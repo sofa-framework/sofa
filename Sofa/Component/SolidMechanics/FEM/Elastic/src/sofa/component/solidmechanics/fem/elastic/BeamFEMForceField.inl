@@ -255,7 +255,7 @@ void BeamFEMForceField<DataTypes>::addDForce(const sofa::core::MechanicalParams 
 template<class DataTypes>
 typename BeamFEMForceField<DataTypes>::Real BeamFEMForceField<DataTypes>::pseudoDeterminantForCoef ( const type::Mat<2, 3, Real>&  M )
 {
-    return  M[0][1]*M[1][2] - M[1][1]*M[0][2] -  M[0][0]*M[1][2] + M[1][0]*M[0][2] + M[0][0]*M[1][1] - M[1][0]*M[0][1];
+    return  M(0,1)*M(1,2) - M(1,1)*M(0,2) -  M(0,0)*M(1,2) + M(1,0)*M(0,2) + M(0,0)*M(1,1) - M(1,0)*M(0,1);
 }
 
 template<class DataTypes>
@@ -293,31 +293,31 @@ void BeamFEMForceField<DataTypes>::computeStiffness(int i, Index , Index )
 
     // Define stiffness matrix 'k' in local coordinates
     k_loc.clear();
-    k_loc[6][6]   = k_loc[0][0]   = _E*_A/_L;
-    k_loc[7][7]   = k_loc[1][1]   = (Real)(12.0*EIz/(L3*(1.0+phiy)));
-    k_loc[8][8]   = k_loc[2][2]   = (Real)(12.0*EIy/(L3*(1.0+phiz)));
-    k_loc[9][9]   = k_loc[3][3]   = _G*_J/_L;
-    k_loc[10][10] = k_loc[4][4]   = (Real)((4.0+phiz)*EIy/(_L*(1.0+phiz)));
-    k_loc[11][11] = k_loc[5][5]   = (Real)((4.0+phiy)*EIz/(_L*(1.0+phiy)));
+    k_loc(6,6)   = k_loc(0,0)   = _E*_A/_L;
+    k_loc(7,7)   = k_loc(1,1)   = (Real)(12.0*EIz/(L3*(1.0+phiy)));
+    k_loc(8,8)   = k_loc(2,2)   = (Real)(12.0*EIy/(L3*(1.0+phiz)));
+    k_loc(9,9)   = k_loc(3,3)   = _G*_J/_L;
+    k_loc(10,10) = k_loc(4,4)   = (Real)((4.0+phiz)*EIy/(_L*(1.0+phiz)));
+    k_loc(11,11) = k_loc(5,5)   = (Real)((4.0+phiy)*EIz/(_L*(1.0+phiy)));
 
-    k_loc[4][2]   = (Real)(-6.0*EIy/(L2*(1.0+phiz)));
-    k_loc[5][1]   = (Real)( 6.0*EIz/(L2*(1.0+phiy)));
-    k_loc[6][0]   = -k_loc[0][0];
-    k_loc[7][1]   = -k_loc[1][1];
-    k_loc[7][5]   = -k_loc[5][1];
-    k_loc[8][2]   = -k_loc[2][2];
-    k_loc[8][4]   = -k_loc[4][2];
-    k_loc[9][3]   = -k_loc[3][3];
-    k_loc[10][2]  = k_loc[4][2];
-    k_loc[10][4]  = (Real)((2.0-phiz)*EIy/(_L*(1.0+phiz)));
-    k_loc[10][8]  = -k_loc[4][2];
-    k_loc[11][1]  = k_loc[5][1];
-    k_loc[11][5]  = (Real)((2.0-phiy)*EIz/(_L*(1.0+phiy)));
-    k_loc[11][7]  = -k_loc[5][1];
+    k_loc(4,2)   = (Real)(-6.0*EIy/(L2*(1.0+phiz)));
+    k_loc(5,1)   = (Real)( 6.0*EIz/(L2*(1.0+phiy)));
+    k_loc(6,0)   = -k_loc(0,0);
+    k_loc(7,1)   = -k_loc(1,1);
+    k_loc(7,5)   = -k_loc(5,1);
+    k_loc(8,2)   = -k_loc(2,2);
+    k_loc(8,4)   = -k_loc(4,2);
+    k_loc(9,3)   = -k_loc(3,3);
+    k_loc(10,2)  = k_loc(4,2);
+    k_loc(10,4)  = (Real)((2.0-phiz)*EIy/(_L*(1.0+phiz)));
+    k_loc(10,8)  = -k_loc(4,2);
+    k_loc(11,1)  = k_loc(5,1);
+    k_loc(11,5)  = (Real)((2.0-phiy)*EIz/(_L*(1.0+phiy)));
+    k_loc(11,7)  = -k_loc(5,1);
 
     for (int i=0; i<=10; i++)
         for (int j=i+1; j<12; j++)
-            k_loc[i][j] = k_loc[j][i];
+            k_loc(i,j) = k_loc(j,i);
 }
 
 inline type::Quat<SReal> qDiff(type::Quat<SReal> a, const type::Quat<SReal>& b)
@@ -542,13 +542,13 @@ void BeamFEMForceField<DataTypes>::addKToMatrix(sofa::linearalgebra::BaseMatrix 
 
                         for (int i=0; i<3; i++)
                             for (int j=0; j<3; j++) {
-                                K.elems[i+x1][j+y1] += m[i][j];
-                                K.elems[j+y1][i+x1] += m[i][j];
+                                K(i+x1,j+y1) += m(i,j);
+                                K(j+y1,i+x1) += m(i,j);
                             }
                         if (x1 == y1)
                             for (int i=0; i<3; i++)
                                 for (int j=0; j<3; j++)
-                                    K.elems[i+x1][j+y1] *= SReal(0.5);
+                                    K(i+x1,j+y1) *= SReal(0.5);
 
                     }
                 }
@@ -642,13 +642,13 @@ void BeamFEMForceField<DataTypes>::buildStiffnessMatrix(core::behavior::Stiffnes
 
                         for (int i=0; i<3; i++)
                             for (int j=0; j<3; j++) {
-                                K.elems[i+x1][j+y1] += m[i][j];
-                                K.elems[j+y1][i+x1] += m[i][j];
+                                K(i+x1,j+y1) += m(i,j);
+                                K(j+y1,i+x1) += m(i,j);
                             }
                         if (x1 == y1)
                             for (int i=0; i<3; i++)
                                 for (int j=0; j<3; j++)
-                                    K.elems[i+x1][j+y1] *= SReal(0.5);
+                                    K(i+x1,j+y1) *= SReal(0.5);
 
                     }
                 }
@@ -731,28 +731,15 @@ void BeamFEMForceField<DataTypes>::computeBBox(const core::ExecParams* params, b
 
     if( !onlyVisible ) return;
 
-
-    static const Real max_real = std::numeric_limits<Real>::max();
-    static const Real min_real = std::numeric_limits<Real>::lowest();
-    Real maxBBox[3] = {min_real,min_real,min_real};
-    Real minBBox[3] = {max_real,max_real,max_real};
-
-
-    const size_t npoints = this->mstate->getSize();
     const VecCoord& p = this->mstate->read(core::vec_id::read_access::position)->getValue();
 
-    for (size_t i=0; i<npoints; i++)
+    type::BoundingBox bbox;
+    for (const auto& pt : p )
     {
-        const type::Vec3 &pt = p[i].getCenter();
-
-        for (int c=0; c<3; c++)
-        {
-            if (pt[c] > maxBBox[c]) maxBBox[c] = pt[c];
-            else if (pt[c] < minBBox[c]) minBBox[c] = pt[c];
-        }
+        bbox.include(pt.getCenter());
     }
 
-    this->f_bbox.setValue(sofa::type::TBoundingBox<Real>(minBBox,maxBBox));
+    this->f_bbox.setValue(bbox);
 
 }
 

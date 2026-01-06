@@ -51,11 +51,7 @@ public:
     typedef std::map< std::string, OperationCreator* > RegisterStorage;
     RegisterStorage registry;
 
-    static OperationFactory* getInstance()
-    {
-        static OperationFactory instance;
-        return &instance;
-    }
+    static OperationFactory* getInstance();
 
     static std::string GetDescription(const std::string &name)
     {
@@ -69,10 +65,8 @@ public:
 
     }
 
-    SOFA_ATTRIBUTE_DEPRECATED__TYPO() static Operation* Instanciate(const std::string &name)
-    {
-        return Instantiate(name);
-    }
+    SOFA_ATTRIBUTE_DISABLED__TYPO()
+    static Operation* Instanciate(const std::string &name) = delete;
 
     static Operation* Instantiate(const std::string &name)
     {

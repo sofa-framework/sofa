@@ -90,7 +90,7 @@ void PartialFixedProjectiveConstraint<DataTypes>::projectResponse(const core::Me
     projectResponseT<VecDeriv>(res.wref(), 
         [](VecDeriv& dx, const unsigned int index, const VecBool& b)
         { 
-            for (std::size_t j = 0; j < b.size(); j++) if (b[j]) dx[index][j] = 0.0; 
+            for (std::size_t j = 0; j < b.size(); j++) if (b[j]) dx[index][j] = 0.0;
         }
     );
 }

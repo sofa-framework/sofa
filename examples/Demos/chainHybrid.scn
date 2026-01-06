@@ -31,7 +31,9 @@
             <MeshTopology src="@loaderMeca" />
             <MechanicalObject src="@loaderMeca" rx="90" />
             <TriangleCollisionModel simulated="0" moving="0" />
-            <OglModel name="Visual" src="@loaderVisual" color="gray" rx="90" />
+            <Node name="Visu">
+                <OglModel name="Visual" src="@../loaderVisual" color="gray" rx="90" />
+            </Node>
         </Node>
         <include name="FEM" href="Objects/TorusFEM.xml" dx="2.5" />
         <include name="Spring" href="Objects/TorusSpring.xml" dx="5" rx="90" />

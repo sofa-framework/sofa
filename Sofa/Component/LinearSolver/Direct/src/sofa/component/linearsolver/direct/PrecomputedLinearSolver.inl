@@ -53,28 +53,16 @@ PrecomputedLinearSolver<TMatrix,TVector>::PrecomputedLinearSolver()
 }
 
 template<class TMatrix,class TVector>
-void PrecomputedLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(const core::MechanicalParams* mparams)
+void PrecomputedLinearSolver<TMatrix,TVector>::solve (TMatrix& M, TVector& solution, TVector& rh)
 {
-    // Update the matrix only the first time
-    if (first)
-    {
-        first = false;
-        Inherit::setSystemMBKMatrix(mparams);
-        loadMatrix(*this->getSystemMatrix());
-    }
-}
-
-//Solve x = R * M^-1 * R^t * b
-template<class TMatrix,class TVector>
-void PrecomputedLinearSolver<TMatrix,TVector>::solve (TMatrix& , TVector& z, TVector& r)
-{
-    z = internalData.Minv * r;
+    SOFA_UNUSED(M);
+    solution = internalData.Minv * rh;
 }
 
 template<class TMatrix,class TVector>
 void PrecomputedLinearSolver<TMatrix,TVector >::loadMatrix(TMatrix& M)
 {
-    systemSize = this->getSystemMatrix()->rowSize();
+    systemSize = this->l_linearSystem->getSystemMatrix()->rowSize();
     internalData.Minv.resize(systemSize,systemSize);
     dt = this->getContext()->getDt();
 
@@ -151,7 +139,18 @@ void PrecomputedLinearSolver<TMatrix,TVector>::loadMatrixWithCholeskyDecompositi
 }
 
 template<class TMatrix,class TVector>
-void PrecomputedLinearSolver<TMatrix,TVector>::invert(TMatrix& /*M*/) {}
+void PrecomputedLinearSolver<TMatrix,TVector>::invert(TMatrix& /*M*/)
+{
+    if (first)
+    {
+        if (this->l_linearSystem)
+        {
+            loadMatrix(*this->l_linearSystem->getSystemMatrix());
+            this->l_linearSystem->d_enableAssembly.setValue(false);
+        }
+        first = false;
+    }
+}
 
 template<class TMatrix,class TVector> template<class JMatrix>
 void PrecomputedLinearSolver<TMatrix,TVector>::computeActiveDofs(JMatrix& J)
@@ -194,7 +193,6 @@ bool PrecomputedLinearSolver<TMatrix,TVector>::addJMInvJt(linearalgebra::BaseMat
 
         msg_error() << "The construction of the matrix when the solver is used only as cvonstraint "
                        "correction is not implemented. You first need to save the matrix into a file. " ;
-        setSystemMBKMatrix(&mparams);
     }
 
     if (SparseMatrix<double>* j = dynamic_cast<SparseMatrix<double>*>(J))

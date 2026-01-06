@@ -310,7 +310,7 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::addForce(const core::Me
         {
             for (l = 0; l < 3; ++l)
             {
-                tetInfo->m_deformationGradient[k][l] = dp[0][k] * sv[l];
+                tetInfo->m_deformationGradient(k,l) = dp[0][k] * sv[l];
             }
         }
         for (j = 1; j < 3; ++j)
@@ -321,7 +321,7 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::addForce(const core::Me
             {
                 for (l = 0; l < 3; ++l)
                 {
-                    tetInfo->m_deformationGradient[k][l] += dp[j][k] * sv[l];
+                    tetInfo->m_deformationGradient(k,l) += dp[j][k] * sv[l];
                 }
             }
         }
@@ -411,16 +411,15 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::updateTangentMatrix()
             Matrix3  M, N;
             MatrixSym outputTensor;
             N.clear();
-            type::vector<MatrixSym> inputTensor;
-            inputTensor.resize(3);
+            std::array<MatrixSym,3> inputTensor;
             //	MatrixSym input1,input2,input3,outputTensor;
             for (int m = 0; m < 3; m++)
             {
                 for (int n = m; n < 3; n++)
                 {
-                    inputTensor[0](m, n) = svl[m] * df[0][n] + df[0][m] * svl[n];
-                    inputTensor[1](m, n) = svl[m] * df[1][n] + df[1][m] * svl[n];
-                    inputTensor[2](m, n) = svl[m] * df[2][n] + df[2][m] * svl[n];
+                    inputTensor[0](m, n) = svl[m] * df(0,n) + df(0,m) * svl[n];
+                    inputTensor[1](m, n) = svl[m] * df(1,n) + df(1,m) * svl[n];
+                    inputTensor[2](m, n) = svl[m] * df(2,n) + df(2,m) * svl[n];
                 }
             }
 
@@ -433,7 +432,7 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::updateTangentMatrix()
                 //Nv.clear();
                 for (int u = 0; u < 3; u++)
                 {
-                    Nv[u][m] = vectortemp[u];
+                    Nv(u,m) = vectortemp[u];
                 }
                 N += Nv.transposed();
             }
@@ -444,8 +443,8 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::updateTangentMatrix()
 
             const Coord vectSD = tetInfo->m_SPKTensorGeneral * svk;
             productSD = dot(vectSD, svl);
-            M[0][1] = M[0][2] = M[1][0] = M[1][2] = M[2][0] = M[2][1] = 0;
-            M[0][0] = M[1][1] = M[2][2] = (Real)productSD;
+            M(0,1) = M(0,2) = M(1,0) = M(1,2) = M(2,0) = M(2,1) = 0;
+            M(0,0) = M(1,1) = M(2,2) = (Real)productSD;
 
             edgeDfDx += (M+N)*tetInfo->m_restVolume;
 
@@ -486,9 +485,9 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::addDForce(const core::M
         deltax = dx[v0] - dx[v1];
         dv0 = einfo->DfDx * deltax;
         // do the transpose multiply:
-        dv1[0] = (Real)(deltax[0] * einfo->DfDx[0][0] + deltax[1] * einfo->DfDx[1][0] + deltax[2] * einfo->DfDx[2][0]);
-        dv1[1] = (Real)(deltax[0] * einfo->DfDx[0][1] + deltax[1] * einfo->DfDx[1][1] + deltax[2] * einfo->DfDx[2][1]);
-        dv1[2] = (Real)(deltax[0] * einfo->DfDx[0][2] + deltax[1] * einfo->DfDx[1][2] + deltax[2] * einfo->DfDx[2][2]);
+        dv1[0] = (Real)(deltax[0] * einfo->DfDx(0,0) + deltax[1] * einfo->DfDx(1,0) + deltax[2] * einfo->DfDx(2,0));
+        dv1[1] = (Real)(deltax[0] * einfo->DfDx(0,1) + deltax[1] * einfo->DfDx(1,1) + deltax[2] * einfo->DfDx(2,1));
+        dv1[2] = (Real)(deltax[0] * einfo->DfDx(0,2) + deltax[1] * einfo->DfDx(1,2) + deltax[2] * einfo->DfDx(2,2));
         // add forces
         df[v0] += dv1 * kFactor;
         df[v1] -= dv0 * kFactor;
@@ -527,10 +526,10 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::addKToMatrix(sofa::line
         {
             for (unsigned int j = 0; j < 3; j++)
             {
-                mat->add(N0 + i, N0 + j, + einfo->DfDx[j][i] * k);
-                mat->add(N0 + i, N1 + j, - einfo->DfDx[j][i] * k);
-                mat->add(N1 + i, N0 + j, - einfo->DfDx[i][j] * k);
-                mat->add(N1 + i, N1 + j, + einfo->DfDx[i][j] * k);
+                mat->add(N0 + i, N0 + j, + einfo->DfDx(j,i) * k);
+                mat->add(N0 + i, N1 + j, - einfo->DfDx(j,i) * k);
+                mat->add(N1 + i, N0 + j, - einfo->DfDx(i,j) * k);
+                mat->add(N1 + i, N1 + j, + einfo->DfDx(i,j) * k);
             }
         }
     }
@@ -568,10 +567,10 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::buildStiffnessMatrix(
         {
             for(j=0; j<3; j++)
             {
-                dfdx(N0+i, N0+j) +=   einfo->DfDx[j][i];
-                dfdx(N0+i, N1+j) += - einfo->DfDx[j][i];
-                dfdx(N1+i, N0+j) += - einfo->DfDx[i][j];
-                dfdx(N1+i, N1+j) += + einfo->DfDx[i][j];
+                dfdx(N0+i, N0+j) +=   einfo->DfDx(j,i);
+                dfdx(N0+i, N1+j) += - einfo->DfDx(j,i);
+                dfdx(N1+i, N0+j) += - einfo->DfDx(i,j);
+                dfdx(N1+i, N1+j) += + einfo->DfDx(i,j);
             }
         }
     }

@@ -31,7 +31,7 @@ namespace sofa::simulation
 class SOFA_SIMULATION_CORE_API ResetVisitor : public Visitor
 {
 public:
-    ResetVisitor(const core::ExecParams* params) : Visitor(params) {}
+    ResetVisitor(const core::ExecParams* eparams) : Visitor(eparams) {}
 
     void processObject(core::objectmodel::BaseObject* obj);
 
@@ -46,7 +46,7 @@ public:
 class SOFA_SIMULATION_CORE_API StoreResetStateVisitor : public Visitor
 {
 public:
-    StoreResetStateVisitor(const core::ExecParams* params) : Visitor(params) {}
+    StoreResetStateVisitor(const core::ExecParams* eparams) : Visitor(eparams) {}
 
     void processObject(core::objectmodel::BaseObject* obj);
 

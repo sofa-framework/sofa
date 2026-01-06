@@ -29,6 +29,7 @@
 #include <sofa/type/fixed_array.h>
 #include <sofa/gl/glu.h>
 #include <sofa/component/visual/VisualStyle.h>
+#include <sofa/helper/narrow_cast.h>
 
 namespace sofa::gl::component::rendering2d
 {
@@ -45,7 +46,7 @@ void registerOglViewport(sofa::core::ObjectFactory* factory)
 OglViewport::OglViewport()
     :p_screenPosition(initData(&p_screenPosition, "screenPosition", "Viewport position"))
     ,p_screenSize(initData(&p_screenSize, "screenSize", "Viewport size"))
-    ,p_cameraPosition(initData(&p_cameraPosition, Vec3f(0.0,0.0,0.0), "cameraPosition", "Camera's position in eye's space"))
+    ,p_cameraPosition(initData(&p_cameraPosition, Vec3(0.0,0.0,0.0), "cameraPosition", "Camera's position in eye's space"))
     ,p_cameraOrientation(initData(&p_cameraOrientation,Quat<SReal>(), "cameraOrientation", "Camera's orientation"))
     ,p_cameraRigid(initData(&p_cameraRigid, "cameraRigid", "Camera's rigid coord"))
     ,p_zNear(initData(&p_zNear, "zNear", "Camera's ZNear"))
@@ -108,13 +109,13 @@ void OglViewport::preDrawScene(core::visual::VisualParams* vp)
     if (p_swapMainView.getValue())
     {
         const sofa::type::BoundingBox& sceneBBox = vp->sceneBBox();
-        Vec3f cameraPosition;
-        Quat<SReal> cameraOrientation;
+        Vec3 cameraPosition(type::NOINIT);
+        Quat<SReal> cameraOrientation{type::QNOINIT};
 
         //Take the rigid if it is connected to something
         if (p_cameraRigid.isDisplayed())
         {
-            RigidCoord rcam = p_cameraRigid.getValue();
+            const RigidCoord& rcam = p_cameraRigid.getValue();
             cameraPosition =  rcam.getCenter() ;
             cameraOrientation = rcam.getOrientation();
         }
@@ -263,13 +264,13 @@ void OglViewport::renderToViewport(core::visual::VisualParams* vp)
         double zNear=1e10, zFar=-1e10;
 //        double fovy = 0;
 
-        Vec3f cameraPosition;
-        Quat<SReal> cameraOrientation;
+        Vec3 cameraPosition(type::NOINIT);
+        Quat<SReal> cameraOrientation(type::QNOINIT);
 
         //Take the rigid if it is connected to something
         if (p_cameraRigid.isDisplayed())
         {
-            RigidCoord rcam = p_cameraRigid.getValue();
+            const RigidCoord& rcam = p_cameraRigid.getValue();
             cameraPosition =  rcam.getCenter() ;
             cameraOrientation = rcam.getOrientation();
         }
@@ -353,7 +354,7 @@ void OglViewport::renderToViewport(core::visual::VisualParams* vp)
     vp->getModelViewMatrix(lastModelViewMatrix);
     vp->setProjectionMatrix(projectionMatrix);
     vp->setModelViewMatrix(modelViewMatrix);
-    vp->viewport() = Viewport(x0,y0,screenSize[0],screenSize[1]);
+    vp->viewport() = Viewport({x0, y0, helper::narrow_cast<int>(screenSize[0]), helper::narrow_cast<int>(screenSize[1])});
     vp->pass() = core::visual::VisualParams::Std;
     simulation::VisualDrawVisitor vdv( vp );
     vdv.setTags(this->getTags());
@@ -452,11 +453,11 @@ void OglViewport::draw(const core::visual::VisualParams* vparams)
 		return;
 
 	if (!p_cameraRigid.isDisplayed())
-		vparams->drawTool()->drawFrame(p_cameraPosition.getValue(), p_cameraOrientation.getValue(), Vec3(0.1,0.1,0.1));
+        vparams->drawTool()->drawFrame(p_cameraPosition.getValue(), p_cameraOrientation.getValue(), Vec3f(0.1f,0.1f,0.1f));
 	else
 	{
 		RigidCoord rcam = p_cameraRigid.getValue();
-		vparams->drawTool()->drawFrame(rcam.getCenter(), rcam.getOrientation(), Vec3(0.1,0.1,0.1));
+        vparams->drawTool()->drawFrame(rcam.getCenter(), rcam.getOrientation(), Vec3f(0.1f,0.1f,0.1f));
 	}
 }
 

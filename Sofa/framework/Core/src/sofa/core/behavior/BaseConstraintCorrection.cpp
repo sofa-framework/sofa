@@ -21,11 +21,13 @@
 ******************************************************************************/
 #include <sofa/core/behavior/BaseConstraintCorrection.h>
 
+#include <sofa/core/behavior/OdeSolver.h>
+
 namespace sofa::core::behavior
 {
 
 BaseConstraintCorrection::BaseConstraintCorrection(){}
-BaseConstraintCorrection::~BaseConstraintCorrection(){}
+BaseConstraintCorrection::~BaseConstraintCorrection() {}
 
 void BaseConstraintCorrection::rebuildSystem(SReal massFactor, SReal forceFactor)
 {
@@ -169,6 +171,27 @@ void BaseConstraintCorrection::resetContactForce()
 
 
 
+SReal BaseConstraintCorrection::correctionFactor(const sofa::core::behavior::OdeSolver* solver, const ConstraintOrder& constraintOrder)
+{
+    if (solver)
+    {
+        switch (constraintOrder)
+        {
+            case core::ConstraintOrder::POS_AND_VEL :
+            case core::ConstraintOrder::POS :
+                return solver->getPositionIntegrationFactor();
+
+            case core::ConstraintOrder::ACC :
+            case core::ConstraintOrder::VEL :
+                return solver->getVelocityIntegrationFactor();
+
+            default :
+                break;
+        }
+    }
+
+    return 1.0_sreal;
+}
 
 } // namespace sofa::core::behavior
 

@@ -24,7 +24,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 
 #include <sofa/component/statecontainer/MechanicalObject.h>
-#include <sofa/component/collision/geometry/TriangleModel.h>
+#include <sofa/component/collision/geometry/TriangleCollisionModel.h>
 
 
 namespace sofa::gui::component::performer

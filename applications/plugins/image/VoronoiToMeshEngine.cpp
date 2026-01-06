@@ -35,14 +35,17 @@ namespace engine
 
 using namespace defaulttype;
 
-int VoronoiToMeshEngineClass = core::RegisterObject("Generate flat faces between adjacent regions of an image")
-        .add<VoronoiToMeshEngine<ImageUI> >(true)
-        .add<VoronoiToMeshEngine<ImageUC> >()
+void registerVoronoiToMeshEngine(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Generate flat faces between adjacent regions of an image")
+    .add<VoronoiToMeshEngine<ImageUI> >(true)
+    .add<VoronoiToMeshEngine<ImageUC> >()
 #if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
-        .add<VoronoiToMeshEngine<ImageUS> >()
-        .add<VoronoiToMeshEngine<ImageUL> >()
+    .add<VoronoiToMeshEngine<ImageUS> >()
+    .add<VoronoiToMeshEngine<ImageUL> >()
 #endif
-        ;
+    );
+}
 
 template class SOFA_IMAGE_API VoronoiToMeshEngine<ImageUI>;
 template class SOFA_IMAGE_API VoronoiToMeshEngine<ImageUC>;

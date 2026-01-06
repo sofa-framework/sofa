@@ -21,7 +21,7 @@
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <MinProximityIntersection name="Proximity" alarmDistance="0.3" contactDistance="0.2" />
-    <CollisionResponse name="Response" />
+    <CollisionResponse name="Response" response="PenalityContactForceField"/>
     <DefaultAnimationLoop/>
 
     <Node name="Pendulum Static Mesh">

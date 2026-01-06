@@ -174,6 +174,8 @@ public:
     const SeqQuads& getQuads()         override { static SeqQuads     empty; return empty; }
     const SeqTetrahedra& getTetrahedra()       override { static SeqTetrahedra    empty; return empty; }
     const SeqHexahedra& getHexahedra()         override { static SeqHexahedra     empty; return empty; }
+    const SeqPrisms& getPrisms() override { static SeqPrisms empty; return empty; }
+    const SeqPyramids& getPyramids() override { static SeqPyramids empty; return empty; }
 
     /** \brief Get the current revision of this mesh.
     *

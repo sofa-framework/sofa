@@ -52,6 +52,8 @@ namespace container
 namespace _distancegrid_
 {
 
+std::map<DistanceGrid::DistanceGridParams, std::weak_ptr<DistanceGrid> > DistanceGrid::instances;
+
 using namespace defaulttype;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -81,7 +83,6 @@ int validateDim(int n)
 
 DistanceGrid::DistanceGrid(int nx, int ny, int nz, Coord pmin, Coord pmax)
     : meshPts()
-    , m_nbRef(1)
     , m_nx(validateDim(nx)), m_ny(validateDim(ny)), m_nz(validateDim(nz))
     , m_nxny(m_nx*m_ny), m_nxnynz(m_nx*m_ny*m_nz)
     , m_dists(m_nx*m_ny*m_nz)
@@ -93,32 +94,10 @@ DistanceGrid::DistanceGrid(int nx, int ny, int nz, Coord pmin, Coord pmax)
 }
 
 DistanceGrid::~DistanceGrid()
-{
-    std::map<DistanceGridParams, DistanceGrid*>& shared = getShared();
-    std::map<DistanceGridParams, DistanceGrid*>::iterator it = shared.begin();
-    while (it != shared.end() && it->second != this) ++it;
-    if (it != shared.end())
-        shared.erase(it); // remove this grid from the list of already loaded grids
-}
-
-/// Add one reference to this grid. Note that loadShared already does this.
-DistanceGrid* DistanceGrid::addRef()
-{
-    ++m_nbRef;
-    return this;
-}
-
-/// Release one reference, deleting this grid if this is the last
-bool DistanceGrid::release()
-{
-    if (--m_nbRef != 0)
-        return false;
-    delete this;
-    return true;
-}
+{}
 
 //todo(dmarchal) we should make a loader for that...
-DistanceGrid* DistanceGrid::load(const std::string& filename,
+std::unique_ptr<DistanceGrid> DistanceGrid::load(const std::string& filename,
                                  double scale, double sampling,
                                  int nx, int ny, int nz, Coord pmin, Coord pmax)
 {
@@ -144,7 +123,7 @@ DistanceGrid* DistanceGrid::load(const std::string& filename,
                 if (bbmax[c] > pmax[c]) pmax[c] = bbmax[c];
             }
         }
-        DistanceGrid* grid = new DistanceGrid(nx, ny, nz, pmin, pmax);
+        std::unique_ptr<DistanceGrid> grid = std::make_unique<DistanceGrid>(nx, ny, nz, pmin, pmax);
         grid->calcCubeDistance(dim, np);
         if (sampling)
             grid->sampleSurface(sampling);
@@ -152,7 +131,7 @@ DistanceGrid* DistanceGrid::load(const std::string& filename,
     }
     else if (filename.length()>4 && filename.substr(filename.length()-4) == ".raw")
     {
-        DistanceGrid* grid = new DistanceGrid(nx, ny, nz, pmin, pmax);
+        std::unique_ptr<DistanceGrid> grid = std::make_unique<DistanceGrid>(nx, ny, nz, pmin, pmax);
         std::ifstream in(filename.c_str(), std::ios::in | std::ios::binary);
         in.read((char*)&(grid->m_dists[0]), grid->m_nxnynz*sizeof(SReal));
         if (scale != 1.0)
@@ -191,7 +170,7 @@ DistanceGrid* DistanceGrid::load(const std::string& filename,
         ftl::Vec3f fpmax = ftl::transform(mesh.distmap->mat,ftl::Vec3f((float)(nx-1),(float)(ny-1),(float)(nz-1)))*(float)absscale;
         pmin = Coord(fpmin.ptr());
         pmax = Coord(fpmax.ptr());
-        DistanceGrid* grid = new DistanceGrid(nx, ny, nz, pmin, pmax);
+        std::unique_ptr<DistanceGrid> grid = std::make_unique<DistanceGrid>(nx, ny, nz, pmin, pmax);
         for (int i=0; i< grid->m_nxnynz; i++)
             grid->m_dists[i] = mesh.distmap->data[i]*scale;
         if (sampling)
@@ -269,7 +248,7 @@ DistanceGrid* DistanceGrid::load(const std::string& filename,
                 if (bbmax[c] > pmax[c]) pmax[c] = bbmax[c];
             }
         }
-        DistanceGrid* grid = new DistanceGrid(nx, ny, nz, pmin, pmax);
+        std::unique_ptr<DistanceGrid> grid = std::make_unique<DistanceGrid>(nx, ny, nz, pmin, pmax);
         grid->calcDistance(mesh, scale);
         if (sampling)
             grid->sampleSurface(sampling);
@@ -286,7 +265,7 @@ DistanceGrid* DistanceGrid::load(const std::string& filename,
     else
     {
          msg_error("DistanceGrid")<< "Unknown extension: "<<filename;
-        return NULL;
+        return nullptr;
     }
 }
 
@@ -345,7 +324,7 @@ template<class T> bool readData(std::istream& in, int dataSize, bool binary, Dis
     }
 }
 
-DistanceGrid* DistanceGrid::loadVTKFile(const std::string& filename, double scale, double sampling)
+std::unique_ptr<DistanceGrid> DistanceGrid::loadVTKFile(const std::string& filename, double scale, double sampling)
 {
     // Format doc: http://www.vtk.org/pdf/file-formats.pdf
     // http://www.cacr.caltech.edu/~slombey/asci/vtk/vtk_formats.simple.html
@@ -353,13 +332,13 @@ DistanceGrid* DistanceGrid::loadVTKFile(const std::string& filename, double scal
     std::ifstream inVTKFile(filename.c_str(), std::ifstream::in & std::ifstream::binary);
     if( !inVTKFile.is_open() )
     {
-        return NULL;
+        return nullptr;
     }
     std::string line;
 
     // Part 1
     std::getline(inVTKFile, line);
-    if (std::string(line,0,23) != "# vtk DataFile Version ") return NULL;
+    if (std::string(line,0,23) != "# vtk DataFile Version ") return nullptr;
     std::string version(line,23);
 
     // Part 2
@@ -372,13 +351,13 @@ DistanceGrid* DistanceGrid::loadVTKFile(const std::string& filename, double scal
     bool binary;
     if (line == "BINARY") binary = true;
     else if (line == "ASCII") binary = false;
-    else return NULL;
+    else return nullptr;
 
     // Part 4
     std::getline(inVTKFile, line);
     if (line != "DATASET STRUCTURED_POINTS")
     {
-        return NULL;
+        return nullptr;
     }
 
     msg_info("DistanceGrid")<< (binary ? "Binary" : "Text") << " VTK File " << filename << " (version " << version << "): " << header;
@@ -422,7 +401,8 @@ DistanceGrid* DistanceGrid::loadVTKFile(const std::string& filename, double scal
             msg_info("DistanceGrid")<< "Found " << typestr << " data: " << name;
             std::getline(inVTKFile, line); // lookup_table, ignore
             msg_info("DistanceGrid")<< "Loading " << nx<<"x"<<ny<<"x"<<nz << " volume...";
-            DistanceGrid* grid = new DistanceGrid(nx, ny, nz, origin, origin + Coord(spacing[0] * nx, spacing[1] * ny, spacing[2]*nz));
+            std::unique_ptr<DistanceGrid> grid = std::make_unique<DistanceGrid>(nx, ny, nz, origin,
+                                 origin + Coord(spacing[0] * nx, spacing[1] * ny, spacing[2] * nz));
             bool ok = true;
             if (typestr == "char") ok = readData<char>(inVTKFile, dataSize, binary, grid->m_dists, scale);
             else if (typestr == "unsigned_char") ok = readData<unsigned char>(inVTKFile, dataSize, binary, grid->m_dists, scale);
@@ -441,8 +421,7 @@ DistanceGrid* DistanceGrid::loadVTKFile(const std::string& filename, double scal
             }
             if (!ok)
             {
-                delete grid;
-                return NULL;
+                return nullptr;
             }
             msg_info("DistanceGrid")<< "Volume data loading OK.";
             grid->computeBBox();
@@ -451,7 +430,7 @@ DistanceGrid* DistanceGrid::loadVTKFile(const std::string& filename, double scal
             return grid; // we read one scalar field, stop here.
         }
     }
-    return NULL;
+    return nullptr;
 }
 
 template<class T>
@@ -464,7 +443,7 @@ void * readData(std::istream& in, int dataSize, bool binary)
         if (in.eof() || in.bad())
         {
             delete[] buffer;
-            return NULL;
+            return nullptr;
         }
     }
     else
@@ -481,7 +460,7 @@ void * readData(std::istream& in, int dataSize, bool binary)
         if (i < dataSize)
         {
             delete[] buffer;
-            return NULL;
+            return nullptr;
         }
     }
     return buffer;
@@ -528,8 +507,6 @@ int DistanceGrid::index(const Coord& p, Coord& coefs) const
     coefs[2] -= z;
     return x+m_nx*(y+m_ny*(z));
 }
-
-
 
 void DistanceGrid::computeBBox()
 {
@@ -1235,7 +1212,7 @@ void DistanceGrid::sampleSurface(double sampling)
 }
 
 
-DistanceGrid* DistanceGrid::loadShared(const std::string& filename,
+std::shared_ptr<DistanceGrid> DistanceGrid::loadShared(const std::string& filename,
                                        double scale, double sampling, int nx, int ny, int nz, Coord pmin, Coord pmax)
 {
     DistanceGridParams params;
@@ -1247,14 +1224,15 @@ DistanceGrid* DistanceGrid::loadShared(const std::string& filename,
     params.nz = nz;
     params.pmin = pmin;
     params.pmax = pmax;
-    std::map<DistanceGridParams, DistanceGrid*>& shared = getShared();
-    std::map<DistanceGridParams, DistanceGrid*>::iterator it = shared.find(params);
-    if (it != shared.end())
-        return it->second->addRef();
-    else
+    std::map<DistanceGridParams, std::weak_ptr<DistanceGrid> >::iterator it = instances.find(params);
+    if (it != instances.end())
     {
-        return shared[params] = load(filename, scale, sampling, nx, ny, nz, pmin, pmax);
+        if (!it->second.expired())
+            return it->second.lock();
     }
+    std::shared_ptr<DistanceGrid> grid = load(filename, scale, sampling, nx, ny, nz, pmin, pmax);
+    instances[params] = grid;
+    return instances[params].lock();
 }
 
 
@@ -1448,12 +1426,6 @@ bool DistanceGrid::DistanceGridParams::operator>(const DistanceGridParams& v) co
     if (pmax[2]  > v.pmax[2] ) return false;
     if (pmax[2]  < v.pmax[2] ) return true;
     return false;
-}
-
-std::map<DistanceGrid::DistanceGridParams, DistanceGrid*>& DistanceGrid::getShared()
-{
-    static std::map<DistanceGridParams, DistanceGrid*> instance;
-    return instance;
 }
 
 } // namespace _distancegrid_
