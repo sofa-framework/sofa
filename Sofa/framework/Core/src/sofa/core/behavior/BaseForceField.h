@@ -73,7 +73,7 @@ public:
     /// @{
 
     /**
-     * !!! WARNING since v25.12 !!!
+     * !!! WARNING since v26.06 !!!
      * 
      * The template method pattern has been applied to this part of the API.
      * This method calls the newly introduced method "doAddForce" internally,
@@ -105,7 +105,7 @@ public:
     virtual void addForce(const MechanicalParams* mparams, MultiVecDerivId fId ) final;
 
     /**
-     * !!! WARNING since v25.12 !!!
+     * !!! WARNING since v26.06 !!!
      * 
      * The template method pattern has been applied to this part of the API.
      * This method calls the newly introduced method "doAddDForce" internally,
@@ -159,7 +159,7 @@ public:
     virtual void addMBKdx(const MechanicalParams* mparams, MultiVecDerivId dfId);
 
     /**
-     * !!! WARNING since v25.12 !!!
+     * !!! WARNING since v26.06 !!!
      * 
      * The template method pattern has been applied to this part of the API.
      * This method calls the newly introduced method "doGetPotentialEnergy" internally,
@@ -180,7 +180,7 @@ public:
     /// @{
 
     /**
-     * !!! WARNING since v25.12 !!!
+     * !!! WARNING since v26.06 !!!
      * 
      * The template method pattern has been applied to this part of the API.
      * This method calls the newly introduced method "doAddKToMatrix" internally,
@@ -195,7 +195,7 @@ public:
     virtual void addKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix ) final;
 
     /**
-     * !!! WARNING since v25.12 !!!
+     * !!! WARNING since v26.06 !!!
      * 
      * The template method pattern has been applied to this part of the API.
      * This method calls the newly introduced method "doAddBToMatrix" internally,
@@ -219,7 +219,7 @@ public:
     virtual void addMBKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix );
 
     /**
-     * !!! WARNING since v25.12 !!!
+     * !!! WARNING since v26.06 !!!
      * 
      * The template method pattern has been applied to this part of the API.
      * This method calls the newly introduced method "doBuildStiffnessMatrix" internally,
@@ -230,7 +230,7 @@ public:
     virtual void buildStiffnessMatrix(StiffnessMatrix* matrix) final;
 
     /**
-     * !!! WARNING since v25.12 !!!
+     * !!! WARNING since v26.06 !!!
      * 
      * The template method pattern has been applied to this part of the API.
      * This method calls the newly introduced method "doBuildDampingMatrix" internally,

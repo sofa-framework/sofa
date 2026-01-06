@@ -71,7 +71,7 @@ public:
     /// @{
 
     /**
-     * !!! WARNING since v25.12 !!! 
+     * !!! WARNING since v26.06 !!! 
      * 
      * The template method pattern has been applied to this part of the API. 
      * This method calls the newly introduced method "doAddMDx", internally,
@@ -83,7 +83,7 @@ public:
     virtual void addMDx(const MechanicalParams* mparams, MultiVecDerivId fid, SReal factor) final;
 
     /**
-     * !!! WARNING since v25.12 !!! 
+     * !!! WARNING since v26.06 !!! 
      * 
      * The template method pattern has been applied to this part of the API. 
      * This method calls the newly introduced method "doAccFromF", internally,
@@ -95,7 +95,7 @@ public:
     virtual void accFromF(const MechanicalParams* mparams, MultiVecDerivId aid) final;
 
     /**
-     * !!! WARNING since v25.12 !!! 
+     * !!! WARNING since v26.06 !!! 
      * 
      * The template method pattern has been applied to this part of the API. 
      * This method calls the newly introduced method "doAddGravityToV", internally,
@@ -109,7 +109,7 @@ public:
     virtual void addGravityToV(const MechanicalParams* mparams, MultiVecDerivId vid) final;
 
     /**
-     * !!! WARNING since v25.12 !!! 
+     * !!! WARNING since v26.06 !!! 
      * 
      * The template method pattern has been applied to this part of the API. 
      * This method calls the newly introduced method "doGetKineticEnergy", internally,
@@ -121,7 +121,7 @@ public:
     virtual SReal getKineticEnergy(const MechanicalParams* mparams = mechanicalparams::defaultInstance()) const final;
 
     /**
-     * !!! WARNING since v25.12 !!! 
+     * !!! WARNING since v26.06 !!! 
      * 
      * The template method pattern has been applied to this part of the API. 
      * This method calls the newly introduced method "doGetPotentialEnergy", internally,
@@ -133,7 +133,7 @@ public:
     virtual SReal getPotentialEnergy(const MechanicalParams* mparams = mechanicalparams::defaultInstance()) const final;
 
     /**
-     * !!! WARNING since v25.12 !!! 
+     * !!! WARNING since v26.06 !!! 
      * 
      * The template method pattern has been applied to this part of the API. 
      * This method calls the newly introduced method "doGetMomentum", internally,
@@ -150,7 +150,7 @@ public:
     /// @{
 
     /**
-     * !!! WARNING since v25.12 !!! 
+     * !!! WARNING since v26.06 !!! 
      * 
      * The template method pattern has been applied to this part of the API. 
      * This method calls the newly introduced method "doAddMToMatrix", internally,
@@ -166,7 +166,7 @@ public:
     virtual void addMToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) final;
 
     /**
-     * !!! WARNING since v25.12 !!! 
+     * !!! WARNING since v26.06 !!! 
      * 
      * The template method pattern has been applied to this part of the API. 
      * This method calls the newly introduced method "doBuildMassMatrix", internally,
@@ -179,7 +179,7 @@ public:
     /// @}
 
     /**
-     * !!! WARNING since v25.12 !!! 
+     * !!! WARNING since v26.06 !!! 
      * 
      * The template method pattern has been applied to this part of the API. 
      * This method calls the newly introduced method "doInitGnuplot", internally,
@@ -191,7 +191,7 @@ public:
     virtual void initGnuplot(const std::string path) final;
 
     /**
-     * !!! WARNING since v25.12 !!! 
+     * !!! WARNING since v26.06 !!! 
      * 
      * The template method pattern has been applied to this part of the API. 
      * This method calls the newly introduced method "doExportGnuplot", internally,
@@ -203,7 +203,7 @@ public:
     virtual void exportGnuplot(const MechanicalParams* mparams, SReal time) final;
 
     /**
-     * !!! WARNING since v25.12 !!! 
+     * !!! WARNING since v26.06 !!! 
      * 
      * The template method pattern has been applied to this part of the API. 
      * This method calls the newly introduced method "doGetElementMass", internally,
@@ -215,7 +215,7 @@ public:
     virtual SReal getElementMass(sofa::Index index) const final;
 
     /**
-     * !!! WARNING since v25.12 !!! 
+     * !!! WARNING since v26.06 !!! 
      * 
      * The template method pattern has been applied to this part of the API. 
      * This method calls the newly introduced method "doGetElementMass", internally,
