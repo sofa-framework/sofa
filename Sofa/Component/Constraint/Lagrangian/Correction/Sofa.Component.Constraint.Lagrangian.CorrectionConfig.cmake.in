@@ -3,10 +3,11 @@
 @PACKAGE_GUARD@
 @PACKAGE_INIT@
 
-find_package(Sofa.Simulation.Core QUIET REQUIRED)
-find_package(Sofa.Component.Mass QUIET REQUIRED)
-find_package(Sofa.Component.LinearSolver.Iterative QUIET REQUIRED)
-find_package(Sofa.Component.ODESolver.Backward QUIET REQUIRED)
+find_package(Sofa.Config QUIET REQUIRED)
+sofa_find_package(Sofa.Simulation.Core QUIET REQUIRED)
+sofa_find_package(Sofa.Component.Mass QUIET REQUIRED)
+sofa_find_package(Sofa.Component.LinearSolver.Iterative QUIET REQUIRED)
+sofa_find_package(Sofa.Component.ODESolver.Backward QUIET REQUIRED)
 
 if(NOT TARGET @PROJECT_NAME@)
     include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@Targets.cmake")

@@ -35,21 +35,25 @@ namespace engine
 
 using namespace defaulttype;
 
-int DepthMapToMeshEngineClass = core::RegisterObject("Compute a mesh from a depth map image ")
-        .add<DepthMapToMeshEngine<ImageUC> >(true)
-        .add<DepthMapToMeshEngine<ImageD> >()
-        .add<DepthMapToMeshEngine<ImageB> >()
+void registerDepthMapToMeshEngine(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Compute a mesh from a depth map image")
+    .add<DepthMapToMeshEngine<ImageUC> >(true)
+    .add<DepthMapToMeshEngine<ImageD> >()
+    .add<DepthMapToMeshEngine<ImageB> >()
 #if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
-        .add<DepthMapToMeshEngine<ImageC> >()
-        .add<DepthMapToMeshEngine<ImageI> >()
-        .add<DepthMapToMeshEngine<ImageUI> >()
-        .add<DepthMapToMeshEngine<ImageS> >()
-        .add<DepthMapToMeshEngine<ImageUS> >()
-        .add<DepthMapToMeshEngine<ImageL> >()
-        .add<DepthMapToMeshEngine<ImageUL> >()
-        .add<DepthMapToMeshEngine<ImageF> >()
-#endif
-        ;
+    .add<DepthMapToMeshEngine<ImageC> >()
+    .add<DepthMapToMeshEngine<ImageI> >()
+    .add<DepthMapToMeshEngine<ImageUI> >()
+    .add<DepthMapToMeshEngine<ImageS> >()
+    .add<DepthMapToMeshEngine<ImageUS> >()
+    .add<DepthMapToMeshEngine<ImageL> >()
+    .add<DepthMapToMeshEngine<ImageUL> >()
+    .add<DepthMapToMeshEngine<ImageF> >()
+#endif    
+        );
+}
+
 
 template class SOFA_IMAGE_API DepthMapToMeshEngine<ImageUC>;
 template class SOFA_IMAGE_API DepthMapToMeshEngine<ImageD>;

@@ -27,16 +27,6 @@
 using sofa::core::ObjectFactory;
 #include <sofa/helper/system/PluginManager.h>
 
-namespace sofa::component::linearsolver
-{
-    extern void registerGlobalSystemMatrixImage(sofa::core::ObjectFactory* factory);
-}
-namespace sofa::component::constraintset
-{
-    extern void registerComplianceMatrixImage(sofa::core::ObjectFactory* factory);
-}
-
-
 namespace sofamatrix::qt
 {
 
@@ -85,8 +75,6 @@ const char* getModuleDescription()
 
 void registerObjects(sofa::core::ObjectFactory* factory)
 {
-    sofa::component::linearsolver::registerGlobalSystemMatrixImage(factory);
-    sofa::component::constraintset::registerComplianceMatrixImage(factory);
 }
 
 }
