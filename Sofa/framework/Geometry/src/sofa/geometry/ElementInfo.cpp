@@ -28,7 +28,7 @@ namespace sofa::geometry
 
 template struct SOFA_GEOMETRY_API ElementInfo<Edge>;
 template struct SOFA_GEOMETRY_API ElementInfo<Hexahedron>;
-template struct SOFA_GEOMETRY_API ElementInfo<Pentahedron>;
+template struct SOFA_GEOMETRY_API ElementInfo<Prism>;
 template struct SOFA_GEOMETRY_API ElementInfo<Point>;
 template struct SOFA_GEOMETRY_API ElementInfo<Pyramid>;
 template struct SOFA_GEOMETRY_API ElementInfo<Quad>;

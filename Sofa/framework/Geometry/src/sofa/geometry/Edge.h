@@ -218,6 +218,70 @@ struct Edge
     * @tparam   T scalar
     * @param	pA, pB nodes of the first edge
     * @param	pC, pD nodes of the second edge
+    * @param    intersectionBaryCoord barycentric coordinates of the intersection point expressed as alpha * pA + (1-alpha) * pB or pD + (1-beta) pD if there is an intersection ,  node will be filled if there is an intersection otherwise will return [0, 0]
+    */
+    template<typename Node,
+        typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
+        typename = std::enable_if_t<std::is_scalar_v<T>>
+    >
+    static constexpr void closestPointWithEdge(const Node& pA, const Node& pB, const Node& pC, const Node& pD, sofa::type::Vec<2, T>& intersectionBaryCoord)
+    {
+        // The 2 segment equations using pX on edge1 and pY on edge2 can be defined by:
+        // pX = pA + alpha (pB - pA)
+        // pY = pC + beta (pD - pC)
+        const auto AB = pB - pA;
+        const auto CD = pD - pC;
+
+        // We search for the shortest line between the two 3D lines. If this lines length is null then there is an intersection
+        // Shortest segment [pX; pY] between the two lines will be perpendicular to them. Then:
+        // (pX - pY).dot(pB - pA) = 0
+        // (pX - pY).dot(pD - pC) = 0
+
+        // We need to find alpha and beta that suits:
+        // [ (pA - pC) + alpha(pB - pA) - beta(pD - pC) ].dot(pB - pA) = 0
+        // [ (pA - pC) + alpha(pB - pA) - beta(pD - pC) ].dot(pD - pC) = 0
+        const auto CA = pA - pC;
+
+        // Writing d[CA/AB] == (pA - pC).dot(pB - pA) and substituting beta we obtain:
+        // beta = (d[CA/CD] + alpha * d[AB/CD]) / d[CD/CD]
+        // alpha = ( d[CA/CD]*d[CD/AB] - d[CA/AB]*d[CD/CD] ) / ( d[AB/AB]*d[CD/CD] - d[AB/CD]*d[AB/CD])
+        const T dCACD = sofa::type::dot(CA, CD);
+        const T dABCD = sofa::type::dot(AB, CD);
+        const T dCDCD = sofa::type::dot(CD, CD);
+        const T dCAAB = sofa::type::dot(CA, AB);
+        const T dABAB = sofa::type::dot(AB, AB);
+
+        const T alphaNom = (dCACD * dABCD - dCAAB * dCDCD);
+        const T alphaDenom = (dABAB * dCDCD - dABCD * dABCD);
+
+        if (alphaDenom < std::numeric_limits<T>::epsilon()) // alpha == inf, not sure what it means geometrically, colinear?
+        {
+            intersectionBaryCoord = sofa::type::Vec<2, T>(0, 0);
+            return ;
+        }
+
+        T alpha = alphaNom / alphaDenom;
+        T beta = (dCACD + alpha * dABCD) / dCDCD;
+
+        if (fabs(alpha) < EQUALITY_THRESHOLD)
+            alpha = 0;
+        else if (fabs(1-alpha) < EQUALITY_THRESHOLD)
+            alpha = 1;
+
+        if (fabs(beta) < EQUALITY_THRESHOLD)
+            beta = 0;
+        else if (fabs(1-beta) < EQUALITY_THRESHOLD)
+            beta = 1;
+
+        intersectionBaryCoord = sofa::type::Vec<2, T>(alpha, beta);
+    }
+
+    /**
+    * @brief	Compute the intersection coordinate of the 2 input edges.
+    * @tparam   Node iterable container
+    * @tparam   T scalar
+    * @param	pA, pB nodes of the first edge
+    * @param	pC, pD nodes of the second edge
     * @param    intersectionBaryCoord barycentric coordinates of the intersection point expressed as alpa * pA + beta * pB if there is an intersection ,  node will be filled if there is an intersection otherwise will return [0, 0]
     * @return	bool true if there is an intersection, otherwise false
     */
@@ -242,13 +306,13 @@ struct Edge
             const auto AC = pC - pA;
             const T alphaNom = AC[1] * CD[0] - AC[0] * CD[1];
             const T alphaDenom = AB[1] * CD[0] - AB[0] * CD[1];
-            
+
             if (alphaDenom < std::numeric_limits<T>::epsilon()) // collinear
             {
                 intersectionBaryCoord = sofa::type::Vec<2, T>(0, 0);
                 return false;
             }
-            
+
             const T alpha = alphaNom / alphaDenom;
 
             if (alpha < 0 || alpha > 1)
@@ -264,52 +328,13 @@ struct Edge
         }
         else
         {
-            // We search for the shortest line between the two 3D lines. If this lines length is null then there is an intersection
-            // Shortest segment [pX; pY] between the two lines will be perpendicular to them. Then:
-            // (pX - pY).dot(pB - pA) = 0
-            // (pX - pY).dot(pD - pC) = 0
-            
-            // We need to find alpha and beta that suits: 
-            // [ (pA - pC) + alpha(pB - pA) - beta(pD - pC) ].dot(pB - pA) = 0
-            // [ (pA - pC) + alpha(pB - pA) - beta(pD - pC) ].dot(pD - pC) = 0
-            const auto CA = pA - pC;
+            closestPointWithEdge(pA, pB, pC, pD, intersectionBaryCoord);
 
-            // Writing d[CA/AB] == (pA - pC).dot(pB - pA) and substituting beta we obtain:
-            // beta = (d[CA/CD] + alpha * d[AB/CD]) / d[CD/CD]
-            // alpha = ( d[CA/CD]*d[CD/AB] - d[CA/AB]*d[CD/CD] ) / ( d[AB/AB]*d[CD/CD] - d[AB/CD]*d[AB/CD])
-            const T dCACD = sofa::type::dot(CA, CD);
-            const T dABCD = sofa::type::dot(AB, CD);
-            const T dCDCD = sofa::type::dot(CD, CD);
-            const T dCAAB = sofa::type::dot(CA, AB);
-            const T dABAB = sofa::type::dot(AB, AB);
-            
-            const T alphaNom = (dCACD * dABCD - dCAAB * dCDCD);
-            const T alphaDenom = (dABAB * dCDCD - dABCD * dABCD); 
+            const Node pX = pA + intersectionBaryCoord[0] * AB;
+            const Node pY = pC + intersectionBaryCoord[1] * CD;
 
-            if (alphaDenom < std::numeric_limits<T>::epsilon()) // alpha == inf, not sure what it means geometrically, colinear?
-            {
-                intersectionBaryCoord = sofa::type::Vec<2, T>(0, 0);
-                return false;
-            }
-
-            T alpha = alphaNom / alphaDenom;
-            T beta = (dCACD + alpha * dABCD) / dCDCD;
-
-            if (fabs(alpha) < EQUALITY_THRESHOLD)
-                alpha = 0;
-            else if (fabs(1-alpha) < EQUALITY_THRESHOLD)
-                alpha = 1;
-
-            if (fabs(beta) < EQUALITY_THRESHOLD)
-                beta = 0;
-            else if (fabs(1-beta) < EQUALITY_THRESHOLD)
-                beta = 1;
-
-            const Node pX = pA + alpha * AB;
-            const Node pY = pC + beta * CD;
-
-            if (alpha < 0 || beta < 0 // if alpha or beta < 0 means on the exact same line but no overlap.
-                || alpha > 1 || beta > 1 // if alpha > 1 means intersection but after outside from [AB]
+            if (intersectionBaryCoord[0] < 0 || intersectionBaryCoord[1] < 0 // if alpha or beta < 0 means on the exact same line but no overlap.
+                || intersectionBaryCoord[0] > 1 || intersectionBaryCoord[1] > 1 // if alpha > 1 means intersection but after outside from [AB]
                 || (pY - pX).norm2() > EQUALITY_THRESHOLD ) // if pY and pX are not se same means no intersection.
             {
                 intersectionBaryCoord = sofa::type::Vec<2, T>(0, 0);
@@ -317,7 +342,7 @@ struct Edge
             }
             else
             {
-                intersectionBaryCoord = sofa::type::Vec<2, T>(1-alpha, alpha);
+                intersectionBaryCoord = sofa::type::Vec<2, T>(1-intersectionBaryCoord[0], intersectionBaryCoord[0]);
                 return true;
             }
         }

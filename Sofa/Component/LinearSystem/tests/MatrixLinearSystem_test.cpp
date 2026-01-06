@@ -30,7 +30,7 @@
 #include <sofa/simulation/Node.h>
 
 #include <sofa/component/statecontainer/MechanicalObject.h>
-#include <sofa/simulation/graph/DAGNode.h>
+#include <sofa/simulation/Node.h>
 #include <sofa/component/solidmechanics/spring/SpringForceField.h>
 #include <sofa/core/behavior/ForceField.h>
 
@@ -62,7 +62,7 @@ TEST(LinearSystem, MatrixSystem_noContext)
 
 TEST(LinearSystem, MatrixSystem)
 {
-    const sofa::simulation::Node::SPtr root = sofa::core::objectmodel::New<sofa::simulation::graph::DAGNode>();
+    const sofa::simulation::Node::SPtr root = sofa::core::objectmodel::New<sofa::simulation::Node>();
 
     using MatrixType = sofa::linearalgebra::CompressedRowSparseMatrix<SReal>;
     using MatrixSystem = sofa::component::linearsystem::MatrixLinearSystem<MatrixType, sofa::linearalgebra::FullVector<SReal> >;
@@ -92,7 +92,7 @@ TEST(LinearSystem, MatrixSystem_springForceField)
     // required to be able to use EXPECT_MSG_NOEMIT and EXPECT_MSG_EMIT
     sofa::helper::logging::MessageDispatcher::addHandler(sofa::testing::MainGtestMessageHandler::getInstance() ) ;
 
-    sofa::simulation::Node::SPtr root = sofa::core::objectmodel::New<sofa::simulation::graph::DAGNode>();
+    sofa::simulation::Node::SPtr root = sofa::core::objectmodel::New<sofa::simulation::Node>();
 
     using MatrixType = sofa::linearalgebra::FullMatrix<SReal>;
     using MatrixSystem = sofa::component::linearsystem::MatrixLinearSystem<MatrixType, sofa::linearalgebra::FullVector<SReal> >;
@@ -332,7 +332,7 @@ TEST(LinearSystem, MatrixSystem_buggyForceField)
     // required to be able to use EXPECT_MSG_NOEMIT and EXPECT_MSG_EMIT
     sofa::helper::logging::MessageDispatcher::addHandler(sofa::testing::MainGtestMessageHandler::getInstance() ) ;
 
-    const sofa::simulation::Node::SPtr root = sofa::core::objectmodel::New<sofa::simulation::graph::DAGNode>();
+    const sofa::simulation::Node::SPtr root = sofa::core::objectmodel::New<sofa::simulation::Node>();
 
     using MatrixSystem = sofa::component::linearsystem::MatrixLinearSystem<EmptyMatrix, sofa::linearalgebra::FullVector<SReal> >;
     const MatrixSystem::SPtr linearSystem = sofa::core::objectmodel::New<MatrixSystem>();

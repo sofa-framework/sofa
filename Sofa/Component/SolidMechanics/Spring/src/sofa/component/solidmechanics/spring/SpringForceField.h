@@ -44,6 +44,9 @@ class SpringForceFieldInternalData
 public:
 };
 
+inline SReal defaultSpringStiffness = 100.f;
+inline SReal defaultSpringDamping = 5.f;
+
 /// Set of simple springs between particles
 template<class DataTypes>
 class SpringForceField : public core::behavior::PairInteractionForceField<DataTypes>
@@ -150,8 +153,8 @@ protected:
     /// stream to export Potential Energy to gnuplot files
     std::ofstream* m_gnuplotFileEnergy;
 
-    SpringForceField(SReal _ks=100.0, SReal _kd=5.0);
-    SpringForceField(MechanicalState* object1, MechanicalState* object2, SReal _ks=100.0, SReal _kd=5.0);
+    SpringForceField(SReal _ks=defaultSpringStiffness, SReal _kd=defaultSpringDamping);
+    SpringForceField(MechanicalState* object1, MechanicalState* object2, SReal _ks=defaultSpringStiffness, SReal _kd=defaultSpringDamping);
 
     template<class Matrix>
     static void addToMatrix(Matrix* globalMatrix, const unsigned int offsetRow, const unsigned int offsetCol, const Mat& localMatrix);

@@ -21,8 +21,8 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/linearalgebra/SparseMatrixProduct.inl>
-#include <sofa/simulation/ParallelForEach.h>
-#include <sofa/simulation/TaskScheduler.h>
+#include <sofa/simulation/task/ParallelForEach.h>
+#include <sofa/simulation/task/TaskScheduler.h>
 
 
 namespace sofa::simulation

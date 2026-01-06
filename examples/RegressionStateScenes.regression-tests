@@ -84,6 +84,7 @@ Component/SolidMechanics/FEM/TriangularFEMForceFieldOptim.scn 100 1e-4 0 1
 Component/SolidMechanics/Spring/FastTriangularBendingSprings.scn 100 1e-4 0 1
 Component/SolidMechanics/Spring/MeshSpringForceField.scn 300 1e-4 0 1
 Component/Topology/Mapping/Mesh2PointTopologicalMapping.scn 100 1e-4 0 1
+Component/Topology/Container/Grid/RegularGridTopology.scn 10000 1e-4 0 1
 Component/Topology/Container/Grid/SparseGridTopology.scn 100 1e-4 0 1
 Component/Topology/Container/Grid/SparseGridRamificationTopology.scn 100 1e-4 0 1
 

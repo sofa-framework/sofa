@@ -22,7 +22,7 @@
 #include <sofa/testing/BaseTest.h>
 #include <sofa/component/linearsystem/MappingGraph.h>
 #include <sofa/core/MechanicalParams.h>
-#include <sofa/simulation/graph/DAGNode.h>
+#include <sofa/simulation/Node.h>
 #include <sofa/simpleapi/SimpleApi.h>
 #include <sofa/component/statecontainer/MechanicalObject.h>
 #include <sofa/component/mapping/linear/SubsetMapping.h>
@@ -65,7 +65,7 @@ TEST(MappingGraph, nullRootNode)
 
 TEST(MappingGraph, emptyRootNode)
 {
-    const sofa::simulation::Node::SPtr root = sofa::core::objectmodel::New<sofa::simulation::graph::DAGNode>();
+    const sofa::simulation::Node::SPtr root = sofa::core::objectmodel::New<sofa::simulation::Node>();
 
     sofa::component::linearsystem::MappingGraph graph;
     graph.build(sofa::core::MechanicalParams::defaultInstance(), root.get());
@@ -85,7 +85,7 @@ TEST(MappingGraph, emptyRootNode)
 
 TEST(MappingGraph, oneMechanicalObject)
 {
-    const sofa::simulation::Node::SPtr root = sofa::core::objectmodel::New<sofa::simulation::graph::DAGNode>();
+    const sofa::simulation::Node::SPtr root = sofa::core::objectmodel::New<sofa::simulation::Node>();
 
     const auto mstate = sofa::core::objectmodel::New<sofa::component::statecontainer::MechanicalObject<sofa::defaulttype::Vec3Types> >();
     root->addObject(mstate);
@@ -107,7 +107,7 @@ TEST(MappingGraph, oneMechanicalObject)
 
 TEST(MappingGraph, twoMechanicalObject)
 {
-    const sofa::simulation::Node::SPtr root = sofa::core::objectmodel::New<sofa::simulation::graph::DAGNode>();
+    const sofa::simulation::Node::SPtr root = sofa::core::objectmodel::New<sofa::simulation::Node>();
 
     const auto mstate1 = sofa::core::objectmodel::New<sofa::component::statecontainer::MechanicalObject<sofa::defaulttype::Vec3Types> >();
     root->addObject(mstate1);
@@ -135,7 +135,7 @@ TEST(MappingGraph, twoMechanicalObject)
 
 TEST(MappingGraph, oneMapping)
 {
-    const sofa::simulation::Node::SPtr root = sofa::core::objectmodel::New<sofa::simulation::graph::DAGNode>();
+    const sofa::simulation::Node::SPtr root = sofa::core::objectmodel::New<sofa::simulation::Node>();
 
     const auto mstate1 = sofa::core::objectmodel::New<sofa::component::statecontainer::MechanicalObject<sofa::defaulttype::Vec3Types> >();
     root->addObject(mstate1);

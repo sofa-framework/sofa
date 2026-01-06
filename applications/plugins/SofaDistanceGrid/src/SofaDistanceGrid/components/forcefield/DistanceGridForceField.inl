@@ -50,7 +50,7 @@ void DistanceGridForceField<DataTypes>::init()
 
     if (fileDistanceGrid.getValue().empty())
     {
-        if (grid==NULL)
+        if (grid == nullptr)
             msg_error() << "DistanceGridForceField requires an input filename." ;
         /// the grid has already been set
         return;
@@ -245,7 +245,7 @@ void DistanceGridForceField<DataTypes>::addForce(const sofa::core::MechanicalPar
                     Coord fA = -(fB+fC);                   f1[t[0]] += fA;
 
                     TContact c;
-                    c.index = t;
+                    c.index = t.array();
                     c.fact = minA-area;
                     c.normal = sN;
                     c.B = B;
@@ -296,7 +296,7 @@ void DistanceGridForceField<DataTypes>::addForce(const sofa::core::MechanicalPar
                     Coord f0 = -(fA+fB+fC);               f1[t[0]] += f0;
 
                     VContact c;
-                    c.index = t;
+                    c.index = t.array();
                     c.fact = minV-volume;
                     c.A = A;
                     c.B = B;

@@ -97,11 +97,11 @@ void TriangleFEMForceField<DataTypes>::init()
     _strainDisplacements.resize(_indexedElements->size());
     _rotations.resize(_indexedElements->size());
 
-    if (method == SMALL) 
+    if (method == SMALL)
     {
         initSmall();
     }
-    else 
+    else
     {
         initLarge();
     }
@@ -119,11 +119,11 @@ void TriangleFEMForceField<DataTypes>::reinit()
     else if (d_method.getValue() == "large")
         method = LARGE;
 
-    if (method == SMALL) 
+    if (method == SMALL)
     {
         //    initSmall();  // useful ? The rotations are recomputed later
     }
-    else 
+    else
     {
         initLarge(); // compute the per-element strain-displacement matrices
     }
@@ -204,33 +204,34 @@ void TriangleFEMForceField<DataTypes>::computeMaterialStiffnesses()
         const Real Estrain = this->getYoungModulusInElement(i) / ((1 + _p) * (1 - 2 * _p));
         const Real Estress = this->getYoungModulusInElement(i) / (1 - _p * _p);
 
-        const Real triangleVolume = (Real)0.5 * d_thickness.getValue() * cross(p[b] - p[a], p[c] - p[a]).norm();
+        const Real triangleArea = sofa::geometry::Triangle::area(p[a], p[b], p[c]);
+        const Real triangleVolume = d_thickness.getValue() * triangleArea;
 
         if (d_planeStrain.getValue() == true)
         {
-            _materialsStiffnesses[i][0][0] = _1_p;
-            _materialsStiffnesses[i][0][1] = _p;
-            _materialsStiffnesses[i][0][2] = 0;
-            _materialsStiffnesses[i][1][0] = _p;
-            _materialsStiffnesses[i][1][1] = _1_p;
-            _materialsStiffnesses[i][1][2] = 0;
-            _materialsStiffnesses[i][2][0] = 0;
-            _materialsStiffnesses[i][2][1] = 0;
-            _materialsStiffnesses[i][2][2] = 0.5f - _p;
+            _materialsStiffnesses[i](0,0) = _1_p;
+            _materialsStiffnesses[i](0,1) = _p;
+            _materialsStiffnesses[i](0,2) = 0;
+            _materialsStiffnesses[i](1,0) = _p;
+            _materialsStiffnesses[i](1,1) = _1_p;
+            _materialsStiffnesses[i](1,2) = 0;
+            _materialsStiffnesses[i](2,0) = 0;
+            _materialsStiffnesses[i](2,1) = 0;
+            _materialsStiffnesses[i](2,2) = 0.5f - _p;
 
             _materialsStiffnesses[i] *= Estrain * triangleVolume;
         }
         else // plane stress
         {
-            _materialsStiffnesses[i][0][0] = 1;
-            _materialsStiffnesses[i][0][1] = _p;
-            _materialsStiffnesses[i][0][2] = 0;
-            _materialsStiffnesses[i][1][0] = _p;
-            _materialsStiffnesses[i][1][1] = 1;
-            _materialsStiffnesses[i][1][2] = 0;
-            _materialsStiffnesses[i][2][0] = 0;
-            _materialsStiffnesses[i][2][1] = 0;
-            _materialsStiffnesses[i][2][2] = 0.5f * (_1_p);
+            _materialsStiffnesses[i](0,0) = 1;
+            _materialsStiffnesses[i](0,1) = _p;
+            _materialsStiffnesses[i](0,2) = 0;
+            _materialsStiffnesses[i](1,0) = _p;
+            _materialsStiffnesses[i](1,1) = 1;
+            _materialsStiffnesses[i](1,2) = 0;
+            _materialsStiffnesses[i](2,0) = 0;
+            _materialsStiffnesses[i](2,1) = 0;
+            _materialsStiffnesses[i](2,2) = 0.5f * (_1_p);
 
             _materialsStiffnesses[i] *= Estress * triangleVolume;
         }
@@ -446,7 +447,7 @@ void TriangleFEMForceField<DataTypes>::accumulateForceLarge(VecCoord& f, const V
             msg_error() << e.what();
             sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
             break;
-        }        
+        }
 
         // compute strain
         type::Vec<3, Real> strain(type::NOINIT);
@@ -571,7 +572,7 @@ void TriangleFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vp
 
 
 }
-
+ 
 
 template<class DataTypes>
 void TriangleFEMForceField<DataTypes>::computeElementStiffnessMatrix(StiffnessMatrix& S, StiffnessMatrix& SR, const MaterialStiffness& K, const StrainDisplacement& J, const Transformation& Rot)
@@ -592,7 +593,7 @@ void TriangleFEMForceField<DataTypes>::computeElementStiffnessMatrix(StiffnessMa
             // copy the block in the expanded matrix
             for (unsigned k = 0; k < 2; k++)
                 for (unsigned l = 0; l < 2; l++)
-                    Ke[3 * i + k][3 * j + l] = JKJt[2 * i + k][2 * j + l];
+                    Ke(3 * i + k,3 * j + l) = JKJt(2 * i + k,2 * j + l);
         }
     }
 
@@ -601,8 +602,8 @@ void TriangleFEMForceField<DataTypes>::computeElementStiffnessMatrix(StiffnessMa
     for (int i = 0; i < 3; ++i)
         for (int j = 0; j < 3; ++j)
         {
-            RR[i][j] = RR[i + 3][j + 3] = RR[i + 6][j + 6] = Rot[i][j];
-            RRt[i][j] = RRt[i + 3][j + 3] = RRt[i + 6][j + 6] = Rot[j][i];
+            RR(i,j) = RR(i + 3,j + 3) = RR(i + 6,j + 6) = Rot(i,j);
+            RRt(i,j) = RRt(i + 3,j + 3) = RRt(i + 6,j + 6) = Rot(j,i);
         }
 
     S = RR * Ke;

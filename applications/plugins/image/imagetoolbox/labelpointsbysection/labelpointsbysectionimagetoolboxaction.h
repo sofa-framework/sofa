@@ -31,8 +31,6 @@ class SOFA_IMAGE_GUI_API LabelPointsBySectionImageToolBox;
 
 namespace sofa
 {
-namespace gui
-{
 namespace qt
 {
 
@@ -97,7 +95,6 @@ private:
     
 };
 
-}
 }
 }
 

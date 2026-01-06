@@ -42,7 +42,7 @@ namespace sofa::core::behavior
  *  ( df, given a displacement dx ).
  */
 template<class TDataTypes>
-class ForceField : public BaseForceField, public SingleStateAccessor<TDataTypes>
+class ForceField : public BaseForceField, public virtual SingleStateAccessor<TDataTypes>
 {
 public:
     SOFA_CLASS2(SOFA_TEMPLATE(ForceField, TDataTypes), BaseForceField, SOFA_TEMPLATE(SingleStateAccessor, TDataTypes));
@@ -184,7 +184,7 @@ public:
                     {
                         const unsigned COLUMN = offset + S*nodeIndex[n2] +j; // j-th column associated with node n2 in BaseMatrix
                         const unsigned column = S*n2+j;                      // j-th column associated with node n2 in the element matrix
-                        bm->add( ROW,COLUMN, em[row][column]* scale );
+                        bm->add( ROW,COLUMN, em(row, column)* scale );
                     }
                 }
             }

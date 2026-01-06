@@ -40,13 +40,17 @@
 #include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/simulation/UpdateMappingEndEvent.h>
 #include <sofa/simulation/UpdateBoundingBoxVisitor.h>
-#include <sofa/simulation/TaskScheduler.h>
+#include <sofa/simulation/task/TaskScheduler.h>
 #include <sofa/simulation/CollisionVisitor.h>
 #include <sofa/simulation/SolveVisitor.h>
-#include <sofa/simulation/MainTaskSchedulerFactory.h>
+#include <sofa/simulation/task/MainTaskSchedulerFactory.h>
+#include <sofa/component/constraint/lagrangian/solver/BlockGaussSeidelConstraintSolver.h>
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalVInitVisitor.h>
+
+#include <sofa/component/constraint/lagrangian/solver/BlockGaussSeidelConstraintSolver.h>
 using sofa::simulation::mechanicalvisitor::MechanicalVInitVisitor;
+
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalBeginIntegrationVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalBeginIntegrationVisitor;
@@ -67,7 +71,7 @@ using namespace core::behavior;
 using namespace sofa::simulation;
 using sofa::helper::ScopedAdvancedTimer;
 
-using DefaultConstraintSolver = sofa::component::constraint::lagrangian::solver::GenericConstraintSolver;
+using DefaultConstraintSolver = sofa::component::constraint::lagrangian::solver::BlockGaussSeidelConstraintSolver;
 
 FreeMotionAnimationLoop::FreeMotionAnimationLoop() :
     d_solveVelocityConstraintFirst(initData(&d_solveVelocityConstraintFirst , false, "solveVelocityConstraintFirst", "solve separately velocity constraint violations before position constraint violations"))
@@ -100,7 +104,7 @@ void FreeMotionAnimationLoop::init()
         l_constraintSolver.set(this->getContext()->get<sofa::core::behavior::ConstraintSolver>(core::objectmodel::BaseContext::SearchDown));
         if (!l_constraintSolver)
         {
-            if (const auto constraintSolver = sofa::core::objectmodel::New<DefaultConstraintSolver>())
+            if (const auto constraintSolver = sofa::core::objectmodel::New<constraint::lagrangian::solver::BlockGaussSeidelConstraintSolver>())
             {
                 getContext()->addObject(constraintSolver);
                 constraintSolver->setName( this->getContext()->getNameHelper().resolveName(constraintSolver->getClassName(), {}));

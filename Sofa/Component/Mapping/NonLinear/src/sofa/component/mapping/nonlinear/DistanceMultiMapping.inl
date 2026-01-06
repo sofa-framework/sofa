@@ -311,7 +311,7 @@ void DistanceMultiMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mpa
             {
                 for(unsigned k=0; k<In::spatial_dimensions; k++)
                 {
-                    b[j][k] = static_cast<Real>(1) * ( j==k ) - directions[i][j]*directions[i][k];
+                    b(j,k) = static_cast<Real>(1) * ( j==k ) - directions[i][j]*directions[i][k];
                 }
             }
             // (I - uu^T)*f/l*kfactor  --  do not forget kfactor !
@@ -325,7 +325,7 @@ void DistanceMultiMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mpa
             {
                 for(unsigned k=0; k<Nin; k++)
                 {
-                    df[j]+=b[j][k]*dx[k];
+                    df[j]+=b(j,k)*dx[k];
                 }
             }
             parentForce0[pair0[1]] -= df;
@@ -372,7 +372,7 @@ void DistanceMultiMapping<TIn, TOut>::updateK(const core::MechanicalParams* /*mp
             {
                 for(unsigned k=0; k<In::spatial_dimensions; k++)
                 {
-                    b[j][k] = static_cast<Real>(1) * ( j==k ) - directions[i][j]*directions[i][k];
+                    b(j,k) = static_cast<Real>(1) * ( j==k ) - directions[i][j]*directions[i][k];
                 }
             }
             b *= childForce[i][0] * invlengths[i];  // (I - uu^T)*f/l
@@ -439,7 +439,7 @@ void DistanceMultiMapping<TIn, TOut>::buildGeometricStiffnessMatrix(
             {
                 for(unsigned k=0; k<In::spatial_dimensions; k++)
                 {
-                    b[j][k] = static_cast<Real>(1) * ( j==k ) - directions[j] * directions[k];
+                    b(j,k) = static_cast<Real>(1) * ( j==k ) - directions[j] * directions[k];
                 }
             }
             b *= force_i[0] * invlengths[i];  // (I - uu^T)*f/l

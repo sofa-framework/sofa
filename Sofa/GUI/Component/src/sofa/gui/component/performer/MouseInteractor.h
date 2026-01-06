@@ -23,7 +23,7 @@
 #include <sofa/gui/component/config.h>
 
 #include <sofa/gui/component/performer/InteractionPerformer.h>
-#include <sofa/component/collision/geometry/RayModel.h>
+#include <sofa/component/collision/geometry/RayCollisionModel.h>
 #include <sofa/component/statecontainer/MechanicalObject.h>
 
 #include <sofa/core/collision/DetectionOutput.h>
