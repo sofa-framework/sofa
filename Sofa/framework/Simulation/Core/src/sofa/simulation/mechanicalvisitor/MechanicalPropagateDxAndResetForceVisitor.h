@@ -33,9 +33,9 @@ class SOFA_SIMULATION_CORE_API MechanicalPropagateDxAndResetForceVisitor : publi
 public:
     sofa::core::MultiVecDerivId dx,f;
 
-    MechanicalPropagateDxAndResetForceVisitor(const sofa::core::MechanicalParams* mparams,
-                                              sofa::core::MultiVecDerivId dx, sofa::core::MultiVecDerivId f)
-            : MechanicalVisitor(mparams) , dx(dx), f(f)
+    MechanicalPropagateDxAndResetForceVisitor(const sofa::core::MechanicalParams* mechaparams,
+                                              sofa::core::MultiVecDerivId dxvecid, sofa::core::MultiVecDerivId fvecid)
+            : MechanicalVisitor(mechaparams) , dx(dxvecid), f(fvecid)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();

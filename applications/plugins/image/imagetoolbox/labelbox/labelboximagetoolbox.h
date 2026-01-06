@@ -55,9 +55,9 @@ public:
         loadFile();
     }
     
-    sofa::gui::qt::LabelImageToolBoxAction* createTBAction(QWidget*parent=nullptr) override
+    sofa::qt::LabelImageToolBoxAction* createTBAction(QWidget*parent=nullptr) override
     {
-        return new sofa::gui::qt::LabelBoxImageToolBoxAction(this,parent);
+        return new sofa::qt::LabelBoxImageToolBoxAction(this,parent);
     }
 
 

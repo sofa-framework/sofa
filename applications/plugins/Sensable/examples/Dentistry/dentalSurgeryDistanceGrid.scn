@@ -22,7 +22,7 @@
 			<OglModel name="ToothVisualModel" src="@meshLoader_0" color="white" />
 		</Node>
 		<Node name="CollisionModel" >
-			<DistanceGrid fileRigidDistanceGrid="Demos/Dentistry/data/mesh/tooth-128.fmesh" scale="1.0" usePoints="0" proximity="0.0" contactStiffness="50.0" contactFriction="0.0"/>
+			<DistanceGrid fileRigidDistanceGrid="Demos/Dentistry/data/mesh/tooth-128.fmesh" scale="1.0" usePoints="0" contactDistance="0.0" contactStiffness="50.0" contactFriction="0.0"/>
 		</Node>
 	</Node>
 

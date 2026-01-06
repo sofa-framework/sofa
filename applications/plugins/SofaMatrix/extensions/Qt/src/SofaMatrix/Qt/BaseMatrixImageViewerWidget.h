@@ -23,11 +23,11 @@
 #include <SofaMatrix/Qt/config.h>
 
 #include <QGraphicsView>
-#include <sofa/gui/qt/SimpleDataWidget.h>
+#include <sofa/qt/SimpleDataWidget.h>
 
 #include <SofaMatrix/Qt/BaseMatrixImageProxy.h>
 
-namespace sofa::gui::qt
+namespace sofa::qt
 {
 
 /// A QGraphicsScene showing a QImage
@@ -106,4 +106,4 @@ public:
     void readFromData() override;
 };
 
-} // namespace sofa::gui::qt
+} // namespace sofa::qt

@@ -357,28 +357,15 @@ void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(co
     if(!this->isComponentStateValid())
         return;
 
-    const MatrixDeriv& constraints = cparams->readJ(this->mstate)->getValue() ;
+    const MatrixDeriv& constraints = cparams->readJ(this->mstate.get())->getValue() ;
     VecReal comp = d_compliance.getValue();
     Real comp0 = d_defaultCompliance.getValue();
     const bool verbose = d_verbose.getValue();
     const bool useOdeIntegrationFactors = d_useOdeSolverIntegrationFactors.getValue();
     // use the OdeSolver to get the position integration factor
-    SReal factor = 1.0;
-    switch (cparams->constOrder())
-    {
-    case core::ConstraintOrder::POS_AND_VEL :
-    case core::ConstraintOrder::POS :
-        factor = useOdeIntegrationFactors ? m_pOdeSolver->getPositionIntegrationFactor() : 1.0;
-        break;
-
-    case core::ConstraintOrder::ACC :
-    case core::ConstraintOrder::VEL :
-        factor = useOdeIntegrationFactors ? m_pOdeSolver->getVelocityIntegrationFactor() : 1.0;
-        break;
-
-    default :
-        break;
-    }
+    const SReal factor = useOdeIntegrationFactors ?
+        core::behavior::BaseConstraintCorrection::correctionFactor(m_pOdeSolver, cparams->constOrder())
+        : 1.0;
 
     comp0 *= Real(factor);
     for(Size i=0;i<comp.size(); ++i)
@@ -533,8 +520,8 @@ void UncoupledConstraintCorrection<DataTypes>::applyMotionCorrection(const core:
     VecCoord& x = *x_d.beginEdit();
     VecDeriv& v = *v_d.beginEdit();
 
-    const VecCoord& x_free = cparams->readX(this->mstate)->getValue();
-    const VecDeriv& v_free = cparams->readV(this->mstate)->getValue();
+    const VecCoord& x_free = cparams->readX(this->mstate.get())->getValue();
+    const VecDeriv& v_free = cparams->readV(this->mstate.get())->getValue();
       
     const bool useOdeIntegrationFactors = d_useOdeSolverIntegrationFactors.getValue();
 
@@ -566,7 +553,7 @@ void UncoupledConstraintCorrection<DataTypes>::applyPositionCorrection(const cor
 
     VecCoord& x = *x_d.beginEdit();
 
-    const VecCoord& x_free = cparams->readX(this->mstate)->getValue();
+    const VecCoord& x_free = cparams->readX(this->mstate.get())->getValue();
 
     const bool useOdeIntegrationFactors = d_useOdeSolverIntegrationFactors.getValue();
 
@@ -594,7 +581,7 @@ void UncoupledConstraintCorrection<DataTypes>::applyVelocityCorrection(const cor
 
     VecDeriv& v = *v_d.beginEdit();
 
-    const VecDeriv& v_free = cparams->readV(this->mstate)->getValue();
+    const VecDeriv& v_free = cparams->readV(this->mstate.get())->getValue();
 
     const bool useOdeIntegrationFactors = d_useOdeSolverIntegrationFactors.getValue();
 
