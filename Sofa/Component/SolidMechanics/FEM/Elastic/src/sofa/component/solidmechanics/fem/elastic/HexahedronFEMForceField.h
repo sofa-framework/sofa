@@ -79,10 +79,15 @@ public:
 *     0---------1-->X
 */
 template<class DataTypes>
-class HexahedronFEMForceField : virtual public BaseLinearElasticityFEMForceField<DataTypes>, public sofa::core::behavior::BaseRotationFinder
+class HexahedronFEMForceField :
+    virtual public BaseLinearElasticityFEMForceField<DataTypes>,
+    public sofa::core::behavior::BaseRotationFinder
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(HexahedronFEMForceField, DataTypes), SOFA_TEMPLATE(BaseLinearElasticityFEMForceField, DataTypes));
+    SOFA_CLASS2(
+        SOFA_TEMPLATE(HexahedronFEMForceField, DataTypes),
+        SOFA_TEMPLATE(BaseLinearElasticityFEMForceField, DataTypes),
+        sofa::core::behavior::BaseRotationFinder);
 
     typedef BaseLinearElasticityFEMForceField<DataTypes> InheritForceField;
     typedef typename DataTypes::VecCoord VecCoord;

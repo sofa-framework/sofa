@@ -50,3 +50,24 @@
         "v25.06", "v25.12", \
         "Use std::ranges::ranges concept instead.")
 #endif
+
+#ifdef SOFA_BUILD_SOFA_TYPE
+#define SOFA_ATTRIBUTE_DEPRECATED__TBOUNDINGBOX()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED__TBOUNDINGBOX() \
+    SOFA_ATTRIBUTE_DEPRECATED("v25.12", "v26.12", "TBoundingBox<T> is being phased out, use BoundingBox instead (PR 5676).")
+#endif
+
+#ifdef SOFA_BUILD_SOFA_TYPE
+#define SOFA_ATTRIBUTE_DEPRECATED__VEC_FROM_POINTER()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED__VEC_FROM_POINTER() \
+    SOFA_ATTRIBUTE_DEPRECATED("v25.12", "v26.12", "Assignment and construction from raw pointer is being phased out (PR 5675).")
+#endif
+
+#ifdef SOFA_BUILD_SOFA_TYPE
+#define SOFA_ATTRIBUTE_DEPRECATED__VEC_FROM_DIFFERENT_VEC()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED__VEC_FROM_DIFFERENT_VEC() \
+    SOFA_ATTRIBUTE_DEPRECATED("v25.12", "v26.12", "Assignment and construction from a different Vec is being phased out (PR 5675).")
+#endif

@@ -30,7 +30,9 @@ namespace sofa::core::behavior
 class BaseRotationFinder : public virtual sofa::core::objectmodel::BaseObject
 {
 public:
-    /**
+    SOFA_ABSTRACT_CLASS(BaseRotationFinder, sofa::core::objectmodel::BaseObject);
+
+     /**
      * !!! WARNING since v25.12 !!!
      *
      * The template method pattern has been applied to this part of the API.

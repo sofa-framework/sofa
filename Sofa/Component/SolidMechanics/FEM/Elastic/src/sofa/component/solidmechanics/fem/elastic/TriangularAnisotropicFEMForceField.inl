@@ -272,16 +272,16 @@ void TriangularAnisotropicFEMForceField<DataTypes>::computeMaterialStiffness(int
     Real K16 = s * c3 * (Q11-Q12-2*Q66) + s3 * c * (Q12-Q22+2*Q66);
     Real K26 = s3 * c * (Q11-Q12-2*Q66) + s * c3 * (Q12-Q22+2*Q66);
     Real K66 = c2 * s2 * (Q11+Q22-2*Q12-2*Q66) + (c4+s4) * Q66;
-
-    tinfo->materialMatrix[0][0] = K11;
-    tinfo->materialMatrix[0][1] = K12;
-    tinfo->materialMatrix[0][2] = K16;
-    tinfo->materialMatrix[1][0] = K12;
-    tinfo->materialMatrix[1][1] = K22;
-    tinfo->materialMatrix[1][2] = K26;
-    tinfo->materialMatrix[2][0] = K16;
-    tinfo->materialMatrix[2][1] = K26;
-    tinfo->materialMatrix[2][2] = K66;
+    
+    tinfo->materialMatrix(0,0) = K11;
+    tinfo->materialMatrix(0,1) = K12;
+    tinfo->materialMatrix(0,2) = K16;
+    tinfo->materialMatrix(1,0) = K12;
+    tinfo->materialMatrix(1,1) = K22;
+    tinfo->materialMatrix(1,2) = K26;
+    tinfo->materialMatrix(2,0) = K16;
+    tinfo->materialMatrix(2,1) = K26;
+    tinfo->materialMatrix(2,2) = K66;
 
     d_localFiberDirection.endEdit();
     Inherited::d_triangleInfo.endEdit();

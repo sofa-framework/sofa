@@ -37,7 +37,7 @@ class SOFA_SIMULATION_CORE_API UpdateInternalDataVisitor : public Visitor
 {
 
 public:
-    UpdateInternalDataVisitor(const core::ExecParams* params): Visitor(params) {}
+    UpdateInternalDataVisitor(const core::ExecParams* eparams): Visitor(eparams) {}
 
     void processUpdateInternalData(simulation::Node* node, sofa::core::objectmodel::BaseObject* baseObj);
     Result processNodeTopDown(simulation::Node* node) override;

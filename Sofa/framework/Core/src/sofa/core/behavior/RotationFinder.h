@@ -33,6 +33,8 @@ template <class DataTypes>
 class RotationFinder : public BaseRotationFinder
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(RotationFinder, DataTypes), BaseRotationFinder);
+
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;

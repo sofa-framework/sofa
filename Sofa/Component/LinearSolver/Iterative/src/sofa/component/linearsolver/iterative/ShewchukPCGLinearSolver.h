@@ -23,10 +23,5 @@
 
 #include <sofa/component/linearsolver/iterative/PCGLinearSolver.h>
 
-SOFA_HEADER_DEPRECATED("v24.12", "v25.12", "sofa/component/linearsolver/iterative/PCGLinearSolver.h")
+SOFA_HEADER_DISABLED("v24.12", "v25.12", "sofa/component/linearsolver/iterative/PCGLinearSolver.h")
 
-namespace sofa::component::linearsolver::iterative
-{
-template<class TMatrix, class TVector>
-using ShewchukPCGLinearSolver SOFA_ATTRIBUTE_DEPRECATED("v24.12", "v25.12", "ShewchukPCGLinearSolver has been renamed to PCGLinearSolver") = PCGLinearSolver<TMatrix, TVector>;
-}

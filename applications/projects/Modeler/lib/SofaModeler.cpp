@@ -31,7 +31,7 @@
 #include <sofa/gui/init.h>
 #include <sofa/gui/common/GUIManager.h>
 #include <sofa/gui/common/BaseGUI.h>
-#include <sofa/gui/qt/FileManagement.h>
+#include <sofa/qt/FileManagement.h>
 #include <sofa/helper/system/PluginManager.h>
 #include <sofa/helper/Utils.h>
 #include <sofa/helper/cast.h>
@@ -231,7 +231,7 @@ SofaModeler::SofaModeler():recentlyOpenedFilesManager(Utils::getSofaPathPrefix()
     std::vector< QString > filter;
     const QString path(examplePath.c_str());
     filter.push_back("*.scn"); filter.push_back("*.xml");
-    sofa::gui::qt::getFilesInDirectory(path, exampleQString, true, filter);
+    sofa::qt::getFilesInDirectory(path, exampleQString, true, filter);
 
 
     //----------------------------------------------------------------------
@@ -725,7 +725,7 @@ void SofaModeler::fileSaveAs()
     std::string path;
     if (graph->getFilename().empty()) path=examplePath.c_str();
     else path=sofa::helper::system::SetDirectory::GetParentDir(graph->getFilename().c_str());
-    QString s = sofa::gui::qt::getSaveFileName ( this, QString(path.c_str()), "Scenes (*.scn *.xml)", "save file dialog", "Choose where the scene will be saved" );
+    QString s = sofa::qt::getSaveFileName ( this, QString(path.c_str()), "Scenes (*.scn *.xml)", "save file dialog", "Choose where the scene will be saved" );
     if ( s.length() >0 )
     {
 
@@ -759,7 +759,7 @@ void SofaModeler::fileReload()
 
 void SofaModeler::exportSofaClasses()
 {
-    QString filename = sofa::gui::qt::getSaveFileName(this, QString(binPath.c_str()), "Sofa Classes (*.xml)", "export classes dialog", "Choose where the Sofa classes will be exported");
+    QString filename = sofa::qt::getSaveFileName(this, QString(binPath.c_str()), "Sofa Classes (*.xml)", "export classes dialog", "Choose where the Sofa classes will be exported");
     if(filename.isEmpty())
         return;
 
