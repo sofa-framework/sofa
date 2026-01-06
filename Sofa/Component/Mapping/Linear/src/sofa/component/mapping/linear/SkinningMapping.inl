@@ -217,12 +217,12 @@ void SkinningMapping<TIn, TOut>::apply( const sofa::core::MechanicalParams* mpar
 
                 // update the Jacobian Matrix
                 //                Real w=m_weights[i][j];
-                matblock[0][0] = (Real) m_weights[i][j]         ;    matblock[1][0] = (Real) 0                      ;    matblock[2][0] = (Real) 0                      ;
-                matblock[0][1] = (Real) 0                       ;    matblock[1][1] = (Real) m_weights[i][j]        ;    matblock[2][1] = (Real) 0                      ;
-                matblock[0][2] = (Real) 0                       ;    matblock[1][2] = (Real) 0                      ;    matblock[2][2] = (Real) m_weights[i][j]        ;
-                matblock[0][3] = (Real) 0                       ;    matblock[1][3] = (Real)-f_rotatedPos[i][j][2]  ;    matblock[2][3] = (Real) f_rotatedPos[i][j][1]  ;
-                matblock[0][4] = (Real) f_rotatedPos[i][j][2]   ;    matblock[1][4] = (Real) 0                      ;    matblock[2][4] = (Real)-f_rotatedPos[i][j][0]  ;
-                matblock[0][5] = (Real)-f_rotatedPos[i][j][1]   ;    matblock[1][5] = (Real) f_rotatedPos[i][j][0]  ;    matblock[2][5] = (Real) 0                      ;
+                matblock(0,0) = (Real) m_weights[i][j]         ;    matblock(1,0) = (Real) 0                      ;    matblock(2,0) = (Real) 0                      ;
+                matblock(0,1) = (Real) 0                       ;    matblock(1,1) = (Real) m_weights[i][j]        ;    matblock(2,1) = (Real) 0                      ;
+                matblock(0,2) = (Real) 0                       ;    matblock(1,2) = (Real) 0                      ;    matblock(2,2) = (Real) m_weights[i][j]        ;
+                matblock(0,3) = (Real) 0                       ;    matblock(1,3) = (Real)-f_rotatedPos[i][j][2]  ;    matblock(2,3) = (Real) f_rotatedPos[i][j][1]  ;
+                matblock(0,4) = (Real) f_rotatedPos[i][j][2]   ;    matblock(1,4) = (Real) 0                      ;    matblock(2,4) = (Real)-f_rotatedPos[i][j][0]  ;
+                matblock(0,5) = (Real)-f_rotatedPos[i][j][1]   ;    matblock(1,5) = (Real) f_rotatedPos[i][j][0]  ;    matblock(2,5) = (Real) 0                      ;
                 _J.createBlock(index[i][j],matblock);
             }
             _J.endBlockRow();

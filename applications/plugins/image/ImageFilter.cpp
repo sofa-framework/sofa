@@ -35,44 +35,44 @@ namespace engine
 
 using namespace defaulttype;
 
-int ImageFilterClass = core::RegisterObject("Filter an image")
-        .add<ImageFilter<ImageUC,ImageUC    > >(true)
-        .add<ImageFilter<ImageD ,ImageD     > >()
-
-        .add<ImageFilter<ImageUC,ImageD    > >()
-
-        .add<ImageFilter<ImageD,ImageUC    > >()
-        .add<ImageFilter<ImageD,ImageB    > >()
-        .add<ImageFilter<ImageB ,ImageD     > >()
-        .add<ImageFilter<ImageB ,ImageB     > >()
+void registerImageFilter(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Filter an image")
+    .add<ImageFilter<ImageUC,ImageUC    > >(true)
+    .add<ImageFilter<ImageD ,ImageD     > >()
+    .add<ImageFilter<ImageUC,ImageD    > >()
+    .add<ImageFilter<ImageD,ImageUC    > >()
+    .add<ImageFilter<ImageD,ImageB    > >()
+    .add<ImageFilter<ImageB ,ImageD     > >()
+    .add<ImageFilter<ImageB ,ImageB     > >()
 
 #if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
-        .add<ImageFilter<ImageC ,ImageC     > >()
-        .add<ImageFilter<ImageI ,ImageI     > >()
-        .add<ImageFilter<ImageUI,ImageUI    > >()
-        .add<ImageFilter<ImageS ,ImageS     > >()
-        .add<ImageFilter<ImageUS,ImageUS    > >()
-        .add<ImageFilter<ImageL ,ImageL     > >()
-        .add<ImageFilter<ImageUL,ImageUL    > >()
-        .add<ImageFilter<ImageF ,ImageF     > >()
-
-        .add<ImageFilter<ImageC ,ImageD     > >()
-        .add<ImageFilter<ImageI ,ImageD     > >()
-        .add<ImageFilter<ImageUI,ImageD    > >()
-        .add<ImageFilter<ImageS ,ImageD     > >()
-        .add<ImageFilter<ImageUS,ImageD    > >()
-        .add<ImageFilter<ImageL ,ImageD     > >()
-        .add<ImageFilter<ImageUL,ImageD    > >()
-        .add<ImageFilter<ImageF ,ImageD     > >()
-
-        .add<ImageFilter<ImageUS,ImageUC    > >()
-        .add<ImageFilter<ImageUC,ImageUS    > >()
-        .add<ImageFilter<ImageUC,ImageB    > >()
-        .add<ImageFilter<ImageUS,ImageB    > >()
-        .add<ImageFilter<ImageS ,ImageB     > >()
-        .add<ImageFilter<ImageS ,ImageUC     > >()
+    .add<ImageFilter<ImageC ,ImageC     > >()
+    .add<ImageFilter<ImageI ,ImageI     > >()
+    .add<ImageFilter<ImageUI,ImageUI    > >()
+    .add<ImageFilter<ImageS ,ImageS     > >()
+    .add<ImageFilter<ImageUS,ImageUS    > >()
+    .add<ImageFilter<ImageL ,ImageL     > >()
+    .add<ImageFilter<ImageUL,ImageUL    > >()
+    .add<ImageFilter<ImageF ,ImageF     > >()
+    .add<ImageFilter<ImageC ,ImageD     > >()
+    .add<ImageFilter<ImageI ,ImageD     > >()
+    .add<ImageFilter<ImageUI,ImageD    > >()
+    .add<ImageFilter<ImageS ,ImageD     > >()
+    .add<ImageFilter<ImageUS,ImageD    > >()
+    .add<ImageFilter<ImageL ,ImageD     > >()
+    .add<ImageFilter<ImageUL,ImageD    > >()
+    .add<ImageFilter<ImageF ,ImageD     > >()
+    .add<ImageFilter<ImageUS,ImageUC    > >()
+    .add<ImageFilter<ImageUC,ImageUS    > >()
+    .add<ImageFilter<ImageUC,ImageB    > >()
+    .add<ImageFilter<ImageUS,ImageB    > >()
+    .add<ImageFilter<ImageS ,ImageB     > >()
+    .add<ImageFilter<ImageS ,ImageUC     > >()
 #endif
-        ;
+    );
+}
+
 
 template class SOFA_IMAGE_API ImageFilter<ImageUC  ,ImageUC    >;
 template class SOFA_IMAGE_API ImageFilter<ImageD   ,ImageD     >;

@@ -168,9 +168,9 @@ protected:
 template <std::size_t N, class Real>
 struct RigidMappingMatrixHelper;
 
-template<>
+template<> SOFA_COMPONENT_MAPPING_NONLINEAR_API
 void RigidMapping< sofa::defaulttype::Rigid2Types, sofa::defaulttype::Vec2Types >::doUpdateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId );
-template<>
+template<> SOFA_COMPONENT_MAPPING_NONLINEAR_API
 const linearalgebra::BaseMatrix* RigidMapping< sofa::defaulttype::Rigid2Types, sofa::defaulttype::Vec2Types >::doGetK();
 
 #if !defined(SOFA_COMPONENT_MAPPING_RIGIDMAPPING_CPP)

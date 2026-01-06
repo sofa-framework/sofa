@@ -54,6 +54,8 @@ EdgeSetTopologyContainer::EdgeSetTopologyContainer()
 
 void EdgeSetTopologyContainer::init()
 {
+    core::topology::TopologyContainer::init();
+
     const helper::ReadAccessor< Data< sofa::type::vector<Edge> > > m_edge = d_edge;
     
     if (d_initPoints.isSet())
@@ -71,8 +73,6 @@ void EdgeSetTopologyContainer::init()
             }
         }
     }
-
-    PointSetTopologyContainer::init();
 
     // only init if edges are present at init.
     if (!m_edge.empty())

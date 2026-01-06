@@ -41,7 +41,7 @@ namespace sofa::component::engine::analyze
  * This class computes target positions using shape matching deformation [Muller05][Muller11]
  */
 template <class DataTypes>
-class ShapeMatching : public core::DataEngine, public core::behavior::SingleStateAccessor<DataTypes>
+class ShapeMatching : public core::DataEngine, public virtual core::behavior::SingleStateAccessor<DataTypes>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(ShapeMatching,DataTypes),core::DataEngine);

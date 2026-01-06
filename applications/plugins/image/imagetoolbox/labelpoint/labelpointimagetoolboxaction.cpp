@@ -15,8 +15,6 @@
 
 namespace sofa
 {
-namespace gui
-{
 namespace qt
 {
 
@@ -172,6 +170,5 @@ void LabelPointImageToolBoxAction::sectionButtonClick()
 
 
 
-}
 }
 }

@@ -337,7 +337,7 @@ void QuadSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
             Coord vertex2 = coords[ the_quad[1] ];
             Coord vertex3 = coords[ the_quad[2] ];
             Coord vertex4 = coords[ the_quad[3] ];
-            type::Vec3 center; center = (DataTypes::getCPos(vertex1)+DataTypes::getCPos(vertex2)+DataTypes::getCPos(vertex3)+DataTypes::getCPos(vertex4))/4;
+            const type::Vec3 center = type::toVec3((DataTypes::getCPos(vertex1)+DataTypes::getCPos(vertex2)+DataTypes::getCPos(vertex3)+DataTypes::getCPos(vertex4))/4);
 
             positions.push_back(center);
 

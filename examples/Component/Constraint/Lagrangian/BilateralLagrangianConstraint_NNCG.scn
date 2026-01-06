@@ -22,7 +22,7 @@
     <VisualStyle displayFlags="showForceFields" />
     <DefaultVisualManagerLoop />
     <FreeMotionAnimationLoop />
-    <GenericConstraintSolver tolerance="0.001" maxIterations="1000" resolutionMethod="NonsmoothNonlinearConjugateGradient" newtonIterations="100"/>
+    <NNCGConstraintSolver tolerance="0.001" maxIterations="100" />
     <CollisionPipeline depth="6" verbose="0" draw="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>

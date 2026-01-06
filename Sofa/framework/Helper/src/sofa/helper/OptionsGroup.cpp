@@ -45,9 +45,17 @@ void OptionsGroup::setNbItems(const size_type nbofRadioButton )
     selectedItem = 0;
 }
 ///////////////////////////////////////
+type::vector<std::string> OptionsGroup::getItemNames()
+{
+    return textItems;
+}
+///////////////////////////////////////
 void OptionsGroup::setItemName(const unsigned int id_item, const std::string& name )
 {
-    textItems[id_item] = name;
+    if(id_item < textItems.size())
+    {
+        textItems[id_item] = name;
+    }
 }
 ///////////////////////////////////////
 int OptionsGroup::isInOptionsList(const std::string & tempostring) const

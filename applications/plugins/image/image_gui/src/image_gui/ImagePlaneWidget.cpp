@@ -29,9 +29,6 @@
 namespace sofa
 {
 
-namespace gui
-{
-
 namespace qt
 {
 
@@ -80,7 +77,6 @@ helper::Creator<DataWidgetFactory, ImagePlaneDataWidget< ImagePlane<bool> > >		D
 #endif
 
 } // qt
-} // gui
 } // sofa
 
 

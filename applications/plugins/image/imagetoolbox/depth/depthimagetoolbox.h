@@ -123,9 +123,9 @@ public:
 
     }
     
-    sofa::gui::qt::LabelImageToolBoxAction* createTBAction(QWidget*parent=nullptr) override
+    sofa::qt::LabelImageToolBoxAction* createTBAction(QWidget*parent=nullptr) override
     {
-        return new sofa::gui::qt::DepthImageToolBoxAction(this,parent);
+        return new sofa::qt::DepthImageToolBoxAction(this,parent);
     }
 
     void createLayer()

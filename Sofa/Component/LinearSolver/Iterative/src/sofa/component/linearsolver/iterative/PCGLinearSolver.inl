@@ -20,15 +20,15 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/linearsolver/iterative/PCGLinearSolver.h>
-
-#include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/component/linearsolver/iterative/MatrixLinearSolver.h>
-#include <sofa/simulation/AnimateBeginEvent.h>
-#include <sofa/helper/map.h>
+#include <sofa/component/linearsolver/iterative/PCGLinearSolver.h>
+#include <sofa/component/linearsolver/iterative/PreconditionedMatrixFreeSystem.h>
+#include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
- 
+#include <sofa/helper/map.h>
+#include <sofa/simulation/AnimateBeginEvent.h>
+
 #include <cmath>
 
 namespace sofa::component::linearsolver::iterative
@@ -36,12 +36,11 @@ namespace sofa::component::linearsolver::iterative
 
 template<class TMatrix, class TVector>
 PCGLinearSolver<TMatrix,TVector>::PCGLinearSolver()
-    : d_maxIter(initData(&d_maxIter, (unsigned)25, "iterations", "Maximum number of iterations after which the iterative descent of the Conjugate Gradient must stop") )
+    : d_maxIter(initData(&d_maxIter, 25u, "iterations", "Maximum number of iterations after which the iterative descent of the Conjugate Gradient must stop") )
     , d_tolerance(initData(&d_tolerance, 1e-5, "tolerance", "Desired accuracy of the Conjugate Gradient solution evaluating: |r|²/|b|² (ratio of current residual norm over initial residual norm)") )
     , d_use_precond(initData(&d_use_precond, true, "use_precond", "Use a preconditioner") )
     , l_preconditioner(initLink("preconditioner", "Link towards the linear solver used to precondition the conjugate gradient"))
-    , d_update_step(initData(&d_update_step, (unsigned)1, "update_step", "Number of steps before the next refresh of preconditioners") )
-    , d_build_precond(initData(&d_build_precond, true, "build_precond", "Build the preconditioners, if false build the preconditioner only at the initial step") )
+    , d_update_step(this, "v25.12", "v26.06", "update_step", "Instead, use the Data 'assemblingRate' in the associated PreconditionedMatrixFreeSystem")
     , d_graph(initData(&d_graph, "graph", "Graph of residuals at each iteration") )
     , next_refresh_step(0)
     , newton_iter(0)
@@ -51,30 +50,33 @@ PCGLinearSolver<TMatrix,TVector>::PCGLinearSolver()
     this->f_listening.setValue(true);
 }
 
-template<class TMatrix, class TVector>
-void PCGLinearSolver<TMatrix,TVector>::init()
+template <class TMatrix, class TVector>
+void PCGLinearSolver<TMatrix, TVector>::init()
 {
     Inherit1::init();
 
     // Find linear solvers
     if (l_preconditioner.empty())
     {
-        msg_info() << "Link \"preconditioner\" to the desired linear solver should be set to precondition the conjugate gradient.";
+        msg_info() << "Link '" << l_preconditioner.getName() << "' to the desired linear solver "
+            "should be set to precondition the conjugate gradient. Without preconditioner, the "
+            "solver will act as a regular conjugate gradient solver.";
     }
     else
     {
         if (l_preconditioner.get() == nullptr)
         {
             msg_error() << "No preconditioner found at path: " << l_preconditioner.getLinkedPath();
-            sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+            this->d_componentState.setValue( sofa::core::objectmodel::ComponentState::Invalid);
             return;
         }
         else
         {
-            if (l_preconditioner.get()->getTemplateName() == "GraphScattered")
+            if (l_preconditioner->getTemplateName() == "GraphScattered")
             {
-                msg_error() << "Can not use the preconditioner " << l_preconditioner.get()->getName() << " because it is templated on GraphScatteredType";
-                sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+                msg_error() << "Cannot use the preconditioner " << l_preconditioner->getName()
+                            << " because it is templated on GraphScatteredType";
+                this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
                 return;
             }
             else
@@ -84,86 +86,106 @@ void PCGLinearSolver<TMatrix,TVector>::init()
         }
     }
 
+    ensureRequiredLinearSystemType();
+    if (this->isComponentStateInvalid())
+        return;
+
     first = true;
-    sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
+
+    if (!this->isComponentStateInvalid())
+    {
+        this->d_componentState.setValue( sofa::core::objectmodel::ComponentState::Valid);
+    }
 }
 
-template<class TMatrix, class TVector>
-void PCGLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(const core::MechanicalParams* mparams)
+template <class TMatrix, class TVector>
+void PCGLinearSolver<TMatrix, TVector>::ensureRequiredLinearSystemType()
 {
-    sofa::helper::AdvancedTimer::valSet("PCG::buildMBK", 1);
-
+    if (this->l_linearSystem)
     {
-        SCOPED_TIMER("PCG::setSystemMBKMatrix");
-        Inherit::setSystemMBKMatrix(mparams);
-    }
-
-    if (l_preconditioner.get()==nullptr) return;
-
-    if (first) //We initialize all the preconditioners for the first step
-    {
-        l_preconditioner.get()->setSystemMBKMatrix(mparams);
-        first = false;
-        next_refresh_step = 1;
-    }
-    else if (d_build_precond.getValue())
-    {
-        sofa::helper::AdvancedTimer::valSet("PCG::PrecondBuildMBK", 1);
-        SCOPED_TIMER_VARNAME(mbkTimer, "PCG::PrecondSetSystemMBKMatrix");
-
-        if (d_update_step.getValue() > 0)
+        auto* preconditionedMatrix =
+            dynamic_cast<PreconditionedMatrixFreeSystem<TMatrix, TVector>*>(this->l_linearSystem.get());
+        if (!preconditionedMatrix)
         {
-            if (next_refresh_step >= d_update_step.getValue())
+            msg_error() << "This linear solver is designed to work with a "
+                        << PreconditionedMatrixFreeSystem<TMatrix, TVector>::GetClass()->className
+                        << " linear system, but a " << this->l_linearSystem->getClassName()
+                        << " was found";
+            this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        }
+    }
+}
+
+template <class TMatrix, class TVector>
+void PCGLinearSolver<TMatrix, TVector>::bwdInit()
+{
+    if (this->isComponentStateInvalid())
+        return;
+
+    //link the linear systems of both the preconditioner and the PCG
+    if (l_preconditioner && this->l_linearSystem)
+    {
+        if (auto* preconditionerLinearSystem = l_preconditioner->getLinearSystem())
+        {
+            if (auto* preconditionedMatrix = dynamic_cast<PreconditionedMatrixFreeSystem<TMatrix,TVector>*>(this->l_linearSystem.get()))
             {
-                l_preconditioner.get()->setSystemMBKMatrix(mparams);
-                next_refresh_step=1;
+                msg_info() << "Linking the preconditioner linear system (" << preconditionerLinearSystem->getPathName() << ") to the PCG linear system (" << preconditionedMatrix->getPathName() << ")";
+                //this link is essential to ensure that the preconditioner matrix is assembled
+                preconditionedMatrix->l_preconditionerSystem.set(preconditionerLinearSystem);
             }
             else
             {
-                next_refresh_step++;
+                msg_error() << "The preconditioned linear system (" << preconditionedMatrix->getPathName() << ") is not a PreconditionedMatrixFreeSystem";
+                this->d_componentState.setValue( sofa::core::objectmodel::ComponentState::Invalid);
+                return;
             }
         }
     }
-
-    l_preconditioner.get()->updateSystemMatrix();
 }
 
-template<>
-inline void PCGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::cgstep_beta(Vector& p, Vector& r, double beta)
+template <>
+inline void PCGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::cgstep_beta(Vector& p, Vector& r, Real beta)
 {
     p.eq(r,p,beta); // p = p*beta + r
 }
 
 template<>
-inline void PCGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::cgstep_alpha(Vector& x, Vector& p, double alpha)
+inline void PCGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::cgstep_alpha(Vector& x, Vector& p, Real alpha)
 {
     x.peq(p,alpha);                 // x = x + alpha p
 }
 
-template<class Matrix, class Vector>
-void PCGLinearSolver<Matrix,Vector>::handleEvent(sofa::core::objectmodel::Event* event) {
+template <class Matrix, class Vector>
+void PCGLinearSolver<Matrix, Vector>::handleEvent(sofa::core::objectmodel::Event* event)
+{
     /// this event shoul be launch before the addKToMatrix
     if (sofa::simulation::AnimateBeginEvent::checkEventType(event))
     {
         newton_iter = 0;
-        std::map < std::string, sofa::type::vector<double> >& graph = * d_graph.beginEdit();
+        std::map<std::string, sofa::type::vector<Real> >& graph = *d_graph.beginEdit();
         graph.clear();
     }
 }
 
+template <class TMatrix, class TVector>
+void PCGLinearSolver<TMatrix, TVector>::checkLinearSystem()
+{
+    // a PreconditionedMatrixFreeSystem component is created in the absence of a linear system
+    this->template doCheckLinearSystem<PreconditionedMatrixFreeSystem<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector> >();
+}
 
-template<class TMatrix, class TVector>
+template <class TMatrix, class TVector>
 void PCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vector& b)
 {
     SCOPED_TIMER_VARNAME(solveTimer, "PCGLinearSolver::solve");
 
-    std::map < std::string, sofa::type::vector<double> >& graph = * d_graph.beginEdit();
-//    sofa::type::vector<double>& graph_error = graph["Error"];
+    std::map < std::string, sofa::type::vector<Real> >& graph = * d_graph.beginEdit();
+//    sofa::type::vector<Real>& graph_error = graph["Error"];
 
     newton_iter++;
     char name[256];
     sprintf(name,"Error %d",newton_iter);
-    sofa::type::vector<double>& graph_error = graph[std::string(name)];
+    sofa::type::vector<Real>& graph_error = graph[std::string(name)];
 
     const core::ExecParams* params = core::execparams::defaultInstance();
     typename Inherit::TempVectorContainer vtmp(this, params, M, x, b);
@@ -173,8 +195,8 @@ void PCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vector& b)
 
     const bool apply_precond = l_preconditioner.get()!=nullptr && d_use_precond.getValue();
 
-    const double b_norm = b.dot(b);
-    const double tol = d_tolerance.getValue() * b_norm;
+    const Real b_norm = b.dot(b);
+    const Real tol = d_tolerance.getValue() * b_norm;
 
     r = M * x;
     cgstep_beta(r,b,-1);// r = -1 * r + b  =   b - (M * x)
@@ -182,24 +204,25 @@ void PCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vector& b)
     if (apply_precond)
     {
         SCOPED_TIMER_VARNAME(applyPrecondTimer, "PCGLinearSolver::apply Precond");
-        l_preconditioner.get()->setSystemLHVector(w);
-        l_preconditioner.get()->setSystemRHVector(r);
-        l_preconditioner.get()->solveSystem();
+        l_preconditioner->getLinearSystem()->setSystemSolution(w);
+        l_preconditioner->getLinearSystem()->setRHS(r);
+        l_preconditioner->solveSystem();
+        l_preconditioner->getLinearSystem()->dispatchSystemSolution(w);
     }
     else
     {
         w = r;
     }
 
-    double r_norm = r.dot(w);
+    Real r_norm = r.dot(w);
     graph_error.push_back(r_norm/b_norm);
 
     unsigned iter=1;
     while ((iter <= d_maxIter.getValue()) && (r_norm > tol))
     {
         s = M * w;
-        const double dtq = w.dot(s);
-        double alpha = r_norm / dtq;
+        const Real dtq = w.dot(s);
+        Real alpha = r_norm / dtq;
 
         cgstep_alpha(x,w,alpha);//for(int i=0; i<n; i++) x[i] += alpha * d[i];
         cgstep_alpha(r,s,-alpha);//for (int i=0; i<n; i++) r[i] = r[i] - alpha * q[i];
@@ -207,20 +230,21 @@ void PCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vector& b)
         if (apply_precond)
         {
             SCOPED_TIMER_VARNAME(applyPrecondTimer, "PCGLinearSolver::apply Precond");
-            l_preconditioner.get()->setSystemLHVector(s);
-            l_preconditioner.get()->setSystemRHVector(r);
-            l_preconditioner.get()->solveSystem();
+            l_preconditioner->getLinearSystem()->setSystemSolution(s);
+            l_preconditioner->getLinearSystem()->setRHS(r);
+            l_preconditioner->solveSystem();
+            l_preconditioner->getLinearSystem()->dispatchSystemSolution(s);
         }
         else
         {
             s = r;
         }
 
-        const double deltaOld = r_norm;
+        const Real deltaOld = r_norm;
         r_norm = r.dot(s);
         graph_error.push_back(r_norm/b_norm);
 
-        double beta = r_norm / deltaOld;
+        Real beta = r_norm / deltaOld;
 
         cgstep_beta(w,s,beta);//for (int i=0; i<n; i++) d[i] = r[i] + beta * d[i];
 

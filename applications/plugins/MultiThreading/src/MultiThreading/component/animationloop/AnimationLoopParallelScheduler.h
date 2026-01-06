@@ -22,7 +22,7 @@
 #pragma once
 
 #include <MultiThreading/config.h>
-#include <MultiThreading/TaskSchedulerUser.h>
+#include <sofa/simulation/task/TaskSchedulerUser.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/behavior/BaseAnimationLoop.h>
@@ -41,7 +41,7 @@ namespace multithreading::component::animationloop
 
 class SOFA_MULTITHREADING_PLUGIN_API AnimationLoopParallelScheduler :
         public sofa::core::behavior::BaseAnimationLoop,
-        public TaskSchedulerUser
+        public sofa::simulation::TaskSchedulerUser
 {
 public:
 

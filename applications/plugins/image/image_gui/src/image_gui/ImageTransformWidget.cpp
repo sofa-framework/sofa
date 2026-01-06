@@ -29,9 +29,6 @@
 namespace sofa
 {
 
-namespace gui
-{
-
 namespace qt
 {
 
@@ -202,7 +199,6 @@ void ImageLPTransformWidget<TransformType>::writeToData()
 }
 
 } // qt
-} // gui
 } // sofa
 
 

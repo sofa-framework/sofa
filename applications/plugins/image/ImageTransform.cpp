@@ -33,21 +33,24 @@ namespace engine
 
 using namespace defaulttype;
 
-int ImageTransformClass = core::RegisterObject("Read data from ImageContainer")
-        .add<ImageTransform<ImageUC> >(true)
-        .add<ImageTransform<ImageD> >()
-        .add<ImageTransform<ImageB> >()
+void registerImageTransform(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Read data from ImageContainer")
+    .add<ImageTransform<ImageUC> >(true)
+    .add<ImageTransform<ImageD> >()
+    .add<ImageTransform<ImageB> >()
 #if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
-        .add<ImageTransform<ImageC> >()
-        .add<ImageTransform<ImageI> >()
-        .add<ImageTransform<ImageUI> >()
-        .add<ImageTransform<ImageS> >()
-        .add<ImageTransform<ImageUS> >()
-        .add<ImageTransform<ImageL> >()
-        .add<ImageTransform<ImageUL> >()
-        .add<ImageTransform<ImageF> >()
-#endif
-        ;
+    .add<ImageTransform<ImageC> >()
+    .add<ImageTransform<ImageI> >()
+    .add<ImageTransform<ImageUI> >()
+    .add<ImageTransform<ImageS> >()
+    .add<ImageTransform<ImageUS> >()
+    .add<ImageTransform<ImageL> >()
+    .add<ImageTransform<ImageUL> >()
+    .add<ImageTransform<ImageF> >()
+#endif    
+    );
+}
 
 template class SOFA_IMAGE_API ImageTransform<ImageUC>;
 template class SOFA_IMAGE_API ImageTransform<ImageD>;

@@ -97,6 +97,7 @@ public:
     void addOutputsToCallback(const std::string& name, std::initializer_list<BaseData*> outputs);
 
 
+    /// Returns the path to the Base. it is possible to use different character as separator.
     virtual std::string getPathName() const { return ""; }
 
     /// Accessor to the object name
@@ -204,29 +205,29 @@ public:
 
     /// Helper method used to initialize a data field containing a value of type T
     template<class T>
-    BaseData::BaseInitData initData(::sofa::core::objectmodel::Data<T>* field, const char* name, const char* help,
+    BaseData::BaseInitData initData(::sofa::core::objectmodel::Data<T>* field, const char* n, const char* help,
     ::sofa::core::objectmodel::BaseData::DataFlags dataflags)
     {
         ::sofa::core::objectmodel::BaseData::BaseInitData res;
-        this->initData0(field, res, name, help, dataflags);
+        this->initData0(field, res, n, help, dataflags);
         return res;
     }
 
     /// Helper method used to initialize a data field containing a value of type T
     template<class T>
-    BaseData::BaseInitData initData( Data<T>* field, const char* name, const char* help, bool isDisplayed=true, bool isReadOnly=false )
+    BaseData::BaseInitData initData( Data<T>* field, const char* n, const char* help, bool isDisplayed=true, bool isReadOnly=false )
     {
         BaseData::BaseInitData res;
-        this->initData0(field, res, name, help, isDisplayed, isReadOnly);
+        this->initData0(field, res, n, help, isDisplayed, isReadOnly);
         return res;
     }
 
     /// Helper method used to initialize a data field containing a value of type T
     template<class T>
-    typename Data<T>::InitData initData( Data<T>* field, const T& value, const char* name, const char* help, bool isDisplayed=true, bool isReadOnly=false  )
+    typename Data<T>::InitData initData( Data<T>* field, const T& value, const char* n, const char* help, bool isDisplayed=true, bool isReadOnly=false  )
     {
         typename Data<T>::InitData res;
-        this->initData0(field, res, value, name, help, isDisplayed, isReadOnly);
+        this->initData0(field, res, value, n, help, isDisplayed, isReadOnly);
         return res;
     }
 
@@ -324,9 +325,9 @@ protected:
 
     /// Helper method used by initData()
     template<class T>
-    void initData0( Data<T>* field, typename Data<T>::InitData& res, const T& value, const char* name, const char* help, bool isDisplayed=true, bool isReadOnly=false )
+    void initData0( Data<T>* field, typename Data<T>::InitData& res, const T& value, const char* n, const char* help, bool isDisplayed=true, bool isReadOnly=false )
     {
-        initData0( field, res, name, help, isDisplayed, isReadOnly );
+        initData0( field, res, n, help, isDisplayed, isReadOnly );
         res.value = value;
     }
 
@@ -355,6 +356,7 @@ public:
 
     ComponentState getComponentState() const { return d_componentState.getValue() ; }
     bool isComponentStateValid() const { return d_componentState.getValue() == ComponentState::Valid; }
+    bool isComponentStateInvalid() const { return d_componentState.getValue() == ComponentState::Invalid; }
 
     ///@}
 
