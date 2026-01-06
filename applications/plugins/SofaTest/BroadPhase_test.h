@@ -430,7 +430,7 @@ sofa::component::collision::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::S
 //dVecCoord.endEdit();
     obbCollisionModel->computeBoundingTree(0);
 
-    //std::cout<<"the proximity "<<obbCollisionModel->getProximity()<<std::endl;
+    //std::cout<<"the proximity "<<obbCollisionModel->getContactDistance()<<std::endl;
     return obbCollisionModel;
 }
 

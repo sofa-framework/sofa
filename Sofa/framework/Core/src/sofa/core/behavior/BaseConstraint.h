@@ -23,9 +23,9 @@
 
 #include <sofa/core/behavior/BaseLagrangianConstraint.h>
 
-SOFA_HEADER_DEPRECATED("v25.06", "v26.06", "sofa/core/behavior/BaseLagrangianConstraint.h")
+SOFA_HEADER_DEPRECATED("v25.12", "v26.12", "sofa/core/behavior/BaseLagrangianConstraint.h")
 
 namespace sofa::core::behavior
 {
-using BaseConstraint SOFA_ATTRIBUTE_DEPRECATED("v25.06", "v26.06", "BaseConstraint has been renamed to BaseLagrangianConstraint") = BaseLagrangianConstraint;
+using BaseConstraint SOFA_ATTRIBUTE_DEPRECATED("v25.12", "v26.12", "BaseConstraint has been renamed to BaseLagrangianConstraint") = BaseLagrangianConstraint;
 }

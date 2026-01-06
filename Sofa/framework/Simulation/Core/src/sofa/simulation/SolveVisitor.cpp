@@ -23,9 +23,9 @@
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/core/behavior/OdeSolver.h>
-#include <sofa/simulation/TaskScheduler.h>
+#include <sofa/simulation/task/TaskScheduler.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
-#include <sofa/simulation/MainTaskSchedulerFactory.h>
+#include <sofa/simulation/task/MainTaskSchedulerFactory.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/core/behavior/BaseInteractionForceField.h>
 

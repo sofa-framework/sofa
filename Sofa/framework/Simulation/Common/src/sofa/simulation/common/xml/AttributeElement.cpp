@@ -28,8 +28,8 @@ namespace sofa::simulation::xml
 using namespace sofa::defaulttype;
 using helper::Creator;
 
-AttributeElement::AttributeElement(const std::string& name, const std::string& type, BaseElement* parent)
-    : Element<core::objectmodel::BaseObject>(name, type, parent)
+AttributeElement::AttributeElement(const std::string& name, const std::string& type, BaseElement* eparent)
+    : Element<core::objectmodel::BaseObject>(name, type, eparent)
 {
 }
 

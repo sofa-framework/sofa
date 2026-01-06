@@ -53,12 +53,12 @@ typedef double SReal;
 #endif
 
 /// User-defined literals allowing to convert any floating-point to a SReal
-constexpr SReal operator"" _sreal(long double real)
+constexpr SReal operator""_sreal(long double real)
 {
     return static_cast<SReal>(real);
 }
 /// User-defined literals allowing to convert any integer to a SReal
-constexpr SReal operator"" _sreal(unsigned long long int integer)
+constexpr SReal operator""_sreal(unsigned long long int integer)
 {
     return static_cast<SReal>(integer);
 }

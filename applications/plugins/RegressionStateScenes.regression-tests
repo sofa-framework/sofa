@@ -17,3 +17,12 @@ $REGRESSION_DIR/references/applications/plugins
 
 ### MultiThreading ###
 MultiThreading/examples/ParallelCGLinearSolver.scn 100 1e-8 1 1
+
+### SofaDistanceGrid ###
+SofaDistanceGrid/examples/DistanceGridForceField_liver.scn 100 1e-9 1 1
+SofaDistanceGrid/examples/RigidDistanceGridCollisionModel_liver_DefaultAnimationLoop.scn 200 1e-9 1 1
+SofaDistanceGrid/examples/RigidDistanceGridCollisionModel_liver_FreeMotionAnimationLoop.scn 200 1e-9 1 1
+# TODO restore:
+#SofaDistanceGrid/examples/RigidDistanceGridCollisionModel_skull_FreeMotionAnimationLoop.scn 120 1e-9 1 1
+#SofaDistanceGrid/examples/FFDDistanceGridCollisionModel_liver_DefaultAnimationLoop.scn 200 1e-9 1 1
+#SofaDistanceGrid/examples/FFDDistanceGridCollisionModel_liver_FreeMotionAnimationLoop.scn 200 1e-9 1 1

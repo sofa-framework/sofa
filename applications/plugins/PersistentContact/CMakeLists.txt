@@ -1,27 +1,27 @@
 cmake_minimum_required(VERSION 3.22)
-project(PersistentContact)
+project(PersistentContact VERSION 0.1)
 
 
 set(HEADER_FILES
-    config.h
-    PersistentContactBarycentricMapping.h
-    PersistentContactBarycentricMapping.inl
-    PersistentContactMapping.h
-    PersistentContactRigidMapping.h
-    PersistentContactRigidMapping.inl
-    PersistentFrictionContact.h
-    PersistentFrictionContact.inl
-    PersistentUnilateralInteractionConstraint.h
-    PersistentUnilateralInteractionConstraint.inl
+    src/PersistentContact/config.h.in
+    src/PersistentContact/PersistentContactBarycentricMapping.h
+    src/PersistentContact/PersistentContactBarycentricMapping.inl
+    src/PersistentContact/PersistentContactMapping.h
+    src/PersistentContact/PersistentContactRigidMapping.h
+    src/PersistentContact/PersistentContactRigidMapping.inl
+    src/PersistentContact/PersistentFrictionContact.h
+    src/PersistentContact/PersistentFrictionContact.inl
+    src/PersistentContact/PersistentUnilateralInteractionConstraint.h
+    src/PersistentContact/PersistentUnilateralInteractionConstraint.inl
 )
 
 set(SOURCE_FILES
-    PersistentContactBarycentricMapping.cpp
-    PersistentContactMapping.cpp
-    PersistentContactRigidMapping.cpp
-    PersistentFrictionContact.cpp
-    PersistentUnilateralInteractionConstraint.cpp
-    initPersistentContact.cpp
+    src/PersistentContact/PersistentContactBarycentricMapping.cpp
+    src/PersistentContact/PersistentContactMapping.cpp
+    src/PersistentContact/PersistentContactRigidMapping.cpp
+    src/PersistentContact/PersistentFrictionContact.cpp
+    src/PersistentContact/PersistentUnilateralInteractionConstraint.cpp
+    src/PersistentContact/initPersistentContact.cpp
 )
 
 set(README_FILES PersistentContact.txt)
@@ -29,21 +29,22 @@ set(README_FILES PersistentContact.txt)
 set(README_FILES
 	PersistentContact.txt)
 
-find_package(SofaBaseMechanics REQUIRED)
-find_package(SofaRigid REQUIRED)
-find_package(SofaConstraint REQUIRED)
+sofa_find_package(Sofa.Component.Mapping REQUIRED)
+sofa_find_package(Sofa.Component.Collision.Response.Contact REQUIRED)
+sofa_find_package(Sofa.Component.Constraint.Lagrangian.Model REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_PERSISTENTCONTACT")
-target_link_libraries(${PROJECT_NAME} SofaBaseMechanics SofaRigid SofaConstraint)
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
+target_link_libraries(${PROJECT_NAME}
+    Sofa.Component.Mapping
+    Sofa.Component.Collision.Response.Contact
+    Sofa.Component.Constraint.Lagrangian.Model
+)
 
-install(TARGETS ${PROJECT_NAME}
-        COMPONENT PersistentContact_libraries
-        EXPORT PersistentContactTargets
-        RUNTIME DESTINATION bin
-        LIBRARY DESTINATION lib
-        ARCHIVE DESTINATION lib
-        PUBLIC_HEADER DESTINATION "include/${PROJECT_NAME}")
-
-install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
+sofa_create_package_with_targets(
+    PACKAGE_NAME ${PROJECT_NAME}
+    PACKAGE_VERSION ${PROJECT_VERSION}
+    TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
+    INCLUDE_SOURCE_DIR "src"
+    INCLUDE_INSTALL_DIR ${PROJECT_NAME}
+    RELOCATABLE "plugins"
+    )

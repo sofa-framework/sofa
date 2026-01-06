@@ -33,8 +33,8 @@ public:
     sofa::core::ConstMultiVecId v;
     size_t* result;
 
-    MechanicalVSizeVisitor(const sofa::core::ExecParams* params, size_t* result, sofa::core::ConstMultiVecId v)
-            : BaseMechanicalVisitor(params), v(v), result(result)
+    MechanicalVSizeVisitor(const sofa::core::ExecParams* eparams, size_t* resultPtr, sofa::core::ConstMultiVecId vecid)
+            : BaseMechanicalVisitor(eparams), v(vecid), result(resultPtr)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
