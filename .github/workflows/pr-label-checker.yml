@@ -1,4 +1,3 @@
----
 name: PR check - Labels
 on:
   pull_request:
@@ -18,46 +17,16 @@ jobs:
     if: ${{ github.repository_owner == 'sofa-framework' }}
 
     steps:
-      - name: Delay for 10 Seconds
-        run: |
-          echo "Waiting for 10 seconds in case other labels get changed"
-          sleep 10
-      - name: Check Labels and Add Comment
-        id: check_labels_and_comment
-        uses: actions/github-script@v5
+      
+      - name: Check status labels
+        id: check_status_labels
+        uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             // Get PR info: id and labels
             const prNumber = context.payload.pull_request.number;
             const labels = context.payload.pull_request.labels.map(label => label.name);
-
-            // Define an array of descriptive labels
-            const descriptiveLabels = [
-              'enhancement',
-              'deprecated',
-              'refactoring',
-              'pr: breaking',
-              'pr: clean',
-              'pr: fix',
-              'pr: new feature',
-              'pr: test'
-            ];
-
-            // Check if any descriptive label is included in the 'labels' array
-            const hasDescriptiveLabel = labels.some(label => descriptiveLabels.includes(label));
-
-            // If no descriptive label is set, add a comment in the PR and make the action check fail
-            if (!hasDescriptiveLabel) {
-              const comment = ':warning: :warning: :warning:<br>@' + context.payload.pull_request.user.login + ' your PR does not include any **descriptive** label :label:<br> Make sure to add an appropriate [PR label](https://github.com/sofa-framework/sofa/labels) before merge.<br>:warning: :warning: :warning:';
-              github.issues.createComment({
-                issue_number: prNumber,
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                body: comment
-              });
-              core.setFailed('Invalid PR label');
-            }
 
             // Array of possible labels defining the status of the PR
             const statusLabels = [
@@ -74,24 +43,95 @@ jobs:
 
             // If no descriptive label is set, add a comment in the PR and make the action check fail
             if (matchingLabelsCount === 0) {
-              const comment = ':warning: :warning: :warning:<br>@'+context.repo.owner+' your PR does not include any **status** label :label:<br> Make sure to add one (wip, to review or ready).<br>:warning: :warning: :warning:';
-              github.issues.createComment({
+              const comment = ':information_source: @'+context.payload.pull_request.user.login+' your PR does not include any **status** label :label: The label \"pr: status to review\" is added automatically.';
+              github.rest.issues.createComment({
                 issue_number: prNumber,
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 body: comment
               });
-              core.setFailed('Missing status PR label')
-            } else if (matchingLabelsCount > 1) {
-              const comment = ':warning: :warning: :warning:<br>@'+context.repo.owner+' your PR does includes **too many status labels** :label:<br> Make sure to keep only one (wip, to review or ready).<br>:warning: :warning: :warning:';
-              github.issues.createComment({
+
+              // Set flag to TRUE
+              core.setOutput('no_status_label', 'true');
+            }
+            else if (matchingLabelsCount > 1) {
+              const comment = ':warning: :warning: :warning:<br>@'+context.payload.pull_request.user.login+' your PR includes **too many status labels** :label:<br> Make sure to **select only one** (wip, to review or ready).<br>:warning: :warning: :warning:';
+              github.rest.issues.createComment({
                 issue_number: prNumber,
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 body: comment
               });
-              core.setFailed('Too many status PR labels')
+
+              // Make the action step fail
+              core.setFailed('Too many status PR labels');
             }
 
-            // Add all PR labels in log
+            // Print all PR labels in log
             console.log('Labels:', labels.join(', '));
+      
+      - name: Add status label if none given
+        if: ${{ steps.check_status_labels.outputs.no_status_label == 'true' }}
+        run: |
+          gh pr edit "$NUMBER" --add-label "$LABELS"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          NUMBER: ${{ github.event.pull_request.number }}
+          LABELS: "pr: status to review"
+          
+      - name: Check descriptive labels
+        if: ${{ always() }}
+        id: check_descriptive_labels
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            // Get PR info: id and labels
+            const prNumber = context.payload.pull_request.number;
+            const labels = context.payload.pull_request.labels.map(label => label.name);
+
+            // Define an array of descriptive labels
+            const descriptiveLabels = [
+              'deprecated',
+              'refactoring',
+              'pr: enhancement',
+              'pr: breaking',
+              'pr: clean',
+              'pr: fix',
+              'pr: new feature',
+              'pr: test',
+              'pr: revert(ed)',
+              'pr: project-ci-infrastructure'
+            ];
+
+            // Check if any descriptive label is included in the 'labels' array
+            const hasDescriptiveLabel = labels.some(label => descriptiveLabels.includes(label));
+
+            // If no descriptive label is set, add a comment in the PR and make the action check fail
+            if (!hasDescriptiveLabel) {
+              const comment = ':warning: :warning: :warning:<br>@' + context.payload.pull_request.user.login + ' your PR does not include any **descriptive** label :label:<br> Make sure to add an appropriate [PR label](https://github.com/sofa-framework/sofa/labels) before merge.<br>:warning: :warning: :warning:';
+              github.rest.issues.createComment({
+                issue_number: prNumber,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: comment
+              });
+              
+              // Make the action step fail
+              core.setFailed('Invalid PR label');
+            }
+
+      - name: Check label pr based on previous PR
+        if: ${{ always() }}
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const labels = context.payload.pull_request.labels.map(label => label.name);
+            const found = labels.includes("pr: based on previous PR");
+
+            // Make the action step fail
+            if (found) {
+              core.setFailed("Merge blocked: PR has label 'pr: based on previous PR'");
+            }
+

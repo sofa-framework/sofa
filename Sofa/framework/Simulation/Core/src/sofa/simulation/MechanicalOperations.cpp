@@ -400,7 +400,10 @@ void MechanicalOperations::resetSystem(core::behavior::LinearSolver* linearSolve
 {
     if (linearSolver)
     {
-        linearSolver->resetSystem();
+        if (auto* linearSystem = linearSolver->getLinearSystem())
+        {
+            linearSystem->clearSystem();
+        }
     }
 }
 
@@ -414,25 +417,34 @@ void MechanicalOperations::setSystemMBKMatrix(
         mparams.setBFactor(b.get());
         mparams.setKFactor(k.get());
         mparams.setSupportOnlySymmetricMatrix(!linearSolver->supportNonSymmetricSystem());
-        linearSolver->setSystemMBKMatrix(&mparams);
+        if (auto* linearSystem = linearSolver->getLinearSystem())
+        {
+            linearSystem->buildSystemMatrix(&mparams);
+        }
     }
 }
 
-void MechanicalOperations::setSystemRHVector(core::MultiVecDerivId v,
-    core::behavior::LinearSolver* linearSolver)
+void MechanicalOperations::setSystemRHVector(
+    core::MultiVecDerivId v, core::behavior::LinearSolver* linearSolver)
 {
     if (linearSolver)
     {
-        linearSolver->setSystemRHVector(v);
+        if (auto* linearSystem = linearSolver->getLinearSystem())
+        {
+            linearSystem->setRHS(v);
+        }
     }
 }
 
-void MechanicalOperations::setSystemLHVector(core::MultiVecDerivId v,
-    core::behavior::LinearSolver* linearSolver)
+void MechanicalOperations::setSystemLHVector(
+    core::MultiVecDerivId v, core::behavior::LinearSolver* linearSolver)
 {
     if (linearSolver)
     {
-        linearSolver->setSystemLHVector(v);
+        if (auto* linearSystem = linearSolver->getLinearSystem())
+        {
+            linearSystem->setSystemSolution(v);
+        }
     }
 }
 
@@ -444,12 +456,25 @@ void MechanicalOperations::solveSystem(core::behavior::LinearSolver* linearSolve
     }
 }
 
+void MechanicalOperations::solveSystem(
+    core::behavior::LinearSolver* linearSolver, core::MultiVecDerivId v)
+{
+    if (linearSolver)
+    {
+        linearSolver->solveSystem();
+        if (auto* linearSystem = linearSolver->getLinearSystem())
+        {
+            linearSystem->dispatchSystemSolution(v);
+        }
+    }
+}
+
 void MechanicalOperations::print(std::ostream& out,
     core::behavior::LinearSolver* linearSolver)
 {
     if (linearSolver)
     {
-        const linearalgebra::BaseMatrix* m = linearSolver->getSystemBaseMatrix();
+        const linearalgebra::BaseMatrix* m = linearSolver->getLinearSystem()->getSystemBaseMatrix();
         if (!m)
         {
             return;

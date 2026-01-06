@@ -36,9 +36,9 @@
 #include <sofa/component/topology/container/dynamic/QuadSetTopologyContainer.h>
 #include <sofa/component/topology/container/dynamic/HexahedronSetTopologyContainer.h>
 #include <sofa/component/topology/mapping/Hexa2TetraTopologicalMapping.h>
-#include <sofa/component/collision/geometry/SphereModel.h>
-#include <sofa/component/collision/geometry/PointModel.h>
-#include <sofa/component/collision/geometry/TriangleModel.h>
+#include <sofa/component/collision/geometry/SphereCollisionModel.h>
+#include <sofa/component/collision/geometry/PointCollisionModel.h>
+#include <sofa/component/collision/geometry/TriangleCollisionModel.h>
 
 namespace sofa::gui::component::performer
 {

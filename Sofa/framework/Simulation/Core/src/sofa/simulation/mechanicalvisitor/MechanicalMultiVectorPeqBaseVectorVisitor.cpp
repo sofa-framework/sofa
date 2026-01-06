@@ -42,7 +42,7 @@ MechanicalMultiVectorPeqBaseVectorVisitor::Result MechanicalMultiVectorPeqBaseVe
         mm->addFromBaseVectorSameSize(dest.getId(mm), src, o);
         offset = (int)o;
     }
-    //if (!matrix) offset += mm->getMatrixSize();
+    if (!matrix) offset += mm->getMatrixSize();
 
     return RESULT_CONTINUE;
 }
