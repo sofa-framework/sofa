@@ -27,26 +27,81 @@
 namespace sofa::component::constraint::lagrangian::correction
 {
 
-class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION_API GenericConstraintCorrection : public core::behavior::BaseConstraintCorrection
+class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION_API GenericConstraintCorrection
+    : public core::behavior::BaseConstraintCorrection
 {
 public:
     SOFA_CLASS(GenericConstraintCorrection, core::behavior::BaseConstraintCorrection);
 
-    void bwdInit() override;
+    void init() override;
     void cleanup() override;
     void addConstraintSolver(core::behavior::ConstraintSolver *s) override;
     void removeConstraintSolver(core::behavior::ConstraintSolver *s) override;
 
-    void computeMotionCorrectionFromLambda(const core::ConstraintParams* cparams, core::MultiVecDerivId dx, const linearalgebra::BaseVector * lambda) override;
+    /**
+     * \brief \copybrief BaseConstraintCorrection::computeMotionCorrectionFromLambda
+     *
+     * \details Calls the linear solver to perform the computations:
+     * f = J^T * lambda
+     * dx = A^-1 * f
+     *
+     * f is implicitly stored in cparams->lambda()
+     */
+    void computeMotionCorrectionFromLambda(
+        const core::ConstraintParams* cparams,
+        core::MultiVecDerivId dx,
+        const linearalgebra::BaseVector * lambda) override;
 
+    /**
+     * \brief \copybrief BaseConstraintCorrection::addComplianceInConstraintSpace
+     *
+     * \details Calls the linear solver to perform the computation W += J A^-1 J^T
+     */
     void addComplianceInConstraintSpace(const core::ConstraintParams *cparams, linearalgebra::BaseMatrix* W) override;
 
     void getComplianceMatrix(linearalgebra::BaseMatrix* ) const override;
 
-    void applyMotionCorrection(const core::ConstraintParams *cparams, core::MultiVecCoordId x, core::MultiVecDerivId v, core::MultiVecDerivId dx, core::ConstMultiVecDerivId correction) override;
+    /**
+     * Compute:
+     * x = x_free + correction * positionFactor
+     * v = v_free + correction * velocityFactor
+     * dx *= correctionFactor
+     *
+     * x_free and v_free correspond to the position and velocity of the free motion. Both vectors
+     * are referred in \p cparams.
+     *
+     * positionFactor and velocityFactor are factors provided by the ODE solver.
+     *
+     * correctionFactor is either positionFactor or velocityFactor depending on
+     * cparams->constOrder()
+     */
+    void applyMotionCorrection(
+        const core::ConstraintParams *cparams,
+        core::MultiVecCoordId x,
+        core::MultiVecDerivId v,
+        core::MultiVecDerivId dx,
+        core::ConstMultiVecDerivId correction) override;
 
+    /**
+     * Compute:
+     * x = x_free + correction * positionFactor
+     * dx *= correctionFactor
+     *
+     * x_free corresponds to the position of the free motion. x_free is referred in \p cparams.
+     *
+     * positionFactor is a factor provided by the ODE solver.
+     */
     void applyPositionCorrection(const core::ConstraintParams *cparams, core::MultiVecCoordId x, core::MultiVecDerivId dx, core::ConstMultiVecDerivId correction) override;
 
+    /**
+     * Compute:
+     * v = v_free + correction * velocityFactor
+     * dx *= correctionFactor
+     *
+     * v_free corresponds to the velocity of the free motion. v_free is referred in \p cparams.
+     *
+     * velocityFactor is a factor provided by the ODE solver.
+     */
     void applyVelocityCorrection(const core::ConstraintParams *cparams, core::MultiVecDerivId v, core::MultiVecDerivId dv, core::ConstMultiVecDerivId correction) override;
 
     void applyPredictiveConstraintForce(const core::ConstraintParams *cparams, core::MultiVecDerivId f, const linearalgebra::BaseVector *lambda) override;

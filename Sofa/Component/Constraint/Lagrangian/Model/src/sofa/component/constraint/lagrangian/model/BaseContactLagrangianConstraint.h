@@ -63,13 +63,9 @@ public:
 
     typedef core::behavior::BaseLagrangianConstraint::ConstraintBlockInfo ConstraintBlockInfo;
     typedef core::behavior::BaseLagrangianConstraint::PersistentID PersistentID;
-    typedef core::behavior::BaseLagrangianConstraint::ConstCoord ConstCoord;
 
     typedef core::behavior::BaseLagrangianConstraint::VecConstraintBlockInfo VecConstraintBlockInfo;
     typedef core::behavior::BaseLagrangianConstraint::VecPersistentID VecPersistentID;
-    typedef core::behavior::BaseLagrangianConstraint::VecConstCoord VecConstCoord;
-    typedef core::behavior::BaseLagrangianConstraint::VecConstDeriv VecConstDeriv;
-    typedef core::behavior::BaseLagrangianConstraint::VecConstArea VecConstArea;
 
     typedef core::objectmodel::Data<VecCoord>		DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv>		DataVecDeriv;
@@ -148,7 +144,7 @@ public:
             , const DataVecDeriv &v1, const DataVecDeriv &v2) override;
 
 
-    void getConstraintInfo(const core::ConstraintParams* cParams, VecConstraintBlockInfo& blocks, VecPersistentID& ids, VecConstCoord& positions, VecConstDeriv& directions, VecConstArea& areas) override;
+    void getConstraintInfo(const core::ConstraintParams* cParams, VecConstraintBlockInfo& blocks, VecPersistentID& ids) override;
 
     virtual void getConstraintResolution(const core::ConstraintParams *,std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset) =0;
     bool isActive() const override;

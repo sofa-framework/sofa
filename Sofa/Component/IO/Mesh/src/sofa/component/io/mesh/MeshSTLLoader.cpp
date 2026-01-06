@@ -129,8 +129,8 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
     auto my_normals = getWriteOnlyAccessor(d_normals);
     auto my_triangles = getWriteOnlyAccessor(this->d_triangles);
 
-    std::map< sofa::type::Vec3f, core::topology::Topology::Index > my_map;
-    core::topology::Topology::Index positionCounter = 0;
+    std::map< sofa::type::Vec3, sofa::Index > my_map;
+    sofa::Index positionCounter = 0;
     const bool useMap = d_mergePositionUsingMap.getValue();
 
     std::ifstream dataFile(filename, std::ios::in | std::ifstream::binary);
@@ -161,7 +161,7 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
 #endif
 
     // temporaries
-    sofa::type::Vec3f vertex, normal;
+    sofa::type::Vec3f vertexf, normalf;
 
     // reserve vector before filling it
     my_triangles.reserve( nbrFacet );
@@ -171,20 +171,21 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
     // Parsing d_facets
     for (uint32_t i = 0; i<nbrFacet; ++i)
     {
-        Triangle the_tri;
+        topology::Triangle the_tri;
 
         // Normal:
-        dataFile.read((char*)&normal[0], 4);
-        dataFile.read((char*)&normal[1], 4);
-        dataFile.read((char*)&normal[2], 4);
-        my_normals[i] = normal;
+        dataFile.read((char*)&normalf[0], 4);
+        dataFile.read((char*)&normalf[1], 4);
+        dataFile.read((char*)&normalf[2], 4);
+        my_normals[i] = type::toVec3(normalf);
 
         // Vertices:
         for (size_t j = 0; j<3; ++j)
         {
-            dataFile.read((char*)&vertex[0], 4);
-            dataFile.read((char*)&vertex[1], 4);
-            dataFile.read((char*)&vertex[2], 4);
+            dataFile.read((char*)&vertexf[0], 4);
+            dataFile.read((char*)&vertexf[1], 4);
+            dataFile.read((char*)&vertexf[2], 4);
+            const auto vertex = type::toVec3(vertexf);
 
 
             if( useMap )
@@ -208,7 +209,7 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
                     if ( (vertex[0] == my_positions[k][0]) && (vertex[1] == my_positions[k][1])  && (vertex[2] == my_positions[k][2]))
                     {
                         find = true;
-                        the_tri[j] = static_cast<core::topology::Topology::PointID>(k);
+                        the_tri[j] = static_cast<sofa::Index>(k);
                         break;
                     }
 
@@ -250,18 +251,18 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
 
 bool MeshSTLLoader::readSTL(std::ifstream& dataFile)
 {
-    Vec3f result;
+    Vec3 result;
     std::string line;
 
     auto my_positions = getWriteOnlyAccessor(d_positions);
     auto my_normals = getWriteOnlyAccessor(d_normals);
     auto my_triangles = getWriteOnlyAccessor(d_triangles);
 
-    std::map< sofa::type::Vec3f, core::topology::Topology::Index > my_map;
-    core::topology::Topology::Index positionCounter = 0, vertexCounter = 0;
+    std::map< sofa::type::Vec3, sofa::Index > my_map;
+    sofa::Index positionCounter = 0, vertexCounter = 0;
     const bool useMap = d_mergePositionUsingMap.getValue();
 
-    Triangle the_tri;
+    topology::Triangle the_tri;
 
     while (std::getline(dataFile, line))
     {
@@ -304,14 +305,14 @@ bool MeshSTLLoader::readSTL(std::ifstream& dataFile)
                     if ( (result[0] == my_positions[i][0]) && (result[1] == my_positions[i][1])  && (result[2] == my_positions[i][2]))
                     {
                         find = true;
-                        the_tri[vertexCounter] = static_cast<core::topology::Topology::PointID>(i);
+                        the_tri[vertexCounter] = static_cast<sofa::Index>(i);
                         break;
                     }
 
                 if (!find)
                 {
                     my_positions.push_back(result);
-                    the_tri[vertexCounter] = static_cast<core::topology::Topology::PointID>(my_positions.size()-1);
+                    the_tri[vertexCounter] = static_cast<sofa::Index>(my_positions.size()-1);
                 }
             }
             vertexCounter++;

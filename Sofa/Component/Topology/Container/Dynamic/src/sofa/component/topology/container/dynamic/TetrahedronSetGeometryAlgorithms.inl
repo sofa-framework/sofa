@@ -1,4 +1,4 @@
-﻿/******************************************************************************
+/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -833,8 +833,8 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::getIntersectionPointWithPlane(
     for(const auto edgeId : edgesInTetra)
     {
         const Edge& edge = edges[edgeId];
-        p1 = vect_c[edge[0]];
-        p2 = vect_c[edge[1]];
+        p1 = toVecN<3,Real>(vect_c[edge[0]]);
+        p2 = toVecN<3,Real>(vect_c[edge[1]]);
 
         if(computeIntersectionEdgeWithPlane(p1, p2, planP0, normal, intersection))
         {
@@ -880,7 +880,7 @@ bool TetrahedronSetGeometryAlgorithms<DataTypes>::checkNodeSequence(const Tetrah
     sofa::type::Vec<3,Real> vec[3];
     for(int i=1; i<4; i++)
     {
-        vec[i-1]=vect_c[tetra[i]]-vect_c[tetra[0]];
+        vec[i-1]=type::toVec3(vect_c[tetra[i]]-vect_c[tetra[0]]);
         vec[i-1].normalize();
     }
     Real dotProduct=(vec[1].cross(vec[0]))*vec[2];
@@ -3229,12 +3229,12 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Visua
         for (size_t i =0; i<tetraArray.size(); i++)
         {
 
-            Tetrahedron the_tetra = tetraArray[i];
+            const Tetrahedron the_tetra = tetraArray[i];
             Coord vertex1 = coords[ the_tetra[0] ];
             Coord vertex2 = coords[ the_tetra[1] ];
             Coord vertex3 = coords[ the_tetra[2] ];
             Coord vertex4 = coords[ the_tetra[3] ];
-            type::Vec3 center; center = (DataTypes::getCPos(vertex1)+DataTypes::getCPos(vertex2)+DataTypes::getCPos(vertex3)+DataTypes::getCPos(vertex4))/4;
+            const type::Vec3 center = type::toVec3((DataTypes::getCPos(vertex1)+DataTypes::getCPos(vertex2)+DataTypes::getCPos(vertex3)+DataTypes::getCPos(vertex4))/4);
 
             positions.push_back(center);
 
@@ -3260,7 +3260,7 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Visua
             const Tetrahedron& tet = tetraArray[i];
             for (unsigned int j = 0u; j < 4u; ++j)
             {
-                pos.push_back(type::Vec3(DataTypes::getCPos(coords[tet[j]])));
+                pos.push_back(type::toVec3(DataTypes::getCPos(coords[tet[j]])));
             }
         }
 
@@ -3295,7 +3295,7 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Visua
                 const Tetrahedron& tet = tetraArray[m_badTetraIds[i]];
                 for (unsigned int j = 0u; j < 4u; ++j)
                 {
-                    posBad.push_back(type::Vec3(DataTypes::getCPos(coords[tet[j]])));
+                    posBad.push_back(type::toVec3(DataTypes::getCPos(coords[tet[j]])));
                 }
             }
 

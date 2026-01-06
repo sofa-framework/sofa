@@ -27,6 +27,7 @@
 #include <sofa/gl/BasicShapes.h>
 #include <sofa/gl/BasicShapesGL.inl>
 #include <sofa/gl/Axis.h>
+#include <sofa/gl/Frame.h>
 #include <sofa/gl/Cylinder.h>
 #include <sofa/gl/template.h>
 #include <sofa/gl/glText.inl>
@@ -351,16 +352,23 @@ void DrawToolGL::drawTriangles(const std::vector<Vec3> &points, const std::vecto
 void DrawToolGL::drawTriangles(const std::vector<Vec3> &points,
     const std::vector< type::Vec3i > &index,
     const std::vector<Vec3> &normal,
-    const std::vector<type::RGBAColor>& colour)
+    const std::vector<type::RGBAColor>& colors)
 {
-    //todo !
-    SOFA_UNUSED(points);
-    SOFA_UNUSED(index);
-    SOFA_UNUSED(normal);
-    SOFA_UNUSED(colour);
+    glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+    glEnable(GL_COLOR_MATERIAL);
+    setMaterial(colors[0]);
+    glBegin(GL_TRIANGLES);
+    {
+        for (std::size_t i=0; i<index.size(); ++i)
+        {
+            internalDrawTriangle(points[ index[i][0] ],points[ index[i][1] ],points[ index[i][2] ],
+                normal[i],
+                colors[3*i+0],colors[3*i+1],colors[3*i+2]);
+        }
+    } glEnd();
+    glDisable(GL_COLOR_MATERIAL);
+    resetMaterial(colors[0]);
 }
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void DrawToolGL::drawTriangles(const std::vector<Vec3> &points,
         const std::vector<Vec3> &normal, const std::vector< type::RGBAColor > &color)
@@ -448,12 +456,12 @@ void DrawToolGL::drawTriangleFan(const std::vector<Vec3> &points,
 void DrawToolGL::drawFrame(const Vec3& position, const Quaternion &orientation, const Vec<3,float> &size)
 {
     setPolygonMode(0,false);
-    gl::Axis::draw(position, orientation, size, type::RGBAColor::red(), type::RGBAColor::green(), type::RGBAColor::blue());
+    gl::Frame::draw(position, orientation, size, type::RGBAColor::red(), type::RGBAColor::green(), type::RGBAColor::blue());
 }
 void DrawToolGL::drawFrame(const Vec3& position, const Quaternion &orientation, const Vec<3,float> &size, const type::RGBAColor &color)
 {
     setPolygonMode(0,false);
-    gl::Axis::draw(position, orientation, size, color, color, color);
+    gl::Frame::draw(position, orientation, size, color, color, color);
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

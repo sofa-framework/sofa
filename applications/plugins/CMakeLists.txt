@@ -7,6 +7,9 @@ if(SOFA_BUILD_TESTS OR SOFA_BUILD_RELEASE_PACKAGE)
     sofa_add_subdirectory(plugin SofaTest SofaTest)
 endif()
 
+#Should be first to enable all CUDA based modules in plugins
+sofa_add_subdirectory(plugin SofaCUDA SofaCUDA)
+
 sofa_add_subdirectory(plugin CollisionOBBCapsule CollisionOBBCapsule)
 sofa_add_subdirectory(plugin HeadlessRecorder HeadlessRecorder)
 
@@ -37,12 +40,14 @@ sofa_add_subdirectory(plugin SofaHAPI SofaHAPI)
 sofa_add_subdirectory(plugin SofaCarving SofaCarving)
 sofa_add_subdirectory(plugin LeapMotion LeapMotion)
 sofa_add_subdirectory(plugin Geomagic Geomagic)
-sofa_add_subdirectory(plugin SofaAssimp SofaAssimp) # ColladaSceneLoader Depends on Flexible and image
+sofa_add_external(plugin SofaAssimp GIT_REF master GIT_REPOSITORY https://www.github.com/sofa-framework/SofaAssimp.git) # ColladaSceneLoader Depends on Flexible and image
 sofa_add_subdirectory(plugin SofaMatrix SofaMatrix) # Depends on image, CImgPlugin
 sofa_add_external(plugin BeamAdapter GIT_REF master GIT_REPOSITORY https://www.github.com/sofa-framework/BeamAdapter.git)
 sofa_add_external(plugin STLIB GIT_REF master GIT_REPOSITORY https://www.github.com/SofaDefrost/STLIB.git)
 sofa_add_external(plugin SoftRobots GIT_REF master GIT_REPOSITORY https://www.github.com/SofaDefrost/SoftRobots.git)
+sofa_add_external(plugin SoftRobots.Inverse GIT_REF main GIT_REPOSITORY https://www.github.com/SofaDefrost/SoftRobots.Inverse.git)
 sofa_add_external(plugin Cosserat GIT_REF master GIT_REPOSITORY https://www.github.com/SofaDefrost/Cosserat.git) # Cosserat has an optional dependency on SoftRobots
+sofa_add_external(plugin SofaViscoElastic GIT_REF main GIT_REPOSITORY https://www.github.com/SofaDefrost/SofaViscoElastic.git)
 sofa_add_external(plugin CollisionAlgorithm GIT_REF master GIT_REPOSITORY https://forge.icube.unistra.fr/sofa/CollisionAlgorithm.git)
 sofa_add_external(plugin ConstraintGeometry GIT_REF master GIT_REPOSITORY https://forge.icube.unistra.fr/sofa/ConstraintGeometry.git)
 sofa_add_external(plugin ShapeMatchingPlugin GIT_REF master GIT_REPOSITORY https://www.github.com/sofa-framework/ShapeMatchingPlugin.git)
@@ -59,7 +64,6 @@ if((${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU") AND (${CMAKE_SYSTEM_NAME} MATCHES "
     sofa_add_subdirectory(plugin SofaPardisoSolver SofaPardisoSolver) # SofaPardisoSolver is only available under linux with gcc
 endif()
 
-sofa_add_subdirectory(plugin SofaCUDA SofaCUDA)
 
 sofa_find_package(Sofa.GL QUIET)
 if(Sofa.GL_FOUND)

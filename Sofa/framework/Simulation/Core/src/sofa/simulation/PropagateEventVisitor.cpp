@@ -37,12 +37,14 @@ PropagateEventVisitor::~PropagateEventVisitor()
 
 Visitor::Result PropagateEventVisitor::processNodeTopDown(simulation::Node* node)
 {
-    for_each(this, node, node->object, &PropagateEventVisitor::processObject);
-
-    if( m_event->isHandled() )
+    for(auto obj : node->object){
+        processObject(node, obj.get());
+        if(m_event->isHandled())
+            return Visitor::RESULT_PRUNE;
+    };
+    if(m_event->isHandled())
         return Visitor::RESULT_PRUNE;
-    else
-        return Visitor::RESULT_CONTINUE;
+    return Visitor::RESULT_CONTINUE;
 }
 
 void PropagateEventVisitor::processObject(simulation::Node*, core::objectmodel::BaseObject* obj)

@@ -144,15 +144,12 @@ void CenterOfMassMapping<TIn, TOut>::draw(const core::visual::VisualParams* vpar
     const typename Out::VecCoord &X = this->toModel->read(core::vec_id::read_access::position)->getValue();
 
     std::vector< sofa::type::Vec3 > points;
-    sofa::type::Vec3 point1,point2;
     for(unsigned int i=0 ; i<OutCoord::spatial_dimensions ; i++)
     {
         OutCoord v;
-        v[i] = 0.1f;
-        point1 = Out::getCPos((X[0] -v));
-        point2 = Out::getCPos((X[0] +v));
-        points.push_back(point1);
-        points.push_back(point2);
+        v[i] = 0.1;
+        points.push_back(toVec3(Out::getCPos((X[0] -v))));
+        points.push_back(toVec3(Out::getCPos((X[0] +v))));
     }
 
     vparams->drawTool()->drawLines(points, 1, sofa::type::RGBAColor::yellow());

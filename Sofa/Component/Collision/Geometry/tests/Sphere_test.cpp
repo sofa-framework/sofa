@@ -58,7 +58,7 @@ using sofa::helper::logging::MessageDispatcher ;
 #include <sofa/helper/logging/ClangMessageHandler.h>
 using sofa::helper::logging::ClangMessageHandler ;
 
-#include <sofa/simulation/graph/DAGNode.h>
+#include <sofa/simulation/Node.h>
 
 #include <sofa/testing/BaseSimulationTest.h>
 using sofa::testing::BaseSimulationTest;
@@ -101,7 +101,7 @@ bool TestSphere::rigidRigid1(){
     angles[1] = 0;
     angles[2] = 0;
 
-    Node::SPtr scn = New<sofa::simulation::graph::DAGNode>();
+    Node::SPtr scn = New<sofa::simulation::Node>();
     //the center of this OBB is (0,0,-1) and its extent is 1
 
     //we construct the falling sphere
@@ -157,7 +157,7 @@ bool TestSphere::rigidRigid2(){
     angles_2[1] = 0;
     angles_2[2] = 0;
 
-   Node::SPtr scn = New<sofa::simulation::graph::DAGNode>();
+   Node::SPtr scn = New<sofa::simulation::Node>();
                                         //the center of this OBB is (0,0,-1) and its extent is 1
 
     //we construct the falling sphere
@@ -204,7 +204,7 @@ bool TestSphere::rigidSoft2(){
     angles[1] = M_PI/4;
     angles[2] = M_PI/3;
 
-   Node::SPtr scn = New<sofa::simulation::graph::DAGNode>();
+   Node::SPtr scn = New<sofa::simulation::Node>();
                                         //the center of this OBB is (0,0,-1) and its extent is 1
 
     //we construct the falling sphere
@@ -251,7 +251,7 @@ bool TestSphere::rigidSoft1(){
     angles[1] = 0;
     angles[2] = 0;
 
-   Node::SPtr scn = New<sofa::simulation::graph::DAGNode>();
+   Node::SPtr scn = New<sofa::simulation::Node>();
                                         //the center of this OBB is (0,0,-1) and its extent is 1
 
     //we construct the falling sphere
@@ -299,7 +299,7 @@ bool TestSphere::rigidSoft3(){
     angles[1] = M_PI/4;
     angles[2] = M_PI/3;
 
-   Node::SPtr scn = New<sofa::simulation::graph::DAGNode>();
+   Node::SPtr scn = New<sofa::simulation::Node>();
                                         //the center of this OBB is (0,0,-1) and its extent is 1
 
     //we construct the falling sphere
@@ -346,7 +346,7 @@ bool TestSphere::rigidSoft4(){
     angles[1] = 0;
     angles[2] = 0;
 
-   Node::SPtr scn = New<sofa::simulation::graph::DAGNode>();
+   Node::SPtr scn = New<sofa::simulation::Node>();
                                         //the center of this OBB is (0,0,-1) and its extent is 1
 
     //we construct the falling sphere
@@ -384,7 +384,7 @@ bool TestSphere::rigidSoft4(){
 
 
 bool TestSphere::softSoft1(){
-   Node::SPtr scn = New<sofa::simulation::graph::DAGNode>();
+   Node::SPtr scn = New<sofa::simulation::Node>();
                                         //the center of this OBB is (0,0,-1) and its extent is 1
 
     //we construct the falling sphere

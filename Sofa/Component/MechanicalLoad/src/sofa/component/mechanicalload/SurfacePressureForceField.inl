@@ -258,7 +258,7 @@ void SurfacePressureForceField<DataTypes>::addKToMatrix(const core::MechanicalPa
                 {
                     for (unsigned int c = 0; c < 3; c++)
                     {
-                        mat->add(offset + N * i + l, offset + N * v + c, kFact * Kiv[l][c]);
+                        mat->add(offset + N * i + l, offset + N * v + c, kFact * Kiv(l,c));
                     }
                 }
             }
@@ -395,20 +395,20 @@ void SurfacePressureForceField<DataTypes>::addTriangleSurfacePressure(unsigned i
     if (computeDerivatives)
     {
         Mat33 DcrossDA;
-        DcrossDA[0][0]=0;       DcrossDA[0][1]=-bc[2];  DcrossDA[0][2]=bc[1];
-        DcrossDA[1][0]=bc[2];   DcrossDA[1][1]=0;       DcrossDA[1][2]=-bc[0];
-        DcrossDA[2][0]=-bc[1];  DcrossDA[2][1]=bc[0];   DcrossDA[2][2]=0;
+        DcrossDA(0,0)=0;       DcrossDA(0,1)=-bc[2];  DcrossDA(0,2)=bc[1];
+        DcrossDA(1,0)=bc[2];   DcrossDA(1,1)=0;       DcrossDA(1,2)=-bc[0];
+        DcrossDA(2,0)=-bc[1];  DcrossDA(2,1)=bc[0];   DcrossDA(2,2)=0;
 
         Mat33 DcrossDB;
-        DcrossDB[0][0]=0;       DcrossDB[0][1]=ac[2];   DcrossDB[0][2]=-ac[1];
-        DcrossDB[1][0]=-ac[2];  DcrossDB[1][1]=0;       DcrossDB[1][2]=ac[0];
-        DcrossDB[2][0]=ac[1];  DcrossDB[2][1]=-ac[0];   DcrossDB[2][2]=0;
+        DcrossDB(0,0)=0;       DcrossDB(0,1)=ac[2];   DcrossDB(0,2)=-ac[1];
+        DcrossDB(1,0)=-ac[2];  DcrossDB(1,1)=0;       DcrossDB(1,2)=ac[0];
+        DcrossDB(2,0)=ac[1];  DcrossDB(2,1)=-ac[0];   DcrossDB(2,2)=0;
 
 
         Mat33 DcrossDC;
-        DcrossDC[0][0]=0;       DcrossDC[0][1]=-ab[2];  DcrossDC[0][2]=ab[1];
-        DcrossDC[1][0]=ab[2];   DcrossDC[1][1]=0;       DcrossDC[1][2]=-ab[0];
-        DcrossDC[2][0]=-ab[1];  DcrossDC[2][1]=ab[0];   DcrossDC[2][2]=0;
+        DcrossDC(0,0)=0;       DcrossDC(0,1)=-ab[2];  DcrossDC(0,2)=ab[1];
+        DcrossDC(1,0)=ab[2];   DcrossDC(1,1)=0;       DcrossDC(1,2)=-ab[0];
+        DcrossDC(2,0)=-ab[1];  DcrossDC(2,1)=ab[0];   DcrossDC(2,2)=0;
 
         for (unsigned int j = 0; j < 3; j++)
         {

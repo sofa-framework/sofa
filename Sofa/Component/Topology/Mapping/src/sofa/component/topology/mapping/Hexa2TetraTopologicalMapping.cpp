@@ -66,13 +66,15 @@ void Hexa2TetraTopologicalMapping::init()
 {
     using namespace container::dynamic;
 
+    Inherit1::init();
+
     if (!this->checkTopologyInputTypes()) // method will display error message if false
     {
         this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
 
-    TetrahedronSetTopologyModifier* to_tstm;
+    TetrahedronSetTopologyModifier* to_tstm { nullptr };
     toModel->getContext()->get(to_tstm);
     if (!to_tstm)
     {
@@ -83,8 +85,15 @@ void Hexa2TetraTopologicalMapping::init()
 
     // INITIALISATION of TETRAHEDRAL mesh from HEXAHEDRAL mesh :
 
-    TetrahedronSetTopologyContainer *to_tstc;
+    TetrahedronSetTopologyContainer *to_tstc { nullptr };
     toModel->getContext()->get(to_tstc);
+    if (!to_tstc)
+    {
+        msg_error() << "No TetrahedronSetTopologyContainer found in the Tetrahedron topology Node.";
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
+
     // Clear output topology
     to_tstc->clear();
 
@@ -111,45 +120,49 @@ void Hexa2TetraTopologicalMapping::init()
         }
     }
 
+    static constexpr int numberTetraInHexa = 6;
+    Loc2GlobVec.reserve(nbcubes*numberTetraInHexa);
+
+    const bool swapping = d_swapping.getValue();
+
     // Tessellation of each cube into 6 tetrahedra
-    for (size_t i=0; i<nbcubes; i++)
+    for (size_t i = 0; i < nbcubes; ++i)
     {
         core::topology::BaseMeshTopology::Hexa c = fromModel->getHexahedron(i);
-#define swap(a,b) { int t = a; a = b; b = t; }
-        // TODO : swap indexes where needed (currently crash in TriangleSetContainer)
+
         bool swapped = false;
 
-        if(d_swapping.getValue())
+        if(swapping)
         {
             if (!((i%nx)&1))
             {
                 // swap all points on the X edges
-                swap(c[0],c[1]);
-                swap(c[3],c[2]);
-                swap(c[4],c[5]);
-                swap(c[7],c[6]);
+                std::swap(c[0],c[1]);
+                std::swap(c[3],c[2]);
+                std::swap(c[4],c[5]);
+                std::swap(c[7],c[6]);
                 swapped = !swapped;
             }
             if (((i/nx)%ny)&1)
             {
                 // swap all points on the Y edges
-                swap(c[0],c[3]);
-                swap(c[1],c[2]);
-                swap(c[4],c[7]);
-                swap(c[5],c[6]);
+                std::swap(c[0],c[3]);
+                std::swap(c[1],c[2]);
+                std::swap(c[4],c[7]);
+                std::swap(c[5],c[6]);
                 swapped = !swapped;
             }
             if ((i/(nx*ny))&1)
             {
                 // swap all points on the Z edges
-                swap(c[0],c[4]);
-                swap(c[1],c[5]);
-                swap(c[2],c[6]);
-                swap(c[3],c[7]);
+                std::swap(c[0],c[4]);
+                std::swap(c[1],c[5]);
+                std::swap(c[2],c[6]);
+                std::swap(c[3],c[7]);
                 swapped = !swapped;
             }
         }
-#undef swap
+
         if(!swapped)
         {
             to_tstc->addTetra(c[0],c[5],c[1],c[6]);
@@ -168,9 +181,11 @@ void Hexa2TetraTopologicalMapping::init()
             to_tstc->addTetra(c[6],c[7],c[5],c[0]);
             to_tstc->addTetra(c[7],c[5],c[0],c[4]);
         }
-        for(int j=0; j<6; j++)
+        for (int j = 0; j < numberTetraInHexa; j++)
+        {
             Loc2GlobVec.push_back(i);
-        Glob2LocMap[i] = (unsigned int)Loc2GlobVec.size()-1;
+        }
+        Glob2LocMap[i] = static_cast<unsigned int>(Loc2GlobVec.size()) -1;
     }
 
     // Need to fully init the target topology
@@ -181,7 +196,6 @@ void Hexa2TetraTopologicalMapping::init()
 
 Index Hexa2TetraTopologicalMapping::getFromIndex(Index /*ind*/)
 {
-
     return sofa::InvalidID;
 }
 
