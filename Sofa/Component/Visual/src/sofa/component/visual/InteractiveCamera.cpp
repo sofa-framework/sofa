@@ -70,6 +70,7 @@ void InteractiveCamera::moveCamera(int x, int y)
             currentTrackball.ComputeQuaternion(x1, y1, x2, y2);
             //fetch rotation
             newQuat = currentTrackball.GetQuaternion();
+
             type::Vec3 pivot;
             switch (d_pivot.getValue())
             {
@@ -87,7 +88,7 @@ void InteractiveCamera::moveCamera(int x, int y)
                 pivot = sceneCenter;
                 break;
             }
-            rotateWorldAroundPoint(newQuat, pivot, this->getOrientation());
+            rotateWorldAroundPoint(newQuat, pivot, m_startingCameraOrientation, m_startingCameraPosition);
         }
         else if (currentMode == ZOOM_MODE)
         {
@@ -117,8 +118,11 @@ void InteractiveCamera::moveCamera(int x, int y)
         }
         //must call update afterwards
 
-        lastMousePosX = x;
-        lastMousePosY = y;
+        if (currentMode != TRACKBALL_MODE)
+        {
+            lastMousePosX = x;
+            lastMousePosY = y;
+        }
     }
     else if (currentMode == WHEEL_ZOOM_MODE)
     {
@@ -186,6 +190,9 @@ void InteractiveCamera::processMouseEvent(core::objectmodel::MouseEvent* me)
     {
         isMoving = true;
         currentMode = TRACKBALL_MODE;
+        
+        m_startingCameraOrientation = this->getOrientation();
+        m_startingCameraPosition = this->getPosition();
         lastMousePosX = posX;
         lastMousePosY = posY;
     }

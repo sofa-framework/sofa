@@ -27,14 +27,10 @@ namespace sofa::simulation::mechanicalvisitor
 {
 
 MechanicalGetConstraintInfoVisitor::MechanicalGetConstraintInfoVisitor(const core::ConstraintParams* params,
-    VecConstraintBlockInfo& blocks, VecPersistentID& ids, VecConstCoord& positions, VecConstDeriv& directions,
-    VecConstArea& areas)
+    VecConstraintBlockInfo& blocks, VecPersistentID& ids)
     : simulation::BaseMechanicalVisitor(params)
     , _blocks(blocks)
     , _ids(ids)
-    , _positions(positions)
-    , _directions(directions)
-    , _areas(areas)
     , _cparams(params)
 {}
 
@@ -44,7 +40,7 @@ Visitor::Result MechanicalGetConstraintInfoVisitor::fwdConstraintSet(simulation:
     if (core::behavior::BaseLagrangianConstraint *c=cSet->toBaseLagrangianConstraint())
     {
         const ctime_t t0 = begin(node, c);
-        c->getConstraintInfo(_cparams, _blocks, _ids, _positions, _directions, _areas);
+        c->getConstraintInfo(_cparams, _blocks, _ids);
         end(node, c, t0);
     }
     return RESULT_CONTINUE;

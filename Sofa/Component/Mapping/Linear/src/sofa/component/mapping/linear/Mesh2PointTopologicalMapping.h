@@ -153,7 +153,7 @@ protected:
     bool internalCheck(const char* step)
     {
         type::fixed_array <size_t, NB_ELEMENTS > nbInputRemoved;
-        nbInputRemoved.assign(0);
+        nbInputRemoved.fill(0);
         return internalCheck(step, nbInputRemoved);
     }
     bool initDone;

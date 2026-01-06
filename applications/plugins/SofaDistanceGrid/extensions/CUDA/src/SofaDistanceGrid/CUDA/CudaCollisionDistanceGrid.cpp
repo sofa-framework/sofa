@@ -23,7 +23,7 @@
 #include <SofaCUDA/component/solidmechanics/spring/CudaSpringForceField.inl>
 #include <SofaCUDA/component/statecontainer/CudaMechanicalObject.inl>
 #include <SofaCUDA/component/mapping/linear/CudaIdentityMapping.inl>
-#include <SofaCUDA/sofa/gpu/cuda/CudaContactMapper.h>
+#include <sofa/gpu/cuda/CudaContactMapper.h>
 #include <SofaDistanceGrid/CUDA/CudaDistanceGridContactMapper.h>
 #include <SofaCUDA/component/collision/response/contact/CudaPenalityContactForceField.h>
 #include "CudaDistanceGridCollisionModel.h"
@@ -64,7 +64,7 @@ void BarycentricPenalityContact<CudaPointCollisionModel,CudaRigidDistanceGridCol
 
     mapper1.setPoints1(&outputs);
     mapper2.setPoints2(&outputs);
-    const double d0 = intersectionMethod->getContactDistance() + model1->getProximity() + model2->getProximity(); // - 0.001;
+    const double d0 = intersectionMethod->getContactDistance() + model1->getContactDistance() + model2->getContactDistance(); // - 0.001;
 #if 0
     int insize = outputs.size();
     int size = insize;
@@ -117,7 +117,7 @@ void BarycentricPenalityContact<CudaSphereCollisionModel,CudaRigidDistanceGridCo
 
     mapper1.setPoints1(&outputs);
     mapper2.setPoints2(&outputs);
-    const double d0 = intersectionMethod->getContactDistance() + model1->getProximity() + model2->getProximity(); // - 0.001;
+    const double d0 = intersectionMethod->getContactDistance() + model1->getContactDistance() + model2->getContactDistance(); // - 0.001;
 #if 0
     int insize = outputs.size();
     int size = insize;

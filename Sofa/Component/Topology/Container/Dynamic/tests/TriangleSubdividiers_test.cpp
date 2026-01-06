@@ -240,7 +240,7 @@ bool TriangleSubdividers_test::testSubdivider_2Edge_baryCenter()
 
         // Add new points to the triangle and compute the subdivision
         std::shared_ptr<PointToAdd> newPoint_0 = std::make_shared<PointToAdd>(getUniqueId(ancestors0[0], ancestors0[1]), nbrP, ancestors0, coefs);
-        std::shared_ptr<PointToAdd> newPoint_1 = std::make_shared<PointToAdd>(getUniqueId(ancestors1[1], ancestors1[2]), nbrP+1, ancestors1, coefs);
+        std::shared_ptr<PointToAdd> newPoint_1 = std::make_shared<PointToAdd>(getUniqueId(ancestors1[0], ancestors1[1]), nbrP+1, ancestors1, coefs);
         subdivider0->addPoint(newPoint_0);
         subdivider0->addPoint(newPoint_1);
         subdivider0->subdivide(triToTest.triCoords);

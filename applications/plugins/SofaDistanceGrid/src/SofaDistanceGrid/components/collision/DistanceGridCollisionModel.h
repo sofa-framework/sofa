@@ -34,6 +34,7 @@
 #include <sofa/component/topology/container/grid/SparseGridTopology.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/core/behavior/SingleStateAccessor.h>
 
 #include "../../DistanceGrid.h"
 
@@ -63,32 +64,31 @@ public:
 
     explicit RigidDistanceGridCollisionElement(const core::CollisionElementIterator& i);
 
-    DistanceGrid* getGrid();
+    std::shared_ptr<DistanceGrid> getGrid();
 
     bool isTransformed();
     const type::Matrix3& getRotation();
     const type::Vec3& getTranslation();
     bool isFlipped();
 
-    void setGrid(DistanceGrid* surf);
-
     /// @name Previous state data
     /// Used to estimate velocity in case the distance grid itself is dynamic
     /// @{
-    DistanceGrid* getPrevGrid();
+    std::shared_ptr<DistanceGrid> getPrevGrid();
     const type::Matrix3& getPrevRotation();
     const type::Vec3& getPrevTranslation();
     double getPrevDt();
     /// @}
 
     /// Set new grid and transform, keeping the old state to estimate velocity
-    void setNewState(double dt, DistanceGrid* grid, const type::Matrix3& rotation, const type::Vec3& translation);
+    void setNewState(double dt, const std::shared_ptr<DistanceGrid> grid, const type::Matrix3& rotation, const type::Vec3& translation);
 };
 
 class SOFA_SOFADISTANCEGRID_API RigidDistanceGridCollisionModel : public core::CollisionModel
+    , public core::behavior::SingleStateAccessor<defaulttype::Rigid3Types>
 {
 public:
-    SOFA_CLASS(RigidDistanceGridCollisionModel,sofa::core::CollisionModel);
+    SOFA_CLASS2(RigidDistanceGridCollisionModel, sofa::core::CollisionModel, SOFA_TEMPLATE(SingleStateAccessor, defaulttype::Rigid3Types));
 
 protected:
 
@@ -97,25 +97,23 @@ protected:
     public:
         type::Matrix3 rotation;
         type::Vec3 translation;
-        DistanceGrid* grid;
+        std::shared_ptr<DistanceGrid> grid;
 
         /// @name Previous state data
         /// Used to estimate velocity in case the distance grid itself is dynamic
         /// @{
-        DistanceGrid* prevGrid; ///< Previous grid
+        std::shared_ptr<DistanceGrid> prevGrid; ///< Previous grid
         type::Matrix3 prevRotation; ///< Previous rotation
         type::Vec3 prevTranslation; ///< Previous translation
         double prevDt; ///< Time difference between previous and current state
         /// @}
 
         bool isTransformed; ///< True if translation/rotation was set
-        ElementData() : grid(NULL), prevGrid(NULL), prevDt(0.0), isTransformed(false) { rotation.identity(); prevRotation.identity(); }
+        ElementData() : grid(nullptr), prevGrid(nullptr), prevDt(0.0), isTransformed(false) { rotation.identity(); prevRotation.identity(); }
     };
 
     sofa::type::vector<ElementData> elems;
     bool modified;
-    core::behavior::MechanicalState<defaulttype::RigidTypes>* rigid;
-
     void updateGrid();
 
 public:
@@ -145,13 +143,15 @@ protected:
     RigidDistanceGridCollisionModel();
 
     ~RigidDistanceGridCollisionModel() override;
+
+    void drawCollisionModel(const core::visual::VisualParams* vparams) override;
 public:
-    core::behavior::MechanicalState<InDataTypes>* getRigidModel() { return rigid; }
-    core::behavior::MechanicalState<InDataTypes>* getMechanicalState() { return rigid; }
+    core::behavior::MechanicalState<InDataTypes>* getRigidModel() { return this->mstate ; }
+    core::behavior::MechanicalState<InDataTypes>* getMechanicalState() { return this->mstate ; }
 
     void init() override;
 
-    DistanceGrid* getGrid(sofa::Index index=0)
+    std::shared_ptr<DistanceGrid> getGrid(sofa::Index index=0)
     {
         return elems[index].grid;
     }
@@ -191,9 +191,7 @@ public:
         return flipNormals.getValue();
     }
 
-    void setGrid(DistanceGrid* surf, sofa::Index index=0);
-
-    DistanceGrid* getPrevGrid(sofa::Index index=0)
+    std::shared_ptr<DistanceGrid> getPrevGrid(sofa::Index index=0)
     {
         return elems[index].prevGrid;
     }
@@ -211,7 +209,7 @@ public:
     }
 
     /// Set new grid and transform, keeping the old state to estimate velocity
-    void setNewState(sofa::Index index, double dt, DistanceGrid* grid, const type::Matrix3& rotation, const type::Vec3& translation);
+    void setNewState(sofa::Index index, double dt, const std::shared_ptr<DistanceGrid> grid, const type::Matrix3& rotation, const type::Vec3& translation);
 
     /// @}
 
@@ -226,7 +224,6 @@ public:
 
     void draw(const core::visual::VisualParams*, sofa::Index index) override;
 
-    void draw(const core::visual::VisualParams* vparams) override;
 };
 
 inline RigidDistanceGridCollisionElement::RigidDistanceGridCollisionElement(RigidDistanceGridCollisionModel* model, Index index)
@@ -238,20 +235,19 @@ inline RigidDistanceGridCollisionElement::RigidDistanceGridCollisionElement(cons
 {
 }
 
-inline DistanceGrid* RigidDistanceGridCollisionElement::getGrid() { return model->getGrid(index); }
-inline void RigidDistanceGridCollisionElement::setGrid(DistanceGrid* surf) { return model->setGrid(surf, index); }
+inline std::shared_ptr<DistanceGrid> RigidDistanceGridCollisionElement::getGrid() { return model->getGrid(index); }
 
 inline bool RigidDistanceGridCollisionElement::isTransformed() { return model->isTransformed(index); }
 inline const type::Matrix3& RigidDistanceGridCollisionElement::getRotation() { return model->getRotation(index); }
 inline const type::Vec3& RigidDistanceGridCollisionElement::getTranslation() { return model->getTranslation(index); }
 inline bool RigidDistanceGridCollisionElement::isFlipped() { return model->isFlipped(); }
 
-inline DistanceGrid* RigidDistanceGridCollisionElement::getPrevGrid() { return model->getPrevGrid(index); }
+inline std::shared_ptr<DistanceGrid> RigidDistanceGridCollisionElement::getPrevGrid() { return model->getPrevGrid(index); }
 inline const type::Matrix3& RigidDistanceGridCollisionElement::getPrevRotation() { return model->getPrevRotation(index); }
 inline const type::Vec3& RigidDistanceGridCollisionElement::getPrevTranslation() { return model->getPrevTranslation(index); }
 inline double RigidDistanceGridCollisionElement::getPrevDt() { return model->getPrevDt(index); }
 
-inline void RigidDistanceGridCollisionElement::setNewState(double dt, DistanceGrid* grid, const type::Matrix3& rotation, const type::Vec3& translation)
+inline void RigidDistanceGridCollisionElement::setNewState(double dt, const std::shared_ptr<DistanceGrid> grid, const type::Matrix3& rotation, const type::Vec3& translation)
 {
     return model->setNewState(this->getIndex(), dt, grid, rotation, translation);
 }
@@ -270,23 +266,22 @@ public:
 
     explicit FFDDistanceGridCollisionElement(const core::CollisionElementIterator& i);
 
-    DistanceGrid* getGrid();
-
-    void setGrid(DistanceGrid* surf);
+    std::shared_ptr<DistanceGrid> getGrid();
 };
 
 class SOFA_SOFADISTANCEGRID_API FFDDistanceGridCollisionModel : public core::CollisionModel
+    , public core::behavior::SingleStateAccessor<defaulttype::Vec3Types>
 {
 public:
-    SOFA_CLASS(FFDDistanceGridCollisionModel,sofa::core::CollisionModel);
+    SOFA_CLASS2(FFDDistanceGridCollisionModel, sofa::core::CollisionModel, SOFA_TEMPLATE(SingleStateAccessor, defaulttype::Vec3Types));
 
     typedef SReal GSReal;
     typedef DistanceGrid::Coord GCoord;
     class SOFA_SOFADISTANCEGRID_API DeformedCube
     {
     public:
-        DistanceGrid* grid;
-        DeformedCube() : grid(NULL) {}
+        std::shared_ptr<DistanceGrid> grid;
+        DeformedCube() : grid(nullptr) {}
         int elem; ///< Index of the corresponding element in the topology
         std::set<int> neighbors; ///< Index of the neighbors (used for self-collisions)
         struct Point
@@ -437,11 +432,8 @@ protected:
     Data< int > nz; ///< number of values on Z axis
     sofa::core::objectmodel::DataFileName dumpfilename;
 
-    core::behavior::MechanicalState<defaulttype::Vec3Types>* ffd;
-    core::topology::BaseMeshTopology* ffdMesh;
-    //topology::RegularGridTopology* ffdGrid;
-    topology::container::grid::RegularGridTopology* ffdRGrid;
-    topology::container::grid::SparseGridTopology* ffdSGrid;
+    core::objectmodel::SingleLink<FFDDistanceGridCollisionModel, core::topology::BaseMeshTopology,
+                                  BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_ffdMesh;
 
     void updateGrid();
 public:
@@ -456,17 +448,19 @@ protected:
     FFDDistanceGridCollisionModel();
 
     ~FFDDistanceGridCollisionModel() override;
+
+    void drawCollisionModel(const core::visual::VisualParams* vparams) override;
 public:
-    core::behavior::MechanicalState<DataTypes>* getDeformModel() { return ffd; }
-    core::topology::BaseMeshTopology* getDeformGrid() { return ffdMesh; }
+    core::behavior::MechanicalState<DataTypes>* getDeformModel() { return this->mstate; }
+    core::topology::BaseMeshTopology* getDeformGrid() { return l_ffdMesh; }
 
     /// alias used by ContactMapper
-    core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return ffd; }
-    core::topology::BaseMeshTopology* getCollisionTopology() override { return ffdMesh; }
+    core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return this->mstate; }
+    core::topology::BaseMeshTopology* getCollisionTopology() override { return l_ffdMesh; }
 
     void init() override;
 
-    DistanceGrid* getGrid(sofa::Index index=0)
+    std::shared_ptr<DistanceGrid> getGrid(sofa::Index index=0)
     {
         return elems[index].grid;
     }
@@ -475,8 +469,6 @@ public:
     {
         return elems[index];
     }
-
-    void setGrid(DistanceGrid* surf, sofa::Index index=0);
 
     /// CollisionModel interface
     void resize(sofa::Size size) override;
@@ -487,8 +479,6 @@ public:
     bool canCollideWithElement(sofa::Index index, CollisionModel* model2, sofa::Index index2) override;
 
     void draw(const core::visual::VisualParams*, sofa::Index index) override;
-
-    void draw(const core::visual::VisualParams* vparams) override;
 };
 
 inline FFDDistanceGridCollisionElement::FFDDistanceGridCollisionElement(FFDDistanceGridCollisionModel* model, Index index)
@@ -500,8 +490,7 @@ inline FFDDistanceGridCollisionElement::FFDDistanceGridCollisionElement(const co
 {
 }
 
-inline DistanceGrid* FFDDistanceGridCollisionElement::getGrid() { return model->getGrid(index); }
-inline void FFDDistanceGridCollisionElement::setGrid(DistanceGrid* surf) { return model->setGrid(surf, index); }
+inline std::shared_ptr<DistanceGrid> FFDDistanceGridCollisionElement::getGrid() { return model->getGrid(index); }
 
 /// Mapper for FFDDistanceGridCollisionModel
 template <class DataTypes>
@@ -542,7 +531,7 @@ public:
         using sofa::component::mapping::linear::IdentityMapping;
 
         MMechanicalState* outmodel = Inherit::createMapping(name);
-        if (this->child!=NULL && this->mapping==NULL)
+        if (this->child!=nullptr && this->mapping==nullptr)
         {
             //TODO(dmarchal):2017-05-26 This comment may become a conditional code.
             // add velocity visualization
@@ -589,9 +578,9 @@ public:
                 {
                     v = (x - (model->getPrevTranslation(index) + model->    getPrevRotation(index) * P)) * (1.0/gdt);
                 }
-                DistanceGrid* prevGrid = model->getPrevGrid(index);
+                std::shared_ptr<DistanceGrid> prevGrid = model->getPrevGrid(index);
                 //DistanceGrid* grid = model->getGrid(index);
-                //if (prevGrid != NULL && prevGrid != grid && prevGrid->inGrid(P))
+                //if (prevGrid != nullptr && prevGrid != grid && prevGrid->inGrid(P))
                 {
                     DistanceGrid::Coord coefs;
                     int ii = prevGrid->index(P, coefs);

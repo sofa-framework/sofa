@@ -38,8 +38,16 @@ namespace sofa::component::constraint::lagrangian::solver
 class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API ConstraintProblem
 {
 public:
+    // The compliance matrix projected in the constraint space
+    // If J is the jacobian matrix of the constraints and A is the mechanical matrix of the system,
+    // then W = J A^{-1} J^T
     sofa::linearalgebra::LPtrFullMatrix<SReal> W;
-    sofa::linearalgebra::FullVector<SReal> dFree, f;
+
+    // The constraint values of the "free motion" state
+    sofa::linearalgebra::FullVector<SReal> dFree;
+
+    // The lambda values from the Lagrange multipliers
+    sofa::linearalgebra::FullVector<SReal> f;
 
     ConstraintProblem();
     virtual ~ConstraintProblem();
@@ -48,18 +56,22 @@ public:
     int maxIterations;
 
     virtual void clear(int nbConstraints);
-    int getDimension()	{ return dimension; }
-    SReal** getW()		{ return W.lptr(); }
-    SReal* getDfree()	{ return dFree.ptr(); }
-    SReal* getF()		{ return f.ptr(); }
+
+    // Returns the number of scalar constraints, or equivalently the number of Lagrange multipliers
+    int getDimension() const { return dimension; }
+    void setDimension(int dim) { dimension = dim; }
+
+    SReal** getW() { return W.lptr(); }
+    SReal* getDfree() { return dFree.ptr(); }
+    SReal* getF() { return f.ptr(); }
 
     virtual void solveTimed(SReal tolerance, int maxIt, SReal timeout) = 0;
 
-    unsigned int getProblemId();
+    unsigned getProblemId() const;
 
 protected:
     int dimension;
-    unsigned int problemId;
+    unsigned problemId;
 };
 
 
@@ -82,6 +94,10 @@ public:
 
     void removeConstraintCorrection(core::behavior::BaseConstraintCorrection *s) override;
 
+    MultiLink< ConstraintSolverImpl,
+        core::behavior::BaseConstraintCorrection,
+        BaseLink::FLAG_STOREPATH> l_constraintCorrections;
+
 protected:
 
     void postBuildSystem(const core::ConstraintParams* cParams) override;
@@ -89,9 +105,6 @@ protected:
 
     void clearConstraintCorrections();
 
-    MultiLink< ConstraintSolverImpl,
-        core::behavior::BaseConstraintCorrection,
-        BaseLink::FLAG_STOREPATH> l_constraintCorrections;
 
     /// Calls the method resetConstraint on all the mechanical states and BaseConstraintSet
     /// In the case of a MechanicalObject, it clears the constraint jacobian matrix

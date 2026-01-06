@@ -34,30 +34,29 @@ namespace engine
 
 using namespace defaulttype;
 
-int MergedCatchAllVectorClass = core::RegisterObject("MergedCatchAllVector")
+void registerMergedCatchAllVector(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("MergedCatchAllVector")
         .add<MergedCatchAllVector<float > >(true)
-        //.add<MergedCatchAllVector<unsigned float> >()
         .add<MergedCatchAllVector<short > >()
         .add<MergedCatchAllVector<unsigned short > >()
         .add<MergedCatchAllVector<int > >()
         .add<MergedCatchAllVector<unsigned int > >()
         .add<MergedCatchAllVector<double > >()
-        //.add<MergedCatchAllVector<unsigned double> >()
         .add<MergedCatchAllVector<long > >()
         .add<MergedCatchAllVector<unsigned long > >()
         .add<MergedCatchAllVector<bool > >()
         .add<MergedCatchAllVector<sofa::type::Vec3f> >()
         .add<MergedCatchAllVector<sofa::type::Vec3d> >()
-        ;
+    );
+}
 
 template class SOFA_IMAGE_GUI_API MergedCatchAllVector<float >;
-//template class SOFA_IMAGE_GUI_API MergedCatchAllVector<unsigned float >;
 template class SOFA_IMAGE_GUI_API MergedCatchAllVector<short >;
 template class SOFA_IMAGE_GUI_API MergedCatchAllVector<unsigned short >;
 template class SOFA_IMAGE_GUI_API MergedCatchAllVector<int >;
 template class SOFA_IMAGE_GUI_API MergedCatchAllVector<unsigned int >;
 template class SOFA_IMAGE_GUI_API MergedCatchAllVector<double >;
-//template class SOFA_IMAGE_GUI_API MergedCatchAllVector<unsigned double >;
 template class SOFA_IMAGE_GUI_API MergedCatchAllVector<long >;
 template class SOFA_IMAGE_GUI_API MergedCatchAllVector<unsigned long >;
 template class SOFA_IMAGE_GUI_API MergedCatchAllVector<bool >;

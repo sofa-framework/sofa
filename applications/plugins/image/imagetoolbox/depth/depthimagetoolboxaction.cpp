@@ -6,8 +6,6 @@
 
 namespace sofa
 {
-namespace gui
-{
 namespace qt
 {
 
@@ -452,6 +450,5 @@ void DepthImageToolBoxAction::sectionButtonClick()
 
 
 
-}
 }
 }
