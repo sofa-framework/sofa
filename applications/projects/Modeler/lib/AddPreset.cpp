@@ -25,7 +25,7 @@
 #include <iostream>
 #include <sstream>
 #include <cstdlib>
-#include <sofa/gui/qt/FileManagement.h> //static functions to manage opening/ saving of files
+#include <sofa/qt/FileManagement.h> //static functions to manage opening/ saving of files
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/FileRepository.h>
 

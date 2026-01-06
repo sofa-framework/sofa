@@ -78,16 +78,16 @@ public:
     typedef typename T::Real Real;
     enum { NL = T::nbLines };
     enum { NC = T::nbCols };
-    static Real& v(Block& b, IndexType row, IndexType col) { return b[row][col]; }
-    static const Real& v(const Block& b, IndexType row, IndexType col) { return b[row][col]; }
-    static void vset(Block& b, int row, int col, Real val) { b[row][col] = val; }
-    static void vadd(Block& b, int row, int col, Real val) { b[row][col] += val; }
+    static Real& v(Block& b, IndexType row, IndexType col) { return b(row,col); }
+    static const Real& v(const Block& b, IndexType row, IndexType col) { return b(row,col); }
+    static void vset(Block& b, int row, int col, Real val) { b(row,col) = val; }
+    static void vadd(Block& b, int row, int col, Real val) { b(row,col) += val; }
     static void clear(Block& b) { b.clear(); }
     static bool empty(const Block& b)
     {
         for (IndexType i=0; i<NL; ++i)
             for (IndexType j=0; j<NC; ++j)
-                if (b[i][j] != 0) return false;
+                if (b(i,j) != 0) return false;
         return true;
     }
     static void invert(Block& result, const Block& b) { result.invert(b); }
@@ -114,16 +114,16 @@ public:
     typedef real Real;
     enum { NL = L };
     enum { NC = C };
-    static Real& v(Block& b, Index row, Index col) { return b[row][col]; }
-    static const Real& v(const Block& b, Index row, Index col) { return b[row][col]; }
-    static void vset(Block& b, int row, int col, Real val) { b[row][col] = val; }
-    static void vadd(Block& b, int row, int col, Real val) { b[row][col] += val; }
+    static Real& v(Block& b, Index row, Index col) { return b(row,col); }
+    static const Real& v(const Block& b, Index row, Index col) { return b(row,col); }
+    static void vset(Block& b, int row, int col, Real val) { b(row,col) = val; }
+    static void vadd(Block& b, int row, int col, Real val) { b(row,col) += val; }
     static void clear(Block& b) { b.clear(); }
     static bool empty(const Block& b)
     {
         for (Index i=0; i<NL; ++i)
             for (Index j=0; j<NC; ++j)
-                if (b[i][j] != 0) return false;
+                if (b(i,j) != 0) return false;
         return true;
     }
     static void invert(Block& result, const Block& b)

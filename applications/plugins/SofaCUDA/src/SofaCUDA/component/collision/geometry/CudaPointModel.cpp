@@ -78,31 +78,25 @@ void CudaPointCollisionModel::draw(const core::visual::VisualParams* , Index ind
 #endif // SOFACUDA_HAVE_SOFA_GL == 1
 }
 
-void CudaPointCollisionModel::draw(const core::visual::VisualParams* vparams)
+void CudaPointCollisionModel::drawCollisionModel(const core::visual::VisualParams* vparams)
 {
 #if SOFACUDA_HAVE_SOFA_GL == 1
-    if (isActive() && vparams->displayFlags().getShowCollisionModels())
+    if (vparams->displayFlags().getShowWireFrame()) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+    glDisable(GL_LIGHTING);
+    glPointSize(3);
+    glColor4fv(getColor4f());
+
+    for (Size i = 0; i < size; i++)
     {
-        if (vparams->displayFlags().getShowWireFrame())
-            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-        glDisable(GL_LIGHTING);
-        glPointSize(3);
-        glColor4fv(getColor4f());
-
-        for (Size i=0; i<size; i++)
-        {
-            draw(vparams,i);
-        }
-
-        glColor3f(1.0f, 1.0f, 1.0f);
-        glDisable(GL_LIGHTING);
-        glPointSize(1);
-        if (vparams->displayFlags().getShowWireFrame())
-            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        draw(vparams, i);
     }
-    if (isActive() && getPrevious()!=NULL && vparams->displayFlags().getShowBoundingCollisionModels())
-        getPrevious()->draw(vparams);
+
+    glColor3f(1.0f, 1.0f, 1.0f);
+    glDisable(GL_LIGHTING);
+    glPointSize(1);
+    if (vparams->displayFlags().getShowWireFrame()) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
 #endif // SOFACUDA_HAVE_SOFA_GL == 1
 }
 

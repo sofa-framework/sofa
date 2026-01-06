@@ -90,4 +90,12 @@ TEST(TopologyHexahedron_test, getClosestHexahedronIndex)
     EXPECT_EQ(4, sofa::topology::getClosestHexahedronIndex(nine_hexa_vertices, nine_hexa_indices, pos2, coeffs, distance));
 }
 
+TEST(Hexahedron_test, ostream)
+{
+    static constexpr sofa::topology::Hexahedron h{1, 2, 3, 4, 5, 6, 7, 8};
+    std::ostringstream oss;
+    oss << h;
+    EXPECT_EQ("1 2 3 4 5 6 7 8", oss.str());
+}
+
 }// namespace sofa

@@ -71,27 +71,37 @@ public:
     virtual TVector* getSolutionVector() const;
 
     linearalgebra::BaseMatrix* getSystemBaseMatrix() const override;
+    linearalgebra::BaseVector* getSystemRHSBaseVector() const override;
+    linearalgebra::BaseVector* getSystemSolutionBaseVector() const override;
 
     /// Set the size of the matrix to n x n, and the size of RHS and solution to n
-    virtual void resizeSystem(sofa::Size n);
+    void resizeSystem(sofa::Size n) override;
 
-    virtual void clearSystem();
+    void clearSystem() override;
 
     /// Assemble the right-hand side of the linear system, from the values contained in the (Mechanical/Physical)State objects
     /// Warning: it assumes m_mappingGraph is already built
-    virtual void setRHS(core::MultiVecDerivId v);
+    void setRHS(core::MultiVecDerivId v) override;
 
     /// Set the initial estimate of the linear system solution vector, from the values contained in the (Mechanical/Physical)State objects
     /// This vector will be replaced by the solution of the system once the system is solved
     /// Warning: it assumes m_mappingGraph is already built
-    virtual void setSystemSolution(core::MultiVecDerivId v);
+    void setSystemSolution(core::MultiVecDerivId v) override;
 
-    virtual void dispatchSystemSolution(core::MultiVecDerivId v);
-    virtual void dispatchSystemRHS(core::MultiVecDerivId v);
+    void dispatchSystemSolution(core::MultiVecDerivId v) override;
+    void dispatchSystemRHS(core::MultiVecDerivId v) override;
 
     core::objectmodel::BaseContext* getSolveContext();
 
+    /**
+     * This Data is used only to notify other components that the system matrix changed (resize,
+     * clear)
+     */
+    Data<bool> d_matrixChanged;
+
 protected:
+
+    TypedMatrixLinearSystem();
 
     LinearSystemData<TMatrix, TVector> m_linearSystem;
 
@@ -121,20 +131,20 @@ protected:
     /**
      * Returns the factor to apply to the contributions depending on the contribution type
      */
-    template<core::matrixaccumulator::Contribution c>
+    template <core::matrixaccumulator::Contribution c>
     static SReal getContributionFactor(
         const sofa::core::MechanicalParams* mparams,
         const sofa::core::matrixaccumulator::get_component_type<c>* object)
     {
         if constexpr (c == core::matrixaccumulator::Contribution::STIFFNESS)
         {
-            return sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams,
-                object->rayleighStiffness.getValue());
+            return sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(
+                mparams, object->rayleighStiffness.getValue());
         }
         else if constexpr (c == core::matrixaccumulator::Contribution::MASS)
         {
-            return sofa::core::mechanicalparams::mFactorIncludingRayleighDamping(mparams,
-                object->rayleighMass.getValue());
+            return sofa::core::mechanicalparams::mFactorIncludingRayleighDamping(
+                mparams, object->rayleighMass.getValue());
         }
         else if constexpr (c == core::matrixaccumulator::Contribution::DAMPING)
         {

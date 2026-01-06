@@ -31,7 +31,7 @@ namespace sofa::simulation
 class SOFA_SIMULATION_CORE_API UpdateLinksVisitor : public Visitor
 {
 public:
-    UpdateLinksVisitor(const core::ExecParams* params) : Visitor(params) {}
+    UpdateLinksVisitor(const core::ExecParams* eparams) : Visitor(eparams) {}
 
     void processObject(core::objectmodel::BaseObject* obj);
 

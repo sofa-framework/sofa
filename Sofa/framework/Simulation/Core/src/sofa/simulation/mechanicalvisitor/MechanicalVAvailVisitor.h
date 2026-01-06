@@ -37,8 +37,8 @@ public:
     typedef std::set<sofa::core::BaseState*> StateSet;
     MyVecId& v;
     StateSet states;
-    MechanicalVAvailVisitor( const sofa::core::ExecParams* params, MyVecId& v)
-            : BaseMechanicalVisitor(params), v(v)
+    MechanicalVAvailVisitor( const sofa::core::ExecParams* eparams, MyVecId& vecid)
+            : BaseMechanicalVisitor(eparams), v(vecid)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();

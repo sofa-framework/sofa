@@ -5,14 +5,14 @@ sofa_find_package(Sofa.Core REQUIRED)
 sofa_find_package(Sofa.Component.Constraint.Lagrangian.Solver REQUIRED)
 sofa_find_package(Sofa.Component.LinearSolver.Direct REQUIRED)
 sofa_find_package(Eigen3 REQUIRED)
-sofa_find_package(Sofa.GUI.Qt REQUIRED)
+sofa_find_package(Sofa.Qt REQUIRED)
 
 set(SOFA_MODULES
     Sofa.Component.Constraint.Lagrangian.Solver
     Sofa.Component.LinearSolver.Direct
     Sofa.Core
     Eigen3::Eigen
-    Sofa.GUI.Qt
+    Sofa.Qt
     SofaMatrix
 )
 
@@ -20,14 +20,9 @@ set(SOFAMATRIX_SRC_DIR src/SofaMatrix/Qt)
 
 set(HEADER_FILES
     ${SOFAMATRIX_SRC_DIR}/config.h.in
-    ${SOFAMATRIX_SRC_DIR}/ComplianceMatrixImage.h
-    ${SOFAMATRIX_SRC_DIR}/GlobalSystemMatrixImage.h
-    ${SOFAMATRIX_SRC_DIR}/BaseMatrixImageProxy.h
 )
 
 set(SOURCE_FILES
-    ${SOFAMATRIX_SRC_DIR}/ComplianceMatrixImage.cpp
-    ${SOFAMATRIX_SRC_DIR}/GlobalSystemMatrixImage.cpp
     ${SOFAMATRIX_SRC_DIR}/BaseMatrixImageViewerWidget.cpp
     ${SOFAMATRIX_SRC_DIR}/initSofaMatrixQt.cpp
 )

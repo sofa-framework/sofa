@@ -138,26 +138,26 @@ void generateRigid(Rigid3MassType& mass, type::Vec3& center, const helper::io::M
     center = {afIntegral[1]/afIntegral[0],afIntegral[2]/afIntegral[0],afIntegral[3]/afIntegral[0]};
 
     // inertia relative to world origin
-    mass.inertiaMatrix[0][0] = afIntegral[5] + afIntegral[6];
-    mass.inertiaMatrix[0][1] = -afIntegral[7];
-    mass.inertiaMatrix[0][2] = -afIntegral[9];
-    mass.inertiaMatrix[1][0] = mass.inertiaMatrix[0][1];
-    mass.inertiaMatrix[1][1] = afIntegral[4] + afIntegral[6];
-    mass.inertiaMatrix[1][2] = -afIntegral[8];
-    mass.inertiaMatrix[2][0] = mass.inertiaMatrix[0][2];
-    mass.inertiaMatrix[2][1] = mass.inertiaMatrix[1][2];
-    mass.inertiaMatrix[2][2] = afIntegral[4] + afIntegral[5];
+    mass.inertiaMatrix(0,0) = afIntegral[5] + afIntegral[6];
+    mass.inertiaMatrix(0,1) = -afIntegral[7];
+    mass.inertiaMatrix(0,2) = -afIntegral[9];
+    mass.inertiaMatrix(1,0) = mass.inertiaMatrix(0,1);
+    mass.inertiaMatrix(1,1) = afIntegral[4] + afIntegral[6];
+    mass.inertiaMatrix(1,2) = -afIntegral[8];
+    mass.inertiaMatrix(2,0) = mass.inertiaMatrix(0,2);
+    mass.inertiaMatrix(2,1) = mass.inertiaMatrix(1,2);
+    mass.inertiaMatrix(2,2) = afIntegral[4] + afIntegral[5];
 
     // inertia relative to center of mass
-    mass.inertiaMatrix[0][0] -= mass.mass*(center[1]*center[1] + center[2]*center[2]);
-    mass.inertiaMatrix[0][1] += mass.mass*center[0]*center[1];
-    mass.inertiaMatrix[0][2] += mass.mass*center[2]*center[0];
-    mass.inertiaMatrix[1][0] = mass.inertiaMatrix[0][1];
-    mass.inertiaMatrix[1][1] -= mass.mass*(center[2]*center[2] + center[0]*center[0]);
-    mass.inertiaMatrix[1][2] += mass.mass*center[1]*center[2];
-    mass.inertiaMatrix[2][0] = mass.inertiaMatrix[0][2];
-    mass.inertiaMatrix[2][1] = mass.inertiaMatrix[1][2];
-    mass.inertiaMatrix[2][2] -= mass.mass*(center[0]*center[0] + center[1]*center[1]);
+    mass.inertiaMatrix(0,0) -= mass.mass*(center[1]*center[1] + center[2]*center[2]);
+    mass.inertiaMatrix(0,1) += mass.mass*center[0]*center[1];
+    mass.inertiaMatrix(0,2) += mass.mass*center[2]*center[0];
+    mass.inertiaMatrix(1,0) = mass.inertiaMatrix(0,1);
+    mass.inertiaMatrix(1,1) -= mass.mass*(center[2]*center[2] + center[0]*center[0]);
+    mass.inertiaMatrix(1,2) += mass.mass*center[1]*center[2];
+    mass.inertiaMatrix(2,0) = mass.inertiaMatrix(0,2);
+    mass.inertiaMatrix(2,1) = mass.inertiaMatrix(1,2);
+    mass.inertiaMatrix(2,2) -= mass.mass*(center[0]*center[0] + center[1]*center[1]);
 
     mass.inertiaMatrix /= mass.mass;
 }
@@ -252,7 +252,7 @@ void generateRigid( GenerateRigidInfo& res
     const SReal threshold = type::trace( res.inertia ) * 1e-6;
 
     // if not diagonal, extracting principal axes basis to get the corresponding rotation with a diagonal inertia
-    if( res.inertia[0][1]>threshold || res.inertia[0][2]>threshold || res.inertia[1][2]>threshold )
+    if( res.inertia(0,1)>threshold || res.inertia(0,2)>threshold || res.inertia(1,2)>threshold )
     {
         type::Matrix3 U;
         Decompose<SReal>::eigenDecomposition_iterative( res.inertia, U, res.inertia_diagonal );
@@ -261,17 +261,17 @@ void generateRigid( GenerateRigidInfo& res
         if( type::determinant( U ) < 0 ) // reflexion
         {
             // made it a rotation by negating a column
-            U[0][0] = -U[0][0];
-            U[1][0] = -U[1][0];
-            U[2][0] = -U[2][0];
+            U(0,0) = -U(0,0);
+            U(1,0) = -U(1,0);
+            U(2,0) = -U(2,0);
         }
         res.inertia_rotation.fromMatrix( U );
     }
     else
     {
-        res.inertia_diagonal[0] = res.inertia[0][0];
-        res.inertia_diagonal[1] = res.inertia[1][1];
-        res.inertia_diagonal[2] = res.inertia[2][2];
+        res.inertia_diagonal[0] = res.inertia(0,0);
+        res.inertia_diagonal[1] = res.inertia(1,1);
+        res.inertia_diagonal[2] = res.inertia(2,2);
         res.inertia_rotation.clear();
     }
 }

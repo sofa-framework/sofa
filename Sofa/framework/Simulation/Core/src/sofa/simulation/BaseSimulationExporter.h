@@ -35,7 +35,7 @@ namespace sofa::simulation
 namespace _basesimulationexporter_
 {
 using sofa::core::objectmodel::Event ;
-using sofa::core::objectmodel::BaseObject ;
+using BaseObject [[deprecated("Use sofa::core::objectmodel::BaseObject instead.")]] = sofa::core::objectmodel::BaseObject;
 using sofa::core::objectmodel::DataFileName ;
 
 /**

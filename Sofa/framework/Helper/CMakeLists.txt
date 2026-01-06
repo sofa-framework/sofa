@@ -3,8 +3,23 @@ project(Sofa.Helper LANGUAGES CXX)
 
 # Eigen (header only)
 sofa_find_package(Eigen3 REQUIRED)
+
 # Json (header only) needed by AdvancedTimer
-sofa_find_package(Json 3.1.2 REQUIRED)
+find_package(nlohmann_json QUIET)
+
+if(NOT TARGET nlohmann_json AND SOFA_ALLOW_FETCH_DEPENDENCIES)
+    message("Sofa.GUI.Common: DEPENDENCY nlohmann_json NOT FOUND. SOFA_ALLOW_FETCH_DEPENDENCIES is ON, fetching nlohmann_json...")
+
+    set(JSON_BuildTests OFF CACHE INTERNAL "")
+
+    sofa_fetch_dependency(nlohmann_json
+            GIT_REPOSITORY https://github.com/nlohmann/json.git
+            GIT_TAG        v3.12.0
+    )
+elseif(NOT TARGET nlohmann_json)
+    message(FATAL_ERROR "Sofa.GUI.Common: DEPENDENCY nlohmann_json NOT FOUND. SOFA_ALLOW_FETCH_DEPENDENCIES is OFF and thus cannot be fetched. Install nlohmann_json (version>=3.9.1), or enable SOFA_ALLOW_FETCH_DEPENDENCIES to fix this issue.")
+endif()
+
 # STB (header only)
 sofa_find_package(STB REQUIRED)
 # DiffLib (header only)
@@ -249,7 +264,7 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
 endif()
 
 # Json (header only) needed by AdvancedTimer
-target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<BUILD_INTERFACE:${JSON_INCLUDE_DIR}>")
+target_link_libraries(${PROJECT_NAME} PRIVATE nlohmann_json::nlohmann_json)
 
 # STB (header only) for Image
 target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<BUILD_INTERFACE:${STB_INCLUDE_DIR}>")

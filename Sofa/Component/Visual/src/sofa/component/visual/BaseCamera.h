@@ -102,7 +102,8 @@ public:
     void moveCamera(const type::Vec3 &p, const Quat &q);
 
     void rotateCameraAroundPoint( Quat& rotation, const type::Vec3& point);
-    virtual void rotateWorldAroundPoint( Quat& rotation, const type::Vec3& point, Quat orientationCam);
+    virtual void rotateWorldAroundPoint(Quat& rotation, const type::Vec3& point, Quat orientationCam);
+    virtual void rotateWorldAroundPoint(Quat& rotation, const type::Vec3& point, Quat orientationCam, type::Vec3 positionCam);
 
     type::Vec3 screenToViewportPoint(const type::Vec3& p) const;
     type::Vec3 screenToWorldPoint(const type::Vec3& p);

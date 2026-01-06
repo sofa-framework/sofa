@@ -8,8 +8,6 @@
 namespace sofa
 {
 
-namespace gui
-{
 
 namespace qt
 {
@@ -47,5 +45,4 @@ helper::Creator<DataWidgetFactory, ImageToolBoxWidget< ImageToolBoxData<bool> > 
 #endif
 
 } // qt
-} // gui
 } // sofa
