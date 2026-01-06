@@ -49,7 +49,7 @@ void TetrahedralTensorMassForceField<DataTypes>::createEdgeRestInformation(Index
     {
         for (v=0; v<3; ++v)
         {
-            ei.DfDx[u][v]=0;
+            ei.DfDx(u,v)=0;
         }
     }
 
@@ -119,9 +119,9 @@ void TetrahedralTensorMassForceField<DataTypes>::applyTetrahedronCreation(const 
                 {
                     for (v=0; v<3; ++v)
                     {
-                        m[u][v]+= lambdastar*shapeVector[l][u]*shapeVector[k][v]+mustar*shapeVector[k][u]*shapeVector[l][v];
+                        m(u,v)+= lambdastar*shapeVector[l][u]*shapeVector[k][v]+mustar*shapeVector[k][u]*shapeVector[l][v];
                     }
-                    m[u][u]+=val1;
+                    m(u,u)+=val1;
                 }
             }
             else
@@ -130,9 +130,9 @@ void TetrahedralTensorMassForceField<DataTypes>::applyTetrahedronCreation(const 
                 {
                     for (v=0; v<3; ++v)
                     {
-                        m[v][u]+= lambdastar*shapeVector[l][u]*shapeVector[k][v]+mustar*shapeVector[k][u]*shapeVector[l][v];
+                        m(v,u)+= lambdastar*shapeVector[l][u]*shapeVector[k][v]+mustar*shapeVector[k][u]*shapeVector[l][v];
                     }
-                    m[u][u]+=val1;
+                    m(u,u)+=val1;
                 }
             }
 
@@ -199,9 +199,9 @@ void TetrahedralTensorMassForceField<DataTypes>::applyTetrahedronDestruction(con
                 {
                     for (v=0; v<3; ++v)
                     {
-                        m[u][v]-= lambdastar*shapeVector[l][u]*shapeVector[k][v]+mustar*shapeVector[k][u]*shapeVector[l][v];
+                        m(u,v)-= lambdastar*shapeVector[l][u]*shapeVector[k][v]+mustar*shapeVector[k][u]*shapeVector[l][v];
                     }
-                    m[u][u]-=val1;
+                    m(u,u)-=val1;
                 }
             }
             else
@@ -210,9 +210,9 @@ void TetrahedralTensorMassForceField<DataTypes>::applyTetrahedronDestruction(con
                 {
                     for (v=0; v<3; ++v)
                     {
-                        m[v][u]-= lambdastar*shapeVector[l][u]*shapeVector[k][v]+mustar*shapeVector[k][u]*shapeVector[l][v];
+                        m(v,u)+= lambdastar*shapeVector[l][u]*shapeVector[k][v]+mustar*shapeVector[k][u]*shapeVector[l][v];
                     }
-                    m[u][u]-=val1;
+                    m(u,u)-=val1;
                 }
             }
 

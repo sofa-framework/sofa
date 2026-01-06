@@ -93,7 +93,7 @@ public:
     const sofa::type::vector< PrimitiveGroup > & getPolygonsGroups() const { return m_polygonsGroups; }
     const sofa::type::vector< PrimitiveGroup > & getTetrahedraGroups() const { return m_tetrahedraGroups; }
     const sofa::type::vector< PrimitiveGroup > & getHexahedraGroups() const { return m_hexahedraGroups; }
-    const sofa::type::vector< PrimitiveGroup > & getPentahedraGroups() const { return m_pentahedraGroups; }
+    const sofa::type::vector< PrimitiveGroup > & getPrismsGroups() const { return m_prismsGroups; }
     const sofa::type::vector< PrimitiveGroup > & getPyramidsGroups() const { return m_pyramidsGroups; }
 
     const sofa::type::vector< HighOrderEdgePosition >& getHighOrderEdgePositions() const { return m_highOrderEdgePositions; }
@@ -143,7 +143,7 @@ protected:
     type::vector< PrimitiveGroup > m_polygonsGroups; ///< Groups of Polygons
     type::vector< PrimitiveGroup > m_tetrahedraGroups; ///< Groups of Tetrahedra
     type::vector< PrimitiveGroup > m_hexahedraGroups; ///< Groups of Hexahedra
-    type::vector< PrimitiveGroup > m_pentahedraGroups; ///< Groups of Pentahedra
+    type::vector< PrimitiveGroup > m_prismsGroups; ///< Groups of Prisms
     type::vector< PrimitiveGroup > m_pyramidsGroups; ///< Groups of Pyramids
 
 

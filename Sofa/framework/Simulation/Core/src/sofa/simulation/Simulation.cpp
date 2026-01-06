@@ -23,7 +23,6 @@
 #include <sofa/simulation/PrintVisitor.h>
 #include <sofa/simulation/ExportGnuplotVisitor.h>
 #include <sofa/simulation/InitVisitor.h>
-#include <sofa/simulation/AnimateVisitor.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/UpdateContextVisitor.h>
 #include <sofa/simulation/UpdateMappingVisitor.h>

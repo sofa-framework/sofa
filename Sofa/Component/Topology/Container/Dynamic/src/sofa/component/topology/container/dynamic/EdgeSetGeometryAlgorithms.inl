@@ -552,8 +552,7 @@ void EdgeSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
             Edge the_edge = edgeArray[i];
             Coord vertex1 = coords[the_edge[0]];
             Coord vertex2 = coords[the_edge[1]];
-            type::Vec3 center;
-            center = (DataTypes::getCPos(vertex1) + DataTypes::getCPos(vertex2)) / 2;
+            const type::Vec3 center = type::toVec3((DataTypes::getCPos(vertex1) + DataTypes::getCPos(vertex2)) / 2);
 
             positions.push_back(center);
         }
@@ -618,11 +617,11 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( type:
             vertexEdges.push_back(edge);              // concatenate
             const CPos& p0 = DataTypes::getCPos(pos[edge[0]]);
             const CPos& p1 = DataTypes::getCPos(pos[edge[1]]);
-            edgeVec[e] = p1 - p0;
+            edgeVec[e] = toVecN<3, Real>(p1 - p0);
             // each edge vector adds e.et to the matrix
             for(unsigned j=0; j<3; j++)
                 for(unsigned k=0; k<3; k++)
-                    EEt[j][k] += edgeVec[e][k]*edgeVec[e][j];
+                    EEt(j,k) += edgeVec[e][k]*edgeVec[e][j];
         }
 
         // decompose E.Et for system solution

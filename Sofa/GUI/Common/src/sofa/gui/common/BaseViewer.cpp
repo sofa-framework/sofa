@@ -30,6 +30,8 @@
 #include <sofa/component/visual/InteractiveCamera.h>
 
 #include <sofa/core/ComponentNameHelper.h>
+#include <sofa/helper/system/FileSystem.h>
+
 
 namespace sofa::gui::common
 {
@@ -49,7 +51,19 @@ BaseViewer::BaseViewer()
 
 BaseViewer::~BaseViewer()
 {
-
+    //Save parameter file to set selection behavior
+    const std::string baseViewerFilename = BaseGUI::getConfigDirectoryPath() + "/BaseViewer.ini";
+    std::ofstream out(baseViewerFilename.c_str(),std::ios::trunc);
+    out<<std::boolalpha;
+    out<<"EnableSelectionDraw="<<m_enableSelectionDraw<<std::endl;
+    out<<"ShowSelectedNodeBoundingBox="<<m_showSelectedNodeBoundingBox<<std::endl;
+    out<<"ShowSelectedObjectBoundingBox="<<m_showSelectedObjectBoundingBox<<std::endl;
+    out<<"ShowSelectedObjectPositions="<<m_showSelectedObjectPositions<<std::endl;
+    out<<"ShowSelectedObjectSurfaces="<<m_showSelectedObjectSurfaces<<std::endl;
+    out<<"ShowSelectedObjectVolumes="<<m_showSelectedObjectVolumes<<std::endl;
+    out<<"ShowSelectedObjectIndices="<<m_showSelectedObjectIndices<<std::endl;
+    out<<"VisualScaling="<<m_visualScaling<<std::endl;
+    out.close();
 }
 
 sofa::simulation::Node* BaseViewer::getScene()
@@ -201,17 +215,67 @@ PickHandler* BaseViewer::getPickHandler()
 
 bool BaseViewer::load()
 {
+    //Load parameter file to set selection behavior
+    const std::string baseViewerFilename = BaseGUI::getConfigDirectoryPath() + "/BaseViewer.ini";
+    if(helper::system::FileSystem::exists(baseViewerFilename))
+    {
+        std::ifstream baseViewerStream(baseViewerFilename.c_str());
+        for (std::string line; std::getline(baseViewerStream, line);)
+        {
+            const size_t equalPos = line.find('=');
+            if( (equalPos != std::string::npos) && (equalPos != line.size()-1))
+            {
+                const std::string paramName = line.substr(0, equalPos);
+                const bool booleanValue = line.substr(equalPos+1) == std::string("true") ;
+                if(paramName == std::string("EnableSelectionDraw"))
+                {
+                    m_enableSelectionDraw = booleanValue;
+                }
+                else if(paramName == std::string("ShowSelectedNodeBoundingBox"))
+                {
+                    m_showSelectedNodeBoundingBox = booleanValue;
+                }
+                else if(paramName == std::string("ShowSelectedObjectBoundingBox"))
+                {
+                    m_showSelectedObjectBoundingBox = booleanValue;
+                }
+                else if(paramName == std::string("ShowSelectedObjectPositions"))
+                {
+                    m_showSelectedObjectPositions = booleanValue;
+                }
+                else if(paramName == std::string("ShowSelectedObjectSurfaces"))
+                {
+                    m_showSelectedObjectSurfaces = booleanValue;
+                }
+                else if(paramName == std::string("ShowSelectedObjectVolumes"))
+                {
+                    m_showSelectedObjectVolumes = booleanValue;
+                }
+                else if(paramName == std::string("ShowSelectedObjectIndices"))
+                {
+                    m_showSelectedObjectIndices = booleanValue;
+                }
+                else if(paramName == std::string("VisualScaling"))
+                {
+                    const float floatValue = std::stof(line.substr(equalPos+1)) ;
+                    m_visualScaling = floatValue;
+                }
+            }
+        }
+    }
+
+    currentSelection.clear();
+
     if (groot)
     {
-        groot->get(currentCamera);
+        groot->get(currentCamera, core::objectmodel::BaseContext::SearchDown);
         if (!currentCamera)
         {
             currentCamera = sofa::core::objectmodel::New<sofa::component::visual::InteractiveCamera>();
             currentCamera->setName(groot->getNameHelper().resolveName(currentCamera->getClassName(), sofa::core::ComponentNameHelper::Convention::python));
             groot->addObject(currentCamera);
-            //currentCamera->d_position.forceSet();
-            //currentCamera->d_orientation.forceSet();
             currentCamera->bwdInit();
+            msg_info("BaseViewer") << "There is no camera in this scene, I created one. To remove this error message, add a camera in your scene.";
         }
         sofa::component::visual::VisualStyle::SPtr visualStyle = nullptr;
         groot->get(visualStyle);
@@ -275,6 +339,140 @@ void BaseViewer::fitObjectBBox(sofa::core::objectmodel::BaseObject * object)
         }
     }
     redraw();
+}
+
+void BaseViewer::drawSelection(sofa::core::visual::VisualParams* vparams)
+{
+    if (!m_enableSelectionDraw)
+        return;
+    assert(vparams && "call of drawSelection without a valid visual param is not allowed");
+
+    auto drawTool = vparams->drawTool();
+
+    if(currentSelection.empty())
+        return;
+
+    const float size = 2.f;
+    drawTool->setMaterial(m_selectionColor);
+    drawTool->setPolygonMode(0, false);
+    float screenHeight = vparams->viewport()[3];
+
+    for(auto current : currentSelection)
+    {
+        using sofa::type::Vec3;
+        using sofa::defaulttype::RigidCoord;
+        using sofa::defaulttype::Rigid3Types;
+
+        ////////////////////// Render when the selection is a Node ///////////////////////////////
+        auto node = castTo<sofa::simulation::Node*>(current.get());
+        if(node)
+        {
+            if(m_showSelectedNodeBoundingBox)
+            {
+                auto box = node->f_bbox.getValue();
+                drawTool->drawBoundingBox(box.minBBox(), box.maxBBox(), size);
+            }
+
+            // If it is a node then it is not a BaseObject, so we can continue.
+            continue;
+        }
+
+        ////////////////////// Render when the selection is a BaseObject //////////////////////////
+        auto object = castTo<sofa::core::objectmodel::BaseObject*>(current.get());
+        if(object)
+        {
+            sofa::type::BoundingBox box;
+
+            auto ownerNode = dynamic_cast<sofa::simulation::Node*>(object->getContext());
+            if(ownerNode)
+            {
+                box = ownerNode->f_bbox.getValue();
+            }
+            const bool validBox = box.isValid() && !box.isFlat();
+
+            if(m_showSelectedObjectBoundingBox && validBox)
+            {
+                drawTool->drawBoundingBox(box.minBBox(), box.maxBBox(), size);
+            }
+
+            std::vector<Vec3> positions;
+            auto position = object->findData("position");
+            if(m_showSelectedObjectPositions)
+            {
+                if(position)
+                {
+                    auto positionsData = dynamic_cast<Data<sofa::type::vector<Vec3>>*>(position);
+                    if(positionsData)
+                    {
+                        positions = positionsData->getValue();
+                        drawTool->drawPoints(positions, size*2., m_selectionColor);
+                    }
+                    else
+                    {
+                        auto rigidPositions = dynamic_cast<Data<sofa::type::vector<RigidCoord<3, SReal>>>*>(position);
+                        if(rigidPositions && currentCamera)
+                        {
+                            for(auto frame : rigidPositions->getValue())
+                            {
+                                float targetScreenSize = 50.0;
+                                float distance = (currentCamera->getPosition() - Rigid3Types::getCPos(frame)).norm();
+                                SReal scale = distance * tan(currentCamera->getFieldOfView() / 2.0f) * targetScreenSize / screenHeight;
+                                drawTool->drawFrame(Rigid3Types::getCPos(frame), Rigid3Types::getCRot(frame), {scale, scale,scale}, m_selectionColor);
+                                positions.push_back(Rigid3Types::getCPos(frame));
+                            }
+                        }
+                    }
+                }
+            }
+
+            if(m_showSelectedObjectSurfaces && !positions.empty())
+            {
+                auto triangles = object->findData("triangles");
+                if(triangles)
+                {
+                    auto d_triangles = dynamic_cast<Data<sofa::type::vector<core::topology::Topology::Triangle>>*>(triangles);
+                    if(d_triangles)
+                    {
+                        std::vector<Vec3> tripoints;
+                        for(auto indices : d_triangles->getValue())
+                        {
+                            if(indices[0] < positions.size() &&
+                               indices[1] < positions.size() &&
+                               indices[2] < positions.size())
+                            {
+                                tripoints.push_back(positions[indices[0]]);
+                                tripoints.push_back(positions[indices[1]]);
+                                tripoints.push_back(positions[indices[1]]);
+                                tripoints.push_back(positions[indices[2]]);
+                                tripoints.push_back(positions[indices[2]]);
+                                tripoints.push_back(positions[indices[0]]);
+                            }
+                        }
+                        drawTool->drawLines(tripoints, size, m_selectionColor);
+                    }
+                }
+            }
+
+            if(m_showSelectedObjectIndices && !positions.empty() && validBox)
+            {
+                const float scale = (box.maxBBox() - box.minBBox()).norm() * m_visualScaling;
+                drawTool->draw3DText_Indices(positions, scale, m_selectionColor);
+            }
+
+            continue;
+        }
+        msg_error("BaseViewer") << "Only node and object can be selected, if you see this line please report to sofa-developement team";
+    }
+}
+
+void BaseViewer::setCurrentSelection(const std::set<sofa::core::objectmodel::Base::SPtr>& selection)
+{
+    currentSelection = selection;
+}
+
+const std::set<core::objectmodel::Base::SPtr> &BaseViewer::getCurrentSelection() const
+{
+    return currentSelection;
 }
 
 } // namespace sofa::gui::common

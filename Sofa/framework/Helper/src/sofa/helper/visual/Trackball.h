@@ -89,6 +89,7 @@ public:
     // Accessors
     void SetQuaternion(sofa::type::Quat<SReal> Q);
     sofa::type::Quat<SReal> GetQuaternion(void);
+    
 
     // Pass the x and y coordinates of the last and current positions of
     // the mouse, scaled so they are from (-1.0 ... 1.0).
@@ -101,8 +102,9 @@ public:
     // expressed in radians.  The result is put into the third argument.
     void AxisToQuat(double a[3], double phi, double q[4]);
 
+
 private:
-    sofa::type::Quat<SReal>	_quat;
+    sofa::type::Quat<SReal> _quat;
 };
 
 } // namespace sofa::helper::visual

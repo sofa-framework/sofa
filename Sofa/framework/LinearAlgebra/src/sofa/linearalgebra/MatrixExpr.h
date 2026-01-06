@@ -219,7 +219,7 @@ public:
 
     const M1& m1;
 
-    explicit MatrixNegative(const M1& m1) : m1(m1)
+    explicit MatrixNegative(const M1& matrix1) : m1(matrix1)
     {}
 
     bool valid() const
@@ -254,7 +254,7 @@ protected:
     {
     public:
         Dest* d;
-        MyDest(Dest* d) : d(d) {}
+        MyDest(Dest* dest) : d(dest) {}
         void add(int l, int c, double v) { d->add(l,c,-v); }
     };
 
@@ -278,7 +278,7 @@ public:
 
     const M1& m1;
 
-    explicit MatrixTranspose(const M1& m1) : m1(m1)
+    explicit MatrixTranspose(const M1& matrix1) : m1(matrix1)
     {}
 
     bool valid() const
@@ -313,7 +313,7 @@ protected:
     {
     public:
         Dest* d;
-        MyDest(Dest* d) : d(d) {}
+        MyDest(Dest* dest) : d(dest) {}
         void add(int l, int c, double v) { d->add(c,l,v); }
     };
 
@@ -337,7 +337,7 @@ public:
 
     const M1& m1;
     const R2 r2;
-    MatrixScale(const M1& m1, const R2& r2) : m1(m1), r2(r2)
+    MatrixScale(const M1& matrix1, const R2& real2) : m1(matrix1), r2(real2)
     {}
 
     bool valid() const
@@ -375,7 +375,7 @@ protected:
     public:
         Dest* d;
         const R2 r2;
-        MyDest(const R2& r2, Dest* d) : d(d), r2(r2) {}
+        MyDest(const R2& real2, Dest* dest) : d(dest), r2(real2) {}
         void add(int l, int c, double v) { d->add(l,c,v*r2); }
     };
 
@@ -404,7 +404,7 @@ public:
 
     const M1& m1;
     const M2& m2;
-    MatrixAddition(const M1& m1, const M2& m2) : m1(m1), m2(m2)
+    MatrixAddition(const M1& matrix1, const M2& matrix2) : m1(matrix1), m2(matrix2)
     {}
 
     bool valid() const
@@ -453,7 +453,7 @@ public:
 
     const M1& m1;
     const M2& m2;
-    MatrixSubtraction(const M1& m1, const M2& m2) : m1(m1), m2(m2)
+    MatrixSubtraction(const M1& matrix1, const M2& matrix2) : m1(matrix1), m2(matrix2)
     {}
 
     bool valid() const
@@ -488,7 +488,7 @@ protected:
     {
     public:
         Dest* d;
-        MyDest(Dest* d) : d(d) {}
+        MyDest(Dest* dest) : d(dest) {}
         void add(int l, int c, double v) { d->add(l,c,-v); }
     };
 
@@ -515,7 +515,7 @@ public:
 
     const M1& m1;
     const M2& m2;
-    MatrixProduct(const M1& m1, const M2& m2) : m1(m1), m2(m2)
+    MatrixProduct(const M1& matrix1, const M2& matrix2) : m1(matrix1), m2(matrix2)
     {}
 
     bool valid() const
@@ -562,7 +562,7 @@ public:
 
     const M1& m1;
 
-    explicit MatrixInverse(const M1& m1) : m1(m1)
+    explicit MatrixInverse(const M1& matrix1) : m1(matrix1)
     {}
 
     bool valid() const
