@@ -20,6 +20,7 @@ public:
         using reference = T&;
         using pointer = T*;
 
+        iota_iterator() = default;
         explicit iota_iterator(T val) : val_(val) {}
 
         T operator*() const { return val_; }
@@ -27,7 +28,7 @@ public:
         bool operator!=(const iota_iterator& other) const { return val_ != other.val_; }
 
     private:
-        T val_;
+        T val_{};
     };
 
     using iterator = iota_iterator;
