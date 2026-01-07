@@ -19,31 +19,38 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_FORCEFIELD_SPRINGFORCEFIELD_CPP
-#include <sofa/component/solidmechanics/spring/SpringForceField.inl>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/ObjectFactory.h>
+#pragma once
+#include <sofa/component/visual/config.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/core/visual/DrawMesh.h>
+#include <sofa/core/visual/VisualModel.h>
 
-namespace sofa::component::solidmechanics::spring
+namespace sofa::component::visual
 {
 
-using namespace sofa::defaulttype;
-
-void registerSpringForceField(sofa::core::ObjectFactory* factory)
+class VisualMesh : public core::visual::VisualModel
 {
-    factory->registerObjects(core::ObjectRegistrationData("A spring-based force field between two mechanical states, applying Hookean elastic forces with damping.")
-        .add< SpringForceField<Vec3Types> >()
-        .add< SpringForceField<Vec2Types> >()
-        .add< SpringForceField<Vec1Types> >()
-        .add< SpringForceField<Vec6Types> >()
-        .add< SpringForceField<Rigid3Types> >());
+public:
+    SOFA_CLASS(VisualMesh, core::visual::VisualModel);
+
+    Data<type::vector<type::Vec3>> d_position;
+    Data<SReal> d_elementSpace;
+
+    /// The topology will give access to the elements
+    sofa::SingleLink<VisualMesh, sofa::core::topology::BaseMeshTopology,
+        sofa::BaseLink::FLAG_STOREPATH | sofa::BaseLink::FLAG_STRONGLINK> l_topology;
+
+    void init() override;
+
+protected:
+
+    VisualMesh();
+
+    void doDrawVisual(const core::visual::VisualParams* vparams) override;
+
+    core::visual::DrawMesh m_drawMesh;
+
+    void validateTopology();
+};
+
 }
-
-template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API SpringForceField<Vec3Types>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API SpringForceField<Vec2Types>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API SpringForceField<Vec1Types>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API SpringForceField<Vec6Types>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API SpringForceField<Rigid3Types>;
-
-} // namespace sofa::component::solidmechanics::spring

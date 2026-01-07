@@ -112,16 +112,6 @@ GenericConstraintSolver::GenericConstraintSolver()
     d_tolerance.setRequired(true);
 }
 
-GenericConstraintSolver::~GenericConstraintSolver()
-{
-    for (unsigned i=0; i< CP_BUFFER_SIZE; ++i)
-    {
-        delete m_cpBuffer[i];
-    }
-}
-
-
-
 void GenericConstraintSolver::  init()
 {
     this->initializeConstraintProblems();
@@ -144,9 +134,9 @@ void GenericConstraintSolver::initializeConstraintProblems()
 {
     for (unsigned i=0; i< CP_BUFFER_SIZE; ++i)
     {
-        m_cpBuffer[i] = new GenericConstraintProblem(this);
+        m_cpBuffer[i] = std::make_unique<GenericConstraintProblem>(this);
     }
-    current_cp = m_cpBuffer[0];
+    current_cp = m_cpBuffer[0].get();
 }
 
 void GenericConstraintSolver::cleanup()
@@ -414,7 +404,7 @@ void GenericConstraintSolver::lockConstraintProblem(sofa::core::objectmodel::Bas
 
     for (unsigned int i = 0; i < CP_BUFFER_SIZE; ++i)
     {
-        GenericConstraintProblem* p = m_cpBuffer[i];
+        GenericConstraintProblem* p = m_cpBuffer[i].get();
         if (p == p1 || p == p2)
         {
             m_cpIsLocked[i] = true;
