@@ -444,9 +444,16 @@ public:
     void setElementSpace(SReal elementSpace);
 
     template<class PositionContainer>
+    void drawLine(sofa::helper::visual::DrawTool* drawTool, const PositionContainer& position, sofa::core::topology::BaseMeshTopology* topology)
+    {
+        drawElements<sofa::geometry::Edge>(drawTool, position, topology);
+    }
+
+    template<class PositionContainer>
     void drawSurface(sofa::helper::visual::DrawTool* drawTool, const PositionContainer& position, sofa::core::topology::BaseMeshTopology* topology)
     {
         drawElements<sofa::geometry::Triangle>(drawTool, position, topology);
+        drawElements<sofa::geometry::Quad>(drawTool, position, topology);
     }
 
     template<class PositionContainer>
@@ -464,19 +471,38 @@ public:
             return;
         }
 
-        const auto hasTetra = topology && !topology->getTetrahedra().empty();
-        const auto hasHexa = topology && !topology->getHexahedra().empty();
+        const auto hasTriangles = !topology->getTriangles().empty();
+        const auto hasQuads = !topology->getQuads().empty();
 
-        if (!hasTetra && !hasHexa)
+        const auto hasSurfaceElements = hasTriangles || hasQuads;
+
+        const auto hasTetra = !topology->getTetrahedra().empty();
+        const auto hasHexa = !topology->getHexahedra().empty();
+
+        const bool hasVolumeElements = hasTetra || hasHexa;
+
+        if (!hasSurfaceElements && !hasVolumeElements)
         {
-            drawSurface(drawTool, position, topology);
+            drawLine(drawTool, position, topology);
         }
-        drawVolume(drawTool, position, topology);
+        else
+        {
+            if (!hasVolumeElements)
+            {
+                drawSurface(drawTool, position, topology);
+            }
+            else
+            {
+                drawVolume(drawTool, position, topology);
+            }
+        }
     }
 
 private:
     std::tuple<
+        DrawElementMesh<sofa::geometry::Edge>,
         DrawElementMesh<sofa::geometry::Triangle>,
+        DrawElementMesh<sofa::geometry::Quad>,
         DrawElementMesh<sofa::geometry::Tetrahedron>,
         DrawElementMesh<sofa::geometry::Hexahedron>
     > m_meshes;
