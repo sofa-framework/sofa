@@ -20,47 +20,35 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/collision/detection/algorithm/config.h>
 
-#include <sofa/simulation/PipelineImpl.h>
-#include <sofa/component/collision/detection/algorithm/MultiCollisionPipeline.h>
-#include <sofa/component/collision/detection/algorithm/SubCollisionPipeline.h>
+#include <SceneChecking/config.h>
+#include <sofa/simulation/SceneCheck.h>
 
-namespace sofa::component::collision::detection::algorithm
+#include <map>
+#include <sstream>
+
+namespace sofa::_scenechecking_
 {
-
-class SOFA_COMPONENT_COLLISION_DETECTION_ALGORITHM_API CollisionPipeline : public sofa::simulation::PipelineImpl
+    
+class SOFA_SCENECHECKING_API SceneCheckCollisionPipelineAndModels : public sofa::simulation::SceneCheck
 {
 public:
-    SOFA_CLASS(CollisionPipeline,sofa::simulation::PipelineImpl);
+    virtual ~SceneCheckCollisionPipelineAndModels() {}
+    typedef std::shared_ptr<SceneCheckCollisionPipelineAndModels> SPtr;
+    static SPtr newSPtr() { return SPtr(new SceneCheckCollisionPipelineAndModels()); }
+    virtual const std::string getName() override;
+    virtual const std::string getDesc() override;
+    void doInit(sofa::simulation::Node* node) override;
+    void doCheckOn(sofa::simulation::Node* node) override;
+    void doPrintSummary() override;
 
-    Data<bool> d_doPrintInfoMessage;
-    Data<bool> d_doDebugDraw;
-    Data<int>  d_depth;
-    
-protected:
-    CollisionPipeline();
-public:
-    void init() override;
-
-    /// get the set of response available with the current collision pipeline
-    std::set< std::string > getResponseList() const override;
-protected:
-    // -- Pipeline interface
-    /// Remove collision response from last step
-    void doCollisionReset() override;
-    /// Detect new collisions. Note that this step must not modify the simulation graph
-    void doCollisionDetection(const sofa::type::vector<core::CollisionModel*>& collisionModels) override;
-    /// Add collision response in the simulation graph
-    void doCollisionResponse() override;
-
-    virtual void checkDataValues() ;
-    
-    MultiCollisionPipeline::SPtr m_multiCollisionPipeline;
-    SubCollisionPipeline::SPtr m_subCollisionPipeline;
-
-public:
-    static const int defaultDepthValue;
+private:
+    std::string m_message;
 };
 
-} // namespace sofa::component::collision::detection::algorithm
+} // namespace sofa::_scenechecking_
+
+namespace sofa::scenechecking
+{
+    using _scenechecking_::SceneCheckCollisionPipelineAndModels;
+}

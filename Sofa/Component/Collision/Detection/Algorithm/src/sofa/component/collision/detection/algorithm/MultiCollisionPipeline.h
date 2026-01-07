@@ -22,26 +22,29 @@
 #pragma once
 #include <sofa/component/collision/detection/algorithm/config.h>
 
-#include <sofa/simulation/PipelineImpl.h>
-#include <sofa/component/collision/detection/algorithm/MultiCollisionPipeline.h>
-#include <sofa/component/collision/detection/algorithm/SubCollisionPipeline.h>
+#include <sofa/core/collision/Pipeline.h>
+
+namespace sofa::simulation
+{
+class TaskScheduler;
+}
 
 namespace sofa::component::collision::detection::algorithm
 {
 
-class SOFA_COMPONENT_COLLISION_DETECTION_ALGORITHM_API CollisionPipeline : public sofa::simulation::PipelineImpl
+class AbstractSubCollisionPipeline;
+
+class SOFA_COMPONENT_COLLISION_DETECTION_ALGORITHM_API MultiCollisionPipeline : public sofa::core::collision::Pipeline
 {
 public:
-    SOFA_CLASS(CollisionPipeline,sofa::simulation::PipelineImpl);
+    SOFA_CLASS(MultiCollisionPipeline, sofa::core::collision::Pipeline);
 
-    Data<bool> d_doPrintInfoMessage;
-    Data<bool> d_doDebugDraw;
-    Data<int>  d_depth;
-    
+    sofa::Data<int>  d_depth;
 protected:
-    CollisionPipeline();
+    MultiCollisionPipeline();
 public:
     void init() override;
+    void bwdInit() override;
 
     /// get the set of response available with the current collision pipeline
     std::set< std::string > getResponseList() const override;
@@ -50,17 +53,32 @@ protected:
     /// Remove collision response from last step
     void doCollisionReset() override;
     /// Detect new collisions. Note that this step must not modify the simulation graph
-    void doCollisionDetection(const sofa::type::vector<core::CollisionModel*>& collisionModels) override;
+    void doCollisionDetection(const sofa::type::vector<sofa::core::CollisionModel*>& collisionModels) override;
     /// Add collision response in the simulation graph
     void doCollisionResponse() override;
 
-    virtual void checkDataValues() ;
+    void reset() override;
     
-    MultiCollisionPipeline::SPtr m_multiCollisionPipeline;
-    SubCollisionPipeline::SPtr m_subCollisionPipeline;
+    void draw(const core::visual::VisualParams* vparams) override;
+
+    /// Remove collision response from last step
+    virtual void computeCollisionReset() override final;
+    /// Detect new collisions. Note that this step must not modify the simulation graph
+    virtual void computeCollisionDetection() override final;
+    /// Add collision response in the simulation graph
+    virtual void computeCollisionResponse() override final;
+    
+    sofa::simulation::TaskScheduler* m_taskScheduler{nullptr};
+    
+    std::vector<AbstractSubCollisionPipeline*> m_subCollisionPipelines;
 
 public:
-    static const int defaultDepthValue;
+    sofa::Data<bool> d_parallelDetection;
+    sofa::Data<bool> d_parallelResponse;
+    sofa::MultiLink < MultiCollisionPipeline, AbstractSubCollisionPipeline, sofa::BaseLink::FLAG_DUPLICATE > l_subCollisionPipelines;
+    
+    
+    friend class CollisionPipeline; // to be able to call do*()
 };
 
 } // namespace sofa::component::collision::detection::algorithm
