@@ -20,18 +20,16 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/gui/common/config.h>
-
+#include <sofa/component/visual/BaseCamera.h>
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/core/visual/DrawMesh.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/gui/common/ColourPickingVisitor.h>
-
+#include <sofa/gui/common/config.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/Node.h>
-
-#include <sofa/component/visual/BaseCamera.h>
 
 #include <string>
 
@@ -174,6 +172,7 @@ protected:
     std::string _screenshotDirectory;
 
     std::set<sofa::core::objectmodel::Base::SPtr> currentSelection;
+    std::unordered_map<sofa::core::objectmodel::BaseObject*, core::visual::DrawMesh> m_drawMeshContainer;
 };
 
 } // namespace sofa::gui::common
