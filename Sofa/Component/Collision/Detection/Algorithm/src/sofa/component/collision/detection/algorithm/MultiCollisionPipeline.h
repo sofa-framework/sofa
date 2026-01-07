@@ -62,11 +62,11 @@ protected:
     void draw(const core::visual::VisualParams* vparams) override;
 
     /// Remove collision response from last step
-    virtual void computeCollisionReset() override;
+    virtual void computeCollisionReset() override final;
     /// Detect new collisions. Note that this step must not modify the simulation graph
-    virtual void computeCollisionDetection() override;
+    virtual void computeCollisionDetection() override final;
     /// Add collision response in the simulation graph
-    virtual void computeCollisionResponse() override;
+    virtual void computeCollisionResponse() override final;
     
     sofa::simulation::TaskScheduler* m_taskScheduler{nullptr};
     
