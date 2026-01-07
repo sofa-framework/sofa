@@ -20,15 +20,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/solidmechanics/fem/elastic/config.h>
-
 #include <sofa/component/solidmechanics/fem/elastic/BaseLinearElasticityFEMForceField.h>
-
-#include <sofa/type/vector.h>
-#include <sofa/type/Vec.h>
-#include <sofa/type/Mat.h>
-
+#include <sofa/component/solidmechanics/fem/elastic/config.h>
 #include <sofa/core/topology/TopologyData.h>
+#include <sofa/core/visual/DrawMesh.h>
+#include <sofa/type/Mat.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/vector.h>
 
 namespace sofa::component::solidmechanics::fem::elastic
 {
@@ -198,6 +196,8 @@ public:
 protected:
 
     type::Mat<8,3,int> _coef; ///< coef of each vertices to compute the strain stress matrix
+
+    core::visual::DrawElementMesh<sofa::geometry::Hexahedron> m_drawMesh;
 };
 
 #if !defined(SOFA_COMPONENT_FORCEFIELD_HEXAHEDRALFEMFORCEFIELD_CPP)

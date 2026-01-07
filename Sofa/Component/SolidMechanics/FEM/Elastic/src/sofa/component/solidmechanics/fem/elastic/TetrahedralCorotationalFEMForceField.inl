@@ -1353,49 +1353,13 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::draw(const core::visual::V
     
     if (d_drawing.getValue())
     {
-        const sofa::Size nbrTetra = this->l_topology->getNbTetrahedra();
-        std::vector< type::Vec3 > points[4];
-        points[0].reserve(nbrTetra * 3);
-        points[1].reserve(nbrTetra * 3);
-        points[2].reserve(nbrTetra * 3);
-        points[3].reserve(nbrTetra * 3);
-
-        for(Size i = 0 ; i< nbrTetra; ++i)
-        {
-            const core::topology::BaseMeshTopology::Tetrahedron t=this->l_topology->getTetrahedron(i);
-
-            const auto& [a, b, c, d] = t.array();
-            Coord center = (x[a] + x[b] + x[c] + x[d]) * 0.125;
-            Coord pa = (x[a] + center) * (Real)0.666667;
-            Coord pb = (x[b] + center) * (Real)0.666667;
-            Coord pc = (x[c] + center) * (Real)0.666667;
-            Coord pd = (x[d] + center) * (Real)0.666667;
-
-            points[0].push_back(pa);
-            points[0].push_back(pb);
-            points[0].push_back(pc);
-
-            points[1].push_back(pb);
-            points[1].push_back(pc);
-            points[1].push_back(pd);
-
-            points[2].push_back(pc);
-            points[2].push_back(pd);
-            points[2].push_back(pa);
-
-            points[3].push_back(pd);
-            points[3].push_back(pa);
-            points[3].push_back(pb);
-        }
-
-        vparams->drawTool()->drawTriangles(points[0], d_drawColor1.getValue());
-        vparams->drawTool()->drawTriangles(points[1], d_drawColor2.getValue());
-        vparams->drawTool()->drawTriangles(points[2], d_drawColor3.getValue());
-        vparams->drawTool()->drawTriangles(points[3], d_drawColor4.getValue());
+        std::array colors {
+            d_drawColor1.getValue(),
+            d_drawColor2.getValue(),
+            d_drawColor3.getValue(),
+            d_drawColor4.getValue()};
+        m_drawMesh.drawAllElements(vparams->drawTool(), x, this->l_topology.get(), colors);
     }
-    
-    if (vparams->displayFlags().getShowWireFrame())
-        vparams->drawTool()->setPolygonMode(0,false);
 }
 
 

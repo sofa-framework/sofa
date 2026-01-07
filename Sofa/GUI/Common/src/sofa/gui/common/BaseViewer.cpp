@@ -427,29 +427,44 @@ void BaseViewer::drawSelection(sofa::core::visual::VisualParams* vparams)
 
             if(m_showSelectedObjectSurfaces && !positions.empty())
             {
-                auto triangles = object->findData("triangles");
-                if(triangles)
+                if (const auto topology = object->toBaseMeshTopology())
                 {
-                    auto d_triangles = dynamic_cast<Data<sofa::type::vector<core::topology::Topology::Triangle>>*>(triangles);
-                    if(d_triangles)
+                    m_drawMeshContainer[object].drawSurface(drawTool, positions, topology);
+                }
+                else
+                {
+                    auto triangles = object->findData("triangles");
+                    if(triangles)
                     {
-                        std::vector<Vec3> tripoints;
-                        for(auto indices : d_triangles->getValue())
+                        auto d_triangles = dynamic_cast<Data<sofa::type::vector<core::topology::Topology::Triangle>>*>(triangles);
+                        if(d_triangles)
                         {
-                            if(indices[0] < positions.size() &&
-                               indices[1] < positions.size() &&
-                               indices[2] < positions.size())
+                            std::vector<Vec3> tripoints;
+                            for(auto indices : d_triangles->getValue())
                             {
-                                tripoints.push_back(positions[indices[0]]);
-                                tripoints.push_back(positions[indices[1]]);
-                                tripoints.push_back(positions[indices[1]]);
-                                tripoints.push_back(positions[indices[2]]);
-                                tripoints.push_back(positions[indices[2]]);
-                                tripoints.push_back(positions[indices[0]]);
+                                if(indices[0] < positions.size() &&
+                                   indices[1] < positions.size() &&
+                                   indices[2] < positions.size())
+                                {
+                                    tripoints.push_back(positions[indices[0]]);
+                                    tripoints.push_back(positions[indices[1]]);
+                                    tripoints.push_back(positions[indices[1]]);
+                                    tripoints.push_back(positions[indices[2]]);
+                                    tripoints.push_back(positions[indices[2]]);
+                                    tripoints.push_back(positions[indices[0]]);
+                                }
                             }
+                            drawTool->drawLines(tripoints, size, m_selectionColor);
                         }
-                        drawTool->drawLines(tripoints, size, m_selectionColor);
                     }
+                }
+            }
+
+            if(m_showSelectedObjectVolumes && !positions.empty())
+            {
+                if (const auto topology = object->toBaseMeshTopology())
+                {
+                    m_drawMeshContainer[object].drawVolume(drawTool, positions, topology);
                 }
             }
 

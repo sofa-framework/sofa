@@ -21,12 +21,12 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/solidmechanics/fem/elastic/config.h>
-#include <sofa/component/solidmechanics/fem/elastic/TriangleFEMUtils.h>
 #include <sofa/component/solidmechanics/fem/elastic/BaseLinearElasticityFEMForceField.h>
-
-#include <sofa/type/Vec.h>
+#include <sofa/component/solidmechanics/fem/elastic/TriangleFEMUtils.h>
+#include <sofa/component/solidmechanics/fem/elastic/config.h>
+#include <sofa/core/visual/DrawMesh.h>
 #include <sofa/type/Mat.h>
+#include <sofa/type/Vec.h>
 
 // corotational triangle from
 // @InProceedings{NPF05,
@@ -156,6 +156,8 @@ protected:
 
     /// Pointer to the utils class which store methods common to TriangleFEMForceField
     TriangleFEMUtils<DataTypes> m_triangleUtils;
+
+    core::visual::DrawElementMesh<sofa::geometry::Triangle> m_drawMesh;
 };
 
 

@@ -70,6 +70,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/hash.h
     ${SRC_ROOT}/init.h
     ${SRC_ROOT}/integer_id.h
+    ${SRC_ROOT}/IotaView.h
     ${SRC_ROOT}/accessor/ReadAccessor.h
     ${SRC_ROOT}/accessor/ReadAccessorFixedArray.h
     ${SRC_ROOT}/accessor/ReadAccessorVector.h
