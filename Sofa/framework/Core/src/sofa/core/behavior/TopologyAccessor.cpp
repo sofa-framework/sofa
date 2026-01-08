@@ -19,31 +19,46 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_FORCEFIELD_SPRINGFORCEFIELD_CPP
-#include <sofa/component/solidmechanics/spring/SpringForceField.inl>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/behavior/TopologyAccessor.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::solidmechanics::spring
+namespace sofa::core::behavior
 {
 
-using namespace sofa::defaulttype;
-
-void registerSpringForceField(sofa::core::ObjectFactory* factory)
+TopologyAccessor::TopologyAccessor()
+    : l_topology(initLink("topology", "Link to a topology"))
 {
-    factory->registerObjects(core::ObjectRegistrationData("A spring-based force field between two mechanical states, applying Hookean elastic forces with damping.")
-        .add< SpringForceField<Vec3Types> >()
-        .add< SpringForceField<Vec2Types> >()
-        .add< SpringForceField<Vec1Types> >()
-        .add< SpringForceField<Vec6Types> >()
-        .add< SpringForceField<Rigid3Types> >());
 }
 
-template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API SpringForceField<Vec3Types>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API SpringForceField<Vec2Types>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API SpringForceField<Vec1Types>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API SpringForceField<Vec6Types>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API SpringForceField<Rigid3Types>;
+void TopologyAccessor::init()
+{
+    sofa::core::objectmodel::BaseObject::init();
 
-} // namespace sofa::component::solidmechanics::spring
+    if (!this->isComponentStateInvalid())
+    {
+        this->validateTopology();
+    }
+}
+
+void TopologyAccessor::validateTopology()
+{
+    if (l_topology.empty())
+    {
+        msg_info() << "Link to Topology container should be set to ensure right behavior. First "
+                      "Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopologyLink());
+    }
+
+    if (l_topology == nullptr)
+    {
+        msg_error() << "No topology component found at path: " << this->l_topology.getLinkedPath()
+                    << ", nor in current context: " << this->getContext()->name
+                    << ". Object must have a BaseMeshTopology. "
+                    << "The list of available BaseMeshTopology components is: "
+                    << sofa::core::ObjectFactory::getInstance()
+                           ->listClassesDerivedFrom<sofa::core::topology::BaseMeshTopology>();
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+    }
+}
+
+}  // namespace elasticity

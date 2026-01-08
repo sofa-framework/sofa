@@ -1212,8 +1212,6 @@ void HexahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
 
     const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
 
-    vparams->drawTool()->setLightingEnabled(false);
-
     if(_sparseGrid )
     {
         vparams->drawTool()->enableBlending();
@@ -1222,104 +1220,8 @@ void HexahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
     if (vparams->displayFlags().getShowWireFrame())
         vparams->drawTool()->setPolygonMode(0,true);
 
-    const Real percentage = d_drawPercentageOffset.getValue();
-    const Real oneMinusPercentage = static_cast<Real>(1) - percentage;
-
-    const auto* indexedElements = this->getIndexedElements();
-
-    sofa::type::fixed_array<std::vector<sofa::type::Vec3>, 6 > quads; //one list of quads per hexahedron face
-    sofa::type::fixed_array<std::vector<RGBAColor>, 6> colors; //one list of quads per hexahedron face
-
-    for (auto& q : quads)
-    {
-        q.reserve(indexedElements->size() * 4);
-    }
-    for (auto& c : colors)
-    {
-        c.reserve(indexedElements->size() * 4);
-    }
-
-    sofa::Index i {};
-    for (const auto& element : *indexedElements)
-    {
-        const Coord& a = x[element[0]];
-        const Coord& b = x[element[1]];
-        const Coord& c = x[element[2]];
-        const Coord& d = x[element[3]];
-        const Coord& e = x[element[4]];
-        const Coord& f = x[element[5]];
-        const Coord& g = x[element[6]];
-        const Coord& h = x[element[7]];
-
-        const Coord center = (a + b + c + d + e + f + g + h ) * static_cast<Real>(0.125);
-        const Coord centerPercent = center * percentage;
-
-        const Coord pa = a * oneMinusPercentage + centerPercent;
-        const Coord pb = b * oneMinusPercentage + centerPercent;
-        const Coord pc = c * oneMinusPercentage + centerPercent;
-        const Coord pd = d * oneMinusPercentage + centerPercent;
-        const Coord pe = e * oneMinusPercentage + centerPercent;
-        const Coord pf = f * oneMinusPercentage + centerPercent;
-        const Coord pg = g * oneMinusPercentage + centerPercent;
-        const Coord ph = h * oneMinusPercentage + centerPercent;
-
-        quads[0].emplace_back(pa);
-        quads[0].emplace_back(pb);
-        quads[0].emplace_back(pc);
-        quads[0].emplace_back(pd);
-
-        quads[1].emplace_back(pe);
-        quads[1].emplace_back(pf);
-        quads[1].emplace_back(pg);
-        quads[1].emplace_back(ph);
-
-        quads[2].emplace_back(pc);
-        quads[2].emplace_back(pd);
-        quads[2].emplace_back(ph);
-        quads[2].emplace_back(pg);
-
-        quads[3].emplace_back(pa);
-        quads[3].emplace_back(pb);
-        quads[3].emplace_back(pf);
-        quads[3].emplace_back(pe);
-
-        quads[4].emplace_back(pa);
-        quads[4].emplace_back(pd);
-        quads[4].emplace_back(ph);
-        quads[4].emplace_back(pe);
-
-        quads[5].emplace_back(pb);
-        quads[5].emplace_back(pc);
-        quads[5].emplace_back(pg);
-        quads[5].emplace_back(pf);
-
-        const float stiffnessCoef = _sparseGrid ? _sparseGrid->getStiffnessCoef(i) : 1.0f;
-        sofa::type::fixed_array<sofa::type::RGBAColor, 6> quadColors {
-            sofa::type::RGBAColor(0.7f,0.7f,0.1f,stiffnessCoef),
-            sofa::type::RGBAColor(0.7f,0.0f,0.0f,stiffnessCoef),
-            sofa::type::RGBAColor(0.0f,0.7f,0.0f,stiffnessCoef),
-            sofa::type::RGBAColor(0.0f,0.0f,0.7f,stiffnessCoef),
-            sofa::type::RGBAColor(0.1f,0.7f,0.7f,stiffnessCoef),
-            sofa::type::RGBAColor(0.7f,0.1f,0.7f,stiffnessCoef)
-        };
-
-        for (unsigned int j = 0; j < 6; ++j)
-        {
-            auto& faceColors = colors[j];
-            const auto& color = quadColors[j];
-            for (unsigned int k = 0; k < 4; ++k)
-            {
-                faceColors.emplace_back(color);
-            }
-        }
-
-        ++i;
-    }
-
-    for (unsigned int j = 0; j < 6; ++j)
-    {
-        vparams->drawTool()->drawQuads(quads[j], colors[j]);
-    }
+    m_drawMesh.elementSpace = d_drawPercentageOffset.getValue();
+    m_drawMesh.drawAllElements(vparams->drawTool(), x, this->l_topology.get());
 }
 
 

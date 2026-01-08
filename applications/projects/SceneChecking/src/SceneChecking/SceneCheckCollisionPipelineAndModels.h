@@ -19,31 +19,36 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_FORCEFIELD_SPRINGFORCEFIELD_CPP
-#include <sofa/component/solidmechanics/spring/SpringForceField.inl>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/ObjectFactory.h>
+#pragma once
 
-namespace sofa::component::solidmechanics::spring
+#include <SceneChecking/config.h>
+#include <sofa/simulation/SceneCheck.h>
+
+#include <map>
+#include <sstream>
+
+namespace sofa::_scenechecking_
 {
-
-using namespace sofa::defaulttype;
-
-void registerSpringForceField(sofa::core::ObjectFactory* factory)
+    
+class SOFA_SCENECHECKING_API SceneCheckCollisionPipelineAndModels : public sofa::simulation::SceneCheck
 {
-    factory->registerObjects(core::ObjectRegistrationData("A spring-based force field between two mechanical states, applying Hookean elastic forces with damping.")
-        .add< SpringForceField<Vec3Types> >()
-        .add< SpringForceField<Vec2Types> >()
-        .add< SpringForceField<Vec1Types> >()
-        .add< SpringForceField<Vec6Types> >()
-        .add< SpringForceField<Rigid3Types> >());
+public:
+    virtual ~SceneCheckCollisionPipelineAndModels() {}
+    typedef std::shared_ptr<SceneCheckCollisionPipelineAndModels> SPtr;
+    static SPtr newSPtr() { return SPtr(new SceneCheckCollisionPipelineAndModels()); }
+    virtual const std::string getName() override;
+    virtual const std::string getDesc() override;
+    void doInit(sofa::simulation::Node* node) override;
+    void doCheckOn(sofa::simulation::Node* node) override;
+    void doPrintSummary() override;
+
+private:
+    std::string m_message;
+};
+
+} // namespace sofa::_scenechecking_
+
+namespace sofa::scenechecking
+{
+    using _scenechecking_::SceneCheckCollisionPipelineAndModels;
 }
-
-template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API SpringForceField<Vec3Types>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API SpringForceField<Vec2Types>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API SpringForceField<Vec1Types>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API SpringForceField<Vec6Types>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API SpringForceField<Rigid3Types>;
-
-} // namespace sofa::component::solidmechanics::spring
