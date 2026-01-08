@@ -160,7 +160,7 @@ HDCallbackCode HDCALLBACK stateCallback(void * userData)
             auto now = std::chrono::high_resolution_clock::now();
             double elapsed_ms = std::chrono::duration<double, std::milli>(now - last_time).count();
             double avg_freq = counter / (elapsed_ms / 1000.0);
-            msg_info(driver) << "[HapticsLoop] avg freq: " << avg_freq << " Hz";
+            msg_info("GeomagicDriver") << "Haptic loop avg freq: " << avg_freq << " Hz";
             last_time = now;
             counter = 0;
         }
