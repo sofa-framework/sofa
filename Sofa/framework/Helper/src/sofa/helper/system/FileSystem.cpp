@@ -51,6 +51,15 @@
 # include <unistd.h>
 #endif
 
+#if defined(__APPLE__)
+#include <stdio.h>
+#endif
+
+#ifdef linux
+#include <spawn.h>
+#include <sys/wait.h>
+#endif
+
 #include <cassert>
 #include <sofa/helper/system/SetDirectory.h>
 
@@ -515,12 +524,21 @@ bool FileSystem::openFileWithDefaultApplication(const std::string& filename)
             success = true;
 #elif defined(__APPLE__)
         const std::string command = "open \"" + filename + "\"";
-        if (std::system(command.c_str()) == 0)
+        FILE* pipe = popen(command.c_str(), "r+");
+        if (pipe != nullptr)
+        {
             success = true;
+            pclose(pipe);
+        }
 #else
-        const std::string command = "xdg-open \"" + filename +  "\"";
-        if (std::system(command.c_str()) == 0)
-            success = true;
+        pid_t pid; // points to a buffer that is used to return the process ID of the new child process.
+        const char* argv[] = {"xdg-open", filename.c_str(), nullptr};
+        if (posix_spawn(&pid, "/usr/bin/xdg-open", nullptr, nullptr, const_cast<char* const*>(argv), environ) == 0)
+        {
+            int status;
+            if (waitpid(pid, &status, 0) != -1 && WIFEXITED(status) && WEXITSTATUS(status) == 0)
+                success = true;
+        }
 #endif
     }
 
