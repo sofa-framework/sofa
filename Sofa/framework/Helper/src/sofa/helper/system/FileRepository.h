@@ -23,6 +23,7 @@
 #define SOFA_HELPER_SYSTEM_FILEREPOSITORY_H
 
 #include <sofa/helper/config.h>
+#include <sofa/helper/logging/Messaging.h>
 
 #include <string>
 #include <vector>
@@ -165,7 +166,10 @@ public:
         return _flux;
     }
 
-    void displayPaths() const {std::cout<<(*this)<<std::endl;}
+    void displayPaths() const 
+    { 
+        msg_info("FileRepository") << (*this);
+    }
 
     const std::string getTempPath() const;
 

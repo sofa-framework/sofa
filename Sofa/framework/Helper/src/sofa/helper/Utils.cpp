@@ -143,7 +143,11 @@ const std::string& Utils::getExecutableDirectory()
     return path;
 }
 
-static std::string computeSofaPathPrefix()
+/// @brief variable to store custom path set using @sa setSofaCustomPathPrefix to override classical
+/// SOFA_ROOT or getExecutablePath method
+static std::string s_sofaPathPrefix;
+
+std::string computeSofaPathPrefix()
 {
     const char* pathVar = getenv("SOFA_ROOT");
     if (pathVar != nullptr && FileSystem::exists(pathVar))
@@ -168,8 +172,14 @@ static std::string computeSofaPathPrefix()
 
 const std::string& Utils::getSofaPathPrefix()
 {
-    static const std::string prefix = computeSofaPathPrefix();
-    return prefix;
+    if (s_sofaPathPrefix.empty())
+        s_sofaPathPrefix = computeSofaPathPrefix();
+    return s_sofaPathPrefix;
+}
+
+void Utils::setSofaCustomPathPrefix(const std::string& path)
+{
+    s_sofaPathPrefix = FileSystem::cleanPath(path);
 }
 
 const std::string Utils::getSofaPathTo(const std::string& pathFromBuildDir)
