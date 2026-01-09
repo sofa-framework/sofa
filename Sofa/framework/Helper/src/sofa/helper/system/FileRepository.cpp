@@ -304,6 +304,46 @@ bool FileRepository::findFileFromFile(std::string& filename, const std::string& 
     return findFile(filename, SetDirectory::GetParentDir(basefile.c_str()), errlog);
 }
 
+void FileRepository::findAllFilesInRepository(const std::string& path, std::vector<std::string>& files, const std::vector<std::string>& extensions, bool recursive)
+{
+    for (std::vector<std::string>::const_iterator it = vpath.begin(); it != vpath.end(); ++it)
+    {
+        // Get the full / absolute path (vpath + path)
+        const std::string fullPath = SetDirectory::GetRelativeFromDir(path.c_str(), it->c_str());
+        fs::path p = fs::path(fullPath);
+
+        if (fs::exists(p) && fs::is_directory(p))
+        {
+            if (recursive)
+            {
+                for (auto& entry : fs::recursive_directory_iterator(p))
+                {
+                    if (fs::is_regular_file(entry.path()))
+                    {
+                        if (extensions.empty() || std::find(extensions.begin(), extensions.end(), entry.path().extension()) != extensions.end())
+                        {
+                            files.push_back(entry.path().string());
+                        }
+                    }
+                }
+            }
+            else
+            {
+                for (auto& entry : fs::directory_iterator(p))
+                {
+                    if (fs::is_regular_file(entry.path()))
+                    {
+                        if (extensions.empty() || std::find(extensions.begin(), extensions.end(), entry.path().extension()) != extensions.end())
+                        {
+                            files.push_back(entry.path().string());
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 void FileRepository::print()
 {
     for (std::vector<std::string>::const_iterator it = vpath.begin(); it != vpath.end(); ++it)
