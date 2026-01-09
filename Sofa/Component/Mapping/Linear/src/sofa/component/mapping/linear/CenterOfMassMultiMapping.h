@@ -84,7 +84,6 @@ public:
     //virtual void applyJ(const type::vector< OutVecDeriv*>& outDeriv, const type::vector<const InVecDeriv*>& inDeriv);
     //virtual void applyJT( const type::vector<InVecDeriv*>& outDeriv , const type::vector<const OutVecDeriv*>& inDeriv );
 
-    void applyDJT(const core::MechanicalParams* /*mparams*/, core::MultiVecDerivId /*inForce*/, core::ConstMultiVecDerivId /*outForce*/) override {}
 
     void init() override;
     void draw(const core::visual::VisualParams* vparams) override;
@@ -97,6 +96,9 @@ protected:
     }
 
     virtual ~CenterOfMassMultiMapping() {}
+
+    void doApplyDJT(const core::MechanicalParams* /*mparams*/, core::MultiVecDerivId /*inForce*/, core::ConstMultiVecDerivId /*outForce*/) override {}
+
 
     type::vector<const core::behavior::BaseMass*> inputBaseMass;
     InVecCoord inputWeightedCOM;

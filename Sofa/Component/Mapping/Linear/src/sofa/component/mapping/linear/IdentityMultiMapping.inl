@@ -169,7 +169,7 @@ void IdentityMultiMapping<TIn, TOut>::applyJT( const core::ConstraintParams* /*c
 
 
 template <class TIn, class TOut>
-const type::vector<sofa::linearalgebra::BaseMatrix*>* IdentityMultiMapping<TIn, TOut>::getJs()
+const type::vector<sofa::linearalgebra::BaseMatrix*>* IdentityMultiMapping<TIn, TOut>::doGetJs()
 {
     return &baseMatrices;
 }
