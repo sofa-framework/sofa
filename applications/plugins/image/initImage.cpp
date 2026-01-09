@@ -29,11 +29,6 @@
     #include "python/Binding_ImageData.h"
 #endif
 
-namespace sofa::defaulttype
-{
-    extern void registerDataExchange(sofa::core::ObjectFactory* factory);
-}
-
 namespace sofa::component
 {
 
@@ -127,6 +122,16 @@ void initExternalModule()
         {
             msg_warning("initImage") << "the sub-plugin image_gui was not successfully loaded";
         }
+
+        std::string multithreadPluginPath = sofa::helper::system::PluginManager::getInstance().findPlugin("image_multithread");
+        if (!multithreadPluginPath.empty())
+        {
+            sofa::helper::system::PluginManager::getInstance().loadPluginByPath(multithreadPluginPath);
+        }
+        else
+        {
+            msg_warning("initImage") << "the sub-plugin image_multithread was not successfully loaded";
+        }
     }
 }
 
@@ -153,7 +158,6 @@ const char* getModuleDescription()
 
 void registerObjects(sofa::core::ObjectFactory* factory)
 {
-    sofa::defaulttype::registerDataExchange(factory);
     sofa::component::misc::registerImageExporter(factory);
     sofa::component::engine::registerVoronoiToMeshEngine(factory);
     sofa::component::engine::registerTransferFunction(factory);

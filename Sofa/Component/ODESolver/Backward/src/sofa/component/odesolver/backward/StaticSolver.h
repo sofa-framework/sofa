@@ -132,10 +132,10 @@ public:
 protected:
 
     template<class T>
-    struct NewtonRaphsonDeprecatedData : core::objectmodel::lifecycle::DeprecatedData
+    struct NewtonRaphsonDeprecatedData : core::objectmodel::lifecycle::RemovedData
     {
         NewtonRaphsonDeprecatedData(Base* b, const std::string name)
-            : DeprecatedData(b, "v25.06", "v25.12", name, "The Data related to the Newton-Raphson parameters must be defined in the NewtonRaphsonSolver component.")
+            : RemovedData(b, "v25.06", "v25.12", name, "The Data related to the Newton-Raphson parameters must be defined in the NewtonRaphsonSolver component.")
         {}
 
         std::optional<T> value;

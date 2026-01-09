@@ -41,7 +41,7 @@ namespace sofa::core::behavior
  *
  */
 template<class DataTypes>
-class LagrangianConstraint : public BaseLagrangianConstraint, public SingleStateAccessor<DataTypes>
+class LagrangianConstraint : public BaseLagrangianConstraint, public virtual SingleStateAccessor<DataTypes>
 {
 public:
     SOFA_CLASS2(SOFA_TEMPLATE(LagrangianConstraint, DataTypes), BaseLagrangianConstraint, SOFA_TEMPLATE(SingleStateAccessor, DataTypes));

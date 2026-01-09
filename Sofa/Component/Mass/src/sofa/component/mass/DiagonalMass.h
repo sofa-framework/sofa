@@ -21,18 +21,17 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/mass/config.h>
-
-#include <sofa/type/vector.h>
-#include <sofa/type/Vec.h>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/core/behavior/Mass.h>
-#include <sofa/core/topology/TopologyData.h>
-#include <sofa/core/objectmodel/DataFileName.h>
-
-#include <sofa/component/mass/VecMassType.h>
 #include <sofa/component/mass/RigidMassType.h>
+#include <sofa/component/mass/VecMassType.h>
+#include <sofa/component/mass/config.h>
+#include <sofa/core/behavior/Mass.h>
+#include <sofa/core/behavior/TopologyAccessor.h>
+#include <sofa/core/objectmodel/DataFileName.h>
+#include <sofa/core/topology/TopologyData.h>
+#include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/vector.h>
 
 #include <type_traits>
 
@@ -60,10 +59,10 @@ public :
 * @tparam   GeometricalTypes type of the geometry, i.e type of the state associated with the topology (if the topology and the mass relates to the same state, this will be the same as DataTypes)
 */
 template <class DataTypes, class GeometricalTypes = DataTypes>
-class DiagonalMass : public core::behavior::Mass<DataTypes>
+class DiagonalMass : public core::behavior::Mass<DataTypes>, public virtual sofa::core::behavior::TopologyAccessor
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(DiagonalMass,DataTypes, GeometricalTypes), SOFA_TEMPLATE(core::behavior::Mass,DataTypes));
+    SOFA_CLASS2(SOFA_TEMPLATE2(DiagonalMass,DataTypes, GeometricalTypes), SOFA_TEMPLATE(core::behavior::Mass,DataTypes), sofa::core::behavior::TopologyAccessor);
 
     using TMassType = typename sofa::component::mass::MassType<DataTypes>::type;
 
@@ -113,8 +112,6 @@ public:
     /// value defining the initialization process of the mass (0 : totalMass, 1 : massDensity, 2 : vertexMass)
     int m_initializationProcess;
 
-    /// Link to be set to the topology container in the component graph. 
-    SingleLink<DiagonalMass<DataTypes, GeometricalTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
     /// Link to be set to the MechanicalObject associated with the geometry
     SingleLink<DiagonalMass<DataTypes, GeometricalTypes>, sofa::core::behavior::MechanicalState<GeometricalTypes>, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_geometryState;
 
