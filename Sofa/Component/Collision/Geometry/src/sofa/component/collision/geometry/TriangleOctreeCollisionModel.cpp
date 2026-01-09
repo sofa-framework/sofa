@@ -111,8 +111,6 @@ void TriangleOctreeCollisionModel::computeBoundingTree(int maxDepth)
 
         for (auto& p : pt)
         {
-
-
             for(int c=0; c<3; c++)
             {
                 if ((*p)[c] > maxElem[c]) maxElem[c] = (*p)[c];
@@ -131,7 +129,7 @@ void TriangleOctreeCollisionModel::computeBoundingTree(int maxDepth)
     }
 }
 
-void TriangleOctreeCollisionModel::computeContinuousBoundingTree(SReal/* dt*/, int maxDepth)
+void TriangleOctreeCollisionModel::computeContinuousBoundingTree(SReal/* dt*/, ContinuousIntersectionTypeFlag continuousIntersectionFlag, int maxDepth)
 {
     computeBoundingTree(maxDepth);
 }

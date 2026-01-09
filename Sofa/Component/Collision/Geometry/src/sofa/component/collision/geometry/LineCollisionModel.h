@@ -25,7 +25,8 @@
 #include <sofa/core/CollisionModel.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/core/collision/Intersection.h>
+
 
 namespace sofa::component::collision::geometry
 {
@@ -123,7 +124,7 @@ public:
 
     void computeBoundingTree(int maxDepth=0) override;
 
-    void computeContinuousBoundingTree(SReal dt, int maxDepth=0) override;
+    void computeContinuousBoundingTree(SReal dt, ContinuousIntersectionTypeFlag continuousIntersectionFlag = ContinuousIntersectionTypeFlag::Inertia, int maxDepth=0) override;
 
     void handleTopologyChange() override;
 

@@ -97,9 +97,9 @@ void UnbuiltConstraintSolver::initializeConstraintProblems()
 {
     for (unsigned i=0; i< CP_BUFFER_SIZE; ++i)
     {
-        m_cpBuffer[i] = new UnbuiltConstraintProblem(this);
+        m_cpBuffer[i] = std::make_unique<UnbuiltConstraintProblem>(this);
     }
-    current_cp = m_cpBuffer[0];
+    current_cp = m_cpBuffer[0].get();
 }
 
 

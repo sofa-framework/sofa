@@ -194,7 +194,7 @@ void SphereCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
 
 
 template <class DataTypes>
-void SphereCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, int maxDepth)
+void SphereCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, ContinuousIntersectionTypeFlag  continuousIntersectionFlag, int maxDepth)
 {
     using sofa::type::Vec3 ;
 
@@ -223,8 +223,8 @@ void SphereCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, in
         for (sofa::Size i=0; i<size; i++)
         {
             TSphere<DataTypes> p(this,i);
-            const Vec3& pt = p.p();
-            const Vec3 ptv = pt + p.v()*dt;
+            const auto& pt = p.p();
+            const auto ptv = (continuousIntersectionFlag == ContinuousIntersectionTypeFlag::Inertia) ? pt + p.v()*dt : p.pFree();
 
             for (int c = 0; c < 3; c++)
             {

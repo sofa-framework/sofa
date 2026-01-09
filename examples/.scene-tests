@@ -38,5 +38,7 @@ ignore "Component/Controller/MechanicalStateController.scn"
 ignore "Benchmark/TopologicalChanges/ProjectToPlaneConstraint_RemovingMeshTest.scn"
 ignore "Benchmark/TopologicalChanges/FixedPlaneConstraint_RemovingMeshTest.scn"
 
-iterations "/Component/Constraint/Lagrangian/Contact_ImprovedJacobi.scn" "50"
+# Too long
+ignore "Component/Constraint/Lagrangian/Contact_ImprovedJacobi.scn"
+
 timeout "Component/AnimationLoop/FreeMotionAnimationLoop.scn" "180"

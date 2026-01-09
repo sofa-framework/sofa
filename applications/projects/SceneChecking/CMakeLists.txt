@@ -12,6 +12,7 @@ set(HEADER_FILES
     ${SCENECHECK_SRC_DIR}/config.h.in
     ${SCENECHECK_SRC_DIR}/init.h
     ${SCENECHECK_SRC_DIR}/SceneCheckAPIChange.h
+    ${SCENECHECK_SRC_DIR}/SceneCheckCollisionPipelineAndModels.h
     ${SCENECHECK_SRC_DIR}/SceneCheckCollisionResponse.h
     ${SCENECHECK_SRC_DIR}/SceneCheckDeprecatedComponents.h
     ${SCENECHECK_SRC_DIR}/SceneCheckDuplicatedName.h
@@ -26,6 +27,7 @@ set(HEADER_FILES
 set(SOURCE_FILES
     ${SCENECHECK_SRC_DIR}/init.cpp
     ${SCENECHECK_SRC_DIR}/SceneCheckAPIChange.cpp
+    ${SCENECHECK_SRC_DIR}/SceneCheckCollisionPipelineAndModels.cpp
     ${SCENECHECK_SRC_DIR}/SceneCheckCollisionResponse.cpp
     ${SCENECHECK_SRC_DIR}/SceneCheckDeprecatedComponents.cpp
     ${SCENECHECK_SRC_DIR}/SceneCheckDuplicatedName.cpp
