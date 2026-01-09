@@ -41,6 +41,7 @@
 # include <winerror.h>
 # include <strsafe.h>
 # include "Shlwapi.h"           // for PathFileExists()
+#include <shellapi.h>
 #else
 # include <dirent.h>
 # include <sys/stat.h>
@@ -48,6 +49,15 @@
 # include <errno.h>
 # include <string.h>            // for strerror()
 # include <unistd.h>
+#endif
+
+#if defined(__APPLE__)
+#include <stdio.h>
+#endif
+
+#ifdef linux
+#include <spawn.h>
+#include <sys/wait.h>
 #endif
 
 #include <cassert>
@@ -497,6 +507,43 @@ std::string FileSystem::append(const std::string_view& existingPath, const std::
     return std::string(existingPath) + "/" + std::string(toAppend);
 }
 
+bool FileSystem::openFileWithDefaultApplication(const std::string& filename)
+{
+    bool success = false;
+
+    if (!filename.empty())
+    {
+        if (!FileSystem::exists(filename))
+        {
+            msg_error("FileSystem::openFileWithDefaultApplication()") << "File does not exist: " << filename;
+            return success;
+        }
+
+#ifdef WIN32
+        if ((INT_PTR)ShellExecuteA(nullptr, "open", filename.c_str(), nullptr, nullptr, SW_SHOWNORMAL) > 32)
+            success = true;
+#elif defined(__APPLE__)
+        const std::string command = "open \"" + filename + "\"";
+        FILE* pipe = popen(command.c_str(), "r+");
+        if (pipe != nullptr)
+        {
+            success = true;
+            pclose(pipe);
+        }
+#else
+        pid_t pid; // points to a buffer that is used to return the process ID of the new child process.
+        const char* argv[] = {"xdg-open", filename.c_str(), nullptr};
+        if (posix_spawn(&pid, "/usr/bin/xdg-open", nullptr, nullptr, const_cast<char* const*>(argv), environ) == 0)
+        {
+            int status;
+            if (waitpid(pid, &status, 0) != -1 && WIFEXITED(status) && WEXITSTATUS(status) == 0)
+                success = true;
+        }
+#endif
+    }
+
+    return success;
+}
 
 } // namespace system
 } // namespace helper
