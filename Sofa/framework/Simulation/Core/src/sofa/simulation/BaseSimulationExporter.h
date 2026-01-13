@@ -42,10 +42,10 @@ using sofa::core::objectmodel::DataFileName ;
     Component that export something from the scene could inherit from this class
     as it implement an uniform handling of the different data attributes.
 */
-class SOFA_SIMULATION_CORE_API BaseSimulationExporter : public virtual BaseObject
+class SOFA_SIMULATION_CORE_API BaseSimulationExporter : public virtual sofa::core::objectmodel::BaseObject
 {
 public:
-    SOFA_ABSTRACT_CLASS(BaseSimulationExporter, BaseObject);
+    SOFA_ABSTRACT_CLASS(BaseSimulationExporter, sofa::core::objectmodel::BaseObject);
 
     DataFileName       d_filename ;
     Data<unsigned int> d_exportEveryNbSteps;

@@ -184,7 +184,7 @@ Node::SPtr createObstacle(Node::SPtr  parent, const std::string &filenameCollisi
 }
 
 
-Node::SPtr createCollisionNodeVec3(Node::SPtr  parent, BaseObject::SPtr  dof,
+Node::SPtr createCollisionNodeVec3(Node::SPtr  parent, sofa::core::objectmodel::BaseObject::SPtr  dof,
                                    const std::string &filename,
                                    const std::vector<std::string> &elements,
                                    const Deriv3& translation, const Deriv3 &rotation)
@@ -214,7 +214,7 @@ Node::SPtr createCollisionNodeVec3(Node::SPtr  parent, BaseObject::SPtr  dof,
 }
 
 simulation::Node::SPtr createVisualNodeVec3(simulation::Node::SPtr  parent,
-                                            BaseObject::SPtr  dof,
+                                            sofa::core::objectmodel::BaseObject::SPtr  dof,
                                             const std::string &filename, const std::string& color,
                                             const Deriv3& translation, const Deriv3 &rotation,
                                             const MappingType &mappingT)
@@ -259,7 +259,7 @@ simulation::Node::SPtr createVisualNodeVec3(simulation::Node::SPtr  parent,
 
 
 
-Node::SPtr createCollisionNodeRigid(Node::SPtr  parent, BaseObject::SPtr  dofRigid,
+Node::SPtr createCollisionNodeRigid(Node::SPtr  parent, sofa::core::objectmodel::BaseObject::SPtr  dofRigid,
                                     const std::string &filename,
                                     const std::vector<std::string> &elements,
                                     const Deriv3& translation, const Deriv3 &rotation)
@@ -290,7 +290,7 @@ Node::SPtr createCollisionNodeRigid(Node::SPtr  parent, BaseObject::SPtr  dofRig
     return node;
 }
 
-Node::SPtr createVisualNodeRigid(Node::SPtr  parent, BaseObject::SPtr  dofRigid,
+Node::SPtr createVisualNodeRigid(Node::SPtr  parent, sofa::core::objectmodel::BaseObject::SPtr  dofRigid,
                                  const std::string &filename, const std::string& color,
                                  const Deriv3& translation, const Deriv3 &rotation)
 {

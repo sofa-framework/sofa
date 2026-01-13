@@ -50,10 +50,10 @@ public:
     void doEndEditVoidPtr() override { }
 };
 
-class MyObject : public BaseObject
+class MyObject : public sofa::core::objectmodel::BaseObject
 {
 public:
-    SOFA_CLASS(MyObject, BaseObject);
+    SOFA_CLASS(MyObject, sofa::core::objectmodel::BaseObject);
     MyData myData;
     MyObject() :
         myData()
