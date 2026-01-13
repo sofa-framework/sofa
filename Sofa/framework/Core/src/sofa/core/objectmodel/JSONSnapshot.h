@@ -41,14 +41,17 @@ public:
     void fillSnapshot(DataSnapshot datasnap) override;
     void fillLinkSnapshot(BaseLink* link) override;
     void collectData(const std::vector<BaseData*>& datafield, const std::vector<BaseLink*>& linkfield) override;
-    void putData(std::vector<BaseData*>& datafield, std::vector<BaseLink*>& linkfield) override;
+    void putData(std::vector<BaseData*>& datafield, std::vector<BaseLink*>& linkfield, BaseSnapshot::DataInfo& di) override;
         // std::vector<BaseLink*> getLinkField() const;
         // std::vector<BaseLink*> getLinkField() const;
-    void exportToJSON(const std::string filename) override;
-    void importFromJSON(const std::string filename,nlohmann::json& j);
+    void groupComponent() override;
+    nlohmann::json nodeArray();
+    void exportTo(const std::string filename) override;
+    void importFrom(const std::string filename,nlohmann::json& j);
     JSONSnapshot();
     ~JSONSnapshot();
 
+    //nlohmann::json:: jNode = nlohmann::json::array();
 
 
 

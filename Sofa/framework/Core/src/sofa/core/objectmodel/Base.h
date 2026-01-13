@@ -380,7 +380,7 @@ public :
     // }
 
     void saveSnapshot(BaseSnapshot& type);
-
+    void nodeSnapshot(BaseSnapshot& type);
     void loadSnapshot(BaseSnapshot& type);
 
 private :

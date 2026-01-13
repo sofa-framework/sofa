@@ -47,7 +47,7 @@ public:
         std::string name;
         std::string type;
         std::string value;
-        std::string pathname;
+        std::string ownername;
     };
 
     struct LinkInfo
@@ -67,6 +67,10 @@ public:
 
     std::vector<SparseDataSnapshot> SparseSnapshot;
 
+    std::vector<std::string> ComponentSnapshot;
+
+    std::vector<std::vector<SparseDataSnapshot>> NodeSnapshot;
+
 public:
     virtual void printSnapshot() = 0;
     virtual void importSnapshot() = 0;
@@ -74,8 +78,9 @@ public:
     virtual void fillSnapshot(DataSnapshot datasnap) = 0;
     virtual void fillLinkSnapshot(BaseLink* link) = 0;
     virtual void collectData(const std::vector<BaseData*>& datafield, const std::vector<BaseLink*>& linkfield) = 0;
-    virtual void putData(std::vector<BaseData*>& datafield, std::vector<BaseLink*>& linkfield) = 0;
-    virtual void exportToJSON(const std::string filename) = 0;
+    virtual void groupComponent() = 0;
+    virtual void putData(std::vector<BaseData*>& datafield, std::vector<BaseLink*>& linkfield,BaseSnapshot::DataInfo& di) = 0;
+    virtual void exportTo(const std::string filename) = 0;
 
     BaseSnapshot();
     virtual ~BaseSnapshot() = 0;

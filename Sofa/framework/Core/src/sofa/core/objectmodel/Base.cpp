@@ -687,6 +687,13 @@ void Base::saveSnapshot(BaseSnapshot& type)
     //type.collectData(datafield, componentlinks);
     // type.printSnapshot();
     type.collectData(datafield, componentlinks);
+    //type.ComponentSnapshot.push_back(this->getName());
+}
+
+void Base::nodeSnapshot(BaseSnapshot& type)
+{
+    type.ComponentSnapshot.push_back(this->getName());
+    type.groupComponent();
 }
 
 void Base::loadSnapshot(BaseSnapshot& type)

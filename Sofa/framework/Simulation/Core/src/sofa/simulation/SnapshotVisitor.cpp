@@ -55,15 +55,19 @@ namespace sofa::simulation
 
 void SnapshotVisitor::processObject(core::objectmodel::BaseObject* obj)
 {
+    std::cout << "-" <<obj->getName() << std::endl;
     obj->saveSnapshot(snapCont_);
 }
 
 Visitor::Result SnapshotVisitor::processNodeTopDown(simulation::Node* node)
 { 
+    std::cout << node->getName() << std::endl;
+    node->saveSnapshot(snapCont_);
     for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
     {
         this->processObject(it->get());
     } 
+    node->nodeSnapshot(snapCont_);
     return RESULT_CONTINUE;
 }
 

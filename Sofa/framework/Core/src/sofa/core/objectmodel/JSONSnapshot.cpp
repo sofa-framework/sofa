@@ -28,6 +28,9 @@
 #include <iostream>
 #include <sofa/helper/system/SetDirectory.h>
 
+#include <sofa/core/objectmodel/Data.h>
+
+
 namespace sofa::core::objectmodel
 {
 
@@ -47,7 +50,7 @@ void to_json(nlohmann::json& j, const BaseSnapshot::DataInfo& di )
     j["name"]  = di.name;
     j["type"]  = di.type;
     j["value"] = di.value;
-    j["pathname"] = di.pathname;
+    j["ownername"] = di.ownername;
 }
 
 void to_json(nlohmann::json& j, const BaseSnapshot::LinkInfo& li )
@@ -67,30 +70,72 @@ void to_json(nlohmann::json& j, const BaseSnapshot::SparseDataSnapshot& sds )
 
 void JSONSnapshot::collectData(const std::vector<BaseData*>& datafield, const std::vector<BaseLink*>& linkfield)
 {
+    SparseDataSnapshot_.dataContainer.clear();
+    SparseDataSnapshot_.linkContainer.clear();
     DataInfo dinfo;
     for (auto* data : datafield)
     {
+        // std::cout << (*data) << std::endl;
+        
         dinfo.name = data->getName();
         dinfo.type = data->getValueTypeString();
         dinfo.value = data->getValueString();
-        dinfo.pathname = data->getPathName();
+        // (*data).setValueString(dinfo.value); 
+        // data->setValueString(dinfo.value);
+
+        dinfo.ownername = (data->getOwner())->getName();
         SparseDataSnapshot_.dataContainer.push_back(dinfo); 
     }
     LinkInfo linfo;
     for (auto* link : linkfield)
     {
+        // std::cout << (*link) << std::endl;
         linfo.name = link->getName();
         linfo.linkedpath = link->getLinkedPath();
         linfo.path = link->getPath();
         SparseDataSnapshot_.linkContainer.push_back(linfo);
     }
+    SparseSnapshot.push_back(SparseDataSnapshot_);
 }
 
-void JSONSnapshot::exportToJSON(const std::string filename)
+nlohmann::json JSONSnapshot::nodeArray()
 {
-    nlohmann::json j = SparseDataSnapshot_;
+    nlohmann::json jNode = nlohmann::json::array();
+
+    NodeSnapshot.push_back(SparseSnapshot);
+    jNode.push_back(NodeSnapshot);
+    SparseSnapshot.clear();
+
+    return jNode;
+}
+
+void JSONSnapshot::groupComponent()
+{
+    NodeSnapshot.push_back(SparseSnapshot);
+    SparseSnapshot.clear();
+}
+
+void JSONSnapshot::exportTo(const std::string filename)
+{
+    nlohmann::json root = nlohmann::json::object();
+
+    for (size_t ni = 0; ni < NodeSnapshot.size(); ++ni)
+    {
+        const auto &components = NodeSnapshot[ni];
+        nlohmann::json nodeJson = nlohmann::json::object();
+
+        for (size_t ci = 0; ci < components.size(); ++ci)
+        {
+            const auto &sds = components[ci];
+            std::string compName;
+            compName = sds.dataContainer.front().ownername;
+            nodeJson[compName] = sds;
+        }
+        root[ComponentSnapshot[ni]] = nodeJson;
+    }
+
     std::ofstream file(filename);
-    file << j.dump(5);
+    file << root.dump(5);
     file.close();
 }
 
@@ -105,6 +150,7 @@ void from_json(const nlohmann::json& j,BaseSnapshot::DataInfo& di )
     j.at("name").get_to(di.name);
     j.at("type").get_to(di.type);
     j.at("value").get_to(di.value);
+    
 }
 
 void from_json(const nlohmann::json& j,BaseSnapshot::LinkInfo& li )
@@ -120,31 +166,18 @@ void from_json(const nlohmann::json& j,BaseSnapshot::SparseDataSnapshot& sds )
     j.at("links").get_to(sds.linkContainer);
 }
 
-void JSONSnapshot::importFromJSON(const std::string filename, nlohmann::json& j)
+void JSONSnapshot::importFrom(const std::string filename, nlohmann::json& j)
 {
     std::ifstream file(filename);
     file >> j;
 }
 
-void JSONSnapshot::putData(std::vector<BaseData*>& datafield, std::vector<BaseLink*>& linkfield)
+void JSONSnapshot::putData(std::vector<BaseData*>& datafield, std::vector<BaseLink*>& linkfield, BaseSnapshot::DataInfo& di)
 {
     // idea -> while-loop with conditions like : while dataname are same, just set the data. if not 
-    DataInfo dinfo;
-    for (auto* data : datafield)
-    {
-        dinfo.name = data->getName();
-        dinfo.type = data->getValueTypeString();
-        dinfo.value = data->getValueString();
-        SparseDataSnapshot_.dataContainer.push_back(dinfo); 
-    }
-    LinkInfo linfo;
-    for (auto* link : linkfield)
-    {
-        linfo.name = link->getName();
-        linfo.linkedpath = link->getLinkedPath();
-        linfo.path = link->getPath();
-        SparseDataSnapshot_.linkContainer.push_back(linfo);
-    }
+    
+    std::cout << "hey" << std::endl;
+    
 }
 
 
