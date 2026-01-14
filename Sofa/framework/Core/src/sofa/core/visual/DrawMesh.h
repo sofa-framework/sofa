@@ -298,7 +298,7 @@ private:
         {
             const auto& element = elements[i];
             const auto& facetsInElement = topology->getQuadsInHexahedron(i);
-            assert(facetsInElement.size() == NumberTrianglesInTetrahedron);
+            assert(facetsInElement.size() == NumberQuadsInHexahedron);
 
             const auto center = this->elementCenter(position, element);
 
