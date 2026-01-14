@@ -54,7 +54,6 @@ MeshMatrixMass<DataTypes, GeometricalTypes>::MeshMatrixMass()
     , d_lumping( initData(&d_lumping, false, "lumping","If true, the mass matrix is lumped, meaning the mass matrix becomes diagonal (summing all mass values of a line on the diagonal)") )
     , d_printMass( initData(&d_printMass, false, "printMass","boolean if you want to check the mass conservation") )
     , f_graph( initData(&f_graph,"graph","Graph of the controlled potential") )
-    , l_topology(initLink("topology", "link to the topology container"))
     , l_geometryState(initLink("geometryState", "link to the MechanicalObject associated with the geometry"))
     , m_massTopologyType(geometry::ElementType::UNKNOWN)
 {
@@ -1035,22 +1034,9 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::init()
 template <class DataTypes, class GeometricalTypes>
 sofa::geometry::ElementType MeshMatrixMass<DataTypes, GeometricalTypes>::checkTopology()
 {
-    if (l_topology.empty())
-    {
-        msg_info() << "Link \"topology\" to the Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
-        l_topology.set(this->getContext()->getMeshTopologyLink());
-    }
-
-    if (l_topology.get() == nullptr)
-    {
-        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
-        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
-        return sofa::geometry::ElementType::POINT;
-    }
-    else
-    {
-        msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
-    }
+    this->validateTopology();
+    if (this->isComponentStateInvalid())
+        return geometry::ElementType::POINT;
 
     if (l_geometryState.empty())
     {

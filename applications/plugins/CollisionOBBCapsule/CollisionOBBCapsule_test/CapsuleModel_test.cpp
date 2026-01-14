@@ -22,10 +22,17 @@
 #include <gtest/gtest.h>
 #include <CollisionOBBCapsule/geometry/CapsuleModel.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/helper/system/PluginManager.h>
 
 TEST(CapsuleModel, creationFromFactory)
 {
-    const auto entry = sofa::core::ObjectFactory::getInstance()->getEntry("CapsuleCollisionModel");
+    sofa::helper::system::PluginManager& pm = sofa::helper::system::PluginManager::getInstance();
+    pm.loadPluginByName("CollisionOBBCapsule");
+
+    sofa::core::ObjectFactory* objectFactory = sofa::core::ObjectFactory::getInstance();
+    objectFactory->registerObjectsFromPlugin("CollisionOBBCapsule");
+
+    const auto entry = objectFactory->getEntry("CapsuleCollisionModel");
     const auto creatorRigid = entry.creatorMap.at("Rigid3d");
 
     sofa::core::objectmodel::BaseObjectDescription desc;

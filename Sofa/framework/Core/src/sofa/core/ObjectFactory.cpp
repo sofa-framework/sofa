@@ -58,20 +58,18 @@ bool ObjectFactory::hasCreator(std::string classname)
 
 std::string ObjectFactory::shortName(std::string classname)
 {
-    std::string shortname;
-
     const ClassEntryMap::iterator it = registry.find(classname);
     if (it != registry.end())
     {
         const ClassEntry::SPtr entry = it->second;
         if(!entry->creatorMap.empty())
         {
-            const CreatorMap::iterator myit = entry->creatorMap.begin();
-            const Creator::SPtr c = myit->second;
-            shortname = c->getClass()->shortName;
+            const auto firstElement = entry->creatorMap.begin();
+            const BaseObjectCreator::SPtr c = firstElement->second;
+            return c->getClass()->shortName;
         }
     }
-    return shortname;
+    return {};
 }
 
 bool ObjectFactory::addAlias(std::string name, std::string target, bool force,
@@ -95,7 +93,8 @@ bool ObjectFactory::addAlias(std::string name, std::string target, bool force,
         return false;
     }
 
-    if (previous) {
+    if (previous)
+    {
         const ClassEntry::SPtr& entry = aliasEntry;
         *previous = entry;
     }
@@ -113,9 +112,9 @@ void ObjectFactory::resetAlias(std::string name, ClassEntry::SPtr previous)
 
 void findTemplatedCreator(
     objectmodel::BaseContext* context,
-    const ObjectFactory::Creator::SPtr& creator, const std::string& templateName,
+    const ObjectFactory::BaseObjectCreator::SPtr& creator, const std::string& templateName,
     std::map<std::string, std::vector<std::string>>& creatorsErrors,
-    std::vector< std::pair<std::string, ObjectFactory::Creator::SPtr> >& creators,
+    std::vector< std::pair<std::string, ObjectFactory::BaseObjectCreator::SPtr> >& creators,
     objectmodel::BaseObjectDescription* arg)
 {
     if (helper::system::PluginManager::getInstance().isPluginUnloaded(creator->getTarget()))
@@ -142,7 +141,7 @@ void findTemplatedCreator(
 objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
 {
     objectmodel::BaseObject::SPtr object = nullptr;
-    std::vector< std::pair<std::string, Creator::SPtr> > creators;
+    std::vector< std::pair<std::string, BaseObjectCreator::SPtr> > creators;
     std::string classname = arg->getAttribute( "type", "");
     std::string usertemplatename = arg->getAttribute( "template", "");
     ClassEntry::SPtr entry ;
@@ -487,9 +486,9 @@ void ObjectFactory::getEntriesFromTarget(std::vector<ClassEntry::SPtr>& result, 
         {
 
             bool inTarget = false;
-            for (CreatorMap::iterator itc = entry->creatorMap.begin(), itcend = entry->creatorMap.end(); itc != itcend; ++itc)
+            for (ObjectTemplateCreatorMap::iterator itc = entry->creatorMap.begin(), itcend = entry->creatorMap.end(); itc != itcend; ++itc)
             {
-                const Creator::SPtr c = itc->second;
+                const BaseObjectCreator::SPtr c = itc->second;
                 if (target == c->getTarget())
                 {
                     inTarget = true;
@@ -538,7 +537,7 @@ void ObjectFactory::dump(std::ostream& out)
             out << "  license : " << entry->license << "\n";
         if (!entry->documentationURL.empty())
             out << "  documentation : " << entry->documentationURL << "\n";
-        for (CreatorMap::iterator itc = entry->creatorMap.begin(), itcend = entry->creatorMap.end(); itc != itcend; ++itc)
+        for (ObjectTemplateCreatorMap::iterator itc = entry->creatorMap.begin(), itcend = entry->creatorMap.end(); itc != itcend; ++itc)
         {
             out << "  template instance : " << itc->first << "\n";
         }
@@ -580,7 +579,7 @@ void ObjectFactory::dumpXML(std::ostream& out)
             out << "<license>"<<entry->license<<"</license>\n";
         if (!entry->documentationURL.empty())
             out << "<documentation>"<<entry->documentationURL<<"</documentation>\n";
-        for (CreatorMap::iterator itc = entry->creatorMap.begin(), itcend = entry->creatorMap.end(); itc != itcend; ++itc)
+        for (ObjectTemplateCreatorMap::iterator itc = entry->creatorMap.begin(), itcend = entry->creatorMap.end(); itc != itcend; ++itc)
         {
             out << "<creator";
             if (!itc->first.empty()) out << " template=\"" << xmlencode(itc->first) << "\"";
@@ -617,7 +616,7 @@ void ObjectFactory::dumpHTML(std::ostream& out)
         if (entry->creatorMap.size()>2 || (entry->creatorMap.size()==1 && !entry->creatorMap.begin()->first.empty()))
         {
             out << "<li>Template instances:<i>";
-            for (CreatorMap::iterator itc = entry->creatorMap.begin(), itcend = entry->creatorMap.end(); itc != itcend; ++itc)
+            for (ObjectTemplateCreatorMap::iterator itc = entry->creatorMap.begin(), itcend = entry->creatorMap.end(); itc != itcend; ++itc)
             {
                 if (itc->first == entry->defaultTemplate)
                     out << " <b>" << xmlencode(itc->first) << "</b>";
@@ -679,7 +678,7 @@ ObjectRegistrationData& ObjectRegistrationData::addDocumentationURL(std::string 
 
 ObjectRegistrationData& ObjectRegistrationData::addCreator(std::string classname,
                                            std::string templatename,
-                                           ObjectFactory::Creator::SPtr creator)
+                                           ObjectFactory::BaseObjectCreator::SPtr creator)
 {
 
     if (!entry.className.empty() && entry.className != classname)
@@ -831,7 +830,7 @@ RegisterObject& RegisterObject::addDocumentationURL(std::string url)
 }
 
 RegisterObject& RegisterObject::addCreator(std::string classname, std::string templatename,
-    ObjectFactory::Creator::SPtr creator)
+    ObjectFactory::BaseObjectCreator::SPtr creator)
 {
     m_objectRegistrationdata.addCreator(classname, templatename, creator);
     return *this;

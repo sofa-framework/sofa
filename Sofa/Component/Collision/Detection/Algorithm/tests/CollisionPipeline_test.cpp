@@ -102,7 +102,7 @@ void TestCollisionPipeline::checkCollisionPipelineWithNoAttributes()
              "  <CollisionPipeline name='pipeline'/>                                         \n"
              "  <BruteForceBroadPhase/>                                                      \n"
              "  <BVHNarrowPhase/>                                                            \n"
-             "  <CollisionResponse/>                                                         \n"
+             "  <CollisionResponse response='PenalityContactForceField'/>                    \n"
              "  <DiscreteIntersection name='interaction'/>                                   \n"
              "</Node>                                                                        \n" ;
 
@@ -111,7 +111,7 @@ void TestCollisionPipeline::checkCollisionPipelineWithNoAttributes()
     ASSERT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 
-    BaseObject* clp = root->getObject("pipeline") ;
+    sofa::core::objectmodel::BaseObject* clp = root->getObject("pipeline") ;
     ASSERT_NE(clp, nullptr) ;
 }
 
@@ -126,14 +126,14 @@ void TestCollisionPipeline::checkCollisionPipelineWithMissingIntersection()
              "  <CollisionPipeline name='pipeline'/>                                         \n"
              "  <BruteForceBroadPhase/>                                                      \n"
              "  <BVHNarrowPhase/>                                                            \n"
-             "  <CollisionResponse/>                                                         \n"
+             "  <CollisionResponse response='PenalityContactForceField'/>                    \n"
              "</Node>                                                                        \n" ;
 
     root = SceneLoaderXML::loadFromMemory ("testscene", scene.str().c_str());
     ASSERT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 
-    BaseObject* clp = root->getObject("pipeline") ;
+    sofa::core::objectmodel::BaseObject* clp = root->getObject("pipeline") ;
     ASSERT_NE(clp, nullptr) ;
 }
 
@@ -147,7 +147,7 @@ void TestCollisionPipeline::checkCollisionPipelineWithMissingBroadPhase()
              "<Node 	name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"
              "  <CollisionPipeline name='pipeline'/>                                         \n"
              "  <BVHNarrowPhase/>                                                            \n"
-             "  <CollisionResponse/>                                                         \n"
+             "  <CollisionResponse response='PenalityContactForceField'/>                    \n"
              "  <DiscreteIntersection name='interaction'/>                                   \n"
              "</Node>                                                                        \n" ;
 
@@ -155,7 +155,7 @@ void TestCollisionPipeline::checkCollisionPipelineWithMissingBroadPhase()
     ASSERT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 
-    BaseObject* clp = root->getObject("pipeline") ;
+    sofa::core::objectmodel::BaseObject* clp = root->getObject("pipeline") ;
     ASSERT_NE(clp, nullptr) ;
 }
 void TestCollisionPipeline::checkCollisionPipelineWithMissingNarrowPhase()
@@ -168,7 +168,7 @@ void TestCollisionPipeline::checkCollisionPipelineWithMissingNarrowPhase()
              "<Node 	name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"
              "  <CollisionPipeline name='pipeline'/>                                         \n"
              "  <BruteForceBroadPhase/>                                                      \n"
-             "  <CollisionResponse/>                                                         \n"
+             "  <CollisionResponse response='PenalityContactForceField'/>                    \n"
              "  <DiscreteIntersection name='interaction'/>                                   \n"
              "</Node>                                                                        \n" ;
 
@@ -176,7 +176,7 @@ void TestCollisionPipeline::checkCollisionPipelineWithMissingNarrowPhase()
     ASSERT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 
-    BaseObject* clp = root->getObject("pipeline") ;
+    sofa::core::objectmodel::BaseObject* clp = root->getObject("pipeline") ;
     ASSERT_NE(clp, nullptr) ;
 }
 void TestCollisionPipeline::checkCollisionPipelineWithMissingContactManager()
@@ -197,7 +197,7 @@ void TestCollisionPipeline::checkCollisionPipelineWithMissingContactManager()
     ASSERT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 
-    BaseObject* clp = root->getObject("pipeline") ;
+    sofa::core::objectmodel::BaseObject* clp = root->getObject("pipeline") ;
     ASSERT_NE(clp, nullptr) ;
 
 }
@@ -210,7 +210,7 @@ int TestCollisionPipeline::checkCollisionPipelineWithMonkeyValueForDepth(int dva
              "  <CollisionPipeline name='pipeline' depth='"<< dvalue <<"'/>                  \n"
              "  <BruteForceBroadPhase/>                                                      \n"
              "  <BVHNarrowPhase/>                                                            \n"
-             "  <CollisionResponse/>                                                         \n"
+             "  <CollisionResponse response='PenalityContactForceField'/>                    \n"
              "  <DiscreteIntersection name='interaction'/>                                   \n"
              "</Node>                                                                        \n" ;
 

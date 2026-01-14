@@ -30,16 +30,16 @@
 #include "LinkComponent.h"
 #include <sofa/core/SofaLibrary.h>
 
-#include <sofa/gui/qt/ModifyObject.h>
-#include <sofa/gui/qt/QDisplayPropertyWidget.h>
+#include <sofa/qt/ModifyObject.h>
+#include <sofa/qt/QDisplayPropertyWidget.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/Node.h>
 #include <SofaSimulationCommon/xml/BaseElement.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 
-#include <sofa/gui/qt/GraphListenerQListView.h>
-#include <sofa/gui/qt/SofaSceneGraphWidget.h>
+#include <sofa/qt/GraphListenerQListView.h>
+#include <sofa/qt/SofaSceneGraphWidget.h>
 
 
 #include <QTreeWidget>

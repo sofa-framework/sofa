@@ -4,18 +4,15 @@ using sofa::core::RegisterObject ;
 
 #include <SofaImplicitField/deprecated/InterpolatedImplicitSurface.h>
 
-namespace sofa
-{
-namespace component
-{
-namespace container
+namespace sofa::component::container
 {
 
-///factory register
-int InterpolatedImplicitSurfaceClass = RegisterObject("Deprecated. This class is forwarding DiscreteGridField.")
-        .add< InterpolatedImplicitSurface >()
-        .addAlias("DistGrid") ;
+// Register in the Factory
+void registerInterpolatedImplicitSurface(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Deprecated. This class is forwarding DiscreteGridField.")
+    .add< InterpolatedImplicitSurface >()
+    .addAlias("DistGrid"));
+}
 
-} /// container
-} /// component
-} /// sofa
+} /// sofa::component::container

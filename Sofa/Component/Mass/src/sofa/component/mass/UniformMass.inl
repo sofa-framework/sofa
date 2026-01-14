@@ -75,7 +75,6 @@ UniformMass<DataTypes>::UniformMass()
                                                                                    "are discarded (useful for parallelization using mesh partitioning)" ) )
     , d_indices ( initData ( &d_indices, "indices", "optional local DOF indices. Any computation involving only indices outside of this list are discarded" ) )
     , d_preserveTotalMass( initData ( &d_preserveTotalMass, false, "preserveTotalMass", "Prevent totalMass from decreasing when removing particles."))
-    , l_topology(initLink("topology", "link to the topology container"))
 {
     constructor_message();
 
@@ -633,8 +632,7 @@ void UniformMass<DataTypes>::draw(const VisualParams* vparams)
     std::vector<  sofa::type::Vec3 > points;
     for (const auto i : indices)
     {
-        sofa::type::Vec3 p;
-        p = DataTypes::getCPos(x[i]);
+        const sofa::type::Vec3 p = toVec3(DataTypes::getCPos(x[i]));
 
         points.push_back ( p );
         gravityCenter += x[i];

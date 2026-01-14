@@ -59,7 +59,7 @@ namespace sofa::core
     template<Size N1, Size N2, class T1, class T2>
     static inline void eq(type::Vec<N1,T1>& dest, const type::Vec<N2,T2>& src)
     {
-        dest = src;
+        dest = type::toVecN<N1, T1>(src);
     }
 
     template<Size N1, Size N2, class T1, class T2>

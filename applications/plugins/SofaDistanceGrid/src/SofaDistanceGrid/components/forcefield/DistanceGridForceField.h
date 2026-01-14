@@ -62,7 +62,7 @@ public:
     typedef container::DistanceGrid DistanceGrid;
 
 protected:
-    DistanceGrid* grid;
+    std::shared_ptr<DistanceGrid> grid;
 
     class Contact
     {
@@ -170,7 +170,7 @@ public:
     Data< type::Vec<2,int> > localRange;
 protected:
     DistanceGridForceField()
-        : grid(NULL)
+        : grid(nullptr)
         , fileDistanceGrid( initData( &fileDistanceGrid, "filename", "load distance grid from specified file"))
         , scale( initData( &scale, 1.0, "scale", "scaling factor for input file"))
         , box( initData( &box, "box", "Field bounding box defined by xmin,ymin,zmin, xmax,ymax,zmax") )

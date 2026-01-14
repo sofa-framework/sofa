@@ -23,6 +23,8 @@
 
 #include <sofa/config.h>
 
+using namespace sofa;
+
 #define ARTICULATEDSYSTEMPLUGIN_VERSION @PROJECT_VERSION@
 
 #ifdef SOFA_BUILD_ARTICULATEDSYSTEMPLUGIN
@@ -31,3 +33,9 @@
 #else
 #  define SOFA_ARTICULATEDSYSTEMPLUGIN_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
+
+namespace articulatedsystemplugin
+{
+    constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
+    constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
+} // namespace articulatedsystemplugin

@@ -29,8 +29,8 @@ using sofa::core::ObjectFactory ;
 #include <sofa/simulation/graph/DAGSimulation.h>
 using sofa::simulation::graph::DAGSimulation ;
 
-#include <sofa/simulation/graph/DAGNode.h>
-using sofa::simulation::graph::DAGNode;
+#include <sofa/simulation/Node.h>
+using sofa::simulation::Node;
 using sofa::core::objectmodel::BaseObjectDescription ;
 
 #include <sofa/simulation/XMLPrintVisitor.h>
@@ -93,10 +93,10 @@ NodeSPtr createRootNode(Simulation* s, const std::string& name,
     return root ;
 }
 
-BaseObject::SPtr createObject(Node::SPtr parent, BaseObjectDescription& desc)
+sofa::core::objectmodel::BaseObject::SPtr createObject(Node::SPtr parent, BaseObjectDescription& desc)
 {
     /// Create the object.
-    BaseObject::SPtr obj = ObjectFactory::getInstance()->createObject(parent.get(), &desc);
+    sofa::core::objectmodel::BaseObject::SPtr obj = ObjectFactory::getInstance()->createObject(parent.get(), &desc);
     if (obj == nullptr)
     {
         std::stringstream msg;
@@ -112,7 +112,7 @@ BaseObject::SPtr createObject(Node::SPtr parent, BaseObjectDescription& desc)
     return obj ;
 }
 
-BaseObject::SPtr createObject(Node::SPtr parent, const std::string& type, const std::map<std::string, std::string>& params)
+sofa::core::objectmodel::BaseObject::SPtr createObject(Node::SPtr parent, const std::string& type, const std::map<std::string, std::string>& params)
 {
     /// temporarily, the name is set to the type name.
     /// if a "name" parameter is provided, it will overwrite it.
@@ -144,7 +144,7 @@ Node::SPtr createChild(Node::SPtr node, BaseObjectDescription& desc)
 
 Node::SPtr createNode(const std::string& name)
 {
-    return core::objectmodel::New<DAGNode>(name);
+    return core::objectmodel::New<Node>(name);
 }
 
 } // namespace sofa::simpleapi

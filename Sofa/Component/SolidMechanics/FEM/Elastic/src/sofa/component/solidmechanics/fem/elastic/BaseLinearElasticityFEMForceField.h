@@ -22,7 +22,7 @@
 #pragma once
 #include <sofa/component/solidmechanics/fem/elastic/config.h>
 #include <sofa/core/behavior/ForceField.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/core/behavior/TopologyAccessor.h>
 
 
 namespace sofa::component::solidmechanics::fem::elastic
@@ -33,20 +33,17 @@ struct _2DMaterials{};
 struct _3DMaterials{};
 
 template<class DataTypes>
-class BaseLinearElasticityFEMForceField : virtual public core::behavior::ForceField<DataTypes>
+class BaseLinearElasticityFEMForceField : virtual public core::behavior::ForceField<DataTypes>, virtual public core::behavior::TopologyAccessor
 {
 public:
     using Coord = typename DataTypes::Coord;
     using VecReal = typename DataTypes::VecReal;
     using Real = typename DataTypes::Real;
 
-    SOFA_CLASS(SOFA_TEMPLATE(BaseLinearElasticityFEMForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes));
+    SOFA_CLASS2(SOFA_TEMPLATE(BaseLinearElasticityFEMForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes), core::behavior::TopologyAccessor);
 
     Data<VecReal > d_poissonRatio; ///< FEM Poisson Ratio in Hooke's law [0,0.5[
     Data<VecReal > d_youngModulus; ///< FEM Young's Modulus in Hooke's law
-
-    /// Link to be set to the topology container in the component graph.
-    SingleLink<BaseLinearElasticityFEMForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> l_topology;
 
     BaseLinearElasticityFEMForceField();
 

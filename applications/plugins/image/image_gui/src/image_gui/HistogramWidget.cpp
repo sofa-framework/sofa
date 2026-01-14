@@ -29,9 +29,6 @@
 namespace sofa
 {
 
-namespace gui
-{
-
 namespace qt
 {
 
@@ -66,7 +63,6 @@ helper::Creator<DataWidgetFactory, HistogramDataWidget< Histogram<bool> > >				D
 #endif
 
 } // qt
-} // gui
 } // sofa
 
 

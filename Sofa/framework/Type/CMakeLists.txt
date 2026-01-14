@@ -56,6 +56,7 @@ set(SOURCE_FILES
     ${SOFATYPESRC_ROOT}/BoundingBox.cpp
     ${SOFATYPESRC_ROOT}/DualQuat.cpp
     ${SOFATYPESRC_ROOT}/Frame.cpp
+    ${SOFATYPESRC_ROOT}/Mat.cpp
     ${SOFATYPESRC_ROOT}/Material.cpp
     ${SOFATYPESRC_ROOT}/PrimitiveGroup.cpp
     ${SOFATYPESRC_ROOT}/Quat.cpp
@@ -88,12 +89,22 @@ if(NOT Boost_FOUND)
         message(FATAL_ERROR "Boost (${BOOST_MIN_VERSION} or higher) is mandatory.")
     endif()
 endif()
+
 sofa_find_package(Boost QUIET REQUIRED)
+
+option(SOFA_USE_MIMALLOC "Use mimalloc to replace malloc (known to be more efficient, especially with MSVC)" OFF)
+if(SOFA_USE_MIMALLOC)
+    sofa_find_package(mimalloc REQUIRED)
+endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Config)
 target_link_libraries(${PROJECT_NAME} PUBLIC Boost::boost)
+
+if(mimalloc_FOUND)
+    target_link_libraries(${PROJECT_NAME} PUBLIC mimalloc)
+endif()
 
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER Sofa.Framework) # IDE folder
 

@@ -23,9 +23,9 @@
 
 #include <MultiThreading/component/solidmechanics/fem/elastic/ParallelTetrahedronFEMForceField.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/simulation/TaskScheduler.h>
-#include <sofa/simulation/MainTaskSchedulerFactory.h>
-#include <sofa/simulation/ParallelForEach.h>
+#include <sofa/simulation/task/TaskScheduler.h>
+#include <sofa/simulation/task/MainTaskSchedulerFactory.h>
+#include <sofa/simulation/task/ParallelForEach.h>
 
 namespace multithreading::component::forcefield::solidmechanics::fem::elastic
 {
@@ -186,7 +186,7 @@ void ParallelTetrahedronFEMForceField<DataTypes>::addKToMatrix(sofa::linearalgeb
                         {
                             for (sofa::Index j=0; j < S; j++)
                             {
-                                tmpBlock[n1][n2][i][j] = - tmp[n1*S+i][n2*S+j]* kFactor;
+                                tmpBlock[n1][n2](i,j) = - tmp(n1*S+i,n2*S+j)* kFactor;
                             }
                         }
                     }

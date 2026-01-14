@@ -132,7 +132,7 @@ void SparseGridTopology::init()
 
     _nodeAdjacency.resize(d_seqPoints.getValue().size() );
     for(unsigned i=0; i < d_seqPoints.getValue().size(); ++i)
-        _nodeAdjacency[i].assign(InvalidID);
+        _nodeAdjacency[i].fill(InvalidID);
 
     if (_nodeAdjacency.empty())
     {
@@ -885,7 +885,7 @@ void SparseGridTopology::launchPropagationFromSeed(const type::Vec3i &point,
     seed.push(point);
     while (!seed.empty())
     {
-        const type::Vec3i &s=seed.top();
+        const type::Vec3i s=seed.top();
         seed.pop();
         propagateFrom(s,regularGrid,regularGridTypes,alreadyTested,seed);
     }

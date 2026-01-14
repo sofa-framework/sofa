@@ -20,18 +20,16 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/gui/common/config.h>
-
+#include <sofa/component/visual/BaseCamera.h>
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/core/visual/DrawMesh.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/gui/common/ColourPickingVisitor.h>
-
+#include <sofa/gui/common/config.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/Node.h>
-
-#include <sofa/component/visual/BaseCamera.h>
 
 #include <string>
 
@@ -121,7 +119,25 @@ public:
     /// the rendering pass is done here (have to be called in a loop)
     virtual void drawScene(void) = 0;
 
+    void drawSelection(sofa::core::visual::VisualParams* vparams);
+
+    void setCurrentSelection(const std::set<core::objectmodel::Base::SPtr> &selection);
+    const std::set<sofa::core::objectmodel::Base::SPtr>& getCurrentSelection() const;
+
+public:
+    bool m_enableSelectionDraw {true};
+    bool m_showSelectedNodeBoundingBox {true};
+    bool m_showSelectedObjectBoundingBox {true};
+    bool m_showSelectedObjectPositions {false};
+    bool m_showSelectedObjectSurfaces {false};
+    bool m_showSelectedObjectVolumes {false};
+    bool m_showSelectedObjectIndices {false};
+    type::RGBAColor m_selectionColor {type::RGBAColor::purple()};
+    float m_visualScaling {0.2};
+
 protected:
+    void drawIndices(const sofa::type::BoundingBox& bbox, const std::vector<sofa::type::Vec3>& positions);
+
     /// internally called while the actual viewer needs a redraw (ie the camera changed)
     virtual void redraw() = 0;
 
@@ -135,6 +151,7 @@ protected:
     bool _video;
     bool m_isVideoButtonPressed;
     bool m_bShowAxis;
+
     bool _fullScreen;
     int _background;
     bool initTexturesDone;
@@ -153,6 +170,9 @@ protected:
     int _mouseInteractorSavedPosY;
 
     std::string _screenshotDirectory;
+
+    std::set<sofa::core::objectmodel::Base::SPtr> currentSelection;
+    std::unordered_map<sofa::core::objectmodel::BaseObject*, core::visual::DrawMesh> m_drawMeshContainer;
 };
 
 } // namespace sofa::gui::common
