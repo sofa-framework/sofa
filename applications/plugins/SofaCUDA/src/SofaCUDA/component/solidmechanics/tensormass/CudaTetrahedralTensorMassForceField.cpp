@@ -38,6 +38,7 @@ namespace gpu::cuda
 #ifdef SOFA_GPU_CUDA_DOUBLE
         .add< sofa::component::solidmechanics::tensormass::TetrahedralTensorMassForceField<CudaVec3dTypes> >()
 #endif
+        );
     }
 
 } // namespace gpu::cuda

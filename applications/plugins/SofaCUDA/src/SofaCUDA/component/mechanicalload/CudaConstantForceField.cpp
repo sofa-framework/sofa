@@ -49,6 +49,7 @@ namespace sofa::gpu::cuda
         .add< ConstantForceField<CudaRigid3dTypes> >()
         .add< ConstantForceField<CudaRigid2dTypes> >()
 #endif
+        );
     }
 
 } // namespace sofa::gpu::cuda

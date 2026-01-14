@@ -52,6 +52,7 @@ namespace sofa::gpu::cuda
         .add< UncoupledConstraintCorrection< CudaVec3dTypes > >()
         .add< UncoupledConstraintCorrection< CudaVec3d1Types > >()
 #endif
+        );
     }
 
 } // namespace sofa::gpu::cuda

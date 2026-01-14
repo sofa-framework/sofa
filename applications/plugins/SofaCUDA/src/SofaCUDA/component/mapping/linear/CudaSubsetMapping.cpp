@@ -47,7 +47,7 @@ using namespace sofa::component::mapping::linear;
         .add< SubsetMapping< CudaVec3fTypes, CudaVec3fTypes > >()
         .add< SubsetMapping< CudaVec3f1Types, CudaVec3f1Types > >()
         .add< SubsetMapping< CudaVec3f1Types, CudaVec3fTypes > >()
-        .add< SubsetMapping< CudaVec3fTypes, CudaVec3f1Types > >()
+        .add< SubsetMapping< CudaVec3fTypes, CudaVec3f1Types > >());
     }
 
 } // namespace sofa::gpu::cuda

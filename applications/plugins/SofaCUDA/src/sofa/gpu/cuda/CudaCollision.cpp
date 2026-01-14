@@ -82,7 +82,7 @@ public:
 void registerProximityIntersection(sofa::core::ObjectFactory* factory)
 {
     factory->registerObjects(sofa::core::ObjectRegistrationData("GPGPU Proximity Intersection based on CUDA")
-    .add< CudaProximityIntersection >()
+    .add< CudaProximityIntersection >());
 }
 
 sofa::helper::Creator<core::collision::Contact::Factory, RayContact<SphereCollisionModel<gpu::cuda::CudaVec3Types>> > RayCudaSphereContactClass("RayContact",true);

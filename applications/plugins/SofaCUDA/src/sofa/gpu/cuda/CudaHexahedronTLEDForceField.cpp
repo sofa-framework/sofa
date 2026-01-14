@@ -35,7 +35,7 @@ namespace sofa::gpu::cuda
 void registerHexahedronTLEDForceField(sofa::core::ObjectFactory* factory)
 {
     factory->registerObjects(sofa::core::ObjectRegistrationData("GPU-side TLED hexahedron forcefield using CUDA")
-    .add< CudaHexahedronTLEDForceField >()
+    .add< CudaHexahedronTLEDForceField >());
 }
 
 extern "C"

@@ -51,6 +51,7 @@ namespace sofa::gpu::cuda
         .add< BilateralLagrangianConstraint<CudaVec3dTypes> >()
         .add< BilateralLagrangianConstraint<CudaVec3d1Types> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
+        );
     }
 
 } // namespace sofa::gpu::cuda

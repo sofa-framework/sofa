@@ -40,6 +40,7 @@ namespace sofa::gpu::cuda
         .add< component::mass::UniformMass<CudaVec3d1Types> >()
         .add< component::mass::UniformMass<CudaRigid3dTypes > >()
 #endif // SOFA_GPU_CUDA_DOUBLE
+        );
     }
 
 } // namespace sofa::gpu::cuda

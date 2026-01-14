@@ -49,6 +49,7 @@ namespace sofa::gpu::cuda
         .add< component::constraint::projective::LinearMovementProjectiveConstraint<CudaVec6dTypes> >()
         .add< component::constraint::projective::LinearMovementProjectiveConstraint<CudaRigid3dTypes> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
+        );
     }
 
 } // namespace sofa::gpu::cuda

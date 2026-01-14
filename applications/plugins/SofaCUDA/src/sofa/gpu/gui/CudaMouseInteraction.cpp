@@ -76,6 +76,7 @@ namespace sofa::gpu::cuda
 #ifdef SOFA_GPU_CUDA_DOUBLE
         .add< MouseInteractor<CudaVec3dTypes> >()
 #endif
+        );
     }
 
 }

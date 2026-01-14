@@ -87,6 +87,7 @@ namespace sofa::gpu::cuda
         .add< IdentityMapping< CudaVec3fTypes, CudaVec3dTypes> >()
         .add< IdentityMapping< Vec3Types, CudaVec3dTypes> >()
 #endif
+        );
     }
 
 } // namespace sofa::gpu::cuda

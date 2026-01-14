@@ -42,8 +42,9 @@ namespace sofa::gpu::cuda
         factory->registerObjects(sofa::core::ObjectRegistrationData("Supports GPU-side computations using CUDA for the TriangularFEMForceFieldOptim")
         .add< sofa::component::solidmechanics::fem::elastic::TriangularFEMForceFieldOptim<CudaVec3fTypes> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
-    .add< sofa::component::solidmechanics::fem::elastic::TriangularFEMForceFieldOptim<CudaVec3dTypes> >()
+        .add< sofa::component::solidmechanics::fem::elastic::TriangularFEMForceFieldOptim<CudaVec3dTypes> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
+        );
     }
 
 } // sofa::gpu::cuda

@@ -47,6 +47,7 @@ namespace sofa::gpu::cuda
         .add< sofa::component::collision::response::contact::PenalityContactForceField<CudaVec3dTypes> >()
         .add< sofa::component::collision::response::contact::PenalityContactForceField<CudaVec3d1Types> >()
 #endif
+        );
     }
 
 } // namespace sofa::gpu::cuda

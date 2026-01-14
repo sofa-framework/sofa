@@ -92,6 +92,7 @@ void registerMechanicalObject(sofa::core::ObjectFactory* factory)
     .add< component::statecontainer::MechanicalObject<CudaRigid3dTypes> >()
     .add< component::statecontainer::MechanicalObject<CudaRigid2dTypes> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
+    );
 }
 
 void registerMappedObject(sofa::core::ObjectFactory* factory)
@@ -113,6 +114,7 @@ void registerMappedObject(sofa::core::ObjectFactory* factory)
     .add< component::statecontainer::MappedObject<CudaRigid3dTypes> >()
     .add< component::statecontainer::MappedObject<CudaRigid2dTypes> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
+    );
 }
 
 } // namespace sofa::gpu::cuda

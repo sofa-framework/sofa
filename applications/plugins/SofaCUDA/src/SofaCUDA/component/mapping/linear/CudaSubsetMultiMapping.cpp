@@ -44,6 +44,7 @@ namespace sofa::gpu::cuda
         .add< SubsetMultiMapping< CudaRigid3dTypes, CudaRigid3dTypes > >()
         .add< SubsetMultiMapping< CudaRigid3dTypes, CudaVec3dTypes > >()
 #endif
+        );
     }
 }
 

@@ -47,6 +47,7 @@ namespace sofa::gpu::cuda
         .add< component::mechanicalload::SphereForceField<CudaVec3dTypes> >()
         .add< component::mechanicalload::SphereForceField<CudaVec3d1Types> >()
 #endif
+        );
     }
 
 } // namespace sofa::gpu::cuda

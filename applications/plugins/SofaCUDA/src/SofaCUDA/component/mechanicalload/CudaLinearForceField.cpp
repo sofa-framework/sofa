@@ -51,6 +51,7 @@ namespace sofa::gpu::cuda
         .add< component::mechanicalload::LinearForceField<CudaVec6dTypes> >()
 		.add< component::mechanicalload::LinearForceField<CudaRigid3dTypes> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
+        );
     }
 
 }// namespace sofa::gpu::cuda

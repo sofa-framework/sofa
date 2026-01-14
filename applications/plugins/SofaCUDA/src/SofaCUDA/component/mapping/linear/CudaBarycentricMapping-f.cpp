@@ -54,7 +54,7 @@ using namespace sofa::component::mapping::linear;
 
 void registerBarycentricMapping_f(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(sofa::core::ObjectRegistrationData("Supports GPU-side computations using CUDA for the BarycentricMapping_f")
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Supports GPU-side computations using CUDA for the BarycentricMapping_f"));
 }
 
 } // namespace gpu::cuda

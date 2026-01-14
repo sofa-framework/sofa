@@ -54,6 +54,7 @@ namespace sofa::gpu::cuda
         .add< component::engine::select::boxroi::BoxROI<CudaVec3d1Types> >()
         .add< component::engine::select::boxroi::BoxROI<CudaRigid3dTypes> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
+        );
     }
 
 } // namespace sofa::gpu::cuda

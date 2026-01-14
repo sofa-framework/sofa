@@ -32,7 +32,7 @@ namespace sofa::gpu::cuda
     {
         factory->registerObjects(sofa::core::ObjectRegistrationData("Supports GPU-side computations using CUDA for the EllipsoidForceField")
         .add< component::mechanicalload::EllipsoidForceField<CudaVec3fTypes> >()
-        .add< component::mechanicalload::EllipsoidForceField<CudaVec3f1Types> >()
+        .add< component::mechanicalload::EllipsoidForceField<CudaVec3f1Types> >());
     }
 
 } // namespace sofa::gpu::cuda

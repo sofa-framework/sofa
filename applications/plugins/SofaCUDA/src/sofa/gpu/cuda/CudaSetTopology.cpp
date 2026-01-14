@@ -80,7 +80,7 @@ void registerPointSetGeometryAlgorithms(sofa::core::ObjectFactory* factory)
         .add< PointSetGeometryAlgorithms<CudaVec3dTypes> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
         .add< PointSetGeometryAlgorithms<CudaVec3fTypes> >()
-        .add< PointSetGeometryAlgorithms<CudaVec3f1Types> >()
+        .add< PointSetGeometryAlgorithms<CudaVec3f1Types> >());
 }
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
@@ -101,7 +101,7 @@ void registerEdgeSetGeometryAlgorithms(sofa::core::ObjectFactory* factory)
     .add< EdgeSetGeometryAlgorithms<CudaVec3dTypes> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
     .add< EdgeSetGeometryAlgorithms<CudaVec3fTypes> >()
-    .add< EdgeSetGeometryAlgorithms<CudaVec3f1Types> >()
+    .add< EdgeSetGeometryAlgorithms<CudaVec3f1Types> >());
 }
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
@@ -122,7 +122,7 @@ void registerTriangleSetGeometryAlgorithms(sofa::core::ObjectFactory* factory)
         .add< TriangleSetGeometryAlgorithms<CudaVec3dTypes> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
         .add< TriangleSetGeometryAlgorithms<CudaVec3fTypes> >()
-        .add< TriangleSetGeometryAlgorithms<CudaVec3f1Types> >()
+        .add< TriangleSetGeometryAlgorithms<CudaVec3f1Types> >());
 }
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
@@ -143,7 +143,7 @@ void registerQuadSetGeometryAlgorithms(sofa::core::ObjectFactory* factory)
         .add< QuadSetGeometryAlgorithms<CudaVec3dTypes> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
         .add< QuadSetGeometryAlgorithms<CudaVec3fTypes> >()
-        .add< QuadSetGeometryAlgorithms<CudaVec3f1Types> >()
+        .add< QuadSetGeometryAlgorithms<CudaVec3f1Types> >());
 }
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
@@ -164,7 +164,7 @@ void registerTetrahedronSetGeometryAlgorithms(sofa::core::ObjectFactory* factory
         .add< TetrahedronSetGeometryAlgorithms<CudaVec3dTypes> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
         .add< TetrahedronSetGeometryAlgorithms<CudaVec3fTypes> >()
-        .add< TetrahedronSetGeometryAlgorithms<CudaVec3f1Types> >()
+        .add< TetrahedronSetGeometryAlgorithms<CudaVec3f1Types> >());
 }
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
@@ -185,7 +185,7 @@ void registerHexahedronSetGeometryAlgorithms(sofa::core::ObjectFactory* factory)
         .add< HexahedronSetGeometryAlgorithms<CudaVec3dTypes> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
         .add< HexahedronSetGeometryAlgorithms<CudaVec3fTypes> >()
-        .add< HexahedronSetGeometryAlgorithms<CudaVec3f1Types> >()
+        .add< HexahedronSetGeometryAlgorithms<CudaVec3f1Types> >());
 }
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
