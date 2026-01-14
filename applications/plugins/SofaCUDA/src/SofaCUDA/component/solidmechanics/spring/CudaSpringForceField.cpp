@@ -71,6 +71,7 @@ namespace sofa::gpu::cuda
         .add< sofa::component::solidmechanics::spring::SpringForceField<CudaVec3dTypes> >()
         .add< sofa::component::solidmechanics::spring::SpringForceField<CudaVec3d1Types> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
+        );
     }
 
     void registerMeshSpringForceField(sofa::core::ObjectFactory* factory)
@@ -82,6 +83,7 @@ namespace sofa::gpu::cuda
         .add< sofa::component::solidmechanics::spring::MeshSpringForceField<CudaVec3dTypes> >()
         .add< sofa::component::solidmechanics::spring::MeshSpringForceField<CudaVec3d1Types> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
+        );
     }
 
     void registerTriangleBendingSprings(sofa::core::ObjectFactory* factory)
@@ -93,6 +95,7 @@ namespace sofa::gpu::cuda
         .add< sofa::component::solidmechanics::spring::TriangleBendingSprings<CudaVec3dTypes> >()
         .add< sofa::component::solidmechanics::spring::TriangleBendingSprings<CudaVec3d1Types> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
+        );
     }
 
     void registerQuadBendingSprings(sofa::core::ObjectFactory* factory)
@@ -104,6 +107,7 @@ namespace sofa::gpu::cuda
         .add< sofa::component::solidmechanics::spring::QuadBendingSprings<CudaVec3dTypes> >()
         .add< sofa::component::solidmechanics::spring::QuadBendingSprings<CudaVec3d1Types> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
+        );
     }
 
 } // namespace sofa::gpu::cuda

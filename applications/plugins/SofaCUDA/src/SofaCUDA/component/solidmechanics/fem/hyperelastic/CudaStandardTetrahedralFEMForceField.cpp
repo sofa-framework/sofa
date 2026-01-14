@@ -39,6 +39,7 @@ namespace gpu::cuda
 #ifdef SOFA_GPU_CUDA_DOUBLE
         .add< sofa::component::solidmechanics::fem::hyperelastic::StandardTetrahedralFEMForceField<CudaVec3dTypes> >()
 #endif
+        );
     }
 
 } // namespace gpu::cuda

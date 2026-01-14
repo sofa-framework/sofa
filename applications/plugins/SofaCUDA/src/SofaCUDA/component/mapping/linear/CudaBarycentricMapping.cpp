@@ -53,7 +53,7 @@ namespace sofa::gpu::cuda
     {
         factory->registerObjects(sofa::core::ObjectRegistrationData("Supports GPU-side computations using CUDA for the BarycentricMapping")
         .add< BarycentricMapping< Vec3Types, CudaVec3Types> >()
-        .add< BarycentricMapping< CudaVec3Types, Vec3Types> >()
+        .add< BarycentricMapping< CudaVec3Types, Vec3Types> >());
     }
 
 } // namespace sofa::gpu::cuda

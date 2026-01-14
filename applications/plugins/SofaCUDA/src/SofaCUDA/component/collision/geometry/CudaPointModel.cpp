@@ -31,6 +31,7 @@ namespace sofa::gpu::cuda
     {
         factory->registerObjects(sofa::core::ObjectRegistrationData("Supports GPU-side computations using CUDA for the PointCollisionModel")
         .add< CudaPointCollisionModel >()
+        );
     }
 
 using namespace defaulttype;

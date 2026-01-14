@@ -52,6 +52,7 @@ namespace sofa::gpu::cuda
         .add< LinearSolverConstraintCorrection< CudaVec3dTypes > >()
         .add< LinearSolverConstraintCorrection< CudaVec3d1Types > >()
 #endif
+        );
     }
 
 } // namespace sofa::gpu::cuda

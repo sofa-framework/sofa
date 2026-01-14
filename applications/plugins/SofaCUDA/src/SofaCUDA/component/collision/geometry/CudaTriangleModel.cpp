@@ -49,6 +49,7 @@ namespace sofa::gpu::cuda
         .add< component::collision::geometry::TriangleCollisionModel<CudaVec3dTypes> >()
         .add< component::collision::geometry::TriangleCollisionModel<CudaVec3d1Types> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
+        );
     }
 
 } // namespace sofa::gpu::cuda

@@ -84,6 +84,7 @@ namespace gpu::cuda
         .add< component::mass::MeshMatrixMass<CudaVec1dTypes, CudaVec2dTypes > >()
         .add< component::mass::MeshMatrixMass<CudaVec1dTypes, CudaVec3dTypes > >()
 #endif // SOFA_GPU_CUDA_DOUBLE
+        );
     }
 
 } // namespace gpu::cuda

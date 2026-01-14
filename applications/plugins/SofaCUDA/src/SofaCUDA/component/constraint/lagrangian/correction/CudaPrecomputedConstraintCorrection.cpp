@@ -51,6 +51,7 @@ namespace sofa::gpu::cuda
         .add< PrecomputedConstraintCorrection< CudaVec3dTypes > >()
         .add< PrecomputedConstraintCorrection< CudaVec3d1Types > >()
 #endif
+        );
     }
 
 } // namespace sofa::gpu::cuda

@@ -52,7 +52,7 @@ using namespace sofa::gpu::cuda;
 void registerBarycentricMapping(sofa::core::ObjectFactory* factory)
 {
     factory->registerObjects(sofa::core::ObjectRegistrationData("Supports GPU-side computations using CUDA for the BarycentricMapping")
-    .add< BarycentricMapping< CudaVec3Types, Rigid3Types > >()
+    .add< BarycentricMapping< CudaVec3Types, Rigid3Types > >());
 }
 
 

@@ -49,6 +49,7 @@ namespace sofa::gpu::cuda
         .add< component::engine::select::SphereROI<CudaVec3dTypes> >()
         .add< component::engine::select::SphereROI<CudaVec3d1Types> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
+        );
     }
 
 } // namespace sofa::gpu::cuda

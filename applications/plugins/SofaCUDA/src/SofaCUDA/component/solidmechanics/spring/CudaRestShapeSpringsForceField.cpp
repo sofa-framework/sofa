@@ -50,6 +50,7 @@ namespace sofa::gpu::cuda
         .add< sofa::component::solidmechanics::spring::RestShapeSpringsForceField<CudaVec3dTypes> >()
         .add< sofa::component::solidmechanics::spring::RestShapeSpringsForceField<CudaVec3d1Types> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
+        );
     }
 
 } // namespace sofa::gpu::cuda

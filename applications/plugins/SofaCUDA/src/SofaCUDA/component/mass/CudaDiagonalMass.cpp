@@ -60,6 +60,7 @@ namespace gpu::cuda
 #ifdef SOFA_GPU_CUDA_DOUBLE
         .add< component::mass::DiagonalMass<CudaVec3dTypes> >()
  #endif // SOFA_GPU_CUDA_DOUBLE
+        );
     }
 
 } // namespace gpu::cuda

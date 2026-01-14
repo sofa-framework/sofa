@@ -83,6 +83,7 @@ void registerRigidMapping(sofa::core::ObjectFactory* factory)
         .add< RigidMapping< Rigid3fTypes, CudaVec3d1Types> >()
         .add< RigidMapping< Rigid3dTypes, CudaVec3d1Types> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
+        );
 }
 
 } //namespace sofa::gpu::cuda

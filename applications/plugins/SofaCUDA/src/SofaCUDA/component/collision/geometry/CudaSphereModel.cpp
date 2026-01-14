@@ -51,7 +51,7 @@ namespace sofa::gpu::cuda
         .add< component::collision::geometry::SphereCollisionModel<CudaVec3d1Types> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
         .addAlias("CudaSphere")
-        .addAlias("CudaSphereModel")
+        .addAlias("CudaSphereModel"));
     }
 
 } // namespace sofa::gpu::cuda
