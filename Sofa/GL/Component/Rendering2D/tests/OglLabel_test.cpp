@@ -76,7 +76,7 @@ public:
         root->init(sofa::core::execparams::defaultInstance()) ;
 
 
-        BaseObject* lm = root->getObject("label1") ;
+        sofa::core::objectmodel::BaseObject* lm = root->getObject("label1") ;
         ASSERT_NE(nullptr, lm) ;
 
         OglLabel* ogllabel = dynamic_cast<OglLabel*>(lm);
@@ -106,7 +106,7 @@ public:
         ASSERT_NE(nullptr, root.get()) ;
         root->init(sofa::core::execparams::defaultInstance()) ;
 
-        BaseObject* lm = root->getObject("label1") ;
+        sofa::core::objectmodel::BaseObject* lm = root->getObject("label1") ;
         ASSERT_NE(nullptr, lm) ;
 
         OglLabel* ogllabel = dynamic_cast<OglLabel*>(lm);
@@ -133,7 +133,7 @@ public:
         ASSERT_NE(root.get(), nullptr) ;
         root->init(sofa::core::execparams::defaultInstance()) ;
 
-        BaseObject* lm = root->getObject("label1") ;
+        sofa::core::objectmodel::BaseObject* lm = root->getObject("label1") ;
         ASSERT_NE(lm, nullptr) ;
 
         /// List of the supported attributes the user expect to find

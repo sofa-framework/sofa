@@ -199,7 +199,8 @@ const std::map<std::string, RGBAColor> stringToColorMap {
     {"olive", g_olive},
     {"maroon", g_maroon},
     {"silver", g_silver},
-    {"gold", g_gold}
+    {"gold", g_gold},
+    {"azure", g_azure}
 };
 
 SOFA_TYPE_API std::istream& operator>>(std::istream& i, RGBAColor& t)

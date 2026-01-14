@@ -33,24 +33,24 @@ using sofa::testing::BaseTest ;
 
 #include "BaseLink_test.h"
 
-class EmptyObject : public BaseObject
+class EmptyObject : public sofa::core::objectmodel::BaseObject
 {
 public:
-    SOFA_CLASS(EmptyObject, BaseObject) ;
+    SOFA_CLASS(EmptyObject, sofa::core::objectmodel::BaseObject) ;
 };
 
 class SingleLink_test: public BaseTest
 {
 public:
-    SingleLink<BaseObject, BaseObject, BaseLink::FLAG_DOUBLELINK|BaseLink::FLAG_STRONGLINK|BaseLink::FLAG_STOREPATH > m_link ;
-    BaseObject::SPtr m_dst ;
-    BaseObject::SPtr m_src ;
+    SingleLink<sofa::core::objectmodel::BaseObject, sofa::core::objectmodel::BaseObject, BaseLink::FLAG_DOUBLELINK|BaseLink::FLAG_STRONGLINK|BaseLink::FLAG_STOREPATH > m_link ;
+    sofa::core::objectmodel::BaseObject::SPtr m_dst ;
+    sofa::core::objectmodel::BaseObject::SPtr m_src ;
 
     /// Create a link to an object.
     void doSetUp() override
     {
-        m_dst = sofa::core::objectmodel::New<BaseObject>() ;
-        m_src = sofa::core::objectmodel::New<BaseObject>() ;
+        m_dst = sofa::core::objectmodel::New<sofa::core::objectmodel::BaseObject>() ;
+        m_src = sofa::core::objectmodel::New<sofa::core::objectmodel::BaseObject>() ;
 
         m_dst->setName("destination") ;
         m_src->setName("source") ;
@@ -87,14 +87,14 @@ TEST_F(SingleLink_test, checkCounterLogic )
 
 TEST_F(SingleLink_test, checkMultiLink )
 {
-    SingleLink<BaseObject, BaseObject, BaseLink::FLAG_MULTILINK > smlink ;
+    SingleLink<sofa::core::objectmodel::BaseObject, sofa::core::objectmodel::BaseObject, BaseLink::FLAG_MULTILINK > smlink ;
     ASSERT_EQ(smlink.size(), size_t(0)) ;
     smlink.add(m_dst.get()) ;
     ASSERT_EQ(smlink.size(), size_t(1)) ;
     smlink.add(m_dst.get()) ;
     ASSERT_EQ(smlink.size(), size_t(1)) ;
 
-    SingleLink<BaseObject, BaseObject, BaseLink::FLAG_NONE > slink ;
+    SingleLink<sofa::core::objectmodel::BaseObject, sofa::core::objectmodel::BaseObject, BaseLink::FLAG_NONE > slink ;
     ASSERT_EQ(slink.size(), size_t(0)) ;
     slink.add(m_dst.get()) ;
     ASSERT_EQ(slink.size(), size_t(1)) ;
@@ -104,10 +104,10 @@ TEST_F(SingleLink_test, checkMultiLink )
 
 TEST_F(SingleLink_test, getOwnerBase)
 {
-    const auto aBaseObject = sofa::core::objectmodel::New<BaseObject>();
+    const auto aBaseObject = sofa::core::objectmodel::New<sofa::core::objectmodel::BaseObject>();
     using sofa::core::objectmodel::BaseNode;
-    const BaseLink::InitLink<BaseObject> initObjectLink(aBaseObject.get(), "objectlink", "");
-    const SingleLink<BaseObject, BaseObject, BaseLink::FLAG_NONE > objectLink(initObjectLink) ;
+    const BaseLink::InitLink<sofa::core::objectmodel::BaseObject> initObjectLink(aBaseObject.get(), "objectlink", "");
+    const SingleLink<sofa::core::objectmodel::BaseObject, sofa::core::objectmodel::BaseObject, BaseLink::FLAG_NONE > objectLink(initObjectLink) ;
     ASSERT_EQ(objectLink.getOwnerBase(), aBaseObject.get());
     // m_link is initialized without an owner.
     // getOwnerBase() should still work and return a nullptr

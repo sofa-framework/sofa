@@ -276,7 +276,7 @@ void TriangleCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
 }
 
 template<class DataTypes>
-void TriangleCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, int maxDepth)
+void TriangleCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, ContinuousIntersectionTypeFlag continuousIntersectionFlag, int maxDepth)
 {
     CubeCollisionModel* cubeModel = createPrevious<CubeCollisionModel>();
 
@@ -297,12 +297,12 @@ void TriangleCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, 
         for (sofa::Size i=0; i<size; i++)
         {
             Element t(this,i);
-            const type::Vec3& pt1 = t.p1();
-            const type::Vec3& pt2 = t.p2();
-            const type::Vec3& pt3 = t.p3();
-            const type::Vec3 pt1v = pt1 + t.v1()*dt;
-            const type::Vec3 pt2v = pt2 + t.v2()*dt;
-            const type::Vec3 pt3v = pt3 + t.v3()*dt;
+            const auto& pt1 = t.p1();
+            const auto& pt2 = t.p2();
+            const auto& pt3 = t.p3();
+            const auto pt1v = (continuousIntersectionFlag == ContinuousIntersectionTypeFlag::Inertia ? pt1 + t.v1()*dt : t.p1Free());
+            const auto pt2v = (continuousIntersectionFlag == ContinuousIntersectionTypeFlag::Inertia ? pt2 + t.v2()*dt : t.p2Free());
+            const auto pt3v = (continuousIntersectionFlag == ContinuousIntersectionTypeFlag::Inertia ? pt3 + t.v3()*dt : t.p3Free());
 
             for (int c = 0; c < 3; c++)
             {
