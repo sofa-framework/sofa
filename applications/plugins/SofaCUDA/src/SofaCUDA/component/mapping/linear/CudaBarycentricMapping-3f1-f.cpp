@@ -52,9 +52,9 @@ namespace gpu::cuda
     using namespace sofa::core::behavior;
     using namespace sofa::component::mapping::linear;
 
-    void registerBarycentricMapping_3f1_f(sofa::core::ObjectFactory* factory)
+    void registerBarycentricMapping_3f1_f(sofa::core::ObjectFactory* /*factory*/)
     {
-        factory->registerObjects(sofa::core::ObjectRegistrationData("Supports GPU-side computations using CUDA for the BarycentricMapping_3f1_f"));
+        //factory->registerObjects(sofa::core::ObjectRegistrationData("Supports GPU-side computations using CUDA for the BarycentricMapping_3f1_f"));
     }
 
 } // namespace gpu::cuda
