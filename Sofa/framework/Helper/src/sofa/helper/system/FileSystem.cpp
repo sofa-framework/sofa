@@ -523,12 +523,13 @@ bool FileSystem::openFileWithDefaultApplication(const std::string& filename)
         if ((INT_PTR)ShellExecuteA(nullptr, "open", filename.c_str(), nullptr, nullptr, SW_SHOWNORMAL) > 32)
             success = true;
 #elif defined(__APPLE__)
-        const std::string command = "open \"" + filename + "\"";
-        FILE* pipe = popen(command.c_str(), "r+");
-        if (pipe != nullptr)
+        pid_t pid; // points to a buffer that is used to return the process ID of the new child process.
+        char* argv[] = {const_cast<char*>("open"), vconst_cast<char*>(filename.c_str()), nullptr};
+        if (posix_spawn(&pid, "/usr/bin/open", nullptr, nullptr, argv, environ) == 0) 
         {
-            success = true;
-            pclose(pipe);
+            int status;
+            if (waitpid(pid, &status, 0) != -1 && WIFEXITED(status) && WEXITSTATUS(status) == 0)
+                success = true;
         }
 #else
         pid_t pid; // points to a buffer that is used to return the process ID of the new child process.
