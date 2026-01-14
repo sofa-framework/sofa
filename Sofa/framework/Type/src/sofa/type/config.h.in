@@ -23,6 +23,8 @@
 
 #include <sofa/config.h>
 
+#cmakedefine01 SOFA_TYPE_HAVE_MIMALLOC
+
 #define SOFATYPE_VERSION @PROJECT_VERSION@
 
 #ifdef SOFA_BUILD_SOFA_TYPE
