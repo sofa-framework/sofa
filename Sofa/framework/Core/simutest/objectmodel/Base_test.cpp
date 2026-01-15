@@ -38,17 +38,17 @@ using sofa::defaulttype::Vec3Types;
 
 namespace customns
 {
-class CustomBaseObject : public BaseObject
+class CustomBaseObject : public sofa::core::objectmodel::BaseObject
 {
 public:
-    SOFA_CLASS(CustomBaseObject, BaseObject);
+    SOFA_CLASS(CustomBaseObject, sofa::core::objectmodel::BaseObject);
 };
 
 template<class D>
-class CustomBaseObjectT : public BaseObject
+class CustomBaseObjectT : public sofa::core::objectmodel::BaseObject
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(CustomBaseObjectT, D), BaseObject);
+    SOFA_CLASS(SOFA_TEMPLATE(CustomBaseObjectT, D), sofa::core::objectmodel::BaseObject);
 
     static const std::string GetCustomClassName() { return "MyFakeClassName"; }
 };
@@ -100,9 +100,9 @@ TEST_F(Base_test , testComponentState )
 
 TEST_F(Base_test , testBaseClass)
 {
-    EXPECT_EQ(CustomBaseObject::GetClass()->className, "CustomBaseObject");
-    EXPECT_EQ(CustomBaseObject::GetClass()->templateName, "");
-    EXPECT_EQ(CustomBaseObject::GetClass()->shortName, "customBaseObject");
+    EXPECT_EQ(customns::CustomBaseObject::GetClass()->className, "CustomBaseObject");
+    EXPECT_EQ(customns::CustomBaseObject::GetClass()->templateName, "");
+    EXPECT_EQ(customns::CustomBaseObject::GetClass()->shortName, "customBaseObject");
 
     EXPECT_EQ(CustomBaseObjectT<Rigid3Types>::GetClass()->className, "MyFakeClassName");
     EXPECT_EQ(CustomBaseObjectT<Rigid3Types>::GetClass()->templateName, Rigid3Types::Name());
@@ -115,7 +115,7 @@ TEST_F(Base_test , testBaseClass)
 
 TEST_F(Base_test , testGetClassName)
 {
-    const CustomBaseObject o;
+    const customns::CustomBaseObject o;
     EXPECT_EQ(o.getClassName(), "CustomBaseObject");
     EXPECT_EQ(o.getTemplateName(), "");
     EXPECT_EQ(o.getTypeName(), "CustomBaseObject");

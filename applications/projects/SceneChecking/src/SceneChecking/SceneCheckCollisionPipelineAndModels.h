@@ -19,78 +19,36 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/type/init.h>
+#pragma once
 
-#include <iostream>
+#include <SceneChecking/config.h>
+#include <sofa/simulation/SceneCheck.h>
 
-#if SOFA_TYPE_HAVE_MIMALLOC == 1
-#include <mimalloc.h>
-#endif
+#include <map>
+#include <sstream>
 
-
-namespace sofa::type
+namespace sofa::_scenechecking_
 {
-
-static bool s_initialized = false;
-static bool s_cleanedUp = false;
-
-SOFA_TYPE_API void init()
+    
+class SOFA_SCENECHECKING_API SceneCheckCollisionPipelineAndModels : public sofa::simulation::SceneCheck
 {
-    if (!s_initialized)
-    {
-#if SOFA_TYPE_HAVE_MIMALLOC == 1
-        mi_version();
-#endif
-        s_initialized = true;
-    }
+public:
+    virtual ~SceneCheckCollisionPipelineAndModels() {}
+    typedef std::shared_ptr<SceneCheckCollisionPipelineAndModels> SPtr;
+    static SPtr newSPtr() { return SPtr(new SceneCheckCollisionPipelineAndModels()); }
+    virtual const std::string getName() override;
+    virtual const std::string getDesc() override;
+    void doInit(sofa::simulation::Node* node) override;
+    void doCheckOn(sofa::simulation::Node* node) override;
+    void doPrintSummary() override;
+
+private:
+    std::string m_message;
+};
+
+} // namespace sofa::_scenechecking_
+
+namespace sofa::scenechecking
+{
+    using _scenechecking_::SceneCheckCollisionPipelineAndModels;
 }
-
-SOFA_TYPE_API bool isInitialized()
-{
-    return s_initialized;
-}
-
-SOFA_TYPE_API void cleanup()
-{
-    if (!s_cleanedUp)
-    {
-        s_cleanedUp = true;
-    }
-}
-
-SOFA_TYPE_API bool isCleanedUp()
-{
-    return s_cleanedUp;
-}
-
-SOFA_TYPE_API void printUninitializedLibraryWarning(const std::string& library,
-                                                      const std::string& initFunction)
-{
-    std::cerr << "WARNING: " << library << " : the library has not been initialized ("
-              << initFunction << " has never been called, see sofa/type/init.h)"
-              << std::endl;
-}
-
-SOFA_TYPE_API void printLibraryNotCleanedUpWarning(const std::string& library,
-                                                     const std::string& cleanupFunction)
-{
-    std::cerr << "WARNING: " << library << " : the library has not been cleaned up ("
-              << cleanupFunction << " has never been called, see sofa/type/init.h)"
-              << std::endl;
-}
-
-// Detect missing cleanup() call.
-static const struct CleanupCheck
-{
-    CleanupCheck()
-    {
-
-    }
-    ~CleanupCheck()
-    {
-        if (type::isInitialized() && !type::isCleanedUp())
-            type::printLibraryNotCleanedUpWarning("Sofa.Type", "sofa::type::cleanup()");
-    }
-} check;
-
-} // namespace sofa::type

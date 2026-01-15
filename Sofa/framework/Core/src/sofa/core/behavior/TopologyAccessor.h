@@ -19,78 +19,33 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/type/init.h>
+#pragma once
 
-#include <iostream>
+#include <sofa/core/config.h>
+#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 
-#if SOFA_TYPE_HAVE_MIMALLOC == 1
-#include <mimalloc.h>
-#endif
-
-
-namespace sofa::type
+namespace sofa::core::behavior
 {
 
-static bool s_initialized = false;
-static bool s_cleanedUp = false;
-
-SOFA_TYPE_API void init()
+class SOFA_CORE_API TopologyAccessor : public virtual sofa::core::objectmodel::BaseObject
 {
-    if (!s_initialized)
-    {
-#if SOFA_TYPE_HAVE_MIMALLOC == 1
-        mi_version();
-#endif
-        s_initialized = true;
-    }
+public:
+    SOFA_CLASS(TopologyAccessor, sofa::core::objectmodel::BaseObject);
+
+    void init() override;
+
+    sofa::SingleLink<TopologyAccessor, sofa::core::topology::BaseMeshTopology,
+        sofa::BaseLink::FLAG_STOREPATH | sofa::BaseLink::FLAG_STRONGLINK> l_topology;
+
+protected:
+
+    TopologyAccessor();
+
+    /**
+     * Ensure a link to a valid topology
+     */
+    void validateTopology();
+};
+
 }
-
-SOFA_TYPE_API bool isInitialized()
-{
-    return s_initialized;
-}
-
-SOFA_TYPE_API void cleanup()
-{
-    if (!s_cleanedUp)
-    {
-        s_cleanedUp = true;
-    }
-}
-
-SOFA_TYPE_API bool isCleanedUp()
-{
-    return s_cleanedUp;
-}
-
-SOFA_TYPE_API void printUninitializedLibraryWarning(const std::string& library,
-                                                      const std::string& initFunction)
-{
-    std::cerr << "WARNING: " << library << " : the library has not been initialized ("
-              << initFunction << " has never been called, see sofa/type/init.h)"
-              << std::endl;
-}
-
-SOFA_TYPE_API void printLibraryNotCleanedUpWarning(const std::string& library,
-                                                     const std::string& cleanupFunction)
-{
-    std::cerr << "WARNING: " << library << " : the library has not been cleaned up ("
-              << cleanupFunction << " has never been called, see sofa/type/init.h)"
-              << std::endl;
-}
-
-// Detect missing cleanup() call.
-static const struct CleanupCheck
-{
-    CleanupCheck()
-    {
-
-    }
-    ~CleanupCheck()
-    {
-        if (type::isInitialized() && !type::isCleanedUp())
-            type::printLibraryNotCleanedUpWarning("Sofa.Type", "sofa::type::cleanup()");
-    }
-} check;
-
-} // namespace sofa::type

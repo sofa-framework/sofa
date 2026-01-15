@@ -19,78 +19,46 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/type/init.h>
+#include <sofa/core/behavior/TopologyAccessor.h>
+#include <sofa/core/ObjectFactory.h>
 
-#include <iostream>
-
-#if SOFA_TYPE_HAVE_MIMALLOC == 1
-#include <mimalloc.h>
-#endif
-
-
-namespace sofa::type
+namespace sofa::core::behavior
 {
 
-static bool s_initialized = false;
-static bool s_cleanedUp = false;
-
-SOFA_TYPE_API void init()
+TopologyAccessor::TopologyAccessor()
+    : l_topology(initLink("topology", "Link to a topology"))
 {
-    if (!s_initialized)
+}
+
+void TopologyAccessor::init()
+{
+    sofa::core::objectmodel::BaseObject::init();
+
+    if (!this->isComponentStateInvalid())
     {
-#if SOFA_TYPE_HAVE_MIMALLOC == 1
-        mi_version();
-#endif
-        s_initialized = true;
+        this->validateTopology();
     }
 }
 
-SOFA_TYPE_API bool isInitialized()
+void TopologyAccessor::validateTopology()
 {
-    return s_initialized;
-}
-
-SOFA_TYPE_API void cleanup()
-{
-    if (!s_cleanedUp)
+    if (l_topology.empty())
     {
-        s_cleanedUp = true;
+        msg_info() << "Link to Topology container should be set to ensure right behavior. First "
+                      "Topology found in current context will be used.";
+        l_topology.set(this->getContext()->getMeshTopologyLink());
+    }
+
+    if (l_topology == nullptr)
+    {
+        msg_error() << "No topology component found at path: " << this->l_topology.getLinkedPath()
+                    << ", nor in current context: " << this->getContext()->name
+                    << ". Object must have a BaseMeshTopology. "
+                    << "The list of available BaseMeshTopology components is: "
+                    << sofa::core::ObjectFactory::getInstance()
+                           ->listClassesDerivedFrom<sofa::core::topology::BaseMeshTopology>();
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
     }
 }
 
-SOFA_TYPE_API bool isCleanedUp()
-{
-    return s_cleanedUp;
-}
-
-SOFA_TYPE_API void printUninitializedLibraryWarning(const std::string& library,
-                                                      const std::string& initFunction)
-{
-    std::cerr << "WARNING: " << library << " : the library has not been initialized ("
-              << initFunction << " has never been called, see sofa/type/init.h)"
-              << std::endl;
-}
-
-SOFA_TYPE_API void printLibraryNotCleanedUpWarning(const std::string& library,
-                                                     const std::string& cleanupFunction)
-{
-    std::cerr << "WARNING: " << library << " : the library has not been cleaned up ("
-              << cleanupFunction << " has never been called, see sofa/type/init.h)"
-              << std::endl;
-}
-
-// Detect missing cleanup() call.
-static const struct CleanupCheck
-{
-    CleanupCheck()
-    {
-
-    }
-    ~CleanupCheck()
-    {
-        if (type::isInitialized() && !type::isCleanedUp())
-            type::printLibraryNotCleanedUpWarning("Sofa.Type", "sofa::type::cleanup()");
-    }
-} check;
-
-} // namespace sofa::type
+}  // namespace elasticity
