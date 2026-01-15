@@ -263,8 +263,6 @@ void HexahedronFEMForceField<DataTypes>::addDForce (const core::MechanicalParams
 
     for(it = indexedElements->begin() ; it != indexedElements->end() ; ++it, ++i)
     {
-        // Transformation R_0_2;
-        // R_0_2.transpose(_rotations[i]);
 
         Displacement X(sofa::type::NOINIT);
 
