@@ -176,10 +176,9 @@ void NodalLinearDampingForceField<DataTypes>::addForce(const core::MechanicalPar
     {
         const Real singleCoefficient = d_dampingCoefficient.getValue();
 
-        std::size_t i = 0;
-        for (auto& fi : f)
+        for(std::size_t i = 0; i < f.size(); ++i)
         {
-            fi -= v[i++] * singleCoefficient;
+            f[i] -= v[i] * singleCoefficient;
         }
     }
     else
@@ -188,19 +187,12 @@ void NodalLinearDampingForceField<DataTypes>::addForce(const core::MechanicalPar
 
         if (!coefs.empty())
         {
-            const std::size_t nbDampingCoeff = coefs.size();
-            std::size_t i = 0;
-
-            for (auto& fi : f)
+            for(std::size_t i = 0; i < f.size(); ++i)
             {
-                const auto coefId = std::min(i, nbDampingCoeff - 1);
-                const auto& vi = v[i];
-                const auto& ci = coefs[coefId];
-                for (unsigned j = 0; j < Deriv::total_size; ++j)
+                for(unsigned j = 0; j < Deriv::total_size; ++j)
                 {
-                    fi[j] -= vi[j] * ci[j];
+                    f[i][j] -= v[i][j] * coefs[i][j];
                 }
-                ++i;
             }
         }
     }
@@ -224,10 +216,9 @@ void NodalLinearDampingForceField<DataTypes>::addDForce(const core::MechanicalPa
         const Real singleCoefficient = d_dampingCoefficient.getValue();
         Real factor = singleCoefficient * bfactor;
 
-        std::size_t i = 0;
-        for (auto& dfi : df)
+        for(std::size_t i = 0; i < df.size(); ++i)
         {
-            dfi -= dx[i++] * factor;
+            df[i] -= dx[i] * factor;
         }
     }
     else
@@ -237,17 +228,12 @@ void NodalLinearDampingForceField<DataTypes>::addDForce(const core::MechanicalPa
 
         if (nbDampingCoeff && bfactor)
         {
-            std::size_t i = 0;
-
-            for (auto& dfi : df)
+            for(std::size_t i = 0; i < df.size(); ++i)
             {
-                const auto& dxi = dx[i];
-                const auto& ci = coefs[i];
-                for (unsigned j = 0; j < Deriv::total_size; ++j)
+                for(unsigned j = 0; j < Deriv::total_size; ++j)
                 {
-                    dfi[j] -= dxi[j] * ci[j] * bfactor;
+                    df[i][j] -= dx[i][j] * coefs[i][j] * bfactor;
                 }
-                ++i;
             }
         }
     }
