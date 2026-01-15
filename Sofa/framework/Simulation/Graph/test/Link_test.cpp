@@ -45,15 +45,15 @@ struct Link_test : public BaseSimulationTest
     {
         SceneInstance si("root") ;
 
-        auto aBaseObject = sofa::core::objectmodel::New<BaseObject>();
+        auto aBaseObject = sofa::core::objectmodel::New<sofa::core::objectmodel::BaseObject>();
         sofa::core::objectmodel::Base* aBasePtr = aBaseObject.get();
         si.root->addObject(aBaseObject);
 
         using sofa::core::objectmodel::BaseNode;
-        BaseLink::InitLink<BaseObject> initObjectLink(aBaseObject.get(), "objectlink", "");
-        BaseLink::InitLink<BaseObject> initNodeLink(aBaseObject.get(), "nodelink", "");
-        SingleLink<BaseObject, BaseObject, BaseLink::FLAG_NONE > objectLink(initObjectLink) ;
-        SingleLink<BaseObject, BaseNode, BaseLink::FLAG_NONE > nodeLink(initNodeLink);
+        BaseLink::InitLink<sofa::core::objectmodel::BaseObject> initObjectLink(aBaseObject.get(), "objectlink", "");
+        BaseLink::InitLink<sofa::core::objectmodel::BaseObject> initNodeLink(aBaseObject.get(), "nodelink", "");
+        SingleLink<sofa::core::objectmodel::BaseObject, sofa::core::objectmodel::BaseObject, BaseLink::FLAG_NONE > objectLink(initObjectLink) ;
+        SingleLink<sofa::core::objectmodel::BaseObject, BaseNode, BaseLink::FLAG_NONE > nodeLink(initNodeLink);
 
         // objectLink.add(aBasePtr); //< not possible because of template type specification
 
@@ -69,14 +69,14 @@ struct Link_test : public BaseSimulationTest
     void read_multilink_test()
     {
         const SceneInstance si("root") ;
-        const BaseObject::SPtr A = sofa::core::objectmodel::New<BaseObject>();
-        const BaseObject::SPtr B = sofa::core::objectmodel::New<BaseObject>();
-        const BaseObject::SPtr C = sofa::core::objectmodel::New<BaseObject>();
+        const sofa::core::objectmodel::BaseObject::SPtr A = sofa::core::objectmodel::New<sofa::core::objectmodel::BaseObject>();
+        const sofa::core::objectmodel::BaseObject::SPtr B = sofa::core::objectmodel::New<sofa::core::objectmodel::BaseObject>();
+        const sofa::core::objectmodel::BaseObject::SPtr C = sofa::core::objectmodel::New<sofa::core::objectmodel::BaseObject>();
         si.root->addObject(A);
         si.root->addObject(B);
 
-        const BaseLink::InitLink<BaseObject> il1(B.get(), "l1", "");
-        MultiLink<BaseObject, BaseObject, BaseLink::FLAG_NONE > withOwner(il1) ;
+        const BaseLink::InitLink<sofa::core::objectmodel::BaseObject> il1(B.get(), "l1", "");
+        MultiLink<sofa::core::objectmodel::BaseObject, sofa::core::objectmodel::BaseObject, BaseLink::FLAG_NONE > withOwner(il1) ;
 
         // 1. test with valid link & owner
         EXPECT_TRUE(withOwner.read("@/B"));
@@ -91,12 +91,12 @@ struct Link_test : public BaseSimulationTest
     void read_test()
     {
         SceneInstance si("root") ;
-        BaseObject::SPtr A = sofa::core::objectmodel::New<BaseObject>();
-        BaseObject::SPtr B = sofa::core::objectmodel::New<BaseObject>();
+        sofa::core::objectmodel::BaseObject::SPtr A = sofa::core::objectmodel::New<sofa::core::objectmodel::BaseObject>();
+        sofa::core::objectmodel::BaseObject::SPtr B = sofa::core::objectmodel::New<sofa::core::objectmodel::BaseObject>();
         si.root->addObject(A);
-        BaseLink::InitLink<BaseObject> il1(B.get(), "l1", "");
-        SingleLink<BaseObject, BaseObject, BaseLink::FLAG_NONE > withOwner(il1) ;
-        SingleLink<BaseObject, BaseObject, BaseLink::FLAG_NONE > withoutOwner;
+        BaseLink::InitLink<sofa::core::objectmodel::BaseObject> il1(B.get(), "l1", "");
+        SingleLink<sofa::core::objectmodel::BaseObject, sofa::core::objectmodel::BaseObject, BaseLink::FLAG_NONE > withOwner(il1) ;
+        SingleLink<sofa::core::objectmodel::BaseObject, sofa::core::objectmodel::BaseObject, BaseLink::FLAG_NONE > withoutOwner;
         withoutOwner.setOwner(nullptr);
 
         // 1. test with invalid link & no owner
@@ -126,12 +126,12 @@ struct Link_test : public BaseSimulationTest
     void read_test_tofix()
     {
         const SceneInstance si("root");
-        const BaseObject::SPtr A = sofa::core::objectmodel::New<BaseObject>();
-        const BaseObject::SPtr B = sofa::core::objectmodel::New<BaseObject>();
+        const sofa::core::objectmodel::BaseObject::SPtr A = sofa::core::objectmodel::New<sofa::core::objectmodel::BaseObject>();
+        const sofa::core::objectmodel::BaseObject::SPtr B = sofa::core::objectmodel::New<sofa::core::objectmodel::BaseObject>();
         si.root->addObject(A);
-        const BaseLink::InitLink<BaseObject> il1(B.get(), "l1", "");
-        SingleLink<BaseObject, BaseObject, BaseLink::FLAG_NONE > withOwner(il1);
-        SingleLink<BaseObject, BaseObject, BaseLink::FLAG_NONE > withoutOwner;
+        const BaseLink::InitLink<sofa::core::objectmodel::BaseObject> il1(B.get(), "l1", "");
+        SingleLink<sofa::core::objectmodel::BaseObject, sofa::core::objectmodel::BaseObject, BaseLink::FLAG_NONE > withOwner(il1);
+        SingleLink<sofa::core::objectmodel::BaseObject, sofa::core::objectmodel::BaseObject, BaseLink::FLAG_NONE > withoutOwner;
         withoutOwner.setOwner(nullptr);
 
         // Here link is OK, but points to a BaseNode, while the link only accepts BaseObjects. Should return false. But returns true, since findLinkDest returns false in read()

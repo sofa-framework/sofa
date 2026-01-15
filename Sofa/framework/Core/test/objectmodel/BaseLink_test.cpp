@@ -38,14 +38,14 @@ using sofa::testing::BaseTest ;
 #include "BaseLink_test.h"
 
 using SingleLinkImplementations = ::testing::Types<
-    SingleLink<BaseObject, BaseObject, BaseLink::FLAG_STOREPATH>,
-    SingleLink<BaseObject, BaseObject, BaseLink::FLAG_MULTILINK>>;
+    SingleLink<sofa::core::objectmodel::BaseObject, sofa::core::objectmodel::BaseObject, BaseLink::FLAG_STOREPATH>,
+    SingleLink<sofa::core::objectmodel::BaseObject, sofa::core::objectmodel::BaseObject, BaseLink::FLAG_MULTILINK>>;
 INSTANTIATE_TYPED_TEST_SUITE_P(SingleLink, BaseLinkTests, SingleLinkImplementations);
 
 
 using MultiLinkImplementations = ::testing::Types<
-    MultiLink<BaseObject, BaseObject, BaseLink::FLAG_STOREPATH>,
-    MultiLink<BaseObject, BaseObject, BaseLink::FLAG_MULTILINK>
+    MultiLink<sofa::core::objectmodel::BaseObject, sofa::core::objectmodel::BaseObject, BaseLink::FLAG_STOREPATH>,
+    MultiLink<sofa::core::objectmodel::BaseObject, sofa::core::objectmodel::BaseObject, BaseLink::FLAG_MULTILINK>
     >;
 INSTANTIATE_TYPED_TEST_SUITE_P(MultiLink, BaseLinkTests, MultiLinkImplementations);
 
