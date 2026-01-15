@@ -524,7 +524,7 @@ bool FileSystem::openFileWithDefaultApplication(const std::string& filename)
             success = true;
 #elif defined(__APPLE__)
         pid_t pid; // points to a buffer that is used to return the process ID of the new child process.
-        char* argv[] = {const_cast<char*>("open"), vconst_cast<char*>(filename.c_str()), nullptr};
+        char* argv[] = {const_cast<char*>("open"), const_cast<char*>(filename.c_str()), nullptr};
         if (posix_spawn(&pid, "/usr/bin/open", nullptr, nullptr, argv, environ) == 0) 
         {
             int status;
