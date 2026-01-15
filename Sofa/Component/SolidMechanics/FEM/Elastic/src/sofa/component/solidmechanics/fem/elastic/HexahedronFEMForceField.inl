@@ -259,28 +259,26 @@ void HexahedronFEMForceField<DataTypes>::addDForce (const core::MechanicalParams
     typename VecElement::const_iterator it;
 
     const auto* indexedElements = this->getIndexedElements();
+    const auto& elementStiffnesses = d_elementStiffnesses.getValue();
 
     for(it = indexedElements->begin() ; it != indexedElements->end() ; ++it, ++i)
     {
-        // Transformation R_0_2;
-        // R_0_2.transpose(_rotations[i]);
 
-        Displacement X;
+        Displacement X(sofa::type::NOINIT);
 
-        for(int w=0; w<8; ++w)
+        for (int w = 0; w < 8; ++w)
         {
-            Coord x_2;
-            x_2 = _rotations[i] * _dx[(*it)[w]];
+            const Coord x_2 = _rotations[i] * _dx[(*it)[w]];
 
             X[w*3] = x_2[0];
             X[w*3+1] = x_2[1];
             X[w*3+2] = x_2[2];
         }
 
-        Displacement F;
-        computeForce(F, X, d_elementStiffnesses.getValue()[i] );
+        Displacement F(sofa::type::NOINIT);
+        computeForce(F, X, elementStiffnesses[i] );
 
-        for(int w=0; w<8; ++w)
+        for (int w = 0; w < 8; ++w)
         {
             _df[(*it)[w]] -= _rotations[i].multTranspose(Deriv(F[w*3], F[w*3+1], F[w*3+2])) * kFactor;
         }
