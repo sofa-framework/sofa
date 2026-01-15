@@ -119,19 +119,19 @@ static void ensureFolderExists(const std::string& pathToFolder);
 /// @note The function assumes that a path to a file is given.
 static void ensureFolderForFileExists(const std::string& pathToFile);
 
-/// @brief Return true if and only if the given file exists.
-static bool exists(const std::string& path);
+/// @brief Return true if and only if the given file exists. The call might display errors if quiet=false.
+static bool exists(const std::string& path, bool quiet = false );
 
-/// @brief Return true if and only if the given file path corresponds to a directory.
+/// @brief Return true if and only if the given file path corresponds to a directory. The call might display errors if quiet=false.
 ///
 /// @warning The path must exist.
-static bool isDirectory(const std::string& path);
+static bool isDirectory(const std::string& path, bool quiet = false);
 
 /// @brief Return true if and only if the given file path is absolute.
 static bool isAbsolute(const std::string& path);
 
-/// @brief Return true if and only if the given file path is an existing file.
-static bool isFile(const std::string& path);
+/// @brief Return true if and only if the given file path is an existing file. The call might display errors if quiet=false.
+static bool isFile(const std::string& path, bool quiet = false );
 
 /// @brief Replace backslashes with slashes.
 static std::string convertBackSlashesToSlashes(const std::string& path);
