@@ -209,7 +209,7 @@ bool FileSystem::removeDirectory(const std::string& path)
 }
 
 
-bool FileSystem::exists(const std::string& path)
+bool FileSystem::exists(const std::string& path, bool quiet)
 {
 #if defined(WIN32)
     ::SetLastError(0);
@@ -231,14 +231,15 @@ bool FileSystem::exists(const std::string& path)
         if (errno == ENOENT)    // No such file or directory
             return false;
         else {
-            msg_error("FileSystem::exists()") << path << ": " << strerror(errno);
+            if (!quiet)
+                msg_error("FileSystem::exists()") << path << ": " << strerror(errno);
             return false;
         }
 #endif
 }
 
 
-bool FileSystem::isDirectory(const std::string& path)
+bool FileSystem::isDirectory(const std::string& path, bool quiet)
 {
 #if defined(WIN32)
     const DWORD fileAttrib = GetFileAttributes(sofa::helper::widenString(path).c_str());
@@ -251,7 +252,8 @@ bool FileSystem::isDirectory(const std::string& path)
 #else
     struct stat st_buf;
     if (stat(path.c_str(), &st_buf) != 0) {
-        msg_error("FileSystem::isDirectory()") << path << ": " << strerror(errno);
+        if (!quiet)
+                msg_error("FileSystem::isDirectory()") << path << ": " << strerror(errno);
         return false;
     }
     else
@@ -331,11 +333,11 @@ bool FileSystem::isAbsolute(const std::string& path)
                 || path[0] == '/');
 }
 
-bool FileSystem::isFile(const std::string &path)
+bool FileSystem::isFile(const std::string &path, bool quiet)
 {
     return
-            FileSystem::exists(path) &&
-            !FileSystem::isDirectory(path)
+            FileSystem::exists(path, quiet) &&
+            !FileSystem::isDirectory(path, quiet)
     ;
 }
 
