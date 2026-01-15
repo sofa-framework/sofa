@@ -306,6 +306,17 @@ bool FileRepository::findFileFromFile(std::string& filename, const std::string& 
 
 void FileRepository::findAllFilesInRepository(const std::string& path, std::vector<std::string>& files, const std::vector<std::string>& extensions, bool recursive)
 {
+    auto addToFiles = [&files, extensions](const std::filesystem::directory_entry& entry)
+    {
+        if (fs::is_regular_file(entry.path()))
+        {
+            if (extensions.empty() || std::find(extensions.begin(), extensions.end(), entry.path().extension()) != extensions.end())
+            {
+                files.push_back(entry.path().string());
+            }
+        }
+    };
+
     for (std::vector<std::string>::const_iterator it = vpath.begin(); it != vpath.end(); ++it)
     {
         // Get the full / absolute path (vpath + path)
@@ -318,26 +329,14 @@ void FileRepository::findAllFilesInRepository(const std::string& path, std::vect
             {
                 for (auto& entry : fs::recursive_directory_iterator(p))
                 {
-                    if (fs::is_regular_file(entry.path()))
-                    {
-                        if (extensions.empty() || std::find(extensions.begin(), extensions.end(), entry.path().extension()) != extensions.end())
-                        {
-                            files.push_back(entry.path().string());
-                        }
-                    }
+                    addToFiles(entry);
                 }
             }
             else
             {
                 for (auto& entry : fs::directory_iterator(p))
                 {
-                    if (fs::is_regular_file(entry.path()))
-                    {
-                        if (extensions.empty() || std::find(extensions.begin(), extensions.end(), entry.path().extension()) != extensions.end())
-                        {
-                            files.push_back(entry.path().string());
-                        }
-                    }
+                    addToFiles(entry);
                 }
             }
         }
