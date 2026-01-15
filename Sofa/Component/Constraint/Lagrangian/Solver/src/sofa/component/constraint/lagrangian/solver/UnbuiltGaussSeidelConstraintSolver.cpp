@@ -84,8 +84,8 @@ void UnbuiltGaussSeidelConstraintSolver::doSolve(GenericConstraintProblem * prob
         c_current_cp->constraintsResolutions[i]->init(i, w, force);
         i += c_current_cp->constraintsResolutions[i]->getNbLines();
     }
-    memset(force, 0, c_current_cp->getDimension() * sizeof(SReal));	// Erase previous forces for the time being
-
+    // Note: force array is now initialized by GenericConstraintSolver::computeInitialGuess()
+    // for hot-start support. Do not zero forces here.
 
     bool showGraphs = false;
     sofa::type::vector<SReal>* graph_residuals = nullptr;

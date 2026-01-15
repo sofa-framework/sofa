@@ -27,6 +27,7 @@
 #include <sofa/core/behavior/BaseConstraintCorrection.h>
 #include <sofa/core/behavior/BaseLagrangianConstraint.h>
 #include <sofa/helper/map.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalGetConstraintInfoVisitor.h>
 
 #include <sofa/simulation/task/CpuTask.h>
 #include <sofa/helper/OptionsGroup.h>
@@ -67,6 +68,7 @@ public:
     Data<bool> d_scaleTolerance; ///< Scale the error tolerance with the number of constraints
     Data<bool> d_allVerified; ///< All constraints must be verified (each constraint's error < tolerance)
 
+    Data<bool> d_initialGuess; ///< Activate constraint force history to improve convergence (hot start)
     Data<bool> d_computeGraphs; ///< Compute graphs of errors and forces during resolution
     Data<std::map < std::string, sofa::type::vector<SReal> > > d_graphErrors; ///< Sum of the constraints' errors at each iteration
     Data<std::map < std::string, sofa::type::vector<SReal> > > d_graphConstraints; ///< Graph of each constraint's error at the end of the resolution
@@ -125,7 +127,34 @@ protected:
 
     virtual void addRegularization(linearalgebra::BaseMatrix& W, const SReal regularization);
 
+    // Hot-start mechanism types
+    typedef core::behavior::BaseLagrangianConstraint::ConstraintBlockInfo ConstraintBlockInfo;
+    typedef core::behavior::BaseLagrangianConstraint::PersistentID PersistentID;
+    typedef core::behavior::BaseLagrangianConstraint::VecConstraintBlockInfo VecConstraintBlockInfo;
+    typedef core::behavior::BaseLagrangianConstraint::VecPersistentID VecPersistentID;
 
+    class ConstraintBlockBuf
+    {
+    public:
+        std::map<PersistentID, int> persistentToConstraintIdMap;
+        int nbLines{0}; ///< how many dofs (i.e. lines in the matrix) are used by each constraint
+    };
+
+    /// Compute initial guess for constraint forces from previous timestep
+    void computeInitialGuess();
+
+    /// Save constraint forces for use as initial guess in next timestep
+    void keepContactForcesValue();
+
+    /// Get constraint info (block info and persistent IDs) for hot-start
+    void getConstraintInfo(const core::ConstraintParams* cparams);
+
+    // Hot-start data storage
+    std::map<core::behavior::BaseLagrangianConstraint*, ConstraintBlockBuf> m_previousConstraints;
+    type::vector<SReal> m_previousForces;
+    VecConstraintBlockInfo m_constraintBlockInfo;
+    VecPersistentID m_constraintIds;
+    unsigned int m_numConstraints{0}; ///< Number of constraints from current/previous timestep
 
 private:
 
