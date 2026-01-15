@@ -96,8 +96,9 @@ bool VideoRecorderFFMPEG::init(const std::string& ffmpeg_exec_filepath, const st
         extension = ".exe";
 #endif
         m_ffmpegExecPath = helper::Utils::getExecutablePath() + "/ffmpeg" + extension;
-        if(!FileSystem::isFile(m_ffmpegExecPath))
+        if(!FileSystem::isFile(m_ffmpegExecPath, true))
         {
+            msg_warning("VideoRecorderFFMPEG")<< "ffmpeg hasn't been found automatically. Falling back to simply calling ffmpeg"<< extension <<" and hope that the OS finds it on its own. " ;
             // Fallback to a relative FFMPEG (may be in system or exposed in PATH)
             m_ffmpegExecPath = "ffmpeg" + extension;
         }
