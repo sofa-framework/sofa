@@ -109,11 +109,6 @@ public:
     /// @param dx Input vector used to compute \f$ df = kFactor K dx + bFactor B dx \f$
     virtual void addDForce(const MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx ) = 0;
 
-    //This is required to tell the compiler addClambda is legitimately overloaded,
-    //and it does not hide the one from BaseForceField.
-    //To be removed once addClambda is disabled
-    using BaseForceField::addClambda;
-
     /// Get the potential energy associated to this ForceField.
     ///
     /// Used to estimate the total energy of the system by some
