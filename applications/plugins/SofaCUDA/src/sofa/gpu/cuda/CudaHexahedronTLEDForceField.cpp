@@ -32,9 +32,11 @@ using namespace std;
 namespace sofa::gpu::cuda
 {
 
-int CudaHexahedronTLEDForceFieldCudaClass = core::RegisterObject("GPU-side TLED hexahedron forcefield using CUDA")
-        .add< CudaHexahedronTLEDForceField >()
-        ;
+void registerHexahedronTLEDForceField(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("GPU-side TLED hexahedron forcefield using CUDA")
+    .add< CudaHexahedronTLEDForceField >());
+}
 
 extern "C"
 {

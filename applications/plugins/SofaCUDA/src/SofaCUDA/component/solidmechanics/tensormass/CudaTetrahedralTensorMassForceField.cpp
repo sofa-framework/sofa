@@ -30,13 +30,16 @@ namespace sofa
 
 namespace gpu::cuda
 {
-int TetrahedralTensorMassForceFieldCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-.add< sofa::component::solidmechanics::tensormass::TetrahedralTensorMassForceField<CudaVec3fTypes> >()
-#ifdef SOFA_GPU_CUDA_DOUBLE
-.add< sofa::component::solidmechanics::tensormass::TetrahedralTensorMassForceField<CudaVec3dTypes> >()
-#endif
-;
 
+    void registerTetrahedralTensorMassForceField(sofa::core::ObjectFactory* factory)
+    {
+        factory->registerObjects(sofa::core::ObjectRegistrationData("Supports GPU-side computations using CUDA for the TetrahedralTensorMassForceField")
+        .add< sofa::component::solidmechanics::tensormass::TetrahedralTensorMassForceField<CudaVec3fTypes> >()
+#ifdef SOFA_GPU_CUDA_DOUBLE
+        .add< sofa::component::solidmechanics::tensormass::TetrahedralTensorMassForceField<CudaVec3dTypes> >()
+#endif
+        );
+    }
 
 } // namespace gpu::cuda
 

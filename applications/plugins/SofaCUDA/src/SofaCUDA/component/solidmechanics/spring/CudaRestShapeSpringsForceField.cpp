@@ -41,13 +41,16 @@ template class SOFA_GPU_CUDA_API RestShapeSpringsForceField<gpu::cuda::CudaVec3d
 namespace sofa::gpu::cuda
 {
 
-int RestShapeSpringsForceFieldCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
+    void registerRestShapeSpringsForceField(sofa::core::ObjectFactory* factory)
+    {
+        factory->registerObjects(sofa::core::ObjectRegistrationData("Supports GPU-side computations using CUDA for the RestShapeSpringsForceField")
         .add< sofa::component::solidmechanics::spring::RestShapeSpringsForceField<CudaVec3fTypes> >()
         .add< sofa::component::solidmechanics::spring::RestShapeSpringsForceField<CudaVec3f1Types> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
         .add< sofa::component::solidmechanics::spring::RestShapeSpringsForceField<CudaVec3dTypes> >()
         .add< sofa::component::solidmechanics::spring::RestShapeSpringsForceField<CudaVec3d1Types> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
-        ;
+        );
+    }
 
 } // namespace sofa::gpu::cuda

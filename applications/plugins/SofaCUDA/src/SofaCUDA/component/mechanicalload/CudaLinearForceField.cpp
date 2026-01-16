@@ -41,7 +41,9 @@ template class SOFA_GPU_CUDA_API LinearForceField<gpu::cuda::CudaRigid3dTypes>;
 namespace sofa::gpu::cuda
 {
 
-int LinearForceFieldCudaClass = core::RegisterObject("Supports GPU-side computation using CUDA")
+    void registerLinearForceField(sofa::core::ObjectFactory* factory)
+    {
+        factory->registerObjects(sofa::core::ObjectRegistrationData("Supports GPU-side computations using CUDA for the LinearForceField")
         .add< component::mechanicalload::LinearForceField<CudaVec6fTypes> >()
 		.add< component::mechanicalload::LinearForceField<CudaVec3fTypes> >()
 		.add< component::mechanicalload::LinearForceField<CudaRigid3fTypes> >()
@@ -49,6 +51,7 @@ int LinearForceFieldCudaClass = core::RegisterObject("Supports GPU-side computat
         .add< component::mechanicalload::LinearForceField<CudaVec6dTypes> >()
 		.add< component::mechanicalload::LinearForceField<CudaRigid3dTypes> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
-        ;
+        );
+    }
 
 }// namespace sofa::gpu::cuda

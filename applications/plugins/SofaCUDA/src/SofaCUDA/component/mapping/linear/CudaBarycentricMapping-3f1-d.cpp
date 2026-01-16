@@ -52,10 +52,11 @@ using namespace sofa::core;
 using namespace sofa::core::behavior;
 using namespace sofa::component::mapping::linear;
 
-int BarycentricMappingCudaClass_3f1_d = core::RegisterObject("Supports GPU-side computations using CUDA")
-        .add< BarycentricMapping< Vec3Types, CudaVec3f1Types> >()
-        .add< BarycentricMapping< CudaVec3f1Types, Vec3Types> >()
-
-        ;
+void registerBarycentricMapping_3f1_d(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Supports GPU-side computations using CUDA for the registerBarycentricMapping_3f1_d")
+    .add< BarycentricMapping< Vec3Types, CudaVec3f1Types> >()
+    .add< BarycentricMapping< CudaVec3f1Types, Vec3Types> >());
+}
 
 } // namespace sofa::gpu::cuda

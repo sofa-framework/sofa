@@ -38,13 +38,16 @@ template class SOFA_GPU_CUDA_API SphereForceField< CudaVec3d1Types >;
 namespace sofa::gpu::cuda
 {
 
-int SphereForceFieldCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
+    void registerSphereForceField(sofa::core::ObjectFactory* factory)
+    {
+        factory->registerObjects(sofa::core::ObjectRegistrationData("Supports GPU-side computations using CUDA for the SphereForceField")
         .add< component::mechanicalload::SphereForceField<CudaVec3fTypes> >()
         .add< component::mechanicalload::SphereForceField<CudaVec3f1Types> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
         .add< component::mechanicalload::SphereForceField<CudaVec3dTypes> >()
         .add< component::mechanicalload::SphereForceField<CudaVec3d1Types> >()
 #endif
-        ;
+        );
+    }
 
 } // namespace sofa::gpu::cuda

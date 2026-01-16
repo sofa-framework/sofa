@@ -43,14 +43,17 @@ namespace sofa::gpu::cuda
 {
     using namespace sofa::component::constraint::lagrangian::correction;
 
-const int CudaLinearSolverConstraintCorrectionClass = core::RegisterObject("Supports GPU-side computations using CUDA.")
-    .add< LinearSolverConstraintCorrection< CudaVec3fTypes > >()
-    .add< LinearSolverConstraintCorrection< CudaVec3f1Types > >()
+    void registerLinearSolverConstraintCorrection(sofa::core::ObjectFactory* factory)
+    {
+        factory->registerObjects(sofa::core::ObjectRegistrationData("Supports GPU-side computations using CUDA for the LinearSolverConstraintCorrection")
+        .add< LinearSolverConstraintCorrection< CudaVec3fTypes > >()
+        .add< LinearSolverConstraintCorrection< CudaVec3f1Types > >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
-    .add< LinearSolverConstraintCorrection< CudaVec3dTypes > >()
-    .add< LinearSolverConstraintCorrection< CudaVec3d1Types > >()
+        .add< LinearSolverConstraintCorrection< CudaVec3dTypes > >()
+        .add< LinearSolverConstraintCorrection< CudaVec3d1Types > >()
 #endif
-    ;
+        );
+    }
 
 } // namespace sofa::gpu::cuda
 
