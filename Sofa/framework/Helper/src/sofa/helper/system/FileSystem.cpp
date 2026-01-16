@@ -53,6 +53,7 @@
 
 #if defined(__APPLE__)
 #include <stdio.h>
+#include <spawn.h>
 #endif
 
 #ifdef linux
@@ -525,7 +526,7 @@ bool FileSystem::openFileWithDefaultApplication(const std::string& filename)
 #elif defined(__APPLE__)
         pid_t pid; // points to a buffer that is used to return the process ID of the new child process.
         char* argv[] = {const_cast<char*>("open"), const_cast<char*>(filename.c_str()), nullptr};
-        if (posix_spawn(&pid, "/usr/bin/open", nullptr, nullptr, argv, environ) == 0) 
+        if (posix_spawn(&pid, "/usr/bin/open", nullptr, nullptr, argv, nullptr) == 0)
         {
             int status;
             if (waitpid(pid, &status, 0) != -1 && WIFEXITED(status) && WEXITSTATUS(status) == 0)
