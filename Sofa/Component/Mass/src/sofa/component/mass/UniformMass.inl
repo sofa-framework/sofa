@@ -572,7 +572,7 @@ void UniformMass<DataTypes>::addMToMatrix (sofa::linearalgebra::BaseMatrix * mat
 }
 
 template <class DataTypes>
-void UniformMass<DataTypes>::buildMassMatrix(sofa::core::behavior::MassMatrixAccumulator* matrices)
+void UniformMass<DataTypes>::doBuildMassMatrix(sofa::core::behavior::MassMatrixAccumulator* matrices)
 {
     if (!this->isComponentStateValid())
     {
@@ -593,14 +593,14 @@ void UniformMass<DataTypes>::buildMassMatrix(sofa::core::behavior::MassMatrixAcc
 
 
 template <class DataTypes>
-SReal UniformMass<DataTypes>::getElementMass (sofa::Index ) const
+SReal UniformMass<DataTypes>::doGetElementMass (sofa::Index ) const
 {
     return (SReal ( d_vertexMass.getValue() ));
 }
 
 
 template <class DataTypes>
-void UniformMass<DataTypes>::getElementMass (sofa::Index  index, BaseMatrix *m ) const
+void UniformMass<DataTypes>::doGetElementMass (sofa::Index  index, BaseMatrix *m ) const
 {
     SOFA_UNUSED(index);
 

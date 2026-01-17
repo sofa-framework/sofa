@@ -400,7 +400,7 @@ void TriangularQuadraticSpringsForceField<DataTypes>::addDForce(const core::Mech
 }
 
 template <class DataTypes>
-void TriangularQuadraticSpringsForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+void TriangularQuadraticSpringsForceField<DataTypes>::doBuildDampingMatrix(core::behavior::DampingMatrix*)
 {
     // No damping in this ForceField
 }

@@ -627,7 +627,7 @@ void DiagonalMass<DataTypes, GeometricalTypes>::addMToMatrix(sofa::linearalgebra
 }
 
 template <class DataTypes, class GeometricalTypes>
-void DiagonalMass<DataTypes, GeometricalTypes>::buildMassMatrix(sofa::core::behavior::MassMatrixAccumulator* matrices)
+void DiagonalMass<DataTypes, GeometricalTypes>::doBuildMassMatrix(sofa::core::behavior::MassMatrixAccumulator* matrices)
 {
     const MassVector &masses= d_vertexMass.getValue();
     static constexpr auto N = Deriv::total_size;
@@ -641,7 +641,7 @@ void DiagonalMass<DataTypes, GeometricalTypes>::buildMassMatrix(sofa::core::beha
 
 
 template <class DataTypes, class GeometricalTypes>
-SReal DiagonalMass<DataTypes, GeometricalTypes>::getElementMass(sofa::Index index) const
+SReal DiagonalMass<DataTypes, GeometricalTypes>::doGetElementMass(sofa::Index index) const
 {
     return SReal(d_vertexMass.getValue()[index]);
 }
@@ -649,7 +649,7 @@ SReal DiagonalMass<DataTypes, GeometricalTypes>::getElementMass(sofa::Index inde
 
 //TODO: special case for Rigid Mass
 template <class DataTypes, class GeometricalTypes>
-void DiagonalMass<DataTypes, GeometricalTypes>::getElementMass(sofa::Index index, linearalgebra::BaseMatrix *m) const
+void DiagonalMass<DataTypes, GeometricalTypes>::doGetElementMass(sofa::Index index, linearalgebra::BaseMatrix *m) const
 {
     static const linearalgebra::BaseMatrix::Index dimension = linearalgebra::BaseMatrix::Index(defaulttype::DataTypeInfo<Deriv>::size());
     if (m->rowSize() != dimension || m->colSize() != dimension) m->resize(dimension,dimension);

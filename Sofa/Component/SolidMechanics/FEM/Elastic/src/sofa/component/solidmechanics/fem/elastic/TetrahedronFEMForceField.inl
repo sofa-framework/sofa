@@ -1964,7 +1964,7 @@ void TetrahedronFEMForceField<DataTypes>::addKToMatrix(sofa::linearalgebra::Base
 }
 
 template <class DataTypes>
-void TetrahedronFEMForceField<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
+void TetrahedronFEMForceField<DataTypes>::doBuildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
 {
     StiffnessMatrix JKJt, RJKJtRt;
     sofa::type::Mat<3, 3, Real> localMatrix(type::NOINIT);
@@ -2000,7 +2000,7 @@ void TetrahedronFEMForceField<DataTypes>::buildStiffnessMatrix(core::behavior::S
 }
 
 template <class DataTypes>
-void TetrahedronFEMForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+void TetrahedronFEMForceField<DataTypes>::doBuildDampingMatrix(core::behavior::DampingMatrix*)
 {
     // No damping in this ForceField
 }
