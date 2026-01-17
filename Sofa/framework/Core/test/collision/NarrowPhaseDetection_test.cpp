@@ -82,7 +82,7 @@ namespace sofa::core
 class DummyCollisionModel : public CollisionModel
 {
 public:
-    void computeBoundingTree(int /*maxDepth*/) override {}
+    void doComputeBoundingTree(int /*maxDepth*/) override {}
 };
 } //namespace sofa::collision
 
