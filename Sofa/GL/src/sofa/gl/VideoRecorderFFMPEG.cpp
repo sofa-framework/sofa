@@ -87,22 +87,22 @@ bool VideoRecorderFFMPEG::init(const std::string& ffmpeg_exec_filepath, const st
     m_ffmpegBuffer = new unsigned char [m_ffmpegBufferSize];
 
     m_FrameCount = 0;
-
+    std::string extension;
+#ifdef WIN32
+    extension = ".exe";
+#endif
     m_ffmpegExecPath = ffmpeg_exec_filepath;
     if(m_ffmpegExecPath.empty())
     {
-        std::string extension;
-#ifdef WIN32
-        extension = ".exe";
-#endif
         m_ffmpegExecPath = helper::Utils::getExecutablePath() + "/ffmpeg" + extension;
-        if(!FileSystem::isFile(m_ffmpegExecPath, true))
-        {
-            msg_warning("VideoRecorderFFMPEG")<< "ffmpeg hasn't been found automatically. Falling back to simply calling ffmpeg"<< extension <<" and hope that the OS finds it on its own. " ;
-            // Fallback to a relative FFMPEG (may be in system or exposed in PATH)
-            m_ffmpegExecPath = "ffmpeg" + extension;
-        }
     }
+    if(!FileSystem::isFile(m_ffmpegExecPath, true))
+    {
+        msg_warning("VideoRecorderFFMPEG")<< "ffmpeg hasn't been found automatically. Falling back to simply calling ffmpeg"<< extension <<" and hope that the OS finds it on its own. " ;
+        // Fallback to a relative FFMPEG (may be in system or exposed in PATH)
+        m_ffmpegExecPath = "ffmpeg" + extension;
+    }
+
 
     std::stringstream ss;
     ss << m_ffmpegExecPath
@@ -123,6 +123,7 @@ bool VideoRecorderFFMPEG::init(const std::string& ffmpeg_exec_filepath, const st
 #else
     m_ffmpeg = popen(command_line.c_str(), "w");
 #endif
+
     if (m_ffmpeg == nullptr) {
         msg_error("VideoRecorderFFMPEG") << "ffmpeg process failed to open (error " << errno << "). Command line : " << command_line;
         return false;
