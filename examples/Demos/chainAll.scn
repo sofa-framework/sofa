@@ -32,7 +32,7 @@
 
     <Node name="TorusFixed">
         <MeshTopology src="@../loader_torus2_for_collision" />
-        <MechanicalObject src="@../loader_torus2_for_collision" />
+        <MechanicalObject name="tata" src="@../loader_torus2_for_collision" />
         <TriangleCollisionModel moving="0" simulated="0" />
         <LineCollisionModel moving="0" simulated="0" />
         <PointCollisionModel moving="0" simulated="0" />
@@ -44,7 +44,7 @@
         <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1"/>
         <CGLinearSolver iterations="100" threshold="1e-08" tolerance="1e-05" />
         <MeshTopology src="@../loader_torus_low_res" />
-        <MechanicalObject dx="7.6871" dy="0.0000" dz="0.9632" rx="10.0000" ry="-15.0000" rz="0.0000" src="@../loader_torus_low_res" />
+        <MechanicalObject name="toto" dx="7.6871" dy="0.0000" dz="0.9632" rx="10.0000" ry="-15.0000" rz="0.0000" src="@../loader_torus_low_res" />
         <UniformMass totalMass="5" />
         <TetrahedronFEMForceField computeGlobalMatrix="false" method="polar" name="FEM" poissonRatio="0.3" youngModulus="5000" />
         <Node name="Visu">
