@@ -87,21 +87,22 @@ bool VideoRecorderFFMPEG::init(const std::string& ffmpeg_exec_filepath, const st
     m_ffmpegBuffer = new unsigned char [m_ffmpegBufferSize];
 
     m_FrameCount = 0;
-
+    std::string extension;
+#ifdef WIN32
+    extension = ".exe";
+#endif
     m_ffmpegExecPath = ffmpeg_exec_filepath;
     if(m_ffmpegExecPath.empty())
     {
-        std::string extension;
-#ifdef WIN32
-        extension = ".exe";
-#endif
         m_ffmpegExecPath = helper::Utils::getExecutablePath() + "/ffmpeg" + extension;
-        if(!FileSystem::isFile(m_ffmpegExecPath))
-        {
-            // Fallback to a relative FFMPEG (may be in system or exposed in PATH)
-            m_ffmpegExecPath = "ffmpeg" + extension;
-        }
     }
+    if(!FileSystem::isFile(m_ffmpegExecPath, true))
+    {
+        msg_warning("VideoRecorderFFMPEG")<< "ffmpeg hasn't been found automatically. Falling back to simply calling ffmpeg"<< extension <<" and hope that the OS finds it on its own. " ;
+        // Fallback to a relative FFMPEG (may be in system or exposed in PATH)
+        m_ffmpegExecPath = "ffmpeg" + extension;
+    }
+
 
     std::stringstream ss;
     ss << m_ffmpegExecPath
@@ -122,6 +123,7 @@ bool VideoRecorderFFMPEG::init(const std::string& ffmpeg_exec_filepath, const st
 #else
     m_ffmpeg = popen(command_line.c_str(), "w");
 #endif
+
     if (m_ffmpeg == nullptr) {
         msg_error("VideoRecorderFFMPEG") << "ffmpeg process failed to open (error " << errno << "). Command line : " << command_line;
         return false;
@@ -138,31 +140,38 @@ void VideoRecorderFFMPEG::addFrame()
 {        
     GLint viewport[4];
     glGetIntegerv(GL_VIEWPORT, viewport);
-   
+
     if ((viewport[2] != m_viewportWidth) || (viewport[3] != m_viewportHeight))
     {
         std::cout << "WARNING viewport changed during video capture from " << m_viewportWidth << "x" << m_viewportHeight << "  to  " << viewport[2] << "x" << viewport[3] << std::endl;
     }
 
+    glReadPixels(viewport[0], viewport[1], m_viewportWidth, m_viewportHeight, GL_RGBA, GL_UNSIGNED_BYTE, (void*)m_viewportBuffer);
 
-    glReadPixels(0, 0, m_viewportWidth, m_viewportHeight, GL_RGBA, GL_UNSIGNED_BYTE, (void*)m_viewportBuffer);
+    addFrame(m_viewportBuffer, m_viewportWidth, m_viewportHeight);
+}
 
-    // set ffmpeg buffer: initialize to 0 (black) 
+
+
+void VideoRecorderFFMPEG::addFrame(unsigned char* rgbData, int fbWidth, int fbHeight)
+{
+
+    // set ffmpeg buffer: initialize to 0 (black)
     memset(m_ffmpegBuffer, 0, m_ffmpegBufferSize);
 
-    if (m_viewportWidth == m_ffmpegWidth)
+    if (fbWidth == m_ffmpegWidth)
     {
-        memcpy(m_ffmpegBuffer, m_viewportBuffer, m_viewportBufferSize);
+        memcpy(m_ffmpegBuffer, rgbData, fbHeight * fbWidth * m_pixelFormatSize);
     }
     else
     {
-        const unsigned char* viewportBufferIter = m_viewportBuffer;
-        const size_t viewportRowSizeInBytes = m_pixelFormatSize * m_viewportWidth;
+        const unsigned char* viewportBufferIter = rgbData;
+        const size_t viewportRowSizeInBytes = m_pixelFormatSize * fbWidth;
 
         unsigned char* ffmpegBufferIter = m_ffmpegBuffer;
         const size_t ffmpegRowSizeInBytes = m_pixelFormatSize * m_ffmpegWidth;
 
-        int row = m_viewportHeight;
+        int row = fbHeight;
         while ( row-- > 0 )
         {
             memcpy( ffmpegBufferIter, viewportBufferIter, viewportRowSizeInBytes);
@@ -174,8 +183,6 @@ void VideoRecorderFFMPEG::addFrame()
 
 
     fwrite(m_ffmpegBuffer, m_ffmpegBufferSize, 1, m_ffmpeg);
-    
-    return;
 }
 
 void VideoRecorderFFMPEG::finishVideo()
