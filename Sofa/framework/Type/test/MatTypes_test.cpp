@@ -443,3 +443,12 @@ TEST(MatTypesTest, determinant3x3)
     EXPECT_DOUBLE_EQ(sofa::type::determinant(sofa::type::Mat<3,3,SReal>{{0, 1, 0}, {0, 0, 1}, {1, 0, 0}}), 1_sreal);
     EXPECT_DOUBLE_EQ(sofa::type::determinant(sofa::type::Mat<3,3,SReal>{{1, 1, 0}, {1, 0, 1}, {0, 1, 1}}), -2_sreal);
 }
+
+TEST(MatTypesTest, determinant4x4)
+{
+    EXPECT_DOUBLE_EQ(sofa::type::determinant(sofa::type::Mat<4,4,SReal>{{1,0,0,0}, {0,1,0,0}, {0,0,1,0}, {0,0,0,1}}), 1_sreal);
+    EXPECT_DOUBLE_EQ(sofa::type::determinant(sofa::type::Mat<4,4,SReal>{{2,0,0,0}, {0,3,0,0}, {0,0,4,0}, {0,0,0,5}}), 120_sreal);
+    EXPECT_DOUBLE_EQ(sofa::type::determinant(sofa::type::Mat<4,4,SReal>{{0,1,0,0}, {1,0,0,0}, {0,0,1,0}, {0,0,0,1}}), -1_sreal);
+    EXPECT_DOUBLE_EQ(sofa::type::determinant(sofa::type::Mat<4,4,SReal>{{1,0,0,0}, {0,2,0,0}, {0,0,3,0}, {0,0,0,4}}), 24_sreal);
+    EXPECT_DOUBLE_EQ(sofa::type::determinant(sofa::type::Mat<4,4,SReal>{{1,3,5,9}, {1,3,1,7}, {4,3,9,7}, {5,2,0,9}}), -376_sreal);
+}
