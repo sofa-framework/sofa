@@ -41,7 +41,7 @@ function clean_default_plugins()
       ; do
       disabled_plugins=$disabled_plugins'\|'$plugin
   done
-  grep -v $disabled_plugins "$1/plugin_list.conf.default" >> "$1/plugin_list.conf"
+  grep -v $disabled_plugins$2 "$1/plugin_list.conf.default" >> "$1/plugin_list.conf"
 }
 
 function move_metis()
