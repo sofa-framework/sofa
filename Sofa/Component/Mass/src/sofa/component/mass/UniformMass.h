@@ -20,18 +20,16 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
+#include <sofa/component/mass/RigidMassType.h>
+#include <sofa/component/mass/VecMassType.h>
 #include <sofa/component/mass/config.h>
-
-#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/behavior/Mass.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/linearalgebra/BaseVector.h>
+#include <sofa/core/behavior/TopologyAccessor.h>
 #include <sofa/core/objectmodel/DataFileName.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/topology/TopologySubsetIndices.h>
-
-#include <sofa/component/mass/VecMassType.h>
-#include <sofa/component/mass/RigidMassType.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/linearalgebra/BaseVector.h>
 
 #include <type_traits>
 
@@ -39,7 +37,7 @@ namespace sofa::component::mass
 {
 
 template <class DataTypes>
-class UniformMass : public core::behavior::Mass<DataTypes>
+class UniformMass : public core::behavior::Mass<DataTypes>, public virtual core::behavior::TopologyAccessor
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(UniformMass,DataTypes),
@@ -89,10 +87,6 @@ public:
     using core::behavior::ForceField<DataTypes>::mstate ;
     using core::objectmodel::BaseObject::getContext;
     ////////////////////////////////////////////////////////////////////////////
-
-
-    /// Link to be set to the topology container in the component graph.
-    SingleLink <UniformMass<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
 protected:
     UniformMass();

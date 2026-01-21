@@ -46,7 +46,7 @@ public:
     /// the normals for each point
     type::vector<type::Vec3> pNorms;
     void computeBoundingTree(int maxDepth=0) override;
-    void computeContinuousBoundingTree(SReal dt, int maxDepth=0) override;
+    void computeContinuousBoundingTree(SReal dt, ContinuousIntersectionTypeFlag continuousIntersectionFlag = ContinuousIntersectionTypeFlag::Inertia, int maxDepth=0) override;
     /// init the octree creation
     void buildOctree ();
 };

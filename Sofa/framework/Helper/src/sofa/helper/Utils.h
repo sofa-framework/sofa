@@ -96,6 +96,9 @@ static const std::string& getSofaUserLocalDirectory();
 /// @return The ABSOLUTE path of Sofa build dir (or install dir)
 static const std::string& getSofaPathPrefix();
 
+/// @brief Set a custom path to be used by getSofaPathPrefix()
+static void setSofaCustomPathPrefix(const std::string& path);
+
 /// @brief Construct a path based on the build dir path of Sofa
 ///
 /// @warning This function is meant to be used only by the applications that are

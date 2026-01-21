@@ -21,20 +21,34 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/constraint/lagrangian/solver/BuiltConstraintSolver.h>
-#include <sofa/core/behavior/ConstraintResolution.h>
+#include <SceneChecking/config.h>
+#include <sofa/simulation/SceneCheck.h>
 
-namespace sofa::component::constraint::lagrangian::solver
+#include <map>
+#include <sstream>
+
+namespace sofa::_scenechecking_
 {
-class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API ProjectedGaussSeidelConstraintSolver : public BuiltConstraintSolver
+    
+class SOFA_SCENECHECKING_API SceneCheckCollisionPipelineAndModels : public sofa::simulation::SceneCheck
 {
 public:
-    SOFA_CLASS(ProjectedGaussSeidelConstraintSolver, BuiltConstraintSolver);
+    virtual ~SceneCheckCollisionPipelineAndModels() {}
+    typedef std::shared_ptr<SceneCheckCollisionPipelineAndModels> SPtr;
+    static SPtr newSPtr() { return SPtr(new SceneCheckCollisionPipelineAndModels()); }
+    virtual const std::string getName() override;
+    virtual const std::string getDesc() override;
+    void doInit(sofa::simulation::Node* node) override;
+    void doCheckOn(sofa::simulation::Node* node) override;
+    void doPrintSummary() override;
 
-protected:
-    virtual void doSolve(GenericConstraintProblem * problem , SReal timeout = 0.0) override;
-
-    void gaussSeidel_increment(bool measureError, SReal *dfree, SReal *force, SReal **w, SReal tol, SReal *d, int dim, bool& constraintsAreVerified, SReal& error, std::vector<core::behavior::ConstraintResolution*>& constraintCorrections, sofa::type::vector<SReal>& tabErrors) const;
-
+private:
+    std::string m_message;
 };
+
+} // namespace sofa::_scenechecking_
+
+namespace sofa::scenechecking
+{
+    using _scenechecking_::SceneCheckCollisionPipelineAndModels;
 }

@@ -35,6 +35,7 @@
       "displayName": "Minimal config",
       "description": "SOFA as a library, no OpenGL support, no GUI except for batch and no Python support",
       "hidden": false,
+      "generator": "Ninja",
       "cacheVariables": {
         "SOFA_FLOATING_POINT_TYPE": {
           "type": "STRING",
@@ -164,14 +165,6 @@
           "value": "ON"
         },
         "PLUGIN_BEAMADAPTER_CUDA": {
-          "type": "BOOL",
-          "value": "ON"
-        },
-        "SOFA_FETCH_SOFAVISCOELASTIC": {
-          "type": "BOOL",
-          "value": "ON"
-        },
-        "PLUGIN_SOFAVISCOELASTIC": {
           "type": "BOOL",
           "value": "ON"
         },

@@ -45,7 +45,6 @@ public:
     SOFA_CLASS(GenericConstraintSolver, ConstraintSolverImpl);
 protected:
     GenericConstraintSolver();
-    ~GenericConstraintSolver() override;
 public:
     void init() override;
 
@@ -89,8 +88,8 @@ protected:
     void clearConstraintProblemLocks();
 
     static constexpr auto CP_BUFFER_SIZE = 10;
-    sofa::type::fixed_array<GenericConstraintProblem * , CP_BUFFER_SIZE> m_cpBuffer;
-    sofa::type::fixed_array<bool, CP_BUFFER_SIZE> m_cpIsLocked;
+    sofa::type::fixed_array<std::unique_ptr<GenericConstraintProblem>, CP_BUFFER_SIZE> m_cpBuffer;
+    sofa::type::fixed_array<bool, CP_BUFFER_SIZE> m_cpIsLocked = sofa::type::makeHomogeneousArray<bool, CP_BUFFER_SIZE>(false);
     GenericConstraintProblem *current_cp, *last_cp;
 
     sofa::core::MultiVecDerivId m_lambdaId;

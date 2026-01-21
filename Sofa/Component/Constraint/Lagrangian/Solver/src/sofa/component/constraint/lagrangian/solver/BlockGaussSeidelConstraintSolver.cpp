@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <sofa/component/constraint/lagrangian/solver/ProjectedGaussSeidelConstraintSolver.h>
+#include <sofa/component/constraint/lagrangian/solver/BlockGaussSeidelConstraintSolver.h>
 #include <sofa/component/constraint/lagrangian/solver/GenericConstraintSolver.h>
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
@@ -30,7 +30,7 @@ namespace sofa::component::constraint::lagrangian::solver
 {
 
 
-void ProjectedGaussSeidelConstraintSolver::doSolve( GenericConstraintProblem * problem ,SReal timeout)
+void BlockGaussSeidelConstraintSolver::doSolve( GenericConstraintProblem * problem ,SReal timeout)
 {
     SCOPED_TIMER_VARNAME(gaussSeidelTimer, "ConstraintsGaussSeidel");
 
@@ -200,7 +200,7 @@ void ProjectedGaussSeidelConstraintSolver::doSolve( GenericConstraintProblem * p
     }
 }
 
-void ProjectedGaussSeidelConstraintSolver::gaussSeidel_increment(bool measureError, SReal *dfree, SReal *force, SReal **w, SReal tol, SReal *d, int dim, bool& constraintsAreVerified, SReal& error, std::vector<core::behavior::ConstraintResolution*>& constraintCorrections, sofa::type::vector<SReal>& tabErrors) const
+void BlockGaussSeidelConstraintSolver::gaussSeidel_increment(bool measureError, SReal *dfree, SReal *force, SReal **w, SReal tol, SReal *d, int dim, bool& constraintsAreVerified, SReal& error, std::vector<core::behavior::ConstraintResolution*>& constraintCorrections, sofa::type::vector<SReal>& tabErrors) const
 {
     for(int j=0; j<dim; ) // increment of j realized at the end of the loop
     {
@@ -284,10 +284,10 @@ void ProjectedGaussSeidelConstraintSolver::gaussSeidel_increment(bool measureErr
 }
 
 
-void registerProjectedGaussSeidelConstraintSolver(sofa::core::ObjectFactory* factory)
+void registerBlockGaussSeidelConstraintSolver(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("A Constraint Solver using the Linear Complementarity Problem formulation to solve Constraint based components using a Projected Gauss-Seidel iterative method")
-        .add< ProjectedGaussSeidelConstraintSolver >());
+    factory->registerObjects(core::ObjectRegistrationData("A Constraint Solver using the Linear Complementarity Problem formulation to solve Constraint based components using a Block Gauss-Seidel iterative method")
+        .add< BlockGaussSeidelConstraintSolver >());
 }
 
 
