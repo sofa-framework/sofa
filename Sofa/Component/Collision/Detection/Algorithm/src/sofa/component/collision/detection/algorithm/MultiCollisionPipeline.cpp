@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include <sofa/component/collision/detection/algorithm/MultiCollisionPipeline.h>
 
-#include <sofa/component/collision/detection/algorithm/AbstractSubCollisionPipeline.h>
+#include <sofa/component/collision/detection/algorithm/BaseSubCollisionPipeline.h>
 
 #include <sofa/core/CollisionModel.h>
 #include <sofa/core/ObjectFactory.h>
@@ -200,7 +200,7 @@ void MultiCollisionPipeline::doCollisionResponse()
 
 std::set< std::string > MultiCollisionPipeline::getResponseList() const
 {
-    return AbstractSubCollisionPipeline::getResponseList();
+    return BaseSubCollisionPipeline::getResponseList();
 }
 
 void MultiCollisionPipeline::computeCollisionReset()
