@@ -28,8 +28,6 @@
 #include <sofa/core/collision/ContactManager.h>
 #include <sofa/core/collision/Intersection.h>
 
-#include <sofa/core/visual/VisualParams.h>
-
 #include <set>
 #include <string>
 
@@ -42,79 +40,23 @@ public:
     SOFA_ABSTRACT_CLASS(AbstractSubCollisionPipeline, sofa::core::objectmodel::BaseObject);
 
 protected:
-    AbstractSubCollisionPipeline()
-    : sofa::core::objectmodel::BaseObject()
-    , l_collisionModels(initLink("collisionModels", "List of collision models to consider in this pipeline"))
-    , l_intersectionMethod(initLink("intersectionMethod", "Intersection method to use in this pipeline"))
-    , l_contactManager(initLink("contactManager", "Contact manager to use in this pipeline"))
-    {
-        
-    }
+    AbstractSubCollisionPipeline();
     
     virtual void doInit() = 0;
-    virtual void doBwdInit() {}
+    virtual void doBwdInit();
     virtual void doHandleEvent(sofa::core::objectmodel::Event* e) = 0;
-    virtual void doDraw(const core::visual::VisualParams*) {}
+    virtual void doDraw(const core::visual::VisualParams* vparams);
     
 public:
     virtual void computeCollisionReset() = 0;
     virtual void computeCollisionDetection() = 0;
     virtual void computeCollisionResponse() = 0;
     
-    void init() override final
-    {
-        bool validity = true;
-        
-        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
-        
-        //Check given parameters
-        if (l_collisionModels.size() == 0)
-        {
-            msg_warning() << "At least one CollisionModel is required to compute collision detection.";
-            validity = false;
-        }
-        
-        if (!l_intersectionMethod)
-        {
-            msg_warning() << "An Intersection detection component is required to compute collision detection.";
-            validity = false;
-        }
-        
-        if (!l_contactManager)
-        {
-            msg_warning() << "A contact manager component is required to compute collision detection.";
-            validity = false;
-        }
-        
-        if (validity)
-        {
-            this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
-        }
-                
-        doInit();
-    }
-
-    static std::set< std::string > getResponseList()
-    {
-        std::set< std::string > listResponse;
-        for (const auto& [key, creatorPtr] : *core::collision::Contact::Factory::getInstance())
-        {
-            listResponse.insert(key);
-        }
-        return listResponse;
-    }
+    void init() override final;
+    void draw(const core::visual::VisualParams* vparams) override final;
+    void handleEvent(sofa::core::objectmodel::Event* e) override final;
     
-    void draw(const core::visual::VisualParams* vparams) override final
-    {
-        const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
-
-        doDraw(vparams);
-    }
-    
-    void handleEvent(sofa::core::objectmodel::Event* e) override final
-    {
-        doHandleEvent(e);
-    }
+    static std::set< std::string > getResponseList();
 
     sofa::MultiLink < AbstractSubCollisionPipeline, sofa::core::CollisionModel, sofa::BaseLink::FLAG_DUPLICATE > l_collisionModels;
     sofa::SingleLink< AbstractSubCollisionPipeline, sofa::core::collision::Intersection, sofa::BaseLink::FLAG_STOREPATH | sofa::BaseLink::FLAG_STRONGLINK > l_intersectionMethod;
