@@ -137,22 +137,25 @@ void MultiCollisionPipeline::doCollisionDetection(const type::vector<core::Colli
 
     SCOPED_TIMER_VARNAME(docollisiontimer, "doCollisionDetection");
 
-    msg_info()
-         << "doCollisionDetection, compute Bounding Trees" ;
-
-    const sofa::simulation::ForEachExecutionPolicy execution = m_taskScheduler != nullptr && d_parallelDetection.getValue() ?
-        sofa::simulation::ForEachExecutionPolicy::PARALLEL :
-        sofa::simulation::ForEachExecutionPolicy::SEQUENTIAL;
-   
-    auto computeCollisionDetection = [&](const auto& range)
+    if(m_taskScheduler)
     {
-        for (auto it = range.start; it != range.end; ++it)
+        auto computeCollisionDetection = [&](const auto& range)
         {
-            (*it)->computeCollisionDetection();
+            for (auto it = range.start; it != range.end; ++it)
+            {
+                (*it)->computeCollisionDetection();
+            }
+        };
+        
+        sofa::simulation::forEachRange(sofa::simulation::ForEachExecutionPolicy::PARALLEL, *m_taskScheduler, m_subCollisionPipelines.begin(), m_subCollisionPipelines.end(), computeCollisionDetection);
+    }
+    else
+    {
+        for (const auto& subPipeline : m_subCollisionPipelines)
+        {
+            subPipeline->computeCollisionDetection();
         }
-    };
-    
-    sofa::simulation::forEachRange(execution, *m_taskScheduler, m_subCollisionPipelines.begin(), m_subCollisionPipelines.end(), computeCollisionDetection);
+    }
 }
 
 void MultiCollisionPipeline::doCollisionResponse()
