@@ -22,6 +22,7 @@ eigen = ">=3.4.0"
 tinyxml2 = ">=9.0.0"
 cxxopts = ">=3.1.1"
 gtest = "*"
+tight-inclusion = "*"
 
 [tasks]
 build = { cmd = "cmake --build $SOFA_BUILD_DIR --target all", depends-on = ["configure"] }
@@ -91,7 +92,7 @@ activation = { env = { SOFA_PLUGIN_SOFACUDA_ARGS = "-DPLUGIN_SOFACUDA=OFF -DPLUG
 [feature.plugin-cgal.target.unix]
 dependencies = { cgal-cpp = "*", gmp = "*" }
 [feature.plugin-cgal.target.win]
-activation = { env = { SOFA_PLUGIN_SOFACGAL_ARGS = "-DPLUGIN_CGALPLUGIN=OFF" } }
+activation = { env = { SOFA_PLUGIN_SOFACGAL_ARGS = "-DSOFA_FETCH_CGALPLUGIN=OFF -DPLUGIN_CGALPLUGIN=OFF" } }
 
 [feature.plugin-cimg]
 dependencies = { zstd = "*", libtiff = "*", libjpeg-turbo = "*", libpng = "*" }
