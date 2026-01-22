@@ -75,10 +75,7 @@ void MultiCollisionPipeline::init()
     
     if(d_parallelDetection.getValue() || d_parallelResponse.getValue())
     {
-        m_taskScheduler = sofa::simulation::MainTaskSchedulerFactory::createInRegistry();
-        assert(m_taskScheduler);
-        
-        m_taskScheduler->init();
+        this->initTaskScheduler();
     }
 
     // UX: warn if there is any CollisionModel not handled by any SubCollisionPipeline

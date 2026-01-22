@@ -22,9 +22,8 @@
 #pragma once
 #include <sofa/component/collision/detection/algorithm/config.h>
 
-#include <sofa/core/objectmodel/BaseObject.h>
-
 #include <sofa/core/CollisionModel.h>
+#include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/collision/ContactManager.h>
 #include <sofa/core/collision/Intersection.h>
 

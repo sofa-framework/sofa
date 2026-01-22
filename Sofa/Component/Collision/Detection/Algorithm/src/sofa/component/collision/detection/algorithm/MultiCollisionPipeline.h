@@ -24,20 +24,17 @@
 
 #include <sofa/core/collision/Pipeline.h>
 
-namespace sofa::simulation
-{
-class TaskScheduler;
-}
+#include <sofa/simulation/task/TaskSchedulerUser.h>
 
 namespace sofa::component::collision::detection::algorithm
 {
 
 class AbstractSubCollisionPipeline;
 
-class SOFA_COMPONENT_COLLISION_DETECTION_ALGORITHM_API MultiCollisionPipeline : public sofa::core::collision::Pipeline
+class SOFA_COMPONENT_COLLISION_DETECTION_ALGORITHM_API MultiCollisionPipeline : public sofa::core::collision::Pipeline, public sofa::simulation::TaskSchedulerUser
 {
 public:
-    SOFA_CLASS(MultiCollisionPipeline, sofa::core::collision::Pipeline);
+    SOFA_CLASS2(MultiCollisionPipeline, sofa::core::collision::Pipeline, sofa::simulation::TaskSchedulerUser);
 
     sofa::Data<int>  d_depth;
 protected:
@@ -67,9 +64,7 @@ protected:
     virtual void computeCollisionDetection() override final;
     /// Add collision response in the simulation graph
     virtual void computeCollisionResponse() override final;
-    
-    sofa::simulation::TaskScheduler* m_taskScheduler{nullptr};
-    
+        
     std::vector<AbstractSubCollisionPipeline*> m_subCollisionPipelines;
 
 public:
