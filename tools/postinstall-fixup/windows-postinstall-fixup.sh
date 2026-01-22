@@ -44,10 +44,3 @@ cd "$INSTALL_DIR" && find -name "*.ini" -path "*/plugins/*/etc/*" | while read f
     cp  "$f" "$INSTALL_DIR_ETC"
 done
 
-# Copy all collection libs in install/bin (preserving sub-directory structure) to make them easily findable
-cd "$INSTALL_DIR"
-for p in collections/*/; do
-  cd $INSTALL_DIR/$p && find . -name "*.dll" | while read lib; do
-    cp --parents "$lib" "$INSTALL_DIR"
-  done
-done
