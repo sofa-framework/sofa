@@ -116,7 +116,7 @@ void MultiCollisionPipeline::bwdInit()
 {
     for(const auto& subPipeline : l_subCollisionPipelines)
     {
-        subPipeline->doBwdInit();
+        subPipeline->bwdInit();
     }
 }
 

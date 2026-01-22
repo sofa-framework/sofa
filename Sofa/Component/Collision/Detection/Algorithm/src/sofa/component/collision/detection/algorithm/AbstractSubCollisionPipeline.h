@@ -41,15 +41,7 @@ class SOFA_COMPONENT_COLLISION_DETECTION_ALGORITHM_API AbstractSubCollisionPipel
 public:
     SOFA_ABSTRACT_CLASS(AbstractSubCollisionPipeline, sofa::core::objectmodel::BaseObject);
 
-    virtual void computeCollisionReset() = 0;
-    virtual void computeCollisionDetection() = 0;
-    virtual void computeCollisionResponse() = 0;
-    virtual void doInit() = 0;
-    virtual void doBwdInit() {}
-    virtual void doHandleEvent(sofa::core::objectmodel::Event* e) = 0;
-    
-    virtual void doDraw(const core::visual::VisualParams*) {}
-    
+protected:
     AbstractSubCollisionPipeline()
     : sofa::core::objectmodel::BaseObject()
     , l_collisionModels(initLink("collisionModels", "List of collision models to consider in this pipeline"))
@@ -58,6 +50,16 @@ public:
     {
         
     }
+    
+    virtual void doInit() = 0;
+    virtual void doBwdInit() {}
+    virtual void doHandleEvent(sofa::core::objectmodel::Event* e) = 0;
+    virtual void doDraw(const core::visual::VisualParams*) {}
+    
+public:
+    virtual void computeCollisionReset() = 0;
+    virtual void computeCollisionDetection() = 0;
+    virtual void computeCollisionResponse() = 0;
     
     void init() override final
     {
