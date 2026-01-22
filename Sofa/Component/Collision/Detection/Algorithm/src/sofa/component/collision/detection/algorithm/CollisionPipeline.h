@@ -22,17 +22,16 @@
 #pragma once
 #include <sofa/component/collision/detection/algorithm/config.h>
 
-#include <sofa/simulation/PipelineImpl.h>
 #include <sofa/component/collision/detection/algorithm/CompositeCollisionPipeline.h>
 #include <sofa/component/collision/detection/algorithm/SubCollisionPipeline.h>
 
 namespace sofa::component::collision::detection::algorithm
 {
 
-class SOFA_COMPONENT_COLLISION_DETECTION_ALGORITHM_API CollisionPipeline : public sofa::simulation::PipelineImpl
+class SOFA_COMPONENT_COLLISION_DETECTION_ALGORITHM_API CollisionPipeline : public CompositeCollisionPipeline
 {
 public:
-    SOFA_CLASS(CollisionPipeline,sofa::simulation::PipelineImpl);
+    SOFA_CLASS(CollisionPipeline, CompositeCollisionPipeline);
 
     Data<bool> d_doPrintInfoMessage;
     Data<bool> d_doDebugDraw;
@@ -43,20 +42,9 @@ protected:
 public:
     void init() override;
 
-    /// get the set of response available with the current collision pipeline
-    std::set< std::string > getResponseList() const override;
 protected:
-    // -- Pipeline interface
-    /// Remove collision response from last step
-    void doCollisionReset() override;
-    /// Detect new collisions. Note that this step must not modify the simulation graph
-    void doCollisionDetection(const sofa::type::vector<core::CollisionModel*>& collisionModels) override;
-    /// Add collision response in the simulation graph
-    void doCollisionResponse() override;
-
     virtual void checkDataValues() ;
     
-    CompositeCollisionPipeline::SPtr m_multiCollisionPipeline;
     SubCollisionPipeline::SPtr m_subCollisionPipeline;
 
 public:
