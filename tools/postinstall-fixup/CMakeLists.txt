@@ -1,5 +1,5 @@
 # Post-install scripts
-if(NOT SOFA_BUILD_RELEASE_PACKAGE)
+if(NOT SOFA_BUILD_RELEASE_PACKAGE AND NOT CMAKE_SYSTEM_NAME STREQUAL Windows)
     return()
 endif()
 
