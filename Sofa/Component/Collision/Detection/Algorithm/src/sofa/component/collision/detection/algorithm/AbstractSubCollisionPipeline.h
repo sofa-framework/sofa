@@ -95,10 +95,9 @@ public:
     static std::set< std::string > getResponseList()
     {
         std::set< std::string > listResponse;
-        core::collision::Contact::Factory::iterator it;
-        for (it = core::collision::Contact::Factory::getInstance()->begin(); it != core::collision::Contact::Factory::getInstance()->end(); ++it)
+        for (const auto& [key, creatorPtr] : *core::collision::Contact::Factory::getInstance())
         {
-            listResponse.insert(it->first);
+            listResponse.insert(key);
         }
         return listResponse;
     }
