@@ -86,6 +86,7 @@ void CollisionPipeline::init()
     msg_info() << "If you want more flexibility, use directly the components MultiCollisionPipeline and SubCollisionPipeline, with their respective Data.";
 
     auto context = this->getContext();
+    assert(context);
     // set the whole collision models list to the sub collision pipeline
     sofa::type::vector<sofa::core::CollisionModel::SPtr> collisionModels;
     context->get<sofa::core::CollisionModel, sofa::type::vector<sofa::core::CollisionModel::SPtr>>(&collisionModels, BaseContext::SearchRoot);
