@@ -69,7 +69,6 @@ protected:
 
 public:
     sofa::Data<bool> d_parallelDetection;
-    sofa::Data<bool> d_parallelResponse;
     sofa::MultiLink < MultiCollisionPipeline, BaseSubCollisionPipeline, sofa::BaseLink::FLAG_DUPLICATE > l_subCollisionPipelines;
     
     

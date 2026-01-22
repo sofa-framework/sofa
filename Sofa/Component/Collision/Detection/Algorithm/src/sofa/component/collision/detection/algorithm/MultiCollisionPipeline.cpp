@@ -54,7 +54,6 @@ void registerMultiCollisionPipeline(sofa::core::ObjectFactory* factory)
 
 MultiCollisionPipeline::MultiCollisionPipeline()
     : d_parallelDetection(initData(&d_parallelDetection, false, "parallelDetection", "Parallelize collision detection."))
-    , d_parallelResponse(initData(&d_parallelResponse, false, "parallelResponse", "(DISABLED) Parallelize collision response."))
     , l_subCollisionPipelines(initLink("subCollisionPipelines", "List of sub collision pipelines to handle."))
 {
 }
@@ -73,7 +72,7 @@ void MultiCollisionPipeline::init()
         return;
     }
     
-    if(d_parallelDetection.getValue() || d_parallelResponse.getValue())
+    if(d_parallelDetection.getValue())
     {
         this->initTaskScheduler();
     }
@@ -158,23 +157,10 @@ void MultiCollisionPipeline::doCollisionDetection(const type::vector<core::Colli
 
 void MultiCollisionPipeline::doCollisionResponse()
 {
-    // disable parallel execution, as there is a potential race condition on Node
-    // It arises when while cleaning inactive contact, BaryCcontactMapper will detach the node, which clears _descendency set
-    // if two contact responses do the same in the same time, it will do a race condition on this particular node.
-//    const sofa::simulation::ForEachExecutionPolicy execution = m_taskScheduler != nullptr && d_parallelResponse.getValue() ?
-//        sofa::simulation::ForEachExecutionPolicy::PARALLEL :
-//        sofa::simulation::ForEachExecutionPolicy::SEQUENTIAL;
-    const sofa::simulation::ForEachExecutionPolicy execution = sofa::simulation::ForEachExecutionPolicy::SEQUENTIAL;
-       
-    auto computeCollisionResponse = [&](const auto& range)
+    for (const auto& subPipeline : m_subCollisionPipelines)
     {
-        for (auto it = range.start; it != range.end; ++it)
-        {
-            (*it)->computeCollisionResponse();
-        }
-    };
-    
-    sofa::simulation::forEachRange(execution, *m_taskScheduler, l_subCollisionPipelines.begin(), l_subCollisionPipelines.end(), computeCollisionResponse);
+        subPipeline->computeCollisionResponse();
+    }
 }
 
 std::set< std::string > MultiCollisionPipeline::getResponseList() const
