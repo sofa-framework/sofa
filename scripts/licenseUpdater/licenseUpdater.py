@@ -17,6 +17,8 @@ def read_target_header(script_path, header_file_name):
 
     return target_header
 
+gpl_files = []
+
 def add_header_if_missing(folder_path, extensions, target_header, skipped_header):
     # Iterate over each extension
     for ext in extensions:
@@ -28,6 +30,7 @@ def add_header_if_missing(folder_path, extensions, target_header, skipped_header
 
             if skipped_header in content:
                 print(f"File {file_path} has a GPL license")
+                gpl_files.append(file_path)
                 continue
 
             start_char = "/******************************************************************************"
@@ -78,3 +81,7 @@ if __name__ == "__main__":
     extensions = ['h', 'cpp', 'inl', 'h.in', '.cu']
 
     add_header_if_missing(args.folder_path, extensions, lgpl_target_header, gpl_target_header)
+
+    print(f"{len(gpl_files)} files with GPL")
+    for file_path in gpl_files:
+        print(f"- {file_path}")
