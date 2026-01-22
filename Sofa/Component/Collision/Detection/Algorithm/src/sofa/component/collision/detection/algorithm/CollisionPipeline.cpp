@@ -71,7 +71,7 @@ CollisionPipeline::CollisionPipeline()
     m_subCollisionPipeline->d_depth.setParent(&this->d_depth);
     m_subCollisionPipeline->l_broadPhaseDetection.set(this->broadPhaseDetection);
     m_subCollisionPipeline->l_narrowPhaseDetection.set(this->narrowPhaseDetection);
-    m_multiCollisionPipeline = sofa::core::objectmodel::New<MultiCollisionPipeline>();
+    m_multiCollisionPipeline = sofa::core::objectmodel::New<CompositeCollisionPipeline>();
     m_multiCollisionPipeline->l_subCollisionPipelines.add(m_subCollisionPipeline.get());
     
     this->addSlave(m_subCollisionPipeline);
@@ -82,8 +82,8 @@ void CollisionPipeline::init()
 {
     Inherit1::init();
     
-    msg_info() << "CollisionPipeline is now a wrapper to MultiCollisionPipeline with a single SubCollisionPipeline.";
-    msg_info() << "If you want more flexibility, use directly the components MultiCollisionPipeline and SubCollisionPipeline, with their respective Data.";
+    msg_info() << "CollisionPipeline is now a wrapper to CompositeCollisionPipeline with a single SubCollisionPipeline.";
+    msg_info() << "If you want more flexibility, use directly the components CompositeCollisionPipeline and SubCollisionPipeline, with their respective Data.";
 
     auto context = this->getContext();
     assert(context);

@@ -31,14 +31,14 @@ namespace sofa::component::collision::detection::algorithm
 
 class BaseSubCollisionPipeline;
 
-class SOFA_COMPONENT_COLLISION_DETECTION_ALGORITHM_API MultiCollisionPipeline : public sofa::core::collision::Pipeline, public sofa::simulation::TaskSchedulerUser
+class SOFA_COMPONENT_COLLISION_DETECTION_ALGORITHM_API CompositeCollisionPipeline : public sofa::core::collision::Pipeline, public sofa::simulation::TaskSchedulerUser
 {
 public:
-    SOFA_CLASS2(MultiCollisionPipeline, sofa::core::collision::Pipeline, sofa::simulation::TaskSchedulerUser);
+    SOFA_CLASS2(CompositeCollisionPipeline, sofa::core::collision::Pipeline, sofa::simulation::TaskSchedulerUser);
 
     sofa::Data<int>  d_depth;
 protected:
-    MultiCollisionPipeline();
+    CompositeCollisionPipeline();
 public:
     void init() override;
     void bwdInit() override;
@@ -69,7 +69,7 @@ protected:
 
 public:
     sofa::Data<bool> d_parallelDetection;
-    sofa::MultiLink < MultiCollisionPipeline, BaseSubCollisionPipeline, sofa::BaseLink::FLAG_DUPLICATE > l_subCollisionPipelines;
+    sofa::MultiLink < CompositeCollisionPipeline, BaseSubCollisionPipeline, sofa::BaseLink::FLAG_DUPLICATE > l_subCollisionPipelines;
     
     
     friend class CollisionPipeline; // to be able to call do*()
