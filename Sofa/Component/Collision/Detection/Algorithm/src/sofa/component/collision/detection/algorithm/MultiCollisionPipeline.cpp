@@ -130,27 +130,6 @@ void MultiCollisionPipeline::doCollisionReset()
     {
         subPipeline->computeCollisionReset();
     }
-    
-    // re-order pipelines by order of distance
-    m_subCollisionPipelines.clear();
-    for(auto* subPipeline : l_subCollisionPipelines)
-    {
-        const auto alarmDistance = subPipeline->l_intersectionMethod->getAlarmDistance();
-        auto subPipelineIt = m_subCollisionPipelines.begin();
-        
-        if(subPipelineIt == m_subCollisionPipelines.end())
-        {
-            m_subCollisionPipelines.push_back(subPipeline);
-        }
-        else
-        {
-            while(subPipelineIt != m_subCollisionPipelines.end() && alarmDistance > (*subPipelineIt)->l_intersectionMethod->getAlarmDistance())
-            {
-                subPipelineIt++;
-            }
-            m_subCollisionPipelines.insert(subPipelineIt, subPipeline);
-        }
-    }
 }
 
 void MultiCollisionPipeline::doCollisionDetection(const type::vector<core::CollisionModel*>& collisionModels)
