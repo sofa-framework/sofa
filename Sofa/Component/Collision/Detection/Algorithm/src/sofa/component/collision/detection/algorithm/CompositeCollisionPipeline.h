@@ -63,9 +63,7 @@ protected:
     /// Detect new collisions. Note that this step must not modify the simulation graph
     virtual void computeCollisionDetection() override final;
     /// Add collision response in the simulation graph
-    virtual void computeCollisionResponse() override final;
-        
-    std::vector<BaseSubCollisionPipeline*> m_subCollisionPipelines;
+    virtual void computeCollisionResponse() override final;    
 
 public:
     sofa::Data<bool> d_parallelDetection;

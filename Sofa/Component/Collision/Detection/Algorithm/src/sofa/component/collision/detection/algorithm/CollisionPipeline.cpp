@@ -67,46 +67,55 @@ CollisionPipeline::CollisionPipeline()
                ("Max depth of bounding trees. (default=" + std::to_string(defaultDepthValue) + ", min=?, max=?)").c_str()))
 {
     
-    m_subCollisionPipeline = sofa::core::objectmodel::New<SubCollisionPipeline>();
-    m_subCollisionPipeline->d_depth.setParent(&this->d_depth);
-    m_subCollisionPipeline->l_broadPhaseDetection.set(this->broadPhaseDetection);
-    m_subCollisionPipeline->l_narrowPhaseDetection.set(this->narrowPhaseDetection);
-    m_multiCollisionPipeline = sofa::core::objectmodel::New<CompositeCollisionPipeline>();
-    m_multiCollisionPipeline->l_subCollisionPipelines.add(m_subCollisionPipeline.get());
-    
-    this->addSlave(m_subCollisionPipeline);
-    this->addSlave(m_multiCollisionPipeline);
 }
 
 void CollisionPipeline::init()
 {
-    Inherit1::init();
-    
     msg_info() << "CollisionPipeline is now a wrapper to CompositeCollisionPipeline with a single SubCollisionPipeline.";
     msg_info() << "If you want more flexibility, use directly the components CompositeCollisionPipeline and SubCollisionPipeline, with their respective Data.";
-
+    
     auto context = this->getContext();
     assert(context);
+    
+    m_subCollisionPipeline = sofa::core::objectmodel::New<SubCollisionPipeline>();
+    m_subCollisionPipeline->d_depth.setParent(&this->d_depth);
+    
     // set the whole collision models list to the sub collision pipeline
     sofa::type::vector<sofa::core::CollisionModel::SPtr> collisionModels;
     context->get<sofa::core::CollisionModel, sofa::type::vector<sofa::core::CollisionModel::SPtr>>(&collisionModels, BaseContext::SearchRoot);
-        
     for(auto collisionModel : collisionModels)
     {
         m_subCollisionPipeline->l_collisionModels.add(collisionModel.get());
     }
     
-    // set the other component to the sub collision pipeline (which is implcitely searched/set by PipelineImpl)
-    m_subCollisionPipeline->l_intersectionMethod.set(this->intersectionMethod);
-    m_subCollisionPipeline->l_broadPhaseDetection.set(this->broadPhaseDetection);
-    m_subCollisionPipeline->l_narrowPhaseDetection.set(this->narrowPhaseDetection);
-    m_subCollisionPipeline->l_contactManager.set(this->contactManager);
+    // set the other components to the sub collision pipeline
+    // intersection
+    sofa::core::collision::Intersection* intersectionMethod = nullptr;
+    context->get(intersectionMethod, BaseContext::SearchRoot);
+    m_subCollisionPipeline->l_intersectionMethod.set(intersectionMethod);
+                   
+    // broad phase
+    sofa::core::collision::BroadPhaseDetection* broadPhaseDetection = nullptr;
+    context->get(broadPhaseDetection, BaseContext::SearchRoot);
+    m_subCollisionPipeline->l_broadPhaseDetection.set(broadPhaseDetection);
     
+    // narrow phase
+    sofa::core::collision::NarrowPhaseDetection* narrowPhaseDetection = nullptr;
+    context->get(narrowPhaseDetection, BaseContext::SearchRoot);
+    m_subCollisionPipeline->l_narrowPhaseDetection.set(narrowPhaseDetection);
+   
+    // contact manager
+    sofa::core::collision::ContactManager* contactManager = nullptr;
+    context->get(contactManager, BaseContext::SearchRoot);
+    m_subCollisionPipeline->l_contactManager.set(contactManager);
+        
     m_subCollisionPipeline->init();
-    m_multiCollisionPipeline->init();
+    this->l_subCollisionPipelines.add(m_subCollisionPipeline.get());
     
     /// Insure that all the value provided by the user are valid and report message if it is not.
     checkDataValues() ;
+    
+    Inherit1::init();
 }
 
 void CollisionPipeline::checkDataValues()
@@ -117,26 +126,6 @@ void CollisionPipeline::checkDataValues()
                       << "Replaced with the default value = " << defaultDepthValue;
         d_depth.setValue(defaultDepthValue) ;
     }
-}
-
-void CollisionPipeline::doCollisionReset()
-{
-    m_multiCollisionPipeline->doCollisionReset();
-}
-
-void CollisionPipeline::doCollisionDetection(const type::vector<core::CollisionModel*>& collisionModels)
-{
-    m_multiCollisionPipeline->doCollisionDetection(collisionModels);
-}
-
-void CollisionPipeline::doCollisionResponse()
-{
-    m_multiCollisionPipeline->doCollisionResponse();
-}
-
-std::set< std::string > CollisionPipeline::getResponseList() const
-{
-    return m_multiCollisionPipeline->getResponseList();
 }
 
 } // namespace sofa::component::collision::detection::algorithm

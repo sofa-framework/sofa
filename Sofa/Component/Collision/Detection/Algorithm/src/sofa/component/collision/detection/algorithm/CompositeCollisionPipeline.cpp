@@ -147,11 +147,11 @@ void CompositeCollisionPipeline::doCollisionDetection(const type::vector<core::C
             }
         };
         
-        sofa::simulation::forEachRange(sofa::simulation::ForEachExecutionPolicy::PARALLEL, *m_taskScheduler, m_subCollisionPipelines.begin(), m_subCollisionPipelines.end(), computeCollisionDetection);
+        sofa::simulation::forEachRange(sofa::simulation::ForEachExecutionPolicy::PARALLEL, *m_taskScheduler, l_subCollisionPipelines.begin(), l_subCollisionPipelines.end(), computeCollisionDetection);
     }
     else
     {
-        for (const auto& subPipeline : m_subCollisionPipelines)
+        for (const auto& subPipeline : l_subCollisionPipelines)
         {
             subPipeline->computeCollisionDetection();
         }
@@ -160,7 +160,7 @@ void CompositeCollisionPipeline::doCollisionDetection(const type::vector<core::C
 
 void CompositeCollisionPipeline::doCollisionResponse()
 {
-    for (const auto& subPipeline : m_subCollisionPipelines)
+    for (const auto& subPipeline : l_subCollisionPipelines)
     {
         subPipeline->computeCollisionResponse();
     }
@@ -185,7 +185,7 @@ void CompositeCollisionPipeline::computeCollisionDetection()
         return;
     
     //useless
-    std::vector<CollisionModel*> collisionModels;
+    static std::vector<CollisionModel*> collisionModels{};
     
     doCollisionDetection(collisionModels);
 }
@@ -201,7 +201,7 @@ void CompositeCollisionPipeline::computeCollisionResponse()
 
 void CompositeCollisionPipeline::draw(const core::visual::VisualParams* vparams)
 {
-    for (const auto& subPipeline : m_subCollisionPipelines)
+    for (const auto& subPipeline : l_subCollisionPipelines)
     {
         subPipeline->draw(vparams);
     }
