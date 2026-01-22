@@ -33,13 +33,13 @@
 namespace sofa::component::collision::detection::algorithm
 {
 
-class SOFA_COMPONENT_COLLISION_DETECTION_ALGORITHM_API AbstractSubCollisionPipeline : public sofa::core::objectmodel::BaseObject
+class SOFA_COMPONENT_COLLISION_DETECTION_ALGORITHM_API BaseSubCollisionPipeline : public sofa::core::objectmodel::BaseObject
 {
 public:
-    SOFA_ABSTRACT_CLASS(AbstractSubCollisionPipeline, sofa::core::objectmodel::BaseObject);
+    SOFA_ABSTRACT_CLASS(BaseSubCollisionPipeline, sofa::core::objectmodel::BaseObject);
 
 protected:
-    AbstractSubCollisionPipeline();
+    BaseSubCollisionPipeline();
     
     virtual void doInit() = 0;
     virtual void doBwdInit();
@@ -57,9 +57,9 @@ public:
     
     static std::set< std::string > getResponseList();
 
-    sofa::MultiLink < AbstractSubCollisionPipeline, sofa::core::CollisionModel, sofa::BaseLink::FLAG_DUPLICATE > l_collisionModels;
-    sofa::SingleLink< AbstractSubCollisionPipeline, sofa::core::collision::Intersection, sofa::BaseLink::FLAG_STOREPATH | sofa::BaseLink::FLAG_STRONGLINK > l_intersectionMethod;
-    sofa::SingleLink< AbstractSubCollisionPipeline, sofa::core::collision::ContactManager, sofa::BaseLink::FLAG_STOREPATH | sofa::BaseLink::FLAG_STRONGLINK > l_contactManager;
+    sofa::MultiLink < BaseSubCollisionPipeline, sofa::core::CollisionModel, sofa::BaseLink::FLAG_DUPLICATE > l_collisionModels;
+    sofa::SingleLink< BaseSubCollisionPipeline, sofa::core::collision::Intersection, sofa::BaseLink::FLAG_STOREPATH | sofa::BaseLink::FLAG_STRONGLINK > l_intersectionMethod;
+    sofa::SingleLink< BaseSubCollisionPipeline, sofa::core::collision::ContactManager, sofa::BaseLink::FLAG_STOREPATH | sofa::BaseLink::FLAG_STRONGLINK > l_contactManager;
 };
 
 } // namespace sofa::component::collision::detection::algorithm

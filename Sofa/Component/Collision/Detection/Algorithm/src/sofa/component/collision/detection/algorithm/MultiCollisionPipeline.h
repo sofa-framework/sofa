@@ -29,7 +29,7 @@
 namespace sofa::component::collision::detection::algorithm
 {
 
-class AbstractSubCollisionPipeline;
+class BaseSubCollisionPipeline;
 
 class SOFA_COMPONENT_COLLISION_DETECTION_ALGORITHM_API MultiCollisionPipeline : public sofa::core::collision::Pipeline, public sofa::simulation::TaskSchedulerUser
 {
@@ -65,12 +65,12 @@ protected:
     /// Add collision response in the simulation graph
     virtual void computeCollisionResponse() override final;
         
-    std::vector<AbstractSubCollisionPipeline*> m_subCollisionPipelines;
+    std::vector<BaseSubCollisionPipeline*> m_subCollisionPipelines;
 
 public:
     sofa::Data<bool> d_parallelDetection;
     sofa::Data<bool> d_parallelResponse;
-    sofa::MultiLink < MultiCollisionPipeline, AbstractSubCollisionPipeline, sofa::BaseLink::FLAG_DUPLICATE > l_subCollisionPipelines;
+    sofa::MultiLink < MultiCollisionPipeline, BaseSubCollisionPipeline, sofa::BaseLink::FLAG_DUPLICATE > l_subCollisionPipelines;
     
     
     friend class CollisionPipeline; // to be able to call do*()

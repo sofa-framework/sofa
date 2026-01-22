@@ -22,7 +22,7 @@
 #pragma once
 #include <sofa/component/collision/detection/algorithm/config.h>
 
-#include <sofa/component/collision/detection/algorithm/AbstractSubCollisionPipeline.h>
+#include <sofa/component/collision/detection/algorithm/BaseSubCollisionPipeline.h>
 
 #include <sofa/core/CollisionModel.h>
 #include <sofa/core/collision/BroadPhaseDetection.h>
@@ -34,11 +34,11 @@
 namespace sofa::component::collision::detection::algorithm
 {
 
-class SOFA_COMPONENT_COLLISION_DETECTION_ALGORITHM_API SubCollisionPipeline : public AbstractSubCollisionPipeline
+class SOFA_COMPONENT_COLLISION_DETECTION_ALGORITHM_API SubCollisionPipeline : public BaseSubCollisionPipeline
 {
 public:
-    using Inherited = AbstractSubCollisionPipeline;
-    SOFA_CLASS(SubCollisionPipeline, AbstractSubCollisionPipeline);
+    using Inherited = BaseSubCollisionPipeline;
+    SOFA_CLASS(SubCollisionPipeline, Inherited);
 protected:
     SubCollisionPipeline();
 public:

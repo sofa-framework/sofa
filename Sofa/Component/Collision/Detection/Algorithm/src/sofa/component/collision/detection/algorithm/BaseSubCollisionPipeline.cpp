@@ -20,14 +20,14 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/collision/detection/algorithm/AbstractSubCollisionPipeline.h>
+#include <sofa/component/collision/detection/algorithm/BaseSubCollisionPipeline.h>
 
 #include <sofa/core/visual/VisualParams.h>
 
 namespace sofa::component::collision::detection::algorithm
 {
 
-AbstractSubCollisionPipeline::AbstractSubCollisionPipeline()
+BaseSubCollisionPipeline::BaseSubCollisionPipeline()
 : sofa::core::objectmodel::BaseObject()
 , l_collisionModels(initLink("collisionModels", "List of collision models to consider in this pipeline"))
 , l_intersectionMethod(initLink("intersectionMethod", "Intersection method to use in this pipeline"))
@@ -36,18 +36,18 @@ AbstractSubCollisionPipeline::AbstractSubCollisionPipeline()
     
 }
 
-void AbstractSubCollisionPipeline::doBwdInit()
+void BaseSubCollisionPipeline::doBwdInit()
 {
     
 }
 
-void AbstractSubCollisionPipeline::doDraw(const core::visual::VisualParams* vparams)
+void BaseSubCollisionPipeline::doDraw(const core::visual::VisualParams* vparams)
 {
     SOFA_UNUSED(vparams);
     
 }
 
-void AbstractSubCollisionPipeline::init()
+void BaseSubCollisionPipeline::init()
 {
     bool validity = true;
     
@@ -80,7 +80,7 @@ void AbstractSubCollisionPipeline::init()
     doInit();
 }
 
-std::set< std::string > AbstractSubCollisionPipeline::getResponseList()
+std::set< std::string > BaseSubCollisionPipeline::getResponseList()
 {
     std::set< std::string > listResponse;
     for (const auto& [key, creatorPtr] : *core::collision::Contact::Factory::getInstance())
@@ -90,14 +90,14 @@ std::set< std::string > AbstractSubCollisionPipeline::getResponseList()
     return listResponse;
 }
 
-void AbstractSubCollisionPipeline::draw(const core::visual::VisualParams* vparams)
+void BaseSubCollisionPipeline::draw(const core::visual::VisualParams* vparams)
 {
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
     doDraw(vparams);
 }
 
-void AbstractSubCollisionPipeline::handleEvent(sofa::core::objectmodel::Event* e)
+void BaseSubCollisionPipeline::handleEvent(sofa::core::objectmodel::Event* e)
 {
     doHandleEvent(e);
 }
