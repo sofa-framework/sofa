@@ -42,7 +42,7 @@ using namespace sofa::core::collision;
 
 void registerSubCollisionPipeline(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Collision pipeline to be used with MultiCollisionPipeline.")
+    factory->registerObjects(core::ObjectRegistrationData("Collision pipeline to be used with CompositeCollisionPipeline.")
         .add< SubCollisionPipeline >());
 }
 

@@ -23,7 +23,7 @@
 #include <sofa/component/collision/detection/algorithm/config.h>
 
 #include <sofa/simulation/PipelineImpl.h>
-#include <sofa/component/collision/detection/algorithm/MultiCollisionPipeline.h>
+#include <sofa/component/collision/detection/algorithm/CompositeCollisionPipeline.h>
 #include <sofa/component/collision/detection/algorithm/SubCollisionPipeline.h>
 
 namespace sofa::component::collision::detection::algorithm
@@ -56,7 +56,7 @@ protected:
 
     virtual void checkDataValues() ;
     
-    MultiCollisionPipeline::SPtr m_multiCollisionPipeline;
+    CompositeCollisionPipeline::SPtr m_multiCollisionPipeline;
     SubCollisionPipeline::SPtr m_subCollisionPipeline;
 
 public:

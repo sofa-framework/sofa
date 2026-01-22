@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/collision/detection/algorithm/MultiCollisionPipeline.h>
+#include <sofa/component/collision/detection/algorithm/CompositeCollisionPipeline.h>
 
 #include <sofa/component/collision/detection/algorithm/BaseSubCollisionPipeline.h>
 
@@ -46,19 +46,19 @@ using namespace sofa;
 using namespace sofa::core;
 using namespace sofa::core::collision;
 
-void registerMultiCollisionPipeline(sofa::core::ObjectFactory* factory)
+void registerCompositeCollisionPipeline(sofa::core::ObjectFactory* factory)
 {
     factory->registerObjects(core::ObjectRegistrationData("Multiple collision pipelines in one.")
-        .add< MultiCollisionPipeline >());
+        .add< CompositeCollisionPipeline >());
 }
 
-MultiCollisionPipeline::MultiCollisionPipeline()
+CompositeCollisionPipeline::CompositeCollisionPipeline()
     : d_parallelDetection(initData(&d_parallelDetection, false, "parallelDetection", "Parallelize collision detection."))
     , l_subCollisionPipelines(initLink("subCollisionPipelines", "List of sub collision pipelines to handle."))
 {
 }
 
-void MultiCollisionPipeline::init()
+void CompositeCollisionPipeline::init()
 {
     Inherit1::init();
 
@@ -66,7 +66,7 @@ void MultiCollisionPipeline::init()
 
     if(l_subCollisionPipelines.size() == 0)
     {
-        msg_warning() << "No SubCollisionPipeline defined in MultiCollisionPipeline. Nothing will be done." ;
+        msg_warning() << "No SubCollisionPipeline defined in CompositeCollisionPipeline. Nothing will be done." ;
 
         this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
@@ -108,7 +108,7 @@ void MultiCollisionPipeline::init()
     
 }
 
-void MultiCollisionPipeline::bwdInit()
+void CompositeCollisionPipeline::bwdInit()
 {
     for(const auto& subPipeline : l_subCollisionPipelines)
     {
@@ -116,14 +116,14 @@ void MultiCollisionPipeline::bwdInit()
     }
 }
 
-void MultiCollisionPipeline::reset()
+void CompositeCollisionPipeline::reset()
 {
 
 }
 
-void MultiCollisionPipeline::doCollisionReset()
+void CompositeCollisionPipeline::doCollisionReset()
 {
-    msg_info() << "MultiCollisionPipeline::doCollisionReset" ;
+    msg_info() << "CompositeCollisionPipeline::doCollisionReset" ;
 
     for(const auto& subPipeline : l_subCollisionPipelines)
     {
@@ -131,7 +131,7 @@ void MultiCollisionPipeline::doCollisionReset()
     }
 }
 
-void MultiCollisionPipeline::doCollisionDetection(const type::vector<core::CollisionModel*>& collisionModels)
+void CompositeCollisionPipeline::doCollisionDetection(const type::vector<core::CollisionModel*>& collisionModels)
 {
     SOFA_UNUSED(collisionModels);
 
@@ -158,7 +158,7 @@ void MultiCollisionPipeline::doCollisionDetection(const type::vector<core::Colli
     }
 }
 
-void MultiCollisionPipeline::doCollisionResponse()
+void CompositeCollisionPipeline::doCollisionResponse()
 {
     for (const auto& subPipeline : m_subCollisionPipelines)
     {
@@ -166,12 +166,12 @@ void MultiCollisionPipeline::doCollisionResponse()
     }
 }
 
-std::set< std::string > MultiCollisionPipeline::getResponseList() const
+std::set< std::string > CompositeCollisionPipeline::getResponseList() const
 {
     return BaseSubCollisionPipeline::getResponseList();
 }
 
-void MultiCollisionPipeline::computeCollisionReset()
+void CompositeCollisionPipeline::computeCollisionReset()
 {
     if(!this->isComponentStateValid())
         return;
@@ -179,7 +179,7 @@ void MultiCollisionPipeline::computeCollisionReset()
     doCollisionReset();
 }
 
-void MultiCollisionPipeline::computeCollisionDetection()
+void CompositeCollisionPipeline::computeCollisionDetection()
 {
     if(!this->isComponentStateValid())
         return;
@@ -190,7 +190,7 @@ void MultiCollisionPipeline::computeCollisionDetection()
     doCollisionDetection(collisionModels);
 }
 
-void MultiCollisionPipeline::computeCollisionResponse()
+void CompositeCollisionPipeline::computeCollisionResponse()
 {
     if(!this->isComponentStateValid())
         return;
@@ -199,7 +199,7 @@ void MultiCollisionPipeline::computeCollisionResponse()
 }
 
 
-void MultiCollisionPipeline::draw(const core::visual::VisualParams* vparams)
+void CompositeCollisionPipeline::draw(const core::visual::VisualParams* vparams)
 {
     for (const auto& subPipeline : m_subCollisionPipelines)
     {
