@@ -49,10 +49,10 @@ enum class VTKDatasetFormat { IMAGE_DATA, STRUCTURED_POINTS,
                               POLYDATA, UNSTRUCTURED_GRID
                             };
 
-class BaseVTKReader : public BaseObject
+class BaseVTKReader : public sofa::core::objectmodel::BaseObject
 {
 public:
-    class BaseVTKDataIO : public BaseObject
+    class BaseVTKDataIO : public sofa::core::objectmodel::BaseObject
     {
     public:
         string name;
