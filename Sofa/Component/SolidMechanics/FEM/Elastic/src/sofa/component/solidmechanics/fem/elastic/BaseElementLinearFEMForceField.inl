@@ -79,7 +79,7 @@ void BaseElementLinearFEMForceField<DataTypes, ElementType>::precomputeElementSt
     elementStiffness.resize(elements.size());
 
     SCOPED_TIMER("precomputeStiffness");
-    std::ranges::iota_view indices {static_cast<decltype(elements.size())>(0ul), elements.size()};
+    sofa::helper::IotaView indices {static_cast<decltype(elements.size())>(0ul), elements.size()};
     std::for_each(indices.begin(), indices.end(),
         [&](const auto elementId)
         {
