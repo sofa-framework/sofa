@@ -77,16 +77,20 @@ void UnbuiltGaussSeidelConstraintSolver::doSolve(GenericConstraintProblem * prob
     {
         if(!c_current_cp->constraintsResolutions[i])
         {
-            msg_warning() << "Bad size of constraintsResolutions in GenericConstraintSolver" ;
+            msg_warning() << "Bad size of constraintsResolutions" ;
             c_current_cp->setDimension(i);
             break;
         }
         c_current_cp->constraintsResolutions[i]->init(i, w, force);
         i += c_current_cp->constraintsResolutions[i]->getNbLines();
     }
-    // Note: force array is now initialized by GenericConstraintSolver::computeInitialGuess()
-    // for hot-start support. Do not zero forces here.
 
+    // zero forces if cold-start
+    if(!d_initialGuess.getValue())
+    {
+        memset(force, 0, c_current_cp->getDimension() * sizeof(SReal));
+    }
+    
     bool showGraphs = false;
     sofa::type::vector<SReal>* graph_residuals = nullptr;
     std::map < std::string, sofa::type::vector<SReal> > *graph_forces = nullptr, *graph_violations = nullptr;

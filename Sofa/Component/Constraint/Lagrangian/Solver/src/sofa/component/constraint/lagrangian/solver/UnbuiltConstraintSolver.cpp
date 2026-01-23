@@ -31,7 +31,7 @@ namespace sofa::component::constraint::lagrangian::solver
 
 UnbuiltConstraintSolver::UnbuiltConstraintSolver()
 : GenericConstraintSolver()
-, d_initialGuess(initData(&d_initialGuess, true, "initialGuess", "Activate constraint force history to improve convergence (hot start)"))
+, d_initialGuess(initData(&d_initialGuess, false, "initialGuess", "Activate constraint force history to possibly improve convergence (hot start)."))
 {
     
 }
@@ -69,11 +69,9 @@ void UnbuiltConstraintSolver::doBuildSystem( const core::ConstraintParams *cPara
     for (unsigned int i = 0; i < numConstraints; i++)
         c_current_cp->cclist_elems[i].resize(nbCC, nullptr);
 
-    unsigned int nbObjects = 0;
     for (unsigned int c_id = 0; c_id < numConstraints;)
     {
         bool foundCC = false;
-        nbObjects++;
         const unsigned int l = c_current_cp->constraintsResolutions[c_id]->getNbLines();
 
         for (unsigned int j = 0; j < l_constraintCorrections.size(); j++)
@@ -153,7 +151,7 @@ void UnbuiltConstraintSolver::computeInitialGuess()
     {
         force[c] = 0.0;
     }
-
+    
     // Then restore forces from previous timestep for matching persistent IDs
     for (const ConstraintBlockInfo& info : m_constraintBlockInfo)
     {
