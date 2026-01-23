@@ -239,7 +239,7 @@ void ElementCorotationalFEMForceField<DataTypes, ElementType>::computeRotations(
         return;
 
     const auto& elements = trait::FiniteElement::getElementSequence(*this->l_topology);
-    std::ranges::iota_view indices {static_cast<decltype(elements.size())>(0ul), elements.size()};
+    sofa::helper::IotaView indices {static_cast<decltype(elements.size())>(0ul), elements.size()};
 
     rotations.resize(elements.size(), RotationMatrix::Identity());
     if (m_initialRotationsTransposed.size() < elements.size())
