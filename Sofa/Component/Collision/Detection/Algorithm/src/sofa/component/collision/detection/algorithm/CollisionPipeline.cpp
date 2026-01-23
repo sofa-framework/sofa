@@ -111,6 +111,7 @@ void CollisionPipeline::init()
         
     m_subCollisionPipeline->init();
     this->l_subCollisionPipelines.add(m_subCollisionPipeline.get());
+    this->addSlave(m_subCollisionPipeline.get());
     
     /// Insure that all the value provided by the user are valid and report message if it is not.
     checkDataValues() ;

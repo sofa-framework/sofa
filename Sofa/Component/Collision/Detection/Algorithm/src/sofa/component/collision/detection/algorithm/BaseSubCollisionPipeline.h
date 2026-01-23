@@ -22,13 +22,15 @@
 #pragma once
 #include <sofa/component/collision/detection/algorithm/config.h>
 
-#include <sofa/core/CollisionModel.h>
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/collision/ContactManager.h>
-#include <sofa/core/collision/Intersection.h>
 
 #include <set>
 #include <string>
+
+namespace sofa::core
+{
+class CollisionModel;
+}
 
 namespace sofa::component::collision::detection::algorithm
 {
@@ -51,15 +53,13 @@ public:
     virtual void computeCollisionDetection() = 0;
     virtual void computeCollisionResponse() = 0;
     
+    virtual std::vector<sofa::core::CollisionModel*> getCollisionModels() = 0;
+    
     void init() override final;
     void draw(const core::visual::VisualParams* vparams) override final;
     void handleEvent(sofa::core::objectmodel::Event* e) override final;
     
     static std::set< std::string > getResponseList();
-
-    sofa::MultiLink < BaseSubCollisionPipeline, sofa::core::CollisionModel, sofa::BaseLink::FLAG_DUPLICATE > l_collisionModels;
-    sofa::SingleLink< BaseSubCollisionPipeline, sofa::core::collision::Intersection, sofa::BaseLink::FLAG_STOREPATH | sofa::BaseLink::FLAG_STRONGLINK > l_intersectionMethod;
-    sofa::SingleLink< BaseSubCollisionPipeline, sofa::core::collision::ContactManager, sofa::BaseLink::FLAG_STOREPATH | sofa::BaseLink::FLAG_STRONGLINK > l_contactManager;
 };
 
 } // namespace sofa::component::collision::detection::algorithm

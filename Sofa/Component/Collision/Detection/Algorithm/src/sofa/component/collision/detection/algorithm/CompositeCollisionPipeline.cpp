@@ -92,7 +92,7 @@ void CompositeCollisionPipeline::init()
             return;
         }
         
-        for (auto cm : subPipeline->l_collisionModels)
+        for (auto* cm : subPipeline->getCollisionModels())
         {
             pipelineCollisionModels.insert(cm);
         }
@@ -106,14 +106,6 @@ void CompositeCollisionPipeline::init()
         }
     }
     
-}
-
-void CompositeCollisionPipeline::bwdInit()
-{
-    for(const auto& subPipeline : l_subCollisionPipelines)
-    {
-        subPipeline->bwdInit();
-    }
 }
 
 void CompositeCollisionPipeline::reset()
@@ -196,15 +188,6 @@ void CompositeCollisionPipeline::computeCollisionResponse()
         return;
     
     doCollisionResponse();
-}
-
-
-void CompositeCollisionPipeline::draw(const core::visual::VisualParams* vparams)
-{
-    for (const auto& subPipeline : l_subCollisionPipelines)
-    {
-        subPipeline->draw(vparams);
-    }
 }
 
 } // namespace sofa::component::collision::detection::algorithm
