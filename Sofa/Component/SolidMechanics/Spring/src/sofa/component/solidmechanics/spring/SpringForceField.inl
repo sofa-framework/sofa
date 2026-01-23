@@ -546,8 +546,7 @@ auto SpringForceField<DataTypes>::computeSpringForce(
         Real regParam = 1e-4;
         bool isSingular = std::abs(elongation) < tol && std::abs(elongationVelocity) < tol;
         if (isSingular)
-            msg_warning(this) << "!!! We detected a degenerated Spring configuration, we've to add a "
-                               "regularization term to make the matrix invertible !!!";
+            msg_warning(this) << "Degenerated spring configuration detected: a regularization term added making the matrix invertible";
         for(sofa::Index j=0; j<N; ++j )
         {
             for(sofa::Index k=0; k<N; ++k )
