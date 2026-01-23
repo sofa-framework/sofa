@@ -115,7 +115,7 @@ public:
             sofa::simulation::node::unload(root);
     }
 
-    void createSceneGraph(VecCoord positions, BaseObject::SPtr topologyContainer, BaseObject::SPtr geometryAlgorithms)
+    void createSceneGraph(VecCoord positions, sofa::core::objectmodel::BaseObject::SPtr topologyContainer, sofa::core::objectmodel::BaseObject::SPtr geometryAlgorithms)
     {
         node = root->createChild("node");
         mstate = New<MechanicalObject<DataTypes> >();
@@ -143,7 +143,7 @@ public:
             EXPECT_NEAR(expectedMass[i], mass->d_vertexMass.getValue()[i], 1e-4);
     }
 
-    void runTest(VecCoord positions, BaseObject::SPtr topologyContainer, BaseObject::SPtr geometryAlgorithms,
+    void runTest(VecCoord positions, sofa::core::objectmodel::BaseObject::SPtr topologyContainer, sofa::core::objectmodel::BaseObject::SPtr geometryAlgorithms,
                  MassType expectedTotalMass, const VecMass& expectedMass)
     {
         createSceneGraph(positions, topologyContainer, geometryAlgorithms);

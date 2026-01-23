@@ -227,7 +227,7 @@ void Node::moveChild(BaseNode::SPtr node, BaseNode::SPtr prev_parent)
     doMoveChild(node, prev_parent);
 }
 /// Add an object. Detect the implemented interfaces and add the object to the corresponding lists.
-bool Node::addObject(BaseObject::SPtr obj, sofa::core::objectmodel::TypeOfInsertion insertionLocation)
+bool Node::addObject(sofa::core::objectmodel::BaseObject::SPtr obj, sofa::core::objectmodel::TypeOfInsertion insertionLocation)
 {
     // If an object we are trying to add already has a context, it is in another node in the
     // graph: we need to remove it from this context before to insert it into the current
@@ -245,7 +245,7 @@ bool Node::addObject(BaseObject::SPtr obj, sofa::core::objectmodel::TypeOfInsert
 }
 
 /// Remove an object
-bool Node::removeObject(BaseObject::SPtr obj)
+bool Node::removeObject(sofa::core::objectmodel::BaseObject::SPtr obj)
 {
     notifyBeginRemoveObject(this, obj);
     const bool ret = doRemoveObject(obj);
@@ -254,7 +254,7 @@ bool Node::removeObject(BaseObject::SPtr obj)
 }
 
 /// Move an object from another node
-void Node::moveObject(BaseObject::SPtr obj)
+void Node::moveObject(sofa::core::objectmodel::BaseObject::SPtr obj)
 {
     Node* prev_parent = down_cast<Node>(obj->getContext()->toBaseNode());
     if (prev_parent)
@@ -421,7 +421,7 @@ sofa::core::objectmodel::Base* Node::findLinkDestClass(const core::objectmodel::
         return destType->dynamicCast(link->getOwnerBase());
     }
     Node* node = this;
-    BaseObject* master = nullptr;
+    sofa::core::objectmodel::BaseObject* master = nullptr;
     bool based = false;
     if (ppos < psize && pathStr[ppos] == '[') // relative index in the list of objects
     {
@@ -523,7 +523,7 @@ sofa::core::objectmodel::Base* Node::findLinkDestClass(const core::objectmodel::
             {
                 for (;;)
                 {
-                    BaseObject* obj = node->getObject(nameStr);
+                    sofa::core::objectmodel::BaseObject* obj = node->getObject(nameStr);
                     Node* childPtr = node->getChild(nameStr);
                     if (childPtr)
                     {
@@ -568,7 +568,7 @@ sofa::core::objectmodel::Base* Node::findLinkDestClass(const core::objectmodel::
         }
         for (ObjectIterator it = node->object.begin(), itend = node->object.end(); it != itend; ++it)
         {
-            BaseObject* obj = it->get();
+            sofa::core::objectmodel::BaseObject* obj = it->get();
             Base *o = destType->dynamicCast(obj);
             if (!o) continue;
             if(DEBUG_LINK)
@@ -600,7 +600,7 @@ sofa::core::objectmodel::Base* Node::findLinkDestClass(const core::objectmodel::
 }
 
 /// Add an object. Detect the implemented interfaces and add the object to the corresponding lists.
-bool Node::doAddObject(BaseObject::SPtr sobj, sofa::core::objectmodel::TypeOfInsertion insertionLocation)
+bool Node::doAddObject(sofa::core::objectmodel::BaseObject::SPtr sobj, sofa::core::objectmodel::TypeOfInsertion insertionLocation)
 {
     this->setObjectContext(sobj);
     if(insertionLocation == sofa::core::objectmodel::TypeOfInsertion::AtEnd)
@@ -608,7 +608,7 @@ bool Node::doAddObject(BaseObject::SPtr sobj, sofa::core::objectmodel::TypeOfIns
     else
         object.addBegin(sobj);
 
-    BaseObject* obj = sobj.get();
+    sofa::core::objectmodel::BaseObject* obj = sobj.get();
 
     if( !obj->insertInNode( this ) )
     {
@@ -618,13 +618,13 @@ bool Node::doAddObject(BaseObject::SPtr sobj, sofa::core::objectmodel::TypeOfIns
 }
 
 /// Remove an object
-bool Node::doRemoveObject(BaseObject::SPtr sobj)
+bool Node::doRemoveObject(sofa::core::objectmodel::BaseObject::SPtr sobj)
 {
     dmsg_warning_when(sobj == nullptr) << "Trying to remove a nullptr object";
 
     this->clearObjectContext(sobj);
     object.remove(sobj);
-    BaseObject* obj = sobj.get();
+    sofa::core::objectmodel::BaseObject* obj = sobj.get();
 
     if(obj != nullptr && !obj->removeInNode( this ) )
         unsorted.remove(obj);
@@ -632,7 +632,7 @@ bool Node::doRemoveObject(BaseObject::SPtr sobj)
 }
 
 /// Remove an object
-void Node::doMoveObject(BaseObject::SPtr sobj, Node* prev_parent)
+void Node::doMoveObject(sofa::core::objectmodel::BaseObject::SPtr sobj, Node* prev_parent)
 {
     if (prev_parent != nullptr)
         prev_parent->removeObject(sobj);

@@ -251,6 +251,7 @@ void GUIManager::closeGUI()
     if(currentGUI)
     {
         currentGUI->closeGUI();
+        currentGUI = nullptr;
     }
     else
     {

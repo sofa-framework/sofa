@@ -23,6 +23,7 @@
 
 #include <sofa/core/CollisionModel.h>
 #include <sofa/core/collision/DetectionOutput.h>
+#include <sofa/helper/OptionsGroup.h>
 
 namespace sofa::core::collision
 {
@@ -127,8 +128,10 @@ class SOFA_CORE_API Intersection : public virtual objectmodel::BaseObject
 public:
     SOFA_ABSTRACT_CLASS(Intersection, objectmodel::BaseObject);
     SOFA_BASE_CAST_IMPLEMENTATION(Intersection)
+
+
 protected:
-    Intersection() {}
+    Intersection();
     ~Intersection() override;
 
 private:
@@ -149,6 +152,9 @@ public:
 
     /// returns true if algorithm uses continuous detection
     virtual bool useContinuous() const { return false; }
+
+    /// returns the continuous detection type flag
+    virtual CollisionModel::ContinuousIntersectionTypeFlag continuousIntersectionType() const { return  CollisionModel::ContinuousIntersectionTypeFlag::None; }
 
     /// Return the alarm distance (must return 0 if useProximity() is false)
     virtual SReal getAlarmDistance() const { return (SReal)0.0; }

@@ -5,6 +5,7 @@ project(Sofa.Helper_test)
 set(SOURCE_FILES
     DiffLib_test.cpp
     Factory_test.cpp
+    IotaView_test.cpp
     KdTree_test.cpp
     NameDecoder_test.cpp
     OptionsGroup_test.cpp

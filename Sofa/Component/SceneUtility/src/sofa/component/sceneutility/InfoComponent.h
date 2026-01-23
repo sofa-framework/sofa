@@ -32,14 +32,14 @@ namespace sofa::component::sceneutility::infocomponent
 /// fearing it will leak names into the global namespace. When closing this namespace
 /// selected object from this per-file namespace are then imported into their parent namespace.
 /// for ease of use
-using sofa::core::objectmodel::BaseObject ;
+using BaseObject [[deprecated("Use sofa::core::objectmodel::BaseObject instead.")]] = sofa::core::objectmodel::BaseObject;
 
 /// Despite this component does absolutely nothing... it is very useful as it can be used to
 /// retain information scene graph.
-class SOFA_COMPONENT_SCENEUTILITY_API InfoComponent : public BaseObject
+class SOFA_COMPONENT_SCENEUTILITY_API InfoComponent : public sofa::core::objectmodel::BaseObject
 {
 public:
-    SOFA_CLASS(InfoComponent, BaseObject);
+    SOFA_CLASS(InfoComponent, sofa::core::objectmodel::BaseObject);
 
     InfoComponent() {}
     ~InfoComponent() override{}

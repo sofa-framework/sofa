@@ -91,6 +91,15 @@ public:
         ENUM_TYPE_SIZE
     };
 
+
+    enum ContinuousIntersectionTypeFlag
+    {
+        None       = 0,
+        Inertia    = 1,
+        FreeMotion = 2
+    };
+
+
     typedef CollisionElementIterator Iterator;
     typedef topology::BaseMeshTopology Topology;
     typedef sofa::type::Vec3::value_type Real;
@@ -211,7 +220,7 @@ public:
     /// within the given timestep.
     ///
     /// Default to computeBoundingTree().
-    virtual void computeContinuousBoundingTree(SReal /*dt*/, int maxDepth=0) { computeBoundingTree(maxDepth); }
+    virtual void computeContinuousBoundingTree(SReal /*dt*/, ContinuousIntersectionTypeFlag continuousIntersectionFlag = ContinuousIntersectionTypeFlag::Inertia, int maxDepth=0) { computeBoundingTree(maxDepth); }
 
     /// \brief Return the list (as a pair of iterators) of <i>internal children</i> of
     /// an element.
