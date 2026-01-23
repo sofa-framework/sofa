@@ -78,7 +78,7 @@ void CompositeCollisionPipeline::init()
     }
 
     // UX: warn if there is any CollisionModel not handled by any SubCollisionPipeline
-    simulation::Node* root = dynamic_cast<simulation::Node*>(getContext()->getRootContext());
+    simulation::Node* root = dynamic_cast<simulation::Node*>(getContext());
     std::vector<CollisionModel*> sceneCollisionModels;
     root->getTreeObjects<CollisionModel>(&sceneCollisionModels);
 

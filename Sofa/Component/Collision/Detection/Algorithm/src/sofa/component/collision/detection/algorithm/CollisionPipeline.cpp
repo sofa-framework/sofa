@@ -82,7 +82,7 @@ void CollisionPipeline::init()
     
     // set the whole collision models list to the sub collision pipeline
     sofa::type::vector<sofa::core::CollisionModel::SPtr> collisionModels;
-    context->get<sofa::core::CollisionModel, sofa::type::vector<sofa::core::CollisionModel::SPtr>>(&collisionModels, BaseContext::SearchRoot);
+    context->get<sofa::core::CollisionModel, sofa::type::vector<sofa::core::CollisionModel::SPtr>>(&collisionModels, BaseContext::SearchDown);
     for(auto collisionModel : collisionModels)
     {
         m_subCollisionPipeline->l_collisionModels.add(collisionModel.get());
@@ -91,22 +91,22 @@ void CollisionPipeline::init()
     // set the other components to the sub collision pipeline
     // intersection
     sofa::core::collision::Intersection* intersectionMethod = nullptr;
-    context->get(intersectionMethod, BaseContext::SearchRoot);
+    context->get(intersectionMethod, BaseContext::SearchDown);
     m_subCollisionPipeline->l_intersectionMethod.set(intersectionMethod);
                    
     // broad phase
     sofa::core::collision::BroadPhaseDetection* broadPhaseDetection = nullptr;
-    context->get(broadPhaseDetection, BaseContext::SearchRoot);
+    context->get(broadPhaseDetection, BaseContext::SearchDown);
     m_subCollisionPipeline->l_broadPhaseDetection.set(broadPhaseDetection);
     
     // narrow phase
     sofa::core::collision::NarrowPhaseDetection* narrowPhaseDetection = nullptr;
-    context->get(narrowPhaseDetection, BaseContext::SearchRoot);
+    context->get(narrowPhaseDetection, BaseContext::SearchDown);
     m_subCollisionPipeline->l_narrowPhaseDetection.set(narrowPhaseDetection);
    
     // contact manager
     sofa::core::collision::ContactManager* contactManager = nullptr;
-    context->get(contactManager, BaseContext::SearchRoot);
+    context->get(contactManager, BaseContext::SearchDown);
     m_subCollisionPipeline->l_contactManager.set(contactManager);
         
     m_subCollisionPipeline->init();
