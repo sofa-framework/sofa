@@ -1325,29 +1325,16 @@ BaseVTKReader::BaseVTKDataIO* XMLVTKReader::parsePolysIndices(tinyxml2::XMLEleme
                 nbX+= values.size();
                 for (int v : values) polysX << v << ' ';
                 vtkIO_elemtypes->data[lineCnt] = 4;
-                //lineCnt--;
                 msg_warning(this) << "Cell with " << values.size() << " indices will be parsed as poly_line";
                 break;
         }
         lineCnt++;
-        //// Process line
-        //std::cout << "Line: ";
-        //for (int v : values) std::cout << v << " ";
-        //std::cout << "\n";
     }
     
     BaseVTKDataIO* d = BaseVTKReader::newVTKDataIO(string(typeStrTemp));
-    //VTKDataIO<Vec<3, std::int32_t> >* d =  new VTKDataIO<Vec<3, std::int32_t> >;
-    //d->read(polys2.str(), 0);
-    //BaseVTKDataIO* d = BaseVTKReader::newVTKDataIO(string(typeStrTemp));
     int nbIndices = 2 * nb2 + 3 * nb3 + 4 * nb4 + 5 * nb5 + 6 * nb6 + nbX;
     d->resize(nbIndices);
     d->read(rawText, nbIndices, 0);
-    std::cout << d->getData() << std::endl;
-    //BaseVTKDataIO* d = BaseVTKReader::newVTKDataIO(string(typeStrTemp));
-    //d->read(polys4.str(), 0);
-    //d->read(polys5.str(), 0);
-    //d->read(polys6.str(), 0);
 
     return d;
 }
@@ -1479,21 +1466,6 @@ bool XMLVTKReader::loadPolydata(tinyxml2::XMLHandle datasetFormatHandle)
                     inputPointDataVector.push_back(pointdata);
                 }
             }
-            //if (currentNodeName.compare("PolyData") == 0)
-            //{
-            //    dataArrayNode = node->FirstChildElement("DataArray");
-            //    for (; dataArrayNode;
-            //         dataArrayNode = dataArrayNode->NextSiblingElement("DataArray"))
-            //    {
-            //        dataArrayElement = dataArrayNode->ToElement();
-            //        checkError(dataArrayElement);
-            //        const string currentDataArrayName = string(dataArrayElement->Attribute("Name"));
-            //        BaseVTKDataIO* celldata = loadDataArray(dataArrayElement, numberOfCells);
-            //        checkError(celldata);
-            //        celldata->name = currentDataArrayName;
-            //        inputCellDataVector.push_back(celldata);
-            //    }
-            //}
         }
     }
 
