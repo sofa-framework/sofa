@@ -552,8 +552,13 @@ auto SpringForceField<DataTypes>::computeSpringForce(
         {
             for(sofa::Index k=0; k<N; ++k )
             {
-                m[j][k] = ((Real)spring.ks-tgt) * u[j] * u[k];
-                m[j][k] += (isSingular) ? regParam * spring.ks * (((j==k) ? 1.0: 0.0) - u[j] * u[k]) : 0.0;
+                m(j,k) = ((Real)spring.ks-tgt) * u[j] * u[k];
+                if(isSingular)
+                {
+                    const double diagonalTerm = (j == k) ? 1.0 : 0.0;
+                    m(j,k) +=  regParam * spring.ks * (diagonalTerm - u[j] * u[k]);
+                }
+                
             }
             m(j,j) += tgt;
         }
