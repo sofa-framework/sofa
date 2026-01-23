@@ -23,15 +23,13 @@
 #include <sofa/component/collision/detection/algorithm/BaseSubCollisionPipeline.h>
 
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/collision/Contact.h>
 
 namespace sofa::component::collision::detection::algorithm
 {
 
 BaseSubCollisionPipeline::BaseSubCollisionPipeline()
 : sofa::core::objectmodel::BaseObject()
-, l_collisionModels(initLink("collisionModels", "List of collision models to consider in this pipeline"))
-, l_intersectionMethod(initLink("intersectionMethod", "Intersection method to use in this pipeline"))
-, l_contactManager(initLink("contactManager", "Contact manager to use in this pipeline"))
 {
     
 }
@@ -49,34 +47,8 @@ void BaseSubCollisionPipeline::doDraw(const core::visual::VisualParams* vparams)
 
 void BaseSubCollisionPipeline::init()
 {
-    bool validity = true;
-    
-    this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
-    
-    //Check given parameters
-    if (l_collisionModels.size() == 0)
-    {
-        msg_warning() << "At least one CollisionModel is required to compute collision detection.";
-        validity = false;
-    }
-    
-    if (!l_intersectionMethod)
-    {
-        msg_warning() << "An Intersection detection component is required to compute collision detection.";
-        validity = false;
-    }
-    
-    if (!l_contactManager)
-    {
-        msg_warning() << "A contact manager component is required to compute collision detection.";
-        validity = false;
-    }
-    
-    if (validity)
-    {
-        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
-    }
-            
+    this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Loading);
+                
     doInit();
 }
 

@@ -49,6 +49,9 @@ void registerSubCollisionPipeline(sofa::core::ObjectFactory* factory)
 SubCollisionPipeline::SubCollisionPipeline()
     : Inherited()
     , d_depth(initData(&d_depth, s_defaultDepthValue, "depth", +("Max depth of bounding trees. (default=" + std::to_string(s_defaultDepthValue) + ", min=?, max=?)").c_str()))
+    , l_collisionModels(initLink("collisionModels", "List of collision models to consider in this pipeline"))
+    , l_intersectionMethod(initLink("intersectionMethod", "Intersection method to use in this pipeline"))
+    , l_contactManager(initLink("contactManager", "Contact manager to use in this pipeline"))
     , l_broadPhaseDetection(initLink("broadPhaseDetection", "Broad phase detection to use in this pipeline"))
     , l_narrowPhaseDetection(initLink("narrowPhaseDetection", "Narrow phase detection to use in this pipeline"))
 {
@@ -58,6 +61,25 @@ void SubCollisionPipeline::doInit()
 {
     bool validity = true;
 
+    //Check given parameters
+    if (l_collisionModels.size() == 0)
+    {
+        msg_warning() << "At least one CollisionModel is required to compute collision detection.";
+        validity = false;
+    }
+    
+    if (!l_intersectionMethod)
+    {
+        msg_warning() << "An Intersection detection component is required to compute collision detection.";
+        validity = false;
+    }
+    
+    if (!l_contactManager)
+    {
+        msg_warning() << "A contact manager component is required to compute collision detection.";
+        validity = false;
+    }
+    
     if (!l_broadPhaseDetection)
     {
         msg_warning() << "A BroadPhase component is required to compute collision detection.";
@@ -72,6 +94,10 @@ void SubCollisionPipeline::doInit()
     if (!validity)
     {
         this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+    }
+    else
+    {
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
     }
 
 }
@@ -239,6 +265,18 @@ void SubCollisionPipeline::computeCollisionResponse()
     {
         contact->createResponse(scene);
     }
+}
+
+
+std::vector<sofa::core::CollisionModel*> SubCollisionPipeline::getCollisionModels()
+{
+    std::vector<sofa::core::CollisionModel*> collisionModels;
+    collisionModels.reserve(l_collisionModels.getSize());
+    for(auto* collisionModel : l_collisionModels)
+    {
+        collisionModels.push_back(collisionModel);
+    }
+    return collisionModels;
 }
 
 } // namespace sofa::component::collision::detection::algorithm

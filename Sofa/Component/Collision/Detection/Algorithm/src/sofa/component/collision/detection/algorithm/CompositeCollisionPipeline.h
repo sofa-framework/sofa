@@ -41,7 +41,6 @@ protected:
     CompositeCollisionPipeline();
 public:
     void init() override;
-    void bwdInit() override;
 
     /// get the set of response available with the current collision pipeline
     std::set< std::string > getResponseList() const override;
@@ -56,8 +55,6 @@ protected:
 
     void reset() override;
     
-    void draw(const core::visual::VisualParams* vparams) override;
-
     /// Remove collision response from last step
     virtual void computeCollisionReset() override final;
     /// Detect new collisions. Note that this step must not modify the simulation graph

@@ -25,6 +25,8 @@
 #include <sofa/component/collision/detection/algorithm/BaseSubCollisionPipeline.h>
 
 #include <sofa/core/CollisionModel.h>
+#include <sofa/core/collision/ContactManager.h>
+#include <sofa/core/collision/Intersection.h>
 #include <sofa/core/collision/BroadPhaseDetection.h>
 #include <sofa/core/collision/NarrowPhaseDetection.h>
 
@@ -49,8 +51,13 @@ public:
     void computeCollisionReset() override;
     void computeCollisionDetection() override;
     void computeCollisionResponse() override;
-
+    
+    std::vector<sofa::core::CollisionModel*> getCollisionModels() override;
+    
     sofa::Data<unsigned int>  d_depth;
+    sofa::MultiLink < SubCollisionPipeline, sofa::core::CollisionModel, sofa::BaseLink::FLAG_DUPLICATE > l_collisionModels;
+    sofa::SingleLink< SubCollisionPipeline, sofa::core::collision::Intersection, sofa::BaseLink::FLAG_STOREPATH | sofa::BaseLink::FLAG_STRONGLINK > l_intersectionMethod;
+    sofa::SingleLink< SubCollisionPipeline, sofa::core::collision::ContactManager, sofa::BaseLink::FLAG_STOREPATH | sofa::BaseLink::FLAG_STRONGLINK > l_contactManager;
     sofa::SingleLink< SubCollisionPipeline, sofa::core::collision::BroadPhaseDetection, sofa::BaseLink::FLAG_STOREPATH | sofa::BaseLink::FLAG_STRONGLINK > l_broadPhaseDetection;
     sofa::SingleLink< SubCollisionPipeline, sofa::core::collision::NarrowPhaseDetection, sofa::BaseLink::FLAG_STOREPATH | sofa::BaseLink::FLAG_STRONGLINK > l_narrowPhaseDetection;
 
