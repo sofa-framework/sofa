@@ -25,7 +25,7 @@ echo "INSTALL_DIR = $INSTALL_DIR"
 echo "INSTALL_DIR_BIN = $INSTALL_DIR_BIN"
 
 source $SCRIPT_DIR/common.sh
-clean_default_plugins "$INSTALL_DIR_BIN"
+clean_default_plugins "$INSTALL_DIR_BIN" "'\|'Sofa.Metis"
 
 move_metis "$INSTALL_DIR"
 
