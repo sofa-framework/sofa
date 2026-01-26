@@ -101,7 +101,7 @@ void TriangleModelInRegularGrid::init()
     }
 }
 
-void TriangleModelInRegularGrid::computeBoundingTree ( int )
+void TriangleModelInRegularGrid::doComputeBoundingTree ( int )
 {
     CubeCollisionModel* cubeModel = createPrevious<CubeCollisionModel>();
     updateFromTopology();

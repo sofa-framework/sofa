@@ -111,13 +111,6 @@ protected:
 public:
     void init() override;
 
-    // -- CollisionModel interface
-
-    void resize(sofa::Size size) override;
-
-    void computeBoundingTree(int maxDepth=0) override;
-
-    //virtual void computeContinuousBoundingTree(SReal dt, int maxDepth=0);
 
     void draw(const core::visual::VisualParams* vparams, Index index) override;
 
@@ -168,11 +161,6 @@ public:
         return BaseObject::canCreate(obj, context, arg);
     }
 
-    sofa::core::topology::BaseMeshTopology* getCollisionTopology() override
-    {
-        return l_topology.get();
-    }
-
     /**
       *Returns true if capsules at indexes i1 and i2 share the same vertex.
       */
@@ -185,6 +173,20 @@ public:
 
 protected:
     core::behavior::MechanicalState<DataTypes>* _mstate;
+
+    // -- CollisionModel interface
+
+    void doResize(sofa::Size size) override;
+
+    void doComputeBoundingTree(int maxDepth=0) override;
+
+    //virtual void doComputeContinuousBoundingTree(SReal dt, int maxDepth=0);
+
+    sofa::core::topology::BaseMeshTopology* doGetCollisionTopology() override
+    {
+        return l_topology.get();
+    }
+    
 };
 
 template<class DataTypes>

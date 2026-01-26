@@ -48,9 +48,7 @@ public:
     virtual void initBullet();
     virtual void updateBullet();
 
-    inline virtual void computeBoundingTree(int/* maxDepth*/){
-        _bt_cshape->recalculateLocalAabb();
-    }
+
 
     inline virtual ~TBulletOBBModel();
 
@@ -68,6 +66,10 @@ protected:
 
     std::stack<btCollisionShape*> _garbage;
     btCompoundShape * _bt_cshape;
+
+    inline virtual void doComputeBoundingTree(int/* maxDepth*/) override {
+        _bt_cshape->recalculateLocalAabb();
+    }
 
     void cleanGarbage();
 };
