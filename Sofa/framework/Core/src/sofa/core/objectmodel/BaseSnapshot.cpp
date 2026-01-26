@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/objectmodel/BaseSnapshot.h>
+#include "BaseSnapshot.h"
 
 namespace sofa::core::objectmodel
 {
@@ -28,6 +29,112 @@ BaseSnapshot::BaseSnapshot()
 {}
 BaseSnapshot::~BaseSnapshot() = default;
 
+void BaseSnapshot::addToSnap(Base& b, SnapNode& snapObject)
+{
+    std::vector<DataInfo> objData = collectSnapData(b.getDataFields());
+    snapObject.dataContainer.insert(snapObject.dataContainer.end(),std::make_move_iterator(objData.begin()),std::make_move_iterator(objData.end()));
+    //snapObject.dataContainer.push_back(objData);
+    std::vector<LinkInfo> objLink = collectSnapLink(b.getLinks());
+    snapObject.linkContainer.insert(snapObject.linkContainer.end(),std::make_move_iterator(objLink.begin()),std::make_move_iterator(objLink.end()));
+    //snapObject.linkContainer.push_back(objLink);
 
+    snapObject.name = b.getName();
+    
+    // idea : change collectSnapData() parameter to take snapObject as argument.
+    // Maybe change/add a new struct to contains datas AND links (!= component) 
+    // collectSnapData(b.getDataFields(), b.getLinks(), snapObject, isBool);
+
+}
+
+void BaseSnapshot::addToSnap(Base& b, SnapComponent& snapObject)
+{
+    std::cout<< "snapcomponent" << std::endl;
+    std::vector<DataInfo> objData = collectSnapData(b.getDataFields());
+    snapObject.dataContainer.insert(snapObject.dataContainer.end(),std::make_move_iterator(objData.begin()),std::make_move_iterator(objData.end()));
+    //snapObject.dataContainer.push_back(objData);
+    std::vector<LinkInfo> objLink = collectSnapLink(b.getLinks());
+    snapObject.linkContainer.insert(snapObject.linkContainer.end(),std::make_move_iterator(objLink.begin()),std::make_move_iterator(objLink.end()));
+    //snapObject.linkContainer.push_back(objLink);
+
+    snapObject.name = b.getName();
+
+
+}
+
+
+
+std::vector<BaseSnapshot::DataInfo> BaseSnapshot::collectSnapData(const std::vector<BaseData*>& datafield)
+{
+    BaseSnapshot::DataInfo dinfo;
+    std::vector<DataInfo> dataContainer;
+    for (auto* data : datafield)
+    {
+        dinfo.name = data->getName();
+        dinfo.type = data->getValueTypeString();
+        dinfo.value = data->getValueString();
+        dataContainer.push_back(dinfo); 
+    }
+
+    return dataContainer;
+}
+
+std::vector<BaseSnapshot::LinkInfo> BaseSnapshot::collectSnapLink(const std::vector<BaseLink*>& linkfield)
+{
+    BaseSnapshot::LinkInfo linfo;
+    std::vector<LinkInfo> linkContainer;
+    for (auto* link : linkfield)
+    {
+        linfo.name = link->getName();
+        linfo.value = link->getValueString();
+        linfo.type = link->getValueTypeString();
+        linkContainer.push_back(linfo);
+    }
+
+    return linkContainer;
+}
+
+bool BaseSnapshot::hasSnapParent(std::string& parentName)
+{
+    bool result = false;
+
+    if(treeSnapshot.empty())
+    {
+        return result;
+    }
+    
+    for(auto name : nodeList)
+    {
+        if(name == parentName)
+        {
+            result = true;
+        }
+    }
+
+    return result;
+}
+
+
+std::shared_ptr<BaseSnapshot::SnapNode> BaseSnapshot::getSnapParent(std::shared_ptr<BaseSnapshot::SnapNode>& node,
+                                                      std::string& parentName)
+{
+    if (!node)
+    {
+        return nullptr;
+    }
+        
+    if(node->name == parentName)
+    {
+        return node;
+    }
+
+    for (auto& child : node->childNode)
+    {
+        if(auto result = getSnapParent(child, parentName))
+        {
+            return result;
+        }
+    }
+    return nullptr;
+}
 
 } // namespace sofa::core::objectmodel

@@ -149,9 +149,9 @@ TEST_F(Base_test, testSaveSnapshot)
 
     Node* root = c.root.get() ;
 
-    auto JSONSnapCont = createSnapshot(SnapshotType::JSON);
-    auto visitor = SnapshotVisitor(nullptr,*JSONSnapCont);
-    root->execute(visitor);
+    // auto JSONSnapCont = createSnapshot(SnapshotType::JSON);
+    // auto visitor = SnapshotVisitor(nullptr,*JSONSnapCont);
+    // root->execute(visitor);
     // JSONSnapCont->exportToJSON();
     
     // std::vector<sofa::core::objectmodel::BaseObject*> vObj = root->getTreeObjects<sofa::core::objectmodel::BaseObject>();

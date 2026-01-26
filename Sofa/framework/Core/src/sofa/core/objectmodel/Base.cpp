@@ -42,6 +42,8 @@ using sofa::helper::getClosestMatch;
 #include <cstring>
 #include <sstream>
 
+
+
 #define ERROR_LOG_SIZE 100
 
 namespace sofa::core::objectmodel
@@ -680,27 +682,51 @@ int Base::getInstanciationSourceFilePos() const
     return m_instanciationSourceFilePos;
 }
 
-void Base::saveSnapshot(BaseSnapshot& type)
+void Base::saveSnapshot(BaseSnapshot& snap, std::string parent)
 {
-    VecData datafield = this->getDataFields();
-    VecLink componentlinks = this->getLinks();
-    //type.collectData(datafield, componentlinks);
-    // type.printSnapshot();
-    type.collectData(datafield, componentlinks);
-    //type.ComponentSnapshot.push_back(this->getName());
+    if(this->getClassName() == "Node")
+    {
+        auto snapObj = std::make_shared<BaseSnapshot::SnapNode>();
+        snapObj->name = this->getName();
+        snap.addToSnap(*this, *snapObj);
+
+        snap.nodeList.push_back(snapObj->name);
+
+        if(snap.hasSnapParent(parent))
+        {
+            std::cout << "getSnapParent" << std::endl;
+            std::shared_ptr<BaseSnapshot::SnapNode> snapParent = snap.getSnapParent(snap.treeSnapshot[0],parent);
+            snapParent->childNode.push_back(snapObj);
+        }
+        else
+        {
+            snap.treeSnapshot.push_back(snapObj);
+        }
+        
+    }    
+    else
+    {
+        auto snapObj = std::make_shared<BaseSnapshot::SnapComponent>();
+        snap.addToSnap(*this, *snapObj);
+        if(snap.hasSnapParent(parent))
+        {
+            std::shared_ptr<BaseSnapshot::SnapNode> snapParent = snap.getSnapParent(snap.treeSnapshot[0],parent);
+            snapParent->componentList.push_back(*snapObj) ;
+        }
+        else
+        {
+            snap.treeSnapshot[0]->componentList.push_back(*snapObj);
+        }
+        
+    }
 }
 
-void Base::nodeSnapshot(BaseSnapshot& type)
-{
-    type.ComponentSnapshot.push_back(this->getName());
-    type.groupComponent();
-}
+
 
 void Base::loadSnapshot(BaseSnapshot& type)
 {
-    VecData datafield = this->getDataFields();
-    VecLink componentlinks = this->getLinks();
-    
+    //type.importSnapshot(filename);
+    std::cout << "load snapshot" << std::endl;
 }    
 
 } // namespace sofa::core::objectmodel

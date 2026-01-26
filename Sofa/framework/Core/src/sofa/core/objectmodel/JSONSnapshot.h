@@ -33,21 +33,15 @@ class SOFA_CORE_API JSONSnapshot : public BaseSnapshot
 {
 
 public:
-    void printSnapshot() override;
     //void exportSnapshot(const std::vector<BaseData*>& datafield, const std::vector<BaseLink*>& linkfield) override;
-    void importSnapshot() override;
+    void importSnapshot(const std::string filename) override;
 
-    void fillDataSnapshot(BaseData* dat) override;
-    void fillSnapshot(DataSnapshot datasnap) override;
-    void fillLinkSnapshot(BaseLink* link) override;
-    void collectData(const std::vector<BaseData*>& datafield, const std::vector<BaseLink*>& linkfield) override;
-    void putData(std::vector<BaseData*>& datafield, std::vector<BaseLink*>& linkfield, BaseSnapshot::DataInfo& di) override;
-        // std::vector<BaseLink*> getLinkField() const;
-        // std::vector<BaseLink*> getLinkField() const;
-    void groupComponent() override;
-    nlohmann::json nodeArray();
+    std::shared_ptr<BaseSnapshot::SnapNode> createChildNode(const std::string& nodeName) override;
+    void addChildToCurrentNode(std::shared_ptr<BaseSnapshot::SnapNode> child, BaseSnapshot::SnapNode& snapnode) override;
+
     void exportTo(const std::string filename) override;
-    void importFrom(const std::string filename,nlohmann::json& j);
+    void importFrom(std::string filename, BaseSnapshot::SnapNode& rootNode) override;
+    
     JSONSnapshot();
     ~JSONSnapshot();
 

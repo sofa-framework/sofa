@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-// #include <sofa/core/objectmodel/Base.h>
+#include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/core/objectmodel/BaseLink.h>
 
@@ -40,47 +40,76 @@ protected:
 
     DataSnapshot dataSnapshot_;
 
-    std::vector<DataSnapshot> snapshot;
+    //std::vector<DataSnapshot> snapshot;
 public:
     struct DataInfo
     {
         std::string name;
         std::string type;
         std::string value;
-        std::string ownername;
+        std::string parentData;
+        
+        DataInfo() : name(), type(), value(), parentData() {}
     };
 
     struct LinkInfo
     {
         std::string name;
-        std::string linkedpath;
-        std::string path;
+        std::string type;
+        std::string value;
+        LinkInfo() : name(), type(), value() {}
     };
 
-    struct SparseDataSnapshot
+    struct SnapComponent //SparseDataSnapshot
     {
+        std::string name;
         std::vector<DataInfo> dataContainer;
         std::vector<LinkInfo> linkContainer;
+        
+        SnapComponent() : name(""), dataContainer(), linkContainer() {}
+
+        SnapComponent(const std::string& name) : name(name){}
     };
 
-    SparseDataSnapshot SparseDataSnapshot_;
+    SnapComponent SnapComponent_; // SparseDataSnapshot SparseDataSnapshot_
 
-    std::vector<SparseDataSnapshot> SparseSnapshot;
+    struct SnapNode
+    {
+        std::string name;
+        std::vector<DataInfo> dataContainer;
+        std::vector<LinkInfo> linkContainer;
+        std::vector<SnapComponent> componentList;
+        std::vector<std::shared_ptr<SnapNode>> childNode;
+        
+        SnapNode() : name(""), dataContainer(), linkContainer(), componentList(), childNode() {}
 
-    std::vector<std::string> ComponentSnapshot;
+        SnapNode(const std::string& name) : name(name) {}
+    };
 
-    std::vector<std::vector<SparseDataSnapshot>> NodeSnapshot;
+    SnapNode SnapNode_;
+
+    std::vector<std::string> nodeList;
+    std::vector<std::shared_ptr<SnapNode>> treeSnapshot; // here, it is the snapshot
+    
 
 public:
-    virtual void printSnapshot() = 0;
-    virtual void importSnapshot() = 0;
-    virtual void fillDataSnapshot(BaseData* dat) = 0 ;
-    virtual void fillSnapshot(DataSnapshot datasnap) = 0;
-    virtual void fillLinkSnapshot(BaseLink* link) = 0;
-    virtual void collectData(const std::vector<BaseData*>& datafield, const std::vector<BaseLink*>& linkfield) = 0;
-    virtual void groupComponent() = 0;
-    virtual void putData(std::vector<BaseData*>& datafield, std::vector<BaseLink*>& linkfield,BaseSnapshot::DataInfo& di) = 0;
+    virtual void importSnapshot(const std::string filename) = 0;
+
+    
+
+    std::vector<DataInfo> collectSnapData(const std::vector<BaseData*>& datafield);
+    std::vector<LinkInfo> collectSnapLink(const std::vector<BaseLink*>& linkfield);
+    bool hasSnapParent(std::string& parentName);
+    std::shared_ptr<SnapNode> getSnapParent(std::shared_ptr<SnapNode>& node, std::string& parentName);
+
+    virtual std::shared_ptr<SnapNode> createChildNode(const std::string& nodeName) = 0;
+    virtual void addChildToCurrentNode(std::shared_ptr<SnapNode> child,SnapNode& snapnode) = 0 ;
+
+    void addToSnap(Base& b, SnapNode& snapObj);
+    void addToSnap(Base& b, SnapComponent& snapObj);
+
     virtual void exportTo(const std::string filename) = 0;
+    virtual void importFrom(std::string filename, BaseSnapshot::SnapNode& rootNode) = 0;
 
     BaseSnapshot();
     virtual ~BaseSnapshot() = 0;

@@ -39,10 +39,6 @@ JSONSnapshot::JSONSnapshot()
 {}
 JSONSnapshot::~JSONSnapshot() = default;
 
-void JSONSnapshot::printSnapshot()
-{
-    std::cout << "printJSONSnapshot data : " << snapshot.size() << std::endl;
-}
 
 void to_json(nlohmann::json& j, const BaseSnapshot::DataInfo& di )
 {
@@ -50,98 +46,82 @@ void to_json(nlohmann::json& j, const BaseSnapshot::DataInfo& di )
     j["name"]  = di.name;
     j["type"]  = di.type;
     j["value"] = di.value;
-    j["ownername"] = di.ownername;
 }
 
 void to_json(nlohmann::json& j, const BaseSnapshot::LinkInfo& li )
 {
     j.clear();
     j["name"]       = li.name;
-    j["linkedpath"] = li.linkedpath;
-    j["path"]       = li.path;
+    j["type"] = li.type;
+    j["value"]       = li.value;
 }
 
-void to_json(nlohmann::json& j, const BaseSnapshot::SparseDataSnapshot& sds )
+void to_json(nlohmann::json& j, const BaseSnapshot::SnapComponent& sds )
 {
     j.clear();
     j["datas"] = sds.dataContainer;
     j["links"] = sds.linkContainer;
 }
 
-void JSONSnapshot::collectData(const std::vector<BaseData*>& datafield, const std::vector<BaseLink*>& linkfield)
+void to_json(nlohmann::json& j, const BaseSnapshot::SnapNode& sn)
 {
-    SparseDataSnapshot_.dataContainer.clear();
-    SparseDataSnapshot_.linkContainer.clear();
-    DataInfo dinfo;
-    for (auto* data : datafield)
+    j.clear();
+    j["name"] = sn.name;
+    j["datas"] = sn.dataContainer;
+    j["links"] = sn.linkContainer;
+    j["componentList"] = sn.componentList;
+
+    j["childNode"] = nlohmann::json::array();
+    for (const auto& childPtr : sn.childNode)
     {
-        // std::cout << (*data) << std::endl;
-        
-        dinfo.name = data->getName();
-        dinfo.type = data->getValueTypeString();
-        dinfo.value = data->getValueString();
-        // (*data).setValueString(dinfo.value); 
-        // data->setValueString(dinfo.value);
-
-        dinfo.ownername = (data->getOwner())->getName();
-        SparseDataSnapshot_.dataContainer.push_back(dinfo); 
+        if(childPtr)
+        {
+            j["childNode"].push_back(*childPtr);
+        }
     }
-    LinkInfo linfo;
-    for (auto* link : linkfield)
-    {
-        // std::cout << (*link) << std::endl;
-        linfo.name = link->getName();
-        linfo.linkedpath = link->getLinkedPath();
-        linfo.path = link->getPath();
-        SparseDataSnapshot_.linkContainer.push_back(linfo);
-    }
-    SparseSnapshot.push_back(SparseDataSnapshot_);
 }
 
-nlohmann::json JSONSnapshot::nodeArray()
+
+std::shared_ptr<BaseSnapshot::SnapNode> JSONSnapshot::createChildNode(const std::string& name)
 {
-    nlohmann::json jNode = nlohmann::json::array();
-
-    NodeSnapshot.push_back(SparseSnapshot);
-    jNode.push_back(NodeSnapshot);
-    SparseSnapshot.clear();
-
-    return jNode;
+    auto child = std::make_shared<SnapNode>();
+    child->name = name;
+    return child;
 }
 
-void JSONSnapshot::groupComponent()
+void JSONSnapshot::addChildToCurrentNode(std::shared_ptr<BaseSnapshot::SnapNode> child, BaseSnapshot::SnapNode& snapnode)
 {
-    NodeSnapshot.push_back(SparseSnapshot);
-    SparseSnapshot.clear();
+    // snapnode.childNode.push_back(child);
+    // auto currentNode = getCurrentNode();
+    // if (currentNode && child)
+    //     currentNode->childNode.push_back(child);
+    std::cout << "wip" << std::endl;
 }
+
 
 void JSONSnapshot::exportTo(const std::string filename)
 {
-    nlohmann::json root = nlohmann::json::object();
 
-    for (size_t ni = 0; ni < NodeSnapshot.size(); ++ni)
+    nlohmann::json j = nlohmann::json::array() ;
+
+    for (const auto& nodePtr : treeSnapshot)
     {
-        const auto &components = NodeSnapshot[ni];
-        nlohmann::json nodeJson = nlohmann::json::object();
-
-        for (size_t ci = 0; ci < components.size(); ++ci)
+        if (nodePtr)
         {
-            const auto &sds = components[ci];
-            std::string compName;
-            compName = sds.dataContainer.front().ownername;
-            nodeJson[compName] = sds;
+            j.push_back(*nodePtr); 
         }
-        root[ComponentSnapshot[ni]] = nodeJson;
     }
 
     std::ofstream file(filename);
-    file << root.dump(5);
+    file << j.dump(5);
     file.close();
 }
 
-void JSONSnapshot::importSnapshot()
+void JSONSnapshot::importSnapshot(const std::string filename)
 {
     std::cout << "importSnapshot" << std::endl;
+    //importFrom(filename);
+    
 }
 
 
@@ -156,58 +136,80 @@ void from_json(const nlohmann::json& j,BaseSnapshot::DataInfo& di )
 void from_json(const nlohmann::json& j,BaseSnapshot::LinkInfo& li )
 {
     j.at("name").get_to(li.name);
-    j.at("linkedpath").get_to(li.linkedpath);
-    j.at("path").get_to(li.path);
+    j.at("type").get_to(li.type);
+    j.at("value").get_to(li.value);
 }
 
-void from_json(const nlohmann::json& j,BaseSnapshot::SparseDataSnapshot& sds )
+void from_json(const nlohmann::json& j,BaseSnapshot::SnapComponent& sds )
 {
     j.at("datas").get_to(sds.dataContainer);
     j.at("links").get_to(sds.linkContainer);
 }
 
-void JSONSnapshot::importFrom(const std::string filename, nlohmann::json& j)
+void from_json(const nlohmann::json& j, BaseSnapshot::SnapNode& sn)
 {
+    // j.clear();
+    j.at("name").get_to(sn.name); //j["name"] = sn.name;
+    j.at("datas").get_to(sn.dataContainer); //j["datas"] = sn.dataContainer;
+    j.at("links").get_to(sn.linkContainer); //j["links"] = sn.linkContainer;
+    j.at("componentList").get_to(sn.componentList); //j["componentList"] = sn.componentList;
+
+    sn.childNode.clear();
+    if (j.contains("childNode") && j["childNode"].is_array())
+    {
+        for (const auto& childJson : j["childNode"])
+        {
+            auto child = std::make_shared<BaseSnapshot::SnapNode>();
+            childJson.get_to(*child);
+            sn.childNode.push_back(child);
+        }
+    }
+}
+
+void JSONSnapshot::importFrom(const std::string filename, BaseSnapshot::SnapNode& rootNode)
+{
+    std::cout << "importFrom" << std::endl;
     std::ifstream file(filename);
-    file >> j;
+    if(file.is_open())
+    {
+        nlohmann::json jfile;
+        file >> jfile;
+        file.close();
+
+        // Lines above would be useful for unit tests 
+
+        // for (auto& [key,value] : data.items())
+        // {
+        //     std::cout << "name : " << data.value("name","") << std::endl;
+        //     std::cout << "key : " << key << std::endl;
+        // }
+
+        // if(jfile.contains("componentList"))
+        // {
+        //     std::cout << "componentList" << std::endl;
+        //     for(auto& [componentkey,componentvalue] : jfile["componentList"].items())
+        //     {
+                
+        //         std::cout << "Component : " << componentvalue["datas"][0].value("value","") << std::endl;
+        //         std::cout << "Datas : " << std::endl;
+        //         for(const auto& d : componentvalue["datas"])
+        //         {
+        //             std::cout << "  - " << d.value("name", "") << " [" << d.value("type", "") << "] = " << d.value("value", "") << std::endl;
+        //         }
+        //         std::cout << "Links : " << std::endl;
+        //         for(const auto& l : componentvalue["links"])
+        //         {
+        //             std::cout << " - " << l.value("name","") << ", value : "<<l.value("value","") << std::endl;
+        //         }
+        //     }
+        // }
+        
+        // SnapNodeContainer = data.get<std::vector<std::vector<_>>>();
+        // std::cout << data.dump(2) << std::endl;
+    }
 }
 
-void JSONSnapshot::putData(std::vector<BaseData*>& datafield, std::vector<BaseLink*>& linkfield, BaseSnapshot::DataInfo& di)
-{
-    // idea -> while-loop with conditions like : while dataname are same, just set the data. if not 
-    
-    std::cout << "hey" << std::endl;
-    
-}
 
 
-void JSONSnapshot::fillDataSnapshot(BaseData* dat)
-{
-    dataSnapshot_.dataContainer.push_back(dat);
-}
-
-void JSONSnapshot::fillSnapshot(DataSnapshot datasnap)
-{
-    snapshot.push_back(datasnap);
-}
-
-void JSONSnapshot::fillLinkSnapshot(BaseLink* link)
-{
-    dataSnapshot_.linkContainer.push_back(link);
-}
-
-// void JSONSnapshot::collectData(const std::vector<BaseData*>& datafield, const std::vector<BaseLink*>& componentlinks )
-// {
-//     for (auto* data : datafield)
-//     {
-//         fillDataSnapshot(data);
-//     }
-    
-//     for(auto* link : componentlinks)
-//     {
-//         fillLinkSnapshot(link);
-//     }
-//     fillSnapshot(dataSnapshot_);
-// }
 
 } // namespace sofa::core::objectmodel

@@ -26,6 +26,8 @@
 #include <string>
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/objectmodel/BaseSnapshot.h>
+#include <stack>
+#include <memory>
 
 
 namespace sofa::simulation
@@ -36,10 +38,14 @@ class SOFA_SIMULATION_CORE_API SnapshotVisitor : public Visitor
 {
 protected:
     core::objectmodel::BaseSnapshot& snapCont_; 
+    core::objectmodel::BaseSnapshot::SnapNode& snapNode_;
+    
 public:
-    SnapshotVisitor(const sofa::core::ExecParams* eparams, core::objectmodel::BaseSnapshot& snapCont) : Visitor(eparams), snapCont_(snapCont) {}
+    SnapshotVisitor(const sofa::core::ExecParams* eparams, core::objectmodel::BaseSnapshot& snapshot, core::objectmodel::BaseSnapshot::SnapNode& rootNode) : Visitor(eparams), snapCont_(snapshot), snapNode_(rootNode) 
+    {
+    }
 
-    void processObject(core::objectmodel::BaseObject* obj);
+    void processObject(core::objectmodel::BaseObject* obj, std::string parentName);
 
     Result processNodeTopDown(simulation::Node* node) override;
     void processNodeBottomUp(simulation::Node* node) override;

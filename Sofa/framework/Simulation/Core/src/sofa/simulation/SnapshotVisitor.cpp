@@ -48,30 +48,42 @@
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/objectmodel/SnapshotFactory.h>
 using sofa::core::objectmodel::SnapshotType;
+#include <iostream>
 
 
 namespace sofa::simulation
 {
 
-void SnapshotVisitor::processObject(core::objectmodel::BaseObject* obj)
+void SnapshotVisitor::processObject(core::objectmodel::BaseObject* obj, std::string parentName)
 {
-    std::cout << "-" <<obj->getName() << std::endl;
-    obj->saveSnapshot(snapCont_);
+
+    obj->saveSnapshot(snapCont_, parentName);
 }
 
 Visitor::Result SnapshotVisitor::processNodeTopDown(simulation::Node* node)
 { 
-    std::cout << node->getName() << std::endl;
-    node->saveSnapshot(snapCont_);
+    auto* parent = node->getFirstParent();
+    std::string parentName;
+    if(parent)
+    {
+        parentName = parent->getName();
+        node->saveSnapshot(snapCont_,parentName);
+    }
+    else
+    {
+        parentName = "root";
+        node->saveSnapshot(snapCont_,parentName);
+    }
+    
     for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
     {
-        this->processObject(it->get());
-    } 
-    node->nodeSnapshot(snapCont_);
+        this->processObject(it->get(),node->getName());
+    }
+    
     return RESULT_CONTINUE;
 }
 
-void SnapshotVisitor::processNodeBottomUp(simulation::Node* /*node*/)
+void SnapshotVisitor::processNodeBottomUp(simulation::Node* node)
 {
 }
 

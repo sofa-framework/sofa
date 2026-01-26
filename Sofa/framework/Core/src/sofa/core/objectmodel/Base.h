@@ -45,7 +45,6 @@
 #include <sofa/core/objectmodel/SnapshotFactory.h>
 
 
-
 #define SOFA_BASE_CAST_IMPLEMENTATION(CLASSNAME) \
 virtual const CLASSNAME* to##CLASSNAME() const override { return this; } \
 virtual       CLASSNAME* to##CLASSNAME()       override { return this; }
@@ -379,8 +378,8 @@ public :
     //     Snapshot_impl = impl;
     // }
 
-    void saveSnapshot(BaseSnapshot& type);
-    void nodeSnapshot(BaseSnapshot& type);
+    void saveSnapshot(BaseSnapshot& type, std::string parent);
+
     void loadSnapshot(BaseSnapshot& type);
 
 private :
