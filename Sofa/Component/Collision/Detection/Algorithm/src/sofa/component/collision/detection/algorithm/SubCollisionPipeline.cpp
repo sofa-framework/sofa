@@ -131,14 +131,11 @@ void SubCollisionPipeline::computeCollisionDetection()
     if (!this->isComponentStateValid())
         return;
 
-    msg_info()
-         << "doCollisionDetection, compute Bounding Trees" ;
+    msg_info()  << "doCollisionDetection, compute Bounding Trees" ;
 
     // First, we compute a bounding volume for the collision model (for example bounding sphere)
     // or we have loaded a collision model that knows its other model
-
-
-
+    
     type::vector<CollisionModel*> vectBoundingVolume;
     {
         SCOPED_TIMER_VARNAME(bboxtimer, "ComputeBoundingTree");
@@ -156,8 +153,7 @@ void SubCollisionPipeline::computeCollisionDetection()
 
         for (auto it = l_collisionModels.begin(); it != l_collisionModels.end(); ++it)
         {
-            msg_info()
-                << "doCollisionDetection, consider model" ;
+            msg_info() << "doCollisionDetection, consider model" ;
 
             if (!(*it)->isActive()) continue;
 
@@ -179,12 +175,10 @@ void SubCollisionPipeline::computeCollisionDetection()
         }
 
 
-        msg_info()
-                << "doCollisionDetection, Computed "<<nActive<<" Bounding Boxes." ;
+        msg_info() << "doCollisionDetection, Computed "<<nActive<<" Bounding Boxes." ;
     }
 
-    msg_info()
-            << "doCollisionDetection, BroadPhaseDetection "<<l_broadPhaseDetection->getName();
+    msg_info()  << "doCollisionDetection, BroadPhaseDetection "<<l_broadPhaseDetection->getName();
 
     {
         SCOPED_TIMER_VARNAME(broadphase, "BroadPhase");
@@ -195,8 +189,7 @@ void SubCollisionPipeline::computeCollisionDetection()
         l_intersectionMethod->endBroadPhase();
     }
 
-    msg_info()
-        << "doCollisionDetection, NarrowPhaseDetection "<< l_narrowPhaseDetection->getName();
+    msg_info() << "doCollisionDetection, NarrowPhaseDetection "<< l_narrowPhaseDetection->getName();
 
     {
         SCOPED_TIMER_VARNAME(narrowphase, "NarrowPhase");
@@ -204,8 +197,7 @@ void SubCollisionPipeline::computeCollisionDetection()
         l_narrowPhaseDetection->beginNarrowPhase();
         const type::vector<std::pair<CollisionModel*, CollisionModel*> >& vectCMPair = l_broadPhaseDetection->getCollisionModelPairs();
 
-        msg_info()
-                << "doCollisionDetection, "<< vectCMPair.size()<<" colliding model pairs" ;
+        msg_info()  << "doCollisionDetection, "<< vectCMPair.size()<<" colliding model pairs" ;
 
         l_narrowPhaseDetection->addCollisionPairs(vectCMPair);
         l_narrowPhaseDetection->endNarrowPhase();
@@ -221,8 +213,7 @@ void SubCollisionPipeline::computeCollisionResponse()
 
     core::objectmodel::BaseContext* scene = getContext();
 
-    msg_info()
-        << "Create Contacts " << l_contactManager->getName() ;
+    msg_info() << "Create Contacts " << l_contactManager->getName() ;
 
     {
         SCOPED_TIMER_VARNAME(createContactsTimer, "CreateContacts");
@@ -230,7 +221,6 @@ void SubCollisionPipeline::computeCollisionResponse()
     }
 
     // finally we start the creation of collisionGroup
-
     const type::vector<Contact::SPtr>& contacts = l_contactManager->getContacts();
 
     // First we remove all contacts with non-simulated objects and directly add them
@@ -258,8 +248,7 @@ void SubCollisionPipeline::computeCollisionResponse()
 
     SCOPED_TIMER_VARNAME(createResponseTimer, "CreateMovingObjectsResponse");
 
-    msg_info()
-        << "Linking all contacts to Scene" ;
+    msg_info() << "Linking all contacts to Scene" ;
 
     for (const auto& contact : notStaticContacts)
     {
