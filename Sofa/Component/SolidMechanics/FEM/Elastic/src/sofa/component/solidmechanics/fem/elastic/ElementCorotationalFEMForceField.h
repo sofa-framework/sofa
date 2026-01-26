@@ -138,7 +138,7 @@ public:
 
 private:
     using trait = sofa::component::solidmechanics::fem::elastic::trait<DataTypes, ElementType>;
-    using ElementForce = trait::ElementForce;
+    using ElementForce = typename trait::ElementForce;
     using RotationMatrix = sofa::type::Mat<trait::spatial_dimensions, trait::spatial_dimensions, sofa::Real_t<DataTypes>>;
 
 
