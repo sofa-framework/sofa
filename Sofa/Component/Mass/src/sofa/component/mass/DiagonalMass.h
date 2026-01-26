@@ -54,7 +54,6 @@ public :
 * @class    DiagonalMass
 * @brief    This component computes the integral of this mass density over the volume of the object geometry but it supposes that the Mass matrix is diagonal.
 * @remark   Similar to MeshMatrixMass but it does not simplify the Mass Matrix as diagonal.
-* @remark   https://www.sofa-framework.org/community/doc/components/masses/diagonalmass/
 * @tparam   DataTypes type of the state associated with this mass
 * @tparam   GeometricalTypes type of the geometry, i.e type of the state associated with the topology (if the topology and the mass relates to the same state, this will be the same as DataTypes)
 */
