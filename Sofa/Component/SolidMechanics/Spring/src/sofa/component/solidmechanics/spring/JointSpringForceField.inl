@@ -359,6 +359,13 @@ void JointSpringForceField<DataTypes>::addDForce(const core::MechanicalParams *m
 }
 
 template <class DataTypes>
+void JointSpringForceField<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
+{
+    SOFA_UNUSED(matrix);
+    msg_error() << "buildStiffnessMatrix not implemented (thus only computing explicit forces)";
+}
+
+template <class DataTypes>
 void JointSpringForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
 {
     // No damping in this ForceField

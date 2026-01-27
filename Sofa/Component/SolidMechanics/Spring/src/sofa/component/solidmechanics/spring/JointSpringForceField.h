@@ -92,8 +92,6 @@ protected:
     // project torsion to Lawfulltorsion according to limitangles
     void projectTorsion(Spring& spring);
 
-
-
     JointSpringForceField(MechanicalState* object1, MechanicalState* object2);
     JointSpringForceField();
 
@@ -122,6 +120,8 @@ public:
                            DataVecDeriv& data_df2,
                            const DataVecDeriv& data_dx1,
                            const DataVecDeriv& data_dx2) override;
+
+    void buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix) override;
 
     void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) final;
 
