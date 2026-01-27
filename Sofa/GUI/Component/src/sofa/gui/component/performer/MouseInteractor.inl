@@ -32,7 +32,11 @@ void MouseInteractor<DataTypes>::init()
 {
     BaseMouseInteractor::init();
     mouseInSofa = dynamic_cast< MouseContainer*>(this->getContext()->getMechanicalState());
-    assert(mouseInSofa);
+    if (!mouseInSofa)
+    {
+        msg_error() << "MouseInteractor requires a MechanicalState of the correct type in its context";
+        return;
+    }
 }
 
 } // namespace sofa::gui::component::performer
