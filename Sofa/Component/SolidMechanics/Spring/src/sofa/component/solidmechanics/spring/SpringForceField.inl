@@ -554,7 +554,7 @@ auto SpringForceField<DataTypes>::computeSpringForce(
                 m(j,k) = ((Real)spring.ks-tgt) * u[j] * u[k];
                 if(isSingular)
                 {
-                    const double diagonalTerm = (j == k) ? 1.0 : 0.0;
+                    const Real diagonalTerm = (j == k) ? 1.0 : 0.0;
                     m(j,k) +=  regParam * spring.ks * (diagonalTerm - u[j] * u[k]);
                 }
                 
