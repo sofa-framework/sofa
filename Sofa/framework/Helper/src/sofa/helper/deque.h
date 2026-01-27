@@ -27,9 +27,36 @@
 #include <deque>
 #include <string>
 #include <iostream>
+#include <cstdlib>
+#include <cerrno>
+#include <climits>
 
 #include <sofa/helper/logging/Messaging.h>
 
+namespace sofa::helper::deque_detail
+{
+    inline bool safeStrToInt(const std::string& s, int& result)
+    {
+        char* endptr = nullptr;
+        errno = 0;
+        long val = std::strtol(s.c_str(), &endptr, 10);
+        if (errno != 0 || endptr == s.c_str() || val < INT_MIN || val > INT_MAX)
+            return false;
+        result = static_cast<int>(val);
+        return true;
+    }
+
+    inline bool safeStrToUInt(const std::string& s, unsigned int& result)
+    {
+        char* endptr = nullptr;
+        errno = 0;
+        unsigned long val = std::strtoul(s.c_str(), &endptr, 10);
+        if (errno != 0 || endptr == s.c_str() || val > UINT_MAX)
+            return false;
+        result = static_cast<unsigned int>(val);
+        return true;
+    }
+}
 
 /// adding string serialization to std::deque to make it compatible with Data
 /// \todo: refactoring of the containers required
@@ -82,27 +109,42 @@ inline std::istream& operator>>( std::istream& in, std::deque<int>& d )
         const std::string::size_type hyphen = s.find_first_of('-',1);
         if (hyphen == std::string::npos)
         {
-            t = atoi(s.c_str());
+            if (!sofa::helper::deque_detail::safeStrToInt(s, t))
+            {
+                msg_error("deque") << "parsing \""<<s<<"\": invalid integer";
+                continue;
+            }
             d.push_back(t);
         }
         else
         {
             int t1,t2,tinc;
             std::string s1(s,0,hyphen);
-            t1 = atoi(s1.c_str());
+            if (!sofa::helper::deque_detail::safeStrToInt(s1, t1))
+            {
+                msg_error("deque") << "parsing \""<<s<<"\": invalid integer";
+                continue;
+            }
             const std::string::size_type hyphen2 = s.find_first_of('-',hyphen+2);
             if (hyphen2 == std::string::npos)
             {
                 std::string s2(s,hyphen+1);
-                t2 = atoi(s2.c_str());
+                if (!sofa::helper::deque_detail::safeStrToInt(s2, t2))
+                {
+                    msg_error("deque") << "parsing \""<<s<<"\": invalid integer";
+                    continue;
+                }
                 tinc = (t1<t2) ? 1 : -1;
             }
             else
             {
-                std::string s2(s,hyphen+1,hyphen2);
+                std::string s2(s,hyphen+1,hyphen2-hyphen-1);
                 std::string s3(s,hyphen2+1);
-                t2 = atoi(s2.c_str());
-                tinc = atoi(s3.c_str());
+                if (!sofa::helper::deque_detail::safeStrToInt(s2, t2) || !sofa::helper::deque_detail::safeStrToInt(s3, tinc))
+                {
+                    msg_error("deque") << "parsing \""<<s<<"\": invalid integer";
+                    continue;
+                }
                 if (tinc == 0)
                 {
                     msg_error("deque") << "parsing \""<<s<<"\": increment is 0";
@@ -170,7 +212,11 @@ inline std::istream& operator>>( std::istream& in, std::deque<unsigned int>& d )
         const std::string::size_type hyphen = s.find_first_of('-',1);
         if (hyphen == std::string::npos)
         {
-            t = atoi(s.c_str());
+            if (!sofa::helper::deque_detail::safeStrToUInt(s, t))
+            {
+                msg_error("deque") << "parsing \""<<s<<"\": invalid unsigned integer";
+                continue;
+            }
             d.push_back(t);
         }
         else
@@ -178,20 +224,31 @@ inline std::istream& operator>>( std::istream& in, std::deque<unsigned int>& d )
             unsigned int t1,t2;
             int tinc;
             std::string s1(s,0,hyphen);
-            t1 = (unsigned int)atoi(s1.c_str());
+            if (!sofa::helper::deque_detail::safeStrToUInt(s1, t1))
+            {
+                msg_error("deque") << "parsing \""<<s<<"\": invalid unsigned integer";
+                continue;
+            }
             const std::string::size_type hyphen2 = s.find_first_of('-',hyphen+2);
             if (hyphen2 == std::string::npos)
             {
                 std::string s2(s,hyphen+1);
-                t2 = (unsigned int)atoi(s2.c_str());
+                if (!sofa::helper::deque_detail::safeStrToUInt(s2, t2))
+                {
+                    msg_error("deque") << "parsing \""<<s<<"\": invalid unsigned integer";
+                    continue;
+                }
                 tinc = (t1<t2) ? 1 : -1;
             }
             else
             {
-                std::string s2(s,hyphen+1,hyphen2);
+                std::string s2(s,hyphen+1,hyphen2-hyphen-1);
                 std::string s3(s,hyphen2+1);
-                t2 = (unsigned int)atoi(s2.c_str());
-                tinc = atoi(s3.c_str());
+                if (!sofa::helper::deque_detail::safeStrToUInt(s2, t2) || !sofa::helper::deque_detail::safeStrToInt(s3, tinc))
+                {
+                    msg_error("deque") << "parsing \""<<s<<"\": invalid integer";
+                    continue;
+                }
                 if (tinc == 0)
                 {
                     msg_error("deque") << "parsing \""<<s<<"\": increment is 0";
