@@ -41,6 +41,7 @@
 # include <winerror.h>
 # include <strsafe.h>
 # include "Shlwapi.h"           // for PathFileExists()
+#include <shellapi.h>
 #else
 # include <dirent.h>
 # include <sys/stat.h>
@@ -48,6 +49,16 @@
 # include <errno.h>
 # include <string.h>            // for strerror()
 # include <unistd.h>
+#endif
+
+#if defined(__APPLE__)
+#include <stdio.h>
+#include <spawn.h>
+#endif
+
+#ifdef linux
+#include <spawn.h>
+#include <sys/wait.h>
 #endif
 
 #include <cassert>
@@ -199,7 +210,7 @@ bool FileSystem::removeDirectory(const std::string& path)
 }
 
 
-bool FileSystem::exists(const std::string& path)
+bool FileSystem::exists(const std::string& path, bool quiet)
 {
 #if defined(WIN32)
     ::SetLastError(0);
@@ -221,14 +232,15 @@ bool FileSystem::exists(const std::string& path)
         if (errno == ENOENT)    // No such file or directory
             return false;
         else {
-            msg_error("FileSystem::exists()") << path << ": " << strerror(errno);
+            if (!quiet)
+                msg_error("FileSystem::exists()") << path << ": " << strerror(errno);
             return false;
         }
 #endif
 }
 
 
-bool FileSystem::isDirectory(const std::string& path)
+bool FileSystem::isDirectory(const std::string& path, bool quiet)
 {
 #if defined(WIN32)
     const DWORD fileAttrib = GetFileAttributes(sofa::helper::widenString(path).c_str());
@@ -241,7 +253,8 @@ bool FileSystem::isDirectory(const std::string& path)
 #else
     struct stat st_buf;
     if (stat(path.c_str(), &st_buf) != 0) {
-        msg_error("FileSystem::isDirectory()") << path << ": " << strerror(errno);
+        if (!quiet)
+                msg_error("FileSystem::isDirectory()") << path << ": " << strerror(errno);
         return false;
     }
     else
@@ -321,11 +334,11 @@ bool FileSystem::isAbsolute(const std::string& path)
                 || path[0] == '/');
 }
 
-bool FileSystem::isFile(const std::string &path)
+bool FileSystem::isFile(const std::string &path, bool quiet)
 {
     return
-            FileSystem::exists(path) &&
-            !FileSystem::isDirectory(path)
+            FileSystem::exists(path, quiet) &&
+            !FileSystem::isDirectory(path, quiet)
     ;
 }
 
@@ -497,6 +510,44 @@ std::string FileSystem::append(const std::string_view& existingPath, const std::
     return std::string(existingPath) + "/" + std::string(toAppend);
 }
 
+bool FileSystem::openFileWithDefaultApplication(const std::string& filename)
+{
+    bool success = false;
+
+    if (!filename.empty())
+    {
+        if (!FileSystem::exists(filename))
+        {
+            msg_error("FileSystem::openFileWithDefaultApplication()") << "File does not exist: " << filename;
+            return success;
+        }
+
+#ifdef WIN32
+        if ((INT_PTR)ShellExecuteA(nullptr, "open", filename.c_str(), nullptr, nullptr, SW_SHOWNORMAL) > 32)
+            success = true;
+#elif defined(__APPLE__)
+        pid_t pid; // points to a buffer that is used to return the process ID of the new child process.
+        char* argv[] = {const_cast<char*>("open"), const_cast<char*>(filename.c_str()), nullptr};
+        if (posix_spawn(&pid, "/usr/bin/open", nullptr, nullptr, argv, nullptr) == 0)
+        {
+            int status;
+            if (waitpid(pid, &status, 0) != -1 && WIFEXITED(status) && WEXITSTATUS(status) == 0)
+                success = true;
+        }
+#else
+        pid_t pid; // points to a buffer that is used to return the process ID of the new child process.
+        const char* argv[] = {"xdg-open", filename.c_str(), nullptr};
+        if (posix_spawn(&pid, "/usr/bin/xdg-open", nullptr, nullptr, const_cast<char* const*>(argv), environ) == 0)
+        {
+            int status;
+            if (waitpid(pid, &status, 0) != -1 && WIFEXITED(status) && WEXITSTATUS(status) == 0)
+                success = true;
+        }
+#endif
+    }
+
+    return success;
+}
 
 } // namespace system
 } // namespace helper

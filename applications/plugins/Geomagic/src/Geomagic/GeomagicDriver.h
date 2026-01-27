@@ -132,7 +132,7 @@ public:
 
 protected:
     // Pointer to the Geomagic visual model to draw device in scene
-    std::unique_ptr<GeomagicVisualModel> m_GeomagicVisualModel;
+    std::unique_ptr<GeomagicVisualModel> m_GeomagicVisualModel = nullptr;
    
 public:
     ///These data are written by the omni they cnnot be accessed in the simulation loop
@@ -147,6 +147,7 @@ public:
     // Public members exchanged between Driver and HD scheduler
     bool m_simulationStarted; ///< Boolean to warn scheduler when SOFA has started the simulation (changed by AnimateBeginEvent)
     bool m_isInContact; ///< Boolean to warn SOFA side when scheduler has computer contact (forcefeedback no null)
+    bool m_logThreadSpeed = false; ///< Boolean to enable/disable logging of the scheduler thread speed (for debug purpose), will be set to f_printLog
     DeviceData m_hapticData; ///< data structure used by scheduler
     DeviceData m_simuData; ///< data structure used by SOFA loop, values are copied from @sa m_hapticData
     SHHD m_hHD; ///< ID the device
