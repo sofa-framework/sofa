@@ -219,6 +219,7 @@ macro(sofa_fetch_dependency name)
             INSTALL_COMMAND \"\"
             TEST_COMMAND \"\"
             GIT_CONFIG \"remote.origin.fetch=+refs/pull/*:refs/remotes/origin/pr/*\"
+            GIT_SHALLOW TRUE
             )"
         )
 
