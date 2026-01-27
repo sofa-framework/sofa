@@ -23,6 +23,7 @@
 #include <sofa/core/objectmodel/SnapshotFactory.h>
 #include <sofa/core/objectmodel/BaseSnapshot.h>
 #include <sofa/core/objectmodel/JSONSnapshot.h>
+#include <sofa/core/objectmodel/MemorySnapshot.h>
 
 
 
@@ -35,7 +36,8 @@ std::unique_ptr<BaseSnapshot> createSnapshot(SnapshotType type)
     {
         case SnapshotType::JSON:
             return std::make_unique<JSONSnapshot>();
-
+        case SnapshotType::Memory:
+            return std::make_unique<MemorySnapshot>();
         default:
             return nullptr;
     }

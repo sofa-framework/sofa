@@ -689,14 +689,11 @@ void Base::saveSnapshot(BaseSnapshot& snap, std::string parent)
         auto snapObj = std::make_shared<BaseSnapshot::SnapNode>();
         snapObj->name = this->getName();
         snap.addToSnap(*this, *snapObj);
-
         snap.nodeList.push_back(snapObj->name);
-
         if(snap.hasSnapParent(parent))
         {
-            std::cout << "getSnapParent" << std::endl;
             std::shared_ptr<BaseSnapshot::SnapNode> snapParent = snap.getSnapParent(snap.treeSnapshot[0],parent);
-            snapParent->childNode.push_back(snapObj);
+            snapParent->children.push_back(snapObj);
         }
         else
         {
@@ -711,11 +708,11 @@ void Base::saveSnapshot(BaseSnapshot& snap, std::string parent)
         if(snap.hasSnapParent(parent))
         {
             std::shared_ptr<BaseSnapshot::SnapNode> snapParent = snap.getSnapParent(snap.treeSnapshot[0],parent);
-            snapParent->componentList.push_back(*snapObj) ;
+            snapParent->components.push_back(*snapObj) ;
         }
         else
         {
-            snap.treeSnapshot[0]->componentList.push_back(*snapObj);
+            snap.treeSnapshot[0]->components.push_back(*snapObj);
         }
         
     }
@@ -723,10 +720,11 @@ void Base::saveSnapshot(BaseSnapshot& snap, std::string parent)
 
 
 
-void Base::loadSnapshot(BaseSnapshot& type)
+void Base::loadSnapshot(BaseSnapshot& snap)
 {
     //type.importSnapshot(filename);
     std::cout << "load snapshot" << std::endl;
+    snap.addToSimulation();
 }    
 
 } // namespace sofa::core::objectmodel

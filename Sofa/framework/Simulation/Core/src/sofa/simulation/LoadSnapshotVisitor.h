@@ -37,7 +37,7 @@ class SOFA_SIMULATION_CORE_API LoadSnapshotVisitor : public Visitor
 protected:
     core::objectmodel::BaseSnapshot& snapCont_; 
 public:
-    LoadSnapshotVisitor(const sofa::core::ExecParams* eparams, core::objectmodel::BaseSnapshot& snapCont) : Visitor(eparams), snapCont_(snapCont) {}
+    LoadSnapshotVisitor(const sofa::core::ExecParams* eparams, core::objectmodel::BaseSnapshot& snapshot) : Visitor(eparams), snapCont_(snapshot) {}
 
     void processObject(core::objectmodel::BaseObject* obj);
 

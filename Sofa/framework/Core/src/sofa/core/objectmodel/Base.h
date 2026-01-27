@@ -378,9 +378,9 @@ public :
     //     Snapshot_impl = impl;
     // }
 
-    void saveSnapshot(BaseSnapshot& type, std::string parent);
+    void saveSnapshot(BaseSnapshot& snap, std::string parent);
 
-    void loadSnapshot(BaseSnapshot& type);
+    void loadSnapshot(BaseSnapshot& snap);
 
 private :
     BaseSnapshot* Snapshot_impl; 

@@ -38,10 +38,10 @@ class SOFA_SIMULATION_CORE_API SnapshotVisitor : public Visitor
 {
 protected:
     core::objectmodel::BaseSnapshot& snapCont_; 
-    core::objectmodel::BaseSnapshot::SnapNode& snapNode_;
+    // core::objectmodel::BaseSnapshot::SnapNode& snapNode_;
     
 public:
-    SnapshotVisitor(const sofa::core::ExecParams* eparams, core::objectmodel::BaseSnapshot& snapshot, core::objectmodel::BaseSnapshot::SnapNode& rootNode) : Visitor(eparams), snapCont_(snapshot), snapNode_(rootNode) 
+    SnapshotVisitor(const sofa::core::ExecParams* eparams, core::objectmodel::BaseSnapshot& snapshot) : Visitor(eparams), snapCont_(snapshot)
     {
     }
 

@@ -69,39 +69,20 @@ void to_json(nlohmann::json& j, const BaseSnapshot::SnapNode& sn)
     j["name"] = sn.name;
     j["datas"] = sn.dataContainer;
     j["links"] = sn.linkContainer;
-    j["componentList"] = sn.componentList;
+    j["components"] = sn.components;
 
-    j["childNode"] = nlohmann::json::array();
-    for (const auto& childPtr : sn.childNode)
+    j["children"] = nlohmann::json::array();
+    for (const auto& childPtr : sn.children)
     {
         if(childPtr)
         {
-            j["childNode"].push_back(*childPtr);
+            j["children"].push_back(*childPtr);
         }
     }
 }
 
-
-std::shared_ptr<BaseSnapshot::SnapNode> JSONSnapshot::createChildNode(const std::string& name)
-{
-    auto child = std::make_shared<SnapNode>();
-    child->name = name;
-    return child;
-}
-
-void JSONSnapshot::addChildToCurrentNode(std::shared_ptr<BaseSnapshot::SnapNode> child, BaseSnapshot::SnapNode& snapnode)
-{
-    // snapnode.childNode.push_back(child);
-    // auto currentNode = getCurrentNode();
-    // if (currentNode && child)
-    //     currentNode->childNode.push_back(child);
-    std::cout << "wip" << std::endl;
-}
-
-
 void JSONSnapshot::exportTo(const std::string filename)
 {
-
     nlohmann::json j = nlohmann::json::array() ;
 
     for (const auto& nodePtr : treeSnapshot)
@@ -119,9 +100,7 @@ void JSONSnapshot::exportTo(const std::string filename)
 
 void JSONSnapshot::importSnapshot(const std::string filename)
 {
-    std::cout << "importSnapshot" << std::endl;
-    //importFrom(filename);
-    
+    std::cout << "importSnapshot" << std::endl;    
 }
 
 
@@ -148,65 +127,42 @@ void from_json(const nlohmann::json& j,BaseSnapshot::SnapComponent& sds )
 
 void from_json(const nlohmann::json& j, BaseSnapshot::SnapNode& sn)
 {
-    // j.clear();
-    j.at("name").get_to(sn.name); //j["name"] = sn.name;
-    j.at("datas").get_to(sn.dataContainer); //j["datas"] = sn.dataContainer;
-    j.at("links").get_to(sn.linkContainer); //j["links"] = sn.linkContainer;
-    j.at("componentList").get_to(sn.componentList); //j["componentList"] = sn.componentList;
+    j.at("name").get_to(sn.name); 
+    j.at("datas").get_to(sn.dataContainer); 
+    j.at("links").get_to(sn.linkContainer); 
+    j.at("components").get_to(sn.components); 
 
-    sn.childNode.clear();
-    if (j.contains("childNode") && j["childNode"].is_array())
+    sn.children.clear();
+    if (j.contains("children") && j["children"].is_array())
     {
-        for (const auto& childJson : j["childNode"])
+        for (const auto& childJson : j["children"])
         {
             auto child = std::make_shared<BaseSnapshot::SnapNode>();
             childJson.get_to(*child);
-            sn.childNode.push_back(child);
+            sn.children.push_back(child);
         }
     }
 }
 
-void JSONSnapshot::importFrom(const std::string filename, BaseSnapshot::SnapNode& rootNode)
+void JSONSnapshot::importFrom(const std::string filename)
 {
     std::cout << "importFrom" << std::endl;
     std::ifstream file(filename);
-    if(file.is_open())
+    nlohmann::json jfile;
+    file >> jfile;
+    file.close();
+    
+    treeSnapshot.clear();
+    
+    // std::cout << "root : " << jfile[0]["name"] << std::endl;
+    // std::cout << "children : " << jfile[0]["children"] << std::endl;
+    for (auto& [key,value] : jfile[0].items())
     {
-        nlohmann::json jfile;
-        file >> jfile;
-        file.close();
-
-        // Lines above would be useful for unit tests 
-
-        // for (auto& [key,value] : data.items())
-        // {
-        //     std::cout << "name : " << data.value("name","") << std::endl;
-        //     std::cout << "key : " << key << std::endl;
-        // }
-
-        // if(jfile.contains("componentList"))
-        // {
-        //     std::cout << "componentList" << std::endl;
-        //     for(auto& [componentkey,componentvalue] : jfile["componentList"].items())
-        //     {
-                
-        //         std::cout << "Component : " << componentvalue["datas"][0].value("value","") << std::endl;
-        //         std::cout << "Datas : " << std::endl;
-        //         for(const auto& d : componentvalue["datas"])
-        //         {
-        //             std::cout << "  - " << d.value("name", "") << " [" << d.value("type", "") << "] = " << d.value("value", "") << std::endl;
-        //         }
-        //         std::cout << "Links : " << std::endl;
-        //         for(const auto& l : componentvalue["links"])
-        //         {
-        //             std::cout << " - " << l.value("name","") << ", value : "<<l.value("value","") << std::endl;
-        //         }
-        //     }
-        // }
-        
-        // SnapNodeContainer = data.get<std::vector<std::vector<_>>>();
-        // std::cout << data.dump(2) << std::endl;
+        std::cout << "TEST" << std::endl;
     }
+
+    std::cout << "JSON imported successfully from: " << filename << std::endl;
+
 }
 
 

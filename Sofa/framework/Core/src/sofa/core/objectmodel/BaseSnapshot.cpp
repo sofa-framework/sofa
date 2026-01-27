@@ -29,36 +29,33 @@ BaseSnapshot::BaseSnapshot()
 {}
 BaseSnapshot::~BaseSnapshot() = default;
 
+
+void BaseSnapshot::printSnapshot()
+{
+    std::cout << "Snapshot : " << std::endl;
+    for (auto element : treeSnapshot)
+    {
+        std::cout << element->name << std::endl;
+    }
+}
+
+
 void BaseSnapshot::addToSnap(Base& b, SnapNode& snapObject)
 {
     std::vector<DataInfo> objData = collectSnapData(b.getDataFields());
     snapObject.dataContainer.insert(snapObject.dataContainer.end(),std::make_move_iterator(objData.begin()),std::make_move_iterator(objData.end()));
-    //snapObject.dataContainer.push_back(objData);
     std::vector<LinkInfo> objLink = collectSnapLink(b.getLinks());
     snapObject.linkContainer.insert(snapObject.linkContainer.end(),std::make_move_iterator(objLink.begin()),std::make_move_iterator(objLink.end()));
-    //snapObject.linkContainer.push_back(objLink);
-
     snapObject.name = b.getName();
-    
-    // idea : change collectSnapData() parameter to take snapObject as argument.
-    // Maybe change/add a new struct to contains datas AND links (!= component) 
-    // collectSnapData(b.getDataFields(), b.getLinks(), snapObject, isBool);
-
 }
 
 void BaseSnapshot::addToSnap(Base& b, SnapComponent& snapObject)
 {
-    std::cout<< "snapcomponent" << std::endl;
     std::vector<DataInfo> objData = collectSnapData(b.getDataFields());
     snapObject.dataContainer.insert(snapObject.dataContainer.end(),std::make_move_iterator(objData.begin()),std::make_move_iterator(objData.end()));
-    //snapObject.dataContainer.push_back(objData);
     std::vector<LinkInfo> objLink = collectSnapLink(b.getLinks());
     snapObject.linkContainer.insert(snapObject.linkContainer.end(),std::make_move_iterator(objLink.begin()),std::make_move_iterator(objLink.end()));
-    //snapObject.linkContainer.push_back(objLink);
-
     snapObject.name = b.getName();
-
-
 }
 
 
@@ -74,7 +71,6 @@ std::vector<BaseSnapshot::DataInfo> BaseSnapshot::collectSnapData(const std::vec
         dinfo.value = data->getValueString();
         dataContainer.push_back(dinfo); 
     }
-
     return dataContainer;
 }
 
@@ -89,7 +85,6 @@ std::vector<BaseSnapshot::LinkInfo> BaseSnapshot::collectSnapLink(const std::vec
         linfo.type = link->getValueTypeString();
         linkContainer.push_back(linfo);
     }
-
     return linkContainer;
 }
 
@@ -127,7 +122,7 @@ std::shared_ptr<BaseSnapshot::SnapNode> BaseSnapshot::getSnapParent(std::shared_
         return node;
     }
 
-    for (auto& child : node->childNode)
+    for (auto& child : node->children)
     {
         if(auto result = getSnapParent(child, parentName))
         {
@@ -135,6 +130,15 @@ std::shared_ptr<BaseSnapshot::SnapNode> BaseSnapshot::getSnapParent(std::shared_
         }
     }
     return nullptr;
+}
+
+void BaseSnapshot::addToSimulation()
+{
+    std::cout << "addToSimulation" << std::endl;
+    for (auto element : treeSnapshot)
+    {
+        std::cout << element->name << std::endl;
+    }
 }
 
 } // namespace sofa::core::objectmodel

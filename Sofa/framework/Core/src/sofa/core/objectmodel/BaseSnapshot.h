@@ -30,26 +30,14 @@ class Base;
 class SOFA_CORE_API BaseSnapshot 
 {
     
-protected:
-
-    struct DataSnapshot
-    {
-        std::vector<BaseData*> dataContainer;
-        std::vector<BaseLink*> linkContainer;
-    };
-
-    DataSnapshot dataSnapshot_;
-
-    //std::vector<DataSnapshot> snapshot;
 public:
     struct DataInfo
     {
         std::string name;
         std::string type;
         std::string value;
-        std::string parentData;
         
-        DataInfo() : name(), type(), value(), parentData() {}
+        DataInfo() : name(), type(), value() {}
     };
 
     struct LinkInfo
@@ -60,7 +48,7 @@ public:
         LinkInfo() : name(), type(), value() {}
     };
 
-    struct SnapComponent //SparseDataSnapshot
+    struct SnapComponent
     {
         std::string name;
         std::vector<DataInfo> dataContainer;
@@ -71,50 +59,46 @@ public:
         SnapComponent(const std::string& name) : name(name){}
     };
 
-    SnapComponent SnapComponent_; // SparseDataSnapshot SparseDataSnapshot_
+    
 
     struct SnapNode
     {
         std::string name;
         std::vector<DataInfo> dataContainer;
         std::vector<LinkInfo> linkContainer;
-        std::vector<SnapComponent> componentList;
-        std::vector<std::shared_ptr<SnapNode>> childNode;
+        std::vector<SnapComponent> components;
+        std::vector<std::shared_ptr<SnapNode>> children;
         
-        SnapNode() : name(""), dataContainer(), linkContainer(), componentList(), childNode() {}
+        SnapNode() : name(""), dataContainer(), linkContainer(), components(), children() {}
 
         SnapNode(const std::string& name) : name(name) {}
     };
 
-    SnapNode SnapNode_;
+    public :
+        SnapComponent SnapComponent_;
+        SnapNode SnapNode_;
 
-    std::vector<std::string> nodeList;
-    std::vector<std::shared_ptr<SnapNode>> treeSnapshot; // here, it is the snapshot
+        std::vector<std::string> nodeList;
+        std::vector<std::shared_ptr<SnapNode>> treeSnapshot; // here, it is the snapshot
     
 
 public:
     virtual void importSnapshot(const std::string filename) = 0;
 
-    
-
+    void printSnapshot();
+    void addToSnap(Base& b, SnapNode& snapObj);
+    void addToSnap(Base& b, SnapComponent& snapObj);
     std::vector<DataInfo> collectSnapData(const std::vector<BaseData*>& datafield);
     std::vector<LinkInfo> collectSnapLink(const std::vector<BaseLink*>& linkfield);
     bool hasSnapParent(std::string& parentName);
     std::shared_ptr<SnapNode> getSnapParent(std::shared_ptr<SnapNode>& node, std::string& parentName);
 
-    virtual std::shared_ptr<SnapNode> createChildNode(const std::string& nodeName) = 0;
-    virtual void addChildToCurrentNode(std::shared_ptr<SnapNode> child,SnapNode& snapnode) = 0 ;
-
-    void addToSnap(Base& b, SnapNode& snapObj);
-    void addToSnap(Base& b, SnapComponent& snapObj);
+    void addToSimulation();
 
     virtual void exportTo(const std::string filename) = 0;
-    virtual void importFrom(std::string filename, BaseSnapshot::SnapNode& rootNode) = 0;
+    virtual void importFrom(std::string filename) = 0;
 
     BaseSnapshot();
     virtual ~BaseSnapshot() = 0;
-
-
-    
 };
 } // namespace sofa::core::objectmodel

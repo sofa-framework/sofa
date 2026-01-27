@@ -63,18 +63,9 @@ void SnapshotVisitor::processObject(core::objectmodel::BaseObject* obj, std::str
 Visitor::Result SnapshotVisitor::processNodeTopDown(simulation::Node* node)
 { 
     auto* parent = node->getFirstParent();
-    std::string parentName;
-    if(parent)
-    {
-        parentName = parent->getName();
-        node->saveSnapshot(snapCont_,parentName);
-    }
-    else
-    {
-        parentName = "root";
-        node->saveSnapshot(snapCont_,parentName);
-    }
-    
+    std::string parentName = parent ? parent->getName() : node->getName();
+    node->saveSnapshot(snapCont_, parentName);
+
     for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
     {
         this->processObject(it->get(),node->getName());
@@ -83,7 +74,7 @@ Visitor::Result SnapshotVisitor::processNodeTopDown(simulation::Node* node)
     return RESULT_CONTINUE;
 }
 
-void SnapshotVisitor::processNodeBottomUp(simulation::Node* node)
+void SnapshotVisitor::processNodeBottomUp(simulation::Node* /*node*/)
 {
 }
 

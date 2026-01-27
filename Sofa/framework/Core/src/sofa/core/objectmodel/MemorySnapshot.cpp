@@ -19,25 +19,46 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-#include <sofa/core/objectmodel/Base.h>
-#include <sofa/core/objectmodel/BaseSnapshot.h>
+#include <sofa/core/objectmodel/MemorySnapshot.h>
 #include <nlohmann/json.hpp>
 
+#include <fstream>
+#include <string>
+#include <stdexcept>
+#include <iostream>
+#include <sofa/helper/system/SetDirectory.h>
+
+#include <sofa/core/objectmodel/Data.h>
 
 
 namespace sofa::core::objectmodel
 {
 
-class SOFA_CORE_API JSONSnapshot : public BaseSnapshot 
+
+MemorySnapshot::MemorySnapshot()
+{}
+MemorySnapshot::~MemorySnapshot() = default;
+
+void MemorySnapshot::exportTo(const std::string filename)
 {
+    std::cout << "exportTo" << std::endl;
+}
 
-public:
-    void importSnapshot(const std::string filename) override;
+void MemorySnapshot::importSnapshot(const std::string filename)
+{
+    std::cout << "importSnapshot" << std::endl;
 
-    void exportTo(const std::string filename) override;
-    void importFrom(std::string filename) override;
-    JSONSnapshot();
-    ~JSONSnapshot();
-};
+    
+}
+
+
+void MemorySnapshot::importFrom(const std::string filename)
+{
+    std::cout << "importFrom" << std::endl;
+
+}
+
+
+
+
 } // namespace sofa::core::objectmodel

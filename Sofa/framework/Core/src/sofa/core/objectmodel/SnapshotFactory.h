@@ -22,6 +22,7 @@
 #pragma once
 #include <sofa/core/objectmodel/Base.h>
 // #include <sofa/core/objectmodel/BaseSnapshot.h>
+
 #include <memory>
 
 namespace sofa::core::objectmodel
@@ -30,7 +31,8 @@ class BaseSnapshot;
 enum class SnapshotType
 {
     JSON,
-    Print
+    Print,
+    Memory
 };
 std::unique_ptr<BaseSnapshot> createSnapshot(SnapshotType type);
 
