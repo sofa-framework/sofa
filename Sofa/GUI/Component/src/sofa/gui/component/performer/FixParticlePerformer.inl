@@ -130,8 +130,11 @@ sofa::component::statecontainer::MechanicalObject< DataTypes >* FixParticlePerfo
     else if (b.mstate)
     {
         collisionState = dynamic_cast<MouseContainer*>(b.mstate);
-        fixPoint = (collisionState->read(core::vec_id::read_access::position)->getValue())[idx];
-        points.push_back(idx);
+        if (collisionState)
+        {
+            fixPoint = (collisionState->read(core::vec_id::read_access::position)->getValue())[idx];
+            points.push_back(idx);
+        }
     }
 
 
