@@ -169,11 +169,10 @@ format(const char *const format, va_list args)
     va_end(args_copy);
 
     // Allocate memory for the buffer
-    std::string result(size + 1, '0');
-    result[size] = '\0';
+    std::string result(size + 1, '\0');
 
     // Format the string into the buffer
-    vsprintf(&result[0], format, args);
+    vsnprintf(&result[0], size + 1, format, args);
 
     // Resize the string to exclude the null terminator
     result.resize(size);
