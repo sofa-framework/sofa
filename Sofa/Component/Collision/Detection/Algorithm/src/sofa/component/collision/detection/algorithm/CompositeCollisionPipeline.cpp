@@ -102,7 +102,7 @@ void CompositeCollisionPipeline::init()
     {
         if (pipelineCollisionModels.find(cm) == pipelineCollisionModels.end())
         {
-            msg_warning() << "CollisionModel " << cm->getName() << " is not handled by any SubCollisionPipeline.";
+            msg_warning() << "CollisionModel " << cm->getPathName() << " is not handled by any SubCollisionPipeline.";
         }
     }
     
