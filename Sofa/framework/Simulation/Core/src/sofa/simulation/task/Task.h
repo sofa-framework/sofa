@@ -45,8 +45,9 @@ public:
     class SOFA_SIMULATION_CORE_API Allocator
     {
     public:
+        virtual ~Allocator() = default;
         virtual void* allocate(std::size_t sz) = 0;
-                
+
         virtual void free(void* ptr, std::size_t sz) = 0;
     };
    
