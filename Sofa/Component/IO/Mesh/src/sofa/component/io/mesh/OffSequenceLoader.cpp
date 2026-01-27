@@ -27,6 +27,9 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sstream>
 #include <fstream>
+#include <cstdlib>
+#include <cerrno>
+#include <climits>
 
 namespace sofa::component::io::mesh
 {
@@ -88,7 +91,18 @@ void OffSequenceLoader::init()
     while ( m_filenameAndNb[--indCar] >= '0' && m_filenameAndNb[indCar] <= '9')
         fileNb.insert(0, 1, m_filenameAndNb[indCar]);
 
-    currentIndex = firstIndex = atoi(fileNb.c_str());
+    char* endptr = nullptr;
+    errno = 0;
+    long val = std::strtol(fileNb.c_str(), &endptr, 10);
+    if (errno != 0 || endptr == fileNb.c_str() || val < INT_MIN || val > INT_MAX)
+    {
+        msg_error() << "Invalid file index: " << fileNb;
+        currentIndex = firstIndex = 0;
+    }
+    else
+    {
+        currentIndex = firstIndex = static_cast<int>(val);
+    }
 }
 
 

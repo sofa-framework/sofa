@@ -23,6 +23,9 @@
 #include <sofa/component/collision/response/contact/config.h>
 
 #include <sofa/component/collision/response/contact/CollisionResponse.h>
+#include <cstdlib>
+#include <cerrno>
+#include <climits>
 
 namespace sofa::component::collision::response::contact
 {
@@ -46,15 +49,31 @@ public:
             in >> r.name1 >> r.name2 >> r.response;
             if (!r.name1.empty() && r.name1.find_first_not_of("-0123456789") == std::string::npos)
             {
-                r.group1 = atoi(r.name1.c_str());
-                r.name1.clear();
+                char* endptr = nullptr;
+                errno = 0;
+                long val = std::strtol(r.name1.c_str(), &endptr, 10);
+                if (errno == 0 && endptr != r.name1.c_str() && val >= INT_MIN && val <= INT_MAX)
+                {
+                    r.group1 = static_cast<int>(val);
+                    r.name1.clear();
+                }
+                else
+                    r.group1 = 0;
             }
             else
                 r.group1 = 0;
             if (!r.name2.empty() && r.name2.find_first_not_of("-0123456789") == std::string::npos)
             {
-                r.group2 = atoi(r.name2.c_str());
-                r.name2.clear();
+                char* endptr = nullptr;
+                errno = 0;
+                long val = std::strtol(r.name2.c_str(), &endptr, 10);
+                if (errno == 0 && endptr != r.name2.c_str() && val >= INT_MIN && val <= INT_MAX)
+                {
+                    r.group2 = static_cast<int>(val);
+                    r.name2.clear();
+                }
+                else
+                    r.group2 = 0;
             }
             else
                 r.group2 = 0;
