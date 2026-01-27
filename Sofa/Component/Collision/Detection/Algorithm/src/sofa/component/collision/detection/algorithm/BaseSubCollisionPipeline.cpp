@@ -31,27 +31,36 @@ namespace sofa::component::collision::detection::algorithm
 BaseSubCollisionPipeline::BaseSubCollisionPipeline()
 : sofa::core::objectmodel::BaseObject()
 {
-    
+
 }
 
 void BaseSubCollisionPipeline::doBwdInit()
 {
-    
+
 }
 
 void BaseSubCollisionPipeline::doDraw(const core::visual::VisualParams* vparams)
 {
     SOFA_UNUSED(vparams);
-    
+
 }
 
 void BaseSubCollisionPipeline::init()
 {
     this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Loading);
-                
+
     doInit();
 }
 
+/**
+ * @brief Queries all registered contact response types from the Contact factory.
+ *
+ * This static method iterates through all contact types registered in the
+ * Contact::Factory and returns their names. These represent the available
+ * collision response methods (e.g., "PenalityContactForceField", "FrictionContact").
+ *
+ * @return A set of strings containing all registered contact response type names.
+ */
 std::set< std::string > BaseSubCollisionPipeline::getResponseList()
 {
     std::set< std::string > listResponse;

@@ -31,6 +31,25 @@ namespace sofa::component::collision::detection::algorithm
 
 class BaseSubCollisionPipeline;
 
+/**
+ * @brief A collision pipeline that aggregates multiple sub-pipelines using the Composite pattern.
+ *
+ * CompositeCollisionPipeline enables partitioning collision detection into independent groups,
+ * where each group is handled by its own SubCollisionPipeline. This architecture provides
+ * several benefits:
+ *
+ * 1. Modularity: Different collision model groups can use different detection algorithms,
+ *    intersection methods, or contact managers
+ *
+ * 2. Parallelization: When enabled via d_parallelDetection, the collision detection phase
+ *    of each sub-pipeline runs concurrently, potentially improving performance on multi-core systems
+ *
+ * 3. Isolation: Collision models in different sub-pipelines won't generate contacts with each other,
+ *    allowing intentional separation of non-interacting object groups
+ *
+ * @see SubCollisionPipeline
+ * @see BaseSubCollisionPipeline
+ */
 class SOFA_COMPONENT_COLLISION_DETECTION_ALGORITHM_API CompositeCollisionPipeline : public sofa::core::collision::Pipeline, public sofa::simulation::TaskSchedulerUser
 {
 public:
@@ -40,33 +59,43 @@ public:
 protected:
     CompositeCollisionPipeline();
 public:
+    /// @brief Initializes the pipeline and validates sub-pipeline configuration.
     void init() override;
 
-    /// get the set of response available with the current collision pipeline
+    /// @brief Returns the set of available collision response types.
     std::set< std::string > getResponseList() const override;
 protected:
     // -- Pipeline interface
-    /// Remove collision response from last step
+
+    /// @brief Delegates reset to all sub-pipelines to clear previous contacts.
     void doCollisionReset() override;
-    /// Detect new collisions. Note that this step must not modify the simulation graph
+
+    /// @brief Delegates collision detection to all sub-pipelines (optionally in parallel).
+    /// @note The collisionModels parameter is ignored; each sub-pipeline uses its own models.
     void doCollisionDetection(const sofa::type::vector<sofa::core::CollisionModel*>& collisionModels) override;
-    /// Add collision response in the simulation graph
+
+    /// @brief Delegates response creation to all sub-pipelines.
     void doCollisionResponse() override;
 
     void reset() override;
-    
-    /// Remove collision response from last step
+
+    /// @brief Entry point for collision reset, called by the simulation loop.
     virtual void computeCollisionReset() override final;
-    /// Detect new collisions. Note that this step must not modify the simulation graph
+
+    /// @brief Entry point for collision detection, called by the simulation loop.
     virtual void computeCollisionDetection() override final;
-    /// Add collision response in the simulation graph
-    virtual void computeCollisionResponse() override final;    
+
+    /// @brief Entry point for collision response, called by the simulation loop.
+    virtual void computeCollisionResponse() override final;
 
 public:
+    /// When true, collision detection across sub-pipelines runs in parallel using the task scheduler.
     sofa::Data<bool> d_parallelDetection;
+
+    /// List of sub-pipelines to aggregate. Each handles an independent set of collision models.
     sofa::MultiLink < CompositeCollisionPipeline, BaseSubCollisionPipeline, sofa::BaseLink::FLAG_DUPLICATE > l_subCollisionPipelines;
-    
-    
+
+
     friend class CollisionPipeline; // to be able to call do*()
 };
 

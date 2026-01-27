@@ -58,12 +58,23 @@ CompositeCollisionPipeline::CompositeCollisionPipeline()
 {
 }
 
+/**
+ * @brief Initializes the composite pipeline and validates its configuration.
+ *
+ * This method performs several validation and setup steps:
+ * 1. Validates that at least one sub-pipeline is linked
+ * 2. Initializes the task scheduler if parallel detection is enabled
+ * 3. Validates all linked sub-pipelines are valid (non-null)
+ * 4. Checks that all collision models in the scene are covered by at least one sub-pipeline
+ *    (issues warnings for any uncovered models to help users identify configuration issues)
+ */
 void CompositeCollisionPipeline::init()
 {
     Inherit1::init();
 
     this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 
+    // Validate that at least one sub-pipeline is defined
     if(l_subCollisionPipelines.size() == 0)
     {
         msg_warning() << "No SubCollisionPipeline defined in CompositeCollisionPipeline. Nothing will be done." ;
@@ -71,17 +82,19 @@ void CompositeCollisionPipeline::init()
         this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
-    
+
+    // Initialize task scheduler for parallel execution if enabled
     if(d_parallelDetection.getValue())
     {
         this->initTaskScheduler();
     }
 
-    // UX: warn if there is any CollisionModel not handled by any SubCollisionPipeline
+    // Collect all collision models from the scene to verify coverage
     simulation::Node* root = dynamic_cast<simulation::Node*>(getContext());
     std::vector<CollisionModel*> sceneCollisionModels;
     root->getTreeObjects<CollisionModel>(&sceneCollisionModels);
 
+    // Collect all collision models handled by sub-pipelines
     std::set<CollisionModel*> pipelineCollisionModels;
     for(auto* subPipeline : l_subCollisionPipelines)
     {
@@ -91,13 +104,15 @@ void CompositeCollisionPipeline::init()
             this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
             return;
         }
-        
+
         for (auto* cm : subPipeline->getCollisionModels())
         {
             pipelineCollisionModels.insert(cm);
         }
     }
 
+    // Warn about collision models not covered by any sub-pipeline
+    // This helps users identify configuration issues where some models won't participate in collision
     for (const auto& cm : sceneCollisionModels)
     {
         if (pipelineCollisionModels.find(cm) == pipelineCollisionModels.end())
@@ -105,7 +120,7 @@ void CompositeCollisionPipeline::init()
             msg_warning() << "CollisionModel " << cm->getPathName() << " is not handled by any SubCollisionPipeline.";
         }
     }
-    
+
 }
 
 void CompositeCollisionPipeline::reset()
@@ -113,6 +128,7 @@ void CompositeCollisionPipeline::reset()
 
 }
 
+/// Delegates collision reset to all sub-pipelines sequentially.
 void CompositeCollisionPipeline::doCollisionReset()
 {
     msg_info() << "CompositeCollisionPipeline::doCollisionReset" ;
@@ -123,6 +139,15 @@ void CompositeCollisionPipeline::doCollisionReset()
     }
 }
 
+/**
+ * @brief Executes collision detection across all sub-pipelines.
+ *
+ * If parallel detection is enabled and a task scheduler is available, the detection
+ * phase of each sub-pipeline runs concurrently. This can significantly improve
+ * performance when there are multiple independent collision groups.
+ *
+ * @param collisionModels Ignored - each sub-pipeline uses its own linked collision models.
+ */
 void CompositeCollisionPipeline::doCollisionDetection(const type::vector<core::CollisionModel*>& collisionModels)
 {
     SOFA_UNUSED(collisionModels);
@@ -131,6 +156,7 @@ void CompositeCollisionPipeline::doCollisionDetection(const type::vector<core::C
 
     if(m_taskScheduler)
     {
+        // Parallel execution: distribute sub-pipeline detection across available threads
         auto computeCollisionDetection = [&](const auto& range)
         {
             for (auto it = range.start; it != range.end; ++it)
@@ -138,11 +164,12 @@ void CompositeCollisionPipeline::doCollisionDetection(const type::vector<core::C
                 (*it)->computeCollisionDetection();
             }
         };
-        
+
         sofa::simulation::forEachRange(sofa::simulation::ForEachExecutionPolicy::PARALLEL, *m_taskScheduler, l_subCollisionPipelines.begin(), l_subCollisionPipelines.end(), computeCollisionDetection);
     }
     else
     {
+        // Sequential execution: process each sub-pipeline one after another
         for (const auto& subPipeline : l_subCollisionPipelines)
         {
             subPipeline->computeCollisionDetection();
@@ -150,6 +177,7 @@ void CompositeCollisionPipeline::doCollisionDetection(const type::vector<core::C
     }
 }
 
+/// Delegates collision response creation to all sub-pipelines sequentially.
 void CompositeCollisionPipeline::doCollisionResponse()
 {
     for (const auto& subPipeline : l_subCollisionPipelines)
@@ -158,35 +186,40 @@ void CompositeCollisionPipeline::doCollisionResponse()
     }
 }
 
+/// Returns the list of available contact response types from the contact factory.
 std::set< std::string > CompositeCollisionPipeline::getResponseList() const
 {
     return BaseSubCollisionPipeline::getResponseList();
 }
 
+/// Entry point for collision reset phase, called by the simulation loop.
 void CompositeCollisionPipeline::computeCollisionReset()
 {
     if(!this->isComponentStateValid())
         return;
-    
+
     doCollisionReset();
 }
 
+/// Entry point for collision detection phase, called by the simulation loop.
 void CompositeCollisionPipeline::computeCollisionDetection()
 {
     if(!this->isComponentStateValid())
         return;
-    
-    //useless
+
+    // The collision models parameter is not used by this pipeline
+    // since each sub-pipeline manages its own set of models
     static std::vector<CollisionModel*> collisionModels{};
-    
+
     doCollisionDetection(collisionModels);
 }
 
+/// Entry point for collision response phase, called by the simulation loop.
 void CompositeCollisionPipeline::computeCollisionResponse()
 {
     if(!this->isComponentStateValid())
         return;
-    
+
     doCollisionResponse();
 }
 

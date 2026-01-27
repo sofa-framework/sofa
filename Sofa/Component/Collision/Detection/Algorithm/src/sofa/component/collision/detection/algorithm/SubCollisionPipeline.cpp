@@ -57,29 +57,42 @@ SubCollisionPipeline::SubCollisionPipeline()
 {
 }
 
+/**
+ * @brief Validates that all required components are properly linked.
+ *
+ * Checks for the presence of all mandatory links:
+ * - At least one collision model
+ * - An intersection method
+ * - A contact manager
+ * - A broad phase detection component
+ * - A narrow phase detection component
+ *
+ * Sets the component state to Invalid if any required component is missing,
+ * which prevents the pipeline from executing collision detection.
+ */
 void SubCollisionPipeline::doInit()
 {
     bool validity = true;
 
-    //Check given parameters
+    // Validate all required links are set
     if (l_collisionModels.size() == 0)
     {
         msg_warning() << "At least one CollisionModel is required to compute collision detection.";
         validity = false;
     }
-    
+
     if (!l_intersectionMethod)
     {
         msg_warning() << "An Intersection detection component is required to compute collision detection.";
         validity = false;
     }
-    
+
     if (!l_contactManager)
     {
         msg_warning() << "A contact manager component is required to compute collision detection.";
         validity = false;
     }
-    
+
     if (!l_broadPhaseDetection)
     {
         msg_warning() << "A BroadPhase component is required to compute collision detection.";
@@ -91,6 +104,7 @@ void SubCollisionPipeline::doInit()
         validity = false;
     }
 
+    // Set component state based on validation results
     if (!validity)
     {
         this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
@@ -102,6 +116,15 @@ void SubCollisionPipeline::doInit()
 
 }
 
+/**
+ * @brief Resets the collision state by clearing all existing contact responses.
+ *
+ * This method prepares for a new collision detection cycle by:
+ * 1. Propagating the intersection method to all detection components
+ * 2. Removing all contact responses created during the previous time step
+ *
+ * This ensures a clean slate before new collisions are detected.
+ */
 void SubCollisionPipeline::computeCollisionReset()
 {
     if (!this->isComponentStateValid())
@@ -109,11 +132,12 @@ void SubCollisionPipeline::computeCollisionReset()
 
     msg_info() << "SubCollisionPipeline::doCollisionReset";
 
+    // Propagate the intersection method to all collision detection components
     l_broadPhaseDetection->setIntersectionMethod(l_intersectionMethod.get());
     l_narrowPhaseDetection->setIntersectionMethod(l_intersectionMethod.get());
     l_contactManager->setIntersectionMethod(l_intersectionMethod.get());
 
-    // clear all contacts
+    // Remove all contact responses from the previous time step
     const type::vector<Contact::SPtr>& contacts = l_contactManager->getContacts();
     for (const auto& contact : contacts)
     {
@@ -124,6 +148,9 @@ void SubCollisionPipeline::computeCollisionReset()
     }
 }
 
+/**
+ * @brief Performs collision detection in two phases: broad phase and narrow phase.
+ */
 void SubCollisionPipeline::computeCollisionDetection()
 {
     SCOPED_TIMER_VARNAME(docollisiontimer, "doCollisionDetection");
@@ -133,43 +160,49 @@ void SubCollisionPipeline::computeCollisionDetection()
 
     msg_info()  << "doCollisionDetection, compute Bounding Trees" ;
 
-    // First, we compute a bounding volume for the collision model (for example bounding sphere)
-    // or we have loaded a collision model that knows its other model
-    
+    // Phase 1: Compute bounding volumes for all collision models
+    // These hierarchical structures enable efficient spatial queries
     type::vector<CollisionModel*> vectBoundingVolume;
     {
         SCOPED_TIMER_VARNAME(bboxtimer, "ComputeBoundingTree");
 
+        // Check if continuous collision detection (CCD) is enabled
         const bool continuous = l_intersectionMethod->useContinuous();
         const auto continuousIntersectionType = l_intersectionMethod->continuousIntersectionType();
         const SReal dt       = getContext()->getDt();
 
         int nActive = 0;
 
+        // Use full tree depth only if detection algorithms require it, otherwise use depth 0
         const int used_depth = (
                     (l_broadPhaseDetection->needsDeepBoundingTree()) ||
                     (l_narrowPhaseDetection->needsDeepBoundingTree())
             ) ? d_depth.getValue() : 0;
 
+        // Iterate through all linked collision models
         for (auto it = l_collisionModels.begin(); it != l_collisionModels.end(); ++it)
         {
             msg_info() << "doCollisionDetection, consider model" ;
 
+            // Skip inactive models
             if (!(*it)->isActive()) continue;
 
             if (continuous)
             {
+                // CCD: Compute swept bounding volumes that cover the motion trajectory
                 const std::string msg = "Compute Continuous BoundingTree: " + (*it)->getName();
                 ScopedAdvancedTimer continuousBoundingTreeTimer(msg.c_str());
                 (*it)->computeContinuousBoundingTree(dt, continuousIntersectionType, used_depth);
             }
             else
             {
+                // Discrete: Compute bounding volumes at current positions
                 std::string msg = "Compute BoundingTree: " + (*it)->getName();
                 ScopedAdvancedTimer boundingTreeTimer(msg.c_str());
                 (*it)->computeBoundingTree(used_depth);
             }
 
+            // getFirst() returns the root of the bounding tree hierarchy
             vectBoundingVolume.push_back ((*it)->getFirst());
             ++nActive;
         }
@@ -178,27 +211,34 @@ void SubCollisionPipeline::computeCollisionDetection()
         msg_info() << "doCollisionDetection, Computed "<<nActive<<" Bounding Boxes." ;
     }
 
+    // Phase 2: Broad Phase Detection
+    // Quickly finds pairs of models whose bounding volumes overlap
     msg_info()  << "doCollisionDetection, BroadPhaseDetection "<<l_broadPhaseDetection->getName();
 
     {
         SCOPED_TIMER_VARNAME(broadphase, "BroadPhase");
         l_intersectionMethod->beginBroadPhase();
         l_broadPhaseDetection->beginBroadPhase();
-        l_broadPhaseDetection->addCollisionModels(vectBoundingVolume);  // detection is done there
+        l_broadPhaseDetection->addCollisionModels(vectBoundingVolume);  // Actual detection happens here
         l_broadPhaseDetection->endBroadPhase();
         l_intersectionMethod->endBroadPhase();
     }
 
+    // Phase 3: Narrow Phase Detection
+    // Performs precise intersection tests on potentially colliding pairs
     msg_info() << "doCollisionDetection, NarrowPhaseDetection "<< l_narrowPhaseDetection->getName();
 
     {
         SCOPED_TIMER_VARNAME(narrowphase, "NarrowPhase");
         l_intersectionMethod->beginNarrowPhase();
         l_narrowPhaseDetection->beginNarrowPhase();
+
+        // Get the pairs identified by broad phase
         const type::vector<std::pair<CollisionModel*, CollisionModel*> >& vectCMPair = l_broadPhaseDetection->getCollisionModelPairs();
 
         msg_info()  << "doCollisionDetection, "<< vectCMPair.size()<<" colliding model pairs" ;
 
+        // Perform precise intersection tests on each pair
         l_narrowPhaseDetection->addCollisionPairs(vectCMPair);
         l_narrowPhaseDetection->endNarrowPhase();
         l_intersectionMethod->endNarrowPhase();
@@ -206,6 +246,9 @@ void SubCollisionPipeline::computeCollisionDetection()
 
 }
 
+/**
+ * @brief Creates collision responses based on detected contacts.
+ */
 void SubCollisionPipeline::computeCollisionResponse()
 {
     if (!this->isComponentStateValid())
@@ -215,17 +258,19 @@ void SubCollisionPipeline::computeCollisionResponse()
 
     msg_info() << "Create Contacts " << l_contactManager->getName() ;
 
+    // Create contact objects from narrow phase detection results
     {
         SCOPED_TIMER_VARNAME(createContactsTimer, "CreateContacts");
         l_contactManager->createContacts(l_narrowPhaseDetection->getDetectionOutputs());
     }
 
-    // finally we start the creation of collisionGroup
     const type::vector<Contact::SPtr>& contacts = l_contactManager->getContacts();
 
-    // First we remove all contacts with non-simulated objects and directly add them
+    // Separate contacts into two categories based on whether they involve static objects
     type::vector<Contact::SPtr> notStaticContacts;
 
+    // Process contacts involving static (non-simulated) objects first
+    // These get their response attached to the simulated object's context
     {
         SCOPED_TIMER_VARNAME(createStaticObjectsResponseTimer, "CreateStaticObjectsResponse");
         for (const auto& contact : contacts)
@@ -233,19 +278,24 @@ void SubCollisionPipeline::computeCollisionResponse()
             const auto collisionModels = contact->getCollisionModels();
             if (collisionModels.first != nullptr && !collisionModels.first->isSimulated())
             {
+                // First model is static, attach response to second model's context
                 contact->createResponse(collisionModels.second->getContext());
             }
             else if (collisionModels.second != nullptr && !collisionModels.second->isSimulated())
             {
+                // Second model is static, attach response to first model's context
                 contact->createResponse(collisionModels.first->getContext());
             }
             else
             {
+                // Both models are simulated, handle separately
                 notStaticContacts.push_back(contact);
             }
         }
     }
 
+    // Process contacts between two simulated (moving) objects
+    // These get their response attached to the scene context
     SCOPED_TIMER_VARNAME(createResponseTimer, "CreateMovingObjectsResponse");
 
     msg_info() << "Linking all contacts to Scene" ;
@@ -257,6 +307,7 @@ void SubCollisionPipeline::computeCollisionResponse()
 }
 
 
+/// Returns the list of collision models explicitly linked to this pipeline.
 std::vector<sofa::core::CollisionModel*> SubCollisionPipeline::getCollisionModels()
 {
     std::vector<sofa::core::CollisionModel*> collisionModels;
