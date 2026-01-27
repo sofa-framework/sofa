@@ -367,7 +367,7 @@ public:
 
     /// Load data and links from the snapshot to the scene
     void loadSnapshot(const std::shared_ptr<Snapshot::SnapshotObject>& snapshotObject) const;
-    
+
     /// Save Internal State to the SnapshotObject
     virtual void saveInternalStateIn(Snapshot::SnapshotObject& snapshot) const;
 

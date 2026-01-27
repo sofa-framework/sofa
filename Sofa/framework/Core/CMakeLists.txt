@@ -186,6 +186,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/objectmodel/lifecycle/RemovedData.h
     ${SRC_ROOT}/objectmodel/lifecycle/RenamedData.h
     ${SRC_ROOT}/objectmodel/Link.h
+    ${SRC_ROOT}/objectmodel/MemorySnapshot.h
     ${SRC_ROOT}/objectmodel/MouseEvent.h
     ${SRC_ROOT}/objectmodel/SPtr.h
     ${SRC_ROOT}/objectmodel/ScriptEvent.h
@@ -336,6 +337,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/objectmodel/KeypressedEvent.cpp
     ${SRC_ROOT}/objectmodel/KeyreleasedEvent.cpp
     ${SRC_ROOT}/objectmodel/lifecycle/DeprecatedData.cpp
+    ${SRC_ROOT}/objectmodel/MemorySnapshot.cpp
     ${SRC_ROOT}/objectmodel/MouseEvent.cpp
     ${SRC_ROOT}/objectmodel/ScriptEvent.cpp
     ${SRC_ROOT}/objectmodel/Tag.cpp

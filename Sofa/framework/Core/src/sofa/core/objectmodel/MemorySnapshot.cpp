@@ -19,61 +19,46 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/SaveSnapshotVisitor.h>
-#include <sofa/simulation/Node.h>
+#include <sofa/core/objectmodel/MemorySnapshot.h>
+#include <nlohmann/json.hpp>
+
+#include <fstream>
+#include <string>
+#include <stdexcept>
+#include <iostream>
+#include <sofa/helper/system/SetDirectory.h>
+
+#include <sofa/core/objectmodel/Data.h>
 
 
-namespace sofa::simulation
+namespace sofa::core::objectmodel
 {
 
-void SaveSnapshotVisitor::processObject(
-    const core::objectmodel::BaseObject* obj,
-    const std::shared_ptr<core::objectmodel::Snapshot::SnapshotNode>& parent)
+
+MemorySnapshot::MemorySnapshot()
+{}
+MemorySnapshot::~MemorySnapshot() = default;
+
+void MemorySnapshot::exportTo(const std::string filename)
 {
-    auto snapshotObject = obj->saveSnapshot(parent);
-    if (auto slaves = obj->getSlaves(); !slaves.empty())
-    {
-        for (const auto& it : slaves)
-        {
-            const auto slaveObject = it->saveSnapshot(snapshotObject);
-        }
-    }
+    std::cout << "exportTo" << std::endl;
+}
+
+void MemorySnapshot::importSnapshot(const std::string filename)
+{
+    std::cout << "importSnapshot" << std::endl;
+
+    
+}
+
+
+void MemorySnapshot::importFrom(const std::string filename)
+{
+    std::cout << "importFrom" << std::endl;
 
 }
 
-Visitor::Result SaveSnapshotVisitor::processNodeTopDown(simulation::Node* node)
-{
-    const auto parents = node->getParents();
-    auto snapshotParents = std::make_shared<core::objectmodel::Snapshot::SnapshotNode>();
-
-    for (auto* p : parents)
-    {
-        const auto it = m_snapshotNodeMap.find(p);
-        if (it != m_snapshotNodeMap.end())
-        {
-            snapshotParents = std::dynamic_pointer_cast<core::objectmodel::Snapshot::SnapshotNode>(it->second);
-        }
-    }
-
-    const auto snapshot = node->saveSnapshot(snapshotParents);
-    const auto SnapshotNode = std::dynamic_pointer_cast<core::objectmodel::Snapshot::SnapshotNode>(snapshot);
-    if (SnapshotNode)
-        m_snapshotNodeMap[node] = SnapshotNode;
-
-    if (m_snapshotContainer.m_graphRoot == nullptr)
-    {
-        m_snapshotContainer.m_graphRoot = SnapshotNode;
-    }
-
-    for (const auto& it : node->object)
-    {
-        this->processObject(it.get(), SnapshotNode);
-    }
-
-    return RESULT_CONTINUE;
-}
-
-} // namespace sofa::simulation
 
 
 
+} // namespace sofa::core::objectmodel
