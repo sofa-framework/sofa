@@ -35,6 +35,15 @@ class CollisionModel;
 namespace sofa::component::collision::detection::algorithm
 {
 
+/**
+ * @brief Abstract base class defining the interface for sub-collision pipelines.
+ *
+ * This base class is designed to be used with CompositeCollisionPipeline, which
+ * aggregates multiple sub-pipelines and can execute them in parallel.
+ *
+ * @see SubCollisionPipeline for a concrete implementation
+ * @see CompositeCollisionPipeline for the aggregator that manages sub-pipelines
+ */
 class SOFA_COMPONENT_COLLISION_DETECTION_ALGORITHM_API BaseSubCollisionPipeline : public sofa::core::objectmodel::BaseObject
 {
 public:
@@ -42,23 +51,48 @@ public:
 
 protected:
     BaseSubCollisionPipeline();
-    
+
+    /// @brief Called during initialization. Derived classes must implement validation and setup logic.
     virtual void doInit() = 0;
+
+    /// @brief Called after all objects are initialized. Default implementation is empty.
     virtual void doBwdInit();
+
+    /// @brief Called to handle simulation events. Derived classes must implement event processing.
     virtual void doHandleEvent(sofa::core::objectmodel::Event* e) = 0;
+
+    /// @brief Called during rendering. Default implementation is empty.
     virtual void doDraw(const core::visual::VisualParams* vparams);
-    
+
 public:
+    ///@{
+    /// @name Collision Pipeline Interface
+    /// These methods define the three-phase collision workflow that derived classes must implement.
+
+    /// @brief Clears collision state from the previous time step (contacts, responses).
     virtual void computeCollisionReset() = 0;
+
+    /// @brief Performs collision detection (bounding tree, broad phase, narrow phase).
     virtual void computeCollisionDetection() = 0;
+
+    /// @brief Creates collision responses based on detected contacts.
     virtual void computeCollisionResponse() = 0;
-    
+
+    ///@}
+
+    /// @brief Returns the list of collision models handled by this sub-pipeline.
     virtual std::vector<sofa::core::CollisionModel*> getCollisionModels() = 0;
-    
+
+    /// @brief Initializes the component. Marked final to enforce Template Method pattern.
     void init() override final;
+
+    /// @brief Renders debug visualization. Marked final to enforce Template Method pattern.
     void draw(const core::visual::VisualParams* vparams) override final;
+
+    /// @brief Processes simulation events. Marked final to enforce Template Method pattern.
     void handleEvent(sofa::core::objectmodel::Event* e) override final;
-    
+
+    /// @brief Returns all available contact response types registered in the Contact factory.
     static std::set< std::string > getResponseList();
 };
 
