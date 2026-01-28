@@ -26,18 +26,15 @@
 
 namespace sofa::core::objectmodel
 {
-class Base;
+
 class SOFA_CORE_API BaseSnapshot 
 {
-    
 public:
     struct DataInfo
     {
         std::string name;
         std::string type;
         std::string value;
-        
-        DataInfo() : name(), type(), value() {}
     };
 
     struct LinkInfo
@@ -45,55 +42,33 @@ public:
         std::string name;
         std::string type;
         std::string value;
-        LinkInfo() : name(), type(), value() {}
     };
 
-    struct SnapComponent
+    struct SnapshotObject
     {
-        std::string name;
-        std::vector<DataInfo> dataContainer;
-        std::vector<LinkInfo> linkContainer;
-        
-        SnapComponent() : name(""), dataContainer(), linkContainer() {}
+        std::string m_name;
+        std::vector<DataInfo> m_dataContainer;
+        std::vector<LinkInfo> m_linkContainer;
+        void* m_internalState { nullptr };
 
-        SnapComponent(const std::string& name) : name(name){}
+        SnapshotObject() = default;
+        explicit SnapshotObject(const std::string& name) : m_name(name){}
+
+        virtual ~SnapshotObject() = default;
     };
 
-    
-
-    struct SnapNode
+    struct SnapNode : public SnapshotObject
     {
-        std::string name;
-        std::vector<DataInfo> dataContainer;
-        std::vector<LinkInfo> linkContainer;
-        std::vector<SnapComponent> components;
+        std::vector<SnapshotObject> components;
         std::vector<std::shared_ptr<SnapNode>> children;
         
-        SnapNode() : name(""), dataContainer(), linkContainer(), components(), children() {}
-
-        SnapNode(const std::string& name) : name(name) {}
+        SnapNode() = default;
+        SnapNode(const std::string& name) : SnapshotObject(name) {}
     };
 
-    public :
-        SnapComponent SnapComponent_;
-        SnapNode SnapNode_;
+    std::shared_ptr<SnapNode> m_graphRoot { nullptr };
 
-        std::vector<std::string> nodeList;
-        std::vector<std::shared_ptr<SnapNode>> treeSnapshot; // here, it is the snapshot
-    
-
-public:
     virtual void importSnapshot(const std::string filename) = 0;
-
-    void printSnapshot();
-    void addToSnap(Base& b, SnapNode& snapObj);
-    void addToSnap(Base& b, SnapComponent& snapObj);
-    std::vector<DataInfo> collectSnapData(const std::vector<BaseData*>& datafield);
-    std::vector<LinkInfo> collectSnapLink(const std::vector<BaseLink*>& linkfield);
-    bool hasSnapParent(std::string& parentName);
-    std::shared_ptr<SnapNode> getSnapParent(std::shared_ptr<SnapNode>& node, std::string& parentName);
-
-    void addToSimulation();
 
     virtual void exportTo(const std::string filename) = 0;
     virtual void importFrom(std::string filename) = 0;

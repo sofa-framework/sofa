@@ -128,6 +128,9 @@ public:
     virtual core::collision::Pipeline* getCollisionPipeline() const;
     virtual core::visual::VisualLoop* getVisualLoop() const;
 
+protected:
+    std::shared_ptr<core::objectmodel::BaseSnapshot::SnapshotObject> createSnapshotObject(const std::vector<std::shared_ptr<BaseSnapshot::SnapNode>>& parents) const override;
+
 private:
     virtual std::string internalGetPathName() const;
 

@@ -54,30 +54,50 @@ using sofa::core::objectmodel::SnapshotType;
 namespace sofa::simulation
 {
 
-void SnapshotVisitor::processObject(core::objectmodel::BaseObject* obj, std::string parentName)
+void SnapshotVisitor::processObject(
+    core::objectmodel::BaseObject* obj,
+    std::shared_ptr<core::objectmodel::BaseSnapshot::SnapNode> parent)
 {
-
-    obj->saveSnapshot(snapCont_, parentName);
+    obj->saveSnapshot({parent});
 }
 
 Visitor::Result SnapshotVisitor::processNodeTopDown(simulation::Node* node)
-{ 
-    auto* parent = node->getFirstParent();
-    std::string parentName = parent ? parent->getName() : node->getName();
-    node->saveSnapshot(snapCont_, parentName);
+{
+    const auto parents = node->getParents();
 
-    for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
+    std::vector<std::shared_ptr<core::objectmodel::BaseSnapshot::SnapNode>> snapshotParents;
+    for (auto* p : parents)
     {
-        this->processObject(it->get(),node->getName());
+        const auto it = m_snapshotNodeMap.find(p);
+        if (it != m_snapshotNodeMap.end())
+        {
+            snapshotParents.push_back(it->second);
+        }
+        else
+        {
+            msg_error("SnapshotVisitor") << "Does it happen??";
+        }
+    }
+
+    auto snapshot = node->saveSnapshot(snapshotParents);
+    auto snapNode = std::dynamic_pointer_cast<core::objectmodel::BaseSnapshot::SnapNode>(snapshot);
+    if (snapNode)
+    {
+        m_snapshotNodeMap[node] = snapNode;
+    }
+
+    if (m_snapshotContainer.m_graphRoot == nullptr) //root node
+    {
+        m_snapshotContainer.m_graphRoot = snapNode;
+    }
+
+    for (const auto& it : node->object)
+    {
+        this->processObject(it.get(), snapNode);
     }
     
     return RESULT_CONTINUE;
 }
-
-void SnapshotVisitor::processNodeBottomUp(simulation::Node* /*node*/)
-{
-}
-
 
 } // namespace sofa::simulation
 

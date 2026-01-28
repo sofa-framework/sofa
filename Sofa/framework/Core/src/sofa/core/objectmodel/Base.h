@@ -363,24 +363,14 @@ public:
 
     ///@}
 
+    std::shared_ptr<BaseSnapshot::SnapshotObject> saveSnapshot(const std::vector<std::shared_ptr<BaseSnapshot::SnapNode>>& parents) const;
+    void loadSnapshot(BaseSnapshot& snapshot);
 
-public :
-
-    // struct SnapshotContainer
-    // {
-    //     std::string dataname;
-        
-    //     std::string datavalue;
-    // };
-
-    // void setSnapshot(BaseSnapshot* impl)
-    // {
-    //     Snapshot_impl = impl;
-    // }
-
-    void saveSnapshot(BaseSnapshot& snap, std::string parent);
-
-    void loadSnapshot(BaseSnapshot& snap);
+protected:
+    void saveDataIn(BaseSnapshot::SnapshotObject& snapshot) const;
+    void saveLinksIn(BaseSnapshot::SnapshotObject& snapshot) const;
+    virtual void saveInternalStateIn(BaseSnapshot::SnapshotObject& snapshot) const;
+    virtual std::shared_ptr<BaseSnapshot::SnapshotObject> createSnapshotObject(const std::vector<std::shared_ptr<BaseSnapshot::SnapNode>>& parents) const;
 
 private :
     BaseSnapshot* Snapshot_impl; 

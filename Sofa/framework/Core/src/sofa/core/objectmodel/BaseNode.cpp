@@ -63,6 +63,20 @@ core::visual::VisualLoop* BaseNode::getVisualLoop() const
     return this->getContext()->get<core::visual::VisualLoop>();
 }
 
+std::shared_ptr<core::objectmodel::BaseSnapshot::SnapshotObject>
+BaseNode::createSnapshotObject(const std::vector<std::shared_ptr<BaseSnapshot::SnapNode>>& parents) const
+{
+    auto nodeObject = std::make_shared<core::objectmodel::BaseSnapshot::SnapNode>();
+    for (auto p : parents)
+    {
+        if (p)
+        {
+            p->children.push_back(nodeObject);
+        }
+    }
+    return nodeObject;
+}
+
 /// Set the context of an object to this
 void BaseNode::setObjectContext(BaseComponent::SPtr obj)
 {

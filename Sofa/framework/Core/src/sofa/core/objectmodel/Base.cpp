@@ -682,49 +682,69 @@ int Base::getInstanciationSourceFilePos() const
     return m_instanciationSourceFilePos;
 }
 
-void Base::saveSnapshot(BaseSnapshot& snap, std::string parent)
+void Base::saveDataIn(BaseSnapshot::SnapshotObject& snapshot) const
 {
-    if(this->getClassName() == "Node")
+    const auto& dataFields = this->getDataFields();
+
+    for (const auto& data : dataFields)
     {
-        auto snapObj = std::make_shared<BaseSnapshot::SnapNode>();
-        snapObj->name = this->getName();
-        snap.addToSnap(*this, *snapObj);
-        snap.nodeList.push_back(snapObj->name);
-        if(snap.hasSnapParent(parent))
-        {
-            std::shared_ptr<BaseSnapshot::SnapNode> snapParent = snap.getSnapParent(snap.treeSnapshot[0],parent);
-            snapParent->children.push_back(snapObj);
-        }
-        else
-        {
-            snap.treeSnapshot.push_back(snapObj);
-        }
-        
-    }    
-    else
-    {
-        auto snapObj = std::make_shared<BaseSnapshot::SnapComponent>();
-        snap.addToSnap(*this, *snapObj);
-        if(snap.hasSnapParent(parent))
-        {
-            std::shared_ptr<BaseSnapshot::SnapNode> snapParent = snap.getSnapParent(snap.treeSnapshot[0],parent);
-            snapParent->components.push_back(*snapObj) ;
-        }
-        else
-        {
-            snap.treeSnapshot[0]->components.push_back(*snapObj);
-        }
-        
+        BaseSnapshot::DataInfo dataInfo;
+        dataInfo.name = data->getName();
+        dataInfo.type = data->getValueTypeString();
+        dataInfo.value = data->getValueString();
+        snapshot.m_dataContainer.push_back(dataInfo);
     }
+}
+
+void Base::saveLinksIn(BaseSnapshot::SnapshotObject& snapshot) const
+{
+    const auto& links = this->getLinks();
+
+    for (const auto& link : links)
+    {
+        BaseSnapshot::LinkInfo linkInfo;
+        linkInfo.name = link->getName();
+        linkInfo.type = link->getValueTypeString();
+        linkInfo.value = link->getValueString();
+        snapshot.m_linkContainer.push_back(linkInfo);
+    }
+}
+
+void Base::saveInternalStateIn(BaseSnapshot::SnapshotObject& snapshot) const
+{}
+
+std::shared_ptr<BaseSnapshot::SnapshotObject> Base::createSnapshotObject(const std::vector<std::shared_ptr<BaseSnapshot::SnapNode>>& parents) const
+{
+    auto object = std::make_shared<BaseSnapshot::SnapshotObject>();
+    for (auto p : parents)
+    {
+        if (p)
+        {
+            p->components.push_back(*object);
+        }
+    }
+    return object;
+}
+
+std::shared_ptr<BaseSnapshot::SnapshotObject> Base::saveSnapshot(const std::vector<std::shared_ptr<BaseSnapshot::SnapNode>>& parents) const
+{
+    const auto snapshotObject = createSnapshotObject(parent);
+
+    snapshotObject->m_name = this->getName();
+    saveDataIn(*snapshotObject);
+    saveLinksIn(*snapshotObject);
+    saveInternalStateIn(*snapshotObject);
+
+    return snapshotObject;
 }
 
 
 
-void Base::loadSnapshot(BaseSnapshot& snap)
+void Base::loadSnapshot(BaseSnapshot& snapshot)
 {
     //type.importSnapshot(filename);
     std::cout << "load snapshot" << std::endl;
-    snap.addToSimulation();
+    snapshot.addToSimulation();
 }    
 
 } // namespace sofa::core::objectmodel
