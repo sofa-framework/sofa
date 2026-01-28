@@ -110,7 +110,8 @@ public:
 
     /// Rebuild the system using a mass and force factor
     /// Experimental API used to investigate convergence issues.
-    SOFA_ATTRIBUTE_DISABLED__REBUILDSYSTEM() virtual void rebuildSystem(SReal /*massFactor*/, SReal /*forceFactor*/) = delete;
+    SOFA_ATTRIBUTE_DISABLED__REBUILDSYSTEM()
+    virtual void rebuildSystem(SReal /*massFactor*/, SReal /*forceFactor*/) = delete;
 
     /// Compute the residual in the newton iterations due to the constraints forces
     /// i.e. compute Vecid::force() += J^t lambda

@@ -133,10 +133,6 @@ void GenericConstraintCorrection::removeConstraintSolver(ConstraintSolver *s)
     constraintsolvers.remove(s);
 }
 
-void GenericConstraintCorrection::rebuildSystem(SReal massFactor, SReal forceFactor)
-{
-}
-
 void GenericConstraintCorrection::addComplianceInConstraintSpace(const ConstraintParams *cparams, BaseMatrix* W)
 {
     if (!l_ODESolver.get()) return;

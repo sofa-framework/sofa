@@ -106,8 +106,6 @@ public:
 
     void applyPredictiveConstraintForce(const core::ConstraintParams *cparams, core::MultiVecDerivId f, const linearalgebra::BaseVector *lambda) override;
 
-    void rebuildSystem(SReal massFactor, SReal forceFactor) override;
-
     void applyContactForce(const linearalgebra::BaseVector *f) override;
 
     void resetContactForce() override;
