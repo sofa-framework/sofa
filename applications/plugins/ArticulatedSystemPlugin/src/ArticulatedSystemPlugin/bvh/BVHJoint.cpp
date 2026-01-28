@@ -198,6 +198,11 @@ int BVHJoint::getNumSegments(char *s)
 void BVHJoint::dump(char *fName, char *rootJointName)
 {
     FILE *f = fopen(fName,"w+");
+    if (f == nullptr)
+    {
+        msg_error("BVHJoint") << "Failed to open file for writing: " << fName;
+        return;
+    }
 
     fprintf(f,"Catheter_Name Walk\n\n");
     fprintf(f,"Number_of_Nodes %d\n", getNumJoints(rootJointName));
