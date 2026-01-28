@@ -74,7 +74,7 @@ public:
      * Rebuild the system using a mass and force factor.
      * Experimental API used to investigate convergence issues.
      */
-    SOFA_ATTRIBUTE_DEPRECATED__REBUILDSYSTEM() virtual void rebuildSystem(SReal /*massfactor*/, SReal /*forceFactor*/){}
+    SOFA_ATTRIBUTE_DISABLED__REBUILDSYSTEM() virtual void rebuildSystem(SReal /*massfactor*/, SReal /*forceFactor*/) = delete;
 
     /**
      * Use the system previously built and solve it with the appropriate algorithm
@@ -90,11 +90,8 @@ public:
     /// Compute the residual in the newton iterations due to the constraints forces
     /// i.e. compute Vecid::force() += J^t lambda
     /// the result is accumulated in Vecid::force()
-    SOFA_ATTRIBUTE_DEPRECATED__COMPUTERESIDUAL()
-    virtual void computeResidual(const core::ExecParams* /*params*/)
-    {
-        dmsg_error() << "ComputeResidual is not implemented in " << this->getName() ;
-    }
+    SOFA_ATTRIBUTE_DISABLED__COMPUTERESIDUAL()
+    virtual void computeResidual(const core::ExecParams* /*params*/) = delete;
 
     /// @name Resolution DOFs vectors API
     /// @{

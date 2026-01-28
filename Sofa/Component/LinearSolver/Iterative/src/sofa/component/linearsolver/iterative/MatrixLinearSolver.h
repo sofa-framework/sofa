@@ -196,12 +196,12 @@ public:
     void resizeSystem(Size n) = delete;
 
     /// Get the linear system right-hand term vector, or nullptr if this solver does not build it
-    SOFA_ITERATIVE_SOLVER_ATTRIBUTE_DEPRECATED_ASSEMBLY_API()
-    Vector* getSystemRHVector() { return l_linearSystem ? l_linearSystem->getRHSVector() : nullptr; }
+    SOFA_ITERATIVE_SOLVER_ATTRIBUTE_DISABLED_ASSEMBLY_API()
+    Vector* getSystemRHVector() = delete;
 
     /// Get the linear system left-hand term vector, or nullptr if this solver does not build it
-    SOFA_ITERATIVE_SOLVER_ATTRIBUTE_DEPRECATED_ASSEMBLY_API()
-    Vector* getSystemLHVector() { return l_linearSystem ? l_linearSystem->getSolutionVector() : nullptr; }
+    SOFA_ITERATIVE_SOLVER_ATTRIBUTE_DISABLED_ASSEMBLY_API()
+    Vector* getSystemLHVector() = delete;
 
     /// Returns the linear system component associated to the linear solver
     sofa::component::linearsystem::TypedMatrixLinearSystem<Matrix, Vector>* getLinearSystem() const override { return l_linearSystem.get(); }

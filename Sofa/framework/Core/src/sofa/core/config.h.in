@@ -86,10 +86,10 @@
 
 
 #ifdef SOFA_BUILD_SOFA_CORE
-#define SOFA_ATTRIBUTE_DEPRECATED__NAME_CHANGED()
+#define SOFA_ATTRIBUTE_DISABLED__NAME_CHANGED()
 #else
-#define SOFA_ATTRIBUTE_DEPRECATED__NAME_CHANGED() \
-SOFA_ATTRIBUTE_DEPRECATED("v25.12", "v26.06", "Use getContactDistance or setContactDistance instead.")
+#define SOFA_ATTRIBUTE_DISABLED__NAME_CHANGED() \
+SOFA_ATTRIBUTE_DISABLED("v25.12", "v26.06", "Use getContactDistance or setContactDistance instead.")
 #endif
 
 #ifdef SOFA_BUILD_SOFA_CORE
@@ -141,10 +141,10 @@ SOFA_ATTRIBUTE_DEPRECATED("v25.12", "v26.06", "Use getContactDistance or setCont
 #endif
 
 #ifdef SOFA_BUILD_SOFA_CORE
-#define SOFA_ATTRIBUTE_DEPRECATED__REBUILDSYSTEM()
+#define SOFA_ATTRIBUTE_DISABLED__REBUILDSYSTEM()
 #else
-#define SOFA_ATTRIBUTE_DEPRECATED__REBUILDSYSTEM() \
-    SOFA_ATTRIBUTE_DEPRECATED("v25.12", "v26.06", "It was an experimental function no longer used.")
+#define SOFA_ATTRIBUTE_DISABLED__REBUILDSYSTEM() \
+    SOFA_ATTRIBUTE_DISABLED("v25.12", "v26.06", "It was an experimental function no longer used.")
 #endif
 
 
@@ -156,10 +156,10 @@ SOFA_ATTRIBUTE_DEPRECATED("v25.12", "v26.06", "Use getContactDistance or setCont
 #endif
 
 #ifdef SOFA_BUILD_SOFA_CORE
-#define SOFA_ATTRIBUTE_DEPRECATED__COMPUTERESIDUAL()
+#define SOFA_ATTRIBUTE_DISABLED__COMPUTERESIDUAL()
 #else
-#define SOFA_ATTRIBUTE_DEPRECATED__COMPUTERESIDUAL() \
-    SOFA_ATTRIBUTE_DEPRECATED("v25.12", "v26.06", "The method computeResidual is not used")
+#define SOFA_ATTRIBUTE_DISABLED__COMPUTERESIDUAL() \
+    SOFA_ATTRIBUTE_DISABLED("v25.12", "v26.06", "The method computeResidual is not used")
 #endif
 
 

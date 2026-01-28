@@ -63,9 +63,6 @@ MeshLoader::MeshLoader() : BaseLoader()
   , d_transformation(initData(&d_transformation, type::Matrix4::Identity(), "transformation", "4x4 Homogeneous matrix to transform the DOFs (when present replace any)"))
   , d_previousTransformation(type::Matrix4::Identity() )
 {
-    d_pentahedra.setOriginalData(&d_prisms);
-    d_pentahedraGroups.setOriginalData(&d_prismsGroups);
-
     addAlias(&d_tetrahedra, "tetras");
     addAlias(&d_hexahedra, "hexas");
     addAlias(&d_prisms, "pentas");
