@@ -62,40 +62,52 @@ template class SOFA_GPU_CUDA_API MeshSpringForceField<sofa::gpu::cuda::CudaVec3d
 namespace sofa::gpu::cuda
 {
 
-int SpringForceFieldCudaClass = sofa::core::RegisterObject("Supports GPU-side computations using CUDA")
+    void registerSpringForceField(sofa::core::ObjectFactory* factory)
+    {
+        factory->registerObjects(sofa::core::ObjectRegistrationData("Supports GPU-side computations using CUDA for the SpringForceField")
         .add< sofa::component::solidmechanics::spring::SpringForceField<CudaVec3fTypes> >()
         .add< sofa::component::solidmechanics::spring::SpringForceField<CudaVec3f1Types> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
         .add< sofa::component::solidmechanics::spring::SpringForceField<CudaVec3dTypes> >()
         .add< sofa::component::solidmechanics::spring::SpringForceField<CudaVec3d1Types> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
-        ;
+        );
+    }
 
-int MeshSpringForceFieldCudaClass = sofa::core::RegisterObject("Supports GPU-side computations using CUDA")
+    void registerMeshSpringForceField(sofa::core::ObjectFactory* factory)
+    {
+        factory->registerObjects(sofa::core::ObjectRegistrationData("Supports GPU-side computations using CUDA for the MeshSpringForceField")
         .add< sofa::component::solidmechanics::spring::MeshSpringForceField<CudaVec3fTypes> >()
         .add< sofa::component::solidmechanics::spring::MeshSpringForceField<CudaVec3f1Types> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
         .add< sofa::component::solidmechanics::spring::MeshSpringForceField<CudaVec3dTypes> >()
         .add< sofa::component::solidmechanics::spring::MeshSpringForceField<CudaVec3d1Types> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
-        ;
+        );
+    }
 
-int TriangleBendingSpringsCudaClass = sofa::core::RegisterObject("Supports GPU-side computations using CUDA")
+    void registerTriangleBendingSprings(sofa::core::ObjectFactory* factory)
+    {
+        factory->registerObjects(sofa::core::ObjectRegistrationData("Supports GPU-side computations using CUDA for the TriangleBendingSprings")
         .add< sofa::component::solidmechanics::spring::TriangleBendingSprings<CudaVec3fTypes> >()
         .add< sofa::component::solidmechanics::spring::TriangleBendingSprings<CudaVec3f1Types> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
         .add< sofa::component::solidmechanics::spring::TriangleBendingSprings<CudaVec3dTypes> >()
         .add< sofa::component::solidmechanics::spring::TriangleBendingSprings<CudaVec3d1Types> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
-        ;
+        );
+    }
 
-int QuadBendingSpringsCudaClass = sofa::core::RegisterObject("Supports GPU-side computations using CUDA")
+    void registerQuadBendingSprings(sofa::core::ObjectFactory* factory)
+    {
+        factory->registerObjects(sofa::core::ObjectRegistrationData("Supports GPU-side computations using CUDA for the QuadBendingSprings")
         .add< sofa::component::solidmechanics::spring::QuadBendingSprings<CudaVec3fTypes> >()
         .add< sofa::component::solidmechanics::spring::QuadBendingSprings<CudaVec3f1Types> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
         .add< sofa::component::solidmechanics::spring::QuadBendingSprings<CudaVec3dTypes> >()
         .add< sofa::component::solidmechanics::spring::QuadBendingSprings<CudaVec3d1Types> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
-        ;
+        );
+    }
 
 } // namespace sofa::gpu::cuda
