@@ -67,7 +67,7 @@ void ClipPlane::reinit()
         msg_error() << "Reiniting an invalid component is not allowed. It must be inited first" ;
 }
 
-void ClipPlane::fwdDraw(core::visual::VisualParams*)
+void ClipPlane::doFwdDraw(core::visual::VisualParams*)
 {
     if(d_componentState.getValue() == ComponentState::Invalid)
         return ;
@@ -90,7 +90,7 @@ void ClipPlane::fwdDraw(core::visual::VisualParams*)
     }
 }
 
-void ClipPlane::bwdDraw(core::visual::VisualParams*)
+void ClipPlane::doBwdDraw(core::visual::VisualParams*)
 {
     if (active.getValue())
     {
