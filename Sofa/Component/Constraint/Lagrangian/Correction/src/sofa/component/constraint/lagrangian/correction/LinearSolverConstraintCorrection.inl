@@ -209,14 +209,6 @@ void LinearSolverConstraintCorrection<DataTypes>::addComplianceInConstraintSpace
     addRegularization(W);
 }
 
-
-template<class DataTypes>
-void LinearSolverConstraintCorrection<DataTypes>::rebuildSystem(SReal massFactor, SReal forceFactor)
-{
-    SOFA_UNUSED(massFactor);
-    SOFA_UNUSED(forceFactor);
-}
-
 template<class DataTypes>
 void LinearSolverConstraintCorrection<DataTypes>::getComplianceMatrix(linearalgebra::BaseMatrix* Minv) const
 {

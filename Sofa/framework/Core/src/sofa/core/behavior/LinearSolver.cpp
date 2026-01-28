@@ -42,10 +42,5 @@ void LinearSolver::applyConstraintForce(const sofa::core::ConstraintParams*,
     msg_error() << "applyConstraintForce has not been implemented.";
 }
 
-void LinearSolver::computeResidual(const core::ExecParams*, linearalgebra::BaseVector*)
-{
-    msg_error() << "computeResidual has not been implemented.";
-}
-
 } // namespace sofa::core::behavior
 

@@ -29,16 +29,9 @@ namespace sofa::core::behavior
 BaseConstraintCorrection::BaseConstraintCorrection(){}
 BaseConstraintCorrection::~BaseConstraintCorrection() {}
 
-void BaseConstraintCorrection::rebuildSystem(SReal /*massFactor*/, SReal /*forceFactor*/){}
-
 void BaseConstraintCorrection::getComplianceWithConstraintMerge(linearalgebra::BaseMatrix* /*Wmerged*/, std::vector<int> & /*constraint_merge*/)
 {
     msg_warning() << "getComplianceWithConstraintMerge is not implemented yet " ;
-}
-
-void BaseConstraintCorrection::computeResidual(const core::ExecParams* /*params*/, linearalgebra::BaseVector * /*lambda*/)
-{
-    dmsg_warning() << "ComputeResidual is not implemented in " << this->getName() ;
 }
 
 void BaseConstraintCorrection::getBlockDiagonalCompliance(linearalgebra::BaseMatrix* /*W*/, int /*begin*/,int /*end*/)
