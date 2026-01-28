@@ -38,7 +38,6 @@ void registerTriangleOctreeModel(sofa::core::ObjectFactory* factory)
 {
     factory->registerObjects(core::ObjectRegistrationData("Collision model using a triangular mesh mapped to an Octree.")
         .add <	TriangleOctreeCollisionModel >()
-        .addAlias("TriangleOctreeModel")); // SOFA_ATTRIBUTE_DEPRECATED__RENAMED_TRIANGLEOCTREEMODEL()
 }
 
 TriangleOctreeCollisionModel::TriangleOctreeCollisionModel ()
