@@ -914,6 +914,27 @@ public:
     }
 };
 
+template <sofa::Size N, typename real>
+real determinant(const Mat<N, N, real>& mat)
+{
+    real det = 0;
+    for (size_t p = 0; p < N; ++p)
+    {
+        Mat<N - 1, N - 1, real> submat;
+        for (size_t i = 1; i < N; ++i)
+        {
+            size_t colIndex = 0;
+            for (size_t j = 0; j < N; ++j)
+            {
+                if (j == p) continue;
+                submat(i - 1, colIndex++) = mat(i, j);
+            }
+        }
+        det += ((p % 2 == 0) ? 1 : -1) * mat(0, p) * determinant(submat);
+    }
+    return det;
+}
+
 /// Determinant of a 3x3 matrix.
 template<class real>
 constexpr real determinant(const Mat<3,3,real>& m) noexcept
