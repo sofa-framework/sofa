@@ -10,6 +10,7 @@
   qt6Packages,
   libGL,
   metis,
+  nlohmann_json,
   stdenv,
   tinyxml-2,
   zlib,
@@ -53,6 +54,7 @@ stdenv.mkDerivation (finalAttrs: {
     qt6Packages.qtbase
     libGL
     metis
+    nlohmann_json
     tinyxml-2
     zlib
   ];
