@@ -23,7 +23,7 @@
 #include "CudaDistanceGridCollisionModel.h"
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/collision/geometry/CubeModel.h>
+#include <sofa/component/collision/geometry/CubeCollisionModel.h>
 #include <sofa/gl/template.h>
 #include <sofa/helper/rmath.h>
 #if SOFACUDA_HAVE_MINIFLOWVR

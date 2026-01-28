@@ -24,9 +24,9 @@
 #include <CollisionOBBCapsule/detection/intersection/BaseIntTool.h>
 #include <CollisionOBBCapsule/detection/intersection/MeshIntTool.h>
 
-#include <sofa/component/collision/geometry/TriangleModel.h>
+#include <sofa/component/collision/geometry/TriangleCollisionModel.h>
 
-#include <sofa/simulation/graph/DAGNode.h>
+#include <sofa/simulation/Node.h>
 
 #include <sofa/testing/BaseTest.h>
 using sofa::testing::BaseTest;

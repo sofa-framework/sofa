@@ -20,10 +20,10 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <CollisionOBBCapsule/geometry/OBBModel.h>
-#include <sofa/component/collision/geometry/SphereModel.h>
+#include <sofa/component/collision/geometry/SphereCollisionModel.h>
 #include <sofa/component/collision/geometry/CylinderModel.h>
-#include <sofa/component/collision/geometry/TriangleModel.h>
-#include <sofa/component/collision/geometry/RayModel.h>
+#include <sofa/component/collision/geometry/TriangleCollisionModel.h>
+#include <sofa/component/collision/geometry/RayCollisionModel.h>
 #include <sofa/component/collision/response/contact/BarycentricPenalityContact.inl>
 #include <sofa/component/collision/response/contact/FrictionContact.inl>
 #include <sofa/component/collision/response/contact/BaseUnilateralContactResponse.inl>

@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/MainTaskSchedulerFactory.h>
-#include <sofa/simulation/MainTaskSchedulerRegistry.h>
+#include <sofa/simulation/task/MainTaskSchedulerFactory.h>
+#include <sofa/simulation/task/MainTaskSchedulerRegistry.h>
 #include <Sofa.LinearAlgebra.Testing/SparseMatrixProduct_test.h>
 #include <sofa/simulation/ParallelSparseMatrixProduct.h>
 

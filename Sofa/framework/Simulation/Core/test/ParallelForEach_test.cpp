@@ -20,9 +20,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <gtest/gtest.h>
-#include <sofa/simulation/DefaultTaskScheduler.h>
-#include <sofa/simulation/MainTaskSchedulerFactory.h>
-#include <sofa/simulation/ParallelForEach.h>
+#include <sofa/simulation/task/DefaultTaskScheduler.h>
+#include <sofa/simulation/task/MainTaskSchedulerFactory.h>
+#include <sofa/simulation/task/ParallelForEach.h>
 #include <sofa/testing/TestMessageHandler.h>
 
 #include <numeric>
