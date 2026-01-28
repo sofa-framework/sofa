@@ -79,6 +79,8 @@ BackTrace::StackTrace BackTrace::getTrace(size_t maxEntries)
                         else
                             endmangled = savedend; // suffix not found
                         char* name = (char*)malloc(endmangled-beginmangled+1);
+                        if (name == nullptr)
+                            continue;
                         memcpy(name, beginmangled, endmangled-beginmangled);
                         name[endmangled-beginmangled] = '\0';
                         int status;
