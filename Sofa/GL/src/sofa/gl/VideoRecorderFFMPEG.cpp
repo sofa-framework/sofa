@@ -35,6 +35,30 @@ using sofa::helper::system::FileSystem;
 namespace sofa::gl
 {
 
+namespace
+{
+/// Escape a string for safe use in a shell double-quoted context.
+/// Escapes: backslash, backtick, dollar, double-quote, and newline.
+std::string escapeForShell(const std::string& input)
+{
+    std::string result;
+    result.reserve(input.size() + 16);
+    for (char c : input)
+    {
+        switch (c)
+        {
+        case '\\': result += "\\\\"; break;
+        case '"':  result += "\\\""; break;
+        case '$':  result += "\\$";  break;
+        case '`':  result += "\\`";  break;
+        case '\n': result += " ";    break;  // Replace newline with space
+        default:   result += c;      break;
+        }
+    }
+    return result;
+}
+} // anonymous namespace
+
 VideoRecorderFFMPEG::VideoRecorderFFMPEG()
     : m_framerate(25)
     , m_prefix("sofa_video")
@@ -114,7 +138,7 @@ bool VideoRecorderFFMPEG::init(const std::string& ffmpeg_exec_filepath, const st
        << " -pix_fmt " << codec // yuv420p " // " yuv444p "
        << " -crf 17 "
        << " -vf vflip "
-       << "\"" << m_filename << "\""; // @TODO C++14 : replace with std::quoted
+       << "\"" << escapeForShell(m_filename) << "\"";
 
     const std::string& command_line = ss.str();
 
