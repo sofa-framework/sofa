@@ -74,9 +74,7 @@ protected:
 public:
     void bwdInit() override;
 
-    void addComplianceInConstraintSpace(const sofa::core::ConstraintParams *cparams, sofa::linearalgebra::BaseMatrix* W) override;
 
-    void getComplianceMatrix(linearalgebra::BaseMatrix* m) const override;
 
     void computeMotionCorrection(const core::ConstraintParams*, core::MultiVecDerivId dx, core::MultiVecDerivId f) override;
 
@@ -86,35 +84,11 @@ public:
 
     void applyVelocityCorrection(const sofa::core::ConstraintParams *cparams, sofa::Data< VecDeriv > &v, sofa::Data< VecDeriv > &dv, const sofa::Data< VecDeriv > & correction) override;
 
-    /// @name Deprecated API
-    /// @{
-
-    void applyContactForce(const linearalgebra::BaseVector *f) override;
-
-    void resetContactForce() override;
-
-    /// @}
-
     virtual void rotateConstraints(bool back);
 
     virtual void rotateResponse();
 
     void draw(const core::visual::VisualParams* vparams) override;
-
-    /// @name Unbuilt constraint system during resolution
-    /// @{
-
-    void resetForUnbuiltResolution(SReal* f, std::list<unsigned int>& /*renumbering*/) override;
-
-    bool hasConstraintNumber(int index) override;  // virtual ???
-
-    void addConstraintDisplacement(SReal* d, int begin,int end) override;
-
-    void setConstraintDForce(SReal* df, int begin, int end, bool update) override;
-
-    void getBlockDiagonalCompliance(linearalgebra::BaseMatrix* W, int begin, int end) override;
-
-    /// @}
 
 public:
 
@@ -169,6 +143,36 @@ public:
     }
 
 protected:
+     void doGetComplianceMatrix(linearalgebra::BaseMatrix* m) const override;
+
+     void doAddComplianceInConstraintSpace(const sofa::core::ConstraintParams *cparams, sofa::linearalgebra::BaseMatrix* W) override;
+
+     /// @name Deprecated API
+     /// @{
+
+     void doApplyContactForce(const linearalgebra::BaseVector *f) override;
+
+     void doResetContactForce() override;
+
+     /// @}
+
+
+     /// @name Unbuilt constraint system during resolution
+     /// @{
+
+     void doResetForUnbuiltResolution(SReal* f, std::list<unsigned int>& /*renumbering*/) override;
+
+     bool doHasConstraintNumber(int index) override;  // virtual ???
+
+     void doAddConstraintDisplacement(SReal* d, int begin,int end) override;
+
+     void doSetConstraintDForce(SReal* df, int begin, int end, bool update) override;
+
+     void doGetBlockDiagonalCompliance(linearalgebra::BaseMatrix* W, int begin, int end) override;
+
+     /// @}
+
+
     /**
      * @brief Load compliance matrix from memory or external file according to fileName.
      *
