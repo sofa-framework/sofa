@@ -299,14 +299,6 @@ bool GenericConstraintSolver::solveSystem(const core::ConstraintParams * /*cPara
     return true;
 }
 
-void GenericConstraintSolver::computeResidual(const core::ExecParams* eparam)
-{
-    for (const auto& cc : l_constraintCorrections)
-    {
-        cc->computeResidual(eparam,&current_cp->f);
-    }
-}
-
 sofa::type::vector<core::behavior::BaseConstraintCorrection*> GenericConstraintSolver::filteredConstraintCorrections() const
 {
     sofa::type::vector<core::behavior::BaseConstraintCorrection*> filteredConstraintCorrections;
