@@ -206,7 +206,12 @@ DefaultMultiMatrixAccessor::InteractionMatrixRef DefaultMultiMatrixAccessor::get
     InteractionMatrixRef r2;
     if (mstate1 == mstate2)// case where state1 == state2, interaction matrix is on the diagonal stiffness block
     {
-        const MatrixRef r = diagonalStiffnessBloc.find(mstate1)->second;
+        const auto it = diagonalStiffnessBloc.find(mstate1);
+        if (it == diagonalStiffnessBloc.end())
+        {
+            return r2; // Return empty/default InteractionMatrixRef
+        }
+        const MatrixRef r = it->second;
         r2.matrix = r.matrix;
         r2.offRow = r.offset;
         r2.offCol = r.offset;
