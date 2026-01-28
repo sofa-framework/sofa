@@ -103,6 +103,9 @@ void UnbuiltConstraintSolver::doBuildSystem( const core::ConstraintParams *cPara
 
 void UnbuiltConstraintSolver::doPreApplyCorrection()
 {
+    if (!d_initialGuess.getValue())
+        return;
+    
     // Save forces for hot-start in next timestep
     keepContactForcesValue();
 }
@@ -184,9 +187,6 @@ void UnbuiltConstraintSolver::computeInitialGuess()
 
 void UnbuiltConstraintSolver::keepContactForcesValue()
 {
-    if (!d_initialGuess.getValue())
-        return;
-
     SCOPED_TIMER("KeepForces");
 
     const SReal* force = current_cp->getF();
