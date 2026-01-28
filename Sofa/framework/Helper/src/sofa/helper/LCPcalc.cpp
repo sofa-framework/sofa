@@ -241,12 +241,28 @@ int solveLCP(int dim, SReal * q, SReal ** M, SReal * res)
 
     // allocation de la mémoire nécessaire
     mat = (SReal **)malloc(dim*sizeof(SReal *));
+    if (mat == nullptr)
+        return 0;
     for(compteur=0; compteur<dim; compteur++)
     {
         mat[compteur]=(SReal *)malloc((2*dim+1)*sizeof(SReal));
+        if (mat[compteur] == nullptr)
+        {
+            for (int i = 0; i < compteur; i++)
+                free(mat[i]);
+            free(mat);
+            return 0;
+        }
     }
 
     base = (int *)malloc(dim*sizeof(int));
+    if (base == nullptr)
+    {
+        for(compteur=0; compteur<dim; compteur++)
+            free(mat[compteur]);
+        free(mat);
+        return 0;
+    }
 
     // initialisation de la matrice de travail
     for(compteur=0; compteur<dim; compteur++)
