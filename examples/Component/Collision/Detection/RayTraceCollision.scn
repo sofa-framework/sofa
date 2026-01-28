@@ -1,7 +1,7 @@
 <Node name="root" dt="0.01">
     <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BruteForceBroadPhase CollisionPipeline RayTraceNarrowPhase] -->
     <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [NewProximityIntersection] -->
-    <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [TriangleOctreeModel] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [TriangleOctreeCollisionModel] -->
     <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [CollisionResponse] -->
     <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
     <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
@@ -36,7 +36,7 @@
             <MeshOBJLoader name="loader" filename="mesh/torus2_scale3_for_collision.obj" />
             <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" />
-            <TriangleOctreeModel />
+            <TriangleOctreeCollisionModel />
             <BarycentricMapping />
         </Node>
     </Node>
@@ -56,7 +56,7 @@
             <MeshOBJLoader name="loader" filename="mesh/torus2_scale3_for_collision.obj" />
             <MeshTopology src="@loader" />
             <MechanicalObject src="@loader"/>
-            <TriangleOctreeModel />
+            <TriangleOctreeCollisionModel />
             <BarycentricMapping />
         </Node>
     </Node>
@@ -76,7 +76,7 @@
             <MeshOBJLoader name="loader" filename="mesh/torus2_scale3_for_collision.obj" />
             <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" />
-            <TriangleOctreeModel />
+            <TriangleOctreeCollisionModel />
             <BarycentricMapping />
         </Node>
     </Node>
@@ -96,7 +96,7 @@
             <MeshOBJLoader name="loader" filename="mesh/torus2_scale3_for_collision.obj" />
             <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" />
-            <TriangleOctreeModel />
+            <TriangleOctreeCollisionModel />
             <BarycentricMapping />
         </Node>
     </Node>
@@ -116,7 +116,7 @@
             <MeshOBJLoader name="loader" filename="mesh/torus2_scale3_for_collision.obj" />
             <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" />
-            <TriangleOctreeModel />
+            <TriangleOctreeCollisionModel />
             <BarycentricMapping />
         </Node>
     </Node>
@@ -136,7 +136,7 @@
             <MeshOBJLoader name="loader" filename="mesh/torus2_scale3_for_collision.obj" />
             <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" />
-            <TriangleOctreeModel />
+            <TriangleOctreeCollisionModel />
             <BarycentricMapping />
         </Node>
     </Node>
@@ -156,7 +156,7 @@
             <MeshOBJLoader name="loader" filename="mesh/torus2_scale3_for_collision.obj" />
             <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" />
-            <TriangleOctreeModel />
+            <TriangleOctreeCollisionModel />
             <BarycentricMapping />
         </Node>
     </Node>
@@ -176,7 +176,7 @@
             <MeshOBJLoader name="loader" filename="mesh/torus2_scale3_for_collision.obj" />
             <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" />
-            <TriangleOctreeModel />
+            <TriangleOctreeCollisionModel />
             <BarycentricMapping />
         </Node>
     </Node>
@@ -196,7 +196,7 @@
             <MeshOBJLoader name="loader" filename="mesh/torus2_scale3_for_collision.obj" />
             <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" />
-            <TriangleOctreeModel />
+            <TriangleOctreeCollisionModel />
             <BarycentricMapping />
         </Node>
     </Node>
@@ -216,7 +216,7 @@
             <MeshOBJLoader name="loader" filename="mesh/torus2_scale3_for_collision.obj" />
             <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" />
-            <TriangleOctreeModel />
+            <TriangleOctreeCollisionModel />
             <BarycentricMapping />
         </Node>
     </Node>
@@ -224,7 +224,7 @@
         <MeshOBJLoader name="loader" filename="mesh/floor2b.obj" />
         <MeshTopology src="@loader" />
         <MechanicalObject src="@loader" dy="-10" scale="0.5" />
-        <TriangleOctreeModel name="Floor" simulated="0" moving="0" />
+        <TriangleOctreeCollisionModel name="Floor" simulated="0" moving="0" />
         <MeshOBJLoader name="meshLoader_4" filename="mesh/floor2b.obj" scale="0.5" handleSeams="1" />
         <OglModel name="FloorV" src="@meshLoader_4" texturename="textures/floor.bmp" color="lightgray" dy="-10" />
     </Node>

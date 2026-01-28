@@ -34,10 +34,10 @@ typedef core::topology::BaseMeshTopology::Triangle	Triangle;
 namespace sofa::component::collision::geometry
 {
 
-void registerTriangleOctreeModel(sofa::core::ObjectFactory* factory)
+void registerTriangleOctreeCollisionModel(sofa::core::ObjectFactory* factory)
 {
     factory->registerObjects(core::ObjectRegistrationData("Collision model using a triangular mesh mapped to an Octree.")
-        .add <	TriangleOctreeCollisionModel >()
+        .add <	TriangleOctreeCollisionModel >());
 }
 
 TriangleOctreeCollisionModel::TriangleOctreeCollisionModel ()
