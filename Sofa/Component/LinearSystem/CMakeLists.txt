@@ -34,9 +34,6 @@ set(HEADER_FILES
     ${SOFACOMPONENTLINEARSOLVERLINEARSYSTEM_SOURCE_DIR}/matrixaccumulators/ConstantLocalMatrix.h
     ${SOFACOMPONENTLINEARSOLVERLINEARSYSTEM_SOURCE_DIR}/matrixaccumulators/SparsityPatternLocalMappedMatrix.h
     ${SOFACOMPONENTLINEARSOLVERLINEARSYSTEM_SOURCE_DIR}/matrixaccumulators/SparsityPatternLocalMatrix.h
-
-    ${SOFACOMPONENTLINEARSOLVERLINEARSYSTEM_SOURCE_DIR}/visitors/AssembleGlobalVectorFromLocalVectorVisitor.h
-    ${SOFACOMPONENTLINEARSOLVERLINEARSYSTEM_SOURCE_DIR}/visitors/DispatchFromGlobalVectorToLocalVectorVisitor.h
 )
 
 set(SOURCE_FILES
@@ -50,9 +47,6 @@ set(SOURCE_FILES
     ${SOFACOMPONENTLINEARSOLVERLINEARSYSTEM_SOURCE_DIR}/MatrixLinearSystem.cpp
     ${SOFACOMPONENTLINEARSOLVERLINEARSYSTEM_SOURCE_DIR}/MatrixProjectionMethod.cpp
     ${SOFACOMPONENTLINEARSOLVERLINEARSYSTEM_SOURCE_DIR}/TypedMatrixLinearSystem.cpp
-
-    ${SOFACOMPONENTLINEARSOLVERLINEARSYSTEM_SOURCE_DIR}/visitors/AssembleGlobalVectorFromLocalVectorVisitor.cpp
-    ${SOFACOMPONENTLINEARSOLVERLINEARSYSTEM_SOURCE_DIR}/visitors/DispatchFromGlobalVectorToLocalVectorVisitor.cpp
 )
 
 sofa_find_package(Sofa.Simulation.Core REQUIRED)
