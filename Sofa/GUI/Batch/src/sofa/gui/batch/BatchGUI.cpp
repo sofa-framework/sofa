@@ -219,7 +219,15 @@ void BatchGUI::OnNbIterChange(const ArgumentParser* argumentParser, const std::s
     }
     else if (inpLen)
     {
-        nbIter = std::stoi(nbIterInp);
+        try
+        {
+            nbIter = std::stoi(nbIterInp);
+        }
+        catch (const std::exception&)
+        {
+            msg_warning("BatchGUI") << "Invalid number of iterations: '" << nbIterInp << "'. Using default.";
+            nbIter = DEFAULT_NUMBER_OF_ITERATIONS;
+        }
     }
     else
     {
