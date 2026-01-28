@@ -1607,7 +1607,14 @@ protected:
         std::string temp;
         while (std::getline(in, temp, ';'))
         {
-            vec.push_back(std::stoi(temp));
+            try
+            {
+                vec.push_back(std::stoi(temp));
+            }
+            catch (const std::exception&)
+            {
+                // Skip invalid entries
+            }
         }
     }
 };
