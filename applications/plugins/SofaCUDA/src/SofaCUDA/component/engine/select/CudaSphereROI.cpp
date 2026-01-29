@@ -40,13 +40,16 @@ template class SOFA_GPU_CUDA_API SphereROI<gpu::cuda::CudaVec3d1Types>;
 namespace sofa::gpu::cuda
 {
 
-int SphereROICudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
+    void registerSphereROI(sofa::core::ObjectFactory* factory)
+    {
+        factory->registerObjects(sofa::core::ObjectRegistrationData("Supports GPU-side computations using CUDA for the SphereROI")
         .add< component::engine::select::SphereROI<CudaVec3fTypes> >()
         .add< component::engine::select::SphereROI<CudaVec3f1Types> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
         .add< component::engine::select::SphereROI<CudaVec3dTypes> >()
         .add< component::engine::select::SphereROI<CudaVec3d1Types> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
-        ;
+        );
+    }
 
 } // namespace sofa::gpu::cuda

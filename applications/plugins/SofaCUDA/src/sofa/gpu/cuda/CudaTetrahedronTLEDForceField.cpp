@@ -33,9 +33,11 @@
 namespace sofa::gpu::cuda
 {
 
-int CudaTetrahedronTLEDForceFieldCudaClass = core::RegisterObject("GPU TLED tetrahedron forcefield using CUDA")
-        .add< CudaTetrahedronTLEDForceField >()
-        ;
+    void registerTetrahedronTLEDForceField(sofa::core::ObjectFactory* factory)
+    {
+        factory->registerObjects(sofa::core::ObjectRegistrationData("Supports GPU-side computations using CUDA for the TetrahedronTLEDForceField")
+        .add< CudaTetrahedronTLEDForceField >());
+    }
 
 extern "C"
 {
