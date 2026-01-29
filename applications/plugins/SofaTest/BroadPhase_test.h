@@ -25,7 +25,6 @@
 #include <sofa/component/statecontainer/MechanicalObject.h>
 #include <SofaBaseCollision/NewProximityIntersection.h>
 #include <sofa/simulation/Node.h>
-#include <sofa/simulation/Node.h>
 #include <SofaMiscCollision/OBBModel.h>
 #include <sofa/core/collision/NarrowPhaseDetection.h>
 
