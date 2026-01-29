@@ -29,6 +29,8 @@
 #include <iostream>
 #include <fstream>
 #include <algorithm>
+#include <cstdlib>
+#include <cerrno>
 
 namespace sofa::component::engine::transform
 {
@@ -188,7 +190,7 @@ void TransformPosition<DataTypes>::getTransfoFromTfm()
                 typedef std::vector<std::string> vecString;
                 vecString vLine;
 
-                char *l = new char[line.size()];
+                char *l = new char[line.size() + 1];
                 strcpy(l, line.c_str());
                 char* p;
                 for (p = strtok(l, " "); p; p = strtok(nullptr, " "))
@@ -200,7 +202,13 @@ void TransformPosition<DataTypes>::getTransfoFromTfm()
                 {
                     std::string c = *it;
                     if ( c.find_first_of("1234567890.-") != std::string::npos)
-                        values.push_back((Real)atof(c.c_str()));
+                    {
+                        char* endptr = nullptr;
+                        errno = 0;
+                        double val = std::strtod(c.c_str(), &endptr);
+                        if (errno == 0 && endptr != c.c_str())
+                            values.push_back((Real)val);
+                    }
                 }
 
                 if (values.size() != 12)
@@ -259,7 +267,7 @@ void TransformPosition<DataTypes>::getTransfoFromTrm()
 
             std::vector<std::string> vLine;
 
-            char *l = new char[line.size()];
+            char *l = new char[line.size() + 1];
             strcpy(l, line.c_str());
             char* p;
             for (p = strtok(l, " "); p; p = strtok(nullptr, " "))
@@ -285,7 +293,15 @@ void TransformPosition<DataTypes>::getTransfoFromTrm()
                 Coord tr;
                 for ( unsigned int i = 0; i < std::min((unsigned int)vLine.size(),(unsigned int)3); i++)
                 {
-                    tr[i] = mat(i,3) = (Real)atof(vLine[i].c_str());
+                    char* endptr = nullptr;
+                    errno = 0;
+                    double val = std::strtod(vLine[i].c_str(), &endptr);
+                    if (errno != 0 || endptr == vLine[i].c_str())
+                    {
+                        msg_error() << "Invalid number in file: " << vLine[i];
+                        val = 0.0;
+                    }
+                    tr[i] = mat(i,3) = (Real)val;
                 }
                 f_translation.setValue(tr);
 
@@ -294,7 +310,17 @@ void TransformPosition<DataTypes>::getTransfoFromTrm()
             {
                 //rotation matrix
                 for ( unsigned int i = 0; i < std::min((unsigned int)vLine.size(),(unsigned int)3); i++)
-                    mat(nbLines-2,i) = (Real)atof(vLine[i].c_str());
+                {
+                    char* endptr = nullptr;
+                    errno = 0;
+                    double val = std::strtod(vLine[i].c_str(), &endptr);
+                    if (errno != 0 || endptr == vLine[i].c_str())
+                    {
+                        msg_error() << "Invalid number in file: " << vLine[i];
+                        val = 0.0;
+                    }
+                    mat(nbLines-2,i) = (Real)val;
+                }
             }
 
         }
@@ -337,7 +363,7 @@ void TransformPosition<DataTypes>::getTransfoFromTxt()
 
             std::vector<std::string> vLine;
 
-            char *l = new char[line.size()];
+            char *l = new char[line.size() + 1];
             strcpy(l, line.c_str());
             char* p;
             for (p = strtok(l, " "); p; p = strtok(nullptr, " "))
@@ -358,7 +384,17 @@ void TransformPosition<DataTypes>::getTransfoFromTxt()
             else if (vLine.size()<4) {msg_error() << "Matrix is not 4x4.";continue;}
 
             for ( unsigned int i = 0; i < std::min((unsigned int)vLine.size(),(unsigned int)4); i++)
-                mat(nbLines-1,i) = (Real)atof(vLine[i].c_str());
+            {
+                char* endptr = nullptr;
+                errno = 0;
+                double val = std::strtod(vLine[i].c_str(), &endptr);
+                if (errno != 0 || endptr == vLine[i].c_str())
+                {
+                    msg_error() << "Invalid number in file: " << vLine[i];
+                    val = 0.0;
+                }
+                mat(nbLines-1,i) = (Real)val;
+            }
         }
         f_affineMatrix.setValue(mat);
 
