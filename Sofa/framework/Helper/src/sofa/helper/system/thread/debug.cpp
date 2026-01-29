@@ -92,7 +92,8 @@ TraceProfile::TraceProfile(const char *name, int index, int size)
 
 TraceProfile::~TraceProfile()
 {
-    delete( name );
+    delete[] name;
+    delete[] times;
 }
 
 void TraceProfile::addTime(int instant, int time)

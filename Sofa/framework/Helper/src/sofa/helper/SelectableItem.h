@@ -84,6 +84,7 @@ struct DeprecatedItem
 
 struct BaseSelectableItem
 {
+    virtual ~BaseSelectableItem() = default;
     [[nodiscard]] virtual std::size_t getNumberOfItems() const { return 0; }
     [[nodiscard]] virtual const Item* getItemsData() const { return nullptr; }
     [[nodiscard]] virtual std::size_t getSelectedId() const { return 0; }
