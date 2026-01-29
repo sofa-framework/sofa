@@ -33,8 +33,3 @@ move_metis "$INSTALL_DIR"
 cd "$INSTALL_DIR" && find -name "*.dll" -path "*/plugins/*" | while read lib; do
     cp "$lib" "$INSTALL_DIR_BIN"
 done
-
-# Copy all collection libs in install/bin to make them easily findable
-cd "$INSTALL_DIR" && find -name "*.dll" -path "*/collections/*" | while read lib; do
-    cp "$lib" "$INSTALL_DIR_BIN"
-done
