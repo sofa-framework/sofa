@@ -262,8 +262,11 @@ void MeshOBJ::readMTL(const char* filename)
                     else
                         msg_error("MeshOBJ") << "fgets function has encountered an error." ;
                 }
-                sscanf(buf, "%s %s", buf, buf);
-                mat->name = buf;
+                {
+                    char matName[128] = {0};
+                    sscanf(buf, "%*127s %127s", matName);
+                    mat->name = matName;
+                }
                 break;
             case 'N':
                 switch (buf[1])

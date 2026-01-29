@@ -22,9 +22,21 @@
 #pragma once
 #include <sofa/linearalgebra/BlockFullMatrix.h>
 #include <sofa/linearalgebra/matrix_bloc_traits.h>
+#include <limits>
+#include <stdexcept>
 
 namespace sofa::linearalgebra
 {
+
+namespace
+{
+    template<typename Index>
+    bool wouldOverflowBlock(Index a, Index b)
+    {
+        if (a <= 0 || b <= 0) return false;
+        return a > std::numeric_limits<Index>::max() / b;
+    }
+}
 
 template<std::size_t N, typename T>
 typename BlockFullMatrix<N,T>::Index  BlockFullMatrix<N, T>::Block::Nrows() const
@@ -86,8 +98,12 @@ BlockFullMatrix<N, T>::BlockFullMatrix()
 
 template<std::size_t N, typename T>
 BlockFullMatrix<N, T>::BlockFullMatrix(Index nbRow, Index nbCol)
-    : data(new Block[nbRow*nbCol]), nTRow(nbRow), nTCol(nbCol), nBRow(nbRow/BSIZE), nBCol(nbCol/BSIZE), allocsize((nbCol/BSIZE)*(nbRow/BSIZE))
+    : data(nullptr), nTRow(nbRow), nTCol(nbCol), nBRow(nbRow/BSIZE), nBCol(nbCol/BSIZE), allocsize(0)
 {
+    if (wouldOverflowBlock(nBRow, nBCol))
+        throw std::overflow_error("BlockFullMatrix: allocation size overflow");
+    allocsize = nBRow * nBCol;
+    data = new Block[allocsize];
 }
 
 template<std::size_t N, typename T>
@@ -114,9 +130,17 @@ void BlockFullMatrix<N, T>::resize(Index nbRow, Index nbCol)
 {
     if (nbCol != nTCol || nbRow != nTRow)
     {
+        const Index newBRow = nbRow / BSIZE;
+        const Index newBCol = nbCol / BSIZE;
+        if (wouldOverflowBlock(newBRow, newBCol))
+        {
+            msg_error("BTDLinearSolver") << "Cannot resize matrix: allocation size overflow for (" << nbRow << "," << nbCol << ")";
+            return;
+        }
+        const Index newSize = newBRow * newBCol;
         if (allocsize < 0)
         {
-            if ((nbCol/BSIZE)*(nbRow/BSIZE) > -allocsize)
+            if (newSize > -allocsize)
             {
                 msg_error("BTDLinearSolver") << "Cannot resize preallocated matrix to size ("<<nbRow<<","<<nbCol<<")." ;
                 return;
@@ -124,18 +148,18 @@ void BlockFullMatrix<N, T>::resize(Index nbRow, Index nbCol)
         }
         else
         {
-            if ((nbCol/BSIZE)*(nbRow/BSIZE) > allocsize)
+            if (newSize > allocsize)
             {
                 if (allocsize > 0)
                     delete[] data;
-                allocsize = (nbCol/BSIZE)*(nbRow/BSIZE);
+                allocsize = newSize;
                 data = new Block[allocsize];
             }
         }
         nTCol = nbCol;
         nTRow = nbRow;
-        nBCol = nbCol/BSIZE;
-        nBRow = nbRow/BSIZE;
+        nBCol = newBCol;
+        nBRow = newBRow;
     }
     clear();
 }
