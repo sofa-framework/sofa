@@ -257,8 +257,15 @@ bool BaseViewer::load()
                 }
                 else if(paramName == std::string("VisualScaling"))
                 {
-                    const float floatValue = std::stof(line.substr(equalPos+1)) ;
-                    m_visualScaling = floatValue;
+                    try
+                    {
+                        const float floatValue = std::stof(line.substr(equalPos+1)) ;
+                        m_visualScaling = floatValue;
+                    }
+                    catch (const std::exception&)
+                    {
+                        msg_warning("BaseViewer") << "Invalid VisualScaling value in config file";
+                    }
                 }
             }
         }
