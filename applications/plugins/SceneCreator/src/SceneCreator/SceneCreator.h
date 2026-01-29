@@ -65,13 +65,13 @@ SOFA_SCENECREATOR_API simulation::Node::SPtr createObstacle(simulation::Node::SP
 /// Create a collision node using Barycentric Mapping, using a 3d model specified by filename.
 /// elements is a vector of type of collision models (Triangle, Line, Point, Sphere)
 /// an initial transformation can be performed
-SOFA_SCENECREATOR_API simulation::Node::SPtr createCollisionNodeVec3(simulation::Node::SPtr parent, BaseObject::SPtr dof,
+SOFA_SCENECREATOR_API simulation::Node::SPtr createCollisionNodeVec3(simulation::Node::SPtr parent, sofa::core::objectmodel::BaseObject::SPtr dof,
                                                                      const std::string &filename,
                                                                      const std::vector<std::string> &elements,
                                                                      const Deriv3& translation=Deriv3(),
                                                                      const Deriv3 &rotation=Deriv3());
 
-SOFA_SCENECREATOR_API simulation::Node::SPtr createVisualNodeVec3(simulation::Node::SPtr parent, BaseObject::SPtr dof,
+SOFA_SCENECREATOR_API simulation::Node::SPtr createVisualNodeVec3(simulation::Node::SPtr parent, sofa::core::objectmodel::BaseObject::SPtr dof,
                                                                   const std::string &filename, const std::string& color,
                                                                   const Deriv3& translation=Deriv3(),
                                                                   const Deriv3 &rotation=Deriv3(),
@@ -82,14 +82,14 @@ SOFA_SCENECREATOR_API simulation::Node::SPtr createVisualNodeVec3(simulation::No
 /// elements is a vector of type of collision models (Triangle, Line, Point, Sphere)
 /// an initial transformation can be performed
 SOFA_SCENECREATOR_API simulation::Node::SPtr createCollisionNodeRigid(simulation::Node::SPtr parent,
-                                                                      BaseObject::SPtr dofRigid,
+                                                                      sofa::core::objectmodel::BaseObject::SPtr dofRigid,
                                                                       const std::string &filename,
                                                                       const std::vector<std::string> &elements,
                                                                       const Deriv3& translation=Deriv3(),
                                                                       const Deriv3 &rotation=Deriv3());
 
 SOFA_SCENECREATOR_API simulation::Node::SPtr createVisualNodeRigid(simulation::Node::SPtr parent,
-                                                                   BaseObject::SPtr  dofRigid,
+                                                                   sofa::core::objectmodel::BaseObject::SPtr  dofRigid,
                                                                    const std::string &filename,
                                                                    const std::string& color,
                                                                    const Deriv3& translation=Deriv3(),

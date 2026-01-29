@@ -34,10 +34,10 @@ using sofa::testing::BaseTest ;
 namespace sofa{
 namespace another_namespace{
 
-class EmptyObject : public BaseObject
+class EmptyObject : public sofa::core::objectmodel::BaseObject
 {
 public:
-    SOFA_CLASS(EmptyObject, BaseObject) ;
+    SOFA_CLASS(EmptyObject, sofa::core::objectmodel::BaseObject) ;
 };
 
 }
@@ -46,10 +46,10 @@ public:
 namespace sofa{
 namespace numbered_namespace_123{
 
-class NumberedClass123 : public BaseObject
+class NumberedClass123 : public sofa::core::objectmodel::BaseObject
 {
 public:
-    SOFA_CLASS(NumberedClass123, BaseObject) ;
+    SOFA_CLASS(NumberedClass123, sofa::core::objectmodel::BaseObject) ;
 };
 
 class NumberedClass456 : public another_namespace::EmptyObject
@@ -58,10 +58,10 @@ public:
     SOFA_CLASS(NumberedClass456, another_namespace::EmptyObject) ;
 };
 
-class CustomName123 : public BaseObject
+class CustomName123 : public sofa::core::objectmodel::BaseObject
 {
 public:
-    SOFA_CLASS(CustomName123, BaseObject) ;
+    SOFA_CLASS(CustomName123, sofa::core::objectmodel::BaseObject) ;
 
     static const std::string GetCustomClassName(){ return "ClassWithACustomName"; }
     static const std::string GetCustomTemplateName(){ return "ClassWithACustomTemplate"; }
@@ -70,10 +70,10 @@ public:
     static const std::string className(){ return "TEST TEST"; }
 };
 
-class CustomNameOldWay : public BaseObject
+class CustomNameOldWay : public sofa::core::objectmodel::BaseObject
 {
 public:
-    SOFA_CLASS(CustomNameOldWay, BaseObject) ;
+    SOFA_CLASS(CustomNameOldWay, sofa::core::objectmodel::BaseObject) ;
 
     static const std::string className(const CustomNameOldWay* =nullptr){ return "ClassWithACustomNameOldWay"; }
 
@@ -93,40 +93,40 @@ class DataTwo { public: static std::string Name(){ return "Two" ;} };
 class NotAType {};
 
 template<class DataType1>
-class DefaultTemplate1 : public BaseObject
+class DefaultTemplate1 : public sofa::core::objectmodel::BaseObject
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(DefaultTemplate1, DataType1), BaseObject) ;
+    SOFA_CLASS(SOFA_TEMPLATE(DefaultTemplate1, DataType1), sofa::core::objectmodel::BaseObject) ;
 };
 
 template<class DataType1, class DataType2>
-class DefaultTemplate2 : public BaseObject
+class DefaultTemplate2 : public sofa::core::objectmodel::BaseObject
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(DefaultTemplate2, DataType1, DataType2), BaseObject) ;
+    SOFA_CLASS(SOFA_TEMPLATE2(DefaultTemplate2, DataType1, DataType2), sofa::core::objectmodel::BaseObject) ;
 };
 
 template<class DataType1, class DataType2, class NotAType>
-class DefaultTemplate3 : public BaseObject
+class DefaultTemplate3 : public sofa::core::objectmodel::BaseObject
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE3(DefaultTemplate3, DataType1, DataType2, NotAType), BaseObject) ;
+    SOFA_CLASS(SOFA_TEMPLATE3(DefaultTemplate3, DataType1, DataType2, NotAType), sofa::core::objectmodel::BaseObject) ;
 };
 
 template<class DataType1, class DataType2, class NotAType>
-class NotDefaultTemplate : public BaseObject
+class NotDefaultTemplate : public sofa::core::objectmodel::BaseObject
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE3(NotDefaultTemplate, DataType1, DataType2, NotAType), BaseObject) ;
+    SOFA_CLASS(SOFA_TEMPLATE3(NotDefaultTemplate, DataType1, DataType2, NotAType), sofa::core::objectmodel::BaseObject) ;
 
     static const std::string GetCustomTemplateName(){ return "non,oui"; }
 };
 
 template<class TDataType1>
-class OuterClass : public BaseObject
+class OuterClass : public sofa::core::objectmodel::BaseObject
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(OuterClass, TDataType1), BaseObject);
+    SOFA_CLASS(SOFA_TEMPLATE(OuterClass, TDataType1), sofa::core::objectmodel::BaseObject);
 
     template<class TDataType2>
     class InnerClass : public BaseObject

@@ -40,14 +40,18 @@ template class SOFA_GPU_CUDA_API BilateralLagrangianConstraint<gpu::cuda::CudaVe
 namespace sofa::gpu::cuda
 {
 
-using namespace sofa::component::constraint::lagrangian::model;
+    using namespace sofa::component::constraint::lagrangian::model;
 
-int BilateralLagrangianConstraintCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-    .add< BilateralLagrangianConstraint<CudaVec3fTypes> >()
-    .add< BilateralLagrangianConstraint<CudaVec3f1Types> >()
+    void registerBilateralLagrangianConstraint(sofa::core::ObjectFactory* factory)
+    {
+        factory->registerObjects(sofa::core::ObjectRegistrationData("Supports GPU-side computations using CUDA for the BilateralLagrangianConstraint")
+        .add< BilateralLagrangianConstraint<CudaVec3fTypes> >()
+        .add< BilateralLagrangianConstraint<CudaVec3f1Types> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
-    .add< BilateralLagrangianConstraint<CudaVec3dTypes> >()
-    .add< BilateralLagrangianConstraint<CudaVec3d1Types> >()
+        .add< BilateralLagrangianConstraint<CudaVec3dTypes> >()
+        .add< BilateralLagrangianConstraint<CudaVec3d1Types> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
-    ;
+        );
+    }
+
 } // namespace sofa::gpu::cuda

@@ -67,13 +67,16 @@ int triangleFixParticle = FixParticlePerformerCuda3d::RegisterSupportedModel<sof
 namespace sofa::gpu::cuda
 {
 
-using namespace sofa::gui::component::performer;
+    using namespace sofa::gui::component::performer;
 
-int MouseInteractorCudaClass = core::RegisterObject("Supports Mouse Interaction using CUDA")
-                                   .add< MouseInteractor<CudaVec3fTypes> >()
+    void registerMouseInteractor(sofa::core::ObjectFactory* factory)
+    {
+        factory->registerObjects(sofa::core::ObjectRegistrationData("Supports GPU-side computations using CUDA for the MouseInteractor")
+        .add< MouseInteractor<CudaVec3fTypes> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
-                                   .add< MouseInteractor<CudaVec3dTypes> >()
+        .add< MouseInteractor<CudaVec3dTypes> >()
 #endif
-    ;
+        );
+    }
 
 }
