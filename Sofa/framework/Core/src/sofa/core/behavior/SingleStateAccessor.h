@@ -42,6 +42,8 @@ public:
     MechanicalState<DataTypes>* getMState();
     const MechanicalState<DataTypes>* getMState() const;
 
+    void validateMState();
+
 protected:
 
     explicit SingleStateAccessor(MechanicalState<DataTypes>* mm = nullptr);
