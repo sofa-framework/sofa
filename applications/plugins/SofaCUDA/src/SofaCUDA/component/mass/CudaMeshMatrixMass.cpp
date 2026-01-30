@@ -67,7 +67,9 @@ template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec1dTypes,
 namespace gpu::cuda
 {
 
-int MeshMatrixMassClassCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
+    void registerMeshMatrixMass(sofa::core::ObjectFactory* factory)
+    {
+        factory->registerObjects(sofa::core::ObjectRegistrationData("Supports GPU-side computations using CUDA for the MeshMatrixMass")
         .add< component::mass::MeshMatrixMass<CudaVec3fTypes > >(true)
         .add< component::mass::MeshMatrixMass<CudaVec2fTypes > >()
         .add< component::mass::MeshMatrixMass<CudaVec2fTypes, CudaVec3fTypes > >()
@@ -82,7 +84,8 @@ int MeshMatrixMassClassCudaClass = core::RegisterObject("Supports GPU-side compu
         .add< component::mass::MeshMatrixMass<CudaVec1dTypes, CudaVec2dTypes > >()
         .add< component::mass::MeshMatrixMass<CudaVec1dTypes, CudaVec3dTypes > >()
 #endif // SOFA_GPU_CUDA_DOUBLE
-        ;
+        );
+    }
 
 } // namespace gpu::cuda
 

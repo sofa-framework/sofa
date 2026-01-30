@@ -30,21 +30,21 @@
 namespace sofa::gpu::cuda
 {
 
-using namespace sofa::component::mapping::linear;
-using namespace defaulttype;
-using namespace core;
-using namespace core::behavior;
+    using namespace sofa::component::mapping::linear;
+    using namespace defaulttype;
+    using namespace core;
+    using namespace core::behavior;
 
-
-// Register in the Factory
-int BeamLinearMappingCudaClass = core::RegisterObject("Set the positions and velocities of points attached to a beam using linear interpolation between DOFs")
-
+    // Register in the Factory
+    void registerBeamLinearMapping(sofa::core::ObjectFactory* factory)
+    {
+        factory->registerObjects(sofa::core::ObjectRegistrationData("Set the positions and velocities of points attached to a beam using linear interpolation between DOFs")
         .add< BeamLinearMapping<Rigid3Types, CudaVec3Types> >()
-
 #ifdef SOFA_GPU_CUDA_DOUBLE
         .add< BeamLinearMapping<Rigid3Types, CudaVec3dTypes> >()
 #endif
-        ;
+        );
+    }
 
 } // namespace sofa::gpu::cuda
 

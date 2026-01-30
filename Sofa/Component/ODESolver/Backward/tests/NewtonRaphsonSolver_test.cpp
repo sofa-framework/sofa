@@ -292,6 +292,7 @@ struct NewtonRaphsonTest : public testing::BaseSimulationTest
 
     void spring(const SReal k, const SReal L_0, const SReal dt)
     {
+        SOFA_UNUSED(L_0);
         sofa::simpleapi::importPlugin("Sofa.Component.SolidMechanics.Spring");
 
         sofa::simpleapi::createObject(m_scene.root, "RestShapeSpringsForceField", {{"points", "0"}, {"stiffness", std::to_string(k)}});
