@@ -174,7 +174,7 @@ TEST(VecTest, moveConstructor)
     sofa::type::Vec<3, double> v2(std::move(v1));
     EXPECT_EQ(v2[0], 1.0);
     EXPECT_EQ(v2[1], 2.0);
-    EXPECT_NEAR(v2[2], 3.0, 1e-6);
+    EXPECT_EQ(v2[2], 3.0);
 }
 
 TEST(VecTest, constructorFromFixedArray)
