@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-﻿#pragma once
+#pragma once
 #include <sofa/component/linearsolver/preconditioner/config.h>
 #include <sofa/component/linearsystem/TypedMatrixLinearSystem.h>
 namespace sofa::component::linearsolver::preconditioner
