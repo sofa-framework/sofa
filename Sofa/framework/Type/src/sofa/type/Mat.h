@@ -1357,15 +1357,13 @@ template <sofa::Size L, sofa::Size C, sofa::Size P, class real>
 constexpr Mat<L,P,real> operator*(const Mat<L,C,real>& m1, const Mat<C,P,real>& m2) noexcept
 {
     Mat<L,P,real> r(NOINIT);
-    for (Size i = 0; i<L; i++)
+    for (Size i = 0; i < L; ++i)
     {
-        for (Size j = 0; j<P; j++)
+        for (Size k = 0; k < C; ++k)
         {
-            r(i,j) = m1(i,0) * m2(0,j);
-            for (Size k = 1; k<C; k++)
-            {
-                r(i,j) += m1(i,k) * m2(k,j);
-            }
+            const auto aik = m1(i,k);
+            for (Size j = 0; j < P; ++j)
+                r(i,j) += aik * m2(k,j);
         }
     }
     return r;
