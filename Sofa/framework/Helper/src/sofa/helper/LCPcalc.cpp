@@ -242,7 +242,10 @@ int solveLCP(int dim, SReal * q, SReal ** M, SReal * res)
     // allocation de la mémoire nécessaire
     mat = (SReal **)malloc(dim*sizeof(SReal *));
     if (mat == nullptr)
+    {
+        std::cerr << "something went wrong while allocating memory, going out without computing the result." << std::endl;
         return 0;
+    }
     for(compteur=0; compteur<dim; compteur++)
     {
         mat[compteur]=(SReal *)malloc((2*dim+1)*sizeof(SReal));
@@ -251,6 +254,8 @@ int solveLCP(int dim, SReal * q, SReal ** M, SReal * res)
             for (int i = 0; i < compteur; i++)
                 free(mat[i]);
             free(mat);
+
+            std::cerr << "something went wrong while allocating memory, going out without computing the result." << std::endl;
             return 0;
         }
     }
@@ -261,6 +266,8 @@ int solveLCP(int dim, SReal * q, SReal ** M, SReal * res)
         for(compteur=0; compteur<dim; compteur++)
             free(mat[compteur]);
         free(mat);
+        
+        std::cerr << "something went wrong while allocating memory, going out without computing the result." << std::endl;
         return 0;
     }
 
