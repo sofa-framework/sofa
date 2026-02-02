@@ -168,11 +168,11 @@ RGBAColor RGBAColor::fromHSVA(const float h, const float s, const float v, const
 /// This function remove the leading space in the stream.
 static std::istream& trimInitialSpaces(std::istream& in)
 {
-    char first=in.peek();
-    while(!in.eof() && !in.fail() && std::isspace(first, std::locale()))
+    int first = in.peek();
+    while (!in.eof() && !in.fail() && std::isspace(first, std::locale()))
     {
         in.get();
-        first=in.peek();
+        first = in.peek();
     }
     return in;
 }
