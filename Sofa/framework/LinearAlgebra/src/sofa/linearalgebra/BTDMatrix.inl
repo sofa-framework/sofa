@@ -23,21 +23,12 @@
 #include <sofa/linearalgebra/config.h>
 
 #include <sofa/linearalgebra/BTDMatrix.h>
+#include <sofa/type/hardening.h>
 #include <limits>
 #include <stdexcept>
 
 namespace sofa::linearalgebra
 {
-
-namespace
-{
-    template<typename Index>
-    bool wouldOverflowBTD(Index a)
-    {
-        if (a <= 0) return false;
-        return a > std::numeric_limits<Index>::max() / 3;
-    }
-}
 
 template<std::size_t N, typename T>
 BTDMatrix<N, T>::BTDMatrix()
@@ -49,7 +40,7 @@ template<std::size_t N, typename T>
 BTDMatrix<N, T>::BTDMatrix(Index nbRow, Index nbCol)
     : data(nullptr), nTRow(nbRow), nTCol(nbCol), nBRow(nbRow/BSIZE), nBCol(nbCol/BSIZE), allocsize(0)
 {
-    if (wouldOverflowBTD(nBRow))
+    if (type::hardening::checkOverflow(nBRow,3))
         throw std::overflow_error("BTDMatrix: allocation size overflow");
     allocsize = 3 * nBRow;
     data = new Block[allocsize];
@@ -80,7 +71,7 @@ void BTDMatrix<N, T>::resize(Index nbRow, Index nbCol)
     if (nbCol != nTCol || nbRow != nTRow)
     {
         const Index newBRow = nbRow / BSIZE;
-        if (wouldOverflowBTD(newBRow))
+        if (type::hardening::checkOverflow(nBRow,3))
         {
             msg_error("BTDLinearSolver") << "Cannot resize matrix: allocation size overflow for (" << nbRow << "," << nbCol << ")";
             return;

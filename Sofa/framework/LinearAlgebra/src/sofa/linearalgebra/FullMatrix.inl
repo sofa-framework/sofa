@@ -21,21 +21,13 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/linearalgebra/FullMatrix.h>
+#include <sofa/type/hardening.h>
 #include <limits>
 #include <stdexcept>
 
+
 namespace sofa::linearalgebra
 {
-
-namespace
-{
-    template<typename Index>
-    bool wouldOverflow(Index a, Index b)
-    {
-        if (a <= 0 || b <= 0) return false;
-        return a > std::numeric_limits<Index>::max() / b;
-    }
-}
 
 template<class Real>
 FullMatrix<Real>::FullMatrix()
@@ -47,7 +39,7 @@ template<class Real>
 FullMatrix<Real>::FullMatrix(Index nbRow, Index nbCol)
     : data(nullptr), nRow(nbRow), nCol(nbCol), pitch(nbCol), allocsize(0)
 {
-    if (wouldOverflow(nbRow, nbCol))
+    if (type::hardening::checkOverflow(nbRow,nbCol))
         throw std::overflow_error("FullMatrix: allocation size overflow");
     allocsize = nbRow * nbCol;
     data = new Real[allocsize];
@@ -91,7 +83,7 @@ void FullMatrix<Real>::resize(Index nbRow, Index nbCol)
     {
         msg_info() << /*this->Name() << */": resize(" << nbRow << "," << nbCol << ")";
     }
-    if (wouldOverflow(nbRow, nbCol))
+    if (type::hardening::checkOverflow(nbRow,nbCol))
     {
         msg_error() << "Cannot resize matrix: allocation size overflow for (" << nbRow << "," << nbCol << ")";
         return;

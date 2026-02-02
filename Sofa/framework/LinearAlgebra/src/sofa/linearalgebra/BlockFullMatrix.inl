@@ -22,21 +22,13 @@
 #pragma once
 #include <sofa/linearalgebra/BlockFullMatrix.h>
 #include <sofa/linearalgebra/matrix_bloc_traits.h>
+#include <sofa/type/hardening.h>
+
 #include <limits>
 #include <stdexcept>
 
 namespace sofa::linearalgebra
 {
-
-namespace
-{
-    template<typename Index>
-    bool wouldOverflowBlock(Index a, Index b)
-    {
-        if (a <= 0 || b <= 0) return false;
-        return a > std::numeric_limits<Index>::max() / b;
-    }
-}
 
 template<std::size_t N, typename T>
 typename BlockFullMatrix<N,T>::Index  BlockFullMatrix<N, T>::Block::Nrows() const
@@ -100,7 +92,7 @@ template<std::size_t N, typename T>
 BlockFullMatrix<N, T>::BlockFullMatrix(Index nbRow, Index nbCol)
     : data(nullptr), nTRow(nbRow), nTCol(nbCol), nBRow(nbRow/BSIZE), nBCol(nbCol/BSIZE), allocsize(0)
 {
-    if (wouldOverflowBlock(nBRow, nBCol))
+    if (type::hardening::checkOverflow(nBRow, nBCol))
         throw std::overflow_error("BlockFullMatrix: allocation size overflow");
     allocsize = nBRow * nBCol;
     data = new Block[allocsize];
@@ -132,7 +124,7 @@ void BlockFullMatrix<N, T>::resize(Index nbRow, Index nbCol)
     {
         const Index newBRow = nbRow / BSIZE;
         const Index newBCol = nbCol / BSIZE;
-        if (wouldOverflowBlock(newBRow, newBCol))
+        if (type::hardening::checkOverflow(newBRow, newBCol))
         {
             msg_error("BTDLinearSolver") << "Cannot resize matrix: allocation size overflow for (" << nbRow << "," << nbCol << ")";
             return;
