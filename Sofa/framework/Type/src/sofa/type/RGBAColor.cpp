@@ -220,7 +220,7 @@ SOFA_TYPE_API std::istream& operator>>(std::istream& i, RGBAColor& t)
     if( i.eof() || i.fail() )
         return i;
 
-    const char first = i.peek() ;
+    const int first = i.peek() ;
     if (std::isdigit(first, std::locale()))
     {
         i >> r >> g >> b ;
