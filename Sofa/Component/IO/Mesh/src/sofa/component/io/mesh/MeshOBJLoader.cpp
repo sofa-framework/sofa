@@ -29,6 +29,7 @@
 #include <climits>
 #include <sofa/helper/accessor.h>
 #include <sofa/helper/system/Locale.h>
+#include <sofa/type/hardening.h>
 
 namespace sofa::component::io::mesh
 {
@@ -309,17 +310,13 @@ bool MeshOBJLoader::readOBJ (std::ifstream &file, const char* filename)
 
                     if (!tmp.empty())
                     {
-                        char* endptr = nullptr;
-                        errno = 0;
-                        long val = std::strtol(tmp.c_str(), &endptr, 10);
-                        if (errno != 0 || endptr == tmp.c_str() || val < INT_MIN || val > INT_MAX)
+                        if(!sofa::type::hardening::safeStrToInt(tmp, vtn[j]))
                         {
                             msg_error() << "Invalid index " << tmp;
                             vtn[j] = -1;
                         }
                         else
                         {
-                            vtn[j] = static_cast<int>(val);
                             if (vtn[j] >= 1)
                                 vtn[j] -=1; // -1 because the numerotation begins at 1 and a vector begins at 0
                             else if (vtn[j] < 0)

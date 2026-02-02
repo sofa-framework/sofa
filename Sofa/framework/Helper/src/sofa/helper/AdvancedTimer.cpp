@@ -24,6 +24,8 @@
 #include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/type/vector.h>
+#include <sofa/type/hardening.h>
+
 #include <nlohmann/json.hpp>
 
 #include <iomanip>
@@ -94,13 +96,11 @@ public:
             val = getenv("SOFA_TIMER_ALL");
         if (val && *val)
         {
-            char* endptr = nullptr;
-            errno = 0;
-            long parsed = std::strtol(val, &endptr, 10);
-            if (errno == 0 && endptr != val && parsed >= 0 && parsed <= INT_MAX)
-                interval = static_cast<int>(parsed);
-            else
+            if(!sofa::type::hardening::safeStrToInt(std::string(val), interval))
+            {
+                msg_error("AdvancedTimer") << "Timer " << id << " : error while parsing " << val;
                 interval = 0;
+            }
         }
         else
             interval = 0;

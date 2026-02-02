@@ -22,6 +22,7 @@
 
 #include <sofa/component/io/mesh/OffSequenceLoader.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/type/hardening.h>
 
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/core/ObjectFactory.h>
@@ -91,17 +92,15 @@ void OffSequenceLoader::init()
     while ( m_filenameAndNb[--indCar] >= '0' && m_filenameAndNb[indCar] <= '9')
         fileNb.insert(0, 1, m_filenameAndNb[indCar]);
 
-    char* endptr = nullptr;
-    errno = 0;
-    long val = std::strtol(fileNb.c_str(), &endptr, 10);
-    if (errno != 0 || endptr == fileNb.c_str() || val < INT_MIN || val > INT_MAX)
+    
+    if(sofa::type::hardening::safeStrToInt(fileNb, firstIndex))
     {
-        msg_error() << "Invalid file index: " << fileNb;
-        currentIndex = firstIndex = 0;
+        currentIndex = firstIndex;
     }
     else
     {
-        currentIndex = firstIndex = static_cast<int>(val);
+        msg_error() << "Invalid file index: " << fileNb;
+        currentIndex = firstIndex = 0;
     }
 }
 

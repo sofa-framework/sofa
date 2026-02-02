@@ -45,6 +45,8 @@ using sofa::helper::logging::CountingMessageHandler ;
 using sofa::helper::logging::MessageDispatcher ;
 using sofa::helper::logging::Message ;
 
+#include <sofa/type/hardening.h>
+
 template<class T>
 class vector_test : public NumericTest<>,
         public ::testing::WithParamInterface<std::vector<std::string>>
@@ -253,19 +255,18 @@ public:
 template<class T>
 void vector_benchmark<T>::benchmark(const std::vector<std::string>& params)
 {
-    char* endptr = nullptr;
-    errno = 0;
-    long val1 = std::strtol(params[0].c_str(), &endptr, 10);
-    if (errno != 0 || endptr == params[0].c_str() || val1 < INT_MIN || val1 > INT_MAX)
-        val1 = 0;
-    const int loop1 = static_cast<int>(val1);
+    int loop1{}, loop2{};
+    if(!sofa::type::hardening::safeStrToInt(params[0], loop1))
+    {
+        std::cerr << "Error while reading " << params[0];
+        return;
+    }
+    if(!sofa::type::hardening::safeStrToInt(params[1], loop2))
+    {
+        std::cerr << "Error while reading " << params[1];
+        return;
+    }
 
-    endptr = nullptr;
-    errno = 0;
-    long val2 = std::strtol(params[1].c_str(), &endptr, 10);
-    if (errno != 0 || endptr == params[1].c_str() || val2 < INT_MIN || val2 > INT_MAX)
-        val2 = 0;
-    const int loop2 = static_cast<int>(val2);
     std::stringstream tmp;
     for(int i=0;i<loop1;i++)
     {

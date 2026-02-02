@@ -24,6 +24,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <cmath>
 #include <sofa/helper/RandomGenerator.h>
+#include <sofa/type/hardening.h>
 
 #include <vector>
 #include <iostream>
@@ -203,11 +204,15 @@ void TransformPosition<DataTypes>::getTransfoFromTfm()
                     std::string c = *it;
                     if ( c.find_first_of("1234567890.-") != std::string::npos)
                     {
-                        char* endptr = nullptr;
-                        errno = 0;
-                        double val = std::strtod(c.c_str(), &endptr);
-                        if (errno == 0 && endptr != c.c_str())
-                            values.push_back((Real)val);
+                        Real val{};
+                        if(sofa::type::hardening::safeStrToScalar(c, val))
+                        {
+                            values.push_back(val);
+                        }
+                        else
+                        {
+                            msg_error() << "error while parsing value " << c ;
+                        }
                     }
                 }
 
@@ -293,15 +298,14 @@ void TransformPosition<DataTypes>::getTransfoFromTrm()
                 Coord tr;
                 for ( unsigned int i = 0; i < std::min((unsigned int)vLine.size(),(unsigned int)3); i++)
                 {
-                    char* endptr = nullptr;
-                    errno = 0;
-                    double val = std::strtod(vLine[i].c_str(), &endptr);
-                    if (errno != 0 || endptr == vLine[i].c_str())
+                    Real val{};
+                    if(!sofa::type::hardening::safeStrToScalar(vLine[i], val))
                     {
                         msg_error() << "Invalid number in file: " << vLine[i];
                         val = 0.0;
                     }
-                    tr[i] = mat(i,3) = (Real)val;
+                    
+                    tr[i] = mat(i,3) = val;
                 }
                 f_translation.setValue(tr);
 
@@ -311,15 +315,14 @@ void TransformPosition<DataTypes>::getTransfoFromTrm()
                 //rotation matrix
                 for ( unsigned int i = 0; i < std::min((unsigned int)vLine.size(),(unsigned int)3); i++)
                 {
-                    char* endptr = nullptr;
-                    errno = 0;
-                    double val = std::strtod(vLine[i].c_str(), &endptr);
-                    if (errno != 0 || endptr == vLine[i].c_str())
+                    Real val{};
+                    if(!sofa::type::hardening::safeStrToScalar(vLine[i], val))
                     {
                         msg_error() << "Invalid number in file: " << vLine[i];
                         val = 0.0;
                     }
-                    mat(nbLines-2,i) = (Real)val;
+                    
+                    mat(nbLines-2,i) = val;
                 }
             }
 
@@ -385,14 +388,13 @@ void TransformPosition<DataTypes>::getTransfoFromTxt()
 
             for ( unsigned int i = 0; i < std::min((unsigned int)vLine.size(),(unsigned int)4); i++)
             {
-                char* endptr = nullptr;
-                errno = 0;
-                double val = std::strtod(vLine[i].c_str(), &endptr);
-                if (errno != 0 || endptr == vLine[i].c_str())
+                Real val{};
+                if(!sofa::type::hardening::safeStrToScalar(vLine[i], val))
                 {
                     msg_error() << "Invalid number in file: " << vLine[i];
                     val = 0.0;
                 }
+                
                 mat(nbLines-1,i) = (Real)val;
             }
         }

@@ -60,6 +60,8 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/Factory.inl>
 #include <sofa/helper/cast.h>
+#include <sofa/type/hardening.h>
+
 #include <iostream>
 #include <cstdlib>
 #include <cerrno>
@@ -164,13 +166,18 @@ void Node::parse( sofa::core::objectmodel::BaseObjectDescription* arg )
             val = false;
         else if ((str[0] >= '0' && str[0] <= '9') || str[0] == '-')
         {
-            char* endptr = nullptr;
-            errno = 0;
-            long parsed = std::strtol(str, &endptr, 10);
-            if (errno != 0 || endptr == str)
-                continue;
-            val = (parsed != 0);
+            int parsed{};
+            if(sofa::type::hardening::safeStrToInt(str, parsed))
+            {
+                val = (parsed != 0);
+            }
+            else
+            {
+                msg_warning() << "Error while parsing " << str;
+                val = false;
+            }
         }
+        
         else continue;
         if (!oldFlags.empty()) oldFlags += ' ';
         if (val) oldFlags += oldVisualFlags[i];

@@ -29,6 +29,7 @@
 
 #include <sofa/type/vector.h>
 #include <sofa/type/Vec.h>
+#include <sofa/type/hardening.h>
 #include <sofa/linearalgebra/MatrixExpr.h>
 #include <sofa/linearalgebra/FullVector.h>
 #include <sofa/linearalgebra/matrix_bloc_traits.h>
@@ -1607,13 +1608,14 @@ protected:
         std::string temp;
         while (std::getline(in, temp, ';'))
         {
-            try
+            int val{};
+            if(sofa::type::hardening::safeStrToInt(temp, val))
             {
-                vec.push_back(std::stoi(temp));
+                vec.push_back(val);
             }
-            catch (const std::exception&)
+            else
             {
-                // Skip invalid entries
+                msg_warning("CompressedRowSparseMatrixGeneric") << "could not parse " << temp << " ; skipping entry.";
             }
         }
     }

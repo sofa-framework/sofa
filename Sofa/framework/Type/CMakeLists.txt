@@ -10,6 +10,7 @@ set(HEADER_FILES
     ${SOFATYPESRC_ROOT}/DualQuat.h
     ${SOFATYPESRC_ROOT}/DualQuat.inl
     ${SOFATYPESRC_ROOT}/Frame.h
+    ${SOFATYPESRC_ROOT}/hardening.h
     ${SOFATYPESRC_ROOT}/Mat.h
     ${SOFATYPESRC_ROOT}/MatSym.h
     ${SOFATYPESRC_ROOT}/Mat_solve_Cholesky.h
