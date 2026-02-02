@@ -107,6 +107,7 @@ if(mimalloc_FOUND)
 endif()
 
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER Sofa.Framework) # IDE folder
+sofa_enable_clang_tidy(${PROJECT_NAME})
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

@@ -508,3 +508,29 @@ macro(sofa_set_targets_release_only)
 endmacro()
 
 
+
+function(sofa_enable_clang_tidy TARGET_NAME)
+    cmake_parse_arguments(CT "" "CHECKS" "" ${ARGN})
+
+    if(NOT TARGET "${TARGET_NAME}")
+        message(FATAL_ERROR "enable_clang_tidy: '${TARGET_NAME}' is not a target")
+    endif()
+
+    find_program(CLANG_TIDY_EXE NAMES clang-tidy)
+    if(NOT CLANG_TIDY_EXE)
+        message(STATUS "clang-tidy not found; skipping for target '${TARGET_NAME}. Install clang-tidy and add it to your PATH environment variable.'")
+        return()
+    endif()
+
+    set(cmd "${CLANG_TIDY_EXE}")
+    if(CT_CHECKS)
+        list(APPEND cmd "-checks=${CT_CHECKS}")
+    endif()
+
+    # Enable clang-tidy only for this target
+    set_target_properties("${TARGET_NAME}" PROPERTIES
+        C_CLANG_TIDY   "${cmd}"
+        CXX_CLANG_TIDY "${cmd}"
+    )
+endfunction()
+
