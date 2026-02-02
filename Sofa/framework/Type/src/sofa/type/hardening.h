@@ -42,7 +42,7 @@ inline bool safeStrToInt(const std::string& s, int& result)
     char* endptr = nullptr;
     errno = 0;
     long val = std::strtol(s.c_str(), &endptr, 10);
-    if (errno != 0 || endptr == s.c_str() || val < INT_MIN || val > INT_MAX)
+    if (errno != 0 || endptr == s.c_str() || val < std::numeric_limits<int>::min() || val > std::numeric_limits<int>::max())
         return false;
     result = static_cast<int>(val);
     return true;
@@ -53,7 +53,7 @@ inline bool safeStrToUInt(const std::string& s, unsigned int& result)
     char* endptr = nullptr;
     errno = 0;
     unsigned long val = std::strtoul(s.c_str(), &endptr, 10);
-    if (errno != 0 || endptr == s.c_str() || val > UINT_MAX)
+    if (errno != 0 || endptr == s.c_str() || val > std::numeric_limits<unsigned int>::max())
         return false;
     result = static_cast<unsigned int>(val);
     return true;
