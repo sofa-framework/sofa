@@ -36,6 +36,7 @@ using sofa::testing::NumericTest;
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/component/statecontainer/MechanicalObject.h>
 #include <sofa/core/behavior/BaseForceField.h>
+#include <sofa/core/behavior/BaseLocalForceFieldMatrix.h>
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalComputeDfVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalComputeDfVisitor;
@@ -189,7 +190,8 @@ struct ForceField_test : public BaseSimulationTest, NumericTest<typename _ForceF
         }
 
         SReal absoluteErrorPotentialEnergy = std::abs(differencePotentialEnergy - expectedDifferencePotentialEnergy);
-        if( absoluteErrorPotentialEnergy> errorFactorPotentialEnergy*errorMax*this->epsilon() ){
+        if( absoluteErrorPotentialEnergy> errorFactorPotentialEnergy*errorMax*this->epsilon() )
+        {
             ADD_FAILURE()<<"dPotentialEnergy differs from -dX.F (threshold=" << errorFactorPotentialEnergy*errorMax*this->epsilon() << ")" << std::endl
                         << "dPotentialEnergy is " << differencePotentialEnergy << std::endl
                         << "-dX.F is " << expectedDifferencePotentialEnergy << std::endl
@@ -214,7 +216,7 @@ struct ForceField_test : public BaseSimulationTest, NumericTest<typename _ForceF
             "Failed seed number = " << this->seed;
     }
 
-    void checkStiffnessMatrix(core::MechanicalParams* mparams, const VecDeriv& dX, const VecDeriv& changeOfForce)
+    void checkAddKToMatrix(core::MechanicalParams* mparams, const VecDeriv& dX, const VecDeriv& changeOfForce)
     {
         typedef sofa::linearalgebra::EigenBaseSparseMatrix<SReal> Sqmat;
         const std::size_t n = dX.size();
@@ -232,14 +234,57 @@ struct ForceField_test : public BaseSimulationTest, NumericTest<typename _ForceF
         modeling::Vector df;
         sofa::testing::data_traits<DataTypes>::VecDeriv_to_Vector( df, changeOfForce );
 
-        if( debug ){
-            std::cout << "                  dX = " << dX << std::endl;
+        if( debug )
+        {
+            std::cout << "        [addKToMatrix] dX = " << dX << std::endl;
             std::cout << "     change of force = " << changeOfForce << std::endl;
             std::cout << "                 Kdx = " << Kdx.transpose() << std::endl;
         }
 
         EXPECT_LE( this->vectorMaxDiff(Kdx, df), errorMax * this->epsilon() ) <<
-            "Kdx differs from change of force"
+            "Kdx (from addKToMatrix) differs from change of force"
+            "\nFailed seed number = " << this->seed;
+    }
+
+    void checkBuildStiffnessMatrix(core::MechanicalParams* mparams, const VecDeriv& dX, const VecDeriv& changeOfForce)
+    {
+        typedef sofa::linearalgebra::EigenBaseSparseMatrix<SReal> Sqmat;
+        const std::size_t n = dX.size();
+        const sofa::SignedIndex matrixSize = static_cast<sofa::SignedIndex>(n * DataTypes::deriv_total_size);
+        Sqmat K( matrixSize, matrixSize);
+
+        struct StiffnessMatrixAccumulatorTest : public core::behavior::StiffnessMatrixAccumulator
+        {
+            StiffnessMatrixAccumulatorTest(Sqmat& m) : matrix(m) {}
+            void add(sofa::SignedIndex row, sofa::SignedIndex col, float value) override { matrix.add(row, col, (SReal)value); }
+            void add(sofa::SignedIndex row, sofa::SignedIndex col, double value) override { matrix.add(row, col, (SReal)value); }
+            Sqmat& matrix;
+        };
+
+        StiffnessMatrixAccumulatorTest accumulator(K);
+        sofa::core::behavior::StiffnessMatrix stiffnessMatrix;
+        stiffnessMatrix.setMatrixAccumulator(&accumulator, dof.get());
+        stiffnessMatrix.setMechanicalParams(mparams);
+
+        force->buildStiffnessMatrix(&stiffnessMatrix);
+        K.compress();
+
+        modeling::Vector dx;
+        sofa::testing::data_traits<DataTypes>::VecDeriv_to_Vector( dx, dX );
+
+        modeling::Vector Kdx = K * dx;
+        modeling::Vector df;
+        sofa::testing::data_traits<DataTypes>::VecDeriv_to_Vector( df, changeOfForce );
+
+        if( debug )
+        {
+            std::cout << "  [buildStiffnessMatrix] dX = " << dX << std::endl;
+            std::cout << "     change of force = " << changeOfForce << std::endl;
+            std::cout << "                 Kdx = " << Kdx.transpose() << std::endl;
+        }
+
+        EXPECT_LE( this->vectorMaxDiff(Kdx, df), errorMax * this->epsilon() ) <<
+            "Kdx (from buildStiffnessMatrix) differs from change of force"
             "\nFailed seed number = " << this->seed;
     }
 
@@ -325,7 +370,9 @@ struct ForceField_test : public BaseSimulationTest, NumericTest<typename _ForceF
 
         checkComputeDf(&mparams, dX, changeOfForce);
 
-        checkStiffnessMatrix(&mparams, dX, changeOfForce);
+        checkAddKToMatrix(&mparams, dX, changeOfForce);
+
+        checkBuildStiffnessMatrix(&mparams, dX, changeOfForce);
     }
 
 
