@@ -235,6 +235,10 @@ bool DiscreteGridField::loadGridFromMHD( const char *filename )
             dataFile[lenWithoutExt] = '\0';
             strncat( dataFile, "raw", sizeof(dataFile) - lenWithoutExt - 1 );
         }
+        else
+        {
+            printf( "Warning: filename too long to replace extension, keeping '%s'\n", dataFile );
+        }
     }
     std::ifstream data( dataFile, std::ios_base::binary|std::ios_base::in );
     if (!data.is_open()) return false;
