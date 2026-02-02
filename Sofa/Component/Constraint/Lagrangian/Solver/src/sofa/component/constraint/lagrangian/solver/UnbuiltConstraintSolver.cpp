@@ -37,12 +37,13 @@ void UnbuiltConstraintSolver::doBuildSystem( const core::ConstraintParams *cPara
         return;
     }
 
+    // Initialize constraint sequence ONCE before iterating over constraint corrections
+    c_current_cp->constraints_sequence.resize(numConstraints);
+    std::iota(c_current_cp->constraints_sequence.begin(), c_current_cp->constraints_sequence.end(), 0);
+
     for (const auto& cc : l_constraintCorrections)
     {
         if (!cc->isActive()) continue;
-
-        c_current_cp->constraints_sequence.resize(numConstraints);
-        std::iota(c_current_cp->constraints_sequence.begin(), c_current_cp->constraints_sequence.end(), 0);
 
         // some constraint corrections (e.g LinearSolverConstraintCorrection)
         // can change the order of the constraints, to optimize later computations
