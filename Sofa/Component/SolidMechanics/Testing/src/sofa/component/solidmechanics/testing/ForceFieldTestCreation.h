@@ -22,12 +22,7 @@
 #pragma once
 
 #include <sofa/testing/BaseSimulationTest.h>
-using sofa::testing::BaseSimulationTest;
-
 #include <sofa/testing/NumericTest.h>
-using sofa::testing::NumericTest;
-
-#include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/linearalgebra/EigenBaseSparseMatrix.h>
 #include <sofa/core/behavior/SingleMatrixAccessor.h>
@@ -58,8 +53,8 @@ namespace sofa {
  * @author François Faure, 2014
  *
  */
-template <typename _ForceFieldType>
-struct ForceField_test : public BaseSimulationTest, NumericTest<typename _ForceFieldType::DataTypes::Real>
+template <typename _ForceFieldType> requires std::is_base_of_v<core::behavior::BaseForceField, _ForceFieldType>
+struct ForceField_test : public sofa::testing::BaseSimulationTest, public sofa::testing::NumericTest<typename _ForceFieldType::DataTypes::Real>
 {
     typedef _ForceFieldType ForceField;
     typedef typename ForceField::DataTypes DataTypes;
