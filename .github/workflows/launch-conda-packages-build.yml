@@ -9,6 +9,11 @@ jobs:
     if: ${{ github.repository_owner == 'sofa-framework' }}
 
     steps:
+      - name: Get commit date
+        run: |
+          COMMIT_DATE=$(git show -s --date=format:%Y%m%d --format=%cd ${{ github.sha }})
+          echo "COMMIT_DATE=$COMMIT_DATE" >> $GITHUB_ENV
+
       - name: Launch build of development conda packages of SOFA
         run: |
           sudo apt install curl
@@ -18,4 +23,4 @@ jobs:
           -H "Authorization: Bearer ${{ secrets.PERF_REG_TOKEN }}"  \
           -H "X-GitHub-Api-Version: 2022-11-28" \
           https://api.github.com/repos/sofa-framework/conda-ci/dispatches \
-          -d '{"event_type":"build-nightly-sofa","client_payload":{"branch":"master","commit_hash":"${{ github.sha }}"}}'
+          -d '{"event_type":"build-nightly-sofa","client_payload":{"commit_date":"$COMMIT_DATE","commit_hash":"${{ github.sha }}"}}'
