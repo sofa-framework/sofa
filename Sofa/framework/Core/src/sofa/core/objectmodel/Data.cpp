@@ -22,6 +22,9 @@
 #define SOFA_CORE_OBJECTMODEL_DATA_CPP
 
 #include <sofa/core/objectmodel/Data.h>
+
+#include <sofa/type/hardening.h>
+
 #include <cstdlib>
 #include <cerrno>
 
@@ -50,12 +53,15 @@ bool SOFA_CORE_API Data<bool>::read( const std::string& str )
         val = false;
     else if ((str[0] >= '0' && str[0] <= '9') || str[0] == '-')
     {
-        char* endptr = nullptr;
-        errno = 0;
-        long parsed = std::strtol(str.c_str(), &endptr, 10);
-        if (errno != 0 || endptr == str.c_str())
+        int parsed{};
+        if(sofa::type::hardening::safeStrToInt(str, parsed))
+        {
+            val = (parsed != 0);
+        }
+        else
+        {
             return false;
-        val = (parsed != 0);
+        }
     }
     else
         return false;

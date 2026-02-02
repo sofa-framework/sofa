@@ -24,6 +24,7 @@
 #include <cerrno>
 #include <climits>
 #include <sofa/helper/logging/Messaging.h>
+#include <sofa/type/hardening.h>
 
 namespace sofa::helper
 {
@@ -112,13 +113,19 @@ void OptionsGroup::readFromStream(std::istream & stream)
     const int id_stringinButtonList = isInOptionsList(tempostring);
     if (id_stringinButtonList == -1)
     {
-        char* endptr = nullptr;
-        errno = 0;
-        long val = std::strtol(tempostring.c_str(), &endptr, 10);
-        if (errno == 0 && endptr != tempostring.c_str() && val >= 0 && val < (long)size())
-            setSelectedItem(static_cast<unsigned int>(val));
-        else
-            msg_warning("OptionsGroup") << "\""<< tempostring <<"\" is not a parameter in button list :\" "<<(*this)<<"\"";
+        int idx{};
+        if(sofa::type::hardening::safeStrToInt(tempostring, idx))
+        {
+            if (idx >=0 && idx < (int)size())
+            {
+                setSelectedItem(idx);
+            }
+            else
+            {
+                msg_warning("OptionsGroup") << "\""<< tempostring <<"\" is not a parameter in button list :\" "<<(*this)<<"\"";
+            }
+        }
+        msg_warning("OptionsGroup") << "Error while parsing \"" << tempostring << "\"";
     }
     else
     {
