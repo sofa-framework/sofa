@@ -62,7 +62,13 @@ static int hexval(const char c)
 static void extractValidatedHexaString(std::istream& in, std::string& s)
 {
     s.reserve(9);
-    char c = in.get();
+    char c {};
+    in.get(c);
+
+    if (in.fail())
+    {
+        return;
+    }
 
     if(c!='#')
     {
@@ -71,14 +77,15 @@ static void extractValidatedHexaString(std::istream& in, std::string& s)
     }
 
     s.push_back(c);
-    while(in.get(c)){
-        if( !ishexsymbol(c) )
-            return;
+    while (in.get(c))
+    {
+        if (!ishexsymbol(c)) return;
 
-        s.push_back(c) ;
-        if(s.size()>9){
-            in.setstate(std::ios_base::failbit) ;
-            return ;
+        s.push_back(c);
+        if (s.size() > 9)
+        {
+            in.setstate(std::ios_base::failbit);
+            return;
         }
     }
     /// we need to reset the failbit because it is set by the get function
