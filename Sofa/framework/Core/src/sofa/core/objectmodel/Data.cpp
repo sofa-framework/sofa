@@ -22,6 +22,8 @@
 #define SOFA_CORE_OBJECTMODEL_DATA_CPP
 
 #include <sofa/core/objectmodel/Data.h>
+#include <cstdlib>
+#include <cerrno>
 
 
 namespace sofa::core::objectmodel
@@ -47,7 +49,14 @@ bool SOFA_CORE_API Data<bool>::read( const std::string& str )
     else if (str[0] == 'F' || str[0] == 'f')
         val = false;
     else if ((str[0] >= '0' && str[0] <= '9') || str[0] == '-')
-        val = (atoi(str.c_str()) != 0);
+    {
+        char* endptr = nullptr;
+        errno = 0;
+        long parsed = std::strtol(str.c_str(), &endptr, 10);
+        if (errno != 0 || endptr == str.c_str())
+            return false;
+        val = (parsed != 0);
+    }
     else
         return false;
     setValue(val);

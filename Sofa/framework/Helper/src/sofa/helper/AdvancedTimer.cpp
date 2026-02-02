@@ -29,6 +29,7 @@
 #include <iomanip>
 #include <cmath>
 #include <cstdlib>
+#include <cerrno>
 #include <stack>
 #include <algorithm>
 #include <cctype>
@@ -92,7 +93,15 @@ public:
         if (!val || !*val)
             val = getenv("SOFA_TIMER_ALL");
         if (val && *val)
-            interval = atoi(val);
+        {
+            char* endptr = nullptr;
+            errno = 0;
+            long parsed = std::strtol(val, &endptr, 10);
+            if (errno == 0 && endptr != val && parsed >= 0 && parsed <= INT_MAX)
+                interval = static_cast<int>(parsed);
+            else
+                interval = 0;
+        }
         else
             interval = 0;
         defaultInterval = (interval != 0) ? interval : DEFAULT_INTERVAL;

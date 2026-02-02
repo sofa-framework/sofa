@@ -242,6 +242,8 @@ void ArticulatedHierarchyContainer::init ()
         for (; ac != acEnd; ac++)
         {
             context = dynamic_cast<simulation::Node *>((*ac)->getContext());
+            if (!context)
+                continue;
             for (simulation::Node::ChildIterator it = context->child.begin(); it != context->child.end(); ++it)
             {
                 simulation::Node* n =  it->get();

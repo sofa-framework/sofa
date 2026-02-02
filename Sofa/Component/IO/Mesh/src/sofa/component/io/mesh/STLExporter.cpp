@@ -260,7 +260,8 @@ bool STLExporter::writeSTLBinary(bool autonumbering)
     {
         buffer[i]='\0';
     }
-    strcpy(buffer, "Exported from Sofa");
+    strncpy(buffer, "Exported from Sofa", 79);
+    buffer[79] = '\0';
     outfile.write(buffer,80);
 
     /* Number of d_facets */
