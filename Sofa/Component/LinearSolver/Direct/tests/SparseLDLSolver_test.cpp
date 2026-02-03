@@ -28,6 +28,7 @@
 #include <sofa/simpleapi/SimpleApi.h>
 
 #include <sofa/testing/NumericTest.h>
+#include <sofa/helper/RandomGenerator.h>
 
 
 TEST(SparseLDLSolver, EmptySystem)
@@ -139,4 +140,59 @@ TEST(SparseLDLSolver, AssociatedLinearSystem)
     EXPECT_NE(matrixSystem, nullptr);
 
     EXPECT_EQ(MatrixSystem::GetCustomTemplateName(), MatrixType::Name());
+}
+
+
+TEST(SparseLDLSolver, TestInvertingRandomMatrix)
+{
+    using MatrixType = sofa::linearalgebra::CompressedRowSparseMatrix<SReal>;
+    using Solver = sofa::component::linearsolver::direct::SparseLDLSolver<MatrixType, sofa::linearalgebra::FullVector<SReal> >;
+    const Solver::SPtr solver = sofa::core::objectmodel::New<Solver>();
+
+    solver->init();
+
+    unsigned nbRows = 300;
+    unsigned nbCols = 300;
+    SReal reg = 5;
+    float sparsity = 0.5;
+    const auto nbNonZero = static_cast<sofa::SignedIndex>(sparsity * 0.5 * static_cast<SReal>(nbRows*nbCols));
+
+
+    sofa::linearalgebra::FullMatrix<SReal> tempMatrix(nbRows,nbCols), finalTempMatrix;
+    sofa::helper::RandomGenerator randomGenerator;
+    randomGenerator.initSeed(153);
+
+
+    for (sofa::SignedIndex i = 0; i < nbNonZero; ++i)
+    {
+        const auto value = static_cast<SReal>(sofa::helper::drand(1));
+        const auto row = randomGenerator.random<sofa::Index>(0, nbRows);
+        const auto col = randomGenerator.random<sofa::Index>(0, nbCols);
+        tempMatrix.set(row,col,value);
+    }
+
+
+    const double epsilon = std::numeric_limits<SReal>::epsilon();
+    tempMatrix.mulT(finalTempMatrix, tempMatrix);
+    for (sofa::SignedIndex i = 0; i < nbRows; ++i)
+    {
+        finalTempMatrix.set(i,i,finalTempMatrix(i,i) + reg);
+    }
+    sofa::linearalgebra::CompressedRowSparseMatrix<SReal> matrix;
+    matrix.resize(nbRows, nbCols);
+
+    for (unsigned i=0; i<nbRows; ++i)
+    {
+        for (unsigned j=0; j<nbCols; ++j)
+        {
+            if (tempMatrix(i,j) > epsilon)
+                matrix.set(i,j,tempMatrix(i,j));
+        }
+
+    }
+    matrix.compress();
+
+
+
+
 }
