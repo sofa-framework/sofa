@@ -20,7 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/mass/testing/MassTestCreation.h>
-#include <sofa/component/mass/UniformMass.h>
 #include <sofa/component/mass/MeshMatrixMass.h>
 #include <sofa/component/topology/container/constant/MeshTopology.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -29,47 +28,6 @@ namespace sofa::component::mass::testing
 {
 
 using MeshTopology = sofa::component::topology::container::constant::MeshTopology;
-
-/***************************************************************************************************
- * UniformMass
- **************************************************************************************************/
-
-template <typename DataTypes>
-struct UniformMass_template_test : public Mass_test<UniformMass<DataTypes>>
-{
-    using VecCoord = sofa::VecCoord_t<DataTypes>;
-    using VecDeriv = sofa::VecDeriv_t<DataTypes>;
-
-    void run()
-    {
-        this->m_mass->setTotalMass(10.0_sreal);
-
-        VecCoord x(2);
-        DataTypes::set(x[0], 9.5, -49.2, 5.32);
-        DataTypes::set(x[1], 0.8, 17.6, -7.3);
-
-        VecDeriv v(2);
-        DataTypes::set(v[0], 3.54, -0.87, 12.09);
-        DataTypes::set(v[1], 0.048, -8.7, -0.12);
-
-        this->run_test(x, v);
-    }
-};
-
-typedef ::testing::Types<
-    defaulttype::Vec1Types,
-    defaulttype::Vec2Types,
-    defaulttype::Vec3Types,
-    defaulttype::Vec6Types
-> UniformMassDataTypes;
-
-TYPED_TEST_SUITE(UniformMass_template_test, UniformMassDataTypes);
-
-TYPED_TEST(UniformMass_template_test, test)
-{
-    this->run();
-}
-
 
 /***************************************************************************************************
  * MeshMatrixMass
