@@ -528,18 +528,16 @@ public:
 
     bool isDiagonal() const noexcept
     {
-        constexpr Size minDim = std::min(L, C);
         for (Size i=0; i<L; ++i)
         {
             for (Size j=0; j<C; ++j)
             {
-                if (j == i && i < minDim) continue;
+                if (j == i) continue;
                 if( rabs( (*this)(i,j) ) > EQUALITY_THRESHOLD ) return false;
             }
         }
         return true;
     }
-
 
     /// @}
 
