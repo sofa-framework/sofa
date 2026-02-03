@@ -457,7 +457,7 @@ bool BroadPhaseTest<BroadPhase, NarrowPhase>::randTest(int /*seed*/, int nb1, in
     for(int i = 0 ; i < nb2 ; ++i)
         secondCollision.push_back(randVect(min,max));
 
-    sofa::simulation::Node::SPtr scn = sofa::core::objectmodel::New<sofa::simulation::graph::DAGNode>();
+    sofa::simulation::Node::SPtr scn = sofa::core::objectmodel::New<sofa::simulation::Node>();
     sofa::component::collision::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbm1,obbm2;
     obbm1 = makeOBBModel(firstCollision,scn,getExtent());
     obbm2 = makeOBBModel(secondCollision,scn,getExtent());
