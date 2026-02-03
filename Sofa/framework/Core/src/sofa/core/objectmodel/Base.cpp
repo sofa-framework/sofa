@@ -20,8 +20,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_CORE_OBJECTMODEL_BASE_CPP
-#include <sofa/core/objectmodel/Base.h>
 
+#include <sofa/core/objectmodel/Base.h>
+#include <sofa/core/objectmodel/BaseSnapshot.h>
 #include <sofa/type/BoundingBox.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/core/ObjectFactory.h>
@@ -685,7 +686,7 @@ int Base::getInstanciationSourceFilePos() const
 void Base::saveDataIn(BaseSnapshot::SnapshotObject& snapshot) const
 {
     const auto& dataFields = this->getDataFields();
-
+    
     for (const auto& data : dataFields)
     {
         BaseSnapshot::DataInfo dataInfo;
@@ -710,10 +711,11 @@ void Base::saveLinksIn(BaseSnapshot::SnapshotObject& snapshot) const
     }
 }
 
-void Base::saveInternalStateIn(BaseSnapshot::SnapshotObject& snapshot) const
-{}
+// void Base::saveInternalStateIn(BaseSnapshot::SnapshotObject& snapshot) const
+// {}
 
-std::shared_ptr<BaseSnapshot::SnapshotObject> Base::createSnapshotObject(const std::vector<std::shared_ptr<BaseSnapshot::SnapNode>>& parents) const
+std::shared_ptr<BaseSnapshot::SnapshotObject>
+Base::createSnapshotObject(std::vector<std::shared_ptr<BaseSnapshot::SnapNode>>& parents) const
 {
     auto object = std::make_shared<BaseSnapshot::SnapshotObject>();
     for (auto p : parents)
@@ -726,15 +728,13 @@ std::shared_ptr<BaseSnapshot::SnapshotObject> Base::createSnapshotObject(const s
     return object;
 }
 
-std::shared_ptr<BaseSnapshot::SnapshotObject> Base::saveSnapshot(const std::vector<std::shared_ptr<BaseSnapshot::SnapNode>>& parents) const
+std::shared_ptr<BaseSnapshot::SnapshotObject> Base::saveSnapshot(std::vector<std::shared_ptr<BaseSnapshot::SnapNode>>& parents) const
 {
-    const auto snapshotObject = createSnapshotObject(parent);
-
+    const auto snapshotObject = createSnapshotObject(parents);
     snapshotObject->m_name = this->getName();
     saveDataIn(*snapshotObject);
     saveLinksIn(*snapshotObject);
-    saveInternalStateIn(*snapshotObject);
-
+    //saveInternalStateIn(*snapshotObject);
     return snapshotObject;
 }
 
@@ -744,7 +744,6 @@ void Base::loadSnapshot(BaseSnapshot& snapshot)
 {
     //type.importSnapshot(filename);
     std::cout << "load snapshot" << std::endl;
-    snapshot.addToSimulation();
 }    
 
 } // namespace sofa::core::objectmodel

@@ -29,4 +29,14 @@ BaseSnapshot::BaseSnapshot()
 {}
 BaseSnapshot::~BaseSnapshot() = default;
 
+void BaseSnapshot::printSnapshot() const
+{
+    std::cout << m_graphRoot->m_name << std::endl;
+    
+    for (auto& element : m_graphRoot->components)
+    {
+        std::cout << "  Component name : " << element.m_name << std::endl;
+    }
+}
+
 } // namespace sofa::core::objectmodel

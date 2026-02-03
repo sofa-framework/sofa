@@ -55,12 +55,12 @@ namespace sofa::simulation
 
 void LoadSnapshotVisitor::processObject(core::objectmodel::BaseObject* obj)
 {
-    obj->loadSnapshot(snapCont_);
+    //obj->loadSnapshot(snapCont_);
 }
 
 Visitor::Result LoadSnapshotVisitor::processNodeTopDown(simulation::Node* node)
 { 
-    node->loadSnapshot(snapCont_);
+    //node->loadSnapshot(snapCont_);
     for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
     {
         this->processObject(it->get());

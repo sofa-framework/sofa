@@ -41,9 +41,10 @@
 #include <sofa/type/fwd.h>
 
 #include <sstream>
-#include <sofa/core/objectmodel/BaseSnapshot.h>
+
 #include <sofa/core/objectmodel/SnapshotFactory.h>
 
+#include <sofa/core/objectmodel/BaseSnapshot.h>
 
 #define SOFA_BASE_CAST_IMPLEMENTATION(CLASSNAME) \
 virtual const CLASSNAME* to##CLASSNAME() const override { return this; } \
@@ -52,7 +53,7 @@ virtual       CLASSNAME* to##CLASSNAME()       override { return this; }
 namespace sofa::core::objectmodel
 {
 
-class BaseSnapshot;
+
 
 /**
  *  \brief Base class for everything
@@ -363,14 +364,14 @@ public:
 
     ///@}
 
-    std::shared_ptr<BaseSnapshot::SnapshotObject> saveSnapshot(const std::vector<std::shared_ptr<BaseSnapshot::SnapNode>>& parents) const;
+    std::shared_ptr<BaseSnapshot::SnapshotObject> saveSnapshot(std::vector<std::shared_ptr<BaseSnapshot::SnapNode>>& parents) const;
     void loadSnapshot(BaseSnapshot& snapshot);
 
 protected:
     void saveDataIn(BaseSnapshot::SnapshotObject& snapshot) const;
     void saveLinksIn(BaseSnapshot::SnapshotObject& snapshot) const;
-    virtual void saveInternalStateIn(BaseSnapshot::SnapshotObject& snapshot) const;
-    virtual std::shared_ptr<BaseSnapshot::SnapshotObject> createSnapshotObject(const std::vector<std::shared_ptr<BaseSnapshot::SnapNode>>& parents) const;
+    //virtual void saveInternalStateIn(SnapshotObject& snapshot) const;
+    virtual std::shared_ptr<BaseSnapshot::SnapshotObject> createSnapshotObject(std::vector<std::shared_ptr<BaseSnapshot::SnapNode>>& parents) const;
 
 private :
     BaseSnapshot* Snapshot_impl; 

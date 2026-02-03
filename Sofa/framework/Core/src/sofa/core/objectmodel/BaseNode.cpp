@@ -19,6 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/core/objectmodel/BaseSnapshot.h>
 #include <sofa/core/objectmodel/BaseNode.h>
 #include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/core/behavior/BaseAnimationLoop.h>
@@ -63,10 +64,12 @@ core::visual::VisualLoop* BaseNode::getVisualLoop() const
     return this->getContext()->get<core::visual::VisualLoop>();
 }
 
-std::shared_ptr<core::objectmodel::BaseSnapshot::SnapshotObject>
-BaseNode::createSnapshotObject(const std::vector<std::shared_ptr<BaseSnapshot::SnapNode>>& parents) const
+// std::shared_ptr<SnapshotObject> createSnapshotObject(const std::vector<std::shared_ptr<SnapNode>>& parents)
+
+std::shared_ptr<BaseSnapshot::SnapshotObject>
+BaseNode::createSnapshotObject(std::vector<std::shared_ptr<BaseSnapshot::SnapNode>>& parents) const
 {
-    auto nodeObject = std::make_shared<core::objectmodel::BaseSnapshot::SnapNode>();
+    auto nodeObject = std::make_shared<BaseSnapshot::SnapNode>();
     for (auto p : parents)
     {
         if (p)
@@ -74,6 +77,7 @@ BaseNode::createSnapshotObject(const std::vector<std::shared_ptr<BaseSnapshot::S
             p->children.push_back(nodeObject);
         }
     }
+    
     return nodeObject;
 }
 

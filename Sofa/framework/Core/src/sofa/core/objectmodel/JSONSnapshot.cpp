@@ -56,19 +56,20 @@ void to_json(nlohmann::json& j, const BaseSnapshot::LinkInfo& li )
     j["value"]       = li.value;
 }
 
-void to_json(nlohmann::json& j, const BaseSnapshot::SnapComponent& sds )
+void to_json(nlohmann::json& j, const BaseSnapshot::SnapshotObject& so )
 {
     j.clear();
-    j["datas"] = sds.dataContainer;
-    j["links"] = sds.linkContainer;
+    j["name"] = so.m_name;
+    j["datas"] = so.m_dataContainer;
+    j["links"] = so.m_linkContainer;
 }
 
 void to_json(nlohmann::json& j, const BaseSnapshot::SnapNode& sn)
 {
     j.clear();
-    j["name"] = sn.name;
-    j["datas"] = sn.dataContainer;
-    j["links"] = sn.linkContainer;
+    j["name"] = sn.m_name;
+    j["datas"] = sn.m_dataContainer;
+    j["links"] = sn.m_linkContainer;
     j["components"] = sn.components;
 
     j["children"] = nlohmann::json::array();
@@ -78,20 +79,37 @@ void to_json(nlohmann::json& j, const BaseSnapshot::SnapNode& sn)
         {
             j["children"].push_back(*childPtr);
         }
+        else
+        {
+            j["children"].push_back(nullptr);
+        }
+    }
+}
+
+void to_json(nlohmann::json& j, const std::shared_ptr<BaseSnapshot::SnapNode>& sn)
+{
+    j.clear();
+    j["name"] = sn->m_name;
+    j["datas"] = sn->m_dataContainer;
+    j["links"] = sn->m_linkContainer;
+    j["components"] = sn->components;
+    j["children"] = nlohmann::json::array();
+    for (const auto& childPtr : sn->children)
+    {
+        if(childPtr)
+        {
+            j["children"].push_back(*childPtr);
+        }
+        else
+        {
+            j["children"].push_back(nullptr);
+        }
     }
 }
 
 void JSONSnapshot::exportTo(const std::string filename)
 {
-    nlohmann::json j = nlohmann::json::array() ;
-
-    for (const auto& nodePtr : treeSnapshot)
-    {
-        if (nodePtr)
-        {
-            j.push_back(*nodePtr); 
-        }
-    }
+    nlohmann::json j = *m_graphRoot ;
 
     std::ofstream file(filename);
     file << j.dump(5);
@@ -104,62 +122,59 @@ void JSONSnapshot::importSnapshot(const std::string filename)
 }
 
 
-void from_json(const nlohmann::json& j,BaseSnapshot::DataInfo& di )
-{
-    j.at("name").get_to(di.name);
-    j.at("type").get_to(di.type);
-    j.at("value").get_to(di.value);
+// void from_json(const nlohmann::json& j,BaseSnapshot::DataInfo& di )
+// {
+//     j.at("name").get_to(di.name);
+//     j.at("type").get_to(di.type);
+//     j.at("value").get_to(di.value);
     
-}
+// }
 
-void from_json(const nlohmann::json& j,BaseSnapshot::LinkInfo& li )
-{
-    j.at("name").get_to(li.name);
-    j.at("type").get_to(li.type);
-    j.at("value").get_to(li.value);
-}
+// void from_json(const nlohmann::json& j,BaseSnapshot::LinkInfo& li )
+// {
+//     j.at("name").get_to(li.name);
+//     j.at("type").get_to(li.type);
+//     j.at("value").get_to(li.value);
+// }
 
-void from_json(const nlohmann::json& j,BaseSnapshot::SnapComponent& sds )
-{
-    j.at("datas").get_to(sds.dataContainer);
-    j.at("links").get_to(sds.linkContainer);
-}
+// void from_json(const nlohmann::json& j,BaseSnapshot::SnapshotObject& so )
+// {
+//     j.at("datas").get_to(so.m_dataContainer);
+//     j.at("links").get_to(so.m_linkContainer);
+// }
 
-void from_json(const nlohmann::json& j, BaseSnapshot::SnapNode& sn)
-{
-    j.at("name").get_to(sn.name); 
-    j.at("datas").get_to(sn.dataContainer); 
-    j.at("links").get_to(sn.linkContainer); 
-    j.at("components").get_to(sn.components); 
+// void from_json(const nlohmann::json& j, BaseSnapshot::SnapNode& sn)
+// {
+//     j.at("components").get_to(sn.components); 
 
-    sn.children.clear();
-    if (j.contains("children") && j["children"].is_array())
-    {
-        for (const auto& childJson : j["children"])
-        {
-            auto child = std::make_shared<BaseSnapshot::SnapNode>();
-            childJson.get_to(*child);
-            sn.children.push_back(child);
-        }
-    }
-}
+//     sn.children.clear();
+//     if (j.contains("children") && j["children"].is_array())
+//     {
+//         for (const auto& childJson : j["children"])
+//         {
+//             auto child = std::make_shared<BaseSnapshot::SnapNode>();
+//             childJson.get_to(*child);
+//             sn.children.push_back(child);
+//         }
+//     }
+// }
 
 void JSONSnapshot::importFrom(const std::string filename)
 {
-    std::cout << "importFrom" << std::endl;
-    std::ifstream file(filename);
-    nlohmann::json jfile;
-    file >> jfile;
-    file.close();
+    // std::cout << "importFrom" << std::endl;
+    // std::ifstream file(filename);
+    // nlohmann::json jfile;
+    // file >> jfile;
+    // file.close();
     
-    treeSnapshot.clear();
+    // treeSnapshot.clear();
     
-    // std::cout << "root : " << jfile[0]["name"] << std::endl;
-    // std::cout << "children : " << jfile[0]["children"] << std::endl;
-    for (auto& [key,value] : jfile[0].items())
-    {
-        std::cout << "TEST" << std::endl;
-    }
+    // // std::cout << "root : " << jfile[0]["name"] << std::endl;
+    // // std::cout << "children : " << jfile[0]["children"] << std::endl;
+    // for (auto& [key,value] : jfile[0].items())
+    // {
+    //     std::cout << "TEST" << std::endl;
+    // }
 
     std::cout << "JSON imported successfully from: " << filename << std::endl;
 

@@ -20,14 +20,19 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/core/objectmodel/Base.h>
-#include <sofa/core/objectmodel/BaseData.h>
-#include <sofa/core/objectmodel/BaseLink.h>
+//#include <sofa/core/objectmodel/Base.h>
+// #include <sofa/core/objectmodel/BaseData.h>
+// #include <sofa/core/objectmodel/BaseLink.h>
+#include <string>
+#include <vector>
+#include <memory>
+#include <iostream>
+#include <sofa/core/config.h>
 
 namespace sofa::core::objectmodel
 {
 
-class SOFA_CORE_API BaseSnapshot 
+class SOFA_CORE_API BaseSnapshot
 {
 public:
     struct DataInfo
@@ -49,7 +54,7 @@ public:
         std::string m_name;
         std::vector<DataInfo> m_dataContainer;
         std::vector<LinkInfo> m_linkContainer;
-        void* m_internalState { nullptr };
+        //void* m_internalState { nullptr };
 
         SnapshotObject() = default;
         explicit SnapshotObject(const std::string& name) : m_name(name){}
@@ -64,6 +69,9 @@ public:
         
         SnapNode() = default;
         SnapNode(const std::string& name) : SnapshotObject(name) {}
+        SnapNode(const SnapshotObject& obj) : SnapshotObject(obj) {}
+
+        virtual ~SnapNode() noexcept = default;
     };
 
     std::shared_ptr<SnapNode> m_graphRoot { nullptr };
@@ -72,6 +80,8 @@ public:
 
     virtual void exportTo(const std::string filename) = 0;
     virtual void importFrom(std::string filename) = 0;
+
+    void printSnapshot() const;
 
     BaseSnapshot();
     virtual ~BaseSnapshot() = 0;

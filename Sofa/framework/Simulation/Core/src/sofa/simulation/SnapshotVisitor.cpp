@@ -58,7 +58,9 @@ void SnapshotVisitor::processObject(
     core::objectmodel::BaseObject* obj,
     std::shared_ptr<core::objectmodel::BaseSnapshot::SnapNode> parent)
 {
-    obj->saveSnapshot({parent});
+    std::vector<std::shared_ptr<core::objectmodel::BaseSnapshot::SnapNode>> parents;
+    auto snapshot = obj->saveSnapshot(parents);
+    parent->components.push_back(*snapshot);
 }
 
 Visitor::Result SnapshotVisitor::processNodeTopDown(simulation::Node* node)

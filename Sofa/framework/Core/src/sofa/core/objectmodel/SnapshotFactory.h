@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/core/objectmodel/Base.h>
+//#include <sofa/core/objectmodel/Base.h>
 // #include <sofa/core/objectmodel/BaseSnapshot.h>
 
 #include <memory>
