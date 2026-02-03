@@ -4,9 +4,9 @@ project(Sofa.Component.Mass_test)
 
 set(SOURCE_FILES
     DiagonalMass_test.cpp
-    MeshMatrixMass_test.cpp
     UniformMass_test.cpp
-    MassTestCreation_test.cpp
+    MassTestCreation[MeshMatrixMass].cpp
+    MassTestCreation[UniformMass].cpp
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
