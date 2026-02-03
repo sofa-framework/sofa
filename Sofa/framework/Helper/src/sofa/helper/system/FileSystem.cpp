@@ -184,10 +184,6 @@ bool FileSystem::createDirectory(const std::string& path)
             }
         }
     }
-    else
-    {
-        return false;
-    }
 #else
     int status = mkdir(path.c_str(), 0755);
     if(status)
