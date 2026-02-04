@@ -368,7 +368,6 @@ void CudaTetrahedronTLEDForceField::reinit()
     /** Initialises GPU textures with the precomputed arrays for the TLED algorithm
      */
     InitGPU_TetrahedronTLED(nbElementPerVertex, nbVertex, nbElems);
-    delete [] index;
 
 
     /**
