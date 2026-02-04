@@ -29,7 +29,6 @@
 #include <sofa/testing/BaseTest.h>
 #include <sofa/testing/NumericTest.h>
 
-#include "sofa/type/MatSym.h"
 
 TEST(SparseLDLSolver, EmptySystem)
 {
