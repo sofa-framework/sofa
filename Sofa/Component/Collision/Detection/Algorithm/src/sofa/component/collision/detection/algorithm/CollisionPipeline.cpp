@@ -71,7 +71,7 @@ CollisionPipeline::CollisionPipeline()
 
 void CollisionPipeline::init()
 {
-    msg_info() << "CollisionPipeline is now a wrapper to CompositeCollisionPipeline with a single SubCollisionPipeline.";
+    msg_info() << "Since v26.06, CollisionPipeline is a wrapper to CompositeCollisionPipeline with a single SubCollisionPipeline.";
     msg_info() << "If you want more flexibility, use directly the components CompositeCollisionPipeline and SubCollisionPipeline, with their respective Data.";
     
     auto context = this->getContext();
