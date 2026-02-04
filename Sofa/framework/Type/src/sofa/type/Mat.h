@@ -1356,7 +1356,7 @@ constexpr Mat<L,L,Real> tensorProduct(const Vec<L,Real>& a, const Vec<L,Real>& b
 template <sofa::Size L, sofa::Size C, sofa::Size P, class real>
 constexpr Mat<L,P,real> operator*(const Mat<L,C,real>& m1, const Mat<C,P,real>& m2) noexcept
 {
-    Mat<L,P,real> r(NOINIT);
+    Mat<L,P,real> r;
     for (Size i = 0; i < L; ++i)
     {
         for (Size k = 0; k < C; ++k)
