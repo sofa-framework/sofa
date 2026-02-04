@@ -40,15 +40,19 @@ StopperLagrangianConstraint<DataTypes>::StopperLagrangianConstraint(MechanicalSt
 template<class DataTypes>
 void StopperLagrangianConstraint<DataTypes>::init()
 {
-    this->mstate = dynamic_cast<MechanicalState*>(this->getContext()->getMechanicalState());
-    assert(this->mstate);
+    core::behavior::SingleStateAccessor<DataTypes>::init();
 
-    helper::WriteAccessor<Data<VecCoord> > xData = *this->mstate->write(core::vec_id::write_access::position);
-    VecCoord& x = xData.wref();
-    if (x[d_index.getValue()].x() < d_min.getValue())
-        x[d_index.getValue()].x() = (Real) d_min.getValue();
-    if (x[d_index.getValue()].x() > d_max.getValue())
-        x[d_index.getValue()].x() = (Real) d_max.getValue();
+    if (!this->isComponentStateInvalid())
+    {
+        helper::WriteAccessor<Data<VecCoord> > xData = *this->mstate->write(core::vec_id::write_access::position);
+        VecCoord& x = xData.wref();
+        if (x[d_index.getValue()].x() < d_min.getValue())
+            x[d_index.getValue()].x() = (Real) d_min.getValue();
+        if (x[d_index.getValue()].x() > d_max.getValue())
+            x[d_index.getValue()].x() = (Real) d_max.getValue();
+
+        this->d_componentState.setValue(core::objectmodel::ComponentState::Valid);
+    }
 }
 
 template<class DataTypes>
