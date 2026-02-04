@@ -213,11 +213,4 @@ TEST(SparseLDLSolver, TestInvertingRandomMatrix)
         EXPECT_NEAR(unknown[i], known[i], 1e-12);
     }
 
-
-
-
-
-
-
-
 }
