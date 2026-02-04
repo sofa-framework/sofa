@@ -72,7 +72,7 @@ SOFA_CORE_API SReal dt(const sofa::core::MechanicalParams*);
 namespace sofa::core::objectmodel
 {
 class Base;
-class BaseObject;
+class BaseComponent;
 class BaseNode;
 class BaseContext;
 class BaseData;
@@ -263,7 +263,7 @@ SOFA_DECLARE_OPAQUE_FUNCTION_BETWEEN_BASE_AND(sofa::core::BaseMapping);
 SOFA_DECLARE_OPAQUE_FUNCTION_BETWEEN_BASE_AND(sofa::core::BehaviorModel);
 SOFA_DECLARE_OPAQUE_FUNCTION_BETWEEN_BASE_AND(sofa::core::CollisionModel);
 
-SOFA_DECLARE_OPAQUE_FUNCTION_BETWEEN_BASE_AND(sofa::core::objectmodel::BaseObject);
+SOFA_DECLARE_OPAQUE_FUNCTION_BETWEEN_BASE_AND(sofa::core::objectmodel::BaseComponent);
 SOFA_DECLARE_OPAQUE_FUNCTION_BETWEEN_BASE_AND(sofa::core::objectmodel::ContextObject);
 SOFA_DECLARE_OPAQUE_FUNCTION_BETWEEN_BASE_AND(sofa::core::objectmodel::ConfigurationSetting);
 

@@ -188,9 +188,9 @@ public:
     /// Returns a list of object of type passed as a parameter. There should be no
     /// Copy constructor because of Return Value Optimization.
     /// eg:
-    ///    for(BaseObject* o : context->getObjects() ){ ... }
+    ///    for(BaseComponent* o : context->getObjects() ){ ... }
     ///    for(VisualModel* o : context->getObjects<VisualModel>() ){ ... }
-    template<class Object=sofa::core::objectmodel::BaseObject>
+    template<class Object=sofa::core::objectmodel::BaseComponent>
     std::vector<Object*> getObjects(SearchDirection dir = SearchUp){
         std::vector<Object*> o;
         getObjects(o, dir) ;
@@ -338,11 +338,11 @@ public:
     /// @{
 
     /// Mechanical Degrees-of-Freedom
-    virtual void setMechanicalState( BaseObject* )
+    virtual void setMechanicalState( BaseComponent* )
     { }
 
     /// Topology
-    virtual void setTopology( BaseObject* )
+    virtual void setTopology( BaseComponent* )
     { }
 
     /// @}
@@ -362,13 +362,13 @@ public:
     /// @{
 
     /// Add an object, or return false if not supported
-    virtual bool addObject( sptr<BaseObject> /*obj*/, TypeOfInsertion = TypeOfInsertion::AtEnd)
+    virtual bool addObject( sptr<BaseComponent> /*obj*/, TypeOfInsertion = TypeOfInsertion::AtEnd)
     {
         return false;
     }
 
     /// Remove an object, or return false if not supported
-    virtual bool removeObject( sptr<BaseObject> /*obj*/ )
+    virtual bool removeObject( sptr<BaseComponent> /*obj*/ )
     {
         return false;
     }
@@ -393,9 +393,9 @@ public:
     /// @name Notifications for graph change listeners
     /// @{
 
-    virtual void notifyAddSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave);
-    virtual void notifyRemoveSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave);
-    virtual void notifyMoveSlave(core::objectmodel::BaseObject* previousMaster, core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave);
+    virtual void notifyAddSlave(core::objectmodel::BaseComponent* master, core::objectmodel::BaseComponent* slave);
+    virtual void notifyRemoveSlave(core::objectmodel::BaseComponent* master, core::objectmodel::BaseComponent* slave);
+    virtual void notifyMoveSlave(core::objectmodel::BaseComponent* previousMaster, core::objectmodel::BaseComponent* master, core::objectmodel::BaseComponent* slave);
 
     /// @}
 

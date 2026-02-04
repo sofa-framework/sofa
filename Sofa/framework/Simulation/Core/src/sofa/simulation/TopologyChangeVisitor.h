@@ -36,7 +36,7 @@ public:
 
     ~TopologyChangeVisitor() override {}
 
-    virtual void processTopologyChange(simulation::Node* node, sofa::core::objectmodel::BaseObject* obj);
+    virtual void processTopologyChange(simulation::Node* node, sofa::core::objectmodel::BaseComponent* obj);
 
     Result processNodeTopDown(simulation::Node* node) override;
     void processNodeBottomUp(simulation::Node* node) override;

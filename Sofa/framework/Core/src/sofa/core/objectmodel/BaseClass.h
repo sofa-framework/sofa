@@ -247,7 +247,8 @@ public:
 {                                                                   \
     return ::sofa::core::objectmodel::BaseLink::InitLink<MyType>    \
     (this, n, help);                                             \
-}
+}\
+    using BaseObject SOFA_ATTRIBUTE_DEPRECATED("v26.06", "v29.06", "BaseObject has been renamed to BaseComponent") = sofa::core::objectmodel::BaseComponent; // this alias allows the transition from BaseObject to BaseComponent.
 
 // Do not use this macro directly, use SOFA_CLASS instead
 #define SOFA_CLASS_DECL                                        \
