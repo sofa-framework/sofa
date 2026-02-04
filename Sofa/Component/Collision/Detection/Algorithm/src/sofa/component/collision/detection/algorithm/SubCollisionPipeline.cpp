@@ -48,7 +48,7 @@ void registerSubCollisionPipeline(sofa::core::ObjectFactory* factory)
 
 SubCollisionPipeline::SubCollisionPipeline()
     : Inherited()
-    , d_depth(initData(&d_depth, s_defaultDepthValue, "depth", +("Max depth of bounding trees. (default=" + std::to_string(s_defaultDepthValue) + ", min=?, max=?)").c_str()))
+    , d_depth(initData(&d_depth, s_defaultDepthValue, "depth", ("Max depth of bounding trees. (default=" + std::to_string(s_defaultDepthValue) + ", min=?, max=?)").c_str()))
     , l_collisionModels(initLink("collisionModels", "List of collision models to consider in this pipeline"))
     , l_intersectionMethod(initLink("intersectionMethod", "Intersection method to use in this pipeline"))
     , l_contactManager(initLink("contactManager", "Contact manager to use in this pipeline"))
