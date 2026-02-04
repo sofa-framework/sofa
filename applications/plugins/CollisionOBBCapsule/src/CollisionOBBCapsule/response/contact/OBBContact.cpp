@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include <CollisionOBBCapsule/geometry/OBBModel.h>
 #include <sofa/component/collision/geometry/SphereCollisionModel.h>
-#include <sofa/component/collision/geometry/CylinderModel.h>
+#include <sofa/component/collision/geometry/CylinderCollisionModel.h>
 #include <sofa/component/collision/geometry/TriangleCollisionModel.h>
 #include <sofa/component/collision/geometry/RayCollisionModel.h>
 #include <sofa/component/collision/response/contact/BarycentricPenalityContact.inl>
