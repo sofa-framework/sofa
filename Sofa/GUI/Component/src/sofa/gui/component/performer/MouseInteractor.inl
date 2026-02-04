@@ -34,7 +34,9 @@ void MouseInteractor<DataTypes>::init()
     mouseInSofa = dynamic_cast< MouseContainer*>(this->getContext()->getMechanicalState());
     if (!mouseInSofa)
     {
-        msg_error() << "MouseInteractor requires a MechanicalState of the correct type in its context";
+        msg_error() << "MouseInteractor requires a MechanicalState of the correct type (" << DataTypes::Name() << ") in its context";
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        
         return;
     }
 }
