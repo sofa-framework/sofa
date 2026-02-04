@@ -33,7 +33,7 @@ class SOFA_SIMULATION_CORE_API ResetVisitor : public Visitor
 public:
     ResetVisitor(const core::ExecParams* eparams) : Visitor(eparams) {}
 
-    void processObject(core::objectmodel::BaseComponent* obj);
+    void processObject(core::objectmodel::BaseObject* obj);
 
     Result processNodeTopDown(simulation::Node* node) override;
     void processNodeBottomUp(simulation::Node* node) override;
@@ -48,7 +48,7 @@ class SOFA_SIMULATION_CORE_API StoreResetStateVisitor : public Visitor
 public:
     StoreResetStateVisitor(const core::ExecParams* eparams) : Visitor(eparams) {}
 
-    void processObject(core::objectmodel::BaseComponent* obj);
+    void processObject(core::objectmodel::BaseObject* obj);
 
     Result processNodeTopDown(simulation::Node* node) override;
     void processNodeBottomUp(simulation::Node* node) override;

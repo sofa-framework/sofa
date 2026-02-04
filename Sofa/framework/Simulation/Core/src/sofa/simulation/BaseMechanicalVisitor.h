@@ -204,17 +204,17 @@ public:
     virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, sofa::core::BaseMapping* map);
 
 #ifdef SOFA_DUMP_VISITOR_INFO
-    ctime_t begin(simulation::Node* node, sofa::core::objectmodel::BaseComponent* obj, const std::string &info=std::string("type")) override;
-    void end(simulation::Node* node, sofa::core::objectmodel::BaseComponent* obj, ctime_t t0) override;
+    ctime_t begin(simulation::Node* node, sofa::core::objectmodel::BaseObject* obj, const std::string &info=std::string("type")) override;
+    void end(simulation::Node* node, sofa::core::objectmodel::BaseObject* obj, ctime_t t0) override;
 
     virtual void setReadWriteVectors() {}
     virtual void addReadVector(core::ConstMultiVecId id) {  readVector.push_back(id);  }
     virtual void addWriteVector(core::MultiVecId id) {  writeVector.push_back(id);  }
     virtual void addReadWriteVector(core::MultiVecId id) {  readVector.push_back(core::ConstMultiVecId(id)); writeVector.push_back(id);  }
     void printReadVectors(core::behavior::BaseMechanicalState* mm);
-    void printReadVectors(simulation::Node* node, sofa::core::objectmodel::BaseComponent* obj);
+    void printReadVectors(simulation::Node* node, sofa::core::objectmodel::BaseObject* obj);
     void printWriteVectors(core::behavior::BaseMechanicalState* mm);
-    void printWriteVectors(simulation::Node* node, sofa::core::objectmodel::BaseComponent* obj);
+    void printWriteVectors(simulation::Node* node, sofa::core::objectmodel::BaseObject* obj);
 protected:
     sofa::type::vector< sofa::core::ConstMultiVecId > readVector;
     sofa::type::vector< sofa::core::MultiVecId > writeVector;

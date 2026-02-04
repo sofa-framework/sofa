@@ -33,7 +33,7 @@ class SOFA_SIMULATION_CORE_API UpdateLinksVisitor : public Visitor
 public:
     UpdateLinksVisitor(const core::ExecParams* eparams) : Visitor(eparams) {}
 
-    void processObject(core::objectmodel::BaseComponent* obj);
+    void processObject(core::objectmodel::BaseObject* obj);
 
     Result processNodeTopDown(simulation::Node* node) override;
     void processNodeBottomUp(simulation::Node* node) override;
