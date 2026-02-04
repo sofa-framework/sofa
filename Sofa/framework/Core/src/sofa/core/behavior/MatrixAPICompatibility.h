@@ -112,6 +112,7 @@ public:
 
         msg_error(component) << compatibilityMessage << "set is not a supported operation in the compatibility";
     }
+    using linearalgebra::BaseMatrix::add;
     void add(Index row, Index col, double v) override
     {
         if constexpr (c == matrixaccumulator::Contribution::MASS)
@@ -215,6 +216,7 @@ public:
         SOFA_UNUSED(j);
         SOFA_UNUSED(v);
     }
+    using linearalgebra::BaseMatrix::add;
     void add(Index row, Index col, double v) override
     {
         SOFA_UNUSED(row);
