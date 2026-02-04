@@ -144,6 +144,8 @@ public:
                            const DataVecDeriv& data_dx1,
                            const DataVecDeriv& data_dx2) override;
 
+    void buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix) override;
+
     void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) final;
 
     SReal getPotentialEnergy(const core::MechanicalParams*,
