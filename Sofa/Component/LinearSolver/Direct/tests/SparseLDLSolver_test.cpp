@@ -19,17 +19,17 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/testing/BaseTest.h>
-#include <sofa/component/linearsolver/direct/SparseLDLSolver.h>
 #include <sofa/component/linearsolver/direct/SparseCommon.h>
+#include <sofa/component/linearsolver/direct/SparseLDLSolver.h>
 #include <sofa/component/linearsystem/MatrixLinearSystem.h>
+#include <sofa/helper/RandomGenerator.h>
+#include <sofa/simpleapi/SimpleApi.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
-#include <sofa/simpleapi/SimpleApi.h>
-
+#include <sofa/testing/BaseTest.h>
 #include <sofa/testing/NumericTest.h>
-#include <sofa/helper/RandomGenerator.h>
 
+#include "sofa/type/MatSym.h"
 
 TEST(SparseLDLSolver, EmptySystem)
 {
@@ -154,43 +154,68 @@ TEST(SparseLDLSolver, TestInvertingRandomMatrix)
     unsigned nbRows = 300;
     unsigned nbCols = 300;
     SReal reg = 5;
-    float sparsity = 0.5;
-    const auto nbNonZero = static_cast<sofa::SignedIndex>(sparsity * 0.5 * static_cast<SReal>(nbRows*nbCols));
+    float sparsity = 0.05;
+    const auto nbNonZero = static_cast<sofa::SignedIndex>(sparsity * static_cast<SReal>(nbRows*nbCols));
 
 
     sofa::linearalgebra::FullMatrix<SReal> tempMatrix(nbRows,nbCols), finalTempMatrix;
+    tempMatrix.clear();
+
     sofa::helper::RandomGenerator randomGenerator;
-    randomGenerator.initSeed(153);
+    randomGenerator.initSeed(2807);
 
 
     for (sofa::SignedIndex i = 0; i < nbNonZero; ++i)
     {
-        const auto value = static_cast<SReal>(sofa::helper::drand(1));
+        const auto value = static_cast<SReal>(fabs(sofa::helper::drand(2)));
         const auto row = randomGenerator.random<sofa::Index>(0, nbRows);
         const auto col = randomGenerator.random<sofa::Index>(0, nbCols);
         tempMatrix.set(row,col,value);
     }
 
-
-    const double epsilon = std::numeric_limits<SReal>::epsilon();
-    tempMatrix.mulT(finalTempMatrix, tempMatrix);
     for (sofa::SignedIndex i = 0; i < nbRows; ++i)
     {
-        finalTempMatrix.set(i,i,finalTempMatrix(i,i) + reg);
+        tempMatrix.set(i,i,tempMatrix(i,i) + reg);
     }
+    tempMatrix.mulT(finalTempMatrix, tempMatrix);
+
     sofa::linearalgebra::CompressedRowSparseMatrix<SReal> matrix;
     matrix.resize(nbRows, nbCols);
 
+    unsigned nbNZ = 0;
     for (unsigned i=0; i<nbRows; ++i)
     {
         for (unsigned j=0; j<nbCols; ++j)
         {
-            if (tempMatrix(i,j) > epsilon)
-                matrix.set(i,j,tempMatrix(i,j));
+            if (finalTempMatrix(i,j) > 1e-8)
+                matrix.set(i,j,finalTempMatrix(i,j));
+            else
+                ++nbNZ;
         }
 
     }
+    msg_info("TestInvertingRandomMatrix") << "REAL SPARSITY (#zeros/#elements) : " <<(nbNZ)/static_cast<double>(nbRows*nbCols) ;
     matrix.compress();
+
+    sofa::linearalgebra::FullVector<SReal> known(nbCols), unknown(nbCols), rhs(nbRows);
+    for (unsigned i=0; i<nbRows; ++i)
+    {
+        const auto value = static_cast<SReal>(sofa::helper::drand(1));
+        known.set(i,value);
+    }
+    matrix.mul(rhs, known);
+
+    solver->invert(matrix);
+    solver->solve(matrix,  unknown, rhs);
+
+    for (unsigned i=0; i<nbCols; ++i)
+    {
+        EXPECT_NEAR(unknown[i], known[i], 1e-12);
+    }
+
+
+
+
 
 
 
