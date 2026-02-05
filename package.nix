@@ -12,6 +12,7 @@
   metis,
   nlohmann_json,
   stdenv,
+  tight_inclusion,
   tinyxml-2,
   zlib,
 }:
@@ -56,6 +57,7 @@ stdenv.mkDerivation (finalAttrs: {
     metis
     nlohmann_json
     tinyxml-2
+    tight_inclusion
     zlib
   ];
 
