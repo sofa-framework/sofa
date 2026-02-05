@@ -21,14 +21,15 @@
 ******************************************************************************/
 #pragma once
 
+#include <sofa/type/Vec.h>
 #include <sofa/type/config.h>
+#include <sofa/type/fixed_array.h>
 #include <sofa/type/fwd.h>
 
-#include <sofa/type/fixed_array.h>
-#include <sofa/type/Vec.h>
-
-#include <iostream>
 #include <algorithm>
+#include <cstring>
+#include <iostream>
+#include <numeric>
 
 namespace // anonymous
 {
@@ -915,24 +916,29 @@ public:
 };
 
 template <sofa::Size N, typename real>
-real determinant(const Mat<N, N, real>& mat)
+real recDeterminant(const Mat<N, N, real>& mat,const Index& currRow, const std::vector<Index>& cols )
 {
-    real det = 0;
-    for (size_t p = 0; p < N; ++p)
+    if (currRow == N-1)
+        return mat(currRow, cols[0]);
+
+    real det = 0.0;
+    for (size_t c = 0; c < cols.size(); ++c)
     {
-        Mat<N - 1, N - 1, real> submat;
-        for (size_t i = 1; i < N; ++i)
-        {
-            size_t colIndex = 0;
-            for (size_t j = 0; j < N; ++j)
-            {
-                if (j == p) continue;
-                submat(i - 1, colIndex++) = mat(i, j);
-            }
-        }
-        det += ((p % 2 == 0) ? 1 : -1) * mat(0, p) * determinant(submat);
+        std::vector<Index> newCols(cols.size() -1);
+        memcpy(&newCols[0], cols.data(), c * sizeof(Index));
+        memcpy(&newCols[c], &cols[c+1], (cols.size() - 1 - c) * sizeof(Index));
+        det += ((c % 2 == 0) ? 1 : -1) * mat(currRow, cols[c]) * recDeterminant(mat, currRow + 1, newCols );
     }
     return det;
+}
+
+
+template <sofa::Size N, typename real>
+real determinant(const Mat<N, N, real>& mat)
+{
+    std::vector<Index> initcols(N);
+    std::iota(initcols.begin(), initcols.end(), real(0));
+    return recDeterminant(mat, 0, initcols);
 }
 
 /// Determinant of a 3x3 matrix.
