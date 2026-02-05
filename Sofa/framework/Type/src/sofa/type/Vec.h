@@ -87,7 +87,10 @@ public:
     /// Fast constructor: no initialization
     explicit constexpr Vec(NoInit)
     {
-        fill(static_cast<ValueType>(43752981));
+        if constexpr (std::is_arithmetic_v<ValueType>)
+        {
+            fill(static_cast<ValueType>(43752981));
+        }
     }
 
     /// Specific constructor for 1-element vectors.
