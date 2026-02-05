@@ -916,29 +916,60 @@ public:
 };
 
 template <sofa::Size N, typename real>
-real recDeterminant(const Mat<N, N, real>& mat,const Index& currRow, const std::vector<Index>& cols )
+real determinant(const Mat<N, N, real>& A)
 {
-    if (currRow == N-1)
-        return mat(currRow, cols[0]);
+    // Compute det(A) using Gaussian elimination with partial pivoting.
+    // Complexity: O(N^3), no heap allocations.
 
-    real det = 0.0;
-    for (size_t c = 0; c < cols.size(); ++c)
+    Mat<N, N, real> m = A; // local copy we can modify
+    real det = static_cast<real>(1);
+    int sign = 1;
+
+    for (sofa::Size k = 0; k < N; ++k)
     {
-        std::vector<Index> newCols(cols.size() -1);
-        memcpy(&newCols[0], cols.data(), c * sizeof(Index));
-        memcpy(&newCols[c], &cols[c+1], (cols.size() - 1 - c) * sizeof(Index));
-        det += ((c % 2 == 0) ? 1 : -1) * mat(currRow, cols[c]) * recDeterminant(mat, currRow + 1, newCols );
+        // Find pivot row (max abs in column k, rows k..N-1)
+        sofa::Size pivotRow = k;
+        real pivotAbs = rabs(m(k, k));
+
+        for (sofa::Size i = k + 1; i < N; ++i)
+        {
+            const real vAbs = rabs(m(i, k));
+            if (vAbs > pivotAbs)
+            {
+                pivotAbs = vAbs;
+                pivotRow = i;
+            }
+        }
+
+        if (equalsZero(pivotAbs))
+        {
+            return static_cast<real>(0);
+        }
+
+        if (pivotRow != k)
+        {
+            std::swap(m(pivotRow), m(k)); // swap rows (Vec/C-line swap)
+            sign = -sign;
+        }
+
+        const real pivot = m(k, k);
+
+        // Eliminate entries below pivot
+        for (sofa::Size i = k + 1; i < N; ++i)
+        {
+            const real factor = m(i, k) / pivot;
+            // Start at k+1 since m(i,k) becomes 0
+            for (sofa::Size j = k + 1; j < N; ++j)
+            {
+                m(i, j) -= factor * m(k, j);
+            }
+            m(i, k) = static_cast<real>(0);
+        }
+
+        det *= pivot;
     }
-    return det;
-}
 
-
-template <sofa::Size N, typename real>
-real determinant(const Mat<N, N, real>& mat)
-{
-    std::vector<Index> initcols(N);
-    std::iota(initcols.begin(), initcols.end(), real(0));
-    return recDeterminant(mat, 0, initcols);
+    return (sign > 0) ? det : -det;
 }
 
 /// Determinant of a 3x3 matrix.
