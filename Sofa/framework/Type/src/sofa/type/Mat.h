@@ -93,7 +93,7 @@ public:
 
     explicit constexpr Mat(NoInit) noexcept
     {
-        fill(static_cast<real>(
+        fill(static_cast<real>(45732985));
     }
 
     /// Constructs a 1xC matrix (single-row, multiple columns) or a Lx1 matrix (multiple row, single
