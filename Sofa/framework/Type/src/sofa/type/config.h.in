@@ -73,3 +73,10 @@
 #define SOFA_ATTRIBUTE_DEPRECATED__VEC_FROM_DIFFERENT_VEC() \
     SOFA_ATTRIBUTE_DEPRECATED("v25.12", "v26.12", "Assignment and construction from a different Vec is being phased out (PR 5675).")
 #endif
+
+#ifdef SOFA_BUILD_SOFA_TYPE
+#define SOFA_ATTRIBUTE_DEPRECATED__NONSQUAREDETERMINANT()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED__NONSQUAREDETERMINANT() \
+    SOFA_ATTRIBUTE_DEPRECATED("v26.06", "v26.12", "Determinant for non-square matrix is not well-defined.")
+#endif

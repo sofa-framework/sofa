@@ -79,6 +79,8 @@ BackTrace::StackTrace BackTrace::getTrace(size_t maxEntries)
                         else
                             endmangled = savedend; // suffix not found
                         char* name = (char*)malloc(endmangled-beginmangled+1);
+                        if (name == nullptr)
+                            continue;
                         memcpy(name, beginmangled, endmangled-beginmangled);
                         name[endmangled-beginmangled] = '\0';
                         int status;
@@ -115,16 +117,19 @@ BackTrace::StackTrace BackTrace::getTrace(size_t maxEntries)
 
     frames = CaptureStackBackTrace(0, 100, stack, nullptr);
     symbol = (SYMBOL_INFO *)calloc(sizeof(SYMBOL_INFO) + 256 * sizeof(char), 1);
-    symbol->MaxNameLen = 255;
-    symbol->SizeOfStruct = sizeof(SYMBOL_INFO);
-
-    for (i = 0; i < frames; i++)
+    if (symbol != nullptr)
     {
-        SymFromAddr(process, (DWORD64)(stack[i]), 0, symbol);
-        result.push_back(symbol->Name);
-    }
+        symbol->MaxNameLen = 255;
+        symbol->SizeOfStruct = sizeof(SYMBOL_INFO);
 
-    free(symbol);
+        for (i = 0; i < frames; i++)
+        {
+            SymFromAddr(process, (DWORD64)(stack[i]), 0, symbol);
+            result.push_back(symbol->Name);
+        }
+
+        free(symbol);
+    }
 #endif
 
     return result;

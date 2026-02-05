@@ -944,6 +944,7 @@ constexpr real determinant(const Mat<1,1,real>& m) noexcept
 /// Generalized-determinant of a 2x3 matrix.
 /// Mirko Radi, "About a Determinant of Rectangular 2×n Matrix and its Geometric Interpretation"
 template<class real>
+SOFA_ATTRIBUTE_DEPRECATED__NONSQUAREDETERMINANT()
 constexpr real determinant(const Mat<2,3,real>& m) noexcept
 {
     return m(0,0)*m(1,1) - m(0,1)*m(1,0) - ( m(0,0)*m(1,2) - m(0,2)*m(1,0) ) + m(0,1)*m(1,2) - m(0,2)*m(1,1);
@@ -952,6 +953,7 @@ constexpr real determinant(const Mat<2,3,real>& m) noexcept
 /// Generalized-determinant of a 3x2 matrix.
 /// Mirko Radi, "About a Determinant of Rectangular 2×n Matrix and its Geometric Interpretation"
 template<class real>
+SOFA_ATTRIBUTE_DEPRECATED__NONSQUAREDETERMINANT()
 constexpr real determinant(const Mat<3,2,real>& m) noexcept
 {
     return m(0,0)*m(1,1) - m(1,0)*m(0,1) - ( m(0,0)*m(2,1) - m(2,0)*m(0,1) ) + m(1,0)*m(2,1) - m(2,0)*m(1,1);
