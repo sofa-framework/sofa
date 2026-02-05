@@ -20,35 +20,67 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/collision/detection/algorithm/config.h>
+#include <sofa/component/collision/detection/algorithm/BaseSubCollisionPipeline.h>
 
-#include <sofa/component/collision/detection/algorithm/CompositeCollisionPipeline.h>
-#include <sofa/component/collision/detection/algorithm/SubCollisionPipeline.h>
+#include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/collision/Contact.h>
 
 namespace sofa::component::collision::detection::algorithm
 {
 
-class SOFA_COMPONENT_COLLISION_DETECTION_ALGORITHM_API CollisionPipeline : public CompositeCollisionPipeline
+BaseSubCollisionPipeline::BaseSubCollisionPipeline()
+: sofa::core::objectmodel::BaseObject()
 {
-public:
-    SOFA_CLASS(CollisionPipeline, CompositeCollisionPipeline);
 
-    Data<bool> d_doPrintInfoMessage;
-    Data<bool> d_doDebugDraw;
-    Data<int>  d_depth;
-    
-protected:
-    CollisionPipeline();
-public:
-    void init() override;
+}
 
-protected:
-    virtual void checkDataValues() ;
-    
-    SubCollisionPipeline::SPtr m_subCollisionPipeline;
+void BaseSubCollisionPipeline::doBwdInit()
+{
 
-public:
-    static const int defaultDepthValue;
-};
+}
+
+void BaseSubCollisionPipeline::doDraw(const core::visual::VisualParams* vparams)
+{
+    SOFA_UNUSED(vparams);
+
+}
+
+void BaseSubCollisionPipeline::init()
+{
+    this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Loading);
+
+    doInit();
+}
+
+/**
+ * @brief Queries all registered contact response types from the Contact factory.
+ *
+ * This static method iterates through all contact types registered in the
+ * Contact::Factory and returns their names. These represent the available
+ * collision response methods (e.g., "PenalityContactForceField", "FrictionContact").
+ *
+ * @return A set of strings containing all registered contact response type names.
+ */
+std::set< std::string > BaseSubCollisionPipeline::getResponseList()
+{
+    std::set< std::string > listResponse;
+    for (const auto& [key, creatorPtr] : *core::collision::Contact::Factory::getInstance())
+    {
+        listResponse.insert(key);
+    }
+    return listResponse;
+}
+
+void BaseSubCollisionPipeline::draw(const core::visual::VisualParams* vparams)
+{
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
+
+    doDraw(vparams);
+}
+
+void BaseSubCollisionPipeline::handleEvent(sofa::core::objectmodel::Event* e)
+{
+    doHandleEvent(e);
+}
 
 } // namespace sofa::component::collision::detection::algorithm
