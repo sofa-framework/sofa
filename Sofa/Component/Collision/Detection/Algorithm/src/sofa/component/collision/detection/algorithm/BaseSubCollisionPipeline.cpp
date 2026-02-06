@@ -20,7 +20,67 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
+#include <sofa/component/collision/detection/algorithm/BaseSubCollisionPipeline.h>
 
-#include <sofa/component/constraint/lagrangian/model/UnilateralLagrangianConstraint.inl>
+#include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/collision/Contact.h>
 
-SOFA_HEADER_DISABLED("v24.06", "v25.06", "sofa/component/constraint/lagrangian/model/UnilateralLagrangianConstraint.inl")
+namespace sofa::component::collision::detection::algorithm
+{
+
+BaseSubCollisionPipeline::BaseSubCollisionPipeline()
+: sofa::core::objectmodel::BaseObject()
+{
+
+}
+
+void BaseSubCollisionPipeline::doBwdInit()
+{
+
+}
+
+void BaseSubCollisionPipeline::doDraw(const core::visual::VisualParams* vparams)
+{
+    SOFA_UNUSED(vparams);
+
+}
+
+void BaseSubCollisionPipeline::init()
+{
+    this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Loading);
+
+    doInit();
+}
+
+/**
+ * @brief Queries all registered contact response types from the Contact factory.
+ *
+ * This static method iterates through all contact types registered in the
+ * Contact::Factory and returns their names. These represent the available
+ * collision response methods (e.g., "PenalityContactForceField", "FrictionContact").
+ *
+ * @return A set of strings containing all registered contact response type names.
+ */
+std::set< std::string > BaseSubCollisionPipeline::getResponseList()
+{
+    std::set< std::string > listResponse;
+    for (const auto& [key, creatorPtr] : *core::collision::Contact::Factory::getInstance())
+    {
+        listResponse.insert(key);
+    }
+    return listResponse;
+}
+
+void BaseSubCollisionPipeline::draw(const core::visual::VisualParams* vparams)
+{
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
+
+    doDraw(vparams);
+}
+
+void BaseSubCollisionPipeline::handleEvent(sofa::core::objectmodel::Event* e)
+{
+    doHandleEvent(e);
+}
+
+} // namespace sofa::component::collision::detection::algorithm

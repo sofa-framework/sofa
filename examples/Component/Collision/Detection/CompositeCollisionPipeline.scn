@@ -1,0 +1,96 @@
+<?xml version="1.0"?>
+<Node name="root" dt="0.01">
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> <!-- Needed to use components [BruteForceBroadPhase,CollisionPipeline,RayTraceNarrowPhase] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/> <!-- Needed to use components [NewProximityIntersection] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [LineCollisionModel,PointCollisionModel,SphereCollisionModel,TriangleCollisionModel] -->
+    <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/> <!-- Needed to use components [CollisionResponse] -->
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [IdentityMapping] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+
+    <DefaultAnimationLoop/>
+
+    <VisualStyle displayFlags="showVisualModels hideBehaviorModels showCollisionModels hideMappings hideForceFields" />
+
+    <MeshOBJLoader name="torus_loader" filename="mesh/torus.obj" />
+    <Node name="FixedTorusAndFallingSphere_1" >
+        <Node name="FallingSphere" >
+            <EulerImplicitSolver name="odesolver" />
+            <CGLinearSolver name="linear_solver" iterations="250"  tolerance="1.0e-9" threshold="1.0e-9" />
+
+            <MechanicalObject name="rigid" template="Rigid3d" position="-5 10 0 0 0 0 1" />
+            <UniformMass totalMass="1.0" />
+            <Node name="Collision" >
+                <MechanicalObject name="collision_rigid"/>
+                <SphereCollisionModel name="sphere" radius="1" contactStiffness="1"/>
+                <IdentityMapping input="@../rigid" output="@collision_rigid" />
+            </Node>
+        </Node>
+        <Node name="FixedTorus" >
+            <Node name="Collision" >
+                <MechanicalObject name="collision_torus" src="@../../../torus_loader" translation="-5 0 0" scale3d="0.8 0.8 0.8"/>
+                <MeshTopology name="topology" src="@../../../torus_loader"/>
+                <TriangleCollisionModel name="triangle_collision" simulated="0" moving="0" contactStiffness="1" />  
+                <LineCollisionModel name="line_collision" simulated="0" moving="0" contactStiffness="1" />
+                <PointCollisionModel name="point_collision" simulated="0" moving="0" contactStiffness="1" />
+            </Node>
+        </Node>
+    </Node>
+
+    <Node name="FixedTorusAndFallingSphere_2" >
+        <Node name="FallingSphere" >
+            <EulerImplicitSolver name="odesolver" />
+            <CGLinearSolver name="linear_solver" iterations="250"  tolerance="1.0e-9" threshold="1.0e-9" />
+
+            <MechanicalObject name="rigid" template="Rigid3d" position="5 10 0 0 0 0 1" />
+            <UniformMass totalMass="1.0" />
+            <Node name="Collision" >
+                <MechanicalObject name="collision_rigid"/>
+                <SphereCollisionModel name="sphere" radius="0.7" contactStiffness="1" />
+                <IdentityMapping input="@../rigid" output="@collision_rigid" />
+            </Node>
+        </Node>
+        <Node name="FixedTorus" >
+            <Node name="Collision" >
+                <MechanicalObject name="collision_torus" src="@../../../torus_loader" translation="5 0 0" scale3d="0.5 0.5 0.5"/>
+                <MeshTopology name="topology" src="@../../../torus_loader"/>
+                <TriangleCollisionModel name="triangle_collision" simulated="0" moving="0" contactStiffness="1" />  
+                <LineCollisionModel name="line_collision" simulated="0" moving="0" contactStiffness="1" />
+                <PointCollisionModel name="point_collision" simulated="0" moving="0" contactStiffness="1" />
+            </Node>
+        </Node>
+    </Node>
+
+
+    <BruteForceBroadPhase name="broad_phase_large"/>
+    <BVHNarrowPhase name="narrow_phase_large"/>
+    <NewProximityIntersection name="intersection_large" alarmDistance="5" contactDistance="1" />
+    <CollisionResponse name="response_large" response="PenalityContactForceField" />
+    <SubCollisionPipeline name="collision_pipeline_large"
+        collisionModels="@/FixedTorusAndFallingSphere_1/FallingSphere/Collision/sphere
+        @FixedTorusAndFallingSphere_1/FixedTorus/Collision/triangle_collision @FixedTorusAndFallingSphere_1/FixedTorus/Collision/line_collision @FixedTorusAndFallingSphere_1/FixedTorus/Collision/point_collision"
+        broadPhaseDetection="@broad_phase_large"
+        narrowPhaseDetection="@narrow_phase_large"
+        intersectionMethod="@intersection_large"
+        contactManager="@response_large"
+    />
+    <BruteForceBroadPhase name="broad_phase_small"/>
+    <BVHNarrowPhase name="narrow_phase_small"/>
+    <NewProximityIntersection name="intersection_small" alarmDistance="2.5" contactDistance="0.6" />
+    <CollisionResponse name="response_small" response="PenalityContactForceField" />
+    <SubCollisionPipeline name="collision_pipeline_small"
+        collisionModels="@FixedTorusAndFallingSphere_2/FallingSphere/Collision/sphere 
+        @FixedTorusAndFallingSphere_2/FixedTorus/Collision/triangle_collision @FixedTorusAndFallingSphere_2/FixedTorus/Collision/line_collision @FixedTorusAndFallingSphere_2/FixedTorus/Collision/point_collision"
+        broadPhaseDetection="@broad_phase_small"
+        narrowPhaseDetection="@narrow_phase_small"
+        intersectionMethod="@intersection_small"
+        contactManager="@response_small"
+    />
+    <CompositeCollisionPipeline name="composite_pipeline" subCollisionPipelines="@collision_pipeline_large @collision_pipeline_small"/>
+
+</Node>
