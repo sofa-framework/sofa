@@ -528,16 +528,16 @@ public:
 
     bool isDiagonal() const noexcept
     {
-        for (Size i=0; i<L; i++)
+        for (Size i=0; i<L; ++i)
         {
-            for (Size j=0; j<i-1; j++)
+            for (Size j=0; j<C; ++j)
+            {
+                if (j == i) continue;
                 if( rabs( (*this)(i,j) ) > EQUALITY_THRESHOLD ) return false;
-            for (Size j=i+1; j<C; j++)
-                if( rabs( (*this)(i,j) ) > EQUALITY_THRESHOLD ) return false;
+            }
         }
         return true;
     }
-
 
     /// @}
 
