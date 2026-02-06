@@ -63,9 +63,9 @@ struct Mass_test : public sofa::testing::BaseSimulationTest, public sofa::testin
 
     /// @name Scene elements
     /// {
-    DOF::SPtr m_dof;
-    Mass::SPtr m_mass;
-    simulation::Node::SPtr m_node;
+    typename DOF::SPtr m_dof;
+    typename Mass::SPtr m_mass;
+    typename simulation::Node::SPtr m_node;
     /// }
 
     /// @name Precision and control parameters
