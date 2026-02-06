@@ -64,13 +64,21 @@ protected:
 };
 
 using MyTypes = ::testing::Types<
-        sofa::type::Mat<1, 1, SReal>,
-        sofa::type::Mat<1, 2, SReal>,
-        sofa::type::Mat<2, 1, SReal>,
-        sofa::type::Mat<2, 2, SReal>,
-        sofa::type::Mat<3, 3, SReal>,
-        sofa::type::Mat<4, 4, SReal>,
-        sofa::type::Mat<12, 12, SReal>,
+        sofa::type::Mat<1, 1, float>,
+        sofa::type::Mat<1, 2, float>,
+        sofa::type::Mat<2, 1, float>,
+        sofa::type::Mat<2, 2, float>,
+        sofa::type::Mat<3, 3, float>,
+        sofa::type::Mat<4, 4, float>,
+        sofa::type::Mat<12, 12, float>,
+        
+        sofa::type::Mat<1, 1, double>,
+        sofa::type::Mat<1, 2, double>,
+        sofa::type::Mat<2, 1, double>,
+        sofa::type::Mat<2, 2, double>,
+        sofa::type::Mat<3, 3, double>,
+        sofa::type::Mat<4, 4, double>,
+        sofa::type::Mat<12, 12, double>,
 
         sofa::type::Mat<1, 1, int>,
         sofa::type::Mat<1, 2, int>,
