@@ -66,7 +66,7 @@
 #define SOFA_ATTRIBUTE_DEPRECATED__REGISTEROBJECT()
 #else
 #define SOFA_ATTRIBUTE_DEPRECATED__REGISTEROBJECT() \
-    SOFA_ATTRIBUTE_DEPRECATED("v24.12", "v25.12", "RegisterObject and the associated implicit registration is being phased out. Use ObjectRegistrationData and explicit registration from now on. See #4429 for more information.")
+    SOFA_ATTRIBUTE_DEPRECATED("v24.12", "v26.12", "RegisterObject and the associated implicit registration is being phased out. Use ObjectRegistrationData and explicit registration from now on. See #4429 for more information.")
 #endif
 
 #ifdef SOFA_BUILD_SOFA_CORE
