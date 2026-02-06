@@ -472,7 +472,14 @@ public:
     /// Squared norm.
     constexpr ValueType norm2() const noexcept
     {
-        return std::inner_product(elems.begin(), elems.end(), elems.begin(), ValueType{});
+        // The STL function is slower when not compiling in full optimization.
+        // Therefore, the debugging would be slower.
+        // return std::inner_product(elems.begin(), elems.end(), elems.begin(), ValueType{});
+
+        ValueType r = this->elems[0]*this->elems[0];
+        for (Size i=1; i<N; i++)
+            r += this->elems[i]*this->elems[i];
+        return r;
     }
 
     /// Euclidean norm.
@@ -580,7 +587,13 @@ public:
     /// sum of all elements of the vector
     constexpr ValueType sum() const noexcept
     {
-        return std::accumulate(elems.begin(), elems.end(), ValueType{});
+        // The STL function is slower when not compiling in full optimization.
+        // Therefore, the debugging would be slower.
+        // return std::accumulate(elems.begin(), elems.end(), ValueType{});
+        ValueType sum = static_cast<ValueType>(0.0);
+        for (Size i=0; i<N; i++)
+            sum += this->elems[i];
+        return sum;
     }
 
 
