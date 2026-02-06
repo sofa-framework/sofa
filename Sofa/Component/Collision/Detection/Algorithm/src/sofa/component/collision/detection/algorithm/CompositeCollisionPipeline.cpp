@@ -122,6 +122,13 @@ void CompositeCollisionPipeline::init()
     }
 
 }
+void CompositeCollisionPipeline::bwdInit()
+{
+    for(const auto& subPipeline : l_subCollisionPipelines)
+    {
+        subPipeline->bwdInit();
+    }
+}
 
 void CompositeCollisionPipeline::reset()
 {
