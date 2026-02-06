@@ -21,6 +21,10 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/linearalgebra/FullMatrix.h>
+#include <sofa/type/hardening.h>
+#include <limits>
+#include <stdexcept>
+
 
 namespace sofa::linearalgebra
 {
@@ -33,8 +37,12 @@ FullMatrix<Real>::FullMatrix()
 
 template<class Real>
 FullMatrix<Real>::FullMatrix(Index nbRow, Index nbCol)
-    : data(new Real[nbRow*nbCol]), nRow(nbRow), nCol(nbCol), pitch(nbCol), allocsize(nbRow*nbCol)
+    : data(nullptr), nRow(nbRow), nCol(nbCol), pitch(nbCol), allocsize(0)
 {
+    if (type::hardening::checkOverflow(nbRow,nbCol))
+        throw std::overflow_error("FullMatrix: allocation size overflow");
+    allocsize = nbRow * nbCol;
+    data = new Real[allocsize];
 }
 
 template<class Real>
@@ -75,11 +83,17 @@ void FullMatrix<Real>::resize(Index nbRow, Index nbCol)
     {
         msg_info() << /*this->Name() << */": resize(" << nbRow << "," << nbCol << ")";
     }
+    if (type::hardening::checkOverflow(nbRow,nbCol))
+    {
+        msg_error() << "Cannot resize matrix: allocation size overflow for (" << nbRow << "," << nbCol << ")";
+        return;
+    }
     if (nbCol != nCol || nbRow != nRow)
     {
+        const Index newSize = nbRow * nbCol;
         if (allocsize < 0)
         {
-            if (nbRow*nbCol > -allocsize)
+            if (newSize > -allocsize)
             {
                 msg_error() << "Cannot resize preallocated matrix to size (" << nbRow << "," << nbCol << ")";
                 return;
@@ -87,11 +101,11 @@ void FullMatrix<Real>::resize(Index nbRow, Index nbCol)
         }
         else
         {
-            if (nbRow*nbCol > allocsize)
+            if (newSize > allocsize)
             {
                 if (allocsize > 0)
                     delete[] data;
-                allocsize = nbRow*nbCol;
+                allocsize = newSize;
                 data = new Real[allocsize];
             }
         }

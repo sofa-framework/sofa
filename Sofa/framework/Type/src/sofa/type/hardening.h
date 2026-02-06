@@ -19,39 +19,22 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_COLLISION_BASECONTACTMAPPER_CPP
+#pragma once
 
-#include <sofa/component/collision/response/mapper/BaseContactMapper.h>
+#include <limits>
+#include <type_traits>
 
-#include <sofa/helper/Factory.inl>
 
-#include <sofa/defaulttype/VecTypes.h>
+// This file should contain useful function to harden (i.e make safer) the code
 
-namespace sofa::component::collision::response::mapper
+namespace sofa::type::hardening
 {
 
-using namespace defaulttype;
-
-std::string GenerateStringID::generate(){
-    constexpr std::string_view alphanum = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-    std::string result;
-    result.resize(length);
-    for (int i = 0; i < length; i++)
-        result[i] = alphanum[rand() % alphanum.size()];
-
-    return result;
+template<typename IndexType> requires std::is_integral_v<IndexType>
+constexpr bool checkOverflow(IndexType a, IndexType b)
+{
+    if (a <= 0) return false;
+    return a > std::numeric_limits<IndexType>::max() / b;
 }
 
-
-//template class SOFA_COMPONENT_COLLISION_RESPONSE_MAPPER_API BaseContactMapper<defaulttype::Vec2Types>;
-template class SOFA_COMPONENT_COLLISION_RESPONSE_MAPPER_API BaseContactMapper<defaulttype::Vec3Types>;
-template class SOFA_COMPONENT_COLLISION_RESPONSE_MAPPER_API BaseContactMapper<defaulttype::Rigid3Types>;
-
-
-} // namespace sofa::component::collision::response::mapper
-
-namespace sofa::helper
-{
-template class SOFA_COMPONENT_COLLISION_RESPONSE_MAPPER_API Factory< std::string, sofa::component::collision::response::mapper::BaseContactMapper<defaulttype::Vec3Types>, core::CollisionModel* >;
-template class SOFA_COMPONENT_COLLISION_RESPONSE_MAPPER_API Factory< std::string, sofa::component::collision::response::mapper::BaseContactMapper<defaulttype::Rigid3Types>, core::CollisionModel* >;
-} // namespace sofa::helper
+} //namespace sofa::type::hardening
