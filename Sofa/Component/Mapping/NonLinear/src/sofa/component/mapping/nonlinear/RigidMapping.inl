@@ -135,7 +135,8 @@ template <class TIn, class TOut>
 sofa::Index RigidMapping<TIn, TOut>::getRigidIndex(sofa::Index pointIndex ) const
 {
     // do we really need this crap?
-    if( d_points.getValue().size() == d_rigidIndexPerPoint.getValue().size() ) return d_rigidIndexPerPoint.getValue()[pointIndex];
+    if( getPoints().size() == d_rigidIndexPerPoint.getValue().size() )
+        return d_rigidIndexPerPoint.getValue()[pointIndex];
     else
     {
         if( !d_indexFromEnd.getValue() ) return d_index.getValue();
@@ -225,6 +226,7 @@ void RigidMapping<TIn, TOut>::init()
     this->reinit();
 
     this->Inherit::init();
+
 }
 
 template <class TIn, class TOut>
@@ -286,7 +288,7 @@ void RigidMapping<TIn, TOut>::setRepartition(sofa::type::vector<sofa::Size> valu
 }
 
 template <class TIn, class TOut>
-const typename RigidMapping<TIn, TOut>::OutVecCoord & RigidMapping<TIn, TOut>::getPoints()
+const typename RigidMapping<TIn, TOut>::OutVecCoord & RigidMapping<TIn, TOut>::getPoints() const
 {
     if (d_useX0.getValue())
     {
