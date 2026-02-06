@@ -77,6 +77,7 @@ protected:
     /// @brief Delegates response creation to all sub-pipelines.
     void doCollisionResponse() override;
 
+    void bwdInit() override;
     void reset() override;
 
     /// @brief Entry point for collision reset, called by the simulation loop.

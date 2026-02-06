@@ -52,6 +52,11 @@ void BaseSubCollisionPipeline::init()
     doInit();
 }
 
+void BaseSubCollisionPipeline::bwdInit()
+{
+    doBwdInit();
+}
+
 /**
  * @brief Queries all registered contact response types from the Contact factory.
  *
