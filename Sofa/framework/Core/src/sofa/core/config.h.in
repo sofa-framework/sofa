@@ -46,34 +46,12 @@
 #endif // SOFA_CORE_TOPOLOGY_ENABLE_DEPRECATION_MESSAGE
 
 
-#ifdef SOFA_BUILD_SOFA_CORE
-#define SOFA_ATTRIBUTE_DISABLED__COMPLIANT()
-#else
-#define SOFA_ATTRIBUTE_DISABLED__COMPLIANT() \
-    SOFA_ATTRIBUTE_DISABLED("v24.12", "v25.06", "Used only by the deprecated Compliant plugin.")
-#endif
-
-#ifdef SOFA_BUILD_SOFA_CORE
-#define SOFA_ATTRIBUTE_DISABLED__UNNECESSARY_PARAMETER_IN_TYPENAME()
-#else
-#define SOFA_ATTRIBUTE_DISABLED__UNNECESSARY_PARAMETER_IN_TYPENAME() \
-    SOFA_ATTRIBUTE_DISABLED( \
-        "v24.12", "v25.06", \
-        "The parameter is not necessary. Use the function without parameter.")
-#endif
 
 #ifdef SOFA_BUILD_SOFA_CORE
 #define SOFA_ATTRIBUTE_DEPRECATED__REGISTEROBJECT()
 #else
 #define SOFA_ATTRIBUTE_DEPRECATED__REGISTEROBJECT() \
     SOFA_ATTRIBUTE_DEPRECATED("v24.12", "v26.12", "RegisterObject and the associated implicit registration is being phased out. Use ObjectRegistrationData and explicit registration from now on. See #4429 for more information.")
-#endif
-
-#ifdef SOFA_BUILD_SOFA_CORE
-#define SOFA_ATTRIBUTE_DISABLED__BASEWRITEDATAS()
-#else
-#define SOFA_ATTRIBUTE_DISABLED__BASEWRITEDATAS() \
-    SOFA_ATTRIBUTE_DISABLED("v24.12", "v25.06", "This function is not used.")
 #endif
 
 
@@ -91,47 +69,6 @@
 #define SOFA_ATTRIBUTE_DEPRECATED__NAME_CHANGED() \
 SOFA_ATTRIBUTE_DEPRECATED("v25.12", "v26.06", "Use getContactDistance or setContactDistance instead.")
 #endif
-
-#ifdef SOFA_BUILD_SOFA_CORE
-
-    #define SOFA_ATTRIBUTE_DISABLED__POSITION()
-    #define SOFA_ATTRIBUTE_DISABLED__REST_POSITION()
-    #define SOFA_ATTRIBUTE_DISABLED__FREE_POSITION()
-    #define SOFA_ATTRIBUTE_DISABLED__RESET_POSITION()
-
-    #define SOFA_ATTRIBUTE_DISABLED__VELOCITY()
-    #define SOFA_ATTRIBUTE_DISABLED__RESET_VELOCITY()
-    #define SOFA_ATTRIBUTE_DISABLED__FREE_VELOCITY()
-    #define SOFA_ATTRIBUTE_DISABLED__NORMAL()
-    #define SOFA_ATTRIBUTE_DISABLED__FORCE()
-    #define SOFA_ATTRIBUTE_DISABLED__EXTERNAL_FORCE()
-    #define SOFA_ATTRIBUTE_DISABLED__DX()
-    #define SOFA_ATTRIBUTE_DISABLED__DFORCE()
-
-    #define SOFA_ATTRIBUTE_DISABLED__CONSTRAINT_JACOBIAN()
-    #define SOFA_ATTRIBUTE_DISABLED__MAPPING_JACOBIAN()
-
-#else
-
-    #define SOFA_ATTRIBUTE_DISABLED__POSITION() SOFA_ATTRIBUTE_DISABLED("v24.12", "v25.06", "Use the variable sofa::core::vec_id::read_access::position  or sofa::core::vec_id::write_access::position instead")
-    #define SOFA_ATTRIBUTE_DISABLED__REST_POSITION() SOFA_ATTRIBUTE_DISABLED("v24.12", "v25.06", "Use the variable sofa::core::vec_id::read_access::restPosition  or sofa::core::vec_id::write_access::restPosition instead")
-    #define SOFA_ATTRIBUTE_DISABLED__FREE_POSITION() SOFA_ATTRIBUTE_DISABLED("v24.12", "v25.06", "Use the variable sofa::core::vec_id::read_access::freePosition  or sofa::core::vec_id::write_access::freePosition instead")
-    #define SOFA_ATTRIBUTE_DISABLED__RESET_POSITION() SOFA_ATTRIBUTE_DISABLED("v24.12", "v25.06", "Use the variable sofa::core::vec_id::read_access::resetPosition  or sofa::core::vec_id::write_access::resetPosition instead")
-
-    #define SOFA_ATTRIBUTE_DISABLED__VELOCITY() SOFA_ATTRIBUTE_DISABLED("v24.12", "v25.06", "Use the variable sofa::core::vec_id::read_access::velocity  or sofa::core::vec_id::write_access::velocity instead")
-    #define SOFA_ATTRIBUTE_DISABLED__RESET_VELOCITY() SOFA_ATTRIBUTE_DISABLED("v24.12", "v25.06", "Use the variable sofa::core::vec_id::read_access::resetVelocity  or sofa::core::vec_id::write_access::resetVelocity instead")
-    #define SOFA_ATTRIBUTE_DISABLED__FREE_VELOCITY() SOFA_ATTRIBUTE_DISABLED("v24.12", "v25.06", "Use the variable sofa::core::vec_id::read_access::freeVelocity  or sofa::core::vec_id::write_access::freeVelocity instead")
-    #define SOFA_ATTRIBUTE_DISABLED__NORMAL() SOFA_ATTRIBUTE_DISABLED("v24.12", "v25.06", "Use the variable sofa::core::vec_id::read_access::normal  or sofa::core::vec_id::write_access::normal instead")
-    #define SOFA_ATTRIBUTE_DISABLED__FORCE() SOFA_ATTRIBUTE_DISABLED("v24.12", "v25.06", "Use the variable sofa::core::vec_id::read_access::force  or sofa::core::vec_id::write_access::force instead")
-    #define SOFA_ATTRIBUTE_DISABLED__EXTERNAL_FORCE() SOFA_ATTRIBUTE_DISABLED("v24.12", "v25.06", "Use the variable sofa::core::vec_id::read_access::externalForce  or sofa::core::vec_id::write_access::externalForce instead")
-    #define SOFA_ATTRIBUTE_DISABLED__DX() SOFA_ATTRIBUTE_DISABLED("v24.12", "v25.06", "Use the variable sofa::core::vec_id::read_access::dx  or sofa::core::vec_id::write_access::dx instead")
-    #define SOFA_ATTRIBUTE_DISABLED__DFORCE() SOFA_ATTRIBUTE_DISABLED("v24.12", "v25.06", "Use the variable sofa::core::vec_id::read_access::dforce  or sofa::core::vec_id::write_access::dforce instead")
-
-    #define SOFA_ATTRIBUTE_DISABLED__CONSTRAINT_JACOBIAN() SOFA_ATTRIBUTE_DISABLED("v24.12", "v25.06", "Use the variable sofa::core::vec_id::read_access::constraintJacobian  or sofa::core::vec_id::write_access::constraintJacobian instead")
-    #define SOFA_ATTRIBUTE_DISABLED__MAPPING_JACOBIAN() SOFA_ATTRIBUTE_DISABLED("v24.12", "v25.06", "Use the variable sofa::core::vec_id::read_access::mappingJacobian  or sofa::core::vec_id::write_access::mappingJacobian instead")
-
-#endif
-
 
 #ifdef SOFA_BUILD_SOFA_CORE
 #define SOFA_ATTRIBUTE_DEPRECATED__TOBASECONSTRAINT()
