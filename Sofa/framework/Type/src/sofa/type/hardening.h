@@ -19,104 +19,36 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <cstdio>
-#include <cstdlib>
-#include <string>
+#pragma once
 
-#include <sofa/helper/system/thread/debug.h>
-#include <sofa/helper/system/thread/CTime.h>
+#include <limits>
+#include <type_traits>
 
 
-namespace sofa::helper::system::thread
+// This file should contain useful function to harden (i.e make safer) the code
+
+namespace sofa::type::hardening
 {
 
-int Trace::mTraceLevel = 0;
-int Trace::mNbInstance = 0;
-Trace mySingletonTrace;
-
-
-Trace::Trace()
+/// Escape a string for safe use in a shell double-quoted context.
+/// Escapes: backslash, backtick, dollar, double-quote, and newline.
+std::string escapeForShell(const std::string& input)
 {
-
-    if( mNbInstance != 0 )
-        print(TRACE_WARNING, "Multiple instance of a singleton class");
-
-#ifdef TRACE_ENABLE
-    //printf("Trace: [Enabled]\n");
-#else
-    //printf("Trace: [Disabled]\n");
-#endif
-
-    mNbInstance++;
-}
-
-void Trace::setTraceLevel(int level)
-{
-    mTraceLevel = level;
-}
-
-void Trace::print(int level, const char *chaine)
-{
-    switch( level )
+    std::string result;
+    result.reserve(input.size() + 16);
+    for (const char c : input)
     {
-    case TRACE_DEBUG:
-        printf("DEBUG: %s\n",chaine);
-        break;
-
-    case TRACE_INFO:
-        printf("INFO: %s\n", chaine);
-        break;
-
-    case TRACE_WARNING:
-        printf("WARNING: %s\n", chaine);
-        break;
-
-    case TRACE_ERROR:
-        printf("ERROR: %s\n", chaine );
-        exit(EXIT_FAILURE);
+        switch (c)
+        {
+        case '\\': result += "\\\\"; break;
+        case '"':  result += "\\\""; break;
+        case '$':  result += "\\$";  break;
+        case '`':  result += "\\`";  break;
+        case '\n': result += " ";    break;  // Replace newline with space
+        default:   result += c;      break;
+        }
     }
+    return result;
 }
 
-TraceProfile::TraceProfile(const char *name, int index, int size)
-{
-    this->index = index;
-    this->name = new char[strlen(name)+1];
-    strcpy( this->name, name);
-
-    this->size = size;
-    this->times = new int[size];
-    int i;
-    for(i = 0; i < size; i++)
-        this->times[i] = 0;
-}
-
-TraceProfile::~TraceProfile()
-{
-    delete[] name;
-    delete[] times;
-}
-
-void TraceProfile::addTime(int instant, int time)
-{
-    times[instant] += time;
-}
-
-void TraceProfile::begin()
-{
-    beginTime = CTime::getTime();
-}
-
-void TraceProfile::end(int instant)
-{
-    endTime = CTime::getTime();
-    times[instant] += (int)(endTime-beginTime);
-}
-
-} // namespace sofa::helper::system::thread
-
-
-
-
-
-
-
+} //namespace sofa::type::hardening

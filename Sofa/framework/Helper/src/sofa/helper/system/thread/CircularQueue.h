@@ -151,8 +151,8 @@ protected:
     template<class T, class OutputIterator>
     unsigned pop(T array[], unsigned maxSize, unsigned maxCapacity, OutputIterator out, unsigned outmaxsize, bool clear = true);
     
-    volatile unsigned head;
-    volatile unsigned tail;
+    std::atomic<unsigned> head;
+    std::atomic<unsigned> tail;
 };
 
 /**
