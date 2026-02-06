@@ -1,0 +1,186 @@
+<?xml version="1.0" ?>
+<!-- SubsetTopologicalMultiMapping example
+     Demonstrates merging multiple topologies into one for every supported element type.
+     Four demos placed side by side along x:
+
+     x=0:  Triangles   - two 4x4 triangle grids merged, Source2 normals flipped
+     x=5:  Quads       - two 4x4 quad grids merged, Source2 normals flipped
+     x=10: Tetrahedra  - two 3x3x3 grids converted to tetrahedra then merged
+     x=16: Hexahedra   - two 3x3x3 hexahedral grids merged
+-->
+<Node name="root" dt="1e-3" gravity="0 -1 0">
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [GridMeshCreator] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [IdentityMapping SubsetMultiMapping] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [TetrahedronSetTopologyContainer TetrahedronSetTopologyModifier] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Mapping"/> <!-- Needed to use components [Hexa2TetraTopologicalMapping SubsetTopologicalMultiMapping] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+
+    <VisualStyle displayFlags="showVisual showWireframe" />
+    <DefaultAnimationLoop/>
+
+    <EulerImplicitSolver rayleighStiffness="0.1" rayleighMass="0.1" />
+    <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
+
+    <!-- ==================== TRIANGLES (x=0) ==================== -->
+    <Node name="TriangleDemo">
+        <Node name="Source1">
+            <GridMeshCreator name="loader" filename="nofile" resolution="4 4" trianglePattern="2" />
+            <MeshTopology name="topology" src="@loader" />
+            <MechanicalObject template="Vec3" name="dofs" src="@loader" />
+        </Node>
+
+        <Node name="Source2">
+            <GridMeshCreator name="loader" filename="nofile" resolution="4 4" trianglePattern="2"
+                             translation="0 2 0" />
+            <MeshTopology name="topology" src="@loader" />
+            <MechanicalObject template="Vec3" name="dofs" src="@loader" />
+        </Node>
+
+        <Node name="Merged">
+            <MeshTopology name="topology" />
+            <MechanicalObject template="Vec3" name="dofs" />
+
+            <SubsetTopologicalMultiMapping
+                input="@../Source1/topology @../Source2/topology"
+                output="@topology"
+                subsetMultiMapping="@mapping"
+                flipNormals="0 1" />
+
+            <SubsetMultiMapping template="Vec3,Vec3" name="mapping"
+                input="@../Source1/dofs @../Source2/dofs"
+                output="@dofs" />
+
+            <UniformMass vertexMass="1" />
+
+            <Node name="Visual">
+                <OglModel name="Visual" color="0.2 0.6 1.0 1.0" />
+                <IdentityMapping input="@../dofs" output="@Visual" />
+            </Node>
+        </Node>
+    </Node>
+
+    <!-- ==================== QUADS (x=5) ==================== -->
+    <Node name="QuadDemo">
+        <Node name="Source1">
+            <GridMeshCreator name="loader" filename="nofile" resolution="4 4" trianglePattern="0"
+                             translation="5 0 0" />
+            <MeshTopology name="topology" src="@loader" />
+            <MechanicalObject template="Vec3" name="dofs" src="@loader" />
+        </Node>
+
+        <Node name="Source2">
+            <GridMeshCreator name="loader" filename="nofile" resolution="4 4" trianglePattern="0"
+                             translation="5 2 0" />
+            <MeshTopology name="topology" src="@loader" />
+            <MechanicalObject template="Vec3" name="dofs" src="@loader" />
+        </Node>
+
+        <Node name="Merged">
+            <MeshTopology name="topology" />
+            <MechanicalObject template="Vec3" name="dofs" />
+
+            <SubsetTopologicalMultiMapping
+                input="@../Source1/topology @../Source2/topology"
+                output="@topology"
+                subsetMultiMapping="@mapping"
+                flipNormals="0 1" />
+
+            <SubsetMultiMapping template="Vec3,Vec3" name="mapping"
+                input="@../Source1/dofs @../Source2/dofs"
+                output="@dofs" />
+
+            <UniformMass vertexMass="1" />
+
+            <Node name="Visual">
+                <OglModel name="Visual" color="0.2 1.0 0.4 1.0" />
+                <IdentityMapping input="@../dofs" output="@Visual" />
+            </Node>
+        </Node>
+    </Node>
+
+    <!-- ==================== TETRAHEDRA (x=10) ==================== -->
+    <Node name="TetraDemo">
+        <!-- Each source uses RegularGridTopology (hexa) + Hexa2TetraTopologicalMapping to produce tetrahedra -->
+        <Node name="Source1">
+            <RegularGridTopology name="grid" n="3 3 3" min="10 0 0" max="12 2 2" />
+            <MechanicalObject template="Vec3" name="dofs" />
+            <Node name="Tetra">
+                <TetrahedronSetTopologyContainer name="topology" />
+                <TetrahedronSetTopologyModifier />
+                <Hexa2TetraTopologicalMapping input="@../grid" output="@topology" />
+            </Node>
+        </Node>
+
+        <Node name="Source2">
+            <RegularGridTopology name="grid" n="3 3 3" min="10 3 0" max="12 5 2" />
+            <MechanicalObject template="Vec3" name="dofs" />
+            <Node name="Tetra">
+                <TetrahedronSetTopologyContainer name="topology" />
+                <TetrahedronSetTopologyModifier />
+                <Hexa2TetraTopologicalMapping input="@../grid" output="@topology" />
+            </Node>
+        </Node>
+
+        <Node name="Merged">
+            <MeshTopology name="topology" />
+            <MechanicalObject template="Vec3" name="dofs" />
+
+            <SubsetTopologicalMultiMapping
+                input="@../Source1/Tetra/topology @../Source2/Tetra/topology"
+                output="@topology"
+                subsetMultiMapping="@mapping" />
+
+            <SubsetMultiMapping template="Vec3,Vec3" name="mapping"
+                input="@../Source1/dofs @../Source2/dofs"
+                output="@dofs" />
+
+            <UniformMass vertexMass="1" />
+
+            <Node name="Visual">
+                <OglModel name="Visual" color="1.0 0.8 0.2 1.0" />
+                <IdentityMapping input="@../dofs" output="@Visual" />
+            </Node>
+        </Node>
+    </Node>
+
+    <!-- ==================== HEXAHEDRA (x=16) ==================== -->
+    <Node name="HexaDemo">
+        <Node name="Source1">
+            <RegularGridTopology name="grid" n="3 3 3" min="16 0 0" max="18 2 2" />
+            <MechanicalObject template="Vec3" name="dofs" />
+        </Node>
+
+        <Node name="Source2">
+            <RegularGridTopology name="grid" n="3 3 3" min="16 3 0" max="18 5 2" />
+            <MechanicalObject template="Vec3" name="dofs" />
+        </Node>
+
+        <Node name="Merged">
+            <MeshTopology name="topology" />
+            <MechanicalObject template="Vec3" name="dofs" />
+
+            <SubsetTopologicalMultiMapping
+                input="@../Source1/grid @../Source2/grid"
+                output="@topology"
+                subsetMultiMapping="@mapping" />
+
+            <SubsetMultiMapping template="Vec3,Vec3" name="mapping"
+                input="@../Source1/dofs @../Source2/dofs"
+                output="@dofs" />
+
+            <UniformMass vertexMass="1" />
+
+            <Node name="Visual">
+                <OglModel name="Visual" color="1.0 0.4 0.2 1.0" />
+                <IdentityMapping input="@../dofs" output="@Visual" />
+            </Node>
+        </Node>
+    </Node>
+</Node>
