@@ -28,6 +28,7 @@
 #include <sofa/simulation/Node.h>
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/gui/common/ArgumentParser.h>
+#include <sofa/type/hardening.h>
 
 #include <cxxopts.hpp>
 
@@ -219,7 +220,11 @@ void BatchGUI::OnNbIterChange(const ArgumentParser* argumentParser, const std::s
     }
     else if (inpLen)
     {
-        nbIter = std::stoi(nbIterInp);
+        if(!sofa::type::hardening::safeStrToInt(nbIterInp, nbIter))
+        {
+            msg_warning("BatchGUI") << "Invalid number of iterations: '" << nbIterInp << "'. Using default.";
+            nbIter = DEFAULT_NUMBER_OF_ITERATIONS;
+        }
     }
     else
     {

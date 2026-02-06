@@ -60,7 +60,12 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/Factory.inl>
 #include <sofa/helper/cast.h>
+#include <sofa/type/hardening.h>
+
 #include <iostream>
+#include <cstdlib>
+#include <cerrno>
+#include <climits>
 
 /// If you want to activate/deactivate that please set them to true/false
 #define DEBUG_VISITOR false
@@ -160,7 +165,19 @@ void Node::parse( sofa::core::objectmodel::BaseObjectDescription* arg )
         else if (str[0] == 'F' || str[0] == 'f')
             val = false;
         else if ((str[0] >= '0' && str[0] <= '9') || str[0] == '-')
-            val = (atoi(str) != 0);
+        {
+            int parsed{};
+            if(sofa::type::hardening::safeStrToInt(str, parsed))
+            {
+                val = (parsed != 0);
+            }
+            else
+            {
+                msg_warning() << "Error while parsing " << str;
+                val = false;
+            }
+        }
+        
         else continue;
         if (!oldFlags.empty()) oldFlags += ' ';
         if (val) oldFlags += oldVisualFlags[i];
@@ -430,7 +447,15 @@ sofa::core::objectmodel::Base* Node::findLinkDestClass(const core::objectmodel::
             msg_error() << "Invalid index-based path \"" << path << "\"";
             return nullptr;
         }
-        int index = atoi(pathStr.c_str()+ppos+1);
+        char* endptr = nullptr;
+        errno = 0;
+        long parsedIndex = std::strtol(pathStr.c_str()+ppos+1, &endptr, 10);
+        if (errno != 0 || endptr == pathStr.c_str()+ppos+1 || parsedIndex < INT_MIN || parsedIndex > INT_MAX)
+        {
+            msg_error() << "Invalid index in path \"" << path << "\"";
+            return nullptr;
+        }
+        int index = static_cast<int>(parsedIndex);
 
         if(DEBUG_LINK)
            dmsg_info() << "  index-based path to " << index ;

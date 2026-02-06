@@ -19,61 +19,50 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_CORE_OBJECTMODEL_DATA_CPP
+#pragma once
 
-#include <sofa/core/objectmodel/Data.h>
-
-#include <sofa/type/hardening.h>
-
-#include <cstdlib>
-#include <cerrno>
+#include <limits>
+#include <type_traits>
 
 
-namespace sofa::core::objectmodel
+// This file should contain useful function to harden (i.e make safer) the code
+
+namespace sofa::type::hardening
 {
 
-/// Specialization for reading strings
-template<>
-bool SOFA_CORE_API Data<std::string>::read( const std::string& str )
+inline bool safeStrToInt(const std::string& s, int& result)
 {
-    setValue(str);
+    char* endptr = nullptr;
+    errno = 0;
+    long val = std::strtol(s.c_str(), &endptr, 10);
+    if (errno != 0 || endptr == s.c_str() || val < std::numeric_limits<int>::min() || val > std::numeric_limits<int>::max())
+        return false;
+    result = static_cast<int>(val);
     return true;
 }
 
-/// Specialization for reading booleans
-template<>
-bool SOFA_CORE_API Data<bool>::read( const std::string& str )
+inline bool safeStrToUInt(const std::string& s, unsigned int& result)
 {
-    if (str.empty())
+    char* endptr = nullptr;
+    errno = 0;
+    unsigned long val = std::strtoul(s.c_str(), &endptr, 10);
+    if (errno != 0 || endptr == s.c_str() || val > std::numeric_limits<unsigned int>::max())
         return false;
-    bool val;
-    if (str[0] == 'T' || str[0] == 't')
-        val = true;
-    else if (str[0] == 'F' || str[0] == 'f')
-        val = false;
-    else if ((str[0] >= '0' && str[0] <= '9') || str[0] == '-')
-    {
-        int parsed{};
-        if(sofa::type::hardening::safeStrToInt(str, parsed))
-        {
-            val = (parsed != 0);
-        }
-        else
-        {
-            return false;
-        }
-    }
-    else
-        return false;
-    setValue(val);
+    result = static_cast<unsigned int>(val);
     return true;
 }
 
-template class SOFA_CORE_API Data< std::string >;
-template class SOFA_CORE_API Data< sofa::type::vector<std::string> >;
-template class SOFA_CORE_API Data< bool >;
-template class SOFA_CORE_API Data< sofa::type::vector<Index> >;
-
+template<typename ScalarType> requires std::is_scalar_v<ScalarType>
+bool safeStrToScalar(const std::string& s, ScalarType& result)
+{
+    char* endptr = nullptr;
+    errno = 0;
+    long double val = std::strtold(s.c_str(), &endptr);
+    if (errno != 0 || endptr == s.c_str())
+        return false;
+    
+    result = static_cast<ScalarType>(val);
+    return true;
 }
 
-
+} //namespace sofa::type::hardening
