@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/objectmodel/BaseNode.h>
 #include <sofa/core/objectmodel/Event.h>
@@ -32,7 +32,7 @@
 namespace sofa::core::objectmodel
 {
 
-BaseObject::BaseObject()
+BaseComponent::BaseComponent()
     : Base()
     , f_listening(initData( &f_listening, false, "listening", "if true, handle the events, otherwise ignore the events"))
     , l_context(initLink("context","Graph Node containing this object (or BaseContext::getDefault() if no graph is used)"))
@@ -48,7 +48,7 @@ BaseObject::BaseObject()
     f_listening.setAutoLink(false);
 }
 
-BaseObject::~BaseObject()
+BaseComponent::~BaseComponent()
 {
     assert(l_master.get() == nullptr); // an object that is still a slave should not be able to be deleted, as at least one smart pointer points to it
     for(auto& slave : l_slaves)
@@ -62,7 +62,7 @@ BaseObject::~BaseObject()
 
 // This method insures that context is never nullptr (using BaseContext::getDefault() instead)
 // and that all slaves of an object share its context
-void BaseObject::changeContextLink(BaseContext* before, BaseContext*& after)
+void BaseComponent::changeContextLink(BaseContext* before, BaseContext*& after)
 {
     if (!after) after = BaseContext::getDefault();
     if (before == after) return;
@@ -81,14 +81,14 @@ void BaseObject::changeContextLink(BaseContext* before, BaseContext*& after)
 }
 
 /// This method insures that slaves objects have master and context links set correctly
-void BaseObject::changeSlavesLink(BaseObject::SPtr ptr, std::size_t /*index*/, bool add)
+void BaseComponent::changeSlavesLink(BaseComponent::SPtr ptr, std::size_t /*index*/, bool add)
 {
     if (!ptr) return;
     if (add) { ptr->l_master.set(this); ptr->l_context.set(getContext()); }
     else     { ptr->l_master.reset(); ptr->l_context.reset(); }
 }
 
-void BaseObject::parse( BaseObjectDescription* arg )
+void BaseComponent::parse( BaseObjectDescription* arg )
 {
     if (arg->getAttribute("src"))
     {
@@ -117,13 +117,13 @@ void BaseObject::parse( BaseObjectDescription* arg )
     Base::parse(arg);
 }
 
-void BaseObject::setSrc(const std::string &valueString, std::vector< std::string > *attributeList)
+void BaseComponent::setSrc(const std::string &valueString, std::vector< std::string > *attributeList)
 {
     std::size_t posAt = valueString.rfind('@');
     if (posAt == std::string::npos) posAt = 0;
 
     const std::string objectName = valueString.substr(posAt + 1);
-    const BaseObject* loader = getContext()->get<BaseObject>(objectName);
+    const BaseComponent* loader = getContext()->get<BaseComponent>(objectName);
     if (!loader)
     {
         msg_error() << "Source object \"" << valueString << "\" NOT FOUND.";
@@ -132,9 +132,9 @@ void BaseObject::setSrc(const std::string &valueString, std::vector< std::string
     setSrc(valueString, loader, attributeList);
 }
 
-void BaseObject::setSrc(const std::string &valueString, const BaseObject *loader, std::vector< std::string > *attributeList)
+void BaseComponent::setSrc(const std::string &valueString, const BaseComponent *loader, std::vector< std::string > *attributeList)
 {
-    BaseObject::MapData dataLoaderMap = loader->m_aliasData;
+    BaseComponent::MapData dataLoaderMap = loader->m_aliasData;
 
     if (attributeList != nullptr)
     {
@@ -175,7 +175,7 @@ void BaseObject::setSrc(const std::string &valueString, const BaseObject *loader
     }
 }
 
-Base* BaseObject::findLinkDestClass(const BaseClass* destType, const std::string& path, const BaseLink* link)
+Base* BaseComponent::findLinkDestClass(const BaseClass* destType, const std::string& path, const BaseLink* link)
 {
     if (this->getContext() == BaseContext::getDefault())
         return nullptr;
@@ -184,32 +184,32 @@ Base* BaseObject::findLinkDestClass(const BaseClass* destType, const std::string
 }
 
 
-const BaseContext* BaseObject::getContext() const
+const BaseContext* BaseComponent::getContext() const
 {
     return l_context.get();
 }
 
-BaseContext* BaseObject::getContext()
+BaseContext* BaseComponent::getContext()
 {
     return l_context.get();
 }
 
-const BaseObject* BaseObject::getMaster() const
+const BaseComponent* BaseComponent::getMaster() const
 {
     return l_master.get();
 }
 
-BaseObject* BaseObject::getMaster()
+BaseComponent* BaseComponent::getMaster()
 {
     return l_master.get();
 }
 
-const BaseObject::VecSlaves& BaseObject::getSlaves() const
+const BaseComponent::VecSlaves& BaseComponent::getSlaves() const
 {
     return l_slaves.getValue();
 }
 
-BaseObject* BaseObject::getSlave(const std::string& name) const
+BaseComponent* BaseComponent::getSlave(const std::string& name) const
 {
     for (auto slave : l_slaves)
     {
@@ -219,9 +219,9 @@ BaseObject* BaseObject::getSlave(const std::string& name) const
     return nullptr;
 }
 
-void BaseObject::addSlave(BaseObject::SPtr s)
+void BaseComponent::addSlave(BaseComponent::SPtr s)
 {
-    const BaseObject::SPtr previous = s->getMaster();
+    const BaseComponent::SPtr previous = s->getMaster();
     if (previous == this) return;
     if (previous)
         previous->l_slaves.remove(s);
@@ -232,7 +232,7 @@ void BaseObject::addSlave(BaseObject::SPtr s)
         this->getContext()->notifyAddSlave(this, s.get());
 }
 
-void BaseObject::removeSlave(BaseObject::SPtr s)
+void BaseComponent::removeSlave(BaseComponent::SPtr s)
 {
     if (l_slaves.remove(s))
     {
@@ -240,7 +240,7 @@ void BaseObject::removeSlave(BaseObject::SPtr s)
     }
 }
 
-void BaseObject::init()
+void BaseComponent::init()
 {
     for(const auto data: this->m_vecData)
     {
@@ -258,15 +258,15 @@ void BaseObject::init()
     }
 }
 
-void BaseObject::bwdInit()
+void BaseComponent::bwdInit()
 {
 }
 
-void BaseObject::reinit()
+void BaseComponent::reinit()
 {
 }
 
-void BaseObject::updateInternal()
+void BaseComponent::updateInternal()
 {
     const auto& mapTrackedData = m_internalDataTracker.getMapTrackedData();
     for( auto const& it : mapTrackedData )
@@ -281,17 +281,17 @@ void BaseObject::updateInternal()
     }
 }
 
-void BaseObject::trackInternalData(const objectmodel::BaseData& data)
+void BaseComponent::trackInternalData(const objectmodel::BaseData& data)
 {
     m_internalDataTracker.trackData(data);
 }
 
-void BaseObject::cleanTracker()
+void BaseComponent::cleanTracker()
 {
     m_internalDataTracker.clean();
 }
 
-bool BaseObject::hasDataChanged(const objectmodel::BaseData& data)
+bool BaseComponent::hasDataChanged(const objectmodel::BaseData& data)
 {
     bool dataFoundinTracker = false;
     const auto& mapTrackedData = m_internalDataTracker.getMapTrackedData();
@@ -314,22 +314,22 @@ bool BaseObject::hasDataChanged(const objectmodel::BaseData& data)
     return m_internalDataTracker.hasChanged(data);
 }
 
-void BaseObject::doUpdateInternal()
+void BaseComponent::doUpdateInternal()
 { }
 
-void BaseObject::storeResetState()
+void BaseComponent::storeResetState()
 { }
 
-void BaseObject::reset()
+void BaseComponent::reset()
 { }
 
-void BaseObject::cleanup()
+void BaseComponent::cleanup()
 { }
 
-void BaseObject::handleEvent( Event* /*e*/ )
+void BaseComponent::handleEvent( Event* /*e*/ )
 { }
 
-void BaseObject::handleTopologyChange(core::topology::Topology* t)
+void BaseComponent::handleTopologyChange(core::topology::Topology* t)
 {
     if (t == this->getContext()->getTopology())
     {
@@ -337,12 +337,12 @@ void BaseObject::handleTopologyChange(core::topology::Topology* t)
     }
 }
 
-SReal BaseObject::getTime() const
+SReal BaseComponent::getTime() const
 {
     return getContext()->getTime();
 }
 
-std::string BaseObject::getPathName() const
+std::string BaseComponent::getPathName() const
 {
     auto node = dynamic_cast<const BaseNode*>(getContext());
     if(!node)

@@ -410,7 +410,7 @@ public:
     SOFA_BASE_CAST_DEFINITION( core,        CollisionModel                         )
     SOFA_BASE_CAST_DEFINITION( core,        DataEngine                             )
     SOFA_BASE_CAST_DEFINITION( objectmodel, BaseContext                            )
-    SOFA_BASE_CAST_DEFINITION( objectmodel, BaseObject                             )
+    SOFA_BASE_CAST_DEFINITION( objectmodel, BaseComponent                          )
     SOFA_BASE_CAST_DEFINITION( objectmodel, BaseNode                               )
     SOFA_BASE_CAST_DEFINITION( objectmodel, ContextObject                          )
     SOFA_BASE_CAST_DEFINITION( objectmodel, ConfigurationSetting                   )
@@ -444,8 +444,11 @@ public:
 
 #undef SOFA_BASE_CAST_DEFINITION
 
-    SOFA_ATTRIBUTE_DEPRECATED__TOBASECONSTRAINT() virtual const behavior::BaseLagrangianConstraint* toBaseConstraint() const { return toBaseLagrangianConstraint(); } \
+    SOFA_ATTRIBUTE_DEPRECATED__TOBASECONSTRAINT() virtual const behavior::BaseLagrangianConstraint* toBaseConstraint() const { return toBaseLagrangianConstraint(); }
     SOFA_ATTRIBUTE_DEPRECATED__TOBASECONSTRAINT() virtual       behavior::BaseLagrangianConstraint* toBaseConstraint()       { return toBaseLagrangianConstraint(); }
+
+    SOFA_ATTRIBUTE_DEPRECATED__TOBASEOBJECT() virtual const objectmodel::BaseComponent* toBaseObject() const { return toBaseComponent(); }
+    SOFA_ATTRIBUTE_DEPRECATED__TOBASEOBJECT() virtual       objectmodel::BaseComponent* toBaseObject()       { return toBaseComponent(); }
 
     /// @}
 };
