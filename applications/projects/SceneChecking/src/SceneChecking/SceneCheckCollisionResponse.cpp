@@ -144,7 +144,7 @@ void SceneCheckCollisionResponse::doPrintSummary()
 {
     if(m_checkDone && m_message.str()!= "")
     {
-        msg_warning(this->getName()) << m_message.str();
+        msg_error(this->getName()) << m_message.str();
     }
 }
 
