@@ -310,6 +310,8 @@ target_link_options(${PROJECT_NAME} PUBLIC "$<${is_c_cxx_release}:${SOFACONFIG_L
 target_link_options(${PROJECT_NAME} PUBLIC "$<${is_c_cxx_debug}:${SOFACONFIG_LINK_OPTIONS_DEBUG}>")
 target_link_options(${PROJECT_NAME} PUBLIC "$<${is_c_cxx}:${SOFACONFIG_LINK_OPTIONS}>")
 
+sofa_treat_warnings_as_errors(${PROJECT_NAME})
+
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER Sofa.Framework) # IDE folder
 
 # Attach Sofa Version into properties
