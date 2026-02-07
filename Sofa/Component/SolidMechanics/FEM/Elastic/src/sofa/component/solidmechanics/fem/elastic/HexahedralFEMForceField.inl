@@ -613,7 +613,7 @@ void HexahedralFEMForceField<DataTypes>::addKToMatrix(sofa::linearalgebra::BaseM
 }
 
 template <class DataTypes>
-void HexahedralFEMForceField<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
+void HexahedralFEMForceField<DataTypes>::doBuildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
 {
     const type::vector<HexahedronInformation>& hexahedronInf = d_hexahedronInfo.getValue();
 
@@ -646,7 +646,7 @@ void HexahedralFEMForceField<DataTypes>::buildStiffnessMatrix(core::behavior::St
     }
 }
 template <class DataTypes>
-void HexahedralFEMForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+void HexahedralFEMForceField<DataTypes>::doBuildDampingMatrix(core::behavior::DampingMatrix*)
 {
     // No damping in this ForceField
 }

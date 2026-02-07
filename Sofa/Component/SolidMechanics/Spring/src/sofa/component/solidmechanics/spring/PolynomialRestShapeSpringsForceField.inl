@@ -447,7 +447,7 @@ void PolynomialRestShapeSpringsForceField<DataTypes>::draw(const core::visual::V
 
 
 template<class DataTypes>
-void PolynomialRestShapeSpringsForceField<DataTypes>::addKToMatrix(const core::MechanicalParams* mparams,
+void PolynomialRestShapeSpringsForceField<DataTypes>::doAddKToMatrix(const core::MechanicalParams* mparams,
                                                                    const sofa::core::behavior::MultiMatrixAccessor* matrix )
 {    
     msg_info() << "[" <<  this->getName() << "]: addKToMatrix";
@@ -474,7 +474,7 @@ void PolynomialRestShapeSpringsForceField<DataTypes>::addKToMatrix(const core::M
 }
 
 template <class DataTypes>
-void PolynomialRestShapeSpringsForceField<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
+void PolynomialRestShapeSpringsForceField<DataTypes>::doBuildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
 {
     static constexpr sofa::SignedIndex Dimension = Coord::total_size;
 
@@ -493,7 +493,7 @@ void PolynomialRestShapeSpringsForceField<DataTypes>::buildStiffnessMatrix(core:
 }
 
 template <class DataTypes>
-void PolynomialRestShapeSpringsForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+void PolynomialRestShapeSpringsForceField<DataTypes>::doBuildDampingMatrix(core::behavior::DampingMatrix*)
 {
     // No damping in this ForceField
 }

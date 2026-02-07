@@ -48,11 +48,10 @@ public:
     /// \todo Rename to getMechState2()
     virtual BaseMechanicalState* getMechModel2();
 
-    void addKToMatrix(const MechanicalParams* /* mparams */, const sofa::core::behavior::MultiMatrixAccessor* /* matrix */ ) override
+    void doAddKToMatrix(const MechanicalParams* /* mparams */, const sofa::core::behavior::MultiMatrixAccessor* /* matrix */ ) override
     {
         msg_error() << "addKToMatrix not implemented.";
     }
-
 
     /// initialization to export potential energy to gnuplot files format
     virtual void initGnuplot(const std::string path)
