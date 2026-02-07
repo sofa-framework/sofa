@@ -33,6 +33,79 @@ using namespace sofa::type;
 using namespace sofa::helper;
 using namespace sofa::defaulttype;
 
+template<class MatrixType>
+class MatTest : public ::testing::Test
+{
+public:
+    void checkDefaultConstructorDefaultInitialization()
+    {
+        MatrixType A;
+        checkZero(A);
+    }
+
+    void checkDefaultConstructorValueInitialization()
+    {
+        MatrixType A{};
+        checkZero(A);
+    }
+
+protected:
+    void checkZero(const MatrixType& A)
+    {
+        for (sofa::Size i = 0; i < MatrixType::nbLines; ++i)
+        {
+            for (sofa::Size j = 0; j < MatrixType::nbCols; ++j)
+            {
+                static constexpr typename MatrixType::Real zero{};
+                EXPECT_EQ(A(i, j), zero);
+            }
+        }
+    }
+};
+
+using MyTypes = ::testing::Types<
+        sofa::type::Mat<1, 1, float>,
+        sofa::type::Mat<1, 2, float>,
+        sofa::type::Mat<2, 1, float>,
+        sofa::type::Mat<2, 2, float>,
+        sofa::type::Mat<3, 3, float>,
+        sofa::type::Mat<4, 4, float>,
+        sofa::type::Mat<12, 12, float>,
+        
+        sofa::type::Mat<1, 1, double>,
+        sofa::type::Mat<1, 2, double>,
+        sofa::type::Mat<2, 1, double>,
+        sofa::type::Mat<2, 2, double>,
+        sofa::type::Mat<3, 3, double>,
+        sofa::type::Mat<4, 4, double>,
+        sofa::type::Mat<12, 12, double>,
+
+        sofa::type::Mat<1, 1, int>,
+        sofa::type::Mat<1, 2, int>,
+        sofa::type::Mat<2, 1, int>,
+        sofa::type::Mat<2, 2, int>,
+        sofa::type::Mat<3, 3, int>,
+        sofa::type::Mat<4, 4, int>,
+        sofa::type::Mat<12, 12, int>,
+
+        sofa::type::Mat<1, 1, unsigned int>,
+        sofa::type::Mat<1, 2, unsigned int>,
+        sofa::type::Mat<2, 1, unsigned int>,
+        sofa::type::Mat<2, 2, unsigned int>,
+        sofa::type::Mat<3, 3, unsigned int>,
+        sofa::type::Mat<4, 4, unsigned int>,
+        sofa::type::Mat<12, 12, unsigned int>
+    >;
+TYPED_TEST_SUITE(MatTest, MyTypes);
+TYPED_TEST(MatTest, checkDefaultConstructorDefaultInitialization)
+{
+    this->checkDefaultConstructorDefaultInitialization();
+}
+TYPED_TEST(MatTest, checkDefaultConstructorValueInitialization)
+{
+    this->checkDefaultConstructorValueInitialization();
+}
+
 TEST(MatTypesTest, initializerListConstructors)
 {
     static constexpr sofa::type::Mat<3, 3, int> A {
