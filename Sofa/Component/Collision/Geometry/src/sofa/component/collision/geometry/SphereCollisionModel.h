@@ -26,6 +26,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/core/behavior/SingleStateAccessor.h>
 
 namespace sofa::component::collision::geometry
 {
@@ -80,10 +81,14 @@ sofa::type::Vec3 TSphere<defaulttype::Vec3Types >::getContactPointWithSurfacePoi
 
 
 template< class TDataTypes>
-class SphereCollisionModel : public core::CollisionModel
+class SphereCollisionModel :
+    public core::CollisionModel,
+    public virtual core::behavior::SingleStateAccessor<TDataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(SphereCollisionModel, TDataTypes), core::CollisionModel);
+    SOFA_CLASS2(SOFA_TEMPLATE(SphereCollisionModel, TDataTypes),
+        core::CollisionModel,
+        core::behavior::SingleStateAccessor<TDataTypes>);
 
     typedef TDataTypes DataTypes;
     typedef DataTypes InDataTypes;
@@ -170,8 +175,7 @@ public:
     void computeBBox(const core::ExecParams* params, bool onlyVisible=false) override;
 
 protected:
-    core::behavior::MechanicalState<DataTypes>* mstate;
-    SingleLink<SphereCollisionModel<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+    using sofa::core::behavior::SingleStateAccessor<TDataTypes>::mstate;
 };
 
 template<class DataTypes>
