@@ -123,6 +123,7 @@ public:
 
     void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) final;
 
+    using Inherit::getPotentialEnergy;
     SReal getPotentialEnergy(const sofa::core::MechanicalParams*, const DataVecCoord&, const DataVecCoord& ) const override;
 
     const type::vector< Contact >& getContact() const { return contacts.getValue();}
