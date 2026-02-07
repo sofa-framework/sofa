@@ -171,6 +171,12 @@ void CompareState::processCompareState()
         }
     }
 
+    if (validLines.empty()) // No references found, we need to notify that this is not a correct result
+    {
+        totalError_X = std::numeric_limits<double>::max();
+        totalError_V = std::numeric_limits<double>::max();
+    }
+
     msg_info() << "totalError_X = " << totalError_X << ", totalError_V = " << totalError_V;
 }
 
