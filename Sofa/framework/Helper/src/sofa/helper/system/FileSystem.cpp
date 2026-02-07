@@ -198,21 +198,28 @@ bool FileSystem::createDirectory(const std::string& path)
             struct stat st_buf;
             if (stat(path.c_str(), &st_buf) == 0)
             {
-                if ((st_buf.st_mode & S_IFMT) != S_IFDIR) {
-                    msg_error(error) << path << ": File exists and is not a directoy";
+                if ((st_buf.st_mode & S_IFMT) != S_IFDIR)
+                {
+                    msg_error(error) << path << ": File exists and is not a directory";
                     return true;
                 }
                 else
                 {
+                    // 'path' was already created and is a folder
                     return false;
                 }
             }
-
+            else
+            {
+                msg_error(error) << path << ": Unknown error while trying to create this directory.";
+                return true;
+            }
         }
     }
 #endif
     else
     {
+        // 'path' has been created sucessfully
         return false;
     }
 }
