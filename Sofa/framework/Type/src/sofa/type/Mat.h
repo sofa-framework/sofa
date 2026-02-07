@@ -21,14 +21,15 @@
 ******************************************************************************/
 #pragma once
 
+#include <sofa/type/Vec.h>
 #include <sofa/type/config.h>
+#include <sofa/type/fixed_array.h>
 #include <sofa/type/fwd.h>
 
-#include <sofa/type/fixed_array.h>
-#include <sofa/type/Vec.h>
-
-#include <iostream>
 #include <algorithm>
+#include <cstring>
+#include <iostream>
+#include <numeric>
 
 namespace // anonymous
 {
@@ -913,6 +914,63 @@ public:
         this->Mat<L,C,real>::operator=(m);
     }
 };
+
+template <sofa::Size N, typename real>
+real determinant(const Mat<N, N, real>& A)
+{
+    // Compute det(A) using Gaussian elimination with partial pivoting.
+    // Complexity: O(N^3), no heap allocations.
+
+    Mat<N, N, real> m = A; // local copy we can modify
+    real det = static_cast<real>(1);
+    int sign = 1;
+
+    for (sofa::Size k = 0; k < N; ++k)
+    {
+        // Find pivot row (max abs in column k, rows k..N-1)
+        sofa::Size pivotRow = k;
+        real pivotAbs = rabs(m(k, k));
+
+        for (sofa::Size i = k + 1; i < N; ++i)
+        {
+            const real vAbs = rabs(m(i, k));
+            if (vAbs > pivotAbs)
+            {
+                pivotAbs = vAbs;
+                pivotRow = i;
+            }
+        }
+
+        if (equalsZero(pivotAbs))
+        {
+            return static_cast<real>(0);
+        }
+
+        if (pivotRow != k)
+        {
+            std::swap(m(pivotRow), m(k)); // swap rows (Vec/C-line swap)
+            sign = -sign;
+        }
+
+        const real pivot = m(k, k);
+
+        // Eliminate entries below pivot
+        for (sofa::Size i = k + 1; i < N; ++i)
+        {
+            const real factor = m(i, k) / pivot;
+            // Start at k+1 since m(i,k) becomes 0
+            for (sofa::Size j = k + 1; j < N; ++j)
+            {
+                m(i, j) -= factor * m(k, j);
+            }
+            m(i, k) = static_cast<real>(0);
+        }
+
+        det *= pivot;
+    }
+
+    return (sign > 0) ? det : -det;
+}
 
 /// Determinant of a 3x3 matrix.
 template<class real>
