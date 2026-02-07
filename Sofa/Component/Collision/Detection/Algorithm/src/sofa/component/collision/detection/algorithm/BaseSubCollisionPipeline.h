@@ -85,6 +85,9 @@ public:
 
     /// @brief Initializes the component. Marked final to enforce Template Method pattern.
     void init() override final;
+    
+    /// @brief Initialization of the component during the bottom-up traversal. Marked final to enforce Template Method pattern.
+    void bwdInit() override final;
 
     /// @brief Renders debug visualization. Marked final to enforce Template Method pattern.
     void draw(const core::visual::VisualParams* vparams) override final;
