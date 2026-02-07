@@ -39,7 +39,6 @@ public:
     SOFA_CLASS(FreeMotionAnimationLoop, sofa::simulation::CollisionAnimationLoop);
 
 public:
-    void step (const sofa::core::ExecParams* params, SReal dt) override;
     void init() override;
 
     Data<bool> d_solveVelocityConstraintFirst; ///< solve separately velocity constraint violations before position constraint violations
@@ -51,6 +50,8 @@ protected:
     FreeMotionAnimationLoop();
     ~FreeMotionAnimationLoop() override ;
 
+    void doStep (const sofa::core::ExecParams* params, SReal dt) override;
+    
     ///< The ConstraintSolver used in this animation loop (required)
     SingleLink<FreeMotionAnimationLoop, sofa::core::behavior::ConstraintSolver, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> l_constraintSolver;
 
