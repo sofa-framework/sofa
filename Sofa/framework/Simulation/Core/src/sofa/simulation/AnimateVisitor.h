@@ -22,43 +22,4 @@
 #pragma once
 
 #include <sofa/config.h>
-SOFA_HEADER_DEPRECATED_NOT_REPLACED("v25.12", "v26.06")
-
-#include <sofa/simulation/config.h>
-#include <sofa/simulation/fwd.h>
-#include <sofa/simulation/Visitor.h>
-#include <sofa/core/behavior/fwd.h>
-
-#include <sofa/core/behavior/OdeSolver.h>
-
-namespace sofa::simulation
-{
-
-class SOFA_SIMULATION_CORE_API SOFA_ATTRIBUTE_DEPRECATED_ANIMATEVISITOR() AnimateVisitor : public Visitor
-{
-
-protected :
-    SReal dt;
-    bool firstNodeVisited;
-
-public:
-    AnimateVisitor(const core::ExecParams* params, SReal dt);
-
-    void setDt(SReal v) { dt = v; }
-    SReal getDt() const { return dt; }
-
-    virtual void processCollisionPipeline(simulation::Node* node, core::collision::Pipeline* obj);
-    virtual void fwdInteractionForceField(simulation::Node* node, core::behavior::BaseInteractionForceField* obj);
-
-    Result processNodeTopDown(simulation::Node* node) override;
-
-    /// Specify whether this action can be parallelized.
-    bool isThreadSafe() const override { return true; }
-
-    /// Return a category name for this action.
-    /// Only used for debugging / profiling purposes
-    const char* getCategoryName() const override { return "animate"; }
-    const char* getClassName() const override { return "AnimateVisitor"; }
-};
-
-} // namespace sofa::simulation
+SOFA_HEADER_DISABLED_NOT_REPLACED("v25.12", "v26.06")
