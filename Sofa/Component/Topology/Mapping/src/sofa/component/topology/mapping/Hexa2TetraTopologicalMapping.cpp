@@ -68,34 +68,34 @@ void Hexa2TetraTopologicalMapping::init()
 
     Inherit1::init();
 
-    if (!this->checkTopologyInputTypes()) // method will display error message if false
-    {
-        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
-        return;
-    }
+    // if (!this->checkTopologyInputTypes()) // method will display error message if false
+    // {
+    //     this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+    //     return;
+    // }
 
-    TetrahedronSetTopologyModifier* to_tstm { nullptr };
-    toModel->getContext()->get(to_tstm);
-    if (!to_tstm)
-    {
-        msg_error() << "No TetrahedronSetTopologyModifier found in the Tetrahedron topology Node.";
-        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
-        return;
-    }
+    // TetrahedronSetTopologyModifier* to_tstm { nullptr };
+    // toModel->getContext()->get(to_tstm);
+    // if (!to_tstm)
+    // {
+    //     msg_error() << "No TetrahedronSetTopologyModifier found in the Tetrahedron topology Node.";
+    //     this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+    //     return;
+    // }
 
     // INITIALISATION of TETRAHEDRAL mesh from HEXAHEDRAL mesh :
 
-    TetrahedronSetTopologyContainer *to_tstc { nullptr };
-    toModel->getContext()->get(to_tstc);
-    if (!to_tstc)
-    {
-        msg_error() << "No TetrahedronSetTopologyContainer found in the Tetrahedron topology Node.";
-        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
-        return;
-    }
+    // TetrahedronSetTopologyContainer *toModel { nullptr };
+    // toModel->getContext()->get(toModel);
+    // if (!toModel)
+    // {
+    //     msg_error() << "No TetrahedronSetTopologyContainer found in the Tetrahedron topology Node.";
+    //     this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+    //     return;
+    // }
 
     // Clear output topology
-    to_tstc->clear();
+    toModel->clear();
 
     // Set the same number of points
     toModel->setNbPoints(fromModel->getNbPoints());
@@ -165,21 +165,21 @@ void Hexa2TetraTopologicalMapping::init()
 
         if(!swapped)
         {
-            to_tstc->addTetra(c[0],c[5],c[1],c[6]);
-            to_tstc->addTetra(c[0],c[1],c[3],c[6]);
-            to_tstc->addTetra(c[1],c[3],c[6],c[2]);
-            to_tstc->addTetra(c[6],c[3],c[0],c[7]);
-            to_tstc->addTetra(c[6],c[7],c[0],c[5]);
-            to_tstc->addTetra(c[7],c[5],c[4],c[0]);
+            toModel->addTetra(c[0],c[5],c[1],c[6]);
+            toModel->addTetra(c[0],c[1],c[3],c[6]);
+            toModel->addTetra(c[1],c[3],c[6],c[2]);
+            toModel->addTetra(c[6],c[3],c[0],c[7]);
+            toModel->addTetra(c[6],c[7],c[0],c[5]);
+            toModel->addTetra(c[7],c[5],c[4],c[0]);
         }
         else
         {
-            to_tstc->addTetra(c[0],c[5],c[6],c[1]);
-            to_tstc->addTetra(c[0],c[1],c[6],c[3]);
-            to_tstc->addTetra(c[1],c[3],c[2],c[6]);
-            to_tstc->addTetra(c[6],c[3],c[7],c[0]);
-            to_tstc->addTetra(c[6],c[7],c[5],c[0]);
-            to_tstc->addTetra(c[7],c[5],c[0],c[4]);
+            toModel->addTetra(c[0],c[5],c[6],c[1]);
+            toModel->addTetra(c[0],c[1],c[6],c[3]);
+            toModel->addTetra(c[1],c[3],c[2],c[6]);
+            toModel->addTetra(c[6],c[3],c[7],c[0]);
+            toModel->addTetra(c[6],c[7],c[5],c[0]);
+            toModel->addTetra(c[7],c[5],c[0],c[4]);
         }
         for (int j = 0; j < numberTetraInHexa; j++)
         {
