@@ -66,7 +66,7 @@ void Tetra2TriangleTopologicalMapping::init()
 {
     sofa::core::topology::TopologicalMapping::init();
 
-    if (!this->checkTopologyInputTypes()) // method will display error message if false
+    if (!this->checkMappingInputType() || !this->checkMappingOutputType())
     {
         this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
