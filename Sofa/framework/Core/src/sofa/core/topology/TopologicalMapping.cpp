@@ -82,20 +82,38 @@ void TopologicalMapping::dumpLoc2GlobVec()
 
 bool TopologicalMapping::checkTopologyInputTypes()
 {
+    bool res = checkMappingInputType();
+    res = res && checkMappingOutputType();
+
+    res = res && compareInputTopologyType();
+    res = res && compareOutputTopologyType();
+
+    return res;
+}
+
+bool TopologicalMapping::checkMappingInputType() const
+{
     if (m_inputType == geometry::ElementType::UNKNOWN)
     {
         dmsg_error() << "The input ElementType has not been set. Define 'm_inputType' to the correct ElementType in the constructor.";
         return false;
     }
+    return true;
+}
 
+bool TopologicalMapping::checkMappingOutputType() const
+{
     if (m_outputType == geometry::ElementType::UNKNOWN)
     {
         dmsg_error() << "The output ElementType has not been set. Define 'm_outputType' to the correct ElementType in the constructor.";
         return false;
     }
+    return true;
+}
 
+bool TopologicalMapping::compareInputTopologyType() const
+{
     assert(fromModel.get());
-    assert(toModel.get());
 
     const ElementType inputTopologyType = fromModel->getTopologyType();
     if (inputTopologyType != m_inputType)
@@ -103,6 +121,12 @@ bool TopologicalMapping::checkTopologyInputTypes()
         msg_error() << "The type of the input topology '" << fromModel.getPath() << "' (" << elementTypeToString(inputTopologyType) << ") does not correspond to a valid '" << elementTypeToString(m_inputType) << "' topology.";
         return false;
     }
+    return true;
+}
+
+bool TopologicalMapping::compareOutputTopologyType() const
+{
+    assert(toModel.get());
 
     const ElementType outputTopologyType = toModel->getTopologyType();
     if (outputTopologyType != m_outputType)
@@ -110,7 +134,6 @@ bool TopologicalMapping::checkTopologyInputTypes()
         msg_error() << "The type of the output topology '" << toModel.getPath() << "' (" << elementTypeToString(outputTopologyType) << ") does not correspond to a valid '" << elementTypeToString(m_outputType) << "' topology.";
         return false;
     }
-
     return true;
 }
 
