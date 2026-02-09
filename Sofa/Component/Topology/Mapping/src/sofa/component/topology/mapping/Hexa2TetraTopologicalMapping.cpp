@@ -75,12 +75,6 @@ void Hexa2TetraTopologicalMapping::init()
         return;
     }
 
-    // if (!this->checkTopologyInputTypes()) // method will display error message if false
-    // {
-    //     this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
-    //     return;
-    // }
-
     // INITIALISATION of TETRAHEDRAL mesh from HEXAHEDRAL mesh :
 
     // Clear output topology
