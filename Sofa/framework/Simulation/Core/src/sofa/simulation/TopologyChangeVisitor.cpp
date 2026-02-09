@@ -69,10 +69,9 @@ Visitor::Result TopologyChangeVisitor::processNodeTopDown(simulation::Node* node
 #endif
 
     // search for topological mapping, run the mapping first. Do not stop the propagation of parent topology
-    for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
+    for (auto* obj : node->getNodeObjects<sofa::core::topology::TopologicalMapping>())
     {
-        sofa::core::topology::TopologicalMapping* obj = dynamic_cast<sofa::core::topology::TopologicalMapping*>(it->get());
-        if (obj != nullptr)  // find a TopologicalMapping node among the brothers (it must be the first one written)
+        if (obj != nullptr)
         {
             if(obj->propagateFromInputToOutputModel() && obj->getFrom() == m_source)  //node != root){ // the propagation of topological changes comes (at least) from a father node, not from a brother
             {
@@ -92,10 +91,9 @@ Visitor::Result TopologyChangeVisitor::processNodeTopDown(simulation::Node* node
 
 void TopologyChangeVisitor::processNodeBottomUp(simulation::Node* node)
 {
-    for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
+    for (auto* obj : node->getNodeObjects<sofa::core::topology::TopologicalMapping>())
     {
-        sofa::core::topology::TopologicalMapping* obj = dynamic_cast<sofa::core::topology::TopologicalMapping*>(it->get());
-        if (obj != nullptr)  // find a TopologicalMapping node among the brothers (it must be the first one written)
+        if (obj != nullptr)
         {
             if(obj->propagateFromOutputToInputModel() && obj->getTo() == m_source)  //node == root){
             {
