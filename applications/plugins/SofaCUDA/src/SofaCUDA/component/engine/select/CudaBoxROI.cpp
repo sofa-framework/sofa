@@ -41,7 +41,9 @@ template class SOFA_GPU_CUDA_API boxroi::BoxROI<gpu::cuda::CudaVec3d1Types>;
 
 namespace sofa::gpu::cuda
 {
-int BoxROICudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
+    void registerBoxROI(sofa::core::ObjectFactory* factory)
+    {
+        factory->registerObjects(sofa::core::ObjectRegistrationData("Supports GPU-side computations using CUDA for the BoxROI")
         .add< component::engine::select::boxroi::BoxROI<CudaVec2fTypes> >()
         .add< component::engine::select::boxroi::BoxROI<CudaVec3fTypes> >()
         .add< component::engine::select::boxroi::BoxROI<CudaVec3f1Types> >()
@@ -52,7 +54,8 @@ int BoxROICudaClass = core::RegisterObject("Supports GPU-side computations using
         .add< component::engine::select::boxroi::BoxROI<CudaVec3d1Types> >()
         .add< component::engine::select::boxroi::BoxROI<CudaRigid3dTypes> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
-        ;
+        );
+    }
 
 } // namespace sofa::gpu::cuda
 

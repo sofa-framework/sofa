@@ -1,9 +1,9 @@
 # Post-install scripts
-if(NOT SOFA_BUILD_RELEASE_PACKAGE)
+if(NOT SOFA_BUILD_RELEASE_PACKAGE AND NOT CMAKE_SYSTEM_NAME STREQUAL Windows)
     return()
 endif()
 
-if(TARGET Sofa.Qt)
+if(TARGET Sofa.Qt AND SOFA_BUILD_RELEASE_PACKAGE)
     find_package(Qt5 COMPONENTS Gui REQUIRED)
     get_target_property(qt5gui_loc Qt5::Gui LOCATION_RELEASE)
     get_filename_component(QT_LIB_DIR "${qt5gui_loc}" DIRECTORY)
