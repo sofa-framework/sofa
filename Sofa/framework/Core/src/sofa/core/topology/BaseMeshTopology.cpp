@@ -355,6 +355,16 @@ void BaseMeshTopology::addHexa(Index, Index, Index, Index, Index, Index, Index, 
     msg_error() << "addHexa() not supported.";
 }
 
+void BaseMeshTopology::addPrism(Index a, Index b, Index c, Index d, Index e, Index f)
+{
+    msg_error() << "addPrism() not supported.";
+}
+
+void BaseMeshTopology::addPyramid(Index a, Index b, Index c, Index d, Index e)
+{
+    msg_error() << "addPyramid() not supported.";
+}
+
 void BaseMeshTopology::reOrientateTriangle(TriangleID /*id*/)
 {
     msg_error() << "reOrientateTriangle() not supported.";

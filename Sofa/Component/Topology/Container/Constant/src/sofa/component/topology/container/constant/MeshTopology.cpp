@@ -518,6 +518,8 @@ void MeshTopology::init()
 
     const auto hexahedra = sofa::helper::getReadAccessor(d_seqHexahedra);
     const auto tetrahedra = sofa::helper::getReadAccessor(d_seqTetrahedra);
+    const auto prisms = sofa::helper::getReadAccessor(d_seqPrisms);
+    const auto pyramids = sofa::helper::getReadAccessor(d_seqPyramids);
     const auto quads = sofa::helper::getReadAccessor(d_seqQuads);
     const auto triangles = sofa::helper::getReadAccessor(d_seqTriangles);
     const auto edges = sofa::helper::getReadAccessor(d_seqEdges);
@@ -527,6 +529,10 @@ void MeshTopology::init()
         m_upperElementType = geometry::ElementType::HEXAHEDRON;
     else if (!tetrahedra.empty())
         m_upperElementType = sofa::geometry::ElementType::TETRAHEDRON;
+    else if (!prisms.empty())
+        m_upperElementType = sofa::geometry::ElementType::PRISM;
+    else if (!pyramids.empty())
+        m_upperElementType = sofa::geometry::ElementType::PYRAMID;
     else if (!quads.empty())
         m_upperElementType = sofa::geometry::ElementType::QUAD;
     else if (!triangles.empty())
@@ -565,6 +571,8 @@ void MeshTopology::init()
         countPoints(quads);
         countPoints(tetrahedra);
         countPoints(hexahedra);
+        countPoints(prisms);
+        countPoints(pyramids);
 
         nbPoints = n;
     }
@@ -743,6 +751,34 @@ void MeshTopology::addHexa(Index p1, Index p2, Index p3, Index p4, Index p5, Ind
     if (p6 >= nbPoints) nbPoints = p6+1;
     if (p7 >= nbPoints) nbPoints = p7+1;
     if (p8 >= nbPoints) nbPoints = p8+1;
+}
+
+void MeshTopology::addPrism(Index a, Index b, Index c, Index d, Index e, Index f)
+{
+    auto seqPrisms = helper::getWriteOnlyAccessor(d_seqPrisms);
+    seqPrisms.emplace_back(a, b, c, d, e, f);
+
+    for (const auto v : {a,b,c,d,e,f})
+    {
+        if (v >= nbPoints)
+        {
+            nbPoints = v+1;
+        }
+    }
+}
+
+void MeshTopology::addPyramid(Index a, Index b, Index c, Index d, Index e)
+{
+    auto seqPyramids = helper::getWriteOnlyAccessor(d_seqPyramids);
+    seqPyramids.emplace_back(a, b, c, d, e);
+
+    for (const auto v : {a,b,c,d,e})
+    {
+        if (v >= nbPoints)
+        {
+            nbPoints = v+1;
+        }
+    }
 }
 
 void MeshTopology::addUV(SReal u, SReal v)
