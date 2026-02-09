@@ -310,6 +310,23 @@ public:
 protected:
     Size  nbPoints;
 
+    template<typename ElementContainer>
+    Size countPoints(const ElementContainer& seqElements)
+    {
+        Size n = 0;
+        for (const auto& element : seqElements)
+        {
+            for (const auto pointId : element)
+            {
+                if (n <= pointId)
+                {
+                    n = 1 + pointId;
+                }
+            }
+        }
+        return n;
+    }
+
     bool validTetrahedra;
     bool validHexahedra;
 
