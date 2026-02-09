@@ -72,15 +72,21 @@ void Tetra2TriangleTopologicalMapping::init()
         return;
     }
 
-    l_topologyModifier.set(toModel->getContext()->get<container::dynamic::TriangleSetTopologyModifier>(
-            core::objectmodel::BaseContext::SearchDirection::SearchUp));
+    if (!l_topologyModifier)
+    {
+        msg_info() << "Looking for a component of type TriangleSetTopologyModifier "
+                      "in the output topology context ("
+                      << toModel->getContext()->getName() <<").";
+
+        l_topologyModifier.set(toModel->getContext()->get<container::dynamic::TriangleSetTopologyModifier>(
+                core::objectmodel::BaseContext::SearchDirection::SearchUp));
+    }
 
     if (!l_topologyModifier)
     {
-        msg_error() << "No TriangleSetTopologyModifier found in the output topology node '"
-            << toModel->getContext()->getName() << "'.";
-        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
-        return;
+        msg_warning() << "No TriangleSetTopologyModifier found in output topology context ("
+                         << toModel->getContext()->getName() << ") but has not been found. Dynamic "
+                         "topological changes will not be supported.";
     }
     
 
