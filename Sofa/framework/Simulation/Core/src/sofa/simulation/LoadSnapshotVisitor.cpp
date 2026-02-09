@@ -53,25 +53,47 @@ using sofa::core::objectmodel::SnapshotType;
 namespace sofa::simulation
 {
 
-void LoadSnapshotVisitor::processObject(core::objectmodel::BaseObject* obj)
+void LoadSnapshotVisitor::processObject(
+    core::objectmodel::BaseObject* obj,
+    std::shared_ptr<core::objectmodel::BaseSnapshot::SnapshotNode> parent
+)
 {
-    //obj->loadSnapshot(snapCont_);
+    std::cout << "avant findSnapshotObjectBASE" << std::endl;
+    auto snapshotObject = obj->findSnapshotObject(parent, obj->getName());
+    std::cout << "apres findSnapshotObjectBASE" << std::endl;
+    std::cout << "#######################" << std::endl;
+    std::cout << "snapshotObject name (object): " << snapshotObject->m_name << std::endl;
+    std::cout << "#######################" << std::endl;
+    obj->loadSnapshot(snapshotObject);
 }
 
 Visitor::Result LoadSnapshotVisitor::processNodeTopDown(simulation::Node* node)
 { 
-    //node->loadSnapshot(snapCont_);
+    // find the snapshotObject in the snapshot in order to loadSnapshot
+    std::cout << "========================> NOUS SOMMES DANS LE NODE : " << node->getName() << std::endl;
+    std::cout << "avant findSnapshotObjectNODE" << std::endl;
+    auto snapshotObject = node->findSnapshotObject(m_snapshotContainer.m_graphRoot, node->getName());
+    std::cout << "apres findSnapshotObjectNODE" << std::endl;
+    auto SnapshotNode = std::dynamic_pointer_cast<core::objectmodel::BaseSnapshot::SnapshotNode>(snapshotObject);
+    std::cout << "#########################" << std::endl;
+    std::cout << "snapshotObject name (node): " << SnapshotNode->m_name << std::endl;
+    for (auto element : SnapshotNode->components)
+    {
+        std::cout << "components name: " << element.m_name << std::endl;
+    }
+    for (auto child : SnapshotNode->children)
+    {
+        std::cout << "children name: " << child->m_name << std::endl;
+    }
+    std::cout << "#########################" << std::endl;
+    node->loadSnapshot(SnapshotNode);
+    
     for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
     {
-        this->processObject(it->get());
-    } 
+        this->processObject(it->get(), SnapshotNode);
+    }
     return RESULT_CONTINUE;
 }
-
-void LoadSnapshotVisitor::processNodeBottomUp(simulation::Node* /*node*/)
-{
-}
-
 
 } // namespace sofa::simulation
 

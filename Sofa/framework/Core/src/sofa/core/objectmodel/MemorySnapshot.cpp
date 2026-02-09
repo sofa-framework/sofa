@@ -47,7 +47,7 @@ void MemorySnapshot::exportTo(const std::string filename)
 
 void MemorySnapshot::importSnapshot(const std::string filename)
 {
-    std::cout << "importSnapshot" << std::endl;
+    std::cout << "importSnapshot possible" << std::endl;
     if(m_graphRoot != nullptr)
     {
         std::cout << m_graphRoot->m_name << std::endl;

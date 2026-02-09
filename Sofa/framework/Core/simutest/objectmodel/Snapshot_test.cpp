@@ -122,7 +122,7 @@ TEST_F(Snapshot_test, saveSnapshot)
     TestComponent tcomponent;
 
     auto snapshot = std::make_shared<BaseSnapshot::SnapshotObject>();
-    std::vector<std::shared_ptr<BaseSnapshot::SnapNode>> snapshotParents;
+    std::vector<std::shared_ptr<BaseSnapshot::SnapshotNode>> snapshotParents;
     snapshot = tcomponent.saveSnapshot(snapshotParents);
 
     EXPECT_EQ(snapshot->m_name, "pi");

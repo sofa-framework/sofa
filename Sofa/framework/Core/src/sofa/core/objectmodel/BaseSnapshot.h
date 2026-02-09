@@ -62,19 +62,19 @@ public:
         virtual ~SnapshotObject() = default;
     };
 
-    struct SnapNode : public SnapshotObject
+    struct SnapshotNode : public SnapshotObject
     {
         std::vector<SnapshotObject> components;
-        std::vector<std::shared_ptr<SnapNode>> children;
+        std::vector<std::shared_ptr<SnapshotNode>> children;
         
-        SnapNode() = default;
-        SnapNode(const std::string& name) : SnapshotObject(name) {}
-        SnapNode(const SnapshotObject& obj) : SnapshotObject(obj) {}
+        SnapshotNode() = default;
+        SnapshotNode(const std::string& name) : SnapshotObject(name) {}
+        SnapshotNode(const SnapshotObject& obj) : SnapshotObject(obj) {}
 
-        virtual ~SnapNode() noexcept = default;
+        virtual ~SnapshotNode() noexcept = default;
     };
 
-    std::shared_ptr<SnapNode> m_graphRoot { nullptr };
+    std::shared_ptr<SnapshotNode> m_graphRoot { nullptr };
 
     virtual void importSnapshot(const std::string filename) = 0;
 

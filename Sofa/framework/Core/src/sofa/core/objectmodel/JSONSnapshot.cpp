@@ -64,7 +64,7 @@ void to_json(nlohmann::json& j, const BaseSnapshot::SnapshotObject& so )
     j["links"] = so.m_linkContainer;
 }
 
-void to_json(nlohmann::json& j, const BaseSnapshot::SnapNode& sn)
+void to_json(nlohmann::json& j, const BaseSnapshot::SnapshotNode& sn)
 {
     j.clear();
     j["name"] = sn.m_name;
@@ -86,7 +86,7 @@ void to_json(nlohmann::json& j, const BaseSnapshot::SnapNode& sn)
     }
 }
 
-void to_json(nlohmann::json& j, const std::shared_ptr<BaseSnapshot::SnapNode>& sn)
+void to_json(nlohmann::json& j, const std::shared_ptr<BaseSnapshot::SnapshotNode>& sn)
 {
     j.clear();
     j["name"] = sn->m_name;
@@ -143,7 +143,7 @@ void JSONSnapshot::importSnapshot(const std::string filename)
 //     j.at("links").get_to(so.m_linkContainer);
 // }
 
-// void from_json(const nlohmann::json& j, BaseSnapshot::SnapNode& sn)
+// void from_json(const nlohmann::json& j, BaseSnapshot::SnapshotNode& sn)
 // {
 //     j.at("components").get_to(sn.components); 
 
@@ -152,7 +152,7 @@ void JSONSnapshot::importSnapshot(const std::string filename)
 //     {
 //         for (const auto& childJson : j["children"])
 //         {
-//             auto child = std::make_shared<BaseSnapshot::SnapNode>();
+//             auto child = std::make_shared<BaseSnapshot::SnapshotNode>();
 //             childJson.get_to(*child);
 //             sn.children.push_back(child);
 //         }

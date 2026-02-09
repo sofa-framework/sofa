@@ -64,12 +64,10 @@ core::visual::VisualLoop* BaseNode::getVisualLoop() const
     return this->getContext()->get<core::visual::VisualLoop>();
 }
 
-// std::shared_ptr<SnapshotObject> createSnapshotObject(const std::vector<std::shared_ptr<SnapNode>>& parents)
-
 std::shared_ptr<BaseSnapshot::SnapshotObject>
-BaseNode::createSnapshotObject(std::vector<std::shared_ptr<BaseSnapshot::SnapNode>>& parents) const
+BaseNode::createSnapshotObject(std::vector<std::shared_ptr<BaseSnapshot::SnapshotNode>>& parents) const
 {
-    auto nodeObject = std::make_shared<BaseSnapshot::SnapNode>();
+    auto nodeObject = std::make_shared<BaseSnapshot::SnapshotNode>();
     for (auto p : parents)
     {
         if (p)
@@ -79,6 +77,34 @@ BaseNode::createSnapshotObject(std::vector<std::shared_ptr<BaseSnapshot::SnapNod
     }
     
     return nodeObject;
+}
+
+std::shared_ptr<BaseSnapshot::SnapshotObject> 
+BaseNode::findSnapshotObject( const std::shared_ptr<BaseSnapshot::SnapshotNode>& parents, const std::string objectname)
+{
+    std::cout << "Searching for snapshot object (node): " << objectname << std::endl;
+    std::cout << "Searching in parents: " << parents->m_name << std::endl;
+    if(parents->m_name == objectname)
+    {
+        return parents;
+    }
+    for (auto p : parents->children)
+    {
+        std::cout << "Searching in parents: " << p->m_name << std::endl;
+        if (p->m_name == objectname)
+        {
+            auto nodeObject = std::make_shared<BaseSnapshot::SnapshotNode>(*p);
+            return nodeObject;
+        }
+        else
+        {
+            auto childObject = findSnapshotObject(p, objectname);
+            if (childObject)
+                return childObject;
+        }
+    }
+
+    return nullptr;
 }
 
 /// Set the context of an object to this

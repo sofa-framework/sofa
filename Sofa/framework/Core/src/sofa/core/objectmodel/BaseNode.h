@@ -130,7 +130,9 @@ public:
     virtual core::visual::VisualLoop* getVisualLoop() const;
 
 protected:
-    std::shared_ptr<BaseSnapshot::SnapshotObject> createSnapshotObject(std::vector<std::shared_ptr<BaseSnapshot::SnapNode>>& parents) const ;
+    std::shared_ptr<BaseSnapshot::SnapshotObject> createSnapshotObject(std::vector<std::shared_ptr<BaseSnapshot::SnapshotNode>>& parents) const override;
+public:
+    std::shared_ptr<BaseSnapshot::SnapshotObject> findSnapshotObject(const std::shared_ptr<BaseSnapshot::SnapshotNode>& parents, const std::string objectname) override;
 
 private:
     virtual std::string internalGetPathName() const;

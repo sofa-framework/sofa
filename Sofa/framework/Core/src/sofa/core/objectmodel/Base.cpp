@@ -715,7 +715,7 @@ void Base::saveLinksIn(BaseSnapshot::SnapshotObject& snapshot) const
 // {}
 
 std::shared_ptr<BaseSnapshot::SnapshotObject>
-Base::createSnapshotObject(std::vector<std::shared_ptr<BaseSnapshot::SnapNode>>& parents) const
+Base::createSnapshotObject(std::vector<std::shared_ptr<BaseSnapshot::SnapshotNode>>& parents) const
 {
     auto object = std::make_shared<BaseSnapshot::SnapshotObject>();
     for (auto p : parents)
@@ -728,7 +728,7 @@ Base::createSnapshotObject(std::vector<std::shared_ptr<BaseSnapshot::SnapNode>>&
     return object;
 }
 
-std::shared_ptr<BaseSnapshot::SnapshotObject> Base::saveSnapshot(std::vector<std::shared_ptr<BaseSnapshot::SnapNode>>& parents) const
+std::shared_ptr<BaseSnapshot::SnapshotObject> Base::saveSnapshot(std::vector<std::shared_ptr<BaseSnapshot::SnapshotNode>>& parents) const
 {
     const auto snapshotObject = createSnapshotObject(parents);
     snapshotObject->m_name = this->getName();
@@ -738,12 +738,68 @@ std::shared_ptr<BaseSnapshot::SnapshotObject> Base::saveSnapshot(std::vector<std
     return snapshotObject;
 }
 
+std::shared_ptr<BaseSnapshot::SnapshotObject> 
+Base::findSnapshotObject(const std::shared_ptr<BaseSnapshot::SnapshotNode>& parents, const std::string objectname)
+{
+    std::cout << "Searching for snapshot object (base): " << objectname << std::endl;
+    for (auto p : parents->components)
+    {
+        if (p.m_name == objectname)
+        {
+            auto object = std::make_shared<BaseSnapshot::SnapshotObject>(p);
+            return object;
+        }
+        
+    }
+
+    return nullptr;
+}
 
 
-void Base::loadSnapshot(BaseSnapshot& snapshot)
+void Base::loadSnapshot(const std::shared_ptr<BaseSnapshot::SnapshotObject>& snapshotObject)
 {
     //type.importSnapshot(filename);
     std::cout << "load snapshot" << std::endl;
+    // a function to read data from the snapshot and store inside the component
+    for (const auto& dataInfo : snapshotObject->m_dataContainer)
+    {
+        std::cout << "Loading data field: " << dataInfo.name << std::endl;
+        // Find the corresponding data field in the component
+        auto dataField = this->findData(dataInfo.name);
+        //this->parseField(dataInfo.name, dataInfo.value);
+        
+        if (dataField)
+        {
+            std::cout << "=============" << std::endl;
+            std::cout << "dataField value before: " << dataField->getValueString() << std::endl;
+
+            dataField->beginEditVoidPtr();
+            dataField->read(dataInfo.value);
+            dataField->endEditVoidPtr();
+            // dataField->update();
+            std::cout << "dataField value after: " << dataField->getValueString() << std::endl;
+        }
+    }
+
+    for (const auto& linkInfo : snapshotObject->m_linkContainer)
+    {
+        std::cout << "Loading link: " << linkInfo.name << std::endl;
+        // Find the corresponding link in the component
+        //this->parseField(linkInfo.name, linkInfo.value);
+        auto link = this->findLink(linkInfo.name);
+        std::cout << "link " << std::endl;
+        if (link)
+        {
+            std::cout << "link getpath" << std::endl;
+            auto path = link->getPath();
+            std::cout << "linkInfo.value : " << linkInfo.value << std::endl;
+            link->parseString(linkInfo.value, &path);
+            std::cout << "link value before: " << link->getValueString() << std::endl;
+            link->read(path);
+            std::cout << "link value after: " << link->getValueString() << std::endl;
+        }
+    }
+
 }    
 
 } // namespace sofa::core::objectmodel

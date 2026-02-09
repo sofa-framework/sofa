@@ -39,14 +39,14 @@ class SOFA_SIMULATION_CORE_API SnapshotVisitor : public Visitor
 protected:
     core::objectmodel::BaseSnapshot& m_snapshotContainer;
 
-    std::unordered_map<core::objectmodel::BaseNode*, std::shared_ptr<core::objectmodel::BaseSnapshot::SnapNode>> m_snapshotNodeMap;
+    std::unordered_map<core::objectmodel::BaseNode*, std::shared_ptr<core::objectmodel::BaseSnapshot::SnapshotNode>> m_snapshotNodeMap;
     
 public:
     SnapshotVisitor(const sofa::core::ExecParams* eparams, core::objectmodel::BaseSnapshot& snapshot) : Visitor(eparams), m_snapshotContainer(snapshot)
     {
     }
 
-    void processObject(core::objectmodel::BaseObject* obj, std::shared_ptr<core::objectmodel::BaseSnapshot::SnapNode> parent);
+    void processObject(core::objectmodel::BaseObject* obj, std::shared_ptr<core::objectmodel::BaseSnapshot::SnapshotNode> parent);
 
     Result processNodeTopDown(simulation::Node* node) override;
     const char* getClassName() const override { return "SnapshotVisitor"; }
