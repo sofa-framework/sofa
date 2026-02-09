@@ -74,7 +74,7 @@ bool safeStrToScalar(const std::string& s, ScalarType& result)
 
 /// Escape a string for safe use in a shell double-quoted context.
 /// Escapes: backslash, backtick, dollar, double-quote, and newline.
-std::string escapeForShell(const std::string& input)
+inline std::string escapeForShell(const std::string& input)
 {
     std::string result;
     result.reserve(input.size() + 16);
