@@ -68,6 +68,13 @@ void Hexa2TetraTopologicalMapping::init()
 
     Inherit1::init();
 
+    if (toModel == nullptr)
+    {
+        msg_error() << "No target topology container found.";
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
+
     // if (!this->checkTopologyInputTypes()) // method will display error message if false
     // {
     //     this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
