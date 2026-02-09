@@ -517,14 +517,36 @@ TEST(MatTypesTest, determinant3x3)
     EXPECT_DOUBLE_EQ(sofa::type::determinant(sofa::type::Mat<3,3,SReal>{{1, 1, 0}, {1, 0, 1}, {0, 1, 1}}), -2_sreal);
 }
 
-//TEST(MatTypesTest, determinantRectangular)
-//{
-//    const Mat<2,3,double> m232{{1., 2., 3.}, {4., 5., 6.}};
-//    EXPECT_DOUBLE_EQ(sofa::type::determinant(m232), -3.);
-//
-//    const Mat<3,2,double> m322{{1., 2.}, {3., 4.}, {5., 6.}};
-//    EXPECT_DOUBLE_EQ(sofa::type::determinant(m322), -12.);
-//}
+TEST(MatTypesTest, determinant4x4)
+{
+    EXPECT_DOUBLE_EQ(sofa::type::determinant(sofa::type::Mat<4,4,SReal>{{1,0,0,0}, {0,1,0,0}, {0,0,1,0}, {0,0,0,1}}), 1_sreal);
+    EXPECT_DOUBLE_EQ(sofa::type::determinant(sofa::type::Mat<4,4,SReal>{{2,0,0,0}, {0,3,0,0}, {0,0,4,0}, {0,0,0,5}}), 120_sreal);
+    EXPECT_DOUBLE_EQ(sofa::type::determinant(sofa::type::Mat<4,4,SReal>{{0,1,0,0}, {1,0,0,0}, {0,0,1,0}, {0,0,0,1}}), -1_sreal);
+    EXPECT_DOUBLE_EQ(sofa::type::determinant(sofa::type::Mat<4,4,SReal>{{1,0,0,0}, {0,2,0,0}, {0,0,3,0}, {0,0,0,4}}), 24_sreal);
+    EXPECT_DOUBLE_EQ(sofa::type::determinant(sofa::type::Mat<4,4,SReal>{{1,3,5,9}, {1,3,1,7}, {4,3,9,7}, {5,2,0,9}}), -376_sreal);
+}
+
+TEST(MatTypesTest, determinant12x12)
+{
+    using Mat12 = sofa::type::Mat<12, 12, SReal>;
+
+    // Identity: det = 1
+    EXPECT_DOUBLE_EQ(sofa::type::determinant(Mat12::Identity()), 1_sreal);
+
+    // Diagonal matrix: det = product of diagonal entries
+    Mat12 M;
+    M.clear();
+
+    SReal expected = 1_sreal;
+    for (sofa::Size i = 0; i < 12; ++i)
+    {
+        const SReal d = static_cast<SReal>(i + 1); // 1..12
+        M(i, i) = d;
+        expected *= d;
+    }
+
+    EXPECT_DOUBLE_EQ(sofa::type::determinant(M), expected);
+}
 
 TEST(MatTypesTest, fill)
 {
