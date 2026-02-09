@@ -46,7 +46,14 @@ using namespace sofa::testing;
 class MeshTopology_test : public BaseTest
 {
 public:
-    bool testEmptyContainer();
+    void doSetUp() override
+    {
+        m_topo = sofa::core::objectmodel::New< MeshTopology >();
+        ASSERT_TRUE(m_topo != nullptr);
+        ASSERT_EQ(m_topo->getNbPoints(), 0u);
+    }
+
+    bool testEmptyContainer() const;
 
     bool testHexahedronTopology();
     bool testTetrahedronTopology();
@@ -56,30 +63,32 @@ public:
 
     bool testEdgeTopology();
     bool testVertexTopology();
+
+protected:
+
+    MeshTopology::SPtr m_topo { nullptr };
      
 };
 
 
-bool MeshTopology_test::testEmptyContainer()
+bool MeshTopology_test::testEmptyContainer() const
 {
-    const MeshTopology::SPtr topoCon = sofa::core::objectmodel::New< MeshTopology >();
-
-    EXPECT_EQ(topoCon->getNbHexahedra(), 0);
-    EXPECT_EQ(topoCon->getHexahedra().size(), 0);
+    EXPECT_EQ(m_topo->getNbHexahedra(), 0);
+    EXPECT_EQ(m_topo->getHexahedra().size(), 0);
     
-    EXPECT_EQ(topoCon->getNbHexahedra(), 0);
-    EXPECT_EQ(topoCon->getTetrahedra().size(), 0);
+    EXPECT_EQ(m_topo->getNbHexahedra(), 0);
+    EXPECT_EQ(m_topo->getTetrahedra().size(), 0);
 
-    EXPECT_EQ(topoCon->getNbQuads(), 0);
-    EXPECT_EQ(topoCon->getQuads().size(), 0);
+    EXPECT_EQ(m_topo->getNbQuads(), 0);
+    EXPECT_EQ(m_topo->getQuads().size(), 0);
 
-    EXPECT_EQ(topoCon->getNbTriangles(), 0);
-    EXPECT_EQ(topoCon->getTriangles().size(), 0);
+    EXPECT_EQ(m_topo->getNbTriangles(), 0);
+    EXPECT_EQ(m_topo->getTriangles().size(), 0);
 
-    EXPECT_EQ(topoCon->getNbEdges(), 0);
-    EXPECT_EQ(topoCon->getEdges().size(), 0);
+    EXPECT_EQ(m_topo->getNbEdges(), 0);
+    EXPECT_EQ(m_topo->getEdges().size(), 0);
 
-    EXPECT_EQ(topoCon->getNbPoints(), 0);
+    EXPECT_EQ(m_topo->getNbPoints(), 0);
 
     return true;
 }
