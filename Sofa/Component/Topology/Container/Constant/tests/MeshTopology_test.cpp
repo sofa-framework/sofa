@@ -64,6 +64,15 @@ public:
     bool testEdgeTopology();
     bool testVertexTopology();
 
+    void testAddPoint() const;
+    void testAddEdge() const;
+    void testAddTriangle() const;
+    void testAddQuad() const;
+    void testAddTetrahedron() const;
+    void testAddHexahedron() const;
+    void testAddPrism() const;
+    void testAddPyramid() const;
+
 protected:
 
     MeshTopology::SPtr m_topo { nullptr };
@@ -585,11 +594,77 @@ bool MeshTopology_test::testVertexTopology()
     return true;
 }
 
-
-
-
-TEST_F(MeshTopology_test, testEmptyContainer)
+void MeshTopology_test::testAddPoint() const
 {
+    const auto before = m_topo->getNbPoints();
+    m_topo->addPoint(0.0, 0.0, 0.0);
+    EXPECT_EQ(m_topo->getNbPoints(), before + 1);
+}
+
+void MeshTopology_test::testAddEdge() const
+{
+    m_topo->addEdge(0, 1);
+    EXPECT_EQ(m_topo->getNbPoints(), 2u);
+
+    m_topo->addEdge(2, 10);
+    EXPECT_EQ(m_topo->getNbPoints(), 11u);
+}
+
+void MeshTopology_test::testAddTriangle() const
+{
+    m_topo->addTriangle(0, 1, 2);
+    EXPECT_EQ(m_topo->getNbPoints(), 3u);
+
+    m_topo->addTriangle(5, 3, 4);
+    EXPECT_EQ(m_topo->getNbPoints(), 6u);
+}
+
+void MeshTopology_test::testAddQuad() const
+{
+    m_topo->addQuad(0, 1, 2, 3);
+    EXPECT_EQ(m_topo->getNbPoints(), 4u);
+
+    m_topo->addQuad(7, 6, 5, 4);
+    EXPECT_EQ(m_topo->getNbPoints(), 8u);
+}
+
+void MeshTopology_test::testAddTetrahedron() const
+{
+    m_topo->addTetra(0, 1, 2, 3);
+    EXPECT_EQ(m_topo->getNbPoints(), 4u);
+
+    m_topo->addTetra(2, 5, 9, 3);
+    EXPECT_EQ(m_topo->getNbPoints(), 10u);
+}
+
+void MeshTopology_test::testAddHexahedron() const
+{
+    m_topo->addHexa(0, 1, 2, 3, 4, 5, 6, 7);
+    EXPECT_EQ(m_topo->getNbPoints(), 8u);
+
+    m_topo->addHexa(10, 11, 12, 13, 14, 15, 16, 31);
+    EXPECT_EQ(m_topo->getNbPoints(), 32u);
+}
+
+void MeshTopology_test::testAddPrism() const
+{
+    m_topo->addPrism(0, 1, 2, 3, 4, 5);
+    EXPECT_EQ(m_topo->getNbPoints(), 6u);
+
+    m_topo->addPrism(4, 8, 6, 7, 2, 12);
+    EXPECT_EQ(m_topo->getNbPoints(), 13u);
+}
+
+void MeshTopology_test::testAddPyramid() const
+{
+    m_topo->addPyramid(0, 1, 2, 3, 4);
+    EXPECT_EQ(m_topo->getNbPoints(), 5u);
+
+    m_topo->addPyramid(10, 11, 12, 13, 20);
+    EXPECT_EQ(m_topo->getNbPoints(), 21u);
+}
+
+TEST_F(MeshTopology_test, testEmptyContainer) {
     ASSERT_TRUE(testEmptyContainer());
 }
 
@@ -624,6 +699,45 @@ TEST_F(MeshTopology_test, testEdgeTopology)
 //    ASSERT_TRUE(testVertexTopology());
 //}
 
+TEST_F(MeshTopology_test, testAddPoint)
+{
+    testAddPoint();
+}
+
+TEST_F(MeshTopology_test, testAddEdge)
+{
+    testAddEdge();
+}
+
+TEST_F(MeshTopology_test, testAddTriangle)
+{
+    testAddTriangle();
+}
+
+TEST_F(MeshTopology_test, testAddQuad)
+{
+    testAddQuad();
+}
+
+TEST_F(MeshTopology_test, testAddTetrahedron)
+{
+    testAddTetrahedron();
+}
+
+TEST_F(MeshTopology_test, testAddHexahedron)
+{
+    testAddHexahedron();
+}
+
+TEST_F(MeshTopology_test, testAddPrism)
+{
+    testAddPrism();
+}
+
+TEST_F(MeshTopology_test, testAddPyramid)
+{
+    testAddPyramid();
+}
 
 
 // TODO epernod 2018-07-05: test element on Border
