@@ -74,15 +74,6 @@ void Hexa2TetraTopologicalMapping::init()
     //     return;
     // }
 
-    // TetrahedronSetTopologyModifier* to_tstm { nullptr };
-    // toModel->getContext()->get(to_tstm);
-    // if (!to_tstm)
-    // {
-    //     msg_error() << "No TetrahedronSetTopologyModifier found in the Tetrahedron topology Node.";
-    //     this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
-    //     return;
-    // }
-
     // INITIALISATION of TETRAHEDRAL mesh from HEXAHEDRAL mesh :
 
     // TetrahedronSetTopologyContainer *toModel { nullptr };
