@@ -76,15 +76,6 @@ void Hexa2TetraTopologicalMapping::init()
 
     // INITIALISATION of TETRAHEDRAL mesh from HEXAHEDRAL mesh :
 
-    // TetrahedronSetTopologyContainer *toModel { nullptr };
-    // toModel->getContext()->get(toModel);
-    // if (!toModel)
-    // {
-    //     msg_error() << "No TetrahedronSetTopologyContainer found in the Tetrahedron topology Node.";
-    //     this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
-    //     return;
-    // }
-
     // Clear output topology
     toModel->clear();
 
