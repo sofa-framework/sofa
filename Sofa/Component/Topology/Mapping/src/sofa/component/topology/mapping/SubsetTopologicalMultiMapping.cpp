@@ -30,7 +30,7 @@ namespace sofa::component::topology::mapping
 void registerSubsetTopologicalMultiMapping(sofa::core::ObjectFactory* factory)
 {
     factory->registerObjects(core::ObjectRegistrationData(
-        "Merges multiple input topologies (points, edges, triangles) into a single "
+        "Merges multiple input topologies (points, edges, triangles, tetrahedra) into a single "
         "output topology with index remapping. Optionally populates indexPairs for "
         "SubsetMultiMapping coordination.")
         .add<SubsetTopologicalMultiMapping>());
@@ -182,10 +182,26 @@ void SubsetTopologicalMultiMapping::doMerge()
         }
     }
 
+    // Phase 8: Concatenate tetrahedra with offset remapping
+    for (std::size_t srcIdx = 0; srcIdx < numInputs; ++srcIdx)
+    {
+        BaseMeshTopology* input = l_inputTopologies.get(srcIdx);
+        const Index offset = m_pointOffsets[srcIdx];
+        const auto& tetrahedra = input->getTetrahedra();
+
+        for (std::size_t t = 0; t < tetrahedra.size(); ++t)
+        {
+            const auto& tet = tetrahedra[t];
+            output->addTetra(tet[0] + offset, tet[1] + offset,
+                             tet[2] + offset, tet[3] + offset);
+        }
+    }
+
     msg_info() << "Merged " << numInputs << " topologies: "
                << totalPoints << " points, "
                << output->getNbEdges() << " edges, "
-               << output->getNbTriangles() << " triangles.";
+               << output->getNbTriangles() << " triangles, "
+               << output->getNbTetrahedra() << " tetrahedra.";
 }
 
 void SubsetTopologicalMultiMapping::populateSubsetMultiMappingIndexPairs()

@@ -30,10 +30,10 @@ namespace sofa::component::topology::mapping
 
 /**
  * @class SubsetTopologicalMultiMapping
- * @brief Merges multiple input topologies (points, edges, triangles) into a single output topology.
+ * @brief Merges multiple input topologies (points, edges, triangles, tetrahedra) into a single output topology.
  *
  * This is the topological counterpart to SubsetMultiMapping on the mechanical side.
- * For each input topology, points are concatenated with index offsets, and edges/triangles
+ * For each input topology, points are concatenated with index offsets, and edges/triangles/tetrahedra
  * are remapped accordingly. Triangle winding order can be reversed per source via flipNormals.
  *
  * The component can optionally auto-populate the indexPairs Data of a linked SubsetMultiMapping
