@@ -36,7 +36,7 @@ namespace sofa::component::topology::mapping
  * order can be reversed per source via flipNormals.
  *
  * This is the topological counterpart to SubsetMultiMapping.
- * The component can optionally auto-populate the indexPairs Data of a linked SubsetMultiMapping.
+ * The indexPairs output can be linked to a SubsetMultiMapping in scenes.
  *
  * Merging is performed once during init(). Dynamic topology changes are not supported.
  */
@@ -64,16 +64,11 @@ class SOFA_COMPONENT_TOPOLOGY_MAPPING_API SubsetTopologicalMultiMapping
                    sofa::core::objectmodel::BaseLink::FLAG_STRONGLINK>
         l_output;
 
-    /// Optional link to a SubsetMultiMapping to auto-populate its indexPairs.
-    SingleLink<SubsetTopologicalMultiMapping, sofa::core::objectmodel::BaseObject,
-               sofa::core::objectmodel::BaseLink::FLAG_STOREPATH>
-        l_subsetMultiMapping;
-
     Data<sofa::type::vector<bool>>
         d_flipNormals;  ///< Per-source flags to reverse triangle and/or quad winding order
     Data<sofa::type::vector<unsigned>>
-        d_indexPairs;  ///< Output: flat array of (source_index, coord_in_source) pairs for
-                       ///< SubsetMultiMapping
+        d_indexPairs;  ///< Output: flat array of (source_index, coord_in_source) pairs,
+                       ///< linkable to SubsetMultiMapping
 
    protected:
     SubsetTopologicalMultiMapping();
@@ -81,7 +76,6 @@ class SOFA_COMPONENT_TOPOLOGY_MAPPING_API SubsetTopologicalMultiMapping
 
    private:
     void mapTopologies();
-    void populateSubsetMultiMappingIndexPairs();
 
     /// Per-source cumulative point offsets. m_pointOffsets[i] = total points from sources 0..i-1.
     sofa::type::vector<Index> m_pointOffsets;

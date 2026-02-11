@@ -1,13 +1,4 @@
 <?xml version="1.0" ?>
-<!-- SubsetTopologicalMultiMapping example
-     Demonstrates merging multiple topologies into one for every supported element type.
-     Four demos placed side by side along x:
-
-     x=0:  Triangles   - two 4x4 triangle grids merged, Source2 normals flipped
-     x=5:  Quads       - two 4x4 quad grids merged, Source2 normals flipped
-     x=10: Tetrahedra  - two 3x3x3 grids converted to tetrahedra then merged
-     x=16: Hexahedra   - two 3x3x3 hexahedral grids merged
--->
 <Node name="root" dt="1e-3" gravity="0 -1 0">
     <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [GridMeshCreator] -->
     <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
@@ -28,7 +19,6 @@
     <EulerImplicitSolver rayleighStiffness="0.1" rayleighMass="0.1" />
     <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
 
-    <!-- ==================== TRIANGLES (x=0) ==================== -->
     <Node name="TriangleDemo">
         <Node name="Source1">
             <GridMeshCreator name="loader" filename="nofile" resolution="4 4" trianglePattern="2" />
@@ -47,15 +37,15 @@
             <MeshTopology name="topology" />
             <MechanicalObject template="Vec3" name="dofs" />
 
-            <SubsetTopologicalMultiMapping
+            <SubsetTopologicalMultiMapping name="topoMapping"
                 input="@../Source1/topology @../Source2/topology"
                 output="@topology"
-                subsetMultiMapping="@mapping"
                 flipNormals="0 1" />
 
             <SubsetMultiMapping template="Vec3,Vec3" name="mapping"
                 input="@../Source1/dofs @../Source2/dofs"
-                output="@dofs" />
+                output="@dofs"
+                indexPairs="@topoMapping.indexPairs" />
 
             <UniformMass vertexMass="1" />
 
@@ -66,7 +56,6 @@
         </Node>
     </Node>
 
-    <!-- ==================== QUADS (x=5) ==================== -->
     <Node name="QuadDemo">
         <Node name="Source1">
             <GridMeshCreator name="loader" filename="nofile" resolution="4 4" trianglePattern="0"
@@ -86,15 +75,15 @@
             <MeshTopology name="topology" />
             <MechanicalObject template="Vec3" name="dofs" />
 
-            <SubsetTopologicalMultiMapping
+            <SubsetTopologicalMultiMapping name="topoMapping"
                 input="@../Source1/topology @../Source2/topology"
                 output="@topology"
-                subsetMultiMapping="@mapping"
                 flipNormals="0 1" />
 
             <SubsetMultiMapping template="Vec3,Vec3" name="mapping"
                 input="@../Source1/dofs @../Source2/dofs"
-                output="@dofs" />
+                output="@dofs"
+                indexPairs="@topoMapping.indexPairs" />
 
             <UniformMass vertexMass="1" />
 
@@ -105,9 +94,7 @@
         </Node>
     </Node>
 
-    <!-- ==================== TETRAHEDRA (x=10) ==================== -->
     <Node name="TetraDemo">
-        <!-- Each source uses RegularGridTopology (hexa) + Hexa2TetraTopologicalMapping to produce tetrahedra -->
         <Node name="Source1">
             <RegularGridTopology name="grid" n="3 3 3" min="10 0 0" max="12 2 2" />
             <MechanicalObject template="Vec3" name="dofs" />
@@ -132,14 +119,14 @@
             <MeshTopology name="topology" />
             <MechanicalObject template="Vec3" name="dofs" />
 
-            <SubsetTopologicalMultiMapping
+            <SubsetTopologicalMultiMapping name="topoMapping"
                 input="@../Source1/Tetra/topology @../Source2/Tetra/topology"
-                output="@topology"
-                subsetMultiMapping="@mapping" />
+                output="@topology" />
 
             <SubsetMultiMapping template="Vec3,Vec3" name="mapping"
                 input="@../Source1/dofs @../Source2/dofs"
-                output="@dofs" />
+                output="@dofs"
+                indexPairs="@topoMapping.indexPairs" />
 
             <UniformMass vertexMass="1" />
 
@@ -150,7 +137,6 @@
         </Node>
     </Node>
 
-    <!-- ==================== HEXAHEDRA (x=16) ==================== -->
     <Node name="HexaDemo">
         <Node name="Source1">
             <RegularGridTopology name="grid" n="3 3 3" min="16 0 0" max="18 2 2" />
@@ -166,14 +152,14 @@
             <MeshTopology name="topology" />
             <MechanicalObject template="Vec3" name="dofs" />
 
-            <SubsetTopologicalMultiMapping
+            <SubsetTopologicalMultiMapping name="topoMapping"
                 input="@../Source1/grid @../Source2/grid"
-                output="@topology"
-                subsetMultiMapping="@mapping" />
+                output="@topology" />
 
             <SubsetMultiMapping template="Vec3,Vec3" name="mapping"
                 input="@../Source1/dofs @../Source2/dofs"
-                output="@dofs" />
+                output="@dofs"
+                indexPairs="@topoMapping.indexPairs" />
 
             <UniformMass vertexMass="1" />
 

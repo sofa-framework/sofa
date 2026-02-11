@@ -32,17 +32,13 @@ void registerSubsetTopologicalMultiMapping(sofa::core::ObjectFactory* factory)
         core::ObjectRegistrationData("Merges multiple input topologies (points, edges, triangles, "
                                      "quads, tetrahedra, hexahedra) "
                                      "into a single output topology with index remapping. "
-                                     "Optionally populates indexPairs for "
-                                     "SubsetMultiMapping.")
+                                     "Exposes indexPairs Data for linking to SubsetMultiMapping.")
             .add<SubsetTopologicalMultiMapping>());
 }
 
 SubsetTopologicalMultiMapping::SubsetTopologicalMultiMapping()
     : l_inputs(initLink("input", "Input topology sources to merge")),
       l_output(initLink("output", "Output merged topology")),
-      l_subsetMultiMapping(
-          initLink("subsetMultiMapping",
-                   "Optional link to a SubsetMultiMapping to auto-populate its indexPairs")),
       d_flipNormals(
           initData(&d_flipNormals, sofa::type::vector<bool>(), "flipNormals",
                    "Per-source boolean flags to reverse triangle and quad winding order")),
@@ -88,8 +84,6 @@ void SubsetTopologicalMultiMapping::init()
 
     mapTopologies();
 
-    if (l_subsetMultiMapping.get()) populateSubsetMultiMappingIndexPairs();
-
     d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
 
@@ -98,8 +92,6 @@ void SubsetTopologicalMultiMapping::reinit()
     if (d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid) return;
 
     mapTopologies();
-
-    if (l_subsetMultiMapping.get()) populateSubsetMultiMappingIndexPairs();
 }
 
 void SubsetTopologicalMultiMapping::mapTopologies()
@@ -215,26 +207,6 @@ void SubsetTopologicalMultiMapping::mapTopologies()
                << " triangles, " << l_output->getNbQuads() << " quads, "
                << l_output->getNbTetrahedra() << " tetrahedra, " << l_output->getNbHexahedra()
                << " hexahedra.";
-}
-
-void SubsetTopologicalMultiMapping::populateSubsetMultiMappingIndexPairs()
-{
-    auto* targetObj = l_subsetMultiMapping.get();
-    if (!targetObj) return;
-
-    auto* targetData = targetObj->findData("indexPairs");
-    if (!targetData)
-    {
-        msg_error() << "Linked object '" << targetObj->getName()
-                    << "' has no 'indexPairs' Data field. "
-                       "Ensure it is a SubsetMultiMapping.";
-        return;
-    }
-
-    targetData->copyValueFrom(&d_indexPairs);
-
-    msg_info() << "Set " << (d_indexPairs.getValue().size() / 2) << " indexPairs on '"
-               << targetObj->getName() << "'.";
 }
 
 }  // namespace sofa::component::topology::mapping
