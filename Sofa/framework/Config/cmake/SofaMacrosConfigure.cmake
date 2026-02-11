@@ -204,6 +204,12 @@ macro(sofa_fetch_dependency name)
             file(MAKE_DIRECTORY "${fetched_dir}-temp/")
         endif()
 
+        set(GIT_SHALLOW_VALUE TRUE)
+        # GIT_SHALLOW does work if GIT_TAG is a commit SHA hash
+        __is_git_tag_commit_hash(${upper_name}_GIT_TAG IS_GIT_TAG_COMMIT_HASH)
+        if(IS_GIT_TAG_COMMIT_HASH)
+            set(GIT_SHALLOW_VALUE FALSE)
+        endif()
 
         file(WRITE ${fetched_dir}-temp/CMakeLists.txt "
         cmake_minimum_required(VERSION 3.22)
@@ -219,6 +225,7 @@ macro(sofa_fetch_dependency name)
             INSTALL_COMMAND \"\"
             TEST_COMMAND \"\"
             GIT_CONFIG \"remote.origin.fetch=+refs/pull/*:refs/remotes/origin/pr/*\"
+            GIT_SHALLOW ${GIT_SHALLOW_VALUE}
             )"
         )
 

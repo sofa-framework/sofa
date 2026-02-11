@@ -135,12 +135,19 @@ public:
         findFile(filename, basedir, errlog);
         return filename;
     }
-
+    
     /// Find file using the stored set of paths.
     /// @param basefile override current directory by using the parent directory of the given file
     /// @param filename requested file as input, resolved file path as output
     /// @return true if the file was found in one of the directories, false otherwise
     bool findFileFromFile(std::string& filename, const std::string& basefile, std::ostream* errlog=&std::cerr);
+
+    /// Find all files in the repository under the given path.
+    /// @param path Path in vpath to search into.
+    /// @param files Output vector of found files.
+    /// @param extensions Extension filter (e.g. ".txt"), empty string means no filter.
+    /// @param recursive Indicates whether to search recursively into sub-directories.
+    void findAllFilesInRepository(const std::string& path, std::vector<std::string>& files, const std::vector<std::string> &extensions, bool recursive=true);
 
     /// Print the list of path to std::cout
     void print();
