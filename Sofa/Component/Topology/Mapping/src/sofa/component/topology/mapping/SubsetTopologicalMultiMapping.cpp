@@ -1,26 +1,25 @@
 /******************************************************************************
-*                 SOFA, Simulation Open-Framework Architecture                *
-*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
-*                                                                             *
-* This program is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU Lesser General Public License as published by    *
-* the Free Software Foundation; either version 2.1 of the License, or (at     *
-* your option) any later version.                                             *
-*                                                                             *
-* This program is distributed in the hope that it will be useful, but WITHOUT *
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
-* for more details.                                                           *
-*                                                                             *
-* You should have received a copy of the GNU Lesser General Public License    *
-* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
-*******************************************************************************
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
-*                                                                             *
-* Contact information: contact@sofa-framework.org                             *
-******************************************************************************/
+ *                 SOFA, Simulation Open-Framework Architecture                *
+ *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
+ *                                                                             *
+ * This program is free software; you can redistribute it and/or modify it     *
+ * under the terms of the GNU Lesser General Public License as published by    *
+ * the Free Software Foundation; either version 2.1 of the License, or (at     *
+ * your option) any later version.                                             *
+ *                                                                             *
+ * This program is distributed in the hope that it will be useful, but WITHOUT *
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+ * for more details.                                                           *
+ *                                                                             *
+ * You should have received a copy of the GNU Lesser General Public License    *
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+ *******************************************************************************
+ * Authors: The SOFA Team and external contributors (see Authors.txt)          *
+ *                                                                             *
+ * Contact information: contact@sofa-framework.org                             *
+ ******************************************************************************/
 #include <sofa/component/topology/mapping/SubsetTopologicalMultiMapping.h>
-
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/accessor.h>
 
@@ -29,24 +28,26 @@ namespace sofa::component::topology::mapping
 
 void registerSubsetTopologicalMultiMapping(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData(
-        "Merges multiple input topologies (points, edges, triangles, quads, tetrahedra, hexahedra) into a single "
-        "output topology with index remapping. Optionally populates indexPairs for "
-        "SubsetMultiMapping coordination.")
-        .add<SubsetTopologicalMultiMapping>());
+    factory->registerObjects(
+        core::ObjectRegistrationData("Merges multiple input topologies (points, edges, triangles, "
+                                     "quads, tetrahedra, hexahedra) "
+                                     "into a single output topology with index remapping. "
+                                     "Optionally populates indexPairs for "
+                                     "SubsetMultiMapping.")
+            .add<SubsetTopologicalMultiMapping>());
 }
 
 SubsetTopologicalMultiMapping::SubsetTopologicalMultiMapping()
-    : l_inputTopologies(initLink("input", "Input topology sources to merge"))
-    , l_outputTopology(initLink("output", "Output merged topology"))
-    , l_subsetMultiMapping(initLink("subsetMultiMapping",
-          "Optional link to a SubsetMultiMapping to auto-populate its indexPairs"))
-    , d_flipNormals(initData(&d_flipNormals, sofa::type::vector<bool>(),
-          "flipNormals",
-          "Per-source boolean flags to reverse triangle and quad winding order"))
-    , d_indexPairs(initData(&d_indexPairs, sofa::type::vector<unsigned>(),
-          "indexPairs",
-          "Output: flat array of (source_index, coord_in_source) pairs"))
+    : l_inputs(initLink("input", "Input topology sources to merge")),
+      l_output(initLink("output", "Output merged topology")),
+      l_subsetMultiMapping(
+          initLink("subsetMultiMapping",
+                   "Optional link to a SubsetMultiMapping to auto-populate its indexPairs")),
+      d_flipNormals(
+          initData(&d_flipNormals, sofa::type::vector<bool>(), "flipNormals",
+                   "Per-source boolean flags to reverse triangle and quad winding order")),
+      d_indexPairs(initData(&d_indexPairs, sofa::type::vector<unsigned>(), "indexPairs",
+                            "Output: flat array of (source_index, coord_in_source) pairs"))
 {
     d_indexPairs.setReadOnly(true);
 }
@@ -57,197 +58,169 @@ void SubsetTopologicalMultiMapping::init()
 {
     BaseObject::init();
 
-    const auto numInputs = l_inputTopologies.size();
-    if (numInputs == 0)
+    if (l_inputs.size())
     {
-        msg_error() << "No input topologies linked. Set the 'input' attribute with "
-                        "space-separated paths to input topologies.";
-        d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
-        return;
-    }
-
-    for (std::size_t i = 0; i < numInputs; ++i)
-    {
-        if (l_inputTopologies.get(i) == nullptr)
+        for (const auto inputTopology : l_inputs)
         {
-            msg_error() << "Input topology #" << i << " is null.";
-            d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
-            return;
+            if (!inputTopology.get())
+            {
+                msg_error() << "Input topology '" << inputTopology.path << "' could not be found.";
+                d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+                return;
+            }
         }
     }
-
-    if (l_outputTopology.get() == nullptr)
+    else
     {
-        msg_error() << "Output topology is null. Set the 'output' attribute.";
+        msg_error() << "No input topologies found to be linked. Set the 'input' Data with "
+                       "paths to the topologies considered as inputs for the mapping.";
         d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
 
-    doMerge();
-
-    if (l_subsetMultiMapping.get() != nullptr)
+    if (!l_output.get())
     {
-        populateSubsetMultiMappingIndexPairs();
+        msg_error()
+            << "Null output topology. Set the 'output' Data with the path to the output topology.";
+        d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
     }
+
+    mapTopologies();
+
+    if (l_subsetMultiMapping.get()) populateSubsetMultiMappingIndexPairs();
 
     d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
 
 void SubsetTopologicalMultiMapping::reinit()
 {
-    if (d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid)
-        return;
+    if (d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid) return;
 
-    doMerge();
+    mapTopologies();
 
-    if (l_subsetMultiMapping.get() != nullptr)
-    {
-        populateSubsetMultiMappingIndexPairs();
-    }
+    if (l_subsetMultiMapping.get()) populateSubsetMultiMappingIndexPairs();
 }
 
-void SubsetTopologicalMultiMapping::doMerge()
+void SubsetTopologicalMultiMapping::mapTopologies()
 {
-    BaseMeshTopology* output = l_outputTopology.get();
-    const auto numInputs = l_inputTopologies.size();
+    const auto numInputs = l_inputs.size();
 
-    // Phase 1: Clear output topology
-    output->clear();
+    l_output->clear();
+    m_pointOffsets.clear();
 
-    // Phase 2: Compute per-source point offsets
-    m_pointOffsets.resize(numInputs);
-    Index totalPoints = 0;
-    for (std::size_t i = 0; i < numInputs; ++i)
+    // Compute per-source point offsets
+    sofa::Size totalPoints{0};
+    for (const auto input : l_inputs)
     {
-        m_pointOffsets[i] = totalPoints;
-        totalPoints += static_cast<Index>(l_inputTopologies.get(i)->getNbPoints());
+        m_pointOffsets.push_back(totalPoints);
+        totalPoints += input->getNbPoints();
     }
+    l_output->setNbPoints(totalPoints);
 
-    // Phase 3: Set total point count on output
-    output->setNbPoints(static_cast<sofa::Size>(totalPoints));
-
-    // Phase 4: Build indexPairs for SubsetMultiMapping coordination
+    // Build indexPairs necessary to attach mechanical mapping through SubsetMultiMapping link
     {
         auto indexPairs = sofa::helper::getWriteOnlyAccessor(d_indexPairs);
         indexPairs.clear();
-        indexPairs.reserve(static_cast<std::size_t>(totalPoints) * 2);
+        indexPairs.reserve(totalPoints * 2);
 
-        for (std::size_t srcIdx = 0; srcIdx < numInputs; ++srcIdx)
+        for (sofa::Size srcIdx = 0; srcIdx < numInputs; ++srcIdx)
         {
-            const auto nbPts = static_cast<Index>(l_inputTopologies.get(srcIdx)->getNbPoints());
-            for (Index p = 0; p < nbPts; ++p)
+            const auto nbPts = l_inputs.get(srcIdx)->getNbPoints();
+            for (sofa::Size p = 0; p < nbPts; ++p)
             {
-                indexPairs.push_back(static_cast<unsigned>(srcIdx));
-                indexPairs.push_back(static_cast<unsigned>(p));
+                indexPairs.push_back(srcIdx);
+                indexPairs.push_back(p);
             }
         }
     }
 
-    // Phase 5: Read flip flags
-    const auto& flipVec = d_flipNormals.getValue();
-    if (!flipVec.empty() && flipVec.size() != numInputs)
+    // Pre-normalize flipNormals to exactly numInputs entries
+    auto flipVec = sofa::helper::getWriteAccessor(d_flipNormals);
+    if (flipVec.size() > numInputs)
     {
-        msg_warning() << "flipNormals has " << flipVec.size() << " entries but there are "
-                      << numInputs << " input topologies. Missing entries default to false.";
+        msg_warning() << "flipNormals has " << flipVec.size() << " entries but there are only "
+                      << numInputs << " input topologies. Extra entries will be discarded.";
+        flipVec.resize(numInputs);
+    }
+    else if (flipVec.size() < numInputs)
+    {
+        flipVec.resize(numInputs, false);
     }
 
-    // Phase 6: Concatenate edges with offset remapping
-    for (std::size_t srcIdx = 0; srcIdx < numInputs; ++srcIdx)
+    // Concatenate edges from sources with offset remapping
+    for (sofa::Size srcIdx = 0; srcIdx < numInputs; ++srcIdx)
     {
-        BaseMeshTopology* input = l_inputTopologies.get(srcIdx);
-        const Index offset = m_pointOffsets[srcIdx];
-        const auto& edges = input->getEdges();
+        const sofa::Size offset = m_pointOffsets[srcIdx];
 
-        for (std::size_t e = 0; e < edges.size(); ++e)
-        {
-            output->addEdge(edges[e][0] + offset, edges[e][1] + offset);
-        }
+        for (const auto& edge : l_inputs.get(srcIdx)->getEdges())
+            l_output->addEdge(edge[0] + offset, edge[1] + offset);
     }
 
-    // Phase 7: Concatenate triangles with offset remapping + optional flip
-    for (std::size_t srcIdx = 0; srcIdx < numInputs; ++srcIdx)
+    // Concatenate triangles with offset remapping; optionally flip normals
+    for (sofa::Size srcIdx = 0; srcIdx < numInputs; ++srcIdx)
     {
-        BaseMeshTopology* input = l_inputTopologies.get(srcIdx);
-        const Index offset = m_pointOffsets[srcIdx];
-        const bool flip = (srcIdx < flipVec.size()) ? flipVec[srcIdx] : false;
-        const auto& triangles = input->getTriangles();
+        const sofa::Size offset = m_pointOffsets[srcIdx];
+        const bool flip = flipVec[srcIdx];
 
-        for (std::size_t t = 0; t < triangles.size(); ++t)
+        for (const auto& tri : l_inputs.get(srcIdx)->getTriangles())
         {
-            const auto& tri = triangles[t];
             if (flip)
-                output->addTriangle(tri[0] + offset, tri[2] + offset, tri[1] + offset);
+                l_output->addTriangle(tri[0] + offset, tri[2] + offset, tri[1] + offset);
             else
-                output->addTriangle(tri[0] + offset, tri[1] + offset, tri[2] + offset);
+                l_output->addTriangle(tri[0] + offset, tri[1] + offset, tri[2] + offset);
         }
     }
 
-    // Phase 8: Concatenate quads with offset remapping + optional flip
-    for (std::size_t srcIdx = 0; srcIdx < numInputs; ++srcIdx)
+    // Concatenate quads with offset remapping; optionally flip normals
+    for (sofa::Size srcIdx = 0; srcIdx < numInputs; ++srcIdx)
     {
-        BaseMeshTopology* input = l_inputTopologies.get(srcIdx);
-        const Index offset = m_pointOffsets[srcIdx];
-        const bool flip = (srcIdx < flipVec.size()) ? flipVec[srcIdx] : false;
-        const auto& quads = input->getQuads();
+        const sofa::Size offset = m_pointOffsets[srcIdx];
+        const bool flip = flipVec[srcIdx];
 
-        for (std::size_t q = 0; q < quads.size(); ++q)
+        for (auto& quad : l_inputs.get(srcIdx)->getQuads())
         {
-            const auto& quad = quads[q];
             if (flip)
-                output->addQuad(quad[0] + offset, quad[3] + offset,
-                                quad[2] + offset, quad[1] + offset);
+                l_output->addQuad(quad[0] + offset, quad[3] + offset, quad[2] + offset,
+                                  quad[1] + offset);
             else
-                output->addQuad(quad[0] + offset, quad[1] + offset,
-                                quad[2] + offset, quad[3] + offset);
+                l_output->addQuad(quad[0] + offset, quad[1] + offset, quad[2] + offset,
+                                  quad[3] + offset);
         }
     }
 
-    // Phase 9: Concatenate tetrahedra with offset remapping
-    for (std::size_t srcIdx = 0; srcIdx < numInputs; ++srcIdx)
+    // Concatenate tetrahedra with offset remapping
+    for (sofa::Size srcIdx = 0; srcIdx < numInputs; ++srcIdx)
     {
-        BaseMeshTopology* input = l_inputTopologies.get(srcIdx);
-        const Index offset = m_pointOffsets[srcIdx];
-        const auto& tetrahedra = input->getTetrahedra();
+        const sofa::Size offset = m_pointOffsets[srcIdx];
 
-        for (std::size_t t = 0; t < tetrahedra.size(); ++t)
-        {
-            const auto& tet = tetrahedra[t];
-            output->addTetra(tet[0] + offset, tet[1] + offset,
-                             tet[2] + offset, tet[3] + offset);
-        }
+        for (const auto& tet : l_inputs.get(srcIdx)->getTetrahedra())
+            l_output->addTetra(tet[0] + offset, tet[1] + offset, tet[2] + offset, tet[3] + offset);
     }
 
-    // Phase 10: Concatenate hexahedra with offset remapping
-    for (std::size_t srcIdx = 0; srcIdx < numInputs; ++srcIdx)
+    // Concatenate hexahedra with offset remapping
+    for (sofa::Size srcIdx = 0; srcIdx < numInputs; ++srcIdx)
     {
-        BaseMeshTopology* input = l_inputTopologies.get(srcIdx);
-        const Index offset = m_pointOffsets[srcIdx];
-        const auto& hexahedra = input->getHexahedra();
+        const sofa::Size offset = m_pointOffsets[srcIdx];
 
-        for (std::size_t h = 0; h < hexahedra.size(); ++h)
+        for (const auto& hex : l_inputs.get(srcIdx)->getHexahedra())
         {
-            const auto& hex = hexahedra[h];
-            output->addHexa(hex[0] + offset, hex[1] + offset,
-                            hex[2] + offset, hex[3] + offset,
-                            hex[4] + offset, hex[5] + offset,
-                            hex[6] + offset, hex[7] + offset);
+            l_output->addHexa(hex[0] + offset, hex[1] + offset, hex[2] + offset, hex[3] + offset,
+                              hex[4] + offset, hex[5] + offset, hex[6] + offset, hex[7] + offset);
         }
     }
 
-    msg_info() << "Merged " << numInputs << " topologies: "
-               << totalPoints << " points, "
-               << output->getNbEdges() << " edges, "
-               << output->getNbTriangles() << " triangles, "
-               << output->getNbQuads() << " quads, "
-               << output->getNbTetrahedra() << " tetrahedra, "
-               << output->getNbHexahedra() << " hexahedra.";
+    msg_info() << "Merged " << numInputs << " topologies: " << totalPoints << " points, "
+               << l_output->getNbEdges() << " edges, " << l_output->getNbTriangles()
+               << " triangles, " << l_output->getNbQuads() << " quads, "
+               << l_output->getNbTetrahedra() << " tetrahedra, " << l_output->getNbHexahedra()
+               << " hexahedra.";
 }
 
 void SubsetTopologicalMultiMapping::populateSubsetMultiMappingIndexPairs()
 {
     auto* targetObj = l_subsetMultiMapping.get();
-    if (!targetObj)
-        return;
+    if (!targetObj) return;
 
     auto* targetData = targetObj->findData("indexPairs");
     if (!targetData)
@@ -260,8 +233,8 @@ void SubsetTopologicalMultiMapping::populateSubsetMultiMappingIndexPairs()
 
     targetData->copyValueFrom(&d_indexPairs);
 
-    msg_info() << "Set " << (d_indexPairs.getValue().size() / 2)
-               << " indexPairs on '" << targetObj->getName() << "'.";
+    msg_info() << "Set " << (d_indexPairs.getValue().size() / 2) << " indexPairs on '"
+               << targetObj->getName() << "'.";
 }
 
-} // namespace sofa::component::topology::mapping
+}  // namespace sofa::component::topology::mapping
