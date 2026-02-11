@@ -30,11 +30,12 @@ namespace sofa::component::topology::mapping
 
 /**
  * @class SubsetTopologicalMultiMapping
- * @brief Merges multiple input topologies (points, edges, triangles, tetrahedra) into a single output topology.
+ * @brief Merges multiple input topologies (points, edges, triangles, quads, tetrahedra, hexahedra) into a single output topology.
  *
  * This is the topological counterpart to SubsetMultiMapping on the mechanical side.
- * For each input topology, points are concatenated with index offsets, and edges/triangles/tetrahedra
- * are remapped accordingly. Triangle winding order can be reversed per source via flipNormals.
+ * For each input topology, points are concatenated with index offsets, and edges/triangles/quads/
+ * tetrahedra/hexahedra are remapped accordingly. Triangle winding order can be reversed per source
+ * via flipNormals. Quad winding order is also reversed when flipping.
  *
  * The component can optionally auto-populate the indexPairs Data of a linked SubsetMultiMapping
  * for mechanical-side coordination.
@@ -74,7 +75,7 @@ public:
                sofa::core::objectmodel::BaseLink::FLAG_STOREPATH>
         l_subsetMultiMapping;
 
-    Data<sofa::type::vector<bool>> d_flipNormals; ///< Per-source flags to reverse triangle winding order (v0,v1,v2) -> (v0,v2,v1)
+    Data<sofa::type::vector<bool>> d_flipNormals; ///< Per-source flags to reverse triangle and quad winding order
     Data<sofa::type::vector<unsigned>> d_indexPairs; ///< Output: flat array of (source_index, coord_in_source) pairs for SubsetMultiMapping
 
 protected:

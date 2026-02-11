@@ -30,7 +30,7 @@ namespace sofa::component::topology::mapping
 void registerSubsetTopologicalMultiMapping(sofa::core::ObjectFactory* factory)
 {
     factory->registerObjects(core::ObjectRegistrationData(
-        "Merges multiple input topologies (points, edges, triangles, tetrahedra) into a single "
+        "Merges multiple input topologies (points, edges, triangles, quads, tetrahedra, hexahedra) into a single "
         "output topology with index remapping. Optionally populates indexPairs for "
         "SubsetMultiMapping coordination.")
         .add<SubsetTopologicalMultiMapping>());
@@ -43,7 +43,7 @@ SubsetTopologicalMultiMapping::SubsetTopologicalMultiMapping()
           "Optional link to a SubsetMultiMapping to auto-populate its indexPairs"))
     , d_flipNormals(initData(&d_flipNormals, sofa::type::vector<bool>(),
           "flipNormals",
-          "Per-source boolean flags to reverse triangle winding order"))
+          "Per-source boolean flags to reverse triangle and quad winding order"))
     , d_indexPairs(initData(&d_indexPairs, sofa::type::vector<unsigned>(),
           "indexPairs",
           "Output: flat array of (source_index, coord_in_source) pairs"))
@@ -182,7 +182,27 @@ void SubsetTopologicalMultiMapping::doMerge()
         }
     }
 
-    // Phase 8: Concatenate tetrahedra with offset remapping
+    // Phase 8: Concatenate quads with offset remapping + optional flip
+    for (std::size_t srcIdx = 0; srcIdx < numInputs; ++srcIdx)
+    {
+        BaseMeshTopology* input = l_inputTopologies.get(srcIdx);
+        const Index offset = m_pointOffsets[srcIdx];
+        const bool flip = (srcIdx < flipVec.size()) ? flipVec[srcIdx] : false;
+        const auto& quads = input->getQuads();
+
+        for (std::size_t q = 0; q < quads.size(); ++q)
+        {
+            const auto& quad = quads[q];
+            if (flip)
+                output->addQuad(quad[0] + offset, quad[3] + offset,
+                                quad[2] + offset, quad[1] + offset);
+            else
+                output->addQuad(quad[0] + offset, quad[1] + offset,
+                                quad[2] + offset, quad[3] + offset);
+        }
+    }
+
+    // Phase 9: Concatenate tetrahedra with offset remapping
     for (std::size_t srcIdx = 0; srcIdx < numInputs; ++srcIdx)
     {
         BaseMeshTopology* input = l_inputTopologies.get(srcIdx);
@@ -197,11 +217,30 @@ void SubsetTopologicalMultiMapping::doMerge()
         }
     }
 
+    // Phase 10: Concatenate hexahedra with offset remapping
+    for (std::size_t srcIdx = 0; srcIdx < numInputs; ++srcIdx)
+    {
+        BaseMeshTopology* input = l_inputTopologies.get(srcIdx);
+        const Index offset = m_pointOffsets[srcIdx];
+        const auto& hexahedra = input->getHexahedra();
+
+        for (std::size_t h = 0; h < hexahedra.size(); ++h)
+        {
+            const auto& hex = hexahedra[h];
+            output->addHexa(hex[0] + offset, hex[1] + offset,
+                            hex[2] + offset, hex[3] + offset,
+                            hex[4] + offset, hex[5] + offset,
+                            hex[6] + offset, hex[7] + offset);
+        }
+    }
+
     msg_info() << "Merged " << numInputs << " topologies: "
                << totalPoints << " points, "
                << output->getNbEdges() << " edges, "
                << output->getNbTriangles() << " triangles, "
-               << output->getNbTetrahedra() << " tetrahedra.";
+               << output->getNbQuads() << " quads, "
+               << output->getNbTetrahedra() << " tetrahedra, "
+               << output->getNbHexahedra() << " hexahedra.";
 }
 
 void SubsetTopologicalMultiMapping::populateSubsetMultiMappingIndexPairs()
