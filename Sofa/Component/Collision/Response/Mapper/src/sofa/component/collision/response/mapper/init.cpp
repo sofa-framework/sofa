@@ -17,7 +17,7 @@
 *******************************************************************************
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
-* Contact information: mapper@sofa-framework.org                             *
+* Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/collision/response/mapper/init.h>
 #include <sofa/core/ObjectFactory.h>

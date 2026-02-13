@@ -35,6 +35,6 @@ struct Prism
     Prism() = delete;
 };
 
-using Pentahedron SOFA_ATTRIBUTE_DEPRECATED("v25.12", "v25.06", "Pentahedron is renamed to Prism") = Prism;
+using Pentahedron SOFA_ATTRIBUTE_DEPRECATED("v25.12", "v26.06", "Pentahedron is renamed to Prism") = Prism;
 
 } // namespace sofa::geometry

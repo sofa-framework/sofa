@@ -144,14 +144,6 @@ public:
 
     /// @}
 
-
-    SOFA_ATTRIBUTE_DISABLED_MECHANICALOPERATIONS_ADDMBKDX()
-    void addMBKdx(core::MultiVecDerivId df, SReal m, SReal b, SReal k, bool clear = true, bool accumulate = true) = delete;
-    SOFA_ATTRIBUTE_DISABLED_MECHANICALOPERATIONS_ADDMBKV()
-    void addMBKv(core::MultiVecDerivId df, SReal m, SReal b, SReal k, bool clear = true, bool accumulate = true) = delete;
-    SOFA_ATTRIBUTE_DISABLED_MECHANICALOPERATIONS_SETSYSTEMMBKMATRIX_OTHER()
-    void setSystemMBKMatrix(SReal mFact, SReal bFact, SReal kFact, core::behavior::LinearSolver* linearSolver) = delete;
-
 protected:
     VisitorExecuteFunc executeVisitor;
 

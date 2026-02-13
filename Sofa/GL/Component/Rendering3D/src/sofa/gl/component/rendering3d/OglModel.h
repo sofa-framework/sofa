@@ -62,9 +62,6 @@ protected:
     Data<bool> lineSmooth; ///< Enable smooth line rendering
     Data<bool> pointSmooth; ///< Enable smooth point rendering
 
-    // SOFA_ATTRIBUTE_DISABLED("v24.12", "v25.06")
-    DeprecatedAndRemoved isEnabled;
-
     // primitive types
     Data<sofa::helper::OptionsGroup> primitiveType; ///< Select types of primitives to send (necessary for some shader types such as geometry or tessellation)
 
