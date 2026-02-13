@@ -220,7 +220,7 @@ public:
     /// within the given timestep.
     ///
     /// Default to computeBoundingTree().
-    virtual void computeContinuousBoundingTree(SReal /*dt*/, ContinuousIntersectionTypeFlag continuousIntersectionFlag = ContinuousIntersectionTypeFlag::Inertia, int maxDepth=0) { computeBoundingTree(maxDepth); }
+    virtual void computeContinuousBoundingTree(SReal dt, ContinuousIntersectionTypeFlag continuousIntersectionFlag = ContinuousIntersectionTypeFlag::Inertia, int maxDepth=0);
 
     /// \brief Return the list (as a pair of iterators) of <i>internal children</i> of
     /// an element.

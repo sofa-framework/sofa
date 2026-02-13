@@ -112,19 +112,16 @@ template class SOFA_GPU_CUDA_API FixedTranslationProjectiveConstraint<gpu::cuda:
 namespace sofa::gpu::cuda
 {
 
-
-int FixedTranslationProjectiveConstraintCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-// .add< component::constraint::projective::FixedTranslationProjectiveConstraint<CudaVec3fTypes> >()
-// .add< component::constraint::projective::FixedTranslationProjectiveConstraint<CudaVec3f1Types> >()
+    void registerFixedTranslationProjectiveConstraint(sofa::core::ObjectFactory* factory)
+    {
+        factory->registerObjects(sofa::core::ObjectRegistrationData("Supports GPU-side computations using CUDA for the FixedTranslationProjectiveConstraint")
         .add< component::constraint::projective::FixedTranslationProjectiveConstraint<CudaVec6fTypes> >()
         .add< component::constraint::projective::FixedTranslationProjectiveConstraint<CudaRigid3fTypes> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
-// .add< component::constraint::projective::FixedTranslationProjectiveConstraint<CudaVec3dTypes> >()
-// .add< component::constraint::projective::FixedTranslationProjectiveConstraint<CudaVec3d1Types> >()
         .add< component::constraint::projective::FixedTranslationProjectiveConstraint<CudaVec6dTypes> >()
         .add< component::constraint::projective::FixedTranslationProjectiveConstraint<CudaRigid3dTypes> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
-        ;
-
+        );
+    }
 
 } // namespace sofa::gpu::cuda

@@ -38,13 +38,16 @@ template class SOFA_GPU_CUDA_API NearestPointROI<gpu::cuda::CudaVec3d1Types>;
 namespace sofa::gpu::cuda
 {
 
-int NearestPointROICudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
+    void registerNearestPointROI(sofa::core::ObjectFactory* factory)
+    {
+        factory->registerObjects(sofa::core::ObjectRegistrationData("Supports GPU-side computations using CUDA for the NearestPointROI")
         .add< component::engine::select::NearestPointROI<CudaVec3fTypes> >()
         .add< component::engine::select::NearestPointROI<CudaVec3f1Types> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
         .add< component::engine::select::NearestPointROI<CudaVec3dTypes> >()
         .add< component::engine::select::NearestPointROI<CudaVec3d1Types> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
-        ;
+        );
+    }
 
 } // namespace sofa::gpu::cuda

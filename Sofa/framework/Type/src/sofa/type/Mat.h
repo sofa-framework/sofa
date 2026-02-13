@@ -21,14 +21,15 @@
 ******************************************************************************/
 #pragma once
 
+#include <sofa/type/Vec.h>
 #include <sofa/type/config.h>
+#include <sofa/type/fixed_array.h>
 #include <sofa/type/fwd.h>
 
-#include <sofa/type/fixed_array.h>
-#include <sofa/type/Vec.h>
-
-#include <iostream>
 #include <algorithm>
+#include <cstring>
+#include <iostream>
+#include <numeric>
 
 namespace // anonymous
 {
@@ -528,16 +529,16 @@ public:
 
     bool isDiagonal() const noexcept
     {
-        for (Size i=0; i<L; i++)
+        for (Size i=0; i<L; ++i)
         {
-            for (Size j=0; j<i-1; j++)
+            for (Size j=0; j<C; ++j)
+            {
+                if (j == i) continue;
                 if( rabs( (*this)(i,j) ) > EQUALITY_THRESHOLD ) return false;
-            for (Size j=i+1; j<C; j++)
-                if( rabs( (*this)(i,j) ) > EQUALITY_THRESHOLD ) return false;
+            }
         }
         return true;
     }
-
 
     /// @}
 
@@ -914,6 +915,63 @@ public:
     }
 };
 
+template <sofa::Size N, typename real>
+real determinant(const Mat<N, N, real>& A)
+{
+    // Compute det(A) using Gaussian elimination with partial pivoting.
+    // Complexity: O(N^3), no heap allocations.
+
+    Mat<N, N, real> m = A; // local copy we can modify
+    real det = static_cast<real>(1);
+    int sign = 1;
+
+    for (sofa::Size k = 0; k < N; ++k)
+    {
+        // Find pivot row (max abs in column k, rows k..N-1)
+        sofa::Size pivotRow = k;
+        real pivotAbs = rabs(m(k, k));
+
+        for (sofa::Size i = k + 1; i < N; ++i)
+        {
+            const real vAbs = rabs(m(i, k));
+            if (vAbs > pivotAbs)
+            {
+                pivotAbs = vAbs;
+                pivotRow = i;
+            }
+        }
+
+        if (equalsZero(pivotAbs))
+        {
+            return static_cast<real>(0);
+        }
+
+        if (pivotRow != k)
+        {
+            std::swap(m(pivotRow), m(k)); // swap rows (Vec/C-line swap)
+            sign = -sign;
+        }
+
+        const real pivot = m(k, k);
+
+        // Eliminate entries below pivot
+        for (sofa::Size i = k + 1; i < N; ++i)
+        {
+            const real factor = m(i, k) / pivot;
+            // Start at k+1 since m(i,k) becomes 0
+            for (sofa::Size j = k + 1; j < N; ++j)
+            {
+                m(i, j) -= factor * m(k, j);
+            }
+            m(i, k) = static_cast<real>(0);
+        }
+
+        det *= pivot;
+    }
+
+    return (sign > 0) ? det : -det;
+}
+
 /// Determinant of a 3x3 matrix.
 template<class real>
 constexpr real determinant(const Mat<3,3,real>& m) noexcept
@@ -944,6 +1002,7 @@ constexpr real determinant(const Mat<1,1,real>& m) noexcept
 /// Generalized-determinant of a 2x3 matrix.
 /// Mirko Radi, "About a Determinant of Rectangular 2×n Matrix and its Geometric Interpretation"
 template<class real>
+SOFA_ATTRIBUTE_DEPRECATED__NONSQUAREDETERMINANT()
 constexpr real determinant(const Mat<2,3,real>& m) noexcept
 {
     return m(0,0)*m(1,1) - m(0,1)*m(1,0) - ( m(0,0)*m(1,2) - m(0,2)*m(1,0) ) + m(0,1)*m(1,2) - m(0,2)*m(1,1);
@@ -952,6 +1011,7 @@ constexpr real determinant(const Mat<2,3,real>& m) noexcept
 /// Generalized-determinant of a 3x2 matrix.
 /// Mirko Radi, "About a Determinant of Rectangular 2×n Matrix and its Geometric Interpretation"
 template<class real>
+SOFA_ATTRIBUTE_DEPRECATED__NONSQUAREDETERMINANT()
 constexpr real determinant(const Mat<3,2,real>& m) noexcept
 {
     return m(0,0)*m(1,1) - m(1,0)*m(0,1) - ( m(0,0)*m(2,1) - m(2,0)*m(0,1) ) + m(1,0)*m(2,1) - m(2,0)*m(1,1);

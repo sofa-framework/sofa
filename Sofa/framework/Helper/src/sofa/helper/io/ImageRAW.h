@@ -48,7 +48,7 @@ public:
 
 private:
     unsigned headerSize;
-    unsigned char *header;
+    unsigned char *header {nullptr};
 };
 
 

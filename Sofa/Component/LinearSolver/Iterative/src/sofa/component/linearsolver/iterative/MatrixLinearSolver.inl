@@ -49,8 +49,8 @@ MatrixLinearSolver<Matrix,Vector>::MatrixLinearSolver()
                                         "parallelInverseProduct", "Parallelize the computation of the product J*M^{-1}*J^T "
                                                                   "where M is the matrix of the linear system and J is any "
                                                                   "matrix with compatible dimensions"))
-    , invertData()
     , l_linearSystem(initLink("linearSystem", "The linear system to solve"))
+    , invertData()
     , d_factorizationInvalidation(initData(&d_factorizationInvalidation, false, "factorizationInvalidation", "Internal data for the detection of cache invalidation of the matrix factorization"))
 {
     d_factorizationInvalidation.setReadOnly(true);
