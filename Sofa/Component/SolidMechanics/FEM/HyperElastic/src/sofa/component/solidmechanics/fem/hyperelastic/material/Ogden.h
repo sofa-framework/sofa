@@ -81,7 +81,8 @@ public:
 
         // 17/11/2025: Disable /*Eigen::SelfAdjointEigenSolver<EigenMatrix>*/
         // due to incorrect eigenvector computation for 3x3 matrices.
-        Eigen::EigenSolver<Eigen::Matrix<Real, 3, 3> > EigenProblemSolver(CEigen, true);
+        //Eigen::EigenSolver<Eigen::Matrix<Real, 3, 3> > EigenProblemSolver(CEigen, true);
+        Eigen::SelfAdjointEigenSolver<Eigen::Matrix<Real, 3, 3> > EigenProblemSolver(CEigen, true);
         if (EigenProblemSolver.info() != Eigen::Success)
         {
             dmsg_warning("Ogden") << "EigenSolver iterations failed to converge";
