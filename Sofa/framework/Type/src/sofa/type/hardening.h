@@ -21,6 +21,20 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/constraint/projective/FixedPlaneProjectiveConstraint.h>
+#include <limits>
+#include <type_traits>
 
-SOFA_HEADER_DISABLED("v24.06", "v25.06", "sofa/component/constraint/projective/FixedPlaneProjectiveConstraint.h")
+
+// This file should contain useful function to harden (i.e make safer) the code
+
+namespace sofa::type::hardening
+{
+
+template<typename IndexType> requires std::is_integral_v<IndexType>
+constexpr bool checkOverflow(IndexType a, IndexType b)
+{
+    if (a <= 0) return false;
+    return a > std::numeric_limits<IndexType>::max() / b;
+}
+
+} //namespace sofa::type::hardening

@@ -188,7 +188,7 @@ void TransformPosition<DataTypes>::getTransfoFromTfm()
                 typedef std::vector<std::string> vecString;
                 vecString vLine;
 
-                char *l = new char[line.size()];
+                char *l = new char[line.size() + 1];
                 strcpy(l, line.c_str());
                 char* p;
                 for (p = strtok(l, " "); p; p = strtok(nullptr, " "))
@@ -259,7 +259,7 @@ void TransformPosition<DataTypes>::getTransfoFromTrm()
 
             std::vector<std::string> vLine;
 
-            char *l = new char[line.size()];
+            char *l = new char[line.size() + 1];
             strcpy(l, line.c_str());
             char* p;
             for (p = strtok(l, " "); p; p = strtok(nullptr, " "))
@@ -337,7 +337,7 @@ void TransformPosition<DataTypes>::getTransfoFromTxt()
 
             std::vector<std::string> vLine;
 
-            char *l = new char[line.size()];
+            char *l = new char[line.size() + 1];
             strcpy(l, line.c_str());
             char* p;
             for (p = strtok(l, " "); p; p = strtok(nullptr, " "))

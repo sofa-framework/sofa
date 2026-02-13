@@ -862,7 +862,14 @@ std::istream& operator>>( std::istream& in, sofa::linearalgebra::BaseMatrix& m )
 
     }
 
-    m.resize( (Index)lines.size(), (Index)lines[0].size() );
+    if (lines.empty())
+    {
+        m.resize(0, 0);
+    }
+    else
+    {
+        m.resize( (Index)lines.size(), (Index)lines[0].size() );
+    }
 
     for( size_t i=0; i<lines.size();++i)
     {
