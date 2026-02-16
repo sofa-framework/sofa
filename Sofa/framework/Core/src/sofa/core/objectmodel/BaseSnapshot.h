@@ -28,6 +28,7 @@
 #include <memory>
 #include <iostream>
 #include <sofa/core/config.h>
+#include <boost/serialization/base_object.hpp>
 
 namespace sofa::core::objectmodel
 {

@@ -132,3 +132,18 @@ TEST_F(Snapshot_test, saveSnapshot)
     EXPECT_EQ(snapshot->m_dataContainer[5].name, "value");
     EXPECT_EQ(snapshot->m_dataContainer[5].value, "3.14");
 }
+
+TEST_F(Snapshot_test, loadSnapshot)
+{
+    TestComponent tcomponent;
+
+    auto snapshot = std::make_shared<BaseSnapshot::SnapshotObject>();
+    std::vector<std::shared_ptr<BaseSnapshot::SnapshotNode>> snapshotParents;
+    snapshot = tcomponent.saveSnapshot(snapshotParents);
+
+    TestComponent tcomponent2;
+    tcomponent2.d_value.setValue(0.0f);
+    tcomponent2.loadSnapshot(snapshot);
+
+    EXPECT_EQ(tcomponent2.d_value.getValue(), 3.14f);
+}

@@ -82,15 +82,12 @@ BaseNode::createSnapshotObject(std::vector<std::shared_ptr<BaseSnapshot::Snapsho
 std::shared_ptr<BaseSnapshot::SnapshotObject> 
 BaseNode::findSnapshotObject( const std::shared_ptr<BaseSnapshot::SnapshotNode>& parents, const std::string objectname)
 {
-    std::cout << "Searching for snapshot object (node): " << objectname << std::endl;
-    std::cout << "Searching in parents: " << parents->m_name << std::endl;
     if(parents->m_name == objectname)
     {
         return parents;
     }
     for (auto p : parents->children)
     {
-        std::cout << "Searching in parents: " << p->m_name << std::endl;
         if (p->m_name == objectname)
         {
             auto nodeObject = std::make_shared<BaseSnapshot::SnapshotNode>(*p);
