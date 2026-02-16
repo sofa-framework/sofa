@@ -3,13 +3,14 @@ on:
   push:
     branches:
       - master
-      - test_repo_dispatch
 jobs:
   run:
     runs-on: ubuntu-slim
-    # if: ${{ github.repository_owner == 'sofa-framework' }}
+    if: ${{ github.repository_owner == 'sofa-framework' }}
 
     steps:
+      # first extract SOFA and SofaPython3 last commit sha and date on their resp
+      # master branches, which be used as ref for building the devel conda packages
       - uses: actions/checkout@v4
       - name: Get SOFA commit date
         run: |
@@ -19,11 +20,9 @@ jobs:
       - name: Checkout SOFA Python3
         uses: actions/checkout@v4
         with:
-          # repository: sofa-framework/SofaPython3
-          repository: olivier-roussel/SofaPython3
+          repository: sofa-framework/SofaPython3
           ref: master
-          token: ${{ secrets.TEST_PAT }}
-          # token: ${{ secrets.PERF_REG_TOKEN }}
+          token: ${{ secrets.PERF_REG_TOKEN }}
           path: SofaPython3
 
       - name: Get commit info
