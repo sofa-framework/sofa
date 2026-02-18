@@ -66,9 +66,7 @@ public:
                                 const MaterialParameters<DataTypes>& param)
     {
         const MatrixSym& C = sinfo->deformationTensor;
-        const Real mu1 = param.parameterArray[0];
         const Real alpha1 = param.parameterArray[1];
-        const Real k0 = param.parameterArray[2];
 
         m_FJ = pow(sinfo->J, -alpha1/static_cast<Real>(3));
         m_logJ = log(sinfo->J);
