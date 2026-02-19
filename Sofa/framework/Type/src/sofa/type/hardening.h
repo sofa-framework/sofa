@@ -21,30 +21,55 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/config.h>
-
-#cmakedefine01 SOFA_HELPER_HAVE_BOOST
-#cmakedefine01 SOFA_HELPER_HAVE_BOOST_THREAD
-#cmakedefine01 SOFA_HELPER_HAVE_BOOST_FILESYSTEM
-
-// DEPRECATED since v21.06
-// will be removed at v21.12
-#define SOFAHELPER_HAVE_BOOST = @SOFA_HELPER_HAVE_BOOST@;
-#define SOFAHELPER_HAVE_BOOST_THREAD = @SOFA_HELPER_HAVE_BOOST_THREAD@;
-#define SOFAHELPER_HAVE_BOOST_FILESYSTEM = @SOFA_HELPER_HAVE_BOOST_FILESYSTEM@;
-
-#ifdef SOFA_BUILD_SOFA_HELPER
-#  define SOFA_TARGET @PROJECT_NAME@
-#  define SOFA_HELPER_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_HELPER_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+#include <limits>
+#include <type_traits>
 
 
-#ifdef SOFA_BUILD_SOFA_HELPER
-#define SOFA_HELPER_FILESYSTEM_FINDORCREATEAVALIDPATH_DISABLED()
-#else
-#define SOFA_HELPER_FILESYSTEM_FINDORCREATEAVALIDPATH_DISABLED() \
-SOFA_ATTRIBUTE_DISABLED( \
-"v25.06", "v25.12", "It is not clear that this function works on folders or files. Use ensureFolderExists or ensureFolderForFileExists instead.")
-#endif // SOFA_BUILD_SOFA_HELPER
+// This file should contain useful function to harden (i.e make safer) the code
+
+namespace sofa::type::hardening
+{
+
+template<typename IndexType> requires std::is_integral_v<IndexType>
+constexpr bool checkOverflow(IndexType a, IndexType b)
+{
+    if (a <= 0) return false;
+    return a > std::numeric_limits<IndexType>::max() / b;
+}
+
+inline bool safeStrToInt(const std::string& s, int& result)
+{
+    char* endptr = nullptr;
+    errno = 0;
+    long val = std::strtol(s.c_str(), &endptr, 10);
+    if (errno != 0 || endptr == s.c_str() || val < std::numeric_limits<int>::min() || val > std::numeric_limits<int>::max())
+        return false;
+    result = static_cast<int>(val);
+    return true;
+}
+
+inline bool safeStrToUInt(const std::string& s, unsigned int& result)
+{
+    char* endptr = nullptr;
+    errno = 0;
+    unsigned long val = std::strtoul(s.c_str(), &endptr, 10);
+    if (errno != 0 || endptr == s.c_str() || val > std::numeric_limits<unsigned int>::max())
+        return false;
+    result = static_cast<unsigned int>(val);
+    return true;
+}
+
+template<typename ScalarType> requires std::is_scalar_v<ScalarType>
+bool safeStrToScalar(const std::string& s, ScalarType& result)
+{
+    char* endptr = nullptr;
+    errno = 0;
+    long double val = std::strtold(s.c_str(), &endptr);
+    if (errno != 0 || endptr == s.c_str())
+        return false;
+    
+    result = static_cast<ScalarType>(val);
+    return true;
+}
+
+} //namespace sofa::type::hardening

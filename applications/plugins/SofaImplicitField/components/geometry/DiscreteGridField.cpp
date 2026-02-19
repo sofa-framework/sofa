@@ -198,7 +198,8 @@ bool DiscreteGridField::loadGridFromMHD( const char *filename )
         /* Don't allow variable names for problems with correct file paths!
         else if (strncmp( buffer, "ElementDataFile", 11 ) == 0) {
           value = strchr( buffer, '=' )+1;  while (*value==' ') value++;
-          strcpy( dataFile, value );
+          strncpy( dataFile, value, sizeof(dataFile) - 1 );
+          dataFile[sizeof(dataFile) - 1] = '\0';
           dataFileSpecified = true;
         }*/
     }
@@ -224,10 +225,20 @@ bool DiscreteGridField::loadGridFromMHD( const char *filename )
     if (!dataFileSpecified)
     {
         // change extension to .raw
-        strcpy( dataFile, filename );
-        int lenWithoutExt = strlen( filename ) - 3;
-        dataFile[lenWithoutExt] = 0;
-        strcat( dataFile, "raw" );
+        strncpy( dataFile, filename, sizeof(dataFile) - 1 );
+        dataFile[sizeof(dataFile) - 1] = '\0';
+        size_t lenWithoutExt = strlen( filename );
+        if (lenWithoutExt >= 3)
+            lenWithoutExt -= 3;
+        if (lenWithoutExt < sizeof(dataFile) - 4)
+        {
+            dataFile[lenWithoutExt] = '\0';
+            strncat( dataFile, "raw", sizeof(dataFile) - lenWithoutExt - 1 );
+        }
+        else
+        {
+            printf( "Warning: filename too long to replace extension, keeping '%s'\n", dataFile );
+        }
     }
     std::ifstream data( dataFile, std::ios_base::binary|std::ios_base::in );
     if (!data.is_open()) return false;
