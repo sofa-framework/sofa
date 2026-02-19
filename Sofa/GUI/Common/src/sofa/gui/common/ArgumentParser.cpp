@@ -84,9 +84,10 @@ void ArgumentParser::parse()
     // copy argv into a temporary
     char** copyArgv = new char* [m_argc + 1];
     for (int i = 0; i < m_argc; i++) {
-        const int len = strlen(m_argv[i]) + 1;
+        const size_t len = strlen(m_argv[i]) + 1;
         copyArgv[i] = new char[len];
-        strcpy(copyArgv[i], m_argv[i]);
+        strncpy(copyArgv[i], m_argv[i], len);
+        copyArgv[i][len - 1] = '\0';
     }
     copyArgv[m_argc] = nullptr;
 

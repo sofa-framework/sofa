@@ -75,7 +75,11 @@ void BaseException::AddMessage(const char* a_what)
    if (a_what)
    {
       int l = (int)strlen(a_what); int r = LastOne - SoFar;
-      if (l < r) { strcpy(what_error+SoFar, a_what); SoFar += l; }
+      if (l < r) {
+         strncpy(what_error+SoFar, a_what, r);
+         what_error[SoFar + l] = '\0';
+         SoFar += l;
+      }
       else if (r > 0)
       {
          strncpy(what_error+SoFar, a_what, r);

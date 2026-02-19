@@ -80,8 +80,10 @@ void Trace::print(int level, const char *chaine)
 TraceProfile::TraceProfile(const char *name, int index, int size)
 {
     this->index = index;
-    this->name = new char[strlen(name)+1];
-    strcpy( this->name, name);
+    const size_t len = strlen(name) + 1;
+    this->name = new char[len];
+    strncpy(this->name, name, len);
+    this->name[len - 1] = '\0';
 
     this->size = size;
     this->times = new int[size];
@@ -92,7 +94,7 @@ TraceProfile::TraceProfile(const char *name, int index, int size)
 
 TraceProfile::~TraceProfile()
 {
-    delete( name );
+    delete[] name;
 }
 
 void TraceProfile::addTime(int instant, int time)

@@ -260,8 +260,7 @@ bool STLExporter::writeSTLBinary(bool autonumbering)
     {
         buffer[i]='\0';
     }
-    strcpy(buffer, "Exported from Sofa");
-    outfile.write(buffer,80);
+    strncpy(buffer, "Exported from Sofa", 18);
 
     /* Number of d_facets */
     const unsigned int nbt = vecTri.size();
