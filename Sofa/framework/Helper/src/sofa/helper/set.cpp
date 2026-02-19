@@ -23,6 +23,9 @@
 
 #include <string>
 #include <iostream>
+#include <cstdlib>
+#include <cerrno>
+#include <climits>
 
 #include <sofa/helper/set.h>
 #include <sofa/helper/logging/Messaging.h>
@@ -30,6 +33,31 @@
 /// adding string serialization to std::set to make it compatible with Data
 /// \todo: refactoring of the containers required
 /// More info PR #113: https://github.com/sofa-framework/sofa/pull/113
+
+namespace
+{
+    bool safeStrToInt(const std::string& s, int& result)
+    {
+        char* endptr = nullptr;
+        errno = 0;
+        long val = std::strtol(s.c_str(), &endptr, 10);
+        if (errno != 0 || endptr == s.c_str() || val < INT_MIN || val > INT_MAX)
+            return false;
+        result = static_cast<int>(val);
+        return true;
+    }
+
+    bool safeStrToUInt(const std::string& s, unsigned int& result)
+    {
+        char* endptr = nullptr;
+        errno = 0;
+        unsigned long val = std::strtoul(s.c_str(), &endptr, 10);
+        if (errno != 0 || endptr == s.c_str() || val > UINT_MAX)
+            return false;
+        result = static_cast<unsigned int>(val);
+        return true;
+    }
+}
 
 namespace std
 {
@@ -47,27 +75,42 @@ std::istream& operator>> ( std::istream& in, std::set<int>& _set )
         const std::string::size_type hyphen = s.find_first_of('-',1);
         if (hyphen == std::string::npos)
         {
-            t = atoi(s.c_str());
+            if (!safeStrToInt(s, t))
+            {
+                msg_error("set") << "parsing \""<<s<<"\": invalid integer";
+                continue;
+            }
             _set.insert(t);
         }
         else
         {
             int t1,t2,tinc;
             std::string s1(s,0,hyphen);
-            t1 = atoi(s1.c_str());
+            if (!safeStrToInt(s1, t1))
+            {
+                msg_error("set") << "parsing \""<<s<<"\": invalid integer";
+                continue;
+            }
             const std::string::size_type hyphen2 = s.find_first_of('-',hyphen+2);
             if (hyphen2 == std::string::npos)
             {
                 std::string s2(s,hyphen+1);
-                t2 = atoi(s2.c_str());
+                if (!safeStrToInt(s2, t2))
+                {
+                    msg_error("set") << "parsing \""<<s<<"\": invalid integer";
+                    continue;
+                }
                 tinc = (t1<t2) ? 1 : -1;
             }
             else
             {
-                std::string s2(s,hyphen+1,hyphen2);
+                std::string s2(s,hyphen+1,hyphen2-hyphen-1);
                 std::string s3(s,hyphen2+1);
-                t2 = atoi(s2.c_str());
-                tinc = atoi(s3.c_str());
+                if (!safeStrToInt(s2, t2) || !safeStrToInt(s3, tinc))
+                {
+                    msg_error("set") << "parsing \""<<s<<"\": invalid integer";
+                    continue;
+                }
                 if (tinc == 0)
                 {
                     msg_error("set") << "parsing \""<<s<<"\": increment is 0";
@@ -106,7 +149,11 @@ std::istream& operator>> ( std::istream& in, std::set<unsigned int>& _set )
         const std::string::size_type hyphen = s.find_first_of('-',1);
         if (hyphen == std::string::npos)
         {
-            t = atoi(s.c_str());
+            if (!safeStrToUInt(s, t))
+            {
+                msg_error("set") << "parsing \""<<s<<"\": invalid unsigned integer";
+                continue;
+            }
             _set.insert(t);
         }
         else
@@ -114,20 +161,31 @@ std::istream& operator>> ( std::istream& in, std::set<unsigned int>& _set )
             unsigned int t1,t2;
             int tinc;
             std::string s1(s,0,hyphen);
-            t1 = (unsigned int)atoi(s1.c_str());
+            if (!safeStrToUInt(s1, t1))
+            {
+                msg_error("set") << "parsing \""<<s<<"\": invalid unsigned integer";
+                continue;
+            }
             const std::string::size_type hyphen2 = s.find_first_of('-',hyphen+2);
             if (hyphen2 == std::string::npos)
             {
                 std::string s2(s,hyphen+1);
-                t2 = (unsigned int)atoi(s2.c_str());
+                if (!safeStrToUInt(s2, t2))
+                {
+                    msg_error("set") << "parsing \""<<s<<"\": invalid unsigned integer";
+                    continue;
+                }
                 tinc = (t1<t2) ? 1 : -1;
             }
             else
             {
-                std::string s2(s,hyphen+1,hyphen2);
+                std::string s2(s,hyphen+1,hyphen2-hyphen-1);
                 std::string s3(s,hyphen2+1);
-                t2 = (unsigned int)atoi(s2.c_str());
-                tinc = atoi(s3.c_str());
+                if (!safeStrToUInt(s2, t2) || !safeStrToInt(s3, tinc))
+                {
+                    msg_error("set") << "parsing \""<<s<<"\": invalid integer";
+                    continue;
+                }
                 if (tinc == 0)
                 {
                     msg_error("set") << "parsing \""<<s<<"\": increment is 0";
