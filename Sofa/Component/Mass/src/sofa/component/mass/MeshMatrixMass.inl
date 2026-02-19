@@ -2100,23 +2100,23 @@ SReal MeshMatrixMass<DataTypes, GeometricalTypes>::getKineticEnergy( const core:
 
     helper::ReadAccessor< DataVecDeriv > v = vv;
 
-    const unsigned int nbEdges=l_topology->getNbEdges();
-    unsigned int v0,v1;
+    const sofa::Size nbEdges = l_topology->getNbEdges();
 
     SReal e = 0;
+    const auto lumpingCoef = isLumped() ? m_massLumpingCoeff : static_cast<Real>(1.0);
 
-    for (unsigned int i=0; i<v.size(); i++)
+    for (unsigned int i = 0; i < v.size(); i++)
     {
-        e += dot(v[i],v[i]) * vertexMass[i]; // v[i]*v[i]*masses[i] would be more efficient but less generic
+        e += dot(v[i],v[i]) * vertexMass[i] * lumpingCoef; // v[i]*v[i]*masses[i] would be more efficient but less generic
     }
 
-    for (unsigned int i = 0; i < nbEdges; ++i)
+    if (!isLumped())
     {
-        v0 = l_topology->getEdge(i)[0];
-        v1 = l_topology->getEdge(i)[1];
-
-        e += 2 * dot(v[v0], v[v1])*edgeMass[i];
-
+        for (unsigned int i = 0; i < nbEdges; ++i)
+        {
+            const auto& [v0, v1] = l_topology->getEdge(i).array();
+            e += 2 * dot(v[v0], v[v1]) * edgeMass[i];
+        }
     }
 
     return e/2;
