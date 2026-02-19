@@ -134,7 +134,6 @@ RigidMapping<TIn, TOut>::RigidMapping()
 template <class TIn, class TOut>
 sofa::Index RigidMapping<TIn, TOut>::getRigidIndex(sofa::Index pointIndex ) const
 {
-    // do we really need this crap?
     if( getPoints().size() == d_rigidIndexPerPoint.getValue().size() )
         return d_rigidIndexPerPoint.getValue()[pointIndex];
     else
