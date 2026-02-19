@@ -37,11 +37,14 @@ template class SOFA_GPU_CUDA_API TriangularFEMForceFieldOptim<sofa::gpu::cuda::C
 namespace sofa::gpu::cuda
 {
 
-int TriangularFEMForceFieldOptimCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-    .add< sofa::component::solidmechanics::fem::elastic::TriangularFEMForceFieldOptim<CudaVec3fTypes> >()
+    void registerTriangularFEMForceFieldOptim(sofa::core::ObjectFactory* factory)
+    {
+        factory->registerObjects(sofa::core::ObjectRegistrationData("Supports GPU-side computations using CUDA for the TriangularFEMForceFieldOptim")
+        .add< sofa::component::solidmechanics::fem::elastic::TriangularFEMForceFieldOptim<CudaVec3fTypes> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
-    .add< sofa::component::solidmechanics::fem::elastic::TriangularFEMForceFieldOptim<CudaVec3dTypes> >()
+        .add< sofa::component::solidmechanics::fem::elastic::TriangularFEMForceFieldOptim<CudaVec3dTypes> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
-    ;
+        );
+    }
 
 } // sofa::gpu::cuda

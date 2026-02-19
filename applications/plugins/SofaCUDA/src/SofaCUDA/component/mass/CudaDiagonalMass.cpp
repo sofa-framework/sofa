@@ -52,17 +52,16 @@ template class SOFA_GPU_CUDA_API DiagonalMass<sofa::gpu::cuda::CudaVec3dTypes>;
 namespace gpu::cuda
 {
 
-
-// Register in the Factory
-int DiagonalMassCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-    .add< component::mass::DiagonalMass<CudaVec3fTypes> >()
-
+    // Register in the Factory
+    void registerDiagonalMass(sofa::core::ObjectFactory* factory)
+    {
+        factory->registerObjects(sofa::core::ObjectRegistrationData("Supports GPU-side computations using CUDA for the DiagonalMass")
+        .add< component::mass::DiagonalMass<CudaVec3fTypes> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
-    .add< component::mass::DiagonalMass<CudaVec3dTypes> >()
- // SOFA_GPU_CUDA_DOUBLE
-#endif
-        ;
-
+        .add< component::mass::DiagonalMass<CudaVec3dTypes> >()
+ #endif // SOFA_GPU_CUDA_DOUBLE
+        );
+    }
 
 } // namespace gpu::cuda
 

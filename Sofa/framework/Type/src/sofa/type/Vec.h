@@ -32,6 +32,7 @@
 #include <cmath>
 #include <array>
 #include <cassert>
+#include <numeric>
 
 #define EQUALITY_THRESHOLD 1e-6
 
@@ -257,8 +258,7 @@ public:
     // assign one value to all elements
     constexpr void assign(const ValueType& value) noexcept
     {
-        for (size_type i = 0; i < N; i++)
-            elems[i] = value;
+        std::fill_n(this->elems.data(), N, value);
     }
 
     /// Sets every element to 0.
@@ -472,6 +472,10 @@ public:
     /// Squared norm.
     constexpr ValueType norm2() const noexcept
     {
+        // The STL function is slower when not compiling in full optimization.
+        // Therefore, the debugging would be slower.
+        // return std::inner_product(elems.begin(), elems.end(), elems.begin(), ValueType{});
+
         ValueType r = this->elems[0]*this->elems[0];
         for (Size i=1; i<N; i++)
             r += this->elems[i]*this->elems[i];
@@ -583,7 +587,10 @@ public:
     /// sum of all elements of the vector
     constexpr ValueType sum() const noexcept
     {
-        ValueType sum = ValueType(0.0);
+        // The STL function is slower when not compiling in full optimization.
+        // Therefore, the debugging would be slower.
+        // return std::accumulate(elems.begin(), elems.end(), ValueType{});
+        ValueType sum = static_cast<ValueType>(0.0);
         for (Size i=0; i<N; i++)
             sum += this->elems[i];
         return sum;
@@ -597,8 +604,8 @@ public:
     {
         if constexpr (std::is_floating_point_v<ValueType>)
         {
-            return std::equal(this->elems.begin(), this->elems.end(), b.elems.begin(),
-                                   [](auto x, auto y) { return std::abs(x - y) < EQUALITY_THRESHOLD; });
+            constexpr auto equalTest = [](auto x, auto y) { return std::abs(x - y) < EQUALITY_THRESHOLD; };
+            return std::equal(this->elems.begin(), this->elems.end(), b.elems.begin(), equalTest );
         }
         else
         {
@@ -680,19 +687,19 @@ public:
         return elems.end();
     }
 
-    constexpr reference front()
+    constexpr reference front() noexcept
     {
         return elems[0];
     }
-    constexpr const_reference front() const
+    constexpr const_reference front() const noexcept
     {
         return elems[0];
     }
-    constexpr reference back()
+    constexpr reference back() noexcept
     {
         return elems[N - 1];
     }
-    constexpr const_reference back() const
+    constexpr const_reference back() const noexcept
     {
         return elems[N - 1];
     }
@@ -717,7 +724,7 @@ public:
     {}
 
     constexpr VecNoInit(Vec<N,real>&& v) noexcept
-        : Vec<N,real>(v)
+        : Vec<N,real>(std::move(v))
     {}
 
     using Vec<N,real>::Vec;

@@ -73,42 +73,48 @@ template class SOFA_GPU_CUDA_API MechanicalObject<CudaRigid2dTypes>;
 namespace sofa::gpu::cuda
 {
 
-int MechanicalObjectCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-        .add< component::statecontainer::MechanicalObject<CudaVec1fTypes> >()
-        .add< component::statecontainer::MechanicalObject<CudaVec2fTypes> >()
-        .add< component::statecontainer::MechanicalObject<CudaVec3fTypes> >()
-        .add< component::statecontainer::MechanicalObject<CudaVec3f1Types> >()
-        .add< component::statecontainer::MechanicalObject<CudaVec6fTypes> >()
-        .add< component::statecontainer::MechanicalObject<CudaRigid3fTypes> >()
-        .add< component::statecontainer::MechanicalObject<CudaRigid2fTypes> >()
+void registerMechanicalObject(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Supports GPU-side computations using CUDA for the MechanicalObject")
+    .add< component::statecontainer::MechanicalObject<CudaVec1fTypes> >()
+    .add< component::statecontainer::MechanicalObject<CudaVec2fTypes> >()
+    .add< component::statecontainer::MechanicalObject<CudaVec3fTypes> >()
+    .add< component::statecontainer::MechanicalObject<CudaVec3f1Types> >()
+    .add< component::statecontainer::MechanicalObject<CudaVec6fTypes> >()
+    .add< component::statecontainer::MechanicalObject<CudaRigid3fTypes> >()
+    .add< component::statecontainer::MechanicalObject<CudaRigid2fTypes> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
-        .add< component::statecontainer::MechanicalObject<CudaVec1dTypes> >()
-        .add< component::statecontainer::MechanicalObject<CudaVec2dTypes> >()
-        .add< component::statecontainer::MechanicalObject<CudaVec3dTypes> >()
-        .add< component::statecontainer::MechanicalObject<CudaVec3d1Types> >()
-        .add< component::statecontainer::MechanicalObject<CudaVec6dTypes> >()
-        .add< component::statecontainer::MechanicalObject<CudaRigid3dTypes> >()
-        .add< component::statecontainer::MechanicalObject<CudaRigid2dTypes> >()
+    .add< component::statecontainer::MechanicalObject<CudaVec1dTypes> >()
+    .add< component::statecontainer::MechanicalObject<CudaVec2dTypes> >()
+    .add< component::statecontainer::MechanicalObject<CudaVec3dTypes> >()
+    .add< component::statecontainer::MechanicalObject<CudaVec3d1Types> >()
+    .add< component::statecontainer::MechanicalObject<CudaVec6dTypes> >()
+    .add< component::statecontainer::MechanicalObject<CudaRigid3dTypes> >()
+    .add< component::statecontainer::MechanicalObject<CudaRigid2dTypes> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
-        ;
+    );
+}
 
-int MappedObjectCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-        .add< component::statecontainer::MappedObject<CudaVec1fTypes> >()
-        .add< component::statecontainer::MappedObject<CudaVec2fTypes> >()
-        .add< component::statecontainer::MappedObject<CudaVec3fTypes> >()
-        .add< component::statecontainer::MappedObject<CudaVec3f1Types> >()
-        .add< component::statecontainer::MappedObject<CudaVec6fTypes> >()
-        .add< component::statecontainer::MappedObject<CudaRigid3fTypes> >()
-        .add< component::statecontainer::MappedObject<CudaRigid2fTypes> >()
+void registerMappedObject(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("GPU-based collision detection using CUDA for the MappedObject")
+    .add< component::statecontainer::MappedObject<CudaVec1fTypes> >()
+    .add< component::statecontainer::MappedObject<CudaVec2fTypes> >()
+    .add< component::statecontainer::MappedObject<CudaVec3fTypes> >()
+    .add< component::statecontainer::MappedObject<CudaVec3f1Types> >()
+    .add< component::statecontainer::MappedObject<CudaVec6fTypes> >()
+    .add< component::statecontainer::MappedObject<CudaRigid3fTypes> >()
+    .add< component::statecontainer::MappedObject<CudaRigid2fTypes> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
-        .add< component::statecontainer::MappedObject<CudaVec1dTypes> >()
-        .add< component::statecontainer::MappedObject<CudaVec2dTypes> >()
-        .add< component::statecontainer::MappedObject<CudaVec3dTypes> >()
-        .add< component::statecontainer::MappedObject<CudaVec3d1Types> >()
-        .add< component::statecontainer::MappedObject<CudaVec6dTypes> >()
-        .add< component::statecontainer::MappedObject<CudaRigid3dTypes> >()
-        .add< component::statecontainer::MappedObject<CudaRigid2dTypes> >()
+    .add< component::statecontainer::MappedObject<CudaVec1dTypes> >()
+    .add< component::statecontainer::MappedObject<CudaVec2dTypes> >()
+    .add< component::statecontainer::MappedObject<CudaVec3dTypes> >()
+    .add< component::statecontainer::MappedObject<CudaVec3d1Types> >()
+    .add< component::statecontainer::MappedObject<CudaVec6dTypes> >()
+    .add< component::statecontainer::MappedObject<CudaRigid3dTypes> >()
+    .add< component::statecontainer::MappedObject<CudaRigid2dTypes> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
-        ;
+    );
+}
 
 } // namespace sofa::gpu::cuda

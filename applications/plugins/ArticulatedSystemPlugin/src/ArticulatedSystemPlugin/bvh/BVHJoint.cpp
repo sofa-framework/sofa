@@ -48,9 +48,15 @@ BVHJoint::BVHJoint(const char *_name, bool _endSite, BVHJoint *_parent)
     id = lastId++;
 
     if (!endSite)
-        strcpy(name,_name);
+    {
+        strncpy(name, _name, sizeof(name) - 1);
+        name[sizeof(name) - 1] = '\0';
+    }
     else
-        strcpy(name,"End Site");
+    {
+        strncpy(name, "End Site", sizeof(name) - 1);
+        name[sizeof(name) - 1] = '\0';
+    }
 }
 
 BVHJoint::~BVHJoint()
