@@ -37,4 +37,39 @@ constexpr bool checkOverflow(IndexType a, IndexType b)
     return a > std::numeric_limits<IndexType>::max() / b;
 }
 
+inline bool safeStrToInt(const std::string& s, int& result)
+{
+    char* endptr = nullptr;
+    errno = 0;
+    long val = std::strtol(s.c_str(), &endptr, 10);
+    if (errno != 0 || endptr == s.c_str() || val < std::numeric_limits<int>::min() || val > std::numeric_limits<int>::max())
+        return false;
+    result = static_cast<int>(val);
+    return true;
+}
+
+inline bool safeStrToUInt(const std::string& s, unsigned int& result)
+{
+    char* endptr = nullptr;
+    errno = 0;
+    unsigned long val = std::strtoul(s.c_str(), &endptr, 10);
+    if (errno != 0 || endptr == s.c_str() || val > std::numeric_limits<unsigned int>::max())
+        return false;
+    result = static_cast<unsigned int>(val);
+    return true;
+}
+
+template<typename ScalarType> requires std::is_scalar_v<ScalarType>
+bool safeStrToScalar(const std::string& s, ScalarType& result)
+{
+    char* endptr = nullptr;
+    errno = 0;
+    long double val = std::strtold(s.c_str(), &endptr);
+    if (errno != 0 || endptr == s.c_str())
+        return false;
+    
+    result = static_cast<ScalarType>(val);
+    return true;
+}
+
 } //namespace sofa::type::hardening
