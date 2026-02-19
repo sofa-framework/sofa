@@ -298,9 +298,6 @@ public:
         return decodeTypeName(typeid(T));
     }
 
-    template<class T>
-    SOFA_ATTRIBUTE_DISABLED__UNNECESSARY_PARAMETER_IN_TYPENAME() static std::string typeName(const T*) = delete;
-
 protected:
     /// Try to update this Data from the value of its parent in "fast mode";
     bool genericCopyValueFrom(const BaseData* parent);

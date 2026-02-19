@@ -153,8 +153,36 @@ bool FileSystem::createDirectory(const std::string& path)
     if (CreateDirectory(sofa::helper::widenString(path).c_str(), nullptr) == 0)
     {
         DWORD errorCode = ::GetLastError();
-        msg_error(error) << path << ": " << Utils::GetLastError();
-        return true;
+        if (errorCode != ERROR_ALREADY_EXISTS)
+        {
+            msg_error(error) << path << ": " << Utils::GetLastError();
+            return true;
+        }
+        else
+        {
+            // Check if the existing item is a file or directory
+            DWORD attributes = GetFileAttributes(sofa::helper::widenString(path).c_str());
+            if (attributes != INVALID_FILE_ATTRIBUTES)
+            {
+                if ((attributes & FILE_ATTRIBUTE_DIRECTORY) == 0)
+                {
+                    // It's a file, not a directory - this is an error
+                    msg_error(error) << path << ": File exists and is not a directory";
+                    return true;
+                }
+                else
+                {
+                    // It's already a directory - success
+                    return false;
+                }
+            }
+            else
+            {
+                // Couldn't get attributes - treat as error
+                msg_error(error) << path << ": " << Utils::GetLastError();
+                return true;
+            }
+        }
     }
 #else
     int status = mkdir(path.c_str(), 0755);
@@ -170,21 +198,28 @@ bool FileSystem::createDirectory(const std::string& path)
             struct stat st_buf;
             if (stat(path.c_str(), &st_buf) == 0)
             {
-                if ((st_buf.st_mode & S_IFMT) != S_IFDIR) {
-                    msg_error(error) << path << ": File exists and is not a directoy";
+                if ((st_buf.st_mode & S_IFMT) != S_IFDIR)
+                {
+                    msg_error(error) << path << ": File exists and is not a directory";
                     return true;
                 }
                 else
                 {
+                    // 'path' was already created and is a folder
                     return false;
                 }
             }
-
+            else
+            {
+                msg_error(error) << path << ": Unknown error while trying to create this directory.";
+                return true;
+            }
         }
     }
 #endif
     else
     {
+        // 'path' has been created sucessfully
         return false;
     }
 }

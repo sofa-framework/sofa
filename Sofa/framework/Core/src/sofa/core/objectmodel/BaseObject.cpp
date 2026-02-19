@@ -324,7 +324,12 @@ void BaseObject::reset()
 { }
 
 void BaseObject::cleanup()
-{ }
+{
+    while (!l_slaves.empty())
+    {
+        removeSlave(l_slaves.getValue().front());
+    }
+}
 
 void BaseObject::handleEvent( Event* /*e*/ )
 { }

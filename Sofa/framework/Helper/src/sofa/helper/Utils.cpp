@@ -226,7 +226,7 @@ const std::string& Utils::getUserHomeDirectory()
     {
 #ifdef WIN32 // Windows: ${HOME}
         const char* homeDir = std::getenv("USERPROFILE");
-        return std::string(homeDir);
+        return homeDir ? std::string(homeDir) : std::string("");
 #elif defined(__APPLE__) // macOS : ${HOME} (usually /Users/username)
         glob_t globbuf;
         if (glob("~", GLOB_TILDE, nullptr, &globbuf) == 0)
@@ -256,10 +256,12 @@ const std::string& Utils::getUserHomeDirectory()
     if ((homeDir = std::getenv("HOME")) == nullptr)
     {
         // else system calls are used
-        homeDir = getpwuid(getuid())->pw_dir;
+        struct passwd* pw = getpwuid(getuid());
+        if (pw != nullptr)
+            homeDir = pw->pw_dir;
     }
 
-    return std::string(homeDir);
+    return homeDir ? std::string(homeDir) : std::string("");
 
 #endif
     };

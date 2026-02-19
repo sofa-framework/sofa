@@ -33,6 +33,79 @@ using namespace sofa::type;
 using namespace sofa::helper;
 using namespace sofa::defaulttype;
 
+template<class MatrixType>
+class MatTest : public ::testing::Test
+{
+public:
+    void checkDefaultConstructorDefaultInitialization()
+    {
+        MatrixType A;
+        checkZero(A);
+    }
+
+    void checkDefaultConstructorValueInitialization()
+    {
+        MatrixType A{};
+        checkZero(A);
+    }
+
+protected:
+    void checkZero(const MatrixType& A)
+    {
+        for (sofa::Size i = 0; i < MatrixType::nbLines; ++i)
+        {
+            for (sofa::Size j = 0; j < MatrixType::nbCols; ++j)
+            {
+                static constexpr typename MatrixType::Real zero{};
+                EXPECT_EQ(A(i, j), zero);
+            }
+        }
+    }
+};
+
+using MyTypes = ::testing::Types<
+        sofa::type::Mat<1, 1, float>,
+        sofa::type::Mat<1, 2, float>,
+        sofa::type::Mat<2, 1, float>,
+        sofa::type::Mat<2, 2, float>,
+        sofa::type::Mat<3, 3, float>,
+        sofa::type::Mat<4, 4, float>,
+        sofa::type::Mat<12, 12, float>,
+        
+        sofa::type::Mat<1, 1, double>,
+        sofa::type::Mat<1, 2, double>,
+        sofa::type::Mat<2, 1, double>,
+        sofa::type::Mat<2, 2, double>,
+        sofa::type::Mat<3, 3, double>,
+        sofa::type::Mat<4, 4, double>,
+        sofa::type::Mat<12, 12, double>,
+
+        sofa::type::Mat<1, 1, int>,
+        sofa::type::Mat<1, 2, int>,
+        sofa::type::Mat<2, 1, int>,
+        sofa::type::Mat<2, 2, int>,
+        sofa::type::Mat<3, 3, int>,
+        sofa::type::Mat<4, 4, int>,
+        sofa::type::Mat<12, 12, int>,
+
+        sofa::type::Mat<1, 1, unsigned int>,
+        sofa::type::Mat<1, 2, unsigned int>,
+        sofa::type::Mat<2, 1, unsigned int>,
+        sofa::type::Mat<2, 2, unsigned int>,
+        sofa::type::Mat<3, 3, unsigned int>,
+        sofa::type::Mat<4, 4, unsigned int>,
+        sofa::type::Mat<12, 12, unsigned int>
+    >;
+TYPED_TEST_SUITE(MatTest, MyTypes);
+TYPED_TEST(MatTest, checkDefaultConstructorDefaultInitialization)
+{
+    this->checkDefaultConstructorDefaultInitialization();
+}
+TYPED_TEST(MatTest, checkDefaultConstructorValueInitialization)
+{
+    this->checkDefaultConstructorValueInitialization();
+}
+
 TEST(MatTypesTest, initializerListConstructors)
 {
     static constexpr sofa::type::Mat<3, 3, int> A {
@@ -422,7 +495,7 @@ TEST(MatTypesTest, determinant1x1)
 {
     EXPECT_DOUBLE_EQ(sofa::type::determinant(sofa::type::Mat<1,1,SReal>::Identity()), 1_sreal);
 
-    sofa::type::Mat<1,1,SReal> a{{{4.}}};
+    sofa::type::Mat<1,1,SReal> a{{4.}};
     EXPECT_DOUBLE_EQ(sofa::type::determinant(a), 4_sreal);
 }
 
@@ -442,4 +515,159 @@ TEST(MatTypesTest, determinant3x3)
     EXPECT_DOUBLE_EQ(sofa::type::determinant(sofa::type::Mat<3,3,SReal>{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}}), 0_sreal);
     EXPECT_DOUBLE_EQ(sofa::type::determinant(sofa::type::Mat<3,3,SReal>{{0, 1, 0}, {0, 0, 1}, {1, 0, 0}}), 1_sreal);
     EXPECT_DOUBLE_EQ(sofa::type::determinant(sofa::type::Mat<3,3,SReal>{{1, 1, 0}, {1, 0, 1}, {0, 1, 1}}), -2_sreal);
+}
+
+TEST(MatTypesTest, determinant4x4)
+{
+    EXPECT_DOUBLE_EQ(sofa::type::determinant(sofa::type::Mat<4,4,SReal>{{1,0,0,0}, {0,1,0,0}, {0,0,1,0}, {0,0,0,1}}), 1_sreal);
+    EXPECT_DOUBLE_EQ(sofa::type::determinant(sofa::type::Mat<4,4,SReal>{{2,0,0,0}, {0,3,0,0}, {0,0,4,0}, {0,0,0,5}}), 120_sreal);
+    EXPECT_DOUBLE_EQ(sofa::type::determinant(sofa::type::Mat<4,4,SReal>{{0,1,0,0}, {1,0,0,0}, {0,0,1,0}, {0,0,0,1}}), -1_sreal);
+    EXPECT_DOUBLE_EQ(sofa::type::determinant(sofa::type::Mat<4,4,SReal>{{1,0,0,0}, {0,2,0,0}, {0,0,3,0}, {0,0,0,4}}), 24_sreal);
+    EXPECT_DOUBLE_EQ(sofa::type::determinant(sofa::type::Mat<4,4,SReal>{{1,3,5,9}, {1,3,1,7}, {4,3,9,7}, {5,2,0,9}}), -376_sreal);
+}
+
+TEST(MatTypesTest, determinant12x12)
+{
+    using Mat12 = sofa::type::Mat<12, 12, SReal>;
+
+    // Identity: det = 1
+    EXPECT_DOUBLE_EQ(sofa::type::determinant(Mat12::Identity()), 1_sreal);
+
+    // Diagonal matrix: det = product of diagonal entries
+    Mat12 M;
+    M.clear();
+
+    SReal expected = 1_sreal;
+    for (sofa::Size i = 0; i < 12; ++i)
+    {
+        const SReal d = static_cast<SReal>(i + 1); // 1..12
+        M(i, i) = d;
+        expected *= d;
+    }
+
+    EXPECT_DOUBLE_EQ(sofa::type::determinant(M), expected);
+}
+
+TEST(MatTypesTest, fill)
+{
+    Matrix3 M;
+    M.fill(5.0);
+    for (sofa::Size i = 0; i < 3; ++i)
+        for (sofa::Size j = 0; j < 3; ++j)
+            EXPECT_EQ(M(i,j), 5.0);
+}
+
+TEST(MatTypesTest, clear)
+{
+    Matrix3 M;
+    M.fill(1.0);
+    M.clear();
+    for (sofa::Size i = 0; i < 3; ++i)
+        for (sofa::Size j = 0; j < 3; ++j)
+            EXPECT_EQ(M(i,j), 0.0);
+}
+
+TEST(MatTypesTest, col)
+{
+    const Matrix3 M(Matrix3::Line(1., 2., 3.), Matrix3::Line(4., 5., 6.), Matrix3::Line(7., 8., 9.));
+    const auto c = M.col(1);
+    EXPECT_EQ(c[0], 2.);
+    EXPECT_EQ(c[1], 5.);
+    EXPECT_EQ(c[2], 8.);
+}
+
+TEST(MatTypesTest, operatorsEqual)
+{
+    const Matrix3 A(Matrix3::Line(1., 2., 3.), Matrix3::Line(4., 5., 6.), Matrix3::Line(7., 8., 9.));
+    const Matrix3 B(A);
+    EXPECT_TRUE(A == B);
+    EXPECT_FALSE(A != B);
+
+    const Matrix3 C(Matrix3::Line(1., 2., 3.), Matrix3::Line(4., 5., 6.), Matrix3::Line(7., 8., 10.));
+    EXPECT_FALSE(A == C);
+    EXPECT_TRUE(A != C);
+}
+
+TEST(MatTypesTest, isSymmetric)
+{
+    Matrix3 A;
+    A.identity();
+    EXPECT_TRUE(A.isSymmetric());
+
+    Matrix3 B(Matrix3::Line(1., 2., 3.), Matrix3::Line(2., 5., 6.), Matrix3::Line(3., 6., 9.));
+    EXPECT_TRUE(B.isSymmetric());
+
+    Matrix3 C(Matrix3::Line(1., 2., 3.), Matrix3::Line(4., 5., 6.), Matrix3::Line(7., 8., 9.));
+    EXPECT_FALSE(C.isSymmetric());
+}
+
+TEST(MatTypesTest, isDiagonal)
+{
+    Matrix3 A;
+    A.identity();
+    EXPECT_TRUE(A.isDiagonal());
+
+    Matrix3 B{{1., 0., 0.}, {0., 2., 0.}, {0., 0., 3.}};
+    EXPECT_TRUE(B.isDiagonal());
+
+    Matrix3 C(Matrix3::Line(1., 2., 0.), Matrix3::Line(0., 5., 0.), Matrix3::Line(0., 0., 9.));
+    EXPECT_FALSE(C.isDiagonal());
+
+    Mat<2,4,SReal> M;
+    for (sofa::Size i = 0; i < 2; ++i)
+        for (sofa::Size j = 0; j < 4; ++j)
+            M(i,j) = (i == j && i < 2) ? SReal{1} : SReal{0};
+    EXPECT_TRUE(M.isDiagonal());
+
+    Mat<3,2,SReal> N;
+    for (sofa::Size i = 0; i < 3; ++i)
+        for (sofa::Size j = 0; j < 2; ++j)
+            N(i,j) = (i == j && i < 2) ? SReal{1} : SReal{0};
+    EXPECT_TRUE(N.isDiagonal());
+}
+
+TEST(MatTypesTest, multDiagonal)
+{
+    const Matrix3 A(Matrix3::Line(1., 2., 3.), Matrix3::Line(4., 5., 6.), Matrix3::Line(7., 8., 9.));
+    const Vec3 d(2., 3., 4.);
+    const auto R = A.multDiagonal(d);
+    EXPECT_EQ(R(0,0), 2.); EXPECT_EQ(R(0,1), 6.); EXPECT_EQ(R(0,2), 12.);
+    EXPECT_EQ(R(1,0), 8.); EXPECT_EQ(R(1,1),15.); EXPECT_EQ(R(1,2),24.);
+}
+
+TEST(MatTypesTest, plusMinusTransposed)
+{
+    const Matrix3 A(Matrix3::Line(1., 2., 3.), Matrix3::Line(4., 5., 6.), Matrix3::Line(7., 8., 9.));
+    const auto AT = A.transposed();
+    const Matrix3 B = A.plusTransposed(A);
+    EXPECT_EQ(B, A + AT);
+
+    const Matrix3 C = A.minusTransposed(A);
+    EXPECT_EQ(C, A - AT);
+}
+
+TEST(MatTypesTest, addSubTransposed)
+{
+    Matrix3 M;
+    M.identity();
+    const Matrix3 A(Matrix3::Line(1., 2., 3.), Matrix3::Line(4., 5., 6.), Matrix3::Line(7., 8., 9.));
+    M.addTransposed(A);
+    EXPECT_EQ(M, Matrix3::Identity() + A.transposed());
+}
+
+TEST(MatTypesTest, symmetrize)
+{
+    Matrix3 A(Matrix3::Line(1., 2., 3.), Matrix3::Line(4., 5., 6.), Matrix3::Line(7., 8., 9.));
+    A.symmetrize();
+    EXPECT_EQ(A, A.transposed());
+}
+
+TEST(MatTypesTest, transformVec)
+{
+    const Matrix4 T = Matrix4::transformTranslation(Vec3(1., 2., 3.));
+    const Vec3 v(1., 0., 0.);
+    const auto result = T.transform(v);
+    EXPECT_EQ(result[0], 2.);
+    EXPECT_EQ(result[1], 2.);
+    EXPECT_EQ(result[2], 3.);
 }

@@ -37,6 +37,8 @@ Demos/SofaScene.scn 120 1e-5 1 1
 ### Component scenes ###
 Component/Collision/Response/RuleBasedContactManager.scn 100 1e-4 0 1
 Component/Collision/Response/FrictionContact.scn 100 1e-4 0 1
+Component/Collision/Detection/CompositeCollisionPipeline.scn 200 1e-4 0 1
+Component/Collision/Detection/CompositeCollisionPipeline_none.scn 200 1e-4 0 1
 Component/Constraint/Lagrangian/BilateralLagrangianConstraint_NNCG.scn 100 1e-4 0 1
 Component/Constraint/Lagrangian/BilateralLagrangianConstraint_PGS.scn 100 1e-4 0 1
 Component/Constraint/Lagrangian/BilateralLagrangianConstraint_UGS.scn 100 1e-4 0 1
