@@ -25,19 +25,14 @@ jobs:
           token: ${{ secrets.PERF_REG_TOKEN }}
           path: SofaPython3
 
-      - name: Get commit info
+      - name: Get SofaPython3 commit info
         run: |
           cd SofaPython3
           SOFA_PYTHON3_SHA=$(git rev-parse HEAD)
-          SOFA_PYTHON3_COMMIT_DATE=$(git show -s --format=%cI HEAD)
+          SOFA_PYTHON3_COMMIT_DATE=$(git show -s --date=format:%Y%m%d --format=%cd $SOFA_PYTHON3_SHA)
 
           echo "SOFA_PYTHON3_SHA=$SOFA_PYTHON3_SHA" >> $GITHUB_ENV
           echo "SOFA_PYTHON3_COMMIT_DATE=$SOFA_PYTHON3_COMMIT_DATE" >> $GITHUB_ENV
-
-      - name: Get SOFA Python3 last commit and date on master
-        run: |
-          SOFA_PYTHON3_COMMIT_DATE=$(git show -s --date=format:%Y%m%d --format=%cd ${{ github.sha }})
-          echo "COMMIT_DATE=$COMMIT_DATE" >> $GITHUB_ENV
 
       - name: Launch build of development conda packages of SOFA
         run: |
