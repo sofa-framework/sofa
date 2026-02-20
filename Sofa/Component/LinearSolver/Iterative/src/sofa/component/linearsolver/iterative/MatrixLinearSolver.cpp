@@ -40,11 +40,6 @@ void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManage
 }
 
 template<>
-void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::computeResidual(const core::ExecParams* /*params*/,linearalgebra::BaseVector* /*f*/) {
-    //todo
-}
-
-template<>
 GraphScatteredVector* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::createPersistentVector()
 {
     return new GraphScatteredVector(nullptr,core::VecDerivId::null());

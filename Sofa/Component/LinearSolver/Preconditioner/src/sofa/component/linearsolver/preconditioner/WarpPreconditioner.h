@@ -72,8 +72,6 @@ public:
 
     bool addMInvJt(linearalgebra::BaseMatrix* result, linearalgebra::BaseMatrix* J, SReal fact) override;
 
-    void computeResidual(const core::ExecParams* params, linearalgebra::BaseVector* /*f*/) override;
-
 protected:
 
     void checkLinearSystem() override;
