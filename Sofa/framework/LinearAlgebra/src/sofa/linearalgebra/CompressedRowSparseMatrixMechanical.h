@@ -262,6 +262,8 @@ public:
         traits::vset(*this->wblock(i, j, true), bi, bj, static_cast<Real>(v) );
     }
 
+    using BaseMatrix::add;
+
     /**
     * \brief add scalar v at element i, j of matrix
     **/

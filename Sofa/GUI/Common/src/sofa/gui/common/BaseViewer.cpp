@@ -31,7 +31,7 @@
 
 #include <sofa/core/ComponentNameHelper.h>
 #include <sofa/helper/system/FileSystem.h>
-
+#include <sofa/type/hardening.h>
 
 namespace sofa::gui::common
 {
@@ -257,8 +257,10 @@ bool BaseViewer::load()
                 }
                 else if(paramName == std::string("VisualScaling"))
                 {
-                    const float floatValue = std::stof(line.substr(equalPos+1)) ;
-                    m_visualScaling = floatValue;
+                    if(!sofa::type::hardening::safeStrToScalar(line.substr(equalPos+1), m_visualScaling))
+                    {
+                        msg_warning("BaseViewer") << "Invalid VisualScaling value in config file";
+                    }
                 }
             }
         }

@@ -295,8 +295,7 @@ void CudaTetrahedronTLEDForceField::reinit()
 
     // Retrieves force coordinates (slice number and index) for each node
     sofa::type::vector<int2> FCrds(nbVertex * nbElementPerVertex, {-1, -1});
-    int * index = new int[nbVertex];
-    memset(index, 0, nbVertex*sizeof(int));
+    sofa::type::vector<int> index(nbVertex, 0);
 
     // Stores list of nodes for each element
     sofa::type::vector<int4> nodesPerElement(nbElems);
@@ -369,7 +368,6 @@ void CudaTetrahedronTLEDForceField::reinit()
     /** Initialises GPU textures with the precomputed arrays for the TLED algorithm
      */
     InitGPU_TetrahedronTLED(nbElementPerVertex, nbVertex, nbElems);
-    delete [] index;
 
 
     /**

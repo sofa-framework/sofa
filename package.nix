@@ -10,14 +10,16 @@
   qt6Packages,
   libGL,
   metis,
+  nlohmann_json,
   stdenv,
+  tight_inclusion,
   tinyxml-2,
   zlib,
 }:
 
 stdenv.mkDerivation (finalAttrs: {
   pname = "sofa";
-  version = "25.12.99";
+  version = "26.06.99";
 
   src = lib.fileset.toSource {
     root = ./.;
@@ -53,7 +55,9 @@ stdenv.mkDerivation (finalAttrs: {
     qt6Packages.qtbase
     libGL
     metis
+    nlohmann_json
     tinyxml-2
+    tight_inclusion
     zlib
   ];
 

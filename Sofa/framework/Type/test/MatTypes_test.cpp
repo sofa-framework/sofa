@@ -33,6 +33,79 @@ using namespace sofa::type;
 using namespace sofa::helper;
 using namespace sofa::defaulttype;
 
+template<class MatrixType>
+class MatTest : public ::testing::Test
+{
+public:
+    void checkDefaultConstructorDefaultInitialization()
+    {
+        MatrixType A;
+        checkZero(A);
+    }
+
+    void checkDefaultConstructorValueInitialization()
+    {
+        MatrixType A{};
+        checkZero(A);
+    }
+
+protected:
+    void checkZero(const MatrixType& A)
+    {
+        for (sofa::Size i = 0; i < MatrixType::nbLines; ++i)
+        {
+            for (sofa::Size j = 0; j < MatrixType::nbCols; ++j)
+            {
+                static constexpr typename MatrixType::Real zero{};
+                EXPECT_EQ(A(i, j), zero);
+            }
+        }
+    }
+};
+
+using MyTypes = ::testing::Types<
+        sofa::type::Mat<1, 1, float>,
+        sofa::type::Mat<1, 2, float>,
+        sofa::type::Mat<2, 1, float>,
+        sofa::type::Mat<2, 2, float>,
+        sofa::type::Mat<3, 3, float>,
+        sofa::type::Mat<4, 4, float>,
+        sofa::type::Mat<12, 12, float>,
+        
+        sofa::type::Mat<1, 1, double>,
+        sofa::type::Mat<1, 2, double>,
+        sofa::type::Mat<2, 1, double>,
+        sofa::type::Mat<2, 2, double>,
+        sofa::type::Mat<3, 3, double>,
+        sofa::type::Mat<4, 4, double>,
+        sofa::type::Mat<12, 12, double>,
+
+        sofa::type::Mat<1, 1, int>,
+        sofa::type::Mat<1, 2, int>,
+        sofa::type::Mat<2, 1, int>,
+        sofa::type::Mat<2, 2, int>,
+        sofa::type::Mat<3, 3, int>,
+        sofa::type::Mat<4, 4, int>,
+        sofa::type::Mat<12, 12, int>,
+
+        sofa::type::Mat<1, 1, unsigned int>,
+        sofa::type::Mat<1, 2, unsigned int>,
+        sofa::type::Mat<2, 1, unsigned int>,
+        sofa::type::Mat<2, 2, unsigned int>,
+        sofa::type::Mat<3, 3, unsigned int>,
+        sofa::type::Mat<4, 4, unsigned int>,
+        sofa::type::Mat<12, 12, unsigned int>
+    >;
+TYPED_TEST_SUITE(MatTest, MyTypes);
+TYPED_TEST(MatTest, checkDefaultConstructorDefaultInitialization)
+{
+    this->checkDefaultConstructorDefaultInitialization();
+}
+TYPED_TEST(MatTest, checkDefaultConstructorValueInitialization)
+{
+    this->checkDefaultConstructorValueInitialization();
+}
+
 TEST(MatTypesTest, initializerListConstructors)
 {
     static constexpr sofa::type::Mat<3, 3, int> A {
@@ -444,14 +517,36 @@ TEST(MatTypesTest, determinant3x3)
     EXPECT_DOUBLE_EQ(sofa::type::determinant(sofa::type::Mat<3,3,SReal>{{1, 1, 0}, {1, 0, 1}, {0, 1, 1}}), -2_sreal);
 }
 
-//TEST(MatTypesTest, determinantRectangular)
-//{
-//    const Mat<2,3,double> m232{{1., 2., 3.}, {4., 5., 6.}};
-//    EXPECT_DOUBLE_EQ(sofa::type::determinant(m232), -3.);
-//
-//    const Mat<3,2,double> m322{{1., 2.}, {3., 4.}, {5., 6.}};
-//    EXPECT_DOUBLE_EQ(sofa::type::determinant(m322), -12.);
-//}
+TEST(MatTypesTest, determinant4x4)
+{
+    EXPECT_DOUBLE_EQ(sofa::type::determinant(sofa::type::Mat<4,4,SReal>{{1,0,0,0}, {0,1,0,0}, {0,0,1,0}, {0,0,0,1}}), 1_sreal);
+    EXPECT_DOUBLE_EQ(sofa::type::determinant(sofa::type::Mat<4,4,SReal>{{2,0,0,0}, {0,3,0,0}, {0,0,4,0}, {0,0,0,5}}), 120_sreal);
+    EXPECT_DOUBLE_EQ(sofa::type::determinant(sofa::type::Mat<4,4,SReal>{{0,1,0,0}, {1,0,0,0}, {0,0,1,0}, {0,0,0,1}}), -1_sreal);
+    EXPECT_DOUBLE_EQ(sofa::type::determinant(sofa::type::Mat<4,4,SReal>{{1,0,0,0}, {0,2,0,0}, {0,0,3,0}, {0,0,0,4}}), 24_sreal);
+    EXPECT_DOUBLE_EQ(sofa::type::determinant(sofa::type::Mat<4,4,SReal>{{1,3,5,9}, {1,3,1,7}, {4,3,9,7}, {5,2,0,9}}), -376_sreal);
+}
+
+TEST(MatTypesTest, determinant12x12)
+{
+    using Mat12 = sofa::type::Mat<12, 12, SReal>;
+
+    // Identity: det = 1
+    EXPECT_DOUBLE_EQ(sofa::type::determinant(Mat12::Identity()), 1_sreal);
+
+    // Diagonal matrix: det = product of diagonal entries
+    Mat12 M;
+    M.clear();
+
+    SReal expected = 1_sreal;
+    for (sofa::Size i = 0; i < 12; ++i)
+    {
+        const SReal d = static_cast<SReal>(i + 1); // 1..12
+        M(i, i) = d;
+        expected *= d;
+    }
+
+    EXPECT_DOUBLE_EQ(sofa::type::determinant(M), expected);
+}
 
 TEST(MatTypesTest, fill)
 {
