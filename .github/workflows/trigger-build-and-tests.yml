@@ -164,7 +164,7 @@ jobs:
       - name: Run when PR is opened or a commit is pushed in a PR
         if: ${{ github.event_name == 'pull_request' }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.FILTER_BUILD_ACTION_TOKEN }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           OWNER_NAME: ${{ github.event.pull_request.head.repo.owner.login }}
           PR_COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
