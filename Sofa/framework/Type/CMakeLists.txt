@@ -108,6 +108,7 @@ if(mimalloc_FOUND)
 endif()
 
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER Sofa.Framework) # IDE folder
+sofa_treat_warnings_as_errors(${PROJECT_NAME})
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
