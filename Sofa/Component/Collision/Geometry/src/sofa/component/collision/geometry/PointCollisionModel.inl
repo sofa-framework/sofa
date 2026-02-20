@@ -28,6 +28,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/component/collision/geometry/CubeCollisionModel.h>
+#include <sofa/core/behavior/SingleStateAccessor.inl>
 
 namespace sofa::component::collision::geometry
 {
@@ -35,10 +36,8 @@ namespace sofa::component::collision::geometry
 template<class DataTypes>
 PointCollisionModel<DataTypes>::PointCollisionModel()
     : d_bothSide(initData(&d_bothSide, false, "bothSide", "activate collision on both side of the point model (when surface normals are defined on these points)") )
-    , mstate(nullptr)
     , d_computeNormals(initData(&d_computeNormals, false, "computeNormals", "activate computation of normal vectors (required for some collision detection algorithms)") )
     , d_displayFreePosition(initData(&d_displayFreePosition, false, "displayFreePosition", "Display Collision Model Points free position(in green)") )
-    , l_topology(initLink("topology", "link to the topology container"))
 {
     enum_type = POINT_TYPE;
 }
@@ -53,18 +52,20 @@ template<class DataTypes>
 void PointCollisionModel<DataTypes>::init()
 {
     this->CollisionModel::init();
-    mstate = dynamic_cast< core::behavior::MechanicalState<DataTypes>* > (getContext()->getMechanicalState());
 
-    if (mstate==nullptr)
+    if (!this->isComponentStateInvalid())
     {
-        msg_error() << "PointModel requires a Vec3 Mechanical Model";
-        return;
+        this->validateMState();
     }
 
-    if (l_topology.empty())
+    if (!this->isComponentStateInvalid())
     {
-        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
-        l_topology.set(this->getContext()->getMeshTopologyLink());
+        this->validateTopology();
+    }
+
+    if (this->isComponentStateInvalid())
+    {
+        return;
     }
 
     const int npoints = mstate->getSize();
