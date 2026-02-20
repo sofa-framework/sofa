@@ -20,75 +20,25 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <sofa/component/constraint/lagrangian/solver/PreconditionnedConjugateResidual.h>
+#include <float.h>
 #include <sofa/component/constraint/lagrangian/solver/GenericConstraintSolver.h>
+#include <sofa/component/constraint/lagrangian/solver/PreconditionedConjugateResidual.h>
+#include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
-#include <sofa/core/ObjectFactory.h>
+#include <sofa/linearalgebra/FullMatrix.inl>
+#include <sofa/linearalgebra/FullVector.inl>
+
 #include <Eigen/Eigenvalues>
 
 namespace sofa::component::constraint::lagrangian::solver
 {
 
-PreconditionnedConjugateResidual::PreconditionnedConjugateResidual()
+PreconditionedConjugateResidual::PreconditionedConjugateResidual()
     : BuiltConstraintSolver()
 {}
 
-typedef std::vector<std::vector<SReal>> BufferMatrix;
-typedef std::vector<SReal> BufferVector;
-
-inline void bufferMatrixVectorMult(BufferMatrix& W, const BufferVector& vec, BufferVector& result)
-{
-    const unsigned dimension = W.size();
-    for(unsigned j=0; j< dimension ; ++j)
-    {
-        result[j] = 0;
-        for(unsigned k=0; k< dimension; ++k)
-        {
-            result[j]+= W[j][k] * vec[k];
-        }
-    }
-}
-
-inline void bufferVectorAdd(const BufferVector& vec1, const BufferVector& vec2, const SReal fact2,  BufferVector& result)
-{
-    const unsigned dimension = vec1.size();
-        for(unsigned j=0; j< dimension; ++j)
-    {
-        result[j] = vec1[j] + fact2 * vec2[j];
-    }
-}
-inline void bufferVectorAdd(const SReal* vec1, const BufferVector& vec2, const SReal fact2,  SReal *  result)
-{
-    const unsigned dimension = vec2.size();
-        for(unsigned j=0; j< dimension; ++j)
-    {
-        result[j] = vec1[j] + fact2 * vec2[j];
-    }
-}
-
-inline void bufferVectorSubtract(const BufferVector& vec1, const BufferVector& vec2, const SReal fact2,  BufferVector& result)
-{
-    const unsigned dimension = vec1.size();
-    for(unsigned j=0; j< dimension; ++j)
-    {
-        result[j] = vec1[j] - fact2 * vec2[j];
-    }
-}
-
-inline SReal bufferVectorDotProduct(const BufferVector& vec1, BufferVector& vec2)
-{
-    const unsigned dimension = vec1.size();
-    SReal result = 0;
-    for (unsigned j=0; j< dimension; ++j)
-    {
-        result += vec1[j] * vec2[j];
-    }
-    return result;
-}
-
-
-void PreconditionnedConjugateResidual::doSolve(GenericConstraintProblem * problem , SReal timeout)
+void PreconditionedConjugateResidual::doSolve(GenericConstraintProblem * problem , SReal timeout)
 {
     SCOPED_TIMER_VARNAME(gaussSeidelTimer, "PreconditionnedConjugateResidual");
 
@@ -102,40 +52,46 @@ void PreconditionnedConjugateResidual::doSolve(GenericConstraintProblem * proble
         return;
     }
 
-    SReal *dfree = problem->getDfree();
-    SReal *force = problem->getF();
-    SReal **w = problem->getW();
+    const auto & dfree = problem->dFree;
+    auto & force = problem->f;
+    const auto & W = problem->W;
     SReal tol = problem->tolerance;
-    std::vector<SReal> r(dimension);
-    std::vector<SReal> p(dimension);
-    std::vector<SReal> Wp(dimension);
-    std::vector<SReal> Wr(dimension);
-    std::vector<std::vector<SReal>> MW(dimension, std::vector<SReal>(dimension));
 
-    SReal Beta = 0.0;
+    //The use of std::vector-based matrix and vectors is motivated by the destruction
+    linearalgebra::FullVector<SReal> r(dimension);
+    linearalgebra::FullVector<SReal> p(dimension);
+    linearalgebra::FullVector<SReal> Wp(dimension);
+    linearalgebra::FullVector<SReal> Wr(dimension);
+    linearalgebra::FullMatrix<SReal> MW(dimension, dimension);
 
 
-    //Apply Jacobi preconditioner
+    // ===== BEGIN Initialization =====
+    // Initialize state (matrices/vectors) and apply Jacobi preconditioner on left and right to keep symetry
+    // This imply that the solution will be P^{-1}*x and thus should be corrected after solving.
     for(unsigned j=0; j< dimension; ++j)
     {
-        const SReal invWjj = 1.0/w[j][j];
+        const SReal invWjj = 1.0/sqrt(W[j][j]);
         for(unsigned k=0; k< dimension; ++k)
         {
-            MW[j][k] = w[j][k] * invWjj ;
+            const SReal invWkk = 1.0/sqrt(W[k][k]);
+
+            MW[j][k] = W[j][k] * invWjj * invWkk;
         }
     }
-    memcpy(r.data(), dfree, dimension*sizeof(SReal));
+
     for(unsigned j=0; j< dimension; ++j)
     {
-        const SReal invWjj = 1.0/w[j][j];
-        r[j] *= invWjj;
+        const SReal invWjj = 1.0/sqrt(W[j][j]);
+        r[j] = -dfree[j] * invWjj;
     }
 
-    memset(force, 0, dimension*sizeof(SReal));
-    std::copy_n(r.cbegin(), dimension, p.begin());
-    bufferMatrixVectorMult(MW, p, Wp);
-    bufferMatrixVectorMult(MW, r, Wr);
-    SReal rWr = bufferVectorDotProduct(r, Wr);
+    SReal Beta = 0.0;
+    memset(force.ptr(), 0, dimension*sizeof(SReal));
+    p = r;
+    Wp = MW*p;
+    Wr = MW*r;
+    SReal rWr = r.dot(Wr);
+    // ===== END Initialization =====
 
 
     SReal error=0.0;
@@ -152,27 +108,28 @@ void PreconditionnedConjugateResidual::doSolve(GenericConstraintProblem * proble
         iterCount ++;
         bool constraintsAreVerified = true;
 
-        error=0.0;
 
         // Alpha computation
-        const SReal alpha = rWr / bufferVectorDotProduct(Wp, Wp);
+        const SReal alpha = rWr / Wp.dot(Wp);
 
         // Unknown update
-        bufferVectorAdd(force, p, alpha, force);
+        force.eq(force, p, alpha);
 
         // Residue update
-        bufferVectorSubtract(r, Wp, alpha, r);
+        r.eq(r, Wp, -alpha);
 
         // W*residue update
-        bufferMatrixVectorMult(MW, r, Wr);
+        Wr = MW*r;
         const double oldrWr = rWr;
-        rWr = bufferVectorDotProduct(r, Wr);
+        rWr = r.dot(Wr);
 
         // Beta computation
         const SReal beta = rWr / oldrWr;
 
         // p update
-        bufferVectorAdd(r, p, beta, p);
+        p.eq(r, p, beta);
+
+        error=0.0;
 
         for(int j=0; j<dimension; ) // increment of j realized at the end of the loop
         {
@@ -202,24 +159,29 @@ void PreconditionnedConjugateResidual::doSolve(GenericConstraintProblem * proble
             break;
         }
 
-
         // W*p update
-        bufferVectorAdd(Wr, Wp, beta, Wp);
+        Wp.eq(Wr, Wp, beta);
 
+    }
+
+    //Apply preconditionner to unknown to get real force
+    for(int j=0; j<dimension; ++j)
+    {
+        force[j] /= sqrt(W[j][j]);
     }
 
     sofa::helper::AdvancedTimer::valSet("PCR iterations", problem->currentIterations);
 
-    problem->result_output(this, force, error, iterCount, convergence);
+    problem->result_output(this, force.ptr(), error, iterCount, convergence);
 
 }
 
 
 
-void registerPreconditionnedConjugateResidual(sofa::core::ObjectFactory* factory)
+void registerPreconditionedConjugateResidual(sofa::core::ObjectFactory* factory)
 {
     factory->registerObjects(core::ObjectRegistrationData("A Constraint Solver using the Linear Complementarity Problem formulation to solve Constraint based components using a Projected Jacobi iterative method")
-        .add< PreconditionnedConjugateResidual >());
+        .add< PreconditionedConjugateResidual >());
 }
 
 

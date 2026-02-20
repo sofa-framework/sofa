@@ -31,7 +31,7 @@ extern void registerBlockGaussSeidelConstraintSolver(sofa::core::ObjectFactory* 
 extern void registerUnbuiltGaussSeidelConstraintSolver(sofa::core::ObjectFactory* factory);
 extern void registerLCPConstraintSolver(sofa::core::ObjectFactory* factory);
 extern void registerImprovedJacobiConstraintSolver(sofa::core::ObjectFactory* factory);
-extern void registerPreconditionnedConjugateResidual(sofa::core::ObjectFactory* factory);
+extern void registerPreconditionedConjugateResidual(sofa::core::ObjectFactory* factory);
 
 extern "C" {
     SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
@@ -62,7 +62,7 @@ void registerObjects(sofa::core::ObjectFactory* factory)
     registerUnbuiltGaussSeidelConstraintSolver(factory);
     registerLCPConstraintSolver(factory);
     registerImprovedJacobiConstraintSolver(factory);
-    registerPreconditionnedConjugateResidual(factory);
+    registerPreconditionedConjugateResidual(factory);
 }
 
 void init()

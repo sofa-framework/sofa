@@ -26,18 +26,22 @@
 
 namespace sofa::component::constraint::lagrangian::solver
 {
-class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API PreconditionnedConjugateResidual : public BuiltConstraintSolver
+
+/**
+ * This class proposes a direct solver for constraint solving based on a preconditioned conjugate residual method
+ * the preconditioner is a diagonal preconditioner, more precisely a jacobi preconditioner.
+ */
+class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API PreconditionedConjugateResidual : public BuiltConstraintSolver
 {
 public:
-    SOFA_CLASS(PreconditionnedConjugateResidual, BuiltConstraintSolver);
+    SOFA_CLASS(PreconditionedConjugateResidual, BuiltConstraintSolver);
 
-    PreconditionnedConjugateResidual();
+    PreconditionedConjugateResidual();
 
 protected:
     /**
      * Based on paper
-     * Francu, Mihai & Moldoveanu, Florica. An Improved Jacobi Solver for Particle Simulation.
-     * VRPHYS 2014
+     * Yousef Saad. 2003. Iterative methods for sparse linear systems. Vol. 82. siam.
      **/
     virtual void doSolve(GenericConstraintProblem * problem , SReal timeout = 0.0) override;
 
