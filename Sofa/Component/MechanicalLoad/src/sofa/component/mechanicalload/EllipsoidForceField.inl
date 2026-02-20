@@ -165,7 +165,7 @@ void EllipsoidForceField<DataTypes>::addDForce(const sofa::core::MechanicalParam
 }
 
 template <class DataTypes>
-void EllipsoidForceField<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
+void EllipsoidForceField<DataTypes>::doBuildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
 {
     auto dfdx = matrix->getForceDerivativeIn(this->mstate)
                        .withRespectToPositionsIn(this->mstate);
@@ -178,7 +178,7 @@ void EllipsoidForceField<DataTypes>::buildStiffnessMatrix(core::behavior::Stiffn
 }
 
 template <class DataTypes>
-void EllipsoidForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+void EllipsoidForceField<DataTypes>::doBuildDampingMatrix(core::behavior::DampingMatrix*)
 {
     // No damping in this ForceField
 }

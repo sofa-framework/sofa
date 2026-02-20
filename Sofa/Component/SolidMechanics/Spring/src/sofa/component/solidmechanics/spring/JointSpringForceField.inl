@@ -359,7 +359,7 @@ void JointSpringForceField<DataTypes>::addDForce(const core::MechanicalParams *m
 }
 
 template <class DataTypes>
-void JointSpringForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+void JointSpringForceField<DataTypes>::doBuildDampingMatrix(core::behavior::DampingMatrix*)
 {
     // No damping in this ForceField
 }

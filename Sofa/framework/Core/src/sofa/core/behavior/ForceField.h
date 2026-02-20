@@ -55,10 +55,20 @@ public:
     typedef typename DataTypes::VecDeriv         VecDeriv;
     typedef core::objectmodel::Data<VecCoord>    DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv>    DataVecDeriv;
+
+    // Avoid warning : hidden [-Woverloaded-virtual=]
+    using BaseForceField::addForce;
+    using BaseForceField::addDForce;
+    using BaseForceField::getPotentialEnergy;
+    using BaseForceField::addKToMatrix;
+    using BaseForceField::addBToMatrix;
+    using BaseForceField::buildStiffnessMatrix;
+    using BaseForceField::buildDampingMatrix;
+
 protected:
     explicit ForceField(MechanicalState<DataTypes> *mm = nullptr);
-
     ~ForceField() override;
+    
 public:
 
     /// @name Vector operations
@@ -74,7 +84,7 @@ public:
     /// This method retrieves the force, x and v vector from the MechanicalState
     /// and call the internal addForce(const MechanicalParams*, DataVecDeriv&,const DataVecCoord&,const DataVecDeriv&)
     /// method implemented by the component.
-    void addForce(const MechanicalParams* mparams, MultiVecDerivId fId ) override;
+    void doAddForce(const MechanicalParams* mparams, MultiVecDerivId fId ) override;
 
     /// Given the current position and velocity states, update the current force
     /// vector by computing and adding the forces associated with this
@@ -99,7 +109,7 @@ public:
     /// This method retrieves the force and dx vector from the MechanicalState
     /// and call the internal addDForce(VecDeriv&,const VecDeriv&,SReal,SReal)
     /// method implemented by the component.
-    void addDForce(const MechanicalParams* mparams, MultiVecDerivId dfId ) override;
+    void doAddDForce(const MechanicalParams* mparams, MultiVecDerivId dfId ) override;
 
     /// Internal addDForce
     /// Overloaded function, usually called from the generic addDForce version.
@@ -116,7 +126,7 @@ public:
     ///
     /// This method must be implemented by the component, and is usually called
     /// by the generic ForceField::getPotentialEnergy(const MechanicalParams* mparams) method.
-    SReal getPotentialEnergy(const MechanicalParams* mparams) const override;
+    SReal doGetPotentialEnergy(const MechanicalParams* mparams) const override;
 
     virtual SReal getPotentialEnergy(const MechanicalParams* /*mparams*/, const DataVecCoord& x) const = 0;
 
@@ -126,7 +136,7 @@ public:
     /// @name Matrix operations
     /// @{
 
-    void addKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix ) override;
+    void doAddKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix ) override;
 
     /// Internal addKToMatrix
     /// Overloaded function, usually called from the generic addKToMatrix version.
@@ -140,7 +150,7 @@ public:
     /// @param offset Starting index of the submatrix to fill in the global matrix.
     virtual void addKToMatrix(sofa::linearalgebra::BaseMatrix * matrix, SReal kFact, unsigned int &offset);
 
-    void addBToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
+    void doAddBToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
 
     /** Accumulate an element matrix to a global assembly matrix. This is a helper for addKToMatrix, to accumulate each (square) element matrix in the (square) assembled matrix.
     \param bm the global assembly matrix

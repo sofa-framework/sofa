@@ -149,8 +149,8 @@ public:
 
     using Inherit1::addKToMatrix;
     void addKToMatrix(sofa::linearalgebra::BaseMatrix * matrix, SReal kFact, unsigned int &offset) override;
-    void buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix) override;
-    void buildDampingMatrix(core::behavior::DampingMatrix* /* matrices */) override {}
+    void doBuildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix) override;
+    void doBuildDampingMatrix(core::behavior::DampingMatrix* /* matrices */) override {}
 
     void computeBBox(const core::ExecParams* params, bool onlyVisible) override;
 

@@ -459,7 +459,7 @@ void TriangularFEMForceFieldOptim<DataTypes>::addKToMatrix(sofa::linearalgebra::
 }
 
 template <class DataTypes>
-void TriangularFEMForceFieldOptim<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
+void TriangularFEMForceFieldOptim<DataTypes>::doBuildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
 {
     auto dfdx = matrix->getForceDerivativeIn(this->mstate)
                        .withRespectToPositionsIn(this->mstate);
@@ -537,7 +537,7 @@ void TriangularFEMForceFieldOptim<DataTypes>::buildStiffnessMatrix(core::behavio
 }
 
 template <class DataTypes>
-void TriangularFEMForceFieldOptim<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+void TriangularFEMForceFieldOptim<DataTypes>::doBuildDampingMatrix(core::behavior::DampingMatrix*)
 {
     // No damping in this ForceField
 }

@@ -55,6 +55,14 @@ protected:
     BaseForceField();
     ~BaseForceField() override = default;
 
+    virtual void doAddForce(const MechanicalParams* mparams, MultiVecDerivId fId ) = 0;
+    virtual void doAddDForce(const MechanicalParams* mparams, MultiVecDerivId dfId ) = 0;
+    virtual SReal doGetPotentialEnergy( const MechanicalParams* mparams ) const = 0;
+    virtual void doAddKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix ) = 0;
+    virtual void doAddBToMatrix(const MechanicalParams* /*mparams*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/ ) { };
+    virtual void doBuildStiffnessMatrix(StiffnessMatrix* matrix);
+    virtual void doBuildDampingMatrix(DampingMatrix* matrix);
+
 private:
     BaseForceField(const BaseForceField& n) = delete;
     BaseForceField& operator=(const BaseForceField& n) = delete;
@@ -63,6 +71,15 @@ private:
 public:
     /// @name Vector operations
     /// @{
+
+    /**
+     * !!! WARNING since v26.06 !!!
+     * 
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doAddForce" internally,
+     * which is the method to override from now on.
+     * 
+     **/
 
     /// \brief Given the current position and velocity states, update the current force
     /// vector by computing and adding the forces associated with this
@@ -85,8 +102,17 @@ public:
     /// - if \a mparams->energy() is true, the method computes and internally stores the potential energy,
     /// which will be subsequently returned by method getPotentialEnergy()
     /// \param fId the output vector of forces
-    virtual void addForce(const MechanicalParams* mparams, MultiVecDerivId fId )=0;
+    virtual void addForce(const MechanicalParams* mparams, MultiVecDerivId fId ) final;
 
+    /**
+     * !!! WARNING since v26.06 !!!
+     * 
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doAddDForce" internally,
+     * which is the method to override from now on.
+     * 
+     **/
+    
     /// \brief Compute the force derivative given a small displacement from the
     /// position and velocity used in the previous call to addForce().
     ///
@@ -106,7 +132,7 @@ public:
     /// - \a mparams->kFactor() is the coefficient for stiffness contributions (i.e. DOFs term in the ODE)
     /// - \a mparams->readDx() input vector
     /// \param dfId the output vector
-    virtual void addDForce(const MechanicalParams* mparams, MultiVecDerivId dfId )=0;
+    virtual void addDForce(const MechanicalParams* mparams, MultiVecDerivId dfId ) final;
 
     /// \brief Accumulate the contribution of M, B, and/or K matrices multiplied
     /// by the dx vector with the given coefficients.
@@ -132,30 +158,56 @@ public:
     /// \param dfId the output vector
     virtual void addMBKdx(const MechanicalParams* mparams, MultiVecDerivId dfId);
 
+    /**
+     * !!! WARNING since v26.06 !!!
+     * 
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doGetPotentialEnergy" internally,
+     * which is the method to override from now on.
+     * 
+     **/
+
     /// \brief Get the potential energy associated to this ForceField during the
     /// last call of addForce( const MechanicalParams* mparams );
     ///
     /// Used to estimate the total energy of the system by some
     /// post-stabilization techniques.
-    virtual SReal getPotentialEnergy( const MechanicalParams* mparams = mechanicalparams::defaultInstance() ) const=0;
+    virtual SReal getPotentialEnergy( const MechanicalParams* mparams = mechanicalparams::defaultInstance() ) const final;
     /// @}
 
 
     /// @name Matrix operations
     /// @{
 
+    /**
+     * !!! WARNING since v26.06 !!!
+     * 
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doAddKToMatrix" internally,
+     * which is the method to override from now on.
+     * 
+     **/
+
     /// \brief Compute the system matrix corresponding to \f$ k K \f$
     ///
     /// \param mparams \a mparams->kFactor() is the coefficient for stiffness contributions (i.e. DOFs term in the ODE)
     /// \param matrix the matrix to add the result to
-    virtual void addKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix ) = 0;
+    virtual void addKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix ) final;
+
+    /**
+     * !!! WARNING since v26.06 !!!
+     * 
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doAddBToMatrix" internally,
+     * which is the method to override from now on.
+     * 
+     **/
 
     /// \brief Compute the system matrix corresponding to \f$ b B \f$
     ///
     /// \param mparams \a sofa::core::mechanicalparams::bFactor(mparams) is the coefficient for damping contributions (i.e. first derivatives term in the ODE)
     /// \param matrix the matrix to add the result to
-    virtual void addBToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix );
-    //virtual void addBToMatrix(sofa::linearalgebra::BaseMatrix * matrix, SReal bFact, unsigned int &offset);
+    virtual void addBToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix ) final;
 
     /// \brief Compute the system matrix corresponding to \f$ m M + b B + k K \f$
     ///
@@ -165,11 +217,28 @@ public:
     /// - \a mparams->kFactor() is the coefficient for stiffness contributions (i.e. DOFs term in the ODE)
     /// \param matrix the matrix to add the result to
     virtual void addMBKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix );
-    ////virtual void addMBKToMatrix(sofa::linearalgebra::BaseMatrix * matrix, SReal mFact, SReal bFact, SReal kFact, unsigned int &offset);
 
-    virtual void buildStiffnessMatrix(StiffnessMatrix* matrix);
+    /**
+     * !!! WARNING since v26.06 !!!
+     * 
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doBuildStiffnessMatrix" internally,
+     * which is the method to override from now on.
+     * 
+     **/
 
-    virtual void buildDampingMatrix(DampingMatrix* matrix);
+    virtual void buildStiffnessMatrix(StiffnessMatrix* matrix) final;
+
+    /**
+     * !!! WARNING since v26.06 !!!
+     * 
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doBuildDampingMatrix" internally,
+     * which is the method to override from now on.
+     * 
+     **/
+
+    virtual void buildDampingMatrix(DampingMatrix* matrix) final;
 
     /// @}
 

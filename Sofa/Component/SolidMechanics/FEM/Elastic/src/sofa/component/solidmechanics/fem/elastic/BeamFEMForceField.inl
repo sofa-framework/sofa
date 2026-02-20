@@ -578,7 +578,7 @@ void BeamFEMForceField<DataTypes>::addKToMatrix(sofa::linearalgebra::BaseMatrix 
 }
 
 template <class DataTypes>
-void BeamFEMForceField<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
+void BeamFEMForceField<DataTypes>::doBuildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
 {
     auto dfdx = matrix->getForceDerivativeIn(this->mstate)
                        .withRespectToPositionsIn(this->mstate);
@@ -678,7 +678,7 @@ void BeamFEMForceField<DataTypes>::buildStiffnessMatrix(core::behavior::Stiffnes
 }
 
 template <class DataTypes>
-void BeamFEMForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+void BeamFEMForceField<DataTypes>::doBuildDampingMatrix(core::behavior::DampingMatrix*)
 {
     // No damping in this ForceField
 }

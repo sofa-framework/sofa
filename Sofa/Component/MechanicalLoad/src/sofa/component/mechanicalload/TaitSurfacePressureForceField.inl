@@ -318,7 +318,7 @@ void TaitSurfacePressureForceField<DataTypes>::addDForce(const core::MechanicalP
 }
 
 template<class DataTypes>
-void TaitSurfacePressureForceField<DataTypes>::addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix )
+void TaitSurfacePressureForceField<DataTypes>::doAddKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix )
 {
     core::behavior::BlocMatrixWriter<MatBloc> writer;
     writer.addKToMatrix(this, mparams, matrix->getMatrix(this->mstate));
@@ -398,7 +398,7 @@ void TaitSurfacePressureForceField<DataTypes>::addKToMatrixT(const core::Mechani
 }
 
 template <class DataTypes>
-void TaitSurfacePressureForceField<DataTypes>::buildStiffnessMatrix(sofa::core::behavior::StiffnessMatrix* matrix)
+void TaitSurfacePressureForceField<DataTypes>::doBuildStiffnessMatrix(sofa::core::behavior::StiffnessMatrix* matrix)
 {
     const auto mstateSize = this->mstate->getSize();
     const helper::ReadAccessor< Data< SeqTriangles > > pressureTriangles = d_pressureTriangles;
@@ -456,7 +456,7 @@ void TaitSurfacePressureForceField<DataTypes>::buildStiffnessMatrix(sofa::core::
 }
 
 template <class DataTypes>
-void TaitSurfacePressureForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+void TaitSurfacePressureForceField<DataTypes>::doBuildDampingMatrix(core::behavior::DampingMatrix*)
 {
     // No damping in this ForceField
 }

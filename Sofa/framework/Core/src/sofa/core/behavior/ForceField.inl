@@ -41,7 +41,7 @@ template<class DataTypes>
 ForceField<DataTypes>::~ForceField() = default;
 
 template<class DataTypes>
-void ForceField<DataTypes>::addForce(const MechanicalParams* mparams, MultiVecDerivId fId )
+void ForceField<DataTypes>::doAddForce(const MechanicalParams* mparams, MultiVecDerivId fId )
 {
     auto mstate = this->mstate.get();
     if (mparams && mstate)
@@ -51,7 +51,7 @@ void ForceField<DataTypes>::addForce(const MechanicalParams* mparams, MultiVecDe
 }
 
 template<class DataTypes>
-void ForceField<DataTypes>::addDForce(const MechanicalParams* mparams, MultiVecDerivId dfId )
+void ForceField<DataTypes>::doAddDForce(const MechanicalParams* mparams, MultiVecDerivId dfId )
 {
     if (mparams && this->mstate)
     {
@@ -77,7 +77,7 @@ void ForceField<DataTypes>::addDForce(const MechanicalParams* mparams, MultiVecD
 }
 
 template<class DataTypes>
-SReal ForceField<DataTypes>::getPotentialEnergy(const MechanicalParams* mparams) const
+SReal ForceField<DataTypes>::doGetPotentialEnergy(const MechanicalParams* mparams) const
 {
     if (this->mstate)
         return getPotentialEnergy(mparams, *mparams->readX(this->mstate.get()));
@@ -85,7 +85,7 @@ SReal ForceField<DataTypes>::getPotentialEnergy(const MechanicalParams* mparams)
 }
 
 template<class DataTypes>
-void ForceField<DataTypes>::addKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix )
+void ForceField<DataTypes>::doAddKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix )
 {
     if (this->mstate)
     {
@@ -99,19 +99,14 @@ void ForceField<DataTypes>::addKToMatrix(const MechanicalParams* mparams, const 
 template<class DataTypes>
 void ForceField<DataTypes>::addKToMatrix(sofa::linearalgebra::BaseMatrix * /*mat*/, SReal /*kFact*/, unsigned int &/*offset*/)
 {
-    static int i=0;
-    if (i < 10)
-    {
-        // This function is called for implicit time integration where stiffness matrix assembly is expected
-        msg_warning() << "This force field does not support stiffness matrix assembly. "
-                         "Therefore, the forces are integrated explicitly. "
-                         "To support stiffness matrix assembly, addKToMatrix must be implemented.";
-        i++;
-    }
+    // This function is called for implicit time integration where stiffness matrix assembly is expected
+    msg_warning() << "This force field does not support stiffness matrix assembly. "
+                        "Therefore, the forces are integrated explicitly. "
+                        "To support stiffness matrix assembly, addKToMatrix must be implemented.";
 }
 
 template<class DataTypes>
-void ForceField<DataTypes>::addBToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+void ForceField<DataTypes>::doAddBToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     if (this->mstate)
     {

@@ -338,12 +338,12 @@ void TetrahedralTensorMassForceField<DataTypes>::initNeighbourhoodPoints() {}
 
 
 template <class DataTypes>
-SReal  TetrahedralTensorMassForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /* mparams */) const
+SReal  TetrahedralTensorMassForceField<DataTypes>::getPotentialEnergy(const sofa::core::MechanicalParams* mparams, const DataVecCoord& pos) const
 {
     SCOPED_TIMER("getPotentialEnergy");
+    SOFA_UNUSED(mparams);
 
-    const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
-
+    sofa::helper::ReadAccessor< Data< VecCoord > > x = pos;
     SReal energy=0;
 
     unsigned int v0,v1;
@@ -447,7 +447,7 @@ void TetrahedralTensorMassForceField<DataTypes>::addDForce(const core::Mechanica
 }
 
 template <class DataTypes>
-void TetrahedralTensorMassForceField<DataTypes>::buildStiffnessMatrix(sofa::core::behavior::StiffnessMatrix* matrix)
+void TetrahedralTensorMassForceField<DataTypes>::doBuildStiffnessMatrix(sofa::core::behavior::StiffnessMatrix* matrix)
 {
     auto dfdx = matrix->getForceDerivativeIn(this->mstate)
                        .withRespectToPositionsIn(this->mstate);
@@ -474,7 +474,7 @@ void TetrahedralTensorMassForceField<DataTypes>::buildStiffnessMatrix(sofa::core
 }
 
 template <class DataTypes>
-void TetrahedralTensorMassForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+void TetrahedralTensorMassForceField<DataTypes>::doBuildDampingMatrix(core::behavior::DampingMatrix*)
 {
     // No damping in this ForceField
 }

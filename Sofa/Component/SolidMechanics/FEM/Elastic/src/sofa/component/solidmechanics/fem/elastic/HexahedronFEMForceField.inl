@@ -1144,7 +1144,7 @@ void HexahedronFEMForceField<DataTypes>::addKToMatrix(sofa::linearalgebra::BaseM
 }
 
 template<class DataTypes>
-void HexahedronFEMForceField<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
+void HexahedronFEMForceField<DataTypes>::doBuildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
 {
     sofa::Index e { 0 }; //index of the element in the topology
 
