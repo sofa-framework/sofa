@@ -33,7 +33,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <Geomagic/GeomagicVisualModel.h>
 
-#include <sofa/simulation/MainTaskSchedulerFactory.h>
+#include <sofa/simulation/task/MainTaskSchedulerFactory.h>
 
 #include <chrono>
 #include <thread>
