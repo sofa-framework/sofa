@@ -36,18 +36,19 @@
     <!-- Rendering settings -->
     <VisualStyle name="RenderingOptions" displayFlags="showVisualModels" />
     <BackgroundSetting color="0.8 0.8 0.8 1" />
+    <TaskSchedulerSettings name="TaskSchedulerSettings" nbThreads="8" />
 
     <!-- Define Mouse left click as a Bilateral Lagrangian constraint -->
     <ConstraintAttachButtonSetting /> <!-- The presence of this component sets the mouse interaction to Lagrangian-based constraints at the GUI launch -->
 
     <!-- Header of the simulation -->
-    <FreeMotionAnimationLoop name="FreeMotionAnimationLoop" parallelODESolving="true" parallelCollisionDetectionAndFreeMotion="true" />
+    <FreeMotionAnimationLoop name="FreeMotionAnimationLoop" parallelODESolving="true" parallelCollisionDetectionAndFreeMotion="true"  />
     <BlockGaussSeidelConstraintSolver maxIterations="20" _multithreading='true' tolerance="1.0e-4"/>
 
     <!-- Definition of the collision pipeline -->
     <CollisionPipeline name="CollisionPipeline" />
-    <ParallelBruteForceBroadPhase name="CollisionBroadPhase" />
-    <ParallelBVHNarrowPhase name="CollisionNarrowPhase" nbThreads="7"/>
+    <ParallelBruteForceBroadPhase name="CollisionBroadPhase"  />
+    <ParallelBVHNarrowPhase name="CollisionNarrowPhase" />
     <CollisionResponse name="CollisionResponse" response="FrictionContactConstraint" responseParams="mu=0.5" />
     <NewProximityIntersection name="Intersection" alarmDistance="0.3" contactDistance="0.02" />
 
@@ -56,7 +57,7 @@
     <Node name="Logo" >
         <EulerImplicitSolver name="EulerImplicitScheme" />
         <ConstantSparsityPatternSystem template="CompressedRowSparseMatrixd" name="A" printLog="false"/>
-        <EigenSimplicialLDLT name="LDLTLinearSolver" template="CompressedRowSparseMatrixd"  parallelInverseProduct="true" nbThreads="3"  linearSystem="@A"/>
+        <EigenSimplicialLDLT name="LDLTLinearSolver" template="CompressedRowSparseMatrixd"  parallelInverseProduct="true"   linearSystem="@A"/>
 
         <MeshVTKLoader name="LogoLoader" filename="mesh/SofaScene/Logo.vtk"  />
         <TetrahedronSetTopologyContainer name="Container" src="@LogoLoader" />
@@ -115,7 +116,7 @@
     <Node name="S" >
         <EulerImplicitSolver name="EulerImplicitScheme" rayleighMass="0.1" rayleighStiffness="0.1" />
         <ConstantSparsityPatternSystem template="CompressedRowSparseMatrixd" name="A" printLog="false"/>
-        <EigenSimplicialLDLT name="LDLLinearSolver" template="CompressedRowSparseMatrixd" _parallelInverseProduct="true" linearSystem="@A"/>
+        <EigenSimplicialLDLT name="LDLLinearSolver" template="CompressedRowSparseMatrixd" parallelInverseProduct="true" linearSystem="@A"/>
 
         <MeshVTKLoader name="SLoader" filename="mesh/SofaScene/S.vtk"  />
         <TetrahedronSetTopologyContainer name="Container" src="@SLoader" />
@@ -163,7 +164,7 @@
 
         <EulerImplicitSolver name="EulerImplicitScheme" />
         <ConstantSparsityPatternSystem template="CompressedRowSparseMatrixd" name="A" printLog="false"/>
-        <EigenSimplicialLDLT name="precond" template="CompressedRowSparseMatrixd"  parallelInverseProduct="true" nbThreads="3"  linearSystem="@A"/>
+        <EigenSimplicialLDLT name="precond" template="CompressedRowSparseMatrixd"  parallelInverseProduct="true" linearSystem="@A"/>
 
         <MechanicalObject name="ODOF" position="@HexaTopology.position"  />
         <UniformMass name="Mass" totalMass="0.1" />
@@ -214,7 +215,7 @@
     <Node name="A" >
         <EulerImplicitSolver name="EulerImplicitScheme" />
         <ConstantSparsityPatternSystem template="CompressedRowSparseMatrixd" name="A" printLog="false"/>
-        <EigenSimplicialLDLT name="LDLLinearSolver" template="CompressedRowSparseMatrixd"  parallelInverseProduct="true" nbThreads="3"  linearSystem="@A"/>
+        <EigenSimplicialLDLT name="LDLLinearSolver" template="CompressedRowSparseMatrixd"  parallelInverseProduct="true" linearSystem="@A"/>
 
 
         <MeshVTKLoader name="ALoader" filename="mesh/SofaScene/A.vtk"  />
