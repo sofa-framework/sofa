@@ -39,7 +39,7 @@ protected:
     sofa::simulation::TaskScheduler* m_taskScheduler { nullptr };
 
     TaskSchedulerUser();
-    void initTaskScheduler();
+    void initTaskScheduler(bool forceInit = false);
 
     void reinitTaskScheduler();
     void stopTaskSchduler();

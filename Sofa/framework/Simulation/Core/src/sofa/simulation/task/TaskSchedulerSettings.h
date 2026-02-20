@@ -22,7 +22,7 @@ public:
 
     void init()
     {
-        initTaskScheduler();
+        initTaskScheduler(true);
     }
 
     void reInit()
