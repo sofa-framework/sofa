@@ -26,8 +26,8 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
-#include <sofa/linearalgebra/FullMatrix.inl>
-#include <sofa/linearalgebra/FullVector.inl>
+#include <sofa/linearalgebra/FullMatrix.h>
+#include <sofa/linearalgebra/FullVector.h>
 
 #include <Eigen/Eigenvalues>
 

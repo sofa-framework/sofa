@@ -28,8 +28,9 @@ namespace sofa::component::constraint::lagrangian::solver
 {
 
 /**
- * This class proposes a direct solver for constraint solving based on a preconditioned conjugate residual method
- * the preconditioner is a diagonal preconditioner, more precisely a jacobi preconditioner.
+ * This class proposes a direct solver for constraint solving based on a preconditioned conjugate
+ * residual method the preconditioner is a diagonal preconditioner, more precisely a jacobi
+ * preconditioner.
  */
 class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API PreconditionedConjugateResidual : public BuiltConstraintSolver
 {
