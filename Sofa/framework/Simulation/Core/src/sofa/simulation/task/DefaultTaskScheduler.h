@@ -124,7 +124,7 @@ private:
             
     unsigned m_workerThreadCount;
             
-    volatile bool m_workerThreadsIdle;
+    std::atomic<bool> m_workerThreadsIdle;
             
     bool m_isClosing;
             
