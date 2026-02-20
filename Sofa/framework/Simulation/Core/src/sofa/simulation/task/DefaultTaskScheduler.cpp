@@ -94,7 +94,7 @@ void DefaultTaskScheduler::init(const unsigned int NbThread )
 {
     if ( m_isInitialized )
     {
-        if ( (NbThread == m_threadCount) || (NbThread==0 && m_threadCount==GetHardwareThreadsCount()) )
+        if ( (!m_isDefaultInitialized && (NbThread < m_threadCount)) || (NbThread==0 && m_threadCount==GetHardwareThreadsCount()) )
         {
             return;
         }
@@ -107,6 +107,8 @@ void DefaultTaskScheduler::init(const unsigned int NbThread )
 void DefaultTaskScheduler::start(const unsigned int NbThread )
 {
     stop();
+
+    m_isDefaultInitialized = (NbThread == 0);
 
     m_isClosing = false;
     m_workerThreadsIdle = true;
