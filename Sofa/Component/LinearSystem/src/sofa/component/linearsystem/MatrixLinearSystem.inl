@@ -863,6 +863,11 @@ void MatrixLinearSystem<TMatrix, TVector>::associateLocalMatrixTo(
             dmsg_fatal() << "Local matrix is invalid";
         }
 
+        if (std::abs(localMatrix->m_cachedFactor - factor) > std::numeric_limits<SReal>::epsilon())
+        {
+            localMatrix->setFactor(factor);
+        }
+
         const auto matrixSize1 = mstate0->getMatrixSize();
         const auto matrixSize2 = mstate1->getMatrixSize();
         if (!isAnyMapped) // mapped components don't add their contributions directly into the global matrix
