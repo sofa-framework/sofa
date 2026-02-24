@@ -124,7 +124,7 @@ TEST(VecTest, toVecN)
     constexpr IDontKnowWhatVecItIs autotypevec_ref {1u, 2u, 3u, 4u, 5u, 0u, 0u};
     
     EXPECT_TRUE(autotypevec == autotypevec_ref);
-    
+
     // test toVec3
     constexpr sofa::type::Vec3 vec3r = sofa::type::toVec3(vec5i);
     constexpr sofa::type::Vec3 vec3r_ref {1.0_sreal, 2.0_sreal, 3.0_sreal};
@@ -136,4 +136,416 @@ TEST(VecTest, toVecN)
     constexpr sofa::type::Vec<9, long double> vec9ld_ref {1.0L, 2.0L, 3.0L, 4.0L, 5.0L, 42.0L, 42.0L, 42.0L, 42.0L};
     EXPECT_TRUE(vec9ld == vec9ld_ref);
     
+}
+
+TEST(VecTest, NOINITConstructor)
+{
+    sofa::type::Vec<3, double> v(sofa::type::NOINIT);
+    [[maybe_unused]] auto x = v[0];
+    EXPECT_NO_THROW(v[1] = 5.0);
+}
+
+TEST(VecTest, singleElementConstructor)
+{
+    sofa::type::Vec<1, double> v(5.0);
+    EXPECT_EQ(v[0], 5.0);
+}
+
+TEST(VecTest, multiElementConstructor)
+{
+    sofa::type::Vec<3, double> v(1.0, 2.0, 3.0);
+    EXPECT_EQ(v[0], 1.0);
+    EXPECT_EQ(v[1], 2.0);
+    EXPECT_EQ(v[2], 3.0);
+}
+
+TEST(VecTest, copyConstructor)
+{
+    sofa::type::Vec<3, double> v1(1.0, 2.0, 3.0);
+    sofa::type::Vec<3, double> v2(v1);
+    EXPECT_EQ(v2[0], 1.0);
+    EXPECT_EQ(v2[1], 2.0);
+    EXPECT_EQ(v2[2], 3.0);
+}
+
+TEST(VecTest, moveConstructor)
+{
+    sofa::type::Vec<3, double> v1(1.0, 2.0, 3.0);
+    sofa::type::Vec<3, double> v2(std::move(v1));
+    EXPECT_EQ(v2[0], 1.0);
+    EXPECT_EQ(v2[1], 2.0);
+    EXPECT_EQ(v2[2], 3.0);
+}
+
+TEST(VecTest, constructorFromFixedArray)
+{
+    sofa::type::fixed_array<double, 3> arr = {1.0, 2.0, 3.0};
+    sofa::type::Vec<3, double> v(arr);
+    EXPECT_EQ(v[0], 1.0);
+    EXPECT_EQ(v[1], 2.0);
+    EXPECT_EQ(v[2], 3.0);
+}
+
+TEST(VecTest, constructorFromDifferentSize)
+{
+    sofa::type::Vec<3, double> v1(1.0, 2.0, 3.0);
+    sofa::type::Vec<5, double> v2(v1);
+    EXPECT_EQ(v2[0], 1.0);
+    EXPECT_EQ(v2[1], 2.0);
+    EXPECT_EQ(v2[2], 3.0);
+    EXPECT_EQ(v2[3], 0.0);
+    EXPECT_EQ(v2[4], 0.0);
+}
+
+TEST(VecTest, setMethod)
+{
+    sofa::type::Vec<3, double> v;
+    v.set(1.0, 2.0, 3.0);
+    EXPECT_EQ(v[0], 1.0);
+    EXPECT_EQ(v[1], 2.0);
+    EXPECT_EQ(v[2], 3.0);
+}
+
+TEST(VecTest, setFromOtherVec)
+{
+    sofa::type::Vec<3, double> v1(1.0, 2.0, 3.0);
+    sofa::type::Vec<5, double> v;
+    v.set(v1);
+    EXPECT_EQ(v[0], 1.0);
+    EXPECT_EQ(v[1], 2.0);
+    EXPECT_EQ(v[2], 3.0);
+}
+
+TEST(VecTest, elementAccessOperatorParen)
+{
+    sofa::type::Vec<3, double> v(1.0, 2.0, 3.0);
+    EXPECT_EQ(v(0), 1.0);
+    EXPECT_EQ(v(1), 2.0);
+    EXPECT_EQ(v(2), 3.0);
+}
+
+TEST(VecTest, accessorsXYZW)
+{
+    sofa::type::Vec<4, double> v(1.0, 2.0, 3.0, 4.0);
+    EXPECT_EQ(v.x(), 1.0);
+    EXPECT_EQ(v.y(), 2.0);
+    EXPECT_EQ(v.z(), 3.0);
+    EXPECT_EQ(v.w(), 4.0);
+
+    const sofa::type::Vec<4, double> cv(1.0, 2.0, 3.0, 4.0);
+    EXPECT_EQ(cv.x(), 1.0);
+    EXPECT_EQ(cv.y(), 2.0);
+    EXPECT_EQ(cv.z(), 3.0);
+    EXPECT_EQ(cv.w(), 4.0);
+}
+
+TEST(VecTest, pointerAccess)
+{
+    sofa::type::Vec<3, double> v(1.0, 2.0, 3.0);
+    const double* p = v.ptr();
+    EXPECT_EQ(p[0], 1.0);
+    EXPECT_EQ(p[1], 2.0);
+    EXPECT_EQ(p[2], 3.0);
+
+    double* np = v.ptr();
+    np[0] = 10.0;
+    EXPECT_EQ(v[0], 10.0);
+}
+
+TEST(VecTest, dataAccess)
+{
+    sofa::type::Vec<3, double> v(1.0, 2.0, 3.0);
+    const double* p = v.data();
+    EXPECT_EQ(p[0], 1.0);
+    EXPECT_EQ(p[1], 2.0);
+    EXPECT_EQ(p[2], 3.0);
+}
+
+TEST(VecTest, fill)
+{
+    sofa::type::Vec<3, double> v;
+    v.fill(5.0);
+    EXPECT_EQ(v[0], 5.0);
+    EXPECT_EQ(v[1], 5.0);
+    EXPECT_EQ(v[2], 5.0);
+}
+
+TEST(VecTest, assign)
+{
+    sofa::type::Vec<3, double> v;
+    v.assign(7.0);
+    EXPECT_EQ(v[0], 7.0);
+    EXPECT_EQ(v[1], 7.0);
+    EXPECT_EQ(v[2], 7.0);
+}
+
+TEST(VecTest, clear)
+{
+    sofa::type::Vec<3, double> v(5.0, 6.0, 7.0);
+    v.clear();
+    EXPECT_EQ(v[0], 0.0);
+    EXPECT_EQ(v[1], 0.0);
+    EXPECT_EQ(v[2], 0.0);
+}
+
+TEST(VecTest, addition)
+{
+    sofa::type::Vec<3, double> v1(1.0, 2.0, 3.0);
+    sofa::type::Vec<3, double> v2(4.0, 5.0, 6.0);
+    auto v3 = v1 + v2;
+    EXPECT_EQ(v3[0], 5.0);
+    EXPECT_EQ(v3[1], 7.0);
+    EXPECT_EQ(v3[2], 9.0);
+}
+
+TEST(VecTest, additionAssignment)
+{
+    sofa::type::Vec<3, double> v1(1.0, 2.0, 3.0);
+    sofa::type::Vec<3, double> v2(4.0, 5.0, 6.0);
+    v1 += v2;
+    EXPECT_EQ(v1[0], 5.0);
+    EXPECT_EQ(v1[1], 7.0);
+    EXPECT_EQ(v1[2], 9.0);
+}
+
+TEST(VecTest, subtraction)
+{
+    sofa::type::Vec<3, double> v1(5.0, 7.0, 9.0);
+    sofa::type::Vec<3, double> v2(4.0, 5.0, 6.0);
+    auto v3 = v1 - v2;
+    EXPECT_EQ(v3[0], 1.0);
+    EXPECT_EQ(v3[1], 2.0);
+    EXPECT_EQ(v3[2], 3.0);
+}
+
+TEST(VecTest, subtractionAssignment)
+{
+    sofa::type::Vec<3, double> v1(5.0, 7.0, 9.0);
+    sofa::type::Vec<3, double> v2(4.0, 5.0, 6.0);
+    v1 -= v2;
+    EXPECT_EQ(v1[0], 1.0);
+    EXPECT_EQ(v1[1], 2.0);
+    EXPECT_EQ(v1[2], 3.0);
+}
+
+TEST(VecTest, scalarMultiplication)
+{
+    sofa::type::Vec<3, double> v(1.0, 2.0, 3.0);
+    auto r = v * 2.0;
+    EXPECT_EQ(r[0], 2.0);
+    EXPECT_EQ(r[1], 4.0);
+    EXPECT_EQ(r[2], 6.0);
+}
+
+TEST(VecTest, scalarMultiplicationAssignment)
+{
+    sofa::type::Vec<3, double> v(1.0, 2.0, 3.0);
+    v *= 2.0;
+    EXPECT_EQ(v[0], 2.0);
+    EXPECT_EQ(v[1], 4.0);
+    EXPECT_EQ(v[2], 6.0);
+}
+
+TEST(VecTest, scalarDivision)
+{
+    sofa::type::Vec<3, double> v(2.0, 4.0, 6.0);
+    auto r = v / 2.0;
+    EXPECT_EQ(r[0], 1.0);
+    EXPECT_EQ(r[1], 2.0);
+    EXPECT_EQ(r[2], 3.0);
+}
+
+TEST(VecTest, scalarDivisionAssignment)
+{
+    sofa::type::Vec<3, double> v(2.0, 4.0, 6.0);
+    v /= 2.0;
+    EXPECT_EQ(v[0], 1.0);
+    EXPECT_EQ(v[1], 2.0);
+    EXPECT_EQ(v[2], 3.0);
+}
+
+TEST(VecTest, dotProduct)
+{
+    sofa::type::Vec<3, double> v1(1.0, 2.0, 3.0);
+    sofa::type::Vec<3, double> v2(4.0, 5.0, 6.0);
+    EXPECT_EQ(v1 * v2, 32.0);
+}
+
+TEST(VecTest, linearProduct)
+{
+    sofa::type::Vec<3, double> v1(2.0, 4.0, 6.0);
+    sofa::type::Vec<3, double> v2(3.0, 5.0, 7.0);
+    auto r = v1.linearProduct(v2);
+    EXPECT_EQ(r[0], 6.0);
+    EXPECT_EQ(r[1], 20.0);
+    EXPECT_EQ(r[2], 42.0);
+}
+
+TEST(VecTest, linearDivision)
+{
+    sofa::type::Vec<3, double> v1(6.0, 10.0, 14.0);
+    sofa::type::Vec<3, double> v2(2.0, 5.0, 7.0);
+    auto r = v1.linearDivision(v2);
+    EXPECT_EQ(r[0], 3.0);
+    EXPECT_EQ(r[1], 2.0);
+    EXPECT_EQ(r[2], 2.0);
+}
+
+TEST(VecTest, norm2)
+{
+    sofa::type::Vec<3, double> v(3.0, 4.0, 0.0);
+    EXPECT_EQ(v.norm2(), 25.0);
+}
+
+TEST(VecTest, norm)
+{
+    sofa::type::Vec<3, double> v(3.0, 4.0, 0.0);
+    EXPECT_NEAR(v.norm(), 5.0, 1e-10);
+}
+
+TEST(VecTest, normalize)
+{
+    sofa::type::Vec<3, double> v(3.0, 4.0, 0.0);
+    bool result = v.normalize();
+    EXPECT_TRUE(result);
+    EXPECT_NEAR(v[0], 0.6, 1e-6);
+    EXPECT_NEAR(v[1], 0.8, 1e-6);
+    EXPECT_NEAR(v.norm(), 1.0, 1e-10);
+}
+
+TEST(VecTest, normalizeTooSmall)
+{
+    sofa::type::Vec<3, double> v1(1e-6, 2e-6, 3e-6);
+    sofa::type::Vec<3, double> v2 = v1;
+    bool result = v1.normalize(); // threshold is really too small by default
+    EXPECT_TRUE(result);
+    
+    bool result2 = v2.normalize(1e-5); // more reasonable threshold
+    EXPECT_FALSE(result2);
+}
+
+TEST(VecTest, normalized)
+{
+    sofa::type::Vec<3, double> v(3.0, 4.0, 0.0);
+    auto n = v.normalized();
+    EXPECT_NEAR(n[0], 0.6, 1e-6);
+    EXPECT_NEAR(n[1], 0.8, 1e-6);
+}
+
+TEST(VecTest, isNormalized)
+{
+    sofa::type::Vec<3, double> v(1.0, 0.0, 0.0);
+    EXPECT_TRUE(v.isNormalized());
+    
+    sofa::type::Vec<3, double> v2(2.0, 0.0, 0.0);
+    EXPECT_FALSE(v2.isNormalized());
+}
+
+TEST(VecTest, normalizeWithFailsafe)
+{
+    sofa::type::Vec<3, double> v1(1e-8, 2e-8, 3e-8);
+    sofa::type::Vec<3, double> v2 = v1;
+    sofa::type::Vec<3, double> failsafe(7.0, 8.0, 9.0);
+    v1.normalize(failsafe); // threshold is really too small by default
+    EXPECT_NE(v1[0], 7.0);
+    EXPECT_NE(v1[1], 8.0);
+    EXPECT_NE(v1[2], 9.0);
+    
+    v2.normalize(failsafe, 1e-5); // more reasonable threshold
+    EXPECT_EQ(v2[0], 7.0);
+    EXPECT_EQ(v2[1], 8.0);
+    EXPECT_EQ(v2[2], 9.0);
+}
+
+TEST(VecTest, crossProduct)
+{
+    sofa::type::Vec<3, double> a(1.0, 0.0, 0.0);
+    sofa::type::Vec<3, double> b(0.0, 1.0, 0.0);
+    auto c = sofa::type::cross(a, b);
+    EXPECT_EQ(c[0], 0.0);
+    EXPECT_EQ(c[1], 0.0);
+    EXPECT_EQ(c[2], 1.0);
+}
+
+TEST(VecTest, sum)
+{
+    sofa::type::Vec<3, double> v(1.0, 2.0, 3.0);
+    EXPECT_EQ(v.sum(), 6.0);
+}
+
+TEST(VecTest, equalityWithThreshold)
+{
+    sofa::type::Vec<3, double> v1(1.0000001, 2.0000001, 3.0000001);
+    sofa::type::Vec<3, double> v2(1.0, 2.0, 3.0);
+    EXPECT_TRUE(v1 == v2);
+}
+
+TEST(VecTest, inequalityWithThreshold)
+{
+    sofa::type::Vec<3, double> v1(1.1, 2.1, 3.1);
+    sofa::type::Vec<3, double> v2(1.0, 2.0, 3.0);
+    EXPECT_TRUE(v1 != v2);
+}
+
+TEST(VecTest, iterators)
+{
+    sofa::type::Vec<3, double> v(1.0, 2.0, 3.0);
+    auto it = v.begin();
+    EXPECT_EQ(*it, 1.0);
+    ++it;
+    EXPECT_EQ(*it, 2.0);
+    ++it;
+    EXPECT_EQ(*it, 3.0);
+}
+
+TEST(VecTest, constIterators)
+{
+    const sofa::type::Vec<3, double> v(1.0, 2.0, 3.0);
+    auto it = v.begin();
+    EXPECT_EQ(*it, 1.0);
+    ++it;
+    EXPECT_EQ(*it, 2.0);
+    ++it;
+    EXPECT_EQ(*it, 3.0);
+}
+
+TEST(VecTest, front)
+{
+    sofa::type::Vec<3, double> v(5.0, 6.0, 7.0);
+    EXPECT_EQ(v.front(), 5.0);
+}
+
+TEST(VecTest, back)
+{
+    sofa::type::Vec<3, double> v(5.0, 6.0, 7.0);
+    EXPECT_EQ(v.back(), 7.0);
+}
+
+TEST(VecTest, getSubVector)
+{
+    sofa::type::Vec<5, double> v(1.0, 2.0, 3.0, 4.0, 5.0);
+    sofa::type::Vec<2, double> sub;
+    v.getsub(1, sub);
+    EXPECT_EQ(sub[0], 2.0);
+    EXPECT_EQ(sub[1], 3.0);
+}
+
+TEST(VecTest, getSubScalar)
+{
+    sofa::type::Vec<3, double> v(5.0, 6.0, 7.0);
+    double scalar;
+    v.getsub(1, scalar);
+    EXPECT_EQ(scalar, 6.0);
+}
+
+TEST(VecTest, staticSize)
+{
+    constexpr sofa::Size s = sofa::type::Vec<3, double>::static_size;
+    EXPECT_EQ(s, 3u);
+}
+
+TEST(VecTest, sizeMethod)
+{
+    constexpr sofa::Size s = sofa::type::Vec<5, double>::size();
+    EXPECT_EQ(s, 5);
 }

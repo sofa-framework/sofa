@@ -33,6 +33,7 @@
 #endif
 #include <cstring>
 #include <iostream>
+#include <memory>
 
 #include <sofa/helper/logging/Messaging.h>
 
@@ -192,18 +193,15 @@ std::string SetDirectory::GetProcessFullPath(const char* filename)
 #elif defined (__APPLE__)
     if (!filename || filename[0]!='/')
     {
-        char* path = new char[4096];
-        uint32_t size;
-        if ( _NSGetExecutablePath( path, &size ) != 0)
+        uint32_t size = 4096;
+        std::unique_ptr<char[]> path(new char[size]);
+        if ( _NSGetExecutablePath( path.get(), &size ) != 0)
         {
             //realloc
-            delete [] path;
-            path = new char[size];
-            _NSGetExecutablePath( path, &size );
+            path.reset(new char[size]);
+            _NSGetExecutablePath( path.get(), &size );
         }
-        std::string finalPath(path);
-        delete [] path;
-        return finalPath;
+        return std::string(path.get());
     }
 #endif
 

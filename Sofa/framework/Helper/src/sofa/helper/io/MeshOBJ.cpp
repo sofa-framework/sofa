@@ -25,7 +25,12 @@
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/Locale.h>
 #include <sofa/helper/logging/Messaging.h>
+#include <sofa/type/hardening.h>
+
 #include <istream>
+#include <cstdlib>
+#include <cerrno>
+#include <climits>
 
 
 namespace sofa::helper::io
@@ -168,7 +173,18 @@ void MeshOBJ::readOBJ (std::istream &stream, const std::string &filename)
                     }
 
                     if (!tmp.empty())
-                        vtn[j] = atoi(tmp.c_str()) - 1; // -1 because the numerotation begins at 1 and a vector begins at 0
+                    {
+                        int val{};
+                        if(sofa::type::hardening::safeStrToInt(tmp, val ))
+                        {
+                            vtn[j] = val - 1;
+                        }
+                        else
+                        {
+                            msg_error("MeshOBJ") << "Invalid index " << tmp;
+                            vtn[j] = -1;
+                        }
+                    }
                 }
 
                 vIndices.push_back(vtn[0]);
