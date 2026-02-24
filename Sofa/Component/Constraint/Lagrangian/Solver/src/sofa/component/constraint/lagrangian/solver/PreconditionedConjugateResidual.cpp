@@ -85,7 +85,6 @@ void PreconditionedConjugateResidual::doSolve(GenericConstraintProblem * problem
         r[j] = -dfree[j] * invWjj;
     }
 
-    SReal Beta = 0.0;
     memset(force.ptr(), 0, dimension*sizeof(SReal));
     p = r;
     Wp = MW*p;
