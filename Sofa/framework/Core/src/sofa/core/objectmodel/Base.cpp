@@ -686,13 +686,22 @@ int Base::getInstanciationSourceFilePos() const
 void Base::saveDataIn(BaseSnapshot::SnapshotObject& snapshot) const
 {
     const auto& dataFields = this->getDataFields();
-    
+    std::cout << "Type of dataFields : "<< this->getTypeName() << std::endl;
     for (const auto& data : dataFields)
     {
+        // std::cout << "data type : " << data->getValueTypeString() << std::endl;
         BaseSnapshot::DataInfo dataInfo;
         dataInfo.name = data->getName();
         dataInfo.type = data->getValueTypeString();
         dataInfo.value = data->getValueString();
+        std::string replaceValue = "nan";
+        std::string newValue = "0";
+        std::size_t pos = dataInfo.value.find(replaceValue);
+        while (pos != std::string::npos)
+        {
+            dataInfo.value.replace(pos, replaceValue.length(),newValue);
+            pos = dataInfo.value.find(replaceValue, pos + newValue.length());
+        }
         snapshot.m_dataContainer.push_back(dataInfo);
     }
 }
@@ -703,6 +712,7 @@ void Base::saveLinksIn(BaseSnapshot::SnapshotObject& snapshot) const
 
     for (const auto& link : links)
     {
+        // std::cout << "link type : " << link->getValueTypeString() << std::endl;
         BaseSnapshot::LinkInfo linkInfo;
         linkInfo.name = link->getName();
         linkInfo.type = link->getValueTypeString();
@@ -757,29 +767,20 @@ Base::findSnapshotObject(const std::shared_ptr<BaseSnapshot::SnapshotNode>& pare
 
 void Base::loadSnapshot(const std::shared_ptr<BaseSnapshot::SnapshotObject>& snapshotObject)
 {
-    // const auto& dataFields = this->getDataFields();
-    // for (const auto& data : dataFields)
-    // {
-    //     auto* dataTest = dynamic_cast<Data*>(data->getData());
-    //     if (dataTest)
-    //     {
-    //         auto value = dataTest->getValue();
-    //         std::cout << "name : " << value->getName() << std::endl;
-    //         std::cout << "type : " << value->getValueTypeString() << std::endl;
-    //     }
-    // }
-
-
     for (const auto& dataInfo : snapshotObject->m_dataContainer)
     {
-        std::cout << "dataType : " << dataInfo.type << std::endl;
-        if(dataInfo.name == "projectionMatrix" || dataInfo.name == "loadedPlugins")
+        auto data = this->findData(dataInfo.name);
+        if (data)
         {
-            std::cout << "projectionMatrix or loadedPlugins found" << std::endl;
-        }
-        else
-        {
-            this->parseField(dataInfo.name, dataInfo.value);
+            if( dataInfo.name == "loadedPlugins"|| dataInfo.name == "filename" || dataInfo.name == "texturename")
+            {
+                std::cout << "projectionMatrix or loadedPlugins or filename or texturename or newField found" << std::endl;
+            }
+            else
+            {
+                data->read(dataInfo.value);
+            }
+
         }
     }
 

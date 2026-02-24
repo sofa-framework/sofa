@@ -28,13 +28,23 @@
 #include <memory>
 #include <iostream>
 #include <sofa/core/config.h>
-#include <boost/serialization/base_object.hpp>
+
+#include <sofa/core/objectmodel/Data.h>
 
 namespace sofa::core::objectmodel
 {
 
 class SOFA_CORE_API BaseSnapshot
 {
+private:
+
+
+public:
+
+    // Add containers which have all datas from a simulation in BaseData forms
+    std::vector<std::shared_ptr<BaseData>> m_baseDataContainers;
+    
+
 public:
     struct DataInfo
     {

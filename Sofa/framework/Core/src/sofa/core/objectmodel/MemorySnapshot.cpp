@@ -47,20 +47,20 @@ void MemorySnapshot::exportTo(const std::string filename)
 
 void MemorySnapshot::importSnapshot(const std::string filename)
 {
-    std::cout << "importSnapshot possible" << std::endl;
-    if(m_graphRoot != nullptr)
-    {
-        std::cout << m_graphRoot->m_name << std::endl;
+    //std::cout << "importSnapshot possible" << std::endl;
+    // if(m_graphRoot != nullptr)
+    // {
+    //     std::cout << m_graphRoot->m_name << std::endl;
 
-        for (auto& element : m_graphRoot->components)
-        {
-            std::cout << "  Component name : " << element.m_name << std::endl;
-        }
-        for (auto& element : m_graphRoot->children)
-        {
-            std::cout << "  Child name : " << element->m_name << std::endl;
-        }
-    }
+    //     for (auto& element : m_graphRoot->components)
+    //     {
+    //         std::cout << "  Component name : " << element.m_name << std::endl;
+    //     }
+    //     for (auto& element : m_graphRoot->children)
+    //     {
+    //         std::cout << "  Child name : " << element->m_name << std::endl;
+    //     }
+    // }
 }
 
 void MemorySnapshot::importFrom(const std::string filename)
