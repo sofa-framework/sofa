@@ -53,7 +53,7 @@ FullMatrix<Real>::FullMatrix(Real* p, Index nbRow, Index nbCol)
 
 template<class Real>
 FullMatrix<Real>::FullMatrix(Real* p, Index nbRow, Index nbCol, Index pitch)
-    // : data(p), nRow(nbRow), nCol(nbCol), pitch(pitch), allocsize(-nbRow*pitch)
+    : data(p), nRow(nbRow), nCol(nbCol), pitch(pitch), allocsize(-nbRow*pitch)
 {
 }
 

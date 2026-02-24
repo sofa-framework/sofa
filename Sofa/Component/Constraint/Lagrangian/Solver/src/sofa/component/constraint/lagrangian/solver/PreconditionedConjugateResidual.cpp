@@ -42,6 +42,11 @@ void PreconditionedConjugateResidual::doSolve(GenericConstraintProblem * problem
 {
     SCOPED_TIMER_VARNAME(gaussSeidelTimer, "PreconditionedConjugateResidual");
 
+    if (!problem)
+    {
+        msg_error()<<"GenericConstraintProblem is NULL, the constraints will not be solved.";
+        return;
+    }
 
     const int dimension = problem->getDimension();
 
