@@ -40,7 +40,7 @@ PreconditionedConjugateResidual::PreconditionedConjugateResidual()
 
 void PreconditionedConjugateResidual::doSolve(GenericConstraintProblem * problem , SReal timeout)
 {
-    SCOPED_TIMER_VARNAME(gaussSeidelTimer, "PreconditionnedConjugateResidual");
+    SCOPED_TIMER_VARNAME(gaussSeidelTimer, "PreconditionedConjugateResidual");
 
 
     const int dimension = problem->getDimension();
@@ -66,8 +66,8 @@ void PreconditionedConjugateResidual::doSolve(GenericConstraintProblem * problem
 
 
     // ===== BEGIN Initialization =====
-    // Initialize state (matrices/vectors) and apply Jacobi preconditioner on left and right to keep symetry
-    // This imply that the solution will be P^{-1}*x and thus should be corrected after solving.
+    // Initialize the state (matrices/vectors) and apply the Jacobi preconditioner on left and right to keep symmetry
+    // This implies that the solution will be P^{-1}*x and thus should be corrected after solving.
     for(unsigned j=0; j< dimension; ++j)
     {
         const SReal invWjj = 1.0/sqrt(W[j][j]);
@@ -164,7 +164,7 @@ void PreconditionedConjugateResidual::doSolve(GenericConstraintProblem * problem
 
     }
 
-    //Apply preconditionner to unknown to get real force
+    // Apply the preconditioner to unknown to get real force
     for(int j=0; j<dimension; ++j)
     {
         force[j] /= sqrt(W[j][j]);
