@@ -115,7 +115,10 @@ set(HEADER_FILES
     ${SOFACUDA_SOURCE_DIR}/component/constraint/projective/CudaLinearMovementProjectiveConstraint.inl
     ${SOFACUDA_SOURCE_DIR}/component/collision/response/contact/CudaPenalityContactForceField.h
     ${SOFACUDA_SOURCE_DIR}/component/collision/response/contact/CudaPenalityContactForceField.inl
-  
+
+    ### Visual
+    ${SOFACUDA_SOURCE_DIR}/component/visual/CudaVisualModel.h
+    ${SOFACUDA_SOURCE_DIR}/component/visual/CudaVisualModel.inl
 )
 
 set(SOURCE_FILES
@@ -195,6 +198,10 @@ set(SOURCE_FILES
     ${SOFACUDA_SOURCE_DIR}/component/constraint/lagrangian/correction/CudaLinearSolverConstraintCorrection.cpp
     ${SOFACUDA_SOURCE_DIR}/component/constraint/lagrangian/correction/CudaPrecomputedConstraintCorrection.cpp
     ${SOFACUDA_SOURCE_DIR}/component/constraint/lagrangian/correction/CudaUncoupledConstraintCorrection.cpp
+
+    ### Visual 
+    ${SOFACUDA_SOURCE_DIR}/component/visual/CudaVisualModel.cpp
+  
 )
 
 set(CUDA_SOURCES
@@ -240,29 +247,16 @@ set(CUDA_SOURCES
     ### Constraints
     ${SOFACUDA_SOURCE_DIR}/component/constraint/projective/CudaFixedProjectiveConstraint.cu
     ${SOFACUDA_SOURCE_DIR}/component/constraint/projective/CudaLinearMovementProjectiveConstraint.cu
+
+    ### Visual
+    ${SOFACUDA_SOURCE_DIR}/component/visual/CudaVisualModel.cu
     
     
 )
 
-sofa_find_package(Sofa.GL QUIET)
-if(NOT Sofa.GL_FOUND)
-    message(WARNING "Sofa.GL is not active.")
-    message("OpenGL-related code won't be enabled (Sharing OpenGL buffers with CUDA)")
-else()
-    list(APPEND HEADER_FILES
-        ${SOFACUDACORE_SOURCE_DIR}/sofa/gpu/cuda/CudaVisualModel.h
-        ${SOFACUDACORE_SOURCE_DIR}/sofa/gpu/cuda/CudaVisualModel.inl
-    )
-    list(APPEND SOURCE_FILES
-       ${SOFACUDACORE_SOURCE_DIR}/sofa/gpu/cuda/CudaVisualModel.cpp
-    )
-    list(APPEND CUDA_SOURCES
-        ${SOFACUDACORE_SOURCE_DIR}/sofa/gpu/cuda/CudaVisualModel.cu
-    )
-endif()
-
 set(README_FILES README.md)
 
+sofa_find_package(Sofa.GL REQUIRED) # mandatory for gl_interop, buffers....
 sofa_find_package(Sofa.Component.Mass REQUIRED)
 sofa_find_package(Sofa.Component.SolidMechanics.FEM.Elastic REQUIRED)
 sofa_find_package(Sofa.Component.SolidMechanics.FEM.HyperElastic REQUIRED)
@@ -362,17 +356,14 @@ target_link_libraries(${PROJECT_NAME}
     Sofa.Component.MechanicalLoad
 )
 
-target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17 cuda_std_17)
+target_link_libraries(${PROJECT_NAME} Sofa.GL)
 target_link_libraries(${PROJECT_NAME} CUDA::cudart)
 
-if(Sofa.GL_FOUND)
-    target_link_libraries(${PROJECT_NAME} Sofa.GL)
-endif()
+target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17 cuda_std_17)
 
 if(Sofa.GUI_FOUND)
     target_link_libraries(${PROJECT_NAME} Sofa.GUI)
 endif()
-
 
 if(Sofa.Qt_FOUND)
     target_link_libraries(${PROJECT_NAME} Sofa.Qt)
