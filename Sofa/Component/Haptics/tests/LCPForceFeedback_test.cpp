@@ -251,7 +251,7 @@ bool LCPForceFeedback_test::test_Collision()
     m_LCPFFBack = instruNode->get<LCPRig>(instruNode->SearchDown);
     
     // Force only 2 iteration max for ci tests
-    m_LCPFFBack->d_solverMaxIt.setValue(2);
+    m_LCPFFBack->d_solverMaxIt.setValue(4);
 
     // Check components access
     EXPECT_NE(meca, nullptr);
@@ -354,7 +354,7 @@ bool LCPForceFeedback_test::test_multiThread()
     m_LCPFFBack = instruNode->get<LCPRig>(instruNode->SearchDown);
     
     // Force only 2 iteration max for ci tests
-    m_LCPFFBack->d_solverMaxIt.setValue(2);
+    m_LCPFFBack->d_solverMaxIt.setValue(4);
 
     // Check components access
     EXPECT_NE(meca, nullptr);
