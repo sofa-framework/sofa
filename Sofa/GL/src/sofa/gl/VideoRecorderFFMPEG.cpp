@@ -31,6 +31,7 @@
 #include <sofa/helper/system/FileSystem.h>
 using sofa::helper::system::FileSystem;
 #include <sofa/helper/Utils.h>
+#include <sofa/type/hardening.h>
 
 namespace sofa::gl
 {
@@ -114,7 +115,7 @@ bool VideoRecorderFFMPEG::init(const std::string& ffmpeg_exec_filepath, const st
        << " -pix_fmt " << codec // yuv420p " // " yuv444p "
        << " -crf 17 "
        << " -vf vflip "
-       << "\"" << m_filename << "\""; // @TODO C++14 : replace with std::quoted
+       << "\"" << sofa::type::hardening::escapeForShell(m_filename) << "\"";
 
     const std::string& command_line = ss.str();
 
@@ -194,8 +195,8 @@ void VideoRecorderFFMPEG::finishVideo()
     pclose(m_ffmpeg);
 #endif
     
-    delete m_ffmpegBuffer;
-    delete m_viewportBuffer;
+    delete[] m_ffmpegBuffer;
+    delete[] m_viewportBuffer;
     std::cout << m_filename << " written" << std::endl;
 }
 
@@ -209,7 +210,7 @@ std::string VideoRecorderFFMPEG::findFilename(const unsigned int framerate, cons
     do
     {
         ++c;
-        sprintf(buf, "%04d", c);
+        snprintf(buf, sizeof(buf), "%04d", c);
         filename = m_prefix;
         filename += "_r" + std::to_string(framerate) + "_";
         //filename += +"_b" + std::to_string(bitrate) + "_";

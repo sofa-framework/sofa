@@ -24,11 +24,14 @@
 #include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/type/vector.h>
+#include <sofa/type/hardening.h>
+
 #include <nlohmann/json.hpp>
 
 #include <iomanip>
 #include <cmath>
 #include <cstdlib>
+#include <cerrno>
 #include <stack>
 #include <algorithm>
 #include <cctype>
@@ -92,7 +95,13 @@ public:
         if (!val || !*val)
             val = getenv("SOFA_TIMER_ALL");
         if (val && *val)
-            interval = atoi(val);
+        {
+            if(!sofa::type::hardening::safeStrToInt(std::string(val), interval))
+            {
+                msg_error("AdvancedTimer") << "Timer " << id << " : error while parsing " << val;
+                interval = 0;
+            }
+        }
         else
             interval = 0;
         defaultInterval = (interval != 0) ? interval : DEFAULT_INTERVAL;
