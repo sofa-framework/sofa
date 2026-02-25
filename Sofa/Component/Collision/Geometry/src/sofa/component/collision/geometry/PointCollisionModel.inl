@@ -35,7 +35,7 @@ namespace sofa::component::collision::geometry
 template<class DataTypes>
 PointCollisionModel<DataTypes>::PointCollisionModel()
     : d_bothSide(initData(&d_bothSide, false, "bothSide", "activate collision on both side of the point model (when surface normals are defined on these points)") )
-    , mstate(nullptr)
+    , m_mstate(nullptr)
     , d_computeNormals(initData(&d_computeNormals, false, "computeNormals", "activate computation of normal vectors (required for some collision detection algorithms)") )
     , d_displayFreePosition(initData(&d_displayFreePosition, false, "displayFreePosition", "Display Collision Model Points free position(in green)") )
     , l_topology(initLink("topology", "link to the topology container"))
@@ -53,9 +53,9 @@ template<class DataTypes>
 void PointCollisionModel<DataTypes>::init()
 {
     this->CollisionModel::init();
-    mstate = dynamic_cast< core::behavior::MechanicalState<DataTypes>* > (getContext()->getMechanicalState());
+    m_mstate = dynamic_cast< core::behavior::MechanicalState<DataTypes>* > (getContext()->getMechanicalState());
 
-    if (mstate==nullptr)
+    if (m_mstate==nullptr)
     {
         msg_error() << "PointModel requires a Vec3 Mechanical Model";
         return;
@@ -67,7 +67,7 @@ void PointCollisionModel<DataTypes>::init()
         l_topology.set(this->getContext()->getMeshTopologyLink());
     }
 
-    const int npoints = mstate->getSize();
+    const int npoints = m_mstate->getSize();
     resize(npoints);
     if (d_computeNormals.getValue()) updateNormals();
 }
@@ -115,7 +115,7 @@ template<class DataTypes>
 void PointCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
 {
     CubeCollisionModel* cubeModel = createPrevious<CubeCollisionModel>();
-    const auto npoints = mstate->getSize();
+    const auto npoints = m_mstate->getSize();
     bool updated = false;
     if (npoints != size)
     {
@@ -130,7 +130,7 @@ void PointCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
     cubeModel->resize(size);
     if (!empty())
     {
-        //VecCoord& x =mstate->read(core::vec_id::read_access::position)->getValue();
+        //VecCoord& x =m_mstate->read(core::vec_id::read_access::position)->getValue();
         const SReal distance = this->d_contactDistance.getValue();
         for (sofa::Size i=0; i<size; i++)
         {
@@ -146,7 +146,7 @@ template<class DataTypes>
 void PointCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, ContinuousIntersectionTypeFlag continuousIntersectionFlag , int maxDepth)
 {
     CubeCollisionModel* cubeModel = createPrevious<CubeCollisionModel>();
-    const auto npoints = mstate->getSize();
+    const auto npoints = m_mstate->getSize();
     bool updated = false;
     if (npoints != size)
     {
@@ -162,8 +162,8 @@ void PointCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, Con
     cubeModel->resize(size);
     if (!empty())
     {
-        //VecCoord& x =mstate->read(core::vec_id::read_access::position)->getValue();
-        //VecDeriv& v = mstate->read(core::vec_id::read_access::velocity)->getValue();
+        //VecCoord& x =m_mstate->read(core::vec_id::read_access::position)->getValue();
+        //VecDeriv& v = m_mstate->read(core::vec_id::read_access::velocity)->getValue();
         const SReal distance = (SReal)this->d_contactDistance.getValue();
         for (sofa::Size i=0; i<size; i++)
         {
@@ -190,12 +190,12 @@ void PointCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, Con
 template<class DataTypes>
 void PointCollisionModel<DataTypes>::updateNormals()
 {
-    const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
+    const VecCoord& x = this->m_mstate->read(core::vec_id::read_access::position)->getValue();
     auto n = x.size();
-    normals.resize(n);
+    m_normals.resize(n);
     for (sofa::Index i=0; i<n; ++i)
     {
-        normals[i].clear();
+        m_normals[i].clear();
     }
     core::topology::BaseMeshTopology* mesh = l_topology.get();
     if (mesh->getNbTetrahedra()+mesh->getNbHexahedra() > 0)
@@ -210,10 +210,10 @@ void PointCollisionModel<DataTypes>::updateNormals()
                 const Coord& p2 = x[e[1]];
                 const Coord& p3 = x[e[2]];
                 const Coord& p4 = x[e[3]];
-                Coord& n1 = normals[e[0]];
-                Coord& n2 = normals[e[1]];
-                Coord& n3 = normals[e[2]];
-                Coord& n4 = normals[e[3]];
+                Coord& n1 = m_normals[e[0]];
+                Coord& n2 = m_normals[e[1]];
+                Coord& n3 = m_normals[e[2]];
+                Coord& n4 = m_normals[e[3]];
                 Coord n;
                 n = cross(p3-p1,p2-p1); n.normalize();
                 n1 += n;
@@ -246,9 +246,9 @@ void PointCollisionModel<DataTypes>::updateNormals()
                 const Coord& p1 = x[e[0]];
                 const Coord& p2 = x[e[1]];
                 const Coord& p3 = x[e[2]];
-                Coord& n1 = normals[e[0]];
-                Coord& n2 = normals[e[1]];
-                Coord& n3 = normals[e[2]];
+                Coord& n1 = m_normals[e[0]];
+                Coord& n2 = m_normals[e[1]];
+                Coord& n3 = m_normals[e[2]];
                 Coord n;
                 n = cross(p2-p1,p3-p1); n.normalize();
                 n1 += n;
@@ -266,10 +266,10 @@ void PointCollisionModel<DataTypes>::updateNormals()
                 const Coord& p2 = x[e[1]];
                 const Coord& p3 = x[e[2]];
                 const Coord& p4 = x[e[3]];
-                Coord& n1 = normals[e[0]];
-                Coord& n2 = normals[e[1]];
-                Coord& n3 = normals[e[2]];
-                Coord& n4 = normals[e[3]];
+                Coord& n1 = m_normals[e[0]];
+                Coord& n2 = m_normals[e[1]];
+                Coord& n3 = m_normals[e[2]];
+                Coord& n4 = m_normals[e[3]];
                 Coord n;
                 n = cross(p3-p1,p4-p2); n.normalize();
                 n1 += n;
@@ -281,11 +281,11 @@ void PointCollisionModel<DataTypes>::updateNormals()
     }
     for (sofa::Index i=0; i<n; ++i)
     {
-        const SReal l = normals[i].norm();
+        const SReal l = m_normals[i].norm();
         if (l > 1.0e-3)
-            normals[i] *= 1/l;
+            m_normals[i] *= 1/l;
         else
-            normals[i].clear();
+            m_normals[i].clear();
     }
 }
 
@@ -297,7 +297,7 @@ void PointCollisionModel<DataTypes>::computeBBox(const core::ExecParams* params,
     if( onlyVisible && !sofa::core::visual::VisualParams::defaultInstance()->displayFlags().getShowCollisionModels())
         return;
 
-    const auto npoints = mstate->getSize();
+    const auto npoints = m_mstate->getSize();
     if (npoints != size)
         return;
 
@@ -332,7 +332,7 @@ void PointCollisionModel<DataTypes>::drawCollisionModel(const core::visual::Visu
     }
 
     // Check topological modifications
-    const auto npoints = mstate->getSize();
+    const auto npoints = m_mstate->getSize();
     if (npoints != size) return;
 
     std::vector<type::Vec3> pointsP;
@@ -343,10 +343,10 @@ void PointCollisionModel<DataTypes>::drawCollisionModel(const core::visual::Visu
         if (p.isActive())
         {
             pointsP.push_back(p.p());
-            if (i < sofa::Size(normals.size()))
+            if (i < sofa::Size(m_normals.size()))
             {
                 pointsL.push_back(p.p());
-                pointsL.push_back(p.p() + normals[i] * 0.1f);
+                pointsL.push_back(p.p() + m_normals[i] * 0.1f);
             }
         }
     }
