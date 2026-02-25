@@ -281,12 +281,6 @@ if(Sofa.GUI_FOUND)
     list(APPEND SOURCE_FILES ${SOFACUDACORE_SOURCE_DIR}/sofa/gpu/gui/CudaMouseInteraction.cpp)
 endif()
 
-sofa_find_package(Sofa.Qt QUIET)
-if(Sofa.Qt_FOUND)
-    list(APPEND HEADER_FILES ${SOFACUDACORE_SOURCE_DIR}/sofa/gpu/gui/CudaDataWidget.h)
-    list(APPEND SOURCE_FILES ${SOFACUDACORE_SOURCE_DIR}/sofa/gpu/gui/CudaDataWidget.cpp)
-endif()
-
 option(SOFACUDA_VERBOSE_PTXAS "???" OFF)
 
 option(SOFACUDA_CUBLAS "Activate cublas support in CUDA (requires SOFACUDA_DOUBLE)." OFF)
@@ -367,10 +361,6 @@ target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17 cuda_std_17)
 
 if(Sofa.GUI_FOUND)
     target_link_libraries(${PROJECT_NAME} Sofa.GUI)
-endif()
-
-if(Sofa.Qt_FOUND)
-    target_link_libraries(${PROJECT_NAME} Sofa.Qt)
 endif()
 
 if(SOFACUDA_CUBLAS)
