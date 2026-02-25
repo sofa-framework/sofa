@@ -118,7 +118,8 @@ public:
     void buildStiffnessMatrix(core::behavior::StiffnessMatrix* /*matrix*/) override;
     void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) final;
 
-    SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override { msg_warning() << "Method getPotentialEnergy not implemented yet."; return 0.0; }
+    using Inherit1::getPotentialEnergy;
+    SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 

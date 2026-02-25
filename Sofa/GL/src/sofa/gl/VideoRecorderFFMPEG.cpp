@@ -31,6 +31,7 @@
 #include <sofa/helper/system/FileSystem.h>
 using sofa::helper::system::FileSystem;
 #include <sofa/helper/Utils.h>
+#include <sofa/type/hardening.h>
 
 namespace sofa::gl
 {
@@ -114,7 +115,7 @@ bool VideoRecorderFFMPEG::init(const std::string& ffmpeg_exec_filepath, const st
        << " -pix_fmt " << codec // yuv420p " // " yuv444p "
        << " -crf 17 "
        << " -vf vflip "
-       << "\"" << m_filename << "\""; // @TODO C++14 : replace with std::quoted
+       << "\"" << sofa::type::hardening::escapeForShell(m_filename) << "\"";
 
     const std::string& command_line = ss.str();
 

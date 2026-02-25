@@ -117,6 +117,7 @@ public:
 
     void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) final;
 
+    using Inherit1::getPotentialEnergy;
     SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override;
     void draw(const core::visual::VisualParams* vparams) override;
 

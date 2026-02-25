@@ -72,4 +72,25 @@ bool safeStrToScalar(const std::string& s, ScalarType& result)
     return true;
 }
 
+/// Escape a string for safe use in a shell double-quoted context.
+/// Escapes: backslash, backtick, dollar, double-quote, and newline.
+inline std::string escapeForShell(const std::string& input)
+{
+    std::string result;
+    result.reserve(input.size() + 16);
+    for (const char c : input)
+    {
+        switch (c)
+        {
+        case '\\': result += "\\\\"; break;
+        case '"':  result += "\\\""; break;
+        case '$':  result += "\\$";  break;
+        case '`':  result += "\\`";  break;
+        case '\n': result += " ";    break;  // Replace newline with space
+        default:   result += c;      break;
+        }
+    }
+    return result;
+}
+
 } //namespace sofa::type::hardening

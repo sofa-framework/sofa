@@ -40,6 +40,7 @@ namespace sofa::component::constraint::lagrangian::model
 // Every ContactParams should implement hasTangentialComponent
 struct BaseContactParams
 {
+    virtual ~BaseContactParams() = default;
     virtual bool hasTangentialComponent() const = 0;
 };
 
