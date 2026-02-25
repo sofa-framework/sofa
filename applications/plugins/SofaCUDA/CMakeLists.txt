@@ -318,14 +318,17 @@ if(SOFACUDA_DOUBLE)
 endif()
 
 
-option(SOFACUDA_DOUBLE_PRECISE "Enable double-precision for sqrt/div... (requires compute capability >= 2)" OFF)
 # Note: with SOFA_GPU_CUDA_PRECISE and SOFA_GPU_CUDA_DOUBLE you get IEEE
 # 754-compliant floating point operations for addition and multiplication only.
+option(SOFACUDA_PRECISE "Use IEEE 754-compliant floating point operations." OFF)
+option(SOFACUDA_DOUBLE_PRECISE "Enable double-precision for sqrt/div..." OFF)
+if(SOFACUDA_PRECISE)
+    set(SOFA_GPU_CUDA_PRECISE 1)       # #cmakedefine
+endif()
 if(SOFACUDA_DOUBLE_PRECISE)
     set(SOFA_GPU_CUDA_DOUBLE_PRECISE 1)       # #cmakedefine
 endif()
 
-option(SOFACUDA_PRECISE "Use IEEE 754-compliant floating point operations." OFF)
 
 sofa_find_package(CUDAToolkit 11.0 REQUIRED)
 
