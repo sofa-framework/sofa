@@ -13,11 +13,11 @@ set(SOURCE_FILES
 )
 
 sofa_find_package(SofaCUDA REQUIRED)
-sofa_find_package(Sofa.GUI REQUIRED)
+sofa_find_package(Sofa.GUI.Common REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} SofaCUDA)
-target_link_libraries(${PROJECT_NAME} Sofa.GUI)
+target_link_libraries(${PROJECT_NAME} Sofa.GUI.Common)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
