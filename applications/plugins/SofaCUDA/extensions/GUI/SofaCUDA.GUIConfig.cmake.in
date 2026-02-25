@@ -3,7 +3,7 @@
 @PACKAGE_GUARD@
 @PACKAGE_INIT@
 
-find_package(Sofa.GUI QUIET REQUIRED)
+find_package(Sofa.GUI.Common QUIET REQUIRED)
 find_package(SofaCUDA QUIET REQUIRED)
 
 check_required_components(SofaCUDA.GUI)
