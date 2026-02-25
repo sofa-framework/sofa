@@ -772,15 +772,10 @@ void Base::loadSnapshot(const std::shared_ptr<BaseSnapshot::SnapshotObject>& sna
         auto data = this->findData(dataInfo.name);
         if (data)
         {
-            if( dataInfo.name == "loadedPlugins"|| dataInfo.name == "filename" || dataInfo.name == "texturename")
-            {
-                std::cout << "projectionMatrix or loadedPlugins or filename or texturename or newField found" << std::endl;
-            }
-            else
+            if( dataInfo.name != "loadedPlugins"&& dataInfo.name != "filename" && dataInfo.name != "texturename" && dataInfo.name != "pluginName")
             {
                 data->read(dataInfo.value);
             }
-
         }
     }
 

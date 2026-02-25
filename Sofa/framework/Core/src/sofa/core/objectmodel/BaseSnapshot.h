@@ -67,6 +67,23 @@ public:
         std::vector<LinkInfo> m_linkContainer;
         //void* m_internalState { nullptr };
 
+
+        virtual void clear()
+        {
+            m_dataContainer.clear();
+            m_linkContainer.clear();
+        }
+
+        void push_back(const DataInfo& data)
+        {
+            m_dataContainer.push_back(data);
+        }
+
+        void push_back(const LinkInfo& link)
+        {
+            m_linkContainer.push_back(link);
+        }
+
         SnapshotObject() = default;
         explicit SnapshotObject(const std::string& name) : m_name(name){}
 
@@ -77,7 +94,25 @@ public:
     {
         std::vector<SnapshotObject> components;
         std::vector<std::shared_ptr<SnapshotNode>> children;
-        
+
+        void clear()
+        {
+            components.clear();
+            children.clear();  
+            m_dataContainer.clear();
+            m_linkContainer.clear();
+        }
+
+        void push_back(const std::shared_ptr<SnapshotNode>& child)
+        {
+            children.push_back(child);
+        }
+
+        void push_back(const SnapshotObject& component)
+        {
+            components.push_back(component);
+        }
+
         SnapshotNode() = default;
         SnapshotNode(const std::string& name) : SnapshotObject(name) {}
         SnapshotNode(const SnapshotObject& obj) : SnapshotObject(obj) {}

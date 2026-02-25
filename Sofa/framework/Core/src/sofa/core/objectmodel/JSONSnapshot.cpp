@@ -122,62 +122,135 @@ void JSONSnapshot::importSnapshot(const std::string filename)
 }
 
 
-// void from_json(const nlohmann::json& j,BaseSnapshot::DataInfo& di )
-// {
-//     j.at("name").get_to(di.name);
-//     j.at("type").get_to(di.type);
-//     j.at("value").get_to(di.value);
+void from_json(const nlohmann::json& j, BaseSnapshot::DataInfo& di)
+{
+    di.name = j.value("name", "");
+    di.type = j.value("type", "");
+    di.value = j.value("value", "");
+}
+
+void from_json(const nlohmann::json& j, BaseSnapshot::LinkInfo& li)
+{
+    li.name = j.value("name", "");
+    li.type = j.value("type", "");
+    li.value = j.value("value", "");
+}
+
+void from_json(const nlohmann::json& j, BaseSnapshot::SnapshotObject& so)
+{
+    so.m_name = j.value("name", "");
     
-// }
+    if (j.contains("datas") && j["datas"].is_array())
+    {
+        so.m_dataContainer.clear();
+        for (const auto& dataJson : j["datas"])
+        {
+            BaseSnapshot::DataInfo di;
+            from_json(dataJson, di);
+            so.m_dataContainer.push_back(di);
+        }
+    }
+    
+    if (j.contains("links") && j["links"].is_array())
+    {
+        so.m_linkContainer.clear();
+        for (const auto& linkJson : j["links"])
+        {
+            BaseSnapshot::LinkInfo li;
+            from_json(linkJson, li);
+            so.m_linkContainer.push_back(li);
+        }
+    }
+}
 
-// void from_json(const nlohmann::json& j,BaseSnapshot::LinkInfo& li )
-// {
-//     j.at("name").get_to(li.name);
-//     j.at("type").get_to(li.type);
-//     j.at("value").get_to(li.value);
-// }
-
-// void from_json(const nlohmann::json& j,BaseSnapshot::SnapshotObject& so )
-// {
-//     j.at("datas").get_to(so.m_dataContainer);
-//     j.at("links").get_to(so.m_linkContainer);
-// }
-
-// void from_json(const nlohmann::json& j, BaseSnapshot::SnapshotNode& sn)
-// {
-//     j.at("components").get_to(sn.components); 
-
-//     sn.children.clear();
-//     if (j.contains("children") && j["children"].is_array())
-//     {
-//         for (const auto& childJson : j["children"])
-//         {
-//             auto child = std::make_shared<BaseSnapshot::SnapshotNode>();
-//             childJson.get_to(*child);
-//             sn.children.push_back(child);
-//         }
-//     }
-// }
+void from_json(const nlohmann::json& j, BaseSnapshot::SnapshotNode& sn)
+{
+    sn.m_name = j.value("name", "");
+    
+    // Parser les données
+    if (j.contains("datas") && j["datas"].is_array())
+    {
+        sn.m_dataContainer.clear();
+        for (const auto& dataJson : j["datas"])
+        {
+            BaseSnapshot::DataInfo di;
+            from_json(dataJson, di);
+            sn.m_dataContainer.push_back(di);
+        }
+    }
+    
+    // Parser les liens
+    if (j.contains("links") && j["links"].is_array())
+    {
+        sn.m_linkContainer.clear();
+        for (const auto& linkJson : j["links"])
+        {
+            BaseSnapshot::LinkInfo li;
+            from_json(linkJson, li);
+            sn.m_linkContainer.push_back(li);
+        }
+    }
+    
+    // Parser les composants
+    if (j.contains("components") && j["components"].is_array())
+    {
+        sn.components.clear();
+        for (const auto& compJson : j["components"])
+        {
+            BaseSnapshot::SnapshotObject so;
+            from_json(compJson, so);
+            sn.components.push_back(so);
+        }
+    }
+    
+    // Parser les enfants (récursivement)
+    sn.children.clear();
+    if (j.contains("children") && j["children"].is_array())
+    {
+        for (const auto& childJson : j["children"])
+        {
+            if (!childJson.is_null())
+            {
+                auto child = std::make_shared<BaseSnapshot::SnapshotNode>();
+                from_json(childJson, *child);
+                sn.children.push_back(child);
+            }
+        }
+    }
+}
 
 void JSONSnapshot::importFrom(const std::string filename)
 {
-    // std::cout << "importFrom" << std::endl;
-    // std::ifstream file(filename);
-    // nlohmann::json jfile;
-    // file >> jfile;
-    // file.close();
-    
-    // treeSnapshot.clear();
-    
-    // // std::cout << "root : " << jfile[0]["name"] << std::endl;
-    // // std::cout << "children : " << jfile[0]["children"] << std::endl;
-    // for (auto& [key,value] : jfile[0].items())
-    // {
-    //     std::cout << "TEST" << std::endl;
-    // }
+    std::ifstream file(filename);
+    if (!file.is_open())
+    {
+        std::cerr << "ERROR: Cannot open file " << filename << " for reading\n";
+        return;
+    }
+
+    nlohmann::json jsonRoot;
+    file >> jsonRoot;
+    file.close();
+
+    if (!m_graphRoot)
+    {
+        m_graphRoot = std::make_shared<BaseSnapshot::SnapshotNode>();
+    }
+
+
+    if (jsonRoot.is_object() && !jsonRoot.empty())
+    {
+        from_json(jsonRoot, *m_graphRoot);
+    }
+    else
+    {
+        std::cerr << "ERROR: Invalid JSON format in " << filename << "\n";
+        return;
+    }
 
     std::cout << "JSON imported successfully from: " << filename << std::endl;
 
+    
 }
 
 
