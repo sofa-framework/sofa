@@ -323,8 +323,7 @@ if(SOFACUDA_DOUBLE)
 endif()
 
 
-option(SOFACUDA_DOUBLE_PRECISE "Enable double-precision for sqrt/div... (requires compute capability
->= 2 and CUDA_VERSION > 3.0)" OFF)
+option(SOFACUDA_DOUBLE_PRECISE "Enable double-precision for sqrt/div... (requires compute capability >= 2)" OFF)
 # Note: with SOFA_GPU_CUDA_PRECISE and SOFA_GPU_CUDA_DOUBLE you get IEEE
 # 754-compliant floating point operations for addition and multiplication only.
 if(SOFACUDA_DOUBLE_PRECISE)
@@ -333,7 +332,7 @@ endif()
 
 option(SOFACUDA_PRECISE "Use IEEE 754-compliant floating point operations." OFF)
 
-sofa_find_package(CUDAToolkit 10.0 REQUIRED)
+sofa_find_package(CUDAToolkit 11.0 REQUIRED)
 
 # nvcc uses a "host code compiler" to compile CPU code, specified by CUDA_HOST_COMPILER.
 # With some versions of CMake, CUDA_HOST_COMPILER defaults to CMAKE_C_COMPILER,

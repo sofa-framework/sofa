@@ -23,15 +23,6 @@
 #include <sofa/gpu/cuda/CudaMath.h>
 #include "cuda.h"
 
-#if defined(__cplusplus) && CUDA_VERSION < 2000
-namespace sofa
-{
-namespace gpu
-{
-namespace cuda
-{
-#endif
-
 extern "C"
 {
     void SubsetMappingCuda3f_apply(unsigned int size, const void* map, void* out, const void* in);
@@ -335,9 +326,3 @@ void SubsetMappingCuda3f_3f1_applyJT1(unsigned int size, const void* map, void* 
     dim3 grid((size+BSIZE-1)/BSIZE,1);
     {SubsetMappingCuda3f1_applyJT1_kernel<CudaVec3<float> ><<< grid, threads >>>(size, (const int*)map, (CudaVec3<float>*)out, (const CudaVec4<float>*)in); mycudaDebugError("SubsetMappingCuda3f1_applyJT1_kernel<CudaVec3<float> >");}
 }
-
-#if defined(__cplusplus) && CUDA_VERSION < 2000
-} // namespace cuda
-} // namespace gpu
-} // namespace sofa
-#endif
