@@ -26,7 +26,7 @@
 #include <cassert>
 
 #include "cuda.h"
-#include "mycuda.h"
+#include <sofa/gpu/cuda/mycuda.h>
 
 using namespace sofa::gpu::cuda;
 
