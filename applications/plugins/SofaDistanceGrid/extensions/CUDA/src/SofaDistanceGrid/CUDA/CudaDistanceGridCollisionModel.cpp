@@ -26,9 +26,9 @@
 #include <sofa/component/collision/geometry/CubeModel.h>
 #include <sofa/gl/template.h>
 #include <sofa/helper/rmath.h>
-#if SOFACUDA_HAVE_MINIFLOWVR
+#if SOFADISTANCEGRID_HAVE_MINIFLOWVR
     #include <flowvr/render/mesh.h>
-#endif // SOFACUDA_HAVE_MINIFLOWVR
+#endif // SOFADISTANCEGRID_HAVE_MINIFLOWVR
 #include <GL/glew.h>
 #include <fstream>
 
@@ -135,7 +135,7 @@ CudaDistanceGrid* CudaDistanceGrid::load(const std::string& filename, double sca
             grid->sampleSurface(sampling);
         return grid;
     }
-#if SOFACUDA_HAVE_MINIFLOWVR
+#if SOFADISTANCEGRID_HAVE_MINIFLOWVR
     else if (filename.length()>6 && filename.substr(filename.length()-6) == ".fmesh")
     {
         flowvr::render::Mesh mesh;
@@ -195,7 +195,7 @@ CudaDistanceGrid* CudaDistanceGrid::load(const std::string& filename, double sca
         std::cout << "Distance grid creation DONE."<<std::endl;
         return grid;
     }
-#endif // SOFACUDA_HAVE_MINIFLOWVR
+#endif // SOFADISTANCEGRID_HAVE_MINIFLOWVR
     else if (filename.length()>4 && filename.substr(filename.length()-4) == ".obj")
     {
         sofa::helper::io::Mesh* mesh = sofa::helper::io::Mesh::Create(filename);
