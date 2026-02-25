@@ -28,6 +28,7 @@
 
 #cmakedefine SOFA_GPU_THRUST
 #cmakedefine SOFA_GPU_CUDA_DOUBLE
+#cmakedefine SOFA_GPU_CUDA_PRECISE
 #cmakedefine SOFA_GPU_CUDA_DOUBLE_PRECISE
 #cmakedefine SOFA_GPU_CUBLAS
 #cmakedefine01 SOFACUDA_HAVE_MINIFLOWVR

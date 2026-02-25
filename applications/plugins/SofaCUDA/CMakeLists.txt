@@ -337,9 +337,6 @@ if (${CUDA_HOST_COMPILER} MATCHES "ccache$")
     set(CUDA_HOST_COMPILER "g++" CACHE STRING "Host side compiler used by NVCC" FORCE)
 endif()
 
-# quick and dirty fix for nvcc compatibility with -fno-partial-inlining flag
-set(CUDA_PROPAGATE_HOST_FLAGS OFF)
-
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${CUDA_SOURCES} ${README_FILES})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFACUDA_COMPILE_DEFINITIONS}")
 if(SOFACUDA_VERBOSE_PTXAS)
