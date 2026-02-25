@@ -276,11 +276,6 @@ sofa_find_package(Sofa.Component.Engine.Select REQUIRED)
 sofa_find_package(Sofa.Component.Engine.Transform REQUIRED)
 sofa_find_package(Sofa.Component.MechanicalLoad REQUIRED)
 
-sofa_find_package(Sofa.GUI QUIET)
-if(Sofa.GUI_FOUND)
-    list(APPEND SOURCE_FILES ${SOFACUDACORE_SOURCE_DIR}/sofa/gpu/gui/CudaMouseInteraction.cpp)
-endif()
-
 option(SOFACUDA_VERBOSE_PTXAS "???" OFF)
 
 option(SOFACUDA_CUBLAS "Activate cublas support in CUDA (requires SOFACUDA_DOUBLE)." OFF)
@@ -359,10 +354,6 @@ target_link_libraries(${PROJECT_NAME} CUDA::cudart)
 
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17 cuda_std_17)
 
-if(Sofa.GUI_FOUND)
-    target_link_libraries(${PROJECT_NAME} Sofa.GUI)
-endif()
-
 if(SOFACUDA_CUBLAS)
     target_link_libraries(${PROJECT_NAME} ${CUDA_cusparse_LIBRARY} CUDA::cublas)
 
@@ -377,3 +368,5 @@ sofa_create_package_with_targets(
     INCLUDE_SOURCE_DIR "src"
     RELOCATABLE "plugins"
 )
+
+add_subdirectory(extensions)
