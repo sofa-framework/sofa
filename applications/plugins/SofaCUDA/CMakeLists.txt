@@ -289,14 +289,6 @@ if(Sofa.Qt_FOUND)
     list(APPEND SOURCE_FILES ${SOFACUDACORE_SOURCE_DIR}/sofa/gpu/gui/CudaDataWidget.cpp)
 endif()
 
-sofa_find_package(SofaValidation QUIET)
-if(SofaValidation_FOUND)
-    list(APPEND SOURCE_FILES
-        ${SOFACUDACORE_SOURCE_DIR}/sofa/gpu/cuda/CudaExtraMonitor.cpp
-        )
-    message(STATUS "SofaCUDA: found SofaValidation, enabling CudaExtraMonitor (Warning: this component is being deprecated). ")
-endif()
-
 option(SOFACUDA_VERBOSE_PTXAS "???" OFF)
 
 option(SOFACUDA_CUBLAS "Activate cublas support in CUDA (requires SOFACUDA_DOUBLE)." OFF)
@@ -384,10 +376,6 @@ endif()
 
 if(Sofa.Qt_FOUND)
     target_link_libraries(${PROJECT_NAME} Sofa.Qt)
-endif()
-
-if(SofaValidation_FOUND)
-    target_link_libraries(${PROJECT_NAME} SofaValidation)
 endif()
 
 if(SOFACUDA_CUBLAS)
