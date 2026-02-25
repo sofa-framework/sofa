@@ -32,10 +32,9 @@ set(HEADER_FILES
     ${SOFACUDA_SOURCE_DIR}/config.h.in
     ${SOFACUDA_SOURCE_DIR}/init.h
     
-    ### Common
+    ### Core
     ${SOFACUDACORE_SOURCE_DIR}/sofa/gpu/cuda/CudaBaseVector.h
     ${SOFACUDACORE_SOURCE_DIR}/sofa/gpu/cuda/CudaCommon.h
-    ${SOFACUDACORE_SOURCE_DIR}/sofa/gpu/cuda/CudaContactMapper.h
     ${SOFACUDACORE_SOURCE_DIR}/sofa/gpu/cuda/CudaMath.h
     ${SOFACUDACORE_SOURCE_DIR}/sofa/gpu/cuda/CudaMath.inl
     ${SOFACUDACORE_SOURCE_DIR}/sofa/gpu/cuda/CudaMathRigid.h
@@ -107,6 +106,7 @@ set(HEADER_FILES
     ${SOFACUDA_SOURCE_DIR}/component/collision/geometry/CudaPointModel.h
     ${SOFACUDA_SOURCE_DIR}/component/collision/geometry/CudaSphereModel.h
     ${SOFACUDA_SOURCE_DIR}/component/collision/geometry/CudaTriangleModel.h
+    ${SOFACUDA_SOURCE_DIR}/component/collision/response/mapper/CudaContactMapper.h
 
     ### Constraints
     ${SOFACUDA_SOURCE_DIR}/component/constraint/projective/CudaFixedProjectiveConstraint.h
@@ -122,16 +122,16 @@ set(HEADER_FILES
 )
 
 set(SOURCE_FILES
-    ### Common
     ${SOFACUDA_SOURCE_DIR}/init.cpp
+
+    ### Core
     ${SOFACUDACORE_SOURCE_DIR}/sofa/gpu/cuda/CudaBaseVector.cpp
-    ${SOFACUDACORE_SOURCE_DIR}/sofa/gpu/cuda/CudaContactMapper.cpp
     ${SOFACUDACORE_SOURCE_DIR}/sofa/gpu/cuda/mycuda.cpp
+    ${SOFACUDACORE_SOURCE_DIR}/sofa/gpu/cuda/CudaSingleStateAccessor.cpp
+    ${SOFACUDACORE_SOURCE_DIR}/sofa/gpu/cuda/CudaMultiMapping.cpp
 
     ### Mechanical
     ${SOFACUDA_SOURCE_DIR}/component/statecontainer/CudaMechanicalObject.cpp
-    ${SOFACUDACORE_SOURCE_DIR}/sofa/gpu/cuda/CudaSetTopology.cpp
-    ${SOFACUDACORE_SOURCE_DIR}/sofa/gpu/cuda/CudaSingleStateAccessor.cpp
 
     ### Mappings
     ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBarycentricMapping-3f.cpp
@@ -143,7 +143,6 @@ set(SOURCE_FILES
     ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBarycentricMapping.cpp
     ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaBarycentricMappingRigid.cpp
     ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaIdentityMapping.cpp
-    ${SOFACUDACORE_SOURCE_DIR}/sofa/gpu/cuda/CudaMultiMapping.cpp
     ${SOFACUDA_SOURCE_DIR}/component/mapping/nonlinear/CudaRigidMapping.cpp
     ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaSubsetMapping.cpp
     ${SOFACUDA_SOURCE_DIR}/component/mapping/linear/CudaSubsetMultiMapping.cpp
@@ -173,12 +172,13 @@ set(SOURCE_FILES
     
 
     ### Collisions
-    ${SOFACUDACORE_SOURCE_DIR}/sofa/gpu/cuda/CudaCollision.cpp
     ${SOFACUDA_SOURCE_DIR}/component/collision/geometry/CudaLineModel.cpp
     ${SOFACUDA_SOURCE_DIR}/component/collision/geometry/CudaPointModel.cpp
     ${SOFACUDA_SOURCE_DIR}/component/collision/geometry/CudaSphereModel.cpp
     ${SOFACUDA_SOURCE_DIR}/component/collision/geometry/CudaTriangleModel.cpp
     ${SOFACUDA_SOURCE_DIR}/component/collision/response/contact/CudaPenalityContactForceField.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/collision/response/mapper/CudaContactMapper.cpp
+    ${SOFACUDA_SOURCE_DIR}/component/collision/detection/intersection/CudaProximityIntersection.cpp
 
     ### Constraints  
     ${SOFACUDA_SOURCE_DIR}/component/constraint/lagrangian/model/CudaBilateralLagrangianConstraint.cpp
@@ -199,16 +199,19 @@ set(SOURCE_FILES
     ${SOFACUDA_SOURCE_DIR}/component/constraint/lagrangian/correction/CudaPrecomputedConstraintCorrection.cpp
     ${SOFACUDA_SOURCE_DIR}/component/constraint/lagrangian/correction/CudaUncoupledConstraintCorrection.cpp
 
+    ### Topology
+    ${SOFACUDA_SOURCE_DIR}/component/topology/container/dynamic/CudaSetTopology.cpp
+
     ### Visual 
     ${SOFACUDA_SOURCE_DIR}/component/visual/CudaVisualModel.cpp
   
 )
 
 set(CUDA_SOURCES
-    ### Common
+    
+    ### Core
     ${SOFACUDACORE_SOURCE_DIR}/sofa/gpu/cuda/mycuda.cu
     ${SOFACUDACORE_SOURCE_DIR}/sofa/gpu/cuda/CudaBaseVector.cu
-    ${SOFACUDACORE_SOURCE_DIR}/sofa/gpu/cuda/CudaContactMapper.cu
     ${SOFACUDACORE_SOURCE_DIR}/sofa/gpu/cuda/CudaScan.cu
     ${SOFACUDACORE_SOURCE_DIR}/sofa/gpu/cuda/CudaSort.cu
 
@@ -243,6 +246,7 @@ set(CUDA_SOURCES
 
     ### Collisions
     ${SOFACUDA_SOURCE_DIR}/component/collision/response/contact/CudaPenalityContactForceField.cu
+    ${SOFACUDA_SOURCE_DIR}/component/collision/response/mapper/CudaContactMapper.cu
     
     ### Constraints
     ${SOFACUDA_SOURCE_DIR}/component/constraint/projective/CudaFixedProjectiveConstraint.cu

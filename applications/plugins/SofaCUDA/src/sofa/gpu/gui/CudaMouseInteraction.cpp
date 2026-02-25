@@ -6,7 +6,7 @@
 #include <SofaCUDA/component/collision/geometry/CudaSphereModel.h>
 #include <sofa/gui/component/performer/MouseInteractor.inl>
 
-#include <sofa/gpu/cuda/CudaContactMapper.h>
+#include <SofaCUDA/component/collision/response/mapper/CudaContactMapper.h>
 #include <sofa/gui/component/performer/ComponentMouseInteraction.inl>
 #include <sofa/gui/component/performer/AttachBodyPerformer.inl>
 #include <sofa/gui/component/performer/FixParticlePerformer.inl>

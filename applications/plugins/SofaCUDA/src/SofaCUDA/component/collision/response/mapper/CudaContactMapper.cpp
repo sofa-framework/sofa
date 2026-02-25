@@ -21,7 +21,7 @@
 ******************************************************************************/
 #define SOFACUDA_CUDACONTACTMAPPER_CPP
 
-#include <sofa/gpu/cuda/CudaContactMapper.h>
+#include <SofaCUDA/component/collision/response/mapper/CudaContactMapper.h>
 
 namespace sofa::component::collision
 {
