@@ -538,10 +538,11 @@ std::string FileSystem::append(const std::string_view& existingPath, const std::
         return append(existingPath, toAppend.substr(1));
     }
 
-    if (isADirectorySeparator(existingPath.back()))
+    if (!existingPath.empty() && isADirectorySeparator(existingPath.back()))
     {
         return append(existingPath.substr(0, existingPath.size() - 1), toAppend);
     }
+    
     return std::string(existingPath) + "/" + std::string(toAppend);
 }
 

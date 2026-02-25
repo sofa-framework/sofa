@@ -152,7 +152,7 @@ protected:
     class Loader;
 
     void load(const char* filename);
-    const OutVecCoord& getPoints();
+    const OutVecCoord& getPoints() const;
     void setJMatrixBlock(sofa::Index outIdx, sofa::Index inIdx);
 
     std::unique_ptr<MatrixType> m_matrixJ;

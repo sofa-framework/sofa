@@ -24,11 +24,14 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <cmath>
 #include <sofa/helper/RandomGenerator.h>
+#include <sofa/type/hardening.h>
 
 #include <vector>
 #include <iostream>
 #include <fstream>
 #include <algorithm>
+#include <cstdlib>
+#include <cerrno>
 
 namespace sofa::component::engine::transform
 {
@@ -200,7 +203,17 @@ void TransformPosition<DataTypes>::getTransfoFromTfm()
                 {
                     std::string c = *it;
                     if ( c.find_first_of("1234567890.-") != std::string::npos)
-                        values.push_back((Real)atof(c.c_str()));
+                    {
+                        Real val{};
+                        if(sofa::type::hardening::safeStrToScalar(c, val))
+                        {
+                            values.push_back(val);
+                        }
+                        else
+                        {
+                            msg_error() << "error while parsing value " << c ;
+                        }
+                    }
                 }
 
                 if (values.size() != 12)
@@ -285,7 +298,14 @@ void TransformPosition<DataTypes>::getTransfoFromTrm()
                 Coord tr;
                 for ( unsigned int i = 0; i < std::min((unsigned int)vLine.size(),(unsigned int)3); i++)
                 {
-                    tr[i] = mat(i,3) = (Real)atof(vLine[i].c_str());
+                    Real val{};
+                    if(!sofa::type::hardening::safeStrToScalar(vLine[i], val))
+                    {
+                        msg_error() << "Invalid number in file: " << vLine[i];
+                        val = 0.0;
+                    }
+                    
+                    tr[i] = mat(i,3) = val;
                 }
                 f_translation.setValue(tr);
 
@@ -294,7 +314,16 @@ void TransformPosition<DataTypes>::getTransfoFromTrm()
             {
                 //rotation matrix
                 for ( unsigned int i = 0; i < std::min((unsigned int)vLine.size(),(unsigned int)3); i++)
-                    mat(nbLines-2,i) = (Real)atof(vLine[i].c_str());
+                {
+                    Real val{};
+                    if(!sofa::type::hardening::safeStrToScalar(vLine[i], val))
+                    {
+                        msg_error() << "Invalid number in file: " << vLine[i];
+                        val = 0.0;
+                    }
+                    
+                    mat(nbLines-2,i) = val;
+                }
             }
 
         }
@@ -358,7 +387,16 @@ void TransformPosition<DataTypes>::getTransfoFromTxt()
             else if (vLine.size()<4) {msg_error() << "Matrix is not 4x4.";continue;}
 
             for ( unsigned int i = 0; i < std::min((unsigned int)vLine.size(),(unsigned int)4); i++)
-                mat(nbLines-1,i) = (Real)atof(vLine[i].c_str());
+            {
+                Real val{};
+                if(!sofa::type::hardening::safeStrToScalar(vLine[i], val))
+                {
+                    msg_error() << "Invalid number in file: " << vLine[i];
+                    val = 0.0;
+                }
+                
+                mat(nbLines-1,i) = (Real)val;
+            }
         }
         f_affineMatrix.setValue(mat);
 
