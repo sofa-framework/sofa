@@ -338,7 +338,7 @@ int main(int argc, char** argv)
     if (messageHandler == "auto" )
     {
         MessageDispatcher::clearHandlers() ;
-        MessageDispatcher::addHandler( new ConsoleMessageHandler() ) ;
+        MessageDispatcher::addHandler( &sofa::helper::logging::MainConsoleMessageHandler::getInstance() ) ;
     }
     else if (messageHandler == "clang")
     {
@@ -348,7 +348,7 @@ int main(int argc, char** argv)
     else if (messageHandler == "sofa")
     {
         MessageDispatcher::clearHandlers() ;
-        MessageDispatcher::addHandler( new ConsoleMessageHandler() ) ;
+        MessageDispatcher::addHandler( &sofa::helper::logging::MainConsoleMessageHandler::getInstance() ) ;
     }
     else if (messageHandler == "rich")
     {
