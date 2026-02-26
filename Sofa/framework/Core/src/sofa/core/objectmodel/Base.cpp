@@ -686,7 +686,6 @@ int Base::getInstanciationSourceFilePos() const
 void Base::saveDataIn(BaseSnapshot::SnapshotObject& snapshot) const
 {
     const auto& dataFields = this->getDataFields();
-    std::cout << "Type of dataFields : "<< this->getTypeName() << std::endl;
     for (const auto& data : dataFields)
     {
         // std::cout << "data type : " << data->getValueTypeString() << std::endl;
