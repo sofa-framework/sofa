@@ -503,7 +503,7 @@ void RecordedCamera::moveCamera_mouse(int x, int y)
                 break;
             case SCENE_CENTER_PIVOT :
             default:
-                pivot = sceneCenter;
+                pivot = getSceneCenter();
                 break;
             }
 

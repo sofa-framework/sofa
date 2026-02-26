@@ -661,6 +661,9 @@ void BaseCamera::computeZ()
 {
     if (d_computeZClip.getValue())
     {
+        const auto sceneCenter = getSceneCenter();
+        const auto sceneRadius = getSceneRadius();
+
         //modelview transform
         sofa::type::Transform<SReal> world_H_cam(d_position.getValue(), this->getOrientation());
 
@@ -737,9 +740,7 @@ void BaseCamera::setView(const type::Vec3& position, const Quat &orientation)
 
 void BaseCamera::setDefaultView(const type::Vec3 & gravity)
 {
-    const type::Vec3 & minBBox = d_minBBox.getValue();
-    const type::Vec3 & maxBBox = d_maxBBox.getValue();
-    sceneCenter = (minBBox + maxBBox)*0.5;
+    const auto sceneCenter = getSceneCenter();
 
     if (b_setDefaultParameters)
     {
@@ -770,7 +771,7 @@ void BaseCamera::setDefaultView(const type::Vec3 & gravity)
 
         //Distance
         const double coeff = 3.0;
-        const double dist = (minBBox - sceneCenter).norm() * coeff;
+        const double dist = (d_minBBox.getValue() - getSceneCenter()).norm() * coeff;
         d_distance.setValue(dist);
         currentDistance = dist;
 
@@ -918,6 +919,16 @@ void BaseCamera::updateOutputData()
 
     d_zNear.setValue(currentZNear);
     d_zFar.setValue(currentZFar);
+}
+
+type::Vec3 BaseCamera::getSceneCenter() const
+{
+    return (d_minBBox.getValue() + d_maxBBox.getValue()) * 0.5_sreal;
+}
+
+SReal BaseCamera::getSceneRadius() const
+{
+    return 0.5_sreal * (d_maxBBox.getValue() - d_minBBox.getValue()).norm();
 }
 
 void BaseCamera::handleEvent(sofa::core::objectmodel::Event* event)

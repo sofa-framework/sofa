@@ -164,9 +164,6 @@ public:
         d_minBBox.setValue(min);
         d_maxBBox.setValue(max);
 
-        sceneCenter = (min + max)*0.5;
-        sceneRadius = 0.5*(max - min).norm();
-
         computeZ();
     }
 
@@ -260,8 +257,8 @@ public:
 protected:
     void updateOutputData();
 
-    type::Vec3 sceneCenter;
-    SReal sceneRadius;
+    type::Vec3 getSceneCenter() const;
+    SReal getSceneRadius() const;
 
     bool b_setDefaultParameters;
 
