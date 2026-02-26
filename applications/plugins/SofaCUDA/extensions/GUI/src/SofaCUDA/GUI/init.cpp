@@ -24,6 +24,14 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/PluginManager.h>
 
+
+namespace sofa::gpu::cuda
+{
+
+extern void registerMouseInteractor(sofa::core::ObjectFactory* factory);
+
+}
+
 namespace sofa::gpu::cuda::gui
 {
 
@@ -77,7 +85,7 @@ const char* getModuleDescription()
 
 void registerObjects(sofa::core::ObjectFactory* factory)
 {
-    SOFA_UNUSED(factory);
+    sofa::gpu::cuda::registerMouseInteractor(factory);
 }
 
 } // namespace sofa::gpu::cuda::gl
