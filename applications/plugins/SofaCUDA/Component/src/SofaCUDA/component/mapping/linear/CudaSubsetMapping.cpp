@@ -19,19 +19,38 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#ifndef SOFA_GPU_CUDA_CUDASUBSETMAPPING_CPP
+#define SOFA_GPU_CUDA_CUDASUBSETMAPPING_CPP
+#include <SofaCUDA/component/config.h>
 
-#include <sofa/config.h>
-#include <sofa/config/sharedlibrary_defines.h>
+#include <sofa/gpu/cuda/CudaTypes.h>
+#include <SofaCUDA/component/mapping/linear/CudaSubsetMapping.inl>
+#include <sofa/core/ObjectFactory.h>
 
-#ifdef SOFA_BUILD_SOFACUDA
-#  define SOFACUDA_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFACUDA_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-
-namespace sofacuda
+namespace sofa::component::mapping::linear
 {
-	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
-	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
-} // namespace sofacuda
+using namespace sofa::gpu::cuda;
+
+template class SOFACUDA_COMPONENT_API SubsetMapping< CudaVec3fTypes, CudaVec3fTypes >;
+template class SOFACUDA_COMPONENT_API SubsetMapping< CudaVec3f1Types, CudaVec3f1Types >;
+template class SOFACUDA_COMPONENT_API SubsetMapping< CudaVec3f1Types, CudaVec3fTypes >;
+template class SOFACUDA_COMPONENT_API SubsetMapping< CudaVec3fTypes, CudaVec3f1Types >;
+
+} // namespace sofa::component::mapping::linear
+
+namespace sofa::gpu::cuda
+{
+using namespace sofa::component::mapping::linear;
+
+    void registerSubsetMapping(sofa::core::ObjectFactory* factory)
+    {
+        factory->registerObjects(sofa::core::ObjectRegistrationData("Supports GPU-side computations using CUDA for the SubsetMapping")
+        .add< SubsetMapping< CudaVec3fTypes, CudaVec3fTypes > >()
+        .add< SubsetMapping< CudaVec3f1Types, CudaVec3f1Types > >()
+        .add< SubsetMapping< CudaVec3f1Types, CudaVec3fTypes > >()
+        .add< SubsetMapping< CudaVec3fTypes, CudaVec3f1Types > >());
+    }
+
+} // namespace sofa::gpu::cuda
+
+#endif // SOFA_GPU_CUDA_CUDASUBSETMAPPING_CPP

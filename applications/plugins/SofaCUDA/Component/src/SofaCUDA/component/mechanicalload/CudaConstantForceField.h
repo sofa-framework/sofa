@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -21,17 +21,36 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/config.h>
-#include <sofa/config/sharedlibrary_defines.h>
+#include <SofaCUDA/component/config.h>
+#include <sofa/component/mechanicalload/ConstantForceField.h>
 
-#ifdef SOFA_BUILD_SOFACUDA
-#  define SOFACUDA_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFACUDA_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#if !defined(SOFA_COMPONENT_FORCEFIELD_CUDACONSTANTFORCEFIELD_CPP)
+
+#include <sofa/gpu/cuda/CudaTypes.h>
+
+namespace sofa::component::mechanicalload
+{
+
+using namespace sofa::gpu::cuda;
+
+extern template class SOFACUDA_COMPONENT_API ConstantForceField<CudaVec3Types>;
+extern template class SOFACUDA_COMPONENT_API ConstantForceField<CudaVec2Types>;
+extern template class SOFACUDA_COMPONENT_API ConstantForceField<CudaVec1Types>;
+extern template class SOFACUDA_COMPONENT_API ConstantForceField<CudaVec6Types>;
+extern template class SOFACUDA_COMPONENT_API ConstantForceField<CudaRigid3Types>;
+extern template class SOFACUDA_COMPONENT_API ConstantForceField<CudaRigid2Types>;
+
+#ifdef SOFA_GPU_CUDA_DOUBLE
+extern template class SOFACUDA_COMPONENT_API ConstantForceField<CudaVec3dTypes>;
+extern template class SOFACUDA_COMPONENT_API ConstantForceField<CudaVec2dTypes>;
+extern template class SOFACUDA_COMPONENT_API ConstantForceField<CudaVec1dTypes>;
+extern template class SOFACUDA_COMPONENT_API ConstantForceField<CudaVec6dTypes>;
+extern template class SOFACUDA_COMPONENT_API ConstantForceField<CudaRigid3dTypes>;
+extern template class SOFACUDA_COMPONENT_API ConstantForceField<CudaRigid2dTypes>;
 #endif
 
-namespace sofacuda
-{
-	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
-	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
-} // namespace sofacuda
+} // namespace sofa::component::mechanicalload
+#endif
+
+
+

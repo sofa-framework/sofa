@@ -19,19 +19,46 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#include <SofaCUDA/component/config.h>
 
-#include <sofa/config.h>
-#include <sofa/config/sharedlibrary_defines.h>
+#include <sofa/gpu/cuda/CudaTypes.h>
+#include <SofaCUDA/component/mapping/linear/CudaBarycentricMapping.inl>
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/defaulttype/VecTypes.h>
 
-#ifdef SOFA_BUILD_SOFACUDA
-#  define SOFACUDA_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFACUDA_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-
-namespace sofacuda
+namespace sofa::component::mapping::linear
 {
-	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
-	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
-} // namespace sofacuda
+
+using namespace sofa::defaulttype;
+using namespace sofa::core;
+using namespace sofa::core::behavior;
+using namespace sofa::gpu::cuda;
+
+// Spread the instantiations over multiple files for more efficient and lightweight compilation
+
+// instantiations involving both CudaVec3f1Types and Vec3dTypes
+
+
+
+template class SOFACUDA_COMPONENT_API BarycentricMapping< Vec3Types, CudaVec3f1Types>;
+template class SOFACUDA_COMPONENT_API BarycentricMapping< CudaVec3f1Types, Vec3Types>;
+
+
+} // namespace sofa::component::mapping::linear
+
+namespace sofa::gpu::cuda
+{
+
+using namespace sofa::defaulttype;
+using namespace sofa::core;
+using namespace sofa::core::behavior;
+using namespace sofa::component::mapping::linear;
+
+void registerBarycentricMapping_3f1_d(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Supports GPU-side computations using CUDA for the registerBarycentricMapping_3f1_d")
+    .add< BarycentricMapping< Vec3Types, CudaVec3f1Types> >()
+    .add< BarycentricMapping< CudaVec3f1Types, Vec3Types> >());
+}
+
+} // namespace sofa::gpu::cuda

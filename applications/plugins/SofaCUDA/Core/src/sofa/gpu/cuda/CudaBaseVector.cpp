@@ -19,19 +19,21 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#define SOFA_GPU_CUDA_CUDABASEVECTOR_CPP
 
-#include <sofa/config.h>
-#include <sofa/config/sharedlibrary_defines.h>
+#include "CudaBaseVector.h"
 
-#ifdef SOFA_BUILD_SOFACUDA
-#  define SOFACUDA_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFACUDA_API SOFA_IMPORT_DYNAMIC_LIBRARY
+
+namespace sofa::gpu::cuda
+{
+
+template class SOFACUDA_CORE_API CudaBaseVector< float >;
+#ifdef SOFA_GPU_CUDA_DOUBLE
+template class SOFACUDA_CORE_API CudaBaseVector< double >;
 #endif
 
-namespace sofacuda
-{
-	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
-	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
-} // namespace sofacuda
+} // namespace sofa::gpu::cuda
+
+
+
+

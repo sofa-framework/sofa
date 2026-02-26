@@ -19,19 +19,71 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#include <SofaCUDA/core/init.h>
 
-#include <sofa/config.h>
-#include <sofa/config/sharedlibrary_defines.h>
+#include <sofa/helper/system/PluginManager.h>
+#include <sofa/core/ObjectFactory.h>
 
-#ifdef SOFA_BUILD_SOFACUDA
-#  define SOFACUDA_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFACUDA_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+#include <sofa/gpu/cuda/mycuda.h>
 
-namespace sofacuda
+namespace sofacuda::core
 {
-	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
-	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
-} // namespace sofacuda
+
+extern "C" {
+    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
+    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
+    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleVersion();
+    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleLicense();
+    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleDescription();
+    SOFA_EXPORT_DYNAMIC_LIBRARY bool moduleIsInitialized();
+    SOFA_EXPORT_DYNAMIC_LIBRARY void registerObjects(sofa::core::ObjectFactory* factory);
+}
+
+bool isModuleInitialized = false;
+
+void init()
+{
+    static bool first = true;
+    if (first)
+    {
+        isModuleInitialized = sofa::gpu::cuda::mycudaInit();
+        first = false;
+    }
+}
+
+void initExternalModule()
+{
+    init();
+}
+
+const char* getModuleName()
+{
+    return MODULE_NAME;
+}
+
+const char* getModuleVersion()
+{
+    return MODULE_VERSION;
+}
+
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
+
+const char* getModuleDescription()
+{
+    return "A subset of SOFA componend using NVIDIA CUDA";
+}
+
+bool moduleIsInitialized()
+{
+    return isModuleInitialized;
+}
+
+void registerObjects(sofa::core::ObjectFactory* factory)
+{
+    SOFA_UNUSED(factory);
+}
+
+} // namespace sofacuda::core

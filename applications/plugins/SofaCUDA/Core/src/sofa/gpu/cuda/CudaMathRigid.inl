@@ -19,19 +19,41 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#ifndef CUDAMATHRIGID_INL
+#define CUDAMATHRIGID_INL
 
-#include <sofa/config.h>
-#include <sofa/config/sharedlibrary_defines.h>
+#include "CudaMathRigid.h"
+#include <SofaCUDA/core/config.h>
 
-#ifdef SOFA_BUILD_SOFACUDA
-#  define SOFACUDA_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFACUDA_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#ifdef SOFA_GPU_CUDA_PRECISE
+template<>
+__device__ CudaRigidCoord3<float> operator+(CudaRigidCoord3<float> a, CudaRigidDeriv3<float> b)
+{
+    CudaRigidCoord3<float> x;
+
+    x.pos[0] = a.pos[0] + b.pos.x;
+    x.pos[1] = a.pos[1] + b.pos.y;
+    x.pos[2] = a.pos[2] + b.pos.z;
+
+    CudaVec4<float> orient = CudaVec4<float>::make(a.rot[0], a.rot[1], a.rot[2], a.rot[3]);
+    orient = orient*invnorm(orient);
+    CudaVec3<float> vOrient = CudaVec3<float>::make(b.rot.x, b.rot.y, b.rot.z);
+    CudaVec4<float> qDot = vectQuatMult(orient, vOrient);
+    orient.x += __fmul_rn(qDot.x,0.5f);
+    orient.y += __fmul_rn(qDot.y,0.5f);
+    orient.z += __fmul_rn(qDot.z,0.5f);
+    orient.w += __fmul_rn(qDot.w,0.5f);
+    orient = orient*invnorm(orient);
+
+    x.rot[0] = orient.x;
+    x.rot[1] = orient.y;
+    x.rot[2] = orient.z;
+    x.rot[3] = orient.w;
+
+    return x;
+}
 #endif
 
-namespace sofacuda
-{
-	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
-	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
-} // namespace sofacuda
+
+
+#endif

@@ -19,19 +19,39 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#include <SofaCUDA/component/config.h>
 
-#include <sofa/config.h>
-#include <sofa/config/sharedlibrary_defines.h>
+#include <sofa/gpu/cuda/CudaTypes.h>
+#include <sofa/component/constraint/projective/LinearVelocityProjectiveConstraint.inl>
 
-#ifdef SOFA_BUILD_SOFACUDA
-#  define SOFACUDA_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFACUDA_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
 
-namespace sofacuda
+#include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/core/ObjectFactory.h>
+
+namespace sofa::component::constraint::projective
 {
-	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
-	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
-} // namespace sofacuda
+template class SOFACUDA_COMPONENT_API LinearVelocityProjectiveConstraint<gpu::cuda::CudaVec6fTypes>;
+template class SOFACUDA_COMPONENT_API LinearVelocityProjectiveConstraint<gpu::cuda::CudaRigid3fTypes>;
+#ifdef SOFA_GPU_CUDA_DOUBLE
+template class SOFACUDA_COMPONENT_API LinearVelocityProjectiveConstraint<gpu::cuda::CudaVec6dTypes>;
+template class SOFACUDA_COMPONENT_API LinearVelocityProjectiveConstraint<gpu::cuda::CudaRigid3dTypes>;
+#endif // SOFA_GPU_CUDA_DOUBLE
+
+}// namespace sofa::component::constraint::projective
+
+namespace sofa::gpu::cuda
+{
+
+    void registerLinearVelocityProjectiveConstraint(sofa::core::ObjectFactory* factory)
+    {
+        factory->registerObjects(sofa::core::ObjectRegistrationData("Supports GPU-side computations using CUDA for the LinearVelocityProjectiveConstraint")
+        .add< sofa::component::constraint::projective::LinearVelocityProjectiveConstraint<CudaVec6fTypes> >()
+        .add< sofa::component::constraint::projective::LinearVelocityProjectiveConstraint<CudaRigid3fTypes> >()
+#ifdef SOFA_GPU_CUDA_DOUBLE
+        .add< sofa::component::constraint::projective::LinearVelocityProjectiveConstraint<CudaVec6dTypes> >()
+        .add< sofa::component::constraint::projective::LinearVelocityProjectiveConstraint<CudaRigid3dTypes> >()
+#endif // SOFA_GPU_CUDA_DOUBLE
+        );
+    }
+
+} // namespace sofa::gpu::cuda

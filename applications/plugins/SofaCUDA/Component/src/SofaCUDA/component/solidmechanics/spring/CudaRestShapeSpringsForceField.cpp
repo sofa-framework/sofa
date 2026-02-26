@@ -19,19 +19,40 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#include <SofaCUDA/component/config.h>
 
-#include <sofa/config.h>
-#include <sofa/config/sharedlibrary_defines.h>
+#include <sofa/gpu/cuda/CudaTypes.h>
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/core/behavior/ForceField.inl>
+#include <sofa/component/solidmechanics/spring/RestShapeSpringsForceField.inl>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
 
-#ifdef SOFA_BUILD_SOFACUDA
-#  define SOFACUDA_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFACUDA_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-
-namespace sofacuda
+namespace sofa::component::solidmechanics::spring
 {
-	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
-	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
-} // namespace sofacuda
+
+template class SOFACUDA_COMPONENT_API RestShapeSpringsForceField<gpu::cuda::CudaVec3fTypes>;
+template class SOFACUDA_COMPONENT_API RestShapeSpringsForceField<gpu::cuda::CudaVec3f1Types>;
+#ifdef SOFA_GPU_CUDA_DOUBLE
+template class SOFACUDA_COMPONENT_API RestShapeSpringsForceField<gpu::cuda::CudaVec3dTypes>;
+template class SOFACUDA_COMPONENT_API RestShapeSpringsForceField<gpu::cuda::CudaVec3d1Types>;
+#endif // SOFA_GPU_CUDA_DOUBLE
+
+} // namespace sofa::component::solidmechanics::spring
+
+namespace sofa::gpu::cuda
+{
+
+    void registerRestShapeSpringsForceField(sofa::core::ObjectFactory* factory)
+    {
+        factory->registerObjects(sofa::core::ObjectRegistrationData("Supports GPU-side computations using CUDA for the RestShapeSpringsForceField")
+        .add< sofa::component::solidmechanics::spring::RestShapeSpringsForceField<CudaVec3fTypes> >()
+        .add< sofa::component::solidmechanics::spring::RestShapeSpringsForceField<CudaVec3f1Types> >()
+#ifdef SOFA_GPU_CUDA_DOUBLE
+        .add< sofa::component::solidmechanics::spring::RestShapeSpringsForceField<CudaVec3dTypes> >()
+        .add< sofa::component::solidmechanics::spring::RestShapeSpringsForceField<CudaVec3d1Types> >()
+#endif // SOFA_GPU_CUDA_DOUBLE
+        );
+    }
+
+} // namespace sofa::gpu::cuda

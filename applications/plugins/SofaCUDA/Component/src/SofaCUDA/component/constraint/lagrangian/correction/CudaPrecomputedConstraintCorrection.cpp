@@ -19,19 +19,41 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#include <SofaCUDA/component/config.h>
 
-#include <sofa/config.h>
-#include <sofa/config/sharedlibrary_defines.h>
+#include <sofa/gpu/cuda/CudaTypes.h>
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/core/behavior/ConstraintCorrection.inl>
+#include <sofa/component/constraint/lagrangian/correction/PrecomputedConstraintCorrection.inl>
 
-#ifdef SOFA_BUILD_SOFACUDA
-#  define SOFACUDA_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFACUDA_API SOFA_IMPORT_DYNAMIC_LIBRARY
+namespace sofa::component::constraint::lagrangian::correction
+{
+using namespace sofa::gpu::cuda;
+
+template class SOFACUDA_COMPONENT_API PrecomputedConstraintCorrection< CudaVec3fTypes >;
+template class SOFACUDA_COMPONENT_API PrecomputedConstraintCorrection< CudaVec3f1Types >;
+
+#ifdef SOFA_GPU_CUDA_DOUBLE
+template class SOFACUDA_COMPONENT_API PrecomputedConstraintCorrection< CudaVec3dTypes >;
+template class SOFACUDA_COMPONENT_API PrecomputedConstraintCorrection< CudaVec3d1Types >;
 #endif
 
-namespace sofacuda
+} // namespace sofa::component::constraint::lagrangian::correction
+
+namespace sofa::gpu::cuda
 {
-	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
-	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
-} // namespace sofacuda
+    using namespace sofa::component::constraint::lagrangian::correction;
+
+    void registerPrecomputedConstraintCorrection(sofa::core::ObjectFactory* factory)
+    {
+        factory->registerObjects(sofa::core::ObjectRegistrationData("Supports GPU-side computations using CUDA for the PrecomputedConstraintCorrection")
+        .add< PrecomputedConstraintCorrection< CudaVec3fTypes > >()
+        .add< PrecomputedConstraintCorrection< CudaVec3f1Types > >()
+#ifdef SOFA_GPU_CUDA_DOUBLE
+        .add< PrecomputedConstraintCorrection< CudaVec3dTypes > >()
+        .add< PrecomputedConstraintCorrection< CudaVec3d1Types > >()
+#endif
+        );
+    }
+
+} // namespace sofa::gpu::cuda

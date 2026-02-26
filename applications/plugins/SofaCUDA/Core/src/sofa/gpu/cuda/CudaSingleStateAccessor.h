@@ -19,19 +19,34 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#include <sofa/gpu/cuda/CudaTypes.h>
 
-#include <sofa/config.h>
-#include <sofa/config/sharedlibrary_defines.h>
+#include <sofa/core/behavior/SingleStateAccessor.h>
 
-#ifdef SOFA_BUILD_SOFACUDA
-#  define SOFACUDA_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFACUDA_API SOFA_IMPORT_DYNAMIC_LIBRARY
+namespace sofa::core::behavior
+{
+#if !defined(SOFA_GPU_CUDA_CUDALINEMODEL_CPP)
+
+using namespace sofa::gpu::cuda;
+
+#ifdef SOFA_GPU_CUDA_DOUBLE
+extern template class SOFACUDA_CORE_API SingleStateAccessor<CudaVec1dTypes>;
+extern template class SOFACUDA_CORE_API SingleStateAccessor<CudaVec2dTypes>;
+extern template class SOFACUDA_CORE_API SingleStateAccessor<CudaVec3dTypes>;
+extern template class SOFACUDA_CORE_API SingleStateAccessor<CudaVec3d1Types>;
+extern template class SOFACUDA_CORE_API SingleStateAccessor<CudaVec6dTypes>;
+extern template class SOFACUDA_CORE_API SingleStateAccessor<CudaRigid2dTypes>;
+extern template class SOFACUDA_CORE_API SingleStateAccessor<CudaRigid3dTypes>;
+#endif // SOFA_GPU_CUDA_DOUBLE
+extern template class SOFACUDA_CORE_API SingleStateAccessor<CudaVec1fTypes>;
+extern template class SOFACUDA_CORE_API SingleStateAccessor<CudaVec2fTypes>;
+extern template class SOFACUDA_CORE_API SingleStateAccessor<CudaVec3fTypes>;
+extern template class SOFACUDA_CORE_API SingleStateAccessor<CudaVec3f1Types>;
+extern template class SOFACUDA_CORE_API SingleStateAccessor<CudaVec6fTypes>;
+extern template class SOFACUDA_CORE_API SingleStateAccessor<CudaRigid2fTypes>;
+extern template class SOFACUDA_CORE_API SingleStateAccessor<CudaRigid3fTypes>;
+
 #endif
 
-namespace sofacuda
-{
-	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
-	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
-} // namespace sofacuda
+
+} // namespace sofa::core::behavior

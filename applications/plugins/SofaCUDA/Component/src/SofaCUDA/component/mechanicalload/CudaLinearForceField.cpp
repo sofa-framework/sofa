@@ -19,19 +19,41 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#include <SofaCUDA/component/config.h>
 
-#include <sofa/config.h>
-#include <sofa/config/sharedlibrary_defines.h>
+#include <sofa/gpu/cuda/CudaTypes.h>
+#include <SofaCUDA/component/mechanicalload/CudaLinearForceField.inl>
 
-#ifdef SOFA_BUILD_SOFACUDA
-#  define SOFACUDA_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFACUDA_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+#include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/core/ObjectFactory.h>
 
-namespace sofacuda
+namespace sofa::component::mechanicalload
 {
-	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
-	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
-} // namespace sofacuda
+
+template class SOFACUDA_COMPONENT_API LinearForceField<gpu::cuda::CudaVec6fTypes>;
+template class SOFACUDA_COMPONENT_API LinearForceField<gpu::cuda::CudaVec3fTypes>;
+template class SOFACUDA_COMPONENT_API LinearForceField<gpu::cuda::CudaRigid3fTypes>;
+#ifdef SOFA_GPU_CUDA_DOUBLE
+template class SOFACUDA_COMPONENT_API LinearForceField<gpu::cuda::CudaVec6dTypes>;
+template class SOFACUDA_COMPONENT_API LinearForceField<gpu::cuda::CudaRigid3dTypes>;
+#endif // SOFA_GPU_CUDA_DOUBLE
+
+}// namespace sofa::component::mechanicalload
+
+namespace sofa::gpu::cuda
+{
+
+    void registerLinearForceField(sofa::core::ObjectFactory* factory)
+    {
+        factory->registerObjects(sofa::core::ObjectRegistrationData("Supports GPU-side computations using CUDA for the LinearForceField")
+        .add< component::mechanicalload::LinearForceField<CudaVec6fTypes> >()
+		.add< component::mechanicalload::LinearForceField<CudaVec3fTypes> >()
+		.add< component::mechanicalload::LinearForceField<CudaRigid3fTypes> >()
+#ifdef SOFA_GPU_CUDA_DOUBLE
+        .add< component::mechanicalload::LinearForceField<CudaVec6dTypes> >()
+		.add< component::mechanicalload::LinearForceField<CudaRigid3dTypes> >()
+#endif // SOFA_GPU_CUDA_DOUBLE
+        );
+    }
+
+}// namespace sofa::gpu::cuda

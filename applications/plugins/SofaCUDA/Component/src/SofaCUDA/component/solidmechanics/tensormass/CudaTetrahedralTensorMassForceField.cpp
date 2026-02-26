@@ -19,19 +19,36 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#include <SofaCUDA/component/config.h>
 
-#include <sofa/config.h>
-#include <sofa/config/sharedlibrary_defines.h>
+#include <sofa/gpu/cuda/CudaTypes.h>
+#include <sofa/core/behavior/ForceField.inl>
+#include <SofaCUDA/component/solidmechanics/tensormass/CudaTetrahedralTensorMassForceField.inl>
+#include <sofa/core/ObjectFactory.h>
 
-#ifdef SOFA_BUILD_SOFACUDA
-#  define SOFACUDA_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFACUDA_API SOFA_IMPORT_DYNAMIC_LIBRARY
+namespace sofa
+{
+
+
+namespace gpu::cuda
+{
+
+    void registerTetrahedralTensorMassForceField(sofa::core::ObjectFactory* factory)
+    {
+        factory->registerObjects(sofa::core::ObjectRegistrationData("Supports GPU-side computations using CUDA for the TetrahedralTensorMassForceField")
+        .add< sofa::component::solidmechanics::tensormass::TetrahedralTensorMassForceField<CudaVec3fTypes> >()
+#ifdef SOFA_GPU_CUDA_DOUBLE
+        .add< sofa::component::solidmechanics::tensormass::TetrahedralTensorMassForceField<CudaVec3dTypes> >()
+#endif
+        );
+    }
+
+} // namespace gpu::cuda
+
+
+template class SOFACUDA_COMPONENT_API sofa::component::solidmechanics::tensormass::TetrahedralTensorMassForceField<sofa::gpu::cuda::CudaVec3fTypes>;
+#ifdef SOFA_GPU_CUDA_DOUBLE
+template class SOFACUDA_COMPONENT_API sofa::component::solidmechanics::tensormass::TetrahedralTensorMassForceField<sofa::gpu::cuda::CudaVec3dTypes>;
 #endif
 
-namespace sofacuda
-{
-	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
-	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
-} // namespace sofacuda
+} // namespace sofa
