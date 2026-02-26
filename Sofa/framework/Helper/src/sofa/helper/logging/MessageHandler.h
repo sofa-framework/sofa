@@ -40,6 +40,7 @@ class SOFA_HELPER_API MessageHandler
 public:
     virtual ~MessageHandler(){}
     virtual void process(Message& m) = 0 ;
+    virtual std::string getName() const = 0;
 };
 
 

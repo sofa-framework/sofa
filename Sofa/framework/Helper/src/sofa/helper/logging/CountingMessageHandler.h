@@ -65,6 +65,7 @@ public:
 
     /// Inherited from MessageHandler
     void process(Message& m) override ;
+    std::string getName() const override { return "CountingMessageHandler"; }
 private:
     std::vector<int> m_countMatching ;
 } ;

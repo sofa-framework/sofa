@@ -92,6 +92,8 @@ public:
 
     /// Inherited from MessageHandler
     void process(Message& m) override ;
+    std::string getName() const override { return "GtestMessageHandler"; }
+
     void pushFrame(Message::Type type, GtestMessageFrame* frame)  ;
     void popFrame(Message::Type type) ;
 };
