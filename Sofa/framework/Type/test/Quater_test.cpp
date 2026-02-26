@@ -972,13 +972,26 @@ TEST(QuaterTest, SlerpMember)
     //30deg X, 15deg Y and 30deg Z
     quat2.set(0.215229667288440, 0.188196807757208, 0.215229667288440, 0.933774245836654);
 
-    // At t=0 the result should equal quat1 (identity partial rotation applied)
     Quat<double> quatinterp = quat1.slerp(quat2, 0.0);
 
     EXPECT_NEAR(quat1[0], quatinterp[0], errorThreshold);
     EXPECT_NEAR(quat1[1], quatinterp[1], errorThreshold);
     EXPECT_NEAR(quat1[2], quatinterp[2], errorThreshold);
     EXPECT_NEAR(quat1[3], quatinterp[3], errorThreshold);
+
+    quatinterp = quat1.slerp(quat2, 1.0);
+
+    EXPECT_NEAR(quat2[0], quatinterp[0], errorThreshold);
+    EXPECT_NEAR(quat2[1], quatinterp[1], errorThreshold);
+    EXPECT_NEAR(quat2[2], quatinterp[2], errorThreshold);
+    EXPECT_NEAR(quat2[3], quatinterp[3], errorThreshold);
+
+    quatinterp = quat1.slerp(quat2, 0.5);
+    // quatinterp(q1,q2, 0.5, 'slerp')
+    EXPECT_NEAR(0.263984148784687, quatinterp[0], errorThreshold);
+    EXPECT_NEAR(0.315815742361266, quatinterp[1], errorThreshold);
+    EXPECT_NEAR(0.263984148784687, quatinterp[2], errorThreshold);
+    EXPECT_NEAR(0.872287312333299, quatinterp[3], errorThreshold);
 }
 
 // ============================================================================
@@ -1022,14 +1035,23 @@ TEST(QuaterTest, AngularDisplacementIdentity)
 
 TEST(QuaterTest, CreateFromRotationVectorScalars)
 {
-    // Note: the 3-scalar overload has an inverted condition (phi >= 1e-5 returns identity),
-    // so any non-tiny rotation vector returns identity.
-    // Test with a non-tiny rotation to verify it returns identity.
-    Quat<double> quat = Quat<double>::createFromRotationVector(0.5, 0.3, 0.7);
+    // Zero rotation vector -> identity quaternion
+    Quat<double> quat = Quat<double>::createFromRotationVector(0.0, 0.0, 0.0);
     EXPECT_NEAR(0.0, quat[0], errorThreshold);
     EXPECT_NEAR(0.0, quat[1], errorThreshold);
     EXPECT_NEAR(0.0, quat[2], errorThreshold);
     EXPECT_NEAR(1.0, quat[3], errorThreshold);
+
+    // Should produce the same result as the Vec3 overload
+    constexpr double phi = 0.261799387799149; //15deg
+    const sofa::type::Vec3d axis = sofa::type::Vec3d(1, 2, 5).normalized() * phi;
+    const auto quatFromVec = Quat<double>::createFromRotationVector(axis);
+    const auto quatFromScalars = Quat<double>::createFromRotationVector(axis[0], axis[1], axis[2]);
+
+    EXPECT_NEAR(quatFromVec[0], quatFromScalars[0], errorThreshold);
+    EXPECT_NEAR(quatFromVec[1], quatFromScalars[1], errorThreshold);
+    EXPECT_NEAR(quatFromVec[2], quatFromScalars[2], errorThreshold);
+    EXPECT_NEAR(quatFromVec[3], quatFromScalars[3], errorThreshold);
 }
 
 // ============================================================================
