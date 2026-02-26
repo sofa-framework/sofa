@@ -122,9 +122,6 @@ extern void registerQuadSetGeometryAlgorithms(sofa::core::ObjectFactory* factory
 extern void registerTetrahedronSetGeometryAlgorithms(sofa::core::ObjectFactory* factory);
 extern void registerHexahedronSetGeometryAlgorithms(sofa::core::ObjectFactory* factory);
 
-// gui::component::performer;
-extern void registerMouseInteractor(sofa::core::ObjectFactory* factory);
-
 // SofaCUDA
 extern void registerTetrahedronTLEDForceField(sofa::core::ObjectFactory* factory);
 extern void registerHexahedronTLEDForceField(sofa::core::ObjectFactory* factory);
@@ -241,7 +238,6 @@ void registerObjects(sofa::core::ObjectFactory* factory)
     registerQuadSetGeometryAlgorithms(factory);
     registerTetrahedronSetGeometryAlgorithms(factory);
     registerHexahedronSetGeometryAlgorithms(factory);
-    registerMouseInteractor(factory);
 }
 
 }
