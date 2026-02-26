@@ -93,7 +93,7 @@ public:
     void desactivate();
     bool isActivated();
 
-    bool exportParametersInFile(const std::string& viewFilename);
+    bool exportParametersInFile(const std::string& viewFilename) const;
     bool importParametersFromFile(const std::string& viewFilename);
 
     void translate(const type::Vec3& t);
@@ -120,10 +120,10 @@ public:
     type::Ray toRay() const;
 
 
-    type::Vec3 cameraToWorldCoordinates(const type::Vec3& p);
-    type::Vec3 worldToCameraCoordinates(const type::Vec3& p);
-    type::Vec3 cameraToWorldTransform(const type::Vec3& v);
-    type::Vec3 worldToCameraTransform(const type::Vec3& v);
+    type::Vec3 cameraToWorldCoordinates(const type::Vec3& p) const;
+    type::Vec3 worldToCameraCoordinates(const type::Vec3& p) const;
+    type::Vec3 cameraToWorldTransform(const type::Vec3& v) const;
+    type::Vec3 worldToCameraTransform(const type::Vec3& v) const;
     type::Vec3 screenToWorldCoordinates(int x, int y);
     type::Vec2 worldToScreenCoordinates(const type::Vec3& p);
 
@@ -131,13 +131,14 @@ public:
     void fitBoundingBox(const type::Vec3& min,const type::Vec3& max);
 
 
-    type::Vec3 getPosition()
+    const type::Vec3& getPosition() const
     {
         return d_position.getValue();
     }
 
-    Quat getOrientation() ;
-    type::Vec3 getLookAt()
+    Quat getOrientation();
+
+    const type::Vec3& getLookAt() const
     {
         return d_lookAt.getValue();
     }
@@ -148,12 +149,12 @@ public:
         return d_distance.getValue();
     }
 
-    double getFieldOfView()
+    double getFieldOfView() const
     {
         return d_fieldOfView.getValue();
     }
 
-    double getHorizontalFieldOfView() ;
+    double getHorizontalFieldOfView() const;
 
     unsigned int getCameraType() const ;
 
@@ -173,12 +174,12 @@ public:
         d_heightViewport.setValue(h);
     }
 
-    double getZNear()
+    double getZNear() const
     {
         return currentZNear;
     }
 
-    double getZFar()
+    double getZFar() const
     {
         return currentZFar;
     }

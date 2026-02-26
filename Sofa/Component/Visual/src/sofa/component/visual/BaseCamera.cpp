@@ -217,23 +217,23 @@ void BaseCamera::moveCamera(const type::Vec3 &p, const Quat &q)
     updateOutputData();
 }
 
-type::Vec3 BaseCamera::cameraToWorldCoordinates(const type::Vec3& p)
+type::Vec3 BaseCamera::cameraToWorldCoordinates(const type::Vec3& p) const
 {
     return d_orientation.getValue().rotate(p) + d_position.getValue();
 }
 
-type::Vec3 BaseCamera::worldToCameraCoordinates(const type::Vec3& p)
+type::Vec3 BaseCamera::worldToCameraCoordinates(const type::Vec3& p) const
 {
     return d_orientation.getValue().inverseRotate(p - d_position.getValue());
 }
 
-type::Vec3 BaseCamera::cameraToWorldTransform(const type::Vec3& v)
+type::Vec3 BaseCamera::cameraToWorldTransform(const type::Vec3& v) const
 {
     const Quat q = d_orientation.getValue();
     return q.rotate(v) ;
 }
 
-type::Vec3 BaseCamera::worldToCameraTransform(const type::Vec3& v)
+type::Vec3 BaseCamera::worldToCameraTransform(const type::Vec3& v) const
 {
     return d_orientation.getValue().inverseRotate(v);
 }
@@ -305,7 +305,7 @@ void BaseCamera::setCameraType(unsigned int type)
 }
 
 
-double BaseCamera::getHorizontalFieldOfView()
+double BaseCamera::getHorizontalFieldOfView() const
 {
     const sofa::core::visual::VisualParams* vp = sofa::core::visual::VisualParams::defaultInstance();
     const core::visual::VisualParams::Viewport viewport = vp->viewport();
@@ -783,7 +783,7 @@ void BaseCamera::setDefaultView(const type::Vec3 & gravity)
     computeZ();
 }
 
-void BaseCameraXMLExportSingleParameter(tinyxml2::XMLElement* root, core::objectmodel::BaseData& data, const std::string& comment)
+void BaseCameraXMLExportSingleParameter(tinyxml2::XMLElement* root, const core::objectmodel::BaseData& data, const std::string& comment)
 {
     tinyxml2::XMLElement* node = root->GetDocument()->NewElement( data.getName().c_str() );
     node->SetAttribute("value", data.getValueString().c_str() );
@@ -795,7 +795,7 @@ void BaseCameraXMLExportSingleParameter(tinyxml2::XMLElement* root, core::object
     root->LinkEndChild(node);
 }
 
-bool BaseCamera::exportParametersInFile(const std::string& viewFilename)
+bool BaseCamera::exportParametersInFile(const std::string& viewFilename) const
 {
     tinyxml2::XMLDocument doc;
     tinyxml2::XMLDeclaration* decl = doc.NewDeclaration();
