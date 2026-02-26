@@ -19,19 +19,55 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#ifndef SOFA_GPU_CUDA_CUDADIAGONALMASS_CPP
+#define SOFA_GPU_CUDA_CUDADIAGONALMASS_CPP
 
-#include <sofa/config.h>
-#include <sofa/config/sharedlibrary_defines.h>
+#include <SofaCUDA/component/config.h>
 
-#ifdef SOFA_BUILD_SOFACUDA
-#  define SOFACUDA_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFACUDA_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#include <sofa/gpu/cuda/CudaTypes.h>
+#include <SofaCUDA/component/mass/CudaDiagonalMass.inl>
+#include <sofa/core/behavior/Mass.inl>
+#include <sofa/core/behavior/ForceField.inl>
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/component/topology/container/dynamic/EdgeSetGeometryAlgorithms.inl>
+#include <sofa/component/topology/container/dynamic/TriangleSetGeometryAlgorithms.inl>
+#include <sofa/component/topology/container/dynamic/TetrahedronSetGeometryAlgorithms.inl>
+#include <sofa/component/topology/container/dynamic/HexahedronSetGeometryAlgorithms.inl>
+#include <sofa/component/topology/container/dynamic/QuadSetGeometryAlgorithms.inl>
+
+namespace sofa
+{
+
+
+namespace component::mass
+{
+
+template class SOFACUDA_COMPONENT_API DiagonalMass<sofa::gpu::cuda::CudaVec3fTypes>;
+
+#ifdef SOFA_GPU_CUDA_DOUBLE
+template class SOFACUDA_COMPONENT_API DiagonalMass<sofa::gpu::cuda::CudaVec3dTypes>;
 #endif
 
-namespace sofacuda
+} // namespace component::mass
+
+
+namespace gpu::cuda
 {
-	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
-	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
-} // namespace sofacuda
+
+    // Register in the Factory
+    void registerDiagonalMass(sofa::core::ObjectFactory* factory)
+    {
+        factory->registerObjects(sofa::core::ObjectRegistrationData("Supports GPU-side computations using CUDA for the DiagonalMass")
+        .add< component::mass::DiagonalMass<CudaVec3fTypes> >()
+#ifdef SOFA_GPU_CUDA_DOUBLE
+        .add< component::mass::DiagonalMass<CudaVec3dTypes> >()
+ #endif // SOFA_GPU_CUDA_DOUBLE
+        );
+    }
+
+} // namespace gpu::cuda
+
+
+} // namespace sofa
+
+#endif // SOFA_GPU_CUDA_CUDADIAGONALMASS_CPP
