@@ -24,6 +24,11 @@
 #include <sofa/config.h>
 #include <sofa/config/sharedlibrary_defines.h>
 
+#cmakedefine SOFA_GPU_THRUST
+#cmakedefine SOFA_GPU_CUDA_DOUBLE
+#cmakedefine SOFA_GPU_CUDA_PRECISE
+#cmakedefine SOFA_GPU_CUDA_DOUBLE_PRECISE
+#cmakedefine SOFA_GPU_CUBLAS
 #define SOFACUDA_GUI_VERSION @PROJECT_VERSION@
 
 #ifdef SOFA_BUILD_SOFACUDA_GUI

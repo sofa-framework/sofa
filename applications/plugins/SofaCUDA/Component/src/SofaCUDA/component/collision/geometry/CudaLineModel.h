@@ -21,17 +21,29 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/config.h>
-#include <sofa/config/sharedlibrary_defines.h>
+#include <sofa/gpu/cuda/CudaTypes.h>
+#include <sofa/component/collision/geometry/LineModel.h>
 
-#ifdef SOFA_BUILD_SOFACUDA
-#  define SOFACUDA_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFACUDA_API SOFA_IMPORT_DYNAMIC_LIBRARY
+namespace sofa::gpu::cuda
+{
+
+using CudaLineCollisionModel = sofa::component::collision::geometry::LineCollisionModel<CudaVec3Types>;
+using CudaLineCollisionModelf1 = sofa::component::collision::geometry::LineCollisionModel<CudaVec3f1Types>;
+
+using CudaLine = sofa::component::collision::geometry::TLine<CudaVec3fTypes>;
+
+} // namespace sofa::gpu::cuda
+
+
+namespace sofa::component::collision::geometry
+{
+#if !defined(SOFA_GPU_CUDA_CUDALINEMODEL_CPP)
+extern template class SOFACUDA_COMPONENT_API LineCollisionModel<sofa::gpu::cuda::CudaVec3fTypes>;
+extern template class SOFACUDA_COMPONENT_API LineCollisionModel<sofa::gpu::cuda::CudaVec3f1Types>;
+#ifdef SOFA_GPU_CUDA_DOUBLE
+extern template class SOFACUDA_COMPONENT_API LineCollisionModel<sofa::gpu::cuda::CudaVec3dTypes>;
+extern template class SOFACUDA_COMPONENT_API LineCollisionModel<sofa::gpu::cuda::CudaVec3d1Types>;
+#endif  // SOFA_GPU_CUDA_DOUBLE
 #endif
 
-namespace sofacuda
-{
-	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
-	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
-} // namespace sofacuda
+}  // namespace sofa::component::collision::geometry

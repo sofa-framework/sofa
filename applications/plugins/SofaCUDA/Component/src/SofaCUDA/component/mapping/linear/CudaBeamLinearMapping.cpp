@@ -19,19 +19,48 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#define SOFA_COMPONENT_MAPPING_CUDABEAMLINEARMAPPING_CPP
+#include <SofaCUDA/component/mapping/linear/CudaBeamLinearMapping.h>
+#include <sofa/component/mapping/linear/BeamLinearMapping.inl>
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/Mapping.inl>
+#include <sofa/gpu/cuda/CudaTypes.h>
 
-#include <sofa/config.h>
-#include <sofa/config/sharedlibrary_defines.h>
+namespace sofa::gpu::cuda
+{
 
-#ifdef SOFA_BUILD_SOFACUDA
-#  define SOFACUDA_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFACUDA_API SOFA_IMPORT_DYNAMIC_LIBRARY
+    using namespace sofa::component::mapping::linear;
+    using namespace defaulttype;
+    using namespace core;
+    using namespace core::behavior;
+
+    // Register in the Factory
+    void registerBeamLinearMapping(sofa::core::ObjectFactory* factory)
+    {
+        factory->registerObjects(sofa::core::ObjectRegistrationData("Set the positions and velocities of points attached to a beam using linear interpolation between DOFs")
+        .add< BeamLinearMapping<Rigid3Types, CudaVec3Types> >()
+#ifdef SOFA_GPU_CUDA_DOUBLE
+        .add< BeamLinearMapping<Rigid3Types, CudaVec3dTypes> >()
+#endif
+        );
+    }
+
+} // namespace sofa::gpu::cuda
+
+namespace sofa::component::mapping::linear
+{
+
+using namespace defaulttype;
+using namespace core;
+using namespace core::behavior;
+
+template class SOFACUDA_COMPONENT_API BeamLinearMapping< Rigid3Types, sofa::gpu::cuda::CudaVec3Types>;
+
+
+#ifdef SOFA_GPU_CUDA_DOUBLE
+template class SOFACUDA_COMPONENT_API BeamLinearMapping< Rigid3Types, sofa::gpu::cuda::CudaVec3dTypes>;
 #endif
 
-namespace sofacuda
-{
-	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
-	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
-} // namespace sofacuda
+
+} // namespace sofa::component::mapping::linear
