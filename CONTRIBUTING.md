@@ -73,6 +73,7 @@ For newcomers in the community, we regularly identify issues easy to tackle and 
 
 ### Rules
 
+- While **artificial intelligence** tools may assist in drafting code contributions, such contributions must address a real issue encountered by a human developer or a feature needed by end users for their specific use case. The contributor must actively participate in the development process from start to finish, ensuring no contribution is fully automated.
 - Description must explain the **issue solved** or the **feature added**, and this must be reported in the **[CHANGELOG.md](https://github.com/sofa-framework/sofa/blob/master/CHANGELOG.md)** file.
 - Code must follow **[our guidelines](https://github.com/sofa-framework/sofa/blob/master/GUIDELINES.md)**.
 - Commit must build **successfully** on Jenkins for all steps (compilation + tests + examples).
