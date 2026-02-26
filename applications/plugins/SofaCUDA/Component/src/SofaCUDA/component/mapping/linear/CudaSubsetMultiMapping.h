@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -21,17 +21,32 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/config.h>
-#include <sofa/config/sharedlibrary_defines.h>
+#include <SofaCUDA/component/config.h>
+#include <sofa/component/mapping/linear/SubsetMultiMapping.h>
 
-#ifdef SOFA_BUILD_SOFACUDA
-#  define SOFACUDA_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFACUDA_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#if !defined(SOFA_COMPONENT_MAPPING_CUDASUBSETMULTIMAPPING_CPP)
+
+#include <sofa/gpu/cuda/CudaTypes.h>
+
+namespace sofa::component::mapping::linear
+{
+
+using namespace sofa::gpu::cuda;
+
+extern template class SOFACUDA_COMPONENT_API SubsetMultiMapping< CudaVec3Types, CudaVec3Types >;
+extern template class SOFACUDA_COMPONENT_API SubsetMultiMapping< CudaVec1Types, CudaVec1Types >;
+extern template class SOFACUDA_COMPONENT_API SubsetMultiMapping< CudaRigid3Types, CudaRigid3Types >;
+extern template class SOFACUDA_COMPONENT_API SubsetMultiMapping< CudaRigid3Types, CudaVec3Types >;
+
+#ifdef SOFA_GPU_CUDA_DOUBLE
+extern template class SOFACUDA_COMPONENT_API SubsetMultiMapping< CudaVec3dTypes, CudaVec3dTypes >;
+extern template class SOFACUDA_COMPONENT_API SubsetMultiMapping< CudaVec1dTypes, CudaVec1dTypes >;
+extern template class SOFACUDA_COMPONENT_API SubsetMultiMapping< CudaRigid3dTypes, CudaRigid3dTypes >;
+extern template class SOFACUDA_COMPONENT_API SubsetMultiMapping< CudaRigid3dTypes, CudaVec3dTypes >;
 #endif
 
-namespace sofacuda
-{
-	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
-	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
-} // namespace sofacuda
+} // namespace sofa::component::mapping::linear
+#endif
+
+
+
