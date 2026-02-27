@@ -691,7 +691,7 @@ public:
         m[11] = 0;
         m[12] = (float)center[0];
         m[13] = (float)center[1];
-        m[14] = (float)center[2];
+        m[14] = 0;
         m[15] = 1;
     }
 
