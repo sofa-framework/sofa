@@ -197,7 +197,7 @@ struct Edge
 
         //compute intersection between line and plane equation
         const T denominator = planeNorm * (n1 - n0);
-        if (denominator < EQUALITY_THRESHOLD)
+        if (std::abs(denominator) < EQUALITY_THRESHOLD)
         {
             return false;
         }
