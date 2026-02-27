@@ -279,7 +279,7 @@ public :
 
     virtual void resizeBlock(Index nbBRow, Index nbBCol)
     {
-        if (nBlockRow == nbBRow && nBlockRow == nbBCol)
+        if (nBlockRow == nbBRow && nBlockCol == nbBCol)
         {
             /// Just clear the matrix
             for (Index i = 0; i < static_cast<Index>(colsValue.size()); ++i)
