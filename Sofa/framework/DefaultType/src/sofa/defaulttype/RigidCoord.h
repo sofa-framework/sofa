@@ -252,7 +252,7 @@ public:
     {
         RigidCoord r;
         r.center = c.center + center;
-        r.orientation = c.orientation();
+        r.orientation = c.orientation;
         return r;
     }
 
@@ -602,7 +602,7 @@ public:
     {
         RigidCoord r;
         r.center = c.center + center;
-        r.orientation = c.orientation();
+        r.orientation = c.orientation;
         return r;
     }
 
