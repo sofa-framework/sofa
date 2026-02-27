@@ -33,7 +33,6 @@ class SOFA_CORE_API MemorySnapshot : public BaseSnapshot
 {
 
 public:
-    //void exportSnapshot(const std::vector<BaseData*>& datafield, const std::vector<BaseLink*>& linkfield) override;
     void importSnapshot(const std::string filename) override;
 
     void exportTo(const std::string filename) override;

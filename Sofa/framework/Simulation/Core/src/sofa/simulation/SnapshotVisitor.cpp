@@ -75,10 +75,6 @@ Visitor::Result SnapshotVisitor::processNodeTopDown(simulation::Node* node)
         {
             snapshotParents.push_back(it->second);
         }
-        else
-        {
-            msg_error("SnapshotVisitor") << "Does it happen??";
-        }
     }
 
     auto snapshot = node->saveSnapshot(snapshotParents);
@@ -88,7 +84,7 @@ Visitor::Result SnapshotVisitor::processNodeTopDown(simulation::Node* node)
         m_snapshotNodeMap[node] = SnapshotNode;
     }
 
-    if (m_snapshotContainer.m_graphRoot == nullptr) //root node
+    if (m_snapshotContainer.m_graphRoot == nullptr)
     {
         m_snapshotContainer.m_graphRoot = SnapshotNode;
     }

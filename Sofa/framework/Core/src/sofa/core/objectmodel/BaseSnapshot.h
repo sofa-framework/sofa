@@ -20,9 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-//#include <sofa/core/objectmodel/Base.h>
-// #include <sofa/core/objectmodel/BaseData.h>
-// #include <sofa/core/objectmodel/BaseLink.h>
 #include <string>
 #include <vector>
 #include <memory>
@@ -36,14 +33,6 @@ namespace sofa::core::objectmodel
 
 class SOFA_CORE_API BaseSnapshot
 {
-private:
-
-
-public:
-
-    // Add containers which have all datas from a simulation in BaseData forms
-    std::vector<std::shared_ptr<BaseData>> m_baseDataContainers;
-    
 
 public:
     struct DataInfo

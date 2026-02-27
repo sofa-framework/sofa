@@ -167,7 +167,6 @@ void from_json(const nlohmann::json& j, BaseSnapshot::SnapshotNode& sn)
 {
     sn.m_name = j.value("name", "");
     
-    // Parser les données
     if (j.contains("datas") && j["datas"].is_array())
     {
         sn.m_dataContainer.clear();
@@ -179,7 +178,6 @@ void from_json(const nlohmann::json& j, BaseSnapshot::SnapshotNode& sn)
         }
     }
     
-    // Parser les liens
     if (j.contains("links") && j["links"].is_array())
     {
         sn.m_linkContainer.clear();
@@ -191,7 +189,6 @@ void from_json(const nlohmann::json& j, BaseSnapshot::SnapshotNode& sn)
         }
     }
     
-    // Parser les composants
     if (j.contains("components") && j["components"].is_array())
     {
         sn.components.clear();
@@ -203,7 +200,6 @@ void from_json(const nlohmann::json& j, BaseSnapshot::SnapshotNode& sn)
         }
     }
     
-    // Parser les enfants (récursivement)
     sn.children.clear();
     if (j.contains("children") && j["children"].is_array())
     {

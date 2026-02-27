@@ -64,7 +64,6 @@ void LoadSnapshotVisitor::processObject(
 
 Visitor::Result LoadSnapshotVisitor::processNodeTopDown(simulation::Node* node)
 { 
-    // find the snapshotObject in the snapshot in order to loadSnapshot
     auto snapshotObject = node->findSnapshotObject(m_snapshotContainer.m_graphRoot, node->getName());
 
     auto SnapshotNode = std::dynamic_pointer_cast<core::objectmodel::BaseSnapshot::SnapshotNode>(snapshotObject);

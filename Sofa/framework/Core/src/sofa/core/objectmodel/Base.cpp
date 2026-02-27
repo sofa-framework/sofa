@@ -688,11 +688,12 @@ void Base::saveDataIn(BaseSnapshot::SnapshotObject& snapshot) const
     const auto& dataFields = this->getDataFields();
     for (const auto& data : dataFields)
     {
-        // std::cout << "data type : " << data->getValueTypeString() << std::endl;
         BaseSnapshot::DataInfo dataInfo;
         dataInfo.name = data->getName();
         dataInfo.type = data->getValueTypeString();
         dataInfo.value = data->getValueString();
+
+        // Wait PR#5976 to remove
         std::string replaceValue = "nan";
         std::string newValue = "0";
         std::size_t pos = dataInfo.value.find(replaceValue);
@@ -701,6 +702,8 @@ void Base::saveDataIn(BaseSnapshot::SnapshotObject& snapshot) const
             dataInfo.value.replace(pos, replaceValue.length(),newValue);
             pos = dataInfo.value.find(replaceValue, pos + newValue.length());
         }
+        // Wait PR#5976 to remove
+        
         snapshot.m_dataContainer.push_back(dataInfo);
     }
 }
@@ -711,7 +714,6 @@ void Base::saveLinksIn(BaseSnapshot::SnapshotObject& snapshot) const
 
     for (const auto& link : links)
     {
-        // std::cout << "link type : " << link->getValueTypeString() << std::endl;
         BaseSnapshot::LinkInfo linkInfo;
         linkInfo.name = link->getName();
         linkInfo.type = link->getValueTypeString();
@@ -780,21 +782,13 @@ void Base::loadSnapshot(const std::shared_ptr<BaseSnapshot::SnapshotObject>& sna
 
     // for (const auto& linkInfo : snapshotObject->m_linkContainer)
     // {
-    //     // std::cout << "Loading link: " << linkInfo.name << std::endl;
-    //     // Find the corresponding link in the component
-    //     this->parseField(linkInfo.name, linkInfo.value);
-    // //     auto link = this->findLink(linkInfo.name);
-    // //     std::cout << "link " << std::endl;
-    // //     if (link)
-    // //     {
-    // //         std::cout << "link getpath" << std::endl;
-    // //         auto path = link->getPath();
-    // //         std::cout << "linkInfo.value : " << linkInfo.value << std::endl;
-    // //         link->parseString(linkInfo.value, &path);
-    // //         std::cout << "link value before: " << link->getValueString() << std::endl;
-    // //         link->read(path);
-    // //         std::cout << "link value after: " << link->getValueString() << std::endl;
-    // //     }
+    //     auto link = this->findLink(linkInfo.name);
+    //     if (link)
+    //     {
+    //         std::cout << "link name : " << linkInfo.name << std::endl;
+    //         std::cout << "link value : " << linkInfo.value << std::endl;
+    //         link->read(linkInfo.value);
+    //     }
     // }
 }    
 

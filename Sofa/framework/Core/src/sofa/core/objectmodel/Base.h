@@ -375,9 +375,6 @@ protected:
 public :
     virtual std::shared_ptr<BaseSnapshot::SnapshotObject> findSnapshotObject(const std::shared_ptr<BaseSnapshot::SnapshotNode>& parents, const std::string objectname);
 
-private :
-    BaseSnapshot* Snapshot_impl; 
-
 protected:
     /// List of fields (Data instances)
     VecData m_vecData;

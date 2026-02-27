@@ -38,9 +38,10 @@ using sofa::simulation::SnapshotVisitor;
 
 #include <sofa/core/objectmodel/Data.h>
 using sofa::core::objectmodel::Data;
-
-#include <sofa/core/objectmodel/BaseSnapshot.h>
+using sofa::core::objectmodel::BaseLink;
+using sofa::core::objectmodel::SingleLink ;
 using sofa::core::objectmodel::BaseSnapshot;
+using sofa::core::objectmodel::BaseNode;
 
 class TestComponent : public Base
 {
@@ -48,7 +49,6 @@ public:
     
     Data<float> d_value;
     
-
     TestComponent() 
         : d_value(initData(&d_value, 3.14f, "value", "test value"))
     {
@@ -60,13 +60,39 @@ public:
         this->saveDataIn(snapshot);
     }
 
+    void saveLinks(BaseSnapshot::SnapshotObject& snapshot)
+    {
+        this->saveLinksIn(snapshot);
+    }
+
+    std::shared_ptr<BaseSnapshot::SnapshotObject> createSnapshotObjectTest(std::vector<std::shared_ptr<BaseSnapshot::SnapshotNode>>& parents) const
+    {
+        
+        return this->createSnapshotObject(parents);
+    }
 
     SOFA_CLASS(TestComponent,Base);
+};
+
+class MockSnapshotTest : public BaseSnapshot
+{
+public:
+    void importSnapshot(const std::string filename) override
+    {}
+    void exportTo(const std::string filename) override
+    {}
+    void importFrom(std::string filename) override
+    {}
+    
+
+    MockSnapshotTest() {}
+    ~MockSnapshotTest() = default;
 };
 
 class Snapshot_test: public BaseSimulationTest
 {
 public:
+
     SceneInstance* c;
     Node* node {nullptr};
     Snapshot_test()
@@ -95,14 +121,19 @@ public:
     {
         delete c;
     }
+
+
 };
+
 
 TEST_F(Snapshot_test, saveDataIn)
 {
-    TestComponent tcomponent;
-    
+    // TEST of saveDataIn method
+    // Check if the snapshot contains the component with expected data
+
+    TestComponent tComponent;
     auto snapshot = std::make_shared<BaseSnapshot::SnapshotObject>();
-    tcomponent.saveData(*snapshot);
+    tComponent.saveData(*snapshot);
     for (auto& data : snapshot->m_dataContainer)
     {
         if(data.name == "name")
@@ -117,13 +148,83 @@ TEST_F(Snapshot_test, saveDataIn)
     }
 }
 
+TEST_F(Snapshot_test, createSnapshotObject)
+{
+    // TEST of createSnapshotObject
+    // Check if createSnapshotObject can create a SnapshotObject
+    // To verify, A name and some data are added to the SnapshotObject
+
+    TestComponent tComponent;
+    std::vector<std::shared_ptr<BaseSnapshot::SnapshotNode>> snapshotParents;
+    auto snapshotObject = tComponent.createSnapshotObjectTest(snapshotParents);
+
+    snapshotObject->m_name = "snapshotObject";
+    tComponent.saveData(*snapshotObject);
+
+    EXPECT_NE(snapshotObject, nullptr);
+    EXPECT_EQ(snapshotObject->m_name, "snapshotObject");
+
+    for (auto& data : snapshotObject->m_dataContainer)
+    {
+        if(data.name == "name")
+        {
+            EXPECT_EQ(data.value, "pi");
+        }
+
+        if(data.name == "value")
+        {
+            EXPECT_EQ(data.value, "3.14");
+        }
+    }
+}
+
+TEST_F(Snapshot_test, findSnapshotObject)
+{
+    // TEST of findSnapshotObject (Base version)
+    // 
+
+    MockSnapshotTest MockSnapshot;
+
+    EXPECT_EQ(MockSnapshot.m_graphRoot, nullptr);
+
+    MockSnapshot.m_graphRoot = std::make_shared<BaseSnapshot::SnapshotNode>("root"); 
+
+    auto snapshotObject1 = std::make_shared<BaseSnapshot::SnapshotObject>("SnapshotObject1");
+    auto snapshotObject2 = std::make_shared<BaseSnapshot::SnapshotObject>("SnapshotObject2");
+
+    MockSnapshot.m_graphRoot->components.push_back(*snapshotObject1);
+    MockSnapshot.m_graphRoot->components.push_back(*snapshotObject2);
+
+    TestComponent tComponent;
+
+    auto expectedObject1 = tComponent.findSnapshotObject(MockSnapshot.m_graphRoot, "SnapshotObject1");
+    auto expectedObject2 = tComponent.findSnapshotObject(MockSnapshot.m_graphRoot, "SnapshotObject2");
+
+    EXPECT_EQ(snapshotObject1->m_name, expectedObject1->m_name);
+    EXPECT_EQ(snapshotObject2->m_name, expectedObject2->m_name);    
+
+    Node mockNode;
+
+    auto snapshotNode1 = std::make_shared<BaseSnapshot::SnapshotNode>("SnapshotNode1");
+    auto snapshotNode2 = std::make_shared<BaseSnapshot::SnapshotNode>("SnapshotNode2");
+
+    MockSnapshot.m_graphRoot->children.push_back(snapshotNode1);
+    MockSnapshot.m_graphRoot->children.push_back(snapshotNode2);
+
+    auto expectedNode1 = mockNode.findSnapshotObject(MockSnapshot.m_graphRoot,"SnapshotNode1");
+    auto expectedNode2 = mockNode.findSnapshotObject(MockSnapshot.m_graphRoot,"SnapshotNode2");
+
+    EXPECT_EQ(snapshotNode1->m_name, expectedNode1->m_name);
+    EXPECT_EQ(snapshotNode2->m_name, expectedNode2->m_name);  
+}
+
 TEST_F(Snapshot_test, saveSnapshot)
 {
-    TestComponent tcomponent;
+    TestComponent tComponent;
 
     auto snapshot = std::make_shared<BaseSnapshot::SnapshotObject>();
     std::vector<std::shared_ptr<BaseSnapshot::SnapshotNode>> snapshotParents;
-    snapshot = tcomponent.saveSnapshot(snapshotParents);
+    snapshot = tComponent.saveSnapshot(snapshotParents);
 
     EXPECT_EQ(snapshot->m_name, "pi");
     EXPECT_EQ(snapshot->m_dataContainer.size(), 6);
@@ -135,11 +236,11 @@ TEST_F(Snapshot_test, saveSnapshot)
 
 TEST_F(Snapshot_test, loadSnapshot)
 {
-    TestComponent tcomponent;
+    TestComponent tComponent;
 
     auto snapshot = std::make_shared<BaseSnapshot::SnapshotObject>();
     std::vector<std::shared_ptr<BaseSnapshot::SnapshotNode>> snapshotParents;
-    snapshot = tcomponent.saveSnapshot(snapshotParents);
+    snapshot = tComponent.saveSnapshot(snapshotParents);
 
     TestComponent tcomponent2;
     tcomponent2.d_value.setValue(0.0f);
@@ -147,3 +248,4 @@ TEST_F(Snapshot_test, loadSnapshot)
 
     EXPECT_EQ(tcomponent2.d_value.getValue(), 3.14f);
 }
+
