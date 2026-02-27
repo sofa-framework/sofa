@@ -26,7 +26,7 @@
 namespace sofa::simulation
 {
 
-void TaskSchedulerUser::initTaskScheduler()
+void TaskSchedulerUser::initTaskScheduler(bool forceInit)
 {
     if (!d_taskSchedulerType.isSet() || d_taskSchedulerType.getValue().empty())
     {
@@ -41,7 +41,7 @@ void TaskSchedulerUser::initTaskScheduler()
         return;
     }
 
-    if (m_taskScheduler->getThreadCount() < 1)
+    if (forceInit || m_taskScheduler->getThreadCount() < 1)
     {
         auto nbThreads = sofa::helper::getWriteAccessor(d_nbThreads);
         if (nbThreads <= 0)

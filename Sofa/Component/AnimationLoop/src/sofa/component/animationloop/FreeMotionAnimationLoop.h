@@ -24,6 +24,7 @@
 
 #include <sofa/simulation/CollisionAnimationLoop.h>
 #include <sofa/core/MultiVecId.h>
+#include <sofa/simulation/task/TaskSchedulerUser.h>
 
 namespace sofa::core::behavior
 {
@@ -33,7 +34,8 @@ namespace sofa::core::behavior
 namespace sofa::component::animationloop
 {
 
-class SOFA_COMPONENT_ANIMATIONLOOP_API FreeMotionAnimationLoop : public sofa::simulation::CollisionAnimationLoop
+class SOFA_COMPONENT_ANIMATIONLOOP_API FreeMotionAnimationLoop : public sofa::simulation::CollisionAnimationLoop,
+                                                                 public sofa::simulation::TaskSchedulerUser
 {
 public:
     SOFA_CLASS(FreeMotionAnimationLoop, sofa::simulation::CollisionAnimationLoop);
