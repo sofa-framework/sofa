@@ -328,7 +328,7 @@ void FixedProjectiveConstraintInternalData<gpu::cuda::CudaVec1fTypes>::projectRe
     const Data& data = *m->data;
     if (m->d_fixAll.getValue())
         FixedProjectiveConstraintCuda1f_projectResponseContiguous(dx.size(), ((float*)dx.deviceWrite()));
-    else if (data.minIndex >= 0)
+    else if (data.minIndex != sofa::InvalidID)
         FixedProjectiveConstraintCuda1f_projectResponseContiguous(data.maxIndex-data.minIndex+1, ((float*)dx.deviceWrite())+data.minIndex);
     else
         FixedProjectiveConstraintCuda1f_projectResponseIndexed(data.cudaIndices.size(), data.cudaIndices.deviceRead(), dx.deviceWrite());
@@ -392,7 +392,7 @@ void FixedProjectiveConstraintInternalData<gpu::cuda::CudaVec3dTypes>::projectRe
     Data& data = *m->data;
     if (m->d_fixAll.getValue())
         FixedProjectiveConstraintCuda3d_projectResponseContiguous(dx.size(), ((double*)dx.deviceWrite()));
-    else if (data.minIndex >= 0)
+    else if (data.minIndex != sofa::InvalidID)
         FixedProjectiveConstraintCuda3d_projectResponseContiguous(data.maxIndex-data.minIndex+1, ((double*)dx.deviceWrite())+3*data.minIndex);
     else
         FixedProjectiveConstraintCuda3d_projectResponseIndexed(data.cudaIndices.size(), data.cudaIndices.deviceRead(), dx.deviceWrite());
@@ -404,7 +404,7 @@ void FixedProjectiveConstraintInternalData<gpu::cuda::CudaVec3d1Types>::projectR
     Data& data = *m->data;
     if (m->d_fixAll.getValue())
         FixedProjectiveConstraintCuda3d1_projectResponseContiguous(dx.size(), ((double*)dx.deviceWrite()));
-    else if (data.minIndex >= 0)
+    else if (data.minIndex != sofa::InvalidID)
         FixedProjectiveConstraintCuda3d1_projectResponseContiguous(data.maxIndex-data.minIndex+1, ((double*)dx.deviceWrite())+4*data.minIndex);
     else
         FixedProjectiveConstraintCuda3d1_projectResponseIndexed(data.cudaIndices.size(), data.cudaIndices.deviceRead(), dx.deviceWrite());
@@ -416,7 +416,7 @@ void FixedProjectiveConstraintInternalData<gpu::cuda::CudaRigid3dTypes>::project
     Data& data = *m->data;
     if (m->d_fixAll.getValue())
         FixedProjectiveConstraintCudaRigid3d_projectResponseContiguous(dx.size(), ((double*)dx.deviceWrite()));
-    else if (data.minIndex >= 0)
+    else if (data.minIndex != sofa::InvalidID)
         FixedProjectiveConstraintCudaRigid3d_projectResponseContiguous(data.maxIndex-data.minIndex+1, ((double*)dx.deviceWrite())+6*data.minIndex);
     else
         FixedProjectiveConstraintCudaRigid3d_projectResponseIndexed(data.cudaIndices.size(), data.cudaIndices.deviceRead(), dx.deviceWrite());
