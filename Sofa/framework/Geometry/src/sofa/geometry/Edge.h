@@ -307,15 +307,19 @@ struct Edge
             const T alphaNom = AC[1] * CD[0] - AC[0] * CD[1];
             const T alphaDenom = AB[1] * CD[0] - AB[0] * CD[1];
 
-            if (alphaDenom < std::numeric_limits<T>::epsilon()) // collinear
+            if (std::abs(alphaDenom) < std::numeric_limits<T>::epsilon()) // collinear
             {
                 intersectionBaryCoord = sofa::type::Vec<2, T>(0, 0);
                 return false;
             }
 
             const T alpha = alphaNom / alphaDenom;
+            // beta: pC + beta * CD = pA + alpha * AB
+            const T beta = (std::abs(CD[0]) > std::abs(CD[1]))
+                ? (AC[0] + alpha * AB[0]) / CD[0]
+                : (AC[1] + alpha * AB[1]) / CD[1];
 
-            if (alpha < 0 || alpha > 1)
+            if (alpha < 0 || alpha > 1 || beta < 0 || beta > 1)
             {
                 intersectionBaryCoord = sofa::type::Vec<2, T>(0, 0);
                 return false;
