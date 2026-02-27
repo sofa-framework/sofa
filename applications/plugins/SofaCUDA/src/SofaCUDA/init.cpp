@@ -19,36 +19,22 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaCUDA/config.h>
 #include <SofaCUDA/init.h>
-#include <sofa/gpu/cuda/mycuda.h>
+
+#include <SofaCUDA/core/init.h>
+#include <SofaCUDA/component/init.h>
+
+#include <sofa/helper/system/PluginManager.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::gpu::cuda
+namespace sofacuda
 {
-
-//Here are just several convenient functions to help user to know what contains the plugin
 
 extern "C" {
-SOFA_GPU_CUDA_API void initExternalModule();
-SOFA_GPU_CUDA_API const char* getModuleName();
-SOFA_GPU_CUDA_API const char* getModuleVersion();
-SOFA_GPU_CUDA_API const char* getModuleLicense();
-SOFA_GPU_CUDA_API const char* getModuleDescription();
-SOFA_GPU_CUDA_API const char* getModuleComponentList();
-SOFA_GPU_CUDA_API bool moduleIsInitialized();
-}
-
-bool isModuleInitialized = false;
-
-void init()
-{
-    static bool first = true;
-    if (first)
-    {
-        isModuleInitialized = sofa::gpu::cuda::mycudaInit();
-        first = false;
-    }
+    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
+    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
+    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleVersion();
+    SOFA_EXPORT_DYNAMIC_LIBRARY void registerObjects(sofa::core::ObjectFactory* factory);
 }
 
 void initExternalModule()
@@ -58,34 +44,46 @@ void initExternalModule()
 
 const char* getModuleName()
 {
-    return "SofaCUDA";
+    return MODULE_NAME;
 }
 
 const char* getModuleVersion()
 {
-    return "1.0";
+    return MODULE_VERSION;
 }
 
-const char* getModuleLicense()
+void registerObjects(sofa::core::ObjectFactory* factory)
 {
-    return "LGPL";
+    factory->registerObjectsFromPlugin("SofaCUDA.Core");
+    factory->registerObjectsFromPlugin("SofaCUDA.Component");
 }
 
-const char* getModuleDescription()
+void init()
 {
-    return "GPU-based computing using NVIDIA CUDA";
+    static bool first = true;
+    if (first)
+    {
+        // force dependencies at compile-time
+        sofacuda::core::init();
+        sofacuda::component::init();
+
+        // make sure that this plugin is registered into the PluginManager
+        sofa::helper::system::PluginManager::getInstance().registerPlugin(MODULE_NAME);
+
+        first = false;
+    }
 }
 
-const char* getModuleComponentList()
+} // namespace sofacuda
+
+// compat
+namespace sofa::gpu::cuda
 {
-    /// string containing the names of the classes provided by the plugin
-    static std::string classes = sofa::core::ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
-    return classes.c_str();
-}
 
-bool moduleIsInitialized()
+void init()
 {
-    return isModuleInitialized;
+    msg_warning("SofaCUDA") << "You must now call sofacuda::init() instead of sofa::gpu::cuda::init()";
+    sofacuda::init();
 }
 
-}
+} // sofa::gpu::cuda
