@@ -25,6 +25,7 @@
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/MechanicalOperations.h>
 #include <sofa/simulation/VectorOperations.h>
+#include <sofa/simulation/task/TaskSchedulerUser.h>
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/component/linearsolver/iterative/GraphScatteredTypes.h>
 #include <sofa/linearalgebra/FullVector.h>
@@ -43,6 +44,7 @@
 #else
 #include <sofa/core/behavior/DefaultMultiMatrixAccessor.h>
 #endif // SOFA_CORE_ENABLE_CRSMULTIMATRIXACCESSOR
+
 
 namespace sofa::component::linearsolver
 {
@@ -174,7 +176,8 @@ template<class Matrix, class Vector, class ThreadManager = NoThreadManager>
 class MatrixLinearSolver;
 
 template<class Matrix, class Vector>
-class MatrixLinearSolver<Matrix,Vector,NoThreadManager> : public BaseMatrixLinearSolver<Matrix, Vector>
+class MatrixLinearSolver<Matrix,Vector,NoThreadManager> : public BaseMatrixLinearSolver<Matrix, Vector>,
+                                                          public simulation::TaskSchedulerUser
 {
 public:
     SOFA_ABSTRACT_CLASS(SOFA_TEMPLATE3(MatrixLinearSolver,Matrix,Vector,NoThreadManager), SOFA_TEMPLATE2(BaseMatrixLinearSolver,Matrix,Vector));

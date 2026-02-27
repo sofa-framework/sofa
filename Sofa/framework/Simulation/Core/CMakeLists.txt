@@ -143,6 +143,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/task/TaskSchedulerRegistry.h
     ${SRC_ROOT}/task/TaskSchedulerUser.h
     ${SRC_ROOT}/task/WorkerThread.h
+    ${SRC_ROOT}/task/TaskSchedulerSettings.h
 )
 
 set(SOURCE_FILES
@@ -278,6 +279,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/task/TaskSchedulerRegistry.cpp
     ${SRC_ROOT}/task/TaskSchedulerUser.cpp
     ${SRC_ROOT}/task/WorkerThread.cpp
+    ${SRC_ROOT}/task/TaskSchedulerSettings.cpp
 )
 
 set(DEPRECATED_DIR "compat/sofa/simulation")

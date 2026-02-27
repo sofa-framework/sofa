@@ -42,7 +42,7 @@ void BuiltConstraintSolver::init()
     Inherit1::init();
     if(d_multithreading.getValue())
     {
-        simulation::MainTaskSchedulerFactory::createInRegistry()->init();
+        initTaskScheduler();
     }
 }
 
