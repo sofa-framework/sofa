@@ -19,7 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <iomanip>
 #include <iostream>
+#include <sstream>
 #include <sofa/type/Mat.h>
 #include <sofa/type/Quat.h>
 #include <sofa/testing/NumericTest.h>
@@ -670,4 +672,644 @@ TEST(MatTypesTest, transformVec)
     EXPECT_EQ(result[0], 2.);
     EXPECT_EQ(result[1], 2.);
     EXPECT_EQ(result[2], 3.);
+}
+
+// ======================== Operator unit tests ========================
+
+TEST(MatTypesTest, operatorAddition)
+{
+    const sofa::type::Mat<3, 3, int> A {
+        {1, 2, 3}, {4, 5, 6}, {7, 8, 9}
+    };
+    const sofa::type::Mat<3, 3, int> B {
+        {9, 8, 7}, {6, 5, 4}, {3, 2, 1}
+    };
+    const auto C = A + B;
+    for (sofa::Size i = 0; i < 3; ++i)
+        for (sofa::Size j = 0; j < 3; ++j)
+            EXPECT_EQ(C(i, j), 10);
+}
+
+TEST(MatTypesTest, operatorAdditionFloat)
+{
+    const Matrix3 A(Matrix3::Line(1., 2., 3.), Matrix3::Line(4., 5., 6.), Matrix3::Line(7., 8., 9.));
+    const Matrix3 B(Matrix3::Line(0.5, 1.5, 2.5), Matrix3::Line(3.5, 4.5, 5.5), Matrix3::Line(6.5, 7.5, 8.5));
+    const auto C = A + B;
+    EXPECT_FLOATINGPOINT_EQ(C(0, 0), 1.5_sreal)
+    EXPECT_FLOATINGPOINT_EQ(C(0, 1), 3.5_sreal)
+    EXPECT_FLOATINGPOINT_EQ(C(0, 2), 5.5_sreal)
+    EXPECT_FLOATINGPOINT_EQ(C(1, 0), 7.5_sreal)
+    EXPECT_FLOATINGPOINT_EQ(C(1, 1), 9.5_sreal)
+    EXPECT_FLOATINGPOINT_EQ(C(1, 2), 11.5_sreal)
+    EXPECT_FLOATINGPOINT_EQ(C(2, 0), 13.5_sreal)
+    EXPECT_FLOATINGPOINT_EQ(C(2, 1), 15.5_sreal)
+    EXPECT_FLOATINGPOINT_EQ(C(2, 2), 17.5_sreal)
+}
+
+TEST(MatTypesTest, operatorAdditionNonSquare)
+{
+    const sofa::type::Mat<2, 3, int> A {
+        {1, 2, 3}, {4, 5, 6}
+    };
+    const sofa::type::Mat<2, 3, int> B {
+        {10, 20, 30}, {40, 50, 60}
+    };
+    const auto C = A + B;
+    EXPECT_EQ(C(0, 0), 11); EXPECT_EQ(C(0, 1), 22); EXPECT_EQ(C(0, 2), 33);
+    EXPECT_EQ(C(1, 0), 44); EXPECT_EQ(C(1, 1), 55); EXPECT_EQ(C(1, 2), 66);
+}
+
+TEST(MatTypesTest, operatorSubtraction)
+{
+    const sofa::type::Mat<3, 3, int> A {
+        {10, 20, 30}, {40, 50, 60}, {70, 80, 90}
+    };
+    const sofa::type::Mat<3, 3, int> B {
+        {1, 2, 3}, {4, 5, 6}, {7, 8, 9}
+    };
+    const auto C = A - B;
+    EXPECT_EQ(C(0, 0), 9);  EXPECT_EQ(C(0, 1), 18); EXPECT_EQ(C(0, 2), 27);
+    EXPECT_EQ(C(1, 0), 36); EXPECT_EQ(C(1, 1), 45); EXPECT_EQ(C(1, 2), 54);
+    EXPECT_EQ(C(2, 0), 63); EXPECT_EQ(C(2, 1), 72); EXPECT_EQ(C(2, 2), 81);
+}
+
+TEST(MatTypesTest, operatorSubtractionFloat)
+{
+    const Matrix3 A(Matrix3::Line(1., 2., 3.), Matrix3::Line(4., 5., 6.), Matrix3::Line(7., 8., 9.));
+    const Matrix3 B(Matrix3::Line(0.5, 1.0, 1.5), Matrix3::Line(2.0, 2.5, 3.0), Matrix3::Line(3.5, 4.0, 4.5));
+    const auto C = A - B;
+    EXPECT_FLOATINGPOINT_EQ(C(0, 0), 0.5_sreal)
+    EXPECT_FLOATINGPOINT_EQ(C(0, 1), 1.0_sreal)
+    EXPECT_FLOATINGPOINT_EQ(C(0, 2), 1.5_sreal)
+    EXPECT_FLOATINGPOINT_EQ(C(1, 0), 2.0_sreal)
+    EXPECT_FLOATINGPOINT_EQ(C(1, 1), 2.5_sreal)
+    EXPECT_FLOATINGPOINT_EQ(C(1, 2), 3.0_sreal)
+    EXPECT_FLOATINGPOINT_EQ(C(2, 0), 3.5_sreal)
+    EXPECT_FLOATINGPOINT_EQ(C(2, 1), 4.0_sreal)
+    EXPECT_FLOATINGPOINT_EQ(C(2, 2), 4.5_sreal)
+}
+
+TEST(MatTypesTest, operatorUnaryNegation)
+{
+    const sofa::type::Mat<3, 3, int> A {
+        {1, -2, 3}, {-4, 5, -6}, {7, -8, 9}
+    };
+    const auto B = -A;
+    EXPECT_EQ(B(0, 0), -1); EXPECT_EQ(B(0, 1),  2); EXPECT_EQ(B(0, 2), -3);
+    EXPECT_EQ(B(1, 0),  4); EXPECT_EQ(B(1, 1), -5); EXPECT_EQ(B(1, 2),  6);
+    EXPECT_EQ(B(2, 0), -7); EXPECT_EQ(B(2, 1),  8); EXPECT_EQ(B(2, 2), -9);
+}
+
+TEST(MatTypesTest, operatorUnaryNegationIdentity)
+{
+    const Matrix3 A(Matrix3::Line(1., 2., 3.), Matrix3::Line(4., 5., 6.), Matrix3::Line(7., 8., 9.));
+    const auto B = -A;
+    const auto C = A + B;
+    Matrix3 zero;
+    zero.clear();
+    EXPECT_EQ(C, zero);
+}
+
+TEST(MatTypesTest, operatorMatrixTimesVector)
+{
+    const sofa::type::Mat<3, 3, int> A {
+        {1, 0, 0}, {0, 1, 0}, {0, 0, 1}
+    };
+    const sofa::type::Vec<3, int> v {2, 3, 4};
+    const auto r = A * v;
+    EXPECT_EQ(r[0], 2);
+    EXPECT_EQ(r[1], 3);
+    EXPECT_EQ(r[2], 4);
+}
+
+TEST(MatTypesTest, operatorMatrixTimesVectorGeneral)
+{
+    const sofa::type::Mat<3, 3, int> A {
+        {1, 2, 3}, {4, 5, 6}, {7, 8, 9}
+    };
+    const sofa::type::Vec<3, int> v {1, 1, 1};
+    const auto r = A * v;
+    EXPECT_EQ(r[0], 6);
+    EXPECT_EQ(r[1], 15);
+    EXPECT_EQ(r[2], 24);
+}
+
+TEST(MatTypesTest, operatorMatrixTimesVectorNonSquare)
+{
+    const sofa::type::Mat<2, 3, int> A {
+        {1, 2, 3}, {4, 5, 6}
+    };
+    const sofa::type::Vec<3, int> v {1, 2, 3};
+    const auto r = A * v;
+    EXPECT_EQ(r[0], 14);
+    EXPECT_EQ(r[1], 32);
+}
+
+TEST(MatTypesTest, operatorMatrixTimesVectorFloat)
+{
+    const Matrix3 A(Matrix3::Line(1., 0., 0.), Matrix3::Line(0., 2., 0.), Matrix3::Line(0., 0., 3.));
+    const Vec3 v(1., 2., 3.);
+    const auto r = A * v;
+    EXPECT_FLOATINGPOINT_EQ(r[0], 1._sreal)
+    EXPECT_FLOATINGPOINT_EQ(r[1], 4._sreal)
+    EXPECT_FLOATINGPOINT_EQ(r[2], 9._sreal)
+}
+
+TEST(MatTypesTest, operatorMatrixTimesScalar)
+{
+    const sofa::type::Mat<3, 3, int> A {
+        {1, 2, 3}, {4, 5, 6}, {7, 8, 9}
+    };
+    const auto B = A * 3;
+    EXPECT_EQ(B(0, 0),  3); EXPECT_EQ(B(0, 1),  6); EXPECT_EQ(B(0, 2),  9);
+    EXPECT_EQ(B(1, 0), 12); EXPECT_EQ(B(1, 1), 15); EXPECT_EQ(B(1, 2), 18);
+    EXPECT_EQ(B(2, 0), 21); EXPECT_EQ(B(2, 1), 24); EXPECT_EQ(B(2, 2), 27);
+}
+
+TEST(MatTypesTest, operatorMatrixTimesScalarFloat)
+{
+    const Matrix3 A(Matrix3::Line(1., 2., 3.), Matrix3::Line(4., 5., 6.), Matrix3::Line(7., 8., 9.));
+    const auto B = A * 0.5_sreal;
+    EXPECT_FLOATINGPOINT_EQ(B(0, 0), 0.5_sreal)
+    EXPECT_FLOATINGPOINT_EQ(B(0, 1), 1.0_sreal)
+    EXPECT_FLOATINGPOINT_EQ(B(0, 2), 1.5_sreal)
+    EXPECT_FLOATINGPOINT_EQ(B(1, 0), 2.0_sreal)
+    EXPECT_FLOATINGPOINT_EQ(B(1, 1), 2.5_sreal)
+    EXPECT_FLOATINGPOINT_EQ(B(1, 2), 3.0_sreal)
+    EXPECT_FLOATINGPOINT_EQ(B(2, 0), 3.5_sreal)
+    EXPECT_FLOATINGPOINT_EQ(B(2, 1), 4.0_sreal)
+    EXPECT_FLOATINGPOINT_EQ(B(2, 2), 4.5_sreal)
+}
+
+TEST(MatTypesTest, operatorScalarTimesMatrix)
+{
+    const sofa::type::Mat<3, 3, int> A {
+        {1, 2, 3}, {4, 5, 6}, {7, 8, 9}
+    };
+    const auto B = 3 * A;
+    const auto C = A * 3;
+    EXPECT_EQ(B, C);
+}
+
+TEST(MatTypesTest, operatorScalarTimesMatrixFloat)
+{
+    const Matrix3 A(Matrix3::Line(1., 2., 3.), Matrix3::Line(4., 5., 6.), Matrix3::Line(7., 8., 9.));
+    const auto B = 2.0_sreal * A;
+    const auto C = A * 2.0_sreal;
+    EXPECT_EQ(B, C);
+}
+
+TEST(MatTypesTest, operatorMatrixDivideScalar)
+{
+    const sofa::type::Mat<3, 3, int> A {
+        {10, 20, 30}, {40, 50, 60}, {70, 80, 90}
+    };
+    const auto B = A / 10;
+    EXPECT_EQ(B(0, 0), 1); EXPECT_EQ(B(0, 1), 2); EXPECT_EQ(B(0, 2), 3);
+    EXPECT_EQ(B(1, 0), 4); EXPECT_EQ(B(1, 1), 5); EXPECT_EQ(B(1, 2), 6);
+    EXPECT_EQ(B(2, 0), 7); EXPECT_EQ(B(2, 1), 8); EXPECT_EQ(B(2, 2), 9);
+}
+
+TEST(MatTypesTest, operatorMatrixDivideScalarFloat)
+{
+    const Matrix3 A(Matrix3::Line(2., 4., 6.), Matrix3::Line(8., 10., 12.), Matrix3::Line(14., 16., 18.));
+    const auto B = A / 2.0_sreal;
+    EXPECT_FLOATINGPOINT_EQ(B(0, 0), 1._sreal)
+    EXPECT_FLOATINGPOINT_EQ(B(0, 1), 2._sreal)
+    EXPECT_FLOATINGPOINT_EQ(B(0, 2), 3._sreal)
+    EXPECT_FLOATINGPOINT_EQ(B(1, 0), 4._sreal)
+    EXPECT_FLOATINGPOINT_EQ(B(1, 1), 5._sreal)
+    EXPECT_FLOATINGPOINT_EQ(B(1, 2), 6._sreal)
+    EXPECT_FLOATINGPOINT_EQ(B(2, 0), 7._sreal)
+    EXPECT_FLOATINGPOINT_EQ(B(2, 1), 8._sreal)
+    EXPECT_FLOATINGPOINT_EQ(B(2, 2), 9._sreal)
+}
+
+TEST(MatTypesTest, operatorMultiplyAssignScalar)
+{
+    sofa::type::Mat<3, 3, int> A {
+        {1, 2, 3}, {4, 5, 6}, {7, 8, 9}
+    };
+    const auto expected = A * 5;
+    A *= 5;
+    EXPECT_EQ(A, expected);
+}
+
+TEST(MatTypesTest, operatorMultiplyAssignScalarFloat)
+{
+    Matrix3 A(Matrix3::Line(1., 2., 3.), Matrix3::Line(4., 5., 6.), Matrix3::Line(7., 8., 9.));
+    const auto expected = A * 2.5_sreal;
+    A *= 2.5_sreal;
+    EXPECT_EQ(A, expected);
+}
+
+TEST(MatTypesTest, operatorDivideAssignScalar)
+{
+    sofa::type::Mat<3, 3, int> A {
+        {10, 20, 30}, {40, 50, 60}, {70, 80, 90}
+    };
+    const auto expected = A / 10;
+    A /= 10;
+    EXPECT_EQ(A, expected);
+}
+
+TEST(MatTypesTest, operatorDivideAssignScalarFloat)
+{
+    Matrix3 A(Matrix3::Line(2., 4., 6.), Matrix3::Line(8., 10., 12.), Matrix3::Line(14., 16., 18.));
+    const auto expected = A / 2.0_sreal;
+    A /= 2.0_sreal;
+    EXPECT_EQ(A, expected);
+}
+
+TEST(MatTypesTest, operatorAdditionAssignment)
+{
+    sofa::type::Mat<3, 3, int> A {
+        {1, 2, 3}, {4, 5, 6}, {7, 8, 9}
+    };
+    const sofa::type::Mat<3, 3, int> B {
+        {9, 8, 7}, {6, 5, 4}, {3, 2, 1}
+    };
+    const auto expected = A + B;
+    A += B;
+    EXPECT_EQ(A, expected);
+}
+
+TEST(MatTypesTest, operatorAdditionAssignmentFloat)
+{
+    Matrix3 A(Matrix3::Line(1., 2., 3.), Matrix3::Line(4., 5., 6.), Matrix3::Line(7., 8., 9.));
+    const Matrix3 B(Matrix3::Line(0.1, 0.2, 0.3), Matrix3::Line(0.4, 0.5, 0.6), Matrix3::Line(0.7, 0.8, 0.9));
+    const auto expected = A + B;
+    A += B;
+    EXPECT_EQ(A, expected);
+}
+
+TEST(MatTypesTest, operatorSubtractionAssignment)
+{
+    sofa::type::Mat<3, 3, int> A {
+        {10, 20, 30}, {40, 50, 60}, {70, 80, 90}
+    };
+    const sofa::type::Mat<3, 3, int> B {
+        {1, 2, 3}, {4, 5, 6}, {7, 8, 9}
+    };
+    const auto expected = A - B;
+    A -= B;
+    EXPECT_EQ(A, expected);
+}
+
+TEST(MatTypesTest, operatorSubtractionAssignmentFloat)
+{
+    Matrix3 A(Matrix3::Line(1., 2., 3.), Matrix3::Line(4., 5., 6.), Matrix3::Line(7., 8., 9.));
+    const Matrix3 B(Matrix3::Line(0.1, 0.2, 0.3), Matrix3::Line(0.4, 0.5, 0.6), Matrix3::Line(0.7, 0.8, 0.9));
+    const auto expected = A - B;
+    A -= B;
+    EXPECT_EQ(A, expected);
+}
+
+TEST(MatTypesTest, operatorMatrixTimesMatrixGeneral)
+{
+    const sofa::type::Mat<2, 3, int> A {
+        {1, 2, 3}, {4, 5, 6}
+    };
+    const sofa::type::Mat<3, 2, int> B {
+        sofa::type::Vec<2, int>{7, 8},
+        sofa::type::Vec<2, int>{9, 10},
+        sofa::type::Vec<2, int>{11, 12}
+    };
+    const auto C = A * B;
+    // C should be 2x2
+    // C(0,0) = 1*7 + 2*9 + 3*11 = 7 + 18 + 33 = 58
+    // C(0,1) = 1*8 + 2*10 + 3*12 = 8 + 20 + 36 = 64
+    // C(1,0) = 4*7 + 5*9 + 6*11 = 28 + 45 + 66 = 139
+    // C(1,1) = 4*8 + 5*10 + 6*12 = 32 + 50 + 72 = 154
+    EXPECT_EQ(C(0, 0), 58);
+    EXPECT_EQ(C(0, 1), 64);
+    EXPECT_EQ(C(1, 0), 139);
+    EXPECT_EQ(C(1, 1), 154);
+}
+
+TEST(MatTypesTest, operatorMatrixTimesMatrixIdentity)
+{
+    const Matrix3 A(Matrix3::Line(1., 2., 3.), Matrix3::Line(4., 5., 6.), Matrix3::Line(7., 8., 9.));
+    const auto B = A * Matrix3::Identity();
+    EXPECT_EQ(A, B);
+
+    const auto C = Matrix3::Identity() * A;
+    EXPECT_EQ(A, C);
+}
+
+TEST(MatTypesTest, operatorMatrixTimesMatrix4x4)
+{
+    const Matrix4 A(Matrix4::Line(1., 2., 3., 4.), Matrix4::Line(5., 6., 7., 8.),
+                    Matrix4::Line(9., 10., 11., 12.), Matrix4::Line(13., 14., 15., 16.));
+    const auto A2 = A * A;
+    // Row 0: [1*1+2*5+3*9+4*13, 1*2+2*6+3*10+4*14, 1*3+2*7+3*11+4*15, 1*4+2*8+3*12+4*16]
+    //      = [1+10+27+52, 2+12+30+56, 3+14+33+60, 4+16+36+64]
+    //      = [90, 100, 110, 120]
+    EXPECT_FLOATINGPOINT_EQ(A2(0, 0),  90._sreal)
+    EXPECT_FLOATINGPOINT_EQ(A2(0, 1), 100._sreal)
+    EXPECT_FLOATINGPOINT_EQ(A2(0, 2), 110._sreal)
+    EXPECT_FLOATINGPOINT_EQ(A2(0, 3), 120._sreal)
+    // Row 1: [5*1+6*5+7*9+8*13, ...] = [5+30+63+104, 10+36+70+112, 15+42+77+120, 20+48+84+128]
+    //      = [202, 228, 254, 280]
+    EXPECT_FLOATINGPOINT_EQ(A2(1, 0), 202._sreal)
+    EXPECT_FLOATINGPOINT_EQ(A2(1, 1), 228._sreal)
+    EXPECT_FLOATINGPOINT_EQ(A2(1, 2), 254._sreal)
+    EXPECT_FLOATINGPOINT_EQ(A2(1, 3), 280._sreal)
+}
+
+TEST(MatTypesTest, operatorStreamOutput)
+{
+    const sofa::type::Mat<2, 2, int> A {
+        {1, 2}, {3, 4}
+    };
+    std::ostringstream oss;
+    oss << A;
+    const std::string result = oss.str();
+    EXPECT_FALSE(result.empty());
+    // The format is [[1,2],[3,4]]
+    EXPECT_NE(result.find('1'), std::string::npos);
+    EXPECT_NE(result.find('4'), std::string::npos);
+}
+
+TEST(MatTypesTest, operatorStreamInputOutput)
+{
+    const sofa::type::Mat<2, 2, int> A {
+        {1, 2}, {3, 4}
+    };
+    std::ostringstream oss;
+    oss << A;
+
+    sofa::type::Mat<2, 2, int> B;
+    std::istringstream iss(oss.str());
+    iss >> B;
+    EXPECT_EQ(A, B);
+}
+
+TEST(MatTypesTest, operatorStreamInputOutputFloat)
+{
+    const Matrix3 A(Matrix3::Line(1.5, 2.5, 3.5), Matrix3::Line(4.5, 5.5, 6.5), Matrix3::Line(7.5, 8.5, 9.5));
+    std::ostringstream oss;
+    oss << std::setprecision(17) << A;
+
+    Matrix3 B;
+    std::istringstream iss(oss.str());
+    iss >> B;
+    EXPECT_EQ(A, B);
+}
+
+TEST(MatTypesTest, operatorAddSubConsistency)
+{
+    const sofa::type::Mat<3, 3, int> A {
+        {1, 2, 3}, {4, 5, 6}, {7, 8, 9}
+    };
+    const sofa::type::Mat<3, 3, int> B {
+        {9, 8, 7}, {6, 5, 4}, {3, 2, 1}
+    };
+    // (A + B) - B should be A
+    const auto C = (A + B) - B;
+    EXPECT_EQ(C, A);
+}
+
+TEST(MatTypesTest, operatorScalarMultiplyDivideConsistency)
+{
+    const Matrix3 A(Matrix3::Line(2., 4., 6.), Matrix3::Line(8., 10., 12.), Matrix3::Line(14., 16., 18.));
+    const auto B = A * 3.0_sreal;
+    const auto C = B / 3.0_sreal;
+    EXPECT_MAT_NEAR(A, C, 1e-10_sreal);
+}
+
+TEST(MatTypesTest, operatorAdditionWithZero)
+{
+    const Matrix3 A(Matrix3::Line(1., 2., 3.), Matrix3::Line(4., 5., 6.), Matrix3::Line(7., 8., 9.));
+    Matrix3 zero;
+    zero.clear();
+    const auto B = A + zero;
+    EXPECT_EQ(A, B);
+}
+
+TEST(MatTypesTest, operatorMultiplyByZeroScalar)
+{
+    const sofa::type::Mat<3, 3, int> A {
+        {1, 2, 3}, {4, 5, 6}, {7, 8, 9}
+    };
+    const auto B = A * 0;
+    sofa::type::Mat<3, 3, int> zero;
+    zero.clear();
+    EXPECT_EQ(B, zero);
+}
+
+TEST(MatTypesTest, operatorMultiplyByOneScalar)
+{
+    const Matrix3 A(Matrix3::Line(1., 2., 3.), Matrix3::Line(4., 5., 6.), Matrix3::Line(7., 8., 9.));
+    const auto B = A * 1.0_sreal;
+    EXPECT_EQ(A, B);
+}
+
+TEST(MatTypesTest, operatorDistributivity)
+{
+    const sofa::type::Mat<3, 3, int> A {
+        {1, 2, 3}, {4, 5, 6}, {7, 8, 9}
+    };
+    const sofa::type::Mat<3, 3, int> B {
+        {9, 8, 7}, {6, 5, 4}, {3, 2, 1}
+    };
+    // k * (A + B) should equal k*A + k*B
+    const auto lhs = (A + B) * 3;
+    const auto rhs = A * 3 + B * 3;
+    EXPECT_EQ(lhs, rhs);
+}
+
+TEST(MatTypesTest, operatorAssignmentConsistency)
+{
+    sofa::type::Mat<3, 3, int> A {
+        {1, 2, 3}, {4, 5, 6}, {7, 8, 9}
+    };
+    const sofa::type::Mat<3, 3, int> B {
+        {9, 8, 7}, {6, 5, 4}, {3, 2, 1}
+    };
+    // A += B should give the same result as A = A + B
+    auto C = A;
+    C += B;
+    EXPECT_EQ(C, A + B);
+
+    C = A;
+    C -= B;
+    EXPECT_EQ(C, A - B);
+
+    C = A;
+    C *= 3;
+    EXPECT_EQ(C, A * 3);
+
+    C = A;
+    // Use integer division (exact)
+    const sofa::type::Mat<3, 3, int> D {
+        {3, 6, 9}, {12, 15, 18}, {21, 24, 27}
+    };
+    C = D;
+    C /= 3;
+    EXPECT_EQ(C, A);
+}
+
+TEST(MatTypesTest, operatorNegationTwice)
+{
+    const sofa::type::Mat<3, 3, int> A {
+        {1, -2, 3}, {-4, 5, -6}, {7, -8, 9}
+    };
+    const auto B = -(-A);
+    EXPECT_EQ(A, B);
+}
+
+TEST(MatTypesTest, trace)
+{
+    const sofa::type::Mat<3, 3, int> A {
+        {1, 2, 3}, {4, 5, 6}, {7, 8, 9}
+    };
+    EXPECT_EQ(sofa::type::trace(A), 15);
+
+    EXPECT_FLOATINGPOINT_EQ(sofa::type::trace(Matrix3::Identity()), 3.0_sreal)
+}
+
+TEST(MatTypesTest, diagonal)
+{
+    const sofa::type::Mat<3, 3, int> A {
+        {1, 2, 3}, {4, 5, 6}, {7, 8, 9}
+    };
+    const auto d = sofa::type::diagonal(A);
+    EXPECT_EQ(d[0], 1);
+    EXPECT_EQ(d[1], 5);
+    EXPECT_EQ(d[2], 9);
+}
+
+TEST(MatTypesTest, scalarProduct)
+{
+    const sofa::type::Mat<2, 2, int> A {
+        {1, 2}, {3, 4}
+    };
+    const sofa::type::Mat<2, 2, int> B {
+        {5, 6}, {7, 8}
+    };
+    // scalarProduct = 1*5 + 2*6 + 3*7 + 4*8 = 5 + 12 + 21 + 32 = 70
+    EXPECT_EQ(sofa::type::scalarProduct(A, B), 70);
+}
+
+TEST(MatTypesTest, scalarProductIdentity)
+{
+    // scalarProduct of identity with itself = trace(I) = N
+    EXPECT_FLOATINGPOINT_EQ(sofa::type::scalarProduct(Matrix3::Identity(), Matrix3::Identity()), 3.0_sreal)
+}
+
+TEST(MatTypesTest, crossProductMatrix)
+{
+    const Vec3 v(1., 2., 3.);
+    const auto M = sofa::type::crossProductMatrix(v);
+    // crossProductMatrix(v) * x should equal v.cross(x)
+    const Vec3 x(4., 5., 6.);
+    const auto result = M * x;
+    const auto expected = v.cross(x);
+    EXPECT_FLOATINGPOINT_EQ(result[0], expected[0])
+    EXPECT_FLOATINGPOINT_EQ(result[1], expected[1])
+    EXPECT_FLOATINGPOINT_EQ(result[2], expected[2])
+}
+
+TEST(MatTypesTest, crossProductMatrixSkewSymmetric)
+{
+    const Vec3 v(1., 2., 3.);
+    const auto M = sofa::type::crossProductMatrix(v);
+    // A skew-symmetric matrix has M^T = -M
+    const auto MT = M.transposed();
+    const auto negM = -M;
+    EXPECT_EQ(MT, negM);
+}
+
+TEST(MatTypesTest, dyad)
+{
+    const sofa::type::Vec<3, int> u {1, 2, 3};
+    const sofa::type::Vec<2, int> v {4, 5};
+    const auto M = sofa::type::dyad(u, v);
+    // M(i,j) = u[i] * v[j]
+    EXPECT_EQ(M(0, 0), 4);  EXPECT_EQ(M(0, 1), 5);
+    EXPECT_EQ(M(1, 0), 8);  EXPECT_EQ(M(1, 1), 10);
+    EXPECT_EQ(M(2, 0), 12); EXPECT_EQ(M(2, 1), 15);
+}
+
+TEST(MatTypesTest, operatorMatrixTimesMatrixNonSquare)
+{
+    const sofa::type::Mat<3, 2, int> A {
+        sofa::type::Vec<2, int>{1, 2},
+        sofa::type::Vec<2, int>{3, 4},
+        sofa::type::Vec<2, int>{5, 6}
+    };
+    const sofa::type::Mat<2, 4, int> B {
+        sofa::type::Vec<4, int>{1, 2, 3, 4},
+        sofa::type::Vec<4, int>{5, 6, 7, 8}
+    };
+    const auto C = A * B;
+    // C is 3x4
+    // C(0,0) = 1*1 + 2*5 = 11
+    // C(0,1) = 1*2 + 2*6 = 14
+    // C(0,2) = 1*3 + 2*7 = 17
+    // C(0,3) = 1*4 + 2*8 = 20
+    EXPECT_EQ(C(0, 0), 11); EXPECT_EQ(C(0, 1), 14); EXPECT_EQ(C(0, 2), 17); EXPECT_EQ(C(0, 3), 20);
+    // C(1,0) = 3*1 + 4*5 = 23
+    // C(1,1) = 3*2 + 4*6 = 30
+    // C(1,2) = 3*3 + 4*7 = 37
+    // C(1,3) = 3*4 + 4*8 = 44
+    EXPECT_EQ(C(1, 0), 23); EXPECT_EQ(C(1, 1), 30); EXPECT_EQ(C(1, 2), 37); EXPECT_EQ(C(1, 3), 44);
+    // C(2,0) = 5*1 + 6*5 = 35
+    // C(2,1) = 5*2 + 6*6 = 46
+    // C(2,2) = 5*3 + 6*7 = 57
+    // C(2,3) = 5*4 + 6*8 = 68
+    EXPECT_EQ(C(2, 0), 35); EXPECT_EQ(C(2, 1), 46); EXPECT_EQ(C(2, 2), 57); EXPECT_EQ(C(2, 3), 68);
+}
+
+TEST(MatTypesTest, operatorMultiplyScalarNonSquare)
+{
+    const sofa::type::Mat<2, 3, int> A {
+        {1, 2, 3}, {4, 5, 6}
+    };
+    const auto B = A * 2;
+    EXPECT_EQ(B(0, 0), 2); EXPECT_EQ(B(0, 1), 4); EXPECT_EQ(B(0, 2), 6);
+    EXPECT_EQ(B(1, 0), 8); EXPECT_EQ(B(1, 1), 10); EXPECT_EQ(B(1, 2), 12);
+
+    const auto C = 2 * A;
+    EXPECT_EQ(B, C);
+}
+
+TEST(MatTypesTest, multTransposedMember)
+{
+    const sofa::type::Mat<2, 3, int> A {
+        {1, 2, 3}, {4, 5, 6}
+    };
+    const sofa::type::Mat<2, 3, int> B {
+        {7, 8, 9}, {10, 11, 12}
+    };
+    // A * B^T: [2,3] * [3,2] = [2,2]
+    const auto C = A.multTransposed(B);
+    // C(0,0) = 1*7 + 2*8 + 3*9 = 7+16+27 = 50
+    // C(0,1) = 1*10 + 2*11 + 3*12 = 10+22+36 = 68
+    // C(1,0) = 4*7 + 5*8 + 6*9 = 28+40+54 = 122
+    // C(1,1) = 4*10 + 5*11 + 6*12 = 40+55+72 = 167
+    EXPECT_EQ(C(0, 0), 50);
+    EXPECT_EQ(C(0, 1), 68);
+    EXPECT_EQ(C(1, 0), 122);
+    EXPECT_EQ(C(1, 1), 167);
+}
+
+TEST(MatTypesTest, operatorMatrixTimesMatrixAssociativity)
+{
+    const sofa::type::Mat<2, 3, int> A {
+        {1, 2, 3}, {4, 5, 6}
+    };
+    const sofa::type::Mat<3, 2, int> B {
+        sofa::type::Vec<2, int>{7, 8},
+        sofa::type::Vec<2, int>{9, 10},
+        sofa::type::Vec<2, int>{11, 12}
+    };
+    const sofa::type::Mat<2, 2, int> C {
+        {1, 0}, {0, 2}
+    };
+    // (A * B) * C should equal A * (B * C)
+    const auto lhs = (A * B) * C;
+    const auto rhs = A * (B * C);
+    EXPECT_EQ(lhs, rhs);
 }
