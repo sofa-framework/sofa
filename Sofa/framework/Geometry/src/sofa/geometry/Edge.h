@@ -165,7 +165,7 @@ struct Edge
             N2 = sofa::type::cross(AB, AC).norm2();
         }
 
-        if (N2 > EQUALITY_THRESHOLD || N2 < 0)
+        if (std::abs(N2) > EQUALITY_THRESHOLD)
             return false;
         
         return true;
