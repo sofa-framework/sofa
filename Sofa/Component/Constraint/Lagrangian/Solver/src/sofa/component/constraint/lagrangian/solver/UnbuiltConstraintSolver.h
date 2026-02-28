@@ -24,6 +24,7 @@
 #include <sofa/component/constraint/lagrangian/solver/GenericConstraintSolver.h>
 #include <sofa/core/behavior/ConstraintResolution.h>
 
+#include <sofa/simulation/mechanicalvisitor/MechanicalGetConstraintInfoVisitor.h>
 
 
 namespace sofa::component::constraint::lagrangian::solver
@@ -40,11 +41,50 @@ class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API UnbuiltConstraintSolver : 
 {
 public:
     SOFA_CLASS(UnbuiltConstraintSolver, GenericConstraintSolver);
+    
+protected:
+    UnbuiltConstraintSolver();
 
-
+public:
     virtual void initializeConstraintProblems() override;
+
+    Data<bool> d_initialGuess; ///< Activate constraint force history to improve convergence (hot start)
 
 protected:
     virtual void doBuildSystem( const core::ConstraintParams *cParams, GenericConstraintProblem * problem, unsigned int numConstraints) override;
+    
+    virtual void doPreApplyCorrection() override;
+    virtual void doPreClearCorrection(const core::ConstraintParams* cparams) override;
+    virtual void doPostClearCorrection() override;
+    
+    ///<
+    // Hot-start mechanism types
+    typedef core::behavior::BaseLagrangianConstraint::ConstraintBlockInfo ConstraintBlockInfo;
+    typedef core::behavior::BaseLagrangianConstraint::PersistentID PersistentID;
+    typedef core::behavior::BaseLagrangianConstraint::VecConstraintBlockInfo VecConstraintBlockInfo;
+    typedef core::behavior::BaseLagrangianConstraint::VecPersistentID VecPersistentID;
+
+    class ConstraintBlockBuf
+    {
+    public:
+        std::map<PersistentID, int> persistentToConstraintIdMap;
+        int nbLines{0}; ///< how many dofs (i.e. lines in the matrix) are used by each constraint
+    };
+
+    /// Compute initial guess for constraint forces from previous timestep
+    void computeInitialGuess();
+
+    /// Save constraint forces for use as initial guess in next timestep
+    void keepContactForcesValue();
+
+    /// Get constraint info (block info and persistent IDs) for hot-start
+    void getConstraintInfo(const core::ConstraintParams* cparams);
+
+    // Hot-start data storage
+    std::map<core::behavior::BaseLagrangianConstraint*, ConstraintBlockBuf> m_previousConstraints;
+    type::vector<SReal> m_previousForces;
+    VecConstraintBlockInfo m_constraintBlockInfo;
+    VecPersistentID m_constraintIds;
+    unsigned int m_numConstraints{0}; ///< Number of constraints from current/previous timestep
 };
 }

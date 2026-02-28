@@ -24,8 +24,17 @@
 #include <sofa/component/constraint/lagrangian/solver/UnbuiltConstraintProblem.h>
 #include <sofa/component/constraint/lagrangian/solver/GenericConstraintSolver.h>
 
+#include <sofa/helper/ScopedAdvancedTimer.h>
+
 namespace sofa::component::constraint::lagrangian::solver
 {
+
+UnbuiltConstraintSolver::UnbuiltConstraintSolver()
+: GenericConstraintSolver()
+, d_initialGuess(initData(&d_initialGuess, false, "initialGuess", "Activate constraint force history to possibly improve convergence (hot start)."))
+{
+    
+}
 
 void UnbuiltConstraintSolver::doBuildSystem( const core::ConstraintParams *cParams, GenericConstraintProblem * problem, unsigned int numConstraints)
 {
@@ -60,11 +69,9 @@ void UnbuiltConstraintSolver::doBuildSystem( const core::ConstraintParams *cPara
     for (unsigned int i = 0; i < numConstraints; i++)
         c_current_cp->cclist_elems[i].resize(nbCC, nullptr);
 
-    unsigned int nbObjects = 0;
     for (unsigned int c_id = 0; c_id < numConstraints;)
     {
         bool foundCC = false;
-        nbObjects++;
         const unsigned int l = c_current_cp->constraintsResolutions[c_id]->getNbLines();
 
         for (unsigned int j = 0; j < l_constraintCorrections.size(); j++)
@@ -94,6 +101,24 @@ void UnbuiltConstraintSolver::doBuildSystem( const core::ConstraintParams *cPara
 
 }
 
+void UnbuiltConstraintSolver::doPreApplyCorrection()
+{
+    if (!d_initialGuess.getValue())
+        return;
+    
+    // Save forces for hot-start in next timestep
+    keepContactForcesValue();
+}
+void UnbuiltConstraintSolver::doPreClearCorrection(const core::ConstraintParams* cparams)
+{
+    getConstraintInfo(cparams);
+}
+
+void UnbuiltConstraintSolver::doPostClearCorrection()
+{
+    computeInitialGuess();
+}
+
 void UnbuiltConstraintSolver::initializeConstraintProblems()
 {
     for (unsigned i=0; i< CP_BUFFER_SIZE; ++i)
@@ -102,6 +127,108 @@ void UnbuiltConstraintSolver::initializeConstraintProblems()
     }
     current_cp = m_cpBuffer[0].get();
 }
+
+void UnbuiltConstraintSolver::getConstraintInfo(const core::ConstraintParams* cparams)
+{
+    if (d_initialGuess.getValue() && (m_numConstraints != 0))
+    {
+        SCOPED_TIMER("GetConstraintInfo");
+        m_constraintBlockInfo.clear();
+        m_constraintIds.clear();
+        simulation::mechanicalvisitor::MechanicalGetConstraintInfoVisitor(cparams, m_constraintBlockInfo, m_constraintIds).execute(getContext());
+    }
+}
+
+void UnbuiltConstraintSolver::computeInitialGuess()
+{
+    if (!d_initialGuess.getValue() || m_numConstraints == 0)
+        return;
+
+    SCOPED_TIMER("InitialGuess");
+
+    SReal* force = current_cp->getF();
+    const int numConstraints = current_cp->getDimension();
+
+    // First, zero all forces
+    for (int c = 0; c < numConstraints; c++)
+    {
+        force[c] = 0.0;
+    }
+    
+    // Then restore forces from previous timestep for matching persistent IDs
+    for (const ConstraintBlockInfo& info : m_constraintBlockInfo)
+    {
+        if (!info.parent) continue;
+        if (!info.hasId) continue;
+
+        auto previt = m_previousConstraints.find(info.parent);
+        if (previt == m_previousConstraints.end()) continue;
+
+        const ConstraintBlockBuf& buf = previt->second;
+        const int c0 = info.const0;
+        const int nbl = (info.nbLines < buf.nbLines) ? info.nbLines : buf.nbLines;
+
+        for (int c = 0; c < info.nbGroups; ++c)
+        {
+            auto it = buf.persistentToConstraintIdMap.find(m_constraintIds[info.offsetId + c]);
+            if (it == buf.persistentToConstraintIdMap.end()) continue;
+
+            const int prevIndex = it->second;
+            if (prevIndex >= 0 && prevIndex + nbl <= static_cast<int>(m_previousForces.size()))
+            {
+                for (int l = 0; l < nbl; ++l)
+                {
+                    force[c0 + c * nbl + l] = m_previousForces[prevIndex + l];
+                }
+            }
+        }
+    }
+}
+
+void UnbuiltConstraintSolver::keepContactForcesValue()
+{
+    SCOPED_TIMER("KeepForces");
+
+    const SReal* force = current_cp->getF();
+    const unsigned int numConstraints = current_cp->getDimension();
+
+    // Store current forces
+    m_previousForces.resize(numConstraints);
+    for (unsigned int c = 0; c < numConstraints; ++c)
+    {
+        m_previousForces[c] = force[c];
+    }
+
+    // Clear previous history (mark all as invalid)
+    for (auto& previousConstraint : m_previousConstraints)
+    {
+        ConstraintBlockBuf& buf = previousConstraint.second;
+        for (auto& it2 : buf.persistentToConstraintIdMap)
+        {
+            it2.second = -1;
+        }
+    }
+
+    // Fill info from current constraint IDs
+    for (const ConstraintBlockInfo& info : m_constraintBlockInfo)
+    {
+        if (!info.parent) continue;
+        if (!info.hasId) continue;
+
+        ConstraintBlockBuf& buf = m_previousConstraints[info.parent];
+        buf.nbLines = info.nbLines;
+
+        for (int c = 0; c < info.nbGroups; ++c)
+        {
+            buf.persistentToConstraintIdMap[m_constraintIds[info.offsetId + c]] = info.const0 + c * info.nbLines;
+        }
+    }
+
+    // Update constraint count for next iteration
+    m_numConstraints = numConstraints;
+}
+
+
 
 
 }

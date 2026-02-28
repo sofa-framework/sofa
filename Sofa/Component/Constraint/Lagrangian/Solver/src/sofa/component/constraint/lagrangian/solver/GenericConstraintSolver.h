@@ -96,6 +96,9 @@ protected:
     sofa::core::MultiVecDerivId m_dxId;
 
     virtual void initializeConstraintProblems();
+    virtual void preApplyCorrection() { doPreApplyCorrection(); }
+    void preClearCorrection(const core::ConstraintParams* cparams) { doPreClearCorrection(cparams); }
+    void postClearCorrection() { doPostClearCorrection(); }
 
     /*****
      *
@@ -122,10 +125,12 @@ protected:
      *
      */
     virtual void doSolve( GenericConstraintProblem * problem, SReal timeout = 0.0) = 0;
+    
+    virtual void doPreApplyCorrection() { }
+    virtual void doPreClearCorrection(const core::ConstraintParams* cparams) { SOFA_UNUSED(cparams); }
+    virtual void doPostClearCorrection() { }
 
     virtual void addRegularization(linearalgebra::BaseMatrix& W, const SReal regularization);
-
-
 
 private:
 
