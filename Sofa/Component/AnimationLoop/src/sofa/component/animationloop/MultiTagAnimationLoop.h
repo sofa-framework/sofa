@@ -45,7 +45,8 @@ public:
 
     ~MultiTagAnimationLoop() override;
 
-    void step (const sofa::core::ExecParams* params, SReal dt) override;
+protected:
+    void doStep (const sofa::core::ExecParams* params, SReal dt) override;
 
 private:
     sofa::core::objectmodel::TagSet tagList;

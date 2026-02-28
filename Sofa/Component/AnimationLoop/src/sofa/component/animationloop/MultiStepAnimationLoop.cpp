@@ -59,7 +59,7 @@ MultiStepAnimationLoop::~MultiStepAnimationLoop()
 {
 }
 
-void MultiStepAnimationLoop::step(const sofa::core::ExecParams* params, SReal dt)
+void MultiStepAnimationLoop::doStep(const sofa::core::ExecParams* params, SReal dt)
 {
     auto node = dynamic_cast<sofa::simulation::Node*>(this->l_node.get());
 
