@@ -28,7 +28,7 @@ namespace sofa::component::mechanicalload
 
 extern void registerConicalForceField(sofa::core::ObjectFactory* factory);
 extern void registerConstantForceField(sofa::core::ObjectFactory* factory);
-extern void registerDiagonalVelocityDampingForceField(sofa::core::ObjectFactory* factory);
+extern void registerNodalLinearDampingForceField(sofa::core::ObjectFactory* factory);
 extern void registerEdgePressureForceField(sofa::core::ObjectFactory* factory);
 extern void registerEllipsoidForceField(sofa::core::ObjectFactory* factory);
 extern void registerGravity(sofa::core::ObjectFactory* factory);
@@ -42,7 +42,6 @@ extern void registerSurfacePressureForceField(sofa::core::ObjectFactory* factory
 extern void registerTaitSurfacePressureForceField(sofa::core::ObjectFactory* factory);
 extern void registerTorsionForceField(sofa::core::ObjectFactory* factory);
 extern void registerTrianglePressureForceField(sofa::core::ObjectFactory* factory);
-extern void registerUniformVelocityDampingForceField(sofa::core::ObjectFactory* factory);
 
 extern "C" {
     SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
@@ -70,7 +69,7 @@ void registerObjects(sofa::core::ObjectFactory* factory)
 {
     registerConicalForceField(factory);
     registerConstantForceField(factory);
-    registerDiagonalVelocityDampingForceField(factory);
+    registerNodalLinearDampingForceField(factory);
     registerEdgePressureForceField(factory);
     registerEllipsoidForceField(factory);
     registerGravity(factory);
@@ -84,7 +83,6 @@ void registerObjects(sofa::core::ObjectFactory* factory)
     registerTaitSurfacePressureForceField(factory);
     registerTorsionForceField(factory);
     registerTrianglePressureForceField(factory);
-    registerUniformVelocityDampingForceField(factory);
 }
 
 void init()
