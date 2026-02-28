@@ -80,7 +80,7 @@ void TopologicalMapping::dumpLoc2GlobVec()
 }
 
 
-bool TopologicalMapping::checkTopologyInputTypes()
+bool TopologicalMapping::checkTopologyInputTypes() const
 {
     bool res = checkMappingInputType();
     res = res && checkMappingOutputType();
