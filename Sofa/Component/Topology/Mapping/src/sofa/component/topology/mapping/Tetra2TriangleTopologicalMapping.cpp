@@ -85,8 +85,7 @@ void Tetra2TriangleTopologicalMapping::init()
     if (!l_topologyModifier)
     {
         msg_warning() << "No TriangleSetTopologyModifier found in output topology context ("
-                         << toModel->getContext()->getName() << ") but has not been found. Dynamic "
-                         "topological changes will not be supported.";
+                         << toModel->getContext()->getName() << "). Dynamic topological changes will not be supported.";
     }
     
 
