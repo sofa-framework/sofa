@@ -109,27 +109,13 @@ int mycudaInit(int device)
         size_t free, total;
         cudaMemGetInfo(&free,&total);
 
-#if CUDA_VERSION >= 2010
-    #if CUDA_VERSION < 13000
+#if CUDA_VERSION < 13000
         mycudaPrintf("CUDA:  %d : \"%s\", %d/%d MB, %d cores at %.3f GHz, revision %d.%d",i,dev.name, free/(1024*1024), dev.totalGlobalMem/(1024*1024), dev.multiProcessorCount*8, dev.clockRate * 1e-6f, dev.major, dev.minor);
         if (dev.kernelExecTimeoutEnabled)
             mycudaPrintf(", timeout enabled");
         mycudaPrintf("\n");
-    #else
+#else
         mycudaPrintf("CUDA:  %d : \"%s\", %d/%d MB, %d cores, revision %d.%d\n",i,dev.name, free/(1024*1024), dev.totalGlobalMem/(1024*1024), dev.multiProcessorCount*8, dev.major, dev.minor);
-    #endif
-#elif CUDA_VERSION >= 2000
-    #if CUDA_VERSION < 13000
-        mycudaPrintf("CUDA:  %d : \"%s\", %d/%d MB, %d cores at %.3f GHz, revision %d.%d\n",i,dev.name, free/(1024*1024), dev.totalGlobalMem/(1024*1024), dev.multiProcessorCount*8, dev.clockRate * 1e-6f, dev.major, dev.minor);
-    #else
-        mycudaPrintf("CUDA:  %d : \"%s\", %d/%d MB, %d cores, revision %d.%d\n",i,dev.name, free/(1024*1024), dev.totalGlobalMem/(1024*1024), dev.multiProcessorCount*8, dev.major, dev.minor);
-    #endif
-#else //if CUDA_VERSION >= 1000
-    #if CUDA_VERSION < 13000
-        mycudaPrintf("CUDA:  %d : \"%s\", %d/%d MB, cores at %.3f GHz, revision %d.%d\n",i,dev.name, free/(1024*1024), dev.totalGlobalMem/(1024*1024), dev.clockRate * 1e-6f, dev.major, dev.minor);
-    #else
-        mycudaPrintf("CUDA:  %d : \"%s\", %d/%d MB, cores, revision %d.%d\n",i,dev.name, free/(1024*1024), dev.totalGlobalMem/(1024*1024), dev.major, dev.minor);
-    #endif
 #endif
     }
     if (device==-1)
@@ -260,15 +246,12 @@ void mycudaThreadSynchronize()
     cudaDeviceSynchronize();
 }
 
-#if CUDA_VERSION >= 4000
-
 void mycudaDeviceSynchronize()
 {
 	if (!cudaInitCalled) return;
-	
+
 	cudaDeviceSynchronize();
 }
-#endif
 
 void mycudaCheckError(const char* src)
 {

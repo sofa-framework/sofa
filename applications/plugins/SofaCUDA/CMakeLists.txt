@@ -289,14 +289,6 @@ if(Sofa.Qt_FOUND)
     list(APPEND SOURCE_FILES ${SOFACUDACORE_SOURCE_DIR}/sofa/gpu/gui/CudaDataWidget.cpp)
 endif()
 
-sofa_find_package(SofaValidation QUIET)
-if(SofaValidation_FOUND)
-    list(APPEND SOURCE_FILES
-        ${SOFACUDACORE_SOURCE_DIR}/sofa/gpu/cuda/CudaExtraMonitor.cpp
-        )
-    message(STATUS "SofaCUDA: found SofaValidation, enabling CudaExtraMonitor (Warning: this component is being deprecated). ")
-endif()
-
 option(SOFACUDA_VERBOSE_PTXAS "???" OFF)
 
 option(SOFACUDA_CUBLAS "Activate cublas support in CUDA (requires SOFACUDA_DOUBLE)." OFF)
@@ -304,11 +296,6 @@ if(SOFACUDA_CUBLAS)
     set(SOFA_GPU_CUBLAS 1)       # #cmakedefine
     list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
     find_package(CUDASparse REQUIRED)
-endif()
-
-option(SOFACUDA_CUDPP "Activate CUDPP (for RadixSort)." OFF)
-if(SOFACUDA_CUDPP)
-    set(SOFA_GPU_CUDPP 1)       # #cmakedefine
 endif()
 
 # Note: THRUST is included in CUDA SDK 4.0+, it is recommended to use it if available
@@ -323,17 +310,19 @@ if(SOFACUDA_DOUBLE)
 endif()
 
 
-option(SOFACUDA_DOUBLE_PRECISE "Enable double-precision for sqrt/div... (requires compute capability
->= 2 and CUDA_VERSION > 3.0)" OFF)
 # Note: with SOFA_GPU_CUDA_PRECISE and SOFA_GPU_CUDA_DOUBLE you get IEEE
 # 754-compliant floating point operations for addition and multiplication only.
+option(SOFACUDA_PRECISE "Use IEEE 754-compliant floating point operations." OFF)
+option(SOFACUDA_DOUBLE_PRECISE "Enable double-precision for sqrt/div..." OFF)
+if(SOFACUDA_PRECISE)
+    set(SOFA_GPU_CUDA_PRECISE 1)       # #cmakedefine
+endif()
 if(SOFACUDA_DOUBLE_PRECISE)
     set(SOFA_GPU_CUDA_DOUBLE_PRECISE 1)       # #cmakedefine
 endif()
 
-option(SOFACUDA_PRECISE "Use IEEE 754-compliant floating point operations." OFF)
 
-sofa_find_package(CUDAToolkit 10.0 REQUIRED)
+sofa_find_package(CUDAToolkit 11.0 REQUIRED)
 
 # nvcc uses a "host code compiler" to compile CPU code, specified by CUDA_HOST_COMPILER.
 # With some versions of CMake, CUDA_HOST_COMPILER defaults to CMAKE_C_COMPILER,
@@ -342,9 +331,6 @@ if (${CUDA_HOST_COMPILER} MATCHES "ccache$")
     message(STATUS "SofaCUDA: CUDA host compiler was set to ccache, changing to g++")
     set(CUDA_HOST_COMPILER "g++" CACHE STRING "Host side compiler used by NVCC" FORCE)
 endif()
-
-# quick and dirty fix for nvcc compatibility with -fno-partial-inlining flag
-set(CUDA_PROPAGATE_HOST_FLAGS OFF)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${CUDA_SOURCES} ${README_FILES})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFACUDA_COMPILE_DEFINITIONS}")
@@ -392,16 +378,9 @@ if(Sofa.Qt_FOUND)
     target_link_libraries(${PROJECT_NAME} Sofa.Qt)
 endif()
 
-if(SofaValidation_FOUND)
-    target_link_libraries(${PROJECT_NAME} SofaValidation)
-endif()
-
 if(SOFACUDA_CUBLAS)
     target_link_libraries(${PROJECT_NAME} ${CUDA_cusparse_LIBRARY} CUDA::cublas)
 
-endif()
-if(SOFACUDA_CUDPP)
-    target_link_libraries(${PROJECT_NAME} cudpp)
 endif()
 
 ## Install rules for the library and headers; CMake package configurations files
