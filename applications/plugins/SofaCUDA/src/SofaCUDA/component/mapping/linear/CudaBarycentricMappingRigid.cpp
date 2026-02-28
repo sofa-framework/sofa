@@ -41,20 +41,12 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
+using namespace sofa::defaulttype;
 
 namespace sofa::component::mapping::linear
 {
 
-using namespace sofa::defaulttype;
 using namespace sofa::gpu::cuda;
-
-// Register in the Factory
-void registerBarycentricMapping(sofa::core::ObjectFactory* factory)
-{
-    factory->registerObjects(sofa::core::ObjectRegistrationData("Supports GPU-side computations using CUDA for the BarycentricMapping")
-    .add< BarycentricMapping< CudaVec3Types, Rigid3Types > >());
-}
-
 
 template <>
 void BarycentricMapperHexahedronSetTopology<CudaVec3Types, defaulttype::Rigid3Types>::handleTopologyChange(core::topology::Topology* t)
@@ -191,8 +183,17 @@ void BarycentricMapperHexahedronSetTopology<CudaVec3Types, defaulttype::Rigid3Ty
     }
 }
 
-
-
 template class SOFA_GPU_CUDA_API BarycentricMapping< CudaVec3Types, Rigid3Types >;
 
 } // namespace sofa::component::mapping::linear
+
+
+namespace sofa::gpu::cuda
+{
+    // Register in the Factory
+    void registerBarycentricMapping_3fRigid(sofa::core::ObjectFactory* factory)
+    {
+        factory->registerObjects(sofa::core::ObjectRegistrationData("Supports GPU-side computations using CUDA for the BarycentricMapping")
+        .add< sofa::component::mapping::linear::BarycentricMapping< CudaVec3Types, sofa::defaulttype::Rigid3Types > >());
+    }
+}

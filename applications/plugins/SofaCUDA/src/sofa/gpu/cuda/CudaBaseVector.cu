@@ -24,15 +24,6 @@
 #include "mycuda.h"
 #include <cuda.h>
 
-#if defined(__cplusplus) && CUDA_VERSION < 2000
-namespace sofa
-{
-namespace gpu
-{
-namespace cuda
-{
-#endif
-
 using namespace sofa::gpu::cuda;
 
 extern "C"
@@ -155,10 +146,4 @@ void SOFA_GPU_CUDA_API permute_vectord(int dim,const void * a, const void * perm
 
     {permute_vector_kernel<double><<< grid, threads >>>(dim,(const double *) a,(const int *) perm,(double *) b); mycudaDebugError("Cuda_sub_vector_kernel<double>");}
 }
-#endif
-
-#if defined(__cplusplus) && CUDA_VERSION < 2000
-} // namespace cuda
-} // namespace gpu
-} // namespace sofa
 #endif
