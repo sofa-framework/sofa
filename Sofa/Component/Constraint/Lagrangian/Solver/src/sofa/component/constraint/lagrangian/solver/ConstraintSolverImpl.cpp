@@ -89,7 +89,7 @@ void ConstraintSolverImpl::cleanup()
     ConstraintSolver::cleanup();
 }
 
-void ConstraintSolverImpl::removeConstraintCorrection(core::behavior::BaseConstraintCorrection* s)
+void ConstraintSolverImpl::doRemoveConstraintCorrection(core::behavior::BaseConstraintCorrection* s)
 {
     l_constraintCorrections.remove(s);
 }

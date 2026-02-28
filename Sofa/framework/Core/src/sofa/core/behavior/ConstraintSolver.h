@@ -48,7 +48,17 @@ protected:
     ConstraintSolver();
 
     ~ConstraintSolver() override;
-
+    virtual void doSolveConstraint(const ConstraintParams *cParams, MultiVecId res1, MultiVecId res2=MultiVecId::null());
+    virtual bool doPrepareStates(const ConstraintParams *cParams, MultiVecId res1, MultiVecId res2=MultiVecId::null()) = 0;
+    virtual bool doBuildSystem(const ConstraintParams *cParams, MultiVecId res1, MultiVecId res2=MultiVecId::null()) = 0;
+    virtual void doRebuildSystem(SReal /*massFactor*/, SReal /*forceFactor*/) {};
+    virtual bool doSolveSystem(const ConstraintParams *cParams, MultiVecId res1, MultiVecId res2=MultiVecId::null()) = 0;
+    virtual bool doApplyCorrection(const ConstraintParams *cParams, MultiVecId res1, MultiVecId res2=MultiVecId::null()) = 0;
+    virtual void doComputeResidual(const core::ExecParams* /*cParams*/)
+    {
+        dmsg_error() << "ComputeResidual is not implemented in " << this->getName() ;
+    }
+    virtual void doRemoveConstraintCorrection(BaseConstraintCorrection *s) = 0;
 private:
     ConstraintSolver(const ConstraintSolver& n) = delete;
     ConstraintSolver& operator=(const ConstraintSolver& n) = delete;
@@ -58,42 +68,124 @@ public:
     /**
      * Launch the sequence of operations in order to solve the constraints
      */
-    virtual void solveConstraint(const ConstraintParams *, MultiVecId res1, MultiVecId res2=MultiVecId::null());
+    /**
+     * !!! WARNING since v25.12 !!!
+     *
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doSolveConstraint" internally,
+     * which is the method to override from now on.
+     *
+    **/
+    virtual void solveConstraint(const ConstraintParams *cParams, MultiVecId res1, MultiVecId res2=MultiVecId::null()) final
+    {
+        //TODO (SPRINT SED 2025): Component state mechanism
+        doSolveConstraint(cParams, res1, res2);
+    }
 
     /**
      * Do the precomputation: compute free state, or propagate the states to the mapped mechanical states, where the constraint can be expressed
      */
-    virtual bool prepareStates(const ConstraintParams *, MultiVecId res1, MultiVecId res2=MultiVecId::null())=0;
+    /**
+     * !!! WARNING since v25.12 !!!
+     *
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doPrepareStates" internally,
+     * which is the method to override from now on.
+     *
+    **/
+    virtual bool prepareStates(const ConstraintParams *cParams, MultiVecId res1, MultiVecId res2=MultiVecId::null()) final
+    {
+        //TODO (SPRINT SED 2025): Component state mechanism
+        return doPrepareStates(cParams,res1,res2);
+    }
 
     /**
      * Create the system corresponding to the constraints
      */
-    virtual bool buildSystem(const ConstraintParams *, MultiVecId res1, MultiVecId res2=MultiVecId::null())=0;
+    /**
+        * !!! WARNING since v25.12 !!!
+        *
+        * The template method pattern has been applied to this part of the API.
+        * This method calls the newly introduced method "doBuildSystem" internally,
+        * which is the method to override from now on.
+        *
+    **/
+    virtual bool buildSystem(const ConstraintParams *cParams, MultiVecId res1, MultiVecId res2=MultiVecId::null()) final
+    {
+        //TODO (SPRINT SED 2025): Component state mechanism
+        return doBuildSystem(cParams, res1, res2);
+    }
 
     /**
      * Rebuild the system using a mass and force factor.
      * Experimental API used to investigate convergence issues.
      */
-    SOFA_ATTRIBUTE_DEPRECATED__REBUILDSYSTEM() virtual void rebuildSystem(SReal /*massfactor*/, SReal /*forceFactor*/){}
+    /**
+        * !!! WARNING since v25.12 !!!
+        *
+        * The template method pattern has been applied to this part of the API.
+        * This method calls the newly introduced method "doRebuildSystem" internally,
+        * which is the method to override from now on.
+        *
+    **/
+    SOFA_ATTRIBUTE_DEPRECATED__REBUILDSYSTEM() virtual void rebuildSystem(SReal massFactor, SReal forceFactor) final
+    {
+        //TODO (SPRINT SED 2025): Component state mechanism
+        doRebuildSystem(massFactor, forceFactor);
+    }
+
 
     /**
      * Use the system previously built and solve it with the appropriate algorithm
      */
-    virtual bool solveSystem(const ConstraintParams *, MultiVecId res1, MultiVecId res2=MultiVecId::null())=0;
+    /**
+        * !!! WARNING since v25.12 !!!
+        *
+        * The template method pattern has been applied to this part of the API.
+        * This method calls the newly introduced method "doSolveSystem" internally,
+        * which is the method to override from now on.
+        *
+    **/
+    virtual bool solveSystem(const ConstraintParams *cParams, MultiVecId res1, MultiVecId res2=MultiVecId::null()) final
+    {
+        //TODO (SPRINT SED 2025): Component state mechanism
+        return doSolveSystem(cParams, res1, res2);
+    }
 
     /**
      * Correct the Mechanical State with the solution found
      */
-    virtual bool applyCorrection(const ConstraintParams *, MultiVecId res1, MultiVecId res2=MultiVecId::null())=0;
+    /**
+        * !!! WARNING since v25.12 !!!
+        *
+        * The template method pattern has been applied to this part of the API.
+        * This method calls the newly introduced method "doApplyCorrection" internally,
+        * which is the method to override from now on.
+        *
+    **/
+    virtual bool applyCorrection(const ConstraintParams *cParams, MultiVecId res1, MultiVecId res2=MultiVecId::null()) final
+    {
+        //TODO (SPRINT SED 2025): Component state mechanism
+        return doApplyCorrection(cParams, res1, res2);
+    }
 
 
     /// Compute the residual in the newton iterations due to the constraints forces
     /// i.e. compute Vecid::force() += J^t lambda
     /// the result is accumulated in Vecid::force()
+    /**
+        * !!! WARNING since v25.12 !!!
+        *
+        * The template method pattern has been applied to this part of the API.
+        * This method calls the newly introduced method "doCompureResidual" internally,
+        * which is the method to override from now on.
+        *
+    **/
     SOFA_ATTRIBUTE_DEPRECATED__COMPUTERESIDUAL()
-    virtual void computeResidual(const core::ExecParams* /*params*/)
+    virtual void computeResidual(const core::ExecParams* cParams) final
     {
-        dmsg_error() << "ComputeResidual is not implemented in " << this->getName() ;
+        //TODO (SPRINT SED 2025): Component state mechanism
+        doComputeResidual(cParams);
     }
 
     /// @name Resolution DOFs vectors API
@@ -112,7 +204,19 @@ public:
     /// Remove reference to ConstraintCorrection
     ///
     /// @param c is the ConstraintCorrection
-    virtual void removeConstraintCorrection(BaseConstraintCorrection *s) = 0;
+    /**
+        * !!! WARNING since v25.12 !!!
+        *
+        * The template method pattern has been applied to this part of the API.
+        * This method calls the newly introduced method "doRemoveConstraintCorrection" internally,
+        * which is the method to override from now on.
+        *
+    **/
+    virtual void removeConstraintCorrection(BaseConstraintCorrection *s) final
+    {
+        //TODO (SPRINT SED 2025): Component state mechanism
+        doRemoveConstraintCorrection(s);
+    }
 
     bool insertInNode( objectmodel::BaseNode* node ) override;
     bool removeInNode( objectmodel::BaseNode* node ) override;

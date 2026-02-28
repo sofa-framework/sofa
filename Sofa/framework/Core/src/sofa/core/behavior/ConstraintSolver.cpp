@@ -31,7 +31,7 @@ namespace sofa::core::behavior
 ConstraintSolver::ConstraintSolver() = default;
 ConstraintSolver::~ConstraintSolver() = default;
 
-void ConstraintSolver::solveConstraint(const ConstraintParams * cParams, MultiVecId res1, MultiVecId res2)
+void ConstraintSolver::doSolveConstraint(const ConstraintParams * cParams, MultiVecId res1, MultiVecId res2)
 {
     SCOPED_TIMER("SolveConstraint");
     prepareStatesTask(cParams, res1, res2) &&
