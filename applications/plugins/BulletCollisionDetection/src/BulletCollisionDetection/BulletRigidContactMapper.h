@@ -9,11 +9,11 @@
 #include <sofa/component/statecontainer/MechanicalObject.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/component/collision/response/mapper/BaseContactMapper.h>
-#include <sofa/component/collision/geometry/SphereModel.h>
-#include <sofa/component/collision/geometry/TriangleModel.h>
+#include <sofa/component/collision/geometry/SphereCollisionModel.h>
+#include <sofa/component/collision/geometry/TriangleCollisionModel.h>
 #include <sofa/component/collision/geometry/TetrahedronModel.h>
-#include <sofa/component/collision/geometry/LineModel.h>
-#include <sofa/component/collision/geometry/PointModel.h>
+#include <sofa/component/collision/geometry/LineCollisionModel.h>
+#include <sofa/component/collision/geometry/PointCollisionModel.h>
 #include <sofa/component/collision/geometry/CylinderModel.h>
 #include <sofa/core/VecId.h>
 #include <iostream>

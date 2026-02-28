@@ -24,4 +24,4 @@
 #include <sofa/geometry/config.h>
 #include <sofa/geometry/Prism.h>
 
-SOFA_HEADER_DEPRECATED("v25.12", "v26.06", "sofa/geometry/Prism.h")
+SOFA_HEADER_DISABLED("v25.12", "v26.06", "sofa/geometry/Prism.h")

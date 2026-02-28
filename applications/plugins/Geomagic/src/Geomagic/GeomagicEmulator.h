@@ -24,7 +24,7 @@
 #include <Geomagic/config.h>
 #include <Geomagic/GeomagicDriver.h>
 
-#include <sofa/simulation/TaskScheduler.h>
+#include <sofa/simulation/task/TaskScheduler.h>
 #include <sofa/simulation/InitTasks.h>
 
 

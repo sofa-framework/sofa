@@ -1,7 +1,7 @@
 #ifndef BULLET_TRIANGLE_MODEL
 #define BULLET_TRIANGLE_MODEL
 
-#include <sofa/component/collision/geometry/TriangleModel.h>
+#include <sofa/component/collision/geometry/TriangleCollisionModel.h>
 #include "BulletCollisionModel.h"
 #include <sofa/simulation/CollisionBeginEvent.h>
 #include <BulletCollisionDetection/config.h>

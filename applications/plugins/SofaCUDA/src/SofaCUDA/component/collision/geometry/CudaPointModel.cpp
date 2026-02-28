@@ -22,7 +22,7 @@
 #include <SofaCUDA/component/collision/geometry/CudaPointModel.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/collision/geometry/CubeModel.h>
+#include <sofa/component/collision/geometry/CubeCollisionModel.h>
 
 namespace sofa::gpu::cuda
 {
