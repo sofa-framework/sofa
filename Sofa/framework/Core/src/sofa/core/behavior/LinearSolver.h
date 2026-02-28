@@ -135,9 +135,9 @@ public:
     /// Compute the residual in the newton iterations due to the constraints forces
     /// i.e. compute mparams->dF() = J^t lambda
     /// the result is written in mparams->dF()
-    SOFA_ATTRIBUTE_DEPRECATED__COMPUTERESIDUAL()
+    SOFA_ATTRIBUTE_DISABLED__COMPUTERESIDUAL()
     virtual void computeResidual(const core::ExecParams* /*params*/,
-                                 linearalgebra::BaseVector* /*f*/);
+                                 linearalgebra::BaseVector* /*f*/) = delete;
 
     /// Multiply the inverse of the system matrix by the transpose of the given matrix, and multiply
     /// the result with the given matrix J

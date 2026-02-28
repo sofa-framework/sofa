@@ -133,10 +133,6 @@ void GenericConstraintCorrection::removeConstraintSolver(ConstraintSolver *s)
     constraintsolvers.remove(s);
 }
 
-void GenericConstraintCorrection::rebuildSystem(SReal massFactor, SReal forceFactor)
-{
-}
-
 void GenericConstraintCorrection::addComplianceInConstraintSpace(const ConstraintParams *cparams, BaseMatrix* W)
 {
     if (!l_ODESolver.get()) return;
@@ -228,12 +224,6 @@ void GenericConstraintCorrection::applyContactForce(const BaseVector *f)
     // dx *= correctionFactor
     applyMotionCorrection(&cparams, core::vec_id::write_access::position, core::vec_id::write_access::velocity, dx, force);
 }
-
-void GenericConstraintCorrection::computeResidual(const ExecParams* params, linearalgebra::BaseVector *lambda)
-{
-    l_linearSolver.get()->computeResidual(params, lambda);
-}
-
 
 void GenericConstraintCorrection::getComplianceMatrix(linearalgebra::BaseMatrix* Minv) const
 {

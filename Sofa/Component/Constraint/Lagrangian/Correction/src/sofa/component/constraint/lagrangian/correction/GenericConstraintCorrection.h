@@ -106,13 +106,9 @@ public:
 
     void applyPredictiveConstraintForce(const core::ConstraintParams *cparams, core::MultiVecDerivId f, const linearalgebra::BaseVector *lambda) override;
 
-    void rebuildSystem(SReal massFactor, SReal forceFactor) override;
-
     void applyContactForce(const linearalgebra::BaseVector *f) override;
 
     void resetContactForce() override;
-
-    void computeResidual(const core::ExecParams* params, linearalgebra::BaseVector *lambda) override;
 
     SingleLink<GenericConstraintCorrection, sofa::core::behavior::LinearSolver, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_linearSolver; ///< Link towards the linear solver used to compute the compliance matrix, requiring the inverse of the linear system matrix
     SingleLink<GenericConstraintCorrection, sofa::core::behavior::OdeSolver, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_ODESolver; ///< Link towards the ODE solver used to recover the integration factors

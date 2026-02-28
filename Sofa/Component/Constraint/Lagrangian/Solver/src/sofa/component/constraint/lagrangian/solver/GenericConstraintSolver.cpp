@@ -205,18 +205,6 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
     return true;
 }
 
-
-void GenericConstraintSolver::rebuildSystem(const SReal massFactor, const SReal forceFactor)
-{
-    for (const auto& cc : l_constraintCorrections)
-    {
-        if (cc->isActive())
-        {
-            cc->rebuildSystem(massFactor, forceFactor);
-        }
-    }
-}
-
 void printLCP(std::ostream& file, SReal *q, SReal **M, SReal *f, int dim, bool printMatrix = true)
 {
     file.precision(9);
@@ -297,14 +285,6 @@ bool GenericConstraintSolver::solveSystem(const core::ConstraintParams * /*cPara
     }
 
     return true;
-}
-
-void GenericConstraintSolver::computeResidual(const core::ExecParams* eparam)
-{
-    for (const auto& cc : l_constraintCorrections)
-    {
-        cc->computeResidual(eparam,&current_cp->f);
-    }
 }
 
 sofa::type::vector<core::behavior::BaseConstraintCorrection*> GenericConstraintSolver::filteredConstraintCorrections() const
