@@ -37,7 +37,7 @@ VisualModelOBJExporter::~VisualModelOBJExporter()
 }
 
 
-bool VisualModelOBJExporter::write()
+bool VisualModelOBJExporter::doWrite()
 {
     return writeOBJ() ;
 }

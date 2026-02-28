@@ -96,7 +96,7 @@ void STLExporter::doReInit()
     d_componentState.setValue(ComponentState::Valid) ;
 }
 
-bool STLExporter::write()
+bool STLExporter::doWrite()
 {
     if(d_componentState.getValue() != ComponentState::Valid)
         return false ;
