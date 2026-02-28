@@ -73,12 +73,12 @@ public:
      * reflect the effects of the first topology changes on the second topology.
      *
      */
-    void updateTopologicalMappingTopDown() override;
+    void doUpdateTopologicalMappingTopDown() override;
 
-    Index getFromIndex(Index ind) override;
+    Index doGetFromIndex(Index ind) override;
 
     /// Method to check the topology mapping maps regarding the upper topology
-    bool checkTopologies() override;
+    bool doCheckTopologies() override;
 
 protected:
     Data<bool> d_flipNormals; ///< Flip Normal ? (Inverse point order when creating triangle)

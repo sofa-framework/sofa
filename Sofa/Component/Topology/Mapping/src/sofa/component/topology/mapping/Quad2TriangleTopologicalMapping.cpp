@@ -165,12 +165,12 @@ void Quad2TriangleTopologicalMapping::init()
     this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
 
-Index Quad2TriangleTopologicalMapping::getFromIndex(Index ind)
+Index Quad2TriangleTopologicalMapping::doGetFromIndex(Index ind)
 {
     return ind; // identity
 }
 
-void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
+void Quad2TriangleTopologicalMapping::doUpdateTopologicalMappingTopDown()
 {
     using namespace container::dynamic;
 

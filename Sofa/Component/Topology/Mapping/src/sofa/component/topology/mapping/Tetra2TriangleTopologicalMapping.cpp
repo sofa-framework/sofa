@@ -126,7 +126,7 @@ void Tetra2TriangleTopologicalMapping::init()
 }
 
 
-Index Tetra2TriangleTopologicalMapping::getFromIndex(Index ind)
+Index Tetra2TriangleTopologicalMapping::doGetFromIndex(Index ind)
 {
 
     if(fromModel->getTetrahedraAroundTriangle(ind).size()==1)
@@ -139,7 +139,7 @@ Index Tetra2TriangleTopologicalMapping::getFromIndex(Index ind)
     }
 }
 
-void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
+void Tetra2TriangleTopologicalMapping::doUpdateTopologicalMappingTopDown()
 {
     if (this->d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
         return;
@@ -472,7 +472,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 }
 
 
-bool Tetra2TriangleTopologicalMapping::checkTopologies()
+bool Tetra2TriangleTopologicalMapping::doCheckTopologies()
 {
     if (this->d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
         return false;

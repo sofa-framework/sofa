@@ -70,9 +70,9 @@ public:
     * reflect the effects of the first topology changes on the second topology.
     *
     */
-    void updateTopologicalMappingTopDown() override;
+    void doUpdateTopologicalMappingTopDown() override;
 
-    Index getFromIndex(Index ind) override;
+    Index doGetFromIndex(Index ind) override;
 
     sofa::core::objectmodel::Data<bool> d_swapping; ///< Boolean enabling to swapp hexa-edges  in order to avoid bias effect
 };
