@@ -70,7 +70,6 @@ public:
     void init() override;
 
     void apply(const core::MechanicalParams *mparams, DataVecCoord_t<Out>& out, const DataVecCoord_t<In>& in) override;
-    void buildGeometricStiffnessMatrix(sofa::core::GeometricStiffnessMatrix* matrices) override;
 
     void computeBBox(const core::ExecParams* params, bool onlyVisible) override;
     void draw(const core::visual::VisualParams* vparams) override;
@@ -82,6 +81,7 @@ protected:
                             Data<VecDeriv_t<In> >& parentForce,
                             const Data<VecDeriv_t<In> >& parentDisplacement,
                             const Data<VecDeriv_t<Out> >& childForce) override;
+    void doBuildGeometricStiffnessMatrix(sofa::core::GeometricStiffnessMatrix* matrices) override;
 
     using typename Inherit1::SparseKMatrixEigen;
 

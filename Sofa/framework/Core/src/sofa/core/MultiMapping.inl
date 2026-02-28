@@ -128,14 +128,14 @@ void MultiMapping<In,Out>::init()
         }
     }
 
-    apply(mechanicalparams::defaultInstance() , vec_id::write_access::position, vec_id::read_access::position);
-    applyJ(mechanicalparams::defaultInstance() , vec_id::write_access::velocity, vec_id::read_access::velocity);
+    BaseMapping::apply(mechanicalparams::defaultInstance() , vec_id::write_access::position, vec_id::read_access::position);
+    BaseMapping::applyJ(mechanicalparams::defaultInstance() , vec_id::write_access::velocity, vec_id::read_access::velocity);
     if (f_applyRestPosition.getValue())
-        apply(mechanicalparams::defaultInstance(), vec_id::write_access::restPosition, vec_id::read_access::restPosition);
+        BaseMapping::apply(mechanicalparams::defaultInstance(), vec_id::write_access::restPosition, vec_id::read_access::restPosition);
 }
 
 template <class In, class Out>
-void MultiMapping<In,Out>::apply(const MechanicalParams* mparams, MultiVecCoordId outPos, ConstMultiVecCoordId inPos)
+void MultiMapping<In,Out>::doApply(const MechanicalParams* mparams, MultiVecCoordId outPos, ConstMultiVecCoordId inPos)
 {
     type::vector<OutDataVecCoord*> vecOutPos;
     getVecOutCoord(outPos, vecOutPos);
@@ -145,7 +145,7 @@ void MultiMapping<In,Out>::apply(const MechanicalParams* mparams, MultiVecCoordI
 }// MultiMapping::apply
 
 template <class In, class Out>
-void MultiMapping<In,Out>::applyJ(const MechanicalParams* mparams, MultiVecDerivId outVel, ConstMultiVecDerivId inVel)
+void MultiMapping<In,Out>::doApplyJ(const MechanicalParams* mparams, MultiVecDerivId outVel, ConstMultiVecDerivId inVel)
 {
     type::vector<OutDataVecDeriv*> vecOutVel;
     getVecOutDeriv(outVel, vecOutVel);
@@ -155,7 +155,7 @@ void MultiMapping<In,Out>::applyJ(const MechanicalParams* mparams, MultiVecDeriv
 }// MultiMapping::applyJ
 
 template <class In, class Out>
-void MultiMapping<In,Out>::applyJT(const MechanicalParams* mparams, MultiVecDerivId inForce, ConstMultiVecDerivId outForce)
+void MultiMapping<In,Out>::doApplyJT(const MechanicalParams* mparams, MultiVecDerivId inForce, ConstMultiVecDerivId outForce)
 {
     type::vector<InDataVecDeriv*> vecOutForce;
     getVecInDeriv(inForce, vecOutForce);
@@ -166,7 +166,7 @@ void MultiMapping<In,Out>::applyJT(const MechanicalParams* mparams, MultiVecDeri
 }// MultiMapping::applyJT
 
 template <class In, class Out>
-void MultiMapping<In,Out>::disable()
+void MultiMapping<In,Out>::doDisable()
 {
 }
 } // namespace sofa::core

@@ -263,7 +263,7 @@ void DistanceMultiMapping<TIn, TOut>::applyJT(const type::vector< InVecDeriv*>& 
 }
 
 template <class TIn, class TOut>
-void DistanceMultiMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId inForce, core::ConstMultiVecDerivId outForce)
+void DistanceMultiMapping<TIn, TOut>::doApplyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId inForce, core::ConstMultiVecDerivId outForce)
 {
     SOFA_UNUSED(outForce);
     // NOT OPTIMIZED AT ALL, but will do the job for now
@@ -344,13 +344,13 @@ void DistanceMultiMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mpa
 
 
 template <class TIn, class TOut>
-const type::vector<sofa::linearalgebra::BaseMatrix*>* DistanceMultiMapping<TIn, TOut>::getJs()
+const type::vector<sofa::linearalgebra::BaseMatrix*>* DistanceMultiMapping<TIn, TOut>::doGetJs()
 {
     return &baseMatrices;
 }
 
 template <class TIn, class TOut>
-void DistanceMultiMapping<TIn, TOut>::updateK(const core::MechanicalParams* /*mparams*/, core::ConstMultiVecDerivId childForceId )
+void DistanceMultiMapping<TIn, TOut>::doUpdateK(const core::MechanicalParams* /*mparams*/, core::ConstMultiVecDerivId childForceId )
 {
     const unsigned& geometricStiffness = d_geometricStiffness.getValue().getSelectedId();
     if( !geometricStiffness ) { K.resize(0,0); return; }
@@ -409,13 +409,13 @@ void DistanceMultiMapping<TIn, TOut>::updateK(const core::MechanicalParams* /*mp
 
 
 template <class TIn, class TOut>
-const linearalgebra::BaseMatrix* DistanceMultiMapping<TIn, TOut>::getK()
+const linearalgebra::BaseMatrix* DistanceMultiMapping<TIn, TOut>::doGetK()
 {
     return &K;
 }
 
 template <class TIn, class TOut>
-void DistanceMultiMapping<TIn, TOut>::buildGeometricStiffnessMatrix(
+void DistanceMultiMapping<TIn, TOut>::doBuildGeometricStiffnessMatrix(
     sofa::core::GeometricStiffnessMatrix* matrices)
 {
     const unsigned& geometricStiffness = d_geometricStiffness.getValue().getSelectedId();

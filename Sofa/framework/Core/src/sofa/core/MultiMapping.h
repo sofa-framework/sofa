@@ -100,24 +100,11 @@ public:
     /// Get the destination (lower, mapped) model.
     virtual type::vector<behavior::BaseMechanicalState*> getMechTo() override;
 
-    /// Apply ///
-    /// Apply the mapping to position vectors.
-    ///
-    /// If the Mapping can be represented as a matrix \f$ J \f$, this method computes
-    /// \f$ out = J in \f$
-    void apply (const MechanicalParams* mparams, MultiVecCoordId outPos, ConstMultiVecCoordId inPos ) override;
-
     /// This method must be reimplemented by all mappings.
     /// InPos and OutPos by default contains VecIds of type V_COORD.
     /// The size of InPos vector is the same as the number of fromModels.
     /// The size of OutPos vector is the same as the number of OutModels.
     virtual void apply(const MechanicalParams* mparams, const type::vector<OutDataVecCoord*>& dataVecOutPos, const type::vector<const InDataVecCoord*>& dataVecInPos) = 0;
-
-    /// ApplyJ ///
-    /// Apply the mapping to derived (velocity, displacement) vectors.
-    /// \f$ out = J in \f$
-    /// where \f$ J \f$ is the tangent operator (the linear approximation) of the mapping
-    void applyJ (const MechanicalParams* mparams, MultiVecDerivId outVel, ConstMultiVecDerivId inVel ) override;
 
     /// This method must be reimplemented by all mappings.
     /// InDeriv and OutDeriv by default contains VecIds of type V_DERIV.
@@ -125,46 +112,18 @@ public:
     /// The size of OutDeriv vector is the same as the number of OutModels.
     virtual void applyJ(const MechanicalParams* mparams, const type::vector<OutDataVecDeriv*>& dataVecOutVel, const type::vector<const InDataVecDeriv*>& dataVecInVel) = 0;
 
-    /// ApplyJT (Force)///
-    /// Apply the reverse mapping to force vectors.
-    /// \f$ out += J^t in \f$
-    /// where \f$ J \f$ is the tangent operator (the linear approximation) of the mapping
-    void applyJT (const MechanicalParams* mparams, MultiVecDerivId inForce, ConstMultiVecDerivId outForce ) override;
-
     /// This method must be reimplemented by all mappings.
     /// InDeriv and OutDeriv by default contains VecIds of type V_DERIV.
     /// The size of InDeriv vector is the same as the number of fromModels.
     /// The size of OutDeriv vector is the same as the number of OutModels.
     virtual void applyJT(const MechanicalParams* mparams, const type::vector<InDataVecDeriv*>& dataVecOutForce, const type::vector<const OutDataVecDeriv*>& dataVecInForce) = 0;
 
-    /// ApplyJT (Constraint)///
-    void applyJT(const ConstraintParams* cparams, MultiMatrixDerivId inConst, ConstMultiMatrixDerivId outConst ) override
-    {
-        type::vector<InDataMatrixDeriv*> matOutConst;
-        getMatInDeriv(inConst, matOutConst);
-        type::vector<const OutDataMatrixDeriv*> matInConst;
-        getConstMatOutDeriv(outConst, matInConst);
-
-        this->applyJT(cparams, matOutConst, matInConst);
-    }
     /// This method must be reimplemented by all mappings if they need to support constraints.
     virtual void applyJT( const ConstraintParams* /* cparams */, const type::vector< InDataMatrixDeriv* >& /* dataMatOutConst */, const type::vector< const OutDataMatrixDeriv* >& /* dataMatInConst */ )
     {
         msg_error() << "This mapping does not support certain constraints since MultiMapping::applyJT( const ConstraintParams*, const type::vector< InDataMatrixDeriv* >& , const type::vector< const OutDataMatrixDeriv* >&  ) is not overloaded";
     }
 
-    /// computeAccFromMapping
-    void computeAccFromMapping(const MechanicalParams* mparams, MultiVecDerivId outAcc, ConstMultiVecDerivId inVel, ConstMultiVecDerivId inAcc) override
-    {
-        type::vector<OutDataVecDeriv*> vecOutAcc;
-        getVecOutDeriv(outAcc, vecOutAcc);
-        type::vector<const InDataVecDeriv*> vecInVel;
-        getConstVecInDeriv(inVel, vecInVel);
-        type::vector<const InDataVecDeriv*> vecInAcc;
-        getConstVecInDeriv(inAcc, vecInAcc);
-
-        this->computeAccFromMapping(mparams, vecOutAcc, vecInVel, vecInAcc);
-    }
     /// This method must be reimplemented by all mappings if they need to support composite accelerations
     virtual void computeAccFromMapping(
         const MechanicalParams* /* mparams */, const type::vector< OutDataVecDeriv*>&  /* dataVecOutAcc */,
@@ -182,11 +141,6 @@ public:
     /// This method call the internal apply(type::vector<VecId>& InPos, type::vector<VecId>& OutPos)
     /// and applyJ(type::vector<VecId>& InDeriv, type::vector<VecId>& OutDeriv) methods.
     //virtual void updateMapping();
-
-    /// Disable the mapping to get the original coordinates of the mapped model.
-    ///
-    /// It is for instance used in RigidMapping to get the local coordinates of the object.
-    void disable() override;
 
 
     template<class T>
@@ -232,6 +186,55 @@ public:
     }
 
 protected:
+
+
+    /// Apply ///
+    /// Apply the mapping to position vectors.
+    ///
+    /// If the Mapping can be represented as a matrix \f$ J \f$, this method computes
+    /// \f$ out = J in \f$
+    void doApply (const MechanicalParams* mparams, MultiVecCoordId outPos, ConstMultiVecCoordId inPos ) override;
+
+    /// ApplyJ ///
+    /// Apply the mapping to derived (velocity, displacement) vectors.
+    /// \f$ out = J in \f$
+    /// where \f$ J \f$ is the tangent operator (the linear approximation) of the mapping
+    void doApplyJ (const MechanicalParams* mparams, MultiVecDerivId outVel, ConstMultiVecDerivId inVel ) override;
+
+    /// ApplyJT (Force)///
+    /// Apply the reverse mapping to force vectors.
+    /// \f$ out += J^t in \f$
+    /// where \f$ J \f$ is the tangent operator (the linear approximation) of the mapping
+    void doApplyJT (const MechanicalParams* mparams, MultiVecDerivId inForce, ConstMultiVecDerivId outForce ) override;
+
+    /// ApplyJT (Constraint)///
+    void doApplyJT(const ConstraintParams* cparams, MultiMatrixDerivId inConst, ConstMultiMatrixDerivId outConst ) override
+    {
+        type::vector<InDataMatrixDeriv*> matOutConst;
+        getMatInDeriv(inConst, matOutConst);
+        type::vector<const OutDataMatrixDeriv*> matInConst;
+        getConstMatOutDeriv(outConst, matInConst);
+
+        this->applyJT(cparams, matOutConst, matInConst);
+    }
+
+    /// computeAccFromMapping
+    void doComputeAccFromMapping(const MechanicalParams* mparams, MultiVecDerivId outAcc, ConstMultiVecDerivId inVel, ConstMultiVecDerivId inAcc) override
+    {
+        type::vector<OutDataVecDeriv*> vecOutAcc;
+        getVecOutDeriv(outAcc, vecOutAcc);
+        type::vector<const InDataVecDeriv*> vecInVel;
+        getConstVecInDeriv(inVel, vecInVel);
+        type::vector<const InDataVecDeriv*> vecInAcc;
+        getConstVecInDeriv(inAcc, vecInAcc);
+
+        this->computeAccFromMapping(mparams, vecOutAcc, vecInVel, vecInAcc);
+    }
+    /// Disable the mapping to get the original coordinates of the mapped model.
+    ///
+    /// It is for instance used in RigidMapping to get the local coordinates of the object.
+    void doDisable() override;
+
 
     void getVecInCoord     (const MultiVecCoordId id,         type::vector<      InDataVecCoord* > &v) const
     {   for (unsigned int i=0; i<fromModels.size(); ++i) v.push_back(id[fromModels.get(i)].write()); }

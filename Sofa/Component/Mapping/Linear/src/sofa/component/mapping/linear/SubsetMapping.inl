@@ -286,7 +286,7 @@ void SubsetMapping<TIn, TOut>::applyJT ( const core::ConstraintParams * /*cparam
 }
 
 template<class TIn, class TOut>
-const sofa::linearalgebra::BaseMatrix* SubsetMapping<TIn, TOut>::getJ()
+const sofa::linearalgebra::BaseMatrix* SubsetMapping<TIn, TOut>::doGetJ()
 {
     if (matrixJ.get() == 0 || updateJ)
     {
@@ -322,7 +322,7 @@ const sofa::linearalgebra::BaseMatrix* SubsetMapping<TIn, TOut>::getJ()
 
 
 template <class TIn, class TOut>
-const typename SubsetMapping<TIn, TOut>::js_type* SubsetMapping<TIn, TOut>::getJs()
+const typename SubsetMapping<TIn, TOut>::js_type* SubsetMapping<TIn, TOut>::doGetJs()
 {
     using MatrixIndex = typename MatrixType::Index;
     if( !eigen.compressedMatrix.nonZeros() || updateJ ) {

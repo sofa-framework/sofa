@@ -233,7 +233,7 @@ void DistanceFromTargetMapping<TIn, TOut>::matrixFreeApplyDJT(
 }
 
 template <class TIn, class TOut>
-void DistanceFromTargetMapping<TIn, TOut>::buildGeometricStiffnessMatrix(
+void DistanceFromTargetMapping<TIn, TOut>::doBuildGeometricStiffnessMatrix(
     sofa::core::GeometricStiffnessMatrix* matrices)
 {
     const unsigned geometricStiffness = this->d_geometricStiffness.getValue().getSelectedId();
