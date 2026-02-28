@@ -34,21 +34,18 @@ using sofa::core::topology::BaseMeshTopology;
 #include <sofa/testing/BaseTest.h>
 using sofa::testing::BaseTest;
 
-
 using sofa::type::Vec3;
 using sofa::type::Vec3u;
 using sofa::core::objectmodel::New;
 
-#include <sofa/simulation/graph/DAGSimulation.h>
-using sofa::simulation::graph::DAGSimulation;
+#include <sofa/simulation/Simulation.h>
+#include <sofa/simulation/Node.h>
 using sofa::simulation::Node ;
 using sofa::core::objectmodel::New ;
 using sofa::core::objectmodel::BaseData ;
 
 #include <sofa/component/statecontainer/MechanicalObject.h>
 using sofa::component::statecontainer::MechanicalObject ;
-
-#include <sofa/simulation/Node.h>
 
 using sofa::defaulttype::Vec3Types;
 

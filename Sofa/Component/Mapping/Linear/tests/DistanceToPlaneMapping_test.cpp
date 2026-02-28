@@ -28,9 +28,7 @@
 #include "sofa/core/MechanicalParams.h"
 using sofa::testing::BaseTest;
 
-
-#include <sofa/simulation/graph/DAGSimulation.h>
-using sofa::simulation::graph::DAGSimulation;
+#include <sofa/simulation/Node.h>
 using sofa::simulation::Node ;
 using sofa::core::objectmodel::New ;
 using sofa::core::objectmodel::BaseData ;
@@ -53,13 +51,9 @@ class PlaneMappingTest : public testing::Test
     typedef sofa::type::Vec<sofa::Deriv_t<DataType>::spatial_dimensions,typename sofa::Deriv_t<DataType>::value_type> PlaneNormalType;
     typedef sofa::type::Vec<sofa::Coord_t<DataType>::spatial_dimensions,typename sofa::Coord_t<DataType>::value_type> PlanePointType;
 public:
-    sofa::simulation::Simulation* createSimpleScene(typename sofa::component::mapping::linear::DistanceToPlaneMapping<DataType>::SPtr mapping)
+    Node::SPtr createSimpleScene(typename sofa::component::mapping::linear::DistanceToPlaneMapping<DataType>::SPtr mapping)
     {
-
-
-        sofa::simulation::Simulation* simu = sofa::simulation::getSimulation();
-
-        const Node::SPtr node = simu->createNewGraph("root");
+        const Node::SPtr node = sofa::simulation::node::createNewNode("root");
 
         typename MechanicalObject<DataType>::SPtr mechanical = New<MechanicalObject<DataType>>();
         mechanical->resize(10);
@@ -80,7 +74,7 @@ public:
         EXPECT_NO_THROW(
             sofa::simulation::node::initRoot(node.get())
         );
-        return simu;
+        return node;
     }
 
     PlaneNormalType getPseudoRandomNormal()

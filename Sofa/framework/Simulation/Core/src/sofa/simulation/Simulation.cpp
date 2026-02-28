@@ -78,6 +78,10 @@ using namespace sofa;
 namespace node
 {
 
+NodeSPtr createNewNode(const std::string& name){
+    return sofa::core::objectmodel::New<Node>(name);
+}
+
 void initRoot(Node* root)
 {
     SCOPED_TIMER("Simulation::init");
@@ -472,19 +476,26 @@ void unload(NodeSPtr root)
 }
 }
 
-Simulation::Simulation()
-{
-    // Safety check; it could be elsewhere, but here is a good place, I guess.
-    if (!sofa::simulation::core::isInitialized())
-        sofa::helper::printUninitializedLibraryWarning("Sofa.Simulation.Core", "sofa::simulation::common::init()");
-}
-
-Simulation::~Simulation()
-{}
-
+Simulation theSimulation;
 Simulation* getSimulation()
 {
-    return Simulation::theSimulation.get();
+    return &theSimulation;
 }
+
+Simulation::Simulation(){}
+Simulation::~Simulation(){}
+
+/// create a new graph(or tree) and return its root node.
+NodeSPtr Simulation::createNewGraph(const std::string& name)
+{
+   return createNewNode( name );
+}
+
+NodeSPtr Simulation::createNewNode(const std::string& name)
+{
+    return sofa::core::objectmodel::New<Node>(name);
+}
+
+bool Simulation::isDirectedAcyclicGraph() { return true; }
 
 } // namespace sofa::simulation
