@@ -61,6 +61,7 @@ public:
     {
         helper::logging::MessageDispatcher::rmHandler(this);
     }
+    std::string getName() const override { return "RAIIPerComponentLoggingMessageHandler"; }
 };
 
 TEST(DisplayFlags, readFromObject)

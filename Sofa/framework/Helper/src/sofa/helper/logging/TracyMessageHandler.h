@@ -42,8 +42,9 @@ public:
     TracyMessageHandler(MessageFormatter* formatter = nullptr);
     void process(Message &m) override ;
     void setMessageFormatter( MessageFormatter* formatter );
+    std::string getName() const override { return "TracyMessageHandler"; }
 
-private:
+   private:
     MessageFormatter *m_formatter { nullptr };
 
 };
