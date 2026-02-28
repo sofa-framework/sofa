@@ -53,7 +53,7 @@ EulerExplicitSolver::EulerExplicitSolver()
 {
 }
 
-void EulerExplicitSolver::solve(const core::ExecParams* params,
+void EulerExplicitSolver::doSolve(const core::ExecParams* params,
                                 SReal dt,
                                 sofa::core::MultiVecCoordId xResult,
                                 sofa::core::MultiVecDerivId vResult)
