@@ -51,7 +51,7 @@ void ConstraintCorrection< DataTypes >::cleanup()
 }
 
 template <class DataTypes>
-void ConstraintCorrection<DataTypes>::addConstraintSolver(core::behavior::ConstraintSolver *s)
+void ConstraintCorrection<DataTypes>::doAddConstraintSolver(core::behavior::ConstraintSolver *s)
 {
     if (!l_constraintsolvers.add(s))
     {
@@ -61,7 +61,7 @@ void ConstraintCorrection<DataTypes>::addConstraintSolver(core::behavior::Constr
 }
 
 template <class DataTypes>
-void ConstraintCorrection<DataTypes>::removeConstraintSolver(core::behavior::ConstraintSolver *s)
+void ConstraintCorrection<DataTypes>::doRemoveConstraintSolver(core::behavior::ConstraintSolver *s)
 {
     if (!l_constraintsolvers.remove(s))
     {
@@ -71,7 +71,7 @@ void ConstraintCorrection<DataTypes>::removeConstraintSolver(core::behavior::Con
 }
 
 template< class DataTypes >
-void ConstraintCorrection< DataTypes >::computeMotionCorrectionFromLambda(const core::ConstraintParams* cparams, core::MultiVecDerivId dx, const linearalgebra::BaseVector * lambda)
+void ConstraintCorrection< DataTypes >::doComputeMotionCorrectionFromLambda(const core::ConstraintParams* cparams, core::MultiVecDerivId dx, const linearalgebra::BaseVector * lambda)
 {
     addConstraintForceInMotionSpace(cparams, cparams->lambda(), cparams->j(), lambda);
 
@@ -79,7 +79,7 @@ void ConstraintCorrection< DataTypes >::computeMotionCorrectionFromLambda(const 
 }
 
 template< class DataTypes >
-void ConstraintCorrection< DataTypes >::applyMotionCorrection(const core::ConstraintParams *cparams, core::MultiVecCoordId x, core::MultiVecDerivId v, core::MultiVecDerivId dx, core::ConstMultiVecDerivId correction)
+void ConstraintCorrection< DataTypes >::doApplyMotionCorrection(const core::ConstraintParams *cparams, core::MultiVecCoordId x, core::MultiVecDerivId v, core::MultiVecDerivId dx, core::ConstMultiVecDerivId correction)
 {
     if (mstate)
     {
@@ -97,7 +97,7 @@ void ConstraintCorrection< DataTypes >::applyMotionCorrection(const core::Constr
 
 
 template< class DataTypes >
-void ConstraintCorrection< DataTypes >::applyPositionCorrection(const core::ConstraintParams *cparams, core::MultiVecCoordId x, core::MultiVecDerivId dx, core::ConstMultiVecDerivId correction)
+void ConstraintCorrection< DataTypes >::doApplyPositionCorrection(const core::ConstraintParams *cparams, core::MultiVecCoordId x, core::MultiVecDerivId dx, core::ConstMultiVecDerivId correction)
 {
     if (mstate)
     {
@@ -114,7 +114,7 @@ void ConstraintCorrection< DataTypes >::applyPositionCorrection(const core::Cons
 
 
 template< class DataTypes >
-void ConstraintCorrection< DataTypes >::applyVelocityCorrection(const core::ConstraintParams *cparams, core::MultiVecDerivId v, core::MultiVecDerivId dv, core::ConstMultiVecDerivId correction)
+void ConstraintCorrection< DataTypes >::doApplyVelocityCorrection(const core::ConstraintParams *cparams, core::MultiVecDerivId v, core::MultiVecDerivId dv, core::ConstMultiVecDerivId correction)
 {
     if (mstate)
     {
@@ -131,7 +131,7 @@ void ConstraintCorrection< DataTypes >::applyVelocityCorrection(const core::Cons
 
 
 template< class DataTypes >
-void ConstraintCorrection< DataTypes >::applyPredictiveConstraintForce(const core::ConstraintParams *cparams, core::MultiVecDerivId f, const linearalgebra::BaseVector *lambda)
+void ConstraintCorrection< DataTypes >::doApplyPredictiveConstraintForce(const core::ConstraintParams *cparams, core::MultiVecDerivId f, const linearalgebra::BaseVector *lambda)
 {
     if (mstate)
     {

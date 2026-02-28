@@ -35,10 +35,28 @@ public:
 
     void init() override;
     void cleanup() override;
-    void addConstraintSolver(core::behavior::ConstraintSolver *s) override;
-    void removeConstraintSolver(core::behavior::ConstraintSolver *s) override;
 
-    /**
+    SingleLink<GenericConstraintCorrection, sofa::core::behavior::LinearSolver, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_linearSolver; ///< Link towards the linear solver used to compute the compliance matrix, requiring the inverse of the linear system matrix
+    SingleLink<GenericConstraintCorrection, sofa::core::behavior::OdeSolver, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_ODESolver; ///< Link towards the ODE solver used to recover the integration factors
+    Data< SReal > d_complianceFactor; ///< Factor applied to the position factor and velocity factor used to calculate compliance matrix
+    Data< SReal > d_regularizationTerm; ///< add regularizationTerm*Id to W when solving for constraints
+
+protected:
+    GenericConstraintCorrection();
+    ~GenericConstraintCorrection() override;
+
+
+    std::list<core::behavior::ConstraintSolver*> constraintsolvers;
+
+    void applyMotionCorrection(const core::ConstraintParams* cparams, core::MultiVecCoordId xId, core::MultiVecDerivId vId, core::MultiVecDerivId dxId,
+                               core::ConstMultiVecDerivId correction, SReal positionFactor, SReal velocityFactor);
+
+    void doAddConstraintSolver(core::behavior::ConstraintSolver *s) override;
+
+    void doRemoveConstraintSolver(core::behavior::ConstraintSolver *s) override;
+
+
+     /**
      * \brief \copybrief BaseConstraintCorrection::computeMotionCorrectionFromLambda
      *
      * \details Calls the linear solver to perform the computations:
@@ -47,19 +65,20 @@ public:
      *
      * f is implicitly stored in cparams->lambda()
      */
-    void computeMotionCorrectionFromLambda(
+    void doComputeMotionCorrectionFromLambda(
         const core::ConstraintParams* cparams,
         core::MultiVecDerivId dx,
         const linearalgebra::BaseVector * lambda) override;
+
 
     /**
      * \brief \copybrief BaseConstraintCorrection::addComplianceInConstraintSpace
      *
      * \details Calls the linear solver to perform the computation W += J A^-1 J^T
      */
-    void addComplianceInConstraintSpace(const core::ConstraintParams *cparams, linearalgebra::BaseMatrix* W) override;
+    void doAddComplianceInConstraintSpace(const core::ConstraintParams *cparams, linearalgebra::BaseMatrix* W) override;
 
-    void getComplianceMatrix(linearalgebra::BaseMatrix* ) const override;
+    void doGetComplianceMatrix(linearalgebra::BaseMatrix* ) const override;
 
     /**
      * Compute:
@@ -75,7 +94,7 @@ public:
      * correctionFactor is either positionFactor or velocityFactor depending on
      * cparams->constOrder()
      */
-    void applyMotionCorrection(
+    void doApplyMotionCorrection(
         const core::ConstraintParams *cparams,
         core::MultiVecCoordId x,
         core::MultiVecDerivId v,
@@ -91,7 +110,7 @@ public:
      *
      * positionFactor is a factor provided by the ODE solver.
      */
-    void applyPositionCorrection(const core::ConstraintParams *cparams, core::MultiVecCoordId x, core::MultiVecDerivId dx, core::ConstMultiVecDerivId correction) override;
+    void doApplyPositionCorrection(const core::ConstraintParams *cparams, core::MultiVecCoordId x, core::MultiVecDerivId dx, core::ConstMultiVecDerivId correction) override;
 
     /**
      * Compute:
@@ -102,31 +121,18 @@ public:
      *
      * velocityFactor is a factor provided by the ODE solver.
      */
-    void applyVelocityCorrection(const core::ConstraintParams *cparams, core::MultiVecDerivId v, core::MultiVecDerivId dv, core::ConstMultiVecDerivId correction) override;
+    void doApplyVelocityCorrection(const core::ConstraintParams *cparams, core::MultiVecDerivId v, core::MultiVecDerivId dv, core::ConstMultiVecDerivId correction) override;
 
-    void applyPredictiveConstraintForce(const core::ConstraintParams *cparams, core::MultiVecDerivId f, const linearalgebra::BaseVector *lambda) override;
+    void doApplyPredictiveConstraintForce(const core::ConstraintParams *cparams, core::MultiVecDerivId f, const linearalgebra::BaseVector *lambda) override;
 
-    void rebuildSystem(SReal massFactor, SReal forceFactor) override;
+    void doRebuildSystem(SReal massFactor, SReal forceFactor) override;
 
-    void applyContactForce(const linearalgebra::BaseVector *f) override;
+    void doApplyContactForce(const linearalgebra::BaseVector *f) override;
 
-    void resetContactForce() override;
+    void doResetContactForce() override;
 
-    void computeResidual(const core::ExecParams* params, linearalgebra::BaseVector *lambda) override;
+    void doComputeResidual(const core::ExecParams* params, linearalgebra::BaseVector *lambda) override;
 
-    SingleLink<GenericConstraintCorrection, sofa::core::behavior::LinearSolver, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_linearSolver; ///< Link towards the linear solver used to compute the compliance matrix, requiring the inverse of the linear system matrix
-    SingleLink<GenericConstraintCorrection, sofa::core::behavior::OdeSolver, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_ODESolver; ///< Link towards the ODE solver used to recover the integration factors
-    Data< SReal > d_complianceFactor; ///< Factor applied to the position factor and velocity factor used to calculate compliance matrix
-    Data< SReal > d_regularizationTerm; ///< add regularizationTerm*Id to W when solving for constraints
-
-protected:
-    GenericConstraintCorrection();
-    ~GenericConstraintCorrection() override;
-
-    std::list<core::behavior::ConstraintSolver*> constraintsolvers;
-
-    void applyMotionCorrection(const core::ConstraintParams* cparams, core::MultiVecCoordId xId, core::MultiVecDerivId vId, core::MultiVecDerivId dxId,
-                               core::ConstMultiVecDerivId correction, SReal positionFactor, SReal velocityFactor);
 };
 
 } //namespace sofa::component::constraint::lagrangian::correction

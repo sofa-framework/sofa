@@ -62,14 +62,6 @@ public:
 
     void reinit() override;
 
-    void addComplianceInConstraintSpace(const sofa::core::ConstraintParams *cparams, sofa::linearalgebra::BaseMatrix *W) override;
-
-    void getComplianceMatrix(linearalgebra::BaseMatrix* ) const override;
-
-    // for multigrid approach => constraints are merged
-    void getComplianceWithConstraintMerge(linearalgebra::BaseMatrix* Wmerged, std::vector<int> &constraint_merge) override;
-
-
     /// @name Correction API
     /// @{
 
@@ -82,33 +74,6 @@ public:
     void applyVelocityCorrection(const sofa::core::ConstraintParams *cparams, Data< VecDeriv > &v, Data<VecDeriv>& dv, const Data< VecDeriv > & correction) override;
 
     /// @}
-
-
-    /// @name Deprecated API
-    /// @{
-
-    void applyContactForce(const linearalgebra::BaseVector *f) override;
-
-    void resetContactForce() override;
-
-    /// @}
-
-
-    /// @name Unbuilt constraint system during resolution
-    /// @{
-
-    bool hasConstraintNumber(int index) override;  // virtual ???
-
-    void resetForUnbuiltResolution(SReal* f, std::list<unsigned int>& /*renumbering*/) override;
-
-    void addConstraintDisplacement(SReal* d, int begin,int end) override;
-
-    void setConstraintDForce(SReal* df, int begin, int end, bool update) override;
-
-    void getBlockDiagonalCompliance(linearalgebra::BaseMatrix* W, int begin, int end) override;
-
-    /// @}
-
 
     core::topology::PointData< VecReal > d_compliance; ///< Compliance value on each dof. If Rigid compliance (7 values): 1st value for translations, 6 others for upper-triangular part of symmetric 3x3 rotation compliance matrix
 
@@ -128,6 +93,38 @@ private:
 
 protected:
 
+    void doAddComplianceInConstraintSpace(const sofa::core::ConstraintParams *cparams, sofa::linearalgebra::BaseMatrix *W) override;
+
+    void doGetComplianceMatrix(linearalgebra::BaseMatrix* ) const override;
+
+    // for multigrid approach => constraints are merged
+    void doGetComplianceWithConstraintMerge(linearalgebra::BaseMatrix* Wmerged, std::vector<int> &constraint_merge) override;
+
+    /// @name Deprecated API
+    /// @{
+
+    void doApplyContactForce(const linearalgebra::BaseVector *f) override;
+
+    void doResetContactForce() override;
+
+    /// @}
+
+    /// @name Unbuilt constraint system during resolution
+    /// @{
+
+    bool doHasConstraintNumber(int index) override;  // virtual ???
+
+    void doResetForUnbuiltResolution(SReal* f, std::list<unsigned int>& /*renumbering*/) override;
+
+    void doAddConstraintDisplacement(SReal* d, int begin,int end) override;
+
+    void doSetConstraintDForce(SReal* df, int begin, int end, bool update) override;
+
+    void doGetBlockDiagonalCompliance(linearalgebra::BaseMatrix* W, int begin, int end) override;
+
+    /// @}
+
+
     sofa::core::behavior::OdeSolver* m_pOdeSolver;
 
     /**
@@ -141,7 +138,7 @@ template<>
 void UncoupledConstraintCorrection< sofa::defaulttype::Rigid3Types >::init();
 
 template<>
-void UncoupledConstraintCorrection< sofa::defaulttype::Rigid3Types >::getComplianceMatrix(sofa::linearalgebra::BaseMatrix * /*m*/) const;
+void UncoupledConstraintCorrection< sofa::defaulttype::Rigid3Types >::doGetComplianceMatrix(sofa::linearalgebra::BaseMatrix * /*m*/) const;
 
 
 #if !defined(SOFA_COMPONENT_CONSTRAINTSET_UNCOUPLEDCONSTRAINTCORRECTION_CPP)

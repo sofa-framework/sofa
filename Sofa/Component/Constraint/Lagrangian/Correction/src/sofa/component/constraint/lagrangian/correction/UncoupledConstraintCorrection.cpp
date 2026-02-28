@@ -119,7 +119,7 @@ SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION_API void UncoupledConstraintCorr
 
 
 template<>
-SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::getComplianceMatrix(linearalgebra::BaseMatrix *m) const
+SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::doGetComplianceMatrix(linearalgebra::BaseMatrix *m) const
 {
     const VecReal& comp = d_compliance.getValue();
     const unsigned int dimension = defaulttype::DataTypeInfo<Deriv>::size();
