@@ -25,15 +25,6 @@
 #include "CudaMathRigid.h"
 #include <SofaCUDA/config.h>
 
-#if defined(__cplusplus) && CUDA_VERSION < 2000
-namespace sofa
-{
-namespace gpu
-{
-namespace cuda
-{
-#endif
-
 #ifdef SOFA_GPU_CUDA_PRECISE
 template<>
 __device__ CudaRigidCoord3<float> operator+(CudaRigidCoord3<float> a, CudaRigidDeriv3<float> b)
@@ -65,9 +56,4 @@ __device__ CudaRigidCoord3<float> operator+(CudaRigidCoord3<float> a, CudaRigidD
 
 
 
-#if defined(__cplusplus) && CUDA_VERSION < 2000
-} // namespace cuda
-} // namespace gpu
-} // namespace sofa
-#endif
 #endif

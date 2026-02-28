@@ -24,15 +24,6 @@
 #include "cuda.h"
 #include <sofa/gpu/cuda/CudaMathRigid.h>
 
-#if defined(__cplusplus) && CUDA_VERSION < 2000
-namespace sofa
-{
-namespace gpu
-{
-namespace cuda
-{
-#endif
-
 extern "C"
 {
 
@@ -201,8 +192,3 @@ void LinearMovementProjectiveConstraintCudaRigid3d_projectVelocityIndexed(unsign
 
 #endif // SOFA_GPU_CUDA_DOUBLE
 
-#if defined(__cplusplus) && CUDA_VERSION < 2000
-} // namespace cuda
-} // namespace gpu
-} // namespace sofa
-#endif

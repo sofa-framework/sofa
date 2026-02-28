@@ -26,15 +26,6 @@
 
 #include <cstdio>
 
-#if defined(__cplusplus) && CUDA_VERSION < 2000
-namespace sofa
-{
-namespace gpu
-{
-namespace cuda
-{
-#endif
-
 extern "C"
 {
     void UniformMassCuda3f_addMDx(unsigned int size, float mass, void* res, const void* dx);
@@ -479,9 +470,3 @@ void UniformMassCuda3d1_addForce(unsigned int size, const double *mg, void* f)
 }
 
 #endif // SOFA_GPU_CUDA_DOUBLE
-
-#if defined(__cplusplus) && CUDA_VERSION < 2000
-} // namespace cuda
-} // namespace gpu
-} // namespace sofa
-#endif

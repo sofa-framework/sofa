@@ -24,15 +24,6 @@
 #include "cuda.h"
 #include <sofa/gpu/cuda/CudaMathRigid.h>
 
-#if defined(__cplusplus) && CUDA_VERSION < 2000
-namespace sofa
-{
-namespace gpu
-{
-namespace cuda
-{
-#endif
-
 extern "C"
 {
     void FixedProjectiveConstraintCuda1f_projectResponseContiguous(unsigned int size, void* dx);
@@ -216,8 +207,3 @@ void FixedProjectiveConstraintCudaRigid3d_projectResponseIndexed(unsigned int si
 
 #endif // SOFA_GPU_CUDA_DOUBLE
 
-#if defined(__cplusplus) && CUDA_VERSION < 2000
-} // namespace cuda
-} // namespace gpu
-} // namespace sofa
-#endif
