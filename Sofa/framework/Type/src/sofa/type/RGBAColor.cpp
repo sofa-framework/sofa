@@ -62,7 +62,13 @@ static int hexval(const char c)
 static void extractValidatedHexaString(std::istream& in, std::string& s)
 {
     s.reserve(9);
-    char c = in.get();
+    char c {};
+    in.get(c);
+
+    if (in.fail())
+    {
+        return;
+    }
 
     if(c!='#')
     {
@@ -71,14 +77,15 @@ static void extractValidatedHexaString(std::istream& in, std::string& s)
     }
 
     s.push_back(c);
-    while(in.get(c)){
-        if( !ishexsymbol(c) )
-            return;
+    while (in.get(c))
+    {
+        if (!ishexsymbol(c)) return;
 
-        s.push_back(c) ;
-        if(s.size()>9){
-            in.setstate(std::ios_base::failbit) ;
-            return ;
+        s.push_back(c);
+        if (s.size() > 9)
+        {
+            in.setstate(std::ios_base::failbit);
+            return;
         }
     }
     /// we need to reset the failbit because it is set by the get function
@@ -168,11 +175,11 @@ RGBAColor RGBAColor::fromHSVA(const float h, const float s, const float v, const
 /// This function remove the leading space in the stream.
 static std::istream& trimInitialSpaces(std::istream& in)
 {
-    char first=in.peek();
-    while(!in.eof() && !in.fail() && std::isspace(first, std::locale()))
+    int first = in.peek();
+    while (!in.eof() && !in.fail() && std::isspace(first, std::locale()))
     {
         in.get();
-        first=in.peek();
+        first = in.peek();
     }
     return in;
 }
@@ -213,7 +220,7 @@ SOFA_TYPE_API std::istream& operator>>(std::istream& i, RGBAColor& t)
     if( i.eof() || i.fail() )
         return i;
 
-    const char first = i.peek() ;
+    const int first = i.peek() ;
     if (std::isdigit(first, std::locale()))
     {
         i >> r >> g >> b ;
