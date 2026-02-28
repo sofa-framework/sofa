@@ -25,14 +25,6 @@
 #include <cuda_runtime.h>
 #include <cuda.h>
 
-#if defined(__cplusplus) && CUDA_VERSION < 2000
-namespace sofa
-{
-namespace gpu
-{
-namespace cuda
-{
-#endif
 
 
 template<class real>
@@ -144,21 +136,6 @@ typedef CudaVec6<float> CudaVec6f;
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
-#if CUDA_VERSION<3000
-
-class __align__(8) double3
-{
-public:
-    double x, y, z;
-};
-
-class __align__(16) double4
-{
-public:
-    double x, y, z, w;
-};
-
-#endif
 
 template<>
 class CudaVec2<double> : public double2
@@ -882,10 +859,5 @@ public:
     }
 };
 
-#if defined(__cplusplus) && CUDA_VERSION < 2000
-} // namespace cuda
-} // namespace gpu
-} // namespace sofa
-#endif
 
 #endif

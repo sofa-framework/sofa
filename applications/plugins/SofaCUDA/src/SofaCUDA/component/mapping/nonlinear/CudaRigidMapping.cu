@@ -23,15 +23,6 @@
 #include <sofa/gpu/cuda/CudaMath.h>
 #include "cuda.h"
 
-#if defined(__cplusplus) && CUDA_VERSION < 2000
-namespace sofa
-{
-namespace gpu
-{
-namespace cuda
-{
-#endif
-
 extern "C"
 {
     void RigidMappingCuda3f_apply(unsigned int size, const matrix3<float>& rotation, const CudaVec3<float>& translation, void* out, void* rotated, const void* in);
@@ -220,9 +211,3 @@ void RigidMappingCuda3f_applyJT(unsigned int size, unsigned int nbloc, void* out
     dim3 grid(nbloc,1);
     {RigidMappingCuda3f_applyJT_kernel<<< grid, threads, BSIZE*6*sizeof(float) >>>(size, nbloc, (float*)out, (const float*)rotated, (const float*)in); mycudaDebugError("RigidMappingCuda3f_applyJT_kernel");}
 }
-
-#if defined(__cplusplus) && CUDA_VERSION < 2000
-} // namespace cuda
-} // namespace gpu
-} // namespace sofa
-#endif

@@ -25,15 +25,6 @@
 #include <sofa/gpu/cuda/CudaMath.h>
 #include <SofaCUDA/config.h>
 
-#if defined(__cplusplus) && CUDA_VERSION < 2000
-namespace sofa
-{
-namespace gpu
-{
-namespace cuda
-{
-#endif
-
 #ifdef SOFA_GPU_CUDA_PRECISE
 template<>
 __device__ CudaVec3<float> operator*(CudaVec3<float> a, float b)
@@ -366,11 +357,5 @@ __device__ CudaVec4<double> vectQuatMult(CudaVec4<double> a, const CudaVec3<doub
 
 
 
-
-#if defined(__cplusplus) && CUDA_VERSION < 2000
-} // namespace cuda
-} // namespace gpu
-} // namespace sofa
-#endif
 
 #endif
