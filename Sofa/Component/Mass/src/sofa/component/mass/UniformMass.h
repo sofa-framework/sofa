@@ -142,12 +142,12 @@ public:
     void addGravityToV(const core::MechanicalParams* mparams, DataVecDeriv& d_v) override;
 
     void addMToMatrix(sofa::linearalgebra::BaseMatrix * mat, SReal mFact, unsigned int &offset) override; /// Add Mass contribution to global Matrix assembling
-    void buildMassMatrix(sofa::core::behavior::MassMatrixAccumulator* matrices) override;
+    void doBuildMassMatrix(sofa::core::behavior::MassMatrixAccumulator* matrices) override;
     void buildStiffnessMatrix(core::behavior::StiffnessMatrix* /* matrix */) override {}
     void buildDampingMatrix(core::behavior::DampingMatrix* /* matrices */) override {}
 
-    SReal getElementMass(sofa::Index index) const override;
-    void getElementMass(sofa::Index index, linearalgebra::BaseMatrix *m) const override;
+    SReal doGetElementMass(sofa::Index index) const override;
+    void doGetElementMass(sofa::Index index, linearalgebra::BaseMatrix *m) const override;
 
     bool isDiagonal() const override {return true;}
 

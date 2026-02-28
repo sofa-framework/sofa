@@ -106,7 +106,7 @@ public:
 
     void draw(const core::visual::VisualParams* vparams) override;
 
-    SReal getElementMass(sofa::Index index) const override;
+    SReal doGetElementMass(sofa::Index index) const override;
 
     void setDensity(Real d) {d_density.setValue(d );}
     Real getDensity() {return d_density.getValue();}
