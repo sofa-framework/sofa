@@ -26,18 +26,9 @@
 #include <cassert>
 
 #include "cuda.h"
-#include "mycuda.h"
+#include <sofa/gpu/cuda/mycuda.h>
 
 using namespace sofa::gpu::cuda;
-
-#if defined(__cplusplus) && CUDA_VERSION < 2000
-namespace sofa
-{
-namespace gpu
-{
-namespace cuda
-{
-#endif
 
 extern "C"
 {
@@ -1052,9 +1043,3 @@ void CudaTetrahedronTLEDForceField3f_addForce(int4* nodesPerElement, float4* DhC
     {CudaTetrahedronTLEDForceField3f_addForce_kernel<<< grid2, threads2, BSIZE*3*sizeof(float) >>>(nbVertex, nbElem, nbElemPerVertex, (float*)f, forceCoordinates, F0, F1, F2, F3); mycudaDebugError("CudaTetrahedronTLEDForceField3f_addForce_kernel");}
 
 }
-
-#if defined(__cplusplus) && CUDA_VERSION < 2000
-} // namespace cuda
-} // namespace gpu
-} // namespace sofa
-#endif

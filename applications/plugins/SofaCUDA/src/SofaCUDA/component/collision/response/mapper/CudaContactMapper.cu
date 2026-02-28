@@ -23,15 +23,6 @@
 #include <sofa/gpu/cuda/CudaMath.h>
 #include "cuda.h"
 
-#if defined(__cplusplus) && CUDA_VERSION < 2000
-namespace sofa
-{
-namespace gpu
-{
-namespace cuda
-{
-#endif
-
 extern "C"
 {
     void SubsetContactMapperCuda3f_setPoints1(unsigned int size, unsigned int nbTests, unsigned int maxPoints, unsigned int nbPointsPerElem, const void* tests, const void* contacts, void* map);
@@ -88,9 +79,3 @@ void SubsetContactMapperCuda3f_setPoints1(unsigned int size, unsigned int nbTest
     {SubsetContactMapperCuda3f_setPoints1_kernel<<< grid, threads >>>(nbPointsPerElem, (const GPUTestEntry*)tests, (GPUContact*)contacts, (int*)map); mycudaDebugError("SubsetContactMapperCuda3f_setPoints1_kernel");}
 
 }
-
-#if defined(__cplusplus) && CUDA_VERSION < 2000
-} // namespace cuda
-} // namespace gpu
-} // namespace sofa
-#endif
