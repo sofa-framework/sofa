@@ -60,10 +60,11 @@ public:
 protected:
     OglViewport();
     ~OglViewport() override;
+    void doInitVisual(const core::visual::VisualParams*) override;
+
 public:
     void init() override;
     void draw(const core::visual::VisualParams* vparams) override;
-    void doInitVisual(const core::visual::VisualParams*) override;
     void preDrawScene(core::visual::VisualParams* vp) override;
     bool drawScene(core::visual::VisualParams* vp) override;
     void postDrawScene(core::visual::VisualParams* vp) override;

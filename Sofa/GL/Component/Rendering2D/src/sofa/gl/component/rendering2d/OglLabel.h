@@ -54,8 +54,6 @@ public:
 
     void init() override;
     void reinit() override;
-    void doUpdateVisual(const core::visual::VisualParams*) override;
-    void doDrawVisual(const core::visual::VisualParams* vparams) override;
 
     void handleEvent(core::objectmodel::Event *) override;
 
@@ -66,6 +64,8 @@ public:
 protected:
     OglLabel();
     ~OglLabel() override {}
+    void doUpdateVisual(const core::visual::VisualParams*) override;
+    void doDrawVisual(const core::visual::VisualParams* vparams) override;
 
     unsigned int                 m_stepCounter;
 
