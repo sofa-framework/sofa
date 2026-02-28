@@ -75,6 +75,11 @@ protected:
 
     virtual ~FixedProjectiveConstraint();
 
+    void doApplyConstraint(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
+    void doApplyConstraint(const core::MechanicalParams* mparams, linearalgebra::BaseVector* vect, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
+
+    void doApplyConstraint(sofa::core::behavior::ZeroDirichletCondition* matrix) override;
+
 public:
     SetIndex d_indices;
     Data<bool> d_fixAll; ///< filter all the DOF to implement a fixed object
@@ -88,6 +93,10 @@ protected:
     std::unique_ptr<FixedProjectiveConstraintInternalData<DataTypes> > data { nullptr };
     friend class FixedProjectiveConstraintInternalData<DataTypes>;
 
+    /** Project the given matrix (Experimental API).
+      See doc in base parent class
+      */
+    void doProjectMatrix( sofa::linearalgebra::BaseMatrix* /*M*/, unsigned /*offset*/ ) override;
 
 public:
     void clearConstraints();
@@ -103,16 +112,6 @@ public:
     void projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData) override;
     void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData) override;
 
-
-    void applyConstraint(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
-    void applyConstraint(const core::MechanicalParams* mparams, linearalgebra::BaseVector* vect, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
-
-    /** Project the given matrix (Experimental API).
-      See doc in base parent class
-      */
-    void projectMatrix( sofa::linearalgebra::BaseMatrix* /*M*/, unsigned /*offset*/ ) override;
-
-    void applyConstraint(sofa::core::behavior::ZeroDirichletCondition* matrix) override;
 
     void computeBBox(const core::ExecParams* params, bool onlyVisible) override;
     void draw(const core::visual::VisualParams* vparams) override;
