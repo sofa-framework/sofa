@@ -190,7 +190,7 @@ public:
     }
 
 protected:
-    [[nodiscard]] bool checkTopologyInputTypes();
+    [[nodiscard]] bool checkTopologyInputTypes() const;
     [[nodiscard]] bool checkMappingInputType() const;
     [[nodiscard]] bool checkMappingOutputType() const;
     [[nodiscard]] bool compareInputTopologyType() const;
