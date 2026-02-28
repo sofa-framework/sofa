@@ -72,6 +72,9 @@ public:
     bool readFile(const char* filename) override;
 protected:
     bool loadUnstructuredGrid(tinyxml2::XMLHandle datasetFormatHandle);
+    BaseVTKDataIO* parsePolysIndices(tinyxml2::XMLElement* dataArrayElement,
+                                     VTKDataIO<int>* vtkIO_elemtypes, BaseVTKDataIO* offsetElement);
+    BaseVTKDataIO* parsePolysIndices(BaseVTKDataIO* offsetElement, BaseVTKReader::VTKDataIO<int>* vtkIO_elemtypes);
     bool loadPolydata(tinyxml2::XMLHandle datasetFormatHandle);
     bool loadRectilinearGrid(tinyxml2::XMLHandle datasetFormatHandle);
     bool loadStructuredGrid(tinyxml2::XMLHandle datasetFormatHandle);
@@ -383,7 +386,7 @@ bool MeshVTKLoader::setInputsMesh()
             {
                 numSubPolyLines.push_back(nv);
                 std::vector<PointID> points;
-                for (int v = 0; v < nv; ++v)
+                for (int v = 0; v < dataT[c]; ++v)
                 {
                     points.push_back(unsigned(inFP[i + v]));
                 }
@@ -1196,7 +1199,7 @@ bool XMLVTKReader::loadUnstructuredGrid(tinyxml2::XMLHandle datasetFormatHandle)
                     ///DA - types
                     if (currentDataArrayName.compare("types") == 0)
                     {
-                        inputCellTypes = loadDataArray(dataArrayElement, numberOfCells, "Int32");
+                        inputCellTypes = dynamic_cast<VTKDataIO<int>*>(loadDataArray(dataArrayElement, numberOfCells, "Int32"));
                         checkError(inputCellTypes);
                     }
                 }
@@ -1238,11 +1241,235 @@ bool XMLVTKReader::loadUnstructuredGrid(tinyxml2::XMLHandle datasetFormatHandle)
     return true;
 }
 
+
+BaseVTKReader::BaseVTKDataIO* XMLVTKReader::parsePolysIndices(tinyxml2::XMLElement* element, BaseVTKReader::VTKDataIO<int>* vtkIO_elemtypes, BaseVTKDataIO* offsetElement)
+{
+    const char* typeStrTemp;
+    typeStrTemp = element->Attribute("type");
+
+    const char* rawText = element->GetText();  // Now contains embedded '\n'
+    std::istringstream stream(rawText);
+    std::string line;
+    std::cout << "stream: " << stream.str() << std::endl;
+
+    std::ostringstream polys2;
+    int nb2 = 0;
+    std::ostringstream polys3;
+    int nb3 = 0;
+    std::ostringstream polys4;
+    int nb4 = 0;
+    std::ostringstream polys5;
+    int nb5 = 0;
+    std::ostringstream polys6;
+    int nb6 = 0;
+    std::ostringstream polysX;
+    int nbX = 0;
+
+    //vtkIO_elemtypes = new VTKDataIO<int>;
+    int lineCnt = 0;
+    while (std::getline(stream, line))
+    {
+        lineCnt++;
+    }
+    if(lineCnt>2)
+    {
+        vtkIO_elemtypes->resize(lineCnt-2);
+    }
+    else if (lineCnt > 0)
+    {
+        vtkIO_elemtypes->resize(lineCnt);
+    }
+    else
+    {
+        msg_error(this) <<"[VTK] no line found in PolyIndices Element, ABORTING the parsing in VTKLoader";
+        return nullptr;
+    }
+    lineCnt = 0;
+    stream.clear();  // Clear EOF or fail flags
+    stream.seekg(0, std::ios::beg);
+    while (std::getline(stream, line))
+    {
+        std::istringstream lineStream(line);
+        int val;
+        std::vector<int> values;
+        while (lineStream >> val) values.push_back(val);
+
+        switch (values.size())
+        {
+            case 2:
+                nb2++;
+                for (int v : values) polys2 << v << ' ';
+                vtkIO_elemtypes->data[lineCnt] = 3;
+                break;
+            case 3:
+                nb3++;
+                for (int v : values) polys3 << v << ' ';
+                vtkIO_elemtypes->data[lineCnt] = 5;
+                break;
+            case 4:
+                nb4++;
+                for (int v : values) polys4 << v << ' ';
+                vtkIO_elemtypes->data[lineCnt] = 9;
+                break;
+            case 5:
+                nb5++;
+                for (int v : values) polys5 << v << ' ';
+                vtkIO_elemtypes->data[lineCnt] = 4;
+                break;
+            case 6:
+                nb6++;
+                for (int v : values) polys6 << v << ' ';
+                vtkIO_elemtypes->data[lineCnt] = 4;
+                break;
+            default:
+                nbX+= values.size();
+                for (int v : values) polysX << v << ' ';
+                vtkIO_elemtypes->data[lineCnt] = 4;
+                msg_warning(this) << "Cell with " << values.size() << " indices will be parsed as poly_line";
+                break;
+        }
+        lineCnt++;
+    }
+    
+    BaseVTKDataIO* d = BaseVTKReader::newVTKDataIO(string(typeStrTemp));
+    int nbIndices = 2 * nb2 + 3 * nb3 + 4 * nb4 + 5 * nb5 + 6 * nb6 + nbX;
+    d->resize(nbIndices);
+    d->read(rawText, nbIndices, 0);
+
+    return d;
+}
+
+
+BaseVTKReader::BaseVTKDataIO*  XMLVTKReader::parsePolysIndices(BaseVTKDataIO* offsetElement, BaseVTKReader::VTKDataIO<int>* vtkIO_elemtypes)
+{
+    const int* data = static_cast<const int*>(offsetElement->getData());
+
+    vtkIO_elemtypes->resize(offsetElement->dataSize);
+    int nbIndices = 0;
+    int prevOffset = 0;
+    for (int dataID = 0; dataID < offsetElement->dataSize; ++dataID) {
+        nbIndices += data[dataID]-prevOffset;
+        switch (data[dataID]-prevOffset)
+        {
+            case 2:
+                vtkIO_elemtypes->data[dataID] = 3;
+                break;
+            case 3:
+                vtkIO_elemtypes->data[dataID] = 5;
+                break;
+            case 4:
+                vtkIO_elemtypes->data[dataID] = 9;
+                break;
+            default:
+                vtkIO_elemtypes->data[dataID] = 4;
+                msg_info(this) << "Cell with " << data[dataID]-prevOffset << " indices will be parsed as a polyLine.";
+                break;
+        }
+        prevOffset = data[dataID];
+    }
+
+    BaseVTKDataIO* d = BaseVTKReader::newVTKDataIO(string("Int32"));
+    d->resize(nbIndices);
+    d->read(m_inputIndicesText, nbIndices, 0);
+
+    return d;
+}
+
 bool XMLVTKReader::loadPolydata(tinyxml2::XMLHandle datasetFormatHandle)
 {
-    SOFA_UNUSED(datasetFormatHandle);
-    msg_error() << "Polydata dataset not implemented yet" ;
-    return false;
+    tinyxml2::XMLElement* pieceElem = datasetFormatHandle.FirstChildElement("Piece").ToElement();
+
+    checkError(pieceElem);
+    for (; pieceElem; pieceElem = pieceElem->NextSiblingElement())
+    {
+        pieceElem->QueryIntAttribute("NumberOfPoints", &numberOfPoints);
+        pieceElem->QueryIntAttribute("NumberOfPolys", &numberOfCells);
+
+        tinyxml2::XMLNode* dataArrayNode;
+        tinyxml2::XMLElement* dataArrayElement;
+        tinyxml2::XMLNode* node = pieceElem->FirstChild();
+
+        for (; node; node = node->NextSibling())
+        {
+            string currentNodeName = string(node->Value());
+
+            if (currentNodeName.compare("Points") == 0)
+            {
+                /* Points */
+                dataArrayNode = node->FirstChildElement("DataArray");
+                checkError(dataArrayNode);
+                dataArrayElement = dataArrayNode->ToElement();
+                checkError(dataArrayElement);
+                // Force the points coordinates to be stocked as double
+                inputPoints = loadDataArray(dataArrayElement, numberOfPoints, "Float64");
+                checkError(inputPoints);
+            }
+
+            if (currentNodeName.compare("Polys") == 0)
+            {
+                /* Polys */
+                dataArrayNode = node->FirstChildElement("DataArray");
+                for (; dataArrayNode;
+                     dataArrayNode = dataArrayNode->NextSiblingElement("DataArray"))
+                {
+                    dataArrayElement = dataArrayNode->ToElement();
+                    checkError(dataArrayElement);
+                    string currentDataArrayName = string(dataArrayElement->Attribute("Name"));
+                    /// DA - connectivity
+                    if (currentDataArrayName.compare("connectivity") == 0)
+                    {
+                        // number of elements in values is not known ; have to guess it
+                        if(inputCellOffsets)
+                        {
+                            inputCellTypes = new VTKDataIO<int>;
+                            inputCells = parsePolysIndices(dataArrayElement, inputCellTypes, inputCellOffsets);
+                        }
+                        else
+                            m_inputIndicesText = const_cast<char*>(dataArrayElement->GetText());
+
+                    }
+                    /// DA - offsets
+                    if (currentDataArrayName.compare("offsets") == 0)
+                    {
+                        inputCellOffsets = loadDataArray(dataArrayElement, numberOfCells);
+                        checkError(inputCellOffsets);
+
+                        if(strlen(m_inputIndicesText)) //parsing connectivity now we have parsed types of cells
+                        {
+                            inputCellTypes = new VTKDataIO<int>;
+                            inputCells = parsePolysIndices(inputCellOffsets, inputCellTypes);
+                        }
+                    }
+                    /// DA - types
+                    if (currentDataArrayName.compare("types") == 0)
+                    {
+                        inputCellTypes = dynamic_cast<VTKDataIO<int>*>(loadDataArray(dataArrayElement, numberOfCells, "Int32"));
+                        checkError(inputCellTypes);
+                    }
+                }
+            }
+
+            if (currentNodeName.compare("PointData") == 0)
+            {
+                dataArrayNode = node->FirstChildElement("DataArray");
+                for (; dataArrayNode;
+                     dataArrayNode = dataArrayNode->NextSiblingElement("DataArray"))
+                {
+                    dataArrayElement = dataArrayNode->ToElement();
+                    checkError(dataArrayElement);
+
+                    const string currentDataArrayName = string(dataArrayElement->Attribute("Name"));
+
+                    BaseVTKDataIO* pointdata = loadDataArray(dataArrayElement, numberOfPoints);
+                    checkError(pointdata);
+                    pointdata->name = currentDataArrayName;
+                    inputPointDataVector.push_back(pointdata);
+                }
+            }
+        }
+    }
+
+    return true;
 }
 
 bool XMLVTKReader::loadRectilinearGrid(tinyxml2::XMLHandle datasetFormatHandle)
