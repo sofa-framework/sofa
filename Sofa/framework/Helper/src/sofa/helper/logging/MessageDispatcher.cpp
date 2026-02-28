@@ -64,11 +64,9 @@ namespace sofa::helper::logging
 ///     some of them are duplicated
 ///     other get a weak reference
 
-std::vector<MessageHandler*> getDefaultMessageHandlers(){
-    std::vector<MessageHandler*> messageHandlers;
-    static ConsoleMessageHandler s_consoleMessageHandler(&DefaultStyleMessageFormatter::getInstance());
-    messageHandlers.push_back(&s_consoleMessageHandler);
-    return messageHandlers;
+std::vector<MessageHandler*> getDefaultMessageHandlers()
+{
+    return { &sofa::helper::logging::MainConsoleMessageHandler::getInstance() };
 }
 
 class MessageDispatcherImpl
