@@ -542,11 +542,22 @@ auto SpringForceField<DataTypes>::computeSpringForce(
         // dF = k_s.U.U^T.dX + f/l.(I-U.U^T).dX = ((k_s-f/l).U.U^T + f/l.I).dX
         auto& m = springForce->dForce_dX;
         Real tgt = forceIntensity * inverseLength;
+        Real tol = 1e-8;
+        Real regParam = 1e-4;
+        bool isSingular = std::abs(elongation) < tol && std::abs(elongationVelocity) < tol;
+        if (isSingular)
+            msg_warning(this) << "Degenerated spring configuration detected: a regularization term added making the matrix invertible";
         for(sofa::Index j=0; j<N; ++j )
         {
             for(sofa::Index k=0; k<N; ++k )
             {
                 m(j,k) = ((Real)spring.ks-tgt) * u[j] * u[k];
+                if(isSingular)
+                {
+                    const Real diagonalTerm = (j == k) ? 1.0 : 0.0;
+                    m(j,k) +=  regParam * spring.ks * (diagonalTerm - u[j] * u[k]);
+                }
+                
             }
             m(j,j) += tgt;
         }
