@@ -276,7 +276,7 @@ public:
     template<> void TetrahedronFEMForceField< T >::reinit(); \
     template<> void TetrahedronFEMForceField< T >::addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v); \
     template<> void TetrahedronFEMForceField< T >::getRotations(VecReal& vecR); \
-    template<> void TetrahedronFEMForceField< T >::getRotations(linearalgebra::BaseMatrix * vecR,int offset); \
+    template<> void TetrahedronFEMForceField< T >::doGetRotations(linearalgebra::BaseMatrix * vecR,int offset); \
     template<> void TetrahedronFEMForceField< T >::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx); \
     template<> void TetrahedronFEMForceField< T >::addKToMatrix(sofa::linearalgebra::BaseMatrix* mat, SReal kFactor, unsigned int& offset); \
 

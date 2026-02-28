@@ -32,7 +32,22 @@ class BaseRotationFinder : public virtual sofa::core::objectmodel::BaseObject
 public:
     SOFA_ABSTRACT_CLASS(BaseRotationFinder, sofa::core::objectmodel::BaseObject);
 
-    virtual void getRotations(linearalgebra::BaseMatrix * m, int offset = 0) = 0;
+     /**
+     * !!! WARNING since v25.12 !!!
+     *
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doGetRotations" internally,
+     * which is the method to override from now on.
+     *
+     **/
+    virtual void getRotations(linearalgebra::BaseMatrix * m, int offset = 0) final
+    {
+        //TODO (SPRINT SED 2025): Component state mechamism
+        doGetRotations(m,offset);
+    }
+
+protected:
+    virtual void doGetRotations(linearalgebra::BaseMatrix * m, int offset = 0) = 0;
 };
 
 } // namespace sofa::core::behavior
