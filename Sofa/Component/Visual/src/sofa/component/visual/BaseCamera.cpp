@@ -366,7 +366,7 @@ type::Vec2 BaseCamera::worldToScreenCoordinates(const type::Vec3& pos)
     return screenCoord + type::Vec2(viewport[0], viewport[1]);
 }
 
-void BaseCamera::getModelViewMatrix(double mat[16])
+void BaseCamera::doGetModelViewMatrix(double mat[16])
 {
     const sofa::type::Transform<SReal> world_H_cam(d_position.getValue(), this->getOrientation());
     Mat3 rot = world_H_cam.inversed().getRotationMatrix();
@@ -395,7 +395,7 @@ void BaseCamera::getOpenGLModelViewMatrix(double mat[16])
     world_H_cam.inversed().writeOpenGlMatrix(mat);
 }
 
-void BaseCamera::getProjectionMatrix(double mat[16])
+void BaseCamera::doGetProjectionMatrix(double mat[16])
 {
     const double width = double(d_widthViewport.getValue());
     const double height = double(d_heightViewport.getValue());
@@ -537,7 +537,8 @@ void BaseCamera::rotateCameraAroundPoint(Quat& rotation, const type::Vec3& point
     updateOutputData();
 }
 
-void BaseCamera::rotateWorldAroundPoint(Quat &rotation, const type::Vec3 &point, Quat orientationCam, type::Vec3 positionCam)
+
+void BaseCamera::doRotateWorldAroundPoint(Quat &rotation, const type::Vec3 &point, Quat orientationCam, type::Vec3 positionCam)
 {
     type::Vec3 tempAxis;
     SReal tempAngle;
@@ -566,7 +567,7 @@ void BaseCamera::rotateWorldAroundPoint(Quat &rotation, const type::Vec3 &point,
 }
 
 
-void BaseCamera::rotateWorldAroundPoint(Quat& rotation, const type::Vec3& point, Quat orientationCam)
+void BaseCamera::doRotateWorldAroundPoint(Quat& rotation, const type::Vec3& point, Quat orientationCam)
 {
     auto positionCam = sofa::helper::getReadAccessor(d_position);
     rotateWorldAroundPoint(rotation, point, orientationCam, positionCam);
@@ -930,7 +931,7 @@ void BaseCamera::draw(const sofa::core::visual::VisualParams* /*params*/)
 {
 }
 
-void BaseCamera::drawCamera(const core::visual::VisualParams* vparams)
+void BaseCamera::doDrawCamera(const core::visual::VisualParams* vparams)
 {
     const auto dt = (vparams->drawTool());
     dt->setPolygonMode(0, true);
