@@ -84,7 +84,7 @@ public:
 
     Vec3 getPoint(int i) const;
     virtual Vec3 getPoint(int x, int y, int z) const;
-    bool hasPos()  const override { return true; }
+    bool doHasPos()  const override { return true; }
     SReal getPX(Index i)  const override { return getPoint(i)[0]; }
     SReal getPY(Index i) const override { return getPoint(i)[1]; }
     SReal getPZ(Index i) const override { return getPoint(i)[2]; }
