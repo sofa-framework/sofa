@@ -24,8 +24,6 @@
 #include <sofa/component/linearsystem/TypedMatrixLinearSystem.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
-#include <sofa/component/linearsystem/visitors/AssembleGlobalVectorFromLocalVectorVisitor.h>
-#include <sofa/component/linearsystem/visitors/DispatchFromGlobalVectorToLocalVectorVisitor.h>
 #include <sofa/core/behavior/BaseForceField.h>
 #include <sofa/core/behavior/BaseMass.h>
 #include <sofa/core/BaseMapping.h>
@@ -111,8 +109,11 @@ void TypedMatrixLinearSystem<TMatrix, TVector>::copyLocalVectorToGlobalVector(co
             globalVector->resize(m_mappingGraph.getTotalNbMainDofs());
         }
 
-        AssembleGlobalVectorFromLocalVectorVisitor(core::execparams::defaultInstance(), m_mappingGraph, v, globalVector)
-            .execute(getSolveContext());
+        for (const auto& state : m_mappingGraph.getMainMechanicalStates())
+        {
+            auto pos = m_mappingGraph.getPositionInGlobalMatrix(state);
+            state->copyToBaseVector(globalVector, v.getId(state), pos[0]);
+        }
     }
 }
 
@@ -215,8 +216,11 @@ void TypedMatrixLinearSystem<TMatrix, TVector>::dispatchSystemSolution(core::Mul
 {
     if (getSolutionVector())
     {
-        DispatchFromGlobalVectorToLocalVectorVisitor(core::execparams::defaultInstance(), m_mappingGraph, v, getSolutionVector())
-            .execute(getSolveContext());
+        for (const auto& state : m_mappingGraph.getMainMechanicalStates())
+        {
+            auto pos = m_mappingGraph.getPositionInGlobalMatrix(state);
+            state->copyFromBaseVector(v.getId(state), getSolutionVector(), pos[0]);
+        }
     }
 }
 
@@ -225,8 +229,11 @@ void TypedMatrixLinearSystem<TMatrix, TVector>::dispatchSystemRHS(core::MultiVec
 {
     if (getRHSVector())
     {
-        DispatchFromGlobalVectorToLocalVectorVisitor(core::execparams::defaultInstance(), m_mappingGraph, v, getRHSVector())
-            .execute(getSolveContext());
+        for (const auto& state : m_mappingGraph.getMainMechanicalStates())
+        {
+            auto pos = m_mappingGraph.getPositionInGlobalMatrix(state);
+            state->copyFromBaseVector(v.getId(state), getSolutionVector(), pos[0]);
+        }
     }
 }
 
