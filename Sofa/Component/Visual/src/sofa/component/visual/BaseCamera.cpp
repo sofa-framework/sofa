@@ -108,25 +108,25 @@ void BaseCamera::init()
 {
     if(d_position.isSet())
     {
-        if(!d_orientation.isSet())
+        if (!d_orientation.isSet() && d_lookAt.isSet())
         {
             d_distance.setValue((d_lookAt.getValue() - d_position.getValue()).norm());
 
-            const Quat q  = getOrientationFromLookAt(d_position.getValue(), d_lookAt.getValue());
+            const Quat q = getOrientationFromLookAt(d_position.getValue(), d_lookAt.getValue());
             d_orientation.setValue(q);
         }
-        else if(!d_lookAt.isSet())
+        else if (!d_lookAt.isSet() && d_orientation.isSet())
         {
-            //distance assumed to be set
-            if(!d_distance.isSet())
-                msg_warning() << "Missing distance parameter ; taking default value (0.0, 0.0, 0.0)" ;
+            // distance assumed to be set
+            if (!d_distance.isSet())
+                msg_warning() << "Missing distance parameter. Will use default value (0.0, 0.0, 0.0) to compute lookAt";
 
             const type::Vec3 lookat = getLookAtFromOrientation(d_position.getValue(), d_distance.getValue(), d_orientation.getValue());
             d_lookAt.setValue(lookat);
         }
-        else
+        else if (!d_lookAt.isSet() && !d_orientation.isSet())
         {
-            msg_warning() << "Too many missing parameters ; taking default ..." ;
+            msg_warning() << "Too many missing parameters: If camera position is set, please also specify the orientation and lookAt value (or at least one of the two). Will use default values." ;
             b_setDefaultParameters = true;
         }
     }
@@ -143,7 +143,7 @@ void BaseCamera::init()
         }
         else
         {
-            msg_warning() << "Too many missing parameters ; taking default ..." ;
+            msg_warning() << "Too many missing parameters: If camera position is not set, please specify at least the lookAt and orientation to compute the position. Will use default values." ;
             b_setDefaultParameters = true;
         }
     }
@@ -167,13 +167,6 @@ void BaseCamera::reinit()
     updateOutputData();
 }
 
-void BaseCamera::bwdInit()
-{
-    d_minBBox.setValue(getContext()->f_bbox.getValue().minBBox());
-    d_maxBBox.setValue(getContext()->f_bbox.getValue().maxBBox());
-
-    updateOutputData();
-}
 
 void BaseCamera::translate(const type::Vec3& t)
 {
@@ -720,6 +713,9 @@ void BaseCamera::fitSphere(const type::Vec3 &center, SReal radius)
 
 void BaseCamera::fitBoundingBox(const type::Vec3 &min, const type::Vec3 &max)
 {
+    if (!b_setDefaultParameters) 
+        return;
+    
     SReal diameter = std::max(fabs(max[1]-min[1]), fabs(max[0]-min[0]));
     diameter = std::max((SReal)fabs(max[2]-min[2]), diameter);
     const type::Vec3 center = (min + max)*0.5;
@@ -915,9 +911,11 @@ void BaseCamera::updateOutputData()
     //TODO: other info to update
     d_minBBox.setValue(getContext()->f_bbox.getValue().minBBox());
     d_maxBBox.setValue(getContext()->f_bbox.getValue().maxBBox());
-
-    d_zNear.setValue(currentZNear);
-    d_zFar.setValue(currentZFar);
+    if (d_computeZClip.getValue())
+    {
+        d_zNear.setValue(currentZNear);
+        d_zFar.setValue(currentZFar);
+    }
 }
 
 void BaseCamera::handleEvent(sofa::core::objectmodel::Event* event)
