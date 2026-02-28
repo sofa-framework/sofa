@@ -21,7 +21,6 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/collision/geometry/LineCollisionModel.h>
-#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/component/collision/geometry/PointCollisionModel.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/collision/geometry/CubeCollisionModel.h>
@@ -29,6 +28,7 @@
 #include <sofa/simulation/Node.h>
 #include <sofa/core/topology/TopologyChange.h>
 #include <vector>
+#include <sofa/core/behavior/SingleStateAccessor.inl>
 
 namespace sofa::component::collision::geometry
 {
@@ -39,8 +39,7 @@ template<class DataTypes>
 LineCollisionModel<DataTypes>::LineCollisionModel()
     : d_bothSide(initData(&d_bothSide, false, "bothSide", "activate collision on both side of the line model (when surface normals are defined on these lines)") )
     , d_displayFreePosition(initData(&d_displayFreePosition, false, "displayFreePosition", "Display Collision Model Points free position(in green)") )
-    , l_topology(initLink("topology", "link to the topology container"))
-    , mstate(nullptr), topology(nullptr), meshRevision(-1)
+    , meshRevision(-1)
 {
     enum_type = LINE_TYPE;
 }
@@ -57,20 +56,23 @@ template<class DataTypes>
 void LineCollisionModel<DataTypes>::init()
 {
     this->CollisionModel::init();
-    mstate = dynamic_cast< core::behavior::MechanicalState<DataTypes>* > (getContext()->getMechanicalState());
-    this->getContext()->get(mpoints);
 
-    if (mstate==nullptr)
+    if (!this->isComponentStateInvalid())
     {
-        msg_error() << "LineModel requires a Vec3 Mechanical Model";
+        this->validateMState();
+    }
+
+    if (!this->isComponentStateInvalid())
+    {
+        this->validateTopology();
+    }
+
+    if (this->isComponentStateInvalid())
+    {
         return;
     }
 
-    if (l_topology.empty())
-    {
-        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
-        l_topology.set(this->getContext()->getMeshTopologyLink());
-    }
+    this->getContext()->get(mpoints);
 
     core::topology::BaseMeshTopology *bmt = l_topology.get();
     msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
@@ -541,15 +543,15 @@ template<class DataTypes>
 int LineCollisionModel<DataTypes>::getLineFlags(sofa::Index i)
 {
     int f = 0;
-    if (topology)
+    if (l_topology)
     {
         sofa::core::topology::BaseMeshTopology::Edge e(elems[i].p[0], elems[i].p[1]);
         i = getElemEdgeIndex(i);
-        if (i < topology->getNbEdges())
+        if (i < l_topology->getNbEdges())
         {
             for (sofa::Index j=0; j<2; ++j)
             {
-                const auto& eav = topology->getEdgesAroundVertex(e[j]);
+                const auto& eav = l_topology->getEdgesAroundVertex(e[j]);
                 if (eav[0] == (sofa::core::topology::BaseMeshTopology::EdgeID)i)
                     f |= (FLAG_P1 << j);
                 if (eav.size() == 1)

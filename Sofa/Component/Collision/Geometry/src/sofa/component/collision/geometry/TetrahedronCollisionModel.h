@@ -26,6 +26,8 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/VecTypes.h>
+#include <sofa/core/behavior/SingleStateAccessor.h>
+#include <sofa/core/behavior/TopologyAccessor.h>
 
 #include <vector>
 #include <map>
@@ -69,10 +71,16 @@ public:
 
 };
 
-class SOFA_COMPONENT_COLLISION_GEOMETRY_API TetrahedronCollisionModel : public core::CollisionModel
+class SOFA_COMPONENT_COLLISION_GEOMETRY_API TetrahedronCollisionModel :
+    public core::CollisionModel,
+    public virtual core::behavior::SingleStateAccessor<defaulttype::Vec3Types>,
+    public virtual core::behavior::TopologyAccessor
 {
 public:
-    SOFA_CLASS(TetrahedronCollisionModel, core::CollisionModel);
+    SOFA_CLASS3(TetrahedronCollisionModel,
+        core::CollisionModel,
+        core::behavior::SingleStateAccessor<defaulttype::Vec3Types>,
+        core::behavior::TopologyAccessor);
 
     typedef defaulttype::Vec3Types InDataTypes;
     typedef defaulttype::Vec3Types DataTypes;
@@ -94,7 +102,7 @@ protected:
     sofa::type::vector<TetrahedronInfo> elems;
     const sofa::core::topology::BaseMeshTopology::SeqTetrahedra* tetra;
 
-    core::behavior::MechanicalState<defaulttype::Vec3Types>* mstate;
+    using sofa::core::behavior::SingleStateAccessor<defaulttype::Vec3Types>::mstate;
 
     sofa::core::topology::BaseMeshTopology* m_topology;
 
@@ -123,8 +131,7 @@ public:
 
     core::behavior::MechanicalState<defaulttype::Vec3Types>* getMechanicalState() { return mstate; }
 
-    /// Link to be set to the topology container in the component graph.
-    SingleLink<TetrahedronCollisionModel, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+    using sofa::core::behavior::TopologyAccessor::l_topology;
 
 };
 

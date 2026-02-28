@@ -27,6 +27,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/component/collision/geometry/CubeCollisionModel.h>
 #include <sofa/helper/Factory.inl>
+#include <sofa/core/behavior/SingleStateAccessor.inl>
 
 namespace sofa::component::collision::geometry
 {
@@ -42,10 +43,8 @@ void registerTetrahedronCollisionModel(sofa::core::ObjectFactory* factory)
 
 TetrahedronCollisionModel::TetrahedronCollisionModel()
     : tetra(nullptr)
-    , mstate(nullptr)
     , m_topology(nullptr)
     , m_topologyRevision(-1)
-    , l_topology(initLink("topology", "link to the topology container"))
 {
     enum_type = TETRAHEDRON_TYPE;
 }
@@ -59,32 +58,22 @@ void TetrahedronCollisionModel::resize(sofa::Size size)
 
 void TetrahedronCollisionModel::init()
 {
-    if (l_topology.empty())
-    {
-        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
-        l_topology.set(this->getContext()->getMeshTopologyLink());
-    }
-
-    m_topology = l_topology.get();
-    msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
-
-    if (!m_topology)
-    {
-        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name << ". TetrahedronCollisionModel requires a BaseMeshTopology";
-        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
-        return;
-    }
-
     this->CollisionModel::init();
-    mstate = dynamic_cast< core::behavior::MechanicalState<Vec3Types>* > (getContext()->getMechanicalState());
 
-    if (mstate==nullptr)
+    if (!this->isComponentStateInvalid())
     {
-        msg_error() << "TetrahedronCollisionModel requires a Vec3 Mechanical Model";
-        return;
+        this->validateMState();
     }
 
-    updateFromTopology();
+    if (!this->isComponentStateInvalid())
+    {
+        this->validateTopology();
+    }
+
+    if (!this->isComponentStateInvalid())
+    {
+        updateFromTopology();
+    }
 }
 
 

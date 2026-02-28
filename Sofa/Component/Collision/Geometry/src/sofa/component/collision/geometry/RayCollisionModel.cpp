@@ -70,13 +70,12 @@ void RayCollisionModel::init()
 {
     this->CollisionModel::init();
 
-    mstate = dynamic_cast< core::behavior::MechanicalState<Vec3Types>* > (getContext()->getMechanicalState());
-    if (mstate==nullptr)
+    if (!this->isComponentStateInvalid())
     {
-        msg_error() << "RayCollisionModel requires a Vec3 Mechanical Model";
-        return;
+        this->validateMState();
     }
 
+    if (!this->isComponentStateInvalid())
     {
         const int npoints = mstate->getSize();
         resize(npoints);
