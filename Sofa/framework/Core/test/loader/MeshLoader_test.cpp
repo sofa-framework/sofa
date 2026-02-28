@@ -38,7 +38,7 @@ public:
     typedef helper::WriteAccessor< Data< type::vector< Triangle > > > waTtriangles;
     typedef helper::WriteAccessor< Data< type::vector< Tetrahedron > > > waTetrahedra;
 
-    bool doLoad() override
+    bool doLoadMesh() override
     {
         return true;
     }
