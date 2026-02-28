@@ -59,15 +59,65 @@ private:
     Contact& operator=(const Contact& n) = delete;
 	
 public:
-    /// Get the pair of collision models which are in contact
-    virtual std::pair< core::CollisionModel*, core::CollisionModel* > getCollisionModels() = 0;
+    /**
+     * !!! WARNING since v25.12 !!! 
+     * 
+     * The template method pattern has been applied to this part of the API. 
+     * This method calls the newly introduced method "doGetCollisionModels" internally,
+     * which is the method to override from now on.
+     *
+     * Get the pair of collision models which are in contact 
+     * 
+     **/
+    virtual std::pair< core::CollisionModel*, core::CollisionModel* > getCollisionModels() final
+    {
+        //TODO (SPRINT SED 2025): Component state mechamism
+        return this->doGetCollisionModels();
+    };
 
-    /// Set the generic description of a contact point
-    virtual void setDetectionOutputs(DetectionOutputVector* outputs) = 0;
+    /**
+     * !!! WARNING since v25.12 !!! 
+     * 
+     * The template method pattern has been applied to this part of the API. 
+     * This method calls the newly introduced method "doSetDetectionOuputs" internally,
+     * which is the method to override from now on.
+     *
+     * Set the generic description of a contact point
+     * 
+     **/
+    virtual void setDetectionOutputs(DetectionOutputVector* outputs) final 
+    {
+        //TODO (SPRINT SED 2025): Component state mechamism
+        this->doSetDetectionOutputs(outputs);
+    };
 
-    virtual void createResponse(objectmodel::BaseContext* group) = 0;
+    /**
+     * !!! WARNING since v25.12 !!! 
+     * 
+     * The template method pattern has been applied to this part of the API. 
+     * This method calls the newly introduced method "doCreateResponse" internally,
+     * which is the method to override from now on.
+     *
+     **/
+    virtual void createResponse(objectmodel::BaseContext* group) final
+    {
+        //TODO (SPRINT SED 2025): Component state mechamism
+        this->doCreateResponse(group);
+    };
 
-    virtual void removeResponse() = 0;
+    /**
+     * !!! WARNING since v25.12 !!! 
+     * 
+     * The template method pattern has been applied to this part of the API. 
+     * This method calls the newly introduced method "doRemoveResponse" internally,
+     * which is the method to override from now on.
+     *
+     **/
+    virtual void removeResponse() final
+    {
+        //TODO (SPRINT SED 2025): Component state mechamism
+        this->doRemoveResponse();
+    };
 
     /// Return true if this contact should be kept alive, even if objects are no longer in collision
     virtual bool keepAlive() { return false; }
@@ -107,6 +157,18 @@ public:
         if (model1==nullptr || model2==nullptr || inter==nullptr) return typename RealContact::SPtr();
         return sofa::core::objectmodel::New<RealContact>(model1, model2, inter);
     }
+
+protected:
+    /// Get the pair of collision models which are in contact
+    virtual std::pair< core::CollisionModel*, core::CollisionModel* > doGetCollisionModels() = 0;
+
+    /// Set the generic description of a contact point
+    virtual void doSetDetectionOutputs(DetectionOutputVector* outputs) = 0;
+
+    virtual void doCreateResponse(objectmodel::BaseContext* group) = 0;
+
+    virtual void doRemoveResponse() = 0;
+
 
 };
 } // namespace sofa::core::collision

@@ -85,7 +85,7 @@ void BaseUnilateralContactResponse<TCollisionModel1, TCollisionModel2, Constrain
 
 
 template <class TCollisionModel1, class TCollisionModel2, class ConstraintParameters, class ResponseDataTypes >
-void BaseUnilateralContactResponse<TCollisionModel1, TCollisionModel2, ConstraintParameters, ResponseDataTypes>::setDetectionOutputs(OutputVector* o)
+void BaseUnilateralContactResponse<TCollisionModel1, TCollisionModel2, ConstraintParameters, ResponseDataTypes>::doSetDetectionOutputs(OutputVector* o)
 {
     TOutputVector& outputs = *static_cast<TOutputVector*>(o);
     // We need to remove duplicate contacts
@@ -198,7 +198,7 @@ void BaseUnilateralContactResponse<TCollisionModel1, TCollisionModel2, Constrain
 }
 
 template <class TCollisionModel1, class TCollisionModel2, class ConstraintParameters, class ResponseDataTypes >
-void BaseUnilateralContactResponse<TCollisionModel1, TCollisionModel2, ConstraintParameters, ResponseDataTypes>::createResponse(core::objectmodel::BaseContext* group)
+void BaseUnilateralContactResponse<TCollisionModel1, TCollisionModel2, ConstraintParameters, ResponseDataTypes>::doCreateResponse(core::objectmodel::BaseContext* group)
 {
 
     activateMappers();
@@ -238,7 +238,7 @@ void BaseUnilateralContactResponse<TCollisionModel1, TCollisionModel2, Constrain
 }
 
 template <class TCollisionModel1, class TCollisionModel2, class ConstraintParameters, class ResponseDataTypes >
-void BaseUnilateralContactResponse<TCollisionModel1, TCollisionModel2, ConstraintParameters, ResponseDataTypes>::removeResponse()
+void BaseUnilateralContactResponse<TCollisionModel1, TCollisionModel2, ConstraintParameters, ResponseDataTypes>::doRemoveResponse()
 {
     if (m_constraint)
     {
