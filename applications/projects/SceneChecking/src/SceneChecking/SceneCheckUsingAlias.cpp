@@ -99,7 +99,7 @@ void SceneCheckUsingAlias::doPrintSummary()
 
         if(i.first != m_componentsCreatedUsingAlias.rbegin()->first) usingAliasesWarning << msgendl;
     }
-    msg_warning(this->getName()) << usingAliasesWarning.str();
+    msg_error(this->getName()) << usingAliasesWarning.str();
 
     m_componentsCreatedUsingAlias.clear();
 }
