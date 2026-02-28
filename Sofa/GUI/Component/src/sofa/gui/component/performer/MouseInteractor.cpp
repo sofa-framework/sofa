@@ -80,7 +80,7 @@ bool BaseMouseInteractor::removeInteractionPerformer( InteractionPerformer *i)
     }
 }
 
-void BaseMouseInteractor::updatePosition(SReal )
+void BaseMouseInteractor::doUpdatePosition(SReal )
 {
     for (const auto perf : performers)
     {
