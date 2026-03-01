@@ -362,6 +362,116 @@ private:
 };
 
 template<>
+struct SOFA_CORE_API DrawElementMesh<sofa::geometry::Prism>
+    : public BaseDrawMesh<DrawElementMesh<sofa::geometry::Prism>, 5>
+{
+    using ElementType = sofa::geometry::Prism;
+    friend BaseDrawMesh;
+    static constexpr std::size_t NumberTrianglesInPrism = 2;
+    static constexpr std::size_t NumberQuadsInPrism = 3;
+
+    static constexpr ColorContainer defaultColors {
+        sofa::type::RGBAColor::green(),
+        sofa::type::RGBAColor::teal(),
+        sofa::type::RGBAColor(0.7f,0.7f,0.1f,1.f),
+        sofa::type::RGBAColor(0.7f,0.0f,0.0f,1.f),
+        sofa::type::RGBAColor(0.0f,0.7f,0.0f,1.f)
+    };
+
+private:
+    template<class PositionContainer, class IndicesContainer>
+    void doDraw(
+        sofa::helper::visual::DrawTool* drawTool,
+        const PositionContainer& position,
+        sofa::core::topology::BaseMeshTopology* topology,
+        const IndicesContainer& elementIndices,
+        const ColorContainer& colors)
+    {
+        if (!topology)
+            return;
+
+        const auto& elements = topology->getPrisms();
+
+        // Allocate space for rendering points
+        for ( auto& p : renderedPoints)
+        {
+            p.resize((elementIndices.size() * NumberTrianglesInPrism * sofa::geometry::Triangle::NumberOfNodes) +
+                         (elementIndices.size() * NumberQuadsInPrism * sofa::geometry::Quad::NumberOfNodes));
+        }
+
+        std::array<std::size_t, NumberColors> renderedPointId {};
+        
+        for (auto i : elementIndices)
+        {
+            const auto& prism = elements[i];
+            const auto center = this->elementCenter(position, prism);
+
+            // Draw bottom triangle (vertices 0, 1, 2)
+            {
+                const sofa::Index vertexIndices[sofa::geometry::Triangle::NumberOfNodes] = { prism[0], prism[1], prism[2] };
+                for (std::size_t k = 0; k < sofa::geometry::Triangle::NumberOfNodes; ++k)
+                {
+                    const auto p = this->applyElementSpace(position[vertexIndices[k]], center);
+                    renderedPoints[0][renderedPointId[0]++] = sofa::type::toVec3(p);
+                }
+            }
+
+            // Draw top triangle (vertices 3, 4, 5)
+            {
+                const sofa::Index vertexIndices[sofa::geometry::Triangle::NumberOfNodes] = { prism[3], prism[4], prism[5] };
+                for (std::size_t k = 0; k < sofa::geometry::Triangle::NumberOfNodes; ++k)
+                {
+                    const auto p = this->applyElementSpace(position[vertexIndices[k]], center);
+                    renderedPoints[1][renderedPointId[1]++] = sofa::type::toVec3(p);
+                }
+            }
+
+            // Draw quad face 1 (vertices 0, 1, 4, 3)
+            {
+                const sofa::Index vertexIndices[sofa::geometry::Quad::NumberOfNodes] = { prism[0], prism[1], prism[4], prism[3] };
+                for (std::size_t k = 0; k < sofa::geometry::Quad::NumberOfNodes; ++k)
+                {
+                    const auto p = this->applyElementSpace(position[vertexIndices[k]], center);
+                    renderedPoints[2][renderedPointId[2]++] = sofa::type::toVec3(p);
+                }
+            }
+
+            // Draw quad face 2 (vertices 1, 2, 5, 4)
+            {
+                const sofa::Index vertexIndices[sofa::geometry::Quad::NumberOfNodes] = { prism[1], prism[2], prism[5], prism[4] };
+                for (std::size_t k = 0; k < sofa::geometry::Quad::NumberOfNodes; ++k)
+                {
+                    const auto p = this->applyElementSpace(position[vertexIndices[k]], center);
+                    renderedPoints[3][renderedPointId[3]++] = sofa::type::toVec3(p);
+                }
+            }
+
+            // Draw quad face 3 (vertices 2, 0, 3, 5)
+            {
+                const sofa::Index vertexIndices[sofa::geometry::Quad::NumberOfNodes] = { prism[2], prism[0], prism[3], prism[5] };
+                for (std::size_t k = 0; k < sofa::geometry::Quad::NumberOfNodes; ++k)
+                {
+                    const auto p = this->applyElementSpace(position[vertexIndices[k]], center);
+                    renderedPoints[4][renderedPointId[4]++] = sofa::type::toVec3(p);
+                }
+            }
+        }
+
+        // Draw triangles
+        for (std::size_t j = 0; j < NumberTrianglesInPrism; ++j)
+        {
+            drawTool->drawTriangles(renderedPoints[j], colors[j]);
+        }
+
+        // Draw quads
+        for (std::size_t j = 0; j < NumberQuadsInPrism; ++j)
+        {
+            drawTool->drawQuads(renderedPoints[NumberTrianglesInPrism + j], colors[NumberTrianglesInPrism + j]);
+        }
+    }
+};
+
+template<>
 struct SOFA_CORE_API DrawElementMesh<sofa::geometry::Hexahedron>
     : public BaseDrawMesh<DrawElementMesh<sofa::geometry::Hexahedron>, 6>
 {
@@ -460,6 +570,7 @@ public:
     {
         drawElements<sofa::geometry::Tetrahedron>(drawTool, position, topology);
         drawElements<sofa::geometry::Hexahedron>(drawTool, position, topology);
+        drawElements<sofa::geometry::Prism>(drawTool, position, topology);
     }
 
     template<class PositionContainer>
@@ -477,8 +588,9 @@ public:
 
         const auto hasTetra = !topology->getTetrahedra().empty();
         const auto hasHexa = !topology->getHexahedra().empty();
+        const auto hasPrism = !topology->getPrisms().empty();
 
-        const bool hasVolumeElements = hasTetra || hasHexa;
+        const bool hasVolumeElements = hasTetra || hasHexa || hasPrism;
 
         if (!hasSurfaceElements && !hasVolumeElements)
         {
@@ -503,7 +615,8 @@ private:
         DrawElementMesh<sofa::geometry::Triangle>,
         DrawElementMesh<sofa::geometry::Quad>,
         DrawElementMesh<sofa::geometry::Tetrahedron>,
-        DrawElementMesh<sofa::geometry::Hexahedron>
+        DrawElementMesh<sofa::geometry::Hexahedron>,
+        DrawElementMesh<sofa::geometry::Prism>
     > m_meshes;
 };
 
