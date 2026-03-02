@@ -1,13 +1,26 @@
+/******************************************************************************
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
 #include <sofa/component/topology/mapping/Hexa2PrismTopologicalMapping.h>
-#include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
-
-#include <sofa/component/topology/container/dynamic/HexahedronSetTopologyContainer.h>
-
-#include <sofa/component/topology/container/grid/GridTopology.h>
-#include <sofa/type/Vec.h>
-#include <map>
-#include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa::component::topology::mapping
 {
@@ -19,21 +32,13 @@ void registerHexa2PrismTopologicalMapping(sofa::core::ObjectFactory* factory)
 }
 
 Hexa2PrismTopologicalMapping::Hexa2PrismTopologicalMapping()
-    : sofa::core::topology::TopologicalMapping()
-    , d_swapping(initData(&d_swapping, false, "swapping", "Boolean enabling to swap hexa-edges\n in order to avoid bias effect"))
 {
     m_inputType = geometry::ElementType::HEXAHEDRON;
     m_outputType = geometry::ElementType::PRISM;
 }
 
-Hexa2PrismTopologicalMapping::~Hexa2PrismTopologicalMapping()
-{
-}
-
 void Hexa2PrismTopologicalMapping::init()
 {
-    using namespace container::dynamic;
-
     Inherit1::init();
 
     if (toModel == nullptr)
@@ -43,8 +48,11 @@ void Hexa2PrismTopologicalMapping::init()
         return;
     }
 
-    // INITIALISATION of PRISM mesh from HEXAHEDRAL mesh:
+    convertHexaToPrisms();
+}
 
+void Hexa2PrismTopologicalMapping::convertHexaToPrisms()
+{
     // Clear output topology
     toModel->clear();
 
@@ -55,90 +63,39 @@ void Hexa2PrismTopologicalMapping::init()
     Loc2GlobVec.clear();
     Glob2LocMap.clear();
 
-    const size_t nbcubes = fromModel->getNbHexahedra();
+    const sofa::Size nbCubes = fromModel->getNbHexahedra();
 
-    // These values are only correct if the mesh is a grid topology
-    int nx = 2;
-    int ny = 1;
-    {
-        const auto* grid = dynamic_cast<container::grid::GridTopology*>(fromModel.get());
-        if (grid != nullptr)
-        {
-            nx = grid->getNx() - 1;
-            ny = grid->getNy() - 1;
-        }
-    }
-
-    static constexpr int numberPrismsInHexa = 2;
-    Loc2GlobVec.reserve(nbcubes * numberPrismsInHexa);
-
-    const bool swapping = d_swapping.getValue();
+    static constexpr std::size_t numberPrismsInHexa = 2;
+    Loc2GlobVec.reserve(nbCubes * numberPrismsInHexa);
 
     // Tessellation of each cube into 2 triangular prisms
     // Hexahedron vertices:
-    //     4-------7
-    //    /|      /|
-    //   0-------3 |
-    //   | 5----|--6
-    //   |/     | /
-    //   1-------2
+    //     Y  n3---------n2
+    //     ^  /          /|
+    //     | /          / |
+    //     n7---------n6  |
+    //     |          |   |
+    //     |  n0------|--n1
+    //     | /        | /
+    //     |/         |/
+    //     n4---------n5-->X
+    //    /
+    //   /
+    //  Z
     //
     // Decomposition into 2 prisms:
-    // - Prism 1: vertices [0, 1, 5] (bottom triangle) and [3, 2, 6] (top triangle)
-    // - Prism 2: vertices [0, 5, 4] (bottom triangle) and [3, 6, 7] (top triangle)
-    // This ensures face consistency between neighboring hexahedra
+    // - Prism 1: vertices [0, 5, 1] (bottom triangle) and [3, 6, 2] (top triangle)
+    // - Prism 2: vertices [0, 4, 5] (bottom triangle) and [3, 7, 6] (top triangle)
 
-    for (size_t i = 0; i < nbcubes; ++i)
+    for (size_t i = 0; i < nbCubes; ++i)
     {
         core::topology::BaseMeshTopology::Hexa c = fromModel->getHexahedron(i);
 
-        bool swapped = false;
+        // Standard decomposition ensuring face consistency between neighbors
+        toModel->addPrism(c[0], c[5], c[1], c[3], c[6], c[2]);  // Prism 1
+        toModel->addPrism(c[0], c[4], c[5], c[3], c[7], c[6]);  // Prism 2
 
-        if (swapping)
-        {
-            if (!((i % nx) & 1))
-            {
-                // swap all points on the X edges
-                std::swap(c[0], c[1]);
-                std::swap(c[3], c[2]);
-                std::swap(c[4], c[5]);
-                std::swap(c[7], c[6]);
-                swapped = !swapped;
-            }
-            if (((i / nx) % ny) & 1)
-            {
-                // swap all points on the Y edges
-                std::swap(c[0], c[3]);
-                std::swap(c[1], c[2]);
-                std::swap(c[4], c[7]);
-                std::swap(c[5], c[6]);
-                swapped = !swapped;
-            }
-            if ((i / (nx * ny)) & 1)
-            {
-                // swap all points on the Z edges
-                std::swap(c[0], c[4]);
-                std::swap(c[1], c[5]);
-                std::swap(c[2], c[6]);
-                std::swap(c[3], c[7]);
-                swapped = !swapped;
-            }
-        }
-
-        if (!swapped)
-        {
-            // Standard decomposition ensuring face consistency between neighbors
-            toModel->addPrism(c[0], c[1], c[5], c[3], c[2], c[6]);  // Prism 1
-            toModel->addPrism(c[0], c[5], c[4], c[3], c[6], c[7]);  // Prism 2
-        }
-        else
-        {
-            // Swapped decomposition
-            toModel->addPrism(c[0], c[1], c[5], c[3], c[2], c[6]);  // Prism 1
-            toModel->addPrism(c[0], c[5], c[4], c[3], c[6], c[7]);  // Prism 2
-        }
-
-        for (int j = 0; j < numberPrismsInHexa; ++j)
+        for (unsigned j = 0; j < numberPrismsInHexa; ++j)
         {
             Loc2GlobVec.push_back(i);
         }
