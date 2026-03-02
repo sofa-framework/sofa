@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <cwchar>
+#include <cstddef>
 
 namespace sofa::component::solidmechanics::fem::elastic
 {
