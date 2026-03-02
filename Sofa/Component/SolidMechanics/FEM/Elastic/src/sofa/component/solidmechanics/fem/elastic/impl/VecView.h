@@ -56,7 +56,7 @@ struct VecView
 
     sofa::type::Vec<N, ValueType> operator-() const
     {
-        sofa::type::Vec<N, ValueType> res(sofa::type::NOINIT);
+        sofa::type::Vec<N, ValueType> res;
         for (sofa::Size i = 0; i < N; ++i)
             res[i] = -m_data[i];
         return res;
@@ -64,7 +64,7 @@ struct VecView
 
     sofa::type::Vec<N, ValueType> toVec() const
     {
-        sofa::type::Vec<N, ValueType> res(sofa::type::NOINIT);
+        sofa::type::Vec<N, ValueType> res;
         for (sofa::Size i = 0; i < N; ++i)
             res[i] = m_data[i];
         return res;
