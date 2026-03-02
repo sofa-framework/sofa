@@ -100,8 +100,10 @@ BaseNode::findSnapshotObject( const std::shared_ptr<BaseSnapshot::SnapshotNode>&
                 return childObject;
         }
     }
-
-    return nullptr;
+    msg_error("findSnapshotNode") << "SnapshotNode "<< objectname << " not found";
+    auto defaultObject = std::make_shared<BaseSnapshot::SnapshotObject>();
+    defaultObject->m_name = "Unknown node";
+    return defaultObject;
 }
 
 /// Set the context of an object to this

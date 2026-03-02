@@ -758,11 +758,15 @@ Base::findSnapshotObject(const std::shared_ptr<BaseSnapshot::SnapshotNode>& pare
     {
         if (p.m_name == objectname)
         {
-            auto object = std::make_shared<BaseSnapshot::SnapshotObject>(p);
-            return object;
+            auto snapshotObject = std::make_shared<BaseSnapshot::SnapshotObject>(p);
+            return snapshotObject;
         }
     }
-    return nullptr;
+    msg_error("findSnapshotObject") << "SnapshotObject "<< objectname << " not found";
+    auto defaultObject = std::make_shared<BaseSnapshot::SnapshotObject>();
+    defaultObject->m_name = "Unknown object";
+    
+    return defaultObject;
 }
 
 

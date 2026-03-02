@@ -180,42 +180,26 @@ TEST_F(Snapshot_test, createSnapshotObject)
 
 TEST_F(Snapshot_test, findSnapshotObject)
 {
-    // TEST of findSnapshotObject (Base version)
-    // 
-
-    MockSnapshotTest MockSnapshot;
-
-    EXPECT_EQ(MockSnapshot.m_graphRoot, nullptr);
-
-    MockSnapshot.m_graphRoot = std::make_shared<BaseSnapshot::SnapshotNode>("root"); 
-
-    auto snapshotObject1 = std::make_shared<BaseSnapshot::SnapshotObject>("SnapshotObject1");
-    auto snapshotObject2 = std::make_shared<BaseSnapshot::SnapshotObject>("SnapshotObject2");
-
-    MockSnapshot.m_graphRoot->components.push_back(*snapshotObject1);
-    MockSnapshot.m_graphRoot->components.push_back(*snapshotObject2);
+    // TEST of findSnapshotObject
+    // Check if findSnapshotObject can find the SnapshotObject in a Snapshot
+    // with the component's name
+    
 
     TestComponent tComponent;
 
-    auto expectedObject1 = tComponent.findSnapshotObject(MockSnapshot.m_graphRoot, "SnapshotObject1");
-    auto expectedObject2 = tComponent.findSnapshotObject(MockSnapshot.m_graphRoot, "SnapshotObject2");
+    auto snapshotNode = std::make_shared<BaseSnapshot::SnapshotNode>("root");
+    std::vector<std::shared_ptr<BaseSnapshot::SnapshotNode>> snapshotParents;
+    snapshotParents.push_back(snapshotNode); 
 
-    EXPECT_EQ(snapshotObject1->m_name, expectedObject1->m_name);
-    EXPECT_EQ(snapshotObject2->m_name, expectedObject2->m_name);    
+    auto snapshot = tComponent.saveSnapshot(snapshotParents);
+    snapshotNode->components.push_back(*snapshot);
 
-    Node mockNode;
+    auto expectedObject = tComponent.findSnapshotObject(snapshotNode, "pi");
 
-    auto snapshotNode1 = std::make_shared<BaseSnapshot::SnapshotNode>("SnapshotNode1");
-    auto snapshotNode2 = std::make_shared<BaseSnapshot::SnapshotNode>("SnapshotNode2");
+    EXPECT_NE(expectedObject, nullptr);
 
-    MockSnapshot.m_graphRoot->children.push_back(snapshotNode1);
-    MockSnapshot.m_graphRoot->children.push_back(snapshotNode2);
+    EXPECT_EQ(tComponent.getName(), expectedObject->m_name);  
 
-    auto expectedNode1 = mockNode.findSnapshotObject(MockSnapshot.m_graphRoot,"SnapshotNode1");
-    auto expectedNode2 = mockNode.findSnapshotObject(MockSnapshot.m_graphRoot,"SnapshotNode2");
-
-    EXPECT_EQ(snapshotNode1->m_name, expectedNode1->m_name);
-    EXPECT_EQ(snapshotNode2->m_name, expectedNode2->m_name);  
 }
 
 TEST_F(Snapshot_test, saveSnapshot)
