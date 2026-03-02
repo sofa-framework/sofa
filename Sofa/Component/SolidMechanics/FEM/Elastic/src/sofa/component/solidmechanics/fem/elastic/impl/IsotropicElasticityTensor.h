@@ -65,8 +65,8 @@ struct IsotropicElasticityTensor
         return isotropicElasticityTensorProduct(C, v);
     }
 
-    template<sofa::Size C>
-    sofa::type::Mat<NbIndependentElements, C, sofa::Real_t<DataType>> operator*(const sofa::type::Mat<NbIndependentElements, C, sofa::Real_t<DataType>>& v) const noexcept
+    template<sofa::Size nbColumns>
+    sofa::type::Mat<NbIndependentElements, nbColumns, sofa::Real_t<DataType>> operator*(const sofa::type::Mat<NbIndependentElements, nbColumns, sofa::Real_t<DataType>>& v) const noexcept
     {
         return C * v;
     }
