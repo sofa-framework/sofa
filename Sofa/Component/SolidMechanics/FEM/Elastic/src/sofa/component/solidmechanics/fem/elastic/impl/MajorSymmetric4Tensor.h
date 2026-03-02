@@ -46,7 +46,7 @@ public:
     MajorSymmetric4Tensor() = delete;
 
     template<class Callable>
-    MajorSymmetric4Tensor(Callable callable) : m_matrix(sofa::type::NOINIT)
+    explicit MajorSymmetric4Tensor(Callable callable) : m_matrix(sofa::type::NOINIT)
     {
         fill(callable);
     }
