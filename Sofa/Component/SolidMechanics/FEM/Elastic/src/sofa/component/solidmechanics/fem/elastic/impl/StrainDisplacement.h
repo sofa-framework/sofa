@@ -152,7 +152,7 @@ operator*(const sofa::type::Mat<L, C, real>& A, const StrainDisplacement<DataTyp
  */
 template <class DataTypes, class ElementType>
 StrainDisplacement<DataTypes, ElementType> makeStrainDisplacement(
-    const sofa::type::Mat<ElementType::NumberOfNodes, DataTypes::spatial_dimensions, sofa::Real_t<DataTypes> > gradientShapeFunctions)
+    const sofa::type::Mat<ElementType::NumberOfNodes, DataTypes::spatial_dimensions, sofa::Real_t<DataTypes> >& gradientShapeFunctions)
 {
     static constexpr sofa::Size spatial_dimensions = DataTypes::spatial_dimensions;
     static constexpr sofa::Size NumberOfNodesInElement = ElementType::NumberOfNodes;
