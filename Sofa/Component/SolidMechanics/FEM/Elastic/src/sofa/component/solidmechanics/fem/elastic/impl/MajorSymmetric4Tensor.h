@@ -25,7 +25,7 @@
 #include <sofa/helper/ScopedAdvancedTimer.h>
 #include <sofa/type/MatSym.h>
 
-namespace elasticity
+namespace sofa::component::solidmechanics::fem::elastic
 {
 
 /**
