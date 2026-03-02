@@ -191,9 +191,29 @@ struct Triangle
         typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
         typename = std::enable_if_t<std::is_scalar_v<T>>
     >
-        static constexpr bool isPointInTriangle(const Node& p0, const Node& n0, const Node& n1, const Node& n2, sofa::type::Vec<3, T>& baryCoefs)
+        static constexpr bool isPointInTriangle(const Node& p0, const Node& n0, const Node& n1, const Node& n2, sofa::type::Vec<3, T>& baryCoefs, bool assumePointIsInPlane = true)
     {
         baryCoefs = Triangle::getBarycentricCoordinates(p0, n0, n1, n2);
+
+        // In 3D, check if the point is in the plane of the triangle
+        if constexpr (std::is_same_v<Node, sofa::type::Vec<3, T>>)
+        {
+            if(!assumePointIsInPlane)
+            {
+                const auto normal = Triangle::normal(n0, n1, n2);
+                const auto normalNorm2 = sofa::type::dot(normal, normal);
+                if (normalNorm2 > std::numeric_limits<T>::epsilon())
+                {
+                    const auto d = sofa::type::dot(p0 - n0, normal);
+                    if (d * d / normalNorm2 > std::numeric_limits<T>::epsilon())
+                        return false;
+                }
+            }
+        }
+        else
+        {
+            SOFA_UNUSED(assumePointIsInPlane);
+        }
 
         for (int i = 0; i < 3; ++i)
         {
