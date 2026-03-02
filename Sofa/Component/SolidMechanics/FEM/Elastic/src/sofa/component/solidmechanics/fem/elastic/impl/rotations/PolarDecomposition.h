@@ -37,7 +37,7 @@ struct PolarDecomposition
     sofa::Coord_t<DataTypes> computeCentroid(const std::array<sofa::Coord_t<DataTypes>, NumberOfNodesInElement>& nodes)
     {
         sofa::Coord_t<DataTypes> centroid;
-        for (const auto node : nodes)
+        for (const auto& node : nodes)
         {
             centroid += node;
         }
