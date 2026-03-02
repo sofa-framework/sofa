@@ -23,7 +23,7 @@
 #include <SofaCUDA/component/solidmechanics/spring/CudaSpringForceField.inl>
 #include <SofaCUDA/component/statecontainer/CudaMechanicalObject.inl>
 #include <SofaCUDA/component/mapping/linear/CudaIdentityMapping.inl>
-#include <sofa/gpu/cuda/CudaContactMapper.h>
+#include <SofaCUDA/component/collision/response/mapper/CudaContactMapper.h>
 #include <SofaDistanceGrid/CUDA/CudaDistanceGridContactMapper.h>
 #include <SofaCUDA/component/collision/response/contact/CudaPenalityContactForceField.h>
 #include "CudaDistanceGridCollisionModel.h"
