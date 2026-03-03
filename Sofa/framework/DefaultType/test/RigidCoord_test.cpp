@@ -347,6 +347,28 @@ TEST(RigidCoord3d, SubtractSelf)
     EXPECT_NEAR(result.getOrientation()[3], 1.0, trigTol);
 }
 
+TEST(RigidCoord3d, PlusEqualsCoordConsistency)
+{
+    // operator+=(RigidCoord) must produce the same result as operator+(RigidCoord)
+    Quat<double> q90z(0.0, 0.0, sq2_2, sq2_2);
+    Quat<double> q90x(sq2_2, 0.0, 0.0, sq2_2);
+    RigidCoord<3, double> a(Vec<3, double>(1, 2, 3), q90z);
+    RigidCoord<3, double> b(Vec<3, double>(4, 5, 6), q90x);
+
+    auto sum = a + b;
+
+    RigidCoord<3, double> accumulated = a;
+    accumulated += b;
+
+    EXPECT_NEAR(accumulated.getCenter()[0], sum.getCenter()[0], tol);
+    EXPECT_NEAR(accumulated.getCenter()[1], sum.getCenter()[1], tol);
+    EXPECT_NEAR(accumulated.getCenter()[2], sum.getCenter()[2], tol);
+    EXPECT_NEAR(accumulated.getOrientation()[0], sum.getOrientation()[0], tol);
+    EXPECT_NEAR(accumulated.getOrientation()[1], sum.getOrientation()[1], tol);
+    EXPECT_NEAR(accumulated.getOrientation()[2], sum.getOrientation()[2], tol);
+    EXPECT_NEAR(accumulated.getOrientation()[3], sum.getOrientation()[3], tol);
+}
+
 TEST(RigidCoord3d, ScalarMultiply)
 {
     Quat<double> q90z(0.0, 0.0, sq2_2, sq2_2);
