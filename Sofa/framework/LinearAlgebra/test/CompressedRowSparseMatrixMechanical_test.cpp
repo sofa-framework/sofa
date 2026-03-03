@@ -295,6 +295,31 @@ TEST(CompressedRowSparseMatrixMechanical, AddMulVector)
     EXPECT_NEAR(res[1], 3.0, kTol);
 }
 
+TEST(CompressedRowSparseMatrixMechanical, AddMultTranspose)
+{
+    // For CRSMechanicalPolicy, IsAlwaysSymmetric=true so addMultTranspose
+    // delegates to addMul (this^T == this for a symmetric matrix).
+    // Use a symmetric matrix to verify.
+    //
+    // M = [1 2]
+    //     [2 3]
+    // v = [1, 2], expected M^T * v = M * v = [1+4, 2+6] = [5, 8]
+    CRSMech m(2, 2);
+    m.set(0, 0, 1.0); m.set(0, 1, 2.0);
+    m.set(1, 0, 2.0); m.set(1, 1, 3.0);
+    m.compress();
+
+    FVec v(2);
+    v[0] = 1.0; v[1] = 2.0;
+
+    FVec res(2);
+    res[0] = 0.0; res[1] = 0.0;
+    m.addMultTranspose(res, v);
+
+    EXPECT_NEAR(res[0], 5.0, kTol);
+    EXPECT_NEAR(res[1], 8.0, kTol);
+}
+
 // ==================== Arithmetic Operators ====================
 
 TEST(CompressedRowSparseMatrixMechanical, OperatorPlus)
