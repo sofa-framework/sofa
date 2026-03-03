@@ -98,6 +98,7 @@ public:
         in>>m.mass;
         in>>m.volume;
         in>>m.inertiaMatrix;
+        m.recalc();
         return in;
     }
     constexpr void operator *=(Real fact)
@@ -226,6 +227,7 @@ public:
         in>>m.mass;
         in>>m.volume;
         in>>m.inertiaMatrix;
+        m.recalc();
         return in;
     }
     constexpr void operator *=(Real fact)
