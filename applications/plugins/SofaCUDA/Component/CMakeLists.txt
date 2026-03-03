@@ -211,7 +211,7 @@ set(CUDA_SOURCES
 )
 
 find_package(Sofa.Config REQUIRED)
-sofa_find_package(SofaCUDA.Core REQUIRED)
+find_package(SofaCUDA.Core REQUIRED)
 sofa_find_package(Sofa.Component.Mass REQUIRED)
 sofa_find_package(Sofa.Component.SolidMechanics.FEM.Elastic REQUIRED)
 sofa_find_package(Sofa.Component.SolidMechanics.FEM.HyperElastic REQUIRED)

@@ -4,14 +4,13 @@
 @PACKAGE_INIT@
 
 set(CMAKE_CUDA_ARCHITECTURES @CMAKE_CUDA_ARCHITECTURES@)
-
 find_package(Sofa.Config QUIET REQUIRED)
 
 sofa_find_package(Sofa.Core QUIET REQUIRED)
 sofa_find_package(Sofa.GL QUIET REQUIRED)
 sofa_find_package(Sofa.Component.Mass QUIET REQUIRED)
 
-if(NOT TARGET SofaCUDA)
+if(NOT TARGET SofaCUDA.Core)
 	include("${CMAKE_CURRENT_LIST_DIR}/SofaCUDA.CoreTargets.cmake")
 endif()
 
