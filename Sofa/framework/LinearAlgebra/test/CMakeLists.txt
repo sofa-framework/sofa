@@ -9,6 +9,7 @@ set(SOURCE_FILES
     CompressedRowSparseMatrix_test.cpp
     CompressedRowSparseMatrixGeneric_test.cpp
     CompressedRowSparseMatrixConstraint_test.cpp
+    CompressedRowSparseMatrixMechanical_test.cpp
     Matrix_test.cpp
     RotationMatrix_test.cpp
     SparseMatrixProduct_test.cpp
