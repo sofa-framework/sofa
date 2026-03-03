@@ -558,8 +558,20 @@ TEST(RigidCoord2d, DotProduct)
     EXPECT_NEAR(dot, expected, tol);
 }
 
-// Note: Skipping 2D unary operator-() test; it calls orientation.inverse() on
-// a scalar, which would fail to compile (known bug in RigidCoord.h line 515).
+TEST(RigidCoord2d, UnaryNegation)
+{
+    RigidCoord<2, double> c(Vec<2, double>(3, 4), 1.2);
+    auto neg = -c;
+    EXPECT_NEAR(neg.getCenter()[0], -3.0, tol);
+    EXPECT_NEAR(neg.getCenter()[1], -4.0, tol);
+    EXPECT_NEAR(neg.getOrientation(), -1.2, tol);
+
+    // c + (-c) should give zero center and zero orientation
+    auto sum = c + neg;
+    EXPECT_NEAR(sum.getCenter()[0], 0.0, tol);
+    EXPECT_NEAR(sum.getCenter()[1], 0.0, tol);
+    EXPECT_NEAR(sum.getOrientation(), 0.0, tol);
+}
 
 // ====================================================================
 // Float Spot-Checks

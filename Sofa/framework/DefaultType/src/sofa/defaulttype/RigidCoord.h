@@ -512,7 +512,7 @@ public:
 
     constexpr RigidCoord<2, real> operator-() const
     {
-        return RigidCoord<2, real>(-this->center, this->orientation.inverse());
+        return RigidCoord<2, real>(-this->center, -this->orientation);
     }
 
 
