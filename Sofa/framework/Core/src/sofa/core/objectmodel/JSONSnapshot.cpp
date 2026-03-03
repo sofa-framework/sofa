@@ -20,25 +20,18 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/objectmodel/JSONSnapshot.h>
-#include <nlohmann/json.hpp>
-
 #include <fstream>
 #include <string>
 #include <stdexcept>
 #include <iostream>
 #include <sofa/helper/system/SetDirectory.h>
 
-#include <sofa/core/objectmodel/Data.h>
-
-
 namespace sofa::core::objectmodel
 {
-
 
 JSONSnapshot::JSONSnapshot()
 {}
 JSONSnapshot::~JSONSnapshot() = default;
-
 
 void to_json(nlohmann::json& j, const BaseSnapshot::DataInfo& di )
 {
@@ -233,7 +226,6 @@ void JSONSnapshot::importFrom(const std::string filename)
         m_graphRoot = std::make_shared<BaseSnapshot::SnapshotNode>();
     }
 
-
     if (jsonRoot.is_object() && !jsonRoot.empty())
     {
         from_json(jsonRoot, *m_graphRoot);
@@ -245,11 +237,6 @@ void JSONSnapshot::importFrom(const std::string filename)
     }
 
     std::cout << "JSON imported successfully from: " << filename << std::endl;
-
-    
 }
-
-
-
 
 } // namespace sofa::core::objectmodel

@@ -23,9 +23,6 @@
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/objectmodel/BaseSnapshot.h>
 
-
-
-
 namespace sofa::core::objectmodel
 {
 
@@ -34,16 +31,11 @@ class SOFA_CORE_API MemorySnapshot : public BaseSnapshot
 
 public:
     void importSnapshot(const std::string filename) override;
-
     void exportTo(const std::string filename) override;
     void importFrom(std::string filename) override;
     
     MemorySnapshot();
     ~MemorySnapshot();
-
-    //nlohmann::json:: jNode = nlohmann::json::array();
-
-
 
 };
 } // namespace sofa::core::objectmodel

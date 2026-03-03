@@ -19,25 +19,19 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
-
+#include <sofa/core/objectmodel/Base.h>
 #include <sofa/config.h>
 #include <sofa/simulation/Visitor.h>
 #include <string>
-#include <sofa/core/objectmodel/Base.h>
-#include <sofa/core/objectmodel/BaseSnapshot.h>
-
 
 namespace sofa::simulation
 {
-
 
 class SOFA_SIMULATION_CORE_API LoadSnapshotVisitor : public Visitor
 {
 protected:
     core::objectmodel::BaseSnapshot& m_snapshotContainer; 
 
-    std::unordered_map<core::objectmodel::BaseNode*, std::shared_ptr<core::objectmodel::BaseSnapshot::SnapshotNode>> m_snapshotNodeMap;
 public:
     LoadSnapshotVisitor(const sofa::core::ExecParams* eparams, core::objectmodel::BaseSnapshot& snapshot) : Visitor(eparams), m_snapshotContainer(snapshot) {}
 

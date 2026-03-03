@@ -20,20 +20,14 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/objectmodel/MemorySnapshot.h>
-#include <nlohmann/json.hpp>
-
+#include <sofa/helper/system/SetDirectory.h>
 #include <fstream>
 #include <string>
 #include <stdexcept>
 #include <iostream>
-#include <sofa/helper/system/SetDirectory.h>
-
-#include <sofa/core/objectmodel/Data.h>
-
 
 namespace sofa::core::objectmodel
 {
-
 
 MemorySnapshot::MemorySnapshot()
 {}
@@ -41,23 +35,17 @@ MemorySnapshot::~MemorySnapshot() = default;
 
 void MemorySnapshot::exportTo(const std::string filename)
 {
-    std::cout << "exportTo" << std::endl;
-    
+    SOFA_UNUSED(filename);
 }
 
 void MemorySnapshot::importSnapshot(const std::string filename)
 {
-    //std::cout << "importSnapshot possible" << std::endl;
-    
+    SOFA_UNUSED(filename);
 }
 
 void MemorySnapshot::importFrom(const std::string filename)
 {
-    //std::cout << "importFrom" << std::endl;
-
+    SOFA_UNUSED(filename);
 }
-
-
-
 
 } // namespace sofa::core::objectmodel

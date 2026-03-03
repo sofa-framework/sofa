@@ -19,16 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
-
+#include <sofa/core/objectmodel/Base.h>
 #include <sofa/config.h>
 #include <sofa/simulation/Visitor.h>
 #include <string>
-#include <sofa/core/objectmodel/Base.h>
-#include <sofa/core/objectmodel/BaseSnapshot.h>
 #include <stack>
 #include <memory>
-
 
 namespace sofa::simulation
 {

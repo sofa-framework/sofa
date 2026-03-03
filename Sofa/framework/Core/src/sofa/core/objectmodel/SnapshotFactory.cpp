@@ -21,11 +21,8 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/core/objectmodel/SnapshotFactory.h>
-#include <sofa/core/objectmodel/BaseSnapshot.h>
 #include <sofa/core/objectmodel/JSONSnapshot.h>
 #include <sofa/core/objectmodel/MemorySnapshot.h>
-
-
 
 namespace sofa::core::objectmodel
 {

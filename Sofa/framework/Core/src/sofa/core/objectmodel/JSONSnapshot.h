@@ -24,8 +24,6 @@
 #include <sofa/core/objectmodel/BaseSnapshot.h>
 #include <nlohmann/json.hpp>
 
-
-
 namespace sofa::core::objectmodel
 {
 
