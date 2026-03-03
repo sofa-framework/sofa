@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/SnapshotVisitor.h>
+#include <sofa/simulation/SaveSnapshotVisitor.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/core/objectmodel/SnapshotFactory.h>
@@ -30,7 +30,7 @@ using sofa::core::objectmodel::SnapshotType;
 namespace sofa::simulation
 {
 
-void SnapshotVisitor::processObject(
+void SaveSnapshotVisitor::processObject(
     core::objectmodel::BaseObject* obj,
     std::shared_ptr<core::objectmodel::BaseSnapshot::SnapshotNode> parent)
 {
@@ -39,7 +39,7 @@ void SnapshotVisitor::processObject(
     parent->components.push_back(*snapshot);
 }
 
-Visitor::Result SnapshotVisitor::processNodeTopDown(simulation::Node* node)
+Visitor::Result SaveSnapshotVisitor::processNodeTopDown(simulation::Node* node)
 {
     const auto parents = node->getParents();
 

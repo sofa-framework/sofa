@@ -33,8 +33,8 @@ using sofa::core::objectmodel::BaseObject;
 #include <sofa/core/objectmodel/SnapshotFactory.h>
 using sofa::core::objectmodel::SnapshotType;
 
-#include <sofa/simulation/SnapshotVisitor.h>
-using sofa::simulation::SnapshotVisitor;
+#include <sofa/simulation/SaveSnapshotVisitor.h>
+using sofa::simulation::SaveSnapshotVisitor;
 
 #include <sofa/simulation/LoadSnapshotVisitor.h>
 using sofa::simulation::LoadSnapshotVisitor;
@@ -291,7 +291,7 @@ TEST_F(Snapshot_test, JSONSnapshot)
     Node* root = c.root.get() ;
 
     std::string path = std::filesystem::temp_directory_path() / "testfile.json";
-    auto visitor = SnapshotVisitor(nullptr, *JsonSnapshotTest);
+    auto visitor = SaveSnapshotVisitor(nullptr, *JsonSnapshotTest);
     root->execute(visitor);
     JsonSnapshotTest->exportTo(path);
     EXPECT_NE(JsonSnapshotTest->m_graphRoot,nullptr);
