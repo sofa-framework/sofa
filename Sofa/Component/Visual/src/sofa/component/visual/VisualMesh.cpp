@@ -56,8 +56,9 @@ void VisualMesh::init()
     }
 }
 
-void VisualMesh::computeBBox(const core::ExecParams* exec_params, bool cond)
+void VisualMesh::computeBBox(const core::ExecParams* exec_params, bool onlyVisible)
 {
+    SOFA_UNUSED(onlyVisible);
     if (!d_enable.getValue())
         return;
 

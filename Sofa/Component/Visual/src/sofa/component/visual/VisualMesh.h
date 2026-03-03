@@ -41,7 +41,7 @@ public:
         sofa::BaseLink::FLAG_STOREPATH | sofa::BaseLink::FLAG_STRONGLINK> l_topology;
 
     void init() override;
-    void computeBBox(const core::ExecParams*, bool) override;
+    void computeBBox(const core::ExecParams*, bool onlyVisible) override;
 
 protected:
 
