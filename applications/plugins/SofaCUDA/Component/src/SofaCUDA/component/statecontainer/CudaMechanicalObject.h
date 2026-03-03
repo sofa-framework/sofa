@@ -21,6 +21,8 @@
 ******************************************************************************/
 #pragma once
 
+#include <SofaCUDA/component/config.h>
+
 #include <sofa/gpu/cuda/CudaTypes.h>
 #include <sofa/component/statecontainer/MechanicalObject.h>
 #include <sofa/gpu/cuda/CudaBaseVector.h>
@@ -162,6 +164,8 @@ CudaMechanicalObject_DeclMethods(gpu::cuda::CudaRigid3dTypes)
 
 
 #ifndef SOFA_GPU_CUDA_CUDAMECHANICALOBJECT_CPP
+namespace sofa::component::statecontainer
+{
 
 using sofa::gpu::cuda::CudaVec1fTypes;
 using sofa::gpu::cuda::CudaVec2fTypes;
@@ -170,19 +174,15 @@ using sofa::gpu::cuda::CudaVec3f1Types;
 using sofa::gpu::cuda::CudaVec6fTypes;
 using sofa::gpu::cuda::CudaRigid3fTypes;
 using sofa::gpu::cuda::CudaRigid2fTypes;
+extern template class SOFACUDA_COMPONENT_API MechanicalObject<CudaVec1fTypes>;
+extern template class SOFACUDA_COMPONENT_API MechanicalObject<CudaVec2fTypes>;
+extern template class SOFACUDA_COMPONENT_API MechanicalObject<CudaVec3fTypes>;
+extern template class SOFACUDA_COMPONENT_API MechanicalObject<CudaVec3f1Types>;
+extern template class SOFACUDA_COMPONENT_API MechanicalObject<CudaVec6fTypes>;
+extern template class SOFACUDA_COMPONENT_API MechanicalObject<CudaRigid3fTypes>;
+extern template class SOFACUDA_COMPONENT_API MechanicalObject<CudaRigid2fTypes>;
 
-
-// template specialization must be in the same namespace as original namespace for GCC 4.1
-// g++ 4.1 requires template instantiations to be declared on a parent namespace from the template class.
-extern template class SOFACUDA_COMPONENT_API sofa::component::statecontainer::MechanicalObject<CudaVec1fTypes>;
-extern template class SOFACUDA_COMPONENT_API sofa::component::statecontainer::MechanicalObject<CudaVec2fTypes>;
-extern template class SOFACUDA_COMPONENT_API sofa::component::statecontainer::MechanicalObject<CudaVec3fTypes>;
-extern template class SOFACUDA_COMPONENT_API sofa::component::statecontainer::MechanicalObject<CudaVec3f1Types>;
-extern template class SOFACUDA_COMPONENT_API sofa::component::statecontainer::MechanicalObject<CudaVec6fTypes>;
-extern template class SOFACUDA_COMPONENT_API sofa::component::statecontainer::MechanicalObject<CudaRigid3fTypes>;
-extern template class SOFACUDA_COMPONENT_API sofa::component::statecontainer::MechanicalObject<CudaRigid2fTypes>;
 #ifdef SOFA_GPU_CUDA_DOUBLE
-
 using sofa::gpu::cuda::CudaVec1dTypes;
 using sofa::gpu::cuda::CudaVec2dTypes;
 using sofa::gpu::cuda::CudaVec3dTypes;
@@ -190,13 +190,13 @@ using sofa::gpu::cuda::CudaVec3d1Types;
 using sofa::gpu::cuda::CudaVec6dTypes;
 using sofa::gpu::cuda::CudaRigid3dTypes;
 using sofa::gpu::cuda::CudaRigid2dTypes;
-extern template class SOFACUDA_COMPONENT_API sofa::component::statecontainer::MechanicalObject<CudaVec1dTypes>;
-extern template class SOFACUDA_COMPONENT_API sofa::component::statecontainer::MechanicalObject<CudaVec2dTypes>;
-extern template class SOFACUDA_COMPONENT_API sofa::component::statecontainer::MechanicalObject<CudaVec3dTypes>;
-extern template class SOFACUDA_COMPONENT_API sofa::component::statecontainer::MechanicalObject<CudaVec3d1Types>;
-extern template class SOFACUDA_COMPONENT_API sofa::component::statecontainer::MechanicalObject<CudaVec6dTypes>;
-extern template class SOFACUDA_COMPONENT_API sofa::component::statecontainer::MechanicalObject<CudaRigid3dTypes>;
-extern template class SOFACUDA_COMPONENT_API sofa::component::statecontainer::MechanicalObject<CudaRigid2dTypes>;
+extern template class SOFACUDA_COMPONENT_API MechanicalObject<CudaVec1dTypes>;
+extern template class SOFACUDA_COMPONENT_API MechanicalObject<CudaVec2dTypes>;
+extern template class SOFACUDA_COMPONENT_API MechanicalObject<CudaVec3dTypes>;
+extern template class SOFACUDA_COMPONENT_API MechanicalObject<CudaVec3d1Types>;
+extern template class SOFACUDA_COMPONENT_API MechanicalObject<CudaVec6dTypes>;
+extern template class SOFACUDA_COMPONENT_API MechanicalObject<CudaRigid3dTypes>;
+extern template class SOFACUDA_COMPONENT_API MechanicalObject<CudaRigid2dTypes>;
 #endif // SOFA_GPU_CUDA_DOUBLE
-
+}
 #endif // SOFA_GPU_CUDA_CUDAMECHANICALOBJECT_CPP
