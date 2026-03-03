@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.22)
 project(Sofa.LinearAlgebra_test)
 
 set(SOURCE_FILES
+    BlockFullMatrix_test.cpp
     BTDMatrix_test.cpp
     BaseMatrix_test.cpp
     CompressedRowSparseMatrix_test.cpp
