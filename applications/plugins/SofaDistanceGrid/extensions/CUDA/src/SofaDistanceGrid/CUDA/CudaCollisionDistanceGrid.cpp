@@ -20,9 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/gpu/cuda/CudaTypes.h>
-#include <SofaCUDA/component/solidmechanics/spring/CudaSpringForceField.inl>
-#include <SofaCUDA/component/statecontainer/CudaMechanicalObject.inl>
-#include <SofaCUDA/component/mapping/linear/CudaIdentityMapping.inl>
 #include <SofaCUDA/component/collision/response/mapper/CudaContactMapper.h>
 #include <SofaDistanceGrid/CUDA/CudaDistanceGridContactMapper.h>
 #include <SofaCUDA/component/collision/response/contact/CudaPenalityContactForceField.h>
@@ -30,18 +27,9 @@
 #include <SofaCUDA/component/collision/geometry/CudaSphereModel.h>
 #include <SofaCUDA/component/collision/geometry/CudaPointModel.h>
 
-#include <sofa/component/collision/detection/intersection/NewProximityIntersection.inl>
-#include <sofa/component/collision/detection/intersection/MeshNewProximityIntersection.inl>
-#include <sofa/component/collision/detection/intersection/RayDiscreteIntersection.inl>
-#include <sofa/component/collision/detection/intersection/DiscreteIntersection.h>
 #include <sofa/component/collision/response/contact/RayContact.h>
 #include <sofa/component/collision/response/contact/BarycentricPenalityContact.inl>
-#include <sofa/component/collision/response/contact/PenalityContactForceField.h>
-#include <sofa/component/collision/response/mapper/BarycentricContactMapper.inl>
 
-#include <sofa/gl/gl.h>
-#include <sofa/helper/Factory.inl>
-#include <fstream>
 
 namespace sofa::component::collision::response::contact
 {
