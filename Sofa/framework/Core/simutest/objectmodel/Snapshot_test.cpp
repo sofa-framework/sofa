@@ -36,12 +36,19 @@ using sofa::core::objectmodel::SnapshotType;
 #include <sofa/simulation/SnapshotVisitor.h>
 using sofa::simulation::SnapshotVisitor;
 
+#include <sofa/simulation/LoadSnapshotVisitor.h>
+using sofa::simulation::LoadSnapshotVisitor;
+
 #include <sofa/core/objectmodel/Data.h>
 using sofa::core::objectmodel::Data;
 using sofa::core::objectmodel::BaseLink;
 using sofa::core::objectmodel::SingleLink ;
 using sofa::core::objectmodel::BaseSnapshot;
 using sofa::core::objectmodel::BaseNode;
+
+#include <filesystem>
+#include <fstream>
+
 
 class TestComponent : public Base
 {
@@ -71,22 +78,48 @@ public:
         return this->createSnapshotObject(parents);
     }
 
-    SOFA_CLASS(TestComponent,Base);
+    //SOFA_CLASS(TestComponent,Base);
 };
 
 class MockSnapshotTest : public BaseSnapshot
 {
 public:
     void importSnapshot(const std::string filename) override
-    {}
+    {
+        SOFA_UNUSED(filename);
+    }
     void exportTo(const std::string filename) override
-    {}
+    {
+        SOFA_UNUSED(filename);
+    }
     void importFrom(std::string filename) override
-    {}
+    {
+        SOFA_UNUSED(filename);
+    }
     
 
     MockSnapshotTest() {}
     ~MockSnapshotTest() = default;
+
+    void setupSnapshot()
+    {
+        this->m_graphRoot = std::make_shared<BaseSnapshot::SnapshotNode>("root");
+        auto snapshotObject0 = std::make_shared<BaseSnapshot::SnapshotObject>("snapshotObject0");
+        this->m_graphRoot->components.push_back(*snapshotObject0);
+
+        auto snapshotNode1 = std::make_shared<BaseSnapshot::SnapshotNode>("snapshotNode1");
+        auto snapshotNode2 = std::make_shared<BaseSnapshot::SnapshotNode>("snapshotNode2");
+
+        auto snapshotObject1 = std::make_shared<BaseSnapshot::SnapshotObject>("snapshotObject1");
+        auto snapshotObject2 = std::make_shared<BaseSnapshot::SnapshotObject>("snapshotObject2");
+
+        snapshotNode1->components.push_back(*snapshotObject1);
+        snapshotNode2->components.push_back(*snapshotObject2);
+
+        snapshotNode1->children.push_back(snapshotNode2);
+
+        this->m_graphRoot->children.push_back(snapshotNode1);
+    }
 };
 
 class Snapshot_test: public BaseSimulationTest
@@ -95,28 +128,7 @@ public:
 
     SceneInstance* c;
     Node* node {nullptr};
-    Snapshot_test()
-    {
-        std::stringstream scene ;
-        scene << "<?xml version='1.0'?>"
-                 "<Node name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"
-                 "   <RequiredPlugin name='Sofa.Component.SceneUtility' />                   \n"
-                 "   <DefaultAnimationLoop />                                                \n"
-                 "   <DefaultVisualManagerLoop />                                            \n"
-                 "   <MechanicalObject name='mstate0'/>                                      \n"
-                 "   <InfoComponent name='obj'/>                                             \n"
-                 "   <Node name='child1'>                                                    \n"
-                 "      <MechanicalObject name='mstate1'/>                                   \n"
-                 "      <Node name='child2'>                                                 \n"
-                 "      </Node>                                                              \n"
-                 "   </Node>                                                                 \n"
-                 "</Node>                                                                    \n" ;
-        c = new SceneInstance("xml", scene.str()) ;
-        c->initScene() ;
-        const Node* root = c->root.get() ;
-        Base* b = sofa::core::PathResolver::FindBaseFromPath(root, "@/child1/child2");
-        node = dynamic_cast<Node*>(b);
-    }
+    Snapshot_test() {}
     ~Snapshot_test() override 
     {
         delete c;
@@ -204,6 +216,8 @@ TEST_F(Snapshot_test, findSnapshotObject)
 
 TEST_F(Snapshot_test, saveSnapshot)
 {
+    // Test of saveSnapshot
+
     TestComponent tComponent;
 
     auto snapshot = std::make_shared<BaseSnapshot::SnapshotObject>();
@@ -220,6 +234,8 @@ TEST_F(Snapshot_test, saveSnapshot)
 
 TEST_F(Snapshot_test, loadSnapshot)
 {
+    // Test of loadSnapshot
+
     TestComponent tComponent;
 
     auto snapshot = std::make_shared<BaseSnapshot::SnapshotObject>();
@@ -233,3 +249,67 @@ TEST_F(Snapshot_test, loadSnapshot)
     EXPECT_EQ(tcomponent2.d_value.getValue(), 3.14f);
 }
 
+TEST_F(Snapshot_test, BaseSnapshot)
+{
+    // Test of BaseSnapshot
+    // Test the structure and the behavior of a snapshot
+
+    MockSnapshotTest MockSnapshot;
+    MockSnapshot.setupSnapshot();
+
+    EXPECT_EQ(MockSnapshot.m_graphRoot->m_name,"root");
+    EXPECT_EQ(MockSnapshot.m_graphRoot->components[0].m_name,"snapshotObject0");
+    EXPECT_EQ(MockSnapshot.m_graphRoot->children[0]->m_name,"snapshotNode1");
+    EXPECT_EQ(MockSnapshot.m_graphRoot->children[0]->components[0].m_name,"snapshotObject1");
+    EXPECT_EQ(MockSnapshot.m_graphRoot->children[0]->children[0]->m_name,"snapshotNode2");
+    EXPECT_EQ(MockSnapshot.m_graphRoot->children[0]->children[0]->components[0].m_name,"snapshotObject2");
+
+}
+
+TEST_F(Snapshot_test, JSONSnapshot)
+{
+    // TEST JSONSnapshot
+    // Test the behavior of the export and the import with JSON
+
+    auto JsonSnapshotTest = createSnapshot(SnapshotType::JSON);
+
+    const std::string scene = R"(
+        <?xml version='1.0'?>
+        <Node name='Root' gravity='0 -9.81 0' time='0' animate='0' >
+            <RequiredPlugin name='Sofa.Component.StateContainer'/>
+            <DefaultAnimationLoop />
+            <DefaultVisualManagerLoop />
+            <Node name='child1'>
+                <MechanicalObject />
+            </Node>
+        </Node>
+    )";
+
+    SceneInstance c("xml", scene) ;
+    c.initScene() ;
+
+    Node* root = c.root.get() ;
+
+    std::string path = std::filesystem::temp_directory_path() / "testfile.json";
+    auto visitor = SnapshotVisitor(nullptr, *JsonSnapshotTest);
+    root->execute(visitor);
+    JsonSnapshotTest->exportTo(path);
+    EXPECT_NE(JsonSnapshotTest->m_graphRoot,nullptr);
+    std::cout << "JsonSnapshotTest : " << JsonSnapshotTest->m_graphRoot->m_name << std::endl;
+
+    std::ifstream checkFile(path);
+    EXPECT_TRUE(checkFile.good());
+    checkFile.close();
+
+    auto JsonSnapshotTest2 = createSnapshot(SnapshotType::JSON);
+    JsonSnapshotTest2->importFrom(path);
+    EXPECT_NE(JsonSnapshotTest2->m_graphRoot,nullptr);
+
+    EXPECT_EQ(JsonSnapshotTest2->m_graphRoot->m_name,"Root");
+    EXPECT_EQ(JsonSnapshotTest2->m_graphRoot->components[0].m_name,"Sofa.Component.StateContainer");
+    EXPECT_EQ(JsonSnapshotTest2->m_graphRoot->components[1].m_name,"DefaultAnimationLoop1");
+    EXPECT_EQ(JsonSnapshotTest2->m_graphRoot->components[2].m_name,"DefaultVisualManagerLoop1");
+    EXPECT_EQ(JsonSnapshotTest2->m_graphRoot->children[0]->m_name,"child1");
+    EXPECT_EQ(JsonSnapshotTest2->m_graphRoot->children[0]->components[0].m_name,"MechanicalObject1");
+
+}

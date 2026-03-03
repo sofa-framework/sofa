@@ -702,7 +702,6 @@ void Base::saveDataIn(BaseSnapshot::SnapshotObject& snapshot) const
             dataInfo.value.replace(pos, replaceValue.length(),newValue);
             pos = dataInfo.value.find(replaceValue, pos + newValue.length());
         }
-        // Wait PR#5976 to remove
         
         snapshot.m_dataContainer.push_back(dataInfo);
     }
