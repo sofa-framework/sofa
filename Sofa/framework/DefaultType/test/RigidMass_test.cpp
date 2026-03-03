@@ -21,6 +21,7 @@
 ******************************************************************************/
 #include <gtest/gtest.h>
 #include <sofa/defaulttype/RigidTypes.h>
+#include <sstream>
 #include <cmath>
 
 namespace
@@ -254,6 +255,58 @@ TEST(RigidMass2d, DerivDivideRigidMass)
     EXPECT_NEAR(result.getVCenter()[1], 3.0, tol);
     // angular: invInertiaMassMatrix * 10 = 0.5 * 10 = 5
     EXPECT_NEAR(result.getVOrientation(), 5.0, tol);
+}
+
+// ====================================================================
+// Stream Roundtrip Tests
+// ====================================================================
+
+TEST(RigidMass3d, StreamRoundtrip)
+{
+    RigidMass<3, double> original;
+    original.mass = 3.0;
+    original.volume = 2.5;
+    original.inertiaMatrix.identity();
+    original.inertiaMatrix(0, 0) = 2.0;
+    original.inertiaMatrix(1, 1) = 3.0;
+    original.inertiaMatrix(2, 2) = 4.0;
+    original.recalc();
+
+    std::stringstream ss;
+    ss << original;
+
+    RigidMass<3, double> recovered;
+    ss >> recovered;
+
+    EXPECT_NEAR(recovered.mass, 3.0, tol);
+    EXPECT_NEAR(recovered.volume, 2.5, tol);
+    // inertiaMassMatrix should be recomputed: diag(2,3,4) * 3 = diag(6,9,12)
+    EXPECT_NEAR(recovered.inertiaMassMatrix(0, 0), 6.0, tol);
+    EXPECT_NEAR(recovered.inertiaMassMatrix(1, 1), 9.0, tol);
+    EXPECT_NEAR(recovered.inertiaMassMatrix(2, 2), 12.0, tol);
+    // invInertiaMassMatrix should be recomputed: diag(1/6, 1/9, 1/12)
+    EXPECT_NEAR(recovered.invInertiaMassMatrix(0, 0), 1.0 / 6.0, tol);
+    EXPECT_NEAR(recovered.invInertiaMassMatrix(1, 1), 1.0 / 9.0, tol);
+    EXPECT_NEAR(recovered.invInertiaMassMatrix(2, 2), 1.0 / 12.0, tol);
+}
+
+TEST(RigidMass2d, StreamRoundtrip)
+{
+    RigidMass<2, double> original(5.0, 2.0); // circle: mass=5, radius=2
+    // inertiaMatrix = r^2/2 = 2, inertiaMassMatrix = 10
+
+    std::stringstream ss;
+    ss << original;
+
+    RigidMass<2, double> recovered;
+    ss >> recovered;
+
+    EXPECT_NEAR(recovered.mass, 5.0, tol);
+    EXPECT_NEAR(recovered.inertiaMatrix, 2.0, tol);
+    // inertiaMassMatrix should be recomputed: 2 * 5 = 10
+    EXPECT_NEAR(recovered.inertiaMassMatrix, 10.0, tol);
+    // invInertiaMassMatrix should be recomputed: 1/10 = 0.1
+    EXPECT_NEAR(recovered.invInertiaMassMatrix, 0.1, tol);
 }
 
 // ====================================================================
