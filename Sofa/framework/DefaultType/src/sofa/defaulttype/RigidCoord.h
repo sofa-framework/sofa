@@ -157,7 +157,7 @@ public:
     constexpr void operator +=(const RigidCoord<3, real>& a)
     {
         center += a.getCenter();
-        orientation *= a.getOrientation();
+        orientation = a.getOrientation() * orientation;
     }
 
     template<typename real2>
