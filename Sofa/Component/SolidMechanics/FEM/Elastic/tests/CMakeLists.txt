@@ -8,6 +8,7 @@ set(SOURCE_FILES
     FastTetrahedralCorotationalForceField_test.cpp
     FullySymmetric4Tensor_test.cpp
     HexahedronFEMForceField_test.cpp
+    StrainDisplacement_test.cpp
     TetrahedralCorotationalFEMForceField_test.cpp
     TetrahedronFEMForceField_stepTest.cpp
     TetrahedronFEMForceField_test.cpp
