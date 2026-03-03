@@ -113,7 +113,7 @@ private:
                     for (sofa::Size l = 0; l < spatial_dimensions; ++l)
                     {
                         const auto ijkl = callable(i, j, k, l);
-                        const auto jikl = callable(i, j, k, l);
+                        const auto jikl = callable(j, i, k, l);
                         const auto klij = callable(k, l, i, j);
                         const auto ijlk = callable(i, j, l, k);
                         constexpr auto max_precision{std::numeric_limits<long double>::digits10 + 1};
