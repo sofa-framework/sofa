@@ -202,6 +202,7 @@ TEST(RigidMass2d, RectangleConstructor)
     double xw = 3.0, yw = 4.0;
     RigidMass<2, double> m(mass, xw, yw);
     EXPECT_NEAR(m.mass, 6.0, tol);
+    EXPECT_NEAR(m.volume, 12.0, tol);  // area = 3 * 4 = 12
     // inertia = (xw^2 + yw^2) / 12 = (9+16)/12 = 25/12
     EXPECT_NEAR(m.inertiaMatrix, 25.0 / 12.0, tol);
     EXPECT_NEAR(m.inertiaMassMatrix, 25.0 / 12.0 * 6.0, tol);

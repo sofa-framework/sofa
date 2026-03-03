@@ -196,8 +196,8 @@ public:
     RigidMass(Real m, Real xwidth, Real ywidth)
     {
         mass = m;
-        volume = xwidth*xwidth + ywidth*ywidth;
-        inertiaMatrix = volume/12;
+        volume = xwidth * ywidth;
+        inertiaMatrix = (xwidth*xwidth + ywidth*ywidth) / 12;
         recalc();
     }
 
