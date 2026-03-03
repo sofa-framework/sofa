@@ -7,6 +7,7 @@ set(SOURCE_FILES
     BTDMatrix_test.cpp
     BaseMatrix_test.cpp
     CompressedRowSparseMatrix_test.cpp
+    CompressedRowSparseMatrixGeneric_test.cpp
     CompressedRowSparseMatrixConstraint_test.cpp
     Matrix_test.cpp
     RotationMatrix_test.cpp
