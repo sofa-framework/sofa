@@ -149,7 +149,6 @@ set(HEADER_FILES
 set(SOURCE_FILES
     ${SRC_ROOT}/AnimateBeginEvent.cpp
     ${SRC_ROOT}/AnimateEndEvent.cpp
-    ${SRC_ROOT}/AnimateVisitor.cpp
     ${SRC_ROOT}/BaseMechanicalVisitor.cpp
     ${SRC_ROOT}/BehaviorUpdatePositionVisitor.cpp
     ${SRC_ROOT}/CleanupVisitor.cpp
