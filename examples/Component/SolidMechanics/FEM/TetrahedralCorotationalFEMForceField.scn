@@ -26,7 +26,7 @@
         <TetrahedronSetTopologyContainer name="Tetra_topo"/>
         <TetrahedronSetTopologyModifier name="Modifier" />
         <TetrahedronSetGeometryAlgorithms template="Vec3" name="GeomAlgo" />
-        <Hexa2TetraTopologicalMapping input="@grid" output="@Tetra_topo" />
+        <Hexa2TetraTopologicalMapping input="@grid" output="@Tetra_topo" swapping="true"/>
         
         <DiagonalMass massDensity="0.2" />
         <TetrahedralCorotationalFEMForceField name="CFEM" youngModulus="1000" poissonRatio="0.3" method="small" />
@@ -45,7 +45,7 @@
         <TetrahedronSetTopologyContainer name="Tetra_topo" />
         <TetrahedronSetTopologyModifier name="Modifier" />
         <TetrahedronSetGeometryAlgorithms template="Vec3" name="GeomAlgo" />
-        <Hexa2TetraTopologicalMapping input="@grid" output="@Tetra_topo" />
+        <Hexa2TetraTopologicalMapping input="@grid" output="@Tetra_topo" swapping="true"/>
         
         <DiagonalMass massDensity="0.2" />
         <TetrahedralCorotationalFEMForceField name="CFEM" youngModulus="1000" poissonRatio="0.3" method="large" computeVonMisesStress="1"/>
@@ -64,7 +64,7 @@
         <TetrahedronSetTopologyContainer name="Tetra_topo"/>
         <TetrahedronSetTopologyModifier name="Modifier" />
         <TetrahedronSetGeometryAlgorithms template="Vec3" name="GeomAlgo" />
-        <Hexa2TetraTopologicalMapping input="@grid" output="@Tetra_topo" />
+        <Hexa2TetraTopologicalMapping input="@grid" output="@Tetra_topo" swapping="true"/>
         
         <DiagonalMass massDensity="0.2" />
         <TetrahedralCorotationalFEMForceField name="CFEM" youngModulus="1000" poissonRatio="0.3" method="polar" computeVonMisesStress="1"/>
