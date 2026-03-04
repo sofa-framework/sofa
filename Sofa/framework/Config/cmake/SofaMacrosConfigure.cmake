@@ -515,3 +515,13 @@ macro(sofa_set_targets_release_only)
 endmacro()
 
 
+function(sofa_treat_warnings_as_errors TARGET)
+    if(CMAKE_VERSION VERSION_GREATER_EQUAL "3.24")
+        set_property(TARGET ${TARGET} PROPERTY COMPILE_WARNING_AS_ERROR ON)
+    else()
+        target_compile_options(${TARGET} PRIVATE
+            $<$<CXX_COMPILER_ID:MSVC>:/WX>
+            $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Werror>
+        )
+    endif()
+endfunction()
