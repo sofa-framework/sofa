@@ -29,8 +29,7 @@ namespace multithreading::component::linearsolver::iterative
 
 template<class TMatrix, class TVector>
 class ParallelCGLinearSolver :
-    public sofa::component::linearsolver::iterative::CGLinearSolver<TMatrix, TVector>,
-    public sofa::simulation::TaskSchedulerUser
+    public sofa::component::linearsolver::iterative::CGLinearSolver<TMatrix, TVector>
 {
 public:
     SOFA_CLASS2(SOFA_TEMPLATE2(ParallelCGLinearSolver,TMatrix,TVector),
