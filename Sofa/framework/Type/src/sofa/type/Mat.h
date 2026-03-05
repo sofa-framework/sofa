@@ -90,7 +90,7 @@ public:
 
     ArrayLineType elems{};
 
-    constexpr Mat() noexcept = default;
+    constexpr Mat() noexcept : Mat(real{}) {}
 
     explicit constexpr Mat(NoInit) noexcept
     {

@@ -62,18 +62,7 @@ MatrixLinearSolver<Matrix,Vector>::MatrixLinearSolver()
         SOFA_UNUSED(tracker);
         if (d_parallelInverseProduct.getValue())
         {
-            simulation::TaskScheduler* taskScheduler = simulation::MainTaskSchedulerFactory::createInRegistry();
-            assert(taskScheduler);
-
-            if (taskScheduler->getThreadCount() < 1)
-            {
-                taskScheduler->init(0);
-                msg_info() << "Task scheduler initialized on " << taskScheduler->getThreadCount() << " threads";
-            }
-            else
-            {
-                msg_info() << "Task scheduler already initialized on " << taskScheduler->getThreadCount() << " threads";
-            }
+            initTaskScheduler();
         }
         return this->d_componentState.getValue();
     },

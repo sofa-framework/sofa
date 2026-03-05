@@ -122,10 +122,20 @@ void CompositeCollisionPipeline::init()
     }
 
 }
+void CompositeCollisionPipeline::bwdInit()
+{
+    for(const auto& subPipeline : l_subCollisionPipelines)
+    {
+        subPipeline->bwdInit();
+    }
+}
 
 void CompositeCollisionPipeline::reset()
 {
-
+    for(const auto& subPipeline : l_subCollisionPipelines)
+    {
+        subPipeline->reset();
+    }
 }
 
 /// Delegates collision reset to all sub-pipelines sequentially.
