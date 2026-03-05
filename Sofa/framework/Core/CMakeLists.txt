@@ -153,11 +153,11 @@ set(HEADER_FILES
     ${SRC_ROOT}/objectmodel/Base.h
     ${SRC_ROOT}/objectmodel/BaseClass.h
     ${SRC_ROOT}/objectmodel/BaseClassNameHelper.h
+    ${SRC_ROOT}/objectmodel/BaseComponent.h
     ${SRC_ROOT}/objectmodel/BaseContext.h
     ${SRC_ROOT}/objectmodel/BaseData.h
     ${SRC_ROOT}/objectmodel/BaseLink.h
     ${SRC_ROOT}/objectmodel/BaseNode.h
-    ${SRC_ROOT}/objectmodel/BaseObject.h
     ${SRC_ROOT}/objectmodel/BaseObjectDescription.h
     ${SRC_ROOT}/objectmodel/ClassInfo.h
     ${SRC_ROOT}/objectmodel/ComponentState.h
@@ -303,11 +303,11 @@ set(SOURCE_FILES
     ${SRC_ROOT}/objectmodel/AspectPool.cpp
     ${SRC_ROOT}/objectmodel/Base.cpp
     ${SRC_ROOT}/objectmodel/BaseClass.cpp
+    ${SRC_ROOT}/objectmodel/BaseComponent.cpp
     ${SRC_ROOT}/objectmodel/BaseContext.cpp
     ${SRC_ROOT}/objectmodel/BaseData.cpp
     ${SRC_ROOT}/objectmodel/BaseLink.cpp
     ${SRC_ROOT}/objectmodel/BaseNode.cpp
-    ${SRC_ROOT}/objectmodel/BaseObject.cpp
     ${SRC_ROOT}/objectmodel/BaseObjectDescription.cpp
     ${SRC_ROOT}/objectmodel/ClassInfo.cpp
     ${SRC_ROOT}/objectmodel/ComponentState.cpp
@@ -355,6 +355,11 @@ set(SOURCE_FILES
     ${SRC_ROOT}/visual/VisualState.cpp
 )
 
+set(DEPRECATED_DIR "compat/sofa/core")
+set(DEPRECATED_HEADER_FILES
+    ${DEPRECATED_DIR}/objectmodel/BaseObject.h
+)
+
 sofa_find_package(Sofa.Topology REQUIRED)
 sofa_find_package(Sofa.Helper REQUIRED)
 sofa_find_package(Sofa.DefaultType REQUIRED)
@@ -370,6 +375,12 @@ endif()
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Helper Sofa.Topology Sofa.DefaultType)
+
+# For compatibility with renamed files. To remove if all files have been removed in this folder
+target_include_directories(${PROJECT_NAME} PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/compat>
+    $<INSTALL_INTERFACE:include/${PROJECT_NAME}_compat>
+)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE nlohmann_json::nlohmann_json)
 

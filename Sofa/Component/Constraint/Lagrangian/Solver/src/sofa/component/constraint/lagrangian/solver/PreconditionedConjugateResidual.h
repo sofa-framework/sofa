@@ -1,4 +1,4 @@
-﻿/******************************************************************************
+/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -21,24 +21,30 @@
 ******************************************************************************/
 #pragma once
 
-#include <MultiThreading/component/linearsolver/iterative/ParallelCGLinearSolver.h>
+#include <sofa/component/constraint/lagrangian/solver/BuiltConstraintSolver.h>
+#include <sofa/core/behavior/ConstraintResolution.h>
 
-namespace multithreading::component::linearsolver::iterative
+namespace sofa::component::constraint::lagrangian::solver
 {
 
-template <class TMatrix, class TVector>
-void ParallelCGLinearSolver<TMatrix, TVector>::init()
+/**
+ * This class proposes a direct solver for constraint solving based on a preconditioned conjugate
+ * residual method the preconditioner is a diagonal preconditioner, more precisely a jacobi
+ * preconditioner.
+ */
+class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API PreconditionedConjugateResidual : public BuiltConstraintSolver
 {
-    Inherit1::init();
-    this->initTaskScheduler();
-}
+public:
+    SOFA_CLASS(PreconditionedConjugateResidual, BuiltConstraintSolver);
 
-template <class TMatrix, class TVector>
-void ParallelCGLinearSolver<TMatrix, TVector>::solve(
-    Matrix& A, Vector& x, Vector& b)
-{
-    A.setTaskScheduler(this->m_taskScheduler);
-    Inherit1::solve(A, x, b);
-}
+    PreconditionedConjugateResidual();
 
+protected:
+    /**
+     * Based on paper
+     * Yousef Saad. 2003. Iterative methods for sparse linear systems. Vol. 82. siam.
+     **/
+    virtual void doSolve(GenericConstraintProblem * problem , SReal timeout = 0.0) override;
+
+};
 }
