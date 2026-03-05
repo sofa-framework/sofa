@@ -38,19 +38,6 @@ StopperLagrangianConstraint<DataTypes>::StopperLagrangianConstraint(MechanicalSt
 }
 
 template<class DataTypes>
-void StopperLagrangianConstraint<DataTypes>::init()
-{
-    this->mstate = dynamic_cast<MechanicalState*>(this->getContext()->getMechanicalState());
-
-    helper::WriteAccessor<Data<VecCoord> > xData = *this->mstate->write(core::vec_id::write_access::position);
-    VecCoord& x = xData.wref();
-    if (x[d_index.getValue()].x() < d_min.getValue())
-        x[d_index.getValue()].x() = (Real) d_min.getValue();
-    if (x[d_index.getValue()].x() > d_max.getValue())
-        x[d_index.getValue()].x() = (Real) d_max.getValue();
-}
-
-template<class DataTypes>
 void StopperLagrangianConstraint<DataTypes>::buildConstraintMatrix(const core::ConstraintParams* /*cParams*/, DataMatrixDeriv &c_d, unsigned int &cIndex, const DataVecCoord &/*x*/)
 {
     auto c = sofa::helper::getWriteAccessor(c_d);
