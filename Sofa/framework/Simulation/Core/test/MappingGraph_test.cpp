@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/testing/BaseTest.h>
-#include <sofa/component/linearsystem/MappingGraph.h>
+#include <sofa/simulation/MappingGraph.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/simpleapi/SimpleApi.h>
@@ -30,7 +30,7 @@
 
 TEST(MappingGraph, noBuild)
 {
-    const sofa::component::linearsystem::MappingGraph graph;
+    const sofa::simulation::MappingGraph graph;
 
     EXPECT_FALSE(graph.isBuilt());
     EXPECT_EQ(graph.getRootNode(), nullptr);
@@ -47,7 +47,7 @@ TEST(MappingGraph, noBuild)
 
 TEST(MappingGraph, nullRootNode)
 {
-    sofa::component::linearsystem::MappingGraph graph;
+    sofa::simulation::MappingGraph graph;
     graph.build(sofa::core::MechanicalParams::defaultInstance(), nullptr);
 
     EXPECT_FALSE(graph.isBuilt());
@@ -67,7 +67,7 @@ TEST(MappingGraph, emptyRootNode)
 {
     const sofa::simulation::Node::SPtr root = sofa::core::objectmodel::New<sofa::simulation::Node>();
 
-    sofa::component::linearsystem::MappingGraph graph;
+    sofa::simulation::MappingGraph graph;
     graph.build(sofa::core::MechanicalParams::defaultInstance(), root.get());
 
     EXPECT_TRUE(graph.isBuilt());
@@ -91,7 +91,7 @@ TEST(MappingGraph, oneMechanicalObject)
     root->addObject(mstate);
     mstate->resize(10);
 
-    sofa::component::linearsystem::MappingGraph graph;
+    sofa::simulation::MappingGraph graph;
     graph.build(sofa::core::MechanicalParams::defaultInstance(), root.get());
 
     EXPECT_TRUE(graph.isBuilt());
@@ -117,7 +117,7 @@ TEST(MappingGraph, twoMechanicalObject)
     root->addObject(mstate2);
     mstate2->resize(2);
 
-    sofa::component::linearsystem::MappingGraph graph;
+    sofa::simulation::MappingGraph graph;
     graph.build(sofa::core::MechanicalParams::defaultInstance(), root.get());
 
     EXPECT_TRUE(graph.isBuilt());
@@ -151,7 +151,7 @@ TEST(MappingGraph, oneMapping)
     mapping->setFrom(mstate1.get());
     mapping->setTo(mstate2.get());
 
-    sofa::component::linearsystem::MappingGraph graph;
+    sofa::simulation::MappingGraph graph;
     graph.build(sofa::core::MechanicalParams::defaultInstance(), root.get());
 
     EXPECT_TRUE(graph.isBuilt());
@@ -213,7 +213,7 @@ TEST(MappingGraph, diamondMapping)
         {"input", "@/left/left @/right/right"}, {"output", "@bottom"}
     });
 
-    sofa::component::linearsystem::MappingGraph graph;
+    sofa::simulation::MappingGraph graph;
     graph.build(sofa::core::MechanicalParams::defaultInstance(), root.get());
 
     EXPECT_TRUE(graph.isBuilt());

@@ -21,43 +21,11 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/linearsystem/config.h>
-#include <sofa/simulation/BaseMechanicalVisitor.h>
-#include <sofa/component/linearsystem/MappingGraph.h>
+#include <sofa/config.h>
+#include <sofa/simulation/MappingGraph.h>
+SOFA_HEADER_DEPRECATED("v26.06", "v26.12", "sofa/simulation/MappingGraph.h")
 
 namespace sofa::component::linearsystem
 {
-
-/**
- * Copy the values stored in a global vector to the local vectors stored in teach BaseMechanicalState
- * The copy location is based on a built MappingGraph.
- */
-class SOFA_COMPONENT_LINEARSYSTEM_API DispatchFromGlobalVectorToLocalVectorVisitor : public simulation::BaseMechanicalVisitor
-{
-public:
-
-    DispatchFromGlobalVectorToLocalVectorVisitor(
-        const core::ExecParams* params,
-        const MappingGraph& mappingGraph,
-        sofa::core::MultiVecId dst,
-        linearalgebra::BaseVector * globalVector);
-
-    Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;
-
-    /// Return a class name for this visitor
-    /// Only used for debugging / profiling purposes
-    const char* getClassName() const override { return "DispatchFromGlobalVectorToLocalVectorVisitor"; }
-
-protected:
-
-    /// The vector id to copy from the global vector
-    sofa::core::MultiVecId m_dst;
-
-    /// The global vector containing the values to be copied
-    sofa::linearalgebra::BaseVector *m_globalVector { nullptr};
-
-    /// Structure used to identify where in the global vector the local vectors will be copied from
-    const MappingGraph& m_mappingGraph;
-};
-
-} // namespace sofa::component::linearsystem
+using MappingGraph = sofa::simulation::MappingGraph;
+}
