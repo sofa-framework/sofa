@@ -121,7 +121,7 @@ private:
     void start(unsigned int NbThread);
             
     bool m_isInitialized;
-            
+
     unsigned m_workerThreadCount;
             
     std::atomic<bool> m_workerThreadsIdle;

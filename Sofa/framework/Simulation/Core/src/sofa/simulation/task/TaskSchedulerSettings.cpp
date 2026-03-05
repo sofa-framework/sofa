@@ -1,4 +1,4 @@
-﻿/******************************************************************************
+/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,26 +19,18 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
 
-#include <MultiThreading/component/linearsolver/iterative/ParallelCGLinearSolver.h>
+#include <sofa/simulation/task/TaskSchedulerSettings.h>
+#include <sofa/core/ObjectFactory.h>
 
-namespace multithreading::component::linearsolver::iterative
+namespace sofa::simulation
 {
 
-template <class TMatrix, class TVector>
-void ParallelCGLinearSolver<TMatrix, TVector>::init()
+void registerTaskSchedulerSettings(sofa::core::ObjectFactory* factory)
 {
-    Inherit1::init();
-    this->initTaskScheduler();
+    factory->registerObjects(core::ObjectRegistrationData("Set task scheduler globally for the scene.")
+        .add< TaskSchedulerSettings >());
 }
 
-template <class TMatrix, class TVector>
-void ParallelCGLinearSolver<TMatrix, TVector>::solve(
-    Matrix& A, Vector& x, Vector& b)
-{
-    A.setTaskScheduler(this->m_taskScheduler);
-    Inherit1::solve(A, x, b);
-}
 
 }
