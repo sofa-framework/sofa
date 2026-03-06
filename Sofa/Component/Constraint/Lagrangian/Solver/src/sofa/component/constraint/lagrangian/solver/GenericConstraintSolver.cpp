@@ -186,8 +186,14 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
     // suppress the constraints that are on DOFS currently concerned by projective constraint
     applyProjectiveConstraintOnConstraintMatrix(cParams);
 
+    // Get constraint info for hot-start BEFORE clear() resets the constraint count check
+    preClearCorrection(cParams);
+
     //clear and/or resize based on the number of constraints
     current_cp->clear(numConstraints);
+
+    // Restore initial guess from previous timestep AFTER clear() zeros the forces
+    postClearCorrection();
 
     getConstraintViolation(cParams, &current_cp->dFree);
 
@@ -380,6 +386,8 @@ void GenericConstraintSolver::storeConstraintLambdas(const core::ConstraintParam
 
 bool GenericConstraintSolver::applyCorrection(const core::ConstraintParams *cParams, MultiVecId res1, MultiVecId res2)
 {
+    doPreApplyCorrection();
+
     computeAndApplyMotionCorrection(cParams, res1, res2);
     storeConstraintLambdas(cParams);
 
@@ -439,8 +447,5 @@ void GenericConstraintSolver::addRegularization(linearalgebra::BaseMatrix& W, co
         }
     }
 }
-
-
-
 
 } //namespace sofa::component::constraint::lagrangian::solver
