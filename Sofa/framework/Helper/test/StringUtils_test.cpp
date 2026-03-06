@@ -91,6 +91,47 @@ TEST(removeTrailingCharactersTest, mixOfCharacters)
     EXPECT_EQ(result, "Hello");
 }
 
+// Test cases for removeLeadingCharacter
+TEST(removeLeadingCharacterTest, emptyString)
+{
+    std::string_view input = "";
+    constexpr char character = ' ';
+    std::string_view result = sofa::helper::removeLeadingCharacter(input, character);
+    EXPECT_EQ(result, "");
+}
+
+TEST(removeLeadingCharacterTest, singleLeadingCharacter)
+{
+    std::string_view input = " Hello";
+    constexpr char character = ' ';
+    std::string_view result = sofa::helper::removeLeadingCharacter(input, character);
+    EXPECT_EQ(result, "Hello");
+}
+
+TEST(removeLeadingCharacterTest, multipleLeadingCharacters)
+{
+    std::string_view input = "   Hello";
+    constexpr char character = ' ';
+    std::string_view result = sofa::helper::removeLeadingCharacter(input, character);
+    EXPECT_EQ(result, "Hello");
+}
+
+TEST(removeLeadingCharacterTest, noLeadingCharacters)
+{
+    std::string_view input = "Hello";
+    constexpr char character = ' ';
+    std::string_view result = sofa::helper::removeLeadingCharacter(input, character);
+    EXPECT_EQ(result, "Hello");
+}
+
+TEST(removeLeadingCharacterTest, leadingCharactersNotMatching)
+{
+    std::string_view input = "World";
+    constexpr char character = '!';
+    std::string_view result = sofa::helper::removeLeadingCharacter(input, character);
+    EXPECT_EQ(result, "World");
+}
+
 TEST(StringUtilsTest, string_to_widestring_to_string)
 {
     std::string ascii_chars;
@@ -134,4 +175,14 @@ TEST(StringUtilsTest, upcaseString)
     EXPECT_EQ("ABCDEF", helper::upcaseString("AbCdEf"));
     EXPECT_EQ("ABCDEF", helper::upcaseString("ABCDEF"));
 }
+
+TEST(StringUtilsTest, split)
+{
+    std::string toSplit { "@dfasfasd"};
+    const auto v = sofa::helper::split(toSplit, '@');
+    ASSERT_EQ(v.size(), 2);
+    EXPECT_EQ(v[0], "");
+    EXPECT_EQ(v[1], "dfasfasd");
+}
+
 }

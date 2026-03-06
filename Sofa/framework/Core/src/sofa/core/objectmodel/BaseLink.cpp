@@ -105,7 +105,7 @@ bool BaseLink::ParseString(const std::string& text, std::string* path, std::stri
     {
         if (owner)
         {
-            msg_error(owner) << "ERROR parsing Link \""<<text<<"\": first character should be '@'.";
+            msg_error(owner) << "Parsing Link \""<<text<<"\": first character should be '@'.";
         }
         else
         {
@@ -274,8 +274,25 @@ bool BaseLink::read( const std::string& str )
     if (owner == nullptr)
         return false;
 
-    std::istringstream istr(str);
-    std::string path;
+    auto cleanedPath = sofa::helper::removeLeadingCharacter(str, ' ');
+
+    auto first = cleanedPath.find('@');
+    if (first != std::string::npos)
+    {
+        if (first != 0)
+        {
+            //the first characters don't start with '@'. They will be omitted.
+            msg_error(owner) << "Parsing Link \"" << str <<"\": first character should be '@'. All characters before the first '@' will be omitted.";
+            cleanedPath = cleanedPath.substr(first);
+        }
+    }
+    else
+    {
+        //the string does not contain any '@'
+        msg_error(owner) << "Parsing Link \"" << str << "\": no '@' character found. A valid path must start with a '@'";
+        return false;
+    }
+
 
     /// Find the target of each path, and stores each targets in
     /// a temporary vector of (pointer, path) pairs.
@@ -284,26 +301,19 @@ bool BaseLink::read( const std::string& str )
     bool ok = true;
     std::vector< std::pair<Base*, std::string> > entries;
 
-    /// Cut the path using space as a separator. This has several
-    /// questionnable consequence among which space are not allowed in part of a path (so no name containing space)
-    /// tokenizing the path using '@' as a separator would solve  the issue.
-    while (istr >> path)
-    {
-        if (path[0] != '@')
-        {
-            msg_error(owner) << "Parsing Link \"" << path <<"\": first character should be '@'.";
-            ok = false;
-        }
-        else
-        {
-            /// Check if the path is pointing to any object of Base type.
-            Base* ptr = PathResolver::FindBaseFromClassAndPath(owner, getDestClass(), path);
+    auto paths = sofa::helper::split(std::string(cleanedPath), '@');
+    std::erase_if(paths, [](const std::string& path) { return path.empty(); });
+    std::transform(paths.begin(), paths.end(), paths.begin(), [](const std::string& path) { return "@" + path; });
 
-            /// We found either a valid Base object or none.
-            /// ptr can be nullptr, as the destination can be added later in the graph
-            /// instead, we will check for failed links after init is completed
-            entries.emplace_back(ptr, path);
-        }
+    for (const auto& path : paths)
+    {
+        /// Check if the path is pointing to any object of Base type.
+        Base* ptr = PathResolver::FindBaseFromClassAndPath(owner, getDestClass(), path);
+
+        /// We found either a valid Base object or none.
+        /// ptr can be nullptr, as the destination can be added later in the graph
+        /// instead, we will check for failed links after init is completed
+        entries.emplace_back(ptr, path);
     }
 
     /// Check for the case where multiple link has been read while we are a single multilink.
@@ -316,9 +326,9 @@ bool BaseLink::read( const std::string& str )
 
     /// Add the detected objects that are not already present to the container of this Link
     clear();
-    for (const auto& [base, path] : entries)
+    for (const auto& [base2, path2] : entries)
     {
-        ok = add(base, path) && ok;
+        ok = add(base2, path2) && ok;
     }
     return ok;
 }

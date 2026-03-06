@@ -45,6 +45,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/GenerateRigid.h
     ${SRC_ROOT}/IndexOpenMP.h
     ${SRC_ROOT}/LCPcalc.h
+    ${SRC_ROOT}/LinkParser.h
     ${SRC_ROOT}/MarchingCubeUtility.h
     ${SRC_ROOT}/MatEigen.h
     ${SRC_ROOT}/MemoryManager.h
@@ -149,6 +150,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/Factory.cpp
     ${SRC_ROOT}/GenerateRigid.cpp
     ${SRC_ROOT}/LCPcalc.cpp
+    ${SRC_ROOT}/LinkParser.cpp
     ${SRC_ROOT}/MarchingCubeUtility.cpp
     ${SRC_ROOT}/NameDecoder.cpp
     ${SRC_ROOT}/OptionsGroup.cpp

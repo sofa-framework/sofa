@@ -20,8 +20,11 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/simulation/Node.h>
+#include <sofa/simulation/Simulation.h>
+#include <sofa/simulation/fwd.h>
 using sofa::core::objectmodel::BaseObject ;
-#include <sofa/core/objectmodel/BaseNode.h>
+#include <sofa/simulation/Node.h>
 using sofa::core::objectmodel::BaseNode ;
 
 #include <sofa/core/objectmodel/Link.h>
@@ -45,6 +48,7 @@ public:
     SingleLink<sofa::core::objectmodel::BaseObject, sofa::core::objectmodel::BaseObject, BaseLink::FLAG_DOUBLELINK|BaseLink::FLAG_STRONGLINK|BaseLink::FLAG_STOREPATH > m_link ;
     sofa::core::objectmodel::BaseObject::SPtr m_dst ;
     sofa::core::objectmodel::BaseObject::SPtr m_src ;
+    sofa::simulation::Node::SPtr m_root { nullptr };
 
     /// Create a link to an object.
     void doSetUp() override
@@ -56,6 +60,20 @@ public:
         m_src->setName("source") ;
         m_src->addLink(&m_link);
         m_link.add(m_dst.get());
+    }
+
+    void setupContext()
+    {
+        m_root = sofa::simulation::getSimulation()->createNewGraph("root");
+
+        m_root->addObject(this->m_src);
+        m_root->addObject(this->m_dst);
+
+        m_link.set(nullptr);
+        ASSERT_EQ(m_link.get(), nullptr);
+
+        m_src->addLink(&m_link);
+        m_link.setOwner(m_src.get());
     }
 };
 
@@ -141,4 +159,206 @@ TEST_F(SingleLink_test, checkEmptyness  )
     ASSERT_EQ( m_link.size(), 1 );
     m_link.clear();
     ASSERT_EQ( m_link.size(), 0 );
+}
+
+TEST_F(SingleLink_test, readWithoutContext)
+{
+    m_link.set(nullptr);
+    ASSERT_EQ(m_link.get(), nullptr);
+
+    const bool success  = m_link.read("@/destination");
+    ASSERT_FALSE(success);
+    ASSERT_EQ(m_link.get(), nullptr);
+}
+
+
+
+TEST_F(SingleLink_test, readWithContextEmptyString)
+{
+    setupContext();
+
+    const bool success  = m_link.read("");
+    ASSERT_TRUE(success);
+    ASSERT_EQ(m_link.get(), nullptr);
+}
+
+TEST_F(SingleLink_test, readWithContextJustAArobase)
+{
+    setupContext();
+
+    // the path points to an invalid object, but it's ok
+    const bool success  = m_link.read("@");
+    ASSERT_TRUE(success);
+    ASSERT_EQ(m_link.get(), nullptr);
+}
+
+TEST_F(SingleLink_test, readWithContextValidLink)
+{
+    setupContext();
+
+    const bool success  = m_link.read("@/destination");
+    ASSERT_TRUE(success);
+    ASSERT_EQ(m_link.get(), m_dst.get());
+}
+
+TEST_F(SingleLink_test, readWithContextInvalidLink)
+{
+    setupContext();
+
+    // the path points to an invalid object, but it's ok
+    const bool success  = m_link.read("@/foo");
+    ASSERT_TRUE(success);
+    ASSERT_EQ(m_link.get(), nullptr);
+}
+
+TEST_F(SingleLink_test, readWithContextValidLinkDoubleSlash)
+{
+    setupContext();
+
+    const bool success  = m_link.read("@//destination");
+    ASSERT_TRUE(success);
+    ASSERT_EQ(m_link.get(), m_dst.get());
+}
+
+TEST_F(SingleLink_test, readWithContextValidLinkNoSlash)
+{
+    setupContext();
+
+    const bool success  = m_link.read("@destination");
+    ASSERT_TRUE(success);
+    ASSERT_EQ(m_link.get(), m_dst.get());
+}
+
+TEST_F(SingleLink_test, readWithContextValidLinkLeadingSpaces)
+{
+    setupContext();
+
+    const bool success  = m_link.read("     @/destination");
+    ASSERT_TRUE(success);
+    ASSERT_EQ(m_link.get(), m_dst.get());
+    ASSERT_EQ(m_link.getSize(), 1);
+}
+
+TEST_F(SingleLink_test, readWithContextValidLinkTrailingSpaces)
+{
+    setupContext();
+
+    const bool success  = m_link.read("@/destination    ");
+    ASSERT_TRUE(success);
+    ASSERT_EQ(m_link.get(), m_dst.get());
+    ASSERT_EQ(m_link.getSize(), 1);
+}
+
+TEST_F(SingleLink_test, readWithContextValidLinkTrailingSpacesButTheyArePartOfThePath)
+{
+    setupContext();
+
+    m_dst->setName("destination    ");
+
+    const bool success  = m_link.read("@/destination    ");
+    ASSERT_TRUE(success);
+    ASSERT_EQ(m_link.get(), m_dst.get());
+    ASSERT_EQ(m_link.getSize(), 1);
+}
+
+TEST_F(SingleLink_test, readWithContextWithDot)
+{
+    setupContext();
+    m_dst->setName("Component.With.Dots");
+
+    const bool success  = m_link.read("@Component.With.Dots");
+    ASSERT_TRUE(success);
+}
+
+TEST_F(SingleLink_test, readWithContextWithSpace)
+{
+    setupContext();
+    m_dst->setName("Backward Euler ODE Solver");
+
+    const bool success  = m_link.read("@Backward Euler ODE Solver");
+    ASSERT_TRUE(success);
+}
+
+TEST_F(SingleLink_test, readComplex)
+{
+    m_root = sofa::simulation::getSimulation()->createNewGraph("root");
+    m_root->addObject(this->m_src);
+
+    auto child1 = m_root->createChild("child 1");
+    auto child2 = child1->createChild("child 2");
+    child2->addObject(this->m_dst);
+    m_dst->setName("My Object");
+
+    m_link.set(nullptr);
+    ASSERT_EQ(m_link.get(), nullptr);
+
+    m_src->addLink(&m_link);
+    m_link.setOwner(m_src.get());
+
+    {
+        const bool success  = m_link.read("@/child 1/child 2/My Object");
+        ASSERT_TRUE(success);
+        ASSERT_EQ(m_link.get(), m_dst.get());
+        ASSERT_EQ(m_link.getSize(), 1);
+    }
+
+    {
+        const bool success  = m_link.read("@/child 2/My Object");
+        ASSERT_TRUE(success);
+        ASSERT_EQ(m_link.get(), nullptr);
+        ASSERT_EQ(m_link.getSize(), 1);
+    }
+
+    {
+        const bool success  = m_link.read("@/child 1/child 2/../child 2/My Object");
+        ASSERT_TRUE(success);
+        ASSERT_EQ(m_link.get(), m_dst.get());
+        ASSERT_EQ(m_link.getSize(), 1);
+    }
+}
+
+TEST_F(SingleLink_test, readComplex2)
+{
+    m_root = sofa::simulation::getSimulation()->createNewGraph("root");
+
+    auto child1 = m_root->createChild("child 1");
+    child1->addObject(this->m_src);
+
+    auto child2 = child1->createChild("child 2");
+    child2->addObject(this->m_dst);
+    m_dst->setName("My Object");
+
+    m_link.set(nullptr);
+    ASSERT_EQ(m_link.get(), nullptr);
+
+    m_src->addLink(&m_link);
+    m_link.setOwner(m_src.get());
+
+    {
+        const bool success  = m_link.read("@/child 1/child 2/My Object");
+        ASSERT_TRUE(success);
+        ASSERT_EQ(m_link.get(), m_dst.get());
+        ASSERT_EQ(m_link.getSize(), 1);
+    }
+
+    {
+        const bool success  = m_link.read("@child 2/My Object");
+        ASSERT_TRUE(success);
+        ASSERT_EQ(m_link.get(), m_dst.get());
+        ASSERT_EQ(m_link.getSize(), 1);
+    }
+
+    {
+        const bool success  = m_link.read("@child 2/My Object  "); //trailing spaces
+        ASSERT_TRUE(success);
+        ASSERT_EQ(m_link.get(), m_dst.get());
+        ASSERT_EQ(m_link.getSize(), 1);
+    }
+
+    {
+        const bool success  = m_link.read("@/../child 1/child 2/My Object"); //ill-formed
+        ASSERT_TRUE(success);
+        ASSERT_EQ(m_link.get(), nullptr);
+        ASSERT_EQ(m_link.getSize(), 1);
+    }
 }
