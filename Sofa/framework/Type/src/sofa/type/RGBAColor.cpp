@@ -175,7 +175,7 @@ RGBAColor RGBAColor::fromHSVA(const float h, const float s, const float v, const
 /// This function remove the leading space in the stream.
 static std::istream& trimInitialSpaces(std::istream& in)
 {
-    int first = in.peek();
+    char first = static_cast<char>(in.peek());
     while (!in.eof() && !in.fail() && std::isspace(first, std::locale()))
     {
         in.get();
@@ -220,7 +220,7 @@ SOFA_TYPE_API std::istream& operator>>(std::istream& i, RGBAColor& t)
     if( i.eof() || i.fail() )
         return i;
 
-    const int first = i.peek() ;
+    const char first = static_cast<char>(i.peek()) ;
     if (std::isdigit(first, std::locale()))
     {
         i >> r >> g >> b ;
