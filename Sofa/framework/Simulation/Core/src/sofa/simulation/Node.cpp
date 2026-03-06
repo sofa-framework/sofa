@@ -19,8 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/Node.h>
-
+#include <sofa/core/BehaviorModel.h>
+#include <sofa/core/CollisionModel.h>
+#include <sofa/core/Mapping.h>
+#include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/BaseAnimationLoop.h>
 #include <sofa/core/behavior/BaseConstraintSet.h>
 #include <sofa/core/behavior/BaseInteractionForceField.h>
@@ -61,6 +63,7 @@
 #include <sofa/helper/Factory.inl>
 #include <sofa/helper/cast.h>
 #include <sofa/type/hardening.h>
+#include <sofa/helper/LinkParser.h>
 
 #include <iostream>
 #include <cstdlib>
@@ -412,216 +415,125 @@ core::objectmodel::BaseObject* Node::getObject(const std::string& objectName) co
 
 sofa::core::objectmodel::Base* Node::findLinkDestClass(const core::objectmodel::BaseClass* destType, const std::string& path, const core::objectmodel::BaseLink* link)
 {
-    std::string pathStr;
-    if (link)
+    sofa::helper::LinkParser parser(path);
+    parser.validate();
+
+    //early return if the parser has errors
+    if (!parser.submitErrors(this))
     {
-        if (!link->parseString(path,&pathStr))
-            return nullptr;
-    }
-    else
-    {
-        if (!BaseLink::ParseString(path,&pathStr,nullptr,this))
-            return nullptr;
-    }
-
-    if(DEBUG_LINK)
-        dmsg_info() << "LINK: Looking for " << destType->className << "<" << destType->templateName << "> " << pathStr << " from Node " << getName() ;
-
-    std::size_t ppos = 0;
-    const std::size_t psize = pathStr.size();
-    if (ppos == psize || (ppos == psize-2 && pathStr[ppos] == '[' && pathStr[ppos+1] == ']')) // self-reference
-    {
-        if(DEBUG_LINK)
-            dmsg_info() << "  self-reference link." ;
-
-        if (!link || !link->getOwnerBase()) return destType->dynamicCast(this);
-        return destType->dynamicCast(link->getOwnerBase());
-    }
-    Node* node = this;
-    sofa::core::objectmodel::BaseObject* master = nullptr;
-    bool based = false;
-    if (ppos < psize && pathStr[ppos] == '[') // relative index in the list of objects
-    {
-        if (pathStr[psize-1] != ']')
-        {
-            msg_error() << "Invalid index-based path \"" << path << "\"";
-            return nullptr;
-        }
-        char* endptr = nullptr;
-        errno = 0;
-        long parsedIndex = std::strtol(pathStr.c_str()+ppos+1, &endptr, 10);
-        if (errno != 0 || endptr == pathStr.c_str()+ppos+1 || parsedIndex < INT_MIN || parsedIndex > INT_MAX)
-        {
-            msg_error() << "Invalid index in path \"" << path << "\"";
-            return nullptr;
-        }
-        int index = static_cast<int>(parsedIndex);
-
-        if(DEBUG_LINK)
-           dmsg_info() << "  index-based path to " << index ;
-
-        ObjectReverseIterator it = object.rbegin();
-        const ObjectReverseIterator itend = object.rend();
-        if (link && link->getOwnerBase())
-        {
-            // index from last
-            Base* b = link->getOwnerBase();
-            while (it != itend && *it != b)
-                ++it;
-        }
-        while (it != itend && index < 0)
-        {
-            ++it;
-            ++index;
-        }
-        if (it == itend)
-            return nullptr;
-
-        if(DEBUG_LINK)
-            dmsg_info() << "  found " << it->get()->getTypeName() << " " << it->get()->getName() << "." ;
-
-        return destType->dynamicCast(it->get());
-    }
-    else if (ppos < psize && pathStr[ppos] == '/') // absolute path
-    {
-        if(DEBUG_LINK)
-            dmsg_info() << "  absolute path" ;
-        BaseNode* basenode = this->getRoot();
-        if (!basenode) return nullptr;
-        node = down_cast<Node>(basenode);
-        ++ppos;
-        based = true;
-    }
-    while(ppos < psize)
-    {
-        if ((ppos+1 < psize && pathStr.substr(ppos,2) == "./")
-            || pathStr.substr(ppos) == ".")
-        {
-            // this must be this node
-            if(DEBUG_LINK)
-                dmsg_info() << "  to current node" ;
-
-            ppos += 2;
-            based = true;
-        }
-        else if ((ppos+2 < psize && pathStr.substr(ppos,3) == "../") // relative
-                || pathStr.substr(ppos) == "..")
-        {
-            ppos += 3;
-            if (master)
-            {
-                master = master->getMaster();
-                if(DEBUG_LINK)
-                    dmsg_info() << "  to master object " << master->getName() ;
-            }
-            else
-            {
-                core::objectmodel::BaseNode* firstParent = node->getFirstParent();
-                if (!firstParent) return nullptr;
-                node = static_cast<Node*>(firstParent); // TODO: explore other parents
-                if(DEBUG_LINK)
-                    dmsg_info() << "  to parent node " << node->getName() ;
-            }
-            based = true;
-        }
-        else if (pathStr[ppos] == '/')
-        {
-            // extra /
-            if(DEBUG_LINK)
-                dmsg_info() << "  extra '/'" ;
-            ppos += 1;
-        }
-        else
-        {
-            std::size_t p2pos = pathStr.find('/',ppos);
-            if (p2pos == std::string::npos) p2pos = psize;
-            std::string nameStr = pathStr.substr(ppos,p2pos-ppos);
-            ppos = p2pos+1;
-            if (master)
-            {
-                if(DEBUG_LINK)
-                    dmsg_info() << "  to slave object " << nameStr ;
-                master = master->getSlave(nameStr);
-                if (!master) return nullptr;
-            }
-            else
-            {
-                for (;;)
-                {
-                    sofa::core::objectmodel::BaseObject* obj = node->getObject(nameStr);
-                    Node* childPtr = node->getChild(nameStr);
-                    if (childPtr)
-                    {
-                        node = childPtr;
-                        if(DEBUG_LINK)
-                            dmsg_info() << "  to child node " << nameStr ;
-                        break;
-                    }
-                    else if (obj)
-                    {
-                        master = obj;
-                        if(DEBUG_LINK)
-                            dmsg_info()  << "  to object " << nameStr ;
-                        break;
-                    }
-                    if (based) return nullptr;
-                    // this can still be found from an ancestor node
-                    core::objectmodel::BaseNode* firstParent = node->getFirstParent();
-                    if (!firstParent) return nullptr;
-                    node = static_cast<Node*>(firstParent); // TODO: explore other parents
-                    if(DEBUG_LINK)
-                        dmsg_info()  << "  looking in ancestor node " << node->getName() ;
-                }
-            }
-            based = true;
-        }
-    }
-    if (master)
-    {
-        if(DEBUG_LINK)
-            dmsg_info()  << "  found " << master->getTypeName() << " " << master->getName() << "." ;
-        return destType->dynamicCast(master);
-    }
-    else
-    {
-        Base* r = destType->dynamicCast(node);
-        if (r)
-        {
-            if(DEBUG_LINK)
-                dmsg_info()  << "  found node " << node->getName() << "." ;
-            return r;
-        }
-        for (ObjectIterator it = node->object.begin(), itend = node->object.end(); it != itend; ++it)
-        {
-            sofa::core::objectmodel::BaseObject* obj = it->get();
-            Base *o = destType->dynamicCast(obj);
-            if (!o) continue;
-            if(DEBUG_LINK)
-                dmsg_info()  << "  found " << obj->getTypeName() << " " << obj->getName() << "." ;
-            if (!r) r = o;
-            else return nullptr; // several objects are possible, this is an ambiguous path
-        }
-        if (r) return r;
-        // no object found, we look in parent nodes if the searched class is one of the known standard single components (state, topology, ...)
-        if (destType->hasParent(sofa::core::BaseState::GetClass()))
-            return destType->dynamicCast(node->getState());
-        else if (destType->hasParent(core::topology::BaseMeshTopology::GetClass()))
-            return destType->dynamicCast(node->getMeshTopologyLink());
-        else if (destType->hasParent(core::topology::Topology::GetClass()))
-            return destType->dynamicCast(node->getTopology());
-        else if (destType->hasParent(core::visual::Shader::GetClass()))
-            return destType->dynamicCast(node->getShader());
-        else if (destType->hasParent(core::behavior::BaseAnimationLoop::GetClass()))
-            return destType->dynamicCast(node->getAnimationLoop());
-        else if (destType->hasParent(core::behavior::OdeSolver::GetClass()))
-            return destType->dynamicCast(node->getOdeSolver());
-        else if (destType->hasParent(core::collision::Pipeline::GetClass()))
-            return destType->dynamicCast(node->getCollisionPipeline());
-        else if (destType->hasParent(core::visual::VisualLoop::GetClass()))
-            return destType->dynamicCast(node->getVisualLoop());
-
         return nullptr;
     }
+
+    const auto decomposition = parser.split();
+
+    // if the link is absolute, we need to start from the root Node
+    if (parser.isAbsolute())
+    {
+        if (auto* root = this->getRoot(); root && root != this)
+        {
+            const auto pathFromRoot = parser.join(decomposition.begin(), decomposition.end(), false, true);
+            return root->findLinkDestClass(destType, pathFromRoot, link);
+        }
+    }
+
+    // not an absolute link: relative to the current Node. We are searching in the children Node,
+    // and the components stored in the current Node
+
+    // paths such as '@/', '@' or '@.': implicit searching based on the destination type
+    if (decomposition.empty() || decomposition.size() == 1 && decomposition[0] == ".")
+    {
+        if (destType->hasParent(sofa::core::BaseState::GetClass()))
+            return destType->dynamicCast(this->getState());
+        if (destType->hasParent(core::topology::BaseMeshTopology::GetClass()))
+            return destType->dynamicCast(this->getMeshTopologyLink());
+        if (destType->hasParent(core::topology::Topology::GetClass()))
+            return destType->dynamicCast(this->getTopology());
+        if (destType->hasParent(core::visual::Shader::GetClass()))
+            return destType->dynamicCast(this->getShader());
+        if (destType->hasParent(core::behavior::BaseAnimationLoop::GetClass()))
+            return destType->dynamicCast(this->getAnimationLoop());
+        if (destType->hasParent(core::behavior::OdeSolver::GetClass()))
+            return destType->dynamicCast(this->getOdeSolver());
+        if (destType->hasParent(core::collision::Pipeline::GetClass()))
+            return destType->dynamicCast(this->getCollisionPipeline());
+        if (destType->hasParent(core::visual::VisualLoop::GetClass()))
+            return destType->dynamicCast(this->getVisualLoop());
+    }
+
+    const auto& firstElement = decomposition.front();
+
+    if (firstElement == "..")
+    {
+        //we don't know which parent of this Node it refers to. We are searching among all parents.
+        sofa::core::objectmodel::Base* parentSearching { nullptr };
+        const auto pathFromFirstParent = parser.join(decomposition.begin() + 1, decomposition.end(), false, true);
+        for (auto* parent : this->getParents())
+        {
+            parentSearching = parent->findLinkDestClass(destType, pathFromFirstParent, link);
+            if (parentSearching)
+            {
+                return parentSearching;
+            }
+        }
+        return nullptr;
+    }
+
+    const auto firstElementWithoutTrailingSpaces = sofa::helper::removeTrailingCharacter(firstElement, ' ');
+
+    //searching for a component
+    auto* component = this->getObject(firstElement);
+    if (!component)
+    {
+        //searching for a component without trailing spaces
+        component = this->getObject(std::string(firstElementWithoutTrailingSpaces));
+    }
+
+    //searching for a child
+    auto* childFromFirstElement = this->getChild(firstElement);
+    if (!childFromFirstElement)
+    {
+        //searching for a child without trailing spaces
+        childFromFirstElement = this->getChild(std::string(firstElementWithoutTrailingSpaces));
+    }
+
+    if (decomposition.size() == 1)
+    {
+        if (component)
+        {
+            return destType->dynamicCast(component);
+        }
+
+        if (childFromFirstElement)
+        {
+            if (auto* destNode = destType->dynamicCast(childFromFirstElement))
+            {
+                return destNode;
+            }
+        }
+    }
+
+    // checking if the link points to a slave
+    if (decomposition.size() == 2 && component)
+    {
+        if (auto* slave = component->getSlave(decomposition[1]))
+        {
+            return destType->dynamicCast(slave);
+        }
+        if (auto* slaveWithoutTrailingSpaces = component->getSlave(
+                std::string(sofa::helper::removeTrailingCharacter(decomposition[1], ' '))))
+        {
+            return destType->dynamicCast(slaveWithoutTrailingSpaces);
+        }
+    }
+
+    //recursive call
+    if (childFromFirstElement)
+    {
+        const auto pathFromChild = parser.join(decomposition.begin() + 1, decomposition.end(), false, true);
+        return childFromFirstElement->findLinkDestClass(destType, pathFromChild, link);
+    }
+
+    return nullptr;
 }
 
 /// Add an object. Detect the implemented interfaces and add the object to the corresponding lists.

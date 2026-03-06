@@ -184,6 +184,16 @@ std::string_view removeTrailingCharacters(std::string_view sv, const std::initia
     return sv.substr(0, end - sv.begin());
 }
 
+std::string_view removeLeadingCharacter(std::string_view sv, char character)
+{
+    auto begin = sv.begin();
+    while (begin != sv.end() && *begin == character)
+    {
+        ++begin;
+    }
+    return sv.substr(begin - sv.begin());
+}
+
 } // namespace sofa::helper
 
 
