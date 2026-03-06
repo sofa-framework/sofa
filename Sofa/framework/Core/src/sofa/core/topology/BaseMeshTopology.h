@@ -278,6 +278,8 @@ public:
     virtual void addQuad( Index a, Index b, Index c, Index d );
     virtual void addTetra( Index a, Index b, Index c, Index d );
     virtual void addHexa( Index a, Index b, Index c, Index d, Index e, Index f, Index g, Index h );
+    virtual void addPrism( Index a, Index b, Index c, Index d, Index e, Index f );
+    virtual void addPyramid( Index a, Index b, Index c, Index d, Index e );
     /// @}
 
     /// get information about connexity of the mesh

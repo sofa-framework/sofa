@@ -1,4 +1,4 @@
-﻿/******************************************************************************
+/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -21,24 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <MultiThreading/component/linearsolver/iterative/ParallelCGLinearSolver.h>
+#include <sofa/config.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 
-namespace multithreading::component::linearsolver::iterative
-{
-
-template <class TMatrix, class TVector>
-void ParallelCGLinearSolver<TMatrix, TVector>::init()
-{
-    Inherit1::init();
-    this->initTaskScheduler();
-}
-
-template <class TMatrix, class TVector>
-void ParallelCGLinearSolver<TMatrix, TVector>::solve(
-    Matrix& A, Vector& x, Vector& b)
-{
-    A.setTaskScheduler(this->m_taskScheduler);
-    Inherit1::solve(A, x, b);
-}
-
-}
+SOFA_HEADER_DEPRECATED("v26.06", "v29.06", "sofa/core/objectmodel/BaseComponent.h")
