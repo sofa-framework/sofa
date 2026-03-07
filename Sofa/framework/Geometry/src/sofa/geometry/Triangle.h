@@ -88,26 +88,54 @@ struct Triangle
         static constexpr auto getBarycentricCoordinates(const Node& p0, const Node& n0, const Node& n1, const Node& n2)
     {
         // Point can be written: p0 = a*n0 + b*n1 + c*n2
-        // with a = area(n1n2p0)/area(n0n1n2), b = area(n0n2p0)/area(n0n1n2) and c = area(n0n1p0)/area(n0n1n2) 
-        const auto area = Triangle::area(n0, n1, n2);
-        if (fabs(area) < std::numeric_limits<T>::epsilon()) // triangle is flat
+        // with a = area(n1n2p0)/area(n0n1n2), b = area(n0n2p0)/area(n0n1n2) and c = area(n0n1p0)/area(n0n1n2)
+        if constexpr (std::is_same_v<Node, sofa::type::Vec<3, T>>)
         {
-            return sofa::type::Vec<3, T>(-1, -1, -1);
-        }
-        
-        const auto A0 = Triangle::area(n1, n2, p0);
-        const auto A1 = Triangle::area(n0, p0, n2);
+            // In 3D, use signed areas via dot product with triangle normal
+            // to get correct sign for outside-triangle points
+            const auto N = sofa::type::cross(n1 - n0, n2 - n0);
+            const auto NdotN = sofa::type::dot(N, N);
 
-        sofa::type::Vec<3, T> baryCoefs(type::NOINIT);
-        baryCoefs[0] = A0 / area;
-        baryCoefs[1] = A1 / area;
-        baryCoefs[2] = 1 - baryCoefs[0] - baryCoefs[1];
+            if (NdotN < std::numeric_limits<T>::epsilon() * std::numeric_limits<T>::epsilon()) // triangle is flat
+            {
+                return sofa::type::Vec<3, T>(-1, -1, -1);
+            }
 
-        if (fabs(baryCoefs[2]) <= std::numeric_limits<T>::epsilon()){
-            baryCoefs[2] = 0;
+            sofa::type::Vec<3, T> baryCoefs(type::NOINIT);
+            baryCoefs[0] = sofa::type::dot(N, sofa::type::cross(n2 - n1, p0 - n1)) / NdotN;
+            baryCoefs[1] = sofa::type::dot(N, sofa::type::cross(n0 - n2, p0 - n2)) / NdotN;
+            baryCoefs[2] = 1 - baryCoefs[0] - baryCoefs[1];
+
+            if (fabs(baryCoefs[2]) <= std::numeric_limits<T>::epsilon()){
+                baryCoefs[2] = 0;
+            }
+
+            return baryCoefs;
         }
-        
-        return baryCoefs;
+        else
+        {
+            // In 2D, Triangle::area() returns a signed value (shoelace formula),
+            // so the ratio of sub-areas to total area preserves correct signs
+            const auto area = Triangle::area(n0, n1, n2);
+            if (fabs(area) < std::numeric_limits<T>::epsilon()) // triangle is flat
+            {
+                return sofa::type::Vec<3, T>(-1, -1, -1);
+            }
+
+            const auto A0 = Triangle::area(n1, n2, p0);
+            const auto A1 = Triangle::area(n0, p0, n2);
+
+            sofa::type::Vec<3, T> baryCoefs(type::NOINIT);
+            baryCoefs[0] = A0 / area;
+            baryCoefs[1] = A1 / area;
+            baryCoefs[2] = 1 - baryCoefs[0] - baryCoefs[1];
+
+            if (fabs(baryCoefs[2]) <= std::numeric_limits<T>::epsilon()){
+                baryCoefs[2] = 0;
+            }
+
+            return baryCoefs;
+        }
     }
 
 
@@ -163,9 +191,29 @@ struct Triangle
         typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
         typename = std::enable_if_t<std::is_scalar_v<T>>
     >
-        static constexpr bool isPointInTriangle(const Node& p0, const Node& n0, const Node& n1, const Node& n2, sofa::type::Vec<3, T>& baryCoefs)
+        static constexpr bool isPointInTriangle(const Node& p0, const Node& n0, const Node& n1, const Node& n2, sofa::type::Vec<3, T>& baryCoefs, bool assumePointIsInPlane = true)
     {
         baryCoefs = Triangle::getBarycentricCoordinates(p0, n0, n1, n2);
+
+        // In 3D, check if the point is in the plane of the triangle
+        if constexpr (std::is_same_v<Node, sofa::type::Vec<3, T>>)
+        {
+            if(!assumePointIsInPlane)
+            {
+                const auto normal = Triangle::normal(n0, n1, n2);
+                const auto normalNorm2 = sofa::type::dot(normal, normal);
+                if (normalNorm2 > std::numeric_limits<T>::epsilon())
+                {
+                    const auto d = sofa::type::dot(p0 - n0, normal);
+                    if (d * d / normalNorm2 > std::numeric_limits<T>::epsilon())
+                        return false;
+                }
+            }
+        }
+        else
+        {
+            SOFA_UNUSED(assumePointIsInPlane);
+        }
 
         for (int i = 0; i < 3; ++i)
         {
