@@ -70,6 +70,7 @@ public:
     /// Return the solution of the linear system
     virtual TVector* getSolutionVector() const;
 
+
     linearalgebra::BaseMatrix* getSystemBaseMatrix() const override;
     linearalgebra::BaseVector* getSystemRHSBaseVector() const override;
     linearalgebra::BaseVector* getSystemSolutionBaseVector() const override;
@@ -100,6 +101,7 @@ public:
     Data<bool> d_matrixChanged;
 
 protected:
+    linearalgebra::BaseMatrix* doGetSystemBaseMatrix() const override;
 
     TypedMatrixLinearSystem();
 
