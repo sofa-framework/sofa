@@ -1,0 +1,80 @@
+/******************************************************************************
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
+#pragma once
+
+#include <sofa/type/Mat.h>
+
+namespace sofa::component::solidmechanics::fem::elastic
+{
+
+/**
+ * Alias for a sofa::type::Mat
+ * If T is sofa::type::Mat<L,C,real> and L==1 && C==1, the alias is the scalar type.
+ * Otherwise, the alias is T itself.
+ *
+ * Example: static_cast<ScalarOrMatrix<MatType>>(matrix)
+ */
+template <class T>
+using ScalarOrMatrix = std::conditional_t<
+    (T::nbLines==1 && T::nbCols==1), typename T::Real, T>;
+
+template <sofa::Size L, sofa::Size C, class real>
+real absGeneralizedDeterminant(const sofa::type::Mat<L, C, real>& mat)
+{
+    if constexpr (L == C)
+    {
+        return std::abs(sofa::type::determinant(mat));
+    }
+    else
+    {
+        return std::sqrt(sofa::type::determinant(mat.multTranspose(mat)));
+    }
+}
+
+template <sofa::Size L, sofa::Size C, class real>
+sofa::type::Mat<C, L, real> leftPseudoInverse(const sofa::type::Mat<L, C, real>& mat)
+{
+    return mat.multTranspose(mat).inverted() * mat.transposed();
+}
+
+/**
+ * Computes the inverse of a given matrix.
+ * For square matrices (L == C), the standard matrix inverse is computed.
+ * For non-square matrices, the left pseudo-inverse is returned.
+ *
+ * @param mat The input matrix of size LxC to be inverted or pseudo-inverted.
+ * @return A matrix of size CxL representing the inverse or left pseudo-inverse of the input matrix.
+ */
+template <sofa::Size L, sofa::Size C, class real>
+sofa::type::Mat<C, L, real> inverse(const sofa::type::Mat<L, C, real>& mat)
+{
+    if constexpr (L == C)
+    {
+        return mat.inverted();
+    }
+    else
+    {
+        return leftPseudoInverse(mat);
+    }
+}
+
+}
