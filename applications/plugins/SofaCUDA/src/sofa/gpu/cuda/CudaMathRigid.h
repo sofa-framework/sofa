@@ -25,15 +25,6 @@
 #include <cuda_runtime.h>
 #include <cuda.h>
 
-#if defined(__cplusplus) && CUDA_VERSION < 2000
-namespace sofa
-{
-namespace gpu
-{
-namespace cuda
-{
-#endif
-
 template<class real>
 class CudaRigidCoord3;
 
@@ -264,9 +255,4 @@ public:
 
 #endif // SOFA_GPU_CUDA_DOUBLE
 
-#if defined(__cplusplus) && CUDA_VERSION < 2000
-} // namespace cuda
-} // namespace gpu
-} // namespace sofa
-#endif
 #endif
