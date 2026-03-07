@@ -24,7 +24,7 @@
 
 #include <cuda_runtime_api.h>
 
-#include "mycuda.h"
+#include <sofa/gpu/cuda/mycuda.h>
 #include <sofa/core/behavior/ForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/component/topology/container/grid/RegularGridTopology.h>

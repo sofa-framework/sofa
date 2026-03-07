@@ -23,15 +23,6 @@
 #include <sofa/gpu/cuda/CudaMath.h>
 #include "cuda.h"
 
-#if defined(__cplusplus) && CUDA_VERSION < 2000
-namespace sofa
-{
-namespace gpu
-{
-namespace cuda
-{
-#endif
-
 extern "C"
 {
     void DiagonalMassCuda_addMDxf(unsigned int size, float factor, const void * mass, const void* dx, void* res);
@@ -132,10 +123,4 @@ void DiagonalMassCuda_addForced(unsigned int size, const void * mass,const doubl
     dim3 grid((size+BSIZE-1)/BSIZE,1);
     {DiagonalMassCuda_addForce_kernel<double><<< grid, threads >>>(size,(const double *) mass, g[0],g[1],g[2], (double*)f); mycudaDebugError("DiagonalMassCuda_addForce_kernel<double>");}
 }
-#endif
-
-#if defined(__cplusplus) && CUDA_VERSION < 2000
-} // namespace cuda
-} // namespace gpu
-} // namespace sofa
 #endif

@@ -1,45 +1,36 @@
+#include <SofaCUDA/GUI/config.h>
+
 #include <sofa/gpu/cuda/CudaTypes.h>
-#include <SofaCUDA/component/solidmechanics/spring/CudaSpringForceField.inl>
-#include <SofaCUDA/component/statecontainer/CudaMechanicalObject.inl>
-#include <SofaCUDA/component/mapping/linear/CudaIdentityMapping.inl>
-#include <SofaCUDA/component/collision/response/contact/CudaPenalityContactForceField.h>
-#include <SofaCUDA/component/collision/geometry/CudaSphereModel.h>
 #include <sofa/gui/component/performer/MouseInteractor.inl>
 
-#include <sofa/gpu/cuda/CudaContactMapper.h>
+#include <SofaCUDA/component/collision/response/mapper/CudaContactMapper.h>
 #include <sofa/gui/component/performer/ComponentMouseInteraction.inl>
 #include <sofa/gui/component/performer/AttachBodyPerformer.inl>
 #include <sofa/gui/component/performer/FixParticlePerformer.inl>
 #include <sofa/gui/component/performer/BaseAttachBodyPerformer.inl>
 
-#include <sofa/component/collision/detection/intersection/RayDiscreteIntersection.inl>
-#include <sofa/component/collision/detection/intersection/DiscreteIntersection.h>
 
-#include <sofa/component/collision/response/contact/RayContact.h>
-#include <sofa/component/collision/response/mapper/BarycentricContactMapper.inl>
-
-#include <sofa/component/solidmechanics/spring/VectorSpringForceField.h>
-
-#include <sofa/gl/gl.h>
 #include <sofa/helper/Factory.inl>
-#include <sofa/core/Mapping.inl>
-#include <fstream>
+#include <sofa/core/ObjectFactory.h>
+
 
 namespace sofa::gui::component::performer
 {
-template class SOFA_GPU_CUDA_API MouseInteractor<CudaVec3fTypes>;
-template class SOFA_GPU_CUDA_API TComponentMouseInteraction< CudaVec3fTypes >;
-template class SOFA_GPU_CUDA_API AttachBodyPerformer< CudaVec3fTypes >;
-template class SOFA_GPU_CUDA_API FixParticlePerformer< CudaVec3fTypes >;
-
-#ifdef SOFA_GPU_CUDA_DOUBLE
-template class SOFA_GPU_CUDA_API MouseInteractor<CudaVec3dTypes>;
-template class SOFA_GPU_CUDA_API TComponentMouseInteraction< CudaVec3dTypes >;
-template class SOFA_GPU_CUDA_API AttachBodyPerformer< CudaVec3dTypes >;
-template class SOFA_GPU_CUDA_API FixParticlePerformer< CudaVec3dTypes >;
-#endif
 
 using namespace sofa::gpu::cuda;
+
+template class SOFACUDA_GUI_API MouseInteractor<CudaVec3fTypes>;
+template class SOFACUDA_GUI_API TComponentMouseInteraction< CudaVec3fTypes >;
+template class SOFACUDA_GUI_API AttachBodyPerformer< CudaVec3fTypes >;
+template class SOFACUDA_GUI_API FixParticlePerformer< CudaVec3fTypes >;
+
+#ifdef SOFA_GPU_CUDA_DOUBLE
+template class SOFACUDA_GUI_API MouseInteractor<CudaVec3dTypes>;
+template class SOFACUDA_GUI_API TComponentMouseInteraction< CudaVec3dTypes >;
+template class SOFACUDA_GUI_API AttachBodyPerformer< CudaVec3dTypes >;
+template class SOFACUDA_GUI_API FixParticlePerformer< CudaVec3dTypes >;
+#endif
+
 using namespace sofa::component::collision;
 using namespace sofa::component::collision::geometry;
 using namespace sofa::component::collision::response::mapper;
