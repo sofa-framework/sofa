@@ -70,7 +70,7 @@ template <class TMatrix>
 void MatrixProjectionMethod<TMatrix>::addMappedMatrixToGlobalMatrixEigen(
     sofa::type::fixed_array<core::behavior::BaseMechanicalState*, 2> mstatePair,
     TMatrix* mappedMatrix,
-    sofa::type::fixed_array<MappingJacobians<TMatrix>, 2> jacobians,
+    sofa::type::fixed_array<simulation::MappingJacobians<TMatrix>, 2> jacobians,
     const MappingGraph& mappingGraph, linearalgebra::BaseMatrix* globalMatrix)
 {
     if (!mappedMatrix)
@@ -206,14 +206,14 @@ void MatrixProjectionMethod<TMatrix>::computeMatrixJacobians(const core::Mechani
 {
     if (!m_mappingJacobians.has_value() || !d_areJacobiansConstant.getValue())
     {
-        const MappingJacobians<TMatrix> J0 = computeJacobiansFrom(
+        const simulation::MappingJacobians<TMatrix> J0 = computeJacobiansFrom(
             this->l_mechanicalStates[0], mparams, mappingGraph, matrixToProject);
 
-        const MappingJacobians<TMatrix> J1 =
+        const simulation::MappingJacobians<TMatrix> J1 =
                 (this->l_mechanicalStates[0] == this->l_mechanicalStates[1]) ?
                     J0 : computeJacobiansFrom(this->l_mechanicalStates[1], mparams, mappingGraph, matrixToProject);
 
-        m_mappingJacobians.emplace(sofa::type::fixed_array<MappingJacobians<TMatrix>, 2>({J0, J1}));
+        m_mappingJacobians.emplace(sofa::type::fixed_array<simulation::MappingJacobians<TMatrix>, 2>({J0, J1}));
     }
 }
 
@@ -237,7 +237,7 @@ void MatrixProjectionMethod<TMatrix>::projectMatrixToGlobalMatrix(const core::Me
 
 template <class TMatrix>
 std::vector<unsigned> MatrixProjectionMethod<TMatrix>::identifyAffectedDoFs(
-    BaseMechanicalState* mstate, TMatrix* crs)
+    core::behavior::BaseMechanicalState* mstate, TMatrix* crs)
 {
     const auto blockSize = mstate->getMatrixBlockSize();
     std::set<unsigned int> setAffectedDoFs;
@@ -262,13 +262,13 @@ std::vector<unsigned> MatrixProjectionMethod<TMatrix>::identifyAffectedDoFs(
 }
 
 template <class TMatrix>
-MappingJacobians<TMatrix> MatrixProjectionMethod<TMatrix>::computeJacobiansFrom(
-    BaseMechanicalState* mstate, const core::MechanicalParams* mparams,
+simulation::MappingJacobians<TMatrix> MatrixProjectionMethod<TMatrix>::computeJacobiansFrom(
+    core::behavior::BaseMechanicalState* mstate, const core::MechanicalParams* mparams,
     const MappingGraph& mappingGraph, TMatrix* crs)
 {
     core::ConstraintParams cparams(*mparams);
 
-    MappingJacobians<TMatrix> jacobians(*mstate);
+    simulation::MappingJacobians<TMatrix> jacobians(*mstate);
 
     if (!mappingGraph.hasAnyMappingInput(mstate))
     {
