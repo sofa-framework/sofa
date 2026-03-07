@@ -23,15 +23,6 @@
 #include <sofa/gpu/cuda/CudaMath.h>
 #include "cuda.h"
 
-#if defined(__cplusplus) && CUDA_VERSION < 2000
-namespace sofa
-{
-namespace gpu
-{
-namespace cuda
-{
-#endif
-
 struct GPUSphere
 {
     CudaVec3<float> center;
@@ -263,8 +254,3 @@ void SphereForceFieldCuda3f1_addDForce(unsigned int size, GPUSphere* sphere, con
     {SphereForceFieldCuda3f1_addDForce_kernel<<< grid, threads >>>(size, *sphere, penetration, (CudaVec4<float>*)df, (const CudaVec4<float>*)dx); mycudaDebugError("SphereForceFieldCuda3f1_addDForce_kernel");}
 }
 
-#if defined(__cplusplus) && CUDA_VERSION < 2000
-} // namespace cuda
-} // namespace gpu
-} // namespace sofa
-#endif
