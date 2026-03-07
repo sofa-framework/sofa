@@ -54,13 +54,14 @@ protected:
     OglTexturePointer();
     ~OglTexturePointer() override;
 
+    void doFwdDraw(core::visual::VisualParams*) override;
+    void doBwdDraw(core::visual::VisualParams*) override;
+
     Data<unsigned short> textureUnit; ///< Set the texture unit
     Data<bool> enabled; ///< enabled ?
 
 public:
     void init() override;
-    void fwdDraw(core::visual::VisualParams*) override;
-    void bwdDraw(core::visual::VisualParams*) override;
 
     unsigned short getTextureUnit() { return textureUnit.getValue(); }
 
