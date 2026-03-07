@@ -25,6 +25,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/collision/geometry/CubeCollisionModel.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/behavior/SingleStateAccessor.inl>
 
 #include <sofa/core/objectmodel/BaseObject.h>
 using sofa::core::objectmodel::ComponentState ;
@@ -37,7 +38,6 @@ SphereCollisionModel<DataTypes>::SphereCollisionModel()
     : d_radius(initData(&d_radius, "listRadius", "Radius of each sphere"))
     , d_defaultRadius(initData(&d_defaultRadius, (SReal)(1.0), "radius", "Default radius"))
     , d_showImpostors(initData(&d_showImpostors, true, "showImpostors", "Draw spheres as impostors instead of \"real\" spheres"))
-    , mstate(nullptr)
 {
     enum_type = SPHERE_TYPE;
 }
@@ -47,7 +47,6 @@ SphereCollisionModel<DataTypes>::SphereCollisionModel(core::behavior::Mechanical
     : d_radius(initData(&d_radius, "listRadius", "Radius of each sphere"))
     , d_defaultRadius(initData(&d_defaultRadius, (SReal)(1.0), "radius", "Default radius"))
     , d_showImpostors(initData(&d_showImpostors, true, "showImpostors", "Draw spheres as impostors instead of \"real\" spheres"))
-    , mstate(_mstate)
 {
     enum_type = SPHERE_TYPE;
 }
@@ -81,24 +80,18 @@ void SphereCollisionModel<DataTypes>::init()
         msg_warning() << "Calling an already fully initialized component. You should use reinit instead." ;
     }
 
-    this->CollisionModel::init();
-    mstate = dynamic_cast< core::behavior::MechanicalState<DataTypes>* > (getContext()->getMechanicalState());
-    if (mstate==nullptr)
+    if (!this->isComponentStateInvalid())
     {
-        //TODO(dmarchal): The previous message was saying this only work for a vec3 mechanicalstate but there
-        // it seems that a mechanicalstate will work we well...where is the truth ?
-        msg_error(this) << "Missing a MechanicalObject with template '" << DataTypes::Name() << ". "
-                           "This MechnicalObject stores the position of the spheres. When this one is missing the collision model is deactivated. \n"
-                           "To remove this error message you can add to your scene a line <MechanicalObject template='"<< DataTypes::Name() << "'/>. ";
-        d_componentState.setValue(ComponentState::Invalid) ;
-
-        return;
+        this->validateMState();
     }
 
-    const auto npoints = mstate->getSize();
-    resize(npoints);
+    if (!this->isComponentStateInvalid())
+    {
+        const auto npoints = mstate->getSize();
+        resize(npoints);
 
-    d_componentState.setValue(ComponentState::Valid) ;
+        d_componentState.setValue(ComponentState::Valid) ;
+    }
 }
 
 

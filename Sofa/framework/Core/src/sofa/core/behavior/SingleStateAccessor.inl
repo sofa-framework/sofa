@@ -31,15 +31,21 @@ void SingleStateAccessor<DataTypes>::init()
 {
     Inherit1::init();
 
-    d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
+    if (!this->isComponentStateInvalid())
+    {
+        this->validateMState();
+    }
+}
 
+template <class DataTypes>
+void SingleStateAccessor<DataTypes>::validateMState()
+{
     if (!mstate.get())
     {
         mstate.set(dynamic_cast< MechanicalState<DataTypes>* >(getContext()->getMechanicalState()));
 
         if(!mstate)
         {
-
             msg_error() << "No compatible MechanicalState found in the current context. "
                 "This may be because there is no MechanicalState in the local context, "
                 "or because the type is not compatible";
@@ -67,7 +73,7 @@ auto SingleStateAccessor<DataTypes>::getMState() const -> const MechanicalState<
     return mstate.get(); 
 }
 
-template<class DataTypes>
+template <class DataTypes>
 SingleStateAccessor<DataTypes>::SingleStateAccessor(MechanicalState<DataTypes> *mm)
     : Inherit1()
     , mstate(initLink("mstate", "MechanicalState used by this component"), mm)
