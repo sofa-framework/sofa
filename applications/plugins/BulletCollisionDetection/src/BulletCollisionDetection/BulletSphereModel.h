@@ -1,7 +1,7 @@
 #ifndef BULLET_SPHERE_MODEL
 #define BULLET_SPHERE_MODEL
 
-#include <sofa/component/collision/geometry/SphereModel.h>
+#include <sofa/component/collision/geometry/SphereCollisionModel.h>
 #include "BulletCollisionModel.h"
 #include <sofa/simulation/CollisionBeginEvent.h>
 #include <BulletCollisionDetection/config.h>

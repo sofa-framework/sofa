@@ -22,7 +22,7 @@
 #define SOFA_GPU_CUDA_CUDALINEMODEL_CPP
 
 #include <SofaCUDA/component/collision/geometry/CudaLineModel.h>
-#include <sofa/component/collision/geometry/LineModel.inl>
+#include <sofa/component/collision/geometry/LineCollisionModel.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::collision::geometry

@@ -21,8 +21,8 @@
 ******************************************************************************/
 #include "TaskSchedulerTestTasks.h"
 
-#include <sofa/simulation/TaskScheduler.h>
-#include <sofa/simulation/MainTaskSchedulerFactory.h>
+#include <sofa/simulation/task/TaskScheduler.h>
+#include <sofa/simulation/task/MainTaskSchedulerFactory.h>
 
 using sofa::simulation::Task;
 

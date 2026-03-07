@@ -159,10 +159,10 @@ sofa/simulation/tree/SMPSimulation.h : SofaSimulationTree/SMPSimulation.h
 sofa/simulation/tree/tree.h : SofaSimulationTree/tree.h
 sofa/simulation/tree/TreeSimulation.cpp : SofaSimulationTree/TreeSimulation.cpp
 sofa/simulation/tree/TreeSimulation.h : SofaSimulationTree/TreeSimulation.h
-sofa/simulation/graph/DAGNode.cpp : SofaSimulationGraph/DAGNode.cpp
-sofa/simulation/graph/DAGNode.h : SofaSimulationGraph/DAGNode.h
-sofa/simulation/graph/DAGNodeMultiMappingElement.cpp : SofaSimulationGraph/DAGNodeMultiMappingElement.cpp
-sofa/simulation/graph/DAGNodeMultiMappingElement.h : SofaSimulationGraph/DAGNodeMultiMappingElement.h
+sofa/simulation/Node.cpp : SofaSimulationGraph/DAGNode.cpp
+sofa/simulation/Node.h : SofaSimulationGraph/DAGNode.h
+sofa/simulation/NodeMultiMappingElement.cpp : SofaSimulationGraph/DAGNodeMultiMappingElement.cpp
+sofa/simulation/NodeMultiMappingElement.h : SofaSimulationGraph/DAGNodeMultiMappingElement.h
 sofa/simulation/graph/DAGSimulation.cpp : SofaSimulationGraph/DAGSimulation.cpp
 sofa/simulation/graph/DAGSimulation.h : SofaSimulationGraph/DAGSimulation.h
 sofa/simulation/graph/graph.h : SofaSimulationGraph/graph.h
