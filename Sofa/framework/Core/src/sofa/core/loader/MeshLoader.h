@@ -86,22 +86,20 @@ protected:
 protected:
     virtual void clearBuffers() final;
 
+    virtual bool doLoad() override;
+
 private:
-    virtual bool doLoad() = 0;
+    virtual bool doLoadMesh() = 0;
 
     virtual void doClearBuffers() = 0;
 
 public:
-    bool canLoad() override;
-
     //virtual void init();
     void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override;
 
     void init() override;
 
     void reinit() override;
-
-    virtual bool load() final;
 
     /// Apply Homogeneous transformation to the positions
     virtual void applyTransformation (sofa::type::Matrix4 const& T);
