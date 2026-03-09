@@ -36,17 +36,8 @@ LinkParser& LinkParser::cleanLink()
     if (decomposition.empty())
         return *this;
 
-    auto it = std::find(decomposition.begin() + 1, decomposition.end(), "..");
-    while (it != decomposition.end())
-    {
-        auto index = std::distance(decomposition.begin(), it);
-        decomposition.erase(it);
-        decomposition.erase(decomposition.begin() + index - 1);
-        it = std::find(decomposition.begin() + 1, decomposition.end(), "..");
-    }
-
     // a "." references itself, so it can be removed
-    it = std::find(decomposition.begin(), decomposition.end(), ".");
+    auto it = std::find(decomposition.begin(), decomposition.end(), ".");
     while (it != decomposition.end())
     {
         decomposition.erase(it);
