@@ -460,6 +460,11 @@ sofa::core::objectmodel::Base* Node::findLinkDestClass(const core::objectmodel::
             return destType->dynamicCast(this->getVisualLoop());
     }
 
+    if (decomposition.empty())
+    {
+        return destType->dynamicCast(this);
+    }
+    
     const auto& firstElement = decomposition.front();
 
     if (firstElement == "..")
