@@ -40,18 +40,16 @@ namespace sofa::core::behavior
 namespace sofa::gpu::cuda
 {
 
-
-int LinearMovementProjectiveConstraintCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-// .add< component::constraint::projective::LinearMovementProjectiveConstraint<CudaVec3fTypes> >()
-// .add< component::constraint::projective::LinearMovementProjectiveConstraint<CudaVec3f1Types> >()
+    void registerLinearMovementProjectiveConstraint(sofa::core::ObjectFactory* factory)
+    {
+        factory->registerObjects(sofa::core::ObjectRegistrationData("Supports GPU-side computations using CUDA for the LinearMovementProjectiveConstraint")
         .add< component::constraint::projective::LinearMovementProjectiveConstraint<CudaVec6fTypes> >()
         .add< component::constraint::projective::LinearMovementProjectiveConstraint<CudaRigid3fTypes> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
-// .add< component::constraint::projective::LinearMovementProjectiveConstraint<CudaVec3dTypes> >()
-// .add< component::constraint::projective::LinearMovementProjectiveConstraint<CudaVec3d1Types> >()
         .add< component::constraint::projective::LinearMovementProjectiveConstraint<CudaVec6dTypes> >()
         .add< component::constraint::projective::LinearMovementProjectiveConstraint<CudaRigid3dTypes> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
-        ;
+        );
+    }
 
 } // namespace sofa::gpu::cuda

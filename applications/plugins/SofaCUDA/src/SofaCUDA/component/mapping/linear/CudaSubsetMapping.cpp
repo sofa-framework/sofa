@@ -41,12 +41,14 @@ namespace sofa::gpu::cuda
 {
 using namespace sofa::component::mapping::linear;
 
-int SubsetMappingCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
+    void registerSubsetMapping(sofa::core::ObjectFactory* factory)
+    {
+        factory->registerObjects(sofa::core::ObjectRegistrationData("Supports GPU-side computations using CUDA for the SubsetMapping")
         .add< SubsetMapping< CudaVec3fTypes, CudaVec3fTypes > >()
         .add< SubsetMapping< CudaVec3f1Types, CudaVec3f1Types > >()
         .add< SubsetMapping< CudaVec3f1Types, CudaVec3fTypes > >()
-        .add< SubsetMapping< CudaVec3fTypes, CudaVec3f1Types > >()
-        ;
+        .add< SubsetMapping< CudaVec3fTypes, CudaVec3f1Types > >());
+    }
 
 } // namespace sofa::gpu::cuda
 

@@ -39,14 +39,16 @@ template class SOFA_GPU_CUDA_API IndexValueMapper<gpu::cuda::CudaVec3d1Types>;
 
 namespace sofa::gpu::cuda
 {
-
-int IndexValueMapperClass = core::RegisterObject("Supports GPU-side computations using CUDA")
+    void registerIndexValueMapper(sofa::core::ObjectFactory* factory)
+    {
+        factory->registerObjects(sofa::core::ObjectRegistrationData("Supports GPU-side computations using CUDA for the IndexValueMapper")
         .add<component::engine::transform::IndexValueMapper<CudaVec3fTypes> >()
         .add<component::engine::transform::IndexValueMapper<CudaVec3f1Types> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
         .add<component::engine::transform::IndexValueMapper<CudaVec3dTypes> >()
         .add<component::engine::transform::IndexValueMapper<CudaVec3d1Types> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
-        ;
+        );
+    }
 
 } // namespace sofa::gpu::cuda

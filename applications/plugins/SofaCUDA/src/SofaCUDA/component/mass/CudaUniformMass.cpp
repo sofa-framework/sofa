@@ -29,7 +29,9 @@
 namespace sofa::gpu::cuda
 {
 
-int UniformMassCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
+    void registerUniformMass(sofa::core::ObjectFactory* factory)
+    {
+        factory->registerObjects(sofa::core::ObjectRegistrationData("Supports GPU-side computations using CUDA for the UniformMass")
         .add< component::mass::UniformMass<CudaVec3fTypes> >()
         .add< component::mass::UniformMass<CudaVec3f1Types> >()
         .add< component::mass::UniformMass<CudaRigid3fTypes> >()
@@ -38,7 +40,8 @@ int UniformMassCudaClass = core::RegisterObject("Supports GPU-side computations 
         .add< component::mass::UniformMass<CudaVec3d1Types> >()
         .add< component::mass::UniformMass<CudaRigid3dTypes > >()
 #endif // SOFA_GPU_CUDA_DOUBLE
-        ;
+        );
+    }
 
 } // namespace sofa::gpu::cuda
 

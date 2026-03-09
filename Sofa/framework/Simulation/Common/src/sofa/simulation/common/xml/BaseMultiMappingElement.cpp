@@ -60,14 +60,16 @@ bool BaseMultiMappingElement::initNode()
         for( iterState = inputStates.begin();  iterState != inputStates.end(); ++iterState)
         {
             simulation::Node* node = dynamic_cast< simulation::Node* >((*iterState)->getContext());
-            inputNodes.push_back(node);
+            if (node)
+                inputNodes.push_back(node);
         }
         /* */
         /* get the Nodes corresponding to each output BaseState context */
         for( iterState = outputStates.begin(); iterState != outputStates.end(); ++iterState)
         {
             simulation::Node* node = dynamic_cast< simulation::Node* >((*iterState)->getContext());
-            outputNodes.push_back(node);
+            if (node)
+                outputNodes.push_back(node);
         }
 
         type::vector<simulation::Node*>::iterator iterNode;

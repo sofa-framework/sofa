@@ -41,7 +41,9 @@ template class SOFA_GPU_CUDA_API SphereCollisionModel<sofa::gpu::cuda::CudaVec3d
 namespace sofa::gpu::cuda
 {
 
-const int CudaSphereModelClass = core::RegisterObject("Supports GPU-side computations using CUDA")
+    void registerSphereCollisionModel(sofa::core::ObjectFactory* factory)
+    {
+        factory->registerObjects(sofa::core::ObjectRegistrationData("Supports GPU-side computations using CUDA for the SphereCollisionModel")
         .add< component::collision::geometry::SphereCollisionModel<CudaVec3fTypes> >()
         .add< component::collision::geometry::SphereCollisionModel<CudaVec3f1Types> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
@@ -49,7 +51,8 @@ const int CudaSphereModelClass = core::RegisterObject("Supports GPU-side computa
         .add< component::collision::geometry::SphereCollisionModel<CudaVec3d1Types> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
         .addAlias("CudaSphere")
-        .addAlias("CudaSphereModel");
+        .addAlias("CudaSphereModel"));
+    }
 
 } // namespace sofa::gpu::cuda
 

@@ -232,7 +232,15 @@ void QuadPressureForceField<DataTypes>::buildDampingMatrix(core::behavior::Dampi
     // No damping in this ForceField
 }
 
-template<class DataTypes>
+template <class DataTypes>
+SReal QuadPressureForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams*,
+                                                            const DataVecCoord&) const
+{
+    msg_warning() << "Method getPotentialEnergy not implemented yet.";
+    return 0.0;
+}
+
+template <class DataTypes>
 void QuadPressureForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();

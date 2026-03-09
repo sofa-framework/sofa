@@ -41,13 +41,16 @@ template class SOFA_GPU_CUDA_API LineCollisionModel<sofa::gpu::cuda::CudaVec3d1T
 namespace sofa::gpu::cuda
 {
 
-const int LineModelCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
+    void registerLineCollisionModel(sofa::core::ObjectFactory* factory)
+    {
+        factory->registerObjects(sofa::core::ObjectRegistrationData("Supports GPU-side computations using CUDA for the LineCollisionModel")
         .add< component::collision::geometry::LineCollisionModel<CudaVec3fTypes> >()
         .add< component::collision::geometry::LineCollisionModel<CudaVec3f1Types> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
         .add< component::collision::geometry::LineCollisionModel<CudaVec3dTypes> >()
         .add< component::collision::geometry::LineCollisionModel<CudaVec3d1Types> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
-        ;
+        );
+    }
 
 } // namespace sofa::gpu::cuda

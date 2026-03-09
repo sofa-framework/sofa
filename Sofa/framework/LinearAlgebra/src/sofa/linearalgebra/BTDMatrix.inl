@@ -23,6 +23,9 @@
 #include <sofa/linearalgebra/config.h>
 
 #include <sofa/linearalgebra/BTDMatrix.h>
+#include <sofa/type/hardening.h>
+#include <limits>
+#include <stdexcept>
 
 namespace sofa::linearalgebra
 {
@@ -35,8 +38,12 @@ BTDMatrix<N, T>::BTDMatrix()
 
 template<std::size_t N, typename T>
 BTDMatrix<N, T>::BTDMatrix(Index nbRow, Index nbCol)
-    : data(new Block[3*(nbRow/BSIZE)]), nTRow(nbRow), nTCol(nbCol), nBRow(nbRow/BSIZE), nBCol(nbCol/BSIZE), allocsize(3*(nbRow/BSIZE))
+    : data(nullptr), nTRow(nbRow), nTCol(nbCol), nBRow(nbRow/BSIZE), nBCol(nbCol/BSIZE), allocsize(0)
 {
+    if (type::hardening::checkOverflow(nBRow,3))
+        throw std::overflow_error("BTDMatrix: allocation size overflow");
+    allocsize = 3 * nBRow;
+    data = new Block[allocsize];
 }
 
 template<std::size_t N, typename T>
@@ -63,9 +70,16 @@ void BTDMatrix<N, T>::resize(Index nbRow, Index nbCol)
 {
     if (nbCol != nTCol || nbRow != nTRow)
     {
+        const Index newBRow = nbRow / BSIZE;
+        if (type::hardening::checkOverflow(nBRow,3))
+        {
+            msg_error("BTDLinearSolver") << "Cannot resize matrix: allocation size overflow for (" << nbRow << "," << nbCol << ")";
+            return;
+        }
+        const Index newSize = 3 * newBRow;
         if (allocsize < 0)
         {
-            if ((nbRow/BSIZE)*3 > -allocsize)
+            if (newSize > -allocsize)
             {
                 msg_error("BTDLinearSolver") << "Cannot resize preallocated matrix to size ("<<nbRow<<","<<nbCol<<")" ;
                 return;
@@ -73,18 +87,18 @@ void BTDMatrix<N, T>::resize(Index nbRow, Index nbCol)
         }
         else
         {
-            if ((nbRow/BSIZE)*3 > allocsize)
+            if (newSize > allocsize)
             {
                 if (allocsize > 0)
                     delete[] data;
-                allocsize = (nbRow/BSIZE)*3;
+                allocsize = newSize;
                 data = new Block[allocsize];
             }
         }
         nTCol = nbCol;
         nTRow = nbRow;
         nBCol = nbCol/BSIZE;
-        nBRow = nbRow/BSIZE;
+        nBRow = newBRow;
     }
     clear();
 }

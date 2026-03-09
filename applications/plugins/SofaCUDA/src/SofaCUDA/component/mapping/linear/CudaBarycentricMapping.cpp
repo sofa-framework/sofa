@@ -44,15 +44,16 @@ template class SOFA_GPU_CUDA_API BarycentricMapping< CudaVec3Types, Vec3Types>;
 namespace sofa::gpu::cuda
 {
 
-using namespace sofa::defaulttype;
-using namespace sofa::core;
-using namespace sofa::core::behavior;
-using namespace sofa::component::mapping::linear;
+    using namespace sofa::defaulttype;
+    using namespace sofa::core;
+    using namespace sofa::core::behavior;
+    using namespace sofa::component::mapping::linear;
 
-int BarycentricMappingCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
+    void registerBarycentricMapping(sofa::core::ObjectFactory* factory)
+    {
+        factory->registerObjects(sofa::core::ObjectRegistrationData("Supports GPU-side computations using CUDA for the BarycentricMapping")
         .add< BarycentricMapping< Vec3Types, CudaVec3Types> >()
-        .add< BarycentricMapping< CudaVec3Types, Vec3Types> >()
-
-        ;
+        .add< BarycentricMapping< CudaVec3Types, Vec3Types> >());
+    }
 
 } // namespace sofa::gpu::cuda

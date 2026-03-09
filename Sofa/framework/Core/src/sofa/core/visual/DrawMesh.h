@@ -398,7 +398,6 @@ private:
             p.resize(elementIndices.size() * sofa::geometry::Quad::NumberOfNodes);
         }
 
-        std::size_t renderedPointId {};
         for (auto i : elementIndices)
         {
             const auto& element = elements[i];

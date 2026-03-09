@@ -49,10 +49,11 @@ using namespace sofa::defaulttype;
 using namespace sofa::gpu::cuda;
 
 // Register in the Factory
-int BarycentricMappingRigidClass = core::RegisterObject("")
-        .add< BarycentricMapping< CudaVec3Types, Rigid3Types > >()
-
-        ;
+void registerBarycentricMapping(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Supports GPU-side computations using CUDA for the BarycentricMapping")
+    .add< BarycentricMapping< CudaVec3Types, Rigid3Types > >());
+}
 
 
 template <>

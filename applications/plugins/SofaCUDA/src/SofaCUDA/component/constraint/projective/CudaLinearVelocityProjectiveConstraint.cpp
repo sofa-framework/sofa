@@ -40,13 +40,16 @@ template class SOFA_GPU_CUDA_API LinearVelocityProjectiveConstraint<gpu::cuda::C
 namespace sofa::gpu::cuda
 {
 
-int LinearVelocityProjectiveConstraintCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
+    void registerLinearVelocityProjectiveConstraint(sofa::core::ObjectFactory* factory)
+    {
+        factory->registerObjects(sofa::core::ObjectRegistrationData("Supports GPU-side computations using CUDA for the LinearVelocityProjectiveConstraint")
         .add< sofa::component::constraint::projective::LinearVelocityProjectiveConstraint<CudaVec6fTypes> >()
         .add< sofa::component::constraint::projective::LinearVelocityProjectiveConstraint<CudaRigid3fTypes> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
         .add< sofa::component::constraint::projective::LinearVelocityProjectiveConstraint<CudaVec6dTypes> >()
         .add< sofa::component::constraint::projective::LinearVelocityProjectiveConstraint<CudaRigid3dTypes> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
-        ;
+        );
+    }
 
 } // namespace sofa::gpu::cuda

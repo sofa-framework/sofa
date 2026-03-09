@@ -43,13 +43,16 @@ template class SOFA_GPU_CUDA_API ExtraMonitor<gpu::cuda::CudaVec6dTypes>;
 
 namespace sofa::gpu::cuda
 {
-int ExtraMonitorCudaClass = core::RegisterObject("Supports GPU-side computation using CUDA")
+    void registerExtraMonitor(sofa::core::ObjectFactory* factory)
+    {
+        factory->registerObjects(sofa::core::ObjectRegistrationData("Supports GPU-side computations using CUDA for the ExtraMonitor")
         .add< component::misc::ExtraMonitor<CudaRigid3fTypes> >()
         .add< component::misc::ExtraMonitor<CudaVec6fTypes> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
         .add< component::misc::ExtraMonitor<CudaRigid3dTypes> >()
         .add< component::misc::ExtraMonitor<CudaVec6dTypes> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
-        ;
+        );
+    }
 
 }// namespace sofa::gpu::cuda
