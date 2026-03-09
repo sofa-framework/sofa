@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+<Node name="root" dt="0.01" gravity="0 -9.81 0">
+    <!--
+    If all tetrahedra in a mesh are oriented in the same way (for example, all diagonals in a structured grid are split
+    consistently in one direction), the mesh itself introduces a preferred direction.
+
+    Even if the material model is isotropic, the numerical solution behaves as if the material were anisotropic.
+
+    If the diagonals were alternated or randomized, the effect would largely disappear. The alternation can be
+    controlled by the Data 'swapping' in the component 'Hexa2TetrahedronTopologicalMapping'.
+
+    This scene shows the effect of the mesh-induced anisotropy at equilibrium, compared to a mesh where the diagonals
+    are alternated.
+    -->
+    <Node name="plugins">
+        <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
+        <RequiredPlugin name="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
+        <RequiredPlugin name="Sofa.Component.LinearSolver.Direct"/> <!-- Needed to use components [SparseLDLSolver] -->
+        <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [DiagonalMass] -->
+        <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [NewtonRaphsonSolver,StaticSolver] -->
+        <RequiredPlugin name="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [TetrahedronFEMForceField] -->
+        <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+        <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [TetrahedronSetGeometryAlgorithms,TetrahedronSetTopologyContainer,TetrahedronSetTopologyModifier] -->
+        <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->
+        <RequiredPlugin name="Sofa.Component.Topology.Mapping"/> <!-- Needed to use components [Hexa2TetraTopologicalMapping] -->
+        <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualMesh,VisualStyle] -->
+    </Node>
+
+    <DefaultAnimationLoop/>
+    <VisualStyle displayFlags="showBehaviorModels" />
+
+    <!-- Dimensions are in meters -->
+    <RegularGridTopology name="grid" min="-0.01 -0.01 0" max="0.01 0.01 0.2" n="5 5 30"/>
+
+    <Node name="beam_with_anisotropy">
+        <NewtonRaphsonSolver name="non_linear_solver" maxNbIterationsNewton="100"
+                             maxNbIterationsLineSearch="1" warnWhenLineSearchFails="false"/>
+        <StaticSolver name="static_solver" newtonSolver="@non_linear_solver"/>
+        <SparseLDLSolver name="linear_solver" template="CompressedRowSparseMatrixMat3x3d"/>
+
+        <MechanicalObject template="Vec3" name="state" position="@/grid.position"/>
+
+        <Node name="tetrahedra">
+            <TetrahedronSetTopologyContainer name="Tetra_topo" position="@/grid.position"/>
+            <TetrahedronSetTopologyModifier name="Modifier" />
+            <TetrahedronSetGeometryAlgorithms template="Vec3" name="GeomAlgo" />
+            <Hexa2TetraTopologicalMapping input="@grid" output="@Tetra_topo" swapping="false"/>
+
+            <!-- Density is in kg/m^3 -->
+            <DiagonalMass massDensity="1100" />
+            <!-- Young's modulus is in Pa -->
+            <TetrahedronFEMForceField name="FEM" youngModulus="1e6" poissonRatio="0.48"/>
+
+            <VisualMesh position="@state.position" topology="@Tetra_topo"/>
+        </Node>
+
+        <BoxROI template="Vec3" name="box_roi" box="-0.011 -0.011 -0.0001   0.011 0.011 0.0001" drawBoxes="1" />
+        <FixedProjectiveConstraint template="Vec3" indices="@box_roi.indices" />
+    </Node>
+
+    <Node name="beam_without_anisotropy">
+        <NewtonRaphsonSolver name="non_linear_solver" maxNbIterationsNewton="100"
+                             maxNbIterationsLineSearch="1" warnWhenLineSearchFails="false"/>
+        <StaticSolver name="static_solver" newtonSolver="@non_linear_solver"/>
+        <SparseLDLSolver name="linear_solver" template="CompressedRowSparseMatrixMat3x3d"/>
+
+        <MechanicalObject template="Vec3" name="state" position="@/grid.position"/>
+
+        <Node name="tetrahedra">
+            <TetrahedronSetTopologyContainer name="Tetra_topo" position="@/grid.position"/>
+            <TetrahedronSetTopologyModifier name="Modifier" />
+            <TetrahedronSetGeometryAlgorithms template="Vec3" name="GeomAlgo" />
+            <Hexa2TetraTopologicalMapping input="@grid" output="@Tetra_topo" swapping="true"/>
+
+            <!-- Density is in kg/m^3 -->
+            <DiagonalMass massDensity="1100" />
+            <!-- Young's modulus is in Pa -->
+            <TetrahedronFEMForceField name="FEM" youngModulus="1e6" poissonRatio="0.48"/>
+
+            <VisualMesh position="@state.position" topology="@Tetra_topo"/>
+        </Node>
+
+        <BoxROI template="Vec3" name="box_roi" box="-0.011 -0.011 -0.0001   0.011 0.011 0.0001" drawBoxes="1" />
+        <FixedProjectiveConstraint template="Vec3" indices="@box_roi.indices" />
+    </Node>
+</Node>
