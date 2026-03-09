@@ -677,6 +677,27 @@ void MatrixLinearSystem<TMatrix, TVector>::associateLocalMatrixToComponents(cons
     {
         SCOPED_TIMER_VARNAME(clearSystemTimer, "clearSystem");
         this->clearSystem();
+
+        const auto removeCachedComponents = []<class T>(const sofa::type::vector<T*>& components, auto& map)
+        {
+            sofa::type::vector<T*> toRemove;
+            for (const auto& [component, matrix] : map)
+            {
+                if (std::find(components.begin(), components.end(), component) == components.end())
+                {
+                    toRemove.push_back(component);
+                }
+            }
+            for (const auto& component : toRemove)
+            {
+                map.erase(component);
+            }
+        };
+
+        removeCachedComponents(this->m_forceFields, this->m_stiffness);
+        removeCachedComponents(this->m_forceFields, this->m_damping);
+        removeCachedComponents(this->m_masses, this->m_mass);
+        removeCachedComponents(this->m_mechanicalMappings, this->m_geometricStiffness);
     }
 
     {
