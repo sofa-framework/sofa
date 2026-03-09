@@ -80,13 +80,13 @@ BaseNode::createSnapshotObject(std::vector<std::shared_ptr<BaseSnapshot::Snapsho
 }
 
 std::shared_ptr<BaseSnapshot::SnapshotObject> 
-BaseNode::findSnapshotObject( const std::shared_ptr<BaseSnapshot::SnapshotNode>& parents, const std::string objectname)
+BaseNode::findSnapshotObject( const std::shared_ptr<BaseSnapshot::SnapshotNode>& parents, const std::string& objectname)
 {
     if(parents->m_name == objectname)
     {
         return parents;
     }
-    for (auto p : parents->children)
+    for (const auto& p : parents->children)
     {
         if (p->m_name == objectname)
         {
@@ -95,8 +95,7 @@ BaseNode::findSnapshotObject( const std::shared_ptr<BaseSnapshot::SnapshotNode>&
         }
         else
         {
-            auto childObject = findSnapshotObject(p, objectname);
-            if (childObject)
+            if (auto childObject = findSnapshotObject(p, objectname))
                 return childObject;
         }
     }

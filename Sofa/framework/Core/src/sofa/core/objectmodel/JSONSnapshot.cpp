@@ -22,15 +22,12 @@
 #include <sofa/core/objectmodel/JSONSnapshot.h>
 #include <fstream>
 #include <string>
-#include <stdexcept>
 #include <iostream>
-#include <sofa/helper/system/SetDirectory.h>
 
 namespace sofa::core::objectmodel
 {
 
-JSONSnapshot::JSONSnapshot()
-{}
+JSONSnapshot::JSONSnapshot() = default;
 JSONSnapshot::~JSONSnapshot() = default;
 
 void to_json(nlohmann::json& j, const BaseSnapshot::DataInfo& di )
@@ -108,12 +105,6 @@ void JSONSnapshot::exportTo(const std::string filename)
     file << j.dump(5);
     file.close();
 }
-
-void JSONSnapshot::importSnapshot(const std::string filename)
-{
-    std::cout << "importSnapshot" << std::endl;    
-}
-
 
 void from_json(const nlohmann::json& j, BaseSnapshot::DataInfo& di)
 {

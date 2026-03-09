@@ -20,6 +20,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/objectmodel/Base.h>
+
+#include "gtest/gtest.h"
 using sofa::core::objectmodel::Base ;
 using sofa::core::objectmodel::ComponentState;
 
@@ -36,8 +38,11 @@ using sofa::core::objectmodel::SnapshotType;
 #include <sofa/simulation/SaveSnapshotVisitor.h>
 using sofa::simulation::SaveSnapshotVisitor;
 
-#include <sofa/simulation/LoadSnapshotVisitor.h>
-using sofa::simulation::LoadSnapshotVisitor;
+#include <sofa/simulation/LoadDataSnapshotVisitor.h>
+using sofa::simulation::LoadDataSnapshotVisitor;
+
+#include <sofa/simulation/LoadLinkSnapshotVisitor.h>
+using sofa::simulation::LoadLinkSnapshotVisitor;
 
 #include <sofa/core/objectmodel/Data.h>
 using sofa::core::objectmodel::Data;
@@ -52,8 +57,11 @@ using sofa::core::objectmodel::BaseNode;
 
 class TestComponent : public Base
 {
+
 public:
     
+    SOFA_CLASS(TestComponent,Base);
+
     Data<float> d_value;
     
     TestComponent() 
@@ -78,16 +86,11 @@ public:
         return this->createSnapshotObject(parents);
     }
 
-    //SOFA_CLASS(TestComponent,Base);
 };
 
 class MockSnapshotTest : public BaseSnapshot
 {
 public:
-    void importSnapshot(const std::string filename) override
-    {
-        SOFA_UNUSED(filename);
-    }
     void exportTo(const std::string filename) override
     {
         SOFA_UNUSED(filename);
@@ -249,23 +252,6 @@ TEST_F(Snapshot_test, loadSnapshot)
     EXPECT_EQ(tcomponent2.d_value.getValue(), 3.14f);
 }
 
-TEST_F(Snapshot_test, BaseSnapshot)
-{
-    // Test of BaseSnapshot
-    // Test the structure and the behavior of a snapshot
-
-    MockSnapshotTest MockSnapshot;
-    MockSnapshot.setupSnapshot();
-
-    EXPECT_EQ(MockSnapshot.m_graphRoot->m_name,"root");
-    EXPECT_EQ(MockSnapshot.m_graphRoot->components[0].m_name,"snapshotObject0");
-    EXPECT_EQ(MockSnapshot.m_graphRoot->children[0]->m_name,"snapshotNode1");
-    EXPECT_EQ(MockSnapshot.m_graphRoot->children[0]->components[0].m_name,"snapshotObject1");
-    EXPECT_EQ(MockSnapshot.m_graphRoot->children[0]->children[0]->m_name,"snapshotNode2");
-    EXPECT_EQ(MockSnapshot.m_graphRoot->children[0]->children[0]->components[0].m_name,"snapshotObject2");
-
-}
-
 TEST_F(Snapshot_test, JSONSnapshot)
 {
     // TEST JSONSnapshot
@@ -312,4 +298,74 @@ TEST_F(Snapshot_test, JSONSnapshot)
     EXPECT_EQ(JsonSnapshotTest2->m_graphRoot->children[0]->m_name,"child1");
     EXPECT_EQ(JsonSnapshotTest2->m_graphRoot->children[0]->components[0].m_name,"MechanicalObject1");
 
+}
+
+TEST_F(Snapshot_test, LoadLinkVisitor)
+{
+    auto JsonSnapshotTest = createSnapshot(SnapshotType::JSON);
+
+    // const std::string scene = R"(
+    //     <?xml version='1.0'?>
+    //     <Node name='Root' gravity='0 -9.81 0' time='0' animate='0' >
+    //         <RequiredPlugin name='Sofa.Component.StateContainer'/>
+    //         <DefaultAnimationLoop />
+    //         <DefaultVisualManagerLoop />
+    //         <Node name='child1'>
+    //             <MechanicalObject />
+    //         </Node>
+    //     </Node>
+    // )";
+
+    const std::string scene = R"(
+        <?xml version="1.0" ?>
+        <!-- See http://wiki.sofa-framework.org/mediawiki/index.php/TutorialBasicPendulum -->
+        <Node name="root" dt="0.1" gravity="0 0 0">
+          <RequiredPlugin name="Sofa.Component.Collision.Geometry"/> <!-- Needed to use components [SphereCollisionModel] -->
+          <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
+          <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+          <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
+          <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+          <RequiredPlugin name="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [SpringForceField] -->
+          <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+          <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+
+          <DefaultAnimationLoop/>
+          <VisualStyle displayFlags="showBehavior showCollisionModels"/>
+         <!-- Try to test with different solver -->
+          <EulerImplicitSolver name="EulerImplicit"  rayleighStiffness="0.1" rayleighMass="0.1" />
+          <CGLinearSolver name="CGSolver" iterations="25" tolerance="1e-5" threshold="1e-5"/>
+
+          <MechanicalObject name="Particles" template="Vec3"
+                            position="0 0 0 0 0 1"
+                            velocity="0 0 0 0 1 0"/>
+
+          <UniformMass name="Mass" totalMass="1" />
+
+          <FixedProjectiveConstraint indices="0"/>
+          <SpringForceField name="Springs" stiffness="100" damping="1" spring="0 1 10 1 1"/>
+          <SphereCollisionModel radius="0.1"/>
+        </Node>
+    )";
+
+    SceneInstance c("xml", scene) ;
+    c.initScene() ;
+
+    Node* root = c.root.get() ;
+
+    std::string path = std::filesystem::temp_directory_path() / "testfile.json";
+    auto visitor = SaveSnapshotVisitor(nullptr, *JsonSnapshotTest);
+    root->execute(visitor);
+    JsonSnapshotTest->exportTo(path);
+    EXPECT_NE(JsonSnapshotTest->m_graphRoot,nullptr);
+    std::cout << "JsonSnapshotTest : " << JsonSnapshotTest->m_graphRoot->m_name << std::endl;
+
+    std::ifstream checkFile(path);
+    EXPECT_TRUE(checkFile.good());
+    checkFile.close();
+
+    auto loadvisitor = LoadDataSnapshotVisitor(nullptr, *JsonSnapshotTest);
+    root->execute(loadvisitor);
+    auto loadlinkvisitor = LoadLinkSnapshotVisitor(nullptr, *JsonSnapshotTest);
+    root->execute(loadlinkvisitor);
+    EXPECT_NE(JsonSnapshotTest->m_graphRoot,nullptr);
 }

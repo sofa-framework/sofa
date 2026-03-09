@@ -685,8 +685,7 @@ int Base::getInstanciationSourceFilePos() const
 
 void Base::saveDataIn(BaseSnapshot::SnapshotObject& snapshot) const
 {
-    const auto& dataFields = this->getDataFields();
-    for (const auto& data : dataFields)
+    for (const auto& dataFields = this->getDataFields(); const auto& data : dataFields)
     {
         BaseSnapshot::DataInfo dataInfo;
         dataInfo.name = data->getName();
@@ -709,14 +708,23 @@ void Base::saveDataIn(BaseSnapshot::SnapshotObject& snapshot) const
 
 void Base::saveLinksIn(BaseSnapshot::SnapshotObject& snapshot) const
 {
-    const auto& links = this->getLinks();
-
-    for (const auto& link : links)
+    for (const auto& links = this->getLinks(); const auto& link : links)
     {
         BaseSnapshot::LinkInfo linkInfo;
         linkInfo.name = link->getName();
         linkInfo.type = link->getValueTypeString();
         linkInfo.value = link->getValueString();
+        // linkInfo.value = link->getLinkedPath();
+        // linkInfo.value = link->getPath();
+
+        std::string replaceValue = "//";
+        std::size_t pos = linkInfo.value.find(replaceValue);
+        while (pos != std::string::npos)
+        {
+            linkInfo.value.replace(pos, replaceValue.length(), "");
+            pos = linkInfo.value.find(replaceValue, pos);
+        }
+
         snapshot.m_linkContainer.push_back(linkInfo);
     }
 }
@@ -728,7 +736,7 @@ std::shared_ptr<BaseSnapshot::SnapshotObject>
 Base::createSnapshotObject(std::vector<std::shared_ptr<BaseSnapshot::SnapshotNode>>& parents) const
 {
     auto object = std::make_shared<BaseSnapshot::SnapshotObject>();
-    for (auto p : parents)
+    for (const auto& p : parents)
     {
         if (p)
         {
@@ -751,9 +759,9 @@ std::shared_ptr<BaseSnapshot::SnapshotObject> Base::saveSnapshot(std::vector<std
 
 
 std::shared_ptr<BaseSnapshot::SnapshotObject> 
-Base::findSnapshotObject(const std::shared_ptr<BaseSnapshot::SnapshotNode>& parents, const std::string objectname)
+Base::findSnapshotObject(const std::shared_ptr<BaseSnapshot::SnapshotNode>& parents, const std::string& objectname)
 {
-    for (auto p : parents->components)
+    for (const auto& p : parents->components)
     {
         if (p.m_name == objectname)
         {
@@ -769,12 +777,11 @@ Base::findSnapshotObject(const std::shared_ptr<BaseSnapshot::SnapshotNode>& pare
 }
 
 
-void Base::loadSnapshot(const std::shared_ptr<BaseSnapshot::SnapshotObject>& snapshotObject)
+void Base::loadDataSnapshot(const std::shared_ptr<BaseSnapshot::SnapshotObject>& snapshotObject) const
 {
     for (const auto& dataInfo : snapshotObject->m_dataContainer)
     {
-        auto data = this->findData(dataInfo.name);
-        if (data)
+        if (const auto data = this->findData(dataInfo.name))
         {
             if( dataInfo.name != "loadedPlugins"&& dataInfo.name != "filename" && dataInfo.name != "texturename" && dataInfo.name != "pluginName")
             {
@@ -782,18 +789,24 @@ void Base::loadSnapshot(const std::shared_ptr<BaseSnapshot::SnapshotObject>& sna
             }
         }
     }
+}
 
-    // for (const auto& linkInfo : snapshotObject->m_linkContainer)
-    // {
-    //     auto link = this->findLink(linkInfo.name);
-    //     if (link)
-    //     {
-    //         std::cout << "link name : " << linkInfo.name << std::endl;
-    //         std::cout << "link value : " << linkInfo.value << std::endl;
-    //         link->read(linkInfo.value);
-    //     }
-    // }
-}    
+void Base::loadLinkSnapshot(const std::shared_ptr<BaseSnapshot::SnapshotObject>& snapshotObject) const
+{
+    for (const auto& linkInfo : snapshotObject->m_linkContainer)
+    {
+        if (const auto link = this->findLink(linkInfo.name))
+        {
+            if(linkInfo.name != "odeSolver" && linkInfo.name != "linearSolver")
+            {
+                std::cout << "===========link name : " << linkInfo.name << std::endl;
+                std::cout << "===========link value : " << linkInfo.value << std::endl;
+                link->read(linkInfo.value);
+            }
+            
+        }
+    }
+}
 
 } // namespace sofa::core::objectmodel
 

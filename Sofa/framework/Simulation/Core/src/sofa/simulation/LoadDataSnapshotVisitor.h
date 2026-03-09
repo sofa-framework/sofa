@@ -19,39 +19,27 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/LoadSnapshotVisitor.h>
-#include <sofa/helper/Factory.h>
-#include <sofa/simulation/Node.h>
-#include <sofa/core/objectmodel/SnapshotFactory.h>
-using sofa::core::objectmodel::SnapshotType;
+#pragma once
+#include <sofa/core/objectmodel/Base.h>
+#include <sofa/simulation/Visitor.h>
 
 namespace sofa::simulation
 {
 
-void LoadSnapshotVisitor::processObject(
-    core::objectmodel::BaseObject* obj,
-    std::shared_ptr<core::objectmodel::BaseSnapshot::SnapshotNode> parent
-)
+class SOFA_SIMULATION_CORE_API LoadDataSnapshotVisitor : public Visitor
 {
-    auto snapshotObject = obj->findSnapshotObject(parent, obj->getName());
-    obj->loadSnapshot(snapshotObject);
-}
+protected:
+    core::objectmodel::BaseSnapshot& m_snapshotContainer; 
 
-Visitor::Result LoadSnapshotVisitor::processNodeTopDown(simulation::Node* node)
-{ 
-    auto snapshotObject = node->findSnapshotObject(m_snapshotContainer.m_graphRoot, node->getName());
+public:
+    LoadDataSnapshotVisitor(const sofa::core::ExecParams* eparams, core::objectmodel::BaseSnapshot& snapshot) : Visitor(eparams), m_snapshotContainer(snapshot) {}
 
-    auto SnapshotNode = std::dynamic_pointer_cast<core::objectmodel::BaseSnapshot::SnapshotNode>(snapshotObject);
-    node->loadSnapshot(SnapshotNode);
+    void processObject(core::objectmodel::BaseObject* obj, const std::shared_ptr<core::objectmodel::BaseSnapshot::SnapshotNode>& parent);
 
-    for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
-    {
-        this->processObject(it->get(), SnapshotNode);
-    }
-    return RESULT_CONTINUE;
-}
+    Result processNodeTopDown(simulation::Node* node) override;
+    const char* getClassName() const override { return "LoadDataSnapshotVisitor"; }
+
+};
 
 } // namespace sofa::simulation
-
-
 

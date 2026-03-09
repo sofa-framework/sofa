@@ -20,11 +20,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/objectmodel/MemorySnapshot.h>
-#include <sofa/helper/system/SetDirectory.h>
 #include <fstream>
 #include <string>
-#include <stdexcept>
-#include <iostream>
 
 namespace sofa::core::objectmodel
 {
@@ -34,11 +31,6 @@ MemorySnapshot::MemorySnapshot()
 MemorySnapshot::~MemorySnapshot() = default;
 
 void MemorySnapshot::exportTo(const std::string filename)
-{
-    SOFA_UNUSED(filename);
-}
-
-void MemorySnapshot::importSnapshot(const std::string filename)
 {
     SOFA_UNUSED(filename);
 }

@@ -19,28 +19,39 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/core/objectmodel/Base.h>
-#include <sofa/config.h>
-#include <sofa/simulation/Visitor.h>
-#include <string>
+#include <sofa/simulation/LoadDataSnapshotVisitor.h>
+#include <sofa/helper/Factory.h>
+#include <sofa/simulation/Node.h>
+#include <sofa/core/objectmodel/SnapshotFactory.h>
+using sofa::core::objectmodel::SnapshotType;
 
 namespace sofa::simulation
 {
 
-class SOFA_SIMULATION_CORE_API LoadSnapshotVisitor : public Visitor
+void LoadDataSnapshotVisitor::processObject(
+    core::objectmodel::BaseObject* obj,
+    const std::shared_ptr<core::objectmodel::BaseSnapshot::SnapshotNode>& parent
+)
 {
-protected:
-    core::objectmodel::BaseSnapshot& m_snapshotContainer; 
+    auto snapshotObject = obj->findSnapshotObject(parent, obj->getName());
+    obj->loadDataSnapshot(snapshotObject);
+}
 
-public:
-    LoadSnapshotVisitor(const sofa::core::ExecParams* eparams, core::objectmodel::BaseSnapshot& snapshot) : Visitor(eparams), m_snapshotContainer(snapshot) {}
+Visitor::Result LoadDataSnapshotVisitor::processNodeTopDown(simulation::Node* node)
+{
+    const auto snapshotObject = node->findSnapshotObject(m_snapshotContainer.m_graphRoot, node->getName());
 
-    void processObject(core::objectmodel::BaseObject* obj, std::shared_ptr<core::objectmodel::BaseSnapshot::SnapshotNode> parent);
-
-    Result processNodeTopDown(simulation::Node* node) override;
-    const char* getClassName() const override { return "LoadSnapshotVisitor"; }
-
-};
+    const auto SnapshotNode = std::dynamic_pointer_cast<core::objectmodel::BaseSnapshot::SnapshotNode>(snapshotObject);
+    node->loadDataSnapshot(SnapshotNode);
+    std::cout << "test object.getSize : " << node->object.getSize() << std::endl;
+    for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
+    {
+        this->processObject(it->get(), SnapshotNode);
+    }
+    return RESULT_CONTINUE;
+}
 
 } // namespace sofa::simulation
+
+
 

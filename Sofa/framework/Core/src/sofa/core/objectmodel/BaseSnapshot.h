@@ -21,9 +21,9 @@
 ******************************************************************************/
 #pragma once
 #include <string>
+#include <utility>
 #include <vector>
 #include <memory>
-#include <iostream>
 #include <sofa/core/config.h>
 
 #include <sofa/core/objectmodel/Data.h>
@@ -74,7 +74,7 @@ public:
         }
 
         SnapshotObject() = default;
-        explicit SnapshotObject(const std::string& name) : m_name(name){}
+        explicit SnapshotObject(std::string  name) : m_name(std::move(name)){}
 
         virtual ~SnapshotObject() = default;
     };
@@ -84,7 +84,7 @@ public:
         std::vector<SnapshotObject> components;
         std::vector<std::shared_ptr<SnapshotNode>> children;
 
-        void clear()
+        void clear() override
         {
             components.clear();
             children.clear();  
@@ -103,20 +103,16 @@ public:
         }
 
         SnapshotNode() = default;
-        SnapshotNode(const std::string& name) : SnapshotObject(name) {}
-        SnapshotNode(const SnapshotObject& obj) : SnapshotObject(obj) {}
+        explicit SnapshotNode(const std::string& name) : SnapshotObject(name) {}
+        explicit SnapshotNode(const SnapshotObject& obj) : SnapshotObject(obj) {}
 
-        virtual ~SnapshotNode() noexcept = default;
+        ~SnapshotNode() noexcept override = default;
     };
 
     std::shared_ptr<SnapshotNode> m_graphRoot { nullptr };
 
-    virtual void importSnapshot(const std::string filename) = 0;
-
     virtual void exportTo(const std::string filename) = 0;
     virtual void importFrom(std::string filename) = 0;
-
-    void printSnapshot() const;
 
     BaseSnapshot();
     virtual ~BaseSnapshot() = 0;

@@ -365,7 +365,8 @@ public:
     ///@}
 
     std::shared_ptr<BaseSnapshot::SnapshotObject> saveSnapshot(std::vector<std::shared_ptr<BaseSnapshot::SnapshotNode>>& parents) const;
-    void loadSnapshot(const std::shared_ptr<BaseSnapshot::SnapshotObject>& snapshotObject);
+    void loadDataSnapshot(const std::shared_ptr<BaseSnapshot::SnapshotObject>& snapshotObject) const;
+    void loadLinkSnapshot(const std::shared_ptr<BaseSnapshot::SnapshotObject>& snapshotObject) const;
 
 protected:
     void saveDataIn(BaseSnapshot::SnapshotObject& snapshot) const;
@@ -373,7 +374,7 @@ protected:
     //virtual void saveInternalStateIn(SnapshotObject& snapshot) const;
     virtual std::shared_ptr<BaseSnapshot::SnapshotObject> createSnapshotObject(std::vector<std::shared_ptr<BaseSnapshot::SnapshotNode>>& parents) const;
 public :
-    virtual std::shared_ptr<BaseSnapshot::SnapshotObject> findSnapshotObject(const std::shared_ptr<BaseSnapshot::SnapshotNode>& parents, const std::string objectname);
+    virtual std::shared_ptr<BaseSnapshot::SnapshotObject> findSnapshotObject(const std::shared_ptr<BaseSnapshot::SnapshotNode>& parents, const std::string& objectname);
 
 protected:
     /// List of fields (Data instances)

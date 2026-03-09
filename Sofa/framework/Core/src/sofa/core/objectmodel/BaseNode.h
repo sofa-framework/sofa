@@ -132,7 +132,7 @@ public:
 protected:
     std::shared_ptr<BaseSnapshot::SnapshotObject> createSnapshotObject(std::vector<std::shared_ptr<BaseSnapshot::SnapshotNode>>& parents) const override;
 public:
-    std::shared_ptr<BaseSnapshot::SnapshotObject> findSnapshotObject(const std::shared_ptr<BaseSnapshot::SnapshotNode>& parents, const std::string objectname) override;
+    std::shared_ptr<BaseSnapshot::SnapshotObject> findSnapshotObject(const std::shared_ptr<BaseSnapshot::SnapshotNode>& parents, const std::string& objectname) override;
 
 private:
     virtual std::string internalGetPathName() const;

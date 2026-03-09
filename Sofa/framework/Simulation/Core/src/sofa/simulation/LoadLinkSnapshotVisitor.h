@@ -21,20 +21,27 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/core/objectmodel/Base.h>
-#include <sofa/core/objectmodel/BaseSnapshot.h>
-#include <nlohmann/json.hpp>
+#include <sofa/config.h>
+#include <sofa/simulation/Visitor.h>
+#include <string>
 
-namespace sofa::core::objectmodel
+namespace sofa::simulation
 {
 
-class SOFA_CORE_API JSONSnapshot : public BaseSnapshot 
+class SOFA_SIMULATION_CORE_API LoadLinkSnapshotVisitor : public Visitor
 {
+protected:
+    core::objectmodel::BaseSnapshot& m_snapshotContainer; 
 
 public:
+    LoadLinkSnapshotVisitor(const sofa::core::ExecParams* eparams, core::objectmodel::BaseSnapshot& snapshot) : Visitor(eparams), m_snapshotContainer(snapshot) {}
 
-    void exportTo(const std::string filename) override;
-    void importFrom(std::string filename) override;
-    JSONSnapshot();
-    ~JSONSnapshot();
+    void processObject(core::objectmodel::BaseObject* obj, const std::shared_ptr<core::objectmodel::BaseSnapshot::SnapshotNode>& parent);
+
+    Result processNodeTopDown(simulation::Node* node) override;
+    const char* getClassName() const override { return "LoadLinkSnapshotVisitor"; }
+
 };
-} // namespace sofa::core::objectmodel
+
+} // namespace sofa::simulation
+

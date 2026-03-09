@@ -20,23 +20,10 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/objectmodel/BaseSnapshot.h>
-#include "BaseSnapshot.h"
 
 namespace sofa::core::objectmodel
 {
 
-BaseSnapshot::BaseSnapshot()
-{}
+BaseSnapshot::BaseSnapshot() = default;
 BaseSnapshot::~BaseSnapshot() = default;
-
-void BaseSnapshot::printSnapshot() const
-{
-    std::cout << m_graphRoot->m_name << std::endl;
-    
-    for (auto& element : m_graphRoot->components)
-    {
-        std::cout << "  Component name : " << element.m_name << std::endl;
-    }
-}
-
 } // namespace sofa::core::objectmodel

@@ -19,22 +19,36 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-#include <sofa/core/objectmodel/Base.h>
-#include <sofa/core/objectmodel/BaseSnapshot.h>
-#include <nlohmann/json.hpp>
+#include <sofa/simulation/LoadLinkSnapshotVisitor.h>
+#include <sofa/helper/Factory.h>
+#include <sofa/simulation/Node.h>
+#include <sofa/core/objectmodel/SnapshotFactory.h>
+using sofa::core::objectmodel::SnapshotType;
 
-namespace sofa::core::objectmodel
+namespace sofa::simulation
 {
 
-class SOFA_CORE_API JSONSnapshot : public BaseSnapshot 
+void LoadLinkSnapshotVisitor::processObject(
+    core::objectmodel::BaseObject* obj,
+    const std::shared_ptr<core::objectmodel::BaseSnapshot::SnapshotNode>& parent
+)
 {
+    const auto snapshotObject = obj->findSnapshotObject(parent, obj->getName());
+    obj->loadLinkSnapshot(snapshotObject);
+}
 
-public:
+Visitor::Result LoadLinkSnapshotVisitor::processNodeTopDown(simulation::Node* node)
+{
+    const auto snapshotObject = node->findSnapshotObject(m_snapshotContainer.m_graphRoot, node->getName());
+    const auto SnapshotNode = std::dynamic_pointer_cast<core::objectmodel::BaseSnapshot::SnapshotNode>(snapshotObject);
+    node->loadLinkSnapshot(SnapshotNode);
 
-    void exportTo(const std::string filename) override;
-    void importFrom(std::string filename) override;
-    JSONSnapshot();
-    ~JSONSnapshot();
-};
-} // namespace sofa::core::objectmodel
+    for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
+    {
+        this->processObject(it->get(), SnapshotNode);
+    }
+    return RESULT_CONTINUE;
+}
+
+} // namespace sofa::simulation
+
