@@ -19,46 +19,36 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/core/objectmodel/MemorySnapshot.h>
-#include <nlohmann/json.hpp>
+#include <sofa/simulation/LoadLinkSnapshotVisitor.h>
+#include <sofa/helper/Factory.h>
+#include <sofa/simulation/Node.h>
+#include <sofa/core/objectmodel/SnapshotFactory.h>
+using sofa::core::objectmodel::SnapshotType;
 
-#include <fstream>
-#include <string>
-#include <stdexcept>
-#include <iostream>
-#include <sofa/helper/system/SetDirectory.h>
-
-#include <sofa/core/objectmodel/Data.h>
-
-
-namespace sofa::core::objectmodel
+namespace sofa::simulation
 {
 
-
-MemorySnapshot::MemorySnapshot()
-{}
-MemorySnapshot::~MemorySnapshot() = default;
-
-void MemorySnapshot::exportTo(const std::string filename)
+void LoadLinkSnapshotVisitor::processObject(
+    core::objectmodel::BaseObject* obj,
+    const std::shared_ptr<core::objectmodel::BaseSnapshot::SnapshotNode>& parent
+)
 {
-    std::cout << "exportTo" << std::endl;
+    const auto snapshotObject = obj->findSnapshotObject(parent, obj->getName());
+    obj->loadLinkSnapshot(snapshotObject);
 }
 
-void MemorySnapshot::importSnapshot(const std::string filename)
+Visitor::Result LoadLinkSnapshotVisitor::processNodeTopDown(simulation::Node* node)
 {
-    std::cout << "importSnapshot" << std::endl;
+    const auto snapshotObject = node->findSnapshotObject(m_snapshotContainer.m_graphRoot, node->getName());
+    const auto SnapshotNode = std::dynamic_pointer_cast<core::objectmodel::BaseSnapshot::SnapshotNode>(snapshotObject);
+    node->loadLinkSnapshot(SnapshotNode);
 
-
+    for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
+    {
+        this->processObject(it->get(), SnapshotNode);
+    }
+    return RESULT_CONTINUE;
 }
 
+} // namespace sofa::simulation
 
-void MemorySnapshot::importFrom(const std::string filename)
-{
-    std::cout << "importFrom" << std::endl;
-
-}
-
-
-
-
-} // namespace sofa::core::objectmodel

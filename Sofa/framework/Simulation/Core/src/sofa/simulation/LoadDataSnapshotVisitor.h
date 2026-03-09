@@ -19,46 +19,27 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/core/objectmodel/MemorySnapshot.h>
-#include <nlohmann/json.hpp>
+#pragma once
+#include <sofa/core/objectmodel/Base.h>
+#include <sofa/simulation/Visitor.h>
 
-#include <fstream>
-#include <string>
-#include <stdexcept>
-#include <iostream>
-#include <sofa/helper/system/SetDirectory.h>
-
-#include <sofa/core/objectmodel/Data.h>
-
-
-namespace sofa::core::objectmodel
+namespace sofa::simulation
 {
 
-
-MemorySnapshot::MemorySnapshot()
-{}
-MemorySnapshot::~MemorySnapshot() = default;
-
-void MemorySnapshot::exportTo(const std::string filename)
+class SOFA_SIMULATION_CORE_API LoadDataSnapshotVisitor : public Visitor
 {
-    std::cout << "exportTo" << std::endl;
-}
+protected:
+    core::objectmodel::BaseSnapshot& m_snapshotContainer; 
 
-void MemorySnapshot::importSnapshot(const std::string filename)
-{
-    std::cout << "importSnapshot" << std::endl;
+public:
+    LoadDataSnapshotVisitor(const sofa::core::ExecParams* eparams, core::objectmodel::BaseSnapshot& snapshot) : Visitor(eparams), m_snapshotContainer(snapshot) {}
 
+    void processObject(core::objectmodel::BaseObject* obj, const std::shared_ptr<core::objectmodel::BaseSnapshot::SnapshotNode>& parent);
 
-}
+    Result processNodeTopDown(simulation::Node* node) override;
+    const char* getClassName() const override { return "LoadDataSnapshotVisitor"; }
 
+};
 
-void MemorySnapshot::importFrom(const std::string filename)
-{
-    std::cout << "importFrom" << std::endl;
+} // namespace sofa::simulation
 
-}
-
-
-
-
-} // namespace sofa::core::objectmodel
