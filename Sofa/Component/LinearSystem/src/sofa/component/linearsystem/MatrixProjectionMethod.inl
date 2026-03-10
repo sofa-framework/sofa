@@ -126,8 +126,8 @@ void MatrixProjectionMethod<TMatrix>::addMappedMatrixToGlobalMatrixEigen(
             // nb rows of J[0] = size of first mechanical state
             msg_error_when(sofa::Size(J[0]->rows()) != mstatePair[0]->getMatrixSize(), "MatrixMapping")
                     << "[J0] Incompatible matrix size [rows] " << J[0]->rows() << " " << mstatePair[0]->getMatrixSize();
-            msg_error_when(sofa::Size(J[0]->cols()) != a->BaseMechanicalState::getMatrixSize(), "MatrixMapping")
-                    << "[J0] Incompatible matrix size [cols] " << J[0]->cols() << " " << a->BaseMechanicalState::getMatrixSize();
+            msg_error_when(sofa::Size(J[0]->cols()) != a->getMatrixSize(), "MatrixMapping")
+                    << "[J0] Incompatible matrix size [cols] " << J[0]->cols() << " " << a->getMatrixSize();
         }
 
         if (J[1])
@@ -135,8 +135,8 @@ void MatrixProjectionMethod<TMatrix>::addMappedMatrixToGlobalMatrixEigen(
             // nb rows of J[1] = size of second mechanical state
             msg_error_when(sofa::Size(J[1]->rows()) != mstatePair[1]->getMatrixSize(), "MatrixMapping")
                     << "[J1] Incompatible matrix size [rows] " << J[1]->rows() << " " << mstatePair[1]->getMatrixSize();
-            msg_error_when(sofa::Size(J[1]->cols()) != b->BaseMechanicalState::getMatrixSize(), "MatrixMapping")
-                    << "[J1] Incompatible matrix size [cols] " << J[1]->cols() << " " << b->BaseMechanicalState::getMatrixSize();
+            msg_error_when(sofa::Size(J[1]->cols()) != b->getMatrixSize(), "MatrixMapping")
+                    << "[J1] Incompatible matrix size [cols] " << J[1]->cols() << " " << b->getMatrixSize();
         }
 
         Eigen::SparseMatrix<Block, Eigen::RowMajor> JT_K_J;
