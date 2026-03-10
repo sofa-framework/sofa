@@ -23,7 +23,7 @@
 #include <sofa/component/collision/geometry/config.h>
 #include <sofa/core/fwd.h>
 #include <sofa/core/CollisionModel.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/collision/Intersection.h>
 
