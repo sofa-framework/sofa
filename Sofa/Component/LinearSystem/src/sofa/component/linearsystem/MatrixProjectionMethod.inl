@@ -23,6 +23,7 @@
 #include <sofa/component/linearsystem/MatrixProjectionMethod.h>
 #include <sofa/component/linearsystem/BaseMatrixProjectionMethod.inl>
 #include <sofa/core/BaseMapping.h>
+#include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/core/ConstraintParams.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalResetConstraintVisitor.h>
