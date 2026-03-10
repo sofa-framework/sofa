@@ -19,26 +19,32 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_VISUAL_TRAILRENDERER_CPP
-#include <sofa/component/visual/TrailRenderer.inl>
-#include <sofa/core/ObjectFactory.h>
+#pragma once
 
-namespace sofa::component::visual
+#include <sofa/component/constraint/lagrangian/solver/BuiltConstraintSolver.h>
+#include <sofa/core/behavior/ConstraintResolution.h>
+
+namespace sofa::component::constraint::lagrangian::solver
 {
 
-void registerTrailRenderer(sofa::core::ObjectFactory* factory)
+/**
+ * This class proposes a direct solver for constraint solving based on a preconditioned conjugate
+ * residual method the preconditioner is a diagonal preconditioner, more precisely a jacobi
+ * preconditioner.
+ */
+class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API PreconditionedConjugateResidual : public BuiltConstraintSolver
 {
-    factory->registerObjects(core::ObjectRegistrationData("Render a trail behind particles.")
-        .add<TrailRenderer<defaulttype::Vec3Types>>()
-        .add<TrailRenderer<defaulttype::Vec2Types>>()
-        .add<TrailRenderer<defaulttype::Vec1Types>>()
-        .add<TrailRenderer<defaulttype::Rigid3Types>>()
-    );
-}
+public:
+    SOFA_CLASS(PreconditionedConjugateResidual, BuiltConstraintSolver);
 
-template class SOFA_COMPONENT_VISUAL_API TrailRenderer<defaulttype::Vec3Types>;
-template class SOFA_COMPONENT_VISUAL_API TrailRenderer<defaulttype::Vec2Types>;
-template class SOFA_COMPONENT_VISUAL_API TrailRenderer<defaulttype::Vec1Types>;
-template class SOFA_COMPONENT_VISUAL_API TrailRenderer<defaulttype::Rigid3Types>;
+    PreconditionedConjugateResidual();
 
+protected:
+    /**
+     * Based on paper
+     * Yousef Saad. 2003. Iterative methods for sparse linear systems. Vol. 82. siam.
+     **/
+    virtual void doSolve(GenericConstraintProblem * problem , SReal timeout = 0.0) override;
+
+};
 }

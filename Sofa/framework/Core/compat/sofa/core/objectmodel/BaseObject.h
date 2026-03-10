@@ -19,26 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_VISUAL_TRAILRENDERER_CPP
-#include <sofa/component/visual/TrailRenderer.inl>
-#include <sofa/core/ObjectFactory.h>
+#pragma once
 
-namespace sofa::component::visual
-{
+#include <sofa/config.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 
-void registerTrailRenderer(sofa::core::ObjectFactory* factory)
-{
-    factory->registerObjects(core::ObjectRegistrationData("Render a trail behind particles.")
-        .add<TrailRenderer<defaulttype::Vec3Types>>()
-        .add<TrailRenderer<defaulttype::Vec2Types>>()
-        .add<TrailRenderer<defaulttype::Vec1Types>>()
-        .add<TrailRenderer<defaulttype::Rigid3Types>>()
-    );
-}
-
-template class SOFA_COMPONENT_VISUAL_API TrailRenderer<defaulttype::Vec3Types>;
-template class SOFA_COMPONENT_VISUAL_API TrailRenderer<defaulttype::Vec2Types>;
-template class SOFA_COMPONENT_VISUAL_API TrailRenderer<defaulttype::Vec1Types>;
-template class SOFA_COMPONENT_VISUAL_API TrailRenderer<defaulttype::Rigid3Types>;
-
-}
+SOFA_HEADER_DEPRECATED("v26.06", "v29.06", "sofa/core/objectmodel/BaseComponent.h")
