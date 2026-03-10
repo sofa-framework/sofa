@@ -58,8 +58,10 @@ void VisualMesh::init()
 
 void VisualMesh::computeBBox(const core::ExecParams* exec_params, bool onlyVisible)
 {
-    SOFA_UNUSED(onlyVisible);
     if (!d_enable.getValue())
+        return;
+
+    if (onlyVisible && !sofa::core::visual::VisualParams::defaultInstance()->displayFlags().getShowVisualModels())
         return;
 
     type::BoundingBox bbox;
