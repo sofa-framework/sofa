@@ -23,7 +23,7 @@
 #include <sofa/component/playback/config.h>
 
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/core/objectmodel/Event.h>
 
 #include <sofa/simulation/AnimateBeginEvent.h>

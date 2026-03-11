@@ -22,7 +22,7 @@
 #pragma once
 
 #include <MultiThreading/config.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/core/State.h>
 #include <sofa/defaulttype/VecTypes.h>

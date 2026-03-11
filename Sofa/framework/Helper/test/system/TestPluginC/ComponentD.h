@@ -23,7 +23,7 @@
 #define TESTPLUGINC_COMPONENT_D_H
 
 #include <TestPluginC/TestPluginC.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 
 
 namespace testpluginc
