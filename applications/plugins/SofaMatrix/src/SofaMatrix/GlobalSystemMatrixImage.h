@@ -22,7 +22,7 @@
 #pragma once
 #include <SofaMatrix/config.h>
 
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <SofaMatrix/BaseMatrixImageProxy.h>
 
 #include <sofa/core/behavior/BaseMatrixLinearSystem.h>

@@ -24,7 +24,7 @@
 #include <sofa/component/collision/response/contact/config.h>
 #include <sofa/type/Vec.h>
 
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/core/collision/DetectionOutput.h>
 #include <sofa/core/collision/NarrowPhaseDetection.h>
 

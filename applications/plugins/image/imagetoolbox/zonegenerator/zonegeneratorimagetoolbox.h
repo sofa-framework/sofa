@@ -4,7 +4,7 @@
 #include "zonegeneratorimagetoolboxaction.h"
 
 #include <sofa/core/DataEngine.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <image/ImageTypes.h>
 
