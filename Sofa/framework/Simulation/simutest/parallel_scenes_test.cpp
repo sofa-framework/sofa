@@ -153,9 +153,9 @@ public:
                     <BarycentricMapping name="visual mapping" input="@../dofs" output="@VisualModel" />
                 </Node>
                 <Node name="Surf" gravity="0 -9.81 0">
-                    <SphereLoader filename="mesh/liver.sph" />
-                    <MechanicalObject name="spheres" position="@[-1].position" />
-                    <SphereCollisionModel name="CollisionModel" listRadius="@[-2].listRadius"/>
+                    <SphereLoader filename="mesh/liver.sph" name="sphereLoader"/>
+                    <MechanicalObject name="spheres" position="@../dofs.position" />
+                    <SphereCollisionModel name="CollisionModel" listRadius="@sphereLoader.listRadius"/>
                     <BarycentricMapping name="sphere mapping" input="@../dofs" output="@spheres" />
                 </Node>
             </Node>

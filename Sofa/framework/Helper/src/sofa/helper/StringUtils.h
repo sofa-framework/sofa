@@ -109,4 +109,7 @@ SOFA_HELPER_API std::string_view removeTrailingCharacter(std::string_view sv, ch
 ///@brief Removes specified trailing characters from a string view.
 SOFA_HELPER_API std::string_view removeTrailingCharacters(std::string_view sv, std::initializer_list<char> characters);
 
+///@brief Removes specified leading character from a string view
+SOFA_HELPER_API std::string_view removeLeadingCharacter(std::string_view sv, char character);
+
 } // namespace sofa::helper

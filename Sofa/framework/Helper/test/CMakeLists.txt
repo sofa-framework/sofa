@@ -7,6 +7,7 @@ set(SOURCE_FILES
     Factory_test.cpp
     IotaView_test.cpp
     KdTree_test.cpp
+    LinkParser_test.cpp
     NameDecoder_test.cpp
     OptionsGroup_test.cpp
     SelectableItem_test.cpp
