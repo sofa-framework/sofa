@@ -137,8 +137,7 @@ private:
  *
  * @param youngModulus The Young's modulus of the material, representing its stiffness.
  * @param poissonRatio The Poisson's ratio of the material, describing its deformation behavior.
- * @return The isotropic elasticity tensor represented as an object of
- * `ElasticityTensor<DataTypes>`.
+ * @return The isotropic elasticity tensor
  */
 template <class DataTypes>
 FullySymmetric4Tensor<DataTypes> makeIsotropicElasticityTensor(sofa::Real_t<DataTypes> mu, sofa::Real_t<DataTypes> lambda)
