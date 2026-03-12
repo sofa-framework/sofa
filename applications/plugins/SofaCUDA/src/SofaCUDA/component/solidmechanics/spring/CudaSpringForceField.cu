@@ -23,15 +23,6 @@
 #include <sofa/gpu/cuda/CudaMath.h>
 #include "cuda.h"
 
-#if defined(__cplusplus) && CUDA_VERSION < 2000
-namespace sofa
-{
-namespace gpu
-{
-namespace cuda
-{
-#endif
-
 extern "C"
 {
     void SpringForceFieldCuda3f_addForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const void* springs, void* f, const void* x, const void* v, void* dfdx);
@@ -1152,8 +1143,3 @@ void SpringForceFieldCuda3d1_addExternalDForce(unsigned int size, unsigned int n
 
 #endif // SOFA_GPU_CUDA_DOUBLE
 
-#if defined(__cplusplus) && CUDA_VERSION < 2000
-} // namespace cuda
-} // namespace gpu
-} // namespace sofa
-#endif

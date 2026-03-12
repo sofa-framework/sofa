@@ -23,7 +23,7 @@
 #include <sofa/component/playback/config.h>
 
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/core/objectmodel/Event.h>
 
 #include <sofa/simulation/AnimateBeginEvent.h>
@@ -93,7 +93,7 @@ public:
             return false;
         }
 
-        return BaseObject::canCreate(obj, context, arg);
+        return sofa::core::objectmodel::BaseComponent::canCreate(obj, context, arg);
     }
 
 };
