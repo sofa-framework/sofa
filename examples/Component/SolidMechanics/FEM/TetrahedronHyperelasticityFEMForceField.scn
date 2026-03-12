@@ -52,7 +52,7 @@
 
                 <Node name="tetras">
                         <MeshTopology name="Container"/>
-                        <Hexa2TetraTopologicalMapping name="default28" input="@../" output="@Container" printLog="0" />
+                        <Hexa2TetraTopologicalMapping name="default28" input="@../" output="@Container" swapping="true" />
 
                         <TetrahedronHyperelasticityFEMForceField name="FEM" ParameterSet="3448.2759 31034.483"/>
                 </Node>
@@ -74,7 +74,7 @@
 
                 <Node name="tetras">
                         <MeshTopology name="Container"/>
-                        <Hexa2TetraTopologicalMapping name="default28" input="@../" output="@Container" printLog="0" />
+                        <Hexa2TetraTopologicalMapping name="default28" input="@../" output="@Container" swapping="true" />
 
                         <TetrahedronHyperelasticityFEMForceField name="FEM" ParameterSet="3448.2759 31034.483" materialName="StVenantKirchhoff"/>
                 </Node>
@@ -97,7 +97,7 @@
 
                 <Node name="tetras">
                         <MeshTopology name="Container"/>
-                        <Hexa2TetraTopologicalMapping name="default28" input="@../" output="@Container" printLog="0" />
+                        <Hexa2TetraTopologicalMapping name="default28" input="@../" output="@Container" swapping="true" />
 
                         <TetrahedronHyperelasticityFEMForceField name="FEM" ParameterSet="3448.2759 31034.483" materialName="NeoHookean"/>
                 </Node>
@@ -120,7 +120,7 @@
 
                 <Node name="tetras">
                         <MeshTopology name="Container"/>
-                        <Hexa2TetraTopologicalMapping name="default28" input="@../" output="@Container" printLog="0" />
+                        <Hexa2TetraTopologicalMapping name="default28" input="@../" output="@Container" swapping="true" />
 
                         <TetrahedronHyperelasticityFEMForceField name="FEM" ParameterSet="5000 7000 10" materialName="MooneyRivlin"/>
                 </Node>
@@ -142,7 +142,7 @@
 
                 <Node name="tetras">
                         <MeshTopology name="Container"/>
-                        <Hexa2TetraTopologicalMapping name="default28" input="@../" output="@Container" printLog="0" />
+                        <Hexa2TetraTopologicalMapping name="default28" input="@../" output="@Container" swapping="true" />
 
                         <TetrahedronHyperelasticityFEMForceField name="FEM" ParameterSet="1500 500 5000" materialName="Ogden"/>
                 </Node>
