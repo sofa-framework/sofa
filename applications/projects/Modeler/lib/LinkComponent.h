@@ -22,7 +22,7 @@
 #ifndef SOFA_LINKCOMPONENT_H
 #define SOFA_LINKCOMPONENT_H
 
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/core/loader/BaseLoader.h>
 
 #include "ModifierCondition.h"

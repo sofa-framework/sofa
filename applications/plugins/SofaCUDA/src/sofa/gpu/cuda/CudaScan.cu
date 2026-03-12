@@ -24,21 +24,10 @@
 
 #include <cuda.h>
 
-#if defined(SOFA_GPU_CUDPP)
-#include <cudpp.h>
-#include <cudpp_plan.h>
-#include <cudpp_plan_manager.h>
-#include <cudpp_scan.h>
-#endif
-
 #if defined(SOFA_GPU_THRUST)
 #include <thrust/device_vector.h>
 #include <thrust/scan.h>
 #endif
-
-//#if !defined(SOFA_GPU_CUDPP) && !defined(SOFA_GPU_THRUST)
-//#warning CUDA: please define either SOFA_GPU_CUDPP or SOFA_GPU_THRUST to activate scan on GPU
-//#endif
 
 #if defined(__cplusplus)
 namespace sofa
@@ -281,60 +270,6 @@ bool CudaScanSOFA(const void* input, void* output, unsigned int size, ScanType t
     }
 }
 
-
-#if defined(SOFA_GPU_CUDPP)
-
-CUDPPHandle cudppHandleScan[2];
-unsigned int cudppHandleScanMaxElements[2] = { 0, 0 };
-bool cudppScanFailed = false;
-
-bool CudaScanCUDPPAvailable(unsigned int size, ScanType type)
-{
-    if (cudppScanFailed) return false;
-    int plan = (type == SCAN_INCLUSIVE ? 0 : 1);
-    if (size > cudppHandleScanMaxElements[plan])
-    {
-        if (cudppHandleScanMaxElements[plan] > 0)
-        {
-            cudppDestroyPlan(cudppHandleScan[plan]);
-            cudppHandleScanMaxElements[plan] = (((cudppHandleScanMaxElements[plan]>>10)+1)<<10); // increase size to at least the next multiple of 1024
-        }
-        if (size > cudppHandleScanMaxElements[plan])
-            cudppHandleScanMaxElements[plan] = size;
-//            if (cudppHandleScanMaxElements[plan] < (1<<18))
-//                cudppHandleScanMaxElements[plan] = (1<<18);
-        cudppHandleScanMaxElements[plan] = ((cudppHandleScanMaxElements[plan] + 255) & ~255);
-
-        mycudaPrintf("CudaScan: Creating CUDPP %s Scan Plan for %d elements.\n", (type == SCAN_INCLUSIVE ? "Inclusive" : "Exclusive"), cudppHandleScanMaxElements[plan]);
-        CUDPPConfiguration config;
-        config.algorithm = CUDPP_SCAN;
-        config.op = CUDPP_ADD;
-        config.datatype = CUDPP_UINT;
-        config.options = (type == SCAN_INCLUSIVE ? CUDPP_OPTION_INCLUSIVE : CUDPP_OPTION_EXCLUSIVE);
-
-        if (cudppPlan(&cudppHandleScan[plan], config, cudppHandleScanMaxElements[plan], 1, 0) != CUDPP_SUCCESS)
-        {
-            mycudaPrintf("CudaScan: ERROR creating CUDPP %s Scan Plan for %d elements.\n", (type == SCAN_INCLUSIVE ? "Inclusive" : "Exclusive"), cudppHandleScanMaxElements[plan]);
-            cudppHandleScanMaxElements[plan] = 0;
-            cudppDestroyPlan(cudppHandleScan[plan]);
-            cudppScanFailed = true;
-            return false;
-        }
-    }
-    return true;
-}
-
-bool CudaScanCUDPP(const void * d_input, void * d_output, unsigned int size, ScanType type)
-{
-    if (!CudaScanCUDPPAvailable(size, type))
-        return false;
-    int plan = (type == SCAN_INCLUSIVE ? 0 : 1);
-    if (cudppScan(cudppHandleScan[plan],d_output,d_input,size) != CUDPP_SUCCESS)
-        return false;
-    return true;
-}
-#endif
-
 #if defined(SOFA_GPU_THRUST)
 
 unsigned int thrustScanMaxElements = 0;
@@ -379,9 +314,6 @@ enum ScanImplType
 {
     SCANDEFAULT = 0,
     SCAN_SOFA,
-#if defined(SOFA_GPU_CUDPP)
-    SCAN_CUDPP,
-#endif
 #if defined(SOFA_GPU_THRUST)
     SCAN_THRUST,
 #endif
@@ -401,10 +333,6 @@ ScanImplType CudaScanImpl()
             impl = SCANDEFAULT;
         else if ((str[0] == 'S' || str[0] == 's') && (str[1] == 'O' || str[1] == 'o'))
             impl = SCAN_SOFA;
-#if defined(SOFA_GPU_CUDPP)
-        else if ((str[0] == 'C' || str[0] == 'c') && (str[1] == 'U' || str[1] == 'u'))
-            impl = SCAN_CUDPP;
-#endif
 #if defined(SOFA_GPU_THRUST)
         else if ((str[0] == 'T' || str[0] == 't') && (str[1] == 'H' || str[1] == 'h'))
             impl = SCAN_THRUST;
@@ -422,13 +350,6 @@ bool CudaScanGPUAvailable(unsigned int size, ScanType type)
     switch(impl)
     {
     case SCANDEFAULT: // alias for the first active implementation
-#if defined(SOFA_GPU_CUDPP)
-    case SCAN_CUDPP:
-        if (CudaScanCUDPPAvailable(size, type))
-            return true;
-        if (impl != SCANDEFAULT)
-            break;
-#endif
 #if defined(SOFA_GPU_THRUST)
     case SCAN_THRUST:
         if (CudaScanTHRUSTAvailable(size, type))
@@ -448,13 +369,6 @@ bool CudaScanGPU(const void* input, void* output, unsigned int size, ScanType ty
     switch(impl)
     {
     case SCANDEFAULT: // alias for the first active implementation
-#if defined(SOFA_GPU_CUDPP)
-    case SCAN_CUDPP:
-        if (CudaScanCUDPP(input, output, size, type))
-            return true;
-        if (impl != SCANDEFAULT)
-            break;
-#endif
 #if defined(SOFA_GPU_THRUST)
     case SCAN_THRUST:
         if (CudaScanTHRUST(input, output, size, type))

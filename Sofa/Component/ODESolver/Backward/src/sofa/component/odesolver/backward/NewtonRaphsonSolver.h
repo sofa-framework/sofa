@@ -24,7 +24,7 @@
 #include <sofa/component/odesolver/backward/NonLinearFunction.h>
 #include <sofa/component/odesolver/backward/config.h>
 #include <sofa/component/odesolver/backward/convergence/NewtonRaphsonConvergenceMeasure.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/helper/map.h>
 
 namespace sofa::component::odesolver::backward

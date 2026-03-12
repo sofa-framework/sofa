@@ -23,15 +23,6 @@
 #include <sofa/gpu/cuda/CudaMath.h>
 #include "cuda.h"
 
-#if defined(__cplusplus) && CUDA_VERSION < 2000
-namespace sofa
-{
-namespace gpu
-{
-namespace cuda
-{
-#endif
-
 struct GPUEllipsoid
 {
     CudaVec3<float> center;
@@ -340,8 +331,3 @@ void EllipsoidForceFieldCuda3f1_addDForce(unsigned int size, GPUEllipsoid* ellip
     {EllipsoidForceFieldCuda3f1_addDForce_kernel<<< grid, threads >>>(size, /* *ellipsoid, */ tmp, (CudaVec4<float>*)df, (const CudaVec4<float>*)dx, (float)factor); mycudaDebugError("EllipsoidForceFieldCuda3f1_addDForce_kernel");}
 }
 
-#if defined(__cplusplus) && CUDA_VERSION < 2000
-} // namespace cuda
-} // namespace gpu
-} // namespace sofa
-#endif
