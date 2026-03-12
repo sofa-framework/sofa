@@ -25,7 +25,7 @@
         <TetrahedronSetTopologyContainer name="Tetra_topo"/>
         <TetrahedronSetTopologyModifier name="Modifier" />
         <TetrahedronSetGeometryAlgorithms template="Vec3" name="GeomAlgo" />
-        <Hexa2TetraTopologicalMapping input="@grid" output="@Tetra_topo" />
+        <Hexa2TetraTopologicalMapping input="@grid" output="@Tetra_topo" swapping="true"/>
         
         <DiagonalMass massDensity="0.2" />
         <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.4" computeGlobalMatrix="true"
@@ -46,7 +46,7 @@
         <TetrahedronSetTopologyContainer name="Tetra_topo"/>
         <TetrahedronSetTopologyModifier name="Modifier" />
         <TetrahedronSetGeometryAlgorithms template="Vec3" name="GeomAlgo" />
-        <Hexa2TetraTopologicalMapping input="@grid" output="@Tetra_topo" />
+        <Hexa2TetraTopologicalMapping input="@grid" output="@Tetra_topo" swapping="true"/>
         
         <DiagonalMass massDensity="0.2" />
         <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.4" computeGlobalMatrix="true"

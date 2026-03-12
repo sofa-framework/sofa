@@ -24,15 +24,6 @@
 #include "cuda.h"
 #include <cstdio>
 
-#if defined(__cplusplus) && CUDA_VERSION < 2000
-namespace sofa
-{
-namespace gpu
-{
-namespace cuda
-{
-#endif
-
 
 extern "C"
 {
@@ -1335,11 +1326,4 @@ void StandardTetrahedralFEMForceFieldCuda3d_addDForce(int nbTetra, int nbEdges, 
     if(TIMING)
         cudaDeviceSynchronize();
 }
-#endif
-
-
-#if defined(__cplusplus) && CUDA_VERSION < 2000
-} // namespace cuda
-} // namespace gpu
-} // namespace sofa
 #endif

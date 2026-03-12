@@ -12,7 +12,7 @@
     <RequiredPlugin name="Sofa.Component.Topology.Mapping"/> <!-- Needed to use components [Hexa2TetraTopologicalMapping] -->
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
 
-    <DefaultAnimationLoop/>
+    <DefaultAnimationLoop parallelODESolving="true"/>
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
 
     <Node name="BeamFEM_SMALL">
@@ -25,7 +25,7 @@
         <TetrahedronSetTopologyContainer name="Tetra_topo"/>
         <TetrahedronSetTopologyModifier name="Modifier" />
         <TetrahedronSetGeometryAlgorithms template="Vec3" name="GeomAlgo" />
-        <Hexa2TetraTopologicalMapping input="@grid" output="@Tetra_topo" />
+        <Hexa2TetraTopologicalMapping input="@grid" output="@Tetra_topo" swapping="true"/>
 
         <DiagonalMass massDensity="0.2" />
         <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.4" computeGlobalMatrix="false"
@@ -46,7 +46,7 @@
         <TetrahedronSetTopologyContainer name="Tetra_topo"/>
         <TetrahedronSetTopologyModifier name="Modifier" />
         <TetrahedronSetGeometryAlgorithms template="Vec3" name="GeomAlgo" />
-        <Hexa2TetraTopologicalMapping input="@grid" output="@Tetra_topo" />
+        <Hexa2TetraTopologicalMapping input="@grid" output="@Tetra_topo" swapping="true"/>
 
         <DiagonalMass massDensity="0.2" />
         <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.4" computeGlobalMatrix="false"
@@ -66,7 +66,7 @@
         <TetrahedronSetTopologyContainer name="Tetra_topo" />
         <TetrahedronSetTopologyModifier name="Modifier" />
         <TetrahedronSetGeometryAlgorithms template="Vec3" name="GeomAlgo" />
-        <Hexa2TetraTopologicalMapping input="@grid" output="@Tetra_topo" />
+        <Hexa2TetraTopologicalMapping input="@grid" output="@Tetra_topo" swapping="true"/>
 
         <DiagonalMass massDensity="0.2" />
         <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.4" computeGlobalMatrix="false"
@@ -86,7 +86,7 @@
         <TetrahedronSetTopologyContainer name="Tetra_topo"/>
         <TetrahedronSetTopologyModifier name="Modifier" />
         <TetrahedronSetGeometryAlgorithms template="Vec3" name="GeomAlgo" />
-        <Hexa2TetraTopologicalMapping input="@grid" output="@Tetra_topo" />
+        <Hexa2TetraTopologicalMapping input="@grid" output="@Tetra_topo" swapping="true"/>
 
         <DiagonalMass massDensity="0.2" />
         <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.4" computeGlobalMatrix="false"

@@ -24,15 +24,6 @@
 #include <sofa/gpu/cuda/mycuda.h>
 #include "cuda.h"
 
-#if defined(__cplusplus) && CUDA_VERSION < 2000
-namespace sofa
-{
-namespace gpu
-{
-namespace cuda
-{
-#endif
-
 extern "C"
 {
     void MeshMatrixMassCuda_addMDx3f(unsigned int size, float factor, float massLumpingCoeff, const void * vertexMass, const void* dx, void* res);
@@ -378,9 +369,3 @@ void MeshMatrixMassCuda_accFromF1f(int dim, void * acc, const void * f,  const v
     dim3 grid((dim+BSIZE-1)/BSIZE,1);
     {MeshMatrixMassCuda_accFromF1f_kernel<float><<< grid, threads >>>(dim, (float *) acc, (const float *) f, (const float *) vertexMass, massLumpingCoeff);     mycudaDebugError("MeshMatrixMassCuda_accFromF2f_kernel<float>");}
 }
-
-#if defined(__cplusplus) && CUDA_VERSION < 2000
-} // namespace cuda
-} // namespace gpu
-} // namespace sofa
-#endif
