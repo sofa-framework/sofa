@@ -22,7 +22,7 @@
 #include <sofa/core/objectmodel/DataCallback.h>
 using sofa::core::objectmodel::DataCallback;
 
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 
 #include <sofa/testing/BaseTest.h>
 using sofa::testing::BaseTest ;

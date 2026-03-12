@@ -23,7 +23,7 @@
 #pragma once
 #include <sofa/component/linearsolver/ordering/AMDOrderingMethod.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 
 
 namespace sofa::component::linearsolver::ordering

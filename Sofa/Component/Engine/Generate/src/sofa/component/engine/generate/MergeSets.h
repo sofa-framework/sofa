@@ -23,7 +23,7 @@
 #include <sofa/component/engine/generate/config.h>
 
 #include <sofa/core/DataEngine.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 
 #include <set>
 

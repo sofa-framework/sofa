@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/core/MultiVecId.h>
 #include <sofa/linearalgebra/BaseMatrix.h>
 #include <sofa/core/ConstraintOrder.h>
