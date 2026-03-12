@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/visual/Data[DisplayFlags].h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <gtest/gtest.h>
 #include <sofa/core/logging/PerComponentLoggingMessageHandler.h>
 

@@ -27,7 +27,7 @@ using sofa::core::objectmodel::ComponentState;
 using sofa::testing::BaseSimulationTest ;
 using sofa::simulation::Node ;
 
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 using sofa::core::objectmodel::BaseObject;
 
 #include <sofa/core/PathResolver.h>
