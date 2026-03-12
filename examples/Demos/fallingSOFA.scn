@@ -59,9 +59,9 @@
         <Node name="TetraTopology">
             <!-- Transform the hexahedral topology into a tetrahedral topology
             For more information see : https://sofa-framework.github.io/doc/simulation-principles/multi-model-representation/mapping/#topological-mapping -->
-            <TetrahedronSetTopologyContainer name="Container" position="@HexaTop.position"/>
+            <TetrahedronSetTopologyContainer name="Container" position="@../HexaTop.position"/>
             <TetrahedronSetTopologyModifier name="Modifier"/>
-            <Hexa2TetraTopologicalMapping input="@HexaTop" output="@Container" swapping="true"/>
+            <Hexa2TetraTopologicalMapping input="@../HexaTop" output="@Container" swapping="true"/>
         </Node>
     </Node>
 

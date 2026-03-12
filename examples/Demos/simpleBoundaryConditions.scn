@@ -43,7 +43,7 @@
             <TetrahedronSetTopologyContainer name="TetraContainer" />
             <TetrahedronSetTopologyModifier />
             <TetrahedronSetGeometryAlgorithms template="Vec3" />
-            <Hexa2TetraTopologicalMapping name="default28" input="@grid" output="@TetraContainer" />
+            <Hexa2TetraTopologicalMapping name="default28" input="@grid" output="@TetraContainer" swapping="true"/>
             <TetrahedronFEMForceField template="Vec3" name="FEM" method="large" poissonRatio="0.4" youngModulus="1000" />
 
             <!--Extraction of the external triangles of the tetrahedra -->

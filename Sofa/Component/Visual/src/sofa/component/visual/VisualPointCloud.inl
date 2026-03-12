@@ -63,10 +63,30 @@ void VisualPointCloud<DataTypes>::computeBBox(const core::ExecParams* exec_param
 
     type::Vec3 pvec3;
     type::BoundingBox bbox;
-    for (const auto& p : position)
+
+    const auto drawMode = d_drawMode.getValue();
+
+    if (drawMode == DrawMode("Sphere"))
     {
-        DataTypes::get(pvec3[0], pvec3[1], pvec3[2], p);
-        bbox.include(pvec3);
+        const auto sphereRadius = sofa::helper::getWriteAccessor(d_sphereRadius);
+
+        for (std::size_t i = 0; i < std::min(sphereRadius.size(), positionSize); ++i)
+        {
+            DataTypes::get(pvec3[0], pvec3[1], pvec3[2], position[i]);
+
+            const auto sphereRadius_i = sphereRadius[i];
+            const auto sphereRadiusVec3 = sofa::type::Vec3(sphereRadius_i, sphereRadius_i, sphereRadius_i);
+            bbox.include(pvec3 + sphereRadiusVec3);
+            bbox.include(pvec3 - sphereRadiusVec3);
+        }
+    }
+    else
+    {
+        for (const auto& p : position)
+        {
+            DataTypes::get(pvec3[0], pvec3[1], pvec3[2], p);
+            bbox.include(pvec3);
+        }
     }
 
     this->f_bbox.setValue(bbox);

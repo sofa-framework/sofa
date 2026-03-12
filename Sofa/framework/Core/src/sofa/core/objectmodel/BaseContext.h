@@ -338,11 +338,11 @@ public:
     /// @{
 
     /// Mechanical Degrees-of-Freedom
-    virtual void setMechanicalState( BaseObject* )
+    virtual void setMechanicalState( sofa::core::objectmodel::BaseComponent* )
     { }
 
     /// Topology
-    virtual void setTopology( BaseObject* )
+    virtual void setTopology( sofa::core::objectmodel::BaseComponent* )
     { }
 
     /// @}
@@ -362,13 +362,13 @@ public:
     /// @{
 
     /// Add an object, or return false if not supported
-    virtual bool addObject( sptr<BaseObject> /*obj*/, TypeOfInsertion = TypeOfInsertion::AtEnd)
+    virtual bool addObject( sptr<sofa::core::objectmodel::BaseComponent> /*obj*/, TypeOfInsertion = TypeOfInsertion::AtEnd)
     {
         return false;
     }
 
     /// Remove an object, or return false if not supported
-    virtual bool removeObject( sptr<BaseObject> /*obj*/ )
+    virtual bool removeObject( sptr<sofa::core::objectmodel::BaseComponent> /*obj*/ )
     {
         return false;
     }
