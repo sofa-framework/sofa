@@ -31,6 +31,19 @@ struct FiniteElement<sofa::geometry::Hexahedron, DataTypes>
     FINITEELEMENT_HEADER(sofa::geometry::Hexahedron, DataTypes, 3);
     static_assert(spatial_dimensions == 3, "Hexahedrons are only defined in 3D");
 
+    // Following the convention in sofa::geometry::Hexahedron:
+    //     Y  n3---------n2
+    //     ^  /          /|
+    //     | /          / |
+    //     n7---------n6  |
+    //     |          |   |
+    //     |  n0------|--n1
+    //     | /        | /
+    //     |/         |/
+    //     n4---------n5-->X
+    //    /
+    //   /
+    //  Z
     constexpr static std::array<ReferenceCoord, NumberOfNodesInElement> referenceElementNodes {{
         {-1, -1, -1},
         {1, -1, -1},
@@ -65,21 +78,21 @@ struct FiniteElement<sofa::geometry::Hexahedron, DataTypes>
         return gradient;
     }
 
-    static constexpr std::array<QuadraturePointAndWeight, 4> quadraturePoints()
+    static constexpr auto quadraturePoints()
     {
-        constexpr Real sqrt2_3 = 0.816496580928; //sqrt(2./3.)
         constexpr Real sqrt3 = 1.73205080757; //sqrt(3.)
+        constexpr Real sqrt3_1 = static_cast<Real>(1) / sqrt3;
+        constexpr Real one = static_cast<Real>(1);
 
-        constexpr sofa::type::Vec<TopologicalDimension, Real> q0(0., sqrt2_3, -1./sqrt3);
-        constexpr sofa::type::Vec<TopologicalDimension, Real> q1(0., -sqrt2_3, -1./sqrt3);
-        constexpr sofa::type::Vec<TopologicalDimension, Real> q2(-sqrt2_3, 0., 1./sqrt3);
-        constexpr sofa::type::Vec<TopologicalDimension, Real> q3(sqrt2_3, 0., 1./sqrt3);
-
-        constexpr std::array<QuadraturePointAndWeight, 4> q {
-            std::make_pair(q0, static_cast<Real>(2)),
-            std::make_pair(q1, static_cast<Real>(2)),
-            std::make_pair(q2, static_cast<Real>(2)),
-            std::make_pair(q3, static_cast<Real>(2))
+        constexpr std::array q {
+            std::pair{referenceElementNodes[0] * sqrt3_1, one},
+            std::pair{referenceElementNodes[1] * sqrt3_1, one},
+            std::pair{referenceElementNodes[2] * sqrt3_1, one},
+            std::pair{referenceElementNodes[3] * sqrt3_1, one},
+            std::pair{referenceElementNodes[4] * sqrt3_1, one},
+            std::pair{referenceElementNodes[5] * sqrt3_1, one},
+            std::pair{referenceElementNodes[6] * sqrt3_1, one},
+            std::pair{referenceElementNodes[7] * sqrt3_1, one},
         };
 
         return q;
