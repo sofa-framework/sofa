@@ -21,33 +21,25 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/geometry/config.h>
-#include <sofa/geometry/ElementType.h>
+#include <sofa/core/topology/TopologicalMapping.h>
+#include <sofa/component/topology/mapping/config.h>
 
-namespace sofa::geometry
+namespace sofa::component::topology::mapping
 {
 
-struct Prism
+class SOFA_COMPONENT_TOPOLOGY_MAPPING_API Hexa2PrismTopologicalMapping : public sofa::core::topology::TopologicalMapping
 {
-    static constexpr sofa::Size NumberOfNodes = 6;
-    static constexpr ElementType Element_type = ElementType::PRISM;
+public:
+    SOFA_CLASS(Hexa2PrismTopologicalMapping, sofa::core::topology::TopologicalMapping);
 
-    Prism() = delete;
+    virtual void init() override;
+    virtual Index getFromIndex(Index ind) override;
+    virtual void updateTopologicalMappingTopDown() override;
 
-    // CONVENTION : indices ordering for the nodes of a prism :
-    //
-    //     5
-    //   / |  \
-    //  /  |   \
-    // 3---+----4
-    // |   |    |
-    // |   2    |
-    // | /   \  |
-    // |/      \|
-    // 0--------1
-    //
+protected:
+    Hexa2PrismTopologicalMapping();
+
+    void convertHexaToPrisms();
 };
 
-using Pentahedron SOFA_ATTRIBUTE_DEPRECATED("v25.12", "v26.06", "Pentahedron is renamed to Prism") = Prism;
-
-} // namespace sofa::geometry
+} // namespace sofa::component::topology::mapping
