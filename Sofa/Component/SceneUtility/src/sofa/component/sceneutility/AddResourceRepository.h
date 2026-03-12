@@ -22,7 +22,7 @@
 #pragma once
 #include <sofa/component/sceneutility/config.h>
 
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/helper/system/FileRepository.h>
 using sofa::helper::system::FileRepository;

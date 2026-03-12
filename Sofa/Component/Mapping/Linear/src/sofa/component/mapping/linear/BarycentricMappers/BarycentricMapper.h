@@ -22,7 +22,7 @@
 #pragma once
 #include <sofa/component/mapping/linear/config.h>
 #include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa::component::mapping::linear::_barycentricmapper_

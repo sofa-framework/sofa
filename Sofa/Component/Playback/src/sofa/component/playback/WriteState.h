@@ -24,7 +24,7 @@
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
@@ -103,7 +103,7 @@ public:
             arg->logError("No mechanical state found in the context node.");
             return false;
         }
-        return BaseObject::canCreate(obj, context, arg);
+        return sofa::core::objectmodel::BaseComponent::canCreate(obj, context, arg);
     }
 
 };

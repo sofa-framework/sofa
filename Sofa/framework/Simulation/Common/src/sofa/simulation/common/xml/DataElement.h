@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/simulation/common/xml/Element.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 
 namespace sofa::simulation::xml
 {

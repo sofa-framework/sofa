@@ -28,7 +28,7 @@
 #include <sofa/component/sceneutility/config.h>
 
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/core/objectmodel/Data.h>
 
 #include <string>

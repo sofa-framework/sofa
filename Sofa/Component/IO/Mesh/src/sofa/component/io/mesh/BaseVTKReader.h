@@ -26,7 +26,7 @@
 #include <iosfwd>
 
 #include <sofa/core/objectmodel/BaseData.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 
 namespace sofa::component::io::mesh::basevtkreader
 {

@@ -22,7 +22,7 @@
 #pragma once
 
 #include <FailingPlugin/FailingPlugin.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 
 
 namespace sofa::test
