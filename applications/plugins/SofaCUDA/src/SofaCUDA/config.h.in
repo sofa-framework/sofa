@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFACUDA_CONFIG_H
-#define SOFACUDA_CONFIG_H
+#pragma once
 
 #include <sofa/config.h>
 
@@ -42,4 +41,8 @@
 #  define SOFA_GPU_CUDA_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-#endif
+namespace sofa::gpu::cuda
+{
+    constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
+    constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
+} // namespace sofa::gpu::cuda
