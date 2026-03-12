@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/core/DataTracker.h>
 #include <sofa/core/DataTrackerFunctor.h>
 #include <sofa/simulation/AnimateBeginEvent.h>

@@ -115,7 +115,7 @@ public:
             return false;
         }
 
-        return BaseObject::canCreate(obj, context, arg);
+        return sofa::core::objectmodel::BaseComponent::canCreate(obj, context, arg);
     }
 
     virtual type::vector<std::string> getBaseConstraintIdentifiers() override final

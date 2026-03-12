@@ -23,7 +23,7 @@
 
 #include <sofa/core/config.h>
 
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/core/objectmodel/BaseClassNameHelper.h>
 #include <numeric>
 #include <sofa/helper/Utils.h>

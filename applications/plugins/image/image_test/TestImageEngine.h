@@ -23,7 +23,7 @@
 #define SOFA_COMPONENT_ENGINE_TestImageEngine_H
 
 #include <sofa/core/DataEngine.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <image/ImageTypes.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/AnimateEndEvent.h>
