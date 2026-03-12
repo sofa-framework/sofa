@@ -22,7 +22,7 @@
 #pragma once
 #include <sofa/component/collision/detection/algorithm/config.h>
 
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 
 #include <set>
 #include <string>

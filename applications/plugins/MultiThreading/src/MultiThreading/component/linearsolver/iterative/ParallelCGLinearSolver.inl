@@ -30,7 +30,7 @@ template <class TMatrix, class TVector>
 void ParallelCGLinearSolver<TMatrix, TVector>::init()
 {
     Inherit1::init();
-    initTaskScheduler();
+    this->initTaskScheduler();
 }
 
 template <class TMatrix, class TVector>

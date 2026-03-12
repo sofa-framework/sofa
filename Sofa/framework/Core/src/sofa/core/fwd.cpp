@@ -47,7 +47,7 @@
 
 #include <sofa/core/collision/Pipeline.h>
 
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
 #include <sofa/core/objectmodel/ContextObject.h>
 

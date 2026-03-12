@@ -22,7 +22,7 @@
 #pragma once
 
 #include <sofa/core/config.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 
 namespace sofa::core::behavior
