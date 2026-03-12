@@ -23,7 +23,7 @@
 
 #include <MultiThreading/config.h>
 #include <sofa/core/DataEngine.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 
 namespace sofa::component::engine
 {

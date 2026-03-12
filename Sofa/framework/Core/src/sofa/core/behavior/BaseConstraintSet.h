@@ -24,7 +24,7 @@
 
 #include <sofa/core/config.h>
 #include <sofa/linearalgebra/BaseVector.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/core/MultiVecId.h>
 
 namespace sofa::core::behavior

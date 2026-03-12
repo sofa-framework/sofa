@@ -141,7 +141,7 @@ public:
             arg->logError(std::string("No mechanical state with the datatype '") + TDataTypes::Name() + "' found in the context node.");
             return false;
         }
-        return sofa::core::objectmodel::BaseObject::canCreate(obj, context, arg);
+        return sofa::core::objectmodel::BaseComponent::canCreate(obj, context, arg);
     }
 
 protected :

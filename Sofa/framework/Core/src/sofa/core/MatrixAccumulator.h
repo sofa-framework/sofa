@@ -24,7 +24,7 @@
 #include <sofa/core/config.h>
 #include <sofa/type/vector.h>
 #include <sofa/type/fwd.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 
 namespace sofa::core
 {
