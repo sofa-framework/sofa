@@ -29,7 +29,7 @@
         <TetrahedronSetTopologyContainer name="BeamTopo" />
         <TetrahedronSetTopologyModifier name="Modifier" />
 
-        <Hexa2TetraTopologicalMapping input="@grid" output="@BeamTopo" />
+        <Hexa2TetraTopologicalMapping input="@grid" output="@BeamTopo" swapping="true"/>
     </Node>
    
     <Node name="TetrahedronFEMForceField-GPU-Green">

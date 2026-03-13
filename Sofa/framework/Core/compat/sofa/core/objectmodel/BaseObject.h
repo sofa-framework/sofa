@@ -19,40 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "CudaTypes.h"
+#pragma once
 
-#include <SofaValidation/ExtraMonitor.h>
-#include <SofaValidation/ExtraMonitor.inl>
-#include <SofaValidation/Monitor.inl>
+#include <sofa/config.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/RigidTypes.h>
-
-namespace sofa::component::misc
-{
-
-template class SOFA_GPU_CUDA_API ExtraMonitor<gpu::cuda::CudaRigid3fTypes>;
-template class SOFA_GPU_CUDA_API ExtraMonitor<gpu::cuda::CudaVec6fTypes>;
-#ifdef SOFA_GPU_CUDA_DOUBLE
-template class SOFA_GPU_CUDA_API ExtraMonitor<gpu::cuda::CudaRigid3dTypes>;
-template class SOFA_GPU_CUDA_API ExtraMonitor<gpu::cuda::CudaVec6dTypes>;
-#endif // SOFA_GPU_CUDA_DOUBLE
-
-}// namespace sofa::component::misc
-
-
-namespace sofa::gpu::cuda
-{
-    void registerExtraMonitor(sofa::core::ObjectFactory* factory)
-    {
-        factory->registerObjects(sofa::core::ObjectRegistrationData("Supports GPU-side computations using CUDA for the ExtraMonitor")
-        .add< component::misc::ExtraMonitor<CudaRigid3fTypes> >()
-        .add< component::misc::ExtraMonitor<CudaVec6fTypes> >()
-#ifdef SOFA_GPU_CUDA_DOUBLE
-        .add< component::misc::ExtraMonitor<CudaRigid3dTypes> >()
-        .add< component::misc::ExtraMonitor<CudaVec6dTypes> >()
-#endif // SOFA_GPU_CUDA_DOUBLE
-        );
-    }
-
-}// namespace sofa::gpu::cuda
+SOFA_HEADER_DEPRECATED("v26.06", "v29.06", "sofa/core/objectmodel/BaseComponent.h")

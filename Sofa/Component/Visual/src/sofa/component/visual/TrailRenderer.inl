@@ -72,7 +72,9 @@ void TrailRenderer<DataTypes>::storeParticlePositions()
     sofa::Size i {};
     for (const auto& pos : position)
     {
-        m_trail[i++].push_back(DataTypes::getCPos(pos));
+        sofa::type::Vec3 pvec3;
+        DataTypes::get(pvec3[0], pvec3[1], pvec3[2], pos);
+        m_trail[i++].push_back(pvec3);
     }
 
     removeFirstElements();

@@ -24,23 +24,16 @@
 
 #include <cuda.h>
 
-#if defined(SOFA_GPU_CUDPP)
-#include <cudpp.h>
-#include <cudpp_plan.h>
-#include <cudpp_plan_manager.h>
-#include <cudpp_radixsort.h>
-#endif
-
 #if defined(SOFA_GPU_THRUST)
 #include <thrust/device_vector.h>
 #include <thrust/sort.h>
 #endif
 
-#if !defined(SOFA_GPU_CUDPP) && !defined(SOFA_GPU_THRUST)
+#if !defined(SOFA_GPU_THRUST)
 #ifdef _MSC_VER
-#pragma message( __FILE__ " : Warning: CUDA: please define either SOFA_GPU_CUDPP or SOFA_GPU_THRUST to activate sorting on GPU")
+#pragma message( __FILE__ " : Warning: CUDA: please define SOFA_GPU_THRUST to activate sorting on GPU")
 #else
-#warning CUDA: please define either SOFA_GPU_CUDPP or SOFA_GPU_THRUST to activate sorting on GPU
+#warning CUDA: please define SOFA_GPU_THRUST to activate sorting on GPU
 #endif
 #endif
 
@@ -59,59 +52,6 @@ extern "C" {
     bool SOFA_GPU_CUDA_API CudaSortGPU(void* keys, void* data, unsigned int size, int bits);
 
 } // "C"
-
-#if defined(SOFA_GPU_CUDPP)
-
-CUDPPHandle cudppHandleSort[2];
-unsigned int cudppHandleSortMaxElements[2] = { 0, 0 };
-bool cudppFailed = false;
-
-bool CudaSortCUDPPAvailable(unsigned int numElements, bool withData)
-{
-    if (cudppFailed) return false;
-    int plan = (withData) ? 1 : 0;
-    if (numElements > cudppHandleSortMaxElements[plan])
-    {
-        if (cudppHandleSortMaxElements[plan] > 0)
-        {
-            cudppDestroyPlan(cudppHandleSort[plan]);
-            cudppHandleSortMaxElements[plan] = (((cudppHandleSortMaxElements[plan]>>10)+1)<<10); // increase size to at least the next multiple of 1024
-        }
-        if (numElements > cudppHandleSortMaxElements[plan])
-            cudppHandleSortMaxElements[plan] = numElements;
-//            if (cudppHandleSortMaxElements[plan] < (1<<18))
-//                cudppHandleSortMaxElements[plan] = (1<<18);
-        cudppHandleSortMaxElements[plan] = ((cudppHandleSortMaxElements[plan] + 255) & ~255);
-
-        mycudaPrintf("CudaSort: Creating CUDPP RadixSort Plan for %d elements.\n", cudppHandleSortMaxElements[plan]);
-        CUDPPConfiguration config;
-        config.algorithm = CUDPP_SORT_RADIX;
-        config.op = CUDPP_ADD;
-        config.datatype = CUDPP_UINT;
-        config.options = withData ? CUDPP_OPTION_KEY_VALUE_PAIRS : CUDPP_OPTION_KEYS_ONLY;
-        if (cudppPlan(&cudppHandleSort[plan], config, cudppHandleSortMaxElements[plan], 1, 0) != CUDPP_SUCCESS)
-        {
-            mycudaPrintf("CudaSort: ERROR creating CUDPP RadixSort Plan for %d elements.\n", cudppHandleSortMaxElements[plan]);
-            cudppHandleSortMaxElements[plan] = 0;
-            cudppDestroyPlan(cudppHandleSort[plan]);
-            cudppFailed = true;
-            return false;
-        }
-    }
-    return true;
-}
-
-bool CudaSortCUDPP(void * d_keys, void * d_values, unsigned int numElements, int keybits = 32)
-{
-    bool withData = (d_values != NULL);
-    if (!CudaSortCUDPPAvailable(numElements, withData))
-        return false;
-    int plan = (withData) ? 1 : 0;
-    if (cudppSort(cudppHandleSort[plan],d_keys,d_values,keybits,numElements) != CUDPP_SUCCESS)
-        return false;
-    return true;
-}
-#endif
 
 #if defined(SOFA_GPU_THRUST)
 
@@ -154,9 +94,6 @@ bool CudaSortTHRUST(void* keys, void* data, unsigned int size, int /*bits*/)
 enum SortImplType
 {
     SORTDEFAULT = 0,
-#if defined(SOFA_GPU_CUDPP)
-    SORT_CUDPP,
-#endif
 #if defined(SOFA_GPU_THRUST)
     SORT_THRUST,
 #endif
@@ -174,10 +111,6 @@ SortImplType CudaSortImpl()
             impl = SORTDEFAULT;
         else if ((str[0] == 'D' || str[0] == 'd') && (str[1] == 'E' || str[1] == 'e'))
             impl = SORTDEFAULT;
-#if defined(SOFA_GPU_CUDPP)
-        else if ((str[0] == 'C' || str[0] == 'c') && (str[1] == 'U' || str[1] == 'u'))
-            impl = SORT_CUDPP;
-#endif
 #if defined(SOFA_GPU_THRUST)
         else if ((str[0] == 'T' || str[0] == 't') && (str[1] == 'H' || str[1] == 'h'))
             impl = SORT_THRUST;
@@ -195,13 +128,6 @@ bool CudaSortGPUAvailable(unsigned int size, bool withData)
     switch(impl)
     {
     case SORTDEFAULT: // alias for the first active implementation
-#if defined(SOFA_GPU_CUDPP)
-    case SORT_CUDPP:
-        if (CudaSortCUDPPAvailable(size, withData))
-            return true;
-        if (impl != SORTDEFAULT)
-            break;
-#endif
 #if defined(SOFA_GPU_THRUST)
     case SORT_THRUST:
         if (CudaSortTHRUSTAvailable(size, withData))
@@ -221,13 +147,6 @@ bool CudaSortGPU(void* keys, void* data, unsigned int size, int bits)
     switch(impl)
     {
     case SORTDEFAULT: // alias for the first active implementation
-#if defined(SOFA_GPU_CUDPP)
-    case SORT_CUDPP:
-        if (CudaSortCUDPP(keys, data, size, bits))
-            return true;
-        if (impl != SORTDEFAULT)
-            break;
-#endif
 #if defined(SOFA_GPU_THRUST)
     case SORT_THRUST:
         if (CudaSortTHRUST(keys, data, size, bits))

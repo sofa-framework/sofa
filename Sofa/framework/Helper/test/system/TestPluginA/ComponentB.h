@@ -23,7 +23,7 @@
 #define TESTPLUGINA_COMPONENT_B_H
 
 #include <TestPluginA/TestPluginA.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 

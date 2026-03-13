@@ -31,15 +31,6 @@
 
 #define TIMING true
 
-#if defined(__cplusplus) && CUDA_VERSION < 2000
-namespace sofa
-{
-namespace gpu
-{
-namespace cuda
-{
-#endif
-
 extern "C"
 {
 void TetrahedralTensorMassForceFieldCuda3f_addForce(int nbPoints, int nbMaxEdgesPerNode, const void* neighbourhoodPoints, void* contribEdge, int nbEdges, void* f, const void* x, const void* initialPoints, const void* edgeInfo );
@@ -315,12 +306,4 @@ void TetrahedralTensorMassForceFieldCuda3d_addDForce(int nbPoints, int nbMaxEdge
         cudaDeviceSynchronize();
 }
 #endif
-
-
-#if defined(__cplusplus) && CUDA_VERSION < 2000
-} // namespace cuda
-} // namespace gpu
-} // namespace sofa
-#endif
-
 
