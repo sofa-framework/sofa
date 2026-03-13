@@ -20,12 +20,12 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/linearsystem/config.h>
+#include <sofa/simulation/config.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
 
 #include <sofa/simulation/Node.h>
 
-namespace sofa::component::linearsystem
+namespace sofa::simulation
 {
 
 using core::behavior::BaseMechanicalState;
@@ -35,7 +35,7 @@ using core::behavior::BaseMechanicalState;
  *
  * Graph must be built with the build() function.
  */
-class SOFA_COMPONENT_LINEARSYSTEM_API MappingGraph
+class SOFA_SIMULATION_CORE_API MappingGraph
 {
 
 public:
