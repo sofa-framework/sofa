@@ -41,10 +41,10 @@ jobs:
         with:
           token: ${{ steps.generate-token.outputs.token }}
           commit-message: 'pixi: Update pixi lockfile'
-          title: Update pixi lockfile
+          title: [CI] Update pixi lockfile
           body-path: diff.md
           branch: topic/update-pixi
           base: master
-          labels: pixi
+          labels: ["pixi", "pr: status to review", "pr: project-ci-infrastructure", "pr: fast merge", "topic for next dev-meeting"]
           delete-branch: true
           add-paths: pixi.lock
