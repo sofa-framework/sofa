@@ -1,0 +1,361 @@
+[workspace]
+authors = ["Olivier Roussel <olivier.roussel@inria.fr>"]
+channels = ["https://prefix.dev/conda-forge"]
+description = "Open-source framework for interactive mechanical simulation, with emphasis on biomechanics and robotics"
+name = "SOFA"
+# Update PIXI_CURRENT_PLATFORM environment variable definition below if you modify platforms
+platforms = ["linux-64", "osx-64", "osx-arm64", "win-64"]
+version = "25.06.99"
+license = "LGPL-2.1-or-later"
+license-file = "LICENSE-LGPL.md"
+
+# TODO: add ccache support
+[dependencies]
+cxx-compiler = ">=1.7.0"
+cmake = ">=3.22"
+ninja = ">=1.11"
+pkg-config = "*"
+git = ">=2.47.0"
+libboost-headers = ">=1.76.0"
+zlib = ">=1.2.11"
+eigen = ">=3.4.0"
+tinyxml2 = ">=9.0.0"
+cxxopts = ">=3.1.1"
+gtest = "*"
+tight-inclusion = "*"
+
+[tasks]
+build = { cmd = "cmake --build $SOFA_BUILD_DIR --target all", depends-on = ["configure"] }
+install = { cmd = "cmake --build $SOFA_BUILD_DIR --target install", depends-on = ["build"] }
+runSofa = { cmd = "runSofa", depends-on = ["install"] }
+clean = { cmd = "rm -rf $SOFA_BUILD_DIR" }
+
+# Python 3.12 is the one supported by default
+[feature.python-supported.dependencies]
+python = "3.12.*"
+
+# Remark: one can add these features to add support for lower/upper bounds of python
+# versions support in the CI
+# [feature.python-oldest.dependencies]
+# python = "3.10.*"
+
+# [feature.python-newest.dependencies]
+# python = "3.14.*"
+
+[activation]
+scripts = ["development/scripts/pixi/activation.sh"]
+
+[target.win-64.activation]
+scripts = ["development/scripts/pixi/activation.bat"]
+
+# There is no environment variable set by Pixi that store
+# current platform when running a Pixi task, so we have
+# to set it manually to PIXI_CURRENT_PLATFORM
+[target.linux-64.activation.env]
+PIXI_CURRENT_PLATFORM = "linux-64"
+[target.osx-64.activation.env]
+PIXI_CURRENT_PLATFORM = "osx-64"
+[target.osx-arm64.activation.env]
+PIXI_CURRENT_PLATFORM = "osx-arm64"
+[target.win-64.activation.env]
+PIXI_CURRENT_PLATFORM = "win-64"
+
+# Use clang on GNU/Linux
+[feature.clang]
+platforms = ["linux-64"]
+activation = { env = { CC = "clang", CXX = "clang++" } }
+dependencies = { clangxx = "*" }
+
+[feature.plugin-sofa-python3]
+dependencies = { numpy = ">=1.22.0", pybind11 = ">=2.3.0" }
+activation = { env = { SOFA_PLUGIN_PYTHON3_ARGS = "-DPLUGIN_SOFAPYTHON3=ON -DSOFA_FETCH_SOFAPYTHON3=ON -DPython_EXECUTABLE=$SOFA_PYTHON_EXECUTABLE -DPython_FIND_STRATEGY=LOCATION" } }
+
+# TODO : remove me
+[feature.qt-gui]
+activation = { env = { Qt5_DIR = "$CONDA_PREFIX/lib/cmake" } }
+dependencies = { qt-main = ">=5.15.0", ffmpeg = "*", libqglviewer = "*" }
+
+[feature.plugin-cuda.system-requirements]
+cuda = "12"
+[feature.plugin-cuda.target.linux]
+# XXX Adding nvvm/bin to PATH was required to compile, may be related to
+# https://github.com/conda-forge/cuda-nvcc-impl-feedstock/issues/9
+activation = { env = { PATH = "$CONDA_PREFIX/nvvm/bin:$PATH", SOFA_PLUGIN_SOFACUDA_ARGS = "-DPLUGIN_SOFACUDA=ON -DSOFACUDA_ENABLE_NATIVE_ARCHITECTURE=ON" } }
+dependencies = { cuda-version = "*", cuda-compiler = "*" }
+[feature.plugin-cuda.target.win]
+activation = { env = { SOFA_PLUGIN_SOFACUDA_ARGS = "-DPLUGIN_SOFACUDA=ON -DSOFACUDA_ENABLE_NATIVE_ARCHITECTURE=ON" } }
+dependencies = { cuda-version = "*", cuda-compiler = "*" }
+[feature.plugin-cuda.target.osx]
+activation = { env = { SOFA_PLUGIN_SOFACUDA_ARGS = "-DPLUGIN_SOFACUDA=OFF -DPLUGIN_BEAMADAPTER_CUDA=OFF -DPLUGIN_SOFADISTANCEGRID_CUDA=OFF -DPLUGIN_SOFASPHFLUID_CUDA=OFF -DPLUGIN_SOFTROBOTS_CUDA=OFF" } }
+
+# We still build CGAL plugin excepted on windows (linking is failing)
+[feature.plugin-cgal.target.unix]
+dependencies = { cgal-cpp = "*", gmp = "*" }
+[feature.plugin-cgal.target.win]
+activation = { env = { SOFA_PLUGIN_SOFACGAL_ARGS = "-DSOFA_FETCH_CGALPLUGIN=OFF -DPLUGIN_CGALPLUGIN=OFF" } }
+
+[feature.plugin-cimg]
+dependencies = { zstd = "*", libtiff = "*", libjpeg-turbo = "*", libpng = "*" }
+
+[feature.presets-defaultGUI]
+dependencies = { glew = "*", glfw = "*", nativefiledialog-extended = "*"}
+[feature.presets-defaultGUI.target.linux]
+dependencies = { libglu = "*", libgl-devel = "*" }
+
+# conda-deny is a tool that will be used to bundle licenses of conda installed packages
+[feature.build-release-package.dependencies]
+conda-deny = "*"
+[feature.build-release-package.activation]
+env = { SOFA_BUILD_RELEASE_PACKAGE_WITH_PIXI = "1" }
+[feature.build-release-package.tasks]
+configure-package = { cmd = [ "cmake",
+  "-G",
+  "Ninja",
+  "-B",
+  "$SOFA_BUILD_DIR",
+  "-S",
+  ".",
+  "-DCMAKE_BUILD_TYPE=MinSizeRel",
+  "-DCPACK_BINARY_IFW=OFF",
+  "-DCPACK_BINARY_BUNDLE=OFF",
+  "-DCPACK_BINARY_DEB=OFF",
+  "-DCPACK_BINARY_DRAGNDROP=OFF",
+  "-DCPACK_BINARY_FREEBSD=OFF",
+  "-DCPACK_BINARY_OSXX11=OFF",
+  "-DCPACK_BINARY_PACKAGEMAKER=OFF",
+  "-DCPACK_BINARY_PRODUCTBUILD=OFF",
+  "-DCPACK_BINARY_RPM=OFF",
+  "-DCPACK_BINARY_STGZ=OFF",
+  "-DCPACK_BINARY_TBZ2=OFF",
+  "-DCPACK_BINARY_TGZ=OFF",
+  "-DCPACK_BINARY_TXZ=OFF",
+  "-DCPACK_SOURCE_RPM=OFF",
+  "-DCPACK_SOURCE_TBZ2=OFF",
+  "-DCPACK_SOURCE_TGZ=OFF",
+  "-DCPACK_SOURCE_TXZ=OFF",
+  "-DCPACK_SOURCE_TZ=OFF",
+  "-DCPACK_GENERATOR=\"ZIP;NSIS\"",
+  "-DCPACK_BINARY_ZIP=ON",
+  "-DCPACK_BINARY_NSIS=ON",
+  "-DCMAKE_OSX_DEPLOYMENT_TARGET=10.15",
+  "-DCPACK_GENERATOR=ZIP",
+  "-DSOFA_BUILD_RELEASE_PACKAGE=ON",
+  "-DSOFA_USE_DEPENDENCY_PACK=OFF",
+  "--preset",
+  "full",
+  "$SOFA_PLUGIN_PYTHON3_ARGS",
+  "$SOFA_PLUGIN_SOFACUDA_ARGS",
+  "$SOFA_PLUGIN_SOFACGAL_ARGS" ] }
+
+build-package = { cmd = "cmake --build $SOFA_BUILD_DIR --target package", depends-on = ["configure-package"] }
+
+[feature.presets-conda-core.tasks]
+# XXX we should probably do not allow fetch dependencies for this preset
+configure = { cmd = [ "cmake",
+  "-G",
+  "Ninja",
+  "-B",
+  "$SOFA_BUILD_DIR",
+  "-S",
+  ".",
+  "-DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX",
+  "-DCMAKE_BUILD_TYPE=$SOFA_BUILD_TYPE",
+  "--preset",
+  "conda-core"] }
+
+[feature.presets-minimal.tasks]
+configure = { cmd = [ "cmake",
+  "-G",
+  "Ninja",
+  "-B",
+  "$SOFA_BUILD_DIR",
+  "-S",
+  ".",
+  "-DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX",
+  "-DCMAKE_BUILD_TYPE=$SOFA_BUILD_TYPE",
+  "--preset",
+  "minimal"] }
+
+[feature.presets-standard.tasks]
+configure = { cmd = [ "cmake",
+  "-G",
+  "Ninja",
+  "-B",
+  "$SOFA_BUILD_DIR",
+  "-S",
+  ".",
+  "-DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX",
+  "-DCMAKE_BUILD_TYPE=$SOFA_BUILD_TYPE",
+  "--preset",
+  "standard",
+  "$SOFA_PLUGIN_PYTHON3_ARGS"] }
+
+[feature.presets-supported-plugins.tasks]
+configure = { cmd = [ "cmake",
+  "-G",
+  "Ninja",
+  "-B",
+  "$SOFA_BUILD_DIR",
+  "-S",
+  ".",
+  "-DCMAKE_VERBOSE_MAKEFILE=ON",
+  "-DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX",
+  "-DCMAKE_BUILD_TYPE=$SOFA_BUILD_TYPE",
+  "--preset",
+  "supported-plugins",
+  "$SOFA_PLUGIN_PYTHON3_ARGS",
+  "$SOFA_PLUGIN_SOFACGAL_ARGS",
+  "$SOFA_PLUGIN_SOFACUDA_ARGS"] }
+
+[feature.presets-full.tasks]
+configure = { cmd = [ "cmake",
+  "-G",
+  "Ninja",
+  "-B",
+  "$SOFA_BUILD_DIR",
+  "-S",
+  ".",
+  "-DCMAKE_VERBOSE_MAKEFILE=ON",
+  "-DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX",
+  "-DCMAKE_BUILD_TYPE=$SOFA_BUILD_TYPE",
+  "-DPLUGIN_SOFACUDA=$SOFA_PLUGIN_SOFACUDA",
+  "-DSOFACUDA_ENABLE_NATIVE_ARCHITECTURE=ON",
+  "--preset",
+  "full",
+  "$SOFA_PLUGIN_PYTHON3_ARGS",
+  "$SOFA_PLUGIN_SOFACGAL_ARGS",
+  "$SOFA_PLUGIN_SOFACUDA_ARGS"] }
+
+[feature.presets-minimal-dev.tasks]
+configure = { cmd = [ "cmake",
+  "-G",
+  "Ninja",
+  "-B",
+  "$SOFA_BUILD_DIR",
+  "-S",
+  ".",
+  "-DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX",
+  "-DCMAKE_BUILD_TYPE=$SOFA_BUILD_TYPE",
+  "--preset",
+  "minimal-dev"] }
+
+[feature.presets-standard-dev.tasks]
+configure = { cmd = [ "cmake",
+  "-G",
+  "Ninja",
+  "-B",
+  "$SOFA_BUILD_DIR",
+  "-S",
+  ".",
+  "-DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX",
+  "-DCMAKE_BUILD_TYPE=$SOFA_BUILD_TYPE",
+  "--preset",
+  "standard-dev",
+  "$SOFA_PLUGIN_PYTHON3_ARGS"] }
+
+[feature.presets-supported-plugins-dev.tasks]
+configure = { cmd = [ "cmake",
+  "-G",
+  "Ninja",
+  "-B",
+  "$SOFA_BUILD_DIR",
+  "-S",
+  ".",
+  "-DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX",
+  "-DCMAKE_BUILD_TYPE=$SOFA_BUILD_TYPE",
+  "--preset",
+  "supported-plugins-dev",
+  "$SOFA_PLUGIN_PYTHON3_ARGS",
+  "$SOFA_PLUGIN_SOFACGAL_ARGS",
+  "$SOFA_PLUGIN_SOFACUDA_ARGS"] }
+
+[feature.presets-full-dev.tasks]
+configure = { cmd = [ "cmake",
+  "-G",
+  "Ninja",
+  "-B",
+  "$SOFA_BUILD_DIR",
+  "-S",
+  ".",
+  "-DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX",
+  "-DCMAKE_BUILD_TYPE=$SOFA_BUILD_TYPE",
+  "--preset",
+  "full-dev",
+  "$SOFA_PLUGIN_PYTHON3_ARGS",
+  "$SOFA_PLUGIN_SOFACGAL_ARGS",
+  "$SOFA_PLUGIN_SOFACUDA_ARGS"] }  
+
+[environments]
+default = { features = [
+  "presets-supported-plugins",
+  "plugin-sofa-python3",
+  "plugin-cgal",
+  "plugin-cuda",
+  "plugin-cimg",
+  "presets-defaultGUI",
+  "qt-gui",
+  "python-supported"] }
+conda-core = { features = ["presets-conda-core"] }
+minimal = { features = ["presets-minimal"] }
+minimal-dev = { features = ["presets-minimal-dev"] }
+standard = { features = [
+  "presets-standard",
+  "plugin-sofa-python3",
+  "presets-defaultGUI",
+  "python-supported"] }
+standard-clang = { features = [
+  "clang",
+  "presets-standard",
+  "plugin-sofa-python3",
+  "presets-defaultGUI",
+  "python-supported"] }
+standard-dev = { features = [
+  "presets-standard-dev",
+  "plugin-sofa-python3",
+  "presets-defaultGUI",
+  "python-supported"] }
+release-package = { features = [
+  "build-release-package",
+  "plugin-sofa-python3",
+  "plugin-cgal",
+  "plugin-cuda",
+  "plugin-cimg",
+  "presets-defaultGUI",
+  "qt-gui",
+  "python-supported"] }
+supported-plugins = { features = [
+  "presets-supported-plugins",
+  "plugin-sofa-python3",
+  "plugin-cgal",
+  "plugin-cuda",
+  "plugin-cimg",
+  "presets-defaultGUI",
+  "qt-gui",
+  "python-supported"]}
+supported-plugins-dev = { features = [
+  "presets-supported-plugins-dev",
+  "plugin-sofa-python3",
+  "plugin-cgal",
+  "plugin-cuda",
+  "plugin-cimg",
+  "presets-defaultGUI",
+  "qt-gui",
+  "python-supported"]}
+full = { features = [
+  "presets-full",
+  "plugin-sofa-python3",
+  "plugin-cgal",
+  "plugin-cuda",
+  "plugin-cimg",
+  "presets-defaultGUI",
+  "qt-gui",
+  "python-supported"]}
+full-dev = { features = [
+  "presets-full-dev",
+  "plugin-sofa-python3",
+  "plugin-cgal",
+  "plugin-cuda",
+  "plugin-cimg",
+  "presets-defaultGUI",
+  "qt-gui",
+  "python-supported"]}
