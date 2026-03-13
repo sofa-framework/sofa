@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<Node name="root" dt="0.01" gravity="0 -9 0">
+    <Node name="plugins">
+        <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+        <RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
+        <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->
+        <RequiredPlugin name="Sofa.Component.Topology.Mapping"/> <!-- Needed to use components [Hexa2PrismTopologicalMapping] -->
+        <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualMesh] -->
+    </Node>
+
+    <DefaultAnimationLoop/>
+
+    <Node name="grid">
+        <RegularGridTopology name="grid" min="-5 -5 0" max="5 5 40" n="5 5 20"/>
+        <MechanicalObject template="Vec3" name="state" position="@grid.position"/>
+
+        <Node name="prisms">
+            <MeshTopology name="prism_topology"/>
+            <Hexa2PrismTopologicalMapping input="@grid" output="@prism_topology" />
+            <VisualMesh position="@../state.position" topology="@prism_topology" enable="true"/>
+        </Node>
+
+    </Node>
+</Node>

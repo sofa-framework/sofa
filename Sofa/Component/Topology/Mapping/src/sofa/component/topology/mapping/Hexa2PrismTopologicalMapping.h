@@ -19,40 +19,27 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "CudaTypes.h"
+#pragma once
 
-#include <SofaValidation/ExtraMonitor.h>
-#include <SofaValidation/ExtraMonitor.inl>
-#include <SofaValidation/Monitor.inl>
+#include <sofa/core/topology/TopologicalMapping.h>
+#include <sofa/component/topology/mapping/config.h>
 
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/RigidTypes.h>
-
-namespace sofa::component::misc
+namespace sofa::component::topology::mapping
 {
 
-template class SOFA_GPU_CUDA_API ExtraMonitor<gpu::cuda::CudaRigid3fTypes>;
-template class SOFA_GPU_CUDA_API ExtraMonitor<gpu::cuda::CudaVec6fTypes>;
-#ifdef SOFA_GPU_CUDA_DOUBLE
-template class SOFA_GPU_CUDA_API ExtraMonitor<gpu::cuda::CudaRigid3dTypes>;
-template class SOFA_GPU_CUDA_API ExtraMonitor<gpu::cuda::CudaVec6dTypes>;
-#endif // SOFA_GPU_CUDA_DOUBLE
-
-}// namespace sofa::component::misc
-
-
-namespace sofa::gpu::cuda
+class SOFA_COMPONENT_TOPOLOGY_MAPPING_API Hexa2PrismTopologicalMapping : public sofa::core::topology::TopologicalMapping
 {
-    void registerExtraMonitor(sofa::core::ObjectFactory* factory)
-    {
-        factory->registerObjects(sofa::core::ObjectRegistrationData("Supports GPU-side computations using CUDA for the ExtraMonitor")
-        .add< component::misc::ExtraMonitor<CudaRigid3fTypes> >()
-        .add< component::misc::ExtraMonitor<CudaVec6fTypes> >()
-#ifdef SOFA_GPU_CUDA_DOUBLE
-        .add< component::misc::ExtraMonitor<CudaRigid3dTypes> >()
-        .add< component::misc::ExtraMonitor<CudaVec6dTypes> >()
-#endif // SOFA_GPU_CUDA_DOUBLE
-        );
-    }
+public:
+    SOFA_CLASS(Hexa2PrismTopologicalMapping, sofa::core::topology::TopologicalMapping);
 
-}// namespace sofa::gpu::cuda
+    virtual void init() override;
+    virtual Index getFromIndex(Index ind) override;
+    virtual void updateTopologicalMappingTopDown() override;
+
+protected:
+    Hexa2PrismTopologicalMapping();
+
+    void convertHexaToPrisms();
+};
+
+} // namespace sofa::component::topology::mapping

@@ -34,7 +34,7 @@
             <TetrahedronSetTopologyContainer name="Container"/>
             <TetrahedronSetTopologyModifier name="Modifier" />
             <TetrahedronSetGeometryAlgorithms template="Vec3" name="GeomAlgo" />
-            <Hexa2TetraTopologicalMapping name="default28" input="@../hexaGrid" output="@Container" printLog="0" />
+            <Hexa2TetraTopologicalMapping name="default28" input="@../hexaGrid" output="@Container" swapping="true"/>
 
             <TetrahedronHyperelasticityFEMForceField name="FEM" ParameterSet="1644295.30201342 33557.0469798658" materialName="StableNeoHookean"/>
         </Node>

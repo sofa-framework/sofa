@@ -85,13 +85,13 @@ public:
     virtual void moveChild(BaseNode::SPtr node) = 0;
 
     /// Add a generic object
-    virtual bool addObject(BaseObject::SPtr obj, TypeOfInsertion = TypeOfInsertion::AtEnd) = 0;
+    virtual bool addObject(sofa::core::objectmodel::BaseComponent::SPtr obj, TypeOfInsertion = TypeOfInsertion::AtEnd) = 0;
 
     /// Remove a generic object
-    virtual bool removeObject(BaseObject::SPtr obj) = 0;
+    virtual bool removeObject(sofa::core::objectmodel::BaseComponent::SPtr obj) = 0;
 
     /// Move an object from a node to another node
-    virtual void moveObject(BaseObject::SPtr obj) = 0;
+    virtual void moveObject(sofa::core::objectmodel::BaseComponent::SPtr obj) = 0;
 
     /// Test if the given node is a parent of this node.
     virtual bool hasParent(const BaseNode* node) const = 0;
@@ -134,10 +134,10 @@ private:
     /// @}
 protected:
     /// Set the context of an object to this
-    void setObjectContext(BaseObject::SPtr obj);
+    void setObjectContext(sofa::core::objectmodel::BaseComponent::SPtr obj);
 
     /// Reset the context of an object
-    void clearObjectContext(BaseObject::SPtr obj);
+    void clearObjectContext(sofa::core::objectmodel::BaseComponent::SPtr obj);
 
 
     /// @name virtual functions to add/remove special components directly in the right Sequence
