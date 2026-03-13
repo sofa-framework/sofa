@@ -16,8 +16,8 @@ jobs:
       - uses: actions/create-github-app-token@v1
         id: generate-token
         with:
-          app-id: ${{ secrets.APP_ID }}
-          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+          app-id: ${{ secrets.UPDATE_PIXI_APP_ID }}
+          private-key: ${{ secrets.UPDATE_PIXI_APP_PRIVATE_KEY }}
 
       - uses: actions/checkout@v4
         with:
