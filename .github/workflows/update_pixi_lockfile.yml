@@ -45,6 +45,11 @@ jobs:
           body-path: diff.md
           branch: topic/update-pixi
           base: master
-          labels: ["pixi", "pr: status to review", "pr: project-ci-infrastructure", "pr: fast merge", "topic for next dev-meeting"]
+          labels: |
+            pixi
+            pr: status to review
+            pr: project-ci-infrastructure
+            pr: fast merge
+            topic for next dev-meeting
           delete-branch: true
           add-paths: pixi.lock
