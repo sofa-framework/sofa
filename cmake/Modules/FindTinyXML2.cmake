@@ -27,10 +27,12 @@ else()
   endif()
 
   if(WIN32)
-    # possibly also add lib/{win32,win64} to path_suffixes for compat with the windeppack
+    # when using WinDepPack, dll are located alongside lib files (in lib/{win32,win64}),
+    # which have been set in CMAKE_LIBRARY_PATH
     find_file(TinyXML2_DLL
       NAMES tinyxml2.dll
       PATH_SUFFIXES bin
+      PATHS ${CMAKE_LIBRARY_PATH}
     )
   endif()
 
