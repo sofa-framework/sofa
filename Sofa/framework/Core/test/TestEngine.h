@@ -23,7 +23,7 @@
 #define SOFA_COMPONENT_ENGINE_TestEngine_H
 
 #include <sofa/core/DataEngine.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 
 namespace sofa
 {
