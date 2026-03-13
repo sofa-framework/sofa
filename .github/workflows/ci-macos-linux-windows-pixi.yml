@@ -2,7 +2,11 @@ name: CI - MacOS/Linux/Windows via Pixi
 
 on:
   push:
+    branches:
+      - master
   pull_request:
+    paths:
+      - 'pixi*'
   workflow_dispatch:
 
 concurrency:
