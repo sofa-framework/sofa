@@ -4,7 +4,7 @@ import os
 
 g_size = 10;
 
-def createScene(root_node, template):
+def internalCreateScene(root_node, template):
 
     size = int(os.getenv('s', g_size)) # read the value for size from the env, fallback to g_size if the env.var not set
 
