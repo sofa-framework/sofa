@@ -23,7 +23,7 @@
 #define TESTPLUGINA_COMPONENT_A_H
 
 #include <TestPluginA/TestPluginA.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 
 
 namespace sofa::test

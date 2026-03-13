@@ -22,7 +22,7 @@
 #include <sofa/simulation/common/xml/BaseMultiMappingElement.h>
 #include <sofa/core/BaseMapping.h>
 #include <sofa/core/BaseState.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/core/objectmodel/BaseNode.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/common/xml/NodeElement.h>

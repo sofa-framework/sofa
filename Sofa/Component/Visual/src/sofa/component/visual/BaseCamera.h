@@ -22,7 +22,7 @@
 #pragma once
 #include <sofa/component/visual/config.h>
 
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/type/Vec.h>
 #include <sofa/type/Ray.h>
 #include <sofa/type/Quat.h>

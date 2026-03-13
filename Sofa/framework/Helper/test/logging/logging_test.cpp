@@ -61,7 +61,7 @@ using sofa::helper::logging::MainPerComponentLoggingMessageHandler ;
 #include <sofa/core/logging/RichConsoleStyleMessageFormatter.h>
 using sofa::helper::logging::RichConsoleStyleMessageFormatter ;
 
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/core/ObjectFactory.h>
 
 //TODO(dmarchal): replace that with the LoggingMessageHandler

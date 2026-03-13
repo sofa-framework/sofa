@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/linearsystem/MappingGraph.h>
+#include <sofa/simulation/MappingGraph.h>
 
 #include <sofa/core/BaseMapping.h>
 #include <sofa/core/behavior/BaseForceField.h>
@@ -30,7 +30,7 @@
 #include <sofa/simulation/mechanicalvisitor/MechanicalAccumulateJacobian.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalResetConstraintVisitor.h>
 
-namespace sofa::component::linearsystem
+namespace sofa::simulation
 {
 
 core::objectmodel::BaseContext* MappingGraph::getRootNode() const
