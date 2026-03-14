@@ -84,16 +84,16 @@ void TriangleOctreeCollisionModel::computeBoundingTree(int maxDepth)
     updateFromTopology();
 
     if (!isMoving() && !cubeModel->empty()) return; // No need to recompute BBox if immobile
-    const std::size_t size2=m_mstate->getSize();
+    const std::size_t size2=mstate->getSize();
     pNorms.resize(size2);
     for(sofa::Size i=0; i<size2; i++)
     {
         pNorms[i]=type::Vec3(0,0,0);
     }
     type::Vec3 minElem, maxElem;
-    maxElem[0]=minElem[0]=m_mstate->read(core::vec_id::read_access::position)->getValue()[0][0];
-    maxElem[1]=minElem[1]=m_mstate->read(core::vec_id::read_access::position)->getValue()[0][1];
-    maxElem[2]=minElem[2]=m_mstate->read(core::vec_id::read_access::position)->getValue()[0][2];
+    maxElem[0]=minElem[0]=mstate->read(core::vec_id::read_access::position)->getValue()[0][0];
+    maxElem[1]=minElem[1]=mstate->read(core::vec_id::read_access::position)->getValue()[0][1];
+    maxElem[2]=minElem[2]=mstate->read(core::vec_id::read_access::position)->getValue()[0][2];
 
     cubeModel->resize(1);  // size = number of triangles
     for (std::size_t i=1; i<size; i++)

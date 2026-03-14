@@ -28,6 +28,8 @@
 #include <sofa/core/VecId.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/behavior/SingleStateAccessor.h>
+#include <sofa/core/behavior/TopologyAccessor.h>
 
 namespace sofa::component::collision::geometry
 {
@@ -102,10 +104,16 @@ using Triangle = TTriangle<sofa::defaulttype::Vec3Types>;
  * The class \sa TTriangle is used to access specific triangle of this collision Model.
  */
 template<class TDataTypes>
-class TriangleCollisionModel : public core::CollisionModel
+class TriangleCollisionModel :
+    public core::CollisionModel,
+    public virtual core::behavior::SingleStateAccessor<TDataTypes>,
+    public virtual core::behavior::TopologyAccessor
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(TriangleCollisionModel, TDataTypes), core::CollisionModel);
+    SOFA_CLASS3(SOFA_TEMPLATE(TriangleCollisionModel, TDataTypes),
+        core::CollisionModel,
+        core::behavior::SingleStateAccessor<TDataTypes>,
+        core::behavior::TopologyAccessor);
 
     typedef TDataTypes DataTypes;
     typedef DataTypes InDataTypes;
@@ -138,13 +146,10 @@ public:
     Data<bool> d_bothSide; ///< activate collision on both side of the triangle model
     Data<bool> d_computeNormals; ///< set to false to disable computation of triangles normal
     Data<bool> d_useCurvature; ///< use the curvature of the mesh to avoid some self-intersection test
-    
-    /// Link to be set to the topology container in the component graph.
-    SingleLink<TriangleCollisionModel<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
 protected:
-    core::behavior::MechanicalState<DataTypes>* m_mstate; ///< Pointer to the corresponding MechanicalState
-    sofa::core::topology::BaseMeshTopology* m_topology; ///< Pointer to the corresponding Topology
+    using sofa::core::behavior::SingleStateAccessor<TDataTypes>::mstate;
+    using sofa::core::behavior::TopologyAccessor::l_topology;
 
     VecDeriv m_normals; ///< Vector of normal direction per triangle.
 
@@ -185,8 +190,8 @@ public:
 
     bool canCollideWithElement(sofa::Index index, CollisionModel* model2, sofa::Index index2) override;
 
-    core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return m_mstate; }
-    const core::behavior::MechanicalState<DataTypes>* getMechanicalState() const { return m_mstate; }
+    core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return mstate; }
+    const core::behavior::MechanicalState<DataTypes>* getMechanicalState() const { return mstate; }
 
     const VecCoord& getX() const { return(getMechanicalState()->read(core::vec_id::read_access::position)->getValue()); }
     const sofa::core::topology::BaseMeshTopology::SeqTriangles& getTriangles() const { return *m_triangles; }
