@@ -24,9 +24,4 @@
 #include <sofa/simulation/Node.h>
 
 //header moved in the plugin SofaValidation
-SOFA_HEADER_DEPRECATED("v25.12", "v26.06", "'sofa/simulation/Node.h' instead of 'sofa/simulation/graph/DAGNode.h' and replace uses of DAGNode with Node")
-
-namespace sofa::simulation::graph
-{
-    using DAGNode = sofa::simulation::Node;
-} // namespace sofa::simulation::graph
+SOFA_HEADER_DISABLED("v25.12", "v26.06", "'sofa/simulation/Node.h' instead of 'sofa/simulation/Node.h' and replace uses of DAGNode with Node")

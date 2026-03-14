@@ -47,7 +47,7 @@
 
 #include <sofa/core/objectmodel/Context.h>
 #include <sofa/simulation/Node.h>
-#include <SofaSimulationGraph/DAGNode.h>
+#include <sofa/simulation/Node.h>
 #include <sofa/simulation/Simulation.h>
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <SofaSimulationGraph/init.h>
@@ -62,7 +62,7 @@
 using namespace sofa::defaulttype;
 
 using sofa::simulation::Node;
-using sofa::simulation::graph::DAGNode;
+using sofa::simulation::Node;
 using sofa::helper::system::DataRepository;
 
 
