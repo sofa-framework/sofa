@@ -29,7 +29,8 @@ std::map<std::string, Deprecated, std::less<> > deprecatedComponents = {
     {"RayTraceDetection", Deprecated("v21.06", "v21.12")},
     {"BruteForceDetection", Deprecated("v21.06", "v21.12")},
     {"DirectSAP", Deprecated("v21.06", "v21.12")},
-    {"RigidRigidMapping", Deprecated("v23.06", "v23.12", "You can use the component RigidMapping with template='Rigid3,Rigid3' instead.")},
+    {"RigidRigidMapping", Deprecated("v23.06", "v23.12", "You can use the component RigidMapping with template='Rigid3,Rigid3' instead")},
+    {"UniformVelocityDampingForceField", Deprecated("v26.06", "v26.12", "You can use the NodalLinearDampingForceField instead")},
     {"ConstraintAnimationLoop", Deprecated("v26.06", "v26.12", "Use FreeMotionAnimationLoop instead.")},
 };
 
@@ -767,7 +768,8 @@ std::map< std::string, Renamed, std::less<> > renamedComponents = {
     {"ParallelStiffSpringForceField", Renamed("v24.06","v25.06","ParallelSpringForceField")},
     {"ShewchukPCGLinearSolver", Renamed("v24.12","v25.12","PCGLinearSolver")},
     {"OglCylinderModel", Renamed("v24.12", "v25.06", "CylinderVisualModel")},
-    {"TriangleOctreeModel", Renamed("v25.12", "v26.06", "TriangleOctreeCollisionModel") }
+    {"DiagonalVelocityDampingForceField", Renamed("v26.06","v26.12","NodalLinearDampingForceField")},
+    {"TriangleOctreeModel", Renamed("v25.12", "v26.06", "TriangleOctreeCollisionModel") },
 };
 
 

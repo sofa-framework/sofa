@@ -119,7 +119,7 @@ def createScene(node):
     angularNode.createObject('CGLinearSolver',name = 'numsolver',tolerance=1e-10,threshold=1e-10,iterations=1000)
     angularNode.createObject('MechanicalObject', template="Rigid", name="dofs", position="0 0 0 0 0 0 1", velocity="0 0 0 "+str(INITIAL_VELOCITY)+" 0 0")
     angularNode.createObject('UniformMass', filename=rigidFilename)
-    angularNode.createObject('UniformVelocityDampingForceField', dampingCoefficient=DAMPING_COEF)
+    angularNode.createObject('NodalLinearDampingForceField', dampingCoefficient=DAMPING_COEF)
     #angularNode.createObject('PartialFixedProjectiveConstraint', indices='0', fixedDirections="1 1 1 0 1 1")
 
 
@@ -129,7 +129,7 @@ def createScene(node):
     translationNode.createObject('CGLinearSolver',name = 'numsolver',tolerance=1e-10,threshold=1e-10,iterations=1000)
     translationNode.createObject('MechanicalObject', template="Rigid", name="dofs", position="0 0 0 0 0 0 1", velocity=str(INITIAL_VELOCITY)+" 0 0  0 0 0")
     translationNode.createObject('UniformMass', filename=rigidFilename)
-    translationNode.createObject('UniformVelocityDampingForceField', dampingCoefficient=DAMPING_COEF)
+    translationNode.createObject('NodalLinearDampingForceField', dampingCoefficient=DAMPING_COEF)
     #translationNode.createObject('PartialFixedProjectiveConstraint', indices='0', fixedDirections="0 1 1 1 1 1")
 
 
