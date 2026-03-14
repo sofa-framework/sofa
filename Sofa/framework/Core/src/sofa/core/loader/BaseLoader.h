@@ -35,8 +35,33 @@ public:
     SOFA_ABSTRACT_CLASS(BaseLoader, objectmodel::BaseObject);
     SOFA_BASE_CAST_IMPLEMENTATION(BaseLoader)
 
-    virtual bool load() = 0;
-    virtual bool canLoad() ;
+    /**
+     * !!! WARNING since v25.12 !!! 
+     * 
+     * The template method pattern has been applied to this part of the API. 
+     * This method calls the newly introduced method "doFunctionName" internally,
+     * which is the method to override from now on.
+     * 
+     **/
+    virtual bool load() final
+    {
+        //TODO (SPRINT SED 2025): Component state mechanism
+        return this->doLoad(); 
+    }
+
+    /**
+     * !!! WARNING since v25.12 !!! 
+     * 
+     * The template method pattern has been applied to this part of the API. 
+     * This method calls the newly introduced method "doFunctionName" internally,
+     * which is the method to override from now on.
+     * 
+     **/
+    virtual bool canLoad() final
+    {
+        //TODO (SPRINT SED 2025): Component state mechanism
+        return this->doCanLoad(); 
+    }
 
     void parse(objectmodel::BaseObjectDescription *arg) override ;
 
@@ -51,6 +76,9 @@ protected:
 
     static void skipToEOL(FILE* f) ;
     static bool readLine(char* buf, int size, FILE* f) ;
+
+    virtual bool doLoad() = 0;
+    virtual bool doCanLoad() ;
 };
 
 } /// namespace sofa::core::loader

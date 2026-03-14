@@ -240,24 +240,17 @@ void MeshLoader::reinit()
     updateMesh();
 }
 
-bool MeshLoader::load()
+bool MeshLoader::doLoad()
 {
     // Clear previously loaded buffers
     clearBuffers();
 
-    const bool loaded = doLoad();
+    const bool loaded = doLoadMesh();
 
     // Clear (potentially) partially filled buffers
     if (!loaded)
         clearBuffers();
     return loaded;
-}
-
-
-
-bool MeshLoader::canLoad()
-{
-    return BaseLoader::canLoad();
 }
 
 void MeshLoader::updateMesh()
