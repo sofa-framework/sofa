@@ -136,13 +136,13 @@ void IdentityMapping<TIn, TOut>::handleTopologyChange()
 }
 
 template <class TIn, class TOut>
-const sofa::linearalgebra::BaseMatrix* IdentityMapping<TIn, TOut>::getJ()
+const sofa::linearalgebra::BaseMatrix* IdentityMapping<TIn, TOut>::doGetJ()
 {
     return &J;
 }
 
 template <class TIn, class TOut>
-const typename IdentityMapping<TIn, TOut>::js_type* IdentityMapping<TIn, TOut>::getJs()
+const typename IdentityMapping<TIn, TOut>::js_type* IdentityMapping<TIn, TOut>::doGetJs()
 {
     return &Js;
 }
