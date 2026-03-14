@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,19 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#define SOFACUDA_CUDACONTACTMAPPER_CPP
 
-#include <sofa/config.h>
-#include <sofa/config/sharedlibrary_defines.h>
+#include <SofaCUDA/component/collision/response/mapper/CudaContactMapper.h>
 
-#ifdef SOFA_BUILD_SOFACUDA
-#  define SOFACUDA_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFACUDA_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-
-namespace sofacuda
+namespace sofa::component::collision
 {
-	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
-	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
-} // namespace sofacuda
+
+template class SOFACUDA_COMPONENT_API response::mapper::ContactMapper<sofa::gpu::cuda::CudaPointCollisionModel, CudaVec3fTypes>;
+template class SOFACUDA_COMPONENT_API response::mapper::ContactMapper<sofa::gpu::cuda::CudaSphereCollisionModel, CudaVec3fTypes>;
+
+}

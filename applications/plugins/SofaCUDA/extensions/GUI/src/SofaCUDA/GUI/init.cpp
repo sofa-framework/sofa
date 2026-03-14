@@ -1,6 +1,6 @@
 /******************************************************************************
-*                 SOFA, Simulation Open-Framework Architecture                *
-*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
+*                              BeamAdapter plugin                             *
+*                  (c) 2006 Inria, University of Lille, CNRS                  *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -15,31 +15,57 @@
 * You should have received a copy of the GNU Lesser General Public License    *
 * along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+* Authors: see Authors.md                                                     *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaCUDA/init.h>
+#include <SofaCUDA/GUI/init.h>
 
-#include <SofaCUDA/core/init.h>
-#include <SofaCUDA/component/init.h>
-
-#include <sofa/helper/system/PluginManager.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/helper/system/PluginManager.h>
 
-namespace sofacuda
+
+namespace sofa::gpu::cuda
+{
+
+extern void registerMouseInteractor(sofa::core::ObjectFactory* factory);
+
+}
+
+namespace sofa::gpu::cuda::gui
 {
 
 extern "C" {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleVersion();
-    SOFA_EXPORT_DYNAMIC_LIBRARY void registerObjects(sofa::core::ObjectFactory* factory);
+    SOFACUDA_GUI_API void initExternalModule();
+    SOFACUDA_GUI_API const char* getModuleLicense();
+    SOFACUDA_GUI_API const char* getModuleName();
+    SOFACUDA_GUI_API const char* getModuleVersion();
+    SOFACUDA_GUI_API const char* getModuleDescription();
+    SOFACUDA_GUI_API void registerObjects(sofa::core::ObjectFactory* factory);
 }
+
+void init()
+{
+    static bool first = true;
+    if (first)
+    {
+        // make sure that this plugin is registered into the PluginManager
+        sofa::helper::system::PluginManager::getInstance().registerPlugin(MODULE_NAME);
+        
+        first = false;
+    }
+}
+
+//Here are just several convenient functions to help user to know what contains the plugin
 
 void initExternalModule()
 {
     init();
+}
+
+const char* getModuleLicense()
+{
+    return "LGPL";
 }
 
 const char* getModuleName()
@@ -52,38 +78,14 @@ const char* getModuleVersion()
     return MODULE_VERSION;
 }
 
+const char* getModuleDescription()
+{
+    return "OpenGL extension of the SofaCUDA plugin.";
+}
+
 void registerObjects(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjectsFromPlugin("SofaCUDA.Core");
-    factory->registerObjectsFromPlugin("SofaCUDA.Component");
+    sofa::gpu::cuda::registerMouseInteractor(factory);
 }
 
-void init()
-{
-    static bool first = true;
-    if (first)
-    {
-        // force dependencies at compile-time
-        sofacuda::core::init();
-        sofacuda::component::init();
-
-        // make sure that this plugin is registered into the PluginManager
-        sofa::helper::system::PluginManager::getInstance().registerPlugin(MODULE_NAME);
-
-        first = false;
-    }
-}
-
-} // namespace sofacuda
-
-// compat
-namespace sofa::gpu::cuda
-{
-
-void init()
-{
-    msg_warning("SofaCUDA") << "You must now call sofacuda::init() instead of sofa::gpu::cuda::init()";
-    sofacuda::init();
-}
-
-} // sofa::gpu::cuda
+} // namespace sofa::gpu::cuda::gl

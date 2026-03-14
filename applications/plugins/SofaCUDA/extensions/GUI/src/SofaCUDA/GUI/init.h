@@ -1,6 +1,6 @@
 /******************************************************************************
-*                 SOFA, Simulation Open-Framework Architecture                *
-*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
+*                              BeamAdapter plugin                             *
+*                  (c) 2006 Inria, University of Lille, CNRS                  *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -15,23 +15,16 @@
 * You should have received a copy of the GNU Lesser General Public License    *
 * along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+* Authors: see Authors.md                                                     *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
+#include <SofaCUDA/GUI/config.h>
 
-#include <sofa/config.h>
-#include <sofa/config/sharedlibrary_defines.h>
-
-#ifdef SOFA_BUILD_SOFACUDA
-#  define SOFACUDA_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFACUDA_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-
-namespace sofacuda
+namespace sofa::gpu::cuda::gui
 {
-	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
-	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
-} // namespace sofacuda
+
+void SOFACUDA_GUI_API init();
+
+} // namespace sofa::gpu::cuda::gui
