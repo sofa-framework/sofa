@@ -76,6 +76,7 @@ constexpr auto toTensorIndices<2>(std::size_t voigtIndex)
 template<>
 constexpr auto toTensorIndices<1>(std::size_t voigtIndex)
 {
+    SOFA_UNUSED(voigtIndex);
     return std::make_pair(0, 0);
 }
 
