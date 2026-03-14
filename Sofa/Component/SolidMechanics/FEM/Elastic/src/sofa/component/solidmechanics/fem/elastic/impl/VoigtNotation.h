@@ -28,6 +28,21 @@
 namespace sofa::component::solidmechanics::fem::elastic
 {
 
+constexpr std::array voigt3d {
+    std::make_pair(0, 0),
+    std::make_pair(1, 1),
+    std::make_pair(2, 2),
+    std::make_pair(1, 2),
+    std::make_pair(0, 2),
+    std::make_pair(0, 1)
+};
+
+constexpr std::array voigt2d {
+    std::make_pair(0, 0),
+    std::make_pair(1, 1),
+    std::make_pair(0, 1)
+};
+
 /**
  * Converts a Voigt index to the corresponding tensor indices (i, j) for a symmetric tensor.
  *
@@ -43,41 +58,23 @@ namespace sofa::component::solidmechanics::fem::elastic
 template<std::size_t spatial_dimensions>
 constexpr auto toTensorIndices(std::size_t voigtIndex)
 {
-    static_assert(false, "dimension not supported");
-}
-
-template<>
-constexpr auto toTensorIndices<3>(std::size_t voigtIndex)
-{
-    constexpr std::array voigt3d {
-        std::make_pair(0, 0),
-        std::make_pair(1, 1),
-        std::make_pair(2, 2),
-        std::make_pair(1, 2),
-        std::make_pair(0, 2),
-        std::make_pair(0, 1)
-    };
-    assert(voigtIndex < voigt3d.size());
-    return voigt3d[voigtIndex];
-}
-
-template<>
-constexpr auto toTensorIndices<2>(std::size_t voigtIndex)
-{
-    constexpr std::array voigt2d {
-        std::make_pair(0, 0),
-        std::make_pair(1, 1),
-        std::make_pair(0, 1)
-    };
-    assert(voigtIndex < voigt2d.size());
-    return voigt2d[voigtIndex];
-}
-
-template<>
-constexpr auto toTensorIndices<1>(std::size_t voigtIndex)
-{
-    SOFA_UNUSED(voigtIndex);
-    return std::make_pair(0, 0);
+    if constexpr (spatial_dimensions == 3)
+    {
+        return voigt3d[voigtIndex];
+    }
+    else if constexpr (spatial_dimensions == 2)
+    {
+        return voigt2d[voigtIndex];
+    }
+    else if constexpr (spatial_dimensions == 1)
+    {
+        SOFA_UNUSED(voigtIndex);
+        return std::make_pair(0, 0);
+    }
+    else
+    {
+        static_assert(false, "dimension not supported");
+    }
 }
 
 template<class DataTypes>
