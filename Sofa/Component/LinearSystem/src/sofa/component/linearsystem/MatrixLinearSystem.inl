@@ -239,7 +239,7 @@ inline sofa::type::vector<core::behavior::BaseMechanicalState*> retrieveAssociat
 
 inline sofa::type::vector<core::behavior::BaseMechanicalState*> retrieveAssociatedMechanicalState(BaseMapping* component)
 {
-    type::vector<BaseMechanicalState*> mstates = component->getMechFrom();
+    type::vector<core::behavior::BaseMechanicalState*> mstates = component->getMechFrom();
 
     //remove duplicates: it may happen for MultiMappings
     std::sort( mstates.begin(), mstates.end() );
