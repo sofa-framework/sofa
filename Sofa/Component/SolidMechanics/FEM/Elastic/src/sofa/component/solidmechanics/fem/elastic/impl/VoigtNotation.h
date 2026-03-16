@@ -77,12 +77,6 @@ constexpr auto toTensorIndices(std::size_t voigtIndex)
     }
 }
 
-template<class DataTypes>
-constexpr auto toTensorIndices(std::size_t voigtIndex)
-{
-    return toTensorIndices<DataTypes::spatial_dimensions>(voigtIndex);
-}
-
 /**
  * Converts tensor indices (i, j) to the corresponding Voigt index for a symmetric tensor.
  *

@@ -70,10 +70,10 @@ public:
 
         for (sofa::Size a = 0; a < NumberOfIndependentElements; ++a)
         {
-            const auto [i, j] = toTensorIndices<DataTypes>(a);
+            const auto [i, j] = toTensorIndices<spatial_dimensions>(a);
             for (sofa::Size b = a; b < NumberOfIndependentElements; ++b) // the Voigt representation is symmetric, that is why b starts at a
             {
-                const auto [k, l] = toTensorIndices<DataTypes>(b);
+                const auto [k, l] = toTensorIndices<spatial_dimensions>(b);
                 m_matrix(a, b) = callable(i, j, k, l);
             }
         }
