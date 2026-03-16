@@ -55,7 +55,7 @@ template<class DataType>
 struct IsotropicElasticityTensor
 {
     static constexpr auto spatial_dimensions = DataType::spatial_dimensions;
-    static constexpr auto NbIndependentElements = symmetric_tensor::NumberOfIndependentElements<spatial_dimensions>;
+    static constexpr auto NbIndependentElements = sofa::type::NumberOfIndependentElements<spatial_dimensions>;
 
     explicit IsotropicElasticityTensor(const sofa::type::Mat<NbIndependentElements, NbIndependentElements, sofa::Real_t<DataType>>& mat) : C(mat) {}
     IsotropicElasticityTensor() = default;
