@@ -85,7 +85,7 @@ private:
 template<sofa::Size L, sofa::Size C, typename ValueType>
 sofa::type::Vec<L, ValueType> operator*(const sofa::type::Mat<L, C, ValueType>& mat, const VecView<C, ValueType>& vec)
 {
-    sofa::type::Vec<L, ValueType> res(sofa::type::NOINIT);
+    sofa::type::Vec<L, ValueType> res;
 
     for (sofa::Size i = 0; i < L; ++i)
     {
