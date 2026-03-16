@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/core/trait/DataTypes.h>
-#include <sofa/component/solidmechanics/fem/elastic/impl/FullySymmetric4Tensor.h>
+#include <sofa/type/FullySymmetric4Tensor.h>
 #include <sofa/component/solidmechanics/fem/elastic/impl/KroneckerDelta.h>
 
 namespace sofa::component::solidmechanics::fem::elastic
@@ -44,7 +44,7 @@ auto makeIsotropicElasticityTensor(sofa::Real_t<DataTypes> mu, sofa::Real_t<Data
 {
     using Real = sofa::Real_t<DataTypes>;
 
-    return FullySymmetric4Tensor<DataTypes::spatial_dimensions, Real>{
+    return sofa::type::FullySymmetric4Tensor<DataTypes::spatial_dimensions, Real>{
         [mu, lambda](sofa::Index i, sofa::Index j, sofa::Index k, sofa::Index l)
         {
             return mu * (kroneckerDelta<Real>(i, k) * kroneckerDelta<Real>(j, l) + kroneckerDelta<Real>(i, l) * kroneckerDelta<Real>(j, k)) +
@@ -92,7 +92,7 @@ struct OrthotropicElasticityTensor
         C = mat;
     }
 
-    void set(const FullySymmetric4Tensor<D, Real>& tensor)
+    void set(const sofa::type::FullySymmetric4Tensor<D, Real>& tensor)
     {
         C = tensor.toVoigtMatSym().toMat();
     }

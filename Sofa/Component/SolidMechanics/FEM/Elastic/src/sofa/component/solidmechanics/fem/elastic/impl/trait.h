@@ -23,7 +23,7 @@
 
 #include <sofa/component/solidmechanics/fem/elastic/finiteelement/FiniteElement.h>
 #include <sofa/component/solidmechanics/fem/elastic/impl/ElementStiffnessMatrix.h>
-#include <sofa/component/solidmechanics/fem/elastic/impl/FullySymmetric4Tensor.h>
+#include <sofa/type/FullySymmetric4Tensor.h>
 #include <sofa/core/trait/DataTypes.h>
 
 namespace sofa::component::solidmechanics::fem::elastic
@@ -51,7 +51,7 @@ struct trait
     static constexpr sofa::Size NbQuadraturePoints = FiniteElement::quadraturePoints().size();
 
     /// type of 2nd-order tensor for the elasticity tensor for isotropic materials
-    using ElasticityTensor = FullySymmetric4Tensor<DataTypes::spatial_dimensions, Real>;
+    using ElasticityTensor = sofa::type::FullySymmetric4Tensor<DataTypes::spatial_dimensions, Real>;
 
     /// the type of B in e = B d, if e is the strain, and d is the displacement
     using StrainDisplacement = sofa::component::solidmechanics::fem::elastic::StrainDisplacement<DataTypes, ElementType>;

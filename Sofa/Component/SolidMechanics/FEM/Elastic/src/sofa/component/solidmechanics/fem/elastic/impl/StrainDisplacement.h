@@ -22,7 +22,7 @@
 #pragma once
 #include <sofa/core/trait/DataTypes.h>
 #include <sofa/type/MatSym.h>
-#include <sofa/component/solidmechanics/fem/elastic/impl/VoigtNotation.h>
+#include <sofa/type/VoigtNotation.h>
 
 namespace sofa::component::solidmechanics::fem::elastic
 {
@@ -54,7 +54,7 @@ strainDisplacementVectorProduct(
 
     for (std::size_t voigtIndex = 0; voigtIndex < StrainDisplacement::nbLines; ++voigtIndex)
     {
-        const auto [i, j] = toTensorIndices<spatial_dimensions>(voigtIndex);
+        const auto [i, j] = sofa::type::toTensorIndices<spatial_dimensions>(voigtIndex);
 
         if (i == j)
         {
@@ -104,7 +104,7 @@ strainDisplacementTransposedVectorProduct(
     {
         for (std::size_t voigtIndex = 0; voigtIndex < StrainDisplacement::nbLines; ++voigtIndex)
         {
-            const auto [i, j] = toTensorIndices<spatial_dimensions>(voigtIndex);
+            const auto [i, j] = sofa::type::toTensorIndices<spatial_dimensions>(voigtIndex);
 
             product[ne * spatial_dimensions + i] +=
                 B(voigtIndex, ne * spatial_dimensions + i) * v[voigtIndex];
@@ -232,7 +232,7 @@ StrainDisplacement<DataTypes, ElementType> makeStrainDisplacement(
 
     for (std::size_t voigtIndex = 0; voigtIndex < nbVoigtIndices; ++voigtIndex)
     {
-        const auto [i, j] = toTensorIndices<spatial_dimensions>(voigtIndex);
+        const auto [i, j] = sofa::type::toTensorIndices<spatial_dimensions>(voigtIndex);
         for (sofa::Size ne = 0; ne < NumberOfNodesInElement; ++ne)
         {
             B(voigtIndex, ne * spatial_dimensions + i) = gradientShapeFunctions[ne][j];

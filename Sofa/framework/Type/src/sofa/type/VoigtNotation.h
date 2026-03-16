@@ -21,11 +21,10 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/type/MatSym.h>
 #include <array>
 
-namespace sofa::component::solidmechanics::fem::elastic
+namespace sofa::type
 {
 
 constexpr std::array voigt3d {
