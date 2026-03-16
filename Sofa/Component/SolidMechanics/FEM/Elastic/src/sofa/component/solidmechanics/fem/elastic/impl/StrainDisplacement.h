@@ -234,7 +234,7 @@ StrainDisplacement<DataTypes, ElementType> makeStrainDisplacement(
 
     for (std::size_t voigtIndex = 0; voigtIndex < nbVoigtIndices; ++voigtIndex)
     {
-        const auto [i, j] = toTensorIndices<DataTypes>(voigtIndex);
+        const auto [i, j] = toTensorIndices<spatial_dimensions>(voigtIndex);
         for (sofa::Size ne = 0; ne < NumberOfNodesInElement; ++ne)
         {
             B(voigtIndex, ne * spatial_dimensions + i) = gradientShapeFunctions[ne][j];
