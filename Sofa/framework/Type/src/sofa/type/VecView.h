@@ -23,7 +23,7 @@
 
 #include <sofa/type/Vec.h>
 
-namespace sofa::component::solidmechanics::fem::elastic
+namespace sofa::type
 {
 
 template<sofa::Size N, typename ValueType>

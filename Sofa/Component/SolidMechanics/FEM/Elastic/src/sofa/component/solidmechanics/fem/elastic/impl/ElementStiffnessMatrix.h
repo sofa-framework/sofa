@@ -172,7 +172,7 @@ FactorizedElementStiffness<DataTypes, ElementType, matrixVectorProductType> inte
 
         const auto detJ = sofa::type::absGeneralizedDeterminant(jacobian);
         const sofa::type::Mat<TopologicalDimension, spatial_dimensions, Real> J_inv =
-            sofa::component::solidmechanics::fem::elastic::inverse(jacobian);
+            sofa::type::inverse(jacobian);
 
         // gradient of the shape functions in the physical element evaluated at the quadrature point
         sofa::type::Mat<NumberOfNodesInElement, spatial_dimensions, Real> dN_dq(sofa::type::NOINIT);

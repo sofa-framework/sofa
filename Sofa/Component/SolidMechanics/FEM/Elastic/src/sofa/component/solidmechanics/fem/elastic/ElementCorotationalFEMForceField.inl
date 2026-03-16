@@ -108,7 +108,7 @@ void ElementCorotationalFEMForceField<DataTypes, ElementType>::computeElementsFo
         typename trait::ElementDisplacement displacement(sofa::type::NOINIT);
         for (sofa::Size j = 0; j < trait::NumberOfNodesInElement; ++j)
         {
-            VecView<trait::spatial_dimensions, sofa::Real_t<DataTypes>> transformedDisplacement(displacement, j * trait::spatial_dimensions);
+            sofa::type::VecView<trait::spatial_dimensions, sofa::Real_t<DataTypes>> transformedDisplacement(displacement, j * trait::spatial_dimensions);
             transformedDisplacement = elementRotation.multTranspose(elementNodesCoordinates[j] - t) - (restElementNodesCoordinates[j] - t0);
         }
 
@@ -119,7 +119,7 @@ void ElementCorotationalFEMForceField<DataTypes, ElementType>::computeElementsFo
 
         for (sofa::Size i = 0; i < trait::NumberOfNodesInElement; ++i)
         {
-            VecView<trait::spatial_dimensions, sofa::Real_t<DataTypes>> nodeForce(elementForce, i * trait::spatial_dimensions);
+            sofa::type::VecView<trait::spatial_dimensions, sofa::Real_t<DataTypes>> nodeForce(elementForce, i * trait::spatial_dimensions);
             nodeForce = elementRotation * nodeForce;
         }
     }
@@ -146,7 +146,7 @@ void ElementCorotationalFEMForceField<DataTypes, ElementType>::computeElementsFo
 
         for (sofa::Size n = 0; n < trait::NumberOfNodesInElement; ++n)
         {
-            VecView<trait::spatial_dimensions, sofa::Real_t<DataTypes>> rotated_dx(element_dx, n * trait::spatial_dimensions);
+            sofa::type::VecView<trait::spatial_dimensions, sofa::Real_t<DataTypes>> rotated_dx(element_dx, n * trait::spatial_dimensions);
             rotated_dx = elementRotation.multTranspose(nodeDx[element[n]]);
         }
 
@@ -157,7 +157,7 @@ void ElementCorotationalFEMForceField<DataTypes, ElementType>::computeElementsFo
 
         for (sofa::Size n = 0; n < trait::NumberOfNodesInElement; ++n)
         {
-            VecView<trait::spatial_dimensions, sofa::Real_t<DataTypes>> nodedForce(df, n * trait::spatial_dimensions);
+            sofa::type::VecView<trait::spatial_dimensions, sofa::Real_t<DataTypes>> nodedForce(df, n * trait::spatial_dimensions);
             nodedForce = elementRotation * nodedForce;
         }
     }
