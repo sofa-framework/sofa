@@ -78,43 +78,43 @@ constexpr sofa::type::Vec<6, real> isotropicElasticityTensorProduct(const sofa::
     return result;
 }
 
-template<class DataType>
+template <std::size_t D, class real>
 struct IsotropicElasticityTensor
 {
-    static constexpr auto spatial_dimensions = DataType::spatial_dimensions;
-    static constexpr auto NbIndependentElements = sofa::type::NumberOfIndependentElements<spatial_dimensions>;
+    using Real = real;
+    static constexpr auto NbIndependentElements = sofa::type::NumberOfIndependentElements<D>;
 
-    explicit IsotropicElasticityTensor(const sofa::type::Mat<NbIndependentElements, NbIndependentElements, sofa::Real_t<DataType>>& mat) : C(mat) {}
+    explicit IsotropicElasticityTensor(const sofa::type::Mat<NbIndependentElements, NbIndependentElements, Real>& mat) : C(mat) {}
     IsotropicElasticityTensor() = default;
 
-    sofa::type::Vec<NbIndependentElements, sofa::Real_t<DataType>> operator*(const sofa::type::Vec<NbIndependentElements, sofa::Real_t<DataType>>& v) const
+    sofa::type::Vec<NbIndependentElements, Real> operator*(const sofa::type::Vec<NbIndependentElements, Real>& v) const
     {
         return isotropicElasticityTensorProduct(C, v);
     }
 
     template<sofa::Size nbColumns>
-    sofa::type::Mat<NbIndependentElements, nbColumns, sofa::Real_t<DataType>> operator*(const sofa::type::Mat<NbIndependentElements, nbColumns, sofa::Real_t<DataType>>& v) const noexcept
+    sofa::type::Mat<NbIndependentElements, nbColumns, Real> operator*(const sofa::type::Mat<NbIndependentElements, nbColumns, Real>& v) const noexcept
     {
         return C * v;
     }
 
-    sofa::Real_t<DataType> operator()(sofa::Size i, sofa::Size j) const
+    Real operator()(sofa::Size i, sofa::Size j) const
     {
         return C(i, j);
     }
 
-    sofa::Real_t<DataType>& operator()(sofa::Size i, sofa::Size j)
+    Real& operator()(sofa::Size i, sofa::Size j)
     {
         return C(i, j);
     }
 
-    const sofa::type::Mat<NbIndependentElements, NbIndependentElements, sofa::Real_t<DataType>>& toMat() const
+    const sofa::type::Mat<NbIndependentElements, NbIndependentElements, Real>& toMat() const
     {
         return C;
     }
 
 private:
-    sofa::type::Mat<NbIndependentElements, NbIndependentElements, sofa::Real_t<DataType>> C;
+    sofa::type::Mat<NbIndependentElements, NbIndependentElements, Real> C;
 
 };
 
