@@ -21,14 +21,13 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/solidmechanics/fem/elastic/impl/VoigtNotation.h>
-#include <sofa/core/trait/DataTypes.h>
+#include <sofa/type/VoigtNotation.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
 #include <sofa/type/MatSym.h>
 
 #include <iomanip>
 
-namespace sofa::component::solidmechanics::fem::elastic
+namespace sofa::type
 {
 
 /**

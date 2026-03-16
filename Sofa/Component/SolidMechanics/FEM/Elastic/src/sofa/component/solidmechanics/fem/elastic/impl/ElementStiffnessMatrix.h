@@ -22,7 +22,7 @@
 #pragma once
 
 #include <sofa/component/solidmechanics/fem/elastic/finiteelement/FiniteElement.h>
-#include <sofa/component/solidmechanics/fem/elastic/impl/FullySymmetric4Tensor.h>
+#include <sofa/type/FullySymmetric4Tensor.h>
 #include <sofa/component/solidmechanics/fem/elastic/impl/OrthotropicElasticityTensor.h>
 #include <sofa/component/solidmechanics/fem/elastic/impl/StrainDisplacement.h>
 #include <sofa/type/Mat.h>
@@ -84,7 +84,7 @@ public:
     const OrthotropicElasticityTensor<DataTypes::spatial_dimensions, sofa::Real_t<DataTypes>>& getElasticityTensor() const { return elasticityTensor; }
 
     void setElasticityTensor(
-        const FullySymmetric4Tensor<DataTypes::spatial_dimensions, sofa::Real_t<DataTypes>>& elasticityTensor_)
+        const sofa::type::FullySymmetric4Tensor<DataTypes::spatial_dimensions, sofa::Real_t<DataTypes>>& elasticityTensor_)
     {
         this->elasticityTensor.set(elasticityTensor_);
     }
@@ -145,7 +145,7 @@ public:
 template <class DataTypes, class ElementType, MatrixVectorProductType matrixVectorProductType = MatrixVectorProductType::Dense>
 FactorizedElementStiffness<DataTypes, ElementType, matrixVectorProductType> integrate(
     const std::array<sofa::Coord_t<DataTypes>, ElementType::NumberOfNodes>& nodesCoordinates,
-    const FullySymmetric4Tensor<DataTypes::spatial_dimensions, sofa::Real_t<DataTypes>>& elasticityTensor)
+    const sofa::type::FullySymmetric4Tensor<DataTypes::spatial_dimensions, sofa::Real_t<DataTypes>>& elasticityTensor)
 {
     using Real = sofa::Real_t<DataTypes>;
     using FiniteElement = FiniteElement<ElementType, DataTypes>;
