@@ -87,6 +87,16 @@ struct IsotropicElasticityTensor
     explicit IsotropicElasticityTensor(const sofa::type::Mat<NbIndependentElements, NbIndependentElements, Real>& mat) : C(mat) {}
     IsotropicElasticityTensor() = default;
 
+    void set(const sofa::type::Mat<NbIndependentElements, NbIndependentElements, Real>& mat)
+    {
+        C = mat;
+    }
+
+    void set(const FullySymmetric4Tensor<D, Real>& tensor)
+    {
+        C = tensor.toVoigtMatSym().toMat();
+    }
+
     sofa::type::Vec<NbIndependentElements, Real> operator*(const sofa::type::Vec<NbIndependentElements, Real>& v) const
     {
         return isotropicElasticityTensorProduct(C, v);

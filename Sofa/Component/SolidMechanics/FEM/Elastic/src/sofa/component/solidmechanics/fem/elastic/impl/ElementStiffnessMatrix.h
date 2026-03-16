@@ -94,13 +94,7 @@ public:
     void setElasticityTensor(
         const FullySymmetric4Tensor<DataTypes::spatial_dimensions, sofa::Real_t<DataTypes>>& elasticityTensor_)
     {
-        for (std::size_t i = 0; i < NumberOfIndependentElements; ++i)
-        {
-            for (std::size_t j = 0; j < NumberOfIndependentElements; ++j)
-            {
-                this->elasticityTensor(i, j) = elasticityTensor_.toVoigtMatSym()(i, j);
-            }
-        }
+        this->elasticityTensor.set(elasticityTensor_);
     }
 
     void addFactor(std::size_t quadraturePointIndex,
