@@ -23,7 +23,7 @@
 
 #include <sofa/component/solidmechanics/fem/elastic/finiteelement/FiniteElement.h>
 #include <sofa/component/solidmechanics/fem/elastic/impl/FullySymmetric4Tensor.h>
-#include <sofa/component/solidmechanics/fem/elastic/impl/IsotropicElasticityTensor.h>
+#include <sofa/component/solidmechanics/fem/elastic/impl/OrthotropicElasticityTensor.h>
 #include <sofa/component/solidmechanics/fem/elastic/impl/MatrixTools.h>
 #include <sofa/component/solidmechanics/fem/elastic/impl/StrainDisplacement.h>
 #include <sofa/type/Mat.h>
@@ -67,7 +67,7 @@ private:
     /// The factors of the stiffness matrix
     /// @{
     std::array<StrainDisplacement<DataTypes, ElementType>, NbQuadraturePoints> B;
-    IsotropicElasticityTensor<DataTypes::spatial_dimensions, sofa::Real_t<DataTypes>> elasticityTensor;
+    OrthotropicElasticityTensor<DataTypes::spatial_dimensions, sofa::Real_t<DataTypes>> elasticityTensor;
     std::array<Real, NbQuadraturePoints> factors;
     /// @}
 
@@ -82,7 +82,7 @@ private:
 public:
     const StrainDisplacement<DataTypes, ElementType>& getB(std::size_t i) const { return B[i]; }
     Real getFactor(std::size_t i) const { return factors[i]; }
-    const IsotropicElasticityTensor<DataTypes::spatial_dimensions, sofa::Real_t<DataTypes>>& getElasticityTensor() const { return elasticityTensor; }
+    const OrthotropicElasticityTensor<DataTypes::spatial_dimensions, sofa::Real_t<DataTypes>>& getElasticityTensor() const { return elasticityTensor; }
 
     void setElasticityTensor(
         const FullySymmetric4Tensor<DataTypes::spatial_dimensions, sofa::Real_t<DataTypes>>& elasticityTensor_)

@@ -54,7 +54,7 @@ auto makeIsotropicElasticityTensor(sofa::Real_t<DataTypes> mu, sofa::Real_t<Data
 
 
 template <sofa::Size N, class real>
-constexpr sofa::type::Vec<N, real> isotropicElasticityTensorProduct(const sofa::type::Mat<N, N, real>& tensor, const sofa::type::Vec<N, real>& v)
+constexpr sofa::type::Vec<N, real> orthotropicElasticityTensorProduct(const sofa::type::Mat<N, N, real>& tensor, const sofa::type::Vec<N, real>& v)
 {
     return tensor * v;
 }
@@ -64,7 +64,7 @@ constexpr sofa::type::Vec<N, real> isotropicElasticityTensorProduct(const sofa::
  * omitted.
  */
 template <class real>
-constexpr sofa::type::Vec<6, real> isotropicElasticityTensorProduct(const sofa::type::Mat<6, 6, real>& tensor, const sofa::type::Vec<6, real>& v)
+constexpr sofa::type::Vec<6, real> orthotropicElasticityTensorProduct(const sofa::type::Mat<6, 6, real>& tensor, const sofa::type::Vec<6, real>& v)
 {
     sofa::type::Vec<6, real> result { sofa::type::NOINIT };
 
@@ -79,13 +79,13 @@ constexpr sofa::type::Vec<6, real> isotropicElasticityTensorProduct(const sofa::
 }
 
 template <std::size_t D, class real>
-struct IsotropicElasticityTensor
+struct OrthotropicElasticityTensor
 {
     using Real = real;
     static constexpr auto NbIndependentElements = sofa::type::NumberOfIndependentElements<D>;
 
-    explicit IsotropicElasticityTensor(const sofa::type::Mat<NbIndependentElements, NbIndependentElements, Real>& mat) : C(mat) {}
-    IsotropicElasticityTensor() = default;
+    explicit OrthotropicElasticityTensor(const sofa::type::Mat<NbIndependentElements, NbIndependentElements, Real>& mat) : C(mat) {}
+    OrthotropicElasticityTensor() = default;
 
     void set(const sofa::type::Mat<NbIndependentElements, NbIndependentElements, Real>& mat)
     {
@@ -99,7 +99,7 @@ struct IsotropicElasticityTensor
 
     sofa::type::Vec<NbIndependentElements, Real> operator*(const sofa::type::Vec<NbIndependentElements, Real>& v) const
     {
-        return isotropicElasticityTensorProduct(C, v);
+        return orthotropicElasticityTensorProduct(C, v);
     }
 
     template<sofa::Size nbColumns>
