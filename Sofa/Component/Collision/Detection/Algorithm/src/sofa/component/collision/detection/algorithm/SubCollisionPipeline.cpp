@@ -201,14 +201,14 @@ void SubCollisionPipeline::computeCollisionDetection()
             {
                 // CCD: Compute swept bounding volumes that cover the motion trajectory
                 const std::string msg = timerPrefix + "Compute Continuous BoundingTree: " + (*it)->getName();
-                ScopedAdvancedTimer continuousBoundingTreeTimer(msg.c_str());
+                SCOPED_TIMER(msg.c_str());
                 (*it)->computeContinuousBoundingTree(dt, continuousIntersectionType, used_depth);
             }
             else
             {
                 // Discrete: Compute bounding volumes at current positions
                 std::string msg = timerPrefix + "Compute BoundingTree: " + (*it)->getName();
-                ScopedAdvancedTimer boundingTreeTimer(msg.c_str());
+                SCOPED_TIMER(msg.c_str());
                 (*it)->computeBoundingTree(used_depth);
             }
 
