@@ -151,7 +151,14 @@ auto BaseLinearElasticityFEMForceField<DataTypes>::toLameParameters(
 {
     SOFA_UNUSED(elementType);
 
-    return sofa::component::solidmechanics::fem::elastic::toLameParameters<2, Real>(youngModulus, poissonRatio);
+    LameLambda<Real> lambda { 0 };
+    LameMu<Real> mu { 0 };
+
+    sofa::component::solidmechanics::fem::elastic::toLameParameters<2, Real>(
+        YoungModulus<Real>(youngModulus), PoissonRatio<Real>(poissonRatio),
+        lambda, mu);
+
+    return {lambda.get(), mu.get()};
 }
 
 template <class DataTypes>
@@ -162,7 +169,14 @@ auto BaseLinearElasticityFEMForceField<DataTypes>::toLameParameters(
 {
     SOFA_UNUSED(elementType);
 
-    return sofa::component::solidmechanics::fem::elastic::toLameParameters<3, Real>(youngModulus, poissonRatio);
+    LameLambda<Real> lambda { 0 };
+    LameMu<Real> mu { 0 };
+
+    sofa::component::solidmechanics::fem::elastic::toLameParameters<3, Real>(
+        YoungModulus<Real>(youngModulus), PoissonRatio<Real>(poissonRatio),
+        lambda, mu);
+
+    return {lambda.get(), mu.get()};
 }
 
 }

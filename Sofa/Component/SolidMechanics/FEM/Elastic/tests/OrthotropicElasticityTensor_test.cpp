@@ -27,13 +27,18 @@
 namespace sofa
 {
 
+using namespace sofa::component::solidmechanics::fem::elastic;
+
 TEST(OrthotropicElasticityTensor, isotropicElasticityTensor)
 {
     constexpr auto youngModulus = 1_sreal;
     constexpr auto poissonRatio = 0_sreal;
 
-    const auto [mu, lambda] =
-        component::solidmechanics::fem::elastic::toLameParameters<3, SReal>(youngModulus, poissonRatio);
+    LameLambda<SReal> lambda { 0 };
+    LameMu<SReal> mu { 0 };
+        component::solidmechanics::fem::elastic::toLameParameters<3, SReal>(
+            YoungModulus<SReal>(youngModulus), PoissonRatio<SReal>(poissonRatio),
+            lambda, mu);
     const auto C =
         component::solidmechanics::fem::elastic::makeIsotropicElasticityTensor<3, SReal>(mu, lambda).toVoigtMatSym();
 
