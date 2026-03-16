@@ -21,7 +21,6 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/solidmechanics/fem/elastic/impl/MatrixTools.h>
 #include <sofa/helper/SelectableItem.h>
 #include <sofa/type/Mat.h>
 

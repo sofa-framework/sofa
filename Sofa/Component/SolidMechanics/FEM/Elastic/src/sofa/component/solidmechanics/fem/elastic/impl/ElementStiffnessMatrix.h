@@ -24,7 +24,6 @@
 #include <sofa/component/solidmechanics/fem/elastic/finiteelement/FiniteElement.h>
 #include <sofa/component/solidmechanics/fem/elastic/impl/FullySymmetric4Tensor.h>
 #include <sofa/component/solidmechanics/fem/elastic/impl/OrthotropicElasticityTensor.h>
-#include <sofa/component/solidmechanics/fem/elastic/impl/MatrixTools.h>
 #include <sofa/component/solidmechanics/fem/elastic/impl/StrainDisplacement.h>
 #include <sofa/type/Mat.h>
 
@@ -171,7 +170,7 @@ FactorizedElementStiffness<DataTypes, ElementType, matrixVectorProductType> inte
         for (sofa::Size i = 0; i < NumberOfNodesInElement; ++i)
             jacobian += sofa::type::dyad(nodesCoordinates[i], dN_dq_ref[i]);
 
-        const auto detJ = sofa::component::solidmechanics::fem::elastic::absGeneralizedDeterminant(jacobian);
+        const auto detJ = sofa::type::absGeneralizedDeterminant(jacobian);
         const sofa::type::Mat<TopologicalDimension, spatial_dimensions, Real> J_inv =
             sofa::component::solidmechanics::fem::elastic::inverse(jacobian);
 
