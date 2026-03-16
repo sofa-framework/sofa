@@ -60,6 +60,9 @@ constexpr sofa::type::Vec<N, real> orthotropicElasticityTensorProduct(const sofa
 /**
  * Specialization for 3D where the operations containing known zeros in the elasticity tensor are
  * omitted.
+ *
+ * WARNING: this specialization is only valid for a give Voigt index mapping. If this mapping happens
+ * to change, this specialization will need to be updated accordingly.
  */
 template <class real>
 constexpr sofa::type::Vec<6, real> orthotropicElasticityTensorProduct(const sofa::type::Mat<6, 6, real>& tensor, const sofa::type::Vec<6, real>& v)
@@ -76,6 +79,15 @@ constexpr sofa::type::Vec<6, real> orthotropicElasticityTensorProduct(const sofa
     return result;
 }
 
+/**
+ * @class OrthotropicElasticityTensor
+ * @brief Represents an elasticity tensor for orthotropic materials.
+ *
+ * This class is a wrapper on a matrix (6x6 in 3D) with a specialization for the matrix-vector
+ * product, speeding up computations compared to a regular product. It uses the known shape of an
+ * orthotropic material to optimize the matrix-vector product omitting the operations containing
+ * zero coefficients.
+ */
 template <std::size_t D, class real>
 struct OrthotropicElasticityTensor
 {
