@@ -28,6 +28,7 @@
 
 namespace sofa::component::solidmechanics::fem::elastic
 {
+
 /**
  * @brief Converts Young's modulus and Poisson's ratio to Lamé parameters.
  *
@@ -41,13 +42,13 @@ namespace sofa::component::solidmechanics::fem::elastic
  *         - First: μ (shear modulus),
  *         - Second: λ.
  */
-template<class DataTypes>
-std::pair<sofa::Real_t<DataTypes>, sofa::Real_t<DataTypes>>
-toLameParameters(sofa::Real_t<DataTypes> youngModulus, sofa::Real_t<DataTypes> poissonRatio)
+template <std::size_t spatial_dimensions, class real>
+std::pair<real, real>
+toLameParameters(real youngModulus, real poissonRatio)
 {
-    static constexpr sofa::Size spatial_dimensions = DataTypes::spatial_dimensions;
     const auto mu = youngModulus / (2 * (1 + poissonRatio));
     const auto lambda = youngModulus * poissonRatio / ((1 + poissonRatio) * (1 - (spatial_dimensions - 1) * poissonRatio));
     return std::make_pair(mu, lambda);
 }
+
 }

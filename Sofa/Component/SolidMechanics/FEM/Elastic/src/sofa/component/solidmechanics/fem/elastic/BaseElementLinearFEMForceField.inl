@@ -88,7 +88,7 @@ void BaseElementLinearFEMForceField<DataTypes, ElementType>::precomputeElementSt
             const auto youngModulus = this->getYoungModulusInElement(elementId);
             const auto poissonRatio = this->getPoissonRatioInElement(elementId);
 
-            const auto [mu, lambda] = sofa::component::solidmechanics::fem::elastic::toLameParameters<DataTypes>(youngModulus, poissonRatio);
+            const auto [mu, lambda] = sofa::component::solidmechanics::fem::elastic::toLameParameters<DataTypes::spatial_dimensions, sofa::Real_t<DataTypes>>(youngModulus, poissonRatio);
 
             const auto elasticityTensor = makeIsotropicElasticityTensor<DataTypes>(mu, lambda);
 

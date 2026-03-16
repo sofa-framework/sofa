@@ -23,6 +23,7 @@
 #include <sofa/component/solidmechanics/fem/elastic/BaseLinearElasticityFEMForceField.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/ForceField.inl>
+#include <sofa/component/solidmechanics/fem/elastic/impl/LameParameters.h>
 
 namespace sofa::component::solidmechanics::fem::elastic
 {
@@ -150,13 +151,7 @@ auto BaseLinearElasticityFEMForceField<DataTypes>::toLameParameters(
 {
     SOFA_UNUSED(elementType);
 
-    //Lamé's first parameter
-    const Real lambda = youngModulus * poissonRatio / (1 - poissonRatio * poissonRatio);
-
-    //Lamé's second parameter (or shear modulus)
-    const Real mu = youngModulus / (2 * (1 + poissonRatio));
-
-    return {lambda, mu};
+    return sofa::component::solidmechanics::fem::elastic::toLameParameters<2, Real>(youngModulus, poissonRatio);
 }
 
 template <class DataTypes>
@@ -167,13 +162,7 @@ auto BaseLinearElasticityFEMForceField<DataTypes>::toLameParameters(
 {
     SOFA_UNUSED(elementType);
 
-    //Lamé's first parameter
-    const Real lambda = youngModulus * poissonRatio / ((1 - 2 * poissonRatio) * (1 + poissonRatio));
-
-    //Lamé's second parameter (or shear modulus)
-    const Real mu = youngModulus / (2 * (1 + poissonRatio));
-
-    return {lambda, mu};
+    return sofa::component::solidmechanics::fem::elastic::toLameParameters<3, Real>(youngModulus, poissonRatio);
 }
 
 }
