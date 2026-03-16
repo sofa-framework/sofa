@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/solidmechanics/fem/elastic/ElementCorotationalFEMForceField.h>
-#include <sofa/component/solidmechanics/fem/elastic/impl/VecView.h>
+#include <sofa/type/VecView.h>
 #include <sofa/component/solidmechanics/fem/elastic/impl/VectorTools.h>
 #include <sofa/core/behavior/BaseLocalForceFieldMatrix.h>
 
