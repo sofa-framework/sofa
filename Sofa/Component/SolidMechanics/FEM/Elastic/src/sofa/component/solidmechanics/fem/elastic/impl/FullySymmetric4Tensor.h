@@ -21,7 +21,6 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/solidmechanics/fem/elastic/impl/KroneckerDelta.h>
 #include <sofa/component/solidmechanics/fem/elastic/impl/VoigtNotation.h>
 #include <sofa/core/trait/DataTypes.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
@@ -125,30 +124,5 @@ private:
         }
     }
 };
-
-
-/**
- * @brief Creates an isotropic elasticity tensor for given material properties.
- *
- * This function constructs and returns an elasticity tensor for an isotropic material
- * characterized by its Young's modulus and Poisson's ratio. It computes the tensor
- * using the Lamé parameters, which are derived from the given material properties.
- *
- * @param youngModulus The Young's modulus of the material, representing its stiffness.
- * @param poissonRatio The Poisson's ratio of the material, describing its deformation behavior.
- * @return The isotropic elasticity tensor
- */
-template <class DataTypes>
-FullySymmetric4Tensor<DataTypes> makeIsotropicElasticityTensor(sofa::Real_t<DataTypes> mu, sofa::Real_t<DataTypes> lambda)
-{
-    using Real = sofa::Real_t<DataTypes>;
-
-    return FullySymmetric4Tensor<DataTypes>{
-        [mu, lambda](sofa::Index i, sofa::Index j, sofa::Index k, sofa::Index l)
-        {
-            return mu * (kroneckerDelta<Real>(i, k) * kroneckerDelta<Real>(j, l) + kroneckerDelta<Real>(i, l) * kroneckerDelta<Real>(j, k)) +
-                        lambda * kroneckerDelta<Real>(i, j) * kroneckerDelta<Real>(k, l);
-        }};
-}
 
 }
