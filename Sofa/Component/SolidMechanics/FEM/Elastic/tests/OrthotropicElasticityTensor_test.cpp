@@ -19,70 +19,48 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/solidmechanics/fem/elastic/impl/StrainDisplacement.h>
 #include <gtest/gtest.h>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/geometry/Tetrahedron.h>
+#include <sofa/component/solidmechanics/fem/elastic/impl/LameParameters.h>
+#include <sofa/component/solidmechanics/fem/elastic/impl/OrthotropicElasticityTensor.h>
+#include <sofa/testing/NumericTest.h>
 
 namespace sofa
 {
 
-using namespace sofa::component::solidmechanics::fem::elastic;
-
-TEST(StraintDisplacement, matrixVectorProduct)
+TEST(OrthotropicElasticityTensor, isotropicElasticityTensor)
 {
-    sofa::type::Mat<4, 3, SReal> dN_dq(sofa::type::NOINIT);
-    for (std::size_t i = 0; i < 4; ++i)
+    constexpr auto youngModulus = 1_sreal;
+    constexpr auto poissonRatio = 0_sreal;
+
+    const auto [mu, lambda] =
+        component::solidmechanics::fem::elastic::toLameParameters<3, SReal>(youngModulus, poissonRatio);
+    const auto C =
+        component::solidmechanics::fem::elastic::makeIsotropicElasticityTensor<3, SReal>(mu, lambda).toVoigtMatSym();
+
+    for (std::size_t i = 0; i < 3; ++i)
     {
         for (std::size_t j = 0; j < 3; ++j)
         {
-            dN_dq(i, j) = (i + 4) * (j + 9);
+            EXPECT_DOUBLE_EQ(C(i, j), static_cast<SReal>(i == j)) << "i = " << i << " j = " << j;
         }
     }
 
-    const auto B = makeStrainDisplacement<sofa::defaulttype::Vec3Types, sofa::geometry::Tetrahedron>(dN_dq);
-
-    sofa::type::Vec<12, SReal> v;
-
-    for (std::size_t i = 0; i < 12; ++i)
+    for (std::size_t i = 3; i < 6; ++i)
     {
-        v[i] = static_cast<SReal>(i);
+        for (std::size_t j = 3; j < 6; ++j)
+        {
+            EXPECT_FLOATINGPOINT_EQ(C(i, j), static_cast<SReal>(i == j) * 0.5_sreal);
+        }
     }
 
-    const auto Bv = B * v;
-    const auto expectedBv = B.B * v;
-
-    for (std::size_t i = 0; i < 6; ++i)
-    {
-        EXPECT_DOUBLE_EQ(Bv[i], expectedBv[i]) << "i = " << i;
-    }
-}
-
-TEST(StraintDisplacement, matrixTransposedVectorProduct)
-{
-    sofa::type::Mat<4, 3, SReal> dN_dq(sofa::type::NOINIT);
-    for (std::size_t i = 0; i < 4; ++i)
+    for (std::size_t i = 3; i < 6; ++i)
     {
         for (std::size_t j = 0; j < 3; ++j)
         {
-            dN_dq(i, j) = (i + 4) * (j + 9);
+            EXPECT_FLOATINGPOINT_EQ(C(i, j), 0_sreal);
+            EXPECT_FLOATINGPOINT_EQ(C(j, i), 0_sreal);
         }
     }
-
-    const auto B = makeStrainDisplacement<sofa::defaulttype::Vec3Types, sofa::geometry::Tetrahedron>(dN_dq);
-
-    sofa::type::Vec<6, SReal> v;
-    for (std::size_t i = 0; i < 6; ++i)
-    {
-        v[i] = static_cast<SReal>(i);
-    }
-
-    const auto B_Tv = B.multTranspose(v);
-    const auto expectedB_Tv = B.B.multTranspose(v);
-
-    for (std::size_t i = 0; i < 12; ++i)
-    {
-        EXPECT_DOUBLE_EQ(B_Tv[i], expectedB_Tv[i]) << "i = " << i;
-    }
 }
+
 }
