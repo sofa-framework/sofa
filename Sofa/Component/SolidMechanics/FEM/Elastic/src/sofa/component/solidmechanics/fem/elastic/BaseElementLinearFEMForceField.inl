@@ -90,7 +90,7 @@ void BaseElementLinearFEMForceField<DataTypes, ElementType>::precomputeElementSt
 
             const auto [mu, lambda] = sofa::component::solidmechanics::fem::elastic::toLameParameters<DataTypes::spatial_dimensions, sofa::Real_t<DataTypes>>(youngModulus, poissonRatio);
 
-            const auto elasticityTensor = makeIsotropicElasticityTensor<DataTypes>(mu, lambda);
+            const auto elasticityTensor = makeIsotropicElasticityTensor<DataTypes::spatial_dimensions, sofa::Real_t<DataTypes>>(mu, lambda);
 
             const std::array<sofa::Coord_t<DataTypes>, trait::NumberOfNodesInElement> nodesCoordinates = extractNodesVectorFromGlobalVector(element, restPositionAccessor.ref());
             elementStiffness[elementId] = integrate<DataTypes, ElementType, trait::matrixVectorProductType>(nodesCoordinates, elasticityTensor);

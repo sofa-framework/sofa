@@ -39,16 +39,14 @@ namespace sofa::component::solidmechanics::fem::elastic
  * @param lambda Lamé's second parameter
  * @return The isotropic elasticity tensor
  */
-template <class DataTypes>
-auto makeIsotropicElasticityTensor(sofa::Real_t<DataTypes> mu, sofa::Real_t<DataTypes> lambda)
+template <sofa::Size D, class real>
+auto makeIsotropicElasticityTensor(real mu, real lambda)
 {
-    using Real = sofa::Real_t<DataTypes>;
-
-    return sofa::type::FullySymmetric4Tensor<DataTypes::spatial_dimensions, Real>{
+    return sofa::type::FullySymmetric4Tensor<D, real>{
         [mu, lambda](sofa::Index i, sofa::Index j, sofa::Index k, sofa::Index l)
         {
-            return mu * (kroneckerDelta<Real>(i, k) * kroneckerDelta<Real>(j, l) + kroneckerDelta<Real>(i, l) * kroneckerDelta<Real>(j, k)) +
-                        lambda * kroneckerDelta<Real>(i, j) * kroneckerDelta<Real>(k, l);
+            return mu * (kroneckerDelta<real>(i, k) * kroneckerDelta<real>(j, l) + kroneckerDelta<real>(i, l) * kroneckerDelta<real>(j, k)) +
+                        lambda * kroneckerDelta<real>(i, j) * kroneckerDelta<real>(k, l);
         }};
 }
 
