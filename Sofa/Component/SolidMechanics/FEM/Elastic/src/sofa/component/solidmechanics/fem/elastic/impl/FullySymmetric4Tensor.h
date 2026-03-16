@@ -40,13 +40,12 @@ namespace sofa::component::solidmechanics::fem::elastic
  * C(i,j,k,l) = C(j,i,k,l) (minor symmetry)
  * C(i,j,k,l) = C(i,j,l,k) (minor symmetry)
  */
-template <class DataTypes>
+template <std::size_t D, class real>
 class FullySymmetric4Tensor
 {
 private:
-    static constexpr sofa::Size spatial_dimensions = DataTypes::spatial_dimensions;
-    static constexpr sofa::Size NumberOfIndependentElements = sofa::type::NumberOfIndependentElements<spatial_dimensions>;
-    using Real = sofa::Real_t<DataTypes>;
+    static constexpr sofa::Size NumberOfIndependentElements = sofa::type::NumberOfIndependentElements<D>;
+    using Real = real;
 
 public:
     FullySymmetric4Tensor() = default;
@@ -68,10 +67,10 @@ public:
 
         for (sofa::Size a = 0; a < NumberOfIndependentElements; ++a)
         {
-            const auto [i, j] = toTensorIndices<spatial_dimensions>(a);
+            const auto [i, j] = toTensorIndices<D>(a);
             for (sofa::Size b = a; b < NumberOfIndependentElements; ++b) // the Voigt representation is symmetric, that is why b starts at a
             {
-                const auto [k, l] = toTensorIndices<spatial_dimensions>(b);
+                const auto [k, l] = toTensorIndices<D>(b);
                 m_matrix(a, b) = callable(i, j, k, l);
             }
         }
@@ -79,15 +78,15 @@ public:
 
     Real& operator()(sofa::Size i, sofa::Size j, sofa::Size k, sofa::Size l)
     {
-        const auto a = tensorToVoigtIndex<DataTypes>(i, j);
-        const auto b = tensorToVoigtIndex<DataTypes>(k, l);
+        const auto a = tensorToVoigtIndex<D>(i, j);
+        const auto b = tensorToVoigtIndex<D>(k, l);
         return m_matrix(a, b);
     }
 
     Real operator()(sofa::Size i, sofa::Size j, sofa::Size k, sofa::Size l) const
     {
-        const auto a = tensorToVoigtIndex<DataTypes>(i, j);
-        const auto b = tensorToVoigtIndex<DataTypes>(k, l);
+        const auto a = tensorToVoigtIndex<D>(i, j);
+        const auto b = tensorToVoigtIndex<D>(k, l);
         return m_matrix(a, b);
     }
 
@@ -102,13 +101,13 @@ private:
     template<class Callable>
     static void checkSymmetry(Callable callable)
     {
-        for (sofa::Size i = 0; i < spatial_dimensions; ++i)
+        for (sofa::Size i = 0; i < D; ++i)
         {
-            for (sofa::Size j = 0; j < spatial_dimensions; ++j)
+            for (sofa::Size j = 0; j < D; ++j)
             {
-                for (sofa::Size k = 0; k < spatial_dimensions; ++k)
+                for (sofa::Size k = 0; k < D; ++k)
                 {
-                    for (sofa::Size l = 0; l < spatial_dimensions; ++l)
+                    for (sofa::Size l = 0; l < D; ++l)
                     {
                         const auto ijkl = callable(i, j, k, l);
                         const auto jikl = callable(j, i, k, l);
