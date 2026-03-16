@@ -33,12 +33,12 @@ using sofa::defaulttype::Vec3Types;
 
 /// Base class for barycentric mapping topology-specific mappers
 template<class In, class Out>
-class BarycentricMapper : public virtual core::objectmodel::BaseObject
+class BarycentricMapper : public virtual core::objectmodel::BaseComponent
 {
 
 public:
 
-    SOFA_CLASS(SOFA_TEMPLATE2(BarycentricMapper,In,Out),core::objectmodel::BaseObject);
+    SOFA_CLASS(SOFA_TEMPLATE2(BarycentricMapper,In,Out),core::objectmodel::BaseComponent);
 
     typedef typename In::Real Real;
     typedef typename In::Real InReal;

@@ -45,10 +45,10 @@ class TriangleIncisionInformation;
  *
  * SIMPLE METHOD FOR THE MOMENT. DON'T HANDLE MULTIPLE TOPOLOGIES
 */
-class SOFA_COMPONENT_TOPOLOGY_UTILITY_API TopologicalChangeProcessor: public core::objectmodel::BaseObject
+class SOFA_COMPONENT_TOPOLOGY_UTILITY_API TopologicalChangeProcessor: public core::objectmodel::BaseComponent
 {
 public:
-    SOFA_CLASS(TopologicalChangeProcessor,core::objectmodel::BaseObject);
+    SOFA_CLASS(TopologicalChangeProcessor,core::objectmodel::BaseComponent);
 
     using Index = sofa::Index;
 

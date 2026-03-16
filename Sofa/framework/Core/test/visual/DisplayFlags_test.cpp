@@ -44,10 +44,10 @@ TEST(DisplayFlags, getAllFlagsLabels)
     }
 }
 
-class DummyDisplayFlagsOwner : public sofa::core::objectmodel::BaseObject
+class DummyDisplayFlagsOwner : public sofa::core::objectmodel::BaseComponent
 {
 public:
-    SOFA_CLASS(DummyDisplayFlagsOwner, sofa::core::objectmodel::BaseObject);
+    SOFA_CLASS(DummyDisplayFlagsOwner, sofa::core::objectmodel::BaseComponent);
 
     Data<core::visual::DisplayFlags> m_displayFlags;
 

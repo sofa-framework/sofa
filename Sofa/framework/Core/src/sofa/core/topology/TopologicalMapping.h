@@ -38,10 +38,10 @@ namespace sofa::core::topology
 * So, at each time step, the geometrical and adjacency information are consistent in both topologies.
 *
 */
-class SOFA_CORE_API TopologicalMapping : public virtual objectmodel::BaseObject
+class SOFA_CORE_API TopologicalMapping : public virtual objectmodel::BaseComponent
 {
 public:
-    SOFA_ABSTRACT_CLASS(TopologicalMapping, objectmodel::BaseObject);
+    SOFA_ABSTRACT_CLASS(TopologicalMapping, objectmodel::BaseComponent);
 
     /// Input Topology
     using In = BaseMeshTopology;

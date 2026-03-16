@@ -44,10 +44,10 @@ struct input_event {};
  *
  * Reads mouse Linux events from file /dev/input/eventX and propagate them as SOFA MouseEvents.
  */
-class InputEventReader : public core::objectmodel::BaseObject
+class InputEventReader : public core::objectmodel::BaseComponent
 {
 public:
-    SOFA_CLASS(InputEventReader,core::objectmodel::BaseObject);
+    SOFA_CLASS(InputEventReader,core::objectmodel::BaseComponent);
 protected:
     /**
      * @brief Default Constructor.

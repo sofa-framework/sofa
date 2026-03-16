@@ -30,7 +30,7 @@ using std::vector;
 using std::string;
 
 #include<sofa/core/objectmodel/BaseObject.h>
-using sofa::core::objectmodel::BaseObject ;
+using sofa::core::objectmodel::BaseComponent ;
 
 #include<sofa/simulation/Node.h>
 using sofa::simulation::Node ;
@@ -434,7 +434,7 @@ void checkAttributes()
     EXPECT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 
-    sofa::core::objectmodel::BaseObject* theSphere = root->getTreeNode("Level 1")->getObject("spheremodel") ;
+    sofa::core::objectmodel::BaseComponent* theSphere = root->getTreeNode("Level 1")->getObject("spheremodel") ;
     EXPECT_NE(theSphere, nullptr) ;
 
     /// List of the supported attributes the user expect to find
@@ -462,7 +462,7 @@ void checkSceneWithVec3MechanicalModel()
     EXPECT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 
-    sofa::core::objectmodel::BaseObject* theSphere = root->getTreeNode("Level 1")->getObject("spheremodel") ;
+    sofa::core::objectmodel::BaseComponent* theSphere = root->getTreeNode("Level 1")->getObject("spheremodel") ;
     EXPECT_NE(theSphere, nullptr) ;
 }
 
@@ -481,7 +481,7 @@ void checkSceneWithRigid3dMechanicalModel()
     EXPECT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 
-    sofa::core::objectmodel::BaseObject* theSphere = root->getTreeNode("Level 1")->getObject("spheremodel") ;
+    sofa::core::objectmodel::BaseComponent* theSphere = root->getTreeNode("Level 1")->getObject("spheremodel") ;
     EXPECT_NE(theSphere, nullptr) ;
 }
 

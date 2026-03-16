@@ -31,11 +31,11 @@ namespace sofa::test
 {
 
 template<class T>
-class SOFA_TESTPLUGINA_API ComponentB : public sofa::core::objectmodel::BaseObject
+class SOFA_TESTPLUGINA_API ComponentB : public sofa::core::objectmodel::BaseComponent
 {
 
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(ComponentB, T), sofa::core::objectmodel::BaseObject);
+    SOFA_CLASS(SOFA_TEMPLATE(ComponentB, T), sofa::core::objectmodel::BaseComponent);
 
 protected:
     ComponentB();
