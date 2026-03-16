@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/core/trait/DataTypes.h>
+#include <sofa/component/solidmechanics/fem/elastic/impl/LameParameters.h>
 #include <sofa/type/FullySymmetric4Tensor.h>
 #include <sofa/component/solidmechanics/fem/elastic/impl/KroneckerDelta.h>
 
@@ -40,10 +40,10 @@ namespace sofa::component::solidmechanics::fem::elastic
  * @return The isotropic elasticity tensor
  */
 template <sofa::Size D, class real>
-auto makeIsotropicElasticityTensor(real mu, real lambda)
+auto makeIsotropicElasticityTensor(LameMu<real> mu, LameLambda<real> lambda)
 {
     return sofa::type::FullySymmetric4Tensor<D, real>{
-        [mu, lambda](sofa::Index i, sofa::Index j, sofa::Index k, sofa::Index l)
+        [mu = mu.get(), lambda = lambda.get()](sofa::Index i, sofa::Index j, sofa::Index k, sofa::Index l)
         {
             return mu * (kroneckerDelta<real>(i, k) * kroneckerDelta<real>(j, l) + kroneckerDelta<real>(i, l) * kroneckerDelta<real>(j, k)) +
                         lambda * kroneckerDelta<real>(i, j) * kroneckerDelta<real>(k, l);

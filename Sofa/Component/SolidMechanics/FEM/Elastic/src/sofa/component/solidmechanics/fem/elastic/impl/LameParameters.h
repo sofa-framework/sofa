@@ -23,11 +23,22 @@
 
 #include <utility>
 
-#include <sofa/core/trait/DataTypes.h>
+#include <sofa/type/StrongType.h>
 #include <sofa/config.h>
 
 namespace sofa::component::solidmechanics::fem::elastic
 {
+template<class real>
+using YoungModulus = sofa::type::StrongType<real, struct YoungModulusTag, sofa::type::functionality::Arithmetic>;
+
+template<class real>
+using PoissonRatio = sofa::type::StrongType<real, struct PoissonRatioTag, sofa::type::functionality::Arithmetic>;
+
+template<class real>
+using LameLambda = sofa::type::StrongType<real, struct LameLambdaTag, sofa::type::functionality::Arithmetic>;
+
+template<class real>
+using LameMu = sofa::type::StrongType<real, struct LameMuTag, sofa::type::functionality::Arithmetic>;
 
 /**
  * @brief Converts Young's modulus and Poisson's ratio to Lamé parameters.
@@ -43,12 +54,14 @@ namespace sofa::component::solidmechanics::fem::elastic
  *         - Second: λ.
  */
 template <std::size_t spatial_dimensions, class real>
-std::pair<real, real>
-toLameParameters(real youngModulus, real poissonRatio)
+void toLameParameters(
+    //input
+    YoungModulus<real> youngModulus, PoissonRatio<real> poissonRatio,
+    //output
+    LameLambda<real>& lambda, LameMu<real>& mu)
 {
-    const auto mu = youngModulus / (2 * (1 + poissonRatio));
-    const auto lambda = youngModulus * poissonRatio / ((1 + poissonRatio) * (1 - (spatial_dimensions - 1) * poissonRatio));
-    return std::make_pair(mu, lambda);
+    mu.get() = youngModulus.get() / (2 * (1 + poissonRatio.get()));
+    lambda.get() = youngModulus.get() * poissonRatio.get() / ((1 + poissonRatio.get()) * (1 - (spatial_dimensions - 1) * poissonRatio.get()));
 }
 
 }

@@ -53,6 +53,7 @@ private:
     using trait = sofa::component::solidmechanics::fem::elastic::trait<DataTypes, ElementType>;
     using ElementStiffness = typename trait::ElementStiffness;
     using StrainDisplacement = typename trait::StrainDisplacement;
+    using Real = typename trait::Real;
 
 protected:
 
