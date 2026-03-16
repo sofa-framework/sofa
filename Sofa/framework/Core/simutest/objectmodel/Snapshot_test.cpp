@@ -247,7 +247,7 @@ TEST_F(Snapshot_test, loadSnapshot)
 
     TestComponent tcomponent2;
     tcomponent2.d_value.setValue(0.0f);
-    tcomponent2.loadSnapshot(snapshot);
+    tcomponent2.loadDataSnapshot(snapshot);
 
     EXPECT_EQ(tcomponent2.d_value.getValue(), 3.14f);
 }
