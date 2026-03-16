@@ -33,13 +33,6 @@
 namespace sofa::component::solidmechanics::fem::elastic
 {
 
-template <class DataTypes, class ElementType>
-using ElementStiffness = sofa::type::Mat<
-    ElementType::NumberOfNodes * DataTypes::spatial_dimensions,
-    ElementType::NumberOfNodes * DataTypes::spatial_dimensions,
-    sofa::Real_t<DataTypes>
->;
-
 /**
  * Specifies the type of matrix-vector product to be used with the stiffness matrix.
  */
