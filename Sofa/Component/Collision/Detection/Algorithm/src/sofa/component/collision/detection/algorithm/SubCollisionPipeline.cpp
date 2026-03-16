@@ -32,13 +32,21 @@ using sofa::helper::ScopedAdvancedTimer ;
 
 #include <sofa/helper/AdvancedTimer.h>
 
-#include <format>
+// To uncomment once the compilers fully support std::format
+//#include <format>
 
 namespace
 {
     std::string formatComponentName(const std::string& componentName)
     {
-        return std::format("[{}]", componentName);
+        //return std::format("[{}]", componentName);
+
+        std::string result;
+        result.reserve(componentName.size() + 2); // exact size known upfront
+        result += '[';
+        result += componentName;
+        result += ']';
+        return result;
     }
 }
 
