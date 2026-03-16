@@ -91,7 +91,8 @@ public:
     Real getFactor(std::size_t i) const { return factors[i]; }
     const IsotropicElasticityTensor<DataTypes>& getElasticityTensor() const { return elasticityTensor; }
 
-    void setElasticityTensor(const FullySymmetric4Tensor<DataTypes>& elasticityTensor_)
+    void setElasticityTensor(
+        const FullySymmetric4Tensor<DataTypes::spatial_dimensions, sofa::Real_t<DataTypes>>& elasticityTensor_)
     {
         for (std::size_t i = 0; i < NumberOfIndependentElements; ++i)
         {
@@ -158,7 +159,7 @@ public:
 template <class DataTypes, class ElementType, MatrixVectorProductType matrixVectorProductType = MatrixVectorProductType::Dense>
 FactorizedElementStiffness<DataTypes, ElementType, matrixVectorProductType> integrate(
     const std::array<sofa::Coord_t<DataTypes>, ElementType::NumberOfNodes>& nodesCoordinates,
-    const FullySymmetric4Tensor<DataTypes>& elasticityTensor)
+    const FullySymmetric4Tensor<DataTypes::spatial_dimensions, sofa::Real_t<DataTypes>>& elasticityTensor)
 {
     using Real = sofa::Real_t<DataTypes>;
     using FiniteElement = FiniteElement<ElementType, DataTypes>;

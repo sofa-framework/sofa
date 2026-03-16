@@ -51,7 +51,7 @@ struct trait
     static constexpr sofa::Size NbQuadraturePoints = FiniteElement::quadraturePoints().size();
 
     /// type of 2nd-order tensor for the elasticity tensor for isotropic materials
-    using ElasticityTensor = FullySymmetric4Tensor<DataTypes>;
+    using ElasticityTensor = FullySymmetric4Tensor<DataTypes::spatial_dimensions, Real>;
 
     /// the type of B in e = B d, if e is the strain, and d is the displacement
     using StrainDisplacement = sofa::component::solidmechanics::fem::elastic::StrainDisplacement<DataTypes, ElementType>;

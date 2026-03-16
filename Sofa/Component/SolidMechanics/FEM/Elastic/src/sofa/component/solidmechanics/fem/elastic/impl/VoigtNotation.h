@@ -86,7 +86,7 @@ constexpr auto toTensorIndices(std::size_t voigtIndex)
  *
  * This function handles symmetric tensors by mapping (i, j) to an index in the Voigt convention.
  *
- * @tparam DataTypes The data type (e.g., sofa::defaulttype::Vec2Types, sofa::defaulttype::Vec3Types)
+ * @tparam spatial_dimensions The number of space dimensions (e.g. 3 for 3D, 2 for 2D)
  * @param i First tensor index
  * @param j Second tensor index
  * @return Voigt index (0 <= index < N, where N is the number of independent components)
@@ -94,32 +94,32 @@ constexpr auto toTensorIndices(std::size_t voigtIndex)
  * @note For 3D: (0,0)->0, (1,1)->1, (2,2)->2, (1,2)->3, (0,2)->4, (0,1)->5
  *       For 2D: (0,0)->0, (1,1)->1, (0,1)->2
  */
-template<class DataTypes>
+template<std::size_t spatial_dimensions>
 constexpr std::size_t tensorToVoigtIndex(std::size_t i, std::size_t j)
 {
-    assert(i < DataTypes::spatial_dimensions);
-    assert(j < DataTypes::spatial_dimensions);
+    assert(i < spatial_dimensions);
+    assert(j < spatial_dimensions);
     if (i == j)
         return i;
-    return sofa::type::NumberOfIndependentElements<DataTypes::spatial_dimensions> - i - j;
+    return sofa::type::NumberOfIndependentElements<spatial_dimensions> - i - j;
 }
 
-static_assert(tensorToVoigtIndex<sofa::defaulttype::Vec3Types>(0,0) == 0);
-static_assert(tensorToVoigtIndex<sofa::defaulttype::Vec3Types>(0,1) == 5);
-static_assert(tensorToVoigtIndex<sofa::defaulttype::Vec3Types>(0,2) == 4);
-static_assert(tensorToVoigtIndex<sofa::defaulttype::Vec3Types>(1,0) == 5);
-static_assert(tensorToVoigtIndex<sofa::defaulttype::Vec3Types>(1,1) == 1);
-static_assert(tensorToVoigtIndex<sofa::defaulttype::Vec3Types>(1,2) == 3);
-static_assert(tensorToVoigtIndex<sofa::defaulttype::Vec3Types>(2,0) == 4);
-static_assert(tensorToVoigtIndex<sofa::defaulttype::Vec3Types>(2,1) == 3);
-static_assert(tensorToVoigtIndex<sofa::defaulttype::Vec3Types>(2,2) == 2);
+static_assert(tensorToVoigtIndex<3>(0,0) == 0);
+static_assert(tensorToVoigtIndex<3>(0,1) == 5);
+static_assert(tensorToVoigtIndex<3>(0,2) == 4);
+static_assert(tensorToVoigtIndex<3>(1,0) == 5);
+static_assert(tensorToVoigtIndex<3>(1,1) == 1);
+static_assert(tensorToVoigtIndex<3>(1,2) == 3);
+static_assert(tensorToVoigtIndex<3>(2,0) == 4);
+static_assert(tensorToVoigtIndex<3>(2,1) == 3);
+static_assert(tensorToVoigtIndex<3>(2,2) == 2);
 
-static_assert(tensorToVoigtIndex<sofa::defaulttype::Vec2Types>(0,0) == 0);
-static_assert(tensorToVoigtIndex<sofa::defaulttype::Vec2Types>(0,1) == 2);
-static_assert(tensorToVoigtIndex<sofa::defaulttype::Vec2Types>(1,0) == 2);
-static_assert(tensorToVoigtIndex<sofa::defaulttype::Vec2Types>(1,1) == 1);
+static_assert(tensorToVoigtIndex<2>(0,0) == 0);
+static_assert(tensorToVoigtIndex<2>(0,1) == 2);
+static_assert(tensorToVoigtIndex<2>(1,0) == 2);
+static_assert(tensorToVoigtIndex<2>(1,1) == 1);
 
-static_assert(tensorToVoigtIndex<sofa::defaulttype::Vec1Types>(0,0) == 0);
+static_assert(tensorToVoigtIndex<1>(0,0) == 0);
 
 
 }

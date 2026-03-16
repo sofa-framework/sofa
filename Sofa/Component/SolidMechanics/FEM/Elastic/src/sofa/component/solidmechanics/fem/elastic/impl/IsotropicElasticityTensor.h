@@ -40,11 +40,11 @@ namespace sofa::component::solidmechanics::fem::elastic
  * @return The isotropic elasticity tensor
  */
 template <class DataTypes>
-FullySymmetric4Tensor<DataTypes> makeIsotropicElasticityTensor(sofa::Real_t<DataTypes> mu, sofa::Real_t<DataTypes> lambda)
+auto makeIsotropicElasticityTensor(sofa::Real_t<DataTypes> mu, sofa::Real_t<DataTypes> lambda)
 {
     using Real = sofa::Real_t<DataTypes>;
 
-    return FullySymmetric4Tensor<DataTypes>{
+    return FullySymmetric4Tensor<DataTypes::spatial_dimensions, Real>{
         [mu, lambda](sofa::Index i, sofa::Index j, sofa::Index k, sofa::Index l)
         {
             return mu * (kroneckerDelta<Real>(i, k) * kroneckerDelta<Real>(j, l) + kroneckerDelta<Real>(i, l) * kroneckerDelta<Real>(j, k)) +
