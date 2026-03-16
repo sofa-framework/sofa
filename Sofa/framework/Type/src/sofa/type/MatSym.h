@@ -27,10 +27,13 @@
 #include <cassert>
 #include <iostream>
 
-
-
 namespace sofa::type
 {
+
+/// The number of independent elements in a symmetric 2nd-order tensor of size (N x N)
+template<sofa::Size N>
+constexpr sofa::Size NumberOfIndependentElements = N * (N + 1) / 2;
+
 
 /**
  * Dense symmetric matrix of size DxD storing only D*(D+1)/2 values
@@ -38,7 +41,7 @@ namespace sofa::type
  * \tparam real Type of scalar
  */
 template <sofa::Size D, class real = SReal>
-class MatSym : public VecNoInit<D * (D + 1) / 2, real>
+class MatSym : public VecNoInit<NumberOfIndependentElements<D>, real>
 {
 public:
     static constexpr sofa::Size N = D * D;
@@ -50,7 +53,7 @@ public:
     static constexpr Size nbCols  = D;
 
 
-    static constexpr auto NumberStoredValues = D * (D + 1) / 2;
+    static constexpr auto NumberStoredValues = NumberOfIndependentElements<D>;
 
     // Voigt ordering map for symmetric 2D/3D tensors
     // The order used in SOFA is non-standard: [xx, xy, yy, xz, yz, zz]

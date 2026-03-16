@@ -22,7 +22,7 @@
 #pragma once
 
 #include <sofa/defaulttype/VecTypes.h>
-
+#include <sofa/type/MatSym.h>
 #include <array>
 
 namespace sofa::component::solidmechanics::fem::elastic
@@ -97,7 +97,7 @@ constexpr std::size_t tensorToVoigtIndex(std::size_t i, std::size_t j)
     assert(j < DataTypes::spatial_dimensions);
     if (i == j)
         return i;
-    return symmetric_tensor::NumberOfIndependentElements<DataTypes::spatial_dimensions> - i - j;
+    return sofa::type::NumberOfIndependentElements<DataTypes::spatial_dimensions> - i - j;
 }
 
 static_assert(tensorToVoigtIndex<sofa::defaulttype::Vec3Types>(0,0) == 0);

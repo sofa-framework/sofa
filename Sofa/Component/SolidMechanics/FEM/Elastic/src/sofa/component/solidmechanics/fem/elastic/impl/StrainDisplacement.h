@@ -21,9 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/core/trait/DataTypes.h>
-#include <sofa/type/Mat.h>
-
-#include <sofa/component/solidmechanics/fem/elastic/impl/SymmetricTensor.h>
+#include <sofa/type/MatSym.h>
 #include <sofa/component/solidmechanics/fem/elastic/impl/VoigtNotation.h>
 
 namespace sofa::component::solidmechanics::fem::elastic
@@ -135,7 +133,7 @@ struct StrainDisplacement
 {
     using Real = sofa::Real_t<DataTypes>;
     static constexpr auto spatial_dimensions = DataTypes::spatial_dimensions;
-    static constexpr auto nbLines = symmetric_tensor::NumberOfIndependentElements<spatial_dimensions>;
+    static constexpr auto nbLines = sofa::type::NumberOfIndependentElements<spatial_dimensions>;
     static constexpr auto nbNodesInElement = ElementType::NumberOfNodes;
     static constexpr auto nbColumns = nbNodesInElement * spatial_dimensions;
 
@@ -228,7 +226,7 @@ StrainDisplacement<DataTypes, ElementType> makeStrainDisplacement(
 {
     static constexpr sofa::Size spatial_dimensions = DataTypes::spatial_dimensions;
     static constexpr sofa::Size NumberOfNodesInElement = ElementType::NumberOfNodes;
-    static constexpr auto nbVoigtIndices = symmetric_tensor::NumberOfIndependentElements<DataTypes::spatial_dimensions>;
+    static constexpr auto nbVoigtIndices = sofa::type::NumberOfIndependentElements<DataTypes::spatial_dimensions>;
 
     StrainDisplacement<DataTypes, ElementType> B;
 

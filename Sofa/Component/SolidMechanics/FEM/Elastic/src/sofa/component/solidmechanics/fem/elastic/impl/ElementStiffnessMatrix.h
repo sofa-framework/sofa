@@ -69,7 +69,7 @@ private:
     using Real = sofa::Real_t<DataTypes>;
     using FiniteElement = sofa::component::solidmechanics::fem::elastic::FiniteElement<ElementType, DataTypes>;
     static constexpr auto NbQuadraturePoints = FiniteElement::quadraturePoints().size();
-    static constexpr sofa::Size NumberOfIndependentElements = symmetric_tensor::NumberOfIndependentElements<DataTypes::spatial_dimensions>;
+    static constexpr sofa::Size NumberOfIndependentElements = sofa::type::NumberOfIndependentElements<DataTypes::spatial_dimensions>;
 
     /// The factors of the stiffness matrix
     /// @{
