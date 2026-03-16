@@ -43,6 +43,9 @@ constexpr std::array voigt2d {
     std::make_pair(0, 1)
 };
 
+template<std::size_t V>
+struct InvalidDimension;
+
 /**
  * Converts a Voigt index to the corresponding tensor indices (i, j) for a symmetric tensor.
  *
@@ -73,7 +76,8 @@ constexpr auto toTensorIndices(std::size_t voigtIndex)
     }
     else
     {
-        static_assert(false, "dimension not supported");
+        //InvalidDimension is incomplete. It triggers an error showing the value of spatial_dimensions for debugging.
+        return InvalidDimension<spatial_dimensions>{};
     }
 }
 
