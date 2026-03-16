@@ -21,10 +21,37 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/core/trait/DataTypes.h>
-#include <sofa/type/Mat.h>
+#include <sofa/component/solidmechanics/fem/elastic/impl/FullySymmetric4Tensor.h>
+#include <sofa/component/solidmechanics/fem/elastic/impl/KroneckerDelta.h>
 
 namespace sofa::component::solidmechanics::fem::elastic
 {
+
+
+/**
+ * @brief Creates an isotropic elasticity tensor for given material properties.
+ *
+ * This function constructs and returns an elasticity tensor for an isotropic material
+ * characterized by its Young's modulus and Poisson's ratio. It computes the tensor
+ * using the Lamé parameters, which are derived from the given material properties.
+ *
+ * @param mu Lamé's first parameter
+ * @param lambda Lamé's second parameter
+ * @return The isotropic elasticity tensor
+ */
+template <class DataTypes>
+FullySymmetric4Tensor<DataTypes> makeIsotropicElasticityTensor(sofa::Real_t<DataTypes> mu, sofa::Real_t<DataTypes> lambda)
+{
+    using Real = sofa::Real_t<DataTypes>;
+
+    return FullySymmetric4Tensor<DataTypes>{
+        [mu, lambda](sofa::Index i, sofa::Index j, sofa::Index k, sofa::Index l)
+        {
+            return mu * (kroneckerDelta<Real>(i, k) * kroneckerDelta<Real>(j, l) + kroneckerDelta<Real>(i, l) * kroneckerDelta<Real>(j, k)) +
+                        lambda * kroneckerDelta<Real>(i, j) * kroneckerDelta<Real>(k, l);
+        }};
+}
+
 
 template <sofa::Size N, class real>
 constexpr sofa::type::Vec<N, real> isotropicElasticityTensorProduct(const sofa::type::Mat<N, N, real>& tensor, const sofa::type::Vec<N, real>& v)
