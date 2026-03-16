@@ -167,6 +167,20 @@ public:
         }
     }
 
+    Mat<D, D, real> toMat() const
+    {
+        Mat<D, D, real> M(NOINIT);
+        for (sofa::Size j = 0; j < D; j++)
+        {
+            for (sofa::Size i = 0; i < j; i++)
+            {
+                M(i, j) = M(j, i) = this->operator()(i, j);
+            }
+            M(j, j) = this->operator()(j, j);
+        }
+        return M;
+    }
+
     template<Size D2>
     constexpr void getsub(Size a, MatSym<D2, real>& m) const requires (D2 <= D)
     {
