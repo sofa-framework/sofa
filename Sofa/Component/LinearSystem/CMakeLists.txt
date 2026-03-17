@@ -76,6 +76,8 @@ sofa_create_package_with_targets(
     INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
 )
 
+install(DIRECTORY compat/ DESTINATION include/${PROJECT_NAME}_compat COMPONENT headers)
+
 cmake_dependent_option(SOFA_COMPONENT_LINEARSYSTEM_BUILD_TESTS "Compile the automatic tests" ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
 if(SOFA_COMPONENT_LINEARSYSTEM_BUILD_TESTS)
     add_subdirectory(tests)
