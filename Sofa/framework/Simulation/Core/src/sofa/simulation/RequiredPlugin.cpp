@@ -103,45 +103,56 @@ bool RequiredPlugin::loadPlugin()
     if (suffixVec.empty())
         suffixVec.push_back(defaultSuffix);
 
-    /// Copy the lost of names provided as arguments
-    const type::vector<std::string>& nameVec = d_pluginName.getValue();
-    type::vector<std::string> pluginsToLoad = nameVec;
+    const bool loadPluginFromName = !d_pluginName.isSet() && name.isSet();
 
-    /// In case the pluginName is not set we copy the provided name into the set to load.
-    if(!d_pluginName.isSet() && name.isSet())
+    auto pluginNameData = sofa::helper::WriteAccessor(d_pluginName);
+
+    //the plugin to load can also be defined by setting the component name to the plugin name
+    if (loadPluginFromName)
     {
-        pluginsToLoad.push_back(this->getName());
+        auto componentName = this->getName();
+        pluginNameData.push_back(componentName);
+        // msg_info() << "The plugin name '" << componentName << "', provided by the component name, is added to the list of plugin names to load in the Data 'pluginName'.";
+
+        if (componentName.find_first_of('.') != std::string::npos)
+        {
+            //it is common for plugin names to contain a dot, but a dot in a component name can lead
+            //to an undefined behavior. Therefore, dots are replaced with _ in the component name.
+            sofa::helper::replaceAll(componentName, ".", "_");
+            this->setName(componentName);
+            // msg_info() << "The name of the component has been changed to '" << componentName << "' to avoid undefined behavior. The Data 'pluginName' is used instead to load the plugins.";
+        }
     }
 
     type::vector< std::string > failed;
     std::ostringstream errmsg;
-    for (const auto& pluginName : pluginsToLoad)
+    for (const auto& pluginName : pluginNameData)
     {
-        const std::string name = FileSystem::cleanPath( pluginName ); // name is not necessarily a path
+        const std::string cleanedName = FileSystem::cleanPath( pluginName ); // name is not necessarily a path
         bool isNameLoaded = false;
         for (const auto& suffix : suffixVec)
         {
-            bool isPluginLoaded = pluginManager.pluginIsLoaded(name);
+            bool isPluginLoaded = pluginManager.pluginIsLoaded(cleanedName);
             if (!isPluginLoaded)
             {
-                const auto status = pluginManager.loadPlugin(name, suffix, true, true, &errmsg);
+                const auto status = pluginManager.loadPlugin(cleanedName, suffix, true, true, &errmsg);
                 isPluginLoaded = (status == PluginManager::PluginLoadStatus::SUCCESS || status == PluginManager::PluginLoadStatus::ALREADY_LOADED);
             }
             if (isPluginLoaded)
             {
-                loadedPlugins.push_back(name);
+                loadedPlugins.push_back(cleanedName);
                 isNameLoaded = true;
 
                 // Register Objects explicitly
-                objectFactory->registerObjectsFromPlugin(name);
+                objectFactory->registerObjectsFromPlugin(cleanedName);
 
                 // fail-safe to check if potential components have been registered (implicitly or explicitly)
                 std::vector<sofa::core::ObjectFactory::ClassEntry::SPtr> entries;
-                objectFactory->getEntriesFromTarget(entries, name);
+                objectFactory->getEntriesFromTarget(entries, cleanedName);
 
                 if (entries.empty())
                 {
-                    msg_warning() << "No component has been registered from " << name << ".\n"
+                    msg_warning() << "No component has been registered from " << cleanedName << ".\n"
                         << "It could be because: \n"
                         << " - the entrypoint registerObjects() has not been implemented;\n"
                         << " - (deprecated since v24.12) no sofa::core::RegisterObject() has been called;\n"
@@ -153,7 +164,7 @@ bool RequiredPlugin::loadPlugin()
         }
         if (!isNameLoaded)
         {
-            failed.push_back(name);
+            failed.push_back(cleanedName);
         }
         else if (d_stopAfterFirstNameFound.getValue())
         {
