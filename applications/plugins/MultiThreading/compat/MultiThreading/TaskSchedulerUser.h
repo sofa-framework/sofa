@@ -21,9 +21,4 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/simulation/task/TaskSchedulerUser.h>
-SOFA_HEADER_DEPRECATED("v25.12", "v26.06", "sofa/simulation/task/TaskSchedulerUser.h")
-
-namespace multithreading
-{
-using TaskSchedulerUser = sofa::simulation::TaskSchedulerUser;
-}
+SOFA_HEADER_DISABLED("v25.12", "v26.06", "sofa/simulation/task/TaskSchedulerUser.h")

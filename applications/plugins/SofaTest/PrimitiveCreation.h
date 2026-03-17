@@ -25,8 +25,8 @@
 
 #include <sofa/component/topology/container/constant/MeshTopology.h>
 
-#include <sofa/component/collision/geometry/TriangleModel.h>
-#include <sofa/component/collision/geometry/SphereModel.h>
+#include <sofa/component/collision/geometry/TriangleCollisionModel.h>
+#include <sofa/component/collision/geometry/SphereCollisionModel.h>
 
 #include <sofa/simulation/Node.h>
 
