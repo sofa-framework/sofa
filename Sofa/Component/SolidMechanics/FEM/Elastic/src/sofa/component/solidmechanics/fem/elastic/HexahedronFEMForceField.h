@@ -145,7 +145,7 @@ public:
     const Transformation& getElementRotation(const sofa::Index elemidx);
 
     void getNodeRotation(Transformation& R, sofa::Index nodeIdx) ;
-    void getRotations(linearalgebra::BaseMatrix * rotations,int offset = 0) override ;
+    void doGetRotations(linearalgebra::BaseMatrix * rotations,int offset = 0) override ;
 
     using Inherit1::addKToMatrix;
     void addKToMatrix(sofa::linearalgebra::BaseMatrix * matrix, SReal kFact, unsigned int &offset) override;
