@@ -2257,7 +2257,7 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::addMToMatrix(sofa::linearalgeb
 }
 
 template <class DataTypes, class GeometricalTypes>
-void MeshMatrixMass<DataTypes, GeometricalTypes>::buildMassMatrix(sofa::core::behavior::MassMatrixAccumulator* matrices)
+void MeshMatrixMass<DataTypes, GeometricalTypes>::doBuildMassMatrix(sofa::core::behavior::MassMatrixAccumulator* matrices)
 {
     const MassVector &vertexMass= d_vertexMass.getValue();
     const MassVector &edgeMass= d_edgeMass.getValue();
@@ -2298,7 +2298,7 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::buildMassMatrix(sofa::core::be
 
 
 template <class DataTypes, class GeometricalTypes>
-SReal MeshMatrixMass<DataTypes, GeometricalTypes>::getElementMass(Index index) const
+SReal MeshMatrixMass<DataTypes, GeometricalTypes>::doGetElementMass(Index index) const
 {
     const auto &vertexMass= d_vertexMass.getValue();
     const SReal mass = vertexMass[index] * m_massLumpingCoeff;
@@ -2309,7 +2309,7 @@ SReal MeshMatrixMass<DataTypes, GeometricalTypes>::getElementMass(Index index) c
 
 //TODO: special case for Rigid Mass
 template <class DataTypes, class GeometricalTypes>
-void MeshMatrixMass<DataTypes, GeometricalTypes>::getElementMass(Index index, linearalgebra::BaseMatrix *m) const
+void MeshMatrixMass<DataTypes, GeometricalTypes>::doGetElementMass(Index index, linearalgebra::BaseMatrix *m) const
 {
     static const linearalgebra::BaseMatrix::Index dimension = linearalgebra::BaseMatrix::Index(defaulttype::DataTypeInfo<Deriv>::size());
     if (m->rowSize() != dimension || m->colSize() != dimension) m->resize(dimension,dimension);
