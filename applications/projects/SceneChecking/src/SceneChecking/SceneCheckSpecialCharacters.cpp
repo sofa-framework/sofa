@@ -93,8 +93,11 @@ void SceneCheckSpecialCharacters::doCheckOn(sofa::simulation::Node* node)
 
 void SceneCheckSpecialCharacters::doPrintSummary()
 {
-    msg_warning(this->getName()) << "Found " << m_numWithSpecialChars
-        << " nodes or components with special characters in their names. It can lead to undefined behavior.";
+    if (m_numWithSpecialChars != 0)
+    {
+        msg_warning(this->getName()) << "Found " << m_numWithSpecialChars
+            << " nodes or components with special characters in their names. It can lead to undefined behavior.";
+    }
 }
 
 }  // namespace sofa::scenechecking
