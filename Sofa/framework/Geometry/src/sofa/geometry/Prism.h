@@ -34,18 +34,18 @@ struct Prism
 
     Prism() = delete;
 
-    // CONVENTION : indices ordering for the nodes of a prism :
-    //
-    //     5
-    //   / |  \
-    //  /  |   \
-    // 3---+----4
-    // |   |    |
-    // |   2    |
-    // | /   \  |
-    // |/      \|
-    // 0--------1
-    //
+    /* CONVENTION : indices ordering for the nodes of a prism :
+     *
+     *      5
+     *    / |  \
+     *   /  |   \
+     *  3---+----4
+     *  |   |    |
+     *  |   2    |
+     *  | /   \  |
+     *  |/      \|
+     *  0--------1
+     */
 };
 
 using Pentahedron SOFA_ATTRIBUTE_DEPRECATED("v25.12", "v26.06", "Pentahedron is renamed to Prism") = Prism;
