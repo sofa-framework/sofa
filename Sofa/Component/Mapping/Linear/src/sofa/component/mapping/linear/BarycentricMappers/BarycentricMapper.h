@@ -60,10 +60,10 @@ public:
 
 public:
 
-    using BaseObject::init;
+    using BaseComponent::init;
     virtual void init(const typename Out::VecCoord& out, const typename In::VecCoord& in) = 0;
 
-    using BaseObject::draw;
+    using BaseComponent::draw;
     virtual void draw(const core::visual::VisualParams*, const typename Out::VecCoord& out, const typename In::VecCoord& in) = 0;
 
     virtual void apply( typename Out::VecCoord& out, const typename In::VecCoord& in ) = 0;

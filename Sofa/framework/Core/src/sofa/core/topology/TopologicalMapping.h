@@ -145,7 +145,7 @@ public:
             return false;
         }
 
-        if (dynamic_cast<BaseObject*>(stin) == dynamic_cast<BaseObject*>(stout))
+        if (dynamic_cast<sofa::core::objectmodel::BaseComponent*>(stin) == dynamic_cast<sofa::core::objectmodel::BaseComponent*>(stout))
         {
             // we should refuse to create mappings with the same input and output model, which may happen if a State object is missing in the child node
             arg->logError("Both the input mesh and the output mesh points to the same mesh topology ('"+stin->getName()+"').");
