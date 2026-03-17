@@ -135,7 +135,10 @@ if(ZLIB_FOUND)
     foreach(v IN LISTS PNG_NAMES)
       list(APPEND PNG_DLL_FILENAMES ${v}.dll)
     endforeach()
-    find_file(PNG_DLL NAMES ${PNG_DLL_FILENAMES} PATH_SUFFIXES bin)
+    find_file(PNG_DLL 
+        NAMES ${PNG_DLL_FILENAMES} 
+        PATH_SUFFIXES bin 
+        PATHS ${CMAKE_LIBRARY_PATH})
     mark_as_advanced(PNG_DLL)
  endif()
   unset(PNG_NAMES)
