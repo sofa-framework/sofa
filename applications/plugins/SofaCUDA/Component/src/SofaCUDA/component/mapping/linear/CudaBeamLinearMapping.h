@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -21,17 +21,25 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/config.h>
-#include <sofa/config/sharedlibrary_defines.h>
+#include <SofaCUDA/component/config.h>
+#include <sofa/component/mapping/linear/BeamLinearMapping.h>
 
-#ifdef SOFA_BUILD_SOFACUDA
-#  define SOFACUDA_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFACUDA_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#if !defined(SOFA_COMPONENT_MAPPING_CUDABEAMLINEARMAPPING_CPP)
+
+#include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/gpu/cuda/CudaTypes.h>
+
+namespace sofa::component::mapping::linear
+{
+
+extern template class SOFACUDA_COMPONENT_API BeamLinearMapping< defaulttype::Rigid3Types, sofa::gpu::cuda::CudaVec3Types>;
+
+#ifdef SOFA_GPU_CUDA_DOUBLE
+extern template class SOFACUDA_COMPONENT_API BeamLinearMapping< defaulttype::Rigid3Types, sofa::gpu::cuda::CudaVec3dTypes>;
 #endif
 
-namespace sofacuda
-{
-	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
-	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
-} // namespace sofacuda
+} // namespace sofa::component::mapping::linear
+#endif
+
+
+
