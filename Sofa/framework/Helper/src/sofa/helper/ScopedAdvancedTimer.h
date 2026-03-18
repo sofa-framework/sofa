@@ -71,7 +71,9 @@ ScopedAdvancedTimer::ScopedAdvancedTimer(const char* message, T* obj)
     #define SCOPED_TIMER_VARNAME_DYN_TR(varname, name) ZoneTransientN(varname##_tr, name, true)
 #else
     #define SCOPED_TIMER_TR(name)
+    #define SCOPED_TIMER_DYN_TR(name)
     #define SCOPED_TIMER_VARNAME_TR(varname, name)
+    #define SCOPED_TIMER_VARNAME_DYN_TR(varname, name)
 #endif
 
 #ifdef SOFA_ENABLE_SCOPED_ADVANCED_TIMER
