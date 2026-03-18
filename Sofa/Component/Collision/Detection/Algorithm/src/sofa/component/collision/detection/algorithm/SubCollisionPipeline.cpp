@@ -171,7 +171,7 @@ void SubCollisionPipeline::computeCollisionReset()
 void SubCollisionPipeline::computeCollisionDetection()
 {
     const std::string timerPrefix = formatComponentName(this->getName()) + " ";
-    SCOPED_TIMER_VARNAME(docollisiontimer, timerPrefix + "doCollisionDetection");
+    SCOPED_TIMER_VARNAME(docollisiontimer, timerPrefix + std::string("doCollisionDetection"));
 
     if (!this->isComponentStateValid())
         return;
@@ -182,7 +182,7 @@ void SubCollisionPipeline::computeCollisionDetection()
     // These hierarchical structures enable efficient spatial queries
     type::vector<CollisionModel*> vectBoundingVolume;
     {
-        SCOPED_TIMER_VARNAME(bboxtimer, timerPrefix + "ComputeBoundingTree");
+        SCOPED_TIMER_VARNAME(bboxtimer, timerPrefix + std::string("ComputeBoundingTree"));
 
         // Check if continuous collision detection (CCD) is enabled
         const bool continuous = l_intersectionMethod->useContinuous();
@@ -208,14 +208,14 @@ void SubCollisionPipeline::computeCollisionDetection()
             if (continuous)
             {
                 // CCD: Compute swept bounding volumes that cover the motion trajectory
-                const std::string msg = timerPrefix + "Compute Continuous BoundingTree: " + (*it)->getName();
+                const std::string msg = timerPrefix + std::string("Compute Continuous BoundingTree: ") + (*it)->getName();
                 SCOPED_TIMER(msg.c_str());
                 (*it)->computeContinuousBoundingTree(dt, continuousIntersectionType, used_depth);
             }
             else
             {
                 // Discrete: Compute bounding volumes at current positions
-                std::string msg = timerPrefix + "Compute BoundingTree: " + (*it)->getName();
+                std::string msg = timerPrefix + std::string("Compute BoundingTree: ") + (*it)->getName();
                 SCOPED_TIMER(msg.c_str());
                 (*it)->computeBoundingTree(used_depth);
             }
@@ -234,7 +234,7 @@ void SubCollisionPipeline::computeCollisionDetection()
     msg_info()  << "doCollisionDetection, BroadPhaseDetection "<<l_broadPhaseDetection->getName();
 
     {
-        SCOPED_TIMER_VARNAME(broadphase, timerPrefix + "BroadPhase");
+        SCOPED_TIMER_VARNAME(broadphase, timerPrefix + std::string("BroadPhase"));
         l_intersectionMethod->beginBroadPhase();
         l_broadPhaseDetection->beginBroadPhase();
         l_broadPhaseDetection->addCollisionModels(vectBoundingVolume);  // Actual detection happens here
@@ -247,7 +247,7 @@ void SubCollisionPipeline::computeCollisionDetection()
     msg_info() << "doCollisionDetection, NarrowPhaseDetection "<< l_narrowPhaseDetection->getName();
 
     {
-        SCOPED_TIMER_VARNAME(narrowphase, timerPrefix + "NarrowPhase");
+        SCOPED_TIMER_VARNAME(narrowphase, timerPrefix + std::string("NarrowPhase"));
         l_intersectionMethod->beginNarrowPhase();
         l_narrowPhaseDetection->beginNarrowPhase();
 
