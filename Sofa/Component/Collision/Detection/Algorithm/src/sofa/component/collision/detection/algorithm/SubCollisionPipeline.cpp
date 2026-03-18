@@ -171,8 +171,8 @@ void SubCollisionPipeline::computeCollisionReset()
 void SubCollisionPipeline::computeCollisionDetection()
 {
     const std::string timerPrefix = formatComponentName(this->getName()) + " ";
-    const std::string globalTimerName = timerPrefix + std::string("doCollisionDetection");
-    SCOPED_TIMER_VARNAME(docollisiontimer, globalTimerName.c_str());
+    const std::string globalTimerName = timerPrefix + "doCollisionDetection";
+    SCOPED_TIMER_VARNAME_DYN(docollisiontimer, globalTimerName.c_str());
 
     if (!this->isComponentStateValid())
         return;
@@ -183,8 +183,8 @@ void SubCollisionPipeline::computeCollisionDetection()
     // These hierarchical structures enable efficient spatial queries
     type::vector<CollisionModel*> vectBoundingVolume;
     {
-        const std::string localTimerName = timerPrefix + std::string("ComputeBoundingTree");
-        SCOPED_TIMER_VARNAME(bboxtimer, timerPrefix + localTimerName.c_str());
+        const std::string localTimerName = timerPrefix + "ComputeBoundingTree";
+        SCOPED_TIMER_VARNAME_DYN(bboxtimer, localTimerName.c_str());
 
         // Check if continuous collision detection (CCD) is enabled
         const bool continuous = l_intersectionMethod->useContinuous();
@@ -210,15 +210,15 @@ void SubCollisionPipeline::computeCollisionDetection()
             if (continuous)
             {
                 // CCD: Compute swept bounding volumes that cover the motion trajectory
-                const std::string msg = timerPrefix + std::string("Compute Continuous BoundingTree: ") + (*it)->getName();
-                SCOPED_TIMER(msg.c_str());
+                const std::string msg = timerPrefix + "Compute Continuous BoundingTree: " + (*it)->getName();
+                SCOPED_TIMER_DYN(msg.c_str());
                 (*it)->computeContinuousBoundingTree(dt, continuousIntersectionType, used_depth);
             }
             else
             {
                 // Discrete: Compute bounding volumes at current positions
-                std::string msg = timerPrefix + std::string("Compute BoundingTree: ") + (*it)->getName();
-                SCOPED_TIMER(msg.c_str());
+                std::string msg = timerPrefix + "Compute BoundingTree: " + (*it)->getName();
+                SCOPED_TIMER_DYN(msg.c_str());
                 (*it)->computeBoundingTree(used_depth);
             }
 
@@ -236,8 +236,8 @@ void SubCollisionPipeline::computeCollisionDetection()
     msg_info()  << "doCollisionDetection, BroadPhaseDetection "<<l_broadPhaseDetection->getName();
 
     {
-        const std::string localTimerName = timerPrefix + std::string("BroadPhase");
-        SCOPED_TIMER_VARNAME(broadphase, localTimerName.c_str() );
+        const std::string localTimerName = timerPrefix + "BroadPhase";
+        SCOPED_TIMER_VARNAME_DYN(broadphase, localTimerName.c_str());
         l_intersectionMethod->beginBroadPhase();
         l_broadPhaseDetection->beginBroadPhase();
         l_broadPhaseDetection->addCollisionModels(vectBoundingVolume);  // Actual detection happens here
@@ -250,8 +250,8 @@ void SubCollisionPipeline::computeCollisionDetection()
     msg_info() << "doCollisionDetection, NarrowPhaseDetection "<< l_narrowPhaseDetection->getName();
 
     {
-        const std::string localTimerName = timerPrefix + std::string("NarrowPhase");
-        SCOPED_TIMER_VARNAME(narrowphase,  localTimerName.c_str());
+        const std::string localTimerName = timerPrefix + "NarrowPhase";
+        SCOPED_TIMER_VARNAME_DYN(narrowphase, localTimerName.c_str());
         l_intersectionMethod->beginNarrowPhase();
         l_narrowPhaseDetection->beginNarrowPhase();
 
