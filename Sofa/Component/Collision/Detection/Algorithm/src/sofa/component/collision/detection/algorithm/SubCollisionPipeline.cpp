@@ -32,6 +32,23 @@ using sofa::helper::ScopedAdvancedTimer ;
 
 #include <sofa/helper/AdvancedTimer.h>
 
+// To uncomment once the compilers fully support std::format
+//#include <format>
+
+namespace
+{
+    std::string formatComponentName(const std::string& componentName)
+    {
+        //return std::format("[{}]", componentName);
+
+        std::string result;
+        result.reserve(componentName.size() + 2); // exact size known upfront
+        result += '[';
+        result += componentName;
+        result += ']';
+        return result;
+    }
+}
 
 namespace sofa::component::collision::detection::algorithm
 {
@@ -153,7 +170,8 @@ void SubCollisionPipeline::computeCollisionReset()
  */
 void SubCollisionPipeline::computeCollisionDetection()
 {
-    SCOPED_TIMER_VARNAME(docollisiontimer, "doCollisionDetection");
+    const std::string timerPrefix = formatComponentName(this->getName()) + " ";
+    SCOPED_TIMER_VARNAME(docollisiontimer, timerPrefix + "doCollisionDetection");
 
     if (!this->isComponentStateValid())
         return;
@@ -164,7 +182,7 @@ void SubCollisionPipeline::computeCollisionDetection()
     // These hierarchical structures enable efficient spatial queries
     type::vector<CollisionModel*> vectBoundingVolume;
     {
-        SCOPED_TIMER_VARNAME(bboxtimer, "ComputeBoundingTree");
+        SCOPED_TIMER_VARNAME(bboxtimer, timerPrefix + "ComputeBoundingTree");
 
         // Check if continuous collision detection (CCD) is enabled
         const bool continuous = l_intersectionMethod->useContinuous();
@@ -190,15 +208,15 @@ void SubCollisionPipeline::computeCollisionDetection()
             if (continuous)
             {
                 // CCD: Compute swept bounding volumes that cover the motion trajectory
-                const std::string msg = "Compute Continuous BoundingTree: " + (*it)->getName();
-                ScopedAdvancedTimer continuousBoundingTreeTimer(msg.c_str());
+                const std::string msg = timerPrefix + "Compute Continuous BoundingTree: " + (*it)->getName();
+                SCOPED_TIMER(msg.c_str());
                 (*it)->computeContinuousBoundingTree(dt, continuousIntersectionType, used_depth);
             }
             else
             {
                 // Discrete: Compute bounding volumes at current positions
-                std::string msg = "Compute BoundingTree: " + (*it)->getName();
-                ScopedAdvancedTimer boundingTreeTimer(msg.c_str());
+                std::string msg = timerPrefix + "Compute BoundingTree: " + (*it)->getName();
+                SCOPED_TIMER(msg.c_str());
                 (*it)->computeBoundingTree(used_depth);
             }
 
@@ -216,7 +234,7 @@ void SubCollisionPipeline::computeCollisionDetection()
     msg_info()  << "doCollisionDetection, BroadPhaseDetection "<<l_broadPhaseDetection->getName();
 
     {
-        SCOPED_TIMER_VARNAME(broadphase, "BroadPhase");
+        SCOPED_TIMER_VARNAME(broadphase, timerPrefix + "BroadPhase");
         l_intersectionMethod->beginBroadPhase();
         l_broadPhaseDetection->beginBroadPhase();
         l_broadPhaseDetection->addCollisionModels(vectBoundingVolume);  // Actual detection happens here
@@ -229,7 +247,7 @@ void SubCollisionPipeline::computeCollisionDetection()
     msg_info() << "doCollisionDetection, NarrowPhaseDetection "<< l_narrowPhaseDetection->getName();
 
     {
-        SCOPED_TIMER_VARNAME(narrowphase, "NarrowPhase");
+        SCOPED_TIMER_VARNAME(narrowphase, timerPrefix + "NarrowPhase");
         l_intersectionMethod->beginNarrowPhase();
         l_narrowPhaseDetection->beginNarrowPhase();
 
