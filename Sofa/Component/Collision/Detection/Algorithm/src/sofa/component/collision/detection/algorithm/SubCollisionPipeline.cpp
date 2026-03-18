@@ -171,7 +171,8 @@ void SubCollisionPipeline::computeCollisionReset()
 void SubCollisionPipeline::computeCollisionDetection()
 {
     const std::string timerPrefix = formatComponentName(this->getName()) + " ";
-    SCOPED_TIMER_VARNAME(docollisiontimer, timerPrefix + std::string("doCollisionDetection"));
+    const std::string globalTimerName = timerPrefix + std::string("doCollisionDetection");
+    SCOPED_TIMER_VARNAME(docollisiontimer, globalTimerName.c_str());
 
     if (!this->isComponentStateValid())
         return;
@@ -182,7 +183,8 @@ void SubCollisionPipeline::computeCollisionDetection()
     // These hierarchical structures enable efficient spatial queries
     type::vector<CollisionModel*> vectBoundingVolume;
     {
-        SCOPED_TIMER_VARNAME(bboxtimer, timerPrefix + std::string("ComputeBoundingTree"));
+        const std::string localTimerName = timerPrefix + std::string("ComputeBoundingTree");
+        SCOPED_TIMER_VARNAME(bboxtimer, timerPrefix + localTimerName.c_str());
 
         // Check if continuous collision detection (CCD) is enabled
         const bool continuous = l_intersectionMethod->useContinuous();
@@ -234,7 +236,8 @@ void SubCollisionPipeline::computeCollisionDetection()
     msg_info()  << "doCollisionDetection, BroadPhaseDetection "<<l_broadPhaseDetection->getName();
 
     {
-        SCOPED_TIMER_VARNAME(broadphase, timerPrefix + std::string("BroadPhase"));
+        const std::string localTimerName = timerPrefix + std::string("BroadPhase");
+        SCOPED_TIMER_VARNAME(broadphase, localTimerName.c_str() );
         l_intersectionMethod->beginBroadPhase();
         l_broadPhaseDetection->beginBroadPhase();
         l_broadPhaseDetection->addCollisionModels(vectBoundingVolume);  // Actual detection happens here
@@ -247,7 +250,8 @@ void SubCollisionPipeline::computeCollisionDetection()
     msg_info() << "doCollisionDetection, NarrowPhaseDetection "<< l_narrowPhaseDetection->getName();
 
     {
-        SCOPED_TIMER_VARNAME(narrowphase, timerPrefix + std::string("NarrowPhase"));
+        const std::string localTimerName = timerPrefix + std::string("NarrowPhase");
+        SCOPED_TIMER_VARNAME(narrowphase,  localTimerName.c_str());
         l_intersectionMethod->beginNarrowPhase();
         l_narrowPhaseDetection->beginNarrowPhase();
 
