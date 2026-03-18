@@ -402,7 +402,7 @@ bool EulerExplicitSolver::isMassMatrixTriviallyInvertible(const core::ExecParams
     if (mappedMassVisitor.hasMappedMass())
         return false;
 
-    // At this stage, we now that we don't have any mapped mass. We can check if they are all diagonal.
+    // At this stage, we know that we don't have any mapped mass. We can check if they are all diagonal.
     AllOfMassesAreDiagonalVisitor allOfMassesAreDiagonalVisitor(params);
     allOfMassesAreDiagonalVisitor.execute(this->getContext());
     return allOfMassesAreDiagonalVisitor.areAllMassesAreDiagonal();
