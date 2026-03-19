@@ -40,7 +40,9 @@ void LoadDataSnapshotVisitor::processObject(
 Visitor::Result LoadDataSnapshotVisitor::processNodeTopDown(simulation::Node* node)
 {
     const auto snapshotObject = node->findSnapshotObject(m_snapshotContainer.m_graphRoot, node->getName());
-
+    if (!snapshotObject)
+        msg_error("findSnapshotNode") << "SnapshotNode "<< node->getName() << " not found in ";
+    std::string nodeName = node->getName();
     const auto SnapshotNode = std::dynamic_pointer_cast<core::objectmodel::BaseSnapshot::SnapshotNode>(snapshotObject);
     node->loadDataSnapshot(SnapshotNode);
     std::cout << "test object.getSize : " << node->object.getSize() << std::endl;

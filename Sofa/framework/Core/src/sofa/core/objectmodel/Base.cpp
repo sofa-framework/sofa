@@ -717,13 +717,13 @@ void Base::saveLinksIn(BaseSnapshot::SnapshotObject& snapshot) const
         // linkInfo.value = link->getLinkedPath();
         // linkInfo.value = link->getPath();
 
-        std::string replaceValue = "//";
-        std::size_t pos = linkInfo.value.find(replaceValue);
-        while (pos != std::string::npos)
-        {
-            linkInfo.value.replace(pos, replaceValue.length(), "");
-            pos = linkInfo.value.find(replaceValue, pos);
-        }
+        // std::string replaceValue = "//";
+        // std::size_t pos = linkInfo.value.find(replaceValue);
+        // while (pos != std::string::npos)
+        // {
+        //     linkInfo.value.replace(pos, replaceValue.length(), "");
+        //     pos = linkInfo.value.find(replaceValue, pos);
+        // }
 
         snapshot.m_linkContainer.push_back(linkInfo);
     }
@@ -793,15 +793,38 @@ void Base::loadDataSnapshot(const std::shared_ptr<BaseSnapshot::SnapshotObject>&
 
 void Base::loadLinkSnapshot(const std::shared_ptr<BaseSnapshot::SnapshotObject>& snapshotObject) const
 {
+    //if ( this->getClassName() != "Node")
     for (const auto& linkInfo : snapshotObject->m_linkContainer)
     {
         if (const auto link = this->findLink(linkInfo.name))
         {
             if(linkInfo.name != "odeSolver" && linkInfo.name != "linearSolver")
             {
-                std::cout << "===========link name : " << linkInfo.name << std::endl;
-                std::cout << "===========link value : " << linkInfo.value << std::endl;
-                link->read(linkInfo.value);
+                // std::cout << "===========link name : " << linkInfo.name << std::endl;
+                // std::cout << "===========link value : " << linkInfo.value << std::endl;
+
+                // link->read(linkInfo.value);
+
+                // Idea : Compare links in the snapshot and in the simulation, and change/add targets to the link
+                std::vector <std::string> newSublinks = helper::split(linkInfo.value, ' ');
+                std::vector <std::string> currentSublinks = helper::split(link->getValueString(), ' ');
+
+                for (const auto& subLink : newSublinks)
+                {
+                    Base* obj = PathResolver::FindBaseFromClassAndPath(link->getOwner(), link->getDestClass(), subLink);
+                    auto it = std::ranges::find(currentSublinks, subLink);
+                    if (it != currentSublinks.end()) {
+                        // subLink is in currentSublinks
+                        const size_t index = std::distance(currentSublinks.begin(), it);
+                        link->set(obj,index);
+                    }
+                    else {
+                        // subLink is not in currentSublinks
+                        link->add(obj,subLink);
+                    }
+                }
+
+
             }
             
         }

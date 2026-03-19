@@ -82,27 +82,21 @@ BaseNode::createSnapshotObject(std::vector<std::shared_ptr<BaseSnapshot::Snapsho
 std::shared_ptr<BaseSnapshot::SnapshotObject> 
 BaseNode::findSnapshotObject( const std::shared_ptr<BaseSnapshot::SnapshotNode>& parents, const std::string& objectname)
 {
+    if (!parents) return nullptr;
+
     if(parents->m_name == objectname)
     {
         return parents;
     }
-    for (const auto& p : parents->children)
+
+    for (const auto& child : parents->children)
     {
-        if (p->m_name == objectname)
-        {
-            auto nodeObject = std::make_shared<BaseSnapshot::SnapshotNode>(*p);
-            return nodeObject;
-        }
-        else
-        {
-            if (auto childObject = findSnapshotObject(p, objectname))
-                return childObject;
-        }
+        if (auto result = this->findSnapshotObject(child, objectname))
+            return result;
+
     }
-    msg_error("findSnapshotNode") << "SnapshotNode "<< objectname << " not found";
-    auto defaultObject = std::make_shared<BaseSnapshot::SnapshotObject>();
-    defaultObject->m_name = "Unknown node";
-    return defaultObject;
+
+    return nullptr;
 }
 
 /// Set the context of an object to this
