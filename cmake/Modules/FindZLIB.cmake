@@ -181,6 +181,7 @@ if(NOT ZLIB_LIBRARY)
       find_file(ZLIB_DLL
         NAMES zlib.dll
         PATH_SUFFIXES bin
+        PATHS ${CMAKE_LIBRARY_PATH}
       )
     endif()
   endforeach()
