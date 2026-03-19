@@ -66,10 +66,14 @@ ScopedAdvancedTimer::ScopedAdvancedTimer(const char* message, T* obj)
 #ifdef TRACY_ENABLE
     #include <tracy/Tracy.hpp>
     #define SCOPED_TIMER_TR(name) ZoneScopedN(name)
+    #define SCOPED_TIMER_DYN_TR(name) ZoneTransientN( ___tracy_scoped_zone,name, true)
     #define SCOPED_TIMER_VARNAME_TR(varname, name) ZoneNamedN(varname##_tr, name, true)
+    #define SCOPED_TIMER_VARNAME_DYN_TR(varname, name) ZoneTransientN(varname##_tr, name, true)
 #else
     #define SCOPED_TIMER_TR(name)
+    #define SCOPED_TIMER_DYN_TR(name)
     #define SCOPED_TIMER_VARNAME_TR(varname, name)
+    #define SCOPED_TIMER_VARNAME_DYN_TR(varname, name)
 #endif
 
 #ifdef SOFA_ENABLE_SCOPED_ADVANCED_TIMER
@@ -81,4 +85,6 @@ ScopedAdvancedTimer::ScopedAdvancedTimer(const char* message, T* obj)
 #endif
 
 #define SCOPED_TIMER(name) SCOPED_TIMER_TR(name); SCOPED_TIMER_AD(name)
+#define SCOPED_TIMER_DYN(name) SCOPED_TIMER_DYN_TR(name); SCOPED_TIMER_AD(name)
 #define SCOPED_TIMER_VARNAME(varname, name) SCOPED_TIMER_VARNAME_TR(varname, name); SCOPED_TIMER_VARNAME_AD(varname, name)
+#define SCOPED_TIMER_VARNAME_DYN(varname, name) SCOPED_TIMER_VARNAME_DYN_TR(varname, name); SCOPED_TIMER_VARNAME_AD(varname, name)
