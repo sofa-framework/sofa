@@ -159,7 +159,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/objectmodel/BaseLink.h
     ${SRC_ROOT}/objectmodel/BaseNode.h
     ${SRC_ROOT}/objectmodel/BaseObjectDescription.h
-    ${SRC_ROOT}/objectmodel/BaseSnapshot.h
+    ${SRC_ROOT}/objectmodel/Snapshot.h
     ${SRC_ROOT}/objectmodel/ClassInfo.h
     ${SRC_ROOT}/objectmodel/ComponentState.h
     ${SRC_ROOT}/objectmodel/ConfigurationSetting.h
@@ -313,7 +313,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/objectmodel/BaseLink.cpp
     ${SRC_ROOT}/objectmodel/BaseNode.cpp
     ${SRC_ROOT}/objectmodel/BaseObjectDescription.cpp
-    ${SRC_ROOT}/objectmodel/BaseSnapshot.cpp
+    ${SRC_ROOT}/objectmodel/Snapshot.cpp
     ${SRC_ROOT}/objectmodel/ClassInfo.cpp
     ${SRC_ROOT}/objectmodel/ComponentState.cpp
     ${SRC_ROOT}/objectmodel/ConfigurationSetting.cpp

@@ -32,9 +32,9 @@ namespace sofa::simulation
 
 void SaveSnapshotVisitor::processObject(
     core::objectmodel::BaseObject* obj,
-    std::shared_ptr<core::objectmodel::BaseSnapshot::SnapshotNode> parent)
+    std::shared_ptr<core::objectmodel::Snapshot::SnapshotNode> parent)
 {
-    std::vector<std::shared_ptr<core::objectmodel::BaseSnapshot::SnapshotNode>> parents;
+    std::vector<std::shared_ptr<core::objectmodel::Snapshot::SnapshotNode>> parents;
     const auto snapshot = obj->saveSnapshot(parents);
     parent->components.push_back(*snapshot);
 }
@@ -43,7 +43,7 @@ Visitor::Result SaveSnapshotVisitor::processNodeTopDown(simulation::Node* node)
 {
     const auto parents = node->getParents();
 
-    std::vector<std::shared_ptr<core::objectmodel::BaseSnapshot::SnapshotNode>> snapshotParents;
+    std::vector<std::shared_ptr<core::objectmodel::Snapshot::SnapshotNode>> snapshotParents;
     for (auto* p : parents)
     {
         const auto it = m_snapshotNodeMap.find(p);
@@ -54,7 +54,7 @@ Visitor::Result SaveSnapshotVisitor::processNodeTopDown(simulation::Node* node)
     }
 
     const auto snapshot = node->saveSnapshot(snapshotParents);
-    const auto SnapshotNode = std::dynamic_pointer_cast<core::objectmodel::BaseSnapshot::SnapshotNode>(snapshot);
+    const auto SnapshotNode = std::dynamic_pointer_cast<core::objectmodel::Snapshot::SnapshotNode>(snapshot);
     if (SnapshotNode)
     {
         m_snapshotNodeMap[node] = SnapshotNode;

@@ -48,7 +48,7 @@ using sofa::simulation::LoadLinkSnapshotVisitor;
 using sofa::core::objectmodel::Data;
 using sofa::core::objectmodel::BaseLink;
 using sofa::core::objectmodel::SingleLink ;
-using sofa::core::objectmodel::BaseSnapshot;
+using sofa::core::objectmodel::Snapshot;
 using sofa::core::objectmodel::BaseNode;
 
 #include <filesystem>
@@ -70,17 +70,17 @@ public:
         this->setName("pi");
     }
 
-    void saveData(BaseSnapshot::SnapshotObject& snapshot)
+    void saveData(Snapshot::SnapshotObject& snapshot)
     {
         this->saveDataIn(snapshot);
     }
 
-    void saveLinks(BaseSnapshot::SnapshotObject& snapshot)
+    void saveLinks(Snapshot::SnapshotObject& snapshot)
     {
         this->saveLinksIn(snapshot);
     }
 
-    std::shared_ptr<BaseSnapshot::SnapshotObject> createSnapshotObjectTest(std::vector<std::shared_ptr<BaseSnapshot::SnapshotNode>>& parents) const
+    std::shared_ptr<Snapshot::SnapshotObject> createSnapshotObjectTest(std::vector<std::shared_ptr<Snapshot::SnapshotNode>>& parents) const
     {
         
         return this->createSnapshotObject(parents);
@@ -88,7 +88,7 @@ public:
 
 };
 
-class MockSnapshotTest : public BaseSnapshot
+class MockSnapshotTest : public Snapshot
 {
 public:
     void exportTo(const std::string filename) override
@@ -106,15 +106,15 @@ public:
 
     void setupSnapshot()
     {
-        this->m_graphRoot = std::make_shared<BaseSnapshot::SnapshotNode>("root");
-        auto snapshotObject0 = std::make_shared<BaseSnapshot::SnapshotObject>("snapshotObject0");
+        this->m_graphRoot = std::make_shared<Snapshot::SnapshotNode>("root");
+        auto snapshotObject0 = std::make_shared<Snapshot::SnapshotObject>("snapshotObject0");
         this->m_graphRoot->components.push_back(*snapshotObject0);
 
-        auto snapshotNode1 = std::make_shared<BaseSnapshot::SnapshotNode>("snapshotNode1");
-        auto snapshotNode2 = std::make_shared<BaseSnapshot::SnapshotNode>("snapshotNode2");
+        auto snapshotNode1 = std::make_shared<Snapshot::SnapshotNode>("snapshotNode1");
+        auto snapshotNode2 = std::make_shared<Snapshot::SnapshotNode>("snapshotNode2");
 
-        auto snapshotObject1 = std::make_shared<BaseSnapshot::SnapshotObject>("snapshotObject1");
-        auto snapshotObject2 = std::make_shared<BaseSnapshot::SnapshotObject>("snapshotObject2");
+        auto snapshotObject1 = std::make_shared<Snapshot::SnapshotObject>("snapshotObject1");
+        auto snapshotObject2 = std::make_shared<Snapshot::SnapshotObject>("snapshotObject2");
 
         snapshotNode1->components.push_back(*snapshotObject1);
         snapshotNode2->components.push_back(*snapshotObject2);
@@ -147,7 +147,7 @@ TEST_F(Snapshot_test, saveDataIn)
     // Check if the snapshot contains the component with expected data
 
     TestComponent tComponent;
-    auto snapshot = std::make_shared<BaseSnapshot::SnapshotObject>();
+    auto snapshot = std::make_shared<Snapshot::SnapshotObject>();
     tComponent.saveData(*snapshot);
     for (auto& data : snapshot->m_dataContainer)
     {
@@ -170,7 +170,7 @@ TEST_F(Snapshot_test, createSnapshotObject)
     // To verify, A name and some data are added to the SnapshotObject
 
     TestComponent tComponent;
-    std::vector<std::shared_ptr<BaseSnapshot::SnapshotNode>> snapshotParents;
+    std::vector<std::shared_ptr<Snapshot::SnapshotNode>> snapshotParents;
     auto snapshotObject = tComponent.createSnapshotObjectTest(snapshotParents);
 
     snapshotObject->m_name = "snapshotObject";
@@ -202,8 +202,8 @@ TEST_F(Snapshot_test, findSnapshotObject)
 
     TestComponent tComponent;
 
-    auto snapshotNode = std::make_shared<BaseSnapshot::SnapshotNode>("root");
-    std::vector<std::shared_ptr<BaseSnapshot::SnapshotNode>> snapshotParents;
+    auto snapshotNode = std::make_shared<Snapshot::SnapshotNode>("root");
+    std::vector<std::shared_ptr<Snapshot::SnapshotNode>> snapshotParents;
     snapshotParents.push_back(snapshotNode); 
 
     auto snapshot = tComponent.saveSnapshot(snapshotParents);
@@ -223,8 +223,8 @@ TEST_F(Snapshot_test, saveSnapshot)
 
     TestComponent tComponent;
 
-    auto snapshot = std::make_shared<BaseSnapshot::SnapshotObject>();
-    std::vector<std::shared_ptr<BaseSnapshot::SnapshotNode>> snapshotParents;
+    auto snapshot = std::make_shared<Snapshot::SnapshotObject>();
+    std::vector<std::shared_ptr<Snapshot::SnapshotNode>> snapshotParents;
     snapshot = tComponent.saveSnapshot(snapshotParents);
 
     EXPECT_EQ(snapshot->m_name, "pi");
@@ -241,8 +241,8 @@ TEST_F(Snapshot_test, loadSnapshot)
 
     TestComponent tComponent;
 
-    auto snapshot = std::make_shared<BaseSnapshot::SnapshotObject>();
-    std::vector<std::shared_ptr<BaseSnapshot::SnapshotNode>> snapshotParents;
+    auto snapshot = std::make_shared<Snapshot::SnapshotObject>();
+    std::vector<std::shared_ptr<Snapshot::SnapshotNode>> snapshotParents;
     snapshot = tComponent.saveSnapshot(snapshotParents);
 
     TestComponent tcomponent2;

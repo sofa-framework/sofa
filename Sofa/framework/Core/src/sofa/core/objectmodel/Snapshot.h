@@ -31,7 +31,7 @@
 namespace sofa::core::objectmodel
 {
 
-class SOFA_CORE_API BaseSnapshot
+class SOFA_CORE_API Snapshot
 {
 
 public:
@@ -111,10 +111,10 @@ public:
 
     std::shared_ptr<SnapshotNode> m_graphRoot { nullptr };
 
-    virtual void exportTo(const std::string filename) = 0;
-    virtual void importFrom(std::string filename) = 0;
+    // virtual void exportTo(const std::string filename) = 0;
+    // virtual void importFrom(std::string filename) = 0;
 
-    BaseSnapshot();
-    virtual ~BaseSnapshot() = 0;
+    Snapshot();
+    virtual ~Snapshot();
 };
 } // namespace sofa::core::objectmodel

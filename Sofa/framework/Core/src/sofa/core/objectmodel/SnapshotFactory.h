@@ -24,13 +24,13 @@
 
 namespace sofa::core::objectmodel
 {
-class BaseSnapshot; 
+class Snapshot; 
 enum class SnapshotType
 {
     JSON,
     Print,
     Memory
 };
-std::unique_ptr<BaseSnapshot> createSnapshot(SnapshotType type);
+std::unique_ptr<Snapshot> createSnapshot(SnapshotType type);
 
 } // namespace sofa::core::objectmodel

@@ -22,7 +22,7 @@
 #define SOFA_CORE_OBJECTMODEL_BASE_CPP
 
 #include <sofa/core/objectmodel/Base.h>
-#include <sofa/core/objectmodel/BaseSnapshot.h>
+#include <sofa/core/objectmodel/Snapshot.h>
 #include <sofa/type/BoundingBox.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/core/ObjectFactory.h>
@@ -683,11 +683,11 @@ int Base::getInstanciationSourceFilePos() const
     return m_instanciationSourceFilePos;
 }
 
-void Base::saveDataIn(BaseSnapshot::SnapshotObject& snapshot) const
+void Base::saveDataIn(Snapshot::SnapshotObject& snapshot) const
 {
     for (const auto& dataFields = this->getDataFields(); const auto& data : dataFields)
     {
-        BaseSnapshot::DataInfo dataInfo;
+        Snapshot::DataInfo dataInfo;
         dataInfo.name = data->getName();
         dataInfo.type = data->getValueTypeString();
         dataInfo.value = data->getValueString();
@@ -706,11 +706,11 @@ void Base::saveDataIn(BaseSnapshot::SnapshotObject& snapshot) const
     }
 }
 
-void Base::saveLinksIn(BaseSnapshot::SnapshotObject& snapshot) const
+void Base::saveLinksIn(Snapshot::SnapshotObject& snapshot) const
 {
     for (const auto& links = this->getLinks(); const auto& link : links)
     {
-        BaseSnapshot::LinkInfo linkInfo;
+        Snapshot::LinkInfo linkInfo;
         linkInfo.name = link->getName();
         linkInfo.type = link->getValueTypeString();
         linkInfo.value = link->getValueString();
@@ -729,13 +729,13 @@ void Base::saveLinksIn(BaseSnapshot::SnapshotObject& snapshot) const
     }
 }
 
-// void Base::saveInternalStateIn(BaseSnapshot::SnapshotObject& snapshot) const
+// void Base::saveInternalStateIn(Snapshot::SnapshotObject& snapshot) const
 // {}
 
-std::shared_ptr<BaseSnapshot::SnapshotObject>
-Base::createSnapshotObject(std::vector<std::shared_ptr<BaseSnapshot::SnapshotNode>>& parents) const
+std::shared_ptr<Snapshot::SnapshotObject>
+Base::createSnapshotObject(std::vector<std::shared_ptr<Snapshot::SnapshotNode>>& parents) const
 {
-    auto object = std::make_shared<BaseSnapshot::SnapshotObject>();
+    auto object = std::make_shared<Snapshot::SnapshotObject>();
     for (const auto& p : parents)
     {
         if (p)
@@ -746,7 +746,7 @@ Base::createSnapshotObject(std::vector<std::shared_ptr<BaseSnapshot::SnapshotNod
     return object;
 }
 
-std::shared_ptr<BaseSnapshot::SnapshotObject> Base::saveSnapshot(std::vector<std::shared_ptr<BaseSnapshot::SnapshotNode>>& parents) const
+std::shared_ptr<Snapshot::SnapshotObject> Base::saveSnapshot(std::vector<std::shared_ptr<Snapshot::SnapshotNode>>& parents) const
 {
     const auto snapshotObject = createSnapshotObject(parents);
     snapshotObject->m_name = this->getName();
@@ -758,26 +758,26 @@ std::shared_ptr<BaseSnapshot::SnapshotObject> Base::saveSnapshot(std::vector<std
 
 
 
-std::shared_ptr<BaseSnapshot::SnapshotObject> 
-Base::findSnapshotObject(const std::shared_ptr<BaseSnapshot::SnapshotNode>& parents, const std::string& objectname)
+std::shared_ptr<Snapshot::SnapshotObject>
+Base::findSnapshotObject(const std::shared_ptr<Snapshot::SnapshotNode>& parents, const std::string& objectname)
 {
     for (const auto& p : parents->components)
     {
         if (p.m_name == objectname)
         {
-            auto snapshotObject = std::make_shared<BaseSnapshot::SnapshotObject>(p);
+            auto snapshotObject = std::make_shared<Snapshot::SnapshotObject>(p);
             return snapshotObject;
         }
     }
     msg_error("findSnapshotObject") << "SnapshotObject "<< objectname << " not found";
-    auto defaultObject = std::make_shared<BaseSnapshot::SnapshotObject>();
+    auto defaultObject = std::make_shared<Snapshot::SnapshotObject>();
     defaultObject->m_name = "Unknown object";
     
     return defaultObject;
 }
 
 
-void Base::loadDataSnapshot(const std::shared_ptr<BaseSnapshot::SnapshotObject>& snapshotObject) const
+void Base::loadDataSnapshot(const std::shared_ptr<Snapshot::SnapshotObject>& snapshotObject) const
 {
     for (const auto& dataInfo : snapshotObject->m_dataContainer)
     {
@@ -791,7 +791,7 @@ void Base::loadDataSnapshot(const std::shared_ptr<BaseSnapshot::SnapshotObject>&
     }
 }
 
-void Base::loadLinkSnapshot(const std::shared_ptr<BaseSnapshot::SnapshotObject>& snapshotObject) const
+void Base::loadLinkSnapshot(const std::shared_ptr<Snapshot::SnapshotObject>& snapshotObject) const
 {
     //if ( this->getClassName() != "Node")
     for (const auto& linkInfo : snapshotObject->m_linkContainer)

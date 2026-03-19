@@ -44,7 +44,7 @@
 
 #include <sofa/core/objectmodel/SnapshotFactory.h>
 
-#include <sofa/core/objectmodel/BaseSnapshot.h>
+#include <sofa/core/objectmodel/Snapshot.h>
 
 #define SOFA_BASE_CAST_IMPLEMENTATION(CLASSNAME) \
 virtual const CLASSNAME* to##CLASSNAME() const override { return this; } \
@@ -364,17 +364,17 @@ public:
 
     ///@}
 
-    std::shared_ptr<BaseSnapshot::SnapshotObject> saveSnapshot(std::vector<std::shared_ptr<BaseSnapshot::SnapshotNode>>& parents) const;
-    void loadDataSnapshot(const std::shared_ptr<BaseSnapshot::SnapshotObject>& snapshotObject) const;
-    void loadLinkSnapshot(const std::shared_ptr<BaseSnapshot::SnapshotObject>& snapshotObject) const;
+    std::shared_ptr<Snapshot::SnapshotObject> saveSnapshot(std::vector<std::shared_ptr<Snapshot::SnapshotNode>>& parents) const;
+    void loadDataSnapshot(const std::shared_ptr<Snapshot::SnapshotObject>& snapshotObject) const;
+    void loadLinkSnapshot(const std::shared_ptr<Snapshot::SnapshotObject>& snapshotObject) const;
 
 protected:
-    void saveDataIn(BaseSnapshot::SnapshotObject& snapshot) const;
-    void saveLinksIn(BaseSnapshot::SnapshotObject& snapshot) const;
+    void saveDataIn(Snapshot::SnapshotObject& snapshot) const;
+    void saveLinksIn(Snapshot::SnapshotObject& snapshot) const;
     //virtual void saveInternalStateIn(SnapshotObject& snapshot) const;
-    virtual std::shared_ptr<BaseSnapshot::SnapshotObject> createSnapshotObject(std::vector<std::shared_ptr<BaseSnapshot::SnapshotNode>>& parents) const;
+    virtual std::shared_ptr<Snapshot::SnapshotObject> createSnapshotObject(std::vector<std::shared_ptr<Snapshot::SnapshotNode>>& parents) const;
 public :
-    virtual std::shared_ptr<BaseSnapshot::SnapshotObject> findSnapshotObject(const std::shared_ptr<BaseSnapshot::SnapshotNode>& parents, const std::string& objectname);
+    virtual std::shared_ptr<Snapshot::SnapshotObject> findSnapshotObject(const std::shared_ptr<Snapshot::SnapshotNode>& parents, const std::string& objectname);
 
 protected:
     /// List of fields (Data instances)

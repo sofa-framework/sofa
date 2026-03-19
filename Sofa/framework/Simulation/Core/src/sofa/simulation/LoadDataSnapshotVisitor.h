@@ -29,12 +29,12 @@ namespace sofa::simulation
 class SOFA_SIMULATION_CORE_API LoadDataSnapshotVisitor : public Visitor
 {
 protected:
-    core::objectmodel::BaseSnapshot& m_snapshotContainer; 
+    core::objectmodel::Snapshot& m_snapshotContainer; 
 
 public:
-    LoadDataSnapshotVisitor(const sofa::core::ExecParams* eparams, core::objectmodel::BaseSnapshot& snapshot) : Visitor(eparams), m_snapshotContainer(snapshot) {}
+    LoadDataSnapshotVisitor(const sofa::core::ExecParams* eparams, core::objectmodel::Snapshot& snapshot) : Visitor(eparams), m_snapshotContainer(snapshot) {}
 
-    void processObject(core::objectmodel::BaseObject* obj, const std::shared_ptr<core::objectmodel::BaseSnapshot::SnapshotNode>& parent);
+    void processObject(core::objectmodel::BaseObject* obj, const std::shared_ptr<core::objectmodel::Snapshot::SnapshotNode>& parent);
 
     Result processNodeTopDown(simulation::Node* node) override;
     const char* getClassName() const override { return "LoadDataSnapshotVisitor"; }

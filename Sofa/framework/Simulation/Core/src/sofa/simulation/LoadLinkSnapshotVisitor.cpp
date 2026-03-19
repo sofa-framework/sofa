@@ -30,7 +30,7 @@ namespace sofa::simulation
 
 void LoadLinkSnapshotVisitor::processObject(
     core::objectmodel::BaseObject* obj,
-    const std::shared_ptr<core::objectmodel::BaseSnapshot::SnapshotNode>& parent
+    const std::shared_ptr<core::objectmodel::Snapshot::SnapshotNode>& parent
 )
 {
     const auto snapshotObject = obj->findSnapshotObject(parent, obj->getName());
@@ -40,7 +40,7 @@ void LoadLinkSnapshotVisitor::processObject(
 Visitor::Result LoadLinkSnapshotVisitor::processNodeTopDown(simulation::Node* node)
 {
     const auto snapshotObject = node->findSnapshotObject(m_snapshotContainer.m_graphRoot, node->getName());
-    const auto SnapshotNode = std::dynamic_pointer_cast<core::objectmodel::BaseSnapshot::SnapshotNode>(snapshotObject);
+    const auto SnapshotNode = std::dynamic_pointer_cast<core::objectmodel::Snapshot::SnapshotNode>(snapshotObject);
     node->loadLinkSnapshot(SnapshotNode);
 
     for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)

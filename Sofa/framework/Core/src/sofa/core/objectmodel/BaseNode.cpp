@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/core/objectmodel/BaseSnapshot.h>
+#include <sofa/core/objectmodel/Snapshot.h>
 #include <sofa/core/objectmodel/BaseNode.h>
 #include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/core/behavior/BaseAnimationLoop.h>
@@ -64,10 +64,10 @@ core::visual::VisualLoop* BaseNode::getVisualLoop() const
     return this->getContext()->get<core::visual::VisualLoop>();
 }
 
-std::shared_ptr<BaseSnapshot::SnapshotObject>
-BaseNode::createSnapshotObject(std::vector<std::shared_ptr<BaseSnapshot::SnapshotNode>>& parents) const
+std::shared_ptr<Snapshot::SnapshotObject>
+BaseNode::createSnapshotObject(std::vector<std::shared_ptr<Snapshot::SnapshotNode>>& parents) const
 {
-    auto nodeObject = std::make_shared<BaseSnapshot::SnapshotNode>();
+    auto nodeObject = std::make_shared<Snapshot::SnapshotNode>();
     for (auto p : parents)
     {
         if (p)
@@ -79,8 +79,8 @@ BaseNode::createSnapshotObject(std::vector<std::shared_ptr<BaseSnapshot::Snapsho
     return nodeObject;
 }
 
-std::shared_ptr<BaseSnapshot::SnapshotObject> 
-BaseNode::findSnapshotObject( const std::shared_ptr<BaseSnapshot::SnapshotNode>& parents, const std::string& objectname)
+std::shared_ptr<Snapshot::SnapshotObject>
+BaseNode::findSnapshotObject( const std::shared_ptr<Snapshot::SnapshotNode>& parents, const std::string& objectname)
 {
     if (!parents) return nullptr;
 

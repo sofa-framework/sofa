@@ -30,7 +30,7 @@ namespace sofa::simulation
 
 void LoadDataSnapshotVisitor::processObject(
     core::objectmodel::BaseObject* obj,
-    const std::shared_ptr<core::objectmodel::BaseSnapshot::SnapshotNode>& parent
+    const std::shared_ptr<core::objectmodel::Snapshot::SnapshotNode>& parent
 )
 {
     auto snapshotObject = obj->findSnapshotObject(parent, obj->getName());
@@ -43,7 +43,7 @@ Visitor::Result LoadDataSnapshotVisitor::processNodeTopDown(simulation::Node* no
     if (!snapshotObject)
         msg_error("findSnapshotNode") << "SnapshotNode "<< node->getName() << " not found in ";
     std::string nodeName = node->getName();
-    const auto SnapshotNode = std::dynamic_pointer_cast<core::objectmodel::BaseSnapshot::SnapshotNode>(snapshotObject);
+    const auto SnapshotNode = std::dynamic_pointer_cast<core::objectmodel::Snapshot::SnapshotNode>(snapshotObject);
     node->loadDataSnapshot(SnapshotNode);
     std::cout << "test object.getSize : " << node->object.getSize() << std::endl;
     for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)

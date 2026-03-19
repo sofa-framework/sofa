@@ -19,11 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/core/objectmodel/BaseSnapshot.h>
+#include <sofa/core/objectmodel/Snapshot.h>
 
 namespace sofa::core::objectmodel
 {
 
-BaseSnapshot::BaseSnapshot() = default;
-BaseSnapshot::~BaseSnapshot() = default;
+Snapshot::Snapshot() = default;
+Snapshot::~Snapshot() = default;
 } // namespace sofa::core::objectmodel

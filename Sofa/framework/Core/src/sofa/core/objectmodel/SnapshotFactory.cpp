@@ -27,7 +27,7 @@
 namespace sofa::core::objectmodel
 {
 
-std::unique_ptr<BaseSnapshot> createSnapshot(SnapshotType type)
+std::unique_ptr<Snapshot> createSnapshot(SnapshotType type)
 {
     switch (type)
     {

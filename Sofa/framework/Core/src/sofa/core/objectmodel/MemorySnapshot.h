@@ -21,12 +21,12 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/core/objectmodel/Base.h>
-#include <sofa/core/objectmodel/BaseSnapshot.h>
+#include <sofa/core/objectmodel/Snapshot.h>
 
 namespace sofa::core::objectmodel
 {
 
-class SOFA_CORE_API MemorySnapshot : public BaseSnapshot 
+class SOFA_CORE_API MemorySnapshot : public Snapshot
 {
 
 public:
