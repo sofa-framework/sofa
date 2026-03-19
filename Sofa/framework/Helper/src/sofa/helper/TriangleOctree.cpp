@@ -40,23 +40,28 @@ TriangleOctree::~TriangleOctree()
 
 void TriangleOctree::draw (sofa::helper::visual::DrawTool* drawTool)
 {
-    type::Vec3 center;
-    if ( objects.size ())
+    if (!objects.empty())
     {
-        center =
-            (type::Vec3 (x, y, z) + type::Vec3 (size / 2, size / 2, size / 2));
+        const auto x_f = static_cast<float>(x);
+        const auto y_f = static_cast<float>(y);
+        const auto z_f = static_cast<float>(z);
+        const auto size_f = static_cast<float>(size);
+
+        const type::Vec3f center = type::Vec3f(x_f, y_f, z_f) + type::Vec3f(size_f / 2, size_f / 2, size_f / 2);
         drawTool->pushMatrix();
-        drawTool->translate((float)center[0], (float)center[1], (float)center[2]);
+        drawTool->translate(center[0], center[1], center[2]);
         drawTool->setPolygonMode(0, false);
-        drawTool->drawCube(size, sofa::type::RGBAColor(0.5f, 0.5f, 0.5f, 1.0f));
+        drawTool->drawCube(size_f, sofa::type::RGBAColor::gray());
         drawTool->popMatrix();
 
         drawTool->setPolygonMode(0, true);
     }
-    for (int i = 0; i < 8; i++)
+    for (auto& childOctree : childVec)
     {
-        if (childVec[i])
-            childVec[i]->draw(drawTool);
+        if (childOctree)
+        {
+            childOctree->draw(drawTool);
+        }
     }
 }
 
