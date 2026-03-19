@@ -55,6 +55,26 @@ extern "C" {
     SOFA_SOFAMATRIX_API void registerObjects(sofa::core::ObjectFactory* factory);
 }
 
+namespace
+{
+void loadExtensions()
+{
+    auto& pluginManager = sofa::helper::system::PluginManager::getInstance();
+    for (const auto [guiModule, sofaMatrixModule] : {{"Sofa.Qt", "SofaMatrix.Qt"}, {"SofaImGui", "SofaMatrix.imgui"}})
+    {
+        const auto [pluginPath, isPluginLoaded] = pluginManager.isPluginLoaded(guiModule);
+        if (isPluginLoaded)
+        {
+            std::ostringstream pluginLoadingErrors;
+            pluginManager.loadPluginByName(sofaMatrixModule,
+                                     sofa::helper::system::PluginManager::getDefaultSuffix(),
+                                     true, true, &pluginLoadingErrors);
+            break;
+        }
+    }
+}
+}
+
 void initExternalModule()
 {
     static bool first = true;
@@ -66,6 +86,8 @@ void initExternalModule()
         first = false;
 
         sofa::component::initializeMatrixExporterComponents();
+
+        loadExtensions();
     }
 }
 
