@@ -362,6 +362,87 @@ private:
 };
 
 template<>
+struct SOFA_CORE_API DrawElementMesh<sofa::geometry::Prism>
+    : public BaseDrawMesh<DrawElementMesh<sofa::geometry::Prism>, 5>
+{
+    using ElementType = sofa::geometry::Prism;
+    friend BaseDrawMesh;
+    static constexpr std::size_t NumberTrianglesInPrism = 2;
+    static constexpr std::size_t NumberQuadsInPrism = 3;
+
+    static constexpr ColorContainer defaultColors {
+        sofa::type::RGBAColor::green(),
+        sofa::type::RGBAColor::teal(),
+        sofa::type::RGBAColor::navy(),
+        sofa::type::RGBAColor::gold(),
+        sofa::type::RGBAColor::purple()
+    };
+
+private:
+    template<class PositionContainer, class IndicesContainer>
+    void doDraw(
+        sofa::helper::visual::DrawTool* drawTool,
+        const PositionContainer& position,
+        sofa::core::topology::BaseMeshTopology* topology,
+        const IndicesContainer& elementIndices,
+        const ColorContainer& colors)
+    {
+        if (!topology)
+            return;
+
+        const auto& elements = topology->getPrisms();
+
+        // Allocate space for rendering points
+        renderedPoints[0].resize(elementIndices.size() * sofa::geometry::Triangle::NumberOfNodes);
+        renderedPoints[1].resize(elementIndices.size() * sofa::geometry::Triangle::NumberOfNodes);
+        renderedPoints[2].resize(elementIndices.size() * sofa::geometry::Quad::NumberOfNodes);
+        renderedPoints[3].resize(elementIndices.size() * sofa::geometry::Quad::NumberOfNodes);
+        renderedPoints[4].resize(elementIndices.size() * sofa::geometry::Quad::NumberOfNodes);
+
+        std::array<std::size_t, NumberColors> renderedPointId {};
+        
+        for (auto i : elementIndices)
+        {
+            const auto& prism = elements[i];
+            const auto center = this->elementCenter(position, prism);
+
+            const auto drawTriangle = [&](sofa::Index bufferId, sofa::Index v0, sofa::Index v1, sofa::Index v2)
+            {
+                const std::array vertexIndices { prism[v0], prism[v1], prism[v2] };
+                for (std::size_t k = 0; k < sofa::geometry::Triangle::NumberOfNodes; ++k)
+                {
+                    const auto p = this->applyElementSpace(position[vertexIndices[k]], center);
+                    renderedPoints[bufferId][renderedPointId[bufferId]++] = sofa::type::toVec3(p);
+                }
+            };
+
+            drawTriangle(0, 0, 1, 2);
+            drawTriangle(1, 5, 4, 3);
+
+            const auto drawQuad = [&](sofa::Index bufferId, sofa::Index v0, sofa::Index v1, sofa::Index v2, sofa::Index v3)
+            {
+                const std::array vertexIndices { prism[v0], prism[v1], prism[v2], prism[v3] };
+                for (std::size_t k = 0; k < sofa::geometry::Quad::NumberOfNodes; ++k)
+                {
+                    const auto p = this->applyElementSpace(position[vertexIndices[k]], center);
+                    renderedPoints[bufferId][renderedPointId[bufferId]++] = sofa::type::toVec3(p);
+                }
+            };
+
+            drawQuad(2, 0, 2, 5, 3);
+            drawQuad(3, 0, 3, 4, 1);
+            drawQuad(4, 1, 4, 5, 2);
+        }
+
+        drawTool->drawTriangles(renderedPoints[0], colors[0]);
+        drawTool->drawTriangles(renderedPoints[1], colors[1]);
+        drawTool->drawQuads(renderedPoints[2], colors[2]);
+        drawTool->drawQuads(renderedPoints[3], colors[3]);
+        drawTool->drawQuads(renderedPoints[4], colors[4]);
+    }
+};
+
+template<>
 struct SOFA_CORE_API DrawElementMesh<sofa::geometry::Hexahedron>
     : public BaseDrawMesh<DrawElementMesh<sofa::geometry::Hexahedron>, 6>
 {
@@ -460,6 +541,7 @@ public:
     {
         drawElements<sofa::geometry::Tetrahedron>(drawTool, position, topology);
         drawElements<sofa::geometry::Hexahedron>(drawTool, position, topology);
+        drawElements<sofa::geometry::Prism>(drawTool, position, topology);
     }
 
     template<class PositionContainer>
@@ -477,8 +559,9 @@ public:
 
         const auto hasTetra = !topology->getTetrahedra().empty();
         const auto hasHexa = !topology->getHexahedra().empty();
+        const auto hasPrism = !topology->getPrisms().empty();
 
-        const bool hasVolumeElements = hasTetra || hasHexa;
+        const bool hasVolumeElements = hasTetra || hasHexa || hasPrism;
 
         if (!hasSurfaceElements && !hasVolumeElements)
         {
@@ -503,7 +586,8 @@ private:
         DrawElementMesh<sofa::geometry::Triangle>,
         DrawElementMesh<sofa::geometry::Quad>,
         DrawElementMesh<sofa::geometry::Tetrahedron>,
-        DrawElementMesh<sofa::geometry::Hexahedron>
+        DrawElementMesh<sofa::geometry::Hexahedron>,
+        DrawElementMesh<sofa::geometry::Prism>
     > m_meshes;
 };
 

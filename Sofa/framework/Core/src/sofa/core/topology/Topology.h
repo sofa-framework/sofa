@@ -25,7 +25,7 @@
 #include <sofa/topology/Topology.h>
 #include <sofa/geometry/ElementType.h>
 #include <sofa/geometry/ElementInfo.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
 
 namespace sofa::core::topology

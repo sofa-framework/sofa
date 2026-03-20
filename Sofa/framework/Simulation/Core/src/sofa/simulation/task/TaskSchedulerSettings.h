@@ -7,7 +7,7 @@
 #include <sofa/simulation/config.h>
 
 #include <sofa/simulation/task/TaskSchedulerUser.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 
 namespace sofa::simulation
 {
