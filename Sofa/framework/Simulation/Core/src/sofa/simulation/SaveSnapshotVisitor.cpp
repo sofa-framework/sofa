@@ -22,8 +22,6 @@
 #include <sofa/simulation/SaveSnapshotVisitor.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/simulation/Node.h>
-#include <sofa/core/objectmodel/SnapshotFactory.h>
-using sofa::core::objectmodel::SnapshotType;
 #include <iostream>
 
 

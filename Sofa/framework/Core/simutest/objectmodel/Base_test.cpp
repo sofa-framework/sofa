@@ -36,9 +36,6 @@ using sofa::defaulttype::Rigid3Types;
 #include <sofa/defaulttype/VecTypes.h>
 using sofa::defaulttype::Vec3Types;
 
-#include <sofa/core/objectmodel/SnapshotFactory.h>
-using sofa::core::objectmodel::SnapshotType;
-
 #include <sofa/simulation/SaveSnapshotVisitor.h>
 using sofa::simulation::SaveSnapshotVisitor;
 

@@ -20,24 +20,10 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/core/objectmodel/SnapshotFactory.h>
-#include <sofa/core/objectmodel/JSONSnapshot.h>
-#include <sofa/core/objectmodel/MemorySnapshot.h>
+#include <sofa/core/objectmodel/Base.h>
+#include <sofa/core/objectmodel/Snapshot.h>
 
 namespace sofa::core::objectmodel
 {
-
-std::unique_ptr<Snapshot> createSnapshot(SnapshotType type)
-{
-    switch (type)
-    {
-        case SnapshotType::JSON:
-            return std::make_unique<JSONSnapshot>();
-        case SnapshotType::Memory:
-            return std::make_unique<MemorySnapshot>();
-        default:
-            return nullptr;
-    }
-}
 
 } // namespace sofa::core::objectmodel

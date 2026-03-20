@@ -42,8 +42,6 @@
 
 #include <sstream>
 
-#include <sofa/core/objectmodel/SnapshotFactory.h>
-
 #include <sofa/core/objectmodel/Snapshot.h>
 
 #define SOFA_BASE_CAST_IMPLEMENTATION(CLASSNAME) \

@@ -22,8 +22,6 @@
 #include <sofa/simulation/LoadDataSnapshotVisitor.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/simulation/Node.h>
-#include <sofa/core/objectmodel/SnapshotFactory.h>
-using sofa::core::objectmodel::SnapshotType;
 
 namespace sofa::simulation
 {
@@ -45,7 +43,6 @@ Visitor::Result LoadDataSnapshotVisitor::processNodeTopDown(simulation::Node* no
     std::string nodeName = node->getName();
     const auto SnapshotNode = std::dynamic_pointer_cast<core::objectmodel::Snapshot::SnapshotNode>(snapshotObject);
     node->loadDataSnapshot(SnapshotNode);
-    std::cout << "test object.getSize : " << node->object.getSize() << std::endl;
     for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
     {
         this->processObject(it->get(), SnapshotNode);

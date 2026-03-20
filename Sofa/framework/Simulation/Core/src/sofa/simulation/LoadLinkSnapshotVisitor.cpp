@@ -22,8 +22,6 @@
 #include <sofa/simulation/LoadLinkSnapshotVisitor.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/simulation/Node.h>
-#include <sofa/core/objectmodel/SnapshotFactory.h>
-using sofa::core::objectmodel::SnapshotType;
 
 namespace sofa::simulation
 {

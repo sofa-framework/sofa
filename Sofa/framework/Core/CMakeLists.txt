@@ -178,17 +178,16 @@ set(HEADER_FILES
     ${SRC_ROOT}/objectmodel/HapticDeviceEvent.h
     ${SRC_ROOT}/objectmodel/IdleEvent.h
     ${SRC_ROOT}/objectmodel/JoystickEvent.h
-    ${SRC_ROOT}/objectmodel/JSONSnapshot.h
+    ${SRC_ROOT}/objectmodel/SnapshotJSONExporter.h
     ${SRC_ROOT}/objectmodel/KeypressedEvent.h
     ${SRC_ROOT}/objectmodel/KeyreleasedEvent.h
     ${SRC_ROOT}/objectmodel/lifecycle/DeprecatedData.h
     ${SRC_ROOT}/objectmodel/lifecycle/RemovedData.h
     ${SRC_ROOT}/objectmodel/lifecycle/RenamedData.h
     ${SRC_ROOT}/objectmodel/Link.h
-    ${SRC_ROOT}/objectmodel/MemorySnapshot.h
+    ${SRC_ROOT}/objectmodel/SnapshotManager.h
     ${SRC_ROOT}/objectmodel/MouseEvent.h
     ${SRC_ROOT}/objectmodel/SPtr.h
-    ${SRC_ROOT}/objectmodel/SnapshotFactory.h
     ${SRC_ROOT}/objectmodel/ScriptEvent.h
     ${SRC_ROOT}/objectmodel/TypeOfInsertion.h
     ${SRC_ROOT}/objectmodel/Tag.h
@@ -332,14 +331,13 @@ set(SOURCE_FILES
     ${SRC_ROOT}/objectmodel/HapticDeviceEvent.cpp
     ${SRC_ROOT}/objectmodel/IdleEvent.cpp
     ${SRC_ROOT}/objectmodel/JoystickEvent.cpp
-    ${SRC_ROOT}/objectmodel/JSONSnapshot.cpp
+    ${SRC_ROOT}/objectmodel/SnapshotJSONExporter.cpp
     ${SRC_ROOT}/objectmodel/KeypressedEvent.cpp
     ${SRC_ROOT}/objectmodel/KeyreleasedEvent.cpp
     ${SRC_ROOT}/objectmodel/lifecycle/DeprecatedData.cpp
-    ${SRC_ROOT}/objectmodel/MemorySnapshot.cpp
+    ${SRC_ROOT}/objectmodel/SnapshotManager.cpp
     ${SRC_ROOT}/objectmodel/MouseEvent.cpp
     ${SRC_ROOT}/objectmodel/ScriptEvent.cpp
-    ${SRC_ROOT}/objectmodel/SnapshotFactory.cpp
     ${SRC_ROOT}/objectmodel/Tag.cpp
     ${SRC_ROOT}/objectmodel/TagSet.cpp
     ${SRC_ROOT}/topology/BaseMeshTopology.cpp

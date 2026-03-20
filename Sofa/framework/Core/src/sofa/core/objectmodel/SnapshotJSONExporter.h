@@ -20,17 +20,11 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <memory>
+#include <sofa/core/objectmodel/Base.h>
+#include <sofa/core/objectmodel/Snapshot.h>
 
 namespace sofa::core::objectmodel
 {
-class Snapshot; 
-enum class SnapshotType
-{
-    JSON,
-    Print,
-    Memory
-};
-std::unique_ptr<Snapshot> createSnapshot(SnapshotType type);
-
+    void exportTo(Snapshot& snapshot, const std::string& filename);
+    void importFrom(Snapshot& snapshot, const std::string& filename);
 } // namespace sofa::core::objectmodel

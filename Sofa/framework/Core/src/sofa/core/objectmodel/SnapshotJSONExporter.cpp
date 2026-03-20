@@ -19,16 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/core/objectmodel/JSONSnapshot.h>
+#include <sofa/core/objectmodel/SnapshotJSONExporter.h>
+#include <nlohmann/json.hpp>
 #include <fstream>
 #include <string>
 #include <iostream>
 
 namespace sofa::core::objectmodel
 {
-
-JSONSnapshot::JSONSnapshot() = default;
-JSONSnapshot::~JSONSnapshot() = default;
 
 void to_json(nlohmann::json& j, const Snapshot::DataInfo& di )
 {
@@ -97,9 +95,9 @@ void to_json(nlohmann::json& j, const std::shared_ptr<Snapshot::SnapshotNode>& s
     }
 }
 
-void JSONSnapshot::exportTo(const std::string filename)
+void exportTo(Snapshot& snapshot, const std::string& filename)
 {
-    nlohmann::json j = *m_graphRoot ;
+    nlohmann::json j = snapshot.m_graphRoot ;
 
     std::ofstream file(filename);
     file << j.dump(5);
@@ -199,7 +197,7 @@ void from_json(const nlohmann::json& j, Snapshot::SnapshotNode& sn)
     }
 }
 
-void JSONSnapshot::importFrom(const std::string filename)
+void importFrom(Snapshot& snapshot, const std::string& filename)
 {
     std::ifstream file(filename);
     if (!file.is_open())
@@ -212,14 +210,14 @@ void JSONSnapshot::importFrom(const std::string filename)
     file >> jsonRoot;
     file.close();
 
-    if (!m_graphRoot)
+    if (!snapshot.m_graphRoot)
     {
-        m_graphRoot = std::make_shared<Snapshot::SnapshotNode>();
+        snapshot.m_graphRoot = std::make_shared<Snapshot::SnapshotNode>();
     }
 
     if (jsonRoot.is_object() && !jsonRoot.empty())
     {
-        from_json(jsonRoot, *m_graphRoot);
+        from_json(jsonRoot, *snapshot.m_graphRoot);
     }
     else
     {

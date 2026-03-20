@@ -19,22 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-#include <sofa/core/objectmodel/Base.h>
-#include <sofa/core/objectmodel/Snapshot.h>
-#include <nlohmann/json.hpp>
+#include <sofa/core/objectmodel/SnapshotManager.h>
+#include <fstream>
+#include <string>
 
 namespace sofa::core::objectmodel
 {
 
-class SOFA_CORE_API JSONSnapshot : public Snapshot
-{
 
-public:
 
-    void exportTo(const std::string filename) override;
-    void importFrom(std::string filename) override;
-    JSONSnapshot();
-    ~JSONSnapshot();
-};
 } // namespace sofa::core::objectmodel
