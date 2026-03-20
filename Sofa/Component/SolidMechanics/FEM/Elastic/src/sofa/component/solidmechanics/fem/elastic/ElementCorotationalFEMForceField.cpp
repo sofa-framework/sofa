@@ -23,7 +23,7 @@
 
 #include <sofa/component/solidmechanics/fem/elastic/ElementCorotationalFEMForceField.inl>
 
-#include <sofa/component/solidmechanics/fem/elastic/finiteelement/FiniteElement[all].h>
+#include <sofa/fem/FiniteElement[all].h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::solidmechanics::fem::elastic

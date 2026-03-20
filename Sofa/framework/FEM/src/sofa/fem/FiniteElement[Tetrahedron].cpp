@@ -19,10 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#define SOFA_FEM_FINITE_ELEMENT_TETRAHEDRON_CPP
+#include <sofa/fem/FiniteElement[Tetrahedron].h>
+#include <sofa/defaulttype/VecTypes.h>
 
-#include <sofa/component/solidmechanics/fem/elastic/finiteelement/FiniteElement[Edge].h>
-#include <sofa/component/solidmechanics/fem/elastic/finiteelement/FiniteElement[Hexahedron].h>
-#include <sofa/component/solidmechanics/fem/elastic/finiteelement/FiniteElement[Quad].h>
-#include <sofa/component/solidmechanics/fem/elastic/finiteelement/FiniteElement[Tetrahedron].h>
-#include <sofa/component/solidmechanics/fem/elastic/finiteelement/FiniteElement[Triangle].h>
+namespace sofa::fem
+{
+
+template struct SOFA_FEM_API FiniteElement<sofa::geometry::Tetrahedron, sofa::defaulttype::Vec3Types>;
+
+}

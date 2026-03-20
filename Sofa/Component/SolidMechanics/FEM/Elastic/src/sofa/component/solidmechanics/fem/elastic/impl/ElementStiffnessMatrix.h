@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/solidmechanics/fem/elastic/finiteelement/FiniteElement.h>
+#include <sofa/fem/FiniteElement.h>
 #include <sofa/type/FullySymmetric4Tensor.h>
 #include <sofa/component/solidmechanics/fem/elastic/impl/OrthotropicElasticityTensor.h>
 #include <sofa/component/solidmechanics/fem/elastic/impl/StrainDisplacement.h>
@@ -59,7 +59,7 @@ struct FactorizedElementStiffness
 {
 private:
     using Real = sofa::Real_t<DataTypes>;
-    using FiniteElement = sofa::component::solidmechanics::fem::elastic::FiniteElement<ElementType, DataTypes>;
+    using FiniteElement = sofa::fem::FiniteElement<ElementType, DataTypes>;
     static constexpr auto NbQuadraturePoints = FiniteElement::quadraturePoints().size();
     static constexpr sofa::Size NumberOfIndependentElements = sofa::type::NumberOfIndependentElements<DataTypes::spatial_dimensions>;
 
@@ -148,7 +148,7 @@ FactorizedElementStiffness<DataTypes, ElementType, matrixVectorProductType> inte
     const sofa::type::FullySymmetric4Tensor<DataTypes::spatial_dimensions, sofa::Real_t<DataTypes>>& elasticityTensor)
 {
     using Real = sofa::Real_t<DataTypes>;
-    using FiniteElement = FiniteElement<ElementType, DataTypes>;
+    using FiniteElement = sofa::fem::FiniteElement<ElementType, DataTypes>;
 
     static constexpr sofa::Size spatial_dimensions = DataTypes::spatial_dimensions;
     static constexpr sofa::Size NumberOfNodesInElement = ElementType::NumberOfNodes;

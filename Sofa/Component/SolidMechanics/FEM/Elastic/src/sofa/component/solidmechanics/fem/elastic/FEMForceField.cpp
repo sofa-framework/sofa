@@ -21,7 +21,7 @@
 ******************************************************************************/
 #define ELASTICITY_COMPONENT_FEM_FORCEFIELD_CPP
 #include <sofa/component/solidmechanics/fem/elastic/FEMForceField.inl>
-#include <sofa/component/solidmechanics/fem/elastic/finiteelement/FiniteElement[all].h>
+#include <sofa/fem/FiniteElement[all].h>
 
 namespace sofa::component::solidmechanics::fem::elastic
 {

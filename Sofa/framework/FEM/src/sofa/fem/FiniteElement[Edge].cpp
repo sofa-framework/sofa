@@ -19,38 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-#include <sofa/component/solidmechanics/fem/elastic/finiteelement/FiniteElement.h>
+#define SOFA_FEM_FINITE_ELEMENT_EDGE_CPP
+#include <sofa/fem/FiniteElement[Edge].h>
+#include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa::component::solidmechanics::fem::elastic
+namespace sofa::fem
 {
 
-template <class DataTypes>
-struct FiniteElement<sofa::geometry::Edge, DataTypes>
-{
-    FINITEELEMENT_HEADER(sofa::geometry::Edge, DataTypes, 1);
-
-    constexpr static std::array<ReferenceCoord, NumberOfNodesInElement> referenceElementNodes {{ReferenceCoord{-1}, ReferenceCoord{1}}};
-
-    static const sofa::type::vector<TopologyElement>& getElementSequence(sofa::core::topology::BaseMeshTopology& topology)
-    {
-        return topology.getEdges();
-    }
-
-    static constexpr sofa::type::Mat<NumberOfNodesInElement, TopologicalDimension, Real> gradientShapeFunctions(const sofa::type::Vec<TopologicalDimension, Real>& q)
-    {
-        SOFA_UNUSED(q);
-        return {{-static_cast<Real>(0.5)}, {static_cast<Real>(0.5)}};
-    }
-
-    static constexpr std::array<QuadraturePointAndWeight, 1> quadraturePoints()
-    {
-        constexpr sofa::type::Vec<TopologicalDimension, Real> q0(static_cast<Real>(0));
-        return {
-            std::make_pair(q0, static_cast<Real>(2))
-        };
-    }
-
-};
+template struct SOFA_FEM_API FiniteElement<sofa::geometry::Edge, sofa::defaulttype::Vec3Types>;
+template struct SOFA_FEM_API FiniteElement<sofa::geometry::Edge, sofa::defaulttype::Vec2Types>;
+template struct SOFA_FEM_API FiniteElement<sofa::geometry::Edge, sofa::defaulttype::Vec1Types>;
 
 }

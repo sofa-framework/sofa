@@ -46,14 +46,6 @@ set(HEADER_FILES
     ${SOFACOMPONENTSOLIDMECHANICSFEMELASTIC_SOURCE_DIR}/TriangularFEMForceFieldOptim.h
     ${SOFACOMPONENTSOLIDMECHANICSFEMELASTIC_SOURCE_DIR}/TriangularFEMForceFieldOptim.inl
 
-    ${SOFACOMPONENTSOLIDMECHANICSFEMELASTIC_SOURCE_DIR}/finiteelement/FiniteElement.h
-    ${SOFACOMPONENTSOLIDMECHANICSFEMELASTIC_SOURCE_DIR}/finiteelement/FiniteElement[all].h
-    ${SOFACOMPONENTSOLIDMECHANICSFEMELASTIC_SOURCE_DIR}/finiteelement/FiniteElement[Edge].h
-    ${SOFACOMPONENTSOLIDMECHANICSFEMELASTIC_SOURCE_DIR}/finiteelement/FiniteElement[Hexahedron].h
-    ${SOFACOMPONENTSOLIDMECHANICSFEMELASTIC_SOURCE_DIR}/finiteelement/FiniteElement[Quad].h
-    ${SOFACOMPONENTSOLIDMECHANICSFEMELASTIC_SOURCE_DIR}/finiteelement/FiniteElement[Tetrahedron].h
-    ${SOFACOMPONENTSOLIDMECHANICSFEMELASTIC_SOURCE_DIR}/finiteelement/FiniteElement[Triangle].h
-
     ${SOFACOMPONENTSOLIDMECHANICSFEMELASTIC_SOURCE_DIR}/impl/ComputeStrategy.h
     ${SOFACOMPONENTSOLIDMECHANICSFEMELASTIC_SOURCE_DIR}/impl/ElementStiffnessMatrix.h
     ${SOFACOMPONENTSOLIDMECHANICSFEMELASTIC_SOURCE_DIR}/impl/KroneckerDelta.h
@@ -96,10 +88,12 @@ set(SOURCE_FILES
 
 sofa_find_package(Sofa.Simulation.Core REQUIRED)
 sofa_find_package(Sofa.Component.Topology.Container.Grid REQUIRED)
+sofa_find_package(Sofa.FEM REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Simulation.Core)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Topology.Container.Grid)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.FEM)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

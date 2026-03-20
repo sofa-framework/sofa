@@ -30,7 +30,7 @@
 #include <sofa/core/behavior/TopologyAccessor.h>
 
 #if !defined(ELASTICITY_COMPONENT_FEM_FORCEFIELD_CPP)
-#include <sofa/component/solidmechanics/fem/elastic/finiteelement/FiniteElement[all].h>
+#include <sofa/fem/FiniteElement[all].h>
 #endif
 
 namespace sofa::component::solidmechanics::fem::elastic

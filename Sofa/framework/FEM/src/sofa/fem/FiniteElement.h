@@ -20,9 +20,10 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
+#include <sofa/fem/config.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 
-namespace sofa::component::solidmechanics::fem::elastic
+namespace sofa::fem
 {
 
 template <class ElementType, class DataTypes>
@@ -45,7 +46,7 @@ struct FiniteElement;
 template <class ElementType, class DataTypes>
 struct FiniteElementHelper
 {
-    using FiniteElement = sofa::component::solidmechanics::fem::elastic::FiniteElement<ElementType, DataTypes>;
+    using FiniteElement = sofa::fem::FiniteElement<ElementType, DataTypes>;
     using Coord = typename FiniteElement::Coord;
     using Real = typename FiniteElement::Real;
 

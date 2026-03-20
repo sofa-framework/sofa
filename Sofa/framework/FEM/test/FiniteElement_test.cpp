@@ -20,12 +20,10 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <gtest/gtest.h>
-#include <sofa/component/solidmechanics/fem/elastic/finiteelement/FiniteElement[all].h>
+#include <sofa/fem/FiniteElement[all].h>
 
 namespace sofa
 {
-
-using namespace sofa::component::solidmechanics::fem::elastic;
 
 /**
  * Computes the sum of the quadrature weights and compare it to an expected value
@@ -33,7 +31,7 @@ using namespace sofa::component::solidmechanics::fem::elastic;
 template <class ElementType, class DataTypes>
 void testSumWeights(const sofa::Real_t<DataTypes> expected)
 {
-    using FE = FiniteElement<ElementType, DataTypes>;
+    using FE = sofa::fem::FiniteElement<ElementType, DataTypes>;
 
     SReal weightSum = 0;
     for (const auto& [q, w] : FE::quadraturePoints())
@@ -89,9 +87,9 @@ TEST(FiniteElement, hexa3dWeights)
  * Checks that the sum of the gradients of shape functions is zero at the evaluation point.
  */
 template <class ElementType, class DataTypes>
-void testGradientShapeFunctions(const sofa::type::Vec<FiniteElement<ElementType, DataTypes>::TopologicalDimension, sofa::Real_t<DataTypes>>& evaluationPoint)
+void testGradientShapeFunctions(const sofa::type::Vec<sofa::fem::FiniteElement<ElementType, DataTypes>::TopologicalDimension, sofa::Real_t<DataTypes>>& evaluationPoint)
 {
-    using FE = FiniteElement<ElementType, DataTypes>;
+    using FE = sofa::fem::FiniteElement<ElementType, DataTypes>;
     static constexpr sofa::type::Vec<FE::TopologicalDimension, sofa::Real_t<DataTypes>> zero;
 
     const auto N = FE::gradientShapeFunctions(evaluationPoint);

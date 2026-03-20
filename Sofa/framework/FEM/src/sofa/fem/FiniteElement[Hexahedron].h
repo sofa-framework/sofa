@@ -20,9 +20,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/solidmechanics/fem/elastic/finiteelement/FiniteElement.h>
+#include <sofa/fem/FiniteElement.h>
 
-namespace sofa::component::solidmechanics::fem::elastic
+#if !defined(SOFA_FEM_FINITE_ELEMENT_HEXAHEDRON_CPP)
+#include <sofa/defaulttype/VecTypes.h>
+#endif
+
+namespace sofa::fem
 {
 
 template <class DataTypes>
@@ -98,4 +102,9 @@ struct FiniteElement<sofa::geometry::Hexahedron, DataTypes>
         return q;
     }
 };
+
+#if !defined(SOFA_FEM_FINITE_ELEMENT_HEXAHEDRON_CPP)
+extern template struct SOFA_FEM_API FiniteElement<sofa::geometry::Hexahedron, sofa::defaulttype::Vec3Types>;
+#endif
+
 }

@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/solidmechanics/fem/elastic/finiteelement/FiniteElement.h>
+#include <sofa/fem/FiniteElement.h>
 #include <sofa/component/solidmechanics/fem/elastic/impl/ElementStiffnessMatrix.h>
 #include <sofa/type/FullySymmetric4Tensor.h>
 #include <sofa/core/trait/DataTypes.h>
@@ -40,7 +40,7 @@ struct trait
     using Deriv = sofa::Deriv_t<DataTypes>;
     using Real = sofa::Real_t<DataTypes>;
 
-    using FiniteElement = sofa::component::solidmechanics::fem::elastic::FiniteElement<ElementType, DataTypes>;
+    using FiniteElement = sofa::fem::FiniteElement<ElementType, DataTypes>;
     using TopologyElement = typename FiniteElement::TopologyElement;
     using ReferenceCoord = typename FiniteElement::ReferenceCoord;
 

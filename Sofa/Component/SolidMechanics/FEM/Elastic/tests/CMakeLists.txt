@@ -6,7 +6,6 @@ set(SOURCE_FILES
     BaseTetrahedronFEMForceField_test.h
     BeamFEMForceField_test.cpp
     FastTetrahedralCorotationalForceField_test.cpp
-    FiniteElement_test.cpp
     HexahedronFEMForceField_test.cpp
     StrainDisplacement_test.cpp
     TetrahedralCorotationalFEMForceField_test.cpp
