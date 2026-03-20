@@ -20,8 +20,33 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
+
 #include <SofaCUDA/config.h>
-namespace sofa::gpu::cuda
+#include <sofa/component/mapping/linear/SubsetMultiMapping.h>
+
+#if !defined(SOFA_COMPONENT_MAPPING_CUDASUBSETMULTIMAPPING_CPP)
+
+#include <sofa/gpu/cuda/CudaTypes.h>
+
+namespace sofa::component::mapping::linear
 {
-SOFA_GPU_CUDA_API void init();
-} // namespace sofa::gpu::cuda
+
+using namespace sofa::gpu::cuda;
+
+extern template class SOFA_GPU_CUDA_API SubsetMultiMapping< CudaVec3Types, CudaVec3Types >;
+extern template class SOFA_GPU_CUDA_API SubsetMultiMapping< CudaVec1Types, CudaVec1Types >;
+extern template class SOFA_GPU_CUDA_API SubsetMultiMapping< CudaRigid3Types, CudaRigid3Types >;
+extern template class SOFA_GPU_CUDA_API SubsetMultiMapping< CudaRigid3Types, CudaVec3Types >;
+
+#ifdef SOFA_GPU_CUDA_DOUBLE
+extern template class SOFA_GPU_CUDA_API SubsetMultiMapping< CudaVec3dTypes, CudaVec3dTypes >;
+extern template class SOFA_GPU_CUDA_API SubsetMultiMapping< CudaVec1dTypes, CudaVec1dTypes >;
+extern template class SOFA_GPU_CUDA_API SubsetMultiMapping< CudaRigid3dTypes, CudaRigid3dTypes >;
+extern template class SOFA_GPU_CUDA_API SubsetMultiMapping< CudaRigid3dTypes, CudaVec3dTypes >;
+#endif
+
+} // namespace sofa::component::mapping::linear
+#endif
+
+
+

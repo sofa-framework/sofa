@@ -1,4 +1,4 @@
-﻿/******************************************************************************
+/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,9 +19,36 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-#include <SofaCUDA/config.h>
+#include <sofa/gpu/cuda/CudaTypes.h>
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/component/engine/transform/IndexValueMapper.inl>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
+
+namespace sofa::component::engine::transform
+{
+
+template class SOFA_GPU_CUDA_API IndexValueMapper<gpu::cuda::CudaVec3fTypes>;
+template class SOFA_GPU_CUDA_API IndexValueMapper<gpu::cuda::CudaVec3f1Types>;
+#ifdef SOFA_GPU_CUDA_DOUBLE
+template class SOFA_GPU_CUDA_API IndexValueMapper<gpu::cuda::CudaVec3dTypes>;
+template class SOFA_GPU_CUDA_API IndexValueMapper<gpu::cuda::CudaVec3d1Types>;
+#endif // SOFA_GPU_CUDA_DOUBLE
+
+} // namespace sofa::component::engine::transform
+
 namespace sofa::gpu::cuda
 {
-SOFA_GPU_CUDA_API void init();
+    void registerIndexValueMapper(sofa::core::ObjectFactory* factory)
+    {
+        factory->registerObjects(sofa::core::ObjectRegistrationData("Supports GPU-side computations using CUDA for the IndexValueMapper")
+        .add<component::engine::transform::IndexValueMapper<CudaVec3fTypes> >()
+        .add<component::engine::transform::IndexValueMapper<CudaVec3f1Types> >()
+#ifdef SOFA_GPU_CUDA_DOUBLE
+        .add<component::engine::transform::IndexValueMapper<CudaVec3dTypes> >()
+        .add<component::engine::transform::IndexValueMapper<CudaVec3d1Types> >()
+#endif // SOFA_GPU_CUDA_DOUBLE
+        );
+    }
+
 } // namespace sofa::gpu::cuda

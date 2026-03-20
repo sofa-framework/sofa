@@ -20,8 +20,37 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
+
 #include <SofaCUDA/config.h>
-namespace sofa::gpu::cuda
+#include <sofa/component/mechanicalload/ConstantForceField.h>
+
+#if !defined(SOFA_COMPONENT_FORCEFIELD_CUDACONSTANTFORCEFIELD_CPP)
+
+#include <sofa/gpu/cuda/CudaTypes.h>
+
+namespace sofa::component::mechanicalload
 {
-SOFA_GPU_CUDA_API void init();
-} // namespace sofa::gpu::cuda
+
+using namespace sofa::gpu::cuda;
+
+extern template class SOFA_GPU_CUDA_API ConstantForceField<CudaVec3Types>;
+extern template class SOFA_GPU_CUDA_API ConstantForceField<CudaVec2Types>;
+extern template class SOFA_GPU_CUDA_API ConstantForceField<CudaVec1Types>;
+extern template class SOFA_GPU_CUDA_API ConstantForceField<CudaVec6Types>;
+extern template class SOFA_GPU_CUDA_API ConstantForceField<CudaRigid3Types>;
+extern template class SOFA_GPU_CUDA_API ConstantForceField<CudaRigid2Types>;
+
+#ifdef SOFA_GPU_CUDA_DOUBLE
+extern template class SOFA_GPU_CUDA_API ConstantForceField<CudaVec3dTypes>;
+extern template class SOFA_GPU_CUDA_API ConstantForceField<CudaVec2dTypes>;
+extern template class SOFA_GPU_CUDA_API ConstantForceField<CudaVec1dTypes>;
+extern template class SOFA_GPU_CUDA_API ConstantForceField<CudaVec6dTypes>;
+extern template class SOFA_GPU_CUDA_API ConstantForceField<CudaRigid3dTypes>;
+extern template class SOFA_GPU_CUDA_API ConstantForceField<CudaRigid2dTypes>;
+#endif
+
+} // namespace sofa::component::mechanicalload
+#endif
+
+
+

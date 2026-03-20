@@ -1,4 +1,4 @@
-﻿/******************************************************************************
+/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,9 +19,35 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-#include <SofaCUDA/config.h>
+#include <sofa/gpu/cuda/CudaTypes.h>
+#include <SofaCUDA/component/mechanicalload/CudaSphereForceField.inl>
+#include <sofa/core/behavior/ForceField.inl>
+#include <sofa/core/ObjectFactory.h>
+
+namespace sofa::component::mechanicalload
+{
+template class SOFA_GPU_CUDA_API SphereForceField< CudaVec3fTypes >;
+template class SOFA_GPU_CUDA_API SphereForceField< CudaVec3f1Types >;
+
+#ifdef SOFA_GPU_CUDA_DOUBLE
+template class SOFA_GPU_CUDA_API SphereForceField< CudaVec3dTypes >;
+template class SOFA_GPU_CUDA_API SphereForceField< CudaVec3d1Types >;
+#endif
+}
+
 namespace sofa::gpu::cuda
 {
-SOFA_GPU_CUDA_API void init();
+
+    void registerSphereForceField(sofa::core::ObjectFactory* factory)
+    {
+        factory->registerObjects(sofa::core::ObjectRegistrationData("Supports GPU-side computations using CUDA for the SphereForceField")
+        .add< component::mechanicalload::SphereForceField<CudaVec3fTypes> >()
+        .add< component::mechanicalload::SphereForceField<CudaVec3f1Types> >()
+#ifdef SOFA_GPU_CUDA_DOUBLE
+        .add< component::mechanicalload::SphereForceField<CudaVec3dTypes> >()
+        .add< component::mechanicalload::SphereForceField<CudaVec3d1Types> >()
+#endif
+        );
+    }
+
 } // namespace sofa::gpu::cuda

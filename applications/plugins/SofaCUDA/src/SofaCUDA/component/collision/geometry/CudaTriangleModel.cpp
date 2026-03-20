@@ -1,4 +1,4 @@
-﻿/******************************************************************************
+/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,9 +19,37 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-#include <SofaCUDA/config.h>
+#define SOFA_GPU_CUDA_CUDATRIANGLEMODEL_CPP
+
+#include <SofaCUDA/component/collision/geometry/CudaTriangleModel.h>
+#include <sofa/component/collision/geometry/TriangleModel.inl>
+#include <sofa/core/ObjectFactory.h>
+
+namespace sofa::component::collision::geometry
+{
+
+template class SOFA_GPU_CUDA_API TriangleCollisionModel<sofa::gpu::cuda::CudaVec3fTypes>;
+template class SOFA_GPU_CUDA_API TriangleCollisionModel<sofa::gpu::cuda::CudaVec3f1Types>;
+#ifdef SOFA_GPU_CUDA_DOUBLE
+template class SOFA_GPU_CUDA_API TriangleCollisionModel<sofa::gpu::cuda::CudaVec3dTypes>;
+template class SOFA_GPU_CUDA_API TriangleCollisionModel<sofa::gpu::cuda::CudaVec3d1Types>;
+#endif // SOFA_GPU_CUDA_DOUBLE
+
+} // namespace sofa::component::collision::geometry
+
 namespace sofa::gpu::cuda
 {
-SOFA_GPU_CUDA_API void init();
+
+    void registerTriangleCollisionModel(sofa::core::ObjectFactory* factory)
+    {
+        factory->registerObjects(sofa::core::ObjectRegistrationData("Supports GPU-side computations using CUDA for the TriangleCollisionModel")
+        .add< component::collision::geometry::TriangleCollisionModel<CudaVec3fTypes> >()
+        .add< component::collision::geometry::TriangleCollisionModel<CudaVec3f1Types> >()
+#ifdef SOFA_GPU_CUDA_DOUBLE
+        .add< component::collision::geometry::TriangleCollisionModel<CudaVec3dTypes> >()
+        .add< component::collision::geometry::TriangleCollisionModel<CudaVec3d1Types> >()
+#endif // SOFA_GPU_CUDA_DOUBLE
+        );
+    }
+
 } // namespace sofa::gpu::cuda

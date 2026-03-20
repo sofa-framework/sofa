@@ -1,4 +1,4 @@
-﻿/******************************************************************************
+/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,9 +19,34 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-#include <SofaCUDA/config.h>
-namespace sofa::gpu::cuda
+#include <sofa/gpu/cuda/CudaTypes.h>
+
+#include <sofa/core/behavior/SingleStateAccessor.h>
+
+namespace sofa::core::behavior
 {
-SOFA_GPU_CUDA_API void init();
-} // namespace sofa::gpu::cuda
+#if !defined(SOFA_GPU_CUDA_CUDALINEMODEL_CPP)
+
+using namespace sofa::gpu::cuda;
+
+#ifdef SOFA_GPU_CUDA_DOUBLE
+extern template class SOFA_GPU_CUDA_API SingleStateAccessor<CudaVec1dTypes>;
+extern template class SOFA_GPU_CUDA_API SingleStateAccessor<CudaVec2dTypes>;
+extern template class SOFA_GPU_CUDA_API SingleStateAccessor<CudaVec3dTypes>;
+extern template class SOFA_GPU_CUDA_API SingleStateAccessor<CudaVec3d1Types>;
+extern template class SOFA_GPU_CUDA_API SingleStateAccessor<CudaVec6dTypes>;
+extern template class SOFA_GPU_CUDA_API SingleStateAccessor<CudaRigid2dTypes>;
+extern template class SOFA_GPU_CUDA_API SingleStateAccessor<CudaRigid3dTypes>;
+#endif // SOFA_GPU_CUDA_DOUBLE
+extern template class SOFA_GPU_CUDA_API SingleStateAccessor<CudaVec1fTypes>;
+extern template class SOFA_GPU_CUDA_API SingleStateAccessor<CudaVec2fTypes>;
+extern template class SOFA_GPU_CUDA_API SingleStateAccessor<CudaVec3fTypes>;
+extern template class SOFA_GPU_CUDA_API SingleStateAccessor<CudaVec3f1Types>;
+extern template class SOFA_GPU_CUDA_API SingleStateAccessor<CudaVec6fTypes>;
+extern template class SOFA_GPU_CUDA_API SingleStateAccessor<CudaRigid2fTypes>;
+extern template class SOFA_GPU_CUDA_API SingleStateAccessor<CudaRigid3fTypes>;
+
+#endif
+
+
+} // namespace sofa::core::behavior

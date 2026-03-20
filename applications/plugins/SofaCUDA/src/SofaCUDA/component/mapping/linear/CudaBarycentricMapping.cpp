@@ -1,4 +1,4 @@
-﻿/******************************************************************************
+/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,9 +19,41 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-#include <SofaCUDA/config.h>
+#include <sofa/gpu/cuda/CudaTypes.h>
+#include <SofaCUDA/component/mapping/linear/CudaBarycentricMapping.inl>
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/defaulttype/VecTypes.h>
+
+namespace sofa::component::mapping::linear
+{
+
+using namespace sofa::defaulttype;
+using namespace sofa::core;
+using namespace sofa::core::behavior;
+using namespace sofa::gpu::cuda;
+
+
+// Spread the instantiations over multiple files for more efficient and lightweight compilation. See CudaBarycentricMapping-*.cpp files.
+
+// Instantiations involving both CudaVec3fTypes and Vec3dTypes
+template class SOFA_GPU_CUDA_API BarycentricMapping< Vec3Types, CudaVec3Types>;
+template class SOFA_GPU_CUDA_API BarycentricMapping< CudaVec3Types, Vec3Types>;
+
+} // namespace sofa::component::mapping::linear
+
 namespace sofa::gpu::cuda
 {
-SOFA_GPU_CUDA_API void init();
+
+    using namespace sofa::defaulttype;
+    using namespace sofa::core;
+    using namespace sofa::core::behavior;
+    using namespace sofa::component::mapping::linear;
+
+    void registerBarycentricMapping(sofa::core::ObjectFactory* factory)
+    {
+        factory->registerObjects(sofa::core::ObjectRegistrationData("Supports GPU-side computations using CUDA for the BarycentricMapping")
+        .add< BarycentricMapping< Vec3Types, CudaVec3Types> >()
+        .add< BarycentricMapping< CudaVec3Types, Vec3Types> >());
+    }
+
 } // namespace sofa::gpu::cuda
