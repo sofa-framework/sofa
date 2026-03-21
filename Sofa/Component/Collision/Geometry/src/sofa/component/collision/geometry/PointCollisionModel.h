@@ -26,6 +26,8 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/VecTypes.h>
+#include <sofa/core/behavior/SingleStateAccessor.h>
+#include <sofa/core/behavior/TopologyAccessor.h>
 
 namespace sofa::component::collision::geometry
 {
@@ -60,10 +62,16 @@ public:
 using Point = TPoint<sofa::defaulttype::Vec3Types>;
 
 template<class TDataTypes>
-class PointCollisionModel : public core::CollisionModel
+class PointCollisionModel :
+    public core::CollisionModel,
+    public virtual core::behavior::SingleStateAccessor<TDataTypes>,
+    public virtual core::behavior::TopologyAccessor
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(PointCollisionModel, TDataTypes), core::CollisionModel);
+    SOFA_CLASS3(SOFA_TEMPLATE(PointCollisionModel, TDataTypes),
+        core::CollisionModel,
+        core::behavior::SingleStateAccessor<TDataTypes>,
+        core::behavior::TopologyAccessor);
 
     typedef TDataTypes DataTypes;
     typedef DataTypes InDataTypes;
@@ -129,15 +137,12 @@ public:
 
 protected:
 
-    core::behavior::MechanicalState<DataTypes>* mstate;
+    using sofa::core::behavior::SingleStateAccessor<TDataTypes>::mstate;
 
     Data<bool> d_computeNormals; ///< activate computation of normal vectors (required for some collision detection algorithms)
     Data<bool> d_displayFreePosition; ///< Display Collision Model Points free position(in green)
 
     VecDeriv normals;
-
-    /// Link to be set to the topology container in the component graph.
-    SingleLink<PointCollisionModel<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
 };
 
