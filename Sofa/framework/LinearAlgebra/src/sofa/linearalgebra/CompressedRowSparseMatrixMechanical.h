@@ -1141,9 +1141,9 @@ protected:
         if constexpr (Policy::AutoCompress) const_cast<Matrix*>(this)->compress(); /// \warning this violates the const-ness of the method !
         vresize( res, this->colBSize(), colSize() );
 
-        if constexpr (Policy::IsAlwaysSymetric) /// In symetric case this^T = this
+        if constexpr (Policy::IsAlwaysSymmetric) /// In symmetric case this^T = this
         {
-            taddMul(res, vec);
+            taddMul<Real2>(res, vec);
             return;
         }
 
