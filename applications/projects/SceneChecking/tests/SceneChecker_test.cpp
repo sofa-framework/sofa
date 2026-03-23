@@ -53,7 +53,7 @@ using sofa::core::execparams::defaultInstance;
 /// This component is only for testing the APIVersion system.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #include <sofa/core/objectmodel/BaseComponent.h>
-using sofa::core::objectmodel::BaseObject;
+using sofa::core::objectmodel::BaseComponent;
 using sofa::core::objectmodel::Base;
 
 #include <sofa/core/ObjectFactory.h>
@@ -62,10 +62,10 @@ using sofa::core::ExecParams;
 
 #include <sofa/simpleapi/SimpleApi.h>
 
-class ComponentDeprecated : public sofa::core::objectmodel::BaseObject
+class ComponentDeprecated : public sofa::core::objectmodel::BaseComponent
 {
 public:
-    SOFA_CLASS(ComponentDeprecated, sofa::core::objectmodel::BaseObject);
+    SOFA_CLASS(ComponentDeprecated, sofa::core::objectmodel::BaseComponent);
 public:
 
 };

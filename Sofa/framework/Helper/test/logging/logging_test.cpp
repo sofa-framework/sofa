@@ -260,7 +260,7 @@ TEST(LoggingTest, emptyMessage)
 #include <string>
 #include <sofa/core/objectmodel/Data.h>
 
-class MyComponent : public sofa::core::objectmodel::BaseObject
+class MyComponent : public sofa::core::objectmodel::BaseComponent
 {
 public:
 

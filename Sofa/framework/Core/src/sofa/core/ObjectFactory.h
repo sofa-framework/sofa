@@ -74,7 +74,7 @@ public:
         /// Construction method called by the factory.
         ///
         /// \pre canCreate(context, arg) == true.
-        virtual objectmodel::BaseObject::SPtr createInstance(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg) = 0;
+        virtual objectmodel::BaseComponent::SPtr createInstance(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg) = 0;
 
         /// type_info structure associated with the type of instantiated objects.
         virtual const std::type_info& type() = 0;
@@ -176,13 +176,13 @@ public:
     void resetAlias(std::string name, ClassEntry::SPtr previous);
 
     /// Create an object given a context and a description.
-    objectmodel::BaseObject::SPtr createObject(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg);
+    objectmodel::BaseComponent::SPtr createObject(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg);
 
     /// Get the ObjectFactory singleton instance
     static ObjectFactory* getInstance();
 
     /// \copydoc createObject
-    static objectmodel::BaseObject::SPtr CreateObject(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
+    static objectmodel::BaseComponent::SPtr CreateObject(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
     {
         return getInstance()->createObject(context, arg);
     }
@@ -276,7 +276,7 @@ public:
         RealObject* instance = nullptr;
         return RealObject::canCreate(instance, context, arg);
     }
-    objectmodel::BaseObject::SPtr createInstance(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg) override
+    objectmodel::BaseComponent::SPtr createInstance(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg) override
     {
         RealObject* instance = nullptr;
         return RealObject::create(instance, context, arg);

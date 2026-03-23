@@ -31,10 +31,10 @@ using sofa::core::objectmodel::DataFileName;
 namespace sofa::component::sceneutility
 {
 
-class SOFA_COMPONENT_SCENEUTILITY_API BaseAddResourceRepository: public sofa::core::objectmodel::BaseObject
+class SOFA_COMPONENT_SCENEUTILITY_API BaseAddResourceRepository: public sofa::core::objectmodel::BaseComponent
 {
 public:
-    SOFA_ABSTRACT_CLASS(BaseAddResourceRepository, sofa::core::objectmodel::BaseObject);
+    SOFA_ABSTRACT_CLASS(BaseAddResourceRepository, sofa::core::objectmodel::BaseComponent);
 
 protected:
     BaseAddResourceRepository();

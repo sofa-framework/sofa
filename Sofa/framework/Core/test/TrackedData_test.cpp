@@ -42,12 +42,12 @@ namespace sofa {
 /// Cons: extra test at regular intervals to check if the Data changed.
 /// Pros: it is clear what's going on (and when).
 ///       Maybe easier to manage multithreading?
-class TestObject : public core::objectmodel::BaseObject
+class TestObject : public core::objectmodel::BaseComponent
 {
 
 public:
 
-    SOFA_CLASS(TestObject,core::objectmodel::BaseObject);
+    SOFA_CLASS(TestObject,core::objectmodel::BaseComponent);
 
 
     Data< bool > input;
@@ -152,12 +152,12 @@ TEST_F(DataTracker_test, testTrackedData )
 /// Pros: very flexible
 /// Cons: more complex w/ multithreading??
 ///       It is not obvious to know who is an input, who is an output
-class TestObject2 : public core::objectmodel::BaseObject
+class TestObject2 : public core::objectmodel::BaseComponent
 {
 
 public:
 
-    SOFA_CLASS(TestObject2,core::objectmodel::BaseObject);
+    SOFA_CLASS(TestObject2,core::objectmodel::BaseComponent);
 
 
     Data< bool > input;
@@ -197,10 +197,10 @@ protected:
 };
 unsigned TestObject2::s_updateCounter = 0u;
 
-class DummyObject : public core::objectmodel::BaseObject
+class DummyObject : public core::objectmodel::BaseComponent
 {
 public:
-    SOFA_CLASS(DummyObject,core::objectmodel::BaseObject);
+    SOFA_CLASS(DummyObject,core::objectmodel::BaseComponent);
     Data< bool > myData;
     DummyObject()
         : Inherit1()

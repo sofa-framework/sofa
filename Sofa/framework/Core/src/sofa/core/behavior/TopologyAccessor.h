@@ -28,10 +28,10 @@
 namespace sofa::core::behavior
 {
 
-class SOFA_CORE_API TopologyAccessor : public virtual sofa::core::objectmodel::BaseObject
+class SOFA_CORE_API TopologyAccessor : public virtual sofa::core::objectmodel::BaseComponent
 {
 public:
-    SOFA_CLASS(TopologyAccessor, sofa::core::objectmodel::BaseObject);
+    SOFA_CLASS(TopologyAccessor, sofa::core::objectmodel::BaseComponent);
 
     void init() override;
 

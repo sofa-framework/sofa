@@ -57,7 +57,7 @@ public:
     bool applyCorrection(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
     void computeResidual(const core::ExecParams* /*params*/) override;
     ConstraintProblem* getConstraintProblem() override;
-    void lockConstraintProblem(sofa::core::objectmodel::BaseObject* from, ConstraintProblem* p1, ConstraintProblem* p2 = nullptr) override;
+    void lockConstraintProblem(sofa::core::objectmodel::BaseComponent* from, ConstraintProblem* p1, ConstraintProblem* p2 = nullptr) override;
 
 
     Data<int> d_maxIt; ///< maximal number of iterations of iterative algorithm

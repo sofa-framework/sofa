@@ -36,10 +36,10 @@ The mapping must be located somewhere between the master and the slave, so that 
 It is typically located in the same graph node as the slave, with the master in the parent node, but this is not a must.
 Mappings typically store constant local coordinates of the output points, and update the output points by applying input displacements to the local coordinates.
  */
-class SOFA_CORE_API BaseMapping : public virtual objectmodel::BaseObject
+class SOFA_CORE_API BaseMapping : public virtual objectmodel::BaseComponent
 {
 public:
-    SOFA_ABSTRACT_CLASS(BaseMapping, objectmodel::BaseObject);
+    SOFA_ABSTRACT_CLASS(BaseMapping, objectmodel::BaseComponent);
     SOFA_BASE_CAST_IMPLEMENTATION(BaseMapping)
 protected:
 
