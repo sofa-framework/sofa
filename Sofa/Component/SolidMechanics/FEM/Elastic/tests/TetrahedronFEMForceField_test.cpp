@@ -74,7 +74,7 @@ public:
         m_root = simulation::SceneLoaderXML::loadFromMemory ("testscene", scene.str().c_str()) ;
         m_root->init(sofa::core::execparams::defaultInstance());
 
-        core::objectmodel::BaseObject* fem = m_root->getTreeNode("FEMnode")->getObject("fem") ;
+        core::objectmodel::BaseComponent* fem = m_root->getTreeNode("FEMnode")->getObject("fem") ;
         EXPECT_NE(fem, nullptr) ;
 
         EXPECT_EQ(fem->getComponentState(), core::objectmodel::ComponentState::Invalid) ;

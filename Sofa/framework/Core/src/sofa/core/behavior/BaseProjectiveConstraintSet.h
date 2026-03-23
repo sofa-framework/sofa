@@ -65,7 +65,7 @@ struct ZeroDirichletCondition
 class SOFA_CORE_API BaseProjectiveConstraintSet : public virtual StateAccessor
 {
 public:
-    SOFA_ABSTRACT_CLASS(BaseProjectiveConstraintSet, objectmodel::BaseObject);
+    SOFA_ABSTRACT_CLASS(BaseProjectiveConstraintSet, objectmodel::BaseComponent);
     SOFA_BASE_CAST_IMPLEMENTATION(BaseProjectiveConstraintSet)
 protected:
     BaseProjectiveConstraintSet()

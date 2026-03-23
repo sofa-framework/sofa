@@ -70,10 +70,10 @@ public:
  *    to the final elements)
  *
  */
-class SOFA_CORE_API CollisionModel : public virtual objectmodel::BaseObject
+class SOFA_CORE_API CollisionModel : public virtual objectmodel::BaseComponent
 {
 public:
-    SOFA_ABSTRACT_CLASS(CollisionModel, objectmodel::BaseObject);
+    SOFA_ABSTRACT_CLASS(CollisionModel, objectmodel::BaseComponent);
     SOFA_BASE_CAST_IMPLEMENTATION(CollisionModel)
 
     enum{
@@ -450,7 +450,7 @@ protected:
     void* userData;
 
     /// Pointer to the  Controller component heritating from CollisionElementActiver
-    SingleLink<CollisionModel, sofa::core::objectmodel::BaseObject, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_collElemActiver;
+    SingleLink<CollisionModel, sofa::core::objectmodel::BaseComponent, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_collElemActiver;
 
     /// Render the whole collision model.
     virtual void drawCollisionModel(const core::visual::VisualParams* vparams);

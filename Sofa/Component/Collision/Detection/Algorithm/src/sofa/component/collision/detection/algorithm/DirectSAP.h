@@ -30,10 +30,10 @@
 namespace sofa::component::collision::detection::algorithm
 {
 
-class SOFA_COMPONENT_COLLISION_DETECTION_ALGORITHM_API DirectSAP final : public sofa::core::objectmodel::BaseObject
+class SOFA_COMPONENT_COLLISION_DETECTION_ALGORITHM_API DirectSAP final : public sofa::core::objectmodel::BaseComponent
 {
 public:
-    SOFA_CLASS(DirectSAP, sofa::core::objectmodel::BaseObject);
+    SOFA_CLASS(DirectSAP, sofa::core::objectmodel::BaseComponent);
 
     void init() override;
 

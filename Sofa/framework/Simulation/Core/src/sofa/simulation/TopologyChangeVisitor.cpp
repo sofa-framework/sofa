@@ -50,7 +50,7 @@ std::string TopologyChangeVisitor::getInfos() const
     return "Topology:" + m_source->getName();
 }
 
-void TopologyChangeVisitor::processTopologyChange(simulation::Node *node, sofa::core::objectmodel::BaseObject* obj)
+void TopologyChangeVisitor::processTopologyChange(simulation::Node *node, sofa::core::objectmodel::BaseComponent* obj)
 {
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printComment("processTopologyChange");

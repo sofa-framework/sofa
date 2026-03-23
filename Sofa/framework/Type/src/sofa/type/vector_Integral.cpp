@@ -37,12 +37,12 @@ SOFA_TYPE_API int getInteger(const std::string& s, std::stringstream& msg, unsig
 {
     const char* attrstr = s.c_str();
     char* end = nullptr;
-    const int retval = strtol(attrstr, &end, 10);
+    const long retval = strtol(attrstr, &end, 10);
 
     /// It is important to check that the string was totally parsed to report
     /// message to users because a silent error is the worse thing that can happen in UX.
     if (end == attrstr + strlen(attrstr))
-        return retval;
+        return static_cast<int>(retval);
 
     if (numErrors < 5)
         msg << "    - problem while parsing '" << s << "' as Integer'. Replaced by 0 instead." << "\n";

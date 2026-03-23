@@ -31,10 +31,10 @@ namespace sofa::core::behavior
 /**
  * Base class for components requiring access to a linear solver
  */
-class SOFA_CORE_API LinearSolverAccessor : public virtual objectmodel::BaseObject
+class SOFA_CORE_API LinearSolverAccessor : public virtual objectmodel::BaseComponent
 {
 public:
-    SOFA_ABSTRACT_CLASS(LinearSolverAccessor, objectmodel::BaseObject)
+    SOFA_ABSTRACT_CLASS(LinearSolverAccessor, objectmodel::BaseComponent)
 
     void init() override;
 
