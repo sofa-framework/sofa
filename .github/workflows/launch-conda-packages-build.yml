@@ -47,7 +47,7 @@ jobs:
         run: |
           cd SofaGLFW
           SOFAGLFW_SHA=$(git rev-parse HEAD)
-          SOFAGLFW_COMMIT_DATE=$(git show -s --date=format:%Y%m%d --format=%cd SOFAGLFW_SHA)
+          SOFAGLFW_COMMIT_DATE=$(git show -s --date=format:%Y%m%d --format=%cd $SOFAGLFW_SHA)
 
           echo "SOFAGLFW_SHA=$SOFAGLFW_SHA" >> $GITHUB_ENV
           echo "SOFAGLFW_COMMIT_DATE=$SOFAGLFW_COMMIT_DATE" >> $GITHUB_ENV
