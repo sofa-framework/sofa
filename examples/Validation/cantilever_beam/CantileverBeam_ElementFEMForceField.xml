@@ -31,6 +31,7 @@
     <MechanicalObject template="Vec3" name="state" showObject="true"/>
 
     <MeshMatrixMass massDensity="1100" topology="@grid"/>
+    <NodalMassDensity property="1100"/>
 
     <BoxROI template="Vec3" name="box_roi" box="-0.011 -0.011 -0.0001   0.011 0.011 0.0001" drawBoxes="1" />
     <FixedProjectiveConstraint template="Vec3" indices="@box_roi.indices" />
