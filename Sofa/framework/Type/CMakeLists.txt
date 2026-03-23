@@ -10,6 +10,7 @@ set(HEADER_FILES
     ${SOFATYPESRC_ROOT}/DualQuat.h
     ${SOFATYPESRC_ROOT}/DualQuat.inl
     ${SOFATYPESRC_ROOT}/Frame.h
+    ${SOFATYPESRC_ROOT}/FullySymmetric4Tensor.h
     ${SOFATYPESRC_ROOT}/hardening.h
     ${SOFATYPESRC_ROOT}/Mat.h
     ${SOFATYPESRC_ROOT}/MatSym.h
@@ -50,6 +51,8 @@ set(HEADER_FILES
     ${SOFATYPESRC_ROOT}/vector_algebra.h
     ${SOFATYPESRC_ROOT}/vector_algorithm.h
     ${SOFATYPESRC_ROOT}/vector_device.h
+    ${SOFATYPESRC_ROOT}/VecView.h
+    ${SOFATYPESRC_ROOT}/VoigtNotation.h
 )
 
 set(SOURCE_FILES

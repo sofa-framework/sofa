@@ -98,3 +98,21 @@ Benchmark/Performance/MatrixAssembly/MatrixAssembly_direct.scn 300 1e-4 0 1
 Benchmark/Performance/MatrixAssembly/MatrixAssembly_direct_blocs.scn 300 1e-4 0 1
 Benchmark/Performance/MatrixAssembly/MatrixAssembly_matrixfreeCG.scn 300 1e-4 0 1
 Benchmark/Analysis/Pendulum.scn 300 1e-4 0 1
+
+### Validation scenes ###
+Validation/cantilever_beam/hexahedron/corotational/parallel/assembled/HexahedronCorotationalFEMForceField.scn 100 1e-4 0 1
+Validation/cantilever_beam/hexahedron/corotational/parallel/matrixfree/HexahedronCorotationalFEMForceField.scn 100 1e-4 0 1
+Validation/cantilever_beam/hexahedron/corotational/sequential/assembled/HexahedronCorotationalFEMForceField.scn 100 1e-4 0 1
+Validation/cantilever_beam/hexahedron/corotational/sequential/matrixfree/HexahedronCorotationalFEMForceField.scn 100 1e-4 0 1
+Validation/cantilever_beam/hexahedron/linear/parallel/assembled/HexahedronLinearSmallStrainFEMForceField.scn 100 1e-4 0 1
+Validation/cantilever_beam/hexahedron/linear/parallel/matrixfree/HexahedronLinearSmallStrainFEMForceField.scn 100 1e-4 0 1
+Validation/cantilever_beam/hexahedron/linear/sequential/assembled/HexahedronLinearSmallStrainFEMForceField.scn 100 1e-4 0 1
+Validation/cantilever_beam/hexahedron/linear/sequential/matrixfree/HexahedronLinearSmallStrainFEMForceField.scn 100 1e-4 0 1
+Validation/cantilever_beam/tetrahedron/corotational/parallel/assembled/TetrahedronCorotationalFEMForceField.scn 100 1e-4 0 1
+Validation/cantilever_beam/tetrahedron/corotational/parallel/matrixfree/TetrahedronCorotationalFEMForceField.scn 100 1e-4 0 1
+Validation/cantilever_beam/tetrahedron/corotational/sequential/assembled/TetrahedronCorotationalFEMForceField.scn 100 1e-4 0 1
+Validation/cantilever_beam/tetrahedron/corotational/sequential/matrixfree/TetrahedronCorotationalFEMForceField.scn 100 1e-4 0 1
+Validation/cantilever_beam/tetrahedron/linear/parallel/assembled/TetrahedronLinearSmallStrainFEMForceField.scn 100 1e-4 0 1
+Validation/cantilever_beam/tetrahedron/linear/parallel/matrixfree/TetrahedronLinearSmallStrainFEMForceField.scn 100 1e-4 0 1
+Validation/cantilever_beam/tetrahedron/linear/sequential/assembled/TetrahedronLinearSmallStrainFEMForceField.scn 100 1e-4 0 1
+Validation/cantilever_beam/tetrahedron/linear/sequential/matrixfree/TetrahedronLinearSmallStrainFEMForceField.scn 100 1e-4 0 1
