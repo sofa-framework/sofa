@@ -133,7 +133,7 @@ void from_json(const nlohmann::json& j, Snapshot::SnapshotObject& so)
     so.m_name = j.value("name", "");
     so.m_className = j.value("classname", "");
     so.m_pathName = j.value("pathname","");
-    
+
     if (j.contains("data") && j["data"].is_array())
     {
         so.m_dataContainer.clear();
@@ -176,7 +176,7 @@ void from_json(const nlohmann::json& j, Snapshot::SnapshotNode& sn)
     sn.m_name = j.value("name", "");
     sn.m_className = j.value("classname", "");
     sn.m_pathName = j.value("pathname","");
-    
+
     if (j.contains("data") && j["data"].is_array())
     {
         sn.m_dataContainer.clear();
@@ -227,7 +227,7 @@ void from_json(const nlohmann::json& j, Snapshot::SnapshotNode& sn)
         }
     }
 }
-    
+
 void importFrom(Snapshot& snapshot, const std::string& filename)
 {
     std::ifstream file(filename);

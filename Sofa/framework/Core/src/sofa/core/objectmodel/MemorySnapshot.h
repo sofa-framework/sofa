@@ -29,7 +29,7 @@
 namespace sofa::core::objectmodel
 {
 
-class SOFA_CORE_API MemorySnapshot : public BaseSnapshot 
+class SOFA_CORE_API MemorySnapshot : public BaseSnapshot
 {
 
 public:
@@ -38,7 +38,7 @@ public:
 
     void exportTo(const std::string filename) override;
     void importFrom(std::string filename) override;
-    
+
     MemorySnapshot();
     ~MemorySnapshot();
 
