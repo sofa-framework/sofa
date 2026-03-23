@@ -717,13 +717,13 @@ void Base::saveLinksIn(Snapshot::SnapshotObject& snapshot) const
         // linkInfo.value = link->getLinkedPath();
         // linkInfo.value = link->getPath();
 
-        // std::string replaceValue = "//";
-        // std::size_t pos = linkInfo.value.find(replaceValue);
-        // while (pos != std::string::npos)
-        // {
-        //     linkInfo.value.replace(pos, replaceValue.length(), "");
-        //     pos = linkInfo.value.find(replaceValue, pos);
-        // }
+        std::string replaceValue = "//";
+        std::size_t pos = linkInfo.value.find(replaceValue);
+        while (pos != std::string::npos)
+        {
+            linkInfo.value.replace(pos, replaceValue.length(), "");
+            pos = linkInfo.value.find(replaceValue, pos);
+        }
 
         snapshot.m_linkContainer.push_back(linkInfo);
     }
@@ -783,10 +783,17 @@ void Base::loadDataSnapshot(const std::shared_ptr<Snapshot::SnapshotObject>& sna
     {
         if (const auto data = this->findData(dataInfo.name))
         {
-            if( dataInfo.name != "loadedPlugins"&& dataInfo.name != "filename" && dataInfo.name != "texturename" && dataInfo.name != "pluginName")
-            {
-                data->read(dataInfo.value);
+            // If dataInfo.value is a vector<string> like '["Value1", "Value2" ... "Value_i"]'
+            if (dataInfo.value[0] == '[' && dataInfo.value.back() == ']') {
+                std::string dataValueStr = dataInfo.value;
+                dataValueStr.erase(std::remove(dataValueStr.begin(), dataValueStr.end(), '['), dataValueStr.end());
+                dataValueStr.erase(std::remove(dataValueStr.begin(), dataValueStr.end(), ']'), dataValueStr.end());
+                dataValueStr.erase(std::remove(dataValueStr.begin(), dataValueStr.end(), '"'), dataValueStr.end());
+                dataValueStr.erase(std::remove(dataValueStr.begin(), dataValueStr.end(), ','), dataValueStr.end());
+                data->read(dataValueStr);
             }
+            else
+                data->read(dataInfo.value);
         }
     }
 }
@@ -798,35 +805,28 @@ void Base::loadLinkSnapshot(const std::shared_ptr<Snapshot::SnapshotObject>& sna
     {
         if (const auto link = this->findLink(linkInfo.name))
         {
-            if(linkInfo.name != "odeSolver" && linkInfo.name != "linearSolver")
+            // std::cout << "===========link name : " << linkInfo.name << std::endl;
+            // std::cout << "===========link value : " << linkInfo.value << std::endl;
+
+            // link->read(linkInfo.value);
+
+            // Idea : Compare links in the snapshot and in the simulation, and change/add targets to the link
+            std::vector<std::string> newSublinks = helper::split(linkInfo.value, ' ');
+            for (const auto& newSublink : newSublinks)
             {
-                // std::cout << "===========link name : " << linkInfo.name << std::endl;
-                // std::cout << "===========link value : " << linkInfo.value << std::endl;
-
-                // link->read(linkInfo.value);
-
-                // Idea : Compare links in the snapshot and in the simulation, and change/add targets to the link
-                std::vector <std::string> newSublinks = helper::split(linkInfo.value, ' ');
-                std::vector <std::string> currentSublinks = helper::split(link->getValueString(), ' ');
-
-                for (const auto& subLink : newSublinks)
+                auto obj = PathResolver::FindBaseFromPath(link->getOwner(), newSublink);
+                bool checkedPath = PathResolver::CheckPath(obj,link->getDestClass(),newSublink);
+                if (!checkedPath)
                 {
-                    Base* obj = PathResolver::FindBaseFromClassAndPath(link->getOwner(), link->getDestClass(), subLink);
-                    auto it = std::ranges::find(currentSublinks, subLink);
-                    if (it != currentSublinks.end()) {
-                        // subLink is in currentSublinks
-                        const size_t index = std::distance(currentSublinks.begin(), it);
-                        link->set(obj,index);
-                    }
-                    else {
-                        // subLink is not in currentSublinks
-                        link->add(obj,subLink);
-                    }
+                    link->add(obj, newSublink);
                 }
-
-
             }
-            
+            // How to detect if a link is depracted ?
+            // for (const auto& oldLink : )
+            // {
+            //     if (std::ranges::find(newSublinks,oldLink) == newSublinks.end())
+            //         link->removePath(oldLink);
+            // }
         }
     }
 }

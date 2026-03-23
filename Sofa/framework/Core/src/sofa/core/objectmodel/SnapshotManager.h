@@ -25,5 +25,17 @@
 
 namespace sofa::core::objectmodel
 {
+class SnapshotManager
+{
+public:
+    SnapshotManager();
+    ~SnapshotManager();
 
+    std::vector<std::string> recentSnapshotFiles;
+    std::map<std::string, std::shared_ptr<sofa::core::objectmodel::Snapshot>> recentSnapshots;
+
+    static void AddRecentFile(const std::string& path, std::vector<std::string>& recentFiles, int maxFiles = 10);
+    static void AddRecentSnapshot(std::map<std::string, std::shared_ptr<sofa::core::objectmodel::Snapshot>>& recentSnapshots, std::shared_ptr<sofa::core::objectmodel::Snapshot> snapshot, double snapshotTime, int maxSnapshots = 10);
+
+};
 } // namespace sofa::core::objectmodel

@@ -121,4 +121,6 @@ public:
     Snapshot();
     virtual ~Snapshot();
 };
+
+
 } // namespace sofa::core::objectmodel
