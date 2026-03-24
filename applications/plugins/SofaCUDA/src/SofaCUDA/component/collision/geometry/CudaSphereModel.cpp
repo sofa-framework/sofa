@@ -1,4 +1,4 @@
-﻿/******************************************************************************
+/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,9 +19,40 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-#include <SofaCUDA/config.h>
+#define SOFA_GPU_CUDA_CUDASPHEREMODEL_CPP
+
+#include <SofaCUDA/component/collision/geometry/CudaSphereModel.h>
+#include <sofa/component/collision/geometry/SphereModel.inl>
+#include <sofa/core/ObjectFactory.h>
+
+namespace sofa::component::collision::geometry
+{
+
+template class SOFA_GPU_CUDA_API SphereCollisionModel<sofa::gpu::cuda::CudaVec3fTypes>;
+template class SOFA_GPU_CUDA_API SphereCollisionModel<sofa::gpu::cuda::CudaVec3f1Types>;
+#ifdef SOFA_GPU_CUDA_DOUBLE
+template class SOFA_GPU_CUDA_API SphereCollisionModel<sofa::gpu::cuda::CudaVec3dTypes>;
+template class SOFA_GPU_CUDA_API SphereCollisionModel<sofa::gpu::cuda::CudaVec3d1Types>;
+#endif // SOFA_GPU_CUDA_DOUBLE
+
+} // namespace sofa::component::collision::geometry
+
+
 namespace sofa::gpu::cuda
 {
-SOFA_GPU_CUDA_API void init();
+
+    void registerSphereCollisionModel(sofa::core::ObjectFactory* factory)
+    {
+        factory->registerObjects(sofa::core::ObjectRegistrationData("Supports GPU-side computations using CUDA for the SphereCollisionModel")
+        .add< component::collision::geometry::SphereCollisionModel<CudaVec3fTypes> >()
+        .add< component::collision::geometry::SphereCollisionModel<CudaVec3f1Types> >()
+#ifdef SOFA_GPU_CUDA_DOUBLE
+        .add< component::collision::geometry::SphereCollisionModel<CudaVec3dTypes> >()
+        .add< component::collision::geometry::SphereCollisionModel<CudaVec3d1Types> >()
+#endif // SOFA_GPU_CUDA_DOUBLE
+        .addAlias("CudaSphere")
+        .addAlias("CudaSphereModel"));
+    }
+
 } // namespace sofa::gpu::cuda
+

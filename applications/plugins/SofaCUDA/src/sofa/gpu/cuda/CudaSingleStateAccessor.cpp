@@ -1,4 +1,4 @@
-﻿/******************************************************************************
+/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,9 +19,34 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-#include <SofaCUDA/config.h>
-namespace sofa::gpu::cuda
+#define SOFA_GPU_CUDA_CUDASINGLESTATEACCESSOR_CPP
+#include <sofa/gpu/cuda/CudaTypes.h>
+
+#include <sofa/gpu/cuda/CudaSingleStateAccessor.h>
+
+#include <sofa/core/behavior/SingleStateAccessor.inl>
+
+
+namespace sofa::core::behavior
 {
-SOFA_GPU_CUDA_API void init();
-} // namespace sofa::gpu::cuda
+
+using namespace sofa::gpu::cuda;
+
+#ifdef SOFA_GPU_CUDA_DOUBLE
+template class SOFA_GPU_CUDA_API SingleStateAccessor<CudaVec1dTypes>;
+template class SOFA_GPU_CUDA_API SingleStateAccessor<CudaVec2dTypes>;
+template class SOFA_GPU_CUDA_API SingleStateAccessor<CudaVec3dTypes>;
+template class SOFA_GPU_CUDA_API SingleStateAccessor<CudaVec3d1Types>;
+template class SOFA_GPU_CUDA_API SingleStateAccessor<CudaVec6dTypes>;
+template class SOFA_GPU_CUDA_API SingleStateAccessor<CudaRigid2dTypes>;
+template class SOFA_GPU_CUDA_API SingleStateAccessor<CudaRigid3dTypes>;
+#endif // SOFA_GPU_CUDA_DOUBLE
+template class SOFA_GPU_CUDA_API SingleStateAccessor<CudaVec1fTypes>;
+template class SOFA_GPU_CUDA_API SingleStateAccessor<CudaVec2fTypes>;
+template class SOFA_GPU_CUDA_API SingleStateAccessor<CudaVec3fTypes>;
+template class SOFA_GPU_CUDA_API SingleStateAccessor<CudaVec3f1Types>;
+template class SOFA_GPU_CUDA_API SingleStateAccessor<CudaVec6fTypes>;
+template class SOFA_GPU_CUDA_API SingleStateAccessor<CudaRigid2fTypes>;
+template class SOFA_GPU_CUDA_API SingleStateAccessor<CudaRigid3fTypes>;
+
+} // namespace sofa::core::behavior

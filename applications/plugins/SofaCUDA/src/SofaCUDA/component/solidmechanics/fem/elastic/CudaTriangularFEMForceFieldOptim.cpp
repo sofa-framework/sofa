@@ -1,4 +1,4 @@
-﻿/******************************************************************************
+/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,9 +19,32 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-#include <SofaCUDA/config.h>
+#include <sofa/gpu/cuda/CudaTypes.h>
+#include <SofaCUDA/component/solidmechanics/fem/elastic/CudaTriangularFEMForceFieldOptim.inl>
+#include <sofa/core/ObjectFactory.h>
+
+namespace sofa::component::solidmechanics::fem::elastic
+{
+
+template class SOFA_GPU_CUDA_API TriangularFEMForceFieldOptim<sofa::gpu::cuda::CudaVec3fTypes>;
+#ifdef SOFA_GPU_CUDA_DOUBLE
+template class SOFA_GPU_CUDA_API TriangularFEMForceFieldOptim<sofa::gpu::cuda::CudaVec3dTypes>;
+#endif // SOFA_GPU_CUDA_DOUBLE
+
+} // namespace sofa::component::solidmechanics::fem::elastic
+
+
 namespace sofa::gpu::cuda
 {
-SOFA_GPU_CUDA_API void init();
-} // namespace sofa::gpu::cuda
+
+    void registerTriangularFEMForceFieldOptim(sofa::core::ObjectFactory* factory)
+    {
+        factory->registerObjects(sofa::core::ObjectRegistrationData("Supports GPU-side computations using CUDA for the TriangularFEMForceFieldOptim")
+        .add< sofa::component::solidmechanics::fem::elastic::TriangularFEMForceFieldOptim<CudaVec3fTypes> >()
+#ifdef SOFA_GPU_CUDA_DOUBLE
+        .add< sofa::component::solidmechanics::fem::elastic::TriangularFEMForceFieldOptim<CudaVec3dTypes> >()
+#endif // SOFA_GPU_CUDA_DOUBLE
+        );
+    }
+
+} // sofa::gpu::cuda

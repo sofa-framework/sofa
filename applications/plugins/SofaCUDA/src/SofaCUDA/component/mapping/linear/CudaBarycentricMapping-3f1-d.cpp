@@ -1,4 +1,4 @@
-﻿/******************************************************************************
+/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,9 +19,44 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-#include <SofaCUDA/config.h>
+#include <sofa/gpu/cuda/CudaTypes.h>
+#include <SofaCUDA/component/mapping/linear/CudaBarycentricMapping.inl>
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/defaulttype/VecTypes.h>
+
+namespace sofa::component::mapping::linear
+{
+
+using namespace sofa::defaulttype;
+using namespace sofa::core;
+using namespace sofa::core::behavior;
+using namespace sofa::gpu::cuda;
+
+// Spread the instantiations over multiple files for more efficient and lightweight compilation
+
+// instantiations involving both CudaVec3f1Types and Vec3dTypes
+
+
+
+template class SOFA_GPU_CUDA_API BarycentricMapping< Vec3Types, CudaVec3f1Types>;
+template class SOFA_GPU_CUDA_API BarycentricMapping< CudaVec3f1Types, Vec3Types>;
+
+
+} // namespace sofa::component::mapping::linear
+
 namespace sofa::gpu::cuda
 {
-SOFA_GPU_CUDA_API void init();
+
+using namespace sofa::defaulttype;
+using namespace sofa::core;
+using namespace sofa::core::behavior;
+using namespace sofa::component::mapping::linear;
+
+void registerBarycentricMapping_3f1_d(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Supports GPU-side computations using CUDA for the registerBarycentricMapping_3f1_d")
+    .add< BarycentricMapping< Vec3Types, CudaVec3f1Types> >()
+    .add< BarycentricMapping< CudaVec3f1Types, Vec3Types> >());
+}
+
 } // namespace sofa::gpu::cuda

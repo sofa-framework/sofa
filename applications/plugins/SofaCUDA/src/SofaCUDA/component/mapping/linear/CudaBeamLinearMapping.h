@@ -20,8 +20,26 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
+
 #include <SofaCUDA/config.h>
-namespace sofa::gpu::cuda
+#include <sofa/component/mapping/linear/BeamLinearMapping.h>
+
+#if !defined(SOFA_COMPONENT_MAPPING_CUDABEAMLINEARMAPPING_CPP)
+
+#include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/gpu/cuda/CudaTypes.h>
+
+namespace sofa::component::mapping::linear
 {
-SOFA_GPU_CUDA_API void init();
-} // namespace sofa::gpu::cuda
+
+extern template class SOFA_GPU_CUDA_API BeamLinearMapping< defaulttype::Rigid3Types, sofa::gpu::cuda::CudaVec3Types>;
+
+#ifdef SOFA_GPU_CUDA_DOUBLE
+extern template class SOFA_GPU_CUDA_API BeamLinearMapping< defaulttype::Rigid3Types, sofa::gpu::cuda::CudaVec3dTypes>;
+#endif
+
+} // namespace sofa::component::mapping::linear
+#endif
+
+
+

@@ -1,4 +1,4 @@
-﻿/******************************************************************************
+/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,9 +19,35 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-#include <SofaCUDA/config.h>
-namespace sofa::gpu::cuda
+#include <sofa/gpu/cuda/CudaTypes.h>
+#include <SofaCUDA/component/solidmechanics/fem/hyperelastic/CudaStandardTetrahedralFEMForceField.inl>
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/core/behavior/ForceField.inl>
+#include <sofa/component/solidmechanics/fem/hyperelastic/StandardTetrahedralFEMForceField.inl>
+
+namespace sofa
 {
-SOFA_GPU_CUDA_API void init();
-} // namespace sofa::gpu::cuda
+
+
+namespace gpu::cuda
+{
+    
+    void registerStandardTetrahedralFEMForceField(sofa::core::ObjectFactory* factory)
+    {
+        factory->registerObjects(sofa::core::ObjectRegistrationData("Supports GPU-side computations using CUDA for the StandardTetrahedralFEMForceField")
+        .add< sofa::component::solidmechanics::fem::hyperelastic::StandardTetrahedralFEMForceField<CudaVec3fTypes> >()
+#ifdef SOFA_GPU_CUDA_DOUBLE
+        .add< sofa::component::solidmechanics::fem::hyperelastic::StandardTetrahedralFEMForceField<CudaVec3dTypes> >()
+#endif
+        );
+    }
+
+} // namespace gpu::cuda
+
+
+template class SOFA_GPU_CUDA_API sofa::component::solidmechanics::fem::hyperelastic::StandardTetrahedralFEMForceField<sofa::gpu::cuda::CudaVec3fTypes>;
+#ifdef SOFA_GPU_CUDA_DOUBLE
+template class SOFA_GPU_CUDA_API sofa::component::solidmechanics::fem::hyperelastic::StandardTetrahedralFEMForceField<sofa::gpu::cuda::CudaVec3dTypes>;
+#endif
+
+} // namespace sofa

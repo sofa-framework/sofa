@@ -19,9 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-#include <SofaCUDA/config.h>
-namespace sofa::gpu::cuda
+#define SOFACUDA_CUDACONTACTMAPPER_CPP
+
+#include <SofaCUDA/component/collision/response/mapper/CudaContactMapper.h>
+
+namespace sofa::component::collision
 {
-SOFA_GPU_CUDA_API void init();
-} // namespace sofa::gpu::cuda
+
+template class SOFA_GPU_CUDA_API response::mapper::ContactMapper<sofa::gpu::cuda::CudaPointCollisionModel, CudaVec3fTypes>;
+template class SOFA_GPU_CUDA_API response::mapper::ContactMapper<sofa::gpu::cuda::CudaSphereCollisionModel, CudaVec3fTypes>;
+
+}
