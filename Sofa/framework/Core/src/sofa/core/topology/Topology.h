@@ -33,10 +33,10 @@ namespace sofa::core::topology
 
 // This class should be deprecated in the near future, and its only use is to be included in the Node topology Sequence.
 // As for now, it is mainly used for compatibility reason (and its inheritance on BaseObject...) against BaseMeshTopology
-class SOFA_CORE_API Topology : public virtual sofa::core::objectmodel::BaseObject
+class SOFA_CORE_API Topology : public virtual sofa::core::objectmodel::BaseComponent
 {
 public:
-    SOFA_CLASS(Topology, core::objectmodel::BaseObject);
+    SOFA_CLASS(Topology, core::objectmodel::BaseComponent);
     SOFA_BASE_CAST_IMPLEMENTATION(Topology)
 
     SOFA_CORE_TOPOLOGY_ATTRIBUTE_DEPRECATED__ALIASES_INDEX()

@@ -30,17 +30,17 @@ namespace
 {
 
 template<class Type>
-class TestObject : public sofa::core::objectmodel::BaseObject
+class TestObject : public sofa::core::objectmodel::BaseComponent
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(TestObject, Type), sofa::core::objectmodel::BaseObject);
+    SOFA_CLASS(SOFA_TEMPLATE(TestObject, Type), sofa::core::objectmodel::BaseComponent);
 };
 
 template<class Type>
-class TestObject2 : public sofa::core::objectmodel::BaseObject
+class TestObject2 : public sofa::core::objectmodel::BaseComponent
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(TestObject2, Type), sofa::core::objectmodel::BaseObject);
+    SOFA_CLASS(SOFA_TEMPLATE(TestObject2, Type), sofa::core::objectmodel::BaseComponent);
 };
 
 int A = RegisterObject("Dummy test object.")

@@ -916,7 +916,7 @@ void MatrixLinearSystem<TMatrix, TVector>::makeCreateDispatcher()
 
 template <class TMatrix, class TVector>
 std::shared_ptr<sofa::core::matrixaccumulator::IndexVerificationStrategy> MatrixLinearSystem<TMatrix, TVector>::
-makeIndexVerificationStrategy(sofa::core::objectmodel::BaseObject* component)
+makeIndexVerificationStrategy(sofa::core::objectmodel::BaseComponent* component)
 {
     auto strategy = std::make_shared<core::matrixaccumulator::RangeVerification>();
     strategy->m_messageComponent = component;

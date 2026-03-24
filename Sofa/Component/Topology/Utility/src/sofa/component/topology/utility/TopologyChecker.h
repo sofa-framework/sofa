@@ -42,10 +42,10 @@ namespace sofa::component::topology::utility
 *   - At each level the topology is checked through the main element container and also the cross topology containers
 *   - Each method return a bool and will display msg_error if problems are detected.
 */
-class SOFA_COMPONENT_TOPOLOGY_UTILITY_API TopologyChecker: public core::objectmodel::BaseObject
+class SOFA_COMPONENT_TOPOLOGY_UTILITY_API TopologyChecker: public core::objectmodel::BaseComponent
 {
 public:
-    SOFA_CLASS(TopologyChecker, core::objectmodel::BaseObject);
+    SOFA_CLASS(TopologyChecker, core::objectmodel::BaseComponent);
 
     void init() override;
 

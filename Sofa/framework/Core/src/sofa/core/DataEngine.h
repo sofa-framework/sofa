@@ -52,10 +52,10 @@ namespace sofa::core
  * }
  *
  */
-class SOFA_CORE_API DataEngine : public core::DataTrackerDDGNode, public virtual core::objectmodel::BaseObject
+class SOFA_CORE_API DataEngine : public core::DataTrackerDDGNode, public virtual core::objectmodel::BaseComponent
 {
 public:
-    SOFA_ABSTRACT_CLASS(DataEngine, core::objectmodel::BaseObject);
+    SOFA_ABSTRACT_CLASS(DataEngine, core::objectmodel::BaseComponent);
     SOFA_BASE_CAST_IMPLEMENTATION(DataEngine)
 protected:
     /// Constructor

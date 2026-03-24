@@ -39,10 +39,10 @@ namespace sofa::component::playback
 
 /** Read Topology containers information from file at each timestep
 */
-class SOFA_COMPONENT_PLAYBACK_API ReadTopology: public core::objectmodel::BaseObject
+class SOFA_COMPONENT_PLAYBACK_API ReadTopology: public core::objectmodel::BaseComponent
 {
 public:
-    SOFA_CLASS(ReadTopology,core::objectmodel::BaseObject);
+    SOFA_CLASS(ReadTopology,core::objectmodel::BaseComponent);
 
     sofa::core::objectmodel::DataFileName d_filename;
     Data < double > d_interval; ///< time duration between inputs

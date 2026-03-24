@@ -86,12 +86,12 @@ void HexahedralFEMForceField<DataTypes>::init()
     if (this->l_topology->getHexahedra().empty())
     {
         msg_error() << "Object must have a Topology with hexahedra.";
-        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
 
     this->reinit(); // compute per-element stiffness matrices and other precomputed values
-    sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
+    this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
 
 

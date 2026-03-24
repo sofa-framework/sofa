@@ -2112,9 +2112,10 @@ SReal MeshMatrixMass<DataTypes, GeometricalTypes>::getKineticEnergy( const core:
 
     if (!isLumped())
     {
+        const auto& edges = l_topology->getEdges();
         for (unsigned int i = 0; i < nbEdges; ++i)
         {
-            const auto& [v0, v1] = l_topology->getEdge(i).array();
+            const auto& [v0, v1] = edges[i].array();
             e += 2 * dot(v[v0], v[v1]) * edgeMass[i];
         }
     }

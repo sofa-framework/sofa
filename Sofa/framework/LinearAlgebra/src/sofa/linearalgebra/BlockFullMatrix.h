@@ -180,7 +180,7 @@ public:
                 Real r = 0;
                 for (Index j=0; j<BSIZE; ++j)
                 {
-                    r += bloc(bi,bj)[i][j] * v[(bi + bj - 1)*BSIZE + j];
+                    r += bloc(bi,bj)[i][j] * v[bj*BSIZE + j];
                 }
                 res[bi*BSIZE + i] = r;
             }
@@ -191,7 +191,7 @@ public:
                     Real r = 0;
                     for (Index j=0; j<BSIZE; ++j)
                     {
-                        r += bloc(bi,bj)[i][j] * v[(bi + bj - 1)*BSIZE + j];
+                        r += bloc(bi,bj)[i][j] * v[bj*BSIZE + j];
                     }
                     res[bi*BSIZE + i] += r;
                 }
