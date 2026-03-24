@@ -47,10 +47,10 @@ namespace sofa::component::playback
  * Stop to write the state if the kinematic energy reach a given threshold (stopAt)
  * The energy will be measured at each period determined by keperiod
 */
-class SOFA_COMPONENT_PLAYBACK_API WriteState: public core::objectmodel::BaseObject
+class SOFA_COMPONENT_PLAYBACK_API WriteState: public core::objectmodel::BaseComponent
 {
 public:
-    SOFA_CLASS(WriteState,core::objectmodel::BaseObject);
+    SOFA_CLASS(WriteState,core::objectmodel::BaseComponent);
 
     sofa::core::objectmodel::DataFileName d_filename;
     Data < bool > d_writeX; ///< flag enabling output of X vector

@@ -32,7 +32,7 @@ namespace sofa::component::engine
 * This class merge 2 coordinate vectors.
 */
 template <class DataTypes>
-class MeanComputation : public virtual core::objectmodel::BaseObject
+class MeanComputation : public virtual core::objectmodel::BaseComponent
 {
     typedef typename DataTypes::Coord         Coord;
     typedef typename DataTypes::VecCoord      VecCoord;
@@ -45,7 +45,7 @@ class MeanComputation : public virtual core::objectmodel::BaseObject
     //typedef sofa::type::vector<Coord3D>    VecCoord3D;
 
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(MeanComputation, DataTypes), core::objectmodel::BaseObject);
+    SOFA_CLASS(SOFA_TEMPLATE(MeanComputation, DataTypes), core::objectmodel::BaseComponent);
     //typedef typename DataTypes::VecCoord VecCoord;
 
 protected:

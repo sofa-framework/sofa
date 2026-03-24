@@ -32,10 +32,10 @@ namespace sofa::core::behavior
  * A permutation is computed and applied on a sparse matrix to improve the
  * computation time when solving a linear system.
  */
-class SOFA_CORE_API BaseOrderingMethod : virtual public objectmodel::BaseObject
+class SOFA_CORE_API BaseOrderingMethod : virtual public objectmodel::BaseComponent
 {
 public:
-    SOFA_ABSTRACT_CLASS(BaseOrderingMethod, objectmodel::BaseObject)
+    SOFA_ABSTRACT_CLASS(BaseOrderingMethod, objectmodel::BaseComponent)
 
     ~BaseOrderingMethod() override;
 

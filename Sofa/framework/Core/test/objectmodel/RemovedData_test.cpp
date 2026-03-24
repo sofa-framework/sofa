@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/objectmodel/BaseComponent.h>
-using sofa::core::objectmodel::BaseObject ;
+using sofa::core::objectmodel::BaseComponent ;
 
 #include <sofa/testing/BaseTest.h>
 using sofa::testing::BaseTest;
@@ -32,10 +32,10 @@ using sofa::core::objectmodel::lifecycle::RemovedData;
 namespace
 {
 
-class MyObject : public sofa::core::objectmodel::BaseObject
+class MyObject : public sofa::core::objectmodel::BaseComponent
 {
 public:
-    SOFA_CLASS(MyObject, sofa::core::objectmodel::BaseObject);
+    SOFA_CLASS(MyObject, sofa::core::objectmodel::BaseComponent);
 
     DeprecatedData deprecatedData {this, "v23.06", "v23.12", "deprecatedData", "You should now use XXXX"};
     RemovedData removedData {this, "v23.06", "v23.12", "removedData", "You should now use XXXX"};
