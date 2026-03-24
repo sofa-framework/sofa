@@ -105,7 +105,7 @@ public:
     virtual int getWidth()=0;
     virtual int getHeight()=0;
     virtual void captureEvent() {}
-    virtual void fitObjectBBox(sofa::core::objectmodel::BaseObject* );
+    virtual void fitObjectBBox(sofa::core::objectmodel::BaseComponent* );
     virtual void fitNodeBBox(sofa::core::objectmodel::BaseNode*);
 
     virtual void setFullScreen(bool /*enable*/) {}
@@ -172,7 +172,7 @@ protected:
     std::string _screenshotDirectory;
 
     std::set<sofa::core::objectmodel::Base::SPtr> currentSelection;
-    std::unordered_map<sofa::core::objectmodel::BaseObject*, core::visual::DrawMesh> m_drawMeshContainer;
+    std::unordered_map<sofa::core::objectmodel::BaseComponent*, core::visual::DrawMesh> m_drawMeshContainer;
 };
 
 } // namespace sofa::gui::common

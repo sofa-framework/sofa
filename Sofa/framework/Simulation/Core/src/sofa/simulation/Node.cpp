@@ -74,7 +74,6 @@
 namespace sofa::simulation
 {
 using core::objectmodel::BaseNode;
-using core::objectmodel::BaseObject;
 
 Node::Node(const std::string& nodename, Node* parent)
     : core::objectmodel::BaseNode()
@@ -190,7 +189,7 @@ void Node::parse( sofa::core::objectmodel::BaseObjectDescription* arg )
 
         sofa::core::objectmodel::BaseObjectDescription objDesc("displayFlags","VisualStyle");
         objDesc.setAttribute("displayFlags", oldFlags);
-        sofa::core::objectmodel::BaseObject::SPtr obj = sofa::core::ObjectFactory::CreateObject(this, &objDesc);
+        sofa::core::objectmodel::BaseComponent::SPtr obj = sofa::core::ObjectFactory::CreateObject(this, &objDesc);
     }
 }
 
@@ -244,7 +243,7 @@ void Node::moveChild(BaseNode::SPtr node, BaseNode::SPtr prev_parent)
     doMoveChild(node, prev_parent);
 }
 /// Add an object. Detect the implemented interfaces and add the object to the corresponding lists.
-bool Node::addObject(sofa::core::objectmodel::BaseObject::SPtr obj, sofa::core::objectmodel::TypeOfInsertion insertionLocation)
+bool Node::addObject(sofa::core::objectmodel::BaseComponent::SPtr obj, sofa::core::objectmodel::TypeOfInsertion insertionLocation)
 {
     // If an object we are trying to add already has a context, it is in another node in the
     // graph: we need to remove it from this context before to insert it into the current
@@ -262,7 +261,7 @@ bool Node::addObject(sofa::core::objectmodel::BaseObject::SPtr obj, sofa::core::
 }
 
 /// Remove an object
-bool Node::removeObject(sofa::core::objectmodel::BaseObject::SPtr obj)
+bool Node::removeObject(sofa::core::objectmodel::BaseComponent::SPtr obj)
 {
     notifyBeginRemoveObject(this, obj);
     const bool ret = doRemoveObject(obj);
@@ -271,7 +270,7 @@ bool Node::removeObject(sofa::core::objectmodel::BaseObject::SPtr obj)
 }
 
 /// Move an object from another node
-void Node::moveObject(sofa::core::objectmodel::BaseObject::SPtr obj)
+void Node::moveObject(sofa::core::objectmodel::BaseComponent::SPtr obj)
 {
     Node* prev_parent = down_cast<Node>(obj->getContext()->toBaseNode());
     if (prev_parent)
@@ -314,56 +313,56 @@ void Node::notifyEndRemoveChild(Node::SPtr parent, Node::SPtr childPtr) const
         rootListener->onEndRemoveChild(parent.get(), childPtr.get());
 }
 
-void Node::notifyBeginAddObject(Node::SPtr parent, core::objectmodel::BaseObject::SPtr objPtr) const
+void Node::notifyBeginAddObject(Node::SPtr parent, core::objectmodel::BaseComponent::SPtr objPtr) const
 {
     const Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
     for (const auto& rootListener : root->listener)
         rootListener->onBeginAddObject(parent.get(), objPtr.get());
 }
 
-void Node::notifyEndAddObject(Node::SPtr parent, core::objectmodel::BaseObject::SPtr objPtr) const
+void Node::notifyEndAddObject(Node::SPtr parent, core::objectmodel::BaseComponent::SPtr objPtr) const
 {
     const Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
     for (const auto& rootListener : root->listener)
         rootListener->onEndAddObject(parent.get(), objPtr.get());
 }
 
-void Node::notifyBeginRemoveObject(Node::SPtr parent, core::objectmodel::BaseObject::SPtr objPtr) const
+void Node::notifyBeginRemoveObject(Node::SPtr parent, core::objectmodel::BaseComponent::SPtr objPtr) const
 {
     const Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
     for (const auto& rootListener : root->listener)
         rootListener->onBeginRemoveObject(parent.get(), objPtr.get());
 }
 
-void Node::notifyEndRemoveObject(Node::SPtr parent, core::objectmodel::BaseObject::SPtr objPtr) const
+void Node::notifyEndRemoveObject(Node::SPtr parent, core::objectmodel::BaseComponent::SPtr objPtr) const
 {
     const Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
     for (const auto& rootListener : root->listener)
         rootListener->onEndRemoveObject(parent.get(), objPtr.get());
 }
 
-void Node::notifyBeginAddSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave) const
+void Node::notifyBeginAddSlave(core::objectmodel::BaseComponent* master, core::objectmodel::BaseComponent* slave) const
 {
     const Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
     for (const auto& rootListener : root->listener)
         rootListener->onBeginAddSlave(master, slave);
 }
 
-void Node::notifyEndAddSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave) const
+void Node::notifyEndAddSlave(core::objectmodel::BaseComponent* master, core::objectmodel::BaseComponent* slave) const
 {
     const Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
     for (const auto& rootListener : root->listener)
         rootListener->onEndAddSlave(master, slave);
 }
 
-void Node::notifyBeginRemoveSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave) const
+void Node::notifyBeginRemoveSlave(core::objectmodel::BaseComponent* master, core::objectmodel::BaseComponent* slave) const
 {
     const Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
     for (const auto& rootListener : root->listener)
         rootListener->onBeginRemoveSlave(master, slave);
 }
 
-void Node::notifyEndRemoveSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave) const
+void Node::notifyEndRemoveSlave(core::objectmodel::BaseComponent* master, core::objectmodel::BaseComponent* slave) const
 {
     const Node* root = down_cast<Node>(this->getContext()->getRootContext()->toBaseNode());
     for (const auto& rootListener : root->listener)
@@ -402,7 +401,7 @@ void Node::removeListener(MutationListener* obj)
 
 
 /// Find an object given its name
-core::objectmodel::BaseObject* Node::getObject(const std::string& objectName) const
+core::objectmodel::BaseComponent* Node::getObject(const std::string& objectName) const
 {
     for (ObjectIterator it = object.begin(), itend = object.end(); it != itend; ++it)
         if ((*it)->getName() == objectName)
@@ -438,7 +437,7 @@ sofa::core::objectmodel::Base* Node::findLinkDestClass(const core::objectmodel::
         return destType->dynamicCast(link->getOwnerBase());
     }
     Node* node = this;
-    sofa::core::objectmodel::BaseObject* master = nullptr;
+    sofa::core::objectmodel::BaseComponent* master = nullptr;
     bool based = false;
     if (ppos < psize && pathStr[ppos] == '[') // relative index in the list of objects
     {
@@ -548,7 +547,7 @@ sofa::core::objectmodel::Base* Node::findLinkDestClass(const core::objectmodel::
             {
                 for (;;)
                 {
-                    sofa::core::objectmodel::BaseObject* obj = node->getObject(nameStr);
+                    sofa::core::objectmodel::BaseComponent* obj = node->getObject(nameStr);
                     Node* childPtr = node->getChild(nameStr);
                     if (childPtr)
                     {
@@ -593,7 +592,7 @@ sofa::core::objectmodel::Base* Node::findLinkDestClass(const core::objectmodel::
         }
         for (ObjectIterator it = node->object.begin(), itend = node->object.end(); it != itend; ++it)
         {
-            sofa::core::objectmodel::BaseObject* obj = it->get();
+            sofa::core::objectmodel::BaseComponent* obj = it->get();
             Base *o = destType->dynamicCast(obj);
             if (!o) continue;
             if(DEBUG_LINK)
@@ -625,7 +624,7 @@ sofa::core::objectmodel::Base* Node::findLinkDestClass(const core::objectmodel::
 }
 
 /// Add an object. Detect the implemented interfaces and add the object to the corresponding lists.
-bool Node::doAddObject(sofa::core::objectmodel::BaseObject::SPtr sobj, sofa::core::objectmodel::TypeOfInsertion insertionLocation)
+bool Node::doAddObject(sofa::core::objectmodel::BaseComponent::SPtr sobj, sofa::core::objectmodel::TypeOfInsertion insertionLocation)
 {
     this->setObjectContext(sobj);
     if(insertionLocation == sofa::core::objectmodel::TypeOfInsertion::AtEnd)
@@ -633,7 +632,7 @@ bool Node::doAddObject(sofa::core::objectmodel::BaseObject::SPtr sobj, sofa::cor
     else
         object.addBegin(sobj);
 
-    sofa::core::objectmodel::BaseObject* obj = sobj.get();
+    sofa::core::objectmodel::BaseComponent* obj = sobj.get();
 
     if( !obj->insertInNode( this ) )
     {
@@ -643,13 +642,13 @@ bool Node::doAddObject(sofa::core::objectmodel::BaseObject::SPtr sobj, sofa::cor
 }
 
 /// Remove an object
-bool Node::doRemoveObject(sofa::core::objectmodel::BaseObject::SPtr sobj)
+bool Node::doRemoveObject(sofa::core::objectmodel::BaseComponent::SPtr sobj)
 {
     dmsg_warning_when(sobj == nullptr) << "Trying to remove a nullptr object";
 
     this->clearObjectContext(sobj);
     object.remove(sobj);
-    sofa::core::objectmodel::BaseObject* obj = sobj.get();
+    sofa::core::objectmodel::BaseComponent* obj = sobj.get();
 
     if(obj != nullptr && !obj->removeInNode( this ) )
         unsorted.remove(obj);
@@ -657,7 +656,7 @@ bool Node::doRemoveObject(sofa::core::objectmodel::BaseObject::SPtr sobj)
 }
 
 /// Remove an object
-void Node::doMoveObject(sofa::core::objectmodel::BaseObject::SPtr sobj, Node* prev_parent)
+void Node::doMoveObject(sofa::core::objectmodel::BaseComponent::SPtr sobj, Node* prev_parent)
 {
     if (prev_parent != nullptr)
         prev_parent->removeObject(sobj);
@@ -1226,7 +1225,7 @@ void* Node::getObject(const sofa::core::objectmodel::ClassInfo& class_info, cons
     if (dir != SearchParents)
         for (ObjectIterator it = this->object.begin(); it != this->object.end(); ++it)
         {
-            sofa::core::objectmodel::BaseObject* obj = it->get();
+            sofa::core::objectmodel::BaseComponent* obj = it->get();
             if (tags.empty() || (obj)->getTags().includes(tags))
             {
 
@@ -1331,7 +1330,7 @@ void* Node::getObject(const sofa::core::objectmodel::ClassInfo& class_info, cons
         }
         else
         {
-            sofa::core::objectmodel::BaseObject* obj = simulation::Node::getObject(childName);
+            sofa::core::objectmodel::BaseComponent* obj = simulation::Node::getObject(childName);
             if (obj == nullptr)
             {
                 return nullptr;
@@ -1866,7 +1865,7 @@ void Node::getLocalObjects( const sofa::core::objectmodel::ClassInfo& class_info
 {
     for (Node::ObjectIterator it = this->object.begin(); it != this->object.end(); ++it)
     {
-        sofa::core::objectmodel::BaseObject* obj = it->get();
+        sofa::core::objectmodel::BaseComponent* obj = it->get();
         void* result = class_info.dynamicCast(obj);
         if (result != nullptr && (tags.empty() || (obj)->getTags().includes(tags)))
             container(result);
@@ -1905,7 +1904,7 @@ NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::CollisionModel, CollisionModel, colli
 NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::collision::Pipeline, CollisionPipeline, collisionPipeline )
 
 template class NodeSequence<Node,true>;
-template class NodeSequence<sofa::core::objectmodel::BaseObject,true>;
+template class NodeSequence<sofa::core::objectmodel::BaseComponent,true>;
 template class NodeSequence<sofa::core::BehaviorModel>;
 template class NodeSequence<sofa::core::BaseMapping>;
 template class NodeSequence<sofa::core::behavior::OdeSolver>;
@@ -1922,7 +1921,7 @@ template class NodeSequence<sofa::core::visual::Shader>;
 template class NodeSequence<sofa::core::visual::VisualModel>;
 template class NodeSequence<sofa::core::visual::VisualManager>;
 template class NodeSequence<sofa::core::CollisionModel>;
-template class NodeSequence<sofa::core::objectmodel::BaseObject>;
+template class NodeSequence<sofa::core::objectmodel::BaseComponent>;
 
 template class NodeSingle<sofa::core::behavior::BaseAnimationLoop>;
 template class NodeSingle<sofa::core::visual::VisualLoop>;

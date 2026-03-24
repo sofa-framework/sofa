@@ -33,10 +33,10 @@
 namespace sofa::component::visual
 {
 
-class SOFA_COMPONENT_VISUAL_API BaseCamera : public core::objectmodel::BaseObject
+class SOFA_COMPONENT_VISUAL_API BaseCamera : public core::objectmodel::BaseComponent
 {
 public:
-    SOFA_CLASS(BaseCamera, core::objectmodel::BaseObject);
+    SOFA_CLASS(BaseCamera, core::objectmodel::BaseComponent);
 
     typedef type::Quat<SReal> Quat;
 

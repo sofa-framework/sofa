@@ -35,10 +35,10 @@ namespace sofa::component::constraintset
  *
  * Note that the compliance matrix is dense. It means all the entries will probably be non-zero
  */
-class SOFA_SOFAMATRIX_API ComplianceMatrixImage : public core::objectmodel::BaseObject
+class SOFA_SOFAMATRIX_API ComplianceMatrixImage : public core::objectmodel::BaseComponent
 {
 public:
-    SOFA_CLASS(ComplianceMatrixImage, core::objectmodel::BaseObject);
+    SOFA_CLASS(ComplianceMatrixImage, core::objectmodel::BaseComponent);
 
 protected:
 

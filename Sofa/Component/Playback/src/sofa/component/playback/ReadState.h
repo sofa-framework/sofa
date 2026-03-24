@@ -39,10 +39,10 @@ namespace sofa::component::playback
 
 /** Read State vectors from file at each timestep
 */
-class SOFA_COMPONENT_PLAYBACK_API ReadState: public core::objectmodel::BaseObject
+class SOFA_COMPONENT_PLAYBACK_API ReadState: public core::objectmodel::BaseComponent
 {
 public:
-    SOFA_CLASS(ReadState,core::objectmodel::BaseObject);
+    SOFA_CLASS(ReadState,core::objectmodel::BaseComponent);
 
     sofa::core::objectmodel::DataFileName d_filename;
     Data < double > d_interval; ///< time duration between inputs

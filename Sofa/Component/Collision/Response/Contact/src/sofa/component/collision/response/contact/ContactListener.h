@@ -40,10 +40,10 @@ namespace sofa::component::collision::response::contact
 // forward declaration
 class NarrowPhaseDetection;
 
-class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API ContactListener : public virtual core::objectmodel::BaseObject
+class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API ContactListener : public virtual core::objectmodel::BaseComponent
 {
 public:
-    SOFA_ABSTRACT_CLASS(ContactListener, core::objectmodel::BaseObject);
+    SOFA_ABSTRACT_CLASS(ContactListener, core::objectmodel::BaseComponent);
 
 
     ContactListener(core::CollisionModel* collModel1 = nullptr, core::CollisionModel* collModel2 = nullptr );

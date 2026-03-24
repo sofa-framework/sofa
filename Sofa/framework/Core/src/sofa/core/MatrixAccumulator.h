@@ -137,7 +137,7 @@ struct SOFA_CORE_API RangeVerification : virtual IndividualIndexVerificationStra
     sofa::SignedIndex minColIndex { 0 };
     sofa::SignedIndex maxColIndex { std::numeric_limits<sofa::SignedIndex>::max() };
 
-    sofa::core::objectmodel::BaseObject* m_messageComponent { nullptr };
+    sofa::core::objectmodel::BaseComponent* m_messageComponent { nullptr };
 
     [[nodiscard]]
     helper::logging::MessageDispatcher::LoggerStream logger() const;
@@ -156,7 +156,7 @@ class MatrixAccumulatorIndexChecker : public TBaseMatrixAccumulator
 {
 public:
     static_assert(std::is_base_of_v<MatrixAccumulatorInterface, TBaseMatrixAccumulator>, "Template argument must be a MatrixAccumulatorInterface");
-    static_assert(std::is_base_of_v<objectmodel::BaseObject, TBaseMatrixAccumulator>, "Template argument must be a BaseObject");
+    static_assert(std::is_base_of_v<objectmodel::BaseComponent, TBaseMatrixAccumulator>, "Template argument must be a BaseObject");
     static_assert(std::is_base_of_v<matrixaccumulator::IndexVerificationStrategy, TStrategy>, "Template argument must be a IndexVerificationStrategy");
 
     SOFA_CLASS(MatrixAccumulatorIndexChecker, TBaseMatrixAccumulator);

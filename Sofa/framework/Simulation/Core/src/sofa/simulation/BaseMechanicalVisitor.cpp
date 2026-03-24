@@ -225,7 +225,7 @@ void BaseMechanicalVisitor::printWriteVectors(core::behavior::BaseMechanicalStat
 }
 
 
-void BaseMechanicalVisitor::printReadVectors(simulation::Node* node, core::objectmodel::BaseObject* obj)
+void BaseMechanicalVisitor::printReadVectors(simulation::Node* node, core::objectmodel::BaseComponent* obj)
 {
     using sofa::core::behavior::BaseInteractionForceField;
     using sofa::core::behavior::BaseInteractionProjectiveConstraintSet;
@@ -272,7 +272,7 @@ void BaseMechanicalVisitor::printReadVectors(simulation::Node* node, core::objec
 }
 
 
-void BaseMechanicalVisitor::printWriteVectors(simulation::Node* node, core::objectmodel::BaseObject* obj)
+void BaseMechanicalVisitor::printWriteVectors(simulation::Node* node, core::objectmodel::BaseComponent* obj)
 {
     using sofa::core::behavior::BaseInteractionForceField;
     using sofa::core::behavior::BaseInteractionProjectiveConstraintSet;
@@ -323,7 +323,7 @@ void BaseMechanicalVisitor::printWriteVectors(simulation::Node* node, core::obje
 }
 
 
-Visitor::ctime_t BaseMechanicalVisitor::begin(simulation::Node* node, core::objectmodel::BaseObject* obj, const std::string &info)
+Visitor::ctime_t BaseMechanicalVisitor::begin(simulation::Node* node, core::objectmodel::BaseComponent* obj, const std::string &info)
 {
     ctime_t t=Visitor::begin(node, obj, info);
     printReadVectors(node, obj);
@@ -331,7 +331,7 @@ Visitor::ctime_t BaseMechanicalVisitor::begin(simulation::Node* node, core::obje
 }
 
 
-void BaseMechanicalVisitor::end(simulation::Node* node, core::objectmodel::BaseObject* obj, ctime_t t0)
+void BaseMechanicalVisitor::end(simulation::Node* node, core::objectmodel::BaseComponent* obj, ctime_t t0)
 {
     printWriteVectors(node, obj);
     Visitor::end(node, obj, t0);
