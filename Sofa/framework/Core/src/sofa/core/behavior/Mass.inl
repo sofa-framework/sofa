@@ -94,7 +94,9 @@ template<class DataTypes>
 void Mass<DataTypes>::addMBKdx(const MechanicalParams* mparams, MultiVecDerivId dfId)
 {
     this->ForceField<DataTypes>::addMBKdx(mparams, dfId);
-    if (mparams->mFactorIncludingRayleighDamping(rayleighMass.getValue()) != 0.0)
+    if (mparams &&
+        mparams->mFactorIncludingRayleighDamping(rayleighMass.getValue()) != 0.0 &&
+        this->mstate)
     {
         addMDx(mparams, *dfId[this->mstate.get()].write(),
                 *mparams->readDx(this->mstate.get()), mparams->mFactorIncludingRayleighDamping(rayleighMass.getValue()));

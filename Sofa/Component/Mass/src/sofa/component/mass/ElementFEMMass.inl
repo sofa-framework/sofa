@@ -19,60 +19,42 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/mass/init.h>
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/helper/system/PluginManager.h>
+#pragma once
+#include <sofa/component/mass/ElementFEMMass.h>
 
 namespace sofa::component::mass
 {
 
-extern void registerDiagonalMass(sofa::core::ObjectFactory* factory);
-extern void registerMeshMatrixMass(sofa::core::ObjectFactory* factory);
-extern void registerUniformMass(sofa::core::ObjectFactory* factory);
-extern void registerNodalMassDensity(sofa::core::ObjectFactory* factory);
-extern void registerFEMMass(sofa::core::ObjectFactory* factory);
-
-extern "C" {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleVersion();
-    SOFA_EXPORT_DYNAMIC_LIBRARY void registerObjects(sofa::core::ObjectFactory* factory);
-}
-
-void initExternalModule()
+template <class TDataTypes, class TElementType>
+void ElementFEMMass<TDataTypes, TElementType>::init()
 {
-    init();
-}
+    TopologyAccessor::init();
 
-const char* getModuleName()
-{
-    return MODULE_NAME;
-}
-
-const char* getModuleVersion()
-{
-    return MODULE_VERSION;
-}
-
-void registerObjects(sofa::core::ObjectFactory* factory)
-{
-    registerDiagonalMass(factory);
-    registerMeshMatrixMass(factory);
-    registerUniformMass(factory);
-    registerNodalMassDensity(factory);
-    registerFEMMass(factory);
-}
-
-void init()
-{
-    static bool first = true;
-    if (first)
+    if (!this->isComponentStateInvalid())
     {
-        // make sure that this plugin is registered into the PluginManager
-        sofa::helper::system::PluginManager::getInstance().registerPlugin(MODULE_NAME);
+        core::behavior::Mass<TDataTypes>::init();
+    }
 
-        first = false;
+    if (!this->isComponentStateInvalid())
+    {
+        elementFEMMass_init();
     }
 }
 
-} // namespace sofa::component::mass
+template <class TDataTypes, class TElementType>
+void ElementFEMMass<TDataTypes, TElementType>::elementFEMMass_init()
+{
+}
+
+template <class TDataTypes, class TElementType>
+void ElementFEMMass<TDataTypes, TElementType>::addForce(const core::MechanicalParams*,
+                                                        sofa::DataVecDeriv_t<DataTypes>& f,
+                                                        const sofa::DataVecCoord_t<DataTypes>& x,
+                                                        const sofa::DataVecDeriv_t<DataTypes>& v)
+{
+
+
+}
+
+
+}  // namespace sofa::component::mass
