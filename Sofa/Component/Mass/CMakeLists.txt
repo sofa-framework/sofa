@@ -30,10 +30,12 @@ set(SOURCE_FILES
     ${SOFACOMPONENTMASS_SOURCE_DIR}/UniformMass.cpp
 )
 
+sofa_find_package(Sofa.FEM REQUIRED)
 sofa_find_package(Sofa.Simulation.Core REQUIRED)
 sofa_find_package(Sofa.Component.Topology.Container.Dynamic REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.FEM)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Simulation.Core)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Topology.Container.Dynamic)
 
