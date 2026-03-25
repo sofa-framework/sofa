@@ -23,11 +23,11 @@
 
 #include <sofa/core/objectmodel/BaseNode.h>
 
-class Dummy: public sofa::core::objectmodel::BaseObject
+class Dummy: public sofa::core::objectmodel::BaseComponent
 {
     bool *m_destroyed;
 public:
-    SOFA_CLASS(Dummy, sofa::core::objectmodel::BaseObject);
+    SOFA_CLASS(Dummy, sofa::core::objectmodel::BaseComponent);
 
     Dummy(const std::string& name): m_destroyed(nullptr) {this->setName(name);}
     Dummy(bool *destroyed): m_destroyed(destroyed) {}

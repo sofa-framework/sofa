@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<Node name="root" dt="0.01" gravity="0 -9.81 0">
+    <include href="../../../../CantileverBeam_ElementFEMForceField.xml"/>
+
+    <CGLinearSolver iterations="250" name="linear_solver" tolerance="1.0e-12" threshold="1.0e-12" />
+
+    <HexahedronCorotationalFEMForceField name="FEM" youngModulus="2e6" poissonRatio="0.45" topology="@grid"
+                                         computeForceStrategy="parallel" computeForceDerivStrategy="parallel"/>
+
+</Node>

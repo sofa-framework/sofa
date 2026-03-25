@@ -29,10 +29,10 @@
 namespace sofa::simulation
 {
 
-class SOFA_SIMULATION_CORE_API RequiredPlugin : public core::objectmodel::BaseObject
+class SOFA_SIMULATION_CORE_API RequiredPlugin : public core::objectmodel::BaseComponent
 {
 public:
-    SOFA_CLASS(RequiredPlugin,core::objectmodel::BaseObject);
+    SOFA_CLASS(RequiredPlugin,core::objectmodel::BaseComponent);
     sofa::core::objectmodel::Data<type::vector<std::string> > d_pluginName; ///< plugin name (or several names if you need to load different plugins or a plugin with several alternate names)
     sofa::core::objectmodel::Data<type::vector<type::fixed_array<std::string,2> > > d_suffixMap; ///< standard->custom suffixes pairs (to be used if the plugin is compiled outside of Sofa with a non standard way of differentiating versions), using ! to represent empty suffix
 

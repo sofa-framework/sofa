@@ -36,10 +36,10 @@ using BaseObject [[deprecated("Use sofa::core::objectmodel::BaseObject instead."
 
 /// Despite this component does absolutely nothing... it is very useful as it can be used to
 /// retain information scene graph.
-class SOFA_COMPONENT_SCENEUTILITY_API InfoComponent : public sofa::core::objectmodel::BaseObject
+class SOFA_COMPONENT_SCENEUTILITY_API InfoComponent : public sofa::core::objectmodel::BaseComponent
 {
 public:
-    SOFA_CLASS(InfoComponent, sofa::core::objectmodel::BaseObject);
+    SOFA_CLASS(InfoComponent, sofa::core::objectmodel::BaseComponent);
 
     InfoComponent() {}
     ~InfoComponent() override{}
