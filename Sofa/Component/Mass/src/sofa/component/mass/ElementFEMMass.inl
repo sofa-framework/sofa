@@ -21,9 +21,18 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/mass/ElementFEMMass.h>
+#include <sofa/helper/IotaView.h>
+#include <sofa/helper/ScopedAdvancedTimer.h>
 
 namespace sofa::component::mass
 {
+
+template <class TDataTypes, class TElementType>
+ElementFEMMass<TDataTypes, TElementType>::ElementFEMMass()
+    : l_nodalMassDensity(initLink("nodalMassDensity", "Link to nodal mass density"))
+{
+}
+
 
 template <class TDataTypes, class TElementType>
 void ElementFEMMass<TDataTypes, TElementType>::init()
@@ -37,6 +46,11 @@ void ElementFEMMass<TDataTypes, TElementType>::init()
 
     if (!this->isComponentStateInvalid())
     {
+        validateNodalMassDensity();
+    }
+
+    if (!this->isComponentStateInvalid())
+    {
         elementFEMMass_init();
     }
 }
@@ -44,6 +58,74 @@ void ElementFEMMass<TDataTypes, TElementType>::init()
 template <class TDataTypes, class TElementType>
 void ElementFEMMass<TDataTypes, TElementType>::elementFEMMass_init()
 {
+    //1. compute element mass matrix
+    const auto& elements = FiniteElement::getElementSequence(*this->l_topology);
+    const auto nbElements = elements.size();
+
+    sofa::type::vector<ElementMassMatrix> elementMassMatrices;
+    elementMassMatrices.resize(nbElements);
+
+    sofa::helper::ReadAccessor nodalMassDensityAccessor { l_nodalMassDensity->d_property };
+    auto restPositionAccessor = this->mstate->readRestPositions();
+
+    SCOPED_TIMER("elementMassMatrix");
+    sofa::helper::IotaView indices {static_cast<decltype(nbElements)>(0ul), nbElements};
+    std::for_each(indices.begin(), indices.end(),
+        [&](const auto elementId)
+        {
+            const auto& element = elements[elementId];
+            auto& elementMassMatrix = elementMassMatrices[elementId];
+
+            std::array<Real_t<DataTypes>, NumberOfNodesInElement> nodeDensityInElement;
+            for (std::size_t i = 0; i < NumberOfNodesInElement; ++i)
+            {
+                nodeDensityInElement[i] = l_nodalMassDensity->getNodeProperty(element[i], nodalMassDensityAccessor);
+            }
+
+            std::array<Coord_t<DataTypes>, NumberOfNodesInElement> nodeCoordinatesInElement;
+            for (std::size_t i = 0; i < NumberOfNodesInElement; ++i)
+            {
+                nodeCoordinatesInElement[i] = restPositionAccessor[element[i]];
+            }
+
+            std::size_t quadraturePointIndex = 0;
+            for (const auto& [quadraturePoint, weight] : FiniteElement::quadraturePoints())
+            {
+                // gradient of shape functions in the reference element evaluated at the quadrature point
+                const sofa::type::Mat<NumberOfNodesInElement, TopologicalDimension, Real_t<DataTypes>> dN_dq_ref =
+                    FiniteElement::gradientShapeFunctions(quadraturePoint);
+
+                // jacobian of the mapping from the reference space to the physical space, evaluated at the
+                // quadrature point
+                sofa::type::Mat<spatial_dimensions, TopologicalDimension, Real_t<DataTypes>> jacobian;
+                for (sofa::Size i = 0; i < NumberOfNodesInElement; ++i)
+                    jacobian += sofa::type::dyad(nodeCoordinatesInElement[i], dN_dq_ref[i]);
+
+                const auto detJ = sofa::type::absGeneralizedDeterminant(jacobian);
+
+                ++quadraturePointIndex;
+            }
+        }
+    );
+
+    //2. convert element matrices to dof matrices and store them for later use
+}
+template <class TDataTypes, class TElementType>
+void ElementFEMMass<TDataTypes, TElementType>::validateNodalMassDensity()
+{
+    if (l_nodalMassDensity.empty())
+    {
+        msg_info() << "Link to a nodal mass density should be set to ensure right behavior. First "
+                      "component found in current context will be used.";
+        l_nodalMassDensity.set(this->getContext()->get<NodalMassDensity>());
+    }
+
+    if (l_nodalMassDensity == nullptr)
+    {
+        msg_error() << "No nodal mass density component found at path: " << this->l_nodalMassDensity.getLinkedPath()
+                    << ", nor in current context: " << this->getContext()->name << ".";
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+    }
 }
 
 template <class TDataTypes, class TElementType>
@@ -55,6 +137,5 @@ void ElementFEMMass<TDataTypes, TElementType>::addForce(const core::MechanicalPa
 
 
 }
-
 
 }  // namespace sofa::component::mass
