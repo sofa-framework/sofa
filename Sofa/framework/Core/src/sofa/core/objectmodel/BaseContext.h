@@ -190,7 +190,7 @@ public:
     /// eg:
     ///    for(BaseObject* o : context->getObjects() ){ ... }
     ///    for(VisualModel* o : context->getObjects<VisualModel>() ){ ... }
-    template<class Object=sofa::core::objectmodel::BaseObject>
+    template<class Object=sofa::core::objectmodel::BaseComponent>
     std::vector<Object*> getObjects(SearchDirection dir = SearchUp){
         std::vector<Object*> o;
         getObjects(o, dir) ;
@@ -393,9 +393,9 @@ public:
     /// @name Notifications for graph change listeners
     /// @{
 
-    virtual void notifyAddSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave);
-    virtual void notifyRemoveSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave);
-    virtual void notifyMoveSlave(core::objectmodel::BaseObject* previousMaster, core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave);
+    virtual void notifyAddSlave(core::objectmodel::BaseComponent* master, core::objectmodel::BaseComponent* slave);
+    virtual void notifyRemoveSlave(core::objectmodel::BaseComponent* master, core::objectmodel::BaseComponent* slave);
+    virtual void notifyMoveSlave(core::objectmodel::BaseComponent* previousMaster, core::objectmodel::BaseComponent* master, core::objectmodel::BaseComponent* slave);
 
     /// @}
 

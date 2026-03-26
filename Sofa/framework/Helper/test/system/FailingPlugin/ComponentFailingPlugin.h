@@ -28,11 +28,11 @@
 namespace sofa::test
 {
 
-class SOFA_FAILINGPLUGIN_API ComponentFailingPlugin : public sofa::core::objectmodel::BaseObject
+class SOFA_FAILINGPLUGIN_API ComponentFailingPlugin : public sofa::core::objectmodel::BaseComponent
 {
 
 public:
-    SOFA_CLASS(ComponentFailingPlugin, sofa::core::objectmodel::BaseObject);
+    SOFA_CLASS(ComponentFailingPlugin, sofa::core::objectmodel::BaseComponent);
 
 protected:
     ComponentFailingPlugin();

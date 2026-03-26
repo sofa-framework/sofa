@@ -22,6 +22,7 @@
 #include <gtest/gtest.h>
 
 #include <sofa/core/objectmodel/Data.h>
+#include <sofa/core/objectmodel/DataCallback.h>
 #include <sofa/type/vector.h>
 
 namespace sofa
@@ -77,6 +78,75 @@ TEST(WriteAccessor, VectorTypes)
     accessor[3] = 6.f;
     EXPECT_FLOAT_EQ(accessor[3], 6.f);
     EXPECT_FLOAT_EQ(vector.getValue()[3], 6.f);
+}
+
+TEST(WriteAccessor, MoveConstructor)
+{
+    Data<float> floatValue { 12.f };
+    int initialCounter = floatValue.getCounter();
+
+    {
+        sofa::helper::WriteAccessor floatAccessor(floatValue);
+        EXPECT_EQ(floatValue.getCounter(), initialCounter + 1);
+        EXPECT_FLOAT_EQ(floatAccessor.ref(), 12.f);
+
+        sofa::helper::WriteAccessor floatAccessorMoved(std::move(floatAccessor));
+        EXPECT_EQ(floatValue.getCounter(), initialCounter + 1);
+        EXPECT_FLOAT_EQ(floatAccessorMoved.ref(), 12.f);
+
+        // Even if we moved from it, we can still call ref() and wref()
+        // but it is not recommended as it doesn't hold the responsibility of endEdit anymore.
+        EXPECT_FLOAT_EQ(floatAccessor.ref(), 12.f);
+
+        floatAccessorMoved.wref() = 14.f;
+        EXPECT_FLOAT_EQ(floatValue.getValue(), 14.f);
+    }
+
+    Data<float> data { 1.f };
+    int endEditCount = 0;
+    sofa::core::objectmodel::DataCallback cb;
+    cb.addInput(&data);
+    cb.addCallback([&endEditCount](){
+        endEditCount++;
+    });
+
+    {
+        sofa::helper::WriteAccessor acc1(data);
+        EXPECT_EQ(endEditCount, 0); // beginEdit doesn't trigger callback
+        {
+            sofa::helper::WriteAccessor acc2(std::move(acc1));
+            EXPECT_EQ(endEditCount, 0);
+        }
+        // acc2 out of scope, endEdit called
+        EXPECT_EQ(endEditCount, 1);
+    }
+    // acc1 out of scope, if move constructor worked correctly, endEdit should NOT be called again.
+    EXPECT_EQ(endEditCount, 1);
+}
+
+TEST(WriteAccessor, MoveConstructorVector)
+{
+    Data<sofa::type::vector<float>> vector { sofa::type::vector<float> { 0.f, 1.f, 2.f, 3.f, 4.f} };
+    int endEditCount = 0;
+    sofa::core::objectmodel::DataCallback cb;
+    cb.addInput(&vector);
+    cb.addCallback([&endEditCount](){
+        endEditCount++;
+    });
+
+    {
+        sofa::helper::WriteAccessor acc1(vector);
+        EXPECT_EQ(acc1.size(), 5);
+        {
+            sofa::helper::WriteAccessor acc2(std::move(acc1));
+            EXPECT_EQ(acc2.size(), 5);
+            EXPECT_EQ(acc1.size(), 5); // Still valid but no longer responsible for endEdit
+            acc2[0] = 10.f;
+        }
+        EXPECT_EQ(endEditCount, 1);
+    }
+    EXPECT_EQ(endEditCount, 1);
+    EXPECT_FLOAT_EQ(vector.getValue()[0], 10.f);
 }
 
 

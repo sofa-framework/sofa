@@ -62,7 +62,7 @@ public:
             else
             {
                 core::objectmodel::BaseObjectDescription description(desiredMethod.c_str(), desiredMethod.c_str());
-                const core::objectmodel::BaseObject::SPtr baseObject = core::ObjectFactory::getInstance()->createObject(this->getContext(), &description);
+                const core::objectmodel::BaseComponent::SPtr baseObject = core::ObjectFactory::getInstance()->createObject(this->getContext(), &description);
                 if (auto* metisOrderingMethod = dynamic_cast<core::behavior::BaseOrderingMethod*>(baseObject.get()))
                 {
                     setupCreatedOrderingMethod(metisOrderingMethod);

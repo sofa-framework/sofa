@@ -230,7 +230,6 @@ bool FileSystem::removeDirectory(const std::string& path)
 #ifdef WIN32
     if (RemoveDirectory(sofa::helper::widenString(path).c_str()) == 0)
     {
-        DWORD errorCode = ::GetLastError();
         msg_error("FileSystem::removedirectory()") << path << ": " << Utils::GetLastError();
         return true;
     }
@@ -245,7 +244,7 @@ bool FileSystem::removeDirectory(const std::string& path)
 }
 
 
-bool FileSystem::exists(const std::string& path, bool quiet)
+bool FileSystem::exists(const std::string& path, [[maybe_unused]] bool quiet)
 {
 #if defined(WIN32)
     ::SetLastError(0);
@@ -275,7 +274,7 @@ bool FileSystem::exists(const std::string& path, bool quiet)
 }
 
 
-bool FileSystem::isDirectory(const std::string& path, bool quiet)
+bool FileSystem::isDirectory(const std::string& path, [[maybe_unused]] bool quiet)
 {
 #if defined(WIN32)
     const DWORD fileAttrib = GetFileAttributes(sofa::helper::widenString(path).c_str());

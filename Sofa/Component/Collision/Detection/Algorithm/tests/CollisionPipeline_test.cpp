@@ -28,8 +28,8 @@ using std::string;
 #include <sofa/core/fwd.h>
 using sofa::core::execparams::defaultInstance;
 
-#include<sofa/core/objectmodel/BaseObject.h>
-using sofa::core::objectmodel::BaseObject ;
+#include<sofa/core/objectmodel/BaseComponent.h>
+using sofa::core::objectmodel::BaseComponent ;
 
 #include <sofa/component/collision/detection/algorithm/CollisionPipeline.h>
 using sofa::component::collision::detection::algorithm::CollisionPipeline ;
@@ -117,7 +117,7 @@ void TestCollisionPipeline::checkCollisionPipelineWithNoAttributes()
     ASSERT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 
-    sofa::core::objectmodel::BaseObject* clp = root->getObject("pipeline") ;
+    sofa::core::objectmodel::BaseComponent* clp = root->getObject("pipeline") ;
     ASSERT_NE(clp, nullptr) ;
 }
 
@@ -143,7 +143,7 @@ void TestCollisionPipeline::checkCollisionPipelineWithMissingIntersection()
     ASSERT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 
-    sofa::core::objectmodel::BaseObject* clp = root->getObject("pipeline") ;
+    sofa::core::objectmodel::BaseComponent* clp = root->getObject("pipeline") ;
     ASSERT_NE(clp, nullptr) ;
 }
 
@@ -169,7 +169,7 @@ void TestCollisionPipeline::checkCollisionPipelineWithMissingBroadPhase()
     ASSERT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 
-    sofa::core::objectmodel::BaseObject* clp = root->getObject("pipeline") ;
+    sofa::core::objectmodel::BaseComponent* clp = root->getObject("pipeline") ;
     ASSERT_NE(clp, nullptr) ;
 }
 void TestCollisionPipeline::checkCollisionPipelineWithMissingNarrowPhase()
@@ -194,7 +194,7 @@ void TestCollisionPipeline::checkCollisionPipelineWithMissingNarrowPhase()
     ASSERT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 
-    sofa::core::objectmodel::BaseObject* clp = root->getObject("pipeline") ;
+    sofa::core::objectmodel::BaseComponent* clp = root->getObject("pipeline") ;
     ASSERT_NE(clp, nullptr) ;
 }
 void TestCollisionPipeline::checkCollisionPipelineWithMissingContactManager()
@@ -219,7 +219,7 @@ void TestCollisionPipeline::checkCollisionPipelineWithMissingContactManager()
     ASSERT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 
-    BaseObject* clp = root->getObject("pipeline") ;
+    BaseComponent* clp = root->getObject("pipeline") ;
     ASSERT_NE(clp, nullptr) ;
 
 }
@@ -243,7 +243,7 @@ void TestCollisionPipeline::checkCollisionPipelineWithMissingCollisionModel()
     ASSERT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 
-    sofa::core::objectmodel::BaseObject* clp = root->getObject("pipeline") ;
+    sofa::core::objectmodel::BaseComponent* clp = root->getObject("pipeline") ;
     ASSERT_NE(clp, nullptr) ;
 
 }

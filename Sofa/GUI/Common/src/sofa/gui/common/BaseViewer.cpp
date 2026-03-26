@@ -324,7 +324,7 @@ void BaseViewer::fitNodeBBox(sofa::core::objectmodel::BaseNode * node )
     redraw();
 }
 
-void BaseViewer::fitObjectBBox(sofa::core::objectmodel::BaseObject * object)
+void BaseViewer::fitObjectBBox(sofa::core::objectmodel::BaseComponent * object)
 {
     if(!currentCamera) return;
 
@@ -380,7 +380,7 @@ void BaseViewer::drawSelection(sofa::core::visual::VisualParams* vparams)
         }
 
         ////////////////////// Render when the selection is a BaseObject //////////////////////////
-        auto object = castTo<sofa::core::objectmodel::BaseObject*>(current.get());
+        auto object = castTo<sofa::core::objectmodel::BaseComponent*>(current.get());
         if(object)
         {
             sofa::type::BoundingBox box;
