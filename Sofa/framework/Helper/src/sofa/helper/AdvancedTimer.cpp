@@ -56,7 +56,7 @@ template class SOFA_HELPER_API AdvancedTimer::Id<AdvancedTimer::Val>;
 class TimerData
 {
 public:
-    AdvancedTimer::IdTimer id;
+    AdvancedTimer::IdTimer m_id;
     type::vector<Record> records;
     int nbIter;
     int interval;
@@ -89,7 +89,7 @@ public:
 
     void init(AdvancedTimer::IdTimer id)
     {
-        this->id = id;
+        this->m_id = id;
         const std::string envvar = std::string("SOFA_TIMER_") + (std::string)id;
         const char* val = getenv(envvar.c_str());
         if (!val || !*val)
@@ -174,7 +174,7 @@ void AdvancedTimer::clear()
 bool AdvancedTimer::isEnabled(IdTimer id)
 {
     TimerData& data = timers[id];
-    if (!data.id)
+    if (!data.m_id)
     {
         data.init(id);
     }
@@ -184,7 +184,7 @@ bool AdvancedTimer::isEnabled(IdTimer id)
 void AdvancedTimer::setEnabled(IdTimer id, bool val)
 {
     TimerData& data = timers[id];
-    if (!data.id)
+    if (!data.m_id)
     {
         data.init(id);
     }
@@ -197,7 +197,7 @@ void AdvancedTimer::setEnabled(IdTimer id, bool val)
 int  AdvancedTimer::getInterval(IdTimer id)
 {
     TimerData& data = timers[id];
-    if (!data.id)
+    if (!data.m_id)
     {
         data.init(id);
     }
@@ -207,7 +207,7 @@ int  AdvancedTimer::getInterval(IdTimer id)
 void AdvancedTimer::setInterval(IdTimer id, int val)
 {
     TimerData& data = timers[id];
-    if (!data.id)
+    if (!data.m_id)
     {
         data.init(id);
     }
@@ -220,7 +220,7 @@ void AdvancedTimer::begin(IdTimer id)
     std::stack<AdvancedTimer::IdTimer>& curTimer = getCurTimer();
     curTimer.push(id);
     TimerData& data = timers[curTimer.top()];
-    if (!data.id)
+    if (!data.m_id)
     {
         data.init(id);
     }
@@ -339,7 +339,7 @@ void AdvancedTimer::end(IdTimer id)
 std::string AdvancedTimer::end(IdTimer id, double time, double dt)
 {
     const TimerData& data = timers[id];
-    if(!data.id)
+    if(!data.m_id)
     {
         return std::string("");
     }
@@ -801,7 +801,7 @@ void TimerData::print()
 {
     static ctime_t tmargin = CTime::getTicksPerSec() / 100000;
     std::ostream& out = std::cout;
-    out << "==== " << id << " ====\n\n";
+    out << "==== " << m_id << " ====\n\n";
     if (!records.empty())
     {
         out << "Trace of last iteration :\n";
@@ -955,7 +955,7 @@ void AdvancedTimer::setOutputType(IdTimer id, const std::string& type)
 {
     // Seek for the timer
     TimerData& data = timers[id];
-    if (!data.id)
+    if (!data.m_id)
     {
         data.init(id);
     }
@@ -1101,7 +1101,7 @@ void TimerData::print(std::ostream& result)
 {
     //static ctime_t tmargin = CTime::getTicksPerSec() / 100000;
     std::ostream& out = result;
-    out << "Timer: " << id << "\n";
+    out << "Timer: " << m_id << "\n";
     if (!steps.empty())
     {
         //out << "\nSteps Duration Statistics (in ms) :\n";

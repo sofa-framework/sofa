@@ -96,7 +96,7 @@ void SceneCheckCollisionPipelineAndModels::doPrintSummary()
 {
     if(!m_message.empty())
     {
-        msg_warning(this->getName()) << m_message;
+        scnchecking_warning(this->getName()) << m_message;
     }
 }
 

@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.22)
 project(SceneChecking LANGUAGES CXX)
 
+option(SOFA_SCENECHECKING_WARNINGS_ARE_ERRORS "Consider SceneChecking warnings as errors." OFF)
+
 find_package(Sofa.Config REQUIRED)
 sofa_find_package(Sofa.Simulation.Core REQUIRED)
 sofa_find_package(Sofa.Component.SceneUtility REQUIRED)
@@ -19,6 +21,7 @@ set(HEADER_FILES
     ${SCENECHECK_SRC_DIR}/SceneCheckEmptyNodeName.h
     ${SCENECHECK_SRC_DIR}/SceneCheckMapping.h
     ${SCENECHECK_SRC_DIR}/SceneCheckMissingRequiredPlugin.h
+    ${SCENECHECK_SRC_DIR}/SceneCheckSpecialCharacters.h
     ${SCENECHECK_SRC_DIR}/SceneCheckUsingAlias.h
     ${SCENECHECK_SRC_DIR}/SceneCheckerListener.h
     ${SCENECHECK_SRC_DIR}/SceneCheckerVisitor.h
@@ -34,6 +37,7 @@ set(SOURCE_FILES
     ${SCENECHECK_SRC_DIR}/SceneCheckEmptyNodeName.cpp
     ${SCENECHECK_SRC_DIR}/SceneCheckMapping.cpp
     ${SCENECHECK_SRC_DIR}/SceneCheckMissingRequiredPlugin.cpp
+    ${SCENECHECK_SRC_DIR}/SceneCheckSpecialCharacters.cpp
     ${SCENECHECK_SRC_DIR}/SceneCheckUsingAlias.cpp
     ${SCENECHECK_SRC_DIR}/SceneCheckerListener.cpp
     ${SCENECHECK_SRC_DIR}/SceneCheckerVisitor.cpp

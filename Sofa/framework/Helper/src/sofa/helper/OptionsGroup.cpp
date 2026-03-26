@@ -63,9 +63,12 @@ void OptionsGroup::setItemName(const unsigned int id_item, const std::string& na
 ///////////////////////////////////////
 int OptionsGroup::isInOptionsList(const std::string & tempostring) const
 {
-    for(std::size_t i=0; i<textItems.size(); i++)
+    for (std::size_t i = 0; i < textItems.size(); i++)
     {
-        if (textItems[i]==tempostring) return i;
+        if (textItems[i] == tempostring)
+        {
+            return static_cast<int>(i);
+        }
     }
     return -1;
 }

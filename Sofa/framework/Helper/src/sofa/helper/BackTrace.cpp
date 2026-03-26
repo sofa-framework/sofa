@@ -45,7 +45,7 @@
 namespace sofa::helper
 {
 
-BackTrace::StackTrace BackTrace::getTrace(size_t maxEntries)
+BackTrace::StackTrace BackTrace::getTrace([[maybe_unused]] size_t maxEntries)
 {
     BackTrace::StackTrace result;
 

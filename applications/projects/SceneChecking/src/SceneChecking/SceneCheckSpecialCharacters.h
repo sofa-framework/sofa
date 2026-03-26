@@ -19,47 +19,28 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <difflib.h>
-#include <sofa/helper/DiffLib.h>
+#pragma once
 
-#include <cstring>
-#include <queue>
-#include <utility>
+#include <SceneChecking/config.h>
+#include <sofa/simulation/SceneCheck.h>
 
-namespace sofa::helper
+namespace sofa::scenechecking
 {
 
-std::vector<std::tuple<std::string, SReal>> SOFA_HELPER_API getClosestMatch(const std::string& needle,
-                                                                            const std::vector<std::string>& haystack,
-                                                                            const Size numEntries, const SReal threshold)
+class SOFA_SCENECHECKING_API SceneCheckSpecialCharacters : public sofa::simulation::SceneCheck
 {
-    class Tuple
-    {
-    public:
-        Tuple(float ratio_, std::string value_)
-            : ratio(ratio_), value(std::move(value_)) {}
+public:
+    typedef std::shared_ptr<SceneCheckSpecialCharacters> SPtr;
+    static SPtr newSPtr() { return std::make_shared<SceneCheckSpecialCharacters>(); }
+    const std::string getName() override;
+    const std::string getDesc() override;
+    void doInit(sofa::simulation::Node* node) override;
+    void doCheckOn(sofa::simulation::Node* node) override;
+    void doPrintSummary() override;
 
-        float ratio;
-        std::string value;
-    };
-    auto cmp = [](const Tuple& left, Tuple& right) { return left.ratio < right.ratio; };
-    std::priority_queue<Tuple, std::vector<Tuple>, decltype(cmp)> q3(cmp);
+private:
 
-    for(auto& s : haystack)
-    {
-        auto foo = difflib::MakeSequenceMatcher(needle,s);
-        q3.emplace(foo.ratio(), s);
-    }
-    std::vector<std::tuple<std::string, SReal>> result;
-    while (!q3.empty() && result.size() <= numEntries)
-    {
-        if(q3.top().ratio < threshold)
-            break;
-        result.emplace_back(q3.top().value, q3.top().ratio);
-        q3.pop();
-    }
-    return result;
+    std::size_t m_numWithSpecialChars {};
 };
 
-} // namespace sofa
-
+}
