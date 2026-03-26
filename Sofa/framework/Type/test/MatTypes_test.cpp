@@ -1313,3 +1313,28 @@ TEST(MatTypesTest, operatorMatrixTimesMatrixAssociativity)
     const auto rhs = A * (B * C);
     EXPECT_EQ(lhs, rhs);
 }
+
+TEST(MatTypesTest, pseudoInverse)
+{
+    constexpr sofa::type::Mat<2, 2, SReal> A = {{-1, 3./2.}, {1., -1.}};
+    constexpr sofa::type::Mat<2, 2, SReal> expectedInverse = {{2., 3.}, {2., 2.}};
+
+    const auto pseudoInverse = sofa::type::leftPseudoInverse(A);
+    const auto inverse = sofa::type::inverse(A);
+
+    for (sofa::Size i = 0; i < 2; ++i)
+    {
+        for (sofa::Size j = 0; j < 2; ++j)
+        {
+            EXPECT_NEAR(expectedInverse[i][j], inverse[i][j], 1e-15) << "i = " << i << " j = " << j << " A = " << A;
+        }
+    }
+
+    for (sofa::Size i = 0; i < 2; ++i)
+    {
+        for (sofa::Size j = 0; j < 2; ++j)
+        {
+            EXPECT_NEAR(pseudoInverse[i][j], inverse[i][j], 1e-15) << "i = " << i << " j = " << j << " A = " << A;
+        }
+    }
+}

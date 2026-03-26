@@ -23,6 +23,7 @@
 #include <sofa/component/solidmechanics/fem/elastic/BaseLinearElasticityFEMForceField.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/ForceField.inl>
+#include <sofa/component/solidmechanics/fem/elastic/impl/LameParameters.h>
 
 namespace sofa::component::solidmechanics::fem::elastic
 {
@@ -150,13 +151,14 @@ auto BaseLinearElasticityFEMForceField<DataTypes>::toLameParameters(
 {
     SOFA_UNUSED(elementType);
 
-    //Lamé's first parameter
-    const Real lambda = youngModulus * poissonRatio / (1 - poissonRatio * poissonRatio);
+    LameLambda<Real> lambda { 0 };
+    LameMu<Real> mu { 0 };
 
-    //Lamé's second parameter (or shear modulus)
-    const Real mu = youngModulus / (2 * (1 + poissonRatio));
+    sofa::component::solidmechanics::fem::elastic::toLameParameters<2, Real>(
+        YoungModulus<Real>(youngModulus), PoissonRatio<Real>(poissonRatio),
+        lambda, mu);
 
-    return {lambda, mu};
+    return {lambda.get(), mu.get()};
 }
 
 template <class DataTypes>
@@ -167,13 +169,14 @@ auto BaseLinearElasticityFEMForceField<DataTypes>::toLameParameters(
 {
     SOFA_UNUSED(elementType);
 
-    //Lamé's first parameter
-    const Real lambda = youngModulus * poissonRatio / ((1 - 2 * poissonRatio) * (1 + poissonRatio));
+    LameLambda<Real> lambda { 0 };
+    LameMu<Real> mu { 0 };
 
-    //Lamé's second parameter (or shear modulus)
-    const Real mu = youngModulus / (2 * (1 + poissonRatio));
+    sofa::component::solidmechanics::fem::elastic::toLameParameters<3, Real>(
+        YoungModulus<Real>(youngModulus), PoissonRatio<Real>(poissonRatio),
+        lambda, mu);
 
-    return {lambda, mu};
+    return {lambda.get(), mu.get()};
 }
 
 }
