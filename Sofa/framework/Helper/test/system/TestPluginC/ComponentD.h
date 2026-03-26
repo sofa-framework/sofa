@@ -29,11 +29,11 @@
 namespace testpluginc
 {
 
-class SOFA_TESTPLUGINC_API ComponentD : public sofa::core::objectmodel::BaseObject
+class SOFA_TESTPLUGINC_API ComponentD : public sofa::core::objectmodel::BaseComponent
 {
 
 public:
-    SOFA_CLASS(ComponentD, sofa::core::objectmodel::BaseObject);
+    SOFA_CLASS(ComponentD, sofa::core::objectmodel::BaseComponent);
 
 protected:
     ComponentD();

@@ -121,7 +121,7 @@ SReal BTDMatrix<N, T>::element(Index i, Index j) const
     const Index bi = i / BSIZE; i = i % BSIZE;
     const Index bj = j / BSIZE; j = j % BSIZE;
     const Index bindex = bj - bi + 1;
-    if (bindex >= 3) return (SReal)0;
+    if (bindex >= 3 || bindex < 0) return (SReal)0;
     return data[bi*3+bindex](i,j);
 }
 

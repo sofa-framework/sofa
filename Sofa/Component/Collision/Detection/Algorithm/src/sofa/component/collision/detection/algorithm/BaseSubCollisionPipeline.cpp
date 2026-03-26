@@ -29,7 +29,7 @@ namespace sofa::component::collision::detection::algorithm
 {
 
 BaseSubCollisionPipeline::BaseSubCollisionPipeline()
-: sofa::core::objectmodel::BaseObject()
+: sofa::core::objectmodel::BaseComponent()
 {
 
 }

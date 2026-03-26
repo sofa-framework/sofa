@@ -12,11 +12,11 @@
 namespace sofa::simulation
 {
 
-class TaskSchedulerSettings : public core::objectmodel::BaseObject,
+class TaskSchedulerSettings : public core::objectmodel::BaseComponent,
                               public TaskSchedulerUser
 {
 public:
-    SOFA_CLASS2(TaskSchedulerSettings, core::objectmodel::BaseObject, TaskSchedulerUser);
+    SOFA_CLASS2(TaskSchedulerSettings, core::objectmodel::BaseComponent, TaskSchedulerUser);
 
     TaskSchedulerSettings() = default;
 

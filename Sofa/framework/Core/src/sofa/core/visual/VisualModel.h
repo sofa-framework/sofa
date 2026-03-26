@@ -42,10 +42,10 @@ class VisualParams;
  *  Most VisualModel are bound by a Mapping to a BehaviorModel or
  *  MechanicalState.
  */
-class SOFA_CORE_API VisualModel : public virtual objectmodel::BaseObject
+class SOFA_CORE_API VisualModel : public virtual objectmodel::BaseComponent
 {
 public:
-    SOFA_ABSTRACT_CLASS(VisualModel, objectmodel::BaseObject);
+    SOFA_ABSTRACT_CLASS(VisualModel, objectmodel::BaseComponent);
     SOFA_BASE_CAST_IMPLEMENTATION(VisualModel)
 
     Data<bool> d_enable; ///< Display the object or not

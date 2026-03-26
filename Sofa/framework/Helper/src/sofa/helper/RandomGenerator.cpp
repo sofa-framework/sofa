@@ -54,7 +54,7 @@ RandomGenerator::RandomGenerator()
 }
 
 RandomGenerator::RandomGenerator(long seed)
-    : seed(seed)
+    : m_seed(seed)
 {
     initSeed(seed);
 }
@@ -65,7 +65,7 @@ RandomGenerator::~RandomGenerator()
 
 void RandomGenerator::initSeed(long seed)
 {
-    this->seed = seed;
+    this->m_seed = seed;
 
     __rand48_seed[0] = RAND48_SEED_0;
     __rand48_seed[1] = (unsigned short) seed;
