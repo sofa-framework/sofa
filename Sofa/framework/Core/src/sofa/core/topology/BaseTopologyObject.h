@@ -26,10 +26,10 @@
 namespace sofa::core::topology
 {
 
-class SOFA_CORE_API BaseTopologyObject : public virtual core::objectmodel::BaseObject
+class SOFA_CORE_API BaseTopologyObject : public virtual core::objectmodel::BaseComponent
 {
 public:
-    SOFA_CLASS(BaseTopologyObject, core::objectmodel::BaseObject);
+    SOFA_CLASS(BaseTopologyObject, core::objectmodel::BaseComponent);
     SOFA_BASE_CAST_IMPLEMENTATION(BaseTopologyObject)
 
 protected:

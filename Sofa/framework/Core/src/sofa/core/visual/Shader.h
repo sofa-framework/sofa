@@ -32,10 +32,10 @@ namespace sofa::core::visual
  *
  *
  */
-class SOFA_CORE_API Shader : public virtual objectmodel::BaseObject
+class SOFA_CORE_API Shader : public virtual objectmodel::BaseComponent
 {
 public:
-    SOFA_ABSTRACT_CLASS(Shader, objectmodel::BaseObject);
+    SOFA_ABSTRACT_CLASS(Shader, objectmodel::BaseComponent);
     SOFA_BASE_CAST_IMPLEMENTATION(Shader)
 protected:
     Shader() {}
@@ -62,10 +62,10 @@ public:
 /**
  *  \brief A basic interface to define an element to be used with a Shader.
  */
-class SOFA_CORE_API ShaderElement: public virtual objectmodel::BaseObject
+class SOFA_CORE_API ShaderElement: public virtual objectmodel::BaseComponent
 {
 public:
-    SOFA_ABSTRACT_CLASS(ShaderElement, objectmodel::BaseObject);
+    SOFA_ABSTRACT_CLASS(ShaderElement, objectmodel::BaseComponent);
     enum ShaderElementType { SE_NONE = 0, SE_TEXTURE, SE_MACRO, SE_VARIABLE, SE_ATTRIBUTE };
 protected:
     ShaderElement() {}

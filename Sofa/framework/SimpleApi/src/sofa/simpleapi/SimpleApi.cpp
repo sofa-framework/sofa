@@ -93,10 +93,10 @@ NodeSPtr createRootNode(Simulation* s, const std::string& name,
     return root ;
 }
 
-sofa::core::objectmodel::BaseObject::SPtr createObject(Node::SPtr parent, BaseObjectDescription& desc)
+sofa::core::objectmodel::BaseComponent::SPtr createObject(Node::SPtr parent, BaseObjectDescription& desc)
 {
     /// Create the object.
-    sofa::core::objectmodel::BaseObject::SPtr obj = ObjectFactory::getInstance()->createObject(parent.get(), &desc);
+    sofa::core::objectmodel::BaseComponent::SPtr obj = ObjectFactory::getInstance()->createObject(parent.get(), &desc);
     if (obj == nullptr)
     {
         std::stringstream msg;
@@ -112,7 +112,7 @@ sofa::core::objectmodel::BaseObject::SPtr createObject(Node::SPtr parent, BaseOb
     return obj ;
 }
 
-sofa::core::objectmodel::BaseObject::SPtr createObject(Node::SPtr parent, const std::string& type, const std::map<std::string, std::string>& params)
+sofa::core::objectmodel::BaseComponent::SPtr createObject(Node::SPtr parent, const std::string& type, const std::map<std::string, std::string>& params)
 {
     /// temporarily, the name is set to the type name.
     /// if a "name" parameter is provided, it will overwrite it.

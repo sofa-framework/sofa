@@ -30,10 +30,10 @@
 namespace sofa::core::behavior
 {
 
-class SOFA_CORE_API BaseConstraintSet : public virtual objectmodel::BaseObject
+class SOFA_CORE_API BaseConstraintSet : public virtual objectmodel::BaseComponent
 {
 public:
-    SOFA_ABSTRACT_CLASS(BaseConstraintSet, objectmodel::BaseObject);
+    SOFA_ABSTRACT_CLASS(BaseConstraintSet, objectmodel::BaseComponent);
     SOFA_BASE_CAST_IMPLEMENTATION(BaseConstraintSet)
 
 protected:

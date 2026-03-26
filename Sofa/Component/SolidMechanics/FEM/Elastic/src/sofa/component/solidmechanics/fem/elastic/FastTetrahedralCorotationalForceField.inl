@@ -49,7 +49,15 @@ void FastTetrahedralCorotationalForceField<DataTypes>::createTetrahedronRestInfo
     const Real youngModulusElement = this->getYoungModulusInElement(tetrahedronIndex);
     const Real poissonRatioElement = this->getPoissonRatioInElement(tetrahedronIndex);
 
-    auto [lambda, mu] = Inherited::toLameParameters(_3DMat, youngModulusElement, poissonRatioElement);
+    LameLambda<Real> lambdaStrong { 0 };
+    LameMu<Real> muStrong { 0 };
+
+    sofa::component::solidmechanics::fem::elastic::toLameParameters<DataTypes::spatial_dimensions, Real>(
+        YoungModulus<Real>(youngModulusElement), PoissonRatio<Real>(poissonRatioElement),
+        lambdaStrong, muStrong);
+
+    Real lambda = lambdaStrong.get();
+    Real mu = muStrong.get();
 
     typename DataTypes::Real val;
     typename DataTypes::Coord point[4]; //shapeVector[4];

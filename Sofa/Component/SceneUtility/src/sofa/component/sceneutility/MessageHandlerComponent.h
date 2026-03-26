@@ -42,10 +42,10 @@ namespace sofa::component::sceneutility
 {
 
 /// A sofa component to add a MessageHandler to the main logger
-class SOFA_COMPONENT_SCENEUTILITY_API MessageHandlerComponent : public core::objectmodel::BaseObject
+class SOFA_COMPONENT_SCENEUTILITY_API MessageHandlerComponent : public core::objectmodel::BaseComponent
 {
 public:
-    SOFA_CLASS(MessageHandlerComponent, core::objectmodel::BaseObject);
+    SOFA_CLASS(MessageHandlerComponent, core::objectmodel::BaseComponent);
 
     MessageHandlerComponent() ;
     ~MessageHandlerComponent() override{}
@@ -63,10 +63,10 @@ public:
 
 
 /// A sofa component to add a FileMessageHandlerComponent to the main logger
-class SOFA_COMPONENT_SCENEUTILITY_API FileMessageHandlerComponent : public core::objectmodel::BaseObject
+class SOFA_COMPONENT_SCENEUTILITY_API FileMessageHandlerComponent : public core::objectmodel::BaseComponent
 {
 public:
-    SOFA_CLASS(FileMessageHandlerComponent, core::objectmodel::BaseObject) ;
+    SOFA_CLASS(FileMessageHandlerComponent, core::objectmodel::BaseComponent) ;
 
     FileMessageHandlerComponent() ;
     ~FileMessageHandlerComponent() override ;

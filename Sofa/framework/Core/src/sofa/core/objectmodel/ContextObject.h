@@ -30,10 +30,10 @@ namespace sofa::core::objectmodel
  *  \brief Base class for simulation objects that modify the shared context (such as gravity, local coordinate system, ...).
  *
  */
-class SOFA_CORE_API ContextObject : public virtual BaseObject
+class SOFA_CORE_API ContextObject : public virtual sofa::core::objectmodel::BaseComponent
 {
 public:
-    SOFA_ABSTRACT_CLASS(ContextObject, BaseObject);
+    SOFA_ABSTRACT_CLASS(ContextObject, sofa::core::objectmodel::BaseComponent);
     SOFA_BASE_CAST_IMPLEMENTATION(ContextObject)
 protected:
     ContextObject()
