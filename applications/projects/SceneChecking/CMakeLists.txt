@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.22)
 project(SceneChecking LANGUAGES CXX)
 
+option(SOFA_SCENECHECKING_WARNINGS_ARE_ERRORS "Consider SceneChecking warnings as errors." OFF)
+
 find_package(Sofa.Config REQUIRED)
 sofa_find_package(Sofa.Simulation.Core REQUIRED)
 sofa_find_package(Sofa.Component.SceneUtility REQUIRED)
