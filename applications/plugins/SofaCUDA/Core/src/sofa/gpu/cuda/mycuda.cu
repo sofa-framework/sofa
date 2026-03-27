@@ -80,10 +80,29 @@ int mycudaInit(int device)
 {
     if (cudaInitCalled) return 1;
 
+    // Driver and API checks
 #if defined(__cplusplus)
     mycudaPrintf("C++ standard = %ld", __cplusplus);
 #endif
 
+    // ── Driver & Runtime versions ──────────────────────────────────────────
+    int driverVersion = 0, runtimeVersion = 0;
+    cudaDriverGetVersion(&driverVersion);
+    cudaRuntimeGetVersion(&runtimeVersion);
+
+    mycudaPrintf("=== CUDA Version Diagnostics ===\n");
+    mycudaPrintf("Driver  version : %d.%d\n", driverVersion  / 1000, (driverVersion  % 100) / 10);
+    mycudaPrintf("Runtime version : %d.%d\n", runtimeVersion / 1000, (runtimeVersion % 100) / 10);
+
+    if (driverVersion < runtimeVersion) {
+        mycudaPrintf("[ERROR] Driver is too old for this runtime!\n");
+        mycudaPrintf("        Minimum required driver for runtime %d.%d: see CUDA release notes.\n",
+               runtimeVersion / 1000, (runtimeVersion % 100) / 10);
+        return 0;
+    }
+    mycudaPrintf("[OK] Driver is compatible with runtime.\n\n");
+
+    // Hardware checks
     cudaInitCalled = true;
     const cudaError_t getDeviceCountError = cudaGetDeviceCount(&deviceCount);
     if (getDeviceCountError != cudaSuccess)
