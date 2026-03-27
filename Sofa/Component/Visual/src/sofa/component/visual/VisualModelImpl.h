@@ -156,6 +156,7 @@ public:
     sofa::type::Vec3f bbox[2];
 
     Data< sofa::type::Material > d_material;
+    sofa::type::Material m_resetMaterial;
     Data< bool > d_putOnlyTexCoords;
     Data< bool > d_srgbTexturing;
 
