@@ -138,9 +138,9 @@ void findTemplatedCreator(
     }
 }
 
-objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
+objectmodel::BaseComponent::SPtr ObjectFactory::createObject(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
 {
-    objectmodel::BaseObject::SPtr object = nullptr;
+    objectmodel::BaseComponent::SPtr object = nullptr;
     std::vector< std::pair<std::string, BaseObjectCreator::SPtr> > creators;
     std::string classname = arg->getAttribute( "type", "");
     std::string usertemplatename = arg->getAttribute( "template", "");

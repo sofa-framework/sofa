@@ -37,7 +37,7 @@ void DeleteVisitor::processNodeBottomUp(Node* node)
     }
     while (!node->object.empty())
     {
-        core::objectmodel::BaseObject::SPtr object = *node->object.begin();
+        core::objectmodel::BaseComponent::SPtr object = *node->object.begin();
         node->removeObject(object);
         object.reset();
     }

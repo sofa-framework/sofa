@@ -22,7 +22,7 @@
 #pragma once
 
 #include <sofa/core/config.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/core/behavior/LinearSolver.h>
 
 namespace sofa::core::behavior
@@ -31,10 +31,10 @@ namespace sofa::core::behavior
 /**
  * Base class for components requiring access to a linear solver
  */
-class SOFA_CORE_API LinearSolverAccessor : public virtual objectmodel::BaseObject
+class SOFA_CORE_API LinearSolverAccessor : public virtual objectmodel::BaseComponent
 {
 public:
-    SOFA_ABSTRACT_CLASS(LinearSolverAccessor, objectmodel::BaseObject)
+    SOFA_ABSTRACT_CLASS(LinearSolverAccessor, objectmodel::BaseComponent)
 
     void init() override;
 

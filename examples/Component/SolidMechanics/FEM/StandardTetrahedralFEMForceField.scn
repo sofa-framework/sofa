@@ -44,7 +44,7 @@
             <TetrahedronSetTopologyContainer name="Container"/>
             <TetrahedronSetTopologyModifier name="Modifier" />
             <TetrahedronSetGeometryAlgorithms template="Vec3" name="GeomAlgo" />
-            <Hexa2TetraTopologicalMapping name="default28" input="@../" output="@Container" printLog="0" />
+            <Hexa2TetraTopologicalMapping name="default28" input="@../" output="@Container" swapping="true"/>
 
             <StandardTetrahedralFEMForceField name="FEM" ParameterSet="3448.2759 31034.483"/>
         </Node>
@@ -67,7 +67,7 @@
             <TetrahedronSetTopologyContainer name="Container"/>
             <TetrahedronSetTopologyModifier name="Modifier" />
             <TetrahedronSetGeometryAlgorithms template="Vec3" name="GeomAlgo" />
-            <Hexa2TetraTopologicalMapping name="default28" input="@../" output="@Container" printLog="0" />
+            <Hexa2TetraTopologicalMapping name="default28" input="@../" output="@Container" swapping="true"/>
 
             <StandardTetrahedralFEMForceField name="FEM" ParameterSet="3448.2759 31034.483" materialName="StVenantKirchhoff"/>
         </Node>
@@ -91,7 +91,7 @@
             <TetrahedronSetTopologyContainer name="Container"/>
             <TetrahedronSetTopologyModifier name="Modifier" />
             <TetrahedronSetGeometryAlgorithms template="Vec3" name="GeomAlgo" />
-            <Hexa2TetraTopologicalMapping name="default28" input="@../" output="@Container" printLog="0" />
+            <Hexa2TetraTopologicalMapping name="default28" input="@../" output="@Container" swapping="true"/>
 
             <StandardTetrahedralFEMForceField name="FEM" ParameterSet="3448.2759 31034.483" materialName="NeoHookean"/>
         </Node>
@@ -115,7 +115,7 @@
             <TetrahedronSetTopologyContainer name="Container"/>
             <TetrahedronSetTopologyModifier name="Modifier" />
             <TetrahedronSetGeometryAlgorithms template="Vec3" name="GeomAlgo" />
-            <Hexa2TetraTopologicalMapping name="default28" input="@../" output="@Container" printLog="0" />
+            <Hexa2TetraTopologicalMapping name="default28" input="@../" output="@Container" swapping="true"/>
 
             <StandardTetrahedralFEMForceField name="FEM" ParameterSet="5000 7000 10" materialName="MooneyRivlin"/>
         </Node>

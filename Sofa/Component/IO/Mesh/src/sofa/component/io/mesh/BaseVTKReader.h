@@ -26,7 +26,7 @@
 #include <iosfwd>
 
 #include <sofa/core/objectmodel/BaseData.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 
 namespace sofa::component::io::mesh::basevtkreader
 {
@@ -49,10 +49,10 @@ enum class VTKDatasetFormat { IMAGE_DATA, STRUCTURED_POINTS,
                               POLYDATA, UNSTRUCTURED_GRID
                             };
 
-class BaseVTKReader : public sofa::core::objectmodel::BaseObject
+class BaseVTKReader : public sofa::core::objectmodel::BaseComponent
 {
 public:
-    class BaseVTKDataIO : public sofa::core::objectmodel::BaseObject
+    class BaseVTKDataIO : public sofa::core::objectmodel::BaseComponent
     {
     public:
         string name;

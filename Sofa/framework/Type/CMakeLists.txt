@@ -10,6 +10,8 @@ set(HEADER_FILES
     ${SOFATYPESRC_ROOT}/DualQuat.h
     ${SOFATYPESRC_ROOT}/DualQuat.inl
     ${SOFATYPESRC_ROOT}/Frame.h
+    ${SOFATYPESRC_ROOT}/FullySymmetric4Tensor.h
+    ${SOFATYPESRC_ROOT}/hardening.h
     ${SOFATYPESRC_ROOT}/Mat.h
     ${SOFATYPESRC_ROOT}/MatSym.h
     ${SOFATYPESRC_ROOT}/Mat_solve_Cholesky.h
@@ -49,6 +51,8 @@ set(HEADER_FILES
     ${SOFATYPESRC_ROOT}/vector_algebra.h
     ${SOFATYPESRC_ROOT}/vector_algorithm.h
     ${SOFATYPESRC_ROOT}/vector_device.h
+    ${SOFATYPESRC_ROOT}/VecView.h
+    ${SOFATYPESRC_ROOT}/VoigtNotation.h
 )
 
 set(SOURCE_FILES
@@ -106,6 +110,7 @@ if(mimalloc_FOUND)
     target_link_libraries(${PROJECT_NAME} PUBLIC mimalloc)
 endif()
 
+sofa_treat_warnings_as_errors(${PROJECT_NAME})
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER Sofa.Framework) # IDE folder
 
 sofa_create_package_with_targets(

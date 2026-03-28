@@ -36,25 +36,6 @@ class SOFA_HELPER_API Utils
 {
 public:
 
-/// @brief Convert a string to a wstring.
-///
-/// @return The converted string on success, or a empty string on failure.
-SOFA_HELPER_UTILS_IN_STRINGUTILS_DISABLED()
-static std::wstring widenString(const std::string& s) = delete;
-
-/// @brief Convert a wstring to a string.
-///
-/// @return The converted string on success, or a empty string on failure.
-SOFA_HELPER_UTILS_IN_STRINGUTILS_DISABLED()
-static std::string narrowString(const std::wstring& ws) = delete;
-
-/// @brief Convert a string to lower case.
-SOFA_HELPER_UTILS_IN_STRINGUTILS_DISABLED()
-static std::string downcaseString(const std::string& s) = delete;
-
-/// @brief Convert a string to upper case.
-SOFA_HELPER_UTILS_IN_STRINGUTILS_DISABLED()
-static std::string upcaseString(const std::string& s) = delete;
 
 #if defined WIN32
 

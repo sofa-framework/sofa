@@ -32,7 +32,7 @@ TopologyAccessor::TopologyAccessor()
 
 void TopologyAccessor::init()
 {
-    sofa::core::objectmodel::BaseObject::init();
+    sofa::core::objectmodel::BaseComponent::init();
 
     if (!this->isComponentStateInvalid())
     {
