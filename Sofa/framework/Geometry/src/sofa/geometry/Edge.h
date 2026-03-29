@@ -316,8 +316,8 @@ struct Edge
             const T alpha = alphaNom / alphaDenom;
             // beta: pC + beta * CD = pA + alpha * AB
             const T beta = (std::abs(CD[0]) > std::abs(CD[1]))
-                ? (AC[0] + alpha * AB[0]) / CD[0]
-                : (AC[1] + alpha * AB[1]) / CD[1];
+                ? (-AC[0] + alpha * AB[0]) / CD[0]
+                : (-AC[1] + alpha * AB[1]) / CD[1];
 
             if (alpha < 0 || alpha > 1 || beta < 0 || beta > 1)
             {
