@@ -176,8 +176,42 @@ struct Triangle
         }
 
     }
-
-
+    
+    /**
+    * @brief    Test if input point is on the plane defined by the Triangle (n0, n1, n2)
+    * @tparam   Node iterable container
+    * @tparam   T scalar
+    * @param    p0: position of the point to test
+    * @param    n0, n1, n2: nodes of the triangle
+    * @return    bool result if point is on the plane of the triangle.
+    */
+    template<typename Node,
+        typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
+        typename = std::enable_if_t<std::is_scalar_v<T>>
+    >
+    [[nodiscard]]
+    static constexpr bool isPointOnPlane(const Node& p0, const Node& n0, const Node& n1, const Node& n2)
+    {
+        if constexpr (std::is_same_v<Node, sofa::type::Vec<3, T>>)
+        {
+            const auto normal = Triangle::normal(n0, n1, n2);
+            const auto normalNorm2 = sofa::type::dot(normal, normal);
+            if (normalNorm2 > std::numeric_limits<T>::epsilon())
+            {
+                const auto d = sofa::type::dot(p0 - n0, normal);
+                if (d * d / normalNorm2 > std::numeric_limits<T>::epsilon())
+                    return false;
+            }
+            
+            return true;
+        }
+        else
+        {
+            // all points are trivially in the same plane
+            return true;
+        }
+    }
+    
     /**
     * @brief	Test if input point is inside Triangle (n0, n1, n2) using Triangle @sa getBarycentricCoordinates . The point is inside the Triangle if and only if Those coordinates are all positive.
     * @tparam   Node iterable container
@@ -185,34 +219,30 @@ struct Triangle
     * @param	p0: position of the point to test
     * @param	n0, n1, n2: nodes of the triangle
     * @param	output parameter: sofa::type::Vec<3, T> barycentric coordinates of the input point in Triangle
+    * @param assumePointIsOnPlane: optional bool to avoid testing if the point is on the plane defined by the triangle
     * @return	bool result if point is inside Triangle.
     */
     template<typename Node,
         typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
         typename = std::enable_if_t<std::is_scalar_v<T>>
     >
-        static constexpr bool isPointInTriangle(const Node& p0, const Node& n0, const Node& n1, const Node& n2, sofa::type::Vec<3, T>& baryCoefs, bool assumePointIsInPlane = true)
+    [[nodiscard]]
+    static constexpr bool isPointInTriangle(const Node& p0, const Node& n0, const Node& n1, const Node& n2, sofa::type::Vec<3, T>& baryCoefs, bool assumePointIsOnPlane = true)
     {
         baryCoefs = Triangle::getBarycentricCoordinates(p0, n0, n1, n2);
 
         // In 3D, check if the point is in the plane of the triangle
         if constexpr (std::is_same_v<Node, sofa::type::Vec<3, T>>)
         {
-            if(!assumePointIsInPlane)
+            if(!assumePointIsOnPlane)
             {
-                const auto normal = Triangle::normal(n0, n1, n2);
-                const auto normalNorm2 = sofa::type::dot(normal, normal);
-                if (normalNorm2 > std::numeric_limits<T>::epsilon())
-                {
-                    const auto d = sofa::type::dot(p0 - n0, normal);
-                    if (d * d / normalNorm2 > std::numeric_limits<T>::epsilon())
-                        return false;
-                }
+                if(!isPointOnPlane(p0, n0, n1, n2))
+                    return false;
             }
         }
         else
         {
-            SOFA_UNUSED(assumePointIsInPlane);
+            SOFA_UNUSED(assumePointIsOnPlane);
         }
 
         for (int i = 0; i < 3; ++i)

@@ -374,6 +374,51 @@ TYPED_TEST(GeometryVec3DTriangle_test, getBarycentricCoordinates)
 }
 
 
+TYPED_TEST(GeometryVec3DTriangle_test, isPointOnPlane)
+{
+    // Triangle in the plane z = x (normal is proportional to (-1, 0, 1))
+    const TypeParam a{ 0., 0., 0. };
+    const TypeParam b{ 2., 0., 2. };
+    const TypeParam c{ 0., 2., 0. };
+
+    // point on the plane, inside the triangle
+    EXPECT_TRUE(sofa::geometry::Triangle::isPointOnPlane(TypeParam{ 0.5, 0.5, 0.5 }, a, b, c));
+
+    // point on vertex
+    EXPECT_TRUE(sofa::geometry::Triangle::isPointOnPlane(a, a, b, c));
+    EXPECT_TRUE(sofa::geometry::Triangle::isPointOnPlane(b, a, b, c));
+    EXPECT_TRUE(sofa::geometry::Triangle::isPointOnPlane(c, a, b, c));
+
+    // point on edge
+    EXPECT_TRUE(sofa::geometry::Triangle::isPointOnPlane(TypeParam{ 1., 0., 1. }, a, b, c));
+
+    // point on the plane but outside the triangle
+    EXPECT_TRUE(sofa::geometry::Triangle::isPointOnPlane(TypeParam{ 3., 0., 3. }, a, b, c));
+    EXPECT_TRUE(sofa::geometry::Triangle::isPointOnPlane(TypeParam{ -5., 10., -5. }, a, b, c));
+
+    // point off the plane
+    EXPECT_FALSE(sofa::geometry::Triangle::isPointOnPlane(TypeParam{ 1., 0.2, 0.2 }, a, b, c));
+    EXPECT_FALSE(sofa::geometry::Triangle::isPointOnPlane(TypeParam{ 0., 0., 5. }, a, b, c));
+    EXPECT_FALSE(sofa::geometry::Triangle::isPointOnPlane(TypeParam{ 1., 1., 0. }, a, b, c));
+
+    // degenerate (collinear) triangle: always returns true
+    const TypeParam d{ 1., 0., 1. };
+    EXPECT_TRUE(sofa::geometry::Triangle::isPointOnPlane(TypeParam{ 99., 99., 99. }, a, b, d));
+}
+
+
+TYPED_TEST(GeometryVec2DTriangle_test, isPointOnPlane)
+{
+    // In 2D, all points are trivially on the same plane
+    const TypeParam a{ 0., 0. };
+    const TypeParam b{ 2., 0. };
+    const TypeParam c{ 2., 2. };
+
+    EXPECT_TRUE(sofa::geometry::Triangle::isPointOnPlane(TypeParam{ 1., 1. }, a, b, c));
+    EXPECT_TRUE(sofa::geometry::Triangle::isPointOnPlane(TypeParam{ 99., 99. }, a, b, c));
+}
+
+
 TEST(GeometryTriangle_test, rayIntersectionVec3)
 {
     const sofa::type::Vec3 a{ 0., 3., 0. };
