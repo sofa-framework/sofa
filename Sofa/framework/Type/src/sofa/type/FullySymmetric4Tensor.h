@@ -23,6 +23,7 @@
 
 #include <sofa/type/VoigtNotation.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
+#include <sofa/helper/logging/Messaging.h>
 #include <sofa/type/MatSym.h>
 
 #include <iomanip>
