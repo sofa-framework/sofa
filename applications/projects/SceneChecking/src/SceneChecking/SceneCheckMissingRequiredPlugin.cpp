@@ -125,7 +125,7 @@ bool SceneCheckMissingRequiredPlugin::formatRequiredPlugin(
 
 void SceneCheckMissingRequiredPlugin::formatRequiredPluginInXMLSyntax(const std::string& pluginName, const std::vector<std::string>& listComponents, std::ostream& ss)
 {
-    ss << "<RequiredPlugin name=\"" << pluginName << "\"/> <!-- Needed to use components [";
+    ss << "<RequiredPlugin pluginName=\"" << pluginName << "\"/> <!-- Needed to use components [";
     if (!listComponents.empty())
     {
         ss << sofa::helper::join(listComponents, ',');
