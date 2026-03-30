@@ -103,12 +103,13 @@ public:
     BaseVTKDataIO* inputPolygons;
     BaseVTKDataIO* inputCells;
     BaseVTKDataIO* inputCellOffsets;
-    BaseVTKDataIO* inputCellTypes;
+    VTKDataIO<int>* inputCellTypes;
     type::vector<BaseVTKDataIO*> inputPointDataVector;
     type::vector<BaseVTKDataIO*> inputCellDataVector;
     bool isLittleEndian;
+    char* m_inputIndicesText;
 
-    int numberOfPoints, numberOfCells, numberOfLines;
+    int numberOfPoints, numberOfCells, numberOfPolys, numberOfLines;
 
     BaseVTKReader() ;
 
