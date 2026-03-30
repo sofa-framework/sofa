@@ -21,11 +21,12 @@
 ******************************************************************************/
 #pragma once
 
+#include <sofa/component/mass/NodalMassDensity.h>
 #include <sofa/component/mass/config.h>
 #include <sofa/core/behavior/Mass.h>
 #include <sofa/core/behavior/TopologyAccessor.h>
 #include <sofa/fem/FiniteElement.h>
-#include <sofa/component/mass/NodalMassDensity.h>
+#include <sofa/linearalgebra/CompressedRowSparseMatrixMechanical.h>
 
 #if !defined(SOFA_COMPONENT_MASS_ELEMENTFEMMASS_CPP)
 #include <sofa/fem/FiniteElement[all].h>
@@ -54,9 +55,10 @@ protected:
     static constexpr sofa::Size NumberOfDofsInElement = NumberOfNodesInElement * spatial_dimensions;
     static constexpr sofa::Size TopologicalDimension = FiniteElement::TopologicalDimension;
 
-    using ElementMassMatrix = sofa::type::Mat<NumberOfDofsInElement, NumberOfDofsInElement, sofa::Real_t<DataTypes>>;
+    using ElementMassMatrix = sofa::type::Mat<NumberOfNodesInElement, NumberOfNodesInElement, sofa::Real_t<DataTypes>>;
 
     using NodalMassDensity = ::sofa::component::mass::NodalMassDensity<sofa::Real_t<DataTypes>>;
+    using GlobalMassMatrixType = sofa::linearalgebra::CompressedRowSparseMatrixMechanical<Real_t<DataTypes>>;
 
 public:
 
@@ -69,8 +71,7 @@ public:
      */
     static const std::string GetCustomClassName()
     {
-        return std::string(sofa::geometry::elementTypeToString(ElementType::Element_type)) +
-               "FEMMass";
+        return std::string(sofa::geometry::elementTypeToString(ElementType::Element_type)) + "FEMMass";
     }
 
     static const std::string GetCustomTemplateName() { return DataTypes::Name(); }
@@ -87,6 +88,11 @@ public:
                   const sofa::DataVecCoord_t<DataTypes>& x,
                   const sofa::DataVecDeriv_t<DataTypes>& v) override;
 
+    void buildMassMatrix(sofa::core::behavior::MassMatrixAccumulator* matrices) override;
+
+    using Inherit1::addMDx;
+    void addMDx(const core::MechanicalParams*, DataVecDeriv_t<DataTypes>& f, const DataVecDeriv_t<DataTypes>& dx, SReal factor) override;
+
 protected:
 
     ElementFEMMass();
@@ -94,6 +100,8 @@ protected:
     void elementFEMMass_init();
 
     void validateNodalMassDensity();
+
+    GlobalMassMatrixType m_globalMassMatrix;
 };
 
 #if !defined(SOFA_COMPONENT_MASS_ELEMENTFEMMASS_CPP)
