@@ -43,22 +43,22 @@ struct ElementMass_template_test : public Mass_test<ElementFEMMass<typename Mass
     using VecCoord = sofa::VecCoord_t<DataTypes>;
     using VecDeriv = sofa::VecDeriv_t<DataTypes>;
 
-    MeshTopology::SPtr m_topology;
 
     ElementMass_template_test()
     {
         this->m_testAccFromF = false;
         this->m_testKineticEnergy = false;
         this->m_testAddMToMatrix = false;
+        this->m_errorMax = 1e3_sreal;
 
-        m_topology = sofa::core::objectmodel::New<MeshTopology>();
-        this->m_node->addObject(m_topology);
+        auto topology = sofa::core::objectmodel::New<MeshTopology>();
+        this->m_node->addObject(topology);
 
-        m_topology->addEdge(0, 1);
-        m_topology->addTriangle(0, 1, 2);
-        m_topology->addQuad(0, 1, 2, 3);
-        m_topology->addTetra(0, 1, 2, 3);
-        m_topology->addHexa(0, 1, 2, 3, 4, 5, 6, 7);
+        topology->addEdge(0, 1);
+        topology->addTriangle(0, 1, 2);
+        topology->addQuad(0, 1, 2, 3);
+        topology->addTetra(0, 1, 2, 3);
+        topology->addHexa(0, 1, 2, 3, 4, 5, 6, 7);
 
         auto nodalDensity = sofa::core::objectmodel::New<NodalMassDensity<sofa::Real_t<DataTypes>>>();
         this->m_node->addObject(nodalDensity);

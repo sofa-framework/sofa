@@ -237,7 +237,7 @@ void ElementFEMMass<TDataTypes, TElementType>::addMDx(const core::MechanicalPara
             const auto columnId = m_globalMassMatrix.colsIndex[xj];
             const auto& value = m_globalMassMatrix.colsValue[xj];
 
-            result[rowId] += value * dxAccessor[columnId] * factor;
+            result[rowId] += (factor * value) * dxAccessor[columnId];
         }
     }
 }
