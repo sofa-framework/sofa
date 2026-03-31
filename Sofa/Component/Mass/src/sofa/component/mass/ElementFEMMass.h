@@ -130,12 +130,12 @@ public:
      * This method computes the product of the mass matrix and the gravity vector,
      * adding the result to the force vector `f`.
      *
-     * @param params Mechanical parameters for the computation.
+     * @param mparams Mechanical parameters for the computation.
      * @param f The force vector to which the gravity force will be added.
      * @param x The current positions (unused in this implementation).
      * @param v The current velocities (unused in this implementation).
      */
-    void addForce(const core::MechanicalParams*,
+    void addForce(const core::MechanicalParams* mparams,
                   sofa::DataVecDeriv_t<DataTypes>& f,
                   const sofa::DataVecCoord_t<DataTypes>& x,
                   const sofa::DataVecDeriv_t<DataTypes>& v) override;
@@ -177,6 +177,30 @@ protected:
      * element-level mass matrices, and then assembles them into the global sparse matrix `m_globalMassMatrix`.
      */
     void elementFEMMass_init();
+
+    /**
+     * @brief Computes the mass matrix for each finite element.
+     *
+     * This method iterates over all elements provided by the topology and performs
+     * numerical integration (quadrature) to compute the local mass matrix for each element.
+     * The mass density is interpolated from the nodal values using the element's shape functions.
+     *
+     * @param elements The sequence of elements to process.
+     * @param[out] elementMassMatrices A vector to be populated with the computed local mass matrices.
+     */
+    void calculateElementMassMatrix(const auto& elements, sofa::type::vector<ElementMassMatrix> &elementMassMatrices);
+
+    /**
+     * @brief Assembles the global mass matrix from individual element mass matrices.
+     *
+     * This method takes the precomputed local mass matrices and distributes their contributions
+     * into the global sparse mass matrix `m_globalMassMatrix`. It handles the mapping from
+     * local element node indices to global degree-of-freedom indices.
+     *
+     * @param elements The sequence of elements corresponding to the provided mass matrices.
+     * @param elementMassMatrices The precomputed local mass matrices for each element.
+     */
+    void initializeGlobalMassMatrix(const auto& elements, const sofa::type::vector<ElementMassMatrix>& elementMassMatrices);
 
     /**
      * @brief Ensures that a valid NodalMassDensity component is linked.
