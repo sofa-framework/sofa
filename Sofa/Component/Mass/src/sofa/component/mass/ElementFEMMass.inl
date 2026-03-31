@@ -79,8 +79,6 @@ template <class TDataTypes, class TElementType>
 void ElementFEMMass<TDataTypes, TElementType>::elementFEMMass_init()
 {
     const auto& elements = FiniteElement::getElementSequence(*this->l_topology);
-    const auto nbElements = elements.size();
-
     sofa::type::vector<ElementMassMatrix> elementMassMatrices;
 
     //1. compute element mass matrix
@@ -110,14 +108,14 @@ void ElementFEMMass<TDataTypes, TElementType>::calculateElementMassMatrix(
             auto& elementMassMatrix = elementMassMatrices[elementId];
 
             std::array<Real_t<DataTypes>, NumberOfNodesInElement> nodeDensityInElement;
-            for (std::size_t i = 0; i < NumberOfNodesInElement; ++i)
+            for (sofa::Size i = 0; i < NumberOfNodesInElement; ++i)
             {
                 nodeDensityInElement[i] =
                     l_nodalMassDensity->getNodeProperty(element[i], nodalMassDensityAccessor);
             }
 
             std::array<Coord_t<DataTypes>, NumberOfNodesInElement> nodeCoordinatesInElement;
-            for (std::size_t i = 0; i < NumberOfNodesInElement; ++i)
+            for (sofa::Size i = 0; i < NumberOfNodesInElement; ++i)
             {
                 nodeCoordinatesInElement[i] = restPositionAccessor[element[i]];
             }
@@ -170,10 +168,10 @@ void ElementFEMMass<TDataTypes, TElementType>::initializeGlobalMassMatrix(
                       const auto& element = elements[elementId];
                       auto& elementMassMatrix = elementMassMatrices[elementId];
 
-                      for (std::size_t i = 0; i < NumberOfNodesInElement; ++i)
+                      for (sofa::Size i = 0; i < NumberOfNodesInElement; ++i)
                       {
                           const auto node_i = element[i];
-                          for (std::size_t j = 0; j < NumberOfNodesInElement; ++j)
+                          for (sofa::Size j = 0; j < NumberOfNodesInElement; ++j)
                           {
                               const auto node_j = element[j];
                               m_globalMassMatrix.add(node_i, node_j, elementMassMatrix(i, j));
@@ -200,13 +198,12 @@ void ElementFEMMass<TDataTypes, TElementType>::addForce(const core::MechanicalPa
     Deriv_t<DataTypes> theGravity;
     DataTypes::set( theGravity, g[0], g[1], g[2] );
 
-    for (Index xi = 0; xi < (Index)m_globalMassMatrix.rowIndex.size(); ++xi)
+    for (std::size_t xi = 0; xi < m_globalMassMatrix.rowIndex.size(); ++xi)
     {
         const auto rowId = m_globalMassMatrix.rowIndex[xi];
         typename GlobalMassMatrixType::Range rowRange(m_globalMassMatrix.rowBegin[xi], m_globalMassMatrix.rowBegin[xi + 1]);
-        for (Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)
+        for (typename GlobalMassMatrixType::Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)
         {
-            const auto columnId = m_globalMassMatrix.colsIndex[xj];
             const auto& value = m_globalMassMatrix.colsValue[xj];
 
             const auto force = value * theGravity;
@@ -219,18 +216,18 @@ template <class TDataTypes, class TElementType>
 void ElementFEMMass<TDataTypes, TElementType>::buildMassMatrix(
     sofa::core::behavior::MassMatrixAccumulator* matrices)
 {
-    for (Index xi = 0; xi < (Index)m_globalMassMatrix.rowIndex.size(); ++xi)
+    for (std::size_t xi = 0; xi < m_globalMassMatrix.rowIndex.size(); ++xi)
     {
         const auto rowId = m_globalMassMatrix.rowIndex[xi];
         typename GlobalMassMatrixType::Range rowRange(m_globalMassMatrix.rowBegin[xi], m_globalMassMatrix.rowBegin[xi + 1]);
-        for (Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)
+        for (typename GlobalMassMatrixType::Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)
         {
             const auto columnId = m_globalMassMatrix.colsIndex[xj];
             const auto& value = m_globalMassMatrix.colsValue[xj];
 
-            for (std::size_t d = 0; d < spatial_dimensions; ++d)
+            for (typename GlobalMassMatrixType::Index d = 0; d < spatial_dimensions; ++d)
             {
-                matrices->add(rowId * spatial_dimensions + d, columnId * spatial_dimensions +d, value);
+                matrices->add(rowId * spatial_dimensions + d, columnId * spatial_dimensions + d, value);
             }
         }
     }
@@ -242,14 +239,16 @@ void ElementFEMMass<TDataTypes, TElementType>::addMDx(const core::MechanicalPara
                                                       const DataVecDeriv_t<DataTypes>& dx,
                                                       SReal factor)
 {
+    SOFA_UNUSED(mparams);
+
     auto result = sofa::helper::getWriteAccessor(f);
     const auto dxAccessor = sofa::helper::getReadAccessor(dx);
 
-    for (Index xi = 0; xi < (Index)m_globalMassMatrix.rowIndex.size(); ++xi)
+    for (std::size_t xi = 0; xi < m_globalMassMatrix.rowIndex.size(); ++xi)
     {
         const auto rowId = m_globalMassMatrix.rowIndex[xi];
         typename GlobalMassMatrixType::Range rowRange(m_globalMassMatrix.rowBegin[xi], m_globalMassMatrix.rowBegin[xi + 1]);
-        for (Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)
+        for (typename GlobalMassMatrixType::Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)
         {
             const auto columnId = m_globalMassMatrix.colsIndex[xj];
             const auto& value = m_globalMassMatrix.colsValue[xj];
@@ -276,14 +275,16 @@ SReal ElementFEMMass<TDataTypes, TElementType>::getKineticEnergy(
     const core::MechanicalParams* mparams,
     const DataVecDeriv_t<DataTypes>& v) const
 {
+    SOFA_UNUSED(mparams);
+
     SReal kineticEnergy = 0.0;
     auto vAccessor = sofa::helper::getReadAccessor(v);
 
-    for (Index xi = 0; xi < (Index)m_globalMassMatrix.rowIndex.size(); ++xi)
+    for (std::size_t xi = 0; xi < m_globalMassMatrix.rowIndex.size(); ++xi)
     {
         const auto rowId = m_globalMassMatrix.rowIndex[xi];
         typename GlobalMassMatrixType::Range rowRange(m_globalMassMatrix.rowBegin[xi], m_globalMassMatrix.rowBegin[xi + 1]);
-        for (Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)
+        for (typename GlobalMassMatrixType::Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)
         {
             const auto columnId = m_globalMassMatrix.colsIndex[xj];
             const auto& value = m_globalMassMatrix.colsValue[xj];
@@ -300,6 +301,8 @@ SReal ElementFEMMass<TDataTypes, TElementType>::getPotentialEnergy(
     const core::MechanicalParams* mparams,
     const typename core::behavior::Mass<TDataTypes>::DataVecCoord& x) const
 {
+    SOFA_UNUSED(mparams);
+
     SReal potentialEnergy = 0.0;
     auto xAccessor = sofa::helper::getReadAccessor(x);
 
@@ -307,13 +310,12 @@ SReal ElementFEMMass<TDataTypes, TElementType>::getPotentialEnergy(
     Deriv_t<DataTypes> theGravity;
     DataTypes::set( theGravity, g[0], g[1], g[2] );
 
-    for (Index xi = 0; xi < (Index)m_globalMassMatrix.rowIndex.size(); ++xi)
+    for (std::size_t xi = 0; xi < m_globalMassMatrix.rowIndex.size(); ++xi)
     {
         const auto rowId = m_globalMassMatrix.rowIndex[xi];
         typename GlobalMassMatrixType::Range rowRange(m_globalMassMatrix.rowBegin[xi], m_globalMassMatrix.rowBegin[xi + 1]);
-        for (Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)
+        for (typename GlobalMassMatrixType::Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)
         {
-            const auto columnId = m_globalMassMatrix.colsIndex[xj];
             const auto& value = m_globalMassMatrix.colsValue[xj];
 
             potentialEnergy -= sofa::type::dot(xAccessor[rowId], theGravity * value);
