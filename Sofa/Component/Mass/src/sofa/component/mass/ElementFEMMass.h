@@ -163,6 +163,15 @@ public:
      */
     void addMDx(const core::MechanicalParams*, DataVecDeriv_t<DataTypes>& f, const DataVecDeriv_t<DataTypes>& dx, SReal factor) override;
 
+    using Inherit1::accFromF;
+    /**
+     * @brief Supposed to compute $ a = M^{-1} f $, but triggers an error in this implementation.
+     *
+     * @param a The result vector of $M^{-1} f$.
+     * @param f The vector to be multiplied by the inverse mass matrix.
+     */
+    void accFromF(const core::MechanicalParams*, DataVecDeriv_t<DataTypes>& a, const DataVecDeriv_t<DataTypes>& f) override;
+
 protected:
 
     /**
