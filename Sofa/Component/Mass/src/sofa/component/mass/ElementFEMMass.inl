@@ -299,7 +299,7 @@ SReal ElementFEMMass<TDataTypes, TElementType>::getKineticEnergy(
 template <class TDataTypes, class TElementType>
 SReal ElementFEMMass<TDataTypes, TElementType>::getPotentialEnergy(
     const core::MechanicalParams* mparams,
-    const typename core::behavior::Mass<TDataTypes>::DataVecCoord& x) const
+    const DataVecCoord_t<DataTypes>& x) const
 {
     SOFA_UNUSED(mparams);
 

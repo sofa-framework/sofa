@@ -204,7 +204,7 @@ public:
      */
     SReal getPotentialEnergy(
         const core::MechanicalParams* mparams,
-        const core::behavior::Mass<TDataTypes>::DataVecCoord& x) const override;
+        const DataVecCoord_t<DataTypes>& x) const override;
 
 protected:
 
