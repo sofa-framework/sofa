@@ -82,7 +82,10 @@ struct VectorTypeInfo
             data.resize(size/BaseTypeInfo::size());
             return true;
         }
-        return false;
+        else
+        {
+            return false;
+        }
     }
 
     template <typename T>
