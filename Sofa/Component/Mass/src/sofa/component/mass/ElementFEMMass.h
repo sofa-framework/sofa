@@ -156,21 +156,32 @@ public:
      *
      * This is used for computing accelerations or in iterative solvers.
      *
-     * @param params Mechanical parameters for the computation.
+     * @param mparams Mechanical parameters for the computation.
      * @param f The result vector to which the product is added.
      * @param dx The vector to be multiplied by the mass matrix.
      * @param factor A scaling factor for the product.
      */
-    void addMDx(const core::MechanicalParams*, DataVecDeriv_t<DataTypes>& f, const DataVecDeriv_t<DataTypes>& dx, SReal factor) override;
+    void addMDx(const core::MechanicalParams* mparams, DataVecDeriv_t<DataTypes>& f, const DataVecDeriv_t<DataTypes>& dx, SReal factor) override;
 
     using Inherit1::accFromF;
     /**
      * @brief Supposed to compute $ a = M^{-1} f $, but triggers an error in this implementation.
      *
+     * @param mparams Mechanical parameters for the computation.
      * @param a The result vector of $M^{-1} f$.
      * @param f The vector to be multiplied by the inverse mass matrix.
      */
-    void accFromF(const core::MechanicalParams*, DataVecDeriv_t<DataTypes>& a, const DataVecDeriv_t<DataTypes>& f) override;
+    void accFromF(const core::MechanicalParams* mparams, DataVecDeriv_t<DataTypes>& a, const DataVecDeriv_t<DataTypes>& f) override;
+
+
+    using Inherit1::getKineticEnergy;
+    SReal getKineticEnergy(const core::MechanicalParams* mparams,
+                           const DataVecDeriv_t<DataTypes>& v) const override;
+
+    using Inherit1::getPotentialEnergy;
+    SReal getPotentialEnergy(
+        const core::MechanicalParams* mparams,
+        const core::behavior::Mass<TDataTypes>::DataVecCoord& x) const override;
 
 protected:
 
