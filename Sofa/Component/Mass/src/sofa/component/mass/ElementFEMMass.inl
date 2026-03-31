@@ -259,4 +259,12 @@ void ElementFEMMass<TDataTypes, TElementType>::addMDx(const core::MechanicalPara
     }
 }
 
+template <class TDataTypes, class TElementType>
+void ElementFEMMass<TDataTypes, TElementType>::accFromF(const core::MechanicalParams*,
+                                                        DataVecDeriv_t<DataTypes>& a,
+                                                        const DataVecDeriv_t<DataTypes>& f)
+{
+    msg_error() << "the method 'accFromF' can't be used with this component as this SPARSE mass matrix can't be inversed easily.";
+}
+
 }  // namespace sofa::component::mass
