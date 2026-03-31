@@ -316,7 +316,7 @@ SReal ElementFEMMass<TDataTypes, TElementType>::getPotentialEnergy(
             const auto columnId = m_globalMassMatrix.colsIndex[xj];
             const auto& value = m_globalMassMatrix.colsValue[xj];
 
-            potentialEnergy -= sofa::type::dot(theGravity, xAccessor[columnId]) * value;
+            potentialEnergy -= sofa::type::dot(xAccessor[rowId], theGravity * value);
         }
     }
 
