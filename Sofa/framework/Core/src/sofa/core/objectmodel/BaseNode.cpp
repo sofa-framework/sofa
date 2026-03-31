@@ -64,13 +64,13 @@ core::visual::VisualLoop* BaseNode::getVisualLoop() const
 }
 
 /// Set the context of an object to this
-void BaseNode::setObjectContext(BaseObject::SPtr obj)
+void BaseNode::setObjectContext(BaseComponent::SPtr obj)
 {
     obj->l_context.set(this->getContext());
 }
 
 /// Reset the context of an object
-void BaseNode::clearObjectContext(BaseObject::SPtr obj)
+void BaseNode::clearObjectContext(BaseComponent::SPtr obj)
 {
     if (obj != nullptr)
     {

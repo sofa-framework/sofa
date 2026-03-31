@@ -20,7 +20,7 @@ public:
 
     TaskSchedulerSettings() = default;
 
-    void init()
+    void init() override
     {
         initTaskScheduler(true);
     }
