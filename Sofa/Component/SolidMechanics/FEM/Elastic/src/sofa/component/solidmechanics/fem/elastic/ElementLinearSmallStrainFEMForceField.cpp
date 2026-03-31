@@ -49,6 +49,9 @@ void registerElementLinearSmallStrainFEMForceField(sofa::core::ObjectFactory* fa
 
     factory->registerObjects(sofa::core::ObjectRegistrationData("Hooke's law on linear hexahedra assuming small strain")
         .add< ElementLinearSmallStrainFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Hexahedron> >(true));
+
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Hooke's law on linear prisms assuming small strain")
+        .add< ElementLinearSmallStrainFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Prism> >(true));
 }
 
 template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API ElementLinearSmallStrainFEMForceField<sofa::defaulttype::Vec1Types, sofa::geometry::Edge>;
@@ -60,5 +63,6 @@ template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API ElementLinearSmallS
 template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API ElementLinearSmallStrainFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Quad>;
 template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API ElementLinearSmallStrainFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Tetrahedron>;
 template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API ElementLinearSmallStrainFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Hexahedron>;
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API ElementLinearSmallStrainFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Prism>;
 
 }
