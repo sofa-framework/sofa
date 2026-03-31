@@ -287,6 +287,7 @@ SReal ElementFEMMass<TDataTypes, TElementType>::getKineticEnergy(
         {
             const auto columnId = m_globalMassMatrix.colsIndex[xj];
             const auto& value = m_globalMassMatrix.colsValue[xj];
+
             kineticEnergy += sofa::type::dot(vAccessor[rowId], vAccessor[columnId] * value);
         }
     }
@@ -299,7 +300,27 @@ SReal ElementFEMMass<TDataTypes, TElementType>::getPotentialEnergy(
     const core::MechanicalParams* mparams,
     const typename core::behavior::Mass<TDataTypes>::DataVecCoord& x) const
 {
-    return 0;
+    SReal potentialEnergy = 0.0;
+    auto xAccessor = sofa::helper::getReadAccessor(x);
+
+    const auto g = getContext()->getGravity();
+    Deriv_t<DataTypes> theGravity;
+    DataTypes::set( theGravity, g[0], g[1], g[2] );
+
+    for (Index xi = 0; xi < (Index)m_globalMassMatrix.rowIndex.size(); ++xi)
+    {
+        const auto rowId = m_globalMassMatrix.rowIndex[xi];
+        typename GlobalMassMatrixType::Range rowRange(m_globalMassMatrix.rowBegin[xi], m_globalMassMatrix.rowBegin[xi + 1]);
+        for (Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)
+        {
+            const auto columnId = m_globalMassMatrix.colsIndex[xj];
+            const auto& value = m_globalMassMatrix.colsValue[xj];
+
+            potentialEnergy -= sofa::type::dot(theGravity, xAccessor[columnId]) * value;
+        }
+    }
+
+    return potentialEnergy;
 }
 
 }  // namespace sofa::component::mass
