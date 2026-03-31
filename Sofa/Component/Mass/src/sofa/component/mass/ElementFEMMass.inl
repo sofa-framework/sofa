@@ -63,7 +63,7 @@ void ElementFEMMass<TDataTypes, TElementType>::validateNodalMassDensity()
     {
         msg_info() << "Link to a nodal mass density should be set to ensure right behavior. First "
                       "component found in current context will be used.";
-        l_nodalMassDensity.set(this->getContext()->get<NodalMassDensity>());
+        l_nodalMassDensity.set(this->getContext()->template get<NodalMassDensity>());
     }
 
     if (l_nodalMassDensity == nullptr)
