@@ -175,10 +175,33 @@ public:
 
 
     using Inherit1::getKineticEnergy;
+    /**
+     * @brief Computes the total kinetic energy of the system.
+     *
+     * The kinetic energy $T$ is computed as:
+     * \f$ T = \frac{1}{2} \mathbf{v}^T \mathbf{M} \mathbf{v} \f$
+     * where \f$ \mathbf{M} \f$ is the global mass matrix and \f$ \mathbf{v} \f$ is the velocity vector.
+     *
+     * @param mparams Mechanical parameters for the computation.
+     * @param v The current velocity vector.
+     * @return The computed kinetic energy.
+     */
     SReal getKineticEnergy(const core::MechanicalParams* mparams,
                            const DataVecDeriv_t<DataTypes>& v) const override;
 
     using Inherit1::getPotentialEnergy;
+    /**
+     * @brief Computes the total gravitational potential energy of the system.
+     *
+     * The potential energy $V$ is computed as:
+     * \f$ V = - \mathbf{x}^T \mathbf{M} \mathbf{g} \f$
+     * where \f$ \mathbf{M} \f$ is the global mass matrix, \f$ \mathbf{x} \f$ is the position vector,
+     * and \f$ \mathbf{g} \f$ is the gravity vector.
+     *
+     * @param mparams Mechanical parameters for the computation.
+     * @param x The current position vector.
+     * @return The computed gravitational potential energy.
+     */
     SReal getPotentialEnergy(
         const core::MechanicalParams* mparams,
         const core::behavior::Mass<TDataTypes>::DataVecCoord& x) const override;
