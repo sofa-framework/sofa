@@ -57,103 +57,6 @@ void ElementFEMMass<TDataTypes, TElementType>::init()
 }
 
 template <class TDataTypes, class TElementType>
-void ElementFEMMass<TDataTypes, TElementType>::elementFEMMass_init()
-{
-    const auto& identity = sofa::type::Mat<spatial_dimensions, spatial_dimensions, Real_t<DataTypes>>::Identity();
-
-
-    //1. compute element mass matrix
-    const auto& elements = FiniteElement::getElementSequence(*this->l_topology);
-    const auto nbElements = elements.size();
-
-    sofa::type::vector<ElementMassMatrix> elementMassMatrices;
-    elementMassMatrices.resize(nbElements);
-
-    sofa::helper::ReadAccessor nodalMassDensityAccessor { l_nodalMassDensity->d_property };
-    auto restPositionAccessor = this->mstate->readRestPositions();
-
-    {
-        SCOPED_TIMER("elementMassMatrix");
-        sofa::helper::IotaView indices {static_cast<decltype(nbElements)>(0ul), nbElements};
-        std::for_each(indices.begin(), indices.end(),
-            [&](const auto elementId)
-            {
-                const auto& element = elements[elementId];
-                auto& elementMassMatrix = elementMassMatrices[elementId];
-
-                std::array<Real_t<DataTypes>, NumberOfNodesInElement> nodeDensityInElement;
-                for (std::size_t i = 0; i < NumberOfNodesInElement; ++i)
-                {
-                    nodeDensityInElement[i] = l_nodalMassDensity->getNodeProperty(element[i], nodalMassDensityAccessor);
-                }
-
-                std::array<Coord_t<DataTypes>, NumberOfNodesInElement> nodeCoordinatesInElement;
-                for (std::size_t i = 0; i < NumberOfNodesInElement; ++i)
-                {
-                    nodeCoordinatesInElement[i] = restPositionAccessor[element[i]];
-                }
-
-                std::size_t quadraturePointIndex = 0;
-                for (const auto& [quadraturePoint, weight] : FiniteElement::quadraturePoints())
-                {
-                    // gradient of shape functions in the reference element evaluated at the quadrature point
-                    const sofa::type::Mat<NumberOfNodesInElement, TopologicalDimension, Real_t<DataTypes>> dN_dq_ref =
-                        FiniteElement::gradientShapeFunctions(quadraturePoint);
-
-                    // jacobian of the mapping from the reference space to the physical space, evaluated at the
-                    // quadrature point
-                    sofa::type::Mat<spatial_dimensions, TopologicalDimension, Real_t<DataTypes>> jacobian =
-                        FiniteElement::Helper::jacobianFromReferenceToPhysical(nodeCoordinatesInElement, dN_dq_ref);
-
-                    const auto detJ = sofa::type::absGeneralizedDeterminant(jacobian);
-
-                    // shape functions in the reference element evaluated at the quadrature point
-                    const auto N = FiniteElement::shapeFunctions(quadraturePoint);
-
-                    const auto density = FiniteElement::Helper::evaluateValueInElement(nodeDensityInElement, N);
-
-                    const auto NT_N = sofa::type::dyad(N, N);
-
-                    elementMassMatrix += (weight * density * detJ) * NT_N;
-
-                    ++quadraturePointIndex;
-                }
-            }
-        );
-    }
-
-    //2. convert element matrices to dof matrices and store them for later use
-    {
-        SCOPED_TIMER("elementMassMatrix");
-
-        m_globalMassMatrix.clear();
-
-        const auto matrixSize = this->mstate->getMatrixSize();
-        m_globalMassMatrix.resize(matrixSize, matrixSize);
-
-        sofa::helper::IotaView indices {static_cast<decltype(nbElements)>(0ul), nbElements};
-        std::for_each(indices.begin(), indices.end(),
-            [&](const auto elementId)
-            {
-                const auto& element = elements[elementId];
-                auto& elementMassMatrix = elementMassMatrices[elementId];
-
-                for (std::size_t i = 0; i < NumberOfNodesInElement; ++i)
-                {
-                    const auto node_i = element[i];
-                    for (std::size_t j = 0; j < NumberOfNodesInElement; ++j)
-                    {
-                        const auto node_j = element[j];
-                        m_globalMassMatrix.add(node_i, node_j, elementMassMatrix(i, j));
-                    }
-                }
-            });
-
-        m_globalMassMatrix.compress();
-    }
-}
-
-template <class TDataTypes, class TElementType>
 void ElementFEMMass<TDataTypes, TElementType>::validateNodalMassDensity()
 {
     if (l_nodalMassDensity.empty())
@@ -171,12 +74,126 @@ void ElementFEMMass<TDataTypes, TElementType>::validateNodalMassDensity()
     }
 }
 
+
 template <class TDataTypes, class TElementType>
-void ElementFEMMass<TDataTypes, TElementType>::addForce(const core::MechanicalParams*,
+void ElementFEMMass<TDataTypes, TElementType>::elementFEMMass_init()
+{
+    const auto& elements = FiniteElement::getElementSequence(*this->l_topology);
+    const auto nbElements = elements.size();
+
+    sofa::type::vector<ElementMassMatrix> elementMassMatrices;
+
+    //1. compute element mass matrix
+    calculateElementMassMatrix(elements, elementMassMatrices);
+
+    // 2. convert element matrices to dof matrices and store them for later use
+    initializeGlobalMassMatrix(elements, elementMassMatrices);
+}
+
+template <class TDataTypes, class TElementType>
+void ElementFEMMass<TDataTypes, TElementType>::calculateElementMassMatrix(
+    const auto& elements, sofa::type::vector<ElementMassMatrix> &elementMassMatrices)
+{
+    const auto nbElements = elements.size();
+    elementMassMatrices.resize(nbElements);
+
+    sofa::helper::ReadAccessor nodalMassDensityAccessor { l_nodalMassDensity->d_property };
+    auto restPositionAccessor = this->mstate->readRestPositions();
+
+    SCOPED_TIMER("elementMassMatrix");
+    helper::IotaView indices{static_cast<decltype(nbElements)>(0ul), nbElements};
+    std::for_each(
+        indices.begin(), indices.end(),
+        [&](const auto elementId)
+        {
+            const auto& element = elements[elementId];
+            auto& elementMassMatrix = elementMassMatrices[elementId];
+
+            std::array<Real_t<DataTypes>, NumberOfNodesInElement> nodeDensityInElement;
+            for (std::size_t i = 0; i < NumberOfNodesInElement; ++i)
+            {
+                nodeDensityInElement[i] =
+                    l_nodalMassDensity->getNodeProperty(element[i], nodalMassDensityAccessor);
+            }
+
+            std::array<Coord_t<DataTypes>, NumberOfNodesInElement> nodeCoordinatesInElement;
+            for (std::size_t i = 0; i < NumberOfNodesInElement; ++i)
+            {
+                nodeCoordinatesInElement[i] = restPositionAccessor[element[i]];
+            }
+
+            for (const auto& [quadraturePoint, weight] : FiniteElement::quadraturePoints())
+            {
+                // gradient of shape functions in the reference element evaluated at the quadrature
+                // point
+                const sofa::type::Mat<NumberOfNodesInElement, TopologicalDimension, Real_t<DataTypes>>
+                    dN_dq_ref = FiniteElement::gradientShapeFunctions(quadraturePoint);
+
+                // jacobian of the mapping from the reference space to the physical space, evaluated
+                // at the quadrature point
+                sofa::type::Mat<spatial_dimensions, TopologicalDimension, Real_t<DataTypes>>
+                    jacobian = FiniteElement::Helper::jacobianFromReferenceToPhysical(
+                        nodeCoordinatesInElement, dN_dq_ref);
+
+                const auto detJ = sofa::type::absGeneralizedDeterminant(jacobian);
+
+                // shape functions in the reference element evaluated at the quadrature point
+                const auto N = FiniteElement::shapeFunctions(quadraturePoint);
+
+                const auto density =
+                    FiniteElement::Helper::evaluateValueInElement(nodeDensityInElement, N);
+
+                const auto NT_N = sofa::type::dyad(N, N);
+
+                elementMassMatrix += (weight * density * detJ) * NT_N;
+            }
+        });
+}
+
+template <class TDataTypes, class TElementType>
+void ElementFEMMass<TDataTypes, TElementType>::initializeGlobalMassMatrix(
+    const auto& elements, const sofa::type::vector<ElementMassMatrix>& elementMassMatrices)
+{
+    SCOPED_TIMER("elementMassMatrix");
+
+    const auto nbElements = elements.size();
+
+    m_globalMassMatrix.clear();
+
+    const auto matrixSize = this->mstate->getSize();
+    m_globalMassMatrix.resize(matrixSize, matrixSize);
+
+    helper::IotaView indices{static_cast<decltype(nbElements)>(0ul), nbElements};
+    std::for_each(indices.begin(), indices.end(),
+                  [&](const auto elementId)
+                  {
+                      const auto& element = elements[elementId];
+                      auto& elementMassMatrix = elementMassMatrices[elementId];
+
+                      for (std::size_t i = 0; i < NumberOfNodesInElement; ++i)
+                      {
+                          const auto node_i = element[i];
+                          for (std::size_t j = 0; j < NumberOfNodesInElement; ++j)
+                          {
+                              const auto node_j = element[j];
+                              m_globalMassMatrix.add(node_i, node_j, elementMassMatrix(i, j));
+                          }
+                      }
+                  });
+
+    m_globalMassMatrix.compress();
+}
+
+template <class TDataTypes, class TElementType>
+void ElementFEMMass<TDataTypes, TElementType>::addForce(const core::MechanicalParams* mparams,
                                                         sofa::DataVecDeriv_t<DataTypes>& f,
                                                         const sofa::DataVecCoord_t<DataTypes>& x,
                                                         const sofa::DataVecDeriv_t<DataTypes>& v)
 {
+    SOFA_UNUSED(mparams);
+    SOFA_UNUSED(x);
+    SOFA_UNUSED(v);
+
     auto forceAccessor = sofa::helper::getWriteAccessor(f);
 
     const auto g = getContext()->getGravity();
