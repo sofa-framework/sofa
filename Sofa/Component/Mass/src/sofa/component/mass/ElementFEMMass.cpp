@@ -20,9 +20,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_MASS_ELEMENTFEMMASS_CPP
+#include <sofa/component/mass/ElementFEMMass.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/component/mass/ElementFEMMass.inl>
 #include <sofa/fem/FiniteElement[all].h>
 
 namespace sofa::component::mass
