@@ -237,7 +237,7 @@ void ElementFEMMass<TDataTypes, TElementType>::buildMassMatrix(
 }
 
 template <class TDataTypes, class TElementType>
-void ElementFEMMass<TDataTypes, TElementType>::addMDx(const core::MechanicalParams*,
+void ElementFEMMass<TDataTypes, TElementType>::addMDx(const core::MechanicalParams* mparams,
                                                       DataVecDeriv_t<DataTypes>& f,
                                                       const DataVecDeriv_t<DataTypes>& dx,
                                                       SReal factor)
@@ -260,11 +260,46 @@ void ElementFEMMass<TDataTypes, TElementType>::addMDx(const core::MechanicalPara
 }
 
 template <class TDataTypes, class TElementType>
-void ElementFEMMass<TDataTypes, TElementType>::accFromF(const core::MechanicalParams*,
+void ElementFEMMass<TDataTypes, TElementType>::accFromF(const core::MechanicalParams* mparams,
                                                         DataVecDeriv_t<DataTypes>& a,
                                                         const DataVecDeriv_t<DataTypes>& f)
 {
+    SOFA_UNUSED(mparams);
+    SOFA_UNUSED(a);
+    SOFA_UNUSED(f);
+
     msg_error() << "the method 'accFromF' can't be used with this component as this SPARSE mass matrix can't be inversed easily.";
+}
+
+template <class TDataTypes, class TElementType>
+SReal ElementFEMMass<TDataTypes, TElementType>::getKineticEnergy(
+    const core::MechanicalParams* mparams,
+    const DataVecDeriv_t<DataTypes>& v) const
+{
+    SReal kineticEnergy = 0.0;
+    auto vAccessor = sofa::helper::getReadAccessor(v);
+
+    for (Index xi = 0; xi < (Index)m_globalMassMatrix.rowIndex.size(); ++xi)
+    {
+        const auto rowId = m_globalMassMatrix.rowIndex[xi];
+        typename GlobalMassMatrixType::Range rowRange(m_globalMassMatrix.rowBegin[xi], m_globalMassMatrix.rowBegin[xi + 1]);
+        for (Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)
+        {
+            const auto columnId = m_globalMassMatrix.colsIndex[xj];
+            const auto& value = m_globalMassMatrix.colsValue[xj];
+            kineticEnergy += sofa::type::dot(vAccessor[rowId], vAccessor[columnId] * value);
+        }
+    }
+
+    return kineticEnergy / 2_sreal;
+}
+
+template <class TDataTypes, class TElementType>
+SReal ElementFEMMass<TDataTypes, TElementType>::getPotentialEnergy(
+    const core::MechanicalParams* mparams,
+    const typename core::behavior::Mass<TDataTypes>::DataVecCoord& x) const
+{
+    return 0;
 }
 
 }  // namespace sofa::component::mass

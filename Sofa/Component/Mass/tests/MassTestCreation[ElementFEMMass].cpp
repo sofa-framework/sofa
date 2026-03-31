@@ -47,7 +47,6 @@ struct ElementMass_template_test : public Mass_test<ElementFEMMass<typename Mass
     ElementMass_template_test()
     {
         this->m_testAccFromF = false;
-        this->m_testKineticEnergy = false;
         this->m_testAddMToMatrix = false;
         this->m_errorMax = 1e3_sreal;
 
