@@ -21,8 +21,8 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/mass/NodalMassDensity.h>
 #include <sofa/component/mass/config.h>
+#include <sofa/component/mass/NodalMassDensity.h>
 #include <sofa/core/behavior/Mass.h>
 #include <sofa/core/behavior/TopologyAccessor.h>
 #include <sofa/fem/FiniteElement.h>
