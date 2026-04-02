@@ -48,13 +48,24 @@ public:
 
     Data< bool > d_enableAssembly;
 
-    /// Returns the system matrix as a sofa::linearalgebra::BaseMatrix*
-    virtual linearalgebra::BaseMatrix* getSystemBaseMatrix() const { return nullptr; }
+     * !!! WARNING since v25.12 !!!
+     * 
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doGetSystemBaseMatrix" internally,
+     * which is the method to override from now on.
+     *
+     * Returns the system matrix as a linearalgebra::BaseMatrix*
+     * 
+     **/
+    virtual linearalgebra::BaseMatrix* getSystemBaseMatrix() const final 
+    {
+        //TODO (SPRINT SED 2025): Component state mechamism
+        return this->doGetSystemBaseMatrix();
+    }
 
     virtual linearalgebra::BaseVector* getSystemRHSBaseVector() const { return nullptr; }
     virtual linearalgebra::BaseVector* getSystemSolutionBaseVector() const { return nullptr; }
 
-    /// Construct and assemble the linear system matrix
     virtual void buildSystemMatrix(const core::MechanicalParams* mparams);
 
     sofa::type::Vec2u getMatrixSize() const { return d_matrixSize.getValue(); }
@@ -75,6 +86,10 @@ public:
     virtual void dispatchSystemRHS(core::MultiVecDerivId v) = 0;
 
 protected:
+    virtual linearalgebra::BaseMatrix* doGetSystemBaseMatrix() const 
+    { 
+        return nullptr; 
+    }
     virtual void preAssembleSystem(const core::MechanicalParams* /*mparams*/);
     virtual void assembleSystem(const core::MechanicalParams* /*mparams*/);
     virtual void postAssembleSystem(const core::MechanicalParams* /*mparams*/) {}
