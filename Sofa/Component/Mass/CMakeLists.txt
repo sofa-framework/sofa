@@ -9,9 +9,12 @@ set(HEADER_FILES
     ${SOFACOMPONENTMASS_SOURCE_DIR}/AddMToMatrixFunctor.h
     ${SOFACOMPONENTMASS_SOURCE_DIR}/DiagonalMass.h
     ${SOFACOMPONENTMASS_SOURCE_DIR}/DiagonalMass.inl
+    ${SOFACOMPONENTMASS_SOURCE_DIR}/ElementFEMMass.h
+    ${SOFACOMPONENTMASS_SOURCE_DIR}/ElementFEMMass.inl
     ${SOFACOMPONENTMASS_SOURCE_DIR}/MassType.h
     ${SOFACOMPONENTMASS_SOURCE_DIR}/MeshMatrixMass.h
     ${SOFACOMPONENTMASS_SOURCE_DIR}/MeshMatrixMass.inl
+    ${SOFACOMPONENTMASS_SOURCE_DIR}/NodalMassDensity.h
     ${SOFACOMPONENTMASS_SOURCE_DIR}/RigidMassType.h
     ${SOFACOMPONENTMASS_SOURCE_DIR}/UniformMass.h
     ${SOFACOMPONENTMASS_SOURCE_DIR}/UniformMass.inl
@@ -21,14 +24,18 @@ set(HEADER_FILES
 set(SOURCE_FILES
     ${SOFACOMPONENTMASS_SOURCE_DIR}/init.cpp
     ${SOFACOMPONENTMASS_SOURCE_DIR}/DiagonalMass.cpp
+    ${SOFACOMPONENTMASS_SOURCE_DIR}/ElementFEMMass.cpp
     ${SOFACOMPONENTMASS_SOURCE_DIR}/MeshMatrixMass.cpp
+    ${SOFACOMPONENTMASS_SOURCE_DIR}/NodalMassDensity.cpp
     ${SOFACOMPONENTMASS_SOURCE_DIR}/UniformMass.cpp
 )
 
+sofa_find_package(Sofa.FEM REQUIRED)
 sofa_find_package(Sofa.Simulation.Core REQUIRED)
 sofa_find_package(Sofa.Component.Topology.Container.Dynamic REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.FEM)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Simulation.Core)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Topology.Container.Dynamic)
 

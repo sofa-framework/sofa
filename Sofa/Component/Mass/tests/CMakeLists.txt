@@ -5,6 +5,7 @@ project(Sofa.Component.Mass_test)
 set(SOURCE_FILES
     DiagonalMass_test.cpp
     UniformMass_test.cpp
+    MassTestCreation[ElementFEMMass].cpp
     MassTestCreation[MeshMatrixMass].cpp
     MassTestCreation[UniformMass].cpp
 )
