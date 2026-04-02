@@ -83,6 +83,11 @@ TEST(FiniteElement, hexa3dWeights)
     testSumWeights<sofa::geometry::Hexahedron, sofa::defaulttype::Vec3Types>(8);
 }
 
+TEST(FiniteElement, prism3dWeights)
+{
+    testSumWeights<sofa::geometry::Prism, sofa::defaulttype::Vec3Types>(1 / 2.);
+}
+
 /**
  * Checks that the sum of the gradients of shape functions is zero at the evaluation point.
  */
@@ -158,6 +163,10 @@ TEST(FiniteElement, hexa3dGradientShapeFunctions)
     testGradientShapeFunctions<sofa::geometry::Hexahedron, sofa::defaulttype::Vec3Types>(sofa::type::Vec3(1., 1., 1.));
 }
 
-
+TEST(FiniteElement, prism3dGradientShapeFunctions)
+{
+    testGradientShapeFunctions<sofa::geometry::Prism, sofa::defaulttype::Vec3Types>(sofa::type::Vec3(0., 0., 0.));
+    testGradientShapeFunctions<sofa::geometry::Prism, sofa::defaulttype::Vec3Types>(sofa::type::Vec3(1., 1., 1.));
+}
 
 }
