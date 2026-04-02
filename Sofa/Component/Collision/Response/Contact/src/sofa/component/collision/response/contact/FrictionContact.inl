@@ -32,17 +32,19 @@
 namespace sofa::component::collision::response::contact
 {
 
-template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes  >
-FrictionContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::FrictionContact()
+template <class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes >
+FrictionContact<TCollisionModel1, TCollisionModel2, ResponseDataTypes>::FrictionContact()
     : FrictionContact(nullptr, nullptr, nullptr)
 {
 }
+
 
 
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes  >
 FrictionContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::FrictionContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod)
     : BaseUnilateralContactResponse<TCollisionModel1, TCollisionModel2, constraint::lagrangian::model::UnilateralLagrangianContactParameters, ResponseDataTypes>(model1,model2,intersectionMethod)
       , d_mu (initData(&d_mu, 0.8_sreal, "mu", "Friction coefficient (0 for frictionless contacts)"))
+      , d_drag (initData(&d_drag, 0.0_sreal, "drag", "viscosity coefficient (0 for frictionless contacts)"))
 {
 
 }
@@ -50,7 +52,7 @@ FrictionContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::FrictionCo
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes  >
 constraint::lagrangian::model::UnilateralLagrangianContactParameters FrictionContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::getParameterFromDatas() const
 {
-    return {d_mu.getValue()};
+    return constraint::lagrangian::model::UnilateralLagrangianContactParameters(d_mu.getValue(), d_drag.getValue());
 }
 
 
@@ -59,6 +61,5 @@ void FrictionContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::setup
 {
     this->m_constraint = sofa::core::objectmodel::New<constraint::lagrangian::model::UnilateralLagrangianConstraint<defaulttype::Vec3Types> >(mmodel1, mmodel2);
 }
-
 
 } //namespace sofa::component::collision::response::contact
