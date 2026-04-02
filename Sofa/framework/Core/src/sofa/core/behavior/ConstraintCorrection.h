@@ -57,7 +57,7 @@ public:
 protected:
     /// Default Constructor
     explicit ConstraintCorrection(MechanicalState< DataTypes > *ms = nullptr)
-        : Inherit1(), Inherit2(ms)
+        : Inherit2(ms), Inherit1()
         , l_constraintsolvers(initLink("constraintSolvers", "Constraint solvers using this constraint correction"))
     {}
 
