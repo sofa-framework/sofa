@@ -328,6 +328,10 @@
         "APPLICATION_GETDEPRECATEDCOMPONENTS": {
           "type": "BOOL",
           "value": "ON"
+        },
+        "SOFA_SCENECHECKING_WARNINGS_ARE_ERRORS": {
+          "type": "BOOL",
+          "value": "ON"
         }
       }
     },
