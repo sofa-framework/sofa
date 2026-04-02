@@ -85,7 +85,7 @@ ScopedAdvancedTimer::ScopedAdvancedTimer(const char* message, T* obj)
 #endif
 
 consteval const char* ensure_name_must_be_a_compile_time_string_literal(const char* s) { return s; }
-#define ENSURE_SCOPED_ADVANCED_TIMER_ARG_IS_CONSTEXPR(s) ensure_name_must_be_a_compile_time_string_literal(s)
+#define ENSURE_SCOPED_ADVANCED_TIMER_ARG_IS_CONSTEXPR(s) (void)ensure_name_must_be_a_compile_time_string_literal(s)
 
 #define SCOPED_TIMER(name) ENSURE_SCOPED_ADVANCED_TIMER_ARG_IS_CONSTEXPR(name) ; SCOPED_TIMER_TR(name); SCOPED_TIMER_AD(name)
 #define SCOPED_TIMER_DYN(name) SCOPED_TIMER_DYN_TR(name); SCOPED_TIMER_AD(name)

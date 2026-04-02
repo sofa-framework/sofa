@@ -250,7 +250,7 @@ bool FileRepository::findFileIn(std::string& filename, const std::string& path)
     if (filename.empty()) return false; // no filename
     const std::string newfname = SetDirectory::GetRelativeFromDir(filename.c_str(), path.c_str());
 
-    const fs::path p = fs::u8path(newfname);
+    const auto p = fs::path(std::u8string(newfname.begin(), newfname.end()));
     if (fs::exists(p))
     {
         // File found
