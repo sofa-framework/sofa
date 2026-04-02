@@ -147,7 +147,7 @@ void GenericConstraintSolver::cleanup()
     sofa::component::constraint::lagrangian::solver::ConstraintSolverImpl::cleanup();
 }
 
-bool GenericConstraintSolver::prepareStates(const core::ConstraintParams *cParams, MultiVecId /*res1*/, MultiVecId /*res2*/)
+bool GenericConstraintSolver::doPrepareStates(const core::ConstraintParams *cParams, MultiVecId /*res1*/, MultiVecId /*res2*/)
 {
     last_cp = current_cp;
 
@@ -175,7 +175,7 @@ bool GenericConstraintSolver::prepareStates(const core::ConstraintParams *cParam
     return true;
 }
 
-bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams, MultiVecId res1, MultiVecId res2)
+bool GenericConstraintSolver::doBuildSystem(const core::ConstraintParams *cParams, MultiVecId res1, MultiVecId res2)
 {
     SOFA_UNUSED(res1);
     SOFA_UNUSED(res2);
@@ -206,7 +206,7 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
 }
 
 
-void GenericConstraintSolver::rebuildSystem(const SReal massFactor, const SReal forceFactor)
+void GenericConstraintSolver::doRebuildSystem(const SReal massFactor, const SReal forceFactor)
 {
     for (const auto& cc : l_constraintCorrections)
     {
@@ -253,7 +253,7 @@ void printLCP(std::ostream& file, SReal *q, SReal **M, SReal *f, int dim, bool p
     file << "      ];" << msgendl << msgendl;
 }
 
-bool GenericConstraintSolver::solveSystem(const core::ConstraintParams * /*cParams*/, MultiVecId /*res1*/, MultiVecId /*res2*/)
+bool GenericConstraintSolver::doSolveSystem(const core::ConstraintParams * /*cParams*/, MultiVecId /*res1*/, MultiVecId /*res2*/)
 {
     current_cp->tolerance = d_tolerance.getValue();
     current_cp->maxIterations = d_maxIt.getValue();
@@ -299,7 +299,7 @@ bool GenericConstraintSolver::solveSystem(const core::ConstraintParams * /*cPara
     return true;
 }
 
-void GenericConstraintSolver::computeResidual(const core::ExecParams* eparam)
+void GenericConstraintSolver::doComputeResidual(const core::ExecParams* eparam)
 {
     for (const auto& cc : l_constraintCorrections)
     {
@@ -378,7 +378,7 @@ void GenericConstraintSolver::storeConstraintLambdas(const core::ConstraintParam
 }
 
 
-bool GenericConstraintSolver::applyCorrection(const core::ConstraintParams *cParams, MultiVecId res1, MultiVecId res2)
+bool GenericConstraintSolver::doApplyCorrection(const core::ConstraintParams *cParams, MultiVecId res1, MultiVecId res2)
 {
     computeAndApplyMotionCorrection(cParams, res1, res2);
     storeConstraintLambdas(cParams);
