@@ -18,7 +18,7 @@ def createScene(root : Sofa.Core.Node):
        The scalar fields are 'spherical', one implemented in python, the other in c++
        One of the produced mesh is then connected to a visual model.
     """
-    root.addObject("RequiredPlugin", name="SofaImplicitField")
+    root.addObject("RequiredPlugin", pluginName="SofaImplicitField")
 
     root.addObject(DrawController())
 

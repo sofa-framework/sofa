@@ -10,15 +10,15 @@ def internalCreateScene(root_node, template):
 
     root_node.dt = 0.001
 
-    root_node.addObject('RequiredPlugin', name='Sofa.Component.AnimationLoop')
-    root_node.addObject('RequiredPlugin', name='Sofa.Component.Constraint.Projective')
-    root_node.addObject('RequiredPlugin', name='Sofa.Component.LinearSolver.Iterative')
-    root_node.addObject('RequiredPlugin', name='Sofa.Component.Mass')
-    root_node.addObject('RequiredPlugin', name='Sofa.Component.ODESolver.Forward')
-    root_node.addObject('RequiredPlugin', name='Sofa.Component.SolidMechanics.Spring')
-    root_node.addObject('RequiredPlugin', name='Sofa.Component.StateContainer')
-    root_node.addObject('RequiredPlugin', name='Sofa.Component.Topology.Container.Grid')
-    root_node.addObject('RequiredPlugin', name='Sofa.Component.Visual')
+    root_node.addObject('RequiredPlugin', pluginName='Sofa.Component.AnimationLoop')
+    root_node.addObject('RequiredPlugin', pluginName='Sofa.Component.Constraint.Projective')
+    root_node.addObject('RequiredPlugin', pluginName='Sofa.Component.LinearSolver.Iterative')
+    root_node.addObject('RequiredPlugin', pluginName='Sofa.Component.Mass')
+    root_node.addObject('RequiredPlugin', pluginName='Sofa.Component.ODESolver.Forward')
+    root_node.addObject('RequiredPlugin', pluginName='Sofa.Component.SolidMechanics.Spring')
+    root_node.addObject('RequiredPlugin', pluginName='Sofa.Component.StateContainer')
+    root_node.addObject('RequiredPlugin', pluginName='Sofa.Component.Topology.Container.Grid')
+    root_node.addObject('RequiredPlugin', pluginName='Sofa.Component.Visual')
 
     root_node.addObject('DefaultAnimationLoop')
     root_node.addObject('VisualStyle', displayFlags='hideVisualModels hideBehaviorModels showCollisionModels hideMappings showForceFields')
