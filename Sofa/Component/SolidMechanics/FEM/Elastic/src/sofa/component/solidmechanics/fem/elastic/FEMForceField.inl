@@ -208,7 +208,7 @@ template <class DataTypes, class ElementType>
 sofa::simulation::ForEachExecutionPolicy FEMForceField<DataTypes, ElementType>::getExecutionPolicy(
     const sofa::Data<ComputeStrategy>& strategy) const
 {
-    auto computeForceStrategyAccessor = sofa::helper::getReadAccessor(d_computeForceStrategy);
+    auto computeForceStrategyAccessor = sofa::helper::getReadAccessor(strategy);
     const auto& computeForceStrategy = computeForceStrategyAccessor->key();
 
     return (computeForceStrategy == parallelComputeStrategy)
