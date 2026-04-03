@@ -100,6 +100,13 @@ void BaseElementLinearFEMForceField<DataTypes, ElementType>::precomputeElementSt
             const std::array<sofa::Coord_t<DataTypes>, trait::NumberOfNodesInElement> nodesCoordinates = extractNodesVectorFromGlobalVector(element, restPositionAccessor.ref());
             elementStiffness[elementId] = integrate<DataTypes, ElementType, trait::matrixVectorProductType>(nodesCoordinates, elasticityTensor);
         });
+
+    // Extract assembled matrices into a contiguous buffer for cache-friendly access
+    m_assembledStiffnessMatrices.resize(elements.size());
+    for (std::size_t i = 0; i < elements.size(); ++i)
+    {
+        m_assembledStiffnessMatrices[i] = elementStiffness[i].getAssembledMatrix();
+    }
 }
 
 }
