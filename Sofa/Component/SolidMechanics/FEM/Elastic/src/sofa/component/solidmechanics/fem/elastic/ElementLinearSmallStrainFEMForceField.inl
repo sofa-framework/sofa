@@ -49,12 +49,12 @@ void ElementLinearSmallStrainFEMForceField<DataTypes, ElementType>::computeEleme
 {
     const auto& elements = trait::FiniteElement::getElementSequence(*this->l_topology);
     auto restPositionAccessor = this->mstate->readRestPositions();
-    auto elementStiffness = sofa::helper::getReadAccessor(this->d_elementStiffness);
+    const auto& assembledMatrices = this->m_assembledStiffnessMatrices;
 
     for (std::size_t elementId = range.start; elementId < range.end; ++elementId)
     {
         const auto& element = elements[elementId];
-        const auto& stiffnessMatrix = elementStiffness[elementId];
+        const auto& stiffnessMatrix = assembledMatrices[elementId];
 
         typename trait::ElementDisplacement displacement{ sofa::type::NOINIT };
 
@@ -79,12 +79,12 @@ void ElementLinearSmallStrainFEMForceField<DataTypes, ElementType>::computeEleme
     const sofa::VecDeriv_t<DataTypes>& nodeDx)
 {
     const auto& elements = trait::FiniteElement::getElementSequence(*this->l_topology);
-    auto elementStiffness = sofa::helper::getReadAccessor(this->d_elementStiffness);
+    const auto& assembledMatrices = this->m_assembledStiffnessMatrices;
 
     for (std::size_t elementId = range.start; elementId < range.end; ++elementId)
     {
         const auto& element = elements[elementId];
-        const auto& stiffnessMatrix = elementStiffness[elementId];
+        const auto& stiffnessMatrix = assembledMatrices[elementId];
 
         const std::array<sofa::Coord_t<DataTypes>, trait::NumberOfNodesInElement> elementNodesDx =
             extractNodesVectorFromGlobalVector(element, nodeDx);

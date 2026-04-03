@@ -86,7 +86,7 @@ void ElementCorotationalFEMForceField<DataTypes, ElementType>::computeElementsFo
 {
     const auto& elements = trait::FiniteElement::getElementSequence(*this->l_topology);
     auto restPositionAccessor = this->mstate->readRestPositions();
-    auto elementStiffness = sofa::helper::getReadAccessor(this->d_elementStiffness);
+    const auto& assembledMatrices = this->m_assembledStiffnessMatrices;
 
     for (std::size_t elementId = range.start; elementId < range.end; ++elementId)
     {
@@ -112,7 +112,7 @@ void ElementCorotationalFEMForceField<DataTypes, ElementType>::computeElementsFo
             transformedDisplacement = elementRotation.multTranspose(elementNodesCoordinates[j] - t) - (restElementNodesCoordinates[j] - t0);
         }
 
-        const auto& stiffnessMatrix = elementStiffness[elementId];
+        const auto& stiffnessMatrix = assembledMatrices[elementId];
 
         auto& elementForce = elementForces[elementId];
         elementForce = stiffnessMatrix * displacement;
@@ -134,7 +134,7 @@ void ElementCorotationalFEMForceField<DataTypes, ElementType>::computeElementsFo
     const sofa::VecDeriv_t<DataTypes>& nodeDx)
 {
     const auto& elements = trait::FiniteElement::getElementSequence(*this->l_topology);
-    auto elementStiffness = sofa::helper::getReadAccessor(this->d_elementStiffness);
+    const auto& assembledMatrices = this->m_assembledStiffnessMatrices;
 
     for (std::size_t elementId = range.start; elementId < range.end; ++elementId)
     {
@@ -150,7 +150,7 @@ void ElementCorotationalFEMForceField<DataTypes, ElementType>::computeElementsFo
             rotated_dx = elementRotation.multTranspose(nodeDx[element[n]]);
         }
 
-        const auto& stiffnessMatrix = elementStiffness[elementId];
+        const auto& stiffnessMatrix = assembledMatrices[elementId];
 
         auto& df = elementForcesDeriv[elementId];
         df = stiffnessMatrix * element_dx;

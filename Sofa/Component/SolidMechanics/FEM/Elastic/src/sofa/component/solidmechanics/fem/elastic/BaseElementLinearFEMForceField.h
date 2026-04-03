@@ -70,6 +70,13 @@ public:
      * List of precomputed element stiffness matrices
      */
     sofa::Data<sofa::type::vector<ElementHessian> > d_elementStiffness;
+
+    /**
+     * Contiguous buffer of element stiffness matrices, mirroring d_elementStiffness.
+     * Used in the hot path to avoid the shared-lock acquired by getReadAccessor on
+     * the Data, which serializes parallel forEachRange workers.
+     */
+    sofa::type::vector<ElementHessian> m_assembledStiffnessMatrices;
 };
 
 #if !defined(ELASTICITY_COMPONENT_BASE_ELEMENT_LINEAR_FEM_FORCEFIELD_CPP)

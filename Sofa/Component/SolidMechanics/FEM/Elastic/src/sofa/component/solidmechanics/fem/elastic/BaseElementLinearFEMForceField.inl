@@ -101,6 +101,10 @@ void BaseElementLinearFEMForceField<DataTypes, ElementType>::precomputeElementSt
             const std::array<sofa::Coord_t<DataTypes>, trait::NumberOfNodesInElement> nodesCoordinates = extractNodesVectorFromGlobalVector(element, restPositionAccessor.ref());
             elementStiffness[elementId] = integrate<DataTypes, ElementType>(nodesCoordinates, elasticityTensor);
         });
+
+    // Mirror into a plain vector so the hot path can read without acquiring
+    // the Data shared lock, which serializes parallel forEachRange workers.
+    m_assembledStiffnessMatrices.assign(elementStiffness.begin(), elementStiffness.end());
 }
 
 }
