@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <Node 	name="root" gravity="0 0 0" dt="1"  >
   <Node name="plugins">
-    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
-    <RequiredPlugin name="image"/> <!-- Needed to use components [ImageContainer ImageFilter ImageViewer MarchingCubesEngine] -->
+    <RequiredPlugin pluginName="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+    <RequiredPlugin pluginName="image"/> <!-- Needed to use components [ImageContainer ImageFilter ImageViewer MarchingCubesEngine] -->
   </Node>
   <VisualStyle displayFlags="showVisual showWireframe" />
   <ImageContainer  name="image" filename="data/pelvis_f.raw"/>

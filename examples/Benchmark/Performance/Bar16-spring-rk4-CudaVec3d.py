@@ -2,5 +2,5 @@ import importlib
 Bar16_spring_rk4 = importlib.import_module("Bar16-spring-rk4")
 
 def createScene(root_node):
-    root_node.addObject('RequiredPlugin', name='SofaCUDA')
+    root_node.addObject('RequiredPlugin', pluginName='SofaCUDA')
     Bar16_spring_rk4.internalCreateScene(root_node, "CudaVec3d")
