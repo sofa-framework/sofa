@@ -145,6 +145,53 @@ void CudaElementLinearSmallStrainFEMForceField<DataTypes, ElementType>::uploadSt
 }
 
 template<class DataTypes, class ElementType>
+void CudaElementLinearSmallStrainFEMForceField<DataTypes, ElementType>::addForce(
+    const sofa::core::MechanicalParams* mparams,
+    sofa::DataVecDeriv_t<DataTypes>& d_f,
+    const sofa::DataVecCoord_t<DataTypes>& d_x,
+    const sofa::DataVecDeriv_t<DataTypes>& d_v)
+{
+    if (this->isComponentStateInvalid())
+        return;
+
+    if (!m_gpuDataUploaded)
+    {
+        ElementLinearSmallStrainFEMForceField<DataTypes, ElementType>::addForce(mparams, d_f, d_x, d_v);
+        return;
+    }
+
+    using trait = sofa::component::solidmechanics::fem::elastic::trait<DataTypes, ElementType>;
+
+    VecDeriv& f = *d_f.beginEdit();
+    const VecCoord& x = d_x.getValue();
+
+    if (f.size() < x.size())
+        f.resize(x.size());
+
+    auto restPositionAccessor = this->mstate->readRestPositions();
+    const VecCoord& x0 = restPositionAccessor.ref();
+
+    const auto& elements = trait::FiniteElement::getElementSequence(*this->l_topology);
+    const auto nbElem = static_cast<unsigned int>(elements.size());
+    const auto nbVertex = static_cast<unsigned int>(x.size());
+
+    gpu::cuda::ElementLinearSmallStrainFEMForceFieldCuda3f_addForce(
+        nbElem,
+        nbVertex,
+        trait::NumberOfNodesInElement,
+        m_maxElemPerVertex,
+        m_gpuElements.deviceRead(),
+        m_gpuStiffness.deviceRead(),
+        x.deviceRead(),
+        x0.deviceRead(),
+        f.deviceWrite(),
+        m_gpuElementForce.deviceWrite(),
+        m_gpuVelems.deviceRead());
+
+    d_f.endEdit();
+}
+
+template<class DataTypes, class ElementType>
 void CudaElementLinearSmallStrainFEMForceField<DataTypes, ElementType>::addDForce(
     const sofa::core::MechanicalParams* mparams,
     sofa::DataVecDeriv_t<DataTypes>& d_df,
