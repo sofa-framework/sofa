@@ -29,6 +29,19 @@ namespace sofa::gpu::cuda
 
 extern "C"
 {
+    void ElementLinearSmallStrainFEMForceFieldCuda3f_addForce(
+        unsigned int nbElem,
+        unsigned int nbVertex,
+        unsigned int nbNodesPerElem,
+        unsigned int maxElemPerVertex,
+        const void* elements,
+        const void* stiffness,
+        const void* x,
+        const void* x0,
+        void* f,
+        void* eforce,
+        const void* velems);
+
     void ElementLinearSmallStrainFEMForceFieldCuda3f_addDForce(
         unsigned int nbElem,
         unsigned int nbVertex,
@@ -52,8 +65,7 @@ namespace sofa::component::solidmechanics::fem::elastic
  * CUDA-accelerated version of ElementLinearSmallStrainFEMForceField.
  *
  * Works with any element type (Edge, Triangle, Quad, Tetrahedron, Hexahedron).
- * The addDForce method (the CG hot path, called ~250 times per timestep) runs entirely on GPU.
- * The addForce method delegates to the CPU parent.
+ * Both addForce and addDForce run entirely on GPU.
  *
  * Uses a two-kernel approach for addDForce:
  *   Kernel 1: compute per-element forces (1 thread/element, fully unrolled)
@@ -87,6 +99,12 @@ public:
     }
 
     void init() override;
+
+    void addForce(
+        const sofa::core::MechanicalParams* mparams,
+        sofa::DataVecDeriv_t<DataTypes>& f,
+        const sofa::DataVecCoord_t<DataTypes>& x,
+        const sofa::DataVecDeriv_t<DataTypes>& v) override;
 
     void addDForce(
         const sofa::core::MechanicalParams* mparams,
