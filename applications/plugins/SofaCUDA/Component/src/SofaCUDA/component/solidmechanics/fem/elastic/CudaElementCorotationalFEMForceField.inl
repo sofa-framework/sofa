@@ -23,6 +23,7 @@
 #include <SofaCUDA/component/solidmechanics/fem/elastic/CudaElementCorotationalFEMForceField.h>
 #include <sofa/component/solidmechanics/fem/elastic/ElementCorotationalFEMForceField.inl>
 #include <sofa/core/behavior/ForceField.inl>
+#include <cstring>
 
 namespace sofa::component::solidmechanics::fem::elastic
 {
@@ -51,31 +52,90 @@ void CudaElementCorotationalFEMForceField<DataTypes, ElementType>::uploadStiffne
     const auto nbElem = elements.size();
     constexpr auto nDofs = trait::NumberOfDofsInElement;
     constexpr auto nNodes = trait::NumberOfNodesInElement;
+    constexpr auto dim = trait::spatial_dimensions;
 
-    // Upload stiffness matrices (flat row-major NxN per element)
-    m_gpuStiffness.resize(nbElem * nDofs * nDofs);
+    // Find number of vertices
+    unsigned int maxNodeId = 0;
+    for (std::size_t e = 0; e < nbElem; ++e)
+    {
+        const auto& element = elements[e];
+        for (unsigned int n = 0; n < nNodes; ++n)
+        {
+            if (static_cast<unsigned int>(element[n]) > maxNodeId)
+                maxNodeId = static_cast<unsigned int>(element[n]);
+        }
+    }
+    m_nbVertices = maxNodeId + 1;
+
+    // Upload stiffness matrices in block format:
+    // K[(ni * nNodes + nj) * dim * dim + di * dim + dj] per element
+    // This groups each 3x3 sub-block contiguously for better cache behavior.
+    m_gpuStiffness.resize(nbElem * nNodes * nNodes * dim * dim);
     {
         auto* dst = m_gpuStiffness.hostWrite();
         for (std::size_t e = 0; e < nbElem; ++e)
         {
             const auto& K = assembledMatrices[e];
-            for (unsigned int i = 0; i < nDofs; ++i)
-                for (unsigned int j = 0; j < nDofs; ++j)
-                    dst[e * nDofs * nDofs + i * nDofs + j] = static_cast<float>(K[i][j]);
+            for (unsigned int ni = 0; ni < nNodes; ++ni)
+                for (unsigned int nj = 0; nj < nNodes; ++nj)
+                    for (unsigned int di = 0; di < dim; ++di)
+                        for (unsigned int dj = 0; dj < dim; ++dj)
+                            dst[e * nNodes * nNodes * dim * dim
+                                + (ni * nNodes + nj) * dim * dim
+                                + di * dim + dj]
+                                = static_cast<float>(K[ni * dim + di][nj * dim + dj]);
         }
     }
 
-    // Upload element connectivity (nNodes node indices per element)
-    m_gpuElements.resize(nbElem * nNodes);
+    // Upload element connectivity in SoA layout:
+    // elements[nodeIdx * nbElem + elemId] = global node index
+    // Adjacent threads access adjacent memory for coalesced reads.
+    m_gpuElements.resize(nNodes * nbElem);
     {
         auto* dst = m_gpuElements.hostWrite();
         for (std::size_t e = 0; e < nbElem; ++e)
         {
             const auto& element = elements[e];
             for (unsigned int n = 0; n < nNodes; ++n)
-                dst[e * nNodes + n] = static_cast<int>(element[n]);
+                dst[n * nbElem + e] = static_cast<int>(element[n]);
         }
     }
+
+    // Build vertex-to-element mapping (velems)
+    // For each vertex, stores the list of (elemId * nNodes + localNode + 1).
+    // 0 is used as sentinel. SoA layout: velems[slot * nbVertex + vertexId].
+    std::vector<std::vector<int>> vertexElems(m_nbVertices);
+    for (std::size_t e = 0; e < nbElem; ++e)
+    {
+        const auto& element = elements[e];
+        for (unsigned int n = 0; n < nNodes; ++n)
+        {
+            const int nodeId = static_cast<int>(element[n]);
+            vertexElems[nodeId].push_back(
+                static_cast<int>(e * nNodes + n + 1));
+        }
+    }
+
+    m_maxElemPerVertex = 0;
+    for (const auto& ve : vertexElems)
+    {
+        if (ve.size() > m_maxElemPerVertex)
+            m_maxElemPerVertex = static_cast<unsigned int>(ve.size());
+    }
+
+    m_gpuVelems.resize(m_maxElemPerVertex * m_nbVertices);
+    {
+        auto* dst = m_gpuVelems.hostWrite();
+        std::memset(dst, 0, m_maxElemPerVertex * m_nbVertices * sizeof(int));
+        for (std::size_t v = 0; v < m_nbVertices; ++v)
+        {
+            for (std::size_t s = 0; s < vertexElems[v].size(); ++s)
+                dst[s * m_nbVertices + v] = vertexElems[v][s];
+        }
+    }
+
+    // Allocate intermediate per-element force buffer
+    m_gpuElementForce.resize(nbElem * nNodes * dim);
 
     m_gpuDataUploaded = true;
     m_gpuRotationsUploaded = false;
@@ -149,17 +209,20 @@ void CudaElementCorotationalFEMForceField<DataTypes, ElementType>::addDForce(
 
     const auto& elements = trait::FiniteElement::getElementSequence(*this->l_topology);
     const auto nbElem = static_cast<unsigned int>(elements.size());
+    const auto nbVertex = static_cast<unsigned int>(dx.size());
 
     gpu::cuda::ElementCorotationalFEMForceFieldCuda3f_addDForce(
         nbElem,
+        nbVertex,
         trait::NumberOfNodesInElement,
-        trait::NumberOfDofsInElement,
-        trait::spatial_dimensions,
+        m_maxElemPerVertex,
         m_gpuElements.deviceRead(),
         m_gpuRotations.deviceRead(),
         m_gpuStiffness.deviceRead(),
         dx.deviceRead(),
         df.deviceWrite(),
+        m_gpuElementForce.deviceWrite(),
+        m_gpuVelems.deviceRead(),
         kFactor);
 
     d_df.endEdit();

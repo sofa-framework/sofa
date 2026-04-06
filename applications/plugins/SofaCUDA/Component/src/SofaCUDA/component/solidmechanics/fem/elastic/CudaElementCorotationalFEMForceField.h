@@ -31,14 +31,16 @@ extern "C"
 {
     void ElementCorotationalFEMForceFieldCuda3f_addDForce(
         unsigned int nbElem,
+        unsigned int nbVertex,
         unsigned int nbNodesPerElem,
-        unsigned int nbDofsPerElem,
-        unsigned int spatialDim,
+        unsigned int maxElemPerVertex,
         const void* elements,
         const void* rotations,
         const void* stiffness,
         const void* dx,
         void* df,
+        void* eforce,
+        const void* velems,
         float kFactor);
 }
 
@@ -53,6 +55,10 @@ namespace sofa::component::solidmechanics::fem::elastic
  * Works with any element type (Edge, Triangle, Quad, Tetrahedron, Hexahedron).
  * The addDForce method (the CG hot path, called ~250 times per timestep) runs entirely on GPU.
  * The addForce method delegates to the CPU parent and uploads rotations to GPU afterwards.
+ *
+ * Uses a two-kernel approach for addDForce:
+ *   Kernel 1: compute per-element forces (1 thread/element, fully unrolled)
+ *   Kernel 2: gather per-vertex (1 thread/vertex, no atomics)
  */
 template<class DataTypes, class ElementType>
 class CudaElementCorotationalFEMForceField
@@ -99,9 +105,14 @@ protected:
     void uploadStiffnessAndConnectivity();
     void uploadRotations();
 
-    gpu::cuda::CudaVector<float> m_gpuStiffness;   ///< Flat NxN stiffness matrices per element (N = nbDofsPerElement)
-    gpu::cuda::CudaVector<float> m_gpuRotations;    ///< Flat DxD rotation matrices per element (D = spatial_dimensions)
-    gpu::cuda::CudaVector<int>   m_gpuElements;     ///< Node indices per element
+    gpu::cuda::CudaVector<float> m_gpuStiffness;      ///< Block-format stiffness: K[(ni*N+nj)*9 + di*3+dj] per element
+    gpu::cuda::CudaVector<float> m_gpuRotations;       ///< Flat 3x3 rotation matrices per element
+    gpu::cuda::CudaVector<int>   m_gpuElements;        ///< SoA connectivity: elements[nodeIdx * nbElem + elemId]
+    gpu::cuda::CudaVector<float> m_gpuElementForce;    ///< Intermediate per-element per-node force buffer
+    gpu::cuda::CudaVector<int>   m_gpuVelems;          ///< SoA vertex-to-element mapping, 0-terminated
+
+    unsigned int m_maxElemPerVertex = 0;
+    unsigned int m_nbVertices = 0;
 
     bool m_gpuDataUploaded = false;
     bool m_gpuRotationsUploaded = false;
