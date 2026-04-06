@@ -46,11 +46,23 @@ void registerElementCorotationalFEMForceField(sofa::core::ObjectFactory* factory
     using namespace sofa::component::solidmechanics::fem::elastic;
 
     factory->registerObjects(sofa::core::ObjectRegistrationData(
-        "Supports GPU-side computations using CUDA for the ElementCorotationalFEMForceField")
+        "Supports GPU-side computations using CUDA for EdgeCorotationalFEMForceField")
         .add< CudaElementCorotationalFEMForceField<CudaVec3fTypes, sofa::geometry::Edge> >()
+    );
+    factory->registerObjects(sofa::core::ObjectRegistrationData(
+        "Supports GPU-side computations using CUDA for TriangleCorotationalFEMForceField")
         .add< CudaElementCorotationalFEMForceField<CudaVec3fTypes, sofa::geometry::Triangle> >()
+    );
+    factory->registerObjects(sofa::core::ObjectRegistrationData(
+        "Supports GPU-side computations using CUDA for QuadCorotationalFEMForceField")
         .add< CudaElementCorotationalFEMForceField<CudaVec3fTypes, sofa::geometry::Quad> >()
+    );
+    factory->registerObjects(sofa::core::ObjectRegistrationData(
+        "Supports GPU-side computations using CUDA for TetrahedronCorotationalFEMForceField")
         .add< CudaElementCorotationalFEMForceField<CudaVec3fTypes, sofa::geometry::Tetrahedron> >()
+    );
+    factory->registerObjects(sofa::core::ObjectRegistrationData(
+        "Supports GPU-side computations using CUDA for HexahedronCorotationalFEMForceField")
         .add< CudaElementCorotationalFEMForceField<CudaVec3fTypes, sofa::geometry::Hexahedron> >()
     );
 }
