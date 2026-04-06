@@ -39,7 +39,12 @@ namespace cuda
  * Hardcoded Dim=3 (CudaVec3f only).
  *
  * Connectivity is SoA: elements[nodeIdx * nbElem + elemId].
- * Stiffness is in block format: K[(ni * NNodes + nj) * 9 + di * 3 + dj].
+ * Stiffness uses symmetric upper-triangle block storage:
+ *   Only blocks (ni, nj) with nj >= ni are stored.
+ *   NSymBlocks = NNodes*(NNodes+1)/2 blocks of 9 floats each.
+ *   Each off-diagonal block is read once and used for both
+ *   forward (edf[ni] += Kij * rdx[nj]) and symmetric
+ *   (edf[nj] += Kij^T * rdx[ni]) contributions.
  */
 template<int NNodes>
 __global__ void ElementCorotationalFEMForceFieldCuda3f_computeDForce_kernel(
@@ -51,7 +56,7 @@ __global__ void ElementCorotationalFEMForceFieldCuda3f_computeDForce_kernel(
     float* __restrict__ eforce,
     float kFactor)
 {
-    constexpr int NDofs = NNodes * 3;
+    constexpr int NSymBlocks = NNodes * (NNodes + 1) / 2;
 
     const int elemId = blockIdx.x * blockDim.x + threadIdx.x;
     if (elemId >= nbElem) return;
@@ -64,7 +69,7 @@ __global__ void ElementCorotationalFEMForceFieldCuda3f_computeDForce_kernel(
         R[i] = Rptr[i];
 
     // Gather dx and rotate into reference frame: rdx[n] = R^T * dx[node[n]]
-    float rdx[NDofs];
+    float rdx[NNodes * 3];
     #pragma unroll
     for (int n = 0; n < NNodes; ++n)
     {
@@ -78,27 +83,59 @@ __global__ void ElementCorotationalFEMForceFieldCuda3f_computeDForce_kernel(
         rdx[n * 3 + 2] = R[2] * dx_x + R[5] * dx_y + R[8] * dx_z;
     }
 
-    // Block-matrix multiply: edf = K * rdx
-    const float* K = stiffness + elemId * NNodes * NNodes * 9;
-    float edf[NDofs];
+    // Symmetric block-matrix multiply: edf = K * rdx
+    // K stored as upper triangle: blocks (ni, nj) for nj >= ni
+    const float* K = stiffness + elemId * NSymBlocks * 9;
+    float edf[NNodes * 3];
+
+    #pragma unroll
+    for (int i = 0; i < NNodes * 3; ++i)
+        edf[i] = 0.0f;
+
     #pragma unroll
     for (int ni = 0; ni < NNodes; ++ni)
     {
-        float fi0 = 0.0f, fi1 = 0.0f, fi2 = 0.0f;
-        #pragma unroll
-        for (int nj = 0; nj < NNodes; ++nj)
+        // symIdx for (ni, ni) = ni*NNodes - ni*(ni-1)/2
+        const int diagIdx = ni * NNodes - ni * (ni - 1) / 2;
+
+        // Diagonal block (ni, ni): Kii * rdx[ni]
         {
-            const float* Kij = K + (ni * NNodes + nj) * 9;
-            const float rj0 = rdx[nj * 3 + 0];
-            const float rj1 = rdx[nj * 3 + 1];
-            const float rj2 = rdx[nj * 3 + 2];
-            fi0 += Kij[0] * rj0 + Kij[1] * rj1 + Kij[2] * rj2;
-            fi1 += Kij[3] * rj0 + Kij[4] * rj1 + Kij[5] * rj2;
-            fi2 += Kij[6] * rj0 + Kij[7] * rj1 + Kij[8] * rj2;
+            const float* Kii = K + diagIdx * 9;
+            const float ri0 = rdx[ni * 3 + 0];
+            const float ri1 = rdx[ni * 3 + 1];
+            const float ri2 = rdx[ni * 3 + 2];
+            edf[ni * 3 + 0] += Kii[0] * ri0 + Kii[1] * ri1 + Kii[2] * ri2;
+            edf[ni * 3 + 1] += Kii[3] * ri0 + Kii[4] * ri1 + Kii[5] * ri2;
+            edf[ni * 3 + 2] += Kii[6] * ri0 + Kii[7] * ri1 + Kii[8] * ri2;
         }
-        edf[ni * 3 + 0] = fi0;
-        edf[ni * 3 + 1] = fi1;
-        edf[ni * 3 + 2] = fi2;
+
+        // Off-diagonal blocks (ni, nj) for nj > ni
+        #pragma unroll
+        for (int nj = ni + 1; nj < NNodes; ++nj)
+        {
+            const int symIdx = diagIdx + (nj - ni);
+            const float* Kij = K + symIdx * 9;
+
+            // Forward: edf[ni] += Kij * rdx[nj]
+            {
+                const float rj0 = rdx[nj * 3 + 0];
+                const float rj1 = rdx[nj * 3 + 1];
+                const float rj2 = rdx[nj * 3 + 2];
+                edf[ni * 3 + 0] += Kij[0] * rj0 + Kij[1] * rj1 + Kij[2] * rj2;
+                edf[ni * 3 + 1] += Kij[3] * rj0 + Kij[4] * rj1 + Kij[5] * rj2;
+                edf[ni * 3 + 2] += Kij[6] * rj0 + Kij[7] * rj1 + Kij[8] * rj2;
+            }
+
+            // Symmetric: edf[nj] += Kij^T * rdx[ni]
+            {
+                const float ri0 = rdx[ni * 3 + 0];
+                const float ri1 = rdx[ni * 3 + 1];
+                const float ri2 = rdx[ni * 3 + 2];
+                edf[nj * 3 + 0] += Kij[0] * ri0 + Kij[3] * ri1 + Kij[6] * ri2;
+                edf[nj * 3 + 1] += Kij[1] * ri0 + Kij[4] * ri1 + Kij[7] * ri2;
+                edf[nj * 3 + 2] += Kij[2] * ri0 + Kij[5] * ri1 + Kij[8] * ri2;
+            }
+        }
     }
 
     // Rotate back and write: eforce = -kFactor * R * edf

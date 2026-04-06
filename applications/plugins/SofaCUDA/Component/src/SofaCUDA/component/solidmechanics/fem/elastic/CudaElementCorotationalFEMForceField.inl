@@ -67,23 +67,31 @@ void CudaElementCorotationalFEMForceField<DataTypes, ElementType>::uploadStiffne
     }
     m_nbVertices = maxNodeId + 1;
 
-    // Upload stiffness matrices in block format:
-    // K[(ni * nNodes + nj) * dim * dim + di * dim + dj] per element
-    // This groups each 3x3 sub-block contiguously for better cache behavior.
-    m_gpuStiffness.resize(nbElem * nNodes * nNodes * dim * dim);
+    // Upload stiffness matrices in symmetric upper-triangle block format:
+    // Only blocks (ni, nj) with nj >= ni are stored.
+    // symIdx = ni * nNodes - ni*(ni-1)/2 + (nj - ni)
+    // K[symIdx * dim * dim + di * dim + dj] per element
+    constexpr auto nSymBlocks = nNodes * (nNodes + 1) / 2;
+    m_gpuStiffness.resize(nbElem * nSymBlocks * dim * dim);
     {
         auto* dst = m_gpuStiffness.hostWrite();
         for (std::size_t e = 0; e < nbElem; ++e)
         {
             const auto& K = assembledMatrices[e];
             for (unsigned int ni = 0; ni < nNodes; ++ni)
-                for (unsigned int nj = 0; nj < nNodes; ++nj)
+            {
+                const unsigned int diagIdx = ni * nNodes - ni * (ni - 1) / 2;
+                for (unsigned int nj = ni; nj < nNodes; ++nj)
+                {
+                    const unsigned int symIdx = diagIdx + (nj - ni);
                     for (unsigned int di = 0; di < dim; ++di)
                         for (unsigned int dj = 0; dj < dim; ++dj)
-                            dst[e * nNodes * nNodes * dim * dim
-                                + (ni * nNodes + nj) * dim * dim
+                            dst[e * nSymBlocks * dim * dim
+                                + symIdx * dim * dim
                                 + di * dim + dj]
                                 = static_cast<float>(K[ni * dim + di][nj * dim + dj]);
+                }
+            }
         }
     }
 
