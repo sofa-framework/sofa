@@ -29,6 +29,20 @@ namespace sofa::gpu::cuda
 
 extern "C"
 {
+    void ElementCorotationalFEMForceFieldCuda3f_addForce(
+        unsigned int nbElem,
+        unsigned int nbVertex,
+        unsigned int nbNodesPerElem,
+        unsigned int maxElemPerVertex,
+        const void* elements,
+        const void* rotations,
+        const void* stiffness,
+        const void* x,
+        const void* x0,
+        void* f,
+        void* eforce,
+        const void* velems);
+
     void ElementCorotationalFEMForceFieldCuda3f_addDForce(
         unsigned int nbElem,
         unsigned int nbVertex,
