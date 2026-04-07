@@ -176,15 +176,56 @@ void CudaElementCorotationalFEMForceField<DataTypes, ElementType>::uploadRotatio
 template<class DataTypes, class ElementType>
 void CudaElementCorotationalFEMForceField<DataTypes, ElementType>::addForce(
     const sofa::core::MechanicalParams* mparams,
-    sofa::DataVecDeriv_t<DataTypes>& f,
-    const sofa::DataVecCoord_t<DataTypes>& x,
-    const sofa::DataVecDeriv_t<DataTypes>& v)
+    sofa::DataVecDeriv_t<DataTypes>& d_f,
+    const sofa::DataVecCoord_t<DataTypes>& d_x,
+    const sofa::DataVecDeriv_t<DataTypes>& d_v)
 {
-    // Run on CPU: computes rotations and forces
-    ElementCorotationalFEMForceField<DataTypes, ElementType>::addForce(mparams, f, x, v);
+    if (this->isComponentStateInvalid())
+        return;
 
-    // Upload the freshly-computed rotations to GPU for subsequent addDForce calls
+    if (!m_gpuDataUploaded)
+    {
+        ElementCorotationalFEMForceField<DataTypes, ElementType>::addForce(mparams, d_f, d_x, d_v);
+        uploadRotations();
+        return;
+    }
+
+    using trait = sofa::component::solidmechanics::fem::elastic::trait<DataTypes, ElementType>;
+
+    const VecCoord& x = d_x.getValue();
+    auto restPositionAccessor = this->mstate->readRestPositions();
+    const VecCoord& x0 = restPositionAccessor.ref();
+
+    // Compute rotations on CPU (polar decomposition cannot run on GPU)
+    this->computeRotations(this->m_rotations, x, x0);
+
+    // Upload rotations to GPU
     uploadRotations();
+
+    // Run force computation on GPU
+    VecDeriv& f = *d_f.beginEdit();
+    if (f.size() < x.size())
+        f.resize(x.size());
+
+    const auto& elements = trait::FiniteElement::getElementSequence(*this->l_topology);
+    const auto nbElem = static_cast<unsigned int>(elements.size());
+    const auto nbVertex = static_cast<unsigned int>(x.size());
+
+    gpu::cuda::ElementCorotationalFEMForceFieldCuda3f_addForce(
+        nbElem,
+        nbVertex,
+        trait::NumberOfNodesInElement,
+        m_maxElemPerVertex,
+        m_gpuElements.deviceRead(),
+        m_gpuRotations.deviceRead(),
+        m_gpuStiffness.deviceRead(),
+        x.deviceRead(),
+        x0.deviceRead(),
+        f.deviceWrite(),
+        m_gpuElementForce.deviceWrite(),
+        m_gpuVelems.deviceRead());
+
+    d_f.endEdit();
 }
 
 template<class DataTypes, class ElementType>
