@@ -205,6 +205,37 @@ void CudaElementCorotationalFEMForceField<DataTypes, ElementType>::uploadInitial
 }
 
 template<class DataTypes, class ElementType>
+void CudaElementCorotationalFEMForceField<DataTypes, ElementType>::downloadRotations()
+{
+    using trait = sofa::component::solidmechanics::fem::elastic::trait<DataTypes, ElementType>;
+    constexpr auto dim = trait::spatial_dimensions;
+
+    if (!m_gpuRotationsUploaded) return;
+
+    const auto nbElem = m_gpuRotations.size() / (dim * dim);
+    this->m_rotations.resize(nbElem);
+
+    const auto* src = m_gpuRotations.hostRead();
+    for (std::size_t e = 0; e < nbElem; ++e)
+    {
+        auto& R = this->m_rotations[e];
+        for (unsigned int i = 0; i < dim; ++i)
+            for (unsigned int j = 0; j < dim; ++j)
+                R[i][j] = static_cast<Real>(src[e * dim * dim + i * dim + j]);
+    }
+}
+
+template<class DataTypes, class ElementType>
+void CudaElementCorotationalFEMForceField<DataTypes, ElementType>::buildStiffnessMatrix(
+    sofa::core::behavior::StiffnessMatrix* matrix)
+{
+    if (m_gpuRotationMethodSupported && m_gpuRotationsUploaded)
+        downloadRotations();
+
+    ElementCorotationalFEMForceField<DataTypes, ElementType>::buildStiffnessMatrix(matrix);
+}
+
+template<class DataTypes, class ElementType>
 void CudaElementCorotationalFEMForceField<DataTypes, ElementType>::addForce(
     const sofa::core::MechanicalParams* mparams,
     sofa::DataVecDeriv_t<DataTypes>& d_f,
