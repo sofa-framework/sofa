@@ -29,6 +29,21 @@ namespace sofa::gpu::cuda
 
 extern "C"
 {
+    void ElementCorotationalFEMForceFieldCuda3f_addForceWithRotations(
+        unsigned int nbElem,
+        unsigned int nbVertex,
+        unsigned int nbNodesPerElem,
+        unsigned int maxElemPerVertex,
+        const void* elements,
+        const void* initRotTransposed,
+        const void* stiffness,
+        const void* x,
+        const void* x0,
+        void* f,
+        void* eforce,
+        void* rotationsOut,
+        const void* velems);
+
     void ElementCorotationalFEMForceFieldCuda3f_addForce(
         unsigned int nbElem,
         unsigned int nbVertex,
@@ -118,18 +133,21 @@ protected:
 
     void uploadStiffnessAndConnectivity();
     void uploadRotations();
+    void uploadInitialRotationsTransposed();
 
-    gpu::cuda::CudaVector<float> m_gpuStiffness;      ///< Block-format stiffness: K[(ni*N+nj)*9 + di*3+dj] per element
-    gpu::cuda::CudaVector<float> m_gpuRotations;       ///< Flat 3x3 rotation matrices per element
-    gpu::cuda::CudaVector<int>   m_gpuElements;        ///< SoA connectivity: elements[nodeIdx * nbElem + elemId]
-    gpu::cuda::CudaVector<float> m_gpuElementForce;    ///< Intermediate per-element per-node force buffer
-    gpu::cuda::CudaVector<int>   m_gpuVelems;          ///< SoA vertex-to-element mapping, 0-terminated
+    gpu::cuda::CudaVector<float> m_gpuStiffness;                  ///< Symmetric block-format stiffness per element
+    gpu::cuda::CudaVector<float> m_gpuRotations;                  ///< Flat 3x3 rotation matrices per element
+    gpu::cuda::CudaVector<float> m_gpuInitialRotationsTransposed; ///< Flat 3x3 initial rotation transposed per element
+    gpu::cuda::CudaVector<int>   m_gpuElements;                   ///< SoA connectivity: elements[nodeIdx * nbElem + elemId]
+    gpu::cuda::CudaVector<float> m_gpuElementForce;               ///< Intermediate per-element per-node force buffer
+    gpu::cuda::CudaVector<int>   m_gpuVelems;                     ///< SoA vertex-to-element mapping, 0-terminated
 
     unsigned int m_maxElemPerVertex = 0;
     unsigned int m_nbVertices = 0;
 
     bool m_gpuDataUploaded = false;
     bool m_gpuRotationsUploaded = false;
+    bool m_gpuRotationMethodSupported = false;
 };
 
 } // namespace sofa::component::solidmechanics::fem::elastic

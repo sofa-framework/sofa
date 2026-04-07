@@ -36,6 +36,7 @@ void CudaElementCorotationalFEMForceField<DataTypes, ElementType>::init()
     if (!this->isComponentStateInvalid())
     {
         uploadStiffnessAndConnectivity();
+        uploadInitialRotationsTransposed();
     }
 }
 
@@ -174,6 +175,36 @@ void CudaElementCorotationalFEMForceField<DataTypes, ElementType>::uploadRotatio
 }
 
 template<class DataTypes, class ElementType>
+void CudaElementCorotationalFEMForceField<DataTypes, ElementType>::uploadInitialRotationsTransposed()
+{
+    using trait = sofa::component::solidmechanics::fem::elastic::trait<DataTypes, ElementType>;
+    constexpr auto dim = trait::spatial_dimensions;
+    constexpr auto nNodes = trait::NumberOfNodesInElement;
+
+    const auto& initRotT = this->m_initialRotationsTransposed;
+    const auto nbElem = initRotT.size();
+    if (nbElem == 0) return;
+
+    m_gpuInitialRotationsTransposed.resize(nbElem * dim * dim);
+    m_gpuRotations.resize(nbElem * dim * dim);
+    {
+        auto* dst = m_gpuInitialRotationsTransposed.hostWrite();
+        for (std::size_t e = 0; e < nbElem; ++e)
+        {
+            const auto& R = initRotT[e];
+            for (unsigned int i = 0; i < dim; ++i)
+                for (unsigned int j = 0; j < dim; ++j)
+                    dst[e * dim * dim + i * dim + j] = static_cast<float>(R[i][j]);
+        }
+    }
+
+    // Check if the rotation method is GPU-compatible
+    const auto rotationMethodKey = this->m_rotationMethods.d_rotationMethod.getValue().key();
+    m_gpuRotationMethodSupported = (nNodes >= 3)
+        && (rotationMethodKey == "triangle" || rotationMethodKey == "hexahedron");
+}
+
+template<class DataTypes, class ElementType>
 void CudaElementCorotationalFEMForceField<DataTypes, ElementType>::addForce(
     const sofa::core::MechanicalParams* mparams,
     sofa::DataVecDeriv_t<DataTypes>& d_f,
@@ -196,34 +227,54 @@ void CudaElementCorotationalFEMForceField<DataTypes, ElementType>::addForce(
     auto restPositionAccessor = this->mstate->readRestPositions();
     const VecCoord& x0 = restPositionAccessor.ref();
 
-    // Compute rotations on CPU (polar decomposition cannot run on GPU)
-    this->computeRotations(this->m_rotations, x, x0);
-
-    // Upload rotations to GPU
-    uploadRotations();
-
-    // Run force computation on GPU
-    VecDeriv& f = *d_f.beginEdit();
-    if (f.size() < x.size())
-        f.resize(x.size());
-
     const auto& elements = trait::FiniteElement::getElementSequence(*this->l_topology);
     const auto nbElem = static_cast<unsigned int>(elements.size());
     const auto nbVertex = static_cast<unsigned int>(x.size());
 
-    gpu::cuda::ElementCorotationalFEMForceFieldCuda3f_addForce(
-        nbElem,
-        nbVertex,
-        trait::NumberOfNodesInElement,
-        m_maxElemPerVertex,
-        m_gpuElements.deviceRead(),
-        m_gpuRotations.deviceRead(),
-        m_gpuStiffness.deviceRead(),
-        x.deviceRead(),
-        x0.deviceRead(),
-        f.deviceWrite(),
-        m_gpuElementForce.deviceWrite(),
-        m_gpuVelems.deviceRead());
+    VecDeriv& f = *d_f.beginEdit();
+    if (f.size() < x.size())
+        f.resize(x.size());
+
+    if (m_gpuRotationMethodSupported)
+    {
+        // Fully GPU path: compute rotations + forces in one kernel
+        gpu::cuda::ElementCorotationalFEMForceFieldCuda3f_addForceWithRotations(
+            nbElem,
+            nbVertex,
+            trait::NumberOfNodesInElement,
+            m_maxElemPerVertex,
+            m_gpuElements.deviceRead(),
+            m_gpuInitialRotationsTransposed.deviceRead(),
+            m_gpuStiffness.deviceRead(),
+            x.deviceRead(),
+            x0.deviceRead(),
+            f.deviceWrite(),
+            m_gpuElementForce.deviceWrite(),
+            m_gpuRotations.deviceWrite(),
+            m_gpuVelems.deviceRead());
+
+        m_gpuRotationsUploaded = true;
+    }
+    else
+    {
+        // CPU rotations + GPU forces
+        this->computeRotations(this->m_rotations, x, x0);
+        uploadRotations();
+
+        gpu::cuda::ElementCorotationalFEMForceFieldCuda3f_addForce(
+            nbElem,
+            nbVertex,
+            trait::NumberOfNodesInElement,
+            m_maxElemPerVertex,
+            m_gpuElements.deviceRead(),
+            m_gpuRotations.deviceRead(),
+            m_gpuStiffness.deviceRead(),
+            x.deviceRead(),
+            x0.deviceRead(),
+            f.deviceWrite(),
+            m_gpuElementForce.deviceWrite(),
+            m_gpuVelems.deviceRead());
+    }
 
     d_f.endEdit();
 }
