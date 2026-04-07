@@ -69,6 +69,25 @@ __device__ void mat3MulTranspose(const float* A, const float* BT, float* C)
 }
 
 /**
+ * Device helper: C = A^T * B (row-major)
+ * Matches SOFA's Mat::multTranspose(B) which computes this^T * B.
+ */
+__device__ void mat3TransposeMul(const float* A, const float* B, float* C)
+{
+    #pragma unroll
+    for (int i = 0; i < 3; ++i)
+    {
+        #pragma unroll
+        for (int j = 0; j < 3; ++j)
+        {
+            C[i * 3 + j] = A[0 * 3 + i] * B[0 * 3 + j]
+                          + A[1 * 3 + i] * B[1 * 3 + j]
+                          + A[2 * 3 + i] * B[2 * 3 + j];
+        }
+    }
+}
+
+/**
  * Device helper: compute rotation frame from first 3 nodes (TriangleRotation).
  * Used for Triangle (NNodes=3) and Tetrahedron (NNodes=4) elements.
  * ex is [NNodes*3] array of gathered node positions.
@@ -250,11 +269,11 @@ __global__ void ElementCorotationalFEMForceFieldCuda3f_computeRotationsAndForce_
     else
         computeTriangleFrame(ex, frame);
 
-    // R = frame * initRotTransposed^T (i.e. frame.multTranspose(initRotTransposed))
-    // Since initRotTransposed is already the transpose, R = frame * initRotTransposed^T
+    // R = frame^T * initRot (matching SOFA's Mat::multTranspose which computes A^T * B)
+    // m_initialRotationsTransposed stores frame_rest (despite its name, it's transposed during init)
     const float* irt = initRotTransposed + elemId * 9;
     float R[9];
-    mat3MulTranspose(frame, irt, R);
+    mat3TransposeMul(frame, irt, R);
 
     // Write R to rotations buffer for addDForce
     float* Rout = rotationsOut + elemId * 9;
