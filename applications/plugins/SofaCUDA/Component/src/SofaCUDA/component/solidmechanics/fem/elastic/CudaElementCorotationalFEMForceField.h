@@ -127,6 +127,8 @@ public:
         sofa::DataVecDeriv_t<DataTypes>& df,
         const sofa::DataVecDeriv_t<DataTypes>& dx) override;
 
+    void buildStiffnessMatrix(sofa::core::behavior::StiffnessMatrix* matrix) override;
+
 protected:
 
     CudaElementCorotationalFEMForceField() = default;
@@ -134,6 +136,7 @@ protected:
     void uploadStiffnessAndConnectivity();
     void uploadRotations();
     void uploadInitialRotationsTransposed();
+    void downloadRotations();
 
     gpu::cuda::CudaVector<float> m_gpuStiffness;                  ///< Symmetric block-format stiffness per element
     gpu::cuda::CudaVector<float> m_gpuRotations;                  ///< Flat 3x3 rotation matrices per element
