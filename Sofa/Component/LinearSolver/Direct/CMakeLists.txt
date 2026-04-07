@@ -7,6 +7,7 @@ set(HEADER_FILES
     ${SOFACOMPONENTLINEARSOLVERDIRECT_SOURCE_DIR}/config.h.in
     ${SOFACOMPONENTLINEARSOLVERDIRECT_SOURCE_DIR}/init.h
     ${SOFACOMPONENTLINEARSOLVERDIRECT_SOURCE_DIR}/AsyncSparseLDLSolver.h
+    ${SOFACOMPONENTLINEARSOLVERDIRECT_SOURCE_DIR}/EigenCholmodSupernodalLLT.h
     ${SOFACOMPONENTLINEARSOLVERDIRECT_SOURCE_DIR}/AsyncSparseLDLSolver.inl
     ${SOFACOMPONENTLINEARSOLVERDIRECT_SOURCE_DIR}/BTDLinearSolver.h
     ${SOFACOMPONENTLINEARSOLVERDIRECT_SOURCE_DIR}/BTDLinearSolver.inl
@@ -38,6 +39,7 @@ set(HEADER_FILES
 set(SOURCE_FILES
     ${SOFACOMPONENTLINEARSOLVERDIRECT_SOURCE_DIR}/init.cpp
     ${SOFACOMPONENTLINEARSOLVERDIRECT_SOURCE_DIR}/AsyncSparseLDLSolver.cpp
+    ${SOFACOMPONENTLINEARSOLVERDIRECT_SOURCE_DIR}/EigenCholmodSupernodalLLT.cpp
     ${SOFACOMPONENTLINEARSOLVERDIRECT_SOURCE_DIR}/BTDLinearSolver.cpp
     ${SOFACOMPONENTLINEARSOLVERDIRECT_SOURCE_DIR}/CholeskySolver.cpp
     ${SOFACOMPONENTLINEARSOLVERDIRECT_SOURCE_DIR}/EigenSimplicialLDLT.cpp
@@ -59,10 +61,22 @@ sofa_find_package(Sofa.Simulation.Core REQUIRED)
 sofa_find_package(Sofa.Component.LinearSolver.Iterative REQUIRED) # Only for MatrixLinearSolver which will move to core
 sofa_find_package(Sofa.Component.LinearSolver.Ordering REQUIRED)
 
+# Optional CHOLMOD support from SuiteSparse for supernodal Cholesky factorization
+sofa_find_package(CHOLMOD QUIET)
+
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${WRAPPER_FILES})
 
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Simulation.Core Sofa.Component.LinearSolver.Iterative Sofa.Component.LinearSolver.Ordering)
 target_link_libraries(${PROJECT_NAME} PUBLIC Threads::Threads)
+
+if(CHOLMOD_FOUND)
+    target_compile_definitions(${PROJECT_NAME} PUBLIC SOFA_COMPONENT_LINEARSOLVER_DIRECT_HAVE_CHOLMOD)
+    target_link_libraries(${PROJECT_NAME} PUBLIC ${CHOLMOD_LIBRARIES})
+    target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC ${CHOLMOD_INCLUDE_DIRS})
+    message(STATUS "CHOLMOD found: EigenCholmodSupernodalLLT solver enabled")
+else()
+    message(STATUS "CHOLMOD not found: EigenCholmodSupernodalLLT solver disabled")
+endif()
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

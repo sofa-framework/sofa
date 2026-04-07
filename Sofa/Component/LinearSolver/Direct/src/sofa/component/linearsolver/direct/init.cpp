@@ -20,6 +20,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/linearsolver/direct/EigenSolverFactory.h>
+#ifdef SOFA_COMPONENT_LINEARSOLVER_DIRECT_HAVE_CHOLMOD
+#include <Eigen/CholmodSupport>
+#endif
 #include <sofa/component/linearsolver/direct/init.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/PluginManager.h>
@@ -43,6 +46,9 @@ extern void registerEigenSparseQR(sofa::core::ObjectFactory* factory);
 extern void registerPrecomputedLinearSolver(sofa::core::ObjectFactory* factory);
 extern void registerSparseLDLSolver(sofa::core::ObjectFactory* factory);
 extern void registerSVDLinearSolver(sofa::core::ObjectFactory* factory);
+#ifdef SOFA_COMPONENT_LINEARSOLVER_DIRECT_HAVE_CHOLMOD
+extern void registerEigenCholmodSupernodalLLT(sofa::core::ObjectFactory* factory);
+#endif
 
 extern "C" {
     SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
@@ -83,6 +89,25 @@ void registerOrderingMethods()
     registerOrderingMethods<MainQRFactory, Scalar>();
 }
 
+#ifdef SOFA_COMPONENT_LINEARSOLVER_DIRECT_HAVE_CHOLMOD
+// Definition of MainCholmodSupernodalLLTFactory::registerSolver.
+// Kept here (not in the header) to avoid pulling <Eigen/CholmodSupport> everywhere.
+template<typename OrderingMethodType, class ScalarType>
+void MainCholmodSupernodalLLTFactory::registerSolver(const std::string& orderingMethodName)
+{
+    std::lock_guard lock(s_mutex);
+    // CHOLMOD uses its own internal ordering; the OrderingMethodType is unused
+    getFactory().registerType<
+        Eigen::CholmodSupernodalLLT<EigenSparseMatrix<ScalarType>> >(orderingMethodName);
+}
+
+void registerCholmodOrderingMethods()
+{
+    // CHOLMOD only supports double precision
+    registerOrderingMethods<MainCholmodSupernodalLLTFactory, double>();
+}
+#endif
+
 void registerObjects(sofa::core::ObjectFactory* factory)
 {
     registerAsyncSparseLDLSolver(factory);
@@ -97,6 +122,9 @@ void registerObjects(sofa::core::ObjectFactory* factory)
     registerSparseLDLSolver(factory);
     registerSVDLinearSolver(factory);
     linearsystem::registerTypedMatrixLinearSystemBTDMatrix(factory);
+#ifdef SOFA_COMPONENT_LINEARSOLVER_DIRECT_HAVE_CHOLMOD
+    registerEigenCholmodSupernodalLLT(factory);
+#endif
 }
 
 void init()
@@ -109,6 +137,9 @@ void init()
 
         registerOrderingMethods<float>();
         registerOrderingMethods<double>();
+#ifdef SOFA_COMPONENT_LINEARSOLVER_DIRECT_HAVE_CHOLMOD
+        registerCholmodOrderingMethods();
+#endif
 
         first = false;
     }
