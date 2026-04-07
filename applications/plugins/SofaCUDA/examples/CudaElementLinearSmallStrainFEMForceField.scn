@@ -14,7 +14,7 @@
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
     <DefaultAnimationLoop/>
 
-    <Node name="Hexahedron">
+<!--     <Node name="Hexahedron">
         <EulerImplicitSolver name="odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="250" name="linear_solver" tolerance="1.0e-12" threshold="1.0e-12" />
 
@@ -31,5 +31,71 @@
 
         <HexahedronLinearSmallStrainFEMForceField name="FEM" template="CudaVec3f"
                                               youngModulus="2000" poissonRatio="0.3" />
+    </Node> -->
+
+    <Node name="Tetrahedron">
+        <Node name="Beam">
+            <RegularGridTopology name="grid" n="40 10 10" min="0 6 -2" max="16 10 2" />
+            <TetrahedronSetTopologyContainer name="BeamTopo" />
+            <TetrahedronSetTopologyModifier name="Modifier" />
+
+            <Hexa2TetraTopologicalMapping input="@grid" output="@BeamTopo" />
+        </Node>
+        
+        
+        <Node name="TetrahedronFEMForceField-GPU-Green">
+            <EulerImplicitSolver name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
+            <CGLinearSolver iterations="20" name="linear solver" tolerance="1.0e-6" threshold="1.0e-6" />
+            
+            <MechanicalObject position="@../Beam/grid.position" name="Volume" template="CudaVec3f"/>
+
+            <TetrahedronSetTopologyContainer name="Container" src="@../Beam/BeamTopo"/>
+            <TetrahedronSetTopologyModifier name="Modifier" />
+            <TetrahedronSetGeometryAlgorithms name="GeomAlgo" template="CudaVec3f" />
+
+            <DiagonalMass totalMass="50.0" />
+            <BoxROI name="ROI1" box="-0.1 5 -3 0.1 11 3" drawBoxes="1" />
+            
+            <FixedProjectiveConstraint indices="@ROI1.indices" />
+            <TetrahedronLinearSmallStrainFEMForceField name="FEM" template="CudaVec3f"
+                                              youngModulus="2000" poissonRatio="0.3" />
+        </Node>  
     </Node>
+
+<!--     <Node name="Triangle">
+        <RegularGridTopology name="tissue" n="100 100 1" min="0 0 0" max="10 10 0" />
+
+        <EulerImplicitSolver name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
+        <CGLinearSolver iterations="20" name="linear solver" tolerance="1.0e-6" threshold="1.0e-6" />
+        
+        <MechanicalObject position="@../tissue.position" name="dofs" template="CudaVec3f"/>
+
+        <TriangleSetTopologyContainer name="Container" src="@tissue"/>
+        <TriangleSetTopologyModifier name="Modifier" />
+        <TriangleSetGeometryAlgorithms name="GeomAlgo" template="CudaVec3f" />
+
+        <DiagonalMass massDensity="0.15" template="CudaVec3f,CudaVec3f"/>
+        <FixedProjectiveConstraint indices="9900 9901 9902 9903 9996 9997 9998 9999" />
+
+        <TriangleLinearSmallStrainFEMForceField name="FEM" youngModulus="600" poissonRatio="0.3" method="large" template="CudaVec3f"/>
+    </Node> -->
+
+<!--     <Node name="Quad">
+        <RegularGridTopology name="tissue" n="100 100 1" min="0 0 0" max="10 10 0" />
+
+        <EulerImplicitSolver name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
+        <CGLinearSolver iterations="20" name="linear solver" tolerance="1.0e-6" threshold="1.0e-6" />
+        
+        <MechanicalObject position="@../tissue.position" name="dofs" template="CudaVec3f"/>
+
+        <QuadSetTopologyContainer name="Container" src="@tissue"/>
+        <QuadSetTopologyModifier name="Modifier" />
+        <QuadSetGeometryAlgorithms name="GeomAlgo" template="CudaVec3f" />
+
+        <DiagonalMass massDensity="0.15" template="CudaVec3f,CudaVec3f"/>
+        <FixedProjectiveConstraint indices="9900 9901 9902 9903 9996 9997 9998 9999" />
+
+        <QuadLinearSmallStrainFEMForceField name="FEM" youngModulus="600" poissonRatio="0.3" method="large" template="CudaVec3f"/>
+    </Node> -->
+
 </Node>
