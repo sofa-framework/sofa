@@ -142,11 +142,8 @@ void SubCollisionPipeline::doInit()
  *
  * This ensures a clean slate before new collisions are detected.
  */
-void SubCollisionPipeline::computeCollisionReset()
+void SubCollisionPipeline::doComputeCollisionReset()
 {
-    if (!this->isComponentStateValid())
-        return;
-
     msg_info() << "SubCollisionPipeline::doCollisionReset";
 
     // Propagate the intersection method to all collision detection components
@@ -168,14 +165,11 @@ void SubCollisionPipeline::computeCollisionReset()
 /**
  * @brief Performs collision detection in two phases: broad phase and narrow phase.
  */
-void SubCollisionPipeline::computeCollisionDetection()
+void SubCollisionPipeline::doComputeCollisionDetection()
 {
     const std::string timerPrefix = formatComponentName(this->getName()) + " ";
     const std::string globalTimerName = timerPrefix + "doCollisionDetection";
     SCOPED_TIMER_VARNAME_DYN(docollisiontimer, globalTimerName.c_str());
-
-    if (!this->isComponentStateValid())
-        return;
 
     msg_info()  << "doCollisionDetection, compute Bounding Trees" ;
 
@@ -271,11 +265,8 @@ void SubCollisionPipeline::computeCollisionDetection()
 /**
  * @brief Creates collision responses based on detected contacts.
  */
-void SubCollisionPipeline::computeCollisionResponse()
+void SubCollisionPipeline::doComputeCollisionResponse()
 {
-    if (!this->isComponentStateValid())
-        return;
-
     core::objectmodel::BaseContext* scene = getContext();
 
     msg_info() << "Create Contacts " << l_contactManager->getName() ;
