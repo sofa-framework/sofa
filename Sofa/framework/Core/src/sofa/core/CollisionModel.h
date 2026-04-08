@@ -126,7 +126,7 @@ protected:
     /// within the given timestep.
     ///
     /// Default to computeBoundingTree().
-    virtual void doComputeContinuousBoundingTree(SReal /*dt*/, ContinuousIntersectionTypeFlag continuousIntersectionFlag = ContinuousIntersectionTypeFlag::Inertia, int maxDepth=0) { computeBoundingTree(maxDepth); }
+    virtual void doComputeContinuousBoundingTree(SReal /*dt*/, ContinuousIntersectionTypeFlag continuousIntersectionFlag = ContinuousIntersectionTypeFlag::Inertia, int maxDepth=0);
 
     /// \brief Test if two elements can collide with each other.
     ///

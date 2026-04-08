@@ -176,7 +176,7 @@ protected:
 
     void doComputeBoundingTree(int maxDepth=0) override;
 
-    void doComputeContinuousBoundingTree(SReal dt, continuousIntersectionFlag = ContinuousIntersectionTypeFlag::Inertia, int maxDepth=0) override;
+    void doComputeContinuousBoundingTree(SReal dt, ContinuousIntersectionTypeFlag continuousIntersectionFlag = ContinuousIntersectionTypeFlag::Inertia, int maxDepth=0) override;
 
 
     bool doCanCollideWithElement(sofa::Index index, CollisionModel* model2, sofa::Index index2) override;
@@ -190,8 +190,6 @@ public:
     void init() override;
 
     void draw(const core::visual::VisualParams*, sofa::Index index) override;
-
-    void draw(const core::visual::VisualParams* vparams) override;
 
     core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return m_mstate; }
     const core::behavior::MechanicalState<DataTypes>* getMechanicalState() const { return m_mstate; }

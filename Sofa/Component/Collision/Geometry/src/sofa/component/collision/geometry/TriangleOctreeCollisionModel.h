@@ -49,7 +49,6 @@ public:
 
     /// the normals for each point
     type::vector<type::Vec3> pNorms;
-    void draw(const core::visual::VisualParams* vparams) override;
     /// init the octree creation
     void buildOctree ();
 };
