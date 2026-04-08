@@ -32,10 +32,16 @@ namespace cuda
 {
 #endif
 
+template<typename T>
+__device__ T myRsqrt(T x);
+template<> __device__ float myRsqrt<float>(float x) { return rsqrtf(x); }
+template<> __device__ double myRsqrt<double>(double x) { return rsqrt(x); }
+
 /**
  * Device helper: 3x3 matrix multiply C = A * B (row-major)
  */
-__device__ void mat3Mul(const float* A, const float* B, float* C)
+template<typename T>
+__device__ void mat3Mul(const T* A, const T* B, T* C)
 {
     #pragma unroll
     for (int i = 0; i < 3; ++i)
@@ -53,7 +59,8 @@ __device__ void mat3Mul(const float* A, const float* B, float* C)
 /**
  * Device helper: C = A * B^T (row-major)
  */
-__device__ void mat3MulTranspose(const float* A, const float* BT, float* C)
+template<typename T>
+__device__ void mat3MulTranspose(const T* A, const T* BT, T* C)
 {
     #pragma unroll
     for (int i = 0; i < 3; ++i)
@@ -72,7 +79,8 @@ __device__ void mat3MulTranspose(const float* A, const float* BT, float* C)
  * Device helper: C = A^T * B (row-major)
  * Matches SOFA's Mat::multTranspose(B) which computes this^T * B.
  */
-__device__ void mat3TransposeMul(const float* A, const float* B, float* C)
+template<typename T>
+__device__ void mat3TransposeMul(const T* A, const T* B, T* C)
 {
     #pragma unroll
     for (int i = 0; i < 3; ++i)
@@ -89,32 +97,26 @@ __device__ void mat3TransposeMul(const float* A, const float* B, float* C)
 
 /**
  * Device helper: compute rotation frame from first 3 nodes (TriangleRotation).
- * Used for Triangle (NNodes=3) and Tetrahedron (NNodes=4) elements.
- * ex is [NNodes*3] array of gathered node positions.
  */
-__device__ void computeTriangleFrame(const float* ex, float* frame)
+template<typename T>
+__device__ void computeTriangleFrame(const T* ex, T* frame)
 {
-    // xAxis = normalize(p1 - p0)
-    float ax = ex[3] - ex[0], ay = ex[4] - ex[1], az = ex[5] - ex[2];
-    float invLen = rsqrtf(ax * ax + ay * ay + az * az);
+    T ax = ex[3] - ex[0], ay = ex[4] - ex[1], az = ex[5] - ex[2];
+    T invLen = myRsqrt(ax * ax + ay * ay + az * az);
     ax *= invLen; ay *= invLen; az *= invLen;
 
-    // tmp yAxis = p2 - p0
-    float bx = ex[6] - ex[0], by = ex[7] - ex[1], bz = ex[8] - ex[2];
+    T bx = ex[6] - ex[0], by = ex[7] - ex[1], bz = ex[8] - ex[2];
 
-    // zAxis = normalize(cross(xAxis, tmpY))
-    float cx = ay * bz - az * by;
-    float cy = az * bx - ax * bz;
-    float cz = ax * by - ay * bx;
-    invLen = rsqrtf(cx * cx + cy * cy + cz * cz);
+    T cx = ay * bz - az * by;
+    T cy = az * bx - ax * bz;
+    T cz = ax * by - ay * bx;
+    invLen = myRsqrt(cx * cx + cy * cy + cz * cz);
     cx *= invLen; cy *= invLen; cz *= invLen;
 
-    // yAxis = cross(zAxis, xAxis)
     bx = cy * az - cz * ay;
     by = cz * ax - cx * az;
     bz = cx * ay - cy * ax;
 
-    // frame rows: [xAxis; yAxis; zAxis]
     frame[0] = ax; frame[1] = ay; frame[2] = az;
     frame[3] = bx; frame[4] = by; frame[5] = bz;
     frame[6] = cx; frame[7] = cy; frame[8] = cz;
@@ -122,44 +124,39 @@ __device__ void computeTriangleFrame(const float* ex, float* frame)
 
 /**
  * Device helper: compute rotation frame from 8 hexahedron nodes (HexahedronRotation).
- * ex is [8*3] array of gathered node positions.
  */
-__device__ void computeHexahedronFrame(const float* ex, float* frame)
+template<typename T>
+__device__ void computeHexahedronFrame(const T* ex, T* frame)
 {
-    // Average edge vectors
-    // xAxis_avg = ((n1-n0) + (n2-n3) + (n5-n4) + (n6-n7)) * 0.25
-    float ax = ((ex[1*3+0] - ex[0*3+0]) + (ex[2*3+0] - ex[3*3+0])
-              + (ex[5*3+0] - ex[4*3+0]) + (ex[6*3+0] - ex[7*3+0])) * 0.25f;
-    float ay = ((ex[1*3+1] - ex[0*3+1]) + (ex[2*3+1] - ex[3*3+1])
-              + (ex[5*3+1] - ex[4*3+1]) + (ex[6*3+1] - ex[7*3+1])) * 0.25f;
-    float az = ((ex[1*3+2] - ex[0*3+2]) + (ex[2*3+2] - ex[3*3+2])
-              + (ex[5*3+2] - ex[4*3+2]) + (ex[6*3+2] - ex[7*3+2])) * 0.25f;
+    const T quarter = T(0.25);
 
-    // yAxis_avg = ((n3-n0) + (n2-n1) + (n7-n4) + (n6-n5)) * 0.25
-    float bx = ((ex[3*3+0] - ex[0*3+0]) + (ex[2*3+0] - ex[1*3+0])
-              + (ex[7*3+0] - ex[4*3+0]) + (ex[6*3+0] - ex[5*3+0])) * 0.25f;
-    float by = ((ex[3*3+1] - ex[0*3+1]) + (ex[2*3+1] - ex[1*3+1])
-              + (ex[7*3+1] - ex[4*3+1]) + (ex[6*3+1] - ex[5*3+1])) * 0.25f;
-    float bz = ((ex[3*3+2] - ex[0*3+2]) + (ex[2*3+2] - ex[1*3+2])
-              + (ex[7*3+2] - ex[4*3+2]) + (ex[6*3+2] - ex[5*3+2])) * 0.25f;
+    T ax = ((ex[1*3+0] - ex[0*3+0]) + (ex[2*3+0] - ex[3*3+0])
+          + (ex[5*3+0] - ex[4*3+0]) + (ex[6*3+0] - ex[7*3+0])) * quarter;
+    T ay = ((ex[1*3+1] - ex[0*3+1]) + (ex[2*3+1] - ex[3*3+1])
+          + (ex[5*3+1] - ex[4*3+1]) + (ex[6*3+1] - ex[7*3+1])) * quarter;
+    T az = ((ex[1*3+2] - ex[0*3+2]) + (ex[2*3+2] - ex[3*3+2])
+          + (ex[5*3+2] - ex[4*3+2]) + (ex[6*3+2] - ex[7*3+2])) * quarter;
 
-    // Normalize xAxis
-    float invLen = rsqrtf(ax * ax + ay * ay + az * az);
+    T bx = ((ex[3*3+0] - ex[0*3+0]) + (ex[2*3+0] - ex[1*3+0])
+          + (ex[7*3+0] - ex[4*3+0]) + (ex[6*3+0] - ex[5*3+0])) * quarter;
+    T by = ((ex[3*3+1] - ex[0*3+1]) + (ex[2*3+1] - ex[1*3+1])
+          + (ex[7*3+1] - ex[4*3+1]) + (ex[6*3+1] - ex[5*3+1])) * quarter;
+    T bz = ((ex[3*3+2] - ex[0*3+2]) + (ex[2*3+2] - ex[1*3+2])
+          + (ex[7*3+2] - ex[4*3+2]) + (ex[6*3+2] - ex[5*3+2])) * quarter;
+
+    T invLen = myRsqrt(ax * ax + ay * ay + az * az);
     ax *= invLen; ay *= invLen; az *= invLen;
 
-    // zAxis = normalize(cross(xAxis, yAxis_avg))
-    float cx = ay * bz - az * by;
-    float cy = az * bx - ax * bz;
-    float cz = ax * by - ay * bx;
-    invLen = rsqrtf(cx * cx + cy * cy + cz * cz);
+    T cx = ay * bz - az * by;
+    T cy = az * bx - ax * bz;
+    T cz = ax * by - ay * bx;
+    invLen = myRsqrt(cx * cx + cy * cy + cz * cz);
     cx *= invLen; cy *= invLen; cz *= invLen;
 
-    // yAxis = cross(zAxis, xAxis)
     bx = cy * az - cz * ay;
     by = cz * ax - cx * az;
     bz = cx * ay - cy * ax;
 
-    // frame rows: [xAxis; yAxis; zAxis]
     frame[0] = ax; frame[1] = ay; frame[2] = az;
     frame[3] = bx; frame[4] = by; frame[5] = bz;
     frame[6] = cx; frame[7] = cy; frame[8] = cz;
@@ -167,54 +164,48 @@ __device__ void computeHexahedronFrame(const float* ex, float* frame)
 
 /**
  * Symmetric block-matrix multiply: out = K * in
- * K stored as upper triangle: NSymBlocks = NNodes*(NNodes+1)/2 blocks of 9 floats.
- * Inline device function shared by addForce, addDForce, and combined kernels.
  */
-template<int NNodes>
-__device__ void symBlockMatMul(const float* K, const float* in, float* out)
+template<typename T, int NNodes>
+__device__ void symBlockMatMul(const T* K, const T* in, T* out)
 {
     #pragma unroll
     for (int i = 0; i < NNodes * 3; ++i)
-        out[i] = 0.0f;
+        out[i] = T(0);
 
     #pragma unroll
     for (int ni = 0; ni < NNodes; ++ni)
     {
         const int diagIdx = ni * NNodes - ni * (ni - 1) / 2;
 
-        // Diagonal block
         {
-            const float* Kii = K + diagIdx * 9;
-            const float i0 = in[ni * 3 + 0];
-            const float i1 = in[ni * 3 + 1];
-            const float i2 = in[ni * 3 + 2];
+            const T* Kii = K + diagIdx * 9;
+            const T i0 = in[ni * 3 + 0];
+            const T i1 = in[ni * 3 + 1];
+            const T i2 = in[ni * 3 + 2];
             out[ni * 3 + 0] += Kii[0] * i0 + Kii[1] * i1 + Kii[2] * i2;
             out[ni * 3 + 1] += Kii[3] * i0 + Kii[4] * i1 + Kii[5] * i2;
             out[ni * 3 + 2] += Kii[6] * i0 + Kii[7] * i1 + Kii[8] * i2;
         }
 
-        // Off-diagonal blocks
         #pragma unroll
         for (int nj = ni + 1; nj < NNodes; ++nj)
         {
             const int symIdx = diagIdx + (nj - ni);
-            const float* Kij = K + symIdx * 9;
+            const T* Kij = K + symIdx * 9;
 
-            // Forward: out[ni] += Kij * in[nj]
             {
-                const float j0 = in[nj * 3 + 0];
-                const float j1 = in[nj * 3 + 1];
-                const float j2 = in[nj * 3 + 2];
+                const T j0 = in[nj * 3 + 0];
+                const T j1 = in[nj * 3 + 1];
+                const T j2 = in[nj * 3 + 2];
                 out[ni * 3 + 0] += Kij[0] * j0 + Kij[1] * j1 + Kij[2] * j2;
                 out[ni * 3 + 1] += Kij[3] * j0 + Kij[4] * j1 + Kij[5] * j2;
                 out[ni * 3 + 2] += Kij[6] * j0 + Kij[7] * j1 + Kij[8] * j2;
             }
 
-            // Symmetric: out[nj] += Kij^T * in[ni]
             {
-                const float i0 = in[ni * 3 + 0];
-                const float i1 = in[ni * 3 + 1];
-                const float i2 = in[ni * 3 + 2];
+                const T i0 = in[ni * 3 + 0];
+                const T i1 = in[ni * 3 + 1];
+                const T i2 = in[ni * 3 + 2];
                 out[nj * 3 + 0] += Kij[0] * i0 + Kij[3] * i1 + Kij[6] * i2;
                 out[nj * 3 + 1] += Kij[1] * i0 + Kij[4] * i1 + Kij[7] * i2;
                 out[nj * 3 + 2] += Kij[2] * i0 + Kij[5] * i1 + Kij[8] * i2;
@@ -225,31 +216,25 @@ __device__ void symBlockMatMul(const float* K, const float* in, float* out)
 
 /**
  * Combined kernel: compute rotations AND per-element forces in one pass.
- *
- * Uses TriangleRotation for NNodes=3,4 and HexahedronRotation for NNodes=8.
- * Computes: frame from node positions → R = frame * initRotTransposed
- * Then: displacement = R^T*(x-centroid) - (x0-centroid0) → K*disp → -R*result
- * Also writes R to rotations buffer for subsequent addDForce calls.
  */
-template<int NNodes>
-__global__ void ElementCorotationalFEMForceFieldCuda3f_computeRotationsAndForce_kernel(
+template<typename T, int NNodes>
+__global__ void ElementCorotationalFEMForceField_computeRotationsAndForce_kernel(
     int nbElem,
     const int* __restrict__ elements,
-    const float* __restrict__ initRotTransposed,
-    const float* __restrict__ stiffness,
-    const float* __restrict__ x,
-    const float* __restrict__ x0,
-    float* __restrict__ rotationsOut,
-    float* __restrict__ eforce)
+    const T* __restrict__ initRotTransposed,
+    const T* __restrict__ stiffness,
+    const T* __restrict__ x,
+    const T* __restrict__ x0,
+    T* __restrict__ rotationsOut,
+    T* __restrict__ eforce)
 {
     constexpr int NSymBlocks = NNodes * (NNodes + 1) / 2;
-    constexpr float invN = 1.0f / NNodes;
+    const T invN = T(1) / T(NNodes);
 
     const int elemId = blockIdx.x * blockDim.x + threadIdx.x;
     if (elemId >= nbElem) return;
 
-    // Gather node positions and rest positions
-    float ex[NNodes * 3], ex0[NNodes * 3];
+    T ex[NNodes * 3], ex0[NNodes * 3];
     #pragma unroll
     for (int n = 0; n < NNodes; ++n)
     {
@@ -262,28 +247,24 @@ __global__ void ElementCorotationalFEMForceFieldCuda3f_computeRotationsAndForce_
         ex0[n * 3 + 2] = x0[nodeId * 3 + 2];
     }
 
-    // Compute rotation frame from current positions
-    float frame[9];
+    T frame[9];
     if constexpr (NNodes == 8)
         computeHexahedronFrame(ex, frame);
     else
         computeTriangleFrame(ex, frame);
 
-    // R = frame^T * initRot (matching SOFA's Mat::multTranspose which computes A^T * B)
-    // m_initialRotationsTransposed stores frame_rest (despite its name, it's transposed during init)
-    const float* irt = initRotTransposed + elemId * 9;
-    float R[9];
+    // R = frame^T * initRot
+    const T* irt = initRotTransposed + elemId * 9;
+    T R[9];
     mat3TransposeMul(frame, irt, R);
 
-    // Write R to rotations buffer for addDForce
-    float* Rout = rotationsOut + elemId * 9;
+    T* Rout = rotationsOut + elemId * 9;
     #pragma unroll
     for (int i = 0; i < 9; ++i)
         Rout[i] = R[i];
 
-    // Compute centroids
-    float cx = 0.0f, cy = 0.0f, cz = 0.0f;
-    float cx0 = 0.0f, cy0 = 0.0f, cz0 = 0.0f;
+    T cx = T(0), cy = T(0), cz = T(0);
+    T cx0 = T(0), cy0 = T(0), cz0 = T(0);
     #pragma unroll
     for (int n = 0; n < NNodes; ++n)
     {
@@ -293,35 +274,32 @@ __global__ void ElementCorotationalFEMForceFieldCuda3f_computeRotationsAndForce_
     cx *= invN; cy *= invN; cz *= invN;
     cx0 *= invN; cy0 *= invN; cz0 *= invN;
 
-    // Compute displacement: disp[j] = R^T * (x[j] - centroid) - (x0[j] - centroid0)
-    float disp[NNodes * 3];
+    T disp[NNodes * 3];
     #pragma unroll
     for (int n = 0; n < NNodes; ++n)
     {
-        const float dx = ex[n * 3 + 0] - cx;
-        const float dy = ex[n * 3 + 1] - cy;
-        const float dz = ex[n * 3 + 2] - cz;
-        const float rx = R[0] * dx + R[3] * dy + R[6] * dz;
-        const float ry = R[1] * dx + R[4] * dy + R[7] * dz;
-        const float rz = R[2] * dx + R[5] * dy + R[8] * dz;
+        const T dx = ex[n * 3 + 0] - cx;
+        const T dy = ex[n * 3 + 1] - cy;
+        const T dz = ex[n * 3 + 2] - cz;
+        const T rx = R[0] * dx + R[3] * dy + R[6] * dz;
+        const T ry = R[1] * dx + R[4] * dy + R[7] * dz;
+        const T rz = R[2] * dx + R[5] * dy + R[8] * dz;
         disp[n * 3 + 0] = rx - (ex0[n * 3 + 0] - cx0);
         disp[n * 3 + 1] = ry - (ex0[n * 3 + 1] - cy0);
         disp[n * 3 + 2] = rz - (ex0[n * 3 + 2] - cz0);
     }
 
-    // edf = K * disp
-    float edf[NNodes * 3];
-    const float* K = stiffness + elemId * NSymBlocks * 9;
-    symBlockMatMul<NNodes>(K, disp, edf);
+    T edf[NNodes * 3];
+    const T* K = stiffness + elemId * NSymBlocks * 9;
+    symBlockMatMul<T, NNodes>(K, disp, edf);
 
-    // Rotate back and write: out = -R * edf
-    float* out = eforce + elemId * NNodes * 3;
+    T* out = eforce + elemId * NNodes * 3;
     #pragma unroll
     for (int n = 0; n < NNodes; ++n)
     {
-        const float e0 = edf[n * 3 + 0];
-        const float e1 = edf[n * 3 + 1];
-        const float e2 = edf[n * 3 + 2];
+        const T e0 = edf[n * 3 + 0];
+        const T e1 = edf[n * 3 + 1];
+        const T e2 = edf[n * 3 + 2];
         out[n * 3 + 0] = -(R[0] * e0 + R[1] * e1 + R[2] * e2);
         out[n * 3 + 1] = -(R[3] * e0 + R[4] * e1 + R[5] * e2);
         out[n * 3 + 2] = -(R[6] * e0 + R[7] * e1 + R[8] * e2);
@@ -330,36 +308,30 @@ __global__ void ElementCorotationalFEMForceFieldCuda3f_computeRotationsAndForce_
 
 /**
  * Kernel for addForce: Compute per-element force (1 thread per element).
- *
- * displacement[j] = R^T * (x[j] - centroid_x) - (x0[j] - centroid_x0)
- * elementForce = K * displacement
- * out[j] = -R * elementForce[j]
  */
-template<int NNodes>
-__global__ void ElementCorotationalFEMForceFieldCuda3f_computeForce_kernel(
+template<typename T, int NNodes>
+__global__ void ElementCorotationalFEMForceField_computeForce_kernel(
     int nbElem,
     const int* __restrict__ elements,
-    const float* __restrict__ rotations,
-    const float* __restrict__ stiffness,
-    const float* __restrict__ x,
-    const float* __restrict__ x0,
-    float* __restrict__ eforce)
+    const T* __restrict__ rotations,
+    const T* __restrict__ stiffness,
+    const T* __restrict__ x,
+    const T* __restrict__ x0,
+    T* __restrict__ eforce)
 {
     constexpr int NSymBlocks = NNodes * (NNodes + 1) / 2;
-    constexpr float invN = 1.0f / NNodes;
+    const T invN = T(1) / T(NNodes);
 
     const int elemId = blockIdx.x * blockDim.x + threadIdx.x;
     if (elemId >= nbElem) return;
 
-    // Load rotation matrix R (3x3, row-major)
-    const float* Rptr = rotations + elemId * 9;
-    float R[9];
+    const T* Rptr = rotations + elemId * 9;
+    T R[9];
     #pragma unroll
     for (int i = 0; i < 9; ++i)
         R[i] = Rptr[i];
 
-    // Gather node positions and rest positions
-    float ex[NNodes * 3], ex0[NNodes * 3];
+    T ex[NNodes * 3], ex0[NNodes * 3];
     #pragma unroll
     for (int n = 0; n < NNodes; ++n)
     {
@@ -372,9 +344,8 @@ __global__ void ElementCorotationalFEMForceFieldCuda3f_computeForce_kernel(
         ex0[n * 3 + 2] = x0[nodeId * 3 + 2];
     }
 
-    // Compute centroids
-    float cx = 0.0f, cy = 0.0f, cz = 0.0f;
-    float cx0 = 0.0f, cy0 = 0.0f, cz0 = 0.0f;
+    T cx = T(0), cy = T(0), cz = T(0);
+    T cx0 = T(0), cy0 = T(0), cz0 = T(0);
     #pragma unroll
     for (int n = 0; n < NNodes; ++n)
     {
@@ -384,38 +355,32 @@ __global__ void ElementCorotationalFEMForceFieldCuda3f_computeForce_kernel(
     cx *= invN; cy *= invN; cz *= invN;
     cx0 *= invN; cy0 *= invN; cz0 *= invN;
 
-    // Compute displacement: disp[j] = R^T * (x[j] - centroid) - (x0[j] - centroid0)
-    float disp[NNodes * 3];
+    T disp[NNodes * 3];
     #pragma unroll
     for (int n = 0; n < NNodes; ++n)
     {
-        const float dx = ex[n * 3 + 0] - cx;
-        const float dy = ex[n * 3 + 1] - cy;
-        const float dz = ex[n * 3 + 2] - cz;
-
-        // R^T * (x - centroid)
-        const float rx = R[0] * dx + R[3] * dy + R[6] * dz;
-        const float ry = R[1] * dx + R[4] * dy + R[7] * dz;
-        const float rz = R[2] * dx + R[5] * dy + R[8] * dz;
-
+        const T dx = ex[n * 3 + 0] - cx;
+        const T dy = ex[n * 3 + 1] - cy;
+        const T dz = ex[n * 3 + 2] - cz;
+        const T rx = R[0] * dx + R[3] * dy + R[6] * dz;
+        const T ry = R[1] * dx + R[4] * dy + R[7] * dz;
+        const T rz = R[2] * dx + R[5] * dy + R[8] * dz;
         disp[n * 3 + 0] = rx - (ex0[n * 3 + 0] - cx0);
         disp[n * 3 + 1] = ry - (ex0[n * 3 + 1] - cy0);
         disp[n * 3 + 2] = rz - (ex0[n * 3 + 2] - cz0);
     }
 
-    // edf = K * disp
-    float edf[NNodes * 3];
-    const float* K = stiffness + elemId * NSymBlocks * 9;
-    symBlockMatMul<NNodes>(K, disp, edf);
+    T edf[NNodes * 3];
+    const T* K = stiffness + elemId * NSymBlocks * 9;
+    symBlockMatMul<T, NNodes>(K, disp, edf);
 
-    // Rotate back and write: out = -R * edf
-    float* out = eforce + elemId * NNodes * 3;
+    T* out = eforce + elemId * NNodes * 3;
     #pragma unroll
     for (int n = 0; n < NNodes; ++n)
     {
-        const float e0 = edf[n * 3 + 0];
-        const float e1 = edf[n * 3 + 1];
-        const float e2 = edf[n * 3 + 2];
+        const T e0 = edf[n * 3 + 0];
+        const T e1 = edf[n * 3 + 1];
+        const T e2 = edf[n * 3 + 2];
         out[n * 3 + 0] = -(R[0] * e0 + R[1] * e1 + R[2] * e2);
         out[n * 3 + 1] = -(R[3] * e0 + R[4] * e1 + R[5] * e2);
         out[n * 3 + 2] = -(R[6] * e0 + R[7] * e1 + R[8] * e2);
@@ -424,59 +389,52 @@ __global__ void ElementCorotationalFEMForceFieldCuda3f_computeForce_kernel(
 
 /**
  * Kernel for addDForce: Compute per-element dForce (1 thread per element).
- *
- * rdx = R^T * dx, edf = K * rdx, out = -kFactor * R * edf
  */
-template<int NNodes>
-__global__ void ElementCorotationalFEMForceFieldCuda3f_computeDForce_kernel(
+template<typename T, int NNodes>
+__global__ void ElementCorotationalFEMForceField_computeDForce_kernel(
     int nbElem,
     const int* __restrict__ elements,
-    const float* __restrict__ rotations,
-    const float* __restrict__ stiffness,
-    const float* __restrict__ dx,
-    float* __restrict__ eforce,
-    float kFactor)
+    const T* __restrict__ rotations,
+    const T* __restrict__ stiffness,
+    const T* __restrict__ dx,
+    T* __restrict__ eforce,
+    T kFactor)
 {
     constexpr int NSymBlocks = NNodes * (NNodes + 1) / 2;
 
     const int elemId = blockIdx.x * blockDim.x + threadIdx.x;
     if (elemId >= nbElem) return;
 
-    // Load rotation matrix R (3x3, row-major)
-    const float* Rptr = rotations + elemId * 9;
-    float R[9];
+    const T* Rptr = rotations + elemId * 9;
+    T R[9];
     #pragma unroll
     for (int i = 0; i < 9; ++i)
         R[i] = Rptr[i];
 
-    // Gather dx and rotate into reference frame: rdx[n] = R^T * dx[node[n]]
-    float rdx[NNodes * 3];
+    T rdx[NNodes * 3];
     #pragma unroll
     for (int n = 0; n < NNodes; ++n)
     {
         const int nodeId = elements[n * nbElem + elemId];
-        const float dx_x = dx[nodeId * 3 + 0];
-        const float dx_y = dx[nodeId * 3 + 1];
-        const float dx_z = dx[nodeId * 3 + 2];
-
+        const T dx_x = dx[nodeId * 3 + 0];
+        const T dx_y = dx[nodeId * 3 + 1];
+        const T dx_z = dx[nodeId * 3 + 2];
         rdx[n * 3 + 0] = R[0] * dx_x + R[3] * dx_y + R[6] * dx_z;
         rdx[n * 3 + 1] = R[1] * dx_x + R[4] * dx_y + R[7] * dx_z;
         rdx[n * 3 + 2] = R[2] * dx_x + R[5] * dx_y + R[8] * dx_z;
     }
 
-    // Symmetric block-matrix multiply: edf = K * rdx
-    const float* K = stiffness + elemId * NSymBlocks * 9;
-    float edf[NNodes * 3];
-    symBlockMatMul<NNodes>(K, rdx, edf);
+    const T* K = stiffness + elemId * NSymBlocks * 9;
+    T edf[NNodes * 3];
+    symBlockMatMul<T, NNodes>(K, rdx, edf);
 
-    // Rotate back and write: eforce = -kFactor * R * edf
-    float* out = eforce + elemId * NNodes * 3;
+    T* out = eforce + elemId * NNodes * 3;
     #pragma unroll
     for (int n = 0; n < NNodes; ++n)
     {
-        const float e0 = edf[n * 3 + 0];
-        const float e1 = edf[n * 3 + 1];
-        const float e2 = edf[n * 3 + 2];
+        const T e0 = edf[n * 3 + 0];
+        const T e1 = edf[n * 3 + 1];
+        const T e2 = edf[n * 3 + 2];
         out[n * 3 + 0] = -kFactor * (R[0] * e0 + R[1] * e1 + R[2] * e2);
         out[n * 3 + 1] = -kFactor * (R[3] * e0 + R[4] * e1 + R[5] * e2);
         out[n * 3 + 2] = -kFactor * (R[6] * e0 + R[7] * e1 + R[8] * e2);
@@ -485,23 +443,19 @@ __global__ void ElementCorotationalFEMForceFieldCuda3f_computeDForce_kernel(
 
 /**
  * Gather per-vertex forces (1 thread per vertex).
- *
- * Shared by addForce and addDForce.
- * No atomics: each vertex handled by exactly one thread.
- * velems is SoA: velems[s * nbVertex + vertexId], 0-terminated.
- * Each entry is (elemId * NNodes + localNode + 1), with 0 as sentinel.
  */
-__global__ void ElementCorotationalFEMForceFieldCuda3f_gatherForce_kernel(
+template<typename T>
+__global__ void ElementCorotationalFEMForceField_gatherForce_kernel(
     int nbVertex,
     int maxElemPerVertex,
     const int* __restrict__ velems,
-    const float* __restrict__ eforce,
-    float* df)
+    const T* __restrict__ eforce,
+    T* df)
 {
     const int vertexId = blockIdx.x * blockDim.x + threadIdx.x;
     if (vertexId >= nbVertex) return;
 
-    float fx = 0.0f, fy = 0.0f, fz = 0.0f;
+    T fx = T(0), fy = T(0), fz = T(0);
 
     for (int s = 0; s < maxElemPerVertex; ++s)
     {
@@ -518,6 +472,7 @@ __global__ void ElementCorotationalFEMForceFieldCuda3f_gatherForce_kernel(
     df[vertexId * 3 + 2] += fz;
 }
 
+template<typename T>
 static void launchGather(
     unsigned int nbVertex,
     unsigned int maxElemPerVertex,
@@ -527,17 +482,17 @@ static void launchGather(
 {
     const int gatherThreads = 256;
     const int numBlocks = (nbVertex + gatherThreads - 1) / gatherThreads;
-    ElementCorotationalFEMForceFieldCuda3f_gatherForce_kernel
+    ElementCorotationalFEMForceField_gatherForce_kernel<T>
         <<<numBlocks, gatherThreads>>>(
             nbVertex,
             maxElemPerVertex,
             (const int*)velems,
-            (const float*)eforce,
-            (float*)f);
-    mycudaDebugError("ElementCorotationalFEMForceFieldCuda3f_gatherForce_kernel");
+            (const T*)eforce,
+            (T*)f);
+    mycudaDebugError("ElementCorotationalFEMForceField_gatherForce_kernel");
 }
 
-template<int NNodes>
+template<typename T, int NNodes>
 static void launchAddForceWithRotations(
     unsigned int nbElem,
     unsigned int nbVertex,
@@ -554,22 +509,22 @@ static void launchAddForceWithRotations(
 {
     const int computeThreads = 64;
     const int numBlocks = (nbElem + computeThreads - 1) / computeThreads;
-    ElementCorotationalFEMForceFieldCuda3f_computeRotationsAndForce_kernel<NNodes>
+    ElementCorotationalFEMForceField_computeRotationsAndForce_kernel<T, NNodes>
         <<<numBlocks, computeThreads>>>(
             nbElem,
             (const int*)elements,
-            (const float*)initRotTransposed,
-            (const float*)stiffness,
-            (const float*)x,
-            (const float*)x0,
-            (float*)rotationsOut,
-            (float*)eforce);
-    mycudaDebugError("ElementCorotationalFEMForceFieldCuda3f_computeRotationsAndForce_kernel");
+            (const T*)initRotTransposed,
+            (const T*)stiffness,
+            (const T*)x,
+            (const T*)x0,
+            (T*)rotationsOut,
+            (T*)eforce);
+    mycudaDebugError("ElementCorotationalFEMForceField_computeRotationsAndForce_kernel");
 
-    launchGather(nbVertex, maxElemPerVertex, velems, eforce, f);
+    launchGather<T>(nbVertex, maxElemPerVertex, velems, eforce, f);
 }
 
-template<int NNodes>
+template<typename T, int NNodes>
 static void launchAddForce(
     unsigned int nbElem,
     unsigned int nbVertex,
@@ -585,21 +540,21 @@ static void launchAddForce(
 {
     const int computeThreads = 64;
     const int numBlocks = (nbElem + computeThreads - 1) / computeThreads;
-    ElementCorotationalFEMForceFieldCuda3f_computeForce_kernel<NNodes>
+    ElementCorotationalFEMForceField_computeForce_kernel<T, NNodes>
         <<<numBlocks, computeThreads>>>(
             nbElem,
             (const int*)elements,
-            (const float*)rotations,
-            (const float*)stiffness,
-            (const float*)x,
-            (const float*)x0,
-            (float*)eforce);
-    mycudaDebugError("ElementCorotationalFEMForceFieldCuda3f_computeForce_kernel");
+            (const T*)rotations,
+            (const T*)stiffness,
+            (const T*)x,
+            (const T*)x0,
+            (T*)eforce);
+    mycudaDebugError("ElementCorotationalFEMForceField_computeForce_kernel");
 
-    launchGather(nbVertex, maxElemPerVertex, velems, eforce, f);
+    launchGather<T>(nbVertex, maxElemPerVertex, velems, eforce, f);
 }
 
-template<int NNodes>
+template<typename T, int NNodes>
 static void launchAddDForce(
     unsigned int nbElem,
     unsigned int nbVertex,
@@ -611,26 +566,28 @@ static void launchAddDForce(
     void* df,
     void* eforce,
     const void* velems,
-    float kFactor)
+    T kFactor)
 {
     const int computeThreads = 64;
     const int numBlocks = (nbElem + computeThreads - 1) / computeThreads;
-    ElementCorotationalFEMForceFieldCuda3f_computeDForce_kernel<NNodes>
+    ElementCorotationalFEMForceField_computeDForce_kernel<T, NNodes>
         <<<numBlocks, computeThreads>>>(
             nbElem,
             (const int*)elements,
-            (const float*)rotations,
-            (const float*)stiffness,
-            (const float*)dx,
-            (float*)eforce,
+            (const T*)rotations,
+            (const T*)stiffness,
+            (const T*)dx,
+            (T*)eforce,
             kFactor);
-    mycudaDebugError("ElementCorotationalFEMForceFieldCuda3f_computeDForce_kernel");
+    mycudaDebugError("ElementCorotationalFEMForceField_computeDForce_kernel");
 
-    launchGather(nbVertex, maxElemPerVertex, velems, eforce, df);
+    launchGather<T>(nbVertex, maxElemPerVertex, velems, eforce, df);
 }
 
 extern "C"
 {
+
+// ==================== float versions ====================
 
 void ElementCorotationalFEMForceFieldCuda3f_addForceWithRotations(
     unsigned int nbElem,
@@ -649,9 +606,9 @@ void ElementCorotationalFEMForceFieldCuda3f_addForceWithRotations(
 {
     switch (nbNodesPerElem)
     {
-        case 3: launchAddForceWithRotations<3>(nbElem, nbVertex, maxElemPerVertex, elements, initRotTransposed, stiffness, x, x0, f, eforce, rotationsOut, velems); break;
-        case 4: launchAddForceWithRotations<4>(nbElem, nbVertex, maxElemPerVertex, elements, initRotTransposed, stiffness, x, x0, f, eforce, rotationsOut, velems); break;
-        case 8: launchAddForceWithRotations<8>(nbElem, nbVertex, maxElemPerVertex, elements, initRotTransposed, stiffness, x, x0, f, eforce, rotationsOut, velems); break;
+        case 3: launchAddForceWithRotations<float, 3>(nbElem, nbVertex, maxElemPerVertex, elements, initRotTransposed, stiffness, x, x0, f, eforce, rotationsOut, velems); break;
+        case 4: launchAddForceWithRotations<float, 4>(nbElem, nbVertex, maxElemPerVertex, elements, initRotTransposed, stiffness, x, x0, f, eforce, rotationsOut, velems); break;
+        case 8: launchAddForceWithRotations<float, 8>(nbElem, nbVertex, maxElemPerVertex, elements, initRotTransposed, stiffness, x, x0, f, eforce, rotationsOut, velems); break;
     }
 }
 
@@ -671,10 +628,10 @@ void ElementCorotationalFEMForceFieldCuda3f_addForce(
 {
     switch (nbNodesPerElem)
     {
-        case 2: launchAddForce<2>(nbElem, nbVertex, maxElemPerVertex, elements, rotations, stiffness, x, x0, f, eforce, velems); break;
-        case 3: launchAddForce<3>(nbElem, nbVertex, maxElemPerVertex, elements, rotations, stiffness, x, x0, f, eforce, velems); break;
-        case 4: launchAddForce<4>(nbElem, nbVertex, maxElemPerVertex, elements, rotations, stiffness, x, x0, f, eforce, velems); break;
-        case 8: launchAddForce<8>(nbElem, nbVertex, maxElemPerVertex, elements, rotations, stiffness, x, x0, f, eforce, velems); break;
+        case 2: launchAddForce<float, 2>(nbElem, nbVertex, maxElemPerVertex, elements, rotations, stiffness, x, x0, f, eforce, velems); break;
+        case 3: launchAddForce<float, 3>(nbElem, nbVertex, maxElemPerVertex, elements, rotations, stiffness, x, x0, f, eforce, velems); break;
+        case 4: launchAddForce<float, 4>(nbElem, nbVertex, maxElemPerVertex, elements, rotations, stiffness, x, x0, f, eforce, velems); break;
+        case 8: launchAddForce<float, 8>(nbElem, nbVertex, maxElemPerVertex, elements, rotations, stiffness, x, x0, f, eforce, velems); break;
     }
 }
 
@@ -694,10 +651,81 @@ void ElementCorotationalFEMForceFieldCuda3f_addDForce(
 {
     switch (nbNodesPerElem)
     {
-        case 2: launchAddDForce<2>(nbElem, nbVertex, maxElemPerVertex, elements, rotations, stiffness, dx, df, eforce, velems, kFactor); break;
-        case 3: launchAddDForce<3>(nbElem, nbVertex, maxElemPerVertex, elements, rotations, stiffness, dx, df, eforce, velems, kFactor); break;
-        case 4: launchAddDForce<4>(nbElem, nbVertex, maxElemPerVertex, elements, rotations, stiffness, dx, df, eforce, velems, kFactor); break;
-        case 8: launchAddDForce<8>(nbElem, nbVertex, maxElemPerVertex, elements, rotations, stiffness, dx, df, eforce, velems, kFactor); break;
+        case 2: launchAddDForce<float, 2>(nbElem, nbVertex, maxElemPerVertex, elements, rotations, stiffness, dx, df, eforce, velems, kFactor); break;
+        case 3: launchAddDForce<float, 3>(nbElem, nbVertex, maxElemPerVertex, elements, rotations, stiffness, dx, df, eforce, velems, kFactor); break;
+        case 4: launchAddDForce<float, 4>(nbElem, nbVertex, maxElemPerVertex, elements, rotations, stiffness, dx, df, eforce, velems, kFactor); break;
+        case 8: launchAddDForce<float, 8>(nbElem, nbVertex, maxElemPerVertex, elements, rotations, stiffness, dx, df, eforce, velems, kFactor); break;
+    }
+}
+
+// ==================== double versions ====================
+
+void ElementCorotationalFEMForceFieldCuda3d_addForceWithRotations(
+    unsigned int nbElem,
+    unsigned int nbVertex,
+    unsigned int nbNodesPerElem,
+    unsigned int maxElemPerVertex,
+    const void* elements,
+    const void* initRotTransposed,
+    const void* stiffness,
+    const void* x,
+    const void* x0,
+    void* f,
+    void* eforce,
+    void* rotationsOut,
+    const void* velems)
+{
+    switch (nbNodesPerElem)
+    {
+        case 3: launchAddForceWithRotations<double, 3>(nbElem, nbVertex, maxElemPerVertex, elements, initRotTransposed, stiffness, x, x0, f, eforce, rotationsOut, velems); break;
+        case 4: launchAddForceWithRotations<double, 4>(nbElem, nbVertex, maxElemPerVertex, elements, initRotTransposed, stiffness, x, x0, f, eforce, rotationsOut, velems); break;
+        case 8: launchAddForceWithRotations<double, 8>(nbElem, nbVertex, maxElemPerVertex, elements, initRotTransposed, stiffness, x, x0, f, eforce, rotationsOut, velems); break;
+    }
+}
+
+void ElementCorotationalFEMForceFieldCuda3d_addForce(
+    unsigned int nbElem,
+    unsigned int nbVertex,
+    unsigned int nbNodesPerElem,
+    unsigned int maxElemPerVertex,
+    const void* elements,
+    const void* rotations,
+    const void* stiffness,
+    const void* x,
+    const void* x0,
+    void* f,
+    void* eforce,
+    const void* velems)
+{
+    switch (nbNodesPerElem)
+    {
+        case 2: launchAddForce<double, 2>(nbElem, nbVertex, maxElemPerVertex, elements, rotations, stiffness, x, x0, f, eforce, velems); break;
+        case 3: launchAddForce<double, 3>(nbElem, nbVertex, maxElemPerVertex, elements, rotations, stiffness, x, x0, f, eforce, velems); break;
+        case 4: launchAddForce<double, 4>(nbElem, nbVertex, maxElemPerVertex, elements, rotations, stiffness, x, x0, f, eforce, velems); break;
+        case 8: launchAddForce<double, 8>(nbElem, nbVertex, maxElemPerVertex, elements, rotations, stiffness, x, x0, f, eforce, velems); break;
+    }
+}
+
+void ElementCorotationalFEMForceFieldCuda3d_addDForce(
+    unsigned int nbElem,
+    unsigned int nbVertex,
+    unsigned int nbNodesPerElem,
+    unsigned int maxElemPerVertex,
+    const void* elements,
+    const void* rotations,
+    const void* stiffness,
+    const void* dx,
+    void* df,
+    void* eforce,
+    const void* velems,
+    double kFactor)
+{
+    switch (nbNodesPerElem)
+    {
+        case 2: launchAddDForce<double, 2>(nbElem, nbVertex, maxElemPerVertex, elements, rotations, stiffness, dx, df, eforce, velems, kFactor); break;
+        case 3: launchAddDForce<double, 3>(nbElem, nbVertex, maxElemPerVertex, elements, rotations, stiffness, dx, df, eforce, velems, kFactor); break;
+        case 4: launchAddDForce<double, 4>(nbElem, nbVertex, maxElemPerVertex, elements, rotations, stiffness, dx, df, eforce, velems, kFactor); break;
+        case 8: launchAddDForce<double, 8>(nbElem, nbVertex, maxElemPerVertex, elements, rotations, stiffness, dx, df, eforce, velems, kFactor); break;
     }
 }
 

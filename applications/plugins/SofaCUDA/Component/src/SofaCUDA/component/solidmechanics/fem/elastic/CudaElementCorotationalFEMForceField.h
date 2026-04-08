@@ -71,6 +71,49 @@ extern "C"
         void* eforce,
         const void* velems,
         float kFactor);
+
+    void ElementCorotationalFEMForceFieldCuda3d_addForceWithRotations(
+        unsigned int nbElem,
+        unsigned int nbVertex,
+        unsigned int nbNodesPerElem,
+        unsigned int maxElemPerVertex,
+        const void* elements,
+        const void* initRotTransposed,
+        const void* stiffness,
+        const void* x,
+        const void* x0,
+        void* f,
+        void* eforce,
+        void* rotationsOut,
+        const void* velems);
+
+    void ElementCorotationalFEMForceFieldCuda3d_addForce(
+        unsigned int nbElem,
+        unsigned int nbVertex,
+        unsigned int nbNodesPerElem,
+        unsigned int maxElemPerVertex,
+        const void* elements,
+        const void* rotations,
+        const void* stiffness,
+        const void* x,
+        const void* x0,
+        void* f,
+        void* eforce,
+        const void* velems);
+
+    void ElementCorotationalFEMForceFieldCuda3d_addDForce(
+        unsigned int nbElem,
+        unsigned int nbVertex,
+        unsigned int nbNodesPerElem,
+        unsigned int maxElemPerVertex,
+        const void* elements,
+        const void* rotations,
+        const void* stiffness,
+        const void* dx,
+        void* df,
+        void* eforce,
+        const void* velems,
+        double kFactor);
 }
 
 } // namespace sofa::gpu::cuda
@@ -138,12 +181,12 @@ protected:
     void uploadInitialRotationsTransposed();
     void downloadRotations();
 
-    gpu::cuda::CudaVector<float> m_gpuStiffness;                  ///< Symmetric block-format stiffness per element
-    gpu::cuda::CudaVector<float> m_gpuRotations;                  ///< Flat 3x3 rotation matrices per element
-    gpu::cuda::CudaVector<float> m_gpuInitialRotationsTransposed; ///< Flat 3x3 initial rotation transposed per element
-    gpu::cuda::CudaVector<int>   m_gpuElements;                   ///< SoA connectivity: elements[nodeIdx * nbElem + elemId]
-    gpu::cuda::CudaVector<float> m_gpuElementForce;               ///< Intermediate per-element per-node force buffer
-    gpu::cuda::CudaVector<int>   m_gpuVelems;                     ///< SoA vertex-to-element mapping, 0-terminated
+    gpu::cuda::CudaVector<Real> m_gpuStiffness;                  ///< Symmetric block-format stiffness per element
+    gpu::cuda::CudaVector<Real> m_gpuRotations;                  ///< Flat 3x3 rotation matrices per element
+    gpu::cuda::CudaVector<Real> m_gpuInitialRotationsTransposed; ///< Flat 3x3 initial rotation transposed per element
+    gpu::cuda::CudaVector<int>  m_gpuElements;                   ///< SoA connectivity: elements[nodeIdx * nbElem + elemId]
+    gpu::cuda::CudaVector<Real> m_gpuElementForce;               ///< Intermediate per-element per-node force buffer
+    gpu::cuda::CudaVector<int>  m_gpuVelems;                     ///< SoA vertex-to-element mapping, 0-terminated
 
     unsigned int m_maxElemPerVertex = 0;
     unsigned int m_nbVertices = 0;
