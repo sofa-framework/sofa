@@ -474,16 +474,12 @@ protected:
 
     void updateGrid();
 
-<<<<<<< HEAD
     void drawCollisionModel(const core::visual::VisualParams*) override;
-=======
     // -- CollisionModel interface
-
     void doResize(Size size) override;
 
     /// Create or update the bounding volume hierarchy.
     void doComputeBoundingTree(int maxDepth=0) override;
->>>>>>> 
 
 public:
     // Input data parameters

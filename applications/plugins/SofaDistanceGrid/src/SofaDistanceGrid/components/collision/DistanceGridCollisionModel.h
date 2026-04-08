@@ -458,7 +458,6 @@ protected:
 
     bool doCanCollideWithElement(sofa::Index index, CollisionModel* model2, sofa::Index index2) override;
 
-    core::topology::BaseMeshTopology* doGetCollisionTopology() override { return ffdMesh; }
 
 public:
     core::behavior::MechanicalState<DataTypes>* getDeformModel() { return this->mstate; }
@@ -466,7 +465,7 @@ public:
 
     /// alias used by ContactMapper
     core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return this->mstate; }
-    core::topology::BaseMeshTopology* getCollisionTopology() override { return l_ffdMesh; }
+    core::topology::BaseMeshTopology* doGetCollisionTopology() override { return l_ffdMesh; }
 
 
     void init() override;
