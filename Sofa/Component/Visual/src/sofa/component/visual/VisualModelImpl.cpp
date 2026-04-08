@@ -130,7 +130,7 @@ VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filena
     , d_vertPosIdx      (initData   (&d_vertPosIdx, "vertPosIdx", "If vertices have multiple normals/texcoords stores vertices position indices"))
     , d_vertNormIdx     (initData   (&d_vertNormIdx, "vertNormIdx", "If vertices have multiple normals/texcoords stores vertices normal indices"))
     , d_fileMesh          (initData   (&d_fileMesh, "filename", " Path to an ogl model"))
-    , d_texturename       (initData   (&d_texturename, "texturename", "Name of the Texture"))
+    , d_texturename       (initData   (&d_texturename, "texturename", "Full path of the texture file"))
     , d_translation     (initData   (&d_translation, Vec3Real(), "translation", "Initial Translation of the object"))
     , d_rotation        (initData   (&d_rotation, Vec3Real(), "rotation", "Initial Rotation of the object"))
     , d_scale           (initData   (&d_scale, Vec3Real(1.0, 1.0, 1.0), "scale3d", "Initial Scale of the object"))
@@ -224,7 +224,11 @@ void VisualModelImpl::doDrawVisual(const core::visual::VisualParams* vparams)
         if (m_textureChanged)
         {
             deleteTextures();
-            loadTexture(d_texturename.getFullPath());
+            std::string textureFilename = d_texturename.getFullPath();
+            if (sofa::helper::system::DataRepository.findFile(textureFilename))
+            {
+                loadTexture(d_texturename.getFullPath());
+            }
             m_textureChanged = false;
         }
         initVisual(vparams);
@@ -491,7 +495,7 @@ bool VisualModelImpl::load(const std::string& filename, const std::string& loade
             const bool textureLoaded = loadTexture(textureName);
             if(!textureLoaded)
             {
-                msg_error()<<"Texture "<<textureName<<" cannot be loaded";
+                msg_error() << "Texture " << textureName << " cannot be loaded";
             }
         }
         else
