@@ -68,11 +68,7 @@ protected:
     ContactManager* contactManager;
     CollisionGroupManager* groupManager;
 
-public:
-//    typedef NarrowPhaseDetection::DetectionOutputMap DetectionOutputMap;
-protected:
     Pipeline();
-
     ~Pipeline() override;
 	
 private:
@@ -84,13 +80,15 @@ private:
 public:
     void reset() override = 0;
 
-    /// Remove collision response from last step
-    virtual void computeCollisionReset()=0;
-    /// Detect new collisions. Note that this step must not modify the simulation graph
-    virtual void computeCollisionDetection()=0;
-    /// Add collision response in the simulation graph
-    virtual void computeCollisionResponse()=0;
+    /// @brief Entry point for collision reset, called by the simulation loop. It removes collision response from last step
+    virtual void computeCollisionReset() final;
 
+    /// @brief Entry point for collision detection, called by the simulation loop. Note that this step must not modify the simulation graph
+    virtual void computeCollisionDetection() final;
+
+    /// @brief Entry point for collision response, called by the simulation loop. It adds the collision response in the simulation graph
+    virtual void computeCollisionResponse() final;
+    
     void computeCollisions()
     {
         computeCollisionReset();
@@ -109,10 +107,18 @@ public:
     /// get the set of response available with the current collision pipeline
     virtual std::set< std::string > getResponseList() const=0;
 
-public:
-
     bool insertInNode( objectmodel::BaseNode* node ) override;
     bool removeInNode( objectmodel::BaseNode* node ) override;
+
+protected:
+    /// @brief Delegates collision reset 
+    virtual void doComputeCollisionReset() = 0;
+
+    /// @brief Delegates collision detection
+    virtual void doComputeCollisionDetection(const sofa::type::vector<sofa::core::CollisionModel*>& collisionModels) = 0;
+
+    /// @brief Delegates response creation
+    virtual void doComputeCollisionResponse() = 0;
 };
 
 } // namespace collision
