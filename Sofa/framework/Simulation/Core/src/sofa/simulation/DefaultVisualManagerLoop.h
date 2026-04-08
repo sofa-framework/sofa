@@ -24,7 +24,7 @@
 #include <sofa/simulation/config.h>               // config.h *must*  be the first include
 #include <sofa/simulation/fwd.h>
 #include <sofa/core/visual/VisualLoop.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/simulation/Node.h>
 
 
