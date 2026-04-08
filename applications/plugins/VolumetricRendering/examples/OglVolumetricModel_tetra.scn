@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <Node name="root" dt="0.02">
-    <RequiredPlugin name="VolumetricRendering" />
+    <RequiredPlugin pluginName="VolumetricRendering" />
 
 	<MeshVTKLoader name="loader" filename="mesh/raptorTetra_8418.vtu" />
 	<MechanicalObject src="@loader" template="Vec3d" />

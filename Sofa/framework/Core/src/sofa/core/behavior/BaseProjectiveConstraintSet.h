@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/core/MultiVecId.h>
 #include <sofa/core/behavior/StateAccessor.h>
 
@@ -65,7 +65,7 @@ struct ZeroDirichletCondition
 class SOFA_CORE_API BaseProjectiveConstraintSet : public virtual StateAccessor
 {
 public:
-    SOFA_ABSTRACT_CLASS(BaseProjectiveConstraintSet, objectmodel::BaseObject);
+    SOFA_ABSTRACT_CLASS(BaseProjectiveConstraintSet, objectmodel::BaseComponent);
     SOFA_BASE_CAST_IMPLEMENTATION(BaseProjectiveConstraintSet)
 protected:
     BaseProjectiveConstraintSet()

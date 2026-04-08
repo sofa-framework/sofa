@@ -29,12 +29,18 @@ clean_default_plugins "$INSTALL_DIR_BIN"
 
 move_metis "$INSTALL_DIR"
 
-# Copy all plugin libs in install/bin to make them easily findable
-cd "$INSTALL_DIR" && find -name "*.dll" -path "*/plugins/*" | while read lib; do
-    cp "$lib" "$INSTALL_DIR_BIN"
+# Copy all plugin libs in install/bin (preserving sub-directory structure) to make them easily findable
+cd "$INSTALL_DIR"
+for p in plugins/*/; do
+  cd $INSTALL_DIR/$p && find . -name "*.dll" | while read lib; do
+    cp --parents "$lib" "$INSTALL_DIR"
+  done
 done
 
-# Copy all collection libs in install/bin to make them easily findable
-cd "$INSTALL_DIR" && find -name "*.dll" -path "*/collections/*" | while read lib; do
-    cp "$lib" "$INSTALL_DIR_BIN"
+# Copy all plugins config files in etc/ini to make them easily findable
+INSTALL_DIR_ETC="$INSTALL_DIR/etc"
+mkdir -p $INSTALL_DIR_ETC
+cd "$INSTALL_DIR" && find -name "*.ini" -path "*/plugins/*/etc/*" | while read f; do
+    cp  "$f" "$INSTALL_DIR_ETC"
 done
+

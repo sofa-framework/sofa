@@ -27,7 +27,7 @@ namespace sofa::simulation
 {
 
 
-void ResetVisitor::processObject(core::objectmodel::BaseObject* obj)
+void ResetVisitor::processObject(core::objectmodel::BaseComponent* obj)
 {
     obj->reset();
 }
@@ -46,7 +46,7 @@ void ResetVisitor::processNodeBottomUp(simulation::Node* /*node*/)
 {
 }
 
-void StoreResetStateVisitor::processObject(core::objectmodel::BaseObject* obj)
+void StoreResetStateVisitor::processObject(core::objectmodel::BaseComponent* obj)
 {
     obj->storeResetState();
 }

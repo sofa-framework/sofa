@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<Node name="root" dt="0.01" gravity="0 -9.81 0">
+    <include href="../../../../CantileverBeam_ElementFEMForceField.xml"/>
+
+    <ConstantSparsityPatternSystem template="CompressedRowSparseMatrix" name="A" checkIndices="false"/>
+    <NaturalOrderingMethod/>
+    <SparseLDLSolver name="linear_solver" template="CompressedRowSparseMatrix"/>
+
+    <Node name="fem">
+        <TetrahedronSetTopologyContainer name="Tetra_topo"/>
+        <TetrahedronSetTopologyModifier name="Modifier" />
+        <TetrahedronSetGeometryAlgorithms template="Vec3" name="GeomAlgo" drawTetrahedra="false"/>
+        <Hexa2TetraTopologicalMapping input="@grid" output="@Tetra_topo" swapping="true"/>
+
+        <TetrahedronLinearSmallStrainFEMForceField name="FEM" youngModulus="2e6" poissonRatio="0.45" topology="@Tetra_topo"
+                                              computeForceStrategy="parallel" computeForceDerivStrategy="parallel"/>
+    </Node>
+
+</Node>

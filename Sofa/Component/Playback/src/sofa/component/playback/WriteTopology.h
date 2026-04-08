@@ -23,7 +23,7 @@
 #include <sofa/component/playback/config.h>
 
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/core/objectmodel/Event.h>
 
 #include <sofa/simulation/AnimateBeginEvent.h>
@@ -50,10 +50,10 @@ namespace sofa::component::playback
  * Stop to write infos if the kinematic energy reach a given threshold (stopAt)
  * The energy will be measured at each period determined by keperiod
 */
-class SOFA_COMPONENT_PLAYBACK_API WriteTopology: public core::objectmodel::BaseObject
+class SOFA_COMPONENT_PLAYBACK_API WriteTopology: public core::objectmodel::BaseComponent
 {
 public:
-    SOFA_CLASS(WriteTopology,core::objectmodel::BaseObject);
+    SOFA_CLASS(WriteTopology,core::objectmodel::BaseComponent);
 
     sofa::core::objectmodel::DataFileName d_filename;
     Data < bool > d_writeContainers; ///< flag enabling output of common topology containers.
@@ -93,7 +93,7 @@ public:
             return false;
         }
 
-        return BaseObject::canCreate(obj, context, arg);
+        return sofa::core::objectmodel::BaseComponent::canCreate(obj, context, arg);
     }
 
 };
