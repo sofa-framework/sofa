@@ -38,31 +38,6 @@ public:
     virtual void initBullet();
     virtual void updateBullet();
 
-    inline virtual void computeBoundingTree(int/* maxDepth*/){
-        //_bt_collision_object
-        _bt_gmesh->updateBound();
-        //_bt_gmesh->refitTree();
-        //_bt_gmesh->postUpdate();
-    }
-
-//    inline virtual void computeBoundingTree(int/* maxDepth*/){
-//        //_bt_collision_object
-//        //_bt_gmesh->updateBound();
-//        const Vector3 & min = this->mstate->f_bbox.getValue().minBBox();
-//        const Vector3 & max = this->mstate->f_bbox.getValue().maxBBox();
-
-//        std::cout<<"min "<<min<<std::endl;
-//        std::cout<<"max "<<max<<std::endl;
-
-//        btVector3 btmin(min[0],min[1],min[2]);
-//        btVector3 btmax(max[0],max[1],max[2]);
-
-//        _bt_gmesh->refitTree(btmin,btmax);
-//        //_bt_gmesh->postUpdate();
-//    }
-
-    //virtual void computeBoundingTree(int maxDepth=0);
-
     inline virtual ~TBulletTriangleModel(){
         delete _bt_mesh;
         delete _bt_gmesh;
@@ -82,6 +57,30 @@ protected:
     template <class MyReal,class ToRead,class ToFill>
     void myFillFunc(const ToRead & pos,int numverts,ToFill vertexbase,int vertexStride);
 
+    inline virtual void doComputeBoundingTree(int/* maxDepth*/) override {
+        //_bt_collision_object
+        _bt_gmesh->updateBound();
+        //_bt_gmesh->refitTree();
+        //_bt_gmesh->postUpdate();
+    }
+
+//    inline virtual void doComputeBoundingTree(int/* maxDepth*/){
+//        //_bt_collision_object
+//        //_bt_gmesh->updateBound();
+//        const Vector3 & min = this->mstate->f_bbox.getValue().minBBox();
+//        const Vector3 & max = this->mstate->f_bbox.getValue().maxBBox();
+
+//        std::cout<<"min "<<min<<std::endl;
+//        std::cout<<"max "<<max<<std::endl;
+
+//        btVector3 btmin(min[0],min[1],min[2]);
+//        btVector3 btmax(max[0],max[1],max[2]);
+
+//        _bt_gmesh->refitTree(btmin,btmax);
+//        //_bt_gmesh->postUpdate();
+//    }
+
+    //virtual void doComputeBoundingTree(int maxDepth=0);
 
     btTriangleMesh * _bt_mesh;
     btGImpactMeshShape * _bt_gmesh;
