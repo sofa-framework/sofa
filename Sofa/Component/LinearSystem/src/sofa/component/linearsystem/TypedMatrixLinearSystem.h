@@ -71,9 +71,9 @@ public:
     virtual TVector* getSolutionVector() const;
 
 
-    linearalgebra::BaseMatrix* getSystemBaseMatrix() const override;
-    linearalgebra::BaseVector* getSystemRHSBaseVector() const override;
-    linearalgebra::BaseVector* getSystemSolutionBaseVector() const override;
+    linearalgebra::BaseMatrix* doGetSystemBaseMatrix() const override;
+    linearalgebra::BaseVector* doGetSystemRHSBaseVector() const override;
+    linearalgebra::BaseVector* doGetSystemSolutionBaseVector() const override;
 
     /// Set the size of the matrix to n x n, and the size of RHS and solution to n
     void resizeSystem(sofa::Size n) override;
@@ -101,7 +101,6 @@ public:
     Data<bool> d_matrixChanged;
 
 protected:
-    linearalgebra::BaseMatrix* doGetSystemBaseMatrix() const override;
 
     TypedMatrixLinearSystem();
 

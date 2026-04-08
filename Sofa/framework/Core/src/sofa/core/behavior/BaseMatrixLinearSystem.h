@@ -48,6 +48,7 @@ public:
 
     Data< bool > d_enableAssembly;
 
+    /**
      * !!! WARNING since v25.12 !!!
      * 
      * The template method pattern has been applied to this part of the API.
@@ -63,8 +64,35 @@ public:
         return this->doGetSystemBaseMatrix();
     }
 
-    virtual linearalgebra::BaseVector* getSystemRHSBaseVector() const { return nullptr; }
-    virtual linearalgebra::BaseVector* getSystemSolutionBaseVector() const { return nullptr; }
+
+    /**
+     * !!! WARNING since v25.12 !!!
+     *
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doGetSystemRHSBaseVector" internally,
+     * which is the method to override from now on.
+     *
+     **/
+    virtual linearalgebra::BaseVector* getSystemRHSBaseVector() const final
+    {
+        //TODO (SPRINT SED 2025): Component state mechamism
+        return this->doGetSystemRHSBaseVector();
+    }
+
+
+    /**
+     * !!! WARNING since v25.12 !!!
+     *
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doGetSystemSolutionBaseVector" internally,
+     * which is the method to override from now on.
+     *
+     **/
+    virtual linearalgebra::BaseVector* getSystemSolutionBaseVector() const final
+    {
+        //TODO (SPRINT SED 2025): Component state mechamism
+        return this->doGetSystemSolutionBaseVector();
+    }
 
     virtual void buildSystemMatrix(const core::MechanicalParams* mparams);
 
@@ -86,10 +114,11 @@ public:
     virtual void dispatchSystemRHS(core::MultiVecDerivId v) = 0;
 
 protected:
-    virtual linearalgebra::BaseMatrix* doGetSystemBaseMatrix() const 
-    { 
-        return nullptr; 
-    }
+    virtual linearalgebra::BaseMatrix* doGetSystemBaseMatrix() const { return nullptr; }
+    virtual linearalgebra::BaseVector* doGetSystemRHSBaseVector() const { return nullptr; }
+    virtual linearalgebra::BaseVector* doGetSystemSolutionBaseVector() const { return nullptr; }
+
+
     virtual void preAssembleSystem(const core::MechanicalParams* /*mparams*/);
     virtual void assembleSystem(const core::MechanicalParams* /*mparams*/);
     virtual void postAssembleSystem(const core::MechanicalParams* /*mparams*/) {}
