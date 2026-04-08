@@ -57,7 +57,7 @@ public:
 protected:
     /// Default Constructor
     explicit ConstraintCorrection(MechanicalState< DataTypes > *ms = nullptr)
-        : Inherit1(), Inherit2(ms)
+        : Inherit2(ms), Inherit1()
         , l_constraintsolvers(initLink("constraintSolvers", "Constraint solvers using this constraint correction"))
     {}
 
@@ -150,7 +150,7 @@ public:
             return false;
         }
 
-        return BaseObject::canCreate(obj, context, arg);
+        return sofa::core::objectmodel::BaseComponent::canCreate(obj, context, arg);
     }
 
     void setMState(MechanicalState<DataTypes> *_mstate)

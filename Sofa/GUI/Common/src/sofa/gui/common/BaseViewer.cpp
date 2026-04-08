@@ -3,17 +3,17 @@
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU General Public License as published by the Free  *
-* Software Foundation; either version 2 of the License, or (at your option)   *
-* any later version.                                                          *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
 *                                                                             *
 * This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    *
-* more details.                                                               *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
 *                                                                             *
-* You should have received a copy of the GNU General Public License along     *
-* with this program. If not, see <http://www.gnu.org/licenses/>.              *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
@@ -31,7 +31,7 @@
 
 #include <sofa/core/ComponentNameHelper.h>
 #include <sofa/helper/system/FileSystem.h>
-
+#include <sofa/type/hardening.h>
 
 namespace sofa::gui::common
 {
@@ -257,8 +257,10 @@ bool BaseViewer::load()
                 }
                 else if(paramName == std::string("VisualScaling"))
                 {
-                    const float floatValue = std::stof(line.substr(equalPos+1)) ;
-                    m_visualScaling = floatValue;
+                    if(!sofa::type::hardening::safeStrToScalar(line.substr(equalPos+1), m_visualScaling))
+                    {
+                        msg_warning("BaseViewer") << "Invalid VisualScaling value in config file";
+                    }
                 }
             }
         }
@@ -322,7 +324,7 @@ void BaseViewer::fitNodeBBox(sofa::core::objectmodel::BaseNode * node )
     redraw();
 }
 
-void BaseViewer::fitObjectBBox(sofa::core::objectmodel::BaseObject * object)
+void BaseViewer::fitObjectBBox(sofa::core::objectmodel::BaseComponent * object)
 {
     if(!currentCamera) return;
 
@@ -378,7 +380,7 @@ void BaseViewer::drawSelection(sofa::core::visual::VisualParams* vparams)
         }
 
         ////////////////////// Render when the selection is a BaseObject //////////////////////////
-        auto object = castTo<sofa::core::objectmodel::BaseObject*>(current.get());
+        auto object = castTo<sofa::core::objectmodel::BaseComponent*>(current.get());
         if(object)
         {
             sofa::type::BoundingBox box;
@@ -427,29 +429,44 @@ void BaseViewer::drawSelection(sofa::core::visual::VisualParams* vparams)
 
             if(m_showSelectedObjectSurfaces && !positions.empty())
             {
-                auto triangles = object->findData("triangles");
-                if(triangles)
+                if (const auto topology = object->toBaseMeshTopology())
                 {
-                    auto d_triangles = dynamic_cast<Data<sofa::type::vector<core::topology::Topology::Triangle>>*>(triangles);
-                    if(d_triangles)
+                    m_drawMeshContainer[object].drawSurface(drawTool, positions, topology);
+                }
+                else
+                {
+                    auto triangles = object->findData("triangles");
+                    if(triangles)
                     {
-                        std::vector<Vec3> tripoints;
-                        for(auto indices : d_triangles->getValue())
+                        auto d_triangles = dynamic_cast<Data<sofa::type::vector<core::topology::Topology::Triangle>>*>(triangles);
+                        if(d_triangles)
                         {
-                            if(indices[0] < positions.size() &&
-                               indices[1] < positions.size() &&
-                               indices[2] < positions.size())
+                            std::vector<Vec3> tripoints;
+                            for(auto indices : d_triangles->getValue())
                             {
-                                tripoints.push_back(positions[indices[0]]);
-                                tripoints.push_back(positions[indices[1]]);
-                                tripoints.push_back(positions[indices[1]]);
-                                tripoints.push_back(positions[indices[2]]);
-                                tripoints.push_back(positions[indices[2]]);
-                                tripoints.push_back(positions[indices[0]]);
+                                if(indices[0] < positions.size() &&
+                                   indices[1] < positions.size() &&
+                                   indices[2] < positions.size())
+                                {
+                                    tripoints.push_back(positions[indices[0]]);
+                                    tripoints.push_back(positions[indices[1]]);
+                                    tripoints.push_back(positions[indices[1]]);
+                                    tripoints.push_back(positions[indices[2]]);
+                                    tripoints.push_back(positions[indices[2]]);
+                                    tripoints.push_back(positions[indices[0]]);
+                                }
                             }
+                            drawTool->drawLines(tripoints, size, m_selectionColor);
                         }
-                        drawTool->drawLines(tripoints, size, m_selectionColor);
                     }
+                }
+            }
+
+            if(m_showSelectedObjectVolumes && !positions.empty())
+            {
+                if (const auto topology = object->toBaseMeshTopology())
+                {
+                    m_drawMeshContainer[object].drawVolume(drawTool, positions, topology);
                 }
             }
 

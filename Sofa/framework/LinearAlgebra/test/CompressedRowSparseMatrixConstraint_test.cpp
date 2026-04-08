@@ -28,6 +28,7 @@
 
 #include <sofa/helper/RandomGenerator.h>
 #include <sofa/linearalgebra/CompressedRowSparseMatrixConstraint.h>
+#include <sofa/linearalgebra/FullVector.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/testing/LinearCongruentialRandomGenerator.h>
@@ -2189,6 +2190,236 @@ Constraint ID : 4  dof ID : 5  value : 0 0 0.474108  dof ID : 7  value : 0 0.983
     A.prettyPrint(oss);
 
     EXPECT_EQ(oss.str(), expectedOutput);
+}
+
+// ==================== cbegin / cend ====================
+
+TEST(CompressedRowSparseMatrixConstraint, cbeginCendEmptyMatrix)
+{
+    const sofa::linearalgebra::CompressedRowSparseMatrixConstraint<sofa::type::Vec3> m;
+
+    // cbegin/cend must be consistent with begin/end on an empty matrix
+    EXPECT_EQ(m.cbegin(), m.cend());
+    EXPECT_EQ(m.cbegin(), m.begin());
+    EXPECT_EQ(m.cend(), m.end());
+}
+
+TEST(CompressedRowSparseMatrixConstraint, cbeginCendNonEmpty)
+{
+    sofa::linearalgebra::CompressedRowSparseMatrixConstraint<sofa::type::Vec3> m;
+    m.writeLine(0).addCol(0, sofa::type::Vec3(1, 2, 3));
+    m.writeLine(5).addCol(1, sofa::type::Vec3(4, 5, 6));
+    m.compress();
+
+    EXPECT_EQ(m.cbegin(), m.begin());
+    EXPECT_EQ(m.cend(), m.end());
+
+    int count = 0;
+    for (auto it = m.cbegin(); it != m.cend(); ++it)
+        ++count;
+    EXPECT_EQ(count, 2);
+}
+
+// ==================== Constructor with dimensions ====================
+
+TEST(CompressedRowSparseMatrixConstraint, ConstructWithDimensions)
+{
+    sofa::linearalgebra::CompressedRowSparseMatrixConstraint<sofa::type::Vec3> m(5, 10);
+    EXPECT_EQ(m.rowBSize(), 5);
+    EXPECT_EQ(m.colBSize(), 10);
+    EXPECT_TRUE(m.empty());
+}
+
+// ==================== Name ====================
+
+TEST(CompressedRowSparseMatrixConstraint, Name)
+{
+    using Matrix = sofa::linearalgebra::CompressedRowSparseMatrixConstraint<sofa::type::Vec3>;
+    const std::string name = Matrix::Name();
+    EXPECT_FALSE(name.empty());
+    EXPECT_NE(name.find("CompressedRowSparseMatrixConstraint"), std::string::npos);
+}
+
+// ==================== RowType::find ====================
+
+TEST(CompressedRowSparseMatrixConstraint, RowTypeFind)
+{
+    using Vec3 = sofa::type::Vec3;
+    using Matrix = sofa::linearalgebra::CompressedRowSparseMatrixConstraint<Vec3>;
+
+    Matrix m;
+    auto row = m.writeLine(0);
+    row.addCol(5, Vec3(1, 2, 3));
+    row.addCol(10, Vec3(4, 5, 6));
+    row.addCol(15, Vec3(7, 8, 9));
+    m.compress();
+
+    auto rowType = m.readLine(0).row();
+
+    // find existing column
+    auto found = rowType.find(10);
+    ASSERT_NE(found, rowType.end());
+    EXPECT_EQ(found.index(), 10u);
+    EXPECT_EQ(found.val(), Vec3(4, 5, 6));
+
+    // find non-existing column returns end
+    auto notFound = rowType.find(7);
+    EXPECT_EQ(notFound, rowType.end());
+}
+
+// ==================== Row iterator arithmetic ====================
+
+TEST(CompressedRowSparseMatrixConstraint, RowIteratorArithmetic)
+{
+    using Vec3 = sofa::type::Vec3;
+    using Matrix = sofa::linearalgebra::CompressedRowSparseMatrixConstraint<Vec3>;
+
+    Matrix m;
+    m.writeLine(0).addCol(0, Vec3(1, 0, 0));
+    m.writeLine(1).addCol(0, Vec3(0, 1, 0));
+    m.writeLine(2).addCol(0, Vec3(0, 0, 1));
+    m.compress();
+
+    auto it = m.begin();
+
+    // operator+
+    auto it2 = it + 2;
+    EXPECT_EQ(it2.index(), 2u);
+
+    // operator-(difference)
+    auto it0 = it2 - 2;
+    EXPECT_EQ(it0, it);
+
+    // iterator difference
+    EXPECT_EQ(it2 - it, 2);
+
+    // operator+=, operator-=
+    auto it3 = it;
+    it3 += 1;
+    EXPECT_EQ(it3.index(), 1u);
+    it3 -= 1;
+    EXPECT_EQ(it3, it);
+
+    // comparison operators
+    EXPECT_TRUE(it < it2);
+    EXPECT_TRUE(it <= it2);
+    EXPECT_TRUE(it2 > it);
+    EXPECT_TRUE(it2 >= it);
+    EXPECT_TRUE(it <= it);
+    EXPECT_TRUE(it >= it);
+    EXPECT_FALSE(it > it2);
+    EXPECT_FALSE(it2 < it);
+}
+
+// ==================== Column iterator arithmetic ====================
+
+TEST(CompressedRowSparseMatrixConstraint, ColIteratorArithmetic)
+{
+    using Vec3 = sofa::type::Vec3;
+    using Matrix = sofa::linearalgebra::CompressedRowSparseMatrixConstraint<Vec3>;
+
+    Matrix m;
+    auto row = m.writeLine(0);
+    row.addCol(5, Vec3(1, 0, 0));
+    row.addCol(10, Vec3(0, 1, 0));
+    row.addCol(15, Vec3(0, 0, 1));
+    m.compress();
+
+    auto rowIt = m.readLine(0);
+    auto begin = rowIt.begin();
+    auto end = rowIt.end();
+
+    // operator+=
+    auto it = begin;
+    it += 2;
+    EXPECT_EQ(it.index(), 15u);
+
+    // operator-=
+    it -= 2;
+    EXPECT_EQ(it, begin);
+
+    // prefix decrement
+    it += 2;
+    --it;
+    EXPECT_EQ(it.index(), 10u);
+
+    // postfix decrement
+    auto prev = it--;
+    EXPECT_EQ(prev.index(), 10u);
+    EXPECT_EQ(it.index(), 5u);
+
+    // comparison operators
+    EXPECT_TRUE(begin < end);
+    EXPECT_TRUE(end > begin);
+    EXPECT_TRUE(begin <= begin);
+    EXPECT_TRUE(begin >= begin);
+    EXPECT_TRUE(begin <= end);
+    EXPECT_TRUE(end >= begin);
+    EXPECT_FALSE(begin > end);
+    EXPECT_FALSE(end < begin);
+}
+
+// ==================== RowConstIterator::empty ====================
+
+TEST(CompressedRowSparseMatrixConstraint, RowConstIteratorEmpty)
+{
+    using Vec3 = sofa::type::Vec3;
+    using Matrix = sofa::linearalgebra::CompressedRowSparseMatrixConstraint<Vec3>;
+
+    Matrix m;
+    // Row 0 has a column entry
+    m.writeLine(0).addCol(5, Vec3(1, 2, 3));
+    // Row 1 is created in btemp but has no columns: since writeLine
+    // returns a RowWriteAccessor without adding data, row 1 won't exist
+    // after compress. Instead, add and then clear to get an empty row.
+    m.writeLine(1).addCol(0, Vec3(0, 0, 0));
+    m.compress();
+
+    auto it0 = m.readLine(0);
+    EXPECT_FALSE(it0.empty());
+}
+
+// ==================== multTransposeBaseVector ====================
+
+TEST(CompressedRowSparseMatrixConstraint, multTransposeBaseVector)
+{
+    using Vec3 = sofa::type::Vec3;
+    using Matrix = sofa::linearalgebra::CompressedRowSparseMatrixConstraint<Vec3>;
+
+    Matrix m;
+    // Row 0: col 1 = (1, 0, 0), col 2 = (0, 1, 0)
+    auto row0 = m.writeLine(0);
+    row0.addCol(1, Vec3(1, 0, 0));
+    row0.addCol(2, Vec3(0, 1, 0));
+    // Row 1: col 0 = (0, 0, 1)
+    auto row1 = m.writeLine(1);
+    row1.addCol(0, Vec3(0, 0, 1));
+    m.compress();
+
+    // lambda = [2.0, 3.0]
+    sofa::linearalgebra::FullVector<double> lambda(2);
+    lambda[0] = 2.0;
+    lambda[1] = 3.0;
+
+    // res starts as zero
+    sofa::type::vector<Vec3> res;
+    res.resize(3, Vec3(0, 0, 0));
+
+    m.multTransposeBaseVector(res, &lambda);
+
+    // res[1] += (1,0,0) * 2 = (2,0,0)
+    // res[2] += (0,1,0) * 2 = (0,2,0)
+    // res[0] += (0,0,1) * 3 = (0,0,3)
+    constexpr double tol = 1e-10;
+    EXPECT_NEAR(res[0][0], 0.0, tol);
+    EXPECT_NEAR(res[0][1], 0.0, tol);
+    EXPECT_NEAR(res[0][2], 3.0, tol);
+    EXPECT_NEAR(res[1][0], 2.0, tol);
+    EXPECT_NEAR(res[1][1], 0.0, tol);
+    EXPECT_NEAR(res[1][2], 0.0, tol);
+    EXPECT_NEAR(res[2][0], 0.0, tol);
+    EXPECT_NEAR(res[2][1], 2.0, tol);
+    EXPECT_NEAR(res[2][2], 0.0, tol);
 }
 
 } // namespace sofa
