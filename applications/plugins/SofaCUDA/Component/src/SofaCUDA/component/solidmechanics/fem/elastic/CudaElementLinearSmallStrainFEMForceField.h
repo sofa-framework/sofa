@@ -27,60 +27,31 @@
 namespace sofa::gpu::cuda
 {
 
-extern "C"
-{
-    void ElementLinearSmallStrainFEMForceFieldCuda3f_addForce(
-        unsigned int nbElem,
-        unsigned int nbVertex,
-        unsigned int nbNodesPerElem,
-        unsigned int maxElemPerVertex,
-        const void* elements,
-        const void* stiffness,
-        const void* x,
-        const void* x0,
-        void* f,
-        void* eforce,
-        const void* velems);
+template<typename T, int NNodes, int Dim>
+void ElementLinearSmallStrainFEMForceFieldCuda_addForce(
+    unsigned int nbElem,
+    unsigned int nbVertex,
+    unsigned int maxElemPerVertex,
+    const void* elements,
+    const void* stiffness,
+    const void* x,
+    const void* x0,
+    void* f,
+    void* eforce,
+    const void* velems);
 
-    void ElementLinearSmallStrainFEMForceFieldCuda3f_addDForce(
-        unsigned int nbElem,
-        unsigned int nbVertex,
-        unsigned int nbNodesPerElem,
-        unsigned int maxElemPerVertex,
-        const void* elements,
-        const void* stiffness,
-        const void* dx,
-        void* df,
-        void* eforce,
-        const void* velems,
-        float kFactor);
-
-    void ElementLinearSmallStrainFEMForceFieldCuda3d_addForce(
-        unsigned int nbElem,
-        unsigned int nbVertex,
-        unsigned int nbNodesPerElem,
-        unsigned int maxElemPerVertex,
-        const void* elements,
-        const void* stiffness,
-        const void* x,
-        const void* x0,
-        void* f,
-        void* eforce,
-        const void* velems);
-
-    void ElementLinearSmallStrainFEMForceFieldCuda3d_addDForce(
-        unsigned int nbElem,
-        unsigned int nbVertex,
-        unsigned int nbNodesPerElem,
-        unsigned int maxElemPerVertex,
-        const void* elements,
-        const void* stiffness,
-        const void* dx,
-        void* df,
-        void* eforce,
-        const void* velems,
-        double kFactor);
-}
+template<typename T, int NNodes, int Dim>
+void ElementLinearSmallStrainFEMForceFieldCuda_addDForce(
+    unsigned int nbElem,
+    unsigned int nbVertex,
+    unsigned int maxElemPerVertex,
+    const void* elements,
+    const void* stiffness,
+    const void* dx,
+    void* df,
+    void* eforce,
+    const void* velems,
+    T kFactor);
 
 } // namespace sofa::gpu::cuda
 

@@ -161,6 +161,8 @@ void CudaElementLinearSmallStrainFEMForceField<DataTypes, ElementType>::addForce
     }
 
     using trait = sofa::component::solidmechanics::fem::elastic::trait<DataTypes, ElementType>;
+    constexpr auto nNodes = trait::NumberOfNodesInElement;
+    constexpr auto dim = trait::spatial_dimensions;
 
     VecDeriv& f = *d_f.beginEdit();
     const VecCoord& x = d_x.getValue();
@@ -175,24 +177,12 @@ void CudaElementLinearSmallStrainFEMForceField<DataTypes, ElementType>::addForce
     const auto nbElem = static_cast<unsigned int>(elements.size());
     const auto nbVertex = static_cast<unsigned int>(x.size());
 
-    if constexpr (std::is_same_v<Real, double>)
-    {
-        gpu::cuda::ElementLinearSmallStrainFEMForceFieldCuda3d_addForce(
-            nbElem, nbVertex, trait::NumberOfNodesInElement, m_maxElemPerVertex,
-            m_gpuElements.deviceRead(), m_gpuStiffness.deviceRead(),
-            x.deviceRead(), x0.deviceRead(),
-            f.deviceWrite(), m_gpuElementForce.deviceWrite(),
-            m_gpuVelems.deviceRead());
-    }
-    else
-    {
-        gpu::cuda::ElementLinearSmallStrainFEMForceFieldCuda3f_addForce(
-            nbElem, nbVertex, trait::NumberOfNodesInElement, m_maxElemPerVertex,
-            m_gpuElements.deviceRead(), m_gpuStiffness.deviceRead(),
-            x.deviceRead(), x0.deviceRead(),
-            f.deviceWrite(), m_gpuElementForce.deviceWrite(),
-            m_gpuVelems.deviceRead());
-    }
+    gpu::cuda::ElementLinearSmallStrainFEMForceFieldCuda_addForce<Real, nNodes, dim>(
+        nbElem, nbVertex, m_maxElemPerVertex,
+        m_gpuElements.deviceRead(), m_gpuStiffness.deviceRead(),
+        x.deviceRead(), x0.deviceRead(),
+        f.deviceWrite(), m_gpuElementForce.deviceWrite(),
+        m_gpuVelems.deviceRead());
 
     d_f.endEdit();
 }
@@ -214,6 +204,8 @@ void CudaElementLinearSmallStrainFEMForceField<DataTypes, ElementType>::addDForc
     }
 
     using trait = sofa::component::solidmechanics::fem::elastic::trait<DataTypes, ElementType>;
+    constexpr auto nNodes = trait::NumberOfNodesInElement;
+    constexpr auto dim = trait::spatial_dimensions;
 
     VecDeriv& df = *d_df.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
@@ -229,24 +221,12 @@ void CudaElementLinearSmallStrainFEMForceField<DataTypes, ElementType>::addDForc
     const auto nbElem = static_cast<unsigned int>(elements.size());
     const auto nbVertex = static_cast<unsigned int>(dx.size());
 
-    if constexpr (std::is_same_v<Real, double>)
-    {
-        gpu::cuda::ElementLinearSmallStrainFEMForceFieldCuda3d_addDForce(
-            nbElem, nbVertex, trait::NumberOfNodesInElement, m_maxElemPerVertex,
-            m_gpuElements.deviceRead(), m_gpuStiffness.deviceRead(),
-            dx.deviceRead(), df.deviceWrite(),
-            m_gpuElementForce.deviceWrite(), m_gpuVelems.deviceRead(),
-            kFactor);
-    }
-    else
-    {
-        gpu::cuda::ElementLinearSmallStrainFEMForceFieldCuda3f_addDForce(
-            nbElem, nbVertex, trait::NumberOfNodesInElement, m_maxElemPerVertex,
-            m_gpuElements.deviceRead(), m_gpuStiffness.deviceRead(),
-            dx.deviceRead(), df.deviceWrite(),
-            m_gpuElementForce.deviceWrite(), m_gpuVelems.deviceRead(),
-            kFactor);
-    }
+    gpu::cuda::ElementLinearSmallStrainFEMForceFieldCuda_addDForce<Real, nNodes, dim>(
+        nbElem, nbVertex, m_maxElemPerVertex,
+        m_gpuElements.deviceRead(), m_gpuStiffness.deviceRead(),
+        dx.deviceRead(), df.deviceWrite(),
+        m_gpuElementForce.deviceWrite(), m_gpuVelems.deviceRead(),
+        kFactor);
 
     d_df.endEdit();
 }

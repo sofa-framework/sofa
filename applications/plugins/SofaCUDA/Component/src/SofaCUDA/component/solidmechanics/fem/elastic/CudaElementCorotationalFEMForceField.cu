@@ -23,14 +23,12 @@
 #include <sofa/gpu/cuda/CudaMath.h>
 #include <cuda.h>
 
-#if defined(__cplusplus)
 namespace sofa
 {
 namespace gpu
 {
 namespace cuda
 {
-#endif
 
 template<typename T>
 __device__ T myRsqrt(T x);
@@ -164,12 +162,13 @@ __device__ void computeHexahedronFrame(const T* ex, T* frame)
 
 /**
  * Symmetric block-matrix multiply: out = K * in
+ * Templated on Dim for generic spatial dimensions.
  */
-template<typename T, int NNodes>
+template<typename T, int NNodes, int Dim>
 __device__ void symBlockMatMul(const T* K, const T* in, T* out)
 {
     #pragma unroll
-    for (int i = 0; i < NNodes * 3; ++i)
+    for (int i = 0; i < NNodes * Dim; ++i)
         out[i] = T(0);
 
     #pragma unroll
@@ -177,38 +176,47 @@ __device__ void symBlockMatMul(const T* K, const T* in, T* out)
     {
         const int diagIdx = ni * NNodes - ni * (ni - 1) / 2;
 
+        // Diagonal block
         {
-            const T* Kii = K + diagIdx * 9;
-            const T i0 = in[ni * 3 + 0];
-            const T i1 = in[ni * 3 + 1];
-            const T i2 = in[ni * 3 + 2];
-            out[ni * 3 + 0] += Kii[0] * i0 + Kii[1] * i1 + Kii[2] * i2;
-            out[ni * 3 + 1] += Kii[3] * i0 + Kii[4] * i1 + Kii[5] * i2;
-            out[ni * 3 + 2] += Kii[6] * i0 + Kii[7] * i1 + Kii[8] * i2;
+            const T* Kii = K + diagIdx * Dim * Dim;
+            #pragma unroll
+            for (int di = 0; di < Dim; ++di)
+            {
+                T sum = T(0);
+                #pragma unroll
+                for (int dj = 0; dj < Dim; ++dj)
+                    sum += Kii[di * Dim + dj] * in[ni * Dim + dj];
+                out[ni * Dim + di] += sum;
+            }
         }
 
+        // Off-diagonal blocks
         #pragma unroll
         for (int nj = ni + 1; nj < NNodes; ++nj)
         {
             const int symIdx = diagIdx + (nj - ni);
-            const T* Kij = K + symIdx * 9;
+            const T* Kij = K + symIdx * Dim * Dim;
 
+            // Kij * in_j -> out_i
+            #pragma unroll
+            for (int di = 0; di < Dim; ++di)
             {
-                const T j0 = in[nj * 3 + 0];
-                const T j1 = in[nj * 3 + 1];
-                const T j2 = in[nj * 3 + 2];
-                out[ni * 3 + 0] += Kij[0] * j0 + Kij[1] * j1 + Kij[2] * j2;
-                out[ni * 3 + 1] += Kij[3] * j0 + Kij[4] * j1 + Kij[5] * j2;
-                out[ni * 3 + 2] += Kij[6] * j0 + Kij[7] * j1 + Kij[8] * j2;
+                T sum = T(0);
+                #pragma unroll
+                for (int dj = 0; dj < Dim; ++dj)
+                    sum += Kij[di * Dim + dj] * in[nj * Dim + dj];
+                out[ni * Dim + di] += sum;
             }
 
+            // Kij^T * in_i -> out_j
+            #pragma unroll
+            for (int dj = 0; dj < Dim; ++dj)
             {
-                const T i0 = in[ni * 3 + 0];
-                const T i1 = in[ni * 3 + 1];
-                const T i2 = in[ni * 3 + 2];
-                out[nj * 3 + 0] += Kij[0] * i0 + Kij[3] * i1 + Kij[6] * i2;
-                out[nj * 3 + 1] += Kij[1] * i0 + Kij[4] * i1 + Kij[7] * i2;
-                out[nj * 3 + 2] += Kij[2] * i0 + Kij[5] * i1 + Kij[8] * i2;
+                T sum = T(0);
+                #pragma unroll
+                for (int di = 0; di < Dim; ++di)
+                    sum += Kij[di * Dim + dj] * in[ni * Dim + di];
+                out[nj * Dim + dj] += sum;
             }
         }
     }
@@ -216,8 +224,9 @@ __device__ void symBlockMatMul(const T* K, const T* in, T* out)
 
 /**
  * Combined kernel: compute rotations AND per-element forces in one pass.
+ * Rotation computation is inherently 3D (cross products).
  */
-template<typename T, int NNodes>
+template<typename T, int NNodes, int Dim>
 __global__ void ElementCorotationalFEMForceField_computeRotationsAndForce_kernel(
     int nbElem,
     const int* __restrict__ elements,
@@ -228,88 +237,112 @@ __global__ void ElementCorotationalFEMForceField_computeRotationsAndForce_kernel
     T* __restrict__ rotationsOut,
     T* __restrict__ eforce)
 {
+    static_assert(Dim == 3, "Corotational rotation computation requires Dim == 3");
     constexpr int NSymBlocks = NNodes * (NNodes + 1) / 2;
     const T invN = T(1) / T(NNodes);
 
     const int elemId = blockIdx.x * blockDim.x + threadIdx.x;
     if (elemId >= nbElem) return;
 
-    T ex[NNodes * 3], ex0[NNodes * 3];
+    T ex[NNodes * Dim], ex0[NNodes * Dim];
     #pragma unroll
     for (int n = 0; n < NNodes; ++n)
     {
         const int nodeId = elements[n * nbElem + elemId];
-        ex[n * 3 + 0] = x[nodeId * 3 + 0];
-        ex[n * 3 + 1] = x[nodeId * 3 + 1];
-        ex[n * 3 + 2] = x[nodeId * 3 + 2];
-        ex0[n * 3 + 0] = x0[nodeId * 3 + 0];
-        ex0[n * 3 + 1] = x0[nodeId * 3 + 1];
-        ex0[n * 3 + 2] = x0[nodeId * 3 + 2];
+        #pragma unroll
+        for (int d = 0; d < Dim; ++d)
+        {
+            ex[n * Dim + d] = x[nodeId * Dim + d];
+            ex0[n * Dim + d] = x0[nodeId * Dim + d];
+        }
     }
 
-    T frame[9];
+    T frame[Dim * Dim];
     if constexpr (NNodes == 8)
         computeHexahedronFrame(ex, frame);
     else
         computeTriangleFrame(ex, frame);
 
     // R = frame^T * initRot
-    const T* irt = initRotTransposed + elemId * 9;
-    T R[9];
+    const T* irt = initRotTransposed + elemId * Dim * Dim;
+    T R[Dim * Dim];
     mat3TransposeMul(frame, irt, R);
 
-    T* Rout = rotationsOut + elemId * 9;
+    T* Rout = rotationsOut + elemId * Dim * Dim;
     #pragma unroll
-    for (int i = 0; i < 9; ++i)
+    for (int i = 0; i < Dim * Dim; ++i)
         Rout[i] = R[i];
 
-    T cx = T(0), cy = T(0), cz = T(0);
-    T cx0 = T(0), cy0 = T(0), cz0 = T(0);
+    T center[Dim], center0[Dim];
     #pragma unroll
-    for (int n = 0; n < NNodes; ++n)
+    for (int d = 0; d < Dim; ++d)
     {
-        cx += ex[n * 3 + 0]; cy += ex[n * 3 + 1]; cz += ex[n * 3 + 2];
-        cx0 += ex0[n * 3 + 0]; cy0 += ex0[n * 3 + 1]; cz0 += ex0[n * 3 + 2];
+        center[d] = T(0);
+        center0[d] = T(0);
     }
-    cx *= invN; cy *= invN; cz *= invN;
-    cx0 *= invN; cy0 *= invN; cz0 *= invN;
-
-    T disp[NNodes * 3];
     #pragma unroll
     for (int n = 0; n < NNodes; ++n)
     {
-        const T dx = ex[n * 3 + 0] - cx;
-        const T dy = ex[n * 3 + 1] - cy;
-        const T dz = ex[n * 3 + 2] - cz;
-        const T rx = R[0] * dx + R[3] * dy + R[6] * dz;
-        const T ry = R[1] * dx + R[4] * dy + R[7] * dz;
-        const T rz = R[2] * dx + R[5] * dy + R[8] * dz;
-        disp[n * 3 + 0] = rx - (ex0[n * 3 + 0] - cx0);
-        disp[n * 3 + 1] = ry - (ex0[n * 3 + 1] - cy0);
-        disp[n * 3 + 2] = rz - (ex0[n * 3 + 2] - cz0);
+        #pragma unroll
+        for (int d = 0; d < Dim; ++d)
+        {
+            center[d] += ex[n * Dim + d];
+            center0[d] += ex0[n * Dim + d];
+        }
+    }
+    #pragma unroll
+    for (int d = 0; d < Dim; ++d)
+    {
+        center[d] *= invN;
+        center0[d] *= invN;
     }
 
-    T edf[NNodes * 3];
-    const T* K = stiffness + elemId * NSymBlocks * 9;
-    symBlockMatMul<T, NNodes>(K, disp, edf);
-
-    T* out = eforce + elemId * NNodes * 3;
+    T disp[NNodes * Dim];
     #pragma unroll
     for (int n = 0; n < NNodes; ++n)
     {
-        const T e0 = edf[n * 3 + 0];
-        const T e1 = edf[n * 3 + 1];
-        const T e2 = edf[n * 3 + 2];
-        out[n * 3 + 0] = -(R[0] * e0 + R[1] * e1 + R[2] * e2);
-        out[n * 3 + 1] = -(R[3] * e0 + R[4] * e1 + R[5] * e2);
-        out[n * 3 + 2] = -(R[6] * e0 + R[7] * e1 + R[8] * e2);
+        // R^T * (x_n - center)
+        T diff[Dim];
+        #pragma unroll
+        for (int d = 0; d < Dim; ++d)
+            diff[d] = ex[n * Dim + d] - center[d];
+
+        #pragma unroll
+        for (int di = 0; di < Dim; ++di)
+        {
+            T rotated = T(0);
+            #pragma unroll
+            for (int dj = 0; dj < Dim; ++dj)
+                rotated += R[dj * Dim + di] * diff[dj];
+            disp[n * Dim + di] = rotated - (ex0[n * Dim + di] - center0[di]);
+        }
+    }
+
+    T edf[NNodes * Dim];
+    const T* K = stiffness + elemId * NSymBlocks * Dim * Dim;
+    symBlockMatMul<T, NNodes, Dim>(K, disp, edf);
+
+    T* out = eforce + elemId * NNodes * Dim;
+    #pragma unroll
+    for (int n = 0; n < NNodes; ++n)
+    {
+        // R * edf_n, negated
+        #pragma unroll
+        for (int di = 0; di < Dim; ++di)
+        {
+            T sum = T(0);
+            #pragma unroll
+            for (int dj = 0; dj < Dim; ++dj)
+                sum += R[di * Dim + dj] * edf[n * Dim + dj];
+            out[n * Dim + di] = -sum;
+        }
     }
 }
 
 /**
  * Kernel for addForce: Compute per-element force (1 thread per element).
  */
-template<typename T, int NNodes>
+template<typename T, int NNodes, int Dim>
 __global__ void ElementCorotationalFEMForceField_computeForce_kernel(
     int nbElem,
     const int* __restrict__ elements,
@@ -325,72 +358,93 @@ __global__ void ElementCorotationalFEMForceField_computeForce_kernel(
     const int elemId = blockIdx.x * blockDim.x + threadIdx.x;
     if (elemId >= nbElem) return;
 
-    const T* Rptr = rotations + elemId * 9;
-    T R[9];
+    const T* Rptr = rotations + elemId * Dim * Dim;
+    T R[Dim * Dim];
     #pragma unroll
-    for (int i = 0; i < 9; ++i)
+    for (int i = 0; i < Dim * Dim; ++i)
         R[i] = Rptr[i];
 
-    T ex[NNodes * 3], ex0[NNodes * 3];
+    T ex[NNodes * Dim], ex0[NNodes * Dim];
     #pragma unroll
     for (int n = 0; n < NNodes; ++n)
     {
         const int nodeId = elements[n * nbElem + elemId];
-        ex[n * 3 + 0] = x[nodeId * 3 + 0];
-        ex[n * 3 + 1] = x[nodeId * 3 + 1];
-        ex[n * 3 + 2] = x[nodeId * 3 + 2];
-        ex0[n * 3 + 0] = x0[nodeId * 3 + 0];
-        ex0[n * 3 + 1] = x0[nodeId * 3 + 1];
-        ex0[n * 3 + 2] = x0[nodeId * 3 + 2];
+        #pragma unroll
+        for (int d = 0; d < Dim; ++d)
+        {
+            ex[n * Dim + d] = x[nodeId * Dim + d];
+            ex0[n * Dim + d] = x0[nodeId * Dim + d];
+        }
     }
 
-    T cx = T(0), cy = T(0), cz = T(0);
-    T cx0 = T(0), cy0 = T(0), cz0 = T(0);
+    T center[Dim], center0[Dim];
+    #pragma unroll
+    for (int d = 0; d < Dim; ++d)
+    {
+        center[d] = T(0);
+        center0[d] = T(0);
+    }
     #pragma unroll
     for (int n = 0; n < NNodes; ++n)
     {
-        cx += ex[n * 3 + 0]; cy += ex[n * 3 + 1]; cz += ex[n * 3 + 2];
-        cx0 += ex0[n * 3 + 0]; cy0 += ex0[n * 3 + 1]; cz0 += ex0[n * 3 + 2];
+        #pragma unroll
+        for (int d = 0; d < Dim; ++d)
+        {
+            center[d] += ex[n * Dim + d];
+            center0[d] += ex0[n * Dim + d];
+        }
     }
-    cx *= invN; cy *= invN; cz *= invN;
-    cx0 *= invN; cy0 *= invN; cz0 *= invN;
+    #pragma unroll
+    for (int d = 0; d < Dim; ++d)
+    {
+        center[d] *= invN;
+        center0[d] *= invN;
+    }
 
-    T disp[NNodes * 3];
+    T disp[NNodes * Dim];
     #pragma unroll
     for (int n = 0; n < NNodes; ++n)
     {
-        const T dx = ex[n * 3 + 0] - cx;
-        const T dy = ex[n * 3 + 1] - cy;
-        const T dz = ex[n * 3 + 2] - cz;
-        const T rx = R[0] * dx + R[3] * dy + R[6] * dz;
-        const T ry = R[1] * dx + R[4] * dy + R[7] * dz;
-        const T rz = R[2] * dx + R[5] * dy + R[8] * dz;
-        disp[n * 3 + 0] = rx - (ex0[n * 3 + 0] - cx0);
-        disp[n * 3 + 1] = ry - (ex0[n * 3 + 1] - cy0);
-        disp[n * 3 + 2] = rz - (ex0[n * 3 + 2] - cz0);
+        T diff[Dim];
+        #pragma unroll
+        for (int d = 0; d < Dim; ++d)
+            diff[d] = ex[n * Dim + d] - center[d];
+
+        #pragma unroll
+        for (int di = 0; di < Dim; ++di)
+        {
+            T rotated = T(0);
+            #pragma unroll
+            for (int dj = 0; dj < Dim; ++dj)
+                rotated += R[dj * Dim + di] * diff[dj];
+            disp[n * Dim + di] = rotated - (ex0[n * Dim + di] - center0[di]);
+        }
     }
 
-    T edf[NNodes * 3];
-    const T* K = stiffness + elemId * NSymBlocks * 9;
-    symBlockMatMul<T, NNodes>(K, disp, edf);
+    T edf[NNodes * Dim];
+    const T* K = stiffness + elemId * NSymBlocks * Dim * Dim;
+    symBlockMatMul<T, NNodes, Dim>(K, disp, edf);
 
-    T* out = eforce + elemId * NNodes * 3;
+    T* out = eforce + elemId * NNodes * Dim;
     #pragma unroll
     for (int n = 0; n < NNodes; ++n)
     {
-        const T e0 = edf[n * 3 + 0];
-        const T e1 = edf[n * 3 + 1];
-        const T e2 = edf[n * 3 + 2];
-        out[n * 3 + 0] = -(R[0] * e0 + R[1] * e1 + R[2] * e2);
-        out[n * 3 + 1] = -(R[3] * e0 + R[4] * e1 + R[5] * e2);
-        out[n * 3 + 2] = -(R[6] * e0 + R[7] * e1 + R[8] * e2);
+        #pragma unroll
+        for (int di = 0; di < Dim; ++di)
+        {
+            T sum = T(0);
+            #pragma unroll
+            for (int dj = 0; dj < Dim; ++dj)
+                sum += R[di * Dim + dj] * edf[n * Dim + dj];
+            out[n * Dim + di] = -sum;
+        }
     }
 }
 
 /**
  * Kernel for addDForce: Compute per-element dForce (1 thread per element).
  */
-template<typename T, int NNodes>
+template<typename T, int NNodes, int Dim>
 __global__ void ElementCorotationalFEMForceField_computeDForce_kernel(
     int nbElem,
     const int* __restrict__ elements,
@@ -405,46 +459,59 @@ __global__ void ElementCorotationalFEMForceField_computeDForce_kernel(
     const int elemId = blockIdx.x * blockDim.x + threadIdx.x;
     if (elemId >= nbElem) return;
 
-    const T* Rptr = rotations + elemId * 9;
-    T R[9];
+    const T* Rptr = rotations + elemId * Dim * Dim;
+    T R[Dim * Dim];
     #pragma unroll
-    for (int i = 0; i < 9; ++i)
+    for (int i = 0; i < Dim * Dim; ++i)
         R[i] = Rptr[i];
 
-    T rdx[NNodes * 3];
+    // R^T * dx for each node
+    T rdx[NNodes * Dim];
     #pragma unroll
     for (int n = 0; n < NNodes; ++n)
     {
         const int nodeId = elements[n * nbElem + elemId];
-        const T dx_x = dx[nodeId * 3 + 0];
-        const T dx_y = dx[nodeId * 3 + 1];
-        const T dx_z = dx[nodeId * 3 + 2];
-        rdx[n * 3 + 0] = R[0] * dx_x + R[3] * dx_y + R[6] * dx_z;
-        rdx[n * 3 + 1] = R[1] * dx_x + R[4] * dx_y + R[7] * dx_z;
-        rdx[n * 3 + 2] = R[2] * dx_x + R[5] * dx_y + R[8] * dx_z;
+        T nodeDx[Dim];
+        #pragma unroll
+        for (int d = 0; d < Dim; ++d)
+            nodeDx[d] = dx[nodeId * Dim + d];
+
+        #pragma unroll
+        for (int di = 0; di < Dim; ++di)
+        {
+            T sum = T(0);
+            #pragma unroll
+            for (int dj = 0; dj < Dim; ++dj)
+                sum += R[dj * Dim + di] * nodeDx[dj];
+            rdx[n * Dim + di] = sum;
+        }
     }
 
-    const T* K = stiffness + elemId * NSymBlocks * 9;
-    T edf[NNodes * 3];
-    symBlockMatMul<T, NNodes>(K, rdx, edf);
+    const T* K = stiffness + elemId * NSymBlocks * Dim * Dim;
+    T edf[NNodes * Dim];
+    symBlockMatMul<T, NNodes, Dim>(K, rdx, edf);
 
-    T* out = eforce + elemId * NNodes * 3;
+    // R * edf, scaled by -kFactor
+    T* out = eforce + elemId * NNodes * Dim;
     #pragma unroll
     for (int n = 0; n < NNodes; ++n)
     {
-        const T e0 = edf[n * 3 + 0];
-        const T e1 = edf[n * 3 + 1];
-        const T e2 = edf[n * 3 + 2];
-        out[n * 3 + 0] = -kFactor * (R[0] * e0 + R[1] * e1 + R[2] * e2);
-        out[n * 3 + 1] = -kFactor * (R[3] * e0 + R[4] * e1 + R[5] * e2);
-        out[n * 3 + 2] = -kFactor * (R[6] * e0 + R[7] * e1 + R[8] * e2);
+        #pragma unroll
+        for (int di = 0; di < Dim; ++di)
+        {
+            T sum = T(0);
+            #pragma unroll
+            for (int dj = 0; dj < Dim; ++dj)
+                sum += R[di * Dim + dj] * edf[n * Dim + dj];
+            out[n * Dim + di] = -kFactor * sum;
+        }
     }
 }
 
 /**
  * Gather per-vertex forces (1 thread per vertex).
  */
-template<typename T>
+template<typename T, int Dim>
 __global__ void ElementCorotationalFEMForceField_gatherForce_kernel(
     int nbVertex,
     int maxElemPerVertex,
@@ -455,45 +522,30 @@ __global__ void ElementCorotationalFEMForceField_gatherForce_kernel(
     const int vertexId = blockIdx.x * blockDim.x + threadIdx.x;
     if (vertexId >= nbVertex) return;
 
-    T fx = T(0), fy = T(0), fz = T(0);
+    T acc[Dim];
+    #pragma unroll
+    for (int d = 0; d < Dim; ++d)
+        acc[d] = T(0);
 
     for (int s = 0; s < maxElemPerVertex; ++s)
     {
         const int idx = velems[s * nbVertex + vertexId];
         if (idx == 0) break;
-        const int base = (idx - 1) * 3;
-        fx += eforce[base + 0];
-        fy += eforce[base + 1];
-        fz += eforce[base + 2];
+        const int base = (idx - 1) * Dim;
+        #pragma unroll
+        for (int d = 0; d < Dim; ++d)
+            acc[d] += eforce[base + d];
     }
 
-    df[vertexId * 3 + 0] += fx;
-    df[vertexId * 3 + 1] += fy;
-    df[vertexId * 3 + 2] += fz;
+    #pragma unroll
+    for (int d = 0; d < Dim; ++d)
+        df[vertexId * Dim + d] += acc[d];
 }
 
-template<typename T>
-static void launchGather(
-    unsigned int nbVertex,
-    unsigned int maxElemPerVertex,
-    const void* velems,
-    const void* eforce,
-    void* f)
-{
-    const int gatherThreads = 256;
-    const int numBlocks = (nbVertex + gatherThreads - 1) / gatherThreads;
-    ElementCorotationalFEMForceField_gatherForce_kernel<T>
-        <<<numBlocks, gatherThreads>>>(
-            nbVertex,
-            maxElemPerVertex,
-            (const int*)velems,
-            (const T*)eforce,
-            (T*)f);
-    mycudaDebugError("ElementCorotationalFEMForceField_gatherForce_kernel");
-}
+// ===================== Launch functions (C++ templates) =====================
 
-template<typename T, int NNodes>
-static void launchAddForceWithRotations(
+template<typename T, int NNodes, int Dim>
+void ElementCorotationalFEMForceFieldCuda_addForceWithRotations(
     unsigned int nbElem,
     unsigned int nbVertex,
     unsigned int maxElemPerVertex,
@@ -508,8 +560,8 @@ static void launchAddForceWithRotations(
     const void* velems)
 {
     const int computeThreads = 64;
-    const int numBlocks = (nbElem + computeThreads - 1) / computeThreads;
-    ElementCorotationalFEMForceField_computeRotationsAndForce_kernel<T, NNodes>
+    int numBlocks = (nbElem + computeThreads - 1) / computeThreads;
+    ElementCorotationalFEMForceField_computeRotationsAndForce_kernel<T, NNodes, Dim>
         <<<numBlocks, computeThreads>>>(
             nbElem,
             (const int*)elements,
@@ -521,11 +573,20 @@ static void launchAddForceWithRotations(
             (T*)eforce);
     mycudaDebugError("ElementCorotationalFEMForceField_computeRotationsAndForce_kernel");
 
-    launchGather<T>(nbVertex, maxElemPerVertex, velems, eforce, f);
+    const int gatherThreads = 256;
+    numBlocks = (nbVertex + gatherThreads - 1) / gatherThreads;
+    ElementCorotationalFEMForceField_gatherForce_kernel<T, Dim>
+        <<<numBlocks, gatherThreads>>>(
+            nbVertex,
+            maxElemPerVertex,
+            (const int*)velems,
+            (const T*)eforce,
+            (T*)f);
+    mycudaDebugError("ElementCorotationalFEMForceField_gatherForce_kernel");
 }
 
-template<typename T, int NNodes>
-static void launchAddForce(
+template<typename T, int NNodes, int Dim>
+void ElementCorotationalFEMForceFieldCuda_addForce(
     unsigned int nbElem,
     unsigned int nbVertex,
     unsigned int maxElemPerVertex,
@@ -539,8 +600,8 @@ static void launchAddForce(
     const void* velems)
 {
     const int computeThreads = 64;
-    const int numBlocks = (nbElem + computeThreads - 1) / computeThreads;
-    ElementCorotationalFEMForceField_computeForce_kernel<T, NNodes>
+    int numBlocks = (nbElem + computeThreads - 1) / computeThreads;
+    ElementCorotationalFEMForceField_computeForce_kernel<T, NNodes, Dim>
         <<<numBlocks, computeThreads>>>(
             nbElem,
             (const int*)elements,
@@ -551,11 +612,20 @@ static void launchAddForce(
             (T*)eforce);
     mycudaDebugError("ElementCorotationalFEMForceField_computeForce_kernel");
 
-    launchGather<T>(nbVertex, maxElemPerVertex, velems, eforce, f);
+    const int gatherThreads = 256;
+    numBlocks = (nbVertex + gatherThreads - 1) / gatherThreads;
+    ElementCorotationalFEMForceField_gatherForce_kernel<T, Dim>
+        <<<numBlocks, gatherThreads>>>(
+            nbVertex,
+            maxElemPerVertex,
+            (const int*)velems,
+            (const T*)eforce,
+            (T*)f);
+    mycudaDebugError("ElementCorotationalFEMForceField_gatherForce_kernel");
 }
 
-template<typename T, int NNodes>
-static void launchAddDForce(
+template<typename T, int NNodes, int Dim>
+void ElementCorotationalFEMForceFieldCuda_addDForce(
     unsigned int nbElem,
     unsigned int nbVertex,
     unsigned int maxElemPerVertex,
@@ -569,8 +639,8 @@ static void launchAddDForce(
     T kFactor)
 {
     const int computeThreads = 64;
-    const int numBlocks = (nbElem + computeThreads - 1) / computeThreads;
-    ElementCorotationalFEMForceField_computeDForce_kernel<T, NNodes>
+    int numBlocks = (nbElem + computeThreads - 1) / computeThreads;
+    ElementCorotationalFEMForceField_computeDForce_kernel<T, NNodes, Dim>
         <<<numBlocks, computeThreads>>>(
             nbElem,
             (const int*)elements,
@@ -581,158 +651,48 @@ static void launchAddDForce(
             kFactor);
     mycudaDebugError("ElementCorotationalFEMForceField_computeDForce_kernel");
 
-    launchGather<T>(nbVertex, maxElemPerVertex, velems, eforce, df);
+    const int gatherThreads = 256;
+    numBlocks = (nbVertex + gatherThreads - 1) / gatherThreads;
+    ElementCorotationalFEMForceField_gatherForce_kernel<T, Dim>
+        <<<numBlocks, gatherThreads>>>(
+            nbVertex,
+            maxElemPerVertex,
+            (const int*)velems,
+            (const T*)eforce,
+            (T*)df);
+    mycudaDebugError("ElementCorotationalFEMForceField_gatherForce_kernel");
 }
 
-extern "C"
-{
+// ===================== Explicit template instantiations =====================
 
-// ==================== float versions ====================
+// addForceWithRotations: only NNodes >= 3 (triangle/quad/hex rotation methods)
+template void ElementCorotationalFEMForceFieldCuda_addForceWithRotations<float, 3, 3>(unsigned int, unsigned int, unsigned int, const void*, const void*, const void*, const void*, const void*, void*, void*, void*, const void*);
+template void ElementCorotationalFEMForceFieldCuda_addForceWithRotations<float, 4, 3>(unsigned int, unsigned int, unsigned int, const void*, const void*, const void*, const void*, const void*, void*, void*, void*, const void*);
+template void ElementCorotationalFEMForceFieldCuda_addForceWithRotations<float, 8, 3>(unsigned int, unsigned int, unsigned int, const void*, const void*, const void*, const void*, const void*, void*, void*, void*, const void*);
+template void ElementCorotationalFEMForceFieldCuda_addForceWithRotations<double, 3, 3>(unsigned int, unsigned int, unsigned int, const void*, const void*, const void*, const void*, const void*, void*, void*, void*, const void*);
+template void ElementCorotationalFEMForceFieldCuda_addForceWithRotations<double, 4, 3>(unsigned int, unsigned int, unsigned int, const void*, const void*, const void*, const void*, const void*, void*, void*, void*, const void*);
+template void ElementCorotationalFEMForceFieldCuda_addForceWithRotations<double, 8, 3>(unsigned int, unsigned int, unsigned int, const void*, const void*, const void*, const void*, const void*, void*, void*, void*, const void*);
 
-void ElementCorotationalFEMForceFieldCuda3f_addForceWithRotations(
-    unsigned int nbElem,
-    unsigned int nbVertex,
-    unsigned int nbNodesPerElem,
-    unsigned int maxElemPerVertex,
-    const void* elements,
-    const void* initRotTransposed,
-    const void* stiffness,
-    const void* x,
-    const void* x0,
-    void* f,
-    void* eforce,
-    void* rotationsOut,
-    const void* velems)
-{
-    switch (nbNodesPerElem)
-    {
-        case 3: launchAddForceWithRotations<float, 3>(nbElem, nbVertex, maxElemPerVertex, elements, initRotTransposed, stiffness, x, x0, f, eforce, rotationsOut, velems); break;
-        case 4: launchAddForceWithRotations<float, 4>(nbElem, nbVertex, maxElemPerVertex, elements, initRotTransposed, stiffness, x, x0, f, eforce, rotationsOut, velems); break;
-        case 8: launchAddForceWithRotations<float, 8>(nbElem, nbVertex, maxElemPerVertex, elements, initRotTransposed, stiffness, x, x0, f, eforce, rotationsOut, velems); break;
-    }
-}
+// addForce: all element types
+template void ElementCorotationalFEMForceFieldCuda_addForce<float, 2, 3>(unsigned int, unsigned int, unsigned int, const void*, const void*, const void*, const void*, const void*, void*, void*, const void*);
+template void ElementCorotationalFEMForceFieldCuda_addForce<float, 3, 3>(unsigned int, unsigned int, unsigned int, const void*, const void*, const void*, const void*, const void*, void*, void*, const void*);
+template void ElementCorotationalFEMForceFieldCuda_addForce<float, 4, 3>(unsigned int, unsigned int, unsigned int, const void*, const void*, const void*, const void*, const void*, void*, void*, const void*);
+template void ElementCorotationalFEMForceFieldCuda_addForce<float, 8, 3>(unsigned int, unsigned int, unsigned int, const void*, const void*, const void*, const void*, const void*, void*, void*, const void*);
+template void ElementCorotationalFEMForceFieldCuda_addForce<double, 2, 3>(unsigned int, unsigned int, unsigned int, const void*, const void*, const void*, const void*, const void*, void*, void*, const void*);
+template void ElementCorotationalFEMForceFieldCuda_addForce<double, 3, 3>(unsigned int, unsigned int, unsigned int, const void*, const void*, const void*, const void*, const void*, void*, void*, const void*);
+template void ElementCorotationalFEMForceFieldCuda_addForce<double, 4, 3>(unsigned int, unsigned int, unsigned int, const void*, const void*, const void*, const void*, const void*, void*, void*, const void*);
+template void ElementCorotationalFEMForceFieldCuda_addForce<double, 8, 3>(unsigned int, unsigned int, unsigned int, const void*, const void*, const void*, const void*, const void*, void*, void*, const void*);
 
-void ElementCorotationalFEMForceFieldCuda3f_addForce(
-    unsigned int nbElem,
-    unsigned int nbVertex,
-    unsigned int nbNodesPerElem,
-    unsigned int maxElemPerVertex,
-    const void* elements,
-    const void* rotations,
-    const void* stiffness,
-    const void* x,
-    const void* x0,
-    void* f,
-    void* eforce,
-    const void* velems)
-{
-    switch (nbNodesPerElem)
-    {
-        case 2: launchAddForce<float, 2>(nbElem, nbVertex, maxElemPerVertex, elements, rotations, stiffness, x, x0, f, eforce, velems); break;
-        case 3: launchAddForce<float, 3>(nbElem, nbVertex, maxElemPerVertex, elements, rotations, stiffness, x, x0, f, eforce, velems); break;
-        case 4: launchAddForce<float, 4>(nbElem, nbVertex, maxElemPerVertex, elements, rotations, stiffness, x, x0, f, eforce, velems); break;
-        case 8: launchAddForce<float, 8>(nbElem, nbVertex, maxElemPerVertex, elements, rotations, stiffness, x, x0, f, eforce, velems); break;
-    }
-}
+// addDForce: all element types
+template void ElementCorotationalFEMForceFieldCuda_addDForce<float, 2, 3>(unsigned int, unsigned int, unsigned int, const void*, const void*, const void*, const void*, void*, void*, const void*, float);
+template void ElementCorotationalFEMForceFieldCuda_addDForce<float, 3, 3>(unsigned int, unsigned int, unsigned int, const void*, const void*, const void*, const void*, void*, void*, const void*, float);
+template void ElementCorotationalFEMForceFieldCuda_addDForce<float, 4, 3>(unsigned int, unsigned int, unsigned int, const void*, const void*, const void*, const void*, void*, void*, const void*, float);
+template void ElementCorotationalFEMForceFieldCuda_addDForce<float, 8, 3>(unsigned int, unsigned int, unsigned int, const void*, const void*, const void*, const void*, void*, void*, const void*, float);
+template void ElementCorotationalFEMForceFieldCuda_addDForce<double, 2, 3>(unsigned int, unsigned int, unsigned int, const void*, const void*, const void*, const void*, void*, void*, const void*, double);
+template void ElementCorotationalFEMForceFieldCuda_addDForce<double, 3, 3>(unsigned int, unsigned int, unsigned int, const void*, const void*, const void*, const void*, void*, void*, const void*, double);
+template void ElementCorotationalFEMForceFieldCuda_addDForce<double, 4, 3>(unsigned int, unsigned int, unsigned int, const void*, const void*, const void*, const void*, void*, void*, const void*, double);
+template void ElementCorotationalFEMForceFieldCuda_addDForce<double, 8, 3>(unsigned int, unsigned int, unsigned int, const void*, const void*, const void*, const void*, void*, void*, const void*, double);
 
-void ElementCorotationalFEMForceFieldCuda3f_addDForce(
-    unsigned int nbElem,
-    unsigned int nbVertex,
-    unsigned int nbNodesPerElem,
-    unsigned int maxElemPerVertex,
-    const void* elements,
-    const void* rotations,
-    const void* stiffness,
-    const void* dx,
-    void* df,
-    void* eforce,
-    const void* velems,
-    float kFactor)
-{
-    switch (nbNodesPerElem)
-    {
-        case 2: launchAddDForce<float, 2>(nbElem, nbVertex, maxElemPerVertex, elements, rotations, stiffness, dx, df, eforce, velems, kFactor); break;
-        case 3: launchAddDForce<float, 3>(nbElem, nbVertex, maxElemPerVertex, elements, rotations, stiffness, dx, df, eforce, velems, kFactor); break;
-        case 4: launchAddDForce<float, 4>(nbElem, nbVertex, maxElemPerVertex, elements, rotations, stiffness, dx, df, eforce, velems, kFactor); break;
-        case 8: launchAddDForce<float, 8>(nbElem, nbVertex, maxElemPerVertex, elements, rotations, stiffness, dx, df, eforce, velems, kFactor); break;
-    }
-}
-
-// ==================== double versions ====================
-
-void ElementCorotationalFEMForceFieldCuda3d_addForceWithRotations(
-    unsigned int nbElem,
-    unsigned int nbVertex,
-    unsigned int nbNodesPerElem,
-    unsigned int maxElemPerVertex,
-    const void* elements,
-    const void* initRotTransposed,
-    const void* stiffness,
-    const void* x,
-    const void* x0,
-    void* f,
-    void* eforce,
-    void* rotationsOut,
-    const void* velems)
-{
-    switch (nbNodesPerElem)
-    {
-        case 3: launchAddForceWithRotations<double, 3>(nbElem, nbVertex, maxElemPerVertex, elements, initRotTransposed, stiffness, x, x0, f, eforce, rotationsOut, velems); break;
-        case 4: launchAddForceWithRotations<double, 4>(nbElem, nbVertex, maxElemPerVertex, elements, initRotTransposed, stiffness, x, x0, f, eforce, rotationsOut, velems); break;
-        case 8: launchAddForceWithRotations<double, 8>(nbElem, nbVertex, maxElemPerVertex, elements, initRotTransposed, stiffness, x, x0, f, eforce, rotationsOut, velems); break;
-    }
-}
-
-void ElementCorotationalFEMForceFieldCuda3d_addForce(
-    unsigned int nbElem,
-    unsigned int nbVertex,
-    unsigned int nbNodesPerElem,
-    unsigned int maxElemPerVertex,
-    const void* elements,
-    const void* rotations,
-    const void* stiffness,
-    const void* x,
-    const void* x0,
-    void* f,
-    void* eforce,
-    const void* velems)
-{
-    switch (nbNodesPerElem)
-    {
-        case 2: launchAddForce<double, 2>(nbElem, nbVertex, maxElemPerVertex, elements, rotations, stiffness, x, x0, f, eforce, velems); break;
-        case 3: launchAddForce<double, 3>(nbElem, nbVertex, maxElemPerVertex, elements, rotations, stiffness, x, x0, f, eforce, velems); break;
-        case 4: launchAddForce<double, 4>(nbElem, nbVertex, maxElemPerVertex, elements, rotations, stiffness, x, x0, f, eforce, velems); break;
-        case 8: launchAddForce<double, 8>(nbElem, nbVertex, maxElemPerVertex, elements, rotations, stiffness, x, x0, f, eforce, velems); break;
-    }
-}
-
-void ElementCorotationalFEMForceFieldCuda3d_addDForce(
-    unsigned int nbElem,
-    unsigned int nbVertex,
-    unsigned int nbNodesPerElem,
-    unsigned int maxElemPerVertex,
-    const void* elements,
-    const void* rotations,
-    const void* stiffness,
-    const void* dx,
-    void* df,
-    void* eforce,
-    const void* velems,
-    double kFactor)
-{
-    switch (nbNodesPerElem)
-    {
-        case 2: launchAddDForce<double, 2>(nbElem, nbVertex, maxElemPerVertex, elements, rotations, stiffness, dx, df, eforce, velems, kFactor); break;
-        case 3: launchAddDForce<double, 3>(nbElem, nbVertex, maxElemPerVertex, elements, rotations, stiffness, dx, df, eforce, velems, kFactor); break;
-        case 4: launchAddDForce<double, 4>(nbElem, nbVertex, maxElemPerVertex, elements, rotations, stiffness, dx, df, eforce, velems, kFactor); break;
-        case 8: launchAddDForce<double, 8>(nbElem, nbVertex, maxElemPerVertex, elements, rotations, stiffness, dx, df, eforce, velems, kFactor); break;
-    }
-}
-
-} // extern "C"
-
-#if defined(__cplusplus)
 } // namespace cuda
 } // namespace gpu
 } // namespace sofa
-#endif

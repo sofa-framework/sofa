@@ -51,7 +51,6 @@ void CudaElementCorotationalFEMForceField<DataTypes, ElementType>::uploadStiffne
     const auto& assembledMatrices = this->m_assembledStiffnessMatrices;
 
     const auto nbElem = elements.size();
-    constexpr auto nDofs = trait::NumberOfDofsInElement;
     constexpr auto nNodes = trait::NumberOfNodesInElement;
     constexpr auto dim = trait::spatial_dimensions;
 
@@ -253,6 +252,8 @@ void CudaElementCorotationalFEMForceField<DataTypes, ElementType>::addForce(
     }
 
     using trait = sofa::component::solidmechanics::fem::elastic::trait<DataTypes, ElementType>;
+    constexpr auto nNodes = trait::NumberOfNodesInElement;
+    constexpr auto dim = trait::spatial_dimensions;
 
     const VecCoord& x = d_x.getValue();
     auto restPositionAccessor = this->mstate->readRestPositions();
@@ -266,55 +267,33 @@ void CudaElementCorotationalFEMForceField<DataTypes, ElementType>::addForce(
     if (f.size() < x.size())
         f.resize(x.size());
 
-    if (m_gpuRotationMethodSupported)
+    if constexpr (nNodes >= 3)
     {
-        // Fully GPU path: compute rotations + forces in one kernel
-        if constexpr (std::is_same_v<Real, double>)
+        if (m_gpuRotationMethodSupported)
         {
-            gpu::cuda::ElementCorotationalFEMForceFieldCuda3d_addForceWithRotations(
-                nbElem, nbVertex, trait::NumberOfNodesInElement, m_maxElemPerVertex,
+            gpu::cuda::ElementCorotationalFEMForceFieldCuda_addForceWithRotations<Real, nNodes, dim>(
+                nbElem, nbVertex, m_maxElemPerVertex,
                 m_gpuElements.deviceRead(), m_gpuInitialRotationsTransposed.deviceRead(),
                 m_gpuStiffness.deviceRead(), x.deviceRead(), x0.deviceRead(),
                 f.deviceWrite(), m_gpuElementForce.deviceWrite(),
                 m_gpuRotations.deviceWrite(), m_gpuVelems.deviceRead());
-        }
-        else
-        {
-            gpu::cuda::ElementCorotationalFEMForceFieldCuda3f_addForceWithRotations(
-                nbElem, nbVertex, trait::NumberOfNodesInElement, m_maxElemPerVertex,
-                m_gpuElements.deviceRead(), m_gpuInitialRotationsTransposed.deviceRead(),
-                m_gpuStiffness.deviceRead(), x.deviceRead(), x0.deviceRead(),
-                f.deviceWrite(), m_gpuElementForce.deviceWrite(),
-                m_gpuRotations.deviceWrite(), m_gpuVelems.deviceRead());
-        }
 
-        m_gpuRotationsUploaded = true;
-    }
-    else
-    {
-        // CPU rotations + GPU forces
-        this->computeRotations(this->m_rotations, x, x0);
-        uploadRotations();
-
-        if constexpr (std::is_same_v<Real, double>)
-        {
-            gpu::cuda::ElementCorotationalFEMForceFieldCuda3d_addForce(
-                nbElem, nbVertex, trait::NumberOfNodesInElement, m_maxElemPerVertex,
-                m_gpuElements.deviceRead(), m_gpuRotations.deviceRead(),
-                m_gpuStiffness.deviceRead(), x.deviceRead(), x0.deviceRead(),
-                f.deviceWrite(), m_gpuElementForce.deviceWrite(),
-                m_gpuVelems.deviceRead());
-        }
-        else
-        {
-            gpu::cuda::ElementCorotationalFEMForceFieldCuda3f_addForce(
-                nbElem, nbVertex, trait::NumberOfNodesInElement, m_maxElemPerVertex,
-                m_gpuElements.deviceRead(), m_gpuRotations.deviceRead(),
-                m_gpuStiffness.deviceRead(), x.deviceRead(), x0.deviceRead(),
-                f.deviceWrite(), m_gpuElementForce.deviceWrite(),
-                m_gpuVelems.deviceRead());
+            m_gpuRotationsUploaded = true;
+            d_f.endEdit();
+            return;
         }
     }
+
+    // CPU rotations + GPU forces
+    this->computeRotations(this->m_rotations, x, x0);
+    uploadRotations();
+
+    gpu::cuda::ElementCorotationalFEMForceFieldCuda_addForce<Real, nNodes, dim>(
+        nbElem, nbVertex, m_maxElemPerVertex,
+        m_gpuElements.deviceRead(), m_gpuRotations.deviceRead(),
+        m_gpuStiffness.deviceRead(), x.deviceRead(), x0.deviceRead(),
+        f.deviceWrite(), m_gpuElementForce.deviceWrite(),
+        m_gpuVelems.deviceRead());
 
     d_f.endEdit();
 }
@@ -336,6 +315,8 @@ void CudaElementCorotationalFEMForceField<DataTypes, ElementType>::addDForce(
     }
 
     using trait = sofa::component::solidmechanics::fem::elastic::trait<DataTypes, ElementType>;
+    constexpr auto nNodes = trait::NumberOfNodesInElement;
+    constexpr auto dim = trait::spatial_dimensions;
 
     VecDeriv& df = *d_df.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
@@ -351,24 +332,12 @@ void CudaElementCorotationalFEMForceField<DataTypes, ElementType>::addDForce(
     const auto nbElem = static_cast<unsigned int>(elements.size());
     const auto nbVertex = static_cast<unsigned int>(dx.size());
 
-    if constexpr (std::is_same_v<Real, double>)
-    {
-        gpu::cuda::ElementCorotationalFEMForceFieldCuda3d_addDForce(
-            nbElem, nbVertex, trait::NumberOfNodesInElement, m_maxElemPerVertex,
-            m_gpuElements.deviceRead(), m_gpuRotations.deviceRead(),
-            m_gpuStiffness.deviceRead(), dx.deviceRead(),
-            df.deviceWrite(), m_gpuElementForce.deviceWrite(),
-            m_gpuVelems.deviceRead(), kFactor);
-    }
-    else
-    {
-        gpu::cuda::ElementCorotationalFEMForceFieldCuda3f_addDForce(
-            nbElem, nbVertex, trait::NumberOfNodesInElement, m_maxElemPerVertex,
-            m_gpuElements.deviceRead(), m_gpuRotations.deviceRead(),
-            m_gpuStiffness.deviceRead(), dx.deviceRead(),
-            df.deviceWrite(), m_gpuElementForce.deviceWrite(),
-            m_gpuVelems.deviceRead(), kFactor);
-    }
+    gpu::cuda::ElementCorotationalFEMForceFieldCuda_addDForce<Real, nNodes, dim>(
+        nbElem, nbVertex, m_maxElemPerVertex,
+        m_gpuElements.deviceRead(), m_gpuRotations.deviceRead(),
+        m_gpuStiffness.deviceRead(), dx.deviceRead(),
+        df.deviceWrite(), m_gpuElementForce.deviceWrite(),
+        m_gpuVelems.deviceRead(), kFactor);
 
     d_df.endEdit();
 }
