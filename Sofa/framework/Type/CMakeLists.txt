@@ -10,6 +10,8 @@ set(HEADER_FILES
     ${SOFATYPESRC_ROOT}/DualQuat.h
     ${SOFATYPESRC_ROOT}/DualQuat.inl
     ${SOFATYPESRC_ROOT}/Frame.h
+    ${SOFATYPESRC_ROOT}/FullySymmetric4Tensor.h
+    ${SOFATYPESRC_ROOT}/hardening.h
     ${SOFATYPESRC_ROOT}/Mat.h
     ${SOFATYPESRC_ROOT}/MatSym.h
     ${SOFATYPESRC_ROOT}/Mat_solve_Cholesky.h
@@ -49,6 +51,8 @@ set(HEADER_FILES
     ${SOFATYPESRC_ROOT}/vector_algebra.h
     ${SOFATYPESRC_ROOT}/vector_algorithm.h
     ${SOFATYPESRC_ROOT}/vector_device.h
+    ${SOFATYPESRC_ROOT}/VecView.h
+    ${SOFATYPESRC_ROOT}/VoigtNotation.h
 )
 
 set(SOURCE_FILES
@@ -89,13 +93,24 @@ if(NOT Boost_FOUND)
         message(FATAL_ERROR "Boost (${BOOST_MIN_VERSION} or higher) is mandatory.")
     endif()
 endif()
+
 sofa_find_package(Boost QUIET REQUIRED)
+
+option(SOFA_USE_MIMALLOC "Use mimalloc to replace malloc (known to be more efficient, especially with MSVC)" OFF)
+if(SOFA_USE_MIMALLOC)
+    sofa_find_package(mimalloc REQUIRED)
+endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Config)
 target_link_libraries(${PROJECT_NAME} PUBLIC Boost::boost)
 
+if(mimalloc_FOUND)
+    target_link_libraries(${PROJECT_NAME} PUBLIC mimalloc)
+endif()
+
+sofa_treat_warnings_as_errors(${PROJECT_NAME})
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER Sofa.Framework) # IDE folder
 
 sofa_create_package_with_targets(

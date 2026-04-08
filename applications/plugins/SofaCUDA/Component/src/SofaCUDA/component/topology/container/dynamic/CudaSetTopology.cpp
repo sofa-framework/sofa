@@ -1,0 +1,179 @@
+/******************************************************************************
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
+#include <SofaCUDA/component/config.h>
+
+#include <sofa/gpu/cuda/CudaTypes.h>
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/defaulttype/VecTypes.h>
+
+#include <sofa/component/topology/container/dynamic/PointSetGeometryAlgorithms.h>
+#include <sofa/component/topology/container/dynamic/PointSetGeometryAlgorithms.inl>
+
+#include <sofa/component/topology/container/dynamic/EdgeSetGeometryAlgorithms.h>
+#include <sofa/component/topology/container/dynamic/EdgeSetGeometryAlgorithms.inl>
+
+#include <sofa/component/topology/container/dynamic/TriangleSetGeometryAlgorithms.h>
+#include <sofa/component/topology/container/dynamic/TriangleSetGeometryAlgorithms.inl>
+
+#include <sofa/component/topology/container/dynamic/QuadSetGeometryAlgorithms.h>
+#include <sofa/component/topology/container/dynamic/QuadSetGeometryAlgorithms.inl>
+
+#include <sofa/component/topology/container/dynamic/TetrahedronSetGeometryAlgorithms.h>
+#include <sofa/component/topology/container/dynamic/TetrahedronSetGeometryAlgorithms.inl>
+
+#include <sofa/component/topology/container/dynamic/HexahedronSetGeometryAlgorithms.h>
+#include <sofa/component/topology/container/dynamic/HexahedronSetGeometryAlgorithms.inl>
+
+
+namespace sofa::component::topology::container::dynamic
+{
+
+using namespace sofa::defaulttype;
+using namespace sofa::core;
+using namespace sofa::gpu::cuda;
+using namespace sofa::core::behavior;
+
+////////////////////////////////
+////////     Point      ////////
+////////////////////////////////
+#ifdef SOFA_GPU_CUDA_DOUBLE
+template class SOFACUDA_COMPONENT_API PointSetGeometryAlgorithms<CudaVec3dTypes>;
+#endif // SOFA_GPU_CUDA_DOUBLE
+template class SOFACUDA_COMPONENT_API PointSetGeometryAlgorithms<CudaVec3fTypes>;
+template class SOFACUDA_COMPONENT_API PointSetGeometryAlgorithms<CudaVec3f1Types>;
+
+
+////////////////////////////////
+////////      Edge      ////////
+////////////////////////////////
+#ifdef SOFA_GPU_CUDA_DOUBLE
+template class SOFACUDA_COMPONENT_API EdgeSetGeometryAlgorithms<CudaVec3dTypes>;
+#endif // SOFA_GPU_CUDA_DOUBLE
+template class SOFACUDA_COMPONENT_API EdgeSetGeometryAlgorithms<CudaVec3fTypes>;
+template class SOFACUDA_COMPONENT_API EdgeSetGeometryAlgorithms<CudaVec3f1Types>;
+
+
+////////////////////////////////
+////////    Triangle    ////////
+////////////////////////////////
+#ifdef SOFA_GPU_CUDA_DOUBLE
+template class SOFACUDA_COMPONENT_API TriangleSetGeometryAlgorithms<CudaVec3dTypes>;
+#endif // SOFA_GPU_CUDA_DOUBLE
+template class SOFACUDA_COMPONENT_API TriangleSetGeometryAlgorithms<CudaVec3fTypes>;
+template class SOFACUDA_COMPONENT_API TriangleSetGeometryAlgorithms<CudaVec3f1Types>;
+
+
+////////////////////////////////
+////////   Quad   ////////
+////////////////////////////////
+#ifdef SOFA_GPU_CUDA_DOUBLE
+template class SOFACUDA_COMPONENT_API QuadSetGeometryAlgorithms<CudaVec3dTypes>;
+#endif // SOFA_GPU_CUDA_DOUBLE
+template class SOFACUDA_COMPONENT_API QuadSetGeometryAlgorithms<CudaVec3fTypes>;
+template class SOFACUDA_COMPONENT_API QuadSetGeometryAlgorithms<CudaVec3f1Types>;
+
+
+////////////////////////////////
+////////   Tetrahedron  ////////
+////////////////////////////////
+#ifdef SOFA_GPU_CUDA_DOUBLE
+template class SOFACUDA_COMPONENT_API TetrahedronSetGeometryAlgorithms<CudaVec3dTypes>;
+#endif // SOFA_GPU_CUDA_DOUBLE
+template class SOFACUDA_COMPONENT_API TetrahedronSetGeometryAlgorithms<CudaVec3fTypes>;
+template class SOFACUDA_COMPONENT_API TetrahedronSetGeometryAlgorithms<CudaVec3f1Types>;
+
+
+////////////////////////////////
+////////   Hexahedron   ////////
+////////////////////////////////
+#ifdef SOFA_GPU_CUDA_DOUBLE
+template class SOFACUDA_COMPONENT_API HexahedronSetGeometryAlgorithms<CudaVec3dTypes>;
+#endif // SOFA_GPU_CUDA_DOUBLE
+template class SOFACUDA_COMPONENT_API HexahedronSetGeometryAlgorithms<CudaVec3fTypes>;
+template class SOFACUDA_COMPONENT_API HexahedronSetGeometryAlgorithms<CudaVec3f1Types>;
+
+} // namespace sofa::component::topology::container::dynamic
+
+namespace sofa::gpu::cuda
+{
+using namespace sofa::component::topology::container::dynamic;
+
+void registerPointSetGeometryAlgorithms(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Supports GPU-side computations using CUDA for the PointSetGeometryAlgorithms")
+#ifdef SOFA_GPU_CUDA_DOUBLE
+        .add< PointSetGeometryAlgorithms<CudaVec3dTypes> >()
+#endif // SOFA_GPU_CUDA_DOUBLE
+        .add< PointSetGeometryAlgorithms<CudaVec3fTypes> >()
+        .add< PointSetGeometryAlgorithms<CudaVec3f1Types> >());
+}
+
+void registerEdgeSetGeometryAlgorithms(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Supports GPU-side computations using CUDA for the EdgeSetGeometryAlgorithms")
+#ifdef SOFA_GPU_CUDA_DOUBLE
+    .add< EdgeSetGeometryAlgorithms<CudaVec3dTypes> >()
+#endif // SOFA_GPU_CUDA_DOUBLE
+    .add< EdgeSetGeometryAlgorithms<CudaVec3fTypes> >()
+    .add< EdgeSetGeometryAlgorithms<CudaVec3f1Types> >());
+}
+
+void registerTriangleSetGeometryAlgorithms(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Supports GPU-side computations using CUDA for the TriangleSetGeometryAlgorithms")
+#ifdef SOFA_GPU_CUDA_DOUBLE
+        .add< TriangleSetGeometryAlgorithms<CudaVec3dTypes> >()
+#endif // SOFA_GPU_CUDA_DOUBLE
+        .add< TriangleSetGeometryAlgorithms<CudaVec3fTypes> >()
+        .add< TriangleSetGeometryAlgorithms<CudaVec3f1Types> >());
+}
+
+void registerQuadSetGeometryAlgorithms(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Supports GPU-side computations using CUDA for the QuadSetGeometryAlgorithms")
+#ifdef SOFA_GPU_CUDA_DOUBLE
+        .add< QuadSetGeometryAlgorithms<CudaVec3dTypes> >()
+#endif // SOFA_GPU_CUDA_DOUBLE
+        .add< QuadSetGeometryAlgorithms<CudaVec3fTypes> >()
+        .add< QuadSetGeometryAlgorithms<CudaVec3f1Types> >());
+}
+void registerTetrahedronSetGeometryAlgorithms(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Supports GPU-side computations using CUDA for the TetrahedronSetGeometryAlgorithms")
+#ifdef SOFA_GPU_CUDA_DOUBLE
+        .add< TetrahedronSetGeometryAlgorithms<CudaVec3dTypes> >()
+#endif // SOFA_GPU_CUDA_DOUBLE
+        .add< TetrahedronSetGeometryAlgorithms<CudaVec3fTypes> >()
+        .add< TetrahedronSetGeometryAlgorithms<CudaVec3f1Types> >());
+}
+
+void registerHexahedronSetGeometryAlgorithms(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Supports GPU-side computations using CUDA for the HexahedronSetGeometryAlgorithms")
+#ifdef SOFA_GPU_CUDA_DOUBLE
+        .add< HexahedronSetGeometryAlgorithms<CudaVec3dTypes> >()
+#endif // SOFA_GPU_CUDA_DOUBLE
+        .add< HexahedronSetGeometryAlgorithms<CudaVec3fTypes> >()
+        .add< HexahedronSetGeometryAlgorithms<CudaVec3f1Types> >());
+}
+
+} // namespace sofa::gpu::cuda

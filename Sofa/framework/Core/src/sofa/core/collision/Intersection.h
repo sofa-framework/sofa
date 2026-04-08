@@ -123,10 +123,10 @@ protected:
 /** @brief Given 2 collision elements, test if an intersection is possible (for bounding volumes), or compute intersection points if any
 */
 
-class SOFA_CORE_API Intersection : public virtual objectmodel::BaseObject
+class SOFA_CORE_API Intersection : public virtual objectmodel::BaseComponent
 {
 public:
-    SOFA_ABSTRACT_CLASS(Intersection, objectmodel::BaseObject);
+    SOFA_ABSTRACT_CLASS(Intersection, objectmodel::BaseComponent);
     SOFA_BASE_CAST_IMPLEMENTATION(Intersection)
 
 
