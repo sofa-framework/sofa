@@ -23,6 +23,11 @@
 
 #include <sofa/core/objectmodel/Data.h>
 
+#include <sofa/type/hardening.h>
+
+#include <cstdlib>
+#include <cerrno>
+
 
 namespace sofa::core::objectmodel
 {
@@ -47,7 +52,17 @@ bool SOFA_CORE_API Data<bool>::read( const std::string& str )
     else if (str[0] == 'F' || str[0] == 'f')
         val = false;
     else if ((str[0] >= '0' && str[0] <= '9') || str[0] == '-')
-        val = (atoi(str.c_str()) != 0);
+    {
+        int parsed{};
+        if(sofa::type::hardening::safeStrToInt(str, parsed))
+        {
+            val = (parsed != 0);
+        }
+        else
+        {
+            return false;
+        }
+    }
     else
         return false;
     setValue(val);

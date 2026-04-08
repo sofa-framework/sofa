@@ -357,9 +357,9 @@ public:
     }
 
     template<class Real2>
-    MatrixExpr< MatrixAddition< SparseMatrix<T>, SparseMatrix<Real2> > > operator-(const SparseMatrix<Real2>& m) const
+    MatrixExpr< MatrixSubtraction< SparseMatrix<T>, SparseMatrix<Real2> > > operator-(const SparseMatrix<Real2>& m) const
     {
-        return MatrixExpr { MatrixAddition< SparseMatrix<T>, SparseMatrix<Real2> >(*this, m) };
+        return MatrixExpr { MatrixSubtraction< SparseMatrix<T>, SparseMatrix<Real2> >(*this, m) };
     }
 
     void swap(SparseMatrix<T>& m)

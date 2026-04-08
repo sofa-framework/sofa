@@ -61,7 +61,16 @@ void MeshGmsh::init (std::string filename)
         // NB: .msh file header line for version >= 2 can be "$MeshFormat", "$MeshFormat\r", "$MeshFormat \r"
         std::string version;
         std::getline(file, version); // Getting the version line (e.g. 4.1 0 8)
-        gmshFormat = std::stoul(version.substr( 0, version.find(" ")) ); // Retrieving the mesh format, keeping only the integer part
+        try
+        {
+            gmshFormat = std::stoul(version.substr( 0, version.find(" ")) ); // Retrieving the mesh format, keeping only the integer part
+        }
+        catch (const std::exception&)
+        {
+            msg_error("MeshGmsh") << "Invalid mesh format version in file header: '" << version << "'. Closing File";
+            file.close();
+            return;
+        }
         std::getline(file, cmd);
 
         if (cmd.length() < 14 || cmd.substr(0, 14) != std::string("$EndMeshFormat")) // it should end with "$EndMeshFormat" or "$EndMeshFormat\r"

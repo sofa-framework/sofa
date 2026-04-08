@@ -22,7 +22,7 @@
 #pragma once
 #include <sofa/core/config.h>
 
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/linearalgebra/BaseMatrix.h>
 #include <sofa/core/MultiVecId.h>
 
@@ -33,10 +33,10 @@ namespace sofa::core::behavior
  * Base class for components storing and assembling a linear system represented as a matrix.
  * The matrix data structure is defined in derived classes.
  */
-class SOFA_CORE_API BaseMatrixLinearSystem : public virtual core::objectmodel::BaseObject
+class SOFA_CORE_API BaseMatrixLinearSystem : public virtual core::objectmodel::BaseComponent
 {
 public:
-    SOFA_ABSTRACT_CLASS(BaseMatrixLinearSystem, core::objectmodel::BaseObject);
+    SOFA_ABSTRACT_CLASS(BaseMatrixLinearSystem, core::objectmodel::BaseComponent);
 
 protected:
     BaseMatrixLinearSystem();

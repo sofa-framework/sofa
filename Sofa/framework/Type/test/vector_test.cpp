@@ -21,6 +21,10 @@
 ******************************************************************************/
 #include <sofa/testing/NumericTest.h>
 
+#include <cstdlib>
+#include <cerrno>
+#include <climits>
+
 #include <sofa/type/trait/Rebind.h>
 using sofa::testing::NumericTest ;
 
@@ -40,6 +44,8 @@ using sofa::helper::logging::MainCountingMessageHandler ;
 using sofa::helper::logging::CountingMessageHandler ;
 using sofa::helper::logging::MessageDispatcher ;
 using sofa::helper::logging::Message ;
+
+#include <sofa/type/hardening.h>
 
 template<class T>
 class vector_test : public NumericTest<>,
@@ -249,8 +255,18 @@ public:
 template<class T>
 void vector_benchmark<T>::benchmark(const std::vector<std::string>& params)
 {
-    const int loop1 = atoi(params[0].c_str());
-    const int loop2 = atoi(params[1].c_str());
+    int loop1{}, loop2{};
+    if(!sofa::type::hardening::safeStrToInt(params[0], loop1))
+    {
+        std::cerr << "Error while reading " << params[0];
+        return;
+    }
+    if(!sofa::type::hardening::safeStrToInt(params[1], loop2))
+    {
+        std::cerr << "Error while reading " << params[1];
+        return;
+    }
+
     std::stringstream tmp;
     for(int i=0;i<loop1;i++)
     {

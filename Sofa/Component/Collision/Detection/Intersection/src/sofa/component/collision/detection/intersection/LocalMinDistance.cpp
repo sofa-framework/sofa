@@ -1196,7 +1196,7 @@ bool LocalMinDistance::testValidity(Point &p, const Vec3 &PQ) const
     const Vec3 pt = p.p();
 
     const sofa::simulation::Node* node = dynamic_cast<sofa::simulation::Node*>(p.getCollisionModel()->getContext());
-    if ( !(node->get< LineCollisionModel<sofa::defaulttype::Vec3Types> >()) )
+    if ( !node || !(node->get< LineCollisionModel<sofa::defaulttype::Vec3Types> >()) )
         return true;
 
     BaseMeshTopology* topology = p.getCollisionModel()->getCollisionTopology();

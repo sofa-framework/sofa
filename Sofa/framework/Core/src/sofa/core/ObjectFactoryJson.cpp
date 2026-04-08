@@ -81,7 +81,7 @@ inline void to_json(nlohmann::json& json,
 }
 
 inline void to_json(nlohmann::json& json,
-                    const objectmodel::BaseObject::SPtr& object)
+                    const objectmodel::BaseComponent::SPtr& object)
 {
     if (object)
     {

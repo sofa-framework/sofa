@@ -260,7 +260,6 @@ void DirectionProjectiveConstraint<DataTypes>::draw(const core::visual::VisualPa
     else // new drawing by spheres
     {
         std::vector< sofa::type::Vec3 > points;
-        sofa::type::Vec3 point;
         for (unsigned int index : indices)
         {
             const type::Vec3 point = type::toVec3(DataTypes::getCPos(x[index]));
