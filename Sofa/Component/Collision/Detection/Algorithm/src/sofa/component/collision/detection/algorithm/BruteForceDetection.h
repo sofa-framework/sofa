@@ -29,10 +29,10 @@
 namespace sofa::component::collision::detection::algorithm
 {
 
-class SOFA_COMPONENT_COLLISION_DETECTION_ALGORITHM_API BruteForceDetection final : public sofa::core::objectmodel::BaseObject
+class SOFA_COMPONENT_COLLISION_DETECTION_ALGORITHM_API BruteForceDetection final : public sofa::core::objectmodel::BaseComponent
 {
 public:
-    SOFA_CLASS(BruteForceDetection, sofa::core::objectmodel::BaseObject);
+    SOFA_CLASS(BruteForceDetection, sofa::core::objectmodel::BaseComponent);
 
     void init() override;
 

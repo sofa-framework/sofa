@@ -123,6 +123,8 @@ protected:
     void assembleSystemMatrix(sofa::simulation::common::MechanicalOperations* mop) const;
 
     void solveSystem(core::MultiVecDerivId solution, core::MultiVecDerivId rhs) const;
+
+    bool isMassMatrixTriviallyInvertible(const core::ExecParams* params);
 };
 
 } // namespace sofa::component::odesolver::forward

@@ -110,7 +110,18 @@ bool RequiredPlugin::loadPlugin()
     /// In case the pluginName is not set we copy the provided name into the set to load.
     if(!d_pluginName.isSet() && name.isSet())
     {
-        pluginsToLoad.push_back(this->getName());
+        const auto componentName = this->getName();
+        {
+            const auto considerNameAsPluginName = FileSystem::cleanPath(componentName);
+            if (FileSystem::isFile(considerNameAsPluginName) || !pluginManager.findPlugin(considerNameAsPluginName).empty())
+            {
+                msg_deprecated() << "The name of the plugin to load (" << componentName
+                    << ") must be defined in the Data '" << d_pluginName.getName()
+                    << "', not in the the Data '" << this->name.getName() << "'. The plugin '"
+                    << componentName << "' may be loaded, but this may change in the future.";
+            }
+        }
+        pluginsToLoad.push_back(componentName);
     }
 
     type::vector< std::string > failed;

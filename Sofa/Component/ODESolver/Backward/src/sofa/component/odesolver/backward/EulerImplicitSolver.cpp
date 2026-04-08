@@ -58,8 +58,8 @@ void EulerImplicitSolver::init()
     if (!this->getTags().empty())
     {
         msg_info() << "Responsible for the following objects with tags " << this->getTags() << " :";
-        type::vector<core::objectmodel::BaseObject*> objs;
-        this->getContext()->get<core::objectmodel::BaseObject>(&objs,this->getTags(),sofa::core::objectmodel::BaseContext::SearchDown);
+        type::vector<core::objectmodel::BaseComponent*> objs;
+        this->getContext()->get<core::objectmodel::BaseComponent>(&objs,this->getTags(),sofa::core::objectmodel::BaseContext::SearchDown);
         for (const auto* obj : objs)
         {
             msg_info() << "  " << obj->getClassName() << ' ' << obj->getName();

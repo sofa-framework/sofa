@@ -36,10 +36,10 @@ namespace sofa::component::collision::detection::algorithm
  *   colliding state. It must be used with a TriangleOctreeModel,as an octree is used to traverse the object.
  */
 class SOFA_COMPONENT_COLLISION_DETECTION_ALGORITHM_API RayTraceDetection final :
-    public sofa::core::objectmodel::BaseObject
+    public sofa::core::objectmodel::BaseComponent
 {
 public:
-    SOFA_CLASS(RayTraceDetection, sofa::core::objectmodel::BaseObject);
+    SOFA_CLASS(RayTraceDetection, sofa::core::objectmodel::BaseComponent);
 
     void init() override;
 

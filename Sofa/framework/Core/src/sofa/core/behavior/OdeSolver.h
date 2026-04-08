@@ -41,10 +41,10 @@ namespace sofa::core::behavior
  *  (some computations can be executed in parallel).
  *
  */
-class SOFA_CORE_API OdeSolver : public virtual objectmodel::BaseObject
+class SOFA_CORE_API OdeSolver : public virtual objectmodel::BaseComponent
 {
 public:
-    SOFA_ABSTRACT_CLASS(OdeSolver, objectmodel::BaseObject);
+    SOFA_ABSTRACT_CLASS(OdeSolver, objectmodel::BaseComponent);
     SOFA_BASE_CAST_IMPLEMENTATION(OdeSolver)
 protected:
     OdeSolver();

@@ -22,7 +22,10 @@
 #pragma once
 
 #include <sofa/config.h>
+
+#ifndef SOFA_BUILD_SOFA_SIMULATION_CORE
 SOFA_HEADER_DEPRECATED_NOT_REPLACED("v25.12", "v26.06")
+#endif
 
 #include <sofa/simulation/config.h>
 #include <sofa/simulation/fwd.h>

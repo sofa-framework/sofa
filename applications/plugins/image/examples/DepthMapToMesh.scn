@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <Node 	name="root" gravity="0 0 0" dt="1"  >
   <Node name="plugins">
-    <RequiredPlugin name="image"/> <!-- Needed to use components [DepthMapToMeshEngine ImageContainer ImageFilter ImageViewer] -->
+    <RequiredPlugin pluginName="image"/> <!-- Needed to use components [DepthMapToMeshEngine ImageContainer ImageFilter ImageViewer] -->
   </Node>
   <ImageContainer  name="image"  transform="0 0 0 0 0 0 0.1 0.1 100 0 1 1"  filename="data/depth0014-scale.bmp" />
   <ImageViewer  name="viewer"  src="@image" />
