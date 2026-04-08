@@ -123,6 +123,7 @@ public:
 
     void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) final;
 
+    using Inherit::getPotentialEnergy;
     SReal getPotentialEnergy(const sofa::core::MechanicalParams*, const DataVecCoord&, const DataVecCoord& ) const override;
 
     const type::vector< Contact >& getContact() const { return contacts.getValue();}
@@ -130,7 +131,7 @@ public:
     // -- tool grabbing utility
     void grabPoint( const core::behavior::MechanicalState<defaulttype::Vec3Types> *tool,
             const type::vector< sofa::Index > &index,
-            type::vector< std::pair< core::objectmodel::BaseObject*, type::Vec3f> > &result,
+            type::vector< std::pair< core::objectmodel::BaseComponent*, type::Vec3f> > &result,
             type::vector< sofa::Index > &triangle,
             type::vector< sofa::Index > &index_point) ;
 

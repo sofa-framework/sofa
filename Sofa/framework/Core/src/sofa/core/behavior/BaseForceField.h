@@ -175,42 +175,6 @@ public:
 
 
 
-    /** @name API to consider the ForceField as a constraint as in the "Compliant formulation"
-     * See [M Tournier, M Nesme, B Gilles, F Faure, Stable Constrained Dynamics, Siggraph 2015] for more details.
-     * Each ForceField may be processed either as a traditional force function, or as a compliance (provided that its stiffness matrix is invertible).
-     * If isCompliance==false then the ForceField is handled as a traditional force function.
-     * In this case, the stiffness matrix is used to set up the implicit equation matrix, while addForce is used to set up the right-hand term as usual.
-     * If isCompliance==true, the ForceField is handled as a compliance and getComplianceMatrix must return a non-null pointer for assembled solver and/or
-     * must implement addClambda for a graph-scattered (unassembled) implementation.
-     */
-    /// @{
-
-    /// Considered as compliance, else considered as stiffness (default to false)
-    SOFA_ATTRIBUTE_DISABLED__COMPLIANT()
-    objectmodel::lifecycle::RemovedData isCompliance;
-
-    /// Return a pointer to the compliance matrix C
-    /// \f$ C = K^{-1} \f$
-    SOFA_ATTRIBUTE_DISABLED__COMPLIANT()
-    virtual const sofa::linearalgebra::BaseMatrix* getComplianceMatrix(const MechanicalParams*) = delete;
-
-    /// \brief Accumulate the contribution of the C compliant matrix multiplied
-    /// by the given Lagrange multipliers lambda vector with the given cFactor coefficient.
-    ///
-    /// This method computes
-    /// \f[
-    ///            res += cFactor C \lambda
-    /// \f]
-    /// where C is the Compliant matrix (inverse of the Stiffness matrix \f$ K \f$:
-    /// \f$ C = K^{-1} \f$)
-    ///
-    SOFA_ATTRIBUTE_DISABLED__COMPLIANT()
-    virtual void addClambda(const MechanicalParams* /*mparams*/, MultiVecDerivId /*resId*/, MultiVecDerivId /*lambdaId*/, SReal /*cFactor*/ ) = delete;
-
-    /// @}
-
-
-
     /** @name Rayleigh Damping (stiffness contribution)
      */
     /// @{

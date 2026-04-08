@@ -37,7 +37,7 @@ std::string GenerateStringID::generate(){
     std::string result;
     result.resize(length);
     for (int i = 0; i < length; i++)
-        result[i] = alphanum[rand() % length];
+        result[i] = alphanum[rand() % alphanum.size()];
 
     return result;
 }

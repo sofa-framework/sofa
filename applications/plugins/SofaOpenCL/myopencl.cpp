@@ -736,6 +736,11 @@ void myopenclMemsetDevice(int d, _device_pointer dDestPointer, int value, size_t
         myopenclCreateBuffer(d,&(deviceTmpArray.m),n);
         deviceTmpArray.offset=0;
         hostTmpArray = malloc(n);
+        if (hostTmpArray == nullptr)
+        {
+            std::cerr << "myopenclMemsetDevice: Failed to allocate " << n << " bytes" << std::endl;
+            return;
+        }
         memset((void*)hostTmpArray, value, n);
         myopenclEnqueueWriteBuffer(d, deviceTmpArray.m,0, hostTmpArray,n);
         TmpArraySize = n;

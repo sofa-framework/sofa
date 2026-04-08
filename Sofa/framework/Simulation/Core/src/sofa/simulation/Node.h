@@ -107,7 +107,7 @@ public:
 
 
 extern template class NodeSequence<Node,true>;
-extern template class NodeSequence<sofa::core::objectmodel::BaseObject,true>;
+extern template class NodeSequence<sofa::core::objectmodel::BaseComponent,true>;
 extern template class NodeSequence<sofa::core::BehaviorModel>;
 extern template class NodeSequence<sofa::core::BaseMapping>;
 extern template class NodeSequence<sofa::core::behavior::OdeSolver>;
@@ -124,7 +124,7 @@ extern template class NodeSequence<sofa::core::visual::Shader>;
 extern template class NodeSequence<sofa::core::visual::VisualModel>;
 extern template class NodeSequence<sofa::core::visual::VisualManager>;
 extern template class NodeSequence<sofa::core::CollisionModel>;
-extern template class NodeSequence<sofa::core::objectmodel::BaseObject>;
+extern template class NodeSequence<sofa::core::objectmodel::BaseComponent>;
 
 extern template class NodeSingle<sofa::core::behavior::BaseAnimationLoop>;
 extern template class NodeSingle<sofa::core::visual::VisualLoop>;
@@ -224,9 +224,9 @@ public:
     NodeSequence<Node,true> child;
     typedef NodeSequence<Node,true>::iterator ChildIterator;
 
-    NodeSequence<sofa::core::objectmodel::BaseObject,true> object;
-    typedef NodeSequence<sofa::core::objectmodel::BaseObject,true>::iterator ObjectIterator;
-    typedef NodeSequence<sofa::core::objectmodel::BaseObject,true>::reverse_iterator ObjectReverseIterator;
+    NodeSequence<sofa::core::objectmodel::BaseComponent,true> object;
+    typedef NodeSequence<sofa::core::objectmodel::BaseComponent,true>::iterator ObjectIterator;
+    typedef NodeSequence<sofa::core::objectmodel::BaseComponent,true>::reverse_iterator ObjectReverseIterator;
 
     NodeSequence<sofa::core::BehaviorModel> behaviorModel;
     NodeSequence<sofa::core::BaseMapping> mapping;
@@ -245,7 +245,7 @@ public:
     NodeSequence<sofa::core::visual::VisualModel> visualModel;
     NodeSequence<sofa::core::visual::VisualManager> visualManager;
     NodeSequence<sofa::core::CollisionModel> collisionModel;
-    NodeSequence<sofa::core::objectmodel::BaseObject> unsorted;
+    NodeSequence<sofa::core::objectmodel::BaseComponent> unsorted;
 
     NodeSingle<sofa::core::behavior::BaseAnimationLoop> animationManager;
     NodeSingle<sofa::core::visual::VisualLoop> visualLoop;
@@ -274,16 +274,16 @@ public:
     /// @{
 
     /// Add an object and return this. Detect the implemented interfaces and add the object to the corresponding lists.
-    virtual bool addObject(sofa::core::objectmodel::BaseObject::SPtr obj, sofa::core::objectmodel::TypeOfInsertion insertionLocation=sofa::core::objectmodel::TypeOfInsertion::AtEnd) final;
+    virtual bool addObject(sofa::core::objectmodel::BaseComponent::SPtr obj, sofa::core::objectmodel::TypeOfInsertion insertionLocation=sofa::core::objectmodel::TypeOfInsertion::AtEnd) final;
 
     /// Remove an object
-    virtual bool removeObject(sofa::core::objectmodel::BaseObject::SPtr obj) final;
+    virtual bool removeObject(sofa::core::objectmodel::BaseComponent::SPtr obj) final;
 
     /// Move an object from another node
-    virtual void moveObject(sofa::core::objectmodel::BaseObject::SPtr obj) final;
+    virtual void moveObject(sofa::core::objectmodel::BaseComponent::SPtr obj) final;
 
     /// Find an object given its name
-    sofa::core::objectmodel::BaseObject* getObject(const std::string& name) const;
+    sofa::core::objectmodel::BaseComponent* getObject(const std::string& name) const;
 
     Base* findLinkDestClass(const sofa::core::objectmodel::BaseClass* destType, const std::string& path, const sofa::core::objectmodel::BaseLink* link) override;
 
@@ -335,7 +335,7 @@ public:
     /// Eg:
     ///     for( BaseObject* o : node->getNodeObjects() ) { ... }
     ///     for( VisualModel* v : node->getNodeObjects<VisualModel>() ) { ... }
-    template<class Object=sofa::core::objectmodel::BaseObject>
+    template<class Object=sofa::core::objectmodel::BaseComponent>
     std::vector<Object*> getNodeObjects()
     {
         std::vector<Object*> tmp ;
@@ -384,7 +384,7 @@ public:
     /// Eg:
     ///     for( BaseObject* o : node->getTreeObjects() ) { ... }
     ///     for( VisualModel* v : node->getTreeObjects<VisualModel>() ) { ... }
-    template<class Object=sofa::core::objectmodel::BaseObject>
+    template<class Object=sofa::core::objectmodel::BaseComponent>
     std::vector<Object*> getTreeObjects()
     {
         std::vector<Object*> tmp ;
@@ -560,9 +560,9 @@ protected:
     bool debug_;
     bool initialized;
 
-    virtual bool doAddObject(sofa::core::objectmodel::BaseObject::SPtr obj,  sofa::core::objectmodel::TypeOfInsertion insertionLocation= sofa::core::objectmodel::TypeOfInsertion::AtEnd);
-    virtual bool doRemoveObject(sofa::core::objectmodel::BaseObject::SPtr obj);
-    virtual void doMoveObject(sofa::core::objectmodel::BaseObject::SPtr sobj, Node* prev_parent);
+    virtual bool doAddObject(sofa::core::objectmodel::BaseComponent::SPtr obj,  sofa::core::objectmodel::TypeOfInsertion insertionLocation= sofa::core::objectmodel::TypeOfInsertion::AtEnd);
+    virtual bool doRemoveObject(sofa::core::objectmodel::BaseComponent::SPtr obj);
+    virtual void doMoveObject(sofa::core::objectmodel::BaseComponent::SPtr sobj, Node* prev_parent);
 
     std::stack<Visitor*> actionStack;
 
@@ -570,22 +570,22 @@ private:
     virtual void notifyBeginAddChild(Node::SPtr parent, Node::SPtr child) const;
     virtual void notifyBeginRemoveChild(Node::SPtr parent, Node::SPtr child) const;
 
-    virtual void notifyBeginAddObject(Node::SPtr parent, sofa::core::objectmodel::BaseObject::SPtr obj) const;
-    virtual void notifyBeginRemoveObject(Node::SPtr parent, sofa::core::objectmodel::BaseObject::SPtr obj) const;
+    virtual void notifyBeginAddObject(Node::SPtr parent, sofa::core::objectmodel::BaseComponent::SPtr obj) const;
+    virtual void notifyBeginRemoveObject(Node::SPtr parent, sofa::core::objectmodel::BaseComponent::SPtr obj) const;
 
     virtual void notifyEndAddChild(Node::SPtr parent, Node::SPtr child) const;
     virtual void notifyEndRemoveChild(Node::SPtr parent, Node::SPtr child) const;
 
-    virtual void notifyEndAddObject(Node::SPtr parent, sofa::core::objectmodel::BaseObject::SPtr obj) const;
-    virtual void notifyEndRemoveObject(Node::SPtr parent, sofa::core::objectmodel::BaseObject::SPtr obj) const;
+    virtual void notifyEndAddObject(Node::SPtr parent, sofa::core::objectmodel::BaseComponent::SPtr obj) const;
+    virtual void notifyEndRemoveObject(Node::SPtr parent, sofa::core::objectmodel::BaseComponent::SPtr obj) const;
 
     virtual void notifySleepChanged(Node* node) const;
 
-    virtual void notifyBeginAddSlave(sofa::core::objectmodel::BaseObject* master, sofa::core::objectmodel::BaseObject* slave) const;
-    virtual void notifyBeginRemoveSlave(sofa::core::objectmodel::BaseObject* master, sofa::core::objectmodel::BaseObject* slave) const;
+    virtual void notifyBeginAddSlave(sofa::core::objectmodel::BaseComponent* master, sofa::core::objectmodel::BaseComponent* slave) const;
+    virtual void notifyBeginRemoveSlave(sofa::core::objectmodel::BaseComponent* master, sofa::core::objectmodel::BaseComponent* slave) const;
 
-    virtual void notifyEndAddSlave(sofa::core::objectmodel::BaseObject* master, sofa::core::objectmodel::BaseObject* slave) const;
-    virtual void notifyEndRemoveSlave(sofa::core::objectmodel::BaseObject* master, sofa::core::objectmodel::BaseObject* slave) const;
+    virtual void notifyEndAddSlave(sofa::core::objectmodel::BaseComponent* master, sofa::core::objectmodel::BaseComponent* slave) const;
+    virtual void notifyEndRemoveSlave(sofa::core::objectmodel::BaseComponent* master, sofa::core::objectmodel::BaseComponent* slave) const;
 
     // init all contextObject.
     void initializeContexts();

@@ -19,10 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <cstring>
-#include <queue>
 #include <difflib.h>
 #include <sofa/helper/DiffLib.h>
+
+#include <cstring>
+#include <queue>
+#include <utility>
 
 namespace sofa::helper
 {
@@ -35,27 +37,25 @@ std::vector<std::tuple<std::string, SReal>> SOFA_HELPER_API getClosestMatch(cons
     {
     public:
         Tuple(float ratio_, std::string value_)
-        {
-            ratio = ratio_;
-            value = value_;
-        }
+            : ratio(ratio_), value(std::move(value_)) {}
+
         float ratio;
         std::string value;
     };
-    auto cmp = [](Tuple& left, Tuple& right) { return left.ratio < right.ratio; };
+    auto cmp = [](const Tuple& left, Tuple& right) { return left.ratio < right.ratio; };
     std::priority_queue<Tuple, std::vector<Tuple>, decltype(cmp)> q3(cmp);
 
     for(auto& s : haystack)
     {
         auto foo = difflib::MakeSequenceMatcher(needle,s);
-        q3.push(Tuple(foo.ratio(), s));
+        q3.emplace(foo.ratio(), s);
     }
     std::vector<std::tuple<std::string, SReal>> result;
-    while(!q3.empty() && result.size()<=numEntries)
+    while (!q3.empty() && result.size() <= numEntries)
     {
         if(q3.top().ratio < threshold)
             break;
-        result.push_back(std::make_tuple(q3.top().value, q3.top().ratio));
+        result.emplace_back(q3.top().value, q3.top().ratio);
         q3.pop();
     }
     return result;

@@ -91,9 +91,6 @@ public:
     void verify_constraints();
 
 protected:
-    //SOFA_ATTRIBUTE_DEPRECATED("v25.06", "v25.12", "Further to #5017 use m_constraintMatrix instead")
-    DeprecatedAndRemoved J; ///< use m_constraintMatrix instead
-
     linearalgebra::SparseMatrix<Real> m_constraintJacobian;
 
     void doGetComplianceMatrix(linearalgebra::BaseMatrix* ) const override;
