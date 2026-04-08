@@ -436,6 +436,14 @@ public:
     void setGroups(const std::set<int>& ids) { group.setValue(ids); }
     /// @}
 
+    /**
+     * !!! WARNING since v25.12 !!!
+     *
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doGetCollisionTopology" internally,
+     * which is the method to override from now on.
+     *
+     **/
     /// BaseMeshTopology associated to the collision model. TODO: epernod remove virtual pure method by l_topology.get as soons as new link will be available
     virtual sofa::core::topology::BaseMeshTopology* getCollisionTopology() final {
         // TODO (SPRINT SED 2025): Component state mechamism
