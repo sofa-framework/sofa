@@ -95,7 +95,7 @@ void SceneCheckMissingRequiredPlugin::printSummary(simulation::SceneLoader* scen
         {
             tmp << "Note that XML syntax is assumed in the suggested lines to add.";
         }
-        msg_warning(this->getName())
+        scnchecking_warning(this->getName())
                 << "This scene is using component defined in plugins but is not importing the required plugins." << msgendl
                 << indent << "Your scene may not work on a sofa environment with different pre-loaded plugins." << msgendl
                 << indent << "To fix your scene and remove this warning you just need to cut & paste the following lines at the beginning of your scene: " << msgendl
@@ -125,7 +125,7 @@ bool SceneCheckMissingRequiredPlugin::formatRequiredPlugin(
 
 void SceneCheckMissingRequiredPlugin::formatRequiredPluginInXMLSyntax(const std::string& pluginName, const std::vector<std::string>& listComponents, std::ostream& ss)
 {
-    ss << "<RequiredPlugin name=\"" << pluginName << "\"/> <!-- Needed to use components [";
+    ss << "<RequiredPlugin pluginName=\"" << pluginName << "\"/> <!-- Needed to use components [";
     if (!listComponents.empty())
     {
         ss << sofa::helper::join(listComponents, ',');

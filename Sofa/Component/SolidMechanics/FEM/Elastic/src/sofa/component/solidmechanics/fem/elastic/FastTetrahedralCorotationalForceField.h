@@ -25,11 +25,12 @@
 #include <sofa/component/solidmechanics/fem/elastic/config.h>
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/TopologyData.h>
-#include <sofa/type/fixed_array.h>
-#include <sofa/type/vector.h>
-#include <sofa/type/Vec.h>
+#include <sofa/core/visual/DrawMesh.h>
 #include <sofa/type/Mat.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/fixed_array.h>
 #include <sofa/type/trait/Rebind.h>
+#include <sofa/type/vector.h>
 
 namespace sofa::component::solidmechanics::fem::elastic
 {
@@ -177,6 +178,8 @@ protected :
 
     typedef FastTetrahedralCorotationalForceFieldData<DataTypes> ExtraData;
     ExtraData m_data;
+
+    core::visual::DrawElementMesh<sofa::geometry::Tetrahedron> m_drawMesh;
 };
 
 #if !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_FASTTETRAHEDRALCOROTATIONALFORCEFIELD_CPP)

@@ -323,14 +323,14 @@ void TriangularBendingSprings<DataTypes>::init()
     if (m_topology == nullptr)
     {
         msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
-        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
 
     if (m_topology->d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid || m_topology->getNbTriangles()==0)
     {
         msg_error() << " object must have a Triangular Set Topology.";
-        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
     d_edgeInfo.createTopologyHandler(m_topology);

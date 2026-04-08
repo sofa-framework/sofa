@@ -20,18 +20,16 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
+#include <sofa/component/mass/RigidMassType.h>
+#include <sofa/component/mass/VecMassType.h>
 #include <sofa/component/mass/config.h>
-
-#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/behavior/Mass.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/linearalgebra/BaseVector.h>
+#include <sofa/core/behavior/TopologyAccessor.h>
 #include <sofa/core/objectmodel/DataFileName.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/topology/TopologySubsetIndices.h>
-
-#include <sofa/component/mass/VecMassType.h>
-#include <sofa/component/mass/RigidMassType.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/linearalgebra/BaseVector.h>
 
 #include <type_traits>
 
@@ -39,7 +37,7 @@ namespace sofa::component::mass
 {
 
 template <class DataTypes>
-class UniformMass : public core::behavior::Mass<DataTypes>
+class UniformMass : public core::behavior::Mass<DataTypes>, public virtual core::behavior::TopologyAccessor
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(UniformMass,DataTypes),
@@ -87,12 +85,8 @@ public:
     /// otherwise any access to the base::attribute would require
     /// the "this->" approach.
     using core::behavior::ForceField<DataTypes>::mstate ;
-    using core::objectmodel::BaseObject::getContext;
+    using core::objectmodel::BaseComponent::getContext;
     ////////////////////////////////////////////////////////////////////////////
-
-
-    /// Link to be set to the topology container in the component graph.
-    SingleLink <UniformMass<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
 protected:
     UniformMass();
@@ -135,10 +129,13 @@ public:
     sofa::core::objectmodel::ComponentState updateFromTotalMass();
     sofa::core::objectmodel::ComponentState updateFromVertexMass();
 
+    using Inherited::addMDx;
     void addMDx(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecDeriv& dx, SReal factor) override;
+    using Inherited::accFromF;
     void accFromF(const core::MechanicalParams* mparams, DataVecDeriv& a, const DataVecDeriv& f) override;
     void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
 
+    using Inherited::getKineticEnergy;
     SReal getKineticEnergy(const core::MechanicalParams* mparams, const DataVecDeriv& d_v) const override;  ///< vMv/2 using dof->getV() override
     SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const override;   ///< Mgx potential in a uniform gravity field, null at origin
     type::Vec6 getMomentum(const core::MechanicalParams* mparams, const DataVecCoord& x, const DataVecDeriv& v) const override;  ///< (Mv,cross(x,Mv)+Iw) override
@@ -147,6 +144,7 @@ public:
 
     void addGravityToV(const core::MechanicalParams* mparams, DataVecDeriv& d_v) override;
 
+    using Inherited::addMToMatrix;
     void addMToMatrix(sofa::linearalgebra::BaseMatrix * mat, SReal mFact, unsigned int &offset) override; /// Add Mass contribution to global Matrix assembling
     void doBuildMassMatrix(sofa::core::behavior::MassMatrixAccumulator* matrices) override;
     void doBuildStiffnessMatrix(core::behavior::StiffnessMatrix* /* matrix */) override {}

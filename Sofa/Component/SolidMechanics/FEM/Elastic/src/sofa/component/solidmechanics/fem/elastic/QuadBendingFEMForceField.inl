@@ -74,7 +74,6 @@ QuadBendingFEMForceField<DataTypes>::QuadBendingFEMForceField()
   , d_poisson(initData(&d_poisson, type::vector<Real>(1, static_cast<Real>(0.45)), "poissonRatio", "Poisson ratio in Hooke's law (vector)"))
   , d_young(initData(&d_young, type::vector<Real>(1, static_cast<Real>(1000.0)), "youngModulus", "Young modulus in Hooke's law (vector)"))
   , d_thickness(initData(&d_thickness, Real(1.), "thickness", "Thickness of the elements"))
-  , l_topology(initLink("topology", "link to the topology container"))
 
 {
 }
@@ -93,21 +92,13 @@ template <class DataTypes>
 void QuadBendingFEMForceField<DataTypes>::init()
 {
     this->Inherited::init();
-    if (l_topology.empty())
-    {
-        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
-        l_topology.set(this->getContext()->getMeshTopologyLink());
-    }
-  
-    m_topology = l_topology.get();
-    msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+    this->validateTopology();
 
-    if (m_topology == nullptr)
-    {
-        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
-        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+    if (this->isComponentStateInvalid())
         return;
-    }
+
+    m_topology = this->l_topology.get();
+
     if (m_topology->getNbQuads() == 0)
     {
         msg_warning() << "No quads found in linked Topology.";

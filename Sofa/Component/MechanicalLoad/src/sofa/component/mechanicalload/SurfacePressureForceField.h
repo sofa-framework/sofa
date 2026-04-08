@@ -100,10 +100,14 @@ public:
 
     void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v) override;
     void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& /* d_df */, const DataVecDeriv& /* d_dx */) override;
+    
     using Inherit1::addKToMatrix;
     void addKToMatrix(sofa::linearalgebra::BaseMatrix * matrix, SReal kFact, unsigned int &offset) override;
+    
     void doBuildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix) override;
     void doBuildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) final;
+    
+    using Inherit1::getPotentialEnergy;
     SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord& /* x */) const override;
 
     void draw(const core::visual::VisualParams* vparams) override;

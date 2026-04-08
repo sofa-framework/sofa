@@ -290,7 +290,7 @@ void TriangleFEMForceField<DataTypes>::accumulateForceSmall(VecCoord& f, const V
         catch (const std::exception& e)
         {
             msg_error() << e.what();
-            sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+            this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
             break;
         }
         
@@ -399,7 +399,7 @@ void TriangleFEMForceField<DataTypes>::initLarge()
         catch (const std::exception& e)
         {
             msg_error() << e.what();
-            sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+            this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
             return;
         }
     }
@@ -445,7 +445,7 @@ void TriangleFEMForceField<DataTypes>::accumulateForceLarge(VecCoord& f, const V
         catch (const std::exception& e)
         {
             msg_error() << e.what();
-            sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+            this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
             break;
         }
 
@@ -546,31 +546,13 @@ void TriangleFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vp
         return;
 
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
-    vparams->drawTool()->disableLighting();
 
     if (vparams->displayFlags().getShowWireFrame())
         vparams->drawTool()->setPolygonMode(0, true);
 
-    std::vector<sofa::type::RGBAColor> colorVector;
-    std::vector<sofa::type::Vec3> vertices;
-
     const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
 
-    typename VecElement::const_iterator it;
-    for (it = _indexedElements->begin(); it != _indexedElements->end(); ++it)
-    {
-        const auto& [a, b, c] = it->array();
-
-        colorVector.push_back(sofa::type::RGBAColor::green());
-        vertices.push_back(sofa::type::Vec3(x[a]));
-        colorVector.push_back(sofa::type::RGBAColor(0, 0.5, 0.5, 1));
-        vertices.push_back(sofa::type::Vec3(x[b]));
-        colorVector.push_back(sofa::type::RGBAColor(0, 0, 1, 1));
-        vertices.push_back(sofa::type::Vec3(x[c]));
-    }
-    vparams->drawTool()->drawTriangles(vertices, colorVector);
-
-
+    m_drawMesh.drawAllElements(vparams->drawTool(), x, this->l_topology.get());
 }
  
 

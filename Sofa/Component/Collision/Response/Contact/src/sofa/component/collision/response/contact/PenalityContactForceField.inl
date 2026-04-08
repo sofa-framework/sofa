@@ -339,13 +339,13 @@ template<class DataTypes>
 void PenalityContactForceField<DataTypes>::grabPoint(
     const core::behavior::MechanicalState<defaulttype::Vec3Types> *tool,
     const type::vector< sofa::Index > &index,
-    type::vector< std::pair< core::objectmodel::BaseObject*, type::Vec3f> > &result,
+    type::vector< std::pair< core::objectmodel::BaseComponent*, type::Vec3f> > &result,
     type::vector< sofa::Index > &triangle,
     type::vector< sofa::Index > &index_point)
 {
     const auto& contactsRef = contacts.getValue();
 
-    if (static_cast< core::objectmodel::BaseObject *>(this->mstate1) == static_cast< const core::objectmodel::BaseObject *>(tool))
+    if (static_cast< core::objectmodel::BaseComponent *>(this->mstate1) == static_cast< const core::objectmodel::BaseComponent *>(tool))
     {
         const auto& mstate2Pos = this->mstate2->read(core::vec_id::read_access::position)->getValue();
 
@@ -355,14 +355,14 @@ void PenalityContactForceField<DataTypes>::grabPoint(
             {
                 if (contactsRef[i].m1 == index[j])
                 {
-                    result.push_back(std::make_pair(static_cast< core::objectmodel::BaseObject *>(this),mstate2Pos[contactsRef[i].m2]));
+                    result.push_back(std::make_pair(static_cast< core::objectmodel::BaseComponent *>(this),mstate2Pos[contactsRef[i].m2]));
                     triangle.push_back(contactsRef[i].index2);
                     index_point.push_back(index[j]);
                 }
             }
         }
     }
-    else if (static_cast< core::objectmodel::BaseObject *>(this->mstate2) == static_cast< const core::objectmodel::BaseObject *>(tool))
+    else if (static_cast< core::objectmodel::BaseComponent *>(this->mstate2) == static_cast< const core::objectmodel::BaseComponent *>(tool))
     {
         const auto& mstate1Pos = this->mstate1->read(core::vec_id::read_access::position)->getValue();
         for (sofa::Index i=0; i< contactsRef.size(); i++)
@@ -371,7 +371,7 @@ void PenalityContactForceField<DataTypes>::grabPoint(
             {
                 if (contactsRef[i].m2 == index[j])
                 {
-                    result.push_back(std::make_pair(static_cast< core::objectmodel::BaseObject *>(this), mstate1Pos[contactsRef[i].m1]));
+                    result.push_back(std::make_pair(static_cast< core::objectmodel::BaseComponent *>(this), mstate1Pos[contactsRef[i].m1]));
                     triangle.push_back(contactsRef[i].index1);
                     index_point.push_back(index[j]);
                 }

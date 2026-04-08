@@ -22,14 +22,14 @@
 #pragma once
 #include <sofa/component/solidmechanics/fem/elastic/BaseLinearElasticityFEMForceField.h>
 #include <sofa/component/solidmechanics/fem/elastic/config.h>
-
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/TopologyData.h>
-#include <sofa/type/vector.h>
-#include <sofa/type/Vec.h>
-#include <sofa/type/Mat.h>
-#include <sofa/helper/map.h>
+#include <sofa/core/visual/DrawMesh.h>
 #include <sofa/helper/ColorMap.h>
+#include <sofa/helper/map.h>
+#include <sofa/type/Mat.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/vector.h>
 
 // corotational tetrahedron from
 // @InProceedings{NPF05,
@@ -249,6 +249,8 @@ protected:
     void applyStiffnessPolar( Vector& f, const Vector& x, int i=0, Index a=0,Index b=1,Index c=2,Index d=3, SReal fact=1.0 );
 
     void printStiffnessMatrix(int idTetra);
+
+    core::visual::DrawElementMesh<sofa::geometry::Tetrahedron> m_drawMesh;
 
 };
 

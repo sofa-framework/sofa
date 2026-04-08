@@ -43,7 +43,9 @@
 #cmakedefine SOFA_ENABLE_SCOPED_ADVANCED_TIMER
 
 #ifdef WIN32
-#define UNICODE
+#  ifndef UNICODE
+#    define UNICODE
+#  endif
 #endif // WIN32
 
 #ifdef SOFA_FLOAT

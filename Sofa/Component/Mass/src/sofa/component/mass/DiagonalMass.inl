@@ -50,7 +50,6 @@ DiagonalMass<DataTypes, GeometricalTypes>::DiagonalMass()
     , d_showCenterOfGravity( initData(&d_showCenterOfGravity, false, "showGravityCenter", "Display the center of gravity of the system" ) )
     , d_showAxisSize( initData(&d_showAxisSize, 1.0f, "showAxisSizeFactor", "Factor length of the axis displayed (only used for rigids)" ) )
     , d_fileMass( initData(&d_fileMass,  "filename", "Xsp3.0 file to specify the mass parameters" ) )
-    , l_topology(initLink("topology", "link to the topology container"))
     , l_geometryState(initLink("geometryState", "link to the MechanicalObject associated with the geometry"))
     , m_massTopologyType(sofa::geometry::ElementType::UNKNOWN)
 {
@@ -756,22 +755,9 @@ void DiagonalMass<DataTypes, GeometricalTypes>::initTopologyHandlers()
 template <class DataTypes, class GeometricalTypes>
 bool DiagonalMass<DataTypes, GeometricalTypes>::checkTopology()
 {
-    if (l_topology.empty())
-    {
-        msg_info() << "Link \"topology\" to the Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
-        l_topology.set(this->getContext()->getMeshTopologyLink());
-    }
-
-    if (l_topology.get() == nullptr)
-    {
-        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
-        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+    this->validateTopology();
+    if (this->isComponentStateInvalid())
         return false;
-    }
-    else
-    {
-        msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
-    }
 
     if (l_geometryState.empty())
     {

@@ -253,7 +253,7 @@ protected:
     virtual void makeCreateDispatcher();
 
     virtual std::shared_ptr<sofa::core::matrixaccumulator::IndexVerificationStrategy>
-    makeIndexVerificationStrategy(sofa::core::objectmodel::BaseObject* component);
+    makeIndexVerificationStrategy(sofa::core::objectmodel::BaseComponent* component);
 
     std::map< PairMechanicalStates, BaseMatrixProjectionMethod<LocalMappedMatrixType<Real> >* > m_matrixMappings;
 

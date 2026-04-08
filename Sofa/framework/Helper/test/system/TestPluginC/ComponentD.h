@@ -23,17 +23,17 @@
 #define TESTPLUGINC_COMPONENT_D_H
 
 #include <TestPluginC/TestPluginC.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 
 
 namespace testpluginc
 {
 
-class SOFA_TESTPLUGINC_API ComponentD : public sofa::core::objectmodel::BaseObject
+class SOFA_TESTPLUGINC_API ComponentD : public sofa::core::objectmodel::BaseComponent
 {
 
 public:
-    SOFA_CLASS(ComponentD, sofa::core::objectmodel::BaseObject);
+    SOFA_CLASS(ComponentD, sofa::core::objectmodel::BaseComponent);
 
 protected:
     ComponentD();
