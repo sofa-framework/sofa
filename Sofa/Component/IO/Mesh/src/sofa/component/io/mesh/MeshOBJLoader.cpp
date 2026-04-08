@@ -24,8 +24,12 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/SetDirectory.h>
 #include <fstream>
+#include <cstdlib>
+#include <cerrno>
+#include <climits>
 #include <sofa/helper/accessor.h>
 #include <sofa/helper/system/Locale.h>
+#include <sofa/type/hardening.h>
 
 namespace sofa::component::io::mesh
 {
@@ -306,15 +310,22 @@ bool MeshOBJLoader::readOBJ (std::ifstream &file, const char* filename)
 
                     if (!tmp.empty())
                     {
-                        vtn[j] = atoi(tmp.c_str());
-                        if (vtn[j] >= 1)
-                            vtn[j] -=1; // -1 because the numerotation begins at 1 and a vector begins at 0
-                        else if (vtn[j] < 0)
-                            vtn[j] += (j==0) ? sofa::Size(my_positions.size()) : (j==1) ? sofa::Size(my_texCoords.size()) : sofa::Size(my_normals.size());
-                        else
+                        if(!sofa::type::hardening::safeStrToInt(tmp, vtn[j]))
                         {
                             msg_error() << "Invalid index " << tmp;
                             vtn[j] = -1;
+                        }
+                        else
+                        {
+                            if (vtn[j] >= 1)
+                                vtn[j] -=1; // -1 because the numerotation begins at 1 and a vector begins at 0
+                            else if (vtn[j] < 0)
+                                vtn[j] += (j==0) ? sofa::Size(my_positions.size()) : (j==1) ? sofa::Size(my_texCoords.size()) : sofa::Size(my_normals.size());
+                            else
+                            {
+                                msg_error() << "Invalid index " << tmp;
+                                vtn[j] = -1;
+                            }
                         }
                     }
                 }

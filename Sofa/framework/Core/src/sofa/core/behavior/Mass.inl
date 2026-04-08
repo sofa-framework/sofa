@@ -50,7 +50,11 @@ void Mass<DataTypes>::addMDx(const MechanicalParams* mparams, MultiVecDerivId fi
     if (mparams)
     {
         auto mstate = this->mstate.get();
-        addMDx(mparams, *fid[mstate].write(), *mparams->readDx(mstate), factor);
+
+        if (auto* dxData = mparams->readDx(mstate))
+        {
+            addMDx(mparams, *fid[mstate].write(), *dxData, factor);
+        }
     }
 }
 

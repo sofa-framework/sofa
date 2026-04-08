@@ -29,10 +29,10 @@
 namespace sofa::core::visual
 {
 
-class SOFA_CORE_API BaseVisualStyle : public sofa::core::objectmodel::BaseObject
+class SOFA_CORE_API BaseVisualStyle : public sofa::core::objectmodel::BaseComponent
 {
 public:
-    SOFA_CLASS(BaseVisualStyle,sofa::core::objectmodel::BaseObject);
+    SOFA_CLASS(BaseVisualStyle,sofa::core::objectmodel::BaseComponent);
 
     typedef sofa::core::visual::VisualParams VisualParams;
     typedef sofa::core::visual::DisplayFlags DisplayFlags;

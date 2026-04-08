@@ -371,9 +371,9 @@ namespace sofa::helper
 
 
     MarchingCubeUtility::MarchingCubeUtility()
-        : cubeStep ( 1 ), convolutionSize ( 1 ),
-          dataResolution ( 0,0,0 ), dataVoxelSize ( 1_sreal, 1_sreal, 1_sreal ),
-          verticesIndexOffset( 0), verticesTranslation( 0_sreal, 0_sreal, 0_sreal)
+        : m_cubeStep ( 1 ), m_convolutionSize ( 1 ),
+          m_dataResolution ( 0,0,0 ), m_dataVoxelSize ( 1_sreal, 1_sreal, 1_sreal ),
+          m_verticesIndexOffset( 0), m_verticesTranslation( 0_sreal, 0_sreal, 0_sreal)
     {
         // // Computes non trivial faces.
         // int nonTrivialFaces[256];
@@ -413,8 +413,8 @@ namespace sofa::helper
     {
         const float mu = ( isolevel - valp1 ) / ( valp2 - valp1 );
         p = p1 + ( p2 - p1 ) * mu;
-        p = ( ( p + type::Vec3 ( 1_sreal, 1_sreal, 1_sreal) ) * 0.5_sreal ).linearProduct ( dataVoxelSize.linearProduct ( dataResolution ) ) + dataVoxelSize/2_sreal;
-        p += verticesTranslation;
+        p = ( ( p + type::Vec3 ( 1_sreal, 1_sreal, 1_sreal) ) * 0.5_sreal ).linearProduct ( m_dataVoxelSize.linearProduct ( m_dataResolution ) ) + m_dataVoxelSize/2_sreal;
+        p += m_verticesTranslation;
         p[0] = ( int ) helper::round( p[0] * (SReal)PRECISION ) / (SReal)PRECISION;
         p[1] = ( int ) helper::round( p[1] * (SReal)PRECISION ) / (SReal)PRECISION;
         p[2] = ( int ) helper::round( p[2] * (SReal)PRECISION ) / (SReal)PRECISION;
@@ -434,37 +434,37 @@ namespace sofa::helper
 
         cell.pos[0]=vcurf.linearProduct ( gridStep )-type::Vec3 ( 1_sreal, 1_sreal, 1_sreal );
         type::Vec3i valPos0=coord.linearProduct ( dataGridStep );
-        cell.val[0]=(float)((( valPos0[0] >= roi.min[0]) && ( valPos0[1] >= roi.min[1]) && ( valPos0[2] >= roi.min[2]) && ( valPos0[0] < roi.max[0]) && ( valPos0[1] < roi.max[1]) && ( valPos0[2] < roi.max[2]))?data[valPos0[0] + valPos0[1]*dataResolution[0] + valPos0[2]*dataResolution[0]*dataResolution[1]]:0);
+        cell.val[0]=(float)((( valPos0[0] >= m_roi.min[0]) && ( valPos0[1] >= m_roi.min[1]) && ( valPos0[2] >= m_roi.min[2]) && ( valPos0[0] < m_roi.max[0]) && ( valPos0[1] < m_roi.max[1]) && ( valPos0[2] < m_roi.max[2]))?data[valPos0[0] + valPos0[1]*m_dataResolution[0] + valPos0[2]*m_dataResolution[0]*m_dataResolution[1]]:0);
 
         type::Vec3i valPos;
 
         cell.pos[1]=cell.pos[0]+type::Vec3 ( gridStep[0], 0_sreal, 0_sreal );
         valPos=valPos0+type::Vec3i ( dataGridStep[0], 0, 0 );
-        cell.val[1]=(float)((( valPos[0] >= roi.min[0]) && ( valPos[1] >= roi.min[1]) && ( valPos[2] >= roi.min[2]) && ( valPos[0] < roi.max[0]) && ( valPos[1] < roi.max[1]) && ( valPos[2] < roi.max[2]))?data[valPos[0] + valPos[1]*dataResolution[0] + valPos[2]*dataResolution[0]*dataResolution[1]]:0);
+        cell.val[1]=(float)((( valPos[0] >= m_roi.min[0]) && ( valPos[1] >= m_roi.min[1]) && ( valPos[2] >= m_roi.min[2]) && ( valPos[0] < m_roi.max[0]) && ( valPos[1] < m_roi.max[1]) && ( valPos[2] < m_roi.max[2]))?data[valPos[0] + valPos[1]*m_dataResolution[0] + valPos[2]*m_dataResolution[0]*m_dataResolution[1]]:0);
 
         cell.pos[2]=cell.pos[0]+type::Vec3 ( gridStep[0], gridStep[1], 0_sreal );
         valPos=valPos0+type::Vec3i ( dataGridStep[0], dataGridStep[1], 0 );
-        cell.val[2]=(float)((( valPos[0] >= roi.min[0]) && ( valPos[1] >= roi.min[1]) && ( valPos[2] >= roi.min[2]) && ( valPos[0] < roi.max[0]) && ( valPos[1] < roi.max[1]) && ( valPos[2] < roi.max[2]))?data[valPos[0] + valPos[1]*dataResolution[0] + valPos[2]*dataResolution[0]*dataResolution[1]]:0);
+        cell.val[2]=(float)((( valPos[0] >= m_roi.min[0]) && ( valPos[1] >= m_roi.min[1]) && ( valPos[2] >= m_roi.min[2]) && ( valPos[0] < m_roi.max[0]) && ( valPos[1] < m_roi.max[1]) && ( valPos[2] < m_roi.max[2]))?data[valPos[0] + valPos[1]*m_dataResolution[0] + valPos[2]*m_dataResolution[0]*m_dataResolution[1]]:0);
 
         cell.pos[3]=cell.pos[0]+type::Vec3 ( 0., gridStep[1], 0_sreal );
         valPos=valPos0+type::Vec3i ( 0, dataGridStep[1], 0 );
-        cell.val[3]=(float)((( valPos[0] >= roi.min[0]) && ( valPos[1] >= roi.min[1]) && ( valPos[2] >= roi.min[2]) && ( valPos[0] < roi.max[0]) && ( valPos[1] < roi.max[1]) && ( valPos[2] < roi.max[2]))?data[valPos[0] + valPos[1]*dataResolution[0] + valPos[2]*dataResolution[0]*dataResolution[1]]:0);
+        cell.val[3]=(float)((( valPos[0] >= m_roi.min[0]) && ( valPos[1] >= m_roi.min[1]) && ( valPos[2] >= m_roi.min[2]) && ( valPos[0] < m_roi.max[0]) && ( valPos[1] < m_roi.max[1]) && ( valPos[2] < m_roi.max[2]))?data[valPos[0] + valPos[1]*m_dataResolution[0] + valPos[2]*m_dataResolution[0]*m_dataResolution[1]]:0);
 
         cell.pos[4]=cell.pos[0]+type::Vec3 ( 0_sreal, 0_sreal, gridStep[2] );
         valPos=valPos0+type::Vec3i ( 0, 0, dataGridStep[2] );
-        cell.val[4]=(float)((( valPos[0] >= roi.min[0]) && ( valPos[1] >= roi.min[1]) && ( valPos[2] >= roi.min[2]) && ( valPos[0] < roi.max[0]) && ( valPos[1] < roi.max[1]) && ( valPos[2] < roi.max[2]))?data[valPos[0] + valPos[1]*dataResolution[0] + valPos[2]*dataResolution[0]*dataResolution[1]]:0);
+        cell.val[4]=(float)((( valPos[0] >= m_roi.min[0]) && ( valPos[1] >= m_roi.min[1]) && ( valPos[2] >= m_roi.min[2]) && ( valPos[0] < m_roi.max[0]) && ( valPos[1] < m_roi.max[1]) && ( valPos[2] < m_roi.max[2]))?data[valPos[0] + valPos[1]*m_dataResolution[0] + valPos[2]*m_dataResolution[0]*m_dataResolution[1]]:0);
 
         cell.pos[5]=cell.pos[0]+type::Vec3 ( gridStep[0], 0_sreal, gridStep[2] );
         valPos=valPos0+type::Vec3i ( dataGridStep[0], 0, dataGridStep[2] );
-        cell.val[5]=(float)((( valPos[0] >= roi.min[0]) && ( valPos[1] >= roi.min[1]) && ( valPos[2] >= roi.min[2]) && ( valPos[0] < roi.max[0]) && ( valPos[1] < roi.max[1]) && ( valPos[2] < roi.max[2]))?data[valPos[0] + valPos[1]*dataResolution[0] + valPos[2]*dataResolution[0]*dataResolution[1]]:0);
+        cell.val[5]=(float)((( valPos[0] >= m_roi.min[0]) && ( valPos[1] >= m_roi.min[1]) && ( valPos[2] >= m_roi.min[2]) && ( valPos[0] < m_roi.max[0]) && ( valPos[1] < m_roi.max[1]) && ( valPos[2] < m_roi.max[2]))?data[valPos[0] + valPos[1]*m_dataResolution[0] + valPos[2]*m_dataResolution[0]*m_dataResolution[1]]:0);
 
         cell.pos[6]=cell.pos[0]+type::Vec3 ( gridStep[0], gridStep[1], gridStep[2] );
         valPos=valPos0+type::Vec3i ( dataGridStep[0], dataGridStep[1], dataGridStep[2] );
-        cell.val[6]=(float)((( valPos[0] >= roi.min[0]) && ( valPos[1] >= roi.min[1]) && ( valPos[2] >= roi.min[2]) && ( valPos[0] < roi.max[0]) && ( valPos[1] < roi.max[1]) && ( valPos[2] < roi.max[2]))?data[valPos[0] + valPos[1]*dataResolution[0] + valPos[2]*dataResolution[0]*dataResolution[1]]:0);
+        cell.val[6]=(float)((( valPos[0] >= m_roi.min[0]) && ( valPos[1] >= m_roi.min[1]) && ( valPos[2] >= m_roi.min[2]) && ( valPos[0] < m_roi.max[0]) && ( valPos[1] < m_roi.max[1]) && ( valPos[2] < m_roi.max[2]))?data[valPos[0] + valPos[1]*m_dataResolution[0] + valPos[2]*m_dataResolution[0]*m_dataResolution[1]]:0);
 
         cell.pos[7]=cell.pos[0]+type::Vec3 ( 0_sreal, gridStep[1], gridStep[2] );
         valPos=valPos0+type::Vec3i ( 0, dataGridStep[1], dataGridStep[2] );
-        cell.val[7]=(float)((( valPos[0] >= roi.min[0]) && ( valPos[1] >= roi.min[1]) && ( valPos[2] >= roi.min[2]) && ( valPos[0] < roi.max[0]) && ( valPos[1] < roi.max[1]) && ( valPos[2] < roi.max[2]))?data[valPos[0] + valPos[1]*dataResolution[0] + valPos[2]*dataResolution[0]*dataResolution[1]]:0);
+        cell.val[7]=(float)((( valPos[0] >= m_roi.min[0]) && ( valPos[1] >= m_roi.min[1]) && ( valPos[2] >= m_roi.min[2]) && ( valPos[0] < m_roi.max[0]) && ( valPos[1] < m_roi.max[1]) && ( valPos[2] < m_roi.max[2]))?data[valPos[0] + valPos[1]*m_dataResolution[0] + valPos[2]*m_dataResolution[0]*m_dataResolution[1]]:0);
     }
 
     /*
@@ -544,7 +544,7 @@ namespace sofa::helper
                 else
                 {
                     //Add new Vertex in map
-                    current_ID = static_cast<PointID>(map_indices.size()) + verticesIndexOffset;
+                    current_ID = static_cast<PointID>(map_indices.size()) + m_verticesIndexOffset;
                     map_indices.push_back ( current_P );
                     map_vertices.insert ( std::make_pair ( current_P, current_ID ) );
                 }
@@ -575,21 +575,21 @@ namespace sofa::helper
                                               bool propagate
                                               ) const
     {
-        type::Vec3i bboxMin = type::Vec3i ( bbox.min / cubeStep );
-        type::Vec3i bboxMax = type::Vec3i ( bbox.max / cubeStep );
-        type::Vec3i gridSize = type::Vec3i ( dataResolution /cubeStep );
+        type::Vec3i bboxMin = type::Vec3i ( m_bbox.min / m_cubeStep );
+        type::Vec3i bboxMax = type::Vec3i ( m_bbox.max / m_cubeStep );
+        type::Vec3i gridSize = type::Vec3i ( m_dataResolution /m_cubeStep );
 
         const type::Vec3 gridStep { 2_sreal / static_cast<SReal>(gridSize[0]), 2_sreal / static_cast<SReal>(gridSize[1]), 2_sreal / static_cast<SReal>(gridSize[2]) };
 
-        const type::Vec3i dataGridStep ( dataResolution[0]/gridSize[0],dataResolution[1]/gridSize[1],dataResolution[2]/gridSize[2] );
+        const type::Vec3i dataGridStep ( m_dataResolution[0]/gridSize[0],m_dataResolution[1]/gridSize[1],m_dataResolution[2]/gridSize[2] );
 
         type::Vec3i cubeCoord;
         stack<type::Vec3i> cubesToGenerate; // Stack of cubes to generate.
         for( sofa::type::vector<type::Vec3i>::const_iterator it = coord.begin(); it != coord.end(); ++it)
         {
             const type::Vec3i& voxel = *it;
-            if ( ( voxel[0] >= bbox.min[0]-1 ) && ( voxel[1] >= bbox.min[1]-1 ) && ( voxel[2] >= bbox.min[2]-1 ) &&
-                 ( voxel[0] <= bbox.max[0] ) && ( voxel[1] <= bbox.max[1] ) && ( voxel[2] <= bbox.max[2] ) )
+            if ( ( voxel[0] >= m_bbox.min[0]-1 ) && ( voxel[1] >= m_bbox.min[1]-1 ) && ( voxel[2] >= m_bbox.min[2]-1 ) &&
+                 ( voxel[0] <= m_bbox.max[0] ) && ( voxel[1] <= m_bbox.max[1] ) && ( voxel[2] <= m_bbox.max[2] ) )
                 cubesToGenerate.push ( *it ); // Adds the first non-trivial cube.
         }
 
@@ -636,13 +636,13 @@ namespace sofa::helper
         //    Vec3i gridSize = Vec3i ( d_dataResolution[0]/cubeStep, d_dataResolution[1]/cubeStep, d_dataResolution[2]/cubeStep );
         std::set<type::Vec3i> generatedCubes;
 
-        const size_t datasize = dataResolution[0]*dataResolution[1]*dataResolution[2];
+        const size_t datasize = m_dataResolution[0]*m_dataResolution[1]*m_dataResolution[2];
         if ( datasize == 0 )
             return;
 
         unsigned char* data;
         bool smooth = false;
-        if ( convolutionSize != 0 )
+        if ( m_convolutionSize != 0 )
         {
             data = new unsigned char[datasize];
             memcpy ( data, _data, datasize*sizeof ( unsigned char ) );
@@ -682,14 +682,14 @@ namespace sofa::helper
                                     sofa::type::vector< type::Vec3 >& vertices,
                                     type::vector< type::vector<unsigned int> >* triangleIndexInRegularGrid ) const
     {
-        const size_t datasize = dataResolution[0]*dataResolution[1]*dataResolution[2];
+        const size_t datasize = m_dataResolution[0]*m_dataResolution[1]*m_dataResolution[2];
 
         if ( datasize == 0 )
             return;
 
         unsigned char* data;
         bool smooth = false;
-        if ( convolutionSize != 0 )
+        if ( m_convolutionSize != 0 )
         {
             data = new unsigned char[datasize];
             memcpy(data, _data, datasize*sizeof(unsigned char));
@@ -705,15 +705,15 @@ namespace sofa::helper
         for ( size_t i = 0; i < vertices.size(); i++ )
             map_vertices.insert ( std::make_pair ( vertices[i], sofa::helper::narrow_cast<PointID>(i) ) );
 
-        type::Vec3i bboxMin = type::Vec3i ( bbox.min / cubeStep );
-        type::Vec3i bboxMax = type::Vec3i ( bbox.max / cubeStep );
-        type::Vec3i gridSize = type::Vec3i ( dataResolution /cubeStep );
+        type::Vec3i bboxMin = type::Vec3i ( m_bbox.min / m_cubeStep );
+        type::Vec3i bboxMax = type::Vec3i ( m_bbox.max / m_cubeStep );
+        type::Vec3i gridSize = type::Vec3i ( m_dataResolution /m_cubeStep );
 
         const type::Vec3 gridStep { 2_sreal / static_cast<SReal>(gridSize[0]),
                                     2_sreal / static_cast<SReal>(gridSize[1]),
                                     2_sreal / static_cast<SReal>(gridSize[2]) };
 
-        const type::Vec3i dataGridStep ( dataResolution[0]/gridSize[0],dataResolution[1]/gridSize[1],dataResolution[2]/gridSize[2] );
+        const type::Vec3i dataGridStep ( m_dataResolution[0]/gridSize[0],m_dataResolution[1]/gridSize[1],m_dataResolution[2]/gridSize[2] );
 
         int cubeConf;
         for ( int k=bboxMin[2]; k<bboxMax[2]-1; k++ )
@@ -769,12 +769,12 @@ namespace sofa::helper
         msg_info() << "findSeeds(). Beginning." ;
 
         std::set<unsigned int> parsedVoxels;
-        const size_t datasize = dataResolution[0]*dataResolution[1]*dataResolution[2];
+        const size_t datasize = m_dataResolution[0]*m_dataResolution[1]*m_dataResolution[2];
         if ( datasize == 0 )
             return;
         uint8_t* data;
         bool smooth = false;
-        if ( convolutionSize != 0 )
+        if ( m_convolutionSize != 0 )
         {
             data = new uint8_t[datasize];
             memcpy(data, _data, datasize*sizeof(uint8_t));
@@ -786,9 +786,9 @@ namespace sofa::helper
             data = _data;
         }
 
-        type::Vec3i bboxMin = type::Vec3i ( bbox.min / cubeStep );
-        type::Vec3i bboxMax = type::Vec3i ( bbox.max / cubeStep );
-        type::Vec3i gridSize = type::Vec3i ( dataResolution /cubeStep );
+        type::Vec3i bboxMin = type::Vec3i ( m_bbox.min / m_cubeStep );
+        type::Vec3i bboxMax = type::Vec3i ( m_bbox.max / m_cubeStep );
+        type::Vec3i gridSize = type::Vec3i ( m_dataResolution /m_cubeStep );
 
         int index;
         for ( int k=bboxMin[2]; k<bboxMax[2]-1; k++ )
@@ -819,13 +819,13 @@ namespace sofa::helper
     void MarchingCubeUtility::findSeedsFromRealCoords ( vector<type::Vec3i>& mCubeCoords, const vector<type::Vec3>& realCoords ) const
     {
         mCubeCoords.clear();
-        const type::Vec3 gridSize  ( 1_sreal / dataVoxelSize[0]*cubeStep,
-                                     1_sreal / dataVoxelSize[1]*cubeStep,
-                                     1_sreal / dataVoxelSize[2]*cubeStep );
+        const type::Vec3 gridSize  ( 1_sreal / m_dataVoxelSize[0]*m_cubeStep,
+                                     1_sreal / m_dataVoxelSize[1]*m_cubeStep,
+                                     1_sreal / m_dataVoxelSize[2]*m_cubeStep );
 
         for ( vector<type::Vec3>::const_iterator it = realCoords.begin(); it != realCoords.end(); ++it )
         {
-            const type::Vec3 seed = ( ( *it ) - verticesTranslation - ( dataVoxelSize/ 2_sreal ) ).linearProduct ( gridSize );
+            const type::Vec3 seed = ( ( *it ) - m_verticesTranslation - ( m_dataVoxelSize/ 2_sreal ) ).linearProduct ( gridSize );
             const type::Vec3i intSeed {static_cast<int>(seed.x()), static_cast<int>(seed.y()), static_cast<int>(seed.z())};
             mCubeCoords.push_back ( intSeed );
             assert ( intSeed[0] >= 0 );
@@ -839,12 +839,12 @@ namespace sofa::helper
 
     void MarchingCubeUtility::setVerticesIndexOffset( unsigned int verticesIndexOffset)
     {
-        this->verticesIndexOffset = verticesIndexOffset;
+        this->m_verticesIndexOffset = verticesIndexOffset;
     }
 
     void MarchingCubeUtility::setVerticesTranslation( type::Vec3 verticesTranslation)
     {
-        this->verticesTranslation = verticesTranslation;
+        this->m_verticesTranslation = verticesTranslation;
     }
 
 
@@ -852,14 +852,14 @@ namespace sofa::helper
     void MarchingCubeUtility::updateTriangleInRegularGridVector ( type::vector< type::vector<unsigned int /*regular grid space index*/> >& triangleIndexInRegularGrid, const type::Vec3i& coord, const GridCell& cell, unsigned int nbTriangles ) const
     {
         vector<unsigned int> voxels;
-        if ( cell.val[0] ) voxels.push_back ( ( coord[0]+0 ) + ( coord[1]+0 ) *dataResolution[0] + ( coord[2]+0 ) *dataResolution[0]*dataResolution[1] ); //les voxels occupes ds ce cube
-        if ( cell.val[1] ) voxels.push_back ( ( coord[0]+1 ) + ( coord[1]+0 ) *dataResolution[0] + ( coord[2]+0 ) *dataResolution[0]*dataResolution[1] ); //les voxels occupes ds ce cube
-        if ( cell.val[3] ) voxels.push_back ( ( coord[0]+0 ) + ( coord[1]+1 ) *dataResolution[0] + ( coord[2]+0 ) *dataResolution[0]*dataResolution[1] ); //les voxels occupes ds ce cube
-        if ( cell.val[2] ) voxels.push_back ( ( coord[0]+1 ) + ( coord[1]+1 ) *dataResolution[0] + ( coord[2]+0 ) *dataResolution[0]*dataResolution[1] ); //les voxels occupes ds ce cube
-        if ( cell.val[4] ) voxels.push_back ( ( coord[0]+0 ) + ( coord[1]+0 ) *dataResolution[0] + ( coord[2]+1 ) *dataResolution[0]*dataResolution[1] ); //les voxels occupes ds ce cube
-        if ( cell.val[5] ) voxels.push_back ( ( coord[0]+1 ) + ( coord[1]+0 ) *dataResolution[0] + ( coord[2]+1 ) *dataResolution[0]*dataResolution[1] ); //les voxels occupes ds ce cube
-        if ( cell.val[7] ) voxels.push_back ( ( coord[0]+0 ) + ( coord[1]+1 ) *dataResolution[0] + ( coord[2]+1 ) *dataResolution[0]*dataResolution[1] ); //les voxels occupes ds ce cube
-        if ( cell.val[6] ) voxels.push_back ( ( coord[0]+1 ) + ( coord[1]+1 ) *dataResolution[0] + ( coord[2]+1 ) *dataResolution[0]*dataResolution[1] ); //les voxels occupes ds ce cube
+        if ( cell.val[0] ) voxels.push_back ( ( coord[0]+0 ) + ( coord[1]+0 ) *m_dataResolution[0] + ( coord[2]+0 ) *m_dataResolution[0]*m_dataResolution[1] ); //les voxels occupes ds ce cube
+        if ( cell.val[1] ) voxels.push_back ( ( coord[0]+1 ) + ( coord[1]+0 ) *m_dataResolution[0] + ( coord[2]+0 ) *m_dataResolution[0]*m_dataResolution[1] ); //les voxels occupes ds ce cube
+        if ( cell.val[3] ) voxels.push_back ( ( coord[0]+0 ) + ( coord[1]+1 ) *m_dataResolution[0] + ( coord[2]+0 ) *m_dataResolution[0]*m_dataResolution[1] ); //les voxels occupes ds ce cube
+        if ( cell.val[2] ) voxels.push_back ( ( coord[0]+1 ) + ( coord[1]+1 ) *m_dataResolution[0] + ( coord[2]+0 ) *m_dataResolution[0]*m_dataResolution[1] ); //les voxels occupes ds ce cube
+        if ( cell.val[4] ) voxels.push_back ( ( coord[0]+0 ) + ( coord[1]+0 ) *m_dataResolution[0] + ( coord[2]+1 ) *m_dataResolution[0]*m_dataResolution[1] ); //les voxels occupes ds ce cube
+        if ( cell.val[5] ) voxels.push_back ( ( coord[0]+1 ) + ( coord[1]+0 ) *m_dataResolution[0] + ( coord[2]+1 ) *m_dataResolution[0]*m_dataResolution[1] ); //les voxels occupes ds ce cube
+        if ( cell.val[7] ) voxels.push_back ( ( coord[0]+0 ) + ( coord[1]+1 ) *m_dataResolution[0] + ( coord[2]+1 ) *m_dataResolution[0]*m_dataResolution[1] ); //les voxels occupes ds ce cube
+        if ( cell.val[6] ) voxels.push_back ( ( coord[0]+1 ) + ( coord[1]+1 ) *m_dataResolution[0] + ( coord[2]+1 ) *m_dataResolution[0]*m_dataResolution[1] ); //les voxels occupes ds ce cube
 
         for ( size_t i = 0; i < nbTriangles; i++ )
         {
@@ -871,8 +871,8 @@ namespace sofa::helper
 
     void MarchingCubeUtility::findConnectedVoxels ( std::set<unsigned int>& connectedVoxels, const float isoValue, const type::Vec3i& from, unsigned char* data )
     {
-        type::Vec3i bboxMin = type::Vec3i ( bbox.min / cubeStep );
-        type::Vec3i bboxMax = type::Vec3i ( bbox.max / cubeStep );
+        type::Vec3i bboxMin = type::Vec3i ( m_bbox.min / m_cubeStep );
+        type::Vec3i bboxMax = type::Vec3i ( m_bbox.max / m_cubeStep );
         const int minX = bboxMin[0];
         const int minY = bboxMin[1];
         const int minZ = bboxMin[2];
@@ -888,7 +888,7 @@ namespace sofa::helper
             type::Vec3i coord = voxelsToTest.top();
             voxelsToTest.pop();
 
-            const int index = coord[0] + coord[1]*dataResolution[0] + coord[2]*dataResolution[0]*dataResolution[1];
+            const int index = coord[0] + coord[1]*m_dataResolution[0] + coord[2]*m_dataResolution[0]*m_dataResolution[1];
 
             if ( connectedVoxels.contains ( index )) continue;
 
@@ -909,28 +909,28 @@ namespace sofa::helper
 
     void MarchingCubeUtility::smoothData ( unsigned char *data ) const
     {
-        msg_info() << "Smoothing Data using " << convolutionSize << "x"<< convolutionSize << "x"<< convolutionSize << " as gaussian convolution kernel\n";
+        msg_info() << "Smoothing Data using " << m_convolutionSize << "x"<< m_convolutionSize << "x"<< m_convolutionSize << " as gaussian convolution kernel\n";
         vector< float > convolutionKernel;
         createGaussianConvolutionKernel ( convolutionKernel );
 
-        vector<unsigned char> input_data ( ( int ) ( ( dataResolution[0]+convolutionSize )
-                                           * ( dataResolution[1]+convolutionSize )
-                * ( dataResolution[2]+convolutionSize ) ),
+        vector<unsigned char> input_data ( ( int ) ( ( m_dataResolution[0]+m_convolutionSize )
+                                           * ( m_dataResolution[1]+m_convolutionSize )
+                * ( m_dataResolution[2]+m_convolutionSize ) ),
                 0 );
 
-        for ( int k=0; k<dataResolution[2]; ++k )
-            for ( int j=0; j<dataResolution[1]; ++j )
+        for ( int k=0; k<m_dataResolution[2]; ++k )
+            for ( int j=0; j<m_dataResolution[1]; ++j )
             {
-                memcpy ( &input_data[0] + convolutionSize/2
-                        + ( j + convolutionSize/2 ) * ( dataResolution[0]+convolutionSize )
-                        + ( k + convolutionSize/2 ) * ( dataResolution[0]+convolutionSize ) * ( dataResolution[1]+convolutionSize ),
-                        data + j*dataResolution[0] + k*dataResolution[0]*dataResolution[1],
-                        sizeof ( unsigned char ) *dataResolution[0] );
+                memcpy ( &input_data[0] + m_convolutionSize/2
+                        + ( j + m_convolutionSize/2 ) * ( m_dataResolution[0]+m_convolutionSize )
+                        + ( k + m_convolutionSize/2 ) * ( m_dataResolution[0]+m_convolutionSize ) * ( m_dataResolution[1]+m_convolutionSize ),
+                        data + j*m_dataResolution[0] + k*m_dataResolution[0]*m_dataResolution[1],
+                        sizeof ( unsigned char ) *m_dataResolution[0] );
             }
 
-        for ( int k=0; k<dataResolution[2]; ++k )
-            for ( int j=0; j<dataResolution[1]; ++j )
-                for ( int i=0; i<dataResolution[0]; ++i )
+        for ( int k=0; k<m_dataResolution[2]; ++k )
+            for ( int j=0; j<m_dataResolution[1]; ++j )
+                for ( int i=0; i<m_dataResolution[0]; ++i )
                 {
                     applyConvolution ( &convolutionKernel[0], i,j,k, &input_data[0], data );
                 }
@@ -941,37 +941,37 @@ namespace sofa::helper
                                                   const unsigned char* input_data,
                                                   unsigned char* output_data ) const
     {
-        const size_t index = x + dataResolution[0] * ( y + dataResolution[1] * z );
+        const size_t index = x + m_dataResolution[0] * ( y + m_dataResolution[1] * z );
         output_data[index] = 0;
         size_t idx=0;
-        for ( unsigned int k=0; k<convolutionSize; ++k )
-            for ( unsigned int j=0; j<convolutionSize; ++j )
-                for ( unsigned int i=0; i<convolutionSize; ++i )
+        for ( unsigned int k=0; k<m_convolutionSize; ++k )
+            for ( unsigned int j=0; j<m_convolutionSize; ++j )
+                for ( unsigned int i=0; i<m_convolutionSize; ++i )
                 {
                     output_data[index] += (unsigned char)(convolutionKernel[idx++]
-                            * input_data[ ( x+i ) + ( dataResolution[0]+convolutionSize ) * ( ( y+j ) + ( z+k ) * ( dataResolution[1]+convolutionSize ) ) ]);
+                            * input_data[ ( x+i ) + ( m_dataResolution[0]+m_convolutionSize ) * ( ( y+j ) + ( z+k ) * ( m_dataResolution[1]+m_convolutionSize ) ) ]);
                 }
     }
 
     void MarchingCubeUtility::createGaussianConvolutionKernel ( vector< float >  &convolutionKernel ) const
     {
-        if ( convolutionSize<=1 )
+        if ( m_convolutionSize<=1 )
         {
             convolutionKernel.resize ( 1, 1.0f );
             return;
         }
         else
         {
-            convolutionKernel.resize ( convolutionSize*convolutionSize*convolutionSize );
+            convolutionKernel.resize ( m_convolutionSize*m_convolutionSize*m_convolutionSize );
         }
 
-        const float step = 4.0f / ( float ) ( convolutionSize-1 );
+        const float step = 4.0f / ( float ) ( m_convolutionSize-1 );
 
         float total = 0.0;
         size_t idx=0;
-        for ( unsigned int k=0; k<convolutionSize; ++k )
-            for ( unsigned int j=0; j<convolutionSize; ++j )
-                for ( unsigned int i=0; i<convolutionSize; ++i )
+        for ( unsigned int k=0; k<m_convolutionSize; ++k )
+            for ( unsigned int j=0; j<m_convolutionSize; ++j )
+                for ( unsigned int i=0; i<m_convolutionSize; ++i )
                 {
                     const float x = -2.0f + i * step;
                     const float y = -2.0f + j * step;

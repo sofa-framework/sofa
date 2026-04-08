@@ -43,7 +43,7 @@ namespace sofa::component::engine::generate
 class SOFA_COMPONENT_ENGINE_GENERATE_API MeshTetraStuffing : public core::DataEngine
 {
 public:
-    SOFA_CLASS(MeshTetraStuffing,core::objectmodel::BaseObject);
+    SOFA_CLASS(MeshTetraStuffing,core::objectmodel::BaseComponent);
 
     typedef defaulttype::Vec3Types::Real Real;
     typedef defaulttype::Vec3Types::Coord Point;

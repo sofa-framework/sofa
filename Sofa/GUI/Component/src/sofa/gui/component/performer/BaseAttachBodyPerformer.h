@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/gui/component/config.h>
 
 #include <sofa/gui/component/performer/InteractionPerformer.h>
@@ -54,14 +54,14 @@ public:
     virtual void draw(const core::visual::VisualParams* vparams);
     virtual void clear();
     virtual void execute();
-    sofa::core::objectmodel::BaseObject::SPtr getInteractionObject();
+    sofa::core::objectmodel::BaseComponent::SPtr getInteractionObject();
 
     virtual bool startPartial(const BodyPicked& picked) = 0;
 
 
 protected:
 
-    sofa::core::objectmodel::BaseObject::SPtr m_interactionObject;
+    sofa::core::objectmodel::BaseComponent::SPtr m_interactionObject;
     MouseContactMapper  *m_mapper;
     core::visual::DisplayFlags m_flags;
 };

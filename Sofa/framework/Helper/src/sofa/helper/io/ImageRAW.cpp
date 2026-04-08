@@ -37,6 +37,11 @@ void ImageRAW::initHeader(unsigned hsize)
 {
     headerSize = hsize;
     header = (unsigned char*) malloc(headerSize);
+    if (header == nullptr)
+    {
+        msg_error("ImageRAW") << "Failed to allocate header of size " << headerSize;
+        headerSize = 0;
+    }
 }
 
 bool ImageRAW::load(std::string filename)

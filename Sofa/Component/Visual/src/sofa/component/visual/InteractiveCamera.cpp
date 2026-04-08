@@ -85,14 +85,14 @@ void InteractiveCamera::moveCamera(int x, int y)
                 break;
             case SCENE_CENTER_PIVOT:
             default:
-                pivot = sceneCenter;
+                pivot = getSceneCenter();
                 break;
             }
             rotateWorldAroundPoint(newQuat, pivot, m_startingCameraOrientation, m_startingCameraPosition);
         }
         else if (currentMode == ZOOM_MODE)
         {
-            const double zoomStep = d_zoomSpeed.getValue() * (0.01 * sceneRadius ) / heightViewport;
+            const double zoomStep = d_zoomSpeed.getValue() * (0.01 * getSceneRadius() ) / heightViewport;
             double zoomDistance = zoomStep * -(y - lastMousePosY);
 
             type::Vec3 trans(0.0, 0.0, zoomDistance);
@@ -109,7 +109,7 @@ void InteractiveCamera::moveCamera(int x, int y)
         else if (currentMode == PAN_MODE)
         {
             type::Vec3 trans(lastMousePosX - x,  y-lastMousePosY, 0.0);
-            trans = cameraToWorldTransform(trans) * d_panSpeed.getValue() * (0.01 * sceneRadius ) ;
+            trans = cameraToWorldTransform(trans) * d_panSpeed.getValue() * (0.01 * getSceneRadius() ) ;
             translate(trans);
             if ( !d_fixedLookAtPoint.getValue() )
             {
@@ -126,7 +126,7 @@ void InteractiveCamera::moveCamera(int x, int y)
     }
     else if (currentMode == WHEEL_ZOOM_MODE)
     {
-        const double zoomStep = d_zoomSpeed.getValue() * (0.01 * sceneRadius ) / heightViewport;
+        const double zoomStep = d_zoomSpeed.getValue() * (0.01 * getSceneRadius() ) / heightViewport;
         double zoomDistance = zoomStep * -(y*0.5);
 
         type::Vec3 trans(0.0, 0.0, zoomDistance);

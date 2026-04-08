@@ -22,7 +22,7 @@
 #pragma once
 #include <sofa/component/engine/generate/JoinPoints.h>
 
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <list>
 

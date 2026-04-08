@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <Node name="root" dt="0.02">
-    <RequiredPlugin name="VolumetricRendering" />
+    <RequiredPlugin pluginName="VolumetricRendering" />
 
     <Node name="HexaRaptor" >
         <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />

@@ -98,8 +98,6 @@ public:
         typedef const char* (*FuncPtr) ();
         FuncPtr func;
 
-        SOFA_ATTRIBUTE_DISABLED__PLUGIN_GETCOMPONENTLIST()
-        const char* operator() () const = delete;
         GetModuleComponentList():func(nullptr) {}
     } GetModuleComponentList;
 
