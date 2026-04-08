@@ -180,6 +180,7 @@ endif()
 
 ## Windows-specific
 if(WIN32)
+    list(APPEND SOFACONFIG_COMPILE_OPTIONS "/W4")
     list(APPEND SOFACONFIG_COMPILE_OPTIONS "-D_USE_MATH_DEFINES")
     list(APPEND SOFACONFIG_COMPILE_OPTIONS "-D_CRT_SECURE_NO_WARNINGS")
     list(APPEND SOFACONFIG_COMPILE_OPTIONS "-D_CRT_NONSTDC_NO_DEPRECATE")
@@ -309,6 +310,8 @@ target_compile_options(${PROJECT_NAME} PUBLIC "$<${is_c_cxx}:${SOFACONFIG_COMPIL
 target_link_options(${PROJECT_NAME} PUBLIC "$<${is_c_cxx_release}:${SOFACONFIG_LINK_OPTIONS_RELEASE}>")
 target_link_options(${PROJECT_NAME} PUBLIC "$<${is_c_cxx_debug}:${SOFACONFIG_LINK_OPTIONS_DEBUG}>")
 target_link_options(${PROJECT_NAME} PUBLIC "$<${is_c_cxx}:${SOFACONFIG_LINK_OPTIONS}>")
+
+sofa_treat_warnings_as_errors(${PROJECT_NAME})
 
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER Sofa.Framework) # IDE folder
 

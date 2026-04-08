@@ -145,6 +145,13 @@ void CollisionModel::setPrevious(CollisionModel::SPtr val)
         val->next.set(this);
 }
 
+void CollisionModel::computeContinuousBoundingTree(SReal dt, ContinuousIntersectionTypeFlag continuousIntersectionFlag, int maxDepth)
+{
+    SOFA_UNUSED(dt);
+    SOFA_UNUSED(continuousIntersectionFlag);
+    computeBoundingTree(maxDepth);
+}
+
 void CollisionModel::draw(const core::visual::VisualParams* vparams)
 {
     // don't draw if the component is not in valid state

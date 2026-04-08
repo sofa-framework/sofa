@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include <sofa/simulation/UpdateBoundingBoxVisitor.h>
 #include <sofa/type/vector.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
 

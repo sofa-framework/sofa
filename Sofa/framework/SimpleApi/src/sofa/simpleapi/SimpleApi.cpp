@@ -3,17 +3,17 @@
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU General Public License as published by the Free  *
-* Software Foundation; either version 2 of the License, or (at your option)   *
-* any later version.                                                          *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
 *                                                                             *
 * This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    *
-* more details.                                                               *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
 *                                                                             *
-* You should have received a copy of the GNU General Public License along     *
-* with this program. If not, see <http://www.gnu.org/licenses/>.              *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
@@ -93,10 +93,10 @@ NodeSPtr createRootNode(Simulation* s, const std::string& name,
     return root ;
 }
 
-BaseObject::SPtr createObject(Node::SPtr parent, BaseObjectDescription& desc)
+sofa::core::objectmodel::BaseComponent::SPtr createObject(Node::SPtr parent, BaseObjectDescription& desc)
 {
     /// Create the object.
-    BaseObject::SPtr obj = ObjectFactory::getInstance()->createObject(parent.get(), &desc);
+    sofa::core::objectmodel::BaseComponent::SPtr obj = ObjectFactory::getInstance()->createObject(parent.get(), &desc);
     if (obj == nullptr)
     {
         std::stringstream msg;
@@ -112,7 +112,7 @@ BaseObject::SPtr createObject(Node::SPtr parent, BaseObjectDescription& desc)
     return obj ;
 }
 
-BaseObject::SPtr createObject(Node::SPtr parent, const std::string& type, const std::map<std::string, std::string>& params)
+sofa::core::objectmodel::BaseComponent::SPtr createObject(Node::SPtr parent, const std::string& type, const std::map<std::string, std::string>& params)
 {
     /// temporarily, the name is set to the type name.
     /// if a "name" parameter is provided, it will overwrite it.

@@ -21,8 +21,6 @@ set(HEADER_FILES
     src/MultiThreading/component/solidmechanics/fem/elastic/ParallelHexahedronFEMForceField.inl
     src/MultiThreading/component/solidmechanics/fem/elastic/ParallelTetrahedronFEMForceField.h
     src/MultiThreading/component/solidmechanics/fem/elastic/ParallelTetrahedronFEMForceField.inl
-    src/MultiThreading/component/solidmechanics/spring/ParallelStiffSpringForceField.h
-    src/MultiThreading/component/solidmechanics/spring/ParallelStiffSpringForceField.inl
     src/MultiThreading/component/solidmechanics/spring/ParallelSpringForceField.h
     src/MultiThreading/component/solidmechanics/spring/ParallelSpringForceField.inl
     src/MultiThreading/component/solidmechanics/spring/ParallelMeshSpringForceField.h

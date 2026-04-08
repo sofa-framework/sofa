@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<Node name="root" dt="0.01" gravity="0 -9.81 0">
+    <include href="../../../../CantileverBeam_ElementFEMForceField.xml"/>
+
+    <ConstantSparsityPatternSystem template="CompressedRowSparseMatrix" name="A" checkIndices="false"/>
+    <NaturalOrderingMethod/>
+    <SparseLDLSolver name="linear_solver" template="CompressedRowSparseMatrix"/>
+
+    <HexahedronCorotationalFEMForceField name="FEM" youngModulus="2e6" poissonRatio="0.45" topology="@grid"
+                                         computeForceStrategy="parallel" computeForceDerivStrategy="parallel"/>
+
+</Node>

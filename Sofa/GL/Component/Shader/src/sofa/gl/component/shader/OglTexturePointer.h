@@ -23,7 +23,7 @@
 #include <sofa/gl/component/shader/config.h>
 
 #include <sofa/core/visual/VisualModel.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/gl/template.h>
 #include <sofa/gl/Texture.h>
