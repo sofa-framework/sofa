@@ -27,7 +27,7 @@
 
 namespace sofa::core::behavior
 {
-void BaseProjectiveConstraintSet::applyConstraint(sofa::core::behavior::ZeroDirichletCondition* zeroDirichletCondition)
+void BaseProjectiveConstraintSet::doApplyConstraint(sofa::core::behavior::ZeroDirichletCondition* zeroDirichletCondition)
 {
     static std::set<BaseProjectiveConstraintSet*> hasEmittedWarning;
     if (hasEmittedWarning.insert(this).second)
