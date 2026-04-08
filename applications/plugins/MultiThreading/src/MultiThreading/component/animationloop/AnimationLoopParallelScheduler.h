@@ -24,7 +24,7 @@
 #include <MultiThreading/config.h>
 #include <sofa/simulation/task/TaskSchedulerUser.h>
 #include <sofa/core/objectmodel/Data.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/core/behavior/BaseAnimationLoop.h>
 
 #include <sofa/simulation/Node.h>

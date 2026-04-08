@@ -22,6 +22,8 @@
 #pragma once
 #include <sofa/component/animationloop/config.h>
 
+SOFA_HEADER_DEPRECATED_NOT_REPLACED("v26.06", "v26.12")
+
 
 #include <sofa/helper/map.h>
 #include <sofa/linearalgebra/FullMatrix.h>

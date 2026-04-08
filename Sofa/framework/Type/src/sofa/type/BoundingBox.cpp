@@ -48,11 +48,6 @@ bool BoundingBox::isNegligible() const
            minBBox().z() >= maxBBox().z();
 }
 
-bool BoundingBox::isNegligeable() const
-{
-    return isNegligible();
-}
-
 bool BoundingBox::isValid() const
 {
     return minBBox().x() <= maxBBox().x() &&
@@ -301,7 +296,7 @@ void BoundingBox2D::invalidate()
     this->m_bbox = make_neutralBBox2D();
 }
 
-bool BoundingBox2D::isNegligeable() const
+bool BoundingBox2D::isNegligible() const
 {
     return minBBox().x() >= maxBBox().x() &&
            minBBox().y() >= maxBBox().y();
@@ -522,7 +517,7 @@ void BoundingBox1D::invalidate()
     this->m_bbox = make_neutralBBox1D();
 }
 
-bool BoundingBox1D::isNegligeable() const
+bool BoundingBox1D::isNegligible() const
 {
     return minBBox() >= maxBBox();
 }
