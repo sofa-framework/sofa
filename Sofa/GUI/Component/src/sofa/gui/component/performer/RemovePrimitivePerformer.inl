@@ -185,8 +185,8 @@ bool RemovePrimitivePerformer<DataTypes>::createElementList()
         {
             // looking for mapping VolumeToSurface
             const simulation::Node *node_curr = dynamic_cast<simulation::Node*>(topo_curr->getContext());
-            std::vector< core::objectmodel::BaseObject * > listObject;
-            node_curr->get<core::objectmodel::BaseObject>(&listObject, core::objectmodel::BaseContext::SearchRoot);
+            std::vector< core::objectmodel::BaseComponent * > listObject;
+            node_curr->get<core::objectmodel::BaseComponent>(&listObject, core::objectmodel::BaseContext::SearchRoot);
 
             for(unsigned int i=0; i<listObject.size(); ++i) // loop on all components to find mapping
             {
@@ -364,8 +364,8 @@ bool RemovePrimitivePerformer<DataTypes>::createElementList()
         {
             // looking for mapping VolumeToSurface
             const simulation::Node *node_curr = dynamic_cast<simulation::Node*>(topo_curr->getContext());
-            std::vector< core::objectmodel::BaseObject * > listObject;
-            node_curr->get<core::objectmodel::BaseObject>(&listObject, core::objectmodel::BaseContext::Local);
+            std::vector< core::objectmodel::BaseComponent * > listObject;
+            node_curr->get<core::objectmodel::BaseComponent>(&listObject, core::objectmodel::BaseContext::Local);
 
             for(unsigned int i=0; i<listObject.size(); ++i) // loop on all components to find mapping (only tetra for the moment)
             {

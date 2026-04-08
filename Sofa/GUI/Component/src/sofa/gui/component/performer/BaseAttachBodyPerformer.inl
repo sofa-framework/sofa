@@ -119,7 +119,7 @@ void BaseAttachBodyPerformer<DataTypes>::execute()
 }
 
 template <class DataTypes>
-sofa::core::objectmodel::BaseObject::SPtr BaseAttachBodyPerformer<DataTypes>::getInteractionObject()
+sofa::core::objectmodel::BaseComponent::SPtr BaseAttachBodyPerformer<DataTypes>::getInteractionObject()
 {
         return m_interactionObject;
 };

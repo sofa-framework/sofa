@@ -44,30 +44,30 @@ public:
 
     void setDataResolution ( const type::Vec3i   &resolution )
     {
-        dataResolution = resolution;
+        m_dataResolution = resolution;
         setROI( type::Vec3i ( 0, 0, 0 ), resolution );
         setBoundingBox ( type::Vec3i ( 0, 0, 0 ), resolution );
     }
 
     void setDataVoxelSize ( const type::Vec3 &voxelSize )
     {
-        dataVoxelSize = voxelSize;
+        m_dataVoxelSize = voxelSize;
     }
 
     void setStep ( const unsigned int step )
     {
-        cubeStep = step;
+        m_cubeStep = step;
     }
 
     void setConvolutionSize ( const unsigned int convolutionSize )
     {
-        this->convolutionSize = convolutionSize;
+        this->m_convolutionSize = convolutionSize;
     }
 
     /// Set the bounding box from real coords to apply mCube locally.
     void setBoundingBoxFromRealCoords ( const type::Vec3& min, const type::Vec3& max )
     {
-        type::Vec3 gridSize = dataVoxelSize * cubeStep;
+        type::Vec3 gridSize = m_dataVoxelSize * m_cubeStep;
         gridSize = type::Vec3 ( 1_sreal / gridSize[0], 1_sreal / gridSize[1], 1_sreal / gridSize[2] );
 
         //          Vec3i bbMin = ( min - verticesTranslation - ( dataVoxelSize/2.0 ) ).linearProduct ( gridSize );
@@ -80,14 +80,14 @@ public:
     /// Set the bounding box (in the data space) to apply mCube locally.
     void setROI ( const type::Vec3i& min, const type::Vec3i& max )
     {
-        this->roi.min = min;
-        this->roi.max = max;
-        if ( roi.min[0] < 0 ) roi.min[0] = 0;
-        if ( roi.min[1] < 0 ) roi.min[1] = 0;
-        if ( roi.min[2] < 0 ) roi.min[2] = 0;
-        if ( roi.max[0] > dataResolution[0] )roi.max[0] = dataResolution[0];
-        if ( roi.max[1] > dataResolution[1] )roi.max[1] = dataResolution[1];
-        if ( roi.max[2] > dataResolution[2] )roi.max[2] = dataResolution[2];
+        this->m_roi.min = min;
+        this->m_roi.max = max;
+        if ( m_roi.min[0] < 0 ) m_roi.min[0] = 0;
+        if ( m_roi.min[1] < 0 ) m_roi.min[1] = 0;
+        if ( m_roi.min[2] < 0 ) m_roi.min[2] = 0;
+        if ( m_roi.max[0] > m_dataResolution[0] )m_roi.max[0] = m_dataResolution[0];
+        if ( m_roi.max[1] > m_dataResolution[1] )m_roi.max[1] = m_dataResolution[1];
+        if ( m_roi.max[2] > m_dataResolution[2] )m_roi.max[2] = m_dataResolution[2];
     }
 
     /// Set the bounding box (in the data space) to apply mCube locally.
@@ -101,14 +101,14 @@ public:
     /// Set the bounding box (in the data space) to apply mCube locally.
     void setBoundingBox ( const type::Vec3i& min, const type::Vec3i& max )
     {
-        this->bbox.min = min;
-        this->bbox.max = max;
-        if ( bbox.min[0] < 0 ) bbox.min[0] = 0;
-        if ( bbox.min[1] < 0 ) bbox.min[1] = 0;
-        if ( bbox.min[2] < 0 ) bbox.min[2] = 0;
-        if ( bbox.max[0] > dataResolution[0] )bbox.max[0] = dataResolution[0];
-        if ( bbox.max[1] > dataResolution[1] )bbox.max[1] = dataResolution[1];
-        if ( bbox.max[2] > dataResolution[2] )bbox.max[2] = dataResolution[2];
+        this->m_bbox.min = min;
+        this->m_bbox.max = max;
+        if ( m_bbox.min[0] < 0 ) m_bbox.min[0] = 0;
+        if ( m_bbox.min[1] < 0 ) m_bbox.min[1] = 0;
+        if ( m_bbox.min[2] < 0 ) m_bbox.min[2] = 0;
+        if ( m_bbox.max[0] > m_dataResolution[0] )m_bbox.max[0] = m_dataResolution[0];
+        if ( m_bbox.max[1] > m_dataResolution[1] )m_bbox.max[1] = m_dataResolution[1];
+        if ( m_bbox.max[2] > m_dataResolution[2] )m_bbox.max[2] = m_dataResolution[2];
     }
 
     /// given a set of data (size of the data and size of the marching cube beeing defined previously),
@@ -209,14 +209,14 @@ private:
                          type::vector< type::vector<unsigned int> >* triangleIndexInRegularGrid = nullptr,
                          bool propagate = true ) const;
 
-    unsigned int  cubeStep;
-    unsigned int  convolutionSize;
-    type::Vec3i     dataResolution;
-    type::Vec3     dataVoxelSize;
-    BoundingBox bbox; //bbox used to remesh
-    BoundingBox roi; // Set value to 0 on this limit to always obtain manifold mesh. (Set to d_dataResolution by default but can be changed for ROI)
-    unsigned int verticesIndexOffset;
-    type::Vec3 verticesTranslation;
+    unsigned int  m_cubeStep;
+    unsigned int  m_convolutionSize;
+    type::Vec3i     m_dataResolution;
+    type::Vec3     m_dataVoxelSize;
+    BoundingBox m_bbox; //bbox used to remesh
+    BoundingBox m_roi; // Set value to 0 on this limit to always obtain manifold mesh. (Set to d_dataResolution by default but can be changed for ROI)
+    unsigned int m_verticesIndexOffset;
+    type::Vec3 m_verticesTranslation;
 };
 
 extern SOFA_HELPER_API const int MarchingCubeEdgeTable[256];

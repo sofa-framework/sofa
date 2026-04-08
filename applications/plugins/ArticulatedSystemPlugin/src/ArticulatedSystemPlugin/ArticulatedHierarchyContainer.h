@@ -23,7 +23,7 @@
 #include <ArticulatedSystemPlugin/config.h>
 
 #include <sofa/simulation/fwd.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <ArticulatedSystemPlugin/bvh/BVHLoader.h>
 #include <sofa/type/Transform.h>
