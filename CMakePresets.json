@@ -168,14 +168,6 @@
           "type": "BOOL",
           "value": "ON"
         },
-        "SOFA_FETCH_SOFAVISCOELASTIC": {
-          "type": "BOOL",
-          "value": "ON"
-        },
-        "PLUGIN_SOFAVISCOELASTIC": {
-          "type": "BOOL",
-          "value": "ON"
-        },
         "PLUGIN_SOFAMATRIX": {
           "type": "BOOL",
           "value": "ON"
@@ -217,14 +209,6 @@
           "value": "ON"
         },
         "PLUGIN_SOFACUDA": {
-          "type": "BOOL",
-          "value": "ON"
-        },
-        "SOFA_FETCH_CGALPLUGIN": {
-          "type": "BOOL",
-          "value": "ON"
-        },
-        "PLUGIN_CGALPLUGIN": {
           "type": "BOOL",
           "value": "ON"
         },

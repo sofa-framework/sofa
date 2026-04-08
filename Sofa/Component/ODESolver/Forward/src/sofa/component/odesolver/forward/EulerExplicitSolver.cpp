@@ -20,14 +20,15 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/odesolver/forward/EulerExplicitSolver.h>
-#include <sofa/core/visual/VisualParams.h>
-#include <sofa/simulation/MechanicalOperations.h>
-#include <sofa/simulation/VectorOperations.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/behavior/BaseMass.h>
 #include <sofa/core/behavior/LinearSolver.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
-
+#include <sofa/simulation/MappingGraph.h>
+#include <sofa/simulation/MechanicalOperations.h>
+#include <sofa/simulation/VectorOperations.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalGetNonDiagonalMassesCountVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalGetNonDiagonalMassesCountVisitor;
 
@@ -84,11 +85,9 @@ void EulerExplicitSolver::solve(const core::ExecParams* params,
     addSeparateGravity(&mop, dt, vResult);
     computeForce(&mop, f);
 
-    sofa::Size nbNonDiagonalMasses = 0;
-    MechanicalGetNonDiagonalMassesCountVisitor(&mop.mparams, &nbNonDiagonalMasses).execute(this->getContext());
-
-    // Mass matrix is diagonal, solution can thus be found by computing acc = f/m
-    if(nbNonDiagonalMasses == 0.)
+    // The inverse of the mass matrix is trivial to compute. Otherwise, it requires the
+    // assembly of a linear system and a linear solver to compute its solution.
+    if(isMassMatrixTriviallyInvertible(params))
     {
         // acc = M^-1 * f
         computeAcceleration(&mop, acc, f);
@@ -341,6 +340,72 @@ void EulerExplicitSolver::solveSystem(core::MultiVecDerivId solution, core::Mult
     l_linearSolver->getLinearSystem()->setRHS(rhs);
     l_linearSolver->solveSystem();
     l_linearSolver->getLinearSystem()->dispatchSystemSolution(solution);
+}
+
+class MappedMassVisitor final : public simulation::BaseMechanicalVisitor
+{
+public:
+    MappedMassVisitor(const sofa::core::ExecParams* params, sofa::simulation::MappingGraph* mappingGraph)
+        : BaseMechanicalVisitor(params), m_mappingGraph(mappingGraph)
+    {}
+
+    Result fwdMass(simulation::Node*, sofa::core::behavior::BaseMass* mass) override
+    {
+        if (mass && m_mappingGraph)
+        {
+            m_hasMappedMass |= m_mappingGraph->hasAnyMappingInput(mass);
+        }
+        return Result::RESULT_CONTINUE;
+    }
+
+    [[nodiscard]] bool hasMappedMass() const { return m_hasMappedMass; }
+
+private:
+    sofa::simulation::MappingGraph* m_mappingGraph { nullptr };
+    bool m_hasMappedMass { false };
+};
+
+class AllOfMassesAreDiagonalVisitor final : public simulation::BaseMechanicalVisitor
+{
+public:
+    using simulation::BaseMechanicalVisitor::BaseMechanicalVisitor;
+    Result fwdMass(simulation::Node*, sofa::core::behavior::BaseMass* mass) override
+    {
+        if (mass)
+        {
+            m_allMassesAreDiagonal &= mass->isDiagonal();
+        }
+        return Result::RESULT_CONTINUE;
+    }
+
+    [[nodiscard]] bool areAllMassesAreDiagonal() const { return m_allMassesAreDiagonal; }
+
+private:
+    bool m_allMassesAreDiagonal { true };
+};
+
+bool EulerExplicitSolver::isMassMatrixTriviallyInvertible(const core::ExecParams* params)
+{
+    sofa::simulation::MappingGraph mappingGraph;
+    mappingGraph.build(params, this->getContext());
+
+    // To achieve a diagonal global mass matrix in this system:
+    // 1) Each individual mass matrix must itself be diagonal.
+    // 2) The mapped masses must also be mapped through a diagonal Jacobian matrix.
+
+    // Diagonal Jacobian matrices are uncommon and challenging to detect, which means that even if
+    // we identify a mapped mass, we cannot guarantee the global mass matrix will remain diagonal.
+    // Moreover, computing the inverse of a mapped mass would require a complex API. Therefore, this
+    // case is not supported without assembling the global mass matrix.
+    MappedMassVisitor mappedMassVisitor(params, &mappingGraph);
+    mappedMassVisitor.execute(this->getContext());
+    if (mappedMassVisitor.hasMappedMass())
+        return false;
+
+    // At this stage, we know that we don't have any mapped mass. We can check if they are all diagonal.
+    AllOfMassesAreDiagonalVisitor allOfMassesAreDiagonalVisitor(params);
+    allOfMassesAreDiagonalVisitor.execute(this->getContext());
+    return allOfMassesAreDiagonalVisitor.areAllMassesAreDiagonal();
 }
 
 } // namespace sofa::component::odesolver::forward

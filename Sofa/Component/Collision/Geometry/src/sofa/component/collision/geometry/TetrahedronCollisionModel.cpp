@@ -71,7 +71,7 @@ void TetrahedronCollisionModel::init()
     if (!m_topology)
     {
         msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name << ". TetrahedronCollisionModel requires a BaseMeshTopology";
-        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
 

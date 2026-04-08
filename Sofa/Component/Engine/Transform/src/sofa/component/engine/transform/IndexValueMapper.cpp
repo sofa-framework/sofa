@@ -22,7 +22,7 @@
 #define INDEXVALUEMAPPER_CPP_
 
 #include <sofa/component/engine/transform/IndexValueMapper.inl>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::engine::transform

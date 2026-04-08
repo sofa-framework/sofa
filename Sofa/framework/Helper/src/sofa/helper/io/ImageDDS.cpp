@@ -448,8 +448,8 @@ bool ImageDDS::save(std::string filename, int)
     }
 
     bool isWriteOk = true;
-    isWriteOk = isWriteOk && fwrite(&header, sizeof(DDSHeader), 1, file) == sizeof(DDSHeader);
-    isWriteOk = isWriteOk && fwrite(getPixels(), getImageSize(), 1, file) == getImageSize();
+    isWriteOk = isWriteOk && fwrite(&header, sizeof(DDSHeader), 1, file) == 1;
+    isWriteOk = isWriteOk && fwrite(getPixels(), getImageSize(), 1, file) == 1;
     fclose(file);
     if (!isWriteOk)
     {

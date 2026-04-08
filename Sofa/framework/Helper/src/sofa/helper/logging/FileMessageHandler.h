@@ -46,6 +46,7 @@ public:
 
     ~FileMessageHandler() override;
     void process(Message& m) override ;
+    std::string getName() const override { return "FileMessageHandler"; }
 
     bool isValid(); // is output file ok ?
 
