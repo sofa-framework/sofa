@@ -49,7 +49,7 @@ void CompositeLinearSystem<TMatrix, TVector>::init()
         else
         {
             msg_error() << "At least one linear system must be provided";
-            sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+            this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         }
     }
     else
@@ -77,7 +77,7 @@ void CompositeLinearSystem<TMatrix, TVector>::init()
             if (!found)
             {
                 msg_error() << "At least one linear system with a compatible type must be provided";
-                sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+                this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
             }
         }
     }

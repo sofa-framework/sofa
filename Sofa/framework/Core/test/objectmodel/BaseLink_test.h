@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 using BaseObject [[deprecated("Use sofa::core::objectmodel::BaseObject instead.")]] = sofa::core::objectmodel::BaseObject;
 
 #include <sofa/core/objectmodel/BaseNode.h>
@@ -36,10 +36,10 @@ using sofa::testing::BaseTest ;
  * inhertited type
  ***********************************************************************************/
 template<class Link>
-class FakeObject : public BaseObject
+class FakeObject : public sofa::core::objectmodel::BaseComponent
 {
 public:
-    FakeObject() : BaseObject()
+    FakeObject() : sofa::core::objectmodel::BaseComponent()
     {       
     }
 };

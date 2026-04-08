@@ -116,7 +116,7 @@ public:
                           "' found in the context node.");
             return false;
         }
-        return BaseObject::canCreate(obj, context, arg);
+        return sofa::core::objectmodel::BaseComponent::canCreate(obj, context, arg);
     }
 
     void computeBBox(const core::ExecParams* params, bool onlyVisible) override;

@@ -52,3 +52,18 @@ function(sofa_get_all_targets var)
     set(${var} ${targets} PARENT_SCOPE)
 endfunction()
 
+# guess if the git tag is a commit hash or an actual tag or a branch nane.
+# heavily inspired by https://github.com/cpm-cmake/CPM.cmake/pull/130/changes#diff-6fcfee7f313f15253f88285a499e62cb58746d47ff2cfec173f1f4cd29feb44d
+function(__is_git_tag_commit_hash GIT_TAG RESULT)
+  string(LENGTH ${GIT_TAG} length)
+  # full hash has 40 characters, and short hash has at least 7 characters.
+  if (length LESS 7 OR length GREATER 40)
+    SET(${RESULT} 0 PARENT_SCOPE)
+  else()
+    if (${GIT_TAG} MATCHES "^[a-fA-F0-9]+$")
+      SET(${RESULT} 1 PARENT_SCOPE)
+    else()
+      SET(${RESULT} 0 PARENT_SCOPE)
+    endif()
+  endif()
+endfunction()

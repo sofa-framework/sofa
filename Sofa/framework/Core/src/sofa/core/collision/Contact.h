@@ -45,10 +45,10 @@ namespace sofa::core::collision
  *
  * - Contact object dynamically appears in the scenegraph
  */
-class SOFA_CORE_API Contact : public virtual objectmodel::BaseObject
+class SOFA_CORE_API Contact : public virtual objectmodel::BaseComponent
 {
 public:
-    SOFA_ABSTRACT_CLASS(Contact, objectmodel::BaseObject);
+    SOFA_ABSTRACT_CLASS(Contact, objectmodel::BaseComponent);
 protected:
     Contact() {}
     ///Destructor

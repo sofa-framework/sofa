@@ -91,8 +91,8 @@ public:
     virtual std::string getInfos() const { return ""; }
 
 protected:
-    void debug_write_state_before( sofa::core::objectmodel::BaseObject* obj ) ;
-    void debug_write_state_after( sofa::core::objectmodel::BaseObject* obj ) ;
+    void debug_write_state_before( sofa::core::objectmodel::BaseComponent* obj ) ;
+    void debug_write_state_after( sofa::core::objectmodel::BaseComponent* obj ) ;
 
     /// Function to be called when a visitor executes a main task
     /// It surrounds the task function with debug information
@@ -131,28 +131,28 @@ public:
     //method to compare the tags of the object with the ones of the visitor
     // return true if the object has all the tags of the visitor
     // or if no tag is set to the visitor
-    bool testTags(sofa::core::objectmodel::BaseObject* obj);
+    bool testTags(sofa::core::objectmodel::BaseComponent* obj);
 
     /// Alias for context->executeVisitor(this)
     virtual void execute(sofa::core::objectmodel::BaseContext* node, bool precomputedOrder=false);
 
     /// Optional helper method to call before handling an object if not using the for_each method.
     /// It currently takes care of time logging, but could be extended (step-by-step execution for instance)
-    virtual ctime_t begin(simulation::Node *node, sofa::core::objectmodel::BaseObject *obj,
+    virtual ctime_t begin(simulation::Node *node, sofa::core::objectmodel::BaseComponent *obj,
                           const std::string &typeInfo = std::string("type"));
 
     /// Optional helper method to call after handling an object if not using the for_each method.
     /// It currently takes care of time logging, but could be extended (step-by-step execution for instance)
-    virtual void end(simulation::Node* node, sofa::core::objectmodel::BaseObject* obj, ctime_t t0);
+    virtual void end(simulation::Node* node, sofa::core::objectmodel::BaseComponent* obj, ctime_t t0);
 
     /// Optional helper method to call before handling an object if not using the for_each method.
     /// It currently takes care of time logging, but could be extended (step-by-step execution for instance)
-    virtual ctime_t begin(simulation::Visitor::VisitorContext *node, sofa::core::objectmodel::BaseObject *obj,
+    virtual ctime_t begin(simulation::Visitor::VisitorContext *node, sofa::core::objectmodel::BaseComponent *obj,
                   const std::string &typeInfo = std::string("type"));
 
     /// Optional helper method to call after handling an object if not using the for_each method.
     /// It currently takes care of time logging, but could be extended (step-by-step execution for instance)
-    virtual void end(simulation::Visitor::VisitorContext* node, sofa::core::objectmodel::BaseObject* obj, ctime_t t0);
+    virtual void end(simulation::Visitor::VisitorContext* node, sofa::core::objectmodel::BaseComponent* obj, ctime_t t0);
 
     /// Specify whether this visitor can be parallelized.
     virtual bool isThreadSafe() const { return false; }

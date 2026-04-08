@@ -21,7 +21,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_ENGINE_JOINPOINTS_CPP
 #include <sofa/component/engine/generate/JoinPoints.inl>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::engine::generate
