@@ -3,8 +3,8 @@ cmake_minimum_required(VERSION 3.22)
 project(Sofa.Core_test)
 
 set(SOURCE_FILES
-    accessor/ReadAccessor.cpp
-    accessor/WriteAccessor.cpp
+    accessor/ReadAccessor_test.cpp
+    accessor/WriteAccessor_test.cpp
     collision/NarrowPhaseDetection_test.cpp
     loader/MeshLoader_test.cpp
     objectmodel/AspectPool_test.cpp

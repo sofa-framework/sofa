@@ -79,6 +79,8 @@ public:
     /// Inherited from MessageHandler
     void process(Message& m) override ;
 
+    std::string getName() const override { return "LoggingMessageHandler"; }
+
 private:
     int             m_activationCount    {0};
     vector<Message> m_messages ;

@@ -51,10 +51,10 @@ namespace sofa::component::topology::utility
  *
 */
 template <class DataTypes>
-class SOFA_COMPONENT_TOPOLOGY_UTILITY_API TopologyBoundingTrasher: public core::objectmodel::BaseObject
+class SOFA_COMPONENT_TOPOLOGY_UTILITY_API TopologyBoundingTrasher: public core::objectmodel::BaseComponent
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(TopologyBoundingTrasher, DataTypes), core::objectmodel::BaseObject);
+    SOFA_CLASS(SOFA_TEMPLATE(TopologyBoundingTrasher, DataTypes), core::objectmodel::BaseComponent);
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Real Real;

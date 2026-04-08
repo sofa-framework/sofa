@@ -21,12 +21,12 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/solidmechanics/fem/elastic/config.h>
-#include <sofa/component/solidmechanics/fem/elastic/TriangleFEMUtils.h>
 #include <sofa/component/solidmechanics/fem/elastic/BaseLinearElasticityFEMForceField.h>
-
-#include <sofa/type/Vec.h>
+#include <sofa/component/solidmechanics/fem/elastic/TriangleFEMUtils.h>
+#include <sofa/component/solidmechanics/fem/elastic/config.h>
+#include <sofa/core/visual/DrawMesh.h>
 #include <sofa/type/Mat.h>
+#include <sofa/type/Vec.h>
 
 // corotational triangle from
 // @InProceedings{NPF05,
@@ -104,6 +104,7 @@ public:
     void addKToMatrix(sofa::linearalgebra::BaseMatrix *mat, SReal k, unsigned int &offset) override; // compute and add all the element stiffnesses to the global stiffness matrix
     void buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix) override;
     void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) final;
+    using Inherit1::getPotentialEnergy;
     SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override
     {
         msg_warning() << "Method getPotentialEnergy not implemented yet.";
@@ -156,6 +157,8 @@ protected:
 
     /// Pointer to the utils class which store methods common to TriangleFEMForceField
     TriangleFEMUtils<DataTypes> m_triangleUtils;
+
+    core::visual::DrawElementMesh<sofa::geometry::Triangle> m_drawMesh;
 };
 
 

@@ -40,19 +40,19 @@ public:
             ; // nothing
             return;
         }
-        if constexpr (N == 2)
+        else if constexpr (N == 2)
         {
             modulo = index & 1;
             index = index >> 1;
             return;
         }
-        if constexpr (N == 4)
+        else if constexpr (N == 4)
         {
             modulo = index & 3;
             index = index >> 2;
             return;
         }
-        if constexpr (N == 8)
+        else if constexpr (N == 8)
         {
             modulo = index & 7;
             index = index >> 3;
