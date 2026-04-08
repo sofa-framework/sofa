@@ -177,6 +177,7 @@ public:
 
     void set(Index i, Index j, double v) override;
 
+    using BaseMatrix::add;
     void add(Index i, Index j, double v) override;
 
     /**

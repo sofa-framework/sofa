@@ -39,10 +39,10 @@ struct UncoupledConstraintCorrection_test: public BaseSimulationTest
     {
         SceneInstance sceneinstance("xml",
                     "<Node>\n"
-                    "   <RequiredPlugin name='Sofa.Component'/>"
-                    "   <RequiredPlugin name='Sofa.Component.Collision.Geometry'/>"
-                    "   <RequiredPlugin name='Sofa.Component.Collision.Detection.Intersection'/>"
-                    "   <RequiredPlugin name='Sofa.Component.Collision.Response.Contact'/>"
+                    "   <RequiredPlugin pluginName='Sofa.Component'/>"
+                    "   <RequiredPlugin pluginName='Sofa.Component.Collision.Geometry'/>"
+                    "   <RequiredPlugin pluginName='Sofa.Component.Collision.Detection.Intersection'/>"
+                    "   <RequiredPlugin pluginName='Sofa.Component.Collision.Response.Contact'/>"
                     "   <LCPConstraintSolver maxIt='1000' tolerance='0.001' />\n"
                     "   <FreeMotionAnimationLoop />\n"
                     "   <Node name='collision'>\n"

@@ -5,6 +5,7 @@ project(Sofa.Helper_test)
 set(SOURCE_FILES
     DiffLib_test.cpp
     Factory_test.cpp
+    IotaView_test.cpp
     KdTree_test.cpp
     NameDecoder_test.cpp
     OptionsGroup_test.cpp
@@ -12,8 +13,8 @@ set(SOURCE_FILES
     StringUtils_test.cpp
     TagFactory_test.cpp
     Utils_test.cpp
-    accessor/ReadAccessor.cpp
-    accessor/WriteAccessor.cpp
+    accessor/ReadAccessor_test.cpp
+    accessor/WriteAccessor_test.cpp
     io/MeshOBJ_test.cpp
     io/STBImage_test.cpp
     io/XspLoader_test.cpp

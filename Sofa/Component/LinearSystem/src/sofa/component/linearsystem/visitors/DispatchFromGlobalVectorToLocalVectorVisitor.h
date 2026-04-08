@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 
+#include <sofa/component/linearsystem/config.h>
 #include <sofa/simulation/BaseMechanicalVisitor.h>
 #include <sofa/component/linearsystem/MappingGraph.h>
 

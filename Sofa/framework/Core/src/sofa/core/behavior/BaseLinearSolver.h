@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 
 namespace sofa::core::behavior
 {
@@ -30,10 +30,10 @@ namespace sofa::core::behavior
  *  \brief Abstract base class (as type identifier) for linear system solvers without any API
  *
  */
-class SOFA_CORE_API BaseLinearSolver : virtual public objectmodel::BaseObject
+class SOFA_CORE_API BaseLinearSolver : virtual public objectmodel::BaseComponent
 {
 public:
-    SOFA_ABSTRACT_CLASS(BaseLinearSolver, objectmodel::BaseObject);
+    SOFA_ABSTRACT_CLASS(BaseLinearSolver, objectmodel::BaseComponent);
     SOFA_BASE_CAST_IMPLEMENTATION(BaseLinearSolver)
 
     bool insertInNode( objectmodel::BaseNode* node ) override;
