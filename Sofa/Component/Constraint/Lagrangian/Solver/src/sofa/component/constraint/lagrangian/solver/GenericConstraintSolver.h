@@ -58,7 +58,7 @@ public:
     void doComputeResidual(const core::ExecParams* /*params*/) override;
 
     ConstraintProblem* getConstraintProblem() override;
-    void lockConstraintProblem(sofa::core::objectmodel::BaseObject* from, ConstraintProblem* p1, ConstraintProblem* p2 = nullptr) override;
+    void lockConstraintProblem(sofa::core::objectmodel::BaseComponent* from, ConstraintProblem* p1, ConstraintProblem* p2 = nullptr) override;
 
 
     Data<int> d_maxIt; ///< maximal number of iterations of iterative algorithm

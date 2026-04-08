@@ -397,7 +397,7 @@ void GenericConstraintSolver::clearConstraintProblemLocks()
     std::fill(m_cpIsLocked.begin(), m_cpIsLocked.end(), false);
 }
 
-void GenericConstraintSolver::lockConstraintProblem(sofa::core::objectmodel::BaseObject* from, ConstraintProblem* p1, ConstraintProblem* p2)
+void GenericConstraintSolver::lockConstraintProblem(sofa::core::objectmodel::BaseComponent* from, ConstraintProblem* p1, ConstraintProblem* p2)
 {
     if( (current_cp != p1) && (current_cp != p2) ) // The current ConstraintProblem is not locked
         return;

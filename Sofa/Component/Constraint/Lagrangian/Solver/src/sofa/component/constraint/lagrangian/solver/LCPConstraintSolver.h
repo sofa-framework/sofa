@@ -99,7 +99,7 @@ public:
     DeprecatedAndRemoved d_showLevelTranslation; ///< Translation between levels
 
     ConstraintProblem* getConstraintProblem() override;
-    void lockConstraintProblem(sofa::core::objectmodel::BaseObject* from, ConstraintProblem* p1, ConstraintProblem* p2=nullptr) override; ///< Do not use the following LCPs until the next call to this function. This is used to prevent concurrent access to the LCP when using a LCPForceFeedback through an haptic thread
+    void lockConstraintProblem(sofa::core::objectmodel::BaseComponent* from, ConstraintProblem* p1, ConstraintProblem* p2=nullptr) override; ///< Do not use the following LCPs until the next call to this function. This is used to prevent concurrent access to the LCP when using a LCPForceFeedback through an haptic thread
 
 private:
     void addRegularization(linearalgebra::BaseMatrix& W);

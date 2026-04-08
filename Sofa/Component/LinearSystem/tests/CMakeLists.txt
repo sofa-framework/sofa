@@ -4,7 +4,6 @@ project(Sofa.Component.LinearSystem_test)
 
 set(SOURCE_FILES
     MatrixLinearSystem_test.cpp
-    MappingGraph_test.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})

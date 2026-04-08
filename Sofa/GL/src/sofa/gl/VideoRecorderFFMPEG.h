@@ -62,9 +62,14 @@ public:
     bool init(const std::string& ffmpeg_exec_filepath, const std::string& filename, int width, int height, unsigned int framerate, unsigned int bitrate, const std::string& codec="");
 
     void addFrame();
+    void addFrame(unsigned char* rgbData, int fbWidth, int fbHeight);
     void saveVideo();
     void finishVideo();
 
+    int getPixelFormatSize()
+    {
+        return m_pixelFormatSize;
+    };
 
     void setPrefix(const std::string v) { m_prefix = v; }
 
