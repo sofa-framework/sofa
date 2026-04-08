@@ -23,7 +23,7 @@
 #include <sofa/component/collision/geometry/config.h>
 #include <sofa/core/fwd.h>
 #include <sofa/core/CollisionModel.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/collision/Intersection.h>
 
@@ -151,7 +151,7 @@ public:
                           "' found in the context node.");
             return false;
         }
-        return BaseObject::canCreate(obj, context, arg);
+        return sofa::core::objectmodel::BaseComponent::canCreate(obj, context, arg);
     }
 
     sofa::core::topology::BaseMeshTopology* getCollisionTopology() override

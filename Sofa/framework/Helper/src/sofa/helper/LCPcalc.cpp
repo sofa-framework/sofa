@@ -241,12 +241,35 @@ int solveLCP(int dim, SReal * q, SReal ** M, SReal * res)
 
     // allocation de la mémoire nécessaire
     mat = (SReal **)malloc(dim*sizeof(SReal *));
+    if (mat == nullptr)
+    {
+        std::cerr << "something went wrong while allocating memory, going out without computing the result." << std::endl;
+        return 0;
+    }
     for(compteur=0; compteur<dim; compteur++)
     {
         mat[compteur]=(SReal *)malloc((2*dim+1)*sizeof(SReal));
+        if (mat[compteur] == nullptr)
+        {
+            for (int i = 0; i < compteur; i++)
+                free(mat[i]);
+            free(mat);
+
+            std::cerr << "something went wrong while allocating memory, going out without computing the result." << std::endl;
+            return 0;
+        }
     }
 
     base = (int *)malloc(dim*sizeof(int));
+    if (base == nullptr)
+    {
+        for(compteur=0; compteur<dim; compteur++)
+            free(mat[compteur]);
+        free(mat);
+        
+        std::cerr << "something went wrong while allocating memory, going out without computing the result." << std::endl;
+        return 0;
+    }
 
     // initialisation de la matrice de travail
     for(compteur=0; compteur<dim; compteur++)
@@ -1363,8 +1386,8 @@ int nlcp_multiGrid(int dim, SReal *dfree, SReal**W, SReal *f, SReal mu, SReal to
                 free(d_coarse);
 
                 free(d);
-                for (int i = 0; i < numContacts; i++)
-                    delete W33[i];
+                for (int c = 0; c < numContacts; c++)
+                    delete W33[c];
                 free(W33);
 
                 return 0;
@@ -1502,10 +1525,10 @@ int nlcp_multiGrid(int dim, SReal *dfree, SReal**W, SReal *f, SReal mu, SReal to
 
     if(verbose)
     {
-        std::stringstream tmp;
-        tmp << "Result at the COARSE LEVEL: " << msgendl;
-        resultToString(tmp, F_coarse,num_group*3);
-        dmsg_info("LCPcalc") << tmp.str() ;
+        std::stringstream ss;
+        ss << "Result at the COARSE LEVEL: " << msgendl;
+        resultToString(ss, F_coarse,num_group*3);
+        dmsg_info("LCPcalc") << ss.str() ;
     }
 
 
@@ -1528,10 +1551,10 @@ int nlcp_multiGrid(int dim, SReal *dfree, SReal**W, SReal *f, SReal mu, SReal to
 
     if(verbose)
     {
-        std::stringstream tmp;
-        tmp << "projection at the finer LEVEL: " << msgendl ;
-        resultToString(tmp, f,dim);
-        dmsg_info("LCPcalc") << tmp.str() ;
+        std::stringstream ss;
+        ss << "projection at the finer LEVEL: " << msgendl ;
+        resultToString(ss, f,dim);
+        dmsg_info("LCPcalc") << ss.str() ;
     }
 
 
@@ -1541,10 +1564,10 @@ int nlcp_multiGrid(int dim, SReal *dfree, SReal**W, SReal *f, SReal mu, SReal to
 
     if(verbose)
     {
-        std::stringstream tmp;
-        tmp << "after 10 iteration at the finer LEVEL: " << msgendl ;
-        resultToString(tmp, f,dim);
-        dmsg_info("LCPcalc") << tmp.str();
+        std::stringstream ss;
+        ss << "after 10 iteration at the finer LEVEL: " << msgendl ;
+        resultToString(ss, f,dim);
+        dmsg_info("LCPcalc") << ss.str();
     }
 
     free(d_free_coarse);
@@ -1553,8 +1576,8 @@ int nlcp_multiGrid(int dim, SReal *dfree, SReal**W, SReal *f, SReal mu, SReal to
     free(d_coarse);
 
     free(d);
-    for (int i = 0; i < numContacts; i++)
-        delete W33[i];
+    for (int c = 0; c < numContacts; c++)
+        delete W33[c];
     free(W33);
 
     return result;
@@ -1656,9 +1679,9 @@ int nlcp_gaussseidel(int dim, SReal *dfree, SReal**W, SReal *f, SReal mu, SReal 
             for (int c=0;  c<numContacts ; c++)
             {
                 dn = dfree[3*c];
-                for (int i=0; i<dim; i++)
+                for (int k = 0; k < dim; k++)
                 {
-                    dn += W[3*c  ][i]*f[i];
+                    dn += W[3 * c][k] * f[k];
                 }
                 if (dn < 0)
                     sum_d += -dn;
@@ -1688,8 +1711,8 @@ int nlcp_gaussseidel(int dim, SReal *dfree, SReal**W, SReal *f, SReal mu, SReal 
             }
 
             free(d);
-            for (int i = 0; i < numContacts; i++)
-                delete W33[i];
+            for (int c = 0; c < numContacts; c++)
+                delete W33[c];
             free(W33);
 
             if (verbose){
@@ -1702,8 +1725,8 @@ int nlcp_gaussseidel(int dim, SReal *dfree, SReal**W, SReal *f, SReal mu, SReal 
     sofa::helper::AdvancedTimer::valSet("GS iterations", it);
 
     free(d);
-    for (int i = 0; i < numContacts; i++)
-        delete W33[i];
+    for (int c = 0; c < numContacts; c++)
+        delete W33[c];
     free(W33);
 
     if (verbose)
@@ -1797,8 +1820,8 @@ int nlcp_gaussseidelTimed(int dim, SReal *dfree, SReal**W, SReal*f, SReal mu, SR
             if((t1-t0) > tdiff)
             {
                 free(d);
-                for (int i = 0; i < numContacts; i++)
-                    delete W33[i];
+                for (int c = 0; c < numContacts; c++)
+                    delete W33[c];
                 free(W33);
                 return 1;
             }
@@ -1807,8 +1830,8 @@ int nlcp_gaussseidelTimed(int dim, SReal *dfree, SReal**W, SReal*f, SReal mu, SR
         if (error < tol)
         {
             free(d);
-            for (int i = 0; i < numContacts; i++)
-                delete W33[i];
+            for (int c = 0; c < numContacts; c++)
+                delete W33[c];
             free(W33);
             sofa::helper::AdvancedTimer::valSet("GS iterations", it+1);
             return 1;
@@ -1816,8 +1839,8 @@ int nlcp_gaussseidelTimed(int dim, SReal *dfree, SReal**W, SReal*f, SReal mu, SR
     }
     sofa::helper::AdvancedTimer::valSet("GS iterations", it);
     free(d);
-    for (int i = 0; i < numContacts; i++)
-        delete W33[i];
+    for (int c = 0; c < numContacts; c++)
+        delete W33[c];
     free(W33);
 
     if (verbose)

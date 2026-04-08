@@ -34,10 +34,14 @@ namespace sofa::component::mapping::linear
 void registerIdentityMultiMapping(sofa::core::ObjectFactory* factory)
 {
     factory->registerObjects(core::ObjectRegistrationData("Concatenate several mechanical states together.")
+        .add< IdentityMultiMapping< Vec1Types, Vec1Types > >()
+        .add< IdentityMultiMapping< Vec2Types, Vec2Types > >()
         .add< IdentityMultiMapping< Vec3Types, Vec3Types > >()
         .add< IdentityMultiMapping< Rigid3Types, Rigid3Types > >());
 }
 
+template class SOFA_COMPONENT_MAPPING_LINEAR_API IdentityMultiMapping< Vec1Types, Vec1Types >;
+template class SOFA_COMPONENT_MAPPING_LINEAR_API IdentityMultiMapping< Vec2Types, Vec2Types >;
 template class SOFA_COMPONENT_MAPPING_LINEAR_API IdentityMultiMapping< Vec3Types, Vec3Types >;
 template class SOFA_COMPONENT_MAPPING_LINEAR_API IdentityMultiMapping< Rigid3Types, Rigid3Types >;
 

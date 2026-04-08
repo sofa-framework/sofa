@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_CORE_BEHAVIOR_CONSTRAINT_CPP
-#include <sofa/core/behavior/Constraint.inl>
+#include <sofa/core/behavior/LagrangianConstraint.inl>
 
 namespace sofa::core::behavior
 {

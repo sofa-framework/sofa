@@ -132,19 +132,10 @@ void FreeMotionAnimationLoop::init()
         }
     }
 
-    auto* taskScheduler = sofa::simulation::MainTaskSchedulerFactory::createInRegistry();
-    assert(taskScheduler != nullptr);
+
     if (d_parallelCollisionDetectionAndFreeMotion.getValue() || d_parallelODESolving.getValue())
     {
-        if (taskScheduler->getThreadCount() < 1)
-        {
-            taskScheduler->init(0);
-            msg_info() << "Task scheduler initialized on " << taskScheduler->getThreadCount() << " threads";
-        }
-        else
-        {
-            msg_info() << "Task scheduler already initialized on " << taskScheduler->getThreadCount() << " threads";
-        }
+        initTaskScheduler();
     }
 
     this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
@@ -348,9 +339,6 @@ void FreeMotionAnimationLoop::computeFreeMotionAndCollisionDetection(const sofa:
     {
         SCOPED_TIMER("FreeMotion+CollisionDetection");
 
-        auto* taskScheduler = sofa::simulation::MainTaskSchedulerFactory::createInRegistry();
-        assert(taskScheduler != nullptr);
-
         preCollisionComputation(params);
 
         {
@@ -368,7 +356,7 @@ void FreeMotionAnimationLoop::computeFreeMotionAndCollisionDetection(const sofa:
         }
 
         sofa::simulation::CpuTask::Status freeMotionTaskStatus;
-        taskScheduler->addTask(freeMotionTaskStatus, [&]() { computeFreeMotion(params, cparams, dt, pos, freePos, freeVel, mop); });
+        m_taskScheduler->addTask(freeMotionTaskStatus, [&]() { computeFreeMotion(params, cparams, dt, pos, freePos, freeVel, mop); });
 
         {
             SCOPED_TIMER("CollisionDetection");
@@ -379,7 +367,7 @@ void FreeMotionAnimationLoop::computeFreeMotionAndCollisionDetection(const sofa:
 
         {
             SCOPED_TIMER("WaitFreeMotion");
-            taskScheduler->workUntilDone(&freeMotionTaskStatus);
+            m_taskScheduler->workUntilDone(&freeMotionTaskStatus);
         }
 
         {
