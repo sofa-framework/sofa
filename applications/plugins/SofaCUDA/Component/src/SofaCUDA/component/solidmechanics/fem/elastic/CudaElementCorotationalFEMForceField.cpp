@@ -36,11 +36,13 @@ template class SOFACUDA_COMPONENT_API CudaElementCorotationalFEMForceField<CudaV
 template class SOFACUDA_COMPONENT_API CudaElementCorotationalFEMForceField<CudaVec3fTypes, sofa::geometry::Tetrahedron>;
 template class SOFACUDA_COMPONENT_API CudaElementCorotationalFEMForceField<CudaVec3fTypes, sofa::geometry::Hexahedron>;
 
+#ifdef SOFA_GPU_CUDA_DOUBLE
 template class SOFACUDA_COMPONENT_API CudaElementCorotationalFEMForceField<CudaVec3dTypes, sofa::geometry::Edge>;
 template class SOFACUDA_COMPONENT_API CudaElementCorotationalFEMForceField<CudaVec3dTypes, sofa::geometry::Triangle>;
 template class SOFACUDA_COMPONENT_API CudaElementCorotationalFEMForceField<CudaVec3dTypes, sofa::geometry::Quad>;
 template class SOFACUDA_COMPONENT_API CudaElementCorotationalFEMForceField<CudaVec3dTypes, sofa::geometry::Tetrahedron>;
 template class SOFACUDA_COMPONENT_API CudaElementCorotationalFEMForceField<CudaVec3dTypes, sofa::geometry::Hexahedron>;
+#endif
 
 } // namespace sofa::component::solidmechanics::fem::elastic
 
@@ -72,6 +74,7 @@ void registerElementCorotationalFEMForceField(sofa::core::ObjectFactory* factory
         .add< CudaElementCorotationalFEMForceField<CudaVec3fTypes, sofa::geometry::Hexahedron> >()
     );
 
+#ifdef SOFA_GPU_CUDA_DOUBLE
     factory->registerObjects(sofa::core::ObjectRegistrationData(
         "Supports GPU-side computations using CUDA (double) for EdgeCorotationalFEMForceField")
         .add< CudaElementCorotationalFEMForceField<CudaVec3dTypes, sofa::geometry::Edge> >()
@@ -92,6 +95,7 @@ void registerElementCorotationalFEMForceField(sofa::core::ObjectFactory* factory
         "Supports GPU-side computations using CUDA (double) for HexahedronCorotationalFEMForceField")
         .add< CudaElementCorotationalFEMForceField<CudaVec3dTypes, sofa::geometry::Hexahedron> >()
     );
+#endif
 }
 
 } // namespace sofa::gpu::cuda
