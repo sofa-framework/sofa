@@ -70,10 +70,6 @@ dependencies = { clangxx = "*" }
 dependencies = { numpy = ">=1.22.0", pybind11 = ">=2.3.0" }
 activation = { env = { SOFA_PLUGIN_PYTHON3_ARGS = "-DPLUGIN_SOFAPYTHON3=ON -DSOFA_FETCH_SOFAPYTHON3=ON -DPython_EXECUTABLE=$SOFA_PYTHON_EXECUTABLE -DPython_FIND_STRATEGY=LOCATION" } }
 
-# TODO : remove me
-[feature.qt-gui]
-activation = { env = { Qt5_DIR = "$CONDA_PREFIX/lib/cmake" } }
-dependencies = { qt-main = ">=5.15.0", ffmpeg = "*", libqglviewer = "*" }
 
 [feature.plugin-cuda.system-requirements]
 cuda = "12"
@@ -293,7 +289,6 @@ default = { features = [
   "plugin-cuda",
   "plugin-cimg",
   "presets-defaultGUI",
-  "qt-gui",
   "python-supported"] }
 conda-core = { features = ["presets-conda-core"] }
 minimal = { features = ["presets-minimal"] }
@@ -321,7 +316,6 @@ release-package = { features = [
   "plugin-cuda",
   "plugin-cimg",
   "presets-defaultGUI",
-  "qt-gui",
   "python-supported"] }
 supported-plugins = { features = [
   "presets-supported-plugins",
@@ -330,7 +324,6 @@ supported-plugins = { features = [
   "plugin-cuda",
   "plugin-cimg",
   "presets-defaultGUI",
-  "qt-gui",
   "python-supported"]}
 supported-plugins-dev = { features = [
   "presets-supported-plugins-dev",
@@ -339,7 +332,6 @@ supported-plugins-dev = { features = [
   "plugin-cuda",
   "plugin-cimg",
   "presets-defaultGUI",
-  "qt-gui",
   "python-supported"]}
 full = { features = [
   "presets-full",
@@ -348,7 +340,6 @@ full = { features = [
   "plugin-cuda",
   "plugin-cimg",
   "presets-defaultGUI",
-  "qt-gui",
   "python-supported"]}
 full-dev = { features = [
   "presets-full-dev",
@@ -357,6 +348,5 @@ full-dev = { features = [
   "plugin-cuda",
   "plugin-cimg",
   "presets-defaultGUI",
-  "qt-gui",
   "python-supported"]}
  

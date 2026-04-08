@@ -37,7 +37,6 @@ function clean_default_plugins()
           STLIB                     \
           VolumetricRendering       \
           CUDA                      \
-          Sofa.Qt                   \
       ; do
       disabled_plugins=$disabled_plugins'\|'$plugin
   done
