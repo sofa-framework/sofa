@@ -263,7 +263,7 @@ void CudaElementCorotationalFEMForceField<DataTypes, ElementType>::addForce(
     const auto nbElem = static_cast<unsigned int>(elements.size());
     const auto nbVertex = static_cast<unsigned int>(x.size());
 
-    VecDeriv& f = *d_f.beginEdit();
+    auto f = sofa::helper::getWriteOnlyAccessor(d_f);
     if (f.size() < x.size())
         f.resize(x.size());
 
@@ -275,11 +275,10 @@ void CudaElementCorotationalFEMForceField<DataTypes, ElementType>::addForce(
                 nbElem, nbVertex, m_maxElemPerVertex,
                 m_gpuElements.deviceRead(), m_gpuInitialRotationsTransposed.deviceRead(),
                 m_gpuStiffness.deviceRead(), x.deviceRead(), x0.deviceRead(),
-                f.deviceWrite(), m_gpuElementForce.deviceWrite(),
+                f.wref().deviceWrite(), m_gpuElementForce.deviceWrite(),
                 m_gpuRotations.deviceWrite(), m_gpuVelems.deviceRead());
 
             m_gpuRotationsUploaded = true;
-            d_f.endEdit();
             return;
         }
     }
@@ -292,10 +291,8 @@ void CudaElementCorotationalFEMForceField<DataTypes, ElementType>::addForce(
         nbElem, nbVertex, m_maxElemPerVertex,
         m_gpuElements.deviceRead(), m_gpuRotations.deviceRead(),
         m_gpuStiffness.deviceRead(), x.deviceRead(), x0.deviceRead(),
-        f.deviceWrite(), m_gpuElementForce.deviceWrite(),
+        f.wref().deviceWrite(), m_gpuElementForce.deviceWrite(),
         m_gpuVelems.deviceRead());
-
-    d_f.endEdit();
 }
 
 template<class DataTypes, class ElementType>
@@ -318,7 +315,7 @@ void CudaElementCorotationalFEMForceField<DataTypes, ElementType>::addDForce(
     constexpr auto nNodes = trait::NumberOfNodesInElement;
     constexpr auto dim = trait::spatial_dimensions;
 
-    VecDeriv& df = *d_df.beginEdit();
+    auto df = sofa::helper::getWriteOnlyAccessor(d_df);
     const VecDeriv& dx = d_dx.getValue();
 
     if (df.size() < dx.size())
@@ -336,10 +333,8 @@ void CudaElementCorotationalFEMForceField<DataTypes, ElementType>::addDForce(
         nbElem, nbVertex, m_maxElemPerVertex,
         m_gpuElements.deviceRead(), m_gpuRotations.deviceRead(),
         m_gpuStiffness.deviceRead(), dx.deviceRead(),
-        df.deviceWrite(), m_gpuElementForce.deviceWrite(),
+        df.wref().deviceWrite(), m_gpuElementForce.deviceWrite(),
         m_gpuVelems.deviceRead(), kFactor);
-
-    d_df.endEdit();
 }
 
 } // namespace sofa::component::solidmechanics::fem::elastic

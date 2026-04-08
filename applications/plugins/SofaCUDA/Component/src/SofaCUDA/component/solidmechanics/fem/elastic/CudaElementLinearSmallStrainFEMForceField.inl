@@ -164,7 +164,7 @@ void CudaElementLinearSmallStrainFEMForceField<DataTypes, ElementType>::addForce
     constexpr auto nNodes = trait::NumberOfNodesInElement;
     constexpr auto dim = trait::spatial_dimensions;
 
-    VecDeriv& f = *d_f.beginEdit();
+    auto f = sofa::helper::getWriteOnlyAccessor(d_f);
     const VecCoord& x = d_x.getValue();
 
     if (f.size() < x.size())
@@ -181,10 +181,8 @@ void CudaElementLinearSmallStrainFEMForceField<DataTypes, ElementType>::addForce
         nbElem, nbVertex, m_maxElemPerVertex,
         m_gpuElements.deviceRead(), m_gpuStiffness.deviceRead(),
         x.deviceRead(), x0.deviceRead(),
-        f.deviceWrite(), m_gpuElementForce.deviceWrite(),
+        f.wref().deviceWrite(), m_gpuElementForce.deviceWrite(),
         m_gpuVelems.deviceRead());
-
-    d_f.endEdit();
 }
 
 template<class DataTypes, class ElementType>
@@ -207,7 +205,7 @@ void CudaElementLinearSmallStrainFEMForceField<DataTypes, ElementType>::addDForc
     constexpr auto nNodes = trait::NumberOfNodesInElement;
     constexpr auto dim = trait::spatial_dimensions;
 
-    VecDeriv& df = *d_df.beginEdit();
+    auto df = sofa::helper::getWriteOnlyAccessor(d_df);
     const VecDeriv& dx = d_dx.getValue();
 
     if (df.size() < dx.size())
@@ -224,11 +222,9 @@ void CudaElementLinearSmallStrainFEMForceField<DataTypes, ElementType>::addDForc
     gpu::cuda::ElementLinearSmallStrainFEMForceFieldCuda_addDForce<Real, nNodes, dim>(
         nbElem, nbVertex, m_maxElemPerVertex,
         m_gpuElements.deviceRead(), m_gpuStiffness.deviceRead(),
-        dx.deviceRead(), df.deviceWrite(),
+        dx.deviceRead(), df.wref().deviceWrite(),
         m_gpuElementForce.deviceWrite(), m_gpuVelems.deviceRead(),
         kFactor);
-
-    d_df.endEdit();
 }
 
 } // namespace sofa::component::solidmechanics::fem::elastic
