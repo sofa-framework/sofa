@@ -110,7 +110,6 @@ public:
     }
 
 protected:
-    MechanicalState<DataTypes> *mstate;
 
     /// Apply predictive constraint force
     ///
