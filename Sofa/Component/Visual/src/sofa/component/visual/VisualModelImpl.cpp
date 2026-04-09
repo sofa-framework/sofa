@@ -229,6 +229,10 @@ void VisualModelImpl::doDrawVisual(const core::visual::VisualParams* vparams)
             {
                 loadTexture(d_texturename.getFullPath());
             }
+            else
+            {
+                msg_error() << "Texture " << textureFilename << " cannot be loaded";
+            }
             m_textureChanged = false;
         }
         initVisual(vparams);
