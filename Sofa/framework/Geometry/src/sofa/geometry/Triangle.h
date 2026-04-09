@@ -229,21 +229,24 @@ struct Triangle
     [[nodiscard]]
     static constexpr bool isPointInTriangle(const Node& p0, const Node& n0, const Node& n1, const Node& n2, sofa::type::Vec<3, T>& baryCoefs, bool assumePointIsOnPlane = true)
     {
-        baryCoefs = Triangle::getBarycentricCoordinates(p0, n0, n1, n2);
-
         // In 3D, check if the point is in the plane of the triangle
         if constexpr (std::is_same_v<Node, sofa::type::Vec<3, T>>)
         {
             if(!assumePointIsOnPlane)
             {
                 if(!isPointOnPlane(p0, n0, n1, n2))
+                {
+                    baryCoefs = {static_cast<T>(-1), static_cast<T>(-1), static_cast<T>(-1)};
                     return false;
+                }
             }
         }
         else
         {
             SOFA_UNUSED(assumePointIsOnPlane);
         }
+        
+        baryCoefs = Triangle::getBarycentricCoordinates(p0, n0, n1, n2);
 
         for (int i = 0; i < 3; ++i)
         {
