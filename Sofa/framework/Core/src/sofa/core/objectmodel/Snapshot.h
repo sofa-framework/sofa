@@ -116,7 +116,8 @@ public:
         ~SnapshotNode() noexcept override = default;
     };
 
-    std::shared_ptr<SnapshotNode> m_graphRoot { nullptr };
+    std::shared_ptr<SnapshotNode> m_graphRoot {nullptr};
+    std::size_t getNumberChildren();
 
     Snapshot();
     virtual ~Snapshot();

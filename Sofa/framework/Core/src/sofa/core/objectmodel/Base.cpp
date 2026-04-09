@@ -692,16 +692,6 @@ void Base::saveDataIn(Snapshot::SnapshotObject& snapshot) const
         dataInfo.type = data->getValueTypeString();
         dataInfo.value = data->getValueString();
 
-        // Wait PR#5976 to remove
-        std::string replaceValue = "nan";
-        std::string newValue = "0";
-        std::size_t pos = dataInfo.value.find(replaceValue);
-        while (pos != std::string::npos)
-        {
-            dataInfo.value.replace(pos, replaceValue.length(),newValue);
-            pos = dataInfo.value.find(replaceValue, pos + newValue.length());
-        }
-        
         snapshot.m_dataContainer.push_back(dataInfo);
     }
 }
@@ -714,8 +704,6 @@ void Base::saveLinksIn(Snapshot::SnapshotObject& snapshot) const
         linkInfo.name = link->getName();
         linkInfo.type = link->getValueTypeString();
         linkInfo.value = link->getValueString();
-        // linkInfo.value = link->getLinkedPath();
-        // linkInfo.value = link->getPath();
 
         std::string replaceValue = "//";
         std::size_t pos = linkInfo.value.find(replaceValue);
@@ -792,15 +780,19 @@ void Base::loadDataSnapshot(const std::shared_ptr<Snapshot::SnapshotObject>& sna
                 dataValueStr.erase(std::remove(dataValueStr.begin(), dataValueStr.end(), ','), dataValueStr.end());
                 data->read(dataValueStr);
             }
-            else
-                data->read(dataInfo.value);
+            else {
+                // std::cout << "Object ? " << this->getName() << ", data : " << dataInfo.name << std::endl;
+                if(data->read(dataInfo.value) == 0)
+                    std::cout << "[" << this->getName() << "] " <<"read is false for " << dataInfo.name << " : " << dataInfo.value <<  std::endl;
+
+            }
+
         }
     }
 }
 
 void Base::loadLinkSnapshot(const std::shared_ptr<Snapshot::SnapshotObject>& snapshotObject) const
 {
-    //if ( this->getClassName() != "Node")
     for (const auto& linkInfo : snapshotObject->m_linkContainer)
     {
         if (const auto link = this->findLink(linkInfo.name))
@@ -821,7 +813,7 @@ void Base::loadLinkSnapshot(const std::shared_ptr<Snapshot::SnapshotObject>& sna
                     link->add(obj, newSublink);
                 }
             }
-            // How to detect if a link is depracted ?
+            // How do I detect if a link is useless ?
             // for (const auto& oldLink : )
             // {
             //     if (std::ranges::find(newSublinks,oldLink) == newSublinks.end())

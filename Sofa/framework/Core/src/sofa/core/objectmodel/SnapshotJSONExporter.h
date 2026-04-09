@@ -27,4 +27,6 @@ namespace sofa::core::objectmodel
 {
     void exportTo(Snapshot& snapshot, const std::string& filename);
     void importFrom(Snapshot& snapshot, const std::string& filename);
+    std::string file_To_String(const std::string& filename);
+    std::string snapshot_To_String(const Snapshot& snapshot);
 } // namespace sofa::core::objectmodel

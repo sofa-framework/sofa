@@ -230,8 +230,7 @@ void importFrom(Snapshot& snapshot, const std::string& filename)
     std::cout << "JSON imported successfully from: " << filename << std::endl;
 }
 
-
-std::string to_String(const std::string& filename)
+std::string file_To_String(const std::string& filename)
 {
     std::ifstream file(filename);
     if (!file.is_open())
@@ -246,4 +245,9 @@ std::string to_String(const std::string& filename)
     return to_string(jsonRoot);
 }
 
+std::string snapshot_To_String(const Snapshot& snapshot)
+{
+    nlohmann::json j = snapshot.m_graphRoot ;
+    return to_string(j);
+}
 } // namespace sofa::core::objectmodel
