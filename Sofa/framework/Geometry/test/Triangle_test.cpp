@@ -251,9 +251,9 @@ TYPED_TEST(GeometryVec3DTriangle_test, isPointInTriangle)
     p0 = { 1., 0.2, 0.2 };
     res = sofa::geometry::Triangle::isPointInTriangle(p0, a, b, c, bary, false);
     EXPECT_FALSE(res);
-    EXPECT_NEAR(bary[0], 0.6, 1e-4);
-    EXPECT_NEAR(bary[1], 0.3, 1e-4);
-    EXPECT_NEAR(bary[2], 0.1, 1e-4);
+    EXPECT_NEAR(bary[0], -1, 1e-4);
+    EXPECT_NEAR(bary[1], -1, 1e-4);
+    EXPECT_NEAR(bary[2], -1, 1e-4);
 
     // out of plan with assumePointIsInPlane=true (default): bary coords are all positive
     // so the function returns true even though the point is not in the triangle plane
