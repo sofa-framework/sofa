@@ -91,7 +91,7 @@ void GraphHistoryManager::undoOperation(Operation &o)
     switch(o.ID)
     {
     case Operation::DELETE_OBJECT:
-        o.parent->addObject(o.sofaComponent->toBaseObject());
+        o.parent->addObject(o.sofaComponent->toBaseComponent()());
         graph->moveItem(graph->graphListener->items[o.sofaComponent.get()],graph->graphListener->items[o.above.get()]);
         o.ID = Operation::ADD_OBJECT;
         message=std::string("Undo Delete NODE ") + " (" + o.sofaComponent->getClassName() + ") " + o.sofaComponent->getName();
@@ -109,7 +109,7 @@ void GraphHistoryManager::undoOperation(Operation &o)
     case Operation::ADD_OBJECT:
         o.parent=graph->getNode(graph->graphListener->items[o.sofaComponent.get()]);
         o.above=graph->getComponentAbove(graph->graphListener->items[o.sofaComponent.get()]);
-        o.parent->removeObject(o.sofaComponent->toBaseObject());
+        o.parent->removeObject(o.sofaComponent->toBaseComponent()());
         o.ID = Operation::DELETE_OBJECT;
 
         message=std::string("Undo Delete OBJECT ") +" (" + o.sofaComponent->getClassName() + ") " + o.sofaComponent->getName();

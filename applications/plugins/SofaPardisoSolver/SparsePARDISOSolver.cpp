@@ -100,7 +100,14 @@ SparsePARDISOSolver<TMatrix,TVector>::SparsePARDISOSolverInvertData::SparsePARDI
     /* Numbers of processors, value of OMP_NUM_THREADS */
     const char* var = getenv("OMP_NUM_THREADS");
     if(var != NULL)
-        pardiso_iparm[2] = atoi(var);
+    {
+        char* endptr;
+        long val = strtol(var, &endptr, 10);
+        if (endptr != var && *endptr == '\0' && val > 0 && val <= INT_MAX)
+            pardiso_iparm[2] = static_cast<int>(val);
+        else
+            pardiso_iparm[2] = 1;
+    }
     else
         pardiso_iparm[2] = 1;
     sout << "Using " << pardiso_iparm[2] << " thread(s), set OMP_NUM_THREADS environment variable to change." << std::endl;
@@ -193,9 +200,9 @@ int SparsePARDISOSolver<TMatrix,TVector>::callPardiso(SparsePARDISOSolverInvertD
 
         if (doExportData) {
             std::string exportDir=f_exportDataToDir.getValue();
-            std::ofstream f;            
-            char name[100];
-            sprintf(name, "%s/spmatrix_PARD_%s.txt", exportDir.c_str(), suffix.c_str());
+            std::ofstream f;
+            char name[256];
+            snprintf(name, sizeof(name), "%s/spmatrix_PARD_%s.txt", exportDir.c_str(), suffix.c_str());
             f.open(name);
 
             int rw = 0;
@@ -207,7 +214,7 @@ int SparsePARDISOSolver<TMatrix,TVector>::callPardiso(SparsePARDISOSolverInvertD
 
             f.close();
 
-            sprintf(name, "%s/compmatrix_PARD_%s.txt", exportDir.c_str(), suffix.c_str());
+            snprintf(name, sizeof(name), "%s/compmatrix_PARD_%s.txt", exportDir.c_str(), suffix.c_str());
             f.open(name);
 
             for (int i = 0; i <= n; i++)
@@ -271,12 +278,12 @@ void SparsePARDISOSolver<TMatrix,TVector>::invert(Matrix& M)
         if (timeStep != actTimeStep)
             numStep = 0;
         timeStep = actTimeStep;
-        char nm[100];
-        sprintf(nm, "step%04ld_iter%04d", timeStep, numStep);
+        char nm[64];
+        snprintf(nm, sizeof(nm), "step%04ld_iter%04d", timeStep, numStep);
         suffix = nm;
     } else {
-        char nm[100];
-        sprintf(nm, "%04d", numStep);
+        char nm[64];
+        snprintf(nm, sizeof(nm), "%04d", numStep);
         suffix = nm;
     }
 
@@ -287,8 +294,8 @@ void SparsePARDISOSolver<TMatrix,TVector>::invert(Matrix& M)
     if (doExportData) {
         std::string exportDir=f_exportDataToDir.getValue();
         std::ofstream f;
-        char name[100];
-        sprintf(name, "%s/matrix_PARD_%s.txt", exportDir.c_str(), suffix.c_str());
+        char name[256];
+        snprintf(name, sizeof(name), "%s/matrix_PARD_%s.txt", exportDir.c_str(), suffix.c_str());
         //std::cout << this->getName() << ": Exporting to " << name << std::endl;
         f.open(name);
         f << M;
@@ -359,8 +366,8 @@ void SparsePARDISOSolver<TMatrix,TVector>::solve (Matrix& M, Vector& z, Vector& 
     if (doExportData){
         std::string exportDir=f_exportDataToDir.getValue();
         std::ofstream f;
-        char name[100];
-        sprintf(name, "%s/rhs_PARD_%s.txt", exportDir.c_str(), suffix.c_str());
+        char name[256];
+        snprintf(name, sizeof(name), "%s/rhs_PARD_%s.txt", exportDir.c_str(), suffix.c_str());
         f.open(name);
         f << r;
         f.close();
@@ -384,8 +391,8 @@ void SparsePARDISOSolver<TMatrix,TVector>::solve (Matrix& M, Vector& z, Vector& 
     if (doExportData){
         std::string exportDir=f_exportDataToDir.getValue();
         std::ofstream f;
-        char name[100];
-        sprintf(name, "%s/solution_PARD_%s.txt", exportDir.c_str(), suffix.c_str());
+        char name[256];
+        snprintf(name, sizeof(name), "%s/solution_PARD_%s.txt", exportDir.c_str(), suffix.c_str());
         f.open(name);
         f << z;
         f.close();
