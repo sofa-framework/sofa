@@ -19,6 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
+
+#include <sofa/helper/config.h>
+
+SOFA_HEADER_DEPRECATED("v26.06", "v27.06", "This header is unused and will be removed.")
+
 #ifndef SOFA_HELPER_SIMPLETIMER_H
 #define SOFA_HELPER_SIMPLETIMER_H
 
