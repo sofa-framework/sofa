@@ -47,7 +47,7 @@ Visitor::Result PropagateEventVisitor::processNodeTopDown(simulation::Node* node
     return Visitor::RESULT_CONTINUE;
 }
 
-void PropagateEventVisitor::processObject(simulation::Node*, core::objectmodel::BaseObject* obj)
+void PropagateEventVisitor::processObject(simulation::Node*, core::objectmodel::BaseComponent* obj)
 {
     if( obj->f_listening.getValue()==true )
         obj->handleEvent( m_event );

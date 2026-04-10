@@ -20,17 +20,17 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/solidmechanics/fem/elastic/fwd.h>
-
 #include <sofa/component/solidmechanics/fem/elastic/BaseLinearElasticityFEMForceField.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/component/solidmechanics/fem/elastic/fwd.h>
 #include <sofa/component/topology/container/grid/SparseGridTopology.h>
-#include <sofa/type/vector.h>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/type/Mat.h>
 #include <sofa/core/behavior/BaseRotationFinder.h>
-#include <sofa/helper/decompose.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/core/visual/DrawMesh.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/OptionsGroup.h>
+#include <sofa/helper/decompose.h>
+#include <sofa/type/Mat.h>
+#include <sofa/type/vector.h>
 
 namespace sofa::component::solidmechanics::fem::elastic
 {
@@ -222,6 +222,8 @@ protected:
     virtual void accumulateForceSmall( WDataRefVecDeriv &f, RDataRefVecCoord &p, sofa::Index i, const Element&elem  );
 
     bool _alreadyInit;
+
+    core::visual::DrawElementMesh<sofa::geometry::Hexahedron> m_drawMesh;
 };
 
 #if !defined(SOFA_COMPONENT_FORCEFIELD_HEXAHEDRONFEMFORCEFIELD_CPP)
