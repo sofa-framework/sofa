@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/core/objectmodel/BaseNode.h>
 
 namespace sofa::core::behavior
@@ -38,11 +38,11 @@ namespace sofa::core::behavior
  *  certainly change soon.
  *
  */
-class SOFA_CORE_API BaseAnimationLoop : public virtual objectmodel::BaseObject
+class SOFA_CORE_API BaseAnimationLoop : public virtual objectmodel::BaseComponent
 {
 
 public:
-    SOFA_ABSTRACT_CLASS(BaseAnimationLoop, objectmodel::BaseObject);
+    SOFA_ABSTRACT_CLASS(BaseAnimationLoop, objectmodel::BaseComponent);
     SOFA_BASE_CAST_IMPLEMENTATION(BaseAnimationLoop)
 
     // the node where the loop will start processing.

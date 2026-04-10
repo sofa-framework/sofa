@@ -23,6 +23,7 @@
 #include <sofa/component/linearsystem/MatrixProjectionMethod.h>
 #include <sofa/component/linearsystem/BaseMatrixProjectionMethod.inl>
 #include <sofa/core/BaseMapping.h>
+#include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/core/ConstraintParams.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalResetConstraintVisitor.h>
@@ -70,7 +71,7 @@ template <class TMatrix>
 void MatrixProjectionMethod<TMatrix>::addMappedMatrixToGlobalMatrixEigen(
     sofa::type::fixed_array<core::behavior::BaseMechanicalState*, 2> mstatePair,
     TMatrix* mappedMatrix,
-    sofa::type::fixed_array<MappingJacobians<TMatrix>, 2> jacobians,
+    sofa::type::fixed_array<simulation::MappingJacobians<TMatrix>, 2> jacobians,
     const MappingGraph& mappingGraph, linearalgebra::BaseMatrix* globalMatrix)
 {
     if (!mappedMatrix)
@@ -125,8 +126,8 @@ void MatrixProjectionMethod<TMatrix>::addMappedMatrixToGlobalMatrixEigen(
             // nb rows of J[0] = size of first mechanical state
             msg_error_when(sofa::Size(J[0]->rows()) != mstatePair[0]->getMatrixSize(), "MatrixMapping")
                     << "[J0] Incompatible matrix size [rows] " << J[0]->rows() << " " << mstatePair[0]->getMatrixSize();
-            msg_error_when(sofa::Size(J[0]->cols()) != a->BaseMechanicalState::getMatrixSize(), "MatrixMapping")
-                    << "[J0] Incompatible matrix size [cols] " << J[0]->cols() << " " << a->BaseMechanicalState::getMatrixSize();
+            msg_error_when(sofa::Size(J[0]->cols()) != a->getMatrixSize(), "MatrixMapping")
+                    << "[J0] Incompatible matrix size [cols] " << J[0]->cols() << " " << a->getMatrixSize();
         }
 
         if (J[1])
@@ -134,8 +135,8 @@ void MatrixProjectionMethod<TMatrix>::addMappedMatrixToGlobalMatrixEigen(
             // nb rows of J[1] = size of second mechanical state
             msg_error_when(sofa::Size(J[1]->rows()) != mstatePair[1]->getMatrixSize(), "MatrixMapping")
                     << "[J1] Incompatible matrix size [rows] " << J[1]->rows() << " " << mstatePair[1]->getMatrixSize();
-            msg_error_when(sofa::Size(J[1]->cols()) != b->BaseMechanicalState::getMatrixSize(), "MatrixMapping")
-                    << "[J1] Incompatible matrix size [cols] " << J[1]->cols() << " " << b->BaseMechanicalState::getMatrixSize();
+            msg_error_when(sofa::Size(J[1]->cols()) != b->getMatrixSize(), "MatrixMapping")
+                    << "[J1] Incompatible matrix size [cols] " << J[1]->cols() << " " << b->getMatrixSize();
         }
 
         Eigen::SparseMatrix<Block, Eigen::RowMajor> JT_K_J;
@@ -206,14 +207,14 @@ void MatrixProjectionMethod<TMatrix>::computeMatrixJacobians(const core::Mechani
 {
     if (!m_mappingJacobians.has_value() || !d_areJacobiansConstant.getValue())
     {
-        const MappingJacobians<TMatrix> J0 = computeJacobiansFrom(
+        const simulation::MappingJacobians<TMatrix> J0 = computeJacobiansFrom(
             this->l_mechanicalStates[0], mparams, mappingGraph, matrixToProject);
 
-        const MappingJacobians<TMatrix> J1 =
+        const simulation::MappingJacobians<TMatrix> J1 =
                 (this->l_mechanicalStates[0] == this->l_mechanicalStates[1]) ?
                     J0 : computeJacobiansFrom(this->l_mechanicalStates[1], mparams, mappingGraph, matrixToProject);
 
-        m_mappingJacobians.emplace(sofa::type::fixed_array<MappingJacobians<TMatrix>, 2>({J0, J1}));
+        m_mappingJacobians.emplace(sofa::type::fixed_array<simulation::MappingJacobians<TMatrix>, 2>({J0, J1}));
     }
 }
 
@@ -237,7 +238,7 @@ void MatrixProjectionMethod<TMatrix>::projectMatrixToGlobalMatrix(const core::Me
 
 template <class TMatrix>
 std::vector<unsigned> MatrixProjectionMethod<TMatrix>::identifyAffectedDoFs(
-    BaseMechanicalState* mstate, TMatrix* crs)
+    core::behavior::BaseMechanicalState* mstate, TMatrix* crs)
 {
     const auto blockSize = mstate->getMatrixBlockSize();
     std::set<unsigned int> setAffectedDoFs;
@@ -262,13 +263,13 @@ std::vector<unsigned> MatrixProjectionMethod<TMatrix>::identifyAffectedDoFs(
 }
 
 template <class TMatrix>
-MappingJacobians<TMatrix> MatrixProjectionMethod<TMatrix>::computeJacobiansFrom(
-    BaseMechanicalState* mstate, const core::MechanicalParams* mparams,
+simulation::MappingJacobians<TMatrix> MatrixProjectionMethod<TMatrix>::computeJacobiansFrom(
+    core::behavior::BaseMechanicalState* mstate, const core::MechanicalParams* mparams,
     const MappingGraph& mappingGraph, TMatrix* crs)
 {
     core::ConstraintParams cparams(*mparams);
 
-    MappingJacobians<TMatrix> jacobians(*mstate);
+    simulation::MappingJacobians<TMatrix> jacobians(*mstate);
 
     if (!mappingGraph.hasAnyMappingInput(mstate))
     {

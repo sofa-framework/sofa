@@ -29,7 +29,7 @@
 #define SOFAIMPLICITFIELD_COMPONENT_SCALARFIELD_H
 #include <SofaImplicitField/config.h>
 
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/type/Mat.h>
 
 namespace sofa::component::geometry

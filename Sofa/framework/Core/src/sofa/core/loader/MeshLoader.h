@@ -162,7 +162,10 @@ public:
     Data< type::vector< Tetrahedron > > d_tetrahedra; ///< Tetrahedra of the mesh loaded
     Data< type::vector< Hexahedron > > d_hexahedra; ///< Hexahedra of the mesh loaded
     Data< type::vector< Prism > > d_prisms;
+
+#ifndef SOFA_BUILD_SOFA_CORE
     SOFA_ATTRIBUTE_DEPRECATED("v25.12", "v26.06", "Pentahedron is renamed to Prism")
+#endif
     objectmodel::lifecycle::RenamedData<type::vector< Prism >> d_pentahedra; ///< Pentahedra of the mesh loaded
     Data< type::vector< HighOrderTetrahedronPosition > > d_highOrderTetrahedronPositions; ///< High order tetrahedron points of the mesh loaded
     Data< type::vector< HighOrderHexahedronPosition > > d_highOrderHexahedronPositions; ///< High order hexahedron points of the mesh loaded
