@@ -30,10 +30,10 @@ namespace sofa::simulation::xml
 using namespace sofa::defaulttype;
 using helper::Creator;
 
-//template class Factory< std::string, objectmodel::BaseObject, Node<objectmodel::BaseObject*>* >;
+//template class Factory< std::string, objectmodel::BaseComponent, Node<objectmodel::BaseComponent*>* >;
 
 ObjectElement::ObjectElement(const std::string& name, const std::string& type, BaseElement* eparent)
-    : Element<core::objectmodel::BaseObject>(name, type, eparent)
+    : Element<core::objectmodel::BaseComponent>(name, type, eparent)
 {
 }
 
@@ -66,7 +66,7 @@ bool ObjectElement::initNode()
         }
     }
 
-    core::objectmodel::BaseObject::SPtr obj = core::ObjectFactory::CreateObject(ctx, this);
+    core::objectmodel::BaseComponent::SPtr obj = core::ObjectFactory::CreateObject(ctx, this);
 
     if (obj == nullptr)
         obj = Factory::CreateObject(this->getType(), this);

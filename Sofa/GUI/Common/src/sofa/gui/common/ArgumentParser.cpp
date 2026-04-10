@@ -81,14 +81,21 @@ void ArgumentParser::parse()
     // the original argv and argc
     // TODO: upgrade cxxopts to v3 and remove this copy
 
-    // copy argv into a temporary
-    char** copyArgv = new char* [m_argc + 1];
-    for (int i = 0; i < m_argc; i++) {
-        const int len = strlen(m_argv[i]) + 1;
-        copyArgv[i] = new char[len];
-        strcpy(copyArgv[i], m_argv[i]);
+    // copy argv into a vector (automatic cleanup via RAII)
+    std::vector<std::string> argStrings;
+    argStrings.reserve(m_argc);
+    for (int i = 0; i < m_argc; i++) 
+    {
+        argStrings.emplace_back(m_argv[i]);
     }
-    copyArgv[m_argc] = nullptr;
+
+    // build char* array pointing to the strings
+    std::vector<char*> copyArgv;
+    copyArgv.reserve(m_argc + 1);
+    for (auto& s : argStrings) {
+        copyArgv.push_back(s.data());
+    }
+    copyArgv.push_back(nullptr);
 
     int copyArgc = m_argc;
 
@@ -97,7 +104,7 @@ void ArgumentParser::parse()
     {
         extra.clear();
         m_options.parse_positional("input-file");
-        const auto temp = m_options.parse(copyArgc, copyArgv);
+        const auto temp = m_options.parse(copyArgc, copyArgv.data());
         vecArg = temp.arguments();
     }
     catch (const cxxopts::exceptions::exception& e)
@@ -121,12 +128,6 @@ void ArgumentParser::parse()
             }
         }
     }
-
-    // delete argv copy
-    for (int i = 0; i < m_argc; i++) {
-        delete[] copyArgv[i];
-    }
-    delete[] copyArgv;
 }
 
 void ArgumentParser::showArgs()

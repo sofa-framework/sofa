@@ -60,7 +60,7 @@ struct SetTypeInfo
 
     static sofa::Size size(const DataType& data)
     {
-        if (BaseTypeInfo::FixedSize)
+        if constexpr (BaseTypeInfo::FixedSize)
             return sofa::Size(data.size()*BaseTypeInfo::size());
         else
         {
@@ -80,7 +80,7 @@ struct SetTypeInfo
     template <typename T>
     static void getValue(const DataType &data, sofa::Size index, T& value)
     {
-        if (BaseTypeInfo::FixedSize)
+        if constexpr (BaseTypeInfo::FixedSize)
         {
             typename DataType::const_iterator it = data.begin();
             for (sofa::Size i=0; i<index/BaseTypeInfo::size(); ++i) ++it;
@@ -119,7 +119,7 @@ struct SetTypeInfo
 
     static void getValueString(const DataType &data, sofa::Size index, std::string& value)
     {
-        if (BaseTypeInfo::FixedSize)
+        if constexpr (BaseTypeInfo::FixedSize)
         {
             typename DataType::const_iterator it = data.begin();
             for (sofa::Size i=0; i<index/BaseTypeInfo::size(); ++i) ++it;

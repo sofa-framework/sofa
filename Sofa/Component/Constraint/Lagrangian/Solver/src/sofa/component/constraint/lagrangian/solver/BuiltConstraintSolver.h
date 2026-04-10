@@ -22,6 +22,7 @@
 #pragma once
 
 #include <sofa/component/constraint/lagrangian/solver/GenericConstraintSolver.h>
+#include <sofa/simulation/task/TaskSchedulerUser.h>
 
 namespace sofa::component::constraint::lagrangian::solver
 {
@@ -32,7 +33,8 @@ namespace sofa::component::constraint::lagrangian::solver
  *  This component is purely virtual because doSolve is not defined and needs to be defined in the
  *  inherited class
  */
-class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API BuiltConstraintSolver : public GenericConstraintSolver
+class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API BuiltConstraintSolver : public GenericConstraintSolver,
+                                                                              public sofa::simulation::TaskSchedulerUser
 {
 
 public:

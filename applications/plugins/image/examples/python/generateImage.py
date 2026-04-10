@@ -4,7 +4,7 @@ import sys
 
 
 def createScene(node):
-    node.createObject('RequiredPlugin',name='image')
+    node.createObject('RequiredPlugin',pluginName='image')
 
     dimx,dimy,dimz,dimc,dimt = 10, 10, 1, 3, 1
 

@@ -72,6 +72,9 @@ HDCallbackCode HDCALLBACK stateCallback(void * userData)
     HDErrorInfo error;
     GeomagicDriver * driver = (GeomagicDriver * ) userData;
 
+    static auto last_time = std::chrono::high_resolution_clock::now();
+    static int counter = 0;
+
     hdMakeCurrentDevice(driver->m_hHD);
     if (HD_DEVICE_ERROR(error = hdGetError())) return HD_CALLBACK_CONTINUE;
 
@@ -146,6 +149,23 @@ HDCallbackCode HDCALLBACK stateCallback(void * userData)
 
     hdEndFrame(driver->m_hHD);
 
+    // Measure period
+    if (driver->m_logThreadSpeed)
+    {
+        counter++;
+
+        // Print averaged frequency every ~1000 loops
+        if (counter >= 1000)
+        {
+            auto now = std::chrono::high_resolution_clock::now();
+            double elapsed_ms = std::chrono::duration<double, std::milli>(now - last_time).count();
+            double avg_freq = counter / (elapsed_ms / 1000.0);
+            msg_info("GeomagicDriver") << "Haptic loop avg freq: " << avg_freq << " Hz";
+            last_time = now;
+            counter = 0;
+        }
+    }
+
     return HD_CALLBACK_CONTINUE;
 }
 
@@ -178,6 +198,15 @@ GeomagicDriver::GeomagicDriver()
     m_forceFeedback = nullptr;
     m_GeomagicVisualModel = std::make_unique<GeomagicVisualModel>();
     sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Loading);
+
+    this->addUpdateCallback("logHaptics", {&f_printLog},
+                            [this](const core::DataTracker& t)
+                            {
+                                SOFA_UNUSED(t);
+                                m_logThreadSpeed = f_printLog.getValue();
+                                return sofa::core::objectmodel::ComponentState::Valid;
+                            },
+                            {});
 }
 
 
@@ -206,6 +235,8 @@ void GeomagicDriver::init()
         msg_warning() << "No forceFeedBack component found in the scene. Only the motion of the haptic tool will be simulated.";
     }
 
+    // Use internal bool to know if haptic thread should log its speed without calling GetValue each time
+    m_logThreadSpeed = f_printLog.getValue();
 
     // 2- init device and Hd scheduler
     if (d_manualStart.getValue() == false)

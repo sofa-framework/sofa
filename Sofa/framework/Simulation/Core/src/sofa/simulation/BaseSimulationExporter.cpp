@@ -95,7 +95,7 @@ void BaseSimulationExporter::handleEvent(Event *event){
         }
     }
 
-    BaseObject::handleEvent(event) ;
+    BaseComponent::handleEvent(event) ;
 }
 
 

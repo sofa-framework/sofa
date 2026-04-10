@@ -41,7 +41,7 @@ public:
     virtual void processVisualModel(simulation::Node* node, core::visual::VisualModel* vm) = 0;
     virtual void fwdProcessVisualStyle(simulation::Node* node, core::visual::BaseVisualStyle* vm);
     virtual void bwdProcessVisualStyle(simulation::Node* node, core::visual::BaseVisualStyle* vm);
-    virtual void processObject(simulation::Node* /*node*/, core::objectmodel::BaseObject* /*o*/) {}
+    virtual void processObject(simulation::Node* /*node*/, core::objectmodel::BaseComponent* /*o*/) {}
 
     Result processNodeTopDown(simulation::Node* node) override;
 
@@ -69,7 +69,7 @@ public:
     void processNodeBottomUp(simulation::Node* node) override;
     virtual void fwdVisualModel(simulation::Node* node, core::visual::VisualModel* vm);
     void processVisualModel(simulation::Node* node, core::visual::VisualModel* vm) override;
-    void processObject(simulation::Node* node, core::objectmodel::BaseObject* o) override;
+    void processObject(simulation::Node* node, core::objectmodel::BaseComponent* o) override;
     virtual void bwdVisualModel(simulation::Node* node, core::visual::VisualModel* vm);
     const char* getClassName() const override { return "VisualDrawVisitor"; }
 #ifdef SOFA_DUMP_VISITOR_INFO
