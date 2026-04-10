@@ -42,101 +42,50 @@ __global__ void ElementCorotationalFEMForceField_computeRotationsAndForce_kernel
 {
     static_assert(Dim == 3, "Corotational rotation computation requires Dim == 3");
     constexpr int NSymBlocks = NNodes * (NNodes + 1) / 2;
-    const T invN = T(1) / T(NNodes);
 
     const int elemId = blockIdx.x * blockDim.x + threadIdx.x;
     if (elemId >= nbElem) return;
 
+    // Gather element positions
     T ex[NNodes * Dim], ex0[NNodes * Dim];
-    #pragma unroll
-    for (int n = 0; n < NNodes; ++n)
-    {
-        const int nodeId = elements[n * nbElem + elemId];
-        #pragma unroll
-        for (int d = 0; d < Dim; ++d)
-        {
-            ex[n * Dim + d] = x[nodeId * Dim + d];
-            ex0[n * Dim + d] = x0[nodeId * Dim + d];
-        }
-    }
+    gatherElementData<T, NNodes, Dim>(elements, nbElem, elemId, x, ex);
+    gatherElementData<T, NNodes, Dim>(elements, nbElem, elemId, x0, ex0);
 
+    // Compute rotation frame from current positions
     T frame[Dim * Dim];
     if constexpr (NNodes == 8)
         computeHexahedronFrame(ex, frame);
     else
         computeTriangleFrame(ex, frame);
 
+    // R = frame^T * initRotTransposed
     const T* irt = initRotTransposed + elemId * Dim * Dim;
     T R[Dim * Dim];
     mat3TransposeMul(frame, irt, R);
 
+    // Store rotation for later use
     T* Rout = rotationsOut + elemId * Dim * Dim;
     #pragma unroll
     for (int i = 0; i < Dim * Dim; ++i)
         Rout[i] = R[i];
 
+    // Compute element centers
     T center[Dim], center0[Dim];
-    #pragma unroll
-    for (int d = 0; d < Dim; ++d)
-    {
-        center[d] = T(0);
-        center0[d] = T(0);
-    }
-    #pragma unroll
-    for (int n = 0; n < NNodes; ++n)
-    {
-        #pragma unroll
-        for (int d = 0; d < Dim; ++d)
-        {
-            center[d] += ex[n * Dim + d];
-            center0[d] += ex0[n * Dim + d];
-        }
-    }
-    #pragma unroll
-    for (int d = 0; d < Dim; ++d)
-    {
-        center[d] *= invN;
-        center0[d] *= invN;
-    }
+    computeElementCenter<T, NNodes, Dim>(ex, center);
+    computeElementCenter<T, NNodes, Dim>(ex0, center0);
 
+    // Compute corotational displacement
     T disp[NNodes * Dim];
-    #pragma unroll
-    for (int n = 0; n < NNodes; ++n)
-    {
-        T diff[Dim];
-        #pragma unroll
-        for (int d = 0; d < Dim; ++d)
-            diff[d] = ex[n * Dim + d] - center[d];
+    computeCorotationalDisplacement<T, NNodes, Dim>(R, ex, ex0, center, center0, disp);
 
-        #pragma unroll
-        for (int di = 0; di < Dim; ++di)
-        {
-            T rotated = T(0);
-            #pragma unroll
-            for (int dj = 0; dj < Dim; ++dj)
-                rotated += R[dj * Dim + di] * diff[dj];
-            disp[n * Dim + di] = rotated - (ex0[n * Dim + di] - center0[di]);
-        }
-    }
-
+    // Multiply by stiffness matrix
     T edf[NNodes * Dim];
     const T* K = stiffness + elemId * NSymBlocks * Dim * Dim;
     symBlockMatMul<T, NNodes, Dim>(K, disp, edf);
 
+    // Rotate forces back to global frame and negate
     T* out = eforce + elemId * NNodes * Dim;
-    #pragma unroll
-    for (int n = 0; n < NNodes; ++n)
-    {
-        #pragma unroll
-        for (int di = 0; di < Dim; ++di)
-        {
-            T sum = T(0);
-            #pragma unroll
-            for (int dj = 0; dj < Dim; ++dj)
-                sum += R[di * Dim + dj] * edf[n * Dim + dj];
-            out[n * Dim + di] = -sum;
-        }
-    }
+    rotateAndWriteForce<T, NNodes, Dim>(R, edf, out, T(-1));
 }
 
 /**
@@ -153,92 +102,39 @@ __global__ void ElementCorotationalFEMForceField_computeForce_kernel(
     T* __restrict__ eforce)
 {
     constexpr int NSymBlocks = NNodes * (NNodes + 1) / 2;
-    const T invN = T(1) / T(NNodes);
 
     const int elemId = blockIdx.x * blockDim.x + threadIdx.x;
     if (elemId >= nbElem) return;
 
+    // Load rotation matrix
     const T* Rptr = rotations + elemId * Dim * Dim;
     T R[Dim * Dim];
     #pragma unroll
     for (int i = 0; i < Dim * Dim; ++i)
         R[i] = Rptr[i];
 
+    // Gather element positions
     T ex[NNodes * Dim], ex0[NNodes * Dim];
-    #pragma unroll
-    for (int n = 0; n < NNodes; ++n)
-    {
-        const int nodeId = elements[n * nbElem + elemId];
-        #pragma unroll
-        for (int d = 0; d < Dim; ++d)
-        {
-            ex[n * Dim + d] = x[nodeId * Dim + d];
-            ex0[n * Dim + d] = x0[nodeId * Dim + d];
-        }
-    }
+    gatherElementData<T, NNodes, Dim>(elements, nbElem, elemId, x, ex);
+    gatherElementData<T, NNodes, Dim>(elements, nbElem, elemId, x0, ex0);
 
+    // Compute element centers
     T center[Dim], center0[Dim];
-    #pragma unroll
-    for (int d = 0; d < Dim; ++d)
-    {
-        center[d] = T(0);
-        center0[d] = T(0);
-    }
-    #pragma unroll
-    for (int n = 0; n < NNodes; ++n)
-    {
-        #pragma unroll
-        for (int d = 0; d < Dim; ++d)
-        {
-            center[d] += ex[n * Dim + d];
-            center0[d] += ex0[n * Dim + d];
-        }
-    }
-    #pragma unroll
-    for (int d = 0; d < Dim; ++d)
-    {
-        center[d] *= invN;
-        center0[d] *= invN;
-    }
+    computeElementCenter<T, NNodes, Dim>(ex, center);
+    computeElementCenter<T, NNodes, Dim>(ex0, center0);
 
+    // Compute corotational displacement
     T disp[NNodes * Dim];
-    #pragma unroll
-    for (int n = 0; n < NNodes; ++n)
-    {
-        T diff[Dim];
-        #pragma unroll
-        for (int d = 0; d < Dim; ++d)
-            diff[d] = ex[n * Dim + d] - center[d];
+    computeCorotationalDisplacement<T, NNodes, Dim>(R, ex, ex0, center, center0, disp);
 
-        #pragma unroll
-        for (int di = 0; di < Dim; ++di)
-        {
-            T rotated = T(0);
-            #pragma unroll
-            for (int dj = 0; dj < Dim; ++dj)
-                rotated += R[dj * Dim + di] * diff[dj];
-            disp[n * Dim + di] = rotated - (ex0[n * Dim + di] - center0[di]);
-        }
-    }
-
+    // Multiply by stiffness matrix
     T edf[NNodes * Dim];
     const T* K = stiffness + elemId * NSymBlocks * Dim * Dim;
     symBlockMatMul<T, NNodes, Dim>(K, disp, edf);
 
+    // Rotate forces back to global frame and negate
     T* out = eforce + elemId * NNodes * Dim;
-    #pragma unroll
-    for (int n = 0; n < NNodes; ++n)
-    {
-        #pragma unroll
-        for (int di = 0; di < Dim; ++di)
-        {
-            T sum = T(0);
-            #pragma unroll
-            for (int dj = 0; dj < Dim; ++dj)
-                sum += R[di * Dim + dj] * edf[n * Dim + dj];
-            out[n * Dim + di] = -sum;
-        }
-    }
+    rotateAndWriteForce<T, NNodes, Dim>(R, edf, out, T(-1));
 }
 
 /**
@@ -259,51 +155,25 @@ __global__ void ElementCorotationalFEMForceField_computeDForce_kernel(
     const int elemId = blockIdx.x * blockDim.x + threadIdx.x;
     if (elemId >= nbElem) return;
 
+    // Load rotation matrix
     const T* Rptr = rotations + elemId * Dim * Dim;
     T R[Dim * Dim];
     #pragma unroll
     for (int i = 0; i < Dim * Dim; ++i)
         R[i] = Rptr[i];
 
+    // Gather and rotate displacement: rdx = R^T * dx
     T rdx[NNodes * Dim];
-    #pragma unroll
-    for (int n = 0; n < NNodes; ++n)
-    {
-        const int nodeId = elements[n * nbElem + elemId];
-        T nodeDx[Dim];
-        #pragma unroll
-        for (int d = 0; d < Dim; ++d)
-            nodeDx[d] = dx[nodeId * Dim + d];
+    rotateDisplacementTranspose<T, NNodes, Dim>(R, elements, nbElem, elemId, dx, rdx);
 
-        #pragma unroll
-        for (int di = 0; di < Dim; ++di)
-        {
-            T sum = T(0);
-            #pragma unroll
-            for (int dj = 0; dj < Dim; ++dj)
-                sum += R[dj * Dim + di] * nodeDx[dj];
-            rdx[n * Dim + di] = sum;
-        }
-    }
-
+    // Multiply by stiffness matrix
     const T* K = stiffness + elemId * NSymBlocks * Dim * Dim;
     T edf[NNodes * Dim];
     symBlockMatMul<T, NNodes, Dim>(K, rdx, edf);
 
+    // Rotate forces back to global frame and scale
     T* out = eforce + elemId * NNodes * Dim;
-    #pragma unroll
-    for (int n = 0; n < NNodes; ++n)
-    {
-        #pragma unroll
-        for (int di = 0; di < Dim; ++di)
-        {
-            T sum = T(0);
-            #pragma unroll
-            for (int dj = 0; dj < Dim; ++dj)
-                sum += R[di * Dim + dj] * edf[n * Dim + dj];
-            out[n * Dim + di] = -kFactor * sum;
-        }
-    }
+    rotateAndWriteForce<T, NNodes, Dim>(R, edf, out, -kFactor);
 }
 
 // ===================== Launch functions =====================
