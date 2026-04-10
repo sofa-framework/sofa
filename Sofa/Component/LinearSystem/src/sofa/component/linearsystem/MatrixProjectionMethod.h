@@ -61,13 +61,13 @@ protected:
                                      linearalgebra::BaseMatrix* globalMatrix) override;
 
     /// Given a Mechanical State and its matrix, identifies the nodes affected by the matrix
-    std::vector<unsigned int> identifyAffectedDoFs(BaseMechanicalState* mstate, TMatrix* crs);
+    std::vector<unsigned int> identifyAffectedDoFs(core::behavior::BaseMechanicalState* mstate, TMatrix* crs);
 
     /**
      * Build the jacobian matrices of mappings from a mapped state to its top most parents (in the
      * sense of mappings)
      */
-    MappingJacobians<TMatrix> computeJacobiansFrom(BaseMechanicalState* mstate, const core::MechanicalParams* mparams, const MappingGraph& mappingGraph, TMatrix* crs);
+    simulation::MappingJacobians<TMatrix> computeJacobiansFrom(core::behavior::BaseMechanicalState* mstate, const core::MechanicalParams* mparams, const MappingGraph& mappingGraph, TMatrix* crs);
 
     core::objectmodel::BaseContext* getSolveContext();
 
@@ -87,7 +87,7 @@ protected:
     void addMappedMatrixToGlobalMatrixEigen(
         sofa::type::fixed_array<core::behavior::BaseMechanicalState*, 2> mstatePair,
         TMatrix* mappedMatrix,
-        sofa::type::fixed_array<MappingJacobians<TMatrix>, 2> jacobians,
+        sofa::type::fixed_array<simulation::MappingJacobians<TMatrix>, 2> jacobians,
         const MappingGraph& mappingGraph,
         linearalgebra::BaseMatrix* globalMatrix);
 
@@ -100,7 +100,7 @@ protected:
 
     Data<bool> d_areJacobiansConstant; ///< True if mapping jacobians are considered constant over time. They are computed only the first time.
 
-    std::optional<sofa::type::fixed_array<MappingJacobians<TMatrix>, 2>> m_mappingJacobians;
+    std::optional<sofa::type::fixed_array<simulation::MappingJacobians<TMatrix>, 2>> m_mappingJacobians;
 };
 
 #if !defined(SOFA_COMPONENT_LINEARSYSTEM_EIGENMATRIXMAPPING_CPP)

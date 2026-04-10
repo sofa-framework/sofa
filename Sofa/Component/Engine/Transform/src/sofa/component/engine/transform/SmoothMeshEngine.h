@@ -23,7 +23,7 @@
 #include <sofa/component/engine/transform/config.h>
 
 #include <sofa/core/DataEngine.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 

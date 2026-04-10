@@ -27,6 +27,8 @@ namespace sofa::component::solidmechanics::fem::elastic
 {
 
 extern void registerBeamFEMForceField(sofa::core::ObjectFactory* factory);
+extern void registerElementCorotationalFEMForceField(sofa::core::ObjectFactory* factory);
+extern void registerElementLinearSmallStrainFEMForceField(sofa::core::ObjectFactory* factory);
 extern void registerFastTetrahedralCorotationalForceField(sofa::core::ObjectFactory* factory);
 extern void registerHexahedralFEMForceField(sofa::core::ObjectFactory* factory);
 extern void registerHexahedralFEMForceFieldAndMass(sofa::core::ObjectFactory* factory);
@@ -65,6 +67,8 @@ const char* getModuleVersion()
 void registerObjects(sofa::core::ObjectFactory* factory)
 {
     registerBeamFEMForceField(factory);
+    registerElementCorotationalFEMForceField(factory);
+    registerElementLinearSmallStrainFEMForceField(factory);
     registerFastTetrahedralCorotationalForceField(factory);
     registerHexahedralFEMForceField(factory);
     registerHexahedralFEMForceFieldAndMass(factory);

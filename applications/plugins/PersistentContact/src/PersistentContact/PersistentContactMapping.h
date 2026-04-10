@@ -22,7 +22,7 @@
 #ifndef SOFA_COMPONENT_MAPPING_PERSISTENTCONTACTMAPPING_H
 #define SOFA_COMPONENT_MAPPING_PERSISTENTCONTACTMAPPING_H
 
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <iostream>

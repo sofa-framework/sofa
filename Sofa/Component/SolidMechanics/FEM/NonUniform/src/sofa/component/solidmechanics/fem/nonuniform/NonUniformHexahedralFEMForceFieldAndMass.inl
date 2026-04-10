@@ -55,7 +55,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<DataTypes>::init()
     if(_multilevelTopology == nullptr)
     {
         msg_error() << "Object must have a MultilevelHexahedronSetTopologyContainer";
-        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
 

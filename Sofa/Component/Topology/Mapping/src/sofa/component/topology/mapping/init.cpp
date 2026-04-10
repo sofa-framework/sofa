@@ -28,6 +28,7 @@ namespace sofa::component::topology::mapping
 
 extern void registerCenterPointTopologicalMapping(sofa::core::ObjectFactory* factory);
 extern void registerEdge2QuadTopologicalMapping(sofa::core::ObjectFactory* factory);
+extern void registerHexa2PrismTopologicalMapping(sofa::core::ObjectFactory* factory);
 extern void registerHexa2QuadTopologicalMapping(sofa::core::ObjectFactory* factory);
 extern void registerHexa2TetraTopologicalMapping(sofa::core::ObjectFactory* factory);
 extern void registerIdentityTopologicalMapping(sofa::core::ObjectFactory* factory);
@@ -62,6 +63,7 @@ void registerObjects(sofa::core::ObjectFactory* factory)
 {
     registerCenterPointTopologicalMapping(factory);
     registerEdge2QuadTopologicalMapping(factory);
+    registerHexa2PrismTopologicalMapping(factory);
     registerHexa2QuadTopologicalMapping(factory);
     registerHexa2TetraTopologicalMapping(factory);
     registerIdentityTopologicalMapping(factory);

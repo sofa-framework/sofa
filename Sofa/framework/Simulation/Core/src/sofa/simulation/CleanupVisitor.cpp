@@ -32,13 +32,13 @@ simulation::Visitor::Result CleanupVisitor::processNodeTopDown(Node* node)
     // some object will modify the graph during cleanup (removing other nodes or objects)
     // so we cannot assume that the list of object will stay constant
 
-    std::set<sofa::core::objectmodel::BaseObject*> done; // list of objects we already processed
+    std::set<sofa::core::objectmodel::BaseComponent*> done; // list of objects we already processed
     bool stop = false;
     while (!stop)
     {
         stop = true;
-        std::vector< core::objectmodel::BaseObject* > listObject;
-        node->get<core::objectmodel::BaseObject>(&listObject, core::objectmodel::BaseContext::Local);
+        std::vector< core::objectmodel::BaseComponent* > listObject;
+        node->get<core::objectmodel::BaseComponent>(&listObject, core::objectmodel::BaseContext::Local);
 
         for (unsigned int i=0; i<listObject.size(); ++i)
         {

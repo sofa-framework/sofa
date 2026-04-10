@@ -22,7 +22,7 @@
 #pragma once
 #include <sofa/component/engine/transform/Indices2ValuesMapper.h>
 
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 
 namespace sofa::component::engine::transform
 {
