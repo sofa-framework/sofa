@@ -23,7 +23,7 @@
 
 #include <sofa/component/mapping/nonlinear/config.h>
 #include <sofa/core/MechanicalParams.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/helper/OptionsGroup.h>
 
 namespace sofa::component::mapping::nonlinear

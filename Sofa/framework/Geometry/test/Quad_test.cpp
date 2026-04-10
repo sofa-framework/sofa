@@ -23,6 +23,7 @@
 #include <sofa/geometry/Quad.h>
 
 #include <sofa/type/fixed_array.h>
+#include <sofa/type/Vec.h>
 #include <array>
 
 #include <gtest/gtest.h>
@@ -52,6 +53,28 @@ TEST(GeometryQuad_test, quad_area3f_stdarray)
     const auto testArea = sofa::geometry::Quad::area(a, b, c, d);
     const auto expectedArea = 29.685856f;
     EXPECT_FLOAT_EQ(testArea, expectedArea);
+}
+
+TEST(GeometryQuad_test, square_area2f_vec2)
+{
+    const sofa::type::Vec2f a{ 0.f, 0.f };
+    const sofa::type::Vec2f b{ 4.f, 0.f };
+    const sofa::type::Vec2f c{ 4.f, 4.f };
+    const sofa::type::Vec2f d{ 0.f, 4.f };
+
+    const auto testArea = sofa::geometry::Quad::area(a, b, c, d);
+    EXPECT_FLOAT_EQ(testArea, 16.f);
+}
+
+TEST(GeometryQuad_test, rect_area2f_vec2)
+{
+    const sofa::type::Vec2f a{ 0.f, 0.f };
+    const sofa::type::Vec2f b{ 4.f, 0.f };
+    const sofa::type::Vec2f c{ 4.f, 2.f };
+    const sofa::type::Vec2f d{ 0.f, 2.f };
+
+    const auto testArea = sofa::geometry::Quad::area(a, b, c, d);
+    EXPECT_FLOAT_EQ(testArea, 8.f);
 }
 
 }// namespace sofa

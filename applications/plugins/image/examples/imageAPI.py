@@ -2,7 +2,7 @@ import SofaPython.Tools
 import SofaImage.API
 
 def createScene(rootNode):
-    rootNode.createObject("RequiredPlugin", name="Image")
+    rootNode.createObject("RequiredPlugin", pluginName="Image")
     im = SofaImage.API.Image(rootNode,"armadillo")
     im.addMeshLoader("mesh/Armadillo_simplified.obj",1,name="armadillo")
     im.addMeshToImage(0.5)

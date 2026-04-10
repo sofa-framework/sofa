@@ -23,7 +23,7 @@
 #pragma once
 #include <sofa/component/linearsolver/ordering/AMDOrderingMethod.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 
 
 namespace sofa::component::linearsolver::ordering
@@ -62,7 +62,7 @@ public:
             else
             {
                 core::objectmodel::BaseObjectDescription description(desiredMethod.c_str(), desiredMethod.c_str());
-                const core::objectmodel::BaseObject::SPtr baseObject = core::ObjectFactory::getInstance()->createObject(this->getContext(), &description);
+                const core::objectmodel::BaseComponent::SPtr baseObject = core::ObjectFactory::getInstance()->createObject(this->getContext(), &description);
                 if (auto* metisOrderingMethod = dynamic_cast<core::behavior::BaseOrderingMethod*>(baseObject.get()))
                 {
                     setupCreatedOrderingMethod(metisOrderingMethod);
@@ -84,43 +84,6 @@ public:
                 }
             }
 
-        }
-    }
-
-    void parse(sofa::core::objectmodel::BaseObjectDescription* arg) override
-    {
-        Inherit1::parse(arg);
-
-        //To remove for v24.12:
-        if (arg->getAttribute("ordering"))
-        {
-            //map storing the correspondence between the ordering method name
-            //as a Data, and its associated component
-            static const std::map<std::string, std::string> orderingMethodComponentsMap
-            {
-                {"Natural", "NaturalOrderingMethod"},
-                {"AMD", "AMDOrderingMethod"},
-                {"COLAMD", "COLAMDOrderingMethod"},
-                {"Metis", "MetisOrderingMethod"}
-            };
-
-            std::stringstream message;
-            message << "The Data 'ordering' is deprecated. Instead use a "
-                "component of type OrderingMethod. The list of available methods are: "
-                << core::ObjectFactory::getInstance()->listClassesDerivedFrom<sofa::core::behavior::BaseOrderingMethod>();
-
-            const std::string methodName = arg->getAttribute("ordering");
-            const auto it = orderingMethodComponentsMap.find(methodName);
-            if (it != orderingMethodComponentsMap.end())
-            {
-                desiredMethod = it->second;
-
-                message << ". According to the value of the Data 'ordering', the "
-                           "object factory will try to instantiate the component '"
-                           << desiredMethod << "'.";
-            }
-
-            msg_warning() << message.str();
         }
     }
 
