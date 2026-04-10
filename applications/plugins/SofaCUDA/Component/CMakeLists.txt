@@ -39,6 +39,7 @@ set(HEADER_FILES
     
 
     ### solidmechanics
+    ${SOFACUDA_COMPONENT_SOURCE_DIR}/SofaCUDA/component/solidmechanics/fem/elastic/CudaElementFEMKernelUtils.cuh
     ${SOFACUDA_COMPONENT_SOURCE_DIR}/SofaCUDA/component/solidmechanics/fem/elastic/CudaElementCorotationalFEMForceField.h
     ${SOFACUDA_COMPONENT_SOURCE_DIR}/SofaCUDA/component/solidmechanics/fem/elastic/CudaElementCorotationalFEMForceField.inl
     ${SOFACUDA_COMPONENT_SOURCE_DIR}/SofaCUDA/component/solidmechanics/fem/elastic/CudaElementLinearSmallStrainFEMForceField.h

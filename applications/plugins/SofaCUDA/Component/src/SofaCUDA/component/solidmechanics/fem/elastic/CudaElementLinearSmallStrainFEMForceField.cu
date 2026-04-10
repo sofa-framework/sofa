@@ -21,21 +21,13 @@
 ******************************************************************************/
 #include <sofa/gpu/cuda/CudaCommon.h>
 #include <sofa/gpu/cuda/CudaMath.h>
-#include <cuda.h>
+#include "CudaElementFEMKernelUtils.cuh"
 
-namespace sofa
-{
-namespace gpu
-{
-namespace cuda
+namespace sofa::gpu::cuda
 {
 
 /**
- * Kernel for addForce: Compute per-element force from displacement (1 thread per element).
- *
- * f = -K * (x - x0)
- * Templated on NNodes and Dim (compile-time) for full loop unrolling.
- * Templated on T for float/double support.
+ * Kernel for addForce: f = -K * (x - x0)
  */
 template<typename T, int NNodes, int Dim>
 __global__ void ElementLinearSmallStrainFEMForceField_computeForce_kernel(
@@ -51,7 +43,6 @@ __global__ void ElementLinearSmallStrainFEMForceField_computeForce_kernel(
     const int elemId = blockIdx.x * blockDim.x + threadIdx.x;
     if (elemId >= nbElem) return;
 
-    // Gather displacement = x - x0 for this element's nodes
     T disp[NNodes * Dim];
     #pragma unroll
     for (int n = 0; n < NNodes; ++n)
@@ -62,65 +53,10 @@ __global__ void ElementLinearSmallStrainFEMForceField_computeForce_kernel(
             disp[n * Dim + d] = x[nodeId * Dim + d] - x0[nodeId * Dim + d];
     }
 
-    // Symmetric block-matrix multiply: edf = K * disp
     const T* K = stiffness + elemId * NSymBlocks * Dim * Dim;
     T edf[NNodes * Dim];
+    symBlockMatMul<T, NNodes, Dim>(K, disp, edf);
 
-    #pragma unroll
-    for (int i = 0; i < NNodes * Dim; ++i)
-        edf[i] = T(0);
-
-    #pragma unroll
-    for (int ni = 0; ni < NNodes; ++ni)
-    {
-        const int diagIdx = ni * NNodes - ni * (ni - 1) / 2;
-
-        // Diagonal block
-        {
-            const T* Kii = K + diagIdx * Dim * Dim;
-            #pragma unroll
-            for (int di = 0; di < Dim; ++di)
-            {
-                T sum = T(0);
-                #pragma unroll
-                for (int dj = 0; dj < Dim; ++dj)
-                    sum += Kii[di * Dim + dj] * disp[ni * Dim + dj];
-                edf[ni * Dim + di] += sum;
-            }
-        }
-
-        // Off-diagonal blocks
-        #pragma unroll
-        for (int nj = ni + 1; nj < NNodes; ++nj)
-        {
-            const int symIdx = diagIdx + (nj - ni);
-            const T* Kij = K + symIdx * Dim * Dim;
-
-            // Kij * disp_j -> edf_i
-            #pragma unroll
-            for (int di = 0; di < Dim; ++di)
-            {
-                T sum = T(0);
-                #pragma unroll
-                for (int dj = 0; dj < Dim; ++dj)
-                    sum += Kij[di * Dim + dj] * disp[nj * Dim + dj];
-                edf[ni * Dim + di] += sum;
-            }
-
-            // Kij^T * disp_i -> edf_j
-            #pragma unroll
-            for (int dj = 0; dj < Dim; ++dj)
-            {
-                T sum = T(0);
-                #pragma unroll
-                for (int di = 0; di < Dim; ++di)
-                    sum += Kij[di * Dim + dj] * disp[ni * Dim + di];
-                edf[nj * Dim + dj] += sum;
-            }
-        }
-    }
-
-    // Write: eforce = -edf (minus sign from f -= K * displacement)
     T* out = eforce + elemId * NNodes * Dim;
     #pragma unroll
     for (int n = 0; n < NNodes; ++n)
@@ -132,9 +68,7 @@ __global__ void ElementLinearSmallStrainFEMForceField_computeForce_kernel(
 }
 
 /**
- * Kernel for addDForce: Compute per-element dForce (1 thread per element).
- *
- * df = -kFactor * K * dx
+ * Kernel for addDForce: df = -kFactor * K * dx
  */
 template<typename T, int NNodes, int Dim>
 __global__ void ElementLinearSmallStrainFEMForceField_computeDForce_kernel(
@@ -150,7 +84,6 @@ __global__ void ElementLinearSmallStrainFEMForceField_computeDForce_kernel(
     const int elemId = blockIdx.x * blockDim.x + threadIdx.x;
     if (elemId >= nbElem) return;
 
-    // Gather dx for this element's nodes
     T edx[NNodes * Dim];
     #pragma unroll
     for (int n = 0; n < NNodes; ++n)
@@ -161,61 +94,10 @@ __global__ void ElementLinearSmallStrainFEMForceField_computeDForce_kernel(
             edx[n * Dim + d] = dx[nodeId * Dim + d];
     }
 
-    // Symmetric block-matrix multiply: edf = K * edx
     const T* K = stiffness + elemId * NSymBlocks * Dim * Dim;
     T edf[NNodes * Dim];
+    symBlockMatMul<T, NNodes, Dim>(K, edx, edf);
 
-    #pragma unroll
-    for (int i = 0; i < NNodes * Dim; ++i)
-        edf[i] = T(0);
-
-    #pragma unroll
-    for (int ni = 0; ni < NNodes; ++ni)
-    {
-        const int diagIdx = ni * NNodes - ni * (ni - 1) / 2;
-
-        {
-            const T* Kii = K + diagIdx * Dim * Dim;
-            #pragma unroll
-            for (int di = 0; di < Dim; ++di)
-            {
-                T sum = T(0);
-                #pragma unroll
-                for (int dj = 0; dj < Dim; ++dj)
-                    sum += Kii[di * Dim + dj] * edx[ni * Dim + dj];
-                edf[ni * Dim + di] += sum;
-            }
-        }
-
-        #pragma unroll
-        for (int nj = ni + 1; nj < NNodes; ++nj)
-        {
-            const int symIdx = diagIdx + (nj - ni);
-            const T* Kij = K + symIdx * Dim * Dim;
-
-            #pragma unroll
-            for (int di = 0; di < Dim; ++di)
-            {
-                T sum = T(0);
-                #pragma unroll
-                for (int dj = 0; dj < Dim; ++dj)
-                    sum += Kij[di * Dim + dj] * edx[nj * Dim + dj];
-                edf[ni * Dim + di] += sum;
-            }
-
-            #pragma unroll
-            for (int dj = 0; dj < Dim; ++dj)
-            {
-                T sum = T(0);
-                #pragma unroll
-                for (int di = 0; di < Dim; ++di)
-                    sum += Kij[di * Dim + dj] * edx[ni * Dim + di];
-                edf[nj * Dim + dj] += sum;
-            }
-        }
-    }
-
-    // Write: eforce = -kFactor * edf
     T* out = eforce + elemId * NNodes * Dim;
     #pragma unroll
     for (int n = 0; n < NNodes; ++n)
@@ -226,39 +108,7 @@ __global__ void ElementLinearSmallStrainFEMForceField_computeDForce_kernel(
     }
 }
 
-/**
- * Gather per-vertex forces (1 thread per vertex).
- */
-template<typename T, int Dim>
-__global__ void ElementLinearSmallStrainFEMForceField_gatherForce_kernel(
-    int nbVertex,
-    int maxElemPerVertex,
-    const int* __restrict__ velems,
-    const T* __restrict__ eforce,
-    T* df)
-{
-    const int vertexId = blockIdx.x * blockDim.x + threadIdx.x;
-    if (vertexId >= nbVertex) return;
-
-    T acc[Dim];
-    #pragma unroll
-    for (int d = 0; d < Dim; ++d)
-        acc[d] = T(0);
-
-    for (int s = 0; s < maxElemPerVertex; ++s)
-    {
-        const int idx = velems[s * nbVertex + vertexId];
-        if (idx == 0) break;
-        const int base = (idx - 1) * Dim;
-        #pragma unroll
-        for (int d = 0; d < Dim; ++d)
-            acc[d] += eforce[base + d];
-    }
-
-    #pragma unroll
-    for (int d = 0; d < Dim; ++d)
-        df[vertexId * Dim + d] += acc[d];
-}
+// ===================== Launch functions =====================
 
 template<typename T, int NNodes, int Dim>
 void ElementLinearSmallStrainFEMForceFieldCuda_addForce(
@@ -287,14 +137,14 @@ void ElementLinearSmallStrainFEMForceFieldCuda_addForce(
 
     const int gatherThreads = 256;
     numBlocks = (nbVertex + gatherThreads - 1) / gatherThreads;
-    ElementLinearSmallStrainFEMForceField_gatherForce_kernel<T, Dim>
+    ElementFEM_gatherForce_kernel<T, Dim>
         <<<numBlocks, gatherThreads>>>(
             nbVertex,
             maxElemPerVertex,
             (const int*)velems,
             (const T*)eforce,
             (T*)f);
-    mycudaDebugError("ElementLinearSmallStrainFEMForceField_gatherForce_kernel");
+    mycudaDebugError("ElementFEM_gatherForce_kernel");
 }
 
 template<typename T, int NNodes, int Dim>
@@ -324,35 +174,36 @@ void ElementLinearSmallStrainFEMForceFieldCuda_addDForce(
 
     const int gatherThreads = 256;
     numBlocks = (nbVertex + gatherThreads - 1) / gatherThreads;
-    ElementLinearSmallStrainFEMForceField_gatherForce_kernel<T, Dim>
+    ElementFEM_gatherForce_kernel<T, Dim>
         <<<numBlocks, gatherThreads>>>(
             nbVertex,
             maxElemPerVertex,
             (const int*)velems,
             (const T*)eforce,
             (T*)df);
-    mycudaDebugError("ElementLinearSmallStrainFEMForceField_gatherForce_kernel");
+    mycudaDebugError("ElementFEM_gatherForce_kernel");
 }
 
-// Explicit template instantiations for all supported (T, NNodes, Dim) combinations
-template void ElementLinearSmallStrainFEMForceFieldCuda_addForce<float, 2, 3>(unsigned int, unsigned int, unsigned int, const void*, const void*, const void*, const void*, void*, void*, const void*);
-template void ElementLinearSmallStrainFEMForceFieldCuda_addForce<float, 3, 3>(unsigned int, unsigned int, unsigned int, const void*, const void*, const void*, const void*, void*, void*, const void*);
-template void ElementLinearSmallStrainFEMForceFieldCuda_addForce<float, 4, 3>(unsigned int, unsigned int, unsigned int, const void*, const void*, const void*, const void*, void*, void*, const void*);
-template void ElementLinearSmallStrainFEMForceFieldCuda_addForce<float, 8, 3>(unsigned int, unsigned int, unsigned int, const void*, const void*, const void*, const void*, void*, void*, const void*);
-template void ElementLinearSmallStrainFEMForceFieldCuda_addForce<double, 2, 3>(unsigned int, unsigned int, unsigned int, const void*, const void*, const void*, const void*, void*, void*, const void*);
-template void ElementLinearSmallStrainFEMForceFieldCuda_addForce<double, 3, 3>(unsigned int, unsigned int, unsigned int, const void*, const void*, const void*, const void*, void*, void*, const void*);
-template void ElementLinearSmallStrainFEMForceFieldCuda_addForce<double, 4, 3>(unsigned int, unsigned int, unsigned int, const void*, const void*, const void*, const void*, void*, void*, const void*);
-template void ElementLinearSmallStrainFEMForceFieldCuda_addForce<double, 8, 3>(unsigned int, unsigned int, unsigned int, const void*, const void*, const void*, const void*, void*, void*, const void*);
+// ===================== Explicit template instantiations =====================
 
-template void ElementLinearSmallStrainFEMForceFieldCuda_addDForce<float, 2, 3>(unsigned int, unsigned int, unsigned int, const void*, const void*, const void*, void*, void*, const void*, float);
-template void ElementLinearSmallStrainFEMForceFieldCuda_addDForce<float, 3, 3>(unsigned int, unsigned int, unsigned int, const void*, const void*, const void*, void*, void*, const void*, float);
-template void ElementLinearSmallStrainFEMForceFieldCuda_addDForce<float, 4, 3>(unsigned int, unsigned int, unsigned int, const void*, const void*, const void*, void*, void*, const void*, float);
-template void ElementLinearSmallStrainFEMForceFieldCuda_addDForce<float, 8, 3>(unsigned int, unsigned int, unsigned int, const void*, const void*, const void*, void*, void*, const void*, float);
-template void ElementLinearSmallStrainFEMForceFieldCuda_addDForce<double, 2, 3>(unsigned int, unsigned int, unsigned int, const void*, const void*, const void*, void*, void*, const void*, double);
-template void ElementLinearSmallStrainFEMForceFieldCuda_addDForce<double, 3, 3>(unsigned int, unsigned int, unsigned int, const void*, const void*, const void*, void*, void*, const void*, double);
-template void ElementLinearSmallStrainFEMForceFieldCuda_addDForce<double, 4, 3>(unsigned int, unsigned int, unsigned int, const void*, const void*, const void*, void*, void*, const void*, double);
-template void ElementLinearSmallStrainFEMForceFieldCuda_addDForce<double, 8, 3>(unsigned int, unsigned int, unsigned int, const void*, const void*, const void*, void*, void*, const void*, double);
+#define INSTANTIATE_LINEAR(T, NNodes) \
+    template void ElementLinearSmallStrainFEMForceFieldCuda_addForce<T, NNodes, 3>( \
+        unsigned int, unsigned int, unsigned int, const void*, const void*, \
+        const void*, const void*, void*, void*, const void*); \
+    template void ElementLinearSmallStrainFEMForceFieldCuda_addDForce<T, NNodes, 3>( \
+        unsigned int, unsigned int, unsigned int, const void*, const void*, \
+        const void*, void*, void*, const void*, T);
 
-} // namespace cuda
-} // namespace gpu
-} // namespace sofa
+INSTANTIATE_LINEAR(float, 2)
+INSTANTIATE_LINEAR(float, 3)
+INSTANTIATE_LINEAR(float, 4)
+INSTANTIATE_LINEAR(float, 8)
+
+INSTANTIATE_LINEAR(double, 2)
+INSTANTIATE_LINEAR(double, 3)
+INSTANTIATE_LINEAR(double, 4)
+INSTANTIATE_LINEAR(double, 8)
+
+#undef INSTANTIATE_LINEAR
+
+} // namespace sofa::gpu::cuda
