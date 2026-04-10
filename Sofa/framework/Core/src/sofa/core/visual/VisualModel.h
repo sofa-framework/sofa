@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/type/Quat.h>
 
 namespace sofa::core::visual
@@ -42,10 +42,10 @@ class VisualParams;
  *  Most VisualModel are bound by a Mapping to a BehaviorModel or
  *  MechanicalState.
  */
-class SOFA_CORE_API VisualModel : public virtual objectmodel::BaseObject
+class SOFA_CORE_API VisualModel : public virtual objectmodel::BaseComponent
 {
 public:
-    SOFA_ABSTRACT_CLASS(VisualModel, objectmodel::BaseObject);
+    SOFA_ABSTRACT_CLASS(VisualModel, objectmodel::BaseComponent);
     SOFA_BASE_CAST_IMPLEMENTATION(VisualModel)
 
     Data<bool> d_enable; ///< Display the object or not
@@ -63,20 +63,11 @@ public:
      */
     void initVisual(const VisualParams* /*vparams*/);
 
-    // Deprecate the usage of initVisual()
-    // But the final keyword will break the compilation if one does override initVisual anyway.
-    SOFA_ATTRIBUTE_DISABLED("v24.12", "v25.06", "Use initVisual(const VisualParams*) instead")
-    virtual void initVisual() = delete;
-
     /**
      *  \brief used to update the model if necessary.
      *
      */
     void updateVisual(const VisualParams* /*vparams*/);
-    // Deprecate the usage of updateVisual()
-    // But the final keyword will break the compilation if one does override updateVisual() anyway.
-    SOFA_ATTRIBUTE_DISABLED("v24.12", "v25.06", "Use updateVisual(const VisualParams*) instead")
-    virtual void updateVisual() = delete;
 
 protected:
     VisualModel();

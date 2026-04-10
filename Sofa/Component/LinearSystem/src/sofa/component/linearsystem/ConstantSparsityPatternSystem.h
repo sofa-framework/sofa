@@ -114,7 +114,7 @@ protected:
     void makeCreateDispatcher() override;
 
     std::shared_ptr<sofa::core::matrixaccumulator::IndexVerificationStrategy>
-    makeIndexVerificationStrategy(sofa::core::objectmodel::BaseObject* component) override;
+    makeIndexVerificationStrategy(sofa::core::objectmodel::BaseComponent* component) override;
 
 private:
     template<Contribution c>

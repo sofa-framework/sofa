@@ -53,11 +53,6 @@ protected:
     */
     Hexa2TetraTopologicalMapping();
 
-    /** \brief Destructor.
-    *
-    * Does nothing.
-    */
-    ~Hexa2TetraTopologicalMapping() override;
 public:
     /** \brief Initializes the target BaseTopology from the source BaseTopology.
     */

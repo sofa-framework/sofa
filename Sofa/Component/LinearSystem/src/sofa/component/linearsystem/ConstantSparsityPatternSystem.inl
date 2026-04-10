@@ -35,7 +35,7 @@ struct CheckNoChangeInInsertionOrder : virtual core::matrixaccumulator::IndexVer
     using verify_index = std::true_type;
     using skip_insertion_if_error = std::true_type;
 
-    sofa::core::objectmodel::BaseObject* m_messageComponent { nullptr };
+    sofa::core::objectmodel::BaseComponent* m_messageComponent { nullptr };
 
     [[nodiscard]]
     helper::logging::MessageDispatcher::LoggerStream logger() const
@@ -480,7 +480,7 @@ void ConstantSparsityPatternSystem<TMatrix, TVector>::makeCreateDispatcher()
 template <class TMatrix, class TVector>
 std::shared_ptr<sofa::core::matrixaccumulator::IndexVerificationStrategy>
 ConstantSparsityPatternSystem<TMatrix, TVector>::makeIndexVerificationStrategy(
-    sofa::core::objectmodel::BaseObject* component)
+    sofa::core::objectmodel::BaseComponent* component)
 {
     auto strategy =  std::make_shared<StrategyCheckerType>();
     strategy->core::matrixaccumulator::RangeVerification::m_messageComponent = component;
