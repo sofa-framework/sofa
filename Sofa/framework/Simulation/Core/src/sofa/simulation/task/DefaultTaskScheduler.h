@@ -121,10 +121,10 @@ private:
     void start(unsigned int NbThread);
             
     bool m_isInitialized;
-            
+
     unsigned m_workerThreadCount;
             
-    volatile bool m_workerThreadsIdle;
+    std::atomic<bool> m_workerThreadsIdle;
             
     bool m_isClosing;
             

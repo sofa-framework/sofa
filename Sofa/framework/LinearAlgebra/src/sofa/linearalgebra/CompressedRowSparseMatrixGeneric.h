@@ -29,6 +29,7 @@
 
 #include <sofa/type/vector.h>
 #include <sofa/type/Vec.h>
+#include <sofa/type/hardening.h>
 #include <sofa/linearalgebra/MatrixExpr.h>
 #include <sofa/linearalgebra/FullVector.h>
 #include <sofa/linearalgebra/matrix_bloc_traits.h>
@@ -278,7 +279,7 @@ public :
 
     virtual void resizeBlock(Index nbBRow, Index nbBCol)
     {
-        if (nBlockRow == nbBRow && nBlockRow == nbBCol)
+        if (nBlockRow == nbBRow && nBlockCol == nbBCol)
         {
             /// Just clear the matrix
             for (Index i = 0; i < static_cast<Index>(colsValue.size()); ++i)
@@ -1607,7 +1608,15 @@ protected:
         std::string temp;
         while (std::getline(in, temp, ';'))
         {
-            vec.push_back(std::stoi(temp));
+            int val{};
+            if(sofa::type::hardening::safeStrToInt(temp, val))
+            {
+                vec.push_back(val);
+            }
+            else
+            {
+                msg_warning("CompressedRowSparseMatrixGeneric") << "could not parse " << temp << " ; skipping entry.";
+            }
         }
     }
 };

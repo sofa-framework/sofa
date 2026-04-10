@@ -35,7 +35,7 @@
 
 //VERY IMPORTANT FOR GRAPHS
 #include <sofa/helper/map.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/core/behavior/TopologyAccessor.h>
 
 #include <type_traits>
 
@@ -57,15 +57,14 @@ template <class DataTypes, class TMassType>
 * @class    MeshMatrixMass
 * @brief    This component computes the integral of this mass density over the volume of the object geometry.
 * @remark   Similar to DiagonalMass which simplifies the Mass Matrix as diagonal.
-* @remark   https://www.sofa-framework.org/community/doc/components/masses/meshmatrixmass/
 * @tparam   DataTypes type of the state associated to this mass
 * @tparam   GeometricalTypes type of the geometry, i.e type of the state associated with the topology (if the topology and the mass relates to the same state, this will be the same as DataTypes)
 */
 template <class DataTypes, class GeometricalTypes = DataTypes>
-class MeshMatrixMass : public core::behavior::Mass<DataTypes>
+class MeshMatrixMass : public core::behavior::Mass<DataTypes>, public virtual core::behavior::TopologyAccessor
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(MeshMatrixMass,DataTypes, GeometricalTypes), SOFA_TEMPLATE(core::behavior::Mass,DataTypes));
+    SOFA_CLASS2(SOFA_TEMPLATE2(MeshMatrixMass,DataTypes, GeometricalTypes), SOFA_TEMPLATE(core::behavior::Mass,DataTypes), core::behavior::TopologyAccessor);
 
     using TMassType = typename sofa::component::mass::MassType<DataTypes>::type;
 
@@ -109,8 +108,6 @@ public:
     Data< bool >         d_printMass; ///< Boolean to print the mass
     Data< std::map < std::string, sofa::type::vector<double> > > f_graph; ///< Graph of the controlled potential
 
-    /// Link to be set to the topology container in the component graph.
-    SingleLink<MeshMatrixMass<DataTypes, GeometricalTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
     /// Link to be set to the MechanicalObject associated with the geometry
     SingleLink<MeshMatrixMass<DataTypes, GeometricalTypes>, sofa::core::behavior::MechanicalState<GeometricalTypes>, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_geometryState;
 
@@ -200,12 +197,15 @@ public:
 
 
     // -- Mass interface
+    using Inherited::addMDx;
     void addMDx(const core::MechanicalParams*, DataVecDeriv& f, const DataVecDeriv& dx, SReal factor) override;
 
+    using Inherited::accFromF;
     void accFromF(const core::MechanicalParams*, DataVecDeriv& a, const DataVecDeriv& f) override; // This function can't be used as it use M^-1
 
     void addForce(const core::MechanicalParams*, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
 
+    using Inherited::getKineticEnergy;
     SReal getKineticEnergy(const core::MechanicalParams*, const DataVecDeriv& v) const override;  ///< vMv/2 using dof->getV() override
 
     SReal getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& x) const override;   ///< Mgx potential in a uniform gravity field, null at origin
@@ -219,6 +219,7 @@ public:
 
 
     /// Add Mass contribution to global Matrix assembling
+    using Inherited::addMToMatrix;
     void addMToMatrix(sofa::linearalgebra::BaseMatrix * mat, SReal mFact, unsigned int &offset) override;
     void buildMassMatrix(sofa::core::behavior::MassMatrixAccumulator* matrices) override;
     void buildStiffnessMatrix(core::behavior::StiffnessMatrix* /* matrix */) override {}

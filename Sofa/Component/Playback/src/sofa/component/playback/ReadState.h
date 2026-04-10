@@ -22,7 +22,7 @@
 #pragma once
 #include <sofa/component/playback/config.h>
 
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 #include <sofa/simulation/Visitor.h>
@@ -39,10 +39,10 @@ namespace sofa::component::playback
 
 /** Read State vectors from file at each timestep
 */
-class SOFA_COMPONENT_PLAYBACK_API ReadState: public core::objectmodel::BaseObject
+class SOFA_COMPONENT_PLAYBACK_API ReadState: public core::objectmodel::BaseComponent
 {
 public:
-    SOFA_CLASS(ReadState,core::objectmodel::BaseObject);
+    SOFA_CLASS(ReadState,core::objectmodel::BaseComponent);
 
     sofa::core::objectmodel::DataFileName d_filename;
     Data < double > d_interval; ///< time duration between inputs
@@ -91,7 +91,7 @@ public:
             arg->logError("No mechanical state found in the context node.");
             return false;
         }
-        return BaseObject::canCreate(obj, context, arg);
+        return sofa::core::objectmodel::BaseComponent::canCreate(obj, context, arg);
     }
 
 
