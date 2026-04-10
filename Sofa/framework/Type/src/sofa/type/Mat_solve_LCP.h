@@ -161,11 +161,13 @@ bool solveLCP(const Vec<dim,real> &q, const Mat<dim,dim,real> &M, Vec<dim * 2, r
         res[ii] = 0;
 
     // si on est arrive a resoudre le pb, seules les variables en base sont non nulles
-    if (boucles < MAX_NB_LOOP)
+    if (boucles >= MAX_NB_LOOP)
     {
-        for (ii = 0; ii < dim; ii++)
-            res[base[ii]] = mat[ii][dim_mult2];
+        return false;
     }
+
+    for (ii = 0; ii < dim; ii++)
+        res[base[ii]] = mat[ii][dim_mult2];
 
     return true;
 }
