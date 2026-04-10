@@ -43,28 +43,18 @@ __global__ void ElementLinearSmallStrainFEMForceField_computeForce_kernel(
     const int elemId = blockIdx.x * blockDim.x + threadIdx.x;
     if (elemId >= nbElem) return;
 
+    // Gather displacement (x - x0)
     T disp[NNodes * Dim];
-    #pragma unroll
-    for (int n = 0; n < NNodes; ++n)
-    {
-        const int nodeId = elements[n * nbElem + elemId];
-        #pragma unroll
-        for (int d = 0; d < Dim; ++d)
-            disp[n * Dim + d] = x[nodeId * Dim + d] - x0[nodeId * Dim + d];
-    }
+    gatherElementDisplacement<T, NNodes, Dim>(elements, nbElem, elemId, x, x0, disp);
 
+    // Multiply by stiffness matrix
     const T* K = stiffness + elemId * NSymBlocks * Dim * Dim;
     T edf[NNodes * Dim];
     symBlockMatMul<T, NNodes, Dim>(K, disp, edf);
 
+    // Write negated force
     T* out = eforce + elemId * NNodes * Dim;
-    #pragma unroll
-    for (int n = 0; n < NNodes; ++n)
-    {
-        #pragma unroll
-        for (int d = 0; d < Dim; ++d)
-            out[n * Dim + d] = -edf[n * Dim + d];
-    }
+    writeForce<T, NNodes, Dim>(edf, out, T(-1));
 }
 
 /**
@@ -84,28 +74,18 @@ __global__ void ElementLinearSmallStrainFEMForceField_computeDForce_kernel(
     const int elemId = blockIdx.x * blockDim.x + threadIdx.x;
     if (elemId >= nbElem) return;
 
+    // Gather displacement increment
     T edx[NNodes * Dim];
-    #pragma unroll
-    for (int n = 0; n < NNodes; ++n)
-    {
-        const int nodeId = elements[n * nbElem + elemId];
-        #pragma unroll
-        for (int d = 0; d < Dim; ++d)
-            edx[n * Dim + d] = dx[nodeId * Dim + d];
-    }
+    gatherElementData<T, NNodes, Dim>(elements, nbElem, elemId, dx, edx);
 
+    // Multiply by stiffness matrix
     const T* K = stiffness + elemId * NSymBlocks * Dim * Dim;
     T edf[NNodes * Dim];
     symBlockMatMul<T, NNodes, Dim>(K, edx, edf);
 
+    // Write scaled negated force
     T* out = eforce + elemId * NNodes * Dim;
-    #pragma unroll
-    for (int n = 0; n < NNodes; ++n)
-    {
-        #pragma unroll
-        for (int d = 0; d < Dim; ++d)
-            out[n * Dim + d] = -kFactor * edf[n * Dim + d];
-    }
+    writeForce<T, NNodes, Dim>(edf, out, -kFactor);
 }
 
 // ===================== Launch functions =====================
