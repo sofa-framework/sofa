@@ -156,7 +156,6 @@ public:
     sofa::type::Vec3f bbox[2];
 
     Data< sofa::type::Material > d_material;
-    sofa::type::Material m_resetMaterial;
     Data< bool > d_putOnlyTexCoords;
     Data< bool > d_srgbTexturing;
 
@@ -347,6 +346,8 @@ public:
         d_edges.setValue(*e);
     }
 
+    const sofa::type::Material& getSavedMaterial() {return m_savedMaterial;}
+
     virtual void computePositions();
     virtual void computeMesh();
     virtual void computeNormals();
@@ -400,6 +401,9 @@ protected:
 
     /// Internal buffer similar to @sa m_dirtyTriangles but to be used by topolgy Data @sa d_quads callback when points are removed.
     std::set< sofa::core::topology::BaseMeshTopology::QuadID> m_dirtyQuads;
+
+    /// Store the material information, to restore it after rendering with a specific material for selection (GUI related).
+    sofa::type::Material m_savedMaterial;
 };
 
 
