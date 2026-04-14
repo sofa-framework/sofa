@@ -28,7 +28,7 @@
 #include <sofa/component/solidmechanics/fem/elastic/FEMForceField.h>
 
 #if !defined(ELASTICITY_COMPONENT_ELEMENT_LINEAR_SMALL_STRAIN_FEM_FORCE_FIELD_CPP)
-#include <sofa/component/solidmechanics/fem/elastic/finiteelement/FiniteElement[all].h>
+#include <sofa/fem/FiniteElement[all].h>
 #endif
 
 namespace sofa::component::solidmechanics::fem::elastic

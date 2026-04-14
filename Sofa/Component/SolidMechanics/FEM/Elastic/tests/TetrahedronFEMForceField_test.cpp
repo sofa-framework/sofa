@@ -61,8 +61,8 @@ public:
         scene << R"scn(
 <?xml version='1.0'?>
 <Node name="root">
-    <RequiredPlugin name="Sofa.Component.StateContainer"/>
-    <RequiredPlugin name="Sofa.Component.SolidMechanics.FEM.Elastic"/>
+    <RequiredPlugin pluginName="Sofa.Component.StateContainer"/>
+    <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.FEM.Elastic"/>
     <DefaultAnimationLoop/>
     <Node name="FEMnode">
         <MechanicalObject/>
