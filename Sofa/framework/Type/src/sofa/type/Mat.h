@@ -167,7 +167,9 @@ public:
     template<typename real2>
     constexpr Mat(const Mat<L,C,real2>& m) noexcept
     {
-        std::copy(m.begin(), m.begin()+L, this->begin());
+        for( Size i=0; i<L; i++ )
+            for( Size j=0; j<C; j++ )
+                (*this)(i,j) = static_cast<real>(m(i,j));
     }
 
     /// Constructor from another matrix with different size (with null default entries and ignoring outside entries)
