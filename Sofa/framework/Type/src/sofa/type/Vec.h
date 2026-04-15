@@ -517,7 +517,7 @@ public:
         {
             ValueType n=0;
             for( Size i=0; i<N; i++ )
-                if( this->elems[i] ) n+=1;
+                if( this->elems[i] != static_cast<ValueType>(0) ) n+=1;
             return n;
         }
         else // generic implementation
