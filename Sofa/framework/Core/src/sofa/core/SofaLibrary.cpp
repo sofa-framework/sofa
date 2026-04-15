@@ -48,9 +48,9 @@ void SofaLibrary::build( const std::vector< std::string >& examples)
         if (creatorEntry != entries[i]->creatorMap.end())
         {
             const objectmodel::BaseClass* baseClass = creatorEntry->second->getClass();
-            std::vector<std::string> categories;
-            CategoryLibrary::getCategories(baseClass, categories);
-            for (std::vector<std::string>::iterator it = categories.begin(); it != categories.end(); ++it)
+            std::vector<std::string> categoriesVec;
+            CategoryLibrary::getCategories(baseClass, categoriesVec);
+            for (std::vector<std::string>::iterator it = categoriesVec.begin(); it != categoriesVec.end(); ++it)
             {
                 mainCategories.insert((*it));
                 inventory.insert(std::make_pair((*it), entries[i]));
