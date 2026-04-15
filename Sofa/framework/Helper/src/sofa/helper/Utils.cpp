@@ -109,7 +109,7 @@ static std::string computeExecutablePath()
 #elif defined(__APPLE__)
     std::vector<char> buffer(PATH_MAX);
     std::vector<char> real_path(PATH_MAX);
-    uint32_t size = buffer.size();
+    uint32_t size = static_cast<uint32_t>(buffer.size());
     if (_NSGetExecutablePath(&buffer[0], &size) != 0) {
         msg_error("Utils::computeExecutablePath()") << "_NSGetExecutablePath() failed";
     }
