@@ -80,23 +80,6 @@
       }
     },
     {
-      "name": "allGUI",
-      "displayName": "All GUI configurations",
-      "description": "Hidden preset to be used to add all GUI to other preset",
-      "hidden": true,
-      "inherits": ["defaultGUI"],
-      "cacheVariables": {
-        "PLUGIN_SOFA_QT": {
-          "type": "BOOL",
-          "value": "ON"
-        },
-        "SOFA_FETCH_SOFA_QT": {
-          "type": "BOOL",
-          "value": "ON"
-        }
-      }
-    },
-    {
       "name": "standard",
       "displayName": "Standard Config",
       "description": "Adds the default GUI, the SofaPhysics API, the examples based on SimpleAPI and the Python3 support",
@@ -126,7 +109,7 @@
       "displayName": "Supported Plugins Configuration",
       "description": "Adds all officially supported plugins by the SOFA Consortium",
       "hidden": false,
-      "inherits": ["standard","allGUI"],
+      "inherits": ["standard"],
       "cacheVariables": {
         "SOFA_FETCH_STLIB": {
           "type": "BOOL",
@@ -239,7 +222,7 @@
       "displayName": "Full Config",
       "description": "Adds all plugins known to be functional (Release configuration)",
       "hidden": false,
-      "inherits": ["supported-plugins","allGUI"],
+      "inherits": ["supported-plugins"],
       "cacheVariables": {
         "PLUGIN_DIFFUSIONSOLVER": {
           "type": "BOOL",

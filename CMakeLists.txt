@@ -101,8 +101,6 @@ include(SofaMacros)
 
 install(FILES
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/FindEigen3.cmake"
-    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/macdeployqt.cmake"
-    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/windeployqt.cmake"
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/FindTinyXML2.cmake"
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/FindPNG.cmake"
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/FindPCRE2.cmake"
@@ -396,12 +394,6 @@ if(SOFA_BUILD_RELEASE_PACKAGE)
              set(CPACK_IFW_PACKAGE_ICON "${CMAKE_SOURCE_DIR}/applications/projects/runSofa/runSofa.icns")
         endif()
 
-        cpack_ifw_configure_component_group(runtime
-            SORTING_PRIORITY 50
-            DEFAULT TRUE
-            EXPANDED
-            SCRIPT "${CMAKE_SOURCE_DIR}/scripts/qtifw/install.qs"
-            )
         cpack_ifw_configure_component_group(development
             SORTING_PRIORITY 10
             DEFAULT TRUE
