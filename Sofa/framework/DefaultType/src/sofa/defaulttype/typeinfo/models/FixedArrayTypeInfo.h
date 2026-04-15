@@ -80,7 +80,7 @@ struct FixedArrayTypeInfo
     {
         if constexpr (!FixedSize)
         {
-            size /= data.size();
+            size /= static_cast<sofa::Size>(data.size());
             for (sofa::Size i = 0; i < data.size(); ++i)
             {
                 if (!BaseTypeInfo::setSize(data[(sofa::Size)i], size)) 

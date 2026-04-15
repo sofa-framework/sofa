@@ -452,7 +452,7 @@ protected:
 
             for (std::size_t r = std::size_t(rowId); r < rowBegin.size()-1; ++r)
             {
-                rowBegin[r+1] -= nnzRow;
+                rowBegin[r+1] -= static_cast<decltype(rowBegin)::value_type>(nnzRow);
             }
             rowBegin.erase(rowBegin.begin()+rowId);
             rowIndex.erase(rowIndex.begin()+rowId);

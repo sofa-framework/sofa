@@ -186,9 +186,9 @@ void VectorOperations::print(sofa::core::ConstMultiVecId v, std::ostream &out, s
 
 size_t VectorOperations::v_size(core::MultiVecId v)
 {
-    size_t result = 0;
-    executeVisitor( MechanicalVSizeVisitor(params,&result,v) );
-    return result;
+    size_t vecSize = 0;
+    executeVisitor( MechanicalVSizeVisitor(params,&vecSize,v) );
+    return vecSize;
 }
 
 SReal VectorOperations::finish()

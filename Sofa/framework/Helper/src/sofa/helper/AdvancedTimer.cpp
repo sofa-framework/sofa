@@ -934,7 +934,7 @@ void TimerData::print()
 AdvancedTimer::outputType AdvancedTimer::convertOutputType(std::string type)
 {
 	std::for_each(type.begin(), type.end(),  [](char& c) {
-		c = std::tolower(static_cast<unsigned char>(c)); } );
+		c = static_cast<char>(std::tolower(static_cast<unsigned char>(c))); } );
 
 	if(type.compare("json") == 0)
 		return JSON;

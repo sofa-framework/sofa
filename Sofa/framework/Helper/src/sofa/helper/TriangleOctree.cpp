@@ -840,7 +840,7 @@ void TriangleOctreeRoot::buildOctree()
     // for each triangle add it to the octree
     for (size_t i = 0; i < octreeTriangles->size(); i++)
     {
-        fillOctree (static_cast<int>(i));
+        fillOctree(static_cast<Index>(i));
     }
 }
 

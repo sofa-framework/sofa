@@ -113,7 +113,7 @@ void LCP::setLCP(unsigned int input_dim, SReal *input_dfree, SReal **input_W, SR
 void LCP::solveNLCP(bool convergenceTest, std::vector<SReal>* residuals, std::vector<SReal>* violations)
 {
     //SReal error;
-    SReal f_1[3],dn, ds, dt;
+    SReal f_1_local[3],dn, ds, dt;
     const int numContacts = dim/3;
     const bool computeError = (convergenceTest || residuals);
     for (it=0; it<numItMax; it++)
@@ -121,7 +121,7 @@ void LCP::solveNLCP(bool convergenceTest, std::vector<SReal>* residuals, std::ve
         error = 0;
         for (int c=0;  c<numContacts ; c++)
         {
-            f_1[0] = f[3*c]; f_1[1] = f[3*c+1]; f_1[2] = f[3*c+2];
+            f_1_local[0] = f[3*c]; f_1_local[1] = f[3*c+1]; f_1_local[2] = f[3*c+2];
             dn =dfree[3*c];  dt=dfree[3*c+1]; ds =dfree[3*c+2];
             for (int i=0; i<dim; i++)
             {
@@ -140,14 +140,14 @@ void LCP::solveNLCP(bool convergenceTest, std::vector<SReal>* residuals, std::ve
             if (f[3*c]<0)
             {
 
-                if (f_1[0]>0 && computeError)  // the point was in contact and is no more in contact..
+                if (f_1_local[0]>0 && computeError)  // the point was in contact and is no more in contact..
                 {
 
                     for (int j=0; j<3; j++ )
                     {
-                        Ddn -= W[3*c  ][3*c+j]*f_1[j];
-                        Ddt -= W[3*c+1][3*c+j]*f_1[j];
-                        Dds -= W[3*c+2][3*c+j]*f_1[j];
+                        Ddn -= W[3*c  ][3*c+j]*f_1_local[j];
+                        Ddt -= W[3*c+1][3*c+j]*f_1_local[j];
+                        Dds -= W[3*c+2][3*c+j]*f_1_local[j];
                     }
                     error += sqrt(Ddn*Ddn + Ddt*Ddt + Dds*Dds);
                 }
@@ -161,8 +161,8 @@ void LCP::solveNLCP(bool convergenceTest, std::vector<SReal>* residuals, std::ve
             ////// FRICTION
 
             // evaluation of the current tangent positions (motion du to force change along normal)
-            dt +=  W[3*c+1][3*c]*(f[3*c]-f_1[0]);
-            ds +=  W[3*c+2][3*c]*(f[3*c]-f_1[0]);
+            dt +=  W[3*c+1][3*c]*(f[3*c]-f_1_local[0]);
+            ds +=  W[3*c+2][3*c]*(f[3*c]-f_1_local[0]);
 
             // envaluation of the new fricton forces
 

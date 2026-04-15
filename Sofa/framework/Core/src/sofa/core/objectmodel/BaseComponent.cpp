@@ -209,11 +209,11 @@ const BaseComponent::VecSlaves& BaseComponent::getSlaves() const
     return l_slaves.getValue();
 }
 
-BaseComponent* BaseComponent::getSlave(const std::string& name) const
+BaseComponent* BaseComponent::getSlave(const std::string& slaveName) const
 {
     for (auto slave : l_slaves)
     {
-        if (slave.get() && slave->getName() == name)
+        if (slave.get() && slave->getName() == slaveName)
             return slave.get();
     }
     return nullptr;

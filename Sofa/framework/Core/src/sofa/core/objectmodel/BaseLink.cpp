@@ -316,9 +316,9 @@ bool BaseLink::read( const std::string& str )
 
     /// Add the detected objects that are not already present to the container of this Link
     clear();
-    for (const auto& [base, path] : entries)
+    for (const auto& [base, linkPath] : entries)
     {
-        ok = add(base, path) && ok;
+        ok = add(base, linkPath) && ok;
     }
     return ok;
 }

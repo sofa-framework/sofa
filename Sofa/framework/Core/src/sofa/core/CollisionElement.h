@@ -59,7 +59,7 @@ public:
     /// Constructor.
     /// This constructor should be used in case a vector of indices is used.
     BaseCollisionElementIterator(VIterator vit, VIterator vitend)
-        : index(-1), it(vit), itend(vitend)
+        : index(static_cast<Index>(-1)), it(vit), itend(vitend)
     {
         if (it != itend) index = *it;
     }
