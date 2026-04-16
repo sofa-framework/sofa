@@ -235,10 +235,13 @@ const sofa::core::objectmodel::BaseClass* GetClass(){return B::GetClass(); }
 ///
 /// Once declare it is mandatory to also define the same functions.
 /// For that you must use SOFA_DEFINE_OPAQUE_FUNCTION_BETWEEN_BASE_AND
+#define SOFA_DECLARE_WITH_API_MACRO_OPAQUE_FUNCTION_BETWEEN_BASE_AND(TYPENAME, API_MACRO) \
+    template<> API_MACRO TYPENAME* castTo(sofa::core::objectmodel::Base* base); \
+    API_MACRO sofa::core::objectmodel::Base* castToBase(TYPENAME* b); \
+    namespace objectmodel::base { template<> API_MACRO const sofa::core::objectmodel::BaseClass* GetClass<TYPENAME>(); }
+
 #define SOFA_DECLARE_OPAQUE_FUNCTION_BETWEEN_BASE_AND(TYPENAME) \
-    template<> SOFA_CORE_API TYPENAME* castTo(sofa::core::objectmodel::Base* base); \
-    SOFA_CORE_API sofa::core::objectmodel::Base* castToBase(TYPENAME* b); \
-    namespace objectmodel::base { template<> SOFA_CORE_API const sofa::core::objectmodel::BaseClass* GetClass<TYPENAME>(); }
+    SOFA_DECLARE_WITH_API_MACRO_OPAQUE_FUNCTION_BETWEEN_BASE_AND(TYPENAME, SOFA_CORE_API)
 
 /// Define the opaque function signature for a type that in-herit from Base.
 ///
