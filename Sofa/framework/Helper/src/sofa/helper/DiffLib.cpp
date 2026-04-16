@@ -36,10 +36,10 @@ std::vector<std::tuple<std::string, SReal>> SOFA_HELPER_API getClosestMatch(cons
     class Tuple
     {
     public:
-        Tuple(float ratio_, std::string value_)
+        Tuple(SReal ratio_, std::string value_)
             : ratio(ratio_), value(std::move(value_)) {}
 
-        float ratio;
+        SReal ratio;
         std::string value;
     };
     auto cmp = [](const Tuple& left, Tuple& right) { return left.ratio < right.ratio; };
