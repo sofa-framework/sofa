@@ -1,11 +1,11 @@
-#include <sofa/simulation/MappingGraph2.h>
+#include <sofa/simulation/MappingGraph.h>
 
 #include <sofa/simulation/task/ParallelForEach.h>
 
 namespace sofa::simulation
 {
 
-MappingGraph2::InputLists MappingGraph2::InputLists::makeFromNode(core::objectmodel::BaseContext* node)
+MappingGraph::InputLists MappingGraph::InputLists::makeFromNode(core::objectmodel::BaseContext* node)
 {
     InputLists inputLists;
     if (node)
@@ -18,27 +18,27 @@ MappingGraph2::InputLists MappingGraph2::InputLists::makeFromNode(core::objectmo
     return inputLists;
 }
 
-MappingGraph2::MappingGraph2(const InputLists& input)
+MappingGraph::MappingGraph(const InputLists& input)
 {
     build(input);
 }
 
-MappingGraph2::MappingGraph2(core::objectmodel::BaseContext* node)
+MappingGraph::MappingGraph(core::objectmodel::BaseContext* node)
 {
     build(node);
 }
 
-core::objectmodel::BaseContext* MappingGraph2::getRootNode() const
+core::objectmodel::BaseContext* MappingGraph::getRootNode() const
 {
     return m_rootNode;
 }
 
 const sofa::type::vector<core::behavior::BaseMechanicalState*>&
-MappingGraph2::getMainMechanicalStates() const
+MappingGraph::getMainMechanicalStates() const
 {
     return m_roots;
 }
-MappingGraph2::MappingInputs MappingGraph2::getTopMostMechanicalStates(
+MappingGraph::MappingInputs MappingGraph::getTopMostMechanicalStates(
     core::behavior::BaseMechanicalState* state) const
 {
     auto* sn = findStateNode(state);
@@ -89,7 +89,7 @@ MappingGraph2::MappingInputs MappingGraph2::getTopMostMechanicalStates(
     return {};
 }
 
-MappingGraph2::MappingInputs MappingGraph2::getTopMostMechanicalStates(
+MappingGraph::MappingInputs MappingGraph::getTopMostMechanicalStates(
     core::behavior::StateAccessor* stateAccessor) const
 {
     if (stateAccessor == nullptr)
@@ -108,11 +108,11 @@ MappingGraph2::MappingInputs MappingGraph2::getTopMostMechanicalStates(
     return topMostMechanicalStates;
 }
 
-bool MappingGraph2::hasAnyMapping() const
+bool MappingGraph::hasAnyMapping() const
 {
     return m_hasAnyMapping;
 }
-bool MappingGraph2::hasAnyMappingInput(core::behavior::BaseMechanicalState* mstate) const
+bool MappingGraph::hasAnyMappingInput(core::behavior::BaseMechanicalState* mstate) const
 {
     if (m_rootNode == nullptr)
     {
@@ -130,7 +130,7 @@ bool MappingGraph2::hasAnyMappingInput(core::behavior::BaseMechanicalState* msta
     return !m_positionInGlobalMatrix.contains(mstate);
 }
 
-bool MappingGraph2::hasAnyMappingInput(core::behavior::StateAccessor* stateAccessor) const
+bool MappingGraph::hasAnyMappingInput(core::behavior::StateAccessor* stateAccessor) const
 {
     for (auto* mstate : stateAccessor->getMechanicalStates())
     {
@@ -145,12 +145,12 @@ bool MappingGraph2::hasAnyMappingInput(core::behavior::StateAccessor* stateAcces
     return false;
 }
 
-sofa::Size MappingGraph2::getTotalNbMainDofs() const
+sofa::Size MappingGraph::getTotalNbMainDofs() const
 {
     return m_totalNbMainDofs;
 }
 
-type::Vec2u MappingGraph2::getPositionInGlobalMatrix(core::behavior::BaseMechanicalState* mstate) const
+type::Vec2u MappingGraph::getPositionInGlobalMatrix(core::behavior::BaseMechanicalState* mstate) const
 {
     if (m_rootNode == nullptr)
     {
@@ -172,7 +172,7 @@ type::Vec2u MappingGraph2::getPositionInGlobalMatrix(core::behavior::BaseMechani
     return type::Vec2u{};
 }
 
-type::Vec2u MappingGraph2::getPositionInGlobalMatrix(core::behavior::BaseMechanicalState* a,
+type::Vec2u MappingGraph::getPositionInGlobalMatrix(core::behavior::BaseMechanicalState* a,
                                                      core::behavior::BaseMechanicalState* b) const
 {
     const auto pos_a = getPositionInGlobalMatrix(a);
@@ -180,7 +180,7 @@ type::Vec2u MappingGraph2::getPositionInGlobalMatrix(core::behavior::BaseMechani
     return {pos_a[0], pos_b[1]};
 }
 
-sofa::type::vector<core::BaseMapping*> MappingGraph2::getBottomUpMappingsFrom(
+sofa::type::vector<core::BaseMapping*> MappingGraph::getBottomUpMappingsFrom(
     core::behavior::BaseMechanicalState* state) const
 {
     auto* sn = findStateNode(state);
@@ -231,7 +231,7 @@ sofa::type::vector<core::BaseMapping*> MappingGraph2::getBottomUpMappingsFrom(
     return {};
 }
 
-void MappingGraph2::traverseTopDown(MappingGraphVisitor& visitor) const
+void MappingGraph::traverseTopDown(MappingGraphVisitor& visitor) const
 {
     // pending count = number of parents not yet visited.
     std::queue<BaseMappingGraphNode*> ready;
@@ -247,7 +247,7 @@ void MappingGraph2::traverseTopDown(MappingGraphVisitor& visitor) const
     processQueue(ready, visitor, /*topDown=*/true);
 }
 
-void MappingGraph2::traverseBottomUp(MappingGraphVisitor& visitor) const
+void MappingGraph::traverseBottomUp(MappingGraphVisitor& visitor) const
 {
     std::queue<BaseMappingGraphNode*> ready;
     for (auto& node : m_allNodes)
@@ -282,7 +282,7 @@ void MappingGraph2::traverseBottomUp(MappingGraphVisitor& visitor) const
     }
 }
 
-void MappingGraph2::traverseComponentGroups(MappingGraphVisitor& visitor) const
+void MappingGraph::traverseComponentGroups(MappingGraphVisitor& visitor) const
 {
     for (auto& [states, node] : m_groupIndex)
     {
@@ -292,7 +292,7 @@ void MappingGraph2::traverseComponentGroups(MappingGraphVisitor& visitor) const
         }
     }
 }
-void MappingGraph2::traverseComponentGroups(MappingGraphVisitor& visitor,
+void MappingGraph::traverseComponentGroups(MappingGraphVisitor& visitor,
                                             TaskScheduler* taskScheduler) const
 {
     if (taskScheduler)
@@ -312,7 +312,7 @@ void MappingGraph2::traverseComponentGroups(MappingGraphVisitor& visitor,
     }
 }
 
-void MappingGraph2::processQueue(std::queue<BaseMappingGraphNode*>& ready, MappingGraphVisitor& visitor,
+void MappingGraph::processQueue(std::queue<BaseMappingGraphNode*>& ready, MappingGraphVisitor& visitor,
                                  bool topDown)
 {
     while (!ready.empty())
@@ -336,7 +336,7 @@ void MappingGraph2::processQueue(std::queue<BaseMappingGraphNode*>& ready, Mappi
 }
 
 
-bool MappingGraph2::isBuilt() const { return m_isBuilt; }
+bool MappingGraph::isBuilt() const { return m_isBuilt; }
 
 template<class TComponent>
 MappingGraphNode<TComponent>::SPtr makeMappingGraphNode(typename TComponent::SPtr s)
@@ -344,7 +344,7 @@ MappingGraphNode<TComponent>::SPtr makeMappingGraphNode(typename TComponent::SPt
     return MappingGraphNode<TComponent>::SPtr( new MappingGraphNode<TComponent>(s) );
 }
 
-void MappingGraph2::build(const InputLists& input)
+void MappingGraph::build(const InputLists& input)
 {
     m_hasAnyMapping = input.mappings.size() > 0;
 
@@ -438,7 +438,7 @@ void MappingGraph2::build(const InputLists& input)
     m_isBuilt = true;
 }
 
-void MappingGraph2::build(core::objectmodel::BaseContext* rootNode)
+void MappingGraph::build(core::objectmodel::BaseContext* rootNode)
 {
     if (rootNode)
     {
@@ -447,7 +447,7 @@ void MappingGraph2::build(core::objectmodel::BaseContext* rootNode)
     m_rootNode = rootNode;
 }
 
-ComponentGroupMappingGraphNode::SPtr MappingGraph2::findGroupNode(
+ComponentGroupMappingGraphNode::SPtr MappingGraph::findGroupNode(
     const std::vector<core::behavior::BaseMechanicalState::SPtr>& states)
 {
     auto it = std::find_if(m_groupIndex.begin(), m_groupIndex.end(),
@@ -469,7 +469,7 @@ ComponentGroupMappingGraphNode::SPtr MappingGraph2::findGroupNode(
     return group;
 }
 
-ComponentGroupMappingGraphNode::SPtr MappingGraph2::findInGroupNodes(
+ComponentGroupMappingGraphNode::SPtr MappingGraph::findInGroupNodes(
     const core::behavior::BaseMechanicalState::SPtr state)
 {
     auto it = std::find_if(m_groupIndex.begin(), m_groupIndex.end(),
@@ -482,13 +482,13 @@ ComponentGroupMappingGraphNode::SPtr MappingGraph2::findInGroupNodes(
     return nullptr;
 }
 
-BaseMappingGraphNode* MappingGraph2::findStateNode(core::behavior::BaseMechanicalState* raw) const
+BaseMappingGraphNode* MappingGraph::findStateNode(core::behavior::BaseMechanicalState* raw) const
 {
     auto it = m_stateIndex.find(raw);
     return (it != m_stateIndex.end()) ? it->second : nullptr;
 }
 
-void MappingGraph2::addEdge(BaseMappingGraphNode* from, BaseMappingGraphNode* to)
+void MappingGraph::addEdge(BaseMappingGraphNode* from, BaseMappingGraphNode* to)
 {
     from->m_children.push_back(to->shared_from_this());
     to->m_parents.push_back(from->shared_from_this());

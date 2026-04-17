@@ -67,7 +67,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/SceneCheckRegistry.h
     ${SRC_ROOT}/SceneCheckMainRegistry.h
     ${SRC_ROOT}/MappingGraph.h
-    ${SRC_ROOT}/MappingGraph2.h
 
     ${SRC_ROOT}/events/BuildConstraintSystemEndEvent.h
     ${SRC_ROOT}/events/SimulationInitDoneEvent.h
@@ -170,7 +169,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/InitVisitor.cpp
     ${SRC_ROOT}/IntegrateBeginEvent.cpp
     ${SRC_ROOT}/IntegrateEndEvent.cpp
-    ${SRC_ROOT}/MappingGraph2.cpp
+    ${SRC_ROOT}/MappingGraph.cpp
     ${SRC_ROOT}/MechanicalOperations.cpp
     ${SRC_ROOT}/MechanicalVPrintVisitor.cpp
     ${SRC_ROOT}/MechanicalVisitor.cpp
