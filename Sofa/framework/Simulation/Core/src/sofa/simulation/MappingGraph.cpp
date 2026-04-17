@@ -339,9 +339,9 @@ void MappingGraph::processQueue(std::queue<BaseMappingGraphNode*>& ready, Mappin
 bool MappingGraph::isBuilt() const { return m_isBuilt; }
 
 template<class TComponent>
-MappingGraphNode<TComponent>::SPtr makeMappingGraphNode(typename TComponent::SPtr s)
+typename MappingGraphNode<TComponent>::SPtr makeMappingGraphNode(typename TComponent::SPtr s)
 {
-    return MappingGraphNode<TComponent>::SPtr( new MappingGraphNode<TComponent>(s) );
+    return typename MappingGraphNode<TComponent>::SPtr( new MappingGraphNode<TComponent>(s) );
 }
 
 void MappingGraph::build(const InputLists& input)
