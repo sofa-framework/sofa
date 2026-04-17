@@ -73,7 +73,7 @@ TEST(MappingGraph, SingleState)
     sofa::simpleapi::importPlugin(Sofa.Component.StateContainer);
     sofa::simpleapi::createObject(root, "MechanicalObject", {{"name", "state"}});
 
-    auto inputs = sofa::simulation::MappingGraph2::InputLists::makeFromNode(root);
+    auto inputs = sofa::simulation::MappingGraph2::InputLists::makeFromNode(root.get());
     ASSERT_EQ(inputs.mechanicalStates.size(), 1);
     sofa::simulation::MappingGraph2 mappingGraph(inputs);
     ASSERT_TRUE(mappingGraph.isBuilt());
@@ -96,7 +96,7 @@ TEST(MappingGraph, SingleMappingInSingleNode)
     sofa::simpleapi::createObject(root, "MechanicalObject", {{"name", "state2"}});
     sofa::simpleapi::createObject(root, "IdentityMapping", {{"name", "mapping"}, {"input", "@state1"}, {"output", "@state2"}});
 
-    auto inputs = sofa::simulation::MappingGraph2::InputLists::makeFromNode(root);
+    auto inputs = sofa::simulation::MappingGraph2::InputLists::makeFromNode(root.get());
     ASSERT_EQ(inputs.mappings.size(), 1);
     ASSERT_EQ(inputs.mechanicalStates.size(), 2);
     sofa::simulation::MappingGraph2 mappingGraph(inputs);
