@@ -152,10 +152,9 @@ public:
 
     /// Return the list of mechanical states which are:
     /// 1) non-mapped
-    /// 2) input of a mapping involving the mechanical states associated to the provided force field as an output.
+    /// 2) input of a mapping involving the mechanical states associated to the provided component as an output.
     /// The search is recursive (more than one level of mapping)
-    template<class TComponent> requires !std::derived_from<TComponent, core::behavior::BaseMechanicalState>
-    MappingInputs getTopMostMechanicalStates(TComponent* component) const;
+    MappingInputs getTopMostMechanicalStates(core::behavior::StateAccessor* stateAccessor) const;
 
     [[nodiscard]] bool hasAnyMapping() const;
 
@@ -163,9 +162,7 @@ public:
     bool hasAnyMappingInput(core::behavior::BaseMechanicalState* mstate) const;
 
     /// Return true if the mechanical states associated with the provided component is an output of a mapping
-    template<class TComponent> requires !std::derived_from<TComponent, core::behavior::BaseMechanicalState>
-    bool hasAnyMappingInput(TComponent*) const;
-
+    bool hasAnyMappingInput(core::behavior::StateAccessor* stateAccessor) const;
 
     /// Return the sum of the degrees of freedom of all main mechanical states
     [[nodiscard]] sofa::Size getTotalNbMainDofs() const;
@@ -248,40 +245,5 @@ private:
     // Both parent and child lists hold SPtr so the graph owns all nodes.
     static void addEdge(BaseMappingGraphNode* from, BaseMappingGraphNode* to);
 };
-
-template <class TComponent> requires !std::derived_from<TComponent, core::behavior::BaseMechanicalState>
-MappingGraph2::MappingInputs MappingGraph2::getTopMostMechanicalStates(TComponent* component) const
-{
-    if (component == nullptr)
-    {
-        dmsg_error("MappingGraph") << "Requested mass is invalid";
-        return {};
-    }
-
-    const auto& associatedMechanicalStates = component->getMechanicalStates();
-    MappingInputs topMostMechanicalStates;
-    for (auto* mstate : associatedMechanicalStates)
-    {
-        const auto mstates = getTopMostMechanicalStates(mstate);
-        topMostMechanicalStates.insert(topMostMechanicalStates.end(), mstates.begin(), mstates.end());
-    }
-    return topMostMechanicalStates;
-}
-
-template <class TComponent> requires !std::derived_from<TComponent, core::behavior::BaseMechanicalState>
-bool MappingGraph2::hasAnyMappingInput(TComponent* component) const
-{
-    for (auto* mstate : component->getMechanicalStates())
-    {
-        if (mstate)
-        {
-            if (hasAnyMappingInput(mstate))
-            {
-                return true;
-            }
-        }
-    }
-    return false;
-}
 
 }  // namespace sofa::simulation
