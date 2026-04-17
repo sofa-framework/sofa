@@ -159,6 +159,14 @@ public:
 
     [[nodiscard]] bool hasAnyMapping() const;
 
+    /// Return true if the provided mechanical state is an output of a mapping
+    bool hasAnyMappingInput(core::behavior::BaseMechanicalState* mstate) const;
+
+    /// Return true if the mechanical states associated with the provided component is an output of a mapping
+    template<class TComponent> requires !std::derived_from<TComponent, core::behavior::BaseMechanicalState>
+    bool hasAnyMappingInput(TComponent*) const;
+
+
     /// Return the sum of the degrees of freedom of all main mechanical states
     [[nodiscard]] sofa::Size getTotalNbMainDofs() const;
 
@@ -167,6 +175,10 @@ public:
     /// Return where in the global matrix the provided mechanical states writes its contribution
     type::Vec2u getPositionInGlobalMatrix(core::behavior::BaseMechanicalState* a,
                                           core::behavior::BaseMechanicalState* b) const;
+
+    sofa::type::vector<core::BaseMapping*> getBottomUpMappingsFrom(
+        core::behavior::BaseMechanicalState*) const;
+
 
     // ------------------------------------------------------------------
     // Top-down traversal: roots (unmapped states) → leaves (components).
@@ -254,6 +266,22 @@ MappingGraph2::MappingInputs MappingGraph2::getTopMostMechanicalStates(TComponen
         topMostMechanicalStates.insert(topMostMechanicalStates.end(), mstates.begin(), mstates.end());
     }
     return topMostMechanicalStates;
+}
+
+template <class TComponent> requires !std::derived_from<TComponent, core::behavior::BaseMechanicalState>
+bool MappingGraph2::hasAnyMappingInput(TComponent* component) const
+{
+    for (auto* mstate : component->getMechanicalStates())
+    {
+        if (mstate)
+        {
+            if (hasAnyMappingInput(mstate))
+            {
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 }  // namespace sofa::simulation
