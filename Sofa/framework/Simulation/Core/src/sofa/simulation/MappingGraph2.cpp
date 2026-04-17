@@ -89,6 +89,25 @@ MappingGraph2::MappingInputs MappingGraph2::getTopMostMechanicalStates(
     return {};
 }
 
+MappingGraph2::MappingInputs MappingGraph2::getTopMostMechanicalStates(
+    core::behavior::StateAccessor* stateAccessor) const
+{
+    if (stateAccessor == nullptr)
+    {
+        dmsg_error("MappingGraph") << "Requested mass is invalid";
+        return {};
+    }
+
+    const auto& associatedMechanicalStates = stateAccessor->getMechanicalStates();
+    MappingInputs topMostMechanicalStates;
+    for (auto* mstate : associatedMechanicalStates)
+    {
+        const auto mstates = getTopMostMechanicalStates(mstate);
+        topMostMechanicalStates.insert(topMostMechanicalStates.end(), mstates.begin(), mstates.end());
+    }
+    return topMostMechanicalStates;
+}
+
 bool MappingGraph2::hasAnyMapping() const
 {
     return m_hasAnyMapping;
@@ -109,6 +128,21 @@ bool MappingGraph2::hasAnyMappingInput(core::behavior::BaseMechanicalState* msta
 
     //only main (non mapped) mechanical states are in this map
     return !m_positionInGlobalMatrix.contains(mstate);
+}
+
+bool MappingGraph2::hasAnyMappingInput(core::behavior::StateAccessor* stateAccessor) const
+{
+    for (auto* mstate : stateAccessor->getMechanicalStates())
+    {
+        if (mstate)
+        {
+            if (hasAnyMappingInput(mstate))
+            {
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 sofa::Size MappingGraph2::getTotalNbMainDofs() const
