@@ -49,6 +49,9 @@ void registerElementCorotationalFEMForceField(sofa::core::ObjectFactory* factory
 
     factory->registerObjects(sofa::core::ObjectRegistrationData("Hooke's law on linear hexahedra using the corotational approach")
         .add< ElementCorotationalFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Hexahedron> >(true));
+
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Hooke's law on linear prisms using the corotational approach")
+        .add< ElementCorotationalFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Prism> >(true));
 }
 
 // template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API ElementCorotationalFEMForceField<sofa::defaulttype::Vec1Types, sofa::geometry::Edge>;
@@ -60,5 +63,6 @@ template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API ElementCorotational
 template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API ElementCorotationalFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Quad>;
 template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API ElementCorotationalFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Tetrahedron>;
 template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API ElementCorotationalFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Hexahedron>;
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API ElementCorotationalFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Prism>;
 
 }

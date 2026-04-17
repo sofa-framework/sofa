@@ -19,11 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-
-#include <sofa/fem/FiniteElement[Edge].h>
-#include <sofa/fem/FiniteElement[Hexahedron].h>
+#define SOFA_FEM_FINITE_ELEMENT_PRISM_CPP
 #include <sofa/fem/FiniteElement[Prism].h>
-#include <sofa/fem/FiniteElement[Quad].h>
-#include <sofa/fem/FiniteElement[Tetrahedron].h>
-#include <sofa/fem/FiniteElement[Triangle].h>
+#include <sofa/defaulttype/VecTypes.h>
+
+namespace sofa::fem
+{
+
+template struct SOFA_FEM_API FiniteElement<sofa::geometry::Prism, sofa::defaulttype::Vec3Types>;
+
+}
