@@ -1,5 +1,7 @@
 #include <sofa/simulation/MappingGraph2.h>
 
+#include <sofa/simulation/task/ParallelForEach.h>
+
 namespace sofa::simulation
 {
 
@@ -31,21 +33,100 @@ void MappingGraph2::traverseTopDown(MappingGraphVisitor& visitor) const
 
 void MappingGraph2::traverseBottomUp(MappingGraphVisitor& visitor) const
 {
-    // pending count = number of children not yet visited.
     std::queue<BaseMappingGraphNode*> ready;
     for (auto& node : m_allNodes)
     {
-        node->m_pendingCount = static_cast<int>(node->m_children.size());
+        node->m_pendingCount = static_cast<int>(node->m_parents.size());
         if (node->m_pendingCount == 0)
         {
             ready.push(node.get());
         }
     }
 
-    processQueue(ready, visitor, /*topDown=*/false);
+    sofa::type::vector<BaseMappingGraphNode*> nodes;
+    while (!ready.empty())
+    {
+        BaseMappingGraphNode* current = ready.front();
+        nodes.push_back(current);
+        ready.pop();
+
+        for (auto& child : current->m_children)
+        {
+            --(child->m_pendingCount);
+            if (child->m_pendingCount == 0)
+            {
+                ready.push(child.get());
+            }
+        }
+    }
+
+    for (auto it = nodes.crbegin(); it != nodes.crend(); ++it)
+    {
+        (*it)->accept(visitor);
+    }
 }
 
+void MappingGraph2::traverseComponentGroups(MappingGraphVisitor& visitor) const
+{
+    for (auto& [states, node] : m_groupIndex)
+    {
+        for (auto& child : node->m_children)
+        {
+            child->accept(visitor);
+        }
+    }
+}
+void MappingGraph2::traverseComponentGroups(MappingGraphVisitor& visitor,
+                                            TaskScheduler* taskScheduler) const
+{
+    if (taskScheduler)
+    {
+        sofa::simulation::parallelForEach(*taskScheduler, m_groupIndex.begin(), m_groupIndex.end(),
+            [&visitor](const auto& pair)
+            {
+                for (auto& child : pair.second->m_children)
+                {
+                    child->accept(visitor);
+                }
+            });
+    }
+    else
+    {
+        traverseComponentGroups(visitor);
+    }
+}
+
+void MappingGraph2::processQueue(std::queue<BaseMappingGraphNode*>& ready, MappingGraphVisitor& visitor,
+                                 bool topDown)
+{
+    while (!ready.empty())
+    {
+        BaseMappingGraphNode* current = ready.front();
+        std::cout << "Processing node: " << current->getName() << std::endl;
+        ready.pop();
+
+        current->accept(visitor);
+
+        const auto& neighbours = topDown ? current->m_children : current->m_parents;
+        for (auto& neighbour : neighbours)
+        {
+            --(neighbour->m_pendingCount);
+            if (neighbour->m_pendingCount == 0)
+            {
+                ready.push(neighbour.get());
+            }
+        }
+    }
+}
+
+
 bool MappingGraph2::isBuilt() const { return m_isBuilt; }
+
+template<class TComponent>
+MappingGraphNode<TComponent>::SPtr makeMappingGraphNode(typename TComponent::SPtr s)
+{
+    return MappingGraphNode<TComponent>::SPtr( new MappingGraphNode<TComponent>(s) );
+}
 
 void MappingGraph2::build(const InputLists& input)
 {
@@ -164,29 +245,6 @@ ComponentGroupMappingGraphNode::SPtr MappingGraph2::findInGroupNodes(
     if (it != m_groupIndex.end())
         return it->second;
     return nullptr;
-}
-
-void MappingGraph2::processQueue(std::queue<BaseMappingGraphNode*>& ready, MappingGraphVisitor& visitor,
-                                 bool topDown)
-{
-    while (!ready.empty())
-    {
-        BaseMappingGraphNode* current = ready.front();
-        std::cout << "Processing node: " << current->getName() << std::endl;
-        ready.pop();
-
-        current->accept(visitor);
-
-        const auto& neighbours = topDown ? current->m_children : current->m_parents;
-        for (auto& neighbour : neighbours)
-        {
-            --(neighbour->m_pendingCount);
-            if (neighbour->m_pendingCount == 0)
-            {
-                ready.push(neighbour.get());
-            }
-        }
-    }
 }
 
 BaseMappingGraphNode* MappingGraph2::findStateNode(core::behavior::BaseMechanicalState* raw) const

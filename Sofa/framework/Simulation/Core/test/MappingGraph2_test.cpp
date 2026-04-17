@@ -217,6 +217,7 @@ TEST(MappingGraph, ComplexGraph)
 
     mappingGraph.traverseTopDown(visitor);
     ASSERT_EQ(visitor.names.size(), 9); // 9 and not 7 because a UniformMass is a BaseMass and also a BaseForceField
+
     EXPECT_EQ(visitor.names[0], "state1");
     EXPECT_EQ(visitor.names[1], "ff1");
     EXPECT_EQ(visitor.names[2], "mass1");
@@ -229,11 +230,19 @@ TEST(MappingGraph, ComplexGraph)
     EXPECT_EQ(visitor.names[8], "mass2");
 
     visitor.names.clear();
-    // mappingGraph.traverseBottomUp(visitor);
-    // ASSERT_EQ(visitor.names.size(), 9);
-    // EXPECT_EQ(visitor.names[0], "state2");
-    // EXPECT_EQ(visitor.names[1], "mapping");
-    // EXPECT_EQ(visitor.names[2], "state1");
+    mappingGraph.traverseBottomUp(visitor);
+    ASSERT_EQ(visitor.names.size(), 9);
+
+    EXPECT_EQ(visitor.names[0], "mass2");
+    EXPECT_EQ(visitor.names[1], "mass2");
+    EXPECT_EQ(visitor.names[2], "ff2");
+    EXPECT_EQ(visitor.names[3], "state2");
+
+    EXPECT_EQ(visitor.names[4], "mapping");
+    EXPECT_EQ(visitor.names[5], "mass1");
+    EXPECT_EQ(visitor.names[6], "mass1");
+    EXPECT_EQ(visitor.names[7], "ff1");
+    EXPECT_EQ(visitor.names[8], "state1");
 }
 
 }

@@ -25,7 +25,7 @@
 #include <sofa/core/behavior/BaseForceField.h>
 #include <sofa/core/behavior/BaseMass.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
-#include "Node.h"
+#include <sofa/simulation/Node.h>
 
 #include <memory>
 #include <queue>
@@ -34,6 +34,7 @@
 
 namespace sofa::simulation
 {
+class TaskScheduler;
 
 // ---------------------------------------------------------------------------
 // Visitor interface
@@ -97,12 +98,6 @@ private:
     typename TComponent::SPtr m_component;
 };
 
-template<class TComponent>
-MappingGraphNode<TComponent>::SPtr makeMappingGraphNode(typename TComponent::SPtr s)
-{
-    return MappingGraphNode<TComponent>::SPtr( new MappingGraphNode<TComponent>(s) );
-}
-
 class ComponentGroupMappingGraphNode : public BaseMappingGraphNode
 {
 public:
@@ -158,6 +153,9 @@ public:
     // Mirror invariants of top-down, reversed.
     // ------------------------------------------------------------------
     void traverseBottomUp(MappingGraphVisitor& visitor) const;
+
+    void traverseComponentGroups(MappingGraphVisitor& visitor) const;
+    void traverseComponentGroups(MappingGraphVisitor& visitor, TaskScheduler* taskScheduler) const;
 
     // Accessors for inspection / testing.
     const std::vector<BaseMappingGraphNode::SPtr>& allNodes() const { return m_allNodes; }
