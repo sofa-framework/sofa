@@ -387,7 +387,7 @@ private:
 bool EulerExplicitSolver::isMassMatrixTriviallyInvertible(const core::ExecParams* params)
 {
     sofa::simulation::MappingGraph mappingGraph;
-    mappingGraph.build(params, this->getContext());
+    mappingGraph.build(this->getContext());
 
     // To achieve a diagonal global mass matrix in this system:
     // 1) Each individual mass matrix must itself be diagonal.

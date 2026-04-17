@@ -93,6 +93,23 @@ bool MappingGraph2::hasAnyMapping() const
 {
     return m_hasAnyMapping;
 }
+bool MappingGraph2::hasAnyMappingInput(core::behavior::BaseMechanicalState* mstate) const
+{
+    if (m_rootNode == nullptr)
+    {
+        msg_error("MappingGraph") << "Graph is not built yet";
+        return false;
+    }
+
+    if (mstate == nullptr)
+    {
+        msg_error("MappingGraph") << "Requested mechanical state is not valid : cannot get its position in the global matrix";
+        return false;
+    }
+
+    //only main (non mapped) mechanical states are in this map
+    return !m_positionInGlobalMatrix.contains(mstate);
+}
 
 sofa::Size MappingGraph2::getTotalNbMainDofs() const
 {
@@ -127,6 +144,57 @@ type::Vec2u MappingGraph2::getPositionInGlobalMatrix(core::behavior::BaseMechani
     const auto pos_a = getPositionInGlobalMatrix(a);
     const auto pos_b = getPositionInGlobalMatrix(b);
     return {pos_a[0], pos_b[1]};
+}
+
+sofa::type::vector<core::BaseMapping*> MappingGraph2::getBottomUpMappingsFrom(
+    core::behavior::BaseMechanicalState* state) const
+{
+    auto* sn = findStateNode(state);
+    if (sn)
+    {
+        struct CollectMapping : public MappingGraphVisitor
+        {
+            void visit(core::BaseMapping& mapping) override
+            {
+                mappings.push_back(&mapping);
+            }
+
+            sofa::type::vector<core::BaseMapping*> mappings;
+        } visitor;
+
+        for (auto& node : m_allNodes)
+        {
+            node->m_pendingCount = 0;
+        }
+
+        std::queue<BaseMappingGraphNode*> nodes;
+        nodes.push(sn);
+
+        while (!nodes.empty())
+        {
+            BaseMappingGraphNode* current = nodes.front();
+            nodes.pop();
+
+            ++(current->m_pendingCount);
+
+            if (current->m_parents.empty())
+            {
+                current->accept(visitor);
+            }
+
+            for (auto& parent : current->m_parents)
+            {
+                if (parent->m_pendingCount == 0)
+                {
+                    nodes.push(parent.get());
+                }
+            }
+        }
+
+        return visitor.mappings;
+    }
+
+    return {};
 }
 
 void MappingGraph2::traverseTopDown(MappingGraphVisitor& visitor) const
