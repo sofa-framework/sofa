@@ -22,21 +22,21 @@
 #include <gtest/gtest.h>
 #include <sofa/Modules.h>
 #include <sofa/simpleapi/SimpleApi.h>
-#include <sofa/simulation/MappingGraph2.h>
+#include <sofa/simulation/MappingGraph.h>
 
 namespace sofa
 {
 
 TEST(MappingGraph, DefaultConstructor)
 {
-    sofa::simulation::MappingGraph2 mappingGraph;
+    sofa::simulation::MappingGraph mappingGraph;
     EXPECT_FALSE(mappingGraph.isBuilt());
 }
 
 TEST(MappingGraph, Build)
 {
-    sofa::simulation::MappingGraph2 mappingGraph;
-    sofa::simulation::MappingGraph2::InputLists input;
+    sofa::simulation::MappingGraph mappingGraph;
+    sofa::simulation::MappingGraph::InputLists input;
     mappingGraph.build(input);
     EXPECT_TRUE(mappingGraph.isBuilt());
 }
@@ -73,9 +73,9 @@ TEST(MappingGraph, SingleState)
     sofa::simpleapi::importPlugin(Sofa.Component.StateContainer);
     sofa::simpleapi::createObject(root, "MechanicalObject", {{"name", "state"}});
 
-    auto inputs = sofa::simulation::MappingGraph2::InputLists::makeFromNode(root.get());
+    auto inputs = sofa::simulation::MappingGraph::InputLists::makeFromNode(root.get());
     ASSERT_EQ(inputs.mechanicalStates.size(), 1);
-    sofa::simulation::MappingGraph2 mappingGraph(inputs);
+    sofa::simulation::MappingGraph mappingGraph(inputs);
     ASSERT_TRUE(mappingGraph.isBuilt());
 
     CollectNamesVisitor visitor;
@@ -96,10 +96,10 @@ TEST(MappingGraph, SingleMappingInSingleNode)
     sofa::simpleapi::createObject(root, "MechanicalObject", {{"name", "state2"}});
     sofa::simpleapi::createObject(root, "IdentityMapping", {{"name", "mapping"}, {"input", "@state1"}, {"output", "@state2"}});
 
-    auto inputs = sofa::simulation::MappingGraph2::InputLists::makeFromNode(root.get());
+    auto inputs = sofa::simulation::MappingGraph::InputLists::makeFromNode(root.get());
     ASSERT_EQ(inputs.mappings.size(), 1);
     ASSERT_EQ(inputs.mechanicalStates.size(), 2);
-    sofa::simulation::MappingGraph2 mappingGraph(inputs);
+    sofa::simulation::MappingGraph mappingGraph(inputs);
     ASSERT_TRUE(mappingGraph.isBuilt());
 
     CollectNamesVisitor visitor;
@@ -130,10 +130,10 @@ TEST(MappingGraph, SingleMappingWithIntermediateNode)
     sofa::simpleapi::createObject(node1, "MechanicalObject", {{"name", "state2"}});
     sofa::simpleapi::createObject(node1, "IdentityMapping", {{"name", "mapping"}, {"input", "@state1"}, {"output", "@state2"}});
 
-    auto inputs = sofa::simulation::MappingGraph2::InputLists::makeFromNode(root);
+    auto inputs = sofa::simulation::MappingGraph::InputLists::makeFromNode(root);
     ASSERT_EQ(inputs.mappings.size(), 1);
     ASSERT_EQ(inputs.mechanicalStates.size(), 2);
-    sofa::simulation::MappingGraph2 mappingGraph(inputs);
+    sofa::simulation::MappingGraph mappingGraph(inputs);
     ASSERT_TRUE(mappingGraph.isBuilt());
 
     CollectNamesVisitor visitor;
@@ -164,10 +164,10 @@ TEST(MappingGraph, SingleMappingWithIntermediateNodeInverseInputOutput)
     sofa::simpleapi::createObject(node1, "MechanicalObject", {{"name", "state2"}});
     sofa::simpleapi::createObject(node1, "IdentityMapping", {{"name", "mapping"}, {"input", "@state2"}, {"output", "@state1"}});
 
-    auto inputs = sofa::simulation::MappingGraph2::InputLists::makeFromNode(root);
+    auto inputs = sofa::simulation::MappingGraph::InputLists::makeFromNode(root);
     ASSERT_EQ(inputs.mappings.size(), 1);
     ASSERT_EQ(inputs.mechanicalStates.size(), 2);
-    sofa::simulation::MappingGraph2 mappingGraph(inputs);
+    sofa::simulation::MappingGraph mappingGraph(inputs);
     ASSERT_TRUE(mappingGraph.isBuilt());
 
     CollectNamesVisitor visitor;
@@ -206,11 +206,11 @@ TEST(MappingGraph, ComplexGraph)
 
     sofa::simulation::node::initRoot(root.get());
 
-    auto inputs = sofa::simulation::MappingGraph2::InputLists::makeFromNode(root);
+    auto inputs = sofa::simulation::MappingGraph::InputLists::makeFromNode(root);
     ASSERT_EQ(inputs.mappings.size(), 1);
     ASSERT_EQ(inputs.mechanicalStates.size(), 2);
     ASSERT_EQ(inputs.forceFields.size(), 4);
-    sofa::simulation::MappingGraph2 mappingGraph(inputs);
+    sofa::simulation::MappingGraph mappingGraph(inputs);
     ASSERT_TRUE(mappingGraph.isBuilt());
 
     CollectNamesVisitor visitor;
