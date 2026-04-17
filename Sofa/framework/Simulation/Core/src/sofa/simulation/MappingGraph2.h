@@ -65,8 +65,8 @@ public:
     virtual std::string getName() const { return {}; }
 
 private:
-    std::vector<SPtr> m_parents;   // prerequisite nodes
-    std::vector<SPtr> m_children;  // dependent nodes
+    sofa::type::vector<SPtr> m_parents;   // prerequisite nodes
+    sofa::type::vector<SPtr> m_children;  // dependent nodes
 
     // Mutable counter used during traversal (reset before each traversal).
     mutable int m_pendingCount = 0;
@@ -77,6 +77,7 @@ class MappingGraphNode : public BaseMappingGraphNode
 {
 public:
     using SPtr = std::shared_ptr<MappingGraphNode>;
+    friend class MappingGraph2;
     explicit MappingGraphNode(typename TComponent::SPtr s)
         : m_component(std::move(s))
     {}
@@ -116,6 +117,8 @@ public:
 class SOFA_SIMULATION_CORE_API MappingGraph2
 {
 public:
+    using MappingInputs = type::vector<core::behavior::BaseMechanicalState*>;
+
     // ------------------------------------------------------------------
     // Input: flat lists collected from the scene DAG (or any other source).
     // Add further leaf component lists as needed.
@@ -127,11 +130,43 @@ public:
         sofa::type::vector<core::behavior::BaseForceField*> forceFields;
         sofa::type::vector<core::behavior::BaseMass*> masses;
 
-        static InputLists makeFromNode(sofa::simulation::Node::SPtr node);
+        static InputLists makeFromNode(core::objectmodel::BaseContext* node);
+        static InputLists makeFromNode(core::objectmodel::BaseContext::SPtr node) { return makeFromNode(node.get()); }
     };
 
     MappingGraph2() = default;
-    explicit MappingGraph2(const InputLists& input) { build(input); }
+    explicit MappingGraph2(const InputLists& input);
+    explicit MappingGraph2(core::objectmodel::BaseContext* node);
+
+    /// Return the node used to start the exploration of the scene graph in order to build the mapping graph
+    [[nodiscard]] core::objectmodel::BaseContext* getRootNode() const;
+
+    /// Return the list of all mechanical states that are not mapped
+    [[nodiscard]] const sofa::type::vector<core::behavior::BaseMechanicalState*>& getMainMechanicalStates() const;
+
+    /// Return the list of mechanical states which are:
+    /// 1) non-mapped
+    /// 2) input of a mapping involving the provided mechanical state as an output.
+    /// The search is recursive (more than one level of mapping).
+    MappingInputs getTopMostMechanicalStates(core::behavior::BaseMechanicalState* state) const;
+
+    /// Return the list of mechanical states which are:
+    /// 1) non-mapped
+    /// 2) input of a mapping involving the mechanical states associated to the provided force field as an output.
+    /// The search is recursive (more than one level of mapping)
+    template<class TComponent> requires !std::derived_from<TComponent, core::behavior::BaseMechanicalState>
+    MappingInputs getTopMostMechanicalStates(TComponent* component) const;
+
+    [[nodiscard]] bool hasAnyMapping() const;
+
+    /// Return the sum of the degrees of freedom of all main mechanical states
+    [[nodiscard]] sofa::Size getTotalNbMainDofs() const;
+
+    /// Return where in the global matrix the provided mechanical state writes its contribution
+    type::Vec2u getPositionInGlobalMatrix(core::behavior::BaseMechanicalState* mstate) const;
+    /// Return where in the global matrix the provided mechanical states writes its contribution
+    type::Vec2u getPositionInGlobalMatrix(core::behavior::BaseMechanicalState* a,
+                                          core::behavior::BaseMechanicalState* b) const;
 
     // ------------------------------------------------------------------
     // Top-down traversal: roots (unmapped states) → leaves (components).
@@ -157,21 +192,28 @@ public:
     void traverseComponentGroups(MappingGraphVisitor& visitor) const;
     void traverseComponentGroups(MappingGraphVisitor& visitor, TaskScheduler* taskScheduler) const;
 
-    // Accessors for inspection / testing.
-    const std::vector<BaseMappingGraphNode::SPtr>& allNodes() const { return m_allNodes; }
-    const std::vector<MappingGraphNode<sofa::core::behavior::BaseMechanicalState>*>& roots() const { return m_roots;    }
-
     [[nodiscard]] bool isBuilt() const;
 
     // ------------------------------------------------------------------
     // Graph construction
     // ------------------------------------------------------------------
     void build(const InputLists& input);
+    void build(core::objectmodel::BaseContext* rootNode);
 
 private:
+    /// node used to start the exploration of the scene graph in order to build the mapping graph
+    core::objectmodel::BaseContext* m_rootNode { nullptr };
+
     bool m_isBuilt = false;
+    bool m_hasAnyMapping = false;
+
+    sofa::Size m_totalNbMainDofs {};
+
+    /// for each main mechanical states, gives the position of its contribution in the global matrix
+    std::map<core::behavior::BaseMechanicalState*, type::Vec2u > m_positionInGlobalMatrix;
+
     std::vector<BaseMappingGraphNode::SPtr> m_allNodes;
-    std::vector<MappingGraphNode<sofa::core::behavior::BaseMechanicalState>*> m_roots;
+    sofa::type::vector<core::behavior::BaseMechanicalState*> m_roots {};
     std::unordered_map<core::behavior::BaseMechanicalState*, BaseMappingGraphNode*> m_stateIndex;
     std::vector<std::pair<
         std::vector<core::behavior::BaseMechanicalState::SPtr>,
@@ -194,4 +236,24 @@ private:
     // Both parent and child lists hold SPtr so the graph owns all nodes.
     static void addEdge(BaseMappingGraphNode* from, BaseMappingGraphNode* to);
 };
+
+template <class TComponent> requires !std::derived_from<TComponent, core::behavior::BaseMechanicalState>
+MappingGraph2::MappingInputs MappingGraph2::getTopMostMechanicalStates(TComponent* component) const
+{
+    if (component == nullptr)
+    {
+        dmsg_error("MappingGraph") << "Requested mass is invalid";
+        return {};
+    }
+
+    const auto& associatedMechanicalStates = component->getMechanicalStates();
+    MappingInputs topMostMechanicalStates;
+    for (auto* mstate : associatedMechanicalStates)
+    {
+        const auto mstates = getTopMostMechanicalStates(mstate);
+        topMostMechanicalStates.insert(topMostMechanicalStates.end(), mstates.begin(), mstates.end());
+    }
+    return topMostMechanicalStates;
 }
+
+}  // namespace sofa::simulation

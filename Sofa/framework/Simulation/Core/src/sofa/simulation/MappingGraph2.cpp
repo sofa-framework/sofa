@@ -5,14 +5,128 @@
 namespace sofa::simulation
 {
 
-MappingGraph2::InputLists MappingGraph2::InputLists::makeFromNode(sofa::simulation::Node::SPtr node)
+MappingGraph2::InputLists MappingGraph2::InputLists::makeFromNode(core::objectmodel::BaseContext* node)
 {
     InputLists inputLists;
-    node->getTreeObjects(inputLists.mechanicalStates);
-    node->getTreeObjects(inputLists.mappings);
-    node->getTreeObjects(inputLists.forceFields);
-    node->getTreeObjects(inputLists.masses);
+    if (node)
+    {
+        node->getObjects(inputLists.mechanicalStates, core::objectmodel::BaseContext::SearchDirection::SearchDown);
+        node->getObjects(inputLists.mappings, core::objectmodel::BaseContext::SearchDirection::SearchDown);
+        node->getObjects(inputLists.forceFields, core::objectmodel::BaseContext::SearchDirection::SearchDown);
+        node->getObjects(inputLists.masses, core::objectmodel::BaseContext::SearchDirection::SearchDown);
+    }
     return inputLists;
+}
+
+MappingGraph2::MappingGraph2(const InputLists& input)
+{
+    build(input);
+}
+
+MappingGraph2::MappingGraph2(core::objectmodel::BaseContext* node)
+{
+    build(node);
+}
+
+core::objectmodel::BaseContext* MappingGraph2::getRootNode() const
+{
+    return m_rootNode;
+}
+
+const sofa::type::vector<core::behavior::BaseMechanicalState*>&
+MappingGraph2::getMainMechanicalStates() const
+{
+    return m_roots;
+}
+MappingGraph2::MappingInputs MappingGraph2::getTopMostMechanicalStates(
+    core::behavior::BaseMechanicalState* state) const
+{
+    auto* sn = findStateNode(state);
+    if (sn)
+    {
+        struct CollectInput : public MappingGraphVisitor
+        {
+            void visit(core::behavior::BaseMechanicalState& state) override
+            {
+                inputs.push_back(&state);
+            }
+
+            MappingInputs inputs;
+        } visitor;
+
+        for (auto& node : m_allNodes)
+        {
+            node->m_pendingCount = 0;
+        }
+
+        std::queue<BaseMappingGraphNode*> nodes;
+        nodes.push(sn);
+
+        while (!nodes.empty())
+        {
+            BaseMappingGraphNode* current = nodes.front();
+            nodes.pop();
+
+            ++(current->m_pendingCount);
+
+            if (current->m_parents.empty())
+            {
+                current->accept(visitor);
+            }
+
+            for (auto& parent : current->m_parents)
+            {
+                if (parent->m_pendingCount == 0)
+                {
+                    nodes.push(parent.get());
+                }
+            }
+        }
+
+        return visitor.inputs;
+    }
+
+    return {};
+}
+
+bool MappingGraph2::hasAnyMapping() const
+{
+    return m_hasAnyMapping;
+}
+
+sofa::Size MappingGraph2::getTotalNbMainDofs() const
+{
+    return m_totalNbMainDofs;
+}
+
+type::Vec2u MappingGraph2::getPositionInGlobalMatrix(core::behavior::BaseMechanicalState* mstate) const
+{
+    if (m_rootNode == nullptr)
+    {
+        msg_error("MappingGraph") << "Graph is not built yet";
+        return type::Vec2u{};
+    }
+
+    if (mstate == nullptr)
+    {
+        msg_error("MappingGraph") << "Requested mechanical state is not valid : cannot get its position in the global matrix";
+        return type::Vec2u{};
+    }
+
+    if (const auto it = m_positionInGlobalMatrix.find(mstate); it != m_positionInGlobalMatrix.end())
+        return it->second;
+
+    msg_error("MappingGraph") << "Requested mechanical state (" << mstate->getPathName() <<
+        ") is probably mapped or unknown from the graph: only main mechanical states have an associated submatrix in the global matrix";
+    return type::Vec2u{};
+}
+
+type::Vec2u MappingGraph2::getPositionInGlobalMatrix(core::behavior::BaseMechanicalState* a,
+                                                     core::behavior::BaseMechanicalState* b) const
+{
+    const auto pos_a = getPositionInGlobalMatrix(a);
+    const auto pos_b = getPositionInGlobalMatrix(b);
+    return {pos_a[0], pos_b[1]};
 }
 
 void MappingGraph2::traverseTopDown(MappingGraphVisitor& visitor) const
@@ -130,6 +244,8 @@ MappingGraphNode<TComponent>::SPtr makeMappingGraphNode(typename TComponent::SPt
 
 void MappingGraph2::build(const InputLists& input)
 {
+    m_hasAnyMapping = input.mappings.size() > 0;
+
     // 1. Create one wrapper node per object; index state nodes by raw ptr.
     std::vector<MappingGraphNode<sofa::core::behavior::BaseMechanicalState>*> mechanicalStateNodes;
     for (auto& s : input.mechanicalStates)
@@ -206,10 +322,27 @@ void MappingGraph2::build(const InputLists& input)
     }
 
     // 4. Roots: MechanicalState nodes with no parents.
-    std::copy_if(mechanicalStateNodes.begin(), mechanicalStateNodes.end(), std::back_inserter(m_roots),
-        [](auto* node) { return node->m_parents.empty(); });
+    m_totalNbMainDofs = 0;
+    for (const auto& node : mechanicalStateNodes)
+    {
+        if (node->m_parents.empty())
+        {
+            m_roots.push_back(node->m_component.get());
+            m_positionInGlobalMatrix[node->m_component.get()] = type::Vec2u(m_totalNbMainDofs, m_totalNbMainDofs);
+            m_totalNbMainDofs += node->m_component->getMatrixSize();
+        }
+    }
 
     m_isBuilt = true;
+}
+
+void MappingGraph2::build(core::objectmodel::BaseContext* rootNode)
+{
+    if (rootNode)
+    {
+        build(InputLists::makeFromNode(rootNode));
+    }
+    m_rootNode = rootNode;
 }
 
 ComponentGroupMappingGraphNode::SPtr MappingGraph2::findGroupNode(

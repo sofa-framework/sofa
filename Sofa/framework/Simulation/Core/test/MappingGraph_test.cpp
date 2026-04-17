@@ -21,6 +21,7 @@
 ******************************************************************************/
 #include <sofa/testing/BaseTest.h>
 #include <sofa/simulation/MappingGraph.h>
+#include <sofa/simulation/MappingGraph2.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/simpleapi/SimpleApi.h>
@@ -30,7 +31,7 @@
 
 TEST(MappingGraph, noBuild)
 {
-    const sofa::simulation::MappingGraph graph;
+    const sofa::simulation::MappingGraph2 graph;
 
     EXPECT_FALSE(graph.isBuilt());
     EXPECT_EQ(graph.getRootNode(), nullptr);
@@ -40,15 +41,14 @@ TEST(MappingGraph, noBuild)
     EXPECT_TRUE(graph.getTopMostMechanicalStates((sofa::core::behavior::BaseForceField*)nullptr).empty());
     EXPECT_TRUE(graph.getTopMostMechanicalStates((sofa::core::behavior::BaseMass*)nullptr).empty());
 
-    EXPECT_TRUE(graph.makeComponentGroups(sofa::core::MechanicalParams::defaultInstance()).empty());
     EXPECT_FALSE(graph.hasAnyMapping());
     EXPECT_EQ(graph.getTotalNbMainDofs(), 0);
 }
 
 TEST(MappingGraph, nullRootNode)
 {
-    sofa::simulation::MappingGraph graph;
-    graph.build(sofa::core::MechanicalParams::defaultInstance(), nullptr);
+    sofa::simulation::MappingGraph2 graph;
+    graph.build(nullptr);
 
     EXPECT_FALSE(graph.isBuilt());
     EXPECT_EQ(graph.getRootNode(), nullptr);
@@ -58,7 +58,6 @@ TEST(MappingGraph, nullRootNode)
     EXPECT_TRUE(graph.getTopMostMechanicalStates((sofa::core::behavior::BaseForceField*)nullptr).empty());
     EXPECT_TRUE(graph.getTopMostMechanicalStates((sofa::core::behavior::BaseMass*)nullptr).empty());
 
-    EXPECT_TRUE(graph.makeComponentGroups(sofa::core::MechanicalParams::defaultInstance()).empty());
     EXPECT_FALSE(graph.hasAnyMapping());
     EXPECT_EQ(graph.getTotalNbMainDofs(), 0);
 }
@@ -67,8 +66,8 @@ TEST(MappingGraph, emptyRootNode)
 {
     const sofa::simulation::Node::SPtr root = sofa::core::objectmodel::New<sofa::simulation::Node>();
 
-    sofa::simulation::MappingGraph graph;
-    graph.build(sofa::core::MechanicalParams::defaultInstance(), root.get());
+    sofa::simulation::MappingGraph2 graph;
+    graph.build(root.get());
 
     EXPECT_TRUE(graph.isBuilt());
     EXPECT_EQ(graph.getRootNode(), root.get());
@@ -78,7 +77,6 @@ TEST(MappingGraph, emptyRootNode)
     EXPECT_TRUE(graph.getTopMostMechanicalStates((sofa::core::behavior::BaseForceField*)nullptr).empty());
     EXPECT_TRUE(graph.getTopMostMechanicalStates((sofa::core::behavior::BaseMass*)nullptr).empty());
 
-    EXPECT_TRUE(graph.makeComponentGroups(sofa::core::MechanicalParams::defaultInstance()).empty());
     EXPECT_FALSE(graph.hasAnyMapping());
     EXPECT_EQ(graph.getTotalNbMainDofs(), 0);
 }
@@ -91,8 +89,8 @@ TEST(MappingGraph, oneMechanicalObject)
     root->addObject(mstate);
     mstate->resize(10);
 
-    sofa::simulation::MappingGraph graph;
-    graph.build(sofa::core::MechanicalParams::defaultInstance(), root.get());
+    sofa::simulation::MappingGraph2 graph;
+    graph.build(root.get());
 
     EXPECT_TRUE(graph.isBuilt());
     EXPECT_EQ(graph.getRootNode(), root.get());
@@ -100,7 +98,6 @@ TEST(MappingGraph, oneMechanicalObject)
 
     EXPECT_EQ(graph.getTopMostMechanicalStates(mstate.get()), sofa::type::vector<sofa::core::behavior::BaseMechanicalState*>{mstate.get()});
 
-    EXPECT_TRUE(graph.makeComponentGroups(sofa::core::MechanicalParams::defaultInstance()).empty());
     EXPECT_FALSE(graph.hasAnyMapping());
     EXPECT_EQ(graph.getTotalNbMainDofs(), 30);
 }
@@ -117,8 +114,8 @@ TEST(MappingGraph, twoMechanicalObject)
     root->addObject(mstate2);
     mstate2->resize(2);
 
-    sofa::simulation::MappingGraph graph;
-    graph.build(sofa::core::MechanicalParams::defaultInstance(), root.get());
+    sofa::simulation::MappingGraph2 graph;
+    graph.build(root.get());
 
     EXPECT_TRUE(graph.isBuilt());
     EXPECT_EQ(graph.getRootNode(), root.get());
@@ -128,7 +125,6 @@ TEST(MappingGraph, twoMechanicalObject)
     EXPECT_EQ(graph.getTopMostMechanicalStates(mstate1.get()), sofa::type::vector<sofa::core::behavior::BaseMechanicalState*>{mstate1.get()});
     EXPECT_EQ(graph.getTopMostMechanicalStates(mstate2.get()), sofa::type::vector<sofa::core::behavior::BaseMechanicalState*>{mstate2.get()});
 
-    EXPECT_TRUE(graph.makeComponentGroups(sofa::core::MechanicalParams::defaultInstance()).empty());
     EXPECT_FALSE(graph.hasAnyMapping());
     EXPECT_EQ(graph.getTotalNbMainDofs(), 36);
 }
@@ -151,8 +147,8 @@ TEST(MappingGraph, oneMapping)
     mapping->setFrom(mstate1.get());
     mapping->setTo(mstate2.get());
 
-    sofa::simulation::MappingGraph graph;
-    graph.build(sofa::core::MechanicalParams::defaultInstance(), root.get());
+    sofa::simulation::MappingGraph2 graph;
+    graph.build(root.get());
 
     EXPECT_TRUE(graph.isBuilt());
     EXPECT_EQ(graph.getRootNode(), root.get());
@@ -161,7 +157,6 @@ TEST(MappingGraph, oneMapping)
     EXPECT_EQ(graph.getTopMostMechanicalStates(mstate1.get()), sofa::type::vector<sofa::core::behavior::BaseMechanicalState*>{mstate1.get()});
     EXPECT_EQ(graph.getTopMostMechanicalStates(mstate2.get()), sofa::type::vector<sofa::core::behavior::BaseMechanicalState*>{mstate1.get()});
 
-    EXPECT_TRUE(graph.makeComponentGroups(sofa::core::MechanicalParams::defaultInstance()).empty());
     EXPECT_TRUE(graph.hasAnyMapping());
     EXPECT_EQ(graph.getTotalNbMainDofs(), 30);
 }
@@ -213,8 +208,8 @@ TEST(MappingGraph, diamondMapping)
         {"input", "@/left/left @/right/right"}, {"output", "@bottom"}
     });
 
-    sofa::simulation::MappingGraph graph;
-    graph.build(sofa::core::MechanicalParams::defaultInstance(), root.get());
+    sofa::simulation::MappingGraph2 graph;
+    graph.build(root.get());
 
     EXPECT_TRUE(graph.isBuilt());
     EXPECT_EQ(graph.getRootNode(), root.get());
@@ -225,7 +220,6 @@ TEST(MappingGraph, diamondMapping)
     const sofa::type::vector<sofa::core::behavior::BaseMechanicalState*> expectedList {top.get(), top.get()};
     EXPECT_EQ(graph.getTopMostMechanicalStates(bottom.get()), expectedList);
 
-    EXPECT_TRUE(graph.makeComponentGroups(sofa::core::MechanicalParams::defaultInstance()).empty());
     EXPECT_TRUE(graph.hasAnyMapping());
     EXPECT_EQ(graph.getTotalNbMainDofs(), 3 * 3);
 
