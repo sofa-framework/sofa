@@ -67,7 +67,7 @@ sofa_find_package(Sofa.Component.Mass REQUIRED) # because of CudaMassType -> nee
 
 option(SOFACUDA_CORE_VERBOSE_PTXAS "???" OFF)
 
-option(SOFACUDA_DOUBLE "Activate double-precision support in CUDA." OFF)
+option(SOFACUDA_DOUBLE "Activate double-precision support in CUDA." ON)
 if(SOFACUDA_DOUBLE)
     set(SOFA_GPU_CUDA_DOUBLE 1)       # #cmakedefine
 endif()
