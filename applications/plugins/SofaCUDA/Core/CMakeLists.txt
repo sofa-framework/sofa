@@ -67,6 +67,12 @@ sofa_find_package(Sofa.Component.Mass REQUIRED) # because of CudaMassType -> nee
 
 option(SOFACUDA_CORE_VERBOSE_PTXAS "???" OFF)
 
+option(SOFACUDA_DOUBLE "Activate double-precision support in CUDA." OFF)
+if(SOFACUDA_DOUBLE)
+    set(SOFA_GPU_CUDA_DOUBLE 1)       # #cmakedefine
+endif()
+
+
 # Note: with SOFA_GPU_CUDA_PRECISE and SOFA_GPU_CUDA_DOUBLE you get IEEE
 # 754-compliant floating point operations for addition and multiplication only.
 option(SOFACUDA_PRECISE "Use IEEE 754-compliant floating point operations." OFF)
