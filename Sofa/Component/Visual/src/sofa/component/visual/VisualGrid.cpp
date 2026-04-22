@@ -103,43 +103,70 @@ void VisualGrid::buildGrid()
 
     m_drawnPoints.reserve(4u * (nb + 1));
 
+    const int nl = 6; // Draw 6 lines per grid line to avoid artefacts (ex: when using gl equations that are evaluated at vertices only)
+    const float ls = s / nl;
+
     switch(d_plane.getValue())
     {
     case PlaneType("x"):
+        // y
         for (unsigned int i = 0 ; i < nb+1; ++i)
         {
-            m_drawnPoints.emplace_back(0.0, -hs + i * s_nb, -hs);
-            m_drawnPoints.emplace_back(0.0, -hs + i * s_nb,  hs);
+            for (unsigned int j = 0 ; j < nl; ++j)
+            {
+                m_drawnPoints.emplace_back(0.0, -hs + i * s_nb, -hs + j * ls);
+                m_drawnPoints.emplace_back(0.0, -hs + i * s_nb, -hs + (j + 1) * ls);
+            }
         }
+        // z
         for (unsigned int i = 0 ; i < nb+1; ++i)
         {
-            m_drawnPoints.emplace_back(0.0, -hs, -hs + i * s_nb);
-            m_drawnPoints.emplace_back(0.0,  hs, -hs + i * s_nb);
+            for (unsigned int j = 0 ; j < nl; ++j)
+            {
+                m_drawnPoints.emplace_back(0.0, -hs + j * ls, -hs + i * s_nb);
+                m_drawnPoints.emplace_back(0.0, -hs + (j + 1) * ls, -hs + i * s_nb);
+            }
         }
         break;
     case PlaneType("y"):
+        // z
         for (unsigned int i = 0 ; i < nb+1; ++i)
         {
-            m_drawnPoints.emplace_back(-hs, 0.0, -hs + i * s_nb);
-            m_drawnPoints.emplace_back( hs, 0.0, -hs + i * s_nb);
+            for (unsigned int j = 0 ; j < nl; ++j)
+            {
+                m_drawnPoints.emplace_back(-hs + j * ls, 0.0, -hs + i * s_nb);
+                m_drawnPoints.emplace_back(-hs + (j + 1) * ls, 0.0, -hs + i * s_nb);
+            }
         }
+        //x
         for (unsigned int i = 0 ; i < nb+1; ++i)
         {
-            m_drawnPoints.emplace_back(-hs + i * s_nb, 0.0, -hs);
-            m_drawnPoints.emplace_back(-hs + i * s_nb, 0.0,  hs);
+            for (unsigned int j = 0 ; j < nl; ++j)
+            {
+                m_drawnPoints.emplace_back(-hs + i * s_nb, 0.0, -hs + j * ls);
+                m_drawnPoints.emplace_back(-hs + i * s_nb, 0.0, -hs + (j + 1) * ls);
+            }
         }
         break;
     case PlaneType("z"):
     default:
+        // y
         for (unsigned int i = 0 ; i < nb+1; ++i)
         {
-            m_drawnPoints.emplace_back(-hs, -hs + i * s_nb, 0.0);
-            m_drawnPoints.emplace_back( hs, -hs + i * s_nb, 0.0);
+            for (unsigned int j = 0 ; j < nl; ++j)
+            {
+                m_drawnPoints.emplace_back(-hs + j * ls, -hs + i * s_nb, 0.0);
+                m_drawnPoints.emplace_back(-hs + (j + 1) * ls, -hs + i * s_nb, 0.0);
+            }
         }
+        // x
         for (unsigned int i = 0 ; i < nb+1; ++i)
         {
-            m_drawnPoints.emplace_back(-hs + i * s_nb, -hs, 0.0);
-            m_drawnPoints.emplace_back(-hs + i * s_nb,  hs, 0.0);
+            for (unsigned int j = 0 ; j < nl; ++j)
+            {
+                m_drawnPoints.emplace_back(-hs + i * s_nb, -hs + j * ls, 0.0);
+                m_drawnPoints.emplace_back(-hs + i * s_nb, -hs + (j + 1) * ls, 0.0);
+            }
         }
         break;
     }

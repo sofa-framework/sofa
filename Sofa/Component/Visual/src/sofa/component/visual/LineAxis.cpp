@@ -76,14 +76,18 @@ void LineAxis::updateLine()
 void LineAxis::doDrawVisual(const core::visual::VisualParams* vparams)
 {
     const double s = sofa::helper::narrow_cast<double>(d_size.getValue());
+    const double hs = s * 0.5; // half the size
 
     auto drawtool = vparams->drawTool();
     drawtool->disableLighting();
 
-    std::vector<type::Vec3> points;
-    points.resize(2);
+    const int nl = 6; // Draw 6 lines per LineAxis to avoid artefacts (ex: when using gl equations that are evaluated at vertices only)
+    const float ls = s / nl;
 
-    std::vector<type::Vec2i> indices = {type::Vec2i(0,1)};
+    std::vector<type::Vec3> points;
+    points.resize(nl+1);
+    std::vector<type::Vec2i> indices;
+    indices.resize(nl);
 
     const auto& bbox = helper::getReadAccessor(getContext()->f_bbox);
     auto v = bbox->maxBBox() - bbox->minBBox();
@@ -93,8 +97,12 @@ void LineAxis::doDrawVisual(const core::visual::VisualParams* vparams)
 
     if(m_drawX)
     {
-        points[0] = DrawTool::Vec3(-s*0.5, 0.0, 0.0);
-        points[1] = DrawTool::Vec3(s*0.5, 0.0, 0.0);
+        for (unsigned int j = 0 ; j < nl; ++j)
+        {
+            points[j] = DrawTool::Vec3(-hs + ls*j, 0.0, 0.0);
+            points[j+1] = DrawTool::Vec3(-hs + ls*(j+1), 0.0, 0.0);
+            indices[j] = type::Vec2i(j, j+1);
+        }
 
         if (!infinite)
         {
@@ -111,8 +119,12 @@ void LineAxis::doDrawVisual(const core::visual::VisualParams* vparams)
 
     if(m_drawY)
     {
-        points[0] = DrawTool::Vec3(0.0, -s*0.5, 0.0);
-        points[1] = DrawTool::Vec3(0.0,  s*0.5, 0.0);
+        for (unsigned int j = 0 ; j < nl; ++j)
+        {
+            points[j] = DrawTool::Vec3(0.0, -hs + ls*j, 0.0);
+            points[j+1] = DrawTool::Vec3(0.0, -hs + ls*(j+1), 0.0);
+            indices[j] = type::Vec2i(j, j+1);
+        }
 
         if (!infinite)
         {
@@ -129,8 +141,12 @@ void LineAxis::doDrawVisual(const core::visual::VisualParams* vparams)
 
     if(m_drawZ)
     {
-        points[0] = DrawTool::Vec3(0.0, 0.0, -s*0.5);
-        points[1] = DrawTool::Vec3(0.0, 0.0, s*0.5);
+        for (unsigned int j = 0 ; j < nl; ++j)
+        {
+            points[j] = DrawTool::Vec3(0.0, 0.0, -hs + ls*j);
+            points[j+1] = DrawTool::Vec3(0.0, 0.0, -hs + ls*(j+1));
+            indices[j] = type::Vec2i(j, j+1);
+        }
 
         if (!infinite)
         {
