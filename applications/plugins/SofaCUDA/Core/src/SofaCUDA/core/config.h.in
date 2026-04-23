@@ -24,12 +24,13 @@
 #include <sofa/config.h>
 #include <sofa/config/sharedlibrary_defines.h>
 
-#cmakedefine SOFA_GPU_THRUST
 #cmakedefine SOFA_GPU_CUDA_DOUBLE
 #cmakedefine SOFA_GPU_CUDA_PRECISE
 #cmakedefine SOFA_GPU_CUDA_DOUBLE_PRECISE
-#cmakedefine SOFA_GPU_CUBLAS
 #cmakedefine01 SOFACUDA_CORE_HAVE_SOFA_GL
+
+#define SOFA_GPU_THRUST
+#define SOFA_GPU_CUBLAS
 
 #ifdef SOFA_BUILD_SOFACUDA_CORE
 #  define SOFACUDA_CORE_API SOFA_EXPORT_DYNAMIC_LIBRARY
