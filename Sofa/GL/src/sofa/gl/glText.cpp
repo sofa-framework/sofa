@@ -38,7 +38,7 @@ void GlText::initTexture()
     }
     if (s_asciiTexture == nullptr && s_asciiImage != nullptr)
     {
-        s_asciiTexture = new sofa::gl::Texture(s_asciiImage, false, true, false );
+        s_asciiTexture = new sofa::gl::Texture(s_asciiImage, false, true, true );
     }
 }
 
@@ -210,8 +210,14 @@ void GlText::textureDraw_Indices(const type::vector<type::Vec3>& positions, cons
     glAlphaFunc(GL_GREATER, 0.0);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glDisable(GL_DEPTH_TEST);
+    glDisable(GL_LIGHTING);
 
     s_asciiTexture->bind();
+
+    // Save the caller-set color for the main text pass
+    GLfloat textColor[4];
+    glGetFloatv(GL_CURRENT_COLOR, textColor);
 
     for (std::size_t i = 0; i < positions.size(); i++)
     {
@@ -222,8 +228,6 @@ void GlText::textureDraw_Indices(const type::vector<type::Vec3>& positions, cons
 
         std::vector<Vec3f> vertices;
         std::vector<Vec2f> UVs;
-
-        glDisable(GL_LIGHTING);
 
         glPushMatrix();
 
@@ -248,11 +252,7 @@ void GlText::textureDraw_Indices(const type::vector<type::Vec3>& positions, cons
             autoScale = baseFontPixelHeight * scale * 2.0f / (p11 * viewportHeight);
         }
 
-        glLoadIdentity();
-        //translate a little bit to center the text on the position (instead of starting from a top-left position)
-        glTranslatef(temp[0] - (worldWidth*length*autoScale)*0.5f, temp[1] + worldHeight*autoScale*0.5f, temp[2]);
-        glScalef(autoScale, autoScale, autoScale);
-        glRotatef(180.0, 1, 0, 0);
+        // Build quads for this label
         for (std::size_t j = 0; j < length; j++)
         {
             Vec3f vertex_up_left = Vec3f(j*worldWidth, worldHeight, 0.0f);
@@ -281,6 +281,31 @@ void GlText::textureDraw_Indices(const type::vector<type::Vec3>& positions, cons
             UVs.push_back(uv_up_right);
         }
 
+        // Shadow offset: 1.5 pixels in view space
+        const float shadowOffset = 1.5f * autoScale / baseFontPixelHeight;
+
+        // Drop shadow pass (dark, offset down-right)
+        glColor4f(0.0f, 0.0f, 0.0f, textColor[3] * 0.7f);
+        glLoadIdentity();
+        glTranslatef(temp[0] - (worldWidth*length*autoScale)*0.5f + shadowOffset,
+                     temp[1] + worldHeight*autoScale*0.5f - shadowOffset,
+                     temp[2]);
+        glScalef(autoScale, autoScale, autoScale);
+        glRotatef(180.0, 1, 0, 0);
+        glBegin(GL_QUADS);
+        for (std::size_t j = 0; j < vertices.size(); j++)
+        {
+            glTexCoord2fv(UVs[j].data());
+            glVertex3fv(vertices[j].data());
+        }
+        glEnd();
+
+        // Main text pass
+        glColor4fv(textColor);
+        glLoadIdentity();
+        glTranslatef(temp[0] - (worldWidth*length*autoScale)*0.5f, temp[1] + worldHeight*autoScale*0.5f, temp[2]);
+        glScalef(autoScale, autoScale, autoScale);
+        glRotatef(180.0, 1, 0, 0);
         glBegin(GL_QUADS);
         for (std::size_t j = 0; j < vertices.size(); j++)
         {
@@ -295,8 +320,8 @@ void GlText::textureDraw_Indices(const type::vector<type::Vec3>& positions, cons
     s_asciiTexture->unbind();
     glDisable(GL_ALPHA_TEST);
     glDisable(GL_BLEND);
+    glEnable(GL_DEPTH_TEST);
     glPopAttrib();
-
 
     glEnable(GL_LIGHTING);
 }
