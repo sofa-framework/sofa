@@ -40,7 +40,7 @@ PolynomialRestShapeSpringsForceField<DataTypes>::PolynomialRestShapeSpringsForce
     , d_recomputeIndices(initData(&d_recomputeIndices, false, "recompute_indices", "Recompute indices (should be false for BBOX)"))
     , d_drawSpring(initData(&d_drawSpring,false,"drawSpring","draw Spring"))
     , d_springColor(initData(&d_springColor, sofa::type::RGBAColor(0.0f, 1.0f, 0.0f, 1.0f), "springColor","spring color"))
-    , d_showIndicesScale(initData(&d_showIndicesScale, (float)0.02, "showIndicesScale", "Scale for indices display. (default=0.02)"))
+    , d_showIndicesScale(initData(&d_showIndicesScale, (float)1.0, "showIndicesScale", "Multiplier for indices display size. Indices are auto-scaled to maintain a constant screen size."))
     , d_zeroLength(initData(&d_zeroLength,"initialLength","initial virtual length of the spring"))
     , d_smoothShift(initData(&d_smoothShift,static_cast<Real>(0.0),"smoothShift","denominator correction adding shift value"))
     , d_smoothScale(initData(&d_smoothScale,static_cast<Real>(1.0),"smoothScale","denominator correction adding scale"))
@@ -432,7 +432,7 @@ void PolynomialRestShapeSpringsForceField<DataTypes>::draw(const core::visual::V
 
 
     // draw connected point indices
-    Real scale = (vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox()).norm() * d_showIndicesScale.getValue();
+    Real scale = d_showIndicesScale.getValue();
 
     type::vector<type::Vec3> positions;
     for (sofa::Index i = 0; i < indices.size(); i++) {

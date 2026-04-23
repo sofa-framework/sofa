@@ -34,7 +34,7 @@ using sofa::core::objectmodel::ComponentState;
 template <class DataTypes>
  PointSetGeometryAlgorithms< DataTypes >::PointSetGeometryAlgorithms()        
     : GeometryAlgorithms()
-    , d_showIndicesScale (core::objectmodel::Base::initData(&d_showIndicesScale, (float) 0.02, "showIndicesScale", "Debug : scale for view topology indices"))
+    , d_showIndicesScale (core::objectmodel::Base::initData(&d_showIndicesScale, (float) 1.0, "showIndicesScale", "Debug : multiplier for view topology indices size. Indices are auto-scaled to maintain a constant screen size."))
     , d_showPointIndices (core::objectmodel::Base::initData(&d_showPointIndices, (bool) false, "showPointIndices", "Debug : view Point indices"))
     , d_tagMechanics( initData(&d_tagMechanics,std::string(),"tagMechanics","Tag of the Mechanical Object"))
     , l_topology(initLink("topology", "link to the topology container"))
@@ -85,12 +85,7 @@ void PointSetGeometryAlgorithms< DataTypes >::reinit()
 template <class DataTypes>
 float PointSetGeometryAlgorithms< DataTypes >::getIndicesScale() const
 {
-    const sofa::type::BoundingBox& bbox = this->getContext()->f_bbox.getValue();
-    const float bbDiff = float((bbox.maxBBox() - bbox.minBBox()).norm());
-    if (std::isinf(bbDiff))
-        return d_showIndicesScale.getValue();
-    else
-        return bbDiff * d_showIndicesScale.getValue();
+    return d_showIndicesScale.getValue();
 }
 
 

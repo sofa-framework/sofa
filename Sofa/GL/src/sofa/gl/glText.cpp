@@ -184,13 +184,32 @@ void GlText::textureDraw_Indices(const type::vector<type::Vec3>& positions, cons
     static const float worldHeight = 1.0;
     static const float worldWidth = 0.5;
 
+    // Auto-scaling: retrieve projection matrix and viewport to maintain
+    // a constant screen-space text size regardless of camera distance
+    GLfloat projMatrix[16];
+    GLint viewport[4];
+    glGetFloatv(GL_PROJECTION_MATRIX, projMatrix);
+    glGetIntegerv(GL_VIEWPORT, viewport);
+
+    const float viewportHeight = static_cast<float>(viewport[3]);
+    // Column-major P[1][1] = cot(fov_y/2) for perspective
+    const float p11 = projMatrix[5];
+    // Column-major P[3][3]: 0 for perspective, ~1 for orthographic
+    const bool isPerspective = (projMatrix[15] < 0.5f);
+    // Base text height in pixels (before user multiplier)
+    static const float baseFontPixelHeight = 30.0f;
+
+    if (p11 == 0.0f || viewportHeight == 0.0f)
+        return;
+
     glPushAttrib(GL_TEXTURE_BIT);
     glEnable(GL_TEXTURE_2D);
 
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE); // multiply tex color with glColor
-    //glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE); // only tex color (no glColor)
     glEnable(GL_ALPHA_TEST);
     glAlphaFunc(GL_GREATER, 0.0);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     s_asciiTexture->bind();
 
@@ -216,10 +235,23 @@ void GlText::textureDraw_Indices(const type::vector<type::Vec3>& positions, cons
         type::Vec3f temp(positions[i][0], positions[i][1], positions[i][2]);
         temp = modelviewM.transform(temp);
 
+        // Compute auto-scale: one pixel in world units = 2*depth / (p11 * viewportHeight)
+        float autoScale;
+        if (isPerspective)
+        {
+            float depth = -temp[2];
+            if (depth < 1e-5f) depth = 1e-5f;
+            autoScale = baseFontPixelHeight * scale * 2.0f * depth / (p11 * viewportHeight);
+        }
+        else
+        {
+            autoScale = baseFontPixelHeight * scale * 2.0f / (p11 * viewportHeight);
+        }
+
         glLoadIdentity();
         //translate a little bit to center the text on the position (instead of starting from a top-left position)
-        glTranslatef(temp[0] - (worldWidth*length*scale)*0.5f, temp[1] + worldHeight*scale*0.5f, temp[2]);
-        glScalef(scale, scale, scale);
+        glTranslatef(temp[0] - (worldWidth*length*autoScale)*0.5f, temp[1] + worldHeight*autoScale*0.5f, temp[2]);
+        glScalef(autoScale, autoScale, autoScale);
         glRotatef(180.0, 1, 0, 0);
         for (std::size_t j = 0; j < length; j++)
         {
@@ -262,6 +294,7 @@ void GlText::textureDraw_Indices(const type::vector<type::Vec3>& positions, cons
 
     s_asciiTexture->unbind();
     glDisable(GL_ALPHA_TEST);
+    glDisable(GL_BLEND);
     glPopAttrib();
 
 
