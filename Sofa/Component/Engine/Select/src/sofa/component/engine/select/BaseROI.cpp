@@ -31,7 +31,8 @@ using namespace sofa::defaulttype;
 template class SOFA_COMPONENT_ENGINE_SELECT_API BaseROI<Vec1Types>;
 template class SOFA_COMPONENT_ENGINE_SELECT_API BaseROI<Vec2Types>;
 template class SOFA_COMPONENT_ENGINE_SELECT_API BaseROI<Vec3Types>;
-template class SOFA_COMPONENT_ENGINE_SELECT_API BaseROI<Rigid3Types>;
 template class SOFA_COMPONENT_ENGINE_SELECT_API BaseROI<Vec6Types>;
+template class SOFA_COMPONENT_ENGINE_SELECT_API BaseROI<Rigid2Types>;
+template class SOFA_COMPONENT_ENGINE_SELECT_API BaseROI<Rigid3Types>;
 
 } // namespace sofa::component::engine::select
