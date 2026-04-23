@@ -42,6 +42,7 @@ VisualGrid::VisualGrid()
     , d_nbSubdiv(initData(&d_nbSubdiv, 16,  "nbSubdiv", "Number of subdivisions"))
     , d_color(initData(&d_color, sofa::type::RGBAColor(0.34117647058f,0.34117647058f,0.34117647058f,1.0f),  "color", "Color of the lines in the grid. default=(0.34,0.34,0.34,1.0)"))
     , d_thickness(initData(&d_thickness, 1.0f,  "thickness", "Thickness of the lines in the grid"))
+    , d_nbLineSegments(initData(&d_nbLineSegments, 1,  "nbLineSegments", "Number of line segments used to draw each grid line. Higher values reduce rendering artifacts, especially when using vertex-based OpenGL effects"))
 {
     d_componentState.setValue(sofa::core::objectmodel::ComponentState::Loading);
     addUpdateCallback("buildGrid", {&d_plane, &d_size, &d_nbSubdiv}, [this](const core::DataTracker& t)
@@ -103,7 +104,7 @@ void VisualGrid::buildGrid()
 
     m_drawnPoints.reserve(4u * (nb + 1));
 
-    const int nl = 6; // Draw 6 lines per grid line to avoid artefacts (ex: when using gl equations that are evaluated at vertices only)
+    const unsigned int nl = d_nbLineSegments.getValue();
     const float ls = s / nl;
 
     switch(d_plane.getValue())
