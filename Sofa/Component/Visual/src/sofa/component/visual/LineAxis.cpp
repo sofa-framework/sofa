@@ -45,7 +45,7 @@ LineAxis::LineAxis()
     , d_infinite(initData(&d_infinite, false,  "infinite", "If true, ignore the 'size' and draw infinite lines."))
     , d_thickness(initData(&d_thickness, 1.f,  "thickness", "Thickness of the lines."))
     , d_vanishing(initData(&d_vanishing, false,  "vanishing", "In case of infinite lines, should the lines gradually vanish."))
-    , d_nbLineSegment(initData(&d_nbLineSegment, 1,  "nbLineSegments", "Number of line segments used to draw each axis line. Higher values reduce rendering artifacts, especially when using vertex-based OpenGL effects."))
+    , d_nbLineSegments(initData(&d_nbLineSegments, 1,  "nbLineSegments", "Number of line segments used to draw each axis line. Higher values reduce rendering artifacts, especially when using vertex-based OpenGL effects."))
     , m_drawX(true), m_drawY(true), m_drawZ(true)
 {}
 
@@ -82,7 +82,7 @@ void LineAxis::doDrawVisual(const core::visual::VisualParams* vparams)
     auto drawtool = vparams->drawTool();
     drawtool->disableLighting();
 
-    const unsigned int nl = d_nbLineSegment.getValue();
+    const unsigned int nl = d_nbLineSegments.getValue();
     const float ls = s / nl;
 
     std::vector<type::Vec3> points;
