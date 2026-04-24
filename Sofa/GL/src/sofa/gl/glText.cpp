@@ -170,7 +170,7 @@ void GlText::textureDraw_Overlay(const char* text, const double scale)
 
 }
 
-void GlText::textureDraw_Indices(const type::vector<type::Vec3>& positions, const float& scale)
+void GlText::textureDraw_Indices(const type::vector<type::Vec3>& positions, const float& scale, bool enableDepthTest)
 {
     if (!s_asciiTexture)
     {
@@ -210,7 +210,10 @@ void GlText::textureDraw_Indices(const type::vector<type::Vec3>& positions, cons
     glAlphaFunc(GL_GREATER, 0.0);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glDisable(GL_DEPTH_TEST);
+
+    if(!enableDepthTest)
+        glDisable(GL_DEPTH_TEST);
+
     glDisable(GL_LIGHTING);
 
     s_asciiTexture->bind();
