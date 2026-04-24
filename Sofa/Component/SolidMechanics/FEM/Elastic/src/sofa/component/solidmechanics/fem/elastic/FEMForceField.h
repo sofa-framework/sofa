@@ -67,6 +67,8 @@ public:
 
     void draw(const sofa::core::visual::VisualParams*) override;
 
+    void computeBBox(const core::ExecParams* params, bool onlyVisible) override;
+
     sofa::Data<ComputeStrategy> d_computeForceStrategy;
     sofa::Data<ComputeStrategy> d_computeForceDerivStrategy;
 

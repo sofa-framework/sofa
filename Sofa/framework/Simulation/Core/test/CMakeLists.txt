@@ -14,6 +14,7 @@ set(SOURCE_FILES
     TaskSchedulerTestTasks.cpp
     TaskSchedulerTestTasks.h
     TaskSchedulerTests.cpp
+    Visitor_test.cpp
     )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
