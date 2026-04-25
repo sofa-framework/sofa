@@ -158,10 +158,7 @@ void VisualPointCloud<DataTypes>::doDrawVisual(const core::visual::VisualParams*
 template <class DataTypes>
 void VisualPointCloud<DataTypes>::drawIndices(const core::visual::VisualParams* vparams) const
 {
-    const float scale = static_cast<float>(
-        (vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox()).norm() *
-        d_indicesScale.getValue());
-    vparams->drawTool()->draw3DText_Indices(convertCoord(), scale, d_indicesColor.getValue());
+    vparams->drawTool()->draw3DText_Indices(convertCoord(), d_indicesScale.getValue(), d_indicesColor.getValue());
 }
 
 template <class DataTypes>
