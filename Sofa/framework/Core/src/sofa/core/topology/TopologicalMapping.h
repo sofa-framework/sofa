@@ -57,9 +57,37 @@ protected:
 
     ~TopologicalMapping() override { }
 
-public:
     /// Specify the input and output models.
-    virtual void setTopologies(In* from, Out* to);
+    virtual void doSetTopologies(In* from, Out* to);
+
+    /// Method called at each topological changes propagation which comes from the INPUT topology to adapt the OUTPUT topology :
+    virtual void doUpdateTopologicalMappingTopDown() = 0;
+
+    /// Method called at each topological changes propagation which comes from the OUTPUT topology to adapt the INPUT topology :
+    virtual void doUpdateTopologicalMappingBottomUp() {}
+
+    virtual Index doGetGlobIndex(Index ind);
+
+    virtual Index doGetFromIndex(Index ind);
+
+    /// Method to check the topology mapping maps regarding the upper topology
+    virtual bool doCheckTopologies() {return false;}
+
+public:
+
+    /**
+     * !!! WARNING since v25.12 !!!
+     * 
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doSetTopologies" internally,
+     * which is the method to override from now on.
+     * 
+     **/
+    /// Specify the input and output models.
+    virtual void setTopologies(In* from, Out* to) final {
+        //TODO (SPRINT SED 2025): Component state mechamism
+        this->doSetTopologies(from, to);
+    }
 
     /// Set the path to the objects mapped in the scene graph
     void setPathInputObject(const std::string &o) {fromModel.setPath(o);}
@@ -71,11 +99,33 @@ public:
     /// Accessor to the OUTPUT topology of the TopologicalMapping :
     Out* getTo() {return toModel.get();}
 
+    /**
+     * !!! WARNING since v25.12 !!!
+     * 
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doUpdateTopologicalMappingTopDown" internally,
+     * which is the method to override from now on.
+     * 
+     **/
     /// Method called at each topological changes propagation which comes from the INPUT topology to adapt the OUTPUT topology :
-    virtual void updateTopologicalMappingTopDown() = 0;
+    virtual void updateTopologicalMappingTopDown() final {
+        // TODO (SPRINT SED 2025): Component state mechamism
+        this->doUpdateTopologicalMappingTopDown();
+    }
 
+    /**
+     * !!! WARNING since v25.12 !!!
+     * 
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doUpdateTopologicalMappingBottomUp" internally,
+     * which is the method to override from now on.
+     * 
+     **/
     /// Method called at each topological changes propagation which comes from the OUTPUT topology to adapt the INPUT topology :
-    virtual void updateTopologicalMappingBottomUp() {}
+    virtual void updateTopologicalMappingBottomUp() final {
+        // TODO (SPRINT SED 2025): Component state mechamism
+        this->doUpdateTopologicalMappingBottomUp();
+    }
 
     /// Return true if this mapping is able to propagate topological changes from input to output model
     virtual bool propagateFromInputToOutputModel() { return true; }
@@ -89,16 +139,49 @@ public:
     /// Accessor to index maps :
     const std::map<Index, Index>& getGlob2LocMap() { return Glob2LocMap;}
 
-    virtual Index getGlobIndex(Index ind);
+    /**
+     * !!! WARNING since v25.12 !!!
+     * 
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doGetGlobIndex" internally,
+     * which is the method to override from now on.
+     * 
+     **/
+    virtual Index getGlobIndex(Index ind) final {
+        // TODO (SPRINT SED 2025): Component state mechamism
+        return this->doGetGlobIndex(ind);
+    }
 
-    virtual Index getFromIndex(Index ind);
+    /**
+     * !!! WARNING since v25.12 !!!
+     * 
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doGetFromIndex" internally,
+     * which is the method to override from now on.
+     * 
+     **/
+    virtual Index getFromIndex(Index ind) final {
+        // TODO (SPRINT SED 2025): Component state mechamism
+        return this->doGetFromIndex(ind);
+    }
 
     void dumpGlob2LocMap();
 
     void dumpLoc2GlobVec();
 
+    /**
+     * !!! WARNING since v25.12 !!!
+     * 
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doGetFromIndex" internally,
+     * which is the method to override from now on.
+     * 
+     **/
     /// Method to check the topology mapping maps regarding the upper topology
-    virtual bool checkTopologies() {return false;}
+    virtual bool checkTopologies() final {
+        // TODO (SPRINT SED 2025): Component state mechamism
+        return this->doCheckTopologies();
+    }
 
     /** return all the from indices in the 'In' topology corresponding to the index in the 'Out' topology.
     *   This function is used instead of  the previous one when the function isTheOutputTopologySubdividingTheInputOne() returns false.
