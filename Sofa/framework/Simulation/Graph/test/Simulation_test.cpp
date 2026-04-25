@@ -90,7 +90,6 @@ struct Scene_test: public NumericTest<SReal>
         x[2] = type::Vec3(0,1,0);
         x[3] = type::Vec3(0,0,1);
         type::Vec3 expectedMin(0,0,0), expectedMax(1,1,1);
-        DOF->showObject.setValue(true); // bbox is updated only for drawn MO
 
         // end create scene
         //*********
