@@ -27,7 +27,7 @@
 
     <EulerImplicitSolver name="backward_Euler" rayleighStiffness="0.1" rayleighMass="0.1" />
 
-    <RegularGridTopology name="grid" min="-0.01 -0.01 0" max="0.01 0.01 0.2" n="5 5 30"/>
+    <RegularGridTopology name="grid" min="-0.01 -0.01 0" max="0.01 0.01 0.2" n="10 10 60"/>
     <MechanicalObject template="Vec3" name="state" showObject="true"/>
 
     <MeshMatrixMass massDensity="1100" topology="@grid"/>
