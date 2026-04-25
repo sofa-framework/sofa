@@ -262,7 +262,7 @@ public:
     /// @name Initial points accessors (only available if the topology was loaded from a file containing this information).
     /// Note that this data is only used for initialization and is not maintained afterwards (i.e. topological changes may not be applied)
     /// @{
-    bool hasPos() const override { return false; }
+    bool doHasPos() const override { return false; }
     SReal getPX(Index) const override { return 0.0; }
     SReal getPY(Index) const override { return 0.0; }
     SReal getPZ(Index) const override { return 0.0; }
