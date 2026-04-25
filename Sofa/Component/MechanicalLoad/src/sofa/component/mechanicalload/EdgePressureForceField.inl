@@ -317,13 +317,13 @@ void EdgePressureForceField<DataTypes>::updateEdgeInformation()
 }
 
 template <class DataTypes>
-void EdgePressureForceField<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix*)
+void EdgePressureForceField<DataTypes>::doBuildStiffnessMatrix(core::behavior::StiffnessMatrix*)
 {
     // No stiffness in this ForceField
 }
 
 template <class DataTypes>
-void EdgePressureForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+void EdgePressureForceField<DataTypes>::doBuildDampingMatrix(core::behavior::DampingMatrix*)
 {
     // No damping in this ForceField
 }

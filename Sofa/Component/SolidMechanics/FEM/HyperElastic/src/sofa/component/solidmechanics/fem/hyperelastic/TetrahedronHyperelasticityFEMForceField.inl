@@ -536,7 +536,7 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::addKToMatrix(sofa::line
 }
 
 template <class DataTypes>
-void TetrahedronHyperelasticityFEMForceField<DataTypes>::buildStiffnessMatrix(
+void TetrahedronHyperelasticityFEMForceField<DataTypes>::doBuildStiffnessMatrix(
     core::behavior::StiffnessMatrix* matrix)
 {
     /// if the  matrix needs to be updated
@@ -578,7 +578,7 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::buildStiffnessMatrix(
 }
 
 template <class DataTypes>
-void TetrahedronHyperelasticityFEMForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+void TetrahedronHyperelasticityFEMForceField<DataTypes>::doBuildDampingMatrix(core::behavior::DampingMatrix*)
 {
     // No damping in this ForceField
 }

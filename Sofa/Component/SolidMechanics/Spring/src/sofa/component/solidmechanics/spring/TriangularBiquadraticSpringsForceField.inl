@@ -520,7 +520,7 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addDForce(const core::Me
 }
 
 template <class DataTypes>
-void TriangularBiquadraticSpringsForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+void TriangularBiquadraticSpringsForceField<DataTypes>::doBuildDampingMatrix(core::behavior::DampingMatrix*)
 {
     // No damping in this ForceField
 }

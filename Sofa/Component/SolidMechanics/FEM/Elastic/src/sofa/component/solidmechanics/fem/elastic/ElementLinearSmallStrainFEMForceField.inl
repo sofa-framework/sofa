@@ -104,7 +104,7 @@ void ElementLinearSmallStrainFEMForceField<DataTypes, ElementType>::computeEleme
 }
 
 template <class DataTypes, class ElementType>
-void ElementLinearSmallStrainFEMForceField<DataTypes, ElementType>::buildStiffnessMatrix(
+void ElementLinearSmallStrainFEMForceField<DataTypes, ElementType>::doBuildStiffnessMatrix(
     sofa::core::behavior::StiffnessMatrix* matrix)
 {
     if (this->isComponentStateInvalid())
