@@ -135,7 +135,7 @@ TVector* TypedMatrixLinearSystem<TMatrix, TVector>::getSolutionVector() const
 }
 
 template <class TMatrix, class TVector>
-linearalgebra::BaseMatrix* TypedMatrixLinearSystem<TMatrix, TVector>::getSystemBaseMatrix() const
+linearalgebra::BaseMatrix* TypedMatrixLinearSystem<TMatrix, TVector>::doGetSystemBaseMatrix() const
 {
     if constexpr (std::is_base_of_v<sofa::linearalgebra::BaseMatrix, TMatrix>)
     {
@@ -147,7 +147,7 @@ linearalgebra::BaseMatrix* TypedMatrixLinearSystem<TMatrix, TVector>::getSystemB
     }
 }
 template <class TMatrix, class TVector>
-linearalgebra::BaseVector* TypedMatrixLinearSystem<TMatrix, TVector>::getSystemRHSBaseVector() const
+linearalgebra::BaseVector* TypedMatrixLinearSystem<TMatrix, TVector>::doGetSystemRHSBaseVector() const
 {
     if constexpr (std::is_base_of_v<sofa::linearalgebra::BaseVector, TVector>)
     {
@@ -159,7 +159,7 @@ linearalgebra::BaseVector* TypedMatrixLinearSystem<TMatrix, TVector>::getSystemR
     }
 }
 template <class TMatrix, class TVector>
-linearalgebra::BaseVector* TypedMatrixLinearSystem<TMatrix, TVector>::getSystemSolutionBaseVector() const
+linearalgebra::BaseVector* TypedMatrixLinearSystem<TMatrix, TVector>::doGetSystemSolutionBaseVector() const
 {
     if constexpr (std::is_base_of_v<sofa::linearalgebra::BaseVector, TVector>)
     {
