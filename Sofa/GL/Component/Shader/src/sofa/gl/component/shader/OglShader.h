@@ -100,8 +100,9 @@ protected:
 
     OglShader();
     ~OglShader() override;
-public:
     void doInitVisual(const core::visual::VisualParams*) override;
+    
+public:
     void init() override;
     void reinit() override;
     void parse(core::objectmodel::BaseObjectDescription* arg) override;
