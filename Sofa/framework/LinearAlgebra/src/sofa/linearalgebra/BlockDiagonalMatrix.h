@@ -78,12 +78,12 @@ public:
 
     Index rowBSize(void) const
     {
-        return data.size();
+        return static_cast<Index>(data.size());
     }
 
     Index colBSize(void) const
     {
-        return data.size();
+        return static_cast<Index>(data.size());
     }
 
     const Block& bloc(Index i) const

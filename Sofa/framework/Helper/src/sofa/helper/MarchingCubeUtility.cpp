@@ -852,14 +852,14 @@ namespace sofa::helper
     void MarchingCubeUtility::updateTriangleInRegularGridVector ( type::vector< type::vector<unsigned int /*regular grid space index*/> >& triangleIndexInRegularGrid, const type::Vec3i& coord, const GridCell& cell, unsigned int nbTriangles ) const
     {
         vector<unsigned int> voxels;
-        if ( cell.val[0] ) voxels.push_back ( ( coord[0]+0 ) + ( coord[1]+0 ) *m_dataResolution[0] + ( coord[2]+0 ) *m_dataResolution[0]*m_dataResolution[1] ); //les voxels occupes ds ce cube
-        if ( cell.val[1] ) voxels.push_back ( ( coord[0]+1 ) + ( coord[1]+0 ) *m_dataResolution[0] + ( coord[2]+0 ) *m_dataResolution[0]*m_dataResolution[1] ); //les voxels occupes ds ce cube
-        if ( cell.val[3] ) voxels.push_back ( ( coord[0]+0 ) + ( coord[1]+1 ) *m_dataResolution[0] + ( coord[2]+0 ) *m_dataResolution[0]*m_dataResolution[1] ); //les voxels occupes ds ce cube
-        if ( cell.val[2] ) voxels.push_back ( ( coord[0]+1 ) + ( coord[1]+1 ) *m_dataResolution[0] + ( coord[2]+0 ) *m_dataResolution[0]*m_dataResolution[1] ); //les voxels occupes ds ce cube
-        if ( cell.val[4] ) voxels.push_back ( ( coord[0]+0 ) + ( coord[1]+0 ) *m_dataResolution[0] + ( coord[2]+1 ) *m_dataResolution[0]*m_dataResolution[1] ); //les voxels occupes ds ce cube
-        if ( cell.val[5] ) voxels.push_back ( ( coord[0]+1 ) + ( coord[1]+0 ) *m_dataResolution[0] + ( coord[2]+1 ) *m_dataResolution[0]*m_dataResolution[1] ); //les voxels occupes ds ce cube
-        if ( cell.val[7] ) voxels.push_back ( ( coord[0]+0 ) + ( coord[1]+1 ) *m_dataResolution[0] + ( coord[2]+1 ) *m_dataResolution[0]*m_dataResolution[1] ); //les voxels occupes ds ce cube
-        if ( cell.val[6] ) voxels.push_back ( ( coord[0]+1 ) + ( coord[1]+1 ) *m_dataResolution[0] + ( coord[2]+1 ) *m_dataResolution[0]*m_dataResolution[1] ); //les voxels occupes ds ce cube
+        if ( cell.val[0] != 0 ) voxels.push_back ( ( coord[0]+0 ) + ( coord[1]+0 ) *m_dataResolution[0] + ( coord[2]+0 ) *m_dataResolution[0]*m_dataResolution[1] ); //les voxels occupes ds ce cube
+        if ( cell.val[1] != 0 ) voxels.push_back ( ( coord[0]+1 ) + ( coord[1]+0 ) *m_dataResolution[0] + ( coord[2]+0 ) *m_dataResolution[0]*m_dataResolution[1] ); //les voxels occupes ds ce cube
+        if ( cell.val[3] != 0 ) voxels.push_back ( ( coord[0]+0 ) + ( coord[1]+1 ) *m_dataResolution[0] + ( coord[2]+0 ) *m_dataResolution[0]*m_dataResolution[1] ); //les voxels occupes ds ce cube
+        if ( cell.val[2] != 0 ) voxels.push_back ( ( coord[0]+1 ) + ( coord[1]+1 ) *m_dataResolution[0] + ( coord[2]+0 ) *m_dataResolution[0]*m_dataResolution[1] ); //les voxels occupes ds ce cube
+        if ( cell.val[4] != 0 ) voxels.push_back ( ( coord[0]+0 ) + ( coord[1]+0 ) *m_dataResolution[0] + ( coord[2]+1 ) *m_dataResolution[0]*m_dataResolution[1] ); //les voxels occupes ds ce cube
+        if ( cell.val[5] != 0 ) voxels.push_back ( ( coord[0]+1 ) + ( coord[1]+0 ) *m_dataResolution[0] + ( coord[2]+1 ) *m_dataResolution[0]*m_dataResolution[1] ); //les voxels occupes ds ce cube
+        if ( cell.val[7] != 0 ) voxels.push_back ( ( coord[0]+0 ) + ( coord[1]+1 ) *m_dataResolution[0] + ( coord[2]+1 ) *m_dataResolution[0]*m_dataResolution[1] ); //les voxels occupes ds ce cube
+        if ( cell.val[6] != 0 ) voxels.push_back ( ( coord[0]+1 ) + ( coord[1]+1 ) *m_dataResolution[0] + ( coord[2]+1 ) *m_dataResolution[0]*m_dataResolution[1] ); //les voxels occupes ds ce cube
 
         for ( size_t i = 0; i < nbTriangles; i++ )
         {
