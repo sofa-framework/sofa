@@ -68,10 +68,6 @@ public:
 
     void addRegularization(linearalgebra::BaseMatrix* W);
 
-    void addComplianceInConstraintSpace(const sofa::core::ConstraintParams *cparams, linearalgebra::BaseMatrix* W) override;
-
-    void getComplianceMatrix(linearalgebra::BaseMatrix* ) const override;
-
     void computeMotionCorrection(const core::ConstraintParams* cparams, core::MultiVecDerivId dx, core::MultiVecDerivId f) override;
 
     void applyMotionCorrection(const core::ConstraintParams * cparams, Data< VecCoord > &x, Data< VecDeriv > &v, Data< VecDeriv > &dx, const Data< VecDeriv > &f) override;
@@ -80,17 +76,9 @@ public:
 
     void applyVelocityCorrection(const sofa::core::ConstraintParams *cparams, Data< VecDeriv>& v, Data< VecDeriv>& dv, const Data< VecDeriv >& f) override;
 
-    void rebuildSystem(SReal massFactor, SReal forceFactor) override;
 
 
-    /// @name Deprecated API
-    /// @{
 
-    void applyContactForce(const linearalgebra::BaseVector *f) override;
-
-    void resetContactForce() override;
-
-    /// @}
 
     /// @name Unbuilt constraint system during resolution
     /// @{
@@ -102,18 +90,33 @@ public:
 
     void verify_constraints();
 
-    bool hasConstraintNumber(int index) override;  // virtual ???
-
-    void resetForUnbuiltResolution(SReal* f, std::list<unsigned int>& renumbering) override;
-
-    void addConstraintDisplacement(SReal*d, int begin,int end) override;
-
-    void setConstraintDForce(SReal*df, int begin, int end, bool update) override;
-
-    void getBlockDiagonalCompliance(linearalgebra::BaseMatrix* W, int begin, int end) override;
-
 protected:
     linearalgebra::SparseMatrix<Real> m_constraintJacobian;
+
+    void doGetComplianceMatrix(linearalgebra::BaseMatrix* ) const override;
+
+    void doAddComplianceInConstraintSpace(const sofa::core::ConstraintParams *cparams, linearalgebra::BaseMatrix* W) override;
+
+    bool doHasConstraintNumber(int index) override;  // virtual ???
+
+    void doResetForUnbuiltResolution(SReal* f, std::list<unsigned int>& renumbering) override;
+
+    void doAddConstraintDisplacement(SReal*d, int begin,int end) override;
+
+    void doSetConstraintDForce(SReal*df, int begin, int end, bool update) override;
+
+    void doGetBlockDiagonalCompliance(linearalgebra::BaseMatrix* W, int begin, int end) override;
+
+    void doRebuildSystem(SReal massFactor, SReal forceFactor) override;
+
+    /// @name Deprecated API
+    /// @{
+
+    void doApplyContactForce(const linearalgebra::BaseVector *f) override;
+
+    void doResetContactForce() override;
+
+    /// @}
 
     /**
     * @brief Convert the constraint matrix
