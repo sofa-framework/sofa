@@ -24,45 +24,38 @@
 #include <sofa/helper/StringUtils.h>
 #include <sofa/helper/Utils.h>
 
-#if __has_include(<filesystem>)
-  #include <filesystem>
-  namespace fs = std::filesystem;
-#elif __has_include(<experimental/filesystem>)
-  #include <experimental/filesystem> 
-  namespace fs = std::experimental::filesystem;
-#else
-  error "Missing the <filesystem> header."
-#endif
-
+#include <filesystem>
 #include <fstream>
 #include <iostream>
 #ifdef WIN32
 # include <windows.h>
 # include <winerror.h>
 # include <strsafe.h>
-# include "Shlwapi.h"           // for PathFileExists()
-#include <shellapi.h>
+# include "Shlwapi.h"
+# include <shellapi.h>
 #else
 # include <dirent.h>
 # include <sys/stat.h>
 # include <sys/types.h>
 # include <errno.h>
-# include <string.h>            // for strerror()
+# include <string.h>
 # include <unistd.h>
 #endif
 
 #if defined(__APPLE__)
-#include <stdio.h>
-#include <spawn.h>
+# include <stdio.h>
+# include <spawn.h>
 #endif
 
 #ifdef linux
-#include <spawn.h>
-#include <sys/wait.h>
+# include <spawn.h>
+# include <sys/wait.h>
 #endif
 
 #include <cassert>
 #include <sofa/helper/system/SetDirectory.h>
+
+namespace fs = std::filesystem;
 
 namespace sofa
 {
@@ -70,282 +63,6 @@ namespace helper
 {
 namespace system
 {
-
-std::string FileSystem::getExtension(const std::string& filename)
-{
-    const std::string s = filename;
-    const std::string::size_type pos = s.find_last_of('.');
-    if (pos == std::string::npos)
-        return ""; // no extension
-    else
-        return s.substr(pos+1);
-}
-
-
-#if defined(WIN32)
-// Helper: call FindFirstFile, taking care of wstring to string conversion.
-static HANDLE helper_FindFirstFile(std::string path, WIN32_FIND_DATA *ffd)
-{
-    TCHAR szDir[MAX_PATH];
-    HANDLE hFind = INVALID_HANDLE_VALUE;
-
-    // Prepare string for use with FindFile functions.  First, copy the
-    // string to a buffer, then append '\*' to the directory name.
-    StringCchCopy(szDir, MAX_PATH, sofa::helper::widenString(path).c_str());
-    StringCchCat(szDir, MAX_PATH, TEXT("\\*"));
-
-    // Find the first file in the directory.
-    hFind = FindFirstFile(szDir, ffd);
-
-    return hFind;
-}
-#endif
-
-
-bool FileSystem::listDirectory(const std::string& directoryPath,
-                               std::vector<std::string>& outputFilenames)
-{
-#if defined(WIN32)
-    // Find the first file in the directory.
-    WIN32_FIND_DATA ffd;
-    const HANDLE hFind = helper_FindFirstFile(directoryPath, &ffd);
-    if (hFind == INVALID_HANDLE_VALUE) {
-        msg_error("FileSystem::listDirectory()") << directoryPath << ": " << Utils::GetLastError();
-        return true;
-    }
-
-    // Iterate over files and push them in the output vector
-    do {
-        std::string filename = sofa::helper::narrowString(ffd.cFileName);
-        if (filename != "." && filename != "..")
-            outputFilenames.push_back(filename);
-    } while (FindNextFile(hFind, &ffd) != 0);
-
-    // Check for errors
-    const bool errorOccured = ::GetLastError() != ERROR_NO_MORE_FILES;
-    if (errorOccured)
-        msg_error("FileSystem::listDirectory()") << directoryPath << ": " << Utils::GetLastError();
-
-    FindClose(hFind);
-    return errorOccured;
-#else
-    DIR *dp = opendir(directoryPath.c_str());
-    if (dp == nullptr) {
-        msg_error("FileSystem::listDirectory()") << directoryPath << ": " << strerror(errno);
-        return true;
-    }
-
-    struct dirent *ep;
-    while ( (ep = readdir(dp)) ) {
-        const std::string filename(ep->d_name);
-        if (filename != "." && filename != "..")
-            outputFilenames.push_back(std::string(ep->d_name));
-    }
-    closedir(dp);
-    return false;
-#endif
-}
-
-bool FileSystem::createDirectory(const std::string& path)
-{
-    std::string error = "FileSystem::createdirectory()";
-#ifdef WIN32
-    if (CreateDirectory(sofa::helper::widenString(path).c_str(), nullptr) == 0)
-    {
-        DWORD errorCode = ::GetLastError();
-        if (errorCode != ERROR_ALREADY_EXISTS)
-        {
-            msg_error(error) << path << ": " << Utils::GetLastError();
-            return true;
-        }
-        else
-        {
-            // Check if the existing item is a file or directory
-            DWORD attributes = GetFileAttributes(sofa::helper::widenString(path).c_str());
-            if (attributes != INVALID_FILE_ATTRIBUTES)
-            {
-                if ((attributes & FILE_ATTRIBUTE_DIRECTORY) == 0)
-                {
-                    // It's a file, not a directory - this is an error
-                    msg_error(error) << path << ": File exists and is not a directory";
-                    return true;
-                }
-                else
-                {
-                    // It's already a directory - success
-                    return false;
-                }
-            }
-            else
-            {
-                // Couldn't get attributes - treat as error
-                msg_error(error) << path << ": " << Utils::GetLastError();
-                return true;
-            }
-        }
-    }
-#else
-    int status = mkdir(path.c_str(), 0755);
-    if(status)
-    {
-        if (errno != EEXIST)
-        {
-            msg_error(error) << path << ": " << strerror(errno);
-            return true;
-        }
-        else
-        {
-            struct stat st_buf;
-            if (stat(path.c_str(), &st_buf) == 0)
-            {
-                if ((st_buf.st_mode & S_IFMT) != S_IFDIR)
-                {
-                    msg_error(error) << path << ": File exists and is not a directory";
-                    return true;
-                }
-                else
-                {
-                    // 'path' was already created and is a folder
-                    return false;
-                }
-            }
-            else
-            {
-                msg_error(error) << path << ": Unknown error while trying to create this directory.";
-                return true;
-            }
-        }
-    }
-#endif
-    else
-    {
-        // 'path' has been created sucessfully
-        return false;
-    }
-}
-
-
-bool FileSystem::removeDirectory(const std::string& path)
-{
-#ifdef WIN32
-    if (RemoveDirectory(sofa::helper::widenString(path).c_str()) == 0)
-    {
-        msg_error("FileSystem::removedirectory()") << path << ": " << Utils::GetLastError();
-        return true;
-    }
-#else
-    if (rmdir(path.c_str()))
-    {
-        msg_error("FileSystem::removedirectory()") << path << ": " << strerror(errno);
-        return true;
-    }
-#endif
-    return false;
-}
-
-
-bool FileSystem::exists(const std::string& path, [[maybe_unused]] bool quiet)
-{
-#if defined(WIN32)
-    ::SetLastError(0);
-    if (PathFileExists(sofa::helper::widenString(path).c_str()) != 0)
-        return true;
-    else
-    {
-        const DWORD errorCode = ::GetLastError();
-        if (errorCode != ERROR_FILE_NOT_FOUND && errorCode != ERROR_PATH_NOT_FOUND) // not No such file error
-            msg_error("FileSystem::exists()") << path << ": " << Utils::GetLastError();
-        return false;
-    }
-
-#else
-    struct stat st_buf;
-    if (stat(path.c_str(), &st_buf) == 0)
-        return true;
-    else
-        if (errno == ENOENT)    // No such file or directory
-            return false;
-        else {
-            if (!quiet)
-                msg_error("FileSystem::exists()") << path << ": " << strerror(errno);
-            return false;
-        }
-#endif
-}
-
-
-bool FileSystem::isDirectory(const std::string& path, [[maybe_unused]] bool quiet)
-{
-#if defined(WIN32)
-    const DWORD fileAttrib = GetFileAttributes(sofa::helper::widenString(path).c_str());
-    if (fileAttrib == INVALID_FILE_ATTRIBUTES) {
-        msg_error("FileSystem::isDirectory()") << path << ": " << Utils::GetLastError();
-        return false;
-    }
-    else
-        return (fileAttrib & FILE_ATTRIBUTE_DIRECTORY) != 0;
-#else
-    struct stat st_buf;
-    if (stat(path.c_str(), &st_buf) != 0) {
-        if (!quiet)
-                msg_error("FileSystem::isDirectory()") << path << ": " << strerror(errno);
-        return false;
-    }
-    else
-        return S_ISDIR(st_buf.st_mode);
-#endif
-}
-
-bool FileSystem::listDirectory(const std::string& directoryPath,
-                               std::vector<std::string>& outputFilenames,
-                               const std::string& extension)
-{
-    // List directory
-    std::vector<std::string> files;
-    if (listDirectory(directoryPath, files))
-        return true;
-
-    // Filter files
-    for (std::size_t i=0 ; i!=files.size() ; i++) {
-        const std::string& filename = files[i];
-        if (filename.size() >= extension.size())
-            if (filename.compare(filename.size()-extension.size(),
-                                 std::string::npos, extension) == 0)
-                outputFilenames.push_back(filename);
-    }
-    return false;
-}
-
-int FileSystem::findFiles(const std::string& directoryPath,
-                           std::vector<std::string>& outputFilePaths,
-                           const std::string& extension, const int depth)
-{
-    // List directory
-    std::vector<std::string> files;
-    if (listDirectory(directoryPath, files)) // true = error
-        return -1;
-
-    // Filter files
-    for (const auto& filename : files)
-    {
-        const std::string& filepath = append(directoryPath, filename);
-
-        if ( isDirectory(filepath) && filename[0] != '.' && depth > 0 )
-        {
-            if ( findFiles(filepath, outputFilePaths, extension, depth - 1) == -1)
-                return -1;
-        }
-        else if ( isFile(filepath) &&
-                  filename.length() >= extension.length() &&
-                  filename.compare(filename.length() - extension.length(), extension.length(), extension) == 0 )
-        {
-            // filename ends with extension
-            outputFilePaths.push_back(filepath);
-        }
-    }
-    return (int)outputFilePaths.size();
-}
-
 
 static bool pathHasDrive(const std::string& path) {
     return path.length() >=3
@@ -361,19 +78,175 @@ static std::string pathDrive(const std::string& path) {
     return path.substr(0, 2);
 }
 
+// Note: This function uses manual string manipulation instead of std::filesystem::path::parent_path()
+// because std::filesystem does not handle trailing slashes the same way.
+// For example, std::filesystem treats "/abc/def/ghi/" and "/abc/def/ghi" differently for parent_path(),
+// while this implementation normalizes trailing slashes before computing the parent.
+// Additionally, Windows drive letters (e.g., "C:/") require special handling to preserve the drive prefix.
+static std::string computeParentDirectory(const std::string& path)
+{
+    if (path == "")
+        return ".";
+    else if (path == "/")
+        return "/";
+    else if (path[path.length()-1] == '/')
+        return computeParentDirectory(path.substr(0, path.length() - 1));
+    else {
+        const size_t last_slash = path.find_last_of('/');
+        if (last_slash == std::string::npos)
+            return ".";
+        else if (last_slash == 0)
+            return "/";
+        else if (last_slash == path.length())
+            return "";
+        else
+            return path.substr(0, last_slash);
+    }
+}
+
+std::string FileSystem::getExtension(const std::string& filename)
+{
+    const std::string s = filename;
+    const std::string::size_type pos = s.find_last_of('.');
+    if (pos == std::string::npos)
+        return ""; // no extension
+    else
+        return s.substr(pos+1);
+}
+
+bool FileSystem::listDirectory(const std::string& directoryPath,
+                               std::vector<std::string>& outputFilenames)
+{
+    try
+    {
+        for (const auto& entry : fs::directory_iterator(directoryPath))
+        {
+            const std::string filename = entry.path().filename().string();
+            if (filename != "." && filename != "..")
+                outputFilenames.push_back(filename);
+        }
+        return false;
+    }
+    catch (const fs::filesystem_error& e)
+    {
+        msg_error("FileSystem::listDirectory()") << directoryPath << ": " << e.what();
+        return true;
+    }
+}
+
+bool FileSystem::createDirectory(const std::string& path)
+{
+    try
+    {
+        if (fs::exists(path))
+        {
+            if (!fs::is_directory(path))
+            {
+                msg_error("FileSystem::createDirectory()") << path << ": File exists and is not a directory";
+                return true;
+            }
+            return false;
+        }
+        fs::create_directories(path);
+        return false;
+    }
+    catch (const fs::filesystem_error& e)
+    {
+        msg_error("FileSystem::createDirectory()") << path << ": " << e.what();
+        return true;
+    }
+}
+
+bool FileSystem::removeDirectory(const std::string& path)
+{
+#ifdef WIN32
+    if (RemoveDirectory(sofa::helper::widenString(path).c_str()) == 0)
+    {
+        msg_error("FileSystem::removeDirectory()") << path << ": " << Utils::GetLastError();
+        return true;
+    }
+#else
+    if (rmdir(path.c_str()))
+    {
+        msg_error("FileSystem::removeDirectory()") << path << ": " << strerror(errno);
+        return true;
+    }
+#endif
+    return false;
+}
+
+bool FileSystem::removeAll(const std::string& path){
+    try
+    {
+        fs::remove_all(path);
+        return true ;
+    }
+    catch(const fs::filesystem_error& /*e*/)
+    {
+        return false ;
+    }
+}
+
+bool FileSystem::removeFile(const std::string& path)
+{
+    try
+    {
+        return fs::remove(path);
+    }
+    catch (const fs::filesystem_error& e)
+    {
+        msg_error("FileSystem::removeFile()") << path << ": " << e.what();
+        return false;
+    }
+}
+
+bool FileSystem::exists(const std::string& path, bool quiet)
+{
+    try
+    {
+        return fs::exists(path);
+    }
+    catch (const fs::filesystem_error& e)
+    {
+        if (!quiet)
+            msg_error("FileSystem::exists()") << path << ": " << e.what();
+        return false;
+    }
+}
+
+bool FileSystem::isDirectory(const std::string& path, bool quiet)
+{
+    try
+    {
+        return fs::is_directory(path);
+    }
+    catch (const fs::filesystem_error& e)
+    {
+        if (!quiet)
+            msg_error("FileSystem::isDirectory()") << path << ": " << e.what();
+        return false;
+    }
+}
+
+bool FileSystem::isFile(const std::string &path, bool quiet)
+{
+    try
+    {
+        return fs::is_regular_file(path);
+    }
+    catch (const fs::filesystem_error& e)
+    {
+        if (!quiet)
+            msg_error("FileSystem::isFile()") << path << ": " << e.what();
+        return false;
+    }
+}
+
 bool FileSystem::isAbsolute(const std::string& path)
 {
     return !path.empty()
             && (pathHasDrive(path)
                 || path[0] == '/');
-}
-
-bool FileSystem::isFile(const std::string &path, bool quiet)
-{
-    return
-            FileSystem::exists(path, quiet) &&
-            !FileSystem::isDirectory(path, quiet)
-    ;
 }
 
 std::string FileSystem::convertBackSlashesToSlashes(const std::string& path)
@@ -388,23 +261,6 @@ std::string FileSystem::convertSlashesToBackSlashes(const std::string& path)
     std::string str(path);
     std::replace(str.begin(), str.end(), '/', '\\');
     return str;
-}
-
-bool FileSystem::removeAll(const std::string& path){
-    try
-    {
-        fs::remove_all(path);
-    }
-    catch(fs::filesystem_error const & /*e*/)
-    {
-        return false ;
-    }
-    return true ;
-}
-
-bool FileSystem::removeFile(const std::string& path)
-{
-    return fs::remove(path);
 }
 
 std::string FileSystem::removeExtraSlashes(const std::string& path)
@@ -443,29 +299,6 @@ std::string FileSystem::removeExtraBackSlashes(const std::string& path)
     return str;
 }
 
-void FileSystem::ensureFolderExists(const std::string& pathToFolder)
-{
-    if (!FileSystem::exists(pathToFolder))
-    {
-        const std::string parentPath = FileSystem::getParentDirectory(pathToFolder);
-        FileSystem::ensureFolderExists(parentPath);
-
-        if (FileSystem::exists(parentPath))
-        {
-            FileSystem::createDirectory(pathToFolder);
-        }
-    }
-}
-
-void FileSystem::ensureFolderForFileExists(const std::string& pathToFile)
-{
-    if (!FileSystem::exists(pathToFile))
-    {
-        const std::string parentPath = FileSystem::getParentDirectory(pathToFile);
-        FileSystem::ensureFolderExists(parentPath);
-    }
-}
-
 std::string FileSystem::cleanPath(const std::string& path, separator s)
 {
     if(s == SLASH)
@@ -474,52 +307,128 @@ std::string FileSystem::cleanPath(const std::string& path, separator s)
         return removeExtraBackSlashes(convertSlashesToBackSlashes(path));
 }
 
-static std::string computeParentDirectory(const std::string& path)
-{
-    if (path == "")
-        return ".";
-    else if (path == "/")
-        return "/";
-    else if (path[path.length()-1] == '/')
-        return computeParentDirectory(path.substr(0, path.length() - 1));
-    else {
-        const size_t last_slash = path.find_last_of('/');
-        if (last_slash == std::string::npos)
-            return ".";
-        else if (last_slash == 0)
-            return "/";
-        else if (last_slash == path.length())
-            return "";
-        else
-            return path.substr(0, last_slash);
-    }
-}
-
 std::string FileSystem::getParentDirectory(const std::string& path)
 {
-    if (pathHasDrive(path))     // check for Windows drive
+    if (pathHasDrive(path))
         return pathDrive(path) + computeParentDirectory(pathWithoutDrive(path));
     else
         return computeParentDirectory(path);
 }
 
+// Note: This function uses manual string manipulation instead of std::filesystem::path::filename()
+// because std::filesystem does not handle trailing slashes correctly.
+// For example, std::filesystem::path("/abc/def/ghi/").filename() returns "" (empty),
+// while this implementation returns "ghi" by recursively stripping trailing slashes first.
+// Windows drive letters also require special handling.
 std::string FileSystem::stripDirectory(const std::string& path)
 {
-    if (pathHasDrive(path))     // check for Windows drive
+    if (pathHasDrive(path))
         return stripDirectory(pathWithoutDrive(path));
     else
     {
         const size_t last_slash = path.find_last_of("/");
-        if (last_slash == std::string::npos)    // No slash
+        if (last_slash == std::string::npos)
             return path;
-        else if (last_slash == path.size() - 1) // Trailing slash
+        else if (last_slash == path.size() - 1)
             if (path.size() == 1)
                 return "/";
             else
                 return stripDirectory(path.substr(0, path.size() - 1));
         else
             return path.substr(last_slash + 1, std::string::npos);
-        return "";
+    }
+}
+
+bool FileSystem::listDirectory(const std::string& directoryPath,
+                               std::vector<std::string>& outputFilenames,
+                               const std::string& extension)
+{
+    try
+    {
+        for (const auto& entry : fs::directory_iterator(directoryPath))
+        {
+            if (entry.is_regular_file())
+            {
+                const std::string filename = entry.path().filename().string();
+                if (filename.size() >= extension.size())
+                {
+                    const std::string fileExt = entry.path().extension().string();
+                    if (fileExt == extension || (extension.size() > 0 && fileExt.size() > 0 && fileExt.substr(1) == extension))
+                        outputFilenames.push_back(filename);
+                }
+            }
+        }
+        return false;
+    }
+    catch (const fs::filesystem_error& e)
+    {
+        msg_error("FileSystem::listDirectory()") << directoryPath << ": " << e.what();
+        return true;
+    }
+}
+
+int FileSystem::findFiles(const std::string& directoryPath,
+                          std::vector<std::string>& outputFilePaths,
+                          const std::string& extension, const int depth)
+{
+    try
+    {
+        for (const auto& entry : fs::directory_iterator(directoryPath))
+        {
+            const std::string filepath = entry.path().string();
+            
+            if (entry.is_directory() && entry.path().filename().string()[0] != '.' && depth > 0)
+            {
+                if (findFiles(filepath, outputFilePaths, extension, depth - 1) == -1)
+                    return -1;
+            }
+            else if (entry.is_regular_file())
+            {
+                const std::string filename = entry.path().filename().string();
+                if (filename.length() >= extension.length() &&
+                    filename.compare(filename.length() - extension.length(), extension.length(), extension) == 0)
+                {
+                    outputFilePaths.push_back(filepath);
+                }
+            }
+        }
+        return static_cast<int>(outputFilePaths.size());
+    }
+    catch (const fs::filesystem_error& e)
+    {
+        msg_error("FileSystem::findFiles()") << directoryPath << ": " << e.what();
+        return -1;
+    }
+}
+
+void FileSystem::ensureFolderExists(const std::string& pathToFolder)
+{
+    try
+    {
+        if (!fs::exists(pathToFolder))
+        {
+            fs::create_directories(pathToFolder);
+        }
+    }
+    catch (const fs::filesystem_error& e)
+    {
+        msg_error("FileSystem::ensureFolderExists()") << pathToFolder << ": " << e.what();
+    }
+}
+
+void FileSystem::ensureFolderForFileExists(const std::string& pathToFile)
+{
+    try
+    {
+        fs::path p(pathToFile);
+        if (p.has_parent_path())
+        {
+            fs::create_directories(p.parent_path());
+        }
+    }
+    catch (const fs::filesystem_error& e)
+    {
+        msg_error("FileSystem::ensureFolderForFileExists()") << pathToFile << ": " << e.what();
     }
 }
 
@@ -551,7 +460,7 @@ bool FileSystem::openFileWithDefaultApplication(const std::string& filename)
 
     if (!filename.empty())
     {
-        if (!FileSystem::exists(filename))
+        if (!fs::exists(filename))
         {
             msg_error("FileSystem::openFileWithDefaultApplication()") << "File does not exist: " << filename;
             return success;
@@ -561,7 +470,7 @@ bool FileSystem::openFileWithDefaultApplication(const std::string& filename)
         if ((INT_PTR)ShellExecuteA(nullptr, "open", filename.c_str(), nullptr, nullptr, SW_SHOWNORMAL) > 32)
             success = true;
 #elif defined(__APPLE__)
-        pid_t pid; // points to a buffer that is used to return the process ID of the new child process.
+        pid_t pid;
         char* argv[] = {const_cast<char*>("open"), const_cast<char*>(filename.c_str()), nullptr};
         if (posix_spawn(&pid, "/usr/bin/open", nullptr, nullptr, argv, nullptr) == 0)
         {
@@ -570,7 +479,7 @@ bool FileSystem::openFileWithDefaultApplication(const std::string& filename)
                 success = true;
         }
 #else
-        pid_t pid; // points to a buffer that is used to return the process ID of the new child process.
+        pid_t pid;
         const char* argv[] = {"xdg-open", filename.c_str(), nullptr};
         if (posix_spawn(&pid, "/usr/bin/xdg-open", nullptr, nullptr, const_cast<char* const*>(argv), environ) == 0)
         {
