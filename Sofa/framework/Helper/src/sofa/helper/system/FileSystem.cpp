@@ -111,7 +111,7 @@ bool FileSystem::listDirectory(const std::string& directoryPath,
     const HANDLE hFind = helper_FindFirstFile(directoryPath, &ffd);
     if (hFind == INVALID_HANDLE_VALUE) {
         msg_error("FileSystem::listDirectory()") << directoryPath << ": " << Utils::GetLastError();
-        return false;
+        return true;
     }
 
     // Iterate over files and push them in the output vector
