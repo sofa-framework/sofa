@@ -186,7 +186,7 @@ sofa::type::vector<core::BaseMapping*> MappingGraph::getBottomUpMappingsFrom(
     auto* sn = findStateNode(state);
     if (sn)
     {
-        struct CollectMapping : public MappingGraphVisitor
+        struct CollectMapping final : public MappingGraphVisitor
         {
             void visit(core::BaseMapping& mapping) override
             {
@@ -211,10 +211,7 @@ sofa::type::vector<core::BaseMapping*> MappingGraph::getBottomUpMappingsFrom(
 
             ++(current->m_pendingCount);
 
-            if (current->m_parents.empty())
-            {
-                current->accept(visitor);
-            }
+            current->accept(visitor);
 
             for (auto& parent : current->m_parents)
             {
