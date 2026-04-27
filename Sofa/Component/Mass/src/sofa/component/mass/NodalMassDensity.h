@@ -19,60 +19,40 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/mass/init.h>
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/helper/system/PluginManager.h>
+#pragma once
+
+#include <sofa/component/mass/config.h>
+#include <sofa/core/BaseNodalProperty.h>
+#include <sofa/core/behavior/BaseMechanicalState.h>
 
 namespace sofa::component::mass
 {
 
-extern void registerDiagonalMass(sofa::core::ObjectFactory* factory);
-extern void registerMeshMatrixMass(sofa::core::ObjectFactory* factory);
-extern void registerUniformMass(sofa::core::ObjectFactory* factory);
-extern void registerNodalMassDensity(sofa::core::ObjectFactory* factory);
-extern void registerFEMMass(sofa::core::ObjectFactory* factory);
-
-extern "C" {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleVersion();
-    SOFA_EXPORT_DYNAMIC_LIBRARY void registerObjects(sofa::core::ObjectFactory* factory);
-}
-
-void initExternalModule()
+template<class Scalar>
+class NodalMassDensity : public sofa::core::BaseNodalProperty<Scalar>
 {
-    init();
-}
+public:
+    SOFA_CLASS(NodalMassDensity<Scalar>, sofa::core::BaseNodalProperty<Scalar>);
 
-const char* getModuleName()
-{
-    return MODULE_NAME;
-}
-
-const char* getModuleVersion()
-{
-    return MODULE_VERSION;
-}
-
-void registerObjects(sofa::core::ObjectFactory* factory)
-{
-    registerDiagonalMass(factory);
-    registerMeshMatrixMass(factory);
-    registerUniformMass(factory);
-    registerNodalMassDensity(factory);
-    registerFEMMass(factory);
-}
-
-void init()
-{
-    static bool first = true;
-    if (first)
+    template<class T>
+    static bool canCreate(T* obj, sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription* arg)
     {
-        // make sure that this plugin is registered into the PluginManager
-        sofa::helper::system::PluginManager::getInstance().registerPlugin(MODULE_NAME);
-
-        first = false;
+        if (const auto* state = context->getMechanicalState())
+        {
+            static const auto scalarType = defaulttype::DataTypeInfo<Scalar>::name();
+            if (state->getScalarType() == scalarType)
+                return true;
+            arg->logError("The mechanical state does not have a scalar type of '" + scalarType + "'");
+            return false;
+        }
+        return true;
     }
-}
 
-} // namespace sofa::component::mass
+private:
+
+    static constexpr Scalar defaultMassDensity = static_cast<Scalar>(1.);
+
+    NodalMassDensity() : sofa::core::BaseNodalProperty<Scalar>(defaultMassDensity) {}
+};
+
+}
