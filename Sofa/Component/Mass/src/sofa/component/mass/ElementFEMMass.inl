@@ -166,7 +166,7 @@ void ElementFEMMass<TDataTypes, TElementType>::initializeGlobalMassMatrix(
                   [&](const auto elementId)
                   {
                       const auto& element = elements[elementId];
-                      auto& elementMassMatrix = elementMassMatrices[elementId];
+                      const auto& elementMassMatrix = elementMassMatrices[elementId];
 
                       for (sofa::Size i = 0; i < NumberOfNodesInElement; ++i)
                       {
