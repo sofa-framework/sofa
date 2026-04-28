@@ -452,7 +452,6 @@ ComponentGroupMappingGraphNode::SPtr MappingGraph::findGroupNode(
     if (it != m_groupIndex.end())
         return it->second;
 
-    std::cout << "Creating group node for " << sofa::helper::join(states.begin(), states.end(), [](auto state){ return state->getName(); }, ", ") << std::endl;
     auto group = ComponentGroupMappingGraphNode::SPtr{new ComponentGroupMappingGraphNode};
     for (const auto& state : states)
     {
