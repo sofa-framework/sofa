@@ -1,6 +1,7 @@
 #include <sofa/simulation/MappingGraph.h>
-
 #include <sofa/simulation/task/ParallelForEach.h>
+
+#include <ranges>
 
 namespace sofa::simulation
 {
@@ -36,7 +37,7 @@ core::objectmodel::BaseContext* MappingGraph::getRootNode() const
 const sofa::type::vector<core::behavior::BaseMechanicalState*>&
 MappingGraph::getMainMechanicalStates() const
 {
-    return m_roots;
+    return m_rootStates;
 }
 MappingGraph::MappingInputs MappingGraph::getTopMostMechanicalStates(
     core::behavior::BaseMechanicalState* state) const
@@ -230,21 +231,11 @@ sofa::type::vector<core::BaseMapping*> MappingGraph::getBottomUpMappingsFrom(
 
 void MappingGraph::traverseTopDown(MappingGraphVisitor& visitor) const
 {
-    // pending count = number of parents not yet visited.
-    std::queue<BaseMappingGraphNode*> ready;
-    for (auto& node : m_allNodes)
-    {
-        node->m_pendingCount = static_cast<int>(node->m_parents.size());
-        if (node->m_pendingCount == 0)
-        {
-            ready.push(node.get());
-        }
-    }
-
-    processQueue(ready, visitor, /*topDown=*/true);
+    std::queue<BaseMappingGraphNode*> ready = prepareRootForTraversal();
+    processQueue(ready, [&visitor](const BaseMappingGraphNode* node){ node->accept(visitor); });
 }
 
-void MappingGraph::traverseBottomUp(MappingGraphVisitor& visitor) const
+std::queue<BaseMappingGraphNode*> MappingGraph::prepareRootForTraversal() const
 {
     std::queue<BaseMappingGraphNode*> ready;
     for (auto& node : m_allNodes)
@@ -256,26 +247,23 @@ void MappingGraph::traverseBottomUp(MappingGraphVisitor& visitor) const
         }
     }
 
+    return ready;
+}
+
+void MappingGraph::traverseBottomUp(MappingGraphVisitor& visitor) const
+{
+    //the strategy consists in traversing the graph from top to bottom and
+    //register the traversed nodes in a list. The bottom-up traversal corresponds to the
+    //reversed list.
+
+    std::queue<BaseMappingGraphNode*> ready = prepareRootForTraversal();
+
     sofa::type::vector<BaseMappingGraphNode*> nodes;
-    while (!ready.empty())
-    {
-        BaseMappingGraphNode* current = ready.front();
-        nodes.push_back(current);
-        ready.pop();
+    processQueue(ready, [&nodes](BaseMappingGraphNode* node){ nodes.push_back(node); });
 
-        for (auto& child : current->m_children)
-        {
-            --(child->m_pendingCount);
-            if (child->m_pendingCount == 0)
-            {
-                ready.push(child.get());
-            }
-        }
-    }
-
-    for (auto it = nodes.crbegin(); it != nodes.crend(); ++it)
+    for (const auto* node : std::views::reverse(nodes))
     {
-        (*it)->accept(visitor);
+        node->accept(visitor);
     }
 }
 
@@ -308,30 +296,6 @@ void MappingGraph::traverseComponentGroups(MappingGraphVisitor& visitor,
         traverseComponentGroups(visitor);
     }
 }
-
-void MappingGraph::processQueue(std::queue<BaseMappingGraphNode*>& ready, MappingGraphVisitor& visitor,
-                                 bool topDown)
-{
-    while (!ready.empty())
-    {
-        BaseMappingGraphNode* current = ready.front();
-        std::cout << "Processing node: " << current->getName() << std::endl;
-        ready.pop();
-
-        current->accept(visitor);
-
-        const auto& neighbours = topDown ? current->m_children : current->m_parents;
-        for (auto& neighbour : neighbours)
-        {
-            --(neighbour->m_pendingCount);
-            if (neighbour->m_pendingCount == 0)
-            {
-                ready.push(neighbour.get());
-            }
-        }
-    }
-}
-
 
 bool MappingGraph::isBuilt() const { return m_isBuilt; }
 
@@ -426,7 +390,7 @@ void MappingGraph::build(const InputLists& input)
     {
         if (node->m_parents.empty())
         {
-            m_roots.push_back(node->m_component.get());
+            m_rootStates.push_back(node->m_component.get());
             m_positionInGlobalMatrix[node->m_component.get()] = type::Vec2u(m_totalNbMainDofs, m_totalNbMainDofs);
             m_totalNbMainDofs += node->m_component->getMatrixSize();
         }

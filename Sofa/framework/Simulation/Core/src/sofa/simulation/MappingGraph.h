@@ -402,25 +402,43 @@ private:
 
     // Graph ownership structures:
     std::vector<BaseMappingGraphNode::SPtr> m_allNodes; ///< All nodes in the graph.
-    sofa::type::vector<core::behavior::BaseMechanicalState*> m_roots {}; ///< List of initial, unmapped mechanical states (graph roots).
+    sofa::type::vector<core::behavior::BaseMechanicalState*> m_rootStates {}; ///< List of initial, unmapped mechanical states (graph roots).
     std::unordered_map<core::behavior::BaseMechanicalState*, BaseMappingGraphNode*> m_stateIndex; ///< Quick lookup for a state's node.
     std::vector<std::pair<
         std::vector<core::behavior::BaseMechanicalState::SPtr>,
         ComponentGroupMappingGraphNode::SPtr>> m_groupIndex; ///< Indexing mechanism for group nodes.
 
     // ------------------------------------------------------------------
+
+    std::queue<BaseMappingGraphNode*> prepareRootForTraversal() const;
+
     /**
      * @brief Performs a breadth-first search (BFS) traversal, processing nodes in dependency order.
      * 
      * This static helper method is used for both top-down and bottom-up traversals.
      * 
      * @param ready The queue of nodes that are currently ready to be visited/processed.
-     * @param visitor The visitor implementation used by the process.
-     * @param topDown If true, processes children (top-down); if false, processes parents (bottom-up).
      */
-    static void processQueue(std::queue<BaseMappingGraphNode*>& ready,
-                             MappingGraphVisitor&       visitor,
-                             bool                       topDown);
+    template<class Callable>
+    static void processQueue(std::queue<BaseMappingGraphNode*>& ready, const Callable& f)
+    {
+        while (!ready.empty())
+        {
+            BaseMappingGraphNode* current = ready.front();
+            ready.pop();
+
+            f(current);
+
+            for (auto& child : current->m_children)
+            {
+                --(child->m_pendingCount);
+                if (child->m_pendingCount == 0)
+                {
+                    ready.push(child.get());
+                }
+            }
+        }
+    }
 
     /**
      * @brief Locates or creates a component group node encompassing the given set of states.
