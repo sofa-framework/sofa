@@ -6,6 +6,14 @@
 namespace sofa::simulation
 {
 
+bool BaseMappingGraphNode::isMapped() const
+{
+    return std::any_of(m_parents.begin(), m_parents.end(), [](const SPtr& node)
+    {
+        return node->getType() == NodeType::Mapping || node->isMapped();
+    });
+}
+
 MappingGraph::InputLists MappingGraph::InputLists::makeFromNode(core::objectmodel::BaseContext* node)
 {
     InputLists inputLists;
@@ -241,7 +249,7 @@ std::queue<BaseMappingGraphNode*> MappingGraph::prepareRootForTraversal() const
     for (auto& node : m_allNodes)
     {
         node->m_pendingCount = static_cast<int>(node->m_parents.size());
-        if (node->m_pendingCount == 0)
+        if (node->m_pendingCount == 0) //node without any parent -> a root
         {
             ready.push(node.get());
         }
@@ -256,10 +264,12 @@ void MappingGraph::traverseBottomUp(MappingGraphVisitor& visitor) const
     //register the traversed nodes in a list. The bottom-up traversal corresponds to the
     //reversed list.
 
-    std::queue<BaseMappingGraphNode*> ready = prepareRootForTraversal();
-
     sofa::type::vector<BaseMappingGraphNode*> nodes;
-    processQueue(ready, [&nodes](BaseMappingGraphNode* node){ nodes.push_back(node); });
+    nodes.reserve(m_allNodes.size());
+    {
+        std::queue<BaseMappingGraphNode*> ready = prepareRootForTraversal();
+        processQueue(ready, [&nodes](BaseMappingGraphNode* node){ nodes.push_back(node); });
+    }
 
     for (const auto* node : std::views::reverse(nodes))
     {
