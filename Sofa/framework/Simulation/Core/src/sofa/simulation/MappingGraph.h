@@ -108,7 +108,21 @@ public:
      */
     virtual std::string getName() const { return {}; }
 
-private:
+    enum class NodeType {
+        MechanicalState,
+        Mapping,
+        Component,
+        Group
+    };
+
+    virtual NodeType getType() const = 0;
+
+    /**
+     * @return True if the node has an ancestor which is a mapping node
+     */
+    bool isMapped() const;
+
+   private:
     sofa::type::vector<SPtr> m_parents;   ///< prerequisite nodes (nodes pointing to this one)
     sofa::type::vector<SPtr> m_children;  ///< dependent nodes (nodes pointed from this one)
 
@@ -161,7 +175,17 @@ public:
         return m_component->getName();
     }
 
-private:
+    NodeType getType() const override
+    {
+        if constexpr (std::is_base_of_v<core::behavior::BaseMechanicalState, TComponent>)
+            return NodeType::MechanicalState;
+        else if constexpr (std::is_base_of_v<core::BaseMapping, TComponent>)
+            return NodeType::Mapping;
+        else
+            return NodeType::Component;
+    }
+
+   private:
     typename TComponent::SPtr m_component; ///< The actual SOFA component instance pointer.
 };
 
@@ -182,6 +206,11 @@ public:
     std::string getName() const override
     {
         return "group";
+    }
+
+    NodeType getType() const override
+    {
+        return NodeType::Group;
     }
 };
 
