@@ -186,27 +186,48 @@ TEST(MappingGraph, SingleMappingWithIntermediateNodeInverseInputOutput)
     EXPECT_EQ(visitor.names[2], "state2");
 }
 
-TEST(MappingGraph, ComplexGraph)
+/**
+ * @brief Sets up the complex graph environment for testing, creating nodes and components.
+ * 
+ * @return std::tuple<sofa::simulation::Node::SPtr, sofa::simulation::MappingGraph::InputLists> A tuple containing the root node pointer and collected input lists.
+ */
+auto setupComplexGraphEnvironment() -> std::pair<const sofa::simulation::Node::SPtr, sofa::simulation::MappingGraph::InputLists>
 {
-    const sofa::simulation::Node::SPtr root = sofa::simpleapi::createRootNode(sofa::simulation::getSimulation(), "root");
-
+    // Setup common plugins required for both complex graph tests
     sofa::simpleapi::importPlugin(Sofa.Component.Mapping.Linear);
     sofa::simpleapi::importPlugin(Sofa.Component.StateContainer);
     sofa::simpleapi::importPlugin(Sofa.Component.MechanicalLoad);
     sofa::simpleapi::importPlugin(Sofa.Component.Mass);
 
+    const sofa::simulation::Node::SPtr root = sofa::simpleapi::createRootNode(sofa::simulation::getSimulation(), "root");
+
+    // Components on the root node (state1)
     sofa::simpleapi::createObject(root, "MechanicalObject", {{"name", "state1"}});
     sofa::simpleapi::createObject(root, "ConstantForceField", {{"name", "ff1"}, {"state", "@state1"}, {"forces", "1 0 0"}});
     sofa::simpleapi::createObject(root, "UniformMass", {{"name", "mass1"}});
+    
+    // Components on the child node (state2)
     const auto node1 = root->createChild("node1");
     sofa::simpleapi::createObject(node1, "MechanicalObject", {{"name", "state2"}});
     sofa::simpleapi::createObject(node1, "ConstantForceField", {{"name", "ff2"}, {"state", "@state2"}, {"forces", "1 0 0"}});
     sofa::simpleapi::createObject(node1, "UniformMass", {{"name", "mass2"}});
+
+    // Mapping connecting state1 to state2
     sofa::simpleapi::createObject(node1, "IdentityMapping", {{"name", "mapping"}, {"input", "@state1"}, {"output", "@state2"}});
 
+    // Initialize the root node structure
     sofa::simulation::node::initRoot(root.get());
 
     auto inputs = sofa::simulation::MappingGraph::InputLists::makeFromNode(root);
+    return {root, inputs};
+}
+
+
+TEST(MappingGraph, ComplexGraph)
+{
+    // Setup environment using helper function
+    auto [root, inputs] = setupComplexGraphEnvironment();
+
     ASSERT_EQ(inputs.mappings.size(), 1);
     ASSERT_EQ(inputs.mechanicalStates.size(), 2);
     ASSERT_EQ(inputs.forceFields.size(), 4);
@@ -215,6 +236,7 @@ TEST(MappingGraph, ComplexGraph)
 
     CollectNamesVisitor visitor;
 
+    // Top Down Traversal Check
     mappingGraph.traverseTopDown(visitor);
     ASSERT_EQ(visitor.names.size(), 9); // 9 and not 7 because a UniformMass is a BaseMass and also a BaseForceField
 
@@ -230,6 +252,7 @@ TEST(MappingGraph, ComplexGraph)
     EXPECT_EQ(visitor.names[8], "mass2");
 
     visitor.names.clear();
+    // Bottom Up Traversal Check
     mappingGraph.traverseBottomUp(visitor);
     ASSERT_EQ(visitor.names.size(), 9);
 
@@ -243,6 +266,58 @@ TEST(MappingGraph, ComplexGraph)
     EXPECT_EQ(visitor.names[6], "mass1");
     EXPECT_EQ(visitor.names[7], "ff1");
     EXPECT_EQ(visitor.names[8], "state1");
+}
+
+/**
+ * @brief Tests scoped traversal using different VisitorApplication scopes, limiting results to mapped nodes only.
+ */
+TEST(MappingGraph, ComplexGraph_OnlyMappedNodes)
+{
+    // Setup environment using helper function
+    auto [root, inputs] = setupComplexGraphEnvironment();
+
+    ASSERT_EQ(inputs.mappings.size(), 1);
+    ASSERT_EQ(inputs.mechanicalStates.size(), 2);
+    ASSERT_EQ(inputs.forceFields.size(), 4);
+    sofa::simulation::MappingGraph mappingGraph(inputs);
+    ASSERT_TRUE(mappingGraph.isBuilt());
+
+    CollectNamesVisitor visitor;
+
+    // Test ONLY_MAPPED_NODES scope
+    mappingGraph.traverseTopDown(visitor, sofa::simulation::VisitorApplication::ONLY_MAPPED_NODES);
+    ASSERT_GT(visitor.names.size(), 3);
+    EXPECT_EQ(visitor.names[0], "state2");
+    EXPECT_EQ(visitor.names[1], "ff2");
+    EXPECT_EQ(visitor.names[2], "mass2");
+
+}
+
+/**
+ * @brief Tests scoped traversal using different VisitorApplication scopes, limiting results to main nodes only.
+ */
+TEST(MappingGraph, ComplexGraph_OnlyMainNodes)
+{
+    // Setup environment using helper function
+    auto [root, inputs] = setupComplexGraphEnvironment();
+
+    ASSERT_EQ(inputs.mappings.size(), 1);
+    ASSERT_EQ(inputs.mechanicalStates.size(), 2);
+    ASSERT_EQ(inputs.forceFields.size(), 4);
+    sofa::simulation::MappingGraph mappingGraph(inputs);
+    ASSERT_TRUE(mappingGraph.isBuilt());
+
+    CollectNamesVisitor visitor;
+
+    // Test ONLY_MAIN_NODES scope
+    mappingGraph.traverseTopDown(visitor, sofa::simulation::VisitorApplication::ONLY_MAIN_NODES);
+    ASSERT_EQ(visitor.names.size(), 5);
+
+    EXPECT_EQ(visitor.names[0], "state1");
+    EXPECT_EQ(visitor.names[1], "ff1");
+    EXPECT_EQ(visitor.names[2], "mass1");
+    EXPECT_EQ(visitor.names[3], "mass1");
+    EXPECT_EQ(visitor.names[4], "mapping");
 }
 
 }
