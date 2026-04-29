@@ -114,6 +114,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/behavior/MultiMatrixAccessor.h
     ${SRC_ROOT}/behavior/MultiVec.h
     ${SRC_ROOT}/behavior/OdeSolver.h
+    ${SRC_ROOT}/behavior/IntegrationScheme.h
     ${SRC_ROOT}/behavior/PairInteractionConstraint.h
     ${SRC_ROOT}/behavior/PairInteractionConstraint.inl
     ${SRC_ROOT}/behavior/PairInteractionForceField.h
@@ -281,6 +282,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/behavior/MixedInteractionForceField.cpp
     ${SRC_ROOT}/behavior/MultiMatrixAccessor.cpp
     ${SRC_ROOT}/behavior/OdeSolver.cpp
+    ${SRC_ROOT}/behavior/IntegrationScheme.cpp
     ${SRC_ROOT}/behavior/PairInteractionConstraint.cpp
     ${SRC_ROOT}/behavior/PairInteractionForceField.cpp
     ${SRC_ROOT}/behavior/PairInteractionProjectiveConstraintSet.cpp

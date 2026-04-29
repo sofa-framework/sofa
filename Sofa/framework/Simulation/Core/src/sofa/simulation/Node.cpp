@@ -31,6 +31,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/behavior/Mass.h>
 #include <sofa/core/behavior/OdeSolver.h>
+#include <sofa/core/behavior/IntegrationScheme.h>
 #include <sofa/core/collision/Pipeline.h>
 #include <sofa/core/loader/BaseLoader.h>
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
@@ -85,6 +86,7 @@ Node::Node(const std::string& nodename, Node* parent)
     , mapping(initLink("mapping", "The (non-mechanical) Mapping(s) attached to this node (only valid for root node)"))
 
     , solver(initLink("odeSolver", "The OdeSolver(s) attached to this node (controlling the mechanical time integration of this branch)"))
+    , integrationScheme(initLink("integrationScheme", "The IntegrationScheme(s) attached to this node (controlling the mechanical time integration of this branch)"))
     , constraintSolver(initLink("constraintSolver", "The ConstraintSolver(s) attached to this node"))
     , linearSolver(initLink("linearSolver", "The LinearSolver(s) attached to this node"))
     , topologyObject(initLink("topologyObject", "The topology-related objects attached to this node"))
@@ -1881,6 +1883,7 @@ NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::visual::VisualLoop, VisualLoop, visua
 NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::BehaviorModel, BehaviorModel, behaviorModel )
 NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::BaseMapping, Mapping, mapping )
 NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::behavior::OdeSolver, OdeSolver, solver )
+NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::behavior::IntegrationScheme, IntegrationScheme, integrationScheme )
 NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::behavior::ConstraintSolver, ConstraintSolver, constraintSolver )
 NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::behavior::BaseLinearSolver, LinearSolver, linearSolver )
 NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::topology::Topology, Topology, topology )
@@ -1908,6 +1911,7 @@ template class NodeSequence<sofa::core::objectmodel::BaseComponent,true>;
 template class NodeSequence<sofa::core::BehaviorModel>;
 template class NodeSequence<sofa::core::BaseMapping>;
 template class NodeSequence<sofa::core::behavior::OdeSolver>;
+template class NodeSequence<sofa::core::behavior::IntegrationScheme>;
 template class NodeSequence<sofa::core::behavior::ConstraintSolver>;
 template class NodeSequence<sofa::core::behavior::BaseLinearSolver>;
 template class NodeSequence<sofa::core::topology::BaseTopologyObject>;

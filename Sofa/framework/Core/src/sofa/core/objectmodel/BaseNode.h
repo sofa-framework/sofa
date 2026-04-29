@@ -156,6 +156,7 @@ public:
      BASENODE_ADD_SPECIAL_COMPONENT( core::BehaviorModel, BehaviorModel, behaviorModel )
      BASENODE_ADD_SPECIAL_COMPONENT( core::BaseMapping, Mapping, mapping )
      BASENODE_ADD_SPECIAL_COMPONENT( core::behavior::OdeSolver, OdeSolver, solver )
+     BASENODE_ADD_SPECIAL_COMPONENT( core::behavior::IntegrationScheme, IntegrationScheme, integrationScheme )
      BASENODE_ADD_SPECIAL_COMPONENT( core::behavior::ConstraintSolver, ConstraintSolver, constraintSolver )
      BASENODE_ADD_SPECIAL_COMPONENT( core::behavior::BaseLinearSolver, LinearSolver, linearSolver )
      BASENODE_ADD_SPECIAL_COMPONENT( core::topology::Topology, Topology, topology )

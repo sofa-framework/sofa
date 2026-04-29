@@ -155,6 +155,9 @@ set(HEADER_FILES
     ${SRC_ROOT}/task/TaskSchedulerUser.h
     ${SRC_ROOT}/task/WorkerThread.h
     ${SRC_ROOT}/task/TaskSchedulerSettings.h
+
+    ${SRC_ROOT}/integrationschemes/AccelerationBasedIntegrationScheme.h
+    ${SRC_ROOT}/integrationschemes/VelocityBasedIntegrationScheme.h
 )
 
 set(SOURCE_FILES
@@ -297,6 +300,9 @@ set(SOURCE_FILES
     ${SRC_ROOT}/task/TaskSchedulerUser.cpp
     ${SRC_ROOT}/task/WorkerThread.cpp
     ${SRC_ROOT}/task/TaskSchedulerSettings.cpp
+
+    ${SRC_ROOT}/integrationschemes/AccelerationBasedIntegrationScheme.cpp
+    ${SRC_ROOT}/integrationschemes/VelocityBasedIntegrationScheme.cpp
 )
 
 set(DEPRECATED_DIR "compat/sofa/simulation")

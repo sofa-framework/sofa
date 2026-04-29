@@ -232,6 +232,7 @@ public:
     NodeSequence<sofa::core::BaseMapping> mapping;
 
     NodeSequence<sofa::core::behavior::OdeSolver> solver;
+    NodeSequence<sofa::core::behavior::IntegrationScheme> integrationScheme;
     NodeSequence<sofa::core::behavior::ConstraintSolver> constraintSolver;
     NodeSequence<sofa::core::behavior::BaseLinearSolver> linearSolver;
     NodeSequence<sofa::core::topology::BaseTopologyObject> topologyObject;
@@ -611,6 +612,7 @@ protected:
     NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::BehaviorModel, BehaviorModel, behaviorModel )
     NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::BaseMapping, Mapping, mapping )
     NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::behavior::OdeSolver, OdeSolver, solver )
+    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::behavior::IntegrationScheme, IntegrationScheme, integrationScheme )
     NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::behavior::ConstraintSolver, ConstraintSolver, constraintSolver )
     NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::behavior::BaseLinearSolver, LinearSolver, linearSolver )
     NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::topology::Topology, Topology, topology )
