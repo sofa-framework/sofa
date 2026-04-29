@@ -31,6 +31,19 @@ MappingGraph::MappingGraph(core::objectmodel::BaseContext* node)
     build(node);
 }
 
+void MappingGraph::clear()
+{
+    m_rootNode = nullptr;
+    m_isBuilt = false;
+    m_hasAnyMapping = false;
+    m_totalNbMainDofs = 0;
+    m_positionInGlobalMatrix.clear();
+    m_allNodes.clear();
+    m_rootStates.clear();
+    m_stateIndex.clear();
+    m_groupIndex.clear();
+}
+
 core::objectmodel::BaseContext* MappingGraph::getRootNode() const
 {
     return m_rootNode;
@@ -347,6 +360,8 @@ typename MappingGraphNode<TComponent>::SPtr makeMappingGraphNode(typename TCompo
 
 void MappingGraph::build(const InputLists& input)
 {
+    clear();
+
     m_hasAnyMapping = input.mappings.size() > 0;
 
     // 1. Create one wrapper node per object; index state nodes by raw ptr.

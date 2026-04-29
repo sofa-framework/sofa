@@ -20,9 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <memory>
-#include <optional>
-#include <sofa/simulation/config.h>
+
 #include <sofa/simulation/mappinggraph/MappingGraphVisitor.h>
 
 namespace sofa::simulation
