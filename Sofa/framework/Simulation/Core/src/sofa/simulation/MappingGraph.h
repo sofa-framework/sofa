@@ -32,12 +32,14 @@
  */
 
 #pragma once
-#include <sofa/simulation/config.h>
 #include <sofa/core/BaseMapping.h>
 #include <sofa/core/behavior/BaseForceField.h>
 #include <sofa/core/behavior/BaseMass.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/simulation/Node.h>
+#include <sofa/simulation/config.h>
+
+#include <optional>
 #include <queue>
 
 namespace sofa::simulation
@@ -135,6 +137,8 @@ public:
 
     // Mutable counter used during traversal (reset before each traversal).
     mutable int m_pendingCount = 0;
+
+    mutable std::optional<bool> m_isMapped;
 };
 
 /**
