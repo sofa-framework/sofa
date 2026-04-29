@@ -9,7 +9,7 @@
 		<RequiredPlugin pluginName="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
 		<RequiredPlugin pluginName="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
 		<RequiredPlugin pluginName="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
-		<RequiredPlugin pluginName="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+		<RequiredPlugin pluginName="Sofa.Component.IntegrationSchemes.Backward"/> <!-- Needed to use components [EulerImplicitIntegrationScheme] -->
 		<RequiredPlugin pluginName="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
 		<RequiredPlugin pluginName="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
 	</Node>
@@ -22,7 +22,7 @@
 	<CollisionResponse name="Response"  response="PenalityContactForceField" />
 
 	<Node name="object" />
-		<EulerImplicitSolver name="Implicit Euler Solver"  rayleighMass="0"  rayleighStiffness="0.1" />
+		<EulerImplicitIntegrationScheme name="Implicit Euler Solver"  rayleighMass="0"  rayleighStiffness="0.1" />
 		<CGLinearSolver template="GraphScattered" iterations="25" tolerance="1e-5" threshold="1e-5" name="Conjugate Gradient"/>
 		<Node 	 name="RigMec"  gravity="0 0 0"  >
 			<MechanicalObject template="Vec3d" name="falling_particle"  position="0 0 5 3 3 6 6 7 7"  velocity="0 0 -0.01 0 0 -0.01 0 0 -0.01"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1"  reserve="0" />

@@ -8,7 +8,7 @@
     <RequiredPlugin pluginName="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
     <RequiredPlugin pluginName="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [IdentityMapping] -->
     <RequiredPlugin pluginName="Sofa.Component.Mass"/> <!-- Needed to use components [DiagonalMass] -->
-    <RequiredPlugin pluginName="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin pluginName="Sofa.Component.IntegrationSchemes.Backward"/> <!-- Needed to use components [EulerImplicitIntegrationScheme] -->
     <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [TriangularFEMForceField] -->
     <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [TriangularBendingSprings] -->
     <RequiredPlugin pluginName="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
@@ -25,7 +25,7 @@
     <DefaultAnimationLoop/>
 
     <Node name="SquareGravity">
-        <EulerImplicitSolver name="cg_odesolver"/>
+        <EulerImplicitIntegrationScheme name="cg_odesolver"/>
         <CGImplicit iterations="40" tolerance="1e-6" threshold="1e-10" />
                
         <RegularGridTopology name="grid" nx="10" ny="10" nz="1" xmin="-5" xmax="5" ymin="-5" ymax="5" zmin="0" zmax="0"/>

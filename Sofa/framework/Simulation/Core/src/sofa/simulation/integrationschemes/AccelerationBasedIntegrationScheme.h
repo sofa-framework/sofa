@@ -76,6 +76,8 @@ public:
      */
     void updateVelocityAndPositionFromLinearSolution(SReal alpha, unsigned iteration = 0) override;
 
+    virtual SReal getVelocityIntegrationFactor() const final;
+    virtual SReal getPositionIntegrationFactor() const final;
 
 protected:
 

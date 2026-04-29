@@ -11,7 +11,7 @@
     <RequiredPlugin pluginName="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [IdentityMapping] -->
     <RequiredPlugin pluginName="Sofa.Component.Mass"/> <!-- Needed to use components [DiagonalMass] -->
     <RequiredPlugin pluginName="Sofa.Component.MechanicalLoad"/> <!-- Needed to use components [TrianglePressureForceField] -->
-    <RequiredPlugin pluginName="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin pluginName="Sofa.Component.IntegrationSchemes.Backward"/> <!-- Needed to use components [EulerImplicitIntegrationScheme] -->
     <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [TetrahedralCorotationalFEMForceField] -->
     <RequiredPlugin pluginName="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
     <RequiredPlugin pluginName="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [TetrahedronSetGeometryAlgorithms TetrahedronSetTopologyContainer TetrahedronSetTopologyModifier TriangleSetTopologyContainer TriangleSetTopologyModifier] -->
@@ -30,7 +30,7 @@
     <InteractiveCamera name="camera" position ="-43.0916 -14.6777 18.7712" orientation ="0.150872 -0.594478 -0.286645 0.735981" fieldOfView ="45" distance ="34.729" zNear ="0" zFar ="0" projectionType ="0" minBBox="-2.11554 -0.250372 0.88082"  maxBBox="2.10716 6.97043 16.8875" widthViewport="800" heightViewport="600" zoomSpeed="250" panSpeed="0.1" pivot="0" fixedLookAt="0" activated="1" listening="0" />
 
     <Node name="TT">
-        <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitIntegrationScheme name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MeshVTKLoader name="meshLoader" filename="mesh/raptorTetra_19409.vtu" translation=" -19 -22 12" />
         <MechanicalObject name="Volume" src="@meshLoader" translation="0 0 0" />

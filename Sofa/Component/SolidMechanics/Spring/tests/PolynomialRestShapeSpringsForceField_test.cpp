@@ -43,7 +43,7 @@ public:
         root->setDt(dt);
 
         this->loadPlugins({
-            Sofa.Component.ODESolver.Forward,
+            Sofa.Component.IntegrationSchemes.Forward,
             Sofa.Component.StateContainer,
             Sofa.Component.SolidMechanics.Spring
         });

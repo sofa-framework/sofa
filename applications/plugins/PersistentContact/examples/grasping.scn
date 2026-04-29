@@ -16,7 +16,7 @@
 	
 	
 	<Node name="Torus">
-		<EulerImplicitSolver  rayleighMass="0.0001"  rayleighStiffness="0.00001"/>
+		<EulerImplicitIntegrationScheme  rayleighMass="0.0001"  rayleighStiffness="0.00001"/>
 		<SparseTAUCSLLtSolver name="taucs"/>
 		<SparseGridTopology name="grid" n="4 2 4" fileTopology="torus_cm.obj"/>
 		<MechanicalObject name="MichelleM0" dx="5" dy="7" dz="-5" rx="90" sx="4.0" sy="8.0" sz="5"/>
@@ -47,7 +47,7 @@
 	</Node>
 	
 	<Node name="Torus2">
-		<EulerImplicitSolver  rayleighMass="0.0001"  rayleighStiffness="0.00001"/>
+		<EulerImplicitIntegrationScheme  rayleighMass="0.0001"  rayleighStiffness="0.00001"/>
 		<SparseTAUCSLLtSolver name="taucs"/>
 		
 		<SparseGridTopology name="grid" n="4 2 4" fileTopology="torus_cm.obj"/>

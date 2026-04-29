@@ -27,7 +27,7 @@
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 
-#include <sofa/component/odesolver/backward/EulerImplicitSolver.h>
+#include <sofa/component/integrationschemes/backward/EulerImplicitIntegrationScheme.h>
 
 #include <sofa/linearalgebra/SparseMatrix.h>
 #include <sofa/component/linearsolver/iterative/CGLinearSolver.h>
@@ -287,7 +287,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
         static constexpr sofa::type::Vec3 gravity_zero(0_sreal, 0_sreal, 0_sreal);
         this->getContext()->setGravity(gravity_zero);
 
-        sofa::component::odesolver::backward::EulerImplicitSolver* eulerSolver;
+        sofa::component::integrationschemes::backward::EulerImplicitIntegrationScheme* eulerSolver;
         sofa::component::linearsolver::iterative::CGLinearSolver< sofa::component::linearsolver::GraphScatteredMatrix, sofa::component::linearsolver::GraphScatteredVector >* cgLinearSolver;
         core::behavior::LinearSolver* linearSolver;
 
@@ -297,19 +297,19 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 
         if (eulerSolver && cgLinearSolver)
         {
-            msg_info() << "use EulerImplicitSolver & CGLinearSolver" ;
+            msg_info() << "use EulerImplicitIntegrationScheme & CGLinearSolver" ;
         }
         else if (eulerSolver && linearSolver)
         {
-            msg_info() << "use EulerImplicitSolver & LinearSolver";
+            msg_info() << "use EulerImplicitIntegrationScheme & LinearSolver";
         }
         else if(eulerSolver)
         {
-            msg_info() << "use EulerImplicitSolver";
+            msg_info() << "use EulerImplicitIntegrationScheme";
         }
         else
         {
-            msg_error() << "PrecomputedContactCorrection must be associated with EulerImplicitSolver+LinearSolver for the precomputation\nNo Precomputation" ;
+            msg_error() << "PrecomputedContactCorrection must be associated with EulerImplicitIntegrationScheme+LinearSolver for the precomputation\nNo Precomputation" ;
             return;
         }
 

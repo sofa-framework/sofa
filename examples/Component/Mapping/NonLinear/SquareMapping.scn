@@ -8,7 +8,7 @@
         <RequiredPlugin pluginName="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
         <RequiredPlugin pluginName="Sofa.Component.Mapping.NonLinear"/> <!-- Needed to use components [DistanceMapping SquareDistanceMapping SquareMapping] -->
         <RequiredPlugin pluginName="Sofa.Component.Mass"/> <!-- Needed to use components [DiagonalMass] -->
-        <RequiredPlugin pluginName="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+        <RequiredPlugin pluginName="Sofa.Component.IntegrationSchemes.Backward"/> <!-- Needed to use components [EulerImplicitIntegrationScheme] -->
         <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [RestShapeSpringsForceField] -->
         <RequiredPlugin pluginName="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
         <RequiredPlugin pluginName="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [EdgeSetGeometryAlgorithms EdgeSetTopologyContainer] -->
@@ -23,7 +23,7 @@
 
     <Node name="twoMappings">
 
-        <EulerImplicitSolver name="solverTwoMappings" rayleighStiffness="0.1" rayleighMass="0.1"/>
+        <EulerImplicitIntegrationScheme name="solverTwoMappings" rayleighStiffness="0.1" rayleighMass="0.1"/>
         <CGLinearSolver iterations="1e4" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
 
         <EdgeSetTopologyContainer name="topology" position="@../loader.position" edges="@../loader.edges" />
@@ -45,7 +45,7 @@
     <Node name="oneMapping">
         <TransformEngine name="transform" template="Vec3" translation="0 0 0" input_position="@../loader.position" />
 
-        <EulerImplicitSolver name="solverOneMapping" rayleighStiffness="0.1" rayleighMass="0.1"/>
+        <EulerImplicitIntegrationScheme name="solverOneMapping" rayleighStiffness="0.1" rayleighMass="0.1"/>
         <CGLinearSolver iterations="1e4" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
 
         <EdgeSetTopologyContainer name="topology" position="@transform.output_position" edges="@../loader.edges" />

@@ -26,7 +26,7 @@
 namespace sofa::simulation::mechanicalvisitor
 {
 
-/** Visitor used to do a time integration step using OdeSolvers
+/** Visitor used to do a time integration step using IntegrationSchemes
 */
 class SOFA_SIMULATION_CORE_API MechanicalIntegrationVisitor : public BaseMechanicalVisitor
 {
@@ -36,7 +36,7 @@ public:
             : BaseMechanicalVisitor(m_params) , dt(_dt)
     {}
 
-    Result fwdOdeSolver(simulation::Node* node,sofa::core::behavior::OdeSolver* obj) override;
+    Result fwdIntegrationScheme(simulation::Node* node,sofa::core::behavior::IntegrationScheme* obj) override;
     Result fwdInteractionForceField(simulation::Node*,sofa::core::behavior::BaseInteractionForceField* obj) override;
 
     /// Return a class name for this visitor

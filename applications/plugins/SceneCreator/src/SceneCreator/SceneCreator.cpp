@@ -88,16 +88,16 @@ Node::SPtr  createEulerSolverNode(Node::SPtr parent, const std::string& name, co
 
     if (scheme == "Explicit")
     {
-        simpleapi::createObject(parent, "RequiredPlugin", {{"pluginName", Sofa.Component.ODESolver.Forward}});
+        simpleapi::createObject(parent, "RequiredPlugin", {{"pluginName", Sofa.Component.IntegrationSchemes.Forward}});
         simpleapi::createObject(node, "EulerExplicitSolver", {{"name","Euler Explicit"}});
         return node ;
     }
 
     if (scheme == "Implicit")
     {
-        simpleapi::createObject(parent, "RequiredPlugin", {{"pluginName", Sofa.Component.ODESolver.Backward}});
+        simpleapi::createObject(parent, "RequiredPlugin", {{"pluginName", Sofa.Component.IntegrationSchemes.Backward}});
         simpleapi::createObject(parent, "RequiredPlugin", {{"pluginName", Sofa.Component.LinearSolver.Iterative}});
-        simpleapi::createObject(node, "EulerImplicitSolver", {{"name","Euler Implicit"},
+        simpleapi::createObject(node, "EulerImplicitIntegrationScheme", {{"name","Euler Implicit"},
                                                               {"rayleighStiffness","0.01"},
                                                               {"rayleighMass", "1.0"}}) ;
         simpleapi::createObject(node, "CGLinearSolver", {{"name","Conjugate Gradient"},
@@ -110,9 +110,9 @@ Node::SPtr  createEulerSolverNode(Node::SPtr parent, const std::string& name, co
 
     if (scheme == "Implicit_SparseLDL")
     {
-        simpleapi::createObject(parent, "RequiredPlugin", {{"pluginName", Sofa.Component.ODESolver.Backward}});
+        simpleapi::createObject(parent, "RequiredPlugin", {{"pluginName", Sofa.Component.IntegrationSchemes.Backward}});
         simpleapi::createObject(parent, "RequiredPlugin", {{"pluginName", Sofa.Component.LinearSolver.Direct}});
-        simpleapi::createObject(node, "EulerImplicitSolver", {{"name","Euler Implicit"},
+        simpleapi::createObject(node, "EulerImplicitIntegrationScheme", {{"name","Euler Implicit"},
                                                                 {"rayleighStiffness","0.01"},
                                                                 {"rayleighMass", "1.0"}}) ;
 

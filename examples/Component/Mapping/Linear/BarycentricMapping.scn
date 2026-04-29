@@ -9,7 +9,7 @@
     <RequiredPlugin pluginName="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [BarycentricMapping] -->
     <RequiredPlugin pluginName="Sofa.Component.Mapping.NonLinear"/> <!-- Needed to use components [RigidMapping] -->
     <RequiredPlugin pluginName="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
-    <RequiredPlugin pluginName="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin pluginName="Sofa.Component.IntegrationSchemes.Backward"/> <!-- Needed to use components [EulerImplicitIntegrationScheme] -->
     <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [TetrahedronFEMForceField] -->
     <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [MeshSpringForceField RegularGridSpringForceField] -->
     <RequiredPlugin pluginName="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
@@ -37,7 +37,7 @@
             <OglModel name="Visual" src="@meshLoader_19" color="gray" />
         </Node>
         <Node name="TorusFEM">
-            <EulerImplicitSolver rayleighStiffness="0.01"  rayleighMass="0.1" />
+            <EulerImplicitIntegrationScheme rayleighStiffness="0.01"  rayleighMass="0.1" />
             <CGLinearSolver iterations="100" threshold="0.00000001" tolerance="1e-5"/>
             <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
             <MeshTopology src="@loader" />
@@ -60,7 +60,7 @@
             </Node>
         </Node>
         <Node name="TorusSpring">
-            <EulerImplicitSolver rayleighStiffness="0.01" />
+            <EulerImplicitIntegrationScheme rayleighStiffness="0.01" />
             <CGLinearSolver iterations="100" threshold="0.00000001" tolerance="1e-5"/>
             <MeshGmshLoader name="loader" filename="mesh/torus2_low_res.msh" />
             <MeshTopology src="@loader" />
@@ -83,7 +83,7 @@
             </Node>
         </Node>
         <Node name="TorusFFD">
-            <EulerImplicitSolver rayleighStiffness="0.01" />
+            <EulerImplicitIntegrationScheme rayleighStiffness="0.01" />
             <CGLinearSolver iterations="100" threshold="0.00000001" tolerance="1e-5"/>
             <MechanicalObject dx="7.5" />
             <UniformMass totalMass="5" />
@@ -105,7 +105,7 @@
             </Node>
         </Node>
         <Node name="TorusRigid">
-            <EulerImplicitSolver rayleighStiffness="0.01" />
+            <EulerImplicitIntegrationScheme rayleighStiffness="0.01" />
             <CGLinearSolver iterations="100" threshold="0.00000001" tolerance="1e-5"/>
             <MechanicalObject template="Rigid3" dx="10" />
             <UniformMass filename="BehaviorModels/torus2.rigid" />
@@ -137,7 +137,7 @@
             <OglModel name="Visual" src="@meshLoader_21" color="gray" dz="6" />
         </Node>
         <Node name="TorusFEM1">
-            <EulerImplicitSolver rayleighStiffness="0.01" />
+            <EulerImplicitIntegrationScheme rayleighStiffness="0.01" />
             <CGLinearSolver iterations="100" threshold="0.00000001" tolerance="1e-5"/>
             <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
             <MeshTopology src="@loader" />
@@ -160,7 +160,7 @@
             </Node>
         </Node>
         <Node name="TorusFEM2">
-            <EulerImplicitSolver rayleighStiffness="0.01" />
+            <EulerImplicitIntegrationScheme rayleighStiffness="0.01" />
             <CGLinearSolver iterations="100" threshold="0.00000001" tolerance="1e-5"/>
             <MeshGmshLoader name="loader" filename="mesh/torus2_low_res.msh" />
             <MeshTopology src="@loader" />
@@ -183,7 +183,7 @@
             </Node>
         </Node>
         <Node name="TorusFEM3">
-            <EulerImplicitSolver rayleighStiffness="0.01" />
+            <EulerImplicitIntegrationScheme rayleighStiffness="0.01" />
             <CGLinearSolver iterations="100" threshold="0.00000001" tolerance="1e-5"/>
             <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
             <MeshTopology src="@loader" />
@@ -206,7 +206,7 @@
             </Node>
         </Node>
         <Node name="TorusFEM4">
-            <EulerImplicitSolver rayleighStiffness="0.01" />
+            <EulerImplicitIntegrationScheme rayleighStiffness="0.01" />
             <CGLinearSolver iterations="100" threshold="0.00000001" tolerance="1e-5"/>
             <MeshGmshLoader name="loader" filename="mesh/torus2_low_res.msh" />
             <MeshTopology src="@loader" />
@@ -241,7 +241,7 @@
             <OglModel name="Visual" src="@meshLoader_14" dz="12" color="gray" />
         </Node>
         <Node name="TorusSpring1">
-            <EulerImplicitSolver rayleighStiffness="0.01" />
+            <EulerImplicitIntegrationScheme rayleighStiffness="0.01" />
             <CGLinearSolver iterations="100" threshold="0.00000001" tolerance="1e-5"/>
             <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
             <MeshTopology src="@loader" />
@@ -264,7 +264,7 @@
             </Node>
         </Node>
         <Node name="TorusSpring2">
-            <EulerImplicitSolver rayleighStiffness="0.01" />
+            <EulerImplicitIntegrationScheme rayleighStiffness="0.01" />
             <CGLinearSolver iterations="100" threshold="0.00000001" tolerance="1e-5"/>
             <MeshGmshLoader name="loader" filename="mesh/torus2_low_res.msh" />
             <MeshTopology src="@loader" />
@@ -287,7 +287,7 @@
             </Node>
         </Node>
         <Node name="TorusSpring3">
-            <EulerImplicitSolver rayleighStiffness="0.01" />
+            <EulerImplicitIntegrationScheme rayleighStiffness="0.01" />
             <CGLinearSolver iterations="100" threshold="0.00000001" tolerance="1e-5"/>
             <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
             <MeshTopology src="@loader" />
@@ -310,7 +310,7 @@
             </Node>
         </Node>
         <Node name="TorusSpring4">
-            <EulerImplicitSolver rayleighStiffness="0.01" />
+            <EulerImplicitIntegrationScheme rayleighStiffness="0.01" />
             <CGLinearSolver iterations="100" threshold="0.00000001" tolerance="1e-5"/>
             <MeshGmshLoader name="loader" filename="mesh/torus2_low_res.msh" />
             <MeshTopology src="@loader" />
@@ -345,7 +345,7 @@
             <OglModel name="Visual" src="@meshLoader_9" dz="18" color="gray" />
         </Node>
         <Node name="TorusFFD1">
-            <EulerImplicitSolver rayleighStiffness="0.01" />
+            <EulerImplicitIntegrationScheme rayleighStiffness="0.01" />
             <CGLinearSolver iterations="100" threshold="0.00000001" tolerance="1e-5"/>
             <MechanicalObject dx="2.5" dz="18" />
             <UniformMass totalMass="5" />
@@ -367,7 +367,7 @@
             </Node>
         </Node>
         <Node name="TorusFFD2">
-            <EulerImplicitSolver rayleighStiffness="0.01" />
+            <EulerImplicitIntegrationScheme rayleighStiffness="0.01" />
             <CGLinearSolver iterations="100" threshold="0.00000001" tolerance="1e-5"/>
             <MechanicalObject dx="5" dz="18" />
             <UniformMass totalMass="5" />
@@ -389,7 +389,7 @@
             </Node>
         </Node>
         <Node name="TorusFFD3">
-            <EulerImplicitSolver rayleighStiffness="0.01" />
+            <EulerImplicitIntegrationScheme rayleighStiffness="0.01" />
             <CGLinearSolver iterations="100" threshold="0.00000001" tolerance="1e-5"/>
             <MechanicalObject dx="7.5" dz="18" />
             <UniformMass totalMass="5" />
@@ -411,7 +411,7 @@
             </Node>
         </Node>
         <Node name="TorusFFD4">
-            <EulerImplicitSolver rayleighStiffness="0.01" />
+            <EulerImplicitIntegrationScheme rayleighStiffness="0.01" />
             <CGLinearSolver iterations="100" threshold="0.00000001" tolerance="1e-5"/>
             <MechanicalObject dx="10" dz="18" />
             <UniformMass totalMass="5" />
@@ -445,7 +445,7 @@
             <OglModel name="Visual" src="@meshLoader_2" dz="24" color="gray" />
         </Node>
         <Node name="TorusRigid1">
-            <EulerImplicitSolver rayleighStiffness="0" />
+            <EulerImplicitIntegrationScheme rayleighStiffness="0" />
             <CGLinearSolver iterations="100" threshold="0.00000001" tolerance="1e-5"/>
             <MechanicalObject template="Rigid3" dx="2.5" dz="24" />
             <UniformMass filename="BehaviorModels/torus.rigid" />
@@ -465,7 +465,7 @@
             </Node>
         </Node>
         <Node name="TorusRigid2">
-            <EulerImplicitSolver rayleighStiffness="0" />
+            <EulerImplicitIntegrationScheme rayleighStiffness="0" />
             <CGLinearSolver iterations="100" threshold="0.00000001" tolerance="1e-5"/>
             <MechanicalObject template="Rigid3" dx="5" dz="24" />
             <UniformMass filename="BehaviorModels/torus2.rigid" />
@@ -485,7 +485,7 @@
             </Node>
         </Node>
         <Node name="TorusRigid3">
-            <EulerImplicitSolver rayleighStiffness="0" />
+            <EulerImplicitIntegrationScheme rayleighStiffness="0" />
             <CGLinearSolver iterations="100" threshold="0.00000001" tolerance="1e-5"/>
             <MechanicalObject template="Rigid3" dx="7.5" dz="24" />
             <UniformMass filename="BehaviorModels/torus.rigid" />
@@ -505,7 +505,7 @@
             </Node>
         </Node>
         <Node name="TorusRigid4">
-            <EulerImplicitSolver rayleighStiffness="0" />
+            <EulerImplicitIntegrationScheme rayleighStiffness="0" />
             <CGLinearSolver iterations="100" threshold="0.00000001" tolerance="1e-5"/>
             <MechanicalObject template="Rigid3" dx="10" dz="24" />
             <UniformMass filename="BehaviorModels/torus2.rigid" />

@@ -1,12 +1,12 @@
 <Node      name="Root"  dt="0.04" bbox="-1 -1 -1 1 1 1" >
     <RequiredPlugin pluginName="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [OscillatorProjectiveConstraint] -->
     <RequiredPlugin pluginName="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
-    <RequiredPlugin pluginName="Sofa.Component.ODESolver.Forward"/> <!-- Needed to use components [EulerExplicitSolver] -->
+    <RequiredPlugin pluginName="Sofa.Component.IntegrationSchemes.Forward"/> <!-- Needed to use components [EulerExplicitIntegrationScheme] -->
     <RequiredPlugin pluginName="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
     <RequiredPlugin pluginName="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
     <VisualStyle displayFlags="showBehaviorModels" />
     <DefaultAnimationLoop/>
-    <EulerExplicitSolver name="solver" />
+    <EulerExplicitIntegrationScheme name="solver" />
 
     <Node name="Point Oscillator"  >
         <MechanicalObject template="Vec3" name="mech" position="0 0 0"  velocity="1 0 0"  force="1 0 0" externalForce="1 0 0" derivX="1 0 0"  restScale="1" />

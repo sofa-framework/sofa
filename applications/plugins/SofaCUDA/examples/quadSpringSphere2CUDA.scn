@@ -2,7 +2,7 @@
     <RequiredPlugin pluginName="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
     <RequiredPlugin pluginName="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
     <RequiredPlugin pluginName="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [IdentityMapping] -->
-    <RequiredPlugin pluginName="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin pluginName="Sofa.Component.IntegrationSchemes.Backward"/> <!-- Needed to use components [EulerImplicitIntegrationScheme] -->
     <RequiredPlugin pluginName="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
     <RequiredPlugin pluginName="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->
     <RequiredPlugin pluginName="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
@@ -31,7 +31,7 @@
 	</Node>
 	<Node name="SquareCloth">
 		<!--<CGImplicit rayleighMass="0.05"  iterations="10" threshold="0.000001"/>-->
-		<EulerImplicitSolver rayleighMass="0.05" rayleighStiffness="0.1" />
+		<EulerImplicitIntegrationScheme rayleighMass="0.05" rayleighStiffness="0.1" />
 		<CGLinearSolver iterations="10" threshold="0.000001"/>
 	<Node name="SquareCloth1">
 		<MechanicalObject template="CudaVec3f" />

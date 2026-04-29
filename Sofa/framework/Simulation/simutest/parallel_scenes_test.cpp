@@ -61,7 +61,7 @@ public:
             Sofa.Component.LinearSolver.Iterative,
             Sofa.Component.Mapping.Linear,
             Sofa.Component.Mass,
-            Sofa.Component.ODESolver.Backward,
+            Sofa.Component.IntegrationSchemes.Backward,
             Sofa.Component.SolidMechanics.FEM.Elastic,
             Sofa.Component.StateContainer,
             Sofa.Component.Topology.Container.Constant,
@@ -139,7 +139,7 @@ public:
             <MeshOBJLoader name="LiverSurface" filename="mesh/liver-smooth.obj" />
 
             <Node name="Liver" gravity="0 -9.81 0">
-                <EulerImplicitSolver name="cg_odesolver"   rayleighStiffness="0.1" rayleighMass="0.1" />
+                <EulerImplicitIntegrationScheme name="cg_odesolver"   rayleighStiffness="0.1" rayleighMass="0.1" />
                 <CGLinearSolver name="linear solver" iterations="25" tolerance="1e-09" threshold="1e-09" />
                 <MeshGmshLoader name="meshLoader" filename="mesh/liver.msh" />
                 <TetrahedronSetTopologyContainer name="topo" src="@meshLoader" />
@@ -191,13 +191,13 @@ public:
 
                 <SparseGridRamificationTopology name="grid" n="4 12 3" fileTopology="mesh/snake_body.obj" nbVirtualFinerLevels="3" finestConnectivity="0"/>
 
-                <EulerImplicitSolver name="cg_odesolver" rayleighMass="1" rayleighStiffness="0.03" />
+                <EulerImplicitIntegrationScheme name="cg_odesolver" rayleighMass="1" rayleighStiffness="0.03" />
                 <MatrixLinearSystem template="CompressedRowSparseMatrixMat3x3" name="linearSystem"/>
                 <CGLinearSolver name="linear_solver" iterations="20" tolerance="1e-12" threshold="1e-18" template="CompressedRowSparseMatrixMat3x3" linearSystem="@linearSystem"/>
                 <MechanicalObject name="dofs"  scale="1" dy="2" position="@grid.position"  tags="NoPicking" />
                 <UniformMass totalMass="1.0" />
                 <HexahedronFEMForceField name="FEM" youngModulus="30000.0" poissonRatio="0.3" method="large" updateStiffnessMatrix="false" printLog="0" />
-                <UncoupledConstraintCorrection defaultCompliance="184" useOdeSolverIntegrationFactors="0"/>
+                <UncoupledConstraintCorrection defaultCompliance="184" useIntegrationSchemeIntegrationFactors="0"/>
 
                 <Node name="Collis">
                     <MeshOBJLoader name="loader" filename="mesh/meca_snake_900tri.obj" />

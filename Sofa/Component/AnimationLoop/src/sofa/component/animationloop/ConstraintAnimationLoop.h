@@ -30,7 +30,7 @@ SOFA_HEADER_DEPRECATED_NOT_REPLACED("v26.06", "v26.12")
 #include <sofa/core/MultiVecId.h>
 #include <sofa/core/VecId.h>
 #include <sofa/core/behavior/BaseConstraintCorrection.h>
-#include <sofa/core/behavior/OdeSolver.h>
+#include <sofa/core/behavior/IntegrationScheme.h>
 #include <sofa/core/ConstraintParams.h>
 #include <sofa/core/fwd.h>
 

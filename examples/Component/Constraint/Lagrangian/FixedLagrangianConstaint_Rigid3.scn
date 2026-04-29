@@ -8,7 +8,7 @@
     <RequiredPlugin pluginName="Sofa.Component.LinearSolver.Direct"/> <!-- Needed to use components [BTDLinearSolver] -->
     <RequiredPlugin pluginName="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [IdentityMapping TubularMapping] -->
     <RequiredPlugin pluginName="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
-    <RequiredPlugin pluginName="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin pluginName="Sofa.Component.IntegrationSchemes.Backward"/> <!-- Needed to use components [EulerImplicitIntegrationScheme] -->
     <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [BeamFEMForceField] -->
     <RequiredPlugin pluginName="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
     <RequiredPlugin pluginName="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [EdgeSetTopologyContainer EdgeSetTopologyModifier QuadSetGeometryAlgorithms QuadSetTopologyContainer QuadSetTopologyModifier] -->
@@ -24,7 +24,7 @@
     <BlockGaussSeidelConstraintSolver maxIterations="200" tolerance="1.0e-8"/>
 
     <Node name="Needle">
-        <EulerImplicitSolver  />
+        <EulerImplicitIntegrationScheme  />
         <BTDLinearSolver name="BTD" />
         <EdgeSetTopologyContainer name="Container" position=" 0 0 0  0.010 0  0 0.020 0 0   0.030 0 0   0.040 0 0  0.050 0 0   0.060 0 0  0.070 0 0  0.080 0 0  0.090 0 0  0.100 0 0  0.110 0 0  0.120 0 0  0.130 0 0." edges="0 1 1 2 2 3 3 4 4 5 5 6 6 7 7 8 8 9 9 10 10 11 11 12 12 13" />
         <EdgeSetTopologyModifier name="modifier" />

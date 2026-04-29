@@ -5,15 +5,14 @@ set(SOFACOMPONENT_SOURCE_DIR "src/sofa/component")
 
 sofa_add_subdirectory_modules(SOFACOMPONENT_TARGETS
     DIRECTORIES
-    ODESolver
     IO
     Playback
     SceneUtility
     Topology
     Visual
     LinearSystem
-    LinearSolver
     IntegrationSchemes
+    LinearSolver
     Mass
     Diffusion
     Mapping

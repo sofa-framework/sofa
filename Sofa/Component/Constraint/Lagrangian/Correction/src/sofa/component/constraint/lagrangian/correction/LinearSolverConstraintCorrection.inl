@@ -104,10 +104,10 @@ void LinearSolverConstraintCorrection<DataTypes>::init()
     {
         msg_info() << "Link \"ODESolver\" to the desired ODE solver should be set to ensure right behavior." << msgendl
                    << "First ODESolver found in current context will be used.";
-        l_ODESolver.set( context->get<sofa::core::behavior::OdeSolver>(sofa::core::objectmodel::BaseContext::Local) );
+        l_ODESolver.set( context->get<sofa::core::behavior::IntegrationScheme>(sofa::core::objectmodel::BaseContext::Local) );
         if (l_ODESolver.get() == nullptr)
         {
-            l_ODESolver.set( context->get<sofa::core::behavior::OdeSolver>(sofa::core::objectmodel::BaseContext::SearchRoot) );
+            l_ODESolver.set( context->get<sofa::core::behavior::IntegrationScheme>(sofa::core::objectmodel::BaseContext::SearchRoot) );
         }
     }
 
@@ -192,7 +192,7 @@ void LinearSolverConstraintCorrection<DataTypes>::addComplianceInConstraintSpace
     if(d_componentState.getValue() != ComponentState::Valid)
         return ;
 
-    // use the OdeSolver to get the position integration factor
+    // use the IntegrationScheme to get the position integration factor
     const SReal factor = core::behavior::BaseConstraintCorrection::correctionFactor(l_ODESolver.get(), cparams->constOrder());
 
     // J is read from the mechanical state and converted to m_constraintJacobian
@@ -373,10 +373,10 @@ void LinearSolverConstraintCorrection<DataTypes>::applyContactForce(const linear
 
     //TODO: tell the solver not to recompute the matrix
 
-    // use the OdeSolver to get the position integration factor
+    // use the IntegrationScheme to get the position integration factor
     const SReal positionFactor = l_ODESolver.get()->getPositionIntegrationFactor();
 
-    // use the OdeSolver to get the position integration factor
+    // use the IntegrationScheme to get the position integration factor
     const SReal velocityFactor = l_ODESolver.get()->getVelocityIntegrationFactor();
 
     Data<VecCoord>& xData     = *mstate->write(core::vec_id::write_access::position);
@@ -689,7 +689,7 @@ void LinearSolverConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(lin
     if(d_componentState.getValue() != ComponentState::Valid)
         return ;
 
-    // use the OdeSolver to get the position integration factor
+    // use the IntegrationScheme to get the position integration factor
     const SReal factor = l_ODESolver.get()->getPositionIntegrationFactor(); //*m_ODESolver->getPositionIntegrationFactor(); // dt*dt
 
     const unsigned int numDOFs = mstate->getSize();

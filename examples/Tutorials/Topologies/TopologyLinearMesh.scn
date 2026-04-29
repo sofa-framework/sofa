@@ -8,7 +8,7 @@
     <RequiredPlugin pluginName="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
     <RequiredPlugin pluginName="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
     <RequiredPlugin pluginName="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
-    <RequiredPlugin pluginName="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin pluginName="Sofa.Component.IntegrationSchemes.Backward"/> <!-- Needed to use components [EulerImplicitIntegrationScheme] -->
     <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [MeshSpringForceField] -->
     <RequiredPlugin pluginName="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
     <RequiredPlugin pluginName="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
@@ -25,7 +25,7 @@
         <MechanicalObject template="Vec3" name="DOF" position="0 0 4 1 0 4 2 0 4 3 0 4 4 0 4 5 0 4" />
         <UniformMass template="Vec3" name="Mass" totalMass="1" />
         <CGLinearSolver template="GraphScattered" name="CG solver" iterations="25" tolerance="1e-5" threshold="1e-5"/>
-        <EulerImplicitSolver name="EulerImplicit"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitIntegrationScheme name="EulerImplicit"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <FixedProjectiveConstraint template="Vec3" name="Fixed dof" indices="0" />
         <MeshTopology name="Static Mesh" edges="0 1  1 2  2 3  3 4  4 5 " />
         <MeshSpringForceField template="Vec3" name="springs" stiffness="100" damping="1" />
@@ -34,7 +34,7 @@
         <MechanicalObject template="Vec3" name="DOF" position="0 0 -4 1 0 -4 2 0 -4 3 0 -4 4 0 -4 5 0 -4" />
         <UniformMass template="Vec3" name="Mass" totalMass="1" />
         <CGLinearSolver template="GraphScattered" name="CG solver" iterations="25" tolerance="1e-5" threshold="1e-5"/>
-        <EulerImplicitSolver name="EulerImplicit" />
+        <EulerImplicitIntegrationScheme name="EulerImplicit" />
         <FixedProjectiveConstraint template="Vec3" name="Fixed dof" indices="0" />
         <MeshTopology name="Static Mesh" />
         <MeshSpringForceField template="Vec3" name="springs" stiffness="100" damping="1" />
