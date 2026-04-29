@@ -32,9 +32,10 @@
  */
 
 #pragma once
-#include <sofa/simulation/config.h>
 #include <sofa/simulation/Node.h>
+#include <sofa/simulation/config.h>
 #include <sofa/simulation/mappinggraph/ComponentGroupMappingGraphNode.h>
+#include <sofa/simulation/mappinggraph/CallableVisitor.h>
 
 #include <queue>
 
@@ -205,12 +206,26 @@ public:
     // and leaf components. This guarantees correct dependency order.
     void traverseTopDown(MappingGraphVisitor& visitor, VisitorApplication scope = VisitorApplication::ALL_NODES) const;
 
+    template<class Callable>
+    void traverseTopDown_(const Callable& callable, VisitorApplication scope = VisitorApplication::ALL_NODES) const
+    {
+        CallableVisitor<Callable> visitor{callable};
+        traverseTopDown(visitor, scope);
+    }
+
     // ------------------------------------------------------------------
     // Bottom-up traversal: leaves → roots.
     //
     // Provides the reverse dependency ordering check, ensuring that prerequisite 
     // states are processed before the components that require them.
     void traverseBottomUp(MappingGraphVisitor& visitor, VisitorApplication scope = VisitorApplication::ALL_NODES) const;
+
+    template<class Callable>
+    void traverseBottomUp_(const Callable& callable, VisitorApplication scope = VisitorApplication::ALL_NODES) const
+    {
+        CallableVisitor<Callable> visitor{callable};
+        traverseBottomUp(visitor, scope);
+    }
 
     /**
      * @brief Visit and process component groups without any specific order.
