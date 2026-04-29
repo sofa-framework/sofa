@@ -106,6 +106,8 @@ public:
      */
     explicit MappingGraph(core::objectmodel::BaseContext* node);
 
+    void clear();
+
     /**
      * @brief Returns the root node used during the initial construction of the graph.
      * @return A pointer to the root object model context.
