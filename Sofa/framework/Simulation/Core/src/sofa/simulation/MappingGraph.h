@@ -382,7 +382,7 @@ public:
     //
     // Provides the reverse dependency ordering check, ensuring that prerequisite 
     // states are processed before the components that require them.
-    void traverseBottomUp(MappingGraphVisitor& visitor) const;
+    void traverseBottomUp(MappingGraphVisitor& visitor, VisitorApplication scope = VisitorApplication::ALL_NODES) const;
 
     /**
      * @brief Visit and process component groups without any specific order.

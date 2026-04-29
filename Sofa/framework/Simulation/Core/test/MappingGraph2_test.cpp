@@ -286,10 +286,21 @@ TEST(MappingGraph, ComplexGraph_OnlyMappedNodes)
 
     // Test ONLY_MAPPED_NODES scope
     mappingGraph.traverseTopDown(visitor, sofa::simulation::VisitorApplication::ONLY_MAPPED_NODES);
-    ASSERT_GT(visitor.names.size(), 3);
+    ASSERT_EQ(visitor.names.size(), 4);
     EXPECT_EQ(visitor.names[0], "state2");
     EXPECT_EQ(visitor.names[1], "ff2");
     EXPECT_EQ(visitor.names[2], "mass2");
+    EXPECT_EQ(visitor.names[3], "mass2");
+
+    visitor.names.clear();
+    // Bottom Up Traversal Check
+    mappingGraph.traverseBottomUp(visitor, sofa::simulation::VisitorApplication::ONLY_MAPPED_NODES);
+    ASSERT_EQ(visitor.names.size(), 4);
+
+    EXPECT_EQ(visitor.names[0], "mass2");
+    EXPECT_EQ(visitor.names[1], "mass2");
+    EXPECT_EQ(visitor.names[2], "ff2");
+    EXPECT_EQ(visitor.names[3], "state2");
 
 }
 
@@ -318,6 +329,17 @@ TEST(MappingGraph, ComplexGraph_OnlyMainNodes)
     EXPECT_EQ(visitor.names[2], "mass1");
     EXPECT_EQ(visitor.names[3], "mass1");
     EXPECT_EQ(visitor.names[4], "mapping");
+
+    visitor.names.clear();
+    // Bottom Up Traversal Check
+    mappingGraph.traverseBottomUp(visitor, sofa::simulation::VisitorApplication::ONLY_MAIN_NODES);
+    ASSERT_EQ(visitor.names.size(), 5);
+
+    EXPECT_EQ(visitor.names[0], "mapping");
+    EXPECT_EQ(visitor.names[1], "mass1");
+    EXPECT_EQ(visitor.names[2], "mass1");
+    EXPECT_EQ(visitor.names[3], "ff1");
+    EXPECT_EQ(visitor.names[4], "state1");
 }
 
 }
