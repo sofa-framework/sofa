@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/integrationschemes/backward/NewmarkIntegrationScheme.h>
+#include <sofa/component/integrationschemes/backward/BDFIntegrationScheme.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/AdvancedTimer.h>
@@ -35,47 +35,115 @@ using core::VecId;
 using namespace sofa::defaulttype;
 using namespace core::behavior;
 
-NewmarkIntegrationScheme::NewmarkIntegrationScheme()
-: d_beta(initData(&d_beta,0.25,"beta","Factor controlling the 'implicitness' of the position computation with respect to the acceleration. 0.0 means explicit central difference, 1.0/0.6 means linear accelerations scheme") )
-, d_gamma(initData(&d_gamma,0.5,"gamma","Factor controlling the 'implicitness' of the velocity computation with respect to the acceleration. To insure unconditional stability, gamma must belong to [2*beta, 1/2]. ") )
+BDFIntegrationScheme::BDFIntegrationScheme()
+: d_order(initData(&d_order,Size(2),"order","Order of the Backward Differential Formula.") )
 {  }
 
-SReal NewmarkIntegrationScheme::getPositionUpdateDerivedFromAcceleration() const
+void BDFIntegrationScheme::init()
 {
-    return m_dt * m_dt * d_beta.getValue();
+    if (d_order.getValue() == 0)
+    {
+        msg_error()<<"Order cannot be null";
+        d_componentState.setValue(core::objectmodel::ComponentState::Invalid);
+        return;
+    }
+    for (unsigned i = 0; i < d_order.getValue() + 1; i++)
+        m_samples.push_back(- i * m_dt);
 }
 
-SReal NewmarkIntegrationScheme::getPositionUpdateDerivedFromVelocity() const
+void BDFIntegrationScheme::doSetupIntegrationStep(const core::ExecParams* params, SReal dt,
+                                                  sofa::core::MultiVecCoordId xResult,
+                                                  sofa::core::MultiVecDerivId vResult)
 {
-    return 0.0;
+    Inherit1::doSetupIntegrationStep(params, dt, xResult, vResult);
+
+    m_samples.pop_back();
+    m_samples.push_front(m_dt);
+
+    computeAFactors();
 }
 
-SReal NewmarkIntegrationScheme::getVelocityUpdateDerivedFromAcceleration() const
+SReal BDFIntegrationScheme::getPositionUpdateDerivedFromVelocity() const
 {
-    return m_dt * d_gamma.getValue();
+    return m_dt / m_aFactors[d_order.getValue()];
 }
 
+SReal BDFIntegrationScheme::getInverseVelocityUpdateDerivedFromVelocity() const
+{
+    return m_aFactors[d_order.getValue()] / m_dt ;
+}
 
-void NewmarkIntegrationScheme::computePositionUpdateFromVelocityAndAcceleration(sofa::simulation::common::VectorOperations & vop, sofa::core::MultiVecDerivId& result, const sofa::core::MultiVecDerivId& velocity, const sofa::core::MultiVecDerivId& acceleration)
+//Compute the position update from current value of velocity : dX = g_x(v_i) - x_t
+void BDFIntegrationScheme::computeCurrentPositionIntegrationError(sofa::simulation::common::VectorOperations & vop, sofa::core::MultiVecDerivId& result,  const sofa::core::MultiVecCoordId& position, const sofa::core::MultiVecDerivId& velocity)
+{
+
+    sofa::core::behavior::MultiVecDeriv res(&vop, result );
+    res.eq(velocity, m_dt / m_aFactors[d_order.getValue()]);
+    for (unsigned i = 0; i < d_order.getValue(); i++)
+    {
+        //TODO How does that work in practice ? Deriv += f * Coord
+        res.peq(m_x0[i], -m_aFactors[i]/m_aFactors[d_order.getValue()]);
+    }
+    res.peq(m_x0[d_order.getValue()], -1);
+
+}
+//Compute the acceleration from current value of velocity. This is the implementation of the inverse integration scheme for the velocity
+void BDFIntegrationScheme::computeAccelerationFromVelocity(sofa::simulation::common::VectorOperations & vop, sofa::core::MultiVecDerivId& result, const sofa::core::MultiVecDerivId& velocity)
 {
     sofa::core::behavior::MultiVecDeriv res(&vop, result );
-    res.eq(m_v0[0], m_dt);
-    res.peq(acceleration, m_dt * m_dt * d_beta.getValue() );
-    res.peq(m_a0[0], m_dt * m_dt * (0.5  -  d_beta.getValue()) );
+    res.eq(velocity, m_aFactors[d_order.getValue()]/m_dt);
+    for (unsigned i = 0; i < d_order.getValue(); i++)
+    {
+        res.peq(m_v0[i], m_aFactors[i]/m_dt);
+    }
 }
 
-void NewmarkIntegrationScheme::computeVelocityUpdateFromAcceleration(sofa::simulation::common::VectorOperations & vop, const sofa::core::MultiVecDerivId& result, const sofa::core::MultiVecDerivId& acceleration)
+
+void BDFIntegrationScheme::computeAFactors()
+
 {
-    sofa::core::behavior::MultiVecDeriv res(&vop, result );
-    res.peq(acceleration, m_dt * d_gamma.getValue() );
-    res.peq(m_a0[0], m_dt * (1.0  -  d_gamma.getValue()) );
+    //TODO make sure the order doesn't mismatch here with the theory in typst
+    assert(m_samples.size() > 1);
+    const auto order =m_samples.size() - 1;
+    assert(order >= 1);
+
+    m_aFactors.resize(order+1);
+
+    /**
+     * Computation of the derivative of the Lagrange inteperpolation polynomials
+     */
+    for (std::size_t j = 0; j < order+1; ++j)
+    {
+        auto& a_j = m_aFactors[j];
+
+        a_j = 0;
+        for (std::size_t i = 0; i < order+1; ++i)
+        {
+            if (i != j)
+            {
+                SReal product = 1_sreal;
+                for (std::size_t m = 0; m < order + 1; ++m)
+                {
+                    if (m != i && m != j)
+                    {
+                        product *= (m_samples[order] - m_samples[m]) / (m_samples[j] - m_samples[m]);
+                    }
+                }
+                a_j += product / (m_samples[j] - m_samples[i]);
+            }
+        }
+    }
+    for (SReal& j : m_aFactors)
+    {
+        j *= m_dt;
+    }
 }
 
 
-void registerNewmarkIntegrationScheme(sofa::core::ObjectFactory* factory)
+void registerBDFIntegrationScheme(sofa::core::ObjectFactory* factory)
 {
     factory->registerObjects(core::ObjectRegistrationData("Time integrator using implicit backward Euler scheme.")
-        .add< NewmarkIntegrationScheme >());
+        .add< BDFIntegrationScheme >());
 }
 
 } // namespace sofa::component::odesolver::backward

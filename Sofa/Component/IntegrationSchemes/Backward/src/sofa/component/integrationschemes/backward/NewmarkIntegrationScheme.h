@@ -53,9 +53,10 @@ protected:
     SReal getPositionUpdateDerivedFromVelocity() const override;
     SReal getVelocityUpdateDerivedFromAcceleration() const override;
 
-    // void computeCurrentAccelerationFromVelocity(sofa::simulation::common::VectorOperations & vop, sofa::core::MultiVecDerivId& result, const sofa::core::MultiVecDerivId& velocity) override ;
-    void computePositionUpdateFromVelocityAndAcceleration(sofa::simulation::common::VectorOperations & vop, sofa::core::MultiVecDerivId& result, const sofa::core::MultiVecDerivId& velocity, const sofa::core::MultiVecDerivId& acceleration) override;
-    void computeVelocityUpdateFromAcceleration(sofa::simulation::common::VectorOperations & vop, const sofa::core::MultiVecDerivId& result, const sofa::core::MultiVecDerivId& acceleration) override;
+    //Compute the error made on the position integration equation : x_{t+h} - g_x(v,a), with v and a the current estimates of velocity and acceleration
+    virtual void computeCurrentPositionIntegrationError(sofa::simulation::common::VectorOperations & vop, sofa::core::MultiVecDerivId& result, const sofa::core::MultiVecDerivId& velocity, const sofa::core::MultiVecDerivId& acceleration);
+    //Compute the error made on the position integration equation : v_{t+h} - g_v(a), with a the current estimate of acceleration
+    virtual void computeCurrentVelocityIntegrationError(sofa::simulation::common::VectorOperations & vop, const sofa::core::MultiVecDerivId& result, const sofa::core::MultiVecDerivId& acceleration) ;
 
     virtual Size getIntegrationSchemeOrder() override
     {

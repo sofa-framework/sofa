@@ -106,6 +106,10 @@ public:
     bool insertInNode( objectmodel::BaseNode* node ) override;
     bool removeInNode( objectmodel::BaseNode* node ) override;
 
+    Data<SReal> d_rayleighStiffness; ///< Rayleigh damping coefficient related to stiffness, > 0
+    Data<SReal> d_rayleighMass; ///< Rayleigh damping coefficient related to mass, > 0
+
+
 protected:
 
     virtual sofa::Size getIntegrationSchemeOrder() = 0;
@@ -123,10 +127,6 @@ protected:
     sofa::core::MultiVecDerivId m_acceleration;
 
     sofa::core::MultiVecDerivId m_unknown;
-
-
-    Data<SReal> d_rayleighStiffness; ///< Rayleigh damping coefficient related to stiffness, > 0
-    Data<SReal> d_rayleighMass; ///< Rayleigh damping coefficient related to mass, > 0
 
 
 };
