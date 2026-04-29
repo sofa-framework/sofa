@@ -237,27 +237,33 @@ sofa::type::vector<core::BaseMapping*> MappingGraph::getBottomUpMappingsFrom(
     return {};
 }
 
+namespace
+{
+bool shouldVisit(const BaseMappingGraphNode* node, VisitorApplication scope)
+{
+    if (node)
+    {
+        switch (scope)
+        {
+            case VisitorApplication::ONLY_MAPPED_NODES:
+                return node->isMapped();
+            case VisitorApplication::ONLY_MAIN_NODES:
+                return !node->isMapped();
+            case VisitorApplication::ALL_NODES:
+            default:
+                return true; // Visit all nodes.
+        }
+    }
+    return false;
+}
+}
+
 void MappingGraph::traverseTopDown(MappingGraphVisitor& visitor, VisitorApplication scope) const
 {
     std::queue<BaseMappingGraphNode*> ready = prepareRootForTraversal();
-    processQueue(ready, [&visitor, this, scope](const BaseMappingGraphNode* node){
-        bool should_visit = true;
-
-        switch (scope)
-        {
-        case VisitorApplication::ONLY_MAPPED_NODES:
-            should_visit = node->isMapped();
-            break;
-        case VisitorApplication::ONLY_MAIN_NODES:
-            should_visit = !node->isMapped();
-            break;
-        case VisitorApplication::ALL_NODES:
-        default:
-            should_visit = true; // Visit all nodes.
-            break;
-        }
-
-        if (should_visit)
+    processQueue(ready, [&visitor, scope](const BaseMappingGraphNode* node)
+    {
+        if (shouldVisit(node, scope))
         {
             node->accept(visitor);
         }
@@ -279,7 +285,7 @@ std::queue<BaseMappingGraphNode*> MappingGraph::prepareRootForTraversal() const
     return ready;
 }
 
-void MappingGraph::traverseBottomUp(MappingGraphVisitor& visitor) const
+void MappingGraph::traverseBottomUp(MappingGraphVisitor& visitor, VisitorApplication scope) const
 {
     //the strategy consists in traversing the graph from top to bottom and
     //register the traversed nodes in a list. The bottom-up traversal corresponds to the
@@ -289,7 +295,13 @@ void MappingGraph::traverseBottomUp(MappingGraphVisitor& visitor) const
     nodes.reserve(m_allNodes.size());
     {
         std::queue<BaseMappingGraphNode*> ready = prepareRootForTraversal();
-        processQueue(ready, [&nodes](BaseMappingGraphNode* node){ nodes.push_back(node); });
+        processQueue(ready, [&nodes, scope](BaseMappingGraphNode* node)
+        {
+            if (shouldVisit(node, scope))
+            {
+                nodes.push_back(node);
+            }
+        });
     }
 
     for (const auto* node : std::views::reverse(nodes))
