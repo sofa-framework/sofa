@@ -7,7 +7,7 @@
     <RequiredPlugin pluginName="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
     <RequiredPlugin pluginName="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [IdentityMapping] -->
     <RequiredPlugin pluginName="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
-    <RequiredPlugin pluginName="Sofa.Component.ODESolver.Forward"/> <!-- Needed to use components [RungeKutta4Solver] -->
+    <RequiredPlugin pluginName="Sofa.Component.IntegrationSchemes.Forward"/> <!-- Needed to use components [RungeKutta4IntegrationScheme] -->
     <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [MeshSpringForceField] -->
     <RequiredPlugin pluginName="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
     <RequiredPlugin pluginName="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [TetrahedronSetTopologyContainer TetrahedronSetTopologyModifier] -->
@@ -36,7 +36,7 @@
     </Node>
     
     <Node name="MeshSpringForceField-GPU-Green">
-        <RungeKutta4Solver />
+        <RungeKutta4IntegrationScheme />
                 
         <MechanicalObject position="@../Beam/grid.position" name="Volume" template="CudaVec3f"/>
         <TetrahedronSetTopologyContainer name="Container" src="@../Beam/BeamTopo"/>
@@ -55,7 +55,7 @@
     </Node>
     
     <Node name="MeshSpringForceField-CPU-Red">
-        <RungeKutta4Solver />
+        <RungeKutta4IntegrationScheme />
                 
         <MechanicalObject position="@../Beam/grid.position" name="Volume" template="Vec3"/>
         <TetrahedronSetTopologyContainer name="Container" src="@../Beam/BeamTopo"/>

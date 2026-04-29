@@ -37,7 +37,7 @@
 #include <sofa/core/behavior/BaseProjectiveConstraintSet.h>
 #include <sofa/core/behavior/ConstraintSolver.h>
 #include <sofa/core/behavior/LinearSolver.h>
-#include <sofa/core/behavior/OdeSolver.h>
+#include <sofa/core/behavior/IntegrationScheme.h>
 #include <sofa/core/collision/CollisionAlgorithm.h>
 #include <sofa/core/collision/Intersection.h>
 #include <sofa/core/collision/Pipeline.h>
@@ -152,7 +152,7 @@ std::vector<std::string> CategoryLibrary::getCategories()
         "Mapping",
         "Mass",
         "MechanicalState",
-        "OdeSolver",
+        "IntegrationScheme",
         "OrderingMethod",
         "ProjectiveConstraintSet",
         "TopologicalMapping",
@@ -195,8 +195,8 @@ void CategoryLibrary::getCategories(const objectmodel::BaseClass* mclass,
         v.push_back("TopologicalMapping");
     if (mclass->hasParent(behavior::BaseMass::GetClass()))
         v.push_back("Mass");
-    if (mclass->hasParent(behavior::OdeSolver::GetClass()))
-        v.push_back("OdeSolver");
+    if (mclass->hasParent(behavior::IntegrationScheme::GetClass()))
+        v.push_back("IntegrationScheme");
     if (mclass->hasParent(behavior::ConstraintSolver::GetClass()))
         v.push_back("ConstraintSolver");
     if (mclass->hasParent(behavior::BaseConstraintCorrection::GetClass()))

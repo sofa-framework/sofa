@@ -29,7 +29,7 @@ using sofa::testing::BaseSimulationTest;
 
 #include <sofa/simulation/graph/DAGSimulation.h>
 
-#include <sofa/component/odesolver/backward/EulerImplicitSolver.h>
+#include <sofa/component/odesolver/backward/EulerImplicitIntegrationScheme.h>
 #include <sofa/component/odesolver/backward/VariationalSymplecticSolver.h>
 #include <sofa/component/linearsolver/iterative/CGLinearSolver.h>
 #include <sofa/component/statecontainer/MechanicalObject.h>
@@ -91,7 +91,7 @@ namespace sofa {
             }
             else
             {
-                const sofa::component::odesolver::backward::EulerImplicitSolver::SPtr eulerSolver = New<sofa::component::odesolver::backward::EulerImplicitSolver>();
+                const sofa::component::odesolver::backward::EulerImplicitIntegrationScheme::SPtr eulerSolver = New<sofa::component::odesolver::backward::EulerImplicitIntegrationScheme>();
                 root->addObject(eulerSolver);
             }
             const CGLinearSolver::SPtr cgLinearSolver = New<CGLinearSolver> ();

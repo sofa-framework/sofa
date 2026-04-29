@@ -12,7 +12,7 @@ The scene compares two simulations in which only the vertices order differs:
     <RequiredPlugin pluginName="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshGmshLoader] -->
     <RequiredPlugin pluginName="Sofa.Component.LinearSolver.Direct"/> <!-- Needed to use components [EigenSparseLU] -->
     <RequiredPlugin pluginName="Sofa.Component.Mass"/> <!-- Needed to use components [MeshMatrixMass] -->
-    <RequiredPlugin pluginName="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin pluginName="Sofa.Component.IntegrationSchemes.Backward"/> <!-- Needed to use components [EulerImplicitIntegrationScheme] -->
     <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [TetrahedronFEMForceField] -->
     <RequiredPlugin pluginName="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
     <RequiredPlugin pluginName="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [TetrahedronSetGeometryAlgorithms TetrahedronSetTopologyContainer] -->
@@ -32,7 +32,7 @@ The scene compares two simulations in which only the vertices order differs:
     </Node>
 
     <Node name="NoReorder" activated="true">
-        <EulerImplicitSolver name="odeImplicitSolver" />
+        <EulerImplicitIntegrationScheme name="odeImplicitSolver" />
         <MatrixLinearSystem name="system"/>
         <EigenSparseLU name="solver" template="CompressedRowSparseMatrixd"/>
 
@@ -48,7 +48,7 @@ The scene compares two simulations in which only the vertices order differs:
     </Node>
 
     <Node name="Reorder" activated="true">
-        <EulerImplicitSolver name="odeImplicitSolver" />
+        <EulerImplicitIntegrationScheme name="odeImplicitSolver" />
         <MatrixLinearSystem name="system"/>
         <EigenSparseLU name="solver" template="CompressedRowSparseMatrixd"/>
 

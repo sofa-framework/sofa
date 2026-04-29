@@ -4,7 +4,7 @@
     <RequiredPlugin pluginName="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
     <RequiredPlugin pluginName="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
     <RequiredPlugin pluginName="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
-    <RequiredPlugin pluginName="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin pluginName="Sofa.Component.IntegrationSchemes.Backward"/> <!-- Needed to use components [EulerImplicitIntegrationScheme] -->
     <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [TetrahedronFEMForceField] -->
     <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.FEM.HyperElastic"/> <!-- Needed to use components [StandardTetrahedralFEMForceField] -->
     <RequiredPlugin pluginName="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
@@ -17,7 +17,7 @@
     <VisualStyle displayFlags="showForceFields showBehaviorModels" />
 
     <Node name="Corrotational">
-        <EulerImplicitSolver name="cg_odesolver" printLog="false" />
+        <EulerImplicitIntegrationScheme name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
 
         <RegularGridTopology name="hexaGrid" min="0 0 0" max="1 1 2.7" n="3 3 8" p0="0 0 0"/>
@@ -32,7 +32,7 @@
     </Node>
 
     <Node name="ArrudaBoyce">
-        <EulerImplicitSolver name="cg_odesolver" printLog="false" />
+        <EulerImplicitIntegrationScheme name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
 
         <RegularGridTopology name="hexaGrid" min="0 0 0" max="1 1 2.7" n="3 3 8" p0="2 0 0"/>
@@ -55,7 +55,7 @@
     </Node>
 
     <Node name="StVenantKirchhoff">
-        <EulerImplicitSolver name="cg_odesolver" printLog="false" />
+        <EulerImplicitIntegrationScheme name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
 
         <RegularGridTopology name="hexaGrid" min="0 0 0" max="1 1 2.7" n="3 3 8" p0="4 0 0"/>
@@ -79,7 +79,7 @@
 
 
     <Node name="NeoHookean">
-        <EulerImplicitSolver name="cg_odesolver" printLog="false" />
+        <EulerImplicitIntegrationScheme name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
 
         <RegularGridTopology name="hexaGrid" min="0 0 0" max="1 1 2.7" n="3 3 8" p0="6 0 0"/>
@@ -103,7 +103,7 @@
 
 
     <Node name="MooneyRivlin">
-        <EulerImplicitSolver name="cg_odesolver" printLog="false" />
+        <EulerImplicitIntegrationScheme name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
 
         <RegularGridTopology name="hexaGrid" min="0 0 0" max="1 1 2.7" n="3 3 8" p0="8 0 0"/>

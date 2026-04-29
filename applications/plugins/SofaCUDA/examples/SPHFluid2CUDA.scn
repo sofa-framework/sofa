@@ -3,10 +3,10 @@
     <RequiredPlugin name="CUDA computing" pluginName="SofaCUDA" />
 <!--  <MultiStepAnimationLoop integrationSteps="2" /> -->
 	<Node name="fluid">
-		<CentralDifferenceSolver/>
+		<CentralDifferenceIntegrationScheme/>
 <!--
-		<RungeKutta4Solver/>
-		<EulerImplicitSolver rayleighMass="0" rayleighStiffness="0" />
+		<RungeKutta4IntegrationScheme/>
+		<EulerImplicitIntegrationScheme rayleighMass="0" rayleighStiffness="0" />
 		<CGLinearSolver tolerance="1.0e-20" threshold="1.0e-12"/>
 -->
 		<MechanicalObject name="MModel" template="CudaVec3f" reserve="32000" />

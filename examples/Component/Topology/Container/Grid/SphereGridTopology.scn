@@ -5,7 +5,7 @@
     <RequiredPlugin pluginName="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
     <RequiredPlugin pluginName="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [IdentityMapping] -->
     <RequiredPlugin pluginName="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
-    <RequiredPlugin pluginName="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin pluginName="Sofa.Component.IntegrationSchemes.Backward"/> <!-- Needed to use components [EulerImplicitIntegrationScheme] -->
     <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [HexahedronFEMForceField TetrahedronFEMForceField] -->
     <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [MeshSpringForceField] -->
     <RequiredPlugin pluginName="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
@@ -15,7 +15,7 @@
     <VisualStyle displayFlags="showBehaviorModels showForceFields showVisual" />
     <DefaultAnimationLoop/>
     <Node name="SphereFEMTetra">
-        <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitIntegrationScheme  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" tolerance="0.000001" threshold="1e-5"/>
         <MechanicalObject dx="-10" />
         <UniformMass totalMass="100" />
@@ -28,7 +28,7 @@
         </Node>
     </Node>
     <Node name="SphereFEM">
-        <EulerImplicitSolver />
+        <EulerImplicitIntegrationScheme />
         <CGLinearSolver iterations="25" tolerance="0.000001" threshold="1e-5"/>
         <MechanicalObject />
         <UniformMass totalMass="100" />
@@ -37,7 +37,7 @@
         <HexahedronFEMForceField name="FEM" youngModulus="1116" poissonRatio="0.3" method="large" />
     </Node>
     <Node name="SphereSpring">
-        <EulerImplicitSolver />
+        <EulerImplicitIntegrationScheme />
         <CGLinearSolver iterations="25" tolerance="0.000001" threshold="1e-5"/>
         <MechanicalObject dx="10" />
         <UniformMass totalMass="100" />

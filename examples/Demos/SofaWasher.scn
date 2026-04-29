@@ -15,7 +15,7 @@
     <RequiredPlugin pluginName="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [BarycentricMapping] -->
     <RequiredPlugin pluginName="Sofa.Component.Mapping.NonLinear"/> <!-- Needed to use components [RigidMapping] -->
     <RequiredPlugin pluginName="Sofa.Component.Mass"/> <!-- Needed to use components [MeshMatrixMass UniformMass] -->
-    <RequiredPlugin pluginName="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin pluginName="Sofa.Component.IntegrationSchemes.Backward"/> <!-- Needed to use components [EulerImplicitIntegrationScheme] -->
     <RequiredPlugin pluginName="Sofa.Component.Setting"/> <!-- Needed to use components [BackgroundSetting] -->
     <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [TetrahedronFEMForceField] -->
     <RequiredPlugin pluginName="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
@@ -43,7 +43,7 @@
 
     <!--  # Object = SOFA Logo -->
     <Node name="SOFALogo">
-        <EulerImplicitSolver name="EulerImplicitScheme" />
+        <EulerImplicitIntegrationScheme name="EulerImplicitScheme" />
         <ConstantSparsityPatternSystem template="CompressedRowSparseMatrixd" name="A" printLog="false"/>
         <EigenSimplicialLDLT name="LDLTLinearSolver" template="CompressedRowSparseMatrixd"  parallelInverseProduct="true" linearSystem="@A"/>
 
@@ -80,7 +80,7 @@
     </Node>
 
     <Node name="Box">
-        <EulerImplicitSolver name="EulerImplicitScheme" />
+        <EulerImplicitIntegrationScheme name="EulerImplicitScheme" />
         <EigenSparseLU name="LUSolver" template="CompressedRowSparseMatrixd" />
         <MechanicalObject name="mstate" template="Rigid3" position="0 0 0 0 0 0 1" />
         <LinearVelocityProjectiveConstraint indices="0" keyTimes="0 5 15 25" velocities="0 0 0 0 0 0 0 0 0 0 0 0.5 0 0 0 0 0 -0.5 0 0 0 0 0 0.5" continueAfterEnd="true" />

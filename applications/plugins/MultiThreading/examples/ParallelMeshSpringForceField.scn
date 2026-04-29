@@ -15,7 +15,7 @@
         <RequiredPlugin pluginName="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
         <RequiredPlugin pluginName="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
         <RequiredPlugin pluginName="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
-        <RequiredPlugin pluginName="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+        <RequiredPlugin pluginName="Sofa.Component.IntegrationSchemes.Backward"/> <!-- Needed to use components [EulerImplicitIntegrationScheme] -->
     </Node>
 
 
@@ -24,7 +24,7 @@
 
     <Node name="DeformableObject">
 
-        <EulerImplicitSolver name="odeSolver"/>
+        <EulerImplicitIntegrationScheme name="odeSolver"/>
         <CGLinearSolver iterations="25" name="linearSolver" tolerance="1.0e-9" threshold="1.0e-9" />
 
         <MechanicalObject name="dofs"/>

@@ -73,11 +73,11 @@ public:
     /// This method calls the fwd* methods during the forward traversal. You typically do not overload it.
     Result processNodeTopDown(simulation::Node* node) override;
 
-    /// Process the OdeSolver
-    virtual Result fwdOdeSolver(simulation::Node* /*node*/, sofa::core::behavior::OdeSolver* /*solver*/);
+    /// Process the IntegrationScheme
+    virtual Result fwdIntegrationScheme(simulation::Node* /*node*/, sofa::core::behavior::IntegrationScheme* /*solver*/);
 
-    /// Process the OdeSolver
-    virtual Result fwdOdeSolver(VisitorContext* ctx, sofa::core::behavior::OdeSolver* solver);
+    /// Process the IntegrationScheme
+    virtual Result fwdIntegrationScheme(VisitorContext* ctx, sofa::core::behavior::IntegrationScheme* solver);
 
     /// Process the ConstraintSolver
     virtual Result fwdConstraintSolver(simulation::Node* /*node*/, sofa::core::behavior::ConstraintSolver* /*solver*/);
@@ -177,11 +177,11 @@ public:
     /// Process the BaseMechanicalMapping
     virtual void bwdMechanicalMapping(VisitorContext* ctx, sofa::core::BaseMapping* map);
 
-    /// Process the OdeSolver
-    virtual void bwdOdeSolver(simulation::Node* /*node*/,sofa::core::behavior::OdeSolver* /*solver*/);
+    /// Process the IntegrationScheme
+    virtual void bwdIntegrationScheme(simulation::Node* /*node*/,sofa::core::behavior::IntegrationScheme* /*solver*/);
 
-    /// Process the OdeSolver
-    virtual void bwdOdeSolver(VisitorContext* ctx,sofa::core::behavior::OdeSolver* solver);
+    /// Process the IntegrationScheme
+    virtual void bwdIntegrationScheme(VisitorContext* ctx,sofa::core::behavior::IntegrationScheme* solver);
 
     /// Process the ConstraintSolver
     virtual void bwdConstraintSolver(simulation::Node* /*node*/,sofa::core::behavior::ConstraintSolver* /*solver*/);

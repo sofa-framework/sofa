@@ -213,7 +213,6 @@ void AccelerationBasedIntegrationScheme::solveLinearEquation()
  */
 void AccelerationBasedIntegrationScheme::updateVelocityAndPositionFromLinearSolution(SReal alpha, unsigned iteration)
 {
-    //TODO use alpha
     sofa::simulation::common::VectorOperations vop( m_params, this->getContext() );
     sofa::simulation::common::MechanicalOperations mop( m_params, this->getContext() );
 
@@ -225,9 +224,9 @@ void AccelerationBasedIntegrationScheme::updateVelocityAndPositionFromLinearSolu
     const SReal DGv = getVelocityUpdateDerivedFromAcceleration();
 
 
-    acc.peq(m_unknown);
-    vel.peq(m_unknown, DGv);
-    pos.peq(m_unknown, DGx);
+    acc.peq(m_unknown, alpha);
+    vel.peq(m_unknown, alpha * DGv);
+    pos.peq(m_unknown, alpha * DGx);
 
     //TODO make this work with alpha, iteration might be still 0 but we are in the linesearch algo and we don't want to remove this each time...
     if (iteration == 0) [[unlikely]]
@@ -241,6 +240,21 @@ void AccelerationBasedIntegrationScheme::updateVelocityAndPositionFromLinearSolu
             pos.peq(m_r2, -pudfv);
     }
 }
+
+
+
+SReal AccelerationBasedIntegrationScheme::getVelocityIntegrationFactor() const
+{
+    return getVelocityUpdateDerivedFromAcceleration();
+}
+
+SReal AccelerationBasedIntegrationScheme::getPositionIntegrationFactor() const
+{
+    //TODO not 100% sure this is what's expected.
+    //TODO But given what's in LinearSolverConstraintCorrection< DataTypes >::applyMotionCorrection it seems like it
+    return getPositionUpdateDerivedFromVelocity()*getVelocityUpdateDerivedFromAcceleration() + getPositionUpdateDerivedFromAcceleration();
+}
+
 
 
 

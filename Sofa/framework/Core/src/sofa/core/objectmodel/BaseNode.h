@@ -124,8 +124,8 @@ public:
     /// @{
 
     virtual core::behavior::BaseAnimationLoop* getAnimationLoop() const;
-    virtual core::behavior::OdeSolver* getOdeSolver() const;
     virtual core::collision::Pipeline* getCollisionPipeline() const;
+    virtual core::behavior::IntegrationScheme* getIntegrationScheme() const;
     virtual core::visual::VisualLoop* getVisualLoop() const;
 
 private:
@@ -155,7 +155,6 @@ public:
      BASENODE_ADD_SPECIAL_COMPONENT( core::visual::VisualLoop, VisualLoop, visualLoop )
      BASENODE_ADD_SPECIAL_COMPONENT( core::BehaviorModel, BehaviorModel, behaviorModel )
      BASENODE_ADD_SPECIAL_COMPONENT( core::BaseMapping, Mapping, mapping )
-     BASENODE_ADD_SPECIAL_COMPONENT( core::behavior::OdeSolver, OdeSolver, solver )
      BASENODE_ADD_SPECIAL_COMPONENT( core::behavior::IntegrationScheme, IntegrationScheme, integrationScheme )
      BASENODE_ADD_SPECIAL_COMPONENT( core::behavior::ConstraintSolver, ConstraintSolver, constraintSolver )
      BASENODE_ADD_SPECIAL_COMPONENT( core::behavior::BaseLinearSolver, LinearSolver, linearSolver )

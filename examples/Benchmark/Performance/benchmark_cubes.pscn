@@ -8,10 +8,10 @@
         <RequiredPlugin pluginName="SofaConstraint"/>
         <RequiredPlugin pluginName="SofaMeshCollision"/>
         <RequiredPlugin pluginName="SofaRigid"/>
-        <RequiredPlugin pluginName="SofaImplicitOdeSolver"/>
+        <RequiredPlugin pluginName="SofaImplicitIntegrationScheme"/>
         <RequiredPlugin pluginName="SofaLoader"/>
         <RequiredPlugin pluginName="SofaGeneralEngine"/>
-        <RequiredPlugin pluginName="Sofa.Component.ODESolver.Backward"/>
+        <RequiredPlugin pluginName="Sofa.Component.IntegrationSchemes.Backward"/>
         <RequiredPlugin pluginName="SofaMiscCollision"/>
     </Node>
 
@@ -52,13 +52,13 @@
 
 <?php echo '        <Node name="Cube'.$i.'">';?>
 
-            <EulerImplicitSolver name="EulerImplicit"  rayleighStiffness="0.1" rayleighMass="0.1" />
+            <EulerImplicitIntegrationScheme name="EulerImplicit"  rayleighStiffness="0.1" rayleighMass="0.1" />
             <CGLinearSolver name="CG Solver" iterations="25" tolerance="1e-5" threshold="1e-5"/>
 
 <?php echo '            <MechanicalObject name="Cube_RigidDOF" template="Rigid3" translation="'.$tx.' '.$ty.' '.$tz.'" />';?>
 
             <UniformMass name="UniformMass" totalMass="10.0" />
-            <UncoupledConstraintCorrection useOdeSolverIntegrationFactors="0"/>
+            <UncoupledConstraintCorrection useIntegrationSchemeIntegrationFactors="0"/>
             <Node name="Collision Model">
                 <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
                 <MechanicalObject name="Collision_Cube" />

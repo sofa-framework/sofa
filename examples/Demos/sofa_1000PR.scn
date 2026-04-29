@@ -13,7 +13,7 @@
     <RequiredPlugin pluginName="Sofa.Component.LinearSolver.Direct"/> <!-- Needed to use components [SparseLDLSolver] -->
     <RequiredPlugin pluginName="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [BarycentricMapping] -->
     <RequiredPlugin pluginName="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
-    <RequiredPlugin pluginName="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin pluginName="Sofa.Component.IntegrationSchemes.Backward"/> <!-- Needed to use components [EulerImplicitIntegrationScheme] -->
     <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [HexahedronFEMForceField] -->
     <RequiredPlugin pluginName="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
     <RequiredPlugin pluginName="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
@@ -36,7 +36,7 @@
     <RecordedCamera name="cam" position="0 50 0" rotationLookAt="0 5 0" rotationStartPoint="0 30 80" rotationCenter="0 0 0" listening="true" startTime="20" endTime="100" drawRotation="0" rotationMode="1" />
 
     <Node name="Number1">
-        <EulerImplicitSolver name="cg_odesolver" printLog="false"  />
+        <EulerImplicitIntegrationScheme name="cg_odesolver" printLog="false"  />
         <SparseLDLSolver  template="CompressedRowSparseMatrix" name="Torus1_SparseLDLSolver" printLog="false" />
 
         <SparseGridRamificationTopology name="grid" n="4 6 3" fileTopology="mesh/n1.obj" nbVirtualFinerLevels="3" finestConnectivity="0"/>
@@ -69,7 +69,7 @@
 
 
     <Node name="Number01">
-        <EulerImplicitSolver name="cg_odesolver" printLog="false"  />
+        <EulerImplicitIntegrationScheme name="cg_odesolver" printLog="false"  />
         <SparseLDLSolver  template="CompressedRowSparseMatrix" name="Torus1_SparseLDLSolver" printLog="false" />
 
         <SparseGridRamificationTopology name="grid" n="4 5 3" fileTopology="mesh/n0.obj" nbVirtualFinerLevels="3" finestConnectivity="0"/>
@@ -100,7 +100,7 @@
     </Node>
 
     <Node name="Number02">
-        <EulerImplicitSolver name="cg_odesolver" printLog="false"  />
+        <EulerImplicitIntegrationScheme name="cg_odesolver" printLog="false"  />
         <SparseLDLSolver  template="CompressedRowSparseMatrix" name="Torus1_SparseLDLSolver" printLog="false" />
 
         <SparseGridRamificationTopology name="grid" n="4 5 3" fileTopology="mesh/n0.obj" nbVirtualFinerLevels="3" finestConnectivity="0"/>
@@ -131,7 +131,7 @@
     </Node>
 
     <Node name="Number03">
-        <EulerImplicitSolver name="cg_odesolver" printLog="false"  />
+        <EulerImplicitIntegrationScheme name="cg_odesolver" printLog="false"  />
         <SparseLDLSolver  template="CompressedRowSparseMatrix" name="Torus1_SparseLDLSolver" printLog="false" />
 
         <SparseGridRamificationTopology name="grid" n="4 5 3" fileTopology="mesh/n0.obj" nbVirtualFinerLevels="3" finestConnectivity="0"/>
@@ -162,7 +162,7 @@
     </Node>
 
     <Node name="Sofa">
-        <EulerImplicitSolver name="cg_odesolver" printLog="false"  />
+        <EulerImplicitIntegrationScheme name="cg_odesolver" printLog="false"  />
         <SparseLDLSolver  template="CompressedRowSparseMatrix" name="Torus1_SparseLDLSolver" printLog="false" />
         
         <SparseGridRamificationTopology name="grid" n="2 2 2" fileTopology="mesh/sofa_logo.obj" nbVirtualFinerLevels="3" finestConnectivity="0"/>

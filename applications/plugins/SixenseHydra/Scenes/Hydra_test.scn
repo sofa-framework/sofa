@@ -1,7 +1,7 @@
 <Node 	name="Root" dt="0.02"  >
 	<VisualStyle displayFlags="showVisualModels hideBehaviorModels showCollisionModels hideMappings hideForceFields" />
 
-	<EulerImplicitSolver name="eulerImplicitSolver2"  rayleighStiffness="0.01"  rayleighMass="0.1" />
+	<EulerImplicitIntegrationScheme name="eulerImplicitSolver2"  rayleighStiffness="0.01"  rayleighMass="0.1" />
 	<CGLinearSolver template="GraphScattered" name="linear solver"  iterations="40"  tolerance="1e-009"  threshold="1e-015" />
 	
 	<RazerHydraDriver name="RHdriver1"  listening="true" useBothTools="false" displayTools="true" scale="0.004" />

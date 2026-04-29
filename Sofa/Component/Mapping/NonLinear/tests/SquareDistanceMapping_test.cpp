@@ -163,7 +163,7 @@ struct SquareDistanceMappingCompare_test : NumericTest<SReal>
 
         for (const auto& node : {oneMapping, twoMappings})
         {
-            simpleapi::createObject(node, "EulerImplicitSolver", {{"rayleighStiffness", "0.1"}, {"rayleighMass","0.1"}});
+            simpleapi::createObject(node, "EulerImplicitIntegrationScheme", {{"rayleighStiffness", "0.1"}, {"rayleighMass","0.1"}});
             simpleapi::createObject(node, "EdgeSetTopologyContainer",
                 {{"position", "@../loader.position"}, {"edges", "@../loader.edges"}, {"name", "topology"}});
             simpleapi::createObject(node, "MechanicalObject", {{"name", "defoDOF"}, {"template", "Vec3"}});

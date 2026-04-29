@@ -25,7 +25,7 @@
 #include <sofa/component/mass/UniformMass.h>
 #include <sofa/component/topology/container/grid/RegularGridTopology.h>
 #include <sofa/component/linearsolver/iterative/CGLinearSolver.h>
-#include <sofa/component/odesolver/backward/EulerImplicitSolver.h>
+#include <sofa/component/odesolver/backward/EulerImplicitIntegrationScheme.h>
 #include <sofa/component/engine/select/PairBoxRoi.h>
 #include <sofa/component/engine/select/BoxROI.h>
 #include <sofa/simulation/DefaultAnimationLoop.h>
@@ -80,7 +80,7 @@ PatchTestStruct<DataTypes> createRegularGridScene(
     simulation::Node::SPtr SquareNode = root->createChild("Square");
 
     // Euler implicit solver and cglinear solver
-    const component::odesolver::backward::EulerImplicitSolver::SPtr solver = modeling::addNew<component::odesolver::backward::EulerImplicitSolver>(SquareNode,"EulerImplicitSolver");
+    const component::odesolver::backward::EulerImplicitIntegrationScheme::SPtr solver = modeling::addNew<component::odesolver::backward::EulerImplicitIntegrationScheme>(SquareNode,"EulerImplicitIntegrationScheme");
     solver->d_rayleighStiffness.setValue(0.5);
     solver->d_rayleighMass.setValue(0.5);
     const CGLinearSolver::SPtr cgLinearSolver = modeling::addNew< CGLinearSolver >(SquareNode,"linearSolver");

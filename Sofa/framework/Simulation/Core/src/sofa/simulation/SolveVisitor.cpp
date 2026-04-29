@@ -22,7 +22,7 @@
 #include <sofa/simulation/SolveVisitor.h>
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/simulation/Node.h>
-#include <sofa/core/behavior/OdeSolver.h>
+#include <sofa/core/behavior/IntegrationScheme.h>
 #include <sofa/simulation/task/TaskScheduler.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
 #include <sofa/simulation/task/MainTaskSchedulerFactory.h>
@@ -32,7 +32,7 @@
 namespace sofa::simulation
 {
 
-void SolveVisitor::processSolver(simulation::Node* node, sofa::core::behavior::OdeSolver* s)
+void SolveVisitor::processSolver(simulation::Node* node, sofa::core::behavior::IntegrationScheme* s)
 {
     helper::ScopedAdvancedTimer timer("Mechanical",node);
     s->solve(params, dt, x, v);
@@ -135,7 +135,7 @@ SolveVisitor::SolveVisitor(const sofa::core::ExecParams* params, SReal _dt, bool
 
 void SolveVisitor::sequentialSolve(simulation::Node* node)
 {
-    for_each(this, node, node->solver, &SolveVisitor::processSolver);
+    for_each(this, node, node->integrationScheme, &SolveVisitor::processSolver);
 }
 
 void SolveVisitor::parallelSolve(simulation::Node* node)
@@ -143,7 +143,7 @@ void SolveVisitor::parallelSolve(simulation::Node* node)
     auto* taskScheduler = sofa::simulation::MainTaskSchedulerFactory::createInRegistry();
     assert(taskScheduler != nullptr);
 
-    for (auto* solver : node->solver)
+    for (auto* solver : node->integrationScheme)
     {
         m_tasks.emplace_back(&m_status, solver, params, dt, x, v);
         taskScheduler->addTask(&m_tasks.back());

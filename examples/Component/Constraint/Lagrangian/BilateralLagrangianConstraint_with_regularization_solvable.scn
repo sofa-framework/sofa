@@ -8,7 +8,7 @@
     <RequiredPlugin pluginName="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
     <RequiredPlugin pluginName="Sofa.Component.LinearSolver.Direct"/> <!-- Needed to use components [SparseLDLSolver] -->
     <RequiredPlugin pluginName="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
-    <RequiredPlugin pluginName="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin pluginName="Sofa.Component.IntegrationSchemes.Backward"/> <!-- Needed to use components [EulerImplicitIntegrationScheme] -->
     <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [HexahedronFEMForceField] -->
     <RequiredPlugin pluginName="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
     <RequiredPlugin pluginName="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->
@@ -30,7 +30,7 @@
     <Node name="DeformableCube0">
 
         <VisualStyle displayFlags="showForceFields" />
-        <EulerImplicitSolver name="odesolver" printLog="false" />
+        <EulerImplicitIntegrationScheme name="odesolver" printLog="false" />
         <SparseLDLSolver name="linearSolver" template="CompressedRowSparseMatrixMat3x3d" />
 
         <RegularGridTopology name="grid" nx="4" ny="4" nz="4" xmin="-1" xmax="1" ymin="-1" ymax="1" zmin="-1" zmax="1" />
@@ -61,7 +61,7 @@
     <Node name="DeformableCube1">
 
         <VisualStyle displayFlags="showForceFields" />
-        <EulerImplicitSolver name="odesolver" printLog="false" />
+        <EulerImplicitIntegrationScheme name="odesolver" printLog="false" />
         <SparseLDLSolver name="linearSolver" template="CompressedRowSparseMatrixMat3x3d" />
 
         <RegularGridTopology name="grid" nx="4" ny="4" nz="4" xmin="2" xmax="4" ymin="-1" ymax="1" zmin="-1" zmax="1" />
@@ -92,7 +92,7 @@
     <Node name="DeformableCube2">
 
         <VisualStyle displayFlags="showForceFields" />
-        <EulerImplicitSolver name="odesolver" printLog="false" />
+        <EulerImplicitIntegrationScheme name="odesolver" printLog="false" />
         <SparseLDLSolver name="linearSolver" template="CompressedRowSparseMatrixMat3x3d" />
 
         <RegularGridTopology name="grid" nx="4" ny="4" nz="4" xmin="5" xmax="7" ymin="-1" ymax="1" zmin="-1" zmax="1" />
