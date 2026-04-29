@@ -109,7 +109,7 @@ const CollisionAnimationLoop::Solvers& CollisionAnimationLoop::getSolverSequence
 {
     simulation::Node* gnode = dynamic_cast<simulation::Node*>( getContext() );
     assert( gnode );
-    return gnode->solver;
+    return gnode->integrationScheme;
 }
 
 } // namespace simulation

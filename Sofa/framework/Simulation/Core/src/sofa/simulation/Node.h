@@ -231,7 +231,6 @@ public:
     NodeSequence<sofa::core::BehaviorModel> behaviorModel;
     NodeSequence<sofa::core::BaseMapping> mapping;
 
-    NodeSequence<sofa::core::behavior::IntegrationScheme> solver;
     NodeSequence<sofa::core::behavior::IntegrationScheme> integrationScheme;
     NodeSequence<sofa::core::behavior::ConstraintSolver> constraintSolver;
     NodeSequence<sofa::core::behavior::BaseLinearSolver> linearSolver;

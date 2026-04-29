@@ -129,37 +129,35 @@ void VelocityBasedIntegrationScheme::computeRHS(unsigned iteration)
         SCOPED_TIMER("ComputeRHTerm");
         b.eq(f, 1.0);  // b = f
 
+        auto backV = mop->v();
 
         if (   fabs(d_rayleighMass.getValue()) > std::numeric_limits<SReal>::epsilon()
             || fabs(d_rayleighMass.getValue()) > std::numeric_limits<SReal>::epsilon())
         {
+            mop->setV(m_vResult);
+
             mop.addMBKv(b, core::MatricesFactors::M(-d_rayleighMass.getValue()),
             core::MatricesFactors::B(0),
             core::MatricesFactors::K(d_rayleighStiffness.getValue()));
         }
 
-
         if (iteration == 0) [[unlikely]]
         {
-            computePositionUpdateFromVelocity(vop, m_r1, core::vec_id::write_access::velocity);
-            r1.teq(-1.0);
-            auto backV = mop->v();
+            computeCurrentPositionIntegrationError(vop, m_r1, m_xResult, m_vResult);
             mop->setV(m_r1);
             mop.addMBKv(b, core::MatricesFactors::M(0.0),
                          core::MatricesFactors::B(0),
                          core::MatricesFactors::K(-1.0));
-            mop->setV(backV);
         }
 
-        computeAccelerationFromVelocity(vop, m_acceleration, core::vec_id::write_access::velocity);
-        auto backV = mop->v();
+        computeAccelerationFromVelocity(vop, m_acceleration, m_vResult);
         mop->setV(m_acceleration);
         // add the change of force due to stiffness + Rayleigh damping
         mop.addMBKv(b, core::MatricesFactors::M(-1.0),
                     core::MatricesFactors::B(0),
                     core::MatricesFactors::K(0));
-        mop->setV(backV);
 
+        mop->setV(backV);
 
         mop.projectResponse(b);
     }

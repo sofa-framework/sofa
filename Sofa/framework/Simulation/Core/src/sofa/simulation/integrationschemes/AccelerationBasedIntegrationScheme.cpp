@@ -146,8 +146,7 @@ void AccelerationBasedIntegrationScheme::computeRHS(unsigned iteration)
         {
             auto backV = mop->v();
 
-            computePositionUpdateFromVelocityAndAcceleration(vop, m_r1, core::vec_id::write_access::velocity, m_acceleration);
-            r1.teq(-1.0);
+            computeCurrentPositionIntegrationError(vop, m_r1, core::vec_id::write_access::velocity, m_acceleration);
 
             mop->setV(m_r1);
             mop.addMBKv(b, core::MatricesFactors::M(0.0),
@@ -155,8 +154,7 @@ void AccelerationBasedIntegrationScheme::computeRHS(unsigned iteration)
                         core::MatricesFactors::K(-1.0));
 
 
-            computeVelocityUpdateFromAcceleration(vop, m_r2, m_acceleration);
-            r2.teq(-1.0);
+            computeCurrentVelocityIntegrationError(vop, m_r2, m_acceleration);
 
             mop->setV(m_r2);
             mop.addMBKv(b, core::MatricesFactors::M(d_rayleighMass.getValue()),

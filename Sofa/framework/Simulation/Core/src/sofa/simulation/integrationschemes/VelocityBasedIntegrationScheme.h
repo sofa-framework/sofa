@@ -86,8 +86,8 @@ protected:
     virtual SReal getPositionUpdateDerivedFromVelocity() const = 0;
     virtual SReal getInverseVelocityUpdateDerivedFromVelocity() const = 0;
 
-    //Compute the position update from current value of velocity : dX = x_t - g_x(v_i)
-    virtual void computePositionUpdateFromVelocity(sofa::simulation::common::VectorOperations & vop, sofa::core::MultiVecDerivId& result, const sofa::core::MultiVecDerivId& velocity) = 0;
+    //Compute the error made on the position integration equation : x_{t+h} - g_x(v), with v the current estimate of velocity
+    virtual void computeCurrentPositionIntegrationError(sofa::simulation::common::VectorOperations & vop, sofa::core::MultiVecDerivId& result, const sofa::core::MultiVecCoordId& position, const sofa::core::MultiVecDerivId& velocity) = 0;
     //Compute the acceleration from current value of velocity. This is the implementation of the inverse integration scheme for the velocity
     virtual void computeAccelerationFromVelocity(sofa::simulation::common::VectorOperations & vop, sofa::core::MultiVecDerivId& result, const sofa::core::MultiVecDerivId& velocity) = 0;
 };

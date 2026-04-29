@@ -85,7 +85,6 @@ Node::Node(const std::string& nodename, Node* parent)
     , behaviorModel(initLink("behaviorModel", "The BehaviorModel attached to this node (only valid for root node)"))
     , mapping(initLink("mapping", "The (non-mechanical) Mapping(s) attached to this node (only valid for root node)"))
 
-    , solver(initLink("odeSolver", "The IntegrationScheme(s) attached to this node (controlling the mechanical time integration of this branch)"))
     , integrationScheme(initLink("integrationScheme", "The IntegrationScheme(s) attached to this node (controlling the mechanical time integration of this branch)"))
     , constraintSolver(initLink("constraintSolver", "The ConstraintSolver(s) attached to this node"))
     , linearSolver(initLink("linearSolver", "The LinearSolver(s) attached to this node"))
@@ -726,8 +725,8 @@ core::behavior::BaseAnimationLoop* Node::getAnimationLoop() const
 
 core::behavior::IntegrationScheme* Node::getIntegrationScheme() const
 {
-    if (!solver.empty())
-        return solver[0];
+    if (!integrationScheme.empty())
+        return integrationScheme[0];
     else
         return get<core::behavior::IntegrationScheme>(SearchParents);
 }
@@ -821,9 +820,9 @@ bool Node::getDebug() const
 void Node::removeControllers()
 {
     removeObject(*animationManager.begin());
-    typedef NodeSequence<core::behavior::IntegrationScheme> Solvers;
-    const Solvers solverRemove = solver;
-    for ( Solvers::iterator i=solverRemove.begin(), iend=solverRemove.end(); i!=iend; ++i )
+    typedef NodeSequence<core::behavior::IntegrationScheme> integrationSchemes;
+    const integrationSchemes solverRemove = integrationScheme;
+    for ( integrationSchemes::iterator i=solverRemove.begin(), iend=solverRemove.end(); i!=iend; ++i )
         removeObject( *i );
 }
 
@@ -936,7 +935,7 @@ void Node::printComponents()
     for (NodeSingle<BaseAnimationLoop>::iterator i = animationManager.begin(), iend = animationManager.end(); i != iend; ++i)
         sstream << (*i)->getName() << " ";
     sstream << "\n" << "IntegrationScheme: ";
-    for (NodeSequence<IntegrationScheme>::iterator i = solver.begin(), iend = solver.end(); i != iend; ++i)
+    for (NodeSequence<IntegrationScheme>::iterator i = integrationScheme.begin(), iend = integrationScheme.end(); i != iend; ++i)
         sstream << (*i)->getName() << " ";
     sstream << "\n" << "LinearSolver: ";
     for (NodeSequence<BaseLinearSolver>::iterator i = linearSolver.begin(), iend = linearSolver.end(); i != iend; i++)
