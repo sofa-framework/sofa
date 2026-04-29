@@ -14,7 +14,7 @@ def internalCreateScene(root_node, template):
     root_node.addObject('RequiredPlugin', pluginName='Sofa.Component.Constraint.Projective')
     root_node.addObject('RequiredPlugin', pluginName='Sofa.Component.LinearSolver.Iterative')
     root_node.addObject('RequiredPlugin', pluginName='Sofa.Component.Mass')
-    root_node.addObject('RequiredPlugin', pluginName='Sofa.Component.ODESolver.Forward')
+    root_node.addObject('RequiredPlugin', pluginName='Sofa.Component.IntegrationSchemes.Forward')
     root_node.addObject('RequiredPlugin', pluginName='Sofa.Component.SolidMechanics.Spring')
     root_node.addObject('RequiredPlugin', pluginName='Sofa.Component.StateContainer')
     root_node.addObject('RequiredPlugin', pluginName='Sofa.Component.Topology.Container.Grid')
@@ -24,7 +24,7 @@ def internalCreateScene(root_node, template):
     root_node.addObject('VisualStyle', displayFlags='hideVisualModels hideBehaviorModels showCollisionModels hideMappings showForceFields')
 
     m1 = root_node.addChild('M1')
-    m1.addObject('RungeKutta4Solver')
+    m1.addObject('RungeKutta4IntegrationScheme')
     m1.addObject('MechanicalObject', template=template)
     m1.addObject('UniformMass', totalMass=20 * size)
     m1.addObject('RegularGridTopology', nx="16", ny="16", nz=5*size+1, xmin="0", xmax="3", ymin="0", ymax="3", zmin="0", zmax=size)

@@ -116,7 +116,7 @@ public:
             Sofa.Component.StateContainer,
             Sofa.Component.Topology.Container.Grid,
             Sofa.Component.SolidMechanics.Spring,
-            Sofa.Component.ODESolver.Backward,
+            Sofa.Component.IntegrationSchemes.Backward,
             Sofa.Component.LinearSolver.Iterative,
             Sofa.Component.Mass
         });
@@ -127,7 +127,7 @@ public:
             {"n", str(type::Vec3(nbrGrid, nbrGrid, 1))}, {"min", "0 0 0"}, {"max", "10 10 0"} });
 
         const Node::SPtr FNode = sofa::simpleapi::createChild(m_root, "SpringNode");
-        createObject(FNode, "EulerImplicitSolver");
+        createObject(FNode, "EulerImplicitIntegrationScheme");
         createObject(FNode, "CGLinearSolver", {{ "iterations", "20" }, { "tolerance", "1e-5" }, {"threshold", "1e-8"}});
         createObject(FNode, "MechanicalObject", {
             {"name","dof"}, {"template","Vec3d"}, {"position", "@../grid.position"} });

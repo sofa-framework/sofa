@@ -7,7 +7,7 @@
     <RequiredPlugin pluginName="Sofa.Component.Constraint.Lagrangian.Solver"/> <!-- Needed to use components [GenericConstraintSolver] -->
     <RequiredPlugin pluginName="Sofa.Component.LinearSolver.Direct"/> <!-- Needed to use components [EigenSparseLU] -->
     <RequiredPlugin pluginName="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
-    <RequiredPlugin pluginName="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin pluginName="Sofa.Component.IntegrationSchemes.Backward"/> <!-- Needed to use components [EulerImplicitIntegrationScheme] -->
     <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [RestShapeSpringsForceField] -->
     <RequiredPlugin pluginName="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
     <RequiredPlugin pluginName="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
@@ -22,7 +22,7 @@
     </Node>
 
     <Node name="Object2">
-        <EulerImplicitSolver rayleighMass="0" rayleighStiffness="0"/>
+        <EulerImplicitIntegrationScheme rayleighMass="0" rayleighStiffness="0"/>
         <EigenSparseLU template="CompressedRowSparseMatrix" name="LULinearSolver"/>
         <MechanicalObject name="mstate" template="Rigid3" position="0.1 0 0  0  0 0 0 1" />
         <SphereCollisionModel color="1 0 0 1" radius="0.01" />

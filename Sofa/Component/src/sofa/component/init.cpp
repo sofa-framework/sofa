@@ -35,7 +35,7 @@
 #include <sofa/component/mapping/init.h>
 #include <sofa/component/mass/init.h>
 #include <sofa/component/mechanicalload/init.h>
-#include <sofa/component/odesolver/init.h>
+#include <sofa/component/integrationschemes/init.h>
 #include <sofa/component/playback/init.h>
 #include <sofa/component/sceneutility/init.h>
 #include <sofa/component/setting/init.h>
@@ -87,7 +87,7 @@ void registerObjects(sofa::core::ObjectFactory* factory)
     factory->registerObjectsFromPlugin(Sofa.Component.Mapping);
     factory->registerObjectsFromPlugin(Sofa.Component.Mass);
     factory->registerObjectsFromPlugin(Sofa.Component.MechanicalLoad);
-    factory->registerObjectsFromPlugin(Sofa.Component.ODESolver);
+    factory->registerObjectsFromPlugin(Sofa.Component.IntegrationSchemes);
     factory->registerObjectsFromPlugin(Sofa.Component.Playback);
     factory->registerObjectsFromPlugin(Sofa.Component.SceneUtility);
     factory->registerObjectsFromPlugin(Sofa.Component.Setting);
@@ -115,7 +115,7 @@ void init()
         sofa::component::mapping::init();
         sofa::component::mass::init();
         sofa::component::mechanicalload::init();
-        sofa::component::odesolver::init();
+        sofa::component::integrationschemes::init();
         sofa::component::playback::init();
         sofa::component::sceneutility::init();
         sofa::component::setting::init();

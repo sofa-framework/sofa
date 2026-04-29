@@ -79,23 +79,23 @@ std::map<std::string, ComponentChange, std::less<> > movedComponents = {
     { "GlobalSystemMatrixExporter", Moved("v22.06", "SofaBaseLinearSolver", "SofaMatrix") },
 
     // SofaMiscSolver was deprecated in #2571
-    { "DampVelocitySolver", Moved("v22.06", "SofaMiscSolver", Sofa.Component.ODESolver.Forward) },
-    { "NewmarkImplicitSolver", Moved("v22.06", "SofaMiscSolver", Sofa.Component.ODESolver.Backward) },
+    { "DampVelocitySolver", Moved("v22.06", "SofaMiscSolver", Sofa.Component.IntegrationSchemes.Forward) },
+    { "NewmarkIntegrationScheme", Moved("v22.06", "SofaMiscSolver", Sofa.Component.IntegrationSchemes.Backward) },
 
-    // SofaExplicitOdeSolver was deprecated in #2571
-    { "EulerExplicitSolver", Moved("v22.06", "SofaExplicitOdeSolver", Sofa.Component.ODESolver.Forward) },
+    // SofaExplicitIntegrationScheme was deprecated in #2571
+    { "EulerExplicitSolver", Moved("v22.06", "SofaExplicitIntegrationScheme", Sofa.Component.IntegrationSchemes.Forward) },
 
-    // SofaImplicitOdeSolver was deprecated in #2571
-    { "EulerImplicitSolver", Moved("v22.06", "SofaImplicitOdeSolver", Sofa.Component.ODESolver.Backward) },
-    { "StaticSolver", Moved("v22.06", "SofaImplicitOdeSolver", Sofa.Component.ODESolver.Backward) },
+    // SofaImplicitIntegrationScheme was deprecated in #2571
+    { "EulerImplicitIntegrationScheme", Moved("v22.06", "SofaImplicitIntegrationScheme", Sofa.Component.IntegrationSchemes.Backward) },
+    { "StaticSolver", Moved("v22.06", "SofaImplicitIntegrationScheme", Sofa.Component.IntegrationSchemes.Backward) },
 
-    // SofaGeneralExplicitOdeSolver was deprecated in #2571
-    { "CentralDifferenceSolver", Moved("v22.06", "SofaGeneralExplicitOdeSolver", Sofa.Component.ODESolver.Forward) },
-    { "RungeKutta2Solver", Moved("v22.06", "SofaGeneralExplicitOdeSolver", Sofa.Component.ODESolver.Forward) },
-    { "RungeKutta4Solver", Moved("v22.06", "SofaGeneralExplicitOdeSolver", Sofa.Component.ODESolver.Forward) },
+    // SofaGeneralExplicitIntegrationScheme was deprecated in #2571
+    { "CentralDifferenceSolver", Moved("v22.06", "SofaGeneralExplicitIntegrationScheme", Sofa.Component.IntegrationSchemes.Forward) },
+    { "RungeKutta2Solver", Moved("v22.06", "SofaGeneralExplicitIntegrationScheme", Sofa.Component.IntegrationSchemes.Forward) },
+    { "RungeKutta4Solver", Moved("v22.06", "SofaGeneralExplicitIntegrationScheme", Sofa.Component.IntegrationSchemes.Forward) },
 
-    // SofaGeneralImplicitOdeSolver was deprecated in #2571
-    { "VariationalSymplecticSolver", Moved("v22.06", "SofaGeneralImplicitOdeSolver", Sofa.Component.ODESolver.Backward) },
+    // SofaGeneralImplicitIntegrationScheme was deprecated in #2571
+    { "VariationalSymplecticSolver", Moved("v22.06", "SofaGeneralImplicitIntegrationScheme", Sofa.Component.IntegrationSchemes.Backward) },
 
     // SofaLoader was deprecated in #2582
     { "MeshOBJLoader", Moved("v22.06", "SofaLoader", Sofa.Component.IO.Mesh) },
@@ -787,9 +787,9 @@ std::map< std::string, Dealiased, std::less<> > dealiasedComponents = {
     {"DampVelocity", Dealiased("v24.12","DampVelocitySolver")},
     {"RungeKutta2", Dealiased("v24.12","RungeKutta2Solver")},
     {"RungeKutta4", Dealiased("v24.12","RungeKutta4Solver")},
-    {"EulerImplicit", Dealiased("v24.12","EulerImplicitSolver")},
-    {"ImplicitEulerSolver", Dealiased("v24.12","EulerImplicitSolver")},
-    {"ImplicitEuler", Dealiased("v24.12","EulerImplicitSolver")},
+    {"EulerImplicit", Dealiased("v24.12","EulerImplicitIntegrationScheme")},
+    {"ImplicitEulerSolver", Dealiased("v24.12","EulerImplicitIntegrationScheme")},
+    {"ImplicitEuler", Dealiased("v24.12","EulerImplicitIntegrationScheme")},
     {"VariationalSolver", Dealiased("v24.12","VariationalSymplecticSolver")},
     {"Mesh", Dealiased("v24.12","MeshTopology")},
     {"SphereQuad", Dealiased("v24.12","SphereQuadTopology")},

@@ -60,7 +60,7 @@ sofa::simulation::Node::SPtr RestSpringsForceField_test::createScene(const std::
     auto theRoot = createRootNode(theSimulation, "root");
 
     this->loadPlugins({
-        Sofa.Component.ODESolver.Backward,
+        Sofa.Component.IntegrationSchemes.Backward,
         Sofa.Component.LinearSolver.Iterative,
         Sofa.Component.StateContainer,
         Sofa.Component.Mass,
@@ -68,7 +68,7 @@ sofa::simulation::Node::SPtr RestSpringsForceField_test::createScene(const std::
     });
     
     createObject(theRoot, "DefaultAnimationLoop");
-    createObject(theRoot, "EulerImplicitSolver");
+    createObject(theRoot, "EulerImplicitIntegrationScheme");
     createObject(theRoot, "CGLinearSolver", {{ "iterations", "25" }, { "tolerance", "1e-5" }, {"threshold", "1e-5"}});
 
     /// Create an object with a mass and use a rest shape spring ff so it stays

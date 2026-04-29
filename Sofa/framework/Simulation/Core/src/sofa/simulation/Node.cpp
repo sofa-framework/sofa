@@ -30,7 +30,7 @@
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/behavior/Mass.h>
-#include <sofa/core/behavior/OdeSolver.h>
+#include <sofa/core/behavior/IntegrationScheme.h>
 #include <sofa/core/behavior/IntegrationScheme.h>
 #include <sofa/core/collision/Pipeline.h>
 #include <sofa/core/loader/BaseLoader.h>
@@ -85,7 +85,7 @@ Node::Node(const std::string& nodename, Node* parent)
     , behaviorModel(initLink("behaviorModel", "The BehaviorModel attached to this node (only valid for root node)"))
     , mapping(initLink("mapping", "The (non-mechanical) Mapping(s) attached to this node (only valid for root node)"))
 
-    , solver(initLink("odeSolver", "The OdeSolver(s) attached to this node (controlling the mechanical time integration of this branch)"))
+    , solver(initLink("odeSolver", "The IntegrationScheme(s) attached to this node (controlling the mechanical time integration of this branch)"))
     , integrationScheme(initLink("integrationScheme", "The IntegrationScheme(s) attached to this node (controlling the mechanical time integration of this branch)"))
     , constraintSolver(initLink("constraintSolver", "The ConstraintSolver(s) attached to this node"))
     , linearSolver(initLink("linearSolver", "The LinearSolver(s) attached to this node"))
@@ -614,8 +614,8 @@ sofa::core::objectmodel::Base* Node::findLinkDestClass(const core::objectmodel::
             return destType->dynamicCast(node->getShader());
         else if (destType->hasParent(core::behavior::BaseAnimationLoop::GetClass()))
             return destType->dynamicCast(node->getAnimationLoop());
-        else if (destType->hasParent(core::behavior::OdeSolver::GetClass()))
-            return destType->dynamicCast(node->getOdeSolver());
+        else if (destType->hasParent(core::behavior::IntegrationScheme::GetClass()))
+            return destType->dynamicCast(node->getIntegrationScheme());
         else if (destType->hasParent(core::collision::Pipeline::GetClass()))
             return destType->dynamicCast(node->getCollisionPipeline());
         else if (destType->hasParent(core::visual::VisualLoop::GetClass()))
@@ -724,12 +724,12 @@ core::behavior::BaseAnimationLoop* Node::getAnimationLoop() const
         return get<core::behavior::BaseAnimationLoop>(SearchParents);
 }
 
-core::behavior::OdeSolver* Node::getOdeSolver() const
+core::behavior::IntegrationScheme* Node::getIntegrationScheme() const
 {
     if (!solver.empty())
         return solver[0];
     else
-        return get<core::behavior::OdeSolver>(SearchParents);
+        return get<core::behavior::IntegrationScheme>(SearchParents);
 }
 
 core::collision::Pipeline* Node::getCollisionPipeline() const
@@ -821,7 +821,7 @@ bool Node::getDebug() const
 void Node::removeControllers()
 {
     removeObject(*animationManager.begin());
-    typedef NodeSequence<core::behavior::OdeSolver> Solvers;
+    typedef NodeSequence<core::behavior::IntegrationScheme> Solvers;
     const Solvers solverRemove = solver;
     for ( Solvers::iterator i=solverRemove.begin(), iend=solverRemove.end(); i!=iend; ++i )
         removeObject( *i );
@@ -935,8 +935,8 @@ void Node::printComponents()
     sstream << "BaseAnimationLoop: ";
     for (NodeSingle<BaseAnimationLoop>::iterator i = animationManager.begin(), iend = animationManager.end(); i != iend; ++i)
         sstream << (*i)->getName() << " ";
-    sstream << "\n" << "OdeSolver: ";
-    for (NodeSequence<OdeSolver>::iterator i = solver.begin(), iend = solver.end(); i != iend; ++i)
+    sstream << "\n" << "IntegrationScheme: ";
+    for (NodeSequence<IntegrationScheme>::iterator i = solver.begin(), iend = solver.end(); i != iend; ++i)
         sstream << (*i)->getName() << " ";
     sstream << "\n" << "LinearSolver: ";
     for (NodeSequence<BaseLinearSolver>::iterator i = linearSolver.begin(), iend = linearSolver.end(); i != iend; i++)
@@ -1882,7 +1882,6 @@ NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::behavior::BaseAnimationLoop, Animatio
 NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::visual::VisualLoop, VisualLoop, visualLoop )
 NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::BehaviorModel, BehaviorModel, behaviorModel )
 NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::BaseMapping, Mapping, mapping )
-NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::behavior::OdeSolver, OdeSolver, solver )
 NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::behavior::IntegrationScheme, IntegrationScheme, integrationScheme )
 NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::behavior::ConstraintSolver, ConstraintSolver, constraintSolver )
 NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::behavior::BaseLinearSolver, LinearSolver, linearSolver )
@@ -1910,7 +1909,6 @@ template class NodeSequence<Node,true>;
 template class NodeSequence<sofa::core::objectmodel::BaseComponent,true>;
 template class NodeSequence<sofa::core::BehaviorModel>;
 template class NodeSequence<sofa::core::BaseMapping>;
-template class NodeSequence<sofa::core::behavior::OdeSolver>;
 template class NodeSequence<sofa::core::behavior::IntegrationScheme>;
 template class NodeSequence<sofa::core::behavior::ConstraintSolver>;
 template class NodeSequence<sofa::core::behavior::BaseLinearSolver>;

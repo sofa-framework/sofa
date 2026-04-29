@@ -411,7 +411,6 @@ public:
     SOFA_BASE_CAST_DEFINITION( objectmodel, ContextObject                          )
     SOFA_BASE_CAST_DEFINITION( objectmodel, ConfigurationSetting                   )
     SOFA_BASE_CAST_DEFINITION( behavior,    BaseAnimationLoop                      )
-    SOFA_BASE_CAST_DEFINITION( behavior,    OdeSolver                              )
     SOFA_BASE_CAST_DEFINITION( behavior,    IntegrationScheme                      )
     SOFA_BASE_CAST_DEFINITION( behavior,    BaseLinearSolver                       )
     SOFA_BASE_CAST_DEFINITION( behavior,    LinearSolver                           )

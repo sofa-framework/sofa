@@ -4,7 +4,7 @@
     <RequiredPlugin pluginName="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [PCGLinearSolver] -->
     <RequiredPlugin pluginName="Sofa.Component.LinearSolver.Preconditioner"/> <!-- Needed to use components [JacobiPreconditioner] -->
     <RequiredPlugin pluginName="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [IdentityMapping] -->
-    <RequiredPlugin pluginName="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin pluginName="Sofa.Component.IntegrationSchemes.Backward"/> <!-- Needed to use components [EulerImplicitIntegrationScheme] -->
     <RequiredPlugin pluginName="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
     <RequiredPlugin pluginName="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
     <RequiredPlugin pluginName="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->
@@ -14,7 +14,7 @@
   <Node name="M1">
     <MeshVTKLoader name="volume" filename="mesh/raptorTetra_12580.vtu" onlyAttachedPoints="true" />
 <!--    <MeshOBJLoader name="surface" filename="mesh/raptor8k1.obj" />-->
-    <EulerImplicitSolver rayleighStiffness="0.1" rayleighMass="0.1" />
+    <EulerImplicitIntegrationScheme rayleighStiffness="0.1" rayleighMass="0.1" />
 <!--    <CGLinearSolver iterations="30" tolerance="1e-10" threshold="1e-10"/>-->
         <PCGLinearSolver iterations="30" tolerance="1e-10" preconditioner="@precond" />
 	<JacobiPreconditioner template="CudaDiagonalMatrixf" name="precond" />

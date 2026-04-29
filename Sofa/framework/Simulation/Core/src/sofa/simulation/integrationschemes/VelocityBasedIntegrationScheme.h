@@ -77,6 +77,8 @@ public:
      */
     virtual void updateVelocityAndPositionFromLinearSolution(SReal alpha, unsigned iteration = 0);
 
+    virtual SReal getVelocityIntegrationFactor() const final;
+    virtual SReal getPositionIntegrationFactor() const final;
 
 protected:
     virtual sofa::Size getIntegrationSchemeOrder() = 0;

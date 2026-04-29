@@ -89,6 +89,19 @@ public:
      */
     virtual void updateVelocityAndPositionFromLinearSolution(SReal alpha, unsigned iteration = 0) = 0;
 
+    SOFA_ATTRIBUTE_DEPRECATED("v26.12", "v27.06", "This method has been devided into smallest methods composing the time integration stage.") virtual void solve(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) final ;
+
+
+    /// Given the solution dx of the linear system inversion, how much will it affect the velocity
+    ///
+    /// This method is used to compute the compliance for contact corrections
+    virtual SReal getVelocityIntegrationFactor() const = 0;
+
+    /// Given the solution dx of the linear system inversion, how much will it affect the position
+    ///
+    /// This method is used to compute the compliance for contact corrections
+    virtual SReal getPositionIntegrationFactor() const = 0;
+
 
     bool insertInNode( objectmodel::BaseNode* node ) override;
     bool removeInNode( objectmodel::BaseNode* node ) override;

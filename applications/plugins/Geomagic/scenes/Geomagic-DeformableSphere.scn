@@ -16,7 +16,7 @@
     <RequiredPlugin pluginName="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [BarycentricMapping IdentityMapping] -->
     <RequiredPlugin pluginName="Sofa.Component.Mapping.NonLinear"/> <!-- Needed to use components [RigidMapping] -->
     <RequiredPlugin pluginName="Sofa.Component.Mass"/> <!-- Needed to use components [DiagonalMass UniformMass] -->
-    <RequiredPlugin pluginName="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin pluginName="Sofa.Component.IntegrationSchemes.Backward"/> <!-- Needed to use components [EulerImplicitIntegrationScheme] -->
     <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [TetrahedronFEMForceField] -->
     <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [RestShapeSpringsForceField] -->
     <RequiredPlugin pluginName="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
@@ -44,7 +44,7 @@
     
     
     <Node name="DeformableSphere">		
-        <EulerImplicitSolver rayleighMass="0.01" rayleighStiffness="0.1" /> 
+        <EulerImplicitIntegrationScheme rayleighMass="0.01" rayleighStiffness="0.1" />
         <SparseLDLSolver template="CompressedRowSparseMatrixMat3x3d"/>
         
         <MeshOBJLoader name="loaderS" filename="mesh/sphere_05.obj" scale3d="0.05 0.05 0.05" translation="0 0 2" />
@@ -99,7 +99,7 @@
     </Node>
 	
 	<Node name="Instrument" >
-        <EulerImplicitSolver rayleighMass="0.01" rayleighStiffness="0.1" />
+        <EulerImplicitIntegrationScheme rayleighMass="0.01" rayleighStiffness="0.1" />
 		<SparseLDLSolver template="CompressedRowSparseMatrixMat3x3d"/>
         
 		<MechanicalObject name="instrumentState" template="Rigid3" tags="GeomagicDevice" />

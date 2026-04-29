@@ -3,8 +3,8 @@
 <RequiredPlugin pluginName="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshGmshLoader] -->
 <RequiredPlugin pluginName="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
 <RequiredPlugin pluginName="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
-<RequiredPlugin pluginName="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
-<RequiredPlugin pluginName="Sofa.Component.ODESolver.Forward"/> <!-- Needed to use components [EulerExplicitSolver] -->
+<RequiredPlugin pluginName="Sofa.Component.IntegrationSchemes.Backward"/> <!-- Needed to use components [EulerImplicitIntegrationScheme] -->
+<RequiredPlugin pluginName="Sofa.Component.IntegrationSchemes.Forward"/> <!-- Needed to use components [EulerExplicitIntegrationScheme] -->
 <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [SpringForceField] -->
 <RequiredPlugin pluginName="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
 <RequiredPlugin pluginName="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
@@ -12,7 +12,7 @@
 <VisualStyle displayFlags="showBehaviorModels showForceFields showCollisionModels showMappings" />
 
 	<Node name="Symplectic Explicit Euler">
-	  <EulerExplicitSolver/>
+	  <EulerExplicitIntegrationScheme/>
 		<MeshGmshLoader filename="mesh/smCube27.msh" name="loader" />
 		<MechanicalObject src="@loader" 
 		velocity="
@@ -77,7 +77,7 @@
 	</Node>
 
 	<Node name="Implicit Euler">
-	  <EulerImplicitSolver rayleighStiffness="0" rayleighMass="0"/> 
+	  <EulerImplicitIntegrationScheme rayleighStiffness="0" rayleighMass="0"/>
 	  <CGLinearSolver iterations="50" tolerance="1e-9" threshold="1e-9"/>
 		<MeshGmshLoader filename="mesh/smCube27.msh" name="loader" />
 		<MechanicalObject src="@loader"

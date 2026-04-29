@@ -33,12 +33,12 @@ set(SOURCE_FILES
 )
 
 sofa_find_package(Sofa.Simulation.Core REQUIRED)
-sofa_find_package(Sofa.Component.ODESolver.Backward REQUIRED)
+sofa_find_package(Sofa.Component.IntegrationSchemes.Backward REQUIRED)
 sofa_find_package(Sofa.Component.LinearSolver.Iterative REQUIRED)
 sofa_find_package(Sofa.Component.LinearSolver.Direct REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${WRAPPER_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Simulation.Core Sofa.Component.ODESolver.Backward Sofa.Component.LinearSolver.Iterative Sofa.Component.LinearSolver.Direct)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Simulation.Core Sofa.Component.IntegrationSchemes.Backward Sofa.Component.LinearSolver.Iterative Sofa.Component.LinearSolver.Direct)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

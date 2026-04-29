@@ -201,13 +201,12 @@ void VelocityBasedIntegrationScheme::solveLinearEquation()
  */
 void VelocityBasedIntegrationScheme::updateVelocityAndPositionFromLinearSolution(SReal alpha, unsigned iteration)
 {
-    //TODO use alpha
     sofa::simulation::common::VectorOperations vop( m_params, this->getContext() );
 
     sofa::core::behavior::MultiVecCoord pos(&vop, m_xResult);
     sofa::core::behavior::MultiVecDeriv vel(&vop, m_vResult );
 
-    pos.peq(m_unknown, getPositionUpdateDerivedFromVelocity());
+    pos.peq(m_unknown, alpha * getPositionUpdateDerivedFromVelocity());
 
     //TODO make this work with alpha, iteration might be still 0 but we are in the linesearch algo and we don't want to remove this each time...
     if (iteration == 0) [[unlikely]]
@@ -215,9 +214,18 @@ void VelocityBasedIntegrationScheme::updateVelocityAndPositionFromLinearSolution
         pos.peq(m_r1, -1.0);
     }
 
-    vel.peq(m_unknown);
+    vel.peq(m_unknown, alpha);
 }
 
 
+SReal VelocityBasedIntegrationScheme::getVelocityIntegrationFactor() const
+{
+    return 1.0_sreal;
+}
+
+SReal VelocityBasedIntegrationScheme::getPositionIntegrationFactor() const
+{
+    return getPositionUpdateDerivedFromVelocity();
+}
 
 } // namespace sofa::component::integrationschemes::forward

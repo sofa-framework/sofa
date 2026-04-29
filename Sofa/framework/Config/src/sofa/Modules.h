@@ -115,11 +115,6 @@ public:
         MODULE(Mass, "Sofa.Component.Mass")
         MODULE(MechanicalLoad, "Sofa.Component.MechanicalLoad")
 
-        START_MODULE(ODESolver, "Sofa.Component.ODESolver")
-            MODULE(Backward, "Sofa.Component.ODESolver.Backward")
-            MODULE(Forward, "Sofa.Component.ODESolver.Forward")
-        END_MODULE(ODESolver)
-
         START_MODULE(IntegrationSchemes, "Sofa.Component.IntegrationSchemes")
             MODULE(Backward, "Sofa.Component.IntegrationSchemes.Backward")
             MODULE(Forward, "Sofa.Component.IntegrationSchemes.Forward")

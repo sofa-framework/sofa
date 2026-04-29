@@ -4,7 +4,7 @@
     <DefaultAnimationLoop/>
     <Node name="plugins">
         <RequiredPlugin pluginName="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
-        <RequiredPlugin pluginName="Sofa.Component.ODESolver.Forward"/> <!-- Needed to use components [EulerExplicitSolver] -->
+        <RequiredPlugin pluginName="Sofa.Component.IntegrationSchemes.Forward"/> <!-- Needed to use components [EulerExplicitIntegrationScheme] -->
         <RequiredPlugin pluginName="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
         <RequiredPlugin pluginName="Sofa.Component.Visual"/> <!-- Needed to use components [TrailRenderer VisualGrid] -->
     </Node>
@@ -13,7 +13,7 @@
 
     <DefaultAnimationLoop/>
 
-    <EulerExplicitSolver/>
+    <EulerExplicitIntegrationScheme/>
     <MechanicalObject template="Vec3" name="particle"
                       position="0 0 0  0 0 0  0 0 0  0 0 0"
                       velocity="5 5 0  -5 5 0  7 7 0  -7 7 0" showObject="true" showObjectScale="10"/>
