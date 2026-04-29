@@ -56,19 +56,21 @@ SReal NewmarkIntegrationScheme::getVelocityUpdateDerivedFromAcceleration() const
 }
 
 
-void NewmarkIntegrationScheme::computePositionUpdateFromVelocityAndAcceleration(sofa::simulation::common::VectorOperations & vop, sofa::core::MultiVecDerivId& result, const sofa::core::MultiVecDerivId& velocity, const sofa::core::MultiVecDerivId& acceleration)
+void NewmarkIntegrationScheme::computeCurrentPositionIntegrationError(sofa::simulation::common::VectorOperations & vop, sofa::core::MultiVecDerivId& result, const sofa::core::MultiVecDerivId& velocity, const sofa::core::MultiVecDerivId& acceleration)
 {
     sofa::core::behavior::MultiVecDeriv res(&vop, result );
-    res.eq(m_v0[0], m_dt);
-    res.peq(acceleration, m_dt * m_dt * d_beta.getValue() );
-    res.peq(m_a0[0], m_dt * m_dt * (0.5  -  d_beta.getValue()) );
+    res.eq(m_xResult,m_x0[0], -1);
+    res.peq(m_v0[0], -m_dt);
+    res.peq(acceleration, -m_dt * m_dt * d_beta.getValue() );
+    res.peq(m_a0[0], -m_dt * m_dt * (0.5  -  d_beta.getValue()) );
 }
 
-void NewmarkIntegrationScheme::computeVelocityUpdateFromAcceleration(sofa::simulation::common::VectorOperations & vop, const sofa::core::MultiVecDerivId& result, const sofa::core::MultiVecDerivId& acceleration)
+void NewmarkIntegrationScheme::computeCurrentVelocityIntegrationError(sofa::simulation::common::VectorOperations & vop, const sofa::core::MultiVecDerivId& result, const sofa::core::MultiVecDerivId& acceleration)
 {
     sofa::core::behavior::MultiVecDeriv res(&vop, result );
-    res.peq(acceleration, m_dt * d_gamma.getValue() );
-    res.peq(m_a0[0], m_dt * (1.0  -  d_gamma.getValue()) );
+    res.eq( m_vResult, m_v0[0], -1);
+    res.peq(acceleration, -m_dt * d_gamma.getValue() );
+    res.peq(m_a0[0], -m_dt * (1.0  -  d_gamma.getValue()) );
 }
 
 

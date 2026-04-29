@@ -71,7 +71,7 @@ Visitor::Result PrintVisitor::processNodeTopDown(simulation::Node* node)
     ++level;
     processObjects(node->mechanicalState,"MechanicalState");
     processObjects(node->mechanicalMapping,"MechanicalMapping");
-    processObjects(node->solver,"Solver");
+    processObjects(node->integrationScheme,"IntegrationScheme");
     processObjects(node->linearSolver,"LinearSolver");
     processObjects(node->mass,"Mass");
     processObjects(node->topology,"Topology");

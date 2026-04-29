@@ -37,30 +37,37 @@ namespace sofa::component::integrationschemes::backward
 {
 
 
-class SOFA_COMPONENT_INTEGRATIONSCHEMES_BACKWARD_API NewmarkIntegrationScheme :
-    public sofa::simulation::integrationschemes::AccelerationBasedIntegrationScheme
+class SOFA_COMPONENT_INTEGRATIONSCHEMES_BACKWARD_API BDFIntegrationScheme :
+    public sofa::simulation::integrationschemes::VelocityBasedIntegrationScheme
 {
 public:
-    SOFA_CLASS(NewmarkIntegrationScheme, sofa::simulation::integrationschemes::AccelerationBasedIntegrationScheme);
+    SOFA_CLASS(BDFIntegrationScheme, sofa::simulation::integrationschemes::VelocityBasedIntegrationScheme);
+    core::objectmodel::Data<sofa::Size> d_order;
 
-    core::objectmodel::Data<SReal> d_beta;
-    core::objectmodel::Data<SReal> d_gamma;
+    BDFIntegrationScheme();
+
+    virtual void init() override;
+    virtual void doSetupIntegrationStep(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
+
+    virtual SReal getPositionUpdateDerivedFromVelocity() const override;
+    virtual SReal getInverseVelocityUpdateDerivedFromVelocity() const override;
+
+    //Compute the position update from current value of velocity : dX = g_x(v_i) - x_t
+    virtual void computeCurrentPositionIntegrationError(sofa::simulation::common::VectorOperations & vop, sofa::core::MultiVecDerivId& result,  const sofa::core::MultiVecCoordId& position,const sofa::core::MultiVecDerivId& velocity) override;
+    //Compute the acceleration from current value of velocity. This is the implementation of the inverse integration scheme for the velocity
+    virtual void computeAccelerationFromVelocity(sofa::simulation::common::VectorOperations & vop, sofa::core::MultiVecDerivId& result, const sofa::core::MultiVecDerivId& velocity) override;
 
 protected:
-    NewmarkIntegrationScheme();
-
-    SReal getPositionUpdateDerivedFromAcceleration() const override;
-    SReal getPositionUpdateDerivedFromVelocity() const override;
-    SReal getVelocityUpdateDerivedFromAcceleration() const override;
-
-    // void computeCurrentAccelerationFromVelocity(sofa::simulation::common::VectorOperations & vop, sofa::core::MultiVecDerivId& result, const sofa::core::MultiVecDerivId& velocity) override ;
-    void computePositionUpdateFromVelocityAndAcceleration(sofa::simulation::common::VectorOperations & vop, sofa::core::MultiVecDerivId& result, const sofa::core::MultiVecDerivId& velocity, const sofa::core::MultiVecDerivId& acceleration) override;
-    void computeVelocityUpdateFromAcceleration(sofa::simulation::common::VectorOperations & vop, const sofa::core::MultiVecDerivId& result, const sofa::core::MultiVecDerivId& acceleration) override;
-
-    virtual Size getIntegrationSchemeOrder() override
+    virtual sofa::Size getIntegrationSchemeOrder()
     {
-        return 1;
+        return d_order.getValue();
     }
+
+    void computeAFactors();
+
+    std::vector<SReal> m_aFactors;
+    std::deque<SReal> m_samples;
+
 };
 
 } // namespace sofa::component::integrationschemes::backward

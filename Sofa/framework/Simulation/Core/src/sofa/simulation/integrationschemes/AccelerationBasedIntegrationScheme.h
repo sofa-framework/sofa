@@ -88,8 +88,10 @@ protected:
     virtual SReal getPositionUpdateDerivedFromVelocity() const = 0;
     virtual SReal getVelocityUpdateDerivedFromAcceleration() const = 0;
 
-    virtual void computePositionUpdateFromVelocityAndAcceleration(sofa::simulation::common::VectorOperations & vop, sofa::core::MultiVecDerivId& result, const sofa::core::MultiVecDerivId& velocity, const sofa::core::MultiVecDerivId& acceleration) = 0;
-    virtual void computeVelocityUpdateFromAcceleration(sofa::simulation::common::VectorOperations & vop, const sofa::core::MultiVecDerivId& result, const sofa::core::MultiVecDerivId& acceleration) = 0;
+    //Compute the error made on the position integration equation : x_{t+h} - g_x(v,a), with v and a the current estimates of velocity and acceleration
+    virtual void computeCurrentPositionIntegrationError(sofa::simulation::common::VectorOperations & vop, sofa::core::MultiVecDerivId& result, const sofa::core::MultiVecDerivId& velocity, const sofa::core::MultiVecDerivId& acceleration) = 0;
+    //Compute the error made on the position integration equation : v_{t+h} - g_v(a), with a the current estimate of acceleration
+    virtual void computeCurrentVelocityIntegrationError(sofa::simulation::common::VectorOperations & vop, const sofa::core::MultiVecDerivId& result, const sofa::core::MultiVecDerivId& acceleration) = 0;
 
 
 };

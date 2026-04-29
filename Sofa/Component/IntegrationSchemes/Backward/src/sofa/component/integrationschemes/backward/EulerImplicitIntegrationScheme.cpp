@@ -37,7 +37,8 @@ using namespace core::behavior;
 
 EulerImplicitIntegrationScheme::EulerImplicitIntegrationScheme()
     : d_trapezoidalScheme( initData(&d_trapezoidalScheme,false,"trapezoidalScheme","Boolean to use the trapezoidal scheme instead of the implicit Euler scheme and get second order accuracy in time (false by default)") )
-    {
+{
+
 }
 
 
@@ -52,20 +53,20 @@ SReal EulerImplicitIntegrationScheme::getInverseVelocityUpdateDerivedFromVelocit
     return 1/m_dt;
 }
 
-//Compute the position update from current value of velocity : dX = x_t - g_x(v_i)
-void EulerImplicitIntegrationScheme::computePositionUpdateFromVelocity(sofa::simulation::common::VectorOperations & vop, sofa::core::MultiVecDerivId& result, const sofa::core::MultiVecDerivId& velocity)
+//Compute the error made on the position integration equation : x_{t+h} - g_x(v), with v the current estimate of velocity
+void EulerImplicitIntegrationScheme::computeCurrentPositionIntegrationError(sofa::simulation::common::VectorOperations & vop, sofa::core::MultiVecDerivId& result, const sofa::core::MultiVecCoordId& position, const sofa::core::MultiVecDerivId& velocity)
 {
-    //TODO this is not in accordance to its use in VelocityIntegrationScheme where it is ecxpected to compute X and not dX being g_x(v) - x_t
     sofa::core::behavior::MultiVecDeriv res(&vop, result );
-    res.eq(velocity, m_dt);
+    res.eq(position,m_x0[0],  -1);
+    res.peq(velocity, -m_dt);
 }
 
 //Compute the acceleration from current value of velocity. This is the implementation of the inverse integration scheme for the velocity
 void EulerImplicitIntegrationScheme::computeAccelerationFromVelocity(sofa::simulation::common::VectorOperations & vop, sofa::core::MultiVecDerivId& result, const sofa::core::MultiVecDerivId& velocity)
 {
     sofa::core::behavior::MultiVecDeriv res(&vop, result );
-    res.eq(velocity, 1/m_dt);
-    res.peq(m_v0[0], -1/m_dt);
+    res.eq(velocity,m_v0[0], -1);
+    res.teq( 1/m_dt);
 }
 
 
