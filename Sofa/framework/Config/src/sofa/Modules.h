@@ -120,6 +120,11 @@ public:
             MODULE(Forward, "Sofa.Component.ODESolver.Forward")
         END_MODULE(ODESolver)
 
+        START_MODULE(IntegrationSchemes, "Sofa.Component.IntegrationSchemes")
+            MODULE(Backward, "Sofa.Component.IntegrationSchemes.Backward")
+            MODULE(Forward, "Sofa.Component.IntegrationSchemes.Forward")
+        END_MODULE(IntegrationSchemes)
+
         MODULE(Playback, "Sofa.Component.Playback")
         MODULE(SceneUtility, "Sofa.Component.SceneUtility")
         MODULE(Setting, "Sofa.Component.Setting")
