@@ -25,6 +25,7 @@
 #include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/core/behavior/MultiVec.h>
+#include <sofa/simulation/MappingGraph.h>
 
 namespace sofa::simulation::common
 {
@@ -125,6 +126,9 @@ protected:
     void solveSystem(core::MultiVecDerivId solution, core::MultiVecDerivId rhs) const;
 
     bool isMassMatrixTriviallyInvertible(const core::ExecParams* params);
+
+
+    simulation::MappingGraph m_mappingGraph;
 };
 
 } // namespace sofa::component::odesolver::forward
