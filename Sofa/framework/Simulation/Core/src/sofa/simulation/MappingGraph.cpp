@@ -8,10 +8,18 @@ namespace sofa::simulation
 
 bool BaseMappingGraphNode::isMapped() const
 {
-    return std::any_of(m_parents.begin(), m_parents.end(), [](const SPtr& node)
+    if (m_isMapped.has_value())
+    {
+        return m_isMapped.value();
+    }
+
+    const auto isMapped = std::any_of(m_parents.begin(), m_parents.end(), [](const SPtr& node)
     {
         return node->getType() == NodeType::Mapping || node->isMapped();
     });
+
+    m_isMapped = isMapped;
+    return isMapped;
 }
 
 MappingGraph::InputLists MappingGraph::InputLists::makeFromNode(core::objectmodel::BaseContext* node)
