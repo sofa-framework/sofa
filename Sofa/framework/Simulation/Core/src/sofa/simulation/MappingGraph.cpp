@@ -1,26 +1,12 @@
 #include <sofa/simulation/MappingGraph.h>
 #include <sofa/simulation/task/ParallelForEach.h>
 
+#include <sofa/simulation/mappinggraph/MappingGraphNode.h>
+
 #include <ranges>
 
 namespace sofa::simulation
 {
-
-bool BaseMappingGraphNode::isMapped() const
-{
-    if (m_isMapped.has_value())
-    {
-        return m_isMapped.value();
-    }
-
-    const auto isMapped = std::any_of(m_parents.begin(), m_parents.end(), [](const SPtr& node)
-    {
-        return node->getType() == NodeType::Mapping || node->isMapped();
-    });
-
-    m_isMapped = isMapped;
-    return isMapped;
-}
 
 MappingGraph::InputLists MappingGraph::InputLists::makeFromNode(core::objectmodel::BaseContext* node)
 {
