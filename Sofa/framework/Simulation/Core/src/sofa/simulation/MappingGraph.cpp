@@ -265,6 +265,17 @@ bool shouldVisit(const BaseMappingGraphNode* node, VisitorApplication scope)
 }
 }
 
+void MappingGraph::traverse(MappingGraphVisitor& visitor, VisitorApplication scope) const
+{
+    for (auto& node : m_allNodes)
+    {
+        if (shouldVisit(node.get(), scope))
+        {
+            node->accept(visitor);
+        }
+    }
+}
+
 void MappingGraph::traverseTopDown(MappingGraphVisitor& visitor, VisitorApplication scope) const
 {
     std::queue<BaseMappingGraphNode*> ready = prepareRootForTraversal();

@@ -200,6 +200,15 @@ public:
         core::behavior::BaseMechanicalState*) const;
 
 
+    void traverse(MappingGraphVisitor& visitor, VisitorApplication scope = VisitorApplication::ALL_NODES) const;
+
+    template<class Callable>
+    void traverse_(const Callable& callable, VisitorApplication scope = VisitorApplication::ALL_NODES) const
+    {
+        CallableVisitor<Callable> visitor{callable};
+        traverse(visitor, scope);
+    }
+
     // ------------------------------------------------------------------
     // Top-down traversal: roots (unmapped states) → leaves (components).
     //

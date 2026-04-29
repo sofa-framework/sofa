@@ -29,6 +29,7 @@
 #include <sofa/simulation/VisitorExecuteFunc.h>
 #include <sofa/core/ConstraintParams.h>
 #include <sofa/core/MatricesFactors.h>
+#include <sofa/simulation/MappingGraph.h>
 
 
 namespace sofa::simulation::common
@@ -78,6 +79,8 @@ public:
     void computeEnergy(SReal &kineticEnergy, SReal &potentialEnergy);
     /// Compute the current force (given the latest propagated position and velocity)
     void computeForce(core::MultiVecDerivId result, bool clear = true, bool accumulate = true);
+    /// Compute the current force (given the latest propagated position and velocity)
+    void computeForce(const MappingGraph& mappingGraph, core::MultiVecDerivId result, bool clear = true, bool accumulate = true);
     /// Compute the current force delta (given the latest propagated displacement)
     void computeDf(core::MultiVecDerivId df, bool clear = true, bool accumulate = true);
     /// Compute the current force delta (given the latest propagated velocity)

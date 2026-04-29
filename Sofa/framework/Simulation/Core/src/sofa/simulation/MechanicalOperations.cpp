@@ -259,6 +259,36 @@ void MechanicalOperations::computeForce(core::MultiVecDerivId result, bool clear
     executeVisitor( MechanicalComputeForceVisitor(&mparams, result, accumulate) );
 }
 
+void MechanicalOperations::computeForce(const MappingGraph& mappingGraph,
+                                        core::MultiVecDerivId result, bool clear, bool accumulate)
+{
+    setF(result);
+    if (clear)
+    {
+        mappingGraph.traverse_([&](core::behavior::BaseMechanicalState& state)
+        {
+            state.resetForce(&mparams, result.getId(&state));
+        });
+    }
+
+    mappingGraph.traverse_([&](core::behavior::BaseMechanicalState& state)
+    {
+        state.accumulateForce(&mparams, result.getId(&state));
+    });
+
+    mappingGraph.traverse_([&](core::behavior::BaseForceField& forceField)
+    {
+        forceField.addForce(&mparams, result);
+    });
+
+    if (accumulate)
+    {
+        mappingGraph.traverseBottomUp_([&](core::BaseMapping& mapping)
+        {
+            mapping.applyJT(&mparams, result, result);
+        });
+    }
+}
 
 /// Compute the current force delta (given the latest propagated displacement)
 void MechanicalOperations::computeDf(core::MultiVecDerivId df, bool clear, bool accumulate)
