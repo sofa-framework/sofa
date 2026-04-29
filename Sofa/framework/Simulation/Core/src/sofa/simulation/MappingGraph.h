@@ -235,6 +235,13 @@ public:
      */
     void traverseComponentGroups(MappingGraphVisitor& visitor, VisitorApplication scope = VisitorApplication::ALL_NODES) const;
 
+    template<class Callable>
+    void traverseComponentGroups_(const Callable& callable, VisitorApplication scope = VisitorApplication::ALL_NODES) const
+    {
+        CallableVisitor<Callable> visitor{callable};
+        traverseComponentGroups(visitor, scope);
+    }
+
     /**
      * @brief Visit and process component groups without any specific order, optionally coordinating
      * with a TaskScheduler to manage execution parallelism.
