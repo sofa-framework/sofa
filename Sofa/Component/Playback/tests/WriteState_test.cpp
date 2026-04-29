@@ -89,7 +89,7 @@ namespace sofa {
             }
             else
             {
-                const sofa::component::odesolver::backward::EulerImplicitSolver::SPtr eulerSolver = New<sofa::component::odesolver::backward::EulerImplicitSolver>();
+                const sofa::component::odesolver::backward::EulerImplicitIntegrationScheme::SPtr eulerSolver = New<sofa::component::odesolver::backward::EulerImplicitIntegrationScheme>();
                 root->addObject(eulerSolver);
             }
             const CGLinearSolver::SPtr cgLinearSolver = New<CGLinearSolver> ();

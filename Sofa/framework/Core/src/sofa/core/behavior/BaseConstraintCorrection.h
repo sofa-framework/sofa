@@ -137,7 +137,7 @@ protected:
     BaseConstraintCorrection();
     ~BaseConstraintCorrection() override;
 
-    static SReal correctionFactor(const sofa::core::behavior::OdeSolver* solver, const ConstraintOrder& constraintOrder);
+    static SReal correctionFactor(const sofa::core::behavior::IntegrationScheme* solver, const ConstraintOrder& constraintOrder);
 
 private:
     BaseConstraintCorrection(const BaseConstraintCorrection& n) = delete ;

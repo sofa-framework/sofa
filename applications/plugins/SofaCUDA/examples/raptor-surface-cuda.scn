@@ -1,7 +1,7 @@
 <Node name="root" dt="0.04">
     <RequiredPlugin pluginName="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader MeshVTKLoader] -->
     <RequiredPlugin pluginName="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
-    <RequiredPlugin pluginName="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin pluginName="Sofa.Component.IntegrationSchemes.Backward"/> <!-- Needed to use components [EulerImplicitIntegrationScheme] -->
     <RequiredPlugin pluginName="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
     <RequiredPlugin pluginName="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
     <RequiredPlugin pluginName="SofaCUDA"/> <!-- Needed to use components [BoxROI FixedProjectiveConstraint IdentityMapping MechanicalObject PlaneForceField TriangularFEMForceFieldOptim UniformMass] -->
@@ -10,7 +10,7 @@
     <MeshOBJLoader name="surface" filename="mesh/raptor_8kp.obj" triangulate="1" />
 <!--    <MeshOBJLoader name="surface" filename="mesh/raptor8k1.obj" triangulate="1" />-->
 <!--    <MeshOBJLoader name="surface" filename="mesh/raptor_35kp.obj" triangulate="1" />-->
-    <EulerImplicitSolver rayleighStiffness="0.1" rayleighMass="0.1" />
+    <EulerImplicitIntegrationScheme rayleighStiffness="0.1" rayleighMass="0.1" />
     <CGLinearSolver iterations="25" tolerance="1e-6" threshold="1e-20"/>
     <MeshTopology src="@surface" />
 	<MechanicalObject template="CudaVec3f" />

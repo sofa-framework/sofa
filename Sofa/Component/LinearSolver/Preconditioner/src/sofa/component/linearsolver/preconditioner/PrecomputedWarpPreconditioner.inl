@@ -37,7 +37,7 @@
 
 #include <sofa/type/Quat.h>
 
-#include <sofa/component/odesolver/backward/EulerImplicitSolver.h>
+#include <sofa/component/integrationschemes/backward/EulerImplicitIntegrationScheme.h>
 #include <sofa/component/linearsolver/iterative/CGLinearSolver.h>
 #include <sofa/component/linearsolver/direct/EigenSimplicialLLT.h>
 #include <sofa/component/linearsolver/direct/EigenDirectSparseSolver.inl>
@@ -125,7 +125,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrix(TMatrix& M)
     dt = this->getContext()->getDt();
 
 
-    sofa::component::odesolver::backward::EulerImplicitSolver* EulerSolver;
+    sofa::component::integrationschemes::backward::EulerImplicitIntegrationScheme* EulerSolver;
     this->getContext()->get(EulerSolver);
     factInt = 1.0; // christian : it is not a compliance... but an admittance that is computed !
     if (EulerSolver) factInt = EulerSolver->getPositionIntegrationFactor(); // here, we compute a compliance
@@ -262,7 +262,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
     ss << this->getContext()->getName() << "-" << systemSize << "-" << dt << ((sizeof(Real)==sizeof(float)) ? ".compf" : ".comp");
     std::ifstream compFileIn(ss.str().c_str(), std::ifstream::binary);
 
-    sofa::component::odesolver::backward::EulerImplicitSolver* EulerSolver;
+    sofa::component::integrationschemes::backward::EulerImplicitIntegrationScheme* EulerSolver;
     this->getContext()->get(EulerSolver);
 
     // for the initial computation, the gravity has to be put at 0
@@ -288,13 +288,13 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
 
 
     if(EulerSolver && CGlinearSolver) {
-        msg_info() << "use EulerImplicitSolver &  CGLinearSolver";
+        msg_info() << "use EulerImplicitIntegrationScheme &  CGLinearSolver";
     } else if(EulerSolver && linearSolver) {
-        msg_info() << "use EulerImplicitSolver &  LinearSolver";
+        msg_info() << "use EulerImplicitIntegrationScheme &  LinearSolver";
     } else if(EulerSolver) {
-        msg_info() << "use EulerImplicitSolver";
+        msg_info() << "use EulerImplicitIntegrationScheme";
     } else {
-        msg_error() << "PrecomputedContactCorrection must be associated with EulerImplicitSolver+LinearSolver for the precomputation\nNo Precomputation";
+        msg_error() << "PrecomputedContactCorrection must be associated with EulerImplicitIntegrationScheme+LinearSolver for the precomputation\nNo Precomputation";
         return;
     }
     sofa::core::VecDerivId lhId = core::vec_id::write_access::velocity;

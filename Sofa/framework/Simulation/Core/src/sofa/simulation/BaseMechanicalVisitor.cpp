@@ -30,7 +30,7 @@
 #include <sofa/core/behavior/BaseProjectiveConstraintSet.h>
 #include <sofa/core/behavior/BaseInteractionProjectiveConstraintSet.h>
 #include <sofa/core/behavior/BaseConstraintSet.h>
-#include <sofa/core/behavior/OdeSolver.h>
+#include <sofa/core/behavior/IntegrationScheme.h>
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/BaseMapping.h>
@@ -73,7 +73,7 @@ Visitor::Result BaseMechanicalVisitor::processNodeTopDown(simulation::Node *node
 {
     for (auto *solver : node->solver)
     {
-        if (runVisitorTask(this, ctx, &BaseMechanicalVisitor::fwdOdeSolver, solver, fwdVisitorType) == RESULT_PRUNE)
+        if (runVisitorTask(this, ctx, &BaseMechanicalVisitor::fwdIntegrationScheme, solver, fwdVisitorType) == RESULT_PRUNE)
         {
             return RESULT_PRUNE;
         }
@@ -169,7 +169,7 @@ void BaseMechanicalVisitor::processNodeBottomUp(simulation::Node *node, VisitorC
         }
     }
 
-    for_each(this, ctx, node->solver, &BaseMechanicalVisitor::bwdOdeSolver, bwdVisitorType);
+    for_each(this, ctx, node->solver, &BaseMechanicalVisitor::bwdIntegrationScheme, bwdVisitorType);
 
     if (node == root)
     {
@@ -369,16 +369,16 @@ void BaseMechanicalVisitor::end(simulation::Node* node, core::objectmodel::BaseC
 /// Only used for debugging / profiling purposes
 const char* BaseMechanicalVisitor::getClassName() const { return "MechanicalVisitor"; }
 
-/// Process the OdeSolver
-auto BaseMechanicalVisitor::fwdOdeSolver(simulation::Node* /*node*/, sofa::core::behavior::OdeSolver* /*solver*/) -> Result
+/// Process the IntegrationScheme
+auto BaseMechanicalVisitor::fwdIntegrationScheme(simulation::Node* /*node*/, sofa::core::behavior::IntegrationScheme* /*solver*/) -> Result
 {
     return RESULT_CONTINUE;
 }
 
-/// Process the OdeSolver
-auto BaseMechanicalVisitor::fwdOdeSolver(VisitorContext* ctx, sofa::core::behavior::OdeSolver* solver) -> Result
+/// Process the IntegrationScheme
+auto BaseMechanicalVisitor::fwdIntegrationScheme(VisitorContext* ctx, sofa::core::behavior::IntegrationScheme* solver) -> Result
 {
-    return fwdOdeSolver(ctx->node, solver);
+    return fwdIntegrationScheme(ctx->node, solver);
 }
 
 /// Process the ConstraintSolver
@@ -526,13 +526,13 @@ void BaseMechanicalVisitor::bwdMechanicalMapping(simulation::Node* /*node*/, sof
 void BaseMechanicalVisitor::bwdMechanicalMapping(VisitorContext* ctx, sofa::core::BaseMapping* map)
 { bwdMechanicalMapping(ctx->node, map); }
 
-/// Process the OdeSolver
-void BaseMechanicalVisitor::bwdOdeSolver(simulation::Node* /*node*/,sofa::core::behavior::OdeSolver* /*solver*/)
+/// Process the IntegrationScheme
+void BaseMechanicalVisitor::bwdIntegrationScheme(simulation::Node* /*node*/,sofa::core::behavior::IntegrationScheme* /*solver*/)
 {}
 
-/// Process the OdeSolver
-void BaseMechanicalVisitor::bwdOdeSolver(VisitorContext* ctx,sofa::core::behavior::OdeSolver* solver)
-{ bwdOdeSolver(ctx->node, solver); }
+/// Process the IntegrationScheme
+void BaseMechanicalVisitor::bwdIntegrationScheme(VisitorContext* ctx,sofa::core::behavior::IntegrationScheme* solver)
+{ bwdIntegrationScheme(ctx->node, solver); }
 
 /// Process the ConstraintSolver
 void BaseMechanicalVisitor::bwdConstraintSolver(simulation::Node* /*node*/,sofa::core::behavior::ConstraintSolver* /*solver*/)

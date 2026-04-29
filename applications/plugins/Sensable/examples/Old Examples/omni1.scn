@@ -16,7 +16,7 @@
 		
 
 
-		<EulerImplicitSolver name="eulerImplicitSolver2"  rayleighStiffness="0.01"  rayleighMass="0.1" />
+		<EulerImplicitIntegrationScheme name="eulerImplicitSolver2"  rayleighStiffness="0.01"  rayleighMass="0.1" />
 		<CGLinearSolver template="GraphScattered" name="linear solver"  iterations="40"  tolerance="1e-009"  threshold="1e-015" />
 		<MechanicalObject template="Rigid3d" name="tool"  position="0 0 0 -0.707107 0 0 0.707107"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  rest_position="0 0 0 0 0 0 1"  restScale="1"  showObjectScale="0.1"  showIndicesScale="0.0001" />
 		<UniformMass template="Rigid3d" name="uniformMass3"  totalMass="0.01" />

@@ -4,7 +4,7 @@
 <VisualStyle displayFlags="showBehaviorModels hideCollisionModels hideMappings showForceFields" />
 <RequiredPlugin pluginName="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
 <RequiredPlugin pluginName="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
-<RequiredPlugin pluginName="Sofa.Component.ODESolver.Forward"/> <!-- Needed to use components [RungeKutta4Solver] -->
+<RequiredPlugin pluginName="Sofa.Component.IntegrationSchemes.Forward"/> <!-- Needed to use components [RungeKutta4Solver] -->
 <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [MeshSpringForceField] -->
 <RequiredPlugin pluginName="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
 <RequiredPlugin pluginName="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->
@@ -15,7 +15,7 @@
 	<Node name="M1">
 		<RungeKutta4Solver/>
 		<!--<CGImplicitSolver iterations="10" tolerance="1e-15" threshold="1e-15" />-->
-		<!--<EulerImplicitSolver />                <CGLinearSolver iterations="10" tolerance="1e-15" threshold="1e-15"/>-->
+		<!--<EulerImplicitIntegrationScheme />                <CGLinearSolver iterations="10" tolerance="1e-15" threshold="1e-15"/>-->
 		<MechanicalObject template="CudaVec3f" />
 <!--		<UniformMass totalMass="20" /> -->
 <?php echo '<UniformMass totalMass="'.(20*$size).'" />'."\n"; ?>

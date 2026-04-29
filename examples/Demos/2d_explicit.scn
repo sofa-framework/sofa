@@ -2,14 +2,14 @@
 <RequiredPlugin pluginName="Sofa.Component.Mapping.NonLinear"/> <!-- Needed to use components [RigidMapping] -->
 <RequiredPlugin pluginName="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
 <RequiredPlugin pluginName="Sofa.Component.MechanicalLoad"/> <!-- Needed to use components [PlaneForceField] -->
-<RequiredPlugin pluginName="Sofa.Component.ODESolver.Forward"/> <!-- Needed to use components [RungeKutta4Solver] -->
+<RequiredPlugin pluginName="Sofa.Component.IntegrationSchemes.Forward"/> <!-- Needed to use components [RungeKutta4IntegrationScheme] -->
 <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [SpringForceField] -->
 <RequiredPlugin pluginName="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
 <RequiredPlugin pluginName="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
 
 <DefaultAnimationLoop/>
 <VisualStyle displayFlags="showBehaviorModels showForceFields showInteractionForceFields showCollisionModels showMappings" />
-    <RungeKutta4Solver />
+    <RungeKutta4IntegrationScheme />
     <Node name="Cube1">
         <MechanicalObject template="Rigid2" position="0 10 0" velocity="0.1 1 -100" />
         <UniformMass vertexMass="10 1 0.83333" />

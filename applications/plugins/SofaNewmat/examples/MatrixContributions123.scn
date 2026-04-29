@@ -10,7 +10,7 @@
     <RequiredPlugin pluginName="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
     <RequiredPlugin pluginName="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [BarycentricMapping IdentityMapping] -->
     <RequiredPlugin pluginName="Sofa.Component.Mass"/> <!-- Needed to use components [DiagonalMass] -->
-    <RequiredPlugin pluginName="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin pluginName="Sofa.Component.IntegrationSchemes.Backward"/> <!-- Needed to use components [EulerImplicitIntegrationScheme] -->
     <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [HexahedralFEMForceField TetrahedralCorotationalFEMForceField] -->
     <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [SpringForceField] -->
     <RequiredPlugin pluginName="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
@@ -27,7 +27,7 @@
     <CollisionResponse name="default22" response="PenalityContactForceField" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
     <Node name="DirectSolverNode">
-        <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitIntegrationScheme name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <LULinearSolver name="m_lSolver" printLog="false" verbose="false" />
         <Node name="HexahedraA">
             <HexahedronSetTopologyContainer name="hexaContainer1" position="0. 0. 0. &#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;        5. 0. 0. &#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;        5. 1. 0. &#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;        0. 1. 0.  &#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;        0. 0. 1. &#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;        5. 0. 1. &#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;                                5. 1. 1. &#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;                                0. 1. 1." hexahedra="0 1 2 3 4 5 6 7" />
@@ -75,7 +75,7 @@
     </Node>
     <!-- uncomment to see the comparison between direct solver (contribution of interaction & mapping to the global matrix) and the iterative solver
     <Node name="IterativeSolverNode">
-        <EulerImplicitSolver name="cg_odesolver" printLog="false" />
+        <EulerImplicitIntegrationScheme name="cg_odesolver" printLog="false" />
         <CGLinearSolver name="cg_solver" iterations="25" tolerance="1.0e-9" threshold="1.0e-9" />
         <Node name="HexahedraA">
             <HexahedronSetTopologyContainer name="hexaContainer1" position="0. 0. 0. &#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;        5. 0. 0. &#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;        5. 1. 0. &#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;        0. 1. 0.  &#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;        0. 0. 1. &#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;        5. 0. 1. &#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;                                5. 1. 1. &#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;                                0. 1. 1." hexahedra="0 1 2 3 4 5 6 7" />

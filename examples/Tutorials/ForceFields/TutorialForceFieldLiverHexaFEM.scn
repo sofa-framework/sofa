@@ -10,7 +10,7 @@
     <RequiredPlugin pluginName="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
     <RequiredPlugin pluginName="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [BarycentricMapping] -->
     <RequiredPlugin pluginName="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
-    <RequiredPlugin pluginName="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin pluginName="Sofa.Component.IntegrationSchemes.Backward"/> <!-- Needed to use components [EulerImplicitIntegrationScheme] -->
     <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [HexahedronFEMForceField] -->
     <RequiredPlugin pluginName="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
     <RequiredPlugin pluginName="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [SparseGridTopology] -->
@@ -25,7 +25,7 @@
     <DefaultAnimationLoop/>
     
     <Node name="LiverHexaFEM" gravity="0 -9.81 0">
-        <EulerImplicitSolver name="default19" rayleighStiffness="0.01"  rayleighMass="0.1" />
+        <EulerImplicitIntegrationScheme name="default19" rayleighStiffness="0.01"  rayleighMass="0.1" />
         <CGLinearSolver template="GraphScattered" name="default20" iterations="25" tolerance="1e-09" threshold="1e-09" />
         <SparseGridTopology name="topology" fileTopology="mesh/liver-smooth.obj" n="8 6 6" />
         <MechanicalObject template="Vec3" name="dofs" translation="0 0 0" rotation="0 0 0" scale="1" />

@@ -28,7 +28,7 @@
 #include <sofa/core/collision/CollisionGroupManager.h>
 #include <sofa/core/collision/ContactManager.h>
 #include <sofa/core/behavior/BaseAnimationLoop.h>
-#include <sofa/core/behavior/OdeSolver.h>
+#include <sofa/core/behavior/IntegrationScheme.h>
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/core/behavior/BaseInteractionForceField.h>
 #include <sofa/core/BaseMapping.h>
@@ -132,7 +132,7 @@ bool ExportDotVisitor::display(core::objectmodel::BaseComponent* obj, const char
         if (showCollisionPipeline) { show = true; *color = COLOR[COLLISION]; }
         else hide = true;
     }
-    if (obj->toOdeSolver())
+    if (obj->toIntegrationScheme())
     {
         if (showSolver) { show = true; *color = COLOR[SOLVER]; }
         else hide = true;

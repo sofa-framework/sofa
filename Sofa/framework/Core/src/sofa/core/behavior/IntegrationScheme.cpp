@@ -52,6 +52,14 @@ void IntegrationScheme::setupIntegrationStep(const core::ExecParams* params, SRe
 
 }
 
+void IntegrationScheme::solve(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
+{
+    setupIntegrationStep(params, dt, xResult, vResult);
+    computeLHS(0);
+    computeRHS(0);
+    solveLinearEquation();
+    updateVelocityAndPositionFromLinearSolution(1.0, 0);
+}
 
 bool IntegrationScheme::insertInNode( objectmodel::BaseNode* node )
 {

@@ -4,13 +4,13 @@
 	<RequiredPlugin pluginName="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
 	<RequiredPlugin pluginName="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
 	<RequiredPlugin pluginName="Sofa.Component.MechanicalLoad"/> <!-- Needed to use components [ConstantForceField] -->
-	<RequiredPlugin pluginName="Sofa.Component.ODESolver.Forward"/> <!-- Needed to use components [EulerExplicitSolver] -->
+	<RequiredPlugin pluginName="Sofa.Component.IntegrationSchemes.Forward"/> <!-- Needed to use components [EulerExplicitIntegrationScheme] -->
 	<RequiredPlugin pluginName="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [HexahedronFEMForceField] -->
 	<RequiredPlugin pluginName="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
 	<RequiredPlugin pluginName="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->
 	<RequiredPlugin pluginName="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
 
-	<EulerExplicitSolver  />
+	<EulerExplicitIntegrationScheme  />
 	<VisualStyle displayFlags="showBehavior" />
 	<DefaultAnimationLoop/>
 	<Node >

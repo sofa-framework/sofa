@@ -4,7 +4,7 @@
     <RequiredPlugin pluginName="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
     <RequiredPlugin pluginName="Sofa.Component.LinearSolver.Direct"/> <!-- Needed to use components [SparseLDLSolver] -->
     <RequiredPlugin pluginName="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
-    <RequiredPlugin pluginName="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin pluginName="Sofa.Component.IntegrationSchemes.Backward"/> <!-- Needed to use components [EulerImplicitIntegrationScheme] -->
     <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [SpringForceField] -->
     <RequiredPlugin pluginName="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
     <RequiredPlugin pluginName="Sofa.Component.Visual"/> <!-- Needed to use components [VisualGrid VisualStyle] -->
@@ -18,7 +18,7 @@
     <VisualStyle displayFlags="showBehavior" />
 
     <Node name="ClassicEulerImplicit" gravity="0 -9.81 0">
-    	<EulerImplicitSolver name="EulerImplicit-NoTrapez" trapezoidalScheme="0"/>
+    	<EulerImplicitIntegrationScheme name="EulerImplicit-NoTrapez" trapezoidalScheme="0"/>
     	<SparseLDLSolver template="CompressedRowSparseMatrixMat3x3d"/>
         <MechanicalObject template="Vec3" name="Particles" restScale="1" position="0 0 0 1 0 0" showObject="1" showObjectScale="10"/>
         <UniformMass template="Vec3" name="Mass" totalMass="1.0"/>
@@ -28,7 +28,7 @@
     </Node>
 
     <Node name="TrapezoidalRule" gravity="0 -9.81 0">
-    	<EulerImplicitSolver name="EulerImplicit-WithTrapez" trapezoidalScheme="1"/>
+    	<EulerImplicitIntegrationScheme name="EulerImplicit-WithTrapez" trapezoidalScheme="1"/>
     	<SparseLDLSolver template="CompressedRowSparseMatrixMat3x3d"/>
         <MechanicalObject template="Vec3" name="Particles" restScale="1" position="0 2 0 1 2 0" showObject="1" showObjectScale="10"/>
         <UniformMass template="Vec3" name="Mass" totalMass="1.0"/>
