@@ -66,6 +66,8 @@ void EulerExplicitSolver::solve(const core::ExecParams* params,
 
     SCOPED_TIMER("EulerExplicitSolve");
 
+    m_mappingGraph.build(this->getContext());
+
     // Create the vector and mechanical operations tools. These are used to execute special operations (multiplication,
     // additions, etc.) on multi-vectors (a vector that is stored in different buffers inside the mechanical objects)
     sofa::simulation::common::VectorOperations vop( params, this->getContext() );
@@ -277,14 +279,14 @@ void EulerExplicitSolver::addSeparateGravity(sofa::simulation::common::Mechanica
     mop->addSeparateGravity(dt, v);
 }
 
-void EulerExplicitSolver::computeForce(sofa::simulation::common::MechanicalOperations* mop, core::MultiVecDerivId f)
+void EulerExplicitSolver::computeForce(sofa::simulation::common::MechanicalOperations* mop, core::MultiVecDerivId f) const
 {
     SCOPED_TIMER("ComputeForce");
 
     // 1. Clear the force vector (F := 0)
     // 2. Go down in the current context tree calling addForce on every forcefields
     // 3. Go up from the current context tree leaves calling applyJT on every mechanical mappings
-    mop->computeForce(f);
+    mop->computeForce(m_mappingGraph, f);
 }
 
 void EulerExplicitSolver::computeAcceleration(sofa::simulation::common::MechanicalOperations* mop, core::MultiVecDerivId acc, core::ConstMultiVecDerivId f)
@@ -344,8 +346,6 @@ void EulerExplicitSolver::solveSystem(core::MultiVecDerivId solution, core::Mult
 
 bool EulerExplicitSolver::isMassMatrixTriviallyInvertible(const core::ExecParams* params)
 {
-    m_mappingGraph.build(this->getContext());
-
     // To achieve a diagonal global mass matrix in this system:
     // 1) Each individual mass matrix must itself be diagonal.
     // 2) The mapped masses must also be mapped through a diagonal Jacobian matrix.
