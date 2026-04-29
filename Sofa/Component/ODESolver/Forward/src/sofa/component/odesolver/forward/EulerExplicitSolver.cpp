@@ -342,25 +342,6 @@ void EulerExplicitSolver::solveSystem(core::MultiVecDerivId solution, core::Mult
     l_linearSolver->getLinearSystem()->dispatchSystemSolution(solution);
 }
 
-class AllOfMassesAreDiagonalVisitor final : public simulation::BaseMechanicalVisitor
-{
-public:
-    using simulation::BaseMechanicalVisitor::BaseMechanicalVisitor;
-    Result fwdMass(simulation::Node*, sofa::core::behavior::BaseMass* mass) override
-    {
-        if (mass)
-        {
-            m_allMassesAreDiagonal &= mass->isDiagonal();
-        }
-        return Result::RESULT_CONTINUE;
-    }
-
-    [[nodiscard]] bool areAllMassesAreDiagonal() const { return m_allMassesAreDiagonal; }
-
-private:
-    bool m_allMassesAreDiagonal { true };
-};
-
 bool EulerExplicitSolver::isMassMatrixTriviallyInvertible(const core::ExecParams* params)
 {
     m_mappingGraph.build(this->getContext());
@@ -384,9 +365,12 @@ bool EulerExplicitSolver::isMassMatrixTriviallyInvertible(const core::ExecParams
     }
 
     // At this stage, we know that we don't have any mapped mass. We can check if they are all diagonal.
-    AllOfMassesAreDiagonalVisitor allOfMassesAreDiagonalVisitor(params);
-    allOfMassesAreDiagonalVisitor.execute(this->getContext());
-    return allOfMassesAreDiagonalVisitor.areAllMassesAreDiagonal();
+    bool areAllMassesDiagonal = true;
+    m_mappingGraph.traverseComponentGroups_([&areAllMassesDiagonal](const sofa::core::behavior::BaseMass& mass)
+    {
+        areAllMassesDiagonal &= mass.isDiagonal();
+    });
+    return areAllMassesDiagonal;
 }
 
 } // namespace sofa::component::odesolver::forward
