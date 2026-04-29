@@ -318,13 +318,16 @@ void MappingGraph::traverseBottomUp(MappingGraphVisitor& visitor, VisitorApplica
     }
 }
 
-void MappingGraph::traverseComponentGroups(MappingGraphVisitor& visitor) const
+void MappingGraph::traverseComponentGroups(MappingGraphVisitor& visitor, VisitorApplication scope) const
 {
     for (auto& [states, node] : m_groupIndex)
     {
-        for (auto& child : node->m_children)
+        if (shouldVisit(node.get(), scope))
         {
-            child->accept(visitor);
+            for (auto& child : node->m_children)
+            {
+                child->accept(visitor);
+            }
         }
     }
 }

@@ -392,10 +392,10 @@ public:
      * @brief Visit and process component groups without any specific order.
      * @param visitor The concrete visitor implementation.
      */
-    void traverseComponentGroups(MappingGraphVisitor& visitor) const;
+    void traverseComponentGroups(MappingGraphVisitor& visitor, VisitorApplication scope = VisitorApplication::ALL_NODES) const;
 
     /**
-     * @brief Performs a full graph traversal for component groups, optionally coordinating
+     * @brief Visit and process component groups without any specific order, optionally coordinating
      * with a TaskScheduler to manage execution parallelism.
      * @param visitor The concrete visitor implementation.
      * @param taskScheduler Optional scheduler instance for tasks requiring explicit ordering.
