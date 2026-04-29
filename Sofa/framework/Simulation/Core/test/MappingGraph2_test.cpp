@@ -342,4 +342,36 @@ TEST(MappingGraph, ComplexGraph_OnlyMainNodes)
     EXPECT_EQ(visitor.names[4], "[STATE]state1");
 }
 
+TEST(MappingGraph, ComplexGraphUsingLambdas)
+{
+    // Setup environment using helper function
+    auto [root, inputs] = setupComplexGraphEnvironment();
+
+    ASSERT_EQ(inputs.mappings.size(), 1);
+    ASSERT_EQ(inputs.mechanicalStates.size(), 2);
+    ASSERT_EQ(inputs.forceFields.size(), 4);
+    sofa::simulation::MappingGraph mappingGraph(inputs);
+    ASSERT_TRUE(mappingGraph.isBuilt());
+
+    sofa::type::vector<std::string> visited;
+
+    mappingGraph.traverseTopDown_([&visited](const core::behavior::BaseMechanicalState& state)
+    {
+        visited.push_back(state.getName());
+    });
+    ASSERT_EQ(visited.size(), 2);
+
+    EXPECT_EQ(visited[0], "state1");
+    EXPECT_EQ(visited[1], "state2");
+
+    visited.clear();
+    mappingGraph.traverseTopDown_([&visited](const core::BaseMapping& mapping)
+    {
+        visited.push_back(mapping.getName());
+    });
+    ASSERT_EQ(visited.size(), 1);
+
+    EXPECT_EQ(visited[0], "mapping");
+}
+
 }

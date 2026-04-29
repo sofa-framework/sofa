@@ -77,6 +77,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/events/SolveConstraintSystemEndEvent.h
 
     ${SRC_ROOT}/mappinggraph/BaseMappingGraphNode.h
+    ${SRC_ROOT}/mappinggraph/CallableVisitor.h
     ${SRC_ROOT}/mappinggraph/ComponentGroupMappingGraphNode.h
     ${SRC_ROOT}/mappinggraph/MappingGraphNode.h
     ${SRC_ROOT}/mappinggraph/MappingGraphVisitor.h
