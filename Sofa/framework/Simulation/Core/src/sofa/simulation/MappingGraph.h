@@ -44,6 +44,13 @@ namespace sofa::simulation
 {
 class TaskScheduler;
 
+enum class VisitorApplication
+{
+    ALL_NODES,
+    ONLY_MAPPED_NODES,
+    ONLY_MAIN_NODES
+};
+
 /**
  * @brief Visitor interface for traversing the mapping graph.
  * 
@@ -368,7 +375,7 @@ public:
     // Ensures that a BaseMechanicalState is only processed after all mappings 
     // that produce it as output have been processed, and similarly for mappings 
     // and leaf components. This guarantees correct dependency order.
-    void traverseTopDown(MappingGraphVisitor& visitor) const;
+    void traverseTopDown(MappingGraphVisitor& visitor, VisitorApplication scope = VisitorApplication::ALL_NODES) const;
 
     // ------------------------------------------------------------------
     // Bottom-up traversal: leaves → roots.
@@ -378,15 +385,14 @@ public:
     void traverseBottomUp(MappingGraphVisitor& visitor) const;
 
     /**
-     * @brief Performs a full graph traversal specifically designed to visit and process 
-     * component groups defined in the scene hierarchy.
+     * @brief Visit and process component groups without any specific order.
      * @param visitor The concrete visitor implementation.
      */
     void traverseComponentGroups(MappingGraphVisitor& visitor) const;
 
     /**
      * @brief Performs a full graph traversal for component groups, optionally coordinating
-     * with a TaskScheduler to manage execution order.
+     * with a TaskScheduler to manage execution parallelism.
      * @param visitor The concrete visitor implementation.
      * @param taskScheduler Optional scheduler instance for tasks requiring explicit ordering.
      */

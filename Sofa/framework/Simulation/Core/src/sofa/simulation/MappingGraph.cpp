@@ -237,10 +237,31 @@ sofa::type::vector<core::BaseMapping*> MappingGraph::getBottomUpMappingsFrom(
     return {};
 }
 
-void MappingGraph::traverseTopDown(MappingGraphVisitor& visitor) const
+void MappingGraph::traverseTopDown(MappingGraphVisitor& visitor, VisitorApplication scope) const
 {
     std::queue<BaseMappingGraphNode*> ready = prepareRootForTraversal();
-    processQueue(ready, [&visitor](const BaseMappingGraphNode* node){ node->accept(visitor); });
+    processQueue(ready, [&visitor, this, scope](const BaseMappingGraphNode* node){
+        bool should_visit = true;
+
+        switch (scope)
+        {
+        case VisitorApplication::ONLY_MAPPED_NODES:
+            should_visit = node->isMapped();
+            break;
+        case VisitorApplication::ONLY_MAIN_NODES:
+            should_visit = !node->isMapped();
+            break;
+        case VisitorApplication::ALL_NODES:
+        default:
+            should_visit = true; // Visit all nodes.
+            break;
+        }
+
+        if (should_visit)
+        {
+            node->accept(visitor);
+        }
+    });
 }
 
 std::queue<BaseMappingGraphNode*> MappingGraph::prepareRootForTraversal() const
