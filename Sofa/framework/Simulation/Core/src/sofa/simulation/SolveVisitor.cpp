@@ -50,7 +50,7 @@ void SolveVisitor::fwdInteractionForceField(Node* node, core::behavior::BaseInte
 
 Visitor::Result SolveVisitor::processNodeTopDown(simulation::Node* node)
 {
-    if (! node->solver.empty())
+    if (! node->integrationScheme.empty())
     {
         if (m_parallelSolve)
         {

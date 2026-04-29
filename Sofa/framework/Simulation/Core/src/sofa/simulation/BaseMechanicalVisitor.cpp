@@ -71,7 +71,7 @@ bool BaseMechanicalVisitor::isMechanicalStateMapped(simulation::Node* node) cons
 
 Visitor::Result BaseMechanicalVisitor::processNodeTopDown(simulation::Node *node, VisitorContext *ctx)
 {
-    for (auto *solver : node->solver)
+    for (auto *solver : node->integrationScheme)
     {
         if (runVisitorTask(this, ctx, &BaseMechanicalVisitor::fwdIntegrationScheme, solver, fwdVisitorType) == RESULT_PRUNE)
         {
@@ -169,7 +169,7 @@ void BaseMechanicalVisitor::processNodeBottomUp(simulation::Node *node, VisitorC
         }
     }
 
-    for_each(this, ctx, node->solver, &BaseMechanicalVisitor::bwdIntegrationScheme, bwdVisitorType);
+    for_each(this, ctx, node->integrationScheme, &BaseMechanicalVisitor::bwdIntegrationScheme, bwdVisitorType);
 
     if (node == root)
     {
