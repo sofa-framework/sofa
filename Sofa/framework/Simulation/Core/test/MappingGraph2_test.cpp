@@ -45,22 +45,22 @@ struct CollectNamesVisitor : public sofa::simulation::MappingGraphVisitor
 {
     void visit(core::BaseMapping& mapping) override
     {
-        names.push_back(mapping.getName());
+        names.push_back("[MAPPING]" + mapping.getName());
     }
 
     void visit(core::behavior::BaseMechanicalState& state) override
     {
-        names.push_back(state.getName());
+        names.push_back("[STATE]" + state.getName());
     }
 
     void visit(core::behavior::BaseForceField& ff) override
     {
-        names.push_back(ff.getName());
+        names.push_back("[FORCEFIELD]" + ff.getName());
     }
 
     void visit(core::behavior::BaseMass& mass) override
     {
-        names.push_back(mass.getName());
+        names.push_back("[MASS]" + mass.getName());
     }
 
     std::vector<std::string> names;
@@ -82,7 +82,7 @@ TEST(MappingGraph, SingleState)
 
     mappingGraph.traverseTopDown(visitor);
     ASSERT_EQ(visitor.names.size(), 1);
-    EXPECT_EQ(visitor.names[0], "state");
+    EXPECT_EQ(visitor.names[0], "[STATE]state");
 }
 
 TEST(MappingGraph, SingleMappingInSingleNode)
@@ -106,16 +106,16 @@ TEST(MappingGraph, SingleMappingInSingleNode)
 
     mappingGraph.traverseTopDown(visitor);
     ASSERT_EQ(visitor.names.size(), 3);
-    EXPECT_EQ(visitor.names[0], "state1");
-    EXPECT_EQ(visitor.names[1], "mapping");
-    EXPECT_EQ(visitor.names[2], "state2");
+    EXPECT_EQ(visitor.names[0], "[STATE]state1");
+    EXPECT_EQ(visitor.names[1], "[MAPPING]mapping");
+    EXPECT_EQ(visitor.names[2], "[STATE]state2");
 
     visitor.names.clear();
     mappingGraph.traverseBottomUp(visitor);
     ASSERT_EQ(visitor.names.size(), 3);
-    EXPECT_EQ(visitor.names[0], "state2");
-    EXPECT_EQ(visitor.names[1], "mapping");
-    EXPECT_EQ(visitor.names[2], "state1");
+    EXPECT_EQ(visitor.names[0], "[STATE]state2");
+    EXPECT_EQ(visitor.names[1], "[MAPPING]mapping");
+    EXPECT_EQ(visitor.names[2], "[STATE]state1");
 }
 
 TEST(MappingGraph, SingleMappingWithIntermediateNode)
@@ -140,16 +140,16 @@ TEST(MappingGraph, SingleMappingWithIntermediateNode)
 
     mappingGraph.traverseTopDown(visitor);
     ASSERT_EQ(visitor.names.size(), 3);
-    EXPECT_EQ(visitor.names[0], "state1");
-    EXPECT_EQ(visitor.names[1], "mapping");
-    EXPECT_EQ(visitor.names[2], "state2");
+    EXPECT_EQ(visitor.names[0], "[STATE]state1");
+    EXPECT_EQ(visitor.names[1], "[MAPPING]mapping");
+    EXPECT_EQ(visitor.names[2], "[STATE]state2");
 
     visitor.names.clear();
     mappingGraph.traverseBottomUp(visitor);
     ASSERT_EQ(visitor.names.size(), 3);
-    EXPECT_EQ(visitor.names[0], "state2");
-    EXPECT_EQ(visitor.names[1], "mapping");
-    EXPECT_EQ(visitor.names[2], "state1");
+    EXPECT_EQ(visitor.names[0], "[STATE]state2");
+    EXPECT_EQ(visitor.names[1], "[MAPPING]mapping");
+    EXPECT_EQ(visitor.names[2], "[STATE]state1");
 }
 
 TEST(MappingGraph, SingleMappingWithIntermediateNodeInverseInputOutput)
@@ -174,16 +174,16 @@ TEST(MappingGraph, SingleMappingWithIntermediateNodeInverseInputOutput)
 
     mappingGraph.traverseTopDown(visitor);
     ASSERT_EQ(visitor.names.size(), 3);
-    EXPECT_EQ(visitor.names[0], "state2");
-    EXPECT_EQ(visitor.names[1], "mapping");
-    EXPECT_EQ(visitor.names[2], "state1");
+    EXPECT_EQ(visitor.names[0], "[STATE]state2");
+    EXPECT_EQ(visitor.names[1], "[MAPPING]mapping");
+    EXPECT_EQ(visitor.names[2], "[STATE]state1");
 
     visitor.names.clear();
     mappingGraph.traverseBottomUp(visitor);
     ASSERT_EQ(visitor.names.size(), 3);
-    EXPECT_EQ(visitor.names[0], "state1");
-    EXPECT_EQ(visitor.names[1], "mapping");
-    EXPECT_EQ(visitor.names[2], "state2");
+    EXPECT_EQ(visitor.names[0], "[STATE]state1");
+    EXPECT_EQ(visitor.names[1], "[MAPPING]mapping");
+    EXPECT_EQ(visitor.names[2], "[STATE]state2");
 }
 
 /**
@@ -240,32 +240,32 @@ TEST(MappingGraph, ComplexGraph)
     mappingGraph.traverseTopDown(visitor);
     ASSERT_EQ(visitor.names.size(), 9); // 9 and not 7 because a UniformMass is a BaseMass and also a BaseForceField
 
-    EXPECT_EQ(visitor.names[0], "state1");
-    EXPECT_EQ(visitor.names[1], "ff1");
-    EXPECT_EQ(visitor.names[2], "mass1");
-    EXPECT_EQ(visitor.names[3], "mass1");
+    EXPECT_EQ(visitor.names[0], "[STATE]state1");
+    EXPECT_EQ(visitor.names[1], "[FORCEFIELD]ff1");
+    EXPECT_EQ(visitor.names[2], "[FORCEFIELD]mass1");
+    EXPECT_EQ(visitor.names[3], "[MASS]mass1");
 
-    EXPECT_EQ(visitor.names[4], "mapping");
-    EXPECT_EQ(visitor.names[5], "state2");
-    EXPECT_EQ(visitor.names[6], "ff2");
-    EXPECT_EQ(visitor.names[7], "mass2");
-    EXPECT_EQ(visitor.names[8], "mass2");
+    EXPECT_EQ(visitor.names[4], "[MAPPING]mapping");
+    EXPECT_EQ(visitor.names[5], "[STATE]state2");
+    EXPECT_EQ(visitor.names[6], "[FORCEFIELD]ff2");
+    EXPECT_EQ(visitor.names[7], "[FORCEFIELD]mass2");
+    EXPECT_EQ(visitor.names[8], "[MASS]mass2");
 
     visitor.names.clear();
     // Bottom Up Traversal Check
     mappingGraph.traverseBottomUp(visitor);
     ASSERT_EQ(visitor.names.size(), 9);
 
-    EXPECT_EQ(visitor.names[0], "mass2");
-    EXPECT_EQ(visitor.names[1], "mass2");
-    EXPECT_EQ(visitor.names[2], "ff2");
-    EXPECT_EQ(visitor.names[3], "state2");
+    EXPECT_EQ(visitor.names[0], "[MASS]mass2");
+    EXPECT_EQ(visitor.names[1], "[FORCEFIELD]mass2");
+    EXPECT_EQ(visitor.names[2], "[FORCEFIELD]ff2");
+    EXPECT_EQ(visitor.names[3], "[STATE]state2");
 
-    EXPECT_EQ(visitor.names[4], "mapping");
-    EXPECT_EQ(visitor.names[5], "mass1");
-    EXPECT_EQ(visitor.names[6], "mass1");
-    EXPECT_EQ(visitor.names[7], "ff1");
-    EXPECT_EQ(visitor.names[8], "state1");
+    EXPECT_EQ(visitor.names[4], "[MAPPING]mapping");
+    EXPECT_EQ(visitor.names[5], "[MASS]mass1");
+    EXPECT_EQ(visitor.names[6], "[FORCEFIELD]mass1");
+    EXPECT_EQ(visitor.names[7], "[FORCEFIELD]ff1");
+    EXPECT_EQ(visitor.names[8], "[STATE]state1");
 }
 
 /**
@@ -287,20 +287,20 @@ TEST(MappingGraph, ComplexGraph_OnlyMappedNodes)
     // Test ONLY_MAPPED_NODES scope
     mappingGraph.traverseTopDown(visitor, sofa::simulation::VisitorApplication::ONLY_MAPPED_NODES);
     ASSERT_EQ(visitor.names.size(), 4);
-    EXPECT_EQ(visitor.names[0], "state2");
-    EXPECT_EQ(visitor.names[1], "ff2");
-    EXPECT_EQ(visitor.names[2], "mass2");
-    EXPECT_EQ(visitor.names[3], "mass2");
+    EXPECT_EQ(visitor.names[0], "[STATE]state2");
+    EXPECT_EQ(visitor.names[1], "[FORCEFIELD]ff2");
+    EXPECT_EQ(visitor.names[2], "[FORCEFIELD]mass2");
+    EXPECT_EQ(visitor.names[3], "[MASS]mass2");
 
     visitor.names.clear();
     // Bottom Up Traversal Check
     mappingGraph.traverseBottomUp(visitor, sofa::simulation::VisitorApplication::ONLY_MAPPED_NODES);
     ASSERT_EQ(visitor.names.size(), 4);
 
-    EXPECT_EQ(visitor.names[0], "mass2");
-    EXPECT_EQ(visitor.names[1], "mass2");
-    EXPECT_EQ(visitor.names[2], "ff2");
-    EXPECT_EQ(visitor.names[3], "state2");
+    EXPECT_EQ(visitor.names[0], "[MASS]mass2");
+    EXPECT_EQ(visitor.names[1], "[FORCEFIELD]mass2");
+    EXPECT_EQ(visitor.names[2], "[FORCEFIELD]ff2");
+    EXPECT_EQ(visitor.names[3], "[STATE]state2");
 
 }
 
@@ -324,22 +324,22 @@ TEST(MappingGraph, ComplexGraph_OnlyMainNodes)
     mappingGraph.traverseTopDown(visitor, sofa::simulation::VisitorApplication::ONLY_MAIN_NODES);
     ASSERT_EQ(visitor.names.size(), 5);
 
-    EXPECT_EQ(visitor.names[0], "state1");
-    EXPECT_EQ(visitor.names[1], "ff1");
-    EXPECT_EQ(visitor.names[2], "mass1");
-    EXPECT_EQ(visitor.names[3], "mass1");
-    EXPECT_EQ(visitor.names[4], "mapping");
+    EXPECT_EQ(visitor.names[0], "[STATE]state1");
+    EXPECT_EQ(visitor.names[1], "[FORCEFIELD]ff1");
+    EXPECT_EQ(visitor.names[2], "[FORCEFIELD]mass1");
+    EXPECT_EQ(visitor.names[3], "[MASS]mass1");
+    EXPECT_EQ(visitor.names[4], "[MAPPING]mapping");
 
     visitor.names.clear();
     // Bottom Up Traversal Check
     mappingGraph.traverseBottomUp(visitor, sofa::simulation::VisitorApplication::ONLY_MAIN_NODES);
     ASSERT_EQ(visitor.names.size(), 5);
 
-    EXPECT_EQ(visitor.names[0], "mapping");
-    EXPECT_EQ(visitor.names[1], "mass1");
-    EXPECT_EQ(visitor.names[2], "mass1");
-    EXPECT_EQ(visitor.names[3], "ff1");
-    EXPECT_EQ(visitor.names[4], "state1");
+    EXPECT_EQ(visitor.names[0], "[MAPPING]mapping");
+    EXPECT_EQ(visitor.names[1], "[MASS]mass1");
+    EXPECT_EQ(visitor.names[2], "[FORCEFIELD]mass1");
+    EXPECT_EQ(visitor.names[3], "[FORCEFIELD]ff1");
+    EXPECT_EQ(visitor.names[4], "[STATE]state1");
 }
 
 }
