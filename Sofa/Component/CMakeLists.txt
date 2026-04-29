@@ -13,6 +13,7 @@ sofa_add_subdirectory_modules(SOFACOMPONENT_TARGETS
     Visual
     LinearSystem
     LinearSolver
+    IntegrationSchemes
     Mass
     Diffusion
     Mapping
