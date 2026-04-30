@@ -80,7 +80,7 @@ public:
     /// Compute the current force (given the latest propagated position and velocity)
     void computeForce(core::MultiVecDerivId result, bool clear = true, bool accumulate = true);
     /// Compute the current force (given the latest propagated position and velocity)
-    void computeForce(const MappingGraph& mappingGraph, core::MultiVecDerivId result, bool clear = true, bool accumulate = true);
+    void computeForce(const MappingGraph& mappingGraph, core::MultiVecDerivId result, bool clearForceBefore, bool accumulateForcesFromMappedStates, TaskScheduler* taskScheduler);
     /// Compute the current force delta (given the latest propagated displacement)
     void computeDf(core::MultiVecDerivId df, bool clear = true, bool accumulate = true);
     /// Compute the current force delta (given the latest propagated velocity)
