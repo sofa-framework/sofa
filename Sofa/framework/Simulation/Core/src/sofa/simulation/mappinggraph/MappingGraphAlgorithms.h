@@ -35,8 +35,20 @@ class TaskScheduler;
 class BaseMappingGraphNode;
 class MappingGraph;
 
+/**
+ * @brief Provides graph traversal algorithms for the mapping graph.
+ *
+ * This class contains static and instance methods that implement various ways
+ * to traverse the nodes and component groups defined in a MappingGraph,
+ * such as top-down, bottom-up, or arbitrary order. It uses the Visitor pattern
+ * to process components during traversal.
+ */
 struct SOFA_SIMULATION_CORE_API MappingGraphAlgorithms
 {
+    /**
+     * @brief Constructor for MappingGraphAlgorithms.
+     * @param mappingGraph Pointer to the mapping graph to be traversed.
+     */
     explicit MappingGraphAlgorithms(MappingGraph* mappingGraph)
         : m_mappingGraph(mappingGraph)
     {
@@ -46,8 +58,19 @@ struct SOFA_SIMULATION_CORE_API MappingGraphAlgorithms
     // Traverse without any specific order
     // ------------------------------------------------------------------
 
+    /**
+     * @brief Traverses the entire mapping graph nodes in an arbitrary order.
+     * @param visitor The concrete visitor implementation to process each node.
+     * @param scope Specifies which types of nodes should be visited (e.g., all, or only component groups).
+     */
     void traverse(MappingGraphVisitor& visitor, VisitorApplication scope = VisitorApplication::ALL_NODES) const;
 
+    /**
+     * @brief Traverses the entire mapping graph nodes using a callable function in an arbitrary order.
+     * @tparam Callable The type of callable object used for visitation.
+     * @param callable The callable object containing the logic to execute during traversal.
+     * @param scope Specifies which types of nodes should be visited.
+     */
     template<class Callable>
     void traverse_(const Callable& callable, VisitorApplication scope = VisitorApplication::ALL_NODES) const
     {
@@ -59,8 +82,19 @@ struct SOFA_SIMULATION_CORE_API MappingGraphAlgorithms
     // Top-Down traversal
     // ------------------------------------------------------------------
 
+    /**
+     * @brief Traverses the mapping graph in a top-down order.
+     * @param visitor The concrete visitor implementation to process each node.
+     * @param scope Specifies which types of nodes should be visited.
+     */
     void traverseTopDown(MappingGraphVisitor& visitor, VisitorApplication scope = VisitorApplication::ALL_NODES) const;
 
+    /**
+     * @brief Traverses the mapping graph in a top-down order using a callable function.
+     * @tparam Callable The type of callable object used for visitation.
+     * @param callable The callable object containing the logic to execute during traversal.
+     * @param scope Specifies which types of nodes should be visited.
+     */
     template<class Callable>
     void traverseTopDown_(const Callable& callable, VisitorApplication scope = VisitorApplication::ALL_NODES) const
     {
@@ -72,8 +106,19 @@ struct SOFA_SIMULATION_CORE_API MappingGraphAlgorithms
     // Bottom-Up traversal
     // ------------------------------------------------------------------
 
+    /**
+     * @brief Traverses the mapping graph in a bottom-up order.
+     * @param visitor The concrete visitor implementation to process each node.
+     * @param scope Specifies which types of nodes should be visited.
+     */
     void traverseBottomUp(MappingGraphVisitor& visitor, VisitorApplication scope = VisitorApplication::ALL_NODES) const;
 
+    /**
+     * @brief Traverses the mapping graph in a bottom-up order using a callable function.
+     * @tparam Callable The type of callable object used for visitation.
+     * @param callable The callable object containing the logic to execute during traversal.
+     * @param scope Specifies which types of nodes should be visited.
+     */
     template<class Callable>
     void traverseBottomUp_(const Callable& callable, VisitorApplication scope = VisitorApplication::ALL_NODES) const
     {
@@ -88,9 +133,16 @@ struct SOFA_SIMULATION_CORE_API MappingGraphAlgorithms
     /**
      * @brief Visit and process component groups without any specific order.
      * @param visitor The concrete visitor implementation.
+     * @param scope Specifies which types of nodes should be visited. Defaults to ALL_NODES.
      */
     void traverseComponentGroups(MappingGraphVisitor& visitor, VisitorApplication scope = VisitorApplication::ALL_NODES) const;
 
+    /**
+     * @brief Visit and process component groups without any specific order using a callable function.
+     * @tparam Callable The type of callable object used for visitation.
+     * @param callable The callable object containing the logic to execute during traversal.
+     * @param scope Specifies which types of nodes should be visited. Defaults to ALL_NODES.
+     */
     template<class Callable>
     void traverseComponentGroups_(const Callable& callable, VisitorApplication scope = VisitorApplication::ALL_NODES) const
     {
