@@ -169,8 +169,8 @@ void MappingGraphAlgorithms::traverseBottomUp(MappingGraphVisitor& visitor,
     }
 }
 
-void MappingGraphAlgorithms::traverseComponentGroups(MappingGraphVisitor& visitor,
-                                                     VisitorApplication scope) const
+void MappingGraphAlgorithms::traverseComponentGroups(
+    MappingGraphVisitor& visitor, VisitorApplication scope) const
 {
     for (auto& [states, node] : m_mappingGraph->m_groupIndex)
     {
@@ -181,6 +181,37 @@ void MappingGraphAlgorithms::traverseComponentGroups(MappingGraphVisitor& visito
                 child->accept(visitor);
             }
         }
+    }
+}
+
+void MappingGraphAlgorithms::traverseComponentGroups(MappingGraphVisitor& visitor,
+                                                     VisitorApplication scope,
+                                                     TaskScheduler* taskScheduler) const
+{
+    if (taskScheduler)
+    {
+        sofa::type::vector<BaseMappingGraphNode::SPtr> visitableNodes;
+        for (const auto& node : m_mappingGraph->m_groupIndex)
+        {
+            if (shouldVisit(node.second.get(), scope))
+            {
+                visitableNodes.push_back(node.second);
+            }
+        }
+
+        sofa::simulation::parallelForEach(*taskScheduler,
+            visitableNodes.begin(), visitableNodes.end(),
+            [&visitor, &scope](const auto& node)
+            {
+                for (auto& child : node->m_children)
+                {
+                    child->accept(visitor);
+                }
+            });
+    }
+    else
+    {
+        traverseComponentGroups(visitor);
     }
 }
 

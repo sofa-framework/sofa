@@ -80,6 +80,13 @@ struct SOFA_SIMULATION_CORE_API MappingGraphAlgorithms
         traverse(visitor, scope);
     }
 
+    template<class Callable>
+    void traverse_(const Callable& callable, VisitorApplication scope, TaskScheduler* taskScheduler) const
+    {
+        CallableVisitor<Callable> visitor{callable};
+        traverse(visitor, scope, taskScheduler);
+    }
+
     // ------------------------------------------------------------------
     // Top-Down traversal
     // ------------------------------------------------------------------
@@ -139,6 +146,8 @@ struct SOFA_SIMULATION_CORE_API MappingGraphAlgorithms
      */
     void traverseComponentGroups(MappingGraphVisitor& visitor, VisitorApplication scope = VisitorApplication::ALL_NODES) const;
 
+    void traverseComponentGroups(MappingGraphVisitor& visitor, VisitorApplication scope, TaskScheduler* taskScheduler) const;
+
     /**
      * @brief Visit and process component groups without any specific order using a callable function.
      * @tparam Callable The type of callable object used for visitation.
@@ -159,6 +168,13 @@ struct SOFA_SIMULATION_CORE_API MappingGraphAlgorithms
      * @param taskScheduler Optional scheduler instance for tasks requiring explicit ordering.
      */
     void traverseComponentGroups(MappingGraphVisitor& visitor, TaskScheduler* taskScheduler) const;
+
+    template<class Callable>
+    void traverseComponentGroups_(const Callable& callable, VisitorApplication scope, TaskScheduler* taskScheduler) const
+    {
+        CallableVisitor<Callable> visitor{callable};
+        traverseComponentGroups(visitor, scope, taskScheduler);
+    }
 
 private:
     MappingGraph* m_mappingGraph { nullptr };
