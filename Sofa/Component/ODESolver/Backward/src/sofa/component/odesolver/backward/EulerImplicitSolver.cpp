@@ -82,6 +82,8 @@ void EulerImplicitSolver::cleanup()
 
 void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
 {
+    m_mappingGraph.build(this->getContext());
+
 #ifdef SOFA_DUMP_VISITOR_INFO
     sofa::simulation::Visitor::printNode("SolverVectorAllocation");
 #endif
@@ -126,7 +128,7 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
         SCOPED_TIMER("ComputeForce");
         mop->setImplicit(true); // this solver is implicit
         // compute the net forces at the beginning of the time step
-        mop.computeForce(f);                                                               //f = Kx + Bv
+        mop.computeForce(m_mappingGraph, f, true, true, nullptr);
 
         msg_info() << "initial f = " << f;
     }

@@ -291,7 +291,7 @@ void MechanicalOperations::computeForce(const MappingGraph& mappingGraph,
 
     /**
      * Compute f += f(x) on all force fields in the mapping graph. This operation can be performed
-     * in any order on all states in the graph, and can be parallelized among groups.
+     * in any order on all states in the graph, and can be parallelized among component groups.
      */
     mappingGraph.algorithms.traverseComponentGroups_([&](core::behavior::BaseForceField& forceField)
     {
