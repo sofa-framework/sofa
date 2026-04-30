@@ -286,7 +286,7 @@ void EulerExplicitSolver::computeForce(sofa::simulation::common::MechanicalOpera
     // 1. Clear the force vector (F := 0)
     // 2. Go down in the current context tree calling addForce on every forcefields
     // 3. Go up from the current context tree leaves calling applyJT on every mechanical mappings
-    mop->computeForce(m_mappingGraph, f);
+    mop->computeForce(m_mappingGraph, f, true, true, nullptr);
 }
 
 void EulerExplicitSolver::computeAcceleration(sofa::simulation::common::MechanicalOperations* mop, core::MultiVecDerivId acc, core::ConstMultiVecDerivId f)
@@ -344,8 +344,10 @@ void EulerExplicitSolver::solveSystem(core::MultiVecDerivId solution, core::Mult
     l_linearSolver->getLinearSystem()->dispatchSystemSolution(solution);
 }
 
-bool EulerExplicitSolver::isMassMatrixTriviallyInvertible(const core::ExecParams* params)
+bool EulerExplicitSolver::isMassMatrixTriviallyInvertible(const core::ExecParams* params) const
 {
+    SOFA_UNUSED(params);
+
     // To achieve a diagonal global mass matrix in this system:
     // 1) Each individual mass matrix must itself be diagonal.
     // 2) The mapped masses must also be mapped through a diagonal Jacobian matrix.
@@ -355,7 +357,7 @@ bool EulerExplicitSolver::isMassMatrixTriviallyInvertible(const core::ExecParams
     // Moreover, computing the inverse of a mapped mass would require a complex API. Therefore, this
     // case is not supported without assembling the global mass matrix.
     bool hasMappedMass = false;
-    m_mappingGraph.traverseComponentGroups_([&hasMappedMass](const sofa::core::behavior::BaseMass& mass)
+    m_mappingGraph.algorithms.traverseComponentGroups_([&hasMappedMass](const sofa::core::behavior::BaseMass&)
     {
         hasMappedMass = true;
     }, simulation::VisitorApplication::ONLY_MAPPED_NODES);
@@ -366,7 +368,7 @@ bool EulerExplicitSolver::isMassMatrixTriviallyInvertible(const core::ExecParams
 
     // At this stage, we know that we don't have any mapped mass. We can check if they are all diagonal.
     bool areAllMassesDiagonal = true;
-    m_mappingGraph.traverseComponentGroups_([&areAllMassesDiagonal](const sofa::core::behavior::BaseMass& mass)
+    m_mappingGraph.algorithms.traverseComponentGroups_([&areAllMassesDiagonal](const sofa::core::behavior::BaseMass& mass)
     {
         areAllMassesDiagonal &= mass.isDiagonal();
     });

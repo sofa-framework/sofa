@@ -193,9 +193,9 @@ void MappingGraphAlgorithms::traverseComponentGroups(MappingGraphVisitor& visito
         sofa::type::vector<BaseMappingGraphNode::SPtr> parallelNodes, sequentialNodes;
         for (const auto& [states, node] : m_mappingGraph->m_groupIndex)
         {
-            //with a size of 1, we are sure that they are all different, preventing data races
             if (shouldVisit(node.get(), scope))
             {
+                //with a size of 1, we are sure that they are all different, preventing data races
                 if ( states.size() == 1)
                 {
                     parallelNodes.push_back(node);
@@ -217,7 +217,7 @@ void MappingGraphAlgorithms::traverseComponentGroups(MappingGraphVisitor& visito
                 }
             });
 
-        for (const auto node : sequentialNodes)
+        for (const auto& node : sequentialNodes)
         {
             for (auto& child : node->m_children)
             {
