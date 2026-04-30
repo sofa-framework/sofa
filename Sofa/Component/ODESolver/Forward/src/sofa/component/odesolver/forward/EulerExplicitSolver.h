@@ -25,6 +25,7 @@
 #include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/core/behavior/MultiVec.h>
+#include <sofa/simulation/MappingGraph.h>
 
 namespace sofa::simulation::common
 {
@@ -107,7 +108,7 @@ protected:
     static void addSeparateGravity(sofa::simulation::common::MechanicalOperations* mop, SReal dt, core::MultiVecDerivId v);
 
     /// Assemble the force vector (right-hand side of the equation)
-    static void computeForce(sofa::simulation::common::MechanicalOperations* mop, core::MultiVecDerivId f);
+    void computeForce(sofa::simulation::common::MechanicalOperations* mop, core::MultiVecDerivId f) const;
 
     /// Compute the acceleration from the force and the inverse of the mass
     /// acc = M^-1 * f
@@ -125,6 +126,9 @@ protected:
     void solveSystem(core::MultiVecDerivId solution, core::MultiVecDerivId rhs) const;
 
     bool isMassMatrixTriviallyInvertible(const core::ExecParams* params);
+
+
+    simulation::MappingGraph m_mappingGraph;
 };
 
 } // namespace sofa::component::odesolver::forward

@@ -76,6 +76,12 @@ set(HEADER_FILES
     ${SRC_ROOT}/events/SimulationStopEvent.h
     ${SRC_ROOT}/events/SolveConstraintSystemEndEvent.h
 
+    ${SRC_ROOT}/mappinggraph/BaseMappingGraphNode.h
+    ${SRC_ROOT}/mappinggraph/CallableVisitor.h
+    ${SRC_ROOT}/mappinggraph/ComponentGroupMappingGraphNode.h
+    ${SRC_ROOT}/mappinggraph/MappingGraphNode.h
+    ${SRC_ROOT}/mappinggraph/MappingGraphVisitor.h
+
     ${SRC_ROOT}/mechanicalvisitor/MechanicalAccFromFVisitor.h
     ${SRC_ROOT}/mechanicalvisitor/MechanicalAccumulateJacobian.h
     ${SRC_ROOT}/mechanicalvisitor/MechanicalAccumulateJacobian.h
@@ -213,6 +219,9 @@ set(SOURCE_FILES
     ${SRC_ROOT}/events/SimulationStartEvent.cpp
     ${SRC_ROOT}/events/SimulationStopEvent.cpp
     ${SRC_ROOT}/events/SolveConstraintSystemEndEvent.cpp
+
+    ${SRC_ROOT}/mappinggraph/BaseMappingGraphNode.cpp
+    ${SRC_ROOT}/mappinggraph/MappingGraphVisitor.cpp
 
     ${SRC_ROOT}/mechanicalvisitor/MechanicalAccFromFVisitor.cpp
     ${SRC_ROOT}/mechanicalvisitor/MechanicalAccumulateJacobian.cpp
