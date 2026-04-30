@@ -374,4 +374,48 @@ TEST(MappingGraph, ComplexGraphUsingLambdas)
     EXPECT_EQ(visited[0], "mapping");
 }
 
+
+TEST(MappingGraph, ComplexGraphInteractionForceField)
+{
+    // Setup common plugins required for both complex graph tests
+    sofa::simpleapi::importPlugin(Sofa.Component.Mapping.Linear);
+    sofa::simpleapi::importPlugin(Sofa.Component.StateContainer);
+    sofa::simpleapi::importPlugin(Sofa.Component.MechanicalLoad);
+    sofa::simpleapi::importPlugin(Sofa.Component.Mass);
+    sofa::simpleapi::importPlugin(Sofa.Component.SolidMechanics.Spring);
+
+    const sofa::simulation::Node::SPtr root = sofa::simpleapi::createRootNode(sofa::simulation::getSimulation(), "root");
+
+    const auto node1 = root->createChild("node1");
+    sofa::simpleapi::createObject(node1, "MechanicalObject", {{"name", "state1"}});
+    sofa::simpleapi::createObject(node1, "ConstantForceField", {{"name", "ff1"}, {"state", "@state1"}, {"forces", "1 0 0"}});
+    sofa::simpleapi::createObject(node1, "UniformMass", {{"name", "mass1"}});
+
+    const auto node2 = root->createChild("node2");
+    sofa::simpleapi::createObject(node2, "MechanicalObject", {{"name", "state2"}});
+    sofa::simpleapi::createObject(node2, "ConstantForceField", {{"name", "ff2"}, {"state", "@state2"}, {"forces", "1 0 0"}});
+    sofa::simpleapi::createObject(node2, "UniformMass", {{"name", "mass2"}});
+
+    // const auto node3 = root->createChild("node3");
+    // sofa::simpleapi::createObject(node3, "MechanicalObject", {{"name", "state3"}});
+
+    sofa::simpleapi::createObject(root, "SpringForceField", {{"name", "spring"}, {"object1", "@node1/state1"}, {"object2", "@node2/state2"}});
+
+    // Initialize the root node structure
+    sofa::simulation::node::initRoot(root.get());
+
+    sofa::simulation::MappingGraph mappingGraph(root.get());
+    ASSERT_TRUE(mappingGraph.isBuilt());
+
+    CollectNamesVisitor visitor;
+
+    // Top Down Traversal Check
+    mappingGraph.algorithms.traverseTopDown(visitor);
+    // ASSERT_EQ(visitor.names.size(), 9); // 9 and not 7 because a UniformMass is a BaseMass and also a BaseForceField
+
+    EXPECT_EQ(visitor.names[0], "[STATE]state1");
+}
+
+
+
 }
