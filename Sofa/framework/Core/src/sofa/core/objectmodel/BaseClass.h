@@ -234,6 +234,7 @@ public:
 
 // Do not use this macro directly, use SOFA_ABSTRACT_CLASS instead
 #define SOFA_ABSTRACT_CLASS_DECL                                        \
+    using BaseObject SOFA_ATTRIBUTE_DEPRECATED("v26.06", "v29.06", "BaseObject has been renamed to BaseComponent") = sofa::core::objectmodel::BaseComponent; /*this alias allows the transition from BaseObject to BaseComponent.*/ \
     typedef MyType* Ptr;                                                \
     friend class sofa::core::objectmodel::BaseClassNameHelper;          \
     static std::string GetDefaultTemplateName(){ return sofa::core::objectmodel::BaseClassNameHelper::DefaultTypeTemplateName<MyType>::Get(); } \
@@ -248,7 +249,6 @@ public:
     return ::sofa::core::objectmodel::BaseLink::InitLink<MyType>    \
     (this, n, help);                                             \
 }\
-    using BaseObject SOFA_ATTRIBUTE_DEPRECATED("v26.06", "v29.06", "BaseObject has been renamed to BaseComponent") = sofa::core::objectmodel::BaseComponent; // this alias allows the transition from BaseObject to BaseComponent.
 
 // Do not use this macro directly, use SOFA_CLASS instead
 #define SOFA_CLASS_DECL                                        \
