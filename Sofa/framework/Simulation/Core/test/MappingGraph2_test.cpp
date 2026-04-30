@@ -80,7 +80,7 @@ TEST(MappingGraph, SingleState)
 
     CollectNamesVisitor visitor;
 
-    mappingGraph.traverseTopDown(visitor);
+    mappingGraph.algorithms.traverseTopDown(visitor);
     ASSERT_EQ(visitor.names.size(), 1);
     EXPECT_EQ(visitor.names[0], "[STATE]state");
 }
@@ -104,14 +104,14 @@ TEST(MappingGraph, SingleMappingInSingleNode)
 
     CollectNamesVisitor visitor;
 
-    mappingGraph.traverseTopDown(visitor);
+    mappingGraph.algorithms.traverseTopDown(visitor);
     ASSERT_EQ(visitor.names.size(), 3);
     EXPECT_EQ(visitor.names[0], "[STATE]state1");
     EXPECT_EQ(visitor.names[1], "[MAPPING]mapping");
     EXPECT_EQ(visitor.names[2], "[STATE]state2");
 
     visitor.names.clear();
-    mappingGraph.traverseBottomUp(visitor);
+    mappingGraph.algorithms.traverseBottomUp(visitor);
     ASSERT_EQ(visitor.names.size(), 3);
     EXPECT_EQ(visitor.names[0], "[STATE]state2");
     EXPECT_EQ(visitor.names[1], "[MAPPING]mapping");
@@ -138,14 +138,14 @@ TEST(MappingGraph, SingleMappingWithIntermediateNode)
 
     CollectNamesVisitor visitor;
 
-    mappingGraph.traverseTopDown(visitor);
+    mappingGraph.algorithms.traverseTopDown(visitor);
     ASSERT_EQ(visitor.names.size(), 3);
     EXPECT_EQ(visitor.names[0], "[STATE]state1");
     EXPECT_EQ(visitor.names[1], "[MAPPING]mapping");
     EXPECT_EQ(visitor.names[2], "[STATE]state2");
 
     visitor.names.clear();
-    mappingGraph.traverseBottomUp(visitor);
+    mappingGraph.algorithms.traverseBottomUp(visitor);
     ASSERT_EQ(visitor.names.size(), 3);
     EXPECT_EQ(visitor.names[0], "[STATE]state2");
     EXPECT_EQ(visitor.names[1], "[MAPPING]mapping");
@@ -172,14 +172,14 @@ TEST(MappingGraph, SingleMappingWithIntermediateNodeInverseInputOutput)
 
     CollectNamesVisitor visitor;
 
-    mappingGraph.traverseTopDown(visitor);
+    mappingGraph.algorithms.traverseTopDown(visitor);
     ASSERT_EQ(visitor.names.size(), 3);
     EXPECT_EQ(visitor.names[0], "[STATE]state2");
     EXPECT_EQ(visitor.names[1], "[MAPPING]mapping");
     EXPECT_EQ(visitor.names[2], "[STATE]state1");
 
     visitor.names.clear();
-    mappingGraph.traverseBottomUp(visitor);
+    mappingGraph.algorithms.traverseBottomUp(visitor);
     ASSERT_EQ(visitor.names.size(), 3);
     EXPECT_EQ(visitor.names[0], "[STATE]state1");
     EXPECT_EQ(visitor.names[1], "[MAPPING]mapping");
@@ -237,7 +237,7 @@ TEST(MappingGraph, ComplexGraph)
     CollectNamesVisitor visitor;
 
     // Top Down Traversal Check
-    mappingGraph.traverseTopDown(visitor);
+    mappingGraph.algorithms.traverseTopDown(visitor);
     ASSERT_EQ(visitor.names.size(), 9); // 9 and not 7 because a UniformMass is a BaseMass and also a BaseForceField
 
     EXPECT_EQ(visitor.names[0], "[STATE]state1");
@@ -253,7 +253,7 @@ TEST(MappingGraph, ComplexGraph)
 
     visitor.names.clear();
     // Bottom Up Traversal Check
-    mappingGraph.traverseBottomUp(visitor);
+    mappingGraph.algorithms.traverseBottomUp(visitor);
     ASSERT_EQ(visitor.names.size(), 9);
 
     EXPECT_EQ(visitor.names[0], "[MASS]mass2");
@@ -285,7 +285,7 @@ TEST(MappingGraph, ComplexGraph_OnlyMappedNodes)
     CollectNamesVisitor visitor;
 
     // Test ONLY_MAPPED_NODES scope
-    mappingGraph.traverseTopDown(visitor, sofa::simulation::VisitorApplication::ONLY_MAPPED_NODES);
+    mappingGraph.algorithms.traverseTopDown(visitor, sofa::simulation::VisitorApplication::ONLY_MAPPED_NODES);
     ASSERT_EQ(visitor.names.size(), 4);
     EXPECT_EQ(visitor.names[0], "[STATE]state2");
     EXPECT_EQ(visitor.names[1], "[FORCEFIELD]ff2");
@@ -294,7 +294,7 @@ TEST(MappingGraph, ComplexGraph_OnlyMappedNodes)
 
     visitor.names.clear();
     // Bottom Up Traversal Check
-    mappingGraph.traverseBottomUp(visitor, sofa::simulation::VisitorApplication::ONLY_MAPPED_NODES);
+    mappingGraph.algorithms.traverseBottomUp(visitor, sofa::simulation::VisitorApplication::ONLY_MAPPED_NODES);
     ASSERT_EQ(visitor.names.size(), 4);
 
     EXPECT_EQ(visitor.names[0], "[MASS]mass2");
@@ -321,7 +321,7 @@ TEST(MappingGraph, ComplexGraph_OnlyMainNodes)
     CollectNamesVisitor visitor;
 
     // Test ONLY_MAIN_NODES scope
-    mappingGraph.traverseTopDown(visitor, sofa::simulation::VisitorApplication::ONLY_MAIN_NODES);
+    mappingGraph.algorithms.traverseTopDown(visitor, sofa::simulation::VisitorApplication::ONLY_MAIN_NODES);
     ASSERT_EQ(visitor.names.size(), 5);
 
     EXPECT_EQ(visitor.names[0], "[STATE]state1");
@@ -332,7 +332,7 @@ TEST(MappingGraph, ComplexGraph_OnlyMainNodes)
 
     visitor.names.clear();
     // Bottom Up Traversal Check
-    mappingGraph.traverseBottomUp(visitor, sofa::simulation::VisitorApplication::ONLY_MAIN_NODES);
+    mappingGraph.algorithms.traverseBottomUp(visitor, sofa::simulation::VisitorApplication::ONLY_MAIN_NODES);
     ASSERT_EQ(visitor.names.size(), 5);
 
     EXPECT_EQ(visitor.names[0], "[MAPPING]mapping");
@@ -355,7 +355,7 @@ TEST(MappingGraph, ComplexGraphUsingLambdas)
 
     sofa::type::vector<std::string> visited;
 
-    mappingGraph.traverseTopDown_([&visited](const core::behavior::BaseMechanicalState& state)
+    mappingGraph.algorithms.traverseTopDown_([&visited](const core::behavior::BaseMechanicalState& state)
     {
         visited.push_back(state.getName());
     });
@@ -365,7 +365,7 @@ TEST(MappingGraph, ComplexGraphUsingLambdas)
     EXPECT_EQ(visited[1], "state2");
 
     visited.clear();
-    mappingGraph.traverseTopDown_([&visited](const core::BaseMapping& mapping)
+    mappingGraph.algorithms.traverseTopDown_([&visited](const core::BaseMapping& mapping)
     {
         visited.push_back(mapping.getName());
     });

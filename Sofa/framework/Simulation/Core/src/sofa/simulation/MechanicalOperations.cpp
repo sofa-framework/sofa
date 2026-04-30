@@ -265,25 +265,25 @@ void MechanicalOperations::computeForce(const MappingGraph& mappingGraph,
     setF(result);
     if (clear)
     {
-        mappingGraph.traverse_([&](core::behavior::BaseMechanicalState& state)
+        mappingGraph.algorithms.traverse_([&](core::behavior::BaseMechanicalState& state)
         {
             state.resetForce(&mparams, result.getId(&state));
         });
     }
 
-    mappingGraph.traverse_([&](core::behavior::BaseMechanicalState& state)
+    mappingGraph.algorithms.traverse_([&](core::behavior::BaseMechanicalState& state)
     {
         state.accumulateForce(&mparams, result.getId(&state));
     });
 
-    mappingGraph.traverse_([&](core::behavior::BaseForceField& forceField)
+    mappingGraph.algorithms.traverse_([&](core::behavior::BaseForceField& forceField)
     {
         forceField.addForce(&mparams, result);
     });
 
     if (accumulate)
     {
-        mappingGraph.traverseBottomUp_([&](core::BaseMapping& mapping)
+        mappingGraph.algorithms.traverseBottomUp_([&](core::BaseMapping& mapping)
         {
             mapping.applyJT(&mparams, result, result);
         });

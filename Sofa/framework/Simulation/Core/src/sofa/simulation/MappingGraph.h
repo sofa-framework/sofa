@@ -35,20 +35,11 @@
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/config.h>
 #include <sofa/simulation/mappinggraph/ComponentGroupMappingGraphNode.h>
-#include <sofa/simulation/mappinggraph/CallableVisitor.h>
-
-#include <queue>
+#include <sofa/simulation/mappinggraph/MappingGraphAlgorithms.h>
 
 namespace sofa::simulation
 {
 class TaskScheduler;
-
-enum class VisitorApplication
-{
-    ALL_NODES,
-    ONLY_MAPPED_NODES,
-    ONLY_MAIN_NODES
-};
 
 /**
  * @brief Represents the overall mechanical simulation graph structure (Mapping Graph).
@@ -113,6 +104,9 @@ public:
      * @return A pointer to the root object model context.
      */
     [[nodiscard]] core::objectmodel::BaseContext* getRootNode() const;
+
+    friend struct MappingGraphAlgorithms;
+    MappingGraphAlgorithms algorithms { this };
 
     /**
      * @brief Gets the list of all main mechanical states that are not used as outputs 
@@ -199,66 +193,6 @@ public:
     sofa::type::vector<core::BaseMapping*> getBottomUpMappingsFrom(
         core::behavior::BaseMechanicalState*) const;
 
-
-    void traverse(MappingGraphVisitor& visitor, VisitorApplication scope = VisitorApplication::ALL_NODES) const;
-
-    template<class Callable>
-    void traverse_(const Callable& callable, VisitorApplication scope = VisitorApplication::ALL_NODES) const
-    {
-        CallableVisitor<Callable> visitor{callable};
-        traverse(visitor, scope);
-    }
-
-    // ------------------------------------------------------------------
-    // Top-down traversal: roots (unmapped states) → leaves (components).
-    //
-    // Ensures that a BaseMechanicalState is only processed after all mappings 
-    // that produce it as output have been processed, and similarly for mappings 
-    // and leaf components. This guarantees correct dependency order.
-    void traverseTopDown(MappingGraphVisitor& visitor, VisitorApplication scope = VisitorApplication::ALL_NODES) const;
-
-    template<class Callable>
-    void traverseTopDown_(const Callable& callable, VisitorApplication scope = VisitorApplication::ALL_NODES) const
-    {
-        CallableVisitor<Callable> visitor{callable};
-        traverseTopDown(visitor, scope);
-    }
-
-    // ------------------------------------------------------------------
-    // Bottom-up traversal: leaves → roots.
-    //
-    // Provides the reverse dependency ordering check, ensuring that prerequisite 
-    // states are processed before the components that require them.
-    void traverseBottomUp(MappingGraphVisitor& visitor, VisitorApplication scope = VisitorApplication::ALL_NODES) const;
-
-    template<class Callable>
-    void traverseBottomUp_(const Callable& callable, VisitorApplication scope = VisitorApplication::ALL_NODES) const
-    {
-        CallableVisitor<Callable> visitor{callable};
-        traverseBottomUp(visitor, scope);
-    }
-
-    /**
-     * @brief Visit and process component groups without any specific order.
-     * @param visitor The concrete visitor implementation.
-     */
-    void traverseComponentGroups(MappingGraphVisitor& visitor, VisitorApplication scope = VisitorApplication::ALL_NODES) const;
-
-    template<class Callable>
-    void traverseComponentGroups_(const Callable& callable, VisitorApplication scope = VisitorApplication::ALL_NODES) const
-    {
-        CallableVisitor<Callable> visitor{callable};
-        traverseComponentGroups(visitor, scope);
-    }
-
-    /**
-     * @brief Visit and process component groups without any specific order, optionally coordinating
-     * with a TaskScheduler to manage execution parallelism.
-     * @param visitor The concrete visitor implementation.
-     * @param taskScheduler Optional scheduler instance for tasks requiring explicit ordering.
-     */
-    void traverseComponentGroups(MappingGraphVisitor& visitor, TaskScheduler* taskScheduler) const;
-
     /**
      * @brief Checks if the graph has been successfully built and analyzed.
      * @return True if building is complete, false otherwise.
@@ -305,36 +239,6 @@ private:
         ComponentGroupMappingGraphNode::SPtr>> m_groupIndex; ///< Indexing mechanism for group nodes.
 
     // ------------------------------------------------------------------
-
-    std::queue<BaseMappingGraphNode*> prepareRootForTraversal() const;
-
-    /**
-     * @brief Performs a breadth-first search (BFS) traversal, processing nodes in dependency order.
-     * 
-     * This static helper method is used for both top-down and bottom-up traversals.
-     * 
-     * @param ready The queue of nodes that are currently ready to be visited/processed.
-     */
-    template<class Callable>
-    static void processQueue(std::queue<BaseMappingGraphNode*>& ready, const Callable& f)
-    {
-        while (!ready.empty())
-        {
-            BaseMappingGraphNode* current = ready.front();
-            ready.pop();
-
-            f(current);
-
-            for (auto& child : current->m_children)
-            {
-                --(child->m_pendingCount);
-                if (child->m_pendingCount == 0)
-                {
-                    ready.push(child.get());
-                }
-            }
-        }
-    }
 
     /**
      * @brief Locates or creates a component group node encompassing the given set of states.
