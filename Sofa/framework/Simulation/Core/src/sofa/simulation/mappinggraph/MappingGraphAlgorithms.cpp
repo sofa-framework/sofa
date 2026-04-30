@@ -103,6 +103,33 @@ void MappingGraphAlgorithms::traverse(MappingGraphVisitor& visitor, VisitorAppli
     }
 }
 
+void MappingGraphAlgorithms::traverse(MappingGraphVisitor& visitor,
+    VisitorApplication scope, TaskScheduler* taskScheduler) const
+{
+    if (taskScheduler)
+    {
+        sofa::type::vector<BaseMappingGraphNode::SPtr> visitableNodes;
+        for (const auto& node : m_mappingGraph->m_allNodes)
+        {
+            if (shouldVisit(node.get(), scope))
+            {
+                visitableNodes.push_back(node);
+            }
+        }
+
+        sofa::simulation::parallelForEach(*taskScheduler,
+            visitableNodes.begin(), visitableNodes.end(),
+            [&visitor](const auto& node)
+            {
+                node->accept(visitor);
+            });
+    }
+    else
+    {
+        traverse(visitor);
+    }
+}
+
 void MappingGraphAlgorithms::traverseTopDown(MappingGraphVisitor& visitor,
                                              VisitorApplication scope) const
 {

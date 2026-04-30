@@ -65,6 +65,8 @@ struct SOFA_SIMULATION_CORE_API MappingGraphAlgorithms
      */
     void traverse(MappingGraphVisitor& visitor, VisitorApplication scope = VisitorApplication::ALL_NODES) const;
 
+    void traverse(MappingGraphVisitor& visitor, VisitorApplication scope, TaskScheduler* taskScheduler) const;
+
     /**
      * @brief Traverses the entire mapping graph nodes using a callable function in an arbitrary order.
      * @tparam Callable The type of callable object used for visitation.
