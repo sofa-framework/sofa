@@ -79,6 +79,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/mappinggraph/BaseMappingGraphNode.h
     ${SRC_ROOT}/mappinggraph/CallableVisitor.h
     ${SRC_ROOT}/mappinggraph/ComponentGroupMappingGraphNode.h
+    ${SRC_ROOT}/mappinggraph/ExportDot.h
     ${SRC_ROOT}/mappinggraph/MappingGraphAlgorithms.h
     ${SRC_ROOT}/mappinggraph/MappingGraphNode.h
     ${SRC_ROOT}/mappinggraph/MappingGraphVisitor.h
@@ -223,6 +224,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/events/SolveConstraintSystemEndEvent.cpp
 
     ${SRC_ROOT}/mappinggraph/BaseMappingGraphNode.cpp
+    ${SRC_ROOT}/mappinggraph/ExportDot.cpp
     ${SRC_ROOT}/mappinggraph/MappingGraphAlgorithms.cpp
     ${SRC_ROOT}/mappinggraph/MappingGraphVisitor.cpp
 

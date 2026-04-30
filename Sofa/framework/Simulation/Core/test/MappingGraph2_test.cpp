@@ -23,6 +23,7 @@
 #include <sofa/Modules.h>
 #include <sofa/simpleapi/SimpleApi.h>
 #include <sofa/simulation/MappingGraph.h>
+#include <sofa/simulation/mappinggraph/ExportDot.h>
 
 namespace sofa
 {
@@ -406,6 +407,8 @@ TEST(MappingGraph, ComplexGraphInteractionForceField)
 
     sofa::simulation::MappingGraph mappingGraph(root.get());
     ASSERT_TRUE(mappingGraph.isBuilt());
+
+    std::cout << exportToDotFormat(mappingGraph) << std::endl;
 
     CollectNamesVisitor visitor;
 

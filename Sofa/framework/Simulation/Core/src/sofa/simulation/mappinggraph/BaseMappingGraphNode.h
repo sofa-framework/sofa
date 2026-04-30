@@ -41,6 +41,7 @@ public:
     using SPtr = std::shared_ptr<BaseMappingGraphNode>;
     friend class MappingGraph;
     friend struct MappingGraphAlgorithms;
+    friend std::string SOFA_SIMULATION_CORE_API exportToDotFormat(const MappingGraph& graph);
 
     virtual ~BaseMappingGraphNode() = default;
 

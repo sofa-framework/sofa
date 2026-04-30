@@ -216,6 +216,8 @@ public:
      */
     void build(core::objectmodel::BaseContext* rootNode);
 
+    friend std::string SOFA_SIMULATION_CORE_API exportToDotFormat(const MappingGraph& graph);
+
 private:
     ///< Root node used to start graph exploration during construction.
     core::objectmodel::BaseContext* m_rootNode { nullptr };
