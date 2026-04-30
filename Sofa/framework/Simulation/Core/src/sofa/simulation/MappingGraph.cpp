@@ -322,9 +322,9 @@ void MappingGraph::traverseBottomUp(MappingGraphVisitor& visitor, VisitorApplica
         });
     }
 
-    for (const auto* node : std::views::reverse(nodes))
+    for (auto it = nodes.crbegin(); it != nodes.crend(); ++it)
     {
-        node->accept(visitor);
+        (*it)->accept(visitor);
     }
 }
 
