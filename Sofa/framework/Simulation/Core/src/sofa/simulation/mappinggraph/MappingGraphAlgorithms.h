@@ -161,14 +161,6 @@ struct SOFA_SIMULATION_CORE_API MappingGraphAlgorithms
         traverseComponentGroups(visitor, scope);
     }
 
-    /**
-     * @brief Visit and process component groups without any specific order, optionally coordinating
-     * with a TaskScheduler to manage execution parallelism.
-     * @param visitor The concrete visitor implementation.
-     * @param taskScheduler Optional scheduler instance for tasks requiring explicit ordering.
-     */
-    void traverseComponentGroups(MappingGraphVisitor& visitor, TaskScheduler* taskScheduler) const;
-
     template<class Callable>
     void traverseComponentGroups_(const Callable& callable, VisitorApplication scope, TaskScheduler* taskScheduler) const
     {

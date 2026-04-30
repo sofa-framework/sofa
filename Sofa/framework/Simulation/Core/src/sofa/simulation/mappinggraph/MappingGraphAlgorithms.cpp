@@ -190,17 +190,25 @@ void MappingGraphAlgorithms::traverseComponentGroups(MappingGraphVisitor& visito
 {
     if (taskScheduler)
     {
-        sofa::type::vector<BaseMappingGraphNode::SPtr> visitableNodes;
-        for (const auto& node : m_mappingGraph->m_groupIndex)
+        sofa::type::vector<BaseMappingGraphNode::SPtr> parallelNodes, sequentialNodes;
+        for (const auto& [states, node] : m_mappingGraph->m_groupIndex)
         {
-            if (shouldVisit(node.second.get(), scope))
+            //with a size of 1, we are sure that they are all different, preventing data races
+            if (shouldVisit(node.get(), scope))
             {
-                visitableNodes.push_back(node.second);
+                if ( states.size() == 1)
+                {
+                    parallelNodes.push_back(node);
+                }
+                else
+                {
+                    sequentialNodes.push_back(node);
+                }
             }
         }
 
         sofa::simulation::parallelForEach(*taskScheduler,
-            visitableNodes.begin(), visitableNodes.end(),
+            parallelNodes.begin(), parallelNodes.end(),
             [&visitor, &scope](const auto& node)
             {
                 for (auto& child : node->m_children)
@@ -208,6 +216,14 @@ void MappingGraphAlgorithms::traverseComponentGroups(MappingGraphVisitor& visito
                     child->accept(visitor);
                 }
             });
+
+        for (const auto node : sequentialNodes)
+        {
+            for (auto& child : node->m_children)
+            {
+                child->accept(visitor);
+            }
+        }
     }
     else
     {
@@ -215,25 +231,5 @@ void MappingGraphAlgorithms::traverseComponentGroups(MappingGraphVisitor& visito
     }
 }
 
-void MappingGraphAlgorithms::traverseComponentGroups(MappingGraphVisitor& visitor,
-                                           TaskScheduler* taskScheduler) const
-{
-    if (taskScheduler)
-    {
-        sofa::simulation::parallelForEach(*taskScheduler,
-            m_mappingGraph->m_groupIndex.begin(), m_mappingGraph->m_groupIndex.end(),
-            [&visitor](const auto& pair)
-            {
-                for (auto& child : pair.second->m_children)
-                {
-                    child->accept(visitor);
-                }
-            });
-    }
-    else
-    {
-        traverseComponentGroups(visitor);
-    }
-}
 
 }  // namespace sofa::simulation
