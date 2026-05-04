@@ -37,6 +37,7 @@ public:
     Data<bool> d_infinite; ///< If true, ignore the "size" and draw infinite lines
     Data<float> d_thickness; ///< Thickness of the lines
     Data<bool> d_vanishing; ///< In case of infinite lines, should the lines gradually vanish.
+    Data<int> d_nbLineSegments; ///< Number of line segments used to draw each axis line. Higher values reduce rendering artifacts, especially when using vertex-based OpenGL effects.
 
     LineAxis();
 

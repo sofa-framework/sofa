@@ -19,27 +19,20 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#define SOFA_COMPONENT_ENGINE_BASEROI_CPP
+#include <sofa/component/engine/select/BaseROI.inl>
+#include <sofa/defaulttype/VecTypes.h>
 
-#include <sofa/config.h>
-#include <sofa/config/sharedlibrary_defines.h>
-
-#cmakedefine SOFA_GPU_CUDA_DOUBLE
-#cmakedefine SOFA_GPU_CUDA_PRECISE
-#cmakedefine SOFA_GPU_CUDA_DOUBLE_PRECISE
-#cmakedefine01 SOFACUDA_CORE_HAVE_SOFA_GL
-
-#define SOFA_GPU_THRUST
-#define SOFA_GPU_CUBLAS
-
-#ifdef SOFA_BUILD_SOFACUDA_CORE
-#  define SOFACUDA_CORE_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFACUDA_CORE_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-
-namespace sofacuda::core
+namespace sofa::component::engine::select
 {
-	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
-	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
-} // namespace sofacuda::core
+
+using namespace sofa::defaulttype;
+
+template class SOFA_COMPONENT_ENGINE_SELECT_API BaseROI<Vec1Types>;
+template class SOFA_COMPONENT_ENGINE_SELECT_API BaseROI<Vec2Types>;
+template class SOFA_COMPONENT_ENGINE_SELECT_API BaseROI<Vec3Types>;
+template class SOFA_COMPONENT_ENGINE_SELECT_API BaseROI<Vec6Types>;
+template class SOFA_COMPONENT_ENGINE_SELECT_API BaseROI<Rigid2Types>;
+template class SOFA_COMPONENT_ENGINE_SELECT_API BaseROI<Rigid3Types>;
+
+} // namespace sofa::component::engine::select
