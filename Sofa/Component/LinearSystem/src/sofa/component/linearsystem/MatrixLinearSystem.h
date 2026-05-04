@@ -26,7 +26,7 @@
 #include <sofa/core/behavior/BaseLocalForceFieldMatrix.h>
 #include <sofa/core/behavior/BaseLocalMassMatrix.h>
 #include <sofa/core/BaseLocalMappingMatrix.h>
-#include <sofa/component/linearsystem/MappingGraph.h>
+#include <sofa/simulation/MappingGraph.h>
 #include <sofa/core/behavior/BaseProjectiveConstraintSet.h>
 #include <sofa/component/linearsystem/matrixaccumulators/AssemblingMappedMatrixAccumulator.h>
 #include <sofa/component/linearsystem/CreateMatrixDispatcher.h>

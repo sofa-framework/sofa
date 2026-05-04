@@ -24,7 +24,7 @@
 
 #include <sofa/core/behavior/BaseMatrixLinearSystem.h>
 #include <sofa/core/MultiVecId.h>
-#include <sofa/component/linearsystem/MappingGraph.h>
+#include <sofa/simulation/MappingGraph.h>
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/component/linearsystem/LinearSystemData.h>
 #include <sofa/core/MatrixAccumulator.h>

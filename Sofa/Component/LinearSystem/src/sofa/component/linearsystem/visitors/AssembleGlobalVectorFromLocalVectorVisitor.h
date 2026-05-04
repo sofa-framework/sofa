@@ -23,7 +23,7 @@
 
 #include <sofa/component/linearsystem/config.h>
 #include <sofa/simulation/BaseMechanicalVisitor.h>
-#include <sofa/component/linearsystem/MappingGraph.h>
+#include <sofa/simulation/MappingGraph.h>
 
 namespace sofa::component::linearsystem
 {
