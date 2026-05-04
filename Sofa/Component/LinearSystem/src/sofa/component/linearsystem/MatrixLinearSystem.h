@@ -80,7 +80,7 @@ public:
     using Contribution = core::matrixaccumulator::Contribution;
     using PairMechanicalStates = sofa::type::fixed_array<core::behavior::BaseMechanicalState*, 2>;
 
-    [[nodiscard]] const MappingGraph& getMappingGraph() const;
+    [[nodiscard]] const simulation::MappingGraph& getMappingGraph() const;
 
     Data< bool > d_assembleStiffness; ///< If true, the stiffness is added to the global matrix
     Data< bool > d_assembleMass; ///< If true, the mass is added to the global matrix

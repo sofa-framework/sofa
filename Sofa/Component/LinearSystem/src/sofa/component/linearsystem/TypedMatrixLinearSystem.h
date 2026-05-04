@@ -106,7 +106,7 @@ protected:
     LinearSystemData<TMatrix, TVector> m_linearSystem;
 
     /// Relationships between the mechanical states and their associated components
-    MappingGraph m_mappingGraph;
+    ::sofa::simulation::MappingGraph m_mappingGraph;
 
     /// The list of force fields contributing to the matrix assembly
     sofa::type::vector<sofa::core::behavior::BaseForceField*> m_forceFields;

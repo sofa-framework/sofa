@@ -38,7 +38,7 @@ public:
 
     DispatchFromGlobalVectorToLocalVectorVisitor(
         const core::ExecParams* params,
-        const MappingGraph& mappingGraph,
+        const simulation::MappingGraph& mappingGraph,
         sofa::core::MultiVecId dst,
         linearalgebra::BaseVector * globalVector);
 
@@ -57,7 +57,7 @@ protected:
     sofa::linearalgebra::BaseVector *m_globalVector { nullptr};
 
     /// Structure used to identify where in the global vector the local vectors will be copied from
-    const MappingGraph& m_mappingGraph;
+    const simulation::MappingGraph& m_mappingGraph;
 };
 
 } // namespace sofa::component::linearsystem

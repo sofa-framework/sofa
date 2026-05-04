@@ -760,7 +760,7 @@ TMatrix, TVector>::getContributors() const
 }
 
 template <class TMatrix, class TVector>
-const MappingGraph& MatrixLinearSystem<TMatrix, TVector>::getMappingGraph() const
+const simulation::MappingGraph& MatrixLinearSystem<TMatrix, TVector>::getMappingGraph() const
 {
     return m_mappingGraph;
 }

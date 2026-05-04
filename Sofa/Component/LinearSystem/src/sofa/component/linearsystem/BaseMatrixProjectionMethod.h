@@ -62,7 +62,7 @@ public:
      * \param globalMatrix The product is added into this matrix
      */
     virtual void projectMatrixToGlobalMatrix(const core::MechanicalParams* mparams,
-                                             const MappingGraph& mappingGraph,
+                                             const simulation::MappingGraph& mappingGraph,
                                              TMatrix* matrixToProject,
                                              linearalgebra::BaseMatrix* globalMatrix) = 0;
 
