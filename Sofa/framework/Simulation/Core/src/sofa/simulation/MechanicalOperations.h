@@ -89,6 +89,8 @@ public:
     void addMBKdx(core::MultiVecDerivId df, core::MatricesFactors::M m, core::MatricesFactors::B b, core::MatricesFactors::K k, bool clear = true, bool accumulate = true);
     /// accumulate $ df += (m M + b B + k K) velocity $
     void addMBKv(core::MultiVecDerivId df, core::MatricesFactors::M m, core::MatricesFactors::B b, core::MatricesFactors::K k, bool clear = true, bool accumulate = true);
+    /// accumulate $ df += (m M + b B + k K) velocity $
+    void addMBKv(const MappingGraph& mappingGraph, core::MultiVecDerivId df, core::MatricesFactors::M m, core::MatricesFactors::B b, core::MatricesFactors::K k, bool clear = true, bool accumulate = true);
     /// Add dt*Gravity to the velocity
     void addSeparateGravity(SReal dt, core::MultiVecDerivId result = core::vec_id::write_access::velocity );
 

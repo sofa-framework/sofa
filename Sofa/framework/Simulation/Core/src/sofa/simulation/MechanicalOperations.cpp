@@ -380,7 +380,49 @@ void MechanicalOperations::addMBKv(core::MultiVecDerivId df,
     mparams.setDx(dx);
 }
 
+void MechanicalOperations::addMBKv(const MappingGraph& mappingGraph, core::MultiVecDerivId df,
+                                   core::MatricesFactors::M m, core::MatricesFactors::B b,
+                                   core::MatricesFactors::K k, bool clear, bool accumulate)
+{
+    const core::ConstMultiVecDerivId dx = mparams.dx();
+    mparams.setDx(mparams.v());
+    setDf(df);
+    if (clear)
+    {
+        /**
+         * Reset forces on all mapped mechanical states in the mapping graph. This operation can be performed
+         * in any order on all mapped states in the graph.
+         */
+        mappingGraph.algorithms.traverse_([&](core::behavior::BaseMechanicalState& state)
+        {
+            const VecDerivId& stateForce = df.getId(&state);
+            state.resetForce(&mparams, stateForce);
+        }, VisitorApplication::ONLY_MAPPED_NODES);
+    }
+    mparams.setBFactor(b.get());
+    mparams.setKFactor(k.get());
+    mparams.setMFactor(m.get());
+    /* useV = true */
 
+    mappingGraph.algorithms.traverseComponentGroups_([&](core::behavior::BaseForceField& forceField)
+    {
+        forceField.addMBKdx(&mparams, df);
+    });
+
+    if (accumulate)
+    {
+        mappingGraph.algorithms.traverseBottomUp_([&](core::BaseMapping& mapping)
+        {
+            mapping.applyJT(&mparams, df, df);
+            if( mparams.kFactor() == 0 )
+            {
+                mapping.applyDJT(&mparams, df, df);
+            }
+        });
+    }
+
+    mparams.setDx(dx);
+}
 
 /// Add dt*Gravity to the velocity
 void MechanicalOperations::addSeparateGravity(SReal dt, core::MultiVecDerivId result)

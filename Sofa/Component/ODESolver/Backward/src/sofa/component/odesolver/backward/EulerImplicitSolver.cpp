@@ -149,7 +149,7 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
             msg_info() << "f = " << f;
 
             // add the change of force due to stiffness + Rayleigh damping
-            mop.addMBKv(b, core::MatricesFactors::M(-d_rayleighMass.getValue()),
+            mop.addMBKv(m_mappingGraph, b, core::MatricesFactors::M(-d_rayleighMass.getValue()),
                         core::MatricesFactors::B(0),
                         core::MatricesFactors::K(h * tr + d_rayleighStiffness.getValue())); // b =  f + ( rm M + (h+rs) K ) v
 
