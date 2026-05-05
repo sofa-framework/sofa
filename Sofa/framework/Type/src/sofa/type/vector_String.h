@@ -23,4 +23,5 @@
 #include <sofa/type/vector_T.h>
 
 template<> SOFA_TYPE_API std::ostream& sofa::type::vector<std::string>::write(std::ostream& os) const;
+template<> SOFA_TYPE_API std::istream& sofa::type::vector<std::string>::read( std::istream& in );
 
