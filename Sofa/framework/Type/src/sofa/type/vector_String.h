@@ -24,3 +24,6 @@
 
 template<> SOFA_TYPE_API std::ostream& sofa::type::vector<std::string>::write(std::ostream& os) const;
 
+#if !defined(SOFA_TYPE_VECTOR_STRING_CPP)
+extern template class SOFA_TYPE_API sofa::type::vector<std::string>;
+#endif
