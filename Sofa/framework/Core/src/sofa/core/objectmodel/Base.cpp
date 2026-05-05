@@ -683,6 +683,7 @@ int Base::getInstanciationSourceFilePos() const
     return m_instanciationSourceFilePos;
 }
 
+/// Save datas in a SnapshotObject
 void Base::saveDataIn(Snapshot::SnapshotObject& snapshot) const
 {
     for (const auto& dataFields = this->getDataFields(); const auto& data : dataFields)
@@ -696,6 +697,7 @@ void Base::saveDataIn(Snapshot::SnapshotObject& snapshot) const
     }
 }
 
+/// Save links in a SnapshotObject
 void Base::saveLinksIn(Snapshot::SnapshotObject& snapshot) const
 {
     for (const auto& links = this->getLinks(); const auto& link : links)
@@ -705,6 +707,7 @@ void Base::saveLinksIn(Snapshot::SnapshotObject& snapshot) const
         linkInfo.type = link->getValueTypeString();
         linkInfo.value = link->getValueString();
 
+        // Think about it
         std::string replaceValue = "//";
         std::size_t pos = linkInfo.value.find(replaceValue);
         while (pos != std::string::npos)
@@ -717,9 +720,11 @@ void Base::saveLinksIn(Snapshot::SnapshotObject& snapshot) const
     }
 }
 
-// void Base::saveInternalStateIn(Snapshot::SnapshotObject& snapshot) const
-// {}
+void Base::saveInternalStateIn(Snapshot::SnapshotObject& snapshot) const {
+    SOFA_UNUSED(snapshot);
+}
 
+/// Create a SnapshotObject from the component to save in the snapshot
 std::shared_ptr<Snapshot::SnapshotObject>
 Base::createSnapshotObject(std::vector<std::shared_ptr<Snapshot::SnapshotNode>>& parents) const
 {
@@ -734,18 +739,19 @@ Base::createSnapshotObject(std::vector<std::shared_ptr<Snapshot::SnapshotNode>>&
     return object;
 }
 
+/// Save the component in the snapshot
 std::shared_ptr<Snapshot::SnapshotObject> Base::saveSnapshot(std::vector<std::shared_ptr<Snapshot::SnapshotNode>>& parents) const
 {
     const auto snapshotObject = createSnapshotObject(parents);
     snapshotObject->m_name = this->getName();
     saveDataIn(*snapshotObject);
     saveLinksIn(*snapshotObject);
-    //saveInternalStateIn(*snapshotObject);
+    saveInternalStateIn(*snapshotObject);
     return snapshotObject;
 }
 
 
-
+/// Find the SnapshotObject in the graph with the object's name
 std::shared_ptr<Snapshot::SnapshotObject>
 Base::findSnapshotObject(const std::shared_ptr<Snapshot::SnapshotNode>& parents, const std::string& objectname)
 {
@@ -764,7 +770,12 @@ Base::findSnapshotObject(const std::shared_ptr<Snapshot::SnapshotNode>& parents,
     return defaultObject;
 }
 
+void Base::loadInternalStateFrom(const Snapshot::SnapshotObject& snapshot) const
+{
+    SOFA_UNUSED(snapshot);
+}
 
+/// Load datas from the snapshot to the scene
 void Base::loadDataSnapshot(const std::shared_ptr<Snapshot::SnapshotObject>& snapshotObject) const
 {
     for (const auto& dataInfo : snapshotObject->m_dataContainer)
@@ -781,8 +792,7 @@ void Base::loadDataSnapshot(const std::shared_ptr<Snapshot::SnapshotObject>& sna
                 data->read(dataValueStr);
             }
             else {
-                // std::cout << "Object ? " << this->getName() << ", data : " << dataInfo.name << std::endl;
-                if(data->read(dataInfo.value) == 0)
+                if(data->read(dataInfo.value) == 0 )
                     std::cout << "[" << this->getName() << "] " <<"read is false for " << dataInfo.name << " : " << dataInfo.value <<  std::endl;
 
             }
@@ -791,15 +801,13 @@ void Base::loadDataSnapshot(const std::shared_ptr<Snapshot::SnapshotObject>& sna
     }
 }
 
+/// Load links from the snapshot to the scene
 void Base::loadLinkSnapshot(const std::shared_ptr<Snapshot::SnapshotObject>& snapshotObject) const
 {
     for (const auto& linkInfo : snapshotObject->m_linkContainer)
     {
         if (const auto link = this->findLink(linkInfo.name))
         {
-            // std::cout << "===========link name : " << linkInfo.name << std::endl;
-            // std::cout << "===========link value : " << linkInfo.value << std::endl;
-
             // link->read(linkInfo.value);
 
             // Idea : Compare links in the snapshot and in the simulation, and change/add targets to the link
@@ -813,6 +821,7 @@ void Base::loadLinkSnapshot(const std::shared_ptr<Snapshot::SnapshotObject>& sna
                     link->add(obj, newSublink);
                 }
             }
+
             // How do I detect if a link is useless ?
             // for (const auto& oldLink : )
             // {

@@ -20,9 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/simulation/SaveSnapshotVisitor.h>
-#include <sofa/helper/Factory.h>
 #include <sofa/simulation/Node.h>
-#include <iostream>
 
 
 namespace sofa::simulation

@@ -35,7 +35,7 @@ namespace sofa::core::objectmodel
 *  \brief Class for snapshot
 *
 *  This class contains the structure for a snapshot of a simulation in SOFA.
-*  The snapshot contains datas and links, and keep to shape of a scene graph
+*  The snapshot contains datas and links, and keep the shape of a scene graph
 */
 
 class SOFA_CORE_API Snapshot
@@ -61,7 +61,7 @@ public:
         std::string m_name;
         std::vector<DataInfo> m_dataContainer;
         std::vector<LinkInfo> m_linkContainer;
-        //void* m_internalState { nullptr };
+        void* m_internalState { nullptr };
 
 
         virtual void clear()
@@ -117,11 +117,10 @@ public:
     };
 
     std::shared_ptr<SnapshotNode> m_graphRoot {nullptr};
-    std::size_t getNumberChildren();
 
     Snapshot();
     virtual ~Snapshot();
-};
 
+};
 
 } // namespace sofa::core::objectmodel

@@ -27,7 +27,4 @@ namespace sofa::core::objectmodel
 Snapshot::Snapshot() = default;
 Snapshot::~Snapshot() = default;
 
-std::size_t Snapshot::getNumberChildren() {
-    return m_graphRoot->children.size();
-}
 } // namespace sofa::core::objectmodel

@@ -369,11 +369,12 @@ public:
 protected:
     void saveDataIn(Snapshot::SnapshotObject& snapshot) const;
     void saveLinksIn(Snapshot::SnapshotObject& snapshot) const;
-    //virtual void saveInternalStateIn(SnapshotObject& snapshot) const;
+
     virtual std::shared_ptr<Snapshot::SnapshotObject> createSnapshotObject(std::vector<std::shared_ptr<Snapshot::SnapshotNode>>& parents) const;
 public :
     virtual std::shared_ptr<Snapshot::SnapshotObject> findSnapshotObject(const std::shared_ptr<Snapshot::SnapshotNode>& parents, const std::string& objectname);
-
+    virtual void saveInternalStateIn(Snapshot::SnapshotObject& snapshot) const;
+    virtual void loadInternalStateFrom(const Snapshot::SnapshotObject& snapshot) const;
 protected:
     /// List of fields (Data instances)
     VecData m_vecData;

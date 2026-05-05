@@ -36,18 +36,16 @@ void SnapshotManager::AddRecentFile(const std::string& path, std::vector<std::st
         std::remove(recentFiles.begin(), recentFiles.end(), path),
         recentFiles.end()
     );
-    //recentFiles.insert(recentFiles.begin(), path);
     recentFiles.push_back(path);
     if (recentFiles.size() > maxFiles)
         recentFiles.resize(maxFiles);
 }
 
-void SnapshotManager::AddRecentSnapshot(std::map<std::string, std::shared_ptr<sofa::core::objectmodel::Snapshot>>& recentSnapshots, std::shared_ptr<sofa::core::objectmodel::Snapshot> snapshot, double snapshotTime, int maxSnapshots)
+void SnapshotManager::AddRecentSnapshot(std::map<std::string, std::shared_ptr<sofa::core::objectmodel::Snapshot>>& recentSnapshots, std::shared_ptr<sofa::core::objectmodel::Snapshot> snapshot, double snapshotTime)
 {
     static int index = 0;
     recentSnapshots["Memory_Snapshot " + std::to_string(index++) + " at " + std::to_string(snapshotTime)] = snapshot;
-    if (recentSnapshots.size() > maxSnapshots)
-        recentSnapshots.erase(recentSnapshots.begin());
+
 }
 
 } // namespace sofa::core::objectmodel

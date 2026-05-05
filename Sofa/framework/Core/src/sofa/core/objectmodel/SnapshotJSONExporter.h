@@ -22,6 +22,7 @@
 #pragma once
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/objectmodel/Snapshot.h>
+#include <sofa/core/objectmodel/SnapshotManager.h>
 
 namespace sofa::core::objectmodel
 {
@@ -29,4 +30,7 @@ namespace sofa::core::objectmodel
     void importFrom(Snapshot& snapshot, const std::string& filename);
     std::string file_To_String(const std::string& filename);
     std::string snapshot_To_String(const Snapshot& snapshot);
+    void exportTo(std::map<std::string, std::shared_ptr<Snapshot>>& snapshots, const std::string& filename);
+    void importFrom(std::map<std::string, std::shared_ptr<Snapshot>>& snapshots, const std::string& filename);
+    void separateSnapshots(const std::string& filename, SnapshotManager& snapshotManager);
 } // namespace sofa::core::objectmodel

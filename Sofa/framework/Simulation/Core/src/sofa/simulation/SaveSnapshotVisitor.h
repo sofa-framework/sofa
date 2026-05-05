@@ -20,10 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/objectmodel/Base.h>
-#include <sofa/config.h>
 #include <sofa/simulation/Visitor.h>
-#include <string>
-#include <stack>
 #include <memory>
 
 namespace sofa::simulation

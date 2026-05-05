@@ -25,6 +25,8 @@
 #include <string>
 #include <iostream>
 
+
+
 namespace sofa::core::objectmodel
 {
 
@@ -198,7 +200,7 @@ void from_json(const nlohmann::json& j, Snapshot::SnapshotNode& sn)
         }
     }
 }
-
+    
 void importFrom(Snapshot& snapshot, const std::string& filename)
 {
     std::ifstream file(filename);
@@ -250,4 +252,87 @@ std::string snapshot_To_String(const Snapshot& snapshot)
     nlohmann::json j = snapshot.m_graphRoot ;
     return to_string(j);
 }
+
+void exportTo(std::map<std::string, std::shared_ptr<Snapshot>>& snapshots, const std::string& filename)
+{
+    std::ofstream file(filename);
+
+    nlohmann::json j_all = nlohmann::json::array();
+
+    for (const auto& snapshotJson : snapshots)
+    {
+        j_all.push_back(snapshotJson.second->m_graphRoot);
+    }
+    file << j_all.dump(5);
+    file.close();
+}
+
+void importFrom(std::map<std::string, std::shared_ptr<Snapshot>>& snapshots, const std::string& filename)
+{
+    std::ifstream file(filename);
+
+    if (!file.is_open())
+    {
+        std::cerr << "ERROR: Cannot open file " << filename << " for reading\n";
+        return;
+    }
+
+    nlohmann::json j_all = nlohmann::json::array();
+    file >> j_all;
+    file.close();
+
+    snapshots.clear();
+
+    int index = 0;
+
+    for (const auto& snapshotJson : j_all)
+    {
+        auto snapshot = std::make_shared<Snapshot>();
+
+        from_json(snapshotJson, *snapshot->m_graphRoot);
+
+        std::string id;
+
+        if (snapshot->m_graphRoot)
+            id = snapshot->m_graphRoot->m_name;
+
+        if (id.empty())
+            id="snapshot_"+ std::to_string(index++);
+        snapshot->m_graphRoot->m_name = id;
+        snapshots[id] = snapshot;
+    }
+}
+
+void separateSnapshots(const std::string& filename, SnapshotManager& snapshotManager)
+{
+    std::ifstream file(filename);
+
+    nlohmann::json jSnapshot;
+
+    if (!file.is_open())
+    {
+        msg_error("SnapshotJSONExporter") << "ERROR: Cannot open file " << filename << " for reading\n";
+        return;
+    }
+
+    file >> jSnapshot;
+    file.close();
+
+    for (const auto& snapshotJson : jSnapshot)
+    {
+        auto snapshot = std::make_shared<Snapshot>();
+        snapshot->m_graphRoot = std::make_shared<Snapshot::SnapshotNode>();
+        from_json(snapshotJson, *snapshot->m_graphRoot);
+        std::string snapshotTime = "0";
+        for (const auto& data : snapshot->m_graphRoot->m_dataContainer)
+        {
+            if (data.name == "time")
+                snapshotTime = data.value;
+        }
+
+        snapshotManager.AddRecentSnapshot(snapshotManager.recentSnapshots,snapshot, std::stod(snapshotTime));
+    }
+
+}
+
 } // namespace sofa::core::objectmodel

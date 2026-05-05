@@ -33,6 +33,7 @@ void LoadDataSnapshotVisitor::processObject(
 {
     auto snapshotObject = obj->findSnapshotObject(parent, obj->getName());
     obj->loadDataSnapshot(snapshotObject);
+    obj->loadInternalStateFrom(*snapshotObject);
 }
 
 Visitor::Result LoadDataSnapshotVisitor::processNodeTopDown(simulation::Node* node)
@@ -40,7 +41,6 @@ Visitor::Result LoadDataSnapshotVisitor::processNodeTopDown(simulation::Node* no
     const auto snapshotObject = node->findSnapshotObject(m_snapshotContainer.m_graphRoot, node->getName());
     if (!snapshotObject)
         msg_error("findSnapshotNode") << "SnapshotNode "<< node->getName() << " not found in ";
-    std::string nodeName = node->getName();
     const auto SnapshotNode = std::dynamic_pointer_cast<core::objectmodel::Snapshot::SnapshotNode>(snapshotObject);
     node->loadDataSnapshot(SnapshotNode);
     for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
@@ -51,6 +51,3 @@ Visitor::Result LoadDataSnapshotVisitor::processNodeTopDown(simulation::Node* no
 }
 
 } // namespace sofa::simulation
-
-
-
