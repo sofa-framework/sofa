@@ -38,7 +38,7 @@ jobs:
         env:
           SOFA_BUILD_TYPE: ${{ matrix.build_type }}
         run: |
-          pixi run -e ${{ matrix.environment }} configure -CMAKE_CUDA_ARCHITECTURES=60;89
+          pixi run -e ${{ matrix.environment }} configure -DCMAKE_CUDA_ARCHITECTURES=60;89
           pixi run -e ${{ matrix.environment }} build
 
       - name: Testing - Run SOFA in batch mode [MacOS/Linux/Windows]
