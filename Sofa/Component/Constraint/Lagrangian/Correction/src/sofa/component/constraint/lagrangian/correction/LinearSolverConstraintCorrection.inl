@@ -82,7 +82,7 @@ void LinearSolverConstraintCorrection<DataTypes>::init()
     if (l_linearSolver.get() == nullptr)
     {
         msg_error() << "No LinearSolver component found at path: " << l_linearSolver.getLinkedPath() << ", nor in current context: " << context->name;
-        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
     else
@@ -90,7 +90,7 @@ void LinearSolverConstraintCorrection<DataTypes>::init()
         if (l_linearSolver->getTemplateName() == "GraphScattered")
         {
             msg_error() << "Can not use the solver " << l_linearSolver->getName() << " because it is templated on GraphScatteredType";
-            sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+            this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
             return;
         }
         else
@@ -114,7 +114,7 @@ void LinearSolverConstraintCorrection<DataTypes>::init()
     if (l_ODESolver.get() == nullptr)
     {
         msg_error() << "No ODESolver component found at path: " << l_ODESolver.getLinkedPath() << ", nor in current context: " << context->name;
-        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
     else

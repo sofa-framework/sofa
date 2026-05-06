@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/core/MultiVecId.h>
 #include <sofa/linearalgebra/BaseMatrix.h>
 #include <sofa/core/ConstraintOrder.h>
@@ -34,10 +34,10 @@ class ConstraintSolver;
 /**
  *  \brief Component computing constraint forces within a simulated body using the compliance method.
  */
-class SOFA_CORE_API BaseConstraintCorrection : public virtual objectmodel::BaseObject
+class SOFA_CORE_API BaseConstraintCorrection : public virtual objectmodel::BaseComponent
 {
 public:
-    SOFA_ABSTRACT_CLASS(BaseConstraintCorrection, objectmodel::BaseObject);
+    SOFA_ABSTRACT_CLASS(BaseConstraintCorrection, objectmodel::BaseComponent);
 
     virtual bool isActive() { return this->getContext()->isActive(); }
 

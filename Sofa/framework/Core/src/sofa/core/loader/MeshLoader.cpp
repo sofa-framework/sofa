@@ -180,7 +180,8 @@ void MeshLoader::clearBuffers()
 
 void MeshLoader::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
 {
-    objectmodel::BaseObject::parse(arg);
+
+    BaseLoader::parse(arg);
 
     if (arg->getAttribute("scale"))
     {

@@ -52,8 +52,8 @@ using sofa::core::execparams::defaultInstance;
 /////////////////////// COMPONENT DEFINITION & DECLARATION /////////////////////////////////////////
 /// This component is only for testing the APIVersion system.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-#include <sofa/core/objectmodel/BaseObject.h>
-using sofa::core::objectmodel::BaseObject;
+#include <sofa/core/objectmodel/BaseComponent.h>
+using sofa::core::objectmodel::BaseComponent;
 using sofa::core::objectmodel::Base;
 
 #include <sofa/core/ObjectFactory.h>
@@ -62,10 +62,10 @@ using sofa::core::ExecParams;
 
 #include <sofa/simpleapi/SimpleApi.h>
 
-class ComponentDeprecated : public sofa::core::objectmodel::BaseObject
+class ComponentDeprecated : public sofa::core::objectmodel::BaseComponent
 {
 public:
-    SOFA_CLASS(ComponentDeprecated, sofa::core::objectmodel::BaseObject);
+    SOFA_CLASS(ComponentDeprecated, sofa::core::objectmodel::BaseComponent);
 public:
 
 };
@@ -81,7 +81,7 @@ struct SceneChecker_test : public BaseSimulationTest
     void checkRequiredPlugin(bool missing)
     {
         this->loadPlugins({Sofa.Component.ODESolver.Forward});
-        const std::string missStr = missing ? "" : "<RequiredPlugin name='Sofa.Component.ODESolver.Forward'/> \n";
+        const std::string missStr = missing ? "" : "<RequiredPlugin pluginName='Sofa.Component.ODESolver.Forward'/> \n";
         std::stringstream scene;
         scene << "<?xml version='1.0'?>                                             \n"
               << "<Node name='Root' gravity='0 -9.81 0' time='0' animate='0' >      \n"
@@ -117,7 +117,7 @@ struct SceneChecker_test : public BaseSimulationTest
         std::stringstream scene;
         scene << "<?xml version='1.0'?>                                           \n"
               << "<Node name='Root' gravity='0 -9.81 0' time='0' animate='0' >    \n"
-              << "    <RequiredPlugin name='Sofa.GL.Component'/>                   \n"
+              << "    <RequiredPlugin pluginName='Sofa.GL.Component'/>                   \n"
               << "    <Node name='nodeCheck'>                                     \n"
               << "      <Node name='nodeA' />                                     \n"
               << "      <Node name='nodeA' />                                     \n"
@@ -214,8 +214,8 @@ struct SceneChecker_test : public BaseSimulationTest
         std::stringstream scene;
         scene << "<?xml version='1.0'?>                                           \n"
               << "<Node name='Root' gravity='0 -9.81 0' time='0' animate='0' >    \n"
-              << "    <RequiredPlugin name='Sofa.Component.StateContainer'/>      \n"
-              << "    <RequiredPlugin name='Sofa.Component.Visual'/>              \n"
+              << "    <RequiredPlugin pluginName='Sofa.Component.StateContainer'/>      \n"
+              << "    <RequiredPlugin pluginName='Sofa.Component.Visual'/>              \n"
               << "    <MechanicalObject template='Vec3d' />                       \n"
               << "    <" << componentName << "/>                                  \n"
               << "</Node>                                                         \n";
@@ -246,10 +246,10 @@ struct SceneChecker_test : public BaseSimulationTest
         std::string scenePrefix = R"("
 <Node name='root'>
     <DefaultAnimationLoop/>
-    <RequiredPlugin name='Sofa.Component.Collision.Detection.Algorithm' />
-    <RequiredPlugin name='Sofa.Component.Collision.Detection.Intersection' />
-    <RequiredPlugin name='Sofa.Component.Collision.Geometry' />
-    <RequiredPlugin name='Sofa.Component.Collision.Response.Contact' />
+    <RequiredPlugin pluginName='Sofa.Component.Collision.Detection.Algorithm' />
+    <RequiredPlugin pluginName='Sofa.Component.Collision.Detection.Intersection' />
+    <RequiredPlugin pluginName='Sofa.Component.Collision.Geometry' />
+    <RequiredPlugin pluginName='Sofa.Component.Collision.Response.Contact' />
 )";
         std::string scenePipeline = R"("
     <CollisionPipeline verbose="0" />

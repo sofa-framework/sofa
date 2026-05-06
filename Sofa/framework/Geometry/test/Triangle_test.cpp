@@ -247,21 +247,29 @@ TYPED_TEST(GeometryVec3DTriangle_test, isPointInTriangle)
     EXPECT_EQ(bary[2], 1);
 
     // False cases
-    // out of plan
+    // out of plan with assumePointIsInPlane=false
     p0 = { 1., 0.2, 0.2 };
-    res = sofa::geometry::Triangle::isPointInTriangle(p0, a, b, c, bary);
+    res = sofa::geometry::Triangle::isPointInTriangle(p0, a, b, c, bary, false);
     EXPECT_FALSE(res);
-    EXPECT_NEAR(bary[0], 0.69282, 1e-4);
-    EXPECT_NEAR(bary[1], 0.360555, 1e-4);
-    EXPECT_NEAR(bary[2], -0.0533754, 1e-4);
+    EXPECT_NEAR(bary[0], -1, 1e-4);
+    EXPECT_NEAR(bary[1], -1, 1e-4);
+    EXPECT_NEAR(bary[2], -1, 1e-4);
+
+    // out of plan with assumePointIsInPlane=true (default): bary coords are all positive
+    // so the function returns true even though the point is not in the triangle plane
+    res = sofa::geometry::Triangle::isPointInTriangle(p0, a, b, c, bary);
+    EXPECT_TRUE(res);
+    EXPECT_NEAR(bary[0], 0.6, 1e-4);
+    EXPECT_NEAR(bary[1], 0.3, 1e-4);
+    EXPECT_NEAR(bary[2], 0.1, 1e-4);
 
     // in plan but out of triangle
     p0 = { 2., 2., 2. };
     res = sofa::geometry::Triangle::isPointInTriangle(p0, a, b, c, bary);
     EXPECT_FALSE(res);
-    EXPECT_EQ(bary[0], 1);
+    EXPECT_EQ(bary[0], -1);
     EXPECT_EQ(bary[1], 1);
-    EXPECT_EQ(bary[2], -1);
+    EXPECT_EQ(bary[2], 1);
 
 
     // Special cases
@@ -273,6 +281,141 @@ TYPED_TEST(GeometryVec3DTriangle_test, isPointInTriangle)
     EXPECT_EQ(bary[0], -1);
     EXPECT_EQ(bary[1], -1);
     EXPECT_EQ(bary[2], -1);
+}
+
+
+TYPED_TEST(GeometryVec2DTriangle_test, getBarycentricCoordinates)
+{
+    using Scalar = typename TypeParam::value_type;
+
+    const TypeParam a{ 0., 0. };
+    const TypeParam b{ 2., 0. };
+    const TypeParam c{ 2., 2. };
+
+    // point inside
+    TypeParam p0{ 1.5, 0.5 };
+    auto bary = sofa::geometry::Triangle::getBarycentricCoordinates(p0, a, b, c);
+    EXPECT_FLOAT_EQ(float(bary[0]), 0.25f);
+    EXPECT_FLOAT_EQ(float(bary[1]), 0.5f);
+    EXPECT_FLOAT_EQ(float(bary[2]), 0.25f);
+
+    // on vertex n0
+    p0 = { 0., 0. };
+    bary = sofa::geometry::Triangle::getBarycentricCoordinates(p0, a, b, c);
+    EXPECT_FLOAT_EQ(float(bary[0]), 1.0f);
+    EXPECT_FLOAT_EQ(float(bary[1]), 0.0f);
+    EXPECT_FLOAT_EQ(float(bary[2]), 0.0f);
+
+    // on edge n0-n1
+    p0 = { 1., 0. };
+    bary = sofa::geometry::Triangle::getBarycentricCoordinates(p0, a, b, c);
+    EXPECT_NEAR(bary[0], 0.5f, 1e-4);
+    EXPECT_NEAR(bary[1], 0.5f, 1e-4);
+    EXPECT_NEAR(bary[2], 0.0f, 1e-4);
+
+    // outside triangle
+    p0 = { 4., 10. };
+    bary = sofa::geometry::Triangle::getBarycentricCoordinates(p0, a, b, c);
+    EXPECT_NEAR(bary[0], -1.0f, 1e-4);
+    EXPECT_NEAR(bary[1], -3.0f, 1e-4);
+    EXPECT_NEAR(bary[2], 5.0f, 1e-4);
+
+    // degenerate (flat) triangle
+    const TypeParam d{ 1., 0. };
+    bary = sofa::geometry::Triangle::getBarycentricCoordinates(p0, a, b, d);
+    EXPECT_EQ(bary[0], -1);
+    EXPECT_EQ(bary[1], -1);
+    EXPECT_EQ(bary[2], -1);
+}
+
+
+TYPED_TEST(GeometryVec3DTriangle_test, getBarycentricCoordinates)
+{
+    using Scalar = typename TypeParam::value_type;
+
+    const TypeParam a{ 0., 0., 0. };
+    const TypeParam b{ 2., 0., 2. };
+    const TypeParam c{ 0., 2., 0. };
+
+    // point inside (in-plane)
+    TypeParam p0{ 0.5, 0.5, 0.5 };
+    auto bary = sofa::geometry::Triangle::getBarycentricCoordinates(p0, a, b, c);
+    EXPECT_NEAR(bary[0], 0.5f, 1e-4);
+    EXPECT_NEAR(bary[1], 0.25f, 1e-4);
+    EXPECT_NEAR(bary[2], 0.25f, 1e-4);
+
+    // on vertex n2
+    p0 = { 0., 2., 0. };
+    bary = sofa::geometry::Triangle::getBarycentricCoordinates(p0, a, b, c);
+    EXPECT_EQ(bary[0], 0);
+    EXPECT_EQ(bary[1], 0);
+    EXPECT_EQ(bary[2], 1);
+
+    // outside but in-plane
+    p0 = { 2., 2., 2. };
+    bary = sofa::geometry::Triangle::getBarycentricCoordinates(p0, a, b, c);
+    EXPECT_NEAR(bary[0], -1.0f, 1e-4);
+    EXPECT_NEAR(bary[1], 1.0f, 1e-4);
+    EXPECT_NEAR(bary[2], 1.0f, 1e-4);
+
+    // out-of-plane point (projects inside)
+    p0 = { 1., 0.2, 0.2 };
+    bary = sofa::geometry::Triangle::getBarycentricCoordinates(p0, a, b, c);
+    EXPECT_NEAR(bary[0], 0.6f, 1e-4);
+    EXPECT_NEAR(bary[1], 0.3f, 1e-4);
+    EXPECT_NEAR(bary[2], 0.1f, 1e-4);
+
+    // degenerate (flat) triangle
+    const TypeParam d{ 1., 0., 1. };
+    bary = sofa::geometry::Triangle::getBarycentricCoordinates(p0, a, b, d);
+    EXPECT_EQ(bary[0], -1);
+    EXPECT_EQ(bary[1], -1);
+    EXPECT_EQ(bary[2], -1);
+}
+
+
+TYPED_TEST(GeometryVec3DTriangle_test, isPointOnPlane)
+{
+    // Triangle in the plane z = x (normal is proportional to (-1, 0, 1))
+    const TypeParam a{ 0., 0., 0. };
+    const TypeParam b{ 2., 0., 2. };
+    const TypeParam c{ 0., 2., 0. };
+
+    // point on the plane, inside the triangle
+    EXPECT_TRUE(sofa::geometry::Triangle::isPointOnPlane(TypeParam{ 0.5, 0.5, 0.5 }, a, b, c));
+
+    // point on vertex
+    EXPECT_TRUE(sofa::geometry::Triangle::isPointOnPlane(a, a, b, c));
+    EXPECT_TRUE(sofa::geometry::Triangle::isPointOnPlane(b, a, b, c));
+    EXPECT_TRUE(sofa::geometry::Triangle::isPointOnPlane(c, a, b, c));
+
+    // point on edge
+    EXPECT_TRUE(sofa::geometry::Triangle::isPointOnPlane(TypeParam{ 1., 0., 1. }, a, b, c));
+
+    // point on the plane but outside the triangle
+    EXPECT_TRUE(sofa::geometry::Triangle::isPointOnPlane(TypeParam{ 3., 0., 3. }, a, b, c));
+    EXPECT_TRUE(sofa::geometry::Triangle::isPointOnPlane(TypeParam{ -5., 10., -5. }, a, b, c));
+
+    // point off the plane
+    EXPECT_FALSE(sofa::geometry::Triangle::isPointOnPlane(TypeParam{ 1., 0.2, 0.2 }, a, b, c));
+    EXPECT_FALSE(sofa::geometry::Triangle::isPointOnPlane(TypeParam{ 0., 0., 5. }, a, b, c));
+    EXPECT_FALSE(sofa::geometry::Triangle::isPointOnPlane(TypeParam{ 1., 1., 0. }, a, b, c));
+
+    // degenerate (collinear) triangle: always returns true
+    const TypeParam d{ 1., 0., 1. };
+    EXPECT_TRUE(sofa::geometry::Triangle::isPointOnPlane(TypeParam{ 99., 99., 99. }, a, b, d));
+}
+
+
+TYPED_TEST(GeometryVec2DTriangle_test, isPointOnPlane)
+{
+    // In 2D, all points are trivially on the same plane
+    const TypeParam a{ 0., 0. };
+    const TypeParam b{ 2., 0. };
+    const TypeParam c{ 2., 2. };
+
+    EXPECT_TRUE(sofa::geometry::Triangle::isPointOnPlane(TypeParam{ 1., 1. }, a, b, c));
+    EXPECT_TRUE(sofa::geometry::Triangle::isPointOnPlane(TypeParam{ 99., 99. }, a, b, c));
 }
 
 

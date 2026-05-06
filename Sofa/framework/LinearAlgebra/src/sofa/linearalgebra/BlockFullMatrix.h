@@ -155,6 +155,7 @@ public:
 
     void set(Index i, Index j, double v) override;
 
+    using BaseMatrix::add;
     void add(Index i, Index j, double v) override;
 
     void clear(Index i, Index j) override;
@@ -179,7 +180,7 @@ public:
                 Real r = 0;
                 for (Index j=0; j<BSIZE; ++j)
                 {
-                    r += bloc(bi,bj)[i][j] * v[(bi + bj - 1)*BSIZE + j];
+                    r += bloc(bi,bj)[i][j] * v[bj*BSIZE + j];
                 }
                 res[bi*BSIZE + i] = r;
             }
@@ -190,7 +191,7 @@ public:
                     Real r = 0;
                     for (Index j=0; j<BSIZE; ++j)
                     {
-                        r += bloc(bi,bj)[i][j] * v[(bi + bj - 1)*BSIZE + j];
+                        r += bloc(bi,bj)[i][j] * v[bj*BSIZE + j];
                     }
                     res[bi*BSIZE + i] += r;
                 }

@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/core/CollisionElement.h>
 #include <sofa/helper/set.h>
 
@@ -70,10 +70,10 @@ public:
  *    to the final elements)
  *
  */
-class SOFA_CORE_API CollisionModel : public virtual objectmodel::BaseObject
+class SOFA_CORE_API CollisionModel : public virtual objectmodel::BaseComponent
 {
 public:
-    SOFA_ABSTRACT_CLASS(CollisionModel, objectmodel::BaseObject);
+    SOFA_ABSTRACT_CLASS(CollisionModel, objectmodel::BaseComponent);
     SOFA_BASE_CAST_IMPLEMENTATION(CollisionModel)
 
     enum{
@@ -220,7 +220,7 @@ public:
     /// within the given timestep.
     ///
     /// Default to computeBoundingTree().
-    virtual void computeContinuousBoundingTree(SReal /*dt*/, ContinuousIntersectionTypeFlag continuousIntersectionFlag = ContinuousIntersectionTypeFlag::Inertia, int maxDepth=0) { computeBoundingTree(maxDepth); }
+    virtual void computeContinuousBoundingTree(SReal dt, ContinuousIntersectionTypeFlag continuousIntersectionFlag = ContinuousIntersectionTypeFlag::Inertia, int maxDepth=0);
 
     /// \brief Return the list (as a pair of iterators) of <i>internal children</i> of
     /// an element.
@@ -451,7 +451,7 @@ protected:
     void* userData;
 
     /// Pointer to the  Controller component heritating from CollisionElementActiver
-    SingleLink<CollisionModel, sofa::core::objectmodel::BaseObject, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_collElemActiver;
+    SingleLink<CollisionModel, sofa::core::objectmodel::BaseComponent, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_collElemActiver;
 
     /// Render the whole collision model.
     virtual void drawCollisionModel(const core::visual::VisualParams* vparams);

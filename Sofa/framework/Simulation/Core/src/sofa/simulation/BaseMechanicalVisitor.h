@@ -44,7 +44,7 @@ class SOFA_SIMULATION_CORE_API BaseMechanicalVisitor : public Visitor
 {
 
 protected:
-    simulation::Node* root; ///< root node from which the visitor was executed
+    simulation::Node* root { nullptr }; ///< root node from which the visitor was executed
 
     virtual Result processNodeTopDown(simulation::Node* node, VisitorContext* ctx);
     virtual void processNodeBottomUp(simulation::Node* node, VisitorContext* ctx);
@@ -55,6 +55,12 @@ public:
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     const char* getClassName() const override;
+
+    /**
+     * Returns true if the node has a mapped mechanical state. It is mapped if the state is not an
+     * output of a mapping.
+     */
+    virtual bool isMechanicalStateMapped(simulation::Node* node) const;
 
     /**@name Forward processing
     Methods called during the forward (top-down) traversal of the data structure.
@@ -204,17 +210,17 @@ public:
     virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, sofa::core::BaseMapping* map);
 
 #ifdef SOFA_DUMP_VISITOR_INFO
-    ctime_t begin(simulation::Node* node, sofa::core::objectmodel::BaseObject* obj, const std::string &info=std::string("type")) override;
-    void end(simulation::Node* node, sofa::core::objectmodel::BaseObject* obj, ctime_t t0) override;
+    ctime_t begin(simulation::Node* node, sofa::core::objectmodel::BaseComponent* obj, const std::string &info=std::string("type")) override;
+    void end(simulation::Node* node, sofa::core::objectmodel::BaseComponent* obj, ctime_t t0) override;
 
     virtual void setReadWriteVectors() {}
     virtual void addReadVector(core::ConstMultiVecId id) {  readVector.push_back(id);  }
     virtual void addWriteVector(core::MultiVecId id) {  writeVector.push_back(id);  }
     virtual void addReadWriteVector(core::MultiVecId id) {  readVector.push_back(core::ConstMultiVecId(id)); writeVector.push_back(id);  }
     void printReadVectors(core::behavior::BaseMechanicalState* mm);
-    void printReadVectors(simulation::Node* node, sofa::core::objectmodel::BaseObject* obj);
+    void printReadVectors(simulation::Node* node, sofa::core::objectmodel::BaseComponent* obj);
     void printWriteVectors(core::behavior::BaseMechanicalState* mm);
-    void printWriteVectors(simulation::Node* node, sofa::core::objectmodel::BaseObject* obj);
+    void printWriteVectors(simulation::Node* node, sofa::core::objectmodel::BaseComponent* obj);
 protected:
     sofa::type::vector< sofa::core::ConstMultiVecId > readVector;
     sofa::type::vector< sofa::core::MultiVecId > writeVector;

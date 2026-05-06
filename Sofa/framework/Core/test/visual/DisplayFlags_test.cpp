@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/visual/Data[DisplayFlags].h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <gtest/gtest.h>
 #include <sofa/core/logging/PerComponentLoggingMessageHandler.h>
 
@@ -44,10 +44,10 @@ TEST(DisplayFlags, getAllFlagsLabels)
     }
 }
 
-class DummyDisplayFlagsOwner : public sofa::core::objectmodel::BaseObject
+class DummyDisplayFlagsOwner : public sofa::core::objectmodel::BaseComponent
 {
 public:
-    SOFA_CLASS(DummyDisplayFlagsOwner, sofa::core::objectmodel::BaseObject);
+    SOFA_CLASS(DummyDisplayFlagsOwner, sofa::core::objectmodel::BaseComponent);
 
     Data<core::visual::DisplayFlags> m_displayFlags;
 
@@ -61,6 +61,7 @@ public:
     {
         helper::logging::MessageDispatcher::rmHandler(this);
     }
+    std::string getName() const override { return "RAIIPerComponentLoggingMessageHandler"; }
 };
 
 TEST(DisplayFlags, readFromObject)

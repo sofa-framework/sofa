@@ -8,6 +8,7 @@ set(HEADER_FILES
     ${SOFACOMPONENTTOPOLOGYMAPPING_SOURCE_DIR}/init.h
     ${SOFACOMPONENTTOPOLOGYMAPPING_SOURCE_DIR}/CenterPointTopologicalMapping.h
     ${SOFACOMPONENTTOPOLOGYMAPPING_SOURCE_DIR}/Edge2QuadTopologicalMapping.h
+    ${SOFACOMPONENTTOPOLOGYMAPPING_SOURCE_DIR}/Hexa2PrismTopologicalMapping.h
     ${SOFACOMPONENTTOPOLOGYMAPPING_SOURCE_DIR}/Hexa2QuadTopologicalMapping.h
     ${SOFACOMPONENTTOPOLOGYMAPPING_SOURCE_DIR}/Hexa2TetraTopologicalMapping.h
     ${SOFACOMPONENTTOPOLOGYMAPPING_SOURCE_DIR}/IdentityTopologicalMapping.h
@@ -21,6 +22,7 @@ set(SOURCE_FILES
     ${SOFACOMPONENTTOPOLOGYMAPPING_SOURCE_DIR}/init.cpp
     ${SOFACOMPONENTTOPOLOGYMAPPING_SOURCE_DIR}/CenterPointTopologicalMapping.cpp
     ${SOFACOMPONENTTOPOLOGYMAPPING_SOURCE_DIR}/Edge2QuadTopologicalMapping.cpp
+    ${SOFACOMPONENTTOPOLOGYMAPPING_SOURCE_DIR}/Hexa2PrismTopologicalMapping.cpp
     ${SOFACOMPONENTTOPOLOGYMAPPING_SOURCE_DIR}/Hexa2QuadTopologicalMapping.cpp
     ${SOFACOMPONENTTOPOLOGYMAPPING_SOURCE_DIR}/Hexa2TetraTopologicalMapping.cpp
     ${SOFACOMPONENTTOPOLOGYMAPPING_SOURCE_DIR}/IdentityTopologicalMapping.cpp
@@ -44,3 +46,11 @@ sofa_create_package_with_targets(
     INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
 )
+
+# Tests
+# If SOFA_BUILD_TESTS exists and is OFF, then these tests will be auto-disabled
+cmake_dependent_option(SOFA_COMPONENT_TOPOLOGY_MAPPING_BUILD_TESTS "Compile the automatic tests" ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
+if(SOFA_COMPONENT_TOPOLOGY_MAPPING_BUILD_TESTS)
+    enable_testing()
+    add_subdirectory(tests)
+endif()

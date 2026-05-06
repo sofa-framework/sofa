@@ -106,8 +106,8 @@ Index TopologicalChangeManager::removeItemsFromTriangleModel(TriangleCollisionMo
     while(is_topoMap)
     {
         is_topoMap = false;
-        std::vector< core::objectmodel::BaseObject * > listObject;
-        node_curr->get<core::objectmodel::BaseObject>(&listObject, core::objectmodel::BaseContext::Local);
+        std::vector< core::objectmodel::BaseComponent * > listObject;
+        node_curr->get<core::objectmodel::BaseComponent>(&listObject, core::objectmodel::BaseContext::Local);
         for(unsigned int i=0; i<listObject.size(); ++i)
         {
             sofa::core::topology::TopologicalMapping *topoMap = dynamic_cast<sofa::core::topology::TopologicalMapping *>(listObject[i]);
@@ -235,8 +235,8 @@ Index TopologicalChangeManager::removeItemsFromPointModel(PointCollisionModel<so
     while (is_topoMap)
     {
         is_topoMap = false;
-        std::vector< core::objectmodel::BaseObject * > listObject;
-        node_curr->get<core::objectmodel::BaseObject>(&listObject, core::objectmodel::BaseContext::Local);
+        std::vector< core::objectmodel::BaseComponent * > listObject;
+        node_curr->get<core::objectmodel::BaseComponent>(&listObject, core::objectmodel::BaseContext::Local);
         for (unsigned int i = 0; i<listObject.size(); ++i)
         {
             sofa::core::topology::TopologicalMapping *topoMap = dynamic_cast<sofa::core::topology::TopologicalMapping *>(listObject[i]);
@@ -342,8 +342,8 @@ Index TopologicalChangeManager::removeItemsFromSphereModel(SphereCollisionModel<
     {
         is_topoMap = false;
 
-        std::vector< core::objectmodel::BaseObject * > listObject;
-        node_curr->get<core::objectmodel::BaseObject>(&listObject, core::objectmodel::BaseContext::Local);
+        std::vector< core::objectmodel::BaseComponent * > listObject;
+        node_curr->get<core::objectmodel::BaseComponent>(&listObject, core::objectmodel::BaseContext::Local);
         for(unsigned int i=0; i<listObject.size(); ++i)
         {
             sofa::core::topology::TopologicalMapping *topoMap = dynamic_cast<sofa::core::topology::TopologicalMapping *>(listObject[i]);

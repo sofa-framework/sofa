@@ -69,7 +69,7 @@ public:
     void resizeSystem(sofa::Size n) override;
     void clearSystem() override;
 
-    using ConstantCRSMapping = std::unordered_map<sofa::SignedIndex, std::size_t>;
+    using ConstantCRSMapping = std::unordered_map<std::uint64_t, std::size_t>;
 
     bool isConstantSparsityPatternUsedYet() const;
 
@@ -114,7 +114,7 @@ protected:
     void makeCreateDispatcher() override;
 
     std::shared_ptr<sofa::core::matrixaccumulator::IndexVerificationStrategy>
-    makeIndexVerificationStrategy(sofa::core::objectmodel::BaseObject* component) override;
+    makeIndexVerificationStrategy(sofa::core::objectmodel::BaseComponent* component) override;
 
 private:
     template<Contribution c>
