@@ -113,7 +113,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Mass)
 target_link_libraries(${PROJECT_NAME} PUBLIC CUDA::cudart)
 
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17 cuda_std_17)
-target_link_libraries(${PROJECT_NAME} PUBLIC ${CUDA_cusparse_LIBRARY} CUDA::cublas)
+target_link_libraries(${PROJECT_NAME} PUBLIC ${CUDA_cusparse_LIBRARY} ${CUDA_cublas_LIBRARY})
 
 # see (I guess) https://github.com/sofa-framework/sofa/blob/314b95cbfba411bf8431486ea75b7c67c0bbcc76/Sofa/framework/Config/cmake/SofaMacrosInstall.cmake#L695
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}>/include/${PROJECT_NAME}/${PROJECT_NAME}")
