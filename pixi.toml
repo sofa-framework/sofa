@@ -77,10 +77,10 @@ cuda = "12"
 [feature.plugin-cuda.target.linux]
 # XXX Adding nvvm/bin to PATH was required to compile, may be related to
 # https://github.com/conda-forge/cuda-nvcc-impl-feedstock/issues/9
-activation = { env = { PATH = "$CONDA_PREFIX/nvvm/bin:$PATH", SOFA_PLUGIN_SOFACUDA_ARGS = "-DPLUGIN_SOFACUDA=ON -DSOFACUDA_ENABLE_NATIVE_ARCHITECTURE=ON" } }
+activation = { env = { PATH = "$CONDA_PREFIX/nvvm/bin:$PATH", SOFA_PLUGIN_SOFACUDA_ARGS = "-DPLUGIN_SOFACUDA=ON" } }
 dependencies = { cuda-version = "*", cuda-compiler = "*", libcublas-dev = "*", libcusparse-dev = "*" }
 [feature.plugin-cuda.target.win]
-activation = { env = { SOFA_PLUGIN_SOFACUDA_ARGS = "-DPLUGIN_SOFACUDA=ON -DSOFACUDA_ENABLE_NATIVE_ARCHITECTURE=ON" } }
+activation = { env = { SOFA_PLUGIN_SOFACUDA_ARGS = "-DPLUGIN_SOFACUDA=ON" } }
 dependencies = { cuda-version = "*", cuda-compiler = "*", libcublas-dev = "*", libcusparse-dev = "*" }
 [feature.plugin-cuda.target.osx]
 activation = { env = { SOFA_PLUGIN_SOFACUDA_ARGS = "-DPLUGIN_SOFACUDA=OFF -DPLUGIN_BEAMADAPTER_CUDA=OFF -DPLUGIN_SOFADISTANCEGRID_CUDA=OFF -DPLUGIN_SOFASPHFLUID_CUDA=OFF -DPLUGIN_SOFTROBOTS_CUDA=OFF" } }
@@ -216,7 +216,6 @@ configure = { cmd = [ "cmake",
   "-DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX",
   "-DCMAKE_BUILD_TYPE=$SOFA_BUILD_TYPE",
   "-DPLUGIN_SOFACUDA=$SOFA_PLUGIN_SOFACUDA",
-  "-DSOFACUDA_ENABLE_NATIVE_ARCHITECTURE=ON",
   "--preset",
   "full",
   "$SOFA_PLUGIN_PYTHON3_ARGS",

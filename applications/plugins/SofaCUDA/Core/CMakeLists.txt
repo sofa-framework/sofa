@@ -5,17 +5,11 @@ set(SOFACUDA_CORE_MAJOR_VERSION 0)
 set(SOFACUDA_CORE_MINOR_VERSION 1)
 set(SOFACUDA_CORE_VERSION ${SOFACUDA_CORE_MAJOR_VERSION}.${SOFACUDA_CORE_MINOR_VERSION})
 
-if(CMAKE_VERSION VERSION_GREATER_EQUAL "3.24.0") 
-    option(SOFACUDA_ENABLE_NATIVE_ARCHITECTURE "Set native as for CUDA_ARCHITECTURES (which will compile compatible architectures for the current system)")
-    if(SOFACUDA_ENABLE_NATIVE_ARCHITECTURE)
-        set(CMAKE_CUDA_ARCHITECTURES native)
-    endif()
-endif()
 
 # set 75 as fallback value
 if(NOT DEFINED CMAKE_CUDA_ARCHITECTURES)
-    message(NOTICE "CMAKE_CUDA_ARCHITECTURES is not set, it will be set by default to 75")
-    set(CMAKE_CUDA_ARCHITECTURES 75)
+    message(NOTICE "CMAKE_CUDA_ARCHITECTURES is not set, it will be set by default to native")
+    set(CMAKE_CUDA_ARCHITECTURES native)
 endif()
 
 set(SOFACUDA_CORE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
