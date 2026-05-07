@@ -41,14 +41,12 @@ BDFIntegrationScheme::BDFIntegrationScheme()
 
 void BDFIntegrationScheme::init()
 {
+    Inherit1::init();
     if (d_order.getValue() == 0)
     {
         msg_error()<<"Order cannot be null";
         d_componentState.setValue(core::objectmodel::ComponentState::Invalid);
-        return;
     }
-    for (unsigned i = 0; i < d_order.getValue() + 1; i++)
-        m_samples.push_back(- i * m_dt);
 }
 
 void BDFIntegrationScheme::doSetupIntegrationStep(const core::ExecParams* params, SReal dt,
@@ -57,8 +55,14 @@ void BDFIntegrationScheme::doSetupIntegrationStep(const core::ExecParams* params
 {
     Inherit1::doSetupIntegrationStep(params, dt, xResult, vResult);
 
-    m_samples.pop_back();
-    m_samples.push_front(m_dt);
+    if (m_samples.empty())
+    {
+        for (unsigned i = 0; i < d_order.getValue() + 1; i++)
+            m_samples.push_front(- i * m_dt);
+    }
+
+    m_samples.pop_front();
+    m_samples.push_back(m_samples.back() + m_dt);
 
     computeAFactors();
 }
@@ -73,29 +77,35 @@ SReal BDFIntegrationScheme::getInverseVelocityUpdateDerivedFromVelocity() const
     return m_aFactors[d_order.getValue()] / m_dt ;
 }
 
-//Compute the position update from current value of velocity : dX = g_x(v_i) - x_t
+//Compute the error made on the position integration equation : x_{t+h} - g_x(v), with v the current estimate of velocity
 void BDFIntegrationScheme::computeCurrentPositionIntegrationError(sofa::simulation::common::VectorOperations & vop, sofa::core::MultiVecDerivId& result,  const sofa::core::MultiVecCoordId& position, const sofa::core::MultiVecDerivId& velocity)
 {
 
     sofa::core::behavior::MultiVecDeriv res(&vop, result );
-    res.eq(velocity, m_dt / m_aFactors[d_order.getValue()]);
+    res.eq(velocity, - m_dt / m_aFactors[d_order.getValue()]);
     for (unsigned i = 0; i < d_order.getValue(); i++)
     {
         //TODO How does that work in practice ? Deriv += f * Coord
-        res.peq(m_x0[i], -m_aFactors[i]/m_aFactors[d_order.getValue()]);
+        res.peq(m_x0[i], m_aFactors[i]/m_aFactors[d_order.getValue()]);
     }
-    res.peq(m_x0[d_order.getValue()], -1);
+    res.peq(position);
 
 }
 //Compute the acceleration from current value of velocity. This is the implementation of the inverse integration scheme for the velocity
 void BDFIntegrationScheme::computeAccelerationFromVelocity(sofa::simulation::common::VectorOperations & vop, sofa::core::MultiVecDerivId& result, const sofa::core::MultiVecDerivId& velocity)
 {
+    //TODO using BDF also on acceleration is not stable : why ?
+    // sofa::core::behavior::MultiVecDeriv res(&vop, result );
+    // res.eq(velocity, m_aFactors[d_order.getValue()]/m_dt);
+    // for (unsigned i = 0; i < d_order.getValue(); i++)
+    // {
+    //     res.peq(m_v0[i], m_aFactors[i]/m_dt);
+    // }
+
     sofa::core::behavior::MultiVecDeriv res(&vop, result );
-    res.eq(velocity, m_aFactors[d_order.getValue()]/m_dt);
-    for (unsigned i = 0; i < d_order.getValue(); i++)
-    {
-        res.peq(m_v0[i], m_aFactors[i]/m_dt);
-    }
+    res.eq(velocity, 1/m_dt);
+    res.peq(m_v0[d_order.getValue() - 1], -1/m_dt);
+
 }
 
 
