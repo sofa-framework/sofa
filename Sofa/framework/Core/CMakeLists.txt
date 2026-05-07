@@ -24,6 +24,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/AccumulationVecId.inl
     ${SRC_ROOT}/BaseMatrixAccumulatorComponent.h
     ${SRC_ROOT}/BaseLocalMappingMatrix.h
+    ${SRC_ROOT}/BaseNodalProperty.h
     ${SRC_ROOT}/BaseMapping.h
     ${SRC_ROOT}/BaseState.h
     ${SRC_ROOT}/BehaviorModel.h
