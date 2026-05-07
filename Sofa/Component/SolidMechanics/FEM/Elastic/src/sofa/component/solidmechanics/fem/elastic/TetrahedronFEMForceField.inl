@@ -759,10 +759,6 @@ inline void TetrahedronFEMForceField<DataTypes>::computeRotationLarge( Transform
     // second vector in the plane of the two first edges
     // third vector orthogonal to first and second
 
-    // TODO : remove std::cout 
-    std::cout << " p size : " << p.size() << std::endl;
-    std::cout << " a : " << a << " b : " << b << " c : " << c << std::endl;
-    
     const Coord edgex = (p[b]-p[a]).normalized();
           Coord edgey = p[c]-p[a];
     const Coord edgez = cross( edgex, edgey ).normalized();

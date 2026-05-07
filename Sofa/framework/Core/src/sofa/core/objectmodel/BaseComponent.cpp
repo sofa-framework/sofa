@@ -178,13 +178,9 @@ void BaseComponent::setSrc(const std::string &valueString, const BaseComponent *
 Base* BaseComponent::findLinkDestClass(const BaseClass* destType, const std::string& path, const BaseLink* link)
 {
     if (this->getContext() == BaseContext::getDefault())
-    {
         return nullptr;
-    }
     else
-    {
         return this->getContext()->findLinkDestClass(destType, path, link);
-    }
 }
 
 

@@ -19,14 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/core/objectmodel/Snapshot.h>
 #include <sofa/core/objectmodel/BaseNode.h>
 #include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/core/behavior/BaseAnimationLoop.h>
 #include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/core/collision/Pipeline.h>
 #include <sofa/core/visual/VisualLoop.h>
-
+#include <sofa/core/objectmodel/Snapshot.h>
 
 namespace sofa::core::objectmodel
 {

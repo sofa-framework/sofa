@@ -22,7 +22,6 @@
 #define SOFA_CORE_OBJECTMODEL_BASE_CPP
 
 #include <sofa/core/objectmodel/Base.h>
-#include <sofa/core/objectmodel/Snapshot.h>
 #include <sofa/type/BoundingBox.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/core/ObjectFactory.h>
@@ -37,6 +36,8 @@ using sofa::helper::logging::Message ;
 
 #include <sofa/helper/DiffLib.h>
 using sofa::helper::getClosestMatch;
+
+#include <sofa/core/objectmodel/Snapshot.h>
 
 #include <map>
 #include <typeinfo>
@@ -782,21 +783,8 @@ void Base::loadDataSnapshot(const std::shared_ptr<Snapshot::SnapshotObject>& sna
     {
         if (const auto data = this->findData(dataInfo.name))
         {
-            // If dataInfo.value is a vector<string> like '["Value1", "Value2" ... "Value_i"]'
-            if (dataInfo.value[0] == '[' && dataInfo.value.back() == ']') {
-                std::string dataValueStr = dataInfo.value;
-                dataValueStr.erase(std::remove(dataValueStr.begin(), dataValueStr.end(), '['), dataValueStr.end());
-                dataValueStr.erase(std::remove(dataValueStr.begin(), dataValueStr.end(), ']'), dataValueStr.end());
-                dataValueStr.erase(std::remove(dataValueStr.begin(), dataValueStr.end(), '"'), dataValueStr.end());
-                dataValueStr.erase(std::remove(dataValueStr.begin(), dataValueStr.end(), ','), dataValueStr.end());
-                data->read(dataValueStr);
-            }
-            else {
-                if(data->read(dataInfo.value) == 0 )
-                    std::cout << "[" << this->getName() << "] " <<"read is false for " << dataInfo.name << " : " << dataInfo.value <<  std::endl;
-
-            }
-
+            if(data->read(dataInfo.value) == 0 )
+                msg_error() << "Failed to read " << dataInfo.name << " : " << dataInfo.value;
         }
     }
 }
@@ -804,32 +792,36 @@ void Base::loadDataSnapshot(const std::shared_ptr<Snapshot::SnapshotObject>& sna
 /// Load links from the snapshot to the scene
 void Base::loadLinkSnapshot(const std::shared_ptr<Snapshot::SnapshotObject>& snapshotObject) const
 {
+    std::vector<Base*> linksFromSnapshot;
+
     for (const auto& linkInfo : snapshotObject->m_linkContainer)
     {
         if (const auto link = this->findLink(linkInfo.name))
         {
-            // link->read(linkInfo.value);
 
-            // Idea : Compare links in the snapshot and in the simulation, and change/add targets to the link
             std::vector<std::string> newSublinks = helper::split(linkInfo.value, ' ');
             for (const auto& newSublink : newSublinks)
             {
                 auto obj = PathResolver::FindBaseFromPath(link->getOwner(), newSublink);
-                bool checkedPath = PathResolver::CheckPath(obj,link->getDestClass(),newSublink);
-                if (!checkedPath)
+                if ( obj != nullptr)
                 {
-                    link->add(obj, newSublink);
+                    linksFromSnapshot.push_back(obj);
                 }
             }
-
-            // How do I detect if a link is useless ?
-            // for (const auto& oldLink : )
-            // {
-            //     if (std::ranges::find(newSublinks,oldLink) == newSublinks.end())
-            //         link->removePath(oldLink);
-            // }
+            std::size_t i = 0;
+            for (const auto& linkFromSnapshot : linksFromSnapshot)
+            {
+                std::string linkName = linkFromSnapshot->getName();
+                Base* linkedBase = link->getLinkedBase(i);
+                if (linkedBase != linkFromSnapshot || linkedBase != nullptr)
+                    link->add(linkFromSnapshot,linkName);
+                else
+                    link->remove(linkedBase);
+                i+=1;
+            }
         }
     }
+
 }
 
 } // namespace sofa::core::objectmodel
