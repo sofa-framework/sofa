@@ -5,13 +5,15 @@
         <RequiredPlugin pluginName="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
         <RequiredPlugin pluginName="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
         <RequiredPlugin pluginName="Sofa.Component.LinearSolver.Direct"/> <!-- Needed to use components [SparseLDLSolver] -->
-        <RequiredPlugin pluginName="Sofa.Component.Mass"/> <!-- Needed to use components [MeshMatrixMass] -->
-        <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.FEM.Elastic"/>
+        <RequiredPlugin pluginName="Sofa.Component.Mass"/> <!-- Needed to use components [NodalMassDensity,PrismFEMMass] -->
+        <RequiredPlugin pluginName="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+        <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [PrismCorotationalFEMForceField] -->
         <RequiredPlugin pluginName="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
         <RequiredPlugin pluginName="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
         <RequiredPlugin pluginName="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->
         <RequiredPlugin pluginName="Sofa.Component.Topology.Mapping"/> <!-- Needed to use components [Hexa2PrismTopologicalMapping] -->
         <RequiredPlugin pluginName="Sofa.Component.Visual"/> <!-- Needed to use components [VisualMesh] -->
+        <RequiredPlugin pluginName="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglSceneFrame] -->
     </Node>
 
     <DefaultAnimationLoop/>
@@ -21,13 +23,11 @@
     <LineAxis size="0.1"/>
     <OglSceneFrame/>
 
-    <EulerImplicitSolver name="backward Euler" rayleighStiffness="0.1" rayleighMass="0.1" />
-    <SparseLDLSolver/>
+    <EulerImplicitSolver name="backward_Euler" rayleighStiffness="0.01" rayleighMass="0.01" />
+    <SparseLDLSolver template="CompressedRowSparseMatrixMat3x3d"/>
 
     <RegularGridTopology name="grid" min="-0.01 -0.01 0" max="0.01 0.01 0.2" n="5 5 30"/>
     <MechanicalObject template="Vec3" name="state" showObject="true"/>
-
-    <MeshMatrixMass massDensity="1100"/>
 
     <Node name="prisms">
         <MeshTopology name="prism_topology"/>
@@ -35,6 +35,9 @@
 
         <PrismCorotationalFEMForceField name="FEM" youngModulus="2e6" poissonRatio="0.45" topology="@prism_topology"
                                         rotationMethod="polar" computeForceStrategy="sequenced" computeForceDerivStrategy="sequenced"/>
+
+        <NodalMassDensity property="1100"/>
+        <PrismFEMMass/>
 
         <VisualMesh position="@../state.position" topology="@prism_topology" enable="true"/>
     </Node>
