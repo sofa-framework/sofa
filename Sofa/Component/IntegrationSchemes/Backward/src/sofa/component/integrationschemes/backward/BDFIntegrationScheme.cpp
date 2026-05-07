@@ -74,7 +74,7 @@ SReal BDFIntegrationScheme::getPositionUpdateDerivedFromVelocity() const
 
 SReal BDFIntegrationScheme::getInverseVelocityUpdateDerivedFromVelocity() const
 {
-    return m_aFactors[d_order.getValue()] / m_dt ;
+    return 1.0 / m_dt ;
 }
 
 //Compute the error made on the position integration equation : x_{t+h} - g_x(v), with v the current estimate of velocity
