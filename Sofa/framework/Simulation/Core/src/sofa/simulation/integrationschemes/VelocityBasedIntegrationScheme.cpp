@@ -48,7 +48,15 @@ void VelocityBasedIntegrationScheme::doSetupIntegrationStep(const core::ExecPara
     {
         simulation::common::VectorOperations::realloc(vop, m_x0[i], "x0" + (order != 1 ? "_" + std::to_string(i)  : ""), this);
         simulation::common::VectorOperations::realloc(vop, m_v0[i], "v0" + (order != 1 ? "_" + std::to_string(i)  : ""), this);
+        if (this->getTime() < std::numeric_limits<SReal>::epsilon())
+        {
+            sofa::core::behavior::MultiVecDeriv v0(&vop, m_v0[i]);
+            v0.eq(core::vec_id::write_access::velocity);
+            sofa::core::behavior::MultiVecCoord x0(&vop, m_x0[i]);
+            x0.eq(core::vec_id::write_access::position);
+        }
     }
+
     for (unsigned i = 0; i < order - 1; ++i)
     {
         sofa::core::behavior::MultiVecCoord x(&vop, m_x0[i]);
@@ -65,6 +73,7 @@ void VelocityBasedIntegrationScheme::doSetupIntegrationStep(const core::ExecPara
     v0.eq(core::vec_id::write_access::velocity);
     sofa::core::behavior::MultiVecCoord x0(&vop, m_x0[order - 1]);
     x0.eq(core::vec_id::write_access::position);
+
 }
 
 /**
@@ -79,11 +88,13 @@ void VelocityBasedIntegrationScheme::computeLHS(unsigned iteration)
     mop.cparams.setX(m_xResult);
     mop.cparams.setV(m_vResult);
 
+
+
     {
         SCOPED_TIMER("setSystemMBKMatrix");
         const core::MatricesFactors::M mFact( this->getInverseVelocityUpdateDerivedFromVelocity() + d_rayleighMass.getValue() );
-        const core::MatricesFactors::B bFact( 1.0 );
-        const core::MatricesFactors::K kFact( this->getPositionUpdateDerivedFromVelocity() - d_rayleighStiffness.getValue() );
+        const core::MatricesFactors::B bFact( - 1.0 );
+        const core::MatricesFactors::K kFact( - this->getPositionUpdateDerivedFromVelocity() - d_rayleighStiffness.getValue() );
 
         mop.setSystemMBKMatrix(mFact, bFact, kFact, l_linearSolver.get());
 
@@ -127,12 +138,12 @@ void VelocityBasedIntegrationScheme::computeRHS(unsigned iteration)
 
     {
         SCOPED_TIMER("ComputeRHTerm");
-        b.eq(f, 1.0);  // b = f
+        b.eq(f);  // b = f
 
         auto backV = mop->v();
 
         if (   fabs(d_rayleighMass.getValue()) > std::numeric_limits<SReal>::epsilon()
-            || fabs(d_rayleighMass.getValue()) > std::numeric_limits<SReal>::epsilon())
+            || fabs(d_rayleighStiffness.getValue()) > std::numeric_limits<SReal>::epsilon())
         {
             mop->setV(m_vResult);
 
@@ -185,6 +196,10 @@ SReal VelocityBasedIntegrationScheme::squaredNormRHS()
 void VelocityBasedIntegrationScheme::solveLinearEquation()
 {
     SCOPED_TIMER("MBKSolve");
+    sofa::simulation::common::VectorOperations vop( m_params, this->getContext() );
+
+    sofa::core::behavior::MultiVecDeriv x(&vop, m_unknown );
+    x.clear();
 
     l_linearSolver->getLinearSystem()->setSystemSolution(m_unknown);
     l_linearSolver->getLinearSystem()->setRHS(m_r0);
@@ -213,6 +228,7 @@ void VelocityBasedIntegrationScheme::updateVelocityAndPositionFromLinearSolution
     }
 
     vel.peq(m_unknown, alpha);
+
 }
 
 
