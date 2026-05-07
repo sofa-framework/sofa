@@ -51,6 +51,15 @@ void AccelerationBasedIntegrationScheme::doSetupIntegrationStep(const core::Exec
         simulation::common::VectorOperations::realloc(vop, m_x0[i], "x0" + (order != 1 ? "_" + std::to_string(i)  : ""), this);
         simulation::common::VectorOperations::realloc(vop, m_v0[i], "v0" + (order != 1 ? "_" + std::to_string(i)  : ""), this);
         simulation::common::VectorOperations::realloc(vop, m_a0[i], "a0" + (order != 1 ? "_" + std::to_string(i)  : ""), this, true);
+        if (this->getTime() < std::numeric_limits<SReal>::epsilon())
+        {
+            sofa::core::behavior::MultiVecDeriv v0(&vop, m_v0[i]);
+            v0.eq(core::vec_id::write_access::velocity);
+            sofa::core::behavior::MultiVecCoord x0(&vop, m_x0[i]);
+            x0.eq(core::vec_id::write_access::position);
+            sofa::core::behavior::MultiVecDeriv a0(&vop, m_a0[i]);
+            a0.clear();
+        }
     }
     for (unsigned i = 0; i < order - 1; ++i)
     {
