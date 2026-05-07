@@ -248,7 +248,7 @@ public:
 {                                                                   \
     return ::sofa::core::objectmodel::BaseLink::InitLink<MyType>    \
     (this, n, help);                                             \
-}\
+}
 
 // Do not use this macro directly, use SOFA_CLASS instead
 #define SOFA_CLASS_DECL                                        \
