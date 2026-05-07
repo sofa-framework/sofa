@@ -22,8 +22,9 @@
 #pragma once
 #include <sofa/core/config.h>
 
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/linearalgebra/BaseMatrix.h>
+#include <sofa/core/MultiVecId.h>
 
 namespace sofa::core::behavior
 {
@@ -32,26 +33,46 @@ namespace sofa::core::behavior
  * Base class for components storing and assembling a linear system represented as a matrix.
  * The matrix data structure is defined in derived classes.
  */
-class SOFA_CORE_API BaseMatrixLinearSystem : public virtual core::objectmodel::BaseObject
+class SOFA_CORE_API BaseMatrixLinearSystem : public virtual core::objectmodel::BaseComponent
 {
 public:
-    SOFA_ABSTRACT_CLASS(BaseMatrixLinearSystem, core::objectmodel::BaseObject);
+    SOFA_ABSTRACT_CLASS(BaseMatrixLinearSystem, core::objectmodel::BaseComponent);
 
 protected:
     BaseMatrixLinearSystem();
 
+public:
+
     /// Size of the linear system
     Data< sofa::type::Vec2u > d_matrixSize;
 
-public:
+    Data< bool > d_enableAssembly;
 
-    /// Returns the system matrix as a linearalgebra::BaseMatrix*
+    /// Returns the system matrix as a sofa::linearalgebra::BaseMatrix*
     virtual linearalgebra::BaseMatrix* getSystemBaseMatrix() const { return nullptr; }
 
+    virtual linearalgebra::BaseVector* getSystemRHSBaseVector() const { return nullptr; }
+    virtual linearalgebra::BaseVector* getSystemSolutionBaseVector() const { return nullptr; }
+
     /// Construct and assemble the linear system matrix
-    void buildSystemMatrix(const core::MechanicalParams* mparams);
+    virtual void buildSystemMatrix(const core::MechanicalParams* mparams);
 
     sofa::type::Vec2u getMatrixSize() const { return d_matrixSize.getValue(); }
+
+    /// Set the size of the matrix to n x n, and the size of RHS and solution to n
+    virtual void resizeSystem(sofa::Size n) = 0;
+
+    virtual void clearSystem() = 0;
+
+    /// Assemble the right-hand side of the linear system from the values contained in the (Mechanical/Physical)State objects
+    virtual void setRHS(core::MultiVecDerivId v) = 0;
+
+    /// Set the initial estimate of the linear system solution vector, from the values contained in the (Mechanical/Physical)State objects
+    /// This vector will be replaced by the solution of the system once the system is solved
+    virtual void setSystemSolution(core::MultiVecDerivId v) = 0;
+
+    virtual void dispatchSystemSolution(core::MultiVecDerivId v) = 0;
+    virtual void dispatchSystemRHS(core::MultiVecDerivId v) = 0;
 
 protected:
     virtual void preAssembleSystem(const core::MechanicalParams* /*mparams*/);

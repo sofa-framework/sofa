@@ -27,10 +27,13 @@
 #include <cassert>
 #include <iostream>
 
-
-
 namespace sofa::type
 {
+
+/// The number of independent elements in a symmetric 2nd-order tensor of size (N x N)
+template<sofa::Size N>
+constexpr sofa::Size NumberOfIndependentElements = N * (N + 1) / 2;
+
 
 /**
  * Dense symmetric matrix of size DxD storing only D*(D+1)/2 values
@@ -38,13 +41,33 @@ namespace sofa::type
  * \tparam real Type of scalar
  */
 template <sofa::Size D, class real = SReal>
-class MatSym : public VecNoInit<D * (D + 1) / 2, real>
+class MatSym : public VecNoInit<NumberOfIndependentElements<D>, real>
 {
 public:
-
+    static constexpr sofa::Size N = D * D;
     typedef real Real;
     typedef Vec<D,Real> Coord;
-    static constexpr auto NumberStoredValues = D * (D + 1) / 2;
+    typedef sofa::Size Size;
+
+    static constexpr Size nbLines = D;
+    static constexpr Size nbCols  = D;
+
+
+    static constexpr auto NumberStoredValues = NumberOfIndependentElements<D>;
+
+    // Voigt ordering map for symmetric 2D/3D tensors
+    // The order used in SOFA is non-standard: [xx, xy, yy, xz, yz, zz]
+    static constexpr fixed_array<sofa::Index, 3*3> toVoigt = {0, 1, 3, 1, 2, 4, 3, 4, 5};
+    static constexpr sofa::Index voigtID(sofa::Index i, sofa::Index j = 0) {return toVoigt[i * 3 + j];}
+    static constexpr fixed_array<std::tuple<sofa::Index, sofa::Index>, 6> fromVoigt =
+    {
+        std::make_tuple(0,0),
+        std::make_tuple(0,1),
+        std::make_tuple(1,1),
+        std::make_tuple(0,2),
+        std::make_tuple(1,2),
+        std::make_tuple(2,2)
+    };
 
     constexpr MatSym() noexcept
     {
@@ -144,6 +167,46 @@ public:
         }
     }
 
+    Mat<D, D, real> toMat() const
+    {
+        Mat<D, D, real> M(NOINIT);
+        for (sofa::Size j = 0; j < D; j++)
+        {
+            for (sofa::Size i = 0; i < j; i++)
+            {
+                M(i, j) = M(j, i) = this->operator()(i, j);
+            }
+            M(j, j) = this->operator()(j, j);
+        }
+        return M;
+    }
+
+    template<Size D2>
+    constexpr void getsub(Size a, MatSym<D2, real>& m) const requires (D2 <= D)
+    {
+        assert(a + D2 <= D);
+        for (sofa::Size i = 0; i < D2; i++)
+        {
+            for (sofa::Size j = i; j < D2; j++)
+            {
+                m(i, j) = this->operator()(i + a, j + a);
+            }
+        }
+    }
+
+    template<Size L2, Size C2>
+    constexpr void getsub(Size L0, Size C0, Mat<L2, C2, real>& m) const requires (L2 <= D && C2 <= D)
+    {
+        assert(L0 + L2 <= D && C0 + C2 <= D);
+        for (Size i = 0; i < L2; i++)
+        {
+            for (Size j = 0; j < C2; j++)
+            {
+                m(i, j) = this->operator()(i + L0, j + C0);
+            }
+        }
+    }
+
     /// convert to Voigt notation (supported only for D == 2 and D == 3)
     template<sofa::Size TD = D, typename = std::enable_if_t<TD == 3 || TD == 2> >
     inline Vec<NumberStoredValues, real> getVoigt() const
@@ -236,13 +299,14 @@ public:
     }
 
     //Multiplication by a non symmetric matrix on the right
-    [[nodiscard]] Mat<D,D,real> SymMatMultiply(const Mat<D,D,real>& m) const
+    template<sofa::Size C>
+    [[nodiscard]] Mat<D,C,real> SymMatMultiply(const Mat<D,C,real>& m) const
     {
-        Mat<D,D,real> r(NOINIT);
+        Mat<D,C,real> r(NOINIT);
 
         for (sofa::Size i = 0; i < D; i++)
         {
-            for (sofa::Size j = 0; j < D; j++)
+            for (sofa::Size j = 0; j < C; j++)
             {
                 r(i,j) = (*this)(i, 0) * m(0,j);
                 for (sofa::Size k = 1; k < D; k++)
@@ -254,17 +318,19 @@ public:
         return r;
     }
 
-    Mat<D,D,real> operator*(const Mat<D,D,real>& m) const
+    template<sofa::Size C>
+    Mat<D,C,real> operator*(const Mat<D,C,real>& m) const
     {
         return SymMatMultiply(m);
     }
 
     //Multiplication by a non symmetric matrix on the left
-    Mat<D, D, real> MatSymMultiply(const Mat<D, D, real>& m) const
+    template<sofa::Size L>
+    Mat<L, D, real> MatSymMultiply(const Mat<L, D, real>& m) const
     {
-        Mat<D, D, real> r(NOINIT);
+        Mat<L, D, real> r(NOINIT);
 
-        for (sofa::Size i = 0; i < D; i++)
+        for (sofa::Size i = 0; i < L; i++)
         {
             for (sofa::Size j = 0; j < D; j++)
             {
@@ -415,8 +481,8 @@ public:
     }
 };
 
-template <sofa::Size D, class real>
-Mat<D, D, real> operator*(const Mat<D, D, real>& a, const MatSym<D, real>& b)
+template <sofa::Size L, sofa::Size D, class real>
+Mat<L, D, real> operator*(const Mat<L, D, real>& a, const MatSym<D, real>& b)
 {
     return b.MatSymMultiply(a);
 }
@@ -581,14 +647,15 @@ bool invertMatrix(MatSym<2,real>& dest, const MatSym<2,real>& from)
 template<sofa::Size D,class real>
 std::ostream& operator<<(std::ostream& o, const MatSym<D,real>& m)
 {
-    o << '[' ;
+    o << '[';
     for(sofa::Size i=0; i<D; i++)
     {
         for(sofa::Size j=0; j<D; j++)
         {
-            o<<" "<<m(i,j);
+            o << " " << m(i, j);
         }
-        o<<" ,";
+        if (i != D-1)
+            o<<" ,";
     }
     o << ']';
     return o;

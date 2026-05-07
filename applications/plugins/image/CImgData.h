@@ -571,7 +571,7 @@ public:
 };
 
 template<class TDataType>
-struct ImageTypeInfo : public BaseImageTypeInfo
+struct  ImageTypeInfo : public BaseImageTypeInfo
 {
     typedef TDataType DataType;
     typedef typename DataType::T BaseType;

@@ -26,6 +26,9 @@
 namespace sofa::type
 {
 
+template class SOFA_TYPE_API Mat<1,1,float>;
+template class SOFA_TYPE_API Mat<1,1,double>;
+
 template class SOFA_TYPE_API Mat<2,2,float>;
 template class SOFA_TYPE_API Mat<2,2,double>;
 

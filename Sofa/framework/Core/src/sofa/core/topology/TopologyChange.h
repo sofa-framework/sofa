@@ -197,6 +197,8 @@ std::ostream& operator << (std::ostream& out, const ElemAncestorElem<NV>& d)
 template<int NV>
 std::istream& operator >> (std::istream& in, ElemAncestorElem<NV>& d)
 {
+    SOFA_UNUSED(d);
+    
     return in;
 }
 

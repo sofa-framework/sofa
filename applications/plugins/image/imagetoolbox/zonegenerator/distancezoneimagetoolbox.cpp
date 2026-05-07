@@ -15,23 +15,26 @@ namespace component
 namespace engine
 {
 
-int DistanceZoneImageToolBox_Class = core::RegisterObject("DistanceZoneImageToolBox")
-        .add<DistanceZoneImageToolBox<ImageUC> >()
-        .add<DistanceZoneImageToolBox<ImageD> >(true)
+void registerDistanceZoneImageToolBox(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("DistanceZoneImageToolBox")
+    .add<DistanceZoneImageToolBox<ImageUC> >()
+    .add<DistanceZoneImageToolBox<ImageD> >(true)
 #if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
-        .add<DistanceZoneImageToolBox<ImageC> >()
-        .add<DistanceZoneImageToolBox<ImageI> >()
-        .add<DistanceZoneImageToolBox<ImageUI> >()
-        .add<DistanceZoneImageToolBox<ImageS> >()
-        .add<DistanceZoneImageToolBox<ImageUS> >()
-        .add<DistanceZoneImageToolBox<ImageL> >()
-        .add<DistanceZoneImageToolBox<ImageUL> >()
-        .add<DistanceZoneImageToolBox<ImageF> >()
-        .add<DistanceZoneImageToolBox<ImageB> >()
+    .add<DistanceZoneImageToolBox<ImageC> >()
+    .add<DistanceZoneImageToolBox<ImageI> >()
+    .add<DistanceZoneImageToolBox<ImageUI> >()
+    .add<DistanceZoneImageToolBox<ImageS> >()
+    .add<DistanceZoneImageToolBox<ImageUS> >()
+    .add<DistanceZoneImageToolBox<ImageL> >()
+    .add<DistanceZoneImageToolBox<ImageUL> >()
+    .add<DistanceZoneImageToolBox<ImageF> >()
+    .add<DistanceZoneImageToolBox<ImageB> >()
 #endif
-        .addLicense("LGPL")
-        .addAuthor("Vincent Majorczyk");
-
+    .addLicense("LGPL")
+    .addAuthor("Vincent Majorczyk")
+    );
+}
 
 
 

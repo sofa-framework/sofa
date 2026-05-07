@@ -37,21 +37,24 @@ namespace misc
 
 using namespace defaulttype;
 
-int ImageExporterClass = core::RegisterObject("Save an image")
-        .add<ImageExporter<ImageUC> >(true)
-        .add<ImageExporter<ImageD> >()
-        .add<ImageExporter<ImageB> >()
+void registerImageExporter(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Save an image")
+    .add<ImageExporter<ImageUC> >(true)
+    .add<ImageExporter<ImageD> >()
+    .add<ImageExporter<ImageB> >()
 #if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
-        .add<ImageExporter<ImageC> >()
-        .add<ImageExporter<ImageI> >()
-        .add<ImageExporter<ImageUI> >()
-        .add<ImageExporter<ImageS> >()
-        .add<ImageExporter<ImageUS> >()
-        .add<ImageExporter<ImageL> >()
-        .add<ImageExporter<ImageUL> >()
-        .add<ImageExporter<ImageF> >()
+    .add<ImageExporter<ImageC> >()
+    .add<ImageExporter<ImageI> >()
+    .add<ImageExporter<ImageUI> >()
+    .add<ImageExporter<ImageS> >()
+    .add<ImageExporter<ImageUS> >()
+    .add<ImageExporter<ImageL> >()
+    .add<ImageExporter<ImageUL> >()
+    .add<ImageExporter<ImageF> >()
 #endif
-        ;
+    );
+}
 
 template class SOFA_IMAGE_API ImageExporter<ImageUC>;
 template class SOFA_IMAGE_API ImageExporter<ImageD>;

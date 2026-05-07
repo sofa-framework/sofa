@@ -107,6 +107,7 @@ public:
     void setSystemRHVector(core::MultiVecDerivId v, core::behavior::LinearSolver* linearSolver);
     void setSystemLHVector(core::MultiVecDerivId v, core::behavior::LinearSolver* linearSolver);
     void solveSystem(core::behavior::LinearSolver* linearSolver);
+    void solveSystem(core::behavior::LinearSolver* linearSolver, core::MultiVecDerivId v);
     void print( std::ostream& out, core::behavior::LinearSolver* linearSolver);
     /// @}
 
@@ -142,14 +143,6 @@ public:
     void printWithElapsedTime( core::ConstMultiVecId v,  unsigned time, std::ostream& out=std::cerr );
 
     /// @}
-
-
-    SOFA_ATTRIBUTE_DISABLED_MECHANICALOPERATIONS_ADDMBKDX()
-    void addMBKdx(core::MultiVecDerivId df, SReal m, SReal b, SReal k, bool clear = true, bool accumulate = true) = delete;
-    SOFA_ATTRIBUTE_DISABLED_MECHANICALOPERATIONS_ADDMBKV()
-    void addMBKv(core::MultiVecDerivId df, SReal m, SReal b, SReal k, bool clear = true, bool accumulate = true) = delete;
-    SOFA_ATTRIBUTE_DISABLED_MECHANICALOPERATIONS_SETSYSTEMMBKMATRIX_OTHER()
-    void setSystemMBKMatrix(SReal mFact, SReal bFact, SReal kFact, core::behavior::LinearSolver* linearSolver) = delete;
 
 protected:
     VisitorExecuteFunc executeVisitor;

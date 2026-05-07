@@ -24,12 +24,12 @@
 #include <SofaDistanceGrid/config.h>
 
 #include <sofa/core/collision/Intersection.h>
-#include <sofa/component/collision/geometry/SphereModel.h>
-#include <sofa/component/collision/geometry/PointModel.h>
-#include <sofa/component/collision/geometry/LineModel.h>
-#include <sofa/component/collision/geometry/TriangleModel.h>
-#include <sofa/component/collision/geometry/CubeModel.h>
-#include <sofa/component/collision/geometry/RayModel.h>
+#include <sofa/component/collision/geometry/SphereCollisionModel.h>
+#include <sofa/component/collision/geometry/PointCollisionModel.h>
+#include <sofa/component/collision/geometry/LineCollisionModel.h>
+#include <sofa/component/collision/geometry/TriangleCollisionModel.h>
+#include <sofa/component/collision/geometry/CubeCollisionModel.h>
+#include <sofa/component/collision/geometry/RayCollisionModel.h>
 #include <sofa/component/collision/detection/intersection/DiscreteIntersection.h>
 
 #include <SofaDistanceGrid/components/collision/DistanceGridCollisionModel.h>

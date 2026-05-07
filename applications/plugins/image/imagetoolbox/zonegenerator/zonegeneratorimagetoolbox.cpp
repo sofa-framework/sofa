@@ -15,22 +15,27 @@ namespace component
 namespace engine
 {
 
-int ZoneGeneratorImageToolBox_Class = core::RegisterObject("ZoneGeneratorImageToolBox")
-        .add<ZoneGeneratorImageToolBox<ImageUC> >()
-        .add<ZoneGeneratorImageToolBox<ImageD> >(true)
+void registerZoneGeneratorImageToolBox(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("ZoneGeneratorImageToolBox")
+    .add<ZoneGeneratorImageToolBox<ImageUC> >()
+    .add<ZoneGeneratorImageToolBox<ImageD> >(true)
 #if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
-        .add<ZoneGeneratorImageToolBox<ImageC> >()
-        .add<ZoneGeneratorImageToolBox<ImageI> >()
-        .add<ZoneGeneratorImageToolBox<ImageUI> >()
-        .add<ZoneGeneratorImageToolBox<ImageS> >()
-        .add<ZoneGeneratorImageToolBox<ImageUS> >()
-        .add<ZoneGeneratorImageToolBox<ImageL> >()
-        .add<ZoneGeneratorImageToolBox<ImageUL> >()
-        .add<ZoneGeneratorImageToolBox<ImageF> >()
-        .add<ZoneGeneratorImageToolBox<ImageB> >()
+    .add<ZoneGeneratorImageToolBox<ImageC> >()
+    .add<ZoneGeneratorImageToolBox<ImageI> >()
+    .add<ZoneGeneratorImageToolBox<ImageUI> >()
+    .add<ZoneGeneratorImageToolBox<ImageS> >()
+    .add<ZoneGeneratorImageToolBox<ImageUS> >()
+    .add<ZoneGeneratorImageToolBox<ImageL> >()
+    .add<ZoneGeneratorImageToolBox<ImageUL> >()
+    .add<ZoneGeneratorImageToolBox<ImageF> >()
+    .add<ZoneGeneratorImageToolBox<ImageB> >()
 #endif
-        .addLicense("LGPL")
-        .addAuthor("Vincent Majorczyk");
+    .addLicense("LGPL")
+    .addAuthor("Vincent Majorczyk")
+    );
+}
+
 
 template<>
 double ZoneGeneratorImageToolBox<ImageD>::color(int index,int max)

@@ -99,7 +99,7 @@ std::string Capture::findFilename()
     do
     {
         ++c;
-        sprintf(buf, "%08d",c);
+        snprintf(buf, sizeof(buf), "%08d",c);
         filename = prefix;
         filename += buf;
         if(pngSupport)
@@ -110,7 +110,7 @@ std::string Capture::findFilename()
     while (stat(filename.c_str(),&st)==0);
     counter = c+1;
 
-    sprintf(buf, "%08d",c);
+    snprintf(buf, sizeof(buf), "%08d",c);
     filename = prefix;
     filename += buf;
     if(pngSupport)

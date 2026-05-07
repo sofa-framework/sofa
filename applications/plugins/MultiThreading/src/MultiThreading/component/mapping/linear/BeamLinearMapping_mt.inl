@@ -25,8 +25,8 @@
 
 #include <MultiThreading/component/mapping/linear/BeamLinearMapping_tasks.inl>
 
-#include <sofa/simulation/TaskScheduler.h>
-#include <sofa/simulation/MainTaskSchedulerFactory.h>
+#include <sofa/simulation/task/TaskScheduler.h>
+#include <sofa/simulation/task/MainTaskSchedulerFactory.h>
 
 namespace multithreading::component::mapping::linear
 {

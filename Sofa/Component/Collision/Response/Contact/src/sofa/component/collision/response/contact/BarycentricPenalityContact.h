@@ -31,7 +31,7 @@
 #include <sofa/component/collision/response/mapper/BarycentricContactMapper.h>
 #include <sofa/component/collision/response/mapper/IdentityContactMapper.h>
 
-#include <sofa/component/collision/geometry/CylinderModel.h>
+#include <sofa/component/collision/geometry/CylinderCollisionModel.h>
 
 
 namespace sofa::component::collision::response::contact

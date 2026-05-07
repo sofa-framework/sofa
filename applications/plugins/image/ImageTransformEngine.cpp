@@ -35,9 +35,11 @@ namespace engine
 
 using namespace defaulttype;
 
-int ImageTransformEngineClass = core::RegisterObject("Apply a transform to the data 'transform'")
-        .add<ImageTransformEngine>(true)
-        ;
+void registerImageTransformEngine(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Apply a transform to the data 'transform")
+    .add<ImageTransformEngine>(true));
+}
 
 } //
 } // namespace component

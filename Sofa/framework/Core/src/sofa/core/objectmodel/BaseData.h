@@ -194,6 +194,7 @@ public:
 
     /// If we use the Data as a link and not as value directly
     virtual std::string getLinkPath() const;
+    std::string getPathName()const;
 
     /// Return whether this %Data can be used as a linkPath.
     ///
@@ -290,15 +291,15 @@ public:
     template<class T>
     static std::string typeName()
     {
-        if (defaulttype::DataTypeInfo<T>::ValidInfo)
+        if constexpr (defaulttype::DataTypeInfo<T>::ValidInfo)
         {
             return defaulttype::DataTypeName<T>::name();
         }
-        return decodeTypeName(typeid(T));
+        else
+        {
+            return decodeTypeName(typeid(T));
+        }
     }
-
-    template<class T>
-    SOFA_ATTRIBUTE_DISABLED__UNNECESSARY_PARAMETER_IN_TYPENAME() static std::string typeName(const T*) = delete;
 
 protected:
     /// Try to update this Data from the value of its parent in "fast mode";

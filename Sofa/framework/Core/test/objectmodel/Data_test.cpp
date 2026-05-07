@@ -51,7 +51,7 @@ public:
 
     Data<sofa::topology::Element<sofa::geometry::Edge> > dataEdge;
     Data<sofa::topology::Element<sofa::geometry::Hexahedron> > dataHexahedron;
-    Data<sofa::topology::Element<sofa::geometry::Pentahedron> > dataPentahedron;
+    Data<sofa::topology::Element<sofa::geometry::Prism> > dataPrism;
     Data<sofa::topology::Element<sofa::geometry::Point> > dataPoint;
     Data<sofa::topology::Element<sofa::geometry::Pyramid> > dataPyramid;
     Data<sofa::topology::Element<sofa::geometry::Quad> > dataQuad;
@@ -60,7 +60,7 @@ public:
 
     Data<sofa::type::vector<sofa::topology::Element<sofa::geometry::Edge> > > dataVecEdge;
     Data<sofa::type::vector<sofa::topology::Element<sofa::geometry::Hexahedron> > > dataVecHexahedron;
-    Data<sofa::type::vector<sofa::topology::Element<sofa::geometry::Pentahedron> > > dataVecPentahedron;
+    Data<sofa::type::vector<sofa::topology::Element<sofa::geometry::Prism> > > dataVecPrism;
     Data<sofa::type::vector<sofa::topology::Element<sofa::geometry::Point> > > dataVecPoint;
     Data<sofa::type::vector<sofa::topology::Element<sofa::geometry::Pyramid> > > dataVecPyramid;
     Data<sofa::type::vector<sofa::topology::Element<sofa::geometry::Quad> > > dataVecQuad;
@@ -74,7 +74,7 @@ TEST_F(Data_test, validInfo)
 {
     EXPECT_TRUE(defaulttype::DataTypeInfo<sofa::topology::Element<sofa::geometry::Edge> >::ValidInfo);
     EXPECT_TRUE(defaulttype::DataTypeInfo<sofa::topology::Element<sofa::geometry::Hexahedron> >::ValidInfo);
-    EXPECT_TRUE(defaulttype::DataTypeInfo<sofa::topology::Element<sofa::geometry::Pentahedron> >::ValidInfo);
+    EXPECT_TRUE(defaulttype::DataTypeInfo<sofa::topology::Element<sofa::geometry::Prism> >::ValidInfo);
     // EXPECT_TRUE(defaulttype::DataTypeInfo<sofa::topology::Element<sofa::geometry::Point> >::ValidInfo);
     EXPECT_TRUE(defaulttype::DataTypeInfo<sofa::topology::Element<sofa::geometry::Pyramid> >::ValidInfo);
     EXPECT_TRUE(defaulttype::DataTypeInfo<sofa::topology::Element<sofa::geometry::Quad> >::ValidInfo);
@@ -91,7 +91,7 @@ TEST_F(Data_test, dataTypeName)
 {
     EXPECT_EQ(std::string{sofa::geometry::ElementInfo<sofa::geometry::Edge>::name()}, "Edge");
     EXPECT_EQ(std::string{sofa::geometry::ElementInfo<sofa::geometry::Hexahedron>::name()}, "Hexahedron");
-    EXPECT_EQ(std::string{sofa::geometry::ElementInfo<sofa::geometry::Pentahedron>::name()}, "Pentahedron");
+    EXPECT_EQ(std::string{sofa::geometry::ElementInfo<sofa::geometry::Prism>::name()}, "Prism");
     // EXPECT_EQ(std::string{sofa::geometry::ElementInfo<sofa::geometry::Point>::name()}, "Point");
     EXPECT_EQ(std::string{sofa::geometry::ElementInfo<sofa::geometry::Pyramid>::name()}, "Pyramid");
     EXPECT_EQ(std::string{sofa::geometry::ElementInfo<sofa::geometry::Quad>::name()}, "Quad");
@@ -101,7 +101,7 @@ TEST_F(Data_test, dataTypeName)
 
     EXPECT_EQ(defaulttype::DataTypeName<sofa::topology::Element<sofa::geometry::Edge> >::name(), "Edge");
     EXPECT_EQ(defaulttype::DataTypeName<sofa::topology::Element<sofa::geometry::Hexahedron> >::name(), "Hexahedron");
-    EXPECT_EQ(defaulttype::DataTypeName<sofa::topology::Element<sofa::geometry::Pentahedron> >::name(), "Pentahedron");
+    EXPECT_EQ(defaulttype::DataTypeName<sofa::topology::Element<sofa::geometry::Prism> >::name(), "Prism");
     // EXPECT_EQ(defaulttype::DataTypeName<sofa::topology::Element<sofa::geometry::Point> >::name(), "Point");
     EXPECT_EQ(defaulttype::DataTypeName<sofa::topology::Element<sofa::geometry::Pyramid> >::name(), "Pyramid");
     EXPECT_EQ(defaulttype::DataTypeName<sofa::topology::Element<sofa::geometry::Quad> >::name(), "Quad");
@@ -135,7 +135,7 @@ TEST_F(Data_test, getValueTypeString)
 
     EXPECT_EQ(dataEdge.getValueTypeString(), "Edge");
     EXPECT_EQ(dataHexahedron.getValueTypeString(), "Hexahedron");
-    EXPECT_EQ(dataPentahedron.getValueTypeString(), "Pentahedron");
+    EXPECT_EQ(dataPrism.getValueTypeString(), "Prism");
     // EXPECT_EQ(dataPoint.getValueTypeString(), "Point");
     EXPECT_EQ(dataPyramid.getValueTypeString(), "Pyramid");
     EXPECT_EQ(dataQuad.getValueTypeString(), "Quad");
@@ -144,7 +144,7 @@ TEST_F(Data_test, getValueTypeString)
 
     EXPECT_EQ(dataVecEdge.getValueTypeString(), "vector<Edge>");
     EXPECT_EQ(dataVecHexahedron.getValueTypeString(), "vector<Hexahedron>");
-    EXPECT_EQ(dataVecPentahedron.getValueTypeString(), "vector<Pentahedron>");
+    EXPECT_EQ(dataVecPrism.getValueTypeString(), "vector<Prism>");
     // EXPECT_EQ(dataVecPoint.getValueTypeString(), "vector<Point>");
     EXPECT_EQ(dataVecPyramid.getValueTypeString(), "vector<Pyramid>");
     EXPECT_EQ(dataVecQuad.getValueTypeString(), "vector<Quad>");
@@ -179,7 +179,7 @@ TEST_F(Data_test, getNameWithValueTypeInfo)
 
     EXPECT_EQ(dataEdge.getValueTypeInfo()->name(), "Edge");
     EXPECT_EQ(dataHexahedron.getValueTypeInfo()->name(), "Hexahedron");
-    EXPECT_EQ(dataPentahedron.getValueTypeInfo()->name(), "Pentahedron");
+    EXPECT_EQ(dataPrism.getValueTypeInfo()->name(), "Prism");
     // EXPECT_EQ(dataPoint.getValueTypeInfo()->name(), "Point");
     EXPECT_EQ(dataPyramid.getValueTypeInfo()->name(), "Pyramid");
     EXPECT_EQ(dataQuad.getValueTypeInfo()->name(), "Quad");
@@ -188,7 +188,7 @@ TEST_F(Data_test, getNameWithValueTypeInfo)
 
     EXPECT_EQ(dataVecEdge.getValueTypeInfo()->name(), "vector<Edge>");
     EXPECT_EQ(dataVecHexahedron.getValueTypeInfo()->name(), "vector<Hexahedron>");
-    EXPECT_EQ(dataVecPentahedron.getValueTypeInfo()->name(), "vector<Pentahedron>");
+    EXPECT_EQ(dataVecPrism.getValueTypeInfo()->name(), "vector<Prism>");
     // EXPECT_EQ(dataVecPoint.getValueTypeInfo()->name(), "vector<Point>");
     EXPECT_EQ(dataVecPyramid.getValueTypeInfo()->name(), "vector<Pyramid>");
     EXPECT_EQ(dataVecQuad.getValueTypeInfo()->name(), "vector<Quad>");

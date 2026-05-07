@@ -3,17 +3,17 @@
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU General Public License as published by the Free  *
-* Software Foundation; either version 2 of the License, or (at your option)   *
-* any later version.                                                          *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
 *                                                                             *
 * This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    *
-* more details.                                                               *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
 *                                                                             *
-* You should have received a copy of the GNU General Public License along     *
-* with this program. If not, see <http://www.gnu.org/licenses/>.              *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
@@ -31,7 +31,7 @@
 
 #include <sofa/core/ComponentNameHelper.h>
 #include <sofa/helper/system/FileSystem.h>
-
+#include <sofa/type/hardening.h>
 
 namespace sofa::gui::common
 {
@@ -257,25 +257,27 @@ bool BaseViewer::load()
                 }
                 else if(paramName == std::string("VisualScaling"))
                 {
-                    const float floatValue = std::stof(line.substr(equalPos+1)) ;
-                    m_visualScaling = floatValue;
+                    if(!sofa::type::hardening::safeStrToScalar(line.substr(equalPos+1), m_visualScaling))
+                    {
+                        msg_warning("BaseViewer") << "Invalid VisualScaling value in config file";
+                    }
                 }
             }
         }
     }
 
+    currentSelection.clear();
 
     if (groot)
     {
-        groot->get(currentCamera);
+        groot->get(currentCamera, core::objectmodel::BaseContext::SearchDown);
         if (!currentCamera)
         {
             currentCamera = sofa::core::objectmodel::New<sofa::component::visual::InteractiveCamera>();
             currentCamera->setName(groot->getNameHelper().resolveName(currentCamera->getClassName(), sofa::core::ComponentNameHelper::Convention::python));
             groot->addObject(currentCamera);
-            //currentCamera->d_position.forceSet();
-            //currentCamera->d_orientation.forceSet();
             currentCamera->bwdInit();
+            msg_info("BaseViewer") << "There is no camera in this scene, I created one. To remove this error message, add a camera in your scene.";
         }
         sofa::component::visual::VisualStyle::SPtr visualStyle = nullptr;
         groot->get(visualStyle);
@@ -322,7 +324,7 @@ void BaseViewer::fitNodeBBox(sofa::core::objectmodel::BaseNode * node )
     redraw();
 }
 
-void BaseViewer::fitObjectBBox(sofa::core::objectmodel::BaseObject * object)
+void BaseViewer::fitObjectBBox(sofa::core::objectmodel::BaseComponent * object)
 {
     if(!currentCamera) return;
 
@@ -352,13 +354,14 @@ void BaseViewer::drawSelection(sofa::core::visual::VisualParams* vparams)
     if(currentSelection.empty())
         return;
 
+    const float size = 2.f;
+    drawTool->setMaterial(m_selectionColor);
     drawTool->setPolygonMode(0, false);
     float screenHeight = vparams->viewport()[3];
 
     for(auto current : currentSelection)
     {
         using sofa::type::Vec3;
-        using sofa::type::RGBAColor;
         using sofa::defaulttype::RigidCoord;
         using sofa::defaulttype::Rigid3Types;
 
@@ -369,7 +372,7 @@ void BaseViewer::drawSelection(sofa::core::visual::VisualParams* vparams)
             if(m_showSelectedNodeBoundingBox)
             {
                 auto box = node->f_bbox.getValue();
-                drawTool->drawBoundingBox(box.minBBox(), box.maxBBox(), 2.0);
+                drawTool->drawBoundingBox(box.minBBox(), box.maxBBox(), size);
             }
 
             // If it is a node then it is not a BaseObject, so we can continue.
@@ -377,19 +380,21 @@ void BaseViewer::drawSelection(sofa::core::visual::VisualParams* vparams)
         }
 
         ////////////////////// Render when the selection is a BaseObject //////////////////////////
-        auto object = castTo<sofa::core::objectmodel::BaseObject*>(current.get());
+        auto object = castTo<sofa::core::objectmodel::BaseComponent*>(current.get());
         if(object)
         {
             sofa::type::BoundingBox box;
+
             auto ownerNode = dynamic_cast<sofa::simulation::Node*>(object->getContext());
             if(ownerNode)
             {
                 box = ownerNode->f_bbox.getValue();
             }
+            const bool validBox = box.isValid() && !box.isFlat();
 
-            if(m_showSelectedObjectBoundingBox)
+            if(m_showSelectedObjectBoundingBox && validBox)
             {
-                drawTool->drawBoundingBox(box.minBBox(), box.maxBBox(), 2.0);
+                drawTool->drawBoundingBox(box.minBBox(), box.maxBBox(), size);
             }
 
             std::vector<Vec3> positions;
@@ -402,19 +407,19 @@ void BaseViewer::drawSelection(sofa::core::visual::VisualParams* vparams)
                     if(positionsData)
                     {
                         positions = positionsData->getValue();
-                        drawTool->drawPoints(positions, 2.0, RGBAColor::yellow());
+                        drawTool->drawPoints(positions, size*2., m_selectionColor);
                     }
                     else
                     {
                         auto rigidPositions = dynamic_cast<Data<sofa::type::vector<RigidCoord<3, SReal>>>*>(position);
-                        if(rigidPositions)
+                        if(rigidPositions && currentCamera)
                         {
                             for(auto frame : rigidPositions->getValue())
                             {
                                 float targetScreenSize = 50.0;
                                 float distance = (currentCamera->getPosition() - Rigid3Types::getCPos(frame)).norm();
                                 SReal scale = distance * tan(currentCamera->getFieldOfView() / 2.0f) * targetScreenSize / screenHeight;
-                                drawTool->drawFrame(Rigid3Types::getCPos(frame), Rigid3Types::getCRot(frame), {scale, scale,scale});
+                                drawTool->drawFrame(Rigid3Types::getCPos(frame), Rigid3Types::getCRot(frame), {scale, scale,scale}, m_selectionColor);
                                 positions.push_back(Rigid3Types::getCPos(frame));
                             }
                         }
@@ -424,36 +429,51 @@ void BaseViewer::drawSelection(sofa::core::visual::VisualParams* vparams)
 
             if(m_showSelectedObjectSurfaces && !positions.empty())
             {
-                auto triangles = object->findData("triangles");
-                if(triangles)
+                if (const auto topology = object->toBaseMeshTopology())
                 {
-                    auto d_triangles = dynamic_cast<Data<sofa::type::vector<core::topology::Topology::Triangle>>*>(triangles);
-                    if(d_triangles)
+                    m_drawMeshContainer[object].drawSurface(drawTool, positions, topology);
+                }
+                else
+                {
+                    auto triangles = object->findData("triangles");
+                    if(triangles)
                     {
-                        std::vector<Vec3> tripoints;
-                        for(auto indices : d_triangles->getValue())
+                        auto d_triangles = dynamic_cast<Data<sofa::type::vector<core::topology::Topology::Triangle>>*>(triangles);
+                        if(d_triangles)
                         {
-                            if(indices[0] < positions.size() &&
-                               indices[1] < positions.size() &&
-                               indices[2] < positions.size())
+                            std::vector<Vec3> tripoints;
+                            for(auto indices : d_triangles->getValue())
                             {
-                                tripoints.push_back(positions[indices[0]]);
-                                tripoints.push_back(positions[indices[1]]);
-                                tripoints.push_back(positions[indices[1]]);
-                                tripoints.push_back(positions[indices[2]]);
-                                tripoints.push_back(positions[indices[2]]);
-                                tripoints.push_back(positions[indices[0]]);
+                                if(indices[0] < positions.size() &&
+                                   indices[1] < positions.size() &&
+                                   indices[2] < positions.size())
+                                {
+                                    tripoints.push_back(positions[indices[0]]);
+                                    tripoints.push_back(positions[indices[1]]);
+                                    tripoints.push_back(positions[indices[1]]);
+                                    tripoints.push_back(positions[indices[2]]);
+                                    tripoints.push_back(positions[indices[2]]);
+                                    tripoints.push_back(positions[indices[0]]);
+                                }
                             }
+                            drawTool->drawLines(tripoints, size, m_selectionColor);
                         }
-                        drawTool->drawLines(tripoints, 1.5, RGBAColor::fromFloat(1.0,1.0,1.0,0.7));
                     }
                 }
             }
 
-            if(!positions.empty() && m_showSelectedObjectIndices)
+            if(m_showSelectedObjectVolumes && !positions.empty())
+            {
+                if (const auto topology = object->toBaseMeshTopology())
+                {
+                    m_drawMeshContainer[object].drawVolume(drawTool, positions, topology);
+                }
+            }
+
+            if(m_showSelectedObjectIndices && !positions.empty() && validBox)
             {
                 const float scale = (box.maxBBox() - box.minBBox()).norm() * m_visualScaling;
-                drawTool->draw3DText_Indices(positions, scale, RGBAColor::white());
+                drawTool->draw3DText_Indices(positions, scale, m_selectionColor);
             }
 
             continue;

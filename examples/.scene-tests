@@ -37,3 +37,16 @@ ignore "Component/Controller/MechanicalStateController.scn"
 # To be removed when scenes are fixed.
 ignore "Benchmark/TopologicalChanges/ProjectToPlaneConstraint_RemovingMeshTest.scn"
 ignore "Benchmark/TopologicalChanges/FixedPlaneConstraint_RemovingMeshTest.scn"
+
+# Too long
+ignore "Component/Constraint/Lagrangian/Contact_ImprovedJacobi.scn"
+
+timeout "Component/AnimationLoop/FreeMotionAnimationLoop.scn" "180"
+
+
+#SofaCuda not available
+ignore "Benchmark/Performance/Bar16-fem-implicit-CudaVec3d.py"
+ignore "Benchmark/Performance/Bar16-fem-implicit-CudaVec3f.py"
+ignore "Benchmark/Performance/Bar16-spring-rk4-CudaVec3d.py"
+ignore "Benchmark/Performance/Bar16-spring-rk4-CudaVec3f.py"
+

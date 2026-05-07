@@ -35,12 +35,15 @@ namespace engine
 
 using namespace defaulttype;
 
-int MeshToImageEngineClass = core::RegisterObject("Compute a rasterization image from several meshes")
-        .add<MeshToImageEngine<ImageB> >(true)
-        .add<MeshToImageEngine<ImageUC> >()
-        .add<MeshToImageEngine<ImageUS> >()
-        .add<MeshToImageEngine<ImageD> >()
-        ;
+void registerMeshToImageEngine(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Compute a rasterization image from several meshes")
+    .add<MeshToImageEngine<ImageB> >(true)
+    .add<MeshToImageEngine<ImageUC> >()
+    .add<MeshToImageEngine<ImageUS> >()
+    .add<MeshToImageEngine<ImageD> >()
+    );
+}
 
 template class SOFA_IMAGE_API MeshToImageEngine<ImageB>;
 template class SOFA_IMAGE_API MeshToImageEngine<ImageUC>;

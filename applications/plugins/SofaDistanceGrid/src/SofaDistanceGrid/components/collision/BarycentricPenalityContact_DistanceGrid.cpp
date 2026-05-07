@@ -23,9 +23,9 @@
 #include <sofa/component/collision/response/mapper/BarycentricContactMapper.h>
 #include <sofa/component/collision/response/mapper/BarycentricContactMapper.inl>
 
-#include <sofa/component/collision/geometry/PointModel.h>
-#include <sofa/component/collision/geometry/TriangleModel.h>
-#include <sofa/component/collision/geometry/SphereModel.h>
+#include <sofa/component/collision/geometry/PointCollisionModel.h>
+#include <sofa/component/collision/geometry/TriangleCollisionModel.h>
+#include <sofa/component/collision/geometry/SphereCollisionModel.h>
 
 #include "DistanceGridCollisionModel.h"
 

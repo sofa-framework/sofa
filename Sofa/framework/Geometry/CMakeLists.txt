@@ -12,6 +12,7 @@ set(HEADER_FILES
     ${SOFAGEOMETRYSRC_ROOT}/Hexahedron.h
     ${SOFAGEOMETRYSRC_ROOT}/Pentahedron.h
     ${SOFAGEOMETRYSRC_ROOT}/Point.h
+    ${SOFAGEOMETRYSRC_ROOT}/Prism.h
     ${SOFAGEOMETRYSRC_ROOT}/Pyramid.h
     ${SOFAGEOMETRYSRC_ROOT}/Quad.h
     ${SOFAGEOMETRYSRC_ROOT}/Tetrahedron.h
@@ -34,6 +35,7 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Config Sofa.Type)
 
+sofa_treat_warnings_as_errors(${PROJECT_NAME})
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER Sofa.Framework) # IDE folder
 
 sofa_create_package_with_targets(

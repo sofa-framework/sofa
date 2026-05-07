@@ -35,35 +35,18 @@ namespace engine
 
 using namespace defaulttype;
 
-int ImageToRigidMassEngineClass = core::RegisterObject("Compute rigid mass from a density image")
-        .add<ImageToRigidMassEngine<ImageD> >(true)
-        .add<ImageToRigidMassEngine<ImageUC> >()
-        .add<ImageToRigidMassEngine<ImageB> >()
-#if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
-//        .add<ImageToRigidMassEngine<ImageC> >()
-//        .add<ImageToRigidMassEngine<ImageI> >()
-//        .add<ImageToRigidMassEngine<ImageUI> >()
-//        .add<ImageToRigidMassEngine<ImageS> >()
-//        .add<ImageToRigidMassEngine<ImageUS> >()
-//        .add<ImageToRigidMassEngine<ImageL> >()
-//        .add<ImageToRigidMassEngine<ImageUL> >()
-//        .add<ImageToRigidMassEngine<ImageF> >()
-#endif
-        ;
+void registerImageToRigidMassEngine(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Compute rigid mass from a density image")
+    .add<ImageToRigidMassEngine<ImageD> >(true)
+    .add<ImageToRigidMassEngine<ImageUC> >()
+    .add<ImageToRigidMassEngine<ImageB> >()
+    );
+}
 
 template class SOFA_IMAGE_API ImageToRigidMassEngine<ImageD>;
 template class SOFA_IMAGE_API ImageToRigidMassEngine<ImageUC>;
 template class SOFA_IMAGE_API ImageToRigidMassEngine<ImageB>;
-#if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
-//template class SOFA_IMAGE_API ImageToRigidMassEngine<ImageC>;
-//template class SOFA_IMAGE_API ImageToRigidMassEngine<ImageI>;
-//template class SOFA_IMAGE_API ImageToRigidMassEngine<ImageUI>;
-//template class SOFA_IMAGE_API ImageToRigidMassEngine<ImageS>;
-//template class SOFA_IMAGE_API ImageToRigidMassEngine<ImageUS>;
-//template class SOFA_IMAGE_API ImageToRigidMassEngine<ImageL>;
-//template class SOFA_IMAGE_API ImageToRigidMassEngine<ImageUL>;
-//template class SOFA_IMAGE_API ImageToRigidMassEngine<ImageF>;
-#endif
 
 
 } //

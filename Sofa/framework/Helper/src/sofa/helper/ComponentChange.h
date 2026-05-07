@@ -47,6 +47,8 @@ public:
     std::string m_changeVersion;
     const std::string& getMessage() const { return m_message; }
     const std::string& getVersion() const { return m_changeVersion; }
+
+    ComponentChange& withCustomMessage(const std::string& message) { m_message = message; return *this; }
 };
 
 class SOFA_HELPER_API Deprecated : public ComponentChange
@@ -75,7 +77,7 @@ public:
         std::stringstream output;
         output << "This component has been PLUGINIZED since SOFA " << sinceVersion << ". "
                   "To continue using this component you need to update you scene "
-                  "and add <RequiredPlugin name='" <<  plugin << "'/>";
+                  "and add <RequiredPlugin pluginName='" <<  plugin << "'/>";
         m_message = output.str();
         m_changeVersion = sinceVersion;
     }
@@ -138,7 +140,7 @@ public:
         std::stringstream output;
         output << "This component has been MOVED from " << fromPlugin << " to " << toPlugin << " since SOFA " << sinceVersion << ".\n"
             << "To continue using this component you may need to update your scene "
-            << "by adding\n<RequiredPlugin name='" << toPlugin << "'/>";
+            << "by adding\n<RequiredPlugin pluginName='" << toPlugin << "'/>";
         m_message = output.str();
         m_changeVersion = sinceVersion;
     }

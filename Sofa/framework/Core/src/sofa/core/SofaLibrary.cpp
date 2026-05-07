@@ -44,7 +44,7 @@ void SofaLibrary::build( const std::vector< std::string >& examples)
     for (std::size_t i=0; i<entries.size(); ++i)
     {
         //Insert Template specification
-        ObjectFactory::CreatorMap::iterator creatorEntry = entries[i]->creatorMap.begin();
+        ObjectFactory::ObjectTemplateCreatorMap::iterator creatorEntry = entries[i]->creatorMap.begin();
         if (creatorEntry != entries[i]->creatorMap.end())
         {
             const objectmodel::BaseClass* baseClass = creatorEntry->second->getClass();

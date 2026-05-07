@@ -22,8 +22,8 @@
 #pragma once
 
 #include <MultiThreading/component/solidmechanics/spring/ParallelSpringForceField.h>
-#include <sofa/simulation/MainTaskSchedulerFactory.h>
-#include <sofa/simulation/ParallelForEach.h>
+#include <sofa/simulation/task/MainTaskSchedulerFactory.h>
+#include <sofa/simulation/task/ParallelForEach.h>
 
 namespace multithreading::component::solidmechanics::spring
 {

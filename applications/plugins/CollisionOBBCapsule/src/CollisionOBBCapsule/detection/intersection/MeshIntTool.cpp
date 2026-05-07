@@ -420,10 +420,7 @@ void MeshIntTool::triangleBaryCoords(const type::Vec3& to_be_projected,const typ
     b[0] = AQ*AB;
     b[1] = AQ*AC;
     const SReal det = type::determinant(A);
-
-    alpha = 0.5;
-    beta = 0.5;
-
+  
     alpha = (b[0]*A[1][1] - b[1]*A[0][1])/det;
     beta  = (b[1]*A[0][0] - b[0]*A[1][0])/det;
     if (alpha < 0 || beta < 0 || alpha + beta > 1)

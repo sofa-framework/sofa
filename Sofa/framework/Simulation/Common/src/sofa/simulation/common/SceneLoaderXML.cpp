@@ -68,12 +68,14 @@ bool SceneLoaderXML::syntaxForAddingRequiredPlugin(const std::string& pluginName
 {
     SOFA_UNUSED(nodeWhereAdded);
 
-    ss << "<RequiredPlugin name=\"" << pluginName << "\"/> <!-- Needed to use components [";
+    ss << "<RequiredPlugin pluginName=\"" << pluginName << "\"/>";
     if (!listComponents.empty())
     {
+        ss << " <!-- Needed to use components [";
         ss << sofa::helper::join(listComponents, ',');
+        ss << "] -->";
     }
-    ss << "] -->" << msgendl;
+    ss << msgendl;
     return true;
 }
 
@@ -138,6 +140,8 @@ Node::SPtr SceneLoaderXML::processXML(xml::BaseElement* xml, const char *filenam
     }
 
     Node::SPtr root = down_cast<Node> ( baseroot );
+    root->setInstanciationSourceFileName(xml->getSrcFile());
+    root->setInstanciationSourceFilePos(xml->getSrcLine());
 
     return root;
 }

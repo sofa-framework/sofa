@@ -122,13 +122,10 @@ protected:
 public:
     void solve (TMatrix& M, TVector& x, TVector& b) override;
     void invert(TMatrix& M) override;
-    void setSystemMBKMatrix(const core::MechanicalParams* mparams) override;
     bool addJMInvJt(linearalgebra::BaseMatrix* result, linearalgebra::BaseMatrix* J, SReal fact) override;
     void draw(const core::visual::VisualParams* vparams) override;
     void init() override;
     void loadMatrix(TMatrix& M);
-
-    bool hasUpdatedMatrix() override {return false;}
 
     TBaseMatrix * getSystemMatrixInv()
     {
@@ -144,7 +141,7 @@ public:
             arg->logError(std::string("No mechanical state with the datatype '") + TDataTypes::Name() + "' found in the context node.");
             return false;
         }
-        return sofa::core::objectmodel::BaseObject::canCreate(obj, context, arg);
+        return sofa::core::objectmodel::BaseComponent::canCreate(obj, context, arg);
     }
 
 protected :

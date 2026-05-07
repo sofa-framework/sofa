@@ -80,8 +80,6 @@ public:
     [[nodiscard]] bool isValid() const;
     [[nodiscard]] bool isFlat()  const;
     [[nodiscard]] bool isNegligible() const; // !valid || flat
-    SOFA_ATTRIBUTE_DISABLED__BOUNDINGBOX_TYPO()
-    [[nodiscard]] bool isNegligeable() const;
     [[nodiscard]] bool isNull()  const;
 
     SReal* minBBoxPtr();
@@ -166,7 +164,7 @@ public:
     void invalidate();
     bool isValid() const;
     bool isFlat()  const;
-    bool isNegligeable() const; // !valid || flat
+    bool isNegligible() const; // !valid || flat
     bool isNull()  const;
 
     SReal* minBBoxPtr();
@@ -236,7 +234,7 @@ public:
     void invalidate();
     bool isValid() const;
     bool isFlat()  const;
-    bool isNegligeable() const; // !valid || flat
+    bool isNegligible() const; // !valid || flat
     bool isNull()  const;
 
     const SReal&  minBBox() const;

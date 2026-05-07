@@ -31,15 +31,19 @@ namespace sofa::core::behavior
 
 BaseForceField::BaseForceField()
     : StateAccessor()
-    , isCompliance(this, "v24.12", "v25.06", "isCompliance", "Consider the component as a compliance, else as a stiffness")
     , rayleighStiffness( initData(&rayleighStiffness, 0_sreal, "rayleighStiffness", "Rayleigh damping - stiffness matrix coefficient"))
 {
 }
 
 void BaseForceField::addMBKdx(const MechanicalParams* mparams, MultiVecDerivId dfId)
 {
-    if (sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams,rayleighStiffness.getValue()) != 0.0 || sofa::core::mechanicalparams::bFactor(mparams) != 0.0)
+    const auto kFactor = sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams,rayleighStiffness.getValue());
+    const auto bFactor = sofa::core::mechanicalparams::bFactor(mparams);
+
+    if (kFactor != 0.0 || bFactor != 0.0)
+    {
         addDForce(mparams, dfId);
+    }
 }
 
 void BaseForceField::addBToMatrix(const MechanicalParams* /*mparams*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/)

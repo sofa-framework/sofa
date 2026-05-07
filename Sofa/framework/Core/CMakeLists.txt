@@ -1,6 +1,21 @@
 cmake_minimum_required(VERSION 3.22)
 project(Sofa.Core LANGUAGES CXX)
 
+find_package(nlohmann_json QUIET)
+
+if(NOT TARGET nlohmann_json AND SOFA_ALLOW_FETCH_DEPENDENCIES)
+    message("Sofa.Core: DEPENDENCY nlohmann_json NOT FOUND. SOFA_ALLOW_FETCH_DEPENDENCIES is ON, fetching nlohmann_json...")
+
+    set(JSON_BuildTests OFF CACHE INTERNAL "")
+
+    sofa_fetch_dependency(nlohmann_json
+            GIT_REPOSITORY https://github.com/nlohmann/json.git
+            GIT_TAG        v3.12.0
+    )
+elseif(NOT TARGET nlohmann_json)
+    message(FATAL_ERROR "Sofa.Core: DEPENDENCY nlohmann_json NOT FOUND. SOFA_ALLOW_FETCH_DEPENDENCIES is OFF and thus cannot be fetched. Install nlohmann_json (version>=3.9.1), or enable SOFA_ALLOW_FETCH_DEPENDENCIES to fix this issue.")
+endif()
+
 set(SRC_ROOT "src/sofa/core")
 
 set(HEADER_FILES
@@ -9,6 +24,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/AccumulationVecId.inl
     ${SRC_ROOT}/BaseMatrixAccumulatorComponent.h
     ${SRC_ROOT}/BaseLocalMappingMatrix.h
+    ${SRC_ROOT}/BaseNodalProperty.h
     ${SRC_ROOT}/BaseMapping.h
     ${SRC_ROOT}/BaseState.h
     ${SRC_ROOT}/BehaviorModel.h
@@ -112,6 +128,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/behavior/SingleStateAccessor.h
     ${SRC_ROOT}/behavior/SingleStateAccessor.inl
     ${SRC_ROOT}/behavior/StateAccessor.h
+    ${SRC_ROOT}/behavior/TopologyAccessor.h
     ${SRC_ROOT}/behavior/fwd.h
     ${SRC_ROOT}/collision/BroadPhaseDetection.h
     ${SRC_ROOT}/collision/CollisionAlgorithm.h
@@ -137,11 +154,11 @@ set(HEADER_FILES
     ${SRC_ROOT}/objectmodel/Base.h
     ${SRC_ROOT}/objectmodel/BaseClass.h
     ${SRC_ROOT}/objectmodel/BaseClassNameHelper.h
+    ${SRC_ROOT}/objectmodel/BaseComponent.h
     ${SRC_ROOT}/objectmodel/BaseContext.h
     ${SRC_ROOT}/objectmodel/BaseData.h
     ${SRC_ROOT}/objectmodel/BaseLink.h
     ${SRC_ROOT}/objectmodel/BaseNode.h
-    ${SRC_ROOT}/objectmodel/BaseObject.h
     ${SRC_ROOT}/objectmodel/BaseObjectDescription.h
     ${SRC_ROOT}/objectmodel/ClassInfo.h
     ${SRC_ROOT}/objectmodel/ComponentState.h
@@ -195,6 +212,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/visual/BaseVisualStyle.h
     ${SRC_ROOT}/visual/Data[DisplayFlags].h
     ${SRC_ROOT}/visual/DisplayFlags.h
+    ${SRC_ROOT}/visual/DrawMesh.h
     ${SRC_ROOT}/visual/FlagTreeItem.h
     ${SRC_ROOT}/visual/Shader.h
     ${SRC_ROOT}/visual/Tristate.h
@@ -269,6 +287,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/behavior/ProjectiveConstraintSet.cpp
     ${SRC_ROOT}/behavior/SingleMatrixAccessor.cpp
     ${SRC_ROOT}/behavior/SingleStateAccessor.cpp
+    ${SRC_ROOT}/behavior/TopologyAccessor.cpp
     ${SRC_ROOT}/behavior/fwd.cpp
     ${SRC_ROOT}/collision/BroadPhaseDetection.cpp
     ${SRC_ROOT}/collision/Contact.cpp
@@ -285,11 +304,11 @@ set(SOURCE_FILES
     ${SRC_ROOT}/objectmodel/AspectPool.cpp
     ${SRC_ROOT}/objectmodel/Base.cpp
     ${SRC_ROOT}/objectmodel/BaseClass.cpp
+    ${SRC_ROOT}/objectmodel/BaseComponent.cpp
     ${SRC_ROOT}/objectmodel/BaseContext.cpp
     ${SRC_ROOT}/objectmodel/BaseData.cpp
     ${SRC_ROOT}/objectmodel/BaseLink.cpp
     ${SRC_ROOT}/objectmodel/BaseNode.cpp
-    ${SRC_ROOT}/objectmodel/BaseObject.cpp
     ${SRC_ROOT}/objectmodel/BaseObjectDescription.cpp
     ${SRC_ROOT}/objectmodel/ClassInfo.cpp
     ${SRC_ROOT}/objectmodel/ComponentState.cpp
@@ -327,6 +346,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/topology/TopologySubsetIndices.cpp
     ${SRC_ROOT}/visual/Data[DisplayFlags].cpp
     ${SRC_ROOT}/visual/DisplayFlags.cpp
+    ${SRC_ROOT}/visual/DrawMesh.cpp
     ${SRC_ROOT}/visual/FlagTreeItem.cpp
     ${SRC_ROOT}/visual/Shader.cpp
     ${SRC_ROOT}/visual/VisualLoop.cpp
@@ -334,6 +354,11 @@ set(SOURCE_FILES
     ${SRC_ROOT}/visual/VisualModel.cpp
     ${SRC_ROOT}/visual/VisualParams.cpp
     ${SRC_ROOT}/visual/VisualState.cpp
+)
+
+set(DEPRECATED_DIR "compat/sofa/core")
+set(DEPRECATED_HEADER_FILES
+    ${DEPRECATED_DIR}/objectmodel/BaseObject.h
 )
 
 sofa_find_package(Sofa.Topology REQUIRED)
@@ -351,6 +376,14 @@ endif()
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Helper Sofa.Topology Sofa.DefaultType)
+
+# For compatibility with renamed files. To remove if all files have been removed in this folder
+target_include_directories(${PROJECT_NAME} PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/compat>
+    $<INSTALL_INTERFACE:include/${PROJECT_NAME}_compat>
+)
+
+target_link_libraries(${PROJECT_NAME} PRIVATE nlohmann_json::nlohmann_json)
 
 if(SOFA_BUILD_WITH_PCH_ENABLED)
     message("Adding precompiled header for Sofa.Core")
@@ -371,6 +404,8 @@ sofa_create_package_with_targets(
     INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
 )
+
+install(DIRECTORY compat/ DESTINATION include/${PROJECT_NAME}_compat COMPONENT headers)
 
 # Tests
 # If SOFA_BUILD_TESTS exists and is OFF, then these tests will be auto-disabled

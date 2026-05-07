@@ -491,6 +491,8 @@ MeshTopology::MeshTopology()
     , d_seqQuads(initData(&d_seqQuads, "quads", "List of quad indices"))
     , d_seqTetrahedra(initData(&d_seqTetrahedra, "tetrahedra", "List of tetrahedron indices"))
     , d_seqHexahedra(initData(&d_seqHexahedra, "hexahedra", "List of hexahedron indices"))
+    , d_seqPrisms(initData(&d_seqPrisms, "prisms", "List of prisms indices"))
+    , d_seqPyramids(initData(&d_seqPyramids, "pyramids", "List of pyramids indices"))
     , d_seqUVs(initData(&d_seqUVs, "uv", "List of uv coordinates"))
     , d_computeAllBuffers(initData(&d_computeAllBuffers, false, "computeAllBuffers", "Option to compute all crossed topology buffers at init. False by default"))
     , nbPoints(0)
@@ -516,6 +518,8 @@ void MeshTopology::init()
 
     const auto hexahedra = sofa::helper::getReadAccessor(d_seqHexahedra);
     const auto tetrahedra = sofa::helper::getReadAccessor(d_seqTetrahedra);
+    const auto prisms = sofa::helper::getReadAccessor(d_seqPrisms);
+    const auto pyramids = sofa::helper::getReadAccessor(d_seqPyramids);
     const auto quads = sofa::helper::getReadAccessor(d_seqQuads);
     const auto triangles = sofa::helper::getReadAccessor(d_seqTriangles);
     const auto edges = sofa::helper::getReadAccessor(d_seqEdges);
@@ -525,6 +529,10 @@ void MeshTopology::init()
         m_upperElementType = geometry::ElementType::HEXAHEDRON;
     else if (!tetrahedra.empty())
         m_upperElementType = sofa::geometry::ElementType::TETRAHEDRON;
+    else if (!prisms.empty())
+        m_upperElementType = sofa::geometry::ElementType::PRISM;
+    else if (!pyramids.empty())
+        m_upperElementType = sofa::geometry::ElementType::PYRAMID;
     else if (!quads.empty())
         m_upperElementType = sofa::geometry::ElementType::QUAD;
     else if (!triangles.empty())
@@ -543,28 +551,13 @@ void MeshTopology::init()
     // compute the number of points, if the topology is charged from the scene or if it was loaded from a MeshLoader without any points data.
     if (nbPoints==0)
     {
-        unsigned int n = 0;
-        const auto countPoints = [&n](const auto& seqElements)
-        {
-            for (const auto& element : seqElements)
-            {
-                for (const auto pointId : element)
-                {
-                    if (n <= pointId)
-                    {
-                        n = 1 + pointId;
-                    }
-                }
-            }
-        };
-
-        countPoints(edges);
-        countPoints(triangles);
-        countPoints(quads);
-        countPoints(tetrahedra);
-        countPoints(hexahedra);
-
-        nbPoints = n;
+        nbPoints = std::max(nbPoints, countPoints(edges));
+        nbPoints = std::max(nbPoints, countPoints(triangles));
+        nbPoints = std::max(nbPoints, countPoints(quads));
+        nbPoints = std::max(nbPoints, countPoints(tetrahedra));
+        nbPoints = std::max(nbPoints, countPoints(hexahedra));
+        nbPoints = std::max(nbPoints, countPoints(prisms));
+        nbPoints = std::max(nbPoints, countPoints(pyramids));
     }
 
 
@@ -692,55 +685,58 @@ void MeshTopology::addPoint(SReal px, SReal py, SReal pz)
 
 void MeshTopology::addEdge( Index a, Index b )
 {
-    d_seqEdges.beginEdit()->push_back(Edge(a, b));
-    d_seqEdges.endEdit();
-    if (a >= nbPoints) nbPoints = a+1;
-    if (b >= nbPoints) nbPoints = b+1;
+    const Edge addedElement { a, b };
+    auto seqElements = helper::getWriteOnlyAccessor(d_seqEdges);
+    seqElements.push_back(addedElement);
+    nbPoints = std::max(nbPoints, countPoints(std::array{addedElement}));
 }
 
 void MeshTopology::addTriangle( Index a, Index b, Index c )
 {
-    d_seqTriangles.beginEdit()->push_back(Triangle(a, b, c) );
-    d_seqTriangles.endEdit();
-    if (a >= nbPoints) nbPoints = a+1;
-    if (b >= nbPoints) nbPoints = b+1;
-    if (c >= nbPoints) nbPoints = c+1;
+    const Triangle addedElement { a, b, c };
+    auto seqElements = helper::getWriteOnlyAccessor(d_seqTriangles);
+    seqElements.push_back(addedElement);
+    nbPoints = std::max(nbPoints, countPoints(std::array{addedElement}));
 }
 
 void MeshTopology::addQuad(Index a, Index b, Index c, Index d)
 {
-    d_seqQuads.beginEdit()->push_back(Quad(a, b, c, d));
-    d_seqQuads.endEdit();
-    if (a >= nbPoints) nbPoints = a+1;
-    if (b >= nbPoints) nbPoints = b+1;
-    if (c >= nbPoints) nbPoints = c+1;
-    if (d >= nbPoints) nbPoints = d+1;
+    const Quad addedElement { a, b, c, d };
+    auto seqElements = helper::getWriteOnlyAccessor(d_seqQuads);
+    seqElements.push_back(addedElement);
+    nbPoints = std::max(nbPoints, countPoints(std::array{addedElement}));
 }
 
 void MeshTopology::addTetra( Index a, Index b, Index c, Index d )
 {
-    d_seqTetrahedra.beginEdit()->push_back(Tetra(a, b, c, d) );
-    d_seqTetrahedra.endEdit();
-    if (a >= nbPoints) nbPoints = a+1;
-    if (b >= nbPoints) nbPoints = b+1;
-    if (c >= nbPoints) nbPoints = c+1;
-    if (d >= nbPoints) nbPoints = d+1;
+    const Tetrahedron addedElement { a, b, c, d };
+    auto seqElements = helper::getWriteOnlyAccessor(d_seqTetrahedra);
+    seqElements.push_back(addedElement);
+    nbPoints = std::max(nbPoints, countPoints(std::array{addedElement}));
 }
 
 void MeshTopology::addHexa(Index p1, Index p2, Index p3, Index p4, Index p5, Index p6, Index p7, Index p8)
 {
+    const Hexahedron addedElement { p1, p2, p3, p4, p5, p6, p7, p8 };
+    auto seqElements = helper::getWriteOnlyAccessor(d_seqHexahedra);
+    seqElements.push_back(addedElement);
+    nbPoints = std::max(nbPoints, countPoints(std::array{addedElement}));
+}
 
-    d_seqHexahedra.beginEdit()->push_back(Hexa(p1, p2, p3, p4, p5, p6, p7, p8));
+void MeshTopology::addPrism(Index a, Index b, Index c, Index d, Index e, Index f)
+{
+    const Prism addedElement { a, b, c, d, e, f };
+    auto seqElements = helper::getWriteOnlyAccessor(d_seqPrisms);
+    seqElements.push_back(addedElement);
+    nbPoints = std::max(nbPoints, countPoints(std::array{addedElement}));
+}
 
-    d_seqHexahedra.endEdit();
-    if (p1 >= nbPoints) nbPoints = p1+1;
-    if (p2 >= nbPoints) nbPoints = p2+1;
-    if (p3 >= nbPoints) nbPoints = p3+1;
-    if (p4 >= nbPoints) nbPoints = p4+1;
-    if (p5 >= nbPoints) nbPoints = p5+1;
-    if (p6 >= nbPoints) nbPoints = p6+1;
-    if (p7 >= nbPoints) nbPoints = p7+1;
-    if (p8 >= nbPoints) nbPoints = p8+1;
+void MeshTopology::addPyramid(Index a, Index b, Index c, Index d, Index e)
+{
+    const Pyramid addedElement { a, b, c, d, e };
+    auto seqElements = helper::getWriteOnlyAccessor(d_seqPyramids);
+    seqElements.push_back(addedElement);
+    nbPoints = std::max(nbPoints, countPoints(std::array{addedElement}));
 }
 
 void MeshTopology::addUV(SReal u, SReal v)
@@ -763,7 +759,6 @@ const MeshTopology::SeqTriangles& MeshTopology::getTriangles()
 
 const MeshTopology::SeqQuads& MeshTopology::getQuads()
 {
-
     return d_seqQuads.getValue();
 }
 
@@ -787,6 +782,16 @@ const MeshTopology::SeqHexahedra& MeshTopology::getHexahedra()
     return d_seqHexahedra.getValue();
 }
 
+const BaseMeshTopology::SeqPrisms& MeshTopology::getPrisms()
+{
+    return d_seqPrisms.getValue();
+}
+
+const BaseMeshTopology::SeqPyramids& MeshTopology::getPyramids()
+{
+    return d_seqPyramids.getValue();
+}
+
 const MeshTopology::SeqUV& MeshTopology::getUVs()
 {
     return d_seqUVs.getValue();
@@ -802,59 +807,9 @@ void MeshTopology::setNbPoints(Size n)
     nbPoints = n;
 }
 
-Size MeshTopology::getNbEdges()
-{
-    return Size(getEdges().size());
-}
-
-Size MeshTopology::getNbTriangles()
-{
-    return Size(getTriangles().size());
-}
-
-Size MeshTopology::getNbQuads()
-{
-    return Size(getQuads().size());
-}
-
-Size MeshTopology::getNbTetrahedra()
-{
-    return Size(getTetrahedra().size());
-}
-
-Size MeshTopology::getNbHexahedra()
-{
-    return Size(getHexahedra().size());
-}
-
 Size MeshTopology::getNbUVs()
 {
     return Size(getUVs().size());
-}
-
-const MeshTopology::Edge MeshTopology::getEdge(Index i)
-{
-    return getEdges()[i];
-}
-
-const MeshTopology::Triangle MeshTopology::getTriangle(Index i)
-{
-    return getTriangles()[i];
-}
-
-const MeshTopology::Quad MeshTopology::getQuad(Index i)
-{
-    return getQuads()[i];
-}
-
-const MeshTopology::Tetra MeshTopology::getTetrahedron(Index i)
-{
-    return getTetrahedra()[i];
-}
-
-const MeshTopology::Hexa MeshTopology::getHexahedron(Index i)
-{
-    return getHexahedra()[i];
 }
 
 const MeshTopology::UV MeshTopology::getUV(Index i)

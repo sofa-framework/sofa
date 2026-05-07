@@ -98,6 +98,17 @@ public:
             testing::NumericTest<Real>::epsilon());
     }
 
+    void access() const
+    {
+        for (sofa::Size i = 0; i < Size; ++i)
+        {
+            for (sofa::Size j = 0; j < Size; ++j)
+            {
+                EXPECT_EQ(m_symmetricMatrix(i, j), m_symmetricMatrix(j, i));
+            }
+        }
+    }
+
 protected:
     sofa::type::MatSym<Size, Real> m_symmetricMatrix;
 
@@ -162,6 +173,11 @@ TYPED_TEST(MatSymTest, trace)
     ASSERT_NO_THROW (this->trace());
 }
 
+TYPED_TEST(MatSymTest, access)
+{
+    ASSERT_NO_THROW (this->access());
+}
+
 
 template<class _Real>
 class MatSym3x3Test : public MatSymTest<MatSymTestParameterPack<3, _Real>>
@@ -183,5 +199,47 @@ TYPED_TEST(MatSym3x3Test, elementAccessor)
 {
     ASSERT_NO_THROW (this->elementAccessor());
 }
+
+
+
+TEST(MatSym_Test, getsub_3x3_2x2)
+{
+    // [ 1 2 4 ]
+    // [ 2 3 5 ]
+    // [ 4 5 6 ]
+    constexpr sofa::type::MatSym<3, double> mat33 {1.,2.,3.,4.,5.,6.};
+
+    {
+        sofa::type::Mat<2, 2, double> mat22;
+        mat33.getsub(0, 0, mat22);
+
+        EXPECT_DOUBLE_EQ(mat22(0, 0), 1_sreal);
+        EXPECT_DOUBLE_EQ(mat22(0, 1), 2_sreal);
+        EXPECT_DOUBLE_EQ(mat22(1, 0), 2_sreal);
+        EXPECT_DOUBLE_EQ(mat22(1, 1), 3_sreal);
+    }
+    {
+
+        sofa::type::Mat<2, 2, double> mat22;
+        mat33.getsub(1, 1, mat22);
+
+        EXPECT_DOUBLE_EQ(mat22(0, 0), 3_sreal);
+        EXPECT_DOUBLE_EQ(mat22(0, 1), 5_sreal);
+        EXPECT_DOUBLE_EQ(mat22(1, 0), 5_sreal);
+        EXPECT_DOUBLE_EQ(mat22(1, 1), 6_sreal);
+    }
+    {
+
+        sofa::type::MatSym<2, double> mat22;
+        mat33.getsub(1, mat22);
+
+        EXPECT_DOUBLE_EQ(mat22(0, 0), 3_sreal);
+        EXPECT_DOUBLE_EQ(mat22(0, 1), 5_sreal);
+        EXPECT_DOUBLE_EQ(mat22(1, 0), 5_sreal);
+        EXPECT_DOUBLE_EQ(mat22(1, 1), 6_sreal);
+    }
+}
+
+
 
 }

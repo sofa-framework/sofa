@@ -24,8 +24,6 @@
 #include <sofa/component/linearsystem/TypedMatrixLinearSystem.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
-#include <sofa/component/linearsystem/visitors/AssembleGlobalVectorFromLocalVectorVisitor.h>
-#include <sofa/component/linearsystem/visitors/DispatchFromGlobalVectorToLocalVectorVisitor.h>
 #include <sofa/core/behavior/BaseForceField.h>
 #include <sofa/core/behavior/BaseMass.h>
 #include <sofa/core/BaseMapping.h>
@@ -33,6 +31,14 @@
 
 namespace sofa::component::linearsystem
 {
+
+template <class TMatrix, class TVector>
+TypedMatrixLinearSystem<TMatrix, TVector>::TypedMatrixLinearSystem()
+    : d_matrixChanged(initData(&d_matrixChanged, false, "factorizationInvalidation", "Internal Data indicating a change in the matrix"))
+{
+    d_matrixChanged.setReadOnly(true);
+    d_matrixChanged.setDisplayed(false);
+}
 
 template<class TMatrix, class TVector>
 void TypedMatrixLinearSystem<TMatrix, TVector>::preAssembleSystem(const core::MechanicalParams* mparams)
@@ -69,6 +75,8 @@ void TypedMatrixLinearSystem<TMatrix, TVector>::preAssembleSystem(const core::Me
     }
 
     associateLocalMatrixToComponents(mparams);
+
+    d_matrixChanged.setValue(true);
 }
 
 template <class TMatrix, class TVector>
@@ -101,8 +109,11 @@ void TypedMatrixLinearSystem<TMatrix, TVector>::copyLocalVectorToGlobalVector(co
             globalVector->resize(m_mappingGraph.getTotalNbMainDofs());
         }
 
-        AssembleGlobalVectorFromLocalVectorVisitor(core::execparams::defaultInstance(), m_mappingGraph, v, globalVector)
-            .execute(getSolveContext());
+        for (auto& state : m_mappingGraph.getMainMechanicalStates())
+        {
+            auto pos = m_mappingGraph.getPositionInGlobalMatrix(state);
+            state->copyToBaseVector(globalVector, v.getId(state), pos[0]);
+        }
     }
 }
 
@@ -136,17 +147,43 @@ linearalgebra::BaseMatrix* TypedMatrixLinearSystem<TMatrix, TVector>::getSystemB
         return nullptr;
     }
 }
+template <class TMatrix, class TVector>
+linearalgebra::BaseVector* TypedMatrixLinearSystem<TMatrix, TVector>::getSystemRHSBaseVector() const
+{
+    if constexpr (std::is_base_of_v<sofa::linearalgebra::BaseVector, TVector>)
+    {
+        return getRHSVector();
+    }
+    else
+    {
+        return nullptr;
+    }
+}
+template <class TMatrix, class TVector>
+linearalgebra::BaseVector* TypedMatrixLinearSystem<TMatrix, TVector>::getSystemSolutionBaseVector() const
+{
+    if constexpr (std::is_base_of_v<sofa::linearalgebra::BaseVector, TVector>)
+    {
+        return getSolutionVector();
+    }
+    else
+    {
+        return nullptr;
+    }
+}
 
 template <class TMatrix, class TVector>
 void TypedMatrixLinearSystem<TMatrix, TVector>::resizeSystem(sofa::Size n)
 {
     m_linearSystem.resizeSystem(n);
+    d_matrixChanged.setValue(true);
 }
 
 template <class TMatrix, class TVector>
 void TypedMatrixLinearSystem<TMatrix, TVector>::clearSystem()
 {
     m_linearSystem.clearSystem();
+    d_matrixChanged.setValue(true);
 }
 
 template <class TMatrix, class TVector>
@@ -179,8 +216,11 @@ void TypedMatrixLinearSystem<TMatrix, TVector>::dispatchSystemSolution(core::Mul
 {
     if (getSolutionVector())
     {
-        DispatchFromGlobalVectorToLocalVectorVisitor(core::execparams::defaultInstance(), m_mappingGraph, v, getSolutionVector())
-            .execute(getSolveContext());
+        for (auto& state : m_mappingGraph.getMainMechanicalStates())
+        {
+            auto pos = m_mappingGraph.getPositionInGlobalMatrix(state);
+            state->copyFromBaseVector(v.getId(state), getSolutionVector(), pos[0]);
+        }
     }
 }
 
@@ -189,20 +229,25 @@ void TypedMatrixLinearSystem<TMatrix, TVector>::dispatchSystemRHS(core::MultiVec
 {
     if (getRHSVector())
     {
-        DispatchFromGlobalVectorToLocalVectorVisitor(core::execparams::defaultInstance(), m_mappingGraph, v, getRHSVector())
-            .execute(getSolveContext());
+        for (auto& state : m_mappingGraph.getMainMechanicalStates())
+        {
+            auto pos = m_mappingGraph.getPositionInGlobalMatrix(state);
+            state->copyFromBaseVector(v.getId(state), getRHSVector(), pos[0]);
+        }
     }
 }
 
 template <class TMatrix, class TVector>
 core::objectmodel::BaseContext* TypedMatrixLinearSystem<TMatrix, TVector>::getSolveContext()
 {
-    auto* linearSolver = this->getContext()->template get<sofa::core::behavior::LinearSolver>(core::objectmodel::BaseContext::Local);
+    auto* linearSolver = this->getContext()->template get<sofa::core::behavior::LinearSolver>(
+        core::objectmodel::BaseContext::Local);
     if (linearSolver)
     {
         return linearSolver->getContext();
     }
-    linearSolver = this->getContext()->template get<sofa::core::behavior::LinearSolver>(core::objectmodel::BaseContext::SearchUp);
+    linearSolver = this->getContext()->template get<sofa::core::behavior::LinearSolver>(
+        core::objectmodel::BaseContext::SearchUp);
     if (linearSolver)
     {
         return linearSolver->getContext();
@@ -211,4 +256,4 @@ core::objectmodel::BaseContext* TypedMatrixLinearSystem<TMatrix, TVector>::getSo
     return this->getContext();
 }
 
-}
+}  // namespace sofa::component::linearsystem

@@ -217,23 +217,23 @@ void BaseCamera::moveCamera(const type::Vec3 &p, const Quat &q)
     updateOutputData();
 }
 
-type::Vec3 BaseCamera::cameraToWorldCoordinates(const type::Vec3& p)
+type::Vec3 BaseCamera::cameraToWorldCoordinates(const type::Vec3& p) const
 {
     return d_orientation.getValue().rotate(p) + d_position.getValue();
 }
 
-type::Vec3 BaseCamera::worldToCameraCoordinates(const type::Vec3& p)
+type::Vec3 BaseCamera::worldToCameraCoordinates(const type::Vec3& p) const
 {
     return d_orientation.getValue().inverseRotate(p - d_position.getValue());
 }
 
-type::Vec3 BaseCamera::cameraToWorldTransform(const type::Vec3& v)
+type::Vec3 BaseCamera::cameraToWorldTransform(const type::Vec3& v) const
 {
     const Quat q = d_orientation.getValue();
     return q.rotate(v) ;
 }
 
-type::Vec3 BaseCamera::worldToCameraTransform(const type::Vec3& v)
+type::Vec3 BaseCamera::worldToCameraTransform(const type::Vec3& v) const
 {
     return d_orientation.getValue().inverseRotate(v);
 }
@@ -305,7 +305,7 @@ void BaseCamera::setCameraType(unsigned int type)
 }
 
 
-double BaseCamera::getHorizontalFieldOfView()
+double BaseCamera::getHorizontalFieldOfView() const
 {
     const sofa::core::visual::VisualParams* vp = sofa::core::visual::VisualParams::defaultInstance();
     const core::visual::VisualParams::Viewport viewport = vp->viewport();
@@ -537,21 +537,18 @@ void BaseCamera::rotateCameraAroundPoint(Quat& rotation, const type::Vec3& point
     updateOutputData();
 }
 
-void BaseCamera::rotateWorldAroundPoint(Quat &rotation, const type::Vec3 &point, Quat orientationCam)
+void BaseCamera::rotateWorldAroundPoint(Quat &rotation, const type::Vec3 &point, Quat orientationCam, type::Vec3 positionCam)
 {
     type::Vec3 tempAxis;
     SReal tempAngle;
-    //Quat orientationCam = this->getOrientation();
-    type::Vec3& positionCam = *d_position.beginEdit();
 
     rotation.quatToAxis(tempAxis, tempAngle);
-    const Quat tempQuat (orientationCam.rotate(-tempAxis), tempAngle);
+    const Quat tempQuat(orientationCam.rotate(-tempAxis), tempAngle);
 
     const sofa::type::Transform<SReal> world_H_cam(positionCam, orientationCam);
     const sofa::type::Transform<SReal> world_H_pivot(point, Quat());
     const sofa::type::Transform<SReal> pivotBefore_R_pivotAfter(type::Vec3(0.0,0.0,0.0), tempQuat);
     const sofa::type::Transform<SReal> camera_H_WorldAfter = world_H_cam.inversed() * world_H_pivot * pivotBefore_R_pivotAfter * world_H_pivot.inversed();
-    //defaulttype::SolidTypes<double>::Transform camera_H_WorldAfter = worldBefore_H_cam.inversed()*worldBefore_R_worldAfter;
 
     positionCam = camera_H_WorldAfter.inversed().getOrigin();
     orientationCam = camera_H_WorldAfter.inversed().getOrientation();
@@ -563,13 +560,17 @@ void BaseCamera::rotateWorldAroundPoint(Quat &rotation, const type::Vec3 &point,
     }
 
     d_orientation.setValue(orientationCam);
-    d_position.endEdit();
+    d_position.setValue(positionCam);
 
     updateOutputData();
 }
 
 
-
+void BaseCamera::rotateWorldAroundPoint(Quat& rotation, const type::Vec3& point, Quat orientationCam)
+{
+    auto positionCam = sofa::helper::getReadAccessor(d_position);
+    rotateWorldAroundPoint(rotation, point, orientationCam, positionCam);
+}
 
 
 type::Vec3 BaseCamera::screenToViewportPoint(const type::Vec3& p) const
@@ -660,6 +661,9 @@ void BaseCamera::computeZ()
 {
     if (d_computeZClip.getValue())
     {
+        const auto sceneCenter = getSceneCenter();
+        const auto sceneRadius = getSceneRadius();
+
         //modelview transform
         sofa::type::Transform<SReal> world_H_cam(d_position.getValue(), this->getOrientation());
 
@@ -736,9 +740,7 @@ void BaseCamera::setView(const type::Vec3& position, const Quat &orientation)
 
 void BaseCamera::setDefaultView(const type::Vec3 & gravity)
 {
-    const type::Vec3 & minBBox = d_minBBox.getValue();
-    const type::Vec3 & maxBBox = d_maxBBox.getValue();
-    sceneCenter = (minBBox + maxBBox)*0.5;
+    const auto sceneCenter = getSceneCenter();
 
     if (b_setDefaultParameters)
     {
@@ -769,7 +771,7 @@ void BaseCamera::setDefaultView(const type::Vec3 & gravity)
 
         //Distance
         const double coeff = 3.0;
-        const double dist = (minBBox - sceneCenter).norm() * coeff;
+        const double dist = (d_minBBox.getValue() - getSceneCenter()).norm() * coeff;
         d_distance.setValue(dist);
         currentDistance = dist;
 
@@ -781,7 +783,7 @@ void BaseCamera::setDefaultView(const type::Vec3 & gravity)
     computeZ();
 }
 
-void BaseCameraXMLExportSingleParameter(tinyxml2::XMLElement* root, core::objectmodel::BaseData& data, const std::string& comment)
+void BaseCameraXMLExportSingleParameter(tinyxml2::XMLElement* root, const core::objectmodel::BaseData& data, const std::string& comment)
 {
     tinyxml2::XMLElement* node = root->GetDocument()->NewElement( data.getName().c_str() );
     node->SetAttribute("value", data.getValueString().c_str() );
@@ -793,7 +795,7 @@ void BaseCameraXMLExportSingleParameter(tinyxml2::XMLElement* root, core::object
     root->LinkEndChild(node);
 }
 
-bool BaseCamera::exportParametersInFile(const std::string& viewFilename)
+bool BaseCamera::exportParametersInFile(const std::string& viewFilename) const
 {
     tinyxml2::XMLDocument doc;
     tinyxml2::XMLDeclaration* decl = doc.NewDeclaration();
@@ -917,6 +919,16 @@ void BaseCamera::updateOutputData()
 
     d_zNear.setValue(currentZNear);
     d_zFar.setValue(currentZFar);
+}
+
+type::Vec3 BaseCamera::getSceneCenter() const
+{
+    return (d_minBBox.getValue() + d_maxBBox.getValue()) * 0.5_sreal;
+}
+
+SReal BaseCamera::getSceneRadius() const
+{
+    return 0.5_sreal * (d_maxBBox.getValue() - d_minBBox.getValue()).norm();
 }
 
 void BaseCamera::handleEvent(sofa::core::objectmodel::Event* event)

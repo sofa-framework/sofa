@@ -27,7 +27,7 @@ namespace sofa::core
 {
 
 
-typedef sofa::core::ObjectFactory::Creator    Creator;
+using Creator = sofa::core::ObjectFactory::BaseObjectCreator;
 
 /**
  *  \brief An Generic Category of the Sofa Library

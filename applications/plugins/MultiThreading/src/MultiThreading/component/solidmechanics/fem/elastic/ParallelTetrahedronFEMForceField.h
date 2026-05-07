@@ -22,11 +22,11 @@
 #pragma once
 
 #include <MultiThreading/config.h>
-#include <MultiThreading/TaskSchedulerUser.h>
+#include <sofa/simulation/task/TaskSchedulerUser.h>
 
 #include <sofa/component/solidmechanics/fem/elastic/TetrahedronFEMForceField.h>
-#include <sofa/simulation/CpuTask.h>
-#include <sofa/simulation/TaskScheduler.h>
+#include <sofa/simulation/task/CpuTask.h>
+#include <sofa/simulation/task/TaskScheduler.h>
 
 #include <thread>
 
@@ -46,7 +46,7 @@ namespace multithreading::component::forcefield::solidmechanics::fem::elastic
 template<class DataTypes>
 class SOFA_MULTITHREADING_PLUGIN_API ParallelTetrahedronFEMForceField :
     virtual public sofa::component::solidmechanics::fem::elastic::TetrahedronFEMForceField<DataTypes>,
-    public TaskSchedulerUser
+    public sofa::simulation::TaskSchedulerUser
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(ParallelTetrahedronFEMForceField, DataTypes), SOFA_TEMPLATE(sofa::component::solidmechanics::fem::elastic::TetrahedronFEMForceField, DataTypes));
@@ -102,7 +102,7 @@ protected:
 };
 
 #if  !defined(SOFA_MULTITHREADING_PARALLELTETRAHEDRONFEMFORCEFIELD_CPP)
-extern template class SOFA_MULTITHREADING_PLUGIN_API ParallelTetrahedronFEMForceField<defaulttype::Vec3Types>;
+extern template class SOFA_MULTITHREADING_PLUGIN_API ParallelTetrahedronFEMForceField<sofa::defaulttype::Vec3Types>;
 #endif
 
 } //namespace sofa::component::forcefield

@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/core/behavior/BaseConstraintSet.h>
 
 namespace sofa::core::behavior
@@ -36,11 +36,11 @@ class BaseConstraintCorrection;
  The parameters are defined in class ConstraintParams.
  *
  */
-class SOFA_CORE_API ConstraintSolver : public virtual objectmodel::BaseObject
+class SOFA_CORE_API ConstraintSolver : public virtual objectmodel::BaseComponent
 {
 public:
 
-    SOFA_ABSTRACT_CLASS(ConstraintSolver, objectmodel::BaseObject);
+    SOFA_ABSTRACT_CLASS(ConstraintSolver, objectmodel::BaseComponent);
     SOFA_BASE_CAST_IMPLEMENTATION(ConstraintSolver)
 
 protected:
@@ -90,6 +90,7 @@ public:
     /// Compute the residual in the newton iterations due to the constraints forces
     /// i.e. compute Vecid::force() += J^t lambda
     /// the result is accumulated in Vecid::force()
+    SOFA_ATTRIBUTE_DEPRECATED__COMPUTERESIDUAL()
     virtual void computeResidual(const core::ExecParams* /*params*/)
     {
         dmsg_error() << "ComputeResidual is not implemented in " << this->getName() ;

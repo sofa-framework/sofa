@@ -42,7 +42,7 @@ namespace sofa::core::behavior
  *  ( df, given a displacement dx ).
  */
 template<class TDataTypes>
-class ForceField : public BaseForceField, public SingleStateAccessor<TDataTypes>
+class ForceField : public BaseForceField, public virtual SingleStateAccessor<TDataTypes>
 {
 public:
     SOFA_CLASS2(SOFA_TEMPLATE(ForceField, TDataTypes), BaseForceField, SOFA_TEMPLATE(SingleStateAccessor, TDataTypes));
@@ -108,14 +108,6 @@ public:
     /// @param df Output vector to fill, result of \f$ kFactor K dx + bFactor B dx \f$
     /// @param dx Input vector used to compute \f$ df = kFactor K dx + bFactor B dx \f$
     virtual void addDForce(const MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx ) = 0;
-
-    //This is required to tell the compiler addClambda is legitimately overloaded,
-    //and it does not hide the one from BaseForceField.
-    //To be removed once addClambda is disabled
-    using BaseForceField::addClambda;
-
-    SOFA_ATTRIBUTE_DISABLED__COMPLIANT()
-    virtual void addClambda(const MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& lambda, SReal cFactor ) = delete;
 
     /// Get the potential energy associated to this ForceField.
     ///
@@ -223,7 +215,7 @@ public:
                 }
             }
 
-            return BaseObject::canCreate(obj, context, arg);
+            return sofa::core::objectmodel::BaseComponent::canCreate(obj, context, arg);
         }
         return false;
     }

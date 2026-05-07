@@ -43,12 +43,22 @@
 #include <sstream>
 #include <list>
 #include <iomanip>
+#include <limits>
 #include <sofa/helper/system/FileSystem.h>
 
 //#define NEW_METHOD_UNBUILT
 
 namespace sofa::component::constraint::lagrangian::correction
 {
+
+namespace
+{
+    inline bool wouldOverflowCompliance(unsigned int a, unsigned int b)
+    {
+        if (a == 0 || b == 0) return false;
+        return a > std::numeric_limits<unsigned int>::max() / b;
+    }
+}
 
 template<class DataTypes>
 PrecomputedConstraintCorrection<DataTypes>::PrecomputedConstraintCorrection(sofa::core::behavior::MechanicalState<DataTypes> *mm)
@@ -139,6 +149,12 @@ bool PrecomputedConstraintCorrection<DataTypes>::loadCompliance(std::string file
             std::ifstream compFileIn(path, std::ifstream::binary);
             if (compFileIn.is_open())
             {
+                if (wouldOverflowCompliance(nbRows, nbCols))
+                {
+                    msg_error() << "Cannot allocate compliance matrix: size overflow for (" << nbRows << "," << nbCols << ")";
+                    compFileIn.close();
+                    return false;
+                }
                 invM->data = new Real[nbRows * nbCols];
 
                 msg_info() << "File " << path << " found. Loading..." ;
@@ -156,6 +172,11 @@ bool PrecomputedConstraintCorrection<DataTypes>::loadCompliance(std::string file
             std::stringstream ss;
             if (sofa::helper::system::DataRepository.findFile(fileName, "", &ss))
             {
+                if (wouldOverflowCompliance(nbRows, nbCols))
+                {
+                    msg_error() << "Cannot allocate compliance matrix: size overflow for (" << nbRows << "," << nbCols << ")";
+                    return false;
+                }
                 invM->data = new Real[nbRows * nbCols];
 
                 std::ifstream compFileIn(fileName.c_str(), std::ifstream::binary);
@@ -253,6 +274,11 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
         msg_info() << "Compliance being built";
 
         // Buffer Allocation
+        if (wouldOverflowCompliance(nbRows, nbCols))
+        {
+            msg_error() << "Cannot allocate compliance matrix: size overflow for (" << nbRows << "," << nbCols << ")";
+            return;
+        }
         invM->data = new Real[nbRows * nbCols];
 
         // for the initial computation, the gravity has to be put at 0
@@ -355,9 +381,6 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
                     fact *= eulerSolver->getPositionIntegrationFactor(); // here, we compute a compliance
 
                     eulerSolver->solve(core::execparams::defaultInstance(), dt, core::vec_id::write_access::position, core::vec_id::write_access::velocity);
-
-                    if (linearSolver)
-                        linearSolver->freezeSystemMatrix(); // do not recompute the matrix for the rest of the precomputation
                 }
 
                 for (unsigned int v = 0; v < nbNodes; v++)
@@ -373,10 +396,6 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
             force[f] = unitary_force;
             msg_info() << tmpStr.str();
         }        
-
-        // Do not recompute the matrix for the rest of the precomputation
-        if (linearSolver)
-            linearSolver->freezeSystemMatrix();
 
         saveCompliance(invName);
 

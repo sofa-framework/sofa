@@ -3,17 +3,17 @@
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU General Public License as published by the Free  *
-* Software Foundation; either version 2 of the License, or (at your option)   *
-* any later version.                                                          *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
 *                                                                             *
 * This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    *
-* more details.                                                               *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
 *                                                                             *
-* You should have received a copy of the GNU General Public License along     *
-* with this program. If not, see <http://www.gnu.org/licenses/>.              *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
@@ -33,7 +33,7 @@
 namespace sofa::simpleapi
 {
 
-using sofa::core::objectmodel::BaseObject;
+using BaseObject [[deprecated("Use sofa::core::objectmodel::BaseObject instead.")]] = sofa::core::objectmodel::BaseObject;
 using sofa::core::objectmodel::BaseObjectDescription;
 
 using sofa::simulation::Simulation ;
@@ -53,11 +53,11 @@ NodeSPtr SOFA_SIMPLEAPI_API createRootNode( Simulation* s, const std::string& na
 ///@brief Create a sofa object in the provided node.
 ///The parameter "params" is for passing specific data argument to the created object including the
 ///object's type.
-sofa::core::sptr<BaseObject> SOFA_SIMPLEAPI_API createObject(NodeSPtr node, BaseObjectDescription& params);
+sofa::core::sptr<sofa::core::objectmodel::BaseComponent> SOFA_SIMPLEAPI_API createObject(NodeSPtr node, BaseObjectDescription& params);
 
 ///@brief create a sofa object in the provided node of the given type.
 ///The parameter "params" is for passing specific data argument to the created object.
-sofa::core::sptr<BaseObject> SOFA_SIMPLEAPI_API createObject( NodeSPtr node, const std::string& type,
+sofa::core::sptr<sofa::core::objectmodel::BaseComponent> SOFA_SIMPLEAPI_API createObject( NodeSPtr node, const std::string& type,
     const std::map<std::string, std::string>& params = std::map<std::string, std::string>{} );
 
 ///@brief create a child to the provided nodeof given name.

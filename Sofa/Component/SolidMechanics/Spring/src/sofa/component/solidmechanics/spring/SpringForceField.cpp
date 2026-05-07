@@ -32,7 +32,7 @@ using namespace sofa::defaulttype;
 
 void registerSpringForceField(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Springs.")
+    factory->registerObjects(core::ObjectRegistrationData("A spring-based force field between two mechanical states, applying Hookean elastic forces with damping.")
         .add< SpringForceField<Vec3Types> >()
         .add< SpringForceField<Vec2Types> >()
         .add< SpringForceField<Vec1Types> >()

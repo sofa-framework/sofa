@@ -143,7 +143,11 @@ const std::string& Utils::getExecutableDirectory()
     return path;
 }
 
-static std::string computeSofaPathPrefix()
+/// @brief variable to store custom path set using @sa setSofaCustomPathPrefix to override classical
+/// SOFA_ROOT or getExecutablePath method
+static std::string s_sofaPathPrefix;
+
+std::string computeSofaPathPrefix()
 {
     const char* pathVar = getenv("SOFA_ROOT");
     if (pathVar != nullptr && FileSystem::exists(pathVar))
@@ -168,8 +172,14 @@ static std::string computeSofaPathPrefix()
 
 const std::string& Utils::getSofaPathPrefix()
 {
-    static const std::string prefix = computeSofaPathPrefix();
-    return prefix;
+    if (s_sofaPathPrefix.empty())
+        s_sofaPathPrefix = computeSofaPathPrefix();
+    return s_sofaPathPrefix;
+}
+
+void Utils::setSofaCustomPathPrefix(const std::string& path)
+{
+    s_sofaPathPrefix = FileSystem::cleanPath(path);
 }
 
 const std::string Utils::getSofaPathTo(const std::string& pathFromBuildDir)
@@ -216,7 +226,7 @@ const std::string& Utils::getUserHomeDirectory()
     {
 #ifdef WIN32 // Windows: ${HOME}
         const char* homeDir = std::getenv("USERPROFILE");
-        return std::string(homeDir);
+        return homeDir ? std::string(homeDir) : std::string("");
 #elif defined(__APPLE__) // macOS : ${HOME} (usually /Users/username)
         glob_t globbuf;
         if (glob("~", GLOB_TILDE, nullptr, &globbuf) == 0)
@@ -246,10 +256,12 @@ const std::string& Utils::getUserHomeDirectory()
     if ((homeDir = std::getenv("HOME")) == nullptr)
     {
         // else system calls are used
-        homeDir = getpwuid(getuid())->pw_dir;
+        struct passwd* pw = getpwuid(getuid());
+        if (pw != nullptr)
+            homeDir = pw->pw_dir;
     }
 
-    return std::string(homeDir);
+    return homeDir ? std::string(homeDir) : std::string("");
 
 #endif
     };

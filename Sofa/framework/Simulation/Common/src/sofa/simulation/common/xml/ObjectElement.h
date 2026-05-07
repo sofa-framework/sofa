@@ -21,12 +21,12 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/simulation/common/xml/Element.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 
 namespace sofa::simulation::xml
 {
 
-class SOFA_SIMULATION_COMMON_API ObjectElement : public Element<sofa::core::objectmodel::BaseObject>
+class SOFA_SIMULATION_COMMON_API ObjectElement : public Element<sofa::core::objectmodel::BaseComponent>
 {
 public:
     ObjectElement(const std::string& name, const std::string& type, BaseElement* parent=nullptr);

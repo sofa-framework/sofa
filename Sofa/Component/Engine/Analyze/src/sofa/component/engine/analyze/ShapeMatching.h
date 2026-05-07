@@ -25,7 +25,7 @@
 
 
 #include <sofa/core/DataEngine.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/core/VecId.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/behavior/SingleStateAccessor.h>
@@ -41,7 +41,7 @@ namespace sofa::component::engine::analyze
  * This class computes target positions using shape matching deformation [Muller05][Muller11]
  */
 template <class DataTypes>
-class ShapeMatching : public core::DataEngine, public core::behavior::SingleStateAccessor<DataTypes>
+class ShapeMatching : public core::DataEngine, public virtual core::behavior::SingleStateAccessor<DataTypes>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(ShapeMatching,DataTypes),core::DataEngine);

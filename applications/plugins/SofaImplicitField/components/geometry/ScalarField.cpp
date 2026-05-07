@@ -53,7 +53,6 @@ void ScalarField::getValues(const std::vector<Vec3d>& positions, std::vector<dou
     {
         results.emplace_back(getValue(position));
     }
-    return;
 }
 
 Vec3d ScalarField::getGradientByFinitDifference(Vec3d& pos, int& i)

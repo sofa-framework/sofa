@@ -72,7 +72,8 @@ SOFA_CORE_API SReal dt(const sofa::core::MechanicalParams*);
 namespace sofa::core::objectmodel
 {
 class Base;
-class BaseObject;
+class BaseComponent;
+using BaseObject = BaseComponent;
 class BaseNode;
 class BaseContext;
 class BaseData;
@@ -211,6 +212,9 @@ sofa::core::objectmodel::Base* castToBase(Source*b){ return b; }
 template<class Dest>
 Dest castTo(sofa::core::objectmodel::Base* base){ return dynamic_cast<Dest>(base); }
 
+template<class Dest>
+const Dest castTo(const sofa::core::objectmodel::Base* base){ return dynamic_cast<const Dest>(base); }
+
 namespace objectmodel::base
 {
 /// Returns the BaseClass* from type parameter B, hiding B::GetClass()
@@ -231,10 +235,13 @@ const sofa::core::objectmodel::BaseClass* GetClass(){return B::GetClass(); }
 ///
 /// Once declare it is mandatory to also define the same functions.
 /// For that you must use SOFA_DEFINE_OPAQUE_FUNCTION_BETWEEN_BASE_AND
+#define SOFA_DECLARE_WITH_API_MACRO_OPAQUE_FUNCTION_BETWEEN_BASE_AND(TYPENAME, API_MACRO) \
+    template<> API_MACRO TYPENAME* castTo(sofa::core::objectmodel::Base* base); \
+    API_MACRO sofa::core::objectmodel::Base* castToBase(TYPENAME* b); \
+    namespace objectmodel::base { template<> API_MACRO const sofa::core::objectmodel::BaseClass* GetClass<TYPENAME>(); }
+
 #define SOFA_DECLARE_OPAQUE_FUNCTION_BETWEEN_BASE_AND(TYPENAME) \
-    template<> SOFA_CORE_API TYPENAME* castTo(sofa::core::objectmodel::Base* base); \
-    SOFA_CORE_API sofa::core::objectmodel::Base* castToBase(TYPENAME* b); \
-    namespace objectmodel::base { template<> SOFA_CORE_API const sofa::core::objectmodel::BaseClass* GetClass<TYPENAME>(); }
+    SOFA_DECLARE_WITH_API_MACRO_OPAQUE_FUNCTION_BETWEEN_BASE_AND(TYPENAME, SOFA_CORE_API)
 
 /// Define the opaque function signature for a type that in-herit from Base.
 ///
@@ -260,7 +267,7 @@ SOFA_DECLARE_OPAQUE_FUNCTION_BETWEEN_BASE_AND(sofa::core::BaseMapping);
 SOFA_DECLARE_OPAQUE_FUNCTION_BETWEEN_BASE_AND(sofa::core::BehaviorModel);
 SOFA_DECLARE_OPAQUE_FUNCTION_BETWEEN_BASE_AND(sofa::core::CollisionModel);
 
-SOFA_DECLARE_OPAQUE_FUNCTION_BETWEEN_BASE_AND(sofa::core::objectmodel::BaseObject);
+SOFA_DECLARE_OPAQUE_FUNCTION_BETWEEN_BASE_AND(sofa::core::objectmodel::BaseComponent);
 SOFA_DECLARE_OPAQUE_FUNCTION_BETWEEN_BASE_AND(sofa::core::objectmodel::ContextObject);
 SOFA_DECLARE_OPAQUE_FUNCTION_BETWEEN_BASE_AND(sofa::core::objectmodel::ConfigurationSetting);
 

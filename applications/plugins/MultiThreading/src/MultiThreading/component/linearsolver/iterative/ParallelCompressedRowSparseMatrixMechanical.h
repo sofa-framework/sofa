@@ -22,8 +22,8 @@
 #pragma once
 
 #include <sofa/linearalgebra/CompressedRowSparseMatrixMechanical.h>
-#include <sofa/simulation/ParallelForEach.h>
-#include <sofa/simulation/TaskScheduler.h>
+#include <sofa/simulation/task/ParallelForEach.h>
+#include <sofa/simulation/task/TaskScheduler.h>
 
 namespace multithreading::component::linearsolver::iterative
 {

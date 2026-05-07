@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
 #include <sofa/core/objectmodel/BaseContext.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
 #include <iostream>
 #include <sofa/helper/logging/Messaging.h>

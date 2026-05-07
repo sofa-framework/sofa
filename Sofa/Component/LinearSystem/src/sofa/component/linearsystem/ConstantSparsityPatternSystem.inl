@@ -35,7 +35,7 @@ struct CheckNoChangeInInsertionOrder : virtual core::matrixaccumulator::IndexVer
     using verify_index = std::true_type;
     using skip_insertion_if_error = std::true_type;
 
-    sofa::core::objectmodel::BaseObject* m_messageComponent { nullptr };
+    sofa::core::objectmodel::BaseComponent* m_messageComponent { nullptr };
 
     [[nodiscard]]
     helper::logging::MessageDispatcher::LoggerStream logger() const
@@ -132,7 +132,7 @@ void ConstantSparsityPatternSystem<TMatrix, TVector>::replaceLocalMatrixMapped(c
                     mat->compressedInsertionOrderList.reserve(insertionOrderList.size());
                     for (const auto& [row, col] : insertionOrderList)
                     {
-                        mat->compressedInsertionOrderList.push_back(mapping.at(row + col * sharedMatrix->rows()));
+                        mat->compressedInsertionOrderList.push_back(mapping.at(static_cast<std::int64_t>(row) + static_cast<std::int64_t>(col) * sharedMatrix->rows()));
                     }
                 }
                 else
@@ -209,7 +209,7 @@ void ConstantSparsityPatternSystem<TMatrix, TVector>::replaceLocalMatrixNonMappe
         // row and col are in global coordinates but the local coordinates will be checked
         pairInsertionOrderList.push_back({row - posInGlobalMatrix[0], col - posInGlobalMatrix[1]});
 
-        const auto flatIndex = row + col * this->getSystemMatrix()->rows();
+        const auto flatIndex = static_cast<std::int64_t>(row) + static_cast<std::int64_t>(col) * this->getSystemMatrix()->rows();
         const auto it = m_constantCRSMapping->find(flatIndex);
         if (it != m_constantCRSMapping->end())
         {
@@ -327,7 +327,7 @@ void ConstantSparsityPatternSystem<TMatrix, TVector>::buildHashTable(linearalgeb
         for(auto xj = rowRange.begin() ; xj < rowRange.end() ; ++xj )  // for each non-null block
         {
             const auto col = M.colsIndex[xj];
-            mapping.emplace(row + col * M.rows(), xj);
+            mapping.emplace(static_cast<std::int64_t>(row) + static_cast<std::int64_t>(col) * M.rows(), xj);
         }
     }
 }
@@ -480,7 +480,7 @@ void ConstantSparsityPatternSystem<TMatrix, TVector>::makeCreateDispatcher()
 template <class TMatrix, class TVector>
 std::shared_ptr<sofa::core::matrixaccumulator::IndexVerificationStrategy>
 ConstantSparsityPatternSystem<TMatrix, TVector>::makeIndexVerificationStrategy(
-    sofa::core::objectmodel::BaseObject* component)
+    sofa::core::objectmodel::BaseComponent* component)
 {
     auto strategy =  std::make_shared<StrategyCheckerType>();
     strategy->core::matrixaccumulator::RangeVerification::m_messageComponent = component;

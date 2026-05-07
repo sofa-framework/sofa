@@ -21,15 +21,17 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 
 
 namespace sofa::core::behavior
 {
 
-class BaseRotationFinder : public virtual sofa::core::objectmodel::BaseObject
+class BaseRotationFinder : public virtual sofa::core::objectmodel::BaseComponent
 {
 public:
+    SOFA_ABSTRACT_CLASS(BaseRotationFinder, sofa::core::objectmodel::BaseComponent);
+
     virtual void getRotations(linearalgebra::BaseMatrix * m, int offset = 0) = 0;
 };
 

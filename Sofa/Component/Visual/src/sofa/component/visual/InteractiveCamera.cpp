@@ -70,6 +70,7 @@ void InteractiveCamera::moveCamera(int x, int y)
             currentTrackball.ComputeQuaternion(x1, y1, x2, y2);
             //fetch rotation
             newQuat = currentTrackball.GetQuaternion();
+
             type::Vec3 pivot;
             switch (d_pivot.getValue())
             {
@@ -84,14 +85,14 @@ void InteractiveCamera::moveCamera(int x, int y)
                 break;
             case SCENE_CENTER_PIVOT:
             default:
-                pivot = sceneCenter;
+                pivot = getSceneCenter();
                 break;
             }
-            rotateWorldAroundPoint(newQuat, pivot, this->getOrientation());
+            rotateWorldAroundPoint(newQuat, pivot, m_startingCameraOrientation, m_startingCameraPosition);
         }
         else if (currentMode == ZOOM_MODE)
         {
-            const double zoomStep = d_zoomSpeed.getValue() * (0.01 * sceneRadius ) / heightViewport;
+            const double zoomStep = d_zoomSpeed.getValue() * (0.01 * getSceneRadius() ) / heightViewport;
             double zoomDistance = zoomStep * -(y - lastMousePosY);
 
             type::Vec3 trans(0.0, 0.0, zoomDistance);
@@ -108,7 +109,7 @@ void InteractiveCamera::moveCamera(int x, int y)
         else if (currentMode == PAN_MODE)
         {
             type::Vec3 trans(lastMousePosX - x,  y-lastMousePosY, 0.0);
-            trans = cameraToWorldTransform(trans) * d_panSpeed.getValue() * (0.01 * sceneRadius ) ;
+            trans = cameraToWorldTransform(trans) * d_panSpeed.getValue() * (0.01 * getSceneRadius() ) ;
             translate(trans);
             if ( !d_fixedLookAtPoint.getValue() )
             {
@@ -117,12 +118,15 @@ void InteractiveCamera::moveCamera(int x, int y)
         }
         //must call update afterwards
 
-        lastMousePosX = x;
-        lastMousePosY = y;
+        if (currentMode != TRACKBALL_MODE)
+        {
+            lastMousePosX = x;
+            lastMousePosY = y;
+        }
     }
     else if (currentMode == WHEEL_ZOOM_MODE)
     {
-        const double zoomStep = d_zoomSpeed.getValue() * (0.01 * sceneRadius ) / heightViewport;
+        const double zoomStep = d_zoomSpeed.getValue() * (0.01 * getSceneRadius() ) / heightViewport;
         double zoomDistance = zoomStep * -(y*0.5);
 
         type::Vec3 trans(0.0, 0.0, zoomDistance);
@@ -186,6 +190,9 @@ void InteractiveCamera::processMouseEvent(core::objectmodel::MouseEvent* me)
     {
         isMoving = true;
         currentMode = TRACKBALL_MODE;
+        
+        m_startingCameraOrientation = this->getOrientation();
+        m_startingCameraPosition = this->getPosition();
         lastMousePosX = posX;
         lastMousePosY = posY;
     }

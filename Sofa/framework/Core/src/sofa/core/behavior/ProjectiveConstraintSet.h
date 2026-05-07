@@ -39,7 +39,7 @@ namespace sofa::core::behavior
  *
  */
 template<class DataTypes>
-class ProjectiveConstraintSet : public BaseProjectiveConstraintSet, public SingleStateAccessor<DataTypes>
+class ProjectiveConstraintSet : public BaseProjectiveConstraintSet, public virtual SingleStateAccessor<DataTypes>
 {
 public:
     SOFA_CLASS2(SOFA_TEMPLATE(ProjectiveConstraintSet,DataTypes), BaseProjectiveConstraintSet, SOFA_TEMPLATE(SingleStateAccessor, DataTypes));
@@ -153,7 +153,7 @@ public:
             return false;
         }
 
-        return BaseObject::canCreate(obj, context, arg);
+        return sofa::core::objectmodel::BaseComponent::canCreate(obj, context, arg);
     }
 };
 

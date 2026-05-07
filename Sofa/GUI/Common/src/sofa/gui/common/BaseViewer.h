@@ -3,35 +3,33 @@
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU General Public License as published by the Free  *
-* Software Foundation; either version 2 of the License, or (at your option)   *
-* any later version.                                                          *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
 *                                                                             *
 * This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    *
-* more details.                                                               *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
 *                                                                             *
-* You should have received a copy of the GNU General Public License along     *
-* with this program. If not, see <http://www.gnu.org/licenses/>.              *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/gui/common/config.h>
-
+#include <sofa/component/visual/BaseCamera.h>
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/core/visual/DrawMesh.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/gui/common/ColourPickingVisitor.h>
-
+#include <sofa/gui/common/config.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/Node.h>
-
-#include <sofa/component/visual/BaseCamera.h>
 
 #include <string>
 
@@ -107,7 +105,7 @@ public:
     virtual int getWidth()=0;
     virtual int getHeight()=0;
     virtual void captureEvent() {}
-    virtual void fitObjectBBox(sofa::core::objectmodel::BaseObject* );
+    virtual void fitObjectBBox(sofa::core::objectmodel::BaseComponent* );
     virtual void fitNodeBBox(sofa::core::objectmodel::BaseNode*);
 
     virtual void setFullScreen(bool /*enable*/) {}
@@ -134,6 +132,7 @@ public:
     bool m_showSelectedObjectSurfaces {false};
     bool m_showSelectedObjectVolumes {false};
     bool m_showSelectedObjectIndices {false};
+    type::RGBAColor m_selectionColor {type::RGBAColor::purple()};
     float m_visualScaling {0.2};
 
 protected:
@@ -173,6 +172,7 @@ protected:
     std::string _screenshotDirectory;
 
     std::set<sofa::core::objectmodel::Base::SPtr> currentSelection;
+    std::unordered_map<sofa::core::objectmodel::BaseComponent*, core::visual::DrawMesh> m_drawMeshContainer;
 };
 
 } // namespace sofa::gui::common

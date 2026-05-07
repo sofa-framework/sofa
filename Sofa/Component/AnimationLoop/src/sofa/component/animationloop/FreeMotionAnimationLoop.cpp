@@ -40,13 +40,17 @@
 #include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/simulation/UpdateMappingEndEvent.h>
 #include <sofa/simulation/UpdateBoundingBoxVisitor.h>
-#include <sofa/simulation/TaskScheduler.h>
+#include <sofa/simulation/task/TaskScheduler.h>
 #include <sofa/simulation/CollisionVisitor.h>
 #include <sofa/simulation/SolveVisitor.h>
-#include <sofa/simulation/MainTaskSchedulerFactory.h>
+#include <sofa/simulation/task/MainTaskSchedulerFactory.h>
+#include <sofa/component/constraint/lagrangian/solver/BlockGaussSeidelConstraintSolver.h>
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalVInitVisitor.h>
+
+#include <sofa/component/constraint/lagrangian/solver/BlockGaussSeidelConstraintSolver.h>
 using sofa::simulation::mechanicalvisitor::MechanicalVInitVisitor;
+
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalBeginIntegrationVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalBeginIntegrationVisitor;
@@ -67,7 +71,7 @@ using namespace core::behavior;
 using namespace sofa::simulation;
 using sofa::helper::ScopedAdvancedTimer;
 
-using DefaultConstraintSolver = sofa::component::constraint::lagrangian::solver::GenericConstraintSolver;
+using DefaultConstraintSolver = sofa::component::constraint::lagrangian::solver::BlockGaussSeidelConstraintSolver;
 
 FreeMotionAnimationLoop::FreeMotionAnimationLoop() :
     d_solveVelocityConstraintFirst(initData(&d_solveVelocityConstraintFirst , false, "solveVelocityConstraintFirst", "solve separately velocity constraint violations before position constraint violations"))
@@ -100,7 +104,7 @@ void FreeMotionAnimationLoop::init()
         l_constraintSolver.set(this->getContext()->get<sofa::core::behavior::ConstraintSolver>(core::objectmodel::BaseContext::SearchDown));
         if (!l_constraintSolver)
         {
-            if (const auto constraintSolver = sofa::core::objectmodel::New<DefaultConstraintSolver>())
+            if (const auto constraintSolver = sofa::core::objectmodel::New<constraint::lagrangian::solver::BlockGaussSeidelConstraintSolver>())
             {
                 getContext()->addObject(constraintSolver);
                 constraintSolver->setName( this->getContext()->getNameHelper().resolveName(constraintSolver->getClassName(), {}));
@@ -128,19 +132,10 @@ void FreeMotionAnimationLoop::init()
         }
     }
 
-    auto* taskScheduler = sofa::simulation::MainTaskSchedulerFactory::createInRegistry();
-    assert(taskScheduler != nullptr);
+
     if (d_parallelCollisionDetectionAndFreeMotion.getValue() || d_parallelODESolving.getValue())
     {
-        if (taskScheduler->getThreadCount() < 1)
-        {
-            taskScheduler->init(0);
-            msg_info() << "Task scheduler initialized on " << taskScheduler->getThreadCount() << " threads";
-        }
-        else
-        {
-            msg_info() << "Task scheduler already initialized on " << taskScheduler->getThreadCount() << " threads";
-        }
+        initTaskScheduler();
     }
 
     this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
@@ -344,9 +339,6 @@ void FreeMotionAnimationLoop::computeFreeMotionAndCollisionDetection(const sofa:
     {
         SCOPED_TIMER("FreeMotion+CollisionDetection");
 
-        auto* taskScheduler = sofa::simulation::MainTaskSchedulerFactory::createInRegistry();
-        assert(taskScheduler != nullptr);
-
         preCollisionComputation(params);
 
         {
@@ -364,7 +356,7 @@ void FreeMotionAnimationLoop::computeFreeMotionAndCollisionDetection(const sofa:
         }
 
         sofa::simulation::CpuTask::Status freeMotionTaskStatus;
-        taskScheduler->addTask(freeMotionTaskStatus, [&]() { computeFreeMotion(params, cparams, dt, pos, freePos, freeVel, mop); });
+        m_taskScheduler->addTask(freeMotionTaskStatus, [&]() { computeFreeMotion(params, cparams, dt, pos, freePos, freeVel, mop); });
 
         {
             SCOPED_TIMER("CollisionDetection");
@@ -375,7 +367,7 @@ void FreeMotionAnimationLoop::computeFreeMotionAndCollisionDetection(const sofa:
 
         {
             SCOPED_TIMER("WaitFreeMotion");
-            taskScheduler->workUntilDone(&freeMotionTaskStatus);
+            m_taskScheduler->workUntilDone(&freeMotionTaskStatus);
         }
 
         {

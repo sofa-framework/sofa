@@ -36,8 +36,8 @@
 #include <sofa/core/behavior/BaseLocalForceFieldMatrix.h>
 #include <sofa/core/behavior/BaseLocalMassMatrix.h>
 #include <sofa/core/MechanicalParams.h>
-#include <sofa/simulation/MainTaskSchedulerFactory.h>
-#include <sofa/simulation/ParallelForEach.h>
+#include <sofa/simulation/task/MainTaskSchedulerFactory.h>
+#include <sofa/simulation/task/ParallelForEach.h>
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalIdentityBlocksInJacobianVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalIdentityBlocksInJacobianVisitor;
@@ -239,7 +239,7 @@ inline sofa::type::vector<core::behavior::BaseMechanicalState*> retrieveAssociat
 
 inline sofa::type::vector<core::behavior::BaseMechanicalState*> retrieveAssociatedMechanicalState(BaseMapping* component)
 {
-    type::vector<BaseMechanicalState*> mstates = component->getMechFrom();
+    type::vector<core::behavior::BaseMechanicalState*> mstates = component->getMechFrom();
 
     //remove duplicates: it may happen for MultiMappings
     std::sort( mstates.begin(), mstates.end() );
@@ -677,6 +677,27 @@ void MatrixLinearSystem<TMatrix, TVector>::associateLocalMatrixToComponents(cons
     {
         SCOPED_TIMER_VARNAME(clearSystemTimer, "clearSystem");
         this->clearSystem();
+
+        const auto removeCachedComponents = []<class T>(const sofa::type::vector<T*>& components, auto& map)
+        {
+            sofa::type::vector<T*> toRemove;
+            for (const auto& [component, matrix] : map)
+            {
+                if (std::find(components.begin(), components.end(), component) == components.end())
+                {
+                    toRemove.push_back(component);
+                }
+            }
+            for (const auto& component : toRemove)
+            {
+                map.erase(component);
+            }
+        };
+
+        removeCachedComponents(this->m_forceFields, this->m_stiffness);
+        removeCachedComponents(this->m_forceFields, this->m_damping);
+        removeCachedComponents(this->m_masses, this->m_mass);
+        removeCachedComponents(this->m_mechanicalMappings, this->m_geometricStiffness);
     }
 
     {
@@ -739,7 +760,7 @@ TMatrix, TVector>::getContributors() const
 }
 
 template <class TMatrix, class TVector>
-const MappingGraph& MatrixLinearSystem<TMatrix, TVector>::getMappingGraph() const
+const simulation::MappingGraph& MatrixLinearSystem<TMatrix, TVector>::getMappingGraph() const
 {
     return m_mappingGraph;
 }
@@ -863,6 +884,8 @@ void MatrixLinearSystem<TMatrix, TVector>::associateLocalMatrixTo(
             dmsg_fatal() << "Local matrix is invalid";
         }
 
+        localMatrix->setFactor(factor);
+
         const auto matrixSize1 = mstate0->getMatrixSize();
         const auto matrixSize2 = mstate1->getMatrixSize();
         if (!isAnyMapped) // mapped components don't add their contributions directly into the global matrix
@@ -893,7 +916,7 @@ void MatrixLinearSystem<TMatrix, TVector>::makeCreateDispatcher()
 
 template <class TMatrix, class TVector>
 std::shared_ptr<sofa::core::matrixaccumulator::IndexVerificationStrategy> MatrixLinearSystem<TMatrix, TVector>::
-makeIndexVerificationStrategy(sofa::core::objectmodel::BaseObject* component)
+makeIndexVerificationStrategy(sofa::core::objectmodel::BaseComponent* component)
 {
     auto strategy = std::make_shared<core::matrixaccumulator::RangeVerification>();
     strategy->m_messageComponent = component;

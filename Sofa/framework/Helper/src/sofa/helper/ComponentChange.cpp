@@ -30,6 +30,7 @@ std::map<std::string, Deprecated, std::less<> > deprecatedComponents = {
     {"BruteForceDetection", Deprecated("v21.06", "v21.12")},
     {"DirectSAP", Deprecated("v21.06", "v21.12")},
     {"RigidRigidMapping", Deprecated("v23.06", "v23.12", "You can use the component RigidMapping with template='Rigid3,Rigid3' instead.")},
+    {"ConstraintAnimationLoop", Deprecated("v26.06", "v26.12", "Use FreeMotionAnimationLoop instead.")},
 };
 
 std::map<std::string, ComponentChange, std::less<> > movedComponents = {
@@ -622,6 +623,18 @@ std::map<std::string, ComponentChange, std::less<> > movedComponents = {
 std::map<std::string, ComponentChange, std::less<> > uncreatableComponents = {
 
     /***********************/
+    // REMOVED SINCE v25.12
+
+    { "GenericConstraintSolver",
+        ComponentChange().withCustomMessage("GenericConstraintSolver has been replaced since v25.12 by a set of new components, whose names relate to the method used:\n"
+             "    - BlockGaussSeidelConstraintSolver (if you were using this component without setting 'resolutionMethod' or by setting it to 'ProjectedGaussSeidel')\n"
+             "    - UnbuiltGaussSeidelConstraintSolver (if you were using this component while setting 'resolutionMethod=\"UnbuiltGaussSeidel\"')\n"
+             "    - NNCGConstraintSolver (if you were using this component while setting 'resolutionMethod=\"NonsmoothNonlinearConjugateGradient\"')\n"
+             "      --> For NNCGConstraintSolver, data 'newtonIterations' has been replaced by 'maxIterations'"
+             )},
+
+
+    /***********************/
     // REMOVED SINCE v25.06
 
     { "MakeAliasComponent", RemovedIn("v25.06").afterDeprecationIn("v24.12")},
@@ -753,7 +766,8 @@ std::map< std::string, Renamed, std::less<> > renamedComponents = {
     {"StiffSpringForceField", Renamed("v24.06","v25.06","SpringForceField")},
     {"ParallelStiffSpringForceField", Renamed("v24.06","v25.06","ParallelSpringForceField")},
     {"ShewchukPCGLinearSolver", Renamed("v24.12","v25.12","PCGLinearSolver")},
-    {"OglCylinderModel", Renamed("v24.12", "v25.06", "CylinderVisualModel")}
+    {"OglCylinderModel", Renamed("v24.12", "v25.06", "CylinderVisualModel")},
+    {"TriangleOctreeModel", Renamed("v25.12", "v26.06", "TriangleOctreeCollisionModel") }
 };
 
 

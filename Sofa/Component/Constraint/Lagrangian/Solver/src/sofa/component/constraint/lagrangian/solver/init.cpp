@@ -26,8 +26,12 @@
 namespace sofa::component::constraint::lagrangian::solver
 {
 
-extern void registerGenericConstraintSolver(sofa::core::ObjectFactory* factory);
+extern void registerNNCGConstraintSolver(sofa::core::ObjectFactory* factory);
+extern void registerBlockGaussSeidelConstraintSolver(sofa::core::ObjectFactory* factory);
+extern void registerUnbuiltGaussSeidelConstraintSolver(sofa::core::ObjectFactory* factory);
 extern void registerLCPConstraintSolver(sofa::core::ObjectFactory* factory);
+extern void registerImprovedJacobiConstraintSolver(sofa::core::ObjectFactory* factory);
+extern void registerPreconditionedConjugateResidual(sofa::core::ObjectFactory* factory);
 
 extern "C" {
     SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
@@ -53,8 +57,12 @@ const char* getModuleVersion()
 
 void registerObjects(sofa::core::ObjectFactory* factory)
 {
-    registerGenericConstraintSolver(factory);
+    registerNNCGConstraintSolver(factory);
+    registerBlockGaussSeidelConstraintSolver(factory);
+    registerUnbuiltGaussSeidelConstraintSolver(factory);
     registerLCPConstraintSolver(factory);
+    registerImprovedJacobiConstraintSolver(factory);
+    registerPreconditionedConjugateResidual(factory);
 }
 
 void init()

@@ -24,7 +24,7 @@
 #include <sofa/component/collision/response/mapper/BarycentricContactMapper.inl>
 #include <sofa/component/collision/response/mapper/TetrahedronBarycentricContactMapper.h>
 
-#include <sofa/component/collision/geometry/TetrahedronModel.h>
+#include <sofa/component/collision/geometry/TetrahedronCollisionModel.h>
 
 namespace sofa::component::collision::response::contact
 {

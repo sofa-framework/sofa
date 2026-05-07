@@ -55,10 +55,17 @@ void StaticSolver::parse(core::objectmodel::BaseObjectDescription* arg)
     {
         if (const char* attribute = arg->getAttribute(data.m_name))
         {
-            data.value.emplace(std::stod(attribute));
-            msg_warning() << "The attribute '" << data.m_name
-                << "' is no longer defined in this component. Instead, define the attribute '"
-                << newAttributeName << "' in the NewtonRaphsonSolver component associated with this StaticSolver.";
+            try
+            {
+                data.value.emplace(std::stod(attribute));
+                msg_warning() << "The attribute '" << data.m_name
+                    << "' is no longer defined in this component. Instead, define the attribute '"
+                    << newAttributeName << "' in the NewtonRaphsonSolver component associated with this StaticSolver.";
+            }
+            catch (const std::exception&)
+            {
+                msg_warning() << "Invalid value '" << attribute << "' for deprecated attribute '" << data.m_name << "'";
+            }
         }
     };
 
@@ -150,9 +157,10 @@ struct StaticResidualFunction : newton_raphson::BaseNonLinearFunction
     {
         SCOPED_TIMER("MBKSolve");
 
-        linearSolver->setSystemLHVector(dx);
-        linearSolver->setSystemRHVector(force);
+        linearSolver->getLinearSystem()->setSystemSolution(dx);
+        linearSolver->getLinearSystem()->setRHS(force);
         linearSolver->solveSystem();
+        linearSolver->getLinearSystem()->dispatchSystemSolution(dx);
     }
 
     SReal squaredNormDx() override

@@ -35,10 +35,13 @@ namespace engine
 
 using namespace defaulttype;
 
-int ImageCoordValuesFromPositionsClass = core::RegisterObject("Get interpolated coordinates at sample locations in an image with 3 channels")
-        .add<ImageCoordValuesFromPositions<ImageD> >(true)
-        .add<ImageCoordValuesFromPositions<ImageF> >()
-        ;
+void registerImageCoordValuesFromPositions(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Get interpolated coordinates at sample locations in an image with 3 channels")
+    .add<ImageCoordValuesFromPositions<ImageD> >(true)
+    .add<ImageCoordValuesFromPositions<ImageF> >());
+}
+
 
 template class SOFA_IMAGE_API ImageCoordValuesFromPositions<ImageD>;
 template class SOFA_IMAGE_API ImageCoordValuesFromPositions<ImageF>;

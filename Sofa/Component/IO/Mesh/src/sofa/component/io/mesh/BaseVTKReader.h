@@ -26,7 +26,7 @@
 #include <iosfwd>
 
 #include <sofa/core/objectmodel/BaseData.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 
 namespace sofa::component::io::mesh::basevtkreader
 {
@@ -36,7 +36,7 @@ namespace sofa::component::io::mesh::basevtkreader
 /// So that you can access to BaseVTKReader with
 /// sofa::component::loader::BaseVTKReader or sofa::component::loader::basevtkreader::BaseVTKReader
 
-using sofa::core::objectmodel::BaseObject ;
+using BaseObject [[deprecated("Use sofa::core::objectmodel::BaseObject instead.")]] = sofa::core::objectmodel::BaseObject;
 using sofa::core::objectmodel::BaseData ;
 
 using std::ofstream ;
@@ -49,10 +49,10 @@ enum class VTKDatasetFormat { IMAGE_DATA, STRUCTURED_POINTS,
                               POLYDATA, UNSTRUCTURED_GRID
                             };
 
-class BaseVTKReader : public BaseObject
+class BaseVTKReader : public sofa::core::objectmodel::BaseComponent
 {
 public:
-    class BaseVTKDataIO : public BaseObject
+    class BaseVTKDataIO : public sofa::core::objectmodel::BaseComponent
     {
     public:
         string name;
@@ -103,12 +103,13 @@ public:
     BaseVTKDataIO* inputPolygons;
     BaseVTKDataIO* inputCells;
     BaseVTKDataIO* inputCellOffsets;
-    BaseVTKDataIO* inputCellTypes;
+    VTKDataIO<int>* inputCellTypes;
     type::vector<BaseVTKDataIO*> inputPointDataVector;
     type::vector<BaseVTKDataIO*> inputCellDataVector;
     bool isLittleEndian;
+    char* m_inputIndicesText;
 
-    int numberOfPoints, numberOfCells, numberOfLines;
+    int numberOfPoints, numberOfCells, numberOfPolys, numberOfLines;
 
     BaseVTKReader() ;
 

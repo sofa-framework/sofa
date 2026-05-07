@@ -23,7 +23,7 @@
 
 #include <sofa/component/mapping/linear/BeamLinearMapping.h>
 
-#include <sofa/simulation/CpuTask.h>
+#include <sofa/simulation/task/CpuTask.h>
 
 
 namespace multithreading::component::mapping::linear

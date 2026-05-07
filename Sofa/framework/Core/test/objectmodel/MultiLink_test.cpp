@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/core/objectmodel/BaseObject.h>
-using sofa::core::objectmodel::BaseObject ;
+#include <sofa/core/objectmodel/BaseComponent.h>
+using sofa::core::objectmodel::BaseComponent ;
 #include <sofa/core/objectmodel/BaseNode.h>
 using sofa::core::objectmodel::BaseNode ;
 

@@ -298,9 +298,12 @@ bool GLSLShader::CompileShader(GLint target, const ShaderContents& shaderContent
             msg_error() << "Header:\n" << header;
 
         GLcharARB *logString = (GLcharARB *)malloc((length + 1) * sizeof(GLcharARB));
-        glGetInfoLogARB(shader, length, &laux, logString);
-        msg_error() << logString;
-        free(logString);
+        if (logString != nullptr)
+        {
+            glGetInfoLogARB(shader, length, &laux, logString);
+            msg_error() << logString;
+            free(logString);
+        }
     }
     if (compiled)
         m_hShaders[target] = shader;
@@ -371,9 +374,12 @@ void GLSLShader::InitShaders()
     if (length > 1)
     {
         GLcharARB *logString = (GLcharARB *)malloc((length+1) * sizeof(GLcharARB));
-        glGetInfoLogARB(m_hProgramObject, length, &laux, logString);
-        msg_error() << logString;
-        free(logString);
+        if (logString != nullptr)
+        {
+            glGetInfoLogARB(m_hProgramObject, length, &laux, logString);
+            msg_error() << logString;
+            free(logString);
+        }
         for (std::map<GLint,ShaderContents>::const_iterator it = m_hShaderContents.begin(), itend = m_hShaderContents.end(); it != itend; ++it)
             if(!it->second.filename.empty())
                 msg_error() << GetShaderStageName(it->first) << " shader file: " << it->second.filename ;

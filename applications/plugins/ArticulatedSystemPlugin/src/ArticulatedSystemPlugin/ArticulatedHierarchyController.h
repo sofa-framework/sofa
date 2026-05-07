@@ -37,7 +37,7 @@
 #include <sofa/component/controller/Controller.h>
 
 #include <ArticulatedSystemPlugin/ArticulatedHierarchyContainer.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/type/vector.h>
 
 #include <map>

@@ -85,6 +85,7 @@ protected:
     // data for dual quat blending
     Data< type::vector<unsigned int> > d_nbRef; ///< Number of primitives influencing each point.
     Data< type::vector<sofa::type::SVector<unsigned int> > > d_index; ///< parent indices for each child.
+    Data< bool > d_computeWeightsFromPosition;
     Data< type::vector<sofa::type::SVector<InReal> > > d_weight; ///< influence weights of the Dofs.
     void updateWeights();
 

@@ -12,8 +12,8 @@ if(CMAKE_VERSION VERSION_GREATER_EQUAL "3.24.0")
 endif()
 
 # Manually define VERSION
-set(Sofa_VERSION_MAJOR 25)
-set(Sofa_VERSION_MINOR 12)
+set(Sofa_VERSION_MAJOR 26)
+set(Sofa_VERSION_MINOR 06)
 set(Sofa_VERSION_PATCH 99)
 set(Sofa_VERSION ${Sofa_VERSION_MAJOR}.${Sofa_VERSION_MINOR}.${Sofa_VERSION_PATCH})
 
@@ -53,7 +53,7 @@ option(SOFA_BUILD_RELEASE_PACKAGE "Run package specific configure" OFF)
 # Option to allow some dependencies such as cxxopts to be fetched by cmake if
 # the package is not found
 option(SOFA_ALLOW_FETCH_DEPENDENCIES "Allow compatible dependencies to be fetched if the package is not found by cmake.
-  List of dependencies that can be fetched: cxxopts, gtest, metis, CImg" ON)
+  List of dependencies that can be fetched: cxxopts, gtest, metis, CImg, nlohmann json" ON)
 
 # Option to accelerate the compilation
 # see https://cmake.org/cmake/help/v3.16/command/target_precompile_headers.html
@@ -101,9 +101,12 @@ include(SofaMacros)
 
 install(FILES
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/FindEigen3.cmake"
-    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/macdeployqt.cmake"
-    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/windeployqt.cmake"
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/FindTinyXML2.cmake"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/FindPNG.cmake"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/FindPCRE2.cmake"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/FindZSTD.cmake"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/FindZLIB.cmake"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/FindQGLViewer.cmake"
     DESTINATION lib/cmake/Modules
     COMPONENT headers
     )
@@ -146,7 +149,7 @@ if(MSVC)
         if(SOFA_DEPENDENCY_PACK_DIR AND EXISTS ${SOFA_DEPENDENCY_PACK_DIR})
             add_subdirectory(${SOFA_DEPENDENCY_PACK_DIR} ${CMAKE_BINARY_DIR}/extlibs/SofaDependencyPack)
         else ()
-            message(INFO "Fetching WinDepPack")
+            message(STATUS "Fetching WinDepPack")
             sofa_fetch_dependency(WinDepPack GIT_REPOSITORY "https://github.com/sofa-framework/WinDepPack.git" GIT_TAG "master" DONT_BUILD)
             add_subdirectory("${CMAKE_BINARY_DIR}/external_directories/fetched/WinDepPack" "${CMAKE_BINARY_DIR}/extlibs/WinDepPack")
         endif()
@@ -280,6 +283,14 @@ sofa_install_git_infos(${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR})
 add_subdirectory(tools/postinstall-fixup)
 
 if(SOFA_BUILD_RELEASE_PACKAGE)
+    # if building release package using Pixi, build a bundle of licence files of all 
+    # dependencies that will be embedded in the package
+    if($ENV{SOFA_BUILD_RELEASE_PACKAGE_WITH_PIXI})
+        message("Build SOFA release package using Pixi, bunding licenses...")
+        execute_process(COMMAND conda-deny bundle -e $ENV{PIXI_ENVIRONMENT_NAME} -p $ENV{PIXI_CURRENT_PLATFORM} -d ${CMAKE_BINARY_DIR}/licenses)
+        install(DIRECTORY ${CMAKE_BINARY_DIR}/licenses/ DESTINATION licenses COMPONENT applications)
+    endif()
+
     #######################
     # CPack configuration #
     #######################
@@ -383,12 +394,6 @@ if(SOFA_BUILD_RELEASE_PACKAGE)
              set(CPACK_IFW_PACKAGE_ICON "${CMAKE_SOURCE_DIR}/applications/projects/runSofa/runSofa.icns")
         endif()
 
-        cpack_ifw_configure_component_group(runtime
-            SORTING_PRIORITY 50
-            DEFAULT TRUE
-            EXPANDED
-            SCRIPT "${CMAKE_SOURCE_DIR}/scripts/qtifw/install.qs"
-            )
         cpack_ifw_configure_component_group(development
             SORTING_PRIORITY 10
             DEFAULT TRUE
