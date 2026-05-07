@@ -5,7 +5,6 @@ Sources:
 """
 from SofaImplicitField import ScalarField
 import numpy
-import numba
 
 class Sphere(ScalarField):
     def __init__(self, *args, **kwargs):
