@@ -72,7 +72,7 @@ void MatrixProjectionMethod<TMatrix>::addMappedMatrixToGlobalMatrixEigen(
     sofa::type::fixed_array<core::behavior::BaseMechanicalState*, 2> mstatePair,
     TMatrix* mappedMatrix,
     sofa::type::fixed_array<simulation::MappingJacobians<TMatrix>, 2> jacobians,
-    const MappingGraph& mappingGraph, linearalgebra::BaseMatrix* globalMatrix)
+    const simulation::MappingGraph& mappingGraph, linearalgebra::BaseMatrix* globalMatrix)
 {
     if (!mappedMatrix)
     {
@@ -203,7 +203,7 @@ void addToGlobalMatrix(linearalgebra::BaseMatrix* globalMatrix, Eigen::SparseMat
 }
 
 template <class TMatrix>
-void MatrixProjectionMethod<TMatrix>::computeMatrixJacobians(const core::MechanicalParams* mparams, const MappingGraph& mappingGraph, TMatrix* matrixToProject)
+void MatrixProjectionMethod<TMatrix>::computeMatrixJacobians(const core::MechanicalParams* mparams, const simulation::MappingGraph& mappingGraph, TMatrix* matrixToProject)
 {
     if (!m_mappingJacobians.has_value() || !d_areJacobiansConstant.getValue())
     {
@@ -219,7 +219,8 @@ void MatrixProjectionMethod<TMatrix>::computeMatrixJacobians(const core::Mechani
 }
 
 template <class TMatrix>
-void MatrixProjectionMethod<TMatrix>::computeMatrixProduct(const MappingGraph& mappingGraph, TMatrix* matrixToProject, linearalgebra::BaseMatrix* globalMatrix)
+void MatrixProjectionMethod<TMatrix>::computeMatrixProduct(
+    const simulation::MappingGraph& mappingGraph, TMatrix* matrixToProject, linearalgebra::BaseMatrix* globalMatrix)
 {
     this->addMappedMatrixToGlobalMatrixEigen(
         {this->l_mechanicalStates[0], this->l_mechanicalStates[1]},
@@ -229,7 +230,7 @@ void MatrixProjectionMethod<TMatrix>::computeMatrixProduct(const MappingGraph& m
 
 template <class TMatrix>
 void MatrixProjectionMethod<TMatrix>::projectMatrixToGlobalMatrix(const core::MechanicalParams* mparams,
-    const MappingGraph& mappingGraph,
+    const simulation::MappingGraph& mappingGraph,
     TMatrix* matrixToProject, linearalgebra::BaseMatrix* globalMatrix)
 {
     computeMatrixJacobians(mparams, mappingGraph, matrixToProject);
@@ -265,7 +266,7 @@ std::vector<unsigned> MatrixProjectionMethod<TMatrix>::identifyAffectedDoFs(
 template <class TMatrix>
 simulation::MappingJacobians<TMatrix> MatrixProjectionMethod<TMatrix>::computeJacobiansFrom(
     core::behavior::BaseMechanicalState* mstate, const core::MechanicalParams* mparams,
-    const MappingGraph& mappingGraph, TMatrix* crs)
+    const simulation::MappingGraph& mappingGraph, TMatrix* crs)
 {
     core::ConstraintParams cparams(*mparams);
 
