@@ -187,7 +187,7 @@ void LinearSolverConstraintCorrection<DataTypes>::addRegularization(linearalgebr
 }
 
 template<class DataTypes>
-void LinearSolverConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(const sofa::core::ConstraintParams *cparams, sofa::linearalgebra::BaseMatrix* W)
+void LinearSolverConstraintCorrection<DataTypes>::doAddComplianceInConstraintSpace(const sofa::core::ConstraintParams *cparams, sofa::linearalgebra::BaseMatrix* W)
 {
     if(d_componentState.getValue() != ComponentState::Valid)
         return ;
@@ -211,14 +211,14 @@ void LinearSolverConstraintCorrection<DataTypes>::addComplianceInConstraintSpace
 
 
 template<class DataTypes>
-void LinearSolverConstraintCorrection<DataTypes>::rebuildSystem(SReal massFactor, SReal forceFactor)
+void LinearSolverConstraintCorrection<DataTypes>::doRebuildSystem(SReal massFactor, SReal forceFactor)
 {
     SOFA_UNUSED(massFactor);
     SOFA_UNUSED(forceFactor);
 }
 
 template<class DataTypes>
-void LinearSolverConstraintCorrection<DataTypes>::getComplianceMatrix(linearalgebra::BaseMatrix* Minv) const
+void LinearSolverConstraintCorrection<DataTypes>::doGetComplianceMatrix(linearalgebra::BaseMatrix* Minv) const
 {
     if(d_componentState.getValue() != ComponentState::Valid)
         return ;
@@ -333,7 +333,7 @@ void LinearSolverConstraintCorrection< DataTypes >::applyVelocityCorrection(cons
 
 
 template<class DataTypes>
-void LinearSolverConstraintCorrection<DataTypes>::applyContactForce(const linearalgebra::BaseVector *f)
+void LinearSolverConstraintCorrection<DataTypes>::doApplyContactForce(const linearalgebra::BaseVector *f)
 {
     core::VecDerivId forceID(core::VecDerivId::V_FIRST_DYNAMIC_INDEX);
     core::VecDerivId dxID = core::vec_id::write_access::dx;
@@ -418,7 +418,7 @@ void LinearSolverConstraintCorrection<DataTypes>::applyContactForce(const linear
 
 
 template<class DataTypes>
-void LinearSolverConstraintCorrection<DataTypes>::resetContactForce()
+void LinearSolverConstraintCorrection<DataTypes>::doResetContactForce()
 {
     Data<VecDeriv>& forceData = *mstate->write(core::vec_id::write_access::force);
     VecDeriv& force = *forceData.beginEdit();
@@ -429,7 +429,7 @@ void LinearSolverConstraintCorrection<DataTypes>::resetContactForce()
 
 
 template<class DataTypes>
-bool LinearSolverConstraintCorrection<DataTypes>::hasConstraintNumber(int index)
+bool LinearSolverConstraintCorrection<DataTypes>::doHasConstraintNumber(int index)
 {
     const MatrixDeriv& c = mstate->read(core::vec_id::read_access::constraintJacobian)->getValue();
 
@@ -444,7 +444,7 @@ void LinearSolverConstraintCorrection<DataTypes>::verify_constraints()
 }
 
 template<class DataTypes>
-void LinearSolverConstraintCorrection<DataTypes>::resetForUnbuiltResolution(SReal* f, std::list<unsigned int>& renumbering)
+void LinearSolverConstraintCorrection<DataTypes>::doResetForUnbuiltResolution(SReal* f, std::list<unsigned int>& renumbering)
 {
     verify_constraints();
 
@@ -587,7 +587,7 @@ void LinearSolverConstraintCorrection<DataTypes>::resetForUnbuiltResolution(SRea
 }
 
 template<class DataTypes>
-void LinearSolverConstraintCorrection<DataTypes>::addConstraintDisplacement(SReal*d, int begin, int end)
+void LinearSolverConstraintCorrection<DataTypes>::doAddConstraintDisplacement(SReal*d, int begin, int end)
 {
     const MatrixDeriv& constraints = mstate->read(core::vec_id::read_access::constraintJacobian)->getValue();
 
@@ -648,7 +648,7 @@ void LinearSolverConstraintCorrection<DataTypes>::addConstraintDisplacement(SRea
 }
 
 template<class DataTypes>
-void LinearSolverConstraintCorrection<DataTypes>::setConstraintDForce(SReal* df, int begin, int end, bool update)
+void LinearSolverConstraintCorrection<DataTypes>::doSetConstraintDForce(SReal* df, int begin, int end, bool update)
 {
     last_force = begin;
 
@@ -692,7 +692,7 @@ void LinearSolverConstraintCorrection<DataTypes>::setConstraintDForce(SReal* df,
 }
 
 template<class DataTypes>
-void LinearSolverConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(linearalgebra::BaseMatrix* W, int begin, int end)
+void LinearSolverConstraintCorrection<DataTypes>::doGetBlockDiagonalCompliance(linearalgebra::BaseMatrix* W, int begin, int end)
 {
     if(d_componentState.getValue() != ComponentState::Valid)
         return ;
