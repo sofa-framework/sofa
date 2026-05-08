@@ -62,18 +62,7 @@ MatrixLinearSolver<Matrix,Vector>::MatrixLinearSolver()
         SOFA_UNUSED(tracker);
         if (d_parallelInverseProduct.getValue())
         {
-            simulation::TaskScheduler* taskScheduler = simulation::MainTaskSchedulerFactory::createInRegistry();
-            assert(taskScheduler);
-
-            if (taskScheduler->getThreadCount() < 1)
-            {
-                taskScheduler->init(0);
-                msg_info() << "Task scheduler initialized on " << taskScheduler->getThreadCount() << " threads";
-            }
-            else
-            {
-                msg_info() << "Task scheduler already initialized on " << taskScheduler->getThreadCount() << " threads";
-            }
+            initTaskScheduler();
         }
         return this->d_componentState.getValue();
     },
@@ -505,24 +494,5 @@ void MatrixLinearSolver<Matrix,Vector>::applyConstraintForce(const sofa::core::C
     l_linearSystem->dispatchSystemSolution(dx);
     l_linearSystem->dispatchSystemRHS(cparams->lambda());
 }
-
-template<class Matrix, class Vector>
-void MatrixLinearSolver<Matrix,Vector>::computeResidual(const core::ExecParams* params,linearalgebra::BaseVector* f)
-{
-    auto* rhsVector = l_linearSystem->getRHSVector();
-    rhsVector->clear();
-    rhsVector->resize(l_linearSystem->getSystemBaseMatrix()->colSize());
-
-    /// rhs = J^t * f
-    internalData.projectForceInConstraintSpace(rhsVector, f);
-
-    sofa::simulation::common::VectorOperations vop( params, this->getContext() );
-    sofa::core::behavior::MultiVecDeriv force(&vop, core::vec_id::write_access::force );
-
-    // force += rhs
-    executeVisitor( MechanicalMultiVectorPeqBaseVectorVisitor(core::execparams::defaultInstance(), force, rhsVector, nullptr) );
-}
-
-
 
 } // namespace sofa::component::linearsolver

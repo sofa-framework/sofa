@@ -290,7 +290,7 @@ void TriangleFEMForceField<DataTypes>::accumulateForceSmall(VecCoord& f, const V
         catch (const std::exception& e)
         {
             msg_error() << e.what();
-            sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+            this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
             break;
         }
         
@@ -399,7 +399,7 @@ void TriangleFEMForceField<DataTypes>::initLarge()
         catch (const std::exception& e)
         {
             msg_error() << e.what();
-            sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+            this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
             return;
         }
     }
@@ -445,7 +445,7 @@ void TriangleFEMForceField<DataTypes>::accumulateForceLarge(VecCoord& f, const V
         catch (const std::exception& e)
         {
             msg_error() << e.what();
-            sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+            this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
             break;
         }
 

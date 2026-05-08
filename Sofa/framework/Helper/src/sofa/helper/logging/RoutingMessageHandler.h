@@ -68,6 +68,7 @@ public:
 
     /// Inherited from MessageHandler
     void process(Message& m) override ;
+    std::string getName() const override { return "RoutingMessageHandler"; }
 
 private:
     std::vector<std::pair<FilterFunction, MessageHandler*> > m_filters;

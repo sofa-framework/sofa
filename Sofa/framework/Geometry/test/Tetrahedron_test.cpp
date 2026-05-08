@@ -40,4 +40,64 @@ TEST(GeometryTetrahedron_test, volume2_vec3f)
     EXPECT_NEAR(testVolume, 2.f/3.f, 1e-5);
 }
 
+TEST(GeometryTetrahedron_test, signedVolume_positive_vec3f)
+{
+    // Regular tetrahedron with positive orientation
+    const sofa::type::Vec3f a{ 0.f, 0.f, 0.f };
+    const sofa::type::Vec3f b{ 1.f, 0.f, 0.f };
+    const sofa::type::Vec3f c{ 0.f, 1.f, 0.f };
+    const sofa::type::Vec3f d{ 0.f, 0.f, 1.f };
+
+    const auto sv = sofa::geometry::Tetrahedron::signedVolume(a, b, c, d);
+    EXPECT_NEAR(sv, 1.f / 6.f, 1e-5);
+}
+
+TEST(GeometryTetrahedron_test, signedVolume_negative_vec3f)
+{
+    // Swapping two vertices reverses orientation
+    const sofa::type::Vec3f a{ 0.f, 0.f, 0.f };
+    const sofa::type::Vec3f b{ 1.f, 0.f, 0.f };
+    const sofa::type::Vec3f c{ 0.f, 1.f, 0.f };
+    const sofa::type::Vec3f d{ 0.f, 0.f, 1.f };
+
+    const auto sv = sofa::geometry::Tetrahedron::signedVolume(a, c, b, d);
+    EXPECT_NEAR(sv, -1.f / 6.f, 1e-5);
+}
+
+TEST(GeometryTetrahedron_test, volume_unit_vec3f)
+{
+    const sofa::type::Vec3f a{ 0.f, 0.f, 0.f };
+    const sofa::type::Vec3f b{ 1.f, 0.f, 0.f };
+    const sofa::type::Vec3f c{ 0.f, 1.f, 0.f };
+    const sofa::type::Vec3f d{ 0.f, 0.f, 1.f };
+
+    const auto v = sofa::geometry::Tetrahedron::volume(a, b, c, d);
+    EXPECT_NEAR(v, 1.f / 6.f, 1e-5);
+}
+
+TEST(GeometryTetrahedron_test, volume_degenerate_vec3f)
+{
+    // Degenerate: all four points coplanar
+    const sofa::type::Vec3f a{ 0.f, 0.f, 0.f };
+    const sofa::type::Vec3f b{ 1.f, 0.f, 0.f };
+    const sofa::type::Vec3f c{ 0.f, 1.f, 0.f };
+    const sofa::type::Vec3f d{ 1.f, 1.f, 0.f };
+
+    const auto v = sofa::geometry::Tetrahedron::volume(a, b, c, d);
+    EXPECT_NEAR(v, 0.f, 1e-5);
+}
+
+TEST(GeometryTetrahedron_test, volume_scaled_vec3d)
+{
+    // Scaled tetrahedron (double precision)
+    const sofa::type::Vec3d a{ 0., 0., 0. };
+    const sofa::type::Vec3d b{ 2., 0., 0. };
+    const sofa::type::Vec3d c{ 0., 2., 0. };
+    const sofa::type::Vec3d d{ 0., 0., 2. };
+
+    // Volume = (2*2*2) / 6 = 8/6 = 4/3
+    const auto v = sofa::geometry::Tetrahedron::volume(a, b, c, d);
+    EXPECT_NEAR(v, 4.0 / 3.0, 1e-10);
+}
+
 }// namespace sofa

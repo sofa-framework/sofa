@@ -23,7 +23,7 @@
 #pragma once
 #include <sofa/component/linearsolver/ordering/AMDOrderingMethod.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 
 
 namespace sofa::component::linearsolver::ordering
@@ -62,7 +62,7 @@ public:
             else
             {
                 core::objectmodel::BaseObjectDescription description(desiredMethod.c_str(), desiredMethod.c_str());
-                const core::objectmodel::BaseObject::SPtr baseObject = core::ObjectFactory::getInstance()->createObject(this->getContext(), &description);
+                const core::objectmodel::BaseComponent::SPtr baseObject = core::ObjectFactory::getInstance()->createObject(this->getContext(), &description);
                 if (auto* metisOrderingMethod = dynamic_cast<core::behavior::BaseOrderingMethod*>(baseObject.get()))
                 {
                     setupCreatedOrderingMethod(metisOrderingMethod);

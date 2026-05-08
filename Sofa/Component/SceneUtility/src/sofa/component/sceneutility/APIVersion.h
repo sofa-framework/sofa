@@ -23,18 +23,18 @@
 
 #include <sofa/component/sceneutility/config.h>
 
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 using BaseObject [[deprecated("Use sofa::core::objectmodel::BaseObject instead.")]] = sofa::core::objectmodel::BaseObject;
 
 
 namespace sofa::component::sceneutility::_apiversion_
 {
 
-class SOFA_COMPONENT_SCENEUTILITY_API APIVersion : public sofa::core::objectmodel::BaseObject
+class SOFA_COMPONENT_SCENEUTILITY_API APIVersion : public sofa::core::objectmodel::BaseComponent
 {
 
 public:
-    SOFA_CLASS(APIVersion, sofa::core::objectmodel::BaseObject);
+    SOFA_CLASS(APIVersion, sofa::core::objectmodel::BaseComponent);
 
     const std::string& getApiLevel() ;
     void init() override ;

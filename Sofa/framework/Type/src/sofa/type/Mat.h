@@ -890,6 +890,16 @@ public:
 
 };
 
+/**
+ * Alias for a sofa::type::Mat
+ * If T is sofa::type::Mat<L,C,real> and L==1 && C==1, the alias is the scalar type.
+ * Otherwise, the alias is T itself.
+ *
+ * Example: static_cast<ScalarOrMatrix<MatType>>(matrix)
+ */
+template <class T>
+using ScalarOrMatrix = std::conditional_t<
+    (T::nbLines==1 && T::nbCols==1), typename T::Real, T>;
 
 /// Same as Mat except the values are not initialized by default
 template <sofa::Size L, sofa::Size C, typename real>
@@ -1015,6 +1025,28 @@ SOFA_ATTRIBUTE_DEPRECATED__NONSQUAREDETERMINANT()
 constexpr real determinant(const Mat<3,2,real>& m) noexcept
 {
     return m(0,0)*m(1,1) - m(1,0)*m(0,1) - ( m(0,0)*m(2,1) - m(2,0)*m(0,1) ) + m(1,0)*m(2,1) - m(2,0)*m(1,1);
+}
+
+/**
+ * Computes the absolute value of the generalized determinant of a given matrix.
+ * For square matrices (L == C), this is the absolute value of the standard determinant.
+ * For non-square matrices, it computes the square root of the determinant of (mat^T * mat),
+ * which corresponds to the volume of the parallelotope spanned by the column vectors.
+ *
+ * @param mat The input matrix of size LxC.
+ * @return The absolute generalized determinant of the matrix.
+ */
+template <sofa::Size L, sofa::Size C, class real>
+real absGeneralizedDeterminant(const sofa::type::Mat<L, C, real>& mat)
+{
+    if constexpr (L == C)
+    {
+        return std::abs(sofa::type::determinant(mat));
+    }
+    else
+    {
+        return std::sqrt(sofa::type::determinant(mat.multTranspose(mat)));
+    }
 }
 
 // one-norm of a 3 x 3 matrix
@@ -1210,6 +1242,43 @@ template<sofa::Size S, class real>
     return b;
 }
 
+/**
+ * Computes the left pseudo-inverse of a given matrix.
+ * The left pseudo-inverse is calculated as (Aᵀ * A)⁻¹ * Aᵀ,
+ * where A is the input matrix, and the calculation assumes
+ * that A has full column rank.
+ *
+ * @param matrix The input matrix for which the left pseudo-inverse is to be computed.
+ * @return A two-dimensional array representing the left pseudo-inverse of the input matrix.
+ *         The result will have dimensions compatible with the pseudo-inverse operation.
+ */
+template <sofa::Size L, sofa::Size C, class real>
+sofa::type::Mat<C, L, real> leftPseudoInverse(const sofa::type::Mat<L, C, real>& mat)
+{
+    return mat.multTranspose(mat).inverted() * mat.transposed();
+}
+
+/**
+ * Computes the inverse of a given matrix.
+ * For square matrices (L == C), the standard matrix inverse is computed.
+ * For non-square matrices, the left pseudo-inverse is returned.
+ *
+ * @param mat The input matrix of size LxC to be inverted or pseudo-inverted.
+ * @return A matrix of size CxL representing the inverse or left pseudo-inverse of the input matrix.
+ */
+template <sofa::Size L, sofa::Size C, class real>
+sofa::type::Mat<C, L, real> inverse(const sofa::type::Mat<L, C, real>& mat)
+{
+    if constexpr (L == C)
+    {
+        return mat.inverted();
+    }
+    else
+    {
+        return leftPseudoInverse(mat);
+    }
+}
+
 template <sofa::Size L, sofa::Size C, typename real>
 std::ostream& operator<<(std::ostream& o, const Mat<L,C,real>& m)
 {
@@ -1356,16 +1425,14 @@ constexpr Mat<L,L,Real> tensorProduct(const Vec<L,Real>& a, const Vec<L,Real>& b
 template <sofa::Size L, sofa::Size C, sofa::Size P, class real>
 constexpr Mat<L,P,real> operator*(const Mat<L,C,real>& m1, const Mat<C,P,real>& m2) noexcept
 {
-    Mat<L,P,real> r(NOINIT);
-    for (Size i = 0; i<L; i++)
+    Mat<L,P,real> r(static_cast<real>(0));
+    for (Size i = 0; i < L; ++i)
     {
-        for (Size j = 0; j<P; j++)
+        for (Size k = 0; k < C; ++k)
         {
-            r(i,j) = m1(i,0) * m2(0,j);
-            for (Size k = 1; k<C; k++)
-            {
-                r(i,j) += m1(i,k) * m2(k,j);
-            }
+            const auto aik = m1(i,k);
+            for (Size j = 0; j < P; ++j)
+                r(i,j) += aik * m2(k,j);
         }
     }
     return r;

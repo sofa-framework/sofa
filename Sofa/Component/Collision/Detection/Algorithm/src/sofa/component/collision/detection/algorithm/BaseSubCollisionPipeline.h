@@ -22,7 +22,7 @@
 #pragma once
 #include <sofa/component/collision/detection/algorithm/config.h>
 
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 
 #include <set>
 #include <string>
@@ -44,10 +44,10 @@ namespace sofa::component::collision::detection::algorithm
  * @see SubCollisionPipeline for a concrete implementation
  * @see CompositeCollisionPipeline for the aggregator that manages sub-pipelines
  */
-class SOFA_COMPONENT_COLLISION_DETECTION_ALGORITHM_API BaseSubCollisionPipeline : public sofa::core::objectmodel::BaseObject
+class SOFA_COMPONENT_COLLISION_DETECTION_ALGORITHM_API BaseSubCollisionPipeline : public sofa::core::objectmodel::BaseComponent
 {
 public:
-    SOFA_ABSTRACT_CLASS(BaseSubCollisionPipeline, sofa::core::objectmodel::BaseObject);
+    SOFA_ABSTRACT_CLASS(BaseSubCollisionPipeline, sofa::core::objectmodel::BaseComponent);
 
 protected:
     BaseSubCollisionPipeline();

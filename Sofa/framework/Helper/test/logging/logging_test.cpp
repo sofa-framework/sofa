@@ -61,7 +61,7 @@ using sofa::helper::logging::MainPerComponentLoggingMessageHandler ;
 #include <sofa/core/logging/RichConsoleStyleMessageFormatter.h>
 using sofa::helper::logging::RichConsoleStyleMessageFormatter ;
 
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/core/ObjectFactory.h>
 
 //TODO(dmarchal): replace that with the LoggingMessageHandler
@@ -72,6 +72,8 @@ public:
     void process(Message& m) override{
         m_messages.push_back(m);
     }
+
+    std::string getName() const override { return "MyMessageHandler" ; }
 
     size_t numMessages(){
         return m_messages.size() ;
@@ -89,6 +91,7 @@ TEST(LoggingTest, noHandler)
 {
     // This test does not test anything, except the absence of crash
     MessageDispatcher::clearHandlers() ;
+    ASSERT_EQ(MessageDispatcher::getHandlers().size(), 0);
 
     msg_info("") << " info message with conversion" << 1.5 << "\n" ;
     msg_deprecated("") << " deprecated message with conversion" << 1.5 << "\n" ;
@@ -132,6 +135,20 @@ TEST(LoggingTest, duplicatedHandler)
     msg_error("") << " error message with conversion" << 1.5 << "\n" ;
 
     EXPECT_TRUE( h.numMessages() == 4u) ;
+}
+
+TEST(LoggingTest, rmHandler)
+{
+    MessageDispatcher::clearHandlers();
+
+    MyMessageHandler h;
+
+    // First add is expected to return the handler ID.
+    EXPECT_TRUE(MessageDispatcher::addHandler(&h) == 0);
+
+    EXPECT_EQ(MessageDispatcher::rmHandler(&h), -1);
+
+    EXPECT_EQ(MessageDispatcher::getHandlers().size(), 0);
 }
 
 void f1()
@@ -243,7 +260,7 @@ TEST(LoggingTest, emptyMessage)
 #include <string>
 #include <sofa/core/objectmodel/Data.h>
 
-class MyComponent : public sofa::core::objectmodel::BaseObject
+class MyComponent : public sofa::core::objectmodel::BaseComponent
 {
 public:
 

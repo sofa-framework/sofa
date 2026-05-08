@@ -280,7 +280,7 @@ void BlockFullMatrix<N, T>::clearRowCol(Index i)
 template<std::size_t N, typename T>
 void BlockFullMatrix<N, T>::clear()
 {
-    for (Index i=0; i<3*nBRow; ++i)
+    for (Index i=0; i<nBRow*nBCol; ++i)
         data[i].clear();
 }
 

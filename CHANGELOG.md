@@ -3737,7 +3737,7 @@ ____________________________________________________________
 
 **Examples / Scenes**
 - [examples] Fix TopologySurfaceDifferentMesh.scn [#716]( https://github.com/sofa-framework/sofa/pull/716 )
-- [examples] Fix the examples  missing a <RequiredPlugin name="SofaSparseSolver"/> [#748]( https://github.com/sofa-framework/sofa/pull/748 )
+- [examples] Fix the examples  missing a <RequiredPlugin pluginName="SofaSparseSolver"/> [#748]( https://github.com/sofa-framework/sofa/pull/748 )
 - [examples] Fix scenes having issue with CollisionGroup [#821]( https://github.com/sofa-framework/sofa/pull/821 )
 
 

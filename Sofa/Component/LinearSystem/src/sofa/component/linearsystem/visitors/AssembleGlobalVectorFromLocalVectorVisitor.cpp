@@ -26,7 +26,7 @@ namespace sofa::component::linearsystem
 {
 
 AssembleGlobalVectorFromLocalVectorVisitor::AssembleGlobalVectorFromLocalVectorVisitor(const core::ExecParams* params,
-    const MappingGraph& mappingGraph, sofa::core::ConstMultiVecId src, linearalgebra::BaseVector* globalVector)
+    const simulation::MappingGraph& mappingGraph, sofa::core::ConstMultiVecId src, linearalgebra::BaseVector* globalVector)
     : BaseMechanicalVisitor(params)
     , m_src(src)
     , m_globalVector(globalVector)
