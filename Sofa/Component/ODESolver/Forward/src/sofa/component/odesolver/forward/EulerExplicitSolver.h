@@ -29,7 +29,7 @@
 
 namespace sofa::simulation::common
 {
-class MechanicalOperations;
+class MappingGraphMechanicalOperations;
 class VectorOperations;
 }
 
@@ -97,7 +97,7 @@ protected:
     /// Update state variable (new position and velocity) based on the computed acceleration
     /// The update takes constraints into account
     void updateState(sofa::simulation::common::VectorOperations* vop,
-                     sofa::simulation::common::MechanicalOperations* mop,
+                     sofa::simulation::common::MappingGraphMechanicalOperations* mop,
                      sofa::core::MultiVecCoordId xResult,
                      sofa::core::MultiVecDerivId vResult,
                      const sofa::core::behavior::MultiVecDeriv& acc,
@@ -105,23 +105,23 @@ protected:
 
     /// Gravity times time step size is added to the velocity for some masses
     /// v += g * dt
-    static void addSeparateGravity(sofa::simulation::common::MechanicalOperations* mop, SReal dt, core::MultiVecDerivId v);
+    static void addSeparateGravity(sofa::simulation::common::MappingGraphMechanicalOperations* mop, SReal dt, core::MultiVecDerivId v);
 
     /// Assemble the force vector (right-hand side of the equation)
-    void computeForce(sofa::simulation::common::MechanicalOperations* mop, core::MultiVecDerivId f) const;
+    void computeForce(sofa::simulation::common::MappingGraphMechanicalOperations* mop, core::MultiVecDerivId f) const;
 
     /// Compute the acceleration from the force and the inverse of the mass
     /// acc = M^-1 * f
-    static void computeAcceleration(sofa::simulation::common::MechanicalOperations* mop,
+    static void computeAcceleration(sofa::simulation::common::MappingGraphMechanicalOperations* mop,
                                     core::MultiVecDerivId acc,
                                     core::ConstMultiVecDerivId f);
 
     /// Apply projective constraints, such as FixedProjectiveConstraint
-    static void projectResponse(sofa::simulation::common::MechanicalOperations* mop, core::MultiVecDerivId vecId);
+    static void projectResponse(sofa::simulation::common::MappingGraphMechanicalOperations* mop, core::MultiVecDerivId vecId);
 
-    static void solveConstraints(sofa::simulation::common::MechanicalOperations* mop, core::MultiVecDerivId acc);
+    static void solveConstraints(sofa::simulation::common::MappingGraphMechanicalOperations* mop, core::MultiVecDerivId acc);
 
-    void assembleSystemMatrix(sofa::simulation::common::MechanicalOperations* mop) const;
+    void assembleSystemMatrix(sofa::simulation::common::MappingGraphMechanicalOperations* mop) const;
 
     void solveSystem(core::MultiVecDerivId solution, core::MultiVecDerivId rhs) const;
 

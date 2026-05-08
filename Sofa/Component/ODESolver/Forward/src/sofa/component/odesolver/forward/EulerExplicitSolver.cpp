@@ -27,10 +27,8 @@
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
 #include <sofa/simulation/MappingGraph.h>
-#include <sofa/simulation/MechanicalOperations.h>
+#include <sofa/simulation/MappingGraphMechanicalOperations.h>
 #include <sofa/simulation/VectorOperations.h>
-#include <sofa/simulation/mechanicalvisitor/MechanicalGetNonDiagonalMassesCountVisitor.h>
-using sofa::simulation::mechanicalvisitor::MechanicalGetNonDiagonalMassesCountVisitor;
 
 //#define SOFA_NO_VMULTIOP
 
@@ -71,7 +69,7 @@ void EulerExplicitSolver::solve(const core::ExecParams* params,
     // Create the vector and mechanical operations tools. These are used to execute special operations (multiplication,
     // additions, etc.) on multi-vectors (a vector that is stored in different buffers inside the mechanical objects)
     sofa::simulation::common::VectorOperations vop( params, this->getContext() );
-    sofa::simulation::common::MechanicalOperations mop( params, this->getContext() );
+    sofa::simulation::common::MappingGraphMechanicalOperations mop( params, this->getContext() );
 
     // Let the mechanical operations know that the current solver is explicit. This will be propagated back to the
     // force fields during the addForce and addKToMatrix phase. Force fields use this information to avoid
@@ -123,7 +121,7 @@ void EulerExplicitSolver::solve(const core::ExecParams* params,
 }
 
 void EulerExplicitSolver::updateState(sofa::simulation::common::VectorOperations* vop,
-                                      sofa::simulation::common::MechanicalOperations* mop,
+                                      sofa::simulation::common::MappingGraphMechanicalOperations* mop,
                                       sofa::core::MultiVecCoordId xResult,
                                       sofa::core::MultiVecDerivId vResult,
                                       const sofa::core::behavior::MultiVecDeriv& acc,
@@ -269,7 +267,7 @@ void EulerExplicitSolver::init()
     d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
 
-void EulerExplicitSolver::addSeparateGravity(sofa::simulation::common::MechanicalOperations* mop, SReal dt, core::MultiVecDerivId v)
+void EulerExplicitSolver::addSeparateGravity(sofa::simulation::common::MappingGraphMechanicalOperations* mop, SReal dt, core::MultiVecDerivId v)
 {
     SCOPED_TIMER("addSeparateGravity");
 
@@ -279,7 +277,7 @@ void EulerExplicitSolver::addSeparateGravity(sofa::simulation::common::Mechanica
     mop->addSeparateGravity(dt, v);
 }
 
-void EulerExplicitSolver::computeForce(sofa::simulation::common::MechanicalOperations* mop, core::MultiVecDerivId f) const
+void EulerExplicitSolver::computeForce(sofa::simulation::common::MappingGraphMechanicalOperations* mop, core::MultiVecDerivId f) const
 {
     SCOPED_TIMER("ComputeForce");
 
@@ -289,7 +287,7 @@ void EulerExplicitSolver::computeForce(sofa::simulation::common::MechanicalOpera
     mop->computeForce(m_mappingGraph, f, true, true, nullptr);
 }
 
-void EulerExplicitSolver::computeAcceleration(sofa::simulation::common::MechanicalOperations* mop, core::MultiVecDerivId acc, core::ConstMultiVecDerivId f)
+void EulerExplicitSolver::computeAcceleration(sofa::simulation::common::MappingGraphMechanicalOperations* mop, core::MultiVecDerivId acc, core::ConstMultiVecDerivId f)
 {
     SCOPED_TIMER("AccFromF");
 
@@ -301,7 +299,7 @@ void EulerExplicitSolver::computeAcceleration(sofa::simulation::common::Mechanic
     mop->accFromF(acc, f);
 }
 
-void EulerExplicitSolver::projectResponse(sofa::simulation::common::MechanicalOperations* mop, core::MultiVecDerivId vecId)
+void EulerExplicitSolver::projectResponse(sofa::simulation::common::MappingGraphMechanicalOperations* mop, core::MultiVecDerivId vecId)
 {
     SCOPED_TIMER("projectResponse");
 
@@ -311,7 +309,7 @@ void EulerExplicitSolver::projectResponse(sofa::simulation::common::MechanicalOp
     mop->projectResponse(vecId);
 }
 
-void EulerExplicitSolver::solveConstraints(sofa::simulation::common::MechanicalOperations* mop, core::MultiVecDerivId acc)
+void EulerExplicitSolver::solveConstraints(sofa::simulation::common::MappingGraphMechanicalOperations* mop, core::MultiVecDerivId acc)
 {
     SCOPED_TIMER("solveConstraint");
 
@@ -319,7 +317,7 @@ void EulerExplicitSolver::solveConstraints(sofa::simulation::common::MechanicalO
     mop->solveConstraint(acc, core::ConstraintOrder::ACC);
 }
 
-void EulerExplicitSolver::assembleSystemMatrix(sofa::simulation::common::MechanicalOperations* mop) const
+void EulerExplicitSolver::assembleSystemMatrix(sofa::simulation::common::MappingGraphMechanicalOperations* mop) const
 {
     SCOPED_TIMER("MBKBuild");
 

@@ -29,7 +29,6 @@
 #include <sofa/simulation/VisitorExecuteFunc.h>
 #include <sofa/core/ConstraintParams.h>
 #include <sofa/core/MatricesFactors.h>
-#include <sofa/simulation/MappingGraph.h>
 
 
 namespace sofa::simulation::common
@@ -79,8 +78,6 @@ public:
     void computeEnergy(SReal &kineticEnergy, SReal &potentialEnergy);
     /// Compute the current force (given the latest propagated position and velocity)
     void computeForce(core::MultiVecDerivId result, bool clear = true, bool accumulate = true);
-    /// Compute the current force (given the latest propagated position and velocity)
-    void computeForce(const MappingGraph& mappingGraph, core::MultiVecDerivId result, bool clearForceBefore, bool accumulateForcesFromMappedStates, TaskScheduler* taskScheduler);
     /// Compute the current force delta (given the latest propagated displacement)
     void computeDf(core::MultiVecDerivId df, bool clear = true, bool accumulate = true);
     /// Compute the current force delta (given the latest propagated velocity)
@@ -89,8 +86,6 @@ public:
     void addMBKdx(core::MultiVecDerivId df, core::MatricesFactors::M m, core::MatricesFactors::B b, core::MatricesFactors::K k, bool clear = true, bool accumulate = true);
     /// accumulate $ df += (m M + b B + k K) velocity $
     void addMBKv(core::MultiVecDerivId df, core::MatricesFactors::M m, core::MatricesFactors::B b, core::MatricesFactors::K k, bool clear = true, bool accumulate = true);
-    /// accumulate $ df += (m M + b B + k K) velocity $
-    void addMBKv(const MappingGraph& mappingGraph, core::MultiVecDerivId df, core::MatricesFactors::M m, core::MatricesFactors::B b, core::MatricesFactors::K k, bool clear = true, bool accumulate = true);
     /// Add dt*Gravity to the velocity
     void addSeparateGravity(SReal dt, core::MultiVecDerivId result = core::vec_id::write_access::velocity );
 

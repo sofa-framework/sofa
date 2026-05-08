@@ -22,7 +22,7 @@
 #include <sofa/component/odesolver/backward/EulerImplicitSolver.h>
 
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/simulation/MechanicalOperations.h>
+#include <sofa/simulation/MappingGraphMechanicalOperations.h>
 #include <sofa/simulation/VectorOperations.h>
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/core/ObjectFactory.h>
@@ -88,7 +88,7 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
     sofa::simulation::Visitor::printNode("SolverVectorAllocation");
 #endif
     sofa::simulation::common::VectorOperations vop( params, this->getContext() );
-    sofa::simulation::common::MechanicalOperations mop( params, this->getContext() );
+    sofa::simulation::common::MappingGraphMechanicalOperations mop( params, this->getContext() );
     MultiVecCoord pos(&vop, core::vec_id::write_access::position );
     MultiVecDeriv vel(&vop, core::vec_id::write_access::velocity );
     MultiVecDeriv f(&vop, core::vec_id::write_access::force );
