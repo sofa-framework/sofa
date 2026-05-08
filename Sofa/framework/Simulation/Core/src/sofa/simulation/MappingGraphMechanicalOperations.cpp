@@ -112,7 +112,7 @@ void MappingGraphMechanicalOperations::addMBKv(const MappingGraph& mappingGraph,
         mappingGraph.algorithms.traverseBottomUp_([&](core::BaseMapping& mapping)
         {
             mapping.applyJT(&mparams, df, df);
-            if( mparams.kFactor() == 0 )
+            if( mparams.kFactor() != 0 )
             {
                 mapping.applyDJT(&mparams, df, df);
             }
