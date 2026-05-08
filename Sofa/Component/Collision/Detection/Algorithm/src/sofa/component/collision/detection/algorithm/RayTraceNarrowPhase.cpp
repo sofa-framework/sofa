@@ -36,18 +36,18 @@ using sofa::helper::TriangleOctree;
 
 void registerRayTraceNarrowPhase(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Narrow phase of the collision detection using TriangleOctreeModel")
+    factory->registerObjects(core::ObjectRegistrationData("Narrow phase of the collision detection using TriangleOctreeCollisionModel")
         .add < RayTraceNarrowPhase >());
 }
 
 void RayTraceNarrowPhase::findPairsVolume (CubeCollisionModel * cm1, CubeCollisionModel * cm2)
 {
-    /*Obtain the CollisionModel at the lowest level, in this case it must be a TriangleOctreeModel */
+    /*Obtain the CollisionModel at the lowest level, in this case it must be a TriangleOctreeCollisionModel */
 
-    TriangleOctreeModel *tm1 =
-            dynamic_cast < TriangleOctreeModel * >(cm1->getLast ());
-    TriangleOctreeModel *tm2 =
-            dynamic_cast < TriangleOctreeModel * >(cm2->getLast ());
+    TriangleOctreeCollisionModel *tm1 =
+            dynamic_cast < TriangleOctreeCollisionModel * >(cm1->getLast ());
+    TriangleOctreeCollisionModel *tm2 =
+            dynamic_cast < TriangleOctreeCollisionModel * >(cm2->getLast ());
     if (!tm1 || !tm2)
         return;
 
@@ -66,7 +66,7 @@ void RayTraceNarrowPhase::findPairsVolume (CubeCollisionModel * cm1, CubeCollisi
 
     }
 
-    /* get the output vector for a TriangleOctreeModel, TriangleOctreeModel Collision*/
+    /* get the output vector for a TriangleOctreeCollisionModel, TriangleOctreeCollisionModel Collision*/
     /*Get the cube representing the bounding box of both Models */
     // sofa::core::collision::DetectionOutputVector *& contacts=outputsMap[std::make_pair(tm1, tm2)];
     core::collision::DetectionOutputVector*& contacts = this->getDetectionOutputs(tm1, tm2);
@@ -76,17 +76,17 @@ void RayTraceNarrowPhase::findPairsVolume (CubeCollisionModel * cm1, CubeCollisi
     {
         contacts = new
                 sofa::core::collision::TDetectionOutputVector <
-                        TriangleOctreeModel, TriangleOctreeModel >;
+                        TriangleOctreeCollisionModel, TriangleOctreeCollisionModel >;
 
     }
 
 
 
 
-    TDetectionOutputVector < TriangleOctreeModel,
-    TriangleOctreeModel > *outputs =
-            static_cast < TDetectionOutputVector < TriangleOctreeModel,
-            TriangleOctreeModel > *>(contacts);
+    TDetectionOutputVector < TriangleOctreeCollisionModel,
+    TriangleOctreeCollisionModel > *outputs =
+            static_cast < TDetectionOutputVector < TriangleOctreeCollisionModel,
+            TriangleOctreeCollisionModel > *>(contacts);
 
     Cube cube1 (cm1, 0);
     const Cube cube2 (cm2, 0);
