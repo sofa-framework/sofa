@@ -216,7 +216,7 @@ public:
      */
     void build(core::objectmodel::BaseContext* rootNode);
 
-    friend std::string SOFA_SIMULATION_CORE_API exportToDotFormat(const MappingGraph& graph);
+    const sofa::type::vector<BaseMappingGraphNode::SPtr>& getAllNodes() const { return m_allNodes; }
 
 private:
     ///< Root node used to start graph exploration during construction.
@@ -233,7 +233,7 @@ private:
     std::map<core::behavior::BaseMechanicalState*, type::Vec2u > m_positionInGlobalMatrix;
 
     // Graph ownership structures:
-    std::vector<BaseMappingGraphNode::SPtr> m_allNodes; ///< All nodes in the graph.
+    sofa::type::vector<BaseMappingGraphNode::SPtr> m_allNodes; ///< All nodes in the graph.
     sofa::type::vector<core::behavior::BaseMechanicalState*> m_rootStates {}; ///< List of initial, unmapped mechanical states (graph roots).
     std::unordered_map<core::behavior::BaseMechanicalState*, BaseMappingGraphNode*> m_stateIndex; ///< Quick lookup for a state's node.
     std::vector<std::pair<

@@ -80,7 +80,7 @@ std::string exportToDotFormat(const MappingGraph& graph)
     ss << "  rankdir=TB;\n"; // Top to Bottom layout is common for dependency graphs
 
     // 1. Add all nodes (vertices)
-    for (const auto& node : graph.m_allNodes)
+    for (const auto& node : graph.getAllNodes())
     {
         const std::string label = "[" + getType(node.get()) + "]" + node->getName();
 
@@ -91,10 +91,10 @@ std::string exportToDotFormat(const MappingGraph& graph)
     }
 
     // 2. Add all edges (dependencies)
-    for (const auto& node : graph.m_allNodes)
+    for (const auto& node : graph.getAllNodes())
     {
         const std::string sourceName = "Node_" + std::to_string(reinterpret_cast<uintptr_t>(node.get()));
-        for (auto child : node->m_children)
+        for (const auto& child : node->getChildren())
         {
             const std::string targetName = "Node_" + std::to_string(reinterpret_cast<uintptr_t>(child.get()));
 

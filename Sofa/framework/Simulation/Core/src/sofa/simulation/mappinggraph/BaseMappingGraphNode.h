@@ -41,7 +41,6 @@ public:
     using SPtr = std::shared_ptr<BaseMappingGraphNode>;
     friend class MappingGraph;
     friend struct MappingGraphAlgorithms;
-    friend std::string SOFA_SIMULATION_CORE_API exportToDotFormat(const MappingGraph& graph);
 
     virtual ~BaseMappingGraphNode() = default;
 
@@ -70,6 +69,9 @@ public:
      * @return True if the node has an ancestor which is a mapping node
      */
     bool isMapped() const;
+
+    const sofa::type::vector<SPtr>& getParents() const { return m_parents; }
+    const sofa::type::vector<SPtr>& getChildren() const { return m_children; }
 
 private:
     sofa::type::vector<SPtr> m_parents;   ///< prerequisite nodes (nodes pointing to this one)

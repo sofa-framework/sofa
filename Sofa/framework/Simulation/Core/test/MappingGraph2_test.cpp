@@ -408,8 +408,6 @@ TEST(MappingGraph, ComplexGraphInteractionForceField)
     sofa::simulation::MappingGraph mappingGraph(root.get());
     ASSERT_TRUE(mappingGraph.isBuilt());
 
-    std::cout << exportToDotFormat(mappingGraph) << std::endl;
-
     CollectNamesVisitor visitor;
 
     // Top Down Traversal Check
