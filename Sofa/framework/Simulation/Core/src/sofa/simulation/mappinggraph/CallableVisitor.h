@@ -69,6 +69,12 @@ struct GetComponentFromCallable<Callable>
     using type = core::BaseMapping;
 };
 
+template<class Callable> requires std::is_invocable_v<Callable, core::behavior::BaseProjectiveConstraintSet&>
+struct GetComponentFromCallable<Callable>
+{
+    using type = core::behavior::BaseProjectiveConstraintSet;
+};
+
 template<class Callable>
 using CallableVisitor = BaseCallableVisitor<Callable, typename GetComponentFromCallable<Callable>::type>;
 

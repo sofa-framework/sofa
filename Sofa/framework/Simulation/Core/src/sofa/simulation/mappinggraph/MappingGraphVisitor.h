@@ -26,6 +26,7 @@
 #include <sofa/core/behavior/BaseForceField.h>
 #include <sofa/core/behavior/BaseMass.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
+#include <sofa/core/behavior/BaseProjectiveConstraintSet.h>
 
 namespace sofa::simulation
 {
@@ -66,6 +67,12 @@ public:
      * @param m The mass component to visit.
      */
     virtual void visit(core::behavior::BaseMass&) {}
+
+    /**
+     * @brief Visits a projective constraint node.
+     * @param pcs The projective constraint component to visit.
+     */
+    virtual void visit(sofa::core::behavior::BaseProjectiveConstraintSet&) {}
 };
 
 }

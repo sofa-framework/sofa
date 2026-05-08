@@ -60,10 +60,11 @@ public:
      */
     struct SOFA_SIMULATION_CORE_API InputLists
     {
-        sofa::type::vector<core::behavior::BaseMechanicalState*> mechanicalStates; ///< All Mechanical State inputs.
-        sofa::type::vector<core::BaseMapping*> mappings;                       ///< All Mapping components.
-        sofa::type::vector<core::behavior::BaseForceField*> forceFields;       ///< All Force Field components.
-        sofa::type::vector<core::behavior::BaseMass*> masses;                   ///< All Mass components.
+        sofa::type::vector<core::behavior::BaseMechanicalState*> mechanicalStates;
+        sofa::type::vector<core::BaseMapping*> mappings;
+        sofa::type::vector<core::behavior::BaseForceField*> forceFields;
+        sofa::type::vector<core::behavior::BaseMass*> masses;
+        sofa::type::vector<core::behavior::BaseProjectiveConstraintSet*> projectedConstraints;
 
         /**
          * @brief Creates InputLists from a context pointer.
