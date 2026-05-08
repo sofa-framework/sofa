@@ -84,8 +84,8 @@ public:
         return m_colorMap.getColor(i);
     }
 
-    SOFA_ATTRIBUTE_DEPRECATED__OGLCOLORMAPGETDEFAULT()
-    static OglColorMap* getDefault();
+    SOFA_ATTRIBUTE_DISABLED__OGLCOLORMAPGETDEFAULT()
+    static OglColorMap* getDefault() = delete;
 
     template<class Real>
     helper::ColorMap::evaluator<Real> getEvaluator(Real vmin, Real vmax)

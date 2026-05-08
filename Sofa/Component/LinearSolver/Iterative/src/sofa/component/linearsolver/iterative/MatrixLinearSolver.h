@@ -199,12 +199,12 @@ public:
     void resizeSystem(Size n) = delete;
 
     /// Get the linear system right-hand term vector, or nullptr if this solver does not build it
-    SOFA_ITERATIVE_SOLVER_ATTRIBUTE_DEPRECATED_ASSEMBLY_API()
-    Vector* getSystemRHVector() { return l_linearSystem ? l_linearSystem->getRHSVector() : nullptr; }
+    SOFA_ITERATIVE_SOLVER_ATTRIBUTE_DISABLED_ASSEMBLY_API()
+    Vector* getSystemRHVector() = delete;
 
     /// Get the linear system left-hand term vector, or nullptr if this solver does not build it
-    SOFA_ITERATIVE_SOLVER_ATTRIBUTE_DEPRECATED_ASSEMBLY_API()
-    Vector* getSystemLHVector() { return l_linearSystem ? l_linearSystem->getSolutionVector() : nullptr; }
+    SOFA_ITERATIVE_SOLVER_ATTRIBUTE_DISABLED_ASSEMBLY_API()
+    Vector* getSystemLHVector() = delete;
 
     /// Returns the linear system component associated to the linear solver
     sofa::component::linearsystem::TypedMatrixLinearSystem<Matrix, Vector>* getLinearSystem() const override { return l_linearSystem.get(); }
@@ -248,8 +248,6 @@ public:
     bool buildComplianceMatrix(const core::ConstraintParams* cparams, linearalgebra::BaseMatrix* result, SReal fact, SReal regularizationTerm) override;
 
     void applyConstraintForce(const sofa::core::ConstraintParams* cparams, sofa::core::MultiVecDerivId dx, const linearalgebra::BaseVector* f) override;
-
-    void computeResidual(const core::ExecParams* params, linearalgebra::BaseVector* f) override;
 
     ///< Parallelize the computation of the product J*M^{-1}*J^T where M is the
     ///< matrix of the linear system and J is any matrix with compatible dimensions
@@ -372,9 +370,6 @@ GraphScatteredVector* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVect
 
 template<> SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API
 void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::applyConstraintForce(const sofa::core::ConstraintParams* /*cparams*/, sofa::core::MultiVecDerivId /*dx*/, const linearalgebra::BaseVector* /*f*/);
-
-template<> SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API
-void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::computeResidual(const core::ExecParams* params,linearalgebra::BaseVector* f);
 
 template<> SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API
 void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::checkLinearSystem();
