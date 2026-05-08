@@ -42,7 +42,7 @@ public:
     ~MatrixProjectionMethod() override;
 
     void computeMatrixJacobians(const core::MechanicalParams* mparams,
-                                const MappingGraph& mappingGraph,
+                                const simulation::MappingGraph& mappingGraph,
                                 TMatrix* matrixToProject);
 
 protected:
@@ -51,12 +51,12 @@ protected:
 
     void reinit() override;
 
-    virtual void computeMatrixProduct(const MappingGraph& mappingGraph,
+    virtual void computeMatrixProduct(const simulation::MappingGraph& mappingGraph,
                           TMatrix* matrixToProject,
                           linearalgebra::BaseMatrix* globalMatrix);
 
     virtual void projectMatrixToGlobalMatrix(const core::MechanicalParams* mparams,
-                                     const MappingGraph& mappingGraph,
+                                     const simulation::MappingGraph& mappingGraph,
                                      TMatrix* matrixToProject,
                                      linearalgebra::BaseMatrix* globalMatrix) override;
 
@@ -67,7 +67,7 @@ protected:
      * Build the jacobian matrices of mappings from a mapped state to its top most parents (in the
      * sense of mappings)
      */
-    simulation::MappingJacobians<TMatrix> computeJacobiansFrom(core::behavior::BaseMechanicalState* mstate, const core::MechanicalParams* mparams, const MappingGraph& mappingGraph, TMatrix* crs);
+    simulation::MappingJacobians<TMatrix> computeJacobiansFrom(core::behavior::BaseMechanicalState* mstate, const core::MechanicalParams* mparams, const simulation::MappingGraph& mappingGraph, TMatrix* crs);
 
     core::objectmodel::BaseContext* getSolveContext();
 
@@ -88,7 +88,7 @@ protected:
         sofa::type::fixed_array<core::behavior::BaseMechanicalState*, 2> mstatePair,
         TMatrix* mappedMatrix,
         sofa::type::fixed_array<simulation::MappingJacobians<TMatrix>, 2> jacobians,
-        const MappingGraph& mappingGraph,
+        const simulation::MappingGraph& mappingGraph,
         linearalgebra::BaseMatrix* globalMatrix);
 
     Eigen::Map<Eigen::SparseMatrix<Block, Eigen::RowMajor> > makeEigenMap(const TMatrix& matrix);
