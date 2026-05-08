@@ -159,7 +159,7 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
 
         msg_info() << "b = " << b;
 
-        mop.projectResponse(b);                                   // b is projected to the constrained space
+        mop.projectResponse(m_mappingGraph, b);                                   // b is projected to the constrained space
 
         msg_info() << "projected b = " << b;
     }

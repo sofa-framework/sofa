@@ -299,14 +299,14 @@ void EulerExplicitSolver::computeAcceleration(sofa::simulation::common::MappingG
     mop->accFromF(acc, f);
 }
 
-void EulerExplicitSolver::projectResponse(sofa::simulation::common::MappingGraphMechanicalOperations* mop, core::MultiVecDerivId vecId)
+void EulerExplicitSolver::projectResponse(sofa::simulation::common::MappingGraphMechanicalOperations* mop, core::MultiVecDerivId vecId) const
 {
     SCOPED_TIMER("projectResponse");
 
     // Calls the "projectResponse" method of every BaseProjectiveConstraintSet objects found in the
     // current context tree. An example of such constraint set is the FixedProjectiveConstraint. In this case,
     // it will set to 0 every row (i, _) of the input vector for the ith degree of freedom.
-    mop->projectResponse(vecId);
+    mop->projectResponse(m_mappingGraph, vecId);
 }
 
 void EulerExplicitSolver::solveConstraints(sofa::simulation::common::MappingGraphMechanicalOperations* mop, core::MultiVecDerivId acc)

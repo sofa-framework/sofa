@@ -117,7 +117,7 @@ protected:
                                     core::ConstMultiVecDerivId f);
 
     /// Apply projective constraints, such as FixedProjectiveConstraint
-    static void projectResponse(sofa::simulation::common::MappingGraphMechanicalOperations* mop, core::MultiVecDerivId vecId);
+    void projectResponse(sofa::simulation::common::MappingGraphMechanicalOperations* mop, core::MultiVecDerivId vecId) const;
 
     static void solveConstraints(sofa::simulation::common::MappingGraphMechanicalOperations* mop, core::MultiVecDerivId acc);
 

@@ -23,6 +23,21 @@
 
 namespace sofa::simulation::common
 {
+
+void MappingGraphMechanicalOperations::projectResponse(const MappingGraph& mappingGraph,
+                                                       core::MultiVecDerivId dx, double** W)
+{
+    setDx(dx);
+    mappingGraph.algorithms.traverse_([&](core::behavior::BaseProjectiveConstraintSet& constraint)
+    {
+        constraint.projectResponse(&mparams, dx);
+        if (W != nullptr)
+        {
+            constraint.projectResponse(&mparams, W);
+        }
+    });
+}
+
 void MappingGraphMechanicalOperations::computeForce(const MappingGraph& mappingGraph,
                                                     core::MultiVecDerivId result,
                                                     bool clearForceBefore,

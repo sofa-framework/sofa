@@ -48,6 +48,10 @@ class SOFA_SIMULATION_CORE_API MappingGraphMechanicalOperations : public Mechani
 public:
     using MechanicalOperations::MechanicalOperations;
 
+    /// Apply projective constraints to the given vector
+    void projectResponse(const MappingGraph& mappingGraph, core::MultiVecDerivId dx, double** W = nullptr);
+    using MechanicalOperations::projectResponse;
+
     /// Compute the current force (given the latest propagated position and velocity)
     void computeForce(const MappingGraph& mappingGraph, core::MultiVecDerivId result, bool clearForceBefore, bool accumulateForcesFromMappedStates, TaskScheduler* taskScheduler);
     using MechanicalOperations::computeForce;
