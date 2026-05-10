@@ -1,3 +1,24 @@
+/******************************************************************************
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
 #include <vector>
 using std::vector;
 
@@ -80,7 +101,7 @@ void TestLight::checkLightMissingLightManager(const std::string& lighttype)
     ASSERT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 
-    sofa::core::objectmodel::BaseObject* lm = root->getTreeNode("Level 1")->getObject("light1") ;
+    sofa::core::objectmodel::BaseComponent* lm = root->getTreeNode("Level 1")->getObject("light1") ;
     ASSERT_NE(lm, nullptr) ;
 
     sofa::simulation::node::unload(root);
@@ -105,10 +126,10 @@ void TestLight::checkPositionalLightValidAttributes()
     ASSERT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 
-    sofa::core::objectmodel::BaseObject* lm = root->getTreeNode("Level 1")->getObject("lightmanager") ;
+    sofa::core::objectmodel::BaseComponent* lm = root->getTreeNode("Level 1")->getObject("lightmanager") ;
     ASSERT_NE(lm, nullptr) ;
 
-    sofa::core::objectmodel::BaseObject* light = root->getTreeNode("Level 1")->getObject("light1") ;
+    sofa::core::objectmodel::BaseComponent* light = root->getTreeNode("Level 1")->getObject("light1") ;
     ASSERT_NE(light, nullptr) ;
 
     /// List of the supported attributes the user expect to find
@@ -146,10 +167,10 @@ void TestLight::checkDirectionalLightValidAttributes()
     ASSERT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 
-    sofa::core::objectmodel::BaseObject* lm = root->getTreeNode("Level 1")->getObject("lightmanager") ;
+    sofa::core::objectmodel::BaseComponent* lm = root->getTreeNode("Level 1")->getObject("lightmanager") ;
     ASSERT_NE(lm, nullptr) ;
 
-    sofa::core::objectmodel::BaseObject* light = root->getTreeNode("Level 1")->getObject("light1") ;
+    sofa::core::objectmodel::BaseComponent* light = root->getTreeNode("Level 1")->getObject("light1") ;
     ASSERT_NE(light, nullptr) ;
 
     /// List of the supported attributes the user expect to find
@@ -187,10 +208,10 @@ void TestLight::checkSpotLightValidAttributes()
     ASSERT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 
-    sofa::core::objectmodel::BaseObject* lm = root->getTreeNode("Level 1")->getObject("lightmanager") ;
+    sofa::core::objectmodel::BaseComponent* lm = root->getTreeNode("Level 1")->getObject("lightmanager") ;
     ASSERT_NE(lm, nullptr) ;
 
-    sofa::core::objectmodel::BaseObject* light = root->getTreeNode("Level 1")->getObject("light1") ;
+    sofa::core::objectmodel::BaseComponent* light = root->getTreeNode("Level 1")->getObject("light1") ;
     ASSERT_NE(light, nullptr) ;
 
     /// List of the supported attributes the user expect to find

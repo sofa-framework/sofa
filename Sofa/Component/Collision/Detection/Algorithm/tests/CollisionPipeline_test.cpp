@@ -28,8 +28,8 @@ using std::string;
 #include <sofa/core/fwd.h>
 using sofa::core::execparams::defaultInstance;
 
-#include<sofa/core/objectmodel/BaseObject.h>
-using sofa::core::objectmodel::BaseObject ;
+#include<sofa/core/objectmodel/BaseComponent.h>
+using sofa::core::objectmodel::BaseComponent ;
 
 #include <sofa/component/collision/detection/algorithm/CollisionPipeline.h>
 using sofa::component::collision::detection::algorithm::CollisionPipeline ;
@@ -72,12 +72,14 @@ public:
     void checkCollisionPipelineWithMissingBroadPhase();
     void checkCollisionPipelineWithMissingNarrowPhase();
     void checkCollisionPipelineWithMissingContactManager();
+    void checkCollisionPipelineWithMissingCollisionModel();
     int checkCollisionPipelineWithMonkeyValueForDepth(int value);
 
     void doSetUp() override
     {
         this->loadPlugins({
             Sofa.Component.StateContainer,
+            Sofa.Component.Collision.Geometry,
             Sofa.Component.Collision.Detection.Algorithm,
             Sofa.Component.Collision.Detection.Intersection,
             Sofa.Component.Collision.Response.Contact
@@ -104,6 +106,10 @@ void TestCollisionPipeline::checkCollisionPipelineWithNoAttributes()
              "  <BVHNarrowPhase/>                                                            \n"
              "  <CollisionResponse response='PenalityContactForceField'/>                    \n"
              "  <DiscreteIntersection name='interaction'/>                                   \n"
+             "  <Node name='Model'/>                                                         \n"
+             "      <MechanicalObject template='Vec3' name='Container' position='0 0 0'/>    \n"
+             "      <SphereCollisionModel name='SphereModel'/>                               \n"
+             "   </Node>                                                                     \n"
              "</Node>                                                                        \n" ;
 
     root = SceneLoaderXML::loadFromMemory ("testscene", scene.str().c_str());
@@ -111,7 +117,7 @@ void TestCollisionPipeline::checkCollisionPipelineWithNoAttributes()
     ASSERT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 
-    sofa::core::objectmodel::BaseObject* clp = root->getObject("pipeline") ;
+    sofa::core::objectmodel::BaseComponent* clp = root->getObject("pipeline") ;
     ASSERT_NE(clp, nullptr) ;
 }
 
@@ -127,13 +133,17 @@ void TestCollisionPipeline::checkCollisionPipelineWithMissingIntersection()
              "  <BruteForceBroadPhase/>                                                      \n"
              "  <BVHNarrowPhase/>                                                            \n"
              "  <CollisionResponse response='PenalityContactForceField'/>                    \n"
+             "  <Node name='Model'/>                                                         \n"
+             "      <MechanicalObject template='Vec3' name='Container' position='0 0 0'/>    \n"
+             "      <SphereCollisionModel name='SphereModel'/>                               \n"
+             "   </Node>                                                                     \n"
              "</Node>                                                                        \n" ;
 
     root = SceneLoaderXML::loadFromMemory ("testscene", scene.str().c_str());
     ASSERT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 
-    sofa::core::objectmodel::BaseObject* clp = root->getObject("pipeline") ;
+    sofa::core::objectmodel::BaseComponent* clp = root->getObject("pipeline") ;
     ASSERT_NE(clp, nullptr) ;
 }
 
@@ -149,13 +159,17 @@ void TestCollisionPipeline::checkCollisionPipelineWithMissingBroadPhase()
              "  <BVHNarrowPhase/>                                                            \n"
              "  <CollisionResponse response='PenalityContactForceField'/>                    \n"
              "  <DiscreteIntersection name='interaction'/>                                   \n"
+             "  <Node name='Model'/>                                                         \n"
+             "      <MechanicalObject template='Vec3' name='Container' position='0 0 0'/>    \n"
+             "      <SphereCollisionModel name='SphereModel'/>                               \n"
+             "   </Node>                                                                     \n"
              "</Node>                                                                        \n" ;
 
     root = SceneLoaderXML::loadFromMemory ("testscene", scene.str().c_str());
     ASSERT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 
-    sofa::core::objectmodel::BaseObject* clp = root->getObject("pipeline") ;
+    sofa::core::objectmodel::BaseComponent* clp = root->getObject("pipeline") ;
     ASSERT_NE(clp, nullptr) ;
 }
 void TestCollisionPipeline::checkCollisionPipelineWithMissingNarrowPhase()
@@ -170,13 +184,17 @@ void TestCollisionPipeline::checkCollisionPipelineWithMissingNarrowPhase()
              "  <BruteForceBroadPhase/>                                                      \n"
              "  <CollisionResponse response='PenalityContactForceField'/>                    \n"
              "  <DiscreteIntersection name='interaction'/>                                   \n"
+             "  <Node name='Model'/>                                                         \n"
+             "      <MechanicalObject template='Vec3' name='Container' position='0 0 0'/>    \n"
+             "      <SphereCollisionModel name='SphereModel'/>                               \n"
+             "   </Node>                                                                     \n"
              "</Node>                                                                        \n" ;
-
+    
     root = SceneLoaderXML::loadFromMemory ("testscene", scene.str().c_str());
     ASSERT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 
-    sofa::core::objectmodel::BaseObject* clp = root->getObject("pipeline") ;
+    sofa::core::objectmodel::BaseComponent* clp = root->getObject("pipeline") ;
     ASSERT_NE(clp, nullptr) ;
 }
 void TestCollisionPipeline::checkCollisionPipelineWithMissingContactManager()
@@ -191,13 +209,41 @@ void TestCollisionPipeline::checkCollisionPipelineWithMissingContactManager()
              "  <BruteForceBroadPhase/>                                                      \n"
              "  <BVHNarrowPhase/>                                                            \n"
              "  <DiscreteIntersection name='interaction'/>                                   \n"
+             "  <Node name='Model'/>                                                         \n"
+             "      <MechanicalObject template='Vec3' name='Container' position='0 0 0'/>    \n"
+             "      <SphereCollisionModel name='SphereModel'/>                               \n"
+             "   </Node>                                                                     \n"
              "</Node>                                                                        \n" ;
 
     root = SceneLoaderXML::loadFromMemory ("testscene", scene.str().c_str());
     ASSERT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 
-    sofa::core::objectmodel::BaseObject* clp = root->getObject("pipeline") ;
+    BaseComponent* clp = root->getObject("pipeline") ;
+    ASSERT_NE(clp, nullptr) ;
+
+}
+
+void TestCollisionPipeline::checkCollisionPipelineWithMissingCollisionModel()
+{
+    EXPECT_MSG_EMIT(Warning) ;
+    EXPECT_MSG_NOEMIT(Error) ;
+
+    std::stringstream scene ;
+    scene << "<?xml version='1.0'?>                                                          \n"
+             "<Node     name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"
+             "  <CollisionPipeline name='pipeline'/>                                         \n"
+             "  <BruteForceBroadPhase/>                                                      \n"
+             "  <BVHNarrowPhase/>                                                            \n"
+             "  <CollisionResponse response='PenalityContactForceField'/>                    \n"
+             "  <DiscreteIntersection name='interaction'/>                                   \n"
+             "</Node>                                                                        \n" ;
+
+    root = SceneLoaderXML::loadFromMemory ("testscene", scene.str().c_str());
+    ASSERT_NE(root.get(), nullptr) ;
+    root->init(sofa::core::execparams::defaultInstance()) ;
+
+    sofa::core::objectmodel::BaseComponent* clp = root->getObject("pipeline") ;
     ASSERT_NE(clp, nullptr) ;
 
 }
@@ -212,6 +258,10 @@ int TestCollisionPipeline::checkCollisionPipelineWithMonkeyValueForDepth(int dva
              "  <BVHNarrowPhase/>                                                            \n"
              "  <CollisionResponse response='PenalityContactForceField'/>                    \n"
              "  <DiscreteIntersection name='interaction'/>                                   \n"
+             "  <Node name='Model'/>                                                         \n"
+             "      <MechanicalObject template='Vec3' name='Container' position='0 0 0'/>    \n"
+             "      <SphereCollisionModel name='SphereModel'/>                               \n"
+             "   </Node>                                                                     \n"
              "</Node>                                                                        \n" ;
 
     root = SceneLoaderXML::loadFromMemory ("testscene", scene.str().c_str());
@@ -251,6 +301,12 @@ TEST_F(TestCollisionPipeline, checkCollisionPipelineWithMissingContactManager)
 {
     this->checkCollisionPipelineWithMissingContactManager();
 }
+
+TEST_F(TestCollisionPipeline, checkCollisionPipelineWithMissingCollisionModel)
+{
+    this->checkCollisionPipelineWithMissingCollisionModel();
+}
+
 
 TEST_F(TestCollisionPipeline, checkCollisionPipelineWithMonkeyValueForDepth_OpenIssue)
 {

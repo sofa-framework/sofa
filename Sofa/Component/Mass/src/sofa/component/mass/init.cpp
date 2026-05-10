@@ -29,6 +29,8 @@ namespace sofa::component::mass
 extern void registerDiagonalMass(sofa::core::ObjectFactory* factory);
 extern void registerMeshMatrixMass(sofa::core::ObjectFactory* factory);
 extern void registerUniformMass(sofa::core::ObjectFactory* factory);
+extern void registerNodalMassDensity(sofa::core::ObjectFactory* factory);
+extern void registerFEMMass(sofa::core::ObjectFactory* factory);
 
 extern "C" {
     SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
@@ -57,6 +59,8 @@ void registerObjects(sofa::core::ObjectFactory* factory)
     registerDiagonalMass(factory);
     registerMeshMatrixMass(factory);
     registerUniformMass(factory);
+    registerNodalMassDensity(factory);
+    registerFEMMass(factory);
 }
 
 void init()

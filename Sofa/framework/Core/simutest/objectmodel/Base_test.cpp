@@ -27,7 +27,7 @@ using sofa::core::objectmodel::ComponentState;
 using sofa::testing::BaseSimulationTest ;
 using sofa::simulation::Node ;
 
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 using sofa::core::objectmodel::BaseObject;
 
 #include <sofa/defaulttype/RigidTypes.h>
@@ -38,17 +38,17 @@ using sofa::defaulttype::Vec3Types;
 
 namespace customns
 {
-class CustomBaseObject : public sofa::core::objectmodel::BaseObject
+class CustomBaseObject : public sofa::core::objectmodel::BaseComponent
 {
 public:
-    SOFA_CLASS(CustomBaseObject, sofa::core::objectmodel::BaseObject);
+    SOFA_CLASS(CustomBaseObject, sofa::core::objectmodel::BaseComponent);
 };
 
 template<class D>
-class CustomBaseObjectT : public sofa::core::objectmodel::BaseObject
+class CustomBaseObjectT : public sofa::core::objectmodel::BaseComponent
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(CustomBaseObjectT, D), sofa::core::objectmodel::BaseObject);
+    SOFA_CLASS(SOFA_TEMPLATE(CustomBaseObjectT, D), sofa::core::objectmodel::BaseComponent);
 
     static const std::string GetCustomClassName() { return "MyFakeClassName"; }
 };
@@ -68,7 +68,7 @@ public:
         const std::string scene = R"(
             <?xml version='1.0'?>
             <Node name='Root' gravity='0 -9.81 0' time='0' animate='0' >
-               <RequiredPlugin name='Sofa.Component.StateContainer'/>
+               <RequiredPlugin pluginName='Sofa.Component.StateContainer'/>
                <DefaultAnimationLoop />
                <DefaultVisualManagerLoop />
                <Node name='child1'>

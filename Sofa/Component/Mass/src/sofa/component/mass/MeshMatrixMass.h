@@ -57,7 +57,6 @@ template <class DataTypes, class TMassType>
 * @class    MeshMatrixMass
 * @brief    This component computes the integral of this mass density over the volume of the object geometry.
 * @remark   Similar to DiagonalMass which simplifies the Mass Matrix as diagonal.
-* @remark   https://www.sofa-framework.org/community/doc/components/masses/meshmatrixmass/
 * @tparam   DataTypes type of the state associated to this mass
 * @tparam   GeometricalTypes type of the geometry, i.e type of the state associated with the topology (if the topology and the mass relates to the same state, this will be the same as DataTypes)
 */
@@ -198,12 +197,15 @@ public:
 
 
     // -- Mass interface
+    using Inherited::addMDx;
     void addMDx(const core::MechanicalParams*, DataVecDeriv& f, const DataVecDeriv& dx, SReal factor) override;
 
+    using Inherited::accFromF;
     void accFromF(const core::MechanicalParams*, DataVecDeriv& a, const DataVecDeriv& f) override; // This function can't be used as it use M^-1
 
     void addForce(const core::MechanicalParams*, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
 
+    using Inherited::getKineticEnergy;
     SReal getKineticEnergy(const core::MechanicalParams*, const DataVecDeriv& v) const override;  ///< vMv/2 using dof->getV() override
 
     SReal getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& x) const override;   ///< Mgx potential in a uniform gravity field, null at origin
@@ -217,6 +219,7 @@ public:
 
 
     /// Add Mass contribution to global Matrix assembling
+    using Inherited::addMToMatrix;
     void addMToMatrix(sofa::linearalgebra::BaseMatrix * mat, SReal mFact, unsigned int &offset) override;
     void buildMassMatrix(sofa::core::behavior::MassMatrixAccumulator* matrices) override;
     void buildStiffnessMatrix(core::behavior::StiffnessMatrix* /* matrix */) override {}

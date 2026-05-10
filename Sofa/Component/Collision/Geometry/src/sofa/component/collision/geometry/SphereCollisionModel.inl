@@ -26,7 +26,7 @@
 #include <sofa/component/collision/geometry/CubeCollisionModel.h>
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 using sofa::core::objectmodel::ComponentState ;
 
 namespace sofa::component::collision::geometry

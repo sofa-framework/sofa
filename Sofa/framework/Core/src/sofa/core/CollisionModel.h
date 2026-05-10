@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/core/CollisionElement.h>
 #include <sofa/helper/set.h>
 
@@ -70,10 +70,10 @@ public:
  *    to the final elements)
  *
  */
-class SOFA_CORE_API CollisionModel : public virtual objectmodel::BaseObject
+class SOFA_CORE_API CollisionModel : public virtual objectmodel::BaseComponent
 {
 public:
-    SOFA_ABSTRACT_CLASS(CollisionModel, objectmodel::BaseObject);
+    SOFA_ABSTRACT_CLASS(CollisionModel, objectmodel::BaseComponent);
     SOFA_BASE_CAST_IMPLEMENTATION(CollisionModel)
 
     enum{
@@ -220,7 +220,7 @@ public:
     /// within the given timestep.
     ///
     /// Default to computeBoundingTree().
-    virtual void computeContinuousBoundingTree(SReal /*dt*/, ContinuousIntersectionTypeFlag continuousIntersectionFlag = ContinuousIntersectionTypeFlag::Inertia, int maxDepth=0) { computeBoundingTree(maxDepth); }
+    virtual void computeContinuousBoundingTree(SReal dt, ContinuousIntersectionTypeFlag continuousIntersectionFlag = ContinuousIntersectionTypeFlag::Inertia, int maxDepth=0);
 
     /// \brief Return the list (as a pair of iterators) of <i>internal children</i> of
     /// an element.
@@ -329,8 +329,8 @@ public:
 
     /// @name Experimental methods
     /// @{
-    SOFA_ATTRIBUTE_DEPRECATED__NAME_CHANGED()
-    [[nodiscard]] SReal getProximity() const { return getContactDistance(); }
+    SOFA_ATTRIBUTE_DISABLED__NAME_CHANGED()
+    [[nodiscard]] SReal getProximity() const = delete;
 
     /// Get distance to the actual (visual) surface
     [[nodiscard]] SReal getContactDistance() const { return d_contactDistance.getValue(); }
@@ -376,8 +376,9 @@ public:
 
     /// Set of differents parameters
     void setContactDistance (const SReal a)        { d_contactDistance.setValue(a); }
-    SOFA_ATTRIBUTE_DEPRECATED__NAME_CHANGED()
-    void setProximity (const SReal a)  { setContactDistance(a); }
+    
+    SOFA_ATTRIBUTE_DISABLED__NAME_CHANGED()
+    void setProximity (const SReal a) = delete;
 
     void setContactResponse (const std::string &a) { contactResponse.setValue(a); }
 
@@ -450,7 +451,7 @@ protected:
     void* userData;
 
     /// Pointer to the  Controller component heritating from CollisionElementActiver
-    SingleLink<CollisionModel, sofa::core::objectmodel::BaseObject, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_collElemActiver;
+    SingleLink<CollisionModel, sofa::core::objectmodel::BaseComponent, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_collElemActiver;
 
     /// Render the whole collision model.
     virtual void drawCollisionModel(const core::visual::VisualParams* vparams);

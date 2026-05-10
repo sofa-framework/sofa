@@ -162,8 +162,6 @@ public:
     Data< type::vector< Tetrahedron > > d_tetrahedra; ///< Tetrahedra of the mesh loaded
     Data< type::vector< Hexahedron > > d_hexahedra; ///< Hexahedra of the mesh loaded
     Data< type::vector< Prism > > d_prisms;
-    SOFA_ATTRIBUTE_DEPRECATED("v25.12", "v26.06", "Pentahedron is renamed to Prism")
-    objectmodel::lifecycle::RenamedData<type::vector< Prism >> d_pentahedra; ///< Pentahedra of the mesh loaded
     Data< type::vector< HighOrderTetrahedronPosition > > d_highOrderTetrahedronPositions; ///< High order tetrahedron points of the mesh loaded
     Data< type::vector< HighOrderHexahedronPosition > > d_highOrderHexahedronPositions; ///< High order hexahedron points of the mesh loaded
     Data< type::vector< Pyramid > > d_pyramids; ///< Pyramids of the mesh loaded
@@ -182,8 +180,6 @@ public:
     Data< type::vector< PrimitiveGroup > > d_hexahedraGroups; ///< Groups of Hexahedra
     Data< type::vector< PrimitiveGroup > > d_prismsGroups; ///< Groups of Prisms
     Data< type::vector< PrimitiveGroup > > d_pyramidsGroups; ///< Groups of Pyramids
-
-    objectmodel::lifecycle::RenamedData<type::vector< PrimitiveGroup >> d_pentahedraGroups;
 
     Data< bool > d_flipNormals; ///< Flip Normals
     Data< bool > d_triangulate; ///< Divide all polygons into triangles
