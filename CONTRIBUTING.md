@@ -10,14 +10,14 @@ Here is a brief summary of how it is structured:
 - SOFA Consortium: research centers and companies willing to share the cost of development and maintenance of SOFA, hosted by Inria.
 - SOFA Consortium Staff: administrators of SOFA and its ecosystem. This group is directed by the Executive Committee (EC).
 
-All SOFA Developers are gladly invited to the [SOFA-dev meetings](https://www.sofa-framework.org/applications/publications/#CiteSOFA). They take place remotely every Wednesday at 10 a.m. CET and are animated by the SOFA Reviewers + the Consortium Staff. [Subscribe to SOFA-dev mailing-list](https://sympa.inria.fr/sympa/subscribe/sofa-dev) to get the agenda, reports and conference room url.
+All SOFA Developers are gladly invited to the [SOFA-dev meetings](https://www.sofa-framework.org/applications/publications/#CiteSOFA). They take place remotely every Thursday at 9:30 a.m. CET and are animated by the SOFA Reviewers + the Consortium Staff. [Subscribe to SOFA-dev mailing-list](https://sympa.inria.fr/sympa/subscribe/sofa-dev) to get the agenda, reports and conference room url.
 
 About the steering committees:
 
 - SOFA Scientific and Technical Committee (STC): defines the technical roadmap twice a year, validate the contribution rules, the Reviewers team and discuss every technical point in SOFA.
 - SOFA Executive Committee (EC): decides on evolutions of the membership contract, the communication policy and the priorities of the Consortium.
 
-A more detailed definition of the [governing committees](https://www.sofa-framework.org/consortium/presentation/) is available in the SOFA website.
+A more detailed definition of the [governing committees](https://www.sofa-framework.org/consortium/presentation/) is available on the SOFA website.
 
 
 # Getting started
