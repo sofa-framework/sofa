@@ -183,7 +183,7 @@ struct Mass_test : public sofa::testing::BaseSimulationTest, public sofa::testin
 
         // v * Mv should be the 2 * kinetic energy
         EXPECT_LT(std::abs(vMv - 2 * ke), (SReal)(m_errorMax * this->epsilon()))
-            << "Kinetic energy inconsistent with addMDx";
+            << "Kinetic energy inconsistent with addMDx (vMv = " << vMv << ", kinetic energy = " << (Real)ke << ")";
     }
     /**
      * @brief Given positions and velocities, checks mass methods.

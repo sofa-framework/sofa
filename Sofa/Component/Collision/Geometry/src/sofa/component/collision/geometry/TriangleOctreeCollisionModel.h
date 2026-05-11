@@ -51,8 +51,4 @@ public:
     void buildOctree ();
 };
 
-
-using TriangleOctreeModel SOFA_ATTRIBUTE_DEPRECATED__RENAMED_TRIANGLEOCTREEMODEL() = TriangleOctreeCollisionModel;
-
-
 } // namespace sofa::component::collision::geometry

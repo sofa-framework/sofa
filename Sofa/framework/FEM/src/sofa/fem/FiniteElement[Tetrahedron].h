@@ -47,6 +47,16 @@ struct FiniteElement<sofa::geometry::Tetrahedron, DataTypes>
         return topology.getTetrahedra();
     }
 
+    static constexpr sofa::type::Vec<NumberOfNodesInElement, Real> shapeFunctions(const sofa::type::Vec<TopologicalDimension, Real>& q)
+    {
+        return {
+            static_cast<Real>(1) - q[0] - q[1] - q[2],
+            q[0],
+            q[1],
+            q[2]
+        };
+    }
+
     static constexpr sofa::type::Mat<NumberOfNodesInElement, TopologicalDimension, Real> gradientShapeFunctions(const sofa::type::Vec<TopologicalDimension, Real>& q)
     {
         SOFA_UNUSED(q);

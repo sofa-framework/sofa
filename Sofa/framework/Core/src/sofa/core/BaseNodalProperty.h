@@ -20,61 +20,48 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/fem/FiniteElement.h>
 
-namespace sofa::fem
+#include <sofa/core/objectmodel/BaseComponent.h>
+
+namespace sofa::core
 {
 
-#if !defined(SOFA_FEM_FINITE_ELEMENT_TRIANGLE_CPP)
-#include <sofa/defaulttype/VecTypes.h>
-#endif
-
-template <class DataTypes>
-struct FiniteElement<sofa::geometry::Triangle, DataTypes>
+template<class T>
+class BaseNodalProperty : public virtual sofa::core::objectmodel::BaseComponent
 {
-    FINITEELEMENT_HEADER(sofa::geometry::Triangle, DataTypes, 2);
-    static_assert(spatial_dimensions > 1, "Triangles cannot be defined in 1D");
+public:
+    SOFA_CLASS(BaseNodalProperty<T>, sofa::core::objectmodel::BaseComponent);
 
-    constexpr static std::array<ReferenceCoord, NumberOfNodesInElement> referenceElementNodes {{
-        {0, 0},
-        {1, 0},
-        {0, 1}}};
+    BaseNodalProperty() = delete;
 
-    static const sofa::type::vector<TopologyElement>& getElementSequence(sofa::core::topology::BaseMeshTopology& topology)
+    Data<sofa::type::vector<T> > d_property;
+
+    const T& getNodeProperty(sofa::Index i, sofa::helper::ReadAccessor<Data<sofa::type::vector<T>>>& property) const
     {
-        return topology.getTriangles();
+        if (property.size() > i)
+        {
+            return property[i];
+        }
+        if (!property.empty())
+        {
+            return property->back();
+        }
+        return m_defaultProperty;
     }
 
-    static constexpr sofa::type::Vec<NumberOfNodesInElement, Real> shapeFunctions(const sofa::type::Vec<TopologicalDimension, Real>& q)
+    const T& getNodeProperty(sofa::Index i) const
     {
-        return {
-            static_cast<Real>(1) - q[0] - q[1],
-            q[0],
-            q[1]
-        };
+        sofa::helper::ReadAccessor property { d_property };
+        return getNodeProperty(i, property);
     }
 
-    static constexpr sofa::type::Mat<NumberOfNodesInElement, TopologicalDimension, Real> gradientShapeFunctions(const sofa::type::Vec<TopologicalDimension, Real>& q)
-    {
-        SOFA_UNUSED(q);
-        return {
-            {-1, -1},
-            {1, 0},
-            {0, 1}
-        };
-    }
+protected:
+    explicit BaseNodalProperty(const T defaultProperty)
+        : d_property(initData(&d_property, {defaultProperty}, "property", "Nodal property"))
+        , m_defaultProperty(defaultProperty)
+    {}
 
-    static constexpr std::array<QuadraturePointAndWeight, 1> quadraturePoints()
-    {
-        return {
-            std::make_pair(sofa::type::Vec<TopologicalDimension, Real>(1./3., 1./3.), 1./2.)
-        };
-    }
+    T m_defaultProperty {};
 };
-
-#if !defined(SOFA_FEM_FINITE_ELEMENT_TRIANGLE_CPP)
-extern template struct SOFA_FEM_API FiniteElement<sofa::geometry::Triangle, sofa::defaulttype::Vec3Types>;
-extern template struct SOFA_FEM_API FiniteElement<sofa::geometry::Triangle, sofa::defaulttype::Vec2Types>;
-#endif
 
 }

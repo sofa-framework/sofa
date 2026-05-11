@@ -46,6 +46,8 @@ private:
     BaseState(const BaseState& n) = delete;
     BaseState& operator=(const BaseState& n) = delete;
 public:
+    virtual std::string getScalarType() const { return {}; }
+
     /// Current size of all stored vectors
     virtual Size getSize() const = 0;
 
