@@ -33,7 +33,7 @@ void LoadSnapshotVisitor::processObject(
 {
     auto snapshotObject = obj->findSnapshotObject(parent, obj->getName());
     obj->loadDataSnapshot(snapshotObject);
-    obj->loadLinkSnapshot(snapshotObject);
+    // obj->loadLinkSnapshot(snapshotObject);
     // obj->loadInternalStateFrom(*snapshotObject);
 }
 
@@ -44,7 +44,7 @@ Visitor::Result LoadSnapshotVisitor::processNodeTopDown(simulation::Node* node)
         msg_error("findSnapshotNode") << "SnapshotNode "<< node->getName() << " not found in ";
     const auto SnapshotNode = std::dynamic_pointer_cast<core::objectmodel::Snapshot::SnapshotNode>(snapshotObject);
     node->loadDataSnapshot(SnapshotNode);
-    node->loadLinkSnapshot(SnapshotNode);
+    // node->loadLinkSnapshot(SnapshotNode);
     for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
     {
         this->processObject(it->get(), SnapshotNode);

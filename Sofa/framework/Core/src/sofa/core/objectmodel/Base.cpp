@@ -784,7 +784,7 @@ void Base::loadDataSnapshot(const std::shared_ptr<Snapshot::SnapshotObject>& sna
         if (const auto data = this->findData(dataInfo.name))
         {
             if(data->read(dataInfo.value) == 0 )
-                msg_error() << "Failed to read " << dataInfo.name << " : " << dataInfo.value;
+                msg_error("LoadSnapshot") << "Failed to read " << dataInfo.name << " from the snapshot: " << dataInfo.value;
         }
     }
 }
