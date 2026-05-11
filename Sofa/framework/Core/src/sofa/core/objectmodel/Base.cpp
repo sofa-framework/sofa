@@ -809,16 +809,16 @@ void Base::loadLinkSnapshot(const std::shared_ptr<Snapshot::SnapshotObject>& sna
                 }
             }
             std::size_t i = 0;
-            for (const auto& linkFromSnapshot : linksFromSnapshot)
-            {
-                std::string linkName = linkFromSnapshot->getName();
-                Base* linkedBase = link->getLinkedBase(i);
-                if (linkedBase != linkFromSnapshot || linkedBase != nullptr)
-                    link->add(linkFromSnapshot,linkName);
-                else
-                    link->remove(linkedBase);
-                i+=1;
-            }
+            // for (const auto& linkFromSnapshot : linksFromSnapshot)
+            // {
+            //     std::string linkName = linkFromSnapshot->getName();
+            //     Base* linkedBase = link->getLinkedBase(i);
+            //     if (linkedBase != linkFromSnapshot || linkedBase != nullptr)
+            //         link->add(linkFromSnapshot,linkName);
+            //     else
+            //         link->remove(linkedBase);
+            //     i+=1;
+            // }
         }
     }
 
