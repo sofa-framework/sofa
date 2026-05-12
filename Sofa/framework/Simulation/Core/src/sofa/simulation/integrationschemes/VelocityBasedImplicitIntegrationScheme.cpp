@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/integrationschemes/VelocityBasedIntegrationScheme.h>
+#include <sofa/simulation/integrationschemes/VelocityBasedImplicitIntegrationScheme.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/BaseMass.h>
 #include <sofa/core/behavior/LinearSolver.h>
@@ -36,14 +36,18 @@ namespace sofa::simulation::integrationschemes
 {
 
 
-void VelocityBasedIntegrationScheme::doSetupIntegrationStep(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
+void VelocityBasedImplicitIntegrationScheme::doSetupIntegrationStep(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
 {
     sofa::simulation::common::VectorOperations vop( m_params, this->getContext() );
     sofa::simulation::common::MechanicalOperations mop( m_params, this->getContext() );
     simulation::common::VectorOperations::realloc(vop, m_r0, "r0", this, true);
     simulation::common::VectorOperations::realloc(vop, m_r1, "r1", this, true);
-
     const Size order = getIntegrationSchemeOrder();
+
+    m_x0.resize(order);
+    m_v0.resize(order);
+    m_a0.resize(order);
+
     for (unsigned i = 0; i < order; ++i)
     {
         simulation::common::VectorOperations::realloc(vop, m_x0[i], "x0" + (order != 1 ? "_" + std::to_string(i)  : ""), this);
@@ -79,7 +83,7 @@ void VelocityBasedIntegrationScheme::doSetupIntegrationStep(const core::ExecPara
 /**
  * Compute the system matrix.
  */
-void VelocityBasedIntegrationScheme::computeLHS(unsigned iteration)
+void VelocityBasedImplicitIntegrationScheme::computeLHS(unsigned iteration)
 {
     SOFA_UNUSED(iteration);
 
@@ -105,7 +109,7 @@ void VelocityBasedIntegrationScheme::computeLHS(unsigned iteration)
 /**
 * compute the current RHS.
 */
-void VelocityBasedIntegrationScheme::computeRHS(unsigned iteration)
+void VelocityBasedImplicitIntegrationScheme::computeRHS(unsigned iteration)
 {
     sofa::simulation::common::VectorOperations vop( m_params, this->getContext() );
     sofa::simulation::common::MechanicalOperations mop( m_params, this->getContext() );
@@ -179,7 +183,7 @@ void VelocityBasedIntegrationScheme::computeRHS(unsigned iteration)
 /**
  * Returns the squared norm of the last evaluation of the RHS
  */
-SReal VelocityBasedIntegrationScheme::squaredNormRHS()
+SReal VelocityBasedImplicitIntegrationScheme::squaredNormRHS()
 {
     sofa::simulation::common::VectorOperations vop( m_params, this->getContext() );
 
@@ -193,7 +197,7 @@ SReal VelocityBasedIntegrationScheme::squaredNormRHS()
 /**
  * Solve the linear equation from a Newton iteration, i.e. it computes (x^{i+1}-x^i).
  */
-void VelocityBasedIntegrationScheme::solveLinearEquation()
+void VelocityBasedImplicitIntegrationScheme::solveLinearEquation()
 {
     SCOPED_TIMER("MBKSolve");
     sofa::simulation::common::VectorOperations vop( m_params, this->getContext() );
@@ -212,7 +216,7 @@ void VelocityBasedIntegrationScheme::solveLinearEquation()
  * guess. It computes x^{i+1} += alpha * dx, where dx is the result of the linear system. It is
  * not necessary to share the result with the Newton-Raphson method.
  */
-void VelocityBasedIntegrationScheme::updateVelocityAndPositionFromLinearSolution(SReal alpha, unsigned iteration)
+void VelocityBasedImplicitIntegrationScheme::updateVelocityAndPositionFromLinearSolution(SReal alpha, unsigned iteration)
 {
     sofa::simulation::common::VectorOperations vop( m_params, this->getContext() );
 
@@ -232,12 +236,12 @@ void VelocityBasedIntegrationScheme::updateVelocityAndPositionFromLinearSolution
 }
 
 
-SReal VelocityBasedIntegrationScheme::getVelocityIntegrationFactor() const
+SReal VelocityBasedImplicitIntegrationScheme::getVelocityIntegrationFactor() const
 {
     return 1.0_sreal;
 }
 
-SReal VelocityBasedIntegrationScheme::getPositionIntegrationFactor() const
+SReal VelocityBasedImplicitIntegrationScheme::getPositionIntegrationFactor() const
 {
     return getPositionUpdateDerivedFromVelocity();
 }

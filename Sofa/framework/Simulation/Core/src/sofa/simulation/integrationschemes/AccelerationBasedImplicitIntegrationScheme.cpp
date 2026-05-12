@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/integrationschemes/AccelerationBasedIntegrationScheme.h>
+#include <sofa/simulation/integrationschemes/AccelerationBasedImplicitIntegrationScheme.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/BaseMass.h>
 #include <sofa/core/behavior/LinearSolver.h>
@@ -36,16 +36,22 @@ using sofa::simulation::mechanicalvisitor::MechanicalGetNonDiagonalMassesCountVi
 
 namespace sofa::simulation::integrationschemes
 {
-void AccelerationBasedIntegrationScheme::doSetupIntegrationStep(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
+void AccelerationBasedImplicitIntegrationScheme::doSetupIntegrationStep(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
 {
 
     sofa::simulation::common::VectorOperations vop( m_params, this->getContext() );
     sofa::simulation::common::MechanicalOperations mop( m_params, this->getContext() );
+
+    const Size order = getIntegrationSchemeOrder();
+
+    m_x0.resize(order);
+    m_v0.resize(order);
+    m_a0.resize(order);
+
     simulation::common::VectorOperations::realloc(vop, m_r0, "r0", this, true);
     simulation::common::VectorOperations::realloc(vop, m_r1, "r1", this, true);
     simulation::common::VectorOperations::realloc(vop, m_r2, "r2", this, true);
 
-    const Size order = getIntegrationSchemeOrder();
     for (unsigned i = 0; i < order; ++i)
     {
         simulation::common::VectorOperations::realloc(vop, m_x0[i], "x0" + (order != 1 ? "_" + std::to_string(i)  : ""), this);
@@ -87,7 +93,7 @@ void AccelerationBasedIntegrationScheme::doSetupIntegrationStep(const core::Exec
 /**
  * Compute the system matrix.
  */
-void AccelerationBasedIntegrationScheme::computeLHS(unsigned iteration)
+void AccelerationBasedImplicitIntegrationScheme::computeLHS(unsigned iteration)
 {
     SOFA_UNUSED(iteration);
 
@@ -111,7 +117,7 @@ void AccelerationBasedIntegrationScheme::computeLHS(unsigned iteration)
 /**
 * compute the current RHS.
 */
-void AccelerationBasedIntegrationScheme::computeRHS(unsigned iteration)
+void AccelerationBasedImplicitIntegrationScheme::computeRHS(unsigned iteration)
 {
     sofa::simulation::common::VectorOperations vop( m_params, this->getContext() );
     sofa::simulation::common::MechanicalOperations mop( m_params, this->getContext() );
@@ -189,7 +195,7 @@ void AccelerationBasedIntegrationScheme::computeRHS(unsigned iteration)
 /**
  * Returns the squared norm of the last evaluation of the RHS
  */
-SReal AccelerationBasedIntegrationScheme::squaredNormRHS()
+SReal AccelerationBasedImplicitIntegrationScheme::squaredNormRHS()
 {
     sofa::simulation::common::VectorOperations vop( m_params, this->getContext() );
 
@@ -203,7 +209,7 @@ SReal AccelerationBasedIntegrationScheme::squaredNormRHS()
 /**
  * Solve the linear equation from a Newton iteration, i.e. it computes (x^{i+1}-x^i).
  */
-void AccelerationBasedIntegrationScheme::solveLinearEquation()
+void AccelerationBasedImplicitIntegrationScheme::solveLinearEquation()
 {
     SCOPED_TIMER("MBKSolve");
 
@@ -218,7 +224,7 @@ void AccelerationBasedIntegrationScheme::solveLinearEquation()
  * guess. It computes x^{i+1} += alpha * dx, where dx is the result of the linear system. It is
  * not necessary to share the result with the Newton-Raphson method.
  */
-void AccelerationBasedIntegrationScheme::updateVelocityAndPositionFromLinearSolution(SReal alpha, unsigned iteration)
+void AccelerationBasedImplicitIntegrationScheme::updateVelocityAndPositionFromLinearSolution(SReal alpha, unsigned iteration)
 {
     sofa::simulation::common::VectorOperations vop( m_params, this->getContext() );
     sofa::simulation::common::MechanicalOperations mop( m_params, this->getContext() );
@@ -250,12 +256,12 @@ void AccelerationBasedIntegrationScheme::updateVelocityAndPositionFromLinearSolu
 
 
 
-SReal AccelerationBasedIntegrationScheme::getVelocityIntegrationFactor() const
+SReal AccelerationBasedImplicitIntegrationScheme::getVelocityIntegrationFactor() const
 {
     return getVelocityUpdateDerivedFromAcceleration();
 }
 
-SReal AccelerationBasedIntegrationScheme::getPositionIntegrationFactor() const
+SReal AccelerationBasedImplicitIntegrationScheme::getPositionIntegrationFactor() const
 {
     //TODO not 100% sure this is what's expected.
     //TODO But given what's in LinearSolverConstraintCorrection< DataTypes >::applyMotionCorrection it seems like it

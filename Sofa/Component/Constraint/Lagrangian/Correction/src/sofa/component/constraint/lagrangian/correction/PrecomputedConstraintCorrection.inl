@@ -345,7 +345,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
         /// (avoid to have a line of 0 at the top of the matrix)
         if (eulerSolver)
         {
-            eulerSolver->solve(core::execparams::defaultInstance(), dt, core::vec_id::write_access::position, core::vec_id::write_access::velocity);
+            eulerSolver->integrate(core::execparams::defaultInstance(), dt, core::vec_id::write_access::position, core::vec_id::write_access::velocity);
         }
 
         Deriv unitary_force;
@@ -380,7 +380,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
                 {
                     fact *= eulerSolver->getPositionIntegrationFactor(); // here, we compute a compliance
 
-                    eulerSolver->solve(core::execparams::defaultInstance(), dt, core::vec_id::write_access::position, core::vec_id::write_access::velocity);
+                    eulerSolver->integrate(core::execparams::defaultInstance(), dt, core::vec_id::write_access::position, core::vec_id::write_access::velocity);
                 }
 
                 for (unsigned int v = 0; v < nbNodes; v++)
