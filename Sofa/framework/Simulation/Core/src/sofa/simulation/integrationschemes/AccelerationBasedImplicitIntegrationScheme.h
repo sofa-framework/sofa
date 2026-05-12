@@ -73,14 +73,14 @@ public:
      * guess. It computes x^{i+1} += alpha * dx, where dx is the result of the linear system. It is
      * not necessary to share the result with the Newton-Raphson method.
      */
-    void updateVelocityAndPositionFromLinearSolution(SReal alpha, unsigned iteration = 0) override;
+    void updateStatesFromLinearSolution(SReal alpha, unsigned iteration = 0) override;
 
     virtual SReal getVelocityIntegrationFactor() const final;
     virtual SReal getPositionIntegrationFactor() const final;
 
 protected:
 
-    virtual sofa::Size getIntegrationSchemeOrder() = 0;
+    virtual sofa::Size getIntegrationSchemeOrder() const = 0;
 
 
     virtual SReal getPositionUpdateDerivedFromAcceleration() const = 0;
