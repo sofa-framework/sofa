@@ -73,8 +73,6 @@ PrecomputedConstraintCorrection<DataTypes>::PrecomputedConstraintCorrection(sofa
     , d_debugViewFrameScale(initData(&d_debugViewFrameScale, 1.0_sreal, "debugViewFrameScale", "Scale on computed node's frame"))
     , d_fileCompliance(initData(&d_fileCompliance, "fileCompliance", "Precomputed compliance matrix data file"))
     , d_fileDir(initData(&d_fileDir, "fileDir", "If not empty, the compliance will be saved in this repertory"))
-    , l_odeSolver(initLink("ODESolver", "Link towards the ODE solver used during the compliance precomputation. If unset, the first OdeSolver in the current context is used."))
-    , l_linearSolver(initLink("linearSolver", "Link towards the linear solver used during the compliance precomputation. If unset, the first LinearSolver in the current context is used."))
     , invM(nullptr)
     , appCompliance(nullptr)
     , nbRows(0), nbCols(0), dof_on_node(0), nbNodes(0)
@@ -359,7 +357,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
         /// (avoid to have a line of 0 at the top of the matrix)
         if (l_odeSolver)
         {
-            l_odeSolver->solve(core::execparams::defaultInstance(), dt, core::vec_id::write_access::position, core::vec_id::write_access::velocity);
+            l_odeSolver->integrate(core::execparams::defaultInstance(), dt, core::vec_id::write_access::position, core::vec_id::write_access::velocity);
         }
 
         Deriv unitary_force;

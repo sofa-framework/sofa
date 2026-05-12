@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/integrationschemes/backward/config.h>
-#include <sofa/simulation/integrationschemes/VelocityBasedIntegrationScheme.h>
+#include <sofa/simulation/integrationschemes/VelocityBasedImplicitIntegrationScheme.h>
 #include <sofa/core/behavior/LinearSolverAccessor.h>
 
 #include <sofa/simulation/MechanicalOperations.h>
@@ -102,10 +102,10 @@ namespace sofa::component::integrationschemes::backward
  *
  */
 class SOFA_COMPONENT_INTEGRATIONSCHEMES_BACKWARD_API EulerImplicitIntegrationScheme :
-    public sofa::simulation::integrationschemes::VelocityBasedIntegrationScheme
+    public sofa::simulation::integrationschemes::VelocityBasedImplicitIntegrationScheme
 {
 public:
-    SOFA_CLASS(EulerImplicitIntegrationScheme, sofa::simulation::integrationschemes::VelocityBasedIntegrationScheme);
+    SOFA_CLASS(EulerImplicitIntegrationScheme, sofa::simulation::integrationschemes::VelocityBasedImplicitIntegrationScheme);
 
    Data<bool> d_trapezoidalScheme; ///< Boolean to use the trapezoidal scheme instead of the implicit Euler scheme and get second order accuracy in time (false by default)
 

@@ -58,7 +58,7 @@ Visitor::Result MechanicalIntegrationVisitor::fwdIntegrationScheme(simulation::N
         accumulateMatrixDeriv.execute(node);
     }
 
-    obj->solve(params, dt, sofa::core::vec_id::write_access::position, sofa::core::vec_id::write_access::velocity);
+    obj->integrate(params, dt, sofa::core::vec_id::write_access::position, sofa::core::vec_id::write_access::velocity);
 
     MechanicalProjectPositionAndVelocityVisitor(&mparams, nextTime,core::vec_id::write_access::position,core::vec_id::write_access::velocity
     ).execute( node );

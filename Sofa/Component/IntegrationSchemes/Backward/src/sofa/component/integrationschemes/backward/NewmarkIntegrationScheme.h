@@ -25,9 +25,7 @@
 #include <sofa/core/behavior/LinearSolverAccessor.h>
 #include <sofa/simulation/MechanicalOperations.h>
 #include <sofa/simulation/VectorOperations.h>
-#include <sofa/simulation/integrationschemes/VelocityBasedIntegrationScheme.h>
-
-#include "sofa/simulation/integrationschemes/AccelerationBasedIntegrationScheme.h"
+#include "sofa/simulation/integrationschemes/AccelerationBasedImplicitIntegrationScheme.h"
 
 namespace sofa::simulation::common
 {
@@ -38,10 +36,10 @@ namespace sofa::component::integrationschemes::backward
 
 
 class SOFA_COMPONENT_INTEGRATIONSCHEMES_BACKWARD_API NewmarkIntegrationScheme :
-    public sofa::simulation::integrationschemes::AccelerationBasedIntegrationScheme
+    public sofa::simulation::integrationschemes::AccelerationBasedImplicitIntegrationScheme
 {
 public:
-    SOFA_CLASS(NewmarkIntegrationScheme, sofa::simulation::integrationschemes::AccelerationBasedIntegrationScheme);
+    SOFA_CLASS(NewmarkIntegrationScheme, sofa::simulation::integrationschemes::AccelerationBasedImplicitIntegrationScheme);
 
     core::objectmodel::Data<SReal> d_beta;
     core::objectmodel::Data<SReal> d_gamma;
