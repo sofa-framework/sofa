@@ -20,53 +20,24 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/behavior/IntegrationScheme.h>
+#include <sofa/simulation/integrationschemes/ImplicitIntegrationScheme.h>
 #include <cstdlib>
 #include <cmath>
 #include <sofa/core/objectmodel/BaseNode.h>
 
 
-namespace sofa::core::behavior
+namespace sofa::simulation::integrationschemes
 {
 
-IntegrationScheme::IntegrationScheme()
-    : d_rayleighStiffness(initData(&d_rayleighStiffness, (SReal)0.0, "rayleighStiffness", "Rayleigh damping coefficient related to stiffness, > 0") )
-    , d_rayleighMass(initData(&d_rayleighMass, (SReal)0.0, "rayleighMass", "Rayleigh damping coefficient related to mass, > 0"))
-{}
 
-IntegrationScheme::~IntegrationScheme()
-{}
 
-void IntegrationScheme::setupIntegrationStep(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
+void ImplicitIntegrationScheme::integrate(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
 {
-    m_params = params;
-    m_dt = dt;
-    m_xResult = xResult;
-    m_vResult = vResult;
-
-
-    doSetupIntegrationStep(params, dt, xResult, vResult);
-
-
+    setupIntegrationStep(params, dt, xResult, vResult);
+    computeLHS(0);
+    computeRHS(0);
+    solveLinearEquation();
+    updateVelocityAndPositionFromLinearSolution(1.0, 0);
 }
 
-bool IntegrationScheme::insertInNode( objectmodel::BaseNode* node )
-{
-    node->addIntegrationScheme(this);
-    Inherit1::insertInNode(node);
-    return true;
 }
-
-bool IntegrationScheme::removeInNode( objectmodel::BaseNode* node )
-{
-    node->removeIntegrationScheme(this);
-    Inherit1::removeInNode(node);
-    return true;
-}
-
-
-} // namespace sofa::core::behavior
-
-
-
-
-

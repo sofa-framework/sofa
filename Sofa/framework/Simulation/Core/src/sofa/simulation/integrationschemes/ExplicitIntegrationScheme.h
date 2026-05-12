@@ -19,54 +19,37 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
+#include <sofa/simulation/config.h>
+
 #include <sofa/core/behavior/IntegrationScheme.h>
-#include <cstdlib>
-#include <cmath>
-#include <sofa/core/objectmodel/BaseNode.h>
+#include <sofa/core/behavior/LinearSolver.h>
+#include <sofa/core/behavior/MultiVec.h>
 
+#include <sofa/core/behavior/LinearSolverAccessor.h>
 
-namespace sofa::core::behavior
+namespace sofa::simulation::common
 {
-
-IntegrationScheme::IntegrationScheme()
-    : d_rayleighStiffness(initData(&d_rayleighStiffness, (SReal)0.0, "rayleighStiffness", "Rayleigh damping coefficient related to stiffness, > 0") )
-    , d_rayleighMass(initData(&d_rayleighMass, (SReal)0.0, "rayleighMass", "Rayleigh damping coefficient related to mass, > 0"))
-{}
-
-IntegrationScheme::~IntegrationScheme()
-{}
-
-void IntegrationScheme::setupIntegrationStep(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
-{
-    m_params = params;
-    m_dt = dt;
-    m_xResult = xResult;
-    m_vResult = vResult;
-
-
-    doSetupIntegrationStep(params, dt, xResult, vResult);
-
-
+class MechanicalOperations;
+class VectorOperations;
 }
 
-bool IntegrationScheme::insertInNode( objectmodel::BaseNode* node )
+namespace sofa::simulation::integrationschemes
 {
-    node->addIntegrationScheme(this);
-    Inherit1::insertInNode(node);
-    return true;
-}
 
-bool IntegrationScheme::removeInNode( objectmodel::BaseNode* node )
+class SOFA_SIMULATION_CORE_API ExplicitIntegrationScheme :
+                            public  sofa::core::behavior::IntegrationScheme,
+                            public sofa::core::behavior::LinearSolverAccessor
 {
-    node->removeIntegrationScheme(this);
-    Inherit1::removeInNode(node);
-    return true;
-}
+public:
+    SOFA_ABSTRACT_CLASS(ExplicitIntegrationScheme, sofa::core::behavior::IntegrationScheme);
 
+    ExplicitIntegrationScheme() = default;
+    virtual ~ExplicitIntegrationScheme() override = default ;
 
-} // namespace sofa::core::behavior
+    virtual void integrate(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) = 0 ;
 
-
-
+};
+} // namespace sofa::component::integrationschemes
 
 
