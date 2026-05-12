@@ -216,7 +216,7 @@ void VelocityBasedImplicitIntegrationScheme::solveLinearEquation()
  * guess. It computes x^{i+1} += alpha * dx, where dx is the result of the linear system. It is
  * not necessary to share the result with the Newton-Raphson method.
  */
-void VelocityBasedImplicitIntegrationScheme::updateVelocityAndPositionFromLinearSolution(SReal alpha, unsigned iteration)
+void VelocityBasedImplicitIntegrationScheme::updateStatesFromLinearSolution(SReal alpha, unsigned iteration)
 {
     sofa::simulation::common::VectorOperations vop( m_params, this->getContext() );
 
