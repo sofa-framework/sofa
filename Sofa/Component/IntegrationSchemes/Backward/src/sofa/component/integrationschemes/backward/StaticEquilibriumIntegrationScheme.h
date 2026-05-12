@@ -22,11 +22,10 @@
 #pragma once
 #include <sofa/simulation/config.h>
 
-#include <sofa/simulation/integrationschemes/ImplicitIntegrationScheme.h>
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/core/behavior/MultiVec.h>
-
 #include <sofa/core/behavior/LinearSolverAccessor.h>
+#include <sofa/simulation/integrationschemes/ImplicitIntegrationScheme.h>
 
 namespace sofa::simulation::common
 {
@@ -34,61 +33,53 @@ class MechanicalOperations;
 class VectorOperations;
 }
 
-namespace sofa::simulation::integrationschemes
+namespace sofa::component::integrationschemes::backward
 {
 
-class SOFA_SIMULATION_CORE_API VelocityBasedImplicitIntegrationScheme :
-                            public ImplicitIntegrationScheme
+class SOFA_SIMULATION_CORE_API StaticEquilibriumIntegrationScheme :
+                            public sofa::simulation::integrationschemes::ImplicitIntegrationScheme
 {
 public:
-    SOFA_ABSTRACT_CLASS(VelocityBasedImplicitIntegrationScheme, ImplicitIntegrationScheme);
+    SOFA_ABSTRACT_CLASS(StaticEquilibriumIntegrationScheme, ImplicitIntegrationScheme);
 
-    VelocityBasedImplicitIntegrationScheme() = default;
+    StaticEquilibriumIntegrationScheme() = default;
 
-    virtual void doSetupIntegrationStep(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult);
+    void doSetupIntegrationStep(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
 
     /**
      * Compute the system matrix.
      */
-    virtual void computeLHS(unsigned iteration = 0);
+    void computeLHS(unsigned iteration = 0) override;
 
     /**
     * compute the current RHS.
     */
-    virtual void computeRHS(unsigned iteration = 0);
-
+    void computeRHS(unsigned iteration = 0) override;
 
     /**
      * Returns the squared norm of the last evaluation of the RHS
      */
-    virtual SReal squaredNormRHS();
-
+    SReal squaredNormRHS() override;
 
     /**
      * Solve the linear equation from a Newton iteration, i.e. it computes (x^{i+1}-x^i).
      */
-    virtual void solveLinearEquation();
+    void solveLinearEquation() override;
 
     /**
      * Once (x^{i+1}-x^i) has been computed, the result is used internally to update the current
      * guess. It computes x^{i+1} += alpha * dx, where dx is the result of the linear system. It is
      * not necessary to share the result with the Newton-Raphson method.
      */
-    virtual void updateStatesFromLinearSolution(SReal alpha, unsigned iteration = 0);
+    void updateStatesFromLinearSolution(SReal alpha, unsigned iteration = 0) override;
 
     virtual SReal getVelocityIntegrationFactor() const final;
     virtual SReal getPositionIntegrationFactor() const final;
 
 protected:
-    virtual sofa::Size getIntegrationSchemeOrder() const = 0;
 
-    virtual SReal getPositionUpdateDerivedFromVelocity() const = 0;
-    virtual SReal getInverseVelocityUpdateDerivedFromVelocity() const = 0;
+    virtual sofa::Size getIntegrationSchemeOrder() const;
 
-    //Compute the error made on the position integration equation : x_{t+h} - g_x(v), with v the current estimate of velocity
-    virtual void computeCurrentPositionIntegrationError(sofa::simulation::common::VectorOperations & vop, sofa::core::MultiVecDerivId& result, const sofa::core::MultiVecCoordId& position, const sofa::core::MultiVecDerivId& velocity) = 0;
-    //Compute the acceleration from current value of velocity. This is the implementation of the inverse integration scheme for the velocity
-    virtual void computeAccelerationFromVelocity(sofa::simulation::common::VectorOperations & vop, sofa::core::MultiVecDerivId& result, const sofa::core::MultiVecDerivId& velocity) = 0;
 };
 
 } // namespace sofa::component::integrationschemes

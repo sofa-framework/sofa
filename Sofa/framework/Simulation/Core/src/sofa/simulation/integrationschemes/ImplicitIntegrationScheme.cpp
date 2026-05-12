@@ -37,7 +37,7 @@ void ImplicitIntegrationScheme::integrate(const core::ExecParams* params, SReal 
     computeLHS(0);
     computeRHS(0);
     solveLinearEquation();
-    updateVelocityAndPositionFromLinearSolution(1.0, 0);
+    updateStatesFromLinearSolution(1.0, 0);
 }
 
 }

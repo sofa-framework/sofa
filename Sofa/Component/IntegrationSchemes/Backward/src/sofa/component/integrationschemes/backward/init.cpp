@@ -29,6 +29,7 @@ namespace sofa::component::integrationschemes::backward
 extern void registerEulerImplicitIntegrationScheme(sofa::core::ObjectFactory* factory);
 extern void registerNewmarkIntegrationScheme(sofa::core::ObjectFactory* factory);
 extern void registerBDFIntegrationScheme(sofa::core::ObjectFactory* factory);
+extern void registerStaticEquilibriumIntegrationScheme(sofa::core::ObjectFactory* factory);
 
 extern "C" {
     SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
@@ -57,6 +58,8 @@ void registerObjects(sofa::core::ObjectFactory* factory)
     registerEulerImplicitIntegrationScheme(factory);
     registerNewmarkIntegrationScheme(factory);
     registerBDFIntegrationScheme(factory);
+    registerStaticEquilibriumIntegrationScheme(factory);
+
 }
 
 void init()
