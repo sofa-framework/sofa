@@ -22,7 +22,7 @@
 #pragma once
 #include <sofa/simulation/config.h>
 
-#include <sofa/core/behavior/IntegrationScheme.h>
+#include <sofa/simulation/integrationschemes/ImplicitIntegrationScheme.h>
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/core/behavior/MultiVec.h>
 
@@ -37,14 +37,13 @@ class VectorOperations;
 namespace sofa::simulation::integrationschemes
 {
 
-class SOFA_SIMULATION_CORE_API VelocityBasedIntegrationScheme :
-                            public  sofa::core::behavior::IntegrationScheme,
-                            public sofa::core::behavior::LinearSolverAccessor
+class SOFA_SIMULATION_CORE_API VelocityBasedImplicitIntegrationScheme :
+                            public ImplicitIntegrationScheme
 {
 public:
-    SOFA_ABSTRACT_CLASS(VelocityBasedIntegrationScheme, sofa::core::behavior::IntegrationScheme);
+    SOFA_ABSTRACT_CLASS(VelocityBasedImplicitIntegrationScheme, ImplicitIntegrationScheme);
 
-    VelocityBasedIntegrationScheme() = default;
+    VelocityBasedImplicitIntegrationScheme() = default;
 
     virtual void doSetupIntegrationStep(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult);
 

@@ -35,7 +35,7 @@ namespace sofa::simulation
 void SolveVisitor::processSolver(simulation::Node* node, sofa::core::behavior::IntegrationScheme* s)
 {
     helper::ScopedAdvancedTimer timer("Mechanical",node);
-    s->solve(params, dt, x, v);
+    s->integrate(params, dt, x, v);
 }
 
 void SolveVisitor::fwdInteractionForceField(Node* node, core::behavior::BaseInteractionForceField* forceField)
@@ -162,7 +162,7 @@ void SolveVisitor::initializeTaskScheduler()
 
 sofa::simulation::Task::MemoryAlloc SolveVisitorTask::run()
 {
-    m_solver->solve(m_execParams, m_dt, m_x, m_v);
+    m_solver->integrate(m_execParams, m_dt, m_x, m_v);
     return Task::Stack;
 }
 

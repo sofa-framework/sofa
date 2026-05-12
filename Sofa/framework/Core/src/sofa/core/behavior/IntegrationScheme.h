@@ -60,36 +60,7 @@ public:
     virtual void doSetupIntegrationStep(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
     {  }
 
-    /**
-     * Compute the system matrix.
-     */
-    virtual void computeLHS(unsigned iteration = 0) = 0;
-
-     /**
-     * compute the current RHS.
-     */
-    virtual void computeRHS(unsigned iteration = 0) = 0;
-
-
-    /**
-     * Returns the squared norm of the last evaluation of the RHS
-     */
-    virtual SReal squaredNormRHS() = 0;
-
-
-    /**
-     * Solve the linear equation from a Newton iteration, i.e. it computes (x^{i+1}-x^i).
-     */
-    virtual void solveLinearEquation() = 0;
-
-    /**
-     * Once (x^{i+1}-x^i) has been computed, the result is used internally to update the current
-     * guess. It computes x^{i+1} += alpha * dx, where dx is the result of the linear system. It is
-     * not necessary to share the result with the Newton-Raphson method.
-     */
-    virtual void updateVelocityAndPositionFromLinearSolution(SReal alpha, unsigned iteration = 0) = 0;
-
-    SOFA_ATTRIBUTE_DEPRECATED("v26.12", "v27.06", "This method has been devided into smallest methods composing the time integration stage.") virtual void solve(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) final ;
+    virtual void integrate(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) = 0;
 
 
     /// Given the solution dx of the linear system inversion, how much will it affect the velocity
@@ -112,21 +83,14 @@ public:
 
 protected:
 
-    virtual sofa::Size getIntegrationSchemeOrder() = 0;
 
     const core::ExecParams* m_params;
     SReal m_dt;
     sofa::core::MultiVecCoordId m_xResult;
     sofa::core::MultiVecDerivId m_vResult;
-
-    sofa::core::MultiVecDerivId m_r0, m_r1, m_r2;
-
-    std::vector<MultiVecCoordId> m_x0;
-    std::vector<MultiVecDerivId> m_a0, m_v0;
-
-    sofa::core::MultiVecDerivId m_acceleration;
-
     sofa::core::MultiVecDerivId m_unknown;
+
+
 
 
 };

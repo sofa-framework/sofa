@@ -25,9 +25,8 @@
 #include <sofa/core/behavior/LinearSolverAccessor.h>
 #include <sofa/simulation/MechanicalOperations.h>
 #include <sofa/simulation/VectorOperations.h>
-#include <sofa/simulation/integrationschemes/VelocityBasedIntegrationScheme.h>
+#include <sofa/simulation/integrationschemes/VelocityBasedImplicitIntegrationScheme.h>
 
-#include "sofa/simulation/integrationschemes/AccelerationBasedIntegrationScheme.h"
 
 namespace sofa::simulation::common
 {
@@ -38,10 +37,10 @@ namespace sofa::component::integrationschemes::backward
 
 
 class SOFA_COMPONENT_INTEGRATIONSCHEMES_BACKWARD_API BDFIntegrationScheme :
-    public sofa::simulation::integrationschemes::VelocityBasedIntegrationScheme
+    public sofa::simulation::integrationschemes::VelocityBasedImplicitIntegrationScheme
 {
 public:
-    SOFA_CLASS(BDFIntegrationScheme, sofa::simulation::integrationschemes::VelocityBasedIntegrationScheme);
+    SOFA_CLASS(BDFIntegrationScheme, sofa::simulation::integrationschemes::VelocityBasedImplicitIntegrationScheme);
     core::objectmodel::Data<sofa::Size> d_order;
 
     BDFIntegrationScheme();
