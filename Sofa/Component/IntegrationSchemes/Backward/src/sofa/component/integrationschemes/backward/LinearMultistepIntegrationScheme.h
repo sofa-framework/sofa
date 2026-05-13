@@ -25,7 +25,7 @@
 #include <sofa/core/behavior/LinearSolverAccessor.h>
 #include <sofa/simulation/MechanicalOperations.h>
 #include <sofa/simulation/VectorOperations.h>
-#include <sofa/component/integrationschemes/backward/LinearMultistepIntegrationScheme.h>
+#include <sofa/simulation/integrationschemes/VelocityBasedImplicitIntegrationScheme.h>
 
 
 namespace sofa::simulation::common
@@ -36,17 +36,37 @@ namespace sofa::component::integrationschemes::backward
 {
 
 
-class SOFA_COMPONENT_INTEGRATIONSCHEMES_BACKWARD_API BDFIntegrationScheme :
-    public LinearMultistepIntegrationScheme
+class SOFA_COMPONENT_INTEGRATIONSCHEMES_BACKWARD_API LinearMultistepIntegrationScheme :
+    public sofa::simulation::integrationschemes::VelocityBasedImplicitIntegrationScheme
 {
 public:
-    SOFA_CLASS(BDFIntegrationScheme, LinearMultistepIntegrationScheme);
+    SOFA_CLASS(LinearMultistepIntegrationScheme, sofa::simulation::integrationschemes::VelocityBasedImplicitIntegrationScheme);
+    core::objectmodel::Data<sofa::Size> d_order;
 
-    BDFIntegrationScheme() = default;
+    LinearMultistepIntegrationScheme();
+
+    virtual void init() override;
+    virtual void doSetupIntegrationStep(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
+
+    virtual SReal getPositionUpdateDerivedFromVelocity() const override;
+    virtual SReal getInverseVelocityUpdateDerivedFromVelocity() const override;
+
+    //Compute the position update from current value of velocity : dX = g_x(v_i) - x_t
+    virtual void computeCurrentPositionIntegrationError(sofa::simulation::common::VectorOperations & vop, sofa::core::MultiVecDerivId& result,  const sofa::core::MultiVecCoordId& position,const sofa::core::MultiVecDerivId& velocity) override;
+    //Compute the acceleration from current value of velocity. This is the implementation of the inverse integration scheme for the velocity
+    virtual void computeAccelerationFromVelocity(sofa::simulation::common::VectorOperations & vop, sofa::core::MultiVecDerivId& result, const sofa::core::MultiVecDerivId& velocity) override;
 
 protected:
+    virtual sofa::Size getIntegrationSchemeOrder() const override
+    {
+        return d_order.getValue();
+    }
 
-    virtual void computeFactors() override;
+    virtual void computeFactors() = 0;
+
+    std::vector<SReal> m_aFactors;
+    std::vector<SReal> m_bFactors;
+    std::deque<SReal> m_samples;
 
 };
 
