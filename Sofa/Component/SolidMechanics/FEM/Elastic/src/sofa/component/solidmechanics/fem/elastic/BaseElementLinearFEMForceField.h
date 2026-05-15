@@ -55,6 +55,10 @@ private:
     using StrainDisplacement = typename trait::StrainDisplacement;
     using Real = typename trait::Real;
 
+public:
+    using AssembledStiffnessMatrix = sofa::type::Mat<
+        trait::NumberOfDofsInElement, trait::NumberOfDofsInElement, Real>;
+
 protected:
 
     BaseElementLinearFEMForceField();
@@ -70,6 +74,14 @@ public:
      * List of precomputed element stiffness matrices
      */
     sofa::Data<sofa::type::vector<ElementStiffness> > d_elementStiffness;
+
+    /**
+     * Contiguous buffer of assembled stiffness matrices (one per element).
+     * Extracted from d_elementStiffness for cache-friendly access in the hot path.
+     * This avoids loading the full FactorizedElementStiffness struct (~15 KB per element)
+     * when only the assembled matrix (~4.6 KB) is needed.
+     */
+    sofa::type::vector<AssembledStiffnessMatrix> m_assembledStiffnessMatrices;
 };
 
 #if !defined(ELASTICITY_COMPONENT_BASE_ELEMENT_LINEAR_FEM_FORCEFIELD_CPP)
