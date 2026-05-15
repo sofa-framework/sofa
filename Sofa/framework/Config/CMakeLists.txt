@@ -181,6 +181,9 @@ endif()
 ## Windows-specific
 if(WIN32)
     list(APPEND SOFACONFIG_COMPILE_OPTIONS "/W4")
+    # MSVC warning suppressions
+    list(APPEND SOFACONFIG_COMPILE_OPTIONS "/wd4589") # Constructor of abstract class ignores initializer for virtual base class
+
     list(APPEND SOFACONFIG_COMPILE_OPTIONS "-D_USE_MATH_DEFINES")
     list(APPEND SOFACONFIG_COMPILE_OPTIONS "-D_CRT_SECURE_NO_WARNINGS")
     list(APPEND SOFACONFIG_COMPILE_OPTIONS "-D_CRT_NONSTDC_NO_DEPRECATE")

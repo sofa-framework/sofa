@@ -49,7 +49,7 @@ void MechanicalAddMBKdxVisitor::bwdMechanicalMapping(simulation::Node* /*node*/,
     if (accumulate)
     {
         map->applyJT(mparams, res, res);
-        if( mparams->kFactor() ) map->applyDJT(mparams, res, res);
+        if( mparams->kFactor() != 0 ) map->applyDJT(mparams, res, res);
     }
 }
 

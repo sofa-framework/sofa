@@ -934,7 +934,7 @@ void TimerData::print()
 AdvancedTimer::outputType AdvancedTimer::convertOutputType(std::string type)
 {
 	std::for_each(type.begin(), type.end(),  [](char& c) {
-		c = std::tolower(static_cast<unsigned char>(c)); } );
+		c = static_cast<char>(std::tolower(static_cast<unsigned char>(c))); } );
 
 	if(type.compare("json") == 0)
 		return JSON;
@@ -1087,7 +1087,7 @@ std::string getTime(ctime_t t, int niter=1)
 double strToDouble(std::string const &stringToConvert, std::size_t const precision)
 {
     std::stringstream convertingStream;
-    convertingStream << std::setprecision(precision) << std::fixed << stringToConvert << std::endl;
+    convertingStream << std::setprecision(static_cast<int>(precision)) << std::fixed << stringToConvert << std::endl;
 
     double answer;
     convertingStream >> answer;

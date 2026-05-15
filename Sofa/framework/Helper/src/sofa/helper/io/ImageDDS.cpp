@@ -204,11 +204,13 @@ bool ImageDDS::load(std::string filename)
         //case DDS_FORMAT_BGR32F:  type = Image::FLOAT;  channels = Image::BGR;        break;
         //case DDS_FORMAT_BGRA32F: type = Image::FLOAT;  channels = Image::BGRA;       break;
 
-    default:
-    {
-        bool error = false;
+        default:
+        {
+            bool error = false;
+            type = Image::UNORM8;  // Initialize with a default value
+            channels = Image::L;   // Initialize with a default value
 
-        switch (header.ddpfPixelFormat.dwRGBBitCount)
+            switch (header.ddpfPixelFormat.dwRGBBitCount)
         {
             // 8bit formats (R8, L8)
         case 8:

@@ -177,9 +177,13 @@ void DynamicLibrary::fetchLastError()
     m_lastError = std::string(pMsgBuf);
 # else
     std::wstring s(pMsgBuf);
-    // This is terrible, it will truncate wchar_t to char_t,
-    // but it should work for characters 0 to 127.
-    m_lastError = std::string(s.begin(), s.end());
+    // Convert wide string to narrow string properly
+    int size = WideCharToMultiByte(CP_UTF8, 0, s.c_str(), -1, nullptr, 0, NULL, FALSE);
+    if (size > 0)
+    {
+        m_lastError.resize(size - 1);
+        WideCharToMultiByte(CP_UTF8, 0, s.c_str(), -1, &m_lastError[0], size, NULL, FALSE);
+    }
 # endif
     LocalFree(pMsgBuf);
 #else

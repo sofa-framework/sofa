@@ -90,7 +90,7 @@ int TypeInfoRegistry::AllocateNewTypeId(const std::type_info& nfo)
     const std::string name = sofa::helper::NameDecoder::decodeTypeName(nfo);
     const std::string typeName = sofa::helper::NameDecoder::decodeTypeName(nfo);
     typeinfos.push_back(new NameOnlyTypeInfo(name, typeName));
-    return typeinfos.size()-1;
+    return static_cast<int>(typeinfos.size()-1);
 }
 
 

@@ -52,7 +52,7 @@ void DefaultMultiMatrixAccessor::clear()
 {
     globalDim = 0;
     for (auto it = realStateOffsets.begin(), itend = realStateOffsets.end(); it != itend; ++it)
-        it->second = -1;
+        it->second = static_cast<decltype(it->second)>(-1);
 
     for (std::map< const sofa::core::behavior::BaseMechanicalState*, linearalgebra::BaseMatrix* >::iterator it = mappedMatrices.begin(), itend = mappedMatrices.end(); it != itend; ++it)
         if (it->second != nullptr) delete it->second;

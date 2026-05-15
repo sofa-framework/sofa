@@ -529,7 +529,7 @@ void ObjectFactory::dump(std::ostream& out)
         if (!entry->aliases.empty())
         {
             out << "  aliases :";
-            for (std::set<std::string>::iterator myit = entry->aliases.begin(), itend = entry->aliases.end(); myit != itend; ++myit)
+            for (std::set<std::string>::iterator myit = entry->aliases.begin(), aliasesEnd = entry->aliases.end(); myit != aliasesEnd; ++myit)
                 out << " " << *myit;
             out << "\n";
         }
@@ -573,7 +573,7 @@ void ObjectFactory::dumpXML(std::ostream& out)
         const ClassEntry::SPtr entry = it->second;
         if (entry->className != it->first) continue;
         out << "<class name=\"" << xmlencode(entry->className) <<"\">\n";
-        for (std::set<std::string>::iterator myit = entry->aliases.begin(), itend = entry->aliases.end(); myit != itend; ++myit)
+        for (std::set<std::string>::iterator myit = entry->aliases.begin(), aliasesEnd = entry->aliases.end(); myit != aliasesEnd; ++myit)
             out << "<alias>" << xmlencode(*myit) << "</alias>\n";
         if (!entry->description.empty())
             out << "<description>"<<entry->description<<"</description>\n";
@@ -607,7 +607,7 @@ void ObjectFactory::dumpHTML(std::ostream& out)
         if (!entry->aliases.empty())
         {
             out << "<li>Aliases:<i>";
-            for (std::set<std::string>::iterator myit = entry->aliases.begin(), itend = entry->aliases.end(); myit != itend; ++myit)
+            for (std::set<std::string>::iterator myit = entry->aliases.begin(), aliasesEnd = entry->aliases.end(); myit != aliasesEnd; ++myit)
                 out << " " << xmlencode(*myit);
             out << "</i></li>\n";
         }

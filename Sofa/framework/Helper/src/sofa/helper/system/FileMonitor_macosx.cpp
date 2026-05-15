@@ -95,7 +95,7 @@ These steps are explained in more detail in the sections that follow.
                                           0.2, // CFTimeInterval latency
                                           kFSEventStreamCreateFlagFileEvents // FSEventStreamCreateFlags flags
                                           );
-        FSEventStreamScheduleWithRunLoop(m_eventStream,CFRunLoopGetCurrent(), kCFRunLoopDefaultMode);
+        FSEventStreamSetDispatchQueue(m_eventStream, dispatch_get_main_queue());
         FSEventStreamStart(m_eventStream);
     }
 
