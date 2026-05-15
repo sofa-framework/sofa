@@ -67,6 +67,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/SceneCheckRegistry.h
     ${SRC_ROOT}/SceneCheckMainRegistry.h
     ${SRC_ROOT}/MappingGraph.h
+    ${SRC_ROOT}/MappingGraphMechanicalOperations.h
 
     ${SRC_ROOT}/events/BuildConstraintSystemEndEvent.h
     ${SRC_ROOT}/events/SimulationInitDoneEvent.h
@@ -75,6 +76,15 @@ set(HEADER_FILES
     ${SRC_ROOT}/events/SimulationStartEvent.h
     ${SRC_ROOT}/events/SimulationStopEvent.h
     ${SRC_ROOT}/events/SolveConstraintSystemEndEvent.h
+
+    ${SRC_ROOT}/mappinggraph/BaseMappingGraphNode.h
+    ${SRC_ROOT}/mappinggraph/CallableVisitor.h
+    ${SRC_ROOT}/mappinggraph/ComponentGroupMappingGraphNode.h
+    ${SRC_ROOT}/mappinggraph/ExportDot.h
+    ${SRC_ROOT}/mappinggraph/MappingGraphAlgorithms.h
+    ${SRC_ROOT}/mappinggraph/MappingGraphNode.h
+    ${SRC_ROOT}/mappinggraph/MappingGraphVisitor.h
+    ${SRC_ROOT}/mappinggraph/VisitorApplication.h
 
     ${SRC_ROOT}/mechanicalvisitor/MechanicalAccFromFVisitor.h
     ${SRC_ROOT}/mechanicalvisitor/MechanicalAccumulateJacobian.h
@@ -169,6 +179,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/IntegrateBeginEvent.cpp
     ${SRC_ROOT}/IntegrateEndEvent.cpp
     ${SRC_ROOT}/MappingGraph.cpp
+    ${SRC_ROOT}/MappingGraphMechanicalOperations.cpp
     ${SRC_ROOT}/MechanicalOperations.cpp
     ${SRC_ROOT}/MechanicalVPrintVisitor.cpp
     ${SRC_ROOT}/MechanicalVisitor.cpp
@@ -212,6 +223,11 @@ set(SOURCE_FILES
     ${SRC_ROOT}/events/SimulationStartEvent.cpp
     ${SRC_ROOT}/events/SimulationStopEvent.cpp
     ${SRC_ROOT}/events/SolveConstraintSystemEndEvent.cpp
+
+    ${SRC_ROOT}/mappinggraph/BaseMappingGraphNode.cpp
+    ${SRC_ROOT}/mappinggraph/ExportDot.cpp
+    ${SRC_ROOT}/mappinggraph/MappingGraphAlgorithms.cpp
+    ${SRC_ROOT}/mappinggraph/MappingGraphVisitor.cpp
 
     ${SRC_ROOT}/mechanicalvisitor/MechanicalAccFromFVisitor.cpp
     ${SRC_ROOT}/mechanicalvisitor/MechanicalAccumulateJacobian.cpp
