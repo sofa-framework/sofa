@@ -704,7 +704,7 @@ void QuadBendingFEMForceField<DataTypes>::addDForce(const core::MechanicalParams
 }
 
 template <class DataTypes>
-void QuadBendingFEMForceField<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
+void QuadBendingFEMForceField<DataTypes>::doBuildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
 {
     static constexpr auto N = Deriv::total_size;
     auto dfdx = matrix->getForceDerivativeIn(this->mstate)
@@ -733,7 +733,7 @@ void QuadBendingFEMForceField<DataTypes>::buildStiffnessMatrix(core::behavior::S
 }
 
 template <class DataTypes>
-void QuadBendingFEMForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+void QuadBendingFEMForceField<DataTypes>::doBuildDampingMatrix(core::behavior::DampingMatrix*)
 {
     // No damping in this ForceField
 }

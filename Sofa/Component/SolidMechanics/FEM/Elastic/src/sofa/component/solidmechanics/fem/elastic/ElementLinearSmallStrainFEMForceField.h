@@ -70,7 +70,7 @@ private:
 public:
     void init() override;
 
-    void buildStiffnessMatrix(sofa::core::behavior::StiffnessMatrix* matrix) override;
+    void doBuildStiffnessMatrix(sofa::core::behavior::StiffnessMatrix* matrix) override;
 
     SReal getPotentialEnergy(const sofa::core::MechanicalParams*, const sofa::DataVecCoord_t<DataTypes>& x) const override;
 

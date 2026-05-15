@@ -112,10 +112,9 @@ public:
     SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/,
                                      const DataVecCoord&  /* x */) const override;
     virtual void updateStiffness( const VecCoord& x );
-    void addKToMatrix(const core::MechanicalParams*
-                              mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix ) override;
-    void buildStiffnessMatrix(sofa::core::behavior::StiffnessMatrix* matrix) override;
-    void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) final;
+    void addKToMatrix(sofa::linearalgebra::BaseMatrix * matrix, SReal kFact, unsigned int &offset) override;
+    void doBuildStiffnessMatrix(sofa::core::behavior::StiffnessMatrix* matrix) override;
+    void doBuildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) final;
 
     void draw(const core::visual::VisualParams* vparams) override;
     void drawPlane(const core::visual::VisualParams*, float size=0.0f);

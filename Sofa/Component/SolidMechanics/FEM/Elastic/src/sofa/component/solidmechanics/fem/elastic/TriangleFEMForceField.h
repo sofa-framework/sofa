@@ -100,10 +100,13 @@ public:
     void reinit() override;
     void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
     void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx) override;
+    
     using Inherit1::addKToMatrix;
     void addKToMatrix(sofa::linearalgebra::BaseMatrix *mat, SReal k, unsigned int &offset) override; // compute and add all the element stiffnesses to the global stiffness matrix
-    void buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix) override;
-    void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) final;
+
+    void doBuildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix) override;
+    void doBuildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) final;
+
     using Inherit1::getPotentialEnergy;
     SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override
     {

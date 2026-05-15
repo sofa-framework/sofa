@@ -195,7 +195,7 @@ void PenalityContactForceField<CudaVec3fTypes>::addDForce(const core::Mechanical
     d_df2.endEdit();
 }
 
-inline void PenalityContactForceField<CudaVectorTypes<Vec<3>, Vec<3>>>::buildDampingMatrix(core::behavior::DampingMatrix* damping_matrix)
+inline void PenalityContactForceField<CudaVectorTypes<Vec<3>, Vec<3>>>::doBuildDampingMatrix(core::behavior::DampingMatrix* damping_matrix)
 {
     // No damping in this ForceField
 }

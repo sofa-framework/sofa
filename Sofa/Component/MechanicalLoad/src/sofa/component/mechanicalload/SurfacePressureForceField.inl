@@ -237,13 +237,8 @@ void SurfacePressureForceField<DataTypes>::addDForce(const core::MechanicalParam
 
 
 template <class DataTypes>
-void SurfacePressureForceField<DataTypes>::addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+void SurfacePressureForceField<DataTypes>::addKToMatrix(sofa::linearalgebra::BaseMatrix * matrix, SReal kFact, unsigned int &offset)
 {
-    const sofa::core::behavior::MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
-    sofa::linearalgebra::BaseMatrix* mat = mref.matrix;
-    unsigned int offset = mref.offset;
-    Real kFact = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
-
     const int N = Coord::total_size;
     if (d_useTangentStiffness.getValue())
     {
@@ -258,7 +253,7 @@ void SurfacePressureForceField<DataTypes>::addKToMatrix(const core::MechanicalPa
                 {
                     for (unsigned int c = 0; c < 3; c++)
                     {
-                        mat->add(offset + N * i + l, offset + N * v + c, kFact * Kiv(l,c));
+                        matrix->add(offset + N * i + l, offset + N * v + c, kFact * Kiv(l,c));
                     }
                 }
             }
@@ -267,7 +262,7 @@ void SurfacePressureForceField<DataTypes>::addKToMatrix(const core::MechanicalPa
 }
 
 template <class DataTypes>
-void SurfacePressureForceField<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
+void SurfacePressureForceField<DataTypes>::doBuildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
 {
     if (d_useTangentStiffness.getValue())
     {
@@ -290,7 +285,7 @@ void SurfacePressureForceField<DataTypes>::buildStiffnessMatrix(core::behavior::
 }
 
 template <class DataTypes>
-void SurfacePressureForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+void SurfacePressureForceField<DataTypes>::doBuildDampingMatrix(core::behavior::DampingMatrix*)
 {
     // No damping in this ForceField
 }

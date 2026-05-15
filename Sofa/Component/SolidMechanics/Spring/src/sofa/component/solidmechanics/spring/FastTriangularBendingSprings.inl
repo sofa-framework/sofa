@@ -433,7 +433,7 @@ void FastTriangularBendingSprings<DataTypes>::addKToMatrix(sofa::linearalgebra::
 }
 
 template <class _DataTypes>
-void FastTriangularBendingSprings<_DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
+void FastTriangularBendingSprings<_DataTypes>::doBuildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
 {
     static constexpr auto blockSize = DataTypes::deriv_total_size;
     static constexpr auto spatialDimension = DataTypes::spatial_dimensions;
@@ -458,7 +458,7 @@ void FastTriangularBendingSprings<_DataTypes>::buildStiffnessMatrix(core::behavi
 }
 
 template <class _DataTypes>
-void FastTriangularBendingSprings<_DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+void FastTriangularBendingSprings<_DataTypes>::doBuildDampingMatrix(core::behavior::DampingMatrix*)
 {
     // No damping in this ForceField
 }

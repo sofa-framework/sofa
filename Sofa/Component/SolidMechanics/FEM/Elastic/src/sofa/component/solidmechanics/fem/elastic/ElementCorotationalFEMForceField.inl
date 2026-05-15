@@ -164,7 +164,7 @@ void ElementCorotationalFEMForceField<DataTypes, ElementType>::computeElementsFo
 }
 
 template <class DataTypes, class ElementType>
-void ElementCorotationalFEMForceField<DataTypes, ElementType>::buildStiffnessMatrix(
+void ElementCorotationalFEMForceField<DataTypes, ElementType>::doBuildStiffnessMatrix(
     sofa::core::behavior::StiffnessMatrix* matrix)
 {
     auto dfdx = matrix->getForceDerivativeIn(this->sofa::core::behavior::ForceField<DataTypes>::mstate)
