@@ -63,7 +63,7 @@ void MeshGmsh::init (std::string filename)
         std::getline(file, version); // Getting the version line (e.g. 4.1 0 8)
         try
         {
-            gmshFormat = std::stoul(version.substr( 0, version.find(" ")) ); // Retrieving the mesh format, keeping only the integer part
+            gmshFormat = static_cast<unsigned int>(std::stoul(version.substr( 0, version.find(" ")) )); // Retrieving the mesh format, keeping only the integer part
         }
         catch (const std::exception&)
         {

@@ -38,7 +38,7 @@ public:
 
     void computeProductFromIntersection() override
     {
-        assert(this->m_intersectionAB.intersection.size() == this->m_productResult.nonZeros());
+        assert(static_cast<Eigen::Index>(this->m_intersectionAB.intersection.size()) == this->m_productResult.nonZeros());
         assert(taskScheduler);
 
         auto* lhs_ptr = this->m_lhs->valuePtr();
