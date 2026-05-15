@@ -139,7 +139,7 @@ class DeformableOnRigidFrameMapping : public LinearMulti2Mapping<TIn, TInRoot, T
         const type::vector< InRootDataVecDeriv*>& dataVecOutRootForce,
         const type::vector<const OutDataVecDeriv*>& dataVecInForce) override;
 
-    void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId inForce, core::ConstMultiVecDerivId outForce) override;
+    void doApplyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId inForce, core::ConstMultiVecDerivId outForce) override;
 
 
     //ApplyJT Constraint
