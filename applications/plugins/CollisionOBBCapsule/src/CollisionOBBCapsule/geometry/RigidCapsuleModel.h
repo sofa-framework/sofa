@@ -118,14 +118,6 @@ protected:
 public:
     void init() override;
 
-    // -- CollisionModel interface
-
-    void resize(sofa::Size size) override;
-
-    void computeBoundingTree(int maxDepth=0) override;
-
-    //virtual void computeContinuousBoundingTree(SReal dt, int maxDepth=0);
-
     void draw(const core::visual::VisualParams* vparams, sofa::Index index) override;
 
     core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return _mstate; }
@@ -169,6 +161,14 @@ public:
     Data<VecReal > & writeRadii();
 protected:
     core::behavior::MechanicalState<DataTypes>* _mstate;
+
+    // -- CollisionModel interface
+
+    void doResize(sofa::Size size) override;
+
+    void doComputeBoundingTree(int maxDepth=0) override;
+
+    //virtual void doComputeContinuousBoundingTree(SReal dt, int maxDepth=0);
 };
 
 

@@ -35,7 +35,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/Node.inl
     ${SRC_ROOT}/ParallelSparseMatrixProduct.h
     ${SRC_ROOT}/PauseEvent.h
-    ${SRC_ROOT}/PipelineImpl.h
     ${SRC_ROOT}/PositionEvent.h
     ${SRC_ROOT}/PrintVisitor.h
     ${SRC_ROOT}/PropagateEventVisitor.h
@@ -175,7 +174,6 @@ set(SOURCE_FILES
     ${SRC_ROOT}/MutationListener.cpp
     ${SRC_ROOT}/Node.cpp
     ${SRC_ROOT}/PauseEvent.cpp
-    ${SRC_ROOT}/PipelineImpl.cpp
     ${SRC_ROOT}/PositionEvent.cpp
     ${SRC_ROOT}/PrintVisitor.cpp
     ${SRC_ROOT}/PropagateEventVisitor.cpp

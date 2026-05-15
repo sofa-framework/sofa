@@ -70,7 +70,7 @@ void TriangleOctreeCollisionModel::drawCollisionModel (const core::visual::Visua
     }
 }
 
-void TriangleOctreeCollisionModel::computeBoundingTree(int maxDepth)
+void TriangleOctreeModel::doComputeBoundingTree(int maxDepth)
 {
     const type::vector<topology::Triangle>& tri = *m_triangles;
     if(octreeRoot)
@@ -128,9 +128,10 @@ void TriangleOctreeCollisionModel::computeBoundingTree(int maxDepth)
     }
 }
 
-void TriangleOctreeCollisionModel::computeContinuousBoundingTree(SReal/* dt*/, ContinuousIntersectionTypeFlag continuousIntersectionFlag, int maxDepth)
+
+void TriangleOctreeModel::doComputeContinuousBoundingTree(SReal/* dt*/, ContinuousIntersectionTypeFlag continuousIntersectionFlag, int maxDepth)
 {
-    computeBoundingTree(maxDepth);
+    doComputeBoundingTree(maxDepth);
 }
 
 void TriangleOctreeCollisionModel::buildOctree()
