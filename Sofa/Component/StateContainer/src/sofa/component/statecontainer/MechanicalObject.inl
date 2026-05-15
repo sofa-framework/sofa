@@ -151,7 +151,7 @@ MechanicalObject<DataTypes>::MechanicalObject()
     , showObject(initData(&showObject, (bool) false, "showObject", "Show objects. (default=false)"))
     , showObjectScale(initData(&showObjectScale, 0.1f, "showObjectScale", "Scale for object display. (default=0.1)"))
     , showIndices(initData(&showIndices, (bool) false, "showIndices", "Show indices. (default=false)"))
-    , showIndicesScale(initData(&showIndicesScale, 0.02f, "showIndicesScale", "Scale for indices display. (default=0.02)"))
+    , showIndicesScale(initData(&showIndicesScale, 1.0f, "showIndicesScale", "Multiplier for indices display size. Indices are auto-scaled to maintain a constant screen size."))
     , showVectors(initData(&showVectors, (bool) false, "showVectors", "Show velocity. (default=false)"))
     , showVectorsScale(initData(&showVectorsScale, 0.0001f, "showVectorsScale", "Scale for vectors display. (default=0.0001)"))
     , drawMode(initData(&drawMode,0,"drawMode","The way vectors will be drawn:\n- 0: Line\n- 1:Cylinder\n- 2: Arrow.\n\nThe DOFS will be drawn:\n- 0: point\n- >1: sphere. (default=0)"))
@@ -2630,14 +2630,12 @@ SReal MechanicalObject<DataTypes>::getConstraintJacobianTimesVecDeriv(unsigned i
 template <class DataTypes>
 inline void MechanicalObject<DataTypes>::drawIndices(const core::visual::VisualParams* vparams)
 {
-    const float scale = (float)((vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox()).norm() * showIndicesScale.getValue());
-
     std::vector<type::Vec3> positions;
     positions.reserve(d_size.getValue());
     for (int i = 0; i <d_size.getValue(); ++i)
         positions.push_back(type::Vec3(getPX(i), getPY(i), getPZ(i)));
 
-    vparams->drawTool()->draw3DText_Indices(positions, scale, d_color.getValue());
+    vparams->drawTool()->draw3DText_Indices(positions, showIndicesScale.getValue(), d_color.getValue());
 }
 
 template <class DataTypes>

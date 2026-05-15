@@ -133,7 +133,7 @@ public:
     bool m_showSelectedObjectVolumes {false};
     bool m_showSelectedObjectIndices {false};
     type::RGBAColor m_selectionColor {type::RGBAColor::purple()};
-    float m_visualScaling {0.2};
+    float m_visualScaling {1.0};
 
 protected:
     void drawIndices(const sofa::type::BoundingBox& bbox, const std::vector<sofa::type::Vec3>& positions);
