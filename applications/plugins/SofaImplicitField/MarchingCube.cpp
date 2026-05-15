@@ -43,7 +43,6 @@ void MarchingCube::generateSurfaceMesh(const double isoval, const double mstep, 
     if( nz < 2 || ny < 2 || nx < 2 )
         return;
 
-    double cx,cy,cz;
     int z,mk;
     const int *tri;
 
