@@ -44,8 +44,19 @@ static std::string getPath(std::string s) {
 // {
 //     std::vector<std::string> fileList;
 //     FileSystem::listDirectory(getPath("empty-directory"), fileList);
-// 	EXPECT_TRUE(fileList.empty());
+//     EXPECT_TRUE(fileList.empty());
 // }
+
+TEST(FileSystemTest, getExtension)
+{
+    EXPECT_EQ("d", FileSystem::getExtension("a/b/c.d"));
+    EXPECT_EQ("txt", FileSystem::getExtension("file.txt"));
+    EXPECT_EQ("gz", FileSystem::getExtension("archive.tar.gz"));
+    EXPECT_EQ("", FileSystem::getExtension("no_extension"));
+    EXPECT_EQ("", FileSystem::getExtension(""));
+    EXPECT_EQ("h", FileSystem::getExtension("/absolute/path/to/file.h"));
+    EXPECT_EQ("ext", FileSystem::getExtension(".ext"));
+}
 
 TEST(FileSystemTest, listDirectory_nonEmpty)
 {
@@ -122,6 +133,51 @@ TEST(FileSystemTest, listDirectory_withExtension_noMatch)
     std::vector<std::string> fileList;
     FileSystem::listDirectory(getPath("non-empty-directory/"), fileList, "h");
     EXPECT_TRUE(fileList.empty());
+}
+
+TEST(FileSystemTest, findFiles_noDepth)
+{
+    sofa::helper::logging::MessageDispatcher::addHandler(sofa::testing::MainGtestMessageHandler::getInstance());
+    EXPECT_MSG_NOEMIT(Error);
+
+    std::vector<std::string> results;
+    const int count = FileSystem::findFiles(getPath("non-empty-directory"), results, ".txt");
+    EXPECT_EQ(count, 2);
+    EXPECT_EQ(results.size(), 2u);
+}
+
+TEST(FileSystemTest, findFiles_noMatch)
+{
+    sofa::helper::logging::MessageDispatcher::addHandler(sofa::testing::MainGtestMessageHandler::getInstance());
+    EXPECT_MSG_NOEMIT(Error);
+
+    std::vector<std::string> results;
+    const int count = FileSystem::findFiles(getPath("non-empty-directory"), results, ".xyz");
+    EXPECT_EQ(count, 0);
+    EXPECT_TRUE(results.empty());
+}
+
+TEST(FileSystemTest, findFiles_withDepth)
+{
+    sofa::helper::logging::MessageDispatcher::addHandler(sofa::testing::MainGtestMessageHandler::getInstance());
+    EXPECT_MSG_NOEMIT(Error);
+
+    // The "mesh" subdirectory contains .obj files, and the root resources dir also has subdirectories
+    // Use the resources dir with depth to find .txt files in subdirectories
+    std::vector<std::string> results;
+    const int count = FileSystem::findFiles(getPath(""), results, ".txt", 1);
+    EXPECT_GT(count, 0);
+    EXPECT_EQ(static_cast<int>(results.size()), count);
+}
+
+TEST(FileSystemTest, findFiles_invalidDirectory)
+{
+    sofa::helper::logging::MessageDispatcher::addHandler(sofa::testing::MainGtestMessageHandler::getInstance());
+    EXPECT_MSG_EMIT(Error);
+
+    std::vector<std::string> results;
+    const int count = FileSystem::findFiles(getPath("thisDirectoryDoesNotExist"), results, ".txt");
+    EXPECT_EQ(count, -1);
 }
 
 TEST(FileSystemTest, createDirectory)
@@ -256,13 +312,6 @@ TEST(FileSystemTest, isAbsolute)
     EXPECT_TRUE(FileSystem::isAbsolute("B:/abc"));
     EXPECT_TRUE(FileSystem::isAbsolute("C:/abc/"));
     EXPECT_TRUE(FileSystem::isAbsolute("D:/abc/def"));
-}
-
-TEST(FileSystemTest, cleanPath)
-{
-    EXPECT_EQ("", FileSystem::cleanPath(""));
-    EXPECT_EQ("/abc/def/ghi/jkl/mno", FileSystem::cleanPath("/abc/def//ghi/jkl///mno"));
-    EXPECT_EQ("C:/abc/def/ghi/jkl/mno", FileSystem::cleanPath("C:\\abc\\def\\ghi/jkl///mno"));
 }
 
 TEST(FileSystemTest, convertBackSlashesToSlashes)
@@ -423,4 +472,82 @@ TEST(FileSystemTest, ensureFolderForFileExists_fileExist)
 
     //cleanup
     EXPECT_TRUE(FileSystem::removeFile(file));
+}
+
+TEST(FileSystemTest, removeFile_existingFile)
+{
+    const std::string filename = "FileSystemTest_removeFile.txt";
+    std::ofstream ofs(filename, std::ofstream::out);
+    ofs << "test";
+    ofs.close();
+
+    ASSERT_TRUE(FileSystem::exists(filename));
+    EXPECT_TRUE(FileSystem::removeFile(filename));
+    EXPECT_FALSE(FileSystem::exists(filename));
+}
+
+TEST(FileSystemTest, removeFile_nonExistingFile)
+{
+    EXPECT_FALSE(FileSystem::removeFile("FileSystemTest_removeFile_nonExisting.txt"));
+}
+
+TEST(FileSystemTest, removeAll_nonEmptyDirectory)
+{
+    // Create a directory structure: parent/child/file.txt
+    const std::string parent = "removeAllTestDir";
+    const std::string child = parent + "/subdir";
+    EXPECT_FALSE(FileSystem::createDirectory(parent));
+    EXPECT_FALSE(FileSystem::createDirectory(child));
+
+    // Create a file inside
+    std::ofstream ofs(child + "/file.txt", std::ofstream::out);
+    ofs << "test";
+    ofs.close();
+
+    ASSERT_TRUE(FileSystem::exists(child + "/file.txt"));
+
+    EXPECT_TRUE(FileSystem::removeAll(parent));
+    EXPECT_FALSE(FileSystem::exists(parent));
+}
+
+TEST(FileSystemTest, removeAll_nonExistingDirectory)
+{
+    // removeAll on a non-existing path should still return true (no exception thrown by fs::remove_all)
+    EXPECT_TRUE(FileSystem::removeAll("removeAllTestDir_doesNotExist"));
+}
+
+TEST(FileSystemTest, convertSlashesToBackSlashes)
+{
+    EXPECT_EQ("", FileSystem::convertSlashesToBackSlashes(""));
+    EXPECT_EQ("abc\\def\\ghi", FileSystem::convertSlashesToBackSlashes("abc/def/ghi"));
+    EXPECT_EQ("abc\\def\\ghi", FileSystem::convertSlashesToBackSlashes("abc\\def\\ghi"));
+    EXPECT_EQ("abc\\def\\ghi", FileSystem::convertSlashesToBackSlashes("abc\\def/ghi"));
+    EXPECT_EQ("C:\\abc\\def\\ghi", FileSystem::convertSlashesToBackSlashes("C:/abc/def/ghi"));
+    EXPECT_EQ("C:\\abc\\def\\ghi", FileSystem::convertSlashesToBackSlashes("C:\\abc/def\\ghi"));
+}
+
+TEST(FileSystemTest, removeExtraBackSlashes)
+{
+    EXPECT_EQ("", FileSystem::removeExtraBackSlashes(""));
+    EXPECT_EQ("\\", FileSystem::removeExtraBackSlashes("\\"));
+    EXPECT_EQ("\\", FileSystem::removeExtraBackSlashes("\\\\"));
+    EXPECT_EQ("\\", FileSystem::removeExtraBackSlashes("\\\\\\"));
+    EXPECT_EQ("\\", FileSystem::removeExtraBackSlashes("\\\\\\\\"));
+    EXPECT_EQ("\\abc\\def", FileSystem::removeExtraBackSlashes("\\abc\\def"));
+    EXPECT_EQ("\\abc\\def\\", FileSystem::removeExtraBackSlashes("\\abc\\def\\"));
+    EXPECT_EQ("\\abc\\def\\ghi\\jkl\\", FileSystem::removeExtraBackSlashes("\\abc\\\\def\\\\ghi\\jkl\\\\\\"));
+}
+
+TEST(FileSystemTest, cleanPath_slash)
+{
+    EXPECT_EQ("", FileSystem::cleanPath("")); // assuming FileSystem::SLASH by default
+    EXPECT_EQ("/abc/def/ghi/jkl/mno", FileSystem::cleanPath("/abc/def//ghi/jkl///mno"));
+    EXPECT_EQ("C:/abc/def/ghi/jkl/mno", FileSystem::cleanPath("C:\\abc\\def\\ghi/jkl///mno"));
+}
+
+TEST(FileSystemTest, cleanPath_backslash)
+{
+    EXPECT_EQ("", FileSystem::cleanPath("", FileSystem::BACKSLASH));
+    EXPECT_EQ("\\abc\\def\\ghi\\jkl\\mno", FileSystem::cleanPath("\\abc\\def\\\\ghi\\jkl\\\\\\mno", FileSystem::BACKSLASH));
+    EXPECT_EQ("C:\\abc\\def\\ghi\\jkl\\mno", FileSystem::cleanPath("C:/abc/def/ghi\\jkl\\\\\\mno", FileSystem::BACKSLASH));
 }
