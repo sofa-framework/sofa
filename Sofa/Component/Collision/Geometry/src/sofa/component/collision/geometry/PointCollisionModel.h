@@ -84,18 +84,8 @@ protected:
 
 public:
     void init() override;
-
-    // -- CollisionModel interface
-
-    void resize(sofa::Size size) override;
-
-    void computeBoundingTree(int maxDepth=0) override;
-
-    void computeContinuousBoundingTree(SReal dt, ContinuousIntersectionTypeFlag continuousIntersectionFlag = ContinuousIntersectionTypeFlag::Inertia, int maxDepth=0) override;
-
+    
     void draw(const core::visual::VisualParams*, sofa::Index index) override;
-
-    bool canCollideWithElement(sofa::Index index, CollisionModel* model2, sofa::Index index2) override;
 
     core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return mstate; }
 
@@ -122,11 +112,6 @@ public:
     void computeBBox(const core::ExecParams* params, bool onlyVisible) override;
     void updateNormals();
 
-    sofa::core::topology::BaseMeshTopology* getCollisionTopology() override
-    {
-        return l_topology.get();
-    }
-
 protected:
 
     core::behavior::MechanicalState<DataTypes>* mstate;
@@ -139,6 +124,18 @@ protected:
     /// Link to be set to the topology container in the component graph.
     SingleLink<PointCollisionModel<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
+    // -- CollisionModel interface
+
+    void doComputeBoundingTree(int maxDepth=0) override;
+
+    void doComputeContinuousBoundingTree(SReal dt, ContinuousIntersectionTypeFlag continuousIntersectionFlag = ContinuousIntersectionTypeFlag::Inertia, int maxDepth=0) override;
+
+    bool doCanCollideWithElement(sofa::Index index, CollisionModel* model2, sofa::Index index2) override;
+
+    sofa::core::topology::BaseMeshTopology* doGetCollisionTopology() override
+    {
+        return l_topology.get();
+    }
 };
 
 
