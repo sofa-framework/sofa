@@ -25,7 +25,7 @@
 #include <Geomagic/GeomagicDriver.h>
 
 #include <sofa/simulation/task/TaskScheduler.h>
-#include <sofa/simulation/InitTasks.h>
+#include <sofa/simulation/task/InitTasks.h>
 
 
 namespace geomagic
