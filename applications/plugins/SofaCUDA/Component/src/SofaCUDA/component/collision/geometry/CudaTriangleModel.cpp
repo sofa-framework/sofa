@@ -23,7 +23,7 @@
 #include <SofaCUDA/component/config.h>
 
 #include <SofaCUDA/component/collision/geometry/CudaTriangleModel.h>
-#include <sofa/component/collision/geometry/TriangleModel.inl>
+#include <sofa/component/collision/geometry/TriangleCollisionModel.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::collision::geometry
