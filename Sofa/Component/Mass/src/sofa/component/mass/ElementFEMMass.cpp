@@ -37,6 +37,7 @@ template class SOFA_COMPONENT_MASS_API ElementFEMMass<sofa::defaulttype::Vec2Typ
 template class SOFA_COMPONENT_MASS_API ElementFEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::Quad>;
 template class SOFA_COMPONENT_MASS_API ElementFEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::Tetrahedron>;
 template class SOFA_COMPONENT_MASS_API ElementFEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::Hexahedron>;
+template class SOFA_COMPONENT_MASS_API ElementFEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::Prism>;
 
 void registerFEMMass(sofa::core::ObjectFactory* factory)
 {
@@ -59,6 +60,8 @@ void registerFEMMass(sofa::core::ObjectFactory* factory)
     factory->registerObjects(sofa::core::ObjectRegistrationData("Finite-element mass (inertia and body force) defined on hexahedra")
         .add< ElementFEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::Hexahedron> >(true));
 
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Finite-element mass (inertia and body force) defined on prisms")
+        .add< ElementFEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::Prism> >(true));
 }
 
 }
