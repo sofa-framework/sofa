@@ -30,6 +30,25 @@ namespace sofa::simulation::integrationschemes
 {
 
 
+ImplicitIntegrationScheme::ImplicitIntegrationScheme()
+: d_rayleighStiffness(initData(&d_rayleighStiffness, 0.0_sreal, "rayleighStiffness", "Rayleigh damping coefficient related to stiffness, > 0") )
+, d_rayleighMass(initData(&d_rayleighMass, 0.0_sreal, "rayleighMass", "Rayleigh damping coefficient related to mass, > 0"))
+{
+
+}
+
+void ImplicitIntegrationScheme::setupIntegrationStep(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
+{
+    m_params = params;
+    m_dt = dt;
+    m_xResult = xResult;
+    m_vResult = vResult;
+
+
+    doSetupIntegrationStep(params, dt, xResult, vResult);
+
+
+}
 
 void ImplicitIntegrationScheme::integrate(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
 {

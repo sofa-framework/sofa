@@ -53,15 +53,7 @@ protected:
 
 public:
 
-    // WARNING we expect the linear integrator to initialize the working vecs. Meaning that if we
-    // work in FreeMotion, the xResult should already be equal to the actual position.
-    // Same for the velocity. This is expected when updating the position, only a += will be done.
-    virtual void setupIntegrationStep(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult);
-    virtual void doSetupIntegrationStep(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
-    {  }
-
     virtual void integrate(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) = 0;
-
 
     /// Given the solution dx of the linear system inversion, how much will it affect the velocity
     ///
@@ -77,22 +69,9 @@ public:
     bool insertInNode( objectmodel::BaseNode* node ) override;
     bool removeInNode( objectmodel::BaseNode* node ) override;
 
-    Data<SReal> d_rayleighStiffness; ///< Rayleigh damping coefficient related to stiffness, > 0
-    Data<SReal> d_rayleighMass; ///< Rayleigh damping coefficient related to mass, > 0
-
-
 protected:
 
-
-    const core::ExecParams* m_params;
     SReal m_dt;
-    sofa::core::MultiVecCoordId m_xResult;
-    sofa::core::MultiVecDerivId m_vResult;
-    sofa::core::MultiVecDerivId m_unknown;
-
-
-
-
 };
 
 } // namespace sofa::core::behavior

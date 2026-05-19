@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/odesolver/forward/RungeKutta4Solver.h>
+#include <sofa/component/integrationschemes/forward/RungeKutta4Solver.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/MechanicalOperations.h>
@@ -28,7 +28,7 @@
 #include <cmath>
 
 
-namespace sofa::component::odesolver::forward
+namespace sofa::component::integrationschemes::forward
 {
 
 using core::VecId;
@@ -41,7 +41,7 @@ void registerRungeKutta4Solver(sofa::core::ObjectFactory* factory)
         .add< RungeKutta4Solver >());
 }
 
-void RungeKutta4Solver::solve(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
+void RungeKutta4Solver::doIntegrate(const core::ExecParams* params, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
 {
     sofa::simulation::common::VectorOperations vop( params, this->getContext() );
     sofa::simulation::common::MechanicalOperations mop( params, this->getContext() );
@@ -64,13 +64,13 @@ void RungeKutta4Solver::solve(const core::ExecParams* params, SReal dt, sofa::co
 
     MultiVecCoord newX(&vop);
 
-    SReal stepBy2 = SReal(dt / 2.0);
-    SReal stepBy3 = SReal(dt / 3.0);
-    SReal stepBy6 = SReal(dt / 6.0);
+    SReal stepBy2 = SReal(m_dt / 2.0);
+    SReal stepBy3 = SReal(m_dt / 3.0);
+    SReal stepBy6 = SReal(m_dt / 6.0);
 
     SReal startTime = this->getTime();
 
-    mop.addSeparateGravity(dt);	// v += dt*g . Used if mass wants to added G separately from the other forces to v.
+    mop.addSeparateGravity(m_dt);	// v += dt*g . Used if mass wants to added G separately from the other forces to v.
 
     //First step
     dmsg_info() << "RK4 Step 1";
@@ -141,15 +141,15 @@ void RungeKutta4Solver::solve(const core::ExecParams* params, SReal dt, sofa::co
         ops.resize(2);
         ops[0].first = newX;
         ops[0].second.push_back(std::make_pair(pos.id(),1.0));
-        ops[0].second.push_back(std::make_pair(k3v.id(),dt));
+        ops[0].second.push_back(std::make_pair(k3v.id(),m_dt));
         ops[1].first = k4v;
         ops[1].second.push_back(std::make_pair(vel.id(),1.0));
-        ops[1].second.push_back(std::make_pair(k3a.id(),dt));
+        ops[1].second.push_back(std::make_pair(k3a.id(),m_dt));
         vop.v_multiop(ops);
     }
 #endif
 
-    mop.computeAcc( startTime+dt, k4a, newX, k4v);
+    mop.computeAcc( startTime+m_dt, k4a, newX, k4v);
 
    dmsg_info() << "RK4 Final";
 
