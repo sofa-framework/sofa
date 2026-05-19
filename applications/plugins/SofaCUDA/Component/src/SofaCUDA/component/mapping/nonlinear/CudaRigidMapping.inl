@@ -114,7 +114,7 @@ void RigidMapping<defaulttype::Rigid3Types, gpu::cuda::CudaVec3Types>::apply( co
     const InVecCoord& in = dIn.getValue();
 
     const auto& points = this->d_points.getValue();
-    type::Vec3d translation;
+    type::Vec3 translation;
     sofa::type::Mat<3,3, defaulttype::Rigid3Types::Real> rotation;
     m_rotatedPoints.resize(points.size());
     out.recreate(points.size());
