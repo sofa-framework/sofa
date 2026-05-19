@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/odesolver/forward/EulerExplicitSolver.h>
+#include <sofa/component/integrationschemes/forward/EulerExplicitSolver.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/BaseMass.h>
 #include <sofa/core/behavior/LinearSolver.h>
@@ -30,11 +30,13 @@
 #include <sofa/simulation/MechanicalOperations.h>
 #include <sofa/simulation/VectorOperations.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalGetNonDiagonalMassesCountVisitor.h>
+
+#include "sofa/simulation/integrationschemes/ImplicitIntegrationScheme.h"
 using sofa::simulation::mechanicalvisitor::MechanicalGetNonDiagonalMassesCountVisitor;
 
 //#define SOFA_NO_VMULTIOP
 
-namespace sofa::component::odesolver::forward
+namespace sofa::component::integrationschemes::forward
 {
 
 using namespace sofa::defaulttype;
@@ -54,10 +56,7 @@ EulerExplicitSolver::EulerExplicitSolver()
 {
 }
 
-void EulerExplicitSolver::solve(const core::ExecParams* params,
-                                SReal dt,
-                                sofa::core::MultiVecCoordId xResult,
-                                sofa::core::MultiVecDerivId vResult)
+void EulerExplicitSolver::doIntegrate(const core::ExecParams* params, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
 {
     if (!isComponentStateValid())
     {
@@ -82,7 +81,7 @@ void EulerExplicitSolver::solve(const core::ExecParams* params,
 
     acc.realloc(&vop, !d_threadSafeVisitor.getValue(), true);
 
-    addSeparateGravity(&mop, dt, vResult);
+    addSeparateGravity(&mop, m_dt, vResult);
     computeForce(&mop, f);
 
     // The inverse of the mass matrix is trivial to compute. Otherwise, it requires the
@@ -117,15 +116,14 @@ void EulerExplicitSolver::solve(const core::ExecParams* params,
     }
 
     // Compute the new position and new velocity from the acceleration
-    updateState(&vop, &mop, xResult, vResult, acc, dt);
+    updateState(&vop, &mop, xResult, vResult, acc);
 }
 
 void EulerExplicitSolver::updateState(sofa::simulation::common::VectorOperations* vop,
                                       sofa::simulation::common::MechanicalOperations* mop,
                                       sofa::core::MultiVecCoordId xResult,
                                       sofa::core::MultiVecDerivId vResult,
-                                      const sofa::core::behavior::MultiVecDeriv& acc,
-                                      SReal dt) const
+                                      const sofa::core::behavior::MultiVecDeriv& acc) const
 {
     SCOPED_TIMER("updateState");
 
@@ -190,7 +188,7 @@ void EulerExplicitSolver::updateState(sofa::simulation::common::VectorOperations
         // The value 1.0 indicates that the first operation is based on the values
         // in the second pair and, therefore, the second operation is discarded.
         ops_vel.second.emplace_back(vel.id(), 1.0);
-        ops_vel.second.emplace_back(acc.id(), dt);
+        ops_vel.second.emplace_back(acc.id(), m_dt);
 
         // Access the set of operations corresponding to the position vector
         // In case of symplectic solver, these operations are executed second.
@@ -206,7 +204,7 @@ void EulerExplicitSolver::updateState(sofa::simulation::common::VectorOperations
         // The value 1.0 indicates that the first operation is based on the values
         // in the second pair and, therefore, the second operation is discarded.
         ops_pos.second.emplace_back(pos.id(), 1.0);
-        ops_pos.second.emplace_back(d_symplectic.getValue() ? newVel.id() : vel.id(), dt);
+        ops_pos.second.emplace_back(d_symplectic.getValue() ? newVel.id() : vel.id(), m_dt);
 
         // Execute the defined operations to compute the new velocity vector and
         // the new position vector.
@@ -224,39 +222,9 @@ void EulerExplicitSolver::updateState(sofa::simulation::common::VectorOperations
 #endif
 }
 
-SReal EulerExplicitSolver::getIntegrationFactor(int inputDerivative, int outputDerivative) const
-{
-    if (inputDerivative >= 3 || outputDerivative >= 3)
-    {
-        return 0;
-    }
-
-    const SReal dt = getContext()->getDt();
-    const SReal k_a = d_symplectic.getValue() * dt * dt;
-    const SReal matrix[3][3] =
-        {
-                { 1, dt, k_a}, //x = 1 * x + dt * v + k_a * a
-                { 0,  1,  dt}, //v = 0 * x +  1 * v +  dt * a
-                { 0,  0,   0}
-        };
-
-    return matrix[outputDerivative][inputDerivative];
-}
-
-SReal EulerExplicitSolver::getSolutionIntegrationFactor(int outputDerivative) const
-{
-    if (outputDerivative >= 3)
-        return 0;
-
-    const SReal dt = getContext()->getDt();
-    const SReal k_a = d_symplectic.getValue() * dt * dt;
-    const SReal vect[3] = {k_a, dt, 1};
-    return vect[outputDerivative];
-}
-
 void EulerExplicitSolver::init()
 {
-    OdeSolver::init();
+    Inherit1::init();
 
     if (!l_linearSolver.get())
     {

@@ -22,50 +22,29 @@
 #pragma once
 #include <sofa/component/integrationschemes/forward/config.h>
 
-#include <sofa/core/behavior/OdeSolver.h>
 
-namespace sofa::component::odesolver::forward
+#include <sofa/simulation/integrationschemes/ExplicitIntegrationScheme.h>
+
+namespace sofa::component::integrationschemes::forward
 {
 
 /** A popular time integration method, much more precise than the EulerSolver */
-class SOFA_COMPONENT_ODESOLVER_FORWARD_API RungeKutta4Solver : public sofa::core::behavior::OdeSolver
+class SOFA_COMPONENT_INTEGRATIONSCHEMES_FORWARD_API RungeKutta4Solver : public simulation::integrationschemes::ExplicitIntegrationScheme
 {
 public:
-    SOFA_CLASS(RungeKutta4Solver, sofa::core::behavior::OdeSolver);
+    SOFA_CLASS(RungeKutta4Solver, simulation::integrationschemes::ExplicitIntegrationScheme);
 
-    void solve (const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
+    virtual void doIntegrate(const core::ExecParams* params, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
 
-    /// Given an input derivative order (0 for position, 1 for velocity, 2 for acceleration),
-    /// how much will it affect the output derivative of the given order.
-    /// @todo use real factors depending on the current RK4 step
-    SReal getIntegrationFactor(int inputDerivative, int outputDerivative) const override
+    virtual SReal getVelocityIntegrationFactor() const override
     {
-        const SReal dt = getContext()->getDt();
-        const SReal matrix[3][3] =
-        {
-            { 1, dt/2, 0},
-            { 0, 1, dt/2},
-            { 0, 0, 0}
-        };
-        if (inputDerivative >= 3 || outputDerivative >= 3)
-            return 0;
-        else
-            return matrix[outputDerivative][inputDerivative];
+        return m_dt/2.0;
     }
 
-    /// Given a solution of the linear system,
-    /// how much will it affect the output derivative of the given order.
-    /// @todo use real factors depending on the current RK4 step
-    SReal getSolutionIntegrationFactor(int outputDerivative) const override
+    virtual SReal getPositionIntegrationFactor() const override
     {
-        const SReal dt = getContext()->getDt();
-        const SReal vect[3] = { 0.0, dt/2, 1};
-        if (outputDerivative >= 3)
-            return 0;
-        else
-            return vect[outputDerivative];
+        return m_dt*m_dt/4.0;
     }
-
 };
 
 } // namespace sofa::component::odesolver::forward

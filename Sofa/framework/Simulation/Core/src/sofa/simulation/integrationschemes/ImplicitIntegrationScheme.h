@@ -44,7 +44,14 @@ class SOFA_SIMULATION_CORE_API ImplicitIntegrationScheme :
 public:
     SOFA_ABSTRACT_CLASS(ImplicitIntegrationScheme, sofa::core::behavior::IntegrationScheme);
 
-    ImplicitIntegrationScheme() = default;
+    // WARNING we expect the linear integrator to initialize the working vecs. Meaning that if we
+    // work in FreeMotion, the xResult should already be equal to the actual position.
+    // Same for the velocity. This is expected when updating the position, only a += will be done.
+    virtual void setupIntegrationStep(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult);
+    virtual void doSetupIntegrationStep(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
+    {  }
+
+    ImplicitIntegrationScheme();
 
     /**
      * Compute the system matrix.
@@ -91,6 +98,15 @@ public:
 protected:
 
     virtual sofa::Size getIntegrationSchemeOrder() const = 0;
+
+    Data<SReal> d_rayleighStiffness; ///< Rayleigh damping coefficient related to stiffness, > 0
+    Data<SReal> d_rayleighMass; ///< Rayleigh damping coefficient related to mass, > 0
+
+
+    const core::ExecParams* m_params;
+    sofa::core::MultiVecCoordId m_xResult;
+    sofa::core::MultiVecDerivId m_vResult;
+    sofa::core::MultiVecDerivId m_unknown;
 
     sofa::core::MultiVecDerivId m_r0, m_r1, m_r2;
 

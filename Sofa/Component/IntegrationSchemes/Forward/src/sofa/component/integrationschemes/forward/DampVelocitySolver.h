@@ -21,50 +21,37 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/odesolver/forward/config.h>
+#include <sofa/component/integrationschemes/forward/config.h>
 
-#include <sofa/core/behavior/OdeSolver.h>
+#include <sofa/simulation/integrationschemes/ExplicitIntegrationScheme.h>
 
-namespace sofa::component::odesolver::forward
+namespace sofa::component::integrationschemes::forward
 {
 
 /** Velocity damping and thresholding.
 This is not an ODE solver, but it can be used as a post-process after a real ODE solver.
 */
-class SOFA_COMPONENT_ODESOLVER_FORWARD_API DampVelocitySolver : public sofa::core::behavior::OdeSolver
+class SOFA_COMPONENT_INTEGRATIONSCHEMES_FORWARD_API DampVelocitySolver : public simulation::integrationschemes::ExplicitIntegrationScheme
 {
 public:
-    SOFA_CLASS(DampVelocitySolver, sofa::core::behavior::OdeSolver);
+    SOFA_CLASS(DampVelocitySolver, simulation::integrationschemes::ExplicitIntegrationScheme);
 
-    void solve (const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
     Data<SReal> d_rate; ///< Factor used to reduce the velocities. Typically between 0 and 1.
     Data<SReal> d_threshold; ///< Threshold under which the velocities are canceled.
 
     /// Given an input derivative order (0 for position, 1 for velocity, 2 for acceleration),
     /// how much will it affect the output derivative of the given order.
-    SReal getIntegrationFactor(int inputDerivative, int outputDerivative) const override
+    virtual void doIntegrate(const core::ExecParams* params, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
+
+    virtual SReal getVelocityIntegrationFactor() const override
     {
-        const SReal dt = getContext()->getDt();
-        const SReal matrix[3][3] =
-        {
-            { 1, 0, },
-            { 0, std::exp(-d_rate.getValue() * dt), 0},
-            { 0, 0,                                 0}
-        };
-        if (inputDerivative >= 3 || outputDerivative >= 3)
-            return 0;
-        else
-            return matrix[outputDerivative][inputDerivative];
+        return 1.0;
     }
 
-    /// Given a solution of the linear system,
-    /// how much will it affect the output derivative of the given order.
-    ///
-    SReal getSolutionIntegrationFactor(int /*outputDerivative*/) const override
+    virtual SReal getPositionIntegrationFactor() const override
     {
-        return 0;
+        return m_dt;
     }
-
 protected:
     DampVelocitySolver();
 };

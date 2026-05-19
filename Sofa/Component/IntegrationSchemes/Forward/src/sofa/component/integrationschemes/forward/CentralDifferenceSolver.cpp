@@ -73,7 +73,7 @@ CentralDifferenceSolver::CentralDifferenceSolver()
  *
  */
 
-void CentralDifferenceSolver::integrate(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
+void CentralDifferenceSolver::doIntegrate(const core::ExecParams* params, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
 {
     sofa::simulation::common::VectorOperations vop( params, this->getContext() );
     sofa::simulation::common::MechanicalOperations mop( params, this->getContext() );
@@ -87,7 +87,7 @@ void CentralDifferenceSolver::integrate(const core::ExecParams* params, SReal dt
 
     const SReal r = d_rayleighMass.getValue();
 
-    mop.addSeparateGravity(dt);                // v += dt*g . Used if mass wants to added G separately from the other forces to v.
+    mop.addSeparateGravity(m_dt);                // v += dt*g . Used if mass wants to added G separately from the other forces to v.
 
     //projectVelocity(vel);                  // initial velocities are projected to the constrained space
 
@@ -115,11 +115,11 @@ void CentralDifferenceSolver::integrate(const core::ExecParams* params, SReal dt
         // vel += dx * dt
         ops[0].first = vel2;
         ops[0].second.push_back(std::make_pair(vel.id(),1.0));
-        ops[0].second.push_back(std::make_pair(dx.id(),dt));
+        ops[0].second.push_back(std::make_pair(dx.id(),m_dt));
         // pos += vel * dt
         ops[1].first = pos2;
         ops[1].second.push_back(std::make_pair(pos.id(),1.0));
-        ops[1].second.push_back(std::make_pair(vel2.id(),dt));
+        ops[1].second.push_back(std::make_pair(vel2.id(),m_dt));
 
         vop.v_multiop(ops);
 
@@ -140,12 +140,12 @@ void CentralDifferenceSolver::integrate(const core::ExecParams* params, SReal dt
         // vel += dx * dt
         ops[0].first = vel2;
         ops[0].second.push_back(std::make_pair(vel.id(),1.0));
-        ops[0].second.push_back(std::make_pair(vel.id(),-1.0 + (1/dt - r/2)/(1/dt + r/2)));
-        ops[0].second.push_back(std::make_pair(dx.id(),1/(1/dt + r/2)));
+        ops[0].second.push_back(std::make_pair(vel.id(),-1.0 + (1/m_dt - r/2)/(1/m_dt + r/2)));
+        ops[0].second.push_back(std::make_pair(dx.id(),1/(1/m_dt + r/2)));
         // pos += vel * dt
         ops[1].first = pos2;
         ops[1].second.push_back(std::make_pair(pos.id(),1.0));
-        ops[1].second.push_back(std::make_pair(vel2.id(),dt));
+        ops[1].second.push_back(std::make_pair(vel2.id(),m_dt));
 
         vop.v_multiop(ops);
 
