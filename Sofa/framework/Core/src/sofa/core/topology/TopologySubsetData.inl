@@ -117,8 +117,8 @@ void TopologySubsetData <ElementType, VecT>::add(sofa::Size nbElements,
     helper::WriteOnlyAccessor<Data<container_type> > data = this;
 
     // first resize the subsetData. value will be applied in the loop using callbacks
-    const Size size = data.size();
-    data.resize(size + nbElements);
+    const Size size = static_cast<Size>(data.size());
+    data.resize(size + static_cast<Size>(nbElements));
     
 
     if (this->p_onCreationCallback)
@@ -129,7 +129,7 @@ void TopologySubsetData <ElementType, VecT>::add(sofa::Size nbElements,
             value_type& t = data[id];
             
             // update map if needed
-            addPostProcess(LastDataId + i + 1);
+            addPostProcess(LastDataId + static_cast<sofa::Index>(i) + 1);
 
             this->p_onCreationCallback(id, t, elems[i], 
                 (ancestors.empty() || coefs.empty()) ? s_empty_ancestors : ancestors[i],
@@ -154,7 +154,7 @@ void TopologySubsetData <ElementType, VecT>::add(const sofa::type::vector<Index>
 {
     SOFA_UNUSED(ancestorElems);
 
-    const sofa::Size nbElements = index.size();
+    const sofa::Size nbElements = static_cast<sofa::Size>(index.size());
     this->add(nbElements, elems, ancestors, coefs);
 }
 

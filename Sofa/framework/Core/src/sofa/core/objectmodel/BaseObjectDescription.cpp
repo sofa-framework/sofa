@@ -141,7 +141,7 @@ int BaseObjectDescription::getAttributeAsInt(const std::string& attr, const int 
 
     const char* attrstr=it->second.c_str();
     char* end=nullptr;
-    const int retval = strtol(attrstr, &end, 10);
+    const int retval = static_cast<int>(strtol(attrstr, &end, 10));
 
     /// It is important to check that the attribute was totally parsed to report
     /// message to users because a silent error is the worse thing that can happen in UX.
