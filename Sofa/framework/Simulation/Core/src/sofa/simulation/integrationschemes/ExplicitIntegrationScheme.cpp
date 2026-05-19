@@ -20,30 +20,23 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/integrationschemes/forward/config.h>
+#include <sofa/simulation/config.h>
 
 #include <sofa/simulation/integrationschemes/ExplicitIntegrationScheme.h>
+#include <sofa/core/behavior/LinearSolver.h>
+#include <sofa/core/behavior/MultiVec.h>
 
-namespace sofa::component::integrationschemes::forward
+#include <sofa/core/behavior/LinearSolverAccessor.h>
+
+namespace sofa::simulation::integrationschemes
 {
 
-/** A popular time integration method, much more precise than the EulerSolver */
-class SOFA_COMPONENT_INTEGRATIONSCHEMES_FORWARD_API RungeKutta2Solver : public simulation::integrationschemes::ExplicitIntegrationScheme
+void ExplicitIntegrationScheme::integrate(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
 {
-public:
-    SOFA_CLASS(RungeKutta2Solver, simulation::integrationschemes::ExplicitIntegrationScheme);
+    m_dt = dt;
+    doIntegrate(params, xResult, vResult);
+}
 
-    virtual void doIntegrate(const core::ExecParams* params, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
+} // namespace sofa::component::integrationschemes
 
-    virtual SReal getVelocityIntegrationFactor() const override
-    {
-        return m_dt/2.0;
-    }
 
-    virtual SReal getPositionIntegrationFactor() const override
-    {
-        return m_dt*m_dt/4.0;
-    }
-};
-
-} // namespace sofa::component::odesolver::forward

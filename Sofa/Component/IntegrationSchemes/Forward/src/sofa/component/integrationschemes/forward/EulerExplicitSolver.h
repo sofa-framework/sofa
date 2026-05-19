@@ -20,9 +20,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/odesolver/forward/config.h>
+#include <sofa/component/integrationschemes/forward/config.h>
 
-#include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/core/behavior/MultiVec.h>
 
@@ -32,7 +31,9 @@ class MechanicalOperations;
 class VectorOperations;
 }
 
-namespace sofa::component::odesolver::forward
+#include <sofa/simulation/integrationschemes/ExplicitIntegrationScheme.h>
+
+namespace sofa::component::integrationschemes::forward
 {
 
 /**
@@ -64,30 +65,32 @@ namespace sofa::component::odesolver::forward
  *
  * The semi-implicit Euler method is more robust than the standard Euler method.
  */
-class SOFA_COMPONENT_ODESOLVER_FORWARD_API EulerExplicitSolver : public sofa::core::behavior::OdeSolver
+class SOFA_COMPONENT_INTEGRATIONSCHEMES_FORWARD_API EulerExplicitSolver : public simulation::integrationschemes::ExplicitIntegrationScheme
 {
 public:
-    SOFA_CLASS(EulerExplicitSolver, sofa::core::behavior::OdeSolver);
+    SOFA_CLASS(EulerExplicitSolver, simulation::integrationschemes::ExplicitIntegrationScheme);
 
 protected:
     EulerExplicitSolver();
 
 public:
-    void solve(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
 
     Data<bool> d_symplectic; ///< If true (default), the velocities are updated before the positions and the method is symplectic, more robust. If false, the positions are updated before the velocities (standard Euler, less robust).
     Data<bool> d_threadSafeVisitor; ///< If true, do not use realloc and free visitors in fwdInteractionForceField.
 
     SingleLink<EulerExplicitSolver, core::behavior::LinearSolver, BaseLink::FLAG_STRONGLINK> l_linearSolver;
 
-    /// Given an input derivative order (0 for position, 1 for velocity, 2 for acceleration),
-    /// how much will it affect the output derivative of the given order.
-    SReal getIntegrationFactor(int inputDerivative, int outputDerivative) const override ;
+    virtual void doIntegrate(const core::ExecParams* params, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
 
-    /// Given a solution of the linear system,
-    /// how much will it affect the output derivative of the given order.
-    ///
-    SReal getSolutionIntegrationFactor(int outputDerivative) const override ;
+    virtual SReal getVelocityIntegrationFactor() const override
+    {
+        return m_dt;
+    }
+
+    virtual SReal getPositionIntegrationFactor() const override
+    {
+        return m_dt*m_dt;
+    }
 
     void init() override ;
 
@@ -99,8 +102,7 @@ protected:
                      sofa::simulation::common::MechanicalOperations* mop,
                      sofa::core::MultiVecCoordId xResult,
                      sofa::core::MultiVecDerivId vResult,
-                     const sofa::core::behavior::MultiVecDeriv& acc,
-                     SReal dt) const;
+                     const sofa::core::behavior::MultiVecDeriv& acc) const;
 
     /// Gravity times time step size is added to the velocity for some masses
     /// v += g * dt
