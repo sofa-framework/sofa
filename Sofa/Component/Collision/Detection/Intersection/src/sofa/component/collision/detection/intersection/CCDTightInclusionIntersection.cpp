@@ -62,7 +62,7 @@ CCDTightInclusionIntersection::CCDTightInclusionIntersection()
 : BaseProximityIntersection()
 , d_continuousCollisionType(initData(&d_continuousCollisionType, helper::OptionsGroup({"None", "Inertia", "FreeMotion"}).setSelectedItem(0), "continuousCollisionType",
     "Data used for continuous collision detection taken into {'None','Inertia','FreeMotion'}. If 'None' then no CCD is used, if 'Inertia' then only inertia will be used to compute the collision detection and if 'FreeMotion' then the free motion will be used. Note that if 'FreeMotion' is selected, you cannot use the option 'parallelCollisionDetectionAndFreeMotion' in the FreeMotionAnimationLoop"))
-, d_tolerance(initData(&d_tolerance,static_cast<SReal>(1e-10),"tolerance","tolerance used by the tight inclusion CCD algorithm"))
+, d_tolerance(initData(&d_tolerance, 1e-10_sreal,"tolerance","tolerance used by the tight inclusion CCD algorithm"))
 , d_maxIterations(initData(&d_maxIterations,(long) 1000,"maxIterations","maxIterations used by the tight inclusion CCD algorithm"))
 {
 
