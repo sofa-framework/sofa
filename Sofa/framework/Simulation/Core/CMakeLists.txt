@@ -306,6 +306,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/integrationschemes/AccelerationBasedImplicitIntegrationScheme.cpp
     ${SRC_ROOT}/integrationschemes/VelocityBasedImplicitIntegrationScheme.cpp
     ${SRC_ROOT}/integrationschemes/ImplicitIntegrationScheme.cpp
+    ${SRC_ROOT}/integrationschemes/ExplicitIntegrationScheme.cpp
 
 )
 

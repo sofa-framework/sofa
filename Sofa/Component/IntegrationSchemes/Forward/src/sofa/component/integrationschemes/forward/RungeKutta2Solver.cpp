@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/odesolver/forward/RungeKutta2Solver.h>
+#include <sofa/component/integrationschemes/forward/RungeKutta2Solver.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/MechanicalOperations.h>
 #include <sofa/simulation/VectorOperations.h>
@@ -28,7 +28,7 @@
 
 
 
-namespace sofa::component::odesolver::forward
+namespace sofa::component::integrationschemes::forward
 {
 using core::VecId;
 using namespace core::behavior;
@@ -40,7 +40,7 @@ void registerRungeKutta2Solver(sofa::core::ObjectFactory* factory)
         .add< RungeKutta2Solver >());
 }
 
-void RungeKutta2Solver::solve(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
+void RungeKutta2Solver::doIntegrate(const core::ExecParams* params, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
 {
     sofa::simulation::common::VectorOperations vop( params, this->getContext() );
     sofa::simulation::common::MechanicalOperations mop( params, this->getContext() );
@@ -58,7 +58,7 @@ void RungeKutta2Solver::solve(const core::ExecParams* params, SReal dt, sofa::co
 
     SReal startTime = this->getTime();
 
-    mop.addSeparateGravity(dt);	// v += dt*g . Used if mass wants to added G separately from the other forces to v.
+    mop.addSeparateGravity(m_dt);	// v += dt*g . Used if mass wants to added G separately from the other forces to v.
 
     // Compute state derivative. vel is the derivative of pos
     mop.computeAcc (startTime, acc, pos, vel); // acc is the derivative of vel
@@ -77,17 +77,17 @@ void RungeKutta2Solver::solve(const core::ExecParams* params, SReal dt, sofa::co
         ops.resize(2);
         ops[0].first = newX;
         ops[0].second.push_back(std::make_pair(pos.id(),1.0));
-        ops[0].second.push_back(std::make_pair(vel.id(),dt/2));
+        ops[0].second.push_back(std::make_pair(vel.id(),m_dt/2));
         ops[1].first = newV;
         ops[1].second.push_back(std::make_pair(vel.id(),1.0));
-        ops[1].second.push_back(std::make_pair(acc.id(),dt/2));
+        ops[1].second.push_back(std::make_pair(acc.id(),m_dt/2));
 
         vop.v_multiop(ops);
     }
 #endif
 
     // Compute the derivative at newX, newV
-    mop.computeAcc ( startTime+dt/2., acc, newX, newV);
+    mop.computeAcc ( startTime+m_dt/2., acc, newX, newV);
 
     // Use the derivative at newX, newV to update the state
 #ifdef SOFA_NO_VMULTIOP // unoptimized version
@@ -102,10 +102,10 @@ void RungeKutta2Solver::solve(const core::ExecParams* params, SReal dt, sofa::co
         ops.resize(2);
         ops[0].first = pos2;
         ops[0].second.push_back(std::make_pair(pos.id(),1.0));
-        ops[0].second.push_back(std::make_pair(newV.id(),dt));
+        ops[0].second.push_back(std::make_pair(newV.id(),m_dt));
         ops[1].first = vel2;
         ops[1].second.push_back(std::make_pair(vel.id(),1.0));
-        ops[1].second.push_back(std::make_pair(acc.id(),dt));
+        ops[1].second.push_back(std::make_pair(acc.id(),m_dt));
         vop.v_multiop(ops);
 
         mop.solveConstraint(vel2,core::ConstraintOrder::VEL);

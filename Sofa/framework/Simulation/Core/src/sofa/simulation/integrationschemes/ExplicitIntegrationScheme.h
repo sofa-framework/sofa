@@ -47,7 +47,10 @@ public:
     ExplicitIntegrationScheme() = default;
     virtual ~ExplicitIntegrationScheme() override = default ;
 
-    virtual void integrate(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) = 0 ;
+    virtual void integrate(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override final;
+    virtual void doIntegrate(const core::ExecParams* params, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) = 0 ;
+
+
 
 };
 } // namespace sofa::component::integrationschemes

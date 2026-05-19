@@ -19,12 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/odesolver/forward/DampVelocitySolver.h>
+#include <sofa/component/integrationschemes/forward/DampVelocitySolver.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/VectorOperations.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::odesolver::forward
+namespace sofa::component::integrationschemes::forward
 {
 
 using namespace sofa::defaulttype;
@@ -42,16 +42,16 @@ DampVelocitySolver::DampVelocitySolver()
 {
 }
 
-void DampVelocitySolver::solve(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId /*xResult*/, sofa::core::MultiVecDerivId vResult)
+void DampVelocitySolver::doIntegrate(const core::ExecParams* params, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
 {
     sofa::simulation::common::VectorOperations vop( params, this->getContext() );
     MultiVecDeriv vel(&vop, vResult /*core::vec_id::write_access::velocity*/ );
 
-    msg_info() <<"DampVelocitySolver, dt = "<< dt
+    msg_info() <<"DampVelocitySolver, dt = "<< m_dt
                <<"DampVelocitySolver, initial v = "<< vel ;
 
 
-    vel.teq( exp(-d_rate.getValue() * dt) );
+    vel.teq( exp(-d_rate.getValue() * m_dt) );
     if(d_threshold.getValue() != 0.0 )
         vel.threshold(d_threshold.getValue() );
 

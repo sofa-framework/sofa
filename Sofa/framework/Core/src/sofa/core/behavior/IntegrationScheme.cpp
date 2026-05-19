@@ -29,25 +29,10 @@ namespace sofa::core::behavior
 {
 
 IntegrationScheme::IntegrationScheme()
-    : d_rayleighStiffness(initData(&d_rayleighStiffness, (SReal)0.0, "rayleighStiffness", "Rayleigh damping coefficient related to stiffness, > 0") )
-    , d_rayleighMass(initData(&d_rayleighMass, (SReal)0.0, "rayleighMass", "Rayleigh damping coefficient related to mass, > 0"))
 {}
 
 IntegrationScheme::~IntegrationScheme()
 {}
-
-void IntegrationScheme::setupIntegrationStep(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
-{
-    m_params = params;
-    m_dt = dt;
-    m_xResult = xResult;
-    m_vResult = vResult;
-
-
-    doSetupIntegrationStep(params, dt, xResult, vResult);
-
-
-}
 
 bool IntegrationScheme::insertInNode( objectmodel::BaseNode* node )
 {
