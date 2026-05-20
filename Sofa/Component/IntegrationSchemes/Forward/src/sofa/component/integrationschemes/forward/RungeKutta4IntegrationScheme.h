@@ -20,40 +20,31 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-
 #include <sofa/component/integrationschemes/forward/config.h>
+
 
 #include <sofa/simulation/integrationschemes/ExplicitIntegrationScheme.h>
 
 namespace sofa::component::integrationschemes::forward
 {
 
-/** Velocity damping and thresholding.
-This is not an ODE solver, but it can be used as a post-process after a real ODE solver.
-*/
-class SOFA_COMPONENT_INTEGRATIONSCHEMES_FORWARD_API DampVelocitySolver : public simulation::integrationschemes::ExplicitIntegrationScheme
+/** A popular time integration method, much more precise than the EulerIntegrationScheme */
+class SOFA_COMPONENT_INTEGRATIONSCHEMES_FORWARD_API RungeKutta4IntegrationScheme : public simulation::integrationschemes::ExplicitIntegrationScheme
 {
 public:
-    SOFA_CLASS(DampVelocitySolver, simulation::integrationschemes::ExplicitIntegrationScheme);
+    SOFA_CLASS(RungeKutta4IntegrationScheme, simulation::integrationschemes::ExplicitIntegrationScheme);
 
-    Data<SReal> d_rate; ///< Factor used to reduce the velocities. Typically between 0 and 1.
-    Data<SReal> d_threshold; ///< Threshold under which the velocities are canceled.
-
-    /// Given an input derivative order (0 for position, 1 for velocity, 2 for acceleration),
-    /// how much will it affect the output derivative of the given order.
     virtual void doIntegrate(const core::ExecParams* params, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
 
     virtual SReal getVelocityIntegrationFactor() const override
     {
-        return 1.0;
+        return m_dt/2.0;
     }
 
     virtual SReal getPositionIntegrationFactor() const override
     {
-        return m_dt;
+        return m_dt*m_dt/4.0;
     }
-protected:
-    DampVelocitySolver();
 };
 
-} // namespace sofa::component::odesolver::forward
+} // namespace sofa::component::odeIntegrationScheme::forward

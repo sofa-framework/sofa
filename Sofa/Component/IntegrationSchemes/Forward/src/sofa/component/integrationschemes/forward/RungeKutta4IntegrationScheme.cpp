@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/integrationschemes/forward/RungeKutta4Solver.h>
+#include <sofa/component/integrationschemes/forward/RungeKutta4IntegrationScheme.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/MechanicalOperations.h>
@@ -35,17 +35,17 @@ using core::VecId;
 using namespace core::behavior;
 using namespace sofa::defaulttype;
 
-void registerRungeKutta4Solver(sofa::core::ObjectFactory* factory)
+void registerRungeKutta4IntegrationScheme(sofa::core::ObjectFactory* factory)
 {
     factory->registerObjects(core::ObjectRegistrationData("A popular explicit time integrator.")
-        .add< RungeKutta4Solver >());
+        .add< RungeKutta4IntegrationScheme >());
 }
 
-void RungeKutta4Solver::doIntegrate(const core::ExecParams* params, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
+void RungeKutta4IntegrationScheme::doIntegrate(const core::ExecParams* params, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
 {
     sofa::simulation::common::VectorOperations vop( params, this->getContext() );
     sofa::simulation::common::MechanicalOperations mop( params, this->getContext() );
-    mop->setImplicit(false); // this solver is explicit only
+    mop->setImplicit(false); // this IntegrationScheme is explicit only
     // Get the Ids of the state vectors
     MultiVecCoord pos(&vop, core::vec_id::write_access::position );
     MultiVecDeriv vel(&vop, core::vec_id::write_access::velocity );
@@ -190,4 +190,4 @@ void RungeKutta4Solver::doIntegrate(const core::ExecParams* params, sofa::core::
 }
 
 
-} // namespace sofa::component::odesolver::forward
+} // namespace sofa::component::odeIntegrationScheme::forward
