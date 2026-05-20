@@ -26,7 +26,7 @@ namespace sofa::component::linearsystem
 {
 
 DispatchFromGlobalVectorToLocalVectorVisitor::DispatchFromGlobalVectorToLocalVectorVisitor(const core::ExecParams* params,
-    const MappingGraph& mappingGraph, sofa::core::MultiVecId dst, linearalgebra::BaseVector* globalVector)
+    const simulation::MappingGraph& mappingGraph, sofa::core::MultiVecId dst, linearalgebra::BaseVector* globalVector)
     : BaseMechanicalVisitor(params)
     , m_dst(dst)
     , m_globalVector(globalVector)

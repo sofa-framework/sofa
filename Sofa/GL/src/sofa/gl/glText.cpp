@@ -196,7 +196,7 @@ void GlText::textureDraw_Indices(const type::vector<type::Vec3>& positions, cons
     const float p11 = projMatrix[5];
     // Column-major P[3][3]: 0 for perspective, ~1 for orthographic
     const bool isPerspective = (projMatrix[15] < 0.5f);
-    // Base text height in pixels (before user multiplier)
+    // Base text height in pixels (before user scaling)
     static const float baseFontPixelHeight = 30.0f;
 
     if (p11 == 0.0f || viewportHeight == 0.0f)

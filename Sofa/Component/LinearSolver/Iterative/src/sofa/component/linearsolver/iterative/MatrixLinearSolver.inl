@@ -495,23 +495,4 @@ void MatrixLinearSolver<Matrix,Vector>::applyConstraintForce(const sofa::core::C
     l_linearSystem->dispatchSystemRHS(cparams->lambda());
 }
 
-template<class Matrix, class Vector>
-void MatrixLinearSolver<Matrix,Vector>::computeResidual(const core::ExecParams* params,linearalgebra::BaseVector* f)
-{
-    auto* rhsVector = l_linearSystem->getRHSVector();
-    rhsVector->clear();
-    rhsVector->resize(l_linearSystem->getSystemBaseMatrix()->colSize());
-
-    /// rhs = J^t * f
-    internalData.projectForceInConstraintSpace(rhsVector, f);
-
-    sofa::simulation::common::VectorOperations vop( params, this->getContext() );
-    sofa::core::behavior::MultiVecDeriv force(&vop, core::vec_id::write_access::force );
-
-    // force += rhs
-    executeVisitor( MechanicalMultiVectorPeqBaseVectorVisitor(core::execparams::defaultInstance(), force, rhsVector, nullptr) );
-}
-
-
-
 } // namespace sofa::component::linearsolver

@@ -206,6 +206,12 @@ jobs:
               done
           fi
 
+          ## Cleaning old tests results of they exists
+          if [ -d "${{ env.BUILD_DIR }}/tests_results/" ]; then 
+              echo "Cleaning old test results folder."
+              rm -rf "${{ env.BUILD_DIR }}/tests_results/"
+          fi
+
       - name: Build
         id: build-step
         shell: bash

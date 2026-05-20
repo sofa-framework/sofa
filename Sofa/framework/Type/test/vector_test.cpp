@@ -317,3 +317,62 @@ TEST_P(vector_benchmark_int, benchmark)
 INSTANTIATE_TEST_SUITE_P(benchmark,
                         vector_benchmark_int,
                         ::testing::ValuesIn(benchvalues));
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+///
+/// TEST THE vector<std::string> behavior
+///
+////////////////////////////////////////////////////////////////////////////////////////////////////
+typedef vector_test<std::string> vector_test_string;
+TEST_P(vector_test_string, checkReadWriteBehavior)
+{
+    this->checkVector(GetParam()) ;
+}
+// Test cases for string read/write functionality.
+// write() format: ["elem1", "elem2", ...]
+// read() supports:
+//   - Bracketed quoted format (bijective with write): ["elem1", "elem2", ...]
+//   - Plain whitespace-separated fallback (no brackets)
+std::vector<std::vector<std::string>> stringvalues={
+    /// Empty input -> empty vector -> write outputs []
+    {"", "[]", "None"},
+
+    /// Single quoted element (bracketed format, round-trip)
+    {"[\"apple\"]", "[\"apple\"]", "None"},
+
+    /// Single quoted element containing spaces (round-trip)
+    {"[\"hello world test\"]", "[\"hello world test\"]", "None"},
+
+    /// Multiple quoted elements (round-trip)
+    {"[\"one\", \"two\", \"three\"]", "[\"one\", \"two\", \"three\"]", "None"},
+
+    /// Empty array (round-trip)
+    {"[]", "[]", "None"},
+
+    /// Plain whitespace-separated fallback (no brackets): each token is an element
+    {"one two three", "[\"one\", \"two\", \"three\"]", "None"},
+
+    /// Single plain token
+    {"single_word", "[\"single_word\"]", "None"},
+
+    /// Bad format: opening bracket but no closing bracket -> Error
+    {"[\"unterminated\"", "[\"unterminated\"]", "Error"},
+
+    /// Bad format: bracket with no opening quote -> Error
+    {"[badtoken]", "[]", "Error"},
+
+    /// Bad format: unterminated quoted string -> Error
+    {"[\"not closed", "[]", "Error"},
+
+    /// Bad format: missing separator between elements -> Error
+    {"[\"one\" \"two\"]", "[\"one\"]", "Error"},
+};
+
+INSTANTIATE_TEST_SUITE_P(checkReadWriteBehavior,
+                        vector_test_string,
+                        ::testing::ValuesIn(stringvalues));
+
+TEST_F(vector_test_string, checkRebind)
+{
+    this->checkRebind();
+}

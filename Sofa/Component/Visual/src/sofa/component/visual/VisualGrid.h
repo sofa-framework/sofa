@@ -52,6 +52,7 @@ public:
 
     Data<sofa::type::RGBAColor> d_color; ///< Color of the lines in the grid. default=(0.34,0.34,0.34,1.0)
     Data<float> d_thickness; ///< Thickness of the lines in the grid
+    Data<int> d_nbLineSegments; ///< Number of line segments used to draw each grid line. Higher values reduce rendering artifacts, especially when using vertex-based OpenGL effects
 
     VisualGrid();
     ~VisualGrid() override = default;

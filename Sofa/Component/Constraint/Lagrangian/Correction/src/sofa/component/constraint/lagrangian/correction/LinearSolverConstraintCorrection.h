@@ -80,9 +80,6 @@ public:
 
     void applyVelocityCorrection(const sofa::core::ConstraintParams *cparams, Data< VecDeriv>& v, Data< VecDeriv>& dv, const Data< VecDeriv >& f) override;
 
-    void rebuildSystem(SReal massFactor, SReal forceFactor) override;
-
-
     /// @name Deprecated API
     /// @{
 

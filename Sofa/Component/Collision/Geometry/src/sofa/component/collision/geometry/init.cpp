@@ -35,7 +35,7 @@ extern void registerSphereCollisionModel(sofa::core::ObjectFactory* factory);
 extern void registerTetrahedronCollisionModel(sofa::core::ObjectFactory* factory);
 extern void registerTriangleCollisionModel(sofa::core::ObjectFactory* factory);
 extern void registerTriangleModelInRegularGrid(sofa::core::ObjectFactory* factory);
-extern void registerTriangleOctreeModel(sofa::core::ObjectFactory* factory);
+extern void registerTriangleOctreeCollisionModel(sofa::core::ObjectFactory* factory);
 
 extern "C" {
     SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
@@ -70,7 +70,7 @@ void registerObjects(sofa::core::ObjectFactory* factory)
     registerTetrahedronCollisionModel(factory);
     registerTriangleCollisionModel(factory);
     registerTriangleModelInRegularGrid(factory);
-    registerTriangleOctreeModel(factory);
+    registerTriangleOctreeCollisionModel(factory);
 }
 
 void init()

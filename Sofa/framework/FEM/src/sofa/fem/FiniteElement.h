@@ -40,7 +40,8 @@ struct FiniteElement;
     using ReferenceCoord = sofa::type::Vec<TopologicalDimension, Real>;\
     using ShapeFunctionType = std::function<Real(const ReferenceCoord&)>;\
     using QuadraturePoint = ReferenceCoord; \
-    using QuadraturePointAndWeight = std::pair<QuadraturePoint, Real>
+    using QuadraturePointAndWeight = std::pair<QuadraturePoint, Real>;\
+    using Helper = FiniteElementHelper<ElementType, DataTypes>
 
 
 template <class ElementType, class DataTypes>
@@ -78,6 +79,14 @@ struct FiniteElementHelper
             jacobian += sofa::type::dyad(elementNodesCoordinates[i], gradientShapeFunctionInReferenceElement[i]);
         }
         return jacobian;
+    }
+
+    template<class T>
+    static constexpr auto evaluateValueInElement(
+        const std::array<T, NumberOfNodesInElement>& valuesAtNodes,
+        const sofa::type::Vec<NumberOfNodesInElement, Real>& shapeFunctions)
+    {
+        return std::inner_product(valuesAtNodes.begin(), valuesAtNodes.end(), shapeFunctions.begin(), T(0));
     }
 
 };

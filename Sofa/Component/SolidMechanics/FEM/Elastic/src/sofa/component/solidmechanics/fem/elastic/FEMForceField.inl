@@ -236,4 +236,20 @@ void FEMForceField<DataTypes, ElementType>::draw(const sofa::core::visual::Visua
     m_drawMesh.drawAllElements(vparams->drawTool(), x, this->l_topology.get());
 }
 
+template <class DataTypes, class ElementType>
+void FEMForceField<DataTypes, ElementType>::computeBBox(const core::ExecParams* params, bool onlyVisible)
+{
+    SOFA_UNUSED(params);
+
+    if(!onlyVisible)
+        return;
+
+    auto* vparams = sofa::core::visual::VisualParams::defaultInstance();
+
+    if(onlyVisible && !vparams->displayFlags().getShowForceFields())
+        return;
+
+    this->f_bbox.setValue(this->mstate->computeBBox());
+}
+
 }  // namespace sofa::component::solidmechanics::fem::elastic

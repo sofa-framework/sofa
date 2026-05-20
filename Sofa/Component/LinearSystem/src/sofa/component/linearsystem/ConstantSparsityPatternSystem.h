@@ -69,7 +69,7 @@ public:
     void resizeSystem(sofa::Size n) override;
     void clearSystem() override;
 
-    using ConstantCRSMapping = std::unordered_map<sofa::SignedIndex, std::size_t>;
+    using ConstantCRSMapping = std::unordered_map<std::uint64_t, std::size_t>;
 
     bool isConstantSparsityPatternUsedYet() const;
 

@@ -788,8 +788,9 @@ void VisualModelImpl::init()
     d_translation.setValue(Vec3Real());
     d_rotation.setValue(Vec3Real());
     d_scale.setValue(Vec3Real(1, 1, 1));
-}
 
+    m_savedMaterial = d_material.getValue();
+}
 
 void VisualModelImpl::initPositionFromVertices()
 {

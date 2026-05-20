@@ -78,6 +78,8 @@ public:
 protected:
     virtual ~MechanicalObject();
 public:
+    std::string getScalarType() const override { return sofa::defaulttype::DataTypeInfo<Real>::name(); }
+
     void parse ( core::objectmodel::BaseObjectDescription* arg ) override;
 
     Data< VecCoord > x; ///< position coordinates of the degrees of freedom

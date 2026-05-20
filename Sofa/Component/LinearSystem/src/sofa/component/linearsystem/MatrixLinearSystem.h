@@ -26,7 +26,7 @@
 #include <sofa/core/behavior/BaseLocalForceFieldMatrix.h>
 #include <sofa/core/behavior/BaseLocalMassMatrix.h>
 #include <sofa/core/BaseLocalMappingMatrix.h>
-#include <sofa/component/linearsystem/MappingGraph.h>
+#include <sofa/simulation/MappingGraph.h>
 #include <sofa/core/behavior/BaseProjectiveConstraintSet.h>
 #include <sofa/component/linearsystem/matrixaccumulators/AssemblingMappedMatrixAccumulator.h>
 #include <sofa/component/linearsystem/CreateMatrixDispatcher.h>
@@ -80,7 +80,7 @@ public:
     using Contribution = core::matrixaccumulator::Contribution;
     using PairMechanicalStates = sofa::type::fixed_array<core::behavior::BaseMechanicalState*, 2>;
 
-    [[nodiscard]] const MappingGraph& getMappingGraph() const;
+    [[nodiscard]] const simulation::MappingGraph& getMappingGraph() const;
 
     Data< bool > d_assembleStiffness; ///< If true, the stiffness is added to the global matrix
     Data< bool > d_assembleMass; ///< If true, the mass is added to the global matrix

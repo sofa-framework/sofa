@@ -47,6 +47,16 @@ struct FiniteElement<sofa::geometry::Quad, DataTypes>
         return topology.getQuads();
     }
 
+    static constexpr sofa::type::Vec<NumberOfNodesInElement, Real> shapeFunctions(const sofa::type::Vec<TopologicalDimension, Real>& q)
+    {
+        return {
+            static_cast<Real>(0.25) * (q[0] - 1) * (q[1] - 1),
+            -static_cast<Real>(0.25) * (q[0] + 1) * (q[1] - 1),
+            static_cast<Real>(0.25) * (q[0] + 1) * (q[1] + 1),
+            -static_cast<Real>(0.25) * (q[0] - 1) * (q[1] + 1)
+        };
+    }
+
     static constexpr sofa::type::Mat<NumberOfNodesInElement, TopologicalDimension, Real> gradientShapeFunctions(const sofa::type::Vec<TopologicalDimension, Real>& q)
     {
         return {

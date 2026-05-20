@@ -44,7 +44,7 @@ class SOFA_SIMULATION_CORE_API BaseMechanicalVisitor : public Visitor
 {
 
 protected:
-    simulation::Node* root; ///< root node from which the visitor was executed
+    simulation::Node* root { nullptr }; ///< root node from which the visitor was executed
 
     virtual Result processNodeTopDown(simulation::Node* node, VisitorContext* ctx);
     virtual void processNodeBottomUp(simulation::Node* node, VisitorContext* ctx);
@@ -55,6 +55,12 @@ public:
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     const char* getClassName() const override;
+
+    /**
+     * Returns true if the node has a mapped mechanical state. It is mapped if the state is not an
+     * output of a mapping.
+     */
+    virtual bool isMechanicalStateMapped(simulation::Node* node) const;
 
     /**@name Forward processing
     Methods called during the forward (top-down) traversal of the data structure.

@@ -67,20 +67,7 @@ sofa_find_package(Sofa.Component.Mass REQUIRED) # because of CudaMassType -> nee
 
 option(SOFACUDA_CORE_VERBOSE_PTXAS "???" OFF)
 
-option(SOFACUDA_CUBLAS "Activate cublas support in CUDA (requires SOFACUDA_DOUBLE)." OFF)
-if(SOFACUDA_CUBLAS)
-    set(SOFA_GPU_CUBLAS 1)       # #cmakedefine
-    list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
-    find_package(CUDASparse REQUIRED)
-endif()
-
-# Note: THRUST is included in CUDA SDK 4.0+, it is recommended to use it if available
-option(SOFACUDA_THRUST "Activate THRUST (for RadixSort)." ON)
-if(SOFACUDA_THRUST)
-    set(SOFA_GPU_THRUST 1)       # #cmakedefine
-endif()
-
-option(SOFACUDA_DOUBLE "Activate double-precision support in CUDA (requires GT200+ GPU and -arch sm_13 flag." OFF)
+option(SOFACUDA_DOUBLE "Activate double-precision support in CUDA." ON)
 if(SOFACUDA_DOUBLE)
     set(SOFA_GPU_CUDA_DOUBLE 1)       # #cmakedefine
 endif()
@@ -126,10 +113,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Mass)
 target_link_libraries(${PROJECT_NAME} PUBLIC CUDA::cudart)
 
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17 cuda_std_17)
-
-if(SOFACUDA_CUBLAS)
-    target_link_libraries(${PROJECT_NAME} ${CUDA_cusparse_LIBRARY} CUDA::cublas)
-endif()
+target_link_libraries(${PROJECT_NAME} PUBLIC ${CUDA_cusparse_LIBRARY} CUDA::cublas)
 
 # see (I guess) https://github.com/sofa-framework/sofa/blob/314b95cbfba411bf8431486ea75b7c67c0bbcc76/Sofa/framework/Config/cmake/SofaMacrosInstall.cmake#L695
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}>/include/${PROJECT_NAME}/${PROJECT_NAME}")
