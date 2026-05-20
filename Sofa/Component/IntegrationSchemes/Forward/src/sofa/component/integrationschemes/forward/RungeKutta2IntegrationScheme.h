@@ -27,36 +27,23 @@
 namespace sofa::component::integrationschemes::forward
 {
 
-/** Explicit time integrator using central difference (also known as Verlet of Leap-frop).
- *
- * @see http://www.dynasupport.com/support/tutorial/users.guide/time.integration
- * @see http://en.wikipedia.org/wiki/Leapfrog_method
- *
- */
-class SOFA_COMPONENT_INTEGRATIONSCHEMES_FORWARD_API CentralDifferenceSolver : public simulation::integrationschemes::ExplicitIntegrationScheme
+/** A popular time integration method, much more precise than the EulerIntegrationScheme */
+class SOFA_COMPONENT_INTEGRATIONSCHEMES_FORWARD_API RungeKutta2IntegrationScheme : public simulation::integrationschemes::ExplicitIntegrationScheme
 {
 public:
-    SOFA_CLASS(CentralDifferenceSolver, simulation::integrationschemes::ExplicitIntegrationScheme);
-protected:
-    CentralDifferenceSolver();
-public:
-
-    Data<SReal> d_rayleighMass; ///< Rayleigh damping coefficient related to mass
-    Data<bool> d_threadSafeVisitor; ///< If true, do not use realloc and free visitors in fwdInteractionForceField.
+    SOFA_CLASS(RungeKutta2IntegrationScheme, simulation::integrationschemes::ExplicitIntegrationScheme);
 
     virtual void doIntegrate(const core::ExecParams* params, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
 
     virtual SReal getVelocityIntegrationFactor() const override
     {
-        return m_dt;
+        return m_dt/2.0;
     }
 
     virtual SReal getPositionIntegrationFactor() const override
     {
-        return m_dt * m_dt;
+        return m_dt*m_dt/4.0;
     }
-
-
 };
 
-} // namespace sofa::component::odesolver::forward
+} // namespace sofa::component::odeIntegrationScheme::forward

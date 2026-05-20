@@ -38,14 +38,14 @@ namespace sofa::component::integrationschemes::forward
 
 /**
  * The simplest time integration.
- * Two variants of the Euler solver are available in this component:
+ * Two variants of the Euler IntegrationScheme are available in this component:
  * - forward Euler method, also called explicit Euler method
  * - semi-implicit Euler method, also called semi-explicit Euler method or symplectic Euler
  *
  * In both variants, acceleration is first computed. The system to compute the acceleration
  * is M * a = f, where M is the mass matrix and f can be a force.
  * In case of a diagonal mass matrix, M is trivially invertible and the acceleration
- * can be computed without a linear solver.
+ * can be computed without a linear IntegrationScheme.
  *
  * f is accumulated by force fields through the addForce function. Mappings can
  * also contribute by projecting forces of mapped objects.
@@ -65,20 +65,20 @@ namespace sofa::component::integrationschemes::forward
  *
  * The semi-implicit Euler method is more robust than the standard Euler method.
  */
-class SOFA_COMPONENT_INTEGRATIONSCHEMES_FORWARD_API EulerExplicitSolver : public simulation::integrationschemes::ExplicitIntegrationScheme
+class SOFA_COMPONENT_INTEGRATIONSCHEMES_FORWARD_API EulerExplicitIntegrationScheme : public simulation::integrationschemes::ExplicitIntegrationScheme
 {
 public:
-    SOFA_CLASS(EulerExplicitSolver, simulation::integrationschemes::ExplicitIntegrationScheme);
+    SOFA_CLASS(EulerExplicitIntegrationScheme, simulation::integrationschemes::ExplicitIntegrationScheme);
 
 protected:
-    EulerExplicitSolver();
+    EulerExplicitIntegrationScheme();
 
 public:
 
     Data<bool> d_symplectic; ///< If true (default), the velocities are updated before the positions and the method is symplectic, more robust. If false, the positions are updated before the velocities (standard Euler, less robust).
     Data<bool> d_threadSafeVisitor; ///< If true, do not use realloc and free visitors in fwdInteractionForceField.
 
-    SingleLink<EulerExplicitSolver, core::behavior::LinearSolver, BaseLink::FLAG_STRONGLINK> l_linearSolver;
+    SingleLink<EulerExplicitIntegrationScheme, core::behavior::LinearSolver, BaseLink::FLAG_STRONGLINK> l_linearSolver;
 
     virtual void doIntegrate(const core::ExecParams* params, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
 
@@ -129,4 +129,4 @@ protected:
     bool isMassMatrixTriviallyInvertible(const core::ExecParams* params);
 };
 
-} // namespace sofa::component::odesolver::forward
+} // namespace sofa::component::odeIntegrationScheme::forward
