@@ -170,7 +170,7 @@ void  DualQuatCoord3<real>::normalize_getdJ( type::Mat<4,4,real>& dJ0, type::Mat
 
     real q0dqe = (real) ( qn.orientation[0]*dq.dual[0] + qn.orientation[1]*dq.dual[1] + qn.orientation[2]*dq.dual[2] + qn.orientation[3]*dq.dual[3]);
 
-    if(dq.orientation[0] || dq.orientation[1] || dq.orientation[2] || dq.orientation[3])
+    if(dq.orientation[0] != 0 || dq.orientation[1] != 0 || dq.orientation[2] != 0 || dq.orientation[3] != 0)
     {
         real q0dq0 = (real) ( qn.orientation[0]*dq.orientation[0] + qn.orientation[1]*dq.orientation[1] + qn.orientation[2]*dq.orientation[2] + qn.orientation[3]*dq.orientation[3]);
         real qedq0 = (real) ( qn.dual[0]*dq.orientation[0] + qn.dual[1]*dq.orientation[1] + qn.dual[2]*dq.orientation[2] + qn.dual[3]*dq.orientation[3]);
