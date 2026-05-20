@@ -26,6 +26,11 @@
 namespace sofa::component::integrationschemes::forward
 {
 
+extern void registerCentralDifferenceIntegrationScheme(sofa::core::ObjectFactory* factory);
+extern void registerDampVelocityIntegrationScheme(sofa::core::ObjectFactory* factory);
+extern void registerEulerExplicitIntegrationScheme(sofa::core::ObjectFactory* factory);
+extern void registerRungeKutta2IntegrationScheme(sofa::core::ObjectFactory* factory);
+extern void registerRungeKutta4IntegrationScheme(sofa::core::ObjectFactory* factory);
 
 extern "C" {
     SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
@@ -51,7 +56,13 @@ const char* getModuleVersion()
 
 void registerObjects(sofa::core::ObjectFactory* factory)
 {
+    registerCentralDifferenceIntegrationScheme(factory);
+    registerDampVelocityIntegrationScheme(factory);
+    registerEulerExplicitIntegrationScheme(factory);
+    registerRungeKutta2IntegrationScheme(factory);
+    registerRungeKutta4IntegrationScheme(factory);
 }
+
 
 void init()
 {

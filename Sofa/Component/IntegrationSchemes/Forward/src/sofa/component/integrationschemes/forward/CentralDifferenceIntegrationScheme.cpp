@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/integrationschemes/forward/CentralDifferenceSolver.h>
+#include <sofa/component/integrationschemes/forward/CentralDifferenceIntegrationScheme.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/MechanicalOperations.h>
 #include <sofa/simulation/VectorOperations.h>
@@ -32,7 +32,7 @@ using core::VecId;
 using namespace sofa::defaulttype;
 using namespace core::behavior;
 
-CentralDifferenceSolver::CentralDifferenceSolver()
+CentralDifferenceIntegrationScheme::CentralDifferenceIntegrationScheme()
     : d_rayleighMass(initData(&d_rayleighMass, (SReal)0.0, "rayleighMass", "Rayleigh damping coefficient related to mass"))
     , d_threadSafeVisitor(initData(&d_threadSafeVisitor, false, "threadSafeVisitor", "If true, do not use realloc and free visitors in fwdInteractionForceField."))
 {
@@ -73,11 +73,11 @@ CentralDifferenceSolver::CentralDifferenceSolver()
  *
  */
 
-void CentralDifferenceSolver::doIntegrate(const core::ExecParams* params, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
+void CentralDifferenceIntegrationScheme::doIntegrate(const core::ExecParams* params, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
 {
     sofa::simulation::common::VectorOperations vop( params, this->getContext() );
     sofa::simulation::common::MechanicalOperations mop( params, this->getContext() );
-    mop->setImplicit(false); // this solver is explicit only
+    mop->setImplicit(false); // this IntegrationScheme is explicit only
     MultiVecCoord pos(&vop, core::vec_id::write_access::position );
     MultiVecDeriv vel(&vop, core::vec_id::write_access::velocity );
     MultiVecCoord pos2(&vop, xResult /*core::vec_id::write_access::position*/ );
@@ -156,10 +156,10 @@ void CentralDifferenceSolver::doIntegrate(const core::ExecParams* params, sofa::
 
 }
 
-void registerCentralDifferenceSolver(sofa::core::ObjectFactory* factory)
+void registerCentralDifferenceIntegrationScheme(sofa::core::ObjectFactory* factory)
 {
     factory->registerObjects(core::ObjectRegistrationData("Explicit time integrator using central difference (also known as Verlet of Leap-frog).")
-        .add< CentralDifferenceSolver >());
+        .add< CentralDifferenceIntegrationScheme >());
 }
 
-} // namespace sofa::component::odesolver::forward
+} // namespace sofa::component::odeIntegrationScheme::forward
