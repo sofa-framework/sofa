@@ -19,43 +19,41 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/integrationschemes/forward/DampVelocitySolver.h>
-#include <sofa/core/visual/VisualParams.h>
-#include <sofa/simulation/VectorOperations.h>
-#include <sofa/core/ObjectFactory.h>
+#pragma once
+
+#include <sofa/component/integrationschemes/forward/config.h>
+
+#include <sofa/simulation/integrationschemes/ExplicitIntegrationScheme.h>
 
 namespace sofa::component::integrationschemes::forward
 {
 
-using namespace sofa::defaulttype;
-using namespace core::behavior;
-
-void registerDampVelocitySolver(sofa::core::ObjectFactory* factory)
+/** Velocity damping and thresholding.
+This is not an ODE IntegrationScheme, but it can be used as a post-process after a real ODE IntegrationScheme.
+*/
+class SOFA_COMPONENT_INTEGRATIONSCHEMES_FORWARD_API DampVelocityIntegrationScheme : public simulation::integrationschemes::ExplicitIntegrationScheme
 {
-    factory->registerObjects(core::ObjectRegistrationData("Reduce the velocities.")
-        .add< DampVelocitySolver >());
-}
+public:
+    SOFA_CLASS(DampVelocityIntegrationScheme, simulation::integrationschemes::ExplicitIntegrationScheme);
 
-DampVelocitySolver::DampVelocitySolver()
-    : d_rate(initData(&d_rate, 0.99_sreal, "rate", "Factor used to reduce the velocities. Typically between 0 and 1.") )
-    , d_threshold(initData(&d_threshold, 0.0_sreal, "threshold", "Threshold under which the velocities are canceled.") )
-{
-}
+    Data<SReal> d_rate; ///< Factor used to reduce the velocities. Typically between 0 and 1.
+    Data<SReal> d_threshold; ///< Threshold under which the velocities are canceled.
 
-void DampVelocitySolver::doIntegrate(const core::ExecParams* params, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
-{
-    sofa::simulation::common::VectorOperations vop( params, this->getContext() );
-    MultiVecDeriv vel(&vop, vResult /*core::vec_id::write_access::velocity*/ );
+    /// Given an input derivative order (0 for position, 1 for velocity, 2 for acceleration),
+    /// how much will it affect the output derivative of the given order.
+    virtual void doIntegrate(const core::ExecParams* params, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
 
-    msg_info() <<"DampVelocitySolver, dt = "<< m_dt
-               <<"DampVelocitySolver, initial v = "<< vel ;
+    virtual SReal getVelocityIntegrationFactor() const override
+    {
+        return 1.0;
+    }
 
+    virtual SReal getPositionIntegrationFactor() const override
+    {
+        return m_dt;
+    }
+protected:
+    DampVelocityIntegrationScheme();
+};
 
-    vel.teq( exp(-d_rate.getValue() * m_dt) );
-    if(d_threshold.getValue() != 0.0 )
-        vel.threshold(d_threshold.getValue() );
-
-    msg_info() <<"DampVelocitySolver, final v = "<< vel ;
-}
-
-} // namespace sofa::component::odesolver::forward
+} // namespace sofa::component::odeIntegrationScheme::forward

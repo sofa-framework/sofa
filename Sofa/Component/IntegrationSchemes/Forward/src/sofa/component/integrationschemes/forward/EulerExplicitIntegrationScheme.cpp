@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/integrationschemes/forward/EulerExplicitSolver.h>
+#include <sofa/component/integrationschemes/forward/EulerExplicitIntegrationScheme.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/BaseMass.h>
 #include <sofa/core/behavior/LinearSolver.h>
@@ -43,20 +43,20 @@ using namespace sofa::defaulttype;
 using namespace sofa::helper;
 using namespace core::behavior;
 
-void registerEulerExplicitSolver(sofa::core::ObjectFactory* factory)
+void registerEulerExplicitIntegrationScheme(sofa::core::ObjectFactory* factory)
 {
     factory->registerObjects(core::ObjectRegistrationData("A simple explicit time integrator.")
-        .add< EulerExplicitSolver >());
+        .add< EulerExplicitIntegrationScheme >());
 }
 
-EulerExplicitSolver::EulerExplicitSolver()
+EulerExplicitIntegrationScheme::EulerExplicitIntegrationScheme()
     : d_symplectic( initData( &d_symplectic, true, "symplectic", "If true (default), the velocities are updated before the positions and the method is symplectic, more robust. If false, the positions are updated before the velocities (standard Euler, less robust).") )
     , d_threadSafeVisitor(initData(&d_threadSafeVisitor, false, "threadSafeVisitor", "If true, do not use realloc and free visitors in fwdInteractionForceField."))
-    , l_linearSolver(initLink("linearSolver", "Linear solver used by this component"))
+    , l_linearSolver(initLink("linearIntegrationScheme", "Linear IntegrationScheme used by this component"))
 {
 }
 
-void EulerExplicitSolver::doIntegrate(const core::ExecParams* params, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
+void EulerExplicitIntegrationScheme::doIntegrate(const core::ExecParams* params, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
 {
     if (!isComponentStateValid())
     {
@@ -70,12 +70,12 @@ void EulerExplicitSolver::doIntegrate(const core::ExecParams* params, sofa::core
     sofa::simulation::common::VectorOperations vop( params, this->getContext() );
     sofa::simulation::common::MechanicalOperations mop( params, this->getContext() );
 
-    // Let the mechanical operations know that the current solver is explicit. This will be propagated back to the
+    // Let the mechanical operations know that the current IntegrationScheme is explicit. This will be propagated back to the
     // force fields during the addForce and addKToMatrix phase. Force fields use this information to avoid
-    // recomputing constant data in case of explicit solvers.
+    // recomputing constant data in case of explicit IntegrationSchemes.
     mop->setImplicit(false);
 
-    // Initialize the set of multi-vectors computed by this solver
+    // Initialize the set of multi-vectors computed by this IntegrationScheme
     MultiVecDeriv acc   (&vop, core::vec_id::write_access::dx);     // acceleration to be computed
     MultiVecDeriv f     (&vop, core::vec_id::write_access::force ); // force to be computed
 
@@ -85,7 +85,7 @@ void EulerExplicitSolver::doIntegrate(const core::ExecParams* params, sofa::core
     computeForce(&mop, f);
 
     // The inverse of the mass matrix is trivial to compute. Otherwise, it requires the
-    // assembly of a linear system and a linear solver to compute its solution.
+    // assembly of a linear system and a linear IntegrationScheme to compute its solution.
     if(isMassMatrixTriviallyInvertible(params))
     {
         // acc = M^-1 * f
@@ -99,7 +99,7 @@ void EulerExplicitSolver::doIntegrate(const core::ExecParams* params, sofa::core
 
         if (l_linearSolver.get())
         {
-            // Build the global matrix. In this solver, it is the global mass matrix
+            // Build the global matrix. In this IntegrationScheme, it is the global mass matrix
             // Projective constraints are also projected in this step
             assembleSystemMatrix(&mop);
 
@@ -109,7 +109,7 @@ void EulerExplicitSolver::doIntegrate(const core::ExecParams* params, sofa::core
         }
         else
         {
-            msg_error() << "Due to the presence of non-diagonal masses, the solver requires a linear solver";
+            msg_error() << "Due to the presence of non-diagonal masses, the IntegrationScheme requires a linear IntegrationScheme";
             d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
             return;
         }
@@ -119,7 +119,7 @@ void EulerExplicitSolver::doIntegrate(const core::ExecParams* params, sofa::core
     updateState(&vop, &mop, xResult, vResult, acc);
 }
 
-void EulerExplicitSolver::updateState(sofa::simulation::common::VectorOperations* vop,
+void EulerExplicitIntegrationScheme::updateState(sofa::simulation::common::VectorOperations* vop,
                                       sofa::simulation::common::MechanicalOperations* mop,
                                       sofa::core::MultiVecCoordId xResult,
                                       sofa::core::MultiVecDerivId vResult,
@@ -127,9 +127,9 @@ void EulerExplicitSolver::updateState(sofa::simulation::common::VectorOperations
 {
     SCOPED_TIMER("updateState");
 
-    // Initialize the set of multi-vectors computed by this solver
+    // Initialize the set of multi-vectors computed by this IntegrationScheme
     // "xResult" could be "position()" or "freePosition()" depending on the
-    // animation loop calling this ODE solver.
+    // animation loop calling this ODE IntegrationScheme.
     // Similarly, "vResult" could be "velocity()" or "freeVelocity()".
     // In case "xResult" refers to "position()", "newPos" refers the
     // same multi-vector than "pos". Similarly, for "newVel" and "vel".
@@ -170,7 +170,7 @@ void EulerExplicitSolver::updateState(sofa::simulation::common::VectorOperations
         // Create a set of linear operations that will be executed on two vectors
         // In our case, the operations will be executed to compute the new velocity vector,
         // and the new position vector. The order of execution is defined by
-        // the symplectic property of the solver.
+        // the symplectic property of the IntegrationScheme.
         VMultiOp ops(2);
 
         // Change order of operations depending on the symplectic flag
@@ -178,7 +178,7 @@ void EulerExplicitSolver::updateState(sofa::simulation::common::VectorOperations
         const VMultiOp::size_type velId = 1 - posId; // 0 if symplectic, 1 otherwise
 
         // Access the set of operations corresponding to the velocity vector
-        // In case of symplectic solver, these operations are executed first.
+        // In case of symplectic IntegrationScheme, these operations are executed first.
         auto& ops_vel = ops[velId];
 
         // Associate the new velocity vector as the result to this set of operations
@@ -191,14 +191,14 @@ void EulerExplicitSolver::updateState(sofa::simulation::common::VectorOperations
         ops_vel.second.emplace_back(acc.id(), m_dt);
 
         // Access the set of operations corresponding to the position vector
-        // In case of symplectic solver, these operations are executed second.
+        // In case of symplectic IntegrationScheme, these operations are executed second.
         auto& ops_pos = ops[posId];
 
         // Associate the new position vector as the result to this set of operations
         ops_pos.first = newPos;
 
         // The two following operations are actually a unique operation: newPos = pos + dt * v
-        // where v is "newVel" in case of a symplectic solver, and "vel" otherwise.
+        // where v is "newVel" in case of a symplectic IntegrationScheme, and "vel" otherwise.
         // If symplectic: newPos = pos + dt * newVel, executed after newVel has been computed
         // If not symplectic: newPos = pos + dt * vel
         // The value 1.0 indicates that the first operation is based on the values
@@ -215,14 +215,14 @@ void EulerExplicitSolver::updateState(sofa::simulation::common::VectorOperations
         // current context tree.
         vop->v_multiop(ops);
 
-        // Calls "solveConstraint" on every ConstraintSolver objects found in the current context tree.
+        // Calls "solveConstraint" on every ConstraintIntegrationScheme objects found in the current context tree.
         mop->solveConstraint(newVel,core::ConstraintOrder::VEL);
         mop->solveConstraint(newPos,core::ConstraintOrder::POS);
     }
 #endif
 }
 
-void EulerExplicitSolver::init()
+void EulerExplicitIntegrationScheme::init()
 {
     Inherit1::init();
 
@@ -235,7 +235,7 @@ void EulerExplicitSolver::init()
     d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
 
-void EulerExplicitSolver::addSeparateGravity(sofa::simulation::common::MechanicalOperations* mop, SReal dt, core::MultiVecDerivId v)
+void EulerExplicitIntegrationScheme::addSeparateGravity(sofa::simulation::common::MechanicalOperations* mop, SReal dt, core::MultiVecDerivId v)
 {
     SCOPED_TIMER("addSeparateGravity");
 
@@ -245,7 +245,7 @@ void EulerExplicitSolver::addSeparateGravity(sofa::simulation::common::Mechanica
     mop->addSeparateGravity(dt, v);
 }
 
-void EulerExplicitSolver::computeForce(sofa::simulation::common::MechanicalOperations* mop, core::MultiVecDerivId f)
+void EulerExplicitIntegrationScheme::computeForce(sofa::simulation::common::MechanicalOperations* mop, core::MultiVecDerivId f)
 {
     SCOPED_TIMER("ComputeForce");
 
@@ -255,7 +255,7 @@ void EulerExplicitSolver::computeForce(sofa::simulation::common::MechanicalOpera
     mop->computeForce(f);
 }
 
-void EulerExplicitSolver::computeAcceleration(sofa::simulation::common::MechanicalOperations* mop, core::MultiVecDerivId acc, core::ConstMultiVecDerivId f)
+void EulerExplicitIntegrationScheme::computeAcceleration(sofa::simulation::common::MechanicalOperations* mop, core::MultiVecDerivId acc, core::ConstMultiVecDerivId f)
 {
     SCOPED_TIMER("AccFromF");
 
@@ -267,7 +267,7 @@ void EulerExplicitSolver::computeAcceleration(sofa::simulation::common::Mechanic
     mop->accFromF(acc, f);
 }
 
-void EulerExplicitSolver::projectResponse(sofa::simulation::common::MechanicalOperations* mop, core::MultiVecDerivId vecId)
+void EulerExplicitIntegrationScheme::projectResponse(sofa::simulation::common::MechanicalOperations* mop, core::MultiVecDerivId vecId)
 {
     SCOPED_TIMER("projectResponse");
 
@@ -277,20 +277,20 @@ void EulerExplicitSolver::projectResponse(sofa::simulation::common::MechanicalOp
     mop->projectResponse(vecId);
 }
 
-void EulerExplicitSolver::solveConstraints(sofa::simulation::common::MechanicalOperations* mop, core::MultiVecDerivId acc)
+void EulerExplicitIntegrationScheme::solveConstraints(sofa::simulation::common::MechanicalOperations* mop, core::MultiVecDerivId acc)
 {
     SCOPED_TIMER("solveConstraint");
 
-    // Calls "solveConstraint" method of every ConstraintSolver objects found in the current context tree.
+    // Calls "solveConstraint" method of every ConstraintIntegrationScheme objects found in the current context tree.
     mop->solveConstraint(acc, core::ConstraintOrder::ACC);
 }
 
-void EulerExplicitSolver::assembleSystemMatrix(sofa::simulation::common::MechanicalOperations* mop) const
+void EulerExplicitIntegrationScheme::assembleSystemMatrix(sofa::simulation::common::MechanicalOperations* mop) const
 {
     SCOPED_TIMER("MBKBuild");
 
-    //    A. For LinearSolver using a GraphScatteredMatrix (ie, non-assembled matrices), nothing appends.
-    //    B. For LinearSolver using other type of matrices (FullMatrix, SparseMatrix, CompressedRowSparseMatrix),
+    //    A. For LinearIntegrationScheme using a GraphScatteredMatrix (ie, non-assembled matrices), nothing appends.
+    //    B. For LinearIntegrationScheme using other type of matrices (FullMatrix, SparseMatrix, CompressedRowSparseMatrix),
     //       the "addMBKToMatrix" method is called on each BaseForceField objects and the "applyConstraint" method
     //       is called on every BaseProjectiveConstraintSet objects. An example of such constraint set is the
     //       FixedProjectiveConstraint. In this case, it will set to 0 every column (_, i) and row (i, _) of the assembled
@@ -301,7 +301,7 @@ void EulerExplicitSolver::assembleSystemMatrix(sofa::simulation::common::Mechani
         core::MatricesFactors::K(0), l_linearSolver.get());
 }
 
-void EulerExplicitSolver::solveSystem(core::MultiVecDerivId solution, core::MultiVecDerivId rhs) const
+void EulerExplicitIntegrationScheme::solveSystem(core::MultiVecDerivId solution, core::MultiVecDerivId rhs) const
 {
     SCOPED_TIMER("MBKSolve");
     l_linearSolver->getLinearSystem()->setSystemSolution(solution);
@@ -352,7 +352,7 @@ private:
     bool m_allMassesAreDiagonal { true };
 };
 
-bool EulerExplicitSolver::isMassMatrixTriviallyInvertible(const core::ExecParams* params)
+bool EulerExplicitIntegrationScheme::isMassMatrixTriviallyInvertible(const core::ExecParams* params)
 {
     sofa::simulation::MappingGraph mappingGraph;
     mappingGraph.build(params, this->getContext());
@@ -376,4 +376,4 @@ bool EulerExplicitSolver::isMassMatrixTriviallyInvertible(const core::ExecParams
     return allOfMassesAreDiagonalVisitor.areAllMassesAreDiagonal();
 }
 
-} // namespace sofa::component::odesolver::forward
+} // namespace sofa::component::odeIntegrationScheme::forward
