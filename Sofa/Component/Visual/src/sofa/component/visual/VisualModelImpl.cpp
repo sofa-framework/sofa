@@ -29,6 +29,7 @@
 #include <sofa/helper/ScopedAdvancedTimer.h>
 #include <sofa/helper/io/Mesh.h>
 #include <sofa/helper/system/FileRepository.h>
+#include <sofa/helper/system/FileSystem.h>
 #include <sofa/core/topology/TopologyData.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
@@ -225,9 +226,9 @@ void VisualModelImpl::doDrawVisual(const core::visual::VisualParams* vparams)
         {
             deleteTextures();
             std::string textureFilename = d_texturename.getFullPath();
-            if (sofa::helper::system::DataRepository.findFile(textureFilename))
+            if (sofa::helper::system::FileSystem::exists(textureFilename))
             {
-                loadTexture(d_texturename.getFullPath());
+                loadTexture(textureFilename);
             }
             else
             {
