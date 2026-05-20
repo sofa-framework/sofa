@@ -148,14 +148,14 @@ MechanicalObject<DataTypes>::MechanicalObject()
     , reset_velocity(initData(&reset_velocity, "reset_velocity", "reset velocity coordinates of the degrees of freedom"))
     , restScale(initData(&restScale, 1.0_sreal, "restScale", "optional scaling of rest position coordinates (to simulated pre-existing internal tension).(default = 1.0)"))
     , d_useTopology(initData(&d_useTopology, true, "useTopology", "Shall this object rely on any active topology to initialize its size and positions"))
-    , showObject(initData(&showObject, (bool) false, "showObject", "Show objects. (default=false)"))
-    , showObjectScale(initData(&showObjectScale, 0.1f, "showObjectScale", "Scale for object display. (default=0.1)"))
-    , showIndices(initData(&showIndices, (bool) false, "showIndices", "Show indices. (default=false)"))
-    , showIndicesScale(initData(&showIndicesScale, 0.02f, "showIndicesScale", "Scale for indices display. (default=0.02)"))
-    , showVectors(initData(&showVectors, (bool) false, "showVectors", "Show velocity. (default=false)"))
-    , showVectorsScale(initData(&showVectorsScale, 0.0001f, "showVectorsScale", "Scale for vectors display. (default=0.0001)"))
-    , drawMode(initData(&drawMode,0,"drawMode","The way vectors will be drawn:\n- 0: Line\n- 1:Cylinder\n- 2: Arrow.\n\nThe DOFS will be drawn:\n- 0: point\n- >1: sphere. (default=0)"))
-    , d_color(initData(&d_color, type::RGBAColor::white(), "showColor", "Color for object display. (default=[1 1 1 1])"))
+    , showObject(this, "showObject")
+    , showObjectScale(this, "showObjectScale")
+    , showIndices(this, "showIndices")
+    , showIndicesScale(this, "showIndicesScale")
+    , showVectors(this, "showVectors")
+    , showVectorsScale(this, "showVectorsScale")
+    , drawMode(this, "drawMode")
+    , d_color(this, "showColor")
     , translation(initData(&translation, type::Vec3(), "translation", "Translation of the DOFs"))
     , rotation(initData(&rotation, type::Vec3(), "rotation", "Rotation of the DOFs"))
     , scale(initData(&scale, type::Vec3(1_sreal, 1_sreal, 1_sreal), "scale3d", "Scale of the DOFs in 3 dimensions"))
@@ -2627,107 +2627,6 @@ SReal MechanicalObject<DataTypes>::getConstraintJacobianTimesVecDeriv(unsigned i
     return result;
 }
 
-template <class DataTypes>
-inline void MechanicalObject<DataTypes>::drawIndices(const core::visual::VisualParams* vparams)
-{
-    const float scale = (float)((vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox()).norm() * showIndicesScale.getValue());
-
-    std::vector<type::Vec3> positions;
-    positions.reserve(d_size.getValue());
-    for (int i = 0; i <d_size.getValue(); ++i)
-        positions.push_back(type::Vec3(getPX(i), getPY(i), getPZ(i)));
-
-    vparams->drawTool()->draw3DText_Indices(positions, scale, d_color.getValue());
-}
-
-template <class DataTypes>
-inline void MechanicalObject<DataTypes>::drawVectors(const core::visual::VisualParams* vparams)
-{
-    float scale = showVectorsScale.getValue();
-    sofa::helper::ReadAccessor< Data<VecDeriv> > v_rA = *this->read(core::vec_id::read_access::velocity);
-    type::vector<type::Vec3> points;
-    points.resize(2);
-    for(Size i=0; i<v_rA.size(); ++i )
-    {
-        Real vx=0.0,vy=0.0,vz=0.0;
-        DataTypes::get(vx,vy,vz,v_rA[i]);
-        type::Vec3 p1 = type::Vec3(getPX(i), getPY(i), getPZ(i));
-        type::Vec3 p2 = type::Vec3(getPX(i)+scale*vx, getPY(i)+scale*vy, getPZ(i)+scale*vz);
-
-        const float rad = (float)( (p1-p2).norm()/20.0 );
-        switch (drawMode.getValue())
-        {
-        case 0:
-            points[0] = p1;
-            points[1] = p2;
-            vparams->drawTool()->drawLines(points, 1, sofa::type::RGBAColor::white());
-            break;
-        case 1:
-            vparams->drawTool()->drawCylinder(p1, p2, rad, sofa::type::RGBAColor::white());
-            break;
-        case 2:
-            vparams->drawTool()->drawArrow(p1, p2, rad, sofa::type::RGBAColor::white());
-            break;
-        default:
-            msg_error() << "No proper drawing mode found!";
-            break;
-        }
-    }
-}
-
-template <class DataTypes>
-inline void MechanicalObject<DataTypes>::draw(const core::visual::VisualParams* vparams)
-{
-    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
-    vparams->drawTool()->setLightingEnabled(false);
-
-    if (showIndices.getValue())
-    {
-        drawIndices(vparams);
-    }
-
-    if (showVectors.getValue())
-    {
-        drawVectors(vparams);
-    }
-
-    if (showObject.getValue())
-    {
-        const float& scale = showObjectScale.getValue();
-        type::vector<type::Vec3> positions(d_size.getValue());
-        for (sofa::Index i = 0; i < Size(d_size.getValue()); ++i)
-            positions[i] = type::Vec3(getPX(i), getPY(i), getPZ(i));
-
-        switch (drawMode.getValue())
-        {
-        case 0:
-            vparams->drawTool()->drawPoints(positions,scale, d_color.getValue());
-            break;
-        case 1:
-            vparams->drawTool()->setLightingEnabled(true);
-            vparams->drawTool()->drawSpheres(positions,scale, d_color.getValue());
-            break;
-        case 2:
-            vparams->drawTool()->setLightingEnabled(true);
-            vparams->drawTool()->drawSpheres(positions,scale, sofa::type::RGBAColor::red());
-            break;
-        case 3:
-            vparams->drawTool()->setLightingEnabled(true);
-            vparams->drawTool()->drawSpheres(positions,scale, sofa::type::RGBAColor::green());
-            break;
-        case 4:
-            vparams->drawTool()->setLightingEnabled(true);
-            vparams->drawTool()->drawSpheres(positions,scale, sofa::type::RGBAColor::blue());
-            break;
-        default:
-            msg_error() << "No proper drawing mode found!";
-            break;
-        }
-    }
-
-}
-
-
 /// Find mechanical particles hit by the given ray.
 /// A mechanical particle is defined as a 2D or 3D, position or rigid DOF
 /// Returns false if this object does not support picking
@@ -2771,9 +2670,6 @@ bool MechanicalObject<DataTypes>::pickParticles(const core::ExecParams* /* param
 template <class DataTypes>
 bool MechanicalObject<DataTypes>::addBBox(SReal* minBBox, SReal* maxBBox)
 {
-    // participating to bbox only if it is drawn
-    if( !showObject.getValue() ) return false;
-
     static const unsigned spatial_dimensions = std::min( (unsigned)DataTypes::spatial_dimensions, 3u );
 
     const VecCoord& x = read(core::vec_id::read_access::position)->getValue();
@@ -2796,7 +2692,7 @@ template <class DataTypes>
 void MechanicalObject<DataTypes>::computeBBox(const core::ExecParams* params, bool onlyVisible)
 {
     // participating to bbox only if it is drawn
-    if( onlyVisible && !showObject.getValue() ) return;
+    if( onlyVisible) return;
     Inherited::computeBBox( params );
 }
 
