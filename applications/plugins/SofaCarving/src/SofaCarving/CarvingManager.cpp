@@ -186,7 +186,7 @@ void CarvingManager::handleEvent(sofa::core::objectmodel::Event* event)
     if (d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
         return;
 
-    if (sofa::core::objectmodel::KeypressedEvent* ev = dynamic_cast<sofa::core::objectmodel::KeypressedEvent*>(event))
+    if (sofa::core::objectmodel::KeypressedEvent::checkEventType(event))
     {
         dmsg_info() << "GET KEY "<<ev->getKey();
         if (ev->getKey() == d_keyEvent.getValue())
@@ -198,7 +198,7 @@ void CarvingManager::handleEvent(sofa::core::objectmodel::Event* event)
             d_active.setValue(!d_active.getValue());
         }
     }
-    else if (sofa::core::objectmodel::KeyreleasedEvent* ev = dynamic_cast<sofa::core::objectmodel::KeyreleasedEvent*>(event))
+    else if (sofa::core::objectmodel::KeyreleasedEvent::checkEventType(event))
     {
         if (ev->getKey() == d_keyEvent.getValue())
         {
