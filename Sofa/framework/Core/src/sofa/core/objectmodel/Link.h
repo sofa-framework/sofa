@@ -408,13 +408,6 @@ public:
         return add(ptr, path);
     }
 
-    // bool remove(DestPtr v)
-    // {
-    //     if (!v)
-    //         return false;
-    //     return removeAt(TraitsContainer::find(m_value,v));
-    // }
-
     bool _doRemove_(Base* target) override
     {
         if (!target)
