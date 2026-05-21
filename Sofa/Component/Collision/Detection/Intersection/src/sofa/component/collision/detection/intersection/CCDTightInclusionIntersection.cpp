@@ -28,8 +28,8 @@
 
 #include <sofa/core/collision/Intersection.inl>
 
-#include <sofa/component/collision/geometry/LineModel.h>
-#include <sofa/component/collision/geometry/TriangleModel.h>
+#include <sofa/component/collision/geometry/LineCollisionModel.h>
+#include <sofa/component/collision/geometry/TriangleCollisionModel.h>
 #include <sofa/linearalgebra/EigenVector.h>
 
 #include <tight_inclusion/ccd.hpp>

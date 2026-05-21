@@ -24,4 +24,4 @@
 #include <sofa/topology/config.h>
 #include <sofa/topology/Prism.h>
 
-SOFA_HEADER_DEPRECATED("v25.12", "v26.06", "sofa/topology/Prism.h")
+SOFA_HEADER_DISABLED("v25.12", "v26.06", "sofa/topology/Prism.h")
