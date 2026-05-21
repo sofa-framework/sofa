@@ -23,7 +23,7 @@
 
 #include <sofa/component/statecontainer/MechanicalObject.h>
 
-#include <sofa/component/collision/geometry/SphereModel.h>
+#include <sofa/component/collision/geometry/SphereCollisionModel.h>
 
 #include<sofa/simulation/Node.h>
 using sofa::simulation::Node;

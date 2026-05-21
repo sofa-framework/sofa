@@ -23,4 +23,4 @@
 #include <sofa/component/collision/geometry/config.h>
 #include <sofa/component/collision/geometry/SphereCollisionModel.h>
 
-SOFA_HEADER_DEPRECATED("v25.12", "v26.06", "sofa/component/collision/geometry/SphereCollisionModel.h")
+SOFA_HEADER_DISABLED("v25.12", "v26.06", "sofa/component/collision/geometry/SphereCollisionModel.h")
