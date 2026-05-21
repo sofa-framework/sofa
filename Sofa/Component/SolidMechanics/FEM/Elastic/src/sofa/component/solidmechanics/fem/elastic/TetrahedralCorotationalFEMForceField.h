@@ -113,14 +113,41 @@ public:
         }
 
         /// Output stream
-        inline friend std::ostream& operator<< ( std::ostream& os, const TetrahedronInformation& /*tri*/ )
+        inline friend std::ostream& operator<< ( std::ostream& os, const TetrahedronInformation& tri )
         {
+            // MaterialStiffness (MatrixSym or Mat — has operator<< in SOFA)
+            os << tri.materialMatrix << " ";
+
+            // StrainDisplacementTransposed (Mat type — has operator<< in SOFA)
+            os << tri.strainDisplacementTransposedMatrix << " ";
+
+            // fixed_array<Coord, 4>
+            for (int i = 0; i < 4; ++i)
+                os << tri.rotatedInitialElements[i] << " ";
+
+            // Mat<4, 4, Real>
+            os << tri.elemShapeFun << " ";
+
+            // Transformation (Mat<3,3,Real> — has operator<< in SOFA)
+            os << tri.rotation << " ";
+
+            // Transformation
+            os << tri.initialTransformation << " ";
             return os;
         }
 
         /// Input stream
-        inline friend std::istream& operator>> ( std::istream& in, TetrahedronInformation& /*tri*/ )
+        inline friend std::istream& operator>> ( std::istream& in, TetrahedronInformation& tri )
         {
+            in >> tri.materialMatrix;
+            in >> tri.strainDisplacementTransposedMatrix;
+
+            for (int i = 0; i < 4; ++i)
+                in >> tri.rotatedInitialElements[i];
+
+            in >> tri.elemShapeFun;
+            in >> tri.rotation;
+            in >> tri.initialTransformation;
             return in;
         }
     };
