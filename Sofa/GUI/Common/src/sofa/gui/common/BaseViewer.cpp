@@ -472,8 +472,7 @@ void BaseViewer::drawSelection(sofa::core::visual::VisualParams* vparams)
 
             if(m_showSelectedObjectIndices && !positions.empty() && validBox)
             {
-                const float scale = (box.maxBBox() - box.minBBox()).norm() * m_visualScaling;
-                drawTool->draw3DText_Indices(positions, scale, m_selectionColor);
+                drawTool->draw3DText_Indices(positions, m_visualScaling, m_selectionColor);
             }
 
             continue;
