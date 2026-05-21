@@ -104,7 +104,7 @@ const char* getColor(const sofa::Index id)
 sofa::Index registerColor(const std::string& hexColor)
 {
     DEFAULTCOLORS.emplace_back(hexColor);
-    return DEFAULTCOLORS.size()-1;
+    return static_cast<sofa::Index>(DEFAULTCOLORS.size()-1);
 }
 
 sofa::Index registerColor(const std::string& className, const std::string& hexColor)
