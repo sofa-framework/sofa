@@ -684,7 +684,6 @@ int Base::getInstanciationSourceFilePos() const
     return m_instanciationSourceFilePos;
 }
 
-/// Save datas in a SnapshotObject
 void Base::saveDataIn(Snapshot::SnapshotObject& snapshot) const
 {
     for (const auto& dataFields = this->getDataFields(); const auto& data : dataFields)
@@ -698,7 +697,6 @@ void Base::saveDataIn(Snapshot::SnapshotObject& snapshot) const
     }
 }
 
-/// Save links in a SnapshotObject
 void Base::saveLinksIn(Snapshot::SnapshotObject& snapshot) const
 {
     for (const auto& links = this->getLinks(); const auto& link : links)
@@ -708,7 +706,6 @@ void Base::saveLinksIn(Snapshot::SnapshotObject& snapshot) const
         linkInfo.type = link->getValueTypeString();
         linkInfo.value = link->getValueString();
 
-        // Think about it
         std::string replaceValue = "//";
         std::size_t pos = linkInfo.value.find(replaceValue);
         while (pos != std::string::npos)
@@ -725,7 +722,6 @@ void Base::saveInternalStateIn(Snapshot::SnapshotObject& snapshot) const {
     SOFA_UNUSED(snapshot);
 }
 
-/// Create a SnapshotObject from the component to save in the snapshot
 std::shared_ptr<Snapshot::SnapshotObject>
 Base::createSnapshotObject(std::vector<std::shared_ptr<Snapshot::SnapshotNode>>& parents) const
 {
@@ -740,7 +736,6 @@ Base::createSnapshotObject(std::vector<std::shared_ptr<Snapshot::SnapshotNode>>&
     return object;
 }
 
-/// Save the component in the snapshot
 std::shared_ptr<Snapshot::SnapshotObject> Base::saveSnapshot(std::vector<std::shared_ptr<Snapshot::SnapshotNode>>& parents) const
 {
     const auto snapshotObject = createSnapshotObject(parents);
@@ -752,7 +747,6 @@ std::shared_ptr<Snapshot::SnapshotObject> Base::saveSnapshot(std::vector<std::sh
 }
 
 
-/// Find the SnapshotObject in the graph with the object's name
 std::shared_ptr<Snapshot::SnapshotObject>
 Base::findSnapshotObject(const std::shared_ptr<Snapshot::SnapshotNode>& parents, const std::string& objectname)
 {
@@ -776,7 +770,6 @@ void Base::loadInternalStateFrom(const Snapshot::SnapshotObject& snapshot) const
     SOFA_UNUSED(snapshot);
 }
 
-/// Load datas from the snapshot to the scene
 void Base::loadDataSnapshot(const std::shared_ptr<Snapshot::SnapshotObject>& snapshotObject) const
 {
     for (const auto& dataInfo : snapshotObject->m_dataContainer)
@@ -789,7 +782,6 @@ void Base::loadDataSnapshot(const std::shared_ptr<Snapshot::SnapshotObject>& sna
     }
 }
 
-/// Load links from the snapshot to the scene
 void Base::loadLinkSnapshot(const std::shared_ptr<Snapshot::SnapshotObject>& snapshotObject) const
 {
     std::vector<Base*> linksFromSnapshot;

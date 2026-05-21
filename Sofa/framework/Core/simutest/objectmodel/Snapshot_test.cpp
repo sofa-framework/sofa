@@ -49,7 +49,7 @@ using sofa::simulation::LoadLinkSnapshotVisitor;
 #include <sofa/core/objectmodel/Data.h>
 using sofa::core::objectmodel::Data;
 using sofa::core::objectmodel::BaseLink;
-using sofa::core::objectmodel::SingleLink ;
+using sofa::core::objectmodel::SingleLink;
 using sofa::core::objectmodel::Snapshot;
 using sofa::core::objectmodel::BaseNode;
 
@@ -120,6 +120,7 @@ TEST_F(Snapshot_test, saveLinkIn)
 {
     // TEST of saveLinksIn method
     // Check if the snapshot contains the component with expected data
+
     TestComponent tComponent;
     auto snapshot = std::make_shared<Snapshot::SnapshotObject>();
 

@@ -26,11 +26,26 @@
 
 namespace sofa::core::objectmodel
 {
+
+    /// Export a single Snapshot to a JSON file
     void exportTo(Snapshot& snapshot, const std::string& filename);
+
+    /// Import a single Snapshot from a JSON file
     void importFrom(Snapshot& snapshot, const std::string& filename);
+
+    /// Read a JSON file and returns its content as a string
     std::string file_To_String(const std::string& filename);
+
+    /// Serialize a Snapshot to a JSON string
     std::string snapshot_To_String(const Snapshot& snapshot);
+
+    /// Export a collection of Snapshots to a single JSON file
     void exportTo(std::map<std::string, std::shared_ptr<Snapshot>>& snapshots, const std::string& filename);
+
+    /// Import a collection of Snapshots from a single JSON file
     void importFrom(std::map<std::string, std::shared_ptr<Snapshot>>& snapshots, const std::string& filename);
+
+    /// Parses a multi-snapshot JSON file and registers each snapshot with a SnapshotManager
     void separateSnapshots(const std::string& filename, SnapshotManager& snapshotManager);
+
 } // namespace sofa::core::objectmodel

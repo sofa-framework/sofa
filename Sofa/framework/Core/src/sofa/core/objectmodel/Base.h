@@ -362,18 +362,34 @@ public:
 
     ///@}
 
+    /// Save a SnapshotObject full of data and link into the snapshot
     std::shared_ptr<Snapshot::SnapshotObject> saveSnapshot(std::vector<std::shared_ptr<Snapshot::SnapshotNode>>& parents) const;
+
+    /// Load data from the snapshot to the scene
     void loadDataSnapshot(const std::shared_ptr<Snapshot::SnapshotObject>& snapshotObject) const;
+
+    /// Load link from the snapshot to the scene
     void loadLinkSnapshot(const std::shared_ptr<Snapshot::SnapshotObject>& snapshotObject) const;
 
 protected:
+
+    /// Save data from an object to the SnapshotObject
     void saveDataIn(Snapshot::SnapshotObject& snapshot) const;
+
+    /// Save link from an object to the SnapshotObject
     void saveLinksIn(Snapshot::SnapshotObject& snapshot) const;
 
+    /// Create a SnapshotObject that will contain data and link
     virtual std::shared_ptr<Snapshot::SnapshotObject> createSnapshotObject(std::vector<std::shared_ptr<Snapshot::SnapshotNode>>& parents) const;
 public :
+
+    /// Find a SnapshotObject corresponding to the object from the scene
     virtual std::shared_ptr<Snapshot::SnapshotObject> findSnapshotObject(const std::shared_ptr<Snapshot::SnapshotNode>& parents, const std::string& objectname);
+
+    /// Save Internal State to the SnapshotObject
     virtual void saveInternalStateIn(Snapshot::SnapshotObject& snapshot) const;
+
+    ///Load Internal State from a snapshot to the scene
     virtual void loadInternalStateFrom(const Snapshot::SnapshotObject& snapshot) const;
 protected:
     /// List of fields (Data instances)

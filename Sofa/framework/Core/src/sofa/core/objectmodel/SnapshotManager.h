@@ -25,6 +25,12 @@
 
 namespace sofa::core::objectmodel
 {
+
+/**
+*  \brief Snapshot Class for a container of snapshot
+*
+*  This class contains methods and elements that will help to manage snapshot in memory.
+*/
 class SnapshotManager
 {
 public:
