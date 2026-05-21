@@ -406,7 +406,7 @@ public:
         return true;
     }
 
-    bool removePath(const std::string& path) override
+    bool removePath(const std::string& path)
     {
         if (path.empty()) return false;
         const std::size_t n = m_value.size();
