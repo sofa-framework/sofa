@@ -33,8 +33,8 @@ template<class T> struct TypeTrait{};
     { \
         static constexpr std::string_view typeName = #type; \
         static constexpr std::string_view suffix = suffix_string; \
-        static const std::string name() { return std::string(typeName); } \
-        static const std::string GetTypeName() { return std::string(suffix); } \
+        static const std::string name() { return std::string(suffix); } \
+        static const std::string GetTypeName() { return std::string(typeName); } \
     }
 
 MAKE_TYPE_TRAIT(bool, "bool");
