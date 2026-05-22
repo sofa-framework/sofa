@@ -23,48 +23,13 @@
 
 #include <sofa/defaulttype/typeinfo/models/IntegerTypeInfo.h>
 #include <sofa/type/trait/TypeTrait.h>
+#include <concepts>
 
 namespace sofa::defaulttype
 {
 
-template<>
-struct DataTypeInfo<char> : public IntegerTypeInfo<char>, public type::TypeTrait<char>
-{};
-
-template<>
-struct DataTypeInfo<unsigned char> : public IntegerTypeInfo<unsigned char>, public sofa::type::TypeTrait<unsigned char>
-{};
-
-template<>
-struct DataTypeInfo<short> : public IntegerTypeInfo<short>, public sofa::type::TypeTrait<short>
-{};
-
-template<>
-struct DataTypeInfo<unsigned short> : public IntegerTypeInfo<unsigned short>, public sofa::type::TypeTrait<unsigned short>
-{};
-
-template<>
-struct DataTypeInfo<int> : public IntegerTypeInfo<int>, public sofa::type::TypeTrait<int>
-{};
-
-template<>
-struct DataTypeInfo<unsigned int> : public IntegerTypeInfo<unsigned int>, public sofa::type::TypeTrait<unsigned int>
-{};
-
-template<>
-struct DataTypeInfo<long> : public IntegerTypeInfo<long>, public sofa::type::TypeTrait<long>
-{};
-
-template<>
-struct DataTypeInfo<unsigned long> : public IntegerTypeInfo<unsigned long>, public sofa::type::TypeTrait<unsigned long>
-{};
-
-template<>
-struct DataTypeInfo<long long> : public IntegerTypeInfo<long long>, public sofa::type::TypeTrait<long long>
-{};
-
-template<>
-struct DataTypeInfo<unsigned long long> : public IntegerTypeInfo<unsigned long long>, public sofa::type::TypeTrait<unsigned long long>
+template<std::integral T>
+struct DataTypeInfo<T> : public IntegerTypeInfo<T>, public type::TypeTrait<T>
 {};
 
 } /// typeNamespace sofa::defaulttype
