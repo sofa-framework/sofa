@@ -455,16 +455,9 @@ public:
         std::ostringstream o;
         o << "EigenMatrix";
 
-        if constexpr (std::is_scalar<Real>::value)
+        if constexpr (std::is_scalar_v<Real>)
         {
-            if constexpr (std::is_same<float, Real>::value)
-            {
-                o << "f";
-            }
-            if constexpr (std::is_same<double, Real>::value)
-            {
-                o << "d";
-            }
+            o << sofa::type::TypeTrait<Real>::suffix;
         }
 
         return o.str();
