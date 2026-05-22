@@ -23,6 +23,7 @@
 
 #include <sofa/defaulttype/typeinfo/models/ScalarTypeInfo.h>
 #include <sofa/defaulttype/TypeInfoRegistry.h>
+#include <sofa/type/trait/TypeTrait.h>
 
 namespace sofa::defaulttype
 {

@@ -24,6 +24,7 @@
 
 #include <sofa/linearalgebra/BaseVector.h>
 #include <sofa/type/Vec.h>
+#include <sofa/type/trait/TypeTrait.h>
 #include <Eigen/Dense>
 
 namespace sofa::linearalgebra
