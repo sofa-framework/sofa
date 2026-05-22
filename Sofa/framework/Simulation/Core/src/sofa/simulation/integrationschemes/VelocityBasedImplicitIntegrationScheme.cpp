@@ -78,6 +78,9 @@ void VelocityBasedImplicitIntegrationScheme::doSetupIntegrationStep(const core::
     sofa::core::behavior::MultiVecCoord x0(&vop, m_x0[order - 1]);
     x0.eq(core::vec_id::write_access::position);
 
+    vop.v_eq(m_vResult, core::vec_id::write_access::velocity);
+    vop.v_eq(m_xResult, core::vec_id::write_access::position);
+
 }
 
 /**
@@ -87,17 +90,12 @@ void VelocityBasedImplicitIntegrationScheme::computeLHS(unsigned iteration)
 {
     SOFA_UNUSED(iteration);
 
-    sofa::simulation::common::VectorOperations vop( m_params, this->getContext() );
     sofa::simulation::common::MechanicalOperations mop( m_params, this->getContext() );
-    mop.cparams.setX(m_xResult);
-    mop.cparams.setV(m_vResult);
-
-
 
     {
         SCOPED_TIMER("setSystemMBKMatrix");
-        const core::MatricesFactors::M mFact( this->getInverseVelocityUpdateDerivedFromVelocity() + d_rayleighMass.getValue() );
-        const core::MatricesFactors::B bFact( - 1.0 );
+        const core::MatricesFactors::M mFact(  this->getInverseVelocityUpdateDerivedFromVelocity() + d_rayleighMass.getValue() );
+        const core::MatricesFactors::B bFact(  -1.0 );
         const core::MatricesFactors::K kFact( - this->getPositionUpdateDerivedFromVelocity() - d_rayleighStiffness.getValue() );
 
         mop.setSystemMBKMatrix(mFact, bFact, kFact, l_linearSolver.get());
@@ -117,17 +115,9 @@ void VelocityBasedImplicitIntegrationScheme::computeRHS(unsigned iteration)
     mop.cparams.setV(m_vResult);
 
     sofa::core::behavior::MultiVecDeriv f(&vop, core::vec_id::write_access::force );
-    f.clear();
-
     sofa::core::behavior::MultiVecDeriv acc(&vop, m_acceleration );
-    acc.clear();
-
     sofa::core::behavior::MultiVecDeriv b(&vop, m_r0 );
-    b.clear();
-
     sofa::core::behavior::MultiVecDeriv r1(&vop, m_r1 );
-    r1.clear();
-
 
     {
         SCOPED_TIMER("ComputeForce");
@@ -167,7 +157,6 @@ void VelocityBasedImplicitIntegrationScheme::computeRHS(unsigned iteration)
 
         computeAccelerationFromVelocity(vop, m_acceleration, m_vResult);
         mop->setV(m_acceleration);
-        // add the change of force due to stiffness + Rayleigh damping
         mop.addMBKv(b, core::MatricesFactors::M(-1.0),
                     core::MatricesFactors::B(0),
                     core::MatricesFactors::K(0));
@@ -203,7 +192,6 @@ void VelocityBasedImplicitIntegrationScheme::solveLinearEquation()
     sofa::simulation::common::VectorOperations vop( m_params, this->getContext() );
 
     sofa::core::behavior::MultiVecDeriv x(&vop, m_unknown );
-    x.clear();
 
     l_linearSolver->getLinearSystem()->setSystemSolution(m_unknown);
     l_linearSolver->getLinearSystem()->setRHS(m_r0);
@@ -232,7 +220,6 @@ void VelocityBasedImplicitIntegrationScheme::updateStatesFromLinearSolution(SRea
     }
 
     vel.peq(m_unknown, alpha);
-
 }
 
 

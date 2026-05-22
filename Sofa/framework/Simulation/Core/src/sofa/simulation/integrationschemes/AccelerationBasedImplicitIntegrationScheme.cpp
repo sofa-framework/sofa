@@ -88,6 +88,10 @@ void AccelerationBasedImplicitIntegrationScheme::doSetupIntegrationStep(const co
     sofa::core::behavior::MultiVecDeriv a0(&vop, m_a0[order - 1]);
     a0.eq(m_acceleration);
 
+
+    vop.v_eq(m_vResult, core::vec_id::write_access::velocity);
+    vop.v_eq(m_xResult, core::vec_id::write_access::position);
+
 }
 
 /**
@@ -125,15 +129,9 @@ void AccelerationBasedImplicitIntegrationScheme::computeRHS(unsigned iteration)
     sofa::core::behavior::MultiVecDeriv vel(&vop, core::vec_id::write_access::velocity );
 
     sofa::core::behavior::MultiVecDeriv f(&vop, core::vec_id::write_access::force );
-    f.clear();
     sofa::core::behavior::MultiVecDeriv b(&vop, m_r0 );
-    b.clear();
     sofa::core::behavior::MultiVecDeriv r1(&vop, m_r1 );
-    r1.clear();
     sofa::core::behavior::MultiVecDeriv r2(&vop, m_r2 );
-    r2.clear();
-
-
 
     {
         //TODO deal with that.
