@@ -163,16 +163,9 @@ public:
         std::ostringstream o;
         o << "EigenVector";
 
-        if constexpr (std::is_scalar<TReal>::value)
+        if constexpr (std::is_scalar_v<TReal>)
         {
-            if constexpr (std::is_same<float, TReal>::value)
-            {
-                o << "f";
-            }
-            if constexpr (std::is_same<double, TReal>::value)
-            {
-                o << "d";
-            }
+            o << sofa::type::TypeTrait<TReal>::suffix;
         }
 
         return o.str();
