@@ -45,23 +45,8 @@ public:
             SOFA_TEMPLATE2(BaseElementLinearFEMForceField, DataTypes, ElementType),
             SOFA_TEMPLATE2(FEMForceField, DataTypes, ElementType));
 
-    /**
-     * The purpose of this function is to register the name of this class according to the provided
-     * pattern.
-     *
-     * Example: ElementLinearSmallStrainFEMForceField<Vec3Types, sofa::geometry::Edge> will produce
-     * the class name "EdgeLinearSmallStrainFEMForceField".
-     */
-    static const std::string GetCustomClassName()
-    {
-        return std::string(sofa::geometry::elementTypeToString(ElementType::Element_type)) +
-               "LinearSmallStrainFEMForceField";
-    }
-
-    static const std::string GetCustomTemplateName() { return DataTypes::Name(); }
-
 private:
-    using trait = sofa::component::solidmechanics::fem::elastic::trait<DataTypes, ElementType>;
+    using trait = typename FEMForceField<DataTypes, ElementType>::trait;
     using ElementHessian = typename trait::ElementHessian;
     using ElementDisplacement = typename trait::ElementDisplacement;
     using StrainDisplacement = typename trait::StrainDisplacement;
