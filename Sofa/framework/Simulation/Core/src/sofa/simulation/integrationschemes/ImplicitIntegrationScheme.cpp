@@ -25,6 +25,8 @@
 #include <cmath>
 #include <sofa/core/objectmodel/BaseNode.h>
 
+#include <sofa/simulation/MechanicalOperations.h>
+#include <sofa/simulation/VectorOperations.h>
 
 namespace sofa::simulation::integrationschemes
 {
@@ -33,12 +35,18 @@ namespace sofa::simulation::integrationschemes
 ImplicitIntegrationScheme::ImplicitIntegrationScheme()
 : d_rayleighStiffness(initData(&d_rayleighStiffness, 0.0_sreal, "rayleighStiffness", "Rayleigh damping coefficient related to stiffness, > 0") )
 , d_rayleighMass(initData(&d_rayleighMass, 0.0_sreal, "rayleighMass", "Rayleigh damping coefficient related to mass, > 0"))
+, m_vop(nullptr)
+, m_mop(nullptr)
 {
 
 }
 
 void ImplicitIntegrationScheme::setupIntegrationStep(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
 {
+
+    m_vop = std::make_shared<sofa::simulation::common::VectorOperations>( params, this->getContext() );
+    m_mop = std::make_unique<sofa::simulation::common::MechanicalOperations>( params, this->getContext() );
+
     m_params = params;
     m_dt = dt;
     m_xResult = xResult;

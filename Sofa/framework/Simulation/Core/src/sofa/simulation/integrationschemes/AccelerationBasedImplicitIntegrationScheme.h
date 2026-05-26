@@ -27,11 +27,8 @@
 #include <sofa/core/behavior/LinearSolverAccessor.h>
 #include <sofa/simulation/integrationschemes/ImplicitIntegrationScheme.h>
 
-namespace sofa::simulation::common
-{
-class MechanicalOperations;
-class VectorOperations;
-}
+#include <sofa/simulation/MechanicalOperations.h>
+#include <sofa/simulation/VectorOperations.h>
 
 namespace sofa::simulation::integrationschemes
 {
@@ -91,8 +88,6 @@ protected:
     virtual void computeCurrentPositionIntegrationError(sofa::simulation::common::VectorOperations & vop, sofa::core::MultiVecDerivId& result, const sofa::core::MultiVecDerivId& velocity, const sofa::core::MultiVecDerivId& acceleration) = 0;
     //Compute the error made on the position integration equation : v_{t+h} - g_v(a), with a the current estimate of acceleration
     virtual void computeCurrentVelocityIntegrationError(sofa::simulation::common::VectorOperations & vop, const sofa::core::MultiVecDerivId& result, const sofa::core::MultiVecDerivId& acceleration) = 0;
-
-
 };
 
 } // namespace sofa::component::integrationschemes

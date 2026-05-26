@@ -28,11 +28,8 @@
 
 #include <sofa/core/behavior/LinearSolverAccessor.h>
 
-namespace sofa::simulation::common
-{
-class MechanicalOperations;
-class VectorOperations;
-}
+#include <sofa/simulation/MechanicalOperations.h>
+#include <sofa/simulation/VectorOperations.h>
 
 namespace sofa::simulation::integrationschemes
 {
@@ -89,6 +86,8 @@ protected:
     virtual void computeCurrentPositionIntegrationError(sofa::simulation::common::VectorOperations & vop, sofa::core::MultiVecDerivId& result, const sofa::core::MultiVecCoordId& position, const sofa::core::MultiVecDerivId& velocity) = 0;
     //Compute the acceleration from current value of velocity. This is the implementation of the inverse integration scheme for the velocity
     virtual void computeAccelerationFromVelocity(sofa::simulation::common::VectorOperations & vop, sofa::core::MultiVecDerivId& result, const sofa::core::MultiVecDerivId& velocity) = 0;
+
+
 };
 
 } // namespace sofa::component::integrationschemes
