@@ -35,18 +35,26 @@ namespace sofa::simulation::integrationschemes
 void VelocityBasedImplicitIntegrationScheme::doSetupIntegrationStep(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
 {
 
+    // Make sure the states are following the sizes
     simulation::common::VectorOperations::realloc(*m_vop, m_r0, "r0", this, true);
     simulation::common::VectorOperations::realloc(*m_vop, m_r1, "r1", this, true);
+    simulation::common::VectorOperations::realloc(*m_vop, m_acceleration, "acceleration", this, true);
+    simulation::common::VectorOperations::realloc(*m_vop, m_unknown, "dv", this, true);
+
+    // Deal with higher order integration scheme
     const Size order = getIntegrationSchemeOrder();
 
     m_x0.resize(order);
     m_v0.resize(order);
-    m_a0.resize(order);
 
     for (unsigned i = 0; i < order; ++i)
     {
+        // If first order, don't add the subscript
         simulation::common::VectorOperations::realloc(*m_vop, m_x0[i], "x0" + (order != 1 ? "_" + std::to_string(i)  : ""), this, true);
         simulation::common::VectorOperations::realloc(*m_vop, m_v0[i], "v0" + (order != 1 ? "_" + std::to_string(i)  : ""), this,true);
+
+        // Only at the start of the simulation, copy the position/velocity values inside the stored
+        // states to recreate the past
         if (this->getTime() < std::numeric_limits<SReal>::epsilon())
         {
             sofa::core::behavior::MultiVecDeriv v0(m_vop.get(), m_v0[i]);
@@ -56,6 +64,8 @@ void VelocityBasedImplicitIntegrationScheme::doSetupIntegrationStep(const core::
         }
     }
 
+    // Now shift all states to advance in time (could be skipped at the start of the simulation)
+    // I decided not to do it to avoid having the check
     for (unsigned i = 0; i < order - 1; ++i)
     {
         sofa::core::behavior::MultiVecCoord x(m_vop.get(), m_x0[i]);
@@ -64,15 +74,15 @@ void VelocityBasedImplicitIntegrationScheme::doSetupIntegrationStep(const core::
         v.eq(m_v0[i+1]);
     }
 
-    simulation::common::VectorOperations::realloc(*m_vop, m_acceleration, "acceleration", this, true);
-    simulation::common::VectorOperations::realloc(*m_vop, m_unknown, "dv", this, true);
-
-    //Might be used afterwards by computeAccelerationFromVelocity
+    // Store the previous state in its right position in the state vector
     sofa::core::behavior::MultiVecDeriv v0(m_vop.get(), m_v0[order - 1]);
     v0.eq(core::vec_id::write_access::velocity);
     sofa::core::behavior::MultiVecCoord x0(m_vop.get(), m_x0[order - 1]);
     x0.eq(core::vec_id::write_access::position);
 
+
+    // This is only there for lagrangian based simulation, to make sure we start using the real pose
+    // instead of the free pos (same for velocity)
     m_vop->v_eq(m_vResult, core::vec_id::write_access::velocity);
     m_vop->v_eq(m_xResult, core::vec_id::write_access::position);
 
@@ -85,15 +95,14 @@ void VelocityBasedImplicitIntegrationScheme::computeLHS(unsigned iteration)
 {
     SOFA_UNUSED(iteration);
 
-    {
-        SCOPED_TIMER("setSystemMBKMatrix");
-        const core::MatricesFactors::M mFact(  this->getInverseVelocityUpdateDerivedFromVelocity() + d_rayleighMass.getValue() );
-        const core::MatricesFactors::B bFact(  -1.0 );
-        const core::MatricesFactors::K kFact( - this->getPositionUpdateDerivedFromVelocity() - d_rayleighStiffness.getValue() );
+    // Set the factor of the left hand side taking into account the rayleigh damping
+    SCOPED_TIMER("setSystemMBKMatrix");
+    const core::MatricesFactors::M mFact(  this->getInverseVelocityUpdateDerivedFromVelocity() + d_rayleighMass.getValue() );
+    const core::MatricesFactors::B bFact(  -1.0 );
+    const core::MatricesFactors::K kFact( - this->getPositionUpdateDerivedFromVelocity() - d_rayleighStiffness.getValue() );
 
-        m_mop->setSystemMBKMatrix(mFact, bFact, kFact, l_linearSolver.get());
+    m_mop->setSystemMBKMatrix(mFact, bFact, kFact, l_linearSolver.get());
 
-    }
 
 }
 
@@ -102,57 +111,66 @@ void VelocityBasedImplicitIntegrationScheme::computeLHS(unsigned iteration)
 */
 void VelocityBasedImplicitIntegrationScheme::computeRHS(unsigned iteration)
 {
+    // Make sure no one modified this
     m_mop->cparams.setX(m_xResult);
     m_mop->cparams.setV(m_vResult);
 
     sofa::core::behavior::MultiVecDeriv f(m_vop.get(), core::vec_id::write_access::force );
-    sofa::core::behavior::MultiVecDeriv b(m_vop.get(), m_r0 );
+    // Let's make sure f is cleared between each Newton steps
+    f.clear();
+    // The other one don't need to be clear as they are recomputed and not updated by the real IS impl
 
     {
         SCOPED_TIMER("ComputeForce");
-
-        //TODO deal with that.
         m_mop->mparams.setImplicit(true); // this solver is implicit
         // compute the net forces at the beginning of the time step
 
         //TODO calling computeForce with default values might wipe out the interaction forcefield
-        m_mop->computeForce(f);                                                               //f = Kx + Bv
+        m_mop->computeForce(f);
     }
 
     {
         SCOPED_TIMER("ComputeRHTerm");
-        b.eq(f);  // b = f
+        m_vop->v_eq(m_r0, f, 1.0);
 
         auto backV = m_mop->mparams.v();
 
+        // This computes the explicit part of the Rayleigh damping
         if (   fabs(d_rayleighMass.getValue()) > std::numeric_limits<SReal>::epsilon()
             || fabs(d_rayleighStiffness.getValue()) > std::numeric_limits<SReal>::epsilon())
         {
             m_mop->mparams.setV(m_vResult);
 
-            m_mop->addMBKv(b, core::MatricesFactors::M(-d_rayleighMass.getValue()),
+            m_mop->addMBKv(m_r0, core::MatricesFactors::M(-d_rayleighMass.getValue()),
             core::MatricesFactors::B(0),
             core::MatricesFactors::K(d_rayleighStiffness.getValue()));
         }
 
-        if (iteration == 0) [[unlikely]]
+        // R1 should be equal to 0 in theory when integration scheme is linear. But let's recompute
+        // it anyway to compute the residue
+        computeCurrentPositionIntegrationError(*m_vop, m_r1, m_xResult, m_vResult);
+        if (iteration == 0)
         {
-            computeCurrentPositionIntegrationError(*m_vop, m_r1, m_xResult, m_vResult);
             m_mop->mparams.setV(m_r1);
-            m_mop->addMBKv(b, core::MatricesFactors::M(0.0),
-                         core::MatricesFactors::B(0),
-                         core::MatricesFactors::K(-1.0));
+            m_mop->addMBKv(m_r0, core::MatricesFactors::M(0.0),
+                        core::MatricesFactors::B(0),
+                        core::MatricesFactors::K(-1.0));
         }
 
+        // In velocity-based IS the acceleration is not integrated but estimated using first order
+        // backward finite difference on the velocity
         computeAccelerationFromVelocity(*m_vop, m_acceleration, m_vResult);
         m_mop->mparams.setV(m_acceleration);
-        m_mop->addMBKv(b, core::MatricesFactors::M(-1.0),
+        m_mop->addMBKv(m_r0, core::MatricesFactors::M(-1.0),
                     core::MatricesFactors::B(0),
                     core::MatricesFactors::K(0));
 
         m_mop->mparams.setV(backV);
 
-        m_mop->projectResponse(b);
+        // Set the factor of the left hand side taking into account the rayleigh damping
+        // Apply projective constraints to the full residue
+        m_mop->projectResponse(m_r0);
+        m_mop->projectResponse(m_r1);
     }
 
 }
@@ -194,14 +212,18 @@ void VelocityBasedImplicitIntegrationScheme::updateStatesFromLinearSolution(SRea
     sofa::core::behavior::MultiVecCoord pos(m_vop.get(), m_xResult);
     sofa::core::behavior::MultiVecDeriv vel(m_vop.get(), m_vResult );
 
+    //Update position w/r to unknown
     pos.peq(m_unknown, alpha * getPositionUpdateDerivedFromVelocity());
 
     //TODO make this work with alpha, iteration might be still 0 but we are in the linesearch algo and we don't want to remove this each time...
-    if (iteration == 0) [[unlikely]]
+    // R1 should be equal to 0, avoids computation
+    if (iteration == 0)
     {
+        //Update position w/r R1
         pos.peq(m_r1, -1.0);
     }
 
+    // Accumulate the velocity
     vel.peq(m_unknown, alpha);
 }
 
