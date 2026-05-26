@@ -26,22 +26,17 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
-#include <sofa/simulation/MappingGraph.h>
-#include <sofa/simulation/MechanicalOperations.h>
-#include <sofa/simulation/VectorOperations.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalGetNonDiagonalMassesCountVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalGetNonDiagonalMassesCountVisitor;
 
 namespace sofa::simulation::integrationschemes
 {
 
-
 void VelocityBasedImplicitIntegrationScheme::doSetupIntegrationStep(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
 {
-    sofa::simulation::common::VectorOperations vop( m_params, this->getContext() );
-    sofa::simulation::common::MechanicalOperations mop( m_params, this->getContext() );
-    simulation::common::VectorOperations::realloc(vop, m_r0, "r0", this, true);
-    simulation::common::VectorOperations::realloc(vop, m_r1, "r1", this, true);
+
+    simulation::common::VectorOperations::realloc(*m_vop, m_r0, "r0", this, true);
+    simulation::common::VectorOperations::realloc(*m_vop, m_r1, "r1", this, true);
     const Size order = getIntegrationSchemeOrder();
 
     m_x0.resize(order);
@@ -50,36 +45,36 @@ void VelocityBasedImplicitIntegrationScheme::doSetupIntegrationStep(const core::
 
     for (unsigned i = 0; i < order; ++i)
     {
-        simulation::common::VectorOperations::realloc(vop, m_x0[i], "x0" + (order != 1 ? "_" + std::to_string(i)  : ""), this);
-        simulation::common::VectorOperations::realloc(vop, m_v0[i], "v0" + (order != 1 ? "_" + std::to_string(i)  : ""), this);
+        simulation::common::VectorOperations::realloc(*m_vop, m_x0[i], "x0" + (order != 1 ? "_" + std::to_string(i)  : ""), this, true);
+        simulation::common::VectorOperations::realloc(*m_vop, m_v0[i], "v0" + (order != 1 ? "_" + std::to_string(i)  : ""), this,true);
         if (this->getTime() < std::numeric_limits<SReal>::epsilon())
         {
-            sofa::core::behavior::MultiVecDeriv v0(&vop, m_v0[i]);
+            sofa::core::behavior::MultiVecDeriv v0(m_vop.get(), m_v0[i]);
             v0.eq(core::vec_id::write_access::velocity);
-            sofa::core::behavior::MultiVecCoord x0(&vop, m_x0[i]);
+            sofa::core::behavior::MultiVecCoord x0(m_vop.get(), m_x0[i]);
             x0.eq(core::vec_id::write_access::position);
         }
     }
 
     for (unsigned i = 0; i < order - 1; ++i)
     {
-        sofa::core::behavior::MultiVecCoord x(&vop, m_x0[i]);
+        sofa::core::behavior::MultiVecCoord x(m_vop.get(), m_x0[i]);
         x.eq(m_x0[i+1]);
-        sofa::core::behavior::MultiVecDeriv v(&vop, m_v0[i]);
+        sofa::core::behavior::MultiVecDeriv v(m_vop.get(), m_v0[i]);
         v.eq(m_v0[i+1]);
     }
 
-    simulation::common::VectorOperations::realloc(vop, m_acceleration, "acceleration", this, true);
-    simulation::common::VectorOperations::realloc(vop, m_unknown, "dv", this, true);
+    simulation::common::VectorOperations::realloc(*m_vop, m_acceleration, "acceleration", this, true);
+    simulation::common::VectorOperations::realloc(*m_vop, m_unknown, "dv", this, true);
 
     //Might be used afterwards by computeAccelerationFromVelocity
-    sofa::core::behavior::MultiVecDeriv v0(&vop, m_v0[order - 1]);
+    sofa::core::behavior::MultiVecDeriv v0(m_vop.get(), m_v0[order - 1]);
     v0.eq(core::vec_id::write_access::velocity);
-    sofa::core::behavior::MultiVecCoord x0(&vop, m_x0[order - 1]);
+    sofa::core::behavior::MultiVecCoord x0(m_vop.get(), m_x0[order - 1]);
     x0.eq(core::vec_id::write_access::position);
 
-    vop.v_eq(m_vResult, core::vec_id::write_access::velocity);
-    vop.v_eq(m_xResult, core::vec_id::write_access::position);
+    m_vop->v_eq(m_vResult, core::vec_id::write_access::velocity);
+    m_vop->v_eq(m_xResult, core::vec_id::write_access::position);
 
 }
 
@@ -90,15 +85,13 @@ void VelocityBasedImplicitIntegrationScheme::computeLHS(unsigned iteration)
 {
     SOFA_UNUSED(iteration);
 
-    sofa::simulation::common::MechanicalOperations mop( m_params, this->getContext() );
-
     {
         SCOPED_TIMER("setSystemMBKMatrix");
         const core::MatricesFactors::M mFact(  this->getInverseVelocityUpdateDerivedFromVelocity() + d_rayleighMass.getValue() );
         const core::MatricesFactors::B bFact(  -1.0 );
         const core::MatricesFactors::K kFact( - this->getPositionUpdateDerivedFromVelocity() - d_rayleighStiffness.getValue() );
 
-        mop.setSystemMBKMatrix(mFact, bFact, kFact, l_linearSolver.get());
+        m_mop->setSystemMBKMatrix(mFact, bFact, kFact, l_linearSolver.get());
 
     }
 
@@ -109,61 +102,57 @@ void VelocityBasedImplicitIntegrationScheme::computeLHS(unsigned iteration)
 */
 void VelocityBasedImplicitIntegrationScheme::computeRHS(unsigned iteration)
 {
-    sofa::simulation::common::VectorOperations vop( m_params, this->getContext() );
-    sofa::simulation::common::MechanicalOperations mop( m_params, this->getContext() );
-    mop.cparams.setX(m_xResult);
-    mop.cparams.setV(m_vResult);
+    m_mop->cparams.setX(m_xResult);
+    m_mop->cparams.setV(m_vResult);
 
-    sofa::core::behavior::MultiVecDeriv f(&vop, core::vec_id::write_access::force );
-    sofa::core::behavior::MultiVecDeriv acc(&vop, m_acceleration );
-    sofa::core::behavior::MultiVecDeriv b(&vop, m_r0 );
-    sofa::core::behavior::MultiVecDeriv r1(&vop, m_r1 );
+    sofa::core::behavior::MultiVecDeriv f(m_vop.get(), core::vec_id::write_access::force );
+    sofa::core::behavior::MultiVecDeriv b(m_vop.get(), m_r0 );
 
     {
         SCOPED_TIMER("ComputeForce");
 
         //TODO deal with that.
-        mop->setImplicit(true); // this solver is implicit
+        m_mop->mparams.setImplicit(true); // this solver is implicit
         // compute the net forces at the beginning of the time step
 
         //TODO calling computeForce with default values might wipe out the interaction forcefield
-        mop.computeForce(f);                                                               //f = Kx + Bv
+        m_mop->computeForce(f);                                                               //f = Kx + Bv
     }
 
     {
         SCOPED_TIMER("ComputeRHTerm");
         b.eq(f);  // b = f
 
-        auto backV = mop->v();
+        auto backV = m_mop->mparams.v();
 
         if (   fabs(d_rayleighMass.getValue()) > std::numeric_limits<SReal>::epsilon()
             || fabs(d_rayleighStiffness.getValue()) > std::numeric_limits<SReal>::epsilon())
         {
-            mop->setV(m_vResult);
+            m_mop->mparams.setV(m_vResult);
 
-            mop.addMBKv(b, core::MatricesFactors::M(-d_rayleighMass.getValue()),
+            m_mop->addMBKv(b, core::MatricesFactors::M(-d_rayleighMass.getValue()),
             core::MatricesFactors::B(0),
             core::MatricesFactors::K(d_rayleighStiffness.getValue()));
         }
 
         if (iteration == 0) [[unlikely]]
         {
-            computeCurrentPositionIntegrationError(vop, m_r1, m_xResult, m_vResult);
-            mop->setV(m_r1);
-            mop.addMBKv(b, core::MatricesFactors::M(0.0),
+            computeCurrentPositionIntegrationError(*m_vop, m_r1, m_xResult, m_vResult);
+            m_mop->mparams.setV(m_r1);
+            m_mop->addMBKv(b, core::MatricesFactors::M(0.0),
                          core::MatricesFactors::B(0),
                          core::MatricesFactors::K(-1.0));
         }
 
-        computeAccelerationFromVelocity(vop, m_acceleration, m_vResult);
-        mop->setV(m_acceleration);
-        mop.addMBKv(b, core::MatricesFactors::M(-1.0),
+        computeAccelerationFromVelocity(*m_vop, m_acceleration, m_vResult);
+        m_mop->mparams.setV(m_acceleration);
+        m_mop->addMBKv(b, core::MatricesFactors::M(-1.0),
                     core::MatricesFactors::B(0),
                     core::MatricesFactors::K(0));
 
-        mop->setV(backV);
+        m_mop->mparams.setV(backV);
 
-        mop.projectResponse(b);
+        m_mop->projectResponse(b);
     }
 
 }
@@ -176,8 +165,8 @@ SReal VelocityBasedImplicitIntegrationScheme::squaredNormRHS()
 {
     sofa::simulation::common::VectorOperations vop( m_params, this->getContext() );
 
-    core::behavior::MultiVecDeriv r0(&vop, m_r0);
-    core::behavior::MultiVecDeriv r1(&vop, m_r1);
+    core::behavior::MultiVecDeriv r0(m_vop.get(), m_r0);
+    core::behavior::MultiVecDeriv r1(m_vop.get(), m_r1);
 
     return r0.dot(r0) + r1.dot(r1);
 }
@@ -189,10 +178,6 @@ SReal VelocityBasedImplicitIntegrationScheme::squaredNormRHS()
 void VelocityBasedImplicitIntegrationScheme::solveLinearEquation()
 {
     SCOPED_TIMER("MBKSolve");
-    sofa::simulation::common::VectorOperations vop( m_params, this->getContext() );
-
-    sofa::core::behavior::MultiVecDeriv x(&vop, m_unknown );
-
     l_linearSolver->getLinearSystem()->setSystemSolution(m_unknown);
     l_linearSolver->getLinearSystem()->setRHS(m_r0);
     l_linearSolver->solveSystem();
@@ -206,10 +191,8 @@ void VelocityBasedImplicitIntegrationScheme::solveLinearEquation()
  */
 void VelocityBasedImplicitIntegrationScheme::updateStatesFromLinearSolution(SReal alpha, unsigned iteration)
 {
-    sofa::simulation::common::VectorOperations vop( m_params, this->getContext() );
-
-    sofa::core::behavior::MultiVecCoord pos(&vop, m_xResult);
-    sofa::core::behavior::MultiVecDeriv vel(&vop, m_vResult );
+    sofa::core::behavior::MultiVecCoord pos(m_vop.get(), m_xResult);
+    sofa::core::behavior::MultiVecDeriv vel(m_vop.get(), m_vResult );
 
     pos.peq(m_unknown, alpha * getPositionUpdateDerivedFromVelocity());
 

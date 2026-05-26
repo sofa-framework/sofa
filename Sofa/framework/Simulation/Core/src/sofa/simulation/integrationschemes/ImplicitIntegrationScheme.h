@@ -115,6 +115,10 @@ protected:
 
     sofa::core::MultiVecDerivId m_acceleration;
 
+
+    std::shared_ptr<sofa::simulation::common::VectorOperations > m_vop;
+    std::unique_ptr<sofa::simulation::common::MechanicalOperations> m_mop;
+
 };
 } // namespace sofa::component::integrationschemes
 
