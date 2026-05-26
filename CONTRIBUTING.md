@@ -1,6 +1,7 @@
 # Welcome
 
-Welcome to the SOFA Community! Here is a brief summary of how it is structured:
+Welcome to the SOFA Community! This document aims at presenting how to contribute code to the SOFA project. Note that contributing code is not the only way to get involved. We provide a webpage listing [other ways to contribute](https://www.sofa-framework.org/community/get-involved/). Choose your own way!
+Here is a brief summary of how it is structured:
 
 - SOFA Users: people using SOFA by writing scenes or using the SOFA API.
 - SOFA Developers: people programming into SOFA, modifying the API, writing plugins.
@@ -9,21 +10,20 @@ Welcome to the SOFA Community! Here is a brief summary of how it is structured:
 - SOFA Consortium: research centers and companies willing to share the cost of development and maintenance of SOFA, hosted by Inria.
 - SOFA Consortium Staff: administrators of SOFA and its ecosystem. This group is directed by the Executive Committee (EC).
 
-All SOFA Developers are gladly invited to the SOFA-dev meetings.  
-They take place remotely every Wednesday at 10 a.m. CET and are animated by the SOFA Reviewers + the Consortium Staff.  
-[Subscribe to SOFA-dev mailing-list](https://sympa.inria.fr/sympa/subscribe/sofa-dev) to get the agenda, reports and conference room url.
+All SOFA Developers are gladly invited to the [SOFA-dev meetings](https://www.sofa-framework.org/applications/publications/#CiteSOFA). They take place remotely every Thursday at 9:30 a.m. CET and are animated by the SOFA Reviewers + the Consortium Staff. [Subscribe to SOFA-dev mailing-list](https://sympa.inria.fr/sympa/subscribe/sofa-dev) to get the agenda, reports and conference room url.
 
 About the steering committees:
 
 - SOFA Scientific and Technical Committee (STC): defines the technical roadmap twice a year, validate the contribution rules, the Reviewers team and discuss every technical point in SOFA.
 - SOFA Executive Committee (EC): decides on evolutions of the membership contract, the communication policy and the priorities of the Consortium.
 
-A more detailed definition of the committees is available [in the SOFA website](https://www.sofa-framework.org/consortium/presentation/).
+A more detailed definition of the [governing committees](https://www.sofa-framework.org/consortium/presentation/) is available on the SOFA website.
 
 
 # Getting started
 
-Please **read carefully** [the GitHub guide on Contributing to Open Source](https://guides.github.com/activities/contributing-to-open-source/). We also recommend you to check this [more detailed documentation on issues and pull requests](https://help.github.com/categories/collaborating-with-issues-and-pull-requests/).
+Please **read carefully** [the GitHub guide on Contributing to Open Source](https://docs.github.com/en/get-started/exploring-projects-on-github/contributing-to-open-source).
+We also recommend you to check this [more detailed documentation on issues and pull requests](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests).
 
 
 # Support - Discussion forum
@@ -161,3 +161,12 @@ By making a contribution to this project, I certify that:
 # Annual development cycle
 
 <center><figure><img src="https://www.sofa-framework.org/wp-content/uploads/2023/04/SOFA-contribution-process.png" alt="Annual dev cycle" style="width:75%"><figcaption align = "center"><b>A year of development within the SOFA community: dev meeting and events</b></figcaption></figure></center>
+
+# Share your achievements
+
+Discovering what you achieve using SOFA and SofaPython3 is rewarding for the project. We would be most grateful in case you:
+- [Cite SOFA](https://www.sofa-framework.org/applications/publications/#CiteSOFA) in your publications
+- [Share your achievements](https://github.com/sofa-framework/sofa/discussions/categories/share-your-achievements) with the community
+- Join the [SOFA annual conference](https://www.sofa-framework.org/sofa-events/sofa-week/) and present your work
+- Share new [plugins](https://www.sofa-framework.org/applications/plugins/)
+

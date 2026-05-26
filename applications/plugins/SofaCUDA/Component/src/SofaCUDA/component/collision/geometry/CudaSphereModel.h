@@ -23,7 +23,7 @@
 #include <SofaCUDA/component/config.h>
 
 #include <sofa/gpu/cuda/CudaTypes.h>
-#include <sofa/component/collision/geometry/SphereModel.h>
+#include <sofa/component/collision/geometry/SphereCollisionModel.h>
 
 namespace sofa::gpu::cuda
 {
