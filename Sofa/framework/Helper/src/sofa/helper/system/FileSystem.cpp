@@ -117,44 +117,51 @@ std::string FileSystem::getExtension(const std::string& filename)
 bool FileSystem::listDirectory(const std::string& directoryPath,
                                std::vector<std::string>& outputFilenames)
 {
-    try
+    std::error_code ec;
+    fs::directory_iterator it(directoryPath, ec);
+    if (ec)
     {
-        for (const auto& entry : fs::directory_iterator(directoryPath))
-        {
-            const std::string filename = entry.path().filename().string();
-            if (filename != "." && filename != "..")
-                outputFilenames.push_back(filename);
-        }
-        return false;
-    }
-    catch (const fs::filesystem_error& e)
-    {
-        msg_error("FileSystem::listDirectory()") << directoryPath << ": " << e.what();
+        msg_error("FileSystem::listDirectory()") << directoryPath << ": " << ec.message();
         return true;
     }
+    for (; it != fs::directory_iterator(); it.increment(ec))
+    {
+        if (ec)
+        {
+            msg_error("FileSystem::listDirectory()") << directoryPath << ": " << ec.message();
+            return true;
+        }
+        const std::string filename = it->path().filename().string();
+        if (filename != "." && filename != "..")
+            outputFilenames.push_back(filename);
+    }
+    return false;
 }
 
 bool FileSystem::createDirectory(const std::string& path)
 {
-    try
+    std::error_code ec;
+    if (fs::exists(path, ec))
     {
-        if (fs::exists(path))
+        if (!fs::is_directory(path, ec))
         {
-            if (!fs::is_directory(path))
-            {
-                msg_error("FileSystem::createDirectory()") << path << ": File exists and is not a directory";
-                return true;
-            }
-            return false;
+            msg_error("FileSystem::createDirectory()") << path << ": File exists and is not a directory";
+            return true;
         }
-        fs::create_directories(path);
         return false;
     }
-    catch (const fs::filesystem_error& e)
+    if (ec)
     {
-        msg_error("FileSystem::createDirectory()") << path << ": " << e.what();
+        msg_error("FileSystem::createDirectory()") << path << ": " << ec.message();
         return true;
     }
+    fs::create_directories(path, ec);
+    if (ec)
+    {
+        msg_error("FileSystem::createDirectory()") << path << ": " << ec.message();
+        return true;
+    }
+    return false;
 }
 
 bool FileSystem::removeDirectory(const std::string& path)
@@ -176,70 +183,48 @@ bool FileSystem::removeDirectory(const std::string& path)
 }
 
 bool FileSystem::removeAll(const std::string& path){
-    try
-    {
-        fs::remove_all(path);
-        return true ;
-    }
-    catch(const fs::filesystem_error& /*e*/)
-    {
-        return false ;
-    }
+    std::error_code ec;
+    fs::remove_all(path, ec);
+    return !ec;
 }
 
 bool FileSystem::removeFile(const std::string& path)
 {
-    try
+    std::error_code ec;
+    const bool removed = fs::remove(path, ec);
+    if (ec)
     {
-        return fs::remove(path);
-    }
-    catch (const fs::filesystem_error& e)
-    {
-        msg_error("FileSystem::removeFile()") << path << ": " << e.what();
+        msg_error("FileSystem::removeFile()") << path << ": " << ec.message();
         return false;
     }
+    return removed;
 }
 
 bool FileSystem::exists(const std::string& path, bool quiet)
 {
-    try
-    {
-        return fs::exists(path);
-    }
-    catch (const fs::filesystem_error& e)
-    {
-        if (!quiet)
-            msg_error("FileSystem::exists()") << path << ": " << e.what();
-        return false;
-    }
+    std::error_code ec;
+    const bool result = fs::exists(path, ec);
+    if (ec && !quiet)
+        msg_error("FileSystem::exists()") << path << ": " << ec.message();
+    return result;
 }
 
 bool FileSystem::isDirectory(const std::string& path, bool quiet)
 {
-    try
-    {
-        return fs::is_directory(path);
-    }
-    catch (const fs::filesystem_error& e)
-    {
-        if (!quiet)
-            msg_error("FileSystem::isDirectory()") << path << ": " << e.what();
-        return false;
-    }
+    std::error_code ec;
+    const bool result = fs::is_directory(path, ec);
+    if (ec && !quiet)
+        msg_error("FileSystem::isDirectory()") << path << ": " << ec.message();
+    return result;
 }
 
 bool FileSystem::isFile(const std::string &path, bool quiet)
 {
-    try
-    {
-        return fs::is_regular_file(path);
-    }
-    catch (const fs::filesystem_error& e)
-    {
-        if (!quiet)
-            msg_error("FileSystem::isFile()") << path << ": " << e.what();
-        return false;
-    }
+    std::error_code ec;
+    const bool result = fs::is_regular_file(path, ec);
+    if (ec && !quiet)
+        msg_error("FileSystem::isFile()") << path << ": " << ec.message();
+    return result;
 }
 
 bool FileSystem::isAbsolute(const std::string& path)
@@ -343,92 +328,101 @@ bool FileSystem::listDirectory(const std::string& directoryPath,
                                std::vector<std::string>& outputFilenames,
                                const std::string& extension)
 {
-    try
+    std::error_code ec;
+    fs::directory_iterator it(directoryPath, ec);
+    if (ec)
     {
-        for (const auto& entry : fs::directory_iterator(directoryPath))
-        {
-            if (entry.is_regular_file())
-            {
-                const std::string filename = entry.path().filename().string();
-                if (filename.size() >= extension.size())
-                {
-                    const std::string fileExt = entry.path().extension().string();
-                    if (fileExt == extension || (extension.size() > 0 && fileExt.size() > 0 && fileExt.substr(1) == extension))
-                        outputFilenames.push_back(filename);
-                }
-            }
-        }
-        return false;
-    }
-    catch (const fs::filesystem_error& e)
-    {
-        msg_error("FileSystem::listDirectory()") << directoryPath << ": " << e.what();
+        msg_error("FileSystem::listDirectory()") << directoryPath << ": " << ec.message();
         return true;
     }
+    for (; it != fs::directory_iterator(); it.increment(ec))
+    {
+        if (ec)
+        {
+            msg_error("FileSystem::listDirectory()") << directoryPath << ": " << ec.message();
+            return true;
+        }
+        if (it->is_regular_file(ec))
+        {
+            const std::string filename = it->path().filename().string();
+            if (filename.size() >= extension.size())
+            {
+                const std::string fileExt = it->path().extension().string();
+                if (fileExt == extension || (extension.size() > 0 && fileExt.size() > 0 && fileExt.substr(1) == extension))
+                    outputFilenames.push_back(filename);
+            }
+        }
+    }
+    return false;
 }
 
 int FileSystem::findFiles(const std::string& directoryPath,
                           std::vector<std::string>& outputFilePaths,
                           const std::string& extension, const int depth)
 {
-    try
+    std::error_code ec;
+    fs::directory_iterator it(directoryPath, ec);
+    if (ec)
     {
-        for (const auto& entry : fs::directory_iterator(directoryPath))
-        {
-            const std::string filepath = entry.path().string();
-            
-            if (entry.is_directory() && entry.path().filename().string()[0] != '.' && depth > 0)
-            {
-                if (findFiles(filepath, outputFilePaths, extension, depth - 1) == -1)
-                    return -1;
-            }
-            else if (entry.is_regular_file())
-            {
-                const std::string filename = entry.path().filename().string();
-                if (filename.length() >= extension.length() &&
-                    filename.compare(filename.length() - extension.length(), extension.length(), extension) == 0)
-                {
-                    outputFilePaths.push_back(filepath);
-                }
-            }
-        }
-        return static_cast<int>(outputFilePaths.size());
-    }
-    catch (const fs::filesystem_error& e)
-    {
-        msg_error("FileSystem::findFiles()") << directoryPath << ": " << e.what();
+        msg_error("FileSystem::findFiles()") << directoryPath << ": " << ec.message();
         return -1;
     }
+    for (; it != fs::directory_iterator(); it.increment(ec))
+    {
+        if (ec)
+        {
+            msg_error("FileSystem::findFiles()") << directoryPath << ": " << ec.message();
+            return -1;
+        }
+        const std::string filepath = it->path().string();
+
+        if (it->is_directory(ec) && it->path().filename().string()[0] != '.' && depth > 0)
+        {
+            if (findFiles(filepath, outputFilePaths, extension, depth - 1) == -1)
+                return -1;
+        }
+        else if (it->is_regular_file(ec))
+        {
+            const std::string filename = it->path().filename().string();
+            if (filename.length() >= extension.length() &&
+                filename.compare(filename.length() - extension.length(), extension.length(), extension) == 0)
+            {
+                outputFilePaths.push_back(filepath);
+            }
+        }
+    }
+    return static_cast<int>(outputFilePaths.size());
 }
 
 void FileSystem::ensureFolderExists(const std::string& pathToFolder)
 {
-    try
+    std::error_code ec;
+    if (!fs::exists(pathToFolder, ec))
     {
-        if (!fs::exists(pathToFolder))
+        if (ec)
         {
-            fs::create_directories(pathToFolder);
+            msg_error("FileSystem::ensureFolderExists()") << pathToFolder << ": " << ec.message();
+            return;
         }
-    }
-    catch (const fs::filesystem_error& e)
-    {
-        msg_error("FileSystem::ensureFolderExists()") << pathToFolder << ": " << e.what();
+        fs::create_directories(pathToFolder, ec);
+        if (ec)
+        {
+            msg_error("FileSystem::ensureFolderExists()") << pathToFolder << ": " << ec.message();
+        }
     }
 }
 
 void FileSystem::ensureFolderForFileExists(const std::string& pathToFile)
 {
-    try
+    fs::path p(pathToFile);
+    if (p.has_parent_path())
     {
-        fs::path p(pathToFile);
-        if (p.has_parent_path())
+        std::error_code ec;
+        fs::create_directories(p.parent_path(), ec);
+        if (ec)
         {
-            fs::create_directories(p.parent_path());
+            msg_error("FileSystem::ensureFolderForFileExists()") << pathToFile << ": " << ec.message();
         }
-    }
-    catch (const fs::filesystem_error& e)
-    {
-        msg_error("FileSystem::ensureFolderForFileExists()") << pathToFile << ": " << e.what();
     }
 }
 
@@ -460,7 +454,8 @@ bool FileSystem::openFileWithDefaultApplication(const std::string& filename)
 
     if (!filename.empty())
     {
-        if (!fs::exists(filename))
+        std::error_code ec;
+        if (!fs::exists(filename, ec) || ec)
         {
             msg_error("FileSystem::openFileWithDefaultApplication()") << "File does not exist: " << filename;
             return success;
