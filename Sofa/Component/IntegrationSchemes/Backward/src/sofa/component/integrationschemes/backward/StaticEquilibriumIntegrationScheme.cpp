@@ -46,9 +46,9 @@ void StaticEquilibriumIntegrationScheme::doSetupIntegrationStep(const core::Exec
 /**
  * Compute the system matrix.
  */
-void StaticEquilibriumIntegrationScheme::computeLHS(unsigned iteration)
+void StaticEquilibriumIntegrationScheme::computeLHS(bool firstIteration)
 {
-    SOFA_UNUSED(iteration);
+    SOFA_UNUSED(firstIteration);
 
     sofa::simulation::common::VectorOperations vop( m_params, this->getContext() );
     sofa::simulation::common::MechanicalOperations mop( m_params, this->getContext() );
@@ -68,7 +68,7 @@ void StaticEquilibriumIntegrationScheme::computeLHS(unsigned iteration)
 /**
 * compute the current RHS.
 */
-void StaticEquilibriumIntegrationScheme::computeRHS(unsigned iteration)
+void StaticEquilibriumIntegrationScheme::computeRHS(bool firstIteration)
 {
     sofa::simulation::common::VectorOperations vop( m_params, this->getContext() );
     sofa::simulation::common::MechanicalOperations mop( m_params, this->getContext() );
@@ -119,7 +119,7 @@ void StaticEquilibriumIntegrationScheme::solveLinearEquation()
  * guess. It computes x^{i+1} += alpha * dx, where dx is the result of the linear system. It is
  * not necessary to share the result with the Newton-Raphson method.
  */
-void StaticEquilibriumIntegrationScheme::updateStatesFromLinearSolution(SReal alpha, unsigned iteration)
+void StaticEquilibriumIntegrationScheme::updateStatesFromLinearSolution(SReal alpha, bool firstIteration)
 {
     sofa::simulation::common::VectorOperations vop( m_params, this->getContext() );
     sofa::simulation::common::MechanicalOperations mop( m_params, this->getContext() );
