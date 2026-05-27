@@ -45,12 +45,12 @@ EulerImplicitIntegrationScheme::EulerImplicitIntegrationScheme()
 
 SReal EulerImplicitIntegrationScheme::getPositionUpdateDerivedFromVelocity() const
 {
-    return m_dt;
+    return d_trapezoidalScheme.getValue() ? m_dt/2.0 : m_dt ;
 }
 
 SReal EulerImplicitIntegrationScheme::getInverseVelocityUpdateDerivedFromVelocity() const
 {
-    return 1/m_dt;
+    return 1.0/m_dt;
 }
 
 //Compute the error made on the position integration equation : x_{t+h} - g_x(v), with v the current estimate of velocity
@@ -58,7 +58,16 @@ void EulerImplicitIntegrationScheme::computeCurrentPositionIntegrationError(sofa
 {
     sofa::core::behavior::MultiVecDeriv res(&vop, result );
     res.eq(position,m_x0[0],  -1);
-    res.peq(velocity, -m_dt);
+
+    if ( d_trapezoidalScheme.getValue())
+    {
+        res.peq(m_v0[0], -m_dt/2.0);
+        res.peq(velocity, -m_dt/2.0);
+    }
+    else
+    {
+        res.peq(velocity, -m_dt);
+    }
 }
 
 //Compute the acceleration from current value of velocity. This is the implementation of the inverse integration scheme for the velocity
