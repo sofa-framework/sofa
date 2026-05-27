@@ -101,6 +101,7 @@ protected:
 
     Data<SReal> d_rayleighStiffness; ///< Rayleigh damping coefficient related to stiffness, > 0
     Data<SReal> d_rayleighMass; ///< Rayleigh damping coefficient related to mass, > 0
+    Data<bool> d_firstOrder;
 
 
     const core::ExecParams* m_params;
