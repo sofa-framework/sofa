@@ -120,7 +120,7 @@ protected:
     //Compute the acceleration from current value of velocity. This is the implementation of the inverse integration scheme for the velocity
     virtual void computeAccelerationFromVelocity(sofa::simulation::common::VectorOperations & vop, sofa::core::MultiVecDerivId& result, const sofa::core::MultiVecDerivId& velocity);
 
-    virtual Size getIntegrationSchemeOrder() const override
+    virtual Size getIntegrationSchemeTimeOrder() const override
     {
         return 1;
     }

@@ -77,7 +77,7 @@ public:
 
 protected:
 
-    virtual sofa::Size getIntegrationSchemeOrder() const = 0;
+    virtual sofa::Size getIntegrationSchemeTimeOrder() const = 0;
 
 
     virtual SReal getPositionUpdateDerivedFromAcceleration() const = 0;

@@ -45,7 +45,7 @@ void AccelerationBasedImplicitIntegrationScheme::doSetupIntegrationStep(const co
     simulation::common::VectorOperations::realloc(*m_vop, m_unknown, "da", this, true);
 
     // Deal with higher order integration scheme
-    const Size order = getIntegrationSchemeOrder();
+    const Size order = getIntegrationSchemeTimeOrder();
 
     m_x0.resize(order);
     m_v0.resize(order);
