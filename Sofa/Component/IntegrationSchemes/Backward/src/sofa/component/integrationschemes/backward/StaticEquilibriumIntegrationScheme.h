@@ -78,7 +78,7 @@ public:
 
 protected:
 
-    virtual sofa::Size getIntegrationSchemeOrder() const;
+    virtual sofa::Size getIntegrationSchemeTimeOrder() const;
 
 };
 

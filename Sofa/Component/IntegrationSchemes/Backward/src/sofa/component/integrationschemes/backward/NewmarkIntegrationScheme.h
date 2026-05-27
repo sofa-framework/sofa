@@ -56,7 +56,7 @@ protected:
     //Compute the error made on the position integration equation : v_{t+h} - g_v(a), with a the current estimate of acceleration
     virtual void computeCurrentVelocityIntegrationError(sofa::simulation::common::VectorOperations & vop, const sofa::core::MultiVecDerivId& result, const sofa::core::MultiVecDerivId& acceleration) ;
 
-    virtual Size getIntegrationSchemeOrder() const override
+    virtual Size getIntegrationSchemeTimeOrder() const override
     {
         return 1;
     }

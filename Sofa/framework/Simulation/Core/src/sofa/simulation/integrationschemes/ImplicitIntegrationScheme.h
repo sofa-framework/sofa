@@ -97,7 +97,7 @@ public:
 
 protected:
 
-    virtual sofa::Size getIntegrationSchemeOrder() const = 0;
+    virtual sofa::Size getIntegrationSchemeTimeOrder() const = 0;
 
     Data<SReal> d_rayleighStiffness; ///< Rayleigh damping coefficient related to stiffness, > 0
     Data<SReal> d_rayleighMass; ///< Rayleigh damping coefficient related to mass, > 0
