@@ -142,7 +142,7 @@ SReal StaticEquilibriumIntegrationScheme::getPositionIntegrationFactor() const
     return 1.0;
 }
 
-sofa::Size  StaticEquilibriumIntegrationScheme::getIntegrationSchemeOrder() const
+sofa::Size  StaticEquilibriumIntegrationScheme::getIntegrationSchemeTimeOrder() const
 {
     return 1;
 }
