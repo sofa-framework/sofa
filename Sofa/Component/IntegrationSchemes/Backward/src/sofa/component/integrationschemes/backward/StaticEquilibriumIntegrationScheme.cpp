@@ -38,9 +38,7 @@ namespace sofa::component::integrationschemes::backward
 {
 void StaticEquilibriumIntegrationScheme::doSetupIntegrationStep(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
 {
-    sofa::simulation::common::VectorOperations vop( m_params, this->getContext() );
-
-    simulation::common::VectorOperations::realloc(vop, m_unknown, "dx", this, true);
+    simulation::common::VectorOperations::realloc(*m_vop, m_unknown, "dx", this, true);
 }
 
 /**
@@ -50,9 +48,6 @@ void StaticEquilibriumIntegrationScheme::computeLHS(bool firstIteration)
 {
     SOFA_UNUSED(firstIteration);
 
-    sofa::simulation::common::VectorOperations vop( m_params, this->getContext() );
-    sofa::simulation::common::MechanicalOperations mop( m_params, this->getContext() );
-
     {
 
         SCOPED_TIMER("setSystemMBKMatrix");
@@ -60,7 +55,7 @@ void StaticEquilibriumIntegrationScheme::computeLHS(bool firstIteration)
         const core::MatricesFactors::B bFact( 0 );
         const core::MatricesFactors::K kFact( -1.0 );
 
-        mop.setSystemMBKMatrix(mFact, bFact, kFact, l_linearSolver.get());
+        m_mop->setSystemMBKMatrix(mFact, bFact, kFact, l_linearSolver.get());
     }
 
 }
@@ -70,19 +65,17 @@ void StaticEquilibriumIntegrationScheme::computeLHS(bool firstIteration)
 */
 void StaticEquilibriumIntegrationScheme::computeRHS(bool firstIteration)
 {
-    sofa::simulation::common::VectorOperations vop( m_params, this->getContext() );
-    sofa::simulation::common::MechanicalOperations mop( m_params, this->getContext() );
-    sofa::core::behavior::MultiVecDeriv f(&vop, core::vec_id::write_access::force );
+    sofa::core::behavior::MultiVecDeriv f(m_vop.get(), core::vec_id::write_access::force );
     f.clear();
 
     {
         //TODO deal with that.
         SCOPED_TIMER("ComputeForce");
-        mop->setImplicit(true); // this solver is implicit
+        m_mop->mparams.setImplicit(true); // this solver is implicit
         // compute the net forces at the beginning of the time step
-        mop.computeForce(f);                                                               //f = Kx + Bv
+        m_mop->computeForce(f);                                                               //f = Kx + Bv
 
-        mop.projectResponse(f);   // b is projected to the constrained space
+        m_mop->projectResponse(f);   // b is projected to the constrained space
     }
 
 }
@@ -93,9 +86,7 @@ void StaticEquilibriumIntegrationScheme::computeRHS(bool firstIteration)
  */
 SReal StaticEquilibriumIntegrationScheme::squaredNormRHS()
 {
-    sofa::simulation::common::VectorOperations vop( m_params, this->getContext() );
-
-    core::behavior::MultiVecDeriv r0(&vop, core::vec_id::write_access::force);
+    core::behavior::MultiVecDeriv r0(m_vop.get(), core::vec_id::write_access::force);
 
     return r0.dot(r0);
 }
@@ -121,10 +112,7 @@ void StaticEquilibriumIntegrationScheme::solveLinearEquation()
  */
 void StaticEquilibriumIntegrationScheme::updateStatesFromLinearSolution(SReal alpha, bool firstIteration)
 {
-    sofa::simulation::common::VectorOperations vop( m_params, this->getContext() );
-    sofa::simulation::common::MechanicalOperations mop( m_params, this->getContext() );
-
-    sofa::core::behavior::MultiVecCoord pos(&vop, m_xResult);
+    sofa::core::behavior::MultiVecCoord pos(m_vop.get(), m_xResult);
 
     pos.peq(m_unknown, alpha );
 }
