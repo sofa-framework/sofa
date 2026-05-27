@@ -35,6 +35,7 @@ namespace sofa::simulation::integrationschemes
 ImplicitIntegrationScheme::ImplicitIntegrationScheme()
 : d_rayleighStiffness(initData(&d_rayleighStiffness, 0.0_sreal, "rayleighStiffness", "Rayleigh damping coefficient related to stiffness, > 0") )
 , d_rayleighMass(initData(&d_rayleighMass, 0.0_sreal, "rayleighMass", "Rayleigh damping coefficient related to mass, > 0"))
+, d_firstOrder(initData(&d_firstOrder, false, "firstOrder", "If true the coordinates derivative will not be integrated and considered null at the beginning of the solving."))
 , m_vop(nullptr)
 , m_mop(nullptr)
 {
