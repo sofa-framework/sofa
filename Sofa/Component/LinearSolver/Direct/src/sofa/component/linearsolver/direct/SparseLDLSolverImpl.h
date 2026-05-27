@@ -23,7 +23,7 @@
 #include <sofa/component/linearsolver/direct/config.h>
 
 #include <sofa/helper/ScopedAdvancedTimer.h>
-#include <sofa/component/linearsolver/iterative/MatrixLinearSolver.h>
+#include <sofa/component/linearsolver/iterative/MatrixLinearSolver.inl>
 #include <sofa/component/linearsolver/direct/SparseCommon.h>
 #include <sofa/helper/OptionsGroup.h>
 #include <sofa/linearalgebra/DiagonalSystemSolver.h>
