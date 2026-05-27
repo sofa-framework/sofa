@@ -37,7 +37,7 @@ namespace sofa::component::linearsolver::iterative
 template<class TMatrix, class TVector>
 PCGLinearSolver<TMatrix,TVector>::PCGLinearSolver()
     : d_maxIter(initData(&d_maxIter, 25u, "iterations", "Maximum number of iterations after which the iterative descent of the Conjugate Gradient must stop") )
-    , d_tolerance(initData(&d_tolerance, 1e-5, "tolerance", "Desired accuracy of the Conjugate Gradient solution evaluating: |r|²/|b|² (ratio of current residual norm over initial residual norm)") )
+    , d_tolerance(initData(&d_tolerance, 1e-5_sreal, "tolerance", "Desired accuracy of the Conjugate Gradient solution evaluating: |r|²/|b|² (ratio of current residual norm over initial residual norm)") )
     , d_use_precond(initData(&d_use_precond, true, "use_precond", "Use a preconditioner") )
     , l_preconditioner(initLink("preconditioner", "Link towards the linear solver used to precondition the conjugate gradient"))
     , d_update_step(this, "v25.12", "v26.06", "update_step", "Instead, use the Data 'assemblingRate' in the associated PreconditionedMatrixFreeSystem")

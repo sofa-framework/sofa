@@ -75,7 +75,7 @@ public:
     static void draw ( const T& text, const type::Vec3& position = type::Vec3(0.0,0.0,0.0), const double& scale = 1.0);
 
     static void textureDraw_Overlay(const char* text, const double scale = 1.0);
-    static void textureDraw_Indices(const type::vector<type::Vec3>& positions, const float& scale);
+    static void textureDraw_Indices(const type::vector<type::Vec3>& positions, const float& scale, bool enableDepthTest = true);
 
 private:
     static void initTexture();

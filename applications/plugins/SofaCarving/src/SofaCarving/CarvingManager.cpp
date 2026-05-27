@@ -36,6 +36,7 @@
 
 namespace sofacarving
 {
+    
 
 void registerCarvingManager(sofa::core::ObjectFactory* factory)
 {
@@ -51,9 +52,6 @@ CarvingManager::CarvingManager()
     , d_active( initData(&d_active, false, "active", "Activate this object.\nNote that this can be dynamically controlled by using a key") )
     , d_keyEvent( initData(&d_keyEvent, '1', "key", "key to press to activate this object until the key is released") )
     , d_keySwitchEvent( initData(&d_keySwitchEvent, '4', "keySwitch", "key to activate this object until the key is pressed again") )
-    , d_mouseEvent( initData(&d_mouseEvent, true, "mouseEvent", "Activate carving with middle mouse button") )
-    , d_omniEvent( initData(&d_omniEvent, true, "omniEvent", "Activate carving with omni button") )
-    , d_activatorName(initData(&d_activatorName, "button1", "activatorName", "Name to active the script event parsing. Will look for 'pressed' or 'release' keyword. For example: 'button1_pressed'"))
 {
     this->f_listening.setValue(true);
 }
@@ -201,7 +199,7 @@ void CarvingManager::handleEvent(sofa::core::objectmodel::Event* event)
             d_active.setValue(!d_active.getValue());
         }
     }
-    else if(sofa::core::objectmodel::KeyreleasedEvent::checkEventType(event))
+    else if (sofa::core::objectmodel::KeyreleasedEvent::checkEventType(event))
     {
         sofa::core::objectmodel::KeyreleasedEvent* ev = dynamic_cast<sofa::core::objectmodel::KeyreleasedEvent*>(event);
         if (ev->getKey() == d_keyEvent.getValue())
@@ -209,51 +207,15 @@ void CarvingManager::handleEvent(sofa::core::objectmodel::Event* event)
             d_active.setValue(false);
         }
     }
-    else if(sofa::core::objectmodel::MouseEvent::checkEventType(event))
-    {
-        sofa::core::objectmodel::MouseEvent * ev = dynamic_cast<sofa::core::objectmodel::MouseEvent*>(event);
-        if ((ev->getState() == sofa::core::objectmodel::MouseEvent::MiddlePressed) && (d_mouseEvent.getValue()))
-        {
-            d_active.setValue(true);
-        }
-        else if ((ev->getState() == sofa::core::objectmodel::MouseEvent::MiddleReleased) && (d_mouseEvent.getValue()))
-        {
-            d_active.setValue(false);
-        }
-    }
-    else if(sofa::core::objectmodel::HapticDeviceEvent::checkEventType(event))
-    {
-        sofa::core::objectmodel::HapticDeviceEvent * ev = dynamic_cast<sofa::core::objectmodel::HapticDeviceEvent *>(event);
-        if (ev->getButtonState() == 1)
-        {
-            d_active.setValue(true);
-        }
-        else if (ev->getButtonState() == 0)
-        {
-            d_active.setValue(false);
-        }
-    }
-    else if(sofa::core::objectmodel::ScriptEvent::checkEventType(event))
-    {
-        sofa::core::objectmodel::ScriptEvent *ev = dynamic_cast<sofa::core::objectmodel::ScriptEvent *>(event);
-        const std::string& eventS = ev->getEventName();
-        if (eventS.find(d_activatorName.getValue()) != std::string::npos && eventS.find("pressed") != std::string::npos)
-        {
-            d_active.setValue(true);
-        }
-
-        if (eventS.find(d_activatorName.getValue()) != std::string::npos && eventS.find("released") != std::string::npos)
-        {
-            d_active.setValue(false);
-        }
-    }
     else if (sofa::simulation::AnimateEndEvent::checkEventType(event))
     {
-        if (d_active.getValue())
+        if (d_active.getValue()) 
         {
             doCarve();
         }
     }
+
+
 }
 
 } // namespace sofacarving
