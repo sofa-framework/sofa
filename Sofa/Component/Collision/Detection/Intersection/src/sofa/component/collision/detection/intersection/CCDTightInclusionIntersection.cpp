@@ -62,7 +62,7 @@ CCDTightInclusionIntersection::CCDTightInclusionIntersection()
 : BaseProximityIntersection()
 , d_continuousCollisionType(initData(&d_continuousCollisionType, helper::OptionsGroup({"None", "Inertia", "FreeMotion"}).setSelectedItem(0), "continuousCollisionType",
     "Data used for continuous collision detection taken into {'None','Inertia','FreeMotion'}. If 'None' then no CCD is used, if 'Inertia' then only inertia will be used to compute the collision detection and if 'FreeMotion' then the free motion will be used. Note that if 'FreeMotion' is selected, you cannot use the option 'parallelCollisionDetectionAndFreeMotion' in the FreeMotionAnimationLoop"))
-, d_tolerance(initData(&d_tolerance,1e-10,"tolerance","tolerance used by the tight inclusion CCD algorithm"))
+, d_tolerance(initData(&d_tolerance, 1e-10_sreal,"tolerance","tolerance used by the tight inclusion CCD algorithm"))
 , d_maxIterations(initData(&d_maxIterations,(long) 1000,"maxIterations","maxIterations used by the tight inclusion CCD algorithm"))
 {
 
@@ -132,18 +132,18 @@ bool CCDTightInclusionIntersection::testIntersection(Line& e1, Line& e2, const c
     }
 
 
-    const Eigen::Map<Eigen::Vector3<SReal>> Line1ABegin(const_cast<double*>(e1.p1().elems.data()));
-    const Eigen::Map<Eigen::Vector3<SReal>> Line1AEnd(const_cast<double*>(e1.p1Free().elems.data()));
-    const Eigen::Map<Eigen::Vector3<SReal>> Line1BBegin(const_cast<double*>(e1.p2().elems.data()));
-    const Eigen::Map<Eigen::Vector3<SReal>> Line1BEnd(const_cast<double*>(e1.p2Free().elems.data()));
+    const Eigen::Map<Eigen::Vector3<SReal>> Line1ABegin(const_cast<SReal*>(e1.p1().elems.data()));
+    const Eigen::Map<Eigen::Vector3<SReal>> Line1AEnd(const_cast<SReal*>(e1.p1Free().elems.data()));
+    const Eigen::Map<Eigen::Vector3<SReal>> Line1BBegin(const_cast<SReal*>(e1.p2().elems.data()));
+    const Eigen::Map<Eigen::Vector3<SReal>> Line1BEnd(const_cast<SReal*>(e1.p2Free().elems.data()));
 
-    const Eigen::Map<Eigen::Vector3<SReal>> Line2ABegin(const_cast<double*>(e2.p1().elems.data()));
-    const Eigen::Map<Eigen::Vector3<SReal>> Line2AEnd(const_cast<double*>(e2.p1Free().elems.data()));
-    const Eigen::Map<Eigen::Vector3<SReal>> Line2BBegin(const_cast<double*>(e2.p2().elems.data()));
-    const Eigen::Map<Eigen::Vector3<SReal>> Line2BEnd(const_cast<double*>(e2.p2Free().elems.data()));
+    const Eigen::Map<Eigen::Vector3<SReal>> Line2ABegin(const_cast<SReal*>(e2.p1().elems.data()));
+    const Eigen::Map<Eigen::Vector3<SReal>> Line2AEnd(const_cast<SReal*>(e2.p1Free().elems.data()));
+    const Eigen::Map<Eigen::Vector3<SReal>> Line2BBegin(const_cast<SReal*>(e2.p2().elems.data()));
+    const Eigen::Map<Eigen::Vector3<SReal>> Line2BEnd(const_cast<SReal*>(e2.p2Free().elems.data()));
 
 
-    const Eigen::Vector3d err {-1.0, -1.0, -1.0};
+    const Eigen::Vector3<SReal> err {-1.0_sreal, -1.0_sreal, -1.0_sreal};
     const double maxSeparation = currentIntersection->getContactDistance() + e1.getContactDistance() + e2.getContactDistance(); // 0.00001
     SReal toi = 2.0;
     const SReal tmax = 1.0;
@@ -166,18 +166,18 @@ int CCDTightInclusionIntersection::computeIntersection(Line& e1, Line& e2, Outpu
         return 0;
     }
 
-    const Eigen::Map<Eigen::Vector3<SReal>> Line1ABegin(const_cast<double*>(e1.p1().elems.data()));
-    const Eigen::Map<Eigen::Vector3<SReal>> Line1AEnd(const_cast<double*>(e1.p1Free().elems.data()));
-    const Eigen::Map<Eigen::Vector3<SReal>> Line1BBegin(const_cast<double*>(e1.p2().elems.data()));
-    const Eigen::Map<Eigen::Vector3<SReal>> Line1BEnd(const_cast<double*>(e1.p2Free().elems.data()));
+    const Eigen::Map<Eigen::Vector3<SReal>> Line1ABegin(const_cast<SReal*>(e1.p1().elems.data()));
+    const Eigen::Map<Eigen::Vector3<SReal>> Line1AEnd(const_cast<SReal*>(e1.p1Free().elems.data()));
+    const Eigen::Map<Eigen::Vector3<SReal>> Line1BBegin(const_cast<SReal*>(e1.p2().elems.data()));
+    const Eigen::Map<Eigen::Vector3<SReal>> Line1BEnd(const_cast<SReal*>(e1.p2Free().elems.data()));
 
-    const Eigen::Map<Eigen::Vector3<SReal>> Line2ABegin(const_cast<double*>(e2.p1().elems.data()));
-    const Eigen::Map<Eigen::Vector3<SReal>> Line2AEnd(const_cast<double*>(e2.p1Free().elems.data()));
-    const Eigen::Map<Eigen::Vector3<SReal>> Line2BBegin(const_cast<double*>(e2.p2().elems.data()));
-    const Eigen::Map<Eigen::Vector3<SReal>> Line2BEnd(const_cast<double*>(e2.p2Free().elems.data()));
+    const Eigen::Map<Eigen::Vector3<SReal>> Line2ABegin(const_cast<SReal*>(e2.p1().elems.data()));
+    const Eigen::Map<Eigen::Vector3<SReal>> Line2AEnd(const_cast<SReal*>(e2.p1Free().elems.data()));
+    const Eigen::Map<Eigen::Vector3<SReal>> Line2BBegin(const_cast<SReal*>(e2.p2().elems.data()));
+    const Eigen::Map<Eigen::Vector3<SReal>> Line2BEnd(const_cast<SReal*>(e2.p2Free().elems.data()));
 
 
-    const Eigen::Vector3d err {-1.0, -1.0, -1.0};
+    const Eigen::Vector3<SReal> err {-1.0, -1.0, -1.0};
     const auto maxSeparation = currentIntersection->getContactDistance() + e1.getContactDistance() + e2.getContactDistance(); // 0.00001
     SReal toi = 2.0;
     const SReal tmax = 1.0;
@@ -220,18 +220,18 @@ bool CCDTightInclusionIntersection::testIntersection(Triangle& triangle, Point& 
     }
 
 
-    const Eigen::Map<Eigen::Vector3<SReal>> TriangleABegin(const_cast<double*>(triangle.p1().elems.data()));
-    const Eigen::Map<Eigen::Vector3<SReal>> TriangleAEnd(const_cast<double*>(triangle.p1Free().elems.data()));
-    const Eigen::Map<Eigen::Vector3<SReal>> TriangleBBegin(const_cast<double*>(triangle.p2().elems.data()));
-    const Eigen::Map<Eigen::Vector3<SReal>> TriangleBEnd(const_cast<double*>(triangle.p2Free().elems.data()));
-    const Eigen::Map<Eigen::Vector3<SReal>> TriangleCBegin(const_cast<double*>(triangle.p3().elems.data()));
-    const Eigen::Map<Eigen::Vector3<SReal>> TriangleCEnd(const_cast<double*>(triangle.p3Free().elems.data()));
+    const Eigen::Map<Eigen::Vector3<SReal>> TriangleABegin(const_cast<SReal*>(triangle.p1().elems.data()));
+    const Eigen::Map<Eigen::Vector3<SReal>> TriangleAEnd(const_cast<SReal*>(triangle.p1Free().elems.data()));
+    const Eigen::Map<Eigen::Vector3<SReal>> TriangleBBegin(const_cast<SReal*>(triangle.p2().elems.data()));
+    const Eigen::Map<Eigen::Vector3<SReal>> TriangleBEnd(const_cast<SReal*>(triangle.p2Free().elems.data()));
+    const Eigen::Map<Eigen::Vector3<SReal>> TriangleCBegin(const_cast<SReal*>(triangle.p3().elems.data()));
+    const Eigen::Map<Eigen::Vector3<SReal>> TriangleCEnd(const_cast<SReal*>(triangle.p3Free().elems.data()));
 
-    const Eigen::Map<Eigen::Vector3<SReal>> PointBegin(const_cast<double*>(point.p().elems.data()));
-    const Eigen::Map<Eigen::Vector3<SReal>> PointEnd(const_cast<double*>(point.pFree().elems.data()));
+    const Eigen::Map<Eigen::Vector3<SReal>> PointBegin(const_cast<SReal*>(point.p().elems.data()));
+    const Eigen::Map<Eigen::Vector3<SReal>> PointEnd(const_cast<SReal*>(point.pFree().elems.data()));
 
 
-    const Eigen::Vector3d err {-1.0, -1.0, -1.0};
+    const Eigen::Vector3<SReal> err {-1.0, -1.0, -1.0};
     const double maxSeparation = currentIntersection->getContactDistance() + triangle.getContactDistance() + point.getContactDistance(); // 0.00001
     SReal toi = 2.0;
     const SReal tmax = 1.0;
@@ -254,17 +254,17 @@ int CCDTightInclusionIntersection::computeIntersection(Triangle& triangle, Point
             <<" not activated" ;
         return 0;
     }
-    const Eigen::Map<Eigen::Vector3<SReal>> TriangleABegin(const_cast<double*>(triangle.p1().elems.data()));
-    const Eigen::Map<Eigen::Vector3<SReal>> TriangleAEnd(const_cast<double*>(triangle.p1Free().elems.data()));
-    const Eigen::Map<Eigen::Vector3<SReal>> TriangleBBegin(const_cast<double*>(triangle.p2().elems.data()));
-    const Eigen::Map<Eigen::Vector3<SReal>> TriangleBEnd(const_cast<double*>(triangle.p2Free().elems.data()));
-    const Eigen::Map<Eigen::Vector3<SReal>> TriangleCBegin(const_cast<double*>(triangle.p3().elems.data()));
-    const Eigen::Map<Eigen::Vector3<SReal>> TriangleCEnd(const_cast<double*>(triangle.p3Free().elems.data()));
+    const Eigen::Map<Eigen::Vector3<SReal>> TriangleABegin(const_cast<SReal*>(triangle.p1().elems.data()));
+    const Eigen::Map<Eigen::Vector3<SReal>> TriangleAEnd(const_cast<SReal*>(triangle.p1Free().elems.data()));
+    const Eigen::Map<Eigen::Vector3<SReal>> TriangleBBegin(const_cast<SReal*>(triangle.p2().elems.data()));
+    const Eigen::Map<Eigen::Vector3<SReal>> TriangleBEnd(const_cast<SReal*>(triangle.p2Free().elems.data()));
+    const Eigen::Map<Eigen::Vector3<SReal>> TriangleCBegin(const_cast<SReal*>(triangle.p3().elems.data()));
+    const Eigen::Map<Eigen::Vector3<SReal>> TriangleCEnd(const_cast<SReal*>(triangle.p3Free().elems.data()));
 
-    const Eigen::Map<Eigen::Vector3<SReal>> PointBegin(const_cast<double*>(point.p().elems.data()));
-    const Eigen::Map<Eigen::Vector3<SReal>> PointEnd(const_cast<double*>(point.pFree().elems.data()));
+    const Eigen::Map<Eigen::Vector3<SReal>> PointBegin(const_cast<SReal*>(point.p().elems.data()));
+    const Eigen::Map<Eigen::Vector3<SReal>> PointEnd(const_cast<SReal*>(point.pFree().elems.data()));
 
-    const Eigen::Vector3d err {-1.0, -1.0, -1.0};
+    const Eigen::Vector3<SReal> err {-1.0, -1.0, -1.0};
     const double maxSeparation = currentIntersection->getContactDistance() + triangle.getContactDistance() + point.getContactDistance(); // 0.00001
     SReal toi = std::numeric_limits<SReal>::infinity();
     const SReal tmax = 1.0;
