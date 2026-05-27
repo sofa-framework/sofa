@@ -57,7 +57,7 @@ public:
     virtual void computeAccelerationFromVelocity(sofa::simulation::common::VectorOperations & vop, sofa::core::MultiVecDerivId& result, const sofa::core::MultiVecDerivId& velocity) override;
 
 protected:
-    virtual sofa::Size getIntegrationSchemeOrder() const override
+    virtual sofa::Size getIntegrationSchemeTimeOrder() const override
     {
         return d_order.getValue();
     }
