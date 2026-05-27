@@ -149,7 +149,7 @@ void AccelerationBasedImplicitIntegrationScheme::computeRHS(bool firstIteration)
 
         // This computes the explicit part of the Rayleigh damping
         if (   fabs(d_rayleighMass.getValue()) > std::numeric_limits<SReal>::epsilon()
-            || fabs(d_rayleighMass.getValue()) > std::numeric_limits<SReal>::epsilon())
+            || fabs(d_rayleighStiffness.getValue()) > std::numeric_limits<SReal>::epsilon())
         {
             m_mop->addMBKv(m_r0, core::MatricesFactors::M(-d_rayleighMass.getValue()),
             core::MatricesFactors::B(0),
