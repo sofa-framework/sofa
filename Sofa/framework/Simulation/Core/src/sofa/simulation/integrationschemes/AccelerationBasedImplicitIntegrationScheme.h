@@ -46,12 +46,12 @@ public:
     /**
      * Compute the system matrix.
      */
-    void computeLHS(unsigned iteration = 0) override;
+    void computeLHS(bool firstIteration = false) override;
 
     /**
     * compute the current RHS.
     */
-    void computeRHS(unsigned iteration = 0) override;
+    void computeRHS(bool firstIteration = false) override;
 
 
     /**
@@ -70,7 +70,7 @@ public:
      * guess. It computes x^{i+1} += alpha * dx, where dx is the result of the linear system. It is
      * not necessary to share the result with the Newton-Raphson method.
      */
-    void updateStatesFromLinearSolution(SReal alpha, unsigned iteration = 0) override;
+    void updateStatesFromLinearSolution(SReal alpha, bool firstIteration = false) override;
 
     virtual SReal getVelocityIntegrationFactor() const final;
     virtual SReal getPositionIntegrationFactor() const final;

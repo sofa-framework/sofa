@@ -32,6 +32,10 @@ using sofa::simulation::mechanicalvisitor::MechanicalGetNonDiagonalMassesCountVi
 namespace sofa::simulation::integrationschemes
 {
 
+VelocityBasedImplicitIntegrationScheme::VelocityBasedImplicitIntegrationScheme()
+: d_firstOrder(initData(&d_firstOrder, false, "firstOrder", "If true the coordinates derivative will not be integrated and considered null at the beginning of the solving."))
+{}
+
 void VelocityBasedImplicitIntegrationScheme::doSetupIntegrationStep(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
 {
 
@@ -112,9 +116,9 @@ void VelocityBasedImplicitIntegrationScheme::doSetupIntegrationStep(const core::
 /**
  * Compute the system matrix.
  */
-void VelocityBasedImplicitIntegrationScheme::computeLHS(unsigned iteration)
+void VelocityBasedImplicitIntegrationScheme::computeLHS(bool firstIteration)
 {
-    SOFA_UNUSED(iteration);
+    SOFA_UNUSED(firstIteration);
 
     // Set the factor of the left hand side taking into account the rayleigh damping
     SCOPED_TIMER("setSystemMBKMatrix");
@@ -130,7 +134,7 @@ void VelocityBasedImplicitIntegrationScheme::computeLHS(unsigned iteration)
 /**
 * compute the current RHS.
 */
-void VelocityBasedImplicitIntegrationScheme::computeRHS(unsigned iteration)
+void VelocityBasedImplicitIntegrationScheme::computeRHS(bool firstIteration)
 {
     // Make sure no one modified this
     m_mop->cparams.setX(m_xResult);
@@ -158,7 +162,7 @@ void VelocityBasedImplicitIntegrationScheme::computeRHS(unsigned iteration)
 
         // This computes the explicit part of the Rayleigh damping
         // If we are in first order, in the first iteration there is no need to add this damping
-        if ( (! d_firstOrder.getValue() || iteration != 0) && (fabs(d_rayleighMass.getValue()) > std::numeric_limits<SReal>::epsilon()
+        if ( (! d_firstOrder.getValue() || !firstIteration) && (fabs(d_rayleighMass.getValue()) > std::numeric_limits<SReal>::epsilon()
             || fabs(d_rayleighStiffness.getValue()) > std::numeric_limits<SReal>::epsilon()))
         {
             m_mop->mparams.setV(m_vResult);
@@ -171,7 +175,7 @@ void VelocityBasedImplicitIntegrationScheme::computeRHS(unsigned iteration)
         // R1 should be equal to 0 in theory when integration scheme is linear. But let's recompute
         // it anyway to compute the residue
         computeCurrentPositionIntegrationError(*m_vop, m_r1, m_xResult, m_vResult);
-        if (iteration == 0)
+        if (firstIteration)
         {
             m_mop->mparams.setV(m_r1);
             m_mop->addMBKv(m_r0, core::MatricesFactors::M(0.0),
@@ -180,7 +184,7 @@ void VelocityBasedImplicitIntegrationScheme::computeRHS(unsigned iteration)
         }
 
         // If we are in first order, in the first iteration acceleration is null
-        if (! d_firstOrder.getValue() || iteration != 0)
+        if (! d_firstOrder.getValue() || !firstIteration)
         {
             // In velocity-based IS the acceleration is not integrated but estimated using first order
             // backward finite difference on the velocity
@@ -233,7 +237,7 @@ void VelocityBasedImplicitIntegrationScheme::solveLinearEquation()
  * guess. It computes x^{i+1} += alpha * dx, where dx is the result of the linear system. It is
  * not necessary to share the result with the Newton-Raphson method.
  */
-void VelocityBasedImplicitIntegrationScheme::updateStatesFromLinearSolution(SReal alpha, unsigned iteration)
+void VelocityBasedImplicitIntegrationScheme::updateStatesFromLinearSolution(SReal alpha, bool firstIteration)
 {
     sofa::core::behavior::MultiVecCoord pos(m_vop.get(), m_xResult);
     sofa::core::behavior::MultiVecDeriv vel(m_vop.get(), m_vResult );
@@ -244,13 +248,13 @@ void VelocityBasedImplicitIntegrationScheme::updateStatesFromLinearSolution(SRea
     //TODO make this work with alpha, iteration might be still 0 but we are in the linesearch algo and we don't want to remove this each time...
     // R1 should be equal to 0, avoids computation
     // If in first order this is 0 at first iteration too
-    if (!d_firstOrder.getValue() && iteration == 0)
+    if (!d_firstOrder.getValue() && firstIteration)
     {
         //Update position w/r R1
         pos.peq(m_r1, -1.0);
     }
 
-    if (d_firstOrder.getValue() && iteration == 0)
+    if (d_firstOrder.getValue() && firstIteration)
     {
         // If we are at first iteration in first order case, we need to enforce the velocity to be 0
         vel.eq(m_unknown, alpha);

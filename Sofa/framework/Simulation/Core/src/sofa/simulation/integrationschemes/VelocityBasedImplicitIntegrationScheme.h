@@ -40,19 +40,22 @@ class SOFA_SIMULATION_CORE_API VelocityBasedImplicitIntegrationScheme :
 public:
     SOFA_ABSTRACT_CLASS(VelocityBasedImplicitIntegrationScheme, ImplicitIntegrationScheme);
 
-    VelocityBasedImplicitIntegrationScheme() = default;
+    Data<bool> d_firstOrder;
+
+
+    VelocityBasedImplicitIntegrationScheme();
 
     virtual void doSetupIntegrationStep(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult);
 
     /**
      * Compute the system matrix.
      */
-    virtual void computeLHS(unsigned iteration = 0);
+    virtual void computeLHS(bool firstIteration = false);
 
     /**
     * compute the current RHS.
     */
-    virtual void computeRHS(unsigned iteration = 0);
+    virtual void computeRHS(bool firstIteration = false);
 
 
     /**
@@ -71,12 +74,14 @@ public:
      * guess. It computes x^{i+1} += alpha * dx, where dx is the result of the linear system. It is
      * not necessary to share the result with the Newton-Raphson method.
      */
-    virtual void updateStatesFromLinearSolution(SReal alpha, unsigned iteration = 0);
+    virtual void updateStatesFromLinearSolution(SReal alpha, bool firstIteration = false);
 
     virtual SReal getVelocityIntegrationFactor() const final;
     virtual SReal getPositionIntegrationFactor() const final;
 
 protected:
+
+
     virtual sofa::Size getIntegrationSchemeOrder() const = 0;
 
     virtual SReal getPositionUpdateDerivedFromVelocity() const = 0;
