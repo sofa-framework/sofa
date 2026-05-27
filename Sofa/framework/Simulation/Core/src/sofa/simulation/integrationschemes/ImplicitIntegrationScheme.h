@@ -56,12 +56,12 @@ public:
     /**
      * Compute the system matrix.
      */
-    virtual void computeLHS(unsigned iteration = 0) = 0;
+    virtual void computeLHS(bool firstIteration = false) = 0;
 
      /**
      * compute the current RHS.
      */
-    virtual void computeRHS(unsigned iteration = 0) = 0;
+    virtual void computeRHS(bool firstIteration = false) = 0;
 
 
     /**
@@ -80,7 +80,7 @@ public:
      * guess. It computes x^{i+1} += alpha * dx, where dx is the result of the linear system. It is
      * not necessary to share the result with the Newton-Raphson method.
      */
-    virtual void updateStatesFromLinearSolution(SReal alpha, unsigned iteration = 0) = 0;
+    virtual void updateStatesFromLinearSolution(SReal alpha, bool firstIteration = false) = 0;
 
     virtual void integrate(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) final ;
 
@@ -101,7 +101,6 @@ protected:
 
     Data<SReal> d_rayleighStiffness; ///< Rayleigh damping coefficient related to stiffness, > 0
     Data<SReal> d_rayleighMass; ///< Rayleigh damping coefficient related to mass, > 0
-    Data<bool> d_firstOrder;
 
 
     const core::ExecParams* m_params;

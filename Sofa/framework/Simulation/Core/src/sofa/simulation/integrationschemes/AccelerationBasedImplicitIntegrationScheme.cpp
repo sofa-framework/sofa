@@ -101,9 +101,9 @@ void AccelerationBasedImplicitIntegrationScheme::doSetupIntegrationStep(const co
 /**
  * Compute the system matrix.
  */
-void AccelerationBasedImplicitIntegrationScheme::computeLHS(unsigned iteration)
+void AccelerationBasedImplicitIntegrationScheme::computeLHS(bool firstIteration)
 {
-    SOFA_UNUSED(iteration);
+    SOFA_UNUSED(firstIteration);
 
     // Those two factors relate the position (DGx) and the velocity (DGv) to the acceleration
     // We can think of them as the first order approximation of the IS in term of acceleration
@@ -122,7 +122,7 @@ void AccelerationBasedImplicitIntegrationScheme::computeLHS(unsigned iteration)
 /**
 * compute the current RHS.
 */
-void AccelerationBasedImplicitIntegrationScheme::computeRHS(unsigned iteration)
+void AccelerationBasedImplicitIntegrationScheme::computeRHS(bool firstIteration)
 {
 
     // Make sure no one modified this
@@ -165,7 +165,7 @@ void AccelerationBasedImplicitIntegrationScheme::computeRHS(unsigned iteration)
         computeCurrentPositionIntegrationError (*m_vop, m_r1, core::vec_id::write_access::velocity, m_acceleration);
         computeCurrentVelocityIntegrationError (*m_vop, m_r2, m_acceleration);
 
-        if (iteration == 0)
+        if (firstIteration)
         {
             m_mop->mparams.setV(m_r1);
             m_mop->addMBKv(m_r0, core::MatricesFactors::M(0.0),
@@ -224,7 +224,7 @@ void AccelerationBasedImplicitIntegrationScheme::solveLinearEquation()
  * guess. It computes x^{i+1} += alpha * dx, where dx is the result of the linear system. It is
  * not necessary to share the result with the Newton-Raphson method.
  */
-void AccelerationBasedImplicitIntegrationScheme::updateStatesFromLinearSolution(SReal alpha, unsigned iteration)
+void AccelerationBasedImplicitIntegrationScheme::updateStatesFromLinearSolution(SReal alpha, bool firstIteration)
 {
     sofa::core::behavior::MultiVecCoord pos(m_vop.get(), m_xResult);
     sofa::core::behavior::MultiVecDeriv vel(m_vop.get(), m_vResult );
@@ -242,7 +242,7 @@ void AccelerationBasedImplicitIntegrationScheme::updateStatesFromLinearSolution(
     pos.peq(m_unknown, alpha * DGx);
 
     //TODO make this work with alpha, iteration might be still 0 but we are in the linesearch algo and we don't want to remove this each time...
-    if (iteration == 0) [[unlikely]]
+    if (firstIteration)
     {
         vel.peq(m_r2, -1.0);
         pos.peq(m_r1, -1.0);
