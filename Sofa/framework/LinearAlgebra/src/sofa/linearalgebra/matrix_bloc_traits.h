@@ -224,7 +224,7 @@ public:
         subBlock = v(b, row, col);
     }
 
-    static const std::string Name() { return sofa::type::TypeTrait<Real>::GetTypeName(); }
+    static const std::string Name() { return sofa::type::TypeTrait<Real>::name(); }
     static sofa::linearalgebra::BaseMatrix::ElementType getElementType() { return sofa::linearalgebra::BaseMatrix::ELEMENT_FLOAT; }
     static IndexType getElementSize() { return sizeof(Real); }
 };
@@ -260,7 +260,7 @@ public:
     static void split_col_index(IndexType& index, IndexType& modulo) { bloc_index_func<NC, IndexType>::split(index, modulo); }
 
     static sofa::linearalgebra::BaseMatrix::ElementType getElementType() { return sofa::linearalgebra::BaseMatrix::ELEMENT_FLOAT; }
-    static const std::string Name() { return sofa::type::TypeTrait<Real>::GetTypeName(); }
+    static const std::string Name() { return sofa::type::TypeTrait<Real>::name(); }
 };
 
 template <typename IndexType>
@@ -294,7 +294,7 @@ public:
     static void split_col_index(int& index, int& modulo) { bloc_index_func<NC, IndexType>::split(index, modulo); }
 
     static sofa::linearalgebra::BaseMatrix::ElementType getElementType() { return sofa::linearalgebra::BaseMatrix::ELEMENT_INT; }
-    static const std::string Name() { return sofa::type::TypeTrait<Real>::GetTypeName(); }
+    static const std::string Name() { return sofa::type::TypeTrait<Real>::name(); }
 };
 
 
