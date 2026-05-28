@@ -55,9 +55,9 @@ public:
 
 
     /**
-     * Returns the squared norm of the last evaluation of the RHS
+     * Returns the evaluation of the residue
      */
-    SReal squaredNormRHS() override;
+    virtual SReal evaluateResidue() override;
 
 
     /**
