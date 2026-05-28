@@ -81,24 +81,6 @@ protected:
 public:
 
     /**
-     * @brief Gets the class name according to the provided template parameters.
-     *
-     * For example, `ElementFEMMass<Vec3Types, sofa::geometry::Edge>` will return "EdgeFEMMass".
-     *
-     * @return A string representing the class name.
-     */
-    static const std::string GetCustomClassName()
-    {
-        return std::string(sofa::geometry::elementTypeToString(ElementType::Element_type)) + "FEMMass";
-    }
-
-    /**
-     * @brief Gets the template name based on the data types.
-     * @return A string representing the template name (e.g., "Vec3d").
-     */
-    static const std::string GetCustomTemplateName() { return DataTypes::Name(); }
-
-    /**
      * @brief Link to the nodal mass density component.
      *
      * This component provides the mass density at each node of the mesh.

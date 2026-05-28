@@ -41,27 +41,18 @@ template class SOFA_COMPONENT_MASS_API ElementFEMMass<sofa::defaulttype::Vec3Typ
 
 void registerFEMMass(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(sofa::core::ObjectRegistrationData("Finite-element mass (inertia and body force) defined on edges")
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Finite-element mass (inertia and body force)")
         .add< ElementFEMMass<sofa::defaulttype::Vec1Types, sofa::geometry::Edge> >()
         .add< ElementFEMMass<sofa::defaulttype::Vec2Types, sofa::geometry::Edge> >()
-        .add< ElementFEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::Edge> >(true));
-
-    factory->registerObjects(sofa::core::ObjectRegistrationData("Finite-element mass (inertia and body force) defined on triangles")
+        .add< ElementFEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::Edge> >()
         .add< ElementFEMMass<sofa::defaulttype::Vec2Types, sofa::geometry::Triangle> >()
-        .add< ElementFEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::Triangle> >(true));
-
-    factory->registerObjects(sofa::core::ObjectRegistrationData("Finite-element mass (inertia and body force) defined on quads")
+        .add< ElementFEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::Triangle> >()
         .add< ElementFEMMass<sofa::defaulttype::Vec2Types, sofa::geometry::Quad> >()
-        .add< ElementFEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::Quad> >(true));
-
-    factory->registerObjects(sofa::core::ObjectRegistrationData("Finite-element mass (inertia and body force) defined on tetrahedra")
-        .add< ElementFEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::Tetrahedron> >(true));
-
-    factory->registerObjects(sofa::core::ObjectRegistrationData("Finite-element mass (inertia and body force) defined on hexahedra")
-        .add< ElementFEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::Hexahedron> >(true));
-
-    factory->registerObjects(sofa::core::ObjectRegistrationData("Finite-element mass (inertia and body force) defined on prisms")
-        .add< ElementFEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::Prism> >(true));
+        .add< ElementFEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::Quad> >()
+        .add< ElementFEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::Tetrahedron> >()
+        .add< ElementFEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::Hexahedron> >()
+        .add< ElementFEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::Prism> >()
+    );
 }
 
 }
