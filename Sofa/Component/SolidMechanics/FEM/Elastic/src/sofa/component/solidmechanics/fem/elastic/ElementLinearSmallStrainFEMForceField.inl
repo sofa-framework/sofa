@@ -44,7 +44,7 @@ template <class DataTypes, class ElementType>
 void ElementLinearSmallStrainFEMForceField<DataTypes, ElementType>::computeElementsForces(
     const sofa::simulation::Range<std::size_t>& range,
     const sofa::core::MechanicalParams* mparams,
-    sofa::type::vector<ElementForce>& elementForces,
+    sofa::type::vector<ElementGradient>& elementForces,
     const sofa::VecCoord_t<DataTypes>& nodePositions)
 {
     const auto& elements = trait::FiniteElement::getElementSequence(*this->l_topology);
@@ -75,7 +75,7 @@ template <class DataTypes, class ElementType>
 void ElementLinearSmallStrainFEMForceField<DataTypes, ElementType>::computeElementsForcesDeriv(
     const sofa::simulation::Range<std::size_t>& range,
     const sofa::core::MechanicalParams* mparams,
-    sofa::type::vector<ElementForce>& elementForcesDeriv,
+    sofa::type::vector<ElementGradient>& elementForcesDeriv,
     const sofa::VecDeriv_t<DataTypes>& nodeDx)
 {
     const auto& elements = trait::FiniteElement::getElementSequence(*this->l_topology);

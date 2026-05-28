@@ -88,7 +88,7 @@ void FEMForceField<DataTypes, ElementType>::addForce(
 template <class DataTypes, class ElementType>
 void FEMForceField<DataTypes, ElementType>::computeElementsForces(
     const sofa::core::MechanicalParams* mparams,
-    sofa::type::vector<ElementForce>& f,
+    sofa::type::vector<ElementGradient>& f,
     const sofa::VecCoord_t<DataTypes>& x)
 {
     SCOPED_TIMER("ElementForces");
@@ -159,7 +159,7 @@ void FEMForceField<DataTypes, ElementType>::addDForce(
 
 template <class DataTypes, class ElementType>
 void FEMForceField<DataTypes, ElementType>::computeElementsForcesDeriv(
-    const sofa::core::MechanicalParams* mparams, sofa::type::vector<ElementForce>& df,
+    const sofa::core::MechanicalParams* mparams, sofa::type::vector<ElementGradient>& df,
     const sofa::VecDeriv_t<DataTypes>& dx)
 {
     SCOPED_TIMER("ElementForcesDeriv");

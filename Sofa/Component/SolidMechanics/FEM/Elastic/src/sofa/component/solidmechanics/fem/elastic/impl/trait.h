@@ -66,7 +66,7 @@ struct trait
         NumberOfDofsInElement,
         sofa::Real_t<DataTypes>>;
 
-    using ElementForce = sofa::type::Vec<NumberOfDofsInElement, sofa::Real_t<DataTypes>>;
+    using ElementGradient = sofa::type::Vec<NumberOfDofsInElement, sofa::Real_t<DataTypes>>;
 };
 
 }
