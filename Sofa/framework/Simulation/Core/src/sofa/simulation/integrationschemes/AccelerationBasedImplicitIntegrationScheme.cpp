@@ -194,9 +194,9 @@ void AccelerationBasedImplicitIntegrationScheme::computeRHS(bool firstIteration)
 
 
 /**
- * Returns the squared norm of the last evaluation of the RHS
+ * Returns the evaluation of the residue
  */
-SReal AccelerationBasedImplicitIntegrationScheme::squaredNormRHS()
+SReal AccelerationBasedImplicitIntegrationScheme::evaluateResidue()
 {
     core::behavior::MultiVecDeriv r0(m_vop.get(), m_r0);
     core::behavior::MultiVecDeriv r1(m_vop.get(), m_r1);

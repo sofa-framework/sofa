@@ -82,9 +82,9 @@ void StaticEquilibriumIntegrationScheme::computeRHS(bool firstIteration)
 
 
 /**
- * Returns the squared norm of the last evaluation of the RHS
+ * Returns the evaluation of the residue
  */
-SReal StaticEquilibriumIntegrationScheme::squaredNormRHS()
+SReal StaticEquilibriumIntegrationScheme::evaluateResidue()
 {
     core::behavior::MultiVecDeriv r0(m_vop.get(), core::vec_id::write_access::force);
 
