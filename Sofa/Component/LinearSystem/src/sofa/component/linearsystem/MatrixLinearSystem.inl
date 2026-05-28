@@ -23,7 +23,7 @@
 #include <optional>
 #include <unordered_set>
 #include <mutex>
-#include <sofa/component/linearsystem/MatrixProjectionMethod.h>
+#include <sofa/component/linearsystem/MatrixProjectionMethod.inl>
 #include <sofa/component/linearsystem/MatrixLinearSystem.h>
 #include <sofa/component/linearsystem/TypedMatrixLinearSystem.inl>
 
@@ -38,6 +38,7 @@
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/simulation/task/MainTaskSchedulerFactory.h>
 #include <sofa/simulation/task/ParallelForEach.h>
+#include <sofa/component/linearsystem/MappedMassMatrixObserver.inl>
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalIdentityBlocksInJacobianVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalIdentityBlocksInJacobianVisitor;

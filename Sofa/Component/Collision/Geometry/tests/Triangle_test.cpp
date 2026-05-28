@@ -27,11 +27,11 @@ using sofa::component::collision::detection::intersection::MeshMinProximityInter
 #include <sofa/component/collision/detection/intersection/MeshNewProximityIntersection.inl>
 using sofa::component::collision::detection::intersection::MeshNewProximityIntersection;
 
-#include <sofa/component/collision/geometry/TriangleModel.h>
+#include <sofa/component/collision/geometry/TriangleCollisionModel.h>
 
 using sofa::core::execparams::defaultInstance;
 using sofa::core::objectmodel::New;
-#include <sofa/component/collision/geometry/SphereModel.h>
+#include <sofa/component/collision/geometry/SphereCollisionModel.h>
 using sofa::component::collision::geometry::Sphere;
 using sofa::component::collision::geometry::SphereCollisionModel;
 using sofa::component::collision::geometry::RigidSphere;

@@ -22,7 +22,7 @@
 #pragma once
 
 #include <sofa/gpu/cuda/CudaTypes.h>
-#include <sofa/component/collision/geometry/LineModel.h>
+#include <sofa/component/collision/geometry/LineCollisionModel.h>
 
 namespace sofa::gpu::cuda
 {

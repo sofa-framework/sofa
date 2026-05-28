@@ -25,7 +25,7 @@
 #include <sofa/core/visual/DisplayFlags.h>
 
 #include <sofa/type/Vec.h>
-#include <sofa/component/collision/geometry/CubeModel.h>
+#include <sofa/component/collision/geometry/CubeCollisionModel.h>
 
 namespace collisionobbcapsule::geometry
 {

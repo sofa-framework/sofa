@@ -24,10 +24,10 @@
 
 #include <sofa/core/collision/Intersection.h>
 #include <CollisionOBBCapsule/detection/intersection/IntrTriangleOBB.h>
-#include <sofa/component/collision/geometry/TriangleModel.h>
-#include <sofa/component/collision/geometry/PointModel.h>
-#include <sofa/component/collision/geometry/LineModel.h>
-#include <sofa/component/collision/geometry/SphereModel.h>
+#include <sofa/component/collision/geometry/TriangleCollisionModel.h>
+#include <sofa/component/collision/geometry/PointCollisionModel.h>
+#include <sofa/component/collision/geometry/LineCollisionModel.h>
+#include <sofa/component/collision/geometry/SphereCollisionModel.h>
 #include <CollisionOBBCapsule/geometry/OBBModel.h>
 #include <CollisionOBBCapsule/geometry/CapsuleModel.h>
 #include <CollisionOBBCapsule/geometry/RigidCapsuleModel.h>

@@ -23,7 +23,7 @@
 #define SOFA_STANDARDTEST_BroadPhase_test_H
 
 #include <SofaBaseCollision/NewProximityIntersection.h>
-#include <SofaSimulationGraph/DAGNode.h>
+#include <sofa/simulation/Node.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/collision/NarrowPhaseDetection.h>
 
@@ -474,7 +474,7 @@ bool BroadPhaseTest<BroadPhase, NarrowPhase>::randTest(int seed,int nb1,int nb2,
     for(int i = 0 ; i < nb2 ; ++i)
         secondCollision.push_back(randVect(min,max));
 
-    sofa::simulation::Node::SPtr scn = New<sofa::simulation::graph::DAGNode>();
+    sofa::simulation::Node::SPtr scn = New<sofa::simulation::Node>();
     sofa::component::collision::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbm1,obbm2;
     obbm1 = makeOBBModel(firstCollision,scn,getExtent());
     obbm2 = makeOBBModel(secondCollision,scn,getExtent());

@@ -97,7 +97,7 @@ protected:
     static const char* visualNodeNames[NVISUALNODE];
     static const char* visualNodeFiles[NVISUALNODE];
     simulation::Node::SPtr m_omniVisualNode;
-    component::statecontainer::MechanicalObject<sofa::defaulttype::Rigid3dTypes>::SPtr rigidDOF;
+    component::statecontainer::MechanicalObject<sofa::defaulttype::Rigid3Types>::SPtr rigidDOF;
 
     VecCoord m_posDeviceVisu; ///< position of the hpatic devices for rendering. first pos is equal to d_posDevice
 
