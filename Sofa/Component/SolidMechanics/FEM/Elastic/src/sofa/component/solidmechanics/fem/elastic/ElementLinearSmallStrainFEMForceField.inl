@@ -133,7 +133,7 @@ void ElementLinearSmallStrainFEMForceField<DataTypes, ElementType>::buildStiffne
         {
             for (sofa::Index n2 = 0; n2 < trait::NumberOfNodesInElement; ++n2)
             {
-                stiffnessMatrix.getAssembledMatrix().getsub(trait::spatial_dimensions * n1, trait::spatial_dimensions * n2, localMatrix); //extract the submatrix corresponding to the coupling of nodes n1 and n2
+                stiffnessMatrix.getsub(trait::spatial_dimensions * n1, trait::spatial_dimensions * n2, localMatrix); //extract the submatrix corresponding to the coupling of nodes n1 and n2
                 dfdx(element[n1] * trait::spatial_dimensions, element[n2] * trait::spatial_dimensions) += -localMatrix;
             }
         }
@@ -169,7 +169,7 @@ void ElementLinearSmallStrainFEMForceField<DataTypes, ElementType>::addKToMatrix
         {
             for (sofa::Index n2 = 0; n2 < trait::NumberOfNodesInElement; ++n2)
             {
-                stiffnessMatrix.getAssembledMatrix().getsub(trait::spatial_dimensions * n1, trait::spatial_dimensions * n2, localMatrix); //extract the submatrix corresponding to the coupling of nodes n1 and n2
+                stiffnessMatrix.getsub(trait::spatial_dimensions * n1, trait::spatial_dimensions * n2, localMatrix); //extract the submatrix corresponding to the coupling of nodes n1 and n2
 
                 const auto value = (-static_cast<sofa::Real_t<DataTypes>>(kFact)) * static_cast<sofa::type::ScalarOrMatrix<LocalMatType>>(localMatrix);
                 matrix->add(

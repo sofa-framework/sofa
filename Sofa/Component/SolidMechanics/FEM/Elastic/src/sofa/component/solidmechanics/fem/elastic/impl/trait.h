@@ -21,10 +21,11 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/fem/FiniteElement.h>
-#include <sofa/component/solidmechanics/fem/elastic/impl/ElementStiffnessMatrix.h>
-#include <sofa/type/FullySymmetric4Tensor.h>
 #include <sofa/core/trait/DataTypes.h>
+#include <sofa/fem/FiniteElement.h>
+#include <sofa/type/FullySymmetric4Tensor.h>
+
+#include <sofa/component/solidmechanics/fem/elastic/impl/StrainDisplacement.h>
 
 namespace sofa::component::solidmechanics::fem::elastic
 {
@@ -54,22 +55,18 @@ struct trait
     using ElasticityTensor = sofa::type::FullySymmetric4Tensor<DataTypes::spatial_dimensions, Real>;
 
     /// the type of B in e = B d, if e is the strain, and d is the displacement
-    using StrainDisplacement = sofa::component::solidmechanics::fem::elastic::StrainDisplacement<DataTypes, ElementType>;
+    using StrainDisplacement = StrainDisplacement<DataTypes, ElementType>;
 
     /// the concatenation of the displacement of the element nodes in a single vector
     using ElementDisplacement = sofa::type::Vec<NumberOfDofsInElement, Real>;
 
-    /// tells how to compute the matrix-vector product of the stiffness matrix with a displacement
-    /// vector. It does not change the result, but it can have an impact on performances.
-    static constexpr MatrixVectorProductType matrixVectorProductType =
-        NbQuadraturePoints > 1
-            ? MatrixVectorProductType::Dense
-            : MatrixVectorProductType::Factorization;
+    /// the type of the element hessian matrix
+    using ElementHessian = sofa::type::Mat<
+        NumberOfDofsInElement,
+        NumberOfDofsInElement,
+        sofa::Real_t<DataTypes>>;
 
-    /// the type of the element stiffness matrix
-    using ElementStiffness = sofa::component::solidmechanics::fem::elastic::FactorizedElementStiffness<DataTypes, ElementType, matrixVectorProductType>;
-
-    using ElementForce = sofa::type::Vec<trait::NumberOfDofsInElement, sofa::Real_t<DataTypes>>;
+    using ElementForce = sofa::type::Vec<NumberOfDofsInElement, sofa::Real_t<DataTypes>>;
 };
 
 }

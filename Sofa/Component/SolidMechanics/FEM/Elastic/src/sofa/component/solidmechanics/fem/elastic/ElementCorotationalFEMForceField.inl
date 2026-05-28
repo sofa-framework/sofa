@@ -193,7 +193,7 @@ void ElementCorotationalFEMForceField<DataTypes, ElementType>::buildStiffnessMat
         {
             for (sofa::Index n2 = 0; n2 < trait::NumberOfNodesInElement; ++n2)
             {
-                stiffnessMatrix.getAssembledMatrix().getsub(trait::spatial_dimensions * n1, trait::spatial_dimensions * n2, localMatrix);  // extract the submatrix corresponding to the coupling of nodes n1 and n2
+                stiffnessMatrix.getsub(trait::spatial_dimensions * n1, trait::spatial_dimensions * n2, localMatrix);  // extract the submatrix corresponding to the coupling of nodes n1 and n2
                 dfdx(element[n1] * trait::spatial_dimensions, element[n2] * trait::spatial_dimensions) += -elementRotation * localMatrix * elementRotation_T;
             }
         }
