@@ -207,9 +207,9 @@ void VelocityBasedImplicitIntegrationScheme::computeRHS(bool firstIteration)
 
 
 /**
- * Returns the squared norm of the last evaluation of the RHS
+ * Returns the evaluation of the residue
  */
-SReal VelocityBasedImplicitIntegrationScheme::squaredNormRHS()
+SReal VelocityBasedImplicitIntegrationScheme::evaluateResidue()
 {
     sofa::simulation::common::VectorOperations vop( m_params, this->getContext() );
 

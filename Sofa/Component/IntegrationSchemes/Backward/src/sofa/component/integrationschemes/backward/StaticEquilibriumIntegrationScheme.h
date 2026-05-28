@@ -57,9 +57,9 @@ public:
     void computeRHS(bool firstIteration = true) override;
 
     /**
-     * Returns the squared norm of the last evaluation of the RHS
+     * Returns the evaluation of the residue
      */
-    SReal squaredNormRHS() override;
+    SReal evaluateResidue() override;
 
     /**
      * Solve the linear equation from a Newton iteration, i.e. it computes (x^{i+1}-x^i).
