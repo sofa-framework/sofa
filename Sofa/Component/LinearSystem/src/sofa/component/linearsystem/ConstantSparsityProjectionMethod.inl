@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/linearsystem/ConstantSparsityProjectionMethod.h>
+#include <sofa/component/linearsystem/MatrixProjectionMethod.inl>
 
 #include <Eigen/Sparse>
 #include <sofa/helper/ScopedAdvancedTimer.h>

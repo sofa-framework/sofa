@@ -33,9 +33,9 @@ namespace sofa::component::constraint::lagrangian::solver
 ImprovedJacobiConstraintSolver::ImprovedJacobiConstraintSolver()
     : BuiltConstraintSolver()
     , d_useSpectralCorrection(initData(&d_useSpectralCorrection,false,"useSpectralCorrection","If set to true, the solution found after each iteration will be multiplied by spectralCorrectionFactor*2/spr(W), with spr() denoting the spectral radius."))
-    , d_spectralCorrectionFactor(initData(&d_spectralCorrectionFactor,1.0,"spectralCorrectionFactor","Factor used to modulate the spectral correction"))
+    , d_spectralCorrectionFactor(initData(&d_spectralCorrectionFactor,1.0_sreal,"spectralCorrectionFactor","Factor used to modulate the spectral correction"))
     , d_useConjugateResidue(initData(&d_useConjugateResidue,false,"useConjugateResidue","If set to true, the solution found after each iteration will be corrected along the solution direction using `\\lambda^{i+1} -= beta^{i} * (\\lambda^{i} - \\lambda^{i-1})` with beta following the formula beta^{i} = min(1, (i/maxIterations)^{conjugateResidueSpeedFactor}) "))
-    , d_conjugateResidueSpeedFactor(initData(&d_conjugateResidueSpeedFactor,10.0,"conjugateResidueSpeedFactor","Factor used to modulate the speed in which beta used in the conjugate residue part reaches 1.0. The higher the value, the slower the reach. "))
+    , d_conjugateResidueSpeedFactor(initData(&d_conjugateResidueSpeedFactor,10.0_sreal,"conjugateResidueSpeedFactor","Factor used to modulate the speed in which beta used in the conjugate residue part reaches 1.0. The higher the value, the slower the reach. "))
 {
 
 }

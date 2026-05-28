@@ -33,8 +33,8 @@ namespace sofa::component::constraint::lagrangian::solver
 BuiltConstraintSolver::BuiltConstraintSolver()
 : d_multithreading(initData(&d_multithreading, false, "multithreading", "Build compliances concurrently"))
 , d_useSVDForRegularization(initData(&d_useSVDForRegularization, false, "useSVDForRegularization", "Use SVD decomposiiton of the compliance matrix to project singular values smaller than regularization to the regularization term. Only works with built"))
-, d_svdSingularValueNullSpaceCriteriaFactor(initData(&d_svdSingularValueNullSpaceCriteriaFactor, 0.01, "svdSingularValueNullSpaceCriteriaFactor", "Fraction of the highest singular value bellow which a singular value will be supposed to belong to the nullspace"))
-, d_svdSingularVectorNullSpaceCriteriaFactor(initData(&d_svdSingularVectorNullSpaceCriteriaFactor, 0.001, "svdSingularVectorNullSpaceCriteriaFactor", "Absolute value bellow which a component of a normalized base vector will be considered null"))
+, d_svdSingularValueNullSpaceCriteriaFactor(initData(&d_svdSingularValueNullSpaceCriteriaFactor, 0.01_sreal, "svdSingularValueNullSpaceCriteriaFactor", "Fraction of the highest singular value bellow which a singular value will be supposed to belong to the nullspace"))
+, d_svdSingularVectorNullSpaceCriteriaFactor(initData(&d_svdSingularVectorNullSpaceCriteriaFactor, 0.001_sreal, "svdSingularVectorNullSpaceCriteriaFactor", "Absolute value bellow which a component of a normalized base vector will be considered null"))
 {}
 
 void BuiltConstraintSolver::init()
@@ -62,7 +62,7 @@ void BuiltConstraintSolver::addRegularization(linearalgebra::BaseMatrix& W, cons
             const size_t problemSize = FullW->rowSize();
 
             Eigen::Map<Eigen::MatrixX<SReal>> EigenW(FullW->ptr(),problemSize, problemSize) ;
-            Eigen::JacobiSVD<Eigen::MatrixXd> svd( EigenW, Eigen::ComputeFullV | Eigen::ComputeFullU );
+            Eigen::JacobiSVD<Eigen::MatrixX<SReal>> svd( EigenW, Eigen::ComputeFullV | Eigen::ComputeFullU );
 
 
 

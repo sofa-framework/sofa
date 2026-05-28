@@ -355,7 +355,7 @@ void render_coordinate_frame(const CoordinateFrame& frame, const type::Vec3& cen
     };
 
     sofa::type::Vec3 rotAxis;
-    double phi{};
+    SReal phi{};
     orient.quatToAxis(rotAxis, phi);
 
     glMatrixMode(GL_MODELVIEW);
@@ -425,9 +425,9 @@ void Frame::draw(const type::Vec3& center, const Quaternion& orient, const type:
 void Frame::draw(const type::Vec3& center, const double orient[4][4], const type::Vec3& len, const type::RGBAColor& colorX, const type::RGBAColor& colorY, const type::RGBAColor& colorZ)
 {
     const sofa::type::Matrix3 matOrient{ 
-        {orient[0][0], orient[0][1] , orient[0][2] },
-        {orient[1][0], orient[1][1] , orient[1][2] },
-        {orient[2][0], orient[2][1] , orient[2][2] } 
+        {static_cast<SReal>(orient[0][0]), static_cast<SReal>(orient[0][1]) , static_cast<SReal>(orient[0][2]) },
+        {static_cast<SReal>(orient[1][0]), static_cast<SReal>(orient[1][1]) , static_cast<SReal>(orient[1][2]) },
+        {static_cast<SReal>(orient[2][0]), static_cast<SReal>(orient[2][1]) , static_cast<SReal>(orient[2][2]) }
     };
     Quaternion q(sofa::type::QNOINIT);
     q.fromMatrix(matOrient);
@@ -442,9 +442,9 @@ void Frame::draw(const type::Vec3& center, const Quaternion& orient, SReal len, 
 void Frame::draw(const type::Vec3& center, const double orient[4][4], SReal len, const type::RGBAColor& colorX, const type::RGBAColor& colorY, const type::RGBAColor& colorZ)
 {
     const sofa::type::Matrix3 matOrient{
-        {orient[0][0], orient[0][1] , orient[0][2] },
-        {orient[1][0], orient[1][1] , orient[1][2] },
-        {orient[2][0], orient[2][1] , orient[2][2] }
+            {static_cast<SReal>(orient[0][0]), static_cast<SReal>(orient[0][1]) , static_cast<SReal>(orient[0][2]) },
+            {static_cast<SReal>(orient[1][0]), static_cast<SReal>(orient[1][1]) , static_cast<SReal>(orient[1][2]) },
+            {static_cast<SReal>(orient[2][0]), static_cast<SReal>(orient[2][1]) , static_cast<SReal>(orient[2][2]) }
     };
 
     Quaternion q(sofa::type::QNOINIT);

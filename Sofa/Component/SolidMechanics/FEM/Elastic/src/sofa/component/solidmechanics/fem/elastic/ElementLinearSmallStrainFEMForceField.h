@@ -72,6 +72,7 @@ public:
 
     void buildStiffnessMatrix(sofa::core::behavior::StiffnessMatrix* matrix) override;
 
+    using sofa::core::behavior::ForceField<DataTypes>::getPotentialEnergy;
     SReal getPotentialEnergy(const sofa::core::MechanicalParams*, const sofa::DataVecCoord_t<DataTypes>& x) const override;
 
     using sofa::core::behavior::ForceField<DataTypes>::addKToMatrix;

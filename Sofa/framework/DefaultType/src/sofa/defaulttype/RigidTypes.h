@@ -153,13 +153,13 @@ public:
 
     static Deriv coordDifference(const Coord& c1, const Coord& c2)
     {
-        type::Vec3 vCenter = c1.getCenter() - c2.getCenter();
+        const Vec3 vCenter = c1.getCenter() - c2.getCenter();
         const type::Quat<real> quat2(c2.getOrientation());
         const type::Quat<real> quat1(c1.getOrientation());
         // Transformation between c2 and c1 frames
         type::Quat<real> quat = quat1 * quat2.inverse();
         quat.normalize();
-        type::Vec3 axis(type::NOINIT);
+        Vec3 axis(type::NOINIT);
         real angle{};
         quat.quatToAxis(axis, angle);
         axis *= angle;
@@ -361,7 +361,7 @@ public:
 
     static Deriv coordDifference(const Coord& c1, const Coord& c2)
     {
-        const type::Vec2 vCenter = c1.getCenter() - c2.getCenter();
+        const Vec2 vCenter = c1.getCenter() - c2.getCenter();
         real angle = c1.getOrientation() - c2.getOrientation(); // Difference in orientation (angle between frames)
         angle = std::fmod(angle + M_PI, 2 * M_PI) - M_PI; // Normalize angle to [-π, π]
 
