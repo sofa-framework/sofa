@@ -49,6 +49,9 @@ sofa_find_package(tight_inclusion QUIET)
 
 if(NOT tight_inclusion_FOUND AND SOFA_ALLOW_FETCH_DEPENDENCIES)
 
+    if(${SOFA_FLOATING_POINT_TYPE} STREQUAL float)
+        set(TIGHT_INCLUSION_WITH_DOUBLE_PRECISION OFF)
+    endif ()
     sofa_fetch_dependency(tight_inclusion
             GIT_REPOSITORY https://github.com/sofa-framework/Tight-Inclusion
             GIT_TAG        v1.0.6-export-target

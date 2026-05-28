@@ -35,12 +35,12 @@ namespace sofa::component::mapping::linear
 {
 
 template <class TIn>
-class DistanceToPlaneMapping : public LinearMapping<TIn, defaulttype::Vec1dTypes>
+class DistanceToPlaneMapping : public LinearMapping<TIn, defaulttype::Vec1Types>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(DistanceToPlaneMapping,TIn), SOFA_TEMPLATE2(LinearMapping,TIn, defaulttype::Vec1dTypes));
-    typedef LinearMapping<TIn,  defaulttype::Vec1dTypes> Inherit;
-    typedef  defaulttype::Vec1dTypes TOut;
+    SOFA_CLASS(SOFA_TEMPLATE(DistanceToPlaneMapping,TIn), SOFA_TEMPLATE2(LinearMapping,TIn, defaulttype::Vec1Types));
+    typedef LinearMapping<TIn,  defaulttype::Vec1Types> Inherit;
+    typedef  defaulttype::Vec1Types TOut;
 
     void init() override;
 

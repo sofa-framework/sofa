@@ -37,14 +37,12 @@ using namespace sofa::core::behavior;
 using namespace sofa::gpu::cuda;
 
 template class SOFACUDA_COMPONENT_API RigidMapping< CudaRigid3fTypes, CudaVec3fTypes>;
-template class SOFACUDA_COMPONENT_API RigidMapping< Rigid3fTypes, CudaVec3fTypes>;
 template class SOFACUDA_COMPONENT_API RigidMapping< Rigid3Types, CudaVec3Types>;
 template class SOFACUDA_COMPONENT_API RigidMapping< Rigid3Types, CudaVec3f1Types>;
 
 //template class SOFACUDA_COMPONENT_API RigidMapping< CudaRigid3fTypes, Vec3dTypes>;
 //template class SOFACUDA_COMPONENT_API RigidMapping< CudaRigid3fTypes, Vec3fTypes>;
 template class SOFACUDA_COMPONENT_API RigidMapping< CudaRigid3fTypes, CudaVec3f1Types>;
-template class SOFACUDA_COMPONENT_API RigidMapping< Rigid3fTypes, CudaVec3f1Types>;
 
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
@@ -71,19 +69,15 @@ void registerRigidMapping(sofa::core::ObjectFactory* factory)
 {
     factory->registerObjects(sofa::core::ObjectRegistrationData("Supports GPU-side computations using CUDA for the RigidMapping")
         .add< RigidMapping< CudaRigid3fTypes, CudaVec3fTypes> >()
-        .add< RigidMapping< Rigid3fTypes, CudaVec3fTypes> >()
         .add< RigidMapping< Rigid3Types, CudaVec3Types> >()
         .add< RigidMapping< Rigid3Types, CudaVec3f1Types> >()
         .add< RigidMapping< CudaRigid3fTypes, CudaVec3f1Types> >()
-        .add< RigidMapping< Rigid3fTypes, CudaVec3f1Types> >()
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
         .add< RigidMapping< CudaRigid3fTypes, CudaVec3dTypes> >()
-        .add< RigidMapping< Rigid3fTypes, CudaVec3dTypes> >()
-        .add< RigidMapping< Rigid3dTypes, CudaVec3dTypes> >()
+        .add< RigidMapping< Rigid3Types, CudaVec3dTypes> >()
         .add< RigidMapping< CudaRigid3fTypes, CudaVec3d1Types> >()
-        .add< RigidMapping< Rigid3fTypes, CudaVec3d1Types> >()
-        .add< RigidMapping< Rigid3dTypes, CudaVec3d1Types> >()
+        .add< RigidMapping< Rigid3Types, CudaVec3d1Types> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
         );
 }
