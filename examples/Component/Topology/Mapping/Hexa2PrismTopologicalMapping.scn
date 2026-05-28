@@ -37,7 +37,7 @@
                                         rotationMethod="polar" computeForceStrategy="sequenced" computeForceDerivStrategy="sequenced"/>
 
         <NodalMassDensity property="1100"/>
-        <PrismFEMMass/>
+        <ElementFEMMass template="Vec3,Prism"/>
 
         <VisualMesh position="@../state.position" topology="@prism_topology" enable="true"/>
     </Node>
