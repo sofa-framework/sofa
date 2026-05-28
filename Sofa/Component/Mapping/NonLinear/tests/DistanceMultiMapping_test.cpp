@@ -61,7 +61,7 @@ struct DistanceMultiMappingTest : public MultiMapping_test<_DistanceMultiMapping
         if (computeDistance)
         {
             const auto expectedDistance = (In::getCPos(incoords[1][0]) - In::getCPos(incoords[0][0])).norm();
-            Out::set( outcoords[0], expectedDistance, 0.,0.);
+            Out::set( outcoords[0], expectedDistance, 0._sreal,0._sreal);
         }
         else
         {
