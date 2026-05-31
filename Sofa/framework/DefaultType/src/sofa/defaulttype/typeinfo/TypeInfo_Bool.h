@@ -22,15 +22,13 @@
 #pragma once
 
 #include <sofa/defaulttype/typeinfo/models/BoolTypeInfo.h>
+#include <sofa/type/trait/TypeTrait.h>
 namespace sofa::defaulttype
 {
 
 template<>
-struct DataTypeInfo<bool> : public BoolTypeInfo
-{
-    static const std::string name() { return "bool"; }
-    static const std::string GetTypeName() { return "bool"; }
-};
+struct DataTypeInfo<bool> : public BoolTypeInfo, public sofa::type::TypeTrait<bool>
+{};
 
 
 } /// namespace sofa::defaulttype

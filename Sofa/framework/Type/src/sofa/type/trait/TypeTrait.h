@@ -21,17 +21,43 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/defaulttype/typeinfo/models/ScalarTypeInfo.h>
-#include <sofa/defaulttype/TypeInfoRegistry.h>
-#include <sofa/type/trait/TypeTrait.h>
-#include <concepts>
+#include <string_view>
 
-namespace sofa::defaulttype
+namespace sofa::type
 {
 
-template<std::floating_point T>
-struct DataTypeInfo<T> : public ScalarTypeInfo<T>, public sofa::type::TypeTrait<T>
-{};
+template<class T> struct TypeTrait{};
 
-} /// namespace sofa::defaulttype
+#define MAKE_TYPE_TRAIT(type, suffix_string) \
+    template<> struct TypeTrait<type> \
+    { \
+        static constexpr std::string_view typeName = #type; \
+        static constexpr std::string_view suffix = suffix_string; \
+        static const std::string name() { return std::string(suffix); } \
+        static const std::string GetTypeName() { return std::string(typeName); } \
+    }
 
+MAKE_TYPE_TRAIT(bool, "bool");
+
+MAKE_TYPE_TRAIT(float, "f");
+MAKE_TYPE_TRAIT(double, "d");
+MAKE_TYPE_TRAIT(long double, "e");
+
+MAKE_TYPE_TRAIT(int, "i");
+MAKE_TYPE_TRAIT(unsigned int, "I");
+
+MAKE_TYPE_TRAIT(short, "h");
+MAKE_TYPE_TRAIT(unsigned short, "H");
+
+MAKE_TYPE_TRAIT(char, "b");
+MAKE_TYPE_TRAIT(unsigned char, "B");
+
+MAKE_TYPE_TRAIT(long, "l");
+MAKE_TYPE_TRAIT(unsigned long, "L");
+
+MAKE_TYPE_TRAIT(long long, "q");
+MAKE_TYPE_TRAIT(unsigned long long, "Q");
+
+#undef MAKE_TYPE_TRAIT
+
+}
