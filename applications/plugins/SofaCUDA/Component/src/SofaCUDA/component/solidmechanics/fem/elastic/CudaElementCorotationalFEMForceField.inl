@@ -48,7 +48,7 @@ void CudaElementCorotationalFEMForceField<DataTypes, ElementType>::uploadStiffne
     if (!this->l_topology) return;
 
     const auto& elements = trait::FiniteElement::getElementSequence(*this->l_topology);
-    const auto& assembledMatrices = this->m_assembledStiffnessMatrices;
+    auto assembledMatrices = sofa::helper::getReadAccessor(this->d_elementStiffness);
 
     const auto nbElem = elements.size();
     constexpr auto nNodes = trait::NumberOfNodesInElement;
