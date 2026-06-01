@@ -28,6 +28,7 @@
 #include <sofa/core/VecId.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/objectmodel/Base.h>
 
 namespace sofa::component::collision::geometry
 {
@@ -192,6 +193,37 @@ public:
     const sofa::core::topology::BaseMeshTopology::SeqTriangles& getTriangles() const { return *m_triangles; }
     const VecDeriv& getNormals() const { return m_normals; }
     int getTriangleFlags(sofa::core::topology::BaseMeshTopology::TriangleID i);
+
+    void saveInternalStateIn(sofa::core::objectmodel::Snapshot::SnapshotObject& snapshot) const override
+    {
+        sofa::core::objectmodel::Snapshot::DataInfo dataInfo;
+
+        std::stringstream ss;
+        this->m_triangles->write(ss);
+        // this->m_internalTriangles.write(ss);
+        dataInfo.name = "m_internalTriangles";
+        dataInfo.type = "vector";
+        dataInfo.value = ss.str();
+
+        snapshot.m_dataContainer.push_back(dataInfo);
+    }
+
+    void loadInternalStateFrom(const core::objectmodel::Snapshot::SnapshotObject &snapshot) override
+    {
+        std::cout << "load 1" << std::endl;
+        for (const auto& dataInfo : snapshot.m_dataContainer)
+        {
+            if (dataInfo.name == "m_internalTriangles")
+            {
+                std::stringstream ss(dataInfo.value);
+                // Find a way to modify m_triangles...
+                this->m_triangles->read(ss);
+                // this->m_internalTriangles.read(ss);
+                // const_cast<sofa::core::topology::BaseMeshTopology::SeqTriangles*>(m_triangles)->read(ss);
+            }
+        }
+        std::cout << "load 2" << std::endl;
+    }
 
     Deriv velocity(sofa::Index index)const;
 

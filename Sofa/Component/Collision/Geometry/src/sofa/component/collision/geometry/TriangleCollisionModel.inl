@@ -247,6 +247,20 @@ void TriangleCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
             const type::Vec3& pt1 = x[t.p1Index()];
             const type::Vec3& pt2 = x[t.p2Index()];
             const type::Vec3& pt3 = x[t.p3Index()];
+            // std::cout << "x = " << x << std::endl;
+            // std::cout << "t is valid ? " << t.valid() << std::endl;
+            // std::cout << "t.p1Index() = " << t.p1Index() << std::endl;
+            // std::cout << "x size = " << x.size() << std::endl;
+            // std::cout << "pt1 = " << pt1 << " pt2 = " << pt2 << " pt3 = " << pt3 << std::endl;
+            // std::cout << "m_triangles ? " << (*(this->m_triangles)) << std::endl ;
+            // std::cout << "size m_triangles ? " << this->m_triangles->size()<< std::endl;
+            // std::cout << "size m_normals ? " << this->m_normals.size() << std::endl;
+
+            // std::stringstream ss;
+            // this->m_triangles->write(ss);
+            // std::string str = ss.str();
+            // std::cout << str << std::endl;
+
 
             for (int c = 0; c < 3; c++)
             {

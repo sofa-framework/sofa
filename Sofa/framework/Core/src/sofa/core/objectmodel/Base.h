@@ -390,7 +390,7 @@ public :
     virtual void saveInternalStateIn(Snapshot::SnapshotObject& snapshot) const;
 
     ///Load Internal State from a snapshot to the scene
-    virtual void loadInternalStateFrom(const Snapshot::SnapshotObject& snapshot) const;
+    virtual void loadInternalStateFrom(const Snapshot::SnapshotObject& snapshot) ;
 protected:
     /// List of fields (Data instances)
     VecData m_vecData;

@@ -765,9 +765,10 @@ Base::findSnapshotObject(const std::shared_ptr<Snapshot::SnapshotNode>& parents,
     return defaultObject;
 }
 
-void Base::loadInternalStateFrom(const Snapshot::SnapshotObject& snapshot) const
+void Base::loadInternalStateFrom(const Snapshot::SnapshotObject& snapshot) 
 {
     SOFA_UNUSED(snapshot);
+
 }
 
 void Base::loadDataSnapshot(const std::shared_ptr<Snapshot::SnapshotObject>& snapshotObject) const

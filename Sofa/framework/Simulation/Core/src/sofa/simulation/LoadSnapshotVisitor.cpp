@@ -32,9 +32,15 @@ void LoadSnapshotVisitor::processObject(
 )
 {
     auto snapshotObject = obj->findSnapshotObject(parent, obj->getName());
-    obj->loadDataSnapshot(snapshotObject);
-    // obj->loadLinkSnapshot(snapshotObject);
-    // obj->loadInternalStateFrom(*snapshotObject);
+    if (!snapshotObject)
+        msg_error("findSnapshotObject") << "SnapshotObject " << obj->getName() << " not found in ";
+    else
+    {
+        obj->loadDataSnapshot(snapshotObject);
+        // obj->loadLinkSnapshot(snapshotObject);
+        obj->loadInternalStateFrom(*snapshotObject);
+    }
+
 }
 
 Visitor::Result LoadSnapshotVisitor::processNodeTopDown(simulation::Node* node)
@@ -42,13 +48,17 @@ Visitor::Result LoadSnapshotVisitor::processNodeTopDown(simulation::Node* node)
     const auto snapshotObject = node->findSnapshotObject(m_snapshotContainer.m_graphRoot, node->getName());
     if (!snapshotObject)
         msg_error("findSnapshotNode") << "SnapshotNode "<< node->getName() << " not found in ";
-    const auto SnapshotNode = std::dynamic_pointer_cast<core::objectmodel::Snapshot::SnapshotNode>(snapshotObject);
-    node->loadDataSnapshot(SnapshotNode);
-    // node->loadLinkSnapshot(SnapshotNode);
-    for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
+    else
     {
-        this->processObject(it->get(), SnapshotNode);
+        const auto SnapshotNode = std::dynamic_pointer_cast<core::objectmodel::Snapshot::SnapshotNode>(snapshotObject);
+        node->loadDataSnapshot(SnapshotNode);
+        // node->loadLinkSnapshot(SnapshotNode);
+        for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
+        {
+            this->processObject(it->get(), SnapshotNode);
+        }
     }
+
     return RESULT_CONTINUE;
 }
 
