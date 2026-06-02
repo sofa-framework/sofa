@@ -81,6 +81,7 @@ public:
     Data<bool> d_updateNormals; ///< True if normals should be updated at each iteration
     Data<bool> d_computeTangents; ///< True if tangents should be computed at startup
     Data<bool> d_updateTangents; ///< True if tangents should be updated at each iteration
+    Data<bool> d_computeTextureCoordinates; ///< True if texture coordinates should be computed at startup, using UV sphere projection
     Data<bool> d_handleDynamicTopology; ///< True if topological changes should be handled
     Data<bool> d_fixMergedUVSeams; ///< True if UV seams should be handled even when duplicate UVs are merged
     Data<bool> d_keepLines; ///< keep and draw lines (false by default)
