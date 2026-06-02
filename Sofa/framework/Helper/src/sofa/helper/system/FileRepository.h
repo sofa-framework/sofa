@@ -115,7 +115,7 @@ public:
     /// Otherwise returns path.
     static std::string relativeToPath(std::string path, std::string refPath);
 
-    const std::vector< std::string > &getPaths() const {return vpath;}
+    const std::vector< std::string > &getPaths() const {return m_vpath;}
 
     const std::string getPathsJoined();
 
@@ -167,9 +167,10 @@ public:
     friend std::ostream& operator << (std::ostream& _flux, FileRepository _fr)
     {
         _flux<< "FileRepository vpath :"<<std::endl;
-        for(std::vector<std::string>::iterator it = _fr.vpath.begin(); it!=_fr.vpath.end(); it++)
-            _flux<<(*it)<<std::endl;
-
+        
+        for(const auto& vpath : _fr.m_vpath)
+            _flux << vpath <<std::endl;
+        
         return _flux;
     }
 
@@ -188,7 +189,7 @@ protected:
     std::string directAccessProtocolPrefix;
 
     /// Vector of paths.
-    std::vector<std::string> vpath;
+    std::vector<std::string> m_vpath;
 
     /// Search file in a given path.
     static bool findFileIn(std::string& filename, const std::string& path);
