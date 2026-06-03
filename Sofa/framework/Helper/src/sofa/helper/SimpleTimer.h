@@ -51,6 +51,19 @@ template<> struct UnitInfo<std::chrono::seconds>
     static constexpr std::string_view unit = "s";
 };
 
+/**
+ * @class SimpleTimer
+ * @brief A RAII utility class for measuring elapsed time in operations and log it.
+ *
+ * @code
+ * // Measure a block of code
+ * {
+ *     sofa::helper::SimpleTimer<std::chrono::milliseconds> timer("File I/O Simulation");
+ *     // ... Simulate file reading/writing here ...
+ *     // The elapsed time is logged by the timer at the end of the scope
+ * }
+ * @endcode
+ */
 template<class Unit = std::chrono::nanoseconds>
 struct SimpleTimer
 {
@@ -65,7 +78,7 @@ struct SimpleTimer
 
     ~SimpleTimer()
     {
-        end();
+        stop();
     }
 
     void restart()
@@ -73,7 +86,7 @@ struct SimpleTimer
         m_start = std::chrono::high_resolution_clock::now();
     }
 
-    void end()
+    void stop()
     {
         if (!hasEnded)
         {
