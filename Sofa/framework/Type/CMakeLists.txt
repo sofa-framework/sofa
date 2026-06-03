@@ -52,7 +52,6 @@ set(HEADER_FILES
     ${SOFATYPESRC_ROOT}/vector_algebra.h
     ${SOFATYPESRC_ROOT}/vector_algorithm.h
     ${SOFATYPESRC_ROOT}/vector_device.h
-    ${SOFATYPESRC_ROOT}/VecView.h
     ${SOFATYPESRC_ROOT}/VoigtNotation.h
 )
 

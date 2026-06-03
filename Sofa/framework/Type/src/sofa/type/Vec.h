@@ -311,6 +311,16 @@ public:
         m = this->elems[i];
     }
 
+    template <Size N2, std::enable_if_t<(N2 < N), bool> = true>
+    void setsub(const Size i, const sofa::type::Vec<N2, ValueType>& v) noexcept
+    {
+        for (Size j = 0; j < N2; j++)
+        {
+            this->elems[j + i] = v[j];
+        }
+    }
+
+
     // LINEAR ALGEBRA
     constexpr Vec<N,ValueType> mulscalar(const ValueType f) const noexcept
     {
