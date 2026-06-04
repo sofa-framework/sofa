@@ -22,80 +22,15 @@
 #pragma once
 
 #include <sofa/defaulttype/typeinfo/models/IntegerTypeInfo.h>
+#include <sofa/type/trait/TypeTrait.h>
+#include <concepts>
 
 namespace sofa::defaulttype
 {
 
-template<>
-struct DataTypeInfo<char> : public IntegerTypeInfo<char>
-{
-    static const std::string GetTypeName() { return "char"; }
-    static const std::string name() { return "b"; }
-};
-
-template<>
-struct DataTypeInfo<unsigned char> : public IntegerTypeInfo<unsigned char>
-{
-    static const std::string GetTypeName() { return "unsigned char"; }
-    static const std::string name() { return "B"; }
-};
-
-template<>
-struct DataTypeInfo<short> : public IntegerTypeInfo<short>
-{
-    static const std::string GetTypeName() { return "short"; }
-    static const std::string name() { return "h"; }
-};
-
-template<>
-struct DataTypeInfo<unsigned short> : public IntegerTypeInfo<unsigned short>
-{
-    static const std::string GetTypeName() { return "unsigned short"; }
-    static const std::string name() { return "H"; }
-};
-
-template<>
-struct DataTypeInfo<int> : public IntegerTypeInfo<int>
-{
-    static const std::string GetTypeName() { return "int"; }
-    static const std::string name() { return "i"; }
-};
-
-template<>
-struct DataTypeInfo<unsigned int> : public IntegerTypeInfo<unsigned int>
-{
-    static const std::string GetTypeName() { return "unsigned int"; }
-    static const std::string name() { return "I"; }
-};
-
-template<>
-struct DataTypeInfo<long> : public IntegerTypeInfo<long>
-{
-    static const std::string GetTypeName() { return "long"; }
-    static const std::string name() { return "l"; }
-};
-
-template<>
-struct DataTypeInfo<unsigned long> : public IntegerTypeInfo<unsigned long>
-{
-    static const std::string GetTypeName() { return "unsigned long"; }
-    static const std::string name() { return "L"; }
-};
-
-template<>
-struct DataTypeInfo<long long> : public IntegerTypeInfo<long long>
-{
-    static const std::string GetTypeName() { return "long long"; }
-    static const std::string name() { return "q"; }
-};
-
-template<>
-struct DataTypeInfo<unsigned long long> : public IntegerTypeInfo<unsigned long long>
-{
-    static const std::string GetTypeName() { return "unsigned long long"; }
-    static const std::string name() { return "Q"; }
-};
-
+template<std::integral T>
+struct DataTypeInfo<T> : public IntegerTypeInfo<T>, public type::TypeTrait<T>
+{};
 
 } /// typeNamespace sofa::defaulttype
 
