@@ -138,7 +138,7 @@ public:
 
 private:
     using trait = sofa::component::solidmechanics::fem::elastic::trait<DataTypes, ElementType>;
-    using ElementForce = typename trait::ElementForce;
+    using ElementGradient = typename trait::ElementGradient;
     using RotationMatrix = sofa::type::Mat<trait::spatial_dimensions, trait::spatial_dimensions, sofa::Real_t<DataTypes>>;
 
 
@@ -158,19 +158,19 @@ public:
 protected:
 
     void beforeElementForce(const sofa::core::MechanicalParams* mparams,
-        sofa::type::vector<ElementForce>& f,
+        sofa::type::vector<ElementGradient>& f,
         const sofa::VecCoord_t<DataTypes>& x) override;
 
     void computeElementsForces(
         const sofa::simulation::Range<std::size_t>& range,
         const sofa::core::MechanicalParams* mparams,
-        sofa::type::vector<ElementForce>& f,
+        sofa::type::vector<ElementGradient>& f,
         const sofa::VecCoord_t<DataTypes>& x) override;
 
     void computeElementsForcesDeriv(
         const sofa::simulation::Range<std::size_t>& range,
         const sofa::core::MechanicalParams* mparams,
-        sofa::type::vector<ElementForce>& elementForcesDeriv,
+        sofa::type::vector<ElementGradient>& elementForcesDeriv,
         const sofa::VecDeriv_t<DataTypes>& nodeDx) override;
 
     sofa::type::vector<RotationMatrix> m_rotations;

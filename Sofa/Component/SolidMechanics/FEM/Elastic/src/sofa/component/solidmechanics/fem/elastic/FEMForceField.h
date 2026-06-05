@@ -50,7 +50,7 @@ public:
 
 private:
     using trait = sofa::component::solidmechanics::fem::elastic::trait<DataTypes, ElementType>;
-    using ElementForce = typename trait::ElementForce;
+    using ElementGradient = typename trait::ElementGradient;
 
 public:
     void init() override;
@@ -81,17 +81,17 @@ protected:
     /// Methods related to addForce
     /// @{
     void computeElementsForces(const sofa::core::MechanicalParams* mparams,
-        sofa::type::vector<ElementForce>& f,
+        sofa::type::vector<ElementGradient>& f,
         const sofa::VecCoord_t<DataTypes>& x);
 
     virtual void beforeElementForce(const sofa::core::MechanicalParams* mparams,
-        sofa::type::vector<ElementForce>& f,
+        sofa::type::vector<ElementGradient>& f,
         const sofa::VecCoord_t<DataTypes>& x) {}
 
     virtual void computeElementsForces(
         const sofa::simulation::Range<std::size_t>& range,
         const sofa::core::MechanicalParams* mparams,
-        sofa::type::vector<ElementForce>& f,
+        sofa::type::vector<ElementGradient>& f,
         const sofa::VecCoord_t<DataTypes>& x) = 0;
 
     void dispatchElementForcesToNodes(
@@ -103,7 +103,7 @@ protected:
     /// Methods related to addDForce
     /// @{
     void computeElementsForcesDeriv(const sofa::core::MechanicalParams* mparams,
-        sofa::type::vector<ElementForce>& df,
+        sofa::type::vector<ElementGradient>& df,
         const sofa::VecDeriv_t<DataTypes>& dx);
 
     virtual void beforeElementForceDeriv(const sofa::core::MechanicalParams* mparams) {}
@@ -111,7 +111,7 @@ protected:
     virtual void computeElementsForcesDeriv(
         const sofa::simulation::Range<std::size_t>& range,
         const sofa::core::MechanicalParams* mparams,
-        sofa::type::vector<ElementForce>& df,
+        sofa::type::vector<ElementGradient>& df,
         const sofa::VecDeriv_t<DataTypes>& dx) = 0;
 
     /**
