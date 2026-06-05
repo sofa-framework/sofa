@@ -36,7 +36,7 @@ namespace sofa::component::mass
 {
 
 /**
- * @class ElementFEMMass
+ * @class FEMMass
  * @brief Computes and stores the mass matrix for a finite element model.
  *
  * This class calculates the mass matrix for a given set of finite elements based on a nodal mass density field.
@@ -54,14 +54,14 @@ namespace sofa::component::mass
  * @tparam TElementType The type of finite element (e.g., sofa::geometry::Tetrahedron).
  */
 template<class TDataTypes, class TElementType>
-class ElementFEMMass :
+class FEMMass :
     public core::behavior::Mass<TDataTypes>,
     public virtual sofa::core::behavior::TopologyAccessor
 {
 public:
     using DataTypes = TDataTypes;
     using ElementType = TElementType;
-    SOFA_CLASS2(SOFA_TEMPLATE2(ElementFEMMass, DataTypes, ElementType),
+    SOFA_CLASS2(SOFA_TEMPLATE2(FEMMass, DataTypes, ElementType),
         core::behavior::Mass<TDataTypes>,
         sofa::core::behavior::TopologyAccessor);
 
@@ -86,7 +86,7 @@ public:
      * This component provides the mass density at each node of the mesh.
      * It must be present in the context for the mass to be calculated correctly.
      */
-    sofa::SingleLink<ElementFEMMass, NodalMassDensity,
+    sofa::SingleLink<FEMMass, NodalMassDensity,
         sofa::BaseLink::FLAG_STOREPATH | sofa::BaseLink::FLAG_STRONGLINK> l_nodalMassDensity;
 
     /**
@@ -193,7 +193,7 @@ protected:
     /**
      * @brief Default constructor.
      */
-    ElementFEMMass();
+    FEMMass();
 
     /**
      * @brief Performs the internal calculation and assembly of the mass matrix.
@@ -249,17 +249,17 @@ protected:
     GlobalMassMatrixType m_globalMassMatrix;
 };
 
-#if !defined(SOFA_COMPONENT_MASS_ELEMENTFEMMASS_CPP)
-template class SOFA_COMPONENT_MASS_API ElementFEMMass<sofa::defaulttype::Vec1Types, sofa::geometry::Edge>;
-template class SOFA_COMPONENT_MASS_API ElementFEMMass<sofa::defaulttype::Vec2Types, sofa::geometry::Edge>;
-template class SOFA_COMPONENT_MASS_API ElementFEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::Edge>;
-template class SOFA_COMPONENT_MASS_API ElementFEMMass<sofa::defaulttype::Vec2Types, sofa::geometry::Triangle>;
-template class SOFA_COMPONENT_MASS_API ElementFEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::Triangle>;
-template class SOFA_COMPONENT_MASS_API ElementFEMMass<sofa::defaulttype::Vec2Types, sofa::geometry::Quad>;
-template class SOFA_COMPONENT_MASS_API ElementFEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::Quad>;
-template class SOFA_COMPONENT_MASS_API ElementFEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::Tetrahedron>;
-template class SOFA_COMPONENT_MASS_API ElementFEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::Hexahedron>;
-template class SOFA_COMPONENT_MASS_API ElementFEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::Prism>;
+#if !defined(SOFA_COMPONENT_MASS_FEMMASS_CPP)
+template class SOFA_COMPONENT_MASS_API FEMMass<sofa::defaulttype::Vec1Types, sofa::geometry::Edge>;
+template class SOFA_COMPONENT_MASS_API FEMMass<sofa::defaulttype::Vec2Types, sofa::geometry::Edge>;
+template class SOFA_COMPONENT_MASS_API FEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::Edge>;
+template class SOFA_COMPONENT_MASS_API FEMMass<sofa::defaulttype::Vec2Types, sofa::geometry::Triangle>;
+template class SOFA_COMPONENT_MASS_API FEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::Triangle>;
+template class SOFA_COMPONENT_MASS_API FEMMass<sofa::defaulttype::Vec2Types, sofa::geometry::Quad>;
+template class SOFA_COMPONENT_MASS_API FEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::Quad>;
+template class SOFA_COMPONENT_MASS_API FEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::Tetrahedron>;
+template class SOFA_COMPONENT_MASS_API FEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::Hexahedron>;
+template class SOFA_COMPONENT_MASS_API FEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::Prism>;
 #endif
 
 }  // namespace sofa::component::mass
