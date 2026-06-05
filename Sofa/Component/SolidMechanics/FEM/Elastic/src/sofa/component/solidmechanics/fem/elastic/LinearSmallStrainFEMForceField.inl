@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/solidmechanics/fem/elastic/ElementLinearSmallStrainFEMForceField.h>
+#include <sofa/component/solidmechanics/fem/elastic/LinearSmallStrainFEMForceField.h>
 #include <sofa/component/solidmechanics/fem/elastic/BaseElementLinearFEMForceField.inl>
 #include <sofa/component/solidmechanics/fem/elastic/FEMForceField.inl>
 
@@ -28,7 +28,7 @@ namespace sofa::component::solidmechanics::fem::elastic
 {
 
 template <class DataTypes, class ElementType>
-void ElementLinearSmallStrainFEMForceField<DataTypes, ElementType>::init()
+void LinearSmallStrainFEMForceField<DataTypes, ElementType>::init()
 {
     BaseElementLinearFEMForceField<DataTypes, ElementType>::init();
     FEMForceField<DataTypes, ElementType>::init();
@@ -41,7 +41,7 @@ void ElementLinearSmallStrainFEMForceField<DataTypes, ElementType>::init()
 
 
 template <class DataTypes, class ElementType>
-void ElementLinearSmallStrainFEMForceField<DataTypes, ElementType>::computeElementsForces(
+void LinearSmallStrainFEMForceField<DataTypes, ElementType>::computeElementsForces(
     const sofa::simulation::Range<std::size_t>& range,
     const sofa::core::MechanicalParams* mparams,
     sofa::type::vector<ElementGradient>& elementForces,
@@ -72,7 +72,7 @@ void ElementLinearSmallStrainFEMForceField<DataTypes, ElementType>::computeEleme
 }
 
 template <class DataTypes, class ElementType>
-void ElementLinearSmallStrainFEMForceField<DataTypes, ElementType>::computeElementsForcesDeriv(
+void LinearSmallStrainFEMForceField<DataTypes, ElementType>::computeElementsForcesDeriv(
     const sofa::simulation::Range<std::size_t>& range,
     const sofa::core::MechanicalParams* mparams,
     sofa::type::vector<ElementGradient>& elementForcesDeriv,
@@ -104,7 +104,7 @@ void ElementLinearSmallStrainFEMForceField<DataTypes, ElementType>::computeEleme
 }
 
 template <class DataTypes, class ElementType>
-void ElementLinearSmallStrainFEMForceField<DataTypes, ElementType>::buildStiffnessMatrix(
+void LinearSmallStrainFEMForceField<DataTypes, ElementType>::buildStiffnessMatrix(
     sofa::core::behavior::StiffnessMatrix* matrix)
 {
     if (this->isComponentStateInvalid())
@@ -141,7 +141,7 @@ void ElementLinearSmallStrainFEMForceField<DataTypes, ElementType>::buildStiffne
 }
 
 template <class DataTypes, class ElementType>
-SReal ElementLinearSmallStrainFEMForceField<DataTypes, ElementType>::getPotentialEnergy(
+SReal LinearSmallStrainFEMForceField<DataTypes, ElementType>::getPotentialEnergy(
     const sofa::core::MechanicalParams*,
     const sofa::DataVecCoord_t<DataTypes>& x) const
 {
@@ -149,7 +149,7 @@ SReal ElementLinearSmallStrainFEMForceField<DataTypes, ElementType>::getPotentia
 }
 
 template <class DataTypes, class ElementType>
-void ElementLinearSmallStrainFEMForceField<DataTypes, ElementType>::addKToMatrix(
+void LinearSmallStrainFEMForceField<DataTypes, ElementType>::addKToMatrix(
     sofa::linearalgebra::BaseMatrix* matrix, SReal kFact, unsigned& offset)
 {
     if (this->isComponentStateInvalid())
