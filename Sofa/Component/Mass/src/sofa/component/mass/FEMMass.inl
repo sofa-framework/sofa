@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/mass/ElementFEMMass.h>
+#include <sofa/component/mass/FEMMass.h>
 #include <sofa/core/behavior/BaseLocalMassMatrix.h>
 #include <sofa/helper/IotaView.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
@@ -29,14 +29,14 @@ namespace sofa::component::mass
 {
 
 template <class TDataTypes, class TElementType>
-ElementFEMMass<TDataTypes, TElementType>::ElementFEMMass()
+FEMMass<TDataTypes, TElementType>::FEMMass()
     : l_nodalMassDensity(initLink("nodalMassDensity", "Link to nodal mass density"))
 {
 }
 
 
 template <class TDataTypes, class TElementType>
-void ElementFEMMass<TDataTypes, TElementType>::init()
+void FEMMass<TDataTypes, TElementType>::init()
 {
     TopologyAccessor::init();
 
@@ -57,7 +57,7 @@ void ElementFEMMass<TDataTypes, TElementType>::init()
 }
 
 template <class TDataTypes, class TElementType>
-void ElementFEMMass<TDataTypes, TElementType>::validateNodalMassDensity()
+void FEMMass<TDataTypes, TElementType>::validateNodalMassDensity()
 {
     if (l_nodalMassDensity.empty())
     {
@@ -76,7 +76,7 @@ void ElementFEMMass<TDataTypes, TElementType>::validateNodalMassDensity()
 
 
 template <class TDataTypes, class TElementType>
-void ElementFEMMass<TDataTypes, TElementType>::elementFEMMass_init()
+void FEMMass<TDataTypes, TElementType>::elementFEMMass_init()
 {
     const auto& elements = FiniteElement::getElementSequence(*this->l_topology);
     sofa::type::vector<ElementMassMatrix> elementMassMatrices;
@@ -89,7 +89,7 @@ void ElementFEMMass<TDataTypes, TElementType>::elementFEMMass_init()
 }
 
 template <class TDataTypes, class TElementType>
-void ElementFEMMass<TDataTypes, TElementType>::calculateElementMassMatrix(
+void FEMMass<TDataTypes, TElementType>::calculateElementMassMatrix(
     const auto& elements, sofa::type::vector<ElementMassMatrix> &elementMassMatrices)
 {
     const auto nbElements = elements.size();
@@ -149,7 +149,7 @@ void ElementFEMMass<TDataTypes, TElementType>::calculateElementMassMatrix(
 }
 
 template <class TDataTypes, class TElementType>
-void ElementFEMMass<TDataTypes, TElementType>::initializeGlobalMassMatrix(
+void FEMMass<TDataTypes, TElementType>::initializeGlobalMassMatrix(
     const auto& elements, const sofa::type::vector<ElementMassMatrix>& elementMassMatrices)
 {
     SCOPED_TIMER("elementMassMatrix");
@@ -183,7 +183,7 @@ void ElementFEMMass<TDataTypes, TElementType>::initializeGlobalMassMatrix(
 }
 
 template <class TDataTypes, class TElementType>
-void ElementFEMMass<TDataTypes, TElementType>::addForce(const core::MechanicalParams* mparams,
+void FEMMass<TDataTypes, TElementType>::addForce(const core::MechanicalParams* mparams,
                                                         sofa::DataVecDeriv_t<DataTypes>& f,
                                                         const sofa::DataVecCoord_t<DataTypes>& x,
                                                         const sofa::DataVecDeriv_t<DataTypes>& v)
@@ -213,7 +213,7 @@ void ElementFEMMass<TDataTypes, TElementType>::addForce(const core::MechanicalPa
 }
 
 template <class TDataTypes, class TElementType>
-void ElementFEMMass<TDataTypes, TElementType>::buildMassMatrix(
+void FEMMass<TDataTypes, TElementType>::buildMassMatrix(
     sofa::core::behavior::MassMatrixAccumulator* matrices)
 {
     for (std::size_t xi = 0; xi < m_globalMassMatrix.rowIndex.size(); ++xi)
@@ -234,7 +234,7 @@ void ElementFEMMass<TDataTypes, TElementType>::buildMassMatrix(
 }
 
 template <class TDataTypes, class TElementType>
-void ElementFEMMass<TDataTypes, TElementType>::addMDx(const core::MechanicalParams* mparams,
+void FEMMass<TDataTypes, TElementType>::addMDx(const core::MechanicalParams* mparams,
                                                       DataVecDeriv_t<DataTypes>& f,
                                                       const DataVecDeriv_t<DataTypes>& dx,
                                                       SReal factor)
@@ -259,7 +259,7 @@ void ElementFEMMass<TDataTypes, TElementType>::addMDx(const core::MechanicalPara
 }
 
 template <class TDataTypes, class TElementType>
-void ElementFEMMass<TDataTypes, TElementType>::accFromF(const core::MechanicalParams* mparams,
+void FEMMass<TDataTypes, TElementType>::accFromF(const core::MechanicalParams* mparams,
                                                         DataVecDeriv_t<DataTypes>& a,
                                                         const DataVecDeriv_t<DataTypes>& f)
 {
@@ -271,7 +271,7 @@ void ElementFEMMass<TDataTypes, TElementType>::accFromF(const core::MechanicalPa
 }
 
 template <class TDataTypes, class TElementType>
-SReal ElementFEMMass<TDataTypes, TElementType>::getKineticEnergy(
+SReal FEMMass<TDataTypes, TElementType>::getKineticEnergy(
     const core::MechanicalParams* mparams,
     const DataVecDeriv_t<DataTypes>& v) const
 {
@@ -297,7 +297,7 @@ SReal ElementFEMMass<TDataTypes, TElementType>::getKineticEnergy(
 }
 
 template <class TDataTypes, class TElementType>
-SReal ElementFEMMass<TDataTypes, TElementType>::getPotentialEnergy(
+SReal FEMMass<TDataTypes, TElementType>::getPotentialEnergy(
     const core::MechanicalParams* mparams,
     const DataVecCoord_t<DataTypes>& x) const
 {
