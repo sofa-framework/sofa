@@ -135,12 +135,12 @@ sofa::linearalgebra::BaseMatrix* Mapping<In,Out>::createMappedMatrix(const behav
 template <class In, class Out>
 void Mapping<In,Out>::apply(const MechanicalParams* mparams, MultiVecCoordId outPos, ConstMultiVecCoordId inPos)
 {
-    State<In>* fromModel = this->fromModel.get();
-    State<Out>*  toModel = this->toModel.get();
-    if(fromModel && toModel)
+    State<In>* from = this->fromModel.get();
+    State<Out>*  to = this->toModel.get();
+    if(from && to)
     {
-        OutDataVecCoord* out = outPos[toModel].write();
-        const InDataVecCoord* in = inPos[fromModel].read();
+        OutDataVecCoord* out = outPos[to].write();
+        const InDataVecCoord* in = inPos[from].read();
         if(out && in)
         {
             this->apply(mparams, *out, *in);
@@ -151,12 +151,12 @@ void Mapping<In,Out>::apply(const MechanicalParams* mparams, MultiVecCoordId out
 template <class In, class Out>
 void Mapping<In,Out>::applyJ(const MechanicalParams* mparams, MultiVecDerivId outVel, ConstMultiVecDerivId inVel)
 {
-    State<In>* fromModel = this->fromModel.get();
-    State<Out>*  toModel = this->toModel.get();
-    if(fromModel && toModel)
+    State<In>* from = this->fromModel.get();
+    State<Out>*  to = this->toModel.get();
+    if(from && to)
     {
-        OutDataVecDeriv* out = outVel[toModel].write();
-        const InDataVecDeriv* in = inVel[fromModel].read();
+        OutDataVecDeriv* out = outVel[to].write();
+        const InDataVecDeriv* in = inVel[from].read();
         if(out && in)
         {
                 this->applyJ(mparams, *out, *in);
@@ -167,12 +167,12 @@ void Mapping<In,Out>::applyJ(const MechanicalParams* mparams, MultiVecDerivId ou
 template <class In, class Out>
 void Mapping<In,Out>::applyJT(const MechanicalParams *mparams, MultiVecDerivId inForce, ConstMultiVecDerivId outForce)
 {
-    State<In>* fromModel = this->fromModel.get();
-    State<Out>*  toModel = this->toModel.get();
-    if(fromModel && toModel)
+    State<In>* from = this->fromModel.get();
+    State<Out>*  to = this->toModel.get();
+    if(from && to)
     {
-        InDataVecDeriv* out = inForce[fromModel].write();
-        const OutDataVecDeriv* in = outForce[toModel].read();
+        InDataVecDeriv* out = inForce[from].write();
+        const OutDataVecDeriv* in = outForce[to].read();
         if(out && in)
         {
             this->applyJT(mparams, *out, *in);
@@ -184,12 +184,12 @@ void Mapping<In,Out>::applyJT(const MechanicalParams *mparams, MultiVecDerivId i
 template <class In, class Out>
 void Mapping<In,Out>::applyJT(const ConstraintParams* cparams, MultiMatrixDerivId inConst, ConstMultiMatrixDerivId outConst )
 {
-    State<In>* fromModel = this->fromModel.get();
-    State<Out>*  toModel = this->toModel.get();
-    if(fromModel && toModel)
+    State<In>* from = this->fromModel.get();
+    State<Out>*  to = this->toModel.get();
+    if(from && to)
     {
-        InDataMatrixDeriv* out = inConst[fromModel].write();
-        const OutDataMatrixDeriv* in = outConst[toModel].read();
+        InDataMatrixDeriv* out = inConst[from].write();
+        const OutDataMatrixDeriv* in = outConst[to].read();
         if(out && in)
         {
             this->applyJT(cparams, *out, *in);
@@ -208,13 +208,13 @@ void Mapping<In,Out>::applyDJT(const MechanicalParams* /*mparams */ , MultiVecDe
 template <class In, class Out>
 void Mapping<In,Out>::computeAccFromMapping(const MechanicalParams* mparams, MultiVecDerivId outAcc, ConstMultiVecDerivId inVel, ConstMultiVecDerivId inAcc )
 {
-    State<In>* fromModel = this->fromModel.get();
-    State<Out>*  toModel = this->toModel.get();
-    if(fromModel && toModel)
+    State<In>* from = this->fromModel.get();
+    State<Out>*  to = this->toModel.get();
+    if(from && to)
     {
-        OutDataVecDeriv* out = outAcc[toModel].write();
-        const InDataVecDeriv* inV = inVel[fromModel].read();
-        const InDataVecDeriv* inA = inAcc[fromModel].read();
+        OutDataVecDeriv* out = outAcc[to].write();
+        const InDataVecDeriv* inV = inVel[from].read();
+        const InDataVecDeriv* inA = inAcc[from].read();
         if(out && inV && inA)
             this->computeAccFromMapping(mparams, *out, *inV, *inA);
     }

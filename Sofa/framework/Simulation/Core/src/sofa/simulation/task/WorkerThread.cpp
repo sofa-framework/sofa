@@ -75,7 +75,7 @@ void WorkerThread::run(void)
 {
 #ifdef WIN32
     const std::wstring widestr = std::wstring(m_name.begin(), m_name.end());
-    HRESULT r = SetThreadDescription(
+    (void)SetThreadDescription(
         GetCurrentThread(),
         widestr.c_str()
         );
