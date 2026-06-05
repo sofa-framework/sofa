@@ -35,7 +35,6 @@ namespace sofa::core::loader
 {
 
 using namespace sofa::defaulttype;
-using namespace sofa::core::loader;
 
 VoxelLoader::VoxelLoader()
     :BaseLoader()

@@ -74,16 +74,16 @@ public:
     /// and those six elements are conceptually numbered from 0 to 5.  This is
     /// relevant only if FixedSize() is true. I FixedSize() is false,
     /// the return value will be equivalent to the one of byteSize()
-    sofa::Size size() const override {return -1;}
+    sofa::Size size() const override {return static_cast<sofa::Size>(-1);}
     /// The size in bytes of the ValueType
     /// For example, the size of a fixed_array<fixed_array<int, 2>, 3>` is 4 on most systems,
     /// as it is the byte size of the smallest dimension in the array (int -> 32bit)
-    sofa::Size byteSize() const override {return -1;}
+    sofa::Size byteSize() const override {return static_cast<sofa::Size>(-1);}
 
     /// The size of \a data, in number of iterable elements
     /// (For containers, that'll be the number of elements in the 1st dimension).
     /// For example, with type == `
-    sofa::Size size(const void* /*data*/) const override {return -1;}
+    sofa::Size size(const void* /*data*/) const override {return static_cast<sofa::Size>(-1);}
     /// Resize \a data to \a size elements, if relevant.
 
     /// But resizing is not always relevant, for example:

@@ -22,7 +22,7 @@
 #include <sofa/component/odesolver/backward/EulerImplicitSolver.h>
 
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/simulation/MechanicalOperations.h>
+#include <sofa/simulation/MappingGraphMechanicalOperations.h>
 #include <sofa/simulation/VectorOperations.h>
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/core/ObjectFactory.h>
@@ -82,11 +82,13 @@ void EulerImplicitSolver::cleanup()
 
 void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
 {
+    m_mappingGraph.build(this->getContext());
+
 #ifdef SOFA_DUMP_VISITOR_INFO
     sofa::simulation::Visitor::printNode("SolverVectorAllocation");
 #endif
     sofa::simulation::common::VectorOperations vop( params, this->getContext() );
-    sofa::simulation::common::MechanicalOperations mop( params, this->getContext() );
+    sofa::simulation::common::MappingGraphMechanicalOperations mop( params, this->getContext() );
     MultiVecCoord pos(&vop, core::vec_id::write_access::position );
     MultiVecDeriv vel(&vop, core::vec_id::write_access::velocity );
     MultiVecDeriv f(&vop, core::vec_id::write_access::force );
@@ -126,7 +128,7 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
         SCOPED_TIMER("ComputeForce");
         mop->setImplicit(true); // this solver is implicit
         // compute the net forces at the beginning of the time step
-        mop.computeForce(f);                                                               //f = Kx + Bv
+        mop.computeForce(m_mappingGraph, f, true, true, nullptr);
 
         msg_info() << "initial f = " << f;
     }
@@ -147,7 +149,7 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
             msg_info() << "f = " << f;
 
             // add the change of force due to stiffness + Rayleigh damping
-            mop.addMBKv(b, core::MatricesFactors::M(-d_rayleighMass.getValue()),
+            mop.addMBKv(m_mappingGraph, b, core::MatricesFactors::M(-d_rayleighMass.getValue()),
                         core::MatricesFactors::B(0),
                         core::MatricesFactors::K(h * tr + d_rayleighStiffness.getValue())); // b =  f + ( rm M + (h+rs) K ) v
 
@@ -157,7 +159,7 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
 
         msg_info() << "b = " << b;
 
-        mop.projectResponse(b);                                   // b is projected to the constrained space
+        mop.projectResponse(m_mappingGraph, b);                                   // b is projected to the constrained space
 
         msg_info() << "projected b = " << b;
     }

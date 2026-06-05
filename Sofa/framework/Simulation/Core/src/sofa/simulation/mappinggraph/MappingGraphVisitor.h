@@ -19,47 +19,60 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <difflib.h>
-#include <sofa/helper/DiffLib.h>
+#pragma once
 
-#include <cstring>
-#include <queue>
-#include <utility>
+#include <sofa/simulation/config.h>
+#include <sofa/core/BaseMapping.h>
+#include <sofa/core/behavior/BaseForceField.h>
+#include <sofa/core/behavior/BaseMass.h>
+#include <sofa/core/behavior/BaseMechanicalState.h>
+#include <sofa/core/behavior/BaseProjectiveConstraintSet.h>
 
-namespace sofa::helper
+namespace sofa::simulation
 {
 
-std::vector<std::tuple<std::string, SReal>> SOFA_HELPER_API getClosestMatch(const std::string& needle,
-                                                                            const std::vector<std::string>& haystack,
-                                                                            const Size numEntries, const SReal threshold)
+/**
+ * @brief Visitor interface for traversing the mapping graph.
+ *
+ * This visitor pattern is used to allow algorithms to process nodes in a
+ * structured way without modifying their structure or coupling traversal logic
+ * with specific component types. Implementations must override visit methods
+ * corresponding to the behaviors they intend to handle.
+ */
+class MappingGraphVisitor
 {
-    class Tuple
-    {
-    public:
-        Tuple(SReal ratio_, std::string value_)
-            : ratio(ratio_), value(std::move(value_)) {}
+public:
+    virtual ~MappingGraphVisitor() = default;
 
-        SReal ratio;
-        std::string value;
-    };
-    auto cmp = [](const Tuple& left, Tuple& right) { return left.ratio < right.ratio; };
-    std::priority_queue<Tuple, std::vector<Tuple>, decltype(cmp)> q3(cmp);
+    /**
+     * @brief Visits a mechanical state node.
+     * @param mstate The mechanical state component to visit.
+     */
+    virtual void visit(core::behavior::BaseMechanicalState&) {}
 
-    for(auto& s : haystack)
-    {
-        auto foo = difflib::MakeSequenceMatcher(needle,s);
-        q3.emplace(foo.ratio(), s);
-    }
-    std::vector<std::tuple<std::string, SReal>> result;
-    while (!q3.empty() && result.size() <= numEntries)
-    {
-        if(q3.top().ratio < threshold)
-            break;
-        result.emplace_back(q3.top().value, q3.top().ratio);
-        q3.pop();
-    }
-    return result;
+    /**
+     * @brief Visits a base mapping node.
+     * @param mapping The mapping component to visit.
+     */
+    virtual void visit(core::BaseMapping&) {}
+
+    /**
+     * @brief Visits a force field behavior node.
+     * @param ff The force field component to visit.
+     */
+    virtual void visit(core::behavior::BaseForceField&) {}
+
+    /**
+     * @brief Visits a mass behavior node.
+     * @param m The mass component to visit.
+     */
+    virtual void visit(core::behavior::BaseMass&) {}
+
+    /**
+     * @brief Visits a projective constraint node.
+     * @param pcs The projective constraint component to visit.
+     */
+    virtual void visit(sofa::core::behavior::BaseProjectiveConstraintSet&) {}
 };
 
-} // namespace sofa
-
+}

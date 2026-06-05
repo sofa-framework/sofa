@@ -19,47 +19,36 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <difflib.h>
-#include <sofa/helper/DiffLib.h>
+#pragma once
 
-#include <cstring>
-#include <queue>
-#include <utility>
+#include <sofa/simulation/mappinggraph/BaseMappingGraphNode.h>
 
-namespace sofa::helper
+namespace sofa::simulation
 {
 
-std::vector<std::tuple<std::string, SReal>> SOFA_HELPER_API getClosestMatch(const std::string& needle,
-                                                                            const std::vector<std::string>& haystack,
-                                                                            const Size numEntries, const SReal threshold)
+/**
+ * @brief A node wrapper used for representing groups of components or abstract groupings.
+ */
+class SOFA_SIMULATION_CORE_API ComponentGroupMappingGraphNode : public BaseMappingGraphNode
 {
-    class Tuple
-    {
-    public:
-        Tuple(SReal ratio_, std::string value_)
-            : ratio(ratio_), value(std::move(value_)) {}
+public:
+    using SPtr = std::shared_ptr<ComponentGroupMappingGraphNode>;
 
-        SReal ratio;
-        std::string value;
-    };
-    auto cmp = [](const Tuple& left, Tuple& right) { return left.ratio < right.ratio; };
-    std::priority_queue<Tuple, std::vector<Tuple>, decltype(cmp)> q3(cmp);
+    void accept(MappingGraphVisitor& visitor) const override { SOFA_UNUSED(visitor); }
 
-    for(auto& s : haystack)
+    /**
+     * @brief Returns the fixed name "group" for this type of node.
+     * @return The string "group".
+     */
+    std::string getName() const override
     {
-        auto foo = difflib::MakeSequenceMatcher(needle,s);
-        q3.emplace(foo.ratio(), s);
+        return "group";
     }
-    std::vector<std::tuple<std::string, SReal>> result;
-    while (!q3.empty() && result.size() <= numEntries)
+
+    NodeType getType() const override
     {
-        if(q3.top().ratio < threshold)
-            break;
-        result.emplace_back(q3.top().value, q3.top().ratio);
-        q3.pop();
+        return NodeType::Group;
     }
-    return result;
 };
 
-} // namespace sofa
-
+}
