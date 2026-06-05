@@ -106,6 +106,8 @@ protected:
         sofa::type::vector<ElementForce>& df,
         const sofa::VecDeriv_t<DataTypes>& dx);
 
+    virtual void beforeElementForceDeriv(const sofa::core::MechanicalParams* mparams) {}
+
     virtual void computeElementsForcesDeriv(
         const sofa::simulation::Range<std::size_t>& range,
         const sofa::core::MechanicalParams* mparams,
