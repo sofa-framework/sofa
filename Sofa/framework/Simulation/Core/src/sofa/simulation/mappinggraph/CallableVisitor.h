@@ -19,47 +19,63 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <difflib.h>
-#include <sofa/helper/DiffLib.h>
+#pragma once
 
-#include <cstring>
-#include <queue>
-#include <utility>
+#include <sofa/simulation/mappinggraph/MappingGraphVisitor.h>
 
-namespace sofa::helper
+namespace sofa::simulation
 {
 
-std::vector<std::tuple<std::string, SReal>> SOFA_HELPER_API getClosestMatch(const std::string& needle,
-                                                                            const std::vector<std::string>& haystack,
-                                                                            const Size numEntries, const SReal threshold)
+template<class Callable, class Component>
+struct BaseCallableVisitor : public MappingGraphVisitor
 {
-    class Tuple
-    {
-    public:
-        Tuple(SReal ratio_, std::string value_)
-            : ratio(ratio_), value(std::move(value_)) {}
+    explicit BaseCallableVisitor(const Callable& callable)
+    : m_callable(callable)
+    {}
 
-        SReal ratio;
-        std::string value;
-    };
-    auto cmp = [](const Tuple& left, Tuple& right) { return left.ratio < right.ratio; };
-    std::priority_queue<Tuple, std::vector<Tuple>, decltype(cmp)> q3(cmp);
+    void visit(Component& component) override
+    {
+        this->m_callable(component);
+    }
 
-    for(auto& s : haystack)
-    {
-        auto foo = difflib::MakeSequenceMatcher(needle,s);
-        q3.emplace(foo.ratio(), s);
-    }
-    std::vector<std::tuple<std::string, SReal>> result;
-    while (!q3.empty() && result.size() <= numEntries)
-    {
-        if(q3.top().ratio < threshold)
-            break;
-        result.emplace_back(q3.top().value, q3.top().ratio);
-        q3.pop();
-    }
-    return result;
+protected:
+    const Callable& m_callable;
 };
 
-} // namespace sofa
+template<class Callable>
+struct GetComponentFromCallable;
 
+template<class Callable> requires std::is_invocable_v<Callable, core::behavior::BaseForceField&>
+struct GetComponentFromCallable<Callable>
+{
+    using type = core::behavior::BaseForceField;
+};
+
+template<class Callable> requires std::is_invocable_v<Callable, core::behavior::BaseMass&>
+struct GetComponentFromCallable<Callable>
+{
+    using type = core::behavior::BaseMass;
+};
+
+template<class Callable> requires std::is_invocable_v<Callable, core::behavior::BaseMechanicalState&>
+struct GetComponentFromCallable<Callable>
+{
+    using type = core::behavior::BaseMechanicalState;
+};
+
+template<class Callable> requires std::is_invocable_v<Callable, core::BaseMapping&>
+struct GetComponentFromCallable<Callable>
+{
+    using type = core::BaseMapping;
+};
+
+template<class Callable> requires std::is_invocable_v<Callable, core::behavior::BaseProjectiveConstraintSet&>
+struct GetComponentFromCallable<Callable>
+{
+    using type = core::behavior::BaseProjectiveConstraintSet;
+};
+
+template<class Callable>
+using CallableVisitor = BaseCallableVisitor<Callable, typename GetComponentFromCallable<Callable>::type>;
+
+}

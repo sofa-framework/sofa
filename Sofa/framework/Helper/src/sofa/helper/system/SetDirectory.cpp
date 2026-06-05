@@ -174,7 +174,13 @@ std::string SetDirectory::GetProcessFullPath(const char* filename)
         GetModuleFileName(nullptr,tpath,1024);
         std::wstring wprocessPath = tpath;
         std::string processPath;
-        processPath.assign(wprocessPath.begin(), wprocessPath.end() );
+        // Convert wide string to narrow string properly
+        int size = WideCharToMultiByte(CP_UTF8, 0, wprocessPath.c_str(), -1, nullptr, 0, NULL, FALSE);
+        if (size > 0)
+        {
+            processPath.resize(size - 1);
+            WideCharToMultiByte(CP_UTF8, 0, wprocessPath.c_str(), -1, &processPath[0], size, NULL, FALSE);
+        }
         return processPath;
     }
     /// \TODO use GetCommandLineW and/or CommandLineToArgvW. This is however not strictly necessary, as argv[0] already contains the full path in most cases.

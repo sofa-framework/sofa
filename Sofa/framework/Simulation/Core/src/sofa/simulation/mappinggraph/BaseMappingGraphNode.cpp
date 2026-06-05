@@ -19,47 +19,25 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <difflib.h>
-#include <sofa/helper/DiffLib.h>
+#include <sofa/simulation/mappinggraph/BaseMappingGraphNode.h>
 
-#include <cstring>
-#include <queue>
-#include <utility>
-
-namespace sofa::helper
+namespace sofa::simulation
 {
 
-std::vector<std::tuple<std::string, SReal>> SOFA_HELPER_API getClosestMatch(const std::string& needle,
-                                                                            const std::vector<std::string>& haystack,
-                                                                            const Size numEntries, const SReal threshold)
+bool BaseMappingGraphNode::isMapped() const
 {
-    class Tuple
+    if (m_isMapped.has_value())
     {
-    public:
-        Tuple(SReal ratio_, std::string value_)
-            : ratio(ratio_), value(std::move(value_)) {}
-
-        SReal ratio;
-        std::string value;
-    };
-    auto cmp = [](const Tuple& left, Tuple& right) { return left.ratio < right.ratio; };
-    std::priority_queue<Tuple, std::vector<Tuple>, decltype(cmp)> q3(cmp);
-
-    for(auto& s : haystack)
-    {
-        auto foo = difflib::MakeSequenceMatcher(needle,s);
-        q3.emplace(foo.ratio(), s);
+        return m_isMapped.value();
     }
-    std::vector<std::tuple<std::string, SReal>> result;
-    while (!q3.empty() && result.size() <= numEntries)
+
+    const auto isMapped = std::any_of(m_parents.begin(), m_parents.end(), [](const SPtr& node)
     {
-        if(q3.top().ratio < threshold)
-            break;
-        result.emplace_back(q3.top().value, q3.top().ratio);
-        q3.pop();
-    }
-    return result;
-};
+        return node->getType() == NodeType::Mapping || node->isMapped();
+    });
 
-} // namespace sofa
+    m_isMapped = isMapped;
+    return isMapped;
+}
 
+}
