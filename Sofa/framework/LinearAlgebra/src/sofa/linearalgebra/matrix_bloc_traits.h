@@ -225,7 +225,7 @@ public:
     static void split_col_index(IndexType& index, IndexType& modulo) { bloc_index_func<NC, IndexType>::split(index, modulo); }
 
     static sofa::linearalgebra::BaseMatrix::ElementType getElementType() { return sofa::linearalgebra::BaseMatrix::ELEMENT_FLOAT; }
-    static const std::string Name() { return sofa::type::TypeTrait<Real>::GetTypeName(); }
+    static const std::string Name() { return sofa::type::TypeTrait<Real>::name(); }
 };
 
 } // namespace sofa::linearalgebra
