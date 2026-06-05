@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/solidmechanics/fem/elastic/ElementCorotationalFEMForceField.h>
+#include <sofa/component/solidmechanics/fem/elastic/CorotationalFEMForceField.h>
 #include <sofa/component/solidmechanics/fem/elastic/impl/VectorTools.h>
 #include <sofa/core/behavior/BaseLocalForceFieldMatrix.h>
 
@@ -31,7 +31,7 @@ namespace sofa::component::solidmechanics::fem::elastic
 {
 
 template <class DataTypes, class ElementType>
-ElementCorotationalFEMForceField<DataTypes, ElementType>::ElementCorotationalFEMForceField()
+CorotationalFEMForceField<DataTypes, ElementType>::CorotationalFEMForceField()
     : m_rotationMethods(this)
 {
     this->addUpdateCallback("selectRotationMethod", {&this->m_rotationMethods.d_rotationMethod},
@@ -47,7 +47,7 @@ ElementCorotationalFEMForceField<DataTypes, ElementType>::ElementCorotationalFEM
 }
 
 template <class DataTypes, class ElementType>
-void ElementCorotationalFEMForceField<DataTypes, ElementType>::init()
+void CorotationalFEMForceField<DataTypes, ElementType>::init()
 {
     BaseElementLinearFEMForceField<DataTypes, ElementType>::init();
     FEMForceField<DataTypes, ElementType>::init();
@@ -70,7 +70,7 @@ void ElementCorotationalFEMForceField<DataTypes, ElementType>::init()
 }
 
 template <class DataTypes, class ElementType>
-void ElementCorotationalFEMForceField<DataTypes, ElementType>::beforeElementForce(
+void CorotationalFEMForceField<DataTypes, ElementType>::beforeElementForce(
     const sofa::core::MechanicalParams* mparams, sofa::type::vector<ElementGradient>& f,
     const sofa::VecCoord_t<DataTypes>& x)
 {
@@ -79,7 +79,7 @@ void ElementCorotationalFEMForceField<DataTypes, ElementType>::beforeElementForc
 }
 
 template <class DataTypes, class ElementType>
-void ElementCorotationalFEMForceField<DataTypes, ElementType>::computeElementsForces(
+void CorotationalFEMForceField<DataTypes, ElementType>::computeElementsForces(
     const sofa::simulation::Range<std::size_t>& range, const sofa::core::MechanicalParams* mparams,
     sofa::type::vector<ElementGradient>& elementForces, const sofa::VecCoord_t<DataTypes>& nodePositions)
 {
@@ -128,7 +128,7 @@ void ElementCorotationalFEMForceField<DataTypes, ElementType>::computeElementsFo
 
 
 template <class DataTypes, class ElementType>
-void ElementCorotationalFEMForceField<DataTypes, ElementType>::computeElementsForcesDeriv(
+void CorotationalFEMForceField<DataTypes, ElementType>::computeElementsForcesDeriv(
     const sofa::simulation::Range<std::size_t>& range,
     const sofa::core::MechanicalParams* mparams,
     sofa::type::vector<ElementGradient>& elementForcesDeriv,
@@ -165,7 +165,7 @@ void ElementCorotationalFEMForceField<DataTypes, ElementType>::computeElementsFo
 }
 
 template <class DataTypes, class ElementType>
-void ElementCorotationalFEMForceField<DataTypes, ElementType>::buildStiffnessMatrix(
+void CorotationalFEMForceField<DataTypes, ElementType>::buildStiffnessMatrix(
     sofa::core::behavior::StiffnessMatrix* matrix)
 {
     auto dfdx = matrix->getForceDerivativeIn(this->sofa::core::behavior::ForceField<DataTypes>::mstate)
@@ -202,7 +202,7 @@ void ElementCorotationalFEMForceField<DataTypes, ElementType>::buildStiffnessMat
 }
 
 template <class DataTypes, class ElementType>
-SReal ElementCorotationalFEMForceField<DataTypes, ElementType>::getPotentialEnergy(
+SReal CorotationalFEMForceField<DataTypes, ElementType>::getPotentialEnergy(
     const sofa::core::MechanicalParams*,
     const sofa::DataVecCoord_t<DataTypes>& x) const
 {
@@ -210,7 +210,7 @@ SReal ElementCorotationalFEMForceField<DataTypes, ElementType>::getPotentialEner
 }
 
 template <class DataTypes, class ElementType>
-auto ElementCorotationalFEMForceField<DataTypes, ElementType>::translation(
+auto CorotationalFEMForceField<DataTypes, ElementType>::translation(
     const std::array<sofa::Coord_t<DataTypes>, trait::NumberOfNodesInElement>& nodes) const -> sofa::Coord_t<DataTypes>
 {
     // return nodes[0];
@@ -218,7 +218,7 @@ auto ElementCorotationalFEMForceField<DataTypes, ElementType>::translation(
 }
 
 template <class DataTypes, class ElementType>
-auto ElementCorotationalFEMForceField<DataTypes, ElementType>::computeCentroid(
+auto CorotationalFEMForceField<DataTypes, ElementType>::computeCentroid(
     const std::array<sofa::Coord_t<DataTypes>, trait::NumberOfNodesInElement>& nodes) -> sofa::Coord_t<DataTypes>
 {
     sofa::Coord_t<DataTypes> centroid;
@@ -231,7 +231,7 @@ auto ElementCorotationalFEMForceField<DataTypes, ElementType>::computeCentroid(
 }
 
 template <class DataTypes, class ElementType>
-void ElementCorotationalFEMForceField<DataTypes, ElementType>::computeRotations(
+void CorotationalFEMForceField<DataTypes, ElementType>::computeRotations(
     sofa::type::vector<RotationMatrix>& rotations,
     const sofa::VecCoord_t<DataTypes>& nodePositions,
     const sofa::VecCoord_t<DataTypes>& nodeRestPositions)
@@ -264,7 +264,7 @@ void ElementCorotationalFEMForceField<DataTypes, ElementType>::computeRotations(
 }
 
 template <class DataTypes, class ElementType>
-void ElementCorotationalFEMForceField<DataTypes, ElementType>::computeInitialRotations()
+void CorotationalFEMForceField<DataTypes, ElementType>::computeInitialRotations()
 {
     auto restPositionAccessor = this->sofa::core::behavior::ForceField<DataTypes>::mstate->readRestPositions();
     computeRotations(m_initialRotationsTransposed, restPositionAccessor.ref(), restPositionAccessor.ref());
