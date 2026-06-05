@@ -6,7 +6,7 @@
     <NaturalOrderingMethod/>
     <SparseLDLSolver name="linear_solver" template="CompressedRowSparseMatrix"/>
 
-    <ElementCorotationalFEMForceField name="FEM" template="Vec3,Hexahedron"
+    <CorotationalFEMForceField name="FEM" template="Vec3,Hexahedron"
                                       youngModulus="2e6" poissonRatio="0.45" topology="@grid"
                                       computeForceStrategy="parallel" computeForceDerivStrategy="parallel"/>
 
