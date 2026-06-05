@@ -38,6 +38,7 @@ set(HEADER_FILES
     ${SOFATYPESRC_ROOT}/stable_vector.h
     ${SOFATYPESRC_ROOT}/StrongType.h
     ${SOFATYPESRC_ROOT}/trait/Rebind.h
+    ${SOFATYPESRC_ROOT}/trait/TypeTrait.h
     ${SOFATYPESRC_ROOT}/trait/is_container.h
     ${SOFATYPESRC_ROOT}/trait/is_fixed_array.h
     ${SOFATYPESRC_ROOT}/trait/is_specialization_of.h
