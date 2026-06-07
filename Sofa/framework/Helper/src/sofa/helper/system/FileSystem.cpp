@@ -220,6 +220,9 @@ bool FileSystem::isDirectory(const std::string& path, bool quiet)
 
 bool FileSystem::isFile(const std::string &path, bool quiet)
 {
+    if(!exists(path, quiet))
+        return false;
+
     std::error_code ec;
     const bool result = fs::is_regular_file(path, ec);
     if (ec && !quiet)
