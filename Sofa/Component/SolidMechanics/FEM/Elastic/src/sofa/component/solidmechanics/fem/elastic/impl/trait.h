@@ -55,7 +55,7 @@ struct trait
     using ElasticityTensor = sofa::type::FullySymmetric4Tensor<DataTypes::spatial_dimensions, Real>;
 
     /// the type of B in e = B d, if e is the strain, and d is the displacement
-    using StrainDisplacement = sofa::component::solidmechanics::fem::elastic::StrainDisplacement<DataTypes, ElementType>;
+    using StrainDisplacement = StrainDisplacement<DataTypes, ElementType>;
 
     /// the concatenation of the displacement of the element nodes in a single vector
     using ElementDisplacement = sofa::type::Vec<NumberOfDofsInElement, Real>;
