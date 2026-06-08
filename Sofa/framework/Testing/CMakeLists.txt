@@ -86,6 +86,7 @@ target_compile_options(${PROJECT_NAME} PUBLIC "-DGTEST_LINKED_AS_SHARED_LIBRARY=
 
 set(SOFA_TESTING_RESOURCES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/resources")
 
+sofa_treat_warnings_as_errors(${PROJECT_NAME})
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER Sofa.Framework) # IDE folder
 
 sofa_create_package_with_targets(
