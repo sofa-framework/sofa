@@ -75,7 +75,7 @@ void WorkerThread::run(void)
 {
 #ifdef WIN32
     const std::wstring widestr = std::wstring(m_name.begin(), m_name.end());
-    HRESULT r = SetThreadDescription(
+    (void)SetThreadDescription(
         GetCurrentThread(),
         widestr.c_str()
         );
@@ -203,9 +203,19 @@ bool WorkerThread::pushTask(Task *task)
         return false;
     }
 
+    // Capture the task's Status* before the task becomes visible to workers.
+    // Once m_tasks.push_back(task) runs and the lock is released, a worker
+    // can pop the task, run it, and (if run() returns MemoryAlloc::Dynamic)
+    // free it. Reading task->getStatus() after that point would dereference
+    // freed memory. Status objects are owned by the caller of the dispatch
+    // (e.g. a CpuTaskStatus on the originating frame) and are guaranteed to
+    // outlive the workUntilDone() that follows the push, so the captured
+    // pointer remains valid for the post-publish code below.
+    Task::Status* statusForMain = nullptr;
     {
         simulation::ScopedLock lock(m_taskMutex);
-        const int taskId = task->getStatus()->setBusy(true);
+        statusForMain = task->getStatus();
+        const int taskId = statusForMain->setBusy(true);
         task->m_id = taskId;
         m_tasks.push_back(task);
     }
@@ -213,7 +223,7 @@ bool WorkerThread::pushTask(Task *task)
 
     if (m_taskScheduler->testMainTaskStatus(nullptr))
     {
-        m_taskScheduler->setMainTaskStatus(task->getStatus());
+        m_taskScheduler->setMainTaskStatus(statusForMain);
         m_taskScheduler->wakeUpWorkers();
     }
 

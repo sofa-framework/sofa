@@ -20,34 +20,59 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/solidmechanics/fem/elastic/impl/LameParameters.h>
-#include <sofa/type/FullySymmetric4Tensor.h>
-#include <sofa/component/solidmechanics/fem/elastic/impl/KroneckerDelta.h>
 
-namespace sofa::component::solidmechanics::fem::elastic
+#include <sofa/simulation/config.h>
+#include <sofa/core/BaseMapping.h>
+#include <sofa/core/behavior/BaseForceField.h>
+#include <sofa/core/behavior/BaseMass.h>
+#include <sofa/core/behavior/BaseMechanicalState.h>
+#include <sofa/core/behavior/BaseProjectiveConstraintSet.h>
+
+namespace sofa::simulation
 {
-
 
 /**
- * @brief Creates an isotropic elasticity tensor for given material properties.
+ * @brief Visitor interface for traversing the mapping graph.
  *
- * This function constructs and returns an elasticity tensor for an isotropic material
- * characterized by its Young's modulus and Poisson's ratio. It computes the tensor
- * using the Lamé parameters, which are derived from the given material properties.
- *
- * @param mu Lamé's first parameter
- * @param lambda Lamé's second parameter
- * @return The isotropic elasticity tensor
+ * This visitor pattern is used to allow algorithms to process nodes in a
+ * structured way without modifying their structure or coupling traversal logic
+ * with specific component types. Implementations must override visit methods
+ * corresponding to the behaviors they intend to handle.
  */
-template <sofa::Size D, class real>
-auto makeIsotropicElasticityTensor(LameMu<real> mu, LameLambda<real> lambda)
+class MappingGraphVisitor
 {
-    return sofa::type::FullySymmetric4Tensor<D, real>{
-        [mu = mu.get(), lambda = lambda.get()](sofa::Index i, sofa::Index j, sofa::Index k, sofa::Index l)
-        {
-            return mu * (kroneckerDelta<real>(i, k) * kroneckerDelta<real>(j, l) + kroneckerDelta<real>(i, l) * kroneckerDelta<real>(j, k)) +
-                        lambda * kroneckerDelta<real>(i, j) * kroneckerDelta<real>(k, l);
-        }};
-}
+public:
+    virtual ~MappingGraphVisitor() = default;
+
+    /**
+     * @brief Visits a mechanical state node.
+     * @param mstate The mechanical state component to visit.
+     */
+    virtual void visit(core::behavior::BaseMechanicalState&) {}
+
+    /**
+     * @brief Visits a base mapping node.
+     * @param mapping The mapping component to visit.
+     */
+    virtual void visit(core::BaseMapping&) {}
+
+    /**
+     * @brief Visits a force field behavior node.
+     * @param ff The force field component to visit.
+     */
+    virtual void visit(core::behavior::BaseForceField&) {}
+
+    /**
+     * @brief Visits a mass behavior node.
+     * @param m The mass component to visit.
+     */
+    virtual void visit(core::behavior::BaseMass&) {}
+
+    /**
+     * @brief Visits a projective constraint node.
+     * @param pcs The projective constraint component to visit.
+     */
+    virtual void visit(sofa::core::behavior::BaseProjectiveConstraintSet&) {}
+};
 
 }

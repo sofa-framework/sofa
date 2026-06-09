@@ -19,35 +19,25 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-#include <sofa/component/solidmechanics/fem/elastic/impl/LameParameters.h>
-#include <sofa/type/FullySymmetric4Tensor.h>
-#include <sofa/component/solidmechanics/fem/elastic/impl/KroneckerDelta.h>
+#include <sofa/simulation/mappinggraph/BaseMappingGraphNode.h>
 
-namespace sofa::component::solidmechanics::fem::elastic
+namespace sofa::simulation
 {
 
-
-/**
- * @brief Creates an isotropic elasticity tensor for given material properties.
- *
- * This function constructs and returns an elasticity tensor for an isotropic material
- * characterized by its Young's modulus and Poisson's ratio. It computes the tensor
- * using the Lamé parameters, which are derived from the given material properties.
- *
- * @param mu Lamé's first parameter
- * @param lambda Lamé's second parameter
- * @return The isotropic elasticity tensor
- */
-template <sofa::Size D, class real>
-auto makeIsotropicElasticityTensor(LameMu<real> mu, LameLambda<real> lambda)
+bool BaseMappingGraphNode::isMapped() const
 {
-    return sofa::type::FullySymmetric4Tensor<D, real>{
-        [mu = mu.get(), lambda = lambda.get()](sofa::Index i, sofa::Index j, sofa::Index k, sofa::Index l)
-        {
-            return mu * (kroneckerDelta<real>(i, k) * kroneckerDelta<real>(j, l) + kroneckerDelta<real>(i, l) * kroneckerDelta<real>(j, k)) +
-                        lambda * kroneckerDelta<real>(i, j) * kroneckerDelta<real>(k, l);
-        }};
+    if (m_isMapped.has_value())
+    {
+        return m_isMapped.value();
+    }
+
+    const auto isMapped = std::any_of(m_parents.begin(), m_parents.end(), [](const SPtr& node)
+    {
+        return node->getType() == NodeType::Mapping || node->isMapped();
+    });
+
+    m_isMapped = isMapped;
+    return isMapped;
 }
 
 }
