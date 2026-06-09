@@ -555,7 +555,8 @@ public:
 
     /// return the smallest common parent between this and node2 (returns nullptr if separated sub-graphes)
     Node* findCommonParent( simulation::Node* node2 );
-
+    
+    bool m_bboxIsFixed{false};
 protected:
     bool debug_;
     bool initialized;
