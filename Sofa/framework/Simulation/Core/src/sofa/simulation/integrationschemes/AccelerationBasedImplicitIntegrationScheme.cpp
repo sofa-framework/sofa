@@ -139,7 +139,7 @@ void AccelerationBasedImplicitIntegrationScheme::computeRHS(bool firstIteration)
         SCOPED_TIMER("ComputeForce");
         m_mop->mparams.setImplicit(true); // this solver is implicit
         // compute the net forces at the beginning of the time step
-        m_mop->computeForce(f);
+        m_mop->computeForce(m_mappingGraph, f, true, true, nullptr);
     }
 
     {
@@ -151,7 +151,7 @@ void AccelerationBasedImplicitIntegrationScheme::computeRHS(bool firstIteration)
         if (   fabs(d_rayleighMass.getValue()) > std::numeric_limits<SReal>::epsilon()
             || fabs(d_rayleighStiffness.getValue()) > std::numeric_limits<SReal>::epsilon())
         {
-            m_mop->addMBKv(m_r0, core::MatricesFactors::M(-d_rayleighMass.getValue()),
+            m_mop->addMBKv(m_mappingGraph, m_r0, core::MatricesFactors::M(-d_rayleighMass.getValue()),
             core::MatricesFactors::B(0),
             core::MatricesFactors::K(d_rayleighStiffness.getValue()));
         }
@@ -168,26 +168,26 @@ void AccelerationBasedImplicitIntegrationScheme::computeRHS(bool firstIteration)
         if (firstIteration)
         {
             m_mop->mparams.setV(m_r1);
-            m_mop->addMBKv(m_r0, core::MatricesFactors::M(0.0),
+            m_mop->addMBKv(m_mappingGraph, m_r0, core::MatricesFactors::M(0.0),
                            core::MatricesFactors::B(0),
                            core::MatricesFactors::K(-1.0));
 
             m_mop->mparams.setV(m_r2);
-            m_mop->addMBKv(m_r0, core::MatricesFactors::M(d_rayleighMass.getValue()),
+            m_mop->addMBKv(m_mappingGraph, m_r0, core::MatricesFactors::M(d_rayleighMass.getValue()),
                         core::MatricesFactors::B(-1.0),
                         core::MatricesFactors::K(-getPositionUpdateDerivedFromVelocity() - d_rayleighStiffness.getValue()));
         }
 
         m_mop->mparams.setV(m_acceleration);
-        m_mop->addMBKv(m_r0, core::MatricesFactors::M(-1.0),
+        m_mop->addMBKv(m_mappingGraph, m_r0, core::MatricesFactors::M(-1.0),
                     core::MatricesFactors::B(0),
                     core::MatricesFactors::K(0));
         m_mop->mparams.setV(backV);
 
         // Apply projective constraints to the full residue
-        m_mop->projectResponse(m_r0);
-        m_mop->projectResponse(m_r1);
-        m_mop->projectResponse(m_r2);
+        m_mop->projectResponse(m_mappingGraph, m_r0);
+        m_mop->projectResponse(m_mappingGraph, m_r1);
+        m_mop->projectResponse(m_mappingGraph, m_r2);
     }
 
 }
