@@ -393,31 +393,28 @@ void DistanceGridForceField<DataTypes>::addDForce(const sofa::core::MechanicalPa
 }
 
 template<class DataTypes>
-void DistanceGridForceField<DataTypes>::addKToMatrix(const sofa::core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+void DistanceGridForceField<DataTypes>::addKToMatrix(sofa::linearalgebra::BaseMatrix * mat, SReal kFactor, unsigned int &offset)
 {
-    sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
-    Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
-    unsigned int &offset = r.offset;
-    sofa::linearalgebra::BaseMatrix* mat = r.matrix;
+    if (!grid)
+        return;
 
-    if (r)
+    const sofa::type::vector<Contact>& contacts = this->contacts.getValue();
+
+    if (contacts.empty())
+        return;
+        
+    for (unsigned int i=0; i<contacts.size(); i++)
     {
-        if (!grid) return;
-        const sofa::type::vector<Contact>& contacts = this->contacts.getValue();
-        if (contacts.empty()) return;
-        for (unsigned int i=0; i<contacts.size(); i++)
-        {
-            const Contact& c = contacts[i];
-            const int p = c.index;
-            const Real fact = (Real)(c.fact * -kFactor);
-            const Deriv& normal = c.normal;
-            for (sofa::Size l=0; l<Deriv::total_size; ++l)
-                for (sofa::Size c=0; c<Deriv::total_size; ++c)
-                {
-                    SReal coef = normal[l] * fact * normal[c];
-                    mat->add(offset + p*Deriv::total_size + l, offset + p*Deriv::total_size + c, coef);
-                }
-        }
+        const Contact& c = contacts[i];
+        const int p = c.index;
+        const Real fact = (Real)(c.fact * -kFactor);
+        const Deriv& normal = c.normal;
+        for (sofa::Size l=0; l<Deriv::total_size; ++l)
+            for (sofa::Size c=0; c<Deriv::total_size; ++c)
+            {
+                SReal coef = normal[l] * fact * normal[c];
+                mat->add(offset + p*Deriv::total_size + l, offset + p*Deriv::total_size + c, coef);
+            }
     }
 }
 

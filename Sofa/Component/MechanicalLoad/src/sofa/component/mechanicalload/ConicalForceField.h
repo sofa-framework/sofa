@@ -105,14 +105,15 @@ public:
 
     void addForce(const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv &  dataF, const DataVecCoord &  dataX , const DataVecDeriv & dataV ) override;
     void addDForce(const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv&   datadF , const DataVecDeriv&   datadX ) override;
-    void buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix) override;
+    void doBuildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix) override;
+    void doBuildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) final;
+
     SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override
     {
         msg_warning() << "Method getPotentialEnergy not implemented yet.";
         return 0.0;
     }
-    void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) final;
-
+    
     virtual void updateStiffness( const VecCoord& x );
 
     virtual bool isIn(Coord p);

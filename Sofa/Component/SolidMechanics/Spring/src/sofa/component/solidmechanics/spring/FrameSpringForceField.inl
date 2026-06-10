@@ -170,7 +170,7 @@ void FrameSpringForceField<DataTypes>::addDForce(const core::MechanicalParams* /
 }
 
 template <class DataTypes>
-void FrameSpringForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+void FrameSpringForceField<DataTypes>::doBuildDampingMatrix(core::behavior::DampingMatrix*)
 {
     // No damping in this ForceField
 }

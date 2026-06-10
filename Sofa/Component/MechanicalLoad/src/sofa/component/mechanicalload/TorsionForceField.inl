@@ -121,7 +121,7 @@ void TorsionForceField<DataTypes>::addKToMatrix(linearalgebra::BaseMatrix* matri
 }
 
 template <typename DataTypes>
-void TorsionForceField<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
+void TorsionForceField<DataTypes>::doBuildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
 {
     auto dfdx = matrix->getForceDerivativeIn(this->mstate)
                        .withRespectToPositionsIn(this->mstate);
@@ -143,7 +143,7 @@ void TorsionForceField<DataTypes>::buildStiffnessMatrix(core::behavior::Stiffnes
 }
 
 template <typename DataTypes>
-void TorsionForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+void TorsionForceField<DataTypes>::doBuildDampingMatrix(core::behavior::DampingMatrix*)
 {
     // No damping in this ForceField
 }

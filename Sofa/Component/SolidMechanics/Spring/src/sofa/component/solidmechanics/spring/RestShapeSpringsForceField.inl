@@ -543,7 +543,7 @@ void RestShapeSpringsForceField<DataTypes>::draw(const VisualParams *vparams)
 }
 
 template<class DataTypes>
-void RestShapeSpringsForceField<DataTypes>::addKToMatrix(const MechanicalParams* mparams, const MultiMatrixAccessor* matrix )
+void RestShapeSpringsForceField<DataTypes>::doAddKToMatrix(const MechanicalParams* mparams, const MultiMatrixAccessor* matrix )
 {
     const MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
     BaseMatrix* mat = mref.matrix;
@@ -589,7 +589,7 @@ void RestShapeSpringsForceField<DataTypes>::addKToMatrix(const MechanicalParams*
 }
 
 template<class DataTypes>
-void RestShapeSpringsForceField<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
+void RestShapeSpringsForceField<DataTypes>::doBuildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
 {
     const VecReal& k = d_stiffness.getValue();
     const VecReal& k_a = d_angularStiffness.getValue();
@@ -628,7 +628,7 @@ void RestShapeSpringsForceField<DataTypes>::buildStiffnessMatrix(core::behavior:
 }
 
 template <class DataTypes>
-void RestShapeSpringsForceField<DataTypes>::buildDampingMatrix(
+void RestShapeSpringsForceField<DataTypes>::doBuildDampingMatrix(
     core::behavior::DampingMatrix* matrix)
 {
     SOFA_UNUSED(matrix);

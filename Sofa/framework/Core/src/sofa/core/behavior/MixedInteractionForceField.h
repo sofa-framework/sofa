@@ -61,6 +61,13 @@ public:
     typedef core::objectmodel::Data<VecCoord2> DataVecCoord2;
     typedef core::objectmodel::Data<VecDeriv2> DataVecDeriv2;
 
+    // Avoid warning : hidden [-Woverloaded-virtual=]
+    using BaseForceField::addForce;
+    using BaseForceField::addDForce;
+    using BaseForceField::getPotentialEnergy;
+    using BaseInteractionForceField::getMechModel1;
+    using BaseInteractionForceField::getMechModel2;
+
 protected:
     explicit MixedInteractionForceField(MechanicalState<DataTypes1> *mm1 = nullptr, MechanicalState<DataTypes2> *mm2 = nullptr);
 
@@ -80,7 +87,7 @@ public:
     /// This method retrieves the force, x and v vector from the two MechanicalState
     /// and call the internal addForce(VecDeriv&,VecDeriv&,const VecCoord&,const VecCoord&,const VecDeriv&,const VecDeriv&)
     /// method implemented by the component.
-    void addForce(const MechanicalParams* mparams, MultiVecDerivId fId ) override;
+    void doAddForce(const MechanicalParams* mparams, MultiVecDerivId fId ) override;
 
     /// Compute the force derivative given a small displacement from the
     /// position and velocity used in the previous call to addForce().
@@ -95,18 +102,8 @@ public:
     /// This method retrieves the force and dx vector from the two MechanicalState
     /// and call the internal addDForce(VecDeriv1&,VecDeriv2&,const VecDeriv1&,const VecDeriv2&,SReal,SReal)
     /// method implemented by the component.
-    void addDForce(const MechanicalParams* mparams, MultiVecDerivId dfId ) override;
+    void doAddDForce(const MechanicalParams* mparams, MultiVecDerivId dfId ) override;
 
-
-    /// Get the potential energy associated to this ForceField.
-    ///
-    /// Used to estimate the total energy of the system by some
-    /// post-stabilization techniques.
-    ///
-    /// This method retrieves the x vector from the MechanicalState and call
-    /// the internal getPotentialEnergy(const VecCoord&,const VecCoord&) method implemented by
-    /// the component.
-    SReal getPotentialEnergy(const MechanicalParams* mparams) const override;
 
     /// Given the current position and velocity states, update the current force
     /// vector by computing and adding the forces associated with this
@@ -135,6 +132,17 @@ public:
 
     virtual void addDForce(const MechanicalParams* mparams, DataVecDeriv1& df1, DataVecDeriv2& df2, const DataVecDeriv1& dx1, const DataVecDeriv2& dx2)=0;
 
+
+    /// Get the potential energy associated to this ForceField.
+    ///
+    /// Used to estimate the total energy of the system by some
+    /// post-stabilization techniques.
+    ///
+    /// This method retrieves the x vector from the MechanicalState and call
+    /// the internal getPotentialEnergy(const VecCoord&,const VecCoord&) method implemented by
+    /// the component.
+    SReal doGetPotentialEnergy(const MechanicalParams* mparams) const override;
+
     /// Get the potential energy associated to this ForceField.
     ///
     /// Used to estimate the total energy of the system by some
@@ -152,9 +160,6 @@ public:
         sofa::helper::replaceAll(name, "ForceField", "FF");
         return name;
     }
-
-    using Inherit2::getMechModel1;
-    using Inherit2::getMechModel2;
 };
 
 #if !defined(SOFA_CORE_BEHAVIOR_MIXEDINTERACTIONFORCEFIELD_CPP)

@@ -526,7 +526,7 @@ void TriangularBendingSprings<DataTypes>::addDForce(const core::MechanicalParams
 }
 
 template <class DataTypes>
-void TriangularBendingSprings<DataTypes>::buildStiffnessMatrix(
+void TriangularBendingSprings<DataTypes>::doBuildStiffnessMatrix(
     core::behavior::StiffnessMatrix* matrix)
 {
     auto dfdx = matrix->getForceDerivativeIn(this->mstate)
@@ -553,7 +553,7 @@ void TriangularBendingSprings<DataTypes>::buildStiffnessMatrix(
 }
 
 template <class DataTypes>
-void TriangularBendingSprings<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+void TriangularBendingSprings<DataTypes>::doBuildDampingMatrix(core::behavior::DampingMatrix*)
 {
     // No damping in this ForceField
 }

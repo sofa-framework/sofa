@@ -226,17 +226,13 @@ void PlaneForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams
 }
 
 template<class DataTypes>
-void PlaneForceField<DataTypes>::addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix )
+void PlaneForceField<DataTypes>::addKToMatrix(sofa::linearalgebra::BaseMatrix * matrix, SReal kFact, unsigned int &offset)
 {
     if(this->d_componentState.getValue() != ComponentState::Valid)
         return ;
 
-    const Real fact = (Real)(-this->d_stiffness.getValue()*sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue()));
     Deriv normal;
     DataTypes::setDPos(normal, d_planeNormal.getValue());
-    const sofa::core::behavior::MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
-    sofa::linearalgebra::BaseMatrix* mat = mref.matrix;
-    unsigned int offset = mref.offset;
 
     for (unsigned int i=0; i<this->m_contacts.size(); i++)
     {
@@ -244,14 +240,14 @@ void PlaneForceField<DataTypes>::addKToMatrix(const core::MechanicalParams* mpar
         for (sofa::Index l=0; l<Deriv::total_size; ++l)
             for (sofa::Index c=0; c<Deriv::total_size; ++c)
             {
-                SReal coef = normal[l] * fact * normal[c];
-                mat->add(offset + p*Deriv::total_size + l, offset + p*Deriv::total_size + c, coef);
+                SReal coef = normal[l] * kFact * normal[c];
+                matrix->add(offset + p*Deriv::total_size + l, offset + p*Deriv::total_size + c, coef);
             }
     }
 }
 
 template <class DataTypes>
-void PlaneForceField<DataTypes>::buildStiffnessMatrix(sofa::core::behavior::StiffnessMatrix* matrix)
+void PlaneForceField<DataTypes>::doBuildStiffnessMatrix(sofa::core::behavior::StiffnessMatrix* matrix)
 {
     if (!this->isComponentStateValid())
     {
@@ -273,7 +269,7 @@ void PlaneForceField<DataTypes>::buildStiffnessMatrix(sofa::core::behavior::Stif
 }
 
 template <class DataTypes>
-void PlaneForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+void PlaneForceField<DataTypes>::doBuildDampingMatrix(core::behavior::DampingMatrix*)
 {
     // No damping in this ForceField
 }

@@ -180,7 +180,7 @@ void SphereForceField<DataTypes>::updateStiffness( const VecCoord& x )
 }
 
 template <class DataTypes>
-void SphereForceField<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
+void SphereForceField<DataTypes>::doBuildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
 {
     const Real fact = (Real)(-this->d_stiffness.getValue());
 
@@ -202,7 +202,7 @@ void SphereForceField<DataTypes>::buildStiffnessMatrix(core::behavior::Stiffness
 }
 
 template <class DataTypes>
-void SphereForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+void SphereForceField<DataTypes>::doBuildDampingMatrix(core::behavior::DampingMatrix*)
 {
     // No damping in this ForceField
 }

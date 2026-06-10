@@ -81,7 +81,6 @@ public:
     /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC) and resolution parameters (smoothness, ...)
     virtual void getConstraintInfo(const ConstraintParams* cParams, VecConstraintBlockInfo& blocks, VecPersistentID& ids);
 
-
     //DEPRECATED(v25.06, v25.12)
     typedef sofa::type::vector<type::Vec<3,double>> VecConstCoord;
     typedef sofa::type::vector<type::Vec<3,double>> VecConstDeriv;

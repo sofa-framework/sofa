@@ -145,7 +145,7 @@ void AngularSpringForceField<DataTypes>::addDForce(const core::MechanicalParams*
 
 
 template<class DataTypes>
-void AngularSpringForceField<DataTypes>::addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix )
+void AngularSpringForceField<DataTypes>::doAddKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix )
 {
     const int N = 6;
     const sofa::core::behavior::MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
@@ -163,7 +163,7 @@ void AngularSpringForceField<DataTypes>::addKToMatrix(const core::MechanicalPara
 }
 
 template <class DataTypes>
-void AngularSpringForceField<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
+void AngularSpringForceField<DataTypes>::doBuildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
 {
     auto dfdx = matrix->getForceDerivativeIn(this->mstate)
                        .withRespectToPositionsIn(this->mstate);
@@ -193,7 +193,7 @@ void AngularSpringForceField<DataTypes>::buildStiffnessMatrix(core::behavior::St
 }
 
 template <class DataTypes>
-void AngularSpringForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+void AngularSpringForceField<DataTypes>::doBuildDampingMatrix(core::behavior::DampingMatrix*)
 {
     // No damping in this ForceField
 }

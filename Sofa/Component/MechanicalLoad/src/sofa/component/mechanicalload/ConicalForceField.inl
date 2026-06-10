@@ -157,7 +157,7 @@ void ConicalForceField<DataTypes>::addDForce(const sofa::core::MechanicalParams*
 }
 
 template <class DataTypes>
-void ConicalForceField<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
+void ConicalForceField<DataTypes>::doBuildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
 {
     auto dfdx = matrix->getForceDerivativeIn(this->mstate)
                        .withRespectToPositionsIn(this->mstate);
@@ -174,7 +174,7 @@ void ConicalForceField<DataTypes>::buildStiffnessMatrix(core::behavior::Stiffnes
 }
 
 template <class DataTypes>
-void ConicalForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix*)
+void ConicalForceField<DataTypes>::doBuildDampingMatrix(core::behavior::DampingMatrix*)
 {
     // No damping in this ForceField
 }

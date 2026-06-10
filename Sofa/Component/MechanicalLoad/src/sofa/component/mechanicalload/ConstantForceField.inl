@@ -443,7 +443,7 @@ void ConstantForceField<DataTypes>::addKToMatrix(const sofa::core::behavior::Mul
 }
 
 template <class DataTypes>
-void ConstantForceField<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
+void ConstantForceField<DataTypes>::doBuildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
 {
     SOFA_UNUSED(matrix);
 }

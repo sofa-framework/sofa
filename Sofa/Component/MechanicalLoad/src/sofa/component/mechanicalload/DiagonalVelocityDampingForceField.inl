@@ -90,7 +90,7 @@ void DiagonalVelocityDampingForceField<DataTypes>::addDForce(const core::Mechani
 }
 
 template <class DataTypes>
-void DiagonalVelocityDampingForceField<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix*)
+void DiagonalVelocityDampingForceField<DataTypes>::doBuildStiffnessMatrix(core::behavior::StiffnessMatrix*)
 {
     // DiagonalVelocityDampingForceField is a pure damping component: stiffness is not computed
 }
@@ -126,7 +126,7 @@ void DiagonalVelocityDampingForceField<DataTypes>::addBToMatrix(sofa::linearalge
 }
 
 template <class DataTypes>
-void DiagonalVelocityDampingForceField<DataTypes>::buildDampingMatrix(core::behavior::DampingMatrix* matrix)
+void DiagonalVelocityDampingForceField<DataTypes>::doBuildDampingMatrix(core::behavior::DampingMatrix* matrix)
 {
     const auto& coefs = d_dampingCoefficients.getValue();
     const std::size_t nbDampingCoeff = coefs.size();
