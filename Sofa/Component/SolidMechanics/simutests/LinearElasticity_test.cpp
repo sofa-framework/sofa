@@ -38,8 +38,7 @@
 #include <sofa/component/topology/container/dynamic/TetrahedronSetTopologyContainer.h>
 #include <sofa/component/topology/container/dynamic/TetrahedronSetGeometryAlgorithms.h>
 #include <sofa/component/mass/MeshMatrixMass.h>
-#include <sofa/component/odesolver/backward/StaticSolver.h>
-#include <sofa/component/odesolver/backward/NewtonRaphsonSolver.h>
+#include <sofa/component/integrationschemes/backward/StaticEquilibriumIntegrationScheme.h>
 #include <sofa/component/constraint/projective/FixedProjectiveConstraint.h>
 #include <sofa/component/constraint/projective/FixedPlaneProjectiveConstraint.h>
 #include <sofa/component/constraint/projective/LineProjectiveConstraint.h>
@@ -111,13 +110,11 @@ CylinderTractionStruct<DataTypes>  createCylinderTractionScene(
     cgLinearSolver->d_tolerance.setValue(1e-9);
     cgLinearSolver->d_smallDenominatorThreshold.setValue(1e-9);
     // StaticSolver
-    auto staticSolver = modeling::addNew<component::odesolver::backward::StaticSolver>(root,"StaticSolver");
+    auto staticSolver = modeling::addNew<component::integrationschemes::backward::StaticEquilibriumIntegrationScheme>(root,"StaticSolver");
     staticSolver->f_printLog.setValue(true);
-    auto newtonSolver = modeling::addNew<component::odesolver::backward::NewtonRaphsonSolver>(root,"NewtonRaphsonSolver");
-    newtonSolver->d_maxNbIterationsNewton.setValue(1);
-    newtonSolver->d_maxNbIterationsLineSearch.setValue(1);
-    newtonSolver->d_warnWhenDiverge.setValue(false);
-    newtonSolver->d_warnWhenLineSearchFails.setValue(false);
+    // auto newtonSolver = modeling::addNew<component::odesolver::backward::NewtonRaphsonSolver>(root,"NewtonRaphsonSolver");
+    staticSolver->d_maxNbIterationsNewton.setValue(1);
+    staticSolver->d_maxNbIterationsLineSearch.setValue(1);
     // mechanicalObject object
     typename MechanicalObject::SPtr meca1= sofa::modeling::addNew<MechanicalObject>(root);
     sofa::modeling::setDataLink(&eng->f_outputTetrahedraPositions,&meca1->x);
