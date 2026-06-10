@@ -45,7 +45,7 @@ void ImplicitIntegrationScheme::setupIntegrationStep(const core::ExecParams* par
 {
 
     m_vop = std::make_shared<sofa::simulation::common::VectorOperations>( params, this->getContext() );
-    m_mop = std::make_unique<sofa::simulation::common::MechanicalOperations>( params, this->getContext() );
+    m_mop = std::make_unique<sofa::simulation::common::MappingGraphMechanicalOperations >( params, this->getContext() );
 
     m_params = params;
     m_dt = dt;
