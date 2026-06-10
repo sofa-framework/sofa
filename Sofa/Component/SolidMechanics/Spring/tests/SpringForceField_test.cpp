@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include <sofa/component/solidmechanics/spring/SpringForceField.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/component/odesolver/backward/EulerImplicitIntegrationScheme.h>
+#include <sofa/component/integrationschemes/backward/EulerImplicitIntegrationScheme.h>
 #include <sofa/component/linearsolver/iterative/CGLinearSolver.h>
 
 #include <sofa/component/solidmechanics/testing/ForceFieldTestCreation.h>
@@ -29,7 +29,7 @@
 namespace sofa {
 
 using namespace modeling;
-typedef component::odesolver::backward::EulerImplicitIntegrationScheme EulerImplicitIntegrationScheme;
+typedef component::integrationschemes::backward::EulerImplicitIntegrationScheme EulerImplicitIntegrationScheme;
 typedef component::linearsolver::iterative::CGLinearSolver<component::linearsolver::GraphScatteredMatrix, component::linearsolver::GraphScatteredVector> CGLinearSolver;
 
 /** Used to rotate points and vectors in space for tests
