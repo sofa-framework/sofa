@@ -52,6 +52,7 @@ void ImplicitIntegrationScheme::setupIntegrationStep(const core::ExecParams* par
     m_xResult = xResult;
     m_vResult = vResult;
 
+    m_mappingGraph.build(this->getContext());
 
     doSetupIntegrationStep(params, dt, xResult, vResult);
 

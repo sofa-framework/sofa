@@ -27,6 +27,8 @@
 #include <sofa/core/behavior/MultiVec.h>
 
 #include <sofa/core/behavior/LinearSolverAccessor.h>
+#include <sofa/simulation/MappingGraphMechanicalOperations.h>
+#include <sofa/simulation/MappingGraph.h>
 
 namespace sofa::simulation::common
 {
@@ -119,8 +121,10 @@ protected:
 
 
     std::shared_ptr<sofa::simulation::common::VectorOperations > m_vop;
-    std::unique_ptr<sofa::simulation::common::MechanicalOperations> m_mop;
+    std::unique_ptr<sofa::simulation::common::MappingGraphMechanicalOperations> m_mop;
 
+
+    sofa::simulation::MappingGraph m_mappingGraph;
 };
 } // namespace sofa::component::integrationschemes
 
