@@ -5,7 +5,7 @@
         <RequiredPlugin pluginName="Sofa.Component.LinearSolver.Direct"/> <!-- Needed to use components [EigenSimplicialLDLT] -->
         <RequiredPlugin pluginName="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [BarycentricMapping] -->
         <RequiredPlugin pluginName="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
-        <RequiredPlugin pluginName="Sofa.Component.IntegrationSchemes.Backward"/> <!-- Needed to use components [NewtonRaphsonSolver StaticSolver] -->
+        <RequiredPlugin pluginName="Sofa.Component.IntegrationSchemes.Backward"/> <!-- Needed to use components [NewtonRaphsonSolver StaticEquilibriumIntegrationScheme] -->
         <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [TetrahedronFEMForceField] -->
         <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [MeshSpringForceField] -->
         <RequiredPlugin pluginName="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
@@ -25,9 +25,8 @@
     <MeshGmshLoader name="loader" filename="mesh/truthcylinder1.msh" />
 
     <Node name="Springs">
-        <NewtonRaphsonSolver name="newtonSolver_springs" maxNbIterationsNewton="100"
-                             maxNbIterationsLineSearch="1" warnWhenLineSearchFails="false"/>
-        <StaticSolver newtonSolver="@newtonSolver_springs"/>
+        <StaticEquilibriumIntegrationScheme maxNbIterationsNewton="100"
+                                            maxNbIterationsLineSearch="1"/>
         <EigenSimplicialLDLT template="CompressedRowSparseMatrixMat3x3"/>
 
         <MeshTopology src="@../loader" />
@@ -42,9 +41,7 @@
         </Node>
     </Node>
     <Node name="CoFEM">
-        <NewtonRaphsonSolver name="newtonSolver_corot" maxNbIterationsNewton="100"
-                             maxNbIterationsLineSearch="1" warnWhenLineSearchFails="false"/>
-        <StaticSolver newtonSolver="@newtonSolver_corot"/>
+        <StaticEquilibriumIntegrationScheme newtonSolver="@newtonSolver_corot" maxNbIterationsNewton="100" maxNbIterationsLineSearch="1"/>
         <EigenSimplicialLDLT template="CompressedRowSparseMatrixMat3x3"/>
 
         <MeshTopology src="@../loader" />
@@ -59,9 +56,7 @@
         </Node>
     </Node>
     <Node name="LinearFEM">
-        <NewtonRaphsonSolver name="newtonSolver_lin" maxNbIterationsNewton="100"
-                             maxNbIterationsLineSearch="1" warnWhenLineSearchFails="false"/>
-        <StaticSolver newtonSolver="@newtonSolver_lin"/>
+        <StaticEquilibriumIntegrationScheme newtonSolver="@newtonSolver_lin" maxNbIterationsNewton="100" maxNbIterationsLineSearch="1"/>
         <EigenSimplicialLDLT template="CompressedRowSparseMatrixMat3x3"/>
 
         <MeshTopology src="@../loader" />

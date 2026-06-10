@@ -23,12 +23,6 @@
     <Node name="DeformableObject">
 
         <BDFIntegrationScheme order="2" printLog="false" rayleighMass="0.01" rayleighStiffness="0.01"/>
-        <NewtonRaphsonSolver name="newton" printLog="false"
-                             maxNbIterationsNewton="10" absoluteResidualStoppingThreshold="1e-5"
-                             maxNbIterationsLineSearch="5" lineSearchCoefficient="0.5"
-                             relativeInitialStoppingThreshold="1e-3"
-                             absoluteEstimateDifferenceThreshold="1e-5"
-                             relativeEstimateDifferenceThreshold="1e-5"/>
         <ConstantSparsityPatternSystem template="CompressedRowSparseMatrix" name="A" checkIndices="false"/>
         <PCGLinearSolver name="PCG" iterations="1000" preconditioner="@preconditioner" printLog="true"/>
         <AsyncSparseLDLSolver name="preconditioner" template="CompressedRowSparseMatrix"/>
