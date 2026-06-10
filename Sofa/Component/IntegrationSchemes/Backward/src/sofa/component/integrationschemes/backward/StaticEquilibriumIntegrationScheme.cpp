@@ -36,6 +36,17 @@ using sofa::simulation::mechanicalvisitor::MechanicalGetNonDiagonalMassesCountVi
 
 namespace sofa::component::integrationschemes::backward
 {
+
+StaticEquilibriumIntegrationScheme::StaticEquilibriumIntegrationScheme()
+: d_maxNbIterationsNewton(initData(&d_maxNbIterationsNewton, static_cast<unsigned int>(10) , "maxNbIterationsNewton", "Maximum number of iteration for the Newton algorithm"))
+, d_maxNbIterationsLineSearch(initData(&d_maxNbIterationsLineSearch, static_cast<unsigned int>(1), "maxNbIterationsLineSearch", "Maximum number of iteration for the backtracking linesearch algorithm"))
+, d_newtonStepSize(initData(&d_newtonStepSize, 1.0_sreal , "newtonStepSize", "Size of the first newton step before the linesearch"))
+, d_lineSearchReductionRate(initData(&d_lineSearchReductionRate, 0.5_sreal , "lineSearchReductionRate", "Taken in [0,1[ representing the fraction of diminution of the step done in the backtracking line search (if set to 0.3, the first line search will reduce the step from 1.0 to 0.7)"))
+, d_lineSearchArmijoFactor(initData(&d_lineSearchArmijoFactor, 1e-3_sreal , "lineSearchArmijoFactor", "Taken in [0,1[ it represents a tolerance on the residue in term of the linear approximation. e.g., for a value of 0.01, it means we want the solution to decrease the residue as much as 0.01 times the linear approximation in the same direction."))
+, d_residueThreshold(initData(&d_residueThreshold, 1e-9_sreal , "residueThreshold", "Threshold under which, the residue is considered to be sufficiently low. Newton algorithm will stop after reaching a lower value"))
+, d_currentResidue(initData(&d_currentResidue , "currentResidue", "Current value of the residue"))
+{  }
+
 void StaticEquilibriumIntegrationScheme::doSetupIntegrationStep(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
 {
     simulation::common::VectorOperations::realloc(*m_vop, m_unknown, "dx", this, true);
@@ -135,6 +146,102 @@ sofa::Size  StaticEquilibriumIntegrationScheme::getIntegrationSchemeTimeOrder() 
     return 1;
 }
 
+void StaticEquilibriumIntegrationScheme::integrate(const core::ExecParams* params, SReal dt,
+                                                   sofa::core::MultiVecCoordId xResult,
+                                                   sofa::core::MultiVecDerivId vResult)
+{
+    //Constify the data values
+    const unsigned maxNewtonIt = d_maxNbIterationsNewton.getValue();
+    const unsigned maxLineSearchIt = d_maxNbIterationsLineSearch.getValue();
+    const SReal newtonStepSize = d_newtonStepSize.getValue();
+    const SReal residueThreshold = d_residueThreshold.getValue();
+    const SReal lineSearchReductionRate = d_lineSearchReductionRate.getValue();
+    const SReal lineSearchArmijoFactor = d_lineSearchArmijoFactor.getValue();
+
+    const bool printLog = f_printLog.getValue();
+
+    //Setup tue integration step
+    setupIntegrationStep(params, dt, xResult, vResult);
+
+    //Compute current residual, usefull for static solver to return fast
+    computeRHS(true);
+    SReal oldResidue = evaluateResidue();
+    SReal newResidue = evaluateResidue();
+
+
+    unsigned it = 0;
+    while ( it<maxNewtonIt && newResidue>residueThreshold )
+    {
+        const bool firstIt = it==0;
+
+        if ( ! firstIt )
+        {
+            computeRHS(firstIt);
+            oldResidue = evaluateResidue();
+        }
+        computeLHS(firstIt);
+        //Find decrease direction
+        solveLinearEquation();
+
+        //Setup variables for linesearch
+        SReal alpha = newtonStepSize;
+        SReal delta = 0.0;
+
+        //Already make a full step
+        updateStatesFromLinearSolution(alpha, firstIt);
+        computeRHS(false);
+        newResidue = evaluateResidue();
+
+        //Already make a full step
+        m_vop->v_dot(m_unknown, core::vec_id::write_access::force );
+
+        //Compute the Armijo term
+        SReal armijoTerm = lineSearchArmijoFactor * m_vop->finish();
+
+        unsigned lineSearchIt = 0;
+        while ((newResidue>(oldResidue + alpha*armijoTerm)) && lineSearchIt<maxLineSearchIt )
+        {
+            //We are backtracking on the same line. Instead of starting from initial position and
+            //adding alpha each time, we go back toward the initial position
+            delta = alpha*lineSearchReductionRate;
+            alpha -= delta;
+
+            updateStatesFromLinearSolution(-delta, false);
+            computeRHS(false);
+            newResidue = evaluateResidue();
+
+            ++lineSearchIt;
+        }
+
+        if (newResidue>oldResidue)
+        {
+            msg_warning()<<"Newton step increased the residual";
+        }
+
+        if (printLog)
+        {
+            msg_info()<<"Newton step = "<<it;
+            msg_info()<<"Current residue = "<<newResidue<< "   | previous residue = "<<oldResidue ;
+            msg_info()<<"Number of line search iterations = "<<lineSearchIt;
+        }
+        ++it ;
+    }
+    if (printLog)
+    {
+        if (newResidue<residueThreshold)
+        {
+            msg_info()<<"Newton converged to residue "<<newResidue<<" in "<<it<<" steps.";
+        }
+        else
+        {
+            msg_warning()<<"Newton didn't converge ! Current residue is "<<newResidue;
+        }
+    }
+
+    d_currentResidue.setValue(newResidue);
+
+
+}
 
 void registerStaticEquilibriumIntegrationScheme(sofa::core::ObjectFactory* factory)
 {
