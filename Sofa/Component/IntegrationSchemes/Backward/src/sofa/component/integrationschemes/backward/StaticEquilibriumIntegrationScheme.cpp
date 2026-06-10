@@ -84,9 +84,9 @@ void StaticEquilibriumIntegrationScheme::computeRHS(bool firstIteration)
         SCOPED_TIMER("ComputeForce");
         m_mop->mparams.setImplicit(true); // this solver is implicit
         // compute the net forces at the beginning of the time step
-        m_mop->computeForce(f);                                                               //f = Kx + Bv
+        m_mop->computeForce(m_mappingGraph, f, true, true, nullptr); //f = Kx + Bv
 
-        m_mop->projectResponse(f);   // b is projected to the constrained space
+        m_mop->projectResponse(m_mappingGraph,f);   // b is projected to the constrained space
     }
 
 }
