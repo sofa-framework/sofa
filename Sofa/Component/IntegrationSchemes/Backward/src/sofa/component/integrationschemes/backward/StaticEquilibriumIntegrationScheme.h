@@ -42,7 +42,7 @@ class SOFA_SIMULATION_CORE_API StaticEquilibriumIntegrationScheme :
 public:
     SOFA_ABSTRACT_CLASS(StaticEquilibriumIntegrationScheme, ImplicitIntegrationScheme);
 
-    StaticEquilibriumIntegrationScheme() = default;
+    StaticEquilibriumIntegrationScheme();
 
     void doSetupIntegrationStep(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
 
@@ -75,6 +75,16 @@ public:
 
     virtual SReal getVelocityIntegrationFactor() const final;
     virtual SReal getPositionIntegrationFactor() const final;
+
+    virtual void integrate(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
+
+    Data<unsigned int> d_maxNbIterationsNewton;
+    Data<unsigned int> d_maxNbIterationsLineSearch;
+    Data<SReal> d_newtonStepSize;
+    Data<SReal> d_lineSearchReductionRate;
+    Data<SReal> d_lineSearchArmijoFactor;
+    Data<SReal> d_residueThreshold;
+    Data<SReal> d_currentResidue;
 
 protected:
 
