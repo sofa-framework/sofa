@@ -192,10 +192,8 @@ void StaticEquilibriumIntegrationScheme::integrate(const core::ExecParams* param
         computeRHS(false);
         newResidue = evaluateResidue();
 
-        //Already make a full step
-        m_vop->v_dot(m_unknown, core::vec_id::write_access::force );
-
         //Compute the Armijo term
+        m_vop->v_dot(m_unknown, core::vec_id::write_access::force );
         SReal armijoTerm = lineSearchArmijoFactor * m_vop->finish();
 
         unsigned lineSearchIt = 0;
