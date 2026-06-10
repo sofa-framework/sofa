@@ -19,7 +19,6 @@
     <Node name="BDF-1">
 
         <BDFIntegrationScheme order="1" printLog="false" rayleighMass="0.01" rayleighStiffness="0.01"/>
-        <NewtonRaphsonSolver name="newton" printLog="false" maxNbIterationsNewton="4" maxNbIterationsLineSearch="2" absoluteResidualStoppingThreshold="1e-6"/>
         <EigenSimplicialLDLT template="CompressedRowSparseMatrix"/>
 
         <MechanicalObject name="dofs" template="Vec3" position="0 0 0  1 1 0 " showObject="true" showObjectScale="20"/>
@@ -33,7 +32,6 @@
     <Node name="BDF-2">
 
         <BDFIntegrationScheme order="2" printLog="false" rayleighMass="0.01" rayleighStiffness="0.01"/>
-        <NewtonRaphsonSolver name="newton" printLog="false" maxNbIterationsNewton="4" maxNbIterationsLineSearch="2" absoluteResidualStoppingThreshold="1e-6"/>
         <EigenSimplicialLDLT template="CompressedRowSparseMatrix"/>
 
         <MechanicalObject name="dofs" template="Vec3" position="0 0 0  1 1 0 " showObject="true" showObjectScale="20"/>
@@ -47,7 +45,6 @@
     <Node name="BDF-3">
 
         <BDFIntegrationScheme order="3" printLog="false" rayleighMass="0.01" rayleighStiffness="0.01"/>
-        <NewtonRaphsonSolver name="newton" printLog="false" maxNbIterationsNewton="4" maxNbIterationsLineSearch="2" absoluteResidualStoppingThreshold="1e-6"/>
         <EigenSimplicialLDLT template="CompressedRowSparseMatrix"/>
 
         <MechanicalObject name="dofs" template="Vec3" position="0 0 0  1 1 0 " showObject="true" showObjectScale="20"/>
