@@ -82,7 +82,7 @@ public:
      */
     virtual void updateStatesFromLinearSolution(SReal alpha, bool firstIteration = false) = 0;
 
-    virtual void integrate(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) final ;
+    virtual void integrate(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) ;
 
 
     /// Given the solution dx of the linear system inversion, how much will it affect the velocity
@@ -95,12 +95,14 @@ public:
     /// This method is used to compute the compliance for contact corrections
     virtual SReal getPositionIntegrationFactor() const = 0;
 
+    Data<SReal> d_rayleighStiffness; ///< Rayleigh damping coefficient related to stiffness, > 0
+    Data<SReal> d_rayleighMass; ///< Rayleigh damping coefficient related to mass, > 0
+
+
 protected:
 
     virtual sofa::Size getIntegrationSchemeTimeOrder() const = 0;
 
-    Data<SReal> d_rayleighStiffness; ///< Rayleigh damping coefficient related to stiffness, > 0
-    Data<SReal> d_rayleighMass; ///< Rayleigh damping coefficient related to mass, > 0
 
 
     const core::ExecParams* m_params;
