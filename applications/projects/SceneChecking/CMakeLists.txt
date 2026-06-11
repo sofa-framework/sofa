@@ -24,7 +24,6 @@ set(HEADER_FILES
     ${SCENECHECK_SRC_DIR}/SceneCheckSpecialCharacters.h
     ${SCENECHECK_SRC_DIR}/SceneCheckUsingAlias.h
     ${SCENECHECK_SRC_DIR}/SceneCheckerListener.h
-    ${SCENECHECK_SRC_DIR}/SceneCheckerVisitor.h
 )
 
 set(SOURCE_FILES
@@ -40,7 +39,6 @@ set(SOURCE_FILES
     ${SCENECHECK_SRC_DIR}/SceneCheckSpecialCharacters.cpp
     ${SCENECHECK_SRC_DIR}/SceneCheckUsingAlias.cpp
     ${SCENECHECK_SRC_DIR}/SceneCheckerListener.cpp
-    ${SCENECHECK_SRC_DIR}/SceneCheckerVisitor.cpp
 )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})

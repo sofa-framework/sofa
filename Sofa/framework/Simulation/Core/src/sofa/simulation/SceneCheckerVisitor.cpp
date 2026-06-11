@@ -19,12 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "SceneCheckerVisitor.h"
+#include <sofa/simulation/SceneCheckerVisitor.h>
 
-#include <algorithm>
 #include <sofa/simulation/Node.h>
 
-namespace sofa::_scenechecking_
+#include <algorithm>
+
+namespace sofa::simulation
 {
 using sofa::core::ExecParams ;
 
@@ -51,7 +52,7 @@ void SceneCheckerVisitor::removeCheck(sofa::simulation::SceneCheck::SPtr check)
     m_checkset.erase( std::remove( m_checkset.begin(), m_checkset.end(), check ), m_checkset.end() );
 }
 
-void SceneCheckerVisitor::validate(sofa::simulation::Node* node, simulation::SceneLoader* sceneLoader)
+void SceneCheckerVisitor::  validate(sofa::simulation::Node* node, simulation::SceneLoader* sceneLoader)
 {
     std::stringstream tmp;
     bool first = true;
