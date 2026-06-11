@@ -233,7 +233,7 @@ s:#include *[<"]sofa/component/behaviormodel/eulerianfluid/Grid3D.h[>"]:#include
 s:#include *[<"]sofa/component/behaviormodel/eulerianfluid/Grid2D.h[>"]:#include <SofaEulerianFluid/Grid2D.h>:
 s:#include *[<"]sofa/component/behaviormodel/eulerianfluid/Fluid3D.h[>"]:#include <SofaEulerianFluid/Fluid3D.h>:
 s:#include *[<"]sofa/component/behaviormodel/eulerianfluid/Fluid2D.h[>"]:#include <SofaEulerianFluid/Fluid2D.h>:
-s:#include *[<"]sofa/component/odesolver/RungeKutta4Solver.h[>"]:#include <SofaExplicitOdeSolver/RungeKutta4Solver.h>:
+s:#include *[<"]sofa/component/odesolver/RungeKutta4IntegrationScheme.h[>"]:#include <SofaExplicitOdeSolver/RungeKutta4IntegrationScheme.h>:
 s:#include *[<"]sofa/component/odesolver/RungeKutta2Solver.h[>"]:#include <SofaExplicitOdeSolver/RungeKutta2Solver.h>:
 s:#include *[<"]sofa/component/odesolver/EulerSolver.h[>"]:#include <SofaExplicitOdeSolver/EulerSolver.h>:
 s:#include *[<"]sofa/component/odesolver/CentralDifferenceSolver.h[>"]:#include <SofaExplicitOdeSolver/CentralDifferenceSolver.h>:
@@ -252,7 +252,7 @@ s:#include *[<"]sofa/component/controller/NullForceFeedback.h[>"]:#include <Sofa
 s:#include *[<"]sofa/component/controller/NullForceFeedbackT.h[>"]:#include <SofaHaptics/NullForceFeedbackT.h>:
 s:#include *[<"]sofa/component/controller/ForceFeedback.h[>"]:#include <SofaHaptics/ForceFeedback.h>:
 s:#include *[<"]sofa/component/odesolver/StaticSolver.h[>"]:#include <SofaImplicitOdeSolver/StaticSolver.h>:
-s:#include *[<"]sofa/component/odesolver/EulerImplicitSolver.h[>"]:#include <SofaImplicitOdeSolver/EulerImplicitSolver.h>:
+s:#include *[<"]sofa/component/odesolver/EulerImplicitIntegrationScheme.h[>"]:#include <SofaImplicitOdeSolver/EulerImplicitIntegrationScheme.h>:
 s:#include *[<"]sofa/component/collision/DirectSAP.inl[>"]:#include <SofaMeshCollision/DirectSAP.inl>:
 s:#include *[<"]sofa/component/collision/DirectSAP.h[>"]:#include <SofaMeshCollision/DirectSAP.h>:
 s:#include *[<"]sofa/component/collision/IncrSAP.inl[>"]:#include <SofaMeshCollision/IncrSAP.inl>:
