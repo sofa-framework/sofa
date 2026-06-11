@@ -245,15 +245,15 @@ bool WorkerThread::addTask(Task *task)
 
 bool WorkerThread::stealTask(Task **task)
 {
-    for (const auto it : m_taskScheduler->_threads)
+    for (const auto& [id, otherThread] : m_taskScheduler->_threads)
     {
         // if this is the main thread continue
-        if (std::this_thread::get_id() == it.first)
+        if (std::this_thread::get_id() == id)
         {
             continue;
         }
 
-        WorkerThread *otherThread = it.second;
+        //WorkerThread *otherThread = it.second;
         {
             simulation::ScopedLock lock(otherThread->m_taskMutex);
             if (!otherThread->m_tasks.empty())
