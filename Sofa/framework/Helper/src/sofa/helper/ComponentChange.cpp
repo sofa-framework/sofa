@@ -78,25 +78,6 @@ std::map<std::string, ComponentChange, std::less<> > movedComponents = {
     // MOVED SINCE v22.06
     { "GlobalSystemMatrixExporter", Moved("v22.06", "SofaBaseLinearSolver", "SofaMatrix") },
 
-    // SofaMiscSolver was deprecated in #2571
-    { "DampVelocitySolver", Moved("v22.06", "SofaMiscSolver", Sofa.Component.ODESolver.Forward) },
-    { "NewmarkImplicitSolver", Moved("v22.06", "SofaMiscSolver", Sofa.Component.ODESolver.Backward) },
-
-    // SofaExplicitOdeSolver was deprecated in #2571
-    { "EulerExplicitSolver", Moved("v22.06", "SofaExplicitOdeSolver", Sofa.Component.ODESolver.Forward) },
-
-    // SofaImplicitOdeSolver was deprecated in #2571
-    { "EulerImplicitSolver", Moved("v22.06", "SofaImplicitOdeSolver", Sofa.Component.ODESolver.Backward) },
-    { "StaticSolver", Moved("v22.06", "SofaImplicitOdeSolver", Sofa.Component.ODESolver.Backward) },
-
-    // SofaGeneralExplicitOdeSolver was deprecated in #2571
-    { "CentralDifferenceSolver", Moved("v22.06", "SofaGeneralExplicitOdeSolver", Sofa.Component.ODESolver.Forward) },
-    { "RungeKutta2Solver", Moved("v22.06", "SofaGeneralExplicitOdeSolver", Sofa.Component.ODESolver.Forward) },
-    { "RungeKutta4Solver", Moved("v22.06", "SofaGeneralExplicitOdeSolver", Sofa.Component.ODESolver.Forward) },
-
-    // SofaGeneralImplicitOdeSolver was deprecated in #2571
-    { "VariationalSymplecticSolver", Moved("v22.06", "SofaGeneralImplicitOdeSolver", Sofa.Component.ODESolver.Backward) },
-
     // SofaLoader was deprecated in #2582
     { "MeshOBJLoader", Moved("v22.06", "SofaLoader", Sofa.Component.IO.Mesh) },
     { "MeshVTKLoader", Moved("v22.06", "SofaLoader", Sofa.Component.IO.Mesh) },
