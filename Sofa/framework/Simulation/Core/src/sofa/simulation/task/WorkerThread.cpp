@@ -155,10 +155,14 @@ void WorkerThread::runTask(Task *task)
     {
         if (task->run() & Task::MemoryAlloc::Dynamic)
         {
-            // pooled memory: call destructor and free
-            //task->~Task();
-            task->operator delete(task, sizeof(*task));
-            //delete task;
+            // Run the (virtual) destructor before freeing the storage.
+            // Skipping this leaks any non-trivially-destructible task
+            // members: std::function in CallableTask (the lambda overload
+            // of addTask) leaks its internal __func<>; std::shared_ptr,
+            // std::vector, etc., never release their owned resources.
+            const std::size_t taskSize = sizeof(*task);
+            task->~Task();
+            task->operator delete(task, taskSize);
         }
     }
 
