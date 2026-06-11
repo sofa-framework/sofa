@@ -487,21 +487,25 @@ public:
     }
     static bool upper(Index   i  , Index   j  , Block& val, const Real /*ref*/)
     {
-        if (NL>1 && i*NL == j*NC)
+        if constexpr (NL > 1)
         {
-            for (Index bi = 1; bi < (Index)NL; ++bi)
-                for (Index bj = 0; bj < bi; ++bj)
-                    traits::vset(val, bi, bj, 0);
+            if (i * NL == j * NC)
+            {
+                for (Index bi = 1; bi < (Index)NL; ++bi)
+                    for (Index bj = 0; bj < bi; ++bj) traits::vset(val, bi, bj, 0);
+            }
         }
         return i*NL <= j*NC;
     }
-    static bool lower(Index   i  , Index   j  , Block& val, const Real /*ref*/)
+    static bool lower(Index i, Index j, Block& val, const Real /*ref*/)
     {
-        if (NL>1 && i*NL == j*NC)
+        if constexpr (NL > 1)
         {
-            for (Index bi = 0; bi < (Index)NL-1; ++bi)
-                for (Index bj = bi+1; bj < (Index)NC; ++bj)
-                    traits::vset(val, bi, bj, 0);
+            if (i * NL == j * NC)
+            {
+                for (Index bi = 0; bi < (Index)NL - 1; ++bi)
+                    for (Index bj = bi + 1; bj < (Index)NC; ++bj) traits::vset(val, bi, bj, 0);
+            }
         }
         return i*NL >= j*NC;
     }

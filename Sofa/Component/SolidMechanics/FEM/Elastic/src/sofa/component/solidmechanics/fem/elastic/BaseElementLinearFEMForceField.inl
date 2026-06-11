@@ -23,6 +23,7 @@
 
 #include <sofa/component/solidmechanics/fem/elastic/BaseElementLinearFEMForceField.h>
 #include <sofa/component/solidmechanics/fem/elastic/BaseLinearElasticityFEMForceField.inl>
+#include <sofa/component/solidmechanics/fem/elastic/impl/ElementStiffnessMatrix.h>
 #include <sofa/component/solidmechanics/fem/elastic/impl/LameParameters.h>
 #include <sofa/component/solidmechanics/fem/elastic/impl/VectorTools.h>
 
@@ -98,7 +99,7 @@ void BaseElementLinearFEMForceField<DataTypes, ElementType>::precomputeElementSt
             const auto elasticityTensor = makeIsotropicElasticityTensor<DataTypes::spatial_dimensions, Real>(mu, lambda);
 
             const std::array<sofa::Coord_t<DataTypes>, trait::NumberOfNodesInElement> nodesCoordinates = extractNodesVectorFromGlobalVector(element, restPositionAccessor.ref());
-            elementStiffness[elementId] = integrate<DataTypes, ElementType, trait::matrixVectorProductType>(nodesCoordinates, elasticityTensor);
+            elementStiffness[elementId] = integrate<DataTypes, ElementType>(nodesCoordinates, elasticityTensor);
         });
 }
 

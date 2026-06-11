@@ -44,7 +44,7 @@ template <class DataTypes, class ElementType>
 void ElementLinearSmallStrainFEMForceField<DataTypes, ElementType>::computeElementsForces(
     const sofa::simulation::Range<std::size_t>& range,
     const sofa::core::MechanicalParams* mparams,
-    sofa::type::vector<ElementForce>& elementForces,
+    sofa::type::vector<ElementGradient>& elementForces,
     const sofa::VecCoord_t<DataTypes>& nodePositions)
 {
     const auto& elements = trait::FiniteElement::getElementSequence(*this->l_topology);
@@ -75,7 +75,7 @@ template <class DataTypes, class ElementType>
 void ElementLinearSmallStrainFEMForceField<DataTypes, ElementType>::computeElementsForcesDeriv(
     const sofa::simulation::Range<std::size_t>& range,
     const sofa::core::MechanicalParams* mparams,
-    sofa::type::vector<ElementForce>& elementForcesDeriv,
+    sofa::type::vector<ElementGradient>& elementForcesDeriv,
     const sofa::VecDeriv_t<DataTypes>& nodeDx)
 {
     const auto& elements = trait::FiniteElement::getElementSequence(*this->l_topology);
@@ -133,7 +133,7 @@ void ElementLinearSmallStrainFEMForceField<DataTypes, ElementType>::buildStiffne
         {
             for (sofa::Index n2 = 0; n2 < trait::NumberOfNodesInElement; ++n2)
             {
-                stiffnessMatrix.getAssembledMatrix().getsub(trait::spatial_dimensions * n1, trait::spatial_dimensions * n2, localMatrix); //extract the submatrix corresponding to the coupling of nodes n1 and n2
+                stiffnessMatrix.getsub(trait::spatial_dimensions * n1, trait::spatial_dimensions * n2, localMatrix); //extract the submatrix corresponding to the coupling of nodes n1 and n2
                 dfdx(element[n1] * trait::spatial_dimensions, element[n2] * trait::spatial_dimensions) += -localMatrix;
             }
         }
@@ -169,7 +169,7 @@ void ElementLinearSmallStrainFEMForceField<DataTypes, ElementType>::addKToMatrix
         {
             for (sofa::Index n2 = 0; n2 < trait::NumberOfNodesInElement; ++n2)
             {
-                stiffnessMatrix.getAssembledMatrix().getsub(trait::spatial_dimensions * n1, trait::spatial_dimensions * n2, localMatrix); //extract the submatrix corresponding to the coupling of nodes n1 and n2
+                stiffnessMatrix.getsub(trait::spatial_dimensions * n1, trait::spatial_dimensions * n2, localMatrix); //extract the submatrix corresponding to the coupling of nodes n1 and n2
 
                 const auto value = (-static_cast<sofa::Real_t<DataTypes>>(kFact)) * static_cast<sofa::type::ScalarOrMatrix<LocalMatType>>(localMatrix);
                 matrix->add(

@@ -87,8 +87,8 @@ void DataTrackerDDGNode::cleanDirty(const core::ExecParams*)
 
 void DataTrackerDDGNode::updateAllInputsIfDirty()
 {
-    const DDGLinkContainer& inputs = DDGNode::getInputs();
-    for(const auto input : inputs)
+    const DDGLinkContainer& ddgInputs = DDGNode::getInputs();
+    for(const auto input : ddgInputs)
     {
         static_cast<core::objectmodel::BaseData*>(input)->updateIfDirty();
     }

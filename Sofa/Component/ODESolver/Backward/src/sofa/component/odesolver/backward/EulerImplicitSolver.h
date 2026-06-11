@@ -22,8 +22,8 @@
 #pragma once
 #include <sofa/component/odesolver/backward/config.h>
 #include <sofa/core/behavior/LinearSolverAccessor.h>
-
 #include <sofa/core/behavior/OdeSolver.h>
+#include <sofa/simulation/MappingGraph.h>
 
 namespace sofa::simulation::common
 {
@@ -178,6 +178,8 @@ protected:
     void reallocSolutionVector(sofa::simulation::common::VectorOperations* vop);
     void reallocRightHandSideVector(sofa::simulation::common::VectorOperations* vop);
     void reallocResidualVector(sofa::simulation::common::VectorOperations* vop);
+
+    sofa::simulation::MappingGraph m_mappingGraph;
 };
 
 } // namespace sofa::component::odesolver::backward
