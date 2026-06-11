@@ -617,31 +617,23 @@ void VisualModelImpl::applyUVTransformation()
 
 void VisualModelImpl::applyTranslation(const SReal dx, const SReal dy, const SReal dz)
 {
-    const Coord d((Real)dx,(Real)dy,(Real)dz);
-
-    Data< VecCoord >* d_x = this->write(core::vec_id::write_access::position);
-    VecCoord &x = *d_x->beginEdit();
-
-    for (std::size_t i = 0; i < x.size(); i++)
+    constexpr auto computeTranslation = [](auto id, auto& vm, const auto& d)
     {
-        x[i] += d;
-    }
-
-    d_x->endEdit();
+        auto positions = sofa::helper::getWriteOnlyAccessor(*vm.write(id));
+        
+        for (auto& p : positions)
+        {
+            p += d;
+        }
+    };
+    
+    const Coord d((Real)dx,(Real)dy,(Real)dz);
+    computeTranslation(core::vec_id::write_access::position, *this, d);
 
     if(d_initRestPositions.getValue())
     {
-        VecCoord& restPositions = *(m_restPositions.beginEdit());
-
-        for (std::size_t i = 0; i < restPositions.size(); i++)
-        {
-            restPositions[i] += d;
-        }
-
-        m_restPositions.endEdit();
+        computeTranslation(core::vec_id::write_access::restPosition, *this, d);
     }
-
-    updateVisual(sofa::core::visual::visualparams::defaultInstance());
 }
 
 void VisualModelImpl::applyRotation(const SReal rx, const SReal ry, const SReal rz)
@@ -652,60 +644,44 @@ void VisualModelImpl::applyRotation(const SReal rx, const SReal ry, const SReal 
 
 void VisualModelImpl::applyRotation(const Quat<SReal> q)
 {
-    Data< VecCoord >* d_x = this->write(core::vec_id::write_access::position);
-    VecCoord &x = *d_x->beginEdit();
-
-    for (std::size_t i = 0; i < x.size(); i++)
+    constexpr auto computeRotation = [](auto id, auto& vm, const auto& q)
     {
-        x[i] = q.rotate(x[i]);
-    }
+        auto positions = sofa::helper::getWriteOnlyAccessor(*vm.write(id));
 
-    d_x->endEdit();
+        for (auto& p : positions)
+        {
+            p = q.rotate(p);
+        }
+    };
+    
+    computeRotation(core::vec_id::write_access::position, *this, q);
 
     if(d_initRestPositions.getValue())
     {
-        VecCoord& restPositions = *(m_restPositions.beginEdit());
-
-        for (std::size_t i = 0; i < restPositions.size(); i++)
-        {
-            restPositions[i] = q.rotate(restPositions[i]);
-        }
-
-        m_restPositions.endEdit();
+        computeRotation(core::vec_id::write_access::restPosition, *this, q);
     }
-
-    updateVisual(sofa::core::visual::visualparams::defaultInstance());
 }
 
 void VisualModelImpl::applyScale(const SReal sx, const SReal sy, const SReal sz)
 {
-    Data< VecCoord >* d_x = this->write(core::vec_id::write_access::position);
-    VecCoord &x = *d_x->beginEdit();
-
-    for (std::size_t i = 0; i < x.size(); i++)
+    constexpr auto computeScale = [](auto id, auto& vm, const auto sx, const auto sy, const auto sz)
     {
-        x[i][0] *= (Real)sx;
-        x[i][1] *= (Real)sy;
-        x[i][2] *= (Real)sz;
-    }
+        auto positions = sofa::helper::getWriteOnlyAccessor(*vm.write(id));
 
-    d_x->endEdit();
-
+        for (auto& p : positions)
+        {
+            p[0] *= (Real)sx;
+            p[1] *= (Real)sy;
+            p[2] *= (Real)sz;
+        }
+    };
+    
+    computeScale(core::vec_id::write_access::position, *this, sx, sy, sz);
+    
     if(d_initRestPositions.getValue())
     {
-        VecCoord& restPositions = *(m_restPositions.beginEdit());
-
-        for (std::size_t i = 0; i < restPositions.size(); i++)
-        {
-            restPositions[i][0] *= (Real)sx;
-            restPositions[i][1] *= (Real)sy;
-            restPositions[i][2] *= (Real)sz;
-        }
-
-        m_restPositions.endEdit();
+        computeScale(core::vec_id::write_access::restPosition, *this, sx, sy, sz);
     }
-
-    updateVisual(sofa::core::visual::visualparams::defaultInstance());
 }
 
 void VisualModelImpl::applyUVTranslation(const Real dU, const Real dV)
@@ -790,9 +766,15 @@ void VisualModelImpl::init()
         return;
     }
 
-    applyScale(d_scale.getValue()[0], d_scale.getValue()[1], d_scale.getValue()[2]);
-    applyRotation(d_rotation.getValue()[0], d_rotation.getValue()[1], d_rotation.getValue()[2]);
-    applyTranslation(d_translation.getValue()[0], d_translation.getValue()[1], d_translation.getValue()[2]);
+    const auto& scale = d_scale.getValue();
+    const auto& rotation = d_rotation.getValue();
+    const auto& translation = d_translation.getValue();
+    
+    applyScale(scale[0], scale[1], scale[2]);
+    applyRotation(rotation[0], rotation[1], rotation[2]);
+    applyTranslation(translation[0], translation[1], translation[2]);
+    
+    updateVisual(sofa::core::visual::visualparams::defaultInstance());
 
     d_translation.setValue(Vec3Real());
     d_rotation.setValue(Vec3Real());
@@ -1184,6 +1166,7 @@ void VisualModelImpl::computeBBox(const core::ExecParams*, bool)
     {
         bbox.include(v);
     }
+    
     this->f_bbox.setValue(bbox);
 }
 
