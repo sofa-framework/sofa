@@ -12,7 +12,7 @@
 
     <DefaultAnimationLoop/>
 
-    <EulerImplicitIntegrationScheme name="eulerImplicitSolver0"  rayleighStiffness="0"  rayleighMass="0" />
+    <EulerImplicitIntegrationScheme name="EulerImplicitIntegrationScheme0"  rayleighStiffness="0"  rayleighMass="0" />
     <CGLinearSolver template="GraphScattered" name="cGLinearSolver1"  tolerance="1e-015"  threshold="1e-015" iterations="25"/>
 
     <Node name="noDamping (white)"  >

@@ -278,8 +278,8 @@ simulation::Node::SPtr Elasticity_test<DT>::createGridScene(
 
     simulation::Node::SPtr simulatedScene = root->createChild("simulatedScene");
 
-    component::odesolver::backward::EulerImplicitIntegrationScheme::SPtr eulerImplicitSolver = New<component::odesolver::backward::EulerImplicitIntegrationScheme>();
-    simulatedScene->addObject( eulerImplicitSolver );
+    component::odesolver::backward::EulerImplicitIntegrationScheme::SPtr EulerImplicitIntegrationScheme = New<component::odesolver::backward::EulerImplicitIntegrationScheme>();
+    simulatedScene->addObject( EulerImplicitIntegrationScheme );
     CGLinearSolver::SPtr cgLinearSolver = New<CGLinearSolver>();
     simulatedScene->addObject(cgLinearSolver);
 

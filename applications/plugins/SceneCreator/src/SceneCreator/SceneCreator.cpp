@@ -89,7 +89,7 @@ Node::SPtr  createEulerSolverNode(Node::SPtr parent, const std::string& name, co
     if (scheme == "Explicit")
     {
         simpleapi::createObject(parent, "RequiredPlugin", {{"pluginName", Sofa.Component.IntegrationSchemes.Forward}});
-        simpleapi::createObject(node, "EulerExplicitSolver", {{"name","Euler Explicit"}});
+        simpleapi::createObject(node, "EulerExplicitIntegrationScheme", {{"name","Euler Explicit"}});
         return node ;
     }
 
