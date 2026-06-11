@@ -153,8 +153,8 @@ public:
         return name;
     }
 
-    using Inherit2::getMechModel1;
-    using Inherit2::getMechModel2;
+    BaseMechanicalState* getMechModel1() override { return Inherit2::getMechModel1(); }
+    BaseMechanicalState* getMechModel2() override { return Inherit2::getMechModel2(); }
 };
 
 #if !defined(SOFA_CORE_BEHAVIOR_MIXEDINTERACTIONFORCEFIELD_CPP)

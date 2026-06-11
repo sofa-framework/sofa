@@ -194,49 +194,14 @@ public:
     }
 };
 
-template <typename IndexType>
-class matrix_bloc_traits < float, IndexType >
+template <class T, typename IndexType> requires std::is_scalar_v<T>
+class matrix_bloc_traits < T, IndexType >
 {
 public:
-    typedef float Block;
+    typedef T Block;
     typedef Block BlockTranspose;
 
-    typedef float Real;
-    enum { NL = 1 };
-    enum { NC = 1 };
-    static Real& v(Block& b, IndexType, IndexType) { return b; }
-    static const Real& v(const Block& b, IndexType, IndexType) { return b; }
-    static void vset(Block& b, int, int, Real val) { b = val; }
-    static void vadd(Block& b, int, int, Real val) { b += val; }
-    static void clear(Block& b) { b = 0; }
-    static bool empty(const Block& b)
-    {
-        return b == 0;
-    }
-    static void invert(Block& result, const Block& b) { result = 1.0f/b; }
-
-    static void split_row_index(IndexType& index, IndexType& modulo) { bloc_index_func<NL, IndexType>::split(index, modulo); }
-    static void split_col_index(IndexType& index, IndexType& modulo) { bloc_index_func<NC, IndexType>::split(index, modulo); }
-
-    template<class TSubBlock, std::enable_if_t<std::is_scalar_v<TSubBlock>, bool> = true>
-    static void subBlock(const Block& b, IndexType row, IndexType col, TSubBlock& subBlock)
-    {
-        subBlock = v(b, row, col);
-    }
-
-    static const std::string Name() { return sofa::type::TypeTrait<Real>::name(); }
-    static sofa::linearalgebra::BaseMatrix::ElementType getElementType() { return sofa::linearalgebra::BaseMatrix::ELEMENT_FLOAT; }
-    static IndexType getElementSize() { return sizeof(Real); }
-};
-
-template <typename IndexType>
-class matrix_bloc_traits < double, IndexType >
-{
-public:
-    typedef double Block;
-    typedef Block BlockTranspose;
-
-    typedef double Real;
+    typedef T Real;
     enum { NL = 1 };
     enum { NC = 1 };
     static Real& v(Block& b, IndexType, IndexType) { return b; }
@@ -248,7 +213,7 @@ public:
     {
         return b == 0;
     }
-    static void invert(Block& result, const Block& b) { result = 1.0/b; }
+    static void invert(Block& result, const Block& b) { result = static_cast<Real>(1.0) / b; }
 
     template<class TSubBlock, std::enable_if_t<std::is_scalar_v<TSubBlock>, bool> = true>
     static void subBlock(const Block& b, IndexType row, IndexType col, TSubBlock& subBlock)
@@ -262,40 +227,5 @@ public:
     static sofa::linearalgebra::BaseMatrix::ElementType getElementType() { return sofa::linearalgebra::BaseMatrix::ELEMENT_FLOAT; }
     static const std::string Name() { return sofa::type::TypeTrait<Real>::name(); }
 };
-
-template <typename IndexType>
-class matrix_bloc_traits < int, IndexType >
-{
-public:
-    typedef float Block;
-    typedef Block BlockTranspose;
-
-    typedef float Real;
-    enum { NL = 1 };
-    enum { NC = 1 };
-    static Real& v(Block& b, int, int) { return b; }
-    static const Real& v(const Block& b, int, int) { return b; }
-    static void vset(Block& b, int, int, Real val) { b = val; }
-    static void vadd(Block& b, int, int, Real val) { b += val; }
-    static void clear(Block& b) { b = 0; }
-    static bool empty(const Block& b)
-    {
-        return b == 0;
-    }
-    static void invert(Block& result, const Block& b) { result = 1.0f/b; }
-
-    template<class TSubBlock, std::enable_if_t<std::is_scalar_v<TSubBlock>, bool> = true>
-    static void subBlock(const Block& b, IndexType row, IndexType col, TSubBlock& subBlock)
-    {
-        subBlock = v(b, row, col);
-    }
-
-    static void split_row_index(int& index, int& modulo) { bloc_index_func<NL, IndexType>::split(index, modulo); }
-    static void split_col_index(int& index, int& modulo) { bloc_index_func<NC, IndexType>::split(index, modulo); }
-
-    static sofa::linearalgebra::BaseMatrix::ElementType getElementType() { return sofa::linearalgebra::BaseMatrix::ELEMENT_INT; }
-    static const std::string Name() { return sofa::type::TypeTrait<Real>::name(); }
-};
-
 
 } // namespace sofa::linearalgebra
