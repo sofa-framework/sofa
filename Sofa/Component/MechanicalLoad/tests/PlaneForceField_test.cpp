@@ -136,8 +136,8 @@ struct PlaneForceField_test : public BaseSimulationTest
         m_root = m_simulation->createNewGraph("root");
         m_root->setGravity(Vec3d(-9.8, 0.0,0.0));
 
-        const typename EulerImplicitIntegrationSchemeType::SPtr eulerImplicitSolver = New<EulerImplicitIntegrationSchemeType>();
-        m_root->addObject(eulerImplicitSolver);
+        const typename EulerImplicitIntegrationSchemeType::SPtr EulerImplicitIntegrationScheme = New<EulerImplicitIntegrationSchemeType>();
+        m_root->addObject(EulerImplicitIntegrationScheme);
 
         const typename CGLinearSolverType::SPtr cgLinearSolver = New<CGLinearSolverType>();
         m_root->addObject(cgLinearSolver);

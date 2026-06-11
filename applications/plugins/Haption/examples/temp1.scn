@@ -11,7 +11,7 @@
 	<LocalMinDistance name="localMinDistance0"  alarmDistance="0.3"  contactDistance="0.15" />
 	<CollisionResponse name="Response"  response="FrictionContactConstraint" />
 	<Node 	name="haption" showVisualModels="1" showBehaviorModels="0" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >
-		<EulerImplicitIntegrationScheme name="eulerImplicitSolver1" />
+		<EulerImplicitIntegrationScheme name="EulerImplicitIntegrationScheme1" />
 		<LULinearSolver template="NewMat" name="lULinearSolver0" />
 		<HaptionDriver name="haptionDriver1"  listening="1"  haptionVisu="0"  positionBase="0 0 0 0 0 -0.707107 0.707107" />
 		<MechanicalStateController template="Rigid3d" name="mechanicalStateController1"  buttonDeviceState="@haptionDriver1.state_button"  mainDirection="0 0 -1" />
