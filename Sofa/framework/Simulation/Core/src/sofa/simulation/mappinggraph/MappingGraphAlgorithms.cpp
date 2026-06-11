@@ -209,7 +209,7 @@ void MappingGraphAlgorithms::traverseComponentGroups(MappingGraphVisitor& visito
 
         sofa::simulation::parallelForEach(*taskScheduler,
             parallelNodes.begin(), parallelNodes.end(),
-            [&visitor, &scope](const auto& node)
+            [&visitor](const auto& node)
             {
                 for (auto& child : node->m_children)
                 {

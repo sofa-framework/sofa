@@ -733,7 +733,7 @@ public:
     {
         switch(NC)
         {
-        case 1: if (NL==1) opDynamicReal1<Real, M1, M2 >(m1, m2, fact, category);
+        case 1: if constexpr (NL==1) opDynamicReal1<Real, M1, M2 >(m1, m2, fact, category);
             else opDynamicRealNLNC<Real, NL, 1, M1, M2 >(m1, m2, fact, category);
             break;
         case 2: opDynamicRealNLNC<Real, NL, 2, M1, M2 >(m1, m2, fact, category); break;

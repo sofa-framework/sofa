@@ -17,6 +17,7 @@ jobs:
   sofa-pixi:
     name: ${{ matrix.os }} - Env ${{ matrix.environment }} ${{ matrix.build_type }} ${{ matrix.compiler }}
     runs-on: ${{ matrix.os }}
+    if: ${{ github.repository_owner == 'sofa-framework' }}
 
     strategy:
       fail-fast: false
