@@ -53,12 +53,15 @@ bool NodeElement::initNode()
     if (obj != nullptr)
     {
         setObject(obj);
-        core::objectmodel::BaseNode* baseNode;
-        if (getTypedObject()!=nullptr && getParentElement()!=nullptr && (baseNode = getParentElement()->getObject()->toBaseNode()))
+        if (getTypedObject() != nullptr && getParentElement() != nullptr)
         {
-            getTypedObject()->setInstanciationSourceFilePos(getSrcLine());
-            getTypedObject()->setInstanciationSourceFileName(getSrcFile());
-            baseNode->addChild(getTypedObject());
+            core::objectmodel::BaseNode* baseNode = getParentElement()->getObject()->toBaseNode();
+            if (baseNode != nullptr)
+            {
+                getTypedObject()->setInstanciationSourceFilePos(getSrcLine());
+                getTypedObject()->setInstanciationSourceFileName(getSrcFile());
+                baseNode->addChild(getTypedObject());
+            }
         }
         return true;
     }

@@ -9,6 +9,7 @@ set(SOURCE_FILES
     ParallelForEach_test.cpp
     PushTaskRace_test.cpp
     RequiredPlugin_test.cpp
+    TaskDestructorLeak_test.cpp
     SceneCheckRegistry_test.cpp
     Simulation_test.cpp
     ParallelSparseMatrixProduct_test.cpp

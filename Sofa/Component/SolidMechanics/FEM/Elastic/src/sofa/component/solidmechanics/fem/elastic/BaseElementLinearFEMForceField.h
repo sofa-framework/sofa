@@ -51,7 +51,7 @@ public:
 
 private:
     using trait = sofa::component::solidmechanics::fem::elastic::trait<DataTypes, ElementType>;
-    using ElementStiffness = typename trait::ElementStiffness;
+    using ElementHessian = typename trait::ElementHessian;
     using StrainDisplacement = typename trait::StrainDisplacement;
     using Real = typename trait::Real;
 
@@ -69,7 +69,7 @@ public:
     /**
      * List of precomputed element stiffness matrices
      */
-    sofa::Data<sofa::type::vector<ElementStiffness> > d_elementStiffness;
+    sofa::Data<sofa::type::vector<ElementHessian> > d_elementStiffness;
 };
 
 #if !defined(ELASTICITY_COMPONENT_BASE_ELEMENT_LINEAR_FEM_FORCEFIELD_CPP)

@@ -105,15 +105,24 @@ struct SetTypeInfo
     template<typename T>
     static void setValue(DataType &data, sofa::Size /*index*/, const T& value )
     {
-        if (BaseTypeInfo::FixedSize && BaseTypeInfo::size() == 1)
+
+        if constexpr (BaseTypeInfo::FixedSize)
         {
-            BaseType t;
-            BaseTypeInfo::setValue(t, 0, value);
-            data.insert(t);
+            if (BaseTypeInfo::size() == 1)
+            {
+                BaseType t;
+                BaseTypeInfo::setValue(t, 0, value);
+                data.insert(t);
+            }
+            else
+            {
+                msg_error("SetTypeInfo")
+                    << "setValueString not implemented for set with composite values.";
+            }
         }
         else
         {
-            msg_error("SetTypeInfo") << "setValue not implemented for set with composite values.";
+            msg_error("SetTypeInfo") << "setValueString not implemented for set with dymamic size.";
         }
     }
 
@@ -143,15 +152,22 @@ struct SetTypeInfo
 
     static void setValueString(DataType &data, sofa::Size /*index*/, const std::string& value )
     {
-        if (BaseTypeInfo::FixedSize && BaseTypeInfo::size() == 1)
+        if constexpr (BaseTypeInfo::FixedSize)
         {
-            BaseType t;
-            BaseTypeInfo::setValueString(t, 0, value);
-            data.insert(t);
+            if (BaseTypeInfo::size() == 1)
+            {
+                BaseType t;
+                BaseTypeInfo::setValueString(t, 0, value);
+                data.insert(t);
+            }
+            else
+            {
+                msg_error("SetTypeInfo") << "setValueString not implemented for set with composite values.";
+            }
         }
         else
         {
-            msg_error("SetTypeInfo") << "setValueString not implemented for set with composite values.";
+            msg_error("SetTypeInfo") << "setValueString not implemented for set with dymamic size.";
         }
     }
 

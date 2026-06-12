@@ -75,7 +75,7 @@ void WorkerThread::run(void)
 {
 #ifdef WIN32
     const std::wstring widestr = std::wstring(m_name.begin(), m_name.end());
-    HRESULT r = SetThreadDescription(
+    (void)SetThreadDescription(
         GetCurrentThread(),
         widestr.c_str()
         );
@@ -155,10 +155,14 @@ void WorkerThread::runTask(Task *task)
     {
         if (task->run() & Task::MemoryAlloc::Dynamic)
         {
-            // pooled memory: call destructor and free
-            //task->~Task();
-            task->operator delete(task, sizeof(*task));
-            //delete task;
+            // Run the (virtual) destructor before freeing the storage.
+            // Skipping this leaks any non-trivially-destructible task
+            // members: std::function in CallableTask (the lambda overload
+            // of addTask) leaks its internal __func<>; std::shared_ptr,
+            // std::vector, etc., never release their owned resources.
+            const std::size_t taskSize = sizeof(*task);
+            task->~Task();
+            task->operator delete(task, taskSize);
         }
     }
 
@@ -245,15 +249,15 @@ bool WorkerThread::addTask(Task *task)
 
 bool WorkerThread::stealTask(Task **task)
 {
-    for (const auto it : m_taskScheduler->_threads)
+    for (const auto& [id, otherThread] : m_taskScheduler->_threads)
     {
         // if this is the main thread continue
-        if (std::this_thread::get_id() == it.first)
+        if (std::this_thread::get_id() == id)
         {
             continue;
         }
 
-        WorkerThread *otherThread = it.second;
+        //WorkerThread *otherThread = it.second;
         {
             simulation::ScopedLock lock(otherThread->m_taskMutex);
             if (!otherThread->m_tasks.empty())
