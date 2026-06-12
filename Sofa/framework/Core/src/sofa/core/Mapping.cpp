@@ -28,7 +28,6 @@ namespace sofa::core
 {
 
 using namespace sofa::defaulttype;
-using namespace core;
 
 template class SOFA_CORE_API Mapping< sofa::defaulttype::Vec1Types, sofa::defaulttype::Vec1Types >;
 template class SOFA_CORE_API Mapping< sofa::defaulttype::Vec1Types, sofa::defaulttype::Vec2Types >;

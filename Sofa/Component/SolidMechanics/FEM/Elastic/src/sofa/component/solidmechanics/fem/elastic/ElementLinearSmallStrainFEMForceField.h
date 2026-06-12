@@ -62,10 +62,10 @@ public:
 
 private:
     using trait = sofa::component::solidmechanics::fem::elastic::trait<DataTypes, ElementType>;
-    using ElementStiffness = typename trait::ElementStiffness;
+    using ElementHessian = typename trait::ElementHessian;
     using ElementDisplacement = typename trait::ElementDisplacement;
     using StrainDisplacement = typename trait::StrainDisplacement;
-    using ElementForce = typename trait::ElementForce;
+    using ElementGradient = typename trait::ElementGradient;
 
 public:
     void init() override;
@@ -84,13 +84,13 @@ protected:
     void computeElementsForces(
         const sofa::simulation::Range<std::size_t>& range,
         const sofa::core::MechanicalParams* mparams,
-        sofa::type::vector<ElementForce>& elementForces,
+        sofa::type::vector<ElementGradient>& elementForces,
         const sofa::VecCoord_t<DataTypes>& nodePositions) override;
 
     void computeElementsForcesDeriv(
         const sofa::simulation::Range<std::size_t>& range,
         const sofa::core::MechanicalParams* mparams,
-        sofa::type::vector<ElementForce>& elementForcesDeriv,
+        sofa::type::vector<ElementGradient>& elementForcesDeriv,
         const sofa::VecDeriv_t<DataTypes>& nodeDx) override;
 
 };

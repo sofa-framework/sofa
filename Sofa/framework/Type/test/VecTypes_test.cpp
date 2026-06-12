@@ -538,6 +538,17 @@ TEST(VecTest, getSubScalar)
     EXPECT_EQ(scalar, 6.0);
 }
 
+TEST(VecTest, setSub)
+{
+    sofa::type::Vec<5, double> v(1.0, 2.0, 3.0, 4.0, 5.0);
+    sofa::type::Vec<2, double> sub { 9., 8. };
+    v.setsub(1, sub);
+    EXPECT_EQ(v[0], 1.0);
+    EXPECT_EQ(v[1], 9.0);
+    EXPECT_EQ(v[2], 8.0);
+    EXPECT_EQ(v[3], 4.0);
+}
+
 TEST(VecTest, staticSize)
 {
     constexpr sofa::Size s = sofa::type::Vec<3, double>::static_size;

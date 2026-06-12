@@ -152,8 +152,8 @@ public:
         return obj;
     }
 
-    using Inherit2::getMechModel1;
-    using Inherit2::getMechModel2;
+    BaseMechanicalState* getMechModel1() override { return Inherit2::getMechModel1(); }
+    BaseMechanicalState* getMechModel2() override { return Inherit2::getMechModel2(); }
 
 protected:
 
