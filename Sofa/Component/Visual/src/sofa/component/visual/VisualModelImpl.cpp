@@ -118,6 +118,7 @@ VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filena
     , d_updateNormals   (initData   (&d_updateNormals, true, "updateNormals", "True if normals should be updated at each iteration"))
     , d_computeTangents (initData   (&d_computeTangents, false, "computeTangents", "True if tangents should be computed at startup"))
     , d_updateTangents  (initData   (&d_updateTangents, true, "updateTangents", "True if tangents should be updated at each iteration"))
+    , d_computeTextureCoordinates(initData   (&d_computeTextureCoordinates, false, "computeTextureCoordinates", "True if texture coordinates should be computed at startup, using UV sphere projection"))
     , d_handleDynamicTopology (initData   (&d_handleDynamicTopology, true, "handleDynamicTopology", "True if topological changes should be handled"))
     , d_fixMergedUVSeams (initData   (&d_fixMergedUVSeams, true, "fixMergedUVSeams", "True if UV seams should be handled even when duplicate UVs are merged"))
     , d_keepLines (initData   (&d_keepLines, false, "keepLines", "keep and draw lines (false by default)"))
@@ -1176,7 +1177,8 @@ void VisualModelImpl::computeUVSphereProjection()
     const sofa::core::visual::VisualParams* vparams = sofa::core::visual::VisualParams::defaultInstance();
     this->computeBBox(vparams);
 
-    auto center = (this->f_bbox.getValue().minBBox() + this->f_bbox.getValue().maxBBox())*0.5f;
+    const auto bbox = this->f_bbox.getValue();
+    const auto center = (bbox.minBBox() + bbox.maxBBox())*0.5f;
 
     // Map mesh vertices to sphere
     // transform cart to spherical coordinates (r, theta, phi) and sphere to cart back with radius = 1
@@ -1185,29 +1187,25 @@ void VisualModelImpl::computeUVSphereProjection()
     const std::size_t nbrV = coords.size();
     VecCoord m_sphereV;
     m_sphereV.resize(nbrV);
-
-    VecTexCoord& vtexcoords = *(d_vtexcoords.beginEdit());
+    
+    auto vtexcoords = sofa::helper::getWriteOnlyAccessor(d_vtexcoords);
     vtexcoords.resize(nbrV);
 
     for (std::size_t i = 0; i < nbrV; ++i)
     {
-        Coord Vcentered = coords[i] - center;
-        SReal r = sqrt(Vcentered[0] * Vcentered[0] + Vcentered[1] * Vcentered[1] + Vcentered[2] * Vcentered[2]);
-        const SReal theta = acos(Vcentered[2] / r);
-        const SReal phi = atan2(Vcentered[1], Vcentered[0]);
+        const Coord Vcentered = coords[i] - center;
+        const auto r = sqrt(Vcentered[0] * Vcentered[0] + Vcentered[1] * Vcentered[1] + Vcentered[2] * Vcentered[2]);
+        const auto theta = acos(Vcentered[2] / r);
+        const auto phi = atan2(Vcentered[1], Vcentered[0]);
 
-        r = 1.0;
-        m_sphereV[i][0] = r * sin(theta)*cos(phi) + center[0];
-        m_sphereV[i][1] = r * sin(theta)*sin(phi) + center[1];
-        m_sphereV[i][2] = r * cos(theta) + center[2];
+        m_sphereV[i][0] = sin(theta)*cos(phi) + center[0];
+        m_sphereV[i][1] = sin(theta)*sin(phi) + center[1];
+        m_sphereV[i][2] = cos(theta) + center[2];
 
-        Coord pos = m_sphereV[i] - center;
-        pos.normalize();
-        vtexcoords[i][0] = float(0.5 + atan2(pos[1], pos[0]) / (2 * R_PI));
-        vtexcoords[i][1] = float(0.5 - asin(pos[2]) / R_PI);
+        const Coord pos = (m_sphereV[i] - center).normalized();
+        vtexcoords[i][0] = static_cast<TexCoord::value_type>(0.5 + atan2(pos[1], pos[0]) / (2 * R_PI));
+        vtexcoords[i][1] = static_cast<TexCoord::value_type>(0.5 - asin(pos[2]) / R_PI);
     }
-
-    d_vtexcoords.endEdit();
 }
 
 void VisualModelImpl::flipFaces()
@@ -1322,7 +1320,7 @@ void VisualModelImpl::doUpdateVisual(const core::visual::VisualParams* vparams)
             SCOPED_TIMER_VARNAME(t, "VisualModelImpl::computeTangents");
             computeTangents();
         }
-        if (d_vtexcoords.getValue().size() == 0)
+        if(d_computeTextureCoordinates.getValue())
         {
             SCOPED_TIMER_VARNAME(t, "VisualModelImpl::computeUVSphereProjection");
             computeUVSphereProjection();
