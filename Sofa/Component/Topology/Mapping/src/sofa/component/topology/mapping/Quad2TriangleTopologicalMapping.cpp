@@ -61,6 +61,9 @@ void registerQuad2TriangleTopologicalMapping(sofa::core::ObjectFactory* factory)
 
 Quad2TriangleTopologicalMapping::Quad2TriangleTopologicalMapping()
     : sofa::core::topology::TopologicalMapping()
+    , d_swapping(initData(&d_swapping, true, "swapping",
+                          "If true (default), alternate the diagonal orientation per quad "
+                          "in a checkerboard pattern to avoid numerical bias"))
 {
     m_inputType = geometry::ElementType::QUAD;
     m_outputType = geometry::ElementType::TRIANGLE;
@@ -132,13 +135,14 @@ void Quad2TriangleTopologicalMapping::init()
     }
 
 
+    const bool swapping = d_swapping.getValue();
     for (unsigned int i=0; i<quadArray.size(); ++i)
     {
         const auto & p0 = quadArray[i][0];
         const auto & p1 = quadArray[i][1];
         const auto & p2 = quadArray[i][2];
         const auto & p3 = quadArray[i][3];
-        if (((i%scale) ^ (i/scale)) & 1)
+        if (swapping && (((i%scale) ^ (i/scale)) & 1))
         {
             toModel->addTriangle(p0, p1, p3);
             toModel->addTriangle(p2, p3, p1);
