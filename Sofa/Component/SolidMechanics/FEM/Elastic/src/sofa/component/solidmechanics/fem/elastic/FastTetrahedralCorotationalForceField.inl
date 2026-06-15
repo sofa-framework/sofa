@@ -556,7 +556,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::buildStiffnessMatrix(
     for(sofa::Size i=0; i < nbEdges; ++i )
     {
         const auto& edge = edges[i];
-        dfdx(3 * edge[0], 3 * edge[1]) += -edgeDfDx[i];
+        dfdx(3 * edge[0], 3 * edge[1]) += -edgeDfDx[i].transposed();
         dfdx(3 * edge[1], 3 * edge[0]) += -edgeDfDx[i];
     }
 }
