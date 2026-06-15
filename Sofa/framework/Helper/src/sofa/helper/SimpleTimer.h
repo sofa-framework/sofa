@@ -19,137 +19,85 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_SIMPLETIMER_H
-#define SOFA_HELPER_SIMPLETIMER_H
+#pragma once
 
-#include <sofa/helper/system/thread/CTime.h>
+#include <chrono>
+#include <string>
+
+#include <sofa/helper/logging/Messaging.h>
 
 namespace sofa::helper
 {
+template<class Unit>
+struct UnitInfo;
+
+template<> struct UnitInfo<std::chrono::nanoseconds>
+{
+    static constexpr std::string_view unit = "ns";
+};
+
+template<> struct UnitInfo<std::chrono::microseconds>
+{
+    static constexpr std::string_view unit = "us";
+};
+
+template<> struct UnitInfo<std::chrono::milliseconds>
+{
+    static constexpr std::string_view unit = "ms";
+};
+
+template<> struct UnitInfo<std::chrono::seconds>
+{
+    static constexpr std::string_view unit = "s";
+};
 
 /**
-  Very simple timer
-
-  Usage example :
-
-  sofa::helper::SimpleTimer mytimer;
-
-  void myComputationCode() {
-
-    bool timer = true; // should I print performance stats
-    if (timer) mytimer.start("mystep1);
-
-    ... // step 1 code
-
-    if (timer) mytimer.step("mystep2");
-
-    ... // step 2 code
-
-    if (timer) mytimer.stop();
-  }
-
-
+ * @class SimpleTimer
+ * @brief A RAII utility class for measuring elapsed time in operations and log it.
+ *
+ * @code
+ * // Measure a block of code
+ * {
+ *     sofa::helper::SimpleTimer<std::chrono::milliseconds> timer("File I/O Simulation");
+ *     // ... Simulate file reading/writing here ...
+ *     // The elapsed time is logged by the timer at the end of the scope
+ * }
+ * @endcode
  */
-
-template<int nIter=100, int nStep=100>
-class TSimpleTimer
+template<class Unit = std::chrono::nanoseconds>
+struct SimpleTimer
 {
-public:
+    std::string m_name;
+    std::chrono::time_point<std::chrono::high_resolution_clock> m_start;
+    bool hasEnded { false };
 
-    enum {T_NSTEPS=nStep, T_NITERS=nIter};
+    explicit SimpleTimer(const std::string& name)
+        : m_name(name)
+        , m_start(std::chrono::high_resolution_clock::now())
+    {}
 
-    typedef sofa::helper::system::thread::ctime_t ctime_t;
-    typedef sofa::helper::system::thread::CTime CTime;
-
-    ctime_t timer_total;
-    ctime_t timer_current;
-    ctime_t timer_freq;
-    ctime_t timer_start;
-    ctime_t timers_start;
-    const char* timers_name[T_NSTEPS];
-    ctime_t timers_total[T_NSTEPS];
-    ctime_t timers_current[T_NSTEPS];
-    int timer_niter;
-    int timer_nstep;
-    const char* timer_lastname;
-
-    TSimpleTimer()
+    ~SimpleTimer()
     {
-        timer_total = 0;
-        timer_current = 0;
-        timer_freq = 1;
-        timer_start = 0;
-        timers_start = 0;
-        timer_niter = 0;
-        timer_nstep = 0;
-        timer_lastname = "";
+        stop();
     }
 
-    void start(const char* name)
+    void restart()
     {
-        if (timer_niter == 0)
-        {
-            timer_total = 0;
-            timer_current = 0;
-            timer_freq = CTime::getTicksPerSec();
-            for (int i=0; i<T_NSTEPS; ++i) timers_name[i] = "";
-            for (int i=0; i<T_NSTEPS; ++i) timers_total[i] = 0;
-            for (int i=0; i<T_NSTEPS; ++i) timers_current[i] = 0;
-        }
-        const ctime_t t = CTime::getTime();
-        timer_start = t;
-        timers_start = t;
-        timer_nstep = 0;
-        timer_lastname = name;
-    }
-
-    void step(const char* name = "")
-    {
-        if (timer_nstep >= T_NSTEPS) return;
-        int i = timer_nstep;
-        {
-            timers_name[i] = timer_lastname;
-            timer_lastname = name;
-        }
-        const ctime_t t = CTime::getTime();
-        timers_current[i] = t - timers_start;
-        timers_start = t;
-        timers_total[i] += timers_current[i];
-        ++timer_nstep;
+        m_start = std::chrono::high_resolution_clock::now();
     }
 
     void stop()
     {
-        step();
-        ++timer_niter;
-        const ctime_t t = CTime::getTime();
-        timer_current = t - timer_start;
-        timer_total += timer_current;
-        timer_start = t;
-        timers_start = t;
-        if (timer_niter > 0 && (timer_niter % T_NITERS) == 0)
+        if (!hasEnded)
         {
-            std::stringstream tmpmsg ;
-            tmpmsg << "TIMER after " << timer_niter << " iterations :" << msgendl;
-            for (int i=0; i<T_NSTEPS; ++i)
-            {
-                if (timers_total[i])
-                {
-                    double tcur = 1000.0 * (double)timers_current[i] / (double) timer_freq;
-                    double ttot = 1000.0 * (double)timers_total[i] / (double) (timer_niter * timer_freq);
-                    tmpmsg << "  " << i << ". " << timers_name[i] << "\t : " << std::fixed << (tcur < 10 ? "   " : tcur < 100 ? "  " : tcur < 1000 ? " " : "") << tcur << " \tms  ( mean " << (ttot < 10 ? "   " : ttot < 100 ? "  " : ttot < 1000 ? " " : "") << ttot << " \tms ) " << msgendl;
-                }
-            }
-            double tcur = 1000.0 * (double)timer_current / (double) timer_freq;
-            double ttot = 1000.0 * (double)timer_total / (double) (timer_niter * timer_freq);
-            tmpmsg << "** TOTAL *********\t : " << std::fixed << (tcur < 10 ? "   " : tcur < 100 ? "  " : tcur < 1000 ? " " : "") << tcur << " \tms  ( mean " << (ttot < 10 ? "   " : ttot < 100 ? "  " : ttot < 1000 ? " " : "") << ttot << " \tms ) " ;
-            msg_info("SimpleTimer") << tmpmsg.str() ;
+            auto end = std::chrono::high_resolution_clock::now();
+            msg_info("Timer") << m_name << " took " << std::chrono::duration_cast<Unit>(end - m_start).count() << UnitInfo<Unit>::unit;
+            hasEnded = true;
         }
     }
-};
 
-typedef TSimpleTimer<> SimpleTimer;
+
+};
 
 }
 
-#endif
