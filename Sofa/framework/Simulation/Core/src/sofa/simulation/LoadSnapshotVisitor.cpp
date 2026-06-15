@@ -33,7 +33,7 @@ void LoadSnapshotVisitor::processObject(
 {
     auto snapshotObject = obj->findSnapshotObject(parent, obj->getName());
     if (!snapshotObject)
-        msg_error("findSnapshotObject") << "SnapshotObject " << obj->getName() << " not found in ";
+        msg_error("findSnapshotObject") << "SnapshotObject " << obj->getName() << " not found";
     else
     {
         obj->loadDataSnapshot(snapshotObject);
@@ -47,7 +47,7 @@ Visitor::Result LoadSnapshotVisitor::processNodeTopDown(simulation::Node* node)
 {
     const auto snapshotObject = node->findSnapshotObject(m_snapshotContainer.m_graphRoot, node->getName());
     if (!snapshotObject)
-        msg_error("findSnapshotNode") << "SnapshotNode "<< node->getName() << " not found in ";
+        msg_error("findSnapshotNode") << "SnapshotNode "<< node->getName() << " not found";
     else
     {
         const auto SnapshotNode = std::dynamic_pointer_cast<core::objectmodel::Snapshot::SnapshotNode>(snapshotObject);
