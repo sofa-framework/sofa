@@ -56,7 +56,26 @@ bool ObjectElement::init()
 
 bool ObjectElement::initNode()
 {
-    core::objectmodel::BaseContext* ctx = getParent()->getObject()->toBaseContext();
+    core::objectmodel::BaseContext* ctx { nullptr };
+    if (auto* parent = getParent())
+    {
+        if (auto* parentObj = parent->getObject())
+        {
+            ctx = parentObj->toBaseContext();
+        }
+        else
+        {
+            msg_error("XML parser") << "Cannot access to a valid component from parent element \'"
+                << parent->getName() << "\' (type:\'" << parent->getAttribute("type")
+                << "\') for the object element \'" << this->getName() << "\'";
+        }
+    }
+    else
+    {
+        msg_error("XML parser") << "Cannot find a parent for the object element \'" << this->getName() << "\'";
+    }
+    if (!ctx)
+        return false;
 
     for (AttributeMap::iterator it = attributes.begin(), itend = attributes.end(); it != itend; ++it)
     {
