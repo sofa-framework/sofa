@@ -474,6 +474,17 @@ private:
         const auto& elements = topology->getHexahedra();
         const auto& facets = topology->getQuads();
 
+        if(facets.empty())
+        {
+            static bool firstTime = true;
+            if (firstTime)
+            {
+                msg_error("DrawElementMesh<Hexahedron>") << "Drawing hexahedra needs the associated quads in the topology.";
+                firstTime = false;
+            }
+            return;
+        }
+
         for ( auto& p : renderedPoints)
         {
             p.resize(elementIndices.size() * sofa::geometry::Quad::NumberOfNodes);
