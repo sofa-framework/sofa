@@ -109,7 +109,6 @@ void SpringForceField<DataTypes>::init()
     this->addUpdateCallback("TopoCallBack",{ &d_springsIndices[0], &d_springsIndices[1], &d_lengths, &d_ks, &d_kd},
                       [this](const sofa::core::DataTracker& ) -> sofa::core::objectmodel::ComponentState
                       {
-                          std::cout << "coucou\n";
                           updateSpringsFromTopologyIndices();
                           return sofa::core::objectmodel::ComponentState::Valid;
                       },
