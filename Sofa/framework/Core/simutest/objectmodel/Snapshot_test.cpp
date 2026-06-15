@@ -259,7 +259,7 @@ TEST_F(Snapshot_test, SnapshotJSONExporter)
     auto visitor = SaveSnapshotVisitor(nullptr, *m_snapshot);
     root->execute(visitor);
 
-    exportTo(*m_snapshot,path);
+    exportToJSON(*m_snapshot,path);
 
     std::ifstream checkFile(path);
     EXPECT_TRUE(checkFile.good());

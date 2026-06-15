@@ -99,7 +99,7 @@ void to_json(nlohmann::json& j, const std::shared_ptr<Snapshot::SnapshotNode>& s
     }
 }
 
-void exportTo(Snapshot& snapshot, const std::string& filename)
+void exportToJSON(Snapshot& snapshot, const std::string& filename)
 {
     nlohmann::json j = snapshot.m_graphRoot ;
 
@@ -253,7 +253,7 @@ std::string snapshot_To_String(const Snapshot& snapshot)
     return to_string(j);
 }
 
-void exportTo(std::map<std::string, std::shared_ptr<Snapshot>>& snapshots, const std::string& filename)
+void exportToJSON(std::map<std::string, std::shared_ptr<Snapshot>>& snapshots, const std::string& filename)
 {
     std::ofstream file(filename);
 
