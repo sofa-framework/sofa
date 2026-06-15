@@ -328,6 +328,17 @@ private:
         const auto& elements = topology->getTetrahedra();
         const auto& facets = topology->getTriangles();
 
+        if(facets.empty())
+        {
+            static bool firstTime = true;
+            if (firstTime)
+            {
+                msg_error("DrawElementMesh<Tetrahedron>") << "Drawing tetrahedra needs the associated triangles in the topology.";
+                firstTime = false;
+            }
+            return;
+        }
+
         for ( auto& p : renderedPoints)
         {
             p.resize(elementIndices.size() * sofa::geometry::Triangle::NumberOfNodes);
