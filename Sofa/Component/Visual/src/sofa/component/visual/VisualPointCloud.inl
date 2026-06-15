@@ -101,7 +101,7 @@ type::vector<type::Vec3> VisualPointCloud<DataTypes>::convertCoord() const
     displayedPoints.reserve(position.size());
     for (const auto& point : position)
     {
-        displayedPoints.push_back(DataTypes::getCPos(point));
+        displayedPoints.push_back(sofa::type::toVec3(DataTypes::getCPos(point)));
     }
 
     return displayedPoints;
