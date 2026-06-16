@@ -246,9 +246,9 @@ void AffineMovementProjectiveConstraint<DataTypes>::transform(const SetIndexArra
     {
         // Get quaternion and translation values
         RotationMatrix rotationMat(0);
-        const Quat quat =  d_quaternion.getValue();
+        const Quat& quat =  d_quaternion.getValue();
         quat.toMatrix(rotationMat);
-        const Vec3 translation = d_translation.getValue();
+        const Vec3& translation = d_translation.getValue();
 
         // Apply transformation
         for (size_t i=0; i < indices.size() ; ++i)
@@ -261,11 +261,12 @@ void AffineMovementProjectiveConstraint<DataTypes>::transform(const SetIndexArra
     }
     else
     {
-        Vec3 translation = d_translation.getValue();
+        const Vec3& translation = d_translation.getValue();
+        const Vec3& rotation = d_rotation.getValue();
 
         for (size_t i=0; i < indices.size() ; ++i)
         {
-            DataTypes::setCPos(xf[indices[i]], (d_rotation.getValue()) * DataTypes::getCPos(x0[indices[i]]) + translation);
+            DataTypes::setCPos(xf[indices[i]], rotation * DataTypes::getCPos(x0[indices[i]]) + translation);
         }
     }
 }
