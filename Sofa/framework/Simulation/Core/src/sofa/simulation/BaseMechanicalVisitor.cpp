@@ -30,7 +30,7 @@
 #include <sofa/core/behavior/BaseProjectiveConstraintSet.h>
 #include <sofa/core/behavior/BaseInteractionProjectiveConstraintSet.h>
 #include <sofa/core/behavior/BaseConstraintSet.h>
-#include <sofa/core/behavior/IntegrationScheme.h>
+#include <sofa/core/behavior/BaseIntegrationScheme.h>
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/BaseMapping.h>
@@ -370,13 +370,13 @@ void BaseMechanicalVisitor::end(simulation::Node* node, core::objectmodel::BaseC
 const char* BaseMechanicalVisitor::getClassName() const { return "MechanicalVisitor"; }
 
 /// Process the IntegrationScheme
-auto BaseMechanicalVisitor::fwdIntegrationScheme(simulation::Node* /*node*/, sofa::core::behavior::IntegrationScheme* /*solver*/) -> Result
+auto BaseMechanicalVisitor::fwdIntegrationScheme(simulation::Node* /*node*/,  sofa::core::behavior::BaseIntegrationScheme* /*solver*/) -> Result
 {
     return RESULT_CONTINUE;
 }
 
 /// Process the IntegrationScheme
-auto BaseMechanicalVisitor::fwdIntegrationScheme(VisitorContext* ctx, sofa::core::behavior::IntegrationScheme* solver) -> Result
+auto BaseMechanicalVisitor::fwdIntegrationScheme(VisitorContext* ctx,  sofa::core::behavior::BaseIntegrationScheme* solver) -> Result
 {
     return fwdIntegrationScheme(ctx->node, solver);
 }
@@ -527,11 +527,11 @@ void BaseMechanicalVisitor::bwdMechanicalMapping(VisitorContext* ctx, sofa::core
 { bwdMechanicalMapping(ctx->node, map); }
 
 /// Process the IntegrationScheme
-void BaseMechanicalVisitor::bwdIntegrationScheme(simulation::Node* /*node*/,sofa::core::behavior::IntegrationScheme* /*solver*/)
+void BaseMechanicalVisitor::bwdIntegrationScheme(simulation::Node* /*node*/, sofa::core::behavior::BaseIntegrationScheme* /*solver*/)
 {}
 
 /// Process the IntegrationScheme
-void BaseMechanicalVisitor::bwdIntegrationScheme(VisitorContext* ctx,sofa::core::behavior::IntegrationScheme* solver)
+void BaseMechanicalVisitor::bwdIntegrationScheme(VisitorContext* ctx, sofa::core::behavior::BaseIntegrationScheme* solver)
 { bwdIntegrationScheme(ctx->node, solver); }
 
 /// Process the ConstraintSolver
