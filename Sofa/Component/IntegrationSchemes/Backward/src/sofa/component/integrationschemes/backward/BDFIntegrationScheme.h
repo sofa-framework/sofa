@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/integrationschemes/backward/config.h>
-#include <sofa/core/behavior/IntegrationScheme.h>
+#include <sofa/core/behavior/BaseIntegrationScheme.h>
 #include <sofa/core/behavior/LinearSolverAccessor.h>
 #include <sofa/simulation/MechanicalOperations.h>
 #include <sofa/simulation/VectorOperations.h>

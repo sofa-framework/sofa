@@ -22,7 +22,7 @@
 #include <sofa/core/objectmodel/BaseNode.h>
 #include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/core/behavior/BaseAnimationLoop.h>
-#include <sofa/core/behavior/IntegrationScheme.h>
+#include <sofa/core/behavior/BaseIntegrationScheme.h>
 #include <sofa/core/collision/Pipeline.h>
 #include <sofa/core/visual/VisualLoop.h>
 
@@ -54,9 +54,9 @@ core::collision::Pipeline* BaseNode::getCollisionPipeline() const
 }
 
 
-core::behavior::IntegrationScheme* BaseNode::getIntegrationScheme() const
+core::behavior::BaseIntegrationScheme* BaseNode::getIntegrationScheme() const
 {
-    return this->getContext()->get<core::behavior::IntegrationScheme>();
+    return this->getContext()->get<core::behavior::BaseIntegrationScheme>();
 }
 
 core::visual::VisualLoop* BaseNode::getVisualLoop() const

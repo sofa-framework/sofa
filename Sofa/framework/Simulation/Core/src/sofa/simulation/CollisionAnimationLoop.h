@@ -79,7 +79,7 @@ protected:
     virtual void integrate(const core::ExecParams* params, SReal dt);
 
 
-    typedef simulation::Node::Sequence<core::behavior::IntegrationScheme> Solvers;
+    typedef simulation::Node::Sequence<core::behavior::BaseIntegrationScheme> Solvers;
     typedef core::collision::Pipeline Pipeline;
     const Solvers& getSolverSequence();
 };

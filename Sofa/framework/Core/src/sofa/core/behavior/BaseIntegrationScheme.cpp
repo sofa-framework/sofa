@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/core/behavior/IntegrationScheme.h>
+#include <sofa/core/behavior/BaseIntegrationScheme.h>
 #include <cstdlib>
 #include <cmath>
 #include <sofa/core/objectmodel/BaseNode.h>
@@ -28,20 +28,20 @@
 namespace sofa::core::behavior
 {
 
-IntegrationScheme::IntegrationScheme()
+BaseIntegrationScheme::BaseIntegrationScheme()
 {}
 
-IntegrationScheme::~IntegrationScheme()
+BaseIntegrationScheme::~BaseIntegrationScheme()
 {}
 
-bool IntegrationScheme::insertInNode( objectmodel::BaseNode* node )
+bool BaseIntegrationScheme::insertInNode( objectmodel::BaseNode* node )
 {
     node->addIntegrationScheme(this);
     Inherit1::insertInNode(node);
     return true;
 }
 
-bool IntegrationScheme::removeInNode( objectmodel::BaseNode* node )
+bool BaseIntegrationScheme::removeInNode( objectmodel::BaseNode* node )
 {
     node->removeIntegrationScheme(this);
     Inherit1::removeInNode(node);

@@ -26,7 +26,7 @@
 
 #include <sofa/simulation/MechanicalOperations.h>
 #include <sofa/simulation/VectorOperations.h>
-#include <sofa/core/behavior/IntegrationScheme.h>
+#include <sofa/core/behavior/BaseIntegrationScheme.h>
 
 namespace sofa::simulation::common
 {

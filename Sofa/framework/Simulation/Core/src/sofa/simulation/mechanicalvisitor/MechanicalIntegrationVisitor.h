@@ -36,7 +36,7 @@ public:
             : BaseMechanicalVisitor(m_params) , dt(_dt)
     {}
 
-    Result fwdIntegrationScheme(simulation::Node* node,sofa::core::behavior::IntegrationScheme* obj) override;
+    Result fwdIntegrationScheme(simulation::Node* node, sofa::core::behavior::BaseIntegrationScheme* obj) override;
     Result fwdInteractionForceField(simulation::Node*,sofa::core::behavior::BaseInteractionForceField* obj) override;
 
     /// Return a class name for this visitor

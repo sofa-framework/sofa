@@ -74,10 +74,10 @@ public:
     Result processNodeTopDown(simulation::Node* node) override;
 
     /// Process the IntegrationScheme
-    virtual Result fwdIntegrationScheme(simulation::Node* /*node*/, sofa::core::behavior::IntegrationScheme* /*solver*/);
+    virtual Result fwdIntegrationScheme(simulation::Node* /*node*/,  sofa::core::behavior::BaseIntegrationScheme* /*solver*/);
 
     /// Process the IntegrationScheme
-    virtual Result fwdIntegrationScheme(VisitorContext* ctx, sofa::core::behavior::IntegrationScheme* solver);
+    virtual Result fwdIntegrationScheme(VisitorContext* ctx,  sofa::core::behavior::BaseIntegrationScheme* solver);
 
     /// Process the ConstraintSolver
     virtual Result fwdConstraintSolver(simulation::Node* /*node*/, sofa::core::behavior::ConstraintSolver* /*solver*/);
@@ -178,10 +178,10 @@ public:
     virtual void bwdMechanicalMapping(VisitorContext* ctx, sofa::core::BaseMapping* map);
 
     /// Process the IntegrationScheme
-    virtual void bwdIntegrationScheme(simulation::Node* /*node*/,sofa::core::behavior::IntegrationScheme* /*solver*/);
+    virtual void bwdIntegrationScheme(simulation::Node* /*node*/, sofa::core::behavior::BaseIntegrationScheme* /*solver*/);
 
     /// Process the IntegrationScheme
-    virtual void bwdIntegrationScheme(VisitorContext* ctx,sofa::core::behavior::IntegrationScheme* solver);
+    virtual void bwdIntegrationScheme(VisitorContext* ctx, sofa::core::behavior::BaseIntegrationScheme* solver);
 
     /// Process the ConstraintSolver
     virtual void bwdConstraintSolver(simulation::Node* /*node*/,sofa::core::behavior::ConstraintSolver* /*solver*/);
