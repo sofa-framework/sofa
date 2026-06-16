@@ -22,7 +22,7 @@
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalIntegrationVisitor.h>
 
-#include <sofa/core/behavior/IntegrationScheme.h>
+#include <sofa/core/behavior/BaseIntegrationScheme.h>
 #include <sofa/core/ConstraintParams.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/simulation/Node.h>
@@ -37,7 +37,7 @@
 namespace sofa::simulation::mechanicalvisitor
 {
 
-Visitor::Result MechanicalIntegrationVisitor::fwdIntegrationScheme(simulation::Node* node, core::behavior::IntegrationScheme* obj)
+Visitor::Result MechanicalIntegrationVisitor::fwdIntegrationScheme(simulation::Node* node, core::behavior::BaseIntegrationScheme* obj)
 {
     SReal nextTime = node->getTime() + dt;
     MechanicalBeginIntegrationVisitor beginVisitor( this->params, dt );

@@ -23,7 +23,7 @@
 
 #include <sofa/component/constraint/lagrangian/correction/GenericConstraintCorrection.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalIntegrateConstraintVisitor.h>
-#include <sofa/core/behavior/IntegrationScheme.h>
+#include <sofa/core/behavior/BaseIntegrationScheme.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/ConstraintSolver.h>
 #include <sofa/core/behavior/LinearSolver.h>
@@ -94,10 +94,10 @@ void GenericConstraintCorrection::init()
     {
         msg_info() << "Link \"ODESolver\" to the desired ODE solver should be set to ensure right behavior." << msgendl
                    << "First ODESolver found in current context will be used.";
-        l_ODESolver.set( context->get<sofa::core::behavior::IntegrationScheme>(BaseContext::Local) );
+        l_ODESolver.set( context->get< sofa::core::behavior::BaseIntegrationScheme>(BaseContext::Local) );
         if (l_ODESolver.get() == nullptr)
         {
-            l_ODESolver.set( context->get<sofa::core::behavior::IntegrationScheme>(BaseContext::SearchRoot) );
+            l_ODESolver.set( context->get< sofa::core::behavior::BaseIntegrationScheme>(BaseContext::SearchRoot) );
         }
     }
 

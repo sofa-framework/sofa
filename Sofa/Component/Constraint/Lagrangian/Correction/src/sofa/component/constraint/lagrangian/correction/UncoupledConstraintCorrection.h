@@ -23,7 +23,7 @@
 #include <sofa/component/constraint/lagrangian/correction/config.h>
 
 #include <sofa/core/behavior/ConstraintCorrection.h>
-#include <sofa/core/behavior/IntegrationScheme.h>
+#include <sofa/core/behavior/BaseIntegrationScheme.h>
 #include <sofa/core/topology/TopologyData.h>
 
 namespace sofa::component::constraint::lagrangian::correction
@@ -128,7 +128,7 @@ private:
 
 protected:
 
-    sofa::core::behavior::IntegrationScheme* m_pIntegrationScheme;
+     sofa::core::behavior::BaseIntegrationScheme* m_pIntegrationScheme;
 
     /**
      * @brief Compute dx correction from motion space force vector.

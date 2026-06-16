@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include <sofa/core/behavior/BaseConstraintCorrection.h>
 
-#include <sofa/core/behavior/IntegrationScheme.h>
+#include <sofa/core/behavior/BaseIntegrationScheme.h>
 
 namespace sofa::core::behavior
 {
@@ -44,7 +44,7 @@ void BaseConstraintCorrection::resetForUnbuiltResolution(SReal* /*f*/, std::list
 void BaseConstraintCorrection::addConstraintDisplacement(SReal* /*d*/, int /*begin*/, int /*end*/) {}
 void BaseConstraintCorrection::setConstraintDForce(SReal* /*df*/, int /*begin*/, int /*end*/, bool /*update*/) {}	  // f += df
 
-SReal BaseConstraintCorrection::correctionFactor(const sofa::core::behavior::IntegrationScheme* solver, const ConstraintOrder& constraintOrder)
+SReal BaseConstraintCorrection::correctionFactor(const sofa::core::behavior::BaseIntegrationScheme* solver, const ConstraintOrder& constraintOrder)
 {
     if (solver)
     {

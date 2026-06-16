@@ -22,7 +22,7 @@
 #include <sofa/simulation/SolveVisitor.h>
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/simulation/Node.h>
-#include <sofa/core/behavior/IntegrationScheme.h>
+#include <sofa/core/behavior/BaseIntegrationScheme.h>
 #include <sofa/simulation/task/TaskScheduler.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
 #include <sofa/simulation/task/MainTaskSchedulerFactory.h>
@@ -32,7 +32,7 @@
 namespace sofa::simulation
 {
 
-void SolveVisitor::processSolver(simulation::Node* node, sofa::core::behavior::IntegrationScheme* s)
+void SolveVisitor::processSolver(simulation::Node* node,  sofa::core::behavior::BaseIntegrationScheme* s)
 {
     helper::ScopedAdvancedTimer timer("Mechanical",node);
     s->integrate(params, dt, x, v);

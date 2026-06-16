@@ -37,7 +37,7 @@
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/core/behavior/LinearSolver.h>
 
-#include <sofa/core/behavior/IntegrationScheme.h>
+#include <sofa/core/behavior/BaseIntegrationScheme.h>
 
 #include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
 
@@ -66,7 +66,7 @@ void PrecomputedLinearSolver<TMatrix,TVector >::loadMatrix(TMatrix& M)
     internalData.Minv.resize(systemSize,systemSize);
     dt = this->getContext()->getDt();
 
-    sofa::core::behavior::IntegrationScheme::SPtr odeSolver;
+     sofa::core::behavior::BaseIntegrationScheme::SPtr odeSolver;
     this->getContext()->get(odeSolver);
     factInt = 1.0; // christian : it is not a compliance... but an admittance that is computed !
     if (odeSolver) factInt = odeSolver->getPositionIntegrationFactor(); // here, we compute a compliance

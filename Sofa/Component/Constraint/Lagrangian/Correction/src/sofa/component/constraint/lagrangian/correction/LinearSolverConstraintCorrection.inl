@@ -104,10 +104,10 @@ void LinearSolverConstraintCorrection<DataTypes>::init()
     {
         msg_info() << "Link \"ODESolver\" to the desired ODE solver should be set to ensure right behavior." << msgendl
                    << "First ODESolver found in current context will be used.";
-        l_ODESolver.set( context->get<sofa::core::behavior::IntegrationScheme>(sofa::core::objectmodel::BaseContext::Local) );
+        l_ODESolver.set( context->get< sofa::core::behavior::BaseIntegrationScheme>(sofa::core::objectmodel::BaseContext::Local) );
         if (l_ODESolver.get() == nullptr)
         {
-            l_ODESolver.set( context->get<sofa::core::behavior::IntegrationScheme>(sofa::core::objectmodel::BaseContext::SearchRoot) );
+            l_ODESolver.set( context->get< sofa::core::behavior::BaseIntegrationScheme>(sofa::core::objectmodel::BaseContext::SearchRoot) );
         }
     }
 

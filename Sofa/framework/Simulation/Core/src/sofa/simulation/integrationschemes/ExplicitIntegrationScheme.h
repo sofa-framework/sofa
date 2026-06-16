@@ -22,7 +22,7 @@
 #pragma once
 #include <sofa/simulation/config.h>
 
-#include <sofa/core/behavior/IntegrationScheme.h>
+#include <sofa/core/behavior/BaseIntegrationScheme.h>
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/core/behavior/MultiVec.h>
 
@@ -38,11 +38,11 @@ namespace sofa::simulation::integrationschemes
 {
 
 class SOFA_SIMULATION_CORE_API ExplicitIntegrationScheme :
-                            public  sofa::core::behavior::IntegrationScheme,
+                            public  sofa::core::behavior::BaseIntegrationScheme,
                             public sofa::core::behavior::LinearSolverAccessor
 {
 public:
-    SOFA_ABSTRACT_CLASS(ExplicitIntegrationScheme, sofa::core::behavior::IntegrationScheme);
+    SOFA_ABSTRACT_CLASS(ExplicitIntegrationScheme, sofa::core::behavior::BaseIntegrationScheme);
 
     ExplicitIntegrationScheme() = default;
     virtual ~ExplicitIntegrationScheme() override = default ;
