@@ -52,7 +52,7 @@ void SceneCheckerVisitor::removeCheck(sofa::simulation::SceneCheck::SPtr check)
     m_checkset.erase( std::remove( m_checkset.begin(), m_checkset.end(), check ), m_checkset.end() );
 }
 
-void SceneCheckerVisitor::  validate(sofa::simulation::Node* node, simulation::SceneLoader* sceneLoader)
+void SceneCheckerVisitor::validate(sofa::simulation::Node* node, simulation::SceneLoader* sceneLoader)
 {
     std::stringstream tmp;
     bool first = true;
