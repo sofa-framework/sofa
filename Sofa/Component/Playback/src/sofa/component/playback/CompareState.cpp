@@ -23,7 +23,7 @@
 #include <sofa/component/playback/CompareState.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/core/behavior/IntegrationScheme.h>
+#include <sofa/core/behavior/BaseIntegrationScheme.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/simulation/common/xml/XML.h>
@@ -294,7 +294,7 @@ simulation::Visitor::Result CompareStateCreator::processNodeTopDown( simulation:
     using namespace sofa::defaulttype;
     sofa::core::behavior::BaseMechanicalState * mstate = gnode->mechanicalState;
     if (!mstate)   return simulation::Visitor::RESULT_CONTINUE;
-    core::behavior::IntegrationScheme *isSimulated;
+    core::behavior::BaseIntegrationScheme *isSimulated;
     mstate->getContext()->get(isSimulated);
     if (!isSimulated) return simulation::Visitor::RESULT_CONTINUE;
 

@@ -110,7 +110,7 @@ protected:
     virtual void integrate(const core::ExecParams* params /* PARAMS FIRST  = core::execparams::defaultInstance()*/, double dt);
 
 
-    typedef simulation::Node::Sequence<core::behavior::IntegrationScheme> Solvers;
+    typedef simulation::Node::Sequence<core::behavior::BaseIntegrationScheme> Solvers;
     typedef core::collision::Pipeline Pipeline;
     const Solvers& getSolverSequence();
 

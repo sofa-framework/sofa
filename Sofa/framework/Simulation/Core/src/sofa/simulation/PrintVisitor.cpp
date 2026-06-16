@@ -26,7 +26,7 @@
 #include <sofa/core/collision/Pipeline.h>
 #include <sofa/core/CollisionModel.h>
 #include <sofa/core/BehaviorModel.h>
-#include <sofa/core/behavior/IntegrationScheme.h>
+#include <sofa/core/behavior/BaseIntegrationScheme.h>
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/core/behavior/BaseInteractionForceField.h>
 #include <sofa/core/behavior/BaseProjectiveConstraintSet.h>

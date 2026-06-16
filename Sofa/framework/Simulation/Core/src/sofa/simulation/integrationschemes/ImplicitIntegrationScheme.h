@@ -22,7 +22,7 @@
 #pragma once
 #include <sofa/simulation/config.h>
 
-#include <sofa/core/behavior/IntegrationScheme.h>
+#include <sofa/core/behavior/BaseIntegrationScheme.h>
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/core/behavior/MultiVec.h>
 
@@ -40,11 +40,11 @@ namespace sofa::simulation::integrationschemes
 {
 
 class SOFA_SIMULATION_CORE_API ImplicitIntegrationScheme :
-                            public  sofa::core::behavior::IntegrationScheme,
+                            public  sofa::core::behavior::BaseIntegrationScheme,
                             public sofa::core::behavior::LinearSolverAccessor
 {
 public:
-    SOFA_ABSTRACT_CLASS(ImplicitIntegrationScheme, sofa::core::behavior::IntegrationScheme);
+    SOFA_ABSTRACT_CLASS(ImplicitIntegrationScheme, sofa::core::behavior::BaseIntegrationScheme);
 
     // WARNING we expect the linear integrator to initialize the working vecs. Meaning that if we
     // work in FreeMotion, the xResult should already be equal to the actual position.
