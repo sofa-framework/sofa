@@ -116,7 +116,7 @@ public:
             Sofa.Component.StateContainer,
             Sofa.Component.Topology.Container.Grid,
             Sofa.Component.SolidMechanics.Spring,
-            Sofa.Component.IntegrationSchemes.Backward,
+            Sofa.Component.IntegrationScheme.Backward,
             Sofa.Component.LinearSolver.Iterative,
             Sofa.Component.Mass
         });

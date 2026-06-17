@@ -14,7 +14,7 @@ def internalCreateScene(root_node, template):
     root_node.addObject('RequiredPlugin', pluginName='Sofa.Component.Constraint.Projective')
     root_node.addObject('RequiredPlugin', pluginName='Sofa.Component.LinearSolver.Iterative')
     root_node.addObject('RequiredPlugin', pluginName='Sofa.Component.Mass')
-    root_node.addObject('RequiredPlugin', pluginName='Sofa.Component.IntegrationSchemes.Backward')
+    root_node.addObject('RequiredPlugin', pluginName='Sofa.Component.IntegrationScheme.Backward')
     root_node.addObject('RequiredPlugin', pluginName='Sofa.Component.SolidMechanics.FEM.Elastic')
     root_node.addObject('RequiredPlugin', pluginName='Sofa.Component.StateContainer')
     root_node.addObject('RequiredPlugin', pluginName='Sofa.Component.Topology.Container.Grid')

@@ -757,7 +757,7 @@ std::map< std::string, Renamed, std::less<> > renamedComponents = {
     {"TriangleOctreeModel", Renamed("v25.12", "v26.06", "TriangleOctreeCollisionModel") },
     {"VolumeFromTetrahedrons", Renamed("v26.12", "v27.06", "VolumeFromVolumetricElements") },
 
-    // ODESolver → IntegrationSchemes rename #####
+    // ODESolver → IntegrationScheme rename #####
     {"EulerExplicitSolver",        Renamed("v26.06", "v27.06", "EulerExplicitIntegrationScheme")},
     {"CentralDifferenceSolver",    Renamed("v26.06", "v27.06", "CentralDifferenceIntegrationScheme")},
     {"DampVelocitySolver",         Renamed("v26.06", "v27.06", "DampVelocityIntegrationScheme")},

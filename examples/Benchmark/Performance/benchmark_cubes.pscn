@@ -11,7 +11,7 @@
         <RequiredPlugin pluginName="SofaImplicitIntegrationScheme"/>
         <RequiredPlugin pluginName="SofaLoader"/>
         <RequiredPlugin pluginName="SofaGeneralEngine"/>
-        <RequiredPlugin pluginName="Sofa.Component.IntegrationSchemes.Backward"/>
+        <RequiredPlugin pluginName="Sofa.Component.IntegrationScheme.Backward"/>
         <RequiredPlugin pluginName="SofaMiscCollision"/>
     </Node>
 

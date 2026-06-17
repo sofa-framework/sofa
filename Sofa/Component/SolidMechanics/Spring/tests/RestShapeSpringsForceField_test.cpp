@@ -60,7 +60,7 @@ sofa::simulation::Node::SPtr RestSpringsForceField_test::createScene(const std::
     auto theRoot = createRootNode(theSimulation, "root");
 
     this->loadPlugins({
-        Sofa.Component.IntegrationSchemes.Backward,
+        Sofa.Component.IntegrationScheme.Backward,
         Sofa.Component.LinearSolver.Iterative,
         Sofa.Component.StateContainer,
         Sofa.Component.Mass,

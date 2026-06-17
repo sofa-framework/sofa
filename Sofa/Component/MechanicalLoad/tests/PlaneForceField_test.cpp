@@ -39,7 +39,7 @@ using sofa::simulation::SceneLoaderXML ;
 #include <sofa/defaulttype/VecTypes.h>
 
 #include <sofa/component/statecontainer/MechanicalObject.h>
-#include <sofa/component/integrationschemes/backward/EulerImplicitIntegrationScheme.h>
+#include <sofa/component/integrationscheme/backward/EulerImplicitIntegrationScheme.h>
 #include <sofa/component/linearsolver/iterative/CGLinearSolver.h>
 #include <sofa/component/mass/UniformMass.h>
 
@@ -76,7 +76,7 @@ using sofa::component::mechanicalload::PlaneForceField ;
 
 using sofa::component::statecontainer::MechanicalObject ;
 
-using sofa::component::integrationschemes::backward::EulerImplicitIntegrationScheme ;
+using sofa::component::integrationscheme::backward::EulerImplicitIntegrationScheme ;
 
 template <typename TDataType, typename TMassType>
 struct TypeTuple

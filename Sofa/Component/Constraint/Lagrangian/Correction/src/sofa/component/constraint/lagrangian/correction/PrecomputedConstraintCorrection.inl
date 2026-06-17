@@ -27,7 +27,7 @@
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 
-#include <sofa/component/integrationschemes/backward/EulerImplicitIntegrationScheme.h>
+#include <sofa/component/integrationscheme/backward/EulerImplicitIntegrationScheme.h>
 
 #include <sofa/linearalgebra/SparseMatrix.h>
 #include <sofa/component/linearsolver/iterative/CGLinearSolver.h>
@@ -287,7 +287,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
         static constexpr sofa::type::Vec3 gravity_zero(0_sreal, 0_sreal, 0_sreal);
         this->getContext()->setGravity(gravity_zero);
 
-        sofa::component::integrationschemes::backward::EulerImplicitIntegrationScheme* eulerSolver;
+        sofa::component::integrationscheme::backward::EulerImplicitIntegrationScheme* eulerSolver;
         sofa::component::linearsolver::iterative::CGLinearSolver< sofa::component::linearsolver::GraphScatteredMatrix, sofa::component::linearsolver::GraphScatteredVector >* cgLinearSolver;
         core::behavior::LinearSolver* linearSolver;
 

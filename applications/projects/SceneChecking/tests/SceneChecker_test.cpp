@@ -80,8 +80,8 @@ struct SceneChecker_test : public BaseSimulationTest
 {
     void checkRequiredPlugin(bool missing)
     {
-        this->loadPlugins({Sofa.Component.IntegrationSchemes.Forward});
-        const std::string missStr = missing ? "" : "<RequiredPlugin pluginName='Sofa.Component.IntegrationSchemes.Forward'/> \n";
+        this->loadPlugins({Sofa.Component.IntegrationScheme.Forward});
+        const std::string missStr = missing ? "" : "<RequiredPlugin pluginName='Sofa.Component.IntegrationScheme.Forward'/> \n";
         std::stringstream scene;
         scene << "<?xml version='1.0'?>                                             \n"
               << "<Node name='Root' gravity='0 -9.81 0' time='0' animate='0' >      \n"
