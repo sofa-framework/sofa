@@ -25,6 +25,7 @@
 #include <sofa/core/behavior/ConstraintCorrection.h>
 #include <sofa/core/behavior/BaseIntegrationScheme.h>
 #include <sofa/core/topology/TopologyData.h>
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
 
 namespace sofa::component::constraint::lagrangian::correction
 {
@@ -117,6 +118,7 @@ public:
     Data< Real > d_correctionVelocityFactor; ///< Factor applied to the constraint forces when correcting the velocities
     Data< Real > d_correctionPositionFactor; ///< Factor applied to the constraint forces when correcting the positions
     Data < bool > d_useIntegrationSchemeIntegrationFactors; ///< Use odeSolver integration factors instead of correctionVelocityFactor and correctionPositionFactor
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> d_useOdeSolverIntegrationFactors;
                                                     
     /// Link to be set to the topology container in the component graph.
     SingleLink<UncoupledConstraintCorrection<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;

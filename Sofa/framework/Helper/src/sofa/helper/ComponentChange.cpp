@@ -604,6 +604,12 @@ std::map<std::string, ComponentChange, std::less<> > movedComponents = {
 std::map<std::string, ComponentChange, std::less<> > uncreatableComponents = {
 
     /***********************/
+    // REMOVED SINCE v26.06
+
+    { "NewtonRaphsonSolver",      RemovedIn("v27.06").withoutAnyDeprecation() },
+    { "VariationalSymplecticSolver", RemovedIn("v27.06").withoutAnyDeprecation() },
+
+    /***********************/
     // REMOVED SINCE v25.12
 
     { "GenericConstraintSolver",
@@ -748,7 +754,19 @@ std::map< std::string, Renamed, std::less<> > renamedComponents = {
     {"ParallelStiffSpringForceField", Renamed("v24.06","v25.06","ParallelSpringForceField")},
     {"ShewchukPCGLinearSolver", Renamed("v24.12","v25.12","PCGLinearSolver")},
     {"OglCylinderModel", Renamed("v24.12", "v25.06", "CylinderVisualModel")},
-    {"TriangleOctreeModel", Renamed("v25.12", "v26.06", "TriangleOctreeCollisionModel") }
+    {"TriangleOctreeModel", Renamed("v25.12", "v26.06", "TriangleOctreeCollisionModel") },
+
+    // ODESolver → IntegrationSchemes rename #####
+    {"EulerExplicitSolver",        Renamed("v26.06", "v27.06", "EulerExplicitIntegrationScheme")},
+    {"CentralDifferenceSolver",    Renamed("v26.06", "v27.06", "CentralDifferenceIntegrationScheme")},
+    {"DampVelocitySolver",         Renamed("v26.06", "v27.06", "DampVelocityIntegrationScheme")},
+    {"RungeKutta2Solver",          Renamed("v26.06", "v27.06", "RungeKutta2IntegrationScheme")},
+    {"RungeKutta4Solver",          Renamed("v26.06", "v27.06", "RungeKutta4IntegrationScheme")},
+    {"EulerImplicitSolver",        Renamed("v26.06", "v27.06", "EulerImplicitIntegrationScheme")},
+    {"NewmarkImplicitSolver",      Renamed("v26.06", "v27.06", "NewmarkIntegrationScheme")},
+    {"StaticSolver",               Renamed("v26.06", "v27.06", "StaticEquilibriumIntegrationScheme")},
+    {"BDFOdeSolver",               Renamed("v26.06", "v27.06", "BDFIntegrationScheme")},
+    {"BaseLinearMultiStepMethod",  Renamed("v26.06", "v27.06", "LinearMultistepIntegrationScheme")},
 };
 
 

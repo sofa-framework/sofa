@@ -1,0 +1,12 @@
+@PACKAGE_INIT@
+
+message(FATAL_ERROR
+    "[SOFA v26.06] Sofa.Component.ODESolver has been renamed to "
+    "Sofa.Component.IntegrationSchemes.\n"
+    "Please replace:\n"
+    "    find_package(Sofa.Component.ODESolver)\n"
+    "with:\n"
+    "    find_package(Sofa.Component.IntegrationSchemes)\n"
+    "in your CMakeLists.txt. "
+    "This package will be fully removed in v27.06."
+)
