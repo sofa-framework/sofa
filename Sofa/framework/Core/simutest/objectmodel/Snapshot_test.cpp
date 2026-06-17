@@ -19,6 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <iostream>
+#include <vector>
 #include <sofa/core/objectmodel/Base.h>
 
 #include "gtest/gtest.h"
@@ -29,8 +31,8 @@ using sofa::core::objectmodel::ComponentState;
 using sofa::testing::BaseSimulationTest ;
 using sofa::simulation::Node ;
 
-#include <sofa/core/objectmodel/BaseObject.h>
-using sofa::core::objectmodel::BaseObject;
+#include <sofa/core/objectmodel/BaseComponent.h>
+using sofa::core::objectmodel::BaseComponent;
 
 #include <sofa/core/objectmodel/Snapshot.h>
 using sofa::core::objectmodel::Snapshot;
@@ -62,7 +64,7 @@ class TestComponent : public Base
 public:
     Data<float> d_value;
     
-    TestComponent() 
+    TestComponent()
         : d_value(initData(&d_value, 3.14f, "value", "test value"))
     {
         this->setName("pi");
@@ -82,6 +84,25 @@ public:
     {
         
         return this->createSnapshotObject(parents);
+    }
+
+};
+
+class TestComponentA : public BaseComponent
+{
+public:
+    SOFA_CLASS(TestComponentA, BaseComponent);
+
+    Data<float> d_value;
+    sofa::MultiLink<TestComponentA, BaseComponent, BaseLink::FLAG_DOUBLELINK> l_target;
+
+    // SingleLink<TestComponentA, BaseComponent, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_target;
+
+    TestComponentA()
+        : d_value(initData(&d_value, 3.14f, "value", "test value"))
+        , l_target(initLink("target","target test"))
+    {
+        this->setName("pi");
     }
 
 };
@@ -139,7 +160,6 @@ TEST_F(Snapshot_test, saveLinkIn)
         {
             EXPECT_EQ(link.value, "");
         }
-
     }
 }
 
@@ -229,6 +249,51 @@ TEST_F(Snapshot_test, loadSnapshot)
     tcomponent2.loadDataSnapshot(snapshot);
 
     EXPECT_EQ(tcomponent2.d_value.getValue(), 3.14f);
+}
+
+TEST_F(Snapshot_test, loadLinkSnapshot)
+{
+    /// Test of loadLinkSnapshot
+    /// wip
+    TestComponentA Component1;
+    Component1.setName("Component1");
+    TestComponentA Component2;
+    TestComponentA* ptr;
+    ptr = &Component2;
+    Component2.setName("Component2");
+    TestComponentA Component3;
+    Component3.setName("Component3");
+
+
+    auto snapshotNode = std::make_shared<Snapshot::SnapshotNode>("root");
+    std::vector<std::shared_ptr<Snapshot::SnapshotNode>> snapshotParents;
+    snapshotParents.push_back(snapshotNode);
+
+    std::cout << "Component1 l_target value : " <<Component1.l_target.getValueString() << std::endl;
+
+    Component1.l_target.add(ptr);
+
+    std::cout << "Component1 l_target value : " <<Component1.l_target.getValueString() << std::endl;
+    EXPECT_EQ(Component1.l_target.getValueString(), "@Component2");
+
+    auto snapshotObject1 = std::make_shared<Snapshot::SnapshotObject>();
+    snapshotObject1 = Component1.saveSnapshot(snapshotParents);
+
+    ptr = &Component3;
+    Component1.l_target.add(ptr);
+
+    std::cout << "Component1 l_target value : " <<Component1.l_target.getValueString() << std::endl;
+    // EXPECT_EQ(Component1.l_target.getValueString(), "@Component2 @Component3");
+
+    Component1.loadLinkSnapshot(snapshotObject1);
+
+    std::cout << "Component1 l_target value : " <<Component1.l_target.getValueString() << std::endl;
+    // EXPECT_EQ(Component1.l_target.getValueString(), "@Component2");
+
+    ptr = &Component2;
+    Component1.l_target.remove(ptr);
+    std::cout << "Component1 l_target value : " <<Component1.l_target.getValueString() << std::endl;
+
 }
 
 TEST_F(Snapshot_test, SnapshotJSONExporter)

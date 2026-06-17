@@ -783,41 +783,19 @@ void Base::loadDataSnapshot(const std::shared_ptr<Snapshot::SnapshotObject>& sna
     }
 }
 
-void Base::loadLinkSnapshot(const std::shared_ptr<Snapshot::SnapshotObject>& snapshotObject) const
-{
-    std::vector<Base*> linksFromSnapshot;
+void Base::loadLinkSnapshot(const std::shared_ptr<Snapshot::SnapshotObject>& snapshotObject) const {
+    /// wip
+    for (const auto& linkInfo : snapshotObject->m_linkContainer) {
+        if (const auto link = this->findLink(linkInfo.name)) {
 
-    for (const auto& linkInfo : snapshotObject->m_linkContainer)
-    {
-        if (const auto link = this->findLink(linkInfo.name))
-        {
-
-            std::vector<std::string> newSublinks = helper::split(linkInfo.value, ' ');
-            for (const auto& newSublink : newSublinks)
-            {
-                auto obj = PathResolver::FindBaseFromPath(link->getOwner(), newSublink);
-                if ( obj != nullptr)
-                {
-                    linksFromSnapshot.push_back(obj);
-                }
-            }
-            std::size_t i = 0;
-            // for (const auto& linkFromSnapshot : linksFromSnapshot)
-            // {
-            //     std::string linkName = linkFromSnapshot->getName();
-            //     Base* linkedBase = link->getLinkedBase(i);
-            //     if (linkedBase != linkFromSnapshot || linkedBase != nullptr)
-            //         link->add(linkFromSnapshot,linkName);
-            //     else
-            //         link->remove(linkedBase);
-            //     i+=1;
-            // }
+            if (link->readFromSnapshot(linkInfo.value) == 0 )
+                msg_error("LoadSnapshot") << "Failed to read " << linkInfo.name << " in " << this->getName()  << " from the snapshot " << linkInfo.value;
         }
     }
-
 }
 
-} // namespace sofa::core::objectmodel
+
+}// namespace sofa::core::objectmodel
 
 
 namespace sofa::helper::logging

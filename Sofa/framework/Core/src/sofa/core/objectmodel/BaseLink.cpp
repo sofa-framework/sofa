@@ -323,6 +323,39 @@ bool BaseLink::read( const std::string& str )
     return ok;
 }
 
+/// wip : idea -> compare str with the actual simulation. If a link is an extra link, add it (create new object ?)
+/// If a link (from the scene) is not necessary anymore, it will be remove naturally
+bool BaseLink::readFromSnapshot( const std::string& str )
+{
+    if (str.empty())
+        return true;
+
+    const auto owner = getOwner();
+    if (owner == nullptr)
+        return false;
+
+    std::vector<std::string> linkPaths;
+    std::istringstream istr(str);
+    std::string linkString;
+
+    while (istr >> linkString)
+    {
+        if (!linkString.empty() && linkString[0] == '@')
+            linkPaths.push_back(linkString);
+    }
+
+    for (const auto& linkPath : linkPaths) {
+        std::cout << linkPath << std::endl;
+        Base *ptr = PathResolver::FindBaseFromClassAndPath(owner, getDestClass(), linkPath);
+        if (ptr == nullptr) {
+            msg_warning(owner) << "readFromSnapshot: could not resolve link path " << linkPath << "\" for link " << getName() << ". Skipping.";
+            /// Create a new object ?
+            /// this->add(ptr);
+        }
+    }
+    return true;
+}
+
 std::string BaseLink::getLinkedPath(const std::size_t index) const
 {
     if(index >= getSize())

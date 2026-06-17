@@ -37,7 +37,7 @@ void LoadSnapshotVisitor::processObject(
     else
     {
         obj->loadDataSnapshot(snapshotObject);
-        // obj->loadLinkSnapshot(snapshotObject);
+        obj->loadLinkSnapshot(snapshotObject);
         obj->loadInternalStateFrom(*snapshotObject);
     }
 
@@ -52,7 +52,7 @@ Visitor::Result LoadSnapshotVisitor::processNodeTopDown(simulation::Node* node)
     {
         const auto SnapshotNode = std::dynamic_pointer_cast<core::objectmodel::Snapshot::SnapshotNode>(snapshotObject);
         node->loadDataSnapshot(SnapshotNode);
-        // node->loadLinkSnapshot(SnapshotNode);
+        node->loadLinkSnapshot(SnapshotNode);
         for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
         {
             this->processObject(it->get(), SnapshotNode);
