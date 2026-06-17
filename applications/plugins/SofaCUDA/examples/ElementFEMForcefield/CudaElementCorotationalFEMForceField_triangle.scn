@@ -1,0 +1,35 @@
+<?xml version="1.0" ?>
+<Node name="root" gravity="0 -9.81 0" dt="0.01">
+    <RequiredPlugin pluginName="Sofa.Component.Constraint.Projective"/>
+    <RequiredPlugin pluginName="Sofa.Component.Engine.Select"/>
+    <RequiredPlugin pluginName="Sofa.Component.LinearSolver.Iterative"/>
+    <RequiredPlugin pluginName="Sofa.Component.Mass"/>
+    <RequiredPlugin pluginName="Sofa.Component.ODESolver.Backward"/>
+    <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.FEM.Elastic"/>
+    <RequiredPlugin pluginName="Sofa.Component.Topology.Container.Dynamic"/>
+    <RequiredPlugin pluginName="Sofa.Component.Topology.Container.Grid"/>
+    <RequiredPlugin pluginName="Sofa.Component.Visual"/>
+    <RequiredPlugin pluginName="SofaCUDA"/>
+
+    <VisualStyle displayFlags="showBehaviorModels showForceFields" />
+    <DefaultAnimationLoop />
+    <DefaultVisualManagerLoop />
+
+    <Node name="Triangle">
+        <RegularGridTopology name="tissue" n="100 100 1" min="0 0 0" max="10 10 0" />
+
+        <EulerImplicitSolver name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
+        <CGLinearSolver iterations="20" name="linear solver" tolerance="1.0e-12" threshold="1.0e-12" />
+        
+        <MechanicalObject position="@../tissue.position" name="dofs" template="CudaVec3f"/>
+
+        <TriangleSetTopologyContainer name="Container" src="@tissue"/>
+        <TriangleSetTopologyModifier name="Modifier" />
+        <TriangleSetGeometryAlgorithms name="GeomAlgo" template="CudaVec3f" />
+
+        <DiagonalMass massDensity="0.15" template="CudaVec3f,CudaVec3f"/>
+        <FixedProjectiveConstraint indices="9900 9901 9902 9903 9996 9997 9998 9999" />
+
+        <TriangleCorotationalFEMForceField name="FEM" youngModulus="600" poissonRatio="0.3" method="large" template="CudaVec3f"/>
+    </Node>
+</Node>

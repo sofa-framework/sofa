@@ -90,6 +90,8 @@ extern void registerPlaneForceField(sofa::core::ObjectFactory* factory);
 extern void registerSphereForceField(sofa::core::ObjectFactory* factory);
 
 // component::solidmechanics::fem::elastic
+extern void registerElementCorotationalFEMForceField(sofa::core::ObjectFactory* factory);
+extern void registerElementLinearSmallStrainFEMForceField(sofa::core::ObjectFactory* factory);
 extern void registerHexahedronFEMForceField(sofa::core::ObjectFactory* factory);
 extern void registerTetrahedronFEMForceField(sofa::core::ObjectFactory* factory);
 extern void registerTriangularFEMForceFieldOptim(sofa::core::ObjectFactory* factory);
@@ -224,6 +226,8 @@ void registerObjects(sofa::core::ObjectFactory* factory)
     registerLinearForceField(factory);
     registerPlaneForceField(factory);
     registerSphereForceField(factory);
+    registerElementCorotationalFEMForceField(factory);
+    registerElementLinearSmallStrainFEMForceField(factory);
     registerHexahedronFEMForceField(factory);
     registerTetrahedronFEMForceField(factory);
     registerTriangularFEMForceFieldOptim(factory);

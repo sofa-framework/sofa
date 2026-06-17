@@ -23,24 +23,15 @@
 
 #include <sofa/defaulttype/typeinfo/models/ScalarTypeInfo.h>
 #include <sofa/defaulttype/TypeInfoRegistry.h>
+#include <sofa/type/trait/TypeTrait.h>
+#include <concepts>
 
 namespace sofa::defaulttype
 {
 
-template<>
-struct DataTypeInfo<float> : public ScalarTypeInfo<float>
-{
-    static const std::string GetTypeName() { return "float"; }
-    static const std::string name(){ return "f"; }
-};
-
-
-template<>
-struct DataTypeInfo<double> : public ScalarTypeInfo<double>
-{
-    static const std::string GetTypeName() { return "double"; }
-    static const std::string name(){ return "d"; }
-};
+template<std::floating_point T>
+struct DataTypeInfo<T> : public ScalarTypeInfo<T>, public sofa::type::TypeTrait<T>
+{};
 
 } /// namespace sofa::defaulttype
 

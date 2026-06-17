@@ -76,6 +76,8 @@ public:
 
     Index getFromIndex(Index ind) override;
 
+    /// If true (default), alternate triangle diagonal orientation per quad to avoid bias
+    sofa::core::objectmodel::Data<bool> d_swapping;
 };
 
 } //namespace sofa::component::topology::mapping
