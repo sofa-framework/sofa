@@ -261,8 +261,8 @@ void AffineMovementProjectiveConstraint<DataTypes>::transform(const SetIndexArra
     }
     else
     {
-        const Vec3& translation = d_translation.getValue();
-        const Vec3& rotation = d_rotation.getValue();
+        const auto& translation = d_translation.getValue();
+        const auto& rotation = d_rotation.getValue();
 
         for (size_t i=0; i < indices.size() ; ++i)
         {
