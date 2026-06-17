@@ -51,12 +51,12 @@ install(DIRECTORY compat/ DESTINATION include/${PROJECT_NAME}_compat COMPONENT h
 
 # CMake-level compat: redirect find_package(Sofa.Component.ODESolver.Forward) with an error
 configure_package_config_file(
-    Sofa.Component.ODESolver.ForwardConfig.cmake.in
-    "${CMAKE_BINARY_DIR}/lib/cmake/Sofa.Component.ODESolver.Forward/Sofa.Component.ODESolver.ForwardConfig.cmake"
+    compat/Sofa.Component.ODESolver.ForwardConfig.cmake.in
+    "${CMAKE_BINARY_DIR}/lib/cmake/Sofa.Component.ODESolver.ForwardConfig.cmake"
     INSTALL_DESTINATION "lib/cmake/Sofa.Component.ODESolver.Forward"
 )
 install(FILES
-    "${CMAKE_BINARY_DIR}/lib/cmake/Sofa.Component.ODESolver.Forward/Sofa.Component.ODESolver.ForwardConfig.cmake"
+    "${CMAKE_BINARY_DIR}/lib/cmake/Sofa.Component.ODESolver.ForwardConfig.cmake"
     DESTINATION "lib/cmake/Sofa.Component.ODESolver.Forward"
     COMPONENT headers
 )
