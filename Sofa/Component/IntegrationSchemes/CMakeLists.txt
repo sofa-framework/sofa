@@ -27,3 +27,15 @@ sofa_create_package_with_targets(
     INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
 )
 
+# CMake-level compat: redirect find_package(Sofa.Component.ODESolver) with an error
+configure_package_config_file(
+    Sofa.Component.ODESolverConfig.cmake.in
+    "${CMAKE_BINARY_DIR}/lib/cmake/Sofa.Component.ODESolver/Sofa.Component.ODESolverConfig.cmake"
+    INSTALL_DESTINATION "lib/cmake/Sofa.Component.ODESolver"
+)
+install(FILES
+    "${CMAKE_BINARY_DIR}/lib/cmake/Sofa.Component.ODESolver/Sofa.Component.ODESolverConfig.cmake"
+    DESTINATION "lib/cmake/Sofa.Component.ODESolver"
+    COMPONENT headers
+)
+
