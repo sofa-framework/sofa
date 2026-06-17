@@ -1,0 +1,138 @@
+/******************************************************************************
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
+#pragma once
+#include <sofa/component/integrationscheme/forward/config.h>
+
+#include <sofa/core/behavior/LinearSolver.h>
+#include <sofa/core/behavior/MultiVec.h>
+#include <sofa/simulation/MappingGraphMechanicalOperations.h>
+
+namespace sofa::simulation::common
+{
+class MechanicalOperations;
+class VectorOperations;
+}
+
+#include <sofa/simulation/integrationscheme/ExplicitIntegrationScheme.h>
+
+namespace sofa::component::integrationscheme::forward
+{
+
+/**
+ * The simplest time integration.
+ * Two variants of the Euler IntegrationScheme are available in this component:
+ * - forward Euler method, also called explicit Euler method
+ * - semi-implicit Euler method, also called semi-explicit Euler method or symplectic Euler
+ *
+ * In both variants, acceleration is first computed. The system to compute the acceleration
+ * is M * a = f, where M is the mass matrix and f can be a force.
+ * In case of a diagonal mass matrix, M is trivially invertible and the acceleration
+ * can be computed without a linear IntegrationScheme.
+ *
+ * f is accumulated by force fields through the addForce function. Mappings can
+ * also contribute by projecting forces of mapped objects.
+ * f is computed based on the current state (current velocity and position).
+ *
+ * Explicit Euler method:
+ * The option "symplectic" must be set to false to use this variant.
+ * The explicit Euler method produces an approximate discrete solution by iterating
+ * x_{n+1} = x_n + v_n * dt
+ * v_{n+1} = v_n + a * dt
+ *
+ * Semi-implicit Euler method:
+ * The option "symplectic" must be set to true to use this variant.
+ * The semi-implicit Euler method produces an approximate discrete solution by iterating
+ * v_{n+1} = v_n + a * dt
+ * x_{n+1} = x_n + v_{n+1} * dt
+ *
+ * The semi-implicit Euler method is more robust than the standard Euler method.
+ */
+class SOFA_COMPONENT_INTEGRATIONSCHEME_FORWARD_API EulerExplicitIntegrationScheme : public simulation::integrationscheme::ExplicitIntegrationScheme
+{
+public:
+    SOFA_CLASS(EulerExplicitIntegrationScheme, simulation::integrationscheme::ExplicitIntegrationScheme);
+
+protected:
+    EulerExplicitIntegrationScheme();
+
+public:
+
+    Data<bool> d_symplectic; ///< If true (default), the velocities are updated before the positions and the method is symplectic, more robust. If false, the positions are updated before the velocities (standard Euler, less robust).
+    Data<bool> d_threadSafeVisitor; ///< If true, do not use realloc and free visitors in fwdInteractionForceField.
+
+    SingleLink<EulerExplicitIntegrationScheme, core::behavior::LinearSolver, BaseLink::FLAG_STRONGLINK> l_linearSolver;
+
+    virtual void doIntegrate(const core::ExecParams* params, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
+
+    virtual SReal getVelocityIntegrationFactor() const override
+    {
+        return m_dt;
+    }
+
+    virtual SReal getPositionIntegrationFactor() const override
+    {
+        return m_dt*m_dt;
+    }
+
+    void init() override ;
+
+protected:
+
+protected:
+
+    /// Update state variable (new position and velocity) based on the computed acceleration
+    /// The update takes constraints into account
+    void updateState(sofa::simulation::common::VectorOperations* vop,
+                     sofa::simulation::common::MappingGraphMechanicalOperations* mop,
+                     sofa::core::MultiVecCoordId xResult,
+                     sofa::core::MultiVecDerivId vResult,
+                     const sofa::core::behavior::MultiVecDeriv& acc) const;
+
+    /// Gravity times time step size is added to the velocity for some masses
+    /// v += g * dt
+    static void addSeparateGravity(sofa::simulation::common::MappingGraphMechanicalOperations* mop, SReal dt, core::MultiVecDerivId v);
+
+    /// Assemble the force vector (right-hand side of the equation)
+    void computeForce(sofa::simulation::common::MappingGraphMechanicalOperations* mop, core::MultiVecDerivId f) const;
+
+    /// Compute the acceleration from the force and the inverse of the mass
+    /// acc = M^-1 * f
+    static void computeAcceleration(sofa::simulation::common::MappingGraphMechanicalOperations* mop,
+                                    core::MultiVecDerivId acc,
+                                    core::ConstMultiVecDerivId f);
+
+    /// Apply projective constraints, such as FixedProjectiveConstraint
+    void projectResponse(sofa::simulation::common::MappingGraphMechanicalOperations* mop, core::MultiVecDerivId vecId) const;
+
+    static void solveConstraints(sofa::simulation::common::MappingGraphMechanicalOperations* mop, core::MultiVecDerivId acc);
+
+    void assembleSystemMatrix(sofa::simulation::common::MappingGraphMechanicalOperations* mop) const;
+
+    void solveSystem(core::MultiVecDerivId solution, core::MultiVecDerivId rhs) const;
+
+    bool isMassMatrixTriviallyInvertible(const core::ExecParams* params) const;
+
+
+    simulation::MappingGraph m_mappingGraph;
+};
+
+} // namespace sofa::component::odeIntegrationScheme::forward

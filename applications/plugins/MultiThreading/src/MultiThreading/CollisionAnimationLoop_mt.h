@@ -106,7 +106,7 @@ protected:
 	virtual void collisionResponse(const core::ExecParams* params = core::execparams::defaultInstance());
 
 
-    /// Activate IntegrationSchemes
+    /// Activate IntegrationScheme
     virtual void integrate(const core::ExecParams* params /* PARAMS FIRST  = core::execparams::defaultInstance()*/, double dt);
 
 

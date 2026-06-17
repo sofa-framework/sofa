@@ -27,7 +27,7 @@
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 
-#include <sofa/component/integrationschemes/backward/EulerImplicitIntegrationScheme.h>
+#include <sofa/component/integrationscheme/backward/EulerImplicitIntegrationScheme.h>
 
 #include <sofa/linearalgebra/SparseMatrix.h>
 #include <sofa/core/behavior/LinearSolver.h>
@@ -292,10 +292,9 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 
         // If a solver link was not set explicitly, fall back to the first one found in the context.
         if (l_odeSolver.empty())
-            l_odeSolver.set(this->getContext()->template get<sofa::component::integrationschemes::backward::EulerImplicitIntegrationScheme>());
+            l_odeSolver.set(this->getContext()->template get<sofa::component::integrationscheme::backward::EulerImplicitIntegrationScheme>());
         if (l_linearSolver.empty())
             l_linearSolver.set(this->getContext()->template get<core::behavior::LinearSolver>());
-
         if (l_odeSolver && l_linearSolver)
         {
             msg_info() << "use EulerImplicitIntegrationScheme & LinearSolver";

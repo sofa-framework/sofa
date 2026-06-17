@@ -61,7 +61,7 @@ TEST(SparseLDLSolver, EmptyMState)
 
     const auto plugins = sofa::testing::makeScopedPlugin({
         Sofa.Component.LinearSolver.Direct,
-        Sofa.Component.IntegrationSchemes.Backward,
+        Sofa.Component.IntegrationScheme.Backward,
         Sofa.Component.StateContainer});
 
     sofa::simpleapi::createObject(root, "DefaultAnimationLoop");
@@ -91,7 +91,7 @@ TEST(SparseLDLSolver, TopologyChangeEmptyMState)
     const auto plugins = sofa::testing::makeScopedPlugin({
         Sofa.Component.LinearSolver.Direct,
         Sofa.Component.Mass,
-        Sofa.Component.IntegrationSchemes.Backward,
+        Sofa.Component.IntegrationScheme.Backward,
         Sofa.Component.StateContainer,
         Sofa.Component.Topology.Container.Dynamic,
         Sofa.Component.Topology.Utility});

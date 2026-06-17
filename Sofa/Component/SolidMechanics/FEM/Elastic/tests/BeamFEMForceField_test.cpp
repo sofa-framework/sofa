@@ -86,7 +86,7 @@ public:
         createObject(m_root, "DefaultVisualManagerLoop");
 
         this->loadPlugins({
-            Sofa.Component.IntegrationSchemes.Backward,
+            Sofa.Component.IntegrationScheme.Backward,
             Sofa.Component.LinearSolver.Iterative,
             Sofa.Component.StateContainer,
             Sofa.Component.Topology.Container.Dynamic,
@@ -146,7 +146,7 @@ public:
         m_root = sofa::simpleapi::createRootNode(m_simulation, "root");
 
         this->loadPlugins({
-            Sofa.Component.IntegrationSchemes.Backward,
+            Sofa.Component.IntegrationScheme.Backward,
             Sofa.Component.LinearSolver.Iterative,
             Sofa.Component.StateContainer,
             Sofa.Component.SolidMechanics.FEM.Elastic
