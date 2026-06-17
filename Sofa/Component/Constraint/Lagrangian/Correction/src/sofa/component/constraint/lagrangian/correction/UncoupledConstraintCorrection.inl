@@ -111,6 +111,8 @@ UncoupledConstraintCorrection<DataTypes>::UncoupledConstraintCorrection(sofa::co
     , l_topology(initLink("topology", "link to the topology container"))
     , m_pIntegrationScheme(nullptr)
 {
+    d_useOdeSolverIntegrationFactors.setOriginalData(&d_useIntegrationSchemeIntegrationFactors);
+    this->addAlias(&d_useIntegrationSchemeIntegrationFactors, "useOdeSolverIntegrationFactors");
     // Check defaultCompliance and entries of the compliance vector are not zero
     core::objectmodel::Base::addUpdateCallback("checkNonZeroComplianceInput", {&d_defaultCompliance, &d_compliance}, [this](const core::DataTracker& t)
     {
