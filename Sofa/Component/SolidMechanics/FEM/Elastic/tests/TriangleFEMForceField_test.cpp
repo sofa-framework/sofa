@@ -178,7 +178,7 @@ public:
         const Node::SPtr FEMNode = sofa::simpleapi::createChild(m_root, nodeName);
 
         this->loadPlugins({
-            Sofa.Component.IntegrationSchemes.Backward,
+            Sofa.Component.IntegrationScheme.Backward,
             Sofa.Component.LinearSolver.Iterative,
             Sofa.Component.StateContainer,
             Sofa.Component.Topology.Container.Dynamic,

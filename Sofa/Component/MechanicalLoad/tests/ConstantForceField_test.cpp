@@ -75,7 +75,7 @@ struct ConstantForceField_test : public BaseSimulationTest, NumericTest<typename
     void doSetUp() override
     {
         this->loadPlugins({
-            Sofa.Component.IntegrationSchemes,
+            Sofa.Component.IntegrationScheme,
             Sofa.Component.StateContainer,
             Sofa.Component.MechanicalLoad,
             Sofa.Component.LinearSolver.Iterative,

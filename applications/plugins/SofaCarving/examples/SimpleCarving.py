@@ -22,7 +22,7 @@ def createScene(root):
 
     # Load required plugins
     plugins = root.addChild('Plugins')
-    plugins.addObject('RequiredPlugin', name="MechanicalLoop", pluginName="Sofa.Component.AnimationLoop Sofa.Component.IntegrationSchemes.Backward Sofa.Component.LinearSolver.Iterative Sofa.Component.Mapping.NonLinear Sofa.Component.Mapping.Linear") 
+    plugins.addObject('RequiredPlugin', name="MechanicalLoop", pluginName="Sofa.Component.AnimationLoop Sofa.Component.IntegrationScheme.Backward Sofa.Component.LinearSolver.Iterative Sofa.Component.Mapping.NonLinear Sofa.Component.Mapping.Linear") 
     plugins.addObject('RequiredPlugin', name="MechanicalModel", pluginName="Sofa.Component.StateContainer Sofa.Component.Mass Sofa.Component.SolidMechanics.FEM.Elastic") 
     plugins.addObject('RequiredPlugin', name="Collision", pluginName="Sofa.Component.Collision.Detection.Algorithm Sofa.Component.Collision.Detection.Intersection Sofa.Component.Collision.Geometry Sofa.Component.Collision.Response.Contact") 
     plugins.addObject('RequiredPlugin', name="Constraint", pluginName="Sofa.Component.Constraint.Lagrangian.Correction Sofa.Component.Constraint.Lagrangian.Solver Sofa.Component.Constraint.Projective") 

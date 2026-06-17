@@ -11,7 +11,7 @@ sofa_add_subdirectory_modules(SOFACOMPONENT_TARGETS
     Topology
     Visual
     LinearSystem
-    IntegrationSchemes
+    IntegrationScheme
     LinearSolver
     Mass
     Diffusion

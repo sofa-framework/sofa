@@ -130,7 +130,7 @@ public:
             Sofa.Component.SolidMechanics.FEM.Elastic,
             Sofa.Component.Mass,
             Sofa.Component.LinearSolver.Iterative,
-            Sofa.Component.IntegrationSchemes.Backward,
+            Sofa.Component.IntegrationScheme.Backward,
             Sofa.Component.Constraint.Lagrangian,
             Sofa.Component.Topology.Mapping,
             Sofa.Component.Engine.Select,

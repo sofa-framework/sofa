@@ -26,7 +26,7 @@
 namespace sofa::simulation::mechanicalvisitor
 {
 
-/** Visitor used to do a time integration step using IntegrationSchemes
+/** Visitor used to do a time integration step using IntegrationScheme
 */
 class SOFA_SIMULATION_CORE_API MechanicalIntegrationVisitor : public BaseMechanicalVisitor
 {

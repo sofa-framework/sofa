@@ -12,6 +12,6 @@ add_definitions("-DSOFA_COMPONENT_PLAYBACK_TEST_FILES_DIR=\"${CMAKE_CURRENT_SOUR
 add_definitions("-DSOFA_COMPONENT_PLAYBACK_TEST_BUILD_DIR=\"${CMAKE_BINARY_DIR}/\"")
 
 target_link_libraries(${PROJECT_NAME} Sofa.Testing)
-target_link_libraries(${PROJECT_NAME} Sofa.Component.Playback Sofa.Component.StateContainer Sofa.Component.IntegrationSchemes.Backward Sofa.Component.LinearSolver.Iterative Sofa.Component.Mass)
+target_link_libraries(${PROJECT_NAME} Sofa.Component.Playback Sofa.Component.StateContainer Sofa.Component.IntegrationScheme.Backward Sofa.Component.LinearSolver.Iterative Sofa.Component.Mass)
 
 add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})

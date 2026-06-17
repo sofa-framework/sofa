@@ -88,14 +88,14 @@ Node::SPtr  createEulerSolverNode(Node::SPtr parent, const std::string& name, co
 
     if (scheme == "Explicit")
     {
-        simpleapi::createObject(parent, "RequiredPlugin", {{"pluginName", Sofa.Component.IntegrationSchemes.Forward}});
+        simpleapi::createObject(parent, "RequiredPlugin", {{"pluginName", Sofa.Component.IntegrationScheme.Forward}});
         simpleapi::createObject(node, "EulerExplicitIntegrationScheme", {{"name","Euler Explicit"}});
         return node ;
     }
 
     if (scheme == "Implicit")
     {
-        simpleapi::createObject(parent, "RequiredPlugin", {{"pluginName", Sofa.Component.IntegrationSchemes.Backward}});
+        simpleapi::createObject(parent, "RequiredPlugin", {{"pluginName", Sofa.Component.IntegrationScheme.Backward}});
         simpleapi::createObject(parent, "RequiredPlugin", {{"pluginName", Sofa.Component.LinearSolver.Iterative}});
         simpleapi::createObject(node, "EulerImplicitIntegrationScheme", {{"name","Euler Implicit"},
                                                               {"rayleighStiffness","0.01"},
@@ -110,7 +110,7 @@ Node::SPtr  createEulerSolverNode(Node::SPtr parent, const std::string& name, co
 
     if (scheme == "Implicit_SparseLDL")
     {
-        simpleapi::createObject(parent, "RequiredPlugin", {{"pluginName", Sofa.Component.IntegrationSchemes.Backward}});
+        simpleapi::createObject(parent, "RequiredPlugin", {{"pluginName", Sofa.Component.IntegrationScheme.Backward}});
         simpleapi::createObject(parent, "RequiredPlugin", {{"pluginName", Sofa.Component.LinearSolver.Direct}});
         simpleapi::createObject(node, "EulerImplicitIntegrationScheme", {{"name","Euler Implicit"},
                                                                 {"rayleighStiffness","0.01"},
