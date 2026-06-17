@@ -61,7 +61,7 @@ public:
             Sofa.Component.LinearSolver.Iterative,
             Sofa.Component.Mapping.Linear,
             Sofa.Component.Mass,
-            Sofa.Component.IntegrationSchemes.Backward,
+            Sofa.Component.IntegrationScheme.Backward,
             Sofa.Component.SolidMechanics.FEM.Elastic,
             Sofa.Component.StateContainer,
             Sofa.Component.Topology.Container.Constant,

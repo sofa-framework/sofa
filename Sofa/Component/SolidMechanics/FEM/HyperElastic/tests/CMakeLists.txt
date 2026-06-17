@@ -15,6 +15,6 @@ target_link_libraries(${PROJECT_NAME}
     Sofa.Component.SolidMechanics.FEM.HyperElastic
     Sofa.Component.SolidMechanics.Testing
     Sofa.Component.StateContainer
-    Sofa.Component.IntegrationSchemes.Backward)
+    Sofa.Component.IntegrationScheme.Backward)
 
 add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})

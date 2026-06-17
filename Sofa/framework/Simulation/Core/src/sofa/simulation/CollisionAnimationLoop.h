@@ -75,7 +75,7 @@ protected:
     /// Activate collision pipeline
     virtual void computeCollision(const core::ExecParams* params = core::execparams::defaultInstance());
 
-    /// Activate IntegrationSchemes
+    /// Activate IntegrationScheme
     virtual void integrate(const core::ExecParams* params, SReal dt);
 
 
