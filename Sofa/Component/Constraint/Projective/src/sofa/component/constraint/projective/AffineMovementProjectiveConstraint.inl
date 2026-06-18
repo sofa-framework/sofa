@@ -239,36 +239,35 @@ void AffineMovementProjectiveConstraint<DataTypes>::initializeInitialPositions (
     }
 }
 
-
-template <>
-void AffineMovementProjectiveConstraint<defaulttype::Rigid3Types>::transform(const SetIndexArray & indices,
-                                                                   defaulttype::Rigid3Types::VecCoord& x0,
-                                                                   defaulttype::Rigid3Types::VecCoord& xf)
-{
-    // Get quaternion and translation values
-    RotationMatrix rotationMat(0);
-    const Quat quat =  d_quaternion.getValue();
-    quat.toMatrix(rotationMat);
-    const Vec3 translation = d_translation.getValue();
-
-    // Apply transformation
-    for (size_t i=0; i < indices.size() ; ++i)
-    {
-        // Translation
-        xf[indices[i]].getCenter() = rotationMat*(x0[indices[i]].getCenter()) + translation;
-        // Rotation
-        xf[indices[i]].getOrientation() = (quat)+x0[indices[i]].getOrientation();
-    }
-}
-
 template <class DataTypes>
 void AffineMovementProjectiveConstraint<DataTypes>::transform(const SetIndexArray & indices, VecCoord& x0, VecCoord& xf)
 {
-    Vec3 translation = d_translation.getValue();
-
-    for (size_t i=0; i < indices.size() ; ++i)
+    if constexpr (type::isRigidType<DataTypes>)
     {
-        DataTypes::setCPos(xf[indices[i]], (d_rotation.getValue()) * DataTypes::getCPos(x0[indices[i]]) + translation);
+        // Get quaternion and translation values
+        RotationMatrix rotationMat(0);
+        const Quat& quat =  d_quaternion.getValue();
+        quat.toMatrix(rotationMat);
+        const Vec3& translation = d_translation.getValue();
+
+        // Apply transformation
+        for (size_t i=0; i < indices.size() ; ++i)
+        {
+            // Translation
+            xf[indices[i]].getCenter() = rotationMat*(x0[indices[i]].getCenter()) + translation;
+            // Rotation
+            xf[indices[i]].getOrientation() = (quat)+x0[indices[i]].getOrientation();
+        }
+    }
+    else
+    {
+        const auto& translation = d_translation.getValue();
+        const auto& rotation = d_rotation.getValue();
+
+        for (size_t i=0; i < indices.size() ; ++i)
+        {
+            DataTypes::setCPos(xf[indices[i]], rotation * DataTypes::getCPos(x0[indices[i]]) + translation);
+        }
     }
 }
 
