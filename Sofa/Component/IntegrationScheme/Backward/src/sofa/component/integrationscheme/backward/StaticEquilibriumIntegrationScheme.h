@@ -85,6 +85,7 @@ public:
     Data<SReal> d_lineSearchArmijoFactor;
     Data<SReal> d_residueThreshold;
     Data<SReal> d_currentResidue;
+    Data<bool> d_alwaysAdvanceNewton;
 
 protected:
 
