@@ -112,7 +112,6 @@ CylinderTractionStruct<DataTypes>  createCylinderTractionScene(
     // StaticSolver
     auto staticSolver = modeling::addNew<component::integrationscheme::backward::StaticEquilibriumIntegrationScheme>(root,"StaticSolver");
     staticSolver->f_printLog.setValue(true);
-    // auto newtonSolver = modeling::addNew<component::odesolver::backward::NewtonRaphsonSolver>(root,"NewtonRaphsonSolver");
     staticSolver->d_maxNbIterationsNewton.setValue(1);
     staticSolver->d_maxNbIterationsLineSearch.setValue(1);
     // mechanicalObject object
@@ -223,7 +222,7 @@ struct LinearElasticity_test : public sofa::testing::BaseSimulationTest, sofa::t
         typename sofa::component::solidmechanics::fem::elastic::TetrahedralCorotationalFEMForceField<DataTypes>::SPtr ff=addNew<sofa::component::solidmechanics::fem::elastic::TetrahedralCorotationalFEMForceField<DataTypes> >(root);
         ff->setYoungModulus(youngModulus);
         ff->setPoissonRatio(poissonRatio);
-        ff->setMethod(0); // small method
+        ff->d_method.setValue("small"); // small method
         return (ForceFieldSPtr )ff;
     }
 
@@ -304,7 +303,7 @@ TYPED_TEST( LinearElasticity_test , testTractionTensorMass )
 
 TYPED_TEST( LinearElasticity_test , testTractionCorotational )
 {
-//	this->loadScene( "tests/SofaTest/LinearElasticity.scn");
+    //	this->loadScene( "tests/SofaTest/LinearElasticity.scn");
     ASSERT_TRUE( this->testLinearElasticityInTraction(&sofa::LinearElasticity_test<TypeParam>::addTetrahedralCorotationalFEMLinearElastic));
 }
 

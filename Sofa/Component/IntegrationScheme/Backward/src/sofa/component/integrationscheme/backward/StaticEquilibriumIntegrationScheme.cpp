@@ -45,6 +45,7 @@ StaticEquilibriumIntegrationScheme::StaticEquilibriumIntegrationScheme()
 , d_lineSearchArmijoFactor(initData(&d_lineSearchArmijoFactor, 1e-3_sreal , "lineSearchArmijoFactor", "Taken in [0,1[ it represents a tolerance on the residue in term of the linear approximation. e.g., for a value of 0.01, it means we want the solution to decrease the residue as much as 0.01 times the linear approximation in the same direction."))
 , d_residueThreshold(initData(&d_residueThreshold, 1e-9_sreal , "residueThreshold", "Threshold under which, the residue is considered to be sufficiently low. Newton algorithm will stop after reaching a lower value"))
 , d_currentResidue(initData(&d_currentResidue , "currentResidue", "Current value of the residue"))
+, d_alwaysAdvanceNewton(initData(&d_alwaysAdvanceNewton , false, "alwaysAdvanceNewton", "Even if the linesearch didn't find a better solution than the current one, take the best one along the path that is not the current guess."))
 {  }
 
 void StaticEquilibriumIntegrationScheme::doSetupIntegrationStep(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
@@ -182,6 +183,10 @@ void StaticEquilibriumIntegrationScheme::integrate(const core::ExecParams* param
             computeRHS(firstIt);
             oldResidue = evaluateResidue();
         }
+
+        double bestresidual = oldResidue;
+        double bestalpha = 0.0;
+
         computeLHS(firstIt);
         //Find decrease direction
         solveLinearEquation();
@@ -199,6 +204,12 @@ void StaticEquilibriumIntegrationScheme::integrate(const core::ExecParams* param
         m_vop->v_dot(m_unknown, m_r0);
         const SReal armijoTerm = lineSearchArmijoFactor * m_vop->finish();
 
+        if (newResidue<bestresidual || d_alwaysAdvanceNewton.getValue())
+        {
+            bestresidual = newResidue;
+            bestalpha = alpha;
+        }
+
         unsigned lineSearchIt = 0;
         while ((newResidue>(oldResidue + alpha*armijoTerm)) && lineSearchIt<maxLineSearchIt )
         {
@@ -211,7 +222,20 @@ void StaticEquilibriumIntegrationScheme::integrate(const core::ExecParams* param
             computeRHS(false);
             newResidue = evaluateResidue();
 
+            if (newResidue<bestresidual)
+            {
+                bestresidual = newResidue;
+                bestalpha = alpha;
+            }
+
             ++lineSearchIt;
+        }
+
+        if (fabs(alpha - bestalpha )> std::numeric_limits<SReal>::epsilon() )
+        {
+            updateStatesFromLinearSolution( bestalpha - alpha, false);
+            computeRHS(false);
+            newResidue = evaluateResidue();
         }
 
         if (newResidue>oldResidue)
