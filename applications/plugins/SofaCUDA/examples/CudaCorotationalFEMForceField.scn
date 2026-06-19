@@ -12,13 +12,14 @@
     <RequiredPlugin pluginName="SofaCUDA"/>
 
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
-    <DefaultAnimationLoop/>
+    <DefaultAnimationLoop />
+    <DefaultVisualManagerLoop />
 
 <!--     <Node name="Hexahedron">
         <EulerImplicitSolver name="odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="250" name="linear_solver" tolerance="1.0e-12" threshold="1.0e-12" />
 
-        <RegularGridTopology name="grid" n="40 10 10" min="0 6 -2" max="16 10 2" />
+        <RegularGridTopology name="grid" n="80 20 20" min="0 6 -2" max="16 10 2" />
         <MechanicalObject template="CudaVec3f" name="state"/>
 
         <HexahedronSetTopologyContainer name="Container" src="@grid"/>
@@ -29,8 +30,8 @@
         <BoxROI name="box_roi" box="-0.1 5 -3 0.1 11 3" drawBoxes="1" />
         <FixedProjectiveConstraint indices="@box_roi.indices" />
 
-        <HexahedronLinearSmallStrainFEMForceField name="FEM" template="CudaVec3f"
-                                              youngModulus="2000" poissonRatio="0.3" />
+        <CudaCorotationalFEMForceField name="FEM" template="CudaVec3f,Hexahedron"
+                                       youngModulus="2000" poissonRatio="0.3" />
     </Node> -->
 
     <Node name="Tetrahedron">
@@ -57,11 +58,11 @@
             <BoxROI name="ROI1" box="-0.1 5 -3 0.1 11 3" drawBoxes="1" />
             
             <FixedProjectiveConstraint indices="@ROI1.indices" />
-            <TetrahedronLinearSmallStrainFEMForceField name="FEM" template="CudaVec3f"
-                                              youngModulus="2000" poissonRatio="0.3" />
+            <CudaCorotationalFEMForceField name="FEM" template="CudaVec3f,Tetrahedron"
+                                           youngModulus="2000" poissonRatio="0.3"/>
         </Node>  
     </Node>
-
+    
 <!--     <Node name="Triangle">
         <RegularGridTopology name="tissue" n="100 100 1" min="0 0 0" max="10 10 0" />
 
@@ -77,7 +78,7 @@
         <DiagonalMass massDensity="0.15" template="CudaVec3f,CudaVec3f"/>
         <FixedProjectiveConstraint indices="9900 9901 9902 9903 9996 9997 9998 9999" />
 
-        <TriangleLinearSmallStrainFEMForceField name="FEM" youngModulus="600" poissonRatio="0.3" method="large" template="CudaVec3f"/>
+        <CudaCorotationalFEMForceField name="FEM" youngModulus="600" poissonRatio="0.3" method="large" template="CudaVec3f,Triangle"/>
     </Node> -->
 
 <!--     <Node name="Quad">
@@ -95,7 +96,7 @@
         <DiagonalMass massDensity="0.15" template="CudaVec3f,CudaVec3f"/>
         <FixedProjectiveConstraint indices="9900 9901 9902 9903 9996 9997 9998 9999" />
 
-        <QuadLinearSmallStrainFEMForceField name="FEM" youngModulus="600" poissonRatio="0.3" method="large" template="CudaVec3f"/>
+        <CorotationalFEMForceField name="FEM" youngModulus="600" poissonRatio="0.3" method="large" template="CudaVec3f,Quad"/>
     </Node> -->
 
 </Node>
