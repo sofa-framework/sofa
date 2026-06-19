@@ -71,6 +71,11 @@ public:
     typedef typename DataTypes::MatrixDeriv::RowIterator		MatrixDerivRowIterator;
     typedef typename core::behavior::BaseMechanicalState::ConstraintBlock ConstraintBlock;
 
+    static std::vector<std::string> GetTemplateNameAttributeList()
+    {
+        return {"dofType"};
+    }
+
 protected:
     MechanicalObject();
 public:

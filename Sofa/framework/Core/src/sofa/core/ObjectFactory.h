@@ -28,6 +28,7 @@
 #include <numeric>
 #include <sofa/helper/Utils.h>
 #include <sofa/url.h>
+#include <optional>
 
 
 namespace sofa::helper::system
@@ -110,7 +111,10 @@ public:
         std::string documentationURL;
         std::string defaultTemplate;
         ObjectTemplateCreatorMap creatorMap; // to create instances of the class for different templates
-        std::map<std::string, std::vector<std::string>> m_dataAlias ;
+        std::map<std::string, std::vector<std::string>> m_dataAlias;
+
+        // list of keys.
+        std::optional<std::vector<std::string>> templateNameAttributes;
     };
 
     using ClassName = std::string;
@@ -363,6 +367,11 @@ public:
         const std::string classname = sofa::core::objectmodel::BaseClassNameHelper::getClassName<RealObject>();
         const std::string templatename = sofa::core::objectmodel::BaseClassNameHelper::getTemplateName<RealObject>();
 
+        if constexpr (requires {RealObject::GetTemplateNameAttributeList(); })
+        {
+            entry.templateNameAttributes = RealObject::GetTemplateNameAttributeList();
+        }
+
         if (defaultTemplate)
             entry.defaultTemplate = templatename;
 
@@ -386,6 +395,11 @@ public:
                 << RealObject::GetClass()->className << "<" << RealObject::GetClass()->templateName << "> into the object factory";
         }
         return addCreator(classname, templatename, objectCreator);
+    }
+
+    void addTemplateNameAttributeList(const std::initializer_list<std::string>& list)
+    {
+        entry.templateNameAttributes = list;
     }
 
     /// This is the final operation that will actually commit the additions to the ObjectFactory.

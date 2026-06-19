@@ -226,6 +226,11 @@ public:
         return ThreadManager::Name()+Matrix::Name();
     }
 
+    static std::vector<std::string> GetTemplateNameAttributeList()
+    {
+        return {"matrixType"};
+    }
+
     bool isAsyncSolver() override
     {
         return ThreadManager::isAsyncSolver();

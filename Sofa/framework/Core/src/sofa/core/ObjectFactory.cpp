@@ -138,6 +138,69 @@ void findTemplatedCreator(
     }
 }
 
+std::vector<std::string> replaceDeprecatedTemplates(std::vector<std::string>& templateNames)
+{
+    std::vector<std::string> deprecatedTemplates;
+    for(auto& name : templateNames)
+    {
+        const sofa::defaulttype::TemplateAlias* alias = sofa::defaulttype::TemplateAliases::getTemplateAlias(name);
+        if( alias != nullptr )
+        {
+            assert(alias != nullptr);
+            /// This alias results in "undefined" behavior.
+            if( alias->second )
+            {
+                deprecatedTemplates.push_back("The deprecated template '"+name+"' has been replaced by "+alias->first+".");
+            }
+
+            name = alias->first;
+        }
+    }
+    return deprecatedTemplates;
+}
+
+
+std::optional<std::string> buildTemplateNamesFromAttributes(const ObjectFactory::ClassEntry& entry, objectmodel::BaseObjectDescription* arg)
+{
+    assert(arg);
+    if (entry.templateNameAttributes.has_value())
+    {
+        const auto& attributeList = entry.templateNameAttributes.value();
+        if (attributeList.empty())
+            return {};
+
+        std::vector<std::string> attributeValues;
+
+        std::vector<std::string> foundAttributes;
+        std::vector<std::string> missingAttributes;
+
+        for (const auto& attributeName : attributeList)
+        {
+            if (auto* attr = arg->getAttribute(attributeName, nullptr))
+            {
+                foundAttributes.push_back(attributeName);
+                attributeValues.emplace_back(attr);
+            }
+            else
+            {
+                missingAttributes.push_back(attributeName);
+            }
+        }
+
+        if (!attributeValues.empty() && !missingAttributes.empty())
+        {
+            arg->logError("Found attributes '" + sofa::helper::join(missingAttributes, ", ") +
+                          "', but not '" + sofa::helper::join(foundAttributes, ", ") +
+                          "', preventing to deduce a template list");
+        }
+
+        replaceDeprecatedTemplates(attributeValues);
+        return sofa::helper::join(attributeValues, ",");
+    }
+
+    return {};
+}
+
 objectmodel::BaseComponent::SPtr ObjectFactory::createObject(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
 {
     objectmodel::BaseComponent::SPtr object = nullptr;
@@ -157,22 +220,8 @@ objectmodel::BaseComponent::SPtr ObjectFactory::createObject(objectmodel::BaseCo
     ///      type precision into a different one.
     ///  (4) rebuild the template string by joining them all with ','.
     std::vector<std::string> usertemplatenames = sofa::helper::split(usertemplatename, ',');
-    std::vector<std::string> deprecatedTemplates;
-    for(auto& name : usertemplatenames)
-    {
-        const sofa::defaulttype::TemplateAlias* alias;
-        if( (alias=sofa::defaulttype::TemplateAliases::getTemplateAlias(name)) != nullptr )
-        {
-            assert(alias != nullptr);
-            /// This alias results in "undefined" behavior.
-            if( alias->second )
-            {
-                deprecatedTemplates.push_back("The deprecated template '"+name+"' has been replaced by "+alias->first+".");
-            }
+    std::vector<std::string> deprecatedTemplates = replaceDeprecatedTemplates(usertemplatenames);
 
-            name = alias->first;
-        }
-    }
     std::string templatename = sofa::helper::join(usertemplatenames, ",");
     std::string userresolved = templatename; // Copy in case we change for the default one
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -194,11 +243,24 @@ objectmodel::BaseComponent::SPtr ObjectFactory::createObject(objectmodel::BaseCo
     const auto previous_errors = arg->getErrors();
     arg->clearErrors();
 
-    // For every classes in the registry
     ClassEntryMap::iterator it = registry.find(classname);
     if (it != registry.end()) // Found the classname
     {
         entry = it->second;
+
+        if (templatename.empty())
+        {
+            const auto templateNameFromAttributes = buildTemplateNamesFromAttributes(*entry, arg);
+            if (templateNameFromAttributes.has_value())
+            {
+                const auto& templateNameFromAttributesValue = templateNameFromAttributes.value();
+                if (entry->creatorMap.contains(templateNameFromAttributesValue))
+                {
+                    templatename = templateNameFromAttributesValue;
+                }
+            }
+        }
+
         // If no template has been given or if the template does not exist, first try with the default one
         if(templatename.empty() || !entry->creatorMap.contains(templatename))
             templatename = entry->defaultTemplate;
@@ -714,6 +776,7 @@ bool ObjectRegistrationData::commitTo(sofa::core::ObjectFactory* objectFactory) 
         reg.authors += entry.authors;
         reg.license += entry.license;
         reg.documentationURL += entry.documentationURL;
+        reg.templateNameAttributes = entry.templateNameAttributes;
         if (!entry.defaultTemplate.empty())
         {
             if (!reg.defaultTemplate.empty())
