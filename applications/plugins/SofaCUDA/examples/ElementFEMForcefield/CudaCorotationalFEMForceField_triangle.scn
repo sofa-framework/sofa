@@ -12,9 +12,10 @@
     <RequiredPlugin pluginName="SofaCUDA"/>
 
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
-    <DefaultAnimationLoop/>
+    <DefaultAnimationLoop />
+    <DefaultVisualManagerLoop />
 
-    <Node name="Quad">
+    <Node name="Triangle">
         <RegularGridTopology name="tissue" n="100 100 1" min="0 0 0" max="10 10 0" />
 
         <EulerImplicitSolver name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
@@ -22,14 +23,13 @@
         
         <MechanicalObject position="@../tissue.position" name="dofs" template="CudaVec3f"/>
 
-        <QuadSetTopologyContainer name="Container" src="@tissue"/>
-        <QuadSetTopologyModifier name="Modifier" />
-        <QuadSetGeometryAlgorithms name="GeomAlgo" template="CudaVec3f" />
+        <TriangleSetTopologyContainer name="Container" src="@tissue"/>
+        <TriangleSetTopologyModifier name="Modifier" />
+        <TriangleSetGeometryAlgorithms name="GeomAlgo" template="CudaVec3f" />
 
         <DiagonalMass massDensity="0.15" template="CudaVec3f,CudaVec3f"/>
         <FixedProjectiveConstraint indices="9900 9901 9902 9903 9996 9997 9998 9999" />
 
-        <QuadLinearSmallStrainFEMForceField name="FEM" youngModulus="600" poissonRatio="0.3" method="large" template="CudaVec3f"/>
+        <CudaCorotationalFEMForceField name="FEM" youngModulus="600" poissonRatio="0.3" method="large" template="CudaVec3f,Triangle"/>
     </Node>
-
 </Node>

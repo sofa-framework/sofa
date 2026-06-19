@@ -30,7 +30,7 @@
         <DiagonalMass massDensity="0.15" template="CudaVec3f,CudaVec3f"/>
         <FixedProjectiveConstraint indices="9900 9901 9902 9903 9996 9997 9998 9999" />
 
-        <QuadCorotationalFEMForceField name="FEM" youngModulus="600" poissonRatio="0.3" method="large" template="CudaVec3f"/>
+        <CudaCorotationalFEMForceField name="FEM" youngModulus="600" poissonRatio="0.3" method="large" template="CudaVec3f,Quad"/>
     </Node>
 
 </Node>

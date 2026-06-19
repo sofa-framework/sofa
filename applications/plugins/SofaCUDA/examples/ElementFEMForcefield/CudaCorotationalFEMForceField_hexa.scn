@@ -15,21 +15,23 @@
     <DefaultAnimationLoop />
     <DefaultVisualManagerLoop />
 
-    <Node name="Triangle">
-        <RegularGridTopology name="tissue" n="100 100 1" min="0 0 0" max="10 10 0" />
-
-        <EulerImplicitSolver name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
+    <Node name="Hexahedron">
+        <EulerImplicitSolver name="odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="20" name="linear solver" tolerance="1.0e-12" threshold="1.0e-12" />
-        
-        <MechanicalObject position="@../tissue.position" name="dofs" template="CudaVec3f"/>
 
-        <TriangleSetTopologyContainer name="Container" src="@tissue"/>
-        <TriangleSetTopologyModifier name="Modifier" />
-        <TriangleSetGeometryAlgorithms name="GeomAlgo" template="CudaVec3f" />
+        <RegularGridTopology name="grid" n="80 20 20" min="0 6 -2" max="16 10 2" />
+        <MechanicalObject template="CudaVec3f" name="state"/>
 
-        <DiagonalMass massDensity="0.15" template="CudaVec3f,CudaVec3f"/>
-        <FixedProjectiveConstraint indices="9900 9901 9902 9903 9996 9997 9998 9999" />
+        <HexahedronSetTopologyContainer name="Container" src="@grid"/>
+        <HexahedronSetTopologyModifier name="Modifier" />
 
-        <TriangleCorotationalFEMForceField name="FEM" youngModulus="600" poissonRatio="0.3" method="large" template="CudaVec3f"/>
+        <DiagonalMass totalMass="50.0" />
+
+        <BoxROI name="box_roi" box="-0.1 5 -3 0.1 11 3" drawBoxes="1" />
+        <FixedProjectiveConstraint indices="@box_roi.indices" />
+
+        <CudaCorotationalFEMForceField name="FEM" template="CudaVec3f,Hexahedron"
+                                       youngModulus="2000" poissonRatio="0.3"/>
     </Node>
+
 </Node>

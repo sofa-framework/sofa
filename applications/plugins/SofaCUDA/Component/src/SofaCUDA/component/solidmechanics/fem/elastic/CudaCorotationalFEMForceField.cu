@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include <sofa/gpu/cuda/CudaCommon.h>
 #include <sofa/gpu/cuda/CudaMath.h>
-#include "CudaElementFEMKernelUtils.cuh"
+#include "CudaFEMKernelUtils.cuh"
 
 namespace sofa::gpu::cuda
 {
@@ -30,7 +30,7 @@ namespace sofa::gpu::cuda
  * Combined kernel: compute rotations AND per-element forces in one pass.
  */
 template<typename T, int NNodes, int Dim>
-__global__ void ElementCorotationalFEMForceField_computeRotationsAndForce_kernel(
+__global__ void CorotationalFEMForceField_computeRotationsAndForce_kernel(
     int nbElem,
     const int* __restrict__ elements,
     const T* __restrict__ initRotTransposed,
@@ -92,7 +92,7 @@ __global__ void ElementCorotationalFEMForceField_computeRotationsAndForce_kernel
  * Kernel for addForce with pre-computed rotations.
  */
 template<typename T, int NNodes, int Dim>
-__global__ void ElementCorotationalFEMForceField_computeForce_kernel(
+__global__ void CorotationalFEMForceField_computeForce_kernel(
     int nbElem,
     const int* __restrict__ elements,
     const T* __restrict__ rotations,
@@ -141,7 +141,7 @@ __global__ void ElementCorotationalFEMForceField_computeForce_kernel(
  * Kernel for addDForce.
  */
 template<typename T, int NNodes, int Dim>
-__global__ void ElementCorotationalFEMForceField_computeDForce_kernel(
+__global__ void CorotationalFEMForceField_computeDForce_kernel(
     int nbElem,
     const int* __restrict__ elements,
     const T* __restrict__ rotations,
@@ -179,7 +179,7 @@ __global__ void ElementCorotationalFEMForceField_computeDForce_kernel(
 // ===================== Launch functions =====================
 
 template<typename T, int NNodes, int Dim>
-void ElementCorotationalFEMForceFieldCuda_addForceWithRotations(
+void CorotationalFEMForceFieldCuda_addForceWithRotations(
     unsigned int nbElem,
     unsigned int nbVertex,
     unsigned int maxElemPerVertex,
@@ -195,7 +195,7 @@ void ElementCorotationalFEMForceFieldCuda_addForceWithRotations(
 {
     const int computeThreads = 64;
     int numBlocks = (nbElem + computeThreads - 1) / computeThreads;
-    ElementCorotationalFEMForceField_computeRotationsAndForce_kernel<T, NNodes, Dim>
+    CorotationalFEMForceField_computeRotationsAndForce_kernel<T, NNodes, Dim>
         <<<numBlocks, computeThreads>>>(
             nbElem,
             (const int*)elements,
@@ -205,7 +205,7 @@ void ElementCorotationalFEMForceFieldCuda_addForceWithRotations(
             (const T*)x0,
             (T*)rotationsOut,
             (T*)eforce);
-    mycudaDebugError("ElementCorotationalFEMForceField_computeRotationsAndForce_kernel");
+    mycudaDebugError("CorotationalFEMForceField_computeRotationsAndForce_kernel");
 
     const int gatherThreads = 256;
     numBlocks = (nbVertex + gatherThreads - 1) / gatherThreads;
@@ -220,7 +220,7 @@ void ElementCorotationalFEMForceFieldCuda_addForceWithRotations(
 }
 
 template<typename T, int NNodes, int Dim>
-void ElementCorotationalFEMForceFieldCuda_addForce(
+void CorotationalFEMForceFieldCuda_addForce(
     unsigned int nbElem,
     unsigned int nbVertex,
     unsigned int maxElemPerVertex,
@@ -235,7 +235,7 @@ void ElementCorotationalFEMForceFieldCuda_addForce(
 {
     const int computeThreads = 64;
     int numBlocks = (nbElem + computeThreads - 1) / computeThreads;
-    ElementCorotationalFEMForceField_computeForce_kernel<T, NNodes, Dim>
+    CorotationalFEMForceField_computeForce_kernel<T, NNodes, Dim>
         <<<numBlocks, computeThreads>>>(
             nbElem,
             (const int*)elements,
@@ -244,7 +244,7 @@ void ElementCorotationalFEMForceFieldCuda_addForce(
             (const T*)x,
             (const T*)x0,
             (T*)eforce);
-    mycudaDebugError("ElementCorotationalFEMForceField_computeForce_kernel");
+    mycudaDebugError("CorotationalFEMForceField_computeForce_kernel");
 
     const int gatherThreads = 256;
     numBlocks = (nbVertex + gatherThreads - 1) / gatherThreads;
@@ -259,7 +259,7 @@ void ElementCorotationalFEMForceFieldCuda_addForce(
 }
 
 template<typename T, int NNodes, int Dim>
-void ElementCorotationalFEMForceFieldCuda_addDForce(
+void CorotationalFEMForceFieldCuda_addDForce(
     unsigned int nbElem,
     unsigned int nbVertex,
     unsigned int maxElemPerVertex,
@@ -274,7 +274,7 @@ void ElementCorotationalFEMForceFieldCuda_addDForce(
 {
     const int computeThreads = 64;
     int numBlocks = (nbElem + computeThreads - 1) / computeThreads;
-    ElementCorotationalFEMForceField_computeDForce_kernel<T, NNodes, Dim>
+    CorotationalFEMForceField_computeDForce_kernel<T, NNodes, Dim>
         <<<numBlocks, computeThreads>>>(
             nbElem,
             (const int*)elements,
@@ -283,7 +283,7 @@ void ElementCorotationalFEMForceFieldCuda_addDForce(
             (const T*)dx,
             (T*)eforce,
             kFactor);
-    mycudaDebugError("ElementCorotationalFEMForceField_computeDForce_kernel");
+    mycudaDebugError("CorotationalFEMForceField_computeDForce_kernel");
 
     const int gatherThreads = 256;
     numBlocks = (nbVertex + gatherThreads - 1) / gatherThreads;
@@ -300,15 +300,15 @@ void ElementCorotationalFEMForceFieldCuda_addDForce(
 // ===================== Explicit template instantiations =====================
 
 #define INSTANTIATE_COROTATIONAL(T, NNodes) \
-    template void ElementCorotationalFEMForceFieldCuda_addForce<T, NNodes, 3>( \
+    template void CorotationalFEMForceFieldCuda_addForce<T, NNodes, 3>( \
         unsigned int, unsigned int, unsigned int, const void*, const void*, \
         const void*, const void*, const void*, void*, void*, const void*); \
-    template void ElementCorotationalFEMForceFieldCuda_addDForce<T, NNodes, 3>( \
+    template void CorotationalFEMForceFieldCuda_addDForce<T, NNodes, 3>( \
         unsigned int, unsigned int, unsigned int, const void*, const void*, \
         const void*, const void*, void*, void*, const void*, T);
 
 #define INSTANTIATE_COROTATIONAL_WITH_ROTATIONS(T, NNodes) \
-    template void ElementCorotationalFEMForceFieldCuda_addForceWithRotations<T, NNodes, 3>( \
+    template void CorotationalFEMForceFieldCuda_addForceWithRotations<T, NNodes, 3>( \
         unsigned int, unsigned int, unsigned int, const void*, const void*, \
         const void*, const void*, const void*, void*, void*, void*, const void*);
 

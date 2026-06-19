@@ -22,7 +22,7 @@
 #include <SofaCUDA/component/config.h>
 
 #include <sofa/gpu/cuda/CudaTypes.h>
-#include <SofaCUDA/component/solidmechanics/fem/elastic/CudaElementLinearSmallStrainFEMForceField.inl>
+#include <SofaCUDA/component/solidmechanics/fem/elastic/CudaLinearSmallStrainFEMForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::solidmechanics::fem::elastic
@@ -30,18 +30,18 @@ namespace sofa::component::solidmechanics::fem::elastic
 
 using namespace sofa::gpu::cuda;
 
-template class SOFACUDA_COMPONENT_API CudaElementLinearSmallStrainFEMForceField<CudaVec3fTypes, sofa::geometry::Edge>;
-template class SOFACUDA_COMPONENT_API CudaElementLinearSmallStrainFEMForceField<CudaVec3fTypes, sofa::geometry::Triangle>;
-template class SOFACUDA_COMPONENT_API CudaElementLinearSmallStrainFEMForceField<CudaVec3fTypes, sofa::geometry::Quad>;
-template class SOFACUDA_COMPONENT_API CudaElementLinearSmallStrainFEMForceField<CudaVec3fTypes, sofa::geometry::Tetrahedron>;
-template class SOFACUDA_COMPONENT_API CudaElementLinearSmallStrainFEMForceField<CudaVec3fTypes, sofa::geometry::Hexahedron>;
+template class SOFACUDA_COMPONENT_API CudaLinearSmallStrainFEMForceField<CudaVec3fTypes, sofa::geometry::Edge>;
+template class SOFACUDA_COMPONENT_API CudaLinearSmallStrainFEMForceField<CudaVec3fTypes, sofa::geometry::Triangle>;
+template class SOFACUDA_COMPONENT_API CudaLinearSmallStrainFEMForceField<CudaVec3fTypes, sofa::geometry::Quad>;
+template class SOFACUDA_COMPONENT_API CudaLinearSmallStrainFEMForceField<CudaVec3fTypes, sofa::geometry::Tetrahedron>;
+template class SOFACUDA_COMPONENT_API CudaLinearSmallStrainFEMForceField<CudaVec3fTypes, sofa::geometry::Hexahedron>;
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
-template class SOFACUDA_COMPONENT_API CudaElementLinearSmallStrainFEMForceField<CudaVec3dTypes, sofa::geometry::Edge>;
-template class SOFACUDA_COMPONENT_API CudaElementLinearSmallStrainFEMForceField<CudaVec3dTypes, sofa::geometry::Triangle>;
-template class SOFACUDA_COMPONENT_API CudaElementLinearSmallStrainFEMForceField<CudaVec3dTypes, sofa::geometry::Quad>;
-template class SOFACUDA_COMPONENT_API CudaElementLinearSmallStrainFEMForceField<CudaVec3dTypes, sofa::geometry::Tetrahedron>;
-template class SOFACUDA_COMPONENT_API CudaElementLinearSmallStrainFEMForceField<CudaVec3dTypes, sofa::geometry::Hexahedron>;
+template class SOFACUDA_COMPONENT_API CudaLinearSmallStrainFEMForceField<CudaVec3dTypes, sofa::geometry::Edge>;
+template class SOFACUDA_COMPONENT_API CudaLinearSmallStrainFEMForceField<CudaVec3dTypes, sofa::geometry::Triangle>;
+template class SOFACUDA_COMPONENT_API CudaLinearSmallStrainFEMForceField<CudaVec3dTypes, sofa::geometry::Quad>;
+template class SOFACUDA_COMPONENT_API CudaLinearSmallStrainFEMForceField<CudaVec3dTypes, sofa::geometry::Tetrahedron>;
+template class SOFACUDA_COMPONENT_API CudaLinearSmallStrainFEMForceField<CudaVec3dTypes, sofa::geometry::Hexahedron>;
 #endif
 
 } // namespace sofa::component::solidmechanics::fem::elastic
@@ -49,51 +49,51 @@ template class SOFACUDA_COMPONENT_API CudaElementLinearSmallStrainFEMForceField<
 namespace sofa::gpu::cuda
 {
 
-void registerElementLinearSmallStrainFEMForceField(sofa::core::ObjectFactory* factory)
+void registerLinearSmallStrainFEMForceField(sofa::core::ObjectFactory* factory)
 {
     using namespace sofa::component::solidmechanics::fem::elastic;
 
     factory->registerObjects(sofa::core::ObjectRegistrationData(
         "Supports GPU-side computations using CUDA for EdgeLinearSmallStrainFEMForceField")
-        .add< CudaElementLinearSmallStrainFEMForceField<CudaVec3fTypes, sofa::geometry::Edge> >()
+        .add< CudaLinearSmallStrainFEMForceField<CudaVec3fTypes, sofa::geometry::Edge> >()
     );
     factory->registerObjects(sofa::core::ObjectRegistrationData(
         "Supports GPU-side computations using CUDA for TriangleLinearSmallStrainFEMForceField")
-        .add< CudaElementLinearSmallStrainFEMForceField<CudaVec3fTypes, sofa::geometry::Triangle> >()
+        .add< CudaLinearSmallStrainFEMForceField<CudaVec3fTypes, sofa::geometry::Triangle> >()
     );
     factory->registerObjects(sofa::core::ObjectRegistrationData(
         "Supports GPU-side computations using CUDA for QuadLinearSmallStrainFEMForceField")
-        .add< CudaElementLinearSmallStrainFEMForceField<CudaVec3fTypes, sofa::geometry::Quad> >()
+        .add< CudaLinearSmallStrainFEMForceField<CudaVec3fTypes, sofa::geometry::Quad> >()
     );
     factory->registerObjects(sofa::core::ObjectRegistrationData(
         "Supports GPU-side computations using CUDA for TetrahedronLinearSmallStrainFEMForceField")
-        .add< CudaElementLinearSmallStrainFEMForceField<CudaVec3fTypes, sofa::geometry::Tetrahedron> >()
+        .add< CudaLinearSmallStrainFEMForceField<CudaVec3fTypes, sofa::geometry::Tetrahedron> >()
     );
     factory->registerObjects(sofa::core::ObjectRegistrationData(
         "Supports GPU-side computations using CUDA for HexahedronLinearSmallStrainFEMForceField")
-        .add< CudaElementLinearSmallStrainFEMForceField<CudaVec3fTypes, sofa::geometry::Hexahedron> >()
+        .add< CudaLinearSmallStrainFEMForceField<CudaVec3fTypes, sofa::geometry::Hexahedron> >()
     );
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
     factory->registerObjects(sofa::core::ObjectRegistrationData(
         "Supports GPU-side computations using CUDA (double) for EdgeLinearSmallStrainFEMForceField")
-        .add< CudaElementLinearSmallStrainFEMForceField<CudaVec3dTypes, sofa::geometry::Edge> >()
+        .add< CudaLinearSmallStrainFEMForceField<CudaVec3dTypes, sofa::geometry::Edge> >()
     );
     factory->registerObjects(sofa::core::ObjectRegistrationData(
         "Supports GPU-side computations using CUDA (double) for TriangleLinearSmallStrainFEMForceField")
-        .add< CudaElementLinearSmallStrainFEMForceField<CudaVec3dTypes, sofa::geometry::Triangle> >()
+        .add< CudaLinearSmallStrainFEMForceField<CudaVec3dTypes, sofa::geometry::Triangle> >()
     );
     factory->registerObjects(sofa::core::ObjectRegistrationData(
         "Supports GPU-side computations using CUDA (double) for QuadLinearSmallStrainFEMForceField")
-        .add< CudaElementLinearSmallStrainFEMForceField<CudaVec3dTypes, sofa::geometry::Quad> >()
+        .add< CudaLinearSmallStrainFEMForceField<CudaVec3dTypes, sofa::geometry::Quad> >()
     );
     factory->registerObjects(sofa::core::ObjectRegistrationData(
         "Supports GPU-side computations using CUDA (double) for TetrahedronLinearSmallStrainFEMForceField")
-        .add< CudaElementLinearSmallStrainFEMForceField<CudaVec3dTypes, sofa::geometry::Tetrahedron> >()
+        .add< CudaLinearSmallStrainFEMForceField<CudaVec3dTypes, sofa::geometry::Tetrahedron> >()
     );
     factory->registerObjects(sofa::core::ObjectRegistrationData(
         "Supports GPU-side computations using CUDA (double) for HexahedronLinearSmallStrainFEMForceField")
-        .add< CudaElementLinearSmallStrainFEMForceField<CudaVec3dTypes, sofa::geometry::Hexahedron> >()
+        .add< CudaLinearSmallStrainFEMForceField<CudaVec3dTypes, sofa::geometry::Hexahedron> >()
     );
 #endif
 }
