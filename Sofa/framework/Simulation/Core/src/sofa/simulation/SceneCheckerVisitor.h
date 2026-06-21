@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <SceneChecking/config.h>
+#include <sofa/simulation/config.h>
 #include <sofa/simulation/SceneCheck.h>
 #include <sofa/core/ExecParams.h>
 #include <sofa/simulation/SceneLoaderFactory.h>
@@ -31,10 +31,10 @@
 
 #include <sofa/simulation/Visitor.h>
 
-namespace sofa::_scenechecking_
+namespace sofa::simulation
 {
 
-class SOFA_SCENECHECKING_API SceneCheckerVisitor : public sofa::simulation::Visitor
+class SOFA_SIMULATION_CORE_API SceneCheckerVisitor : public sofa::simulation::Visitor
 {
 public:
     SceneCheckerVisitor(const sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance()) ;
@@ -50,9 +50,4 @@ private:
     std::vector<sofa::simulation::SceneCheck::SPtr> m_checkset ;
 };
 
-} // namespace sofa::_scenechecking_
-
-namespace sofa::scenechecking
-{
-    using _scenechecking_::SceneCheckerVisitor;
-} // namespace sofa::scenechecking
+} // namespace sofa::simulation
