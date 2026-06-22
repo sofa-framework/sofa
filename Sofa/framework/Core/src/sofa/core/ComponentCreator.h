@@ -21,10 +21,38 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/statecontainer/config.h>
+#include <sofa/core/config.h>
 
-namespace sofa::component::statecontainer
+#include <sofa/core/objectmodel/BaseComponent.h>
+
+namespace sofa::core
 {
-    SOFA_COMPONENT_STATECONTAINER_API void init();
 
-} // namespace sofa::component::statecontainer
+struct SOFA_CORE_API BaseComponentCreator
+{
+    virtual ~BaseComponentCreator() = default;
+    virtual objectmodel::BaseComponent::SPtr create() const = 0;
+    virtual const objectmodel::BaseClass* getClass() = 0;
+    virtual std::unique_ptr<BaseComponentCreator> clone() const = 0;
+};
+
+template<class RealComponent>
+struct ComponentCreator : public BaseComponentCreator
+{
+    objectmodel::BaseComponent::SPtr create() const override
+    {
+        return sofa::core::objectmodel::New<RealComponent>();
+    }
+
+    const objectmodel::BaseClass* getClass() override
+    {
+        return RealComponent::GetClass();
+    }
+
+    std::unique_ptr<BaseComponentCreator> clone() const override
+    {
+        return std::make_unique<ComponentCreator>();
+    }
+};
+
+}

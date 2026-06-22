@@ -51,7 +51,7 @@
 #include <sofa/simulation/mechanicalvisitor/MechanicalEndIntegrationVisitor.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalProjectPositionAndVelocityVisitor.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalPropagateOnlyPositionAndVelocityVisitor.h>
-
+#include <sofa/url.h>
 
 namespace sofa::simulation
 {

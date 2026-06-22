@@ -26,10 +26,10 @@
 namespace sofa::core
 {
 
-class ObjectFactory;
-struct SOFA_CORE_API ObjectFactoryJson
-{
-    static std::string dump(ObjectFactory* factory);
-};
+// class ObjectFactory;
+// struct SOFA_CORE_API ObjectFactoryJson
+// {
+//     static std::string dump(ObjectFactory* factory);
+// };
 
 }

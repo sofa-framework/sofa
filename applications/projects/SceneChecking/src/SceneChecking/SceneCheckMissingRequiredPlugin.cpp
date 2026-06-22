@@ -51,32 +51,32 @@ const std::string SceneCheckMissingRequiredPlugin::getDesc()
 
 void SceneCheckMissingRequiredPlugin::doCheckOn(sofa::simulation::Node* node)
 {
-    for (const auto& object : node->object)
-    {
-        const ObjectFactory::ClassEntry entry = ObjectFactory::getInstance()->getEntry(object->getClassName());
-        if(!entry.creatorMap.empty())
-        {
-            ObjectFactory::ObjectTemplateCreatorMap::const_iterator it = entry.creatorMap.find(object->getTemplateName());
-            if(entry.creatorMap.end() != it && *it->second->getTarget())
-            {
-                const std::string pluginName = it->second->getTarget();
-                const std::string path = PluginManager::getInstance().findPlugin(pluginName);
-                if( PluginManager::getInstance().pluginIsLoaded(path)
-                        && !m_loadedPlugins.contains(pluginName))
-                {
-                    m_requiredPlugins[pluginName].push_back(object->getClassName());
-                }
-            }
-        }
-    }
-
-    //sort and remove duplicates
-    for (auto& plugins : m_requiredPlugins)
-    {
-        auto& v = plugins.second;
-        std::sort(v.begin(), v.end());
-        v.erase(std::unique(v.begin(), v.end()), v.end());
-    }
+    // for (const auto& object : node->object)
+    // {
+    //     const ObjectFactory::ClassEntry entry = ObjectFactory::getInstance()->getEntry(object->getClassName());
+    //     if(!entry.creatorMap.empty())
+    //     {
+    //         ObjectFactory::ObjectTemplateCreatorMap::const_iterator it = entry.creatorMap.find(object->getTemplateName());
+    //         if(entry.creatorMap.end() != it && *it->second->getTarget())
+    //         {
+    //             const std::string pluginName = it->second->getTarget();
+    //             const std::string path = PluginManager::getInstance().findPlugin(pluginName);
+    //             if( PluginManager::getInstance().pluginIsLoaded(path)
+    //                     && !m_loadedPlugins.contains(pluginName))
+    //             {
+    //                 m_requiredPlugins[pluginName].push_back(object->getClassName());
+    //             }
+    //         }
+    //     }
+    // }
+    //
+    // //sort and remove duplicates
+    // for (auto& plugins : m_requiredPlugins)
+    // {
+    //     auto& v = plugins.second;
+    //     std::sort(v.begin(), v.end());
+    //     v.erase(std::unique(v.begin(), v.end()), v.end());
+    // }
 }
 
 void SceneCheckMissingRequiredPlugin::printSummary(simulation::SceneLoader* sceneLoader)
