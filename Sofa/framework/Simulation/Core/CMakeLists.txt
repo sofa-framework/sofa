@@ -72,6 +72,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/SceneCheckMainRegistry.h
     ${SRC_ROOT}/MappingGraph.h
     ${SRC_ROOT}/MappingGraphMechanicalOperations.h
+    ${SRC_ROOT}/SceneCheckerVisitor.h
 
     ${SRC_ROOT}/events/BuildConstraintSystemEndEvent.h
     ${SRC_ROOT}/events/SimulationInitDoneEvent.h
@@ -223,6 +224,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/init.cpp
     ${SRC_ROOT}/fwd.cpp
     ${SRC_ROOT}/BaseSimulationExporter.cpp
+    ${SRC_ROOT}/SceneCheckerVisitor.cpp
 
     ${SRC_ROOT}/events/BuildConstraintSystemEndEvent.cpp
     ${SRC_ROOT}/events/SimulationInitDoneEvent.cpp
