@@ -21,9 +21,9 @@
 ******************************************************************************/
 #include "SceneCheckerListener.h"
 
+#include <sofa/simulation/SceneCheckerVisitor.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/SceneCheckMainRegistry.h>
-#include <SceneChecking/SceneCheckerVisitor.h>
 
 namespace sofa::_scenechecking_
 {
@@ -38,7 +38,7 @@ void SceneCheckerListener::rightAfterLoadingScene(sofa::simulation::Node::SPtr n
 {
     if(node.get())
     {
-        sofa::scenechecking::SceneCheckerVisitor sceneCheckerVisitor;
+        sofa::simulation::SceneCheckerVisitor sceneCheckerVisitor;
 
         for (const auto& sceneCheck : sofa::simulation::SceneCheckMainRegistry::getRegisteredSceneChecks())
         {

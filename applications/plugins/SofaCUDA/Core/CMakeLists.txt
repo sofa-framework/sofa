@@ -16,6 +16,10 @@ if(NOT DEFINED CMAKE_CUDA_ARCHITECTURES)
     endif()
 endif()
 
+if(WIN32)
+    set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} -Xcompiler=/Zc:preprocessor")
+endif()
+
 set(SOFACUDA_CORE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
 
 set(HEADER_FILES

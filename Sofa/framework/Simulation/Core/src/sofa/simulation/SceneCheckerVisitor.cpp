@@ -19,12 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "SceneCheckerVisitor.h"
+#include <sofa/simulation/SceneCheckerVisitor.h>
 
-#include <algorithm>
 #include <sofa/simulation/Node.h>
 
-namespace sofa::_scenechecking_
+#include <algorithm>
+
+namespace sofa::simulation
 {
 using sofa::core::ExecParams ;
 
