@@ -271,6 +271,8 @@ auto createComponentFrom(const ComponentDescription::SPtr& desc, objectmodel::Ba
             context->addObject(component);
         }
 
+        msg_warning_when(desc->componentModule.empty(), component.get()) << "Module name is empty";
+
         component->parse(arg);
     }
 
