@@ -43,44 +43,6 @@ inline ComponentInfo::SPtr getComponentInfo(const core::ComponentFactory*)
 namespace sofa::core
 {
 
-std::vector<ComponentDescription::SPtr> ComponentFactory::getComponentsFromName(const std::string& componentName) const
-{
-    std::vector<ComponentDescription::SPtr> result;
-
-    std::string componentToSearch = componentName;
-
-    using sofa::helper::lifecycle::renamedComponents;
-    auto renamedComponent = renamedComponents.find(componentName);
-    if( renamedComponent != renamedComponents.end() )
-    {
-        componentToSearch = renamedComponent->second.getNewName();
-    }
-
-    for (const auto& component : m_registry)
-    {
-        const auto fullName = component->componentModule + "." + component->componentName;
-
-        if (component->componentName == componentToSearch || fullName == componentToSearch)
-        {
-            result.push_back(component);
-        }
-        else
-        {
-            for (const auto& alias : component->aliases)
-            {
-                const auto fullNameAlias = component->componentModule + "." + alias;
-
-                if (alias == componentToSearch || fullNameAlias == componentToSearch)
-                {
-                    result.push_back(component);
-                }
-            }
-        }
-    }
-
-    return result;
-}
-
 typedef struct ObjectRegistrationEntry
 {
     inline static const char* symbol = "registerObjects";
@@ -174,6 +136,48 @@ bool ComponentFactory::registerObjects(LegacyComponentRegistrationData& ro)
 
 namespace
 {
+
+
+std::vector<ComponentDescription::SPtr> getComponentsFromName(
+    const ComponentFactory& self,
+    const std::string& componentName)
+{
+    std::vector<ComponentDescription::SPtr> result;
+
+    std::string componentToSearch = componentName;
+
+    using sofa::helper::lifecycle::renamedComponents;
+    auto renamedComponent = renamedComponents.find(componentName);
+    if( renamedComponent != renamedComponents.end() )
+    {
+        componentToSearch = renamedComponent->second.getNewName();
+    }
+
+    for (const auto& component : self.getRegistry())
+    {
+        const auto fullName = component->componentModule + "." + component->componentName;
+
+        if (component->componentName == componentToSearch || fullName == componentToSearch)
+        {
+            result.push_back(component);
+        }
+        else
+        {
+            for (const auto& alias : component->aliases)
+            {
+                const auto fullNameAlias = component->componentModule + "." + alias;
+
+                if (alias == componentToSearch || fullNameAlias == componentToSearch)
+                {
+                    result.push_back(component);
+                }
+            }
+        }
+    }
+
+    return result;
+}
+
 void autoLoadPluginIfNameContainsPluginName(ComponentFactory& self, const std::string& classname)
 {
     // The last dot separates the module name from the component name
@@ -310,7 +314,7 @@ objectmodel::BaseComponent::SPtr ComponentFactory::createComponent(
     std::string classname {typeAttribute};
     autoLoadPluginIfNameContainsPluginName(*this, classname);
 
-    auto candidates = this->getComponentsFromName(classname);
+    auto candidates = getComponentsFromName(*this, classname);
 
     if (candidates.empty())
     {

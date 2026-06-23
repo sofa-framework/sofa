@@ -46,7 +46,8 @@ public:
     // to deprecate
     using ClassEntry = ComponentDescription;
 
-    std::vector<ComponentDescription::SPtr> getComponentsFromName(const std::string& componentName) const;
+    using Registry = std::vector<ComponentDescription::SPtr>;
+    const Registry& getRegistry() const { return m_registry; }
 
     bool registerObjectsFromPlugin(const std::string& pluginName);
 
@@ -101,7 +102,7 @@ protected:
     using RegisteredPluginSet = std::set<std::string>;
     RegisteredPluginSet m_registeredPluginSet;
 
-    std::vector<ComponentDescription::SPtr> m_registry;
+    Registry m_registry;
 };
 
 
