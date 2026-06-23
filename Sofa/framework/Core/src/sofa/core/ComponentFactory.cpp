@@ -156,6 +156,31 @@ bool ComponentFactory::registerObjects(ComponentRegistrationData& ro)
 
 }
 
+namespace
+{
+void loadPluginIfNameContainsPluginName(ComponentFactory& self, const std::string& classname)
+{
+    // The last dot separates the module name from the component name
+    // Example: Module.Name.ComponentName (it is common to have dots in the module names)
+    // It is assumed that the component name does not contain any dot
+    auto lastDot = classname.find_last_of('.');
+    if (lastDot != std::string::npos)
+    {
+        const auto pluginName = classname.substr(0, lastDot);
+
+        const auto [path, loaded] = helper::system::PluginManager::getInstance().isPluginLoaded(pluginName);
+        if (!loaded)
+        {
+            auto status = helper::system::PluginManager::getInstance().loadPluginByName(pluginName);
+            if (status == helper::system::PluginManager::PluginLoadStatus::SUCCESS)
+            {
+                self.registerObjectsFromPlugin(pluginName);
+            }
+        }
+    }
+}
+}
+
 objectmodel::BaseComponent::SPtr ComponentFactory::createComponent(
     objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
 {
@@ -168,24 +193,9 @@ objectmodel::BaseComponent::SPtr ComponentFactory::createComponent(
         return nullptr;
 
     std::string classname {typeAttribute};
+    loadPluginIfNameContainsPluginName(*this, classname);
 
     auto candidates = this->getComponentsFromName(classname);
-
-    if (candidates.empty())
-    {
-        //try to load a potential plugin based on the component name
-        auto lastDot = classname.find_last_of('.');
-        if (lastDot != std::string::npos)
-        {
-            auto pluginName = classname.substr(0, lastDot);
-            auto status = helper::system::PluginManager::getInstance().loadPluginByName(pluginName);
-            if (status == helper::system::PluginManager::PluginLoadStatus::SUCCESS)
-            {
-                this->registerObjectsFromPlugin(pluginName);
-                candidates = this->getComponentsFromName(classname);
-            }
-        }
-    }
 
     if (candidates.empty())
     {
