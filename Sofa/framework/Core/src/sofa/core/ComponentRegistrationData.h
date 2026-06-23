@@ -44,7 +44,7 @@ struct SOFA_CORE_API ComponentRegistrationData
     std::string componentName;
     std::set<std::string> aliases;
 
-    std::unordered_map<std::string, std::string> templateAttributes;
+    std::vector<std::pair<std::string, std::string>> templateAttributes;
 
     std::string componentNamespace;
     std::string componentModule;
@@ -76,7 +76,7 @@ struct SOFA_CORE_API ComponentRegistrationDataBuilder : public ComponentRegistra
     ComponentRegistrationDataBuilder& addTemplateAttribute(
         const std::string& templateAttribute, const std::string& value)
     {
-        this->templateAttributes[templateAttribute] = value;
+        this->templateAttributes.emplace_back(templateAttribute, value);
         return *this;
     }
 

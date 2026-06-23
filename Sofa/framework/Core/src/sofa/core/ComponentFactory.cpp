@@ -214,6 +214,33 @@ std::vector<ComponentDescription::SPtr> selectCandidatesTemplateAttributes(const
     return matchingCandidates;
 }
 
+std::vector<ComponentDescription::SPtr> selectCandidatesTemplateKeyword(
+    const std::vector<ComponentDescription::SPtr>& candidates,
+    objectmodel::BaseObjectDescription* arg)
+{
+    const char* templateAttr = arg->getAttribute("template", nullptr);
+    if (!templateAttr)
+        return {};
+
+    std::string templateAttrStr { templateAttr };
+    templateAttrStr = defaulttype::TemplateAliases::resolveAlias(templateAttrStr);
+
+    std::vector<ComponentDescription::SPtr> matchingCandidates;
+
+    for (const auto& candidate : candidates)
+    {
+        const auto templateList = sofa::helper::join(
+            candidate->templateAttributes.begin(), candidate->templateAttributes.end(),
+            [](const auto& attr){ return attr.second; }, ',');
+        if (templateAttrStr == templateList)
+        {
+            matchingCandidates.push_back(candidate);
+        }
+    }
+
+    return matchingCandidates;
+}
+
 std::vector<ComponentDescription::SPtr> selectCandidatesDeductionRules(
     const std::vector<ComponentDescription::SPtr>& candidates,
     objectmodel::BaseContext* context,
@@ -223,8 +250,8 @@ std::vector<ComponentDescription::SPtr> selectCandidatesDeductionRules(
 
     for (const auto& candidate : candidates)
     {
-        if (auto rule = candidate->templateDeductionRule;
-            rule->doesTemplateDeductionApply(context, arg))
+        if (const auto rule = candidate->templateDeductionRule;
+            rule && rule->doesTemplateDeductionApply(context, arg))
         {
             matchingCandidates.push_back(candidate);
         }
@@ -278,6 +305,9 @@ objectmodel::BaseComponent::SPtr ComponentFactory::createComponent(
         return helper::system::PluginManager::getInstance().isPluginUnloaded(candidate->componentModule);
     });
 
+    std::sort(candidates.begin(), candidates.end(),
+        [](const auto& a, const auto& b) { return a->instantiationPriority > b->instantiationPriority; });
+
     const auto matchingTemplates = selectCandidatesTemplateAttributes(candidates, arg);
 
     if (!matchingTemplates.empty())
@@ -286,22 +316,24 @@ objectmodel::BaseComponent::SPtr ComponentFactory::createComponent(
         return createComponentFrom(matchingTemplates.front(), context, arg);
     }
 
-    //todo: selection based on the legacy 'template' keyword
+    // Selection based on the legacy 'template' keyword
+    const auto templateCandidates = selectCandidatesTemplateKeyword(candidates, arg);
+    if (!templateCandidates.empty())
+    {
+        return createComponentFrom(templateCandidates.front(), context, arg);
+    }
 
     //template deduction
     // There are candidates, but none of them match the templates
     // We select one of them automatically based on deduction rules
-    const auto deducedCandidates = selectCandidatesDeductionRules(candidates, context, arg);
+    auto deducedCandidates = selectCandidatesDeductionRules(candidates, context, arg);
 
     if (!deducedCandidates.empty())
     {
-        return nullptr;
+        return createComponentFrom(deducedCandidates.front(), context, arg);
     }
 
-    std::sort(deducedCandidates.begin(), deducedCandidates.end(),
-        [](const auto& a, const auto& b) { return a->instantiationPriority > b->instantiationPriority; });
-
-    return createComponentFrom(deducedCandidates.front(), context, arg);
+    return nullptr;
 }
 
 bool ComponentFactory::hasCreator(const std::string& classname) const
