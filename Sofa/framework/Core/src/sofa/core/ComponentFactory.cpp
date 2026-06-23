@@ -337,6 +337,11 @@ objectmodel::BaseComponent::SPtr ComponentFactory::createComponent(
 
     return nullptr;
 }
+objectmodel::BaseComponent::SPtr ComponentFactory::createObject(
+    objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
+{
+    return this->createComponent(context, arg);
+}
 
 bool ComponentFactory::hasCreator(const std::string& classname) const
 {

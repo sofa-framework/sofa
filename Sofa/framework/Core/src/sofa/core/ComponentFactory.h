@@ -65,6 +65,9 @@ public:
     /// Create a component given a context and a description.
     objectmodel::BaseComponent::SPtr createComponent(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg);
 
+    // to deprecate
+    objectmodel::BaseComponent::SPtr createObject(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg);
+
 
 
     /// Test if a creator exists for a given classname

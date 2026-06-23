@@ -49,7 +49,6 @@ void registerComponent(sofa::core::ComponentFactory* factory)
     factory->registerComponent<MechanicalObject<T>>(
     core::ComponentRegistrationDataBuilder()
         .setName("MechanicalObject")
-        .addAlias("State")
         .addTemplateAttribute<T>("dofType")
         .setDescription(std::string(description))
         .setModuleName(MODULE_NAME)

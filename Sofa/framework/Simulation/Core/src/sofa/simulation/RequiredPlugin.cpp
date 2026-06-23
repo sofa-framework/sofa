@@ -35,8 +35,12 @@ namespace sofa::simulation
 
 void registerRequiredPlugin(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Load the SOFA modules and/or plugins required to run a simulation.")
-        .add< RequiredPlugin >());
+    factory->registerComponent<RequiredPlugin>(
+        sofa::core::ComponentRegistrationDataBuilder()
+        .setName("RequiredPlugin")
+        .setDescription("Load the SOFA modules and/or plugins required to run a simulation.")
+        .setModuleName("Sofa.Simulation.Core")
+    );
 }
 
 RequiredPlugin::RequiredPlugin()
