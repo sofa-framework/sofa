@@ -32,136 +32,108 @@
 namespace sofa::core
 {
 
-class SOFA_CORE_API ComponentRegistrationData
+struct SOFA_CORE_API ComponentRegistrationData
 {
-public:
-
     std::string componentName;
     std::set<std::string> aliases;
-    std::string description;
 
-    std::set<std::string> authors;
-    std::string license;
-    std::set<std::string> documentationURL;
+    std::unordered_map<std::string, std::string> templateAttributes;
+
     std::string componentNamespace;
     std::string componentModule;
 
-    std::optional<std::size_t> defaultTemplateId;
+    unsigned int instantiationPriority {};
 
-    std::vector<std::unique_ptr<BaseComponentCreator>> creators;
-
-    /// Start the registration by giving the description of this class.
-    explicit ComponentRegistrationData(const std::string& description)
-    {
-        if (!description.empty())
-        {
-            addDescription(description);
-        }
-    }
-
-    ComponentRegistrationData(const ComponentRegistrationData&) = delete;
-    void operator=(const ComponentRegistrationData&) = delete;
-
-    /// Add an alias name for this class
-    ComponentRegistrationData& addAlias(std::string val)
-    {
-        aliases.insert(val);
-        return *this;
-    }
-
-    /// Add more descriptive text about this class
-    ComponentRegistrationData& addDescription(const std::string& val)
-    {
-        if (description.empty())
-        {
-            description = val;
-        }
-        else
-        {
-            dmsg_error("ComponentRegistrationData") << "Trying to add multiple descriptions for a single component whereas only one is supported";
-        }
-        return *this;
-    }
-
-    /// Specify a list of authors (separated with spaces)
-    ComponentRegistrationData& addAuthor(std::string val)
-    {
-        authors.insert(val);
-        return *this;
-    }
-
-    /// Specify a license (LGPL, GPL, ...)
-    ComponentRegistrationData& addLicense(std::string val)
-    {
-        if (license.empty())
-        {
-            license = val;
-        }
-        else
-        {
-            dmsg_error("ComponentRegistrationData") << "Trying to add multiple licenses for a single component whereas only one is supported";
-        }
-        return *this;
-    }
-
-    /// Specify a documentation URL
-    ComponentRegistrationData& addDocumentationURL(std::string url)
-    {
-        documentationURL.insert(url);
-        return *this;
-    }
-
-    /// Add a template instantiation of this class.
-    ///
-    /// \param defaultTemplate    set to true if this should be the default instance when no template name is given.
-    template<class RealObject>
-    ComponentRegistrationData& add(bool defaultTemplate = false)
-    {
-#ifdef SOFA_TARGET
-        const std::string target = sofa_tostring(SOFA_TARGET);
-
-        if (!target.empty())
-        {
-            componentNamespace = target;
-            componentModule = target;
-        }
-#else
-        dmsg_warning("ComponentFactory") << "Module name cannot be found when registering "
-                << RealObject::GetClass()->className << "<" << RealObject::GetClass()->templateName << "> into the component factory";
-#endif
-
-        const std::string classname = sofa::core::objectmodel::BaseClassNameHelper::getClassName<RealObject>();
-        if (componentName.empty())
-        {
-            componentName = classname;
-        }
-        else
-        {
-            if (componentName != classname)
-            {
-                msg_error("ComponentFactory") << "Trying to define a class (" << classname << ") unrelated to " << componentName;
-                return *this;
-            }
-        }
-
-        creators.push_back(std::unique_ptr<BaseComponentCreator>(new ComponentCreator<RealObject>));
-
-        if (defaultTemplate)
-        {
-            if (defaultTemplateId.has_value())
-            {
-                msg_error("ComponentFactory") << "Trying to define a default template for "
-                    << RealObject::GetClass()->className << " whereas one was already defined before";
-            }
-            else
-            {
-                defaultTemplateId = creators.size() - 1;
-            }
-        }
-
-        return *this;
-    }
-
+    std::string description;
+    std::set<std::string> authors;
+    std::string license;
+    std::set<std::string> documentationURL;
 };
+
+struct SOFA_CORE_API ComponentRegistrationDataBuilder : public ComponentRegistrationData
+{
+    ComponentRegistrationDataBuilder& setName(const std::string& _componentName)
+    {
+        this->componentName = _componentName;
+        return *this;
+    }
+
+    ComponentRegistrationDataBuilder& addAlias(const std::string& alias)
+    {
+        this->aliases.insert(alias);
+        return *this;
+    }
+
+    ComponentRegistrationDataBuilder& addTemplateAttribute(
+        const std::string& templateAttribute, const std::string& value)
+    {
+        this->templateAttributes[templateAttribute] = value;
+        return *this;
+    }
+
+    template<class T>
+    ComponentRegistrationDataBuilder& addTemplateAttribute(const std::string& templateAttribute)
+    {
+        return addTemplateAttribute(templateAttribute, T::Name());
+    }
+
+    ComponentRegistrationDataBuilder& setModuleName(const std::string& _moduleName)
+    {
+        this->componentModule = _moduleName;
+        return *this;
+    }
+
+    ComponentRegistrationDataBuilder& setDescription(const std::string& _description)
+    {
+        this->description = _description;
+        return *this;
+    }
+
+    ComponentRegistrationDataBuilder& addAuthor(const std::string& _author)
+    {
+        this->authors.insert(_author);
+        return *this;
+    }
+
+    ComponentRegistrationDataBuilder& setLicense(const std::string& _license)
+    {
+        this->license = _license;
+        return *this;
+    }
+
+    ComponentRegistrationDataBuilder& setDocumentationURL(const std::string& _documentationURL)
+    {
+        this->documentationURL.insert(_documentationURL);
+        return *this;
+    }
+};
+
+//to deprecate
+struct SOFA_CORE_API LegacyComponentRegistrationData
+{
+    explicit LegacyComponentRegistrationData(const std::string&) {}
+
+    template<class T> LegacyComponentRegistrationData& add(bool = false)
+    {
+        return *this;
+    }
+
+    LegacyComponentRegistrationData& addDocumentationURL(const std::string&)
+    {
+        return *this;
+    }
+
+    LegacyComponentRegistrationData& addDescription(const std::string&)
+    {
+        return *this;
+    }
+
+    LegacyComponentRegistrationData& addAlias(const std::string&)
+    {
+        return *this;
+    }
+};
+
+
 
 }

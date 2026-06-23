@@ -27,7 +27,7 @@ namespace sofa::core
 {
 
 using ObjectFactory = ComponentFactory;
-using ObjectRegistrationData = ComponentRegistrationData;
+using ObjectRegistrationData = LegacyComponentRegistrationData;
 
 
 } // namespace sofa::core

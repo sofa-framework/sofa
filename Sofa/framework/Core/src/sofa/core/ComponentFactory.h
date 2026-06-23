@@ -29,22 +29,12 @@ namespace sofa::core
 {
 
 struct SOFA_CORE_API ComponentDescription
+    : public ComponentRegistrationData
 {
     using SPtr = std::shared_ptr<ComponentDescription>;
 
-    std::string componentName;
-    std::set<std::string> aliases;
-
-    std::set<std::string> templateAttributes;
-    std::string componentNamespace;
-    std::string componentModule;
-
-    unsigned int instantiationPriority {};
-
-    std::string description;
-    std::string authors;
-    std::string license;
-    std::set<std::string> documentationURL;
+    explicit ComponentDescription(const ComponentRegistrationData& data)
+        : ComponentRegistrationData(data) {}
 
     std::unique_ptr<BaseComponentCreator> creator;
 };
@@ -59,8 +49,17 @@ public:
     std::vector<ComponentDescription::SPtr> getComponentsFromName(const std::string& componentName) const;
 
     bool registerObjectsFromPlugin(const std::string& pluginName);
-    bool registerObjects(ComponentRegistrationData& ro);
 
+    //to deprecate
+    bool registerObjects(LegacyComponentRegistrationData& ro);
+
+    template<class Component>
+    void registerComponent(const ComponentRegistrationData& componentDescription)
+    {
+        auto componentInRegistry = std::make_shared<ComponentDescription>(componentDescription);
+        componentInRegistry->creator = std::make_unique<ComponentCreator<Component>>();
+        m_registry.push_back(componentInRegistry);
+    }
 
 
     /// Create a component given a context and a description.

@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/ComponentFactory.h>
+#include <sofa/defaulttype/TemplatesAliases.h>
 #include <sofa/helper/ComponentChange.h>
 #include <sofa/helper/system/PluginManager.h>
 #include <sofa/url.h>
@@ -42,7 +43,7 @@ std::vector<ComponentDescription::SPtr> ComponentFactory::getComponentsFromName(
 
     for (const auto& component : m_registry)
     {
-        const auto fullName = component->componentNamespace + "." + component->componentName;
+        const auto fullName = component->componentModule + "." + component->componentName;
 
         if (component->componentName == componentToSearch || fullName == componentToSearch)
         {
@@ -52,7 +53,7 @@ std::vector<ComponentDescription::SPtr> ComponentFactory::getComponentsFromName(
         {
             for (const auto& alias : component->aliases)
             {
-                const auto fullNameAlias = component->componentNamespace + "." + alias;
+                const auto fullNameAlias = component->componentModule + "." + alias;
 
                 if (alias == componentToSearch || fullNameAlias == componentToSearch)
                 {
@@ -109,48 +110,48 @@ bool ComponentFactory::registerObjectsFromPlugin(const std::string& pluginName)
     }
 }
 
-bool ComponentFactory::registerObjects(ComponentRegistrationData& ro)
+bool ComponentFactory::registerObjects(LegacyComponentRegistrationData& ro)
 {
-    auto& creators = ro.creators;
-
-    if (creators.empty())
-    {
-        msg_error() << "No creator provided";
-        return false;
-    }
-
-    for (auto& creator : ro.creators)
-    {
-        ComponentDescription::SPtr component = std::make_shared<ComponentDescription>();
-
-        component->componentName = ro.componentName;
-        component->aliases = ro.aliases;
-        component->componentNamespace = ro.componentNamespace;
-        component->componentModule = ro.componentModule;
-
-        component->description = ro.description;
-        component->authors = sofa::helper::join(ro.authors, ",");
-        component->license = ro.license;
-        component->documentationURL = ro.documentationURL;
-
-        {
-            //special cases for official documentation
-            const auto modulePaths = sofa::helper::split(component->componentModule, '.');
-            if (modulePaths.size() > 2 && modulePaths[0] == "Sofa" && modulePaths[1] == "Component")
-            {
-                std::string officialDocURL = std::string(sofa::SOFA_DOCUMENTATION_URL) + std::string("components/");
-                officialDocURL += sofa::helper::join(modulePaths.begin() + 2, modulePaths.end(),
-                    [](const std::string& m){ return sofa::helper::downcaseString(m);}, "/");
-                officialDocURL += std::string("/") + sofa::helper::downcaseString(component->componentName);
-
-                component->documentationURL.insert(officialDocURL);
-            }
-        }
-
-        component->creator = std::move(creator);
-
-        this->m_registry.push_back(component);
-    }
+    // auto& creators = ro.creators;
+    //
+    // if (creators.empty())
+    // {
+    //     msg_error() << "No creator provided";
+    //     return false;
+    // }
+    //
+    // for (auto& creator : ro.creators)
+    // {
+    //     ComponentDescription::SPtr component = std::make_shared<ComponentDescription>();
+    //
+    //     component->componentName = ro.componentName;
+    //     component->aliases = ro.aliases;
+    //     component->componentNamespace = ro.componentNamespace;
+    //     component->componentModule = ro.componentModule;
+    //
+    //     component->description = ro.description;
+    //     component->authors = sofa::helper::join(ro.authors, ",");
+    //     component->license = ro.license;
+    //     component->documentationURL = ro.documentationURL;
+    //
+    //     {
+    //         //special cases for official documentation
+    //         const auto modulePaths = sofa::helper::split(component->componentModule, '.');
+    //         if (modulePaths.size() > 2 && modulePaths[0] == "Sofa" && modulePaths[1] == "Component")
+    //         {
+    //             std::string officialDocURL = std::string(sofa::SOFA_DOCUMENTATION_URL) + std::string("components/");
+    //             officialDocURL += sofa::helper::join(modulePaths.begin() + 2, modulePaths.end(),
+    //                 [](const std::string& m){ return sofa::helper::downcaseString(m);}, "/");
+    //             officialDocURL += std::string("/") + sofa::helper::downcaseString(component->componentName);
+    //
+    //             component->documentationURL.insert(officialDocURL);
+    //         }
+    //     }
+    //
+    //     component->creator = std::move(creator);
+    //
+    //     this->m_registry.push_back(component);
+    // }
 
     return true;
 
@@ -158,7 +159,7 @@ bool ComponentFactory::registerObjects(ComponentRegistrationData& ro)
 
 namespace
 {
-void loadPluginIfNameContainsPluginName(ComponentFactory& self, const std::string& classname)
+void autoLoadPluginIfNameContainsPluginName(ComponentFactory& self, const std::string& classname)
 {
     // The last dot separates the module name from the component name
     // Example: Module.Name.ComponentName (it is common to have dots in the module names)
@@ -180,9 +181,54 @@ void loadPluginIfNameContainsPluginName(ComponentFactory& self, const std::strin
     }
 }
 
-void selectCandidates(std::vector<ComponentDescription::SPtr>& candidates)
+std::vector<ComponentDescription::SPtr> selectCandidates(const std::vector<ComponentDescription::SPtr>& candidates, objectmodel::BaseObjectDescription* arg)
 {
-    //template deduction
+    std::vector<ComponentDescription::SPtr> matchingCandidates;
+
+    for (const auto& candidate : candidates)
+    {
+        bool matchAllTemplateParameters = true;
+        for (const auto& [attribute, value] : candidate->templateAttributes)
+        {
+            const char* attr = arg->getAttribute(attribute, nullptr);
+            if (attr == nullptr)
+            {
+                matchAllTemplateParameters = false;
+            }
+            else
+            {
+                const std::string attrStr { attr };
+                if (defaulttype::TemplateAliases::resolveAlias(attrStr) != value)
+                {
+                    matchAllTemplateParameters = false;
+                }
+            }
+        }
+
+        if (matchAllTemplateParameters)
+        {
+            matchingCandidates.push_back(candidate);
+        }
+    }
+
+    return matchingCandidates;
+}
+
+auto createComponentFrom(const ComponentDescription::SPtr& desc, objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
+{
+    auto component = desc->creator->create();
+
+    if (component)
+    {
+        if (context)
+        {
+            context->addObject(component);
+        }
+
+        component->parse(arg);
+    }
+
+    return component;
 }
 
 }
@@ -199,7 +245,7 @@ objectmodel::BaseComponent::SPtr ComponentFactory::createComponent(
         return nullptr;
 
     std::string classname {typeAttribute};
-    loadPluginIfNameContainsPluginName(*this, classname);
+    autoLoadPluginIfNameContainsPluginName(*this, classname);
 
     auto candidates = this->getComponentsFromName(classname);
 
@@ -208,30 +254,26 @@ objectmodel::BaseComponent::SPtr ComponentFactory::createComponent(
         return nullptr;
     }
 
-    std::sort(candidates.begin(), candidates.end(),
-        [](const auto& a, const auto& b) { return a->instantiationPriority > b->instantiationPriority; });
-
     std::erase_if(candidates, [](const ComponentDescription::SPtr& candidate)
     {
         return helper::system::PluginManager::getInstance().isPluginUnloaded(candidate->componentModule);
     });
 
-    selectCandidates(candidates);
+    const auto matchingTemplates = selectCandidates(candidates, arg);
 
-    const auto firstCandidate = candidates.front();
-    auto component = candidates.front()->creator->create();
-
-    if (component)
+    if (!matchingTemplates.empty())
     {
-        if (context)
-        {
-            context->addObject(component);
-        }
-
-        component->parse(arg);
+        msg_warning_when(matchingTemplates.size() > 1) << "Multiple candidates with the same templates";
+        return createComponentFrom(matchingTemplates.front(), context, arg);
     }
 
-    return component;
+    //todo: template deduction
+
+    std::sort(candidates.begin(), candidates.end(),
+        [](const auto& a, const auto& b) { return a->instantiationPriority > b->instantiationPriority; });
+
+
+    return createComponentFrom(candidates.front(), context, arg);
 }
 
 bool ComponentFactory::hasCreator(const std::string& classname) const

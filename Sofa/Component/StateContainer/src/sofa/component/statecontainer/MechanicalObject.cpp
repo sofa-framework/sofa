@@ -41,15 +41,30 @@ template class SOFA_COMPONENT_STATECONTAINER_API MechanicalObject<Vec6Types>;
 template class SOFA_COMPONENT_STATECONTAINER_API MechanicalObject<Rigid3Types>;
 template class SOFA_COMPONENT_STATECONTAINER_API MechanicalObject<Rigid2Types>;
 
+static constexpr std::string_view description {"Mechanical state vectors"};
+
+template<class T>
+void registerComponent(sofa::core::ComponentFactory* factory)
+{
+    factory->registerComponent<MechanicalObject<T>>(
+    core::ComponentRegistrationDataBuilder()
+        .setName("MechanicalObject")
+        .addAlias("State")
+        .addTemplateAttribute<T>("dofType")
+        .setDescription(std::string(description))
+        .setModuleName(MODULE_NAME)
+    );
+};
+
 void registerMechanicalObject(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("mechanical state vectors")
-        .add< MechanicalObject<Vec3Types> >(true) // default template
-        .add< MechanicalObject<Vec2Types> >()
-        .add< MechanicalObject<Vec1Types> >()
-        .add< MechanicalObject<Vec6Types> >()
-        .add< MechanicalObject<Rigid3Types> >()
-        .add< MechanicalObject<Rigid2Types> >());
+    registerComponent<Vec3Types>(factory);
+    registerComponent<Vec2Types>(factory);
+    registerComponent<Vec1Types>(factory);
+    registerComponent<Vec6Types>(factory);
+    registerComponent<Rigid3Types>(factory);
+    registerComponent<Rigid2Types>(factory);
+
 }
 
 template<>
