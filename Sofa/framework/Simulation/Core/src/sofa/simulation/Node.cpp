@@ -191,6 +191,13 @@ void Node::parse( sofa::core::objectmodel::BaseObjectDescription* arg )
         objDesc.setAttribute("displayFlags", oldFlags);
         sofa::core::objectmodel::BaseComponent::SPtr obj = sofa::core::ObjectFactory::CreateObject(this, &objDesc);
     }
+    
+    // BoundingBox state management
+    const char* bboxAttrStr = arg->getAttribute("bbox", nullptr);
+    if(bboxAttrStr != nullptr)
+    {
+        this->m_bboxIsFixed = true;
+    }
 }
 
 /// Initialize the components of this node and all the nodes which depend on it.
