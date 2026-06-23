@@ -179,6 +179,12 @@ void loadPluginIfNameContainsPluginName(ComponentFactory& self, const std::strin
         }
     }
 }
+
+void selectCandidates(std::vector<ComponentDescription::SPtr>& candidates)
+{
+    //template deduction
+}
+
 }
 
 objectmodel::BaseComponent::SPtr ComponentFactory::createComponent(
@@ -210,15 +216,9 @@ objectmodel::BaseComponent::SPtr ComponentFactory::createComponent(
         return helper::system::PluginManager::getInstance().isPluginUnloaded(candidate->componentModule);
     });
 
-    for (const auto& component : candidates)
-    {
-
-    }
+    selectCandidates(candidates);
 
     const auto firstCandidate = candidates.front();
-
-    firstCandidate->componentModule;
-
     auto component = candidates.front()->creator->create();
 
     if (component)
