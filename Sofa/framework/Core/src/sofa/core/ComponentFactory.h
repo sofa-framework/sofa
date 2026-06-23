@@ -167,23 +167,3 @@ struct SOFA_CORE_API MainComponentFactory
 
 
 }
-
-
-
-
-
-
-
-namespace sofa::helper::logging
-{
-
-inline bool notMuted(const core::ComponentFactory*)
-{
-    return true;
-}
-
-inline ComponentInfo::SPtr getComponentInfo(const core::ComponentFactory*)
-{
-    return std::make_shared<ComponentInfo>("ComponentFactory");
-}
-}

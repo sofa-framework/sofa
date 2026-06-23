@@ -25,6 +25,21 @@
 #include <sofa/helper/system/PluginManager.h>
 #include <sofa/url.h>
 
+namespace sofa::helper::logging
+{
+
+inline bool notMuted(const core::ComponentFactory*)
+{
+    return true;
+}
+
+inline ComponentInfo::SPtr getComponentInfo(const core::ComponentFactory*)
+{
+    return std::make_shared<ComponentInfo>("ComponentFactory");
+}
+
+}
+
 namespace sofa::core
 {
 
