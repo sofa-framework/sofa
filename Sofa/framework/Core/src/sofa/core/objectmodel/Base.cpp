@@ -765,7 +765,7 @@ Base::findSnapshotObject(const std::shared_ptr<Snapshot::SnapshotNode>& parents,
     return defaultObject;
 }
 
-void Base::loadInternalStateFrom(const Snapshot::SnapshotObject& snapshot) 
+void Base::loadInternalStateFrom(const Snapshot::SnapshotObject& snapshot)
 {
     SOFA_UNUSED(snapshot);
 
@@ -778,18 +778,17 @@ void Base::loadDataSnapshot(const std::shared_ptr<Snapshot::SnapshotObject>& sna
         if (const auto data = this->findData(dataInfo.name))
         {
             if(data->read(dataInfo.value) == 0 )
-                msg_error("LoadSnapshot") << "Failed to read " << dataInfo.name << " in " << this->getName()  << " from the snapshot " << dataInfo.value;
+                msg_error("LoadDataSnapshot") << "Failed to read " << dataInfo.name << " in " << this->getName()  << " from the snapshot " << dataInfo.value;
         }
     }
 }
 
 void Base::loadLinkSnapshot(const std::shared_ptr<Snapshot::SnapshotObject>& snapshotObject) const {
-    /// wip
     for (const auto& linkInfo : snapshotObject->m_linkContainer) {
         if (const auto link = this->findLink(linkInfo.name)) {
 
             if (link->readFromSnapshot(linkInfo.value) == 0 )
-                msg_error("LoadSnapshot") << "Failed to read " << linkInfo.name << " in " << this->getName()  << " from the snapshot " << linkInfo.value;
+                msg_error("LoadLinkSnapshot") << "Failed to read " << linkInfo.name << " in " << this->getName()  << " from the snapshot " << linkInfo.value;
         }
     }
 }

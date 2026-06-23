@@ -323,10 +323,11 @@ bool BaseLink::read( const std::string& str )
     return ok;
 }
 
-/// wip : idea -> compare str with the actual simulation. If a link is an extra link, add it (create new object ?)
-/// If a link (from the scene) is not necessary anymore, it will be remove naturally
 bool BaseLink::readFromSnapshot( const std::string& str )
 {
+    this->updateLinks();
+    bool result = true;
+
     if (str.empty())
         return true;
 
@@ -334,26 +335,74 @@ bool BaseLink::readFromSnapshot( const std::string& str )
     if (owner == nullptr)
         return false;
 
-    std::vector<std::string> linkPaths;
+    /// From the snapshot
+    std::vector<std::string> linkPathsFromSnapshot;
     std::istringstream istr(str);
     std::string linkString;
 
     while (istr >> linkString)
     {
         if (!linkString.empty() && linkString[0] == '@')
-            linkPaths.push_back(linkString);
+            linkPathsFromSnapshot.push_back(linkString);
     }
 
-    for (const auto& linkPath : linkPaths) {
-        std::cout << linkPath << std::endl;
-        Base *ptr = PathResolver::FindBaseFromClassAndPath(owner, getDestClass(), linkPath);
-        if (ptr == nullptr) {
-            msg_warning(owner) << "readFromSnapshot: could not resolve link path " << linkPath << "\" for link " << getName() << ". Skipping.";
-            /// Create a new object ?
-            /// this->add(ptr);
+    /// From the link
+    std::vector<std::string> linkPathsFromLink;
+
+    std::string linkPath = this->getValueString();
+
+    std::string replaceValue = "//";
+    std::size_t pos = linkPath.find(replaceValue);
+    while (pos != std::string::npos)
+    {
+        linkPath.replace(pos, replaceValue.length(), "");
+        pos = linkPath.find(replaceValue, pos);
+    }
+
+    std::istringstream istrLink(linkPath);
+    std::string linkStringBis;
+
+    while (istrLink >> linkStringBis)
+    {
+        if (!linkStringBis.empty() && linkStringBis[0] == '@')
+            linkPathsFromLink.push_back(linkStringBis);
+    }
+
+    std::set<std::string> mixedLink;
+    mixedLink.insert(linkPathsFromSnapshot.begin(), linkPathsFromSnapshot.end());
+    mixedLink.insert(linkPathsFromLink.begin(), linkPathsFromLink.end());
+
+    for (const auto& linkPath : mixedLink)
+    {
+        bool inLinkPathsFromSnapshot = std::find(linkPathsFromSnapshot.begin(), linkPathsFromSnapshot.end(), linkPath) != linkPathsFromSnapshot.end();
+        bool inLinkPathsFromLink = std::find(linkPathsFromLink.begin(), linkPathsFromLink.end(), linkPath) != linkPathsFromLink.end();
+
+        if (inLinkPathsFromLink && inLinkPathsFromSnapshot)
+        {
+            result = true;
+        }
+        else if (inLinkPathsFromLink)
+        {
+            Base *ptr = PathResolver::FindBaseFromClassAndPath(owner, getDestClass(), linkPath);
+            if (ptr == nullptr)
+            {
+                msg_warning(owner) << "readFromSnapshot: could not resolve link path " << linkPath << "\" for link " << getName() << ". Skipping.";
+                result = false;
+            }
+            this->remove(ptr);
+        }
+        else if (inLinkPathsFromSnapshot)
+        {
+            Base *ptr = PathResolver::FindBaseFromClassAndPath(owner, getDestClass(), linkPath);
+            if (ptr == nullptr)
+            {
+                msg_warning(owner) << "readFromSnapshot: could not resolve link path " << linkPath << "\" for link " << getName() << ". Skipping.";
+                result = false;
+            }
+            this->add(ptr);
         }
     }
-    return true;
+    return result;
 }
 
 std::string BaseLink::getLinkedPath(const std::size_t index) const

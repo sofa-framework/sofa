@@ -211,20 +211,15 @@ public:
 
     void loadInternalStateFrom(const core::objectmodel::Snapshot::SnapshotObject &snapshot) override
     {
+        m_needsUpdate = true;
+        
         for (const auto& dataInfo : snapshot.m_dataContainer)
         {
             if (dataInfo.name == "m_triangles")
             {
-                // std::stringstream ss(dataInfo.value);
-                // std::istringstream iss(dataInfo.value);
-                // this->m_internalTriangles.read(iss);
-                // m_triangles = &m_internalTriangles;
-                // m_needsUpdate = true;
-
                 m_triangles = &m_topology->getTriangles();
                 resize(m_topology->getNbTriangles());
                 updateNormals();
-
             }
 
         }

@@ -40,7 +40,6 @@ void LoadSnapshotVisitor::processObject(
         obj->loadLinkSnapshot(snapshotObject);
         obj->loadInternalStateFrom(*snapshotObject);
     }
-
 }
 
 Visitor::Result LoadSnapshotVisitor::processNodeTopDown(simulation::Node* node)
@@ -58,7 +57,6 @@ Visitor::Result LoadSnapshotVisitor::processNodeTopDown(simulation::Node* node)
             this->processObject(it->get(), SnapshotNode);
         }
     }
-
     return RESULT_CONTINUE;
 }
 
