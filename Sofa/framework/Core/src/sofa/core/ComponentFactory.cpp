@@ -310,29 +310,41 @@ objectmodel::BaseComponent::SPtr ComponentFactory::createComponent(
     std::sort(candidates.begin(), candidates.end(),
         [](const auto& a, const auto& b) { return a->instantiationPriority > b->instantiationPriority; });
 
-    const auto matchingTemplates = selectCandidatesTemplateAttributes(candidates, arg);
-
-    if (!matchingTemplates.empty())
+    //exact template
     {
-        msg_warning_when(matchingTemplates.size() > 1) << "Multiple candidates with the same templates";
-        return createComponentFrom(matchingTemplates.front(), context, arg);
+        const auto matchingTemplates = selectCandidatesTemplateAttributes(candidates, arg);
+
+        if (!matchingTemplates.empty())
+        {
+            msg_warning_when(matchingTemplates.size() > 1) << "Multiple candidates with the same templates: " <<
+                sofa::helper::join(matchingTemplates.begin(), matchingTemplates.end(), ",");
+            return createComponentFrom(matchingTemplates.front(), context, arg);
+        }
     }
 
     // Selection based on the legacy 'template' keyword
-    const auto templateCandidates = selectCandidatesTemplateKeyword(candidates, arg);
-    if (!templateCandidates.empty())
     {
-        return createComponentFrom(templateCandidates.front(), context, arg);
+        const auto templateCandidates = selectCandidatesTemplateKeyword(candidates, arg);
+        if (!templateCandidates.empty())
+        {
+            msg_warning_when(templateCandidates.size() > 1) << "Multiple candidates with the same templates: " <<
+                sofa::helper::join(templateCandidates.begin(), templateCandidates.end(), ",");
+            return createComponentFrom(templateCandidates.front(), context, arg);
+        }
     }
 
     //template deduction
     // There are candidates, but none of them match the templates
     // We select one of them automatically based on deduction rules
-    auto deducedCandidates = selectCandidatesDeductionRules(candidates, context, arg);
-
-    if (!deducedCandidates.empty())
     {
-        return createComponentFrom(deducedCandidates.front(), context, arg);
+        auto deducedCandidates = selectCandidatesDeductionRules(candidates, context, arg);
+
+        if (!deducedCandidates.empty())
+        {
+            msg_warning_when(deducedCandidates.size() > 1) << "Multiple candidates with the same templates: " <<
+                sofa::helper::join(deducedCandidates.begin(), deducedCandidates.end(), ",");
+            return createComponentFrom(deducedCandidates.front(), context, arg);
+        }
     }
 
     return nullptr;

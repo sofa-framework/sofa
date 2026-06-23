@@ -59,6 +59,22 @@ struct SOFA_CORE_API ComponentRegistrationData
     std::shared_ptr<BaseTemplateDeductionRule> templateDeductionRule;
 };
 
+inline std::ostream& operator<<(std::ostream& os, const ComponentRegistrationData& data)
+{
+    os << data.componentName;
+    if (!data.templateAttributes.empty())
+    {
+        os << "[";
+        os << sofa::helper::join(data.templateAttributes.begin(), data.templateAttributes.end(),
+            [](const std::pair<std::string, std::string>& pair)
+            {
+                return pair.first + "=" + pair.second;
+            }, ',');
+        os << "]";
+    }
+    return os;
+}
+
 struct SOFA_CORE_API ComponentRegistrationDataBuilder : public ComponentRegistrationData
 {
     ComponentRegistrationDataBuilder& setName(const std::string& _componentName)
