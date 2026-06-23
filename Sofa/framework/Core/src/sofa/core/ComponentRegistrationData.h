@@ -32,6 +32,13 @@
 namespace sofa::core
 {
 
+struct SOFA_CORE_API BaseTemplateDeductionRule
+{
+    virtual bool doesTemplateDeductionApply(
+        objectmodel::BaseContext* context,
+        objectmodel::BaseObjectDescription* arg) = 0;
+};
+
 struct SOFA_CORE_API ComponentRegistrationData
 {
     std::string componentName;
@@ -48,6 +55,8 @@ struct SOFA_CORE_API ComponentRegistrationData
     std::set<std::string> authors;
     std::string license;
     std::set<std::string> documentationURL;
+
+    std::shared_ptr<BaseTemplateDeductionRule> templateDeductionRule;
 };
 
 struct SOFA_CORE_API ComponentRegistrationDataBuilder : public ComponentRegistrationData

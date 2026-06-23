@@ -181,7 +181,7 @@ void autoLoadPluginIfNameContainsPluginName(ComponentFactory& self, const std::s
     }
 }
 
-std::vector<ComponentDescription::SPtr> selectCandidates(const std::vector<ComponentDescription::SPtr>& candidates, objectmodel::BaseObjectDescription* arg)
+std::vector<ComponentDescription::SPtr> selectCandidatesTemplateAttributes(const std::vector<ComponentDescription::SPtr>& candidates, objectmodel::BaseObjectDescription* arg)
 {
     std::vector<ComponentDescription::SPtr> matchingCandidates;
 
@@ -206,6 +206,25 @@ std::vector<ComponentDescription::SPtr> selectCandidates(const std::vector<Compo
         }
 
         if (matchAllTemplateParameters)
+        {
+            matchingCandidates.push_back(candidate);
+        }
+    }
+
+    return matchingCandidates;
+}
+
+std::vector<ComponentDescription::SPtr> selectCandidatesDeductionRules(
+    const std::vector<ComponentDescription::SPtr>& candidates,
+    objectmodel::BaseContext* context,
+    objectmodel::BaseObjectDescription* arg)
+{
+    std::vector<ComponentDescription::SPtr> matchingCandidates;
+
+    for (const auto& candidate : candidates)
+    {
+        if (auto rule = candidate->templateDeductionRule;
+            rule->doesTemplateDeductionApply(context, arg))
         {
             matchingCandidates.push_back(candidate);
         }
@@ -259,7 +278,7 @@ objectmodel::BaseComponent::SPtr ComponentFactory::createComponent(
         return helper::system::PluginManager::getInstance().isPluginUnloaded(candidate->componentModule);
     });
 
-    const auto matchingTemplates = selectCandidates(candidates, arg);
+    const auto matchingTemplates = selectCandidatesTemplateAttributes(candidates, arg);
 
     if (!matchingTemplates.empty())
     {
@@ -267,13 +286,22 @@ objectmodel::BaseComponent::SPtr ComponentFactory::createComponent(
         return createComponentFrom(matchingTemplates.front(), context, arg);
     }
 
-    //todo: template deduction
+    //todo: selection based on the legacy 'template' keyword
 
-    std::sort(candidates.begin(), candidates.end(),
+    //template deduction
+    // There are candidates, but none of them match the templates
+    // We select one of them automatically based on deduction rules
+    const auto deducedCandidates = selectCandidatesDeductionRules(candidates, context, arg);
+
+    if (!deducedCandidates.empty())
+    {
+        return nullptr;
+    }
+
+    std::sort(deducedCandidates.begin(), deducedCandidates.end(),
         [](const auto& a, const auto& b) { return a->instantiationPriority > b->instantiationPriority; });
 
-
-    return createComponentFrom(candidates.front(), context, arg);
+    return createComponentFrom(deducedCandidates.front(), context, arg);
 }
 
 bool ComponentFactory::hasCreator(const std::string& classname) const
