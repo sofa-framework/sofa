@@ -111,30 +111,15 @@ struct RotationMethods<DataTypes, sofa::geometry::Hexahedron> : RotationMethodsC
 
 
 template <class DataTypes, class ElementType>
-class ElementCorotationalFEMForceField :
+class CorotationalFEMForceField :
     public BaseElementLinearFEMForceField<DataTypes, ElementType>,
     public FEMForceField<DataTypes, ElementType>
 {
 public:
     SOFA_CLASS2(
-        SOFA_TEMPLATE2(ElementCorotationalFEMForceField, DataTypes, ElementType),
+        SOFA_TEMPLATE2(CorotationalFEMForceField, DataTypes, ElementType),
         SOFA_TEMPLATE2(BaseElementLinearFEMForceField, DataTypes, ElementType),
         SOFA_TEMPLATE2(FEMForceField, DataTypes, ElementType));
-
-    /**
-     * The purpose of this function is to register the name of this class according to the provided
-     * pattern.
-     *
-     * Example: ElementCorotationalFEMForceField<Vec3Types, sofa::geometry::Edge> will produce
-     * the class name "EdgeCorotationalFEMForceField".
-     */
-    static const std::string GetCustomClassName()
-    {
-        return std::string(sofa::geometry::elementTypeToString(ElementType::Element_type)) +
-               "CorotationalFEMForceField";
-    }
-
-    static const std::string GetCustomTemplateName() { return DataTypes::Name(); }
 
 private:
     using trait = sofa::component::solidmechanics::fem::elastic::trait<DataTypes, ElementType>;
@@ -144,7 +129,7 @@ private:
 
 public:
 
-    ElementCorotationalFEMForceField();
+    CorotationalFEMForceField();
 
     void init() override;
 
@@ -189,17 +174,17 @@ protected:
 
 
 
-#if !defined(ELASTICITY_COMPONENT_ELEMENT_COROTATIONAL_FEM_FORCE_FIELD_CPP)
-// extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API ElementCorotationalFEMForceField<sofa::defaulttype::Vec1Types, sofa::geometry::Edge>;
-extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API ElementCorotationalFEMForceField<sofa::defaulttype::Vec2Types, sofa::geometry::Edge>;
-extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API ElementCorotationalFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Edge>;
-extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API ElementCorotationalFEMForceField<sofa::defaulttype::Vec2Types, sofa::geometry::Triangle>;
-extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API ElementCorotationalFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Triangle>;
-extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API ElementCorotationalFEMForceField<sofa::defaulttype::Vec2Types, sofa::geometry::Quad>;
-extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API ElementCorotationalFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Quad>;
-extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API ElementCorotationalFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Tetrahedron>;
-extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API ElementCorotationalFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Hexahedron>;
-extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API ElementCorotationalFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Prism>;
+#if !defined(SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_COROTATIONAL_FEM_FORCE_FIELD_CPP)
+// extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API CorotationalFEMForceField<sofa::defaulttype::Vec1Types, sofa::geometry::Edge>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API CorotationalFEMForceField<sofa::defaulttype::Vec2Types, sofa::geometry::Edge>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API CorotationalFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Edge>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API CorotationalFEMForceField<sofa::defaulttype::Vec2Types, sofa::geometry::Triangle>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API CorotationalFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Triangle>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API CorotationalFEMForceField<sofa::defaulttype::Vec2Types, sofa::geometry::Quad>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API CorotationalFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Quad>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API CorotationalFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Tetrahedron>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API CorotationalFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Hexahedron>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API CorotationalFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Prism>;
 #endif
 
 }  // namespace sofa::component::solidmechanics::fem::elastic

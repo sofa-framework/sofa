@@ -20,8 +20,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaCUDA/component/solidmechanics/fem/elastic/CudaElementCorotationalFEMForceField.h>
-#include <sofa/component/solidmechanics/fem/elastic/ElementCorotationalFEMForceField.inl>
+#include <SofaCUDA/component/solidmechanics/fem/elastic/CudaLinearSmallStrainFEMForceField.h>
+#include <sofa/component/solidmechanics/fem/elastic/LinearSmallStrainFEMForceField.inl>
 #include <sofa/core/behavior/ForceField.inl>
 #include <cstring>
 
@@ -29,19 +29,18 @@ namespace sofa::component::solidmechanics::fem::elastic
 {
 
 template<class DataTypes, class ElementType>
-void CudaElementCorotationalFEMForceField<DataTypes, ElementType>::init()
+void CudaLinearSmallStrainFEMForceField<DataTypes, ElementType>::init()
 {
-    ElementCorotationalFEMForceField<DataTypes, ElementType>::init();
+    LinearSmallStrainFEMForceField<DataTypes, ElementType>::init();
 
     if (!this->isComponentStateInvalid())
     {
         uploadStiffnessAndConnectivity();
-        uploadInitialRotationsTransposed();
     }
 }
 
 template<class DataTypes, class ElementType>
-void CudaElementCorotationalFEMForceField<DataTypes, ElementType>::uploadStiffnessAndConnectivity()
+void CudaLinearSmallStrainFEMForceField<DataTypes, ElementType>::uploadStiffnessAndConnectivity()
 {
     using trait = sofa::component::solidmechanics::fem::elastic::trait<DataTypes, ElementType>;
 
@@ -97,7 +96,6 @@ void CudaElementCorotationalFEMForceField<DataTypes, ElementType>::uploadStiffne
 
     // Upload element connectivity in SoA layout:
     // elements[nodeIdx * nbElem + elemId] = global node index
-    // Adjacent threads access adjacent memory for coalesced reads.
     m_gpuElements.resize(nNodes * nbElem);
     {
         auto* dst = m_gpuElements.hostWrite();
@@ -110,8 +108,6 @@ void CudaElementCorotationalFEMForceField<DataTypes, ElementType>::uploadStiffne
     }
 
     // Build vertex-to-element mapping (velems)
-    // For each vertex, stores the list of (elemId * nNodes + localNode + 1).
-    // 0 is used as sentinel. SoA layout: velems[slot * nbVertex + vertexId].
     std::vector<std::vector<int>> vertexElems(m_nbVertices);
     for (std::size_t e = 0; e < nbElem; ++e)
     {
@@ -146,96 +142,10 @@ void CudaElementCorotationalFEMForceField<DataTypes, ElementType>::uploadStiffne
     m_gpuElementForce.resize(nbElem * nNodes * dim);
 
     m_gpuDataUploaded = true;
-    m_gpuRotationsUploaded = false;
 }
 
 template<class DataTypes, class ElementType>
-void CudaElementCorotationalFEMForceField<DataTypes, ElementType>::uploadRotations()
-{
-    using trait = sofa::component::solidmechanics::fem::elastic::trait<DataTypes, ElementType>;
-    constexpr auto dim = trait::spatial_dimensions;
-
-    const auto& rotations = this->m_rotations;
-    const auto nbElem = rotations.size();
-
-    m_gpuRotations.resize(nbElem * dim * dim);
-    {
-        auto* dst = m_gpuRotations.hostWrite();
-        for (std::size_t e = 0; e < nbElem; ++e)
-        {
-            const auto& R = rotations[e];
-            for (unsigned int i = 0; i < dim; ++i)
-                for (unsigned int j = 0; j < dim; ++j)
-                    dst[e * dim * dim + i * dim + j] = static_cast<Real>(R[i][j]);
-        }
-    }
-
-    m_gpuRotationsUploaded = true;
-}
-
-template<class DataTypes, class ElementType>
-void CudaElementCorotationalFEMForceField<DataTypes, ElementType>::uploadInitialRotationsTransposed()
-{
-    using trait = sofa::component::solidmechanics::fem::elastic::trait<DataTypes, ElementType>;
-    constexpr auto dim = trait::spatial_dimensions;
-    constexpr auto nNodes = trait::NumberOfNodesInElement;
-
-    const auto& initRotT = this->m_initialRotationsTransposed;
-    const auto nbElem = initRotT.size();
-    if (nbElem == 0) return;
-
-    m_gpuInitialRotationsTransposed.resize(nbElem * dim * dim);
-    m_gpuRotations.resize(nbElem * dim * dim);
-    {
-        auto* dst = m_gpuInitialRotationsTransposed.hostWrite();
-        for (std::size_t e = 0; e < nbElem; ++e)
-        {
-            const auto& R = initRotT[e];
-            for (unsigned int i = 0; i < dim; ++i)
-                for (unsigned int j = 0; j < dim; ++j)
-                    dst[e * dim * dim + i * dim + j] = static_cast<Real>(R[i][j]);
-        }
-    }
-
-    // Check if the rotation method is GPU-compatible
-    const auto rotationMethodKey = this->m_rotationMethods.d_rotationMethod.getValue().key();
-    m_gpuRotationMethodSupported = (nNodes >= 3)
-        && (rotationMethodKey == "triangle" || rotationMethodKey == "hexahedron");
-}
-
-template<class DataTypes, class ElementType>
-void CudaElementCorotationalFEMForceField<DataTypes, ElementType>::downloadRotations()
-{
-    using trait = sofa::component::solidmechanics::fem::elastic::trait<DataTypes, ElementType>;
-    constexpr auto dim = trait::spatial_dimensions;
-
-    if (!m_gpuRotationsUploaded) return;
-
-    const auto nbElem = m_gpuRotations.size() / (dim * dim);
-    this->m_rotations.resize(nbElem);
-
-    const auto* src = m_gpuRotations.hostRead();
-    for (std::size_t e = 0; e < nbElem; ++e)
-    {
-        auto& R = this->m_rotations[e];
-        for (unsigned int i = 0; i < dim; ++i)
-            for (unsigned int j = 0; j < dim; ++j)
-                R[i][j] = static_cast<Real>(src[e * dim * dim + i * dim + j]);
-    }
-}
-
-template<class DataTypes, class ElementType>
-void CudaElementCorotationalFEMForceField<DataTypes, ElementType>::buildStiffnessMatrix(
-    sofa::core::behavior::StiffnessMatrix* matrix)
-{
-    if (m_gpuRotationMethodSupported && m_gpuRotationsUploaded)
-        downloadRotations();
-
-    ElementCorotationalFEMForceField<DataTypes, ElementType>::buildStiffnessMatrix(matrix);
-}
-
-template<class DataTypes, class ElementType>
-void CudaElementCorotationalFEMForceField<DataTypes, ElementType>::addForce(
+void CudaLinearSmallStrainFEMForceField<DataTypes, ElementType>::addForce(
     const sofa::core::MechanicalParams* mparams,
     sofa::DataVecDeriv_t<DataTypes>& d_f,
     const sofa::DataVecCoord_t<DataTypes>& d_x,
@@ -246,8 +156,7 @@ void CudaElementCorotationalFEMForceField<DataTypes, ElementType>::addForce(
 
     if (!m_gpuDataUploaded)
     {
-        ElementCorotationalFEMForceField<DataTypes, ElementType>::addForce(mparams, d_f, d_x, d_v);
-        uploadRotations();
+        LinearSmallStrainFEMForceField<DataTypes, ElementType>::addForce(mparams, d_f, d_x, d_v);
         return;
     }
 
@@ -255,7 +164,12 @@ void CudaElementCorotationalFEMForceField<DataTypes, ElementType>::addForce(
     constexpr auto nNodes = trait::NumberOfNodesInElement;
     constexpr auto dim = trait::spatial_dimensions;
 
+    VecDeriv& f = *d_f.beginEdit();
     const VecCoord& x = d_x.getValue();
+
+    if (f.size() < x.size())
+        f.resize(x.size());
+
     auto restPositionAccessor = this->mstate->readRestPositions();
     const VecCoord& x0 = restPositionAccessor.ref();
 
@@ -263,35 +177,10 @@ void CudaElementCorotationalFEMForceField<DataTypes, ElementType>::addForce(
     const auto nbElem = static_cast<unsigned int>(elements.size());
     const auto nbVertex = static_cast<unsigned int>(x.size());
 
-    VecDeriv& f = *d_f.beginEdit();
-    if (f.size() < x.size())
-        f.resize(x.size());
-
-    if constexpr (nNodes >= 3)
-    {
-        if (m_gpuRotationMethodSupported)
-        {
-            gpu::cuda::ElementCorotationalFEMForceFieldCuda_addForceWithRotations<Real, nNodes, dim>(
-                nbElem, nbVertex, m_maxElemPerVertex,
-                m_gpuElements.deviceRead(), m_gpuInitialRotationsTransposed.deviceRead(),
-                m_gpuStiffness.deviceRead(), x.deviceRead(), x0.deviceRead(),
-                f.deviceWrite(), m_gpuElementForce.deviceWrite(),
-                m_gpuRotations.deviceWrite(), m_gpuVelems.deviceRead());
-
-            m_gpuRotationsUploaded = true;
-            d_f.endEdit();
-            return;
-        }
-    }
-
-    // CPU rotations + GPU forces
-    this->computeRotations(this->m_rotations, x, x0);
-    uploadRotations();
-
-    gpu::cuda::ElementCorotationalFEMForceFieldCuda_addForce<Real, nNodes, dim>(
+    gpu::cuda::LinearSmallStrainFEMForceFieldCuda_addForce<Real, nNodes, dim>(
         nbElem, nbVertex, m_maxElemPerVertex,
-        m_gpuElements.deviceRead(), m_gpuRotations.deviceRead(),
-        m_gpuStiffness.deviceRead(), x.deviceRead(), x0.deviceRead(),
+        m_gpuElements.deviceRead(), m_gpuStiffness.deviceRead(),
+        x.deviceRead(), x0.deviceRead(),
         f.deviceWrite(), m_gpuElementForce.deviceWrite(),
         m_gpuVelems.deviceRead());
 
@@ -299,7 +188,7 @@ void CudaElementCorotationalFEMForceField<DataTypes, ElementType>::addForce(
 }
 
 template<class DataTypes, class ElementType>
-void CudaElementCorotationalFEMForceField<DataTypes, ElementType>::addDForce(
+void CudaLinearSmallStrainFEMForceField<DataTypes, ElementType>::addDForce(
     const sofa::core::MechanicalParams* mparams,
     sofa::DataVecDeriv_t<DataTypes>& d_df,
     const sofa::DataVecDeriv_t<DataTypes>& d_dx)
@@ -307,10 +196,10 @@ void CudaElementCorotationalFEMForceField<DataTypes, ElementType>::addDForce(
     if (this->isComponentStateInvalid())
         return;
 
-    if (!m_gpuDataUploaded || !m_gpuRotationsUploaded)
+    if (!m_gpuDataUploaded)
     {
         // Fallback to CPU if GPU data not ready
-        ElementCorotationalFEMForceField<DataTypes, ElementType>::addDForce(mparams, d_df, d_dx);
+        LinearSmallStrainFEMForceField<DataTypes, ElementType>::addDForce(mparams, d_df, d_dx);
         return;
     }
 
@@ -332,12 +221,12 @@ void CudaElementCorotationalFEMForceField<DataTypes, ElementType>::addDForce(
     const auto nbElem = static_cast<unsigned int>(elements.size());
     const auto nbVertex = static_cast<unsigned int>(dx.size());
 
-    gpu::cuda::ElementCorotationalFEMForceFieldCuda_addDForce<Real, nNodes, dim>(
+    gpu::cuda::LinearSmallStrainFEMForceFieldCuda_addDForce<Real, nNodes, dim>(
         nbElem, nbVertex, m_maxElemPerVertex,
-        m_gpuElements.deviceRead(), m_gpuRotations.deviceRead(),
-        m_gpuStiffness.deviceRead(), dx.deviceRead(),
-        df.deviceWrite(), m_gpuElementForce.deviceWrite(),
-        m_gpuVelems.deviceRead(), kFactor);
+        m_gpuElements.deviceRead(), m_gpuStiffness.deviceRead(),
+        dx.deviceRead(), df.deviceWrite(),
+        m_gpuElementForce.deviceWrite(), m_gpuVelems.deviceRead(),
+        kFactor);
 
     d_df.endEdit();
 }

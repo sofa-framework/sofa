@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include <sofa/gpu/cuda/CudaCommon.h>
 #include <sofa/gpu/cuda/CudaMath.h>
-#include "CudaElementFEMKernelUtils.cuh"
+#include "CudaFEMKernelUtils.cuh"
 
 namespace sofa::gpu::cuda
 {
@@ -30,7 +30,7 @@ namespace sofa::gpu::cuda
  * Kernel for addForce: f = -K * (x - x0)
  */
 template<typename T, int NNodes, int Dim>
-__global__ void ElementLinearSmallStrainFEMForceField_computeForce_kernel(
+__global__ void LinearSmallStrainFEMForceField_computeForce_kernel(
     int nbElem,
     const int* __restrict__ elements,
     const T* __restrict__ stiffness,
@@ -61,7 +61,7 @@ __global__ void ElementLinearSmallStrainFEMForceField_computeForce_kernel(
  * Kernel for addDForce: df = -kFactor * K * dx
  */
 template<typename T, int NNodes, int Dim>
-__global__ void ElementLinearSmallStrainFEMForceField_computeDForce_kernel(
+__global__ void LinearSmallStrainFEMForceField_computeDForce_kernel(
     int nbElem,
     const int* __restrict__ elements,
     const T* __restrict__ stiffness,
@@ -91,7 +91,7 @@ __global__ void ElementLinearSmallStrainFEMForceField_computeDForce_kernel(
 // ===================== Launch functions =====================
 
 template<typename T, int NNodes, int Dim>
-void ElementLinearSmallStrainFEMForceFieldCuda_addForce(
+void LinearSmallStrainFEMForceFieldCuda_addForce(
     unsigned int nbElem,
     unsigned int nbVertex,
     unsigned int maxElemPerVertex,
@@ -105,7 +105,7 @@ void ElementLinearSmallStrainFEMForceFieldCuda_addForce(
 {
     const int computeThreads = 64;
     int numBlocks = (nbElem + computeThreads - 1) / computeThreads;
-    ElementLinearSmallStrainFEMForceField_computeForce_kernel<T, NNodes, Dim>
+    LinearSmallStrainFEMForceField_computeForce_kernel<T, NNodes, Dim>
         <<<numBlocks, computeThreads>>>(
             nbElem,
             (const int*)elements,
@@ -113,7 +113,7 @@ void ElementLinearSmallStrainFEMForceFieldCuda_addForce(
             (const T*)x,
             (const T*)x0,
             (T*)eforce);
-    mycudaDebugError("ElementLinearSmallStrainFEMForceField_computeForce_kernel");
+    mycudaDebugError("LinearSmallStrainFEMForceField_computeForce_kernel");
 
     const int gatherThreads = 256;
     numBlocks = (nbVertex + gatherThreads - 1) / gatherThreads;
@@ -128,7 +128,7 @@ void ElementLinearSmallStrainFEMForceFieldCuda_addForce(
 }
 
 template<typename T, int NNodes, int Dim>
-void ElementLinearSmallStrainFEMForceFieldCuda_addDForce(
+void LinearSmallStrainFEMForceFieldCuda_addDForce(
     unsigned int nbElem,
     unsigned int nbVertex,
     unsigned int maxElemPerVertex,
@@ -142,7 +142,7 @@ void ElementLinearSmallStrainFEMForceFieldCuda_addDForce(
 {
     const int computeThreads = 64;
     int numBlocks = (nbElem + computeThreads - 1) / computeThreads;
-    ElementLinearSmallStrainFEMForceField_computeDForce_kernel<T, NNodes, Dim>
+    LinearSmallStrainFEMForceField_computeDForce_kernel<T, NNodes, Dim>
         <<<numBlocks, computeThreads>>>(
             nbElem,
             (const int*)elements,
@@ -150,7 +150,7 @@ void ElementLinearSmallStrainFEMForceFieldCuda_addDForce(
             (const T*)dx,
             (T*)eforce,
             kFactor);
-    mycudaDebugError("ElementLinearSmallStrainFEMForceField_computeDForce_kernel");
+    mycudaDebugError("LinearSmallStrainFEMForceField_computeDForce_kernel");
 
     const int gatherThreads = 256;
     numBlocks = (nbVertex + gatherThreads - 1) / gatherThreads;
@@ -167,10 +167,10 @@ void ElementLinearSmallStrainFEMForceFieldCuda_addDForce(
 // ===================== Explicit template instantiations =====================
 
 #define INSTANTIATE_LINEAR(T, NNodes) \
-    template void ElementLinearSmallStrainFEMForceFieldCuda_addForce<T, NNodes, 3>( \
+    template void LinearSmallStrainFEMForceFieldCuda_addForce<T, NNodes, 3>( \
         unsigned int, unsigned int, unsigned int, const void*, const void*, \
         const void*, const void*, void*, void*, const void*); \
-    template void ElementLinearSmallStrainFEMForceFieldCuda_addDForce<T, NNodes, 3>( \
+    template void LinearSmallStrainFEMForceFieldCuda_addDForce<T, NNodes, 3>( \
         unsigned int, unsigned int, unsigned int, const void*, const void*, \
         const void*, void*, void*, const void*, T);
 
