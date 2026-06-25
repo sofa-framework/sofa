@@ -201,9 +201,9 @@ void autoLoadPluginIfNameContainsPluginName(ComponentFactory& self, const std::s
     }
 }
 
-std::vector<ComponentDescription::SPtr> selectCandidatesTemplateAttributes(const std::vector<ComponentDescription::SPtr>& candidates, objectmodel::BaseObjectDescription* arg)
+std::vector<ComponentDescription::SPtr> selectCandidatesFromTemplateAttributes(const std::vector<ComponentDescription::SPtr>& candidates, objectmodel::BaseObjectDescription* arg)
 {
-    std::vector<ComponentDescription::SPtr> matchingCandidates;
+    std::vector<ComponentDescription::SPtr> exactlyMatchingCandidates;
 
     for (const auto& candidate : candidates)
     {
@@ -227,11 +227,36 @@ std::vector<ComponentDescription::SPtr> selectCandidatesTemplateAttributes(const
 
         if (matchAllTemplateParameters)
         {
-            matchingCandidates.push_back(candidate);
+            exactlyMatchingCandidates.push_back(candidate);
+        }
+
+    }
+
+    return exactlyMatchingCandidates;
+}
+
+std::vector<ComponentDescription::SPtr> selectCandidatesFromPartialTemplateAttributes(const std::vector<ComponentDescription::SPtr>& candidates, objectmodel::BaseObjectDescription* arg)
+{
+    std::vector<ComponentDescription::SPtr> partiallyMatchingCandidates;
+
+    for (const auto& candidate : candidates)
+    {
+        for (const auto& [attribute, value] : candidate->templateAttributes)
+        {
+            const char* attr = arg->getAttribute(attribute, nullptr);
+            if (attr != nullptr)
+            {
+                const std::string attrStr { attr };
+                if (defaulttype::TemplateAliases::resolveAlias(attrStr) == value)
+                {
+                    partiallyMatchingCandidates.push_back(candidate);
+                    break;
+                }
+            }
         }
     }
 
-    return matchingCandidates;
+    return partiallyMatchingCandidates;
 }
 
 std::vector<ComponentDescription::SPtr> selectCandidatesTemplateKeyword(
@@ -332,7 +357,7 @@ objectmodel::BaseComponent::SPtr ComponentFactory::createComponent(
 
     //exact template: could it be a template deduction rule?
     {
-        const auto matchingTemplates = selectCandidatesTemplateAttributes(candidates, arg);
+        const auto matchingTemplates = selectCandidatesFromTemplateAttributes(candidates, arg);
 
         if (!matchingTemplates.empty())
         {
@@ -353,6 +378,24 @@ objectmodel::BaseComponent::SPtr ComponentFactory::createComponent(
         }
     }
 
+    //partial template matching
+    {
+        const auto matchingTemplates = selectCandidatesFromPartialTemplateAttributes(candidates, arg);
+
+        if (matchingTemplates.size() == 1)
+        {
+            return createComponentFrom(matchingTemplates.front(), context, arg);
+        }
+
+        auto deducedCandidates = selectCandidatesDeductionRules(matchingTemplates, context, arg);
+        if (!deducedCandidates.empty())
+        {
+            msg_warning_when(deducedCandidates.size() > 1) << "Multiple candidates with the same templates: " <<
+                sofa::helper::join(deducedCandidates.begin(), deducedCandidates.end(), ",");
+            return createComponentFrom(deducedCandidates.front(), context, arg);
+        }
+    }
+
     // Template deduction:
     // So far, none of the candidates match the templates.
     // We select one of them automatically based on deduction rules
@@ -366,6 +409,8 @@ objectmodel::BaseComponent::SPtr ComponentFactory::createComponent(
             return createComponentFrom(deducedCandidates.front(), context, arg);
         }
     }
+
+    msg_error() << "Cannot create component " << classname;
 
     return nullptr;
 }
