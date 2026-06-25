@@ -29,7 +29,7 @@
         <BoxROI name="box_roi" box="-0.1 5 -3 0.1 11 3" drawBoxes="1" />
         <FixedProjectiveConstraint indices="@box_roi.indices" />
 
-        <HexahedronLinearSmallStrainFEMForceField name="FEM" template="CudaVec3f"
+        <CudaLinearSmallStrainFEMForceField name="FEM" template="CudaVec3f,Hexahedron"
                                               youngModulus="2000" poissonRatio="0.3" />
     </Node>
 

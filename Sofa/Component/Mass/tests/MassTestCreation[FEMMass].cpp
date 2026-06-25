@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/mass/ElementFEMMass.h>
+#include <sofa/component/mass/FEMMass.h>
 #include <sofa/component/mass/testing/MassTestCreation.h>
 #include <sofa/component/topology/container/constant/MeshTopology.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -32,11 +32,11 @@ using MeshTopology = sofa::component::topology::container::constant::MeshTopolog
 
 
 /***************************************************************************************************
- * ElementFEMMass
+ * FEMMass
  **************************************************************************************************/
 
 template <typename MassParam>
-struct ElementMass_template_test : public Mass_test<ElementFEMMass<typename MassParam::DataTypes, typename MassParam::ElementType>>
+struct ElementMass_template_test : public Mass_test<FEMMass<typename MassParam::DataTypes, typename MassParam::ElementType>>
 {
     using DataTypes = typename MassParam::DataTypes;
 

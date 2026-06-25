@@ -10,8 +10,9 @@
         <TetrahedronSetGeometryAlgorithms template="Vec3" name="GeomAlgo" drawTetrahedra="false"/>
         <Hexa2TetraTopologicalMapping input="@grid" output="@Tetra_topo" swapping="true"/>
 
-        <TetrahedronLinearSmallStrainFEMForceField name="FEM" youngModulus="2e6" poissonRatio="0.45" topology="@Tetra_topo"
-                                                   computeForceStrategy="parallel" computeForceDerivStrategy="parallel"/>
+        <LinearSmallStrainFEMForceField name="FEM" template="Vec3,Tetrahedron"
+                                               youngModulus="2e6" poissonRatio="0.45" topology="@Tetra_topo"
+                                               computeForceStrategy="parallel" computeForceDerivStrategy="parallel"/>
     </Node>
 
 </Node>

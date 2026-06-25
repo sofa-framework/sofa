@@ -12,8 +12,7 @@
     <RequiredPlugin pluginName="SofaCUDA"/>
 
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
-    <DefaultAnimationLoop />
-    <DefaultVisualManagerLoop />
+    <DefaultAnimationLoop/>
 
     <Node name="Tetrahedron">
         <Node name="Beam">
@@ -25,9 +24,9 @@
         </Node>
         
         
-        <Node name="Simulated">
+        <Node name="TetrahedronFEMForceField-GPU-Green">
             <EulerImplicitSolver name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
-            <CGLinearSolver iterations="20" name="linear solver" tolerance="1.0e-12" threshold="1.0e-12" />
+        <CGLinearSolver iterations="20" name="linear solver" tolerance="1.0e-12" threshold="1.0e-12" />
             
             <MechanicalObject position="@../Beam/grid.position" name="Volume" template="CudaVec3f"/>
 
@@ -39,9 +38,9 @@
             <BoxROI name="ROI1" box="-0.1 5 -3 0.1 11 3" drawBoxes="1" />
             
             <FixedProjectiveConstraint indices="@ROI1.indices" />
-            <TetrahedronCorotationalFEMForceField name="FEM" template="CudaVec3f"
-                                              youngModulus="2000" poissonRatio="0.3" />
+            <CudaLinearSmallStrainFEMForceField name="FEM" template="CudaVec3f,Tetrahedron"
+                                                youngModulus="2000" poissonRatio="0.3"/>
         </Node>  
     </Node>
-    
+
 </Node>
