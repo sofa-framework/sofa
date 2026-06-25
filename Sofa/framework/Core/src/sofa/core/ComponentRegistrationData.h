@@ -136,25 +136,61 @@ struct SOFA_CORE_API ComponentRegistrationDataBuilder : public ComponentRegistra
 //to deprecate
 struct SOFA_CORE_API LegacyComponentRegistrationData
 {
-    explicit LegacyComponentRegistrationData(const std::string&) {}
 
+    std::string m_description;
+    explicit LegacyComponentRegistrationData(const std::string& description)
+        : m_description(description)
+    {}
+
+    std::vector<BaseComponentCreator*> m_componentCreators;
+    ~LegacyComponentRegistrationData()
+    {
+        for (auto* componentCreator : m_componentCreators)
+        {
+            delete componentCreator;
+        }
+    }
+
+    std::vector<std::string> m_componentNames;
     template<class T> LegacyComponentRegistrationData& add(bool = false)
     {
+        m_componentCreators.push_back(new ComponentCreator<T>);
+        m_componentNames.push_back(T::GetClass()->className);
+        //to do: deal with templates
         return *this;
     }
 
-    LegacyComponentRegistrationData& addDocumentationURL(const std::string&)
+    std::string m_documentationURL;
+    LegacyComponentRegistrationData& addDocumentationURL(const std::string& documentationURL)
     {
+        m_documentationURL = documentationURL;
         return *this;
     }
 
-    LegacyComponentRegistrationData& addDescription(const std::string&)
+    LegacyComponentRegistrationData& addDescription(const std::string& description)
     {
+        m_description = description;
         return *this;
     }
 
-    LegacyComponentRegistrationData& addAlias(const std::string&)
+    std::set<std::string> m_aliases;
+    LegacyComponentRegistrationData& addAlias(const std::string& alias)
     {
+        m_aliases.insert(alias);
+        return *this;
+    }
+
+    std::string m_authors;
+    LegacyComponentRegistrationData& addAuthor(const std::string& author)
+    {
+        m_authors = author;
+        return *this;
+    }
+
+    std::string m_license;
+    LegacyComponentRegistrationData& addLicense(const std::string& license)
+    {
+        m_license = license;
         return *this;
     }
 };

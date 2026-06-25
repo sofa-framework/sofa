@@ -33,6 +33,7 @@ struct SOFA_CORE_API ComponentDescription
 {
     using SPtr = std::shared_ptr<ComponentDescription>;
 
+    ComponentDescription() = default;
     explicit ComponentDescription(const ComponentRegistrationData& data)
         : ComponentRegistrationData(data) {}
 

@@ -89,46 +89,47 @@ bool ComponentFactory::registerObjectsFromPlugin(const std::string& pluginName)
 
 bool ComponentFactory::registerObjects(LegacyComponentRegistrationData& ro)
 {
-    // auto& creators = ro.creators;
-    //
-    // if (creators.empty())
-    // {
-    //     msg_error() << "No creator provided";
-    //     return false;
-    // }
-    //
-    // for (auto& creator : ro.creators)
-    // {
-    //     ComponentDescription::SPtr component = std::make_shared<ComponentDescription>();
-    //
-    //     component->componentName = ro.componentName;
-    //     component->aliases = ro.aliases;
-    //     component->componentNamespace = ro.componentNamespace;
-    //     component->componentModule = ro.componentModule;
-    //
-    //     component->description = ro.description;
-    //     component->authors = sofa::helper::join(ro.authors, ",");
-    //     component->license = ro.license;
-    //     component->documentationURL = ro.documentationURL;
-    //
-    //     {
-    //         //special cases for official documentation
-    //         const auto modulePaths = sofa::helper::split(component->componentModule, '.');
-    //         if (modulePaths.size() > 2 && modulePaths[0] == "Sofa" && modulePaths[1] == "Component")
-    //         {
-    //             std::string officialDocURL = std::string(sofa::SOFA_DOCUMENTATION_URL) + std::string("components/");
-    //             officialDocURL += sofa::helper::join(modulePaths.begin() + 2, modulePaths.end(),
-    //                 [](const std::string& m){ return sofa::helper::downcaseString(m);}, "/");
-    //             officialDocURL += std::string("/") + sofa::helper::downcaseString(component->componentName);
-    //
-    //             component->documentationURL.insert(officialDocURL);
-    //         }
-    //     }
-    //
-    //     component->creator = std::move(creator);
-    //
-    //     this->m_registry.push_back(component);
-    // }
+    auto& creators = ro.m_componentCreators;
+
+    if (creators.empty())
+    {
+        msg_error() << "No creator provided";
+        return false;
+    }
+
+    for (std::size_t i = 0; i < creators.size(); ++i)
+    {
+        auto creator = creators[i];
+        ComponentDescription::SPtr component = std::make_shared<ComponentDescription>();
+
+        component->componentName = ro.m_componentNames[i];
+        component->aliases = ro.m_aliases;
+        component->componentNamespace = "";
+        component->componentModule = "";
+
+        component->description = ro.m_description;
+        component->authors.insert(ro.m_authors);
+        component->license = ro.m_license;
+        component->documentationURL.insert(ro.m_documentationURL);
+
+        {
+            //special cases for official documentation
+            const auto modulePaths = sofa::helper::split(component->componentModule, '.');
+            if (modulePaths.size() > 2 && modulePaths[0] == "Sofa" && modulePaths[1] == "Component")
+            {
+                std::string officialDocURL = std::string(sofa::SOFA_DOCUMENTATION_URL) + std::string("components/");
+                officialDocURL += sofa::helper::join(modulePaths.begin() + 2, modulePaths.end(),
+                    [](const std::string& m){ return sofa::helper::downcaseString(m);}, "/");
+                officialDocURL += std::string("/") + sofa::helper::downcaseString(component->componentName);
+
+                component->documentationURL.insert(officialDocURL);
+            }
+        }
+
+        component->creator = creator->clone();
+
+        this->m_registry.push_back(component);
+    }
 
     return true;
 
@@ -329,7 +330,7 @@ objectmodel::BaseComponent::SPtr ComponentFactory::createComponent(
     std::sort(candidates.begin(), candidates.end(),
         [](const auto& a, const auto& b) { return a->instantiationPriority > b->instantiationPriority; });
 
-    //exact template
+    //exact template: could it be a template deduction rule?
     {
         const auto matchingTemplates = selectCandidatesTemplateAttributes(candidates, arg);
 
@@ -352,8 +353,8 @@ objectmodel::BaseComponent::SPtr ComponentFactory::createComponent(
         }
     }
 
-    //template deduction
-    // There are candidates, but none of them match the templates
+    // Template deduction:
+    // So far, none of the candidates match the templates.
     // We select one of them automatically based on deduction rules
     {
         auto deducedCandidates = selectCandidatesDeductionRules(candidates, context, arg);
