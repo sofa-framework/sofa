@@ -62,9 +62,6 @@ protected:
     Data<bool> lineSmooth; ///< Enable smooth line rendering
     Data<bool> pointSmooth; ///< Enable smooth point rendering
 
-    // SOFA_ATTRIBUTE_DISABLED("v24.12", "v25.06")
-    DeprecatedAndRemoved isEnabled;
-
     // primitive types
     Data<sofa::helper::OptionsGroup> primitiveType; ///< Select types of primitives to send (necessary for some shader types such as geometry or tessellation)
 
@@ -74,7 +71,7 @@ protected:
     Data<sofa::helper::OptionsGroup> destFactor; ///< if alpha blending is enabled this specifies how the red, green, blue, and alpha destination blending factors are computed
     GLenum blendEq, sfactor, dfactor;
 
-    sofa::gl::Texture *m_tex; //this texture is used only if a texture name is specified in the scn
+    std::unique_ptr<sofa::gl::Texture> m_tex; //this texture is used only if a texture name is specified in the scn
     GLuint vbo, iboEdges, iboTriangles, iboQuads;
     bool VBOGenDone, initDone, useEdges, useTriangles, useQuads, canUsePatches;
     size_t oldVerticesSize, oldNormalsSize, oldTexCoordsSize, oldTangentsSize, oldBitangentsSize, oldEdgesSize, oldTrianglesSize, oldQuadsSize;
@@ -126,7 +123,7 @@ public:
     bool isUseTriangles()	{ return useTriangles; }
     bool isUseQuads()	{ return useQuads; }
 
-    sofa::gl::Texture* getTex() const	{ return m_tex; }
+    sofa::gl::Texture* getTex() const	{ return m_tex.get(); }
     GLuint getVbo()	{ return vbo;	}
     GLuint getIboEdges() { return iboEdges; }
     GLuint getIboTriangles() { return iboTriangles; }

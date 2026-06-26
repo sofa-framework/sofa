@@ -80,9 +80,6 @@ public:
 
     void applyVelocityCorrection(const sofa::core::ConstraintParams *cparams, Data< VecDeriv>& v, Data< VecDeriv>& dv, const Data< VecDeriv >& f) override;
 
-    void rebuildSystem(SReal massFactor, SReal forceFactor) override;
-
-
     /// @name Deprecated API
     /// @{
 
@@ -113,9 +110,6 @@ public:
     void getBlockDiagonalCompliance(linearalgebra::BaseMatrix* W, int begin, int end) override;
 
 protected:
-    //SOFA_ATTRIBUTE_DEPRECATED("v25.06", "v25.12", "Further to #5017 use m_constraintMatrix instead")
-    DeprecatedAndRemoved J; ///< use m_constraintMatrix instead
-
     linearalgebra::SparseMatrix<Real> m_constraintJacobian;
 
     /**

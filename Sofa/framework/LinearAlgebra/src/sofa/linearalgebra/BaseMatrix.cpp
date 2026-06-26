@@ -733,7 +733,7 @@ public:
     {
         switch(NC)
         {
-        case 1: if (NL==1) opDynamicReal1<Real, M1, M2 >(m1, m2, fact, category);
+        case 1: if constexpr (NL==1) opDynamicReal1<Real, M1, M2 >(m1, m2, fact, category);
             else opDynamicRealNLNC<Real, NL, 1, M1, M2 >(m1, m2, fact, category);
             break;
         case 2: opDynamicRealNLNC<Real, NL, 2, M1, M2 >(m1, m2, fact, category); break;
@@ -862,7 +862,14 @@ std::istream& operator>>( std::istream& in, sofa::linearalgebra::BaseMatrix& m )
 
     }
 
-    m.resize( (Index)lines.size(), (Index)lines[0].size() );
+    if (lines.empty())
+    {
+        m.resize(0, 0);
+    }
+    else
+    {
+        m.resize( (Index)lines.size(), (Index)lines[0].size() );
+    }
 
     for( size_t i=0; i<lines.size();++i)
     {

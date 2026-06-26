@@ -26,8 +26,8 @@
 #include <sofa/component/mapping/nonlinear/RigidMapping.h>
 #include <sofa/component/statecontainer/MechanicalObject.h>
 #include <sofa/component/collision/response/mapper/BaseContactMapper.h>
-#include <sofa/component/collision/geometry/SphereModel.h>
-#include <sofa/component/collision/geometry/CylinderModel.h>
+#include <sofa/component/collision/geometry/SphereCollisionModel.h>
+#include <sofa/component/collision/geometry/CylinderCollisionModel.h>
 #include <sofa/simulation/fwd.h>
 
 namespace sofa::component::collision::response::mapper

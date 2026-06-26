@@ -112,6 +112,8 @@ public:
 
 
 
+    using BaseMatrix::add;
+
     /// Schedule the addition of the value at the given place. Scheduled additions must be finalized using function compress().
     void add( Index row, Index col, double value ) override{
         if( value!=0.0 ) incoming.push_back( Triplet(row,col,(Real)value) );

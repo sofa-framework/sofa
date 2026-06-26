@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.22)
 project(SceneChecking LANGUAGES CXX)
 
+option(SOFA_SCENECHECKING_WARNINGS_ARE_ERRORS "Consider SceneChecking warnings as errors." OFF)
+
 find_package(Sofa.Config REQUIRED)
 sofa_find_package(Sofa.Simulation.Core REQUIRED)
 sofa_find_package(Sofa.Component.SceneUtility REQUIRED)
@@ -8,38 +10,52 @@ sofa_find_package(Sofa.Component.Collision.Response.Contact REQUIRED)
 
 set(SCENECHECK_SRC_DIR src/SceneChecking)
 
+set(DEPRECATED_DIR "compat/SceneChecking")
+set(DEPRECATED_HEADER_FILES
+    ${DEPRECATED_DIR}/SceneCheckerVisitor.h
+)
+
 set(HEADER_FILES
     ${SCENECHECK_SRC_DIR}/config.h.in
     ${SCENECHECK_SRC_DIR}/init.h
     ${SCENECHECK_SRC_DIR}/SceneCheckAPIChange.h
+    ${SCENECHECK_SRC_DIR}/SceneCheckCollisionPipelineAndModels.h
     ${SCENECHECK_SRC_DIR}/SceneCheckCollisionResponse.h
     ${SCENECHECK_SRC_DIR}/SceneCheckDeprecatedComponents.h
     ${SCENECHECK_SRC_DIR}/SceneCheckDuplicatedName.h
     ${SCENECHECK_SRC_DIR}/SceneCheckEmptyNodeName.h
     ${SCENECHECK_SRC_DIR}/SceneCheckMapping.h
     ${SCENECHECK_SRC_DIR}/SceneCheckMissingRequiredPlugin.h
+    ${SCENECHECK_SRC_DIR}/SceneCheckSpecialCharacters.h
     ${SCENECHECK_SRC_DIR}/SceneCheckUsingAlias.h
     ${SCENECHECK_SRC_DIR}/SceneCheckerListener.h
-    ${SCENECHECK_SRC_DIR}/SceneCheckerVisitor.h
 )
 
 set(SOURCE_FILES
     ${SCENECHECK_SRC_DIR}/init.cpp
     ${SCENECHECK_SRC_DIR}/SceneCheckAPIChange.cpp
+    ${SCENECHECK_SRC_DIR}/SceneCheckCollisionPipelineAndModels.cpp
     ${SCENECHECK_SRC_DIR}/SceneCheckCollisionResponse.cpp
     ${SCENECHECK_SRC_DIR}/SceneCheckDeprecatedComponents.cpp
     ${SCENECHECK_SRC_DIR}/SceneCheckDuplicatedName.cpp
     ${SCENECHECK_SRC_DIR}/SceneCheckEmptyNodeName.cpp
     ${SCENECHECK_SRC_DIR}/SceneCheckMapping.cpp
     ${SCENECHECK_SRC_DIR}/SceneCheckMissingRequiredPlugin.cpp
+    ${SCENECHECK_SRC_DIR}/SceneCheckSpecialCharacters.cpp
     ${SCENECHECK_SRC_DIR}/SceneCheckUsingAlias.cpp
     ${SCENECHECK_SRC_DIR}/SceneCheckerListener.cpp
-    ${SCENECHECK_SRC_DIR}/SceneCheckerVisitor.cpp
 )
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${DEPRECATED_HEADER_FILES})
 
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Simulation.Core Sofa.Component.SceneUtility Sofa.Component.Collision.Response.Contact)
+
+target_include_directories(${PROJECT_NAME} PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/compat>
+    $<INSTALL_INTERFACE:include/${PROJECT_NAME}_compat>
+)
+
+install(DIRECTORY compat/ DESTINATION include/${PROJECT_NAME}_compat COMPONENT headers)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

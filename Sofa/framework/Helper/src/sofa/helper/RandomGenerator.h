@@ -47,11 +47,11 @@ class SOFA_HELPER_API RandomGenerator
     unsigned short __rand48_mult[3];
     unsigned short __rand48_add;
 
-    long seed;
-
     void __dorand48(unsigned short xseed[3]);
 
 protected:
+
+    long m_seed {};
 
     /// integer between [0, 2^32-1)
     unsigned long int randomBase();

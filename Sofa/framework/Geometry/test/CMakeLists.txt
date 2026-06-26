@@ -8,6 +8,7 @@ set(SOURCE_FILES
     Quad_test.cpp
     Tetrahedron_test.cpp
     Hexahedron_test.cpp
+    Proximity_test.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})

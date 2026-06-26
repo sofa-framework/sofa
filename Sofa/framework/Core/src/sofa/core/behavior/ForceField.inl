@@ -33,7 +33,7 @@ namespace sofa::core::behavior
 
 template<class DataTypes>
 ForceField<DataTypes>::ForceField(MechanicalState<DataTypes> *mm)
-    : BaseForceField(), SingleStateAccessor<DataTypes>(mm)
+    : SingleStateAccessor<DataTypes>(mm), BaseForceField()
 {
 }
 

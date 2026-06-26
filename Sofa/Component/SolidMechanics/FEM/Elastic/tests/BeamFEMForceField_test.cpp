@@ -130,6 +130,9 @@ public:
 
     void checkNoMechanicalObject()
     {
+        this->loadPlugins({
+            Sofa.Component.SolidMechanics.FEM.Elastic,
+        });
         EXPECT_MSG_EMIT(Error);
         
         m_root = sofa::simpleapi::createRootNode(m_simulation, "root");

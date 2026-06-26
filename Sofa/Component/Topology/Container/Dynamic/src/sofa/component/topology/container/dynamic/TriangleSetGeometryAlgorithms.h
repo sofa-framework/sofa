@@ -394,13 +394,13 @@ public:
 
     // compute barycentric coefficients
     // {
-    SOFA_ATTRIBUTE_DEPRECATED("v25.06", "v25.12", "Use sofa::component::topology::container::dynamic::TriangleSetGeometryAlgorithms::computeTriangleBarycentricCoordinates")
+    SOFA_ATTRIBUTE_DEPRECATED("v25.06", "v26.12", "Use sofa::component::topology::container::dynamic::TriangleSetGeometryAlgorithms::computeTriangleBarycentricCoordinates")
     sofa::type::vector< SReal > computeTriangleBarycoefs(const TriangleID ind_t, const sofa::type::Vec<3, Real>& p) const;
 
-    SOFA_ATTRIBUTE_DEPRECATED("v25.06", "v25.12", "Use sofa::component::topology::container::dynamic::TriangleSetGeometryAlgorithms::computeTriangleBarycentricCoordinates with useRestPosition set to true")
+    SOFA_ATTRIBUTE_DEPRECATED("v25.06", "v26.12", "Use sofa::component::topology::container::dynamic::TriangleSetGeometryAlgorithms::computeTriangleBarycentricCoordinates with useRestPosition set to true")
     sofa::type::vector< SReal > computeRestTriangleBarycoefs(const TriangleID ind_t, const sofa::type::Vec<3, Real>& p) const;
 
-    SOFA_ATTRIBUTE_DEPRECATED("v25.06", "v25.12", "Use sofa::component::topology::container::dynamic::TriangleSetGeometryAlgorithms::computeTriangleBarycentricCoordinates")
+    SOFA_ATTRIBUTE_DEPRECATED("v25.06", "v26.12", "Use sofa::component::topology::container::dynamic::TriangleSetGeometryAlgorithms::computeTriangleBarycentricCoordinates")
     sofa::type::vector< SReal > compute3PointsBarycoefs(const sofa::type::Vec<3, Real>& p,
         PointID ind_p1,
         PointID ind_p2,

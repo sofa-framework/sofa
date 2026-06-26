@@ -107,7 +107,7 @@ void SOFA_SIMULATION_CORE_API unload(NodeSPtr root);
 
 namespace sofa::core
 {
-SOFA_DECLARE_OPAQUE_FUNCTION_BETWEEN_BASE_AND(sofa::simulation::Node);
+SOFA_DECLARE_WITH_API_MACRO_OPAQUE_FUNCTION_BETWEEN_BASE_AND(sofa::simulation::Node, SOFA_SIMULATION_CORE_API);
 }
 
 namespace sofa::simulation::common

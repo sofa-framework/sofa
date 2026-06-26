@@ -29,7 +29,7 @@ using sofa::core::objectmodel::ComponentState;
 using sofa::testing::BaseSimulationTest ;
 using sofa::simulation::Node ;
 
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 using sofa::core::objectmodel::BaseObject;
 
 #include <sofa/core/PathResolver.h>
@@ -55,7 +55,7 @@ public:
         std::stringstream scene ;
         scene << "<?xml version='1.0'?>"
                  "<Node name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"
-                 "   <RequiredPlugin name='Sofa.Component.SceneUtility' />                   \n"
+                 "   <RequiredPlugin pluginName='Sofa.Component.SceneUtility' />                   \n"
                  "   <DefaultAnimationLoop />                                                \n"
                  "   <DefaultVisualManagerLoop />                                            \n"
                  "   <MechanicalObject name='mstate0'/>                                      \n"

@@ -1,11 +1,11 @@
 /******************************************************************************
-*                 SOFA, Simulatconstraintn Open-Framework Architecture                *
+*                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
-* the Free Software Foundatconstraintn; either versconstraintn 2.1 of the License, or (at     *
-* your optconstraintn) any later versconstraintn.                                             *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
 *                                                                             *
 * This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
@@ -17,7 +17,7 @@
 *******************************************************************************
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
-* Contact informatconstraintn: contact@sofa-framework.org                             *
+* Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/constraint/projective/init.h>
 #include <sofa/core/ObjectFactory.h>

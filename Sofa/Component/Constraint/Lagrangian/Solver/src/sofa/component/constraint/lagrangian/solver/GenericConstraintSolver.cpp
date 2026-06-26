@@ -28,10 +28,10 @@
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/component/constraint/lagrangian/solver/visitors/ConstraintStoreLambdaVisitor.h>
 #include <sofa/core/behavior/MultiVec.h>
-#include <sofa/simulation/DefaultTaskScheduler.h>
+#include <sofa/simulation/task/DefaultTaskScheduler.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
-#include <sofa/simulation/MainTaskSchedulerFactory.h>
-#include <sofa/simulation/ParallelForEach.h>
+#include <sofa/simulation/task/MainTaskSchedulerFactory.h>
+#include <sofa/simulation/task/ParallelForEach.h>
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalVOpVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalVOpVisitor;
@@ -112,16 +112,6 @@ GenericConstraintSolver::GenericConstraintSolver()
     d_tolerance.setRequired(true);
 }
 
-GenericConstraintSolver::~GenericConstraintSolver()
-{
-    for (unsigned i=0; i< CP_BUFFER_SIZE; ++i)
-    {
-        delete m_cpBuffer[i];
-    }
-}
-
-
-
 void GenericConstraintSolver::  init()
 {
     this->initializeConstraintProblems();
@@ -144,9 +134,9 @@ void GenericConstraintSolver::initializeConstraintProblems()
 {
     for (unsigned i=0; i< CP_BUFFER_SIZE; ++i)
     {
-        m_cpBuffer[i] = new GenericConstraintProblem(this);
+        m_cpBuffer[i] = std::make_unique<GenericConstraintProblem>(this);
     }
-    current_cp = m_cpBuffer[0];
+    current_cp = m_cpBuffer[0].get();
 }
 
 void GenericConstraintSolver::cleanup()
@@ -213,18 +203,6 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
     this->doBuildSystem(cParams, current_cp, numConstraints);
 
     return true;
-}
-
-
-void GenericConstraintSolver::rebuildSystem(const SReal massFactor, const SReal forceFactor)
-{
-    for (const auto& cc : l_constraintCorrections)
-    {
-        if (cc->isActive())
-        {
-            cc->rebuildSystem(massFactor, forceFactor);
-        }
-    }
 }
 
 void printLCP(std::ostream& file, SReal *q, SReal **M, SReal *f, int dim, bool printMatrix = true)
@@ -307,14 +285,6 @@ bool GenericConstraintSolver::solveSystem(const core::ConstraintParams * /*cPara
     }
 
     return true;
-}
-
-void GenericConstraintSolver::computeResidual(const core::ExecParams* eparam)
-{
-    for (const auto& cc : l_constraintCorrections)
-    {
-        cc->computeResidual(eparam,&current_cp->f);
-    }
 }
 
 sofa::type::vector<core::behavior::BaseConstraintCorrection*> GenericConstraintSolver::filteredConstraintCorrections() const
@@ -407,14 +377,14 @@ void GenericConstraintSolver::clearConstraintProblemLocks()
     std::fill(m_cpIsLocked.begin(), m_cpIsLocked.end(), false);
 }
 
-void GenericConstraintSolver::lockConstraintProblem(sofa::core::objectmodel::BaseObject* from, ConstraintProblem* p1, ConstraintProblem* p2)
+void GenericConstraintSolver::lockConstraintProblem(sofa::core::objectmodel::BaseComponent* from, ConstraintProblem* p1, ConstraintProblem* p2)
 {
     if( (current_cp != p1) && (current_cp != p2) ) // The current ConstraintProblem is not locked
         return;
 
     for (unsigned int i = 0; i < CP_BUFFER_SIZE; ++i)
     {
-        GenericConstraintProblem* p = m_cpBuffer[i];
+        GenericConstraintProblem* p = m_cpBuffer[i].get();
         if (p == p1 || p == p2)
         {
             m_cpIsLocked[i] = true;

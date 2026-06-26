@@ -157,7 +157,7 @@ struct ConstantForceField_test : public BaseSimulationTest, NumericTest<typename
                 EXPECT_MSG_EMIT(Error) ;
                 root->init(sofa::core::execparams::defaultInstance());
 
-                sofa::core::objectmodel::BaseObject* constantff = root->getObject("myForceField") ;
+                sofa::core::objectmodel::BaseComponent* constantff = root->getObject("myForceField") ;
                 ASSERT_NE( constantff, nullptr) ;
 
                 ASSERT_NE( nullptr, constantff->findData(kv.first) ) << "Missing parameter '" << kv.first << "'";

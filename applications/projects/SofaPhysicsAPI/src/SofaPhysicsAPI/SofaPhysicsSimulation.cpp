@@ -112,8 +112,10 @@ const char* SofaPhysicsAPI::loadSofaIni(const char* pathIniFile)
         sofa::helper::system::DataRepository.addFirstPath(pythonDir);
     }
 
-    char* cstr = new char[shareDir.length() + 1];
-    std::strcpy(cstr, shareDir.c_str());
+    const size_t len = shareDir.length() + 1;
+    char* cstr = new char[len];
+    strncpy(cstr, shareDir.c_str(), len);
+    cstr[len - 1] = '\0';
 
     return cstr;
 }
@@ -246,8 +248,10 @@ int SofaPhysicsAPI::getNbMessages()
 const char* SofaPhysicsAPI::getMessage(int messageId, int& msgType)
 {
     std::string value = impl->getMessage(messageId, msgType);
-    char* cstr = new char[value.length() + 1];
-    std::strcpy(cstr, value.c_str());
+    const size_t len = value.length() + 1;
+    char* cstr = new char[len];
+    strncpy(cstr, value.c_str(), len);
+    cstr[len - 1] = '\0';
     return cstr;
 }
 

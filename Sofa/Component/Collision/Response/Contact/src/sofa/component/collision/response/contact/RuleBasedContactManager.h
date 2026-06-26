@@ -23,6 +23,11 @@
 #include <sofa/component/collision/response/contact/config.h>
 
 #include <sofa/component/collision/response/contact/CollisionResponse.h>
+#include <cstdlib>
+#include <cerrno>
+#include <climits>
+
+#include <sofa/type/hardening.h>
 
 namespace sofa::component::collision::response::contact
 {
@@ -46,18 +51,32 @@ public:
             in >> r.name1 >> r.name2 >> r.response;
             if (!r.name1.empty() && r.name1.find_first_not_of("-0123456789") == std::string::npos)
             {
-                r.group1 = atoi(r.name1.c_str());
-                r.name1.clear();
+                int val{};
+                if(sofa::type::hardening::safeStrToInt(r.name1, val))
+                {
+                    r.group1 = val;
+                    r.name1.clear();
+                }
+                else
+                    r.group1 = 0;
             }
             else
                 r.group1 = 0;
+            
             if (!r.name2.empty() && r.name2.find_first_not_of("-0123456789") == std::string::npos)
             {
-                r.group2 = atoi(r.name2.c_str());
-                r.name2.clear();
+                int val{};
+                if(sofa::type::hardening::safeStrToInt(r.name2, val))
+                {
+                    r.group2 = val;
+                    r.name2.clear();
+                }
+                else
+                    r.group2 = 0;
             }
             else
                 r.group2 = 0;
+
             return in;
         }
 

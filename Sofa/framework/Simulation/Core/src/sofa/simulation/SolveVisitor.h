@@ -23,7 +23,7 @@
 
 #include <sofa/simulation/Visitor.h>
 #include <sofa/core/MultiVecId.h>
-#include <sofa/simulation/CpuTask.h>
+#include <sofa/simulation/task/CpuTask.h>
 
 #include <list>
 

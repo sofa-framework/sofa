@@ -4,7 +4,7 @@
 
 <Node 	name="root" gravity="0 0 0" dt="1"  >
   <Node name="plugins">
-    <RequiredPlugin name="image"/> <!-- Needed to use components [ImageContainer ImageExporter] -->
+    <RequiredPlugin pluginName="image"/> <!-- Needed to use components [ImageContainer ImageExporter] -->
   </Node>
   
   <!-- IMPORT IMAGE -->

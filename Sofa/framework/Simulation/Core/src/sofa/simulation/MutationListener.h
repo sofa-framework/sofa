@@ -45,32 +45,32 @@ class SOFA_SIMULATION_CORE_API MutationListener
     virtual void onBeginRemoveChild(Node *parent, Node *child);
 
     virtual void onBeginAddObject(Node *parent,
-                             core::objectmodel::BaseObject *object);
+                             core::objectmodel::BaseComponent *object);
 
     virtual void onBeginRemoveObject(Node *parent,
-                                core::objectmodel::BaseObject *object);
+                                core::objectmodel::BaseComponent *object);
 
-    virtual void onBeginAddSlave(core::objectmodel::BaseObject *master,
-                            core::objectmodel::BaseObject *slave);
+    virtual void onBeginAddSlave(core::objectmodel::BaseComponent *master,
+                            core::objectmodel::BaseComponent *slave);
 
-    virtual void onBeginRemoveSlave(core::objectmodel::BaseObject *master,
-                               core::objectmodel::BaseObject *slave);
+    virtual void onBeginRemoveSlave(core::objectmodel::BaseComponent *master,
+                               core::objectmodel::BaseComponent *slave);
 
     virtual void onEndAddChild(Node *parent, Node *child);
 
     virtual void onEndRemoveChild(Node *parent, Node *child);
 
     virtual void onEndAddObject(Node *parent,
-                             core::objectmodel::BaseObject *object);
+                             core::objectmodel::BaseComponent *object);
 
     virtual void onEndRemoveObject(Node *parent,
-                                core::objectmodel::BaseObject *object);
+                                core::objectmodel::BaseComponent *object);
 
-    virtual void onEndAddSlave(core::objectmodel::BaseObject *master,
-                            core::objectmodel::BaseObject *slave);
+    virtual void onEndAddSlave(core::objectmodel::BaseComponent *master,
+                            core::objectmodel::BaseComponent *slave);
 
-    virtual void onEndRemoveSlave(core::objectmodel::BaseObject *master,
-                               core::objectmodel::BaseObject *slave);
+    virtual void onEndRemoveSlave(core::objectmodel::BaseComponent *master,
+                               core::objectmodel::BaseComponent *slave);
 };
 
 } // namespace sofa::simulation

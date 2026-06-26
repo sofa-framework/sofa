@@ -15,6 +15,7 @@ set(SOURCE_FILES
     VecTypes_test.cpp
     fixed_array_test.cpp
     vector_test.cpp
+    FullySymmetric4Tensor_test.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})

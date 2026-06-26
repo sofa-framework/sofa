@@ -94,7 +94,7 @@ void VisualDrawVisitor::processNodeBottomUp(simulation::Node* node)
     for_each(this, node, node->visualModel,     &VisualDrawVisitor::bwdVisualModel);
 }
 
-void VisualDrawVisitor::processObject(simulation::Node* /*node*/, core::objectmodel::BaseObject* o)
+void VisualDrawVisitor::processObject(simulation::Node* /*node*/, core::objectmodel::BaseComponent* o)
 {
     if (vparams->pass() == core::visual::VisualParams::Transparent || vparams->pass() == core::visual::VisualParams::Shadow)
     {

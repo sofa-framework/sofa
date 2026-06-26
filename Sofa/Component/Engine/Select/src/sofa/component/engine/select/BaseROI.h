@@ -24,7 +24,7 @@
 
 #include <sofa/type/Vec.h>
 #include <sofa/core/DataEngine.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -154,3 +154,15 @@ protected:
 };
 
 } // namespace sofa::component::engine::select
+
+#if !defined(SOFA_COMPONENT_ENGINE_BASEROI_CPP)
+namespace sofa::component::engine::select
+{
+extern template class SOFA_COMPONENT_ENGINE_SELECT_API BaseROI<sofa::defaulttype::Vec1Types>;
+extern template class SOFA_COMPONENT_ENGINE_SELECT_API BaseROI<sofa::defaulttype::Vec2Types>;
+extern template class SOFA_COMPONENT_ENGINE_SELECT_API BaseROI<sofa::defaulttype::Vec3Types>;
+extern template class SOFA_COMPONENT_ENGINE_SELECT_API BaseROI<sofa::defaulttype::Vec6Types>;
+extern template class SOFA_COMPONENT_ENGINE_SELECT_API BaseROI<sofa::defaulttype::Rigid2Types>;
+extern template class SOFA_COMPONENT_ENGINE_SELECT_API BaseROI<sofa::defaulttype::Rigid3Types>;
+} // namespace sofa::component::engine::select
+#endif

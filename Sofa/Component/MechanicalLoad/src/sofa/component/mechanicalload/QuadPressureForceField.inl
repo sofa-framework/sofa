@@ -66,7 +66,7 @@ void QuadPressureForceField<DataTypes>::init()
     if (m_topology == nullptr)
     {
         msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
-        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
 
@@ -232,7 +232,15 @@ void QuadPressureForceField<DataTypes>::buildDampingMatrix(core::behavior::Dampi
     // No damping in this ForceField
 }
 
-template<class DataTypes>
+template <class DataTypes>
+SReal QuadPressureForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams*,
+                                                            const DataVecCoord&) const
+{
+    msg_warning() << "Method getPotentialEnergy not implemented yet.";
+    return 0.0;
+}
+
+template <class DataTypes>
 void QuadPressureForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();

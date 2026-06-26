@@ -63,7 +63,7 @@ struct VectorTypeInfo
 
     static sofa::Size size(const DataType& data)
     {
-        if (BaseTypeInfo::FixedSize)
+        if constexpr (BaseTypeInfo::FixedSize)
             return sofa::Size(data.size()*BaseTypeInfo::size());
         else
         {
@@ -77,24 +77,31 @@ struct VectorTypeInfo
 
     static bool setSize(DataType& data, sofa::Size size)
     {
-        if (BaseTypeInfo::FixedSize)
+        if constexpr (BaseTypeInfo::FixedSize)
         {
             data.resize(size/BaseTypeInfo::size());
             return true;
         }
-        return false;
+        else
+        {
+            return false;
+        }
     }
 
     template <typename T>
     static void getValue(const DataType &data, sofa::Size index, T& value)
     {
-        if (BaseTypeInfo::FixedSize && BaseTypeInfo::size() == 1)
+        if constexpr (BaseTypeInfo::FixedSize)
         {
-            BaseTypeInfo::getValue(data[index], 0, value);
-        }
-        else if (BaseTypeInfo::FixedSize)
-        {
-            BaseTypeInfo::getValue(data[(index/BaseTypeInfo::size())], (index%BaseTypeInfo::size()), value);
+            if (BaseTypeInfo::size() == 1)
+            {
+                BaseTypeInfo::getValue(data[index], 0, value);
+            }
+            else
+            {
+                BaseTypeInfo::getValue(data[(index / BaseTypeInfo::size())],
+                                       (index % BaseTypeInfo::size()), value);
+            }
         }
         else
         {
@@ -115,13 +122,17 @@ struct VectorTypeInfo
     template<typename T>
     static void setValue(DataType &data, sofa::Size index, const T& value )
     {
-        if (BaseTypeInfo::FixedSize && BaseTypeInfo::size() == 1)
+        if constexpr (BaseTypeInfo::FixedSize)
         {
-            BaseTypeInfo::setValue(data[index], 0, value);
-        }
-        else if (BaseTypeInfo::FixedSize)
-        {
-            BaseTypeInfo::setValue(data[(index/BaseTypeInfo::size())], (index%BaseTypeInfo::size()), value);
+            if (BaseTypeInfo::size() == 1)
+            {
+                BaseTypeInfo::setValue(data[index], 0, value);
+            }
+            else
+            {
+                BaseTypeInfo::setValue(data[(index / BaseTypeInfo::size())],
+                                       (index % BaseTypeInfo::size()), value);
+            }
         }
         else
         {
@@ -141,13 +152,17 @@ struct VectorTypeInfo
 
     static void getValueString(const DataType &data, sofa::Size index, std::string& value)
     {
-        if (BaseTypeInfo::FixedSize && BaseTypeInfo::size() == 1)
+        if constexpr (BaseTypeInfo::FixedSize)
         {
-            BaseTypeInfo::getValueString(data[index], 0, value);
-        }
-        else if (BaseTypeInfo::FixedSize)
-        {
-            BaseTypeInfo::getValueString(data[(index/BaseTypeInfo::size())], (index%BaseTypeInfo::size()), value);
+            if (BaseTypeInfo::size() == 1)
+            {
+                BaseTypeInfo::getValueString(data[index], 0, value);
+            }
+            else
+            {
+                BaseTypeInfo::getValueString(data[(index / BaseTypeInfo::size())],
+                                             (index % BaseTypeInfo::size()), value);
+            }
         }
         else
         {
@@ -167,13 +182,17 @@ struct VectorTypeInfo
 
     static void setValueString(DataType &data, sofa::Size index, const std::string& value )
     {
-        if (BaseTypeInfo::FixedSize && BaseTypeInfo::size() == 1)
+        if constexpr (BaseTypeInfo::FixedSize)
         {
-            BaseTypeInfo::setValueString(data[index], 0, value);
-        }
-        else if (BaseTypeInfo::FixedSize)
-        {
-            BaseTypeInfo::setValueString(data[(index/BaseTypeInfo::size())], (index%BaseTypeInfo::size()), value);
+            if (BaseTypeInfo::size() == 1)
+            {
+                BaseTypeInfo::setValueString(data[index], 0, value);
+            }
+            else
+            {
+                BaseTypeInfo::setValueString(data[(index / BaseTypeInfo::size())],
+                                             (index % BaseTypeInfo::size()), value);
+            }
         }
         else
         {

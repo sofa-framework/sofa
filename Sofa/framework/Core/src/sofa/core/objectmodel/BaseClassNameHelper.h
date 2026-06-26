@@ -185,12 +185,14 @@ public:
     }
 
     template <typename T>
-    struct DefaultTypeTemplateName {
+    struct DefaultTypeTemplateName
+    {
         static std::string Get() { return ""; }
     };
 
     template<template <typename, typename...> class C, typename T1, typename ...Ts>
-    struct DefaultTypeTemplateName<C<T1,Ts...>>{
+    struct DefaultTypeTemplateName<C<T1,Ts...>>
+    {
         static std::string Get()
         {
             return GetSofaTypeTemplateName<T1, Ts...>();
@@ -208,7 +210,10 @@ private:
             const std::string n = T::template shortName<T>(ptr);
             return n;
         }
-        return sofa::helper::NameDecoder::shortName(getOverridableClassName<T>());
+        else
+        {
+            return sofa::helper::NameDecoder::shortName(getOverridableClassName<T>());
+        }
     }
 
     template<class T>
@@ -216,19 +221,22 @@ private:
     {
         /// If there is a Get CustomClassName method in T we use it to return the name
         if constexpr (HasGetCustomClassName<T>::value)
-                return T::GetCustomClassName();
-
+        {
+            return T::GetCustomClassName();
+        }
         //TODO(dmarchal 01/04/2020): compatibility layer, remove after 01/01/2020
         // use the className method.
-        if constexpr (HasDeprecatedClassName<T>::value)
+        else if constexpr (HasDeprecatedClassName<T>::value)
         {
             T* ptr {nullptr};
             const std::string& n = T::className(ptr);
             return n;
         }
-
-        /// If nothing works we decode the class name from the typeid.
-        return sofa::helper::NameDecoder::decodeClassName(typeid(T));
+        else
+        {
+            /// If nothing works we decode the class name from the typeid.
+            return sofa::helper::NameDecoder::decodeClassName(typeid(T));
+        }
     }
 
     template<class T>
@@ -237,24 +245,28 @@ private:
         /// If the T object implement a GetCustomTemplateName static method... then we
         /// use that to return the name.
         if constexpr (HasGetCustomTemplateName<T>::value)
-                return T::GetCustomTemplateName();
-
+        {
+            return T::GetCustomTemplateName();
+        }
         //TODO(dmarchal 01/04/2020): compatibility layer, remove after 01/01/2020
         // use the templateName method.
-        if constexpr (HasDeprecatedTemplateName<T>::value)
+        else if constexpr (HasDeprecatedTemplateName<T>::value)
         {
             T* ptr {nullptr};
             const std::string n = T::templateName(ptr);
             return n;
         }
-
         /// A GetDefaultTemplateName method is added by the SOFA_CLASS macro, if the object is
         /// has not better option it will use this one.
-        if constexpr (HasGetDefaultTemplateName<T>::value)
-                return T::GetDefaultTemplateName();
-
-        /// Finally if nothing matches, decode the template name from the typeid
-        return sofa::helper::NameDecoder::decodeTemplateName(typeid(T));
+        else if constexpr (HasGetDefaultTemplateName<T>::value)
+        {
+            return T::GetDefaultTemplateName();
+        }
+        else
+        {
+            /// Finally if nothing matches, decode the template name from the typeid
+            return sofa::helper::NameDecoder::decodeTemplateName(typeid(T));
+        }
     }
 };
 
@@ -262,11 +274,17 @@ template<typename T>
 std::string GetSofaTypeTemplateName(const std::string prefix)
 {
     if constexpr (HasName<T>::value )
-            return prefix + T::Name();
+    {
+        return prefix + T::Name();
+    }
     else if constexpr (HasDataTypeInfo<T>::value )
-            return prefix + sofa::defaulttype::DataTypeInfo<T, void>::name();
+    {
+        return prefix + sofa::defaulttype::DataTypeInfo<T, void>::name();
+    }
     else
+    {
         return prefix + sofa::helper::NameDecoder::decodeTypeName(typeid(T));
+    }
 }
 
 template<typename T1, typename T2, typename ...Ts>

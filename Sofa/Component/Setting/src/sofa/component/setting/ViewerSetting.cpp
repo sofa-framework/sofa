@@ -47,7 +47,7 @@ ViewerSetting::ViewerSetting()
     , d_showSelectedObjectSurfaces(initData(&d_showSelectedObjectSurfaces, true, "showSelectedObjectSurfaces", "Show the surfaces when components with surface topology are selected"))
     , d_showSelectedObjectVolumes(initData(&d_showSelectedObjectVolumes, true, "showSelectedObjectVolumes", "Show the volumes when components with volume topology are selected"))
     , d_showSelectedObjectIndices(initData(&d_showSelectedObjectIndices, true, "showSelectedObjectIndices", "Show the position's indices for components with positions are selected"))
-    , d_selectedVisualScaling(initData(&d_selectedVisualScaling, 0.02, "showSelectedVisualScaling", "Scale factor for the rendering of selected object"))
+    , d_selectedVisualScaling(initData(&d_selectedVisualScaling, 0.02_sreal, "showSelectedVisualScaling", "Scale factor for the rendering of selected object"))
 {
     d_resolution.setGroup("Viewport");
     d_fullscreen.setGroup("Viewport");

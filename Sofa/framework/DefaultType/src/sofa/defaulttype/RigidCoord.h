@@ -157,7 +157,7 @@ public:
     constexpr void operator +=(const RigidCoord<3, real>& a)
     {
         center += a.getCenter();
-        orientation *= a.getOrientation();
+        orientation = a.getOrientation() * orientation;
     }
 
     template<typename real2>
@@ -252,7 +252,7 @@ public:
     {
         RigidCoord r;
         r.center = c.center + center;
-        r.orientation = c.orientation();
+        r.orientation = c.orientation;
         return r;
     }
 
@@ -512,7 +512,7 @@ public:
 
     constexpr RigidCoord<2, real> operator-() const
     {
-        return RigidCoord<2, real>(-this->center, this->orientation.inverse());
+        return RigidCoord<2, real>(-this->center, -this->orientation);
     }
 
 
@@ -602,7 +602,7 @@ public:
     {
         RigidCoord r;
         r.center = c.center + center;
-        r.orientation = c.orientation();
+        r.orientation = c.orientation;
         return r;
     }
 
@@ -691,7 +691,7 @@ public:
         m[11] = 0;
         m[12] = (float)center[0];
         m[13] = (float)center[1];
-        m[14] = (float)center[2];
+        m[14] = 0;
         m[15] = 1;
     }
 

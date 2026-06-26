@@ -22,7 +22,7 @@
 #pragma once
 
 #include <sofa/core/config.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 
 namespace sofa::core::objectmodel
 {
@@ -31,10 +31,10 @@ namespace sofa::core::objectmodel
  *  \brief Base class for all the configuration settings of SOFA
  *
  */
-class SOFA_CORE_API ConfigurationSetting: public BaseObject
+class SOFA_CORE_API ConfigurationSetting: public sofa::core::objectmodel::BaseComponent
 {
 public:
-    SOFA_CLASS(ConfigurationSetting, BaseObject);
+    SOFA_CLASS(ConfigurationSetting, sofa::core::objectmodel::BaseComponent);
     SOFA_BASE_CAST_IMPLEMENTATION(ConfigurationSetting)
 protected:
     ConfigurationSetting(); ///< Default constructor.

@@ -4,31 +4,38 @@ project(Sofa.Component.Mass LANGUAGES CXX)
 set(SOFACOMPONENTMASS_SOURCE_DIR "src/sofa/component/mass")
 
 set(HEADER_FILES
-    ${SOFACOMPONENTMASS_SOURCE_DIR}/config.h.in
-    ${SOFACOMPONENTMASS_SOURCE_DIR}/init.h
     ${SOFACOMPONENTMASS_SOURCE_DIR}/AddMToMatrixFunctor.h
     ${SOFACOMPONENTMASS_SOURCE_DIR}/DiagonalMass.h
     ${SOFACOMPONENTMASS_SOURCE_DIR}/DiagonalMass.inl
+    ${SOFACOMPONENTMASS_SOURCE_DIR}/FEMMass.h
+    ${SOFACOMPONENTMASS_SOURCE_DIR}/FEMMass.inl
     ${SOFACOMPONENTMASS_SOURCE_DIR}/MassType.h
     ${SOFACOMPONENTMASS_SOURCE_DIR}/MeshMatrixMass.h
     ${SOFACOMPONENTMASS_SOURCE_DIR}/MeshMatrixMass.inl
+    ${SOFACOMPONENTMASS_SOURCE_DIR}/NodalMassDensity.h
     ${SOFACOMPONENTMASS_SOURCE_DIR}/RigidMassType.h
     ${SOFACOMPONENTMASS_SOURCE_DIR}/UniformMass.h
     ${SOFACOMPONENTMASS_SOURCE_DIR}/UniformMass.inl
     ${SOFACOMPONENTMASS_SOURCE_DIR}/VecMassType.h
+    ${SOFACOMPONENTMASS_SOURCE_DIR}/config.h.in
+    ${SOFACOMPONENTMASS_SOURCE_DIR}/init.h
 )
 
 set(SOURCE_FILES
     ${SOFACOMPONENTMASS_SOURCE_DIR}/init.cpp
     ${SOFACOMPONENTMASS_SOURCE_DIR}/DiagonalMass.cpp
+    ${SOFACOMPONENTMASS_SOURCE_DIR}/FEMMass.cpp
     ${SOFACOMPONENTMASS_SOURCE_DIR}/MeshMatrixMass.cpp
+    ${SOFACOMPONENTMASS_SOURCE_DIR}/NodalMassDensity.cpp
     ${SOFACOMPONENTMASS_SOURCE_DIR}/UniformMass.cpp
 )
 
+sofa_find_package(Sofa.FEM REQUIRED)
 sofa_find_package(Sofa.Simulation.Core REQUIRED)
 sofa_find_package(Sofa.Component.Topology.Container.Dynamic REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.FEM)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Simulation.Core)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Topology.Container.Dynamic)
 
@@ -39,6 +46,10 @@ sofa_create_package_with_targets(
     INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
 )
+
+if(SOFA_BUILD_TESTS)
+    add_subdirectory(Testing)
+endif()
 
 # Tests
 # If SOFA_BUILD_TESTS exists and is OFF, then these tests will be auto-disabled

@@ -885,7 +885,7 @@ void SparseGridTopology::launchPropagationFromSeed(const type::Vec3i &point,
     seed.push(point);
     while (!seed.empty())
     {
-        const type::Vec3i &s=seed.top();
+        const type::Vec3i s=seed.top();
         seed.pop();
         propagateFrom(s,regularGrid,regularGridTypes,alreadyTested,seed);
     }

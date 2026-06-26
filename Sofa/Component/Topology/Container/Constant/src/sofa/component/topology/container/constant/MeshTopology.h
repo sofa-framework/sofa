@@ -250,6 +250,8 @@ public:
     void addQuad( Index a, Index b, Index c, Index d ) override;
     void addTetra( Index a, Index b, Index c, Index d ) override;
     void addHexa( Index a, Index b, Index c, Index d, Index e, Index f, Index g, Index h ) override;
+    void addPrism( Index a, Index b, Index c, Index d, Index e, Index f ) override;
+    void addPyramid( Index a, Index b, Index c, Index d, Index e ) override;
 
     /// get the current revision of this mesh (use to detect changes)
     int getRevision() const override { return revision; }
@@ -307,6 +309,23 @@ public:
 
 protected:
     Size  nbPoints;
+
+    template<typename ElementContainer>
+    Size countPoints(const ElementContainer& seqElements)
+    {
+        Size n = 0;
+        for (const auto& element : seqElements)
+        {
+            for (const auto pointId : element)
+            {
+                if (n <= pointId)
+                {
+                    n = 1 + pointId;
+                }
+            }
+        }
+        return n;
+    }
 
     bool validTetrahedra;
     bool validHexahedra;

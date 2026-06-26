@@ -4,7 +4,7 @@ import sys
 
 
 def createSceneAndController(node):
-    node.createObject('RequiredPlugin',name='image')
+    node.createObject('RequiredPlugin',pluginName='image')
 
     global ic
     ic = node.createObject('ImageContainer',template="ImageUC", filename="textures/lights2.png", name="img")

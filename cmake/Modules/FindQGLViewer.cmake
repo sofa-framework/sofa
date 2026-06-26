@@ -8,8 +8,6 @@
 #
 # Provides target QGLViewer.
 
-find_package(QGLViewer NO_MODULE QUIET)
-
 if(NOT TARGET QGLViewer)
 
   if(NOT QGLViewer_INCLUDE_DIR)
@@ -26,7 +24,14 @@ if(NOT TARGET QGLViewer)
   )
   endif()
 
-  if(QGLViewer_INCLUDE_DIR AND QGLViewer_LIBRARY)
+  if(WIN32)
+    find_file(QGLViewer_DLL
+      NAMES QGLViewer.dll QGLViewer2.dll
+      PATH_SUFFIXES bin
+    )
+  endif()
+
+  if(QGLViewer_INCLUDE_DIR AND QGLViewer_LIBRARY AND (NOT WIN32 OR QGLViewer_DLL))
     set(QGLViewer_FOUND TRUE)
   else()
     if(QGLViewer_FIND_REQUIRED)
@@ -43,10 +48,10 @@ if(NOT TARGET QGLViewer)
 
   if (Qt5Core_FOUND)
       find_package(Qt5 COMPONENTS Core Gui Xml OpenGL Widgets REQUIRED)
-      set(QT_TARGETS Qt5::Core Qt5::Gui Qt5::Xml Qt5::OpenGL Qt5::Widgets)
+      set(QGLViewer_QT_TARGETS Qt5::Core Qt5::Gui Qt5::Xml Qt5::OpenGL Qt5::Widgets)
   elseif (Qt6Core_FOUND)
       find_package(Qt6 COMPONENTS Gui GuiTools Widgets WidgetsTools OpenGLWidgets Xml REQUIRED)
-      set(QT_TARGETS ${QT_TARGETS} Qt::Core Qt::Gui Qt::Widgets Qt::OpenGLWidgets Qt::Xml)
+      set(QGLViewer_QT_TARGETS Qt::Core Qt::Gui Qt::Widgets Qt::OpenGLWidgets Qt::Xml)
   endif()
 
   if(QGLViewer_FOUND)
@@ -58,9 +63,15 @@ if(NOT TARGET QGLViewer)
     endif(NOT QGLViewer_FIND_QUIETLY)
 
     if(NOT TARGET QGLViewer)
-      add_library(QGLViewer INTERFACE IMPORTED)
-      set_property(TARGET QGLViewer PROPERTY INTERFACE_LINK_LIBRARIES "${QGLViewer_LIBRARIES}" ${QT_TARGETS})
+      add_library(QGLViewer SHARED IMPORTED)
       set_property(TARGET QGLViewer PROPERTY INTERFACE_INCLUDE_DIRECTORIES "${QGLViewer_INCLUDE_DIR}")
+      set_property(TARGET QGLViewer PROPERTY INTERFACE_LINK_LIBRARIES "${QGLViewer_QT_TARGETS}")
+      if(WIN32)
+        set_property(TARGET QGLViewer PROPERTY IMPORTED_LOCATION "${QGLViewer_DLL}")
+        set_property(TARGET QGLViewer PROPERTY IMPORTED_IMPLIB "${QGLViewer_LIBRARIES}")
+      else()
+        set_property(TARGET QGLViewer PROPERTY IMPORTED_LOCATION "${QGLViewer_LIBRARIES}")
+      endif()
     endif()
   endif()
   mark_as_advanced(QGLViewer_INCLUDE_DIR QGLViewer_LIBRARY)

@@ -55,8 +55,8 @@ void VariationalSymplecticSolver::init()
 {
     if (!this->getTags().empty())
     {
-        type::vector<core::objectmodel::BaseObject*> objs;
-        this->getContext()->get<core::objectmodel::BaseObject>(&objs,this->getTags(),sofa::core::objectmodel::BaseContext::SearchDown);
+        type::vector<core::objectmodel::BaseComponent*> objs;
+        this->getContext()->get<core::objectmodel::BaseComponent>(&objs,this->getTags(),sofa::core::objectmodel::BaseContext::SearchDown);
         std::stringstream tmp;
         for (const auto* obj : objs)
             tmp << "  " << obj->getClassName() << ' ' << obj->getName() << msgendl;

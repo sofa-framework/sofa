@@ -29,35 +29,6 @@
 #include <iosfwd>
 #include <cassert>
 
-namespace // anonymous
-{
-
-template<typename QuatReal, typename OtherReal>
-constexpr void getOpenGlMatrix(const QuatReal& q, OtherReal* m)
-{
-    m[0 * 4 + 0] = static_cast<OtherReal>(1.0 - 2.0 * (q[1] * q[1] + q[2] * q[2]));
-    m[1 * 4 + 0] = static_cast<OtherReal>(2.0 * (q[0] * q[1] - q[2] * q[3]));
-    m[2 * 4 + 0] = static_cast<OtherReal>(2.0 * (q[2] * q[0] + q[1] * q[3]));
-    m[3 * 4 + 0] = static_cast<OtherReal>(0.0);
-
-    m[0 * 4 + 1] = static_cast<OtherReal>(2.0 * (q[0] * q[1] + q[2] * q[3]));
-    m[1 * 4 + 1] = static_cast<OtherReal>(1.0 - 2.0 * (q[2] * q[2] + q[0] * q[0]));
-    m[2 * 4 + 1] = static_cast<OtherReal>(2.0 * (q[1] * q[2] - q[0] * q[3]));
-    m[3 * 4 + 1] = static_cast<OtherReal>(0.0);
-
-    m[0 * 4 + 2] = static_cast<OtherReal>(2.0 * (q[2] * q[0] - q[1] * q[3]));
-    m[1 * 4 + 2] = static_cast<OtherReal>(2.0 * (q[1] * q[2] + q[0] * q[3]));
-    m[2 * 4 + 2] = static_cast<OtherReal>(1.0 - 2.0 * (q[1] * q[1] + q[0] * q[0]));
-    m[3 * 4 + 2] = static_cast<OtherReal>(0.0);
-
-    m[0 * 4 + 3] = static_cast<OtherReal>(0.0);
-    m[1 * 4 + 3] = static_cast<OtherReal>(0.0);
-    m[2 * 4 + 3] = static_cast<OtherReal>(0.0);
-    m[3 * 4 + 3] = static_cast<OtherReal>(1.0);
-}
-
-}
-
 namespace sofa::type
 {
 
@@ -72,6 +43,24 @@ class Quat
     typedef type::Vec<3, Real> Vec3;
     typedef type::Mat<3,3, Real> Mat3x3;
     typedef type::Mat<4,4, Real> Mat4x4;
+
+    /// Compute the 3x3 rotation matrix from this quaternion and write
+    /// each coefficient through the provided setter(row, col, value).
+    template<typename Setter>
+    constexpr void computeRotationMatrix(Setter&& set) const
+    {
+        set(0,0, 1 - 2 * (_q[1] * _q[1] + _q[2] * _q[2]));
+        set(0,1, 2 * (_q[0] * _q[1] - _q[2] * _q[3]));
+        set(0,2, 2 * (_q[2] * _q[0] + _q[1] * _q[3]));
+
+        set(1,0, 2 * (_q[0] * _q[1] + _q[2] * _q[3]));
+        set(1,1, 1 - 2 * (_q[2] * _q[2] + _q[0] * _q[0]));
+        set(1,2, 2 * (_q[1] * _q[2] - _q[0] * _q[3]));
+
+        set(2,0, 2 * (_q[2] * _q[0] - _q[1] * _q[3]));
+        set(2,1, 2 * (_q[1] * _q[2] + _q[0] * _q[3]));
+        set(2,2, 1 - 2 * (_q[1] * _q[1] + _q[0] * _q[0]));
+    }
 
 public:
     typedef Real value_type;
@@ -157,44 +146,37 @@ public:
     void fromMatrix(const Mat3x3 &m);
 
     /// Convert the quaternion into an orientation matrix
-    void toMatrix(Mat3x3 &m) const
+    constexpr void toMatrix(Mat3x3 &m) const
     {
-        m(0,0) = (1 - 2 * (_q[1] * _q[1] + _q[2] * _q[2]));
-        m(0,1) = (2 * (_q[0] * _q[1] - _q[2] * _q[3]));
-        m(0,2) = (2 * (_q[2] * _q[0] + _q[1] * _q[3]));
-
-        m(1,0) = (2 * (_q[0] * _q[1] + _q[2] * _q[3]));
-        m(1,1) = (1 - 2 * (_q[2] * _q[2] + _q[0] * _q[0]));
-        m(1,2) = (2 * (_q[1] * _q[2] - _q[0] * _q[3]));
-
-        m(2,0) = (2 * (_q[2] * _q[0] - _q[1] * _q[3]));
-        m(2,1) = (2 * (_q[1] * _q[2] + _q[0] * _q[3]));
-        m(2,2) = (1 - 2 * (_q[1] * _q[1] + _q[0] * _q[0]));
+        computeRotationMatrix([&m](auto i, auto j, Real v) { m(i,j) = v; });
     }
 
     /// Convert the quaternion into an orientation homogeneous matrix
     /// The homogeneous part is set to 0,0,0,1
     constexpr void toHomogeneousMatrix(Mat4x4 &m) const
     {
-        m(0,0) = (1 - 2 * (_q[1] * _q[1] + _q[2] * _q[2]));
-        m(0,1) = (2 * (_q[0] * _q[1] - _q[2] * _q[3]));
-        m(0,2) = (2 * (_q[2] * _q[0] + _q[1] * _q[3]));
-        m(0,3) = 0.0;
+        computeRotationMatrix([&m](auto i, auto j, Real v) { m(i,j) = v; });
+        m(0,3) = 0; m(1,3) = 0; m(2,3) = 0;
+        m(3,0) = 0; m(3,1) = 0; m(3,2) = 0; m(3,3) = 1;
+    }
+    
+    /// Builds a 4x4 rotation matrix from this quaternion.
+    constexpr void buildRotationMatrix(Real m[4][4]) const
+    {
+        computeRotationMatrix([&m](auto i, auto j, Real v) { m[i][j] = v; });
+        m[0][3] = 0; m[1][3] = 0; m[2][3] = 0;
+        m[3][0] = 0; m[3][1] = 0; m[3][2] = 0; m[3][3] = 1;
+    }
 
-        m(1,0) = (2 * (_q[0] * _q[1] + _q[2] * _q[3]));
-        m(1,1) = (1 - 2 * (_q[2] * _q[2] + _q[0] * _q[0]));
-        m(1,2) = (2 * (_q[1] * _q[2] - _q[0] * _q[3]));
-        m(1,3) = 0.0;
-
-        m(2,0) = (2 * (_q[2] * _q[0] - _q[1] * _q[3]));
-        m(2,1) = (2 * (_q[1] * _q[2] + _q[0] * _q[3]));
-        m(2,2) = (1 - 2 * (_q[1] * _q[1] + _q[0] * _q[0]));
-        m(2,3) = 0.0;
-
-        m(3,0) = 0.0f;
-        m(3,1) = 0.0f;
-        m(3,2) = 0.0f;
-        m(3,3) = 1.0f;
+    template<typename OtherReal>
+    constexpr void writeOpenGlMatrix(OtherReal* m) const
+    {
+        // OpenGL uses column-major order: m[col*4 + row]
+        computeRotationMatrix([&m](auto i, auto j, Real v) {
+            m[j * 4 + i] = static_cast<OtherReal>(v);
+        });
+        m[3]  = 0; m[7]  = 0; m[11] = 0;
+        m[12] = 0; m[13] = 0; m[14] = 0; m[15] = 1;
     }
 
     /// Apply the rotation to a given vector
@@ -346,41 +328,6 @@ public:
      between the Quaternions' orientations, by "flipping" the source Quaternion if needed (see
      negate()). */
     void slerp(const Quat& a, const Quat& b, Real t, bool allowFlip=true);
-
-    /// A useful function, builds a rotation matrix in Matrix based on
-    /// given quaternion.
-    constexpr void buildRotationMatrix(Real m[4][4]) const
-    {
-        m[0][0] = (1 - 2 * (_q[1] * _q[1] + _q[2] * _q[2]));
-        m[0][1] = (2 * (_q[0] * _q[1] - _q[2] * _q[3]));
-        m[0][2] = (2 * (_q[2] * _q[0] + _q[1] * _q[3]));
-        m[0][3] = 0;
-
-        m[1][0] = (2 * (_q[0] * _q[1] + _q[2] * _q[3]));
-        m[1][1] = (1 - 2 * (_q[2] * _q[2] + _q[0] * _q[0]));
-        m[1][2] = (2 * (_q[1] * _q[2] - _q[0] * _q[3]));
-        m[1][3] = 0;
-
-        m[2][0] = (2 * (_q[2] * _q[0] - _q[1] * _q[3]));
-        m[2][1] = (2.0f * (_q[1] * _q[2] + _q[0] * _q[3]));
-        m[2][2] = (1.0f - 2.0f * (_q[1] * _q[1] + _q[0] * _q[0]));
-        m[2][3] = 0;
-
-        m[3][0] = 0;
-        m[3][1] = 0;
-        m[3][2] = 0;
-        m[3][3] = 1;
-    }
-
-    constexpr void writeOpenGlMatrix(double* m) const
-    {
-        return getOpenGlMatrix<Quat, double>(*this, m);
-    }
-
-    constexpr void writeOpenGlMatrix(float* m) const
-    {
-        return getOpenGlMatrix<Quat, float>(*this, m);
-    }
 
     /// This function computes a quaternion based on an axis (defined by
     /// the given vector) and an angle about which to rotate.  The angle is

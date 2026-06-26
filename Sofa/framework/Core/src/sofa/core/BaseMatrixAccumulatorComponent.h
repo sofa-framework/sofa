@@ -32,10 +32,10 @@ namespace sofa::core
  * Matrix accumulator which is also a BaseObject. It is designed to be associated with another component.
  */
 template<matrixaccumulator::Contribution c>
-class BaseMatrixAccumulatorComponent : public matrixaccumulator::get_abstract_strong_type<c>, public virtual objectmodel::BaseObject
+class BaseMatrixAccumulatorComponent : public matrixaccumulator::get_abstract_strong_type<c>, public virtual objectmodel::BaseComponent
 {
 public:
-    SOFA_ABSTRACT_CLASS(BaseMatrixAccumulatorComponent, objectmodel::BaseObject);
+    SOFA_ABSTRACT_CLASS(BaseMatrixAccumulatorComponent, objectmodel::BaseComponent);
     using ComponentType = typename matrixaccumulator::get_component_type<c>;
 
     ~BaseMatrixAccumulatorComponent() override = default;

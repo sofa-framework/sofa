@@ -454,14 +454,16 @@ public:
     RowConstIterator cbegin() const
     {
         if constexpr(Policy::AutoCompress) const_cast<Matrix*>(this)->compress();  /// \warning this violates the const-ness of the method !
-        return RowConstIterator(this, 0);
+        return RowConstIterator(this,
+            this->rowIndex.empty() ? s_invalidIndex : 0);
     }
 
     /// Get the iterator corresponding to the end of the rows of blocks
     RowConstIterator cend() const
     {
         if constexpr(Policy::AutoCompress) const_cast<Matrix*>(this)->compress();  /// \warning this violates the const-ness of the method !
-        return RowConstIterator(this, Index(this->rowIndex.size()));
+        return RowConstIterator(this,
+            this->rowIndex.empty() ? s_invalidIndex : Index(this->rowIndex.size()));
     }
 
     class RowWriteAccessor
@@ -547,7 +549,7 @@ public:
     RowConstIterator readLine(Index lIndex) const
     {
         if constexpr (Policy::AutoCompress) const_cast<Matrix*>(this)->compress();  /// \warning this violates the const-ness of the method !
-        Index rowId = (this->nBlockRow == 0) ? 0 : lIndex * this->rowIndex.size() / this->nBlockRow;
+        Index rowId = (this->nBlockRow == 0) ? 0 : static_cast<Index>(lIndex * this->rowIndex.size() / this->nBlockRow);
         if (this->sortedFind(this->rowIndex, lIndex, rowId))
         {
             return RowConstIterator(this, rowId);

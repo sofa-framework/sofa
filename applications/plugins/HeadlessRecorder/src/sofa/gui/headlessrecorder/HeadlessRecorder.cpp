@@ -103,7 +103,16 @@ void HeadlessRecorder::parseRecordingModeOption()
     else
     {
         recordType = RecordMode::timeinterval;
-        skipTime = std::stof(recordTypeRaw);
+        try
+        {
+            skipTime = std::stof(recordTypeRaw);
+        }
+        catch (const std::exception&)
+        {
+            msg_warning("HeadlessRecorder") << "Invalid recording mode '" << recordTypeRaw << "'. Using default wallclocktime.";
+            recordType = RecordMode::wallclocktime;
+            skipTime = 0;
+        }
    }
 }
 

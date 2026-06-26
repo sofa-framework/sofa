@@ -29,7 +29,7 @@ namespace sofa::core
 std::string caseInsensitive(const std::string &text)
 {
     std::string result; result.resize(text.size());
-    for (unsigned int i=0; i<text.size(); ++i) result[i] = toupper(text[i]);
+    for (unsigned int i=0; i<text.size(); ++i) result[i] = static_cast<char>(toupper(text[i]));
     return result;
 }
 

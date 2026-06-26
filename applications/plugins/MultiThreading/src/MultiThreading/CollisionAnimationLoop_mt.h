@@ -23,7 +23,7 @@
 #define SOFA_SIMULATION_TREE_COLLISIONANIMATIONLOOP_MT_H
 
 #include <sofa/helper/AdvancedTimer.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include "BaseAnimationLoop_mt.h"
 
 #include <SofaSimulationCommon/config.h>
@@ -32,7 +32,6 @@
 #include <sofa/simulation/Visitor.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
-#include <sofa/simulation/AnimateVisitor.h>
 #include <sofa/simulation/PropagateEventVisitor.h>
 #include <sofa/simulation/UpdateMappingEndEvent.h>
 #include <sofa/simulation/UpdateMappingVisitor.h>

@@ -23,7 +23,7 @@
 #define SOFA_SIMULATION_TREE_COLLISIONANIMATIONLOOP_H
 
 #include <sofa/helper/AdvancedTimer.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/core/behavior/BaseAnimationLoop.h>
 
 #include <sofa/simulation/config.h>

@@ -88,26 +88,54 @@ struct Triangle
         static constexpr auto getBarycentricCoordinates(const Node& p0, const Node& n0, const Node& n1, const Node& n2)
     {
         // Point can be written: p0 = a*n0 + b*n1 + c*n2
-        // with a = area(n1n2p0)/area(n0n1n2), b = area(n0n2p0)/area(n0n1n2) and c = area(n0n1p0)/area(n0n1n2) 
-        const auto area = Triangle::area(n0, n1, n2);
-        if (fabs(area) < std::numeric_limits<T>::epsilon()) // triangle is flat
+        // with a = area(n1n2p0)/area(n0n1n2), b = area(n0n2p0)/area(n0n1n2) and c = area(n0n1p0)/area(n0n1n2)
+        if constexpr (std::is_same_v<Node, sofa::type::Vec<3, T>>)
         {
-            return sofa::type::Vec<3, T>(-1, -1, -1);
-        }
-        
-        const auto A0 = Triangle::area(n1, n2, p0);
-        const auto A1 = Triangle::area(n0, p0, n2);
+            // In 3D, use signed areas via dot product with triangle normal
+            // to get correct sign for outside-triangle points
+            const auto N = sofa::type::cross(n1 - n0, n2 - n0);
+            const auto NdotN = sofa::type::dot(N, N);
 
-        sofa::type::Vec<3, T> baryCoefs(type::NOINIT);
-        baryCoefs[0] = A0 / area;
-        baryCoefs[1] = A1 / area;
-        baryCoefs[2] = 1 - baryCoefs[0] - baryCoefs[1];
+            if (NdotN < std::numeric_limits<T>::epsilon() * std::numeric_limits<T>::epsilon()) // triangle is flat
+            {
+                return sofa::type::Vec<3, T>(-1, -1, -1);
+            }
 
-        if (fabs(baryCoefs[2]) <= std::numeric_limits<T>::epsilon()){
-            baryCoefs[2] = 0;
+            sofa::type::Vec<3, T> baryCoefs(type::NOINIT);
+            baryCoefs[0] = sofa::type::dot(N, sofa::type::cross(n2 - n1, p0 - n1)) / NdotN;
+            baryCoefs[1] = sofa::type::dot(N, sofa::type::cross(n0 - n2, p0 - n2)) / NdotN;
+            baryCoefs[2] = 1 - baryCoefs[0] - baryCoefs[1];
+
+            if (fabs(baryCoefs[2]) <= std::numeric_limits<T>::epsilon()){
+                baryCoefs[2] = 0;
+            }
+
+            return baryCoefs;
         }
-        
-        return baryCoefs;
+        else
+        {
+            // In 2D, Triangle::area() returns a signed value (shoelace formula),
+            // so the ratio of sub-areas to total area preserves correct signs
+            const auto area = Triangle::area(n0, n1, n2);
+            if (fabs(area) < std::numeric_limits<T>::epsilon()) // triangle is flat
+            {
+                return sofa::type::Vec<3, T>(-1, -1, -1);
+            }
+
+            const auto A0 = Triangle::area(n1, n2, p0);
+            const auto A1 = Triangle::area(n0, p0, n2);
+
+            sofa::type::Vec<3, T> baryCoefs(type::NOINIT);
+            baryCoefs[0] = A0 / area;
+            baryCoefs[1] = A1 / area;
+            baryCoefs[2] = 1 - baryCoefs[0] - baryCoefs[1];
+
+            if (fabs(baryCoefs[2]) <= std::numeric_limits<T>::epsilon()){
+                baryCoefs[2] = 0;
+            }
+
+            return baryCoefs;
+        }
     }
 
 
@@ -148,8 +176,42 @@ struct Triangle
         }
 
     }
-
-
+    
+    /**
+    * @brief    Test if input point is on the plane defined by the Triangle (n0, n1, n2)
+    * @tparam   Node iterable container
+    * @tparam   T scalar
+    * @param    p0: position of the point to test
+    * @param    n0, n1, n2: nodes of the triangle
+    * @return    bool result if point is on the plane of the triangle.
+    */
+    template<typename Node,
+        typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
+        typename = std::enable_if_t<std::is_scalar_v<T>>
+    >
+    [[nodiscard]]
+    static constexpr bool isPointOnPlane(const Node& p0, const Node& n0, const Node& n1, const Node& n2)
+    {
+        if constexpr (std::is_same_v<Node, sofa::type::Vec<3, T>>)
+        {
+            const auto normal = Triangle::normal(n0, n1, n2);
+            const auto normalNorm2 = sofa::type::dot(normal, normal);
+            if (normalNorm2 > std::numeric_limits<T>::epsilon())
+            {
+                const auto d = sofa::type::dot(p0 - n0, normal);
+                if (d * d / normalNorm2 > std::numeric_limits<T>::epsilon())
+                    return false;
+            }
+            
+            return true;
+        }
+        else
+        {
+            // all points are trivially in the same plane
+            return true;
+        }
+    }
+    
     /**
     * @brief	Test if input point is inside Triangle (n0, n1, n2) using Triangle @sa getBarycentricCoordinates . The point is inside the Triangle if and only if Those coordinates are all positive.
     * @tparam   Node iterable container
@@ -157,14 +219,33 @@ struct Triangle
     * @param	p0: position of the point to test
     * @param	n0, n1, n2: nodes of the triangle
     * @param	output parameter: sofa::type::Vec<3, T> barycentric coordinates of the input point in Triangle
+    * @param assumePointIsOnPlane: optional bool to avoid testing if the point is on the plane defined by the triangle
     * @return	bool result if point is inside Triangle.
     */
     template<typename Node,
         typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
         typename = std::enable_if_t<std::is_scalar_v<T>>
     >
-        static constexpr bool isPointInTriangle(const Node& p0, const Node& n0, const Node& n1, const Node& n2, sofa::type::Vec<3, T>& baryCoefs)
+    [[nodiscard]]
+    static constexpr bool isPointInTriangle(const Node& p0, const Node& n0, const Node& n1, const Node& n2, sofa::type::Vec<3, T>& baryCoefs, bool assumePointIsOnPlane = true)
     {
+        // In 3D, check if the point is in the plane of the triangle
+        if constexpr (std::is_same_v<Node, sofa::type::Vec<3, T>>)
+        {
+            if(!assumePointIsOnPlane)
+            {
+                if(!isPointOnPlane(p0, n0, n1, n2))
+                {
+                    baryCoefs = {static_cast<T>(-1), static_cast<T>(-1), static_cast<T>(-1)};
+                    return false;
+                }
+            }
+        }
+        else
+        {
+            SOFA_UNUSED(assumePointIsOnPlane);
+        }
+        
         baryCoefs = Triangle::getBarycentricCoordinates(p0, n0, n1, n2);
 
         for (int i = 0; i < 3; ++i)

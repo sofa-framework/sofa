@@ -859,7 +859,7 @@ ConstraintProblem* LCPConstraintSolver::getConstraintProblem()
     return last_cp;
 }
 
-void LCPConstraintSolver::lockConstraintProblem(sofa::core::objectmodel::BaseObject* /*from*/, ConstraintProblem* l1, ConstraintProblem* l2)
+void LCPConstraintSolver::lockConstraintProblem(sofa::core::objectmodel::BaseComponent* /*from*/, ConstraintProblem* l1, ConstraintProblem* l2)
 {
     if((current_cp!=l1)&&(current_cp!=l2)) // Le lcp courant n'est pas locké
         return;

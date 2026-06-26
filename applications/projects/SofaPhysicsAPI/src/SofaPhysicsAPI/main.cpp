@@ -295,7 +295,7 @@ static void glut_idle()
             lastFPS = currentFPS;
             char buf[1000];
             const char* sceneFileName = mainSimulation->getSceneFileName();
-            sprintf(buf, "SOFA :: %s :: %.1f FPS", sceneFileName, currentFPS);
+            snprintf(buf, sizeof(buf), "SOFA :: %s :: %.1f FPS", sceneFileName, currentFPS);
             glutSetWindowTitle(buf);
         }
 

@@ -22,7 +22,7 @@
 #pragma once
 #include <SofaMatrix/config.h>
 
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <SofaMatrix/BaseMatrixImageProxy.h>
 
 #include <sofa/core/behavior/BaseMatrixLinearSystem.h>
@@ -34,10 +34,10 @@ namespace sofa::component::linearsolver
  * Component to convert a BaseMatrix from the linear solver into an image that can be visualized in the GUI.
  * Use GlobalSystemMatrixExporter in order to save an image on the disk.
  */
-class SOFA_SOFAMATRIX_API GlobalSystemMatrixImage : public core::objectmodel::BaseObject
+class SOFA_SOFAMATRIX_API GlobalSystemMatrixImage : public core::objectmodel::BaseComponent
 {
 public:
-    SOFA_CLASS(GlobalSystemMatrixImage, core::objectmodel::BaseObject);
+    SOFA_CLASS(GlobalSystemMatrixImage, core::objectmodel::BaseComponent);
 
 protected:
 

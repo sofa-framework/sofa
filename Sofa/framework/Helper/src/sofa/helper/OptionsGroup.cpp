@@ -21,7 +21,10 @@
 ******************************************************************************/
 #include <sofa/helper/OptionsGroup.h>
 #include <cstdlib>
+#include <cerrno>
+#include <climits>
 #include <sofa/helper/logging/Messaging.h>
+#include <sofa/type/hardening.h>
 
 namespace sofa::helper
 {
@@ -60,9 +63,12 @@ void OptionsGroup::setItemName(const unsigned int id_item, const std::string& na
 ///////////////////////////////////////
 int OptionsGroup::isInOptionsList(const std::string & tempostring) const
 {
-    for(std::size_t i=0; i<textItems.size(); i++)
+    for (std::size_t i = 0; i < textItems.size(); i++)
     {
-        if (textItems[i]==tempostring) return i;
+        if (textItems[i] == tempostring)
+        {
+            return static_cast<int>(i);
+        }
     }
     return -1;
 }
@@ -110,11 +116,19 @@ void OptionsGroup::readFromStream(std::istream & stream)
     const int id_stringinButtonList = isInOptionsList(tempostring);
     if (id_stringinButtonList == -1)
     {
-        const int idx=atoi(tempostring.c_str());
-        if (idx >=0 && idx < (int)size()) 
-                        setSelectedItem(idx);
-        else
-            msg_warning("OptionsGroup") << "\""<< tempostring <<"\" is not a parameter in button list :\" "<<(*this)<<"\"";
+        int idx{};
+        if(sofa::type::hardening::safeStrToInt(tempostring, idx))
+        {
+            if (idx >=0 && idx < (int)size())
+            {
+                setSelectedItem(idx);
+            }
+            else
+            {
+                msg_warning("OptionsGroup") << "\""<< tempostring <<"\" is not a parameter in button list :\" "<<(*this)<<"\"";
+            }
+        }
+        msg_warning("OptionsGroup") << "Error while parsing \"" << tempostring << "\"";
     }
     else
     {

@@ -70,9 +70,9 @@ template< class DataTypes>
 TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedralCorotationalFEMForceField()
     : d_tetrahedronInfo(initData(&d_tetrahedronInfo, "tetrahedronInfo", "Internal tetrahedron data"))
     , d_method(initData(&d_method, std::string("large"), "method", "\"small\", \"large\" (by QR) or \"polar\" displacements"))
-    , d_localStiffnessFactor(core::objectmodel::BaseObject::initData(&d_localStiffnessFactor, "localStiffnessFactor", "Allow specification of different stiffness per element. If there are N element and M values are specified, the youngModulus factor for element i would be localStiffnessFactor[i*M/N]"))
-    , d_updateStiffnessMatrix(core::objectmodel::BaseObject::initData(&d_updateStiffnessMatrix, false, "updateStiffnessMatrix", ""))
-    , d_assembling(core::objectmodel::BaseObject::initData(&d_assembling, false, "computeGlobalMatrix", ""))
+    , d_localStiffnessFactor(core::objectmodel::BaseComponent::initData(&d_localStiffnessFactor, "localStiffnessFactor", "Allow specification of different stiffness per element. If there are N element and M values are specified, the youngModulus factor for element i would be localStiffnessFactor[i*M/N]"))
+    , d_updateStiffnessMatrix(core::objectmodel::BaseComponent::initData(&d_updateStiffnessMatrix, false, "updateStiffnessMatrix", ""))
+    , d_assembling(core::objectmodel::BaseComponent::initData(&d_assembling, false, "computeGlobalMatrix", ""))
     , d_drawing(initData(&d_drawing, true, "drawing", " draw the forcefield if true"))
     , d_drawColor1(initData(&d_drawColor1, sofa::type::RGBAColor(0.0f, 0.0f, 1.0f, 1.0f), "drawColor1", " draw color for faces 1"))
     , d_drawColor2(initData(&d_drawColor2, sofa::type::RGBAColor(0.0f, 0.5f, 1.0f, 1.0f), "drawColor2", " draw color for faces 2"))
@@ -1353,49 +1353,13 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::draw(const core::visual::V
     
     if (d_drawing.getValue())
     {
-        const sofa::Size nbrTetra = this->l_topology->getNbTetrahedra();
-        std::vector< type::Vec3 > points[4];
-        points[0].reserve(nbrTetra * 3);
-        points[1].reserve(nbrTetra * 3);
-        points[2].reserve(nbrTetra * 3);
-        points[3].reserve(nbrTetra * 3);
-
-        for(Size i = 0 ; i< nbrTetra; ++i)
-        {
-            const core::topology::BaseMeshTopology::Tetrahedron t=this->l_topology->getTetrahedron(i);
-
-            const auto& [a, b, c, d] = t.array();
-            Coord center = (x[a] + x[b] + x[c] + x[d]) * 0.125;
-            Coord pa = (x[a] + center) * (Real)0.666667;
-            Coord pb = (x[b] + center) * (Real)0.666667;
-            Coord pc = (x[c] + center) * (Real)0.666667;
-            Coord pd = (x[d] + center) * (Real)0.666667;
-
-            points[0].push_back(pa);
-            points[0].push_back(pb);
-            points[0].push_back(pc);
-
-            points[1].push_back(pb);
-            points[1].push_back(pc);
-            points[1].push_back(pd);
-
-            points[2].push_back(pc);
-            points[2].push_back(pd);
-            points[2].push_back(pa);
-
-            points[3].push_back(pd);
-            points[3].push_back(pa);
-            points[3].push_back(pb);
-        }
-
-        vparams->drawTool()->drawTriangles(points[0], d_drawColor1.getValue());
-        vparams->drawTool()->drawTriangles(points[1], d_drawColor2.getValue());
-        vparams->drawTool()->drawTriangles(points[2], d_drawColor3.getValue());
-        vparams->drawTool()->drawTriangles(points[3], d_drawColor4.getValue());
+        std::array colors {
+            d_drawColor1.getValue(),
+            d_drawColor2.getValue(),
+            d_drawColor3.getValue(),
+            d_drawColor4.getValue()};
+        m_drawMesh.drawAllElements(vparams->drawTool(), x, this->l_topology.get(), colors);
     }
-    
-    if (vparams->displayFlags().getShowWireFrame())
-        vparams->drawTool()->setPolygonMode(0,false);
 }
 
 

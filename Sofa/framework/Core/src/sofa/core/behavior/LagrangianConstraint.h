@@ -41,7 +41,7 @@ namespace sofa::core::behavior
  *
  */
 template<class DataTypes>
-class LagrangianConstraint : public BaseLagrangianConstraint, public SingleStateAccessor<DataTypes>
+class LagrangianConstraint : public BaseLagrangianConstraint, public virtual SingleStateAccessor<DataTypes>
 {
 public:
     SOFA_CLASS2(SOFA_TEMPLATE(LagrangianConstraint, DataTypes), BaseLagrangianConstraint, SOFA_TEMPLATE(SingleStateAccessor, DataTypes));
@@ -115,7 +115,7 @@ public:
             return false;
         }
 
-        return BaseObject::canCreate(obj, context, arg);
+        return sofa::core::objectmodel::BaseComponent::canCreate(obj, context, arg);
     }
 
     virtual type::vector<std::string> getBaseConstraintIdentifiers() override final

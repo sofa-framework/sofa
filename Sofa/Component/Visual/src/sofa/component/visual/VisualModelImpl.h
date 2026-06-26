@@ -81,6 +81,7 @@ public:
     Data<bool> d_updateNormals; ///< True if normals should be updated at each iteration
     Data<bool> d_computeTangents; ///< True if tangents should be computed at startup
     Data<bool> d_updateTangents; ///< True if tangents should be updated at each iteration
+    Data<bool> d_computeTextureCoordinates; ///< True if texture coordinates should be computed at startup, using UV sphere projection
     Data<bool> d_handleDynamicTopology; ///< True if topological changes should be handled
     Data<bool> d_fixMergedUVSeams; ///< True if UV seams should be handled even when duplicate UVs are merged
     Data<bool> d_keepLines; ///< keep and draw lines (false by default)
@@ -346,6 +347,8 @@ public:
         d_edges.setValue(*e);
     }
 
+    const sofa::type::Material& getSavedMaterial() {return m_savedMaterial;}
+
     virtual void computePositions();
     virtual void computeMesh();
     virtual void computeNormals();
@@ -399,6 +402,9 @@ protected:
 
     /// Internal buffer similar to @sa m_dirtyTriangles but to be used by topolgy Data @sa d_quads callback when points are removed.
     std::set< sofa::core::topology::BaseMeshTopology::QuadID> m_dirtyQuads;
+
+    /// Store the material information, to restore it after rendering with a specific material for selection (GUI related).
+    sofa::type::Material m_savedMaterial;
 };
 
 

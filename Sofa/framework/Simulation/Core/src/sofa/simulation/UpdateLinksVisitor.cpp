@@ -27,7 +27,7 @@ namespace sofa::simulation
 {
 
 
-void UpdateLinksVisitor::processObject(core::objectmodel::BaseObject* obj)
+void UpdateLinksVisitor::processObject(core::objectmodel::BaseComponent* obj)
 {
     obj->updateLinks();
 }

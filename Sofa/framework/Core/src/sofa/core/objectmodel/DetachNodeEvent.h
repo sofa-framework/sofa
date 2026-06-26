@@ -23,7 +23,7 @@
 
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/core/objectmodel/BaseNode.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 
 namespace sofa::core::objectmodel
 {

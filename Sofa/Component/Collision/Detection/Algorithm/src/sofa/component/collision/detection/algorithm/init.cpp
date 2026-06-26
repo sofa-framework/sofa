@@ -29,6 +29,8 @@ namespace sofa::component::collision::detection::algorithm
 extern void registerBruteForceBroadPhase(sofa::core::ObjectFactory* factory);
 extern void registerBruteForceDetection(sofa::core::ObjectFactory* factory);
 extern void registerBVHNarrowPhase(sofa::core::ObjectFactory* factory);
+extern void registerCompositeCollisionPipeline(sofa::core::ObjectFactory* factory);
+extern void registerSubCollisionPipeline(sofa::core::ObjectFactory* factory);
 extern void registerCollisionPipeline(sofa::core::ObjectFactory* factory);
 extern void registerDirectSAP(sofa::core::ObjectFactory* factory);
 extern void registerDirectSAPNarrowPhase(sofa::core::ObjectFactory* factory);
@@ -64,6 +66,8 @@ void registerObjects(sofa::core::ObjectFactory* factory)
     registerBruteForceBroadPhase(factory);
     registerBruteForceDetection(factory);
     registerBVHNarrowPhase(factory);
+    registerCompositeCollisionPipeline(factory);
+    registerSubCollisionPipeline(factory);
     registerCollisionPipeline(factory);
     registerDirectSAP(factory);
     registerDirectSAPNarrowPhase(factory);

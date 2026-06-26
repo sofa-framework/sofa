@@ -22,12 +22,12 @@
 #include <MultiThreading/component/collision/detection/algorithm/ParallelBVHNarrowPhase.h>
 
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/simulation/TaskScheduler.h>
+#include <sofa/simulation/task/TaskScheduler.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
 #include <sofa/core/CollisionModel.h>
 #include <sofa/core/collision/Intersection.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/simulation/MainTaskSchedulerFactory.h>
+#include <sofa/simulation/task/MainTaskSchedulerFactory.h>
 #include <MultiThreading/ParallelImplementationsRegistry.h>
 
 namespace multithreading::component::collision::detection::algorithm

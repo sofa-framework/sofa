@@ -141,10 +141,10 @@ protected:
 	unsigned char m_bLoaded;
 
 private:
-    unsigned width, height, depth, mipmaps;
-    DataType dataType;
-    ChannelFormat channelFormat;
-    unsigned char *data;
+    unsigned m_width {}, m_height {}, m_depth {}, m_mipmaps {};
+    DataType m_dataType;
+    ChannelFormat m_channelFormat;
+    unsigned char *m_data { nullptr };
 };
 
 } // namespace sofa::helper::io

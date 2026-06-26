@@ -2,7 +2,7 @@
 #define BULLET_COLLISION_MODEL_H
 
 #include <sofa/core/objectmodel/BaseClass.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/core/objectmodel/Data.h>
 
 //#pragma GCC diagnostic push

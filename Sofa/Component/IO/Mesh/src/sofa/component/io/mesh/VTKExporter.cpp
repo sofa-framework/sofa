@@ -155,7 +155,7 @@ void VTKExporter::writeData(const type::vector<std::string>& objects, const type
 
     for (unsigned int i=0 ; i<objects.size() ; i++)
     {
-        const core::objectmodel::BaseObject* obj = context->get<core::objectmodel::BaseObject> (objects[i]);
+        const core::objectmodel::BaseComponent* obj = context->get<core::objectmodel::BaseComponent> (objects[i]);
         core::objectmodel::BaseData* field = nullptr;
         if (obj)
         {
@@ -237,7 +237,7 @@ void VTKExporter::writeDataArray(const type::vector<std::string>& objects, const
 
     for (unsigned int i=0 ; i<objects.size() ; i++)
     {
-        const core::objectmodel::BaseObject* obj = context->get<core::objectmodel::BaseObject> (objects[i]);
+        const core::objectmodel::BaseComponent* obj = context->get<core::objectmodel::BaseComponent> (objects[i]);
         core::objectmodel::BaseData* field = nullptr;
         if (obj)
         {
@@ -782,7 +782,7 @@ void VTKExporter::writeParallelFile()
     {
         for (unsigned int i=0 ; i<pointsDataObject.size() ; i++)
         {
-            core::objectmodel::BaseObject* obj = context->get<core::objectmodel::BaseObject> (pointsDataObject[i]);
+            core::objectmodel::BaseComponent* obj = context->get<core::objectmodel::BaseComponent> (pointsDataObject[i]);
             core::objectmodel::BaseData* field = nullptr;
             if (obj)
             {
@@ -855,7 +855,7 @@ void VTKExporter::writeParallelFile()
     {
         for (unsigned int i=0 ; i<cellsDataObject.size() ; i++)
         {
-            core::objectmodel::BaseObject* obj = context->get<core::objectmodel::BaseObject> (cellsDataObject[i]);
+            core::objectmodel::BaseComponent* obj = context->get<core::objectmodel::BaseComponent> (cellsDataObject[i]);
             core::objectmodel::BaseData* field = nullptr;
             if (obj)
             {

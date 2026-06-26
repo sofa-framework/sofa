@@ -127,8 +127,40 @@ namespace sofa::helper
 class Record
 {
 public:
+    /**
+     * @brief High-resolution timestamp of the timer event in clock ticks
+     *
+     * This timestamp records the number of clock ticks since some reference point (not absolute time).
+     *
+     * **Important usage note**: When converting to seconds, you should only use time differences (e.g., `time2 - time1`).
+     * Absolute values of this type cannot be directly converted to seconds without knowing the reference point.
+     */
     sofa::helper::system::thread::ctime_t time;
-    enum Type { RNONE, RBEGIN, REND, RSTEP_BEGIN, RSTEP_END, RSTEP, RVAL_SET, RVAL_ADD } type;
+
+    /**
+     * @enum Record::Type
+     * @brief Type of record in the timer data.
+     *
+     * This enum defines the different types of records that can be stored in the timer data stream.
+     * Each record type represents a specific timing operation or value tracking operation.
+     *
+     * @note The values are used to distinguish between different types of timer operations and value tracking operations.
+     *
+     * @{
+     */
+    enum Type {
+        RNONE,     ///< No record (used for initialization)
+        RBEGIN,    ///< Begin timer operation (e.g., when a timer starts)
+        REND,      ///< End timer operation (e.g., when a timer stops)
+        RSTEP_BEGIN,  ///< Begin of a step operation (e.g., when a step starts)
+        RSTEP_END,    ///< End of a step operation (e.g., when a step ends)
+        RSTEP,        ///< Step operation (e.g., when a step is executed)
+        RVAL_SET,     ///< Set a value operation (e.g., when a value is set)
+        RVAL_ADD      ///< Add to a value operation (e.g., when a value is added)
+    };
+    /// @}
+
+    Type type;
     std::string label;
     unsigned int id;
     unsigned int obj;

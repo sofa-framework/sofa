@@ -4,8 +4,12 @@ project(Sofa.Simulation.Core_test)
 
 set(SOURCE_FILES
     Colors_test.cpp
+    MappingGraph_test.cpp
+    MappingGraph2_test.cpp
     ParallelForEach_test.cpp
+    PushTaskRace_test.cpp
     RequiredPlugin_test.cpp
+    TaskDestructorLeak_test.cpp
     SceneCheckRegistry_test.cpp
     Simulation_test.cpp
     ParallelSparseMatrixProduct_test.cpp
@@ -13,9 +17,13 @@ set(SOURCE_FILES
     TaskSchedulerTestTasks.cpp
     TaskSchedulerTestTasks.h
     TaskSchedulerTests.cpp
+    Visitor_test.cpp
     )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} Sofa.Testing Sofa.Simulation.Core Sofa.LinearAlgebra.Testing)
+target_link_libraries(${PROJECT_NAME} Sofa.Testing Sofa.Simulation.Core Sofa.LinearAlgebra.Testing
+    Sofa.Component.StateContainer
+    Sofa.Component.Mapping.Linear
+)
 
 add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})

@@ -492,4 +492,67 @@ TEST(GeometryEdge_test, intersectionWithPlane3f)
     EXPECT_FLOAT_EQ(inter[2], 0.0f);
 }
 
+TEST(GeometryEdge_test, closestPointWithEdge3f_perpendicular)
+{
+    // Two perpendicular edges crossing at (1,1,1)
+    const sofa::type::Vec3f pA{ 0.f, 0.f, 0.f };
+    const sofa::type::Vec3f pB{ 2.f, 2.f, 2.f };
+    const sofa::type::Vec3f pC{ 0.f, 0.f, 2.f };
+    const sofa::type::Vec3f pD{ 2.f, 2.f, 0.f };
+
+    sofa::type::Vec<2, float> baryCoord(sofa::type::NOINIT);
+    sofa::geometry::Edge::closestPointWithEdge(pA, pB, pC, pD, baryCoord);
+
+    // alpha and beta should both be 0.5 (midpoint of each edge)
+    EXPECT_NEAR(baryCoord[0], 0.5f, 1e-4);
+    EXPECT_NEAR(baryCoord[1], 0.5f, 1e-4);
+
+    // Verify closest points
+    const auto pX = pA + baryCoord[0] * (pB - pA);
+    const auto pY = pC + baryCoord[1] * (pD - pC);
+    EXPECT_NEAR(pX[0], 1.f, 1e-4);
+    EXPECT_NEAR(pX[1], 1.f, 1e-4);
+    EXPECT_NEAR(pX[2], 1.f, 1e-4);
+    EXPECT_NEAR(pY[0], 1.f, 1e-4);
+    EXPECT_NEAR(pY[1], 1.f, 1e-4);
+    EXPECT_NEAR(pY[2], 1.f, 1e-4);
+}
+
+TEST(GeometryEdge_test, closestPointWithEdge3f_parallel)
+{
+    // Two parallel edges offset in z
+    const sofa::type::Vec3f pA{ 0.f, 0.f, 0.f };
+    const sofa::type::Vec3f pB{ 2.f, 0.f, 0.f };
+    const sofa::type::Vec3f pC{ 0.f, 0.f, 1.f };
+    const sofa::type::Vec3f pD{ 2.f, 0.f, 1.f };
+
+    sofa::type::Vec<2, float> baryCoord(sofa::type::NOINIT);
+    sofa::geometry::Edge::closestPointWithEdge(pA, pB, pC, pD, baryCoord);
+
+    // Parallel/collinear case: denominator is near zero, should return (0,0)
+    EXPECT_FLOAT_EQ(baryCoord[0], 0.f);
+    EXPECT_FLOAT_EQ(baryCoord[1], 0.f);
+}
+
+TEST(GeometryEdge_test, closestPointWithEdge3f_skew)
+{
+    // Two skew edges (not intersecting, not parallel)
+    const sofa::type::Vec3f pA{ 0.f, 0.f, 0.f };
+    const sofa::type::Vec3f pB{ 2.f, 0.f, 0.f };
+    const sofa::type::Vec3f pC{ 1.f, 1.f, -1.f };
+    const sofa::type::Vec3f pD{ 1.f, 1.f, 1.f };
+
+    sofa::type::Vec<2, float> baryCoord(sofa::type::NOINIT);
+    sofa::geometry::Edge::closestPointWithEdge(pA, pB, pC, pD, baryCoord);
+
+    // Closest point on edge1 is at alpha=0.5 (x=1), on edge2 at beta=0.5 (z=0)
+    EXPECT_NEAR(baryCoord[0], 0.5f, 1e-4);
+    EXPECT_NEAR(baryCoord[1], 0.5f, 1e-4);
+
+    const auto pX = pA + baryCoord[0] * (pB - pA);
+    const auto pY = pC + baryCoord[1] * (pD - pC);
+    EXPECT_NEAR(pX[0], 1.f, 1e-4);
+    EXPECT_NEAR(pY[2], 0.f, 1e-4);
+}
+
 }// namespace sofa

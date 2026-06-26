@@ -21,10 +21,11 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/linearsystem/ConstantSparsityProjectionMethod.h>
+#include <sofa/component/linearsystem/MatrixProjectionMethod.inl>
 
 #include <Eigen/Sparse>
 #include <sofa/helper/ScopedAdvancedTimer.h>
-#include <sofa/simulation/MainTaskSchedulerFactory.h>
+#include <sofa/simulation/task/MainTaskSchedulerFactory.h>
 #include <sofa/simulation/ParallelSparseMatrixProduct.h>
 
 namespace sofa::component::linearsystem

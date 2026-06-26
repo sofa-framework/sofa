@@ -30,7 +30,7 @@ namespace sofa::core::behavior
 
 template<class DataTypes>
 ProjectiveConstraintSet<DataTypes>::ProjectiveConstraintSet(MechanicalState<DataTypes> *mm)
-    : Inherit1(), Inherit2(mm)
+    : Inherit2(mm), Inherit1()
     , endTime( initData(&endTime,(Real)-1,"endTime","The constraint stops acting after the given value.\nUse a negative value for infinite constraints") )
 {
 }

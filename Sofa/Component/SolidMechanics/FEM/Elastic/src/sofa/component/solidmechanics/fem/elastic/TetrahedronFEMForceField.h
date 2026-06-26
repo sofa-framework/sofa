@@ -32,7 +32,7 @@
 #include <sofa/helper/OptionsGroup.h>
 
 #include <sofa/helper/ColorMap.h>
-#include <sofa/simulation/ParallelForEach.h>
+#include <sofa/simulation/task/ParallelForEach.h>
 
 // corotational tetrahedron from
 // @InProceedings{NPF05,

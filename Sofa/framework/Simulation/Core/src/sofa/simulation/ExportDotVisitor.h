@@ -63,7 +63,7 @@ public:
     ExportDotVisitor(const sofa::core::ExecParams* params, std::ostream* out);
     ~ExportDotVisitor() override;
 
-    void processObject(Node* node, core::objectmodel::BaseObject* obj);
+    void processObject(Node* node, core::objectmodel::BaseComponent* obj);
 
     Result processNodeTopDown(Node* node) override;
     void processNodeBottomUp(Node* node) override;
@@ -81,12 +81,12 @@ protected:
     bool display(Node* node, const char** color=nullptr);
 
     /// Test if an object should be displayed
-    bool display(core::objectmodel::BaseObject* obj, const char** color=nullptr);
+    bool display(core::objectmodel::BaseComponent* obj, const char** color=nullptr);
 
     /// Find the node or object a given object should be attached to.
     /// This is the parent node if it is displayed, otherwise it is the attached MechanicalState or Solver.
     /// Returns an empty string if not found.
-    std::string getParentName(core::objectmodel::BaseObject* obj);
+    std::string getParentName(core::objectmodel::BaseComponent* obj);
 
     /// Compute the name of a given node or object
     std::string getName(core::objectmodel::Base* o, std::string prefix);
@@ -95,7 +95,7 @@ protected:
     std::string getName(core::objectmodel::BaseNode *node);
 
     /// Compute the name of a given object
-    std::string getName(core::objectmodel::BaseObject* obj);
+    std::string getName(core::objectmodel::BaseComponent* obj);
 
 };
 

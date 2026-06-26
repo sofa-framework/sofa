@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/MatrixAccumulator.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/core/objectmodel/SPtr.h>
 
 #include <gtest/gtest.h>
@@ -73,10 +73,10 @@ TEST(MatrixAccumulatorIndexChecker, RangeVerification)
     helper::logging::MessageDispatcher::addHandler(testing::MainGtestMessageHandler::getInstance() ) ;
 
     // Simple class which inherits from MatrixAccumulatorInterface, but also from MatrixAccumulatorInterface
-    class MatrixAccumulatorInterfaceTest : public core::MatrixAccumulatorInterface, public sofa::core::objectmodel::BaseObject
+    class MatrixAccumulatorInterfaceTest : public core::MatrixAccumulatorInterface, public sofa::core::objectmodel::BaseComponent
     {
     public:
-        SOFA_CLASS(MatrixAccumulatorInterfaceTest, sofa::core::objectmodel::BaseObject);
+        SOFA_CLASS(MatrixAccumulatorInterfaceTest, sofa::core::objectmodel::BaseComponent);
         ~MatrixAccumulatorInterfaceTest() override = default;
     };
 

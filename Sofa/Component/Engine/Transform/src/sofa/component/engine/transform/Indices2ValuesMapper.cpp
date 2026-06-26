@@ -22,7 +22,7 @@
 #define SOFA_COMPONENT_ENGINE_INDICES2VALUESMAPPER_CPP
 
 #include <sofa/component/engine/transform/Indices2ValuesMapper.inl>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::engine::transform

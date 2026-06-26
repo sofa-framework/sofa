@@ -10,7 +10,9 @@ set(HEADER_FILES
 set(SOURCE_FILES
     MapMapSparseMatrixEigenUtils_test.cpp
     QuaternionIntegration_test.cpp
+    RigidCoord_test.cpp
     RigidDeriv_test.cpp
+    RigidMass_test.cpp
     TypeInfoRepository_test.cpp
     TypeInfoRepository_tu1_test.cpp
     TypeInfo_test.cpp

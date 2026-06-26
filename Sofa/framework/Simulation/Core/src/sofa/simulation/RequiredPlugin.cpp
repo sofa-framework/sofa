@@ -110,34 +110,45 @@ bool RequiredPlugin::loadPlugin()
     /// In case the pluginName is not set we copy the provided name into the set to load.
     if(!d_pluginName.isSet() && name.isSet())
     {
-        pluginsToLoad.push_back(this->getName());
+        const auto componentName = this->getName();
+        {
+            const auto considerNameAsPluginName = FileSystem::cleanPath(componentName);
+            if (FileSystem::isFile(considerNameAsPluginName) || !pluginManager.findPlugin(considerNameAsPluginName).empty())
+            {
+                msg_deprecated() << "The name of the plugin to load (" << componentName
+                    << ") must be defined in the Data '" << d_pluginName.getName()
+                    << "', not in the the Data '" << this->name.getName() << "'. The plugin '"
+                    << componentName << "' may be loaded, but this may change in the future.";
+            }
+        }
+        pluginsToLoad.push_back(componentName);
     }
 
     type::vector< std::string > failed;
     std::ostringstream errmsg;
     for (const auto& pluginName : pluginsToLoad)
     {
-        const std::string name = FileSystem::cleanPath( pluginName ); // name is not necessarily a path
+        const std::string pluginFilePath = FileSystem::cleanPath( pluginName ); // pluginFilePath is not necessarily a path
         bool isNameLoaded = false;
         for (const auto& suffix : suffixVec)
         {
-            bool isPluginLoaded = pluginManager.pluginIsLoaded(name);
+            bool isPluginLoaded = pluginManager.pluginIsLoaded(pluginFilePath);
             if (!isPluginLoaded)
             {
-                const auto status = pluginManager.loadPlugin(name, suffix, true, true, &errmsg);
+                const auto status = pluginManager.loadPlugin(pluginFilePath, suffix, true, true, &errmsg);
                 isPluginLoaded = (status == PluginManager::PluginLoadStatus::SUCCESS || status == PluginManager::PluginLoadStatus::ALREADY_LOADED);
             }
             if (isPluginLoaded)
             {
-                loadedPlugins.push_back(name);
+                loadedPlugins.push_back(pluginFilePath);
                 isNameLoaded = true;
 
                 // Register Objects explicitly
-                objectFactory->registerObjectsFromPlugin(name);
+                objectFactory->registerObjectsFromPlugin(pluginFilePath);
 
                 // fail-safe to check if potential components have been registered (implicitly or explicitly)
                 std::vector<sofa::core::ObjectFactory::ClassEntry::SPtr> entries;
-                objectFactory->getEntriesFromTarget(entries, name);
+                objectFactory->getEntriesFromTarget(entries, pluginFilePath);
 
                 if (entries.empty())
                 {
@@ -153,7 +164,7 @@ bool RequiredPlugin::loadPlugin()
         }
         if (!isNameLoaded)
         {
-            failed.push_back(name);
+            failed.push_back(pluginFilePath);
         }
         else if (d_stopAfterFirstNameFound.getValue())
         {

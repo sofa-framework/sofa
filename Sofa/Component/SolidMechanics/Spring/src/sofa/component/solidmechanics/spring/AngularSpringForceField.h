@@ -39,12 +39,6 @@ template< class T > class MechanicalState;
 namespace sofa::component::solidmechanics::spring
 {
 
-/**
-* @brief This class describes a simple elastic springs ForceField between DOFs positions and rest positions.
-*
-* Springs are applied to given degrees of freedom between their current positions and their rest shape positions.
-* An external MechanicalState reference can also be passed to the ForceField as rest shape position.
-*/
 template<class DataTypes>
 class AngularSpringForceField : public core::behavior::ForceField<DataTypes>
 {

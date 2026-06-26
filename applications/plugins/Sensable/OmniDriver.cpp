@@ -577,7 +577,8 @@ void OmniDriver::handleEvent(core::objectmodel::Event *event)
                 Quat dummyQuat;
                 sofa::core::objectmodel::HapticDeviceEvent event(currentToolIndex,dummyVector,dummyQuat,buttonState);
                 simulation::Node *groot = dynamic_cast<simulation::Node *>(getContext()->getRootContext()); // access to current node
-                groot->propagateEvent(core::ExecParams::defaultInstance(), &event);
+                if (groot)
+                    groot->propagateEvent(core::ExecParams::defaultInstance(), &event);
                 sofa::helper::AdvancedTimer::stepEnd("OmniDriver::6");
             }
 
@@ -639,7 +640,8 @@ void OmniDriver::handleEvent(core::objectmodel::Event *event)
             sofa::core::objectmodel::HapticDeviceEvent event(currentToolIndex,dummyVector,dummyQuat,
                     sofa::core::objectmodel::HapticDeviceEvent::Button1StateMask);
             simulation::Node *groot = dynamic_cast<simulation::Node *>(getContext()->getRootContext()); // access to current node
-            groot->propagateEvent(core::ExecParams::defaultInstance(), &event);
+            if (groot)
+                groot->propagateEvent(core::ExecParams::defaultInstance(), &event);
         }
         if (kpe->getKey()=='J' || kpe->getKey()=='j')
         {
@@ -649,7 +651,8 @@ void OmniDriver::handleEvent(core::objectmodel::Event *event)
             sofa::core::objectmodel::HapticDeviceEvent event(currentToolIndex,dummyVector,dummyQuat,
                     sofa::core::objectmodel::HapticDeviceEvent::Button2StateMask);
             simulation::Node *groot = dynamic_cast<simulation::Node *>(getContext()->getRootContext()); // access to current node
-            groot->propagateEvent(core::ExecParams::defaultInstance(), &event);
+            if (groot)
+                groot->propagateEvent(core::ExecParams::defaultInstance(), &event);
         }
 
     }
@@ -666,7 +669,8 @@ void OmniDriver::handleEvent(core::objectmodel::Event *event)
             Quat dummyQuat;
             sofa::core::objectmodel::HapticDeviceEvent event(currentToolIndex,dummyVector,dummyQuat,0);
             simulation::Node *groot = dynamic_cast<simulation::Node *>(getContext()->getRootContext()); // access to current node
-            groot->propagateEvent(core::ExecParams::defaultInstance(), &event);
+            if (groot)
+                groot->propagateEvent(core::ExecParams::defaultInstance(), &event);
         }
     }
 }

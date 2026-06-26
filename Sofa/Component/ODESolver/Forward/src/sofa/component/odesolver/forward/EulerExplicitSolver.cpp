@@ -20,16 +20,15 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/odesolver/forward/EulerExplicitSolver.h>
-#include <sofa/core/visual/VisualParams.h>
-#include <sofa/simulation/MechanicalOperations.h>
-#include <sofa/simulation/VectorOperations.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/behavior/BaseMass.h>
 #include <sofa/core/behavior/LinearSolver.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
-
-#include <sofa/simulation/mechanicalvisitor/MechanicalGetNonDiagonalMassesCountVisitor.h>
-using sofa::simulation::mechanicalvisitor::MechanicalGetNonDiagonalMassesCountVisitor;
+#include <sofa/simulation/MappingGraph.h>
+#include <sofa/simulation/MappingGraphMechanicalOperations.h>
+#include <sofa/simulation/VectorOperations.h>
 
 //#define SOFA_NO_VMULTIOP
 
@@ -65,10 +64,12 @@ void EulerExplicitSolver::solve(const core::ExecParams* params,
 
     SCOPED_TIMER("EulerExplicitSolve");
 
+    m_mappingGraph.build(this->getContext());
+
     // Create the vector and mechanical operations tools. These are used to execute special operations (multiplication,
     // additions, etc.) on multi-vectors (a vector that is stored in different buffers inside the mechanical objects)
     sofa::simulation::common::VectorOperations vop( params, this->getContext() );
-    sofa::simulation::common::MechanicalOperations mop( params, this->getContext() );
+    sofa::simulation::common::MappingGraphMechanicalOperations mop( params, this->getContext() );
 
     // Let the mechanical operations know that the current solver is explicit. This will be propagated back to the
     // force fields during the addForce and addKToMatrix phase. Force fields use this information to avoid
@@ -84,11 +85,9 @@ void EulerExplicitSolver::solve(const core::ExecParams* params,
     addSeparateGravity(&mop, dt, vResult);
     computeForce(&mop, f);
 
-    sofa::Size nbNonDiagonalMasses = 0;
-    MechanicalGetNonDiagonalMassesCountVisitor(&mop.mparams, &nbNonDiagonalMasses).execute(this->getContext());
-
-    // Mass matrix is diagonal, solution can thus be found by computing acc = f/m
-    if(nbNonDiagonalMasses == 0.)
+    // The inverse of the mass matrix is trivial to compute. Otherwise, it requires the
+    // assembly of a linear system and a linear solver to compute its solution.
+    if(isMassMatrixTriviallyInvertible(params))
     {
         // acc = M^-1 * f
         computeAcceleration(&mop, acc, f);
@@ -122,7 +121,7 @@ void EulerExplicitSolver::solve(const core::ExecParams* params,
 }
 
 void EulerExplicitSolver::updateState(sofa::simulation::common::VectorOperations* vop,
-                                      sofa::simulation::common::MechanicalOperations* mop,
+                                      sofa::simulation::common::MappingGraphMechanicalOperations* mop,
                                       sofa::core::MultiVecCoordId xResult,
                                       sofa::core::MultiVecDerivId vResult,
                                       const sofa::core::behavior::MultiVecDeriv& acc,
@@ -268,7 +267,7 @@ void EulerExplicitSolver::init()
     d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
 
-void EulerExplicitSolver::addSeparateGravity(sofa::simulation::common::MechanicalOperations* mop, SReal dt, core::MultiVecDerivId v)
+void EulerExplicitSolver::addSeparateGravity(sofa::simulation::common::MappingGraphMechanicalOperations* mop, SReal dt, core::MultiVecDerivId v)
 {
     SCOPED_TIMER("addSeparateGravity");
 
@@ -278,17 +277,17 @@ void EulerExplicitSolver::addSeparateGravity(sofa::simulation::common::Mechanica
     mop->addSeparateGravity(dt, v);
 }
 
-void EulerExplicitSolver::computeForce(sofa::simulation::common::MechanicalOperations* mop, core::MultiVecDerivId f)
+void EulerExplicitSolver::computeForce(sofa::simulation::common::MappingGraphMechanicalOperations* mop, core::MultiVecDerivId f) const
 {
     SCOPED_TIMER("ComputeForce");
 
     // 1. Clear the force vector (F := 0)
     // 2. Go down in the current context tree calling addForce on every forcefields
     // 3. Go up from the current context tree leaves calling applyJT on every mechanical mappings
-    mop->computeForce(f);
+    mop->computeForce(m_mappingGraph, f, true, true, nullptr);
 }
 
-void EulerExplicitSolver::computeAcceleration(sofa::simulation::common::MechanicalOperations* mop, core::MultiVecDerivId acc, core::ConstMultiVecDerivId f)
+void EulerExplicitSolver::computeAcceleration(sofa::simulation::common::MappingGraphMechanicalOperations* mop, core::MultiVecDerivId acc, core::ConstMultiVecDerivId f)
 {
     SCOPED_TIMER("AccFromF");
 
@@ -300,17 +299,17 @@ void EulerExplicitSolver::computeAcceleration(sofa::simulation::common::Mechanic
     mop->accFromF(acc, f);
 }
 
-void EulerExplicitSolver::projectResponse(sofa::simulation::common::MechanicalOperations* mop, core::MultiVecDerivId vecId)
+void EulerExplicitSolver::projectResponse(sofa::simulation::common::MappingGraphMechanicalOperations* mop, core::MultiVecDerivId vecId) const
 {
     SCOPED_TIMER("projectResponse");
 
     // Calls the "projectResponse" method of every BaseProjectiveConstraintSet objects found in the
     // current context tree. An example of such constraint set is the FixedProjectiveConstraint. In this case,
     // it will set to 0 every row (i, _) of the input vector for the ith degree of freedom.
-    mop->projectResponse(vecId);
+    mop->projectResponse(m_mappingGraph, vecId);
 }
 
-void EulerExplicitSolver::solveConstraints(sofa::simulation::common::MechanicalOperations* mop, core::MultiVecDerivId acc)
+void EulerExplicitSolver::solveConstraints(sofa::simulation::common::MappingGraphMechanicalOperations* mop, core::MultiVecDerivId acc)
 {
     SCOPED_TIMER("solveConstraint");
 
@@ -318,7 +317,7 @@ void EulerExplicitSolver::solveConstraints(sofa::simulation::common::MechanicalO
     mop->solveConstraint(acc, core::ConstraintOrder::ACC);
 }
 
-void EulerExplicitSolver::assembleSystemMatrix(sofa::simulation::common::MechanicalOperations* mop) const
+void EulerExplicitSolver::assembleSystemMatrix(sofa::simulation::common::MappingGraphMechanicalOperations* mop) const
 {
     SCOPED_TIMER("MBKBuild");
 
@@ -341,6 +340,37 @@ void EulerExplicitSolver::solveSystem(core::MultiVecDerivId solution, core::Mult
     l_linearSolver->getLinearSystem()->setRHS(rhs);
     l_linearSolver->solveSystem();
     l_linearSolver->getLinearSystem()->dispatchSystemSolution(solution);
+}
+
+bool EulerExplicitSolver::isMassMatrixTriviallyInvertible(const core::ExecParams* params) const
+{
+    SOFA_UNUSED(params);
+
+    // To achieve a diagonal global mass matrix in this system:
+    // 1) Each individual mass matrix must itself be diagonal.
+    // 2) The mapped masses must also be mapped through a diagonal Jacobian matrix.
+
+    // Diagonal Jacobian matrices are uncommon and challenging to detect, which means that even if
+    // we identify a mapped mass, we cannot guarantee the global mass matrix will remain diagonal.
+    // Moreover, computing the inverse of a mapped mass would require a complex API. Therefore, this
+    // case is not supported without assembling the global mass matrix.
+    bool hasMappedMass = false;
+    m_mappingGraph.algorithms.traverseComponentGroups_([&hasMappedMass](const sofa::core::behavior::BaseMass&)
+    {
+        hasMappedMass = true;
+    }, simulation::VisitorApplication::ONLY_MAPPED_NODES);
+    if (hasMappedMass)
+    {
+        return false;
+    }
+
+    // At this stage, we know that we don't have any mapped mass. We can check if they are all diagonal.
+    bool areAllMassesDiagonal = true;
+    m_mappingGraph.algorithms.traverseComponentGroups_([&areAllMassesDiagonal](const sofa::core::behavior::BaseMass& mass)
+    {
+        areAllMassesDiagonal &= mass.isDiagonal();
+    });
+    return areAllMassesDiagonal;
 }
 
 } // namespace sofa::component::odesolver::forward

@@ -22,10 +22,10 @@
 #include <MultiThreading/component/collision/detection/algorithm/ParallelBruteForceBroadPhase.h>
 
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/simulation/TaskScheduler.h>
+#include <sofa/simulation/task/TaskScheduler.h>
 #include <sofa/core/collision/Intersection.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
-#include <sofa/simulation/MainTaskSchedulerFactory.h>
+#include <sofa/simulation/task/MainTaskSchedulerFactory.h>
 #include <MultiThreading/ParallelImplementationsRegistry.h>
 
 namespace multithreading::component::collision::detection::algorithm

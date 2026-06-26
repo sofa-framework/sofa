@@ -200,6 +200,8 @@ inline void IncrSAP::addCollisionModel(core::CollisionModel *cm)
         _nothing_added = false;
 
         CubeCollisionModel * cube_model = dynamic_cast<CubeCollisionModel *>(cm->getLast()->getPrevious());
+        if (!cube_model)
+            return;
         assert(cube_model->getPrevious() == cm->getFirst());
 
         const int old_size = _boxes.size();

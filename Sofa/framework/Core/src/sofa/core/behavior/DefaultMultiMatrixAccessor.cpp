@@ -52,7 +52,7 @@ void DefaultMultiMatrixAccessor::clear()
 {
     globalDim = 0;
     for (auto it = realStateOffsets.begin(), itend = realStateOffsets.end(); it != itend; ++it)
-        it->second = -1;
+        it->second = static_cast<decltype(it->second)>(-1);
 
     for (std::map< const sofa::core::behavior::BaseMechanicalState*, linearalgebra::BaseMatrix* >::iterator it = mappedMatrices.begin(), itend = mappedMatrices.end(); it != itend; ++it)
         if (it->second != nullptr) delete it->second;
@@ -206,7 +206,12 @@ DefaultMultiMatrixAccessor::InteractionMatrixRef DefaultMultiMatrixAccessor::get
     InteractionMatrixRef r2;
     if (mstate1 == mstate2)// case where state1 == state2, interaction matrix is on the diagonal stiffness block
     {
-        const MatrixRef r = diagonalStiffnessBloc.find(mstate1)->second;
+        const auto it = diagonalStiffnessBloc.find(mstate1);
+        if (it == diagonalStiffnessBloc.end())
+        {
+            return r2; // Return empty/default InteractionMatrixRef
+        }
+        const MatrixRef r = it->second;
         r2.matrix = r.matrix;
         r2.offRow = r.offset;
         r2.offCol = r.offset;

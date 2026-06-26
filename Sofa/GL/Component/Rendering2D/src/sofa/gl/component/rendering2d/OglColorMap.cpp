@@ -103,17 +103,6 @@ void OglColorMap::reinit()
     m_colorMap.reinit();
 }
 
-OglColorMap* OglColorMap::getDefault()
-{
-    static OglColorMap::SPtr defaultOglColorMap;
-    if (defaultOglColorMap == nullptr)
-    {
-        defaultOglColorMap = sofa::core::objectmodel::New<OglColorMap>();
-        defaultOglColorMap->init();
-    }
-    return defaultOglColorMap.get();
-}
-
 void OglColorMap::deleteTexture()
 {
     if (texture != 0)

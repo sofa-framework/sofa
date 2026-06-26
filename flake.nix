@@ -28,7 +28,8 @@
           devShells.default = pkgs.mkShell { inputsFrom = [ self'.packages.default ]; };
           packages = {
             default = self'.packages.sofa;
-            sofa = pkgs.callPackage ./package.nix { };
+            sofa = pkgs.callPackage ./package.nix { inherit (self'.packages) tight_inclusion; };
+            tight_inclusion = pkgs.callPackage ./tight_inclusion.nix { };
           };
         };
     };

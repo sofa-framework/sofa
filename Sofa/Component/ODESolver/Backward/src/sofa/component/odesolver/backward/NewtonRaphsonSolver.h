@@ -24,16 +24,16 @@
 #include <sofa/component/odesolver/backward/NonLinearFunction.h>
 #include <sofa/component/odesolver/backward/config.h>
 #include <sofa/component/odesolver/backward/convergence/NewtonRaphsonConvergenceMeasure.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/helper/map.h>
 
 namespace sofa::component::odesolver::backward
 {
 
-class SOFA_COMPONENT_ODESOLVER_BACKWARD_API NewtonRaphsonSolver : public core::objectmodel::BaseObject
+class SOFA_COMPONENT_ODESOLVER_BACKWARD_API NewtonRaphsonSolver : public core::objectmodel::BaseComponent
 {
 public:
-    SOFA_CLASS(NewtonRaphsonSolver, core::objectmodel::BaseObject);
+    SOFA_CLASS(NewtonRaphsonSolver, core::objectmodel::BaseComponent);
 
     Data<unsigned int> d_maxNbIterationsNewton;
     Data<SReal> d_relativeSuccessiveStoppingThreshold;

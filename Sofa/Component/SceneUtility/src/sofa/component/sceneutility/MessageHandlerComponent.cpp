@@ -65,7 +65,7 @@ MessageHandlerComponent::MessageHandlerComponent() :
 
 void MessageHandlerComponent::parse ( core::objectmodel::BaseObjectDescription* arg )
 {
-    BaseObject::parse(arg) ;
+    BaseComponent::parse(arg) ;
 
     const char* type=arg->getAttribute("handler") ;
     if(type==nullptr){
@@ -78,7 +78,7 @@ void MessageHandlerComponent::parse ( core::objectmodel::BaseObjectDescription* 
     const string stype(type) ;
 
     if(stype=="sofa"){
-        MessageDispatcher::addHandler(new ConsoleMessageHandler()) ;
+        MessageDispatcher::addHandler(&sofa::helper::logging::MainConsoleMessageHandler::getInstance()) ;
     }else if(stype=="clang"){
         MessageDispatcher::addHandler(new ClangMessageHandler()) ;
     }else if(stype=="rich"){
@@ -123,7 +123,7 @@ FileMessageHandlerComponent::~FileMessageHandlerComponent()
 
 void FileMessageHandlerComponent::parse ( core::objectmodel::BaseObjectDescription* arg )
 {
-    BaseObject::parse(arg) ;
+    BaseComponent::parse(arg) ;
 
     const char* type=arg->getAttribute("filename") ;
     if(type==nullptr){

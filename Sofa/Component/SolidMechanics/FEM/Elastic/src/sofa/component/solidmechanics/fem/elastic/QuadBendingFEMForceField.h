@@ -26,24 +26,23 @@
 #pragma once
 
 #include <sofa/component/solidmechanics/fem/elastic/config.h>
-
 #include <sofa/core/behavior/ForceField.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/type/Mat.h>
+#include <sofa/core/behavior/TopologyAccessor.h>
 #include <sofa/core/topology/TopologyData.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/helper/map.h>
+#include <sofa/type/Mat.h>
 
 #include <map>
-#include <sofa/helper/map.h>
 
 namespace sofa::component::solidmechanics::fem::elastic
 {
 
 template<class DataTypes>
-class QuadBendingFEMForceField : public core::behavior::ForceField<DataTypes>
+class QuadBendingFEMForceField : public core::behavior::ForceField<DataTypes>, public virtual core::behavior::TopologyAccessor
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(QuadBendingFEMForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes));
+    SOFA_CLASS2(SOFA_TEMPLATE(QuadBendingFEMForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes), core::behavior::TopologyAccessor);
 
     typedef core::behavior::ForceField<DataTypes> Inherited;
     typedef typename DataTypes::VecCoord VecCoord;
@@ -226,10 +225,6 @@ public:
     Data<type::vector<Real> > d_poisson; ///< Poisson ratio in Hooke's law (vector)
     Data<type::vector<Real> > d_young; ///< Young modulus in Hooke's law (vector)
     Data<Real> d_thickness; ///< Thickness of the elements
-
-    /// Link to be set to the topology container in the component graph.
-    SingleLink<QuadBendingFEMForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
-    
 };
 #if !defined(SOFA_COMPONENT_FORCEFIELD_QUADBENDINGFEMFORCEFIELD_CPP)
 

@@ -31,11 +31,11 @@
 #include <sofa/core/CollisionModel.h>
 #include <sofa/component/collision/detection/algorithm/EndPoint.h>
 #include <sofa/component/collision/detection/algorithm/CollisionPM.h>
-#include <sofa/component/collision/geometry/CubeModel.h>
-#include <sofa/component/collision/geometry/TriangleModel.h>
-#include <sofa/component/collision/geometry/LineModel.h>
-#include <sofa/component/collision/geometry/PointModel.h>
-#include <sofa/component/collision/geometry/SphereModel.h>
+#include <sofa/component/collision/geometry/CubeCollisionModel.h>
+#include <sofa/component/collision/geometry/TriangleCollisionModel.h>
+#include <sofa/component/collision/geometry/LineCollisionModel.h>
+#include <sofa/component/collision/geometry/PointCollisionModel.h>
+#include <sofa/component/collision/geometry/SphereCollisionModel.h>
 
 #include <vector>
 #include <set>

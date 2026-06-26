@@ -4,15 +4,15 @@
 <Node name="root" dt="0.01" gravity="0 -9.81 0">
 
     <Node name="pluginList" >
-        <RequiredPlugin name="SofaOpenglVisual"/>
-        <RequiredPlugin name="SofaConstraint"/>
-        <RequiredPlugin name="SofaMeshCollision"/>
-        <RequiredPlugin name="SofaRigid"/>
-        <RequiredPlugin name="SofaImplicitOdeSolver"/>
-        <RequiredPlugin name="SofaLoader"/>
-        <RequiredPlugin name="SofaGeneralEngine"/>
-        <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/>
-        <RequiredPlugin name="SofaMiscCollision"/>
+        <RequiredPlugin pluginName="SofaOpenglVisual"/>
+        <RequiredPlugin pluginName="SofaConstraint"/>
+        <RequiredPlugin pluginName="SofaMeshCollision"/>
+        <RequiredPlugin pluginName="SofaRigid"/>
+        <RequiredPlugin pluginName="SofaImplicitOdeSolver"/>
+        <RequiredPlugin pluginName="SofaLoader"/>
+        <RequiredPlugin pluginName="SofaGeneralEngine"/>
+        <RequiredPlugin pluginName="Sofa.Component.ODESolver.Backward"/>
+        <RequiredPlugin pluginName="SofaMiscCollision"/>
     </Node>
 
 

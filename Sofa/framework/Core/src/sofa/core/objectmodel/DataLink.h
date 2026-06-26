@@ -39,7 +39,7 @@ class SOFA_CORE_API DataLink final : public AbstractDataLink
 public:
 
     DataLink(T& owner) : m_owner{owner} { }
-    virtual ~DataLink() {}
+    ~DataLink() = default;
 
     T* getTarget() const
     {

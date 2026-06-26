@@ -209,12 +209,14 @@ const std::string& SofaPhysicsOutputMesh::Impl::getNameStr() const
 
 const char* SofaPhysicsOutputMesh::Impl::getName() ///< (non-unique) name of this object
 {
-    if (!sObj) 
+    if (!sObj)
         return "None";
 
     std::string value = sObj->getName();
-    char* cstr = new char[value.length() + 1];
-    std::strcpy(cstr, value.c_str()); // force copy to avoid possible segfault if object is destroyed
+    const size_t len = value.length() + 1;
+    char* cstr = new char[len];
+    strncpy(cstr, value.c_str(), len); // force copy to avoid possible segfault if object is destroyed
+    cstr[len - 1] = '\0';
     return cstr;
 }
 

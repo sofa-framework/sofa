@@ -80,7 +80,7 @@ public:
         [[nodiscard]] bool isValid() const { return mat != nullptr; }
         operator bool() const { return isValid(); }
 
-        void checkValidity(const objectmodel::BaseObject* object) const
+        void checkValidity(const objectmodel::BaseComponent* object) const
         {
             msg_error_when(!isValid() || !mstate1 || !mstate2, object)
                 << "The force derivative in mechanical state '"

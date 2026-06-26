@@ -57,7 +57,7 @@ public:
             arg->logError("No mechanical state found in the context node.");
             return false;
         }
-        return BaseObject::canCreate(obj, context, arg);
+        return sofa::core::objectmodel::BaseComponent::canCreate(obj, context, arg);
     }
 
     /// Return the total errors (position and velocity)

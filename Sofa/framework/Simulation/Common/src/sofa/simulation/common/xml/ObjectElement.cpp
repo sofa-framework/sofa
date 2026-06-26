@@ -30,10 +30,10 @@ namespace sofa::simulation::xml
 using namespace sofa::defaulttype;
 using helper::Creator;
 
-//template class Factory< std::string, objectmodel::BaseObject, Node<objectmodel::BaseObject*>* >;
+//template class Factory< std::string, objectmodel::BaseComponent, Node<objectmodel::BaseComponent*>* >;
 
 ObjectElement::ObjectElement(const std::string& name, const std::string& type, BaseElement* eparent)
-    : Element<core::objectmodel::BaseObject>(name, type, eparent)
+    : Element<core::objectmodel::BaseComponent>(name, type, eparent)
 {
 }
 
@@ -56,7 +56,26 @@ bool ObjectElement::init()
 
 bool ObjectElement::initNode()
 {
-    core::objectmodel::BaseContext* ctx = getParent()->getObject()->toBaseContext();
+    core::objectmodel::BaseContext* ctx { nullptr };
+    if (auto* parent = getParent())
+    {
+        if (auto* parentObj = parent->getObject())
+        {
+            ctx = parentObj->toBaseContext();
+        }
+        else
+        {
+            msg_error("XML parser") << "Cannot access to a valid component from parent element \'"
+                << parent->getName() << "\' (type:\'" << parent->getAttribute("type")
+                << "\') for the object element \'" << this->getName() << "\'";
+        }
+    }
+    else
+    {
+        msg_error("XML parser") << "Cannot find a parent for the object element \'" << this->getName() << "\'";
+    }
+    if (!ctx)
+        return false;
 
     for (AttributeMap::iterator it = attributes.begin(), itend = attributes.end(); it != itend; ++it)
     {
@@ -66,7 +85,7 @@ bool ObjectElement::initNode()
         }
     }
 
-    core::objectmodel::BaseObject::SPtr obj = core::ObjectFactory::CreateObject(ctx, this);
+    core::objectmodel::BaseComponent::SPtr obj = core::ObjectFactory::CreateObject(ctx, this);
 
     if (obj == nullptr)
         obj = Factory::CreateObject(this->getType(), this);

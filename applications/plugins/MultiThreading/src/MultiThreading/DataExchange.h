@@ -22,7 +22,7 @@
 #pragma once
 
 #include <MultiThreading/config.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/core/State.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -53,10 +53,10 @@ protected:
 
 
 template <class DataTypes>
-class DataExchange : public virtual objectmodel::BaseObject
+class DataExchange : public virtual objectmodel::BaseComponent
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(DataExchange, DataTypes ), objectmodel::BaseObject);
+    SOFA_CLASS(SOFA_TEMPLATE(DataExchange, DataTypes ), objectmodel::BaseComponent);
 
     //typedef typename DataTypes::Real        Real;
     //typedef typename DataTypes::Coord       Coord;

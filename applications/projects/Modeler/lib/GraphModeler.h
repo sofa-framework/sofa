@@ -36,7 +36,7 @@
 #include <sofa/simulation/Node.h>
 #include <SofaSimulationCommon/xml/BaseElement.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 
 #include <sofa/qt/GraphListenerQListView.h>
 #include <sofa/qt/SofaSceneGraphWidget.h>

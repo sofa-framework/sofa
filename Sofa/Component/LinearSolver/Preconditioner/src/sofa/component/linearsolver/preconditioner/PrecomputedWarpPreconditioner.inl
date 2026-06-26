@@ -276,13 +276,13 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
     if (l_linearSolver.get() == nullptr)
     {
         msg_error() << "No LinearSolver component found at path: " << l_linearSolver.getLinkedPath();
-        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
 
     msg_info() << "LinearSolver path used: '" << l_linearSolver.getLinkedPath() << "'";
 
-    core::objectmodel::BaseObject* ptr = l_linearSolver.get();
+    core::objectmodel::BaseComponent* ptr = l_linearSolver.get();
     CGlinearSolver = dynamic_cast<component::linearsolver::iterative::CGLinearSolver<GraphScatteredMatrix,GraphScatteredVector>*>(ptr);
     linearSolver = ptr->toLinearSolver();
 

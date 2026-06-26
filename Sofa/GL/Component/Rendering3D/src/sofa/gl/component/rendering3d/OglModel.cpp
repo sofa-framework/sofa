@@ -59,7 +59,6 @@ OglModel::OglModel()
     , blendEquation( initData(&blendEquation, "blendEquation", "if alpha blending is enabled this specifies how source and destination colors are combined") )
     , sourceFactor( initData(&sourceFactor, "sfactor", "if alpha blending is enabled this specifies how the red, green, blue, and alpha source blending factors are computed") )
     , destFactor( initData(&destFactor, "dfactor", "if alpha blending is enabled this specifies how the red, green, blue, and alpha destination blending factors are computed") )
-    , m_tex(nullptr)
     , vbo(0), iboEdges(0), iboTriangles(0), iboQuads(0)
     , VBOGenDone(false), initDone(false), useEdges(false), useTriangles(false), useQuads(false), canUsePatches(false)
     , oldVerticesSize(0), oldNormalsSize(0), oldTexCoordsSize(0), oldTangentsSize(0), oldBitangentsSize(0), oldEdgesSize(0), oldTrianglesSize(0), oldQuadsSize(0)
@@ -90,8 +89,7 @@ void OglModel::deleteTextures()
 {
     if (m_tex != nullptr) 
     {
-        delete m_tex;
-        m_tex = nullptr;
+        m_tex.reset(nullptr);
     }
 
     for (unsigned int i = 0 ; i < textures.size() ; i++)
@@ -595,7 +593,8 @@ bool OglModel::loadTexture(const std::string& filename)
     helper::io::Image *img = helper::io::Image::Create(filename);
     if (!img)
         return false;
-    m_tex = new sofa::gl::Texture(img, true, true, false, d_srgbTexturing.getValue());
+
+    m_tex = std::make_unique<sofa::gl::Texture>(img, true, true, false, d_srgbTexturing.getValue());
     return true;
 }
 

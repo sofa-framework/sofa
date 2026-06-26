@@ -23,7 +23,7 @@
 
 #include <sofa/component/sceneutility/config.h>
 
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/type/Vec.h>
 
@@ -33,10 +33,10 @@ namespace sofa::component::sceneutility
 /**
  * Abstract class defining how to pause the animation.
  */
-class SOFA_COMPONENT_SCENEUTILITY_API PauseAnimation: public core::objectmodel::BaseObject
+class SOFA_COMPONENT_SCENEUTILITY_API PauseAnimation: public core::objectmodel::BaseComponent
 {
 public:
-    SOFA_ABSTRACT_CLASS(PauseAnimation, core::objectmodel::BaseObject);
+    SOFA_ABSTRACT_CLASS(PauseAnimation, core::objectmodel::BaseComponent);
 
 protected:
     PauseAnimation ();

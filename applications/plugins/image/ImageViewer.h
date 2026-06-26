@@ -32,7 +32,7 @@
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/component/visual/VisualModelImpl.h>
 #include <sofa/component/visual/RecordedCamera.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/Node.h>

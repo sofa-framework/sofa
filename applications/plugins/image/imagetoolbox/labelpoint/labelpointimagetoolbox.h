@@ -2,7 +2,7 @@
 #define LABELPOINTIMAGETOOLBOX_H
 
 #include <sofa/core/DataEngine.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 
 #include <QDataStream>
 #include "labelpointimagetoolboxaction.h"

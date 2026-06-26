@@ -22,7 +22,7 @@
 #include <sofa/core/objectmodel/DataCallback.h>
 using sofa::core::objectmodel::DataCallback;
 
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 
 #include <sofa/testing/BaseTest.h>
 using sofa::testing::BaseTest ;
@@ -34,7 +34,7 @@ namespace sofa {
 ///  Test suite for data callbacks
 struct DataCallback_test: public BaseTest
 {
-    class TestObject : public sofa::core::objectmodel::BaseObject
+    class TestObject : public sofa::core::objectmodel::BaseComponent
     {
     public:
         /// data attached to an object
@@ -66,7 +66,7 @@ struct DataCallback_test: public BaseTest
         }
 
         TestObject()
-            : sofa::core::objectmodel::BaseObject()
+            : sofa::core::objectmodel::BaseComponent()
             , d_objdata1(initData(&d_objdata1, 0, "objdata1", "objdata1"))
             , d_objdata2(initData(&d_objdata2, 1, "objdata2", "objdata2"))
             , m_datacallback1()

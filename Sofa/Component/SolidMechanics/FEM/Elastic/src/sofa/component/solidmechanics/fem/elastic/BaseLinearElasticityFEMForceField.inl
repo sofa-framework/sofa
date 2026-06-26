@@ -23,6 +23,7 @@
 #include <sofa/component/solidmechanics/fem/elastic/BaseLinearElasticityFEMForceField.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/ForceField.inl>
+#include <sofa/component/solidmechanics/fem/elastic/impl/LameParameters.h>
 
 namespace sofa::component::solidmechanics::fem::elastic
 {
@@ -31,7 +32,6 @@ template <class DataTypes>
 BaseLinearElasticityFEMForceField<DataTypes>::BaseLinearElasticityFEMForceField()
     : d_poissonRatio(initData(&d_poissonRatio, { defaultPoissonRatioValue }, "poissonRatio", "FEM Poisson Ratio in Hooke's law [0,0.5["))
     , d_youngModulus(initData(&d_youngModulus, { defaultYoungModulusValue }, "youngModulus", "FEM Young's Modulus in Hooke's law"))
-    , l_topology(initLink("topology", "link to the topology container"))
 {
     d_poissonRatio.setRequired(true);
     d_youngModulus.setRequired(true);
@@ -87,24 +87,12 @@ template <class DataTypes>
 void BaseLinearElasticityFEMForceField<DataTypes>::init()
 {
     core::behavior::ForceField<DataTypes>::init();
+    this->validateTopology();
 
-    if (l_topology.empty())
+    if (this->isComponentStateInvalid())
     {
-        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
-        l_topology.set(this->getContext()->getMeshTopologyLink());
-    }
-
-    if (l_topology == nullptr)
-    {
-        msg_error() << "No topology component found at path: " << this->l_topology.getLinkedPath()
-            << ", nor in current context: " << this->getContext()->name << ". Object must have a BaseMeshTopology. "
-            << "The list of available BaseMeshTopology components is: "
-            << core::ObjectFactory::getInstance()->listClassesDerivedFrom<core::topology::BaseMeshTopology>();
-        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
-
-    msg_info() << "Topology path used: '" << this->l_topology.getLinkedPath() << "'";
 
     checkYoungModulus();
     checkPoissonRatio();
@@ -163,13 +151,14 @@ auto BaseLinearElasticityFEMForceField<DataTypes>::toLameParameters(
 {
     SOFA_UNUSED(elementType);
 
-    //Lamé's first parameter
-    const Real lambda = youngModulus * poissonRatio / (1 - poissonRatio * poissonRatio);
+    LameLambda<Real> lambda { 0 };
+    LameMu<Real> mu { 0 };
 
-    //Lamé's second parameter (or shear modulus)
-    const Real mu = youngModulus / (2 * (1 + poissonRatio));
+    sofa::component::solidmechanics::fem::elastic::toLameParameters<2, Real>(
+        YoungModulus<Real>(youngModulus), PoissonRatio<Real>(poissonRatio),
+        lambda, mu);
 
-    return {lambda, mu};
+    return {lambda.get(), mu.get()};
 }
 
 template <class DataTypes>
@@ -180,13 +169,14 @@ auto BaseLinearElasticityFEMForceField<DataTypes>::toLameParameters(
 {
     SOFA_UNUSED(elementType);
 
-    //Lamé's first parameter
-    const Real lambda = youngModulus * poissonRatio / ((1 - 2 * poissonRatio) * (1 + poissonRatio));
+    LameLambda<Real> lambda { 0 };
+    LameMu<Real> mu { 0 };
 
-    //Lamé's second parameter (or shear modulus)
-    const Real mu = youngModulus / (2 * (1 + poissonRatio));
+    sofa::component::solidmechanics::fem::elastic::toLameParameters<3, Real>(
+        YoungModulus<Real>(youngModulus), PoissonRatio<Real>(poissonRatio),
+        lambda, mu);
 
-    return {lambda, mu};
+    return {lambda.get(), mu.get()};
 }
 
 }

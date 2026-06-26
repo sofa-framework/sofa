@@ -75,7 +75,6 @@ UniformMass<DataTypes>::UniformMass()
                                                                                    "are discarded (useful for parallelization using mesh partitioning)" ) )
     , d_indices ( initData ( &d_indices, "indices", "optional local DOF indices. Any computation involving only indices outside of this list are discarded" ) )
     , d_preserveTotalMass( initData ( &d_preserveTotalMass, false, "preserveTotalMass", "Prevent totalMass from decreasing when removing particles."))
-    , l_topology(initLink("topology", "link to the topology container"))
 {
     constructor_message();
 

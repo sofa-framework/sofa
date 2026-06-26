@@ -36,6 +36,48 @@ BaseMeshTopology::BaseMeshTopology()
     addAlias(&fileTopology,"fileTopology");
 }
 
+template <>
+Size BaseMeshTopology::getNbElements<geometry::Edge>()
+{
+    return getNbEdges();
+}
+
+template <>
+Size BaseMeshTopology::getNbElements<geometry::Triangle>()
+{
+    return getNbTriangles();
+}
+
+template <>
+Size BaseMeshTopology::getNbElements<geometry::Quad>()
+{
+    return getNbQuads();
+}
+
+template <>
+Size BaseMeshTopology::getNbElements<geometry::Tetrahedron>()
+{
+    return getNbTetrahedra();
+}
+
+template <>
+Size BaseMeshTopology::getNbElements<geometry::Hexahedron>()
+{
+    return getNbHexahedra();
+}
+
+template <>
+Size BaseMeshTopology::getNbElements<geometry::Prism>()
+{
+    return getNbPrisms();
+}
+
+template <>
+Size BaseMeshTopology::getNbElements<geometry::Pyramid>()
+{
+    return getNbPyramids();
+}
+
 /// Returns the set of edges adjacent to a given vertex.
 const BaseMeshTopology::EdgesAroundVertex& BaseMeshTopology::getEdgesAroundVertex(PointID)
 {
@@ -311,6 +353,16 @@ void BaseMeshTopology::addTetra(Index, Index, Index, Index)
 void BaseMeshTopology::addHexa(Index, Index, Index, Index, Index, Index, Index, Index)
 {
     msg_error() << "addHexa() not supported.";
+}
+
+void BaseMeshTopology::addPrism(Index, Index, Index, Index, Index, Index)
+{
+    msg_error() << "addPrism() not supported.";
+}
+
+void BaseMeshTopology::addPyramid(Index, Index, Index, Index, Index)
+{
+    msg_error() << "addPyramid() not supported.";
 }
 
 void BaseMeshTopology::reOrientateTriangle(TriangleID /*id*/)

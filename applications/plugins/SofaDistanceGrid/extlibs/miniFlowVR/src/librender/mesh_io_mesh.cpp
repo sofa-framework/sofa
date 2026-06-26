@@ -93,6 +93,7 @@ static bool swapread_malloc(T*& dest, bool swapdata, FILE* fp)
   else
   {
     dest = (T*)malloc(size);
+    if (dest == NULL) return false;
     if (swapdata)
     {
       if (!swapread((void*)dest, size, fp)) return false;

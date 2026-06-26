@@ -21,6 +21,10 @@
 ******************************************************************************/
 #include <sofa/testing/NumericTest.h>
 
+#include <cstdlib>
+#include <cerrno>
+#include <climits>
+
 #include <sofa/type/trait/Rebind.h>
 using sofa::testing::NumericTest ;
 
@@ -40,6 +44,8 @@ using sofa::helper::logging::MainCountingMessageHandler ;
 using sofa::helper::logging::CountingMessageHandler ;
 using sofa::helper::logging::MessageDispatcher ;
 using sofa::helper::logging::Message ;
+
+#include <sofa/type/hardening.h>
 
 template<class T>
 class vector_test : public NumericTest<>,
@@ -249,8 +255,18 @@ public:
 template<class T>
 void vector_benchmark<T>::benchmark(const std::vector<std::string>& params)
 {
-    const int loop1 = atoi(params[0].c_str());
-    const int loop2 = atoi(params[1].c_str());
+    int loop1{}, loop2{};
+    if(!sofa::type::hardening::safeStrToInt(params[0], loop1))
+    {
+        std::cerr << "Error while reading " << params[0];
+        return;
+    }
+    if(!sofa::type::hardening::safeStrToInt(params[1], loop2))
+    {
+        std::cerr << "Error while reading " << params[1];
+        return;
+    }
+
     std::stringstream tmp;
     for(int i=0;i<loop1;i++)
     {
@@ -301,3 +317,62 @@ TEST_P(vector_benchmark_int, benchmark)
 INSTANTIATE_TEST_SUITE_P(benchmark,
                         vector_benchmark_int,
                         ::testing::ValuesIn(benchvalues));
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+///
+/// TEST THE vector<std::string> behavior
+///
+////////////////////////////////////////////////////////////////////////////////////////////////////
+typedef vector_test<std::string> vector_test_string;
+TEST_P(vector_test_string, checkReadWriteBehavior)
+{
+    this->checkVector(GetParam()) ;
+}
+// Test cases for string read/write functionality.
+// write() format: ["elem1", "elem2", ...]
+// read() supports:
+//   - Bracketed quoted format (bijective with write): ["elem1", "elem2", ...]
+//   - Plain whitespace-separated fallback (no brackets)
+std::vector<std::vector<std::string>> stringvalues={
+    /// Empty input -> empty vector -> write outputs []
+    {"", "[]", "None"},
+
+    /// Single quoted element (bracketed format, round-trip)
+    {"[\"apple\"]", "[\"apple\"]", "None"},
+
+    /// Single quoted element containing spaces (round-trip)
+    {"[\"hello world test\"]", "[\"hello world test\"]", "None"},
+
+    /// Multiple quoted elements (round-trip)
+    {"[\"one\", \"two\", \"three\"]", "[\"one\", \"two\", \"three\"]", "None"},
+
+    /// Empty array (round-trip)
+    {"[]", "[]", "None"},
+
+    /// Plain whitespace-separated fallback (no brackets): each token is an element
+    {"one two three", "[\"one\", \"two\", \"three\"]", "None"},
+
+    /// Single plain token
+    {"single_word", "[\"single_word\"]", "None"},
+
+    /// Bad format: opening bracket but no closing bracket -> Error
+    {"[\"unterminated\"", "[\"unterminated\"]", "Error"},
+
+    /// Bad format: bracket with no opening quote -> Error
+    {"[badtoken]", "[]", "Error"},
+
+    /// Bad format: unterminated quoted string -> Error
+    {"[\"not closed", "[]", "Error"},
+
+    /// Bad format: missing separator between elements -> Error
+    {"[\"one\" \"two\"]", "[\"one\"]", "Error"},
+};
+
+INSTANTIATE_TEST_SUITE_P(checkReadWriteBehavior,
+                        vector_test_string,
+                        ::testing::ValuesIn(stringvalues));
+
+TEST_F(vector_test_string, checkRebind)
+{
+    this->checkRebind();
+}

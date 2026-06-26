@@ -23,7 +23,7 @@
 
 #include <sofa/component/solidmechanics/fem/hyperelastic/config.h>
 
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/type/Vec.h>
 
 namespace sofa::component::solidmechanics::fem::hyperelastic::material
@@ -32,17 +32,17 @@ namespace sofa::component::solidmechanics::fem::hyperelastic::material
 /**
  * Generic material class
  */
-class SOFA_COMPONENT_SOLIDMECHANICS_FEM_HYPERELASTIC_API BaseMaterial : public virtual core::objectmodel::BaseObject
+class SOFA_COMPONENT_SOLIDMECHANICS_FEM_HYPERELASTIC_API BaseMaterial : public virtual core::objectmodel::BaseComponent
 {
 public:
-    SOFA_CLASS(BaseMaterial,core::objectmodel::BaseObject);
+    SOFA_CLASS(BaseMaterial,core::objectmodel::BaseComponent);
 
     BaseMaterial() {}
     ~BaseMaterial() override {}
 
     void init() override
     {
-        this->core::objectmodel::BaseObject::init();
+        this->core::objectmodel::BaseComponent::init();
     }
 
 

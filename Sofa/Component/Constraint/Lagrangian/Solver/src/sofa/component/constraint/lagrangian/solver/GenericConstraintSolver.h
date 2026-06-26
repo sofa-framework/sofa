@@ -28,7 +28,7 @@
 #include <sofa/core/behavior/BaseLagrangianConstraint.h>
 #include <sofa/helper/map.h>
 
-#include <sofa/simulation/CpuTask.h>
+#include <sofa/simulation/task/CpuTask.h>
 #include <sofa/helper/OptionsGroup.h>
 #include <sofa/component/constraint/lagrangian/solver/visitors/MechanicalGetConstraintResolutionVisitor.h>
 #include <sofa/helper/SelectableItem.h>
@@ -45,7 +45,6 @@ public:
     SOFA_CLASS(GenericConstraintSolver, ConstraintSolverImpl);
 protected:
     GenericConstraintSolver();
-    ~GenericConstraintSolver() override;
 public:
     void init() override;
 
@@ -53,12 +52,10 @@ public:
 
     bool prepareStates(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
     bool buildSystem(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
-    void rebuildSystem(const SReal massFactor, const SReal forceFactor) override;
     bool solveSystem(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
     bool applyCorrection(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
-    void computeResidual(const core::ExecParams* /*params*/) override;
     ConstraintProblem* getConstraintProblem() override;
-    void lockConstraintProblem(sofa::core::objectmodel::BaseObject* from, ConstraintProblem* p1, ConstraintProblem* p2 = nullptr) override;
+    void lockConstraintProblem(sofa::core::objectmodel::BaseComponent* from, ConstraintProblem* p1, ConstraintProblem* p2 = nullptr) override;
 
 
     Data<int> d_maxIt; ///< maximal number of iterations of iterative algorithm
@@ -89,8 +86,8 @@ protected:
     void clearConstraintProblemLocks();
 
     static constexpr auto CP_BUFFER_SIZE = 10;
-    sofa::type::fixed_array<GenericConstraintProblem * , CP_BUFFER_SIZE> m_cpBuffer;
-    sofa::type::fixed_array<bool, CP_BUFFER_SIZE> m_cpIsLocked;
+    sofa::type::fixed_array<std::unique_ptr<GenericConstraintProblem>, CP_BUFFER_SIZE> m_cpBuffer;
+    sofa::type::fixed_array<bool, CP_BUFFER_SIZE> m_cpIsLocked = sofa::type::makeHomogeneousArray<bool, CP_BUFFER_SIZE>(false);
     GenericConstraintProblem *current_cp, *last_cp;
 
     sofa::core::MultiVecDerivId m_lambdaId;

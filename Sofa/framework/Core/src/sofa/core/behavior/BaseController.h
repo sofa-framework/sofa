@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 
 namespace sofa::core::behavior
 {
@@ -31,10 +31,10 @@ namespace sofa::core::behavior
  * Interface of user interaction on SOFA Components.
  * Empty class to provide an interface for the Factory
  */
-class SOFA_CORE_API BaseController : public virtual core::objectmodel::BaseObject
+class SOFA_CORE_API BaseController : public virtual core::objectmodel::BaseComponent
 {
 public:
-    SOFA_ABSTRACT_CLASS(BaseController, core::objectmodel::BaseObject);
+    SOFA_ABSTRACT_CLASS(BaseController, core::objectmodel::BaseComponent);
 
 };
 

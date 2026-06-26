@@ -166,6 +166,17 @@ TEST(SelectableItem, data)
     EXPECT_EQ(data.getValueTypeString(), "SelectableItem");
 }
 
+TEST(SelectableItem, dataAccessor)
+{
+    sofa::Data<TestSelectableItem> data;
+    {
+        auto dataAccessor = sofa::helper::getWriteAccessor(data);
+        dataAccessor.wref() = "large";
+    }
+    EXPECT_EQ(data.getValue().selectedId(), 1);
+    EXPECT_EQ(data.getValue().key(), "large");
+}
+
 TEST(SelectableItem, DataTypeInfo_BaseSelectableItems)
 {
     EXPECT_EQ(sofa::defaulttype::DataTypeInfo<sofa::helper::BaseSelectableItem>::GetTypeName(), "SelectableItem");

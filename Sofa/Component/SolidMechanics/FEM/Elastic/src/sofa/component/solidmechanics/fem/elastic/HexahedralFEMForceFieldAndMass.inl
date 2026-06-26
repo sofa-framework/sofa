@@ -55,7 +55,7 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::init( )
     }
 
     this->reinit();
-    sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
+    this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
 
 template<class DataTypes>

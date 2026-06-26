@@ -1,4 +1,4 @@
-﻿/******************************************************************************
+/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -20,8 +20,17 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
+
 #include <SofaCUDA/config.h>
+
+namespace sofacuda
+{
+    SOFACUDA_API void init();
+} // namespace sofacuda
+
+// compat
 namespace sofa::gpu::cuda
 {
-SOFA_GPU_CUDA_API void init();
+    SOFA_ATTRIBUTE_DEPRECATED("v26.06", "v26.12", "use sofacuda::init() instead")
+    SOFACUDA_API void init();
 } // namespace sofa::gpu::cuda

@@ -736,7 +736,6 @@ struct MechanicalObjectVOpTest : public testing::BaseTest
         // v = a-b
         m_mechanicalObject->vOp(nullptr, core::vec_id::write_access::velocity, core::vec_id::read_access::restPosition, core::vec_id::read_access::position, -1_sreal);
 
-        unsigned int index {};
         auto vv = sofa::helper::getReadAccessor(*m_mechanicalObject->read(core::vec_id::read_access::velocity));
         auto va = sofa::helper::getReadAccessor(*m_mechanicalObject->read(core::vec_id::read_access::restPosition));
         auto vb = sofa::helper::getReadAccessor(*m_mechanicalObject->read(core::vec_id::read_access::position));
@@ -750,7 +749,6 @@ struct MechanicalObjectVOpTest : public testing::BaseTest
             {
                 EXPECT_FLOATINGPOINT_EQ(v[j], diff[j])
             }
-            ++index;
         }
 
         checkVecValues<core::vec_id::read_access::position>(positionCoefficient);

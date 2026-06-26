@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/objectmodel/BaseNode.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/core/behavior/BaseAnimationLoop.h>
 #include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/core/collision/Pipeline.h>
@@ -64,13 +64,13 @@ core::visual::VisualLoop* BaseNode::getVisualLoop() const
 }
 
 /// Set the context of an object to this
-void BaseNode::setObjectContext(BaseObject::SPtr obj)
+void BaseNode::setObjectContext(BaseComponent::SPtr obj)
 {
     obj->l_context.set(this->getContext());
 }
 
 /// Reset the context of an object
-void BaseNode::clearObjectContext(BaseObject::SPtr obj)
+void BaseNode::clearObjectContext(BaseComponent::SPtr obj)
 {
     if (obj != nullptr)
     {

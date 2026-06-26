@@ -1,0 +1,215 @@
+From f498ada2dca16d8159acbf083786fe6187e4d843 Mon Sep 17 00:00:00 2001
+From: Olivier Roussel <olivier.roussel@inria.fr>
+Date: Thu, 4 Apr 2024 13:56:36 +0200
+Subject: [PATCH] hotfix for libpython linking on macOS
+
+---
+ CMake/SofaPython3Tools.cmake | 34 +------------------------------
+ CMakeLists.txt               | 39 ------------------------------------
+ Plugin/CMakeLists.txt        | 12 ++++++++++-
+ SofaPython3Config.cmake.in   | 37 ----------------------------------
+ Testing/CMakeLists.txt       |  5 +++++
+ 5 files changed, 17 insertions(+), 110 deletions(-)
+
+diff --git a/CMake/SofaPython3Tools.cmake b/CMake/SofaPython3Tools.cmake
+index 678743f..e59bf80 100644
+--- a/CMake/SofaPython3Tools.cmake
++++ b/CMake/SofaPython3Tools.cmake
+@@ -117,41 +117,9 @@ function(SP3_add_python_module)
+     # We are doing manually what's usually done with pybind11_add_module(${A_TARGET} SHARED "${A_SOURCES}")
+     # since we got some problems on MacOS using recent versions of pybind11 where the SHARED argument wasn't taken
+     # into account
+-    python_add_library(${A_TARGET} SHARED ${A_HEADERS} ${A_SOURCES})
++    pybind11_add_module(${A_TARGET} SHARED ${A_HEADERS} ${A_SOURCES})
+     add_library(SofaPython3::${A_TARGET} ALIAS ${A_TARGET})
+ 
+-    if ("${pybind11_VERSION}" VERSION_GREATER_EQUAL "2.6.0")
+-        target_link_libraries(${A_TARGET} PRIVATE pybind11::headers)
+-        target_link_libraries(${A_TARGET} PRIVATE pybind11::embed)
+-        target_link_libraries(${A_TARGET} PRIVATE pybind11::lto)
+-        if(MSVC)
+-            target_link_libraries(${A_TARGET} PRIVATE pybind11::windows_extras)
+-        endif()
+-
+-        pybind11_extension(${A_TARGET})
+-        pybind11_strip(${A_TARGET})
+-    else()
+-        target_link_libraries(${A_TARGET} PRIVATE pybind11::module)
+-
+-        # Equivalent to pybind11_extension(${A_TARGET}) which doesn't exists on pybind11 versions < 5
+-        set_target_properties(${A_TARGET} PROPERTIES PREFIX "" SUFFIX "${PYTHON_MODULE_EXTENSION}")
+-
+-        if(NOT MSVC AND NOT ${CMAKE_BUILD_TYPE} MATCHES Debug|RelWithDebInfo)
+-            # Equivalent to pybind11_strip(${A_TARGET}) which doesn't exists on pybind11 versions < 5
+-            # Strip unnecessary sections of the binary on Linux/macOS
+-            if(CMAKE_STRIP)
+-                if(APPLE)
+-                    set(x_opt -x)
+-                endif()
+-
+-                add_custom_command(
+-                        TARGET ${A_TARGET}
+-                        POST_BUILD
+-                        COMMAND ${CMAKE_STRIP} ${x_opt} $<TARGET_FILE:${A_TARGET}>)
+-            endif()
+-        endif()
+-    endif()
+-
+     set_target_properties(${A_TARGET}
+         PROPERTIES
+             CXX_VISIBILITY_PRESET "hidden"
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 3774e67..4902809 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -82,35 +82,6 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+ # Set the minimum python version to 3.7
+ set(PYBIND11_PYTHON_VERSION 3.7)
+ 
+-# Find Python3
+-find_package(Python ${PYBIND11_PYTHON_VERSION} COMPONENTS Interpreter Development REQUIRED)
+-
+-# Save PYTHON_* vars
+-set(PYTHON_VERSION_RESET "${PYTHON_VERSION}")
+-set(PYTHON_EXECUTABLE_RESET "${PYTHON_EXECUTABLE}")
+-set(PYTHON_LIBRARIES_RESET "${PYTHON_LIBRARIES}")
+-set(PYTHON_INCLUDE_DIRS_RESET "${PYTHON_INCLUDE_DIRS}")
+-set(PYTHON_LIBRARY_RESET "${PYTHON_LIBRARY}")
+-set(PYTHON_INCLUDE_DIR_RESET "${PYTHON_INCLUDE_DIR}")
+-
+-# Change PYTHON_* vars before pybind11 find_package
+-# to be sure that pybind11 relies on the right Python version
+-set(PYTHON_VERSION "${Python_VERSION}" CACHE STRING "" FORCE)
+-set(PYTHON_EXECUTABLE "${Python_EXECUTABLE}" CACHE FILEPATH "" FORCE)
+-set(PYTHON_LIBRARIES "${Python_LIBRARIES}" CACHE STRING "" FORCE)
+-set(PYTHON_INCLUDE_DIRS "${Python_INCLUDE_DIRS}" CACHE STRING "" FORCE)
+-if(EXISTS "${Python_LIBRARY}")
+-    set(PYTHON_LIBRARY "${Python_LIBRARY}" CACHE INTERNAL "" FORCE)
+-elseif(EXISTS "${Python_LIBRARIES}")
+-    set(PYTHON_LIBRARY "${Python_LIBRARIES}" CACHE INTERNAL "" FORCE)
+-endif()
+-if(EXISTS "${Python_INCLUDE_DIR}")
+-    set(PYTHON_INCLUDE_DIR "${Python_INCLUDE_DIR}" CACHE INTERNAL "" FORCE)
+-elseif(EXISTS "${Python_INCLUDE_DIRS}")
+-    set(PYTHON_INCLUDE_DIR "${Python_INCLUDE_DIRS}" CACHE INTERNAL "" FORCE)
+-endif()
+-string(REGEX MATCH "[0-9]+\.[0-9]+" PythonMAJMIN "${Python_VERSION}")
+-
+ # Set the minimum pybind11 version to 2.3 (before that the pybind11::embed target did not exist)
+ find_package(pybind11 2.3 CONFIG QUIET REQUIRED)
+ 
+@@ -146,8 +117,6 @@ message(STATUS "Python:
+     Libraries: ${Python_LIBRARIES}
+     User site: ${PYTHON_USER_SITE}"
+ )
+-
+-
+ message(STATUS "pybind11:
+     Version: ${pybind11_VERSION}
+     Config: ${pybind11_CONFIG}"
+@@ -246,11 +215,3 @@ if (SP3_LINK_TO_USER_SITE AND SP3_PYTHON_PACKAGES_LINK_DIRECTORY)
+         endif()
+     endforeach()
+ endif()
+-
+-# Reset PYTHON_* vars
+-set(PYTHON_VERSION "${PYTHON_VERSION_RESET}" CACHE STRING "" FORCE)
+-set(PYTHON_EXECUTABLE "${PYTHON_EXECUTABLE_RESET}" CACHE FILEPATH "" FORCE)
+-set(PYTHON_LIBRARIES "${PYTHON_LIBRARIES_RESET}" CACHE STRING "" FORCE)
+-set(PYTHON_INCLUDE_DIRS "${PYTHON_INCLUDE_DIRS_RESET}" CACHE STRING "" FORCE)
+-set(PYTHON_LIBRARY "${PYTHON_LIBRARY_RESET}" CACHE INTERNAL "" FORCE)
+-set(PYTHON_INCLUDE_DIR "${PYTHON_INCLUDE_DIR_RESET}" CACHE INTERNAL "" FORCE)
+diff --git a/Plugin/CMakeLists.txt b/Plugin/CMakeLists.txt
+index f53e987..7cd08e4 100644
+--- a/Plugin/CMakeLists.txt
++++ b/Plugin/CMakeLists.txt
+@@ -35,7 +35,17 @@ add_library(SofaPython3::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
+ target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_SOFAPYTHON3")
+ 
+ target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Simulation.Graph)
+-target_link_libraries(${PROJECT_NAME} PUBLIC pybind11::module pybind11::embed)
++
++# The public linking with pybind lead to have a link with libpython which
++# propagates in the python module .so. On macOS, this extra link with libpython
++# lead to segv when importing the python module in versions of python that don't
++# have a dynamic link with libpython (such as the one provided by conda which is linked
++# statically), but works fine with versions that have such link.
++if(CMAKE_SYSTEM_NAME STREQUAL Darwin)
++  target_link_libraries(${PROJECT_NAME} PRIVATE pybind11::pybind11 pybind11::python_link_helper)
++else()
++  target_link_libraries(${PROJECT_NAME} PUBLIC pybind11::embed)
++endif()
+ 
+ set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME SofaPython3)
+ 
+diff --git a/SofaPython3Config.cmake.in b/SofaPython3Config.cmake.in
+index 2c3410a..8922133 100644
+--- a/SofaPython3Config.cmake.in
++++ b/SofaPython3Config.cmake.in
+@@ -8,47 +8,10 @@ set(SP3_PYTHON_PACKAGES_DIRECTORY @SP3_PYTHON_PACKAGES_DIRECTORY@)
+ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}")
+ include(SofaPython3Tools)
+ 
+-# Find Python3
+-if(NOT Python_FOUND)
+-    find_package(Python @PythonMAJMIN@ EXACT QUIET REQUIRED COMPONENTS Interpreter Development)
+-endif()
+ 
+ # Find pybind11
+ if(NOT pybind11_FOUND)
+-    # Save PYTHON_* vars
+-    set(PYTHON_VERSION_RESET "${PYTHON_VERSION}")
+-    set(PYTHON_EXECUTABLE_RESET "${PYTHON_EXECUTABLE}")
+-    set(PYTHON_LIBRARIES_RESET "${PYTHON_LIBRARIES}")
+-    set(PYTHON_INCLUDE_DIRS_RESET "${PYTHON_INCLUDE_DIRS}")
+-    set(PYTHON_LIBRARY_RESET "${PYTHON_LIBRARY}")
+-    set(PYTHON_INCLUDE_DIR_RESET "${PYTHON_INCLUDE_DIR}")
+-
+-    # Change PYTHON_* vars before pybind11 find_package
+-    # to be sure that pybind11 relies on the right Python version
+-    set(PYTHON_VERSION "${Python_VERSION}" CACHE STRING "" FORCE)
+-    set(PYTHON_EXECUTABLE "${Python_EXECUTABLE}" CACHE FILEPATH "" FORCE)
+-    set(PYTHON_LIBRARIES "${Python_LIBRARIES}" CACHE STRING "" FORCE)
+-    set(PYTHON_INCLUDE_DIRS "${Python_INCLUDE_DIRS}" CACHE STRING "" FORCE)
+-    if(EXISTS "${Python_LIBRARY}")
+-        set(PYTHON_LIBRARY "${Python_LIBRARY}" CACHE INTERNAL "" FORCE)
+-    elseif(EXISTS "${Python_LIBRARIES}")
+-        set(PYTHON_LIBRARY "${Python_LIBRARIES}" CACHE INTERNAL "" FORCE)
+-    endif()
+-    if(EXISTS "${Python_INCLUDE_DIR}")
+-        set(PYTHON_INCLUDE_DIR "${Python_INCLUDE_DIR}" CACHE INTERNAL "" FORCE)
+-    elseif(EXISTS "${Python_INCLUDE_DIRS}")
+-        set(PYTHON_INCLUDE_DIR "${Python_INCLUDE_DIRS}" CACHE INTERNAL "" FORCE)
+-    endif()
+-
+     find_package(pybind11 @pybind11_VERSION@ QUIET REQUIRED CONFIG)
+-
+-    # Reset PYTHON_* vars
+-    set(PYTHON_VERSION "${PYTHON_VERSION_RESET}" CACHE STRING "" FORCE)
+-    set(PYTHON_EXECUTABLE "${PYTHON_EXECUTABLE_RESET}" CACHE FILEPATH "" FORCE)
+-    set(PYTHON_LIBRARIES "${PYTHON_LIBRARIES_RESET}" CACHE STRING "" FORCE)
+-    set(PYTHON_INCLUDE_DIRS "${PYTHON_INCLUDE_DIRS_RESET}" CACHE STRING "" FORCE)
+-    set(PYTHON_LIBRARY "${PYTHON_LIBRARY_RESET}" CACHE INTERNAL "" FORCE)
+-    set(PYTHON_INCLUDE_DIR "${PYTHON_INCLUDE_DIR_RESET}" CACHE INTERNAL "" FORCE)
+ endif()
+ 
+ # Find SofaPython3::XXXXX
+diff --git a/Testing/CMakeLists.txt b/Testing/CMakeLists.txt
+index becc5fa..c7f0adc 100644
+--- a/Testing/CMakeLists.txt
++++ b/Testing/CMakeLists.txt
+@@ -17,6 +17,11 @@ set(SOURCE_FILES
+ 
+ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+ target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Testing SofaPython3::Plugin)
++# We wan't the pybind11 dependency to propagate to SofaPython3Testing consumers,
++# here Bindings.*.Tests
++if(CMAKE_SYSTEM_NAME STREQUAL Darwin)
++  target_link_libraries(${PROJECT_NAME} PUBLIC pybind11::embed)
++endif()
+ target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_SOFAPYTHON3")
+ set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER Testing)
+ 
+-- 
+2.34.1
+

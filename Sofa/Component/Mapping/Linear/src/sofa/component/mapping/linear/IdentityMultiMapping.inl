@@ -141,19 +141,18 @@ void IdentityMultiMapping<TIn, TOut>::applyJT(const core::MechanicalParams* mpar
 {
     SOFA_UNUSED(mparams);
 
+    assert(dataVecInForce.size() == 1);
     const OutVecDeriv& in = dataVecInForce[0]->getValue();
 
     unsigned offset = 0;
-    for(unsigned i=0; i<dataVecOutForce.size(); i++ )
+    for (InDataVecDeriv* const dataOut : dataVecOutForce)
     {
-        InVecDeriv& out = *dataVecOutForce[i]->beginEdit();
+        auto out = sofa::helper::getWriteAccessor(*dataOut);
 
-        for(unsigned int j=0; j<out.size(); j++)
+        for (unsigned int j = 0; j < out.size(); j++)
         {
-            core::peq( out[j], in[offset+j]);
+            core::peq(out[j], in[offset + j]);
         }
-
-        dataVecOutForce[i]->endEdit();
 
         offset += out.size();
     }
@@ -162,9 +161,70 @@ void IdentityMultiMapping<TIn, TOut>::applyJT(const core::MechanicalParams* mpar
 }
 
 template <class TIn, class TOut>
-void IdentityMultiMapping<TIn, TOut>::applyJT( const core::ConstraintParams* /*cparams*/, const type::vector< InDataMatrixDeriv* >& /*dOut*/, const type::vector< const OutDataMatrixDeriv* >& /*dIn*/)
+void IdentityMultiMapping<TIn, TOut>::applyJT( const core::ConstraintParams* cparams, const type::vector< InDataMatrixDeriv* >& dOut, const type::vector< const OutDataMatrixDeriv* >& dIn)
 {
+    SOFA_UNUSED(cparams);
 
+    //only one output in the mapping
+    assert(dIn.size() == 1);
+
+    sofa::type::vector<sofa::helper::WriteAccessor<InDataMatrixDeriv> > outAccessors;
+    outAccessors.reserve(dOut.size());
+    for (auto* out : dOut)
+    {
+        outAccessors.emplace_back(out);
+    }
+
+    //compute the position of each mapping input in the provided matrix
+    sofa::type::vector<std::size_t> offsets(this->fromModels.size() + 1, 0);
+    for (std::size_t i = 0; i < this->fromModels.size(); ++i)
+    {
+        offsets[i + 1] = offsets[i] + this->fromModels[i]->getSize() * Out::deriv_total_size;
+    }
+
+    const auto findInputId = [this, &offsets](auto scalarIndex) -> std::size_t
+    {
+        auto it = std::upper_bound(offsets.begin(), offsets.end(), scalarIndex);
+        return std::distance(offsets.begin(), it) - 1;
+    };
+
+    const typename Out::MatrixDeriv& in = dIn[0]->getValue();
+    for (auto rowIt = in.begin(); rowIt != in.end(); ++rowIt)
+    {
+        // Convert the row block index into scalar index
+        const auto rowId = rowIt.index() * OutMatrixDeriv::NL;
+
+        // find which mapping input is affected by this row
+        const auto outId_row = findInputId(rowId);
+
+        for (auto colIt = rowIt.begin(); colIt != rowIt.end(); ++colIt)
+        {
+            // Convert the column block index into scalar index
+            const auto colId = colIt.index() * OutMatrixDeriv::NC;
+
+            // find which mapping input is affected by this column
+            const auto outId_col = findInputId(colId);
+
+            // coupled terms are not supported
+            if (outId_col != outId_row)
+            {
+                continue;
+            }
+
+            if (outId_col < outAccessors.size())
+            {
+                auto lineIt = outAccessors[outId_col]->writeLine(rowId / InMatrixDeriv::NL);
+
+                Deriv_t<In> value;
+                core::eq( value, colIt.val() );
+
+                const auto blockColIndex = colId - offsets[outId_col];
+                const auto localColIndex = In::deriv_total_size * (blockColIndex / Out::deriv_total_size) + blockColIndex % Out::deriv_total_size;
+
+                lineIt.addCol(localColIndex / InMatrixDeriv::NC, value);
+            }
+        }
+    }
 }
 
 

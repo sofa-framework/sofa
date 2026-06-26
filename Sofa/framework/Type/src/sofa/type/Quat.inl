@@ -387,11 +387,11 @@ auto Quat<Real>::slerp(const Quat &q1, Real t) const -> Quat
 
     q0_1.quatToAxis(axis, angle);
 
-    temp = axis * sin(t * angle);
+    temp = axis * sin(t * angle / Real(2.0));
     for (unsigned int i = 0 ; i<3 ; i++)
         q0_1[i] = temp[i];
 
-    q0_1[3] = cos(t * angle);
+    q0_1[3] = cos(t * angle / Real(2.0));
     q0_1 = q0_1 * (*this);
     return q0_1;
 }
@@ -537,7 +537,7 @@ auto Quat<Real>::createFromRotationVector(Real a0, Real a1, Real a2 ) -> Quat
 {
     Real phi = Real(sqrt(a0*a0+a1*a1+a2*a2));
 
-    if( phi >= 1.0e-5 )
+    if( phi <= 1.0e-5 )
         return Quat(0,0,0,1);
 
     Real nor = 1/phi;

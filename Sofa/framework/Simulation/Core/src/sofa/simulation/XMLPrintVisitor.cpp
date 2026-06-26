@@ -64,7 +64,7 @@ void XMLPrintVisitor::processObject(T obj)
     m_out << "/>" << std::endl;
 }
 
-void XMLPrintVisitor::processBaseObject(core::objectmodel::BaseObject* obj)
+void XMLPrintVisitor::processBaseObject(core::objectmodel::BaseComponent* obj)
 {
     processObject(obj);
 }
@@ -100,7 +100,7 @@ Visitor::Result XMLPrintVisitor::processNodeTopDown(simulation::Node* node)
     // BUGFIX(Jeremie A.): filter objects to output interactions classes after the children nodes to resolve dependencies at creation time
     for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
     {
-        sofa::core::objectmodel::BaseObject* obj = it->get();
+        sofa::core::objectmodel::BaseComponent* obj = it->get();
         if (    obj->toBaseInteractionForceField() == nullptr
             &&  obj->toBaseInteractionConstraint() == nullptr
             &&  obj->toBaseInteractionProjectiveConstraintSet() == nullptr
@@ -115,7 +115,7 @@ void XMLPrintVisitor::processNodeBottomUp(simulation::Node* node)
 {
     for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
     {
-        sofa::core::objectmodel::BaseObject* obj = it->get();
+        sofa::core::objectmodel::BaseComponent* obj = it->get();
         if (    obj->toBaseInteractionForceField() != nullptr
             ||  obj->toBaseInteractionConstraint() != nullptr
             ||  obj->toBaseInteractionProjectiveConstraintSet() != nullptr

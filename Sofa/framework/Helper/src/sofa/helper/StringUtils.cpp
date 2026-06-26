@@ -120,9 +120,11 @@ std::vector<std::string> split(const std::string& s, char delimiter)
 
 char* getAStringCopy(const char *c)
 {
-    char* tmp = new char[strlen(c)+1] ;
-    strcpy(tmp,c);
-    return tmp ;
+    const size_t len = strlen(c) + 1;
+    char* tmp = new char[len];
+    strncpy(tmp, c, len);
+    tmp[len - 1] = '\0';
+    return tmp;
 }
 
 void replaceAll(std::string& str, const std::string& search, const std::string& replace)

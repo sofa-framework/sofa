@@ -23,7 +23,7 @@
 
 #include <sofa/component/collision/detection/algorithm/config.h>
 
-#include <sofa/component/collision/geometry/CubeModel.h>
+#include <sofa/component/collision/geometry/CubeCollisionModel.h>
 
 namespace sofa::component::collision::detection::algorithm
 {

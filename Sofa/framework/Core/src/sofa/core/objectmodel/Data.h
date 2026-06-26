@@ -409,14 +409,27 @@ public:
 
 protected:
     data_container_type& data;
+    bool m_moved = false;
 
     /// @internal used by WriteOnlyAccessor
     WriteAccessor( container_type* c, data_container_type& d) : Inherit(*c), data(d) {}
 
 public:
+    WriteAccessor(WriteAccessor&& other) noexcept : Inherit(std::move(other)), data(other.data)
+    {
+        other.m_moved = true;
+    }
+
     WriteAccessor(data_container_type& d) : Inherit(*d.beginEdit()), data(d) {}
     WriteAccessor(data_container_type* d) : Inherit(*d->beginEdit()), data(*d) {}
-    ~WriteAccessor() { data.endEdit(); }
+
+    ~WriteAccessor()
+    {
+        if (!m_moved)
+        {
+            data.endEdit();
+        }
+    }
 };
 
 

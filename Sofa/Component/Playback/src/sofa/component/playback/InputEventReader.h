@@ -22,7 +22,7 @@
 #pragma once
 #include <sofa/component/playback/config.h>
 
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/core/objectmodel/MouseEvent.h>
 #include <sofa/core/objectmodel/DataFileName.h>
@@ -44,10 +44,10 @@ struct input_event {};
  *
  * Reads mouse Linux events from file /dev/input/eventX and propagate them as SOFA MouseEvents.
  */
-class InputEventReader : public core::objectmodel::BaseObject
+class InputEventReader : public core::objectmodel::BaseComponent
 {
 public:
-    SOFA_CLASS(InputEventReader,core::objectmodel::BaseObject);
+    SOFA_CLASS(InputEventReader,core::objectmodel::BaseComponent);
 protected:
     /**
      * @brief Default Constructor.

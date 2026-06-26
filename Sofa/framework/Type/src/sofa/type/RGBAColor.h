@@ -90,6 +90,7 @@ public:
     constexpr static const RGBAColor& maroon();
     constexpr static const RGBAColor& silver();
     constexpr static const RGBAColor& gold();
+    constexpr static const RGBAColor& azure();
 
     /// @brief enlight a color by a given factor.
     static RGBAColor lighten(const RGBAColor& in, const SReal factor);
@@ -270,6 +271,7 @@ constexpr RGBAColor g_olive     { 0.5f, 0.5f, 0.0f, 1.0f };
 constexpr RGBAColor g_maroon    { 0.5f, 0.0f, 0.0f, 1.0f };
 constexpr RGBAColor g_silver    { 0.75f, 0.75f, 0.75f, 1.0f };
 constexpr RGBAColor g_gold      { 1.0f, 0.84f, 0.0f, 1.0f };
+constexpr RGBAColor g_azure     { 0.0f, 0.5, 1.0f, 1.0f };
 
 constexpr const RGBAColor& RGBAColor::white()    { return g_white;     }
 constexpr const RGBAColor& RGBAColor::black()    { return g_black;     }
@@ -293,7 +295,7 @@ constexpr const RGBAColor& RGBAColor::olive()    { return g_olive ; }
 constexpr const RGBAColor& RGBAColor::maroon()   { return g_maroon; }
 constexpr const RGBAColor& RGBAColor::silver()   { return g_silver; }
 constexpr const RGBAColor& RGBAColor::gold()     { return g_gold  ; }
-
+constexpr const RGBAColor& RGBAColor::azure()    { return g_azure  ; }
 
 } // namespace sofa::type
 

@@ -49,7 +49,7 @@ void MechanicalComputeDfVisitor::bwdMechanicalMapping(simulation::Node* /*node*/
     if (accumulate)
     {
         map->applyJT(mparams, res, res);  // apply material stiffness: variation of force below the mapping
-        if( mparams->kFactor() ) map->applyDJT(mparams, res, res); // apply geometric stiffness: variation due to a change of mapping, with a constant force below the mapping
+        if(mparams->kFactor() != 0) map->applyDJT(mparams, res, res); // apply geometric stiffness: variation due to a change of mapping, with a constant force below the mapping
     }
 }
 

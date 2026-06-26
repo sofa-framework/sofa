@@ -29,6 +29,7 @@
 #include <sofa/helper/ScopedAdvancedTimer.h>
 #include <sofa/helper/io/Mesh.h>
 #include <sofa/helper/system/FileRepository.h>
+#include <sofa/helper/system/FileSystem.h>
 #include <sofa/core/topology/TopologyData.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
@@ -117,6 +118,7 @@ VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filena
     , d_updateNormals   (initData   (&d_updateNormals, true, "updateNormals", "True if normals should be updated at each iteration"))
     , d_computeTangents (initData   (&d_computeTangents, false, "computeTangents", "True if tangents should be computed at startup"))
     , d_updateTangents  (initData   (&d_updateTangents, true, "updateTangents", "True if tangents should be updated at each iteration"))
+    , d_computeTextureCoordinates(initData   (&d_computeTextureCoordinates, false, "computeTextureCoordinates", "True if texture coordinates should be computed at startup, using UV sphere projection"))
     , d_handleDynamicTopology (initData   (&d_handleDynamicTopology, true, "handleDynamicTopology", "True if topological changes should be handled"))
     , d_fixMergedUVSeams (initData   (&d_fixMergedUVSeams, true, "fixMergedUVSeams", "True if UV seams should be handled even when duplicate UVs are merged"))
     , d_keepLines (initData   (&d_keepLines, false, "keepLines", "keep and draw lines (false by default)"))
@@ -130,7 +132,7 @@ VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filena
     , d_vertPosIdx      (initData   (&d_vertPosIdx, "vertPosIdx", "If vertices have multiple normals/texcoords stores vertices position indices"))
     , d_vertNormIdx     (initData   (&d_vertNormIdx, "vertNormIdx", "If vertices have multiple normals/texcoords stores vertices normal indices"))
     , d_fileMesh          (initData   (&d_fileMesh, "filename", " Path to an ogl model"))
-    , d_texturename       (initData   (&d_texturename, "texturename", "Name of the Texture"))
+    , d_texturename       (initData   (&d_texturename, "texturename", "Full path of the texture file"))
     , d_translation     (initData   (&d_translation, Vec3Real(), "translation", "Initial Translation of the object"))
     , d_rotation        (initData   (&d_rotation, Vec3Real(), "rotation", "Initial Rotation of the object"))
     , d_scale           (initData   (&d_scale, Vec3Real(1.0, 1.0, 1.0), "scale3d", "Initial Scale of the object"))
@@ -224,7 +226,15 @@ void VisualModelImpl::doDrawVisual(const core::visual::VisualParams* vparams)
         if (m_textureChanged)
         {
             deleteTextures();
-            loadTexture(d_texturename.getFullPath());
+            std::string textureFilename = d_texturename.getFullPath();
+            if (sofa::helper::system::FileSystem::exists(textureFilename))
+            {
+                loadTexture(textureFilename);
+            }
+            else
+            {
+                msg_error() << "Texture " << textureFilename << " cannot be loaded";
+            }
             m_textureChanged = false;
         }
         initVisual(vparams);
@@ -491,7 +501,7 @@ bool VisualModelImpl::load(const std::string& filename, const std::string& loade
             const bool textureLoaded = loadTexture(textureName);
             if(!textureLoaded)
             {
-                msg_error()<<"Texture "<<textureName<<" cannot be loaded";
+                msg_error() << "Texture " << textureName << " cannot be loaded";
             }
         }
         else
@@ -608,31 +618,23 @@ void VisualModelImpl::applyUVTransformation()
 
 void VisualModelImpl::applyTranslation(const SReal dx, const SReal dy, const SReal dz)
 {
-    const Coord d((Real)dx,(Real)dy,(Real)dz);
-
-    Data< VecCoord >* d_x = this->write(core::vec_id::write_access::position);
-    VecCoord &x = *d_x->beginEdit();
-
-    for (std::size_t i = 0; i < x.size(); i++)
+    constexpr auto computeTranslation = [](auto id, auto& vm, const auto& d)
     {
-        x[i] += d;
-    }
-
-    d_x->endEdit();
+        auto positions = sofa::helper::getWriteOnlyAccessor(*vm.write(id));
+        
+        for (auto& p : positions)
+        {
+            p += d;
+        }
+    };
+    
+    const Coord d((Real)dx,(Real)dy,(Real)dz);
+    computeTranslation(core::vec_id::write_access::position, *this, d);
 
     if(d_initRestPositions.getValue())
     {
-        VecCoord& restPositions = *(m_restPositions.beginEdit());
-
-        for (std::size_t i = 0; i < restPositions.size(); i++)
-        {
-            restPositions[i] += d;
-        }
-
-        m_restPositions.endEdit();
+        computeTranslation(core::vec_id::write_access::restPosition, *this, d);
     }
-
-    updateVisual(sofa::core::visual::visualparams::defaultInstance());
 }
 
 void VisualModelImpl::applyRotation(const SReal rx, const SReal ry, const SReal rz)
@@ -643,60 +645,44 @@ void VisualModelImpl::applyRotation(const SReal rx, const SReal ry, const SReal 
 
 void VisualModelImpl::applyRotation(const Quat<SReal> q)
 {
-    Data< VecCoord >* d_x = this->write(core::vec_id::write_access::position);
-    VecCoord &x = *d_x->beginEdit();
-
-    for (std::size_t i = 0; i < x.size(); i++)
+    constexpr auto computeRotation = [](auto id, auto& vm, const auto& q)
     {
-        x[i] = q.rotate(x[i]);
-    }
+        auto positions = sofa::helper::getWriteOnlyAccessor(*vm.write(id));
 
-    d_x->endEdit();
+        for (auto& p : positions)
+        {
+            p = q.rotate(p);
+        }
+    };
+    
+    computeRotation(core::vec_id::write_access::position, *this, q);
 
     if(d_initRestPositions.getValue())
     {
-        VecCoord& restPositions = *(m_restPositions.beginEdit());
-
-        for (std::size_t i = 0; i < restPositions.size(); i++)
-        {
-            restPositions[i] = q.rotate(restPositions[i]);
-        }
-
-        m_restPositions.endEdit();
+        computeRotation(core::vec_id::write_access::restPosition, *this, q);
     }
-
-    updateVisual(sofa::core::visual::visualparams::defaultInstance());
 }
 
 void VisualModelImpl::applyScale(const SReal sx, const SReal sy, const SReal sz)
 {
-    Data< VecCoord >* d_x = this->write(core::vec_id::write_access::position);
-    VecCoord &x = *d_x->beginEdit();
-
-    for (std::size_t i = 0; i < x.size(); i++)
+    constexpr auto computeScale = [](auto id, auto& vm, const auto sx, const auto sy, const auto sz)
     {
-        x[i][0] *= (Real)sx;
-        x[i][1] *= (Real)sy;
-        x[i][2] *= (Real)sz;
-    }
+        auto positions = sofa::helper::getWriteOnlyAccessor(*vm.write(id));
 
-    d_x->endEdit();
-
+        for (auto& p : positions)
+        {
+            p[0] *= (Real)sx;
+            p[1] *= (Real)sy;
+            p[2] *= (Real)sz;
+        }
+    };
+    
+    computeScale(core::vec_id::write_access::position, *this, sx, sy, sz);
+    
     if(d_initRestPositions.getValue())
     {
-        VecCoord& restPositions = *(m_restPositions.beginEdit());
-
-        for (std::size_t i = 0; i < restPositions.size(); i++)
-        {
-            restPositions[i][0] *= (Real)sx;
-            restPositions[i][1] *= (Real)sy;
-            restPositions[i][2] *= (Real)sz;
-        }
-
-        m_restPositions.endEdit();
+        computeScale(core::vec_id::write_access::restPosition, *this, sx, sy, sz);
     }
-
-    updateVisual(sofa::core::visual::visualparams::defaultInstance());
 }
 
 void VisualModelImpl::applyUVTranslation(const Real dU, const Real dV)
@@ -781,15 +767,22 @@ void VisualModelImpl::init()
         return;
     }
 
-    applyScale(d_scale.getValue()[0], d_scale.getValue()[1], d_scale.getValue()[2]);
-    applyRotation(d_rotation.getValue()[0], d_rotation.getValue()[1], d_rotation.getValue()[2]);
-    applyTranslation(d_translation.getValue()[0], d_translation.getValue()[1], d_translation.getValue()[2]);
+    const auto& scale = d_scale.getValue();
+    const auto& rotation = d_rotation.getValue();
+    const auto& translation = d_translation.getValue();
+    
+    applyScale(scale[0], scale[1], scale[2]);
+    applyRotation(rotation[0], rotation[1], rotation[2]);
+    applyTranslation(translation[0], translation[1], translation[2]);
+    
+    updateVisual(sofa::core::visual::visualparams::defaultInstance());
 
     d_translation.setValue(Vec3Real());
     d_rotation.setValue(Vec3Real());
     d_scale.setValue(Vec3Real(1, 1, 1));
-}
 
+    m_savedMaterial = d_material.getValue();
+}
 
 void VisualModelImpl::initPositionFromVertices()
 {
@@ -1174,6 +1167,7 @@ void VisualModelImpl::computeBBox(const core::ExecParams*, bool)
     {
         bbox.include(v);
     }
+    
     this->f_bbox.setValue(bbox);
 }
 
@@ -1183,7 +1177,8 @@ void VisualModelImpl::computeUVSphereProjection()
     const sofa::core::visual::VisualParams* vparams = sofa::core::visual::VisualParams::defaultInstance();
     this->computeBBox(vparams);
 
-    auto center = (this->f_bbox.getValue().minBBox() + this->f_bbox.getValue().maxBBox())*0.5f;
+    const auto bbox = this->f_bbox.getValue();
+    const auto center = (bbox.minBBox() + bbox.maxBBox())*0.5f;
 
     // Map mesh vertices to sphere
     // transform cart to spherical coordinates (r, theta, phi) and sphere to cart back with radius = 1
@@ -1192,29 +1187,25 @@ void VisualModelImpl::computeUVSphereProjection()
     const std::size_t nbrV = coords.size();
     VecCoord m_sphereV;
     m_sphereV.resize(nbrV);
-
-    VecTexCoord& vtexcoords = *(d_vtexcoords.beginEdit());
+    
+    auto vtexcoords = sofa::helper::getWriteOnlyAccessor(d_vtexcoords);
     vtexcoords.resize(nbrV);
 
     for (std::size_t i = 0; i < nbrV; ++i)
     {
-        Coord Vcentered = coords[i] - center;
-        SReal r = sqrt(Vcentered[0] * Vcentered[0] + Vcentered[1] * Vcentered[1] + Vcentered[2] * Vcentered[2]);
-        const SReal theta = acos(Vcentered[2] / r);
-        const SReal phi = atan2(Vcentered[1], Vcentered[0]);
+        const Coord Vcentered = coords[i] - center;
+        const auto r = sqrt(Vcentered[0] * Vcentered[0] + Vcentered[1] * Vcentered[1] + Vcentered[2] * Vcentered[2]);
+        const auto theta = acos(Vcentered[2] / r);
+        const auto phi = atan2(Vcentered[1], Vcentered[0]);
 
-        r = 1.0;
-        m_sphereV[i][0] = r * sin(theta)*cos(phi) + center[0];
-        m_sphereV[i][1] = r * sin(theta)*sin(phi) + center[1];
-        m_sphereV[i][2] = r * cos(theta) + center[2];
+        m_sphereV[i][0] = sin(theta)*cos(phi) + center[0];
+        m_sphereV[i][1] = sin(theta)*sin(phi) + center[1];
+        m_sphereV[i][2] = cos(theta) + center[2];
 
-        Coord pos = m_sphereV[i] - center;
-        pos.normalize();
-        vtexcoords[i][0] = float(0.5 + atan2(pos[1], pos[0]) / (2 * R_PI));
-        vtexcoords[i][1] = float(0.5 - asin(pos[2]) / R_PI);
+        const Coord pos = (m_sphereV[i] - center).normalized();
+        vtexcoords[i][0] = static_cast<TexCoord::value_type>(0.5 + atan2(pos[1], pos[0]) / (2 * R_PI));
+        vtexcoords[i][1] = static_cast<TexCoord::value_type>(0.5 - asin(pos[2]) / R_PI);
     }
-
-    d_vtexcoords.endEdit();
 }
 
 void VisualModelImpl::flipFaces()
@@ -1329,7 +1320,7 @@ void VisualModelImpl::doUpdateVisual(const core::visual::VisualParams* vparams)
             SCOPED_TIMER_VARNAME(t, "VisualModelImpl::computeTangents");
             computeTangents();
         }
-        if (d_vtexcoords.getValue().size() == 0)
+        if(d_computeTextureCoordinates.getValue())
         {
             SCOPED_TIMER_VARNAME(t, "VisualModelImpl::computeUVSphereProjection");
             computeUVSphereProjection();

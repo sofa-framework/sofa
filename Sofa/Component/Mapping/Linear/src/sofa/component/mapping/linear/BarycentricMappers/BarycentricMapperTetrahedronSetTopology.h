@@ -29,6 +29,7 @@ using sofa::defaulttype::Vec3Types;
 using sofa::type::Mat3x3d;
 using sofa::type::Vec3;
 typedef typename sofa::core::topology::BaseMeshTopology::Tetrahedron Tetrahedron;
+using sofa::type::Mat3x3;
 
 /// Class allowing barycentric mapping computation on a TetrahedronSetTopology
 template<class In, class Out>
@@ -52,7 +53,7 @@ protected:
 
     virtual type::vector<Tetrahedron> getElements() override;
     virtual std::array<Real, Tetrahedron::NumberOfNodes>getBarycentricCoefficients(const std::array<Real, MappingData::NumberOfCoordinates>& barycentricCoordinates) override;
-    void computeBase(Mat3x3d& base, const typename In::VecCoord& in, const Tetrahedron& element) override;
+    void computeBase(Mat3x3& base, const typename In::VecCoord& in, const Tetrahedron& element) override;
     void computeCenter(Vec3& center, const typename In::VecCoord& in, const Tetrahedron& element) override;
     void computeDistance(SReal& d, const Vec3& v) override;
     void addPointInElement(const Index elementIndex, const SReal* baryCoords) override;

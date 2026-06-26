@@ -54,7 +54,7 @@ namespace _blenderexporter_
 // TODO: currently the export only support soft body and hair simulations, clothes, smoke and fluid simulation could be added.
 
 template<class T>
-class SOFA_COMPONENT_IO_MESH_API BlenderExporter: public sofa::simulation::BaseSimulationExporter
+class BlenderExporter: public sofa::simulation::BaseSimulationExporter
 {
 public:
     typedef sofa::simulation::BaseSimulationExporter Inherit;
@@ -105,7 +105,7 @@ public:
                           "' found in the context node.");
             return false;
         }
-        return BaseObject::canCreate(obj, context, arg);
+        return sofa::core::objectmodel::BaseComponent::canCreate(obj, context, arg);
     }
 };
 

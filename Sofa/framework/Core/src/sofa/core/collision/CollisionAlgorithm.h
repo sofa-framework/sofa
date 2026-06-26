@@ -21,15 +21,15 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 
 namespace sofa::core::collision
 {
 
-class CollisionAlgorithm : public virtual objectmodel::BaseObject
+class CollisionAlgorithm : public virtual objectmodel::BaseComponent
 {
 public:
-    SOFA_ABSTRACT_CLASS(CollisionAlgorithm, objectmodel::BaseObject);
+    SOFA_ABSTRACT_CLASS(CollisionAlgorithm, objectmodel::BaseComponent);
 
     /// Collision 'pipeline' instance, allowing to store multiple internal states
     typedef void* Instance;

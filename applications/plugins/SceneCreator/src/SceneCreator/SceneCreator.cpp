@@ -86,15 +86,15 @@ Node::SPtr  createEulerSolverNode(Node::SPtr parent, const std::string& name, co
 
     if (scheme == "Explicit")
     {
-        simpleapi::createObject(parent, "RequiredPlugin", {{"name", Sofa.Component.ODESolver.Forward}});
+        simpleapi::createObject(parent, "RequiredPlugin", {{"pluginName", Sofa.Component.ODESolver.Forward}});
         simpleapi::createObject(node, "EulerExplicitSolver", {{"name","Euler Explicit"}});
         return node ;
     }
 
     if (scheme == "Implicit")
     {
-        simpleapi::createObject(parent, "RequiredPlugin", {{"name", Sofa.Component.ODESolver.Backward}});
-        simpleapi::createObject(parent, "RequiredPlugin", {{"name", Sofa.Component.LinearSolver.Iterative}});
+        simpleapi::createObject(parent, "RequiredPlugin", {{"pluginName", Sofa.Component.ODESolver.Backward}});
+        simpleapi::createObject(parent, "RequiredPlugin", {{"pluginName", Sofa.Component.LinearSolver.Iterative}});
         simpleapi::createObject(node, "EulerImplicitSolver", {{"name","Euler Implicit"},
                                                               {"rayleighStiffness","0.01"},
                                                               {"rayleighMass", "1.0"}}) ;
@@ -108,8 +108,8 @@ Node::SPtr  createEulerSolverNode(Node::SPtr parent, const std::string& name, co
 
     if (scheme == "Implicit_SparseLDL")
     {
-        simpleapi::createObject(parent, "RequiredPlugin", {{"name", Sofa.Component.ODESolver.Backward}});
-        simpleapi::createObject(parent, "RequiredPlugin", {{"name", Sofa.Component.LinearSolver.Direct}});
+        simpleapi::createObject(parent, "RequiredPlugin", {{"pluginName", Sofa.Component.ODESolver.Backward}});
+        simpleapi::createObject(parent, "RequiredPlugin", {{"pluginName", Sofa.Component.LinearSolver.Direct}});
         simpleapi::createObject(node, "EulerImplicitSolver", {{"name","Euler Implicit"},
                                                                 {"rayleighStiffness","0.01"},
                                                                 {"rayleighMass", "1.0"}}) ;
@@ -182,7 +182,7 @@ Node::SPtr createObstacle(Node::SPtr  parent, const std::string &filenameCollisi
 }
 
 
-Node::SPtr createCollisionNodeVec3(Node::SPtr  parent, BaseObject::SPtr  dof,
+Node::SPtr createCollisionNodeVec3(Node::SPtr  parent, sofa::core::objectmodel::BaseObject::SPtr  dof,
                                    const std::string &filename,
                                    const std::vector<std::string> &elements,
                                    const Deriv3& translation, const Deriv3 &rotation)
@@ -212,7 +212,7 @@ Node::SPtr createCollisionNodeVec3(Node::SPtr  parent, BaseObject::SPtr  dof,
 }
 
 simulation::Node::SPtr createVisualNodeVec3(simulation::Node::SPtr  parent,
-                                            BaseObject::SPtr  dof,
+                                            sofa::core::objectmodel::BaseObject::SPtr  dof,
                                             const std::string &filename, const std::string& color,
                                             const Deriv3& translation, const Deriv3 &rotation,
                                             const MappingType &mappingT)
@@ -257,7 +257,7 @@ simulation::Node::SPtr createVisualNodeVec3(simulation::Node::SPtr  parent,
 
 
 
-Node::SPtr createCollisionNodeRigid(Node::SPtr  parent, BaseObject::SPtr  dofRigid,
+Node::SPtr createCollisionNodeRigid(Node::SPtr  parent, sofa::core::objectmodel::BaseObject::SPtr  dofRigid,
                                     const std::string &filename,
                                     const std::vector<std::string> &elements,
                                     const Deriv3& translation, const Deriv3 &rotation)
@@ -288,7 +288,7 @@ Node::SPtr createCollisionNodeRigid(Node::SPtr  parent, BaseObject::SPtr  dofRig
     return node;
 }
 
-Node::SPtr createVisualNodeRigid(Node::SPtr  parent, BaseObject::SPtr  dofRigid,
+Node::SPtr createVisualNodeRigid(Node::SPtr  parent, sofa::core::objectmodel::BaseObject::SPtr  dofRigid,
                                  const std::string &filename, const std::string& color,
                                  const Deriv3& translation, const Deriv3 &rotation)
 {

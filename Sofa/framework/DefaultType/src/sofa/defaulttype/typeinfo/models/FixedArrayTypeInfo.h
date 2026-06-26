@@ -65,7 +65,7 @@ struct FixedArrayTypeInfo
 
     static sofa::Size size(const DataType& data)
     {
-        if (FixedSize)
+        if constexpr (FixedSize)
             return size();
         else
         {
@@ -78,11 +78,14 @@ struct FixedArrayTypeInfo
 
     static bool setSize(DataType& data, sofa::Size size)
     {
-        if (!FixedSize)
+        if constexpr (!FixedSize)
         {
-            size /= data.size();
-            for (sofa::Size i=0; i<data.size(); ++i)
-                if( !BaseTypeInfo::setSize(data[(sofa::Size)i], size) ) return false;
+            size /= static_cast<sofa::Size>(data.size());
+            for (sofa::Size i = 0; i < data.size(); ++i)
+            {
+                if (!BaseTypeInfo::setSize(data[(sofa::Size)i], size)) 
+                    return false;
+            }
             return true;
         }
         return false;
@@ -91,13 +94,17 @@ struct FixedArrayTypeInfo
     template <typename T>
     static void getValue(const DataType &data, sofa::Size index, T& value)
     {
-        if (BaseTypeInfo::FixedSize && BaseTypeInfo::size() == 1)
+        if constexpr (BaseTypeInfo::FixedSize)
         {
-            BaseTypeInfo::getValue(data[(sofa::Size)index], 0, value);
-        }
-        else if (BaseTypeInfo::FixedSize)
-        {
-            BaseTypeInfo::getValue(data[(sofa::Size)(index/BaseTypeInfo::size())], (sofa::Size)(index%BaseTypeInfo::size()), value);
+            if (BaseTypeInfo::size() == 1)
+            {
+                BaseTypeInfo::getValue(data[(sofa::Size)index], 0, value);
+            }
+            else
+            {
+                BaseTypeInfo::getValue(data[(sofa::Size)(index / BaseTypeInfo::size())],
+                                       (sofa::Size)(index % BaseTypeInfo::size()), value);
+            }
         }
         else
         {
@@ -118,13 +125,17 @@ struct FixedArrayTypeInfo
     template<typename T>
     static void setValue(DataType &data, sofa::Size index, const T& value )
     {
-        if (BaseTypeInfo::FixedSize && BaseTypeInfo::size() == 1)
+        if constexpr (BaseTypeInfo::FixedSize)
         {
-            BaseTypeInfo::setValue(data[(sofa::Size)index], 0, value);
-        }
-        else if (BaseTypeInfo::FixedSize)
-        {
-            BaseTypeInfo::setValue(data[(sofa::Size)(index/BaseTypeInfo::size())], (sofa::Size)(index%BaseTypeInfo::size()), value);
+            if (BaseTypeInfo::size() == 1)
+            {
+                BaseTypeInfo::setValue(data[(sofa::Size)index], 0, value);
+            }
+            else
+            {
+                BaseTypeInfo::setValue(data[(sofa::Size)(index / BaseTypeInfo::size())],
+                                       (sofa::Size)(index % BaseTypeInfo::size()), value);
+            }
         }
         else
         {
@@ -144,13 +155,16 @@ struct FixedArrayTypeInfo
 
     static void getValueString(const DataType &data, sofa::Size index, std::string& value)
     {
-        if (BaseTypeInfo::FixedSize && BaseTypeInfo::size() == 1)
+        if constexpr (BaseTypeInfo::FixedSize)
         {
-            BaseTypeInfo::getValueString(data[(sofa::Size)index], 0, value);
-        }
-        else if (BaseTypeInfo::FixedSize)
-        {
-            BaseTypeInfo::getValueString(data[(sofa::Size)(index/BaseTypeInfo::size())], (sofa::Size)(index%BaseTypeInfo::size()), value);
+            if (BaseTypeInfo::size() == 1)
+            {
+                BaseTypeInfo::getValueString(data[(sofa::Size)index], 0, value);
+            }
+            else
+            {
+                BaseTypeInfo::getValueString(data[(sofa::Size)(index/BaseTypeInfo::size())], (sofa::Size)(index%BaseTypeInfo::size()), value);
+            }
         }
         else
         {
@@ -170,13 +184,17 @@ struct FixedArrayTypeInfo
 
     static void setValueString(DataType &data, sofa::Size index, const std::string& value )
     {
-        if (BaseTypeInfo::FixedSize && BaseTypeInfo::size() == 1)
+        if constexpr (BaseTypeInfo::FixedSize)
         {
-            BaseTypeInfo::setValueString(data[(sofa::Size)index], 0, value);
-        }
-        else if (BaseTypeInfo::FixedSize)
-        {
-            BaseTypeInfo::setValueString(data[(sofa::Size)(index/BaseTypeInfo::size())], (sofa::Size)(index%BaseTypeInfo::size()), value);
+            if (BaseTypeInfo::size() == 1)
+            {
+                BaseTypeInfo::setValueString(data[(sofa::Size)index], 0, value);
+            }
+            else
+            {
+                BaseTypeInfo::setValueString(data[(sofa::Size)(index / BaseTypeInfo::size())],
+                                             (sofa::Size)(index % BaseTypeInfo::size()), value);
+            }
         }
         else
         {

@@ -176,10 +176,6 @@ public:
     /// Assign the field values stored in the given map of name -> value pairs
     virtual void parseFields ( const std::map<std::string,std::string*>& str );
 
-    /// Write the current field values to the given map of name -> value pairs
-    SOFA_ATTRIBUTE_DISABLED__BASEWRITEDATAS()
-    void writeDatas (std::map<std::string,std::string*>& str) = delete;
-
     /// Write the current field values to the given output stream
     /// separated with the given separator (" " used by default for XML)
     void writeDatas (std::ostream& out, const std::string& separator = " ");
@@ -410,7 +406,7 @@ public:
     SOFA_BASE_CAST_DEFINITION( core,        CollisionModel                         )
     SOFA_BASE_CAST_DEFINITION( core,        DataEngine                             )
     SOFA_BASE_CAST_DEFINITION( objectmodel, BaseContext                            )
-    SOFA_BASE_CAST_DEFINITION( objectmodel, BaseObject                             )
+    SOFA_BASE_CAST_DEFINITION( objectmodel, BaseComponent                          )
     SOFA_BASE_CAST_DEFINITION( objectmodel, BaseNode                               )
     SOFA_BASE_CAST_DEFINITION( objectmodel, ContextObject                          )
     SOFA_BASE_CAST_DEFINITION( objectmodel, ConfigurationSetting                   )
@@ -444,8 +440,11 @@ public:
 
 #undef SOFA_BASE_CAST_DEFINITION
 
-    SOFA_ATTRIBUTE_DEPRECATED__TOBASECONSTRAINT() virtual const behavior::BaseLagrangianConstraint* toBaseConstraint() const { return toBaseLagrangianConstraint(); } \
+    SOFA_ATTRIBUTE_DEPRECATED__TOBASECONSTRAINT() virtual const behavior::BaseLagrangianConstraint* toBaseConstraint() const { return toBaseLagrangianConstraint(); }
     SOFA_ATTRIBUTE_DEPRECATED__TOBASECONSTRAINT() virtual       behavior::BaseLagrangianConstraint* toBaseConstraint()       { return toBaseLagrangianConstraint(); }
+
+    SOFA_ATTRIBUTE_DEPRECATED__TOBASEOBJECT() virtual const objectmodel::BaseComponent* toBaseObject() const { return toBaseComponent(); }
+    SOFA_ATTRIBUTE_DEPRECATED__TOBASEOBJECT() virtual       objectmodel::BaseComponent* toBaseObject()       { return toBaseComponent(); }
 
     /// @}
 };

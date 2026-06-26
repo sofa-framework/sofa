@@ -66,7 +66,7 @@ struct DeprecatedItem
  *
  * Example:
  * MAKE_SELECTABLE_ITEMS(ResolutionMethod,
- *      sofa::helper::Item{"ProjectedGaussSeidel", "Projected Gauss-Seidel"},
+ *      sofa::helper::Item{"BlockGaussSeidel", "Block Gauss-Seidel"},
  *      sofa::helper::Item{"UnbuiltGaussSeidel", "Gauss-Seidel no matrix assembly"},
  *      sofa::helper::Item{"NonsmoothNonlinearConjugateGradient", "Non-smooth non-linear conjugate gradient"}
  *  );

@@ -80,12 +80,13 @@ public:
     /// Method to check the topology mapping maps regarding the upper topology
     bool checkTopologies() override;
 
+    SingleLink<Tetra2TriangleTopologicalMapping, container::dynamic::TriangleSetTopologyModifier, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topologyModifier;
+
 protected:
     Data<bool> d_flipNormals; ///< Flip Normal ? (Inverse point order when creating triangle)
     Data<bool> d_noNewTriangles; ///< If true no new triangles are being created
     Data<bool> d_noInitialTriangles; ///< If true the list of initial triangles is initially empty. Only additional triangles will be added in the list
     sofa::type::vector<Index> addedTriangleIndex;
-    container::dynamic::TriangleSetTopologyModifier* m_outTopoModifier; ///< Pointer to the output topology modifier
 };
 
 } //namespace sofa::component::topology::mapping

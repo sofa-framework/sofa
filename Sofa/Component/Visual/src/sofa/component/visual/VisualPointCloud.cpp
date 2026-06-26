@@ -29,12 +29,18 @@ namespace sofa::component::visual
 void registerVisualPointCloud(sofa::core::ObjectFactory* factory)
 {
     factory->registerObjects(core::ObjectRegistrationData("Render a point cloud.")
+        .add<VisualPointCloud<defaulttype::Vec1Types>>()
+        .add<VisualPointCloud<defaulttype::Vec2Types>>()
         .add<VisualPointCloud<defaulttype::Vec3Types>>(true)
+        .add<VisualPointCloud<defaulttype::Rigid2Types>>()
         .add<VisualPointCloud<defaulttype::Rigid3Types>>()
     );
 }
 
+template class SOFA_COMPONENT_VISUAL_API VisualPointCloud<defaulttype::Vec1Types>;
+template class SOFA_COMPONENT_VISUAL_API VisualPointCloud<defaulttype::Vec2Types>;
 template class SOFA_COMPONENT_VISUAL_API VisualPointCloud<defaulttype::Vec3Types>;
+template class SOFA_COMPONENT_VISUAL_API VisualPointCloud<defaulttype::Rigid2Types>;
 template class SOFA_COMPONENT_VISUAL_API VisualPointCloud<defaulttype::Rigid3Types>;
 
 

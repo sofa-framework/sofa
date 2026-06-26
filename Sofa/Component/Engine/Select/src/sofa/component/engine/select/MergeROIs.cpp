@@ -22,7 +22,7 @@
 #define MergeROIs_CPP_
 
 #include <sofa/component/engine/select/MergeROIs.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::engine::select

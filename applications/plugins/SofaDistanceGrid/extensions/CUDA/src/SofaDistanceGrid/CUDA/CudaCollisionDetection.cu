@@ -24,15 +24,6 @@
 #include <sofa/gpu/cuda/mycuda.h>
 #include "cuda.h"
 
-#if defined(__cplusplus) && CUDA_VERSION < 2000
-namespace sofa
-{
-namespace gpu
-{
-namespace cuda
-{
-#endif
-
 extern "C"
 {
     void CudaCollisionDetection_runTests(unsigned int nbTests, unsigned int maxPoints, const void* tests, void* nresults);
@@ -242,9 +233,3 @@ void CudaCollisionDetection_runTests(unsigned int nbTests, unsigned int maxPoint
     {CudaCollisionDetection_runTests_kernel<<< grid, threads, threads.x*sizeof(int) >>>(gputests, (int*)nresults); mycudaDebugError("CudaCollisionDetection_runTests_kernel");}
 
 }
-
-#if defined(__cplusplus) && CUDA_VERSION < 2000
-} // namespace cuda
-} // namespace gpu
-} // namespace sofa
-#endif

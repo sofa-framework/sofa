@@ -24,10 +24,10 @@
 #include <sofa/core/collision/Contact.h>
 using sofa::core::collision::Contact ;
 
-#include <sofa/component/collision/geometry/CubeModel.h>
-#include <sofa/component/collision/geometry/SphereModel.h>
-#include <sofa/component/collision/geometry/PointModel.h>
-#include <sofa/component/collision/geometry/TriangleModel.h>
+#include <sofa/component/collision/geometry/CubeCollisionModel.h>
+#include <sofa/component/collision/geometry/SphereCollisionModel.h>
+#include <sofa/component/collision/geometry/PointCollisionModel.h>
+#include <sofa/component/collision/geometry/TriangleCollisionModel.h>
 
 #include <sofa/component/collision/response/mapper/RigidContactMapper.inl>
 #include <sofa/component/collision/response/mapper/BarycentricContactMapper.inl>

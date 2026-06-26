@@ -1,5 +1,5 @@
 <Node name="root" gravity="0.0 -2.0 0.0" dt="0.04" >
-    <RequiredPlugin name="SofaOpenglVisual"/>
+    <RequiredPlugin pluginName="SofaOpenglVisual"/>
     <RequiredPlugin name="CUDA computing" pluginName="SofaCUDA" />
 	<CollisionPipeline verbose="0" />
 	<BruteForceBroadPhase/>

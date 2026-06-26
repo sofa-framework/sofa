@@ -343,6 +343,7 @@ void registerDiagonalMass(sofa::core::ObjectFactory* factory)
 {
     factory->registerObjects(core::ObjectRegistrationData("Compute a lumped (diagonalized) mass matrix resulting from the space integration of a density over a domain.")
         .add< DiagonalMass<Vec3Types> >()
+        .add< DiagonalMass<Vec2Types> >()
         .add< DiagonalMass<Vec2Types, Vec3Types> >()
         .add< DiagonalMass<Vec1Types> >()
         .add< DiagonalMass<Vec1Types, Vec2Types> >()

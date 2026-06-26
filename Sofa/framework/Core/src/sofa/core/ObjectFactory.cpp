@@ -138,9 +138,9 @@ void findTemplatedCreator(
     }
 }
 
-objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
+objectmodel::BaseComponent::SPtr ObjectFactory::createObject(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
 {
-    objectmodel::BaseObject::SPtr object = nullptr;
+    objectmodel::BaseComponent::SPtr object = nullptr;
     std::vector< std::pair<std::string, BaseObjectCreator::SPtr> > creators;
     std::string classname = arg->getAttribute( "type", "");
     std::string usertemplatename = arg->getAttribute( "template", "");
@@ -279,10 +279,14 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
                     possibleNames.emplace_back(k.first);
                 }
 
-                arg->logError("But the following object(s) exist:");
-                for(auto& [name, score] : sofa::helper::getClosestMatch(classname, possibleNames, 5, 0.6))
+                const auto closestMatches = sofa::helper::getClosestMatch(classname, possibleNames, 5, 0.6);
+                if (!closestMatches.empty())
                 {
-                    arg->logError( "                      : " + name + " ("+ std::to_string((int)(100*score))+"% match)");
+                    arg->logError("But the following object(s) exist:");
+                    for(auto& [name, score] : closestMatches)
+                    {
+                        arg->logError( "                      : " + name + " ("+ std::to_string((int)(100*score))+"% match)");
+                    }
                 }
             }
         }
@@ -525,7 +529,7 @@ void ObjectFactory::dump(std::ostream& out)
         if (!entry->aliases.empty())
         {
             out << "  aliases :";
-            for (std::set<std::string>::iterator myit = entry->aliases.begin(), itend = entry->aliases.end(); myit != itend; ++myit)
+            for (std::set<std::string>::iterator myit = entry->aliases.begin(), aliasesEnd = entry->aliases.end(); myit != aliasesEnd; ++myit)
                 out << " " << *myit;
             out << "\n";
         }
@@ -569,7 +573,7 @@ void ObjectFactory::dumpXML(std::ostream& out)
         const ClassEntry::SPtr entry = it->second;
         if (entry->className != it->first) continue;
         out << "<class name=\"" << xmlencode(entry->className) <<"\">\n";
-        for (std::set<std::string>::iterator myit = entry->aliases.begin(), itend = entry->aliases.end(); myit != itend; ++myit)
+        for (std::set<std::string>::iterator myit = entry->aliases.begin(), aliasesEnd = entry->aliases.end(); myit != aliasesEnd; ++myit)
             out << "<alias>" << xmlencode(*myit) << "</alias>\n";
         if (!entry->description.empty())
             out << "<description>"<<entry->description<<"</description>\n";
@@ -603,7 +607,7 @@ void ObjectFactory::dumpHTML(std::ostream& out)
         if (!entry->aliases.empty())
         {
             out << "<li>Aliases:<i>";
-            for (std::set<std::string>::iterator myit = entry->aliases.begin(), itend = entry->aliases.end(); myit != itend; ++myit)
+            for (std::set<std::string>::iterator myit = entry->aliases.begin(), aliasesEnd = entry->aliases.end(); myit != aliasesEnd; ++myit)
                 out << " " << xmlencode(*myit);
             out << "</i></li>\n";
         }

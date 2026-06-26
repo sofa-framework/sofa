@@ -98,6 +98,7 @@ public:
         in>>m.mass;
         in>>m.volume;
         in>>m.inertiaMatrix;
+        m.recalc();
         return in;
     }
     constexpr void operator *=(Real fact)
@@ -195,8 +196,8 @@ public:
     RigidMass(Real m, Real xwidth, Real ywidth)
     {
         mass = m;
-        volume = xwidth*xwidth + ywidth*ywidth;
-        inertiaMatrix = volume/12;
+        volume = xwidth * ywidth;
+        inertiaMatrix = (xwidth*xwidth + ywidth*ywidth) / 12;
         recalc();
     }
 
@@ -226,6 +227,7 @@ public:
         in>>m.mass;
         in>>m.volume;
         in>>m.inertiaMatrix;
+        m.recalc();
         return in;
     }
     constexpr void operator *=(Real fact)

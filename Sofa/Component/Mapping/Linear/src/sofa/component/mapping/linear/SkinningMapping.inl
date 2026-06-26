@@ -42,6 +42,7 @@ SkinningMapping<TIn, TOut>::SkinningMapping ()
     , d_index (initData (&d_index, "indices", "parent indices for each child." ) )
     , d_weight (initData (&d_weight, "weight", "influence weights of the Dofs." ) )
     , d_showFromIndex (initData (&d_showFromIndex, ( unsigned int ) 0, "showFromIndex", "Displayed From Index." ) )
+    , d_computeWeightsFromPosition (initData (&d_computeWeightsFromPosition, false, "computeWeightsFromPosition", "By default, the weights are computed w.r.t the rest positions of the input model. Set to true to compute them from the position instead." ) )
     , d_showWeights (initData (&d_showWeights, false, "showWeights", "Show influence." ) )
 {
     type::vector<unsigned int> defaultNbRef;
@@ -86,7 +87,7 @@ void SkinningMapping<TIn, TOut>::reinit()
 
     sofa::helper::ReadAccessor<Data<OutVecCoord> > out (*this->toModel->read(core::vec_id::read_access::position));
     sofa::helper::ReadAccessor<Data<OutVecCoord> > xto (this->d_initPos);
-    sofa::helper::ReadAccessor<Data<InVecCoord> > xfrom = *this->fromModel->read(core::vec_id::read_access::restPosition);
+    sofa::helper::ReadAccessor<Data<InVecCoord> > xfrom = *this->fromModel->read(d_computeWeightsFromPosition.getValue()? core::vec_id::read_access::position : core::vec_id::read_access::restPosition);
     sofa::helper::WriteAccessor<Data<type::vector<sofa::type::SVector<InReal> > > > m_weights  (d_weight );
     const sofa::helper::ReadAccessor<Data<type::vector<sofa::type::SVector<unsigned int> > > > index ( this->d_index );
 
@@ -133,7 +134,8 @@ void SkinningMapping<TIn, TOut>::updateWeights ()
     msg_info() << "UPDATE WEIGHTS";
 
     sofa::helper::ReadAccessor<Data<OutVecCoord> > xto (this->d_initPos);
-    sofa::helper::ReadAccessor<Data<InVecCoord> > xfrom = *this->fromModel->read(core::vec_id::read_access::restPosition);
+    sofa::helper::ReadAccessor<Data<InVecCoord> > xfrom = *this->fromModel->read(d_computeWeightsFromPosition.getValue()? core::vec_id::read_access::position : core::vec_id::read_access::restPosition);
+
     sofa::helper::WriteAccessor<Data<type::vector<sofa::type::SVector<InReal> > > > m_weights  (d_weight );
     sofa::helper::WriteAccessor<Data<type::vector<sofa::type::SVector<unsigned int> > > > index (d_index );
 

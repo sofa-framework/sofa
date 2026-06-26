@@ -24,7 +24,7 @@
 #include <sofa/component/collision/response/contact/config.h>
 #include <sofa/type/Vec.h>
 
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/core/collision/DetectionOutput.h>
 #include <sofa/core/collision/NarrowPhaseDetection.h>
 
@@ -40,10 +40,10 @@ namespace sofa::component::collision::response::contact
 // forward declaration
 class NarrowPhaseDetection;
 
-class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API ContactListener : public virtual core::objectmodel::BaseObject
+class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API ContactListener : public virtual core::objectmodel::BaseComponent
 {
 public:
-    SOFA_ABSTRACT_CLASS(ContactListener, core::objectmodel::BaseObject);
+    SOFA_ABSTRACT_CLASS(ContactListener, core::objectmodel::BaseComponent);
 
 
     ContactListener(core::CollisionModel* collModel1 = nullptr, core::CollisionModel* collModel2 = nullptr );
@@ -104,7 +104,7 @@ public:
             return false;
         }
 
-        return BaseObject::canCreate(obj, context, arg);
+        return sofa::core::objectmodel::BaseComponent::canCreate(obj, context, arg);
     }
 
     template<class T>

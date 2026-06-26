@@ -165,7 +165,7 @@ public:
             }
         }
 
-        return BaseObject::canCreate(obj, context, arg);
+        return sofa::core::objectmodel::BaseComponent::canCreate(obj, context, arg);
     }
 
     sofa::core::topology::BaseMeshTopology* getCollisionTopology() override

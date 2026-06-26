@@ -49,8 +49,8 @@ MatrixLinearSolver<Matrix,Vector>::MatrixLinearSolver()
                                         "parallelInverseProduct", "Parallelize the computation of the product J*M^{-1}*J^T "
                                                                   "where M is the matrix of the linear system and J is any "
                                                                   "matrix with compatible dimensions"))
-    , invertData()
     , l_linearSystem(initLink("linearSystem", "The linear system to solve"))
+    , invertData()
     , d_factorizationInvalidation(initData(&d_factorizationInvalidation, false, "factorizationInvalidation", "Internal data for the detection of cache invalidation of the matrix factorization"))
 {
     d_factorizationInvalidation.setReadOnly(true);
@@ -62,18 +62,7 @@ MatrixLinearSolver<Matrix,Vector>::MatrixLinearSolver()
         SOFA_UNUSED(tracker);
         if (d_parallelInverseProduct.getValue())
         {
-            simulation::TaskScheduler* taskScheduler = simulation::MainTaskSchedulerFactory::createInRegistry();
-            assert(taskScheduler);
-
-            if (taskScheduler->getThreadCount() < 1)
-            {
-                taskScheduler->init(0);
-                msg_info() << "Task scheduler initialized on " << taskScheduler->getThreadCount() << " threads";
-            }
-            else
-            {
-                msg_info() << "Task scheduler already initialized on " << taskScheduler->getThreadCount() << " threads";
-            }
+            initTaskScheduler();
         }
         return this->d_componentState.getValue();
     },
@@ -505,24 +494,5 @@ void MatrixLinearSolver<Matrix,Vector>::applyConstraintForce(const sofa::core::C
     l_linearSystem->dispatchSystemSolution(dx);
     l_linearSystem->dispatchSystemRHS(cparams->lambda());
 }
-
-template<class Matrix, class Vector>
-void MatrixLinearSolver<Matrix,Vector>::computeResidual(const core::ExecParams* params,linearalgebra::BaseVector* f)
-{
-    auto* rhsVector = l_linearSystem->getRHSVector();
-    rhsVector->clear();
-    rhsVector->resize(l_linearSystem->getSystemBaseMatrix()->colSize());
-
-    /// rhs = J^t * f
-    internalData.projectForceInConstraintSpace(rhsVector, f);
-
-    sofa::simulation::common::VectorOperations vop( params, this->getContext() );
-    sofa::core::behavior::MultiVecDeriv force(&vop, core::vec_id::write_access::force );
-
-    // force += rhs
-    executeVisitor( MechanicalMultiVectorPeqBaseVectorVisitor(core::execparams::defaultInstance(), force, rhsVector, nullptr) );
-}
-
-
 
 } // namespace sofa::component::linearsolver

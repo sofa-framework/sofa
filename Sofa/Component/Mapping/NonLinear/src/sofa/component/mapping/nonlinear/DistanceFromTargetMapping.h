@@ -43,6 +43,7 @@ public:
 
 struct BaseDistanceFromTargetMapping
 {
+    virtual ~BaseDistanceFromTargetMapping() = default;
     virtual void updateTarget( unsigned index, SReal x, SReal y, SReal z ) = 0;
 };
 

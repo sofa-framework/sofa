@@ -21,8 +21,8 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/linearalgebra/SparseMatrixProduct.inl>
-#include <sofa/simulation/ParallelForEach.h>
-#include <sofa/simulation/TaskScheduler.h>
+#include <sofa/simulation/task/ParallelForEach.h>
+#include <sofa/simulation/task/TaskScheduler.h>
 
 
 namespace sofa::simulation
@@ -38,7 +38,7 @@ public:
 
     void computeProductFromIntersection() override
     {
-        assert(this->m_intersectionAB.intersection.size() == this->m_productResult.nonZeros());
+        assert(static_cast<Eigen::Index>(this->m_intersectionAB.intersection.size()) == this->m_productResult.nonZeros());
         assert(taskScheduler);
 
         auto* lhs_ptr = this->m_lhs->valuePtr();

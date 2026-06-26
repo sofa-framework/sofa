@@ -44,6 +44,7 @@ public:
     /// DefaultStyleMessageFormatter object to format the message.
     ConsoleMessageHandler(MessageFormatter* formatter = nullptr);
     void process(Message &m) override ;
+    std::string getName() const override { return "ConsoleMessageHandler"; }
     void setMessageFormatter( MessageFormatter* formatter );
 
 private:

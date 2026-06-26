@@ -1339,34 +1339,33 @@ void TetrahedronFEMForceField<DataTypes>::init()
             if (!((i%nx)&1))
             {
                 // swap all points on the X edges
-                std::swap(c[0],c[1]);
-                std::swap(c[3],c[2]);
-                std::swap(c[4],c[5]);
-                std::swap(c[7],c[6]);
+                for (const auto [v0, v1] : sofa::geometry::Hexahedron::xEdges)
+                {
+                    std::swap(c[v0], c[v1]);
+                }
             }
             if (((i/nx)%ny)&1)
             {
                 // swap all points on the Y edges
-                std::swap(c[0],c[3]);
-                std::swap(c[1],c[2]);
-                std::swap(c[4],c[7]);
-                std::swap(c[5],c[6]);
+                for (const auto [v0, v1] : sofa::geometry::Hexahedron::yEdges)
+                {
+                    std::swap(c[v0], c[v1]);
+                }
             }
             if ((i/(nx*ny))&1)
             {
                 // swap all points on the Z edges
-                std::swap(c[0],c[4]);
-                std::swap(c[1],c[5]);
-                std::swap(c[2],c[6]);
-                std::swap(c[3],c[7]);
+                for (const auto [v0, v1] : sofa::geometry::Hexahedron::zEdges)
+                {
+                    std::swap(c[v0], c[v1]);
+                }
             }
-            typedef core::topology::BaseMeshTopology::Tetra Tetra;
-            tetrahedra->push_back(Tetra(c[0],c[5],c[1],c[6]));
-            tetrahedra->push_back(Tetra(c[0],c[1],c[3],c[6]));
-            tetrahedra->push_back(Tetra(c[1],c[3],c[6],c[2]));
-            tetrahedra->push_back(Tetra(c[6],c[3],c[0],c[7]));
-            tetrahedra->push_back(Tetra(c[6],c[7],c[0],c[5]));
-            tetrahedra->push_back(Tetra(c[7],c[5],c[4],c[0]));
+            tetrahedra->emplace_back(c[0],c[5],c[1],c[6]);
+            tetrahedra->emplace_back(c[0],c[1],c[3],c[6]);
+            tetrahedra->emplace_back(c[1],c[3],c[6],c[2]);
+            tetrahedra->emplace_back(c[6],c[3],c[0],c[7]);
+            tetrahedra->emplace_back(c[6],c[7],c[0],c[5]);
+            tetrahedra->emplace_back(c[7],c[5],c[4],c[0]);
         }
        _indexedElements = tetrahedra;
     }

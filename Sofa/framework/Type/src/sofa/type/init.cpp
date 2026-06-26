@@ -23,6 +23,11 @@
 
 #include <iostream>
 
+#if SOFA_TYPE_HAVE_MIMALLOC == 1
+#include <mimalloc.h>
+#endif
+
+
 namespace sofa::type
 {
 
@@ -33,6 +38,9 @@ SOFA_TYPE_API void init()
 {
     if (!s_initialized)
     {
+#if SOFA_TYPE_HAVE_MIMALLOC == 1
+        mi_version();
+#endif
         s_initialized = true;
     }
 }

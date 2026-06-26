@@ -34,3 +34,11 @@ namespace sofa::scenechecking
     constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
     constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
 } // namespace sofa::scenechecking
+
+#cmakedefine SOFA_SCENECHECKING_WARNINGS_ARE_ERRORS
+
+#if defined(SOFA_SCENECHECKING_WARNINGS_ARE_ERRORS)
+    #define scnchecking_warning msg_error
+#else
+    #define scnchecking_warning msg_warning
+#endif

@@ -24,8 +24,6 @@
 #include <sofa/component/linearsystem/TypedMatrixLinearSystem.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
-#include <sofa/component/linearsystem/visitors/AssembleGlobalVectorFromLocalVectorVisitor.h>
-#include <sofa/component/linearsystem/visitors/DispatchFromGlobalVectorToLocalVectorVisitor.h>
 #include <sofa/core/behavior/BaseForceField.h>
 #include <sofa/core/behavior/BaseMass.h>
 #include <sofa/core/BaseMapping.h>
@@ -73,7 +71,7 @@ void TypedMatrixLinearSystem<TMatrix, TVector>::preAssembleSystem(const core::Me
     {
         SCOPED_TIMER_VARNAME(mappingGraphTimer, "buildMappingGraph");
         // build the mapping graph: this is used to know the relationship between the mechanical states and their associated components
-        m_mappingGraph.build(mparams, getSolveContext());
+        m_mappingGraph.build(getSolveContext());
     }
 
     associateLocalMatrixToComponents(mparams);
@@ -111,8 +109,11 @@ void TypedMatrixLinearSystem<TMatrix, TVector>::copyLocalVectorToGlobalVector(co
             globalVector->resize(m_mappingGraph.getTotalNbMainDofs());
         }
 
-        AssembleGlobalVectorFromLocalVectorVisitor(core::execparams::defaultInstance(), m_mappingGraph, v, globalVector)
-            .execute(getSolveContext());
+        for (auto& state : m_mappingGraph.getMainMechanicalStates())
+        {
+            auto pos = m_mappingGraph.getPositionInGlobalMatrix(state);
+            state->copyToBaseVector(globalVector, v.getId(state), pos[0]);
+        }
     }
 }
 
@@ -190,7 +191,7 @@ void TypedMatrixLinearSystem<TMatrix, TVector>::setRHS(core::MultiVecDerivId v)
 {
     if (!m_mappingGraph.isBuilt()) //note: this check does not make sure the scene graph is different from when the mapping graph has been built
     {
-        m_mappingGraph.build(core::execparams::defaultInstance(), getSolveContext());
+        m_mappingGraph.build(getSolveContext());
     }
 
     copyLocalVectorToGlobalVector(v, getRHSVector());
@@ -201,7 +202,7 @@ void TypedMatrixLinearSystem<TMatrix, TVector>::setSystemSolution(core::MultiVec
 {
     if (!m_mappingGraph.isBuilt()) //note: this check does not guarantee the scene graph is not different from when the mapping graph has been built
     {
-        m_mappingGraph.build(core::execparams::defaultInstance(), getSolveContext());
+        m_mappingGraph.build(getSolveContext());
     }
 
     if (!v.isNull())
@@ -215,8 +216,11 @@ void TypedMatrixLinearSystem<TMatrix, TVector>::dispatchSystemSolution(core::Mul
 {
     if (getSolutionVector())
     {
-        DispatchFromGlobalVectorToLocalVectorVisitor(core::execparams::defaultInstance(), m_mappingGraph, v, getSolutionVector())
-            .execute(getSolveContext());
+        for (auto& state : m_mappingGraph.getMainMechanicalStates())
+        {
+            auto pos = m_mappingGraph.getPositionInGlobalMatrix(state);
+            state->copyFromBaseVector(v.getId(state), getSolutionVector(), pos[0]);
+        }
     }
 }
 
@@ -225,8 +229,11 @@ void TypedMatrixLinearSystem<TMatrix, TVector>::dispatchSystemRHS(core::MultiVec
 {
     if (getRHSVector())
     {
-        DispatchFromGlobalVectorToLocalVectorVisitor(core::execparams::defaultInstance(), m_mappingGraph, v, getRHSVector())
-            .execute(getSolveContext());
+        for (auto& state : m_mappingGraph.getMainMechanicalStates())
+        {
+            auto pos = m_mappingGraph.getPositionInGlobalMatrix(state);
+            state->copyFromBaseVector(v.getId(state), getRHSVector(), pos[0]);
+        }
     }
 }
 

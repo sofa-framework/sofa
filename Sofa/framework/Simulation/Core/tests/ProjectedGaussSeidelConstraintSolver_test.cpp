@@ -30,7 +30,7 @@ namespace
 
 /** Test the UncoupledConstraintCorrection class
 */
-struct ProjectedGaussSeidelConstraintSolver_test : BaseSimulationTest
+struct BlockGaussSeidelConstraintSolver_test : BaseSimulationTest
 {
     void SetUp() override
     {
@@ -44,12 +44,12 @@ struct ProjectedGaussSeidelConstraintSolver_test : BaseSimulationTest
     {
         SceneInstance sceneinstance("xml",
                     "<Node>\n"
-                    "   <RequiredPlugin name='Sofa.Component'/>"
-                    "   <RequiredPlugin name='Sofa.Component.Collision.Geometry'/>"
-                    "   <RequiredPlugin name='Sofa.Component.Collision.Detection.Intersection'/>"
-                    "   <RequiredPlugin name='Sofa.Component.Collision.Response.Contact'/>"
+                    "   <RequiredPlugin pluginName='Sofa.Component'/>"
+                    "   <RequiredPlugin pluginName='Sofa.Component.Collision.Geometry'/>"
+                    "   <RequiredPlugin pluginName='Sofa.Component.Collision.Detection.Intersection'/>"
+                    "   <RequiredPlugin pluginName='Sofa.Component.Collision.Response.Contact'/>"
                     "   <FreeMotionAnimationLoop />\n"
-                    "   <ProjectedGaussSeidelConstraintSolver name='solver' constraintForces='-1 -1 -1' computeConstraintForces='True' maxIt='1000' tolerance='0.001' />\n"
+                    "   <BlockGaussSeidelConstraintSolver name='solver' constraintForces='-1 -1 -1' computeConstraintForces='True' maxIt='1000' tolerance='0.001' />\n"
                     "   <Node name='collision'>\n"
                     "         <MechanicalObject />\n"
                     "         <UncoupledConstraintCorrection useOdeSolverIntegrationFactors='0' />\n"
@@ -66,7 +66,7 @@ struct ProjectedGaussSeidelConstraintSolver_test : BaseSimulationTest
 };
 
 /// run the tests
-TEST_F(ProjectedGaussSeidelConstraintSolver_test, checkConstraintForce)
+TEST_F(BlockGaussSeidelConstraintSolver_test, checkConstraintForce)
 {
     EXPECT_MSG_NOEMIT(Error);
     enableConstraintForce();

@@ -83,7 +83,7 @@ bool ExportDotVisitor::display(Node* node, const char **color)
 }
 
 /// Test if an object should be displayed
-bool ExportDotVisitor::display(core::objectmodel::BaseObject* obj, const char **color)
+bool ExportDotVisitor::display(core::objectmodel::BaseComponent* obj, const char **color)
 {
     using namespace Colors;
     const char* c = nullptr;
@@ -176,7 +176,7 @@ bool ExportDotVisitor::display(core::objectmodel::BaseObject* obj, const char **
 /// Find the node or object a given object should be attached to.
 /// This is the parent node if it is displayed, otherwise it is the attached MechanicalState or Solver.
 /// Returns an empty string if not found.
-std::string ExportDotVisitor::getParentName(core::objectmodel::BaseObject* obj)
+std::string ExportDotVisitor::getParentName(core::objectmodel::BaseComponent* obj)
 {
     if (!obj) return "";
     Node* node = dynamic_cast<Node*>(obj->getContext());
@@ -242,12 +242,12 @@ std::string ExportDotVisitor::getName(core::objectmodel::BaseNode* node)
 }
 
 /// Compute the name of a given object
-std::string ExportDotVisitor::getName(core::objectmodel::BaseObject* obj)
+std::string ExportDotVisitor::getName(core::objectmodel::BaseComponent* obj)
 {
     return getName(obj, "o_");
 }
 
-void ExportDotVisitor::processObject(Node* /*node*/, core::objectmodel::BaseObject* obj)
+void ExportDotVisitor::processObject(Node* /*node*/, core::objectmodel::BaseComponent* obj)
 {
     //std::cout << ' ' << obj->getName() << '(' << sofa::helper::gettypename(typeid(*obj)) << ')';
     const char* color=nullptr;
@@ -300,8 +300,8 @@ void ExportDotVisitor::processObject(Node* /*node*/, core::objectmodel::BaseObje
         core::BaseMapping* map = obj->toBaseMapping();
         if (map!=nullptr)
         {
-            core::objectmodel::BaseObject* model1 = map->getFrom()[0];
-            core::objectmodel::BaseObject* model2 = map->getTo()[0];
+            core::objectmodel::BaseComponent* model1 = map->getFrom()[0];
+            core::objectmodel::BaseComponent* model2 = map->getTo()[0];
             if (display(model1))
             {
                 *out << getName(model1) << " -> " << name << " [style=\"dashed\",arrowhead=\"none\"";

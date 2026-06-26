@@ -143,7 +143,7 @@ static unsigned tableBytes[Image::COUNT_OF_DATA_TYPES][Image::COUNT_OF_CHANNEL_F
 };
 
 Image::Image()
-    : m_bLoaded(0), data(nullptr)
+    : m_bLoaded(0), m_data(nullptr)
 {
 }
 
@@ -153,48 +153,51 @@ Image::~Image()
 }
 
 Image::Image(const Image& rhs)
-    :data(nullptr)
+    :m_data(nullptr)
 {
-    init(rhs.width,rhs.height,rhs.depth,rhs.mipmaps,rhs.dataType,rhs.channelFormat);
-    memcpy(data,rhs.data,getImageSize());
+    init(rhs.m_width,rhs.m_height,rhs.m_depth,rhs.m_mipmaps,rhs.m_dataType,rhs.m_channelFormat);
+    memcpy(m_data,rhs.m_data,getImageSize());
     m_bLoaded = rhs.m_bLoaded;
 }
 
 Image& Image::operator=(const Image& rhs)
 {
+    if (this == &rhs)
+        return *this;
+
     clear();
-    init(rhs.width,rhs.height,rhs.depth,rhs.mipmaps,rhs.dataType,rhs.channelFormat);
-    memcpy(data,rhs.data,getImageSize());
+    init(rhs.m_width,rhs.m_height,rhs.m_depth,rhs.m_mipmaps,rhs.m_dataType,rhs.m_channelFormat);
+    memcpy(m_data,rhs.m_data,getImageSize());
     m_bLoaded = rhs.m_bLoaded;
     return *this;
 }
 
 unsigned Image::getWidth(unsigned mipmap) const
 {
-    const unsigned result = width >> mipmap;
+    const unsigned result = m_width >> mipmap;
     return result ? result : 1;
 }
 
 unsigned Image::getHeight(unsigned mipmap) const
 {
-    const unsigned result = height >> mipmap;
+    const unsigned result = m_height >> mipmap;
     return result ? result : 1;
 }
 
 unsigned Image::getDepth(unsigned mipmap) const
 {
-    const unsigned result = depth >> mipmap;
+    const unsigned result = m_depth >> mipmap;
     return result ? result : 1;
 }
 
 unsigned Image::getBytesPerPixel() const
 {
-    return dataType != UCOMPRESSED ? tableBytes[dataType][channelFormat] : 0;
+    return m_dataType != UCOMPRESSED ? tableBytes[m_dataType][m_channelFormat] : 0;
 }
 
 unsigned Image::getBytesPerBlock() const
 {
-    return dataType == UCOMPRESSED ? tableBytes[UCOMPRESSED][channelFormat] : 0;
+    return m_dataType == UCOMPRESSED ? tableBytes[UCOMPRESSED][m_channelFormat] : 0;
 }
 
 unsigned Image::getBytesPerChannel() const
@@ -216,12 +219,12 @@ unsigned Image::getChannelCount() const
         4   // BGRA
     };
 
-    return table[channelFormat];
+    return table[m_channelFormat];
 }
 
 unsigned Image::getMipmapCount() const
 {
-    return mipmaps;
+    return m_mipmaps;
 }
 
 unsigned Image::getPixelCount() const
@@ -242,7 +245,7 @@ unsigned Image::getMipmapSize(unsigned mipmap) const
     const unsigned height = getHeight(mipmap);
     const unsigned depth = (getTextureType() == TEXTURE_CUBE)? 6 : getDepth(mipmap);
 
-    if (dataType == UCOMPRESSED)
+    if (m_dataType == UCOMPRESSED)
         return ((width + 3) >> 2) * ((height + 3) >> 2) * depth * getBytesPerBlock();
 
     return width * height * depth * getBytesPerPixel();
@@ -261,29 +264,29 @@ unsigned Image::getMipmapRangeSize(unsigned firstMipmap, unsigned mipmaps) const
 
 unsigned Image::getImageSize() const
 {
-    return getMipmapRangeSize(0, mipmaps);
+    return getMipmapRangeSize(0, m_mipmaps);
 }
 
 Image::DataType Image::getDataType() const
 {
-    return dataType;
+    return m_dataType;
 }
 
 Image::ChannelFormat Image::getChannelFormat() const
 {
-    return channelFormat;
+    return m_channelFormat;
 }
 
 Image::TextureType Image::getTextureType() const
 {
-    if (dataType == UCOMPRESSED && channelFormat >= BGR)
+    if (m_dataType == UCOMPRESSED && m_channelFormat >= BGR)
         return TEXTURE_INVALID;
 
-    if (depth == 0 && width == height)
+    if (m_depth == 0 && m_width == m_height)
         return TEXTURE_CUBE;
-    else if(depth > 1)
+    else if(m_depth > 1)
         return TEXTURE_3D;
-    else if (depth == 1)
+    else if (m_depth == 1)
         return TEXTURE_2D;
     else
         return TEXTURE_INVALID;
@@ -291,21 +294,21 @@ Image::TextureType Image::getTextureType() const
 
 unsigned char *Image::getPixels()
 {
-    return data;
+    return m_data;
 }
 
 unsigned char *Image::getMipmapPixels(unsigned mipmap)
 {
     if (getTextureType() == TEXTURE_CUBE)
         return nullptr;
-    return data + getMipmapRangeSize(0, mipmap);
+    return m_data + getMipmapRangeSize(0, mipmap);
 }
 
 unsigned char *Image::getCubeMipmapPixels(unsigned cubeside, unsigned mipmap)
 {
     if (getTextureType() != TEXTURE_CUBE)
         return nullptr;
-    return data + (cubeside * getImageSize() + getMipmapRangeSize(0, mipmap)) / 6;
+    return m_data + (cubeside * getImageSize() + getMipmapRangeSize(0, mipmap)) / 6;
 }
 
 unsigned char *Image::get3DSliceMipmapPixels(unsigned slice, unsigned mipmap)
@@ -317,8 +320,8 @@ unsigned char *Image::get3DSliceMipmapPixels(unsigned slice, unsigned mipmap)
 
 void Image::clear()
 {
-    if (data) free(data);
-    data = nullptr;
+    if (m_data) free(m_data);
+    m_data = nullptr;
     m_bLoaded = 0;
 }
 
@@ -326,18 +329,18 @@ void Image::init(unsigned width, unsigned height, unsigned depth, unsigned mipma
         DataType dataType, ChannelFormat channelFormat)
 {
     clear();
-    this->width = width;
-    this->height = height;
-    this->depth = depth;
-    this->mipmaps = mipmaps;
-    this->dataType = dataType;
-    this->channelFormat = channelFormat;
+    this->m_width = width;
+    this->m_height = height;
+    this->m_depth = depth;
+    this->m_mipmaps = mipmaps;
+    this->m_dataType = dataType;
+    this->m_channelFormat = channelFormat;
 #if 0
     printf("init: w=%i, h=%i, d=%i, mipmaps=%i, type=%s, channels=%s, textype=%s\n",
             width, height, depth, mipmaps, strFromDataType[dataType],
             strFromChannelFormat[channelFormat], strFromTextureType[getTextureType()]);
 #endif
-    data = (unsigned char*)malloc(getImageSize());
+    m_data = (unsigned char*)malloc(getImageSize());
 }
 
 void Image::init(unsigned width, unsigned height, unsigned bpp)
