@@ -391,37 +391,44 @@ objectmodel::BaseComponent::SPtr ComponentFactory::createComponent(
     if (typeAttribute == nullptr)
         return nullptr;
 
-    std::string inputClassName {typeAttribute};
-    std::string className, pluginName;
-    extractModuleName(inputClassName, className, pluginName);
+    std::string componentName, moduleName;
+    extractModuleName(std::string{typeAttribute}, componentName, moduleName);
 
-    if (knownIssues(*this, className))
+    if (knownIssues(*this, componentName))
     {
         return nullptr;
     }
 
-    if (!pluginName.empty())
+    if (auto it = helper::lifecycle::movedComponents.find(componentName);
+        it != helper::lifecycle::movedComponents.end())
     {
-        autoLoadPlugin(*this, pluginName);
+        // autoLoadPlugin(*this, );
     }
 
-    std::vector<ComponentDescription::SPtr> candidates = getComponentsFromName(*this, className, pluginName);
+    if (!moduleName.empty())
+    {
+        autoLoadPlugin(*this, moduleName);
+    }
 
+    std::vector<ComponentDescription::SPtr> candidates = getComponentsFromName(*this, componentName, moduleName);
+
+    // Early failure because there are no compatible candidates
     if (candidates.empty())
     {
         std::stringstream ss;
-        ss << "Cannot create component '" << className << "': '" << className << "' not found in the factory.";
+        ss << "Cannot create component '" << componentName << "': '" << componentName << "' not found in the factory registry.";
 
-        const auto similarNames = similarComponentNames(*this, className);
+        const auto similarNames = similarComponentNames(*this, componentName);
         if (!similarNames.empty())
         {
-            ss << " Some components were found with similar names: " << sofa::helper::join(similarNames, ", ");
+            ss << " Suggestion: Components were found with similar names: " << sofa::helper::join(similarNames, ", ");
         }
 
         msg_error() << ss.str();
         return nullptr;
     }
 
+    // Check that the candidates don't rely on unloaded modules
     {
         auto candidatesWithoutUnloadedPlugins = candidates;
         std::erase_if(candidatesWithoutUnloadedPlugins, [](const ComponentDescription::SPtr& candidate)
@@ -435,8 +442,8 @@ objectmodel::BaseComponent::SPtr ComponentFactory::createComponent(
             std::transform(candidates.begin(), candidates.end(), std::inserter(unloadedPlugins, unloadedPlugins.begin()),
                 [](const ComponentDescription::SPtr& component) { return component->componentModule; });
             const auto unloadedPluginsString = sofa::helper::join(unloadedPlugins.begin(), unloadedPlugins.end());
-            msg_error() << "Trying to create component '" << className
-                << "' but candidates have been found in unloaded plugins:" << unloadedPluginsString << "]";
+            msg_error() << "Attempted to create component '" << componentName
+                << "' but all potential candidates rely on component from currently unloaded plugins:" << unloadedPluginsString << "]";
             return nullptr;
         }
     }
@@ -444,19 +451,19 @@ objectmodel::BaseComponent::SPtr ComponentFactory::createComponent(
     std::sort(candidates.begin(), candidates.end(),
         [](const auto& a, const auto& b) { return a->instantiationPriority > b->instantiationPriority; });
 
-    //exact template: could it be a template deduction rule?
+    // 1. Attempt Exact Template Match (Highest Priority).
     {
-        const auto matchingTemplates = selectCandidatesFromTemplateAttributes(candidates, arg);
+        const auto exactMatches = selectCandidatesFromTemplateAttributes(candidates, arg);
 
-        if (!matchingTemplates.empty())
+        if (!exactMatches.empty())
         {
-            msg_warning_when(matchingTemplates.size() > 1) << "Multiple candidates with the same templates: " <<
-                sofa::helper::join(matchingTemplates.begin(), matchingTemplates.end(), ",");
-            return createComponentFrom(matchingTemplates.front(), context, arg);
+            msg_warning_when(exactMatches.size() > 1) << "Multiple candidates with the same templates: " <<
+                sofa::helper::join(exactMatches.begin(), exactMatches.end(), ",");
+            return createComponentFrom(exactMatches.front(), context, arg);
         }
     }
 
-    // Selection based on the legacy 'template' keyword
+    // 2. Attempt Selection by Legacy 'template' Keyword (Medium-High Priority).
     {
         const auto templateCandidates = selectCandidatesTemplateKeyword(candidates, arg);
         if (!templateCandidates.empty())
@@ -467,18 +474,18 @@ objectmodel::BaseComponent::SPtr ComponentFactory::createComponent(
         }
     }
 
-    //partial template matching
+    // 3. Attempt Partial Template Matching with Deduction (Medium Priority).
     {
         const auto matchingTemplates = selectCandidatesFromPartialTemplateAttributes(candidates, arg);
 
-        // only one candidate matches partially: this is the one
         if (matchingTemplates.size() == 1)
         {
+            // Success: Only one candidate matches partially -> Select it.
             return createComponentFrom(matchingTemplates.front(), context, arg);
         }
-        // otherwise, we discriminate them using deduction rules
         else if (!matchingTemplates.empty())
         {
+            // Ambiguous partial match: Use deduction rules to resolve ambiguity.
             auto deducedCandidates = selectCandidatesDeductionRules(matchingTemplates, context, arg);
             if (!deducedCandidates.empty())
             {
@@ -489,9 +496,8 @@ objectmodel::BaseComponent::SPtr ComponentFactory::createComponent(
         }
     }
 
-    // Template deduction:
-    // So far, none of the candidates match the template attributes.
-    // We select one of them automatically based on deduction rules
+    // 4. Attempt General Template Deduction (Lowest Priority).
+    // If no explicit template matching worked, try to select based purely on deduction rules from all valid candidates.
     {
         auto deducedCandidates = selectCandidatesDeductionRules(candidates, context, arg);
 
@@ -503,7 +509,16 @@ objectmodel::BaseComponent::SPtr ComponentFactory::createComponent(
         }
     }
 
-    msg_error() << "Cannot create component '" << className << "'";
+    // 5. Final fallback
+    {
+        if (!candidates.empty())
+        {
+            return createComponentFrom(candidates.front(), context, arg);
+        }
+    }
+
+    // Final failure
+    msg_error() << "Could not find or select a unique component for '" << componentName << "'";
 
     return nullptr;
 }
