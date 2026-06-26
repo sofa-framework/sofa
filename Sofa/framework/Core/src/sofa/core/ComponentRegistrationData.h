@@ -23,6 +23,7 @@
 
 #include <sofa/core/config.h>
 #include <sofa/core/ComponentCreator.h>
+#include <sofa/core/TemplateDeductionRules.h>
 #include <set>
 #include <string>
 #include <optional>
@@ -31,13 +32,6 @@
 
 namespace sofa::core
 {
-
-struct SOFA_CORE_API BaseTemplateDeductionRule
-{
-    virtual bool doesComponentComplyWith(
-        objectmodel::BaseContext* context,
-        objectmodel::BaseObjectDescription* arg) = 0;
-};
 
 struct SOFA_CORE_API ComponentRegistrationData
 {
@@ -129,6 +123,13 @@ struct SOFA_CORE_API ComponentRegistrationDataBuilder : public ComponentRegistra
     ComponentRegistrationDataBuilder& setDocumentationURL(const std::string& _documentationURL)
     {
         this->documentationURL.insert(_documentationURL);
+        return *this;
+    }
+
+    template<class T>
+    ComponentRegistrationDataBuilder& setDeductionRule()
+    {
+        this->templateDeductionRule = std::make_shared<T>();
         return *this;
     }
 };

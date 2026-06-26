@@ -441,7 +441,7 @@ objectmodel::BaseComponent::SPtr ComponentFactory::createComponent(
             std::set<std::string> unloadedPlugins;
             std::transform(candidates.begin(), candidates.end(), std::inserter(unloadedPlugins, unloadedPlugins.begin()),
                 [](const ComponentDescription::SPtr& component) { return component->componentModule; });
-            const auto unloadedPluginsString = sofa::helper::join(unloadedPlugins.begin(), unloadedPlugins.end());
+            const auto unloadedPluginsString = sofa::helper::join(unloadedPlugins.begin(), unloadedPlugins.end(), ", ");
             msg_error() << "Attempted to create component '" << componentName
                 << "' but all potential candidates rely on component from currently unloaded plugins:" << unloadedPluginsString << "]";
             return nullptr;

@@ -41,6 +41,7 @@ void registerComponent(sofa::core::ObjectFactory* factory)
         .addTemplateAttribute("elementType", sofa::geometry::elementTypeToString(ElementType::Element_type))
         .setDescription(std::string(description))
         .setModuleName(MODULE_NAME)
+        .setDeductionRule<core::MechanicalStateDeductionRule<DataTypes>>()
     );
 }
 

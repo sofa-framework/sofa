@@ -67,6 +67,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/sptr.h
     ${SRC_ROOT}/State.h
     ${SRC_ROOT}/State.inl
+    ${SRC_ROOT}/TemplateDeductionRules.h
     ${SRC_ROOT}/VecId.h
     ${SRC_ROOT}/behavior/BaseAnimationLoop.h
     ${SRC_ROOT}/behavior/BaseConstraint.h
