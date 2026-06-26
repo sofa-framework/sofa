@@ -198,11 +198,8 @@ void extractModuleName(const std::string& inputClassName, std::string& className
     }
 }
 
-void autoLoadPluginIfNameContainsPluginName(ComponentFactory& self, const std::string& inputClassName)
+void autoLoadPlugin(ComponentFactory& self, const std::string& pluginName)
 {
-    std::string classname, pluginName;
-    extractModuleName(inputClassName, classname, pluginName);
-
     if (!pluginName.empty())
     {
         const auto [path, loaded] = helper::system::PluginManager::getInstance().isPluginLoaded(pluginName);
@@ -370,7 +367,10 @@ objectmodel::BaseComponent::SPtr ComponentFactory::createComponent(
     std::string classname, pluginName;
     extractModuleName(inputClassName, classname, pluginName);
 
-    autoLoadPluginIfNameContainsPluginName(*this, classname);
+    if (!pluginName.empty())
+    {
+        autoLoadPlugin(*this, pluginName);
+    }
 
     std::vector<ComponentDescription::SPtr> candidates = getComponentsFromName(*this, classname);
 
