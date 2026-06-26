@@ -395,10 +395,24 @@ objectmodel::BaseComponent::SPtr ComponentFactory::createComponent(
         return nullptr;
     }
 
-    std::erase_if(candidates, [](const ComponentDescription::SPtr& candidate)
     {
-        return helper::system::PluginManager::getInstance().isPluginUnloaded(candidate->componentModule);
-    });
+        auto candidatesWithoutUnloadedPlugins = candidates;
+        std::erase_if(candidatesWithoutUnloadedPlugins, [](const ComponentDescription::SPtr& candidate)
+        {
+            return helper::system::PluginManager::getInstance().isPluginUnloaded(candidate->componentModule);
+        });
+
+        if (candidatesWithoutUnloadedPlugins.empty())
+        {
+            std::set<std::string> unloadedPlugins;
+            std::transform(candidates.begin(), candidates.end(), std::inserter(unloadedPlugins, unloadedPlugins.begin()),
+                [](const ComponentDescription::SPtr& component) { return component->componentModule; });
+            const auto unloadedPluginsString = sofa::helper::join(unloadedPlugins.begin(), unloadedPlugins.end());
+            msg_error() << "Trying to create component '" << className
+                << "' but candidates have been found in unloaded plugins:" << unloadedPluginsString << "]";
+            return nullptr;
+        }
+    }
 
     std::sort(candidates.begin(), candidates.end(),
         [](const auto& a, const auto& b) { return a->instantiationPriority > b->instantiationPriority; });
