@@ -142,7 +142,8 @@ namespace
 
 std::vector<ComponentDescription::SPtr> getComponentsFromName(
     const ComponentFactory& self,
-    const std::string& componentName)
+    const std::string& componentName,
+    const std::string& pluginName)
 {
     std::vector<ComponentDescription::SPtr> result;
 
@@ -157,6 +158,11 @@ std::vector<ComponentDescription::SPtr> getComponentsFromName(
 
     for (const auto& component : self.getRegistry())
     {
+        if (!pluginName.empty() && component->componentModule != pluginName)
+        {
+            continue;
+        }
+
         const auto fullName = component->componentModule + "." + component->componentName;
 
         if (component->componentName == componentToSearch || fullName == componentToSearch)
@@ -343,7 +349,7 @@ std::vector<std::string> similarComponentNames(const ComponentFactory& self, con
     std::set<std::string> allClassNames;
     std::transform(self.getRegistry().begin(), self.getRegistry().end(), std::inserter(allClassNames, allClassNames.begin()),
         [](const ComponentDescription::SPtr& component){ return component->componentName; });
-    const auto result = sofa::helper::getClosestMatch(className, std::vector(allClassNames.begin(), allClassNames.end()));
+    const auto result = sofa::helper::getClosestMatch(className, std::vector(allClassNames.begin(), allClassNames.end()), 5, 0.6);
     std::vector<std::string> similarComponentNames;
     std::transform(result.begin(), result.end(), std::back_inserter(similarComponentNames),
         [](const auto& match) { return std::get<0>(match); } );
@@ -364,22 +370,22 @@ objectmodel::BaseComponent::SPtr ComponentFactory::createComponent(
         return nullptr;
 
     std::string inputClassName {typeAttribute};
-    std::string classname, pluginName;
-    extractModuleName(inputClassName, classname, pluginName);
+    std::string className, pluginName;
+    extractModuleName(inputClassName, className, pluginName);
 
     if (!pluginName.empty())
     {
         autoLoadPlugin(*this, pluginName);
     }
 
-    std::vector<ComponentDescription::SPtr> candidates = getComponentsFromName(*this, classname);
+    std::vector<ComponentDescription::SPtr> candidates = getComponentsFromName(*this, className, pluginName);
 
     if (candidates.empty())
     {
         std::stringstream ss;
-        ss << "Cannot create component '" << classname << "': '" << classname << "' not found in the factory.";
+        ss << "Cannot create component '" << className << "': '" << className << "' not found in the factory.";
 
-        const auto similarNames = similarComponentNames(*this, classname);
+        const auto similarNames = similarComponentNames(*this, className);
         if (!similarNames.empty())
         {
             ss << " Some components were font with similar names: " << sofa::helper::join(similarNames, ", ");
@@ -456,7 +462,7 @@ objectmodel::BaseComponent::SPtr ComponentFactory::createComponent(
         }
     }
 
-    msg_error() << "Cannot create component '" << classname << "'";
+    msg_error() << "Cannot create component '" << className << "'";
 
     return nullptr;
 }
