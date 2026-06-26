@@ -128,6 +128,7 @@ bool ComponentFactory::registerObjects(LegacyComponentRegistrationData& ro)
         }
 
         component->creator = creator->clone();
+        component->templateDeductionRule = ro.m_templateDeductionRules[i];
 
         this->m_registry.push_back(component);
     }

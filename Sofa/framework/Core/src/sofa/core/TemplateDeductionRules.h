@@ -61,6 +61,18 @@ protected:
 template<class DataTypes>
 using MechanicalStateDeductionRule = OtherComponentsInContextDeductionRule<sofa::core::behavior::MechanicalState<DataTypes>>;
 
+template<class T>
+struct CanCreateDeductionRule : public BaseTemplateDeductionRule
+{
+protected:
+    bool doDoesComponentComplyWith(
+        objectmodel::BaseContext* context,
+        objectmodel::BaseObjectDescription* arg) override
+    {
+        T* instance = nullptr;
+        return T::canCreate(instance, context, arg);
+    }
+};
 
 
 }
