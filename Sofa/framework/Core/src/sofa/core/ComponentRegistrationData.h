@@ -34,7 +34,7 @@ namespace sofa::core
 
 struct SOFA_CORE_API BaseTemplateDeductionRule
 {
-    virtual bool doesTemplateDeductionApply(
+    virtual bool doesComponentComplyWith(
         objectmodel::BaseContext* context,
         objectmodel::BaseObjectDescription* arg) = 0;
 };

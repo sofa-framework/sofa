@@ -23,6 +23,7 @@
 #include <sofa/defaulttype/TemplatesAliases.h>
 #include <sofa/helper/ComponentChange.h>
 #include <sofa/helper/system/PluginManager.h>
+#include <sofa/helper/DiffLib.h>
 #include <sofa/url.h>
 
 namespace sofa::helper::logging
@@ -179,16 +180,31 @@ std::vector<ComponentDescription::SPtr> getComponentsFromName(
     return result;
 }
 
-void autoLoadPluginIfNameContainsPluginName(ComponentFactory& self, const std::string& classname)
+void extractModuleName(const std::string& inputClassName, std::string& className, std::string& moduleName)
 {
     // The last dot separates the module name from the component name
     // Example: Module.Name.ComponentName (it is common to have dots in the module names)
     // It is assumed that the component name does not contain any dot
-    auto lastDot = classname.find_last_of('.');
+    auto lastDot = inputClassName.find_last_of('.');
     if (lastDot != std::string::npos)
     {
-        const auto pluginName = classname.substr(0, lastDot);
+        moduleName = inputClassName.substr(0, lastDot);
+        className = inputClassName.substr(lastDot + 1);
+    }
+    else
+    {
+        moduleName = {};
+        className = inputClassName;
+    }
+}
 
+void autoLoadPluginIfNameContainsPluginName(ComponentFactory& self, const std::string& inputClassName)
+{
+    std::string classname, pluginName;
+    extractModuleName(inputClassName, classname, pluginName);
+
+    if (!pluginName.empty())
+    {
         const auto [path, loaded] = helper::system::PluginManager::getInstance().isPluginLoaded(pluginName);
         if (!loaded)
         {
@@ -295,8 +311,9 @@ std::vector<ComponentDescription::SPtr> selectCandidatesDeductionRules(
 
     for (const auto& candidate : candidates)
     {
+        // Check if the component has a rule AND if that rule applies.
         if (const auto rule = candidate->templateDeductionRule;
-            rule && rule->doesTemplateDeductionApply(context, arg))
+            rule && rule->doesComponentComplyWith(context, arg))
         {
             matchingCandidates.push_back(candidate);
         }
@@ -324,6 +341,18 @@ auto createComponentFrom(const ComponentDescription::SPtr& desc, objectmodel::Ba
     return component;
 }
 
+std::vector<std::string> similarComponentNames(const ComponentFactory& self, const std::string& className)
+{
+    std::set<std::string> allClassNames;
+    std::transform(self.getRegistry().begin(), self.getRegistry().end(), std::inserter(allClassNames, allClassNames.begin()),
+        [](const ComponentDescription::SPtr& component){ return component->componentName; });
+    const auto result = sofa::helper::getClosestMatch(className, std::vector(allClassNames.begin(), allClassNames.end()));
+    std::vector<std::string> similarComponentNames;
+    std::transform(result.begin(), result.end(), std::back_inserter(similarComponentNames),
+        [](const auto& match) { return std::get<0>(match); } );
+    return similarComponentNames;
+}
+
 }
 
 objectmodel::BaseComponent::SPtr ComponentFactory::createComponent(
@@ -337,13 +366,26 @@ objectmodel::BaseComponent::SPtr ComponentFactory::createComponent(
     if (typeAttribute == nullptr)
         return nullptr;
 
-    std::string classname {typeAttribute};
+    std::string inputClassName {typeAttribute};
+    std::string classname, pluginName;
+    extractModuleName(inputClassName, classname, pluginName);
+
     autoLoadPluginIfNameContainsPluginName(*this, classname);
 
-    auto candidates = getComponentsFromName(*this, classname);
+    std::vector<ComponentDescription::SPtr> candidates = getComponentsFromName(*this, classname);
 
     if (candidates.empty())
     {
+        std::stringstream ss;
+        ss << "Cannot create component '" << classname << "': '" << classname << "' not found in the factory.";
+
+        const auto similarNames = similarComponentNames(*this, classname);
+        if (!similarNames.empty())
+        {
+            ss << " Some components were font with similar names: " << sofa::helper::join(similarNames, ", ");
+        }
+
+        msg_error() << ss.str();
         return nullptr;
     }
 
@@ -382,22 +424,26 @@ objectmodel::BaseComponent::SPtr ComponentFactory::createComponent(
     {
         const auto matchingTemplates = selectCandidatesFromPartialTemplateAttributes(candidates, arg);
 
+        // only one candidate matches partially: this is the one
         if (matchingTemplates.size() == 1)
         {
             return createComponentFrom(matchingTemplates.front(), context, arg);
         }
-
-        auto deducedCandidates = selectCandidatesDeductionRules(matchingTemplates, context, arg);
-        if (!deducedCandidates.empty())
+        // otherwise, we discriminate them using deduction rules
+        else if (!matchingTemplates.empty())
         {
-            msg_warning_when(deducedCandidates.size() > 1) << "Multiple candidates with the same templates: " <<
-                sofa::helper::join(deducedCandidates.begin(), deducedCandidates.end(), ",");
-            return createComponentFrom(deducedCandidates.front(), context, arg);
+            auto deducedCandidates = selectCandidatesDeductionRules(matchingTemplates, context, arg);
+            if (!deducedCandidates.empty())
+            {
+                msg_warning_when(deducedCandidates.size() > 1) << "Multiple candidates with the same templates: " <<
+                    sofa::helper::join(deducedCandidates.begin(), deducedCandidates.end(), ",");
+                return createComponentFrom(deducedCandidates.front(), context, arg);
+            }
         }
     }
 
     // Template deduction:
-    // So far, none of the candidates match the templates.
+    // So far, none of the candidates match the template attributes.
     // We select one of them automatically based on deduction rules
     {
         auto deducedCandidates = selectCandidatesDeductionRules(candidates, context, arg);
@@ -410,7 +456,7 @@ objectmodel::BaseComponent::SPtr ComponentFactory::createComponent(
         }
     }
 
-    msg_error() << "Cannot create component " << classname;
+    msg_error() << "Cannot create component '" << classname << "'";
 
     return nullptr;
 }
