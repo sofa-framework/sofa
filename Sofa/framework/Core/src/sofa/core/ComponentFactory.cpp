@@ -388,7 +388,7 @@ objectmodel::BaseComponent::SPtr ComponentFactory::createComponent(
         const auto similarNames = similarComponentNames(*this, className);
         if (!similarNames.empty())
         {
-            ss << " Some components were font with similar names: " << sofa::helper::join(similarNames, ", ");
+            ss << " Some components were found with similar names: " << sofa::helper::join(similarNames, ", ");
         }
 
         msg_error() << ss.str();
