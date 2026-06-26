@@ -356,6 +356,28 @@ std::vector<std::string> similarComponentNames(const ComponentFactory& self, con
     return similarComponentNames;
 }
 
+bool knownIssues(const ComponentFactory& self, const std::string& clasName)
+{
+    auto uncreatableComponent = helper::lifecycle::uncreatableComponents.find(clasName);
+    auto dealiasedComponent = helper::lifecycle::dealiasedComponents.find(clasName);
+
+    const bool isUncreatable =  uncreatableComponent != helper::lifecycle::uncreatableComponents.end();
+    const bool isDealiased = dealiasedComponent != helper::lifecycle::dealiasedComponents.end();
+
+    if (isUncreatable)
+    {
+        msg_error(&self) << uncreatableComponent->second.getMessage();
+        return true;
+    }
+    if (isDealiased)
+    {
+        msg_error(&self) << dealiasedComponent->second.getMessage();
+        return true;
+    }
+
+    return false;
+}
+
 }
 
 objectmodel::BaseComponent::SPtr ComponentFactory::createComponent(
@@ -372,6 +394,11 @@ objectmodel::BaseComponent::SPtr ComponentFactory::createComponent(
     std::string inputClassName {typeAttribute};
     std::string className, pluginName;
     extractModuleName(inputClassName, className, pluginName);
+
+    if (knownIssues(*this, className))
+    {
+        return nullptr;
+    }
 
     if (!pluginName.empty())
     {
