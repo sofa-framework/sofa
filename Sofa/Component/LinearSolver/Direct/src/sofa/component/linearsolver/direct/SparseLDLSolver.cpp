@@ -34,12 +34,11 @@ constexpr std::string_view description { "Direct linear solver using a Sparse LD
 template<class TMatrix, class TVector>
 void registerComponent(sofa::core::ComponentFactory* factory)
 {
-    factory->registerComponent<SparseLDLSolver<TMatrix, TVector>>(
-    core::ComponentRegistrationDataBuilder()
-        .setName("SparseLDLSolver")
+    factory->registerComponent(
+    core::CreateComponent<SparseLDLSolver<TMatrix, TVector>>("SparseLDLSolver")
+        .withModule(MODULE_NAME)
+        .withDescription(description)
         .addTemplateAttribute<TMatrix>("matrixType")
-        .setDescription(std::string(description))
-        .setModuleName(MODULE_NAME)
     );
 };
 

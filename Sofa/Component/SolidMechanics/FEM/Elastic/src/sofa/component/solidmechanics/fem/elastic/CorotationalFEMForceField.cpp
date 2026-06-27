@@ -34,14 +34,13 @@ static constexpr std::string_view description { "Hooke's law using the corotatio
 template <class DataTypes, class ElementType>
 void registerComponent(sofa::core::ObjectFactory* factory)
 {
-    factory->registerComponent<CorotationalFEMForceField<DataTypes, ElementType>>(
-    core::ComponentRegistrationDataBuilder()
-        .setName("CorotationalFEMForceField")
+    factory->registerComponent(
+        core::CreateComponent<CorotationalFEMForceField<DataTypes, ElementType>>("CorotationalFEMForceField")
+        .withModule(MODULE_NAME)
+        .withDescription(std::string(description))
         .addTemplateAttribute<DataTypes>("dofType")
         .addTemplateAttribute("elementType", sofa::geometry::elementTypeToString(ElementType::Element_type))
-        .setDescription(std::string(description))
-        .setModuleName(MODULE_NAME)
-        .setDeductionRule<core::MechanicalStateDeductionRule<DataTypes>>()
+        .withDeductionRule<core::MechanicalStateDeductionRule<DataTypes>>()
     );
 }
 

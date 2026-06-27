@@ -101,21 +101,22 @@ bool ComponentFactory::registerObjects(LegacyComponentRegistrationData& ro)
     for (std::size_t i = 0; i < creators.size(); ++i)
     {
         auto creator = creators[i];
-        ComponentDescription::SPtr component = std::make_shared<ComponentDescription>();
 
-        if (i >= ro.m_moduleNames.size())
+        auto component = std::make_shared<ComponentRegistrationData>();
+
+        if (i < ro.m_componentNames.size())
         {
-            continue;
+            component->componentName = ro.m_componentNames[i];
         }
-
-        component->componentName = ro.m_componentNames[i];
-        component->aliases = ro.m_aliases;
+        component->description = ro.m_description;
         if (i < ro.m_moduleNames.size())
         {
-            component->componentModule = ro.m_moduleNames[i];
+            component->componentName = ro.m_moduleNames[i];
         }
 
-        component->description = ro.m_description;
+        component->creator = creator->clone();
+
+        component->aliases = ro.m_aliases;
         component->authors.insert(ro.m_authors);
         component->license = ro.m_license;
         component->documentationURL.insert(ro.m_documentationURL);
@@ -134,7 +135,6 @@ bool ComponentFactory::registerObjects(LegacyComponentRegistrationData& ro)
             }
         }
 
-        component->creator = creator->clone();
         component->templateDeductionRule = ro.m_templateDeductionRules[i];
 
         this->m_registry.push_back(component);
@@ -148,12 +148,12 @@ namespace
 {
 
 
-std::vector<ComponentDescription::SPtr> getComponentsFromName(
+std::vector<ComponentRegistrationData::SPtr> getComponentsFromName(
     const ComponentFactory& self,
     const std::string& componentName,
     const std::string& pluginName)
 {
-    std::vector<ComponentDescription::SPtr> result;
+    std::vector<ComponentRegistrationData::SPtr> result;
 
     std::string componentToSearch = componentName;
 
@@ -228,14 +228,14 @@ void autoLoadPlugin(ComponentFactory& self, const std::string& pluginName)
     }
 }
 
-std::vector<ComponentDescription::SPtr> selectCandidatesFromTemplateAttributes(
-    const std::vector<ComponentDescription::SPtr>& candidates,
+std::vector<ComponentRegistrationData::SPtr> selectCandidatesFromTemplateAttributes(
+    const std::vector<ComponentRegistrationData::SPtr>& candidates,
     objectmodel::BaseContext* context,
     objectmodel::BaseObjectDescription* arg)
 {
     SOFA_UNUSED(context);
 
-    std::vector<ComponentDescription::SPtr> exactlyMatchingCandidates;
+    std::vector<ComponentRegistrationData::SPtr> exactlyMatchingCandidates;
 
     for (const auto& candidate : candidates)
     {
@@ -267,14 +267,14 @@ std::vector<ComponentDescription::SPtr> selectCandidatesFromTemplateAttributes(
     return exactlyMatchingCandidates;
 }
 
-std::vector<ComponentDescription::SPtr> selectCandidatesFromPartialTemplateAttributes(
-    const std::vector<ComponentDescription::SPtr>& candidates,
+std::vector<ComponentRegistrationData::SPtr> selectCandidatesFromPartialTemplateAttributes(
+    const std::vector<ComponentRegistrationData::SPtr>& candidates,
     objectmodel::BaseContext* context,
     objectmodel::BaseObjectDescription* arg)
 {
     SOFA_UNUSED(context);
 
-    std::vector<ComponentDescription::SPtr> partiallyMatchingCandidates;
+    std::vector<ComponentRegistrationData::SPtr> partiallyMatchingCandidates;
 
     for (const auto& candidate : candidates)
     {
@@ -296,8 +296,8 @@ std::vector<ComponentDescription::SPtr> selectCandidatesFromPartialTemplateAttri
     return partiallyMatchingCandidates;
 }
 
-std::vector<ComponentDescription::SPtr> selectCandidatesTemplateKeyword(
-    const std::vector<ComponentDescription::SPtr>& candidates,
+std::vector<ComponentRegistrationData::SPtr> selectCandidatesTemplateKeyword(
+    const std::vector<ComponentRegistrationData::SPtr>& candidates,
     objectmodel::BaseContext* context,
     objectmodel::BaseObjectDescription* arg)
 {
@@ -310,7 +310,7 @@ std::vector<ComponentDescription::SPtr> selectCandidatesTemplateKeyword(
     std::string templateAttrStr { templateAttr };
     templateAttrStr = defaulttype::TemplateAliases::resolveAlias(templateAttrStr);
 
-    std::vector<ComponentDescription::SPtr> matchingCandidates;
+    std::vector<ComponentRegistrationData::SPtr> matchingCandidates;
 
     for (const auto& candidate : candidates)
     {
@@ -326,8 +326,8 @@ std::vector<ComponentDescription::SPtr> selectCandidatesTemplateKeyword(
     return matchingCandidates;
 }
 
-std::vector<ComponentDescription::SPtr> noFilter(
-    const std::vector<ComponentDescription::SPtr>& candidates,
+std::vector<ComponentRegistrationData::SPtr> noFilter(
+    const std::vector<ComponentRegistrationData::SPtr>& candidates,
     objectmodel::BaseContext* context,
     objectmodel::BaseObjectDescription* arg)
 {
@@ -336,12 +336,12 @@ std::vector<ComponentDescription::SPtr> noFilter(
     return candidates;
 }
 
-std::vector<ComponentDescription::SPtr> selectCandidatesDeductionRules(
-    const std::vector<ComponentDescription::SPtr>& candidates,
+std::vector<ComponentRegistrationData::SPtr> selectCandidatesDeductionRules(
+    const std::vector<ComponentRegistrationData::SPtr>& candidates,
     objectmodel::BaseContext* context,
     objectmodel::BaseObjectDescription* arg)
 {
-    std::vector<ComponentDescription::SPtr> matchingCandidates;
+    std::vector<ComponentRegistrationData::SPtr> matchingCandidates;
 
     for (const auto& candidate : candidates)
     {
@@ -356,7 +356,7 @@ std::vector<ComponentDescription::SPtr> selectCandidatesDeductionRules(
     return matchingCandidates;
 }
 
-objectmodel::BaseComponent::SPtr createComponentFrom(const ComponentDescription::SPtr& desc, objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
+objectmodel::BaseComponent::SPtr createComponentFrom(const ComponentRegistrationData::SPtr& desc, objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
 {
     auto component = desc->creator->create();
 
@@ -379,7 +379,7 @@ std::vector<std::string> similarComponentNames(const ComponentFactory& self, con
 {
     std::set<std::string> allClassNames;
     std::transform(self.getRegistry().begin(), self.getRegistry().end(), std::inserter(allClassNames, allClassNames.begin()),
-        [](const ComponentDescription::SPtr& component){ return component->componentName; });
+        [](const ComponentRegistrationData::SPtr& component){ return component->componentName; });
     const auto result = sofa::helper::getClosestMatch(className, std::vector(allClassNames.begin(), allClassNames.end()), 5, 0.6);
     std::vector<std::string> similarComponentNames;
     std::transform(result.begin(), result.end(), std::back_inserter(similarComponentNames),
@@ -409,7 +409,7 @@ bool knownIssues(const ComponentFactory& self, const std::string& clasName)
     return false;
 }
 
-using Filter = std::vector<ComponentDescription::SPtr> (*)(const std::vector<ComponentDescription::SPtr>&, objectmodel::BaseContext*, objectmodel::BaseObjectDescription*);
+using Filter = std::vector<ComponentRegistrationData::SPtr> (*)(const std::vector<ComponentRegistrationData::SPtr>&, objectmodel::BaseContext*, objectmodel::BaseObjectDescription*);
 
 /**
  * Apply a filter on a list of potential candidates. If the filtered list has a unique element, a
@@ -419,7 +419,7 @@ using Filter = std::vector<ComponentDescription::SPtr> (*)(const std::vector<Com
 objectmodel::BaseComponent::SPtr applyFilter(
     const ComponentFactory& self,
     const std::string& componentName,
-    const std::vector<ComponentDescription::SPtr>& candidates,
+    const std::vector<ComponentRegistrationData::SPtr>& candidates,
     objectmodel::BaseContext* context,
     objectmodel::BaseObjectDescription* arg,
     Filter filter)
@@ -489,7 +489,7 @@ objectmodel::BaseComponent::SPtr ComponentFactory::createComponent(
         autoLoadPlugin(*this, moduleName);
     }
 
-    std::vector<ComponentDescription::SPtr> candidates = getComponentsFromName(*this, componentName, moduleName);
+    std::vector<ComponentRegistrationData::SPtr> candidates = getComponentsFromName(*this, componentName, moduleName);
 
     // Early failure because there are no compatible candidates
     if (candidates.empty())
@@ -510,7 +510,7 @@ objectmodel::BaseComponent::SPtr ComponentFactory::createComponent(
     // Check that the candidates don't rely on unloaded modules
     {
         auto candidatesWithoutUnloadedPlugins = candidates;
-        std::erase_if(candidatesWithoutUnloadedPlugins, [](const ComponentDescription::SPtr& candidate)
+        std::erase_if(candidatesWithoutUnloadedPlugins, [](const ComponentRegistrationData::SPtr& candidate)
         {
             return helper::system::PluginManager::getInstance().isPluginUnloaded(candidate->componentModule);
         });
@@ -519,7 +519,7 @@ objectmodel::BaseComponent::SPtr ComponentFactory::createComponent(
         {
             std::set<std::string> unloadedPlugins;
             std::transform(candidates.begin(), candidates.end(), std::inserter(unloadedPlugins, unloadedPlugins.begin()),
-                [](const ComponentDescription::SPtr& component) { return component->componentModule; });
+                [](const ComponentRegistrationData::SPtr& component) { return component->componentModule; });
             const auto unloadedPluginsString = sofa::helper::join(unloadedPlugins.begin(), unloadedPlugins.end(), ", ");
             msg_error() << "Attempted to create component '" << componentName
                 << "' but all potential candidates rely on component from currently unloaded plugins:" << unloadedPluginsString << "]";
@@ -584,7 +584,7 @@ bool ComponentFactory::hasCreator(const std::string& classname) const
         [&](const auto& component){ return component->componentName == classname; });
 }
 
-void ComponentFactory::getEntriesFromTarget(std::vector<ComponentDescription::SPtr>& result,
+void ComponentFactory::getEntriesFromTarget(std::vector<ComponentRegistrationData::SPtr>& result,
                                             const std::string& target) const
 {
     for (const auto& component : m_registry)
@@ -598,9 +598,10 @@ void ComponentFactory::getEntriesFromTarget(std::vector<ComponentDescription::SP
 
 std::string ComponentFactory::listClassesFromTarget(std::string target, std::string separator)
 {
-    std::vector<ClassEntry::SPtr> entries;
+    std::vector<ComponentRegistrationData::SPtr> entries;
     this->getEntriesFromTarget(entries, target);
-    return sofa::helper::join(entries, separator);
+    return sofa::helper::join(entries.begin(), entries.end(),
+        [](const auto& entry) { std::stringstream ss; ss << *entry; return ss.str();}, separator);
 }
 
 ComponentFactory* ComponentFactory::getInstance() { return MainComponentFactory::getInstance(); }

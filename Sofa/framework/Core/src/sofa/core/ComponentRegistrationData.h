@@ -35,6 +35,9 @@ namespace sofa::core
 
 struct SOFA_CORE_API ComponentRegistrationData
 {
+    friend class ComponentFactory;
+    using SPtr = std::shared_ptr<ComponentRegistrationData>;
+
     std::string componentName;
     std::set<std::string> aliases;
 
@@ -51,6 +54,74 @@ struct SOFA_CORE_API ComponentRegistrationData
     std::set<std::string> documentationURL;
 
     std::shared_ptr<BaseTemplateDeductionRule> templateDeductionRule;
+
+    std::unique_ptr<BaseComponentCreator> creator;
+
+private:
+    // ComponentRegistrationData() = default;
+};
+
+struct SOFA_CORE_API ComponentRegistrationDataBuilder
+{
+    ComponentRegistrationData::SPtr data;
+
+    ComponentRegistrationDataBuilder(const std::string& componentName, const std::string& moduleName, const std::string& description, std::unique_ptr<BaseComponentCreator> creator)
+        : data(std::make_shared<ComponentRegistrationData>())
+    {
+        data->componentName = componentName;
+        data->componentModule = moduleName;
+        data->description = description;
+        data->creator = std::move(creator);
+    }
+
+    ComponentRegistrationDataBuilder& addAlias(const std::string& alias)
+    {
+        data->aliases.insert(alias);
+        return *this;
+    }
+
+    ComponentRegistrationDataBuilder& addTemplateAttribute(
+        const std::string& templateAttribute, const std::string& value)
+    {
+        data->templateAttributes.emplace_back(templateAttribute, value);
+        return *this;
+    }
+
+    template<class T>
+    ComponentRegistrationDataBuilder& addTemplateAttribute(const std::string& templateAttribute)
+    {
+        return addTemplateAttribute(templateAttribute, T::Name());
+    }
+
+    ComponentRegistrationDataBuilder& addAuthor(const std::string& _author)
+    {
+        data->authors.insert(_author);
+        return *this;
+    }
+
+    ComponentRegistrationDataBuilder& withLicense(const std::string& _license)
+    {
+        data->license = _license;
+        return *this;
+    }
+
+    ComponentRegistrationDataBuilder& withDocumentationURL(const std::string& _documentationURL)
+    {
+        data->documentationURL.insert(_documentationURL);
+        return *this;
+    }
+
+    template<class T>
+    ComponentRegistrationDataBuilder& withDeductionRule()
+    {
+        data->templateDeductionRule = std::make_shared<T>();
+        return *this;
+    }
+
+    operator ComponentRegistrationData::SPtr() const
+    {
+        return data;
+    }
 };
 
 inline std::ostream& operator<<(std::ostream& os, const ComponentRegistrationData& data)
@@ -69,70 +140,46 @@ inline std::ostream& operator<<(std::ostream& os, const ComponentRegistrationDat
     return os;
 }
 
-struct SOFA_CORE_API ComponentRegistrationDataBuilder : public ComponentRegistrationData
+struct SOFA_CORE_API ComponentRegistrationDataModule
 {
-    ComponentRegistrationDataBuilder& setName(const std::string& _componentName)
+    ComponentRegistrationDataBuilder withDescription(const std::string& description)
     {
-        this->componentName = _componentName;
-        return *this;
+        return {m_componentName, m_moduleName, description, std::move(m_creator)};
     }
-
-    ComponentRegistrationDataBuilder& addAlias(const std::string& alias)
-    {
-        this->aliases.insert(alias);
-        return *this;
-    }
-
-    ComponentRegistrationDataBuilder& addTemplateAttribute(
-        const std::string& templateAttribute, const std::string& value)
-    {
-        this->templateAttributes.emplace_back(templateAttribute, value);
-        return *this;
-    }
-
-    template<class T>
-    ComponentRegistrationDataBuilder& addTemplateAttribute(const std::string& templateAttribute)
-    {
-        return addTemplateAttribute(templateAttribute, T::Name());
-    }
-
-    ComponentRegistrationDataBuilder& setModuleName(const std::string& _moduleName)
-    {
-        this->componentModule = _moduleName;
-        return *this;
-    }
-
-    ComponentRegistrationDataBuilder& setDescription(const std::string& _description)
-    {
-        this->description = _description;
-        return *this;
-    }
-
-    ComponentRegistrationDataBuilder& addAuthor(const std::string& _author)
-    {
-        this->authors.insert(_author);
-        return *this;
-    }
-
-    ComponentRegistrationDataBuilder& setLicense(const std::string& _license)
-    {
-        this->license = _license;
-        return *this;
-    }
-
-    ComponentRegistrationDataBuilder& setDocumentationURL(const std::string& _documentationURL)
-    {
-        this->documentationURL.insert(_documentationURL);
-        return *this;
-    }
-
-    template<class T>
-    ComponentRegistrationDataBuilder& setDeductionRule()
-    {
-        this->templateDeductionRule = std::make_shared<T>();
-        return *this;
-    }
+    ComponentRegistrationDataModule(const std::string& componentName, const std::string& moduleName, std::unique_ptr<BaseComponentCreator> creator)
+        : m_componentName(componentName), m_moduleName(moduleName), m_creator(std::move(creator)) {}
+private:
+    std::string m_componentName;
+    std::string m_moduleName;
+    std::unique_ptr<BaseComponentCreator> m_creator;
 };
+
+struct SOFA_CORE_API ComponentRegistrationDataName
+{
+    ComponentRegistrationDataModule withModule(const std::string& moduleName)
+    {
+        return {m_componentName, moduleName, std::move(m_creator)};
+    }
+    ComponentRegistrationDataName(const std::string& componentName, std::unique_ptr<BaseComponentCreator> creator)
+        : m_componentName(componentName)
+        , m_creator(std::move(creator))
+    {}
+private:
+    std::string m_componentName;
+    std::unique_ptr<BaseComponentCreator> m_creator;
+};
+
+template<class Component>
+ComponentRegistrationDataName CreateComponent(const std::string& componentName)
+{
+    std::unique_ptr<BaseComponentCreator> creator = std::make_unique<ComponentCreator<Component>>();
+    return ComponentRegistrationDataName(componentName, std::move(creator));
+}
+
+
+
+/**************************************************************************************************/
+
 
 //to deprecate
 struct SOFA_CORE_API LegacyComponentRegistrationData

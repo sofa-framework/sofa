@@ -28,26 +28,14 @@
 namespace sofa::core
 {
 
-struct SOFA_CORE_API ComponentDescription
-    : public ComponentRegistrationData
-{
-    using SPtr = std::shared_ptr<ComponentDescription>;
-
-    ComponentDescription() = default;
-    explicit ComponentDescription(const ComponentRegistrationData& data)
-        : ComponentRegistrationData(data) {}
-
-    std::unique_ptr<BaseComponentCreator> creator;
-};
-
 class SOFA_CORE_API ComponentFactory
 {
 public:
 
     // to deprecate
-    using ClassEntry = ComponentDescription;
+    using ClassEntry = ComponentRegistrationData;
 
-    using Registry = std::vector<ComponentDescription::SPtr>;
+    using Registry = std::vector<ComponentRegistrationData::SPtr>;
     const Registry& getRegistry() const { return m_registry; }
 
     bool registerObjectsFromPlugin(const std::string& pluginName);
@@ -55,12 +43,9 @@ public:
     //to deprecate
     bool registerObjects(LegacyComponentRegistrationData& ro);
 
-    template<class Component>
-    void registerComponent(const ComponentRegistrationData& componentDescription)
+    void registerComponent(const ComponentRegistrationData::SPtr& componentRegistrationData)
     {
-        auto componentInRegistry = std::make_shared<ComponentDescription>(componentDescription);
-        componentInRegistry->creator = std::make_unique<ComponentCreator<Component>>();
-        m_registry.push_back(componentInRegistry);
+        m_registry.push_back(componentRegistrationData);
     }
 
 
@@ -76,14 +61,14 @@ public:
     bool hasCreator(const std::string& classname) const;
 
     /// Fill the given vector with the registered classes from a given target
-    void getEntriesFromTarget(std::vector<ComponentDescription::SPtr>& result, const std::string& target) const;
+    void getEntriesFromTarget(std::vector<ComponentRegistrationData::SPtr>& result, const std::string& target) const;
 
     /// Return the list of classes from a given target
     std::string listClassesFromTarget(std::string target, std::string separator = ", ");
 
     /// Fill the given vector with all the registered classes derived from BaseClass
     template<class BaseClass>
-    std::vector<ComponentDescription::SPtr> getEntriesDerivedFrom() const;
+    std::vector<ComponentRegistrationData::SPtr> getEntriesDerivedFrom() const;
 
     /// Return the list of classes derived from BaseClass as a string
     template<class BaseClass>
@@ -108,9 +93,9 @@ protected:
 
 
 template<class Class>
-std::vector<ComponentDescription::SPtr> ComponentFactory::getEntriesDerivedFrom() const
+std::vector<ComponentRegistrationData::SPtr> ComponentFactory::getEntriesDerivedFrom() const
 {
-    std::vector<ComponentDescription::SPtr> result;
+    std::vector<ComponentRegistrationData::SPtr> result;
 
     auto* componentClass = Class::GetClass();
     if (!componentClass)
@@ -138,7 +123,7 @@ std::string ComponentFactory::listClassesDerivedFrom(const std::string& separato
     auto entries = getEntriesDerivedFrom<BaseClass>();
 
     return sofa::helper::join(entries.begin(), entries.end(),
-        [](const ComponentDescription::SPtr& entry){ return entry->componentName;}, separator);
+        [](const ComponentRegistrationData::SPtr& entry){ return entry->componentName;}, separator);
 }
 
 

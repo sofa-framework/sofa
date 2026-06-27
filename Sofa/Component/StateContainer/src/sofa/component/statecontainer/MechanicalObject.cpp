@@ -46,12 +46,11 @@ static constexpr std::string_view description {"Mechanical state vectors"};
 template<class T>
 void registerComponent(sofa::core::ComponentFactory* factory)
 {
-    factory->registerComponent<MechanicalObject<T>>(
-    core::ComponentRegistrationDataBuilder()
-        .setName("MechanicalObject")
+    factory->registerComponent(
+        core::CreateComponent<MechanicalObject<T>>("MechanicalObject")
+        .withModule(MODULE_NAME)
+        .withDescription(std::string(description))
         .addTemplateAttribute<T>("dofType")
-        .setDescription(std::string(description))
-        .setModuleName(MODULE_NAME)
     );
 };
 
