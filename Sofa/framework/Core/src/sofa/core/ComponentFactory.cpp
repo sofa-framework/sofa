@@ -404,6 +404,11 @@ bool knownIssues(const ComponentFactory& self, const std::string& clasName)
 
 using Filter = std::vector<ComponentDescription::SPtr> (*)(const std::vector<ComponentDescription::SPtr>&, objectmodel::BaseContext*, objectmodel::BaseObjectDescription*);
 
+/**
+ * Apply a filter on a list of potential candidates. If the filtered list has a unique element, a
+ * component will be created based on this element. Otherwise, the filtered list is further filtered
+ * based on deduction rules.
+ */
 objectmodel::BaseComponent::SPtr applyFilter(
     const ComponentFactory& self,
     const std::string& componentName,
@@ -434,6 +439,11 @@ objectmodel::BaseComponent::SPtr applyFilter(
                         deducedCandidates.begin(), deducedCandidates.end(), ", ")
                     << "). The first one is selected.";
                 return createComponentFrom(deducedCandidates.front(), context, arg);
+            }
+            else
+            {
+                // None of the deduction rules matches: returning the first filtered candidate
+                return createComponentFrom(filteredCandidates.front(), context, arg);
             }
         }
     }
