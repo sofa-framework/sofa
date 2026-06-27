@@ -221,8 +221,13 @@ void autoLoadPlugin(ComponentFactory& self, const std::string& pluginName)
     }
 }
 
-std::vector<ComponentDescription::SPtr> selectCandidatesFromTemplateAttributes(const std::vector<ComponentDescription::SPtr>& candidates, objectmodel::BaseObjectDescription* arg)
+std::vector<ComponentDescription::SPtr> selectCandidatesFromTemplateAttributes(
+    const std::vector<ComponentDescription::SPtr>& candidates,
+    objectmodel::BaseContext* context,
+    objectmodel::BaseObjectDescription* arg)
 {
+    SOFA_UNUSED(context);
+
     std::vector<ComponentDescription::SPtr> exactlyMatchingCandidates;
 
     for (const auto& candidate : candidates)
@@ -255,8 +260,13 @@ std::vector<ComponentDescription::SPtr> selectCandidatesFromTemplateAttributes(c
     return exactlyMatchingCandidates;
 }
 
-std::vector<ComponentDescription::SPtr> selectCandidatesFromPartialTemplateAttributes(const std::vector<ComponentDescription::SPtr>& candidates, objectmodel::BaseObjectDescription* arg)
+std::vector<ComponentDescription::SPtr> selectCandidatesFromPartialTemplateAttributes(
+    const std::vector<ComponentDescription::SPtr>& candidates,
+    objectmodel::BaseContext* context,
+    objectmodel::BaseObjectDescription* arg)
 {
+    SOFA_UNUSED(context);
+
     std::vector<ComponentDescription::SPtr> partiallyMatchingCandidates;
 
     for (const auto& candidate : candidates)
@@ -281,8 +291,11 @@ std::vector<ComponentDescription::SPtr> selectCandidatesFromPartialTemplateAttri
 
 std::vector<ComponentDescription::SPtr> selectCandidatesTemplateKeyword(
     const std::vector<ComponentDescription::SPtr>& candidates,
+    objectmodel::BaseContext* context,
     objectmodel::BaseObjectDescription* arg)
 {
+    SOFA_UNUSED(context);
+
     const char* templateAttr = arg->getAttribute("template", nullptr);
     if (!templateAttr)
         return {};
@@ -306,6 +319,16 @@ std::vector<ComponentDescription::SPtr> selectCandidatesTemplateKeyword(
     return matchingCandidates;
 }
 
+std::vector<ComponentDescription::SPtr> noFilter(
+    const std::vector<ComponentDescription::SPtr>& candidates,
+    objectmodel::BaseContext* context,
+    objectmodel::BaseObjectDescription* arg)
+{
+    SOFA_UNUSED(context);
+    SOFA_UNUSED(arg);
+    return candidates;
+}
+
 std::vector<ComponentDescription::SPtr> selectCandidatesDeductionRules(
     const std::vector<ComponentDescription::SPtr>& candidates,
     objectmodel::BaseContext* context,
@@ -326,7 +349,7 @@ std::vector<ComponentDescription::SPtr> selectCandidatesDeductionRules(
     return matchingCandidates;
 }
 
-auto createComponentFrom(const ComponentDescription::SPtr& desc, objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
+objectmodel::BaseComponent::SPtr createComponentFrom(const ComponentDescription::SPtr& desc, objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
 {
     auto component = desc->creator->create();
 
@@ -377,6 +400,44 @@ bool knownIssues(const ComponentFactory& self, const std::string& clasName)
     }
 
     return false;
+}
+
+using Filter = std::vector<ComponentDescription::SPtr> (*)(const std::vector<ComponentDescription::SPtr>&, objectmodel::BaseContext*, objectmodel::BaseObjectDescription*);
+
+objectmodel::BaseComponent::SPtr applyFilter(
+    const ComponentFactory& self,
+    const std::string& componentName,
+    const std::vector<ComponentDescription::SPtr>& candidates,
+    objectmodel::BaseContext* context,
+    objectmodel::BaseObjectDescription* arg,
+    Filter filter)
+{
+    const auto filteredCandidates = filter(candidates, context, arg);
+
+    if (!filteredCandidates.empty())
+    {
+        if (filteredCandidates.size() == 1)
+        {
+            // No ambiguity: The unique candidate is returned
+            return createComponentFrom(filteredCandidates.front(), context, arg);
+        }
+        else
+        {
+            // Multiple candidates: Use deduction rules to resolve ambiguity.
+            auto deducedCandidates = selectCandidatesDeductionRules(filteredCandidates, context, arg);
+            if (!deducedCandidates.empty())
+            {
+                msg_warning_when(deducedCandidates.size() > 1, &self)
+                    << "Attempt to create component '" << componentName
+                    << "', however multiple potential candidates match the provided attributes ("
+                    << sofa::helper::join(
+                        deducedCandidates.begin(), deducedCandidates.end(), ", ")
+                    << "). The first one is selected.";
+                return createComponentFrom(deducedCandidates.front(), context, arg);
+            }
+        }
+    }
+    return nullptr;
 }
 
 }
@@ -449,73 +510,44 @@ objectmodel::BaseComponent::SPtr ComponentFactory::createComponent(
         }
     }
 
+    // In case of ambiguity (multiple candidates), sorting candidates will allow returning the
+    // component with the highest priority.
     std::sort(candidates.begin(), candidates.end(),
         [](const auto& a, const auto& b) { return a->instantiationPriority > b->instantiationPriority; });
 
     // 1. Attempt Exact Template Match (Highest Priority).
+    if (auto component = applyFilter(*this, componentName, candidates, context, arg,
+                                     selectCandidatesFromTemplateAttributes))
     {
-        const auto exactMatches = selectCandidatesFromTemplateAttributes(candidates, arg);
-
-        if (!exactMatches.empty())
-        {
-            msg_warning_when(exactMatches.size() > 1) << "Multiple candidates with the same templates: " <<
-                sofa::helper::join(exactMatches.begin(), exactMatches.end(), ",");
-            return createComponentFrom(exactMatches.front(), context, arg);
-        }
+        return component;
     }
 
     // 2. Attempt Selection by Legacy 'template' Keyword (Medium-High Priority).
+    if (auto component = applyFilter(*this, componentName, candidates, context, arg,
+                                     selectCandidatesTemplateKeyword))
     {
-        const auto templateCandidates = selectCandidatesTemplateKeyword(candidates, arg);
-        if (!templateCandidates.empty())
-        {
-            msg_warning_when(templateCandidates.size() > 1) << "Multiple candidates with the same templates: " <<
-                sofa::helper::join(templateCandidates.begin(), templateCandidates.end(), ",");
-            return createComponentFrom(templateCandidates.front(), context, arg);
-        }
+        return component;
     }
 
-    // 3. Attempt Partial Template Matching with Deduction (Medium Priority).
+    // 3. Attempt Partial Template Matching (Medium Priority).
+    if (auto component = applyFilter(*this, componentName, candidates, context, arg,
+                                     selectCandidatesFromPartialTemplateAttributes))
     {
-        const auto matchingTemplates = selectCandidatesFromPartialTemplateAttributes(candidates, arg);
-
-        if (matchingTemplates.size() == 1)
-        {
-            // Success: Only one candidate matches partially -> Select it.
-            return createComponentFrom(matchingTemplates.front(), context, arg);
-        }
-        else if (!matchingTemplates.empty())
-        {
-            // Ambiguous partial match: Use deduction rules to resolve ambiguity.
-            auto deducedCandidates = selectCandidatesDeductionRules(matchingTemplates, context, arg);
-            if (!deducedCandidates.empty())
-            {
-                msg_warning_when(deducedCandidates.size() > 1) << "Multiple candidates with the same templates: " <<
-                    sofa::helper::join(deducedCandidates.begin(), deducedCandidates.end(), ",");
-                return createComponentFrom(deducedCandidates.front(), context, arg);
-            }
-        }
+        return component;
     }
 
     // 4. Attempt General Template Deduction (Lowest Priority).
-    // If no explicit template matching worked, try to select based purely on deduction rules from all valid candidates.
+    // If no explicit template matching worked, try to select based purely on deduction rules from
+    // all valid candidates.
+    if (auto component = applyFilter(*this, componentName, candidates, context, arg, noFilter))
     {
-        auto deducedCandidates = selectCandidatesDeductionRules(candidates, context, arg);
-
-        if (!deducedCandidates.empty())
-        {
-            msg_warning_when(deducedCandidates.size() > 1) << "Multiple candidates with the same templates: " <<
-                sofa::helper::join(deducedCandidates.begin(), deducedCandidates.end(), ",");
-            return createComponentFrom(deducedCandidates.front(), context, arg);
-        }
+        return component;
     }
 
     // 5. Final fallback
+    if (!candidates.empty())
     {
-        if (!candidates.empty())
-        {
-            return createComponentFrom(candidates.front(), context, arg);
-        }
+        return createComponentFrom(candidates.front(), context, arg);
     }
 
     // Final failure
