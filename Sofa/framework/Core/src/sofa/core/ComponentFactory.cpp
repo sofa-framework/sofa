@@ -105,8 +105,7 @@ bool ComponentFactory::registerObjects(LegacyComponentRegistrationData& ro)
 
         component->componentName = ro.m_componentNames[i];
         component->aliases = ro.m_aliases;
-        component->componentNamespace = "";
-        component->componentModule = "";
+        component->componentModule = ro.m_moduleNames[i];
 
         component->description = ro.m_description;
         component->authors.insert(ro.m_authors);

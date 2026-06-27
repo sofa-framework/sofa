@@ -153,11 +153,17 @@ struct SOFA_CORE_API LegacyComponentRegistrationData
     }
 
     std::vector<std::string> m_componentNames;
+    std::vector<std::string> m_moduleNames;
     std::vector<std::shared_ptr<BaseTemplateDeductionRule> > m_templateDeductionRules;
     template<class T> LegacyComponentRegistrationData& add(bool = false)
     {
         m_componentCreators.push_back(new ComponentCreator<T>);
         m_componentNames.push_back(T::GetClass()->className);
+#ifdef SOFA_TARGET
+        m_moduleNames.push_back(sofa_tostring(SOFA_TARGET));
+#else
+        m_moduleNames.emplace_back();
+#endif
         m_templateDeductionRules.push_back(std::make_shared<CanCreateDeductionRule<T>>());
         //to do: deal with templates
         return *this;
