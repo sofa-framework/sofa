@@ -88,6 +88,20 @@ TEST_F(ComponentFactory_test, CreateComponent)
     EXPECT_EQ(createdComponent->getClassName(), "DummyComponent");
 }
 
+TEST_F(ComponentFactory_test, CreateComponentDifferentName)
+{
+    factory.registerComponent(core::CreateComponent<DummyComponent>("NotDummyComponent")
+        .withModule("test")
+        .withDescription("dummy")
+    );
+
+    core::objectmodel::BaseObjectDescription desc("nameInTheScene", "NotDummyComponent");
+    auto createdComponent = factory.createComponent(node.get(), &desc);
+    ASSERT_NE(createdComponent, nullptr);
+    EXPECT_EQ(createdComponent->getName(), "nameInTheScene");
+    EXPECT_EQ(createdComponent->getClassName(), "DummyComponent");
+}
+
 TEST_F(ComponentFactory_test, HasCreator)
 {
     factory.registerComponent(core::CreateComponent<DummyComponent>("DummyComponent")
