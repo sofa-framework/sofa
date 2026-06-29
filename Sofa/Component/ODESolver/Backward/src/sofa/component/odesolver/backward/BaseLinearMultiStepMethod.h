@@ -61,7 +61,7 @@ public:
 
     void init() override;
     void reset() override;
-    void solve(const core::ExecParams* params, SReal dt,
+    void doSolve(const core::ExecParams* params, SReal dt,
         core::MultiVecCoordId xResult,
         core::MultiVecDerivId vResult) final;
 

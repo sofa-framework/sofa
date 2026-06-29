@@ -40,7 +40,7 @@ public:
 protected:
     CentralDifferenceSolver();
 public:
-    void solve (const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
+    void doSolve (const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
 
     Data<SReal> d_rayleighMass; ///< Rayleigh damping coefficient related to mass
     Data<bool> d_threadSafeVisitor; ///< If true, do not use realloc and free visitors in fwdInteractionForceField.
