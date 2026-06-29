@@ -43,11 +43,7 @@ public:
     //to deprecate
     bool registerObjects(LegacyComponentRegistrationData& ro);
 
-    void registerComponent(const ComponentRegistrationData::SPtr& componentRegistrationData)
-    {
-        m_registry.push_back(componentRegistrationData);
-    }
-
+    void registerComponent(const ComponentRegistrationData::SPtr& componentRegistrationData);
 
     /// Create a component given a context and a description.
     objectmodel::BaseComponent::SPtr createComponent(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg);

@@ -183,14 +183,41 @@ TEST_F(ComponentFactory_test, OneTemplate_identicalRegistration)
         .addTemplateAttribute("t", "int")
     );
 
-    factory.registerComponent(core::CreateComponent<DummyComponentWith1Template<float>>("TemplatedCompo")
+    {
+        EXPECT_MSG_EMIT(Error);
+        factory.registerComponent(core::CreateComponent<DummyComponentWith1Template<float>>("TemplatedCompo")
+           .withModule("test")
+           .withDescription("dummy")
+           .addTemplateAttribute("t", "int")
+       );
+    }
+
+    core::objectmodel::BaseObjectDescription desc("nameInTheScene", "TemplatedCompo");
+    desc.setAttribute("t", "int");
+    EXPECT_MSG_EMIT(Warning); //ambiguity because of identical registration
+    auto createdComponent = factory.createComponent(node.get(), &desc);
+    ASSERT_NE(createdComponent, nullptr);
+    EXPECT_NE(dynamic_cast<DummyComponentWith1Template<int>*>(createdComponent.get()), nullptr);
+}
+
+TEST_F(ComponentFactory_test, OneTemplate_identicalRegistrationNoTemplateAttribute)
+{
+    factory.registerComponent(core::CreateComponent<DummyComponentWith1Template<int>>("TemplatedCompo")
         .withModule("test")
         .withDescription("dummy")
         .addTemplateAttribute("t", "int")
     );
 
+    {
+        EXPECT_MSG_EMIT(Error);
+        factory.registerComponent(core::CreateComponent<DummyComponentWith1Template<float>>("TemplatedCompo")
+           .withModule("test")
+           .withDescription("dummy")
+           .addTemplateAttribute("t", "int")
+       );
+    }
+
     core::objectmodel::BaseObjectDescription desc("nameInTheScene", "TemplatedCompo");
-    desc.setAttribute("t", "int");
     EXPECT_MSG_EMIT(Warning); //ambiguity because of identical registration
     auto createdComponent = factory.createComponent(node.get(), &desc);
     ASSERT_NE(createdComponent, nullptr);

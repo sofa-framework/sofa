@@ -143,6 +143,32 @@ bool ComponentFactory::registerObjects(LegacyComponentRegistrationData& ro)
     return true;
 
 }
+void ComponentFactory::registerComponent(
+    const ComponentRegistrationData::SPtr& componentRegistrationData)
+{
+    //check no duplicate
+    for (const auto& component : m_registry)
+    {
+        if (component->componentName == componentRegistrationData->componentName)
+        {
+            auto allTemplateAttributes = true;
+            for (const auto& templateAttribute : componentRegistrationData->templateAttributes)
+            {
+                if (std::find(component->templateAttributes.begin(), component->templateAttributes.end(),
+                    templateAttribute) ==  component->templateAttributes.end())
+                {
+                    allTemplateAttributes = false;
+                }
+            }
+            if (!componentRegistrationData->templateAttributes.empty() && allTemplateAttributes)
+            {
+                msg_error() << "Attempt to register a new component in the factory with identical attributes than " << *component;
+            }
+        }
+    }
+
+    m_registry.push_back(componentRegistrationData);
+}
 
 namespace
 {
