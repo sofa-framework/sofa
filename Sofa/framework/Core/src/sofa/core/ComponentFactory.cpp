@@ -569,36 +569,20 @@ objectmodel::BaseComponent::SPtr ComponentFactory::createComponent(
     std::sort(candidates.begin(), candidates.end(),
         [](const auto& a, const auto& b) { return a->instantiationPriority > b->instantiationPriority; });
 
-    // 1. Attempt Exact Template Match (Highest Priority).
-    if (auto component = applyFilter(*this, componentName, candidates, context, arg,
-                                     selectCandidatesFromTemplateAttributes))
+    for (const Filter& filter : {
+        selectCandidatesFromTemplateAttributes, //Exact Template Match (Highest Priority).
+        selectCandidatesTemplateKeyword, //Selection by Legacy 'template' Keyword (Medium-High Priority)
+        selectCandidatesFromPartialTemplateAttributes, //Partial Template Matching (Medium Priority)
+        noFilter //General Template Deduction (Lowest Priority)
+    })
     {
-        return component;
+        if (auto component = applyFilter(*this, componentName, candidates, context, arg, filter))
+        {
+            return component;
+        }
     }
 
-    // 2. Attempt Selection by Legacy 'template' Keyword (Medium-High Priority).
-    if (auto component = applyFilter(*this, componentName, candidates, context, arg,
-                                     selectCandidatesTemplateKeyword))
-    {
-        return component;
-    }
-
-    // 3. Attempt Partial Template Matching (Medium Priority).
-    if (auto component = applyFilter(*this, componentName, candidates, context, arg,
-                                     selectCandidatesFromPartialTemplateAttributes))
-    {
-        return component;
-    }
-
-    // 4. Attempt General Template Deduction (Lowest Priority).
-    // If no explicit template matching worked, try to select based purely on deduction rules from
-    // all valid candidates.
-    if (auto component = applyFilter(*this, componentName, candidates, context, arg, noFilter))
-    {
-        return component;
-    }
-
-    // 5. Final fallback
+    // Final fallback
     if (!candidates.empty())
     {
         return createComponentFrom(candidates.front(), context, arg);
