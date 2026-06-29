@@ -79,7 +79,7 @@ void StickContactConstraint<TCollisionModel1,TCollisionModel2>::cleanup()
 
 
 template < class TCollisionModel1, class TCollisionModel2 >
-void StickContactConstraint<TCollisionModel1,TCollisionModel2>::setDetectionOutputs(OutputVector* o)
+void StickContactConstraint<TCollisionModel1,TCollisionModel2>::doSetDetectionOutputs(OutputVector* o)
 {
     this->f_printLog.setValue(true);
     msg_info() << "setDetectionOutputs(" << (o == nullptr ? -1 : (int)static_cast<TOutputVector*>(o)->size()) << ")";
@@ -178,7 +178,7 @@ void StickContactConstraint<TCollisionModel1,TCollisionModel2>::activateMappers(
 }
 
 template < class TCollisionModel1, class TCollisionModel2 >
-void StickContactConstraint<TCollisionModel1,TCollisionModel2>::createResponse(core::objectmodel::BaseContext* group)
+void StickContactConstraint<TCollisionModel1,TCollisionModel2>::doCreateResponse(core::objectmodel::BaseContext* group)
 {
     msg_info() << "->createResponse(" << group->getName() << ")";
     if (!contacts.empty() || !keepAlive())
@@ -217,7 +217,7 @@ void StickContactConstraint<TCollisionModel1,TCollisionModel2>::createResponse(c
 }
 
 template < class TCollisionModel1, class TCollisionModel2 >
-void StickContactConstraint<TCollisionModel1,TCollisionModel2>::removeResponse()
+void StickContactConstraint<TCollisionModel1,TCollisionModel2>::doRemoveResponse()
 {
     msg_info() << "->removeResponse()";
     if (m_constraint)
