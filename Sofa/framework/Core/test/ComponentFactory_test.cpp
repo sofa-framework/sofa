@@ -245,6 +245,69 @@ TEST_F(ComponentFactory_test, OneTemplate_templateKeyword)
     EXPECT_NE(dynamic_cast<DummyComponentWith1Template<int>*>(createdComponent.get()), nullptr);
 }
 
+TEST_F(ComponentFactory_test, TwoTemplate_attributes)
+{
+    EXPECT_MSG_NOEMIT(Warning);
+    EXPECT_MSG_NOEMIT(Error);
+
+    // Register component using two templates (e.g., int and float attributes)
+    factory.registerComponent(core::CreateComponent<DummyComponentWith2Template<int, float>>("TemplatedCompo")
+        .withModule("test")
+        .withDescription("dummy")
+        .addTemplateAttribute("t1", "int")
+        .addTemplateAttribute("t2", "float")
+    );
+
+    factory.registerComponent(core::CreateComponent<DummyComponentWith2Template<int, std::string>>("TemplatedCompo")
+        .withModule("test")
+        .withDescription("dummy")
+        .addTemplateAttribute("t1", "int")
+        .addTemplateAttribute("t2", "float")
+    );
+
+    // Create component specifying both template attributes
+    core::objectmodel::BaseObjectDescription desc("nameInTheScene", "TemplatedCompo");
+    desc.setAttribute("t1", "int");
+    desc.setAttribute("t2", "float");
+    auto createdComponent = factory.createComponent(node.get(), &desc);
+
+    ASSERT_NE(createdComponent, nullptr);
+    // Check if the component is correctly cast to the expected template type
+    auto* cast = dynamic_cast<DummyComponentWith2Template<int, float>*>(createdComponent.get());
+    EXPECT_NE(cast, nullptr);
+}
+
+TEST_F(ComponentFactory_test, TwoTemplate_templateKeyword)
+{
+    EXPECT_MSG_NOEMIT(Warning);
+    EXPECT_MSG_NOEMIT(Error);
+
+    // Register two different components using two templates
+    factory.registerComponent(core::CreateComponent<DummyComponentWith2Template<int, float>>("TemplatedCompo")
+        .withModule("test")
+        .withDescription("dummy")
+        .addTemplateAttribute("t1", "int")
+        .addTemplateAttribute("t2", "float")
+    );
+
+    factory.registerComponent(core::CreateComponent<DummyComponentWith2Template<double, bool>>("TemplatedCompo")
+        .withModule("test")
+        .withDescription("dummy")
+        .addTemplateAttribute("t1", "double")
+        .addTemplateAttribute("t2", "bool")
+    );
+
+    // Use the 'template' keyword to specify all template arguments: t1=int, t2=float
+    core::objectmodel::BaseObjectDescription desc("nameInTheScene", "TemplatedCompo");
+    desc.setAttribute("template", "int,float"); // Assuming comma-separated list of attributes
+    auto createdComponent = factory.createComponent(node.get(), &desc);
+
+    ASSERT_NE(createdComponent, nullptr);
+    // Check if the component is correctly cast to the expected template type
+    auto* cast = dynamic_cast<DummyComponentWith2Template<int, float>*>(createdComponent.get());
+    EXPECT_NE(cast, nullptr);
+}
+
 TEST_F(ComponentFactory_test, CreateUnknownComponent)
 {
     EXPECT_MSG_EMIT(Error);
