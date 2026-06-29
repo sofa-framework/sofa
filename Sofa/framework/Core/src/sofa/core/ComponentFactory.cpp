@@ -242,6 +242,7 @@ std::vector<ComponentRegistrationData::SPtr> selectCandidatesFromTemplateAttribu
         bool matchAllTemplateParameters = true;
         for (const auto& [attribute, value] : candidate->templateAttributes)
         {
+            const auto resolvedValue = defaulttype::TemplateAliases::resolveAlias(value);
             const char* attr = arg->getAttribute(attribute, nullptr);
             if (attr == nullptr)
             {
@@ -250,7 +251,8 @@ std::vector<ComponentRegistrationData::SPtr> selectCandidatesFromTemplateAttribu
             else
             {
                 const std::string attrStr { attr };
-                if (defaulttype::TemplateAliases::resolveAlias(attrStr) != value)
+                const auto resolvedAlias = defaulttype::TemplateAliases::resolveAlias(attrStr);
+                if (resolvedAlias != value)
                 {
                     matchAllTemplateParameters = false;
                 }
@@ -451,6 +453,13 @@ objectmodel::BaseComponent::SPtr applyFilter(
             }
             else
             {
+                msg_warning_when(filteredCandidates.size() > 1, &self)
+                    << "Attempt to create component '" << componentName
+                    << "', however multiple potential candidates match the provided attributes ("
+                    << sofa::helper::join(
+                        filteredCandidates.begin(), filteredCandidates.end(),
+                        [](const ComponentRegistrationData::SPtr& desc){ std::stringstream ss; ss << *desc; return ss.str(); }, ", ")
+                    << "). The first one is selected.";
                 // None of the deduction rules matches: returning the first filtered candidate
                 return createComponentFrom(filteredCandidates.front(), context, arg);
             }

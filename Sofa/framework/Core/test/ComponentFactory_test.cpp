@@ -86,6 +86,7 @@ TEST_F(ComponentFactory_test, CreateComponent)
     ASSERT_NE(createdComponent, nullptr);
     EXPECT_EQ(createdComponent->getName(), "nameInTheScene");
     EXPECT_EQ(createdComponent->getClassName(), "DummyComponent");
+    EXPECT_EQ(createdComponent->d_factoryName.getValue(), "DummyComponent");
 }
 
 TEST_F(ComponentFactory_test, CreateComponentDifferentName)
@@ -153,9 +154,58 @@ TEST_F(ComponentFactory_test, TargetEntries)
     EXPECT_FALSE(list.find("Compo3") != std::string::npos);
 }
 
-TEST_F(ComponentFactory_test, Templates)
+TEST_F(ComponentFactory_test, OneTemplate_attributes)
 {
     factory.registerComponent(core::CreateComponent<DummyComponentWith1Template<int>>("TemplatedCompo")
+        .withModule("test")
+        .withDescription("dummy")
+        .addTemplateAttribute("t", "int")
+    );
+
+    factory.registerComponent(core::CreateComponent<DummyComponentWith1Template<float>>("TemplatedCompo")
+        .withModule("test")
+        .withDescription("dummy")
+        .addTemplateAttribute("t", "float")
+    );
+
+    core::objectmodel::BaseObjectDescription desc("nameInTheScene", "TemplatedCompo");
+    desc.setAttribute("t", "int");
+    auto createdComponent = factory.createComponent(node.get(), &desc);
+    ASSERT_NE(createdComponent, nullptr);
+    EXPECT_NE(dynamic_cast<DummyComponentWith1Template<int>*>(createdComponent.get()), nullptr);
+}
+
+TEST_F(ComponentFactory_test, OneTemplate_identicalRegistration)
+{
+    factory.registerComponent(core::CreateComponent<DummyComponentWith1Template<int>>("TemplatedCompo")
+        .withModule("test")
+        .withDescription("dummy")
+        .addTemplateAttribute("t", "int")
+    );
+
+    factory.registerComponent(core::CreateComponent<DummyComponentWith1Template<float>>("TemplatedCompo")
+        .withModule("test")
+        .withDescription("dummy")
+        .addTemplateAttribute("t", "int")
+    );
+
+    core::objectmodel::BaseObjectDescription desc("nameInTheScene", "TemplatedCompo");
+    desc.setAttribute("t", "int");
+    EXPECT_MSG_EMIT(Warning); //ambiguity because of identical registration
+    auto createdComponent = factory.createComponent(node.get(), &desc);
+    ASSERT_NE(createdComponent, nullptr);
+    EXPECT_NE(dynamic_cast<DummyComponentWith1Template<int>*>(createdComponent.get()), nullptr);
+}
+
+TEST_F(ComponentFactory_test, OneTemplate_templateKeyword)
+{
+    factory.registerComponent(core::CreateComponent<DummyComponentWith1Template<int>>("TemplatedCompo")
+        .withModule("test")
+        .withDescription("dummy")
+        .addTemplateAttribute("t", "int")
+    );
+
+    factory.registerComponent(core::CreateComponent<DummyComponentWith1Template<float>>("TemplatedCompo")
         .withModule("test")
         .withDescription("dummy")
         .addTemplateAttribute("t", "int")
@@ -165,6 +215,7 @@ TEST_F(ComponentFactory_test, Templates)
     desc.setAttribute("template", "int");
     auto createdComponent = factory.createComponent(node.get(), &desc);
     ASSERT_NE(createdComponent, nullptr);
+    EXPECT_NE(dynamic_cast<DummyComponentWith1Template<int>*>(createdComponent.get()), nullptr);
 }
 
 TEST_F(ComponentFactory_test, CreateUnknownComponent)
