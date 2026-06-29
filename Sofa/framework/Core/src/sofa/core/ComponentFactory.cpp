@@ -370,6 +370,8 @@ objectmodel::BaseComponent::SPtr createComponentFrom(const ComponentRegistration
         msg_warning_when(desc->componentModule.empty(), component.get()) << "Module name is empty";
 
         component->parse(arg);
+
+        component->d_factoryName.setValue(desc->componentName);
     }
 
     return component;

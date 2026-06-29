@@ -100,6 +100,7 @@ TEST_F(ComponentFactory_test, CreateComponentDifferentName)
     ASSERT_NE(createdComponent, nullptr);
     EXPECT_EQ(createdComponent->getName(), "nameInTheScene");
     EXPECT_EQ(createdComponent->getClassName(), "DummyComponent");
+    EXPECT_EQ(createdComponent->d_factoryName.getValue(), "NotDummyComponent");
 }
 
 TEST_F(ComponentFactory_test, HasCreator)

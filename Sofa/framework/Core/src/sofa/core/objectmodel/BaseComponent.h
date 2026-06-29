@@ -184,6 +184,7 @@ public:
 
     Base* findLinkDestClass(const BaseClass* destType, const std::string& path, const BaseLink* link) override;
 
+    Data<std::string> d_factoryName;
 
     /// Return the full path name of this object
     virtual std::string getPathName() const override;
