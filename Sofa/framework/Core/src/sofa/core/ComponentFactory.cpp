@@ -344,7 +344,7 @@ std::vector<ComponentRegistrationData::SPtr> selectCandidatesTemplateKeyword(
     {
         const auto templateList = sofa::helper::join(
             candidate->templateAttributes.begin(), candidate->templateAttributes.end(),
-            [](const auto& attr){ return attr.second; }, ',');
+            [](const auto& attr){ return defaulttype::TemplateAliases::resolveAlias(attr.second); }, ',');
         if (templateAttrStr == templateList)
         {
             matchingCandidates.push_back(candidate);
