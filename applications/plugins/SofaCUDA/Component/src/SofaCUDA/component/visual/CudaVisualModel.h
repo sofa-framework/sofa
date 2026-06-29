@@ -104,10 +104,6 @@ public:
     virtual void init() override;
     virtual void reinit() override;
     virtual void internalDraw(const core::visual::VisualParams* vparams);
-    virtual void doDrawVisual(const core::visual::VisualParams*) override;
-    virtual void drawTransparent(const core::visual::VisualParams*) override;
-    virtual void drawShadow(const core::visual::VisualParams*) override;
-    virtual void doUpdateVisual(const core::visual::VisualParams* vparams) override;
     virtual void updateTopology();
     virtual void updateNormals();
     virtual void updateTopologyAndNormals();
@@ -118,6 +114,11 @@ public:
 protected:
 
 
+    virtual void doDrawTransparent(const core::visual::VisualParams*) override;
+    virtual void doDrawShadow(const core::visual::VisualParams*) override;
+
+    virtual void doDrawVisual(const core::visual::VisualParams*) override;
+    virtual void doUpdateVisual(const core::visual::VisualParams* vparams) override;
 
     void initV(int nbe, int nbv, int nbelemperv)
     {

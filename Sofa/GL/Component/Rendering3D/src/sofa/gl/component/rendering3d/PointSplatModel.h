@@ -47,6 +47,8 @@ public:
 protected:
     PointSplatModel();
     ~PointSplatModel() override;
+    void doDrawTransparent(const core::visual::VisualParams* vparams) override;
+
 public:
     void init() override;
 
@@ -54,7 +56,6 @@ public:
 
     virtual bool isTransparent() {return true;}
 
-    void drawTransparent(const core::visual::VisualParams* vparams) override;
 
 private:
     Data<float>		radius; ///< Radius of the spheres.
