@@ -49,7 +49,7 @@ public:
     TMatrix* getSystemMatrix() const override;
     TVector* getRHSVector() const override;
     TVector* getSolutionVector() const override;
-    [[nodiscard]] sofa::linearalgebra::BaseMatrix* getSystemBaseMatrix() const override;
+
     void buildSystemMatrix(const core::MechanicalParams* mparams) override;
     void resizeSystem(sofa::Size n) override;
     void clearSystem() override;
@@ -59,6 +59,8 @@ public:
     void dispatchSystemRHS(core::MultiVecDerivId v) override;
 
 protected:
+    [[nodiscard]] sofa::linearalgebra::BaseMatrix* doGetSystemBaseMatrix() const override;
+    
     ///< List of linear systems to assemble
     MultiLink < MyType, sofa::core::behavior::BaseMatrixLinearSystem, BaseLink::FLAG_DUPLICATE > l_linearSystems;
 
