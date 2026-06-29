@@ -136,7 +136,7 @@ public:
     SReal getYmax() { return d_max.getValue()[1]; }
     SReal getZmax() { return d_max.getValue()[2]; }
 
-    bool hasPos()  const override { return true; }
+    bool doHasPos()  const override { return true; }
 
     /// return the cube containing the given point (or -1 if not found),
     /// as well as deplacements from its first corner in terms of dx, dy, dz (i.e. barycentric coordinates).
