@@ -76,13 +76,13 @@ public:
     void init() override;
 
     void apply(const core::MechanicalParams *mparams, DataVecCoord_t<Out>& out, const DataVecCoord_t<In>& in) override;
-    void buildGeometricStiffnessMatrix(sofa::core::GeometricStiffnessMatrix* matrices) override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 
 protected:
     SquareDistanceMapping();
     ~SquareDistanceMapping() override;
+    void doBuildGeometricStiffnessMatrix(sofa::core::GeometricStiffnessMatrix* matrices) override;
 
     void matrixFreeApplyDJT(const core::MechanicalParams* mparams, Real kFactor,
                             Data<VecDeriv_t<In> >& parentForce,

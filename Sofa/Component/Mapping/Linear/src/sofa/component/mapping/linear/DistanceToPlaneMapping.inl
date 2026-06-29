@@ -172,7 +172,7 @@ void DistanceToPlaneMapping<TIn>::applyJT(const core::ConstraintParams *cparams,
 }
 
 template <class TIn>
-const linearalgebra::BaseMatrix* DistanceToPlaneMapping<TIn>::getJ()
+const linearalgebra::BaseMatrix* DistanceToPlaneMapping<TIn>::doGetJ()
 {
     return &J;
 }

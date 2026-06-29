@@ -122,16 +122,6 @@ public:
 
     void applyJT(const core::ConstraintParams *cparams, Data<InMatrixDeriv>& out, const Data<OutMatrixDeriv>& in) override;
 
-    void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentForce, core::ConstMultiVecDerivId  childForce ) override;
-
-    const sofa::linearalgebra::BaseMatrix* getJ() override;
-
-    virtual const type::vector<sofa::linearalgebra::BaseMatrix*>* getJs() override;
-
-    void updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId ) override;
-    const linearalgebra::BaseMatrix* getK() override;
-    void buildGeometricStiffnessMatrix(sofa::core::GeometricStiffnessMatrix* matrices) override;
-
 
     void draw(const core::visual::VisualParams* vparams) override;
 
@@ -149,6 +139,15 @@ public:
     void updateOmega(typename InDeriv::Rot& omega, const OutDeriv& out, const OutCoord& rotatedpoint);
 
 protected:
+
+    void doApplyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentForce, core::ConstMultiVecDerivId  childForce ) override;
+    const sofa::linearalgebra::BaseMatrix* doGetJ() override;
+    virtual const type::vector<sofa::linearalgebra::BaseMatrix*>* doGetJs() override;
+    void doUpdateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId ) override;
+    const linearalgebra::BaseMatrix* doGetK() override;
+    void doBuildGeometricStiffnessMatrix(sofa::core::GeometricStiffnessMatrix* matrices) override;
+
+
     class Loader;
 
     void load(const char* filename);
@@ -170,9 +169,9 @@ template <std::size_t N, class Real>
 struct RigidMappingMatrixHelper;
 
 template<> SOFA_COMPONENT_MAPPING_NONLINEAR_API
-void RigidMapping< sofa::defaulttype::Rigid2Types, sofa::defaulttype::Vec2Types >::updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId );
+void RigidMapping< sofa::defaulttype::Rigid2Types, sofa::defaulttype::Vec2Types >::doUpdateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId );
 template<> SOFA_COMPONENT_MAPPING_NONLINEAR_API
-const linearalgebra::BaseMatrix* RigidMapping< sofa::defaulttype::Rigid2Types, sofa::defaulttype::Vec2Types >::getK();
+const linearalgebra::BaseMatrix* RigidMapping< sofa::defaulttype::Rigid2Types, sofa::defaulttype::Vec2Types >::doGetK();
 
 #if !defined(SOFA_COMPONENT_MAPPING_RIGIDMAPPING_CPP)
 extern template class SOFA_COMPONENT_MAPPING_NONLINEAR_API RigidMapping< sofa::defaulttype::Rigid3Types, sofa::defaulttype::Vec3Types >;

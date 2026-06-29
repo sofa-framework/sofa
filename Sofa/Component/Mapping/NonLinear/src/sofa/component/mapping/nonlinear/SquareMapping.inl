@@ -97,7 +97,7 @@ void SquareMapping<TIn, TOut>::doUpdateK(const core::MechanicalParams* mparams,
 }
 
 template <class TIn, class TOut>
-void SquareMapping<TIn, TOut>::buildGeometricStiffnessMatrix(
+void SquareMapping<TIn, TOut>::doBuildGeometricStiffnessMatrix(
     sofa::core::GeometricStiffnessMatrix* matrices)
 {
     const unsigned geometricStiffness = this->d_geometricStiffness.getValue().getSelectedId();
