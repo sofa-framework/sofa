@@ -261,6 +261,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/behavior/BaseAnimationLoop.cpp
     ${SRC_ROOT}/behavior/BaseConstraintCorrection.cpp
     ${SRC_ROOT}/behavior/BaseConstraintSet.cpp
+    ${SRC_ROOT}/behavior/BaseController.cpp
     ${SRC_ROOT}/behavior/BaseForceField.cpp
     ${SRC_ROOT}/behavior/BaseInteractionForceField.cpp
     ${SRC_ROOT}/behavior/BaseLagrangianConstraint.cpp
