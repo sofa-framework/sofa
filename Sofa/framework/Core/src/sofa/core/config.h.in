@@ -127,3 +127,24 @@ SOFA_ATTRIBUTE_DEPRECATED("v26.06", "v29.06", "Use toBaseComponent instead.")
 #define SOFA_CORE_DEPRECATED_RENAME_CREATORMAP_OBJECTTEMPLATECREATORMAP() \
     SOFA_ATTRIBUTE_DISABLED("v25.12", "v26.06", "Type CreatorMap has been renamed to ObjectTemplateCreatorMap.")
 #endif
+
+#ifdef SOFA_BUILD_SOFA_CORE
+    #define SOFA_CORE_DEPRECATED_OBJECTFACTORY_CLASSENTRY()
+#else
+    #define SOFA_CORE_DEPRECATED_OBJECTFACTORY_CLASSENTRY() \
+    SOFA_ATTRIBUTE_DISABLED("v26.12", "v27.06", "Type ClassEntry has been replaced by ComponentRegistrationData.")
+#endif
+
+#ifdef SOFA_BUILD_SOFA_CORE
+    #define SOFA_CORE_DEPRECATED_OBJECTFACTORY_REGISTEROBJECTS()
+#else
+    #define SOFA_CORE_DEPRECATED_OBJECTFACTORY_REGISTEROBJECTS() \
+    SOFA_ATTRIBUTE_DISABLED("v26.12", "v27.06", "Use registerComponent instead.")
+#endif
+
+#ifdef SOFA_BUILD_SOFA_CORE
+    #define SOFA_CORE_DEPRECATED_OBJECTFACTORY_CREATEOBJECT()
+#else
+    #define SOFA_CORE_DEPRECATED_OBJECTFACTORY_CREATEOBJECT() \
+    SOFA_ATTRIBUTE_DISABLED("v26.12", "v27.06", "Use createComponent instead.")
+#endif

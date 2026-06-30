@@ -32,26 +32,17 @@ class SOFA_CORE_API ComponentFactory
 {
 public:
 
-    // to deprecate
-    using ClassEntry = ComponentRegistrationData;
+    using SOFA_CORE_DEPRECATED_OBJECTFACTORY_CLASSENTRY() ClassEntry = ComponentRegistrationData;
 
     using Registry = std::vector<ComponentRegistrationData::SPtr>;
     const Registry& getRegistry() const { return m_registry; }
 
     bool registerObjectsFromPlugin(const std::string& pluginName);
 
-    //to deprecate
-    bool registerObjects(LegacyComponentRegistrationData& ro);
-
     void registerComponent(const ComponentRegistrationData::SPtr& componentRegistrationData);
 
     /// Create a component given a context and a description.
     objectmodel::BaseComponent::SPtr createComponent(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg);
-
-    // to deprecate
-    objectmodel::BaseComponent::SPtr createObject(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg);
-
-
 
     /// Test if a creator exists for a given classname
     bool hasCreator(const std::string& classname) const;
@@ -70,6 +61,12 @@ public:
     template<class BaseClass>
     std::string listClassesDerivedFrom(const std::string& separator = ", ") const;
 
+
+    SOFA_CORE_DEPRECATED_OBJECTFACTORY_CREATEOBJECT()
+    objectmodel::BaseComponent::SPtr createObject(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg);
+
+    SOFA_CORE_DEPRECATED_OBJECTFACTORY_REGISTEROBJECTS()
+    bool registerObjects(LegacyComponentRegistrationData& ro);
 
     static SOFA_ATTRIBUTE_DEPRECATED("v26.12", "v27.12", "Use MainComponentFactory::getInstance instead") ComponentFactory* getInstance();
     static SOFA_ATTRIBUTE_DEPRECATED("v26.12", "v27.12", "Use MainComponentFactory::CreateComponent instead") objectmodel::BaseComponent::SPtr CreateObject(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg);
