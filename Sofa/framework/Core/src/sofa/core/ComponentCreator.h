@@ -28,14 +28,43 @@
 namespace sofa::core
 {
 
+/**
+ * @brief Base class for component instantiation.
+ *
+ * This abstract interface is used by ComponentFactory to interact with component creators
+ * without knowing the specific concrete type of the component being created.
+ */
 struct SOFA_CORE_API BaseComponentCreator
 {
     virtual ~BaseComponentCreator() = default;
+
+    /**
+     * @brief Instantiates a new component.
+     * Used by ComponentFactory to generate object instances before attribute parsing.
+     * @return A shared pointer to the newly created BaseComponent.
+     */
     virtual objectmodel::BaseComponent::SPtr create() const = 0;
+
+    /**
+     * @brief Returns the SOFA class metadata associated with the component.
+     */
     virtual const objectmodel::BaseClass* getClass() = 0;
+
+    /**
+     * @brief Creates a copy of the creator.
+     * Ensures the factory registry owns unique instances of creators during registration.
+     */
     virtual std::unique_ptr<BaseComponentCreator> clone() const = 0;
 };
 
+/**
+ * @brief Templated implementation of BaseComponentCreator.
+ *
+ * Binds a specific component class to the factory mechanism, ensuring components
+ * are created using SOFA's memory management (sofa::core::objectmodel::New).
+ *
+ * @tparam RealComponent The concrete component class to instantiate.
+ */
 template<class RealComponent>
 struct ComponentCreator : public BaseComponentCreator
 {
