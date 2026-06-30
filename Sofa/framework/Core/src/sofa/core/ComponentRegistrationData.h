@@ -188,7 +188,7 @@ ComponentRegistrationDataName CreateComponent(const std::string& componentName)
 
 
 //to deprecate
-struct SOFA_CORE_API LegacyComponentRegistrationData
+struct SOFA_CORE_DEPRECATED_OBJECTFACTORY_LEGACYREGISTRATIONDATA() SOFA_CORE_API LegacyComponentRegistrationData
 {
 
     std::string m_description;
