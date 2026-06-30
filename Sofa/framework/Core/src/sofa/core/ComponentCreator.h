@@ -70,6 +70,8 @@ struct ComponentCreator : public BaseComponentCreator
 {
     objectmodel::BaseComponent::SPtr create() const override
     {
+        // WARNING:
+        // It obliges the class to have a default constructor
         return sofa::core::objectmodel::New<RealComponent>();
     }
 
