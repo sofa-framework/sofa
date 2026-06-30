@@ -118,6 +118,12 @@ struct SOFA_CORE_API ComponentRegistrationDataBuilder
         return *this;
     }
 
+    ComponentRegistrationDataBuilder& withInstantiationPriority(unsigned int instantiationPriority)
+    {
+        data->instantiationPriority = instantiationPriority;
+        return *this;
+    }
+
     operator ComponentRegistrationData::SPtr() const
     {
         return data;

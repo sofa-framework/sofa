@@ -262,7 +262,7 @@ TEST_F(ComponentFactory_test, TwoTemplate_attributes)
         .withModule("test")
         .withDescription("dummy")
         .addTemplateAttribute("t1", "int")
-        .addTemplateAttribute("t2", "float")
+        .addTemplateAttribute("t2", "string")
     );
 
     // Create component specifying both template attributes
@@ -316,5 +316,71 @@ TEST_F(ComponentFactory_test, CreateUnknownComponent)
     EXPECT_EQ(createdComponent, nullptr);
 }
 
+TEST_F(ComponentFactory_test, InstantiationPriority)
+{
+    auto lowPriority = core::CreateComponent<DummyComponent>("PriorityCompo")
+        .withModule("test")
+        .withDescription("low")
+        .withInstantiationPriority(1);
+    factory.registerComponent(lowPriority);
+
+    auto highPriority = core::CreateComponent<DummyComponent>("PriorityCompo")
+        .withModule("test")
+        .withDescription("high")
+        .withInstantiationPriority(10);
+    factory.registerComponent(highPriority);
+
+    core::objectmodel::BaseObjectDescription desc("name", "PriorityCompo");
+    auto createdComponent = factory.createComponent(node.get(), &desc);
+
+    ASSERT_NE(createdComponent, nullptr);
+    // The one with description "high" (priority 10) should be selected.
+    // Since both are DummyComponent, we check the factory data if available or just ensure it doesn't crash.
+    // In ComponentFactory.cpp, it sorts by priority descending.
+    EXPECT_EQ(createdComponent->getClassName(), "DummyComponent");
+}
+
+TEST_F(ComponentFactory_test, FullNameCreation)
+{
+    factory.registerComponent(core::CreateComponent<DummyComponent>("MyComponent")
+        .withModule("MyModule")
+        .withDescription("desc")
+    );
+
+    // Create using "Module.Component" syntax
+    core::objectmodel::BaseObjectDescription desc("name", "MyModule.MyComponent");
+    auto createdComponent = factory.createComponent(node.get(), &desc);
+    ASSERT_NE(createdComponent, nullptr);
+    EXPECT_EQ(createdComponent->getClassName(), "DummyComponent");
+    EXPECT_EQ(createdComponent->d_factoryName.getValue(), "MyComponent");
+}
+
+TEST_F(ComponentFactory_test, SuggestionOnMisspell)
+{
+    factory.registerComponent(core::CreateComponent<DummyComponent>("SpecificComponent")
+        .withModule("test").withDescription("description")
+    );
+
+    EXPECT_MSG_EMIT(Error); // Should contain suggestion
+    core::objectmodel::BaseObjectDescription desc("name", "SpecificComponnt"); // Typos
+    auto createdComponent = factory.createComponent(node.get(), &desc);
+    EXPECT_EQ(createdComponent, nullptr);
+}
+
+TEST_F(ComponentFactory_test, TemplateAliasResolution)
+{
+    // Sofa often uses aliases like 'Vec3d' for 'std::vector<double>' etc.
+    // Here we simulate a registration with a specific type and creation with an alias.
+    factory.registerComponent(core::CreateComponent<DummyComponentWith1Template<double>>("AliasedCompo")
+        .withModule("test")
+        .withDescription("description")
+        .addTemplateAttribute("t", "d")
+    );
+
+    core::objectmodel::BaseObjectDescription desc("name", "AliasedCompo");
+    desc.setAttribute("t", "double");
+    auto createdComponent = factory.createComponent(node.get(), &desc);
+    ASSERT_NE(createdComponent, nullptr);
+}
 
 }

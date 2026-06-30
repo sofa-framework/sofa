@@ -278,7 +278,7 @@ std::vector<ComponentRegistrationData::SPtr> selectCandidatesFromTemplateAttribu
             {
                 const std::string attrStr { attr };
                 const auto resolvedAlias = defaulttype::TemplateAliases::resolveAlias(attrStr);
-                if (resolvedAlias != value)
+                if (resolvedAlias != resolvedValue)
                 {
                     matchAllTemplateParameters = false;
                 }
