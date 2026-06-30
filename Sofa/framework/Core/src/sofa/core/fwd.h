@@ -74,8 +74,6 @@ namespace sofa::core::objectmodel
 class Base;
 class BaseComponent;
 using BaseObject = BaseComponent;
-class BaseComponentDescription;
-using BaseObjectDescription = BaseComponentDescription;
 class BaseNode;
 class BaseContext;
 class BaseData;

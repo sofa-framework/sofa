@@ -355,7 +355,7 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt
     pPrevious.eq(newp);
 }
 
-void VariationalSymplecticSolver::parse(core::objectmodel::BaseObjectDescription* arg)
+void VariationalSymplecticSolver::parse(core::objectmodel::BaseComponentDescription* arg)
 {
     if (arg->getAttribute("verbose"))
     {

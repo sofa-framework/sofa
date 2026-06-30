@@ -91,7 +91,7 @@ protected:
 public:
     /// BaseObject initialization method.
     void bwdInit() override ;
-    void parse(core::objectmodel::BaseObjectDescription *arg) override ;
+    void parse(core::objectmodel::BaseComponentDescription *arg) override ;
     void reinit() override ;
 
     /// Add the forces.

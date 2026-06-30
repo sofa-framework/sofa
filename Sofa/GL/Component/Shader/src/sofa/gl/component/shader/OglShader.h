@@ -104,7 +104,7 @@ public:
     void doInitVisual(const core::visual::VisualParams*) override;
     void init() override;
     void reinit() override;
-    void parse(core::objectmodel::BaseObjectDescription* arg) override;
+    void parse(core::objectmodel::BaseComponentDescription* arg) override;
 
     void start() override;
     void stop() override;

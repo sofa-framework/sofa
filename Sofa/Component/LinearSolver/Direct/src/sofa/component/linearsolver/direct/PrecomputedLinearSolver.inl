@@ -210,7 +210,7 @@ bool PrecomputedLinearSolver<TMatrix,TVector>::addJMInvJt(linearalgebra::BaseMat
 }
 
 template <class TMatrix, class TVector>
-void PrecomputedLinearSolver<TMatrix, TVector>::parse(core::objectmodel::BaseObjectDescription* arg)
+void PrecomputedLinearSolver<TMatrix, TVector>::parse(core::objectmodel::BaseComponentDescription* arg)
 {
     if (arg->getAttribute("verbose"))
     {

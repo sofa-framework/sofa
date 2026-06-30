@@ -49,7 +49,7 @@ protected:
 
 public:
 
-    void parse(sofa::core::objectmodel::BaseObjectDescription* arg) override;
+    void parse(sofa::core::objectmodel::BaseComponentDescription* arg) override;
 
     /// load a list of plugins requested in Data
     bool loadPlugin();

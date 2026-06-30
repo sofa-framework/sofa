@@ -8,7 +8,7 @@
 
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseComponent.h>
-#include <sofa/core/objectmodel/BaseObjectDescription.h>
+#include <sofa/core/objectmodel/BaseComponentDescription.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 
 #include "labelpointsbysectionimagetoolboxaction.h"

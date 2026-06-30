@@ -40,7 +40,7 @@ namespace sofa::core
 
 class ObjectRegistrationData;
 
-typedef std::function<void(sofa::core::objectmodel::Base*, sofa::core::objectmodel::BaseObjectDescription*)> OnCreateCallback ;
+typedef std::function<void(sofa::core::objectmodel::Base*, sofa::core::objectmodel::BaseComponentDescription*)> OnCreateCallback ;
 
 /**
  *  \brief Main class used to register and dynamically create objects
@@ -69,12 +69,12 @@ public:
         /// Pre-construction check.
         ///
         /// \return true if the object can be created successfully.
-        virtual bool canCreate(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg) = 0;
+        virtual bool canCreate(objectmodel::BaseContext* context, objectmodel::BaseComponentDescription* arg) = 0;
 
         /// Construction method called by the factory.
         ///
         /// \pre canCreate(context, arg) == true.
-        virtual objectmodel::BaseComponent::SPtr createInstance(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg) = 0;
+        virtual objectmodel::BaseComponent::SPtr createInstance(objectmodel::BaseContext* context, objectmodel::BaseComponentDescription* arg) = 0;
 
         /// type_info structure associated with the type of instantiated objects.
         virtual const std::type_info& type() = 0;
@@ -176,13 +176,13 @@ public:
     void resetAlias(std::string name, ClassEntry::SPtr previous);
 
     /// Create an object given a context and a description.
-    objectmodel::BaseComponent::SPtr createObject(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg);
+    objectmodel::BaseComponent::SPtr createObject(objectmodel::BaseContext* context, objectmodel::BaseComponentDescription* arg);
 
     /// Get the ObjectFactory singleton instance
     static ObjectFactory* getInstance();
 
     /// \copydoc createObject
-    static objectmodel::BaseComponent::SPtr CreateObject(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
+    static objectmodel::BaseComponent::SPtr CreateObject(objectmodel::BaseContext* context, objectmodel::BaseComponentDescription* arg)
     {
         return getInstance()->createObject(context, arg);
     }
@@ -271,12 +271,12 @@ template<class RealObject>
 class ObjectCreator : public ObjectFactory::BaseObjectCreator
 {
 public:
-    bool canCreate(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg) override
+    bool canCreate(objectmodel::BaseContext* context, objectmodel::BaseComponentDescription* arg) override
     {
         RealObject* instance = nullptr;
         return RealObject::canCreate(instance, context, arg);
     }
-    objectmodel::BaseComponent::SPtr createInstance(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg) override
+    objectmodel::BaseComponent::SPtr createInstance(objectmodel::BaseContext* context, objectmodel::BaseComponentDescription* arg) override
     {
         RealObject* instance = nullptr;
         return RealObject::create(instance, context, arg);

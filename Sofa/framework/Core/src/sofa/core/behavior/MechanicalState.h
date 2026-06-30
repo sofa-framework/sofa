@@ -80,7 +80,7 @@ public:
     virtual void getIndicesInSpace(sofa::type::vector<Index>& /*indices*/, Real /*xmin*/, Real /*xmax*/,Real /*ymin*/, Real /*ymax*/, Real /*zmin*/, Real /*zmax*/) const=0;
 
     template<class T>
-    static std::string shortName(const T* ptr = nullptr, objectmodel::BaseObjectDescription* arg = nullptr)
+    static std::string shortName(const T* ptr = nullptr, objectmodel::BaseComponentDescription* arg = nullptr)
     {
         std::string name = Inherit1::shortName(ptr, arg);
         sofa::helper::replaceAll(name, "Mechanical", "M");

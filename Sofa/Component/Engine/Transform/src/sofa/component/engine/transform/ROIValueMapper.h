@@ -71,7 +71,7 @@ public:
 
 
     /// Parse the given description to assign values to this object's fields and potentially other parameters
-    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override
+    void parse ( sofa::core::objectmodel::BaseComponentDescription* arg ) override
     {
         f_indices.parseSizeData(arg, nbROIs);
         f_value.parseSizeData(arg, nbROIs);

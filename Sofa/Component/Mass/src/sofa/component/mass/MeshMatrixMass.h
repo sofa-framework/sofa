@@ -233,7 +233,7 @@ public:
     /// Answer wether mass matrix is lumped or not
     bool isLumped() const { return d_lumping.getValue(); }
 
-    void parse(sofa::core::objectmodel::BaseObjectDescription* arg) override
+    void parse(sofa::core::objectmodel::BaseComponentDescription* arg) override
     {
         Inherited::parse(arg);
         parseMassTemplate<MassType>(arg, this);

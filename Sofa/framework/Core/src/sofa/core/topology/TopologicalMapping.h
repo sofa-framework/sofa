@@ -112,7 +112,7 @@ public:
     /// This implementation reads the "input" and "output" attributes and checks
     /// that the corresponding objects exist, and are not the same object.
     template<class T>
-    static bool canCreate ( T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg )
+    static bool canCreate ( T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseComponentDescription* arg )
     {
         In* stin = nullptr;
         Out* stout = nullptr;
@@ -160,7 +160,7 @@ public:
     /// This implementation read the object1 and object2 attributes to
     /// find the input and output topologies of this mapping.
     template<class T>
-    static typename T::SPtr create (T*, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg )
+    static typename T::SPtr create (T*, core::objectmodel::BaseContext* context, core::objectmodel::BaseComponentDescription* arg )
     {
         typename T::SPtr obj = sofa::core::objectmodel::New<T>();
 

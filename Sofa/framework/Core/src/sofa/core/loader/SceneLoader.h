@@ -42,7 +42,7 @@ protected:
 public:
     bool canLoad() override;
 
-    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override;
+    void parse ( sofa::core::objectmodel::BaseComponentDescription* arg ) override;
 
     void reinit() override;
 

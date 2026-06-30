@@ -76,7 +76,7 @@ public:
     std::vector<std::tuple<unsigned int, unsigned int, unsigned int, unsigned int>> getContactElements() const; // model, id, model, id
 
     template<class T>
-    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
+    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseComponentDescription* arg)
     {
         core::CollisionModel* collModel1 = nullptr;
         core::CollisionModel* collModel2 = nullptr;
@@ -108,7 +108,7 @@ public:
     }
 
     template<class T>
-    static typename T::SPtr create(T* , core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
+    static typename T::SPtr create(T* , core::objectmodel::BaseContext* context, core::objectmodel::BaseComponentDescription* arg)
     {
         core::CollisionModel* collModel1 = nullptr;
         core::CollisionModel* collModel2 = nullptr;

@@ -20,8 +20,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <sofa/core/objectmodel/BaseObjectDescription.h>
-using sofa::core::objectmodel::BaseObjectDescription ;
+#include <sofa/core/objectmodel/BaseComponentDescription.h>
+using sofa::core::objectmodel::BaseComponentDescription ;
 
 #include <sofa/testing/BaseTest.h>
 using sofa::testing::BaseTest ;

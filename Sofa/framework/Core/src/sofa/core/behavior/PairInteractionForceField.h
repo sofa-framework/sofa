@@ -160,7 +160,7 @@ public:
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
     template<class T>
-    static bool canCreate(T* obj, objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
+    static bool canCreate(T* obj, objectmodel::BaseContext* context, objectmodel::BaseComponentDescription* arg)
     {
         MechanicalState<DataTypes>* mstate1 = nullptr;
         MechanicalState<DataTypes>* mstate2 = nullptr;
@@ -184,7 +184,7 @@ public:
 
     /// Construction method called by ObjectFactory.
     template<class T>
-    static typename T::SPtr create(T* /*p0*/, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
+    static typename T::SPtr create(T* /*p0*/, core::objectmodel::BaseContext* context, core::objectmodel::BaseComponentDescription* arg)
     {
         typename T::SPtr obj = sofa::core::objectmodel::New<T>();
 
@@ -210,7 +210,7 @@ public:
     }
 
     template<class T>
-    static std::string shortName(const T* ptr = nullptr, objectmodel::BaseObjectDescription* arg = nullptr)
+    static std::string shortName(const T* ptr = nullptr, objectmodel::BaseComponentDescription* arg = nullptr)
     {
         std::string name = Inherit1::shortName(ptr, arg);
         sofa::helper::replaceAll(name, "InteractionForceField", "IFF");

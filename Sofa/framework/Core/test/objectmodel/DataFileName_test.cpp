@@ -21,8 +21,8 @@
 ******************************************************************************/
 #include <sofa/testing/config.h>
 
-#include <sofa/core/objectmodel/BaseObjectDescription.h>
-using sofa::core::objectmodel::BaseObjectDescription ;
+#include <sofa/core/objectmodel/BaseComponentDescription.h>
+using sofa::core::objectmodel::BaseComponentDescription ;
 
 #include <sofa/core/objectmodel/DataFileName.h>
 using sofa::core::objectmodel::DataFileName ;

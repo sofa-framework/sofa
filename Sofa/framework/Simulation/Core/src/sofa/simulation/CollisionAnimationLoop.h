@@ -52,7 +52,7 @@ class SOFA_SIMULATION_CORE_API CollisionAnimationLoop : public sofa::core::behav
 public:
     typedef sofa::core::behavior::BaseAnimationLoop Inherit;
     typedef sofa::core::objectmodel::BaseContext BaseContext;
-    typedef sofa::core::objectmodel::BaseObjectDescription BaseObjectDescription;
+    typedef sofa::core::objectmodel::BaseComponentDescription BaseObjectDescription;
 
 protected:
     CollisionAnimationLoop();

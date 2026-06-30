@@ -101,7 +101,7 @@ void TriangularFEMForceFieldOptim<DataTypes>::init()
 }
 
 template <class DataTypes>
-void TriangularFEMForceFieldOptim<DataTypes>::parse( sofa::core::objectmodel::BaseObjectDescription* arg )
+void TriangularFEMForceFieldOptim<DataTypes>::parse( sofa::core::objectmodel::BaseComponentDescription* arg )
 {
     const char* method = arg->getAttribute("method");
     if (method && *method && std::string(method) != std::string("large"))
