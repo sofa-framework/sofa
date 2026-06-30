@@ -383,4 +383,98 @@ TEST_F(ComponentFactory_test, TemplateAliasResolution)
     ASSERT_NE(createdComponent, nullptr);
 }
 
+
+
+
+
+
+
+
+
+
+
+
+TEST_F(ComponentFactory_test, LegacyRegistration)
+{
+    core::LegacyComponentRegistrationData legacyData("legacy description");
+    legacyData.add<DummyComponent>();
+    legacyData.addAlias("LegacyAlias");
+    legacyData.addAuthor("Legacy Author");
+    legacyData.addLicense("LGPL");
+
+    bool registered = factory.registerObjects(legacyData);
+    EXPECT_TRUE(registered);
+
+    // Test creation by class name
+    {
+        core::objectmodel::BaseObjectDescription desc("name1", "DummyComponent");
+        auto created = factory.createComponent(node.get(), &desc);
+        ASSERT_NE(created, nullptr);
+        EXPECT_EQ(created->getClassName(), "DummyComponent");
+    }
+
+    // Test creation by alias
+    {
+        core::objectmodel::BaseObjectDescription desc("name2", "LegacyAlias");
+        auto created = factory.createComponent(node.get(), &desc);
+        ASSERT_NE(created, nullptr);
+        EXPECT_EQ(created->getClassName(), "DummyComponent");
+    }
+
+    // Verify metadata in registry
+    const auto& registry = factory.getRegistry();
+    auto it = std::find_if(registry.begin(), registry.end(), [](const auto& reg)
+    {
+        return reg->componentName == "DummyComponent";
+    });
+    ASSERT_NE(it, registry.end());
+    EXPECT_EQ((*it)->description, "legacy description");
+    EXPECT_TRUE((*it)->authors.contains("Legacy Author"));
+    EXPECT_EQ((*it)->license, "LGPL");
+}
+
+TEST_F(ComponentFactory_test, LegacyRegistrationTemplated)
+{
+    core::LegacyComponentRegistrationData legacyData("templated legacy");
+    legacyData.add<DummyComponentWith1Template<int>>();
+
+    factory.registerObjects(legacyData);
+
+    core::objectmodel::BaseObjectDescription desc("name", "DummyComponentWith1Template");
+    desc.setAttribute("template", "int");
+    auto created = factory.createComponent(node.get(), &desc);
+    ASSERT_NE(created, nullptr);
+    EXPECT_NE(dynamic_cast<DummyComponentWith1Template<int>*>(created.get()), nullptr);
+}
+
+TEST_F(ComponentFactory_test, LegacyRegistrationTwoTemplates)
+{
+    core::LegacyComponentRegistrationData legacyData("two templates legacy");
+    legacyData.add<DummyComponentWith2Template<int, float>>();
+
+    factory.registerObjects(legacyData);
+
+    {
+        core::objectmodel::BaseObjectDescription desc("name", "DummyComponentWith2Template");
+        desc.setAttribute("template", "int,float");
+        auto created = factory.createComponent(node.get(), &desc);
+
+        ASSERT_NE(created, nullptr);
+        auto* cast = dynamic_cast<DummyComponentWith2Template<int, float>*>(created.get());
+        EXPECT_NE(cast, nullptr);
+    }
+
+    {
+        core::objectmodel::BaseObjectDescription desc("name", "DummyComponentWith2Template");
+        desc.setAttribute("template", "i,f");
+        auto created = factory.createComponent(node.get(), &desc);
+
+        ASSERT_NE(created, nullptr);
+        auto* cast = dynamic_cast<DummyComponentWith2Template<int, float>*>(created.get());
+        EXPECT_NE(cast, nullptr);
+    }
+}
+
+
+
 }
