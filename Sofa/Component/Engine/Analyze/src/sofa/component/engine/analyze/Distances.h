@@ -70,7 +70,9 @@ protected:
     DistancesInternalData<DataTypes> data;
     friend class DistancesInternalData<DataTypes>;
 
-    Distances ( sofa::component::topology::container::dynamic::DynamicSparseGridTopologyContainer* hexaTopoContainer, core::behavior::MechanicalState<DataTypes>* targetPointSet );
+    explicit Distances(
+        topology::container::dynamic::DynamicSparseGridTopologyContainer* hexaTopoContainer = nullptr,
+        core::behavior::MechanicalState<DataTypes>* targetPointSet = nullptr );
 
     ~Distances() override {}
 
