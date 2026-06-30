@@ -111,7 +111,15 @@ bool ComponentFactory::registerObjects(LegacyComponentRegistrationData& ro)
         component->description = ro.m_description;
         if (i < ro.m_moduleNames.size())
         {
-            component->componentName = ro.m_moduleNames[i];
+            component->componentModule = ro.m_moduleNames[i];
+        }
+        if (i < ro.m_instantiationPriority.size())
+        {
+            component->instantiationPriority = ro.m_instantiationPriority[i];
+        }
+        if (i < ro.m_componentTemplates.size())
+        {
+            component->templateAttributes.emplace_back("template", ro.m_componentTemplates[i]);
         }
 
         component->creator = creator->clone();

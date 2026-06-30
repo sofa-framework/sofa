@@ -206,19 +206,22 @@ struct SOFA_CORE_DEPRECATED_OBJECTFACTORY_LEGACYREGISTRATIONDATA() SOFA_CORE_API
     }
 
     std::vector<std::string> m_componentNames;
+    std::vector<std::string> m_componentTemplates;
     std::vector<std::string> m_moduleNames;
+    std::vector<unsigned int> m_instantiationPriority;
     std::vector<std::shared_ptr<BaseTemplateDeductionRule> > m_templateDeductionRules;
-    template<class T> LegacyComponentRegistrationData& add(bool = false)
+    template<class T> LegacyComponentRegistrationData& add(bool defaultTemplate = false)
     {
         m_componentCreators.push_back(new ComponentCreator<T>);
-        m_componentNames.push_back(T::GetClass()->className);
+        m_componentNames.push_back(sofa::core::objectmodel::BaseClassNameHelper::getClassName<T>());
+        m_componentTemplates.push_back(sofa::core::objectmodel::BaseClassNameHelper::getTemplateName<T>());
 #ifdef SOFA_TARGET
         m_moduleNames.push_back(sofa_tostring(SOFA_TARGET));
 #else
         m_moduleNames.emplace_back();
 #endif
         m_templateDeductionRules.push_back(std::make_shared<CanCreateDeductionRule<T>>());
-        //to do: deal with templates
+        m_instantiationPriority.push_back(std::numeric_limits<unsigned int>::max() * defaultTemplate);
         return *this;
     }
 
