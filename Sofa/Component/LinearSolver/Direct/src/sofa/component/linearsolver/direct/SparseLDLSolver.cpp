@@ -38,7 +38,7 @@ void registerComponent(sofa::core::ComponentFactory* factory)
     core::CreateComponent<SparseLDLSolver<TMatrix, TVector>>("SparseLDLSolver")
         .withModule(MODULE_NAME)
         .withDescription(std::string(description))
-        .addTemplateAttribute<TMatrix>("matrixType")
+        .template addTemplateAttribute<TMatrix>("matrixType")
     );
 };
 
