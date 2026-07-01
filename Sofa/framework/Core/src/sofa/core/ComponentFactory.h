@@ -112,7 +112,7 @@ std::vector<ComponentRegistrationData::SPtr> ComponentFactory::getEntriesDerived
 
     for (const auto& component : m_registry)
     {
-        if (auto* componentClassInRegistry = component->creator->getClass())
+        if (auto* componentClassInRegistry = component->classData)
         {
             if (componentClassInRegistry->hasParent(componentClass))
             {

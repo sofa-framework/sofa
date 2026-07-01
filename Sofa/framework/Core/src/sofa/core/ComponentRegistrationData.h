@@ -55,6 +55,7 @@ struct SOFA_CORE_API ComponentRegistrationData
     std::shared_ptr<BaseTemplateDeductionRule> templateDeductionRule;
 
     std::unique_ptr<BaseComponentCreator> creator;
+    const BaseClass* classData { nullptr };
 
 private:
     // ComponentRegistrationData() = default;
@@ -64,13 +65,19 @@ struct SOFA_CORE_API ComponentRegistrationDataBuilder
 {
     ComponentRegistrationData::SPtr data;
 
-    ComponentRegistrationDataBuilder(const std::string& componentName, const std::string& moduleName, const std::string& description, std::unique_ptr<BaseComponentCreator> creator)
+    ComponentRegistrationDataBuilder(
+        const std::string& componentName,
+        const std::string& moduleName,
+        const std::string& description,
+        std::unique_ptr<BaseComponentCreator> creator,
+        const BaseClass* classData)
         : data(std::make_shared<ComponentRegistrationData>())
     {
         data->componentName = componentName;
         data->componentModule = moduleName;
         data->description = description;
         data->creator = std::move(creator);
+        data->classData = classData;
     }
 
     ComponentRegistrationDataBuilder& addAlias(const std::string& alias)
@@ -149,36 +156,40 @@ struct SOFA_CORE_API ComponentRegistrationDataModule
 {
     ComponentRegistrationDataBuilder withDescription(const std::string& description)
     {
-        return {m_componentName, m_moduleName, description, std::move(m_creator)};
+        return {m_componentName, m_moduleName, description, std::move(m_creator), m_classData};
     }
-    ComponentRegistrationDataModule(const std::string& componentName, const std::string& moduleName, std::unique_ptr<BaseComponentCreator> creator)
-        : m_componentName(componentName), m_moduleName(moduleName), m_creator(std::move(creator)) {}
+    ComponentRegistrationDataModule(const std::string& componentName, const std::string& moduleName, std::unique_ptr<BaseComponentCreator> creator, const BaseClass* classData)
+        : m_componentName(componentName), m_moduleName(moduleName), m_creator(std::move(creator)), m_classData(classData) {}
 private:
     std::string m_componentName;
     std::string m_moduleName;
     std::unique_ptr<BaseComponentCreator> m_creator;
+    const BaseClass* m_classData;
 };
 
 struct SOFA_CORE_API ComponentRegistrationDataName
 {
     ComponentRegistrationDataModule withModule(const std::string& moduleName)
     {
-        return {m_componentName, moduleName, std::move(m_creator)};
+        return {m_componentName, moduleName, std::move(m_creator), m_classData};
     }
-    ComponentRegistrationDataName(const std::string& componentName, std::unique_ptr<BaseComponentCreator> creator)
+    ComponentRegistrationDataName(const std::string& componentName, std::unique_ptr<BaseComponentCreator> creator, const BaseClass* classData)
         : m_componentName(componentName)
         , m_creator(std::move(creator))
+        , m_classData(classData)
     {}
 private:
     std::string m_componentName;
     std::unique_ptr<BaseComponentCreator> m_creator;
+    const BaseClass* m_classData;
 };
 
 template<class Component>
 ComponentRegistrationDataName CreateComponent(const std::string& componentName)
 {
     std::unique_ptr<BaseComponentCreator> creator = std::make_unique<ComponentCreator<Component>>();
-    return ComponentRegistrationDataName(componentName, std::move(creator));
+    auto* classData = Component::GetClass();
+    return ComponentRegistrationDataName(componentName, std::move(creator), classData);
 }
 
 

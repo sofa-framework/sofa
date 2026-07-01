@@ -46,11 +46,6 @@ struct SOFA_CORE_API BaseComponentCreator
     virtual objectmodel::BaseComponent::SPtr create() const = 0;
 
     /**
-     * @brief Returns the SOFA class metadata associated with the component.
-     */
-    virtual const objectmodel::BaseClass* getClass() = 0;
-
-    /**
      * @brief Creates a copy of the creator.
      * Ensures the factory registry owns unique instances of creators during registration.
      */
@@ -73,11 +68,6 @@ struct ComponentCreator : public BaseComponentCreator
         // WARNING:
         // It obliges the class to have a default constructor
         return sofa::core::objectmodel::New<RealComponent>();
-    }
-
-    const objectmodel::BaseClass* getClass() override
-    {
-        return RealComponent::GetClass();
     }
 
     std::unique_ptr<BaseComponentCreator> clone() const override
