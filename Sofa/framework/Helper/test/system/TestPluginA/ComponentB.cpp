@@ -41,12 +41,22 @@ ComponentB<T>::~ComponentB()
 {
 }
 
-int ComponentBClass = sofa::core::RegisterObject("Component B")
-    .add< ComponentB<double> >()
-    .add< ComponentB<sofa::defaulttype::Vec2Types> >()
-    .add< ComponentB<sofa::defaulttype::Rigid3Types> >()
+template<class T>
+void registerComponent(sofa::core::ComponentFactory* factory)
+{
+    factory->registerComponent(
+        core::CreateComponent<ComponentB<T>>("ComponentB")
+            .withModule("TestPluginA")
+            .withDescription("dummy component")
+        );
+}
 
-;
+void registerComponentB(sofa::core::ComponentFactory* factory)
+{
+    registerComponent<ComponentB<double>>(factory);
+    registerComponent<ComponentB<sofa::defaulttype::Vec2Types>>(factory);
+    registerComponent<ComponentB<sofa::defaulttype::Rigid3Types>>(factory);
+}
 
 template class SOFA_TESTPLUGINA_API ComponentB<double>; 
 template class SOFA_TESTPLUGINA_API ComponentB<sofa::defaulttype::Vec2Types>;

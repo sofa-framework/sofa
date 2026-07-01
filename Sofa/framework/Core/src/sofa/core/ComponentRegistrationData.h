@@ -43,7 +43,6 @@ struct SOFA_CORE_API ComponentRegistrationData
 
     std::vector<std::pair<std::string, std::string>> templateAttributes;
 
-    std::string componentNamespace;
     std::string componentModule;
 
     unsigned int instantiationPriority {};

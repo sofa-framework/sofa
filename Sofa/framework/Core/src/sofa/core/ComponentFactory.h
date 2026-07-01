@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 
+#include <sofa/config.h>
 #include <sofa/core/config.h>
 #include <sofa/core/ComponentCreator.h>
 #include <sofa/core/ComponentRegistrationData.h>
@@ -74,6 +75,15 @@ public:
 
 
     void getEntry(std::string) = delete;
+    void getAllEntries(std::vector<ClassEntry::SPtr>& result, bool filterUnloadedPlugins = true) = delete;
+
+    void dumpXML(std::ostream& out = std::cout) = delete;
+    void dumpHTML(std::ostream& out = std::cout) = delete;
+
+    static std::string ShortName(std::string classname) = delete;
+    static void ResetAlias(std::string name, ClassEntry::SPtr previous) = delete;
+    static bool AddAlias(std::string name, std::string result, bool force=false,
+                         ClassEntry::SPtr* previous = nullptr) = delete;
 
 protected:
 
@@ -145,5 +155,10 @@ struct SOFA_CORE_API MainComponentFactory
     static bool HasCreator(const std::string& classname);
 };
 
+
+template<class RealObject>
+using ObjectCreator = DeprecatedAndRemoved;
+
+using RegisterObject = DeprecatedAndRemoved;
 
 }

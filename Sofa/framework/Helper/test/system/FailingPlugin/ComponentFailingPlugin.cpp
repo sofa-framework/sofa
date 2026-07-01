@@ -36,9 +36,14 @@ ComponentFailingPlugin::~ComponentFailingPlugin()
 {
 }
 
-
-int ComponentFailingPluginClass = core::RegisterObject("ComponentFailingPlugin").add< ComponentFailingPlugin >();
-
+void registerComponent(sofa::core::ObjectFactory* factory)
+{
+    factory->registerComponent(
+        core::CreateComponent<ComponentFailingPlugin>("ComponentFailingPlugin")
+            .withModule("FailingPlugin")
+            .withDescription("dummy component")
+        );
+}
 
 } // namespace sofa::test
 
