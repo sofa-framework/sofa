@@ -42,6 +42,8 @@ public:
 
     void registerComponent(const ComponentRegistrationData::SPtr& componentRegistrationData);
 
+    ComponentRegistrationData::SPtr findComponent(objectmodel::BaseObjectDescription* arg);
+
     /// Create a component given a context and a description.
     objectmodel::BaseComponent::SPtr createComponent(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg);
 

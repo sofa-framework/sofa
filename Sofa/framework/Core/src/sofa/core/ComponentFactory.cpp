@@ -454,7 +454,7 @@ using Filter = std::vector<ComponentRegistrationData::SPtr> (*)(const std::vecto
  * component will be created based on this element. Otherwise, the filtered list is further filtered
  * based on deduction rules.
  */
-objectmodel::BaseComponent::SPtr applyFilter(
+ComponentRegistrationData::SPtr applyFilter(
     const ComponentFactory& self,
     const std::string& componentName,
     const std::vector<ComponentRegistrationData::SPtr>& candidates,
@@ -469,7 +469,7 @@ objectmodel::BaseComponent::SPtr applyFilter(
         if (filteredCandidates.size() == 1)
         {
             // No ambiguity: The unique candidate is returned
-            return createComponentFrom(filteredCandidates.front(), context, arg);
+            return filteredCandidates.front();
         }
         else
         {
@@ -483,7 +483,7 @@ objectmodel::BaseComponent::SPtr applyFilter(
                     << sofa::helper::join(
                         deducedCandidates.begin(), deducedCandidates.end(), ", ")
                     << "). The first one is selected.";
-                return createComponentFrom(deducedCandidates.front(), context, arg);
+                return deducedCandidates.front();
             }
             else
             {
@@ -495,7 +495,7 @@ objectmodel::BaseComponent::SPtr applyFilter(
                         [](const ComponentRegistrationData::SPtr& desc){ std::stringstream ss; ss << *desc; return ss.str(); }, ", ")
                     << "). The first one is selected.";
                 // None of the deduction rules matches: returning the first filtered candidate
-                return createComponentFrom(filteredCandidates.front(), context, arg);
+                return filteredCandidates.front();
             }
         }
     }
@@ -504,8 +504,8 @@ objectmodel::BaseComponent::SPtr applyFilter(
 
 }
 
-objectmodel::BaseComponent::SPtr ComponentFactory::createComponent(
-    objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
+
+ComponentRegistrationData::SPtr ComponentFactory::findComponent(objectmodel::BaseObjectDescription* arg)
 {
     if (!arg)
         return nullptr;
@@ -593,7 +593,7 @@ objectmodel::BaseComponent::SPtr ComponentFactory::createComponent(
     // Final fallback
     if (!candidates.empty())
     {
-        return createComponentFrom(candidates.front(), context, arg);
+        return candidates.front();
     }
 
     // Final failure
@@ -601,6 +601,17 @@ objectmodel::BaseComponent::SPtr ComponentFactory::createComponent(
 
     return nullptr;
 }
+
+objectmodel::BaseComponent::SPtr ComponentFactory::createComponent(
+    objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
+{
+    if (auto component = findComponent(arg))
+    {
+        return createComponentFrom(component, context, arg);
+    }
+    return nullptr;
+}
+
 objectmodel::BaseComponent::SPtr ComponentFactory::createObject(
     objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
 {
