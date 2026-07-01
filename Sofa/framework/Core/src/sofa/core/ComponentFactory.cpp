@@ -263,27 +263,6 @@ void autoLoadPlugin(ComponentFactory& self, const std::string& pluginName)
     }
 }
 
-objectmodel::BaseComponent::SPtr createComponentFrom(const ComponentRegistrationData::SPtr& desc, objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
-{
-    auto component = desc->creator->create();
-
-    if (component)
-    {
-        if (context)
-        {
-            context->addObject(component);
-        }
-
-        msg_warning_when(desc->componentModule.empty(), component.get()) << "Module name is empty";
-
-        component->parse(arg);
-
-        component->d_factoryName.setValue(desc->componentName);
-    }
-
-    return component;
-}
-
 std::vector<std::string> similarComponentNames(const ComponentFactory& self, const std::string& className)
 {
     std::set<std::string> allClassNames;
@@ -391,27 +370,60 @@ ComponentRegistrationData::SPtr applyFilter(
     return nullptr;
 }
 
+void reportMissingComponents(ComponentFactory& self, const std::string& componentName)
+{
+    std::stringstream ss;
+    ss << "Cannot create component '" << componentName << "': '" << componentName << "' not found in the factory registry.";
+
+    const auto similarNames = similarComponentNames(self, componentName);
+    if (!similarNames.empty())
+    {
+        ss << " Suggestion: Components were found with similar names: " << sofa::helper::join(similarNames, ", ");
+    }
+
+    msg_error(&self) << ss.str();
+}
+
+bool filterUnloadedPluginsCandidates(const ComponentFactory& self,
+    const std::string& componentName,
+    const std::vector<ComponentRegistrationData::SPtr>& candidates)
+{
+    auto candidatesWithoutUnloadedPlugins = candidates;
+    std::erase_if(candidatesWithoutUnloadedPlugins, [](const ComponentRegistrationData::SPtr& candidate)
+    {
+        return helper::system::PluginManager::getInstance().isPluginUnloaded(candidate->componentModule);
+    });
+
+    if (candidatesWithoutUnloadedPlugins.empty())
+    {
+        std::set<std::string> unloadedPlugins;
+        std::transform(candidates.begin(), candidates.end(), std::inserter(unloadedPlugins, unloadedPlugins.begin()),
+            [](const ComponentRegistrationData::SPtr& component) { return component->componentModule; });
+        const auto unloadedPluginsString = sofa::helper::join(unloadedPlugins.begin(), unloadedPlugins.end(), ", ");
+        msg_error(&self) << "Attempted to create component '" << componentName
+            << "' but all potential candidates rely on component from currently unloaded plugins:" << unloadedPluginsString << "]";
+        return false;
+    }
+    return true;
+}
+
 }
 
 
 ComponentRegistrationData::SPtr ComponentFactory::findComponent(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
 {
-    if (!arg)
-        return nullptr;
-
-    const char* typeAttribute = arg->getAttribute( "type", nullptr);
-
-    if (typeAttribute == nullptr)
-        return nullptr;
+    if (!arg) return nullptr;
 
     std::string componentName, moduleName;
-    extractModuleName(std::string{typeAttribute}, componentName, moduleName);
-
-    if (knownIssues(*this, componentName))
     {
-        return nullptr;
+        const char* typeAttribute = arg->getAttribute( "type", nullptr);
+        if (typeAttribute == nullptr) return nullptr;
+        extractModuleName(std::string{typeAttribute}, componentName, moduleName);
     }
 
+    if (knownIssues(*this, componentName)) return nullptr;
+
+    // 1. Ensure plugins are loaded
     if (auto it = helper::lifecycle::movedComponents.find(componentName);
         it != helper::lifecycle::movedComponents.end())
     {
@@ -423,49 +435,27 @@ ComponentRegistrationData::SPtr ComponentFactory::findComponent(objectmodel::Bas
         autoLoadPlugin(*this, moduleName);
     }
 
+    // 2. Get initial candidates
     std::vector<ComponentRegistrationData::SPtr> candidates = getComponentsFromName(*this, componentName, moduleName);
-
-    // Early failure because there are no compatible candidates
     if (candidates.empty())
     {
-        std::stringstream ss;
-        ss << "Cannot create component '" << componentName << "': '" << componentName << "' not found in the factory registry.";
-
-        const auto similarNames = similarComponentNames(*this, componentName);
-        if (!similarNames.empty())
-        {
-            ss << " Suggestion: Components were found with similar names: " << sofa::helper::join(similarNames, ", ");
-        }
-
-        msg_error() << ss.str();
+        reportMissingComponents(*this, componentName);
         return nullptr;
     }
 
-    // Check that the candidates don't rely on unloaded modules
+    // 3. Filter out candidates from unloaded plugins
+    if (!filterUnloadedPluginsCandidates(*this, componentName, candidates))
     {
-        auto candidatesWithoutUnloadedPlugins = candidates;
-        std::erase_if(candidatesWithoutUnloadedPlugins, [](const ComponentRegistrationData::SPtr& candidate)
-        {
-            return helper::system::PluginManager::getInstance().isPluginUnloaded(candidate->componentModule);
-        });
-
-        if (candidatesWithoutUnloadedPlugins.empty())
-        {
-            std::set<std::string> unloadedPlugins;
-            std::transform(candidates.begin(), candidates.end(), std::inserter(unloadedPlugins, unloadedPlugins.begin()),
-                [](const ComponentRegistrationData::SPtr& component) { return component->componentModule; });
-            const auto unloadedPluginsString = sofa::helper::join(unloadedPlugins.begin(), unloadedPlugins.end(), ", ");
-            msg_error() << "Attempted to create component '" << componentName
-                << "' but all potential candidates rely on component from currently unloaded plugins:" << unloadedPluginsString << "]";
-            return nullptr;
-        }
+        return nullptr;
     }
 
+    // 4. Sort by priority
     // In case of ambiguity (multiple candidates), sorting candidates will allow returning the
     // component with the highest priority.
     std::sort(candidates.begin(), candidates.end(),
         [](const auto& a, const auto& b) { return a->instantiationPriority > b->instantiationPriority; });
 
+    // 5. Apply template matching filters
     static std::array<std::unique_ptr<ComponentFilter>, 4> filters {
         std::make_unique<ExactTemplateMatchFilter>(), //Exact Template Match (Highest Priority).
         std::make_unique<LegacyTemplateKeywordFilter>(), //Selection by Legacy 'template' Keyword (Medium-High Priority)
@@ -496,9 +486,24 @@ ComponentRegistrationData::SPtr ComponentFactory::findComponent(objectmodel::Bas
 objectmodel::BaseComponent::SPtr ComponentFactory::createComponent(
     objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
 {
-    if (auto component = findComponent(context, arg))
+    if (auto componentData = findComponent(context, arg))
     {
-        return createComponentFrom(component, context, arg);
+        auto component = componentData->creator->create();
+
+        if (component)
+        {
+            if (context)
+            {
+                context->addObject(component);
+            }
+
+            msg_warning_when(componentData->componentModule.empty(), component.get()) << "Module name is empty";
+
+            component->parse(arg);
+            component->d_factoryName.setValue(componentData->componentName);
+        }
+
+        return component;
     }
     return nullptr;
 }
