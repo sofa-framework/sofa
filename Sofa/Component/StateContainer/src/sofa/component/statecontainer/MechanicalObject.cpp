@@ -50,7 +50,7 @@ void registerComponent(sofa::core::ComponentFactory* factory)
         core::CreateComponent<MechanicalObject<T>>("MechanicalObject")
         .withModule(MODULE_NAME)
         .withDescription(std::string(description))
-        .addTemplateAttribute<T>("dofType")
+        .template addTemplateAttribute<T>("dofType")
     );
 };
 
