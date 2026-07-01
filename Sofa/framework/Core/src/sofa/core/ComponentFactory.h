@@ -29,6 +29,13 @@
 namespace sofa::core
 {
 
+/**
+ * @brief Factory class for SOFA components.
+ *
+ * This class manages the registration and instantiation of SOFA components.
+ * It maintains a registry of ComponentRegistrationData which contains the creators
+ * and metadata for each component.
+ */
 class SOFA_CORE_API ComponentFactory
 {
 public:
@@ -36,37 +43,69 @@ public:
     using SOFA_CORE_DEPRECATED_OBJECTFACTORY_CLASSENTRY() ClassEntry = ComponentRegistrationData;
 
     using Registry = std::vector<ComponentRegistrationData::SPtr>;
+    /** @brief Get the list of all registered components. */
     const Registry& getRegistry() const { return m_registry; }
 
+    /**
+     * @brief Register components defined in a plugin.
+     * @param pluginName The name of the plugin to register.
+     * @return true if the registration was successful or already done, false if the plugin is not loaded.
+     */
     bool registerObjectsFromPlugin(const std::string& pluginName);
 
+    /**
+     * @brief Register a component in the factory.
+     * @param componentRegistrationData The data containing component info and its creator.
+     */
     void registerComponent(const ComponentRegistrationData::SPtr& componentRegistrationData);
 
+    /**
+     * @brief Find the most suitable component registration data for a given description.
+     *
+     * This method handles plugin auto-loading, alias resolution, and candidate selection
+     * based on template attributes and deduction rules.
+     *
+     * @param context The context in which the search is performed.
+     * @param arg The description of the object to find (must contain a "type" attribute).
+     * @return The matching ComponentRegistrationData, or nullptr if none found.
+     */
     ComponentRegistrationData::SPtr findComponent(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg);
 
-    /// Create a component given a context and a description.
+    /**
+     * @brief Create a component given a context and a description.
+     *
+     * This method first finds the appropriate component using @ref findComponent,
+     * then instantiates it, adds it to the context, and parses its attributes.
+     *
+     * @param context The context where the component will be added.
+     * @param arg The description of the component to create.
+     * @return A smart pointer to the created component, or nullptr on failure.
+     */
     objectmodel::BaseComponent::SPtr createComponent(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg);
 
-    /// Test if a creator exists for a given classname
+    /** @brief Test if a creator exists for a given classname. */
     bool hasCreator(const std::string& classname) const;
 
-    /// Fill the given vector with the registered classes from a given target
+    /** @brief Fill the given vector with the registered classes from a given target module/plugin. */
     void getEntriesFromTarget(std::vector<ComponentRegistrationData::SPtr>& result, const std::string& target) const;
 
-    /// Return the list of classes from a given target
+    /** @brief Return a string list of classes from a given target module/plugin. */
     std::string listClassesFromTarget(std::string target, std::string separator = ", ");
 
-    /// Fill the given vector with all the registered classes derived from BaseClass
+    /** @brief Fill the given vector with all the registered classes derived from BaseClass. */
     template<class BaseClass>
     std::vector<ComponentRegistrationData::SPtr> getEntriesDerivedFrom() const;
 
-    /// Return the list of classes derived from BaseClass as a string
+    /** @brief Return the list of classes derived from BaseClass as a string. */
     template<class BaseClass>
     std::string listClassesDerivedFrom(const std::string& separator = ", ") const;
 
-
     objectmodel::BaseComponent::SPtr SOFA_CORE_DEPRECATED_OBJECTFACTORY_CREATEOBJECT() createObject(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg);
 
+    /**
+     * @brief Legacy method to register multiple objects.
+     * @deprecated Use registerComponent instead.
+     */
     SOFA_CORE_DEPRECATED_OBJECTFACTORY_REGISTEROBJECTS()
     bool registerObjects(LegacyComponentRegistrationData& ro);
 
@@ -78,7 +117,6 @@ public:
 
     SOFA_ATTRIBUTE_DEPRECATED("v26.12", "v27.12", "Use MainComponentFactory::HasCreator instead")
     static bool  HasCreator(const std::string& classname);
-
 
     void getEntry(std::string) = delete;
     void getAllEntries(std::vector<ClassEntry::SPtr>& result, bool filterUnloadedPlugins = true) = delete;
@@ -134,8 +172,6 @@ std::string ComponentFactory::listClassesDerivedFrom(const std::string& separato
     return sofa::helper::join(entries.begin(), entries.end(),
         [](const ComponentRegistrationData::SPtr& entry){ return entry->componentName;}, separator);
 }
-
-
 
 
 struct SOFA_CORE_API MainComponentFactory
