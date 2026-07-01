@@ -33,8 +33,13 @@ using namespace sofa::defaulttype;
 
 void registerTetrahedronFEMForceField(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Tetrahedral finite elements.")
-        .add< TetrahedronFEMForceField<Vec3Types> >());
+    factory->registerComponent(
+        core::CreateComponent<TetrahedronFEMForceField<Vec3Types>>("TetrahedronFEMForceField")
+        .withModule(MODULE_NAME)
+        .withDescription("Tetrahedral finite elements.")
+        .template addTemplateAttribute<Vec3Types>("dofType")
+        .withDeductionRule<core::MechanicalStateDeductionRule<Vec3Types>>()
+    );
 }
 
 template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API TetrahedronFEMForceField<Vec3Types>;

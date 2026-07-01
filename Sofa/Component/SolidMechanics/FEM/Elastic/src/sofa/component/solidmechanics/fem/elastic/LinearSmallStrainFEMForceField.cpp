@@ -29,20 +29,33 @@
 namespace sofa::component::solidmechanics::fem::elastic
 {
 
+static constexpr std::string_view description { "Hooke's law assuming small strain" };
+
+template <class DataTypes, class ElementType>
+void registerComponent(sofa::core::ObjectFactory* factory)
+{
+    factory->registerComponent(
+        core::CreateComponent<LinearSmallStrainFEMForceField<DataTypes, ElementType>>("CorotationalFEMForceField")
+        .withModule(MODULE_NAME)
+        .withDescription(std::string(description))
+        .template addTemplateAttribute<DataTypes>("dofType")
+        .addTemplateAttribute("elementType", sofa::geometry::elementTypeToString(ElementType::Element_type))
+        .withDeductionRule<core::MechanicalStateDeductionRule<DataTypes>>()
+    );
+}
+
 void registerLinearSmallStrainFEMForceField(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(sofa::core::ObjectRegistrationData("Hooke's law assuming small strain")
-        .add< LinearSmallStrainFEMForceField<sofa::defaulttype::Vec1Types, sofa::geometry::Edge> >()
-        .add< LinearSmallStrainFEMForceField<sofa::defaulttype::Vec2Types, sofa::geometry::Edge> >()
-        .add< LinearSmallStrainFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Edge> >()
-        .add< LinearSmallStrainFEMForceField<sofa::defaulttype::Vec2Types, sofa::geometry::Triangle> >()
-        .add< LinearSmallStrainFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Triangle> >()
-        .add< LinearSmallStrainFEMForceField<sofa::defaulttype::Vec2Types, sofa::geometry::Quad> >()
-        .add< LinearSmallStrainFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Quad> >()
-        .add< LinearSmallStrainFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Tetrahedron> >()
-        .add< LinearSmallStrainFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Hexahedron> >()
-        .add< LinearSmallStrainFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Prism> >()
-    );
+    registerComponent<sofa::defaulttype::Vec1Types, sofa::geometry::Edge>(factory);
+    registerComponent<sofa::defaulttype::Vec2Types, sofa::geometry::Edge>(factory);
+    registerComponent<sofa::defaulttype::Vec3Types, sofa::geometry::Edge>(factory);
+    registerComponent<sofa::defaulttype::Vec2Types, sofa::geometry::Triangle>(factory);
+    registerComponent<sofa::defaulttype::Vec3Types, sofa::geometry::Triangle>(factory);
+    registerComponent<sofa::defaulttype::Vec2Types, sofa::geometry::Quad>(factory);
+    registerComponent<sofa::defaulttype::Vec3Types, sofa::geometry::Quad>(factory);
+    registerComponent<sofa::defaulttype::Vec3Types, sofa::geometry::Tetrahedron>(factory);
+    registerComponent<sofa::defaulttype::Vec3Types, sofa::geometry::Hexahedron>(factory);
+    registerComponent<sofa::defaulttype::Vec3Types, sofa::geometry::Prism>(factory);
 }
 
 template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API LinearSmallStrainFEMForceField<sofa::defaulttype::Vec1Types, sofa::geometry::Edge>;

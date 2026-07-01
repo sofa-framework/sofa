@@ -32,8 +32,13 @@ using namespace sofa::defaulttype;
 
 void registerHexahedralFEMForceFieldAndMass(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Hexahedral finite elements with mass")
-        .add< HexahedralFEMForceFieldAndMass<Vec3Types> >());
+    factory->registerComponent(
+        core::CreateComponent<HexahedralFEMForceFieldAndMass<Vec3Types>>("HexahedralFEMForceFieldAndMass")
+        .withModule(MODULE_NAME)
+        .withDescription("Hexahedral finite elements with mass")
+        .template addTemplateAttribute<Vec3Types>("dofType")
+        .withDeductionRule<core::MechanicalStateDeductionRule<Vec3Types>>()
+    );
 }
 
 template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API HexahedralFEMForceFieldAndMass<Vec3Types>;

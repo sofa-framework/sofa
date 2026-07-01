@@ -38,7 +38,7 @@ void registerComponent(sofa::core::ObjectFactory* factory)
         core::CreateComponent<CorotationalFEMForceField<DataTypes, ElementType>>("CorotationalFEMForceField")
         .withModule(MODULE_NAME)
         .withDescription(std::string(description))
-        .addTemplateAttribute<DataTypes>("dofType")
+        .template addTemplateAttribute<DataTypes>("dofType")
         .addTemplateAttribute("elementType", sofa::geometry::elementTypeToString(ElementType::Element_type))
         .withDeductionRule<core::MechanicalStateDeductionRule<DataTypes>>()
     );
