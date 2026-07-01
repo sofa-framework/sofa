@@ -37,7 +37,7 @@ void registerBeamFEMForceField(sofa::core::ObjectFactory* factory)
         .withModule(MODULE_NAME)
         .withDescription("Beam finite elements.")
         .template addTemplateAttribute<Rigid3Types>("dofType")
-        .withDeductionRule<core::MechanicalStateDeductionRule<Rigid3Types>>()
+        .template withDeductionRule<core::MechanicalStateDeductionRule<Rigid3Types>>()
     );
 }
 

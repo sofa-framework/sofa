@@ -38,7 +38,7 @@ void registerTetrahedronFEMForceField(sofa::core::ObjectFactory* factory)
         .withModule(MODULE_NAME)
         .withDescription("Tetrahedral finite elements.")
         .template addTemplateAttribute<Vec3Types>("dofType")
-        .withDeductionRule<core::MechanicalStateDeductionRule<Vec3Types>>()
+        .template withDeductionRule<core::MechanicalStateDeductionRule<Vec3Types>>()
     );
 }
 

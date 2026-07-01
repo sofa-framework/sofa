@@ -39,7 +39,7 @@ void registerTriangularFEMForceField(sofa::core::ObjectFactory* factory)
         .withModule(MODULE_NAME)
         .withDescription("Corotational Triangular finite elements for dynamic topology.")
         .template addTemplateAttribute<Vec3Types>("dofType")
-        .withDeductionRule<core::MechanicalStateDeductionRule<Vec3Types>>()
+        .template withDeductionRule<core::MechanicalStateDeductionRule<Vec3Types>>()
     );
 }
 

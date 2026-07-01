@@ -36,7 +36,7 @@ void registerTriangularAnisotropicFEMForceField(sofa::core::ObjectFactory* facto
         .withModule(MODULE_NAME)
         .withDescription("Triangular finite element model using anisotropic material.")
         .template addTemplateAttribute<Vec3Types>("dofType")
-        .withDeductionRule<core::MechanicalStateDeductionRule<Vec3Types>>()
+        .template withDeductionRule<core::MechanicalStateDeductionRule<Vec3Types>>()
     );
 }
 
