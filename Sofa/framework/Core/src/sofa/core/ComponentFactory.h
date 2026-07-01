@@ -138,22 +138,12 @@ std::string ComponentFactory::listClassesDerivedFrom(const std::string& separato
 
 struct SOFA_CORE_API MainComponentFactory
 {
-    static ComponentFactory* getInstance()
-    {
-        static ComponentFactory instance;
-        return &instance;
-    }
+    static ComponentFactory* getInstance();
 
-    static objectmodel::BaseComponent::SPtr CreateComponent(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
-    {
-        return getInstance()->createComponent(context, arg);
-    }
+    static objectmodel::BaseComponent::SPtr CreateComponent(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg);
 
-    //to deprecate
-    static objectmodel::BaseComponent::SPtr CreateObject(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
-    {
-        return CreateComponent(context, arg);
-    }
+    // to deprecate
+    static objectmodel::BaseComponent::SPtr CreateObject(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg);
 
     /// Test if a creator exists for a given classname
     static bool HasCreator(const std::string& classname);

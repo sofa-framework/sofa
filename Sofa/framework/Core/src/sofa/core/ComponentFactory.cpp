@@ -645,6 +645,24 @@ bool ComponentFactory::HasCreator(const std::string& classname)
     return MainComponentFactory::HasCreator(classname);
 }
 
+ComponentFactory* MainComponentFactory::getInstance()
+{
+    static ComponentFactory instance;
+    return &instance;
+}
+
+objectmodel::BaseComponent::SPtr MainComponentFactory::CreateComponent(
+    objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
+{
+    return getInstance()->createComponent(context, arg);
+}
+
+objectmodel::BaseComponent::SPtr MainComponentFactory::CreateObject(
+    objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
+{
+    return CreateComponent(context, arg);
+}
+
 bool MainComponentFactory::HasCreator(const std::string& classname)
 {
     return getInstance()->hasCreator(classname);
