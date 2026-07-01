@@ -68,9 +68,14 @@ public:
     SOFA_CORE_DEPRECATED_OBJECTFACTORY_REGISTEROBJECTS()
     bool registerObjects(LegacyComponentRegistrationData& ro);
 
-    static ComponentFactory* SOFA_ATTRIBUTE_DEPRECATED("v26.12", "v27.12", "Use MainComponentFactory::getInstance instead") getInstance();
-    static objectmodel::BaseComponent::SPtr SOFA_ATTRIBUTE_DEPRECATED("v26.12", "v27.12", "Use MainComponentFactory::CreateComponent instead") CreateObject(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg);
-    static bool SOFA_ATTRIBUTE_DEPRECATED("v26.12", "v27.12", "Use MainComponentFactory::HasCreator instead") HasCreator(const std::string& classname);
+    SOFA_ATTRIBUTE_DEPRECATED("v26.12", "v27.12", "Use MainComponentFactory::getInstance instead")
+    static ComponentFactory* getInstance();
+
+    SOFA_ATTRIBUTE_DEPRECATED("v26.12", "v27.12", "Use MainComponentFactory::CreateComponent instead")
+    static objectmodel::BaseComponent::SPtr CreateObject(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg);
+
+    SOFA_ATTRIBUTE_DEPRECATED("v26.12", "v27.12", "Use MainComponentFactory::HasCreator instead")
+    static bool  HasCreator(const std::string& classname);
 
 
     void getEntry(std::string) = delete;
