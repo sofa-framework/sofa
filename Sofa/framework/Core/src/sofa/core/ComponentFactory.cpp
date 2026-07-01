@@ -505,7 +505,7 @@ ComponentRegistrationData::SPtr applyFilter(
 }
 
 
-ComponentRegistrationData::SPtr ComponentFactory::findComponent(objectmodel::BaseObjectDescription* arg)
+ComponentRegistrationData::SPtr ComponentFactory::findComponent(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
 {
     if (!arg)
         return nullptr;
@@ -605,7 +605,7 @@ ComponentRegistrationData::SPtr ComponentFactory::findComponent(objectmodel::Bas
 objectmodel::BaseComponent::SPtr ComponentFactory::createComponent(
     objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
 {
-    if (auto component = findComponent(arg))
+    if (auto component = findComponent(context, arg))
     {
         return createComponentFrom(component, context, arg);
     }
