@@ -33,6 +33,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/CollisionModel.h
     ${SRC_ROOT}/ComponentCreator.h
     ${SRC_ROOT}/ComponentFactory.h
+    ${SRC_ROOT}/ComponentFactoryFilters.h
     ${SRC_ROOT}/ComponentLibrary.h
     ${SRC_ROOT}/ComponentNameHelper.h
     ${SRC_ROOT}/ComponentRegistrationData.h
@@ -237,6 +238,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/CategoryLibrary.cpp
     ${SRC_ROOT}/CollisionModel.cpp
     ${SRC_ROOT}/ComponentFactory.cpp
+    ${SRC_ROOT}/ComponentFactoryFilters.cpp
     ${SRC_ROOT}/ComponentLibrary.cpp
     ${SRC_ROOT}/ComponentNameHelper.cpp
     ${SRC_ROOT}/ConstraintParams.cpp

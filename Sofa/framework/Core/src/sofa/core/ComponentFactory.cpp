@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/ComponentFactory.h>
+#include <sofa/core/ComponentFactoryFilters.h>
 #include <sofa/defaulttype/TemplatesAliases.h>
 #include <sofa/helper/ComponentChange.h>
 #include <sofa/helper/system/PluginManager.h>
@@ -316,141 +317,6 @@ bool knownIssues(const ComponentFactory& self, const std::string& clasName)
 
     return false;
 }
-
-class ComponentFilter
-{
-public:
-    virtual ~ComponentFilter() = default;
-    virtual std::vector<ComponentRegistrationData::SPtr> filter(
-        const std::vector<ComponentRegistrationData::SPtr>& candidates,
-        objectmodel::BaseContext* context,
-        objectmodel::BaseObjectDescription* arg) const = 0;
-};
-
-class ExactTemplateMatchFilter final : public ComponentFilter
-{
-public:
-    std::vector<ComponentRegistrationData::SPtr> filter(
-        const std::vector<ComponentRegistrationData::SPtr>& candidates,
-        objectmodel::BaseContext* context,
-        objectmodel::BaseObjectDescription* arg) const override
-    {
-        SOFA_UNUSED(context);
-
-        std::vector<ComponentRegistrationData::SPtr> exactlyMatchingCandidates;
-
-        for (const auto& candidate : candidates)
-        {
-            bool matchAllTemplateParameters = true;
-            for (const auto& [attribute, value] : candidate->templateAttributes)
-            {
-                const auto resolvedValue = defaulttype::TemplateAliases::resolveAlias(value);
-                const char* attr = arg->getAttribute(attribute, nullptr);
-                if (attr == nullptr)
-                {
-                    matchAllTemplateParameters = false;
-                }
-                else
-                {
-                    const std::string attrStr { attr };
-                    const auto resolvedAlias = defaulttype::TemplateAliases::resolveAlias(attrStr);
-                    if (resolvedAlias != resolvedValue)
-                    {
-                        matchAllTemplateParameters = false;
-                    }
-                }
-            }
-
-            if (matchAllTemplateParameters)
-            {
-                exactlyMatchingCandidates.push_back(candidate);
-            }
-        }
-
-        return exactlyMatchingCandidates;
-    }
-};
-
-class LegacyTemplateKeywordFilter final : public ComponentFilter
-{
-public:
-    std::vector<ComponentRegistrationData::SPtr> filter(
-        const std::vector<ComponentRegistrationData::SPtr>& candidates,
-        objectmodel::BaseContext* context,
-        objectmodel::BaseObjectDescription* arg) const override
-    {
-        SOFA_UNUSED(context);
-
-        const char* templateAttr = arg->getAttribute("template", nullptr);
-        if (!templateAttr)
-            return {};
-
-        std::string templateAttrStr { templateAttr };
-        templateAttrStr = defaulttype::TemplateAliases::resolveAlias(templateAttrStr);
-
-        std::vector<ComponentRegistrationData::SPtr> matchingCandidates;
-
-        for (const auto& candidate : candidates)
-        {
-            const auto templateList = sofa::helper::join(
-                candidate->templateAttributes.begin(), candidate->templateAttributes.end(),
-                [](const auto& attr){ return defaulttype::TemplateAliases::resolveAlias(attr.second); }, ',');
-            if (templateAttrStr == templateList)
-            {
-                matchingCandidates.push_back(candidate);
-            }
-        }
-
-        return matchingCandidates;
-    }
-};
-
-class PartialTemplateMatchFilter final : public ComponentFilter
-{
-public:
-    std::vector<ComponentRegistrationData::SPtr> filter(
-        const std::vector<ComponentRegistrationData::SPtr>& candidates,
-        objectmodel::BaseContext* context,
-        objectmodel::BaseObjectDescription* arg) const override
-    {
-        SOFA_UNUSED(context);
-
-        std::vector<ComponentRegistrationData::SPtr> partiallyMatchingCandidates;
-
-        for (const auto& candidate : candidates)
-        {
-            for (const auto& [attribute, value] : candidate->templateAttributes)
-            {
-                const char* attr = arg->getAttribute(attribute, nullptr);
-                if (attr != nullptr)
-                {
-                    const std::string attrStr { attr };
-                    if (defaulttype::TemplateAliases::resolveAlias(attrStr) == value)
-                    {
-                        partiallyMatchingCandidates.push_back(candidate);
-                        break;
-                    }
-                }
-            }
-        }
-
-        return partiallyMatchingCandidates;
-    }
-};
-
-class NoFilter final : public ComponentFilter
-{
-public:
-    std::vector<ComponentRegistrationData::SPtr> filter(
-        const std::vector<ComponentRegistrationData::SPtr>& candidates,
-        objectmodel::BaseContext* context,
-        objectmodel::BaseObjectDescription* arg) const override
-    {
-        SOFA_UNUSED(context);
-        SOFA_UNUSED(arg);
-        return candidates;
-    }
-};
 
 std::vector<ComponentRegistrationData::SPtr> selectCandidatesDeductionRules(
     const std::vector<ComponentRegistrationData::SPtr>& candidates,
