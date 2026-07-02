@@ -532,7 +532,7 @@ void ComponentFactory::getEntriesFromTarget(std::vector<ComponentRegistrationDat
     }
 }
 
-std::string ComponentFactory::listClassesFromTarget(std::string target, std::string separator)
+std::string ComponentFactory::listClassesFromTarget(std::string target, std::string separator) const
 {
     std::vector<ComponentRegistrationData::SPtr> entries;
     this->getEntriesFromTarget(entries, target);

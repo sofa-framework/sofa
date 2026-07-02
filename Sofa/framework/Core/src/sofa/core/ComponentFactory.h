@@ -90,7 +90,7 @@ public:
     void getEntriesFromTarget(std::vector<ComponentRegistrationData::SPtr>& result, const std::string& target) const;
 
     /** @brief Return a string list of classes from a given target module/plugin. */
-    std::string listClassesFromTarget(std::string target, std::string separator = ", ");
+    std::string listClassesFromTarget(std::string target, std::string separator = ", ") const;
 
     /** @brief Fill the given vector with all the registered classes derived from BaseClass. */
     template<class BaseClass>
