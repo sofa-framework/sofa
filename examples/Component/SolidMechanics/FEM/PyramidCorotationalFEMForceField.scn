@@ -1,0 +1,52 @@
+<Node name="root" dt="0.01" gravity="0 -9.81 0">
+    <Node name="plugins">
+        <RequiredPlugin pluginName="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
+        <RequiredPlugin pluginName="Sofa.Component.LinearSolver.Direct"/> <!-- Needed to use components [SparseLDLSolver] -->
+        <RequiredPlugin pluginName="Sofa.Component.Mass"/> <!-- Needed to use components [NodalMassDensity,FEMMass] -->
+        <RequiredPlugin pluginName="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [BDFOdeSolver,NewtonRaphsonSolver] -->
+        <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [CorotationalFEMForceField] -->
+        <RequiredPlugin pluginName="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+        <RequiredPlugin pluginName="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
+        <RequiredPlugin pluginName="Sofa.Component.Visual"/> <!-- Needed to use components [VisualMesh] -->
+    </Node>
+
+    <DefaultAnimationLoop/>
+    <Node name="physics">
+        <BDFOdeSolver order="2" printLog="false" rayleighMass="0.01" rayleighStiffness="0.01"/>
+        <NewtonRaphsonSolver name="newton" printLog="false"
+                             maxNbIterationsNewton="10" absoluteResidualStoppingThreshold="1e-5"
+                             maxNbIterationsLineSearch="5" lineSearchCoefficient="0.5"
+                             relativeInitialStoppingThreshold="1e-3"
+                             absoluteEstimateDifferenceThreshold="1e-5"
+                             relativeEstimateDifferenceThreshold="1e-5"/>
+        <SparseLDLSolver name="linear_solver" template="CompressedRowSparseMatrix"/>
+
+        <!-- A cube made of 6 pyramids -->
+        <MeshTopology name="mesh" pyramids="
+            0 1 5 4 8
+            1 5 6 2 8
+            2 3 7 6 8
+            0 3 7 4 8
+            3 2 1 0 8
+            6 7 4 5 8
+        "
+        position="
+            -1 -1 -1
+            1 -1 -1
+            1 1 -1
+            -1 1 -1
+            -1 -1 1
+            1 -1 1
+            1 1 1
+            -1 1 1
+            0 0 0
+        "/>
+        <MechanicalObject template="Vec3" name="state" />
+        <NodalMassDensity property="10"/>
+        <FEMMass template="Vec3,Pyramid"/>
+        <CorotationalFEMForceField template="Vec3,Pyramid" name="FEM" poissonRatio="0.45" youngModulus="500"/>
+        <FixedProjectiveConstraint indices="2 3 7 6"/>
+
+        <VisualMesh position="@state.position" topology="@mesh"/>
+    </Node>
+</Node>
