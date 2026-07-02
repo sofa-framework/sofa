@@ -65,19 +65,22 @@ struct SOFA_CORE_API ComponentRegistrationDataBuilder
 {
     ComponentRegistrationData::SPtr data;
 
-    ComponentRegistrationDataBuilder(
-        const std::string& componentName,
-        const std::string& moduleName,
-        const std::string& description,
-        std::unique_ptr<BaseComponentCreator> creator,
-        const BaseClass* classData)
-        : data(std::make_shared<ComponentRegistrationData>())
+    ComponentRegistrationDataBuilder& withName(const std::string& name)
     {
-        data->componentName = componentName;
-        data->componentModule = moduleName;
+        data->componentName = name;
+        return *this;
+    }
+
+    ComponentRegistrationDataBuilder& withModule(const std::string& componentModule)
+    {
+        data->componentModule = componentModule;
+        return *this;
+    }
+
+    ComponentRegistrationDataBuilder& withDescription(const std::string& description)
+    {
         data->description = description;
-        data->creator = std::move(creator);
-        data->classData = classData;
+        return *this;
     }
 
     ComponentRegistrationDataBuilder& addAlias(const std::string& alias)
@@ -117,16 +120,27 @@ struct SOFA_CORE_API ComponentRegistrationDataBuilder
         return *this;
     }
 
-    template<class T>
-    ComponentRegistrationDataBuilder& withDeductionRule()
+    ComponentRegistrationDataBuilder& withDeductionRule(const std::shared_ptr<BaseTemplateDeductionRule>& rule)
     {
-        data->templateDeductionRule = std::make_shared<T>();
+        data->templateDeductionRule = rule;
         return *this;
     }
 
     ComponentRegistrationDataBuilder& withInstantiationPriority(unsigned int instantiationPriority)
     {
         data->instantiationPriority = instantiationPriority;
+        return *this;
+    }
+
+    ComponentRegistrationDataBuilder& withClass(const BaseClass* classData)
+    {
+        data->classData = classData;
+        return *this;
+    }
+
+    ComponentRegistrationDataBuilder& withCreator(std::unique_ptr<BaseComponentCreator> creator)
+    {
+        data->creator = std::move(creator);
         return *this;
     }
 
@@ -152,52 +166,39 @@ inline std::ostream& operator<<(std::ostream& os, const ComponentRegistrationDat
     return os;
 }
 
-struct SOFA_CORE_API ComponentRegistrationDataModule
-{
-    ComponentRegistrationDataBuilder withDescription(const std::string& description)
-    {
-        return {m_componentName, m_moduleName, description, std::move(m_creator), m_classData};
-    }
-    ComponentRegistrationDataModule(const std::string& componentName, const std::string& moduleName, std::unique_ptr<BaseComponentCreator> creator, const BaseClass* classData)
-        : m_componentName(componentName), m_moduleName(moduleName), m_creator(std::move(creator)), m_classData(classData) {}
-private:
-    std::string m_componentName;
-    std::string m_moduleName;
-    std::unique_ptr<BaseComponentCreator> m_creator;
-    const BaseClass* m_classData;
-};
-
-struct SOFA_CORE_API ComponentRegistrationDataName
-{
-    ComponentRegistrationDataModule withModule(const std::string& moduleName)
-    {
-        return {m_componentName, moduleName, std::move(m_creator), m_classData};
-    }
-    ComponentRegistrationDataName(const std::string& componentName, std::unique_ptr<BaseComponentCreator> creator, const BaseClass* classData)
-        : m_componentName(componentName)
-        , m_creator(std::move(creator))
-        , m_classData(classData)
-    {}
-private:
-    std::string m_componentName;
-    std::unique_ptr<BaseComponentCreator> m_creator;
-    const BaseClass* m_classData;
+template <class T>
+concept HasTemplateDeductionRule = requires {
+    typename T::TemplateDeductionRule;
 };
 
 template<class Component>
-ComponentRegistrationDataName CreateComponent(const std::string& componentName)
-{
-    std::unique_ptr<BaseComponentCreator> creator = std::make_unique<ComponentCreator<Component>>();
-    auto* classData = Component::GetClass();
-    return ComponentRegistrationDataName(componentName, std::move(creator), classData);
-}
-
-template<class Component>
-ComponentRegistrationDataName CreateComponent()
+ComponentRegistrationDataBuilder CreateComponent(const std::string& componentName)
 {
     std::unique_ptr<BaseComponentCreator> creator = std::make_unique<ComponentCreator<Component>>();
     BaseClass* classData = Component::GetClass();
-    return ComponentRegistrationDataName(classData->className, std::move(creator), classData);
+
+    std::shared_ptr<BaseTemplateDeductionRule> templateDeductionRule { nullptr };
+    if constexpr (HasTemplateDeductionRule<Component>)
+    {
+        templateDeductionRule = std::make_shared<typename Component::TemplateDeductionRule>();
+    }
+    else
+    {
+        templateDeductionRule = std::make_shared<CanCreateDeductionRule<Component>>();
+    }
+
+    return ComponentRegistrationDataBuilder()
+        .withName(componentName)
+        .withClass(classData)
+        .withDeductionRule(templateDeductionRule)
+        .withCreator(std::move(creator));
+}
+
+template<class Component>
+ComponentRegistrationDataBuilder CreateComponent()
+{
+    BaseClass* classData = Component::GetClass();
+    return CreateComponent<Component>(classData->className);
 }
 
 

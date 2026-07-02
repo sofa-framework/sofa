@@ -38,7 +38,6 @@ void registerFastTetrahedralCorotationalForceField(sofa::core::ObjectFactory* fa
         .withModule(MODULE_NAME)
         .withDescription("Fast Corotational Tetrahedral Mesh.")
         .template addTemplateAttribute<Vec3Types>("dofType")
-        .template withDeductionRule<core::MechanicalStateDeductionRule<Vec3Types>>()
     );
 }
 

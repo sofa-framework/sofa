@@ -37,7 +37,6 @@ void registerHexahedralFEMForceField(sofa::core::ObjectFactory* factory)
         .withModule(MODULE_NAME)
         .withDescription("Hexahedral finite elements.")
         .template addTemplateAttribute<Vec3Types>("dofType")
-        .template withDeductionRule<core::MechanicalStateDeductionRule<Vec3Types>>()
     );
 }
 

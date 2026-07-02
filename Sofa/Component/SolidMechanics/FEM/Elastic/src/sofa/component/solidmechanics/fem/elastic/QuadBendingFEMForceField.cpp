@@ -41,7 +41,6 @@ void registerQuadBendingFEMForceField(sofa::core::ObjectFactory* factory)
         .withModule(MODULE_NAME)
         .withDescription("Bending Quad finite elements")
         .template addTemplateAttribute<Vec3Types>("dofType")
-        .template withDeductionRule<core::MechanicalStateDeductionRule<Vec3Types>>()
     );
 }
 

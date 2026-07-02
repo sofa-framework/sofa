@@ -38,7 +38,6 @@ void registerTetrahedralCorotationalFEMForceField(sofa::core::ObjectFactory* fac
         .withModule(MODULE_NAME)
         .withDescription("Corotational FEM Tetrahedral finite elements")
         .template addTemplateAttribute<Vec3Types>("dofType")
-        .template withDeductionRule<core::MechanicalStateDeductionRule<Vec3Types>>()
     );
 }
 

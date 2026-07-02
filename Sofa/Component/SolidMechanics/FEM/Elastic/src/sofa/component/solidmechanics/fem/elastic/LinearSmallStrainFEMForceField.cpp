@@ -40,7 +40,6 @@ void registerComponent(sofa::core::ObjectFactory* factory)
         .withDescription(std::string(description))
         .template addTemplateAttribute<DataTypes>("dofType")
         .addTemplateAttribute("elementType", sofa::geometry::elementTypeToString(ElementType::Element_type))
-        .template withDeductionRule<core::MechanicalStateDeductionRule<DataTypes>>()
     );
 }
 
