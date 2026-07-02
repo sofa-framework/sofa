@@ -121,6 +121,8 @@ public:
     void getEntry(std::string) = delete;
     void getAllEntries(std::vector<ClassEntry::SPtr>& result, bool filterUnloadedPlugins = true) = delete;
 
+    std::string shortName(std::string classname) = delete;
+
     void dumpXML(std::ostream& out = std::cout) = delete;
     void dumpHTML(std::ostream& out = std::cout) = delete;
 
