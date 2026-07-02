@@ -145,6 +145,11 @@ protected:
     ~RigidDistanceGridCollisionModel() override;
 
     void drawCollisionModel(const core::visual::VisualParams* vparams) override;
+    void doResize(sofa::Size size) override;
+
+    /// Create or update the bounding volume hierarchy.
+    void doComputeBoundingTree(int maxDepth=0) override;
+
 public:
     core::behavior::MechanicalState<InDataTypes>* getRigidModel() { return this->mstate ; }
     core::behavior::MechanicalState<InDataTypes>* getMechanicalState() { return this->mstate ; }
@@ -216,11 +221,6 @@ public:
 
     /// Update transformation matrices from current rigid state
     void updateState();
-
-    void resize(sofa::Size size) override;
-
-    /// Create or update the bounding volume hierarchy.
-    void computeBoundingTree(int maxDepth=0) override;
 
     void draw(const core::visual::VisualParams*, sofa::Index index) override;
 
@@ -450,13 +450,23 @@ protected:
     ~FFDDistanceGridCollisionModel() override;
 
     void drawCollisionModel(const core::visual::VisualParams* vparams) override;
+    /// CollisionModel interface
+    void doResize(sofa::Size size) override;
+
+    /// Create or update the bounding volume hierarchy.
+    void doComputeBoundingTree(int maxDepth=0) override;
+
+    bool doCanCollideWithElement(sofa::Index index, CollisionModel* model2, sofa::Index index2) override;
+
+    core::topology::BaseMeshTopology* doGetCollisionTopology() override { return l_ffdMesh; }
+
 public:
     core::behavior::MechanicalState<DataTypes>* getDeformModel() { return this->mstate; }
     core::topology::BaseMeshTopology* getDeformGrid() { return l_ffdMesh; }
 
     /// alias used by ContactMapper
     core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return this->mstate; }
-    core::topology::BaseMeshTopology* getCollisionTopology() override { return l_ffdMesh; }
+
 
     void init() override;
 
@@ -469,14 +479,6 @@ public:
     {
         return elems[index];
     }
-
-    /// CollisionModel interface
-    void resize(sofa::Size size) override;
-
-    /// Create or update the bounding volume hierarchy.
-    void computeBoundingTree(int maxDepth=0) override;
-
-    bool canCollideWithElement(sofa::Index index, CollisionModel* model2, sofa::Index index2) override;
 
     void draw(const core::visual::VisualParams*, sofa::Index index) override;
 };

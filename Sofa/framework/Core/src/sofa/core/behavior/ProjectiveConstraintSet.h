@@ -57,17 +57,8 @@ protected:
     ProjectiveConstraintSet(MechanicalState<DataTypes> *mm = nullptr);
 
     ~ProjectiveConstraintSet() override;
-public:
 
-    // to get rid of warnings
-    using BaseProjectiveConstraintSet::projectResponse;
-
-
-
-    Data<Real> endTime; ///< The constraint stops acting after the given value. Use a negative value for infinite constraints
-    virtual bool isActive() const; ///< if false, the constraint does nothing
-
-    virtual type::vector< core::BaseState* > getModels() override
+    virtual type::vector< core::BaseState* > doGetModels() override
     {
         return { this->getMState() };
     }
@@ -80,30 +71,58 @@ public:
     /// This method retrieves the dxId vector from the MechanicalState and call
     /// the internal projectResponse(VecDeriv&) method implemented by
     /// the component.
-    void projectResponse(const MechanicalParams* mparams, MultiVecDerivId dxId) override;
+    void doProjectResponse(const MechanicalParams* mparams, MultiVecDerivId dxId) override;
 
     /// Project the L matrix of the Lagrange Multiplier equation system.
     ///
     /// This method retrieves the lines of the Jacobian Matrix from the MechanicalState and call
     /// the internal projectResponse(MatrixDeriv&) method implemented by
     /// the component.
-    void projectJacobianMatrix(const MechanicalParams* mparams, MultiMatrixDerivId cId) override;
+    void doProjectJacobianMatrix(const MechanicalParams* mparams, MultiMatrixDerivId cId) override;
 
     /// Project v to constrained space (v models a velocity).
     ///
     /// This method retrieves the vId vector from the MechanicalState and call
     /// the internal projectVelocity(VecDeriv&) method implemented by
     /// the component.
-    void projectVelocity(const MechanicalParams* mparams, MultiVecDerivId vId) override;
+    void doProjectVelocity(const MechanicalParams* mparams, MultiVecDerivId vId) override;
 
     /// Project x to constrained space (x models a position).
     ///
     /// This method retrieves the xId vector from the MechanicalState and call
     /// the internal projectPosition(VecCoord&) method implemented by
     /// the component.
-    void projectPosition(const MechanicalParams* mparams, MultiVecCoordId xId) override;
+    void doProjectPosition(const MechanicalParams* mparams, MultiVecCoordId xId) override;
+
+    /// @}
+
+    /// Project the global Mechanical Matrix to constrained space using offset parameter
+    void doApplyConstraint(const MechanicalParams* /*mparams*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/) override
+    {
+        msg_error() << "applyConstraint(mparams, matrix) not implemented.";
+    }
 
 
+    /// Project the global Mechanical Vector to constrained space using offset parameter
+    void doApplyConstraint(const MechanicalParams* /*mparams*/, linearalgebra::BaseVector* /*vector*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/) override
+    {
+        msg_error() << "applyConstraint(mparams, vector, matrix) not implemented.";
+    }
+
+public:
+
+    // to get rid of warnings
+    using BaseProjectiveConstraintSet::projectResponse;
+    using BaseProjectiveConstraintSet::projectJacobianMatrix;
+    using BaseProjectiveConstraintSet::projectVelocity;
+    using BaseProjectiveConstraintSet::projectPosition;
+
+
+    Data<Real> endTime; ///< The constraint stops acting after the given value. Use a negative value for infinite constraints
+    virtual bool isActive() const; ///< if false, the constraint does nothing
+
+    /// @name Vector operations
+    /// @{
 
     /// Project dx to constrained space (dx models an acceleration).
     ///
@@ -129,19 +148,6 @@ public:
 
     /// @}
 
-
-    /// Project the global Mechanical Matrix to constrained space using offset parameter
-    void applyConstraint(const MechanicalParams* /*mparams*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/) override
-    {
-        msg_error() << "applyConstraint(mparams, matrix) not implemented.";
-    }
-
-
-    /// Project the global Mechanical Vector to constrained space using offset parameter
-    void applyConstraint(const MechanicalParams* /*mparams*/, linearalgebra::BaseVector* /*vector*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/) override
-    {
-        msg_error() << "applyConstraint(mparams, vector, matrix) not implemented.";
-    }
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.

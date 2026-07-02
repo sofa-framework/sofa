@@ -57,6 +57,33 @@ void BaseSubCollisionPipeline::bwdInit()
     doBwdInit();
 }
 
+void BaseSubCollisionPipeline::computeCollisionReset()
+{
+    //TODO (SPRINT SED 2025): Component state mechamism
+    if (!this->isComponentStateValid())
+        return;
+    
+    doComputeCollisionReset();
+}
+
+void BaseSubCollisionPipeline::computeCollisionDetection()
+{
+    //TODO (SPRINT SED 2025): Component state mechamism
+    if (!this->isComponentStateValid())
+        return;
+
+    doComputeCollisionDetection();
+}
+
+void BaseSubCollisionPipeline::computeCollisionResponse()
+{
+    //TODO (SPRINT SED 2025): Component state mechamism
+    if (!this->isComponentStateValid())
+        return;
+
+    doComputeCollisionResponse();
+}
+
 /**
  * @brief Queries all registered contact response types from the Contact factory.
  *

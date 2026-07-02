@@ -64,19 +64,28 @@ protected:
     /// @brief Called during rendering. Default implementation is empty.
     virtual void doDraw(const core::visual::VisualParams* vparams);
 
+    /// @brief Delegates collision reset 
+    virtual void doComputeCollisionReset() = 0;
+
+    /// @brief Delegates collision detection
+    virtual void doComputeCollisionDetection() = 0;
+
+    /// @brief Delegates response creation
+    virtual void doComputeCollisionResponse() = 0;
+
 public:
     ///@{
     /// @name Collision Pipeline Interface
     /// These methods define the three-phase collision workflow that derived classes must implement.
 
     /// @brief Clears collision state from the previous time step (contacts, responses).
-    virtual void computeCollisionReset() = 0;
+    virtual void computeCollisionReset() final;
 
     /// @brief Performs collision detection (bounding tree, broad phase, narrow phase).
-    virtual void computeCollisionDetection() = 0;
+    virtual void computeCollisionDetection() final;
 
     /// @brief Creates collision responses based on detected contacts.
-    virtual void computeCollisionResponse() = 0;
+    virtual void computeCollisionResponse() final;
 
     ///@}
 
