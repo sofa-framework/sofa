@@ -43,8 +43,8 @@
         "/>
         <MechanicalObject template="Vec3" name="state" />
         <NodalMassDensity property="10"/>
-        <PyramidFEMMass/>
-        <PyramidCorotationalFEMForceField name="FEM" poissonRatio="0.45" youngModulus="500"/>
+        <FEMMass template="Vec3,Pyramid"/>
+        <CorotationalFEMForceField template="Vec3,Pyramid" name="FEM" poissonRatio="0.45" youngModulus="500"/>
         <FixedProjectiveConstraint indices="2 3 7 6"/>
 
         <VisualMesh position="@state.position" topology="@mesh"/>
