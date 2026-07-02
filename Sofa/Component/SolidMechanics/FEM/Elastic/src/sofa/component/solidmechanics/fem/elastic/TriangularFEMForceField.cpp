@@ -35,7 +35,7 @@ using namespace sofa::defaulttype;
 void registerTriangularFEMForceField(sofa::core::ObjectFactory* factory)
 {
     factory->registerComponent(
-        core::CreateComponent<TriangularFEMForceField<Vec3Types>>("TriangularFEMForceField")
+        core::CreateComponent<TriangularFEMForceField<Vec3Types>>()
         .withModule(MODULE_NAME)
         .withDescription("Corotational Triangular finite elements for dynamic topology.")
         .template addTemplateAttribute<Vec3Types>("dofType")

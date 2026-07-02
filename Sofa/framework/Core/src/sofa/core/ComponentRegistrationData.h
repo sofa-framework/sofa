@@ -192,6 +192,14 @@ ComponentRegistrationDataName CreateComponent(const std::string& componentName)
     return ComponentRegistrationDataName(componentName, std::move(creator), classData);
 }
 
+template<class Component>
+ComponentRegistrationDataName CreateComponent()
+{
+    std::unique_ptr<BaseComponentCreator> creator = std::make_unique<ComponentCreator<Component>>();
+    BaseClass* classData = Component::GetClass();
+    return ComponentRegistrationDataName(classData->className, std::move(creator), classData);
+}
+
 
 
 /**************************************************************************************************/

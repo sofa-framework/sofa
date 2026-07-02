@@ -33,7 +33,7 @@ using namespace sofa::defaulttype;
 void registerBarycentricMapping(sofa::core::ObjectFactory* factory)
 {
     factory->registerComponent(
-        core::CreateComponent<BarycentricMapping<Vec3Types, Vec3Types>>("BarycentricMapping")
+        core::CreateComponent<BarycentricMapping<Vec3Types, Vec3Types>>()
         .withModule(MODULE_NAME)
         .withDescription("Mapping using barycentric coordinates of the child with respect to cells of its parent.")
         .template addTemplateAttribute<Vec3Types>("inDofType")

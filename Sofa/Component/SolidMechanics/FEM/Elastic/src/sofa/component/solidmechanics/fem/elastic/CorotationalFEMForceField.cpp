@@ -35,7 +35,7 @@ template <class DataTypes, class ElementType>
 void registerComponent(sofa::core::ObjectFactory* factory)
 {
     factory->registerComponent(
-        core::CreateComponent<CorotationalFEMForceField<DataTypes, ElementType>>("CorotationalFEMForceField")
+        core::CreateComponent<CorotationalFEMForceField<DataTypes, ElementType>>()
         .withModule(MODULE_NAME)
         .withDescription(std::string(description))
         .template addTemplateAttribute<DataTypes>("dofType")

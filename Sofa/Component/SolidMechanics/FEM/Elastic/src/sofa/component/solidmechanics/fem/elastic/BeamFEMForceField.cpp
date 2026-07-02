@@ -33,7 +33,7 @@ using namespace sofa::defaulttype;
 void registerBeamFEMForceField(sofa::core::ObjectFactory* factory)
 {
     factory->registerComponent(
-        core::CreateComponent<BeamFEMForceField<Rigid3Types>>("BeamFEMForceField")
+        core::CreateComponent<BeamFEMForceField<Rigid3Types>>()
         .withModule(MODULE_NAME)
         .withDescription("Beam finite elements.")
         .template addTemplateAttribute<Rigid3Types>("dofType")

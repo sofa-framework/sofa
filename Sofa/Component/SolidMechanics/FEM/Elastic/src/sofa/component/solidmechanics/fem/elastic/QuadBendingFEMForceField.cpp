@@ -37,7 +37,7 @@ using namespace sofa::defaulttype;
 void registerQuadBendingFEMForceField(sofa::core::ObjectFactory* factory)
 {
     factory->registerComponent(
-        core::CreateComponent<QuadBendingFEMForceField<Vec3Types>>("QuadBendingFEMForceField")
+        core::CreateComponent<QuadBendingFEMForceField<Vec3Types>>()
         .withModule(MODULE_NAME)
         .withDescription("Bending Quad finite elements")
         .template addTemplateAttribute<Vec3Types>("dofType")

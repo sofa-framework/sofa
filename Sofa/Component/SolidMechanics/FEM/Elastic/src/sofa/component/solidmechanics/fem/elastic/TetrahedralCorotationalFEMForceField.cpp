@@ -34,7 +34,7 @@ using namespace sofa::defaulttype;
 void registerTetrahedralCorotationalFEMForceField(sofa::core::ObjectFactory* factory)
 {
     factory->registerComponent(
-        core::CreateComponent<TetrahedralCorotationalFEMForceField<Vec3Types>>("TetrahedralCorotationalFEMForceField")
+        core::CreateComponent<TetrahedralCorotationalFEMForceField<Vec3Types>>()
         .withModule(MODULE_NAME)
         .withDescription("Corotational FEM Tetrahedral finite elements")
         .template addTemplateAttribute<Vec3Types>("dofType")

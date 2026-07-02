@@ -35,7 +35,7 @@ template<class TMatrix, class TVector>
 void registerComponent(sofa::core::ComponentFactory* factory)
 {
     factory->registerComponent(
-    core::CreateComponent<SparseLDLSolver<TMatrix, TVector>>("SparseLDLSolver")
+    core::CreateComponent<SparseLDLSolver<TMatrix, TVector>>()
         .withModule(MODULE_NAME)
         .withDescription(std::string(description))
         .template addTemplateAttribute<TMatrix>("matrixType")

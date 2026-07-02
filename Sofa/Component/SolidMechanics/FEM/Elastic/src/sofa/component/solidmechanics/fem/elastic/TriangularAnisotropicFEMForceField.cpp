@@ -32,7 +32,7 @@ using namespace sofa::defaulttype;
 void registerTriangularAnisotropicFEMForceField(sofa::core::ObjectFactory* factory)
 {
     factory->registerComponent(
-        core::CreateComponent<TriangularAnisotropicFEMForceField<Vec3Types>>("TriangularAnisotropicFEMForceField")
+        core::CreateComponent<TriangularAnisotropicFEMForceField<Vec3Types>>()
         .withModule(MODULE_NAME)
         .withDescription("Triangular finite element model using anisotropic material.")
         .template addTemplateAttribute<Vec3Types>("dofType")
