@@ -39,11 +39,11 @@ set(HEADER_FILES
     
 
     ### solidmechanics
-    ${SOFACUDA_COMPONENT_SOURCE_DIR}/SofaCUDA/component/solidmechanics/fem/elastic/CudaElementFEMKernelUtils.cuh
-    ${SOFACUDA_COMPONENT_SOURCE_DIR}/SofaCUDA/component/solidmechanics/fem/elastic/CudaElementCorotationalFEMForceField.h
-    ${SOFACUDA_COMPONENT_SOURCE_DIR}/SofaCUDA/component/solidmechanics/fem/elastic/CudaElementCorotationalFEMForceField.inl
-    ${SOFACUDA_COMPONENT_SOURCE_DIR}/SofaCUDA/component/solidmechanics/fem/elastic/CudaElementLinearSmallStrainFEMForceField.h
-    ${SOFACUDA_COMPONENT_SOURCE_DIR}/SofaCUDA/component/solidmechanics/fem/elastic/CudaElementLinearSmallStrainFEMForceField.inl
+    ${SOFACUDA_COMPONENT_SOURCE_DIR}/SofaCUDA/component/solidmechanics/fem/elastic/CudaFEMKernelUtils.cuh
+    ${SOFACUDA_COMPONENT_SOURCE_DIR}/SofaCUDA/component/solidmechanics/fem/elastic/CudaCorotationalFEMForceField.h
+    ${SOFACUDA_COMPONENT_SOURCE_DIR}/SofaCUDA/component/solidmechanics/fem/elastic/CudaCorotationalFEMForceField.inl
+    ${SOFACUDA_COMPONENT_SOURCE_DIR}/SofaCUDA/component/solidmechanics/fem/elastic/CudaLinearSmallStrainFEMForceField.h
+    ${SOFACUDA_COMPONENT_SOURCE_DIR}/SofaCUDA/component/solidmechanics/fem/elastic/CudaLinearSmallStrainFEMForceField.inl
     ${SOFACUDA_COMPONENT_SOURCE_DIR}/SofaCUDA/component/solidmechanics/fem/elastic/CudaHexahedronFEMForceField.h
     ${SOFACUDA_COMPONENT_SOURCE_DIR}/SofaCUDA/component/solidmechanics/fem/elastic/CudaHexahedronFEMForceField.inl
     ${SOFACUDA_COMPONENT_SOURCE_DIR}/SofaCUDA/component/solidmechanics/fem/hyperelastic/CudaStandardTetrahedralFEMForceField.h
@@ -116,8 +116,8 @@ set(SOURCE_FILES
     ${SOFACUDA_COMPONENT_SOURCE_DIR}/SofaCUDA/component/mass/CudaUniformMass.cpp
 
     ### Solidmechanics
-    ${SOFACUDA_COMPONENT_SOURCE_DIR}/SofaCUDA/component/solidmechanics/fem/elastic/CudaElementCorotationalFEMForceField.cpp
-    ${SOFACUDA_COMPONENT_SOURCE_DIR}/SofaCUDA/component/solidmechanics/fem/elastic/CudaElementLinearSmallStrainFEMForceField.cpp
+    ${SOFACUDA_COMPONENT_SOURCE_DIR}/SofaCUDA/component/solidmechanics/fem/elastic/CudaCorotationalFEMForceField.cpp
+    ${SOFACUDA_COMPONENT_SOURCE_DIR}/SofaCUDA/component/solidmechanics/fem/elastic/CudaLinearSmallStrainFEMForceField.cpp
     ${SOFACUDA_COMPONENT_SOURCE_DIR}/SofaCUDA/component/solidmechanics/fem/elastic/CudaHexahedronFEMForceField.cpp
     ${SOFACUDA_COMPONENT_SOURCE_DIR}/SofaCUDA/component/solidmechanics/fem/hyperelastic/CudaStandardTetrahedralFEMForceField.cpp
     ${SOFACUDA_COMPONENT_SOURCE_DIR}/SofaCUDA/component/solidmechanics/tensormass/CudaTetrahedralTensorMassForceField.cpp
@@ -188,8 +188,8 @@ set(CUDA_SOURCES
     ${SOFACUDA_COMPONENT_SOURCE_DIR}/SofaCUDA/component/mass/CudaUniformMass.cu
 
     ### solidmechanics
-    ${SOFACUDA_COMPONENT_SOURCE_DIR}/SofaCUDA/component/solidmechanics/fem/elastic/CudaElementCorotationalFEMForceField.cu
-    ${SOFACUDA_COMPONENT_SOURCE_DIR}/SofaCUDA/component/solidmechanics/fem/elastic/CudaElementLinearSmallStrainFEMForceField.cu
+    ${SOFACUDA_COMPONENT_SOURCE_DIR}/SofaCUDA/component/solidmechanics/fem/elastic/CudaCorotationalFEMForceField.cu
+    ${SOFACUDA_COMPONENT_SOURCE_DIR}/SofaCUDA/component/solidmechanics/fem/elastic/CudaLinearSmallStrainFEMForceField.cu
     ${SOFACUDA_COMPONENT_SOURCE_DIR}/SofaCUDA/component/solidmechanics/fem/elastic/CudaHexahedronFEMForceField.cu
     ${SOFACUDA_COMPONENT_SOURCE_DIR}/SofaCUDA/component/solidmechanics/fem/hyperelastic/CudaStandardTetrahedralFEMForceField.cu
     ${SOFACUDA_COMPONENT_SOURCE_DIR}/SofaCUDA/component/solidmechanics/tensormass/CudaTetrahedralTensorMassForceField.cu

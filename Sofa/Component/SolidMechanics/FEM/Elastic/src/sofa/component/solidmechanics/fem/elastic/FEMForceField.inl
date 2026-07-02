@@ -163,6 +163,7 @@ void FEMForceField<DataTypes, ElementType>::computeElementsForcesDeriv(
     const sofa::VecDeriv_t<DataTypes>& dx)
 {
     SCOPED_TIMER("ElementForcesDeriv");
+    beforeElementForceDeriv(mparams);
 
     this->beforeElementForceDeriv(mparams);
 

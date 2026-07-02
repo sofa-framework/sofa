@@ -52,7 +52,7 @@ def createScene(root_node):
     if g_fem_version == "legacy":
         hexahedron_node.addObject('HexahedronFEMForceField', name="LegacyFEM", template=g_fem_template, youngModulus="4000", poissonRatio="0.3", method="large")
     if g_fem_version == "new":
-        hexahedron_node.addObject('HexahedronCorotationalFEMForceField', name="NewFEM", template=g_fem_template, youngModulus="4000", poissonRatio="0.3")
+        hexahedron_node.addObject('CudaCorotationalFEMForceField', name="NewFEM", template=f"${g_fem_template},Hexahedron", youngModulus="4000", poissonRatio="0.3")
 
 def main():
 

@@ -48,7 +48,7 @@ public:
         sofa::core::behavior::TopologyAccessor,
         sofa::simulation::TaskSchedulerUser);
 
-private:
+protected:
     using trait = sofa::component::solidmechanics::fem::elastic::trait<DataTypes, ElementType>;
     using ElementGradient = typename trait::ElementGradient;
 

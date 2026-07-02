@@ -41,7 +41,7 @@ Visitor::Result UpdateBoundingBoxVisitor::processNodeTopDown(Node* node)
     type::vector<BaseObject*>::iterator object;
     node->get<BaseObject>(&objectList,BaseContext::Local);
     sofa::type::BoundingBox* nodeBBox = node->f_bbox.beginEdit();
-    if(!node->f_bbox.isSet()) // bmarques: Without invalidating the bbox, the node's bbox will only be sized up, and never down with this visitor, to my understanding..
+    if(!node->bboxIsFixed()) // bmarques: Without invalidating the bbox, the node's bbox will only be sized up, and never down with this visitor, to my understanding..
         nodeBBox->invalidate();
     for ( object = objectList.begin(); object != objectList.end(); ++object)
     {
@@ -53,8 +53,9 @@ Visitor::Result UpdateBoundingBoxVisitor::processNodeTopDown(Node* node)
         // if some objects does not participate to the bounding box where they should,
         // you should overload their computeBBox function to correct that
         (*object)->computeBBox(params, true);
-
-        nodeBBox->include((*object)->f_bbox.getValue());
+        
+        if(!node->bboxIsFixed())
+            nodeBBox->include((*object)->f_bbox.getValue());
     }
     node->f_bbox.endEdit();
     return RESULT_CONTINUE;
@@ -62,13 +63,21 @@ Visitor::Result UpdateBoundingBoxVisitor::processNodeTopDown(Node* node)
 
 void UpdateBoundingBoxVisitor::processNodeBottomUp(simulation::Node* node)
 {
-    sofa::type::BoundingBox* nodeBBox = node->f_bbox.beginEdit();
-    Node::ChildIterator childNode;
-    for( childNode = node->child.begin(); childNode!=node->child.end(); ++childNode)
+    if(!node->bboxIsFixed())
     {
-        nodeBBox->include((*childNode)->f_bbox.getValue());
+        sofa::type::BoundingBox* nodeBBox = node->f_bbox.beginEdit();
+        Node::ChildIterator childNode;
+        for( childNode = node->child.begin(); childNode!=node->child.end(); ++childNode)
+        {
+            nodeBBox->include((*childNode)->f_bbox.getValue());
+        }
+        node->f_bbox.endEdit();
     }
-    node->f_bbox.endEdit();
+    else
+    {
+        // the node bounding box is supposed to be fixed
+    }
+        
 }
 
 }
