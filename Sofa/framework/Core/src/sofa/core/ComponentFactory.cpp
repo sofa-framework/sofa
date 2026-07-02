@@ -500,7 +500,7 @@ objectmodel::BaseComponent::SPtr ComponentFactory::createComponent(
             msg_warning_when(componentData->componentModule.empty(), component.get()) << "Module name is empty";
 
             component->parse(arg);
-            component->d_factoryName.setValue(componentData->componentName);
+            component->m_factoryRegistrationData = componentData;
         }
 
         return component;

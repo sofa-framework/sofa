@@ -22,8 +22,11 @@
 #pragma once
 
 #include <sofa/core/config.h>
+#include <sofa/core/objectmodel/SPtr.h>
+#include <sofa/core/sptr.h>
+#include <memory>
 
-#include <sofa/core/objectmodel/BaseComponent.h>
+namespace sofa::core::objectmodel { class BaseComponent; }
 
 namespace sofa::core
 {
@@ -43,7 +46,7 @@ struct SOFA_CORE_API BaseComponentCreator
      * Used by ComponentFactory to generate object instances before attribute parsing.
      * @return A shared pointer to the newly created BaseComponent.
      */
-    virtual objectmodel::BaseComponent::SPtr create() const = 0;
+    virtual sofa::core::sptr<sofa::core::objectmodel::BaseComponent> create() const = 0;
 
     /**
      * @brief Creates a copy of the creator.
@@ -63,11 +66,11 @@ struct SOFA_CORE_API BaseComponentCreator
 template<class RealComponent>
 struct ComponentCreator : public BaseComponentCreator
 {
-    objectmodel::BaseComponent::SPtr create() const override
+    sofa::core::sptr<sofa::core::objectmodel::BaseComponent> create() const override
     {
         // WARNING:
         // It obliges the class to have a default constructor
-        return sofa::core::objectmodel::New<RealComponent>();
+        return objectmodel::New<RealComponent>();
     }
 
     std::unique_ptr<BaseComponentCreator> clone() const override

@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/core/ComponentRegistrationData.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 
 namespace sofa::core
 {

@@ -38,7 +38,6 @@ BaseComponent::BaseComponent()
     , l_context(initLink("context","Graph Node containing this object (or BaseContext::getDefault() if no graph is used)"))
     , l_slaves(initLink("slaves","Sub-objects used internally by this object"))
     , l_master(initLink("master","nullptr for regular objects, or master object for which this object is one sub-objects"))
-    , d_factoryName(initData(&d_factoryName, std::string{}, "factoryName", "Component name registered into the factory"))
 {
     auto bindChangeContextLink = [this](auto&& before, auto&& after) { return this->changeContextLink(before, after); };
     l_context.setValidator(bindChangeContextLink);
@@ -47,8 +46,6 @@ BaseComponent::BaseComponent()
     auto bindChangeSlavesLink = [this](auto&& ptr, auto&& index, auto&& add) { return this->changeSlavesLink(ptr, index, add); };
     l_slaves.setValidator(bindChangeSlavesLink);
     f_listening.setAutoLink(false);
-
-    d_factoryName.setReadOnly(true);
 }
 
 BaseComponent::~BaseComponent()

@@ -21,9 +21,10 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/core/objectmodel/BaseContext.h>
+#include <sofa/core/ComponentRegistrationData.h>
 #include <sofa/core/DataTracker.h>
 #include <sofa/core/fwd.h>
+#include <sofa/core/objectmodel/BaseContext.h>
 
 namespace sofa::core::objectmodel
 {
@@ -42,6 +43,8 @@ class SOFA_CORE_API BaseComponent : public virtual Base
 public:
     SOFA_CLASS(BaseComponent, Base);
     SOFA_BASE_CAST_IMPLEMENTATION(BaseComponent)
+
+    friend class ComponentFactory;
 
 protected:
     BaseComponent();
@@ -184,8 +187,6 @@ public:
 
     Base* findLinkDestClass(const BaseClass* destType, const std::string& path, const BaseLink* link) override;
 
-    Data<std::string> d_factoryName;
-
     /// Return the full path name of this object
     virtual std::string getPathName() const override;
 
@@ -223,8 +224,12 @@ protected:
     /// BaseNode can set the context of its own objects
     friend class BaseNode;
 
+private:
+    ComponentRegistrationData::SPtr m_factoryRegistrationData;
 
 public:
+
+    ComponentRegistrationData::SPtr getFactoryRegistrationData() const { return m_factoryRegistrationData; }
 
     /// the component can insert itself directly in the right sequence in the Node
     /// so the Node does not have to test its type against all known types

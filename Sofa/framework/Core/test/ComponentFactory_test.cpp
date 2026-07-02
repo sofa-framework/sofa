@@ -86,7 +86,7 @@ TEST_F(ComponentFactory_test, CreateComponent)
     ASSERT_NE(createdComponent, nullptr);
     EXPECT_EQ(createdComponent->getName(), "nameInTheScene");
     EXPECT_EQ(createdComponent->getClassName(), "DummyComponent");
-    EXPECT_EQ(createdComponent->d_factoryName.getValue(), "DummyComponent");
+    EXPECT_EQ(createdComponent->getFactoryRegistrationData()->componentName, "DummyComponent");
 }
 
 TEST_F(ComponentFactory_test, CreateComponentDifferentName)
@@ -101,7 +101,7 @@ TEST_F(ComponentFactory_test, CreateComponentDifferentName)
     ASSERT_NE(createdComponent, nullptr);
     EXPECT_EQ(createdComponent->getName(), "nameInTheScene");
     EXPECT_EQ(createdComponent->getClassName(), "DummyComponent");
-    EXPECT_EQ(createdComponent->d_factoryName.getValue(), "NotDummyComponent");
+    EXPECT_EQ(createdComponent->getFactoryRegistrationData()->componentName, "NotDummyComponent");
 }
 
 TEST_F(ComponentFactory_test, HasCreator)
@@ -352,7 +352,7 @@ TEST_F(ComponentFactory_test, FullNameCreation)
     auto createdComponent = factory.createComponent(node.get(), &desc);
     ASSERT_NE(createdComponent, nullptr);
     EXPECT_EQ(createdComponent->getClassName(), "DummyComponent");
-    EXPECT_EQ(createdComponent->d_factoryName.getValue(), "MyComponent");
+    EXPECT_EQ(createdComponent->getFactoryRegistrationData()->componentName, "MyComponent");
 }
 
 TEST_F(ComponentFactory_test, SuggestionOnMisspell)
