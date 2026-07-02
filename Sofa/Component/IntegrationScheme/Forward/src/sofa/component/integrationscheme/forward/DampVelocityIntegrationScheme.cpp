@@ -44,8 +44,7 @@ DampVelocityIntegrationScheme::DampVelocityIntegrationScheme()
 
 void DampVelocityIntegrationScheme::doIntegrate(const core::ExecParams* params, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
 {
-    sofa::simulation::common::VectorOperations vop( params, this->getContext() );
-    MultiVecDeriv vel(&vop, vResult /*core::vec_id::write_access::velocity*/ );
+    MultiVecDeriv vel(m_vop.get(), vResult /*core::vec_id::write_access::velocity*/ );
 
     msg_info() <<"DampVelocityIntegrationScheme, dt = "<< m_dt
                <<"DampVelocityIntegrationScheme, initial v = "<< vel ;

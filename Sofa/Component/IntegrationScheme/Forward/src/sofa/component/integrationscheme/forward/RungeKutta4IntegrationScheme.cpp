@@ -43,26 +43,24 @@ void registerRungeKutta4IntegrationScheme(sofa::core::ObjectFactory* factory)
 
 void RungeKutta4IntegrationScheme::doIntegrate(const core::ExecParams* params, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
 {
-    sofa::simulation::common::VectorOperations vop( params, this->getContext() );
-    sofa::simulation::common::MechanicalOperations mop( params, this->getContext() );
-    mop->setImplicit(false); // this IntegrationScheme is explicit only
+    (*m_mop)->setImplicit(false); // this IntegrationScheme is explicit only
     // Get the Ids of the state vectors
-    MultiVecCoord pos(&vop, core::vec_id::write_access::position );
-    MultiVecDeriv vel(&vop, core::vec_id::write_access::velocity );
-    MultiVecCoord pos2(&vop, xResult /*core::vec_id::write_access::position*/ );
-    MultiVecDeriv vel2(&vop, vResult /*core::vec_id::write_access::velocity*/ );
+    MultiVecCoord pos(m_vop.get(), core::vec_id::write_access::position );
+    MultiVecDeriv vel(m_vop.get(), core::vec_id::write_access::velocity );
+    MultiVecCoord pos2(m_vop.get(), xResult /*core::vec_id::write_access::position*/ );
+    MultiVecDeriv vel2(m_vop.get(), vResult /*core::vec_id::write_access::velocity*/ );
 
     // Allocate auxiliary vectors
-    MultiVecDeriv k1a(&vop);
-    MultiVecDeriv k2a(&vop);
-    MultiVecDeriv k3a(&vop);
-    MultiVecDeriv k4a(&vop);
-    MultiVecDeriv& k1v = vel; //(&vop);
-    MultiVecDeriv k2v(&vop);
-    MultiVecDeriv k3v(&vop);
-    MultiVecDeriv k4v(&vop);
+    MultiVecDeriv k1a(m_vop.get());
+    MultiVecDeriv k2a(m_vop.get());
+    MultiVecDeriv k3a(m_vop.get());
+    MultiVecDeriv k4a(m_vop.get());
+    MultiVecDeriv& k1v = vel; //(m_vop.get());
+    MultiVecDeriv k2v(m_vop.get());
+    MultiVecDeriv k3v(m_vop.get());
+    MultiVecDeriv k4v(m_vop.get());
 
-    MultiVecCoord newX(&vop);
+    MultiVecCoord newX(m_vop.get());
 
     SReal stepBy2 = SReal(m_dt / 2.0);
     SReal stepBy3 = SReal(m_dt / 3.0);
@@ -70,13 +68,13 @@ void RungeKutta4IntegrationScheme::doIntegrate(const core::ExecParams* params, s
 
     SReal startTime = this->getTime();
 
-    mop.addSeparateGravity(m_dt);	// v += dt*g . Used if mass wants to added G separately from the other forces to v.
+    m_mop->addSeparateGravity(m_dt);	// v += dt*g . Used if mass wants to added G separately from the other forces to v.
 
     //First step
     dmsg_info() << "RK4 Step 1";
 
     //k1v = vel;
-    mop.computeAcc (startTime, k1a, pos, vel);
+    m_mop->computeAcc (startTime, k1a, pos, vel);
 
     //Step 2
     dmsg_info() << "RK4 Step 2" ;
@@ -97,11 +95,11 @@ void RungeKutta4IntegrationScheme::doIntegrate(const core::ExecParams* params, s
         ops[1].first = k2v;
         ops[1].second.push_back(std::make_pair(vel.id(),1.0));
         ops[1].second.push_back(std::make_pair(k1a.id(),stepBy2));
-        vop.v_multiop(ops);
+        m_vop->v_multiop(ops);
     }
 #endif
 
-    mop.computeAcc ( startTime+stepBy2, k2a, newX, k2v );
+    m_mop->computeAcc ( startTime+stepBy2, k2a, newX, k2v );
 
     // step 3
     dmsg_info() << "RK4 Step 3" ;
@@ -121,11 +119,11 @@ void RungeKutta4IntegrationScheme::doIntegrate(const core::ExecParams* params, s
         ops[1].first = k3v;
         ops[1].second.push_back(std::make_pair(vel.id(),1.0));
         ops[1].second.push_back(std::make_pair(k2a.id(),stepBy2));
-        vop.v_multiop(ops);
+        m_vop->v_multiop(ops);
     }
 #endif
 
-    mop.computeAcc ( startTime+stepBy2, k3a, newX, k3v );
+    m_mop->computeAcc ( startTime+stepBy2, k3a, newX, k3v );
 
     // step 4
     dmsg_info() << "RK4 Step 4" ;
@@ -145,11 +143,11 @@ void RungeKutta4IntegrationScheme::doIntegrate(const core::ExecParams* params, s
         ops[1].first = k4v;
         ops[1].second.push_back(std::make_pair(vel.id(),1.0));
         ops[1].second.push_back(std::make_pair(k3a.id(),m_dt));
-        vop.v_multiop(ops);
+        m_vop->v_multiop(ops);
     }
 #endif
 
-    mop.computeAcc( startTime+m_dt, k4a, newX, k4v);
+    m_mop->computeAcc( startTime+m_dt, k4a, newX, k4v);
 
    dmsg_info() << "RK4 Final";
 
@@ -161,9 +159,9 @@ void RungeKutta4IntegrationScheme::doIntegrate(const core::ExecParams* params, s
     pos2.peq(k3v,stepBy3);
     vel2.peq(k3a,stepBy3);
     pos2.peq(k4v,stepBy6);
-    mop.solveConstraint(pos2, core::ConstraintOrder::POS);
+    m_mop->solveConstraint(pos2, core::ConstraintOrder::POS);
     vel2.peq(k4a,stepBy6);
-    mop.solveConstraint(vel2, core::ConstraintOrder::VEL);
+    m_mop->solveConstraint(vel2, core::ConstraintOrder::VEL);
 #else // single-operation optimization
     {
         typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
@@ -181,10 +179,10 @@ void RungeKutta4IntegrationScheme::doIntegrate(const core::ExecParams* params, s
         ops[1].second.push_back(std::make_pair(k2a.id(),stepBy3));
         ops[1].second.push_back(std::make_pair(k3a.id(),stepBy3));
         ops[1].second.push_back(std::make_pair(k4a.id(),stepBy6));
-        vop.v_multiop(ops);
+        m_vop->v_multiop(ops);
 
-        mop.solveConstraint(pos, core::ConstraintOrder::POS);
-        mop.solveConstraint(vel, core::ConstraintOrder::VEL);
+        m_mop->solveConstraint(pos, core::ConstraintOrder::POS);
+        m_mop->solveConstraint(vel, core::ConstraintOrder::VEL);
     }
 #endif
 }

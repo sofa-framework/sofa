@@ -54,6 +54,11 @@ void ImplicitIntegrationScheme::setupIntegrationStep(const core::ExecParams* par
 
     m_mappingGraph.build(this->getContext());
 
+
+    // dx is no longer allocated by default (but it will be deleted automatically by the mechanical objects)
+    sofa::core::behavior::MultiVecDeriv dx(m_vop.get(), core::vec_id::write_access::dx);
+    dx.realloc(m_vop.get(), true, true);
+
     doSetupIntegrationStep(params, dt, xResult, vResult);
 
 

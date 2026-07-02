@@ -65,44 +65,36 @@ void EulerExplicitIntegrationScheme::doIntegrate(const core::ExecParams* params,
 
     SCOPED_TIMER("EulerExplicitSolve");
 
-    // Create the vector and mechanical operations tools. These are used to execute special operations (multiplication,
-    // additions, etc.) on multi-vectors (a vector that is stored in different buffers inside the mechanical objects)
-    sofa::simulation::common::VectorOperations vop( params, this->getContext() );
-    sofa::simulation::common::MappingGraphMechanicalOperations mop( params, this->getContext() );
-
-
     // Let the mechanical operations know that the current IntegrationScheme is explicit. This will be propagated back to the
     // force fields during the addForce and addKToMatrix phase. Force fields use this information to avoid
     // recomputing constant data in case of explicit IntegrationScheme.
-    mop->setImplicit(false);
+    (*m_mop)->setImplicit(false);
 
     // Initialize the set of multi-vectors computed by this IntegrationScheme
-    MultiVecDeriv acc   (&vop, core::vec_id::write_access::dx);     // acceleration to be computed
-    MultiVecDeriv f     (&vop, core::vec_id::write_access::force ); // force to be computed
+    MultiVecDeriv acc   (m_vop.get(), core::vec_id::write_access::dx);     // acceleration to be computed
+    MultiVecDeriv f     (m_vop.get(), core::vec_id::write_access::force ); // force to be computed
 
-    acc.realloc(&vop, !d_threadSafeVisitor.getValue(), true);
-
-    addSeparateGravity(&mop, m_dt, vResult);
-    computeForce(&mop, f);
+    addSeparateGravity(m_mop.get(), m_dt, vResult);
+    computeForce(m_mop.get(), f);
 
     // The inverse of the mass matrix is trivial to compute. Otherwise, it requires the
     // assembly of a linear system and a linear IntegrationScheme to compute its solution.
     if(isMassMatrixTriviallyInvertible(params))
     {
         // acc = M^-1 * f
-        computeAcceleration(&mop, acc, f);
-        projectResponse(&mop, acc);
-        solveConstraints(&mop, acc);
+        computeAcceleration(m_mop.get(), acc, f);
+        projectResponse(m_mop.get(), acc);
+        solveConstraints(m_mop.get(), acc);
     }
     else
     {
-        projectResponse(&mop, f);
+        projectResponse(m_mop.get(), f);
 
         if (l_linearSolver.get())
         {
             // Build the global matrix. In this IntegrationScheme, it is the global mass matrix
             // Projective constraints are also projected in this step
-            assembleSystemMatrix(&mop);
+            assembleSystemMatrix(m_mop.get());
 
             // Solve the system to find the acceleration
             // Solve M * a = f
@@ -117,7 +109,7 @@ void EulerExplicitIntegrationScheme::doIntegrate(const core::ExecParams* params,
     }
 
     // Compute the new position and new velocity from the acceleration
-    updateState(&vop, &mop, xResult, vResult, acc);
+    updateState(m_vop.get(), m_mop.get(), xResult, vResult, acc);
 }
 
 void EulerExplicitIntegrationScheme::updateState(sofa::simulation::common::VectorOperations* vop,
@@ -148,10 +140,10 @@ void EulerExplicitIntegrationScheme::updateState(sofa::simulation::common::Vecto
         //newPos = pos + newVel * dt
 
         newVel.eq(vel, acc.id(), dt);
-        mop->solveConstraint(newVel,core::ConstraintOrder::VEL);
+        (*m_mop)->solveConstraint(newVel,core::ConstraintOrder::VEL);
 
         newPos.eq(pos, newVel, dt);
-        mop->solveConstraint(newPos,core::ConstraintOrder::POS);
+        (*m_mop)->solveConstraint(newPos,core::ConstraintOrder::POS);
     }
     else
     {
@@ -159,10 +151,10 @@ void EulerExplicitIntegrationScheme::updateState(sofa::simulation::common::Vecto
         //newVel = vel + acc * dt
 
         newPos.eq(pos, vel, dt);
-        mop->solveConstraint(newPos,core::ConstraintOrder::POS);
+        (*m_mop)->solveConstraint(newPos,core::ConstraintOrder::POS);
 
         newVel.eq(vel, acc.id(), dt);
-        mop->solveConstraint(newVel,core::ConstraintOrder::VEL);
+        (*m_mop)->solveConstraint(newVel,core::ConstraintOrder::VEL);
     }
 #else // single-operation optimization
     {
@@ -217,8 +209,8 @@ void EulerExplicitIntegrationScheme::updateState(sofa::simulation::common::Vecto
         vop->v_multiop(ops);
 
         // Calls "solveConstraint" on every ConstraintIntegrationScheme objects found in the current context tree.
-        mop->solveConstraint(newVel,core::ConstraintOrder::VEL);
-        mop->solveConstraint(newPos,core::ConstraintOrder::POS);
+        m_mop->solveConstraint(newVel,core::ConstraintOrder::VEL);
+        m_mop->solveConstraint(newPos,core::ConstraintOrder::POS);
     }
 #endif
 }

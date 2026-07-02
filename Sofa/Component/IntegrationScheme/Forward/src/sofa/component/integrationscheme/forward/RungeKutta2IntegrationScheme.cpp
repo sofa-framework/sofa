@@ -42,26 +42,24 @@ void registerRungeKutta2IntegrationScheme(sofa::core::ObjectFactory* factory)
 
 void RungeKutta2IntegrationScheme::doIntegrate(const core::ExecParams* params, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
 {
-    sofa::simulation::common::VectorOperations vop( params, this->getContext() );
-    sofa::simulation::common::MechanicalOperations mop( params, this->getContext() );
-    mop->setImplicit(false); // this IntegrationScheme is explicit only
+    (*m_mop)->setImplicit(false); // this IntegrationScheme is explicit only
     // Get the Ids of the state vectors
-    MultiVecCoord pos(&vop, core::vec_id::write_access::position );
-    MultiVecDeriv vel(&vop, core::vec_id::write_access::velocity );
-    MultiVecCoord pos2(&vop, xResult /*core::vec_id::write_access::position*/ );
-    MultiVecDeriv vel2(&vop, vResult /*core::vec_id::write_access::velocity*/ );
+    MultiVecCoord pos(m_vop.get(), core::vec_id::write_access::position );
+    MultiVecDeriv vel(m_vop.get(), core::vec_id::write_access::velocity );
+    MultiVecCoord pos2(m_vop.get(), xResult /*core::vec_id::write_access::position*/ );
+    MultiVecDeriv vel2(m_vop.get(), vResult /*core::vec_id::write_access::velocity*/ );
 
     // Allocate auxiliary vectors
-    MultiVecDeriv acc(&vop);
-    MultiVecCoord newX(&vop);
-    MultiVecDeriv newV(&vop);
+    MultiVecDeriv acc(m_vop.get());
+    MultiVecCoord newX(m_vop.get());
+    MultiVecDeriv newV(m_vop.get());
 
     SReal startTime = this->getTime();
 
-    mop.addSeparateGravity(m_dt);	// v += dt*g . Used if mass wants to added G separately from the other forces to v.
+    m_mop->addSeparateGravity(m_dt);	// v += dt*g . Used if mass wants to added G separately from the other forces to v.
 
     // Compute state derivative. vel is the derivative of pos
-    mop.computeAcc (startTime, acc, pos, vel); // acc is the derivative of vel
+    m_mop->computeAcc (startTime, acc, pos, vel); // acc is the derivative of vel
 
     // Perform a dt/2 step along the derivative
 #ifdef SOFA_NO_VMULTIOP // unoptimized version
@@ -82,19 +80,19 @@ void RungeKutta2IntegrationScheme::doIntegrate(const core::ExecParams* params, s
         ops[1].second.push_back(std::make_pair(vel.id(),1.0));
         ops[1].second.push_back(std::make_pair(acc.id(),m_dt/2));
 
-        vop.v_multiop(ops);
+        m_vop->v_multiop(ops);
     }
 #endif
 
     // Compute the derivative at newX, newV
-    mop.computeAcc ( startTime+m_dt/2., acc, newX, newV);
+    m_mop->computeAcc ( startTime+m_dt/2., acc, newX, newV);
 
     // Use the derivative at newX, newV to update the state
 #ifdef SOFA_NO_VMULTIOP // unoptimized version
     pos2.eq(pos,newV,dt);
-    mop.solveConstraint(pos2,core::ConstraintOrder::POS);
+    m_mop->solveConstraint(pos2,core::ConstraintOrder::POS);
     vel2.eq(vel,acc,dt);
-    mop.solveConstraint(vel2,core::ConstraintOrder::VEL);
+    m_mop->solveConstraint(vel2,core::ConstraintOrder::VEL);
 #else // single-operation optimization
     {
         typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
@@ -106,10 +104,10 @@ void RungeKutta2IntegrationScheme::doIntegrate(const core::ExecParams* params, s
         ops[1].first = vel2;
         ops[1].second.push_back(std::make_pair(vel.id(),1.0));
         ops[1].second.push_back(std::make_pair(acc.id(),m_dt));
-        vop.v_multiop(ops);
+        m_vop->v_multiop(ops);
 
-        mop.solveConstraint(vel2,core::ConstraintOrder::VEL);
-        mop.solveConstraint(pos2,core::ConstraintOrder::POS);
+        m_mop->solveConstraint(vel2,core::ConstraintOrder::VEL);
+        m_mop->solveConstraint(pos2,core::ConstraintOrder::POS);
     }
 #endif
 
