@@ -28,12 +28,23 @@
 
 #include <sofa/core/behavior/LinearSolverAccessor.h>
 
+#include <sofa/simulation/MechanicalOperations.h>
+#include <sofa/simulation/VectorOperations.h>
+
 namespace sofa::simulation::integrationscheme
 {
 
 void ExplicitIntegrationScheme::integrate(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
 {
     m_dt = dt;
+
+    m_vop = std::make_shared<sofa::simulation::common::VectorOperations>( params, this->getContext() );
+    m_mop = std::make_unique<sofa::simulation::common::MappingGraphMechanicalOperations >( params, this->getContext() );
+
+    // dx is no longer allocated by default (but it will be deleted automatically by the mechanical objects)
+    sofa::core::behavior::MultiVecDeriv dx(m_vop.get(), core::vec_id::write_access::dx);
+    dx.realloc(m_vop.get(), true, true);
+
     doIntegrate(params, xResult, vResult);
 }
 
