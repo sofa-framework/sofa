@@ -34,7 +34,7 @@ sofa::simulation::Node::SPtr createScene(const sofa::simpleapi::Simulation::SPtr
     sofa::simpleapi::importPlugin(Sofa.Component.LinearSolver.Iterative);
     sofa::simpleapi::importPlugin(Sofa.Component.Mapping.Linear);
     sofa::simpleapi::importPlugin(Sofa.Component.Mass);
-    sofa::simpleapi::importPlugin(Sofa.Component.ODESolver.Backward);
+    sofa::simpleapi::importPlugin(Sofa.Component.IntegrationScheme.Backward);
     sofa::simpleapi::importPlugin(Sofa.Component.SolidMechanics.FEM.Elastic);
     sofa::simpleapi::importPlugin(Sofa.Component.StateContainer);
     sofa::simpleapi::importPlugin(Sofa.Component.Topology.Container.Dynamic);
@@ -70,7 +70,7 @@ sofa::simulation::Node::SPtr createScene(const sofa::simpleapi::Simulation::SPtr
 
     //Simulated node
     const sofa::simulation::Node::SPtr FEMechanicalModel = sofa::simpleapi::createChild(root,"FE-MechanicalModel");
-    sofa::simpleapi::createObject(FEMechanicalModel, "EulerImplicitSolver");
+    sofa::simpleapi::createObject(FEMechanicalModel, "EulerImplicitIntegrationScheme");
     sofa::simpleapi::createObject(FEMechanicalModel, "SparseLDLSolver", {{"name","ldl"}, {"template","CompressedRowSparseMatrixMat3x3"}, {"parallelInverseProduct","true"}} );
     sofa::simpleapi::createObject(FEMechanicalModel, "TetrahedronSetTopologyContainer", {{"name","Container"},  {"position","@../BeamDomainFromGridTopology/HexaTop.position"}, {"tetrahedra","@../BeamDomainFromGridTopology/Container.tetrahedra"}});
     sofa::simpleapi::createObject(FEMechanicalModel, "TetrahedronSetTopologyModifier", {{"name","Modifier"}});

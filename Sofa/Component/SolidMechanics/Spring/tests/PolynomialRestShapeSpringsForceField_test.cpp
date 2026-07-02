@@ -43,15 +43,15 @@ public:
         root->setDt(dt);
 
         this->loadPlugins({
-            Sofa.Component.ODESolver.Forward,
+            Sofa.Component.IntegrationScheme.Forward,
             Sofa.Component.StateContainer,
             Sofa.Component.SolidMechanics.Spring
         });
 
         const Node::SPtr childNode = sofa::simpleapi::createChild(root, "Particle");
-        sofa::simpleapi::createObject(childNode, "EulerExplicitSolver");
+        sofa::simpleapi::createObject(childNode, "EulerExplicitIntegrationScheme");
         const auto meca = sofa::simpleapi::createObject(childNode, "MechanicalObject", {{"rest_position", "0 0 0"},{"position", "1.1 0 0"}});
-        sofa::simpleapi::createObject(childNode, "EulerExplicitSolver", {{"totalMass", "1.0"}});
+        sofa::simpleapi::createObject(childNode, "EulerExplicitIntegrationScheme", {{"totalMass", "1.0"}});
 
         // Add the spring to test
         sofa::simpleapi::createObject(childNode, "PolynomialRestShapeSpringsForceField", {{"polynomialStiffness", "10 10"},{"polynomialDegree", "2"},{"points", "0"},{"smoothShift", "1e-4"},{"smoothScale", "1e7"}});

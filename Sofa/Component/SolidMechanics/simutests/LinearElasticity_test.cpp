@@ -38,8 +38,7 @@
 #include <sofa/component/topology/container/dynamic/TetrahedronSetTopologyContainer.h>
 #include <sofa/component/topology/container/dynamic/TetrahedronSetGeometryAlgorithms.h>
 #include <sofa/component/mass/MeshMatrixMass.h>
-#include <sofa/component/odesolver/backward/StaticSolver.h>
-#include <sofa/component/odesolver/backward/NewtonRaphsonSolver.h>
+#include <sofa/component/integrationscheme/backward/StaticEquilibriumIntegrationScheme.h>
 #include <sofa/component/constraint/projective/FixedProjectiveConstraint.h>
 #include <sofa/component/constraint/projective/FixedPlaneProjectiveConstraint.h>
 #include <sofa/component/constraint/projective/LineProjectiveConstraint.h>
@@ -111,13 +110,10 @@ CylinderTractionStruct<DataTypes>  createCylinderTractionScene(
     cgLinearSolver->d_tolerance.setValue(1e-9);
     cgLinearSolver->d_smallDenominatorThreshold.setValue(1e-9);
     // StaticSolver
-    auto staticSolver = modeling::addNew<component::odesolver::backward::StaticSolver>(root,"StaticSolver");
+    auto staticSolver = modeling::addNew<component::integrationscheme::backward::StaticEquilibriumIntegrationScheme>(root,"StaticSolver");
     staticSolver->f_printLog.setValue(true);
-    auto newtonSolver = modeling::addNew<component::odesolver::backward::NewtonRaphsonSolver>(root,"NewtonRaphsonSolver");
-    newtonSolver->d_maxNbIterationsNewton.setValue(1);
-    newtonSolver->d_maxNbIterationsLineSearch.setValue(1);
-    newtonSolver->d_warnWhenDiverge.setValue(false);
-    newtonSolver->d_warnWhenLineSearchFails.setValue(false);
+    staticSolver->d_maxNbIterationsNewton.setValue(1);
+    staticSolver->d_maxNbIterationsLineSearch.setValue(1);
     // mechanicalObject object
     typename MechanicalObject::SPtr meca1= sofa::modeling::addNew<MechanicalObject>(root);
     sofa::modeling::setDataLink(&eng->f_outputTetrahedraPositions,&meca1->x);
@@ -226,7 +222,7 @@ struct LinearElasticity_test : public sofa::testing::BaseSimulationTest, sofa::t
         typename sofa::component::solidmechanics::fem::elastic::TetrahedralCorotationalFEMForceField<DataTypes>::SPtr ff=addNew<sofa::component::solidmechanics::fem::elastic::TetrahedralCorotationalFEMForceField<DataTypes> >(root);
         ff->setYoungModulus(youngModulus);
         ff->setPoissonRatio(poissonRatio);
-        ff->setMethod(0); // small method
+        ff->d_method.setValue("small"); // small method
         return (ForceFieldSPtr )ff;
     }
 
@@ -307,7 +303,7 @@ TYPED_TEST( LinearElasticity_test , testTractionTensorMass )
 
 TYPED_TEST( LinearElasticity_test , testTractionCorotational )
 {
-//	this->loadScene( "tests/SofaTest/LinearElasticity.scn");
+    //	this->loadScene( "tests/SofaTest/LinearElasticity.scn");
     ASSERT_TRUE( this->testLinearElasticityInTraction(&sofa::LinearElasticity_test<TypeParam>::addTetrahedralCorotationalFEMLinearElastic));
 }
 

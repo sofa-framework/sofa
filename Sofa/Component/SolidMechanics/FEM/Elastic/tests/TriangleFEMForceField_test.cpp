@@ -178,7 +178,7 @@ public:
         const Node::SPtr FEMNode = sofa::simpleapi::createChild(m_root, nodeName);
 
         this->loadPlugins({
-            Sofa.Component.ODESolver.Backward,
+            Sofa.Component.IntegrationScheme.Backward,
             Sofa.Component.LinearSolver.Iterative,
             Sofa.Component.StateContainer,
             Sofa.Component.Topology.Container.Dynamic,
@@ -186,7 +186,7 @@ public:
             Sofa.Component.Constraint.Projective
         });
 
-        createObject(FEMNode, "EulerImplicitSolver");
+        createObject(FEMNode, "EulerImplicitIntegrationScheme");
         createObject(FEMNode, "CGLinearSolver", {{ "iterations", "20" }, { "tolerance", "1e-5" }, {"threshold", "1e-6"}});
 
         createObject(FEMNode, "MechanicalObject", {

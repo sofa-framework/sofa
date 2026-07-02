@@ -5,7 +5,7 @@
 
 find_package(Sofa.Config QUIET REQUIRED)
 sofa_find_package(Sofa.Simulation.Core QUIET REQUIRED)
-sofa_find_package(Sofa.Component.ODESolver.Backward QUIET REQUIRED)
+sofa_find_package(Sofa.Component.IntegrationScheme.Backward QUIET REQUIRED)
 sofa_find_package(Sofa.Component.LinearSolver.Iterative QUIET REQUIRED)
 sofa_find_package(Sofa.Component.LinearSolver.Direct QUIET REQUIRED)
 

@@ -8,7 +8,7 @@
     <RequiredPlugin pluginName="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
     <RequiredPlugin pluginName="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [IdentityMapping] -->
     <RequiredPlugin pluginName="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
-    <RequiredPlugin pluginName="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin pluginName="Sofa.Component.IntegrationScheme.Backward"/> <!-- Needed to use components [EulerImplicitIntegrationScheme] -->
     <RequiredPlugin pluginName="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
     <RequiredPlugin pluginName="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
     <RequiredPlugin pluginName="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
@@ -26,7 +26,7 @@
     <MeshOBJLoader name="torus_loader" filename="mesh/torus.obj" />
     <Node name="FixedTorusAndFallingSphere_1" >
         <Node name="FallingSphere" >
-            <EulerImplicitSolver name="odesolver" />
+            <EulerImplicitIntegrationScheme name="odesolver" />
             <CGLinearSolver name="linear_solver" iterations="250"  tolerance="1.0e-9" threshold="1.0e-9" />
 
             <MechanicalObject name="rigid" template="Rigid3d" position="-5 10 0 0 0 0 1" />
@@ -50,7 +50,7 @@
 
     <Node name="FixedTorusAndFallingSphere_2" >
         <Node name="FallingSphere" >
-            <EulerImplicitSolver name="odesolver" />
+            <EulerImplicitIntegrationScheme name="odesolver" />
             <CGLinearSolver name="linear_solver" iterations="250"  tolerance="1.0e-9" threshold="1.0e-9" />
 
             <MechanicalObject name="rigid" template="Rigid3d" position="5 10 0 0 0 0 1" />

@@ -6,7 +6,7 @@
     <RequiredPlugin pluginName="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
     <RequiredPlugin pluginName="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [IdentityMapping] -->
     <RequiredPlugin pluginName="Sofa.Component.Mass"/> <!-- Needed to use components [MeshMatrixMass] -->
-    <RequiredPlugin pluginName="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin pluginName="Sofa.Component.IntegrationScheme.Backward"/> <!-- Needed to use components [EulerImplicitIntegrationScheme] -->
     <RequiredPlugin pluginName="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
     <RequiredPlugin pluginName="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [TetrahedronSetGeometryAlgorithms TetrahedronSetTopologyContainer TetrahedronSetTopologyModifier] -->
     <RequiredPlugin pluginName="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
@@ -29,7 +29,7 @@
 
     <Node name="Temperature" gravity="0 0 0"  >
 
-        <EulerImplicitSolver name="EulerExplicitSolver" firstOrder="1" tags="heat" rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitIntegrationScheme name="EulerExplicitIntegrationScheme" firstOrder="1" tags="heat" rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver name="CG" iterations="1000" tolerance="1.0e-10" threshold="1.0e-30" tags="heat"/>
         <MechanicalObject template="Vec1" position="@../potentialLoader.position"  name="gridTemperature" bbox="0 0 0 0 0 0" tags="heat"/>
         <TetrahedronDiffusionFEMForceField template="Vec1" name="DiffusionForceField" topology="@../topo" constantDiffusionCoefficient="1500" printLog="0" drawConduc="0" tagMechanics="mechanics" tags="heat"/>

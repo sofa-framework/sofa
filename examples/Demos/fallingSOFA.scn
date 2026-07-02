@@ -15,7 +15,7 @@
         <RequiredPlugin pluginName="Sofa.Component.LinearSolver.Direct"/> <!-- Needed to use components [SparseLDLSolver] -->
         <RequiredPlugin pluginName="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [BarycentricMapping IdentityMapping] -->
         <RequiredPlugin pluginName="Sofa.Component.Mass"/> <!-- Needed to use components [MeshMatrixMass] -->
-        <RequiredPlugin pluginName="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+        <RequiredPlugin pluginName="Sofa.Component.IntegrationScheme.Backward"/> <!-- Needed to use components [EulerImplicitIntegrationScheme] -->
         <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [TetrahedronFEMForceField] -->
         <RequiredPlugin pluginName="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
         <RequiredPlugin pluginName="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [TetrahedronSetTopologyContainer TetrahedronSetTopologyModifier TriangleSetTopologyContainer TriangleSetTopologyModifier] -->
@@ -68,7 +68,7 @@
     <!-- Simulated node -->
     <Node name="FE-MechanicalModel">
         <!-- Use implicit integration scheme -->
-        <EulerImplicitSolver />
+        <EulerImplicitIntegrationScheme />
         <!-- Direct linear solver used for the computation of linear products using the system matrix $Ax=b$ -->
         <SparseLDLSolver name="ldl" template="CompressedRowSparseMatrixMat3x3" parallelInverseProduct="true" />
         <!-- Topology contains all topological information: elements type, elements array-->

@@ -78,25 +78,6 @@ std::map<std::string, ComponentChange, std::less<> > movedComponents = {
     // MOVED SINCE v22.06
     { "GlobalSystemMatrixExporter", Moved("v22.06", "SofaBaseLinearSolver", "SofaMatrix") },
 
-    // SofaMiscSolver was deprecated in #2571
-    { "DampVelocitySolver", Moved("v22.06", "SofaMiscSolver", Sofa.Component.ODESolver.Forward) },
-    { "NewmarkImplicitSolver", Moved("v22.06", "SofaMiscSolver", Sofa.Component.ODESolver.Backward) },
-
-    // SofaExplicitOdeSolver was deprecated in #2571
-    { "EulerExplicitSolver", Moved("v22.06", "SofaExplicitOdeSolver", Sofa.Component.ODESolver.Forward) },
-
-    // SofaImplicitOdeSolver was deprecated in #2571
-    { "EulerImplicitSolver", Moved("v22.06", "SofaImplicitOdeSolver", Sofa.Component.ODESolver.Backward) },
-    { "StaticSolver", Moved("v22.06", "SofaImplicitOdeSolver", Sofa.Component.ODESolver.Backward) },
-
-    // SofaGeneralExplicitOdeSolver was deprecated in #2571
-    { "CentralDifferenceSolver", Moved("v22.06", "SofaGeneralExplicitOdeSolver", Sofa.Component.ODESolver.Forward) },
-    { "RungeKutta2Solver", Moved("v22.06", "SofaGeneralExplicitOdeSolver", Sofa.Component.ODESolver.Forward) },
-    { "RungeKutta4Solver", Moved("v22.06", "SofaGeneralExplicitOdeSolver", Sofa.Component.ODESolver.Forward) },
-
-    // SofaGeneralImplicitOdeSolver was deprecated in #2571
-    { "VariationalSymplecticSolver", Moved("v22.06", "SofaGeneralImplicitOdeSolver", Sofa.Component.ODESolver.Backward) },
-
     // SofaLoader was deprecated in #2582
     { "MeshOBJLoader", Moved("v22.06", "SofaLoader", Sofa.Component.IO.Mesh) },
     { "MeshVTKLoader", Moved("v22.06", "SofaLoader", Sofa.Component.IO.Mesh) },
@@ -623,6 +604,12 @@ std::map<std::string, ComponentChange, std::less<> > movedComponents = {
 std::map<std::string, ComponentChange, std::less<> > uncreatableComponents = {
 
     /***********************/
+    // REMOVED SINCE v26.06
+
+    { "NewtonRaphsonSolver",      RemovedIn("v27.06").withoutAnyDeprecation() },
+    { "VariationalSymplecticSolver", RemovedIn("v27.06").withoutAnyDeprecation() },
+
+    /***********************/
     // REMOVED SINCE v25.12
 
     { "GenericConstraintSolver",
@@ -767,7 +754,19 @@ std::map< std::string, Renamed, std::less<> > renamedComponents = {
     {"ParallelStiffSpringForceField", Renamed("v24.06","v25.06","ParallelSpringForceField")},
     {"ShewchukPCGLinearSolver", Renamed("v24.12","v25.12","PCGLinearSolver")},
     {"OglCylinderModel", Renamed("v24.12", "v25.06", "CylinderVisualModel")},
-    {"TriangleOctreeModel", Renamed("v25.12", "v26.06", "TriangleOctreeCollisionModel") }
+    {"TriangleOctreeModel", Renamed("v25.12", "v26.06", "TriangleOctreeCollisionModel") },
+
+    // ODESolver → IntegrationScheme rename #####
+    {"EulerExplicitSolver",        Renamed("v26.06", "v27.06", "EulerExplicitIntegrationScheme")},
+    {"CentralDifferenceSolver",    Renamed("v26.06", "v27.06", "CentralDifferenceIntegrationScheme")},
+    {"DampVelocitySolver",         Renamed("v26.06", "v27.06", "DampVelocityIntegrationScheme")},
+    {"RungeKutta2Solver",          Renamed("v26.06", "v27.06", "RungeKutta2IntegrationScheme")},
+    {"RungeKutta4Solver",          Renamed("v26.06", "v27.06", "RungeKutta4IntegrationScheme")},
+    {"EulerImplicitSolver",        Renamed("v26.06", "v27.06", "EulerImplicitIntegrationScheme")},
+    {"NewmarkImplicitSolver",      Renamed("v26.06", "v27.06", "NewmarkIntegrationScheme")},
+    {"StaticSolver",               Renamed("v26.06", "v27.06", "StaticEquilibriumIntegrationScheme")},
+    {"BDFOdeSolver",               Renamed("v26.06", "v27.06", "BDFIntegrationScheme")},
+    {"BaseLinearMultiStepMethod",  Renamed("v26.06", "v27.06", "LinearMultistepIntegrationScheme")},
 };
 
 

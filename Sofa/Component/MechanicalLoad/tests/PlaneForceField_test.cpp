@@ -39,7 +39,7 @@ using sofa::simulation::SceneLoaderXML ;
 #include <sofa/defaulttype/VecTypes.h>
 
 #include <sofa/component/statecontainer/MechanicalObject.h>
-#include <sofa/component/odesolver/backward/EulerImplicitSolver.h>
+#include <sofa/component/integrationscheme/backward/EulerImplicitIntegrationScheme.h>
 #include <sofa/component/linearsolver/iterative/CGLinearSolver.h>
 #include <sofa/component/mass/UniformMass.h>
 
@@ -76,7 +76,7 @@ using sofa::component::mechanicalload::PlaneForceField ;
 
 using sofa::component::statecontainer::MechanicalObject ;
 
-using sofa::component::odesolver::backward::EulerImplicitSolver ;
+using sofa::component::integrationscheme::backward::EulerImplicitIntegrationScheme ;
 
 template <typename TDataType, typename TMassType>
 struct TypeTuple
@@ -102,7 +102,7 @@ struct PlaneForceField_test : public BaseSimulationTest
     typedef CGLinearSolver<GraphScatteredMatrix, GraphScatteredVector>  CGLinearSolverType;
     typedef PlaneForceField<DataTypes>                                  PlaneForceFieldType;
     typedef MechanicalObject<DataTypes>                                 MechanicalObjectType;
-    typedef EulerImplicitSolver                                         EulerImplicitSolverType;
+    typedef EulerImplicitIntegrationScheme                                         EulerImplicitIntegrationSchemeType;
     typedef UniformMass<DataTypes>                             TypedUniformMass;
 
     /// Root of the scene graph, created by the constructor and re-used in the tests
@@ -136,8 +136,8 @@ struct PlaneForceField_test : public BaseSimulationTest
         m_root = m_simulation->createNewGraph("root");
         m_root->setGravity(Vec3d(-9.8, 0.0,0.0));
 
-        const typename EulerImplicitSolverType::SPtr eulerImplicitSolver = New<EulerImplicitSolverType>();
-        m_root->addObject(eulerImplicitSolver);
+        const typename EulerImplicitIntegrationSchemeType::SPtr EulerImplicitIntegrationScheme = New<EulerImplicitIntegrationSchemeType>();
+        m_root->addObject(EulerImplicitIntegrationScheme);
 
         const typename CGLinearSolverType::SPtr cgLinearSolver = New<CGLinearSolverType>();
         m_root->addObject(cgLinearSolver);

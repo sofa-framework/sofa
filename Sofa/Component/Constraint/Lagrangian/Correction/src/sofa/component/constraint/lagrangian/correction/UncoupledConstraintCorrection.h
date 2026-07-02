@@ -23,8 +23,9 @@
 #include <sofa/component/constraint/lagrangian/correction/config.h>
 
 #include <sofa/core/behavior/ConstraintCorrection.h>
-#include <sofa/core/behavior/OdeSolver.h>
+#include <sofa/core/behavior/BaseIntegrationScheme.h>
 #include <sofa/core/topology/TopologyData.h>
+#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
 
 namespace sofa::component::constraint::lagrangian::correction
 {
@@ -116,7 +117,8 @@ public:
     Data<bool> d_verbose; ///< Dump the constraint matrix at each iteration
     Data< Real > d_correctionVelocityFactor; ///< Factor applied to the constraint forces when correcting the velocities
     Data< Real > d_correctionPositionFactor; ///< Factor applied to the constraint forces when correcting the positions
-    Data < bool > d_useOdeSolverIntegrationFactors; ///< Use odeSolver integration factors instead of correctionVelocityFactor and correctionPositionFactor
+    Data < bool > d_useIntegrationSchemeIntegrationFactors; ///< Use odeSolver integration factors instead of correctionVelocityFactor and correctionPositionFactor
+    sofa::core::objectmodel::lifecycle::RenamedData<bool> d_useOdeSolverIntegrationFactors;
                                                     
     /// Link to be set to the topology container in the component graph.
     SingleLink<UncoupledConstraintCorrection<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
@@ -128,7 +130,7 @@ private:
 
 protected:
 
-    sofa::core::behavior::OdeSolver* m_pOdeSolver;
+     sofa::core::behavior::BaseIntegrationScheme* m_pIntegrationScheme;
 
     /**
      * @brief Compute dx correction from motion space force vector.
