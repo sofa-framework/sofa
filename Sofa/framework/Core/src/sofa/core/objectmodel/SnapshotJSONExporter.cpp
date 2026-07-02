@@ -229,7 +229,7 @@ void importFrom(Snapshot& snapshot, const std::string& filename)
         return;
     }
 
-    std::cout << "JSON imported successfully from: " << filename << std::endl;
+    msg_info("SnapshotJSONExporter") << "JSON imported successfully from: " << filename;
 }
 
 std::string file_To_String(const std::string& filename)
