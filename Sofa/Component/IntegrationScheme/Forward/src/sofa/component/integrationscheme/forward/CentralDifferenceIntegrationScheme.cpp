@@ -75,37 +75,36 @@ CentralDifferenceIntegrationScheme::CentralDifferenceIntegrationScheme()
 
 void CentralDifferenceIntegrationScheme::doIntegrate(const core::ExecParams* params, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
 {
-    sofa::simulation::common::VectorOperations vop( params, this->getContext() );
-    sofa::simulation::common::MechanicalOperations mop( params, this->getContext() );
-    mop->setImplicit(false); // this IntegrationScheme is explicit only
-    MultiVecCoord pos(&vop, core::vec_id::write_access::position );
-    MultiVecDeriv vel(&vop, core::vec_id::write_access::velocity );
-    MultiVecCoord pos2(&vop, xResult /*core::vec_id::write_access::position*/ );
-    MultiVecDeriv vel2(&vop, vResult /*core::vec_id::write_access::velocity*/ );
-    MultiVecDeriv dx(&vop, core::vec_id::write_access::dx); dx.realloc(&vop, !d_threadSafeVisitor.getValue(), true);
-    MultiVecDeriv f  (&vop, core::vec_id::write_access::force );
+    
+    (*m_mop)->setImplicit(false); // this IntegrationScheme is explicit only
+    MultiVecCoord pos(m_vop.get(), core::vec_id::write_access::position );
+    MultiVecDeriv vel(m_vop.get(), core::vec_id::write_access::velocity );
+    MultiVecCoord pos2(m_vop.get(), xResult /*core::vec_id::write_access::position*/ );
+    MultiVecDeriv vel2(m_vop.get(), vResult /*core::vec_id::write_access::velocity*/ );
+    MultiVecDeriv dx(m_vop.get(), core::vec_id::write_access::dx); 
+    MultiVecDeriv f  (m_vop.get(), core::vec_id::write_access::force );
 
     const SReal r = d_rayleighMass.getValue();
 
-    mop.addSeparateGravity(m_dt);                // v += dt*g . Used if mass wants to added G separately from the other forces to v.
+    m_mop->addSeparateGravity(m_dt);                // v += dt*g . Used if mass wants to added G separately from the other forces to v.
 
     //projectVelocity(vel);                  // initial velocities are projected to the constrained space
 
     // compute the current force
-    mop.computeForce(f);                       // f = P_n - K u_n
+    m_mop->computeForce(f);                       // f = P_n - K u_n
 
-    mop.accFromF(dx, f);                       // dx = M^{-1} ( P_n - K u_n )
-    mop.projectResponse(dx);                    // dx is projected to the constrained space
+    m_mop->accFromF(dx, f);                       // dx = M^{-1} ( P_n - K u_n )
+    m_mop->projectResponse(dx);                    // dx is projected to the constrained space
 
-    mop.solveConstraint(dx, core::ConstraintOrder::ACC);
+    m_mop->solveConstraint(dx, core::ConstraintOrder::ACC);
     // apply the solution
     if (r==0)
     {
 #ifdef SOFA_NO_VMULTIOP // unoptimized version
         vel2.eq( vel, dx, dt );                  // vel = vel + dt M^{-1} ( P_n - K u_n )
-        mop.solveConstraint(vel2,core::ConstraintOrder::VEL);
+        m_mop->solveConstraint(vel2,core::ConstraintOrder::VEL);
         pos2.eq( pos, vel2, dt );                    // pos = pos + h vel
-        mop.solveConstraint(pos2,core::ConstraintOrder::POS);
+        m_mop->solveConstraint(pos2,core::ConstraintOrder::POS);
 
 #else // single-operation optimization
 
@@ -121,10 +120,10 @@ void CentralDifferenceIntegrationScheme::doIntegrate(const core::ExecParams* par
         ops[1].second.push_back(std::make_pair(pos.id(),1.0));
         ops[1].second.push_back(std::make_pair(vel2.id(),m_dt));
 
-        vop.v_multiop(ops);
+        m_vop->v_multiop(ops);
 
-        mop.solveConstraint(vel2,core::ConstraintOrder::VEL);
-        mop.solveConstraint(pos2,core::ConstraintOrder::POS);
+        m_mop->solveConstraint(vel2,core::ConstraintOrder::VEL);
+        m_mop->solveConstraint(pos2,core::ConstraintOrder::POS);
 #endif
     }
     else
@@ -147,10 +146,10 @@ void CentralDifferenceIntegrationScheme::doIntegrate(const core::ExecParams* par
         ops[1].second.push_back(std::make_pair(pos.id(),1.0));
         ops[1].second.push_back(std::make_pair(vel2.id(),m_dt));
 
-        vop.v_multiop(ops);
+        m_vop->v_multiop(ops);
 
-        mop.solveConstraint(vel2,core::ConstraintOrder::VEL);
-        mop.solveConstraint(pos2,core::ConstraintOrder::POS);
+        m_mop->solveConstraint(vel2,core::ConstraintOrder::VEL);
+        m_mop->solveConstraint(pos2,core::ConstraintOrder::POS);
 #endif
     }
 

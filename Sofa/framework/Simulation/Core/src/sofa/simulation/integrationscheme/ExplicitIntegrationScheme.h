@@ -27,6 +27,7 @@
 #include <sofa/core/behavior/MultiVec.h>
 
 #include <sofa/core/behavior/LinearSolverAccessor.h>
+#include <sofa/simulation/MappingGraphMechanicalOperations.h>
 
 namespace sofa::simulation::common
 {
@@ -50,7 +51,9 @@ public:
     virtual void integrate(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override final;
     virtual void doIntegrate(const core::ExecParams* params, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) = 0 ;
 
-
+protected:
+    std::shared_ptr<sofa::simulation::common::VectorOperations > m_vop;
+    std::unique_ptr<sofa::simulation::common::MappingGraphMechanicalOperations> m_mop;
 
 };
 } // namespace sofa::component::integrationscheme
