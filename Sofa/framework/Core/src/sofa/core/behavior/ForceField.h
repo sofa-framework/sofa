@@ -55,6 +55,9 @@ public:
     typedef typename DataTypes::VecDeriv         VecDeriv;
     typedef core::objectmodel::Data<VecCoord>    DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv>    DataVecDeriv;
+
+    using TemplateDeductionRule = core::MechanicalStateDeductionRule<DataTypes>;
+
 protected:
     explicit ForceField(MechanicalState<DataTypes> *mm = nullptr);
 

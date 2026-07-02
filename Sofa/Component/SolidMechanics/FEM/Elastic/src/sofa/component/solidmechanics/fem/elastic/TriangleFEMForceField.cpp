@@ -33,8 +33,12 @@ using namespace sofa::defaulttype;
 
 void registerTriangleFEMForceField(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Triangular finite elements for static topology.")
-        .add< TriangleFEMForceField<Vec3Types> >());
+    factory->registerComponent(
+        core::CreateComponent<TriangleFEMForceField<Vec3Types>>()
+        .withModule(MODULE_NAME)
+        .withDescription("Triangular finite elements for static topology.")
+        .template addTemplateAttribute<Vec3Types>("dofType")
+    );
 }
 
 template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API TriangleFEMForceField<Vec3Types>;

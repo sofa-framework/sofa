@@ -31,8 +31,12 @@ set(HEADER_FILES
     ${SRC_ROOT}/CategoryLibrary.h
     ${SRC_ROOT}/CollisionElement.h
     ${SRC_ROOT}/CollisionModel.h
+    ${SRC_ROOT}/ComponentCreator.h
+    ${SRC_ROOT}/ComponentFactory.h
+    ${SRC_ROOT}/ComponentFactoryFilters.h
     ${SRC_ROOT}/ComponentLibrary.h
     ${SRC_ROOT}/ComponentNameHelper.h
+    ${SRC_ROOT}/ComponentRegistrationData.h
     ${SRC_ROOT}/ConstraintOrder.h
     ${SRC_ROOT}/ConstraintParams.h
     ${SRC_ROOT}/DataEngine.h
@@ -64,6 +68,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/sptr.h
     ${SRC_ROOT}/State.h
     ${SRC_ROOT}/State.inl
+    ${SRC_ROOT}/TemplateDeductionRules.h
     ${SRC_ROOT}/VecId.h
     ${SRC_ROOT}/behavior/BaseAnimationLoop.h
     ${SRC_ROOT}/behavior/BaseConstraint.h
@@ -232,6 +237,8 @@ set(SOURCE_FILES
     ${SRC_ROOT}/BehaviorModel.cpp
     ${SRC_ROOT}/CategoryLibrary.cpp
     ${SRC_ROOT}/CollisionModel.cpp
+    ${SRC_ROOT}/ComponentFactory.cpp
+    ${SRC_ROOT}/ComponentFactoryFilters.cpp
     ${SRC_ROOT}/ComponentLibrary.cpp
     ${SRC_ROOT}/ComponentNameHelper.cpp
     ${SRC_ROOT}/ConstraintParams.cpp
@@ -248,7 +255,6 @@ set(SOURCE_FILES
     ${SRC_ROOT}/MechanicalParams.cpp
     ${SRC_ROOT}/Multi2Mapping.cpp
     ${SRC_ROOT}/MultiMapping.cpp
-    ${SRC_ROOT}/ObjectFactory.cpp
     ${SRC_ROOT}/ObjectFactoryJson.cpp
     ${SRC_ROOT}/PathResolver.cpp
     ${SRC_ROOT}/SofaLibrary.cpp
@@ -257,6 +263,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/behavior/BaseAnimationLoop.cpp
     ${SRC_ROOT}/behavior/BaseConstraintCorrection.cpp
     ${SRC_ROOT}/behavior/BaseConstraintSet.cpp
+    ${SRC_ROOT}/behavior/BaseController.cpp
     ${SRC_ROOT}/behavior/BaseForceField.cpp
     ${SRC_ROOT}/behavior/BaseInteractionForceField.cpp
     ${SRC_ROOT}/behavior/BaseLagrangianConstraint.cpp

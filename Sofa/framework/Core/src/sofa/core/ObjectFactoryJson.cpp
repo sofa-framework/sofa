@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/ObjectFactoryJson.h>
-#include <sofa/core/ObjectFactory.h>
+#include <sofa/core/ComponentFactory.h>
 #include <nlohmann/json.hpp>
 #include <sofa/core/CategoryLibrary.h>
 
@@ -30,31 +30,6 @@ namespace sofa::core
 
 namespace objectmodel
 {
-
-inline void to_json(nlohmann::json& json,
-                    const objectmodel::BaseClass& baseClass)
-{
-    json["namespaceName"] = baseClass.namespaceName;
-    json["typeName"] = baseClass.typeName;
-    json["className"] = baseClass.className;
-    json["templateName"] = baseClass.templateName;
-    json["shortName"] = baseClass.shortName;
-
-    sofa::type::vector<std::string> parents;
-    parents.reserve(baseClass.parents.size());
-    for (const auto* parent : baseClass.parents)
-    {
-        if (parent)
-        {
-            parents.push_back(parent->typeName);
-        }
-    }
-    json["parents"] = parents;
-
-    std::vector<std::string> categories;
-    sofa::core::CategoryLibrary::getCategories(&baseClass, categories);
-    json["categories"] = categories;
-}
 
 inline void to_json(nlohmann::json& json,
                     const objectmodel::BaseData* data)
@@ -93,41 +68,26 @@ inline void to_json(nlohmann::json& json,
 }
 
 inline void to_json(nlohmann::json& json,
-                    const sofa::core::ObjectFactory::BaseObjectCreator::SPtr& creator)
-{
-    if (creator)
-    {
-        if (const char* target = creator->getTarget())
-        {
-            json["target"] = target;
-        }
-        else
-        {
-            json["target"] = "targetCannotBeFound";
-        }
-        json["class"] = *creator->getClass();
-
-        sofa::core::objectmodel::BaseObjectDescription desc;
-        if (const auto object = creator->createInstance(nullptr, &desc))
-        {
-            json["object"] = object;
-        }
-    }
-}
-
-inline void to_json(nlohmann::json& json,
-                    const sofa::core::ObjectFactory::ClassEntry::SPtr& entry)
+                    const sofa::core::ComponentRegistrationData::SPtr& entry)
 {
     if (entry)
     {
-        json["className"] = entry->className;
+        json["name"] = entry->componentName;
+        json["attributes"] = entry->templateAttributes;
+        json["module"] = entry->componentModule;
         json["description"] = entry->description;
+        json["documentationURL"] = entry->documentationURL;
+        // json["templateDeductionRule"] = entry->templateDeductionRule;
 
-        json["creator"] = entry->creatorMap;
+        if (entry->creator)
+        {
+            auto component = entry->creator->create();
+            json["component"] = component;
+        }
     }
 }
 
-std::string ObjectFactoryJson::dump(ObjectFactory* factory)
+std::string ObjectFactoryJson::dump(ComponentFactory* factory)
 {
     if (!factory)
     {
@@ -135,10 +95,9 @@ std::string ObjectFactoryJson::dump(ObjectFactory* factory)
         return {};
     }
 
-    std::vector<sofa::core::ObjectFactory::ClassEntry::SPtr> entries;
-    factory->getAllEntries(entries, true);
+    const auto& registry = factory->getRegistry();
 
-    const nlohmann::json json = entries;
+    const nlohmann::json json = registry;
 
     std::string dump{};
 

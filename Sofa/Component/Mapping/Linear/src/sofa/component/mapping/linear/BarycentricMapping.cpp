@@ -32,8 +32,14 @@ using namespace sofa::defaulttype;
 
 void registerBarycentricMapping(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Mapping using barycentric coordinates of the child with respect to cells of its parent.")
-        .add< BarycentricMapping< Vec3Types, Vec3Types > >(true));
+    factory->registerComponent(
+        core::CreateComponent<BarycentricMapping<Vec3Types, Vec3Types>>()
+        .withModule(MODULE_NAME)
+        .withDescription("Mapping using barycentric coordinates of the child with respect to cells of its parent.")
+        .template addTemplateAttribute<Vec3Types>("inDofType")
+        .template addTemplateAttribute<Vec3Types>("outDofType")
+        .template withDeductionRule<core::CanCreateDeductionRule<BarycentricMapping< Vec3Types, Vec3Types >>>()
+    );
 }
 
 template class SOFA_COMPONENT_MAPPING_LINEAR_API BarycentricMapping< Vec3Types, Vec3Types >;

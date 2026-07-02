@@ -19,28 +19,4 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_FORCEFIELD_HEXAHEDRALFEMFORCEFIELDANDMASS_CPP
-#include <sofa/component/solidmechanics/fem/elastic/HexahedralFEMForceFieldAndMass.inl>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/core/ObjectFactory.h>
-
-
-namespace sofa::component::solidmechanics::fem::elastic
-{
-
-using namespace sofa::defaulttype;
-
-void registerHexahedralFEMForceFieldAndMass(sofa::core::ObjectFactory* factory)
-{
-    factory->registerComponent(
-        core::CreateComponent<HexahedralFEMForceFieldAndMass<Vec3Types>>()
-        .withModule(MODULE_NAME)
-        .withDescription("Hexahedral finite elements with mass")
-        .template addTemplateAttribute<Vec3Types>("dofType")
-    );
-}
-
-template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API HexahedralFEMForceFieldAndMass<Vec3Types>;
-
-
-} // namespace sofa::component::solidmechanics::fem::elastic
+#include <sofa/core/behavior/BaseController.h>

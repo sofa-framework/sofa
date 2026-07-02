@@ -19,28 +19,60 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_FORCEFIELD_HEXAHEDRALFEMFORCEFIELDANDMASS_CPP
-#include <sofa/component/solidmechanics/fem/elastic/HexahedralFEMForceFieldAndMass.inl>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/core/ObjectFactory.h>
+#pragma once
 
+#include <sofa/core/config.h>
 
-namespace sofa::component::solidmechanics::fem::elastic
+#include <sofa/core/objectmodel/BaseContext.h>
+
+namespace sofa::core
 {
 
-using namespace sofa::defaulttype;
-
-void registerHexahedralFEMForceFieldAndMass(sofa::core::ObjectFactory* factory)
+struct SOFA_CORE_API BaseTemplateDeductionRule
 {
-    factory->registerComponent(
-        core::CreateComponent<HexahedralFEMForceFieldAndMass<Vec3Types>>()
-        .withModule(MODULE_NAME)
-        .withDescription("Hexahedral finite elements with mass")
-        .template addTemplateAttribute<Vec3Types>("dofType")
-    );
+    bool doesComponentComplyWith(
+        objectmodel::BaseContext* context,
+        objectmodel::BaseObjectDescription* arg)
+    {
+        if (!context) return false;
+        return doDoesComponentComplyWith(context, arg);
+    };
+
+protected:
+
+    virtual bool doDoesComponentComplyWith(
+        objectmodel::BaseContext* context,
+        objectmodel::BaseObjectDescription* arg) = 0;
+};
+
+template<class... T>
+struct OtherComponentsInContextDeductionRule : public BaseTemplateDeductionRule
+{
+protected:
+    bool doDoesComponentComplyWith(
+        objectmodel::BaseContext* context,
+        objectmodel::BaseObjectDescription* arg) override
+    {
+        SOFA_UNUSED(arg);
+        return ((context->get<T>() != nullptr) && ...);
+    }
+};
+
+template<class DataTypes>
+using MechanicalStateDeductionRule = OtherComponentsInContextDeductionRule<sofa::core::behavior::MechanicalState<DataTypes>>;
+
+template<class T>
+struct CanCreateDeductionRule : public BaseTemplateDeductionRule
+{
+protected:
+    bool doDoesComponentComplyWith(
+        objectmodel::BaseContext* context,
+        objectmodel::BaseObjectDescription* arg) override
+    {
+        T* instance = nullptr;
+        return T::canCreate(instance, context, arg);
+    }
+};
+
+
 }
-
-template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API HexahedralFEMForceFieldAndMass<Vec3Types>;
-
-
-} // namespace sofa::component::solidmechanics::fem::elastic

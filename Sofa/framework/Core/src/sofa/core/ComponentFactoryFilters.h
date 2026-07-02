@@ -19,28 +19,59 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_FORCEFIELD_HEXAHEDRALFEMFORCEFIELDANDMASS_CPP
-#include <sofa/component/solidmechanics/fem/elastic/HexahedralFEMForceFieldAndMass.inl>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/core/ObjectFactory.h>
+#pragma once
+#include <sofa/core/ComponentRegistrationData.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 
-
-namespace sofa::component::solidmechanics::fem::elastic
+namespace sofa::core
 {
 
-using namespace sofa::defaulttype;
 
-void registerHexahedralFEMForceFieldAndMass(sofa::core::ObjectFactory* factory)
+class ComponentFilter
 {
-    factory->registerComponent(
-        core::CreateComponent<HexahedralFEMForceFieldAndMass<Vec3Types>>()
-        .withModule(MODULE_NAME)
-        .withDescription("Hexahedral finite elements with mass")
-        .template addTemplateAttribute<Vec3Types>("dofType")
-    );
+public:
+    virtual ~ComponentFilter() = default;
+    virtual std::vector<ComponentRegistrationData::SPtr> filter(
+        const std::vector<ComponentRegistrationData::SPtr>& candidates,
+        objectmodel::BaseContext* context,
+        objectmodel::BaseObjectDescription* arg) const = 0;
+};
+
+class ExactTemplateMatchFilter final : public ComponentFilter
+{
+public:
+    std::vector<ComponentRegistrationData::SPtr> filter(
+        const std::vector<ComponentRegistrationData::SPtr>& candidates,
+        objectmodel::BaseContext* context,
+        objectmodel::BaseObjectDescription* arg) const override;
+};
+
+class LegacyTemplateKeywordFilter final : public ComponentFilter
+{
+public:
+    std::vector<ComponentRegistrationData::SPtr> filter(
+        const std::vector<ComponentRegistrationData::SPtr>& candidates,
+        objectmodel::BaseContext* context,
+        objectmodel::BaseObjectDescription* arg) const override;
+};
+
+class PartialTemplateMatchFilter final : public ComponentFilter
+{
+public:
+    std::vector<ComponentRegistrationData::SPtr> filter(
+        const std::vector<ComponentRegistrationData::SPtr>& candidates,
+        objectmodel::BaseContext* context,
+        objectmodel::BaseObjectDescription* arg) const override;
+};
+
+class NoFilter final : public ComponentFilter
+{
+public:
+    std::vector<ComponentRegistrationData::SPtr> filter(
+        const std::vector<ComponentRegistrationData::SPtr>& candidates,
+        objectmodel::BaseContext* context,
+        objectmodel::BaseObjectDescription* arg) const override;
+};
+
+
 }
-
-template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API HexahedralFEMForceFieldAndMass<Vec3Types>;
-
-
-} // namespace sofa::component::solidmechanics::fem::elastic

@@ -33,8 +33,12 @@ using namespace sofa::defaulttype;
 
 void registerFastTetrahedralCorotationalForceField(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Fast Corotational Tetrahedral Mesh.")
-        .add< FastTetrahedralCorotationalForceField<Vec3Types> >());
+    factory->registerComponent(
+        core::CreateComponent<FastTetrahedralCorotationalForceField<Vec3Types>>()
+        .withModule(MODULE_NAME)
+        .withDescription("Fast Corotational Tetrahedral Mesh.")
+        .template addTemplateAttribute<Vec3Types>("dofType")
+    );
 }
 
 template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FastTetrahedralCorotationalForceField<Vec3Types>;

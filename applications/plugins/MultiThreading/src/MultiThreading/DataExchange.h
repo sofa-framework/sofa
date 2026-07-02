@@ -64,7 +64,7 @@ public:
 
 protected:
 
-    DataExchange( const char* from, const char* to );
+    DataExchange();
 
     ~DataExchange() override;
 
@@ -83,54 +83,14 @@ public:
         return sofa::defaulttype::DataTypeName<DataTypes>::name();
     }
 
-    template<class T>
-    static typename T::SPtr create(T*, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        std::string fromPath;
-        std::string toPath;
-
-        if(arg)
-        {
-            fromPath = arg->getAttribute(std::string("from"), "" );
-            toPath = arg->getAttribute(std::string("to"), "" );
-        }
-
-        //context->findLinkDest(stout, fromPath, NULL);
-        //context->findLinkDest(stout, toPath, NULL);
-
-        typename T::SPtr obj = sofa::core::objectmodel::New<T>(fromPath.c_str(), toPath.c_str() );
-        if (context)
-        {
-            context->addObject(obj);
-        }
-        if (arg)
-        {
-            obj->parse(arg);
-        }
-        return obj;
-    }
-
-
     Data<DataTypes> mSource; ///< source object to copy
     Data<DataTypes> mDestination; ///< destination object to copy
 
 private:
 
-
-    /// source
-    //SingleLink< DataExchange<DataTypes>, Data<DataTypes>, BaseLink::FLAG_DATALINK|BaseLink::FLAG_DUPLICATE> mSourceObject;
-    /// dest
-    //SingleLink< DataExchange<DataTypes>, Data<DataTypes>, BaseLink::FLAG_DATALINK|BaseLink::FLAG_DUPLICATE> mDestinationObject;
-
-
-
     DataTypes* mSourcePtr;
     DataTypes* mDestinationPtr;
     //VecCoord mDataCopy;
-
-    std::string fromPath;
-    std::string toPath;
-    //core::objectmodel::BaseObjectDescription* desc;
 
     std::size_t mSizeInBytes;
 

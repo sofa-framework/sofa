@@ -29,20 +29,32 @@
 namespace sofa::component::solidmechanics::fem::elastic
 {
 
+static constexpr std::string_view description { "Hooke's law using the corotational approach" };
+
+template <class DataTypes, class ElementType>
+void registerComponent(sofa::core::ObjectFactory* factory)
+{
+    factory->registerComponent(
+        core::CreateComponent<CorotationalFEMForceField<DataTypes, ElementType>>()
+        .withModule(MODULE_NAME)
+        .withDescription(std::string(description))
+        .template addTemplateAttribute<DataTypes>("dofType")
+        .addTemplateAttribute("elementType", sofa::geometry::elementTypeToString(ElementType::Element_type))
+    );
+}
+
 void registerCorotationalFEMForceField(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(sofa::core::ObjectRegistrationData("Hooke's law using the corotational approach")
-    //     .add< CorotationalFEMForceField<sofa::defaulttype::Vec1Types, sofa::geometry::Edge> >()
-        .add< CorotationalFEMForceField<sofa::defaulttype::Vec2Types, sofa::geometry::Edge> >()
-        .add< CorotationalFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Edge> >()
-        .add< CorotationalFEMForceField<sofa::defaulttype::Vec2Types, sofa::geometry::Triangle> >()
-        .add< CorotationalFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Triangle> >()
-        .add< CorotationalFEMForceField<sofa::defaulttype::Vec2Types, sofa::geometry::Quad> >()
-        .add< CorotationalFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Quad> >()
-        .add< CorotationalFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Tetrahedron> >()
-        .add< CorotationalFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Hexahedron> >()
-        .add< CorotationalFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Prism> >()
-    );
+    // registerComponent<sofa::defaulttype::Vec1Types, sofa::geometry::Edge>(factory);
+    registerComponent<sofa::defaulttype::Vec2Types, sofa::geometry::Edge>(factory);
+    registerComponent<sofa::defaulttype::Vec3Types, sofa::geometry::Edge>(factory);
+    registerComponent<sofa::defaulttype::Vec2Types, sofa::geometry::Triangle>(factory);
+    registerComponent<sofa::defaulttype::Vec3Types, sofa::geometry::Triangle>(factory);
+    registerComponent<sofa::defaulttype::Vec2Types, sofa::geometry::Quad>(factory);
+    registerComponent<sofa::defaulttype::Vec3Types, sofa::geometry::Quad>(factory);
+    registerComponent<sofa::defaulttype::Vec3Types, sofa::geometry::Tetrahedron>(factory);
+    registerComponent<sofa::defaulttype::Vec3Types, sofa::geometry::Hexahedron>(factory);
+    registerComponent<sofa::defaulttype::Vec3Types, sofa::geometry::Prism>(factory);
 }
 
 // template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API CorotationalFEMForceField<sofa::defaulttype::Vec1Types, sofa::geometry::Edge>;

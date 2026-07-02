@@ -29,11 +29,23 @@ namespace sofa::component::linearsolver::direct
 
 using namespace sofa::linearalgebra;
 
+constexpr std::string_view description { "Direct linear solver using a Sparse LDL^T factorization." };
+
+template<class TMatrix, class TVector>
+void registerComponent(sofa::core::ComponentFactory* factory)
+{
+    factory->registerComponent(
+    core::CreateComponent<SparseLDLSolver<TMatrix, TVector>>()
+        .withModule(MODULE_NAME)
+        .withDescription(std::string(description))
+        .template addTemplateAttribute<TMatrix>("matrixType")
+    );
+};
+
 void registerSparseLDLSolver(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Direct linear solver using a Sparse LDL^T factorization.")
-        .add< SparseLDLSolver< CompressedRowSparseMatrix<SReal>, FullVector<SReal> > >(true)
-        .add< SparseLDLSolver< CompressedRowSparseMatrix<type::Mat<3, 3, SReal> >, FullVector<SReal> > >());
+    registerComponent<CompressedRowSparseMatrix<SReal>, FullVector<SReal>>(factory);
+    registerComponent<CompressedRowSparseMatrix<sofa::type::Mat<3, 3, SReal>>, FullVector<SReal>>(factory);
 }
 
 template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API SparseLDLSolver< CompressedRowSparseMatrix<SReal>,FullVector<SReal> >;

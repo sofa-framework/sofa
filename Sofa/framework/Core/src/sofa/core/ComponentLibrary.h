@@ -21,43 +21,11 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/core/ObjectFactory.h>
+#include <sofa/config.h>
 
 namespace sofa::core
 {
 
-typedef sofa::core::ObjectFactory::ClassEntry ClassEntry;
+using ComponentLibrary = DeprecatedAndRemoved;
 
-/**
- *  \brief An Generic Component of the Sofa Library
- *
- *  It contains all the information related to a Sofa component: its name, the templates available, a description of it, its creator, ...
- *  This Interface is used for the Modeler mainly.
- *
- */
-class SOFA_CORE_API ComponentLibrary
-{
-public:
-    ComponentLibrary(const std::string& componentName, const std::string& categoryName, ClassEntry::SPtr entry, const std::vector< std::string >& exampleFiles);
-    virtual ~ComponentLibrary() {}
-
-    virtual void addTemplate( const std::string& templateName);
-    virtual void endConstruction();
-    virtual void setDisplayed(bool ) {}
-
-    const std::string& getName()                     const { return name;}
-    const std::string& getDescription()              const { return description;}
-    const std::string& getCategory()                 const { return categoryName;}
-    const std::vector< std::string >& getTemplates() const { return templateName;}
-    const ClassEntry::SPtr  getEntry()               const { return entry;}
-
-protected:
-    //--------------------------------------------
-    //Sofa information
-    std::string name;
-    std::vector< std::string > templateName;
-    std::string description;
-    std::string categoryName;
-    ClassEntry::SPtr entry;
-};
 }

@@ -20,6 +20,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <TestPluginA/TestPluginA.h>
+#include <sofa/core/ComponentFactory.h>
+
+namespace sofa::test
+{
+extern void registerComponentA(sofa::core::ComponentFactory* factory);
+extern void registerComponentB(sofa::core::ComponentFactory* factory);
+}
 
 extern "C" {
 
@@ -59,6 +66,12 @@ SOFA_TESTPLUGINA_API const char* getModuleDescription()
 SOFA_TESTPLUGINA_API const char* getModuleComponentList()
 {
     return "ComponentA, ComponentB";
+}
+
+void registerObjects(sofa::core::ComponentFactory* factory)
+{
+    sofa::test::registerComponentA(factory);
+    sofa::test::registerComponentB(factory);
 }
 
 } // extern "C"

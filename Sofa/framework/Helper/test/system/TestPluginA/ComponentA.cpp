@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include "ComponentA.h"
 
-#include <sofa/core/ObjectFactory.h>
+#include <sofa/core/ComponentFactory.h>
 
 
 namespace sofa::test
@@ -36,9 +36,14 @@ ComponentA::~ComponentA()
 {
 }
 
-
-int ComponentAClass = core::RegisterObject("Component A").add< ComponentA >();
-
+void registerComponentA(sofa::core::ComponentFactory* factory)
+{
+    factory->registerComponent(
+        core::CreateComponent<ComponentA>("ComponentA")
+            .withModule("TestPluginA")
+            .withDescription("dummy component")
+        );
+}
 
 } // namespace sofa::test
 

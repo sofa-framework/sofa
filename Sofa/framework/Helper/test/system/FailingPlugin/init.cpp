@@ -20,6 +20,12 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <FailingPlugin/FailingPlugin.h>
+#include <sofa/core/ComponentFactory.h>
+
+namespace sofa::test
+{
+extern void registerComponent(sofa::core::ComponentFactory* factory);
+}
 
 extern "C" {
 
@@ -65,6 +71,11 @@ SOFA_FAILINGPLUGIN_API const char* getModuleDescription()
 SOFA_FAILINGPLUGIN_API const char* getModuleComponentList()
 {
     return "ComponentFailingPlugin";
+}
+
+void registerObjects(sofa::core::ComponentFactory* factory)
+{
+    sofa::test::registerComponent(factory);
 }
 
 } // extern "C"

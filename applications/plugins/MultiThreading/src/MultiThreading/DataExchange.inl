@@ -27,18 +27,14 @@ namespace sofa::core
 {
 
 template <class DataTypes>
-DataExchange<DataTypes>::DataExchange( const char* from, const char* to )
+DataExchange<DataTypes>::DataExchange()
     : BaseObject()
     , mSource(initData(&mSource,"from","source object to copy"))
     , mDestination(initData(&mDestination,"to","destination object to copy"))
     , mSourcePtr(nullptr)
     , mDestinationPtr(nullptr)
-    , fromPath(from)
-    , toPath(to)
     , mSizeInBytes(0)
-{
-    //f_listening.setValue(true);
-}
+{}
 
 template <class DataTypes>
 DataExchange<DataTypes>::~DataExchange() = default;
@@ -63,8 +59,8 @@ void DataExchange<DataTypes>::init()
         mSource.beginEdit();
         mDestination.beginEdit();
 
-        parseField( std::string("from"), fromPath );
-        parseField( std::string("to"), toPath );
+        // parseField( std::string("from"), fromPath );
+        // parseField( std::string("to"), toPath );
 
         core::objectmodel::BaseData* tempParent = mSource.getParent();
         tempParent = mDestination.getParent();

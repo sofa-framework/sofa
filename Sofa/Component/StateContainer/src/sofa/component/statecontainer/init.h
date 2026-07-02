@@ -23,11 +23,6 @@
 
 #include <sofa/component/statecontainer/config.h>
 
-namespace sofa::core
-{
-    class ObjectFactory;
-}
-
 namespace sofa::component::statecontainer
 {
     SOFA_COMPONENT_STATECONTAINER_API void init();

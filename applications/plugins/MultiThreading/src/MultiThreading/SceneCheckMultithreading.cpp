@@ -68,24 +68,9 @@ void SceneCheckMultithreading::doCheckOn(sofa::simulation::Node* node)
 
             if (!parallelImplementation.empty())
             {
-                if (sofa::core::ObjectFactory::getInstance()->hasCreator(parallelImplementation))
+                if (sofa::core::MainComponentFactory::HasCreator(parallelImplementation))
                 {
-                    const auto& entry = sofa::core::ObjectFactory::getInstance()->getEntry(parallelImplementation);
-                    auto it = entry.creatorMap.find(object->getTemplateName());
-                    if (it != entry.creatorMap.end())
-                    {
-                        std::string seq = object->getClassName();
-                        if (!object->getTemplateName().empty())
-                        {
-                            seq += "[" + object->getTemplateName() + "]";
-                        }
-                        std::string par = entry.className;
-                        if (!it->first.empty())
-                        {
-                            par += "[" + it->first + "]";
-                        }
-                        m_summary.insert({seq, par });
-                    }
+                    m_summary.insert({object->d_factoryName.getValue(), parallelImplementation });
                 }
                 else
                 {

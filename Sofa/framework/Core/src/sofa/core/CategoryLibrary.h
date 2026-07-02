@@ -22,38 +22,26 @@
 #pragma once
 
 #include <sofa/core/ComponentLibrary.h>
+#include <sofa/core/ComponentFactory.h>
 
 namespace sofa::core
 {
 
-
-using Creator = sofa::core::ObjectFactory::BaseObjectCreator;
-
-/**
- *  \brief An Generic Category of the Sofa Library
- *
- *  It contains all the components available for Sofa corresponding to a given category (force field, mass, mapping...)
- *  This Interface is used for the Modeler mainly.
- *
- */
 class SOFA_CORE_API CategoryLibrary
 {
 public:
-    typedef std::vector< ComponentLibrary* > VecComponent;
-    typedef VecComponent::const_iterator VecComponentIterator;
-
-    CategoryLibrary( const std::string &categoryName);
+    CategoryLibrary( const std::string &categoryName) = delete;
     virtual ~CategoryLibrary() {}
 
-    virtual ComponentLibrary *addComponent(const std::string &componentName, ClassEntry::SPtr entry, const std::vector< std::string > &exampleFiles);
-    virtual void endConstruction();
+    virtual ComponentLibrary *addComponent(const std::string &componentName, ComponentFactory::ClassEntry::SPtr entry, const std::vector< std::string > &exampleFiles) = delete;
+    virtual void endConstruction() = delete;
 
-    const std::string  &getName()          const { return name;}
-    const VecComponent &getComponents()    const {return components;}
+    const std::string  &getName()          const = delete;
+    const std::vector< ComponentLibrary* > &getComponents()    const = delete;
 
-    const ComponentLibrary *getComponent( const std::string &componentName) const;
+    const ComponentLibrary *getComponent( const std::string &componentName) const = delete;
 
-    size_t getNumComponents() const {return components.size();}
+    size_t getNumComponents() const = delete;
 
     /** \brief Get the list of categories a class belongs to, based on its parent classes.
      *
@@ -74,10 +62,10 @@ public:
     static std::vector<std::string> getCategories();
 
 protected:
-    virtual ComponentLibrary *createComponent(const std::string &componentName, ClassEntry::SPtr entry, const std::vector< std::string > &exampleFiles) {return new ComponentLibrary(componentName, name, entry, exampleFiles);}
+    virtual ComponentLibrary *createComponent(const std::string &componentName, ComponentFactory::ClassEntry::SPtr entry, const std::vector< std::string > &exampleFiles) = delete;
 
-    std::string name;
-    VecComponent components;
+    DeprecatedAndRemoved name;
+    DeprecatedAndRemoved components;
 };
 
 } // namespace sofa::core
