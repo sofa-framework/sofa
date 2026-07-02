@@ -128,6 +128,7 @@ TetrahedronDiffusionFEMForceField<DataTypes>::TetrahedronDiffusionFEMForceField(
       d_tagMeshMechanics(initData(&d_tagMeshMechanics, std::string("meca"),"tagMechanics","Tag of the Mechanical Object.")),
       d_drawConduc( initData(&d_drawConduc, (bool)false, "drawConduc","To display conductivity map."))
     , l_topology(initLink("topology", "link to the topology container"))
+    , l_mecaObj(initLink("mecaObj", "link to the 3D mechanical MechanicalObject"))
     , m_topology(nullptr)
 {
     this->f_listening.setValue(true);
@@ -198,12 +199,29 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::init()
     }
 
     /// Get the mechanical object containing the mesh position in 3D
-    core::objectmodel::Tag mechanicalTag(d_tagMeshMechanics.getValue());
-    this->getContext()->get(mechanicalObject, mechanicalTag,sofa::core::objectmodel::BaseContext::SearchUp);
-    if (mechanicalObject==nullptr)
+    /// Priority is the explicit link, with a fallback to historical tag-based lookup.
+    if (!l_mecaObj.empty())
     {
-        msg_error() << "cannot find the mechanical object named '" << mechanicalObject << msgendl;
-        return;
+        mechanicalObject = l_mecaObj.get();
+        if (mechanicalObject == nullptr)
+        {
+            msg_error() << "No MechanicalState found at mecaObj link path '" << l_mecaObj.getLinkedPath() << "'.";
+            this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+            return;
+        }
+    }
+    else
+    {
+        core::objectmodel::Tag mechanicalTag(d_tagMeshMechanics.getValue());
+        this->getContext()->get(mechanicalObject, mechanicalTag, sofa::core::objectmodel::BaseContext::SearchUp);
+        if (mechanicalObject == nullptr)
+        {
+            msg_error() << "No MechanicalState found. Set 'mecaObj' link, or provide a valid 'tagMechanics' (current value: '"
+                        << d_tagMeshMechanics.getValue() << "').";
+            this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+            return;
+        }
+        msg_info() << "Using legacy tagMechanics lookup to find MechanicalState with tag '" << d_tagMeshMechanics.getValue() << "'.";
     }
 
     if(d_transverseAnisotropyRatio.getValue()!=1.0)

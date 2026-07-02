@@ -114,6 +114,7 @@ public:
 
       /// Link to be set to the topology container in the component graph. 
       SingleLink<TetrahedronDiffusionFEMForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+      SingleLink<TetrahedronDiffusionFEMForceField<DataTypes>, MechObject, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_mecaObj;
 
 
 protected:
