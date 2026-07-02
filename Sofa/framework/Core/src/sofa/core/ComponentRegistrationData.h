@@ -174,9 +174,6 @@ concept HasTemplateDeductionRule = requires {
 template<class Component>
 ComponentRegistrationDataBuilder CreateComponent(const std::string& componentName)
 {
-    std::unique_ptr<BaseComponentCreator> creator = std::make_unique<ComponentCreator<Component>>();
-    BaseClass* classData = Component::GetClass();
-
     std::shared_ptr<BaseTemplateDeductionRule> templateDeductionRule { nullptr };
     if constexpr (HasTemplateDeductionRule<Component>)
     {
@@ -187,11 +184,20 @@ ComponentRegistrationDataBuilder CreateComponent(const std::string& componentNam
         templateDeductionRule = std::make_shared<CanCreateDeductionRule<Component>>();
     }
 
-    return ComponentRegistrationDataBuilder()
-        .withName(componentName)
-        .withClass(classData)
-        .withDeductionRule(templateDeductionRule)
-        .withCreator(std::move(creator));
+    auto builder = ComponentRegistrationDataBuilder()
+       .withName(componentName)
+       .withClass(Component::GetClass())
+       .withDeductionRule(templateDeductionRule)
+       .withCreator(std::make_unique<ComponentCreator<Component>>());
+
+    if constexpr (requires {typename Component::DataTypes;})
+    {
+        return builder.addTemplateAttribute("dofType", typename Component::DataTypes::Name());
+    }
+    else
+    {
+        return builder;
+    }
 }
 
 template<class Component>
@@ -200,7 +206,6 @@ ComponentRegistrationDataBuilder CreateComponent()
     BaseClass* classData = Component::GetClass();
     return CreateComponent<Component>(classData->className);
 }
-
 
 
 /**************************************************************************************************/
