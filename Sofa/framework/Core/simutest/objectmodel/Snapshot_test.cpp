@@ -40,12 +40,6 @@ using sofa::core::objectmodel::Snapshot;
 #include <sofa/simulation/SaveSnapshotVisitor.h>
 using sofa::simulation::SaveSnapshotVisitor;
 
-#include <sofa/simulation/LoadDataSnapshotVisitor.h>
-using sofa::simulation::LoadDataSnapshotVisitor;
-
-#include <sofa/simulation/LoadLinkSnapshotVisitor.h>
-using sofa::simulation::LoadLinkSnapshotVisitor;
-
 #include <sofa/core/objectmodel/SnapshotJSONExporter.h>
 
 #include <sofa/core/objectmodel/Data.h>
