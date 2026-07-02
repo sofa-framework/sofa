@@ -290,6 +290,12 @@ public:
     // Getting the stiffness matrix of index i
     void getElementStiffnessMatrix(Real* stiffness, Index nodeIdx);
 
+    void loadInternalStateFrom(const core::objectmodel::Snapshot::SnapshotObject &snapshot) override
+    {
+        SOFA_UNUSED(snapshot);
+        _indexedElements = & (this->l_topology->getTetrahedra());
+    }
+
 protected:
     void computeStrainDisplacement( StrainDisplacement &J, Coord a, Coord b, Coord c, Coord d );
     Real peudo_determinant_for_coef ( const type::Mat<2, 3, Real>&  M );

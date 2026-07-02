@@ -20,8 +20,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_CORE_OBJECTMODEL_BASE_CPP
-#include <sofa/core/objectmodel/Base.h>
 
+#include <sofa/core/objectmodel/Base.h>
 #include <sofa/type/BoundingBox.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/core/ObjectFactory.h>
@@ -37,10 +37,14 @@ using sofa::helper::logging::Message ;
 #include <sofa/helper/DiffLib.h>
 using sofa::helper::getClosestMatch;
 
+#include <sofa/core/objectmodel/Snapshot.h>
+
 #include <map>
 #include <typeinfo>
 #include <cstring>
 #include <sstream>
+
+
 
 #define ERROR_LOG_SIZE 100
 
@@ -680,7 +684,117 @@ int Base::getInstanciationSourceFilePos() const
     return m_instanciationSourceFilePos;
 }
 
-} // namespace sofa::core::objectmodel
+void Base::saveDataIn(Snapshot::SnapshotObject& snapshot) const
+{
+    for (const auto& dataFields = this->getDataFields(); const auto& data : dataFields)
+    {
+        Snapshot::DataInfo dataInfo;
+        dataInfo.name = data->getName();
+        dataInfo.type = data->getValueTypeString();
+        dataInfo.value = data->getValueString();
+
+        snapshot.m_dataContainer.push_back(dataInfo);
+    }
+}
+
+void Base::saveLinksIn(Snapshot::SnapshotObject& snapshot) const
+{
+    for (const auto& links = this->getLinks(); const auto& link : links)
+    {
+        Snapshot::LinkInfo linkInfo;
+        linkInfo.name = link->getName();
+        linkInfo.type = link->getValueTypeString();
+        linkInfo.value = link->getValueString();
+
+        std::string replaceValue = "//";
+        std::size_t pos = linkInfo.value.find(replaceValue);
+        while (pos != std::string::npos)
+        {
+            linkInfo.value.replace(pos, replaceValue.length(), "");
+            pos = linkInfo.value.find(replaceValue, pos);
+        }
+
+        snapshot.m_linkContainer.push_back(linkInfo);
+    }
+}
+
+void Base::saveInternalStateIn(Snapshot::SnapshotObject& snapshot) const {
+    SOFA_UNUSED(snapshot);
+}
+
+std::shared_ptr<Snapshot::SnapshotObject>
+Base::createSnapshotObject(std::vector<std::shared_ptr<Snapshot::SnapshotNode>>& parents) const
+{
+    auto object = std::make_shared<Snapshot::SnapshotObject>();
+    for (const auto& p : parents)
+    {
+        if (p)
+        {
+            p->components.push_back(*object);
+        }
+    }
+    return object;
+}
+
+std::shared_ptr<Snapshot::SnapshotObject> Base::saveSnapshot(std::vector<std::shared_ptr<Snapshot::SnapshotNode>>& parents) const
+{
+    const auto snapshotObject = createSnapshotObject(parents);
+    snapshotObject->m_name = this->getName();
+    saveDataIn(*snapshotObject);
+    saveLinksIn(*snapshotObject);
+    saveInternalStateIn(*snapshotObject);
+    return snapshotObject;
+}
+
+
+std::shared_ptr<Snapshot::SnapshotObject>
+Base::findSnapshotObject(const std::shared_ptr<Snapshot::SnapshotNode>& parents, const std::string& objectname)
+{
+    for (const auto& p : parents->components)
+    {
+        if (p.m_name == objectname)
+        {
+            auto snapshotObject = std::make_shared<Snapshot::SnapshotObject>(p);
+            return snapshotObject;
+        }
+    }
+    msg_error("findSnapshotObject") << "SnapshotObject "<< objectname << " not found";
+    auto defaultObject = std::make_shared<Snapshot::SnapshotObject>();
+    defaultObject->m_name = "Unknown object";
+    
+    return defaultObject;
+}
+
+void Base::loadInternalStateFrom(const Snapshot::SnapshotObject& snapshot)
+{
+    SOFA_UNUSED(snapshot);
+
+}
+
+void Base::loadDataSnapshot(const std::shared_ptr<Snapshot::SnapshotObject>& snapshotObject) const
+{
+    for (const auto& dataInfo : snapshotObject->m_dataContainer)
+    {
+        if (const auto data = this->findData(dataInfo.name))
+        {
+            if(data->read(dataInfo.value) == 0 )
+                msg_error("LoadDataSnapshot") << "Failed to read " << dataInfo.name << " in " << this->getName()  << " from the snapshot " << dataInfo.value;
+        }
+    }
+}
+
+void Base::loadLinkSnapshot(const std::shared_ptr<Snapshot::SnapshotObject>& snapshotObject) const {
+    for (const auto& linkInfo : snapshotObject->m_linkContainer) {
+        if (const auto link = this->findLink(linkInfo.name)) {
+
+            if (link->readFromSnapshot(linkInfo.value) == 0 )
+                msg_error("LoadLinkSnapshot") << "Failed to read " << linkInfo.name << " in " << this->getName()  << " from the snapshot " << linkInfo.value;
+        }
+    }
+}
+
+
+}// namespace sofa::core::objectmodel
 
 
 namespace sofa::helper::logging

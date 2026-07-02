@@ -28,6 +28,7 @@
 #include <sofa/core/VecId.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/objectmodel/Base.h>
 
 namespace sofa::component::collision::geometry
 {
@@ -192,6 +193,37 @@ public:
     const sofa::core::topology::BaseMeshTopology::SeqTriangles& getTriangles() const { return *m_triangles; }
     const VecDeriv& getNormals() const { return m_normals; }
     int getTriangleFlags(sofa::core::topology::BaseMeshTopology::TriangleID i);
+
+    void saveInternalStateIn(sofa::core::objectmodel::Snapshot::SnapshotObject& snapshot) const override
+    {
+        sofa::core::objectmodel::Snapshot::DataInfo dataInfo;
+
+        std::stringstream ss;
+        this->m_triangles->write(ss);
+
+        dataInfo.name = "m_triangles";
+        dataInfo.type = "vector";
+        dataInfo.value = ss.str();
+
+        snapshot.m_dataContainer.push_back(dataInfo);
+
+    }
+
+    void loadInternalStateFrom(const core::objectmodel::Snapshot::SnapshotObject &snapshot) override
+    {
+        m_needsUpdate = true;
+        
+        for (const auto& dataInfo : snapshot.m_dataContainer)
+        {
+            if (dataInfo.name == "m_triangles")
+            {
+                m_triangles = &m_topology->getTriangles();
+                resize(m_topology->getNbTriangles());
+                updateNormals();
+            }
+
+        }
+    }
 
     Deriv velocity(sofa::Index index)const;
 

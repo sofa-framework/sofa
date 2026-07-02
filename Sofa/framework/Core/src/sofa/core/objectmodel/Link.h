@@ -377,27 +377,6 @@ public:
         return true;
     }
 
-    bool add(DestPtr v)
-    {
-        if (!v)
-            return false;
-        const std::size_t index = TraitsContainer::add(m_value,v);
-        updateCounter();
-        added(v, index);
-        return true;
-    }
-
-    bool add(DestPtr v, const std::string& path)
-    {
-        if (!v && path.empty())
-            return false;
-        std::size_t index = TraitsContainer::add(m_value,v);
-        TraitsValueType::setPath(m_value[index],path);
-        updateCounter();
-        added(v, index);
-        return true;
-    }
-
     bool addPath(const std::string& path)
     {
         if (path.empty())
@@ -408,11 +387,11 @@ public:
         return add(ptr, path);
     }
 
-    bool remove(DestPtr v)
+    bool _doRemove_(Base* target) override
     {
-        if (!v)
+        if (!target)
             return false;
-        return removeAt(TraitsContainer::find(m_value,v));
+        return removeAt(TraitsContainer::find(m_value,castTo<DestType*>(target)));
     }
 
     bool removeAt(std::size_t index)
@@ -503,7 +482,32 @@ protected:
         }
 
         /// TLink:adding accepts nullptr (for a not yet resolved link).
-        return TLink::add(destptr, path);
+        std::size_t index = TraitsContainer::add(m_value, destptr);
+        TraitsValueType::setPath(m_value[index], path);
+        updateCounter();
+        added(destptr, index);
+        return true;
+    }
+
+    bool _doAdd_(Base* baseptr) override
+    {
+        /// If the pointer is null and the path empty we do nothing
+        if(!baseptr)
+            return false;
+
+        /// Downcast the pointer to a compatible type and
+        /// If the types are not compatible with the Link we returns false
+        auto destptr = castTo<DestType*>(baseptr);
+        if(!destptr)
+        {
+            return false;
+        }
+
+        /// TLink:adding accepts nullptr (for a not yet resolved link).
+        const std::size_t index = TraitsContainer::add(m_value, destptr);
+        updateCounter();
+        added(destptr, index);
+        return true;;
     }
 
     /// Returns false on type mismatch
@@ -577,7 +581,7 @@ public:
     MultiLink(const BaseLink::InitLink<OwnerType>& init, DestPtr val)
         : Inherit(init), m_validator(nullptr)
     {
-        if (val) this->add(val);
+        if (val) this->_doAdd_(sofa::core::castToBase(TraitsDestPtr::get(val)));
     }
 
     virtual ~MultiLink()
@@ -654,7 +658,7 @@ public:
     SingleLink(const BaseLink::InitLink<OwnerType>& init, DestPtr val)
         : Inherit(init), m_validator(nullptr)
     {
-        if (val) this->add(val);
+        if (val) this->_doAdd_(sofa::core::castToBase(TraitsDestPtr::get(val)));
     }
 
     virtual ~SingleLink()

@@ -25,7 +25,7 @@
 #include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/core/collision/Pipeline.h>
 #include <sofa/core/visual/VisualLoop.h>
-
+#include <sofa/core/objectmodel/Snapshot.h>
 
 namespace sofa::core::objectmodel
 {
@@ -61,6 +61,41 @@ core::collision::Pipeline* BaseNode::getCollisionPipeline() const
 core::visual::VisualLoop* BaseNode::getVisualLoop() const
 {
     return this->getContext()->get<core::visual::VisualLoop>();
+}
+
+std::shared_ptr<Snapshot::SnapshotObject>
+BaseNode::createSnapshotObject(std::vector<std::shared_ptr<Snapshot::SnapshotNode>>& parents) const
+{
+    auto nodeObject = std::make_shared<Snapshot::SnapshotNode>();
+    for (auto p : parents)
+    {
+        if (p)
+        {
+            p->children.push_back(nodeObject);
+        }
+    }
+    
+    return nodeObject;
+}
+
+std::shared_ptr<Snapshot::SnapshotObject>
+BaseNode::findSnapshotObject( const std::shared_ptr<Snapshot::SnapshotNode>& parents, const std::string& objectname)
+{
+    if (!parents) return nullptr;
+
+    if(parents->m_name == objectname)
+    {
+        return parents;
+    }
+
+    for (const auto& child : parents->children)
+    {
+        if (auto result = this->findSnapshotObject(child, objectname))
+            return result;
+
+    }
+
+    return nullptr;
 }
 
 /// Set the context of an object to this

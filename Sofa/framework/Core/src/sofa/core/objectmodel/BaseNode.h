@@ -24,9 +24,10 @@
 #include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/core/objectmodel/TypeOfInsertion.h>
 #include <sofa/core/visual/BaseVisualStyle.h>
-
+#include <sofa/core/objectmodel/Snapshot.h>
 namespace sofa::core::objectmodel
 {
+
 
 /**
  *  \brief Base class for simulation nodes.
@@ -127,6 +128,11 @@ public:
     virtual core::behavior::OdeSolver* getOdeSolver() const;
     virtual core::collision::Pipeline* getCollisionPipeline() const;
     virtual core::visual::VisualLoop* getVisualLoop() const;
+
+protected:
+    std::shared_ptr<Snapshot::SnapshotObject> createSnapshotObject(std::vector<std::shared_ptr<Snapshot::SnapshotNode>>& parents) const override;
+public:
+    std::shared_ptr<Snapshot::SnapshotObject> findSnapshotObject(const std::shared_ptr<Snapshot::SnapshotNode>& parents, const std::string& objectname) override;
 
 private:
     virtual std::string internalGetPathName() const;
