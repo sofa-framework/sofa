@@ -24,6 +24,9 @@
 
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/component/linearsolver/iterative/MatrixLinearSolver.h>
+#include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
+#include <sofa/linearalgebra/FullVector.h>
+#include <sofa/type/Mat.h>
 #include <sofa/helper/map.h>
 
 #include <cmath>
@@ -100,8 +103,80 @@ inline void PCGLinearSolver<component::linearsolver::GraphScatteredMatrix,compon
 template<>
 inline void PCGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::cgstep_alpha(Vector& x,Vector& p, Real alpha);
 
+// -----------------------------------------------------------------------------
+// CompressedRowSparseMatrix (CRS) specialisations.
+//
+// The generic (GraphScattered) implementation in the .inl targets a matrix-free
+// system and is incompatible with an assembled CRS system on three points, so
+// each is overridden in the .cpp:
+//   * checkLinearSystem()              -> the generic one auto-creates a
+//                                         PreconditionedMatrixFreeSystem<GraphScattered>;
+//                                         CRS needs a plain MatrixLinearSystem<CRS,FV>.
+//   * ensureRequiredLinearSystemType() -> the generic one rejects anything that is
+//                                         not a PreconditionedMatrixFreeSystem.
+//   * solve()                          -> the generic precond path drives the
+//                                         preconditioner through the GraphScattered
+//                                         setRHS/solveSystem/dispatch plumbing; for a
+//                                         CRS preconditioner (e.g. SSORPreconditioner)
+//                                         we call precond->invert(M)/precond->solve()
+//                                         directly on the assembled matrix.
+// This makes PCGLinearSolver usable with an assembled (CRS) linear system, hence
+// with LinearSolverConstraintCorrection, which requires one.
+// -----------------------------------------------------------------------------
+template<>
+void PCGLinearSolver<
+    linearalgebra::CompressedRowSparseMatrix<SReal>,
+    linearalgebra::FullVector<SReal>>::solve(
+        linearalgebra::CompressedRowSparseMatrix<SReal>&,
+        linearalgebra::FullVector<SReal>&,
+        linearalgebra::FullVector<SReal>&);
+
+template<>
+void PCGLinearSolver<
+    linearalgebra::CompressedRowSparseMatrix<SReal>,
+    linearalgebra::FullVector<SReal>>::checkLinearSystem();
+
+template<>
+void PCGLinearSolver<
+    linearalgebra::CompressedRowSparseMatrix<SReal>,
+    linearalgebra::FullVector<SReal>>::ensureRequiredLinearSystemType();
+
+template<>
+void PCGLinearSolver<
+    linearalgebra::CompressedRowSparseMatrix<SReal>,
+    linearalgebra::FullVector<SReal>>::bwdInit();
+
+template<>
+void PCGLinearSolver<
+    linearalgebra::CompressedRowSparseMatrix<type::Mat<3,3,SReal>>,
+    linearalgebra::FullVector<SReal>>::solve(
+        linearalgebra::CompressedRowSparseMatrix<type::Mat<3,3,SReal>>&,
+        linearalgebra::FullVector<SReal>&,
+        linearalgebra::FullVector<SReal>&);
+
+template<>
+void PCGLinearSolver<
+    linearalgebra::CompressedRowSparseMatrix<type::Mat<3,3,SReal>>,
+    linearalgebra::FullVector<SReal>>::checkLinearSystem();
+
+template<>
+void PCGLinearSolver<
+    linearalgebra::CompressedRowSparseMatrix<type::Mat<3,3,SReal>>,
+    linearalgebra::FullVector<SReal>>::ensureRequiredLinearSystemType();
+
+template<>
+void PCGLinearSolver<
+    linearalgebra::CompressedRowSparseMatrix<type::Mat<3,3,SReal>>,
+    linearalgebra::FullVector<SReal>>::bwdInit();
+
 #if !defined(SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_PCGLINEARSOLVER_CPP)
-template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API PCGLinearSolver<GraphScatteredMatrix, GraphScatteredVector>;
+extern template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API PCGLinearSolver<GraphScatteredMatrix, GraphScatteredVector>;
+extern template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API PCGLinearSolver<
+    linearalgebra::CompressedRowSparseMatrix<SReal>,
+    linearalgebra::FullVector<SReal>>;
+extern template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API PCGLinearSolver<
+    linearalgebra::CompressedRowSparseMatrix<type::Mat<3,3,SReal>>,
+    linearalgebra::FullVector<SReal>>;
 #endif // !defined(SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_PCGLINEARSOLVER_CPP)
 
 } // namespace sofa::component::linearsolver::iterative
