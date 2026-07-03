@@ -454,6 +454,85 @@ private:
 };
 
 template<>
+struct SOFA_CORE_API DrawElementMesh<sofa::geometry::Pyramid>
+    : public BaseDrawMesh<DrawElementMesh<sofa::geometry::Pyramid>, 5>
+{
+    using ElementType = sofa::geometry::Pyramid;
+    friend BaseDrawMesh;
+
+    static constexpr ColorContainer defaultColors {
+        sofa::type::RGBAColor::green(),
+        sofa::type::RGBAColor::teal(),
+        sofa::type::RGBAColor::navy(),
+        sofa::type::RGBAColor::gold(),
+        sofa::type::RGBAColor::purple()
+    };
+
+private:
+    template<class PositionContainer, class IndicesContainer>
+    void doDraw(
+        sofa::helper::visual::DrawTool* drawTool,
+        const PositionContainer& position,
+        sofa::core::topology::BaseMeshTopology* topology,
+        const IndicesContainer& elementIndices,
+        const ColorContainer& colors)
+    {
+        if (!topology)
+            return;
+
+        const auto& elements = topology->getPyramids();
+
+        // Allocate space for rendering points
+        // 1 Quad + 4 Triangles
+        renderedPoints[0].resize(elementIndices.size() * sofa::geometry::Quad::NumberOfNodes);
+        renderedPoints[1].resize(elementIndices.size() * sofa::geometry::Triangle::NumberOfNodes);
+        renderedPoints[2].resize(elementIndices.size() * sofa::geometry::Triangle::NumberOfNodes);
+        renderedPoints[3].resize(elementIndices.size() * sofa::geometry::Triangle::NumberOfNodes);
+        renderedPoints[4].resize(elementIndices.size() * sofa::geometry::Triangle::NumberOfNodes);
+
+        std::array<std::size_t, NumberColors> renderedPointId {};
+
+        for (auto i : elementIndices)
+        {
+            const auto& pyramid = elements[i];
+            const auto center = this->elementCenter(position, pyramid);
+
+            const auto drawQuad = [&](sofa::Index bufferId, sofa::Index v0, sofa::Index v1, sofa::Index v2, sofa::Index v3)
+            {
+                const std::array vertexIndices { pyramid[v0], pyramid[v1], pyramid[v2], pyramid[v3] };
+                for (std::size_t k = 0; k < sofa::geometry::Quad::NumberOfNodes; ++k)
+                {
+                    const auto p = this->applyElementSpace(position[vertexIndices[k]], center);
+                    renderedPoints[bufferId][renderedPointId[bufferId]++] = sofa::type::toVec3(p);
+                }
+            };
+
+            const auto drawTriangle = [&](sofa::Index bufferId, sofa::Index v0, sofa::Index v1, sofa::Index v2)
+            {
+                const std::array vertexIndices { pyramid[v0], pyramid[v1], pyramid[v2] };
+                for (std::size_t k = 0; k < sofa::geometry::Triangle::NumberOfNodes; ++k)
+                {
+                    const auto p = this->applyElementSpace(position[vertexIndices[k]], center);
+                    renderedPoints[bufferId][renderedPointId[bufferId]++] = sofa::type::toVec3(p);
+                }
+            };
+
+            drawQuad(0, 0, 3, 2, 1);
+            drawTriangle(1, 0, 1, 4);
+            drawTriangle(2, 1, 2, 4);
+            drawTriangle(3, 3, 4, 2);
+            drawTriangle(4, 0, 4, 3);
+        }
+
+        drawTool->drawQuads(renderedPoints[0], colors[0]);
+        drawTool->drawTriangles(renderedPoints[1], colors[1]);
+        drawTool->drawTriangles(renderedPoints[2], colors[2]);
+        drawTool->drawTriangles(renderedPoints[3], colors[3]);
+        drawTool->drawTriangles(renderedPoints[4], colors[4]);
+    }
+};
+
+template<>
 struct SOFA_CORE_API DrawElementMesh<sofa::geometry::Hexahedron>
     : public BaseDrawMesh<DrawElementMesh<sofa::geometry::Hexahedron>, 6>
 {
@@ -564,6 +643,7 @@ public:
         drawElements<sofa::geometry::Tetrahedron>(drawTool, position, topology);
         drawElements<sofa::geometry::Hexahedron>(drawTool, position, topology);
         drawElements<sofa::geometry::Prism>(drawTool, position, topology);
+        drawElements<sofa::geometry::Pyramid>(drawTool, position, topology);
     }
 
     template<class PositionContainer>
@@ -582,8 +662,9 @@ public:
         const auto hasTetra = !topology->getTetrahedra().empty();
         const auto hasHexa = !topology->getHexahedra().empty();
         const auto hasPrism = !topology->getPrisms().empty();
+        const auto hasPyramid = !topology->getPyramids().empty();
 
-        const bool hasVolumeElements = hasTetra || hasHexa || hasPrism;
+        const bool hasVolumeElements = hasTetra || hasHexa || hasPrism || hasPyramid;
 
         if (!hasSurfaceElements && !hasVolumeElements)
         {
@@ -609,7 +690,8 @@ private:
         DrawElementMesh<sofa::geometry::Quad>,
         DrawElementMesh<sofa::geometry::Tetrahedron>,
         DrawElementMesh<sofa::geometry::Hexahedron>,
-        DrawElementMesh<sofa::geometry::Prism>
+        DrawElementMesh<sofa::geometry::Prism>,
+        DrawElementMesh<sofa::geometry::Pyramid>
     > m_meshes;
 };
 
