@@ -71,7 +71,7 @@ void MergeMeshes<DataTypes>::createInputMeshesData(int nb)
 
 /// Parse the given description to assign values to this object's fields and potentially other parameters
 template <class DataTypes>
-void MergeMeshes<DataTypes>::parse ( sofa::core::objectmodel::BaseObjectDescription* arg )
+void MergeMeshes<DataTypes>::parse ( sofa::core::objectmodel::BaseComponentDescription* arg )
 {
     const char* p = arg->getAttribute(f_nbMeshes.getName().c_str());
     if (p)

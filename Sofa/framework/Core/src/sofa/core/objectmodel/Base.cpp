@@ -529,7 +529,7 @@ void Base::addDeprecatedAttribute(lifecycle::DeprecatedData* attribute)
 }
 
 /// Parse the given description to assign values to this object's fields and potentially other parameters
-void  Base::parse ( BaseObjectDescription* arg )
+void  Base::parse ( BaseComponentDescription* arg )
 {
     for(auto& attribute : m_oldAttributes)
     {

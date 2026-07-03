@@ -55,7 +55,7 @@ VolumeFromTriangles<DataTypes>::~VolumeFromTriangles()
 }
 
 template <class DataTypes>
-void VolumeFromTriangles<DataTypes>::parse(core::objectmodel::BaseObjectDescription* arg)
+void VolumeFromTriangles<DataTypes>::parse(core::objectmodel::BaseComponentDescription* arg)
 {
     Inherit1::parse(arg);
 

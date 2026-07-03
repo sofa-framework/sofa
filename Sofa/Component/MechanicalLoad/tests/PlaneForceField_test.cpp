@@ -23,9 +23,8 @@
 #include <sofa/testing/BaseSimulationTest.h>
 using sofa::testing::BaseSimulationTest;
 
-#include <sofa/simulation/graph/DAGSimulation.h>
+#include <sofa/simulation/Simulation.h>
 using sofa::simulation::Simulation ;
-using sofa::simulation::graph::DAGSimulation ;
 using sofa::simulation::Node ;
 using sofa::core::objectmodel::BaseObject ;
 using sofa::core::objectmodel::BaseData ;
@@ -68,8 +67,6 @@ using std::pair;
 using sofa::component::linearsolver::GraphScatteredMatrix ;
 using sofa::component::linearsolver::GraphScatteredVector ;
 using sofa::component::linearsolver::iterative::CGLinearSolver ;
-
-using sofa::simulation::graph::DAGSimulation ;
 
 using sofa::component::mass::UniformMass ;
 using sofa::component::mechanicalload::PlaneForceField ;

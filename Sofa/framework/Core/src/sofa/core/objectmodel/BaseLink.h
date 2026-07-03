@@ -32,7 +32,6 @@ namespace core::objectmodel
 class Base;
 class BaseData;
 class BaseClass;
-class BaseObjectDescription;
 
 /**
  *  \brief Abstract base class for all links in the scene grapn, independently of their type.

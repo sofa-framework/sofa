@@ -84,7 +84,7 @@ public:
     }
 
     template<class T>
-    static typename T::SPtr create(T*, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
+    static typename T::SPtr create(T*, core::objectmodel::BaseContext* context, core::objectmodel::BaseComponentDescription* arg)
     {
         std::string fromPath;
         std::string toPath;

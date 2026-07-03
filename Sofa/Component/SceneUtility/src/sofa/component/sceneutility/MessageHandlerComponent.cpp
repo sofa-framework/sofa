@@ -63,7 +63,7 @@ MessageHandlerComponent::MessageHandlerComponent() :
     m_isValid = false ;
 }
 
-void MessageHandlerComponent::parse ( core::objectmodel::BaseObjectDescription* arg )
+void MessageHandlerComponent::parse ( core::objectmodel::BaseComponentDescription* arg )
 {
     BaseComponent::parse(arg) ;
 
@@ -121,7 +121,7 @@ FileMessageHandlerComponent::~FileMessageHandlerComponent()
     }
 }
 
-void FileMessageHandlerComponent::parse ( core::objectmodel::BaseObjectDescription* arg )
+void FileMessageHandlerComponent::parse ( core::objectmodel::BaseComponentDescription* arg )
 {
     BaseComponent::parse(arg) ;
 

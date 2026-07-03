@@ -45,7 +45,7 @@ public :
     void draw(const core::visual::VisualParams* vparams) override;
 
     template<class T>
-    static typename T::SPtr create(T*, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
+    static typename T::SPtr create(T*, core::objectmodel::BaseContext* context, core::objectmodel::BaseComponentDescription* arg)
     {
         typename T::SPtr obj = sofa::core::objectmodel::New<T>();
         if (context)

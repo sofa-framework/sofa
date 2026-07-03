@@ -26,7 +26,7 @@
 #include <sofa/core/objectmodel/lifecycle/RemovedData.h>
 #include <sofa/core/objectmodel/Link.h>
 #include <sofa/core/objectmodel/BaseClass.h>
-#include <sofa/core/objectmodel/BaseObjectDescription.h>
+#include <sofa/core/objectmodel/BaseComponentDescription.h>
 #include <sofa/core/objectmodel/TagSet.h>
 #include <list>
 #include <sofa/helper/logging/Messaging.h>
@@ -168,7 +168,7 @@ public:
     virtual bool hasField( const std::string& attribute) const;
 
     /// Parse the given description to assign values to this object's fields and potentially other parameters
-    virtual void parse ( BaseObjectDescription* arg );
+    virtual void parse ( BaseComponentDescription* arg );
 
     /// Assign the field values stored in the given list of name + value pairs of strings
     void parseFields ( const std::list<std::string>& str );
@@ -340,7 +340,7 @@ public:
     /// \code  std::string type = Base::shortName<B>(); \endcode
     /// This way derived classes can redefine the shortName method
     template< class T>
-    static std::string shortName(const T* ptr = nullptr, BaseObjectDescription* = nullptr )
+    static std::string shortName(const T* ptr = nullptr, BaseComponentDescription* = nullptr )
     {
         SOFA_UNUSED(ptr);
         return sofa::helper::NameDecoder::shortName(BaseClassNameHelper::getClassName<T>());

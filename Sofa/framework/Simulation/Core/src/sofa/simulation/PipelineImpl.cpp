@@ -84,7 +84,7 @@ void PipelineImpl::init()
                             "To remove this warning, you can add an intersection component to your scene. " << msgendl
                             "More details on the collision pipeline can be found at "
                             "[sofadoc::Collision](https://www.sofa-framework.org/community/doc/simulation-principles/multi-model-representation/collision/).";
-        sofa::core::objectmodel::BaseObjectDescription discreteIntersectionDesc("Default Intersection","DiscreteIntersection");
+        sofa::core::objectmodel::BaseComponentDescription discreteIntersectionDesc("Default Intersection","DiscreteIntersection");
         const sofa::core::objectmodel::BaseComponent::SPtr obj = sofa::core::ObjectFactory::CreateObject(getContext(), &discreteIntersectionDesc);
         intersectionMethod = dynamic_cast<Intersection*>(obj.get());
     }

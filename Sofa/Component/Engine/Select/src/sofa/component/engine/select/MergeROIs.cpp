@@ -44,7 +44,7 @@ void MergeROIs::reinit()
     update();
 }
 
-void MergeROIs::parse ( core::objectmodel::BaseObjectDescription* arg )
+void MergeROIs::parse ( core::objectmodel::BaseComponentDescription* arg )
 {
     f_indices.parseSizeData(arg, d_nbROIs);
     Inherit1::parse(arg);

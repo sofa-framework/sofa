@@ -34,7 +34,7 @@ namespace sofa::gl::component::rendering2d
 {
 
 using sofa::component::setting::BackgroundSetting ;
-using sofa::core::objectmodel::BaseObjectDescription ;
+using sofa::core::objectmodel::BaseComponentDescription ;
 using sofa::type::RGBAColor ;
 
 OglLabel::OglLabel():

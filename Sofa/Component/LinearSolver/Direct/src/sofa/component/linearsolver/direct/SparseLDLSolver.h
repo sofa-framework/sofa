@@ -57,7 +57,7 @@ public :
     typedef SparseLDLImplInvertData<type::vector<int>, type::vector<Real> > InvertData;
 
     void init() override;
-    void parse( sofa::core::objectmodel::BaseObjectDescription* arg ) override;
+    void parse( sofa::core::objectmodel::BaseComponentDescription* arg ) override;
     void solve (Matrix& M, Vector& x, Vector& b) override;
     void invert(Matrix& M) override;
     bool doAddJMInvJtLocal(ResMatrixType* result, const JMatrixType* J, SReal fact, InvertData* data);
