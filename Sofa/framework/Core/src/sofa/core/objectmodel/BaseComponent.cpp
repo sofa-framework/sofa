@@ -224,7 +224,7 @@ void BaseComponent::addSlave(BaseComponent::SPtr s)
     const BaseComponent::SPtr previous = s->getMaster();
     if (previous == this) return;
     if (previous)
-        previous->l_slaves.remove(s);
+        previous->l_slaves.remove(s.get());
     l_slaves.add(s);
     if (previous)
         this->getContext()->notifyMoveSlave(previous.get(), this, s.get());
@@ -234,7 +234,7 @@ void BaseComponent::addSlave(BaseComponent::SPtr s)
 
 void BaseComponent::removeSlave(BaseComponent::SPtr s)
 {
-    if (l_slaves.remove(s))
+    if (l_slaves.remove(s.get()))
     {
         this->getContext()->notifyRemoveSlave(this, s.get());
     }
