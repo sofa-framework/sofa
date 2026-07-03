@@ -4,7 +4,10 @@ channels = ["https://prefix.dev/conda-forge"]
 description = "Open-source framework for interactive mechanical simulation, with emphasis on biomechanics and robotics"
 name = "SOFA"
 # Update PIXI_CURRENT_PLATFORM environment variable definition below if you modify platforms
-platforms = ["linux-64", "osx-64", "osx-arm64", "win-64"]
+platforms = ["osx-64",
+             "osx-arm64",
+             "linux-64",
+             "win-64"]
 version = "25.06.99"
 license = "LGPL-2.1-or-later"
 license-file = "LICENSE-LGPL.md"
@@ -70,9 +73,6 @@ dependencies = { clangxx = "*" }
 dependencies = { numpy = ">=1.22.0", pybind11 = ">=2.3.0" }
 activation = { env = { SOFA_PLUGIN_PYTHON3_ARGS = "-DPLUGIN_SOFAPYTHON3=ON -DSOFA_FETCH_SOFAPYTHON3=ON -DPython_EXECUTABLE=$SOFA_PYTHON_EXECUTABLE -DPython_FIND_STRATEGY=LOCATION" } }
 
-
-[feature.plugin-cuda.system-requirements]
-cuda = "12"
 
 [feature.plugin-cuda.target.linux]
 # XXX Adding nvvm/bin to PATH was required to compile, may be related to
