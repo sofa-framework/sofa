@@ -42,6 +42,7 @@ void registerLinearSmallStrainFEMForceField(sofa::core::ObjectFactory* factory)
         .add< LinearSmallStrainFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Tetrahedron> >()
         .add< LinearSmallStrainFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Hexahedron> >()
         .add< LinearSmallStrainFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Prism> >()
+        .add< LinearSmallStrainFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Pyramid> >()
     );
 }
 
@@ -55,5 +56,6 @@ template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API LinearSmallStrainFE
 template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API LinearSmallStrainFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Tetrahedron>;
 template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API LinearSmallStrainFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Hexahedron>;
 template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API LinearSmallStrainFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Prism>;
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API LinearSmallStrainFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Pyramid>;
 
 }
