@@ -351,14 +351,9 @@ bool BaseLink::readFromSnapshot( const std::string& str )
 
     std::string linkPath = this->getValueString();
 
-    std::string replaceValue = "//";
-    std::size_t pos = linkPath.find(replaceValue);
-    while (pos != std::string::npos)
-    {
-        linkPath.replace(pos, replaceValue.length(), "");
-        pos = linkPath.find(replaceValue, pos);
-    }
-
+    std::string search = "//";
+    sofa::helper::replaceAll(linkPath, search,"");
+    
     std::istringstream istrLink(linkPath);
     std::string linkStringBis;
 

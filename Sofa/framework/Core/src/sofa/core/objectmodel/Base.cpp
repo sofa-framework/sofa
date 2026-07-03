@@ -706,14 +706,8 @@ void Base::saveLinksIn(Snapshot::SnapshotObject& snapshot) const
         linkInfo.type = link->getValueTypeString();
         linkInfo.value = link->getValueString();
 
-        std::string replaceValue = "//";
-        std::size_t pos = linkInfo.value.find(replaceValue);
-        while (pos != std::string::npos)
-        {
-            linkInfo.value.replace(pos, replaceValue.length(), "");
-            pos = linkInfo.value.find(replaceValue, pos);
-        }
-
+        std::string search = "//";
+        sofa::helper::replaceAll(linkInfo.value, search,"");
         snapshot.m_linkContainer.push_back(linkInfo);
     }
 }
@@ -758,7 +752,7 @@ Base::findSnapshotObject(const std::shared_ptr<Snapshot::SnapshotNode>& parents,
             return snapshotObject;
         }
     }
-    msg_error("findSnapshotObject") << "SnapshotObject "<< objectname << " not found";
+    msg_error() << "SnapshotObject "<< objectname << " not found";
     auto defaultObject = std::make_shared<Snapshot::SnapshotObject>();
     defaultObject->m_name = "Unknown object";
     
@@ -778,17 +772,18 @@ void Base::loadDataSnapshot(const std::shared_ptr<Snapshot::SnapshotObject>& sna
         if (const auto data = this->findData(dataInfo.name))
         {
             if(data->read(dataInfo.value) == 0 )
-                msg_error("LoadDataSnapshot") << "Failed to read " << dataInfo.name << " in " << this->getName()  << " from the snapshot " << dataInfo.value;
+                msg_error() << "Failed to read " << dataInfo.name << " in " << this->getName()  << " from the snapshot " << dataInfo.value;
         }
     }
 }
 
-void Base::loadLinkSnapshot(const std::shared_ptr<Snapshot::SnapshotObject>& snapshotObject) const {
+void Base::loadLinkSnapshot(const std::shared_ptr<Snapshot::SnapshotObject>& snapshotObject) const
+{
     for (const auto& linkInfo : snapshotObject->m_linkContainer) {
         if (const auto link = this->findLink(linkInfo.name)) {
 
             if (link->readFromSnapshot(linkInfo.value) == 0 )
-                msg_error("LoadLinkSnapshot") << "Failed to read " << linkInfo.name << " in " << this->getName()  << " from the snapshot " << linkInfo.value;
+                msg_error() << "Failed to read " << linkInfo.name << " in " << this->getName()  << " from the snapshot " << linkInfo.value;
         }
     }
 }

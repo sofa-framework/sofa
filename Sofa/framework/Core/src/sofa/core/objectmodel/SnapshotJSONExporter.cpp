@@ -24,8 +24,11 @@
 #include <fstream>
 #include <string>
 #include <iostream>
+#include <sofa/helper/logging/Messaging.h>
+using sofa::helper::logging::MessageDispatcher ;
+using sofa::helper::logging::Message ;
 
-
+#define ERROR_LOG_SIZE 100
 
 namespace sofa::core::objectmodel
 {
@@ -206,7 +209,7 @@ void importFrom(Snapshot& snapshot, const std::string& filename)
     std::ifstream file(filename);
     if (!file.is_open())
     {
-        std::cerr << "ERROR: Cannot open file " << filename << " for reading\n";
+        msg_error("SnapshotJSONExporter") << "ERROR: Cannot open file " << filename << " for reading";
         return;
     }
 
@@ -225,7 +228,7 @@ void importFrom(Snapshot& snapshot, const std::string& filename)
     }
     else
     {
-        std::cerr << "ERROR: Invalid JSON format in " << filename << "\n";
+        msg_error("SnapshotJSONExporter") << "Invalid JSON format in " << filename ;
         return;
     }
 
@@ -237,7 +240,7 @@ std::string file_To_String(const std::string& filename)
     std::ifstream file(filename);
     if (!file.is_open())
     {
-        msg_error("SnapshotJSONExporter") << "ERROR: Cannot open file " << filename << " for reading\n";
+        msg_error("SnapshotJSONExporter") << "Cannot open file " << filename << " for reading";
         return "";
     }
 
@@ -273,7 +276,7 @@ void importFrom(std::map<std::string, std::shared_ptr<Snapshot>>& snapshots, con
 
     if (!file.is_open())
     {
-        std::cerr << "ERROR: Cannot open file " << filename << " for reading\n";
+        msg_error("SnapshotJSONExporter") << "Cannot open file " << filename << " for reading";
         return;
     }
 
@@ -311,7 +314,7 @@ void separateSnapshots(const std::string& filename, SnapshotManager& snapshotMan
 
     if (!file.is_open())
     {
-        msg_error("SnapshotJSONExporter") << "ERROR: Cannot open file " << filename << " for reading\n";
+        msg_error("SnapshotJSONExporter") << "Cannot open file " << filename << " for reading";
         return;
     }
 
@@ -330,7 +333,7 @@ void separateSnapshots(const std::string& filename, SnapshotManager& snapshotMan
                 snapshotTime = data.value;
         }
 
-        snapshotManager.AddRecentSnapshot(snapshotManager.recentSnapshots,snapshot, std::stod(snapshotTime));
+        snapshotManager.AddRecentSnapshot(snapshotManager.m_recentSnapshots,snapshot, std::stod(snapshotTime));
     }
 
 }

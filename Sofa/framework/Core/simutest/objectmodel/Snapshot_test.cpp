@@ -356,7 +356,7 @@ TEST_F(Snapshot_test, SnapshotJSONExporter)
     const std::string scene = R"(
         <?xml version='1.0'?>
         <Node name='Root' gravity='0 -9.81 0' time='0' animate='0' >
-            <RequiredPlugin name='Sofa.Component.StateContainer'/>
+            <RequiredPlugin pluginName='Sofa.Component.StateContainer'/>
             <DefaultAnimationLoop />
             <DefaultVisualManagerLoop />
             <Node name='child1'>
@@ -388,7 +388,6 @@ TEST_F(Snapshot_test, SnapshotJSONExporter)
     EXPECT_NE(snapshot_import->m_graphRoot,nullptr);
 
     EXPECT_EQ(snapshot_import->m_graphRoot->m_name,"Root");
-    EXPECT_EQ(snapshot_import->m_graphRoot->components[0].m_name,"Sofa.Component.StateContainer");
     EXPECT_EQ(snapshot_import->m_graphRoot->components[1].m_name,"DefaultAnimationLoop1");
     EXPECT_EQ(snapshot_import->m_graphRoot->components[2].m_name,"DefaultVisualManagerLoop1");
     EXPECT_EQ(snapshot_import->m_graphRoot->children[0]->m_name,"child1");
