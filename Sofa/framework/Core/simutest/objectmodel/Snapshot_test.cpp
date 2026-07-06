@@ -62,10 +62,10 @@ public:
     sofa::MultiLink<TestComponent, BaseComponent, BaseLink::FLAG_DOUBLELINK> l_target;
 
     TestComponent()
-        : d_value(initData(&d_value, 3.14f, "value", "test value"))
+        : d_value(initData(&d_value, 3.14f, "pi", "test value"))
         , l_target(initLink("target","target test"))
     {
-        this->setName("pi");
+        this->setName("TestComponent");
     }
 
     void saveData(Snapshot::SnapshotObject& snapshot)
@@ -111,12 +111,11 @@ TEST_F(Snapshot_test, saveDataIn)
     Component.saveData(*snapshot);
     for (auto& data : snapshot->m_dataContainer)
     {
-        if(data.name == "name")
+        if (data.name == "name")
         {
-            EXPECT_EQ(data.value, "pi");
+            EXPECT_EQ(data.value, "TestComponent");
         }
-
-        if(data.name == "value")
+        if(data.name == "pi")
         {
             EXPECT_EQ(data.value, "3.14");
         }
@@ -184,12 +183,7 @@ TEST_F(Snapshot_test, createSnapshotObject)
     EXPECT_EQ(snapshotObject->m_name, "snapshotObject");
     for (auto& data : snapshotObject->m_dataContainer)
     {
-        if(data.name == "name")
-        {
-            EXPECT_EQ(data.value, "pi");
-        }
-
-        if(data.name == "value")
+        if(data.name == "pi")
         {
             EXPECT_EQ(data.value, "3.14");
         }
@@ -218,7 +212,7 @@ TEST_F(Snapshot_test, findSnapshotObject)
     auto snapshot = Component.saveSnapshot(snapshotParents);
     snapshotNode->components.push_back(*snapshot);
 
-    auto expectedObject = Component.findSnapshotObject(snapshotNode, "pi");
+    auto expectedObject = Component.findSnapshotObject(snapshotNode, "TestComponent");
 
     EXPECT_NE(expectedObject, nullptr);
     EXPECT_EQ(Component.getName(), expectedObject->m_name);
@@ -243,11 +237,11 @@ TEST_F(Snapshot_test, saveSnapshot)
 
     snapshot = Component.saveSnapshot(snapshotParents);
 
-    EXPECT_EQ(snapshot->m_name, "pi");
+    EXPECT_EQ(snapshot->m_name, "TestComponent");
     EXPECT_EQ(snapshot->m_dataContainer.size(), 7);
     EXPECT_EQ(snapshot->m_dataContainer[0].name, "name");
-    EXPECT_EQ(snapshot->m_dataContainer[0].value, "pi");
-    EXPECT_EQ(snapshot->m_dataContainer.back().name, "value");
+    EXPECT_EQ(snapshot->m_dataContainer[0].value, "TestComponent");
+    EXPECT_EQ(snapshot->m_dataContainer.back().name, "pi");
     EXPECT_EQ(snapshot->m_dataContainer.back().value, "3.14");
     EXPECT_EQ(snapshot->m_linkContainer[0].name, "context");
     EXPECT_EQ(snapshot->m_linkContainer[0].value, "@./");

@@ -41,8 +41,8 @@ public:
     std::map<std::string, std::shared_ptr<sofa::core::objectmodel::Snapshot>> m_recentSnapshots;
 
 
-    static void AddRecentFile(const std::string& path, std::vector<std::string>& recentFiles, int maxFiles = 10);
-    static void AddRecentSnapshot(std::map<std::string, std::shared_ptr<sofa::core::objectmodel::Snapshot>>& recentSnapshots, std::shared_ptr<sofa::core::objectmodel::Snapshot> snapshot, double snapshotTime );
+    void AddRecentFile(const std::string& path, std::vector<std::string>& recentFiles, int maxFiles = 10);
+    void AddRecentSnapshot(std::map<std::string, std::shared_ptr<sofa::core::objectmodel::Snapshot>>& recentSnapshots, std::shared_ptr<sofa::core::objectmodel::Snapshot> snapshot, double snapshotTime );
 
 };
 } // namespace sofa::core::objectmodel

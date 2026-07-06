@@ -37,7 +37,6 @@ namespace sofa::core::objectmodel
 *  This class contains the structure for a snapshot of a simulation in SOFA.
 *  The snapshot contains data and link, and keep the shape of a scene graph
 */
-
 class SOFA_CORE_API Snapshot
 {
 

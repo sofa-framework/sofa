@@ -712,7 +712,8 @@ void Base::saveLinksIn(Snapshot::SnapshotObject& snapshot) const
     }
 }
 
-void Base::saveInternalStateIn(Snapshot::SnapshotObject& snapshot) const {
+void Base::saveInternalStateIn(Snapshot::SnapshotObject& snapshot) const
+{
     SOFA_UNUSED(snapshot);
 }
 

@@ -130,8 +130,12 @@ public:
     virtual core::visual::VisualLoop* getVisualLoop() const;
 
 protected:
+
+    /// Create a SnapshotObject that will contain data and link
     std::shared_ptr<Snapshot::SnapshotObject> createSnapshotObject(std::vector<std::shared_ptr<Snapshot::SnapshotNode>>& parents) const override;
 public:
+
+    /// Find a SnapshotObject corresponding to the object from the scene
     std::shared_ptr<Snapshot::SnapshotObject> findSnapshotObject(const std::shared_ptr<Snapshot::SnapshotNode>& parents, const std::string& objectname) override;
 
 private:

@@ -134,6 +134,7 @@ public:
     /// Read the command line
     bool read( const std::string& str );
 
+    /// Read the command line from a snapshot
     bool readFromSnapshot( const std::string& str );
 
     /// Update pointers in case the pointed-to objects have appeared

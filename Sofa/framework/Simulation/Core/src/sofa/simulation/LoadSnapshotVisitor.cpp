@@ -22,6 +22,7 @@
 #include <sofa/simulation/LoadSnapshotVisitor.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/simulation/Node.h>
+#include <sofa/helper/logging/Messaging.h>
 
 namespace sofa::simulation
 {
@@ -32,9 +33,7 @@ void LoadSnapshotVisitor::processObject(
 )
 {
     auto snapshotObject = obj->findSnapshotObject(parent, obj->getName());
-    if (!snapshotObject)
-        msg_error("findSnapshotObject") << "SnapshotObject " << obj->getName() << " not found";
-    else
+    if (snapshotObject)
     {
         obj->loadDataSnapshot(snapshotObject);
         obj->loadLinkSnapshot(snapshotObject);
@@ -45,9 +44,7 @@ void LoadSnapshotVisitor::processObject(
 Visitor::Result LoadSnapshotVisitor::processNodeTopDown(simulation::Node* node)
 {
     const auto snapshotObject = node->findSnapshotObject(m_snapshotContainer.m_graphRoot, node->getName());
-    if (!snapshotObject)
-        msg_error("findSnapshotNode") << "SnapshotNode "<< node->getName() << " not found";
-    else
+    if (snapshotObject)
     {
         const auto SnapshotNode = std::dynamic_pointer_cast<core::objectmodel::Snapshot::SnapshotNode>(snapshotObject);
         node->loadDataSnapshot(SnapshotNode);
