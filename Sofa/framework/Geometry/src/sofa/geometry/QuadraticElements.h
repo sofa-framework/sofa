@@ -21,14 +21,59 @@
 ******************************************************************************/
 #pragma once
 
+#include <sofa/geometry/config.h>
 #include <sofa/geometry/ElementType.h>
-#include <sofa/topology/Edge.h>
-#include <sofa/topology/Hexahedron.h>
-#include <sofa/topology/Point.h>
-#include <sofa/topology/Prism.h>
-#include <sofa/topology/Pyramid.h>
-#include <sofa/topology/Quad.h>
-#include <sofa/topology/Tetrahedron.h>
-#include <sofa/topology/Triangle.h>
-#include <sofa/geometry/QuadraticElements.h>
-#include <sofa/topology/config.h>
+
+namespace sofa::geometry
+{
+
+struct QuadraticEdge
+{
+    static constexpr sofa::Size NumberOfNodes = 3;
+    static constexpr sofa::Size PolynomialOrder = 2;
+    static constexpr ElementType Element_type = ElementType::QUADRATIC_EDGE;
+};
+
+struct QuadraticTriangle
+{
+    static constexpr sofa::Size NumberOfNodes = 6;
+    static constexpr sofa::Size PolynomialOrder = 2;
+    static constexpr ElementType Element_type = ElementType::QUADRATIC_TRIANGLE;
+};
+
+struct QuadraticQuad
+{
+    static constexpr sofa::Size NumberOfNodes = 9;
+    static constexpr sofa::Size PolynomialOrder = 2;
+    static constexpr ElementType Element_type = ElementType::QUADRATIC_QUAD;
+};
+
+struct QuadraticTetrahedron
+{
+    static constexpr sofa::Size NumberOfNodes = 10;
+    static constexpr sofa::Size PolynomialOrder = 2;
+    static constexpr ElementType Element_type = ElementType::QUADRATIC_TETRAHEDRON;
+};
+
+struct QuadraticHexahedron
+{
+    static constexpr sofa::Size NumberOfNodes = 27;
+    static constexpr sofa::Size PolynomialOrder = 2;
+    static constexpr ElementType Element_type = ElementType::QUADRATIC_HEXAHEDRON;
+};
+
+struct QuadraticPrism
+{
+    static constexpr sofa::Size NumberOfNodes = 18;
+    static constexpr sofa::Size PolynomialOrder = 2;
+    static constexpr ElementType Element_type = ElementType::QUADRATIC_PRISM;
+};
+
+struct QuadraticPyramid
+{
+    static constexpr sofa::Size NumberOfNodes = 14;
+    static constexpr sofa::Size PolynomialOrder = 2;
+    static constexpr ElementType Element_type = ElementType::QUADRATIC_PYRAMID;
+};
+
+}

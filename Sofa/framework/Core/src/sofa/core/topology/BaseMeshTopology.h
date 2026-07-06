@@ -108,6 +108,21 @@ public:
     virtual const SeqHexahedra& getHexahedra() = 0;
     virtual const SeqPrisms& getPrisms() = 0;
     virtual const SeqPyramids& getPyramids() = 0;
+
+    template<class ElementType> // e.g. sofa::geometry::Edge
+    const auto& getElements() const
+    {
+        using TopologyElement = sofa::topology::Element<ElementType>;
+        using SeqElement = sofa::type::vector<TopologyElement>;
+        const auto* rawSequence = getElementsRaw(ElementType::Element_type);
+        if (!rawSequence)
+        {
+            static SeqElement empty;
+            return empty;
+        }
+        return *static_cast<const SeqElement*>(rawSequence);
+    }
+
     /// @}
 
     /// Random accessors
@@ -334,6 +349,12 @@ public:
 protected:
 
     sofa::core::objectmodel::DataFileName fileTopology;
+
+
+    virtual const void* getElementsRaw(const sofa::geometry::ElementType& elementType) const noexcept
+    {
+        return nullptr;
+    }
 
 public:
 
