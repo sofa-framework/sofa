@@ -57,9 +57,11 @@ sofa::simulation::Node::SPtr createScene(const sofa::simpleapi::Simulation::SPtr
     sofa::simpleapi::createObject(root, "CollisionResponse",{{"name","ContactManager"},
                                                               {"response","FrictionContactConstraint"},
                                                               {"responseParams","mu=0.3"}});
-    sofa::simpleapi::createObject(root, "NewProximityIntersection",{{"name","Intersection"},
-                                                                     {"alarmDistance","0.02"},
-                                                                     {"contactDistance","0.002"}});
+    sofa::simpleapi::createObject(root, "CCDTightInclusionIntersection",{{"name","CCDTightInclusionIntersection"},
+                                                                     {"continuousCollisionType","FreeMotion"},
+                                                                     {"maxIterations","100"},
+                                                                     {"alarmDistance","0.0"},
+                                                                     {"contactDistance","0.00001"}});
 
     //Simulated Topology creation node
     const sofa::simulation::Node::SPtr BeamDomainFromGridTopology = sofa::simpleapi::createChild(root,"BeamDomainFromGridTopology");
@@ -83,7 +85,7 @@ sofa::simulation::Node::SPtr createScene(const sofa::simpleapi::Simulation::SPtr
     sofa::simpleapi::createObject(FEMechanicalModel_Surface, "TriangleSetTopologyModifier", {{"name","Modifier"}});
     sofa::simpleapi::createObject(FEMechanicalModel_Surface, "Tetra2TriangleTopologicalMapping", {{"input","@../Container"}, {"output","@Container"}, {"flipNormals","false"}});
     sofa::simpleapi::createObject(FEMechanicalModel_Surface, "MechanicalObject", {{"name","dofs"},{"rest_position","@../mstate.rest_position"}});
-    sofa::simpleapi::createObject(FEMechanicalModel_Surface, "TriangleCollisionModel", {{"name","Collision"},{"proximity","0.001"}, {"color","0.94117647058824 0.93725490196078 0.89411764705882"}} );
+    sofa::simpleapi::createObject(FEMechanicalModel_Surface, "PointCollisionModel", {{"name","Collision"}, {"color","0.94117647058824 0.93725490196078 0.89411764705882"}} );
     sofa::simpleapi::createObject(FEMechanicalModel_Surface, "IdentityMapping", {{"name","SurfaceMapping"}});
 
     const std::vector<std::string > visuFiles{"mesh/SofaScene/LogoVisu.obj", "mesh/SofaScene/SVisu.obj", "mesh/SofaScene/O.obj", "mesh/SofaScene/FVisu.obj", "mesh/SofaScene/AVisu.obj"};
@@ -105,7 +107,7 @@ sofa::simulation::Node::SPtr createScene(const sofa::simpleapi::Simulation::SPtr
                                                                           {"position","0.2 0 -0.5  0.2 0.1 -0.5  0.3 0.1 -0.5  0.3 0 -0.5  0.2 0 -0.6  0.2 0.1 -0.6  0.3 0.1 -0.6  0.3 0 -0.6"},
                                                                           {"triangles","0 2 1  0 3 2  0 1 5  0 5 4  0 4 7  0 7 3  1 2 6  1 6 5  3 7 6  3 6 2  4 5 6  4 6 7"}} );
     sofa::simpleapi::createObject(Floor, "MechanicalObject", {{"template","Vec3"}});
-    sofa::simpleapi::createObject(Floor, "TriangleCollisionModel", {{"name","FloorCM"}, {"proximity","0.001"}, {"moving","0"}, {"simulated","0"}} );
+    sofa::simpleapi::createObject(Floor, "TriangleCollisionModel", {{"name","FloorCM"}, {"contactDistance","0.00001"}, {"moving","0"}, {"simulated","0"}} );
     return root;
 }
 

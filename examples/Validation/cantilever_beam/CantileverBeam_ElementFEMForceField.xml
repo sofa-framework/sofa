@@ -31,7 +31,7 @@
     <MechanicalObject template="Vec3" name="state" showObject="true"/>
 
     <NodalMassDensity property="1100"/>
-    <HexahedronFEMMass/>
+    <FEMMass template="Vec3,Hexahedron"/>
 
     <BoxROI template="Vec3" name="box_roi" box="-0.011 -0.011 -0.0001   0.011 0.011 0.0001" drawBoxes="1" />
     <FixedProjectiveConstraint template="Vec3" indices="@box_roi.indices" />

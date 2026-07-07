@@ -85,4 +85,61 @@ TEST_F(TetrahedralCorotationalFEMForceField_test, emptyTology)
     this->checkEmptyTopology();
 }
 
+TEST_F(TetrahedralCorotationalFEMForceField_test, TetrahedronInformationStreamOperators)
+{
+    TetraCorotationalFEM::TetrahedronInformation initialInfo;
+
+    for (int i = 0; i < 6; ++i)
+        for (int j = 0; j < 6; ++j)
+            initialInfo.materialMatrix[i][j] = 1;
+
+    for (int i = 0; i < 12; ++i)
+        for (int j = 0; j < 6; ++j)
+            initialInfo.strainDisplacementTransposedMatrix[i][j] = 1;
+
+    for (int i = 0; i < 4; ++i)
+        initialInfo.rotatedInitialElements[i] = Coord(1, 2, 3);
+
+    for (int i = 0; i < 4; ++i)
+        for (int j = 0; j < 4; ++j)
+            initialInfo.elemShapeFun[i][j] = 1;
+
+    for (int i = 0; i < 3; ++i)
+        for (int j = 0; j < 3; ++j)
+            initialInfo.rotation[i][j] = 1;
+
+    for (int i = 0; i < 3; ++i)
+        for (int j = 0; j < 3; ++j)
+            initialInfo.initialTransformation[i][j] = 1;
+
+    std::stringstream buffer;
+    buffer << initialInfo;
+
+    TetraCorotationalFEM::TetrahedronInformation loadedInfo;
+    buffer >> loadedInfo;
+
+    for (int i = 0; i < 6; ++i)
+        for (int j = 0; j < 6; ++j)
+            EXPECT_EQ(initialInfo.materialMatrix[i][j], loadedInfo.materialMatrix[i][j]);
+
+    for (int i = 0; i < 12; ++i)
+        for (int j = 0; j < 6; ++j)
+            EXPECT_EQ(initialInfo.strainDisplacementTransposedMatrix[i][j],
+                     loadedInfo.strainDisplacementTransposedMatrix[i][j]);
+
+    for (int i = 0; i < 4; ++i)
+        EXPECT_EQ(initialInfo.rotatedInitialElements[i], loadedInfo.rotatedInitialElements[i]);
+
+    for (int i = 0; i < 4; ++i)
+        for (int j = 0; j < 4; ++j)
+            EXPECT_EQ(initialInfo.elemShapeFun[i][j], loadedInfo.elemShapeFun[i][j]);
+
+    for (int i = 0; i < 3; ++i)
+        for (int j = 0; j < 3; ++j)
+        {
+            EXPECT_EQ(initialInfo.rotation[i][j], loadedInfo.rotation[i][j]);
+            EXPECT_EQ(initialInfo.initialTransformation[i][j], loadedInfo.initialTransformation[i][j]);
+        }
+}
+
 }

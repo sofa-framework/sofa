@@ -106,7 +106,7 @@ void SpringForceField<DataTypes>::init()
         updateSpringsFromTopologyIndices();
 
 
-    this->addUpdateCallback("TopoCallBack",{ &d_springsIndices[0], &d_springsIndices[1], &d_lengths},
+    this->addUpdateCallback("TopoCallBack",{ &d_springsIndices[0], &d_springsIndices[1], &d_lengths, &d_ks, &d_kd},
                       [this](const sofa::core::DataTracker& ) -> sofa::core::objectmodel::ComponentState
                       {
                           updateSpringsFromTopologyIndices();
@@ -235,55 +235,62 @@ void SpringForceField<DataTypes>::updateSpringsFromTopologyIndices()
     if (indices1.empty())
         return;
 
-    auto lengths = sofa::helper::getWriteAccessor(d_lengths);
-    if (lengths.empty())
     {
-        lengths.push_back({0.0});
+        auto lengths = sofa::helper::getWriteAccessor(d_lengths);
+        if (lengths.empty())
+        {
+            lengths.push_back({0.0});
+        }
+
+        if (lengths.size() != indices1.size())
+        {
+            msg_warning() << "Lengths list has a different size than indices1. The list will be resized to " << indices1.size() << " elements.";
+            lengths->resize(indices1.size(), lengths->back());
+        }
+
+        auto kds = sofa::helper::getWriteAccessor(d_kd);
+        if (kds.size() != indices1.size())
+        {
+            msg_warning() << "Kd list has a different size than indices1. The list will be resized to " << indices1.size() << " elements.";
+            kds->resize(indices1.size(), kds->back());
+        }
+
+        auto kss = sofa::helper::getWriteAccessor(d_ks);
+        if (kss.size() != indices1.size())
+        {
+            msg_warning() << "Ks list has a different size than indices1. The list will be resized to " << indices1.size() << " elements.";
+            kss->resize(indices1.size(), kss->back());
+        }
+
+        auto elongationOnly = sofa::helper::getWriteAccessor(d_elongationOnly);
+        if (elongationOnly.size() != indices1.size())
+        {
+            msg_warning() << "elongationOnly list has a different size than indices1. The list will be resized to " << indices1.size() << " elements.";
+            elongationOnly->resize(indices1.size(), elongationOnly->back());
+        }
+
+
+        auto enabled = sofa::helper::getWriteAccessor(d_enabled);
+        if (enabled.size() != indices1.size())
+        {
+            msg_warning() << "enabled list has a different size than indices1. The list will be resized to " << indices1.size() << " elements.";
+            enabled->resize(indices1.size(), enabled->back());
+        }
+
+        msg_info() << "Inputs have changed, recompute  Springs From Data Inputs";
+
+        type::vector<Spring>& _springs = *this->d_springs.beginEdit();
+        _springs.clear();
+
+        for (sofa::Index i = 0; i<indices1.size(); ++i)
+            _springs.push_back(Spring(indices1[i], indices2[i], kss[i], kds[i], lengths[i],elongationOnly[i],enabled[i]));
+
     }
 
-    if (lengths.size() != indices1.size())
-    {
-        msg_warning() << "Lengths list has a different size than indices1. The list will be resized to " << indices1.size() << " elements.";
-        lengths->resize(indices1.size(), lengths->back());
-    }
+    d_lengths.cleanDirty();
+    d_ks.cleanDirty();
+    d_kd.cleanDirty();
 
-    auto kds = sofa::helper::getWriteAccessor(d_kd);
-    if (kds.size() != indices1.size())
-    {
-        msg_warning() << "Kd list has a different size than indices1. The list will be resized to " << indices1.size() << " elements.";
-        kds->resize(indices1.size(), kds->back());
-    }
-
-    auto kss = sofa::helper::getWriteAccessor(d_ks);
-    if (kss.size() != indices1.size())
-    {
-        msg_warning() << "Ks list has a different size than indices1. The list will be resized to " << indices1.size() << " elements.";
-        kss->resize(indices1.size(), kss->back());
-    }
-
-    auto elongationOnly = sofa::helper::getWriteAccessor(d_elongationOnly);
-    if (elongationOnly.size() != indices1.size())
-    {
-        msg_warning() << "elongationOnly list has a different size than indices1. The list will be resized to " << indices1.size() << " elements.";
-        elongationOnly->resize(indices1.size(), elongationOnly->back());
-    }
-
-
-    auto enabled = sofa::helper::getWriteAccessor(d_enabled);
-    if (enabled.size() != indices1.size())
-    {
-        msg_warning() << "enabled list has a different size than indices1. The list will be resized to " << indices1.size() << " elements.";
-        enabled->resize(indices1.size(), enabled->back());
-    }
-
-    msg_info() << "Inputs have changed, recompute  Springs From Data Inputs";
-
-    type::vector<Spring>& _springs = *this->d_springs.beginEdit();
-    _springs.clear();
-
-    for (sofa::Index i = 0; i<indices1.size(); ++i)
-        _springs.push_back(Spring(indices1[i], indices2[i], kss[i], kds[i], lengths[i],elongationOnly[i],enabled[i]));
-    
     areSpringIndicesDirty = false;
 }
 

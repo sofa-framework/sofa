@@ -48,8 +48,9 @@
     <CollisionResponse name="ContactManager" response="FrictionContactConstraint" responseParams="mu=0.3" />
     <!-- This object is responsible for defining pairs of points used for contact simulation.
     Alarm distance and contact distance are key parameters: alarm distance is the distance at which the collision
-    detection is being performed. The contact distance increases the contact distance between object, enforcing a 'skinning' behavior -->
-    <NewProximityIntersection name="Intersection" alarmDistance="0.02" contactDistance="0.002" />
+    detection is being performed. The contact distance increases the final distance between object, enforcing a 'skinning' behavior.
+    Here, because we are using CCD collision detection, the alarm distance can be set to 0-->
+    <CCDTightInclusionIntersection name="CCDTightInclusionIntersection" continuousCollisionType="FreeMotion" maxIterations="100" alarmDistance="0.0" contactDistance="0.00001"/>
 
     <!-- Non-simulated node used to create underlying deformable topology -->
     <Node name="BeamDomainFromGridTopology">
@@ -93,9 +94,9 @@
             <Tetra2TriangleTopologicalMapping input="@../Container" output="@Container" flipNormals="false"/>
             <MechanicalObject name="dofs" rest_position="@../mstate.rest_position"/>
 
-            <!-- This uses triangles as colliding element. These triangular primitives are the triangles present in the topology
+            <!-- This uses points as colliding element. These primitives are the one of the surface, thanks to the topological mapping
             For more information on collision models see : https://sofa-framework.github.io/doc/components/collision/geometry/collisionmodels/ -->
-            <TriangleCollisionModel name="Collision" contactDistance="0.001" color="0.94117647058824 0.93725490196078 0.89411764705882" />
+            <PointCollisionModel name="Collision" contactDistance="0.0" color="0.94117647058824 0.93725490196078 0.89411764705882" />
 
             <!-- This is a mapping: it relates the position of this node to the one of the simulated node.
             The position of this node (the output of the mapping) is totally defined by the position of the input node
@@ -157,6 +158,6 @@
                                                  4 5 6  4 6 7" />
         <MechanicalObject template="Vec3"/>
         <!-- Because it is neither simulated nor moving, we can speed the solver and collision detection by setting parameters moving="0" simulated="0" -->
-        <TriangleCollisionModel name="CubeCM" contactDistance="0.001" moving="0" simulated="0" />
+        <TriangleCollisionModel name="CubeCM" contactDistance="0.00001" moving="0" simulated="0" />
     </Node>
 </Node>

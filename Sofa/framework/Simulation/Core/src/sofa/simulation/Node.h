@@ -555,10 +555,12 @@ public:
 
     /// return the smallest common parent between this and node2 (returns nullptr if separated sub-graphes)
     Node* findCommonParent( simulation::Node* node2 );
-
+    
+    bool bboxIsFixed() const { return m_bboxIsFixed; }
 protected:
     bool debug_;
     bool initialized;
+    bool m_bboxIsFixed{false};
 
     virtual bool doAddObject(sofa::core::objectmodel::BaseComponent::SPtr obj,  sofa::core::objectmodel::TypeOfInsertion insertionLocation= sofa::core::objectmodel::TypeOfInsertion::AtEnd);
     virtual bool doRemoveObject(sofa::core::objectmodel::BaseComponent::SPtr obj);
