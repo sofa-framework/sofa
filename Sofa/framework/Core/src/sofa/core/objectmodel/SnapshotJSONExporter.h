@@ -22,7 +22,6 @@
 #pragma once
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/objectmodel/Snapshot.h>
-#include <sofa/core/objectmodel/SnapshotManager.h>
 
 namespace sofa::core::objectmodel
 {
@@ -44,8 +43,5 @@ namespace sofa::core::objectmodel
 
     /// Import a collection of Snapshots from a single JSON file
     void importFrom(std::map<std::string, std::shared_ptr<Snapshot>>& snapshots, const std::string& filename);
-
-    /// Parses a multi-snapshot JSON file and registers each snapshot with a SnapshotManager
-    void separateSnapshots(const std::string& filename, SnapshotManager& snapshotManager);
 
 } // namespace sofa::core::objectmodel

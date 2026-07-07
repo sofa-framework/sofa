@@ -306,36 +306,4 @@ void importFrom(std::map<std::string, std::shared_ptr<Snapshot>>& snapshots, con
     }
 }
 
-void separateSnapshots(const std::string& filename, SnapshotManager& snapshotManager)
-{
-    std::ifstream file(filename);
-
-    nlohmann::json jSnapshot;
-
-    if (!file.is_open())
-    {
-        msg_error("SnapshotJSONExporter") << "Cannot open file " << filename << " for reading";
-        return;
-    }
-
-    file >> jSnapshot;
-    file.close();
-
-    for (const auto& snapshotJson : jSnapshot)
-    {
-        auto snapshot = std::make_shared<Snapshot>();
-        snapshot->m_graphRoot = std::make_shared<Snapshot::SnapshotNode>();
-        from_json(snapshotJson, *snapshot->m_graphRoot);
-        std::string snapshotTime = "0";
-        for (const auto& data : snapshot->m_graphRoot->m_dataContainer)
-        {
-            if (data.name == "time")
-                snapshotTime = data.value;
-        }
-
-        snapshotManager.AddRecentSnapshot(snapshotManager.m_recentSnapshots,snapshot, std::stod(snapshotTime));
-    }
-
-}
-
 } // namespace sofa::core::objectmodel
