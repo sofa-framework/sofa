@@ -36,12 +36,23 @@ namespace sofa::simulation
 {
 
 /**
- * \brief Snapshot container and memory save/load helper.
+ * \brief SnapshotManager is responsible for storing and managing snapshots, whether they are kept in memory or stored on disk.
  *
- * Actually, this class:
- * - Store snapshots (from files or memory)
- * - Do save/load in memory
- * - Do save/load in a file
+ * Snapshots are stored in two separate containers:
+ * - m_snapshotsFromMemory for in-memory snapshots.
+ * - m_snapshotsFromFiles for snapshots stored on disk.
+ *
+ * New snapshots can be added using addSnapshotFromMemory() and
+ * addSnapshotFromFile().
+ *
+ * Although in-memory and on-disk snapshots are handled separately,
+ * both follow the same overall design:
+ *
+ * - doMemorySave() and doMemoryLoad() save and restore snapshots in memory.
+ * - doSaveTo() and doLoadTo() save and load snapshots from disk. The output file format can be specified when calling doSaveTo().
+ *
+ * The doSaveTo() function also provides an isGroup parameter, while doLoadToGroup() is used to load a collection of snapshots.
+ * These functions allow groups of snapshots to be saved to and restored from a single file.
  *
  */
 class SOFA_SIMULATION_CORE_API SnapshotManager
