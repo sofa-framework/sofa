@@ -40,17 +40,17 @@ SnapshotManager::SnapshotManager() = default;
 
 SnapshotManager::~SnapshotManager() = default;
 
-void SnapshotManager::addRecentFile(const std::string& path)
+void SnapshotManager::addSnapshotFromFile(const std::string& path)
 {
-    m_recentSnapshotsFromFiles.erase(std::remove(m_recentSnapshotsFromFiles.begin(), m_recentSnapshotsFromFiles.end(), path), m_recentSnapshotsFromFiles.end());
-    m_recentSnapshotsFromFiles.push_back(path);
+    m_snapshotsFromFiles.erase(std::remove(m_snapshotsFromFiles.begin(), m_snapshotsFromFiles.end(), path), m_snapshotsFromFiles.end());
+    m_snapshotsFromFiles.push_back(path);
 }
 
-void SnapshotManager::addRecentSnapshot(std::shared_ptr<sofa::core::objectmodel::Snapshot> snapshot,
+void SnapshotManager::addSnapshotFromMemory(std::shared_ptr<sofa::core::objectmodel::Snapshot> snapshot,
                                         double snapshotTime)
 {
     static int index = 0;
-    m_recentSnapshotsFromMemory["Memory_Snapshot " + std::to_string(index++) + " at " + std::to_string(snapshotTime)] = std::move(snapshot);
+    m_snapshotsFromMemory["Memory_Snapshot " + std::to_string(index++) + " at " + std::to_string(snapshotTime)] = std::move(snapshot);
 }
 
 void SnapshotManager::doMemorySave(sofa::core::sptr<Node>& groot)
@@ -58,18 +58,18 @@ void SnapshotManager::doMemorySave(sofa::core::sptr<Node>& groot)
     auto snapshot = std::make_shared<sofa::core::objectmodel::Snapshot>();
     auto visitor = SaveSnapshotVisitor(nullptr, *snapshot);
     groot->execute(visitor);
-    addRecentSnapshot(snapshot, groot->getTime());
+    addSnapshotFromMemory(snapshot, groot->getTime());
 }
 
 void SnapshotManager::doMemoryLoad(sofa::core::sptr<Node>& groot)
 {
-    if (m_recentSnapshotsFromMemory.empty())
+    if (m_snapshotsFromMemory.empty())
     {
         msg_warning("MemoryLoad") << "No Snapshot in memory";
         return;
     }
 
-    const auto& snapshot = m_recentSnapshotsFromMemory.rbegin()->second;
+    const auto& snapshot = m_snapshotsFromMemory.rbegin()->second;
     auto visitor = LoadSnapshotVisitor(nullptr, *snapshot);
     groot->execute(visitor);
 }
@@ -85,11 +85,11 @@ void SnapshotManager::doSaveTo(sofa::core::sptr<sofa::simulation::Node>& groot,s
     if (FileExtension == "json" && !isGroup)
         exportToJSON(*m_snapshot,savePath);
     else if (FileExtension == "json" && isGroup)
-        exportToJSON(m_recentSnapshotsFromMemory,savePath);
+        exportToJSON(m_snapshotsFromMemory,savePath);
     else
         msg_error("SaveSnapshot") << "Snapshot " << savePath << " not supported";
 
-    addRecentFile(savePath);
+    addSnapshotFromFile(savePath);
     msg_info("SaveSnapshot") << "Snapshot " << savePath << " saved";
 }
 
@@ -102,7 +102,7 @@ void SnapshotManager::doLoadTo(sofa::core::sptr<sofa::simulation::Node>& groot, 
         auto visitor = LoadSnapshotVisitor(nullptr,*m_snapshot);
         groot->execute(visitor);
     }
-    addRecentFile(outPath);
+    addSnapshotFromFile(outPath);
     msg_info("LoadSnapshot") << "Snapshot " << outPath << " loaded";
 }
 
@@ -136,7 +136,7 @@ void SnapshotManager::doLoadToGroup(const std::string& filename)
                 snapshotTime = data.value;
         }
 
-        addRecentSnapshot(snapshot, std::stod(snapshotTime));
+        addSnapshotFromMemory(snapshot, std::stod(snapshotTime));
     }
 
     msg_info("LoadSnapshot") << "Snapshot " << filename << " loaded";

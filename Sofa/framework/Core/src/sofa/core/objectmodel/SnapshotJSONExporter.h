@@ -27,21 +27,21 @@ namespace sofa::core::objectmodel
 {
 
     /// Export a single Snapshot to a JSON file
-    void exportToJSON(Snapshot& snapshot, const std::string& filename);
+    SOFA_CORE_API void exportToJSON(Snapshot& snapshot, const std::string& filename);
 
     /// Import a single Snapshot from a JSON file
-    void importFrom(Snapshot& snapshot, const std::string& filename);
+    SOFA_CORE_API void importFrom(Snapshot& snapshot, const std::string& filename);
 
     /// Read a JSON file and returns its content as a string
-    std::string fileToString(const std::string& filename);
+    SOFA_CORE_API std::string fileToString(const std::string& filename);
 
     /// Serialize a Snapshot to a JSON string
-    std::string snapshotToString(const Snapshot& snapshot);
+    SOFA_CORE_API std::string snapshotToString(const Snapshot& snapshot);
 
     /// Export a collection of Snapshots to a single JSON file
-    void exportToJSON(std::map<std::string, std::shared_ptr<Snapshot>>& snapshots, const std::string& filename);
+    SOFA_CORE_API void exportToJSON(std::map<std::string, std::shared_ptr<Snapshot>>& snapshots, const std::string& filename);
 
     /// Import a collection of Snapshots from a single JSON file
-    void importFrom(std::map<std::string, std::shared_ptr<Snapshot>>& snapshots, const std::string& filename);
+    SOFA_CORE_API void importFrom(std::map<std::string, std::shared_ptr<Snapshot>>& snapshots, const std::string& filename);
 
 } // namespace sofa::core::objectmodel

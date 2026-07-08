@@ -51,16 +51,16 @@ public:
     ~SnapshotManager();
 
     /// Container of snapshot from Files
-    std::vector<std::string> m_recentSnapshotsFromFiles;
+    std::vector<std::string> m_snapshotsFromFiles;
 
     /// Container of snapshot from Memory
-    std::map<std::string, std::shared_ptr<sofa::core::objectmodel::Snapshot>> m_recentSnapshotsFromMemory;
+    std::map<std::string, std::shared_ptr<sofa::core::objectmodel::Snapshot>> m_snapshotsFromMemory;
 
     /// Store every snapshot from files in m_recentSnapshotsFromFiles and sort them by filename
-    void addRecentFile(const std::string& path);
+    void addSnapshotFromFile(const std::string& path);
 
     /// Store every snapshot in memory in m_recentSnapshotsFromMemory and sort them by simulation time
-    void addRecentSnapshot(std::shared_ptr<sofa::core::objectmodel::Snapshot> snapshot,
+    void addSnapshotFromMemory(std::shared_ptr<sofa::core::objectmodel::Snapshot> snapshot,
                            double snapshotTime);
 
     /// Save and store a Snapshot in memory

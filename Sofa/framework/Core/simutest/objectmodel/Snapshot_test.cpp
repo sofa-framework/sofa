@@ -407,4 +407,3 @@ TEST_F(Snapshot_test, SnapshotJSONExporter)
 
     std::filesystem::remove(path);
 }
-
