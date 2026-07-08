@@ -684,34 +684,6 @@ int Base::getInstanciationSourceFilePos() const
     return m_instanciationSourceFilePos;
 }
 
-void Base::saveDataIn(Snapshot::SnapshotObject& snapshot) const
-{
-    for (const auto& dataFields = this->getDataFields(); const auto& data : dataFields)
-    {
-        Snapshot::DataInfo dataInfo;
-        dataInfo.name = data->getName();
-        dataInfo.type = data->getValueTypeString();
-        dataInfo.value = data->getValueString();
-
-        snapshot.m_dataContainer.push_back(dataInfo);
-    }
-}
-
-void Base::saveLinksIn(Snapshot::SnapshotObject& snapshot) const
-{
-    for (const auto& links = this->getLinks(); const auto& link : links)
-    {
-        Snapshot::LinkInfo linkInfo;
-        linkInfo.name = link->getName();
-        linkInfo.type = link->getValueTypeString();
-        linkInfo.value = link->getValueString();
-
-        std::string search = "//";
-        sofa::helper::replaceAll(linkInfo.value, search,"");
-        snapshot.m_linkContainer.push_back(linkInfo);
-    }
-}
-
 void Base::saveInternalStateIn(Snapshot::SnapshotObject& snapshot) const
 {
     SOFA_UNUSED(snapshot);
@@ -735,8 +707,29 @@ std::shared_ptr<Snapshot::SnapshotObject> Base::saveSnapshot(std::vector<std::sh
 {
     const auto snapshotObject = createSnapshotObject(parents);
     snapshotObject->m_name = this->getName();
-    saveDataIn(*snapshotObject);
-    saveLinksIn(*snapshotObject);
+
+    for (const auto& dataFields = this->getDataFields(); const auto& data : dataFields)
+    {
+        Snapshot::DataInfo dataInfo;
+        dataInfo.name = data->getName();
+        dataInfo.type = data->getValueTypeString();
+        dataInfo.value = data->getValueString();
+
+        snapshotObject->m_dataContainer.push_back(dataInfo);
+    }
+
+    for (const auto& links = this->getLinks(); const auto& link : links)
+    {
+        Snapshot::LinkInfo linkInfo;
+        linkInfo.name = link->getName();
+        linkInfo.type = link->getValueTypeString();
+        linkInfo.value = link->getValueString();
+
+        std::string search = "//";
+        sofa::helper::replaceAll(linkInfo.value, search,"");
+        snapshotObject->m_linkContainer.push_back(linkInfo);
+    }
+
     saveInternalStateIn(*snapshotObject);
     return snapshotObject;
 }
@@ -766,7 +759,30 @@ void Base::loadInternalStateFrom(const Snapshot::SnapshotObject& snapshot)
 
 }
 
-void Base::loadDataSnapshot(const std::shared_ptr<Snapshot::SnapshotObject>& snapshotObject) const
+// void Base::loadDataSnapshot(const std::shared_ptr<Snapshot::SnapshotObject>& snapshotObject) const
+// {
+//     for (const auto& dataInfo : snapshotObject->m_dataContainer)
+//     {
+//         if (const auto data = this->findData(dataInfo.name))
+//         {
+//             if(data->read(dataInfo.value) == 0 )
+//                 msg_error() << "Failed to read " << dataInfo.name << " in " << this->getName()  << " from the snapshot " << dataInfo.value;
+//         }
+//     }
+// }
+//
+// void Base::loadLinkSnapshot(const std::shared_ptr<Snapshot::SnapshotObject>& snapshotObject) const
+// {
+//     for (const auto& linkInfo : snapshotObject->m_linkContainer) {
+//         if (const auto link = this->findLink(linkInfo.name)) {
+//
+//             if (link->readFromSnapshot(linkInfo.value) == 0 )
+//                 msg_error() << "Failed to read " << linkInfo.name << " in " << this->getName()  << " from the snapshot " << linkInfo.value;
+//         }
+//     }
+// }
+
+void Base::loadSnapshot(const std::shared_ptr<Snapshot::SnapshotObject>& snapshotObject) const
 {
     for (const auto& dataInfo : snapshotObject->m_dataContainer)
     {
@@ -776,10 +792,7 @@ void Base::loadDataSnapshot(const std::shared_ptr<Snapshot::SnapshotObject>& sna
                 msg_error() << "Failed to read " << dataInfo.name << " in " << this->getName()  << " from the snapshot " << dataInfo.value;
         }
     }
-}
 
-void Base::loadLinkSnapshot(const std::shared_ptr<Snapshot::SnapshotObject>& snapshotObject) const
-{
     for (const auto& linkInfo : snapshotObject->m_linkContainer) {
         if (const auto link = this->findLink(linkInfo.name)) {
 
@@ -788,7 +801,6 @@ void Base::loadLinkSnapshot(const std::shared_ptr<Snapshot::SnapshotObject>& sna
         }
     }
 }
-
 
 }// namespace sofa::core::objectmodel
 

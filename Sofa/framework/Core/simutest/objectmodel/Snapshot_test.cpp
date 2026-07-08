@@ -70,12 +70,30 @@ public:
 
     void saveData(Snapshot::SnapshotObject& snapshot)
     {
-        this->saveDataIn(snapshot);
+        for (const auto& dataFields = this->getDataFields(); const auto& data : dataFields)
+        {
+            Snapshot::DataInfo dataInfo;
+            dataInfo.name = data->getName();
+            dataInfo.type = data->getValueTypeString();
+            dataInfo.value = data->getValueString();
+
+            snapshot.m_dataContainer.push_back(dataInfo);
+        }
     }
 
     void saveLinks(Snapshot::SnapshotObject& snapshot)
     {
-        this->saveLinksIn(snapshot);
+        for (const auto& links = this->getLinks(); const auto& link : links)
+        {
+            Snapshot::LinkInfo linkInfo;
+            linkInfo.name = link->getName();
+            linkInfo.type = link->getValueTypeString();
+            linkInfo.value = link->getValueString();
+
+            std::string search = "//";
+            sofa::helper::replaceAll(linkInfo.value, search,"");
+            snapshot.m_linkContainer.push_back(linkInfo);
+        }
     }
 
     std::shared_ptr<Snapshot::SnapshotObject> createSnapshotObjectTest(std::vector<std::shared_ptr<Snapshot::SnapshotNode>>& parents) const
@@ -273,7 +291,7 @@ TEST_F(Snapshot_test, loadDataSnapshot)
 
     TestComponent Component2;
     Component2.d_value.setValue(0.0f);
-    Component2.loadDataSnapshot(snapshot);
+    Component2.loadSnapshot(snapshot);
 
     EXPECT_EQ(Component2.d_value.getValue(), 3.14f);
 }
@@ -325,7 +343,7 @@ TEST_F(Snapshot_test, loadLinkSnapshot)
 
     EXPECT_EQ(Component1->l_target.getValueString(), "@Component2 @Component3");
 
-    Component1->loadLinkSnapshot(snapshotObject1);
+    Component1->loadSnapshot(snapshotObject1);
 
     EXPECT_EQ(Component1->l_target.getValueString(), "@Component2");
 }
@@ -370,14 +388,14 @@ TEST_F(Snapshot_test, SnapshotJSONExporter)
     auto visitor = SaveSnapshotVisitor(nullptr, *snapshot);
     root->execute(visitor);
 
-    exportToJSON(*snapshot,path);
+    exportToJSON(*snapshot, path.string());
 
     std::ifstream checkFile(path);
     EXPECT_TRUE(checkFile.good());
     checkFile.close();
 
     auto snapshot_import = std::make_shared<Snapshot>();
-    importFrom(*snapshot_import, path);
+    importFrom(*snapshot_import, path.string());
 
     EXPECT_NE(snapshot_import->m_graphRoot,nullptr);
 
@@ -389,5 +407,4 @@ TEST_F(Snapshot_test, SnapshotJSONExporter)
 
     std::filesystem::remove(path);
 }
-
 
