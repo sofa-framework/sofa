@@ -30,12 +30,20 @@ clean_default_plugins "$INSTALL_DIR_BIN"
 move_metis "$INSTALL_DIR"
 
 # Copy all plugin libs in install/bin (preserving sub-directory structure) to make them easily findable
-cd "$INSTALL_DIR"
-for p in plugins/*/; do
-  cd $INSTALL_DIR/$p && find . -name "*.dll" | while read lib; do
-    cp --parents "$lib" "$INSTALL_DIR"
-  done
+curDir="$INSTALL_DIR"
+
+if [[ "$INSTALL_DIR" == *"/NSIS/"* ]]; then
+    curDir="$curDir/applications"
+fi
+cd "$curDir"
+
+for p in plugins/*; do
+cd "$curDir/$p" && find . -name "*.dll" | while read lib; do
+    echo "Moving $lib to $curDir/$lib"
+    cp --parents "$lib" "$curDir"
 done
+done
+
 
 # Copy all plugins config files in etc/ini to make them easily findable
 INSTALL_DIR_ETC="$INSTALL_DIR/etc"
