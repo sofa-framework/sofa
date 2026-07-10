@@ -2,6 +2,17 @@ cmake_minimum_required(VERSION 3.22)
 project(SofaCHOLMOD LANGUAGES CXX)
 
 find_package(Sofa.Config REQUIRED)
+
+# CHOLMOD only supports double precision, so this plugin requires SOFA to be
+# configured with SOFA_FLOATING_POINT_TYPE=double.
+if(NOT "${SOFA_FLOATING_POINT_TYPE}" STREQUAL "double")
+    message(FATAL_ERROR
+        "SofaCHOLMOD requires SOFA_FLOATING_POINT_TYPE=double (CHOLMOD only "
+        "supports double precision), but it is currently set to "
+        "'${SOFA_FLOATING_POINT_TYPE}'. Set SOFA_FLOATING_POINT_TYPE=double or "
+        "disable this plugin (PLUGIN_SOFACHOLMOD=OFF).")
+endif()
+
 sofa_find_package(Sofa.Simulation.Core REQUIRED)
 sofa_find_package(Sofa.Component.LinearSolver.Direct REQUIRED)
 sofa_find_package(Eigen3 REQUIRED)

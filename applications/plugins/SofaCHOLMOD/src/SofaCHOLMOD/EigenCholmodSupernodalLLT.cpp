@@ -38,8 +38,8 @@
 namespace sofacholmod
 {
 
-// CHOLMOD only supports double precision
-static_assert(std::is_same_v<SReal, double>, "EigenCholmodSupernodalLLT requires double precision (SReal must be double)");
+// CHOLMOD only supports double precision. This is enforced at configure time by
+// the plugin's CMakeLists.txt, which requires SOFA_FLOATING_POINT_TYPE=double.
 
 namespace
 {
