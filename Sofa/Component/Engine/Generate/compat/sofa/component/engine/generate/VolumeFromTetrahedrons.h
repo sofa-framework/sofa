@@ -20,27 +20,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-
-#include <sofa/config.h>
-#include <sofa/config/sharedlibrary_defines.h>
-
-#ifdef SOFA_BUILD_SOFA_COMPONENT_ENGINE_GENERATE
-#  define SOFA_TARGET @PROJECT_NAME@
-#  define SOFA_COMPONENT_ENGINE_GENERATE_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_COMPONENT_ENGINE_GENERATE_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+#include <sofa/component/engine/generate/VolumeFromVolumetricElements.h>
+SOFA_HEADER_DEPRECATED("v26.12", "v27.06", "sofa/component/engine/generate/VolumeFromVolumetricElements.h")
 
 namespace sofa::component::engine::generate
 {
-	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
-	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
-} // namespace sofa::component::engine::generate
 
+template <class DataTypes>
+using VolumeFromTetrahedrons SOFA_ATTRIBUTE_DEPRECATED__VOLUMEFROMTETRAHEDRONS() = VolumeFromVolumetricElements<DataTypes>;
 
-#ifdef SOFA_BUILD_SOFA_COMPONENT_ENGINE_GENERATE
-#define SOFA_ATTRIBUTE_DEPRECATED__VOLUMEFROMTETRAHEDRONS()
-#else
-#define SOFA_ATTRIBUTE_DEPRECATED__VOLUMEFROMTETRAHEDRONS() \
-    SOFA_ATTRIBUTE_DEPRECATED("v26.12", "v27.06", "Use the VolumeFromVolumetricElements instead")
-#endif
+}
