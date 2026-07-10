@@ -21,7 +21,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_ENGINE_VOLUMEFROMTETRAHEDRONS_CPP
 
-#include <sofa/component/engine/generate/VolumeFromTetrahedrons.inl>
+#include <sofa/component/engine/generate/VolumeFromVolumetricElements.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::engine::generate
@@ -30,13 +30,13 @@ namespace sofa::component::engine::generate
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
 
-void registerVolumeFromTetrahedrons(sofa::core::ObjectFactory* factory)
+void registerVolumeFromVolumetricElements(sofa::core::ObjectFactory* factory)
 {
     factory->registerObjects(sofa::core::ObjectRegistrationData("This component computes the volume of a given volumetric mesh.")
-    .add<  VolumeFromTetrahedrons<Vec3Types> >(true));
+    .add<  VolumeFromVolumetricElements<Vec3Types> >(true));
 }
 
-template class SOFA_COMPONENT_ENGINE_GENERATE_API VolumeFromTetrahedrons<Vec3Types>;
+template class SOFA_COMPONENT_ENGINE_GENERATE_API VolumeFromVolumetricElements<Vec3Types>;
 
 
 } // namespace
