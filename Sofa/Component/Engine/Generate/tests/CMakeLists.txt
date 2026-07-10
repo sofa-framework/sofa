@@ -9,7 +9,7 @@ set(SOURCE_FILES
     MergePoints_test.cpp
     RandomPointDistributionInSurface_test.cpp
     VolumeFromTriangles_test.cpp
-    VolumeFromTetrahedrons_test.cpp
+    VolumeFromVolumetricElements_test.cpp
 )
 
 find_package(Sofa.Component.StateContainer REQUIRED)
