@@ -759,29 +759,6 @@ void Base::loadInternalStateFrom(const Snapshot::SnapshotObject& snapshot)
 
 }
 
-// void Base::loadDataSnapshot(const std::shared_ptr<Snapshot::SnapshotObject>& snapshotObject) const
-// {
-//     for (const auto& dataInfo : snapshotObject->m_dataContainer)
-//     {
-//         if (const auto data = this->findData(dataInfo.name))
-//         {
-//             if(data->read(dataInfo.value) == 0 )
-//                 msg_error() << "Failed to read " << dataInfo.name << " in " << this->getName()  << " from the snapshot " << dataInfo.value;
-//         }
-//     }
-// }
-//
-// void Base::loadLinkSnapshot(const std::shared_ptr<Snapshot::SnapshotObject>& snapshotObject) const
-// {
-//     for (const auto& linkInfo : snapshotObject->m_linkContainer) {
-//         if (const auto link = this->findLink(linkInfo.name)) {
-//
-//             if (link->readFromSnapshot(linkInfo.value) == 0 )
-//                 msg_error() << "Failed to read " << linkInfo.name << " in " << this->getName()  << " from the snapshot " << linkInfo.value;
-//         }
-//     }
-// }
-
 void Base::loadSnapshot(const std::shared_ptr<Snapshot::SnapshotObject>& snapshotObject) const
 {
     for (const auto& dataInfo : snapshotObject->m_dataContainer)
