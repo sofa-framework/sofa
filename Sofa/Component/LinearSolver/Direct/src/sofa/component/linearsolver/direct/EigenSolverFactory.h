@@ -332,27 +332,4 @@ public:
     }
 };
 
-#ifdef SOFA_COMPONENT_LINEARSOLVER_DIRECT_HAVE_CHOLMOD
-/**
- * Singleton factory dedicated to CHOLMOD supernodal LLT solvers.
- *
- * CHOLMOD manages its own fill-reducing ordering internally (AMD, METIS, NESDIS),
- * so the OrderingMethodType template parameter is intentionally ignored.
- * The ordering method name is only used as a key for the factory lookup.
- *
- * Unlike other factories, registerSolver is not defined in this header because
- * it requires <Eigen/CholmodSupport> which we don't want to pull into every
- * translation unit. It is defined in init.cpp instead.
- */
-class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API MainCholmodSupernodalLLTFactory : public BaseMainEigenSolverFactory<MainCholmodSupernodalLLTFactory>
-{
-public:
-    ~MainCholmodSupernodalLLTFactory();
-
-    template<typename OrderingMethodType, class ScalarType>
-    static void registerSolver(const std::string& orderingMethodName);
-};
-#endif
-
-
 }

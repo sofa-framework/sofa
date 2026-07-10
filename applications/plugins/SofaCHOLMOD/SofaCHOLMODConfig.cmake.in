@@ -1,0 +1,12 @@
+# CMake package configuration file for the SofaCHOLMOD plugin
+
+@PACKAGE_GUARD@
+@PACKAGE_INIT@
+
+find_package(Sofa.Config QUIET REQUIRED)
+
+sofa_find_package(Sofa.Simulation.Core QUIET REQUIRED)
+sofa_find_package(Sofa.Compoment.LinearSolver.Direct QUIET REQUIRED)
+sofa_find_package(CHOLMOD QUIET REQUIRED)
+
+check_required_components(SofaCHOLMOD)

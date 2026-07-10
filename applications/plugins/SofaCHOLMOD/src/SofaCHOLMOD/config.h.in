@@ -19,35 +19,19 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/linearsolver/direct/config.h>
+#pragma once
 
-#ifdef SOFA_COMPONENT_LINEARSOLVER_DIRECT_HAVE_CHOLMOD
+#include <sofa/config.h>
+#include <sofa/config/sharedlibrary_defines.h>
 
-#define SOFA_COMPONENT_LINEARSOLVER_DIRECT_EIGENCHOLMODSUPERNODALLLT_CPP
-#include <Eigen/CholmodSupport>
-#include <sofa/component/linearsolver/direct/EigenCholmodSupernodalLLT.h>
-#include <sofa/component/linearsolver/direct/EigenDirectSparseSolver.inl>
+#ifdef SOFA_BUILD_SOFACHOLMOD
+#  define SOFACHOLMOD_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFACHOLMOD_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
 
-#include <sofa/core/ObjectFactory.h>
-
-namespace sofa::component::linearsolver::direct
+namespace sofacholmod
 {
-
-// CHOLMOD only supports double precision
-static_assert(std::is_same_v<SReal, double>, "EigenCholmodSupernodalLLT requires double precision (SReal must be double)");
-
-template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API EigenCholmodSupernodalLLT< SReal >;
-template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API EigenCholmodSupernodalLLT< sofa::type::Mat<3,3,SReal> >;
-
-MainCholmodSupernodalLLTFactory::~MainCholmodSupernodalLLTFactory() = default;
-
-void registerEigenCholmodSupernodalLLT(sofa::core::ObjectFactory* factory)
-{
-    factory->registerObjects(core::ObjectRegistrationData("Direct linear solver using a supernodal sparse LL^T Cholesky factorization from CHOLMOD (SuiteSparse).")
-        .add< EigenCholmodSupernodalLLT< SReal > >()
-        .add< EigenCholmodSupernodalLLT< sofa::type::Mat<3, 3, SReal> > >());
-}
-
-} // namespace sofa::component::linearsolver::direct
-
-#endif // SOFA_COMPONENT_LINEARSOLVER_DIRECT_HAVE_CHOLMOD
+	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
+	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
+} // namespace sofacholmod

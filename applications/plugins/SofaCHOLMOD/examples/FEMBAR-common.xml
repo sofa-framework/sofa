@@ -1,0 +1,30 @@
+<!-- A prefab declaring a beam, to be used in all examples matching FEMBAR-*.scn -->
+<Node name="Group">
+    <Node name="plugins">
+        <RequiredPlugin pluginName="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
+        <RequiredPlugin pluginName="Sofa.Component.LinearSolver.Direct"/> <!-- Needed to use components [SVDLinearSolver] -->
+        <RequiredPlugin pluginName="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
+        <RequiredPlugin pluginName="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+        <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [HexahedronFEMForceField] -->
+        <RequiredPlugin pluginName="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+        <RequiredPlugin pluginName="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->
+        <RequiredPlugin pluginName="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+        <RequiredPlugin pluginName="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
+        <RequiredPlugin pluginName="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+        <RequiredPlugin pluginName="Sofa.Component.LinearSolver.Preconditioner"/> <!-- Needed to use components [BlockJacobiPreconditioner] -->
+        <RequiredPlugin pluginName="Sofa.Component.LinearSolver.Ordering"/>
+        <RequiredPlugin pluginName="Sofa.Component.LinearSystem"/> <!-- Needed to use components [MatrixLinearSystem] -->
+    </Node>
+
+    <VisualStyle displayFlags="showBehaviorModels showForceFields" />
+
+    <DefaultAnimationLoop name="animationLoop"/>
+    <DefaultVisualManagerLoop name="visualLoop"/>
+
+    <EulerImplicitSolver name="odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
+    <MechanicalObject name="DoFs" />
+    <UniformMass name="mass" totalMass="320" />
+    <RegularGridTopology name="grid" nx="10" ny="10" nz="50" xmin="-9" xmax="-6" ymin="0" ymax="3" zmin="0" zmax="19" />
+    <BoxROI name="box" box="-10 -1 -0.0001  -5 4 0.0001"/>
+    <FixedProjectiveConstraint indices="@box.indices" />
+</Node>

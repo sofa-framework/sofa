@@ -20,15 +20,34 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/linearsolver/direct/config.h>
-
-#ifdef SOFA_COMPONENT_LINEARSOLVER_DIRECT_HAVE_CHOLMOD
+#include <SofaCHOLMOD/config.h>
 
 #include <sofa/component/linearsolver/direct/EigenDirectSparseSolver.h>
 #include <sofa/component/linearsolver/direct/EigenSolverFactory.h>
 
-namespace sofa::component::linearsolver::direct
+namespace sofacholmod
 {
+
+/**
+ * Singleton factory dedicated to CHOLMOD supernodal LLT solvers.
+ *
+ * CHOLMOD manages its own fill-reducing ordering internally (AMD, METIS, NESDIS),
+ * so the OrderingMethodType template parameter is intentionally ignored.
+ * The ordering method name is only used as a key for the factory lookup.
+ *
+ * Unlike other factories, registerSolver is not defined in this header because
+ * it requires <Eigen/CholmodSupport> which we don't want to pull into every
+ * translation unit. It is defined in init.cpp instead.
+ */
+class SOFACHOLMOD_API MainCholmodSupernodalLLTFactory : public sofa::component::linearsolver::direct::BaseMainEigenSolverFactory<MainCholmodSupernodalLLTFactory>
+{
+   public:
+    ~MainCholmodSupernodalLLTFactory();
+
+    template<typename OrderingMethodType, class ScalarType>
+    static void registerSolver(const std::string& orderingMethodName);
+};
+
 
 /**
  * Direct linear solver based on a supernodal sparse LL^T Cholesky factorization
@@ -42,7 +61,7 @@ namespace sofa::component::linearsolver::direct
  */
 template<class TBlockType>
 class EigenCholmodSupernodalLLT
-    : public EigenDirectSparseSolver<
+    : public sofa::component::linearsolver::direct::EigenDirectSparseSolver<
         TBlockType,
         MainCholmodSupernodalLLTFactory
     >
@@ -52,14 +71,12 @@ public:
     using Real = typename Matrix::Real;
     typedef sofa::linearalgebra::FullVector<Real> Vector;
 
-    SOFA_CLASS(SOFA_TEMPLATE(EigenCholmodSupernodalLLT, TBlockType), SOFA_TEMPLATE2(EigenDirectSparseSolver, TBlockType, MainCholmodSupernodalLLTFactory));
+    SOFA_CLASS(SOFA_TEMPLATE(EigenCholmodSupernodalLLT, TBlockType), SOFA_TEMPLATE2(sofa::component::linearsolver::direct::EigenDirectSparseSolver, TBlockType, MainCholmodSupernodalLLTFactory));
 };
 
-#ifndef SOFA_COMPONENT_LINEARSOLVER_DIRECT_EIGENCHOLMODSUPERNODALLLT_CPP
-    extern template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API EigenCholmodSupernodalLLT< SReal >;
-    extern template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API EigenCholmodSupernodalLLT< sofa::type::Mat<3,3,SReal> >;
+#ifndef SOFACHOLMOD_EIGENCHOLMODSUPERNODALLLT_CPP
+extern template class SOFACHOLMOD_API EigenCholmodSupernodalLLT< SReal >;
+extern template class SOFACHOLMOD_API EigenCholmodSupernodalLLT< sofa::type::Mat<3,3,SReal> >;
 #endif
 
-} // namespace sofa::component::linearsolver::direct
-
-#endif // SOFA_COMPONENT_LINEARSOLVER_DIRECT_HAVE_CHOLMOD
+} // namespace sofacholmod
