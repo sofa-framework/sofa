@@ -5,7 +5,7 @@
     <include href="FEMBAR-common.xml"/>
 
     <NaturalOrderingMethod/>
-    <EigenCholmodSupernodalLLT template="CompressedRowSparseMatrixMat3x3"/>
+    <EigenCholmodSupernodalLLT template="CompressedRowSparseMatrixMat3x3" numThreads="8" />
     <HexahedronFEMForceField name="FEM" youngModulus="4000" poissonRatio="0.3" method="large" />
 
 </Node>

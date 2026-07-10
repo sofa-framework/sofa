@@ -30,6 +30,10 @@ target_link_libraries(${TARGET_NAME} PUBLIC Sofa.Component.LinearSolver.Direct)
 target_link_libraries(${PROJECT_NAME} PUBLIC ${CHOLMOD_LIBRARIES})
 target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC ${CHOLMOD_INCLUDE_DIRS})
 
+# Needed to resolve the BLAS backend's runtime thread-count setter via dlsym
+# (empty on Windows, where GetProcAddress from kernel32 is used instead).
+target_link_libraries(${PROJECT_NAME} PRIVATE ${CMAKE_DL_LIBS})
+
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
     PACKAGE_VERSION ${SOFACHOLMOD_VERSION}

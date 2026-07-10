@@ -24,6 +24,7 @@
 
 #include <sofa/component/linearsolver/direct/EigenDirectSparseSolver.h>
 #include <sofa/component/linearsolver/direct/EigenSolverFactory.h>
+#include <sofa/core/objectmodel/Data.h>
 
 namespace sofacholmod
 {
@@ -72,6 +73,27 @@ public:
     typedef sofa::linearalgebra::FullVector<Real> Vector;
 
     SOFA_CLASS(SOFA_TEMPLATE(EigenCholmodSupernodalLLT, TBlockType), SOFA_TEMPLATE2(sofa::component::linearsolver::direct::EigenDirectSparseSolver, TBlockType, MainCholmodSupernodalLLTFactory));
+
+    void init() override;
+    void reinit() override;
+
+    /// Number of threads the underlying BLAS (used by CHOLMOD's supernodal
+    /// factorization) is allowed to use.
+    /// A value <= 0 (default) leaves the BLAS default untouched, i.e. controlled
+    /// by the OPENBLAS_NUM_THREADS / OMP_NUM_THREADS environment variables.
+    /// For the medium-sized systems typically solved here, a small value (1-4)
+    /// is often faster than the default (= number of cores) because it avoids
+    /// thread oversubscription. Only effective with OpenBLAS or MKL; ignored
+    /// with BLAS backends that expose no runtime thread-control API (e.g. Apple
+    /// Accelerate), where the environment variables must be used instead.
+    sofa::core::objectmodel::Data<int> d_numThreads;
+
+protected:
+    EigenCholmodSupernodalLLT();
+
+    /// Apply d_numThreads to the underlying BLAS backend if it exposes a runtime
+    /// thread-count API (OpenBLAS/MKL). No-op if d_numThreads <= 0.
+    void applyBlasNumThreads();
 };
 
 #ifndef SOFACHOLMOD_EIGENCHOLMODSUPERNODALLLT_CPP
