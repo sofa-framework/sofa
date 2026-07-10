@@ -22,18 +22,39 @@
 #pragma once
 #include <sofa/component/engine/generate/config.h>
 #include <sofa/core/DataEngine.h>
+#include <sofa/core/behavior/SingleStateAccessor.h>
+#include <sofa/core/behavior/TopologyAccessor.h>
 
 namespace sofa::component::engine::generate
 {
 
 template<class DataTypes>
-class LinearToHigherOrderElements : public sofa::core::DataEngine
+class LinearToHigherOrderElements :
+    public sofa::core::DataEngine,
+    public sofa::core::behavior::TopologyAccessor,
+    public sofa::core::behavior::SingleStateAccessor<DataTypes>
 {
 public:
-    SOFA_CLASS(LinearToHigherOrderElements<DataTypes>, sofa::core::DataEngine);
+    SOFA_CLASS3(LinearToHigherOrderElements<DataTypes>,
+        sofa::core::DataEngine,
+        sofa::core::behavior::TopologyAccessor,
+        sofa::core::behavior::SingleStateAccessor<DataTypes>);
+
+    template<class ElementType> //e.g. sofa::geometry::Edge
+    using TopologyElement = sofa::topology::Element<ElementType>;
+
+    template<class ElementType> //e.g. sofa::geometry::Edge
+    using SeqElement = sofa::type::vector<TopologyElement<ElementType>>;
+
+    void init() override;
+
+    sofa::DataVecCoord_t<DataTypes> d_position;
+    Data<SeqElement<sofa::geometry::QuadraticTetrahedron>> d_quadraticTetrahedra;
 
 protected:
     void doUpdate() override;
+
+    LinearToHigherOrderElements();
 };
 
 }  // namespace sofa::component::engine::generate

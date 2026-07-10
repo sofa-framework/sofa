@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<Node name="root" gravity="0 0 0" dt="1"  >
+
+    <Node name="plugins">
+        <RequiredPlugin pluginName="Sofa.Component.Engine.Generate"/> <!-- Needed to use components [LinearToHigherOrderElements] -->
+        <RequiredPlugin pluginName="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshVTKLoader] -->
+        <RequiredPlugin pluginName="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+        <RequiredPlugin pluginName="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
+        <RequiredPlugin pluginName="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+    </Node>
+
+    <DefaultAnimationLoop/>
+
+    <Node name="Volume" >
+        <MeshVTKLoader name="mesh" filename="mesh/Bunny.vtk"/>
+        <MeshTopology src="@mesh" name="topology"/>
+        <MechanicalObject />
+        <LinearToHigherOrderElements/>
+        <Node name="Visual" >
+            <OglModel src="@../topology" color="0.5 0.5 0.5 0.1"/>
+        </Node>
+    </Node>
+
+    <Node name="single_tetra" >
+        <MeshTopology name="topology" tetrahedra="0 1 2 3"/>
+        <MechanicalObject name="state" position="0 0 0  1 0 0  0 1 0  0 0 1"/>
+        <LinearToHigherOrderElements/>
+        <VisualMesh position="@state.position" topology="@topology"/>
+    </Node>
+</Node>

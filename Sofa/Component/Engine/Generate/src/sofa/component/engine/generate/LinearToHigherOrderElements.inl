@@ -21,13 +21,93 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/engine/generate/LinearToHigherOrderElements.h>
+#include <sofa/core/behavior/SingleStateAccessor.h>
 
 namespace sofa::component::engine::generate
 {
 
 template <class DataTypes>
-void LinearToHigherOrderElements<DataTypes>::doUpdate()
+LinearToHigherOrderElements<DataTypes>::LinearToHigherOrderElements()
+    : d_position(initData(&d_position, sofa::VecCoord_t<DataTypes>{}, "position", "Output position"))
+    , d_quadraticTetrahedra(initData(&d_quadraticTetrahedra, SeqElement<sofa::geometry::QuadraticTetrahedron>{},
+        "quadratic_tetrahedra", "List of quadratic tetrahedra"))
 {
+    this->addOutput(&d_quadraticTetrahedra);
+    this->addOutput(&d_position);
 }
 
+template <class DataTypes>
+void LinearToHigherOrderElements<DataTypes>::init()
+{
+    DataEngine::init();
+
+    if (!this->isComponentStateInvalid())
+    {
+        this->validateTopology();
+    }
+
+    if (!this->isComponentStateInvalid())
+    {
+        sofa::core::behavior::SingleStateAccessor<DataTypes>::init();
+    }
 }
+
+
+struct TetrahedronEdge
+{
+    TetrahedronEdge(sofa::Index p, sofa::Index q) : a(std::min(p, q)), b(std::max(p, q)) {}
+    sofa::Index a, b;
+    bool operator==(const TetrahedronEdge& e) const
+    {
+        return a == e.a && b == e.b;
+    }
+};
+
+
+template <class DataTypes>
+void LinearToHigherOrderElements<DataTypes>::doUpdate()
+{
+    if (!l_topology)
+        return;
+
+    //input elements
+    const auto& tetrahedra = l_topology->getElements<sofa::geometry::Tetrahedron>();
+
+    //input position
+    const auto inPosition = this->mstate->readPositions();
+
+    //output elements
+    auto quadraticTetrahedra = sofa::helper::getWriteOnlyAccessor(d_quadraticTetrahedra);
+
+    //output position
+    auto outPosition = sofa::helper::getWriteOnlyAccessor(d_position);
+    outPosition.wref() = inPosition.ref();
+
+
+    auto hash = [&inPosition](const TetrahedronEdge& edge){ return edge.a + inPosition.size() * edge.b; };
+    std::unordered_map<TetrahedronEdge, sofa::Size, decltype(hash)> newPointsMap(10, hash);
+
+    for (const auto& element : tetrahedra)
+    {
+        std::array<sofa::Index, 6> newIndices;
+        static constexpr std::array<std::pair<sofa::Index, sofa::Index>, 6> listEdgesInTetra {{{0, 1}, {0, 2}, {0, 3}, {1, 2}, {1, 3}, {2, 3}}};
+        for (std::size_t i = 0; i < listEdgesInTetra.size(); ++i)
+        {
+            const auto [a, b] = listEdgesInTetra[i];
+            TetrahedronEdge edge{element[a], element[b]};
+
+            const auto [it, success] = newPointsMap.insert(std::make_pair(edge, outPosition.size()));
+            if (success)
+            {
+                outPosition.push_back( 0.5 * (inPosition[element[a]] + inPosition[element[b]]));
+            }
+            newIndices[i] = it->second;
+        }
+
+        quadraticTetrahedra.emplace_back(element[0], element[1], element[2], element[3],
+            newIndices[0], newIndices[1], newIndices[2], newIndices[3],
+            newIndices[4], newIndices[5]);
+    }
+}
+
+}  // namespace sofa::component::engine::generate
