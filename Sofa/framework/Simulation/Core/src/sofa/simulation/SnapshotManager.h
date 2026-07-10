@@ -51,8 +51,8 @@ namespace sofa::simulation
  * - doMemorySave() and doMemoryLoad() save and restore snapshots in memory.
  * - doSaveTo() and doLoadTo() save and load snapshots from disk. The output file format can be specified when calling doSaveTo().
  *
- * The doSaveTo() function also provides an isGroup parameter, while doLoadToGroup() is used to load a collection of snapshots.
- * These functions allow groups of snapshots to be saved to and restored from a single file.
+ * The doSaveTo() function also provides an isSet parameter, while doLoadToSet() is used to load a set of snapshots.
+ * These functions allow sets of snapshots to be saved to and restored from a single file.
  *
  */
 class SOFA_SIMULATION_CORE_API SnapshotManager
@@ -80,14 +80,14 @@ public:
     /// Load a snapshot from memory
     void doMemoryLoad(sofa::core::sptr<sofa::simulation::Node>& groot);
 
-    /// Save and store a Snapshot to a file (or Save and store a group of Snapshot to a file when isGroup is true)
-    void doSaveTo(sofa::core::sptr<sofa::simulation::Node>& groot,std::string savePath, bool isGroup);
+    /// Save and store a Snapshot to a file (or Save and store a group of Snapshot to a file when isSet is true)
+    void doSaveTo(sofa::core::sptr<sofa::simulation::Node>& groot,std::string savePath, bool isSet);
 
     /// Load a snapshot from a file
     void doLoadTo(sofa::core::sptr<sofa::simulation::Node>& groot, std::string outPath);
 
     /// Load a group of snapshots from a file
-    void doLoadToGroup(const std::string& filename);
+    void doLoadToSet(const std::string& filename);
 
 
 };

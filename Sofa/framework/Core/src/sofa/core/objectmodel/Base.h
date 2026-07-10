@@ -379,8 +379,7 @@ protected:
     /// Create a SnapshotObject that will contain data and link
     virtual std::shared_ptr<Snapshot::SnapshotObject> createSnapshotObject(std::vector<std::shared_ptr<Snapshot::SnapshotNode>>& parents) const;
 
-public :
-
+public:
     /// Find a SnapshotObject corresponding to the object from the scene
     virtual std::shared_ptr<Snapshot::SnapshotObject> findSnapshotObject(const std::shared_ptr<Snapshot::SnapshotNode>& parents, const std::string& objectname);
 

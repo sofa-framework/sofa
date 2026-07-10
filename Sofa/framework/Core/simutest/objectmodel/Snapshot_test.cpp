@@ -102,6 +102,11 @@ public:
         return this->createSnapshotObject(parents);
     }
 
+    std::shared_ptr<Snapshot::SnapshotObject> findSnapshotObjectTest(const std::shared_ptr<Snapshot::SnapshotNode>& parents, const std::string& objectname)
+    {
+        return this->findSnapshotObject(parents, objectname);
+    }
+
 };
 
 class Snapshot_test: public BaseSimulationTest
@@ -230,7 +235,7 @@ TEST_F(Snapshot_test, findSnapshotObject)
     auto snapshot = Component.saveSnapshot(snapshotParents);
     snapshotNode->components.push_back(*snapshot);
 
-    auto expectedObject = Component.findSnapshotObject(snapshotNode, "TestComponent");
+    auto expectedObject = Component.findSnapshotObjectTest(snapshotNode, "TestComponent");
 
     EXPECT_NE(expectedObject, nullptr);
     EXPECT_EQ(Component.getName(), expectedObject->m_name);

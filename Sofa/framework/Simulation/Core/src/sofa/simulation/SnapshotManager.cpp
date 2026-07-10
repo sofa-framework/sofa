@@ -74,7 +74,7 @@ void SnapshotManager::doMemoryLoad(sofa::core::sptr<Node>& groot)
     groot->execute(visitor);
 }
 
-void SnapshotManager::doSaveTo(sofa::core::sptr<sofa::simulation::Node>& groot,std::string savePath, bool isGroup)
+void SnapshotManager::doSaveTo(sofa::core::sptr<sofa::simulation::Node>& groot,std::string savePath, bool isSet)
 {
     auto m_snapshot = std::make_shared<sofa::core::objectmodel::Snapshot>();
     auto visitor = SaveSnapshotVisitor(nullptr,*m_snapshot);
@@ -82,9 +82,9 @@ void SnapshotManager::doSaveTo(sofa::core::sptr<sofa::simulation::Node>& groot,s
 
 
     std::string FileExtension = FileSystem::getExtension(savePath);
-    if (FileExtension == "json" && !isGroup)
+    if (FileExtension == "json" && !isSet)
         exportToJSON(*m_snapshot,savePath);
-    else if (FileExtension == "json" && isGroup)
+    else if (FileExtension == "json" && isSet)
         exportToJSON(m_snapshotsFromMemory,savePath);
     else
         msg_error("SaveSnapshot") << "Snapshot " << savePath << " not supported";
@@ -106,7 +106,7 @@ void SnapshotManager::doLoadTo(sofa::core::sptr<sofa::simulation::Node>& groot, 
     msg_info("LoadSnapshot") << "Snapshot " << outPath << " loaded";
 }
 
-void SnapshotManager::doLoadToGroup(const std::string& filename)
+void SnapshotManager::doLoadToSet(const std::string& filename)
 {
     if (!FileSystem::exists(filename))
         return;
