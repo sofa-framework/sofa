@@ -33,10 +33,10 @@ namespace sofa::component::engine::generate
  * This class returns the volumes of a given volumic mesh.
  */
 template <class DataTypes>
-class VolumeFromTetrahedrons : public sofa::core::DataEngine
+class VolumeFromVolumetricElements : public sofa::core::DataEngine
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(VolumeFromTetrahedrons,DataTypes), sofa::core::DataEngine);
+    SOFA_CLASS(SOFA_TEMPLATE(VolumeFromVolumetricElements,DataTypes), sofa::core::DataEngine);
 
     typedef typename DataTypes::VecCoord VecCoord;
 
@@ -54,8 +54,8 @@ public:
 
 public:
 
-    VolumeFromTetrahedrons();
-    ~VolumeFromTetrahedrons() override;
+    VolumeFromVolumetricElements();
+    ~VolumeFromVolumetricElements() override;
 
     ////////////////////////// Inherited from BaseObject ///////////////////
     void init() override;
@@ -71,8 +71,8 @@ public:
 
 protected:
 
-    SingleLink<VolumeFromTetrahedrons<DataTypes>, BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
-    SingleLink<VolumeFromTetrahedrons<DataTypes>, MechanicalState, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_state;
+    SingleLink<VolumeFromVolumetricElements<DataTypes>, BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+    SingleLink<VolumeFromVolumetricElements<DataTypes>, MechanicalState, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_state;
 
     sofa::Data<VecCoord>     d_positions;
     sofa::Data<VecTetras>    d_tetras;
@@ -90,7 +90,7 @@ private:
 };
 
 #if !defined(SOFA_COMPONENT_ENGINE_VOLUMEFROMTETRAHEDRONS_CPP)
-extern template class VolumeFromTetrahedrons<sofa::defaulttype::Vec3Types>;
+extern template class VolumeFromVolumetricElements<sofa::defaulttype::Vec3Types>;
 #endif
 
 } // namespace
