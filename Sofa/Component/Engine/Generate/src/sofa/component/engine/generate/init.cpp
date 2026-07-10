@@ -35,6 +35,7 @@ extern void registerGenerateRigidMass(sofa::core::ObjectFactory* factory);
 extern void registerGenerateSphere(sofa::core::ObjectFactory* factory);
 extern void registerGroupFilterYoungModulus(sofa::core::ObjectFactory* factory);
 extern void registerJoinPoints(sofa::core::ObjectFactory* factory);
+extern void registerLinearToHigherOrderElements(sofa::core::ObjectFactory* factory);
 extern void registerMergeMeshes(sofa::core::ObjectFactory* factory);
 extern void registerMergePoints(sofa::core::ObjectFactory* factory);
 extern void registerMergeSets(sofa::core::ObjectFactory* factory);
@@ -42,12 +43,12 @@ extern void registerMergeVectors(sofa::core::ObjectFactory* factory);
 extern void registerMeshBarycentricMapperEngine(sofa::core::ObjectFactory* factory);
 extern void registerMeshClosingEngine(sofa::core::ObjectFactory* factory);
 extern void registerMeshTetraStuffing(sofa::core::ObjectFactory* factory);
-extern void registerNormalsFromPoints(sofa::core::ObjectFactory* factory);
 extern void registerNormEngine(sofa::core::ObjectFactory* factory);
+extern void registerNormalsFromPoints(sofa::core::ObjectFactory* factory);
 extern void registerRandomPointDistributionInSurface(sofa::core::ObjectFactory* factory);
 extern void registerSpiral(sofa::core::ObjectFactory* factory);
-extern void registerVolumeFromTriangles(sofa::core::ObjectFactory* factory);
 extern void registerVolumeFromTetrahedrons(sofa::core::ObjectFactory* factory);
+extern void registerVolumeFromTriangles(sofa::core::ObjectFactory* factory);
 
 extern "C" {
     SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
@@ -82,6 +83,7 @@ void registerObjects(sofa::core::ObjectFactory* factory)
     registerGenerateSphere(factory);
     registerGroupFilterYoungModulus(factory);
     registerJoinPoints(factory);
+    registerLinearToHigherOrderElements(factory);
     registerMergeMeshes(factory);
     registerMergePoints(factory);
     registerMergeSets(factory);
