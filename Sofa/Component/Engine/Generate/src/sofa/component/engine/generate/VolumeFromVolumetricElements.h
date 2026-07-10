@@ -89,7 +89,7 @@ private:
     void checkTopology();
 };
 
-#if !defined(SOFA_COMPONENT_ENGINE_VOLUMEFROMTETRAHEDRONS_CPP)
+#if !defined(SOFA_COMPONENT_ENGINE_VOLUMEFROMVOLUMETRICELEMENTS_CPP)
 extern template class VolumeFromVolumetricElements<sofa::defaulttype::Vec3Types>;
 #endif
 
