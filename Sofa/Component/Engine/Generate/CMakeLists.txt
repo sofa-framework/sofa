@@ -77,10 +77,21 @@ set(SOURCE_FILES
     ${SOFACOMPONENTENGINEGENERATE_SOURCE_DIR}/Spiral.cpp
 )
 
+set(DEPRECATED_DIR "compat/sofa/component/engine/generate")
+set(DEPRECATED_HEADER_FILES
+    ${DEPRECATED_DIR}/VolumeFromTetrahedrons.h
+    ${DEPRECATED_DIR}/VolumeFromTetrahedrons.inl
+)
+
+
 sofa_find_package(Sofa.Simulation.Core REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Simulation.Core)
+target_include_directories(${PROJECT_NAME} PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/compat>
+    $<INSTALL_INTERFACE:include/${PROJECT_NAME}_compat>
+)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
@@ -89,6 +100,8 @@ sofa_create_package_with_targets(
     INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
 )
+
+install(DIRECTORY compat/ DESTINATION include/${PROJECT_NAME}_compat COMPONENT headers)
 
 # Tests
 # If SOFA_BUILD_TESTS exists and is OFF, then these tests will be auto-disabled
