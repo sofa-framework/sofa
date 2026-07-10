@@ -330,12 +330,7 @@ private:
 
         if(facets.empty())
         {
-            static bool firstTime = true;
-            if (firstTime)
-            {
-                msg_error("DrawElementMesh<Tetrahedron>") << "Drawing tetrahedra needs the associated triangles in the topology.";
-                firstTime = false;
-            }
+            msg_error_once("DrawElementMesh<Tetrahedron>") << "Drawing tetrahedra needs the associated triangles in the topology.";
             return;
         }
 
@@ -566,12 +561,7 @@ private:
 
         if(facets.empty())
         {
-            static bool firstTime = true;
-            if (firstTime)
-            {
-                msg_error("DrawElementMesh<Hexahedron>") << "Drawing hexahedra needs the associated quads in the topology.";
-                firstTime = false;
-            }
+            msg_error_once("DrawElementMesh<Hexahedron>") << "Drawing hexahedra needs the associated quads in the topology.";
             return;
         }
 
