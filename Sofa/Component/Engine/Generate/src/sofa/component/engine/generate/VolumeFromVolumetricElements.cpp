@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_ENGINE_VOLUMEFROMTETRAHEDRONS_CPP
+#define SOFA_COMPONENT_ENGINE_VOLUMEFROMVOLUMETRICELEMENTS_CPP
 
 #include <sofa/component/engine/generate/VolumeFromVolumetricElements.inl>
 #include <sofa/core/ObjectFactory.h>
