@@ -74,18 +74,28 @@ public:
 
     SOFA_CLASS(SOFA_TEMPLATE(EigenCholmodSupernodalLLT, TBlockType), SOFA_TEMPLATE2(sofa::component::linearsolver::direct::EigenDirectSparseSolver, TBlockType, MainCholmodSupernodalLLTFactory));
 
+    using JMatrixType = typename Inherit1::JMatrixType;
+    using ResMatrixType = typename Inherit1::ResMatrixType;
+
     void init() override;
     void reinit() override;
+    void invert(Matrix& A) override;
+
+    bool addJMInvJtLocal(Matrix* M, ResMatrixType* result,
+                         const JMatrixType* J, SReal fact) override;
 
     /// Number of threads the underlying BLAS (used by CHOLMOD's supernodal
     /// factorization) is allowed to use.
-    /// A value <= 0 (default) leaves the BLAS default untouched, i.e. controlled
-    /// by the OPENBLAS_NUM_THREADS / OMP_NUM_THREADS environment variables.
-    /// For the medium-sized systems typically solved here, a small value (1-4)
-    /// is often faster than the default (= number of cores) because it avoids
-    /// thread oversubscription. Only effective with OpenBLAS or MKL; ignored
-    /// with BLAS backends that expose no runtime thread-control API (e.g. Apple
-    /// Accelerate), where the environment variables must be used instead.
+    /// Default is 1, which is the fastest setting for the vast majority of SOFA
+    /// scenes: it avoids thread oversubscription, which is catastrophic when
+    /// several solvers are factorized in parallel (e.g. with parallelODESolving)
+    /// and still optimal for a single medium-sized system. Increase it only for
+    /// a single, very large standalone system. A value <= 0 leaves the BLAS
+    /// default untouched, i.e. controlled by the OPENBLAS_NUM_THREADS /
+    /// OMP_NUM_THREADS environment variables. Only effective with OpenBLAS or
+    /// MKL; ignored with BLAS backends that expose no runtime thread-control API
+    /// (e.g. Apple Accelerate), where the environment variables must be used
+    /// instead.
     sofa::core::objectmodel::Data<int> d_numThreads;
 
 protected:
@@ -94,6 +104,11 @@ protected:
     /// Apply d_numThreads to the underlying BLAS backend if it exposes a runtime
     /// thread-count API (OpenBLAS/MKL). No-op if d_numThreads <= 0.
     void applyBlasNumThreads();
+
+    /// Reused dense J^T buffer for addJMInvJtLocal, to avoid reallocating at every
+    /// constraint-solve step. Not thread-safe, but each solver instance handles a
+    /// single object whose compliance is built sequentially.
+    Eigen::MatrixXd m_Jt;
 };
 
 #ifndef SOFACHOLMOD_EIGENCHOLMODSUPERNODALLLT_CPP

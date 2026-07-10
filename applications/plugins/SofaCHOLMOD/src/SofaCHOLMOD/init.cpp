@@ -25,6 +25,7 @@
 #include <sofa/core/ObjectFactory.h>
 
 #include <SofaCHOLMOD/EigenCholmodSupernodalLLT.h>
+#include <SofaCHOLMOD/CholmodSolverProxy.h>
 #include <Eigen/CholmodSupport>
 
 namespace sofacholmod
@@ -36,9 +37,11 @@ template<typename OrderingMethodType, class ScalarType>
 void MainCholmodSupernodalLLTFactory::registerSolver(const std::string& orderingMethodName)
 {
     std::lock_guard lock(s_mutex);
-    // CHOLMOD uses its own internal ordering; the OrderingMethodType is unused
-    getFactory().registerType<
-        Eigen::CholmodSupernodalLLT<EigenSparseMatrix<ScalarType>> >(orderingMethodName);
+    // CHOLMOD uses its own internal ordering; the OrderingMethodType is unused.
+    // Register our own proxy (not the generic EigenSolverWrapper) so that the
+    // solver can access the raw CHOLMOD factor for the optimized
+    // addJMInvJtLocal() compliance-matrix computation.
+    getFactory().registerProxyType<CholmodSolverProxy, ScalarType>(orderingMethodName);
 }
 
 

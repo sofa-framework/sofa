@@ -181,6 +181,16 @@ public:
         m_registeredTypes[join<Scalar>(orderingMethodName)] = [](){ return new EigenSolverWrapper<EigenClass>(); };
     }
 
+    /// Register a solver proxy that already derives from BaseEigenSolverProxy,
+    /// instead of wrapping a raw Eigen solver in an EigenSolverWrapper. This lets
+    /// a solver expose backend-specific functionality (e.g. CHOLMOD's raw factor
+    /// for optimized compliance-matrix computation) through its own proxy type.
+    template<typename ProxyClass, class Scalar>
+    void registerProxyType(const std::string& orderingMethodName)
+    {
+        m_registeredTypes[join<Scalar>(orderingMethodName)] = [](){ return new ProxyClass(); };
+    }
+
     template<class Scalar>
     BaseEigenSolverProxy* getObject(const std::string& orderingMethodName )
     {

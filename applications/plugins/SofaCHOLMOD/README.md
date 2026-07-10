@@ -41,7 +41,7 @@ of the common linear-solver API), but its choice is **ignored** by this solver.
 
 | Data         | Type  | Default | Description |
 |--------------|-------|---------|-------------|
-| `numThreads` | `int` | `0`     | Number of threads the underlying BLAS backend may use for the factorization. `<= 0` leaves the BLAS default untouched (controlled by the `OPENBLAS_NUM_THREADS` / `OMP_NUM_THREADS` environment variables). A small value (`1`-`4`) is often faster on medium-sized systems by avoiding thread oversubscription. Only effective with OpenBLAS or MKL (see [Performance](#performance)). |
+| `numThreads` | `int` | `1`     | Number of threads the underlying BLAS backend may use for the factorization. The default of `1` is the fastest setting for the vast majority of SOFA scenes and avoids thread oversubscription (see [Threading](#threading)). Increase it only for a single, very large standalone system. A value `<= 0` leaves the BLAS default untouched (controlled by the `OPENBLAS_NUM_THREADS` / `OMP_NUM_THREADS` environment variables). Only effective with OpenBLAS or MKL. |
 
 ## Usage
 
@@ -108,24 +108,62 @@ CHOLMOD**, not by SOFA. Keep this in mind when benchmarking:
 
 ### Threading
 
-With an optimized multithreaded BLAS (e.g. OpenBLAS-pthread), the default
-behavior is to use *all* cores. For the medium-sized systems typical in SOFA,
-this **oversubscribes** threads and the launch/synchronization overhead can make
-the solver *slower* than with a handful of threads. Tune it with the
-`numThreads` Data (or the `OPENBLAS_NUM_THREADS` environment variable).
+An optimized multithreaded BLAS (e.g. OpenBLAS-pthread) uses *all* cores by
+default. For the medium-sized systems typical in SOFA this **oversubscribes**
+threads: the launch/synchronization overhead makes the solver *slower* than with
+a single thread, and the problem becomes catastrophic when several solvers are
+factorized in parallel (e.g. multiple objects with `parallelODESolving="true"`),
+where each solver would otherwise spawn one BLAS pool per core.
 
-Illustrative measurement — `examples/FEMBAR_EigenCholmodSupernodalLLT.scn`
-(10×10×50 grid, ~15k DOF), 24-core Linux box, OpenBLAS backend:
+For these reasons `numThreads` **defaults to `1`**, which is the fastest setting
+in nearly all cases. Increase it only for a single, very large standalone
+system.
 
-| Solver / configuration                        | ms / step | Speedup |
-|-----------------------------------------------|-----------|---------|
-| `SparseLDLSolver`                             | ~762      | 1.0x    |
-| `EigenCholmodSupernodalLLT`, reference BLAS   | ~346      | 2.2x    |
-| `EigenCholmodSupernodalLLT`, OpenBLAS, all cores | ~92    | 8.3x    |
+Illustrative measurements on a 24-core Linux box, OpenBLAS backend:
+
+Single medium system — `examples/FEMBAR_EigenCholmodSupernodalLLT.scn`
+(10×10×50 grid, ~15k DOF):
+
+| Solver / configuration                          | ms / step | Speedup |
+|-------------------------------------------------|-----------|---------|
+| `SparseLDLSolver`                               | ~762      | 1.0x    |
+| `EigenCholmodSupernodalLLT`, reference BLAS     | ~346      | 2.2x    |
+| `EigenCholmodSupernodalLLT`, OpenBLAS, all cores| ~92       | 8.3x    |
 | `EigenCholmodSupernodalLLT`, OpenBLAS, `numThreads="1"` | ~70 | 10.9x |
 
-> The optimal thread count is problem- and machine-dependent; small values
-> (`1`-`4`) are a good starting point for medium systems.
+Many small systems in parallel — `examples/TorusFall.scn` (10 tori,
+`parallelODESolving="true"`):
+
+| Solver / configuration                          | FPS   | Speedup |
+|-------------------------------------------------|-------|---------|
+| `EigenCholmodSupernodalLLT`, OpenBLAS, all cores| ~20   | 0.5x    |
+| `SparseLDLSolver` (`parallelInverseProduct`)    | ~40   | 1.0x    |
+| `EigenCholmodSupernodalLLT`, `numThreads="1"`   | ~108  | 2.7x    |
+
+> Multithreaded BLAS only pays off for a single, very large system; whenever
+> several solvers run concurrently, keep `numThreads="1"`.
+
+## Constraint solving (compliance matrix)
+
+For Lagrangian constraints (e.g. contacts), `addJMInvJtLocal` computes the
+compliance block `W = J·A⁻¹·Jᵀ`. Since CHOLMOD factorizes `P·A·Pᵀ = L·Lᵀ`, this
+is `W = Zᵀ·Z` with `Z = L⁻¹·P·Jᵀ` — one triangular forward-solve (all constraint
+columns at once) plus one symmetric product, instead of a full solve per row.
+
+Implementation notes:
+
+- The `Z = L⁻¹·P·Jᵀ` solve uses **`cholmod_solve2`** with workspace buffers held
+  on the solver's `CholmodSolverProxy` and **reused across calls**, avoiding a
+  per-step allocate/free of the dense right-hand side (relevant for scenes with
+  many small systems solved every step).
+- `W = Zᵀ·Z` is computed with the BLAS symmetric rank-k update **`dsyrk`** (only
+  the triangle that is needed, half the flops of a full product), threaded per
+  `numThreads`; it falls back to an Eigen rank update if `dsyrk` is unavailable.
+
+Performance vs `SparseLDLSolver` is size-dependent: CHOLMOD's compliance is
+faster for systems above ~1000 DOF per object (and the margin grows with size),
+while for very small systems the fixed per-call overhead makes the two solvers
+comparable.
 
 ## License
 
