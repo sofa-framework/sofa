@@ -33,13 +33,19 @@ LinearToHigherOrderElements<DataTypes>::LinearToHigherOrderElements()
         "quadratic_edges", "List of quadratic edges"))
     , d_quadraticTriangles(initData(&d_quadraticTriangles, SeqElement<sofa::geometry::QuadraticTriangle>{},
         "quadratic_triangles", "List of quadratic triangles"))
+    , d_quadraticQuads(initData(&d_quadraticQuads, SeqElement<sofa::geometry::QuadraticQuad>{},
+        "quadratic_quads", "List of quadratic quads"))
     , d_quadraticTetrahedra(initData(&d_quadraticTetrahedra, SeqElement<sofa::geometry::QuadraticTetrahedron>{},
         "quadratic_tetrahedra", "List of quadratic tetrahedra"))
+    , d_quadraticHexahedra(initData(&d_quadraticHexahedra, SeqElement<sofa::geometry::QuadraticHexahedron>{},
+        "quadratic_hexahedra", "List of quadratic hexahedra"))
 {
     this->addOutput(&d_position);
     this->addOutput(&d_quadraticEdges);
     this->addOutput(&d_quadraticTriangles);
+    this->addOutput(&d_quadraticQuads);
     this->addOutput(&d_quadraticTetrahedra);
+    this->addOutput(&d_quadraticHexahedra);
 }
 
 template <class DataTypes>
@@ -69,6 +75,15 @@ struct TetrahedronEdge
     }
 };
 
+struct Face {
+    std::array<sofa::Index, 4> indices;
+    Face(sofa::Index a, sofa::Index b, sofa::Index c, sofa::Index d) {
+        indices = {a, b, c, d};
+        std::sort(indices.begin(), indices.end());
+    }
+    bool operator==(const Face& other) const { return indices == other.indices; }
+};
+
 
 template <class DataTypes>
 void LinearToHigherOrderElements<DataTypes>::doUpdate()
@@ -79,7 +94,9 @@ void LinearToHigherOrderElements<DataTypes>::doUpdate()
     //input elements
     const auto& edges = l_topology->getElements<sofa::geometry::Edge>();
     const auto& triangles = l_topology->getElements<sofa::geometry::Triangle>();
+    const auto& quads = l_topology->getElements<sofa::geometry::Quad>();
     const auto& tetrahedra = l_topology->getElements<sofa::geometry::Tetrahedron>();
+    const auto& hexahedra = l_topology->getElements<sofa::geometry::Hexahedron>();
 
     //input position
     const auto inPosition = this->mstate->readPositions();
@@ -87,19 +104,21 @@ void LinearToHigherOrderElements<DataTypes>::doUpdate()
     //output elements
     auto quadraticEdges = sofa::helper::getWriteOnlyAccessor(d_quadraticEdges);
     auto quadraticTriangles = sofa::helper::getWriteOnlyAccessor(d_quadraticTriangles);
+    auto quadraticQuads = sofa::helper::getWriteOnlyAccessor(d_quadraticQuads);
     auto quadraticTetrahedra = sofa::helper::getWriteOnlyAccessor(d_quadraticTetrahedra);
+    auto quadraticHexahedra = sofa::helper::getWriteOnlyAccessor(d_quadraticHexahedra);
 
     //output position
     auto outPosition = sofa::helper::getWriteOnlyAccessor(d_position);
     outPosition.wref() = inPosition.ref();
 
-    auto hash = [&inPosition](const TetrahedronEdge& edge){ return edge.a + inPosition.size() * edge.b; };
-    std::unordered_map<TetrahedronEdge, sofa::Size, decltype(hash)> newPointsMap(10, hash);
+    auto edgeHash = [&inPosition](const TetrahedronEdge& edge){ return edge.a + inPosition.size() * edge.b; };
+    std::unordered_map<TetrahedronEdge, sofa::Size, decltype(edgeHash)> midEdgePointsMap(10, edgeHash);
 
-    auto getOrAddMidPoint = [&](sofa::Index a, sofa::Index b)
+    auto getOrAddMidEdgePoint = [&](sofa::Index a, sofa::Index b)
     {
         TetrahedronEdge edge{a, b};
-        const auto [it, success] = newPointsMap.insert(std::make_pair(edge, outPosition.size()));
+        const auto [it, success] = midEdgePointsMap.insert(std::make_pair(edge, outPosition.size()));
         if (success)
         {
             outPosition.push_back(0.5 * (inPosition[a] + inPosition[b]));
@@ -107,17 +126,45 @@ void LinearToHigherOrderElements<DataTypes>::doUpdate()
         return it->second;
     };
 
+    auto faceHash = [](const Face& f) {
+        size_t h = 0;
+        for (auto i : f.indices) h ^= std::hash<sofa::Index>{}(i) + 0x9e3779b9 + (h << 6) + (h >> 2);
+        return h;
+    };
+    std::unordered_map<Face, sofa::Size, decltype(faceHash)> midFacePointsMap(10, faceHash);
+
+    auto getOrAddMidFacePoint = [&](sofa::Index a, sofa::Index b, sofa::Index c, sofa::Index d)
+    {
+        Face face{a, b, c, d};
+        const auto [it, success] = midFacePointsMap.insert(std::make_pair(face, outPosition.size()));
+        if (success)
+        {
+            outPosition.push_back(0.25 * (inPosition[a] + inPosition[b] + inPosition[c] + inPosition[d]));
+        }
+        return it->second;
+    };
+
     for (const auto& element : edges)
     {
-        quadraticEdges.emplace_back(element[0], element[1], getOrAddMidPoint(element[0], element[1]));
+        quadraticEdges.emplace_back(element[0], element[1], getOrAddMidEdgePoint(element[0], element[1]));
     }
 
     for (const auto& element : triangles)
     {
         quadraticTriangles.emplace_back(element[0], element[1], element[2],
-            getOrAddMidPoint(element[0], element[1]),
-            getOrAddMidPoint(element[0], element[2]),
-            getOrAddMidPoint(element[1], element[2]));
+            getOrAddMidEdgePoint(element[0], element[1]),
+            getOrAddMidEdgePoint(element[1], element[2]),
+            getOrAddMidEdgePoint(element[2], element[0]));
+    }
+
+    for (const auto& element : quads)
+    {
+        quadraticQuads.emplace_back(element[0], element[1], element[2], element[3],
+            getOrAddMidEdgePoint(element[0], element[1]),
+            getOrAddMidEdgePoint(element[0], element[2]),
+            getOrAddMidEdgePoint(element[1], element[3]),
+            getOrAddMidEdgePoint(element[2], element[3]),
+            getOrAddMidFacePoint(element[0], element[1], element[2], element[3]));
     }
 
     for (const auto& element : tetrahedra)
@@ -127,12 +174,31 @@ void LinearToHigherOrderElements<DataTypes>::doUpdate()
         for (std::size_t i = 0; i < listEdgesInTetra.size(); ++i)
         {
             const auto [a, b] = listEdgesInTetra[i];
-            newIndices[i] = getOrAddMidPoint(element[a], element[b]);
+            newIndices[i] = getOrAddMidEdgePoint(element[a], element[b]);
         }
 
         quadraticTetrahedra.emplace_back(element[0], element[1], element[2], element[3],
             newIndices[0], newIndices[1], newIndices[2], newIndices[3],
             newIndices[4], newIndices[5]);
+    }
+
+    for (const auto& element : hexahedra)
+    {
+        std::array<sofa::Index, 12> midEdges;
+        static constexpr std::array<std::pair<sofa::Index, sofa::Index>, 12> hexaEdges {{{0, 1}, {0, 2}, {0, 4}, {1, 3}, {1, 5}, {2, 3}, {2, 6}, {3, 7}, {4, 5}, {4, 6}, {5, 7}, {6, 7}}};
+        for (std::size_t i = 0; i < 12; ++i) midEdges[i] = getOrAddMidEdgePoint(element[hexaEdges[i].first], element[hexaEdges[i].second]);
+
+        std::array<sofa::Index, 6> midFaces;
+        static constexpr std::array<std::array<sofa::Index, 4>, 6> hexaFaces {{{0, 1, 3, 2}, {0, 1, 5, 4}, {0, 2, 6, 4}, {1, 3, 7, 5}, {2, 3, 7, 6}, {4, 5, 7, 6}}};
+        for (std::size_t i = 0; i < 6; ++i) midFaces[i] = getOrAddMidFacePoint(element[hexaFaces[i][0]], element[hexaFaces[i][1]], element[hexaFaces[i][2]], element[hexaFaces[i][3]]);
+
+        sofa::Index midVolume = outPosition.size();
+        outPosition.push_back(0.125 * (inPosition[element[0]] + inPosition[element[1]] + inPosition[element[2]] + inPosition[element[3]] +
+                                       inPosition[element[4]] + inPosition[element[5]] + inPosition[element[6]] + inPosition[element[7]]));
+
+        quadraticHexahedra.emplace_back(element[0], element[1], element[2], element[3], element[4], element[5], element[6], element[7],
+            midEdges[0], midEdges[1], midEdges[2], midEdges[3], midEdges[4], midEdges[5], midEdges[6], midEdges[7], midEdges[8], midEdges[9], midEdges[10], midEdges[11],
+            midFaces[0], midFaces[1], midFaces[2], midFaces[3], midFaces[4], midFaces[5], midVolume);
     }
 }
 

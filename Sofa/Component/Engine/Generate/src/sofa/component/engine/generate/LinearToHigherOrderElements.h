@@ -51,8 +51,9 @@ public:
     sofa::DataVecCoord_t<DataTypes> d_position;
     Data<SeqElement<sofa::geometry::QuadraticEdge>> d_quadraticEdges;
     Data<SeqElement<sofa::geometry::QuadraticTriangle>> d_quadraticTriangles;
+    Data<SeqElement<sofa::geometry::QuadraticQuad>> d_quadraticQuads;
     Data<SeqElement<sofa::geometry::QuadraticTetrahedron>> d_quadraticTetrahedra;
-
+    Data<SeqElement<sofa::geometry::QuadraticHexahedron>> d_quadraticHexahedra;
 
 protected:
     void doUpdate() override;
