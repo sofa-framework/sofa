@@ -41,7 +41,7 @@ of the common linear-solver API), but its choice is **ignored** by this solver.
 
 | Data         | Type  | Default | Description |
 |--------------|-------|---------|-------------|
-| `numThreads` | `int` | `1`     | Number of threads the underlying BLAS backend may use for the factorization. The default of `1` is the fastest setting for the vast majority of SOFA scenes and avoids thread oversubscription (see [Threading](#threading)). Increase it only for a single, very large standalone system. A value `<= 0` leaves the BLAS default untouched (controlled by the `OPENBLAS_NUM_THREADS` / `OMP_NUM_THREADS` environment variables). Only effective with OpenBLAS or MKL. |
+| `numThreads` | `int` | `1`     | Number of threads the underlying BLAS backend may use for the factorization. The default of `1` is a safe choice that avoids thread oversubscription when several solvers run concurrently (see [Threading](#threading)). For a **single large standalone system**, a moderate value (roughly half the physical cores) is faster and should be tuned per machine. A value `<= 0` leaves the BLAS default untouched (controlled by the `OPENBLAS_NUM_THREADS` / `OMP_NUM_THREADS` environment variables). Only effective with OpenBLAS or MKL. |
 
 ## Usage
 
@@ -109,39 +109,48 @@ CHOLMOD**, not by SOFA. Keep this in mind when benchmarking:
 ### Threading
 
 An optimized multithreaded BLAS (e.g. OpenBLAS-pthread) uses *all* cores by
-default. For the medium-sized systems typical in SOFA this **oversubscribes**
-threads: the launch/synchronization overhead makes the solver *slower* than with
-a single thread, and the problem becomes catastrophic when several solvers are
-factorized in parallel (e.g. multiple objects with `parallelODESolving="true"`),
-where each solver would otherwise spawn one BLAS pool per core.
+default. The right thread count depends entirely on the scene:
 
-For these reasons `numThreads` **defaults to `1`**, which is the fastest setting
-in nearly all cases. Increase it only for a single, very large standalone
-system.
+- **A single large system** benefits from multithreaded BLAS, but only up to a
+  point: there is a sweet spot (roughly half the physical cores), beyond which
+  launch/synchronization overhead makes it *slower* again — using all cores is
+  usually the worst choice.
+- **Many systems solved concurrently** (multiple objects, especially with
+  `parallelODESolving="true"`) already saturate the cores through object-level
+  parallelism. Adding BLAS threads on top **oversubscribes** them and is
+  catastrophic.
 
-Illustrative measurements on a 24-core Linux box, OpenBLAS backend:
+`numThreads` therefore **defaults to `1`** — the safe choice that never
+oversubscribes. For a single large system, raise it to the sweet spot (tune per
+machine). The optimum is machine-dependent, so treat the numbers below as
+illustrative (24-core Linux box, OpenBLAS backend).
 
-Single medium system — `examples/FEMBAR_EigenCholmodSupernodalLLT.scn`
-(10×10×50 grid, ~15k DOF):
+Single large system — `examples/FEMBAR_EigenCholmodSupernodalLLT.scn`
+(10×10×50 grid, ~15k DOF). Effect of `numThreads`:
 
-| Solver / configuration                          | ms / step | Speedup |
-|-------------------------------------------------|-----------|---------|
-| `SparseLDLSolver`                               | ~762      | 1.0x    |
-| `EigenCholmodSupernodalLLT`, reference BLAS     | ~346      | 2.2x    |
-| `EigenCholmodSupernodalLLT`, OpenBLAS, all cores| ~92       | 8.3x    |
-| `EigenCholmodSupernodalLLT`, OpenBLAS, `numThreads="1"` | ~70 | 10.9x |
+| `numThreads`      | ms / step | FPS  |
+|-------------------|-----------|------|
+| 1                 | ~67       | 14.9 |
+| 4                 | ~52       | 19.1 |
+| **8** (sweet spot)| **~48**   | 20.8 |
+| 16                | ~64       | 15.6 |
+| 24 (all cores)    | ~96       | 10.4 |
+
+For reference, on the same scene `SparseLDLSolver` is ~762 ms/step, and CHOLMOD
+on a non-optimized *reference* BLAS is ~346 ms/step — i.e. having an optimized
+BLAS matters far more than the exact thread count.
 
 Many small systems in parallel — `examples/TorusFall.scn` (10 tori,
-`parallelODESolving="true"`):
+`parallelODESolving="true"`). Here more BLAS threads only hurt:
 
 | Solver / configuration                          | FPS   | Speedup |
 |-------------------------------------------------|-------|---------|
-| `EigenCholmodSupernodalLLT`, OpenBLAS, all cores| ~20   | 0.5x    |
+| `EigenCholmodSupernodalLLT`, all cores          | ~20   | 0.5x    |
 | `SparseLDLSolver` (`parallelInverseProduct`)    | ~40   | 1.0x    |
 | `EigenCholmodSupernodalLLT`, `numThreads="1"`   | ~108  | 2.7x    |
 
-> Multithreaded BLAS only pays off for a single, very large system; whenever
-> several solvers run concurrently, keep `numThreads="1"`.
+> Rule of thumb: `numThreads="1"` whenever several solvers run concurrently; a
+> moderate value (~half the cores) for a single large standalone system.
 
 ## Constraint solving (compliance matrix)
 
