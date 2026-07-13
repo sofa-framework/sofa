@@ -194,7 +194,41 @@ macro(sofa_fetch_dependency name)
 
     set(${fixed_name}_SOURCE_DIR "${fetched_dir}" CACHE STRING "" FORCE )
 
-    if( "${${upper_name}_LOCAL_DIRECTORY}" STREQUAL "" AND NOT FETCHCONTENT_FULLY_DISCONNECTED AND NOT FETCHCONTENT_UPDATES_DISCONNECTED AND NOT "${ARG_FETCH_ENABLED}" STREQUAL "OFF")
+    # Determine whether we actually need to (re)fetch. Driving ExternalProject
+    # through a nested CMake configure+build (below) is expensive and, on every
+    # reconfigure, only re-runs a git "update" step that almost always confirms the
+    # sources are already at the requested reference. If the repository is already
+    # checked out at the requested GIT_TAG, skip the fetch entirely. A re-fetch is
+    # still triggered automatically when the requested reference no longer matches
+    # what is currently checked out (e.g. a dependency version was bumped).
+    set(_sofa_need_fetch TRUE)
+    if(EXISTS "${fetched_dir}/.git")
+        if(NOT DEFINED GIT_EXECUTABLE)
+            find_package(Git QUIET)
+        endif()
+        if(GIT_EXECUTABLE)
+            # Resolve the current HEAD and the requested reference to commit hashes in a
+            # single git invocation (process spawns are expensive, especially on Windows).
+            # A non-zero result means the requested reference could not be resolved in the
+            # existing checkout (e.g. the GIT_TAG was bumped to a tag/SHA not present yet),
+            # in which case we fall through and (re)fetch.
+            execute_process(COMMAND "${GIT_EXECUTABLE}" rev-parse HEAD "${${upper_name}_GIT_TAG}^{commit}"
+                WORKING_DIRECTORY "${fetched_dir}"
+                OUTPUT_VARIABLE _sofa_refs OUTPUT_STRIP_TRAILING_WHITESPACE
+                RESULT_VARIABLE _sofa_rev_result ERROR_QUIET)
+            if(_sofa_rev_result EQUAL 0)
+                string(REGEX REPLACE "[\r\n]+" ";" _sofa_refs "${_sofa_refs}")
+                list(GET _sofa_refs 0 _sofa_current_ref)
+                list(GET _sofa_refs 1 _sofa_requested_ref)
+                if("${_sofa_current_ref}" STREQUAL "${_sofa_requested_ref}")
+                    set(_sofa_need_fetch FALSE)
+                    message(STATUS "Dependency ${name} already at requested reference ${${upper_name}_GIT_TAG}; skipping fetch.")
+                endif()
+            endif()
+        endif()
+    endif()
+
+    if( "${${upper_name}_LOCAL_DIRECTORY}" STREQUAL "" AND _sofa_need_fetch AND NOT FETCHCONTENT_FULLY_DISCONNECTED AND NOT FETCHCONTENT_UPDATES_DISCONNECTED AND NOT "${ARG_FETCH_ENABLED}" STREQUAL "OFF")
         # Fetch
         message("Fetching dependency ${name} in ${fetched_dir}")
         message(STATUS "Checkout reference ${${upper_name}_GIT_TAG} from repository ${${upper_name}_GIT_REPOSITORY} ")
