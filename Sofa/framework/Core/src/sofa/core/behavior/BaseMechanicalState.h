@@ -118,17 +118,15 @@ public:
     /// Initialize an unset vector
     //virtual void vInit(const ExecParams* params, MatrixDerivId v, ConstMatrixDerivId vSrc) = 0;
 
-    /// \brief Compute a linear operation on vectors : v = a + b * f.
+    /// \brief Compute a linear operation on vectors : r = a + b * k.
     ///
     /// This generic operation can be used for many simpler cases :
-    /// \li v = 0
-    /// \li v = a
-    /// \li v = a + b
-    /// \li v = b * f
-    virtual void vOp(const ExecParams* params, VecId v,
-                     ConstVecId a = ConstVecId::null(),
-                     ConstVecId b = ConstVecId::null(),
-                     SReal f = 1.0 ) = 0;
+    /// \li r = 0
+    /// \li r = a
+    /// \li r = a + b
+    /// \li r = b * k
+    virtual void vOp(const ExecParams* params, VecId r, ConstVecId a = ConstVecId::null(),
+                     ConstVecId b = ConstVecId::null(), SReal k = 1.0) = 0;
 
     /// Data structure describing a set of linear operation on vectors
     /// \see vMultiOp
@@ -269,7 +267,7 @@ public:
     virtual Size getDerivDimension() const { return 0; }
 
     /// Translate the current state
-    virtual void applyTranslation(const SReal dx, const SReal dy, const SReal dz)=0;
+    virtual void applyTranslation(const SReal translationVectorX, const SReal translationVectorY, const SReal translationVectorZ) =0;
 
     /// \brief Rotate the current state
     ///

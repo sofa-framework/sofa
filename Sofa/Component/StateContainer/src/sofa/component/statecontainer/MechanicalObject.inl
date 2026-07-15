@@ -169,7 +169,7 @@ MechanicalObject<DataTypes>::MechanicalObject()
 {
     m_initialized = false;
 
-    data = MechanicalObjectInternalData<DataTypes>(this);
+    m_data = MechanicalObjectInternalData<DataTypes>(this);
 
 
     x               .setGroup("Vector");
@@ -715,13 +715,15 @@ SReal MechanicalObject<DataTypes>::getVZ(sofa::Index i) const
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::applyTranslation (const SReal dx, const SReal dy, const SReal dz)
+void MechanicalObject<DataTypes>::applyTranslation (const SReal translationVectorX,
+                                                   const SReal translationVectorY,
+                                                   const SReal translationVectorZ)
 {
     helper::WriteAccessor< Data<VecCoord> > x_wA = *this->write(core::vec_id::write_access::position);
 
     for (unsigned int i = 0; i < x_wA.size(); i++)
     {
-        DataTypes::add(x_wA[i], dx, dy, dz);
+        DataTypes::add(x_wA[i], translationVectorX, translationVectorY, translationVectorZ);
     }
 }
 
@@ -766,11 +768,14 @@ void MechanicalObject<DataTypes>::getIndicesInSpace(sofa::type::vector<sofa::Ind
 {
     helper::ReadAccessor< Data<VecCoord> > x_rA = this->readPositions();
 
-    for( unsigned i=0; i<x_rA.size(); ++i )
+    type::BoundingBox box(xmin, xmax, ymin, ymax, zmin, zmax);
+
+    for (unsigned i = 0; i < x_rA.size(); ++i)
     {
-        Real x=0.0,y=0.0,z=0.0;
-        DataTypes::get(x,y,z,x_rA[i]);
-        if( x >= xmin && x <= xmax && y >= ymin && y <= ymax && z >= zmin && z <= zmax )
+        sofa::type::Vec<3, Real> pos;
+        DataTypes::get(pos[0], pos[1], pos[2], x_rA[i]);
+
+        if (box.contains(pos))
         {
             indices.push_back(i);
         }
@@ -1181,11 +1186,11 @@ void MechanicalObject<DataTypes>::storeResetState()
     vOp(core::execparams::defaultInstance(), sofa::core::vec_id::write_access::resetPosition, sofa::core::vec_id::read_access::position);
 
     // we only store a resetVelocity if the velocity is not zero
-    helper::ReadAccessor< Data<VecDeriv> > v = *this->read(core::vec_id::read_access::velocity);
+    helper::ReadAccessor< Data<VecDeriv> > v_ra = *this->read(core::vec_id::read_access::velocity);
     bool zero = true;
-    for (unsigned int i=0; i<v.size(); ++i)
+    for (unsigned int i=0; i<v_ra.size(); ++i)
     {
-        const Deriv& vi = v[i];
+        const Deriv& vi = v_ra[i];
         for (unsigned int j=0; j<vi.size(); ++j)
             if (vi[j] != 0) zero = false;
         if (!zero) break;
@@ -1221,18 +1226,18 @@ void MechanicalObject<DataTypes>::reset()
 
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::writeVec(core::ConstVecId v, std::ostream &out)
+void MechanicalObject<DataTypes>::writeVec(core::ConstVecId vecId, std::ostream &out)
 {
-    switch (v.type)
+    switch (vecId.type)
     {
     case sofa::core::V_COORD:
-        out << this->read(core::ConstVecCoordId(v))->getValue();
+        out << this->read(core::ConstVecCoordId(vecId))->getValue();
         break;
     case sofa::core::V_DERIV:
-        out << this->read(core::ConstVecDerivId(v))->getValue();
+        out << this->read(core::ConstVecDerivId(vecId))->getValue();
         break;
     case sofa::core::V_MATDERIV:
-        out << this->read(core::ConstMatrixDerivId(v))->getValue();
+        out << this->read(core::ConstMatrixDerivId(vecId))->getValue();
         break;
     default:
         break;
@@ -1240,16 +1245,16 @@ void MechanicalObject<DataTypes>::writeVec(core::ConstVecId v, std::ostream &out
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::readVec(core::VecId v, std::istream &in)
+void MechanicalObject<DataTypes>::readVec(core::VecId vecId, std::istream &in)
 {
     Size i = 0;
 
-    switch (v.type)
+    switch (vecId.type)
     {
     case sofa::core::V_COORD:
     {
         Coord coord;
-        helper::WriteOnlyAccessor< Data< VecCoord > > vec = *this->write(core::VecCoordId(v));
+        helper::WriteOnlyAccessor< Data< VecCoord > > vec = *this->write(core::VecCoordId(vecId));
 
         while (in >> coord)
         {
@@ -1263,7 +1268,7 @@ void MechanicalObject<DataTypes>::readVec(core::VecId v, std::istream &in)
     case sofa::core::V_DERIV:
     {
         Deriv deriv;
-        helper::WriteOnlyAccessor< Data< VecDeriv > > vec = *this->write(core::VecDerivId(v));
+        helper::WriteOnlyAccessor< Data< VecDeriv > > vec = *this->write(core::VecDerivId(vecId));
 
         while (in >> deriv)
         {
@@ -1286,23 +1291,23 @@ void MechanicalObject<DataTypes>::readVec(core::VecId v, std::istream &in)
 }
 
 template <class DataTypes>
-SReal MechanicalObject<DataTypes>::compareVec(core::ConstVecId v, std::istream &in)
+SReal MechanicalObject<DataTypes>::compareVec(core::ConstVecId vecId, std::istream &in)
 {
     std::string ref,cur;
     getline(in, ref);
 
     std::ostringstream out;
 
-    switch (v.type)
+    switch (vecId.type)
     {
     case sofa::core::V_COORD:
-        out << this->read(core::ConstVecCoordId(v))->getValue();
+        out << this->read(core::ConstVecCoordId(vecId))->getValue();
         break;
     case sofa::core::V_DERIV:
-        out << this->read(core::ConstVecDerivId(v))->getValue();
+        out << this->read(core::ConstVecDerivId(vecId))->getValue();
         break;
     case sofa::core::V_MATDERIV:
-        out << this->read(core::ConstMatrixDerivId(v))->getValue();
+        out << this->read(core::ConstMatrixDerivId(vecId))->getValue();
         break;
     default:
         break;
@@ -1370,44 +1375,44 @@ void MechanicalObject<DataTypes>::accumulateForce(const core::ExecParams* params
 }
 
 template <class DataTypes>
-Data<typename MechanicalObject<DataTypes>::VecCoord>* MechanicalObject<DataTypes>::write(core::VecCoordId v)
+Data<typename MechanicalObject<DataTypes>::VecCoord>* MechanicalObject<DataTypes>::write(core::VecCoordId vecId)
 {
-    if (v.index >= vectorsCoord.size())
+    if (vecId.index >= vectorsCoord.size())
     {
-        vectorsCoord.resize(v.index + 1, 0);
+        vectorsCoord.resize(vecId.index + 1, 0);
     }
 
-    if (vectorsCoord[v.index] == nullptr)
+    if (vectorsCoord[vecId.index] == nullptr)
     {
-        vectorsCoord[v.index] = new Data< VecCoord >;
-        vectorsCoord[v.index]->setName(v.getName());
-        const auto group = v.getGroup();
+        vectorsCoord[vecId.index] = new Data< VecCoord >;
+        vectorsCoord[vecId.index]->setName(vecId.getName());
+        const auto group = vecId.getGroup();
         if (!group.empty())
         {
-            vectorsCoord[v.index]->setGroup(group);
+            vectorsCoord[vecId.index]->setGroup(group);
         }
         else
         {
-            vectorsCoord[v.index]->setGroup("Vector");
+            vectorsCoord[vecId.index]->setGroup("Vector");
         }
-        this->addData(vectorsCoord[v.index]);
+        this->addData(vectorsCoord[vecId.index]);
         if (f_reserve.getValue() > 0)
         {
-            vectorsCoord[v.index]->beginWriteOnly()->reserve(f_reserve.getValue());
-            vectorsCoord[v.index]->endEdit();
+            vectorsCoord[vecId.index]->beginWriteOnly()->reserve(f_reserve.getValue());
+            vectorsCoord[vecId.index]->endEdit();
         }
-        if (vectorsCoord[v.index]->getValue().size() != getSize())
+        if (vectorsCoord[vecId.index]->getValue().size() != getSize())
         {
-            vectorsCoord[v.index]->beginWriteOnly()->resize( getSize() );
-            vectorsCoord[v.index]->endEdit();
+            vectorsCoord[vecId.index]->beginWriteOnly()->resize( getSize() );
+            vectorsCoord[vecId.index]->endEdit();
         }
     }
-    Data<typename MechanicalObject<DataTypes>::VecCoord>* d = vectorsCoord[v.index];
+    Data<typename MechanicalObject<DataTypes>::VecCoord>* d = vectorsCoord[vecId.index];
 #if !defined(NDEBUG)
     const typename MechanicalObject<DataTypes>::VecCoord& val = d->getValue();
     if (!val.empty() && val.size() != (unsigned int)this->getSize())
     {
-        msg_error() << "Writing to State vector " << v << " with incorrect size : " << val.size() << " != " << this->getSize();
+        msg_error() << "Writing to State vector " << vecId << " with incorrect size : " << val.size() << " != " << this->getSize();
     }
 #endif
     return d;
@@ -1416,85 +1421,85 @@ Data<typename MechanicalObject<DataTypes>::VecCoord>* MechanicalObject<DataTypes
 
 
 template <class DataTypes>
-const Data<typename MechanicalObject<DataTypes>::VecCoord>* MechanicalObject<DataTypes>::read(core::ConstVecCoordId v) const
+const Data<typename MechanicalObject<DataTypes>::VecCoord>* MechanicalObject<DataTypes>::read(core::ConstVecCoordId vecId) const
 {
-    if (v.isNull())
+    if (vecId.isNull())
     {
         msg_error() << "Accessing null VecCoord";
     }
 
-    if (v.index < vectorsCoord.size() && vectorsCoord[v.index] != nullptr)
+    if (vecId.index < vectorsCoord.size() && vectorsCoord[vecId.index] != nullptr)
     {
-        const Data<typename MechanicalObject<DataTypes>::VecCoord>* d = vectorsCoord[v.index];
+        const Data<typename MechanicalObject<DataTypes>::VecCoord>* d = vectorsCoord[vecId.index];
 #if !defined(NDEBUG)
         const typename MechanicalObject<DataTypes>::VecCoord& val = d->getValue();
         if (!val.empty() && val.size() != (unsigned int)this->getSize())
         {
-            msg_error() << "Accessing State vector " << v << " with incorrect size : " << val.size() << " != " << this->getSize();
+            msg_error() << "Accessing State vector " << vecId << " with incorrect size : " << val.size() << " != " << this->getSize();
         }
 #endif
         return d;
     }
     else
     {
-        msg_error() << "Vector " << v << " does not exist";
+        msg_error() << "Vector " << vecId << " does not exist";
         return nullptr;
     }
 }
 
 template <class DataTypes>
-Data<typename MechanicalObject<DataTypes>::VecDeriv>* MechanicalObject<DataTypes>::write(core::VecDerivId v)
+Data<typename MechanicalObject<DataTypes>::VecDeriv>* MechanicalObject<DataTypes>::write(core::VecDerivId vecId)
 {
 
-    if (v.index >= vectorsDeriv.size())
+    if (vecId.index >= vectorsDeriv.size())
     {
-        vectorsDeriv.resize(v.index + 1, 0);
+        vectorsDeriv.resize(vecId.index + 1, 0);
     }
 
-    if (vectorsDeriv[v.index] == nullptr)
+    if (vectorsDeriv[vecId.index] == nullptr)
     {
-        vectorsDeriv[v.index] = new Data< VecDeriv >;
-        vectorsDeriv[v.index]->setName(v.getName());
-        const auto group = v.getGroup();
+        vectorsDeriv[vecId.index] = new Data< VecDeriv >;
+        vectorsDeriv[vecId.index]->setName(vecId.getName());
+        const auto group = vecId.getGroup();
         if (!group.empty())
         {
-            vectorsDeriv[v.index]->setGroup(group);
+            vectorsDeriv[vecId.index]->setGroup(group);
         }
         else
         {
-            vectorsDeriv[v.index]->setGroup("Vector");
+            vectorsDeriv[vecId.index]->setGroup("Vector");
         }
-        this->addData(vectorsDeriv[v.index]);
+        this->addData(vectorsDeriv[vecId.index]);
         if (f_reserve.getValue() > 0)
         {
-            vectorsDeriv[v.index]->beginWriteOnly()->reserve(f_reserve.getValue());
-            vectorsDeriv[v.index]->endEdit();
+            vectorsDeriv[vecId.index]->beginWriteOnly()->reserve(f_reserve.getValue());
+            vectorsDeriv[vecId.index]->endEdit();
         }
-        if (vectorsDeriv[v.index]->getValue().size() != getSize())
+        if (vectorsDeriv[vecId.index]->getValue().size() != getSize())
         {
-            vectorsDeriv[v.index]->beginWriteOnly()->resize( getSize() );
-            vectorsDeriv[v.index]->endEdit();
+            vectorsDeriv[vecId.index]->beginWriteOnly()->resize( getSize() );
+            vectorsDeriv[vecId.index]->endEdit();
         }
     }
-    Data<typename MechanicalObject<DataTypes>::VecDeriv>* d = vectorsDeriv[v.index];
+    Data<typename MechanicalObject<DataTypes>::VecDeriv>* d = vectorsDeriv[vecId.index];
 
 #if !defined(NDEBUG)
     const typename MechanicalObject<DataTypes>::VecDeriv& val = d->getValue();
     if (!val.empty() && val.size() != (unsigned int)this->getSize())
     {
-        msg_error() << "Writing to State vector " << v << " with incorrect size : " << val.size() << " != " << this->getSize();
+        msg_error() << "Writing to State vector " << vecId << " with incorrect size : " << val.size() << " != " << this->getSize();
     }
 #endif
     return d;
 }
 
 template <class DataTypes>
-const Data<typename MechanicalObject<DataTypes>::VecDeriv>* MechanicalObject<DataTypes>::read(core::ConstVecDerivId v) const
+const Data<typename MechanicalObject<DataTypes>::VecDeriv>* MechanicalObject<DataTypes>::read(core::ConstVecDerivId vecId) const
 {
 
-    if (v.index < vectorsDeriv.size())
+    if (vecId.index < vectorsDeriv.size())
     {
-        const Data<typename MechanicalObject<DataTypes>::VecDeriv>* d = vectorsDeriv[v.index];
+        const Data<typename MechanicalObject<DataTypes>::VecDeriv>* d = vectorsDeriv[vecId.index];
 
 #if !defined(NDEBUG)
         if(d!=NULL)
@@ -1502,7 +1507,7 @@ const Data<typename MechanicalObject<DataTypes>::VecDeriv>* MechanicalObject<Dat
             const typename MechanicalObject<DataTypes>::VecDeriv& val = d->getValue();
             if (!val.empty() && val.size() != (unsigned int)this->getSize())
             {
-                msg_error() << "Accessing State vector " << v << " with incorrect size : " << val.size() << " != " << this->getSize();
+                msg_error() << "Accessing State vector " << vecId << " with incorrect size : " << val.size() << " != " << this->getSize();
             }
         }
 #endif // !defined(NDEBUG)
@@ -1511,54 +1516,54 @@ const Data<typename MechanicalObject<DataTypes>::VecDeriv>* MechanicalObject<Dat
     }
     else
     {
-        msg_error() << "Vector " << v << "does not exist";
+        msg_error() << "Vector " << vecId << "does not exist";
         return nullptr;
     }
 }
 
 template <class DataTypes>
-Data<typename MechanicalObject<DataTypes>::MatrixDeriv>* MechanicalObject<DataTypes>::write(core::MatrixDerivId v)
+Data<typename MechanicalObject<DataTypes>::MatrixDeriv>* MechanicalObject<DataTypes>::write(core::MatrixDerivId vecId)
 {
 
-    if (v.index >= vectorsMatrixDeriv.size())
+    if (vecId.index >= vectorsMatrixDeriv.size())
     {
-        vectorsMatrixDeriv.resize(v.index + 1, 0);
+        vectorsMatrixDeriv.resize(vecId.index + 1, 0);
     }
 
-    if (vectorsMatrixDeriv[v.index] == nullptr)
+    if (vectorsMatrixDeriv[vecId.index] == nullptr)
     {
-        vectorsMatrixDeriv[v.index] = new Data< MatrixDeriv >;
-        vectorsMatrixDeriv[v.index]->setName(v.getName());
-        const auto group = v.getGroup();
+        vectorsMatrixDeriv[vecId.index] = new Data< MatrixDeriv >;
+        vectorsMatrixDeriv[vecId.index]->setName(vecId.getName());
+        const auto group = vecId.getGroup();
         if (!group.empty())
         {
-            vectorsMatrixDeriv[v.index]->setGroup(group);
+            vectorsMatrixDeriv[vecId.index]->setGroup(group);
         }
         else
         {
-            vectorsMatrixDeriv[v.index]->setGroup("Vector");
+            vectorsMatrixDeriv[vecId.index]->setGroup("Vector");
         }
-        this->addData(vectorsMatrixDeriv[v.index]);
+        this->addData(vectorsMatrixDeriv[vecId.index]);
     }
 
-    return vectorsMatrixDeriv[v.index];
+    return vectorsMatrixDeriv[vecId.index];
 }
 
 template <class DataTypes>
-const Data<typename MechanicalObject<DataTypes>::MatrixDeriv>* MechanicalObject<DataTypes>::read(core::ConstMatrixDerivId v) const
+const Data<typename MechanicalObject<DataTypes>::MatrixDeriv>* MechanicalObject<DataTypes>::read(core::ConstMatrixDerivId vecId) const
 {
 
-    if (v.index < vectorsMatrixDeriv.size())
-        return vectorsMatrixDeriv[v.index];
+    if (vecId.index < vectorsMatrixDeriv.size())
+        return vectorsMatrixDeriv[vecId.index];
     else
     {
-        msg_error() << "Vector " << v << "does not exist";
+        msg_error() << "Vector " << vecId << "does not exist";
         return nullptr;
     }
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::setVecCoord(core::ConstVecCoordId vecId, Data< VecCoord > *v)
+void MechanicalObject<DataTypes>::setVecCoord(core::ConstVecCoordId vecId, Data< VecCoord > *vecData)
 {
     const auto index = vecId.getIndex();
     if (index >= vectorsCoord.size())
@@ -1566,17 +1571,17 @@ void MechanicalObject<DataTypes>::setVecCoord(core::ConstVecCoordId vecId, Data<
         vectorsCoord.resize(index + 1, 0);
     }
 
-    vectorsCoord[index] = v;
+    vectorsCoord[index] = vecData;
 
     const auto group = vecId.getGroup();
     if (!group.empty())
     {
-        v->setGroup(group);
+        vecData->setGroup(group);
     }
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::setVecDeriv(core::ConstVecDerivId vecId, Data< VecDeriv > *v)
+void MechanicalObject<DataTypes>::setVecDeriv(core::ConstVecDerivId vecId, Data< VecDeriv > *vecData)
 {
     const auto index = vecId.getIndex();
     if (index >= vectorsDeriv.size())
@@ -1584,18 +1589,18 @@ void MechanicalObject<DataTypes>::setVecDeriv(core::ConstVecDerivId vecId, Data<
         vectorsDeriv.resize(index + 1, 0);
     }
 
-    vectorsDeriv[index] = v;
+    vectorsDeriv[index] = vecData;
 
     const auto group = vecId.getGroup();
     if (!group.empty())
     {
-        v->setGroup(group);
+        vecData->setGroup(group);
     }
 }
 
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::setVecMatrixDeriv(core::ConstMatrixDerivId vecId, Data < MatrixDeriv > *m)
+void MechanicalObject<DataTypes>::setVecMatrixDeriv(core::ConstMatrixDerivId vecId, Data < MatrixDeriv > *vecData)
 {
     const auto index = vecId.getIndex();
     if (index >= vectorsMatrixDeriv.size())
@@ -1603,12 +1608,12 @@ void MechanicalObject<DataTypes>::setVecMatrixDeriv(core::ConstMatrixDerivId vec
         vectorsMatrixDeriv.resize(index + 1, 0);
     }
 
-    vectorsMatrixDeriv[index] = m;
+    vectorsMatrixDeriv[index] = vecData;
 
     const auto group = vecId.getGroup();
     if (!group.empty())
     {
-        m->setGroup(group);
+        vecData->setGroup(group);
     }
 }
 
@@ -1627,17 +1632,17 @@ void MechanicalObject<DataTypes>::vAvailImpl(core::TVecId<vtype, core::V_WRITE>&
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::vAvail(const core::ExecParams* params, core::VecCoordId& v)
+void MechanicalObject<DataTypes>::vAvail(const core::ExecParams* params, core::VecCoordId& vecId)
 {
     SOFA_UNUSED(params);
-    vAvailImpl(v, vectorsCoord);
+    vAvailImpl(vecId, vectorsCoord);
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::vAvail(const core::ExecParams* params, core::VecDerivId& v)
+void MechanicalObject<DataTypes>::vAvail(const core::ExecParams* params, core::VecDerivId& vecId)
 {
     SOFA_UNUSED(params);
-    vAvailImpl(v, vectorsDeriv);
+    vAvailImpl(vecId, vectorsDeriv);
 }
 
 template <class DataTypes>
@@ -1659,17 +1664,17 @@ void MechanicalObject<DataTypes>::vAllocImpl(
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::vAlloc(const core::ExecParams* params, core::VecCoordId v, const core::VecIdProperties& properties)
+void MechanicalObject<DataTypes>::vAlloc(const core::ExecParams* params, core::VecCoordId vecId, const core::VecIdProperties& properties)
 {
     SOFA_UNUSED(params);
-    vAllocImpl(v, properties);
+    vAllocImpl(vecId, properties);
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::vAlloc(const core::ExecParams* params, core::VecDerivId v, const core::VecIdProperties& properties)
+void MechanicalObject<DataTypes>::vAlloc(const core::ExecParams* params, core::VecDerivId vecId, const core::VecIdProperties& properties)
 {
     SOFA_UNUSED(params);
-    vAllocImpl(v, properties);
+    vAllocImpl(vecId, properties);
 }
 
 template <class DataTypes>
@@ -1690,17 +1695,17 @@ void MechanicalObject<DataTypes>::vReallocImpl(
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::vRealloc(const core::ExecParams* params, core::VecCoordId v, const core::VecIdProperties& properties)
+void MechanicalObject<DataTypes>::vRealloc(const core::ExecParams* params, core::VecCoordId vecId, const core::VecIdProperties& properties)
 {
     SOFA_UNUSED(params);
-    vReallocImpl(v, properties);
+    vReallocImpl(vecId, properties);
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::vRealloc(const core::ExecParams* params, core::VecDerivId v, const core::VecIdProperties& properties)
+void MechanicalObject<DataTypes>::vRealloc(const core::ExecParams* params, core::VecDerivId vecId, const core::VecIdProperties& properties)
 {
     SOFA_UNUSED(params);
-    vReallocImpl(v, properties);
+    vReallocImpl(vecId, properties);
 }
 
 template <class DataTypes>
@@ -1832,11 +1837,11 @@ DataTypes>::getReadAccessor(core::ConstVecId v)
     bool canApplyPredicate = false;\
     if (v.type == core::V_COORD)\
     {\
-        canApplyPredicate = PRED<core::V_COORD>(*this, v, f);\
+        canApplyPredicate = PRED<core::V_COORD>(*this, v, k);\
     }\
     else if (v.type == core::V_DERIV)\
     {\
-        canApplyPredicate = PRED<core::V_DERIV>(*this, v, f);\
+        canApplyPredicate = PRED<core::V_DERIV>(*this, v, k);\
     }
 
 #define APPLY_PREDICATE_TWOPARAMS(PRED, v, b)\
@@ -1845,22 +1850,22 @@ DataTypes>::getReadAccessor(core::ConstVecId v)
     {\
         if (b.type == core::V_COORD)\
         {\
-            canApplyPredicate = PRED<core::V_COORD, core::V_COORD>(*this, v, b, f);\
+            canApplyPredicate = PRED<core::V_COORD, core::V_COORD>(*this, v, b, k);\
         }\
         else if (b.type == core::V_DERIV)\
         {\
-            canApplyPredicate = PRED<core::V_COORD, core::V_DERIV>(*this, v, b, f);\
+            canApplyPredicate = PRED<core::V_COORD, core::V_DERIV>(*this, v, b, k);\
         }\
     }\
     else if (v.type == core::V_DERIV)\
     {\
         if (b.type == core::V_COORD)\
         {\
-            canApplyPredicate = PRED<core::V_DERIV, core::V_COORD>(*this, v, b, f);\
+            canApplyPredicate = PRED<core::V_DERIV, core::V_COORD>(*this, v, b, k);\
         }\
         else if (b.type == core::V_DERIV)\
         {\
-            canApplyPredicate = PRED<core::V_DERIV, core::V_DERIV>(*this, v, b, f);\
+            canApplyPredicate = PRED<core::V_DERIV, core::V_DERIV>(*this, v, b, k);\
         }\
     }
 
@@ -1872,22 +1877,22 @@ DataTypes>::getReadAccessor(core::ConstVecId v)
         {\
             if (b.type == core::V_COORD)\
             {\
-                canApplyPredicate = PRED<core::V_COORD, core::V_COORD, core::V_COORD>(*this, v, a, b, f);\
+                canApplyPredicate = PRED<core::V_COORD, core::V_COORD, core::V_COORD>(*this, v, a, b, k);\
             }\
             else if (b.type == core::V_DERIV)\
             {\
-                canApplyPredicate = PRED<core::V_COORD, core::V_COORD, core::V_DERIV>(*this, v, a, b, f);\
+                canApplyPredicate = PRED<core::V_COORD, core::V_COORD, core::V_DERIV>(*this, v, a, b, k);\
             }\
         }\
         else if (a.type == core::V_DERIV)\
         {\
             if (b.type == core::V_COORD)\
             {\
-                canApplyPredicate = PRED<core::V_COORD, core::V_DERIV, core::V_COORD>(*this, v, a, b, f);\
+                canApplyPredicate = PRED<core::V_COORD, core::V_DERIV, core::V_COORD>(*this, v, a, b, k);\
             }\
             else if (b.type == core::V_DERIV)\
             {\
-                canApplyPredicate = PRED<core::V_COORD, core::V_DERIV, core::V_DERIV>(*this, v, a, b, f);\
+                canApplyPredicate = PRED<core::V_COORD, core::V_DERIV, core::V_DERIV>(*this, v, a, b, k);\
             }\
         }\
     }\
@@ -1897,35 +1902,35 @@ DataTypes>::getReadAccessor(core::ConstVecId v)
         {\
             if (b.type == core::V_COORD)\
             {\
-                canApplyPredicate = PRED<core::V_DERIV, core::V_COORD, core::V_COORD>(*this, v, a, b, f);\
+                canApplyPredicate = PRED<core::V_DERIV, core::V_COORD, core::V_COORD>(*this, v, a, b, k);\
             }\
             else if (b.type == core::V_DERIV)\
             {\
-                canApplyPredicate = PRED<core::V_DERIV, core::V_COORD, core::V_DERIV>(*this, v, a, b, f);\
+                canApplyPredicate = PRED<core::V_DERIV, core::V_COORD, core::V_DERIV>(*this, v, a, b, k);\
             }\
         }\
         else if (a.type == core::V_DERIV)\
         {\
             if (b.type == core::V_COORD)\
             {\
-                canApplyPredicate = PRED<core::V_DERIV, core::V_DERIV, core::V_COORD>(*this, v, a, b, f);\
+                canApplyPredicate = PRED<core::V_DERIV, core::V_DERIV, core::V_COORD>(*this, v, a, b, k);\
             }\
             else if (b.type == core::V_DERIV)\
             {\
-                canApplyPredicate = PRED<core::V_DERIV, core::V_DERIV, core::V_DERIV>(*this, v, a, b, f);\
+                canApplyPredicate = PRED<core::V_DERIV, core::V_DERIV, core::V_DERIV>(*this, v, a, b, k);\
             }\
         }\
     }
 
 template <core::VecType vtype, class DataTypes>
-bool vOp_vf(MechanicalObject<DataTypes>& self, core::VecId v, Real_t<DataTypes> f)
+bool vOp_vf(MechanicalObject<DataTypes>& self, core::VecId v, Real_t<DataTypes> k)
 {
     if constexpr (requires(core::StateVecType_t<DataTypes, vtype> vc, Real_t<DataTypes> fc){vc[0] *= fc;})
     {
         auto vv = helper::getWriteOnlyAccessor(*self.write(core::TVecId<vtype, core::V_WRITE>(v)));
         for (unsigned int i = 0; i < vv.size(); ++i)
         {
-            vv[i] *= f;
+            vv[i] *= k;
         }
         return true;
     }
@@ -1933,7 +1938,7 @@ bool vOp_vf(MechanicalObject<DataTypes>& self, core::VecId v, Real_t<DataTypes> 
 }
 
 template <core::VecType vtype, core::VecType btype, class DataTypes>
-bool vOp_vbf(MechanicalObject<DataTypes>& self, core::VecId v, core::ConstVecId b, Real_t<DataTypes> f)
+bool vOp_vbf(MechanicalObject<DataTypes>& self, core::VecId v, core::ConstVecId b, Real_t<DataTypes> k)
 {
     if constexpr (requires(core::StateVecType_t<DataTypes, vtype> vc, core::StateVecType_t<DataTypes, btype> bc, Real_t<DataTypes> fc){vc[0] = bc[0] * fc;})
     {
@@ -1942,7 +1947,7 @@ bool vOp_vbf(MechanicalObject<DataTypes>& self, core::VecId v, core::ConstVecId 
         vv.resize(vb.size());
         for (unsigned int i = 0; i < vv.size(); ++i)
         {
-            vv[i] = vb[i] * f;
+            vv[i] = vb[i] * k;
         }
         return true;
     }
@@ -1950,9 +1955,9 @@ bool vOp_vbf(MechanicalObject<DataTypes>& self, core::VecId v, core::ConstVecId 
 }
 
 template <core::VecType vtype, core::VecType btype, class DataTypes>
-bool vOp_va(MechanicalObject<DataTypes>& self, core::VecId v, core::ConstVecId b, Real_t<DataTypes> f)
+bool vOp_va(MechanicalObject<DataTypes>& self, core::VecId v, core::ConstVecId b, Real_t<DataTypes> k)
 {
-    SOFA_UNUSED(f);
+    SOFA_UNUSED(k);
     if constexpr (requires(core::StateVecType_t<DataTypes, vtype> vc, core::StateVecType_t<DataTypes, btype> bc){vc[0] = bc[0];})
     {
         auto vv = helper::getWriteOnlyAccessor(*self.write(core::TVecId<vtype, core::V_WRITE>(v)));
@@ -1960,13 +1965,16 @@ bool vOp_va(MechanicalObject<DataTypes>& self, core::VecId v, core::ConstVecId b
         vv.wref() = vb.ref();
         return true;
     }
-    return false;
+    else
+    {
+        return false;
+    }
 }
 
 template <core::VecType vtype, core::VecType btype, class DataTypes>
-bool vOp_vb(MechanicalObject<DataTypes>& self, core::VecId v, core::ConstVecId b, Real_t<DataTypes> f)
+bool vOp_vb(MechanicalObject<DataTypes>& self, core::VecId v, core::ConstVecId b, Real_t<DataTypes> k)
 {
-    SOFA_UNUSED(f);
+    SOFA_UNUSED(k);
     if constexpr (requires(core::StateVecType_t<DataTypes, vtype> vc, core::StateVecType_t<DataTypes, btype> bc){vc[0] += bc[0];})
     {
         auto vv = helper::getWriteOnlyAccessor(*self.write(core::TVecId<vtype, core::V_WRITE>(v)));
@@ -1982,16 +1990,16 @@ bool vOp_vb(MechanicalObject<DataTypes>& self, core::VecId v, core::ConstVecId b
 }
 
 template <core::VecType vtype, core::VecType btype, class DataTypes>
-bool vOp_avf(MechanicalObject<DataTypes>& self, core::VecId v, core::ConstVecId b, Real_t<DataTypes> f)
+bool vOp_avf(MechanicalObject<DataTypes>& self, core::VecId v, core::ConstVecId b, Real_t<DataTypes> k)
 {
-    if constexpr (requires(core::StateVecType_t<DataTypes, vtype> vc, core::StateVecType_t<DataTypes, btype> bc){vc[0] *= f; vc[0] += bc[0];})
+    if constexpr (requires(core::StateVecType_t<DataTypes, vtype> vc, core::StateVecType_t<DataTypes, btype> bc){vc[0] *= k; vc[0] += bc[0];})
     {
         auto vv = helper::getWriteOnlyAccessor(*self.write(core::TVecId<vtype, core::V_WRITE>(v)));
         auto vb = helper::getReadAccessor(*self.read(core::TVecId<btype, core::V_READ>(b)));
         vv.resize(vb.size());
         for (unsigned int i = 0; i < vv.size(); ++i)
         {
-            vv[i] *= f;
+            vv[i] *= k;
             vv[i] += vb[i];
         }
         return true;
@@ -2000,7 +2008,7 @@ bool vOp_avf(MechanicalObject<DataTypes>& self, core::VecId v, core::ConstVecId 
 }
 
 template <core::VecType vtype, core::VecType btype, class DataTypes>
-bool vOp_v_inc_bf(MechanicalObject<DataTypes>& self, core::VecId v, core::ConstVecId b, Real_t<DataTypes> f)
+bool vOp_v_inc_bf(MechanicalObject<DataTypes>& self, core::VecId v, core::ConstVecId b, Real_t<DataTypes> k)
 {
     if constexpr (requires(core::StateVecType_t<DataTypes, vtype> vc, core::StateVecType_t<DataTypes, btype> bc, Real_t<DataTypes> fc){vc[0] += bc[0] * fc;})
     {
@@ -2009,7 +2017,7 @@ bool vOp_v_inc_bf(MechanicalObject<DataTypes>& self, core::VecId v, core::ConstV
         vv.resize(vb.size());
         for (unsigned int i = 0; i < vv.size(); ++i)
         {
-            vv[i] += vb[i] * f;
+            vv[i] += vb[i] * k;
         }
         return true;
     }
@@ -2017,9 +2025,9 @@ bool vOp_v_inc_bf(MechanicalObject<DataTypes>& self, core::VecId v, core::ConstV
 }
 
 template <core::VecType vtype, core::VecType atype, core::VecType btype, class DataTypes>
-bool vOp_vab(MechanicalObject<DataTypes>& self, core::VecId v, core::ConstVecId a, core::ConstVecId b, Real_t<DataTypes> f)
+bool vOp_vab(MechanicalObject<DataTypes>& self, core::VecId v, core::ConstVecId a, core::ConstVecId b, Real_t<DataTypes> k)
 {
-    SOFA_UNUSED(f);
+    SOFA_UNUSED(k);
 
     if constexpr (requires(core::StateVecType_t<DataTypes, vtype> vc, core::StateVecType_t<DataTypes, atype> ac, core::StateVecType_t<DataTypes, btype> bc){vc[0] = ac[0] + bc[0];})
     {
@@ -2037,7 +2045,7 @@ bool vOp_vab(MechanicalObject<DataTypes>& self, core::VecId v, core::ConstVecId 
 }
 
 template <core::VecType vtype, core::VecType atype, core::VecType btype, class DataTypes>
-bool vOp_vabf(MechanicalObject<DataTypes>& self, core::VecId v, core::ConstVecId a, core::ConstVecId b, Real_t<DataTypes> f)
+bool vOp_vabf(MechanicalObject<DataTypes>& self, core::VecId v, core::ConstVecId a, core::ConstVecId b, Real_t<DataTypes> k)
 {
     if constexpr (requires(core::StateVecType_t<DataTypes, vtype> vc, core::StateVecType_t<DataTypes, atype> ac, core::StateVecType_t<DataTypes, btype> bc, Real_t<DataTypes> fc){vc[0] = ac[0] + bc[0] * fc;})
     {
@@ -2047,7 +2055,7 @@ bool vOp_vabf(MechanicalObject<DataTypes>& self, core::VecId v, core::ConstVecId
         vv.resize(vb.size());
         for (unsigned int i = 0; i < vv.size(); ++i)
         {
-            vv[i] = va[i] + vb[i] * f;
+            vv[i] = va[i] + vb[i] * k;
         }
         return true;
     }
@@ -2055,16 +2063,15 @@ bool vOp_vabf(MechanicalObject<DataTypes>& self, core::VecId v, core::ConstVecId
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::vOp(const core::ExecParams* params, core::VecId v,
-                                      core::ConstVecId a,
-                                      core::ConstVecId b, SReal f)
+void MechanicalObject<DataTypes>::vOp(const core::ExecParams* params, core::VecId r,
+                                      core::ConstVecId a, core::ConstVecId b, SReal k)
 {
     SOFA_UNUSED(params);
 
-    if(v.isNull())
+    if(r.isNull())
     {
         // ERROR
-        msg_error() << "Invalid vOp operation 1 ("<<v<<','<<a<<','<<b<<','<<f<<")";
+        msg_error() << "Invalid vOp operation 1 (" << r << ',' << a << ',' << b << ',' << k << ")";
         return;
     }
 
@@ -2072,27 +2079,27 @@ void MechanicalObject<DataTypes>::vOp(const core::ExecParams* params, core::VecI
     {
         if (b.isNull())
         {
-            // v = 0
-            applyPredicateIfCoordOrDeriv(v.type, [this, &v](auto vec)
+            // r = 0
+            applyPredicateIfCoordOrDeriv(r.type, [this, &r](auto vec)
             {
-                auto vv = getWriteOnlyAccessor<vec>(v);
+                auto vv = getWriteOnlyAccessor<vec>(r);
                 vv.resize(d_size.getValue());
                 sofa::defaulttype::resetDataTypeVec(vv.wref());
             });
         }
         else
         {
-            if (v == b)
+            if (r == b)
             {
-                // v *= f
-                APPLY_PREDICATE_ONEPARAMS(vOp_vf, v)
-                msg_error_when(!canApplyPredicate) << "Cannot apply vector operation v *= f (" << v << ',' << a << ',' << b << ',' << f << ")";
+                // r *= k
+                APPLY_PREDICATE_ONEPARAMS(vOp_vf, r)
+                msg_error_when(!canApplyPredicate) << "Cannot apply vector operation r *= k (" << r << ',' << a << ',' << b << ',' << k << ")";
             }
             else
             {
-                // v = b*f
-                APPLY_PREDICATE_TWOPARAMS(vOp_vbf, v, b)
-                msg_error_when(!canApplyPredicate) << "Cannot apply vector operation v = b*f (" << v << ',' << a << ',' << b << ',' << f << ")";
+                // r = b*k
+                APPLY_PREDICATE_TWOPARAMS(vOp_vbf, r, b)
+                msg_error_when(!canApplyPredicate) << "Cannot apply vector operation r = b*k (" << r << ',' << a << ',' << b << ',' << k << ")";
             }
         }
     }
@@ -2100,66 +2107,66 @@ void MechanicalObject<DataTypes>::vOp(const core::ExecParams* params, core::VecI
     {
         if (b.isNull())
         {
-            // v = a
-            APPLY_PREDICATE_TWOPARAMS(vOp_va, v, a)
-            msg_error_when(!canApplyPredicate) << "Cannot apply vector operation v = a (" << v << ',' << a << ',' << b << ',' << f << ")";
+            // r = a
+            APPLY_PREDICATE_TWOPARAMS(vOp_va, r, a)
+            msg_error_when(!canApplyPredicate) << "Cannot apply vector operation r = a (" << r << ',' << a << ',' << b << ',' << k << ")";
         }
         else
         {
-            if (v == a)
+            if (r == a)
             {
-                if (f == 1._sreal)
+                if (k == 1._sreal)
                 {
-                    // v += b
-                    APPLY_PREDICATE_TWOPARAMS(vOp_vb, v, b)
-                    msg_error_when(!canApplyPredicate) << "Cannot apply vector operation v += b (" << v << ',' << a << ',' << b << ',' << f << ")";
+                    // r += b
+                    APPLY_PREDICATE_TWOPARAMS(vOp_vb, r, b)
+                    msg_error_when(!canApplyPredicate) << "Cannot apply vector operation r += b (" << r << ',' << a << ',' << b << ',' << k << ")";
                 }
                 else
                 {
-                    // v += b*f
-                    APPLY_PREDICATE_TWOPARAMS(vOp_v_inc_bf, v, b)
-                    msg_error_when(!canApplyPredicate) << "Cannot apply vector operation v += b*f (" << v << ',' << a << ',' << b << ',' << f << ")";
+                    // r += b*k
+                    APPLY_PREDICATE_TWOPARAMS(vOp_v_inc_bf, r, b)
+                    msg_error_when(!canApplyPredicate) << "Cannot apply vector operation r += b*k (" << r << ',' << a << ',' << b << ',' << k << ")";
                 }
             }
-            else if (v == b)
+            else if (r == b)
             {
-                if (f == 1._sreal)
+                if (k == 1._sreal)
                 {
-                    // v += a
-                    APPLY_PREDICATE_TWOPARAMS(vOp_vb, v, a)
-                    msg_error_when(!canApplyPredicate) << "Cannot apply vector operation v += a (" << v << ',' << a << ',' << b << ',' << f << ")";
+                    // r += a
+                    APPLY_PREDICATE_TWOPARAMS(vOp_vb, r, a)
+                    msg_error_when(!canApplyPredicate) << "Cannot apply vector operation r += a (" << r << ',' << a << ',' << b << ',' << k << ")";
                 }
                 else
                 {
-                    // v = a+v*f
-                    APPLY_PREDICATE_TWOPARAMS(vOp_avf, v, a)
-                    msg_error_when(!canApplyPredicate) << "Cannot apply vector operation v = a+v*f (" << v << ',' << a << ',' << b << ',' << f << ")";
+                    // r = a+r*k
+                    APPLY_PREDICATE_TWOPARAMS(vOp_avf, r, a)
+                    msg_error_when(!canApplyPredicate) << "Cannot apply vector operation r = a+r*k (" << r << ',' << a << ',' << b << ',' << k << ")";
                 }
             }
             else
             {
-                if (f == 1._sreal)
+                if (k == 1._sreal)
                 {
-                    // v = a+b
-                    APPLY_PREDICATE_THREEPARAMS(vOp_vab, v, a, b)
-                    msg_error_when(!canApplyPredicate) << "Cannot apply vector operation v = a+b (" << v << ',' << a << ',' << b << ',' << f << ")";
+                    // r = a+b
+                    APPLY_PREDICATE_THREEPARAMS(vOp_vab, r, a, b)
+                    msg_error_when(!canApplyPredicate) << "Cannot apply vector operation r = a+b (" << r << ',' << a << ',' << b << ',' << k << ")";
                 }
                 else
                 {
                     const auto generalCase = [&]()
                     {
-                        // v = a+b*f
-                        APPLY_PREDICATE_THREEPARAMS(vOp_vabf, v, a, b)
-                        msg_error_when(!canApplyPredicate) << "Cannot apply vector operation v = a+b*f (" << v << ',' << a << ',' << b << ',' << f << ")";
+                        // r = a+b*k
+                        APPLY_PREDICATE_THREEPARAMS(vOp_vabf, r, a, b)
+                        msg_error_when(!canApplyPredicate) << "Cannot apply vector operation r = a+b*k (" << r << ',' << a << ',' << b << ',' << k << ")";
                     };
                     
                     if constexpr (requires (Coord ca, Coord cb) {DataTypes::coordDifference(ca, cb);})
                     {
-                        if (f == -1._sreal &&
-                           (v.type == core::V_DERIV && a.type == core::V_COORD && b.type == core::V_COORD))
+                        if (k == -1._sreal &&
+                           (r.type == core::V_DERIV && a.type == core::V_COORD && b.type == core::V_COORD))
                         {
-                            // v = a-b
-                            auto vv = this->getWriteOnlyAccessor<core::V_DERIV>(v);
+                            // r = a-b
+                            auto vv = this->getWriteOnlyAccessor<core::V_DERIV>(r);
                             auto va = this->getReadAccessor<core::V_COORD>(a);
                             auto vb = this->getReadAccessor<core::V_COORD>(b);
                             vv.resize(vb.size());
@@ -2399,34 +2406,34 @@ SReal MechanicalObject<DataTypes>::vMax(const core::ExecParams* params, core::Co
 }
 
 template <class DataTypes>
-Size MechanicalObject<DataTypes>::vSize(const core::ExecParams* params, core::ConstVecId v)
+Size MechanicalObject<DataTypes>::vSize(const core::ExecParams* params, core::ConstVecId vecId)
 {
     SOFA_UNUSED(params);
 
     Size size = 0;
 
-    const bool isApplied = applyPredicateIfCoordOrDeriv(v.type, [this, &size, &v](auto vtype)
+    const bool isApplied = applyPredicateIfCoordOrDeriv(vecId.type, [this, &size, &vecId](auto vtype)
     {
-        auto va = this->getReadAccessor<vtype>(v);
+        auto va = this->getReadAccessor<vtype>(vecId);
         size = va.size() * core::StateTypeSize_v<DataTypes, vtype>;
     });
 
-    msg_error_when(!isApplied) << "Invalid size operation (" << v << ")";
+    msg_error_when(!isApplied) << "Invalid size operation (" << vecId << ")";
     return size;
 }
 
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::printDOF( core::ConstVecId v, std::ostream& out, int firstIndex, int range) const
+void MechanicalObject<DataTypes>::printDOF( core::ConstVecId vecId, std::ostream& out, int firstIndex, int range) const
 {
     const unsigned int size=this->getSize();
     if ((unsigned int) (abs(firstIndex)) >= size) return;
     const unsigned int first=((firstIndex>=0)?firstIndex:size+firstIndex);
     const unsigned int max=( ( (range >= 0) && ( (range+first)<size) ) ? (range+first):size);
 
-    const bool isApplied = applyPredicateIfCoordOrDeriv(v.type, [&](auto vtype)
+    const bool isApplied = applyPredicateIfCoordOrDeriv(vecId.type, [&](auto vtype)
     {
-        const auto* d_x = this->read(core::TVecId<vtype, core::V_READ>(v));
+        const auto* d_x = this->read(core::TVecId<vtype, core::V_READ>(vecId));
         if (d_x == nullptr) return;
 
         auto xa = sofa::helper::getReadAccessor(*d_x);
@@ -2444,18 +2451,18 @@ void MechanicalObject<DataTypes>::printDOF( core::ConstVecId v, std::ostream& ou
 
     if (!isApplied)
     {
-        out<<"MechanicalObject<DataTypes>::printDOF, unknown v.type = "<<v.type<<std::endl;
+        out<<"MechanicalObject<DataTypes>::printDOF, unknown v.type = "<<vecId.type<<std::endl;
     }
 }
 
 
 template <class DataTypes>
-unsigned MechanicalObject<DataTypes>::printDOFWithElapsedTime(core::ConstVecId v, unsigned count, unsigned time, std::ostream& out)
+unsigned MechanicalObject<DataTypes>::printDOFWithElapsedTime(core::ConstVecId vecId, unsigned count, unsigned time, std::ostream& out)
 {
     unsigned xSize {};
-    const bool isApplied = applyPredicateIfCoordOrDeriv(v.type, [&](auto vtype)
+    const bool isApplied = applyPredicateIfCoordOrDeriv(vecId.type, [&](auto vtype)
     {
-        const auto* d_x = this->read(core::TVecId<vtype, core::V_READ>(v));
+        const auto* d_x = this->read(core::TVecId<vtype, core::V_READ>(vecId));
         if (d_x == nullptr) return;
 
         auto xa = sofa::helper::getReadAccessor(*d_x);
@@ -2470,7 +2477,7 @@ unsigned MechanicalObject<DataTypes>::printDOFWithElapsedTime(core::ConstVecId v
     });
 
     if (!isApplied)
-        out << "MechanicalObject<DataTypes>::printDOFWithElapsedTime, unknown v.type = " << v.type << std::endl;
+        out << "MechanicalObject<DataTypes>::printDOFWithElapsedTime, unknown v.type = " << vecId.type << std::endl;
 
     return xSize;
 }
@@ -2481,8 +2488,8 @@ void MechanicalObject<DataTypes>::resetForce(const core::ExecParams* params, cor
     SOFA_UNUSED(params);
 
     {
-        helper::WriteOnlyAccessor< Data<VecDeriv> > f( *this->write(fid) );
-        sofa::defaulttype::resetDataTypeVec(f.wref());
+        helper::WriteOnlyAccessor< Data<VecDeriv> > f_wa( *this->write(fid) );
+        sofa::defaulttype::resetDataTypeVec(f_wa.wref());
     }
 }
 
@@ -2505,8 +2512,8 @@ void MechanicalObject<DataTypes>::resetConstraint(const core::ConstraintParams* 
     sofa::helper::getWriteOnlyAccessor(c_data)->clear();
 
     //reset the mapping jacobian matrix
-    Data<MatrixDeriv>& m_data = *this->write(core::vec_id::write_access::mappingJacobian);
-    sofa::helper::getWriteOnlyAccessor(m_data)->clear();
+    Data<MatrixDeriv>& matrix = *this->write(core::vec_id::write_access::mappingJacobian);
+    sofa::helper::getWriteOnlyAccessor(matrix)->clear();
 }
 
 template <class DataTypes>
@@ -2514,11 +2521,11 @@ void MechanicalObject<DataTypes>::getConstraintJacobian(const core::ConstraintPa
 {
     // Compute J
     const auto N = Deriv::size();
-    const MatrixDeriv& c = cParams->readJ(this)->getValue();
+    const MatrixDeriv& matrix = cParams->readJ(this)->getValue();
 
-    MatrixDerivRowConstIterator rowItEnd = c.end();
+    MatrixDerivRowConstIterator rowItEnd = matrix.end();
 
-    for (MatrixDerivRowConstIterator rowIt = c.begin(); rowIt != rowItEnd; ++rowIt)
+    for (MatrixDerivRowConstIterator rowIt = matrix.begin(); rowIt != rowItEnd; ++rowIt)
     {
         const int cid = rowIt.index();
 
@@ -2642,7 +2649,7 @@ SReal MechanicalObject<DataTypes>::getConstraintJacobianTimesVecDeriv(unsigned i
     if (rowIterator == constraints.end())
         return 0;
 
-    const VecDeriv *data = 0;
+    const VecDeriv *data = nullptr;
 
     // Maybe we should extend this to restvelocity
     if (id == sofa::core::vec_id::read_access::velocity)
@@ -2672,6 +2679,13 @@ SReal MechanicalObject<DataTypes>::getConstraintJacobianTimesVecDeriv(unsigned i
 }
 
 template <class DataTypes>
+void MechanicalObject<DataTypes>::setTranslation(SReal translationVectorX, SReal translationVectorY,
+                                                 SReal translationVectorZ)
+{
+    translation.setValue(type::Vec3(translationVectorX, translationVectorY, translationVectorZ));
+}
+
+template <class DataTypes>
 inline void MechanicalObject<DataTypes>::drawIndices(const core::visual::VisualParams* vparams)
 {
     std::vector<type::Vec3> positions;
@@ -2689,11 +2703,10 @@ inline void MechanicalObject<DataTypes>::drawIndices(const core::visual::VisualP
 template <class DataTypes>
 inline void MechanicalObject<DataTypes>::drawVectors(const core::visual::VisualParams* vparams)
 {
-    float scale = showVectorsScale.getValue();
+    float scaleValue = showVectorsScale.getValue();
 
     const auto v_rA = sofa::helper::getReadAccessor(*this->read(core::vec_id::read_access::velocity));
     const auto x_rA = sofa::helper::getReadAccessor(*this->read(core::vec_id::read_access::position));
-
     type::vector<type::Vec3> points;
     points.resize(2);
 
@@ -2705,7 +2718,7 @@ inline void MechanicalObject<DataTypes>::drawVectors(const core::visual::VisualP
         DataTypes::get(v3[0], v3[1], v3[2], v_rA[i]);
 
         const type::Vec3 p1 = sofa::type::toVec3(DataTypes::getCPos(x_rA[i]));
-        type::Vec3 p2 = p1 + scale * v3;
+        type::Vec3 p2 = p1 + scaleValue * v3;
 
         const float rad = (float)( (p1-p2).norm()/20.0 );
         switch (mode)
@@ -2746,7 +2759,7 @@ inline void MechanicalObject<DataTypes>::draw(const core::visual::VisualParams* 
 
     if (showObject.getValue())
     {
-        const float& scale = showObjectScale.getValue();
+        const float& scaleValue = showObjectScale.getValue();
 
         std::vector<type::Vec3> positions;
         positions.reserve(d_size.getValue());
@@ -2760,23 +2773,23 @@ inline void MechanicalObject<DataTypes>::draw(const core::visual::VisualParams* 
         switch (drawMode.getValue())
         {
         case 0:
-            vparams->drawTool()->drawPoints(positions,scale, d_color.getValue());
+            vparams->drawTool()->drawPoints(positions,scaleValue, d_color.getValue());
             break;
         case 1:
             vparams->drawTool()->setLightingEnabled(true);
-            vparams->drawTool()->drawSpheres(positions,scale, d_color.getValue());
+            vparams->drawTool()->drawSpheres(positions,scaleValue, d_color.getValue());
             break;
         case 2:
             vparams->drawTool()->setLightingEnabled(true);
-            vparams->drawTool()->drawSpheres(positions,scale, sofa::type::RGBAColor::red());
+            vparams->drawTool()->drawSpheres(positions,scaleValue, sofa::type::RGBAColor::red());
             break;
         case 3:
             vparams->drawTool()->setLightingEnabled(true);
-            vparams->drawTool()->drawSpheres(positions,scale, sofa::type::RGBAColor::green());
+            vparams->drawTool()->drawSpheres(positions,scaleValue, sofa::type::RGBAColor::green());
             break;
         case 4:
             vparams->drawTool()->setLightingEnabled(true);
-            vparams->drawTool()->drawSpheres(positions,scale, sofa::type::RGBAColor::blue());
+            vparams->drawTool()->drawSpheres(positions,scaleValue, sofa::type::RGBAColor::blue());
             break;
         default:
             msg_error() << "No proper drawing mode found!";
@@ -2799,14 +2812,14 @@ bool MechanicalObject<DataTypes>::pickParticles(const core::ExecParams* /* param
         // TODO: this verification is awful and should be done by template specialization
     {
         // seems to be valid DOFs
-        const VecCoord& x =this->read(core::vec_id::read_access::position)->getValue();
+        const VecCoord& position = this->read(core::vec_id::read_access::position)->getValue();
 
         type::Vec<3,Real> origin((Real)rayOx, (Real)rayOy, (Real)rayOz);
         type::Vec<3,Real> direction((Real)rayDx, (Real)rayDy, (Real)rayDz);
         for (int i=0; i< d_size.getValue(); ++i)
         {
-            type::Vec<3,Real> pos;
-            DataTypes::get(pos[0],pos[1],pos[2],x[i]);
+            type::Vec<3, Real> pos;
+            DataTypes::get(pos[0], pos[1], pos[2], position[i]);
 
             if (pos == origin) continue;
             SReal dist = (pos-origin)*direction;
@@ -2835,16 +2848,15 @@ bool MechanicalObject<DataTypes>::addBBox(SReal* minBBox, SReal* maxBBox)
 
     static const unsigned spatial_dimensions = std::min( (unsigned)DataTypes::spatial_dimensions, 3u );
 
-    const VecCoord& x = read(core::vec_id::read_access::position)->getValue();
-    for(Size i=0; i<x.size(); i++ )
+    for(const auto& position : read(core::vec_id::read_access::position)->getValue())
     {
         type::Vec<3,Real> p;
-        DataTypes::get( p[0], p[1], p[2], x[i] );
+        DataTypes::get( p[0], p[1], p[2], position );
 
-        for( unsigned int j=0 ; j<spatial_dimensions; ++j )
+        for (unsigned int j = 0; j < spatial_dimensions; ++j)
         {
-            if(p[j]<minBBox[j]) minBBox[j]=p[j];
-            if(p[j]>maxBBox[j]) maxBBox[j]=p[j];
+            if (p[j] < minBBox[j]) minBBox[j] = p[j];
+            if (p[j] > maxBBox[j]) maxBBox[j] = p[j];
         }
     }
     return true;
