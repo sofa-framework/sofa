@@ -2703,9 +2703,15 @@ inline void MechanicalObject<DataTypes>::draw(const core::visual::VisualParams* 
     if (showObject.getValue())
     {
         const float& scale = showObjectScale.getValue();
-        type::vector<type::Vec3> positions(d_size.getValue());
-        for (sofa::Index i = 0; i < Size(d_size.getValue()); ++i)
-            positions[i] = type::Vec3(getPX(i), getPY(i), getPZ(i));
+
+        std::vector<type::Vec3> positions;
+        positions.reserve(d_size.getValue());
+
+        const auto positionData = this->readPositions();
+        std::transform(positionData.begin(), positionData.end(), std::back_inserter(positions), [](const auto& p)
+        {
+            return sofa::type::toVec3(DataTypes::getCPos(p));
+        });
 
         switch (drawMode.getValue())
         {
