@@ -36,9 +36,6 @@ using sofa::defaulttype::Rigid3Types;
 #include <sofa/defaulttype/VecTypes.h>
 using sofa::defaulttype::Vec3Types;
 
-#include <sofa/simulation/SaveSnapshotVisitor.h>
-using sofa::simulation::SaveSnapshotVisitor;
-
 namespace customns
 {
 class CustomBaseObject : public sofa::core::objectmodel::BaseComponent
@@ -124,3 +121,4 @@ TEST_F(Base_test , testGetClassName)
     EXPECT_EQ(o.getTypeName(), "CustomBaseObject");
     EXPECT_EQ(o.getClass()->className, "CustomBaseObject");
 }
+
