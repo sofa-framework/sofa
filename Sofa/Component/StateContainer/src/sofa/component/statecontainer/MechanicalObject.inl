@@ -670,6 +670,50 @@ void MechanicalObject<DataTypes>::reserve(const Size size)
     reserveFunction(vectorsDeriv);
 }
 
+template<std::size_t dim, class VecId, class DataTypes>
+SReal getPi(const MechanicalObject<DataTypes>& self, const VecId& id, sofa::Index i)
+{
+    sofa::type::Vec<3, sofa::Real_t<DataTypes> > xyz;
+    DataTypes::get(xyz[0], xyz[1], xyz[2], self.read(id)->getValue()[i]);
+    return static_cast<SReal>(xyz[dim]);
+}
+
+template <class DataTypes>
+SReal MechanicalObject<DataTypes>::getPX(sofa::Index i) const
+{
+    return getPi<0>(*this, sofa::core::vec_id::read_access::position, i);
+}
+
+template <class DataTypes>
+SReal MechanicalObject<DataTypes>::getPY(sofa::Index i) const
+{
+    return getPi<1>(*this, sofa::core::vec_id::read_access::position, i);
+}
+
+template <class DataTypes>
+SReal MechanicalObject<DataTypes>::getPZ(sofa::Index i) const
+{
+    return getPi<2>(*this, sofa::core::vec_id::read_access::position, i);
+}
+
+template <class DataTypes>
+SReal MechanicalObject<DataTypes>::getVX(sofa::Index i) const
+{
+    return getPi<0>(*this, sofa::core::vec_id::read_access::velocity, i);
+}
+
+template <class DataTypes>
+SReal MechanicalObject<DataTypes>::getVY(sofa::Index i) const
+{
+    return getPi<1>(*this, sofa::core::vec_id::read_access::velocity, i);
+}
+
+template <class DataTypes>
+SReal MechanicalObject<DataTypes>::getVZ(sofa::Index i) const
+{
+    return getPi<2>(*this, sofa::core::vec_id::read_access::velocity, i);
+}
+
 template <class DataTypes>
 void MechanicalObject<DataTypes>::applyTranslation (const SReal dx, const SReal dy, const SReal dz)
 {
