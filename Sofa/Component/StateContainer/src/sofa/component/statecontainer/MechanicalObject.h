@@ -119,23 +119,23 @@ public:
 
     void reset() override;
 
-    void writeVec(core::ConstVecId v, std::ostream &out) override;
-    void readVec(core::VecId v, std::istream &in) override;
-    SReal compareVec(core::ConstVecId v, std::istream &in) override;
+    void writeVec(core::ConstVecId vecId, std::ostream &out) override;
+    void readVec(core::VecId vecId, std::istream &in) override;
+    SReal compareVec(core::ConstVecId vecId, std::istream &in) override;
 
     void writeState( std::ostream& out ) override;
 
     /// @name New vectors access API based on VecId
     /// @{
 
-    Data< VecCoord >* write(core::VecCoordId v) override;
-    const Data< VecCoord >* read(core::ConstVecCoordId v) const override;
+    Data< VecCoord >* write(core::VecCoordId vecId) override;
+    const Data< VecCoord >* read(core::ConstVecCoordId vecId) const override;
 
-    Data< VecDeriv >* write(core::VecDerivId v) override;
-    const Data< VecDeriv >* read(core::ConstVecDerivId v) const override;
+    Data< VecDeriv >* write(core::VecDerivId vecId) override;
+    const Data< VecDeriv >* read(core::ConstVecDerivId vecId) const override;
 
-    Data< MatrixDeriv >* write(core::MatrixDerivId v) override;
-    const Data< MatrixDeriv >* read(core::ConstMatrixDerivId v) const override;
+    Data< MatrixDeriv >* write(core::MatrixDerivId vecId) override;
+    const Data< MatrixDeriv >* read(core::ConstMatrixDerivId vecId) const override;
 
     /// @}
 
@@ -185,7 +185,7 @@ public:
     /// @{
 
     /// Apply translation vector to the position.
-    void applyTranslation (const SReal dx, const SReal dy, const SReal dz) override;
+    void applyTranslation (const SReal translationVectorX, const SReal translationVectorY, const SReal translationVectorZ) override;
 
     /// Rotation using Euler Angles in degree.
     void applyRotation (const SReal rx, const SReal ry, const SReal rz) override;
@@ -242,7 +242,7 @@ public:
     /// @name Initial transformations accessors.
     /// @{
 
-    void setTranslation(SReal dx, SReal dy, SReal dz) {translation.setValue(type::Vec3(dx,dy,dz));}
+    void setTranslation(SReal translationVectorX, SReal translationVectorY, SReal translationVectorZ);
     void setRotation(SReal rx, SReal ry, SReal rz) {rotation.setValue(type::Vec3(rx,ry,rz));}
     void setScale(SReal sx, SReal sy, SReal sz) {scale.setValue(type::Vec3(sx,sy,sz));}
 
@@ -262,23 +262,23 @@ public:
     void accumulateForce(const core::ExecParams* params, core::VecDerivId f = core::vec_id::write_access::force) override; // see BaseMechanicalState::accumulateForce(const ExecParams*, VecId) override
 
     /// Increment the index of the given VecCoordId, so that all 'allocated' vectors in this state have a lower index
-    void vAvail(const core::ExecParams* params, core::VecCoordId& v) override;
+    void vAvail(const core::ExecParams* params, core::VecCoordId& vecId) override;
     /// Increment the index of the given VecDerivId, so that all 'allocated' vectors in this state have a lower index
-    void vAvail(const core::ExecParams* params, core::VecDerivId& v) override;
+    void vAvail(const core::ExecParams* params, core::VecDerivId& vecId) override;
     /// Increment the index of the given MatrixDerivId, so that all 'allocated' vectors in this state have a lower index
     //virtual void vAvail(core::MatrixDerivId& v);
 
     /// Allocate a new temporary vector
-    void vAlloc(const core::ExecParams* params, core::VecCoordId v, const core::VecIdProperties& properties = {}) override;
+    void vAlloc(const core::ExecParams* params, core::VecCoordId vecId, const core::VecIdProperties& properties = {}) override;
     /// Allocate a new temporary vector
-    void vAlloc(const core::ExecParams* params, core::VecDerivId v, const core::VecIdProperties& properties = {}) override;
+    void vAlloc(const core::ExecParams* params, core::VecDerivId vecId, const core::VecIdProperties& properties = {}) override;
     /// Allocate a new temporary vector
     //virtual void vAlloc(core::MatrixDerivId v);
 
     /// Reallocate a new temporary vector
-    void vRealloc(const core::ExecParams* params, core::VecCoordId v, const core::VecIdProperties& properties = {}) override;
+    void vRealloc(const core::ExecParams* params, core::VecCoordId vecId, const core::VecIdProperties& properties = {}) override;
     /// Reallocate a new temporary vector
-    void vRealloc(const core::ExecParams* params, core::VecDerivId v, const core::VecIdProperties& properties = {}) override;
+    void vRealloc(const core::ExecParams* params, core::VecDerivId vecId, const core::VecIdProperties& properties = {}) override;
 
 
     /// Free a temporary vector
@@ -295,7 +295,9 @@ public:
     /// Initialize an unset vector
     //virtual void vInit(const core::ExecParams* params, core::MatrixDerivId v, core::ConstMatrixDerivId vSrc);
 
-    void vOp(const core::ExecParams* params, core::VecId v, core::ConstVecId a = core::ConstVecId::null(), core::ConstVecId b = core::ConstVecId::null(), SReal f=1.0) override;
+    void vOp(const core::ExecParams* params, core::VecId r,
+             core::ConstVecId a = core::ConstVecId::null(),
+             core::ConstVecId b = core::ConstVecId::null(), SReal f = 1.0) override;
 
     void vMultiOp(const core::ExecParams* params, const VMultiOp& ops) override;
 
@@ -309,7 +311,7 @@ public:
     /// Maximum of the absolute values of the entries of state vector a. This is used to compute the infinite-norm of the vector.
     SReal vMax(const core::ExecParams* params, core::ConstVecId a) override;
 
-    Size vSize( const core::ExecParams* params, core::ConstVecId v ) override;
+    Size vSize( const core::ExecParams* params, core::ConstVecId vecId ) override;
 
     void resetForce(const core::ExecParams* params, core::VecDerivId f = core::vec_id::write_access::force) override;
 
@@ -444,7 +446,7 @@ protected :
     /// Given the number of a constraint Equation, find the index in the MatrixDeriv C, where the constraint is actually stored
     // unsigned int getIdxConstraintFromId(unsigned int id) const;
 
-    MechanicalObjectInternalData<DataTypes> data;
+    MechanicalObjectInternalData<DataTypes> m_data;
 
     template <core::VecType vtype, core::VecAccess vaccess>
     static void setVecIdProperties(core::TVecId<vtype, vaccess> v, const core::VecIdProperties& properties, core::BaseData* vec_d);
