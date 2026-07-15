@@ -2632,8 +2632,12 @@ inline void MechanicalObject<DataTypes>::drawIndices(const core::visual::VisualP
 {
     std::vector<type::Vec3> positions;
     positions.reserve(d_size.getValue());
-    for (int i = 0; i <d_size.getValue(); ++i)
-        positions.push_back(type::Vec3(getPX(i), getPY(i), getPZ(i)));
+
+    const auto positionData = this->readPositions();
+    std::transform(positionData.begin(), positionData.end(), std::back_inserter(positions), [](const auto& p)
+    {
+        return sofa::type::toVec3(DataTypes::getCPos(p));
+    });
 
     vparams->drawTool()->draw3DText_Indices(positions, showIndicesScale.getValue(), d_color.getValue());
 }
