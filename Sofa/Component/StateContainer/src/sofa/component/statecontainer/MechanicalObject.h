@@ -147,14 +147,13 @@ public:
 
     Size getSize() const override { return d_size.getValue(); }
 
-    SReal getPX(sofa::Index i) const override { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(read(core::vec_id::read_access::position)->getValue())[i]); return (SReal)x; }
-    SReal getPY(sofa::Index i) const override { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(read(core::vec_id::read_access::position)->getValue())[i]); return (SReal)y; }
-    SReal getPZ(sofa::Index i) const override { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(read(core::vec_id::read_access::position)->getValue())[i]); return (SReal)z; }
+    SReal getPX(sofa::Index i) const override;
+    SReal getPY(sofa::Index i) const override;
+    SReal getPZ(sofa::Index i) const override;
 
-    SReal getVX(sofa::Index i) const { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z, read(core::vec_id::read_access::velocity)->getValue()[i]); return (SReal)x; }
-    SReal getVY(sofa::Index i) const { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z, read(core::vec_id::read_access::velocity)->getValue()[i]); return (SReal)y; }
-    SReal getVZ(sofa::Index i) const { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z, read(core::vec_id::read_access::velocity)->getValue()[i]); return (SReal)z; }
-
+    SReal getVX(sofa::Index i) const;
+    SReal getVY(sofa::Index i) const;
+    SReal getVZ(sofa::Index i) const;
 
     /** \brief Overwrite values at index outputIndex by the ones at inputIndex.
      *
