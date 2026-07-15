@@ -72,5 +72,5 @@ else()
     message("Sofa.GL not found; disabling VolumetricRendering plugin")
 endif()
 
-sofa_add_subdirectory(plugin SofaDistanceGrid SofaDistanceGrid) # Also defines SofaDistanceGrid.CUDA
+sofa_add_external(plugin SofaDistanceGrid GIT_REF master GIT_REPOSITORY https://www.github.com/sofa-framework/SofaDistanceGrid.git) # Also defines SofaDistanceGrid.CUDA
 sofa_add_subdirectory(plugin SofaImplicitField SofaImplicitField)
