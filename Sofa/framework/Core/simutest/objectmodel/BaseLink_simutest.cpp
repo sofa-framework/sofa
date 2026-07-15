@@ -19,6 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <boost/unordered/detail/fca.hpp>
 #include <sofa/core/objectmodel/Base.h>
 using sofa::core::objectmodel::Base ;
 using sofa::core::objectmodel::ComponentState;
@@ -31,6 +32,7 @@ using sofa::simulation::Node ;
 
 #include <sofa/core/objectmodel/BaseComponent.h>
 using sofa::core::objectmodel::BaseObject;
+using sofa::core::objectmodel::BaseComponent;
 
 #include <sofa/core/PathResolver.h>
 using sofa::core::PathResolver;
@@ -56,6 +58,7 @@ public:
         scene << "<?xml version='1.0'?>"
                  "<Node name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"
                  "   <RequiredPlugin pluginName='Sofa.Component.SceneUtility' />                   \n"
+                 "   <RequiredPlugin pluginName='Sofa.Component.StateContainer' />                 \n"
                  "   <DefaultAnimationLoop />                                                \n"
                  "   <DefaultVisualManagerLoop />                                            \n"
                  "   <MechanicalObject name='mstate0'/>                                      \n"
@@ -79,6 +82,38 @@ public:
     }
 };
 
+class FakeComponent : public BaseComponent {
+public:
+    SOFA_CLASS(FakeComponent, BaseComponent);
+
+    sofa::MultiLink<FakeComponent, sofa::core::objectmodel::BaseComponent, sofa::BaseLink::FLAG_DOUBLELINK> l_target;
+
+    FakeComponent()
+        : l_target(initLink("target", "link for test")) {
+    }
+};
+
+TEST_F(BaseLink_test, remove)
+{
+    FakeComponent owner;
+    FakeComponent target1;
+    FakeComponent target2;
+
+    ASSERT_FALSE(owner.l_target.remove(&target1));
+
+    ASSERT_TRUE(owner.l_target.add(&target1, ""));
+    ASSERT_TRUE(owner.l_target.add(&target2, ""));
+    ASSERT_EQ(owner.l_target.size(), size_t(2));
+    ASSERT_EQ(owner.l_target.get(0), &target1);
+    ASSERT_EQ(owner.l_target.get(1), &target2);
+
+    ASSERT_TRUE(owner.l_target.remove(&target1));
+    ASSERT_EQ(owner.l_target.size(), size_t(1));
+    ASSERT_EQ(owner.l_target.get(0), &target2);
+
+    ASSERT_FALSE(owner.l_target.remove(&target1));
+    ASSERT_FALSE(owner.l_target.remove(nullptr));
+}
 
 //////////////////////// Testing valid path //////////////////////////////////////
 class MultiLink_simutest : public BaseLink_test {};
