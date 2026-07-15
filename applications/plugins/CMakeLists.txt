@@ -73,4 +73,4 @@ else()
 endif()
 
 sofa_add_subdirectory(plugin SofaDistanceGrid SofaDistanceGrid) # Also defines SofaDistanceGrid.CUDA
-sofa_add_subdirectory(plugin SofaImplicitField SofaImplicitField)
+sofa_add_external(plugin SofaImplicitField GIT_REF master GIT_REPOSITORY https://www.github.com/sofa-framework/SofaImplicitField.git)
