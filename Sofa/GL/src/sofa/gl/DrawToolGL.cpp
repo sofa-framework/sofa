@@ -111,23 +111,23 @@ void DrawToolGL::drawLine(const Vec3 &p1, const Vec3 &p2, const type::RGBAColor&
     glEnd();
 }
 
-void DrawToolGL::drawInfiniteLine(const Vec3 &point, const Vec3 &direction, const type::RGBAColor& color, const bool& vanishing)
+void DrawToolGL::drawInfiniteLine(const Vec3& start, const Vec3& end, const type::RGBAColor& color, const bool& vanishing)
 {
     glBegin(GL_LINES);
 
     glColor4f(color[0], color[1], color[2], color[3]);
-    glVertex4d(point[0], point[1], point[2], 1.0);
+    glVertex4d(start[0], start[1], start[2], 1.0);
     if(vanishing)
         glColor4f(color[0], color[1], color[2], 0.0f);
-    glVertex4d(direction[0], direction[1], direction[2], 0.0);
+    glVertex4d(end[0], end[1], end[2], 0.0);
 
     glEnd();
 }
 
-void DrawToolGL::drawInfiniteLine(const Vec3 &point, const Vec3 &direction, const float& size, const type::RGBAColor& color, const bool &vanishing)
+void DrawToolGL::drawInfiniteLine(const Vec3& start, const Vec3& end, const float& size, const type::RGBAColor& color, const bool& vanishing)
 {
     glLineWidth(size);
-    drawInfiniteLine(point, direction, color, vanishing);
+    drawInfiniteLine(start, end, color, vanishing);
     glLineWidth(1);
 }
 

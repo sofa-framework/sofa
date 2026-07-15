@@ -47,8 +47,8 @@ public:
     virtual void drawPoints(const std::vector<type::Vec3> &points, float size, const std::vector<type::RGBAColor>& color) override;
 
     void drawLine(const type::Vec3 &p1, const type::Vec3 &p2, const type::RGBAColor& color) override;
-    void drawInfiniteLine(const type::Vec3 &point, const type::Vec3 &direction, const type::RGBAColor& color, const bool& vanishing=false) override;
-    void drawInfiniteLine(const Vec3 &point, const Vec3 &direction, const float& size, const type::RGBAColor& color, const bool& vanishing=false) override;
+    void drawInfiniteLine(const type::Vec3& start, const type::Vec3& end, const type::RGBAColor& color, const bool& vanishing = false) override;
+    void drawInfiniteLine(const Vec3& start, const Vec3& end, const float& size, const type::RGBAColor& color, const bool& vanishing = false) override;
 
     virtual void drawLines(const std::vector<type::Vec3> &points, float size, const type::RGBAColor& color) override;
     virtual void drawLines(const std::vector<type::Vec3> &points, float size, const std::vector<type::RGBAColor>& colors) override;
