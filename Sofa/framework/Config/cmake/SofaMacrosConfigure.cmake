@@ -218,20 +218,17 @@ macro(sofa_fetch_dependency name)
                 if("${_sofa_head}" STREQUAL "${_sofa_want}")
                     set(_sofa_need_fetch FALSE)
 
-                    # If the ref isn't a bare SHA, it may be a branch whose upstream
-                    # tip has advanced. A lightweight ls-remote check catches that.
-                    # (For tags this is a harmless no-op: the SHA will still match.)
-                    string(REGEX MATCH "^[0-9a-fA-F]{40}$" _sofa_is_sha "${${upper_name}_GIT_TAG}")
-                    if(NOT _sofa_is_sha)
-                        execute_process(
-                            COMMAND "${GIT_EXECUTABLE}" ls-remote origin "${${upper_name}_GIT_TAG}"
-                            WORKING_DIRECTORY "${fetched_dir}"
-                            OUTPUT_VARIABLE _sofa_remote_out OUTPUT_STRIP_TRAILING_WHITESPACE
-                            RESULT_VARIABLE _sofa_remote_rc ERROR_QUIET)
-                        string(REGEX MATCH "^[0-9a-fA-F]+" _sofa_remote_sha "${_sofa_remote_out}")
-                        if(NOT _sofa_remote_rc EQUAL 0 OR NOT "${_sofa_remote_sha}" STREQUAL "${_sofa_head}")
-                            set(_sofa_need_fetch TRUE)
-                        endif()
+                    # If the ref names a branch, upstream may have advanced.
+                    # ls-remote returns nothing for SHAs and the same SHA for tags,
+                    # so we only re-fetch when it succeeds with a *different* hash.
+                    execute_process(
+                        COMMAND "${GIT_EXECUTABLE}" ls-remote origin "${${upper_name}_GIT_TAG}"
+                        WORKING_DIRECTORY "${fetched_dir}"
+                        OUTPUT_VARIABLE _sofa_remote_out OUTPUT_STRIP_TRAILING_WHITESPACE
+                        RESULT_VARIABLE _sofa_remote_rc ERROR_QUIET)
+                    string(REGEX MATCH "^[0-9a-fA-F]+" _sofa_remote_sha "${_sofa_remote_out}")
+                    if(_sofa_remote_rc EQUAL 0 AND _sofa_remote_sha AND NOT "${_sofa_remote_sha}" STREQUAL "${_sofa_head}")
+                        set(_sofa_need_fetch TRUE)
                     endif()
 
                     if(_sofa_need_fetch)
