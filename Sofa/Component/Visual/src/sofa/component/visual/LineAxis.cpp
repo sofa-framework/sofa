@@ -76,19 +76,16 @@ void LineAxis::updateLine()
 
 void LineAxis::doDrawVisual(const core::visual::VisualParams* vparams)
 {
-    const double s = sofa::helper::narrow_cast<double>(d_size.getValue());
-    const double hs = s * 0.5; // half the size
+    const SReal s = sofa::helper::narrow_cast<SReal>(d_size.getValue());
+    const SReal hs = s * 0.5; // half the size
 
     auto drawtool = vparams->drawTool();
     drawtool->disableLighting();
 
-    const unsigned int nl = d_nbLineSegments.getValue();
-    const float ls = s / nl;
+    const int nl = d_nbLineSegments.getValue();
+    const SReal ls = s / nl;
 
     std::vector<type::Vec3> points;
-    points.resize(nl+1);
-    std::vector<type::Vec2i> indices;
-    indices.resize(nl);
 
     const auto& bbox = helper::getReadAccessor(getContext()->f_bbox);
     auto v = bbox->maxBBox() - bbox->minBBox();
@@ -96,70 +93,46 @@ void LineAxis::doDrawVisual(const core::visual::VisualParams* vparams)
     const auto& vanishing = helper::getReadAccessor(d_vanishing);
     const auto& infinite = helper::getReadAccessor(d_infinite);
 
-    if(m_drawX)
+    const auto drawAxis = [&](sofa::Size i, const type::RGBAColor& color)
     {
-        for (unsigned int j = 0 ; j < nl; ++j)
-        {
-            points[j] = DrawTool::Vec3(-hs + ls*j, 0.0, 0.0);
-            points[j+1] = DrawTool::Vec3(-hs + ls*(j+1), 0.0, 0.0);
-            indices[j] = type::Vec2i(j, j+1);
-        }
-
         if (!infinite)
         {
-            drawtool->drawLines(points, indices, thickness, DrawTool::RGBAColor::red());
+            points.resize(nl+1);
+
+            for (int j = 0 ; j < nl + 1; ++j)
+            {
+                points[j].clear();
+                points[j][i] = -hs + ls * j;
+            }
+
+            drawtool->drawLineStrip(points, thickness, color);
         }
-        else // infinite line
+        else
         {
-            drawtool->drawInfiniteLine(DrawTool::Vec3(0, 0, 0), DrawTool::Vec3(v.x(), 0, 0), thickness,
-                                                  DrawTool::RGBAColor::red(), vanishing);
-            drawtool->drawInfiniteLine(DrawTool::Vec3(0, 0, 0), DrawTool::Vec3(-v.x(), 0, 0), thickness,
-                                                  DrawTool::RGBAColor::red(), vanishing);
+            DrawTool::Vec3 direction;
+            direction[i] = v[i];
+
+            drawtool->drawInfiniteLine(DrawTool::Vec3(0, 0, 0), direction, thickness, color, vanishing);
+
+            direction[i] = -v[i];
+            drawtool->drawInfiniteLine(DrawTool::Vec3(0, 0, 0), direction, thickness, color, vanishing);
         }
+    };
+
+
+    if(m_drawX)
+    {
+        drawAxis(0, type::RGBAColor::red());
     }
 
     if(m_drawY)
     {
-        for (unsigned int j = 0 ; j < nl; ++j)
-        {
-            points[j] = DrawTool::Vec3(0.0, -hs + ls*j, 0.0);
-            points[j+1] = DrawTool::Vec3(0.0, -hs + ls*(j+1), 0.0);
-            indices[j] = type::Vec2i(j, j+1);
-        }
-
-        if (!infinite)
-        {
-            drawtool->drawLines(points, indices, thickness, DrawTool::RGBAColor::green());
-        }
-        else // infinite line
-        {
-            drawtool->drawInfiniteLine(DrawTool::Vec3(0, 0, 0), DrawTool::Vec3(0, v.y(), 0), thickness,
-                                                  DrawTool::RGBAColor::green(), vanishing);
-            drawtool->drawInfiniteLine(DrawTool::Vec3(0, 0, 0), DrawTool::Vec3(0, -v.y(), 0), thickness,
-                                                  DrawTool::RGBAColor::green(), vanishing);
-        }
+        drawAxis(1, type::RGBAColor::green());
     }
 
     if(m_drawZ)
     {
-        for (unsigned int j = 0 ; j < nl; ++j)
-        {
-            points[j] = DrawTool::Vec3(0.0, 0.0, -hs + ls*j);
-            points[j+1] = DrawTool::Vec3(0.0, 0.0, -hs + ls*(j+1));
-            indices[j] = type::Vec2i(j, j+1);
-        }
-
-        if (!infinite)
-        {
-            drawtool->drawLines(points, indices, thickness, DrawTool::RGBAColor::blue());
-        }
-        else // infinite line
-        {
-            drawtool->drawInfiniteLine(DrawTool::Vec3(0, 0, 0), DrawTool::Vec3(0, 0, v.z()), thickness,
-                                                  DrawTool::RGBAColor::blue(), vanishing);
-            drawtool->drawInfiniteLine(DrawTool::Vec3(0, 0, 0), DrawTool::Vec3(0, 0, -v.z()), thickness,
-                                                  DrawTool::RGBAColor::blue(), vanishing);
-        }
+        drawAxis(2, type::RGBAColor::blue());
     }
 }
 
