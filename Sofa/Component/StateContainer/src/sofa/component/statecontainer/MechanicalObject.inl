@@ -2632,8 +2632,12 @@ inline void MechanicalObject<DataTypes>::drawIndices(const core::visual::VisualP
 {
     std::vector<type::Vec3> positions;
     positions.reserve(d_size.getValue());
-    for (int i = 0; i <d_size.getValue(); ++i)
-        positions.push_back(type::Vec3(getPX(i), getPY(i), getPZ(i)));
+
+    const auto positionData = this->readPositions();
+    std::transform(positionData.begin(), positionData.end(), std::back_inserter(positions), [](const auto& p)
+    {
+        return sofa::type::toVec3(DataTypes::getCPos(p));
+    });
 
     vparams->drawTool()->draw3DText_Indices(positions, showIndicesScale.getValue(), d_color.getValue());
 }
@@ -2642,18 +2646,25 @@ template <class DataTypes>
 inline void MechanicalObject<DataTypes>::drawVectors(const core::visual::VisualParams* vparams)
 {
     float scale = showVectorsScale.getValue();
-    sofa::helper::ReadAccessor< Data<VecDeriv> > v_rA = *this->read(core::vec_id::read_access::velocity);
+
+    const auto v_rA = sofa::helper::getReadAccessor(*this->read(core::vec_id::read_access::velocity));
+    const auto x_rA = sofa::helper::getReadAccessor(*this->read(core::vec_id::read_access::position));
+
     type::vector<type::Vec3> points;
     points.resize(2);
-    for(Size i=0; i<v_rA.size(); ++i )
+
+    const auto mode = drawMode.getValue();
+
+    for (Size i = 0; i < v_rA.size(); ++i)
     {
-        Real vx=0.0,vy=0.0,vz=0.0;
-        DataTypes::get(vx,vy,vz,v_rA[i]);
-        type::Vec3 p1 = type::Vec3(getPX(i), getPY(i), getPZ(i));
-        type::Vec3 p2 = type::Vec3(getPX(i)+scale*vx, getPY(i)+scale*vy, getPZ(i)+scale*vz);
+        sofa::type::Vec3 v3;
+        DataTypes::get(v3[0], v3[1], v3[2], v_rA[i]);
+
+        const type::Vec3 p1 = sofa::type::toVec3(DataTypes::getCPos(x_rA[i]));
+        type::Vec3 p2 = p1 + scale * v3;
 
         const float rad = (float)( (p1-p2).norm()/20.0 );
-        switch (drawMode.getValue())
+        switch (mode)
         {
         case 0:
             points[0] = p1;
@@ -2692,9 +2703,15 @@ inline void MechanicalObject<DataTypes>::draw(const core::visual::VisualParams* 
     if (showObject.getValue())
     {
         const float& scale = showObjectScale.getValue();
-        type::vector<type::Vec3> positions(d_size.getValue());
-        for (sofa::Index i = 0; i < Size(d_size.getValue()); ++i)
-            positions[i] = type::Vec3(getPX(i), getPY(i), getPZ(i));
+
+        std::vector<type::Vec3> positions;
+        positions.reserve(d_size.getValue());
+
+        const auto positionData = this->readPositions();
+        std::transform(positionData.begin(), positionData.end(), std::back_inserter(positions), [](const auto& p)
+        {
+            return sofa::type::toVec3(DataTypes::getCPos(p));
+        });
 
         switch (drawMode.getValue())
         {
