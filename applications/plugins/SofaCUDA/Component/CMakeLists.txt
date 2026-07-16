@@ -36,7 +36,8 @@ set(HEADER_FILES
     ${SOFACUDA_COMPONENT_SOURCE_DIR}/SofaCUDA/component/mass/CudaMeshMatrixMass.inl
     ${SOFACUDA_COMPONENT_SOURCE_DIR}/SofaCUDA/component/mass/CudaUniformMass.h
     ${SOFACUDA_COMPONENT_SOURCE_DIR}/SofaCUDA/component/mass/CudaUniformMass.inl
-    
+    ${SOFACUDA_COMPONENT_SOURCE_DIR}/SofaCUDA/component/mass/CudaFEMMass.h
+
 
     ### solidmechanics
     ${SOFACUDA_COMPONENT_SOURCE_DIR}/SofaCUDA/component/solidmechanics/fem/elastic/CudaFEMKernelUtils.cuh
@@ -114,6 +115,7 @@ set(SOURCE_FILES
     ${SOFACUDA_COMPONENT_SOURCE_DIR}/SofaCUDA/component/mass/CudaDiagonalMass.cpp
     ${SOFACUDA_COMPONENT_SOURCE_DIR}/SofaCUDA/component/mass/CudaMeshMatrixMass.cpp
     ${SOFACUDA_COMPONENT_SOURCE_DIR}/SofaCUDA/component/mass/CudaUniformMass.cpp
+    ${SOFACUDA_COMPONENT_SOURCE_DIR}/SofaCUDA/component/mass/CudaFEMMass.cpp
 
     ### Solidmechanics
     ${SOFACUDA_COMPONENT_SOURCE_DIR}/SofaCUDA/component/solidmechanics/fem/elastic/CudaCorotationalFEMForceField.cpp
