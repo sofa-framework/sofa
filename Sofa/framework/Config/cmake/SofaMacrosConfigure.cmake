@@ -221,8 +221,56 @@ macro(sofa_fetch_dependency name)
                 list(GET _sofa_refs 0 _sofa_current_ref)
                 list(GET _sofa_refs 1 _sofa_requested_ref)
                 if("${_sofa_current_ref}" STREQUAL "${_sofa_requested_ref}")
-                    set(_sofa_need_fetch FALSE)
-                    message(STATUS "Dependency ${name} already at requested reference ${${upper_name}_GIT_TAG}; skipping fetch.")
+                    # Local HEAD matches the requested ref. However, if the ref is a
+                    # branch name (as opposed to a tag or a commit SHA), the upstream
+                    # branch may have advanced since the last fetch. Detect this with a
+                    # cheap ls-remote query so we don't silently skip upstream updates.
+                    set(_sofa_ref_is_branch FALSE)
+
+                    # Full 40-hex-char SHA → immutable, no remote check needed.
+                    string(REGEX MATCH "^[0-9a-fA-F]{40}$" _sofa_is_sha "${${upper_name}_GIT_TAG}")
+                    if(_sofa_is_sha)
+                        # Commit hash – never changes upstream.
+                    else()
+                        # Check whether the ref is a tag in the local repo.
+                        execute_process(
+                            COMMAND "${GIT_EXECUTABLE}" show-ref --verify --quiet "refs/tags/${${upper_name}_GIT_TAG}"
+                            WORKING_DIRECTORY "${fetched_dir}"
+                            RESULT_VARIABLE _sofa_tag_result)
+                        if(NOT _sofa_tag_result EQUAL 0)
+                            # Not a SHA and not a tag → treat as a branch name.
+                            set(_sofa_ref_is_branch TRUE)
+                        endif()
+                    endif()
+
+                    if(_sofa_ref_is_branch)
+                        # Ask the remote for the current tip of the branch without
+                        # downloading objects. This is a lightweight network call.
+                        execute_process(
+                            COMMAND "${GIT_EXECUTABLE}" ls-remote origin "${${upper_name}_GIT_TAG}"
+                            WORKING_DIRECTORY "${fetched_dir}"
+                            OUTPUT_VARIABLE _sofa_ls_remote_out OUTPUT_STRIP_TRAILING_WHITESPACE
+                            RESULT_VARIABLE _sofa_ls_remote_result ERROR_QUIET)
+                        if(_sofa_ls_remote_result EQUAL 0 AND _sofa_ls_remote_out)
+                            # ls-remote output: "<sha>\t<refname>"
+                            string(REGEX MATCH "^([0-9a-fA-F]+)" _sofa_remote_sha "${_sofa_ls_remote_out}")
+                            if(_sofa_remote_sha AND NOT "${_sofa_remote_sha}" STREQUAL "${_sofa_current_ref}")
+                                set(_sofa_need_fetch TRUE)
+                                message(STATUS "Dependency ${name}: upstream branch ${${upper_name}_GIT_TAG} has new commits (local: ${_sofa_current_ref}, remote: ${_sofa_remote_sha}); re-fetching.")
+                            else()
+                                set(_sofa_need_fetch FALSE)
+                                message(STATUS "Dependency ${name} already at requested branch ${${upper_name}_GIT_TAG} tip; skipping fetch.")
+                            endif()
+                        else()
+                            # ls-remote failed (network issue, ref doesn't exist on remote, etc.).
+                            # Fall through to a full fetch to be safe.
+                            message(STATUS "Dependency ${name}: could not query remote for branch ${${upper_name}_GIT_TAG}; re-fetching to be safe.")
+                        endif()
+                    else()
+                        # Tag or SHA – local match is authoritative.
+                        set(_sofa_need_fetch FALSE)
+                        message(STATUS "Dependency ${name} already at requested reference ${${upper_name}_GIT_TAG}; skipping fetch.")
+                    endif()
                 endif()
             endif()
         endif()
