@@ -32,7 +32,7 @@ TrailRenderer<DataTypes>::TrailRenderer()
     : core::visual::VisualModel()
     , d_position(initData(&d_position, "position", "Position of the particles behind which a trail is rendered"))
     , d_nbSteps(initData(&d_nbSteps, 100u, "nbSteps", "Number of time steps to use to render the trail"))
-    , d_color(initData(&d_color, type::RGBAColor::green(), "color", "Color of the trail"))
+    , d_color(initData(&d_color, helper::ColorMap{type::RGBAColor::green()}, "color", "Color map of the trail"))
     , d_thickness(initData(&d_thickness, 1.f, "thickness", "Thickness of the trail"))
 {
     f_listening.setValue(true);
@@ -85,12 +85,25 @@ void TrailRenderer<DataTypes>::doDrawVisual(const core::visual::VisualParams* vp
 {
     helper::visual::DrawTool*& drawTool = vparams->drawTool();
 
-    const sofa::type::RGBAColor& color = d_color.getValue();
+    const auto& color = d_color.getValue();
     const float thickness = d_thickness.getValue();
+
+    const auto colorEvaluator = color.getEvaluator(0_sreal, static_cast<SReal>(d_nbSteps.getValue()));
+
+    drawTool->disableLighting();
+    drawTool->enableBlending();
 
     for (auto& queue : m_trail)
     {
-        drawTool->drawLineStrip(queue, thickness, color);
+        std::vector<type::RGBAColor> colors;
+        colors.reserve(queue.size());
+
+        for (std::size_t i = 0; i < queue.size(); ++i)
+        {
+            colors.push_back(colorEvaluator(static_cast<SReal>(i)));
+        }
+
+        drawTool->drawLineStrip(queue, thickness, colors);
     }
 }
 

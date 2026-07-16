@@ -210,6 +210,22 @@ void DrawToolGL::drawLineStrip(const std::vector<Vec3> &points, float size, cons
     glLineWidth(1);
 }
 
+void DrawToolGL::drawLineStrip(const std::vector<Vec3>& points, float size,
+                               const std::vector<RGBAColor>& colors)
+{
+    glLineWidth(size);
+    if (getLightEnabled()) disableLighting();
+    glBegin(GL_LINE_STRIP);
+    {
+        for (std::size_t i = 0; i < points.size(); ++i)
+        {
+            internalDrawPoint(points[i], colors[i]);
+        }
+    } glEnd();
+    if (getLightEnabled()) enableLighting();
+    glLineWidth(1);
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void DrawToolGL::drawLineLoop(const std::vector<Vec3> &points, float size, const type::RGBAColor& color)
