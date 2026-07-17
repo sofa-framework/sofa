@@ -62,9 +62,6 @@ struct BaseDrawColoredMesh
         if (!topology)
             return;
 
-        const auto stateLifeCycle = drawTool->makeStateLifeCycle();
-        // drawTool->disableLighting();
-
         static_cast<Derived&>(*this).doDraw(drawTool, position, topology, elementIndices, nodesColors);
     }
 
