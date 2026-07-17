@@ -54,7 +54,7 @@
     </Node>
 
     <Node name="visual">
-        <PointsFromIndices name="points" position="@../defoDOF.position" indices="19 18 17 16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1"/>
+        <PointsFromIndices name="points" position="@../defoDOF.position" indices="19"/>
         <TrailRenderer template="Vec3" position="@points.indices_position" nbSteps="50" color="#ffffff00 orange navy" thickness="15"/>
     </Node>
     
