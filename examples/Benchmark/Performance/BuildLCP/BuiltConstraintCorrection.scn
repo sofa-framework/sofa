@@ -48,7 +48,6 @@
             </Node>
         </Node>
         <Node name="MAN">
-            <EulerExplicitIntegrationScheme />
             <MechanicalObject template="Rigid3" dx="0.0" dy="0.0" dz="0.0" />
             <UniformMass totalMass="100.0" printLog="false" />
             <UncoupledConstraintCorrection/>
@@ -87,7 +86,6 @@
             </Node>
         </Node>
         <Node name="DRAGON1">
-            <EulerExplicitIntegrationScheme />
             <MechanicalObject template="Rigid3" dx="0.0" dy="2.5" dz="2.5" />
             <UniformMass totalMass="100.0" printLog="false" />
             <UncoupledConstraintCorrection/>
