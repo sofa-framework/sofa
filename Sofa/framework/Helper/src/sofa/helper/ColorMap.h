@@ -131,6 +131,15 @@ public:
     friend SOFA_HELPER_API std::ostream& operator<<(std::ostream& out, const ColorMap& m);
     friend SOFA_HELPER_API std::istream& operator>>(std::istream& in, ColorMap& m);
 
+    void init() = delete;
+    void reinit() = delete;
+
+    unsigned int getPaletteSize() const = delete;
+    void setPaletteSize(unsigned int paletteSize) = delete;
+
+    const std::string& getColorScheme() const = delete;
+    void setColorScheme(const std::string& colorScheme) = delete;
+
 private:
     VecColor m_entries;
 };
