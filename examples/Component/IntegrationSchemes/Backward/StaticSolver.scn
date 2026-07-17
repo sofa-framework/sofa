@@ -26,7 +26,8 @@
 
     <Node name="Springs">
         <StaticEquilibriumIntegrationScheme maxNbIterationsNewton="100"
-                                            maxNbIterationsLineSearch="1"/>
+                                            maxNbIterationsLineSearch="1"
+                                            alwaysAdvanceNewton="true" />
         <EigenSimplicialLDLT template="CompressedRowSparseMatrixMat3x3"/>
 
         <MeshTopology src="@../loader" />
@@ -41,7 +42,7 @@
         </Node>
     </Node>
     <Node name="CoFEM">
-        <StaticEquilibriumIntegrationScheme newtonSolver="@newtonSolver_corot" maxNbIterationsNewton="100" maxNbIterationsLineSearch="1"/>
+        <StaticEquilibriumIntegrationScheme newtonSolver="@newtonSolver_corot" maxNbIterationsNewton="100" maxNbIterationsLineSearch="1" alwaysAdvanceNewton="true"/>
         <EigenSimplicialLDLT template="CompressedRowSparseMatrixMat3x3"/>
 
         <MeshTopology src="@../loader" />
@@ -56,7 +57,7 @@
         </Node>
     </Node>
     <Node name="LinearFEM">
-        <StaticEquilibriumIntegrationScheme newtonSolver="@newtonSolver_lin" maxNbIterationsNewton="100" maxNbIterationsLineSearch="1"/>
+        <StaticEquilibriumIntegrationScheme newtonSolver="@newtonSolver_lin" maxNbIterationsNewton="100" maxNbIterationsLineSearch="1" alwaysAdvanceNewton="true"/>
         <EigenSimplicialLDLT template="CompressedRowSparseMatrixMat3x3"/>
 
         <MeshTopology src="@../loader" />

@@ -31,7 +31,7 @@
         <MechanicalObject name="dofs" />
 		<Node name="FastTetrahedronCorotationalForceField">
             <CGLinearSolver iterations="500" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" /> 
-            <StaticEquilibriumIntegrationScheme  />
+            <StaticEquilibriumIntegrationScheme  maxNbIterationsNewton="1" maxNbIterationsLineSearch="0" alwaysAdvanceNewton="true"/>
             <TetrahedronSetTopologyContainer name="Container2" />
             <TetrahedronSetGeometryAlgorithms drawEdges="1" drawColorEdges="0 1 0" name="GeomAlgo" />
             <SimpleTesselatedTetraTopologicalMapping input="@Container1" output="@Container2" />
@@ -45,7 +45,7 @@
 		 </Node>
         <Node name="TetrahedronCorotationalForceField">
             <CGLinearSolver iterations="500" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" /> 
-            <StaticEquilibriumIntegrationScheme  />
+            <StaticEquilibriumIntegrationScheme  maxNbIterationsNewton="1" maxNbIterationsLineSearch="0" alwaysAdvanceNewton="true"/>
 			<TetrahedronSetTopologyContainer name="Container3" />
 			<TetrahedronSetGeometryAlgorithms drawEdges="1" drawColorEdges="1 0 0" name="GeomAlgo" />
 			<SimpleTesselatedTetraTopologicalMapping input="@Container1" output="@Container3" />
