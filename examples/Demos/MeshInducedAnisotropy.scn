@@ -34,7 +34,7 @@
 
     <Node name="beam_with_anisotropy">
         <StaticEquilibriumIntegrationScheme name="static_solver" maxNbIterationsNewton="100"
-                      maxNbIterationsLineSearch="1"  newtonSolver="@non_linear_solver"/>
+                      maxNbIterationsLineSearch="1"  alwaysAdvanceNewton="true"/>
         <SparseLDLSolver name="linear_solver" template="CompressedRowSparseMatrixMat3x3d"/>
 
         <MechanicalObject template="Vec3" name="state" position="@/grid.position"/>
