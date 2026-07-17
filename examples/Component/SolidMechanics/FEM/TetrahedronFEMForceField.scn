@@ -37,7 +37,7 @@
 
 
     <Node name="BeamFEM_LARGE">
-        <StaticEquilibriumIntegrationScheme name="cg_odesolver" printLog="true"  maxNbIterationsNewton="100" maxNbIterationsLineSearch="2" residueThreshold="1e-12"  />
+        <StaticEquilibriumIntegrationScheme name="cg_odesolver" printLog="true"  maxNbIterationsNewton="100" maxNbIterationsLineSearch="2" residueThreshold="1e-12"  alwaysAdvanceNewton="true" />
         <CGLinearSolver iterations="100" name="linear solver" tolerance="1.0e-15" threshold="1.0e-15" />
 
         <RegularGridTopology name="grid" min="-5 -5 0" max="5 5 40" n="5 5 20"/>
