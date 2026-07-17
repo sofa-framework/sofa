@@ -39,8 +39,7 @@ namespace sofa::simulation::integrationscheme
 {
 
 class SOFA_SIMULATION_CORE_API ExplicitIntegrationScheme :
-                            public  sofa::core::behavior::BaseIntegrationScheme,
-                            public sofa::core::behavior::LinearSolverAccessor
+                            public  sofa::core::behavior::BaseIntegrationScheme
 {
 public:
     SOFA_ABSTRACT_CLASS(ExplicitIntegrationScheme, sofa::core::behavior::BaseIntegrationScheme);
