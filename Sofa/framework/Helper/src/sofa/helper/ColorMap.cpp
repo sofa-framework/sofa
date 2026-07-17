@@ -306,7 +306,15 @@ bool ColorMap::buildFromColorScheme(unsigned int paletteSize, const ColorPreset 
 
 std::ostream& operator<<(std::ostream& out, const ColorMap& m)
 {
-    out << m.m_entries;
+    sofa::type::vector<std::string> hexadecimal;
+    hexadecimal.reserve(m.m_entries.size());
+    std::transform(m.m_entries.begin(), m.m_entries.end(), std::back_inserter(hexadecimal),
+        [](const type::RGBAColor& color)
+        {
+            return color.toHexadecimal();
+        });
+
+    hexadecimal.write(out);
     return out;
 }
 
@@ -314,11 +322,19 @@ std::istream& operator>>(std::istream& in, ColorMap& m)
 {
     in >> std::ws;
 
-    std::string line;
-    if (!std::getline(in, line))
+    std::string colorMap;
+    {
+        std::string line;
+        while (std::getline(in, line))
+        {
+            colorMap += line;
+        }
+    }
+
+    if (colorMap.empty())
         return in;
 
-    const auto colorScheme = stringToColorScheme(line);
+    const auto colorScheme = stringToColorScheme(colorMap);
 
     if (colorScheme.has_value())
     {
@@ -326,7 +342,7 @@ std::istream& operator>>(std::istream& in, ColorMap& m)
         return in;
     }
 
-    std::istringstream lineStream(line);
+    std::istringstream lineStream(colorMap);
     m.m_entries.read(lineStream);
     return in;
 }
