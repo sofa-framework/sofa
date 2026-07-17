@@ -247,7 +247,7 @@ TEST_F(Snapshot_test, findSnapshotObject)
  * This test verifies that saveSnapshot save the data to a previously saved snapshot.
  *
  * Test steps:
- * 1. Create a component (Component) and a snapshot
+ * 1. Create a component (Component) and a empty snapshot
  * 2. Save Component1's data in the snapshot
  * 3. Verify if the snapshot contains all the data from Component1
  *
@@ -257,6 +257,11 @@ TEST_F(Snapshot_test, saveSnapshot)
     TestComponent Component;
     auto snapshot = std::make_shared<Snapshot::SnapshotObject>();
     std::vector<std::shared_ptr<Snapshot::SnapshotNode>> snapshotParents;
+
+    ASSERT_NE(snapshot, nullptr);
+    EXPECT_EQ(snapshot->m_name, "");
+    EXPECT_TRUE(snapshot->m_dataContainer.empty());
+    EXPECT_TRUE(snapshot->m_linkContainer.empty());
 
     snapshot = Component.saveSnapshot(snapshotParents);
 
