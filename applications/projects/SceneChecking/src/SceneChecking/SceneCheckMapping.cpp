@@ -127,7 +127,7 @@ void SceneCheckMapping::doPrintSummary()
         std::stringstream ss;
         ss << "The following Node(s) contain a mapping but no state: " << msgendl;
         showNodes(ss, m_nodesWithMappingNoState);
-        msg_error(getName()) << ss.str();
+        msg_warning(getName()) << ss.str();
     }
 
     if (!m_nodesWithMappingWrongState.empty())
@@ -135,7 +135,7 @@ void SceneCheckMapping::doPrintSummary()
         std::stringstream ss;
         ss << "The following Node(s) contain a mapping and a state, and the state is not an output of the mapping: " << msgendl;
         showNodes(ss, m_nodesWithMappingWrongState);
-        msg_error(getName()) << ss.str();
+        msg_warning(getName()) << ss.str();
     }
 
     if (!m_nodesWithMappingWrongState.empty())
@@ -143,7 +143,7 @@ void SceneCheckMapping::doPrintSummary()
         std::stringstream ss;
         ss << "The following Node(s) contain a mapping, a mechanical state and a non-mechanical state. The non-mechanical state is an output of the mapping, but the presence of the mechanical state may interfere and lead to undefined behavior: " << msgendl;
         showNodes(ss, m_nodesWithMappingWrongState);
-        msg_error(getName()) << ss.str();
+        msg_warning(getName()) << ss.str();
     }
 }
 
