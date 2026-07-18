@@ -319,11 +319,14 @@ std::istream& operator>>(std::istream& in, ColorMap& m)
     std::string colorMap;
     {
         std::string line;
-        while (std::getline(in, line))
+        while (in && std::getline(in, line))
         {
-            colorMap += line;
+            colorMap += line + " ";
         }
+        in.clear();
     }
+
+    colorMap = sofa::helper::removeTrailingCharacter(colorMap, ' ');
 
     if (colorMap.empty())
         return in;
