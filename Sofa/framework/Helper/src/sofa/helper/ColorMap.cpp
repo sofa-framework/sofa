@@ -22,10 +22,12 @@
 
 #include <sofa/helper/ColorMap.h>
 #include <sofa/helper/logging/Messaging.h>
-#include <string>
+
 #include <iostream>
 #include <optional>
+#include <string>
 
+#include "StringUtils.h"
 
 namespace sofa::helper
 {
@@ -306,15 +308,7 @@ bool ColorMap::buildFromColorScheme(unsigned int paletteSize, const ColorPreset 
 
 std::ostream& operator<<(std::ostream& out, const ColorMap& m)
 {
-    sofa::type::vector<std::string> hexadecimal;
-    hexadecimal.reserve(m.m_entries.size());
-    std::transform(m.m_entries.begin(), m.m_entries.end(), std::back_inserter(hexadecimal),
-        [](const type::RGBAColor& color)
-        {
-            return color.toHexadecimal();
-        });
-
-    hexadecimal.write(out);
+    out << sofa::helper::join(m.m_entries.begin(), m.m_entries.end(), [](const auto& color){ return color.toHexadecimal(); }, ' ');
     return out;
 }
 
