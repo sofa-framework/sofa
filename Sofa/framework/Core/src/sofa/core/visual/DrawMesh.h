@@ -439,11 +439,7 @@ template<>
                 std::array<sofa::type::RGBAColor, 4> subColors;
                 for (int t = 0; t < 4; ++t)
                 {
-                    subColors[t] = colors[f];
-                    float offset = (t - 1.5f) * 0.05f; // Slight variation
-                    subColors[t].r(std::clamp(subColors[t].r() + offset, 0.f, 1.f));
-                    subColors[t].g(std::clamp(subColors[t].g() + offset, 0.f, 1.f));
-                    subColors[t].b(std::clamp(subColors[t].b() + offset, 0.f, 1.f));
+                    subColors[t] = type::RGBAColor::lighten(colors[f], t * 0.15_sreal);
                 }
 
                 // Draw each sub-triangle set with its specific color
