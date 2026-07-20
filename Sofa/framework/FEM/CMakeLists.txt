@@ -14,6 +14,7 @@ set(HEADER_FILES
     ${SOFAFEMSRC_ROOT}/FiniteElement[Prism].h
     ${SOFAFEMSRC_ROOT}/FiniteElement[Pyramid].h
     ${SOFAFEMSRC_ROOT}/FiniteElement[Quad].h
+    ${SOFAFEMSRC_ROOT}/FiniteElement[QuadraticTetrahedron].h
     ${SOFAFEMSRC_ROOT}/FiniteElement[Tetrahedron].h
     ${SOFAFEMSRC_ROOT}/FiniteElement[Triangle].h
 )
@@ -26,6 +27,7 @@ set(SOURCE_FILES
     ${SOFAFEMSRC_ROOT}/FiniteElement[Prism].cpp
     ${SOFAFEMSRC_ROOT}/FiniteElement[Pyramid].cpp
     ${SOFAFEMSRC_ROOT}/FiniteElement[Quad].cpp
+    ${SOFAFEMSRC_ROOT}/FiniteElement[QuadraticTetrahedron].cpp
     ${SOFAFEMSRC_ROOT}/FiniteElement[Tetrahedron].cpp
     ${SOFAFEMSRC_ROOT}/FiniteElement[Triangle].cpp
 )
