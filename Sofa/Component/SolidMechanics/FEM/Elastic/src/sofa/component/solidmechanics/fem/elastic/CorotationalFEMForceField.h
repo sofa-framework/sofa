@@ -109,6 +109,21 @@ struct RotationMethods<DataTypes, sofa::geometry::Hexahedron> : RotationMethodsC
     }
 };
 
+//partial specialization for quadratic tetrahedron
+template <class DataTypes>
+struct RotationMethods<DataTypes, sofa::geometry::QuadraticTetrahedron> : RotationMethodsContainer<DataTypes, sofa::geometry::QuadraticTetrahedron,
+    PolarDecomposition<DataTypes>, IdentityRotation
+>
+{
+    using Inherit = RotationMethodsContainer<DataTypes, sofa::geometry::QuadraticTetrahedron,
+        PolarDecomposition<DataTypes>, IdentityRotation>;
+
+    explicit RotationMethods(sofa::core::objectmodel::BaseObject* parent) : Inherit(parent)
+    {
+        this->d_rotationMethod.setValue(PolarDecomposition<DataTypes>::getItem().key);
+    }
+};
+
 
 template <class DataTypes, class ElementType>
 class CorotationalFEMForceField :
@@ -186,6 +201,8 @@ extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API Corotational
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API CorotationalFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Hexahedron>;
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API CorotationalFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Prism>;
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API CorotationalFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Pyramid>;
+
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API CorotationalFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticTetrahedron>;
 #endif
 
 }  // namespace sofa::component::solidmechanics::fem::elastic
