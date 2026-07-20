@@ -93,6 +93,9 @@ extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API LinearSmallS
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API LinearSmallStrainFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Hexahedron>;
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API LinearSmallStrainFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Prism>;
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API LinearSmallStrainFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Pyramid>;
+
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API LinearSmallStrainFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticTetrahedron>;
+
 #endif
 
 }  // namespace sofa::component::solidmechanics::fem::elastic

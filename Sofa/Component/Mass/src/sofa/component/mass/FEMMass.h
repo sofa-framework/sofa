@@ -261,6 +261,8 @@ template class SOFA_COMPONENT_MASS_API FEMMass<sofa::defaulttype::Vec3Types, sof
 template class SOFA_COMPONENT_MASS_API FEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::Hexahedron>;
 template class SOFA_COMPONENT_MASS_API FEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::Prism>;
 template class SOFA_COMPONENT_MASS_API FEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::Pyramid>;
+
+template class SOFA_COMPONENT_MASS_API FEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticTetrahedron>;
 #endif
 
 }  // namespace sofa::component::mass
