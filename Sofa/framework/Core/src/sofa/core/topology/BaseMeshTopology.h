@@ -364,6 +364,7 @@ protected:
 
     virtual const void* getElementsRaw(const sofa::geometry::ElementType& elementType) const noexcept
     {
+        SOFA_UNUSED(elementType);
         return nullptr;
     }
 
