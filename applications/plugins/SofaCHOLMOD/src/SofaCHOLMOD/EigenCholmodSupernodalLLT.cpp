@@ -298,7 +298,7 @@ void EigenCholmodSupernodalLLT<TBlockType>::applyBlasNumThreads()
         msg_warning() << "Could not set the number of BLAS threads at runtime: no supported "
                          "BLAS thread-control API (OpenBLAS/MKL) was found. The value of '"
                       << d_numThreads.getName() << "' is ignored on this platform. Control the "
-                         "thread count via environment variables instead (e.g. OPENBLAS_NUM_THREADS).";
+                         "thread count via environment variables instead (e.g. OPENBLAS_NUM_THREADS or MKL_NUM_THREADS).";
     }
 }
 
