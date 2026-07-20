@@ -65,6 +65,9 @@ void EulerExplicitIntegrationScheme::doIntegrate(const core::ExecParams* params,
 
     SCOPED_TIMER("EulerExplicitSolve");
 
+    m_mappingGraph.build(this->getContext());
+
+
     // Let the mechanical operations know that the current IntegrationScheme is explicit. This will be propagated back to the
     // force fields during the addForce and addKToMatrix phase. Force fields use this information to avoid
     // recomputing constant data in case of explicit IntegrationScheme.
@@ -307,7 +310,6 @@ void EulerExplicitIntegrationScheme::solveSystem(core::MultiVecDerivId solution,
 bool EulerExplicitIntegrationScheme::isMassMatrixTriviallyInvertible(const core::ExecParams* params) const
 {
     SOFA_UNUSED(params);
-
     // To achieve a diagonal global mass matrix in this system:
     // 1) Each individual mass matrix must itself be diagonal.
     // 2) The mapped masses must also be mapped through a diagonal Jacobian matrix.
@@ -332,6 +334,7 @@ bool EulerExplicitIntegrationScheme::isMassMatrixTriviallyInvertible(const core:
     {
         areAllMassesDiagonal &= mass.isDiagonal();
     });
+
     return areAllMassesDiagonal;
 }
 
