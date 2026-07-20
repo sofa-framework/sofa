@@ -19,20 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-
-#include <sofa/fem/FiniteElement[Edge].h>
-#include <sofa/fem/FiniteElement[Hexahedron].h>
-#include <sofa/fem/FiniteElement[Prism].h>
-#include <sofa/fem/FiniteElement[Pyramid].h>
-#include <sofa/fem/FiniteElement[Quad].h>
-#include <sofa/fem/FiniteElement[Tetrahedron].h>
-#include <sofa/fem/FiniteElement[Triangle].h>
-
+#define SOFA_FEM_FINITE_ELEMENT_QUADRATIC_EDGE_CPP
 #include <sofa/fem/FiniteElement[QuadraticEdge].h>
-#include <sofa/fem/FiniteElement[QuadraticHexahedron].h>
-#include <sofa/fem/FiniteElement[QuadraticPrism].h>
-#include <sofa/fem/FiniteElement[QuadraticPyramid].h>
-#include <sofa/fem/FiniteElement[QuadraticQuad].h>
-#include <sofa/fem/FiniteElement[QuadraticTetrahedron].h>
-#include <sofa/fem/FiniteElement[QuadraticTriangle].h>
+#include <sofa/defaulttype/VecTypes.h>
+
+namespace sofa::fem
+{
+
+template struct SOFA_FEM_API FiniteElement<sofa::geometry::QuadraticEdge, sofa::defaulttype::Vec3Types>;
+template struct SOFA_FEM_API FiniteElement<sofa::geometry::QuadraticEdge, sofa::defaulttype::Vec2Types>;
+template struct SOFA_FEM_API FiniteElement<sofa::geometry::QuadraticEdge, sofa::defaulttype::Vec1Types>;
+
+}

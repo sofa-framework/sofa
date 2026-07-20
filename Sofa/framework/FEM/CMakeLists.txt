@@ -9,14 +9,22 @@ set(HEADER_FILES
 
     ${SOFAFEMSRC_ROOT}/FiniteElement.h
     ${SOFAFEMSRC_ROOT}/FiniteElement[all].h
+
     ${SOFAFEMSRC_ROOT}/FiniteElement[Edge].h
     ${SOFAFEMSRC_ROOT}/FiniteElement[Hexahedron].h
     ${SOFAFEMSRC_ROOT}/FiniteElement[Prism].h
     ${SOFAFEMSRC_ROOT}/FiniteElement[Pyramid].h
     ${SOFAFEMSRC_ROOT}/FiniteElement[Quad].h
-    ${SOFAFEMSRC_ROOT}/FiniteElement[QuadraticTetrahedron].h
     ${SOFAFEMSRC_ROOT}/FiniteElement[Tetrahedron].h
     ${SOFAFEMSRC_ROOT}/FiniteElement[Triangle].h
+
+    ${SOFAFEMSRC_ROOT}/FiniteElement[QuadraticEdge].h
+    ${SOFAFEMSRC_ROOT}/FiniteElement[QuadraticHexahedron].h
+    ${SOFAFEMSRC_ROOT}/FiniteElement[QuadraticPrism].h
+    ${SOFAFEMSRC_ROOT}/FiniteElement[QuadraticPyramid].h
+    ${SOFAFEMSRC_ROOT}/FiniteElement[QuadraticQuad].h
+    ${SOFAFEMSRC_ROOT}/FiniteElement[QuadraticTetrahedron].h
+    ${SOFAFEMSRC_ROOT}/FiniteElement[QuadraticTriangle].h
 )
 
 set(SOURCE_FILES
@@ -30,6 +38,14 @@ set(SOURCE_FILES
     ${SOFAFEMSRC_ROOT}/FiniteElement[QuadraticTetrahedron].cpp
     ${SOFAFEMSRC_ROOT}/FiniteElement[Tetrahedron].cpp
     ${SOFAFEMSRC_ROOT}/FiniteElement[Triangle].cpp
+
+    ${SOFAFEMSRC_ROOT}/FiniteElement[QuadraticEdge].cpp
+    ${SOFAFEMSRC_ROOT}/FiniteElement[QuadraticHexahedron].cpp
+    ${SOFAFEMSRC_ROOT}/FiniteElement[QuadraticPrism].cpp
+    ${SOFAFEMSRC_ROOT}/FiniteElement[QuadraticPyramid].cpp
+    ${SOFAFEMSRC_ROOT}/FiniteElement[QuadraticQuad].cpp
+    ${SOFAFEMSRC_ROOT}/FiniteElement[QuadraticTetrahedron].cpp
+    ${SOFAFEMSRC_ROOT}/FiniteElement[QuadraticTriangle].cpp
 )
 
 find_package(Sofa.Core REQUIRED)

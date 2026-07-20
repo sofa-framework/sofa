@@ -40,7 +40,17 @@ template class SOFA_COMPONENT_MASS_API FEMMass<sofa::defaulttype::Vec3Types, sof
 template class SOFA_COMPONENT_MASS_API FEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::Prism>;
 template class SOFA_COMPONENT_MASS_API FEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::Pyramid>;
 
+template class SOFA_COMPONENT_MASS_API FEMMass<sofa::defaulttype::Vec1Types, sofa::geometry::QuadraticEdge>;
+template class SOFA_COMPONENT_MASS_API FEMMass<sofa::defaulttype::Vec2Types, sofa::geometry::QuadraticEdge>;
+template class SOFA_COMPONENT_MASS_API FEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticEdge>;
+template class SOFA_COMPONENT_MASS_API FEMMass<sofa::defaulttype::Vec2Types, sofa::geometry::QuadraticTriangle>;
+template class SOFA_COMPONENT_MASS_API FEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticTriangle>;
+template class SOFA_COMPONENT_MASS_API FEMMass<sofa::defaulttype::Vec2Types, sofa::geometry::QuadraticQuad>;
+template class SOFA_COMPONENT_MASS_API FEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticQuad>;
 template class SOFA_COMPONENT_MASS_API FEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticTetrahedron>;
+template class SOFA_COMPONENT_MASS_API FEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticHexahedron>;
+template class SOFA_COMPONENT_MASS_API FEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticPrism>;
+template class SOFA_COMPONENT_MASS_API FEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticPyramid>;
 
 void registerFEMMass(sofa::core::ObjectFactory* factory)
 {
@@ -57,7 +67,17 @@ void registerFEMMass(sofa::core::ObjectFactory* factory)
         .add< FEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::Prism> >()
         .add< FEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::Pyramid> >()
 
+        .add< FEMMass<sofa::defaulttype::Vec1Types, sofa::geometry::QuadraticEdge> >()
+        .add< FEMMass<sofa::defaulttype::Vec2Types, sofa::geometry::QuadraticEdge> >()
+        .add< FEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticEdge> >()
+        .add< FEMMass<sofa::defaulttype::Vec2Types, sofa::geometry::QuadraticTriangle> >()
+        .add< FEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticTriangle> >()
+        .add< FEMMass<sofa::defaulttype::Vec2Types, sofa::geometry::QuadraticQuad> >()
+        .add< FEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticQuad> >()
         .add< FEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticTetrahedron> >()
+        .add< FEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticHexahedron> >()
+        .add< FEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticPrism> >()
+        .add< FEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticPyramid> >()
     );
 }
 

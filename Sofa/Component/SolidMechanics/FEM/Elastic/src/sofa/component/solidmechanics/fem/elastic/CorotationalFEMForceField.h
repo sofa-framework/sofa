@@ -202,7 +202,16 @@ extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API Corotational
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API CorotationalFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Prism>;
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API CorotationalFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Pyramid>;
 
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API CorotationalFEMForceField<sofa::defaulttype::Vec2Types, sofa::geometry::QuadraticEdge>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API CorotationalFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticEdge>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API CorotationalFEMForceField<sofa::defaulttype::Vec2Types, sofa::geometry::QuadraticTriangle>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API CorotationalFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticTriangle>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API CorotationalFEMForceField<sofa::defaulttype::Vec2Types, sofa::geometry::QuadraticQuad>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API CorotationalFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticQuad>;
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API CorotationalFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticTetrahedron>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API CorotationalFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticHexahedron>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API CorotationalFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticPrism>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API CorotationalFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticPyramid>;
 #endif
 
 }  // namespace sofa::component::solidmechanics::fem::elastic
