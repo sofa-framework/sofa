@@ -365,100 +365,96 @@ private:
 };
 
 template<>
-    struct SOFA_CORE_API DrawElementMesh<sofa::geometry::QuadraticTetrahedron>
-        : public BaseDrawMesh<DrawElementMesh<sofa::geometry::QuadraticTetrahedron>, 4>
+struct SOFA_CORE_API DrawElementMesh<sofa::geometry::QuadraticTetrahedron>
+    : public BaseDrawMesh<DrawElementMesh<sofa::geometry::QuadraticTetrahedron>, 4>
+{
+    using ElementType = sofa::geometry::QuadraticTetrahedron;
+    friend BaseDrawMesh;
+
+    static constexpr ColorContainer defaultColors {
+        sofa::type::RGBAColor::blue(),
+        sofa::type::RGBAColor::black(),
+        sofa::type::RGBAColor::azure(),
+        sofa::type::RGBAColor::cyan()
+    };
+
+private:
+    template<class PositionContainer, class IndicesContainer>
+    void doDraw(sofa::helper::visual::DrawTool* drawTool,
+        const PositionContainer& position,
+        sofa::core::topology::BaseMeshTopology* topology,
+        const IndicesContainer& elementIndices,
+        const ColorContainer& colors)
     {
-        using ElementType = sofa::geometry::QuadraticTetrahedron;
-        friend BaseDrawMesh;
+        if (!topology)
+            return;
 
-        static constexpr ColorContainer defaultColors {
-            sofa::type::RGBAColor::blue(),
-            sofa::type::RGBAColor::black(),
-            sofa::type::RGBAColor::azure(),
-            sofa::type::RGBAColor::cyan()
-        };
+        const auto& elements = topology->getElements<sofa::geometry::QuadraticTetrahedron>();
 
-    private:
-        template<class PositionContainer, class IndicesContainer>
-        void doDraw(sofa::helper::visual::DrawTool* drawTool,
-            const PositionContainer& position,
-            sofa::core::topology::BaseMeshTopology* topology,
-            const IndicesContainer& elementIndices,
-            const ColorContainer& colors)
+        // Each QuadraticTetrahedron has 4 quadratic faces.
+        // Each quadratic face is drawn as 4 triangles.
+        constexpr std::size_t nbTrianglesPerFace = 4;
+        constexpr std::size_t nbFaces = 4;
+
+        for (auto& p : renderedPoints)
         {
-            if (!topology)
-                return;
+            p.resize(elementIndices.size() * nbTrianglesPerFace * sofa::geometry::Triangle::NumberOfNodes);
+        }
 
-            const auto& elements = topology->getElements<sofa::geometry::QuadraticTetrahedron>();
+        // Sub-triangles for each of the 4 faces of the Quadratic Tetrahedron
+        // Local indices in QuadraticTetrahedron (0-3: vertices, 4-9: mid-edges)
+        static constexpr std::array<std::array<std::array<std::size_t, 3>, 4>, 4> faceSubTriangles {{
+            {{{0, 4, 5}, {4, 1, 7}, {5, 7, 2}, {4, 7, 5}}},
+            {{{0, 4, 6}, {4, 1, 8}, {6, 8, 3}, {4, 8, 6}}},
+            {{{0, 5, 6}, {5, 2, 9}, {6, 9, 3}, {5, 9, 6}}},
+            {{{1, 7, 8}, {7, 2, 9}, {8, 9, 3}, {7, 9, 8}}}
+        }};
 
-            // Each QuadraticTetrahedron has 4 quadratic faces.
-            // Each quadratic face is drawn as 4 triangles.
-            const std::size_t nbTrianglesPerFace = 4;
-            const std::size_t nbFaces = 4;
-
-            for (auto& p : renderedPoints)
-            {
-                p.resize(elementIndices.size() * nbTrianglesPerFace * sofa::geometry::Triangle::NumberOfNodes);
-            }
-
-            // Sub-triangles for each of the 4 faces of the Quadratic Tetrahedron
-            // Local indices in QuadraticTetrahedron (0-3: vertices, 4-9: mid-edges)
-            // Face 0: (0,1,2) mid: (4,7,5) -> Sub: (0,4,5), (4,1,7), (5,7,2), (4,7,5)
-            // Face 1: (0,1,3) mid: (4,8,6) -> Sub: (0,4,6), (4,1,8), (6,8,3), (4,8,6)
-            // Face 2: (0,2,3) mid: (5,9,6) -> Sub: (0,5,6), (5,2,9), (6,9,3), (5,9,6)
-            // Face 3: (1,2,3) mid: (7,9,8) -> Sub: (1,7,8), (7,2,9), (8,9,3), (7,9,8)
-            static constexpr std::array<std::array<std::array<std::size_t, 3>, 4>, 4> faceSubTriangles {{
-                {{{0, 4, 5}, {4, 1, 7}, {5, 7, 2}, {4, 7, 5}}},
-                {{{0, 4, 6}, {4, 1, 8}, {6, 8, 3}, {4, 8, 6}}},
-                {{{0, 5, 6}, {5, 2, 9}, {6, 9, 3}, {5, 9, 6}}},
-                {{{1, 7, 8}, {7, 2, 9}, {8, 9, 3}, {7, 9, 8}}}
-            }};
-
-            for (std::size_t i = 0; i < elementIndices.size(); ++i)
-            {
-                const auto& element = elements[elementIndices[i]];
-                const auto center = this->elementCenter(position, element);
-
-                for (std::size_t f = 0; f < nbFaces; ++f)
-                {
-                    for (std::size_t t = 0; t < nbTrianglesPerFace; ++t)
-                    {
-                        for (std::size_t v = 0; v < 3; ++v)
-                        {
-                            const auto vertexId = element[faceSubTriangles[f][t][v]];
-                            const auto p = this->applyElementSpace(position[vertexId], center);
-                            renderedPoints[f][(i * nbTrianglesPerFace + t) * 3 + v] = sofa::type::toVec3(p);
-                        }
-                    }
-                }
-            }
+        for (std::size_t i = 0; i < elementIndices.size(); ++i)
+        {
+            const auto& element = elements[elementIndices[i]];
+            const auto center = this->elementCenter(position, sofa::topology::Tetrahedron{element[0], element[1], element[2], element[3]});
 
             for (std::size_t f = 0; f < nbFaces; ++f)
             {
-                // Generate slightly different colors for the 4 sub-triangles of a face
-                std::array<sofa::type::RGBAColor, 4> subColors;
-                for (int t = 0; t < 4; ++t)
-                {
-                    subColors[t] = type::RGBAColor::lighten(colors[f], t * 0.15_sreal);
-                }
-
-                // Draw each sub-triangle set with its specific color
                 for (std::size_t t = 0; t < nbTrianglesPerFace; ++t)
                 {
-                    // We need a temporary view of the buffer for this specific sub-triangle across all tetrahedra
-                    sofa::type::vector<sofa::type::Vec3> subBuffer;
-                    subBuffer.resize(elementIndices.size() * 3);
-                    for(std::size_t i = 0; i < elementIndices.size(); ++i)
+                    for (std::size_t v = 0; v < 3; ++v)
                     {
-                        subBuffer[i*3 + 0] = renderedPoints[f][(i * nbTrianglesPerFace + t) * 3 + 0];
-                        subBuffer[i*3 + 1] = renderedPoints[f][(i * nbTrianglesPerFace + t) * 3 + 1];
-                        subBuffer[i*3 + 2] = renderedPoints[f][(i * nbTrianglesPerFace + t) * 3 + 2];
+                        const auto vertexId = element[faceSubTriangles[f][t][v]];
+                        const auto p = this->applyElementSpace(position[vertexId], center);
+                        renderedPoints[f][(i * nbTrianglesPerFace + t) * 3 + v] = sofa::type::toVec3(p);
                     }
-                    drawTool->drawTriangles(subBuffer, subColors[t]);
                 }
             }
         }
-    };
+
+        for (std::size_t f = 0; f < nbFaces; ++f)
+        {
+            // Generate slightly different colors for the 4 sub-triangles of a face
+            std::array<sofa::type::RGBAColor, 4> subColors;
+            for (int t = 0; t < 4; ++t)
+            {
+                subColors[t] = type::RGBAColor::lighten(colors[f], t * 0.15_sreal);
+            }
+
+            // Draw each sub-triangle set with its specific color
+            for (std::size_t t = 0; t < nbTrianglesPerFace; ++t)
+            {
+                // We need a temporary view of the buffer for this specific sub-triangle across all tetrahedra
+                sofa::type::vector<sofa::type::Vec3> subBuffer;
+                subBuffer.resize(elementIndices.size() * 3);
+                for(std::size_t i = 0; i < elementIndices.size(); ++i)
+                {
+                    subBuffer[i*3 + 0] = renderedPoints[f][(i * nbTrianglesPerFace + t) * 3 + 0];
+                    subBuffer[i*3 + 1] = renderedPoints[f][(i * nbTrianglesPerFace + t) * 3 + 1];
+                    subBuffer[i*3 + 2] = renderedPoints[f][(i * nbTrianglesPerFace + t) * 3 + 2];
+                }
+                drawTool->drawTriangles(subBuffer, subColors[t]);
+            }
+        }
+    }
+};
 
 template<>
 struct SOFA_CORE_API DrawElementMesh<sofa::geometry::Prism>

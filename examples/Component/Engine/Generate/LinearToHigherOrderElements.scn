@@ -6,25 +6,17 @@
         <RequiredPlugin pluginName="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshVTKLoader] -->
         <RequiredPlugin pluginName="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
         <RequiredPlugin pluginName="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
+        <RequiredPlugin pluginName="Sofa.Component.Visual"/> <!-- Needed to use components [VisualMesh,VisualPointCloud] -->
         <RequiredPlugin pluginName="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
     </Node>
 
     <DefaultAnimationLoop/>
 
-<!--    <Node name="Volume" >-->
-<!--        <MeshVTKLoader name="mesh" filename="mesh/Bunny.vtk"/>-->
-<!--        <MeshTopology src="@mesh" name="topology"/>-->
-<!--        <MechanicalObject />-->
-<!--        <LinearToHigherOrderElements/>-->
-<!--        <Node name="Visual" >-->
-<!--            <OglModel src="@../topology" color="0.5 0.5 0.5 0.1"/>-->
-<!--        </Node>-->
-<!--    </Node>-->
-
-    <Node name="single_tetra" >
+    <Node name="Volume" >
         <Node name="preprocessing">
-            <MeshTopology name="topology" tetrahedra="0 1 2 3"/>
-            <MechanicalObject name="state" template="Vec3" position="0 0 0  1 0 0  0 1 0  0 0 1"/>
+            <MeshVTKLoader name="mesh" filename="mesh/Bunny.vtk"/>
+            <MeshTopology src="@mesh" name="topology"/>
+            <MechanicalObject name="state" template="Vec3"/>
             <LinearToHigherOrderElements name="engine"/>
         </Node>
 
@@ -32,8 +24,9 @@
             <MeshTopology name="topology" position="@../preprocessing/engine.position" quadratic_tetrahedra="@../preprocessing/engine.quadratic_tetrahedra"/>
             <MechanicalObject name="state" template="Vec3" position="@../preprocessing/engine.position"/>
 
-            <VisualPointCloud position="@state.position" drawMode="Sphere" sphereRadius="0.1" color="lime"/>
+            <VisualPointCloud position="@state.position" drawMode="Sphere" sphereRadius="0.03" color="orange"/>
             <VisualMesh position="@state.position" topology="@topology"/>
         </Node>
     </Node>
+
 </Node>
