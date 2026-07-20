@@ -154,6 +154,9 @@ void StaticEquilibriumIntegrationScheme::integrate(const core::ExecParams* param
                                                    sofa::core::MultiVecCoordId xResult,
                                                    sofa::core::MultiVecDerivId vResult)
 {
+    SCOPED_TIMER("StaticEquilibriumIntegrationScheme::Integrate");
+
+
     //Constify the data values
     const unsigned maxNewtonIt = d_maxNbIterationsNewton.getValue();
     const unsigned maxLineSearchIt = d_maxNbIterationsLineSearch.getValue();
@@ -176,6 +179,8 @@ void StaticEquilibriumIntegrationScheme::integrate(const core::ExecParams* param
     unsigned it = 0;
     while ( it<maxNewtonIt && newResidue>residueThreshold )
     {
+        SCOPED_TIMER_VARNAME(step_timer, "NewtonStep");
+
         const bool firstIt = it==0;
 
         if ( ! firstIt )
@@ -238,13 +243,13 @@ void StaticEquilibriumIntegrationScheme::integrate(const core::ExecParams* param
             newResidue = evaluateResidue();
         }
 
-        if (newResidue>oldResidue)
-        {
-            msg_warning()<<"Newton step increased the residual";
-        }
 
         if (printLog)
         {
+            if (newResidue>oldResidue)
+            {
+                msg_warning()<<"Newton step increased the residual";
+            }
             msg_info()<<"Newton step = "<<it;
             msg_info()<<"Current residue = "<<newResidue<< "   | previous residue = "<<oldResidue ;
             msg_info()<<"Number of line search iterations = "<<lineSearchIt;
@@ -262,6 +267,9 @@ void StaticEquilibriumIntegrationScheme::integrate(const core::ExecParams* param
             msg_warning()<<"Newton didn't converge ! Current residue is "<<newResidue;
         }
     }
+
+    sofa::helper::AdvancedTimer::valSet("nb_iterations", it);
+    sofa::helper::AdvancedTimer::valSet("residual", std::sqrt(newResidue));
 
     d_currentResidue.setValue(newResidue);
 
