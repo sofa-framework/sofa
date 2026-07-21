@@ -26,6 +26,7 @@
 #include <sofa/core/topology/Topology.h>
 #include <sofa/helper/IotaView.h>
 #include <sofa/helper/visual/DrawTool.h>
+#include <sofa/topology/QuadraticElements.h>
 
 #include <ranges>
 
@@ -823,15 +824,6 @@ private:
             p.resize(elementIndices.size() * nbTrianglesPerFace * sofa::geometry::Triangle::NumberOfNodes);
         }
 
-        // Sub-triangles for each of the 4 faces of the Quadratic Tetrahedron
-        // Local indices in QuadraticTetrahedron (0-3: vertices, 4-9: mid-edges)
-        static constexpr std::array<std::array<std::array<std::size_t, 3>, 4>, 4> faceSubTriangles {{
-            {{{0, 4, 5}, {4, 1, 7}, {5, 7, 2}, {4, 7, 5}}},
-            {{{0, 4, 6}, {4, 1, 8}, {6, 8, 3}, {4, 8, 6}}},
-            {{{0, 5, 6}, {5, 2, 9}, {6, 9, 3}, {5, 9, 6}}},
-            {{{1, 7, 8}, {7, 2, 9}, {8, 9, 3}, {7, 9, 8}}}
-        }};
-
         for (std::size_t i = 0; i < elementIndices.size(); ++i)
         {
             const auto& element = elements[elementIndices[i]];
@@ -839,11 +831,19 @@ private:
 
             for (std::size_t f = 0; f < nbFaces; ++f)
             {
+                const auto& face = topology::quadraticTrianglesInQuadraticTetrahedronArray[f];
+                const sofa::topology::QuadraticTriangle FACE(
+                    element[face[0]], element[face[1]], element[face[2]],
+                    element[face[3]], element[face[4]], element[face[5]]);
+
                 for (std::size_t t = 0; t < nbTrianglesPerFace; ++t)
                 {
+                    const auto& triangle = topology::trianglesInQuadraticTriangles[t];
+                    const sofa::topology::Triangle TRIANGLE(FACE[triangle[0]], FACE[triangle[1]], FACE[triangle[2]]);
+
                     for (std::size_t v = 0; v < 3; ++v)
                     {
-                        const auto vertexId = element[faceSubTriangles[f][t][v]];
+                        const auto vertexId = TRIANGLE[v];
                         const auto p = this->applyElementSpace(position[vertexId], center);
                         renderedPoints[f][(i * nbTrianglesPerFace + t) * 3 + v] = sofa::type::toVec3(p);
                     }
@@ -917,22 +917,6 @@ private:
             p.resize(elementIndices.size() * nbQuadsPerFace * sofa::geometry::Quad::NumberOfNodes);
         }
 
-        // Sub-quads for each of the 6 faces
-        // Face 0: bottom (0,1,2,3) -> nodes 0,1,2,3,8,9,10,11,20
-        // Face 1: front (0,1,5,4) -> nodes 0,1,5,4,8,13,16,12,21
-        // Face 2: right (1,2,6,5) -> nodes 1,2,6,5,9,14,17,13,22
-        // Face 3: back (2,3,7,6) -> nodes 2,3,7,6,10,15,18,14,23
-        // Face 4: left (3,0,4,7) -> nodes 3,0,4,7,11,12,19,15,24
-        // Face 5: top (4,5,6,7) -> nodes 4,5,6,7,16,17,18,19,25
-        static constexpr std::array<std::array<std::array<std::size_t, 4>, 4>, 6> faceSubQuads {{
-            {{{0, 8, 20, 11}, {8, 1, 9, 20}, {20, 9, 2, 10}, {11, 20, 10, 3}}},
-            {{{0, 8, 21, 12}, {8, 1, 13, 21}, {21, 13, 5, 16}, {12, 21, 16, 4}}},
-            {{{1, 9, 22, 13}, {9, 2, 14, 22}, {22, 14, 6, 17}, {13, 22, 17, 5}}},
-            {{{2, 10, 23, 14}, {10, 3, 15, 23}, {23, 15, 7, 18}, {14, 23, 18, 6}}},
-            {{{3, 11, 24, 15}, {11, 0, 12, 24}, {24, 12, 4, 19}, {15, 24, 19, 7}}},
-            {{{4, 16, 25, 19}, {16, 5, 17, 25}, {25, 17, 6, 18}, {19, 25, 18, 7}}}
-        }};
-
         for (std::size_t i = 0; i < elementIndices.size(); ++i)
         {
             const auto& element = elements[elementIndices[i]];
@@ -941,11 +925,14 @@ private:
 
             for (std::size_t f = 0; f < NumberQuadsInHexahedron; ++f)
             {
+                const auto& faceIndices = topology::quadraticQuadsInQuadraticHexahedronArray[f];
+
                 for (std::size_t q = 0; q < nbQuadsPerFace; ++q)
                 {
+                    const auto& subQuad = topology::quadsInQuadraticQuads[q];
                     for (std::size_t v = 0; v < 4; ++v)
                     {
-                        const auto vertexId = element[faceSubQuads[f][q][v]];
+                        const auto vertexId = element[faceIndices[subQuad[v]]];
                         const auto p = this->applyElementSpace(position[vertexId], center);
                         renderedPoints[f][(i * nbQuadsPerFace + q) * 4 + v] = sofa::type::toVec3(p);
                     }

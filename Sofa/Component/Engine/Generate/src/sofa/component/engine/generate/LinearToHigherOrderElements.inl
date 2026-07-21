@@ -161,19 +161,18 @@ void LinearToHigherOrderElements<DataTypes>::doUpdate()
     {
         quadraticQuads.emplace_back(element[0], element[1], element[2], element[3],
             getOrAddMidEdgePoint(element[0], element[1]),
-            getOrAddMidEdgePoint(element[0], element[2]),
-            getOrAddMidEdgePoint(element[1], element[3]),
+            getOrAddMidEdgePoint(element[1], element[2]),
             getOrAddMidEdgePoint(element[2], element[3]),
+            getOrAddMidEdgePoint(element[3], element[0]),
             getOrAddMidFacePoint(element[0], element[1], element[2], element[3]));
     }
 
     for (const auto& element : tetrahedra)
     {
         std::array<sofa::Index, 6> newIndices;
-        static constexpr std::array<std::pair<sofa::Index, sofa::Index>, 6> listEdgesInTetra {{{0, 1}, {0, 2}, {0, 3}, {1, 2}, {1, 3}, {2, 3}}};
-        for (std::size_t i = 0; i < listEdgesInTetra.size(); ++i)
+        for (std::size_t i = 0; i < 6; ++i)
         {
-            const auto [a, b] = listEdgesInTetra[i];
+            const auto [a, b] = core::topology::edgesInTetrahedronArray[i];
             newIndices[i] = getOrAddMidEdgePoint(element[a], element[b]);
         }
 
@@ -185,12 +184,19 @@ void LinearToHigherOrderElements<DataTypes>::doUpdate()
     for (const auto& element : hexahedra)
     {
         std::array<sofa::Index, 12> midEdges;
-        static constexpr std::array<std::pair<sofa::Index, sofa::Index>, 12> hexaEdges {{{0, 1}, {0, 2}, {0, 4}, {1, 3}, {1, 5}, {2, 3}, {2, 6}, {3, 7}, {4, 5}, {4, 6}, {5, 7}, {6, 7}}};
-        for (std::size_t i = 0; i < 12; ++i) midEdges[i] = getOrAddMidEdgePoint(element[hexaEdges[i].first], element[hexaEdges[i].second]);
+        for (std::size_t i = 0; i < 12; ++i)
+        {
+            midEdges[i] =
+               getOrAddMidEdgePoint(element[core::topology::edgesInHexahedronArray[i][0]],
+                                    element[core::topology::edgesInHexahedronArray[i][1]]);
+        }
 
         std::array<sofa::Index, 6> midFaces;
-        static constexpr std::array<std::array<sofa::Index, 4>, 6> hexaFaces {{{0, 1, 3, 2}, {0, 1, 5, 4}, {0, 2, 6, 4}, {1, 3, 7, 5}, {2, 3, 7, 6}, {4, 5, 7, 6}}};
-        for (std::size_t i = 0; i < 6; ++i) midFaces[i] = getOrAddMidFacePoint(element[hexaFaces[i][0]], element[hexaFaces[i][1]], element[hexaFaces[i][2]], element[hexaFaces[i][3]]);
+        for (std::size_t i = 0; i < 6; ++i)
+        {
+            const auto quad = core::topology::quadsOrientationInHexahedronArray[i];
+            midFaces[i] = getOrAddMidFacePoint(element[quad[0]], element[quad[1]], element[quad[2]], element[quad[3]]);
+        }
 
         sofa::Index midVolume = outPosition.size();
         outPosition.push_back(0.125 * (inPosition[element[0]] + inPosition[element[1]] + inPosition[element[2]] + inPosition[element[3]] +

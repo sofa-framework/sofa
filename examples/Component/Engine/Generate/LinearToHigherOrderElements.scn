@@ -10,21 +10,60 @@
         <RequiredPlugin pluginName="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
     </Node>
 
+    <LineAxis/>
+
     <DefaultAnimationLoop/>
 
-    <Node name="Volume" >
+<!--    <Node name="Volume" >-->
+<!--        <Node name="preprocessing">-->
+<!--            <MeshVTKLoader name="mesh" filename="mesh/Bunny.vtk"/>-->
+<!--            <MeshTopology src="@mesh" name="topology"/>-->
+<!--            <MechanicalObject name="state" template="Vec3"/>-->
+<!--            <LinearToHigherOrderElements name="engine"/>-->
+<!--        </Node>-->
+
+<!--        <Node name="quadratic_elements">-->
+<!--            <MeshTopology name="topology" position="@../preprocessing/engine.position" quadratic_tetrahedra="@../preprocessing/engine.quadratic_tetrahedra"/>-->
+<!--            <MechanicalObject name="state" template="Vec3" position="@../preprocessing/engine.position"/>-->
+
+<!--            <VisualPointCloud position="@state.position" drawMode="Sphere" sphereRadius="0.03" color="orange"/>-->
+<!--            <VisualMesh position="@state.position" topology="@topology"/>-->
+<!--        </Node>-->
+<!--    </Node>-->
+
+<!--    <Node name="single_tetra" >-->
+<!--        <Node name="preprocessing">-->
+<!--            <MeshTopology name="topology" tetrahedra="0 1 2 3"/>-->
+<!--            <MechanicalObject name="state" template="Vec3" position="0 0 0  1 0 0  0 1 0  0 0 1"/>-->
+<!--            <LinearToHigherOrderElements name="engine"/>-->
+<!--        </Node>-->
+
+<!--        <Node name="quadratic_elements">-->
+<!--            <MeshTopology name="topology" position="@../preprocessing/engine.position" quadratic_tetrahedra="@../preprocessing/engine.quadratic_tetrahedra"/>-->
+<!--            <MechanicalObject name="state" template="Vec3" position="@../preprocessing/engine.position"/>-->
+
+<!--            <VisualPointCloud position="@state.position" drawMode="Sphere" sphereRadius="0.1" color="lime" showIndices="true" indicesScale="2" indicesColor="black"/>-->
+<!--            <VisualMesh position="@state.position" topology="@topology"/>-->
+<!--        </Node>-->
+<!--    </Node>-->
+
+    <Node name="single_hexa" >
+
+        <VisualPointCloud position="2 0 0" drawMode="Sphere" sphereRadius="0.2" color="red"/>
+        <VisualPointCloud position="0 2 0" drawMode="Sphere" sphereRadius="0.2" color="green"/>
+        <VisualPointCloud position="0 0 2" drawMode="Sphere" sphereRadius="0.2" color="blue"/>
+
         <Node name="preprocessing">
-            <MeshVTKLoader name="mesh" filename="mesh/Bunny.vtk"/>
-            <MeshTopology src="@mesh" name="topology"/>
-            <MechanicalObject name="state" template="Vec3"/>
+            <MeshTopology name="topology" hexahedra="0 1 2 3 4 5 6 7"/>
+            <MechanicalObject name="state" template="Vec3" position="-1 -1 -1  1 -1 -1  1 1 -1  -1 1 -1  -1 -1 1  1 -1 1  1 1 1  -1 1 1"/>
             <LinearToHigherOrderElements name="engine"/>
         </Node>
 
         <Node name="quadratic_elements">
-            <MeshTopology name="topology" position="@../preprocessing/engine.position" quadratic_tetrahedra="@../preprocessing/engine.quadratic_tetrahedra"/>
+            <MeshTopology name="topology" position="@../preprocessing/engine.position" quadratic_hexahedra="@../preprocessing/engine.quadratic_hexahedra"/>
             <MechanicalObject name="state" template="Vec3" position="@../preprocessing/engine.position"/>
 
-            <VisualPointCloud position="@state.position" drawMode="Sphere" sphereRadius="0.03" color="orange"/>
+            <VisualPointCloud position="@state.position" drawMode="Sphere" sphereRadius="0.1" color="lime" showIndices="true" indicesScale="2" indicesColor="black"/>
             <VisualMesh position="@state.position" topology="@topology"/>
         </Node>
     </Node>
