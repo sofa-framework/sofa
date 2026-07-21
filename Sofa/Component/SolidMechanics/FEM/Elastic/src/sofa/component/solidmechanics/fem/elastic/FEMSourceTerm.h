@@ -62,6 +62,7 @@ protected:
 
     static constexpr sofa::Size NumberOfNodesInElement = ElementType::NumberOfNodes;
 
+    using ElementMatrix = sofa::type::Mat<NumberOfNodesInElement, NumberOfNodesInElement, sofa::Real_t<DataTypes>>;
     using GlobalMatrix = sofa::linearalgebra::CompressedRowSparseMatrixMechanical<sofa::Real_t<DataTypes>>;
 
 public:
@@ -134,6 +135,16 @@ protected:
      * @brief Assembles and stores the geometry-only matrix \f$ M_{ij} = \int_{\Omega} N_i N_j \, d\Omega \f$ over each element on the rest configuration.
      */
     void assembleGlobalMatrix();
+
+    /**
+     * @brief Computes the geometry-only matrix of each element.
+     */
+    void calculateElementMatrix(const auto& elements, sofa::type::vector<ElementMatrix>& elementMatrices);
+
+    /**
+     * @brief Scatters the element matrices into the global matrix.
+     */
+    void initializeGlobalMatrix(const auto& elements, const sofa::type::vector<ElementMatrix>& elementMatrices);
 
     /**
      * @brief Geometry-only matrix \f$ M_{ij} = \int_{\Omega} N_i N_j \, d\Omega \f$ of the system.
