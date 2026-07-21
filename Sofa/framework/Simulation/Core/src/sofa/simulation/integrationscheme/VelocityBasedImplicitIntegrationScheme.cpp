@@ -122,9 +122,9 @@ void VelocityBasedImplicitIntegrationScheme::computeLHS(bool firstIteration)
 
     // Set the factor of the left hand side taking into account the rayleigh damping
     SCOPED_TIMER("setSystemMBKMatrix");
-    const core::MatricesFactors::M mFact(  this->getInverseVelocityUpdateDerivedFromVelocity() + d_rayleighMass.getValue() );
-    const core::MatricesFactors::B bFact(  -1.0 );
-    const core::MatricesFactors::K kFact( - this->getPositionUpdateDerivedFromVelocity() - d_rayleighStiffness.getValue() );
+    const core::MatricesFactors::M mFact(this->getPositionUpdateDerivedFromVelocity() * (  this->getInverseVelocityUpdateDerivedFromVelocity() + d_rayleighMass.getValue() ));
+    const core::MatricesFactors::B bFact(this->getPositionUpdateDerivedFromVelocity() * (  -1.0 ));
+    const core::MatricesFactors::K kFact(this->getPositionUpdateDerivedFromVelocity() * ( - this->getPositionUpdateDerivedFromVelocity() - d_rayleighStiffness.getValue() ));
 
     m_mop->setSystemMBKMatrix(mFact, bFact, kFact, l_linearSolver.get());
 
@@ -160,7 +160,7 @@ void VelocityBasedImplicitIntegrationScheme::computeRHS(bool firstIteration)
 
         // This computes the explicit part of the Rayleigh damping
         // If we are in first order, in the first iteration there is no need to add this damping
-        if ( (! d_firstOrder.getValue() || !firstIteration) && (fabs(d_rayleighMass.getValue()) > std::numeric_limits<SReal>::epsilon()
+        if ( (! d_firstOrder.getValue() && !firstIteration) && (fabs(d_rayleighMass.getValue()) > std::numeric_limits<SReal>::epsilon()
             || fabs(d_rayleighStiffness.getValue()) > std::numeric_limits<SReal>::epsilon()))
         {
             m_mop->mparams.setV(m_vResult);
@@ -182,7 +182,7 @@ void VelocityBasedImplicitIntegrationScheme::computeRHS(bool firstIteration)
         }
 
         // If we are in first order, in the first iteration acceleration is null
-        if (! d_firstOrder.getValue() || !firstIteration)
+        if (! d_firstOrder.getValue() && !firstIteration)
         {
             // In velocity-based IS the acceleration is not integrated but estimated using first order
             // backward finite difference on the velocity
@@ -194,6 +194,8 @@ void VelocityBasedImplicitIntegrationScheme::computeRHS(bool firstIteration)
         }
 
         m_mop->mparams.setV(backV);
+        m_vop->v_teq(m_r0,this->getPositionUpdateDerivedFromVelocity());
+        m_vop->v_teq(m_r1,this->getPositionUpdateDerivedFromVelocity());
 
         // Set the factor of the left hand side taking into account the rayleigh damping
         // Apply projective constraints to the full residue
