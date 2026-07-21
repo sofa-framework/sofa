@@ -74,21 +74,32 @@ void FEMSourceTerm<DataTypes, ElementType>::resizeNodalSourceDensity(const std::
 template <class DataTypes, class ElementType>
 void FEMSourceTerm<DataTypes, ElementType>::assembleGlobalMatrix()
 {
-    // M_ij = integral of N_i N_j dV, evaluated on the rest configuration (geometry only).
-    const auto restPositionsAccessor = this->mstate->readRestPositions();
     const auto& elements = FiniteElement::getElementSequence(*this->l_topology);
+    sofa::type::vector<ElementMatrix> elementMatrices;
 
-    m_globalMatrix.clear();
-    const auto size = this->mstate->getSize();
-    m_globalMatrix.resize(size, size);
+    // 1. compute the geometry-only matrix of each element
+    calculateElementMatrix(elements, elementMatrices);
 
-    for (const auto& element : elements)
+    // 2. scatter the element matrices into the global matrix
+    initializeGlobalMatrix(elements, elementMatrices);
+}
+
+template <class DataTypes, class ElementType>
+void FEMSourceTerm<DataTypes, ElementType>::calculateElementMatrix(
+    const auto& elements, sofa::type::vector<ElementMatrix>& elementMatrices)
+{
+    const auto restPositionsAccessor = this->mstate->readRestPositions();
+    elementMatrices.resize(elements.size());
+
+    for (std::size_t elementId = 0; elementId < elements.size(); ++elementId)
     {
+        const auto& element = elements[elementId];
+        auto& elementMatrix = elementMatrices[elementId];
+
         const std::array<sofa::Coord_t<DataTypes>, NumberOfNodesInElement> elementNodesRestCoordinates =
             extractNodesVectorFromGlobalVector(element, restPositionsAccessor.ref());
 
-        sofa::type::Mat<NumberOfNodesInElement, NumberOfNodesInElement, sofa::Real_t<DataTypes>> elementMatrix;
-
+        // M_ij = integral of N_i N_j dV, evaluated on the rest configuration (geometry only).
         for (const auto& [quadraturePoint, weight] : FiniteElement::quadraturePoints())
         {
             const auto N = FiniteElement::shapeFunctions(quadraturePoint);
@@ -98,8 +109,25 @@ void FEMSourceTerm<DataTypes, ElementType>::assembleGlobalMatrix()
                 elementNodesRestCoordinates, dN_dq_ref);
             const auto detJ = sofa::type::absGeneralizedDeterminant(jacobian);
 
-            elementMatrix += (static_cast<sofa::Real_t<DataTypes>>(weight) * static_cast<sofa::Real_t<DataTypes>>(detJ)) * sofa::type::dyad(N, N);
+            const auto NT_N = sofa::type::dyad(N, N);
+
+            elementMatrix += (weight * detJ) * NT_N;
         }
+    }
+}
+
+template <class DataTypes, class ElementType>
+void FEMSourceTerm<DataTypes, ElementType>::initializeGlobalMatrix(
+    const auto& elements, const sofa::type::vector<ElementMatrix>& elementMatrices)
+{
+    m_globalMatrix.clear();
+    const auto size = this->mstate->getSize();
+    m_globalMatrix.resize(size, size);
+
+    for (std::size_t elementId = 0; elementId < elements.size(); ++elementId)
+    {
+        const auto& element = elements[elementId];
+        const auto& elementMatrix = elementMatrices[elementId];
 
         for (sofa::Size i = 0; i < NumberOfNodesInElement; ++i)
         {
@@ -126,7 +154,7 @@ void FEMSourceTerm<DataTypes, ElementType>::addForce(const sofa::core::Mechanica
     const sofa::helper::ReadAccessor nodalSourceDensity = sofa::helper::getReadAccessor(d_nodalSourceDensity);
     auto forceAccessor = sofa::helper::getWriteAccessor(f);
 
-    // f_i = sum_j M_ij b_j : apply the cached matrix to the nodal source density.
+    // f_i = sum_j M_ij b_j : apply the global matrix to the nodal source density.
     for (std::size_t xi = 0; xi < m_globalMatrix.rowIndex.size(); ++xi)
     {
         const auto rowId = m_globalMatrix.rowIndex[xi];
