@@ -117,6 +117,8 @@ public:
             Sofa.Component.Topology.Container.Grid,
             Sofa.Component.SolidMechanics.Spring,
             Sofa.Component.IntegrationScheme.Backward,
+            Sofa.Component.Constraint.Projective,
+            Sofa.Component.Engine.Select,
             Sofa.Component.LinearSolver.Iterative,
             Sofa.Component.Mass
         });
@@ -128,7 +130,7 @@ public:
 
         const Node::SPtr FNode = sofa::simpleapi::createChild(m_root, "SpringNode");
         createObject(FNode, "EulerImplicitIntegrationScheme");
-        createObject(FNode, "CGLinearSolver", {{ "iterations", "20" }, { "tolerance", "1e-5" }, {"threshold", "1e-8"}});
+        createObject(FNode, "CGLinearSolver", {{ "iterations", "25" }, { "tolerance", "1e-10" }, {"threshold", "1e-10"}});
         createObject(FNode, "MechanicalObject", {
             {"name","dof"}, {"template","Vec3d"}, {"position", "@../grid.position"} });
         createObject(FNode, "TriangleSetTopologyContainer", {
@@ -137,6 +139,10 @@ public:
             {"name","Modifier"} });
         createObject(FNode, "TriangleSetGeometryAlgorithms", {
             {"name","GeomAlgo"}, {"template","Vec3d"} });
+
+        createObject(FNode, "BoxROI", {{"name", "ROI1"}, {"box","-0.01 -0.01 -0.01  2.01 0.01 0.01"}});
+        createObject(FNode, "FixedProjectiveConstraint", {{"indices","@ROI1.indices"}});
+
         
         createObject(FNode, "TriangularBendingSprings", { {"Name","TBS"}, {"stiffness", str(ks)}, {"damping", str(kd)} });
         createObject(FNode, "DiagonalMass", { {"name","mass"}, {"massDensity","0.1"} });
@@ -303,11 +309,11 @@ public:
             sofa::simulation::node::animate(m_root.get(), 0.01_sreal);
         }
 
-        EXPECT_NEAR(positions[nbrGrid][0], -0.000132, 1e-4);
-        EXPECT_NEAR(positions[nbrGrid][1], 0.520924, 1e-4);
+        EXPECT_NEAR(positions[nbrGrid][0], -0.00091, 1e-4);
+        EXPECT_NEAR(positions[nbrGrid][1], 0.52464, 1e-4);
         EXPECT_NEAR(positions[nbrGrid][2], 0, 1e-4);
 
-        ASSERT_FLOAT_EQ(triBS->getAccumulatedPotentialEnergy(), 7.7932855e-06);
+        ASSERT_FLOAT_EQ(triBS->getAccumulatedPotentialEnergy(), 0.0046701669);
         ASSERT_FLOAT_EQ(EdgeInfos[0].restlength, 1.1768779);
     }
 

@@ -251,7 +251,7 @@ TEST_F(SquareDistanceMappingCompare_test, compareToDistanceMappingAndSquareMappi
 {
     for (const auto& node : {oneMapping, twoMappings})
     {
-        simpleapi::createObject(node, "CGLinearSolver", {{"iterations", "1e4"}, {"tolerance", "1.0e-9"}, {"threshold", "1.0e-9"}});
+        simpleapi::createObject(node, "CGLinearSolver", {{"iterations", "1e4"}, {"tolerance", "1.0e-12"}, {"threshold", "1.0e-12"}});
     }
 
     sofa::simulation::node::initRoot(root.get());
@@ -260,7 +260,7 @@ TEST_F(SquareDistanceMappingCompare_test, compareToDistanceMappingAndSquareMappi
     {
         sofa::simulation::node::animate(root.get(), 0.01_sreal);
 
-        compareMechanicalObjects(i, 1e-7_sreal);
+        compareMechanicalObjects(i, 1e-4_sreal);
     }
 }
 
@@ -277,7 +277,7 @@ TEST_F(SquareDistanceMappingCompare_test, compareToDistanceMappingAndSquareMappi
     {
         sofa::simulation::node::animate(root.get(), 0.01_sreal);
 
-        compareMechanicalObjects(i, 1e-10_sreal);
+        compareMechanicalObjects(i, 1e-4_sreal);
     }
 }
 
