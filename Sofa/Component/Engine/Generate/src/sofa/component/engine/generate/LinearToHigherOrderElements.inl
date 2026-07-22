@@ -39,6 +39,16 @@ LinearToHigherOrderElements<DataTypes>::LinearToHigherOrderElements()
         "quadratic_tetrahedra", "List of quadratic tetrahedra"))
     , d_quadraticHexahedra(initData(&d_quadraticHexahedra, SeqElement<sofa::geometry::QuadraticHexahedron>{},
         "quadratic_hexahedra", "List of quadratic hexahedra"))
+    , d_computeFromEdges(initData(&d_computeFromEdges, true, "computeFromEdges",
+        "Use edges from the input to generate higher-order edges"))
+    , d_computeFromTriangles(initData(&d_computeFromTriangles, true, "computeFromTriangles",
+            "Use triangles from the input to generate higher-order triangles"))
+    , d_computeFromQuads(initData(&d_computeFromQuads, true, "computeFromQuads",
+            "Use quads from the input to generate higher-order quads"))
+    , d_computeFromTetrahedra(initData(&d_computeFromTetrahedra, true, "computeFromTetrahedra",
+            "Use tetrahedra from the input to generate higher-order tetrahedra"))
+    , d_computeFromHexahedra(initData(&d_computeFromHexahedra, true, "computeFromHexahedra",
+            "Use hexahedra from the input to generate higher-order hexahedra"))
 {
     this->addOutput(&d_position);
     this->addOutput(&d_quadraticEdges);
@@ -144,11 +154,13 @@ void LinearToHigherOrderElements<DataTypes>::doUpdate()
         return it->second;
     };
 
+    if (d_computeFromEdges.getValue())
     for (const auto& element : edges)
     {
         quadraticEdges.emplace_back(element[0], element[1], getOrAddMidEdgePoint(element[0], element[1]));
     }
 
+    if (d_computeFromTriangles.getValue())
     for (const auto& element : triangles)
     {
         quadraticTriangles.emplace_back(element[0], element[1], element[2],
@@ -157,6 +169,7 @@ void LinearToHigherOrderElements<DataTypes>::doUpdate()
             getOrAddMidEdgePoint(element[2], element[0]));
     }
 
+    if (d_computeFromQuads.getValue())
     for (const auto& element : quads)
     {
         quadraticQuads.emplace_back(element[0], element[1], element[2], element[3],
@@ -167,6 +180,7 @@ void LinearToHigherOrderElements<DataTypes>::doUpdate()
             getOrAddMidFacePoint(element[0], element[1], element[2], element[3]));
     }
 
+    if (d_computeFromTetrahedra.getValue())
     for (const auto& element : tetrahedra)
     {
         std::array<sofa::Index, 6> newIndices;
@@ -181,6 +195,7 @@ void LinearToHigherOrderElements<DataTypes>::doUpdate()
             newIndices[4], newIndices[5]);
     }
 
+    if (d_computeFromHexahedra.getValue())
     for (const auto& element : hexahedra)
     {
         std::array<sofa::Index, 12> midEdges;
