@@ -122,9 +122,9 @@ void VelocityBasedImplicitIntegrationScheme::computeLHS(bool firstIteration)
 
     // Set the factor of the left hand side taking into account the rayleigh damping
     SCOPED_TIMER("setSystemMBKMatrix");
-    const core::MatricesFactors::M mFact(this->getPositionUpdateDerivedFromVelocity() * (  this->getInverseVelocityUpdateDerivedFromVelocity() + d_rayleighMass.getValue() ));
-    const core::MatricesFactors::B bFact(this->getPositionUpdateDerivedFromVelocity() * (  -1.0 ));
-    const core::MatricesFactors::K kFact(this->getPositionUpdateDerivedFromVelocity() * ( - this->getPositionUpdateDerivedFromVelocity() - d_rayleighStiffness.getValue() ));
+    const core::MatricesFactors::M mFact( this->getInverseVelocityUpdateDerivedFromVelocity() + d_rayleighMass.getValue() );
+    const core::MatricesFactors::B bFact( -1.0 );
+    const core::MatricesFactors::K kFact(- this->getPositionUpdateDerivedFromVelocity() - d_rayleighStiffness.getValue() );
 
     m_mop->setSystemMBKMatrix(mFact, bFact, kFact, l_linearSolver.get());
 
@@ -194,8 +194,6 @@ void VelocityBasedImplicitIntegrationScheme::computeRHS(bool firstIteration)
         }
 
         m_mop->mparams.setV(backV);
-        m_vop->v_teq(m_r0,this->getPositionUpdateDerivedFromVelocity());
-        m_vop->v_teq(m_r1,this->getPositionUpdateDerivedFromVelocity());
 
         // Set the factor of the left hand side taking into account the rayleigh damping
         // Apply projective constraints to the full residue
