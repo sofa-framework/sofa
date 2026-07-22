@@ -46,14 +46,14 @@ void SnapshotManager::addSnapshotFromFile(const std::string& path)
     m_snapshotsFromFiles.push_back(path);
 }
 
-void SnapshotManager::addSnapshotFromMemory(std::shared_ptr<sofa::core::objectmodel::Snapshot> snapshot,
+void SnapshotManager::addSnapshotFromMemory(const std::shared_ptr<sofa::core::objectmodel::Snapshot>& snapshot,
                                         double snapshotTime)
 {
     static int index = 0;
-    m_snapshotsFromMemory["Memory_Snapshot " + std::to_string(index++) + " at " + std::to_string(snapshotTime)] = std::move(snapshot);
+    m_snapshotsFromMemory["Memory_Snapshot " + std::to_string(index++) + " at " + std::to_string(snapshotTime)] = snapshot;
 }
 
-void SnapshotManager::doMemorySave(sofa::core::sptr<Node>& groot)
+void SnapshotManager::doMemorySave(const sofa::core::sptr<Node>& groot)
 {
     auto snapshot = std::make_shared<sofa::core::objectmodel::Snapshot>();
     auto visitor = SaveSnapshotVisitor(nullptr, *snapshot);
@@ -74,7 +74,7 @@ void SnapshotManager::doMemoryLoad(sofa::core::sptr<Node>& groot)
     groot->execute(visitor);
 }
 
-void SnapshotManager::doSaveTo(sofa::core::sptr<sofa::simulation::Node>& groot,std::string savePath, bool isSet)
+void SnapshotManager::doSaveTo(const sofa::core::sptr<sofa::simulation::Node>& groot, const std::string& savePath, bool isSet)
 {
     auto m_snapshot = std::make_shared<sofa::core::objectmodel::Snapshot>();
     auto visitor = SaveSnapshotVisitor(nullptr,*m_snapshot);
@@ -93,7 +93,7 @@ void SnapshotManager::doSaveTo(sofa::core::sptr<sofa::simulation::Node>& groot,s
     msg_info("SaveSnapshot") << "Snapshot " << savePath << " saved";
 }
 
-void SnapshotManager::doLoadTo(sofa::core::sptr<sofa::simulation::Node>& groot, std::string outPath)
+void SnapshotManager::doLoadTo(sofa::core::sptr<sofa::simulation::Node>& groot, const std::string& outPath)
 {
     auto m_snapshot = std::make_shared<sofa::core::objectmodel::Snapshot>();
     if (FileSystem::exists(outPath))

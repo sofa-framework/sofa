@@ -39,7 +39,7 @@ public:
     {
     }
 
-    void processObject(core::objectmodel::BaseObject* obj, std::shared_ptr<core::objectmodel::Snapshot::SnapshotNode> parent);
+    void processObject(const core::objectmodel::BaseObject* obj, const std::shared_ptr<core::objectmodel::Snapshot::SnapshotNode>& parent);
 
     Result processNodeTopDown(simulation::Node* node) override;
     const char* getClassName() const override { return "SaveSnapshotVisitor"; }

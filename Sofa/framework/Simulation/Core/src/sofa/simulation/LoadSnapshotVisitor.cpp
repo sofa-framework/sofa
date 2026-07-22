@@ -37,6 +37,15 @@ void LoadSnapshotVisitor::processObject(
     {
         obj->loadSnapshot(snapshotObject);
         obj->loadInternalStateFrom(*snapshotObject);
+
+        if (!snapshotObject->m_components.empty())
+        {
+            for (auto& it : snapshotObject->m_components)
+            {
+                auto objSlave = obj->getSlave(it->m_name);
+                objSlave->loadSnapshot(it);
+            }
+        }
     }
 }
 

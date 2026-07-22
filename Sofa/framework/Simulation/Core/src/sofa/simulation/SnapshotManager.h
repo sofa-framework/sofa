@@ -71,20 +71,20 @@ public:
     void addSnapshotFromFile(const std::string& path);
 
     /// Store every snapshot in memory in m_recentSnapshotsFromMemory and sort them by simulation time
-    void addSnapshotFromMemory(std::shared_ptr<sofa::core::objectmodel::Snapshot> snapshot,
+    void addSnapshotFromMemory(const std::shared_ptr<sofa::core::objectmodel::Snapshot>& snapshot,
                            double snapshotTime);
 
     /// Save and store a Snapshot in memory
-    void doMemorySave(sofa::core::sptr<sofa::simulation::Node>& groot);
+    void doMemorySave(const sofa::core::sptr<sofa::simulation::Node>& groot);
 
     /// Load a snapshot from memory
     void doMemoryLoad(sofa::core::sptr<sofa::simulation::Node>& groot);
 
     /// Save and store a Snapshot to a file (or Save and store a group of Snapshot to a file when isSet is true)
-    void doSaveTo(sofa::core::sptr<sofa::simulation::Node>& groot,std::string savePath, bool isSet);
+    void doSaveTo(const sofa::core::sptr<sofa::simulation::Node>& groot, const std::string& savePath, bool isSet);
 
     /// Load a snapshot from a file
-    void doLoadTo(sofa::core::sptr<sofa::simulation::Node>& groot, std::string outPath);
+    void doLoadTo(sofa::core::sptr<sofa::simulation::Node>& groot, const std::string& outPath);
 
     /// Load a group of snapshots from a file
     void doLoadToSet(const std::string& filename);

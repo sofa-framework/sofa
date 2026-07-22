@@ -64,22 +64,17 @@ core::visual::VisualLoop* BaseNode::getVisualLoop() const
 }
 
 std::shared_ptr<Snapshot::SnapshotObject>
-BaseNode::createSnapshotObject(std::vector<std::shared_ptr<Snapshot::SnapshotNode>>& parents) const
+BaseNode::createSnapshotObject(const std::shared_ptr<Snapshot::SnapshotObject>& parent) const
 {
     auto nodeObject = std::make_shared<Snapshot::SnapshotNode>();
-    for (auto p : parents)
-    {
-        if (p)
-        {
-            p->children.push_back(nodeObject);
-        }
-    }
-    
+    const auto nodeParent = std::dynamic_pointer_cast<Snapshot::SnapshotNode>(parent);
+    nodeParent->children.push_back(nodeObject);
+
     return nodeObject;
 }
 
 std::shared_ptr<Snapshot::SnapshotObject>
-BaseNode::findSnapshotObject( const std::shared_ptr<Snapshot::SnapshotNode>& parents, const std::string& objectname)
+BaseNode::findSnapshotObject( const std::shared_ptr<Snapshot::SnapshotNode>& parents, const std::string& objectname) const
 {
     if (!parents) return nullptr;
 

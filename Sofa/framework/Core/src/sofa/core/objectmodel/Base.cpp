@@ -690,22 +690,17 @@ void Base::saveInternalStateIn(Snapshot::SnapshotObject& snapshot) const
 }
 
 std::shared_ptr<Snapshot::SnapshotObject>
-Base::createSnapshotObject(std::vector<std::shared_ptr<Snapshot::SnapshotNode>>& parents) const
+Base::createSnapshotObject(const std::shared_ptr<Snapshot::SnapshotObject>& parent) const
 {
     auto object = std::make_shared<Snapshot::SnapshotObject>();
-    for (const auto& p : parents)
-    {
-        if (p)
-        {
-            p->components.push_back(*object);
-        }
-    }
+    parent->m_components.push_back(object);
+
     return object;
 }
 
-std::shared_ptr<Snapshot::SnapshotObject> Base::saveSnapshot(std::vector<std::shared_ptr<Snapshot::SnapshotNode>>& parents) const
+std::shared_ptr<Snapshot::SnapshotObject> Base::saveSnapshot(std::shared_ptr<Snapshot::SnapshotObject> object) const
 {
-    const auto snapshotObject = createSnapshotObject(parents);
+    auto snapshotObject = createSnapshotObject(object);
     snapshotObject->m_name = this->getName();
 
     for (const auto& dataFields = this->getDataFields(); const auto& data : dataFields)
@@ -725,8 +720,6 @@ std::shared_ptr<Snapshot::SnapshotObject> Base::saveSnapshot(std::vector<std::sh
         linkInfo.type = link->getValueTypeString();
         linkInfo.value = link->getValueString();
 
-        std::string search = "//";
-        sofa::helper::replaceAll(linkInfo.value, search,"");
         snapshotObject->m_linkContainer.push_back(linkInfo);
     }
 
@@ -736,14 +729,13 @@ std::shared_ptr<Snapshot::SnapshotObject> Base::saveSnapshot(std::vector<std::sh
 
 
 std::shared_ptr<Snapshot::SnapshotObject>
-Base::findSnapshotObject(const std::shared_ptr<Snapshot::SnapshotNode>& parents, const std::string& objectname)
+Base::findSnapshotObject(const std::shared_ptr<Snapshot::SnapshotNode>& parents, const std::string& objectname) const
 {
-    for (const auto& p : parents->components)
+    for (const auto& p : parents->m_components)
     {
-        if (p.m_name == objectname)
+        if (p->m_name == objectname)
         {
-            auto snapshotObject = std::make_shared<Snapshot::SnapshotObject>(p);
-            return snapshotObject;
+            return p;
         }
     }
     msg_error() << "SnapshotObject "<< objectname << " not found";

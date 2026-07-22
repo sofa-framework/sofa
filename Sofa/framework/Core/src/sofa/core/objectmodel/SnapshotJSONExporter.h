@@ -27,7 +27,7 @@ namespace sofa::core::objectmodel
 {
 
     /// Export a single Snapshot to a JSON file
-    SOFA_CORE_API void exportToJSON(Snapshot& snapshot, const std::string& filename);
+    SOFA_CORE_API void exportToJSON(const Snapshot& snapshot, const std::string& filename);
 
     /// Import a single Snapshot from a JSON file
     SOFA_CORE_API void importFrom(Snapshot& snapshot, const std::string& filename);
@@ -39,7 +39,7 @@ namespace sofa::core::objectmodel
     SOFA_CORE_API std::string snapshotToString(const Snapshot& snapshot);
 
     /// Export a collection of Snapshots to a single JSON file
-    SOFA_CORE_API void exportToJSON(std::map<std::string, std::shared_ptr<Snapshot>>& snapshots, const std::string& filename);
+    SOFA_CORE_API void exportToJSON(const std::map<std::string, std::shared_ptr<Snapshot>>& snapshots, const std::string& filename);
 
     /// Import a collection of Snapshots from a single JSON file
     SOFA_CORE_API void importFrom(std::map<std::string, std::shared_ptr<Snapshot>>& snapshots, const std::string& filename);

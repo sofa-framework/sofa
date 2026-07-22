@@ -29,10 +29,10 @@ namespace sofa::simulation
 class SOFA_SIMULATION_CORE_API LoadSnapshotVisitor : public Visitor
 {
 protected:
-    core::objectmodel::Snapshot& m_snapshotContainer;
+    const core::objectmodel::Snapshot& m_snapshotContainer;
 
 public:
-    LoadSnapshotVisitor(const sofa::core::ExecParams* eparams, core::objectmodel::Snapshot& snapshot) : Visitor(eparams), m_snapshotContainer(snapshot) {}
+    LoadSnapshotVisitor(const sofa::core::ExecParams* eparams, const core::objectmodel::Snapshot& snapshot) : Visitor(eparams), m_snapshotContainer(snapshot) {}
 
     void processObject(core::objectmodel::BaseObject* obj, const std::shared_ptr<core::objectmodel::Snapshot::SnapshotNode>& parent);
 

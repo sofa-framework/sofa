@@ -57,6 +57,19 @@ void to_json(nlohmann::json& j, const Snapshot::SnapshotObject& so )
     j["name"] = so.m_name;
     j["datas"] = so.m_dataContainer;
     j["links"] = so.m_linkContainer;
+    j["slaves"] = nlohmann::json::array();
+    for (const auto& childPtr : so.m_components)
+    {
+        if(childPtr)
+        {
+            j["slaves"].push_back(*childPtr);
+        }
+        else
+        {
+            j["slaves"].push_back(nullptr);
+        }
+    }
+
 }
 
 void to_json(nlohmann::json& j, const Snapshot::SnapshotNode& sn)
@@ -65,7 +78,19 @@ void to_json(nlohmann::json& j, const Snapshot::SnapshotNode& sn)
     j["name"] = sn.m_name;
     j["datas"] = sn.m_dataContainer;
     j["links"] = sn.m_linkContainer;
-    j["components"] = sn.components;
+
+    j["components"] = nlohmann::json::array();
+    for (const auto& childPtr : sn.m_components)
+    {
+        if(childPtr)
+        {
+            j["components"].push_back(*childPtr);
+        }
+        else
+        {
+            j["components"].push_back(nullptr);
+        }
+    }
 
     j["children"] = nlohmann::json::array();
     for (const auto& childPtr : sn.children)
@@ -81,13 +106,27 @@ void to_json(nlohmann::json& j, const Snapshot::SnapshotNode& sn)
     }
 }
 
+ // Maybe this is not necessary : do for nlohmann::json j = *snapshot.m_graphRoot ;
 void to_json(nlohmann::json& j, const std::shared_ptr<Snapshot::SnapshotNode>& sn)
 {
     j.clear();
     j["name"] = sn->m_name;
     j["datas"] = sn->m_dataContainer;
     j["links"] = sn->m_linkContainer;
-    j["components"] = sn->components;
+
+    j["components"] = nlohmann::json::array();
+    for (const auto& childPtr : sn->m_components)
+    {
+        if(childPtr)
+        {
+            j["components"].push_back(*childPtr);
+        }
+        else
+        {
+            j["components"].push_back(nullptr);
+        }
+    }
+
     j["children"] = nlohmann::json::array();
     for (const auto& childPtr : sn->children)
     {
@@ -102,8 +141,15 @@ void to_json(nlohmann::json& j, const std::shared_ptr<Snapshot::SnapshotNode>& s
     }
 }
 
-void exportToJSON(Snapshot& snapshot, const std::string& filename)
+void exportToJSON(const Snapshot& snapshot, const std::string& filename)
 {
+    std::cout << snapshot.m_graphRoot->m_name << std::endl;
+    std::cout << snapshot.m_graphRoot->children.size() << std::endl;
+
+    for (const auto& c : snapshot.m_graphRoot->children)
+    {
+        std::cout << "  child = " << c->m_name << std::endl;
+    }
     nlohmann::json j = snapshot.m_graphRoot ;
 
     std::ofstream file(filename);
@@ -150,6 +196,20 @@ void from_json(const nlohmann::json& j, Snapshot::SnapshotObject& so)
             so.m_linkContainer.push_back(li);
         }
     }
+
+    so.m_components.clear();
+    if (j.contains("slaves") && j["slaves"].is_array())
+    {
+        for (const auto& childJson : j["slaves"])
+        {
+            if (!childJson.is_null())
+            {
+                auto child = std::make_shared<Snapshot::SnapshotNode>();
+                from_json(childJson, *child);
+                so.m_components.push_back(child);
+            }
+        }
+    }
 }
 
 void from_json(const nlohmann::json& j, Snapshot::SnapshotNode& sn)
@@ -177,15 +237,18 @@ void from_json(const nlohmann::json& j, Snapshot::SnapshotNode& sn)
             sn.m_linkContainer.push_back(li);
         }
     }
-    
+
+    sn.m_components.clear();
     if (j.contains("components") && j["components"].is_array())
     {
-        sn.components.clear();
-        for (const auto& compJson : j["components"])
+        for (const auto& childJson : j["components"])
         {
-            Snapshot::SnapshotObject so;
-            from_json(compJson, so);
-            sn.components.push_back(so);
+            if (!childJson.is_null())
+            {
+                auto child = std::make_shared<Snapshot::SnapshotObject>();
+                from_json(childJson, *child);
+                sn.m_components.push_back(child);
+            }
         }
     }
     
@@ -256,7 +319,7 @@ std::string snapshotToString(const Snapshot& snapshot)
     return to_string(j);
 }
 
-void exportToJSON(std::map<std::string, std::shared_ptr<Snapshot>>& snapshots, const std::string& filename)
+void exportToJSON(const std::map<std::string, std::shared_ptr<Snapshot>>& snapshots, const std::string& filename)
 {
     std::ofstream file(filename);
 

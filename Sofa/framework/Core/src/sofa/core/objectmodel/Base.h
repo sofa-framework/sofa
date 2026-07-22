@@ -363,7 +363,7 @@ public:
     ///@}
 
     /// Save a SnapshotObject full of data and link into the snapshot
-    std::shared_ptr<Snapshot::SnapshotObject> saveSnapshot(std::vector<std::shared_ptr<Snapshot::SnapshotNode>>& parents) const;
+    std::shared_ptr<Snapshot::SnapshotObject> saveSnapshot(std::shared_ptr<Snapshot::SnapshotObject> object) const;
 
     /// Load data and links from the snapshot to the scene
     void loadSnapshot(const std::shared_ptr<Snapshot::SnapshotObject>& snapshotObject) const;
@@ -377,11 +377,11 @@ public:
 protected:
 
     /// Create a SnapshotObject that will contain data and link
-    virtual std::shared_ptr<Snapshot::SnapshotObject> createSnapshotObject(std::vector<std::shared_ptr<Snapshot::SnapshotNode>>& parents) const;
+    virtual std::shared_ptr<Snapshot::SnapshotObject> createSnapshotObject(const std::shared_ptr<Snapshot::SnapshotObject>& object) const;
 
 public:
     /// Find a SnapshotObject corresponding to the object from the scene
-    virtual std::shared_ptr<Snapshot::SnapshotObject> findSnapshotObject(const std::shared_ptr<Snapshot::SnapshotNode>& parents, const std::string& objectname);
+    virtual std::shared_ptr<Snapshot::SnapshotObject> findSnapshotObject(const std::shared_ptr<Snapshot::SnapshotNode>& parents, const std::string& objectname) const;
 
 protected:
     /// List of fields (Data instances)

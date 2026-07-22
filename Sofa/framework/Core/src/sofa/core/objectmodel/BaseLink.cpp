@@ -350,9 +350,6 @@ bool BaseLink::readFromSnapshot( const std::string& str )
     std::vector<std::string> linkPathsFromLink;
 
     std::string linkPath = this->getValueString();
-
-    std::string search = "//";
-    sofa::helper::replaceAll(linkPath, search,"");
     
     std::istringstream istrLink(linkPath);
     std::string linkStringBis;

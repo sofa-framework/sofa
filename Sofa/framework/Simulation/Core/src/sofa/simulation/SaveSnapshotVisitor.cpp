@@ -27,34 +27,38 @@ namespace sofa::simulation
 {
 
 void SaveSnapshotVisitor::processObject(
-    core::objectmodel::BaseObject* obj,
-    std::shared_ptr<core::objectmodel::Snapshot::SnapshotNode> parent)
+    const core::objectmodel::BaseObject* obj,
+    const std::shared_ptr<core::objectmodel::Snapshot::SnapshotNode>& parent)
 {
-    std::vector<std::shared_ptr<core::objectmodel::Snapshot::SnapshotNode>> parents;
-    const auto snapshot = obj->saveSnapshot(parents);
-    parent->components.push_back(*snapshot);
+    auto snapshotObject = obj->saveSnapshot(parent);
+    if (auto slaves = obj->getSlaves(); !slaves.empty())
+    {
+        for (const auto& it : slaves)
+        {
+            const auto slaveObject = it->saveSnapshot(snapshotObject);
+        }
+    }
+
 }
 
 Visitor::Result SaveSnapshotVisitor::processNodeTopDown(simulation::Node* node)
 {
     const auto parents = node->getParents();
+    auto snapshotParents = std::make_shared<core::objectmodel::Snapshot::SnapshotNode>();
 
-    std::vector<std::shared_ptr<core::objectmodel::Snapshot::SnapshotNode>> snapshotParents;
     for (auto* p : parents)
     {
         const auto it = m_snapshotNodeMap.find(p);
         if (it != m_snapshotNodeMap.end())
         {
-            snapshotParents.push_back(it->second);
+            snapshotParents = std::dynamic_pointer_cast<core::objectmodel::Snapshot::SnapshotNode>(it->second);
         }
     }
 
     const auto snapshot = node->saveSnapshot(snapshotParents);
     const auto SnapshotNode = std::dynamic_pointer_cast<core::objectmodel::Snapshot::SnapshotNode>(snapshot);
     if (SnapshotNode)
-    {
         m_snapshotNodeMap[node] = SnapshotNode;
-    }
 
     if (m_snapshotContainer.m_graphRoot == nullptr)
     {
