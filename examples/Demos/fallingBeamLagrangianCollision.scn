@@ -43,7 +43,7 @@
 
     <Node name="FEM">
         <EulerImplicitIntegrationScheme firstOrder="false" rayleighMass="0.1" rayleighStiffness="0.1"/>
-        <PCGLinearSolver preconditioner="@precond"/>
+        <PCGLinearSolver preconditioner="@precond" tolerance="1e-8"/>
         <SparseLDLSolver name="precond" template="CompressedRowSparseMatrixMat3x3" parallelInverseProduct="true" />
 
         <TetrahedronSetTopologyContainer name="Container" position="@../BEAMVOLUME/HexaTop.position"

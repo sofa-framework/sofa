@@ -48,7 +48,7 @@
     
     <Node name="Cloth">
         <EulerImplicitIntegrationScheme name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
-        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9"/>
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-12" threshold="1.0e-12"/>
         
         <RegularGridTopology 
             name="Container" 
