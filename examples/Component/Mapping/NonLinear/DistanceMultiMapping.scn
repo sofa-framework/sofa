@@ -40,7 +40,7 @@
             <RestShapeSpringsForceField template="Vec1" stiffness="1000"/>
         </Node>
     </Node>
-
+zz
     <Node  name="springs1" >
         <TransformEngine name="translate" input_position="@../loader.position" translation="1.2 0 0" />
 
