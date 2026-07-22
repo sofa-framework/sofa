@@ -21,7 +21,7 @@
     <Node name="FixedTorusAndFallingSphere_1" >
         <Node name="FallingSphere" >
             <EulerImplicitIntegrationScheme name="odesolver" />
-            <CGLinearSolver name="linear_solver" iterations="250"  tolerance="1.0e-9" threshold="1.0e-9" />
+            <CGLinearSolver name="linear_solver" iterations="250"  tolerance="1.0e-12" threshold="1.0e-12" />
 
             <MechanicalObject name="rigid" template="Rigid3d" position="-5 10 0 0 0 0 1" />
             <UniformMass totalMass="1.0" />
@@ -45,7 +45,7 @@
     <Node name="FixedTorusAndFallingSphere_2" >
         <Node name="FallingSphere" >
             <EulerImplicitIntegrationScheme name="odesolver" />
-            <CGLinearSolver name="linear_solver" iterations="250"  tolerance="1.0e-9" threshold="1.0e-9" />
+            <CGLinearSolver name="linear_solver" iterations="250"  tolerance="1.0e-12" threshold="1.0e-12" />
 
             <MechanicalObject name="rigid" template="Rigid3d" position="5 10 0 0 0 0 1" />
             <UniformMass totalMass="1.0" />
