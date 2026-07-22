@@ -93,6 +93,74 @@ TEST(FiniteElement, pyramid3dWeights)
     testSumWeights<sofa::geometry::Pyramid, sofa::defaulttype::Vec3Types>(8);
 }
 
+TEST(FiniteElement, quadraticHexa3dWeights)
+{
+    testSumWeights<sofa::geometry::QuadraticHexahedron, sofa::defaulttype::Vec3Types>(8);
+}
+
+/**
+ * Checks that the shape function i at the node j is equal to delta_ij
+ */
+template <class ElementType, class DataTypes>
+void testShapeFunctionsAtNodes()
+{
+    using FE = sofa::fem::FiniteElement<ElementType, DataTypes>;
+
+    for (unsigned int j = 0; j < FE::NumberOfNodesInElement; ++j)
+    {
+        const auto& node_j = FE::referenceElementNodes[j];
+        const auto N = FE::shapeFunctions(node_j);
+
+        for (unsigned int i = 0; i < FE::NumberOfNodesInElement; ++i)
+        {
+            if (i == j)
+                EXPECT_NEAR(N[i], 1.0, 1e-12) << "Shape function " << i << " should be 1 at node " << j;
+            else
+                EXPECT_NEAR(N[i], 0.0, 1e-12) << "Shape function " << i << " should be 0 at node " << j;
+        }
+    }
+}
+
+TEST(FiniteElement, edge1dShapeFunctionsAtNodes)
+{
+    testShapeFunctionsAtNodes<sofa::geometry::Edge, sofa::defaulttype::Vec1Types>();
+}
+
+TEST(FiniteElement, triangle2dShapeFunctionsAtNodes)
+{
+    testShapeFunctionsAtNodes<sofa::geometry::Triangle, sofa::defaulttype::Vec2Types>();
+}
+
+TEST(FiniteElement, quad2dShapeFunctionsAtNodes)
+{
+    testShapeFunctionsAtNodes<sofa::geometry::Quad, sofa::defaulttype::Vec2Types>();
+}
+
+TEST(FiniteElement, tetra3dShapeFunctionsAtNodes)
+{
+    testShapeFunctionsAtNodes<sofa::geometry::Tetrahedron, sofa::defaulttype::Vec3Types>();
+}
+
+TEST(FiniteElement, hexa3dShapeFunctionsAtNodes)
+{
+    testShapeFunctionsAtNodes<sofa::geometry::Hexahedron, sofa::defaulttype::Vec3Types>();
+}
+
+TEST(FiniteElement, prism3dShapeFunctionsAtNodes)
+{
+    testShapeFunctionsAtNodes<sofa::geometry::Prism, sofa::defaulttype::Vec3Types>();
+}
+
+TEST(FiniteElement, pyramid3dShapeFunctionsAtNodes)
+{
+    testShapeFunctionsAtNodes<sofa::geometry::Pyramid, sofa::defaulttype::Vec3Types>();
+}
+
+TEST(FiniteElement, quadraticHexa3dShapeFunctionsAtNodes)
+{
+    testShapeFunctionsAtNodes<sofa::geometry::QuadraticHexahedron, sofa::defaulttype::Vec3Types>();
+}
+
 /**
  * Checks that the sum of the gradients of shape functions is zero at the evaluation point.
  */
@@ -178,6 +246,12 @@ TEST(FiniteElement, pyramid3dGradientShapeFunctions)
 {
     testGradientShapeFunctions<sofa::geometry::Pyramid, sofa::defaulttype::Vec3Types>(sofa::type::Vec3(0., 0., 0.));
     testGradientShapeFunctions<sofa::geometry::Pyramid, sofa::defaulttype::Vec3Types>(sofa::type::Vec3(0.5, 0.5, 0.5));
+}
+
+TEST(FiniteElement, quadraticHexa3dGradientShapeFunctions)
+{
+    testGradientShapeFunctions<sofa::geometry::QuadraticHexahedron, sofa::defaulttype::Vec3Types>(sofa::type::Vec3(0., 0., 0.));
+    testGradientShapeFunctions<sofa::geometry::QuadraticHexahedron, sofa::defaulttype::Vec3Types>(sofa::type::Vec3(1,1,1));
 }
 
 }
