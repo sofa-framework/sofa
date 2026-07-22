@@ -21,7 +21,7 @@
     <StringMeshCreator name="loader" resolution="20" />
 
     <EulerImplicitIntegrationScheme rayleighStiffness="0.1" rayleighMass="0.1"/>
-    <CGLinearSolver iterations="2500" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+    <CGLinearSolver iterations="2500" name="linear solver" tolerance="1.0e-12" threshold="1.0e-12" />
 
     <EdgeSetTopologyContainer name="topology" position="@loader.position" edges="@loader.edges" />
     <MechanicalObject name="defoDOF" template="Vec3" />
