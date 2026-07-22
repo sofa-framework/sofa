@@ -160,7 +160,7 @@ void VelocityBasedImplicitIntegrationScheme::computeRHS(bool firstIteration)
 
         // This computes the explicit part of the Rayleigh damping
         // If we are in first order, in the first iteration there is no need to add this damping
-        if ( (! d_firstOrder.getValue() && !firstIteration) && (fabs(d_rayleighMass.getValue()) > std::numeric_limits<SReal>::epsilon()
+        if ( (!d_firstOrder.getValue() || !firstIteration) && (fabs(d_rayleighMass.getValue()) > std::numeric_limits<SReal>::epsilon()
             || fabs(d_rayleighStiffness.getValue()) > std::numeric_limits<SReal>::epsilon()))
         {
             m_mop->mparams.setV(m_vResult);
@@ -182,7 +182,7 @@ void VelocityBasedImplicitIntegrationScheme::computeRHS(bool firstIteration)
         }
 
         // If we are in first order, in the first iteration acceleration is null
-        if (! d_firstOrder.getValue() && !firstIteration)
+        if (! d_firstOrder.getValue() || !firstIteration)
         {
             // In velocity-based IS the acceleration is not integrated but estimated using first order
             // backward finite difference on the velocity
