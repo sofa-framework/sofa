@@ -220,31 +220,30 @@ struct FiniteElement<sofa::geometry::QuadraticHexahedron, DataTypes>
             N_16, N_17, N_18, N_19, N_20, N_21, N_22, N_23, N_24, N_25, N_26);
     }
 
-    static constexpr std::array<QuadraturePointAndWeight, 8> quadraturePoints()
+    static constexpr std::array<QuadraturePointAndWeight, 27> quadraturePoints()
     {
-        // constexpr Real a = 1. / std::sqrt(3.);
-        constexpr Real a { 0.57735026919 };
-        constexpr Real w = 1.0;
+        constexpr Real a = 0.7745966692414834; // sqrt(3/5)
+        constexpr Real w_a = 5.0 / 9.0;
+        constexpr Real w_0 = 8.0 / 9.0;
 
-        constexpr sofa::type::Vec<TopologicalDimension, Real> q0(-a, -a, -a);
-        constexpr sofa::type::Vec<TopologicalDimension, Real> q1(a, -a, -a);
-        constexpr sofa::type::Vec<TopologicalDimension, Real> q2(a, a, -a);
-        constexpr sofa::type::Vec<TopologicalDimension, Real> q3(-a, a, -a);
-        constexpr sofa::type::Vec<TopologicalDimension, Real> q4(-a, -a, a);
-        constexpr sofa::type::Vec<TopologicalDimension, Real> q5(a, -a, a);
-        constexpr sofa::type::Vec<TopologicalDimension, Real> q6(a, a, a);
-        constexpr sofa::type::Vec<TopologicalDimension, Real> q7(-a, a, a);
+        constexpr std::array<Real, 3> pts = {-a, 0.0, a};
+        constexpr std::array<Real, 3> wts = {w_a, w_0, w_a};
 
-        constexpr std::array<QuadraturePointAndWeight, 8> q {
-            std::make_pair(q0, w),
-            std::make_pair(q1, w),
-            std::make_pair(q2, w),
-            std::make_pair(q3, w),
-            std::make_pair(q4, w),
-            std::make_pair(q5, w),
-            std::make_pair(q6, w),
-            std::make_pair(q7, w)
-        };
+        std::array<QuadraturePointAndWeight, 27> q {};
+        int index = 0;
+        for (int i = 0; i < 3; ++i)
+        {
+            for (int j = 0; j < 3; ++j)
+            {
+                for (int k = 0; k < 3; ++k)
+                {
+                    q[index++] = std::make_pair(
+                        sofa::type::Vec<TopologicalDimension, Real>(pts[i], pts[j], pts[k]),
+                        wts[i] * wts[j] * wts[k]
+                    );
+                }
+            }
+        }
         return q;
     }
 };
