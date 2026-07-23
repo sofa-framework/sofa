@@ -25,12 +25,14 @@
 namespace sofa::component::mass
 {
 
-template class SOFA_COMPONENT_MASS_API NodalMassDensity<SReal>;
+template class SOFA_COMPONENT_MASS_API NodalMassDensity<double>;
+template class SOFA_COMPONENT_MASS_API NodalMassDensity<float>;
 
 void registerNodalMassDensity(sofa::core::ObjectFactory* factory)
 {
     factory->registerObjects(core::ObjectRegistrationData("Definition of a nodal mass density (one value per dof).")
-        .add< NodalMassDensity<SReal> >()
+        .add< NodalMassDensity<double> >()
+        .add< NodalMassDensity<float> >()
     );
 }
 
