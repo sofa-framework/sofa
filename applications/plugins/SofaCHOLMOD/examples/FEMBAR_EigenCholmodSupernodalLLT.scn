@@ -1,0 +1,15 @@
+<Node name="root" dt="0.02" gravity="0 -10 0">
+
+    <RequiredPlugin pluginName="SofaCHOLMOD"/>
+
+    <include href="FEMBAR-common.xml"/>
+
+    <NaturalOrderingMethod/>
+    <!-- This is a single large system: multithreaded BLAS helps up to a sweet
+         spot (~half the physical cores), then gets slower. numThreads="8" is
+         tuned for a 24-core machine; adjust it to your CPU (use "1" for scenes
+         with many objects solved in parallel). -->
+    <EigenCholmodSupernodalLLT template="CompressedRowSparseMatrixMat3x3" numThreads="1" />
+    <HexahedronFEMForceField name="FEM" youngModulus="4000" poissonRatio="0.3" method="large" />
+
+</Node>
