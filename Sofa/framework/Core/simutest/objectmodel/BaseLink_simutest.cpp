@@ -19,7 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <boost/unordered/detail/fca.hpp>
 #include <sofa/core/objectmodel/Base.h>
 using sofa::core::objectmodel::Base ;
 using sofa::core::objectmodel::ComponentState;
