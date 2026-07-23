@@ -89,7 +89,7 @@ struct TetrahedronDiffusionFEMForceField_test : public BaseSimulationTest
 
     TetrahedronDiffusionFEMForceField_test()
         : sceneFilename(std::string(SOFA_COMPONENT_DIFFUSION_TEST_SCENES_DIR) + "/" + "TetrahedronDiffusionFEMForceField.scn")
-        , diffusionCoefficient( 1.0 )
+        , diffusionCoefficient( 1e4 )
         , massDensity( 1.0 )
         , beamDimension(1.0, 0.5, 0.5)
         , beamResolution( type::Vec3i(21,11,11) )
