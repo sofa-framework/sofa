@@ -472,7 +472,7 @@ bool Base::parseField( const std::string& attribute, const std::string& value)
         }
         if( !(dataVec[d]->read( value )) && !value.empty())
         {
-            msg_warning()<<"Could not read value for data field "<< attribute <<": " << value ;
+            msg_warning() << "Could not read value for data field '" << attribute << "': " << value;
             ok = false;
         }
     }

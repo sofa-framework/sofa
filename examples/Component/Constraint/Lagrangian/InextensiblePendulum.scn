@@ -2,7 +2,7 @@
 
 <!-- A pendulum made of a string of particles connected by distance constraints -->
 <!-- Inspired by the CompliantPendulum.scn from the Compliant plugin -->
-<Node name="Root" gravity="0 -10 0" time="0" animate="0"  dt="0.01">
+<Node name="Root" gravity="0 -10 0" time="0" animate="0"  dt="0.01" bbox="-1 -1 -2.5 1 0 -1.5">
     <Node name="plugins">
         <RequiredPlugin pluginName="Sofa.Component.AnimationLoop"/> <!-- Needed to use components [FreeMotionAnimationLoop] -->
         <RequiredPlugin pluginName="Sofa.Component.Constraint.Lagrangian.Correction"/> <!-- Needed to use components [GenericConstraintCorrection] -->
@@ -55,7 +55,7 @@
 
     <Node name="visual">
         <PointsFromIndices name="points" position="@../defoDOF.position" indices="19"/>
-        <TrailRenderer template="Vec3" position="@points.indices_position" nbSteps="50"/>
+        <TrailRenderer template="Vec3" position="@points.indices_position" nbSteps="50" color="#ffffff00 orange navy" thickness="15"/>
     </Node>
     
 </Node>

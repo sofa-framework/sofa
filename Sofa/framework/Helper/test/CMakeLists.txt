@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.22)
 project(Sofa.Helper_test)
 
 set(SOURCE_FILES
+    ColorMap_test.cpp
     DiffLib_test.cpp
     Factory_test.cpp
     IotaView_test.cpp
