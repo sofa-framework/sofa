@@ -107,11 +107,6 @@ public:
             children.push_back(child);
         }
 
-        // void push_back(const SnapshotObject& component)
-        // {
-        //     components.push_back(component);
-        // }
-
         SnapshotNode() = default;
         explicit SnapshotNode(const std::string& name) : SnapshotObject(name) {}
         explicit SnapshotNode(const SnapshotObject& obj) : SnapshotObject(obj) {}

@@ -72,41 +72,6 @@ void to_json(nlohmann::json& j, const Snapshot::SnapshotObject& so )
 
 }
 
-void to_json(nlohmann::json& j, const Snapshot::SnapshotNode& sn)
-{
-    j.clear();
-    j["name"] = sn.m_name;
-    j["datas"] = sn.m_dataContainer;
-    j["links"] = sn.m_linkContainer;
-
-    j["components"] = nlohmann::json::array();
-    for (const auto& childPtr : sn.m_components)
-    {
-        if(childPtr)
-        {
-            j["components"].push_back(*childPtr);
-        }
-        else
-        {
-            j["components"].push_back(nullptr);
-        }
-    }
-
-    j["children"] = nlohmann::json::array();
-    for (const auto& childPtr : sn.children)
-    {
-        if(childPtr)
-        {
-            j["children"].push_back(*childPtr);
-        }
-        else
-        {
-            j["children"].push_back(nullptr);
-        }
-    }
-}
-
- // Maybe this is not necessary : do for nlohmann::json j = *snapshot.m_graphRoot ;
 void to_json(nlohmann::json& j, const std::shared_ptr<Snapshot::SnapshotNode>& sn)
 {
     j.clear();
@@ -143,13 +108,6 @@ void to_json(nlohmann::json& j, const std::shared_ptr<Snapshot::SnapshotNode>& s
 
 void exportToJSON(const Snapshot& snapshot, const std::string& filename)
 {
-    std::cout << snapshot.m_graphRoot->m_name << std::endl;
-    std::cout << snapshot.m_graphRoot->children.size() << std::endl;
-
-    for (const auto& c : snapshot.m_graphRoot->children)
-    {
-        std::cout << "  child = " << c->m_name << std::endl;
-    }
     nlohmann::json j = snapshot.m_graphRoot ;
 
     std::ofstream file(filename);

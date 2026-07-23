@@ -19,8 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <iostream>
-#include <ostream>
 #include <sofa/testing/BaseSimulationTest.h>
 using sofa::testing::BaseSimulationTest ;
 
