@@ -122,13 +122,11 @@ void VelocityBasedImplicitIntegrationScheme::computeLHS(bool firstIteration)
 
     // Set the factor of the left hand side taking into account the rayleigh damping
     SCOPED_TIMER("setSystemMBKMatrix");
-    const core::MatricesFactors::M mFact( this->getInverseVelocityUpdateDerivedFromVelocity() + d_rayleighMass.getValue() );
-    const core::MatricesFactors::B bFact( -1.0 );
-    const core::MatricesFactors::K kFact(- this->getPositionUpdateDerivedFromVelocity() - d_rayleighStiffness.getValue() );
+    const core::MatricesFactors::M mFact(d_firstOrder.getValue() ? this->getInverseVelocityUpdateDerivedFromVelocity() : (this->getInverseVelocityUpdateDerivedFromVelocity() + d_rayleighMass.getValue()));
+    const core::MatricesFactors::B bFact(d_firstOrder.getValue() ? 0                                                   : -1.0 );
+    const core::MatricesFactors::K kFact(d_firstOrder.getValue() ? -this->getPositionUpdateDerivedFromVelocity()       : -(this->getPositionUpdateDerivedFromVelocity() +d_rayleighStiffness.getValue()));
 
     m_mop->setSystemMBKMatrix(mFact, bFact, kFact, l_linearSolver.get());
-
-
 }
 
 /**
