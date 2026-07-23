@@ -92,19 +92,19 @@ public:
 
     struct SnapshotNode : public SnapshotObject
     {
-        std::vector<std::shared_ptr<SnapshotNode>> children;
+        std::vector<std::shared_ptr<SnapshotNode>> m_children;
 
         void clear() override
         {
             m_components.clear();
-            children.clear();  
+            m_children.clear();
             m_dataContainer.clear();
             m_linkContainer.clear();
         }
 
         void push_back(const std::shared_ptr<SnapshotNode>& child)
         {
-            children.push_back(child);
+            m_children.push_back(child);
         }
 
         SnapshotNode() = default;

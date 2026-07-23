@@ -68,7 +68,7 @@ BaseNode::createSnapshotObject(const std::shared_ptr<Snapshot::SnapshotObject>& 
 {
     auto nodeObject = std::make_shared<Snapshot::SnapshotNode>();
     const auto nodeParent = std::dynamic_pointer_cast<Snapshot::SnapshotNode>(parent);
-    nodeParent->children.push_back(nodeObject);
+    nodeParent->m_children.push_back(nodeObject);
 
     return nodeObject;
 }
@@ -83,7 +83,7 @@ BaseNode::findSnapshotObject( const std::shared_ptr<Snapshot::SnapshotNode>& par
         return parents;
     }
 
-    for (const auto& child : parents->children)
+    for (const auto& child : parents->m_children)
     {
         if (auto result = this->findSnapshotObject(child, objectname))
             return result;

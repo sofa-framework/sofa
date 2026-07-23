@@ -230,7 +230,7 @@ TEST_F(Snapshot_test, findSnapshotObject)
     TestComponent Component;
     auto snapshotNode = std::make_shared<Snapshot::SnapshotNode>("root");
     auto snapshotParents = std::make_shared<Snapshot::SnapshotNode>();
-    snapshotParents->children.push_back(snapshotNode);
+    snapshotParents->m_children.push_back(snapshotNode);
 
     auto snapshot = Component.saveSnapshot(snapshotParents);
     snapshotNode->m_components.push_back(snapshot);
@@ -443,7 +443,7 @@ TEST_F(Snapshot_test, loadLinkSnapshot)
 
     auto snapshotNode = std::make_shared<Snapshot::SnapshotNode>("root");
     auto snapshotParents = std::make_shared<Snapshot::SnapshotNode>();
-    snapshotParents->children.push_back(snapshotNode);
+    snapshotParents->m_children.push_back(snapshotNode);
 
     TestComponent* ptr = Component2.get();
     Component1->l_target.add(ptr);
@@ -517,8 +517,8 @@ TEST_F(Snapshot_test, SnapshotJSONExporter)
     EXPECT_EQ(snapshot_import->m_graphRoot->m_name,"Root");
     EXPECT_EQ(snapshot_import->m_graphRoot->m_components[1]->m_name,"DefaultAnimationLoop1");
     EXPECT_EQ(snapshot_import->m_graphRoot->m_components[2]->m_name,"DefaultVisualManagerLoop1");
-    EXPECT_EQ(snapshot_import->m_graphRoot->children[0]->m_name,"child1");
-    EXPECT_EQ(snapshot_import->m_graphRoot->children[0]->m_components[0]->m_name,"MechanicalObject1");
+    EXPECT_EQ(snapshot_import->m_graphRoot->m_children[0]->m_name,"child1");
+    EXPECT_EQ(snapshot_import->m_graphRoot->m_children[0]->m_components[0]->m_name,"MechanicalObject1");
 
     std::filesystem::remove(path);
 }
