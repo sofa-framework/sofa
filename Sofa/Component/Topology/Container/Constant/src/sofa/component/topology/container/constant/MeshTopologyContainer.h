@@ -89,6 +89,7 @@ protected:
 
     MeshTopologyContainer();
 
+public:
     // A proxy for legacy data members
     template<class ElementType>
     struct SeqElementProxy
