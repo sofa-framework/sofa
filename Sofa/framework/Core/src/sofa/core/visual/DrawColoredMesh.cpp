@@ -19,47 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-#include <sofa/component/visual/config.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/visual/DrawColoredMesh.h>
-#include <sofa/core/visual/DrawMesh.h>
-#include <sofa/core/visual/VisualModel.h>
-#include <sofa/helper/ColorMap.h>
 
-namespace sofa::component::visual
+void sofa::core::visual::DrawColoredMesh::setElementSpace(SReal elementSpace)
 {
-
-class VisualMesh : public core::visual::VisualModel
-{
-public:
-    SOFA_CLASS(VisualMesh, core::visual::VisualModel);
-
-    Data<type::vector<type::Vec3>> d_position;
-    Data<SReal> d_elementSpace;
-    Data<bool> d_lighting;
-
-
-    Data<type::vector<SReal>> d_vertexValues;
-    Data<sofa::helper::ColorMap> d_colorMap;
-
-    /// The topology will give access to the elements
-    sofa::SingleLink<VisualMesh, sofa::core::topology::BaseMeshTopology,
-        sofa::BaseLink::FLAG_STOREPATH | sofa::BaseLink::FLAG_STRONGLINK> l_topology;
-
-    void init() override;
-    void computeBBox(const core::ExecParams*, bool onlyVisible) override;
-
-protected:
-
-    VisualMesh();
-
-    void doDrawVisual(const core::visual::VisualParams* vparams) override;
-
-    core::visual::DrawMesh m_drawMesh;
-    core::visual::DrawColoredMesh m_drawColoredMesh;
-
-    void validateTopology();
-};
-
+    std::apply([elementSpace](auto&&... mesh){ ((mesh.elementSpace = elementSpace), ...); }, m_meshes);
 }
