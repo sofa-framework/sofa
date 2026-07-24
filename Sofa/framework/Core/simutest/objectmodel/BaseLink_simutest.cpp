@@ -30,7 +30,7 @@ using sofa::testing::BaseSimulationTest ;
 using sofa::simulation::Node ;
 
 #include <sofa/core/objectmodel/BaseComponent.h>
-using sofa::core::objectmodel::BaseObject;
+using sofa::core::objectmodel::BaseComponent;
 
 #include <sofa/core/PathResolver.h>
 using sofa::core::PathResolver;
@@ -40,6 +40,8 @@ using sofa::defaulttype::Rigid3Types;
 
 #include <sofa/defaulttype/VecTypes.h>
 using sofa::defaulttype::Vec3Types;
+
+using sofa::core::objectmodel::BaseLink;
 
 namespace
 {
@@ -78,6 +80,41 @@ public:
         delete c;
     }
 };
+
+class FakeComponent : public BaseComponent
+{
+public:
+    SOFA_CLASS(FakeComponent, BaseComponent);
+    sofa::MultiLink<FakeComponent, BaseComponent, BaseLink::FLAG_DOUBLELINK> l_target;
+
+    FakeComponent()
+        : l_target(initLink("target","link for test"))
+    {}
+
+};
+
+TEST_F(BaseLink_test, add)
+{
+    FakeComponent Component1;
+    Component1.setName("Component1");
+    FakeComponent Component2;
+    Component2.setName("Component2");
+    FakeComponent Component3;
+    Component3.setName("Component3");
+
+    FakeComponent* ptr;
+    ptr = &Component2;
+
+    EXPECT_EQ(Component1.l_target.getValueString(), "");
+
+    Component1.l_target.add(ptr);
+    EXPECT_EQ(Component1.l_target.getValueString(), "@Component2");
+
+    ptr = &Component3;
+
+    Component1.l_target.add(ptr);
+    EXPECT_EQ(Component1.l_target.getValueString(), "@Component2 @Component3");
+}
 
 
 //////////////////////// Testing valid path //////////////////////////////////////
