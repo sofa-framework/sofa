@@ -1,21 +1,19 @@
 <Node name="root" dt="0.00001" gravity="0 0 0" >
-    <Node name="plugins">
-        <RequiredPlugin pluginName="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [LinearMovementProjectiveConstraint] -->
-        <RequiredPlugin pluginName="Sofa.Component.Diffusion"/> <!-- Needed to use components [TetrahedronDiffusionFEMForceField] -->
-        <RequiredPlugin pluginName="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
-        <RequiredPlugin pluginName="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader MeshVTKLoader] -->
-        <RequiredPlugin pluginName="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
-        <RequiredPlugin pluginName="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [IdentityMapping] -->
-        <RequiredPlugin pluginName="Sofa.Component.Mass"/> <!-- Needed to use components [MeshMatrixMass] -->
-        <RequiredPlugin pluginName="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
-        <RequiredPlugin pluginName="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
-        <RequiredPlugin pluginName="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [TetrahedronSetGeometryAlgorithms TetrahedronSetTopologyContainer TetrahedronSetTopologyModifier] -->
-        <RequiredPlugin pluginName="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
-        <RequiredPlugin pluginName="Sofa.GL.Component.Engine"/> <!-- Needed to use components [TextureInterpolation] -->
-        <RequiredPlugin pluginName="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
-    </Node>
+    <RequiredPlugin pluginName="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [LinearMovementProjectiveConstraint] -->
+    <RequiredPlugin pluginName="Sofa.Component.Diffusion"/> <!-- Needed to use components [TetrahedronDiffusionFEMForceField] -->
+    <RequiredPlugin pluginName="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
+    <RequiredPlugin pluginName="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader MeshVTKLoader] -->
+    <RequiredPlugin pluginName="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+    <RequiredPlugin pluginName="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [IdentityMapping] -->
+    <RequiredPlugin pluginName="Sofa.Component.Mass"/> <!-- Needed to use components [MeshMatrixMass] -->
+    <RequiredPlugin pluginName="Sofa.Component.IntegrationScheme.Backward"/> <!-- Needed to use components [EulerImplicitIntegrationScheme] -->
+    <RequiredPlugin pluginName="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin pluginName="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [TetrahedronSetGeometryAlgorithms TetrahedronSetTopologyContainer TetrahedronSetTopologyModifier] -->
+    <RequiredPlugin pluginName="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+    <RequiredPlugin pluginName="Sofa.GL.Component.Engine"/> <!-- Needed to use components [TextureInterpolation] -->
+    <RequiredPlugin pluginName="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
 
-    <VisualStyle displayFlags="showVisualModels"/>
+    <VisualStyle displayFlags="showBehaviorModels"/>
 
     <MeshVTKLoader name="meshLoader" filename="mesh/raptorTetra_8418.vtu" />
     <MeshOBJLoader name="potentialLoader" filename="mesh/raptorTemperature.obj" />
@@ -31,7 +29,7 @@
 
     <Node name="Temperature" gravity="0 0 0"  >
 
-        <EulerImplicitSolver name="EulerExplicitSolver" firstOrder="1" tags="heat" rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitIntegrationScheme name="EulerExplicitIntegrationScheme" firstOrder="1" tags="heat" rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver name="CG" iterations="1000" tolerance="1.0e-10" threshold="1.0e-30" tags="heat"/>
         <MechanicalObject template="Vec1" position="@../potentialLoader.position"  name="gridTemperature" bbox="0 0 0 0 0 0" tags="heat"/>
         <TetrahedronDiffusionFEMForceField template="Vec1" name="DiffusionForceField" topology="@../topo"

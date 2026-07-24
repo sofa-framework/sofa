@@ -4,7 +4,7 @@
 	<Node name="M1">
 		<MeshVTKLoader name="volume" filename="mesh/raptorTetra_19409.vtu" onlyAttachedPoints="false" />
 <!--    <MeshOBJLoader name="surface" filename="mesh/raptor8k1.obj" />-->
-		<EulerImplicitSolver rayleighMass="0.01" rayleighStiffness="0.01" />
+		<EulerImplicitIntegrationScheme rayleighMass="0.01" rayleighStiffness="0.01" />
 		<CGLinearSolver iterations="25" tolerance="1e-6" threshold="1e-20"/>
 <!--	<PCGLinearSolver iterations="25" tolerance="1e-3" preconditioner="@precond" />
 		<JacobiPreconditioner template="CudaDiagonalMatrixf" name="precond" /> -->

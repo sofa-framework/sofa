@@ -8,7 +8,7 @@
     <RequiredPlugin pluginName="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
     <RequiredPlugin pluginName="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [BarycentricMapping] -->
     <RequiredPlugin pluginName="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
-    <RequiredPlugin pluginName="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin pluginName="Sofa.Component.IntegrationScheme.Backward"/> <!-- Needed to use components [EulerImplicitIntegrationScheme] -->
     <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [MeshSpringForceField] -->
     <RequiredPlugin pluginName="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
     <RequiredPlugin pluginName="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
@@ -29,8 +29,8 @@
             <OglModel name="Visual" src="@meshLoader_3" color="gray" />
         </Node>
         <Node name="TorusSpring1">
-            <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
-            <CGLinearSolver iterations="100" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+            <EulerImplicitIntegrationScheme name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+            <CGLinearSolver iterations="100" name="linear solver" tolerance="1.0e-12" threshold="1.0e-12" />
             <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" translation="2.5 0 0"/>
             <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" />
@@ -50,8 +50,8 @@
             </Node>
         </Node>
         <Node name="TorusSpring2">
-            <EulerImplicitSolver name="cg_odesolver" printLog="false" />
-            <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+            <EulerImplicitIntegrationScheme name="cg_odesolver" printLog="false" />
+            <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-12" threshold="1.0e-12" />
             <MeshGmshLoader name="loader" filename="mesh/torus2_low_res.msh" translation="5 0 0"/>
             <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" />
@@ -71,8 +71,8 @@
             </Node>
         </Node>
         <Node name="TorusSpring3">
-            <EulerImplicitSolver name="cg_odesolver" printLog="false" />
-            <CGLinearSolver iterations="100" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+            <EulerImplicitIntegrationScheme name="cg_odesolver" printLog="false" />
+            <CGLinearSolver iterations="100" name="linear solver" tolerance="1.0e-12" threshold="1.0e-12" />
             <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" translation="7.5 0 0"/>
             <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" />
@@ -92,8 +92,8 @@
             </Node>
         </Node>
         <Node name="TorusSpring4">
-            <EulerImplicitSolver name="cg_odesolver" printLog="false" />
-            <CGLinearSolver iterations="100" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+            <EulerImplicitIntegrationScheme name="cg_odesolver" printLog="false" />
+            <CGLinearSolver iterations="100" name="linear solver" tolerance="1.0e-12" threshold="1.0e-12" />
             <MeshGmshLoader name="loader" filename="mesh/torus2_low_res.msh" translation="10 0 0"/>
             <MeshTopology src="@loader" />
             <MechanicalObject src="@loader"  />

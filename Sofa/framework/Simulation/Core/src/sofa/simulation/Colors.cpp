@@ -64,7 +64,7 @@ std::map<const std::string, int> colors = {
         {"InteractionForceField",   IFFIELD},
         {"ForceField",              FFIELD},
         {"BaseAnimationLoop",       SOLVER},
-        {"OdeSolver",               SOLVER}, // même valeur que ci-dessus
+        {"IntegrationScheme",               SOLVER}, // même valeur que ci-dessus
         {"CollisionPipeline",       COLLISION},
         {"MechanicalMapping",       MMAPPING},
         {"Mapping",                 MAPPING},

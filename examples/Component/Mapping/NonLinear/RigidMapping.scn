@@ -8,7 +8,7 @@
     <RequiredPlugin pluginName="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
     <RequiredPlugin pluginName="Sofa.Component.Mapping.NonLinear"/> <!-- Needed to use components [RigidMapping] -->
     <RequiredPlugin pluginName="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
-    <RequiredPlugin pluginName="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin pluginName="Sofa.Component.IntegrationScheme.Backward"/> <!-- Needed to use components [EulerImplicitIntegrationScheme] -->
     <RequiredPlugin pluginName="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
     <RequiredPlugin pluginName="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
     <RequiredPlugin pluginName="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
@@ -29,7 +29,7 @@
             <OglModel name="Visual" src="@meshLoader_3" color="gray" texturename="textures/brushed_metal.bmp" />
         </Node>
         <Node name="TorusRigid1">
-            <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
+            <EulerImplicitIntegrationScheme  rayleighStiffness="0.1" rayleighMass="0.1" />
             <CGLinearSolver iterations="25" threshold="0.000000000001" tolerance="0.000001" />
             <MechanicalObject template="Rigid3" dx="2.5" />
             <UniformMass filename="BehaviorModels/torus.rigid" />
@@ -47,7 +47,7 @@
             </Node>
         </Node>
         <Node name="TorusRigid2">
-            <EulerImplicitSolver />
+            <EulerImplicitIntegrationScheme />
             <CGLinearSolver iterations="25" threshold="0.000000000001" tolerance="0.000001" />
             <MechanicalObject template="Rigid3" dx="5" />
             <UniformMass totalMass="1.0"/>
@@ -65,7 +65,7 @@
             </Node>
         </Node>
         <Node name="TorusRigid3">
-            <EulerImplicitSolver />
+            <EulerImplicitIntegrationScheme />
             <CGLinearSolver iterations="25" threshold="0.000000000001" tolerance="0.000001" />
             <MechanicalObject template="Rigid3" dx="7.5" />
             <UniformMass totalMass="1.0"/>
@@ -83,7 +83,7 @@
             </Node>
         </Node>
         <Node name="TorusRigid4">
-            <EulerImplicitSolver />
+            <EulerImplicitIntegrationScheme />
             <CGLinearSolver iterations="25" threshold="0.000000000001" tolerance="0.000001" />
             <MechanicalObject template="Rigid3" dx="10" />
             <UniformMass totalMass="1.0"/>

@@ -75,11 +75,11 @@ protected:
     /// Activate collision pipeline
     virtual void computeCollision(const core::ExecParams* params = core::execparams::defaultInstance());
 
-    /// Activate OdeSolvers
+    /// Activate IntegrationScheme
     virtual void integrate(const core::ExecParams* params, SReal dt);
 
 
-    typedef simulation::Node::Sequence<core::behavior::OdeSolver> Solvers;
+    typedef simulation::Node::Sequence<core::behavior::BaseIntegrationScheme> Solvers;
     typedef core::collision::Pipeline Pipeline;
     const Solvers& getSolverSequence();
 };
