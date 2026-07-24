@@ -40,12 +40,18 @@
 #include <sofa/core/IntrusiveObject.h>
 #include <sofa/type/fwd.h>
 
+#include <sstream>
+
+#include <sofa/core/objectmodel/Snapshot.h>
+
 #define SOFA_BASE_CAST_IMPLEMENTATION(CLASSNAME) \
 virtual const CLASSNAME* to##CLASSNAME() const override { return this; } \
 virtual       CLASSNAME* to##CLASSNAME()       override { return this; }
 
 namespace sofa::core::objectmodel
 {
+
+
 
 /**
  *  \brief Base class for everything
@@ -356,6 +362,26 @@ public:
 
     ///@}
 
+    /// Save a SnapshotObject full of data and link into the snapshot
+    std::shared_ptr<Snapshot::SnapshotObject> saveSnapshot(std::shared_ptr<Snapshot::SnapshotObject> object) const;
+
+    /// Load data and links from the snapshot to the scene
+    void loadSnapshot(const std::shared_ptr<Snapshot::SnapshotObject>& snapshotObject) const;
+    
+    /// Save Internal State to the SnapshotObject
+    virtual void saveInternalStateIn(Snapshot::SnapshotObject& snapshot) const;
+
+    ///Load Internal State from a snapshot to the scene
+    virtual void loadInternalStateFrom(const Snapshot::SnapshotObject& snapshot);
+
+protected:
+
+    /// Create a SnapshotObject that will contain data and link
+    virtual std::shared_ptr<Snapshot::SnapshotObject> createSnapshotObject(const std::shared_ptr<Snapshot::SnapshotObject>& object) const;
+
+public:
+    /// Find a SnapshotObject corresponding to the object from the scene
+    virtual std::shared_ptr<Snapshot::SnapshotObject> findSnapshotObject(const std::shared_ptr<Snapshot::SnapshotNode>& parents, const std::string& objectname) const;
 
 protected:
     /// List of fields (Data instances)
