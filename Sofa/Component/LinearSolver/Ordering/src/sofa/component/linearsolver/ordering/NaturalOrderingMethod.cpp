@@ -31,7 +31,7 @@ std::string NaturalOrderingMethod::methodName() const
     return "Natural";
 }
 
-void NaturalOrderingMethod::computePermutation(
+void NaturalOrderingMethod::doComputePermutation(
     const SparseMatrixPattern& inPattern, int* outPermutation,
     int* outInversePermutation)
 {
