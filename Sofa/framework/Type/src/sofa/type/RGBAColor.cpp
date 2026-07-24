@@ -28,6 +28,7 @@
 #include <sofa/type/fixed_array.h>
 #include <sofa/type/fixed_array_algorithms.h>
 #include <sofa/type/Vec.h>
+#include <iomanip>
 
 using namespace sofa::type::pairwise;
 
@@ -170,6 +171,17 @@ RGBAColor RGBAColor::fromHSVA(const float h, const float s, const float v, const
     }
 
     return rgba;
+}
+
+std::string RGBAColor::toHexadecimal() const
+{
+    std::stringstream ss;
+    ss << "#";
+    for (const auto& decimal : m_components)
+    {
+        ss << std::setw(2) << std::setfill('0') << std::hex << static_cast<std::size_t>(decimal * 255);
+    }
+    return ss.str();
 }
 
 /// This function remove the leading space in the stream.
