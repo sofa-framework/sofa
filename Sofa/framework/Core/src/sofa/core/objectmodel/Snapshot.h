@@ -58,6 +58,7 @@ public:
     struct SnapshotObject
     {
         std::string m_name;
+        std::string m_className;
         std::vector<DataInfo> m_dataContainer;
         std::vector<LinkInfo> m_linkContainer;
         void* m_internalState { nullptr };

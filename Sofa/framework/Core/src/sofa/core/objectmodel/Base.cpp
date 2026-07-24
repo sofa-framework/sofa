@@ -702,6 +702,7 @@ std::shared_ptr<Snapshot::SnapshotObject> Base::saveSnapshot(std::shared_ptr<Sna
 {
     auto snapshotObject = createSnapshotObject(object);
     snapshotObject->m_name = this->getName();
+    snapshotObject->m_className = this->getClassName();
 
     for (const auto& dataFields = this->getDataFields(); const auto& data : dataFields)
     {
