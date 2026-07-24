@@ -20,46 +20,18 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/visual/config.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/core/visual/DrawColoredMesh.h>
-#include <sofa/core/visual/DrawMesh.h>
-#include <sofa/core/visual/VisualModel.h>
-#include <sofa/helper/ColorMap.h>
 
-namespace sofa::component::visual
+#include <sofa/config.h>
+#include <sofa/config/sharedlibrary_defines.h>
+
+#ifdef SOFA_BUILD_SOFACHOLMOD
+#  define SOFACHOLMOD_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFACHOLMOD_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
+
+namespace sofacholmod
 {
-
-class VisualMesh : public core::visual::VisualModel
-{
-public:
-    SOFA_CLASS(VisualMesh, core::visual::VisualModel);
-
-    Data<type::vector<type::Vec3>> d_position;
-    Data<SReal> d_elementSpace;
-    Data<bool> d_lighting;
-
-
-    Data<type::vector<SReal>> d_vertexValues;
-    Data<sofa::helper::ColorMap> d_colorMap;
-
-    /// The topology will give access to the elements
-    sofa::SingleLink<VisualMesh, sofa::core::topology::BaseMeshTopology,
-        sofa::BaseLink::FLAG_STOREPATH | sofa::BaseLink::FLAG_STRONGLINK> l_topology;
-
-    void init() override;
-    void computeBBox(const core::ExecParams*, bool onlyVisible) override;
-
-protected:
-
-    VisualMesh();
-
-    void doDrawVisual(const core::visual::VisualParams* vparams) override;
-
-    core::visual::DrawMesh m_drawMesh;
-    core::visual::DrawColoredMesh m_drawColoredMesh;
-
-    void validateTopology();
-};
-
-}
+	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
+	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
+} // namespace sofacholmod

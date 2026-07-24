@@ -79,8 +79,7 @@ OglColorMap::OglColorMap()
     c_colorSchemeCallback.addInput(&d_colorScheme);
     c_colorSchemeCallback.addCallback([this]()
     {
-        m_colorMap.setColorScheme(d_colorScheme.getValue().getSelectedItem());
-        m_colorMap.reinit();
+        m_colorMap = sofa::helper::ColorMap(d_paletteSize.getValue(), d_colorScheme.getValue().getSelectedItem());
 
         deleteTexture();
     });
@@ -97,11 +96,7 @@ void OglColorMap::init()
 }
 
 void OglColorMap::reinit()
-{
-    m_colorMap.setPaletteSize(d_paletteSize.getValue());
-    m_colorMap.setColorScheme(d_colorScheme.getValue().getSelectedItem());
-    m_colorMap.reinit();
-}
+{}
 
 void OglColorMap::deleteTexture()
 {
