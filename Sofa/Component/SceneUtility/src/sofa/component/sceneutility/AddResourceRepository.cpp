@@ -95,7 +95,7 @@ bool BaseAddResourceRepository::updateRepositoryPath()
 }
 
 
-void BaseAddResourceRepository::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
+void BaseAddResourceRepository::parse(sofa::core::objectmodel::BaseComponentDescription* arg)
 {
     Inherit1::parse(arg);
     updateRepositoryPath();

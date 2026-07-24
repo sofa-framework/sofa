@@ -56,14 +56,14 @@ public:
 
     /// Pre-construction check method called by ObjectFactory.
     template<class T>
-    static bool canCreate(T* /*obj*/, BaseContext* /*context*/, BaseObjectDescription* /*arg*/)
+    static bool canCreate(T* /*obj*/, BaseContext* /*context*/, BaseComponentDescription* /*arg*/)
     {
         return true;
     }
 
     /// Construction method called by ObjectFactory.
     template<class T>
-    static typename T::SPtr create(T*, BaseContext* context, BaseObjectDescription* arg)
+    static typename T::SPtr create(T*, BaseContext* context, BaseComponentDescription* arg)
     {
         typename T::SPtr obj = sofa::core::objectmodel::New<T>();
         if (obj)
@@ -86,7 +86,7 @@ public:
     }
 
     /// Parse the given description to assign values to this object's fields and potentially other parameters
-    void parse ( BaseObjectDescription* arg ) override;
+    void parse ( BaseComponentDescription* arg ) override;
 
     /// Initialization method called at graph creation and modification, during top-down traversal.
     virtual void init();

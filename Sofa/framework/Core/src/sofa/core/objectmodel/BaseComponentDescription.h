@@ -38,7 +38,7 @@ class Base;
  *  This default implementation simply stores an attributes map and does not support any hierarchy.
  *
  */
-class SOFA_CORE_API BaseObjectDescription
+class SOFA_CORE_API BaseComponentDescription
 {
 public:
     class Attribute
@@ -59,9 +59,9 @@ public:
 
     typedef std::map<std::string,Attribute> AttributeMap;
 
-    BaseObjectDescription(const char* name=nullptr, const char* type=nullptr);
+    BaseComponentDescription(const char* name=nullptr, const char* type=nullptr);
 
-    virtual ~BaseObjectDescription();
+    virtual ~BaseComponentDescription();
 
     /// Get the associated object (or nullptr if it is not created yet)
     virtual Base* getObject();
@@ -73,7 +73,7 @@ public:
     virtual void setName(const std::string& name);
 
     /// Get the parent node
-    virtual BaseObjectDescription* getParent() const;
+    virtual BaseComponentDescription* getParent() const;
 
     /// Get the file where this description was read from. Useful to resolve relative file paths.
     virtual std::string getBaseFile();
@@ -90,7 +90,7 @@ public:
     }
 
     /// Find an object description given its name (relative to this object)
-    virtual BaseObjectDescription* find(const char* nodeName, bool absolute=false);
+    virtual BaseComponentDescription* find(const char* nodeName, bool absolute=false);
 
     /// Find an object given its name (relative to this object)
     virtual Base* findObject(const char* nodeName);

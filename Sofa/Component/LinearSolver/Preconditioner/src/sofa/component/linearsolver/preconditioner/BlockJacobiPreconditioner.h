@@ -68,7 +68,7 @@ public:
         return TVector::Name();
     }
 
-    void parse(core::objectmodel::BaseObjectDescription *arg) override;
+    void parse(core::objectmodel::BaseComponentDescription *arg) override;
 };
 
 #if !defined(SOFA_COMPONENT_LINEARSOLVER_PRECONDITIONER_BLOCKJACOBIPRECONDITIONER_CPP)

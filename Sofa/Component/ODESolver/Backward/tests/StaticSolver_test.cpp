@@ -22,7 +22,6 @@
 #include <sofa/testing/BaseTest.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/component/odesolver/backward/StaticSolver.h>
-#include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simpleapi/SimpleApi.h>
 
 #include <vector>
@@ -32,7 +31,6 @@ using namespace sofa::simulation;
 using namespace sofa::simpleapi;
 using namespace sofa::helper::logging;
 
-using sofa::simulation::graph::DAGSimulation;
 using sofa::component::odesolver::backward::StaticSolver;
 
 static constexpr SReal poissonRatio = 0;

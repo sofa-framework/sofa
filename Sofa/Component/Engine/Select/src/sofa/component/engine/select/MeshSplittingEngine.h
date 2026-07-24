@@ -103,7 +103,7 @@ public:
     void reinit()    override { resizeData(); update();  }
 
     /// Parse the given description to assign values to this object's fields and potentially other parameters
-    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override
+    void parse ( sofa::core::objectmodel::BaseComponentDescription* arg ) override
     {
         const char* p = arg->getAttribute(nbInputs.getName().c_str());
         if (p) {

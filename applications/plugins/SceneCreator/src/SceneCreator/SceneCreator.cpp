@@ -24,7 +24,6 @@
 #include <sofa/Modules.h>
 
 #include <sofa/simulation/Simulation.h>
-#include <sofa/simulation/graph/DAGSimulation.h>
 #include "GetVectorVisitor.h"
 #include "GetAssembledSizeVisitor.h"
 
@@ -50,7 +49,6 @@ using namespace sofa::defaulttype ;
 
 using type::vector;
 
-using sofa::simulation::graph::DAGSimulation ;
 using sofa::simulation::GetAssembledSizeVisitor ;
 using sofa::simulation::GetVectorVisitor ;
 using sofa::simulation::Node ;

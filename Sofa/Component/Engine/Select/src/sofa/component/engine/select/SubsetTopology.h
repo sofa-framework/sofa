@@ -76,7 +76,7 @@ public:
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
     template<class T>
-    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
+    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseComponentDescription* arg)
     {
         if (!arg->getAttribute("template"))
         {

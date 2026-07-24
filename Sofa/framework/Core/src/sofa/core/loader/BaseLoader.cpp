@@ -37,7 +37,7 @@ BaseLoader::~BaseLoader()
 {
 }
 
-void BaseLoader::parse(sofa::core::objectmodel::BaseObjectDescription *arg)
+void BaseLoader::parse(sofa::core::objectmodel::BaseComponentDescription *arg)
 {
     objectmodel::BaseComponent::parse(arg);
 

@@ -38,7 +38,7 @@ void ImplicitSurfaceMapping<In,Out>::init()
 }
 
 template <class In, class Out>
-void ImplicitSurfaceMapping<In,Out>::parse(core::objectmodel::BaseObjectDescription* arg)
+void ImplicitSurfaceMapping<In,Out>::parse(core::objectmodel::BaseComponentDescription* arg)
 {
     this->Inherit::parse(arg);
     if ( arg->getAttribute("minx") || arg->getAttribute("miny") || arg->getAttribute("minz"))

@@ -55,7 +55,7 @@ void JacobiPreconditioner<TMatrix,TVector>::invert(Matrix& M)
 }
 
 template <class TMatrix, class TVector>
-void JacobiPreconditioner<TMatrix, TVector>::parse(core::objectmodel::BaseObjectDescription* arg)
+void JacobiPreconditioner<TMatrix, TVector>::parse(core::objectmodel::BaseComponentDescription* arg)
 {
     if (arg->getAttribute("verbose"))
     {

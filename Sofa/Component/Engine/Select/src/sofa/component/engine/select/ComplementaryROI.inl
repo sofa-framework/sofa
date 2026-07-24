@@ -33,7 +33,7 @@ namespace sofa::component::engine::select
 using std::string;
 using std::set;
 using std::map;
-using sofa::core::objectmodel::BaseObjectDescription;
+using sofa::core::objectmodel::BaseComponentDescription;
 
 using helper::ReadAccessor;
 using helper::WriteAccessor;

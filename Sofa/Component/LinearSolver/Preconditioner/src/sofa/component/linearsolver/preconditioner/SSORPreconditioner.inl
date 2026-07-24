@@ -88,7 +88,7 @@ void SSORPreconditioner<TMatrix,TVector,TThreadManager>::invert(Matrix& M)
 
 template <class TMatrix, class TVector, class TThreadManager>
 void SSORPreconditioner<TMatrix, TVector, TThreadManager>::parse(
-    core::objectmodel::BaseObjectDescription* arg)
+    core::objectmodel::BaseComponentDescription* arg)
 {
     if (arg->getAttribute("verbose"))
     {

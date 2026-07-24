@@ -22,7 +22,7 @@
 #include "SceneCheckUsingAlias.h"
 
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/core/objectmodel/BaseObjectDescription.h>
+#include <sofa/core/objectmodel/BaseComponentDescription.h>
 #include <sofa/helper/ComponentChange.h>
 #include <sofa/simulation/SceneCheckMainRegistry.h>
 
@@ -33,7 +33,7 @@ namespace sofa::_scenechecking_
 const bool SceneCheckUsingAliasRegistered = sofa::simulation::SceneCheckMainRegistry::addToRegistry(SceneCheckUsingAlias::newSPtr());
 
 using sofa::core::objectmodel::Base;
-using sofa::core::objectmodel::BaseObjectDescription;
+using sofa::core::objectmodel::BaseComponentDescription;
 using sofa::core::ObjectFactory;
 
 

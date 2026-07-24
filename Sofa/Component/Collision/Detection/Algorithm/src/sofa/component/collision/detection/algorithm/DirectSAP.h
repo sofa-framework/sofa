@@ -39,7 +39,7 @@ public:
 
     /// Construction method called by ObjectFactory.
     template<class T>
-    static typename T::SPtr create(T*, sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription* arg)
+    static typename T::SPtr create(T*, sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseComponentDescription* arg)
     {
         if (context)
         {
