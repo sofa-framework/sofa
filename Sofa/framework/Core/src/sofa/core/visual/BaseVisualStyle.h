@@ -41,9 +41,35 @@ protected:
     BaseVisualStyle() { }
     ~BaseVisualStyle() override { }
 
+    virtual void doUpdateVisualFlags(VisualParams* ) { };
+    virtual void doApplyBackupFlags(VisualParams* ) { };
+
 public:
-    virtual void updateVisualFlags(VisualParams* ) { };
-    virtual void applyBackupFlags(VisualParams* ) { };
+    /**
+     * !!! WARNING since v25.12 !!! 
+     * 
+     * The template method pattern has been applied to this part of the API. 
+     * This method calls the newly introduced method "doUpdateVisualFlags" internally,
+     * which is the method to override from now on.
+     * 
+     **/  
+    virtual void updateVisualFlags(VisualParams* vparams) final { 
+        //TODO (SPRINT SED 2025): Component state mechamism
+        return this->doUpdateVisualFlags(vparams); 
+    };
+
+    /**
+     * !!! WARNING since v25.12 !!! 
+     * 
+     * The template method pattern has been applied to this part of the API. 
+     * This method calls the newly introduced method "doApplyBackupFlags" internally,
+     * which is the method to override from now on.
+     * 
+     **/  
+    virtual void applyBackupFlags(VisualParams* vparams) final { 
+        //TODO (SPRINT SED 2025): Component state mechamism
+        return this->doApplyBackupFlags(vparams); 
+    };
 
 };
 

@@ -75,7 +75,7 @@ void BlenderExporter<T>::doReInit()
 }
 
 template<class T>
-bool BlenderExporter<T>::write()
+bool BlenderExporter<T>::doWrite()
 {
     if(!this->isComponentStateValid())
         return false;
