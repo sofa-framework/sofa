@@ -214,6 +214,14 @@
         "PLUGIN_MODELORDERREDUCTION": {
           "type": "BOOL",
           "value": "ON"
+        },
+        "SOFA_FETCH_COSSERAT": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "PLUGIN_COSSERAT": {
+          "type": "BOOL",
+          "value": "ON"
         }
       }
     },
