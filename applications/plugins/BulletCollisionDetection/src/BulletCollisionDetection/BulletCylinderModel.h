@@ -48,9 +48,7 @@ public:
     virtual void initBullet();
     virtual void updateBullet();
 
-    inline virtual void computeBoundingTree(int/* maxDepth*/){
-        _bt_cshape->recalculateLocalAabb();
-    }
+
 
     inline virtual ~TBulletCylinderModel();
 
@@ -70,6 +68,10 @@ protected:
     btCompoundShape * _bt_cshape;//or maybe something else ?
 
     void cleanGarbage();
+
+    inline virtual void doComputeBoundingTree(int/* maxDepth*/) override {
+        _bt_cshape->recalculateLocalAabb();
+    }
 };
 
 typedef TBulletCylinderModel<defaulttype::RigidTypes> BulletCylinderModel;
