@@ -21,8 +21,6 @@
     <DefaultAnimationLoop/>
     <DefaultVisualManagerLoop/>
 
-    <DefaultVisualManagerLoop/>
-
     <Node name="node">
         <EulerImplicitSolver name="odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
 
