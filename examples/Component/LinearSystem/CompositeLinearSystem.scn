@@ -13,7 +13,8 @@
     <RequiredPlugin pluginName="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->
     <RequiredPlugin pluginName="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
     <RequiredPlugin pluginName="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
-    <RequiredPlugin pluginName="SofaMatrix.Qt"/> <!-- Needed to use components [GlobalSystemMatrixImage] -->
+    <RequiredPlugin pluginName="SofaMatrix"/> <!-- Needed to use components [GlobalSystemMatrixImage] -->
+    <RequiredPlugin pluginName="SofaMatrix.imgui"/> <!-- Needed to use components [GlobalSystemMatrixImage] -->
 
     <VisualStyle displayFlags="showBehaviorModels showWireframe" />
 
