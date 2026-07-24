@@ -34,6 +34,7 @@ extern void registerHexa2TetraTopologicalMapping(sofa::core::ObjectFactory* fact
 extern void registerIdentityTopologicalMapping(sofa::core::ObjectFactory* factory);
 extern void registerQuad2TriangleTopologicalMapping(sofa::core::ObjectFactory* factory);
 extern void registerSubsetTopologicalMapping(sofa::core::ObjectFactory* factory);
+extern void registerSubsetTopologicalMultiMapping(sofa::core::ObjectFactory* factory);
 extern void registerTetra2TriangleTopologicalMapping(sofa::core::ObjectFactory* factory);
 extern void registerTriangle2EdgeTopologicalMapping(sofa::core::ObjectFactory* factory);
 
@@ -69,6 +70,7 @@ void registerObjects(sofa::core::ObjectFactory* factory)
     registerIdentityTopologicalMapping(factory);
     registerQuad2TriangleTopologicalMapping(factory);
     registerSubsetTopologicalMapping(factory);
+    registerSubsetTopologicalMultiMapping(factory);
     registerTetra2TriangleTopologicalMapping(factory);
     registerTriangle2EdgeTopologicalMapping(factory);
 }
