@@ -391,7 +391,7 @@ void RecordedCamera::initializeViewUp()
     }
 }
 
-void RecordedCamera::manageEvent(core::objectmodel::Event* e)
+void RecordedCamera::doManageEvent(core::objectmodel::Event* e)
 {
     if(d_activated.getValue())
     {

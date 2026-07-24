@@ -37,7 +37,7 @@ protected:
     ~Camera() override;
 
 public:
-    void manageEvent(core::objectmodel::Event* e) override { SOFA_UNUSED(e); }
+    void doManageEvent(core::objectmodel::Event* e) override { SOFA_UNUSED(e); }
 
 private:
 
