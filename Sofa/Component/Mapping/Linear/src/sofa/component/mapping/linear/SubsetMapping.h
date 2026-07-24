@@ -116,13 +116,12 @@ public:
 
     void applyJT ( const core::ConstraintParams* /*cparams*/, InDataMatrixDeriv& dOut, const OutDataMatrixDeriv& dIn) override;
 
-    const sofa::linearalgebra::BaseMatrix* getJ() override;
-
-public:
     typedef type::vector< linearalgebra::BaseMatrix* > js_type;
-    const js_type* getJs() override;
 
 protected:
+
+    const sofa::linearalgebra::BaseMatrix* doGetJ() override;
+    const js_type* doGetJs() override;
     typedef linearalgebra::EigenSparseMatrix<In, Out> eigen_type;
     eigen_type eigen;
     js_type js;

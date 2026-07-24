@@ -63,10 +63,27 @@ public:
     /// function is constant.
     virtual bool isLinear() const { return false; }
 
+    /**
+     * !!! WARNING since v25.12 !!!
+     *
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doApply" internally,
+     * which is the method to override from now on.
+     *
+     **/
     /// Apply the transformation from the input model to the output model (like apply displacement from BehaviorModel to VisualModel)
-    virtual void apply (const MechanicalParams* mparams = mechanicalparams::defaultInstance(), MultiVecCoordId outPos = vec_id::write_access::position, ConstMultiVecCoordId inPos = vec_id::read_access::position ) = 0;
+    virtual void apply (const MechanicalParams* mparams = mechanicalparams::defaultInstance(), MultiVecCoordId outPos = vec_id::write_access::position, ConstMultiVecCoordId inPos = vec_id::read_access::position ) final;
+
+    /**
+     * !!! WARNING since v25.12 !!!
+     *
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doApplyJ" internally,
+     * which is the method to override from now on.
+     *
+     **/
     /// Compute output velocity based on input velocity, using the linearized transformation (tangent operator). Also used to propagate small displacements.
-    virtual void applyJ(const MechanicalParams* mparams = mechanicalparams::defaultInstance(), MultiVecDerivId outVel = vec_id::write_access::velocity, ConstMultiVecDerivId inVel = vec_id::read_access::velocity ) = 0;
+    virtual void applyJ(const MechanicalParams* mparams = mechanicalparams::defaultInstance(), MultiVecDerivId outVel = vec_id::write_access::velocity, ConstMultiVecDerivId inVel = vec_id::read_access::velocity ) final;
 
     /// Accessor to the input model of this mapping
     virtual type::vector<BaseState*> getFrom() = 0;
@@ -82,13 +99,49 @@ public:
      *  Methods related to the transmission of forces
      */
     ///@{
+
+    /**
+     * !!! WARNING since v25.12 !!!
+     *
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doApplyJT" internally,
+     * which is the method to override from now on.
+     *
+     **/
     /// Accumulate child force in the parent force. In implicit methods, this is also used to accumulate a change of child force to a change of parent force.
-    virtual void applyJT(const MechanicalParams* mparams, MultiVecDerivId inForce, ConstMultiVecDerivId outForce) = 0;
+    virtual void applyJT(const MechanicalParams* mparams, MultiVecDerivId inForce, ConstMultiVecDerivId outForce) final;
+
+    /**
+     * !!! WARNING since v25.12 !!!
+     *
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doApplyDJT" internally,
+     * which is the method to override from now on.
+     *
+     **/
     /// Accumulate a change of parent force due to the change of the mapping, for a constant child force. Null for linear mappings.
-    virtual void applyDJT(const MechanicalParams* mparams, MultiVecDerivId inForce, ConstMultiVecDerivId outForce) = 0;
+    virtual void applyDJT(const MechanicalParams* mparams, MultiVecDerivId inForce, ConstMultiVecDerivId outForce) final;
+
+    /**
+     * !!! WARNING since v25.12 !!!
+     *
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doApplyJT" internally,
+     * which is the method to override from now on.
+     *
+     **/
     /// Propagate constraint Jacobians upward
-    virtual void applyJT(const ConstraintParams* mparams, MultiMatrixDerivId inConst, ConstMultiMatrixDerivId outConst) = 0;
-    virtual void computeAccFromMapping(const MechanicalParams* mparams, MultiVecDerivId outAcc, ConstMultiVecDerivId inVel, ConstMultiVecDerivId inAcc) = 0;
+    virtual void applyJT(const ConstraintParams* mparams, MultiMatrixDerivId inConst, ConstMultiMatrixDerivId outConst) final;
+
+    /**
+     * !!! WARNING since v25.12 !!!
+     *
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doComputeAccFromMapping" internally,
+     * which is the method to override from now on.
+     *
+     **/
+    virtual void computeAccFromMapping(const MechanicalParams* mparams, MultiVecDerivId outAcc, ConstMultiVecDerivId inVel, ConstMultiVecDerivId inAcc) final;
 
     virtual bool areForcesMapped() const;
     virtual bool areConstraintsMapped() const;
@@ -112,6 +165,15 @@ public:
     /// input and output DOFs (mostly identity or data-conversion mappings).
     virtual bool sameTopology() const { return false; }
 
+
+    /**
+     * !!! WARNING since v25.12 !!!
+     *
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doGetJ" internally,
+     * which is the method to override from now on.
+     *
+     **/
     /// Get the (sparse) jacobian matrix of this mapping, as used in applyJ/applyJT.
     /// This matrix should have as many columns as DOFs in the input mechanical states
     /// (one after the other in case of multi-mappings), and as many lines as DOFs in
@@ -123,44 +185,106 @@ public:
     /// @todo Note that if the mapping provides this matrix, then a default implementation
     /// of all other related methods could be provided, or optionally used to verify the
     /// provided implementations for debugging.
-    virtual const sofa::linearalgebra::BaseMatrix* getJ(const MechanicalParams* /*mparams*/);
+    virtual const sofa::linearalgebra::BaseMatrix* getJ(const MechanicalParams* /*mparams*/) final;
 
+
+    /**
+     * !!! WARNING since v25.12 !!!
+     *
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doGetJ" internally,
+     * which is the method to override from now on.
+     *
+     **/
     /// @deprecated
-    virtual const sofa::linearalgebra::BaseMatrix* getJ();
+    virtual const sofa::linearalgebra::BaseMatrix* getJ() final;
 
 
     typedef sofa::linearalgebra::BaseMatrix* (*func_createMappedMatrix)(const behavior::BaseMechanicalState* , const behavior::BaseMechanicalState* );
+
+    /**
+     * !!! WARNING since v25.12 !!!
+     *
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doCreateMappedMatrix" internally,
+     * which is the method to override from now on.
+     *
+     **/
     /// Create a matrix for mapped mechanical objects
     /// If the two mechanical objects is identical, create a new stiffness matrix for this mapped objects
     /// If the two mechanical objects is different, create a new interaction matrix
-    virtual sofa::linearalgebra::BaseMatrix* createMappedMatrix(const behavior::BaseMechanicalState* state1, const behavior::BaseMechanicalState* state2, func_createMappedMatrix);
+    virtual sofa::linearalgebra::BaseMatrix* createMappedMatrix(const behavior::BaseMechanicalState* state1, const behavior::BaseMechanicalState* state2, func_createMappedMatrix) final;
 
     /// Get the source (upper) mechanical state.
     virtual type::vector<behavior::BaseMechanicalState*> getMechFrom() = 0;
     /// Get the destination (lower, mapped) mechanical state.
     virtual type::vector<behavior::BaseMechanicalState*> getMechTo() = 0;
 
+    /**
+     * !!! WARNING since v25.12 !!!
+     *
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doDisable" internally,
+     * which is the method to override from now on.
+     *
+     **/
     /// Disable the mapping to get the original coordinates of the mapped model.
-    virtual void disable()=0;
+    virtual void disable() final;
+
 
     /// @name API for global matrix assembly (used in the Compliant plugin)
     /// @{
 
+    /**
+     * !!! WARNING since v25.12 !!!
+     *
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doGetJs" internally,
+     * which is the method to override from now on.
+     *
+     **/
     /// Returns pointers to Jacobian matrices associated with parent states, consistently with getFrom(). Most mappings have only one parent, however Multimappings have several parents.
     /// For efficiency concerns, please return pointers to defaulttype::EigenBaseSparseMatrix
-    virtual const type::vector<sofa::linearalgebra::BaseMatrix*>* getJs() { dmsg_error() << "Calling a virtual method not implemented."; return nullptr; }
+    virtual const type::vector<sofa::linearalgebra::BaseMatrix*>* getJs() final;
 
+
+    /**
+     * !!! WARNING since v25.12 !!!
+     *
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doUpdateK" internally,
+     * which is the method to override from now on.
+     *
+     **/
     /// Compute the geometric stiffness matrix based on given child forces
     /// K = dJ^T * outForce
     /// Default implementation does nothing, corresponding to a linear mapping.
-    virtual void updateK( const MechanicalParams* /*mparams*/, ConstMultiVecDerivId /*outForce*/ ) {}
+    virtual void updateK( const MechanicalParams* /*mparams*/, ConstMultiVecDerivId /*outForce*/ ) final;
 
+
+    /**
+     * !!! WARNING since v25.12 !!!
+     *
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doGetK" internally,
+     * which is the method to override from now on.
+     *
+     **/
     /// Returns a pointer to the geometric stiffness matrix.
     /// This is the equivalent of applyDJT, for matrix assembly instead of matrix-vector product.
     /// This matrix is associated with the parent DOFs. It is a square matrix with a size of the total number of parent DOFs.
     /// For efficiency concerns, please return a pointer to a defaulttype::EigenBaseSparseMatrix
-    virtual const linearalgebra::BaseMatrix* getK() { return nullptr; }
+    virtual const linearalgebra::BaseMatrix* getK() final;
 
+
+    /**
+     * !!! WARNING since v25.12 !!!
+     *
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doBuildGeometricStiffnessMatrix" internally,
+     * which is the method to override from now on.
+     *
+     **/
     /**
      * \brief Assembles the geometric stiffness matrix of the mapping in the
      *        provided matrix object.
@@ -180,12 +304,28 @@ public:
      *
      * \param matrices The matrix to fill in with the geometric stiffness of the mapping
      */
-    virtual void buildGeometricStiffnessMatrix(sofa::core::GeometricStiffnessMatrix* matrices);
+    virtual void buildGeometricStiffnessMatrix(sofa::core::GeometricStiffnessMatrix* matrices) final;
 
     /// @}
 
 protected:
     bool testMechanicalState(BaseState* state);
+
+    //Method for template method pattern
+    virtual void doBuildGeometricStiffnessMatrix(sofa::core::GeometricStiffnessMatrix* matrices);
+    virtual const linearalgebra::BaseMatrix* doGetK() { return nullptr; }
+    virtual void doUpdateK( const MechanicalParams* /*mparams*/, ConstMultiVecDerivId /*outForce*/ ) {}
+    virtual const type::vector<sofa::linearalgebra::BaseMatrix*>* doGetJs() { dmsg_error() << "Calling a virtual method not implemented."; return nullptr; }
+    virtual void doDisable() = 0;
+    virtual sofa::linearalgebra::BaseMatrix* doCreateMappedMatrix(const behavior::BaseMechanicalState* state1, const behavior::BaseMechanicalState* state2, func_createMappedMatrix);
+    virtual const sofa::linearalgebra::BaseMatrix* doGetJ();
+    virtual const sofa::linearalgebra::BaseMatrix* doGetJ(const MechanicalParams* /*mparams*/);
+    virtual void doComputeAccFromMapping(const MechanicalParams* mparams, MultiVecDerivId outAcc, ConstMultiVecDerivId inVel, ConstMultiVecDerivId inAcc) = 0;
+    virtual void doApplyJT(const ConstraintParams* mparams, MultiMatrixDerivId inConst, ConstMultiMatrixDerivId outConst) = 0;
+    virtual void doApplyDJT(const MechanicalParams* mparams, MultiVecDerivId inForce, ConstMultiVecDerivId outForce) = 0;
+    virtual void doApplyJT(const MechanicalParams* mparams, MultiVecDerivId inForce, ConstMultiVecDerivId outForce) = 0;
+    virtual void doApplyJ(const MechanicalParams* mparams = mechanicalparams::defaultInstance(), MultiVecDerivId outVel = vec_id::write_access::velocity, ConstMultiVecDerivId inVel = vec_id::read_access::velocity ) = 0;
+    virtual void doApply (const MechanicalParams* mparams = mechanicalparams::defaultInstance(), MultiVecCoordId outPos = vec_id::write_access::position, ConstMultiVecCoordId inPos = vec_id::read_access::position ) = 0;
 
 public:
     bool insertInNode( objectmodel::BaseNode* node ) override;

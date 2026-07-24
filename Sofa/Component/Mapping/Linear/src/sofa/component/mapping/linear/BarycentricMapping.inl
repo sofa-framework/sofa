@@ -329,7 +329,7 @@ void BarycentricMapping<TIn, TOut>::applyJT (const core::MechanicalParams * mpar
 
 
 template <class TIn, class TOut>
-const sofa::linearalgebra::BaseMatrix* BarycentricMapping<TIn, TOut>::getJ()
+const sofa::linearalgebra::BaseMatrix* BarycentricMapping<TIn, TOut>::doGetJ()
 {
     if (d_mapper!=nullptr )
     {
@@ -473,10 +473,10 @@ void BarycentricMapperTriangleSetTopology<In,Out>::handleTopologyChange(core::to
 #endif // BARYCENTRIC_MAPPER_TOPOCHANGE_REINIT
 
 template<class TIn, class TOut>
-const type::vector< linearalgebra::BaseMatrix*>* BarycentricMapping<TIn, TOut>::getJs()
+const type::vector< linearalgebra::BaseMatrix*>* BarycentricMapping<TIn, TOut>::doGetJs()
 {
     typedef typename Mapper::MatrixType mat_type;
-    const sofa::linearalgebra::BaseMatrix* matJ = getJ();
+    const sofa::linearalgebra::BaseMatrix* matJ = core::BaseMapping::getJ();
 
     const auto * mat = dynamic_cast<const mat_type*>(matJ);
     if(mat==nullptr)

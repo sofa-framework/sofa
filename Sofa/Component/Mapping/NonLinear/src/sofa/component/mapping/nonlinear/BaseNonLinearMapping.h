@@ -50,14 +50,14 @@ public:
     void applyJ(const core::MechanicalParams* mparams, DataVecDeriv_t<Out>& out, const DataVecDeriv_t<In>& in) final;
     void applyJT(const core::MechanicalParams* mparams, DataVecDeriv_t<In>& out, const DataVecDeriv_t<Out>& in) final;
     void applyJT(const core::ConstraintParams *cparams, DataMatrixDeriv_t<In>& out, const DataMatrixDeriv_t<Out>& in) final;
-    void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentForceId, core::ConstMultiVecDerivId childForceId) final;
-
-    const linearalgebra::BaseMatrix* getK() final;
-    const type::vector<sofa::linearalgebra::BaseMatrix*>* getJs() override;
-
-    void updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId) final;
 
 protected:
+
+
+    void doApplyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentForceId, core::ConstMultiVecDerivId childForceId) final;
+    const linearalgebra::BaseMatrix* doGetK() final;
+    const type::vector<sofa::linearalgebra::BaseMatrix*>* doGetJs() override;
+    void doUpdateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId) final;
 
     using SparseKMatrixEigen = linearalgebra::EigenSparseMatrix<TIn,TIn>;
 
