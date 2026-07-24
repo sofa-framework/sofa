@@ -55,11 +55,12 @@ void UnilateralLagrangianConstraint<DataTypes>::getConstraintResolution(const co
         Contact& c = this->contacts[i];
         if(c.parameters.hasTangentialComponent())
         {
-            UnilateralConstraintResolutionWithFriction* ucrwf = new UnilateralConstraintResolutionWithFriction(c.parameters.mu, nullptr, &this->contactsStatus[i]);
+            UnilateralConstraintResolutionWithFriction* ucrwf;
+            ucrwf = new UnilateralConstraintResolutionWithFriction(c.parameters.mu, c.parameters.drag, nullptr, &this->contactsStatus[i]);
             ucrwf->setTolerance(this->customTolerance);
             resTab[offset] = ucrwf;
 
-            // TODO : cette méthode de stockage des forces peu mal fonctionner avec 2 threads quand on utilise l'haptique
+            // TODO : cette méthode de stockage des forces peut mal fonctionner avec 2 threads quand on utilise l'haptique
             offset += 3;
         }
         else
