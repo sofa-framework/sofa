@@ -188,7 +188,7 @@ void FileRepository::addFirstPath(const std::string& p)
         }
         p0 = p1+1;
     }
-    vpath.insert(vpath.begin(), entries.begin(), entries.end());
+    m_vpath.insert(m_vpath.begin(), entries.begin(), entries.end());
 }
 
 void FileRepository::addLastPath(const std::string& p)
@@ -208,7 +208,7 @@ void FileRepository::addLastPath(const std::string& p)
         }
         p0 = p1+1;
     }
-    vpath.insert(vpath.end(), entries.begin(), entries.end());
+    m_vpath.insert(m_vpath.end(), entries.begin(), entries.end());
 }
 
 void FileRepository::removePath(const std::string& path)
@@ -229,19 +229,19 @@ void FileRepository::removePath(const std::string& path)
     for(std::vector<std::string>::iterator it=entries.begin();
         it!=entries.end(); ++it)
     {
-        vpath.erase( find(vpath.begin(), vpath.end(), *it) );
+        m_vpath.erase( find(m_vpath.begin(), m_vpath.end(), *it) );
     }
 }
 
 void FileRepository::clear()
 {
-    vpath.clear();
+    m_vpath.clear();
 }
 
 std::string FileRepository::getFirstPath()
 {
-    if (vpath.size() > 0)
-        return vpath.front();
+    if (m_vpath.size() > 0)
+        return m_vpath.front();
     else return "";
 }
 
@@ -274,14 +274,35 @@ bool FileRepository::findFile(std::string& filename, const std::string& basedir,
     if (findFileIn(filename, currentDir)) return true;
 
     if (SetDirectory::IsAbsolute(filename)) return false; // absolute file path
+    
+    // if the given filename starts with dot entries,
+    // each path from the list should be searched
+    // and in the current dir as a fallback
     if (filename.substr(0,2)=="./" || filename.substr(0,3)=="../")
     {
+        const std::string original = filename;
+        for(const auto& path : m_vpath)
+        {
+            std::string candidate = original;
+            if (findFileIn(candidate, path))
+            {
+                filename = candidate;
+                return true;
+            }
+        }
+
+        // fallback to currentDir (aka current working dir)
         // update filename with current dir
-        filename = SetDirectory::GetRelativeFromDir(filename.c_str(), currentDir.c_str());
+        filename = SetDirectory::GetRelativeFromDir(original.c_str(), currentDir.c_str());
         return false; // local file path
     }
-    for (std::vector<std::string>::const_iterator it = vpath.begin(); it != vpath.end(); ++it)
-        if (findFileIn(filename, *it)) return true;
+    
+    for(const auto& path : m_vpath)
+    {
+        if (findFileIn(filename, path))
+            return true;
+    }
+    
     if (errlog)
     {
         // hack to use logging rather than directly writing in std::cerr/std::cout
@@ -289,8 +310,10 @@ bool FileRepository::findFile(std::string& filename, const std::string& basedir,
 
         std::stringstream tmplog;
         tmplog << "File "<<filename<<" NOT FOUND in "<<basedir;
-        for (std::vector<std::string>::const_iterator it = vpath.begin(); it != vpath.end(); ++it)
-            tmplog << ':'<<*it;
+        
+        for(const auto& path : m_vpath)
+            tmplog << ':'<< path;
+        
         if( errlog==&std::cerr || errlog==&std::cout)
             msg_error("FileRepository") << tmplog.str();
         else
@@ -317,10 +340,10 @@ void FileRepository::findAllFilesInRepository(const std::string& path, std::vect
         }
     };
 
-    for (std::vector<std::string>::const_iterator it = vpath.begin(); it != vpath.end(); ++it)
+    for (const auto& repopath : m_vpath)
     {
-        // Get the full / absolute path (vpath + path)
-        const std::string fullPath = SetDirectory::GetRelativeFromDir(path.c_str(), it->c_str());
+        // Get the full / absolute path (repopath + path)
+        const std::string fullPath = SetDirectory::GetRelativeFromDir(path.c_str(), repopath.c_str());
         fs::path p = fs::path(fullPath);
 
         if (fs::exists(p) && fs::is_directory(p))
@@ -345,8 +368,8 @@ void FileRepository::findAllFilesInRepository(const std::string& path, std::vect
 
 void FileRepository::print()
 {
-    for (std::vector<std::string>::const_iterator it = vpath.begin(); it != vpath.end(); ++it)
-        std::cout << *it << std::endl;
+    for (const auto& path : m_vpath)
+        std::cout << path << std::endl;
 }
 
 const std::string FileRepository::getPathsJoined()
@@ -356,7 +379,7 @@ const std::string FileRepository::getPathsJoined()
 #ifdef WIN32
     delim = ";";
 #endif
-    std::copy(vpath.begin(), vpath.end(), std::ostream_iterator<std::string>(imploded, delim.c_str()));
+    std::copy(m_vpath.begin(), m_vpath.end(), std::ostream_iterator<std::string>(imploded, delim.c_str()));
     std::string implodedStr = imploded.str();
     implodedStr = implodedStr.substr(0, implodedStr.size()-1); // remove trailing separator
     return implodedStr;

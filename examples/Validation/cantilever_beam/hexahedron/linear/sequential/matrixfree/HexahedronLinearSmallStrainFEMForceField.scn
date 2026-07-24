@@ -4,7 +4,8 @@
 
     <CGLinearSolver iterations="250" name="linear_solver" tolerance="1.0e-12" threshold="1.0e-12" />
 
-    <HexahedronLinearSmallStrainFEMForceField name="FEM" youngModulus="2e6" poissonRatio="0.45" topology="@grid"
-                                         computeForceStrategy="sequenced" computeForceDerivStrategy="sequenced"/>
+    <LinearSmallStrainFEMForceField name="FEM" template="Vec3,Hexahedron"
+                                           youngModulus="2e6" poissonRatio="0.45" topology="@grid"
+                                           computeForceStrategy="sequenced" computeForceDerivStrategy="sequenced"/>
 
 </Node>

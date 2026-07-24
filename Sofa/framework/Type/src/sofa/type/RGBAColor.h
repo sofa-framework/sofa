@@ -66,6 +66,8 @@ public:
     static RGBAColor fromStdArray(const std::array<double, 4>& color);
     static RGBAColor fromHSVA(float h, float s, float v, float a);
 
+    std::string toHexadecimal() const;
+
     static bool read(const std::string& str, RGBAColor& color) ;
 
     constexpr static const RGBAColor& white();

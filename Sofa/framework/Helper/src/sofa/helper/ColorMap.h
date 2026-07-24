@@ -26,22 +26,59 @@
 
 #include <sofa/type/vector.h>
 #include <sofa/type/RGBAColor.h>
-#include <sofa/helper/rmath.h>
 #include <sofa/type/Vec.h>
 #include <string>
-//#include <sofa/helper/OptionsGroup.h>
 
 
 namespace sofa::helper
 {
-    
+
 class SOFA_HELPER_API ColorMap 
 {
 public:
     typedef sofa::type::vector<type::RGBAColor> VecColor;
+
+    enum class ColorPreset : char
+   {
+       RED_TO_BLUE,
+       BLUE_TO_RED,
+
+       YELLOW_TO_CYAN,
+       CYAN_TO_YELLOW,
+
+       RED_TO_YELLOW,
+       YELLOW_TO_RED,
+
+       YELLOW_TO_GREEN,
+       GREEN_TO_YELLOW,
+
+       GREEN_TO_CYAN,
+       CYAN_TO_GREEN,
+
+       CYAN_TO_BLUE,
+       BLUE_TO_CYAN,
+
+       RED,
+       RED_INV,
+
+       GREEN,
+       GREEN_INV,
+
+       BLUE,
+       BLUE_INV,
+
+       HSV,
+
+       UNKNOWN,
+   };
+    static const std::unordered_map<ColorPreset, std::string> colorPresetNamesMap;
     
-    ColorMap(unsigned int paletteSize = 256, const std::string& colorScheme = "HSV");
-    virtual ~ColorMap();
+    explicit ColorMap(unsigned int paletteSize = 256, const ColorPreset = ColorPreset::HSV);
+    ColorMap(unsigned int paletteSize, const std::string& colorScheme);
+    ColorMap(const sofa::type::RGBAColor& c1, const sofa::type::RGBAColor& c2);
+    explicit ColorMap(const sofa::type::RGBAColor& color);
+
+    bool buildFromColorScheme(unsigned int paletteSize = 256, const ColorPreset colorScheme = ColorPreset::HSV);
 
     template<class Real>
     class evaluator
@@ -52,18 +89,18 @@ public:
         {}
 
         evaluator(const ColorMap* map, Real vmin, Real vmax)
-            : map(map), vmin(vmin), vmax(vmax), vscale((vmax == vmin) ? (Real)0 : (map->entries.size()-1)/(vmax-vmin)) {}
+            : map(map), vmin(vmin), vmax(vmax), vscale((vmax == vmin) ? (Real)0 : (map->m_entries.size()-1)/(vmax-vmin)) {}
 
         auto operator()(Real r) const
         {
             Real e = (r-vmin)*vscale;
-            if (e<0) return map->entries.front();
+            if (e<0) return map->m_entries.front();
 
             unsigned int i = (unsigned int)(e);
-            if (i>=map->entries.size()-1) return map->entries.back();
+            if (i>=map->m_entries.size()-1) return map->m_entries.back();
 
-            const auto& c1 = map->entries[i];
-            const auto& c2 = map->entries[i+1];
+            const auto& c1 = map->m_entries[i];
+            const auto& c2 = map->m_entries[i+1];
             return c1+(c2-c1)*(e-i);
         }
     protected:
@@ -73,51 +110,42 @@ public:
         Real vscale;
     };
 
-    unsigned int m_paletteSize;
-    std::string m_colorScheme;
-    
-    VecColor entries;
-    
-    void init();
-    void reinit();
-    
-    unsigned int getPaletteSize() const { return m_paletteSize;  }
-    void setPaletteSize(unsigned int paletteSize) { m_paletteSize = paletteSize; }
-
-    const std::string& getColorScheme() const { return m_colorScheme;  }
-    void setColorScheme(const std::string& colorScheme) { m_colorScheme = colorScheme; }
-
-    unsigned int getNbColors() const { return (unsigned int) entries.size(); }
+    unsigned int getNbColors() const { return (unsigned int) m_entries.size(); }
     type::RGBAColor getColor(unsigned int i) {
-        if (i < entries.size()) return entries[i];
+        if (i < m_entries.size()) return m_entries[i];
         return type::RGBAColor(0.f, 0.f, 0.f, 0.f);
     }
 
     static ColorMap* getDefault();
 
     template<class Real>
-    evaluator<Real> getEvaluator(Real vmin, Real vmax)
+    evaluator<Real> getEvaluator(Real vmin, Real vmax) const
     {
-        if (!entries.empty()) {
+        if (!m_entries.empty()) {
             return evaluator<Real>(this, vmin, vmax);
         } else {
             return evaluator<Real>(getDefault(), vmin, vmax);
         }
     }
 
-    inline friend std::ostream& operator << (std::ostream& out, const ColorMap& m )
-    {
-        out << m.entries;
-        return out;
-    }
+    friend SOFA_HELPER_API std::ostream& operator<<(std::ostream& out, const ColorMap& m);
+    friend SOFA_HELPER_API std::istream& operator>>(std::istream& in, ColorMap& m);
 
-    inline friend std::istream& operator >> (std::istream& in, ColorMap& m )
-    {
-        in >> m.entries;
-        return in;
-    }
+    void init() = delete;
+    void reinit() = delete;
+
+    unsigned int getPaletteSize() const = delete;
+    void setPaletteSize(unsigned int paletteSize) = delete;
+
+    const std::string& getColorScheme() const = delete;
+    void setColorScheme(const std::string& colorScheme) = delete;
+
+private:
+    VecColor m_entries;
 };
 
+SOFA_HELPER_API std::ostream& operator<<(std::ostream& out, const ColorMap& m);
+SOFA_HELPER_API std::istream& operator>>(std::istream& in, ColorMap& m);
 
 } // namespace sofa::helper
 

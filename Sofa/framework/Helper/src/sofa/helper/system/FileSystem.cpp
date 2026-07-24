@@ -377,7 +377,7 @@ int FileSystem::findFiles(const std::string& directoryPath,
             msg_error("FileSystem::findFiles()") << directoryPath << ": " << ec.message();
             return -1;
         }
-        const std::string filepath = it->path().string();
+        const std::string filepath = it->path().generic_string();
 
         if (it->is_directory(ec) && it->path().filename().string()[0] != '.' && depth > 0)
         {

@@ -24,6 +24,7 @@
 #include <sofa/fem/FiniteElement[Edge].h>
 #include <sofa/fem/FiniteElement[Hexahedron].h>
 #include <sofa/fem/FiniteElement[Prism].h>
+#include <sofa/fem/FiniteElement[Pyramid].h>
 #include <sofa/fem/FiniteElement[Quad].h>
 #include <sofa/fem/FiniteElement[Tetrahedron].h>
 #include <sofa/fem/FiniteElement[Triangle].h>

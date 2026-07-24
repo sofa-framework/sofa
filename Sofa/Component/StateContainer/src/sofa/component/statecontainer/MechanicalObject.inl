@@ -1893,8 +1893,9 @@ bool vOp_vbf(MechanicalObject<DataTypes>& self, core::VecId v, core::ConstVecId 
 {
     if constexpr (requires(core::StateVecType_t<DataTypes, vtype> vc, core::StateVecType_t<DataTypes, btype> bc, Real_t<DataTypes> fc){vc[0] = bc[0] * fc;})
     {
-        auto vv = helper::getWriteOnlyAccessor(*self.write(core::TVecId<vtype, core::V_WRITE>(v)));
+        // Read accessors are created before the write-only accessor on purpose: see vOp_va.
         auto vb = helper::getReadAccessor(*self.read(core::TVecId<btype, core::V_READ>(b)));
+        auto vv = helper::getWriteOnlyAccessor(*self.write(core::TVecId<vtype, core::V_WRITE>(v)));
         vv.resize(vb.size());
         for (unsigned int i = 0; i < vv.size(); ++i)
         {
@@ -1911,8 +1912,12 @@ bool vOp_va(MechanicalObject<DataTypes>& self, core::VecId v, core::ConstVecId b
     SOFA_UNUSED(f);
     if constexpr (requires(core::StateVecType_t<DataTypes, vtype> vc, core::StateVecType_t<DataTypes, btype> bc){vc[0] = bc[0];})
     {
-        auto vv = helper::getWriteOnlyAccessor(*self.write(core::TVecId<vtype, core::V_WRITE>(v)));
+        // The read accessor must be created *before* the write-only accessor: reading b may
+        // trigger a Data update (e.g. b is linked to an engine output), which reassigns the
+        // copy-on-write shared_ptr and would free the buffer captured by a write accessor
+        // opened earlier. This matters in particular when v == b (self-copy of a linked Data).
         auto vb = helper::getReadAccessor(*self.read(core::TVecId<btype, core::V_READ>(b)));
+        auto vv = helper::getWriteOnlyAccessor(*self.write(core::TVecId<vtype, core::V_WRITE>(v)));
         vv.wref() = vb.ref();
         return true;
     }
@@ -1925,8 +1930,9 @@ bool vOp_vb(MechanicalObject<DataTypes>& self, core::VecId v, core::ConstVecId b
     SOFA_UNUSED(f);
     if constexpr (requires(core::StateVecType_t<DataTypes, vtype> vc, core::StateVecType_t<DataTypes, btype> bc){vc[0] += bc[0];})
     {
-        auto vv = helper::getWriteOnlyAccessor(*self.write(core::TVecId<vtype, core::V_WRITE>(v)));
+        // Read accessors are created before the write-only accessor on purpose: see vOp_va.
         auto vb = helper::getReadAccessor(*self.read(core::TVecId<btype, core::V_READ>(b)));
+        auto vv = helper::getWriteOnlyAccessor(*self.write(core::TVecId<vtype, core::V_WRITE>(v)));
         vv.resize(vb.size());
         for (unsigned int i = 0; i < vv.size(); ++i)
         {
@@ -1942,8 +1948,9 @@ bool vOp_avf(MechanicalObject<DataTypes>& self, core::VecId v, core::ConstVecId 
 {
     if constexpr (requires(core::StateVecType_t<DataTypes, vtype> vc, core::StateVecType_t<DataTypes, btype> bc){vc[0] *= f; vc[0] += bc[0];})
     {
-        auto vv = helper::getWriteOnlyAccessor(*self.write(core::TVecId<vtype, core::V_WRITE>(v)));
+        // Read accessors are created before the write-only accessor on purpose: see vOp_va.
         auto vb = helper::getReadAccessor(*self.read(core::TVecId<btype, core::V_READ>(b)));
+        auto vv = helper::getWriteOnlyAccessor(*self.write(core::TVecId<vtype, core::V_WRITE>(v)));
         vv.resize(vb.size());
         for (unsigned int i = 0; i < vv.size(); ++i)
         {
@@ -1960,8 +1967,9 @@ bool vOp_v_inc_bf(MechanicalObject<DataTypes>& self, core::VecId v, core::ConstV
 {
     if constexpr (requires(core::StateVecType_t<DataTypes, vtype> vc, core::StateVecType_t<DataTypes, btype> bc, Real_t<DataTypes> fc){vc[0] += bc[0] * fc;})
     {
-        auto vv = helper::getWriteOnlyAccessor(*self.write(core::TVecId<vtype, core::V_WRITE>(v)));
+        // Read accessors are created before the write-only accessor on purpose: see vOp_va.
         auto vb = helper::getReadAccessor(*self.read(core::TVecId<btype, core::V_READ>(b)));
+        auto vv = helper::getWriteOnlyAccessor(*self.write(core::TVecId<vtype, core::V_WRITE>(v)));
         vv.resize(vb.size());
         for (unsigned int i = 0; i < vv.size(); ++i)
         {
@@ -1979,9 +1987,10 @@ bool vOp_vab(MechanicalObject<DataTypes>& self, core::VecId v, core::ConstVecId 
 
     if constexpr (requires(core::StateVecType_t<DataTypes, vtype> vc, core::StateVecType_t<DataTypes, atype> ac, core::StateVecType_t<DataTypes, btype> bc){vc[0] = ac[0] + bc[0];})
     {
-        auto vv = helper::getWriteOnlyAccessor(*self.write(core::TVecId<vtype, core::V_WRITE>(v)));
+        // Read accessors are created before the write-only accessor on purpose: see vOp_va.
         auto va = helper::getReadAccessor(*self.read(core::TVecId<atype, core::V_READ>(a)));
         auto vb = helper::getReadAccessor(*self.read(core::TVecId<btype, core::V_READ>(b)));
+        auto vv = helper::getWriteOnlyAccessor(*self.write(core::TVecId<vtype, core::V_WRITE>(v)));
         vv.resize(vb.size());
         for (unsigned int i = 0; i < vv.size(); ++i)
         {
@@ -1997,9 +2006,10 @@ bool vOp_vabf(MechanicalObject<DataTypes>& self, core::VecId v, core::ConstVecId
 {
     if constexpr (requires(core::StateVecType_t<DataTypes, vtype> vc, core::StateVecType_t<DataTypes, atype> ac, core::StateVecType_t<DataTypes, btype> bc, Real_t<DataTypes> fc){vc[0] = ac[0] + bc[0] * fc;})
     {
-        auto vv = helper::getWriteOnlyAccessor(*self.write(core::TVecId<vtype, core::V_WRITE>(v)));
+        // Read accessors are created before the write-only accessor on purpose: see vOp_va.
         auto va = helper::getReadAccessor(*self.read(core::TVecId<atype, core::V_READ>(a)));
         auto vb = helper::getReadAccessor(*self.read(core::TVecId<btype, core::V_READ>(b)));
+        auto vv = helper::getWriteOnlyAccessor(*self.write(core::TVecId<vtype, core::V_WRITE>(v)));
         vv.resize(vb.size());
         for (unsigned int i = 0; i < vv.size(); ++i)
         {
@@ -2115,9 +2125,10 @@ void MechanicalObject<DataTypes>::vOp(const core::ExecParams* params, core::VecI
                            (v.type == core::V_DERIV && a.type == core::V_COORD && b.type == core::V_COORD))
                         {
                             // v = a-b
-                            auto vv = this->getWriteOnlyAccessor<core::V_DERIV>(v);
+                            // Read accessors are created before the write-only accessor on purpose: see vOp_va.
                             auto va = this->getReadAccessor<core::V_COORD>(a);
                             auto vb = this->getReadAccessor<core::V_COORD>(b);
+                            auto vv = this->getWriteOnlyAccessor<core::V_DERIV>(v);
                             vv.resize(vb.size());
                             for (unsigned int i = 0; i < vv.size(); ++i)
                             {
@@ -2632,8 +2643,12 @@ inline void MechanicalObject<DataTypes>::drawIndices(const core::visual::VisualP
 {
     std::vector<type::Vec3> positions;
     positions.reserve(d_size.getValue());
-    for (int i = 0; i <d_size.getValue(); ++i)
-        positions.push_back(type::Vec3(getPX(i), getPY(i), getPZ(i)));
+
+    const auto positionData = this->readPositions();
+    std::transform(positionData.begin(), positionData.end(), std::back_inserter(positions), [](const auto& p)
+    {
+        return sofa::type::toVec3(DataTypes::getCPos(p));
+    });
 
     vparams->drawTool()->draw3DText_Indices(positions, showIndicesScale.getValue(), d_color.getValue());
 }
@@ -2642,18 +2657,25 @@ template <class DataTypes>
 inline void MechanicalObject<DataTypes>::drawVectors(const core::visual::VisualParams* vparams)
 {
     float scale = showVectorsScale.getValue();
-    sofa::helper::ReadAccessor< Data<VecDeriv> > v_rA = *this->read(core::vec_id::read_access::velocity);
+
+    const auto v_rA = sofa::helper::getReadAccessor(*this->read(core::vec_id::read_access::velocity));
+    const auto x_rA = sofa::helper::getReadAccessor(*this->read(core::vec_id::read_access::position));
+
     type::vector<type::Vec3> points;
     points.resize(2);
-    for(Size i=0; i<v_rA.size(); ++i )
+
+    const auto mode = drawMode.getValue();
+
+    for (Size i = 0; i < v_rA.size(); ++i)
     {
-        Real vx=0.0,vy=0.0,vz=0.0;
-        DataTypes::get(vx,vy,vz,v_rA[i]);
-        type::Vec3 p1 = type::Vec3(getPX(i), getPY(i), getPZ(i));
-        type::Vec3 p2 = type::Vec3(getPX(i)+scale*vx, getPY(i)+scale*vy, getPZ(i)+scale*vz);
+        sofa::type::Vec3 v3;
+        DataTypes::get(v3[0], v3[1], v3[2], v_rA[i]);
+
+        const type::Vec3 p1 = sofa::type::toVec3(DataTypes::getCPos(x_rA[i]));
+        type::Vec3 p2 = p1 + scale * v3;
 
         const float rad = (float)( (p1-p2).norm()/20.0 );
-        switch (drawMode.getValue())
+        switch (mode)
         {
         case 0:
             points[0] = p1;
@@ -2692,9 +2714,15 @@ inline void MechanicalObject<DataTypes>::draw(const core::visual::VisualParams* 
     if (showObject.getValue())
     {
         const float& scale = showObjectScale.getValue();
-        type::vector<type::Vec3> positions(d_size.getValue());
-        for (sofa::Index i = 0; i < Size(d_size.getValue()); ++i)
-            positions[i] = type::Vec3(getPX(i), getPY(i), getPZ(i));
+
+        std::vector<type::Vec3> positions;
+        positions.reserve(d_size.getValue());
+
+        const auto positionData = this->readPositions();
+        std::transform(positionData.begin(), positionData.end(), std::back_inserter(positions), [](const auto& p)
+        {
+            return sofa::type::toVec3(DataTypes::getCPos(p));
+        });
 
         switch (drawMode.getValue())
         {
