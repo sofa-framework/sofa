@@ -50,6 +50,16 @@ using sofa::core::objectmodel::MultiLink;
 #include <filesystem>
 #include <fstream>
 
+/**
+*  \brief Test component used by Snapshot unit tests
+*
+*  This class provides a minimal implementation of a BaseComponent to validate the Snapshot API.
+*  It contains helper methods to test the serialization of data and links, createSnapshotObject and findSnapshotObject.
+*
+*  The component contains :
+*  - a Data called "d_value" used to validate data serialization
+*  - a MultiLink called "l_target" used to validate link serialization
+*/
 class TestComponent : public BaseComponent
 {
 public:
@@ -249,7 +259,7 @@ TEST_F(Snapshot_test, findSnapshotObject)
  * Test steps:
  * 1. Create a component (Component) and a empty snapshot
  * 2. Verify if the snapshot is created and empty
- * 3. Save Component1's data in the snapshot
+ * 3. Save Component's data in the snapshot
  * 4. Verify if the snapshot contains all the data from Component
  *
  */
@@ -475,7 +485,8 @@ TEST_F(Snapshot_test, loadLinkSnapshot)
  * 4. Export m_snapshot to a JSON file and check if the file is valid
  * 5. Create another snapshot (snapshot_import)
  * 6. Import the JSON file in snapshot_import
- * 7. Compare m_snapshot and snapshot_import
+ * 7. Compare snapshot_import with the scene
+ * 8. Compare snapshot and snapshot_import
  *
  */
 TEST_F(Snapshot_test, SnapshotJSONExporter)
@@ -519,6 +530,12 @@ TEST_F(Snapshot_test, SnapshotJSONExporter)
     EXPECT_EQ(snapshot_import->m_graphRoot->m_components[2]->m_name,"DefaultVisualManagerLoop1");
     EXPECT_EQ(snapshot_import->m_graphRoot->m_children[0]->m_name,"child1");
     EXPECT_EQ(snapshot_import->m_graphRoot->m_children[0]->m_components[0]->m_name,"MechanicalObject1");
+
+    EXPECT_EQ(snapshot_import->m_graphRoot->m_name,snapshot->m_graphRoot->m_name);
+    EXPECT_EQ(snapshot_import->m_graphRoot->m_components[1]->m_name,snapshot->m_graphRoot->m_components[1]->m_name);
+    EXPECT_EQ(snapshot_import->m_graphRoot->m_components[2]->m_name,snapshot->m_graphRoot->m_components[2]->m_name);
+    EXPECT_EQ(snapshot_import->m_graphRoot->m_children[0]->m_name,snapshot->m_graphRoot->m_children[0]->m_name);
+    EXPECT_EQ(snapshot_import->m_graphRoot->m_children[0]->m_components[0]->m_name,snapshot->m_graphRoot->m_children[0]->m_components[0]->m_name);
 
     std::filesystem::remove(path);
 }

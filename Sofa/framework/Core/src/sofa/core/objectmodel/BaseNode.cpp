@@ -25,7 +25,6 @@
 #include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/core/collision/Pipeline.h>
 #include <sofa/core/visual/VisualLoop.h>
-#include <sofa/core/objectmodel/Snapshot.h>
 
 namespace sofa::core::objectmodel
 {
