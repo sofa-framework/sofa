@@ -87,7 +87,6 @@ public:
 
     void init() override;
     void reinit() override;
-    void bwdInit() override;
 
     void activate();
     void desactivate();
