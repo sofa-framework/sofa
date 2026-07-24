@@ -28,3 +28,11 @@
 #include <sofa/fem/FiniteElement[Quad].h>
 #include <sofa/fem/FiniteElement[Tetrahedron].h>
 #include <sofa/fem/FiniteElement[Triangle].h>
+
+#include <sofa/fem/FiniteElement[QuadraticEdge].h>
+#include <sofa/fem/FiniteElement[QuadraticHexahedron].h>
+#include <sofa/fem/FiniteElement[QuadraticPrism].h>
+#include <sofa/fem/FiniteElement[QuadraticPyramid].h>
+#include <sofa/fem/FiniteElement[QuadraticQuad].h>
+#include <sofa/fem/FiniteElement[QuadraticTetrahedron].h>
+#include <sofa/fem/FiniteElement[QuadraticTriangle].h>

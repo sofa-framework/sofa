@@ -43,6 +43,18 @@ void registerLinearSmallStrainFEMForceField(sofa::core::ObjectFactory* factory)
         .add< LinearSmallStrainFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Hexahedron> >()
         .add< LinearSmallStrainFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Prism> >()
         .add< LinearSmallStrainFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Pyramid> >()
+
+        .add< LinearSmallStrainFEMForceField<sofa::defaulttype::Vec1Types, sofa::geometry::QuadraticEdge> >()
+        .add< LinearSmallStrainFEMForceField<sofa::defaulttype::Vec2Types, sofa::geometry::QuadraticEdge> >()
+        .add< LinearSmallStrainFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticEdge> >()
+        .add< LinearSmallStrainFEMForceField<sofa::defaulttype::Vec2Types, sofa::geometry::QuadraticTriangle> >()
+        .add< LinearSmallStrainFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticTriangle> >()
+        .add< LinearSmallStrainFEMForceField<sofa::defaulttype::Vec2Types, sofa::geometry::QuadraticQuad> >()
+        .add< LinearSmallStrainFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticQuad> >()
+        .add< LinearSmallStrainFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticTetrahedron> >()
+        .add< LinearSmallStrainFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticHexahedron> >()
+        .add< LinearSmallStrainFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticPrism> >()
+        .add< LinearSmallStrainFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticPyramid> >()
     );
 }
 
@@ -58,4 +70,15 @@ template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API LinearSmallStrainFE
 template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API LinearSmallStrainFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Prism>;
 template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API LinearSmallStrainFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Pyramid>;
 
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API LinearSmallStrainFEMForceField<sofa::defaulttype::Vec1Types, sofa::geometry::QuadraticEdge>;
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API LinearSmallStrainFEMForceField<sofa::defaulttype::Vec2Types, sofa::geometry::QuadraticEdge>;
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API LinearSmallStrainFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticEdge>;
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API LinearSmallStrainFEMForceField<sofa::defaulttype::Vec2Types, sofa::geometry::QuadraticTriangle>;
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API LinearSmallStrainFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticTriangle>;
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API LinearSmallStrainFEMForceField<sofa::defaulttype::Vec2Types, sofa::geometry::QuadraticQuad>;
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API LinearSmallStrainFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticQuad>;
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API LinearSmallStrainFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticTetrahedron>;
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API LinearSmallStrainFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticHexahedron>;
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API LinearSmallStrainFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticPrism>;
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API LinearSmallStrainFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticPyramid>;
 }

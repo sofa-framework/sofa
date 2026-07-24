@@ -180,6 +180,8 @@ public:
 
 protected:
 
+    const void* getElementsRaw(const sofa::geometry::ElementType& elementType) const noexcept override;
+
     /** \brief Creates the EdgeSet array.
      *
      * This function must be implemented by derived classes to create a list of edges from a set of triangles or tetrahedra

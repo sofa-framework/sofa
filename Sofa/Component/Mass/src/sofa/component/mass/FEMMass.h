@@ -261,6 +261,18 @@ template class SOFA_COMPONENT_MASS_API FEMMass<sofa::defaulttype::Vec3Types, sof
 template class SOFA_COMPONENT_MASS_API FEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::Hexahedron>;
 template class SOFA_COMPONENT_MASS_API FEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::Prism>;
 template class SOFA_COMPONENT_MASS_API FEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::Pyramid>;
+
+template class SOFA_COMPONENT_MASS_API FEMMass<sofa::defaulttype::Vec1Types, sofa::geometry::QuadraticEdge>;
+template class SOFA_COMPONENT_MASS_API FEMMass<sofa::defaulttype::Vec2Types, sofa::geometry::QuadraticEdge>;
+template class SOFA_COMPONENT_MASS_API FEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticEdge>;
+template class SOFA_COMPONENT_MASS_API FEMMass<sofa::defaulttype::Vec2Types, sofa::geometry::QuadraticTriangle>;
+template class SOFA_COMPONENT_MASS_API FEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticTriangle>;
+template class SOFA_COMPONENT_MASS_API FEMMass<sofa::defaulttype::Vec2Types, sofa::geometry::QuadraticQuad>;
+template class SOFA_COMPONENT_MASS_API FEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticQuad>;
+template class SOFA_COMPONENT_MASS_API FEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticTetrahedron>;
+template class SOFA_COMPONENT_MASS_API FEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticHexahedron>;
+template class SOFA_COMPONENT_MASS_API FEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticPrism>;
+template class SOFA_COMPONENT_MASS_API FEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticPyramid>;
 #endif
 
 }  // namespace sofa::component::mass
