@@ -47,7 +47,7 @@ protected:
     std::unique_ptr<std::ofstream> m_outfile;
 
     void fetchDataFields(const type::vector<std::string>& strData, type::vector<std::string>& objects, type::vector<std::string>& fields, type::vector<std::string>& names);
-    bool write() override;
+    bool doWrite() override;
     bool writeVTKSimple();
     bool writeVTKXML();
     void writeParallelFile();

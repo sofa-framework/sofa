@@ -39,7 +39,7 @@ class SOFA_SOFAMATRIX_API ComplianceMatrixExporter : public sofa::simulation::Ba
 public:
     SOFA_CLASS(ComplianceMatrixExporter, sofa::simulation::BaseSimulationExporter);
 
-    bool write() override;
+    bool doWrite() override;
     void doInit() override;
 
 protected:
