@@ -19,7 +19,7 @@
 
 stdenv.mkDerivation (finalAttrs: {
   pname = "sofa";
-  version = "26.06.99";
+  version = "26.12.99";
 
   src = lib.fileset.toSource {
     root = ./.;
