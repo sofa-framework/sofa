@@ -109,12 +109,12 @@ void OrderIndependentTransparencyManager::doInitVisual(const core::visual::Visua
     compositionShader.TurnOff();
 }
 
-void OrderIndependentTransparencyManager::fwdDraw(core::visual::VisualParams* /*vp*/)
+void OrderIndependentTransparencyManager::doFwdDraw(core::visual::VisualParams* /*vp*/)
 {
 
 }
 
-void OrderIndependentTransparencyManager::bwdDraw(core::visual::VisualParams* )
+void OrderIndependentTransparencyManager::doBwdDraw(core::visual::VisualParams* )
 {
 
 }

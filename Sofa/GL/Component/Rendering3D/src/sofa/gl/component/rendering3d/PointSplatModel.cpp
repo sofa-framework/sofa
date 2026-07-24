@@ -128,7 +128,7 @@ void PointSplatModel::reinit()
     }
 }
 
-void PointSplatModel::drawTransparent(const core::visual::VisualParams* vparams)
+void PointSplatModel::doDrawTransparent(const core::visual::VisualParams* vparams)
 {
     if(!vparams->displayFlags().getShowVisualModels()) return;
 
