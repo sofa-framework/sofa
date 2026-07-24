@@ -73,7 +73,7 @@ public:
 
 
     /** \brief check if vertices in this topology have positions. */
-    bool hasPos() const override;
+    bool doHasPos() const override;
 
     /** \brief Returns the X coordinate of the ith DOF. */
     SReal getPX(Index i) const override;
