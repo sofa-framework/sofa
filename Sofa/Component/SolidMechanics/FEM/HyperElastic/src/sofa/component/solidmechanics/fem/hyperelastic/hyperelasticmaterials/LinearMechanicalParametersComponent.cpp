@@ -1,0 +1,11 @@
+#define ELASTICITY_COMPONENT_LINEAR_MECHANICAL_PARAMETERS_CPP
+#include <sofa/component/solidmechanics/fem/hyperelastic/hyperelasticmaterials/LinearMechanicalParametersComponent.inl>
+
+namespace sofa::component::solidmechanics::fem::hyperelastic
+{
+
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_HYPERELASTIC_API LinearMechanicalParametersComponent<sofa::defaulttype::Vec1Types>;
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_HYPERELASTIC_API LinearMechanicalParametersComponent<sofa::defaulttype::Vec2Types>;
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_HYPERELASTIC_API LinearMechanicalParametersComponent<sofa::defaulttype::Vec3Types>;
+
+}
