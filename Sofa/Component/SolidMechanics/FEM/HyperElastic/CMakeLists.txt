@@ -31,6 +31,19 @@ set(HEADER_FILES
 
     ${SOFACOMPONENTSOLIDMECHANICSFEMHYPERELASTIC_SOURCE_DIR}/impl/MajorSymmetric4Tensor.h
     ${SOFACOMPONENTSOLIDMECHANICSFEMHYPERELASTIC_SOURCE_DIR}/impl/Strain.h
+
+    ${SOFACOMPONENTSOLIDMECHANICSFEMHYPERELASTIC_SOURCE_DIR}/hyperelasticmaterials/IncompressibleMooneyRivlinMaterial.h
+    ${SOFACOMPONENTSOLIDMECHANICSFEMHYPERELASTIC_SOURCE_DIR}/hyperelasticmaterials/IncompressibleMooneyRivlinMaterial.inl
+    ${SOFACOMPONENTSOLIDMECHANICSFEMHYPERELASTIC_SOURCE_DIR}/hyperelasticmaterials/LinearMechanicalParametersComponent.h
+    ${SOFACOMPONENTSOLIDMECHANICSFEMHYPERELASTIC_SOURCE_DIR}/hyperelasticmaterials/LinearMechanicalParametersComponent.inl
+    ${SOFACOMPONENTSOLIDMECHANICSFEMHYPERELASTIC_SOURCE_DIR}/hyperelasticmaterials/MooneyRivlinMaterial.h
+    ${SOFACOMPONENTSOLIDMECHANICSFEMHYPERELASTIC_SOURCE_DIR}/hyperelasticmaterials/MooneyRivlinMaterial.inl
+    ${SOFACOMPONENTSOLIDMECHANICSFEMHYPERELASTIC_SOURCE_DIR}/hyperelasticmaterials/NeoHookeanMaterial.h
+    ${SOFACOMPONENTSOLIDMECHANICSFEMHYPERELASTIC_SOURCE_DIR}/hyperelasticmaterials/NeoHookeanMaterial.inl
+    ${SOFACOMPONENTSOLIDMECHANICSFEMHYPERELASTIC_SOURCE_DIR}/hyperelasticmaterials/OgdenMaterial.h
+    ${SOFACOMPONENTSOLIDMECHANICSFEMHYPERELASTIC_SOURCE_DIR}/hyperelasticmaterials/OgdenMaterial.inl
+    ${SOFACOMPONENTSOLIDMECHANICSFEMHYPERELASTIC_SOURCE_DIR}/hyperelasticmaterials/StVenantKirchhoffMaterial.h
+    ${SOFACOMPONENTSOLIDMECHANICSFEMHYPERELASTIC_SOURCE_DIR}/hyperelasticmaterials/StVenantKirchhoffMaterial.inl
 )
 
 set(SOURCE_FILES
@@ -41,6 +54,13 @@ set(SOURCE_FILES
     ${SOFACOMPONENTSOLIDMECHANICSFEMHYPERELASTIC_SOURCE_DIR}/StandardTetrahedralFEMForceField.cpp
     ${SOFACOMPONENTSOLIDMECHANICSFEMHYPERELASTIC_SOURCE_DIR}/TetrahedronHyperelasticityFEMForceField.cpp
     ${SOFACOMPONENTSOLIDMECHANICSFEMHYPERELASTIC_SOURCE_DIR}/material/PlasticMaterial.cpp
+
+    ${SOFACOMPONENTSOLIDMECHANICSFEMHYPERELASTIC_SOURCE_DIR}/hyperelasticmaterials/IncompressibleMooneyRivlinMaterial.cpp
+    ${SOFACOMPONENTSOLIDMECHANICSFEMHYPERELASTIC_SOURCE_DIR}/hyperelasticmaterials/LinearMechanicalParametersComponent.cpp
+    ${SOFACOMPONENTSOLIDMECHANICSFEMHYPERELASTIC_SOURCE_DIR}/hyperelasticmaterials/MooneyRivlinMaterial.cpp
+    ${SOFACOMPONENTSOLIDMECHANICSFEMHYPERELASTIC_SOURCE_DIR}/hyperelasticmaterials/NeoHookeanMaterial.cpp
+    ${SOFACOMPONENTSOLIDMECHANICSFEMHYPERELASTIC_SOURCE_DIR}/hyperelasticmaterials/OgdenMaterial.cpp
+    ${SOFACOMPONENTSOLIDMECHANICSFEMHYPERELASTIC_SOURCE_DIR}/hyperelasticmaterials/StVenantKirchhoffMaterial.cpp
 )
 
 sofa_find_package(Sofa.Simulation.Core Sofa.Component.SolidMechanics.FEM.Elastic REQUIRED)
