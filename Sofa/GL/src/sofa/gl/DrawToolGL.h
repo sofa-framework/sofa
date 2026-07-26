@@ -55,6 +55,7 @@ public:
     virtual void drawLines(const std::vector<type::Vec3> &points, const std::vector< type::Vec2i > &index, float size, const type::RGBAColor& color) override;
 
     virtual void drawLineStrip(const std::vector<type::Vec3> &points, float size, const type::RGBAColor& color) override;
+    void drawLineStrip(const std::vector<Vec3> &points, float size, const std::vector<RGBAColor>& colors) override;
     virtual void drawLineLoop(const std::vector<type::Vec3> &points, float size, const type::RGBAColor& color) override;
 
     virtual void drawDisk(float radius, double from, double to, int resolution, const type::RGBAColor& color) override;

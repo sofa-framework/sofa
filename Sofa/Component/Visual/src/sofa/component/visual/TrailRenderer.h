@@ -22,6 +22,8 @@
 #pragma once
 #include <sofa/component/visual/config.h>
 #include <sofa/core/visual/VisualModel.h>
+#include <sofa/helper/ColorMap.h>
+
 #include <queue>
 
 namespace sofa::component::visual
@@ -44,7 +46,7 @@ public:
 
     Data< sofa::type::vector<Coord> > d_position; ///< Position of the particles behind which a trail is rendered
     Data< sofa::Size > d_nbSteps; ///< Number of time steps to use to render the trail
-    Data<sofa::type::RGBAColor> d_color; ///< Color of the trail
+    Data<sofa::helper::ColorMap> d_color; ///< Color of the trail
     Data<float> d_thickness; ///< Thickness of the trail
 
 

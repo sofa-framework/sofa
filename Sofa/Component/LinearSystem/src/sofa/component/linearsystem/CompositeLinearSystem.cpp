@@ -22,12 +22,14 @@
 #include <sofa/component/linearsystem/CompositeLinearSystem.inl>
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/linearalgebra/FullMatrix.h>
-#include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
-#include <sofa/linearalgebra/SparseMatrix.h>
-#include <sofa/linearalgebra/DiagonalMatrix.h>
-#include <sofa/linearalgebra/RotationMatrix.h>
+#include <sofa/linearalgebra/BTDMatrix.h>
 #include <sofa/linearalgebra/BlockDiagonalMatrix.h>
+#include <sofa/linearalgebra/BlockVector.h>
+#include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
+#include <sofa/linearalgebra/DiagonalMatrix.h>
+#include <sofa/linearalgebra/FullMatrix.h>
+#include <sofa/linearalgebra/RotationMatrix.h>
+#include <sofa/linearalgebra/SparseMatrix.h>
 
 namespace sofa::component::linearsystem
 {
@@ -45,6 +47,7 @@ template class SOFA_COMPONENT_LINEARSYSTEM_API CompositeLinearSystem< Compressed
 template class SOFA_COMPONENT_LINEARSYSTEM_API CompositeLinearSystem< DiagonalMatrix<SReal>, FullVector<SReal> >;
 template class SOFA_COMPONENT_LINEARSYSTEM_API CompositeLinearSystem< BlockDiagonalMatrix<3,SReal>, FullVector<SReal> >;
 template class SOFA_COMPONENT_LINEARSYSTEM_API CompositeLinearSystem< RotationMatrix<SReal>, FullVector<SReal> >;
+template class SOFA_COMPONENT_LINEARSYSTEM_API CompositeLinearSystem< BTDMatrix<6, SReal>, BlockVector<6, SReal> >;
 
 void registerCompositeLinearSystem(sofa::core::ObjectFactory* factory)
 {
@@ -59,7 +62,9 @@ void registerCompositeLinearSystem(sofa::core::ObjectFactory* factory)
         .add<CompositeLinearSystem< CompressedRowSparseMatrix<type::Mat<8, 8, SReal> >, FullVector<SReal> > >()
         .add<CompositeLinearSystem< DiagonalMatrix<SReal>, FullVector<SReal> > >()
         .add<CompositeLinearSystem< BlockDiagonalMatrix<3, SReal>, FullVector<SReal> > >()
-        .add<CompositeLinearSystem< RotationMatrix<SReal>, FullVector<SReal> > >());
+        .add<CompositeLinearSystem< RotationMatrix<SReal>, FullVector<SReal> > >()
+        .add<CompositeLinearSystem< BTDMatrix<6, SReal>, BlockVector<6, SReal> > >()
+    );
 }
 
 }
