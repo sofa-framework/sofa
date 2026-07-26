@@ -43,10 +43,10 @@ private:
 
     static constexpr sofa::Size spatial_dimensions = DataTypes::spatial_dimensions;
 
-    using DeformationGradient = PK2HyperelasticMaterial<DataTypes>::DeformationGradient;
-    using RightCauchyGreenTensor = PK2HyperelasticMaterial<DataTypes>::RightCauchyGreenTensor;
-    using StressTensor = PK2HyperelasticMaterial<DataTypes>::StressTensor;
-    using ElasticityTensor = PK2HyperelasticMaterial<DataTypes>::ElasticityTensor;
+    using DeformationGradient = typename PK2HyperelasticMaterial<DataTypes>::DeformationGradient;
+    using RightCauchyGreenTensor = typename PK2HyperelasticMaterial<DataTypes>::RightCauchyGreenTensor;
+    using StressTensor = typename PK2HyperelasticMaterial<DataTypes>::StressTensor;
+    using ElasticityTensor = typename PK2HyperelasticMaterial<DataTypes>::ElasticityTensor;
 
 public:
     // Ogden material constants
