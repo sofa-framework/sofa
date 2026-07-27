@@ -3,7 +3,7 @@
 
     <DefaultAnimationLoop/>
 
-    <VisualStyle displayFlags="showBehaviorModels" />
+    <VisualStyle displayFlags="showBehaviorModels showVisualModels" />
 
     <EulerImplicitSolver name="ODE_solver" rayleighStiffness="0.01" rayleighMass="0.01" />
     <SparseLDLSolver name="linear_solver" template="CompressedRowSparseMatrixMat3x3"/>
@@ -24,8 +24,9 @@
     <LinearSmallStrainFEMForceField name="FEM" template="Vec3,Hexahedron"
                                     youngModulus="50000" poissonRatio="0.45"/>
 
-    <VonMisesStress template="Vec3,Hexahedron" name="stress" printLog="true"/>
+    <VonMisesStress template="Vec3,Hexahedron" name="stress" topology="@grid" printLog="true"/>
 
-    <VisualMesh position="@state.position" topology="@grid"/>
+    <VisualMesh position="@state.position" topology="@grid"
+                vertexValues="@stress.nodalStress" colorMap="HSV" lighting="false"/>
 
 </Node>
