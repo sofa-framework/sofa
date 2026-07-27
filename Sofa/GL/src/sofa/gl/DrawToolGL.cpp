@@ -993,15 +993,9 @@ void DrawToolGL::drawQuads(const std::vector<Vec3> &points, const std::vector<ty
             const type::RGBAColor& col_c = colors[ 4*i+2 ];
             const type::RGBAColor& col_d = colors[ 4*i+3 ];
 
-            type::RGBAColor average_color;
-            for(int jj=0; jj<4; jj++)
-            {
-                average_color[jj] = (col_a[jj]+col_b[jj]+col_c[jj]+col_d[jj])*0.25f;
-            }
-
             Vec3 n = cross((b-a),(c-a));
             n.normalize();
-            internalDrawQuad(a,b,c,d,n,average_color);
+            internalDrawQuad(a, b, c, d, n, col_a, col_b, col_c, col_d);
         }
     } glEnd();
 }
