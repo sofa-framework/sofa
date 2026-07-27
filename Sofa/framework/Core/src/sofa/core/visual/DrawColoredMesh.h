@@ -149,6 +149,58 @@ struct SOFA_CORE_API DrawElementColoredMesh<sofa::geometry::Tetrahedron>
 
 };
 
+template<>
+struct SOFA_CORE_API DrawElementColoredMesh<sofa::geometry::Hexahedron>
+    : public BaseDrawColoredMesh<DrawElementColoredMesh<sofa::geometry::Hexahedron>>
+{
+    using ElementType = sofa::geometry::Hexahedron;
+    friend BaseDrawColoredMesh;
+    static constexpr std::size_t NumberQuadsInHexahedron = 6;
+
+    template<class PositionContainer, class IndicesContainer, class ColorContainer>
+    void doDraw(
+        sofa::helper::visual::DrawTool* drawTool,
+        const PositionContainer& position,
+        sofa::core::topology::BaseMeshTopology* topology,
+        const IndicesContainer& elementIndices,
+        const ColorContainer& nodesColors)
+    {
+        const auto& elements = topology->getHexahedra();
+        const auto& facets = topology->getQuads();
+
+        if(facets.empty())
+        {
+            msg_error_once("DrawElementColoredMesh<Hexahedron>") << "Drawing hexahedra needs the associated quads in the topology.";
+            return;
+        }
+
+        renderedPoints.clear();
+        colors.clear();
+
+        for (auto i : elementIndices)
+        {
+            const auto& element = elements[i];
+            const auto& facetsInElement = topology->getQuadsInHexahedron(i);
+            const auto center = this->elementCenter(position, element);
+
+            for (std::size_t j = 0; j < NumberQuadsInHexahedron; ++j)
+            {
+                const auto faceId = facetsInElement[j];
+                for (const auto vertexId : facets[faceId])
+                {
+                    const auto p = this->applyElementSpace(position[vertexId], center);
+
+                    renderedPoints.push_back(p);
+                    colors.push_back(nodesColors[vertexId]);
+                }
+            }
+        }
+
+        drawTool->drawQuads(renderedPoints, colors);
+    }
+
+};
+
 class SOFA_CORE_API DrawColoredMesh
 {
 public:
@@ -159,6 +211,7 @@ public:
     void draw(sofa::helper::visual::DrawTool* drawTool, const PositionContainer& position, const ColorContainer& nodesColors, sofa::core::topology::BaseMeshTopology* topology)
     {
         std::get<DrawElementColoredMesh<sofa::geometry::Tetrahedron>>(m_meshes).drawAllElements(drawTool, position, topology, nodesColors);
+        std::get<DrawElementColoredMesh<sofa::geometry::Hexahedron>>(m_meshes).drawAllElements(drawTool, position, topology, nodesColors);
     }
 
 private:
@@ -166,8 +219,8 @@ private:
         // DrawElementColoredMesh<sofa::geometry::Edge>,
         // DrawElementColoredMesh<sofa::geometry::Triangle>,
         // DrawElementColoredMesh<sofa::geometry::Quad>,
-        DrawElementColoredMesh<sofa::geometry::Tetrahedron>
-        // DrawElementColoredMesh<sofa::geometry::Hexahedron>,
+        DrawElementColoredMesh<sofa::geometry::Tetrahedron>,
+        DrawElementColoredMesh<sofa::geometry::Hexahedron>
         // DrawElementColoredMesh<sofa::geometry::Prism>,
         // DrawElementColoredMesh<sofa::geometry::Pyramid>
     > m_meshes;
