@@ -55,8 +55,8 @@ void VelocityBasedImplicitIntegrationScheme::doSetupIntegrationStep(const core::
     for (unsigned i = 0; i < order; ++i)
     {
         // If first order, don't add the subscript
-        simulation::common::VectorOperations::realloc(*m_vop, m_x0[i], "x0" + (order != 1 ? "_" + std::to_string(i)  : ""), this, true);
-        simulation::common::VectorOperations::realloc(*m_vop, m_v0[i], "v0" + (order != 1 ? "_" + std::to_string(i)  : ""), this,true);
+        simulation::common::VectorOperations::realloc(*m_vop, m_x0[i], "x0" + (order != 1 ? "_" + std::to_string(i)  : ""), this, false, false);
+        simulation::common::VectorOperations::realloc(*m_vop, m_v0[i], "v0" + (order != 1 ? "_" + std::to_string(i)  : ""), this,false, false);
 
         // Only at the start of the simulation, copy the position/velocity values inside the stored
         // states to recreate the past
@@ -111,14 +111,6 @@ void VelocityBasedImplicitIntegrationScheme::doSetupIntegrationStep(const core::
         m_vop->v_eq(m_vResult, core::vec_id::write_access::velocity);
     }
     m_vop->v_eq(m_xResult, core::vec_id::write_access::position);
-
-    //Propagate intermediate vectors
-    for (unsigned i = 0; i < order; ++i)
-    {
-        m_mop->propagateX(m_x0[i]);
-        if (!d_firstOrder.getValue())
-            m_mop->propagateV(m_v0[i]);
-    }
 }
 
 /**
