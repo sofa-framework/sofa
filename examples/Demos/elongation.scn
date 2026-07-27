@@ -1,0 +1,31 @@
+<?xml version="1.0" ?>
+<Node name="root" gravity="0 -9.81 0" dt="0.01">
+
+    <DefaultAnimationLoop/>
+
+    <VisualStyle displayFlags="showBehaviorModels" />
+
+    <EulerImplicitSolver name="ODE_solver" rayleighStiffness="0.01" rayleighMass="0.01" />
+    <SparseLDLSolver name="linear_solver" template="CompressedRowSparseMatrixMat3x3"/>
+
+    <RegularGridTopology name="grid" n="20 5 5" min="-0.40 -0.05 -0.05" max="0 0.05 0.05" />
+    <MechanicalObject template="Vec3" name="state"/>
+
+    <BoxROI name="boxLeft" box="-0.401 -0.51 -0.51  -0.399 0.51 0.51"/>
+    <LinearMovementProjectiveConstraint template="Vec3" indices="@boxLeft.indices"
+                                        keyTimes="0 2 100000" movements="0 0 0  -0.1 0 0   -0.1 0 0"/>
+
+    <BoxROI name="boxRight" box="-0.01 -0.51 -0.51  0.01 0.51 0.51"/>
+    <LinearMovementProjectiveConstraint template="Vec3" indices="@boxRight.indices"
+                                        keyTimes="0 2 100000" movements="0 0 0  0.1 0 0   0.1 0 0"/>
+
+    <NodalMassDensity property="1100"/>
+<!--    <FEMMass template="Vec3,Hexahedron" topology="@grid"/>-->
+    <LinearSmallStrainFEMForceField name="FEM" template="Vec3,Hexahedron"
+                                    youngModulus="50000" poissonRatio="0.45"/>
+
+    <VonMisesStress template="Vec3,Hexahedron" name="stress" printLog="true"/>
+
+    <VisualMesh position="@state.position" topology="@grid"/>
+
+</Node>
