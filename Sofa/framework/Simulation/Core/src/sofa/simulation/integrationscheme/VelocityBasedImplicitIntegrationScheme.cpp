@@ -111,6 +111,13 @@ void VelocityBasedImplicitIntegrationScheme::doSetupIntegrationStep(const core::
     }
     m_vop->v_eq(m_xResult, core::vec_id::write_access::position);
 
+    //Propagate intermediate vectors
+    for (unsigned i = 0; i < order; ++i)
+    {
+        m_mop->propagateX(m_x0[i]);
+        if (!d_firstOrder.getValue())
+            m_mop->propagateV(m_v0[i]);
+    }
 }
 
 /**
@@ -119,6 +126,13 @@ void VelocityBasedImplicitIntegrationScheme::doSetupIntegrationStep(const core::
 void VelocityBasedImplicitIntegrationScheme::computeLHS(bool firstIteration)
 {
     SOFA_UNUSED(firstIteration);
+
+    // Make sure no one modified this
+    m_mop->cparams.setX(m_xResult);
+    m_mop->cparams.setV(m_vResult);
+
+    m_mop->mparams.setX(m_xResult);
+    m_mop->mparams.setV(m_vResult);
 
     // Set the factor of the left hand side taking into account the rayleigh damping
     SCOPED_TIMER("setSystemMBKMatrix");
@@ -137,6 +151,9 @@ void VelocityBasedImplicitIntegrationScheme::computeRHS(bool firstIteration)
     // Make sure no one modified this
     m_mop->cparams.setX(m_xResult);
     m_mop->cparams.setV(m_vResult);
+
+    m_mop->mparams.setX(m_xResult);
+    m_mop->mparams.setV(m_vResult);
 
     sofa::core::behavior::MultiVecDeriv f(m_vop.get(), core::vec_id::write_access::force );
     // Let's make sure f is cleared between each Newton steps
@@ -173,6 +190,10 @@ void VelocityBasedImplicitIntegrationScheme::computeRHS(bool firstIteration)
         computeCurrentPositionIntegrationError(*m_vop, m_r1, m_xResult, m_vResult);
         if (firstIteration)
         {
+            // This propagation is needed for forcefields that are applied to mapped objects. Then,
+            // those mapped objects need to have the r1 up to date otherwise it'll add 0.
+            m_mop->propagateDx(m_r1);
+
             m_mop->mparams.setV(m_r1);
             m_mop->addMBKv(m_mappingGraph,m_r0, core::MatricesFactors::M(0.0),
                         core::MatricesFactors::B(0),
@@ -185,6 +206,10 @@ void VelocityBasedImplicitIntegrationScheme::computeRHS(bool firstIteration)
             // In velocity-based IS the acceleration is not integrated but estimated using first order
             // backward finite difference on the velocity
             computeAccelerationFromVelocity(*m_vop, m_acceleration, m_vResult);
+
+            // Again, as for m_r1, this propagation is needed for Mapped mass.
+            m_mop->propagateDx(m_acceleration);
+
             m_mop->mparams.setV(m_acceleration);
             m_mop->addMBKv(m_mappingGraph,m_r0, core::MatricesFactors::M(-1.0),
                         core::MatricesFactors::B(0),
@@ -197,6 +222,9 @@ void VelocityBasedImplicitIntegrationScheme::computeRHS(bool firstIteration)
         // Apply projective constraints to the full residue
         m_mop->projectResponse(m_mappingGraph,m_r0);
         m_mop->projectResponse(m_mappingGraph,m_r1);
+
+        m_mop->propagateDx(m_r0);
+        m_mop->propagateDx(m_r1);
     }
 
 }
@@ -226,6 +254,8 @@ void VelocityBasedImplicitIntegrationScheme::solveLinearEquation()
     l_linearSolver->getLinearSystem()->setRHS(m_r0);
     l_linearSolver->solveSystem();
     l_linearSolver->getLinearSystem()->dispatchSystemSolution(m_unknown);
+
+    m_mop->propagateDx(m_unknown);
 }
 
 /**
@@ -260,6 +290,7 @@ void VelocityBasedImplicitIntegrationScheme::updateStatesFromLinearSolution(SRea
         // Accumulate the velocity
         vel.peq(m_unknown, alpha);
     }
+
 }
 
 

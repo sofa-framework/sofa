@@ -96,6 +96,14 @@ void AccelerationBasedImplicitIntegrationScheme::doSetupIntegrationStep(const co
     m_vop->v_eq(m_vResult, core::vec_id::write_access::velocity);
     m_vop->v_eq(m_xResult, core::vec_id::write_access::position);
 
+    //Propagate intermediate vectors
+    for (unsigned i = 0; i < order; ++i)
+    {
+        m_mop->propagateX(m_x0[i]);
+        m_mop->propagateV(m_v0[i]);
+        m_mop->propagateV(m_a0[i]);
+    }
+
 }
 
 /**
@@ -104,6 +112,13 @@ void AccelerationBasedImplicitIntegrationScheme::doSetupIntegrationStep(const co
 void AccelerationBasedImplicitIntegrationScheme::computeLHS(bool firstIteration)
 {
     SOFA_UNUSED(firstIteration);
+
+    // Make sure no one modified this
+    m_mop->cparams.setX(m_xResult);
+    m_mop->cparams.setV(m_vResult);
+
+    m_mop->mparams.setX(m_xResult);
+    m_mop->mparams.setV(m_vResult);
 
     // Those two factors relate the position (DGx) and the velocity (DGv) to the acceleration
     // We can think of them as the first order approximation of the IS in term of acceleration
@@ -124,11 +139,12 @@ void AccelerationBasedImplicitIntegrationScheme::computeLHS(bool firstIteration)
 */
 void AccelerationBasedImplicitIntegrationScheme::computeRHS(bool firstIteration)
 {
-
     // Make sure no one modified this
     m_mop->cparams.setX(m_xResult);
     m_mop->cparams.setV(m_vResult);
 
+    m_mop->mparams.setX(m_xResult);
+    m_mop->mparams.setV(m_vResult);
 
     sofa::core::behavior::MultiVecDeriv f(m_vop.get(), core::vec_id::write_access::force );
     // Let's make sure f is cleared between each Newton steps
@@ -167,6 +183,9 @@ void AccelerationBasedImplicitIntegrationScheme::computeRHS(bool firstIteration)
 
         if (firstIteration)
         {
+            m_mop->propagateDx(m_r1);
+            m_mop->propagateDx(m_r2);
+
             m_mop->mparams.setV(m_r1);
             m_mop->addMBKv(m_mappingGraph, m_r0, core::MatricesFactors::M(0.0),
                            core::MatricesFactors::B(0),
@@ -179,6 +198,8 @@ void AccelerationBasedImplicitIntegrationScheme::computeRHS(bool firstIteration)
         }
 
         m_mop->mparams.setV(m_acceleration);
+        m_mop->propagateDx(m_acceleration);
+
         m_mop->addMBKv(m_mappingGraph, m_r0, core::MatricesFactors::M(-1.0),
                     core::MatricesFactors::B(0),
                     core::MatricesFactors::K(0));
@@ -188,6 +209,10 @@ void AccelerationBasedImplicitIntegrationScheme::computeRHS(bool firstIteration)
         m_mop->projectResponse(m_mappingGraph, m_r0);
         m_mop->projectResponse(m_mappingGraph, m_r1);
         m_mop->projectResponse(m_mappingGraph, m_r2);
+
+        m_mop->propagateDx(m_r0);
+        m_mop->propagateDx(m_r1);
+        m_mop->propagateDx(m_r2);
     }
 
 }
@@ -217,6 +242,8 @@ void AccelerationBasedImplicitIntegrationScheme::solveLinearEquation()
     l_linearSolver->getLinearSystem()->setRHS(m_r0);
     l_linearSolver->solveSystem();
     l_linearSolver->getLinearSystem()->dispatchSystemSolution(m_unknown);
+
+    m_mop->propagateDx(m_unknown);
 }
 
 /**
