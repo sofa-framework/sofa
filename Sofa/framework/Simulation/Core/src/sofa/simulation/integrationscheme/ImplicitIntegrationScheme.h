@@ -84,6 +84,12 @@ public:
      */
     virtual void updateStatesFromLinearSolution(SReal alpha, bool firstIteration = false) = 0;
 
+    /**
+     * This method is called after the integration step is completed.
+     */
+    virtual void finalizeIntegrationStep()
+    {  };
+
     virtual void integrate(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) ;
 
 

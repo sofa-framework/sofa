@@ -41,6 +41,7 @@ public:
     SOFA_ABSTRACT_CLASS(VelocityBasedImplicitIntegrationScheme, ImplicitIntegrationScheme);
 
     Data<bool> d_firstOrder;
+    Data<bool> d_computeFinalAcceleration;
 
 
     VelocityBasedImplicitIntegrationScheme();
@@ -75,6 +76,11 @@ public:
      * not necessary to share the result with the Newton-Raphson method.
      */
     virtual void updateStatesFromLinearSolution(SReal alpha, bool firstIteration = false);
+
+    /**
+     * This method is called after the integration step is completed.
+     */
+    virtual void finalizeIntegrationStep();
 
     virtual SReal getVelocityIntegrationFactor() const final;
     virtual SReal getPositionIntegrationFactor() const final;

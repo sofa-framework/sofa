@@ -71,6 +71,7 @@ void ImplicitIntegrationScheme::integrate(const core::ExecParams* params, SReal 
     computeLHS(true);
     solveLinearEquation();
     updateStatesFromLinearSolution(1.0, true);
+    finalizeIntegrationStep();
 }
 
 }
