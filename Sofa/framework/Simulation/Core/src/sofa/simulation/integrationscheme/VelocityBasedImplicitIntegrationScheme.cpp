@@ -34,6 +34,7 @@ namespace sofa::simulation::integrationscheme
 
 VelocityBasedImplicitIntegrationScheme::VelocityBasedImplicitIntegrationScheme()
 : d_firstOrder(initData(&d_firstOrder, false, "firstOrder", "If true the coordinates derivative will not be integrated and considered null at the beginning of the solving."))
+, d_computeFinalAcceleration(initData(&d_computeFinalAcceleration, false, "computeFinalAcceleration", "If true the integration scheme will compute the total acceleration of the timestep after updating the positions."))
 {}
 
 void VelocityBasedImplicitIntegrationScheme::doSetupIntegrationStep(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
@@ -293,6 +294,15 @@ void VelocityBasedImplicitIntegrationScheme::updateStatesFromLinearSolution(SRea
 
 }
 
+
+void VelocityBasedImplicitIntegrationScheme::finalizeIntegrationStep()
+{
+    if (d_computeFinalAcceleration.getValue())
+    {
+        computeAccelerationFromVelocity(*m_vop, m_acceleration, m_vResult);
+        m_mop->propagateDx(m_acceleration);
+    }
+}
 
 SReal VelocityBasedImplicitIntegrationScheme::getVelocityIntegrationFactor() const
 {
