@@ -82,20 +82,48 @@ void updateTexture(sofa::linearalgebra::BaseMatrix* matrix, unsigned& textureIDR
     const auto width = matrix->rows();
     const auto height = matrix->cols();
 
-    imageDataRef.resize(width * height, 255);
+    imageDataRef.resize(width * height * 3, 255);
+
+    const ImVec4 colorTrue = ImGui::GetStyleColorVec4(ImGuiCol_Text);
+    const ImVec4 colorFalse = ImGui::GetStyleColorVec4(ImGuiCol_WindowBg);
+
+    // Extract R, G, B components
+    const unsigned char rTrue = static_cast<unsigned char>(255.f * colorTrue.x);
+    const unsigned char gTrue = static_cast<unsigned char>(255.f * colorTrue.y);
+    const unsigned char bTrue = static_cast<unsigned char>(255.f * colorTrue.z);
+
+    const unsigned char rFalse = static_cast<unsigned char>(255.f * colorFalse.x);
+    const unsigned char gFalse = static_cast<unsigned char>(255.f * colorFalse.y);
+    const unsigned char bFalse = static_cast<unsigned char>(255.f * colorFalse.z);
 
     // write the data
     for (sofa::SignedIndex y = 0; y < height; ++y)
     {
         for (sofa::SignedIndex x = 0; x < width; ++x)
         {
-            imageDataRef[y * width + x] = !static_cast<bool>(matrix->element(x, y)) * std::numeric_limits<unsigned char>::max();
+            size_t index = (y * width + x) * 3;
+
+            // Determine the color based on matrix element value
+            if (matrix->element(x, y))
+            {
+                // Element is TRUE: Use Window Background Color
+                imageDataRef[index]     = rTrue; // R
+                imageDataRef[index + 1] = gTrue; // G
+                imageDataRef[index + 2] = bTrue; // B
+            }
+            else
+            {
+                // Element is FALSE: Use Text Color
+                imageDataRef[index]     = rFalse; // R
+                imageDataRef[index + 1] = gFalse; // G
+                imageDataRef[index + 2] = bFalse; // B
+            }
         }
     }
 
     // Update the texture
     glBindTexture(GL_TEXTURE_2D, textureIDRef);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, width, height, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE,
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE,
                  imageDataRef.data());
 }
 
