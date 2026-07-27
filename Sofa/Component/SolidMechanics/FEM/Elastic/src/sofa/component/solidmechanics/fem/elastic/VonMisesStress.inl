@@ -28,16 +28,45 @@ namespace sofa::component::solidmechanics::fem::elastic
 
 template <class DataTypes, class ElementType>
 VonMisesStress<DataTypes, ElementType>::VonMisesStress()
+    : d_nodalStress(initData(&d_nodalStress, sofa::type::vector<sofa::Real_t<DataTypes> >{}, "nodalStress", "Nodal von Mises stress values"))
 {
     // This component must receive events
     f_listening.setValue(true);
 }
+
+template <class DataTypes, class ElementType>
+void VonMisesStress<DataTypes, ElementType>::init()
+{
+    core::behavior::SingleStateAccessor<DataTypes>::init();
+
+    if (!this->isComponentStateInvalid())
+    {
+        this->validateTopology();
+    }
+
+    if (!this->isComponentStateInvalid())
+    {
+        auto nodalStress = sofa::helper::getWriteOnlyAccessor(d_nodalStress);
+        nodalStress->resize(this->mstate->getSize());
+
+        // std::iota(nodalStress->begin(), nodalStress->end(), 0);
+    }
+}
+
 template <class DataTypes, class ElementType>
 void VonMisesStress<DataTypes, ElementType>::handleEvent(core::objectmodel::Event* event)
 {
     if (simulation::AnimateEndEvent::checkEventType(event))
     {
-        msg_info() << "Computing von Mises stress";
+        auto nodalStress = sofa::helper::getWriteOnlyAccessor(d_nodalStress);
+        nodalStress->resize(this->mstate->getSize());
+
+        const auto& elements = trait::FiniteElement::getElementSequence(*this->l_topology);
+
+        for (const auto& element : elements)
+        {
+
+        }
     }
 }
 

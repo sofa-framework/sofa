@@ -21,6 +21,7 @@
 ******************************************************************************/
 #include <sofa/component/solidmechanics/fem/elastic/VonMisesStress.inl>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/fem/FiniteElement[all].h>
 
 namespace sofa::component::solidmechanics::fem::elastic
 {
