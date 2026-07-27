@@ -22,23 +22,34 @@
 #pragma once
 
 #include <sofa/component/solidmechanics/fem/elastic/config.h>
-#include <sofa/core/objectmodel/BaseComponent.h>
+#include <sofa/component/solidmechanics/fem/elastic/impl/trait.h>
+#include <sofa/core/behavior/TopologyAccessor.h>
+#include <sofa/core/behavior/SingleStateAccessor.h>
 
 namespace sofa::component::solidmechanics::fem::elastic
 {
 
 template <class DataTypes, class ElementType>
-class VonMisesStress : public core::objectmodel::BaseComponent
+class VonMisesStress : public core::behavior::TopologyAccessor, public core::behavior::SingleStateAccessor<DataTypes>
 {
 public:
-    SOFA_CLASS(
+    SOFA_CLASS2(
         SOFA_TEMPLATE2(VonMisesStress, DataTypes, ElementType),
-        core::objectmodel::BaseComponent);
+        core::behavior::TopologyAccessor,
+        core::behavior::SingleStateAccessor<DataTypes>);
+
+    void init() override;
+
+    Data<sofa::type::vector<sofa::Real_t<DataTypes> > > d_nodalStress;
 
 protected:
+
+    using trait = sofa::component::solidmechanics::fem::elastic::trait<DataTypes, ElementType>;
+
     VonMisesStress();
 
     void handleEvent(core::objectmodel::Event*) override;
+
 };
 
 }  // namespace sofa::component::solidmechanics::fem::elastic
