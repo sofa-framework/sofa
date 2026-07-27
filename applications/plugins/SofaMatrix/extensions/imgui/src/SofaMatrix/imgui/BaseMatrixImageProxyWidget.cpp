@@ -19,10 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaImGui/ImGuiDataWidget.h>
-#include <imgui.h>
 #include <GL/glew.h>
+#include <SofaImGui/ImGuiDataWidget.h>
 #include <SofaMatrix/BaseMatrixImageProxy.h>
+#include <imgui.h>
+#include <sofa/core/objectmodel/Base.h>
 
 #include <optional>
 
@@ -76,6 +77,18 @@ std::optional<GLuint> textureID(sofa::linearalgebra::BaseMatrix* ptr)
     return mapIt->second;
 }
 
+ImVec4& getColorNonZero()
+{
+    static ImVec4 color = ImGui::GetStyleColorVec4(ImGuiCol_Text);
+    return color;
+}
+
+ImVec4& getColorZero()
+{
+    static ImVec4 color = ImGui::GetStyleColorVec4(ImGuiCol_WindowBg);
+    return color;
+}
+
 void updateTexture(sofa::linearalgebra::BaseMatrix* matrix, unsigned& textureIDRef,
                    std::vector<unsigned char>& imageDataRef)
 {
@@ -84,8 +97,8 @@ void updateTexture(sofa::linearalgebra::BaseMatrix* matrix, unsigned& textureIDR
 
     imageDataRef.resize(width * height * 3, 255);
 
-    const ImVec4 colorTrue = ImGui::GetStyleColorVec4(ImGuiCol_Text);
-    const ImVec4 colorFalse = ImGui::GetStyleColorVec4(ImGuiCol_WindowBg);
+    const ImVec4 colorTrue = getColorNonZero();
+    const ImVec4 colorFalse = getColorZero();
 
     // Extract R, G, B components
     const unsigned char rTrue = static_cast<unsigned char>(255.f * colorTrue.x);
@@ -210,6 +223,24 @@ void DataWidget<sofa::type::BaseMatrixImageProxy>::showWidget(MyData& data)
         if (lastCounter)
         {
             *lastCounter = counter;
+        }
+
+        if (ImGui::ColorEdit3(("Color non-zero##" + data.getOwner()->getPathName() + data.getName()).c_str(), (float*)&sofamatrix::imgui::getColorNonZero(), ImGuiColorEditFlags_DisplayRGB)
+            ||
+            ImGui::ColorEdit3(("Color zero##" + data.getOwner()->getPathName() + data.getName()).c_str(), (float*)&sofamatrix::imgui::getColorZero(), ImGuiColorEditFlags_DisplayRGB))
+        {
+            auto textureID = sofamatrix::imgui::textureID(matrix);
+            if (textureID.has_value() == false)
+                return;
+
+            auto imageData = sofamatrix::imgui::imageData(matrix);
+            if (imageData.has_value() == false)
+                return;
+
+            auto& textureIDRef = textureID.value();
+            auto& imageDataRef = imageData.value();
+
+            sofamatrix::imgui::updateTexture(matrix, textureIDRef, imageDataRef);
         }
     }
     else
