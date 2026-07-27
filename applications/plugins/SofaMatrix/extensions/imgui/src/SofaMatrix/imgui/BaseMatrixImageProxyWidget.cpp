@@ -24,6 +24,10 @@
 #include <SofaMatrix/BaseMatrixImageProxy.h>
 #include <imgui.h>
 #include <sofa/core/objectmodel/Base.h>
+#include <sofa/helper/Utils.h>
+#include <sofa/helper/io/STBImage.h>
+#include <sofa/helper/system/FileRepository.h>
+#include <sofa/helper/system/FileSystem.h>
 
 #include <optional>
 
@@ -225,22 +229,70 @@ void DataWidget<sofa::type::BaseMatrixImageProxy>::showWidget(MyData& data)
             *lastCounter = counter;
         }
 
-        if (ImGui::ColorEdit3(("Color non-zero##" + data.getOwner()->getPathName() + data.getName()).c_str(), (float*)&sofamatrix::imgui::getColorNonZero(), ImGuiColorEditFlags_DisplayRGB)
+        if (ImGui::ColorEdit3(("Color non-zero##" + data.getOwner()->getPathName() + data.getName()).c_str(), (float*)&sofamatrix::imgui::getColorNonZero())
             ||
-            ImGui::ColorEdit3(("Color zero##" + data.getOwner()->getPathName() + data.getName()).c_str(), (float*)&sofamatrix::imgui::getColorZero(), ImGuiColorEditFlags_DisplayRGB))
+            ImGui::ColorEdit3(("Color zero##" + data.getOwner()->getPathName() + data.getName()).c_str(), (float*)&sofamatrix::imgui::getColorZero()))
         {
             auto textureID = sofamatrix::imgui::textureID(matrix);
-            if (textureID.has_value() == false)
-                return;
+            if (textureID.has_value() == true)
+            {
+                auto imageData = sofamatrix::imgui::imageData(matrix);
+                if (imageData.has_value() == true)
+                {
+                    auto& textureIDRef = textureID.value();
+                    auto& imageDataRef = imageData.value();
 
-            auto imageData = sofamatrix::imgui::imageData(matrix);
-            if (imageData.has_value() == false)
-                return;
+                    sofamatrix::imgui::updateTexture(matrix, textureIDRef, imageDataRef);
+                }
+            }
+        }
 
-            auto& textureIDRef = textureID.value();
-            auto& imageDataRef = imageData.value();
+        ImGui::NewLine();
+        if (ImGui::Button(("Save image##" + data.getOwner()->getPathName() + data.getName()).c_str()))
+        {
+            sofa::helper::io::STBImage image;
+            image.init(matrix->rows(), matrix->cols(), 1, 1,
+                sofa::helper::io::Image::DataType::UNORM8, sofa::helper::io::Image::ChannelFormat::RGB);
 
-            sofamatrix::imgui::updateTexture(matrix, textureIDRef, imageDataRef);
+            auto textureID = sofamatrix::imgui::textureID(matrix);
+            if (textureID.has_value() == true)
+            {
+                auto imageData = sofamatrix::imgui::imageData(matrix);
+                if (imageData.has_value() == true)
+                {
+                    auto& imageDataRef = imageData.value();
+                    auto& textureIDRef = textureID.value();
+                    sofamatrix::imgui::updateTexture(matrix, textureIDRef, imageDataRef);
+
+                    if (!imageDataRef.empty())
+                    {
+                        unsigned char* pixels = image.getPixels();
+                        for (sofa::SignedIndex y = 0; y < matrix->cols(); ++y)
+                        {
+                            for (sofa::SignedIndex x = 0; x < matrix->rows(); ++x)
+                            {
+                                for (std::size_t i = 0; i < 3; ++i)
+                                {
+                                    pixels[y * matrix->rows() * 3 + x * 3 + i] = imageDataRef[(matrix->rows() - y) * matrix->rows() * 3 + x * 3 + i];
+                                }
+                            }
+                        }
+                        const auto filename = sofa::helper::system::FileSystem::append(sofa::helper::Utils::getExecutableDirectory(), "matrix.bmp");
+                        if (image.save(filename))
+                        {
+                            msg_info("Matrix") << "Saved matrix file in '" << filename << "'";
+                        }
+                        else
+                        {
+                            msg_error(data.getOwner()) << "Error while saving matrix to file '" << filename << "'";
+                        }
+                    }
+                    else
+                    {
+                        msg_error(data.getOwner()) << "Cannot save matrix to file";
+                    }
+                }
+            }
         }
     }
     else
