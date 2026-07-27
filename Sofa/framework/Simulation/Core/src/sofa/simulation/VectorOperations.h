@@ -48,10 +48,11 @@ public:
         core::TMultiVecId<vtype, core::VecAccess::V_WRITE>& id,
         const std::string& vecIdName,
         const sofa::core::objectmodel::Base* holder,
-        bool interactionForcefield = false )
+        bool interactionForcefield = false,
+        const bool propagate=true)
     {
         sofa::core::behavior::TMultiVec<vtype> vec(&vop, id);
-        vec.realloc(&vop, interactionForcefield, true, core::VecIdProperties{vecIdName, holder->getClassName()});
+        vec.realloc(&vop, interactionForcefield, propagate, core::VecIdProperties{vecIdName, holder->getClassName()});
         id = vec.id();
     }
 
