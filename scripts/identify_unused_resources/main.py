@@ -91,7 +91,7 @@ def find_mesh_references(project_dir: str, mesh_dir: str, delete_unused: bool) -
                     lines_processed += 1
 
                     # Regex captures potential paths starting after 'mesh' variations.
-                    matches = re.findall(r'(?:"mesh[\/\\])(.*?)(?:")', line)
+                    matches = re.findall(r'(?:["\']mesh[\/\\])(.*?)(?:["\'])', line)
 
                     for raw_path in matches:
                         reference_key = normalize_potential_reference(raw_path)
