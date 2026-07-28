@@ -42,7 +42,7 @@ void AccelerationBasedImplicitIntegrationScheme::doSetupIntegrationStep(const co
     simulation::common::VectorOperations::realloc(*m_vop, m_r1, "r1", this, true);
     simulation::common::VectorOperations::realloc(*m_vop, m_r2, "r2", this, true);
     simulation::common::VectorOperations::realloc(*m_vop, m_acceleration, "acceleration", this, true);
-    simulation::common::VectorOperations::realloc(*m_vop, m_unknown, "da", this, true);
+    simulation::common::VectorOperations::realloc(*m_vop, m_systemUnknown, "da", this, true);
 
     // Deal with higher order integration scheme
     const Size order = getIntegrationSchemeTimeOrder();
@@ -177,7 +177,7 @@ void AccelerationBasedImplicitIntegrationScheme::computeRHS(bool firstIteration)
         auto backV = m_mop->mparams.v();
 
         // R1 and R2 should be equal to 0 in theory when integration scheme is linear. But let's
-        // recompute them anyway to compute the residue
+        // recompute them anyway to compute the residual
         computeCurrentPositionIntegrationError (*m_vop, m_r1, core::vec_id::write_access::velocity, m_acceleration);
         computeCurrentVelocityIntegrationError (*m_vop, m_r2, m_acceleration);
 
@@ -205,7 +205,7 @@ void AccelerationBasedImplicitIntegrationScheme::computeRHS(bool firstIteration)
                     core::MatricesFactors::K(0));
         m_mop->mparams.setV(backV);
 
-        // Apply projective constraints to the full residue
+        // Apply projective constraints to the full residual
         m_mop->projectResponse(m_mappingGraph, m_r0);
         m_mop->projectResponse(m_mappingGraph, m_r1);
         m_mop->projectResponse(m_mappingGraph, m_r2);
@@ -219,9 +219,9 @@ void AccelerationBasedImplicitIntegrationScheme::computeRHS(bool firstIteration)
 
 
 /**
- * Returns the evaluation of the residue
+ * Returns the evaluation of the residual
  */
-SReal AccelerationBasedImplicitIntegrationScheme::evaluateResidue()
+SReal AccelerationBasedImplicitIntegrationScheme::evaluateResidual()
 {
     core::behavior::MultiVecDeriv r0(m_vop.get(), m_r0);
     core::behavior::MultiVecDeriv r1(m_vop.get(), m_r1);
@@ -238,12 +238,12 @@ void AccelerationBasedImplicitIntegrationScheme::solveLinearEquation()
 {
     SCOPED_TIMER("MBKSolve");
 
-    l_linearSolver->getLinearSystem()->setSystemSolution(m_unknown);
+    l_linearSolver->getLinearSystem()->setSystemSolution(m_systemUnknown);
     l_linearSolver->getLinearSystem()->setRHS(m_r0);
     l_linearSolver->solveSystem();
-    l_linearSolver->getLinearSystem()->dispatchSystemSolution(m_unknown);
+    l_linearSolver->getLinearSystem()->dispatchSystemSolution(m_systemUnknown);
 
-    m_mop->propagateDx(m_unknown);
+    m_mop->propagateDx(m_systemUnknown);
 }
 
 /**
@@ -264,9 +264,9 @@ void AccelerationBasedImplicitIntegrationScheme::updateStatesFromLinearSolution(
     const SReal DGv = getVelocityUpdateDerivedFromAcceleration();
 
     //Update position, velocity and acceleration w/r to unknown
-    acc.peq(m_unknown, alpha);
-    vel.peq(m_unknown, alpha * DGv);
-    pos.peq(m_unknown, alpha * DGx);
+    acc.peq(m_systemUnknown, alpha);
+    vel.peq(m_systemUnknown, alpha * DGv);
+    pos.peq(m_systemUnknown, alpha * DGx);
 
     //TODO make this work with alpha, iteration might be still 0 but we are in the linesearch algo and we don't want to remove this each time...
     if (firstIteration)
