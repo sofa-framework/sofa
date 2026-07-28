@@ -46,9 +46,6 @@ class SOFA_SIMULATION_CORE_API ImplicitIntegrationScheme :
 public:
     SOFA_ABSTRACT_CLASS(ImplicitIntegrationScheme, sofa::core::behavior::BaseIntegrationScheme);
 
-    // WARNING we expect the linear integrator to initialize the working vecs. Meaning that if we
-    // work in FreeMotion, the xResult should already be equal to the actual position.
-    // Same for the velocity. This is expected when updating the position, only a += will be done.
     virtual void setupIntegrationStep(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) final;
     virtual void doSetupIntegrationStep(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
     {  }
