@@ -44,7 +44,7 @@ void VelocityBasedImplicitIntegrationScheme::doSetupIntegrationStep(const core::
     simulation::common::VectorOperations::realloc(*m_vop, m_r0, "r0", this, true);
     simulation::common::VectorOperations::realloc(*m_vop, m_r1, "r1", this, true);
     simulation::common::VectorOperations::realloc(*m_vop, m_acceleration, "acceleration", this, true);
-    simulation::common::VectorOperations::realloc(*m_vop, m_unknown, "dv", this, true);
+    simulation::common::VectorOperations::realloc(*m_vop, m_systemUnknown, "dv", this, true);
 
     // Deal with higher order integration scheme
     const Size order = getIntegrationSchemeTimeOrder();
@@ -179,7 +179,7 @@ void VelocityBasedImplicitIntegrationScheme::computeRHS(bool firstIteration)
         }
 
         // R1 should be equal to 0 in theory when integration scheme is linear. But let's recompute
-        // it anyway to compute the residue
+        // it anyway to compute the residual
         computeCurrentPositionIntegrationError(*m_vop, m_r1, m_xResult, m_vResult);
         if (firstIteration)
         {
@@ -212,7 +212,7 @@ void VelocityBasedImplicitIntegrationScheme::computeRHS(bool firstIteration)
         m_mop->mparams.setV(backV);
 
         // Set the factor of the left hand side taking into account the rayleigh damping
-        // Apply projective constraints to the full residue
+        // Apply projective constraints to the full residual
         m_mop->projectResponse(m_mappingGraph,m_r0);
         m_mop->projectResponse(m_mappingGraph,m_r1);
 
@@ -224,9 +224,9 @@ void VelocityBasedImplicitIntegrationScheme::computeRHS(bool firstIteration)
 
 
 /**
- * Returns the evaluation of the residue
+ * Returns the evaluation of the residual
  */
-SReal VelocityBasedImplicitIntegrationScheme::evaluateResidue()
+SReal VelocityBasedImplicitIntegrationScheme::evaluateResidual()
 {
     sofa::simulation::common::VectorOperations vop( m_params, this->getContext() );
 
@@ -243,12 +243,12 @@ SReal VelocityBasedImplicitIntegrationScheme::evaluateResidue()
 void VelocityBasedImplicitIntegrationScheme::solveLinearEquation()
 {
     SCOPED_TIMER("MBKSolve");
-    l_linearSolver->getLinearSystem()->setSystemSolution(m_unknown);
+    l_linearSolver->getLinearSystem()->setSystemSolution(m_systemUnknown);
     l_linearSolver->getLinearSystem()->setRHS(m_r0);
     l_linearSolver->solveSystem();
-    l_linearSolver->getLinearSystem()->dispatchSystemSolution(m_unknown);
+    l_linearSolver->getLinearSystem()->dispatchSystemSolution(m_systemUnknown);
 
-    m_mop->propagateDx(m_unknown);
+    m_mop->propagateDx(m_systemUnknown);
 }
 
 /**
@@ -262,7 +262,7 @@ void VelocityBasedImplicitIntegrationScheme::updateStatesFromLinearSolution(SRea
     sofa::core::behavior::MultiVecDeriv vel(m_vop.get(), m_vResult );
 
     //Update position w/r to unknown
-    pos.peq(m_unknown, alpha * getPositionUpdateDerivedFromVelocity());
+    pos.peq(m_systemUnknown, alpha * getPositionUpdateDerivedFromVelocity());
 
     //TODO make this work with alpha, iteration might be still 0 but we are in the linesearch algo and we don't want to remove this each time...
     // R1 should be equal to 0, avoids computation
@@ -276,12 +276,12 @@ void VelocityBasedImplicitIntegrationScheme::updateStatesFromLinearSolution(SRea
     if (d_firstOrder.getValue() && firstIteration)
     {
         // If we are at first iteration in first order case, we need to enforce the velocity to be 0
-        vel.eq(m_unknown, alpha);
+        vel.eq(m_systemUnknown, alpha);
     }
     else
     {
         // Accumulate the velocity
-        vel.peq(m_unknown, alpha);
+        vel.peq(m_systemUnknown, alpha);
     }
 
 }

@@ -50,7 +50,7 @@ StaticEquilibriumIntegrationScheme::StaticEquilibriumIntegrationScheme()
 
 void StaticEquilibriumIntegrationScheme::doSetupIntegrationStep(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
 {
-    simulation::common::VectorOperations::realloc(*m_vop, m_unknown, "dx", this, true);
+    simulation::common::VectorOperations::realloc(*m_vop, m_systemUnknown, "dx", this, true);
     simulation::common::VectorOperations::realloc(*m_vop, m_r0, "r0", this, true);
 }
 
@@ -97,9 +97,9 @@ void StaticEquilibriumIntegrationScheme::computeRHS(bool firstIteration)
 
 
 /**
- * Returns the evaluation of the residue
+ * Returns the evaluation of the residual
  */
-SReal StaticEquilibriumIntegrationScheme::evaluateResidue()
+SReal StaticEquilibriumIntegrationScheme::evaluateResidual()
 {
     core::behavior::MultiVecDeriv r0(m_vop.get(), m_r0);
 
@@ -114,10 +114,10 @@ void StaticEquilibriumIntegrationScheme::solveLinearEquation()
 {
     SCOPED_TIMER("MBKSolve");
 
-    l_linearSolver->getLinearSystem()->setSystemSolution(m_unknown);
+    l_linearSolver->getLinearSystem()->setSystemSolution(m_systemUnknown);
     l_linearSolver->getLinearSystem()->setRHS(m_r0);
     l_linearSolver->solveSystem();
-    l_linearSolver->getLinearSystem()->dispatchSystemSolution(m_unknown);
+    l_linearSolver->getLinearSystem()->dispatchSystemSolution(m_systemUnknown);
 }
 
 /**
@@ -129,7 +129,7 @@ void StaticEquilibriumIntegrationScheme::updateStatesFromLinearSolution(SReal al
 {
     sofa::core::behavior::MultiVecCoord pos(m_vop.get(), m_xResult);
 
-    pos.peq(m_unknown, alpha );
+    pos.peq(m_systemUnknown, alpha );
 }
 
 
@@ -172,8 +172,8 @@ void StaticEquilibriumIntegrationScheme::integrate(const core::ExecParams* param
 
     //Compute current residual, usefull for static solver to return fast
     computeRHS(true);
-    SReal oldResidue = evaluateResidue();
-    SReal newResidue = evaluateResidue();
+    SReal oldResidue = evaluateResidual();
+    SReal newResidue = evaluateResidual();
 
 
     unsigned it = 0;
@@ -186,7 +186,7 @@ void StaticEquilibriumIntegrationScheme::integrate(const core::ExecParams* param
         if ( ! firstIt )
         {
             computeRHS(firstIt);
-            oldResidue = evaluateResidue();
+            oldResidue = evaluateResidual();
         }
 
         double bestresidual = oldResidue;
@@ -203,10 +203,10 @@ void StaticEquilibriumIntegrationScheme::integrate(const core::ExecParams* param
         //Already make a full step
         updateStatesFromLinearSolution(alpha, firstIt);
         computeRHS(false);
-        newResidue = evaluateResidue();
+        newResidue = evaluateResidual();
 
         //Compute the Armijo term
-        m_vop->v_dot(m_unknown, m_r0);
+        m_vop->v_dot(m_systemUnknown, m_r0);
         const SReal armijoTerm = lineSearchArmijoFactor * m_vop->finish();
 
         if (newResidue<bestresidual || d_alwaysAdvanceNewton.getValue())
@@ -225,7 +225,7 @@ void StaticEquilibriumIntegrationScheme::integrate(const core::ExecParams* param
 
             updateStatesFromLinearSolution(-delta, false);
             computeRHS(false);
-            newResidue = evaluateResidue();
+            newResidue = evaluateResidual();
 
             if (newResidue<bestresidual)
             {
@@ -240,7 +240,7 @@ void StaticEquilibriumIntegrationScheme::integrate(const core::ExecParams* param
         {
             updateStatesFromLinearSolution( bestalpha - alpha, false);
             computeRHS(false);
-            newResidue = evaluateResidue();
+            newResidue = evaluateResidual();
         }
 
 

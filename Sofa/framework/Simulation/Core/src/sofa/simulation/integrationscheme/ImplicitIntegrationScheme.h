@@ -49,7 +49,7 @@ public:
     // WARNING we expect the linear integrator to initialize the working vecs. Meaning that if we
     // work in FreeMotion, the xResult should already be equal to the actual position.
     // Same for the velocity. This is expected when updating the position, only a += will be done.
-    virtual void setupIntegrationStep(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult);
+    virtual void setupIntegrationStep(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) final;
     virtual void doSetupIntegrationStep(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
     {  }
 
@@ -67,9 +67,9 @@ public:
 
 
     /**
-     * Returns the evaluation of the residue
+     * Returns the evaluation of the residual
      */
-    virtual SReal evaluateResidue() = 0;
+    virtual SReal evaluateResidual() = 0;
 
 
     /**
@@ -90,7 +90,7 @@ public:
     virtual void finalizeIntegrationStep()
     {  };
 
-    virtual void integrate(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) ;
+    virtual void integrate(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
 
 
     /// Given the solution dx of the linear system inversion, how much will it affect the velocity
@@ -116,7 +116,7 @@ protected:
     const core::ExecParams* m_params;
     sofa::core::MultiVecCoordId m_xResult;
     sofa::core::MultiVecDerivId m_vResult;
-    sofa::core::MultiVecDerivId m_unknown;
+    sofa::core::MultiVecDerivId m_systemUnknown;
 
     sofa::core::MultiVecDerivId m_r0, m_r1, m_r2;
 

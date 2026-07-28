@@ -44,37 +44,37 @@ public:
 
     StaticEquilibriumIntegrationScheme();
 
-    void doSetupIntegrationStep(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
+    virtual void doSetupIntegrationStep(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
 
     /**
      * Compute the system matrix.
      */
-    void computeLHS(bool firstIteration = true) override;
+    virtual void computeLHS(bool firstIteration = true) override;
 
     /**
     * compute the current RHS.
     */
-    void computeRHS(bool firstIteration = true) override;
+    virtual void computeRHS(bool firstIteration = true) override;
 
     /**
-     * Returns the evaluation of the residue
+     * Returns the evaluation of the residual
      */
-    SReal evaluateResidue() override;
+    virtual SReal evaluateResidual() override;
 
     /**
      * Solve the linear equation from a Newton iteration, i.e. it computes (x^{i+1}-x^i).
      */
-    void solveLinearEquation() override;
+    virtual void solveLinearEquation() override;
 
     /**
      * Once (x^{i+1}-x^i) has been computed, the result is used internally to update the current
      * guess. It computes x^{i+1} += alpha * dx, where dx is the result of the linear system. It is
      * not necessary to share the result with the Newton-Raphson method.
      */
-    void updateStatesFromLinearSolution(SReal alpha, bool firstIteration = true) override;
+    virtual void updateStatesFromLinearSolution(SReal alpha, bool firstIteration = true) override;
 
-    virtual SReal getVelocityIntegrationFactor() const final;
-    virtual SReal getPositionIntegrationFactor() const final;
+    virtual SReal getVelocityIntegrationFactor() const override final;
+    virtual SReal getPositionIntegrationFactor() const override final;
 
     virtual void integrate(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
 
@@ -89,7 +89,7 @@ public:
 
 protected:
 
-    virtual sofa::Size getIntegrationSchemeTimeOrder() const;
+    virtual sofa::Size getIntegrationSchemeTimeOrder() const override;
 
 };
 
