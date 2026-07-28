@@ -65,7 +65,9 @@ void VonMisesStress<DataTypes, ElementType>::handleEvent(core::objectmodel::Even
 
         for (const auto& element : elements)
         {
-
+            for (const auto& [quadraturePoint, weight] : trait::FiniteElement::quadraturePoints())
+            {
+            }
         }
     }
 }
