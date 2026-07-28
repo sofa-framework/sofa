@@ -29,16 +29,11 @@ namespace sofa::core::behavior
 /**
  *  \brief Component responsible for timestep integration, i.e. advancing the state from time t to t+dt.
  *
- *  This class currently control both the integration scheme (explicit,
- *  implicit, static, etc).
+ *  This is the base class of every type of integration scheme (explicit, implicit, static, etc).
  *
- *  While all computations required to do the integration step are handled by
- *  this object, they should not be implemented directly in it, but instead
- *  the solver propagates orders (or Visitor) to the other components in the
- *  scenegraph that will locally execute them. This allows for greater
- *  flexibility (the solver can just ask for the forces to be computed without
- *  knowing what type of forces are present), as well as performances
- *  (some computations can be executed in parallel).
+ *  Its API is pretty simple as the explicit family of solver wouldn't gain anything being
+ *  solved by non-linear algorithms, so we only expect the classes to 'integrate' in a monolithic way
+ *  The modularized versions will be implemented in the ImplicitIntegrationScheme API
  *
  */
 class SOFA_CORE_API BaseIntegrationScheme : public virtual objectmodel::BaseComponent
