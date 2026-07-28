@@ -33,7 +33,9 @@ using namespace sofa::helper;
 void registerVolumeFromVolumetricElements(sofa::core::ObjectFactory* factory)
 {
     factory->registerObjects(sofa::core::ObjectRegistrationData("This component computes the volume of a given volumetric mesh.")
-    .add<  VolumeFromVolumetricElements<Vec3Types> >(true));
+    .add<  VolumeFromVolumetricElements<Vec3Types> >(true)
+    .addAlias("VolumeFromTetrahedrons")
+    );
 }
 
 template class SOFA_COMPONENT_ENGINE_GENERATE_API VolumeFromVolumetricElements<Vec3Types>;
