@@ -27,6 +27,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/InitVisitor.h
     ${SRC_ROOT}/IntegrateBeginEvent.h
     ${SRC_ROOT}/IntegrateEndEvent.h
+    ${SRC_ROOT}/LoadSnapshotVisitor.h
     ${SRC_ROOT}/MechanicalOperations.h
     ${SRC_ROOT}/MechanicalVPrintVisitor.h
     ${SRC_ROOT}/MechanicalVisitor.h
@@ -44,6 +45,8 @@ set(HEADER_FILES
     ${SRC_ROOT}/SceneLoaderFactory.h
     ${SRC_ROOT}/Simulation.h
     ${SRC_ROOT}/SimulationLoop.h
+    ${SRC_ROOT}/SaveSnapshotVisitor.h
+    ${SRC_ROOT}/SnapshotManager.h
     ${SRC_ROOT}/SolveVisitor.h
     ${SRC_ROOT}/StateChangeVisitor.h
     ${SRC_ROOT}/TopologyChangeVisitor.h
@@ -179,6 +182,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/InitVisitor.cpp
     ${SRC_ROOT}/IntegrateBeginEvent.cpp
     ${SRC_ROOT}/IntegrateEndEvent.cpp
+    ${SRC_ROOT}/LoadSnapshotVisitor.cpp
     ${SRC_ROOT}/MappingGraph.cpp
     ${SRC_ROOT}/MappingGraphMechanicalOperations.cpp
     ${SRC_ROOT}/MechanicalOperations.cpp
@@ -198,6 +202,8 @@ set(SOURCE_FILES
     ${SRC_ROOT}/SceneCheckRegistry.cpp
     ${SRC_ROOT}/SceneCheckMainRegistry.cpp
     ${SRC_ROOT}/Simulation.cpp
+    ${SRC_ROOT}/SaveSnapshotVisitor.cpp
+    ${SRC_ROOT}/SnapshotManager.cpp
     ${SRC_ROOT}/SolveVisitor.cpp
     ${SRC_ROOT}/StateChangeVisitor.cpp
     ${SRC_ROOT}/TopologyChangeVisitor.cpp
@@ -322,6 +328,7 @@ sofa_find_package(Sofa.Core REQUIRED)
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Core)
+target_link_libraries(${PROJECT_NAME} PRIVATE nlohmann_json::nlohmann_json)
 
 target_include_directories(${PROJECT_NAME} PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/compat>

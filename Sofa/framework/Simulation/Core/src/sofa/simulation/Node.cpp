@@ -635,7 +635,7 @@ bool Node::doAddObject(sofa::core::objectmodel::BaseComponent::SPtr sobj, sofa::
 {
     this->setObjectContext(sobj);
     if(insertionLocation == sofa::core::objectmodel::TypeOfInsertion::AtEnd)
-        object.add(sobj);
+        object.add(sobj.get());
     else
         object.addBegin(sobj);
 
@@ -654,7 +654,7 @@ bool Node::doRemoveObject(sofa::core::objectmodel::BaseComponent::SPtr sobj)
     dmsg_warning_when(sobj == nullptr) << "Trying to remove a nullptr object";
 
     this->clearObjectContext(sobj);
-    object.remove(sobj);
+    object.remove(sobj.get());
     sofa::core::objectmodel::BaseComponent* obj = sobj.get();
 
     if(obj != nullptr && !obj->removeInNode( this ) )
@@ -1182,7 +1182,7 @@ void Node::doAddChild(BaseNode::SPtr node)
 {
     const Node::SPtr dagnode = sofa::core::objectmodel::SPtr_static_cast<Node>(node);
     setDirtyDescendancy();
-    child.add(dagnode);
+    child.add(dagnode.get());
     dagnode->l_parents.add(this);
     dagnode->l_parents.updateLinks(); // to fix load-time unresolved links
 }
@@ -1192,7 +1192,7 @@ void Node::doRemoveChild(BaseNode::SPtr node)
 {
     const Node::SPtr dagnode = sofa::core::objectmodel::SPtr_static_cast<Node>(node);
     setDirtyDescendancy();
-    child.remove(dagnode);
+    child.remove(dagnode.get());
     dagnode->l_parents.remove(this);
 }
 

@@ -317,6 +317,8 @@ private:
     virtual void* doBeginEditVoidPtr() = 0;
     virtual void doEndEditVoidPtr() = 0;
     virtual void doOnUpdate() {}
+
+
 };
 
 /** A WriteAccessWithRawPtr is a RAII class, holding a reference to a given container

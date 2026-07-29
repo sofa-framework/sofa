@@ -160,6 +160,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/objectmodel/BaseLink.h
     ${SRC_ROOT}/objectmodel/BaseNode.h
     ${SRC_ROOT}/objectmodel/BaseObjectDescription.h
+    ${SRC_ROOT}/objectmodel/Snapshot.h
     ${SRC_ROOT}/objectmodel/ClassInfo.h
     ${SRC_ROOT}/objectmodel/ComponentState.h
     ${SRC_ROOT}/objectmodel/ConfigurationSetting.h
@@ -178,6 +179,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/objectmodel/HapticDeviceEvent.h
     ${SRC_ROOT}/objectmodel/IdleEvent.h
     ${SRC_ROOT}/objectmodel/JoystickEvent.h
+    ${SRC_ROOT}/objectmodel/SnapshotJSONExporter.h
     ${SRC_ROOT}/objectmodel/KeypressedEvent.h
     ${SRC_ROOT}/objectmodel/KeyreleasedEvent.h
     ${SRC_ROOT}/objectmodel/lifecycle/DeprecatedData.h
@@ -311,6 +313,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/objectmodel/BaseLink.cpp
     ${SRC_ROOT}/objectmodel/BaseNode.cpp
     ${SRC_ROOT}/objectmodel/BaseObjectDescription.cpp
+    ${SRC_ROOT}/objectmodel/Snapshot.cpp
     ${SRC_ROOT}/objectmodel/ClassInfo.cpp
     ${SRC_ROOT}/objectmodel/ComponentState.cpp
     ${SRC_ROOT}/objectmodel/ConfigurationSetting.cpp
@@ -329,6 +332,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/objectmodel/HapticDeviceEvent.cpp
     ${SRC_ROOT}/objectmodel/IdleEvent.cpp
     ${SRC_ROOT}/objectmodel/JoystickEvent.cpp
+    ${SRC_ROOT}/objectmodel/SnapshotJSONExporter.cpp
     ${SRC_ROOT}/objectmodel/KeypressedEvent.cpp
     ${SRC_ROOT}/objectmodel/KeyreleasedEvent.cpp
     ${SRC_ROOT}/objectmodel/lifecycle/DeprecatedData.cpp
