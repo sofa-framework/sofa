@@ -62,7 +62,7 @@ public:
         this->clear();
     }
 
-    void parseSizeLinks(sofa::core::objectmodel::BaseObjectDescription* arg, Data<unsigned int>& size)
+    void parseSizeLinks(sofa::core::objectmodel::BaseComponentDescription* arg, Data<unsigned int>& size)
     {
         const char* p = arg->getAttribute(size.getName().c_str());
         if (p) {

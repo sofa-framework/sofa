@@ -240,7 +240,7 @@ void MinResLinearSolver<TMatrix,TVector>::solve(Matrix& A, Vector& x, Vector& b)
 }
 
 template <class TMatrix, class TVector>
-void MinResLinearSolver<TMatrix, TVector>::parse(core::objectmodel::BaseObjectDescription* arg)
+void MinResLinearSolver<TMatrix, TVector>::parse(core::objectmodel::BaseComponentDescription* arg)
 {
     if (arg->getAttribute("verbose"))
     {

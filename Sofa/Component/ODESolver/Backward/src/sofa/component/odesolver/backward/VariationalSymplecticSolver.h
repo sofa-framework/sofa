@@ -93,7 +93,7 @@ public:
         return 0;
     }
 
-    void parse(core::objectmodel::BaseObjectDescription *arg) override;
+    void parse(core::objectmodel::BaseComponentDescription *arg) override;
 
 protected:
     sofa::core::MultiVecDerivId pID;

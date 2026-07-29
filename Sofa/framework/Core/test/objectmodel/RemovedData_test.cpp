@@ -52,7 +52,7 @@ TEST_F(RemoveData_test, testRemoved)
     EXPECT_MSG_EMIT(Error);
     EXPECT_MSG_NOEMIT(Deprecated);
 
-    sofa::core::objectmodel::BaseObjectDescription desc;
+    sofa::core::objectmodel::BaseComponentDescription desc;
     desc.setAttribute("removedData", "one");
 
     m_object.parse(&desc);
@@ -63,7 +63,7 @@ TEST_F(RemoveData_test, testDeprecated)
     EXPECT_MSG_EMIT(Deprecated);
     EXPECT_MSG_NOEMIT(Error);
 
-    sofa::core::objectmodel::BaseObjectDescription desc;
+    sofa::core::objectmodel::BaseComponentDescription desc;
     desc.setAttribute("deprecatedData", "one");
 
     m_object.parse(&desc);

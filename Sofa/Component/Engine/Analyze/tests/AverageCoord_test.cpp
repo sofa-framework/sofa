@@ -27,12 +27,11 @@ using sofa::testing::BaseSimulationTest;
 #include <sofa/component/statecontainer/MechanicalObject.h>
 using sofa::component::statecontainer::MechanicalObject ;
 
-#include <sofa/simulation/graph/DAGSimulation.h>
+#include <sofa/simulation/Simulation.h>
 using sofa::simulation::Simulation ;
 using sofa::simulation::Node ;
 using sofa::core::objectmodel::New ;
 using sofa::core::objectmodel::BaseData ;
-using sofa::simulation::graph::DAGSimulation;
 
 #include <sofa/component/engine/analyze/AverageCoord.h>
 using sofa::component::engine::analyze::AverageCoord ;

@@ -40,7 +40,7 @@ class SOFA_SIMULATION_CORE_API DefaultVisualManagerLoop : public sofa::core::vis
 public:
     typedef sofa::core::visual::VisualLoop Inherit;
     typedef sofa::core::objectmodel::BaseContext BaseContext;
-    typedef sofa::core::objectmodel::BaseObjectDescription BaseObjectDescription;
+    typedef sofa::core::objectmodel::BaseComponentDescription BaseObjectDescription;
     SOFA_CLASS(DefaultVisualManagerLoop,sofa::core::visual::VisualLoop);
 protected:
     DefaultVisualManagerLoop();

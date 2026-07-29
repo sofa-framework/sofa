@@ -791,7 +791,7 @@ void RigidMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 
 
 template <class TIn, class TOut>
-void RigidMapping<TIn, TOut>::parse(core::objectmodel::BaseObjectDescription* arg)
+void RigidMapping<TIn, TOut>::parse(core::objectmodel::BaseComponentDescription* arg)
 {
     Inherit::parse(arg);
 

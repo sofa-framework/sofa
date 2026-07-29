@@ -51,7 +51,7 @@ VolumeFromTetrahedrons<DataTypes>::VolumeFromTetrahedrons()
 }
 
 template <class DataTypes>
-void VolumeFromTetrahedrons<DataTypes>::parse(core::objectmodel::BaseObjectDescription* arg)
+void VolumeFromTetrahedrons<DataTypes>::parse(core::objectmodel::BaseComponentDescription* arg)
 {
     Inherit1::parse(arg);
 

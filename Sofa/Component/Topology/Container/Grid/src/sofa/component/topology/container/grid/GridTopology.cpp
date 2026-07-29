@@ -58,7 +58,7 @@ void GridTopology::GridUpdate::doUpdate()
         updateEdges();
 }
 
-void GridTopology::parse(core::objectmodel::BaseObjectDescription* arg)
+void GridTopology::parse(core::objectmodel::BaseComponentDescription* arg)
 {
     this->MeshTopology::parse(arg);
 

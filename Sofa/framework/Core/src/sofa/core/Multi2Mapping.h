@@ -199,7 +199,7 @@ public:
     /// if they are compatible with the input and output models types of this
     /// mapping.
     template<class T>
-    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
+    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseComponentDescription* arg)
     {
         static const sofa::type::fixed_array<std::tuple<const char*, const char*, const ::sofa::core::objectmodel::BaseClass*>, 3> attributes {
             std::make_tuple("input1", In1::Name(), LinkFromModels1::DestType::GetClass()),

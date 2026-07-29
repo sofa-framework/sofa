@@ -60,7 +60,7 @@ RegularGridTopology::RegularGridTopology(const type::Vec3i& n, type::BoundingBox
 }
 
 
-void RegularGridTopology::parse(core::objectmodel::BaseObjectDescription* arg)
+void RegularGridTopology::parse(core::objectmodel::BaseComponentDescription* arg)
 {
     float scale=1.0f;
     if (arg->getAttribute("scale")!=nullptr)

@@ -318,7 +318,7 @@ TEST_F(PluginManager_test, failingPlugin)
 
     EXPECT_TRUE(sofa::core::ObjectFactory::getInstance()->hasCreator("ComponentFailingPlugin"));
 
-    sofa::core::objectmodel::BaseObjectDescription description("ComponentFailingPlugin", "ComponentFailingPlugin");
+    sofa::core::objectmodel::BaseComponentDescription description("ComponentFailingPlugin", "ComponentFailingPlugin");
     const auto tmpNode = sofa::core::objectmodel::New<sofa::simulation::Node>("tmp");
     EXPECT_EQ(sofa::core::ObjectFactory::getInstance()->createObject(tmpNode.get(), &description), nullptr);
 

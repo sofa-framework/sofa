@@ -120,7 +120,7 @@ public:
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MeshTopology.
     template<class T>
-    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
+    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseComponentDescription* arg)
     {
         if (context->getMeshTopology() == nullptr) {
             arg->logError("No mesh topology found in the context node.");

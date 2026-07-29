@@ -46,7 +46,7 @@ class SOFA_SIMULATION_CORE_API DefaultAnimationLoop : public sofa::core::behavio
 public:
     typedef sofa::core::behavior::BaseAnimationLoop Inherit;
     typedef sofa::core::objectmodel::BaseContext BaseContext;
-    typedef sofa::core::objectmodel::BaseObjectDescription BaseObjectDescription;
+    typedef sofa::core::objectmodel::BaseComponentDescription BaseObjectDescription;
     SOFA_CLASS(DefaultAnimationLoop, sofa::core::behavior::BaseAnimationLoop);
 protected:
     explicit DefaultAnimationLoop(simulation::Node* gnode = nullptr);

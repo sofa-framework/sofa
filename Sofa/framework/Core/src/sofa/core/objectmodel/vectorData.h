@@ -82,7 +82,7 @@ public:
         this->clear();
     }
 
-    void parseSizeData(sofa::core::objectmodel::BaseObjectDescription* arg, Data<unsigned int>& size)
+    void parseSizeData(sofa::core::objectmodel::BaseComponentDescription* arg, Data<unsigned int>& size)
     {
         const char* p = arg->getAttribute(size.getName().c_str());
         if (p) {

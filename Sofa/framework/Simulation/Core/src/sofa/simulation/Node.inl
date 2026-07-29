@@ -29,13 +29,9 @@ namespace sofa::simulation
 template <class RealObject>
 Node::SPtr Node::create( RealObject*, sofa::core::objectmodel::BaseObjectDescription* arg)
 {
-    if (Simulation* simulation = getSimulation())
-    {
-        Node::SPtr obj = simulation->createNewNode(arg->getName());
-        obj->parse(arg);
-        return obj;
-    }
-    return nullptr;
+    Node::SPtr obj = getSimulation()->createNewNode(arg->getName());
+    obj->parse(arg);
+    return obj;
 }
 
 }

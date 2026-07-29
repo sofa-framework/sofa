@@ -27,7 +27,7 @@
 
 #include <sofa/component/sceneutility/config.h>
 
-#include <sofa/core/objectmodel/BaseObjectDescription.h>
+#include <sofa/core/objectmodel/BaseComponentDescription.h>
 #include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/core/objectmodel/Data.h>
 
@@ -53,7 +53,7 @@ public:
     /// Inherited from BaseObject.
     /// Parse the given description to assign values to this object's fields and
     /// potentially other parameters.
-    void parse ( core::objectmodel::BaseObjectDescription* arg ) override;
+    void parse ( core::objectmodel::BaseComponentDescription* arg ) override;
 
     Data<std::string>        d_type       ;
     bool                m_isValid    ;
@@ -74,7 +74,7 @@ public:
     /// Inherited from BaseObject.
     /// Parse the given description to assign values to this object's fields and
     /// potentially other parameters.
-    void parse ( core::objectmodel::BaseObjectDescription* arg ) override;
+    void parse ( core::objectmodel::BaseComponentDescription* arg ) override;
 
     Data<std::string>        d_filename        ; ///< Name of the file into which the message will be saved in.
     helper::logging::MessageHandler*     m_handler { nullptr };

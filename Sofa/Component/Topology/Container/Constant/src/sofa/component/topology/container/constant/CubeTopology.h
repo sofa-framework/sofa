@@ -43,7 +43,7 @@ protected:
 public:
     void setSize(int nx, int ny, int nz);
 
-    void parse(core::objectmodel::BaseObjectDescription* arg) override;
+    void parse(core::objectmodel::BaseComponentDescription* arg) override;
 
     int getNx() const { return d_nx.getValue(); }
     int getNy() const { return d_ny.getValue(); }

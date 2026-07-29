@@ -128,7 +128,7 @@ public:
 
     void createVariableData ( std::string variable );
 
-    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override;
+    void parse ( sofa::core::objectmodel::BaseComponentDescription* arg ) override;
 
 protected:
     RuleBasedContactManager();

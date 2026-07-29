@@ -47,7 +47,7 @@ StaticSolver::StaticSolver()
     , d_should_diverge_when_residual_is_growing(this, "should_diverge_when_residual_is_growing")
 {}
 
-void StaticSolver::parse(core::objectmodel::BaseObjectDescription* arg)
+void StaticSolver::parse(core::objectmodel::BaseComponentDescription* arg)
 {
     Inherit1::parse(arg);
 

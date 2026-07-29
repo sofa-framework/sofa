@@ -190,7 +190,7 @@ public:
 
 
     template<class T>
-    static std::string shortName(const T* ptr = nullptr, objectmodel::BaseObjectDescription* arg = nullptr)
+    static std::string shortName(const T* ptr = nullptr, objectmodel::BaseComponentDescription* arg = nullptr)
     {
         std::string name = Inherit1::shortName(ptr, arg);
         sofa::helper::replaceAll(name, "Mapping", "Map");
@@ -203,7 +203,7 @@ public:
     /// if they are compatible with the input and output models types of this
     /// mapping.
     template<class T>
-    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
+    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseComponentDescription* arg)
     {
         std::string input  = arg->getAttribute("input","");
         if (input.empty()) {

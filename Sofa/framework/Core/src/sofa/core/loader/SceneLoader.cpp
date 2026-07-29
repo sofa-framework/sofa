@@ -32,7 +32,7 @@ SceneLoader::SceneLoader() : BaseLoader()
 
 }
 
-void SceneLoader::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
+void SceneLoader::parse(sofa::core::objectmodel::BaseComponentDescription* arg)
 {
     objectmodel::BaseComponent::parse(arg);
 

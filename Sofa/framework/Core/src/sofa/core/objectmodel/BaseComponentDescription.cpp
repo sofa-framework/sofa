@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/core/objectmodel/BaseObjectDescription.h>
+#include <sofa/core/objectmodel/BaseComponentDescription.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
@@ -30,7 +30,7 @@
 namespace sofa::core::objectmodel
 {
 
-BaseObjectDescription::BaseObjectDescription(const char* name, const char* type)
+BaseComponentDescription::BaseComponentDescription(const char* name, const char* type)
 {
     if (name)
         attributes["name"] = name;
@@ -38,54 +38,54 @@ BaseObjectDescription::BaseObjectDescription(const char* name, const char* type)
         attributes["type"] = type;
 }
 
-BaseObjectDescription::~BaseObjectDescription()
+BaseComponentDescription::~BaseComponentDescription()
 {
     attributes.clear();
 }
 
 /// Get the associated object (or nullptr if it is not created yet)
-Base* BaseObjectDescription::getObject()
+Base* BaseComponentDescription::getObject()
 {
     return nullptr;
 }
 
 /// Get the object instance name
-std::string BaseObjectDescription::getName()
+std::string BaseComponentDescription::getName()
 {
     return std::string(getAttribute("name",""));
 }
 
-void BaseObjectDescription::setName(const std::string& name)
+void BaseComponentDescription::setName(const std::string& name)
 {
     setAttribute("name",name);
 }
 
 /// Get the parent node
-BaseObjectDescription* BaseObjectDescription::getParent() const
+BaseComponentDescription* BaseComponentDescription::getParent() const
 {
     return nullptr;
 }
 
 /// Get the file where this description was read from. Useful to resolve relative file paths.
-std::string BaseObjectDescription::getBaseFile()
+std::string BaseComponentDescription::getBaseFile()
 {
     return "";
 }
 
 ///// Get all attribute data, read-only
-const BaseObjectDescription::AttributeMap& BaseObjectDescription::getAttributeMap() const
+const BaseComponentDescription::AttributeMap& BaseComponentDescription::getAttributeMap() const
 {
     return attributes;
 }
 
 /// Find an object description given its name (relative to this object)
-BaseObjectDescription* BaseObjectDescription::find(const char* /*nodeName*/, bool /*absolute*/)
+BaseComponentDescription* BaseComponentDescription::find(const char* /*nodeName*/, bool /*absolute*/)
 {
     return nullptr;
 }
 
 /// Remove an attribute given its name, returns false if the attribute was not there.
-bool BaseObjectDescription::removeAttribute(const std::string& attr)
+bool BaseComponentDescription::removeAttribute(const std::string& attr)
 {
     const AttributeMap::iterator it = attributes.find(attr);
     if (it == attributes.end())
@@ -96,7 +96,7 @@ bool BaseObjectDescription::removeAttribute(const std::string& attr)
 }
 
 /// Get an attribute given its name (return defaultVal if not present)
-const char* BaseObjectDescription::getAttribute(const std::string& attr, const char* defaultVal)
+const char* BaseComponentDescription::getAttribute(const std::string& attr, const char* defaultVal)
 {
     const AttributeMap::iterator it = attributes.find(attr);
     if (it == attributes.end())
@@ -106,7 +106,7 @@ const char* BaseObjectDescription::getAttribute(const std::string& attr, const c
 }
 
 /// Docs is in .h
-float BaseObjectDescription::getAttributeAsFloat(const std::string& attr, const float defaultVal)
+float BaseComponentDescription::getAttributeAsFloat(const std::string& attr, const float defaultVal)
 {
     const AttributeMap::iterator it = attributes.find(attr);
     if (it == attributes.end())
@@ -133,7 +133,7 @@ float BaseObjectDescription::getAttributeAsFloat(const std::string& attr, const 
 }
 
 /// Docs is in .h
-int BaseObjectDescription::getAttributeAsInt(const std::string& attr, const int defaultVal)
+int BaseComponentDescription::getAttributeAsInt(const std::string& attr, const int defaultVal)
 {
     const AttributeMap::iterator it = attributes.find(attr);
     if (it == attributes.end())
@@ -157,14 +157,14 @@ int BaseObjectDescription::getAttributeAsInt(const std::string& attr, const int 
 }
 
 /// Set an attribute. Override any existing value
-void BaseObjectDescription::setAttribute(const std::string& attr, const std::string &val)
+void BaseComponentDescription::setAttribute(const std::string& attr, const std::string &val)
 {
     attributes[attr] = val;
 }
 
-std::string BaseObjectDescription::getFullName()
+std::string BaseComponentDescription::getFullName()
 {
-    BaseObjectDescription* parent = getParent();
+    BaseComponentDescription* parent = getParent();
     if (parent==nullptr) return "/";
     std::string pname = parent->getFullName();
     pname += "/";
@@ -173,9 +173,9 @@ std::string BaseObjectDescription::getFullName()
 }
 
 /// Find an object given its name
-Base* BaseObjectDescription::findObject(const char* nodeName)
+Base* BaseComponentDescription::findObject(const char* nodeName)
 {
-    BaseObjectDescription* node = find(nodeName);
+    BaseComponentDescription* node = find(nodeName);
     if (node!=nullptr)
     {
         Base* obj = node->getObject();

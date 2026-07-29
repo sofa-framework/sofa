@@ -184,7 +184,7 @@ void OglShader::doInitVisual(const core::visual::VisualParams*)
 
 
 
-void OglShader::parse(core::objectmodel::BaseObjectDescription* arg)
+void OglShader::parse(core::objectmodel::BaseComponentDescription* arg)
 {
     Inherit1::parse(arg);
 

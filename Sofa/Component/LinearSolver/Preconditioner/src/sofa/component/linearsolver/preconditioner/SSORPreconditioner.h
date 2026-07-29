@@ -63,7 +63,7 @@ public:
         return new SSORPreconditionerInvertData();
     }
 
-    void parse(core::objectmodel::BaseObjectDescription *arg) override;
+    void parse(core::objectmodel::BaseComponentDescription *arg) override;
 
 protected :
 

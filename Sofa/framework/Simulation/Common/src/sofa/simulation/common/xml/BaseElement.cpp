@@ -31,7 +31,7 @@ namespace sofa::simulation::xml
 {
 
 BaseElement::BaseElement(const std::string& name, const std::string& type, BaseElement* newParent)
-    : BaseObjectDescription(name.c_str(), type.c_str()), parent(nullptr), includeNodeType(INCLUDE_NODE_CHILD)
+    : BaseComponentDescription(name.c_str(), type.c_str()), parent(nullptr), includeNodeType(INCLUDE_NODE_CHILD)
 {
     if (newParent!=nullptr) newParent->addChild(this);
 }

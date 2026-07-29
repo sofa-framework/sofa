@@ -38,7 +38,7 @@ namespace sofa::component::engine::select::boxroi
 /// It is then import into sofa::component::engine::BoxROI to not break the
 /// API.
 
-    using core::objectmodel::BaseObjectDescription ;
+    using core::objectmodel::BaseComponentDescription ;
     using sofa::core::behavior::MechanicalState ;
     using core::topology::BaseMeshTopology ;
     using core::behavior::MechanicalState ;

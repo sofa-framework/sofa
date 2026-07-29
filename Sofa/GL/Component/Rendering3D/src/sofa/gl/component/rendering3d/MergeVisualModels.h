@@ -311,7 +311,7 @@ protected:
 
 public:
 
-    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override
+    void parse ( sofa::core::objectmodel::BaseComponentDescription* arg ) override
     {
         vl_input.parseSizeLinks(arg, d_nbInput);
         Inherit1::parse(arg);

@@ -35,7 +35,7 @@ public:
     SOFA_CLASS(NodalMassDensity<Scalar>, sofa::core::BaseNodalProperty<Scalar>);
 
     template<class T>
-    static bool canCreate(T* obj, sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription* arg)
+    static bool canCreate(T* obj, sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseComponentDescription* arg)
     {
         if (const auto* state = context->getMechanicalState())
         {

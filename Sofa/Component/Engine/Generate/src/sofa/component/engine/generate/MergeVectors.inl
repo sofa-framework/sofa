@@ -39,7 +39,7 @@ MergeVectors<VecT>::~MergeVectors()
 }
 
 template <class VecT>
-void MergeVectors<VecT>::parse( sofa::core::objectmodel::BaseObjectDescription* arg )
+void MergeVectors<VecT>::parse( sofa::core::objectmodel::BaseComponentDescription* arg )
 {
     vf_inputs.parseSizeData(arg, f_nbInputs);
     Inherit1::parse(arg);

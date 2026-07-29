@@ -81,7 +81,7 @@ public:
 
 
     /// Parse the given description to assign values to this object's fields and potentially other parameters
-    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override
+    void parse ( sofa::core::objectmodel::BaseComponentDescription* arg ) override
     {
         d_labels.parseSizeData(arg, d_nbLabels);
         Inherit1::parse(arg);

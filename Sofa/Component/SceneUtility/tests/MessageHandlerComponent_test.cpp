@@ -27,9 +27,6 @@ using std::string ;
 #include <sofa/testing/BaseTest.h>
 #include <sofa/testing/TestMessageHandler.h>
 
-#include <sofa/simulation/graph/DAGSimulation.h>
-using sofa::simulation::graph::DAGSimulation ;
-
 #include <sofa/simulation/Node.h>
 using sofa::simulation::Node ;
 

@@ -107,7 +107,7 @@ inline void to_json(nlohmann::json& json,
         }
         json["class"] = *creator->getClass();
 
-        sofa::core::objectmodel::BaseObjectDescription desc;
+        sofa::core::objectmodel::BaseComponentDescription desc;
         if (const auto object = creator->createInstance(nullptr, &desc))
         {
             json["object"] = object;

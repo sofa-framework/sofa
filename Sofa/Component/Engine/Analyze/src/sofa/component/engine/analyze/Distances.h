@@ -126,7 +126,7 @@ public:
     /// if they are compatible with the input and output model types of this
     /// mapping.
     template<class T>
-    static bool canCreate ( T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg )
+    static bool canCreate ( T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseComponentDescription* arg )
     {
         bool error = false;
         if (arg->findObject(arg->getAttribute("hexaContainerPath", "../..")) == nullptr)
@@ -158,7 +158,7 @@ public:
     /// This implementation read the object1 and object2 attributes to
     /// find the input and output models of this mapping.
     template<class T>
-    static typename T::SPtr create(T*, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg )
+    static typename T::SPtr create(T*, core::objectmodel::BaseContext* context, core::objectmodel::BaseComponentDescription* arg )
     {
         typename T::SPtr obj = sofa::core::objectmodel::New<T>(
                 ( arg?dynamic_cast<sofa::component::topology::container::dynamic::DynamicSparseGridTopologyContainer*> ( arg->findObject ( arg->getAttribute ( "hexaContainerPath","../.." ) ) ) :nullptr ),

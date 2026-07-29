@@ -104,7 +104,7 @@ public:
         return &internalData.Minv;
     }
 
-    void parse(core::objectmodel::BaseObjectDescription *arg) override;
+    void parse(core::objectmodel::BaseComponentDescription *arg) override;
 
 protected :
     template<class JMatrix>

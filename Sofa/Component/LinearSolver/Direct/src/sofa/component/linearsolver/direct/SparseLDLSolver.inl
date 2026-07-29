@@ -55,7 +55,7 @@ void SparseLDLSolver<TMatrix, TVector, TThreadManager>::init()
 }
 
 template <class TMatrix, class TVector, class TThreadManager>
-void SparseLDLSolver<TMatrix, TVector, TThreadManager>::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
+void SparseLDLSolver<TMatrix, TVector, TThreadManager>::parse(sofa::core::objectmodel::BaseComponentDescription* arg)
 {
     Inherit1::parse(arg);
 

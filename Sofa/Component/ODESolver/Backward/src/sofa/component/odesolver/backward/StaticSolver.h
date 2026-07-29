@@ -44,7 +44,7 @@ public:
         core::MultiVecCoordId xResult,
         core::MultiVecDerivId vResult) override;
 
-    void parse(core::objectmodel::BaseObjectDescription* arg) override;
+    void parse(core::objectmodel::BaseComponentDescription* arg) override;
     void init() override;
 
     SingleLink<StaticSolver, NewtonRaphsonSolver,

@@ -38,7 +38,7 @@ public:
     virtual bool load() = 0;
     virtual bool canLoad() ;
 
-    void parse(objectmodel::BaseObjectDescription *arg) override ;
+    void parse(objectmodel::BaseComponentDescription *arg) override ;
 
     void setFilename(std::string f)  ;
     const std::string &getFilename() ;

@@ -73,7 +73,7 @@ RestShapeSpringsForceField<DataTypes>::RestShapeSpringsForceField()
 }
 
 template<class DataTypes>
-void RestShapeSpringsForceField<DataTypes>::parse(core::objectmodel::BaseObjectDescription *arg)
+void RestShapeSpringsForceField<DataTypes>::parse(core::objectmodel::BaseComponentDescription *arg)
 {
     const char* attr = arg->getAttribute("external_rest_shape") ;
     if( attr != nullptr && attr[0] != '@')

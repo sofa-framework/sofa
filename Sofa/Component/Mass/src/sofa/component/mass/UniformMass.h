@@ -157,7 +157,7 @@ public:
 
     void draw(const core::visual::VisualParams* vparams) override;
 
-    void parse(sofa::core::objectmodel::BaseObjectDescription* arg) override
+    void parse(sofa::core::objectmodel::BaseComponentDescription* arg) override
     {
         Inherited::parse(arg);
         parseMassTemplate<MassType>(arg, this);

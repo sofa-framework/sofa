@@ -24,7 +24,7 @@
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/objectmodel/BaseComponent.h>
-#include <sofa/core/objectmodel/BaseObjectDescription.h>
+#include <sofa/core/objectmodel/BaseComponentDescription.h>
 #include <sofa/simulation/common/config.h>
 #include <string>
 #include <list>
@@ -41,7 +41,7 @@ enum IncludeNodeType
     INCLUDE_NODE_MERGE, ///< indicating a node that should be merged with its parent, and any child node with the same name as an existing child should be recursively merged
 };
 
-class SOFA_SIMULATION_COMMON_API BaseElement : public sofa::core::objectmodel::BaseObjectDescription
+class SOFA_SIMULATION_COMMON_API BaseElement : public sofa::core::objectmodel::BaseComponentDescription
 {
 private:
     std::string basefile;
@@ -80,7 +80,7 @@ public:
     { attributes["type"] = newType; }
 
     /// Get the parent node
-    sofa::core::objectmodel::BaseObjectDescription* getParent() const override
+    sofa::core::objectmodel::BaseComponentDescription* getParent() const override
     { return parent; }
 
     /// Get the parent node
@@ -129,7 +129,7 @@ public:
     virtual BaseElement* findNode(const char* nodeName, bool absolute=false);
 
     /// Find a node given its name
-    BaseObjectDescription* find(const char* nodeName, bool absolute=false) override
+    BaseComponentDescription* find(const char* nodeName, bool absolute=false) override
     {
         return findNode(nodeName, absolute);
     }

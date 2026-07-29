@@ -179,7 +179,7 @@ public:
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
     template<class T>
-    static bool canCreate(T*& obj, objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
+    static bool canCreate(T*& obj, objectmodel::BaseContext* context, objectmodel::BaseComponentDescription* arg)
     {
         if (context)
         {
@@ -221,7 +221,7 @@ public:
     }
 
     template<class T>
-    static std::string shortName(const T* ptr = nullptr, objectmodel::BaseObjectDescription* arg = nullptr)
+    static std::string shortName(const T* ptr = nullptr, objectmodel::BaseComponentDescription* arg = nullptr)
     {
         std::string name = Inherit1::shortName(ptr, arg);
         sofa::helper::replaceAll(name, "ForceField", "FF");

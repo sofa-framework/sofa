@@ -50,7 +50,7 @@ struct MassType
  * attributes have changed since #2644
  */
 template<class MassType>
-void parseMassTemplate(sofa::core::objectmodel::BaseObjectDescription* arg, const core::behavior::BaseMass* mass)
+void parseMassTemplate(sofa::core::objectmodel::BaseComponentDescription* arg, const core::behavior::BaseMass* mass)
 {
     if (arg->getAttribute("template"))
     {

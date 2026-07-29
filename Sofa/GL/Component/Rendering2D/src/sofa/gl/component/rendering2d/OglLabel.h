@@ -59,7 +59,7 @@ public:
 
     void handleEvent(core::objectmodel::Event *) override;
 
-    void parse(core::objectmodel::BaseObjectDescription *arg) override;
+    void parse(core::objectmodel::BaseComponentDescription *arg) override;
     void setColor(float r, float g, float b, float a) ;
 
 

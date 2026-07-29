@@ -222,13 +222,13 @@ struct MutationListener_test : public BaseTest
     /*TESTS OBJECT*/
     void test_addObject()
     {
-        sofa::core::objectmodel::BaseObjectDescription bod1("obj1", "BaseObject");
+        sofa::core::objectmodel::BaseComponentDescription bod1("obj1", "BaseObject");
         obj1 = sofa::core::objectmodel::New<sofa::core::objectmodel::BaseComponent>();
         obj1->parse(&bod1);
         root->addObject(obj1);
         EXPECT_EQ("Begin Add obj1 to root\nEnd Add obj1 to root\n", listener.log);
         listener.clearLog();
-        sofa::core::objectmodel::BaseObjectDescription bod2("obj2", "BaseObject");
+        sofa::core::objectmodel::BaseComponentDescription bod2("obj2", "BaseObject");
         obj2 = sofa::core::objectmodel::New<sofa::core::objectmodel::BaseComponent>();
         obj2->parse(&bod2);
         root->addObject(obj2);
@@ -292,11 +292,11 @@ struct MutationListener_test : public BaseTest
         const Node::SPtr node1 = sofa::core::objectmodel::New<Node>("node1");
         const Node::SPtr node2 = sofa::core::objectmodel::New<Node>("node2");
         node1->addChild(node2);
-        sofa::core::objectmodel::BaseObjectDescription bod1("obj1", "BaseObject");
+        sofa::core::objectmodel::BaseComponentDescription bod1("obj1", "BaseObject");
         obj1 = sofa::core::objectmodel::New<sofa::core::objectmodel::BaseComponent>();
         obj1->parse(&bod1);
         node2->addObject(obj1);
-        sofa::core::objectmodel::BaseObjectDescription bod2("obj2", "BaseObject");
+        sofa::core::objectmodel::BaseComponentDescription bod2("obj2", "BaseObject");
         obj2 = sofa::core::objectmodel::New<sofa::core::objectmodel::BaseComponent>();
         obj2->parse(&bod2);
         node2->addObject(obj2);
@@ -314,11 +314,11 @@ struct MutationListener_test : public BaseTest
         const Node::SPtr node1 = sofa::core::objectmodel::New<Node>("node1");
         const Node::SPtr node2 = sofa::core::objectmodel::New<Node>("node2");
         node1->addChild(node2);
-        sofa::core::objectmodel::BaseObjectDescription bod1("obj1", "BaseObject");
+        sofa::core::objectmodel::BaseComponentDescription bod1("obj1", "BaseObject");
         obj1 = sofa::core::objectmodel::New<sofa::core::objectmodel::BaseComponent>();
         obj1->parse(&bod1);
         node2->addObject(obj1);
-        sofa::core::objectmodel::BaseObjectDescription bod2("obj2", "BaseObject");
+        sofa::core::objectmodel::BaseComponentDescription bod2("obj2", "BaseObject");
         obj2 = sofa::core::objectmodel::New<sofa::core::objectmodel::BaseComponent>();
         obj2->parse(&bod2);
         node2->addObject(obj2);
@@ -337,11 +337,11 @@ struct MutationListener_test : public BaseTest
         const Node::SPtr node1 = sofa::core::objectmodel::New<Node>("node1");
         const Node::SPtr node2 = sofa::core::objectmodel::New<Node>("node2");
         node1->addChild(node2);
-        sofa::core::objectmodel::BaseObjectDescription bod1("obj1", "BaseObject");
+        sofa::core::objectmodel::BaseComponentDescription bod1("obj1", "BaseObject");
         obj1 = sofa::core::objectmodel::New<sofa::core::objectmodel::BaseComponent>();
         obj1->parse(&bod1);
         node2->addObject(obj1);
-        sofa::core::objectmodel::BaseObjectDescription bod2("obj2", "BaseObject");
+        sofa::core::objectmodel::BaseComponentDescription bod2("obj2", "BaseObject");
         obj2 = sofa::core::objectmodel::New<sofa::core::objectmodel::BaseComponent>();
         obj2->parse(&bod2);
         node2->addObject(obj2);
@@ -369,11 +369,11 @@ struct MutationListener_test : public BaseTest
         const Node::SPtr node7 = sofa::core::objectmodel::New<Node>("node7");
         const Node::SPtr node8 = sofa::core::objectmodel::New<Node>("node8");
 
-        sofa::core::objectmodel::BaseObjectDescription bod1("obj1", "BaseObject");
+        sofa::core::objectmodel::BaseComponentDescription bod1("obj1", "BaseObject");
         obj1 = sofa::core::objectmodel::New<sofa::core::objectmodel::BaseComponent>();
         obj1->parse(&bod1);
         node1->addObject(obj1);
-        sofa::core::objectmodel::BaseObjectDescription bod2("obj2", "BaseObject");
+        sofa::core::objectmodel::BaseComponentDescription bod2("obj2", "BaseObject");
         obj2 = sofa::core::objectmodel::New<sofa::core::objectmodel::BaseComponent>();
         obj2->parse(&bod2);
         node1->addObject(obj2);
