@@ -47,6 +47,11 @@ public:
     ExplicitIntegrationScheme() = default;
     virtual ~ExplicitIntegrationScheme() override = default ;
 
+
+    /**
+     * Template method pattern is implemented here to ensure some data/member are rightly initialized
+     * before solving. This method now internally calls doIntegrate.
+     */
     virtual void integrate(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override final;
     virtual void doIntegrate(const core::ExecParams* params, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) = 0 ;
 

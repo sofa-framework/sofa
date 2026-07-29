@@ -34,7 +34,7 @@ namespace sofa::simulation::integrationscheme
 
 VelocityBasedImplicitIntegrationScheme::VelocityBasedImplicitIntegrationScheme()
 : d_firstOrder(initData(&d_firstOrder, false, "firstOrder", "If true the coordinates derivative will not be integrated and considered null at the beginning of the solving."))
-, d_computeFinalAcceleration(initData(&d_computeFinalAcceleration, false, "computeFinalAcceleration", "If true the integration scheme will compute the total acceleration of the timestep after updating the positions."))
+, d_computeFinalAcceleration(initData(&d_computeFinalAcceleration, false, "computeFinalAcceleration", "If true the integration scheme will compute the total acceleration of the timestep after updating the positions. If false, the acceleration vector is only a result of an internal computation."))
 {}
 
 void VelocityBasedImplicitIntegrationScheme::doSetupIntegrationStep(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
@@ -113,9 +113,6 @@ void VelocityBasedImplicitIntegrationScheme::doSetupIntegrationStep(const core::
     m_vop->v_eq(m_xResult, core::vec_id::write_access::position);
 }
 
-/**
- * Compute the system matrix.
- */
 void VelocityBasedImplicitIntegrationScheme::computeLHS(bool firstIteration)
 {
     SOFA_UNUSED(firstIteration);
@@ -136,9 +133,6 @@ void VelocityBasedImplicitIntegrationScheme::computeLHS(bool firstIteration)
     m_mop->setSystemMBKMatrix(mFact, bFact, kFact, l_linearSolver.get());
 }
 
-/**
-* compute the current RHS.
-*/
 void VelocityBasedImplicitIntegrationScheme::computeRHS(bool firstIteration)
 {
     // Make sure no one modified this
@@ -223,9 +217,6 @@ void VelocityBasedImplicitIntegrationScheme::computeRHS(bool firstIteration)
 }
 
 
-/**
- * Returns the evaluation of the residual
- */
 SReal VelocityBasedImplicitIntegrationScheme::evaluateResidual()
 {
     sofa::simulation::common::VectorOperations vop( m_params, this->getContext() );
@@ -236,10 +227,6 @@ SReal VelocityBasedImplicitIntegrationScheme::evaluateResidual()
     return r0.dot(r0) + r1.dot(r1);
 }
 
-
-/**
- * Solve the linear equation from a Newton iteration, i.e. it computes (x^{i+1}-x^i).
- */
 void VelocityBasedImplicitIntegrationScheme::solveLinearEquation()
 {
     SCOPED_TIMER("MBKSolve");
@@ -251,11 +238,6 @@ void VelocityBasedImplicitIntegrationScheme::solveLinearEquation()
     m_mop->propagateDx(m_systemUnknown);
 }
 
-/**
- * Once (x^{i+1}-x^i) has been computed, the result is used internally to update the current
- * guess. It computes x^{i+1} += alpha * dx, where dx is the result of the linear system. It is
- * not necessary to share the result with the Newton-Raphson method.
- */
 void VelocityBasedImplicitIntegrationScheme::updateStatesFromLinearSolution(SReal alpha, bool firstIteration)
 {
     sofa::core::behavior::MultiVecCoord pos(m_vop.get(), m_xResult);
