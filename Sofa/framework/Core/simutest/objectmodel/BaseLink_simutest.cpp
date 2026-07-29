@@ -30,6 +30,7 @@ using sofa::testing::BaseSimulationTest ;
 using sofa::simulation::Node ;
 
 #include <sofa/core/objectmodel/BaseComponent.h>
+using sofa::core::objectmodel::BaseObject;
 using sofa::core::objectmodel::BaseComponent;
 
 #include <sofa/core/PathResolver.h>
@@ -40,8 +41,6 @@ using sofa::defaulttype::Rigid3Types;
 
 #include <sofa/defaulttype/VecTypes.h>
 using sofa::defaulttype::Vec3Types;
-
-using sofa::core::objectmodel::BaseLink;
 
 namespace
 {
@@ -58,6 +57,7 @@ public:
         scene << "<?xml version='1.0'?>"
                  "<Node name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"
                  "   <RequiredPlugin pluginName='Sofa.Component.SceneUtility' />                   \n"
+                 "   <RequiredPlugin pluginName='Sofa.Component.StateContainer' />                 \n"
                  "   <DefaultAnimationLoop />                                                \n"
                  "   <DefaultVisualManagerLoop />                                            \n"
                  "   <MechanicalObject name='mstate0'/>                                      \n"
@@ -81,41 +81,38 @@ public:
     }
 };
 
-class FakeComponent : public BaseComponent
-{
+class FakeComponent : public BaseComponent {
 public:
     SOFA_CLASS(FakeComponent, BaseComponent);
-    sofa::MultiLink<FakeComponent, BaseComponent, BaseLink::FLAG_DOUBLELINK> l_target;
+
+    sofa::MultiLink<FakeComponent, sofa::core::objectmodel::BaseComponent, sofa::BaseLink::FLAG_DOUBLELINK> l_target;
 
     FakeComponent()
-        : l_target(initLink("target","link for test"))
-    {}
-
+        : l_target(initLink("target", "link for test")) {
+    }
 };
 
-TEST_F(BaseLink_test, add)
+TEST_F(BaseLink_test, remove)
 {
-    FakeComponent Component1;
-    Component1.setName("Component1");
-    FakeComponent Component2;
-    Component2.setName("Component2");
-    FakeComponent Component3;
-    Component3.setName("Component3");
+    FakeComponent owner;
+    FakeComponent target1;
+    FakeComponent target2;
 
-    FakeComponent* ptr;
-    ptr = &Component2;
+    ASSERT_FALSE(owner.l_target.remove(&target1));
 
-    EXPECT_EQ(Component1.l_target.getValueString(), "");
+    ASSERT_TRUE(owner.l_target.add(&target1, ""));
+    ASSERT_TRUE(owner.l_target.add(&target2, ""));
+    ASSERT_EQ(owner.l_target.size(), size_t(2));
+    ASSERT_EQ(owner.l_target.get(0), &target1);
+    ASSERT_EQ(owner.l_target.get(1), &target2);
 
-    Component1.l_target.add(ptr);
-    EXPECT_EQ(Component1.l_target.getValueString(), "@Component2");
+    ASSERT_TRUE(owner.l_target.remove(&target1));
+    ASSERT_EQ(owner.l_target.size(), size_t(1));
+    ASSERT_EQ(owner.l_target.get(0), &target2);
 
-    ptr = &Component3;
-
-    Component1.l_target.add(ptr);
-    EXPECT_EQ(Component1.l_target.getValueString(), "@Component2 @Component3");
+    ASSERT_FALSE(owner.l_target.remove(&target1));
+    ASSERT_FALSE(owner.l_target.remove(nullptr));
 }
-
 
 //////////////////////// Testing valid path //////////////////////////////////////
 class MultiLink_simutest : public BaseLink_test {};
