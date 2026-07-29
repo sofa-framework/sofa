@@ -224,8 +224,6 @@ void BaseComponent::addSlave(BaseComponent::SPtr s)
     const BaseComponent::SPtr previous = s->getMaster();
     if (previous == this) return;
     if (previous)
-        previous->l_slaves.remove(s);
-    l_slaves.add(s.get());
         previous->l_slaves.remove(s.get());
     l_slaves.add(s.get());
     if (previous)
