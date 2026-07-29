@@ -606,7 +606,10 @@ std::map<std::string, ComponentChange, std::less<> > uncreatableComponents = {
     /***********************/
     // REMOVED SINCE v26.06
 
-    { "NewtonRaphsonSolver",      RemovedIn("v27.06").withoutAnyDeprecation() },
+    { "NewtonRaphsonSolver",
+        ComponentChange().withCustomMessage("NewtonRaphsonSolver has been removed since v26.12. It is now again incorporated directly in the StaticEquilibriumIntegrationScheme.\n"
+            "The parameter set can be copy/pasted to the IntegrationScheme directly. A simulation-level Newton-Raphson solver is planned to be released in future release."
+             )},
     { "VariationalSymplecticSolver", RemovedIn("v27.06").withoutAnyDeprecation() },
 
     /***********************/
