@@ -10,7 +10,7 @@
 [![Contact](https://img.shields.io/badge/contact-on_website-brightgreen.svg)](https://www.sofa-framework.org/consortium/contact/)
 [![we're hiring](https://img.shields.io/badge/we're%20hiring!-join%20us-orange)](https://www.sofa-framework.org/about/jobs/)
 
-## What is SOFA
+## What is SOFA ?
 
 SOFA is an open source framework targeted at interactive physics simulation based on the Finite Element Method (FEM), with an emphasis on medical simulation and robotics.  
 It is mainly intended for the research community to help foster newer algorithms, but can also be used as an efficient prototyping tool.  
