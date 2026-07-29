@@ -27,7 +27,7 @@ namespace sofa::core::behavior
 {
 
 /**
- *  \brief Component responsible for timestep integration, i.e. advancing the state from time t to t+dt.
+ *  \brief Component responsible for linearizing the ODE by relating the current timestep to the next one linearly.
  *
  *  This is the base class of every type of integration scheme (explicit, implicit, static, etc).
  *
@@ -48,16 +48,43 @@ protected:
 
 public:
 
+    /**
+     * @param params Parameters for vector and mechanical operations
+     * @param dt Time step for integration
+     * @param xResult MultiVecCoordId in which to store the new position
+     * @param vResult MultiVecCoordId in which to store the new velocity
+     *
+     * This method is a monolithic step integration. It is expected that given the dt, the position
+     * and velocity in xResult and vResult are updated to their value at time t+dt
+     */
     virtual void integrate(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) = 0;
 
-    /// Given the solution dx of the linear system inversion, how much will it affect the velocity
+    /// The integration scheme solves a linear system. In this linear system the unknown has a unit.
+    /// It can be the position, velocity or acceleration increase. In any case, this unknown need then
+    /// to be integrated to update the velocity. This methods returns the factor to put in front of
+    /// this unknown before accumulating it to the velocity.
     ///
-    /// This method is used to compute the compliance for contact corrections
+    /// Said differently, if $x$ is the unknown, $v_{t}$ the velocity at time $t$, then we have
+    /// $$
+    /// v_{t+dt} = v_{t} + k*x + r
+    /// $$
+    /// with $r$ being constant in term of $x$ and $k$ the integration factor returned by this function.
+    ///
+    /// This method is used to compute the compliance for contact corrections.
     virtual SReal getVelocityIntegrationFactor() const = 0;
 
-    /// Given the solution dx of the linear system inversion, how much will it affect the position
+    /// The integration scheme solves a linear system. In this linear system the unknown has a unit.
+    /// It can be the position, velocity or acceleration increase. In any case, this unknown need then
+    /// to be integrated to update the velocity. This methods returns the factor to put in front of
+    /// this unknown before accumulating it to the velocity.
     ///
-    /// This method is used to compute the compliance for contact corrections
+    /// Said differently, if $x$ is the unknown, $p_{t}$ the position at time $t$, then we have
+    /// $$
+    /// p_{t+dt} = p_{t} + k*x + r
+    /// $$
+    /// with $r$ being constant in term of $x$ and $k$ the integration factor returned by this function.
+    ///
+    /// This method is used to compute the compliance for contact corrections.
     virtual SReal getPositionIntegrationFactor() const = 0;
 
 

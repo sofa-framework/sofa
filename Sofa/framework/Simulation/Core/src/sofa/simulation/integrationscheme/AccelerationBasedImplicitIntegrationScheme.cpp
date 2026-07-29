@@ -106,9 +106,6 @@ void AccelerationBasedImplicitIntegrationScheme::doSetupIntegrationStep(const co
 
 }
 
-/**
- * Compute the system matrix.
- */
 void AccelerationBasedImplicitIntegrationScheme::computeLHS(bool firstIteration)
 {
     SOFA_UNUSED(firstIteration);
@@ -134,9 +131,6 @@ void AccelerationBasedImplicitIntegrationScheme::computeLHS(bool firstIteration)
     m_mop->setSystemMBKMatrix(mFact, bFact, kFact, l_linearSolver.get());
 }
 
-/**
-* compute the current RHS.
-*/
 void AccelerationBasedImplicitIntegrationScheme::computeRHS(bool firstIteration)
 {
     // Make sure no one modified this
@@ -178,8 +172,8 @@ void AccelerationBasedImplicitIntegrationScheme::computeRHS(bool firstIteration)
 
         // R1 and R2 should be equal to 0 in theory when integration scheme is linear. But let's
         // recompute them anyway to compute the residual
-        computeCurrentPositionIntegrationError (*m_vop, m_r1, core::vec_id::write_access::velocity, m_acceleration);
-        computeCurrentVelocityIntegrationError (*m_vop, m_r2, m_acceleration);
+        computeCurrentPositionIntegrationError (*m_vop, m_r1, m_xResult, m_vResult, m_acceleration);
+        computeCurrentVelocityIntegrationError (*m_vop, m_r2, m_vResult, m_acceleration);
 
         if (firstIteration)
         {
@@ -217,10 +211,6 @@ void AccelerationBasedImplicitIntegrationScheme::computeRHS(bool firstIteration)
 
 }
 
-
-/**
- * Returns the evaluation of the residual
- */
 SReal AccelerationBasedImplicitIntegrationScheme::evaluateResidual()
 {
     core::behavior::MultiVecDeriv r0(m_vop.get(), m_r0);
@@ -230,10 +220,6 @@ SReal AccelerationBasedImplicitIntegrationScheme::evaluateResidual()
     return r0.dot(r0) + r1.dot(r1) + r2.dot(r2);
 }
 
-
-/**
- * Solve the linear equation from a Newton iteration, i.e. it computes (x^{i+1}-x^i).
- */
 void AccelerationBasedImplicitIntegrationScheme::solveLinearEquation()
 {
     SCOPED_TIMER("MBKSolve");
@@ -246,11 +232,6 @@ void AccelerationBasedImplicitIntegrationScheme::solveLinearEquation()
     m_mop->propagateDx(m_systemUnknown);
 }
 
-/**
- * Once (x^{i+1}-x^i) has been computed, the result is used internally to update the current
- * guess. It computes x^{i+1} += alpha * dx, where dx is the result of the linear system. It is
- * not necessary to share the result with the Newton-Raphson method.
- */
 void AccelerationBasedImplicitIntegrationScheme::updateStatesFromLinearSolution(SReal alpha, bool firstIteration)
 {
     sofa::core::behavior::MultiVecCoord pos(m_vop.get(), m_xResult);
@@ -289,8 +270,6 @@ SReal AccelerationBasedImplicitIntegrationScheme::getVelocityIntegrationFactor()
 
 SReal AccelerationBasedImplicitIntegrationScheme::getPositionIntegrationFactor() const
 {
-    //TODO not 100% sure this is what's expected.
-    //TODO But given what's in LinearSolverConstraintCorrection< DataTypes >::applyMotionCorrection it seems like it
     return getPositionUpdateDerivedFromVelocity()*getVelocityUpdateDerivedFromAcceleration() + getPositionUpdateDerivedFromAcceleration();
 }
 

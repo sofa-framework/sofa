@@ -77,7 +77,6 @@ SReal LinearMultistepIntegrationScheme::getInverseVelocityUpdateDerivedFromVeloc
     return 1.0 / m_dt ;
 }
 
-//Compute the error made on the position integration equation : x_{t+h} - g_x(v), with v the current estimate of velocity
 void LinearMultistepIntegrationScheme::computeCurrentPositionIntegrationError(sofa::simulation::common::VectorOperations & vop, sofa::core::MultiVecDerivId& result,  const sofa::core::MultiVecCoordId& position, const sofa::core::MultiVecDerivId& velocity)
 {
 
@@ -96,7 +95,7 @@ void LinearMultistepIntegrationScheme::computeCurrentPositionIntegrationError(so
     res.peq(position);
 
 }
-//Compute the acceleration from current value of velocity. This is the implementation of the inverse integration scheme for the velocity
+
 void LinearMultistepIntegrationScheme::computeAccelerationFromVelocity(sofa::simulation::common::VectorOperations & vop, sofa::core::MultiVecDerivId& result, const sofa::core::MultiVecDerivId& velocity)
 {
 
