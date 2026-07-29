@@ -54,9 +54,6 @@ void StaticEquilibriumIntegrationScheme::doSetupIntegrationStep(const core::Exec
     simulation::common::VectorOperations::realloc(*m_vop, m_r0, "r0", this, true);
 }
 
-/**
- * Compute the system matrix.
- */
 void StaticEquilibriumIntegrationScheme::computeLHS(bool firstIteration)
 {
     SOFA_UNUSED(firstIteration);
@@ -73,9 +70,6 @@ void StaticEquilibriumIntegrationScheme::computeLHS(bool firstIteration)
 
 }
 
-/**
-* compute the current RHS.
-*/
 void StaticEquilibriumIntegrationScheme::computeRHS(bool firstIteration)
 {
     sofa::core::behavior::MultiVecDeriv f(m_vop.get(), core::vec_id::write_access::force );
@@ -95,10 +89,6 @@ void StaticEquilibriumIntegrationScheme::computeRHS(bool firstIteration)
 
 }
 
-
-/**
- * Returns the evaluation of the residual
- */
 SReal StaticEquilibriumIntegrationScheme::evaluateResidual()
 {
     core::behavior::MultiVecDeriv r0(m_vop.get(), m_r0);
@@ -106,10 +96,6 @@ SReal StaticEquilibriumIntegrationScheme::evaluateResidual()
     return r0.dot(r0);
 }
 
-
-/**
- * Solve the linear equation from a Newton iteration, i.e. it computes (x^{i+1}-x^i).
- */
 void StaticEquilibriumIntegrationScheme::solveLinearEquation()
 {
     SCOPED_TIMER("MBKSolve");
@@ -120,11 +106,6 @@ void StaticEquilibriumIntegrationScheme::solveLinearEquation()
     l_linearSolver->getLinearSystem()->dispatchSystemSolution(m_systemUnknown);
 }
 
-/**
- * Once (x^{i+1}-x^i) has been computed, the result is used internally to update the current
- * guess. It computes x^{i+1} += alpha * dx, where dx is the result of the linear system. It is
- * not necessary to share the result with the Newton-Raphson method.
- */
 void StaticEquilibriumIntegrationScheme::updateStatesFromLinearSolution(SReal alpha, bool firstIteration)
 {
     sofa::core::behavior::MultiVecCoord pos(m_vop.get(), m_xResult);
@@ -132,13 +113,10 @@ void StaticEquilibriumIntegrationScheme::updateStatesFromLinearSolution(SReal al
     pos.peq(m_systemUnknown, alpha );
 }
 
-
-
 SReal StaticEquilibriumIntegrationScheme::getVelocityIntegrationFactor() const
 {
     return 0.0;
 }
-
 
 SReal StaticEquilibriumIntegrationScheme::getPositionIntegrationFactor() const
 {

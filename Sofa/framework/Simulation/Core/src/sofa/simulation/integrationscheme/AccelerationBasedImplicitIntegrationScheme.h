@@ -33,6 +33,16 @@
 namespace sofa::simulation::integrationscheme
 {
 
+/**
+ * This class is a specialization of implicit integration scheme, where the unknown is expressed as
+ * a delta in acceleration.
+ *
+ * Fixing this will then result in a particular expression of the gradient/hessain computation
+ * as well as the state update, enabling to have a generic formulation of the ODE linearization
+ * for all integration scheme that uses acceleration as the unknown.
+ *
+ * For more information see documentation : TODO: link to the updated doc
+ */
 class SOFA_SIMULATION_CORE_API AccelerationBasedImplicitIntegrationScheme :
                             public ImplicitIntegrationScheme
 {
@@ -41,53 +51,80 @@ public:
 
     AccelerationBasedImplicitIntegrationScheme() = default;
 
-   virtual void doSetupIntegrationStep(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
-
+    /** Inherited for ImplicitIntegrationScheme **/
     /**
-     * Compute the system matrix.
-     */
+     *  All of those overriding derive from the equations presented in the documentation TODO link to the documentation
+     **/
+
+    virtual void doSetupIntegrationStep(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
+
     virtual void computeLHS(bool firstIteration = false) override;
-
-    /**
-    * compute the current RHS.
-    */
     virtual void computeRHS(bool firstIteration = false) override;
-
-
-    /**
-     * Returns the evaluation of the residual
-     */
     virtual SReal evaluateResidual() override;
-
-
-    /**
-     * Solve the linear equation from a Newton iteration, i.e. it computes (x^{i+1}-x^i).
-     */
     virtual void solveLinearEquation() override;
-
-    /**
-     * Once (x^{i+1}-x^i) has been computed, the result is used internally to update the current
-     * guess. It computes x^{i+1} += alpha * dx, where dx is the result of the linear system. It is
-     * not necessary to share the result with the Newton-Raphson method.
-     */
     virtual void updateStatesFromLinearSolution(SReal alpha, bool firstIteration = false) override;
 
     virtual SReal getVelocityIntegrationFactor() const override final;
     virtual SReal getPositionIntegrationFactor() const override final;
 
 protected:
-
     virtual sofa::Size getIntegrationSchemeTimeOrder() const = 0;
+    /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ **/
 
-
+    /**   New API methods of VelocityBasedImplicitIntegrationScheme   **/
+    /**
+     * This method returns a scalar which is the value of the derivative of the position integration
+     * scheme with respect to the acceleration.
+     *
+     * In other words, if the position integration scheme is given by  $ p_{t+dt} = g_p(v_{t+dt}, a_{t+dt}) $
+     * then this function returns $\derivative{g_p(v_{t+dt}, a_{t+dt})}{a_{t+dt}}$
+     *
+     * For more information see the documentation : TODO link to the documentation
+     **/
     virtual SReal getPositionUpdateDerivedFromAcceleration() const = 0;
+
+    /**
+     * This method returns a scalar which is the value of the derivative of the position integration
+     * scheme with respect to the velocity.
+     *
+     * In other words, if the position integration scheme is given by  $ p_{t+dt} = g_p(v_{t+dt}, a_{t+dt}) $
+     * then this function returns $\derivative{g_p(v_{t+dt}, a_{t+dt})}{v_{t+dt}}$
+     *
+     * For more information see the documentation : TODO link to the documentation
+     **/
     virtual SReal getPositionUpdateDerivedFromVelocity() const = 0;
+
+    /**
+     * This method returns a scalar which is the value of the derivative of the velocity integration
+     * scheme with respect to the acceleration.
+     *
+     * In other words, if the position integration scheme is given by  $ v_{t+dt} = g_v(a_{t+dt}) $
+     * then this function returns $\derivative{g_v(a_{t+dt})}{a_{t+dt}}$
+     *
+     * For more information see the documentation : TODO link to the documentation
+     **/
     virtual SReal getVelocityUpdateDerivedFromAcceleration() const = 0;
 
-    //Compute the error made on the position integration equation : x_{t+h} - g_x(v,a), with v and a the current estimates of velocity and acceleration
-    virtual void computeCurrentPositionIntegrationError(sofa::simulation::common::VectorOperations & vop, sofa::core::MultiVecDerivId& result, const sofa::core::MultiVecDerivId& velocity, const sofa::core::MultiVecDerivId& acceleration) = 0;
-    //Compute the error made on the position integration equation : v_{t+h} - g_v(a), with a the current estimate of acceleration
-    virtual void computeCurrentVelocityIntegrationError(sofa::simulation::common::VectorOperations & vop, const sofa::core::MultiVecDerivId& result, const sofa::core::MultiVecDerivId& acceleration) = 0;
+    /**
+     * This method compute the error in term of position update given the current position (in the
+     * vecId position) and the current velocity (vecId velocity) and the current acceleration (vecId
+     * acceleration) and store it into the VecId result.
+     *
+     * In equations the computation looks like this : $r = x_{t+h} - g_x(v,a)$
+     *
+     * For more information see the documentation : TODO link to the documentation
+     **/
+    virtual void computeCurrentPositionIntegrationError(sofa::simulation::common::VectorOperations & vop, sofa::core::MultiVecDerivId& result, const sofa::core::MultiVecCoordId& position, const sofa::core::MultiVecDerivId& velocity, const sofa::core::MultiVecDerivId& acceleration) = 0;
+
+    /**
+     * This method compute the error in term of velocity update given the current velocity (vecId
+     * velocity) and the current acceleration (vecId acceleration) and store it into the VecId result.
+     *
+     * In equations the computation looks like this : $r = v_{t+h} - g_v(a)$
+     *
+     * For more information see the documentation : TODO link to the documentation
+     **/
+    virtual void computeCurrentVelocityIntegrationError(sofa::simulation::common::VectorOperations & vop, const sofa::core::MultiVecDerivId& result, const sofa::core::MultiVecDerivId& velocity, const sofa::core::MultiVecDerivId& acceleration) = 0;
 };
 
 } // namespace sofa::component::integrationscheme

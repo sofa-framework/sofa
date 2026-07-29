@@ -46,6 +46,10 @@ class SOFA_SIMULATION_CORE_API ImplicitIntegrationScheme :
 public:
     SOFA_ABSTRACT_CLASS(ImplicitIntegrationScheme, sofa::core::behavior::BaseIntegrationScheme);
 
+    /**
+     * Template method pattern is implemented here to ensure some data/member are rightly initialized
+     * before solving. This method internally calls doSetupIntegrationStep that can be overridden.
+     */
     virtual void setupIntegrationStep(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) final;
     virtual void doSetupIntegrationStep(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
     {  }
@@ -87,17 +91,44 @@ public:
     virtual void finalizeIntegrationStep()
     {  };
 
+    /**
+     * @param params Parameters for vector and mechanical operations
+     * @param dt Time step for integration
+     * @param xResult MultiVecCoordId in which to store the new position
+     * @param vResult MultiVecCoordId in which to store the new velocity
+     *
+     * This method is a monolithic step integration. It is expected that given the dt, the position
+     * and velocity in xResult and vResult are updated to their value at time t+dt
+     */
     virtual void integrate(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
 
 
-    /// Given the solution dx of the linear system inversion, how much will it affect the velocity
+    /// The integration scheme solves a linear system. In this linear system the unknown has a unit.
+    /// It can be the position, velocity or acceleration increase. In any case, this unknown need then
+    /// to be integrated to update the velocity. This methods returns the factor to put in front of
+    /// this unknown before accumulating it to the velocity.
     ///
-    /// This method is used to compute the compliance for contact corrections
+    /// Said differently, if $x$ is the unknown, $v_{t}$ the velocity at time $t$, then we have
+    /// $$
+    /// v_{t+dt} = v_{t} + k*x + r
+    /// $$
+    /// with $r$ being constant in term of $x$ and $k$ the integration factor returned by this function.
+    ///
+    /// This method is used to compute the compliance for contact corrections.
     virtual SReal getVelocityIntegrationFactor() const = 0;
 
-    /// Given the solution dx of the linear system inversion, how much will it affect the position
+    /// The integration scheme solves a linear system. In this linear system the unknown has a unit.
+    /// It can be the position, velocity or acceleration increase. In any case, this unknown need then
+    /// to be integrated to update the velocity. This methods returns the factor to put in front of
+    /// this unknown before accumulating it to the velocity.
     ///
-    /// This method is used to compute the compliance for contact corrections
+    /// Said differently, if $x$ is the unknown, $p_{t}$ the position at time $t$, then we have
+    /// $$
+    /// p_{t+dt} = p_{t} + k*x + r
+    /// $$
+    /// with $r$ being constant in term of $x$ and $k$ the integration factor returned by this function.
+    ///
+    /// This method is used to compute the compliance for contact corrections.
     virtual SReal getPositionIntegrationFactor() const = 0;
 
     Data<SReal> d_rayleighStiffness; ///< Rayleigh damping coefficient related to stiffness, > 0
@@ -106,9 +137,12 @@ public:
 
 protected:
 
+    /**
+     * This method returns the order of the integration scheme in term of number of past timestep
+     * needed to compute the next timestep.
+     * For instance, if $p_{t+dt} = f(v_{t+dt}, ... , v_{t-k*dt}$, then the order is k+1
+     */
     virtual sofa::Size getIntegrationSchemeTimeOrder() const = 0;
-
-
 
     const core::ExecParams* m_params;
     sofa::core::MultiVecCoordId m_xResult;
