@@ -56,6 +56,7 @@ void VonMisesStress<DataTypes, ElementType>::init()
         const auto& elements = FiniteElement::getElementSequence(*this->l_topology);
         nodalStress->resize(elements.size());
 
+        this->precomputeData();
         this->calculateElementMassMatrix(elements, m_elementMassMatrices);
     }
 }
@@ -88,27 +89,32 @@ void VonMisesStress<DataTypes, ElementType>::handleEvent(core::objectmodel::Even
                 }
 
                 std::array<StressVoigtVector, NumberOfNodesInElement> nodalStressInElement;
+                static constexpr auto gradients = sofa::fem::FiniteElementHelper<ElementType, DataTypes>::gradientShapeFunctionAtQuadraturePoints();
+                static constexpr auto quadraturePoints = FiniteElement::quadraturePoints();
+
 
                 for (sofa::Size i = 0; i < sofa::type::NumberOfIndependentElements<spatial_dimensions>; ++i)
                 {
                     sofa::type::Vec<NumberOfNodesInElement, sofa::Real_t<DataTypes>> b;
 
-                    for (const auto& [quadraturePoint, weight] : FiniteElement::quadraturePoints())
+                    for (sofa::Size q = 0; q < NumberOfQuadraturePoints; ++q)
                     {
-                        // gradient of shape functions in the reference element evaluated at the quadrature
-                        // point
-                        const sofa::type::Mat<NumberOfNodesInElement, TopologicalDimension, Real_t<DataTypes>>
-                            dN_dq_ref = FiniteElement::gradientShapeFunctions(quadraturePoint);
+                        const auto& weight = quadraturePoints[q].second;
+                        const auto& precomputed = m_precomputedData[elementId][q];
 
-                        // jacobian of the mapping from the reference space to the physical space, evaluated
-                        // at the quadrature point
-                        const sofa::type::Mat<spatial_dimensions, TopologicalDimension, Real_t<DataTypes>> J_q =
-                            FiniteElement::Helper::jacobianFromReferenceToPhysical(nodeCoordinatesInElement, dN_dq_ref);
+                        // gradient of shape functions in the reference element evaluated at the quadrature point
+                        const auto& dN_dq_ref = gradients[q];
+
+                        // jacobian of the mapping from the reference space to the CURRENT physical space
+                        const auto J_q = FiniteElement::Helper::jacobianFromReferenceToPhysical(nodeCoordinatesInElement, dN_dq_ref);
+
+                        // Deformation Gradient F = J_curr * J_rest_inv
+                        const DeformationGradient F = J_q * precomputed.jacobianInv;
 
                         const auto detJ = sofa::type::absGeneralizedDeterminant(J_q);
 
                         // shape functions in the reference element evaluated at the quadrature point
-                        const auto N = FiniteElement::shapeFunctions(quadraturePoint);
+                        const auto N = FiniteElement::shapeFunctions(quadraturePoints[q].first);
 
                         StressVoigtVector stress;
 
@@ -131,6 +137,42 @@ void VonMisesStress<DataTypes, ElementType>::handleEvent(core::objectmodel::Even
                 }
 
             });
+    }
+}
+
+template <class DataTypes, class ElementType>
+void VonMisesStress<DataTypes, ElementType>::precomputeData()
+{
+    if (this->l_topology == nullptr) return;
+
+    auto restPositionAccessor = this->mstate->readRestPositions();
+    const auto& restPosition = restPositionAccessor.ref();
+
+    const auto& elements = FiniteElement::getElementSequence(*this->l_topology);
+    m_precomputedData.resize(elements.size());
+
+    static constexpr auto gradients = sofa::fem::FiniteElementHelper<ElementType, DataTypes>::gradientShapeFunctionAtQuadraturePoints();
+
+    for (std::size_t i = 0; i < elements.size(); ++i)
+    {
+        const auto& element = elements[i];
+        std::array<Coord_t<DataTypes>, NumberOfNodesInElement> nodeCoordinatesInElement;
+        for (sofa::Size n = 0; n < NumberOfNodesInElement; ++n)
+            nodeCoordinatesInElement[n] = restPosition[element[n]];
+
+        for (std::size_t j = 0; j < NumberOfQuadraturePoints; ++j)
+        {
+            const auto& dN_dq_ref = gradients[j];
+            PrecomputedData& data = m_precomputedData[i][j];
+            data.jacobian = sofa::fem::FiniteElementHelper<ElementType, DataTypes>::jacobianFromReferenceToPhysical(nodeCoordinatesInElement, dN_dq_ref);
+            data.jacobianInv = sofa::type::inverse(data.jacobian);
+            data.detJacobian = sofa::type::absGeneralizedDeterminant(data.jacobian);
+
+            for (sofa::Size n = 0; n < NumberOfNodesInElement; ++n)
+            {
+                data.dN_dQ[n] = data.jacobianInv.multTranspose(dN_dq_ref[n]);
+            }
+        }
     }
 }
 
