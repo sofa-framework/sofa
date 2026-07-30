@@ -22,7 +22,7 @@
 #pragma once
 
 #include <sofa/config.h>
-#include <sofa/component/engine/generate/VolumeFromTetrahedrons.h>
+#include <sofa/component/engine/generate/VolumeFromVolumetricElements.h>
 #include <sofa/geometry/Hexahedron.h>
 #include <sofa/geometry/Tetrahedron.h>
 
@@ -37,7 +37,7 @@ using sofa::core::objectmodel::BaseData;
 
 
 template <class DataTypes>
-VolumeFromTetrahedrons<DataTypes>::VolumeFromTetrahedrons()
+VolumeFromVolumetricElements<DataTypes>::VolumeFromVolumetricElements()
     :
       l_topology(initLink("topology", "link to the topology"))
     , l_state(initLink("mechanical", "link to the mechanical"))
@@ -51,7 +51,7 @@ VolumeFromTetrahedrons<DataTypes>::VolumeFromTetrahedrons()
 }
 
 template <class DataTypes>
-void VolumeFromTetrahedrons<DataTypes>::parse(core::objectmodel::BaseObjectDescription* arg)
+void VolumeFromVolumetricElements<DataTypes>::parse(core::objectmodel::BaseObjectDescription* arg)
 {
     Inherit1::parse(arg);
 
@@ -63,13 +63,13 @@ void VolumeFromTetrahedrons<DataTypes>::parse(core::objectmodel::BaseObjectDescr
 }
 
 template <class DataTypes>
-VolumeFromTetrahedrons<DataTypes>::~VolumeFromTetrahedrons()
+VolumeFromVolumetricElements<DataTypes>::~VolumeFromVolumetricElements()
 {
 }
 
 
 template <class DataTypes>
-void VolumeFromTetrahedrons<DataTypes>::init()
+void VolumeFromVolumetricElements<DataTypes>::init()
 {
     Inherit1::init();
 
@@ -107,7 +107,7 @@ void VolumeFromTetrahedrons<DataTypes>::init()
 
 
 template <class DataTypes>
-void VolumeFromTetrahedrons<DataTypes>::reinit()
+void VolumeFromVolumetricElements<DataTypes>::reinit()
 {
     if(d_componentState.getValue() != ComponentState::Valid)
             return ;
@@ -117,7 +117,7 @@ void VolumeFromTetrahedrons<DataTypes>::reinit()
 
 
 template <class DataTypes>
-void VolumeFromTetrahedrons<DataTypes>::initTopology()
+void VolumeFromVolumetricElements<DataTypes>::initTopology()
 {   
     if (!l_topology.get())
     {
@@ -145,7 +145,7 @@ void VolumeFromTetrahedrons<DataTypes>::initTopology()
 
 
 template <class DataTypes>
-void VolumeFromTetrahedrons<DataTypes>::checkTopology()
+void VolumeFromVolumetricElements<DataTypes>::checkTopology()
 {
     ReadAccessor<sofa::Data<VecCoord> >  positions = d_positions;
     ReadAccessor<sofa::Data<VecTetras> > tetras    = d_tetras;
@@ -194,7 +194,7 @@ void VolumeFromTetrahedrons<DataTypes>::checkTopology()
 
 
 template <class DataTypes>
-void VolumeFromTetrahedrons<DataTypes>::doUpdate()
+void VolumeFromVolumetricElements<DataTypes>::doUpdate()
 {
     if(d_componentState.getValue() != ComponentState::Valid)
             return ;
@@ -210,7 +210,7 @@ void VolumeFromTetrahedrons<DataTypes>::doUpdate()
 
 
 template <class DataTypes>
-void VolumeFromTetrahedrons<DataTypes>::updateVolume()
+void VolumeFromVolumetricElements<DataTypes>::updateVolume()
 {
     Real volume = 0.;
 

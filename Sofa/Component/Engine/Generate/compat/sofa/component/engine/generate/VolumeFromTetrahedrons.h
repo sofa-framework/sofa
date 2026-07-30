@@ -19,25 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_ENGINE_VOLUMEFROMTETRAHEDRONS_CPP
-
-#include <sofa/component/engine/generate/VolumeFromTetrahedrons.inl>
-#include <sofa/core/ObjectFactory.h>
+#pragma once
+#include <sofa/component/engine/generate/VolumeFromVolumetricElements.h>
+SOFA_HEADER_DEPRECATED("v26.12", "v27.06", "sofa/component/engine/generate/VolumeFromVolumetricElements.h")
 
 namespace sofa::component::engine::generate
 {
 
-using namespace sofa::defaulttype;
-using namespace sofa::helper;
+template <class DataTypes>
+using VolumeFromTetrahedrons SOFA_ATTRIBUTE_DEPRECATED__VOLUMEFROMTETRAHEDRONS() = VolumeFromVolumetricElements<DataTypes>;
 
-void registerVolumeFromTetrahedrons(sofa::core::ObjectFactory* factory)
-{
-    factory->registerObjects(sofa::core::ObjectRegistrationData("This component computes the volume of a given volumetric mesh.")
-    .add<  VolumeFromTetrahedrons<Vec3Types> >(true));
 }
-
-template class SOFA_COMPONENT_ENGINE_GENERATE_API VolumeFromTetrahedrons<Vec3Types>;
-
-
-} // namespace
-
