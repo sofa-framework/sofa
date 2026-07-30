@@ -23,8 +23,9 @@
 
 #include <sofa/component/solidmechanics/fem/elastic/config.h>
 #include <sofa/component/solidmechanics/fem/elastic/impl/trait.h>
-#include <sofa/core/behavior/TopologyAccessor.h>
 #include <sofa/core/behavior/SingleStateAccessor.h>
+#include <sofa/core/behavior/TopologyAccessor.h>
+#include <sofa/helper/ColorMap.h>
 
 namespace sofa::component::solidmechanics::fem::elastic
 {
@@ -56,12 +57,15 @@ protected:
 public:
 
     void init() override;
+    void draw(const core::visual::VisualParams* vparams) override;
 
     // A stress value for each node in an element
     using LocalStressValues = std::array<sofa::Real_t<DataTypes>, NumberOfNodesInElement>;
     Data<sofa::type::vector<LocalStressValues>> d_nodalStress;
 
     Data<bool> d_continuousField;
+
+    Data<helper::ColorMap> d_colorMap;
 
     VonMisesStress();
 
