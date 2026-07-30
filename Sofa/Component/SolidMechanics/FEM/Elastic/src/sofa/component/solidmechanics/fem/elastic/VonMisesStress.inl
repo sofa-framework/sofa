@@ -102,11 +102,10 @@ void VonMisesStress<DataTypes, ElementType>::handleEvent(core::objectmodel::Even
 
                         // jacobian of the mapping from the reference space to the physical space, evaluated
                         // at the quadrature point
-                        sofa::type::Mat<spatial_dimensions, TopologicalDimension, Real_t<DataTypes>>
-                            jacobian = FiniteElement::Helper::jacobianFromReferenceToPhysical(
-                                nodeCoordinatesInElement, dN_dq_ref);
+                        const sofa::type::Mat<spatial_dimensions, TopologicalDimension, Real_t<DataTypes>> J_q =
+                            FiniteElement::Helper::jacobianFromReferenceToPhysical(nodeCoordinatesInElement, dN_dq_ref);
 
-                        const auto detJ = sofa::type::absGeneralizedDeterminant(jacobian);
+                        const auto detJ = sofa::type::absGeneralizedDeterminant(J_q);
 
                         // shape functions in the reference element evaluated at the quadrature point
                         const auto N = FiniteElement::shapeFunctions(quadraturePoint);
