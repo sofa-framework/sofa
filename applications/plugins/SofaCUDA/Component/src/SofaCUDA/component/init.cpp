@@ -81,6 +81,7 @@ extern void registerRigidMapping(sofa::core::ObjectFactory* factory);
 extern void registerDiagonalMass(sofa::core::ObjectFactory* factory);
 extern void registerMeshMatrixMass(sofa::core::ObjectFactory* factory);
 extern void registerUniformMass(sofa::core::ObjectFactory* factory);
+extern void registerFEMMass(sofa::core::ObjectFactory* factory);
 
 // component::mechanicalload
 extern void registerConstantForceField(sofa::core::ObjectFactory* factory);
@@ -221,6 +222,7 @@ void registerObjects(sofa::core::ObjectFactory* factory)
     registerDiagonalMass(factory);
     registerMeshMatrixMass(factory);
     registerUniformMass(factory);
+    registerFEMMass(factory);
     registerConstantForceField(factory);
     registerEllipsoidForceField(factory);
     registerLinearForceField(factory);

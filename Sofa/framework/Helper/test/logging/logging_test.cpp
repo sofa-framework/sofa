@@ -274,6 +274,12 @@ public:
         msg_warning(this) << "a warning message" ;
         msg_error(this) << "an error message" ;
     }
+
+    void emitMessagesOnce(){
+        msg_info_once(this) << "an info message" ;
+        msg_warning_once(this) << "a warning message" ;
+        msg_error_once(this) << "an error message" ;
+    }
 };
 
 
@@ -309,6 +315,29 @@ TEST(LoggingTest, checkBaseObjectMsgAPI)
     msg_info(&c) << "A fourth message ";
 
     EXPECT_EQ(c.getLoggedMessages().size(), 4u) << s.str();
+}
+
+TEST(LoggingTest, onceMessagePerInstance)
+{
+    MessageDispatcher::clearHandlers() ;
+    MyMessageHandler h;
+    MessageDispatcher::addHandler(&h) ;
+
+    MyComponent c1;
+    MyComponent c2;
+    c1.f_printLog.setValue(true);
+    c2.f_printLog.setValue(true);
+
+    // Repeated calls on the same instance emit only the first time (3 msgs).
+    c1.emitMessagesOnce() ;
+    c1.emitMessagesOnce() ;
+    c1.emitMessagesOnce() ;
+    EXPECT_EQ(h.numMessages(), 3u);
+
+    // A different instance hitting the same call sites emits its own messages.
+    c2.emitMessagesOnce() ;
+    c2.emitMessagesOnce() ;
+    EXPECT_EQ(h.numMessages(), 6u);
 }
 
 TEST(LoggingTest, checkBaseObjectMsgAPInoPrintLog)

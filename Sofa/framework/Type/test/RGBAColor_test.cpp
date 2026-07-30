@@ -45,6 +45,7 @@ public:
     void checkDoubleStreamingOperator(const std::vector<std::string>&) ;
     void testEnlight();
     void testStructuredBindings();
+    void testToHexadecimal();
 };
 
 void Color_Test::testEnlight()
@@ -62,6 +63,16 @@ void Color_Test::testStructuredBindings()
     EXPECT_EQ(g, 0.);
     EXPECT_EQ(b, 0.);
     EXPECT_EQ(a, 1.);
+}
+
+void Color_Test::testToHexadecimal()
+{
+    EXPECT_EQ(RGBAColor::red().toHexadecimal(), "#ff0000ff");
+    EXPECT_EQ(RGBAColor::green().toHexadecimal(), "#00ff00ff");
+    EXPECT_EQ(RGBAColor::blue().toHexadecimal(), "#0000ffff");
+
+    //beyond 255
+    EXPECT_EQ(RGBAColor(1000, 0, 0, 0).toHexadecimal(), "#3e418000000");
 }
 
 void Color_Test::checkCreateFromString()
@@ -290,6 +301,11 @@ TEST_F(Color_Test, checkEnlight)
 TEST_F(Color_Test, testStructuredBindings)
 {
     this->testStructuredBindings();
+}
+
+TEST_F(Color_Test, testToHexadecimal)
+{
+    this->testToHexadecimal();
 }
 
 std::vector<std::vector<std::string>> testvalues =

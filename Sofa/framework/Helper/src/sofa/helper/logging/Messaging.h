@@ -79,6 +79,7 @@
 #define MESSAGING_H
 
 #include <sofa/helper/logging/MessageDispatcher.h>
+#include <unordered_set>
 
 #define msgendl "  \n"
 
@@ -134,6 +135,50 @@
 #define TWO_FUNC_CHOOSER(_f1, _f2 ,...) _f2
 #define TWO_FUNC_RECOMPOSER(argsWithParentheses) TWO_FUNC_CHOOSER argsWithParentheses
 
+// This header may be included several times in a single translation unit with
+// MESSAGING_H undefined in between (see logging_test.cpp, which re-includes it
+// to toggle the dev-tools mode). The macros below are meant to be redefined on
+// each pass, but OnceTracker is a real type and must be defined only once, so
+// it gets its own dedicated include guard.
+#ifndef SOFA_HELPER_LOGGING_ONCETRACKER_DEFINED
+#define SOFA_HELPER_LOGGING_ONCETRACKER_DEFINED
+namespace sofa {
+namespace helper {
+namespace logging {
+/// Per-call-site bookkeeping for the msg_*_once macros. Each msg_*_once site
+/// owns one thread_local OnceTracker; it records the set of emitter instances
+/// (keyed by address) that have already emitted there, so a message is shown
+/// once per component instance rather than once for the whole program.
+/// Because the tracker is thread_local, no synchronization is needed; the
+/// guarantee is "once per instance per thread" (identical to "once per
+/// instance" when a given emitter only logs from a single thread).
+struct OnceTracker
+{
+    /// Returns true the first time it sees a given emitter, false afterwards.
+    bool firstTimeFor(const void* emitter)
+    {
+        return m_seen.insert(emitter).second;
+    }
+
+private:
+    std::unordered_set<const void*> m_seen;
+};
+} // namespace logging
+} // namespace helper
+} // namespace sofa
+#endif // SOFA_HELPER_LOGGING_ONCETRACKER_DEFINED
+
+/// Guard whose body runs only the first time the given emitter instance reaches
+/// this call site. Used by the msg_*_once macros below.
+#define MSGONCE_1(emitter) if (thread_local sofa::helper::logging::OnceTracker sofaMsgOnceTracker; \
+                                sofaMsgOnceTracker.firstTimeFor(static_cast<const void*>(emitter)))
+#define MSGONCE_0()        MSGONCE_1(this)
+
+#define MSGONCE_CHOOSE_FROM_ARG_COUNT(...) TWO_FUNC_RECOMPOSER((__VA_ARGS__, MSGONCE_1, ))
+#define MSGONCE_NO_ARG_EXPANDER() ,MSGONCE_0
+#define MSGONCE_CHOOSER(...) MSGONCE_CHOOSE_FROM_ARG_COUNT(MSGONCE_NO_ARG_EXPANDER __VA_ARGS__ ())
+#define MSGONCE_GUARD(...) MSGONCE_CHOOSER(__VA_ARGS__)(__VA_ARGS__)
+
 /// THE INFO BEAST
 #define MSGINFO_1(x) if( sofa::helper::logging::notMuted(x) ) oldmsg_info(x)
 #define MSGINFO_0()  if( sofa::helper::logging::notMuted(this) ) oldmsg_info(this)
@@ -144,6 +189,7 @@
 
 #define msg_info(...) MSGINFO_CHOOSER(__VA_ARGS__)(__VA_ARGS__)
 #define msg_info_when(cond, ...) if(cond) msg_info(__VA_ARGS__)
+#define msg_info_once(...) MSGONCE_GUARD(__VA_ARGS__) msg_info(__VA_ARGS__)
 
 /// THE WARNING BEAST
 #define MSGWARNING_1(x) oldmsg_warning(x)
@@ -155,6 +201,7 @@
 
 #define msg_warning(...) MSGWARNING_CHOOSER(__VA_ARGS__)(__VA_ARGS__)
 #define msg_warning_when(cond, ...) if(cond) msg_warning(__VA_ARGS__)
+#define msg_warning_once(...) MSGONCE_GUARD(__VA_ARGS__) msg_warning(__VA_ARGS__)
 
 
 /// THE ERROR BEAST
@@ -167,6 +214,7 @@
 
 #define msg_error(...) MSGERROR_CHOOSER(__VA_ARGS__)(__VA_ARGS__)
 #define msg_error_when(cond, ...) if(cond) msg_error(__VA_ARGS__)
+#define msg_error_once(...) MSGONCE_GUARD(__VA_ARGS__) msg_error(__VA_ARGS__)
 
 
 /// THE FATAL BEAST
@@ -179,6 +227,7 @@
 
 #define msg_fatal(...) MSGFATAL_CHOOSER(__VA_ARGS__)(__VA_ARGS__)
 #define msg_fatal_when(cond, ...) if(cond) msg_fatal(__VA_ARGS__)
+#define msg_fatal_once(...) MSGONCE_GUARD(__VA_ARGS__) msg_fatal(__VA_ARGS__)
 
 
 /// THE DEPRECATED BEAST
@@ -191,6 +240,7 @@
 
 #define msg_deprecated(...) MSGDEPRECATED_CHOOSER(__VA_ARGS__)(__VA_ARGS__)
 #define msg_deprecated_when(cond, ...) if(cond) msg_deprecated(__VA_ARGS__)
+#define msg_deprecated_once(...) MSGONCE_GUARD(__VA_ARGS__) msg_deprecated(__VA_ARGS__)
 
 
 /// THE ADVICE BEAST
@@ -203,6 +253,7 @@
 
 #define msg_advice(...) MSGADVICE_CHOOSER(__VA_ARGS__)(__VA_ARGS__)
 #define msg_advice_when(cond, ...) if(cond) msg_advice(__VA_ARGS__)
+#define msg_advice_once(...) MSGONCE_GUARD(__VA_ARGS__) msg_advice(__VA_ARGS__)
 
 
 ////////////////////////////////// DMSG

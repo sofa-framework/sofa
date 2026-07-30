@@ -40,6 +40,7 @@ sofa_add_subdirectory(plugin SofaHAPI SofaHAPI)
 sofa_add_subdirectory(plugin SofaCarving SofaCarving)
 sofa_add_subdirectory(plugin LeapMotion LeapMotion)
 sofa_add_subdirectory(plugin Geomagic Geomagic)
+sofa_add_subdirectory(plugin SofaCHOLMOD SofaCHOLMOD)
 sofa_add_external(plugin SofaAssimp GIT_REF master GIT_REPOSITORY https://www.github.com/sofa-framework/SofaAssimp.git) # ColladaSceneLoader Depends on Flexible and image
 sofa_add_subdirectory(plugin SofaMatrix SofaMatrix) # Depends on image, CImgPlugin
 sofa_add_external(plugin BeamAdapter GIT_REF master GIT_REPOSITORY https://www.github.com/sofa-framework/BeamAdapter.git)
@@ -73,4 +74,4 @@ else()
 endif()
 
 sofa_add_external(plugin SofaDistanceGrid GIT_REF master GIT_REPOSITORY https://www.github.com/sofa-framework/SofaDistanceGrid.git) # Also defines SofaDistanceGrid.CUDA
-sofa_add_subdirectory(plugin SofaImplicitField SofaImplicitField)
+sofa_add_external(plugin SofaImplicitField GIT_REF master GIT_REPOSITORY https://www.github.com/sofa-framework/SofaImplicitField.git)

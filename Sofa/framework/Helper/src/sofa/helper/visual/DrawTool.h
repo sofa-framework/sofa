@@ -68,6 +68,7 @@ public:
     virtual void drawLines(const std::vector<Vec3> &points, const std::vector< Vec2i > &index , float size, const RGBAColor& color) = 0 ;
 
     virtual void drawLineStrip(const std::vector<Vec3> &points, float size, const RGBAColor& color) = 0 ;
+    virtual void drawLineStrip(const std::vector<Vec3> &points, float size, const std::vector<RGBAColor>& colors) = 0 ;
     virtual void drawLineLoop(const std::vector<Vec3> &points, float size, const RGBAColor& color) = 0 ;
 
     virtual void drawDisk(float radius, double from, double to, int resolution, const RGBAColor& color) = 0;
