@@ -47,7 +47,7 @@ extern void registerNormEngine(sofa::core::ObjectFactory* factory);
 extern void registerRandomPointDistributionInSurface(sofa::core::ObjectFactory* factory);
 extern void registerSpiral(sofa::core::ObjectFactory* factory);
 extern void registerVolumeFromTriangles(sofa::core::ObjectFactory* factory);
-extern void registerVolumeFromTetrahedrons(sofa::core::ObjectFactory* factory);
+extern void registerVolumeFromVolumetricElements(sofa::core::ObjectFactory* factory);
 
 extern "C" {
     SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
@@ -94,7 +94,7 @@ void registerObjects(sofa::core::ObjectFactory* factory)
     registerRandomPointDistributionInSurface(factory);
     registerSpiral(factory);
     registerVolumeFromTriangles(factory);
-    registerVolumeFromTetrahedrons(factory);
+    registerVolumeFromVolumetricElements(factory);
 }
 
 void init()

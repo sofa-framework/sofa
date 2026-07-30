@@ -48,8 +48,8 @@ using sofa::component::statecontainer::MechanicalObject ;
 using sofa::core::topology::BaseMeshTopology ;
 using sofa::core::objectmodel::Data ;
 
-#include <sofa/component/engine/generate/VolumeFromTetrahedrons.h>
-using sofa::component::engine::generate::VolumeFromTetrahedrons ;
+#include <sofa/component/engine/generate/VolumeFromVolumetricElements.h>
+using sofa::component::engine::generate::VolumeFromVolumetricElements ;
 
 #include <sofa/helper/system/FileRepository.h>
 using sofa::helper::system::DataRepository;
@@ -60,9 +60,9 @@ namespace sofa
 {
 
 template <typename _DataTypes>
-struct VolumeFromTetrahedronsTest : public sofa::testing::BaseTest, VolumeFromTetrahedrons<_DataTypes>
+struct VolumeFromVolumetricElementsTest : public sofa::testing::BaseTest, VolumeFromVolumetricElements<_DataTypes>
 {
-    typedef VolumeFromTetrahedrons<_DataTypes> ThisClass ;
+    typedef VolumeFromVolumetricElements<_DataTypes> ThisClass ;
     typedef _DataTypes DataTypes;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
@@ -76,9 +76,9 @@ struct VolumeFromTetrahedronsTest : public sofa::testing::BaseTest, VolumeFromTe
     ///////////////////////////////////////////////////////////////
     // Bring parents members in the current lookup context.
     // more info at: https://gcc.gnu.org/onlinedocs/gcc/Name-lookup.html
-    using VolumeFromTetrahedrons<_DataTypes>::d_volume ;
-    using VolumeFromTetrahedrons<_DataTypes>::d_tetras ;
-    using VolumeFromTetrahedrons<_DataTypes>::d_hexas  ;
+    using VolumeFromVolumetricElements<_DataTypes>::d_volume ;
+    using VolumeFromVolumetricElements<_DataTypes>::d_tetras ;
+    using VolumeFromVolumetricElements<_DataTypes>::d_hexas  ;
     ///////////////////////////////////////////////////////////////
 
 
@@ -111,7 +111,7 @@ struct VolumeFromTetrahedronsTest : public sofa::testing::BaseTest, VolumeFromTe
                 "<?xml version='1.0'?>"
                 "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'> "
                 "   <MechanicalObject/>              "
-                "   <VolumeFromTetrahedrons/>         "
+                "   <VolumeFromVolumetricElements/>         "
                 "</Node>                             " ;
         EXPECT_NO_THROW(SceneLoaderXML::loadFromMemory ( "test", scene.c_str())) ;
     }
@@ -139,18 +139,18 @@ struct VolumeFromTetrahedronsTest : public sofa::testing::BaseTest, VolumeFromTe
 using ::testing::Types;
 typedef Types<Vec3Types> DataTypes;
 
-TYPED_TEST_SUITE(VolumeFromTetrahedronsTest, DataTypes);
+TYPED_TEST_SUITE(VolumeFromVolumetricElementsTest, DataTypes);
 
 
-TYPED_TEST(VolumeFromTetrahedronsTest, NormalBehavior) {
+TYPED_TEST(VolumeFromVolumetricElementsTest, NormalBehavior) {
     ASSERT_NO_THROW(this->normalTests()) ;
 }
 
-TYPED_TEST(VolumeFromTetrahedronsTest, SimpleScene) {
+TYPED_TEST(VolumeFromVolumetricElementsTest, SimpleScene) {
     ASSERT_NO_THROW(this->simpleSceneTest()) ;
 }
 
-TYPED_TEST(VolumeFromTetrahedronsTest, VolumeComputation) {
+TYPED_TEST(VolumeFromVolumetricElementsTest, VolumeComputation) {
     ASSERT_DOUBLE_EQ(12.5,this->volumeComputationTest());
 }
 }
