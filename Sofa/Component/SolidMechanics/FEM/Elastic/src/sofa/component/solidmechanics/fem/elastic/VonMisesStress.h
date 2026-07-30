@@ -71,6 +71,7 @@ protected:
     void calculateElementMassMatrix(const auto& elements, sofa::type::vector<ElementMassMatrix> &elementMassMatrices);
 
     static StressVoigtVector deviatoricStress(const StressVoigtVector& sigma);
+    static Real_t<DataTypes> vonMisesStress(const StressVoigtVector& deviatoricStress);
 };
 
 }  // namespace sofa::component::solidmechanics::fem::elastic
