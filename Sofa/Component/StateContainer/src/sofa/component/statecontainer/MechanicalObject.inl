@@ -2179,7 +2179,7 @@ void MechanicalObject<DataTypes>::vOp(const core::ExecParams* params, core::VecI
                             // Read accessors are created before the write-only accessor on purpose: see vOp_va.
                             auto va = this->getReadAccessor<core::V_COORD>(a);
                             auto vb = this->getReadAccessor<core::V_COORD>(b);
-                            auto vv = this->getWriteOnlyAccessor<core::V_DERIV>(v);
+                            auto vv = this->getWriteOnlyAccessor<core::V_DERIV>(r);
                             vv.resize(vb.size());
                             for (unsigned int i = 0; i < vv.size(); ++i)
                             {
