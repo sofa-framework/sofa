@@ -38,18 +38,39 @@ public:
         core::behavior::TopologyAccessor,
         core::behavior::SingleStateAccessor<DataTypes>);
 
+protected:
+    using FiniteElement = sofa::fem::FiniteElement<ElementType, DataTypes>;
+
+
+    static constexpr sofa::Size spatial_dimensions = DataTypes::spatial_dimensions;
+    static constexpr sofa::Size NumberOfNodesInElement = ElementType::NumberOfNodes;
+    static constexpr sofa::Size NumberOfDofsInElement = NumberOfNodesInElement * spatial_dimensions;
+    static constexpr sofa::Size TopologicalDimension = FiniteElement::TopologicalDimension;
+
+    // a stress tensor represented as a vector using the Voigt mapping
+    using StressVoigtVector = std::array<sofa::Real_t<DataTypes>, sofa::type::NumberOfIndependentElements<spatial_dimensions>>;
+
+public:
+
     void init() override;
 
-    Data<sofa::type::vector<sofa::Real_t<DataTypes> > > d_nodalStress;
+    // A stress value for each node in an element
+    using LocalStressValues = std::array<sofa::Real_t<DataTypes>, NumberOfNodesInElement>;
+    Data<sofa::type::vector<LocalStressValues>> d_nodalStress;
 
-protected:
-
-    using trait = sofa::component::solidmechanics::fem::elastic::trait<DataTypes, ElementType>;
+    Data<bool> d_continuousField;
 
     VonMisesStress();
 
     void handleEvent(core::objectmodel::Event*) override;
 
+protected:
+    using ElementMassMatrix = sofa::type::Mat<NumberOfNodesInElement, NumberOfNodesInElement, sofa::Real_t<DataTypes>>;
+    sofa::type::vector<ElementMassMatrix> m_elementMassMatrices;
+
+    void calculateElementMassMatrix(const auto& elements, sofa::type::vector<ElementMassMatrix> &elementMassMatrices);
+
+    static StressVoigtVector deviatoricStress(const StressVoigtVector& sigma);
 };
 
 }  // namespace sofa::component::solidmechanics::fem::elastic
