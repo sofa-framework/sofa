@@ -67,11 +67,11 @@ public:
         this->model = model;
     }
 
-    void cleanup();
+    void cleanup() override;
 
-    MMechanicalState* createMapping(const char* name="contactPoints");
+    MMechanicalState* createMapping(const char* name="contactPoints") override;
 
-    void resize(Size size)
+    void resize(Size size) override
     {
         if (mapping != nullptr)
             mapping->clear(size);
@@ -80,7 +80,7 @@ public:
         nbp = 0;
     }
 
-    Index addPoint(const Coord& P, Index index, Real&)
+    Index addPoint(const Coord& P, Index index, Real&) override
     {
         Index i = nbp++;
         if (outmodel->getSize() <= i)
@@ -97,7 +97,7 @@ public:
         return i;
     }
 
-    void update()
+    void update() override
     {
         if (mapping != nullptr)
         {
@@ -107,7 +107,7 @@ public:
         }
     }
 
-    void updateXfree()
+    void updateXfree() override
     {
         if (mapping != nullptr)
         {
@@ -122,8 +122,8 @@ public:
 template <class TVec3Types>
 class ContactMapper<collision::geometry::RigidSphereModel,TVec3Types > : public RigidContactMapper<collision::geometry::RigidSphereModel, TVec3Types >{
     public:
-        sofa::Index addPoint(const typename TVec3Types::Coord & P, sofa::Index index,typename TVec3Types::Real & r)
-        {
+        sofa::Index addPoint(const typename TVec3Types::Coord & P, sofa::Index index,typename TVec3Types::Real & r) override
+     {
             const collision::geometry::RigidSphere e(this->model, index);
             const typename collision::geometry::SphereCollisionModel<sofa::defaulttype::Rigid3Types>::DataTypes::Coord & rCenter = e.rigidCenter();
             const typename TVec3Types::Coord & cP = P - rCenter.getCenter();
@@ -138,8 +138,8 @@ class ContactMapper<collision::geometry::RigidSphereModel,TVec3Types > : public 
 template <class TVec3Types>
 class ContactMapper<collision::geometry::CylinderCollisionModel<sofa::defaulttype::Rigid3Types>,TVec3Types > : public RigidContactMapper<collision::geometry::CylinderCollisionModel<sofa::defaulttype::Rigid3Types>, TVec3Types >{
     public:
-        sofa::Index addPoint(const typename TVec3Types::Coord & P, sofa::Index index,typename TVec3Types::Real & r)
-        {
+        sofa::Index addPoint(const typename TVec3Types::Coord & P, sofa::Index index,typename TVec3Types::Real & r) override
+     {
             const typename TVec3Types::Coord & cP = P - this->model->center(index);
             const type::Quat<SReal> & ori = this->model->orientation(index);
 
