@@ -35,6 +35,7 @@ VonMisesStress<DataTypes, ElementType>::VonMisesStress()
     "Compute von Mises stress as a continuous field across the elements. Necessitate the solve "
         "of a sparse linear system. Otherwise, the von Mises stress is computed locally. A local "
         "stress value may indicate discretization errors if the field does not appear continuous."))
+    , d_colorMap(initData(&d_colorMap, sofa::helper::ColorMap(), "colorMap", "Color map"))
 {
     // This component must receive events
     f_listening.setValue(true);
@@ -268,6 +269,12 @@ VonMisesStress<DataTypes, ElementType>::vonMisesStress(const StressVoigtVector& 
     }
 
     return std::sqrt(static_cast<Real_t<DataTypes>>(3) / 2 * sofa::type::trace(s.multTranspose(s)));
+}
+
+template <class DataTypes, class ElementType>
+void VonMisesStress<DataTypes, ElementType>::draw(const core::visual::VisualParams* vparams)
+{
+
 }
 
 }  // namespace sofa::component::solidmechanics::fem::elastic
