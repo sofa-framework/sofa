@@ -408,11 +408,11 @@ public:
         return add(ptr, path);
     }
 
-    bool remove(DestPtr v)
+    bool _doRemove_(Base* target) override
     {
-        if (!v)
+        if (!target)
             return false;
-        return removeAt(TraitsContainer::find(m_value,v));
+        return removeAt(TraitsContainer::find(m_value,castTo<DestType*>(target)));
     }
 
     bool removeAt(std::size_t index)

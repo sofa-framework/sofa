@@ -222,6 +222,14 @@
         "PLUGIN_COSSERAT": {
           "type": "BOOL",
           "value": "ON"
+        },
+        "SOFA_FETCH_SOFAIMPLICITFIELD": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "PLUGIN_SOFAIMPLICITFIELD": {
+          "type": "BOOL",
+          "value": "ON"
         }
       }
     },
@@ -261,10 +269,6 @@
           "value": "ON"
         },
         "PLUGIN_SOFAEULERIANFLUID": {
-          "type": "BOOL",
-          "value": "ON"
-        },
-        "PLUGIN_SOFAIMPLICITFIELD": {
           "type": "BOOL",
           "value": "ON"
         },
