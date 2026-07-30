@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<Node name="root" gravity="0 -9.81 0" dt="0.01">
+<Node name="root" gravity="0 0 0" dt="0.01">
 
     <DefaultAnimationLoop/>
 
@@ -13,20 +13,21 @@
 
     <BoxROI name="boxLeft" box="-0.401 -0.51 -0.51  -0.399 0.51 0.51"/>
     <LinearMovementProjectiveConstraint template="Vec3" indices="@boxLeft.indices"
-                                        keyTimes="0 2 100000" movements="0 0 0  -0.1 0 0   -0.1 0 0"/>
+                                        keyTimes="0 2 4 100000" movements="0 0 0  -0.1 0 0  0.1 0 0   0.1 0 0"/>
+<!--    <FixedProjectiveConstraint indices="@boxLeft.indices"/>-->
 
     <BoxROI name="boxRight" box="-0.01 -0.51 -0.51  0.01 0.51 0.51"/>
     <LinearMovementProjectiveConstraint template="Vec3" indices="@boxRight.indices"
-                                        keyTimes="0 2 100000" movements="0 0 0  0.1 0 0   0.1 0 0"/>
+                                        keyTimes="0 2 4 100000" movements="0 0 0  0.1 0 0  -0.1 0 0   -0.1 0 0"/>
 
     <NodalMassDensity property="1100"/>
-<!--    <FEMMass template="Vec3,Hexahedron" topology="@grid"/>-->
+    <FEMMass template="Vec3,Hexahedron" topology="@grid"/>
     <LinearSmallStrainFEMForceField name="FEM" template="Vec3,Hexahedron"
                                     youngModulus="50000" poissonRatio="0.45"/>
 
     <VonMisesStress template="Vec3,Hexahedron" name="stress" topology="@grid" printLog="true"/>
 
-    <VisualMesh position="@state.position" topology="@grid"
-                vertexValues="@stress.nodalStress" colorMap="HSV" lighting="false"/>
-
+<!--    <VisualMesh position="@state.position" topology="@grid"-->
+<!--                vertexValues="@stress.nodalStress" colorMap="HSV" lighting="false"/>-->
+    <VisualMesh position="@state.position" topology="@grid"/>
 </Node>
