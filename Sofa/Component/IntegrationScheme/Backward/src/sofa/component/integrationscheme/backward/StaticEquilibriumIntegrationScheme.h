@@ -36,7 +36,7 @@ class VectorOperations;
 namespace sofa::component::integrationscheme::backward
 {
 
-class SOFA_SIMULATION_CORE_API StaticEquilibriumIntegrationScheme :
+class SOFA_COMPONENT_INTEGRATIONSCHEME_BACKWARD_API StaticEquilibriumIntegrationScheme :
                             public sofa::simulation::integrationscheme::ImplicitIntegrationScheme
 {
 public:
