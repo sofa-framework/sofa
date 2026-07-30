@@ -42,8 +42,6 @@ using sofa::defaulttype::Rigid3Types;
 #include <sofa/defaulttype/VecTypes.h>
 using sofa::defaulttype::Vec3Types;
 
-using sofa::core::objectmodel::BaseLink;
-
 namespace
 {
 
