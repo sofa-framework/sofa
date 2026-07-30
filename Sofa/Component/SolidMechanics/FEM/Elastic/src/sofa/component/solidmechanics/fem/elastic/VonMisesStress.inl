@@ -123,11 +123,14 @@ void VonMisesStress<DataTypes, ElementType>::handleEvent(core::objectmodel::Even
                     for (sofa::Size j = 0; j < NumberOfNodesInElement; ++j)
                     {
                         nodalStressInElement[j][i] = stressCoordinate[j];
-                        // nodalStress[elementId][j] = stressCoordinate[j];
                     }
                 }
 
-                // nodalStressInElement
+                for (sofa::Size i = 0; i < NumberOfNodesInElement; ++i)
+                {
+                    nodalStress[elementId][i] = vonMisesStress(deviatoricStress(nodalStressInElement[i]));
+                }
+
             });
     }
 }
