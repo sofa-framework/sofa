@@ -46,9 +46,12 @@ protected:
     static constexpr sofa::Size NumberOfNodesInElement = ElementType::NumberOfNodes;
     static constexpr sofa::Size NumberOfDofsInElement = NumberOfNodesInElement * spatial_dimensions;
     static constexpr sofa::Size TopologicalDimension = FiniteElement::TopologicalDimension;
+    static constexpr sofa::Size NumberOfQuadraturePoints = FiniteElement::quadraturePoints().size();
 
     // a stress tensor represented as a vector using the Voigt mapping
     using StressVoigtVector = std::array<sofa::Real_t<DataTypes>, sofa::type::NumberOfIndependentElements<spatial_dimensions>>;
+
+    using DeformationGradient = sofa::type::Mat<spatial_dimensions, spatial_dimensions, Real_t<DataTypes>>;
 
 public:
 
@@ -67,6 +70,18 @@ public:
 protected:
     using ElementMassMatrix = sofa::type::Mat<NumberOfNodesInElement, NumberOfNodesInElement, sofa::Real_t<DataTypes>>;
     sofa::type::vector<ElementMassMatrix> m_elementMassMatrices;
+
+    struct PrecomputedData
+    {
+        sofa::type::Mat<spatial_dimensions, TopologicalDimension, Real_t<DataTypes>> jacobian { sofa::type::NOINIT };
+        sofa::type::Mat<TopologicalDimension, spatial_dimensions, Real_t<DataTypes>> jacobianInv { sofa::type::NOINIT };
+        Real_t<DataTypes> detJacobian {};
+        sofa::type::Mat<NumberOfNodesInElement, spatial_dimensions, Real_t<DataTypes>> dN_dQ { sofa::type::NOINIT };
+    };
+
+    sofa::type::vector<std::array<PrecomputedData, NumberOfQuadraturePoints>> m_precomputedData;
+
+    void precomputeData();
 
     void calculateElementMassMatrix(const auto& elements, sofa::type::vector<ElementMassMatrix> &elementMassMatrices);
 
