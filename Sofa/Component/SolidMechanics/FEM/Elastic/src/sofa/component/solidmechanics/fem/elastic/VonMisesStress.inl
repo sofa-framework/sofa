@@ -204,4 +204,20 @@ auto VonMisesStress<DataTypes, ElementType>::deviatoricStress(const StressVoigtV
     return s;
 }
 
+template <class DataTypes, class ElementType>
+Real_t<DataTypes>
+VonMisesStress<DataTypes, ElementType>::vonMisesStress(const StressVoigtVector& deviatoricStress)
+{
+    sofa::type::Mat<spatial_dimensions, spatial_dimensions, Real_t<DataTypes>> s;
+    for (sofa::Size i = 0; i < spatial_dimensions; ++i)
+    {
+        for (sofa::Size j = 0; j < spatial_dimensions; ++j)
+        {
+            s[i][j] = deviatoricStress[type::tensorToVoigtIndex<spatial_dimensions>(i, j)];
+        }
+    }
+
+    return std::sqrt(static_cast<Real_t<DataTypes>>(3) / 2 * sofa::type::trace(s.multTranspose(s)));
+}
+
 }  // namespace sofa::component::solidmechanics::fem::elastic
