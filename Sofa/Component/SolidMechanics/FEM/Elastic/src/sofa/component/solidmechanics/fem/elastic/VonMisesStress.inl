@@ -21,6 +21,8 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/solidmechanics/fem/elastic/VonMisesStress.h>
+#include <sofa/core/visual/DrawColoredMesh.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/IotaView.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 
@@ -274,7 +276,42 @@ VonMisesStress<DataTypes, ElementType>::vonMisesStress(const StressVoigtVector& 
 template <class DataTypes, class ElementType>
 void VonMisesStress<DataTypes, ElementType>::draw(const core::visual::VisualParams* vparams)
 {
+    const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
+    const auto nodalStress = d_nodalStress.getValue();
+    if (nodalStress.empty())
+        return;
+
+    const auto positions = this->mstate->readPositions();
+    const auto& colorMap = d_colorMap.getValue();
+
+    Real_t<DataTypes> minStress = std::numeric_limits<Real_t<DataTypes>>::max();
+    Real_t<DataTypes> maxStress = std::numeric_limits<Real_t<DataTypes>>::lowest();
+
+    for (const auto& elementStress : nodalStress)
+    {
+        for (const auto& stress : elementStress)
+        {
+            minStress = std::min(minStress, stress);
+            maxStress = std::max(maxStress, stress);
+        }
+    }
+
+    const auto evaluator = colorMap.getEvaluator(minStress, maxStress);
+
+    sofa::type::vector<std::array<type::RGBAColor, NumberOfNodesInElement>> nodesColors;
+    for (const auto& elementStress : nodalStress)
+    {
+        std::array<type::RGBAColor, NumberOfNodesInElement> nodesColorsInElement;
+        for (sofa::Size i = 0; i < NumberOfNodesInElement; ++i)
+        {
+            nodesColorsInElement[i] = (evaluator(elementStress[i]));
+        }
+        nodesColors.push_back(nodesColorsInElement);
+    }
+
+    core::visual::DrawElementColoredMesh<ElementType> renderer;
+    renderer.drawAllElements(vparams->drawTool(), positions.ref(), this->l_topology.get(), nodesColors);
 }
 
 }  // namespace sofa::component::solidmechanics::fem::elastic
