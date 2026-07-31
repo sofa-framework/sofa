@@ -352,8 +352,11 @@ void VonMisesStress<DataTypes, ElementType>::draw(const core::visual::VisualPara
 }
 
 template <class DataTypes, class ElementType>
-void VonMisesStress<DataTypes, ElementType>::computeBBox(const core::ExecParams* params, bool)
+void VonMisesStress<DataTypes, ElementType>::computeBBox(const core::ExecParams* params, bool onlyVisible)
 {
+    SOFA_UNUSED(params);
+    SOFA_UNUSED(onlyVisible);
+
     if (!this->mstate) return;
 
     const auto bbox = this->mstate->computeBBox(); //this may compute twice the mstate bbox, but there is no way to determine if the bbox has already been computed

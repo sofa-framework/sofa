@@ -40,7 +40,7 @@ template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API VonMisesStress<sofa
 
 void registerVonMisesStress(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(sofa::core::ObjectRegistrationData("Compute von Mises stress")
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Compute and draw von Mises stress based on a local least-square projection in each element")
         .add< VonMisesStress<sofa::defaulttype::Vec1Types, sofa::geometry::Edge> >()
         .add< VonMisesStress<sofa::defaulttype::Vec2Types, sofa::geometry::Edge> >()
         .add< VonMisesStress<sofa::defaulttype::Vec3Types, sofa::geometry::Edge> >()
