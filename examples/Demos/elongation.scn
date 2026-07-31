@@ -25,7 +25,7 @@
     <LinearSmallStrainFEMForceField name="FEM" template="Vec3,Hexahedron"
                                     youngModulus="50000" poissonRatio="0.45"/>
 
-    <VonMisesStress template="Vec3,Hexahedron" name="stress" topology="@grid" printLog="true"/>
+    <VonMisesStress template="Vec3,Hexahedron" name="stress" topology="@grid" printLog="true" stressEvaluator="@FEM"/>
 
 <!--    <VisualMesh position="@state.position" topology="@grid"-->
 <!--                vertexValues="@stress.nodalStress" colorMap="HSV" lighting="false"/>-->
