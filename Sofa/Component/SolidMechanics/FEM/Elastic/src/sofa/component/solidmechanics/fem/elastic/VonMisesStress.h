@@ -23,6 +23,7 @@
 
 #include <sofa/component/solidmechanics/fem/elastic/config.h>
 #include <sofa/component/solidmechanics/fem/elastic/impl/trait.h>
+#include <sofa/component/solidmechanics/fem/elastic/CauchyStressEvaluator.h>
 #include <sofa/core/behavior/SingleStateAccessor.h>
 #include <sofa/core/behavior/TopologyAccessor.h>
 #include <sofa/helper/ColorMap.h>
@@ -67,11 +68,17 @@ public:
 
     Data<helper::ColorMap> d_colorMap;
 
+    sofa::SingleLink<MyType, CauchyStressEvaluator<DataTypes>,
+        sofa::BaseLink::FLAG_STOREPATH | sofa::BaseLink::FLAG_STRONGLINK> l_stressEvaluator;
+
     VonMisesStress();
 
     void handleEvent(core::objectmodel::Event*) override;
 
 protected:
+
+    void validateStressEvaluatorLink();
+
     using ElementMassMatrix = sofa::type::Mat<NumberOfNodesInElement, NumberOfNodesInElement, sofa::Real_t<DataTypes>>;
     sofa::type::vector<ElementMassMatrix> m_elementMassMatrices;
 

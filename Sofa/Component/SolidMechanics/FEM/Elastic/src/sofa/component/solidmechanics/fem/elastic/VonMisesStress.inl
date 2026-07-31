@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/solidmechanics/fem/elastic/VonMisesStress.h>
+#include <sofa/core/ObjectFactory.h>
 #include <sofa/core/visual/DrawColoredMesh.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/IotaView.h>
@@ -38,6 +39,7 @@ VonMisesStress<DataTypes, ElementType>::VonMisesStress()
         "of a sparse linear system. Otherwise, the von Mises stress is computed locally. A local "
         "stress value may indicate discretization errors if the field does not appear continuous."))
     , d_colorMap(initData(&d_colorMap, sofa::helper::ColorMap(), "colorMap", "Color map"))
+    , l_stressEvaluator(initLink("stressEvaluator", "The component in charge of evaluating the Cauchy stress."))
 {
     // This component must receive events
     f_listening.setValue(true);
@@ -51,6 +53,11 @@ void VonMisesStress<DataTypes, ElementType>::init()
     if (!this->isComponentStateInvalid())
     {
         this->validateTopology();
+    }
+
+    if (!this->isComponentStateInvalid())
+    {
+        validateStressEvaluatorLink();
     }
 
     if (!this->isComponentStateInvalid())
@@ -146,6 +153,28 @@ void VonMisesStress<DataTypes, ElementType>::handleEvent(core::objectmodel::Even
                 }
 
             });
+    }
+}
+
+template <class DataTypes, class ElementType>
+void VonMisesStress<DataTypes, ElementType>::validateStressEvaluatorLink()
+{
+    if (l_stressEvaluator.empty())
+    {
+        msg_info() << "Link to a valid stress evaluator should be set to ensure right behavior. The first "
+                      "stress evaluator found in current context will be used.";
+        l_stressEvaluator.set(this->getContext()->template get<CauchyStressEvaluator<DataTypes>>());
+    }
+
+    if (l_stressEvaluator == nullptr)
+    {
+        msg_error() << "No stress evaluator component found at path: '" << this->l_stressEvaluator.getLinkedPath()
+                    << "', nor in current context: " << this->getContext()->name
+                    << ". Object must have a stress evaluator. "
+                    << "The list of available stress evaluator components is: "
+                    << sofa::core::ObjectFactory::getInstance()
+                           ->listClassesDerivedFrom<CauchyStressEvaluator<DataTypes>>();
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
     }
 }
 
