@@ -76,14 +76,15 @@ void VonMisesStress<DataTypes, ElementType>::handleEvent(core::objectmodel::Even
 {
     if (simulation::AnimateEndEvent::checkEventType(event))
     {
-        auto nodalStress = sofa::helper::getWriteOnlyAccessor(d_nodalStress);
-        nodalStress->clear();
-        nodalStress->resize(this->mstate->getSize());
-
-        auto restPositionAccessor = this->mstate->readRestPositions();
-
         const auto& elements = FiniteElement::getElementSequence(*this->l_topology);
         const auto nbElements = elements.size();
+
+        auto nodalStress = sofa::helper::getWriteOnlyAccessor(d_nodalStress);
+        nodalStress->clear();
+        nodalStress->resize(nbElements);
+
+        auto positionAccessor = this->mstate->readPositions();
+
         helper::IotaView indices{static_cast<decltype(nbElements)>(0ul), nbElements};
 
         std::for_each(
@@ -95,7 +96,7 @@ void VonMisesStress<DataTypes, ElementType>::handleEvent(core::objectmodel::Even
                 std::array<Coord_t<DataTypes>, NumberOfNodesInElement> nodeCoordinatesInElement;
                 for (sofa::Size i = 0; i < NumberOfNodesInElement; ++i)
                 {
-                    nodeCoordinatesInElement[i] = restPositionAccessor[element[i]];
+                    nodeCoordinatesInElement[i] = positionAccessor[element[i]];
                 }
 
                 std::array<StressVoigtVector, NumberOfNodesInElement> nodalStressInElement;
@@ -220,7 +221,7 @@ void VonMisesStress<DataTypes, ElementType>::calculateElementMassMatrix(
     const auto nbElements = elements.size();
     elementMassMatrices.resize(nbElements);
 
-    auto restPositionAccessor = this->mstate->readRestPositions();
+    auto positionAccessor = this->mstate->readPositions();
 
     SCOPED_TIMER("elementMassMatrix");
     helper::IotaView indices{static_cast<decltype(nbElements)>(0ul), nbElements};
@@ -234,7 +235,7 @@ void VonMisesStress<DataTypes, ElementType>::calculateElementMassMatrix(
             std::array<Coord_t<DataTypes>, NumberOfNodesInElement> nodeCoordinatesInElement;
             for (sofa::Size i = 0; i < NumberOfNodesInElement; ++i)
             {
-                nodeCoordinatesInElement[i] = restPositionAccessor[element[i]];
+                nodeCoordinatesInElement[i] = positionAccessor[element[i]];
             }
 
             for (const auto& [quadraturePoint, weight] : FiniteElement::quadraturePoints())

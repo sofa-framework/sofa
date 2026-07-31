@@ -195,7 +195,7 @@ template <class DataTypes, class ElementType>
 auto LinearSmallStrainFEMForceField<DataTypes, ElementType>::computeStress(
     const DeformationGradient& F, sofa::Size elementId) -> StressVoigtVector
 {
-    const auto strainTensor = static_cast<Real_t<DataTypes>>(1)/2 * (F + F.transposed() - DeformationGradient::Identity());
+    const auto strainTensor = static_cast<Real_t<DataTypes>>(1)/2 * (F + F.transposed())  - DeformationGradient::Identity();
 
     sofa::type::Vec<type::NumberOfIndependentElements<trait::spatial_dimensions>, Real_t<DataTypes> > strainVoigt;
     for (sofa::Size i = 0; i < type::NumberOfIndependentElements<trait::spatial_dimensions>; ++i)
