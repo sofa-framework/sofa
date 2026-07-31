@@ -41,7 +41,7 @@ class LinearSmallStrainFEMForceField :
     public CauchyStressEvaluator<DataTypes>
 {
 public:
-    SOFA_CLASS2(
+    SOFA_CLASS3(
         SOFA_TEMPLATE2(LinearSmallStrainFEMForceField, DataTypes, ElementType),
             SOFA_TEMPLATE2(BaseElementLinearFEMForceField, DataTypes, ElementType),
             SOFA_TEMPLATE2(FEMForceField, DataTypes, ElementType),
