@@ -39,6 +39,7 @@ VonMisesStress<DataTypes, ElementType>::VonMisesStress()
         "of a sparse linear system. Otherwise, the von Mises stress is computed locally. A local "
         "stress value may indicate discretization errors if the field does not appear continuous."))
     , d_colorMap(initData(&d_colorMap, sofa::helper::ColorMap(), "colorMap", "Color map"))
+    , d_lighting(initData(&d_lighting, true, "lighting", "If true, light is simulated on the mesh. Otherwise, no lighting effect."))
     , l_stressEvaluator(initLink("stressEvaluator", "The component in charge of evaluating the Cauchy stress."))
 {
     // This component must receive events
@@ -307,7 +308,7 @@ void VonMisesStress<DataTypes, ElementType>::draw(const core::visual::VisualPara
 {
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
-    vparams->drawTool()->disableLighting();
+    vparams->drawTool()->setLightingEnabled(d_lighting.getValue());
 
     const auto nodalStress = d_nodalStress.getValue();
     if (nodalStress.empty())
