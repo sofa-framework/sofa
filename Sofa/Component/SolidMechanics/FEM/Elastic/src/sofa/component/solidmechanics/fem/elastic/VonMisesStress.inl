@@ -73,6 +73,8 @@ void VonMisesStress<DataTypes, ElementType>::handleEvent(core::objectmodel::Even
 {
     if (simulation::AnimateEndEvent::checkEventType(event))
     {
+        SCOPED_TIMER("vonMisesStress");
+
         const auto& elements = FiniteElement::getElementSequence(*this->l_topology);
         const auto nbElements = elements.size();
 
@@ -147,6 +149,7 @@ template <class DataTypes, class ElementType>
 void VonMisesStress<DataTypes, ElementType>::precomputeData()
 {
     if (this->l_topology == nullptr) return;
+    if (this->mstate == nullptr) return;
 
     auto restPositionAccessor = this->mstate->readRestPositions();
     const auto& restPosition = restPositionAccessor.ref();
