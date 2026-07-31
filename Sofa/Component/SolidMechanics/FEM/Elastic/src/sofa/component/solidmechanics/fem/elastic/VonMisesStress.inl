@@ -34,10 +34,6 @@ template <class DataTypes, class ElementType>
 VonMisesStress<DataTypes, ElementType>::VonMisesStress()
     : d_nodalStress(initData(&d_nodalStress, sofa::type::vector<LocalStressValues>{}, "nodalStress",
                              "Local nodal von Mises stress values"))
-    , d_continuousField(initData(&d_continuousField, false, "continuousField",
-    "Compute von Mises stress as a continuous field across the elements. Necessitate the solve "
-        "of a sparse linear system. Otherwise, the von Mises stress is computed locally. A local "
-        "stress value may indicate discretization errors if the field does not appear continuous."))
     , d_colorMap(initData(&d_colorMap, sofa::helper::ColorMap(), "colorMap", "Color map"))
     , d_lighting(initData(&d_lighting, true, "lighting", "If true, light is simulated on the mesh. Otherwise, no lighting effect."))
     , l_stressEvaluator(initLink("stressEvaluator", "The component in charge of evaluating the Cauchy stress."))
