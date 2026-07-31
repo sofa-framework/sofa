@@ -44,7 +44,6 @@ public:
 protected:
     using FiniteElement = sofa::fem::FiniteElement<ElementType, DataTypes>;
 
-
     static constexpr sofa::Size spatial_dimensions = DataTypes::spatial_dimensions;
     static constexpr sofa::Size NumberOfNodesInElement = ElementType::NumberOfNodes;
     static constexpr sofa::Size NumberOfDofsInElement = NumberOfNodesInElement * spatial_dimensions;
@@ -65,8 +64,6 @@ public:
     // A stress value for each node in an element
     using LocalStressValues = std::array<sofa::Real_t<DataTypes>, NumberOfNodesInElement>;
     Data<sofa::type::vector<LocalStressValues>> d_nodalStress;
-
-    Data<bool> d_continuousField;
 
     Data<helper::ColorMap> d_colorMap;
     Data<bool> d_lighting;
