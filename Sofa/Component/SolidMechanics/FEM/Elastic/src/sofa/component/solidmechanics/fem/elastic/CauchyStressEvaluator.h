@@ -28,13 +28,13 @@ namespace sofa::component::solidmechanics::fem::elastic
 {
 
 template<class DataTypes>
-class CauchyStressEvaluator : public core::objectmodel::BaseComponent
+class CauchyStressEvaluator : public virtual core::objectmodel::BaseComponent
 {
 public:
     SOFA_ABSTRACT_CLASS(CauchyStressEvaluator, BaseComponent)
 
     static constexpr sofa::Size spatial_dimensions = DataTypes::spatial_dimensions;
-    using StressVoigtVector = std::array<sofa::Real_t<DataTypes>, sofa::type::NumberOfIndependentElements<spatial_dimensions>>;
+    using StressVoigtVector = sofa::type::Vec<sofa::type::NumberOfIndependentElements<spatial_dimensions>, sofa::Real_t<DataTypes>>;
     using DeformationGradient = sofa::type::Mat<spatial_dimensions, spatial_dimensions, Real_t<DataTypes>>;
 
     virtual StressVoigtVector computeStress(const DeformationGradient& F, sofa::Size elementId) = 0;
