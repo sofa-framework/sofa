@@ -69,6 +69,7 @@ public:
     Data<bool> d_continuousField;
 
     Data<helper::ColorMap> d_colorMap;
+    Data<bool> d_lighting;
 
     sofa::SingleLink<MyType, CauchyStressEvaluator<DataTypes>,
         sofa::BaseLink::FLAG_STOREPATH | sofa::BaseLink::FLAG_STRONGLINK> l_stressEvaluator;

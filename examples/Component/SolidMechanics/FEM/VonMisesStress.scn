@@ -1,0 +1,37 @@
+<?xml version="1.0" ?>
+<Node name="root" gravity="0 -9.81 0" dt="0.01">
+
+    <Node name="plugins">
+        <RequiredPlugin pluginName="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
+        <RequiredPlugin pluginName="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
+        <RequiredPlugin pluginName="Sofa.Component.LinearSolver.Direct"/> <!-- Needed to use components [SparseLDLSolver] -->
+        <RequiredPlugin pluginName="Sofa.Component.Mass"/> <!-- Needed to use components [FEMMass,NodalMassDensity] -->
+        <RequiredPlugin pluginName="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+        <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [LinearSmallStrainFEMForceField,VonMisesStress] -->
+        <RequiredPlugin pluginName="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+        <RequiredPlugin pluginName="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->
+        <RequiredPlugin pluginName="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+    </Node>
+
+    <DefaultAnimationLoop/>
+
+    <VisualStyle displayFlags="showBehaviorModels showVisualModels" />
+
+    <EulerImplicitSolver name="ODE_solver" rayleighStiffness="0.01" rayleighMass="0.01" />
+    <SparseLDLSolver name="linear_solver" template="CompressedRowSparseMatrixMat3x3"/>
+
+    <RegularGridTopology name="grid" n="20 5 5" min="0 -0.05 -0.05" max="0.4 0.05 0.05" />
+    <MechanicalObject template="Vec3" name="state"/>
+
+    <BoxROI name="boxLeft" box="-0.01 -0.51 -0.51  0.001 0.51 0.51"/>
+    <FixedProjectiveConstraint indices="@boxLeft.indices"/>
+
+    <NodalMassDensity property="1100"/>
+    <FEMMass template="Vec3,Hexahedron" topology="@grid"/>
+
+    <LinearSmallStrainFEMForceField name="FEM" template="Vec3,Hexahedron"
+                                    youngModulus="500000" poissonRatio="0.45"/>
+
+    <VonMisesStress template="Vec3,Hexahedron" name="stress" topology="@grid" stressEvaluator="@FEM"
+                    colorMap="green yellow orange red purple #221C35"/>
+</Node>
