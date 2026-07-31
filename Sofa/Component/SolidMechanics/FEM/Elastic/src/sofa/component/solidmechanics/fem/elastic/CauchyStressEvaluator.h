@@ -24,6 +24,8 @@
 #include <sofa/component/solidmechanics/fem/elastic/config.h>
 #include <sofa/core/objectmodel/BaseComponent.h>
 
+#include <sofa/type/MatSym.h>
+
 namespace sofa::component::solidmechanics::fem::elastic
 {
 
