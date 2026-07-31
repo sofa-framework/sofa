@@ -41,7 +41,7 @@ namespace sofa::simulation::integrationscheme
  * as well as the state update, enabling to have a generic formulation of the ODE linearization
  * for all integration scheme that uses acceleration as the unknown.
  *
- * For more information see documentation : TODO: link to the updated doc
+ * For more information see documentation : https://sofa-framework.github.io/doc/simulation-principles/system-resolution/integration-scheme/
  */
 class SOFA_SIMULATION_CORE_API AccelerationBasedImplicitIntegrationScheme :
                             public ImplicitIntegrationScheme
@@ -53,7 +53,7 @@ public:
 
     /** Inherited for ImplicitIntegrationScheme **/
     /**
-     *  All of those overriding derive from the equations presented in the documentation TODO link to the documentation
+     *  All of those overriding derive from the equations presented in the documentation https://sofa-framework.github.io/doc/simulation-principles/system-resolution/integration-scheme/#solving-for-non-linearities
      **/
 
     virtual void doSetupIntegrationStep(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
@@ -79,7 +79,7 @@ protected:
      * In other words, if the position integration scheme is given by  $ p_{t+dt} = g_p(v_{t+dt}, a_{t+dt}) $
      * then this function returns $\derivative{g_p(v_{t+dt}, a_{t+dt})}{a_{t+dt}}$
      *
-     * For more information see the documentation : TODO link to the documentation
+     * For more information see the documentation : https://sofa-framework.github.io/doc/simulation-principles/system-resolution/integration-scheme/#the-sofa-implementation
      **/
     virtual SReal getPositionUpdateDerivedFromAcceleration() const = 0;
 
@@ -90,7 +90,7 @@ protected:
      * In other words, if the position integration scheme is given by  $ p_{t+dt} = g_p(v_{t+dt}, a_{t+dt}) $
      * then this function returns $\derivative{g_p(v_{t+dt}, a_{t+dt})}{v_{t+dt}}$
      *
-     * For more information see the documentation : TODO link to the documentation
+     * For more information see the documentation : https://sofa-framework.github.io/doc/simulation-principles/system-resolution/integration-scheme/#the-sofa-implementation
      **/
     virtual SReal getPositionUpdateDerivedFromVelocity() const = 0;
 
@@ -101,7 +101,7 @@ protected:
      * In other words, if the position integration scheme is given by  $ v_{t+dt} = g_v(a_{t+dt}) $
      * then this function returns $\derivative{g_v(a_{t+dt})}{a_{t+dt}}$
      *
-     * For more information see the documentation : TODO link to the documentation
+     * For more information see the documentation : https://sofa-framework.github.io/doc/simulation-principles/system-resolution/integration-scheme/#the-sofa-implementation
      **/
     virtual SReal getVelocityUpdateDerivedFromAcceleration() const = 0;
 
@@ -112,7 +112,7 @@ protected:
      *
      * In equations the computation looks like this : $r = x_{t+h} - g_x(v,a)$
      *
-     * For more information see the documentation : TODO link to the documentation
+     * For more information see the documentation : https://sofa-framework.github.io/doc/simulation-principles/system-resolution/integration-scheme/#the-sofa-implementation
      **/
     virtual void computeCurrentPositionIntegrationError(sofa::simulation::common::VectorOperations & vop, sofa::core::MultiVecDerivId& result, const sofa::core::MultiVecCoordId& position, const sofa::core::MultiVecDerivId& velocity, const sofa::core::MultiVecDerivId& acceleration) = 0;
 
@@ -122,7 +122,7 @@ protected:
      *
      * In equations the computation looks like this : $r = v_{t+h} - g_v(a)$
      *
-     * For more information see the documentation : TODO link to the documentation
+     * For more information see the documentation : https://sofa-framework.github.io/doc/simulation-principles/system-resolution/integration-scheme/#the-sofa-implementation
      **/
     virtual void computeCurrentVelocityIntegrationError(sofa::simulation::common::VectorOperations & vop, const sofa::core::MultiVecDerivId& result, const sofa::core::MultiVecDerivId& velocity, const sofa::core::MultiVecDerivId& acceleration) = 0;
 };
