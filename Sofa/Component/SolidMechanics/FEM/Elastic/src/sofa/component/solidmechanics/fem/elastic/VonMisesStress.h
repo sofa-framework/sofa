@@ -26,6 +26,7 @@
 #include <sofa/component/solidmechanics/fem/elastic/CauchyStressEvaluator.h>
 #include <sofa/core/behavior/SingleStateAccessor.h>
 #include <sofa/core/behavior/TopologyAccessor.h>
+#include <sofa/core/visual/DrawColoredMesh.h>
 #include <sofa/helper/ColorMap.h>
 
 namespace sofa::component::solidmechanics::fem::elastic
@@ -99,6 +100,8 @@ protected:
 
     static StressVoigtVector deviatoricStress(const StressVoigtVector& sigma);
     static Real_t<DataTypes> vonMisesStress(const StressVoigtVector& deviatoricStress);
+
+    core::visual::DrawElementColoredMesh<ElementType> m_renderer;
 };
 
 }  // namespace sofa::component::solidmechanics::fem::elastic

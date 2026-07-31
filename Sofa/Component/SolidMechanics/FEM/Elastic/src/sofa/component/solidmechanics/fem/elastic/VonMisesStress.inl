@@ -341,8 +341,7 @@ void VonMisesStress<DataTypes, ElementType>::draw(const core::visual::VisualPara
         nodesColors.push_back(nodesColorsInElement);
     }
 
-    core::visual::DrawElementColoredMesh<ElementType> renderer;
-    renderer.drawAllElements(vparams->drawTool(), positions.ref(), this->l_topology.get(), nodesColors);
+    m_renderer.drawAllElements(vparams->drawTool(), positions.ref(), this->l_topology.get(), nodesColors);
 }
 
 template <class DataTypes, class ElementType>
