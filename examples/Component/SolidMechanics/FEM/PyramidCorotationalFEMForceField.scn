@@ -3,7 +3,7 @@
         <RequiredPlugin pluginName="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
         <RequiredPlugin pluginName="Sofa.Component.LinearSolver.Direct"/> <!-- Needed to use components [SparseLDLSolver] -->
         <RequiredPlugin pluginName="Sofa.Component.Mass"/> <!-- Needed to use components [NodalMassDensity,FEMMass] -->
-        <RequiredPlugin pluginName="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [BDFOdeSolver,NewtonRaphsonSolver] -->
+        <RequiredPlugin pluginName="Sofa.Component.IntegrationScheme.Backward"/> <!-- Needed to use components [BDFIntegrationScheme] -->
         <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [CorotationalFEMForceField] -->
         <RequiredPlugin pluginName="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
         <RequiredPlugin pluginName="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
@@ -12,13 +12,7 @@
 
     <DefaultAnimationLoop/>
     <Node name="physics">
-        <BDFOdeSolver order="2" printLog="false" rayleighMass="0.01" rayleighStiffness="0.01"/>
-        <NewtonRaphsonSolver name="newton" printLog="false"
-                             maxNbIterationsNewton="10" absoluteResidualStoppingThreshold="1e-5"
-                             maxNbIterationsLineSearch="5" lineSearchCoefficient="0.5"
-                             relativeInitialStoppingThreshold="1e-3"
-                             absoluteEstimateDifferenceThreshold="1e-5"
-                             relativeEstimateDifferenceThreshold="1e-5"/>
+        <BDFIntegrationScheme order="2" printLog="false" rayleighMass="0.01" rayleighStiffness="0.01"/>
         <SparseLDLSolver name="linear_solver" template="CompressedRowSparseMatrix"/>
 
         <!-- A cube made of 6 pyramids -->
