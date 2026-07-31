@@ -191,4 +191,13 @@ void LinearSmallStrainFEMForceField<DataTypes, ElementType>::addKToMatrix(
     }
 }
 
+template <class DataTypes, class ElementType>
+auto LinearSmallStrainFEMForceField<DataTypes, ElementType>::computeStress(
+    const DeformationGradient& F, sofa::Size elementId) -> StressVoigtVector
+{
+    StressVoigtVector s;
+
+    return s;
+}
+
 }  // namespace sofa::component::solidmechanics::fem::elastic
