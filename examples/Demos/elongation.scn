@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<Node name="root" gravity="0 0 0" dt="0.01">
+<Node name="root" gravity="0 -9.81 0" dt="0.01">
 
     <DefaultAnimationLoop/>
 
@@ -29,5 +29,5 @@
 
 <!--    <VisualMesh position="@state.position" topology="@grid"-->
 <!--                vertexValues="@stress.nodalStress" colorMap="HSV" lighting="false"/>-->
-    <VisualMesh position="@state.position" topology="@grid"/>
+<!--    <VisualMesh position="@state.position" topology="@grid"/>-->
 </Node>

@@ -195,9 +195,28 @@ template <class DataTypes, class ElementType>
 auto LinearSmallStrainFEMForceField<DataTypes, ElementType>::computeStress(
     const DeformationGradient& F, sofa::Size elementId) -> StressVoigtVector
 {
-    StressVoigtVector s;
+    const auto strainTensor = static_cast<Real_t<DataTypes>>(1)/2 * (F + F.transposed() - DeformationGradient::Identity());
 
-    return s;
+    sofa::type::Vec<type::NumberOfIndependentElements<trait::spatial_dimensions>, Real_t<DataTypes> > strainVoigt;
+    for (sofa::Size i = 0; i < type::NumberOfIndependentElements<trait::spatial_dimensions>; ++i)
+    {
+        const auto [p, q] = type::toTensorIndices<trait::spatial_dimensions>(i);
+        strainVoigt[i] = strainTensor(p, q);
+    }
+
+    const auto youngModulus = this->getYoungModulusInElement(elementId);
+    const auto poissonRatio = this->getPoissonRatioInElement(elementId);
+
+    LameLambda<Real_t<DataTypes>> lambda { 0 };
+    LameMu<Real_t<DataTypes>> mu { 0 };
+
+    sofa::component::solidmechanics::fem::elastic::toLameParameters<DataTypes::spatial_dimensions, Real_t<DataTypes>>(
+        YoungModulus<Real_t<DataTypes>>(youngModulus), PoissonRatio<Real_t<DataTypes>>(poissonRatio),
+        lambda, mu);
+
+    const auto elasticityTensor = makeIsotropicElasticityTensor<DataTypes::spatial_dimensions, Real_t<DataTypes>>(mu, lambda);
+
+    return elasticityTensor.toVoigtMatSym().toMat() * strainVoigt;
 }
 
 }  // namespace sofa::component::solidmechanics::fem::elastic

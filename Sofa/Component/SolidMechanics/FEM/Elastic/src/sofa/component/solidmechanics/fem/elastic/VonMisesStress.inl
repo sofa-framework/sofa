@@ -124,8 +124,7 @@ void VonMisesStress<DataTypes, ElementType>::handleEvent(core::objectmodel::Even
                     // shape functions in the reference element evaluated at the quadrature point
                     const auto N = FiniteElement::shapeFunctions(quadraturePoints[q].first);
 
-                    // TODO: Compute the actual stress at the quadrature point based on F or other data
-                    StressVoigtVector stress;
+                    const StressVoigtVector stress = l_stressEvaluator->computeStress(F, elementId);
 
                     const auto commonFactor = weight * detJ;
                     for (sofa::Size i = 0; i < sofa::type::NumberOfIndependentElements<spatial_dimensions>; ++i)
@@ -307,6 +306,8 @@ void VonMisesStress<DataTypes, ElementType>::draw(const core::visual::VisualPara
 {
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();
 
+    vparams->drawTool()->disableLighting();
+
     const auto nodalStress = d_nodalStress.getValue();
     if (nodalStress.empty())
         return;
@@ -341,6 +342,15 @@ void VonMisesStress<DataTypes, ElementType>::draw(const core::visual::VisualPara
 
     core::visual::DrawElementColoredMesh<ElementType> renderer;
     renderer.drawAllElements(vparams->drawTool(), positions.ref(), this->l_topology.get(), nodesColors);
+}
+
+template <class DataTypes, class ElementType>
+void VonMisesStress<DataTypes, ElementType>::computeBBox(const core::ExecParams* params, bool)
+{
+    if (!this->mstate) return;
+
+    const auto bbox = this->mstate->computeBBox(); //this may compute twice the mstate bbox, but there is no way to determine if the bbox has already been computed
+    this->f_bbox.setValue(std::move(bbox));
 }
 
 }  // namespace sofa::component::solidmechanics::fem::elastic

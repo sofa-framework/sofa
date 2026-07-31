@@ -51,7 +51,7 @@ protected:
     static constexpr sofa::Size NumberOfQuadraturePoints = FiniteElement::quadraturePoints().size();
 
     // a stress tensor represented as a vector using the Voigt mapping
-    using StressVoigtVector = std::array<sofa::Real_t<DataTypes>, sofa::type::NumberOfIndependentElements<spatial_dimensions>>;
+    using StressVoigtVector = sofa::type::Vec<sofa::type::NumberOfIndependentElements<spatial_dimensions>, sofa::Real_t<DataTypes>>;
 
     using DeformationGradient = sofa::type::Mat<spatial_dimensions, spatial_dimensions, Real_t<DataTypes>>;
 
@@ -59,6 +59,7 @@ public:
 
     void init() override;
     void draw(const core::visual::VisualParams* vparams) override;
+    void computeBBox(const core::ExecParams* params, bool) override;
 
     // A stress value for each node in an element
     using LocalStressValues = std::array<sofa::Real_t<DataTypes>, NumberOfNodesInElement>;
