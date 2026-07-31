@@ -59,7 +59,7 @@ public:
 
     void init() override;
     void draw(const core::visual::VisualParams* vparams) override;
-    void computeBBox(const core::ExecParams* params, bool) override;
+    void computeBBox(const core::ExecParams* params, bool onlyVisible) override;
 
     // A stress value for each node in an element
     using LocalStressValues = std::array<sofa::Real_t<DataTypes>, NumberOfNodesInElement>;
