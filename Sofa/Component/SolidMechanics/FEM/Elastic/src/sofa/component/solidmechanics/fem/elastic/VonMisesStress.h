@@ -32,6 +32,24 @@
 namespace sofa::component::solidmechanics::fem::elastic
 {
 
+/**
+ * @brief Component that computes and visualizes the von Mises stress field on a FEM mesh.
+ *
+ * This component evaluates the Cauchy stress at each quadrature point of the elements
+ * using a linked @see CauchyStressEvaluator. Since stress values are naturally calculated
+ * at quadrature points (e.g., Gauss points), but visualization typically requires nodal
+ * values, this component performs a least-squares projection.
+ *
+ * The projection maps the stress tensor components from the quadrature points to the
+ * element nodes by solving a local system involving the Gram matrix (the mass matrix
+ * of the shape functions).
+ *
+ * Once the stress tensor is projected to the nodes, the deviatoric part and the
+ * resulting von Mises scalar are computed for visualization via a color map.
+ *
+ * @tparam DataTypes The SOFA DataTypes (e.g. Vec3d)
+ * @tparam ElementType The geometric element type (e.g. Tetrahedron, Hexahedron)
+ */
 template <class DataTypes, class ElementType>
 class VonMisesStress : public core::behavior::TopologyAccessor, public core::behavior::SingleStateAccessor<DataTypes>
 {
