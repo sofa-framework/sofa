@@ -99,46 +99,46 @@ void VonMisesStress<DataTypes, ElementType>::handleEvent(core::objectmodel::Even
                 for (auto& vec : b) vec.clear();
 
                 for (sofa::Size q = 0; q < NumberOfQuadraturePoints; ++q)
-                    {
-                        const auto& weight = quadraturePoints[q].second;
-                        const auto& precomputed = m_precomputedData[elementId][q];
+                {
+                    const auto& weight = quadraturePoints[q].second;
+                    const auto& precomputed = m_precomputedData[elementId][q];
 
-                        // gradient of shape functions in the reference element evaluated at the quadrature point
-                        const auto& dN_dq_ref = gradients[q];
+                    // gradient of shape functions in the reference element evaluated at the quadrature point
+                    const auto& dN_dq_ref = gradients[q];
 
-                        // jacobian of the mapping from the reference space to the CURRENT physical space
-                        const auto J_q = FiniteElement::Helper::jacobianFromReferenceToPhysical(nodeCoordinatesInElement, dN_dq_ref);
+                    // jacobian of the mapping from the reference space to the CURRENT physical space
+                    const auto J_q = FiniteElement::Helper::jacobianFromReferenceToPhysical(nodeCoordinatesInElement, dN_dq_ref);
 
-                        // Deformation Gradient F = J_curr * J_rest_inv
-                        const DeformationGradient F = J_q * precomputed.jacobianInv;
+                    // Deformation Gradient F = J_curr * J_rest_inv
+                    const DeformationGradient F = J_q * precomputed.jacobianInv;
 
-                        const auto detJ = sofa::type::absGeneralizedDeterminant(J_q);
+                    const auto detJ = sofa::type::absGeneralizedDeterminant(J_q);
 
-                        // shape functions in the reference element evaluated at the quadrature point
-                        const auto N = FiniteElement::shapeFunctions(quadraturePoints[q].first);
+                    // shape functions in the reference element evaluated at the quadrature point
+                    const auto N = FiniteElement::shapeFunctions(quadraturePoints[q].first);
 
-                        // TODO: Compute the actual stress at the quadrature point based on F or other data
-                        StressVoigtVector stress;
+                    // TODO: Compute the actual stress at the quadrature point based on F or other data
+                    StressVoigtVector stress;
 
-                        const auto commonFactor = weight * detJ;
-                        for (sofa::Size i = 0; i < sofa::type::NumberOfIndependentElements<spatial_dimensions>; ++i)
-                        {
-                            const auto stressFactor = commonFactor * stress[i];
-                            for (sofa::Size j = 0; j < NumberOfNodesInElement; ++j)
-                            {
-                                b[i][j] += N[j] * stressFactor;
-                            }
-                        }
-                    }
-
+                    const auto commonFactor = weight * detJ;
                     for (sofa::Size i = 0; i < sofa::type::NumberOfIndependentElements<spatial_dimensions>; ++i)
                     {
-                        const auto stressCoordinate = m_elementMassMatrices[elementId] * b[i];
+                        const auto stressFactor = commonFactor * stress[i];
                         for (sofa::Size j = 0; j < NumberOfNodesInElement; ++j)
                         {
-                            nodalStressInElement[j][i] = stressCoordinate[j];
+                            b[i][j] += N[j] * stressFactor;
                         }
                     }
+                }
+
+                for (sofa::Size i = 0; i < sofa::type::NumberOfIndependentElements<spatial_dimensions>; ++i)
+                {
+                    const auto stressCoordinate = m_elementMassMatrices[elementId] * b[i];
+                    for (sofa::Size j = 0; j < NumberOfNodesInElement; ++j)
+                    {
+                        nodalStressInElement[j][i] = stressCoordinate[j];
+                    }
+                }
 
                 for (sofa::Size i = 0; i < NumberOfNodesInElement; ++i)
                 {
