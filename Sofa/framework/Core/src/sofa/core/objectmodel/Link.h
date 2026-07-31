@@ -377,6 +377,27 @@ public:
         return true;
     }
 
+    bool addDestPtr(DestPtr v)
+    {
+        if (!v)
+            return false;
+        const std::size_t index = TraitsContainer::add(m_value,v);
+        updateCounter();
+        added(v, index);
+        return true;
+    }
+
+    bool addDestPtrPath(DestPtr v, const std::string& path)
+    {
+        if (!v && path.empty())
+            return false;
+        std::size_t index = TraitsContainer::add(m_value,v);
+        TraitsValueType::setPath(m_value[index],path);
+        updateCounter();
+        added(v, index);
+        return true;
+    }
+
     bool addPath(const std::string& path)
     {
         if (path.empty())
@@ -482,11 +503,7 @@ protected:
         }
 
         /// TLink:adding accepts nullptr (for a not yet resolved link).
-        std::size_t index = TraitsContainer::add(m_value, destptr);
-        TraitsValueType::setPath(m_value[index], path);
-        updateCounter();
-        added(destptr, index);
-        return true;
+        return TLink::addDestPtrPath(destptr, path);
     }
 
     bool _doAdd_(Base* baseptr) override
@@ -504,10 +521,7 @@ protected:
         }
 
         /// TLink:adding accepts nullptr (for a not yet resolved link).
-        const std::size_t index = TraitsContainer::add(m_value, destptr);
-        updateCounter();
-        added(destptr, index);
-        return true;;
+        return TLink::addDestPtr(destptr);
     }
 
     /// Returns false on type mismatch
@@ -581,7 +595,7 @@ public:
     MultiLink(const BaseLink::InitLink<OwnerType>& init, DestPtr val)
         : Inherit(init), m_validator(nullptr)
     {
-        if (val) this->_doAdd_(sofa::core::castToBase(TraitsDestPtr::get(val)));
+        if (val) this->addDestPtr(val);
     }
 
     virtual ~MultiLink()
@@ -658,7 +672,7 @@ public:
     SingleLink(const BaseLink::InitLink<OwnerType>& init, DestPtr val)
         : Inherit(init), m_validator(nullptr)
     {
-        if (val) this->_doAdd_(sofa::core::castToBase(TraitsDestPtr::get(val)));
+        if (val) this->addDestPtr(val);
     }
 
     virtual ~SingleLink()

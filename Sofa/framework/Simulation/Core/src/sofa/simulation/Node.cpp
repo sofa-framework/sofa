@@ -635,7 +635,7 @@ bool Node::doAddObject(sofa::core::objectmodel::BaseComponent::SPtr sobj, sofa::
 {
     this->setObjectContext(sobj);
     if(insertionLocation == sofa::core::objectmodel::TypeOfInsertion::AtEnd)
-        object.add(sobj.get());
+        object.addDestPtr(sobj);
     else
         object.addBegin(sobj);
 
@@ -1182,7 +1182,7 @@ void Node::doAddChild(BaseNode::SPtr node)
 {
     const Node::SPtr dagnode = sofa::core::objectmodel::SPtr_static_cast<Node>(node);
     setDirtyDescendancy();
-    child.add(dagnode.get());
+    child.addDestPtr(dagnode);
     dagnode->l_parents.add(this);
     dagnode->l_parents.updateLinks(); // to fix load-time unresolved links
 }
