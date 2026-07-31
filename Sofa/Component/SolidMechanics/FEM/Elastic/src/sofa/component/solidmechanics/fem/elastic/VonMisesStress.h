@@ -79,8 +79,8 @@ protected:
 
     void validateStressEvaluatorLink();
 
-    using ElementMassMatrix = sofa::type::Mat<NumberOfNodesInElement, NumberOfNodesInElement, sofa::Real_t<DataTypes>>;
-    sofa::type::vector<ElementMassMatrix> m_elementMassMatrices;
+    using ElementGramMatrix = sofa::type::Mat<NumberOfNodesInElement, NumberOfNodesInElement, sofa::Real_t<DataTypes>>;
+    sofa::type::vector<ElementGramMatrix> m_elementInverseGramMatrices;
 
     struct PrecomputedData
     {
@@ -94,7 +94,21 @@ protected:
 
     void precomputeData();
 
-    void calculateElementMassMatrix(const auto& elements, sofa::type::vector<ElementMassMatrix> &elementMassMatrices);
+    /**
+     * @brief Computes the inverse of the Gram matrix (integrated N^T * N) for each element.
+     * This matrix is used for the least-square projection of values from quadrature points to nodes.
+     */
+    void calculateElementInverseGramMatrices(const auto& elements, sofa::type::vector<ElementGramMatrix>& inverseGramMatrices);
+
+    /**
+     * @brief Projects values evaluated at quadrature points to nodal values using least-squares.
+     * @param elementId Index of the element
+     * @param valuesAtQuadraturePoints Array of values evaluated at each quadrature point of the element
+     * @return Array of projected values at each node of the element
+     */
+    std::array<StressVoigtVector, NumberOfNodesInElement> projectQuadraturePointValuesToNodes(
+        sofa::Size elementId,
+        const std::array<StressVoigtVector, NumberOfQuadraturePoints>& valuesAtQuadraturePoints) const;
 
     static StressVoigtVector deviatoricStress(const StressVoigtVector& sigma);
     static Real_t<DataTypes> vonMisesStress(const StressVoigtVector& deviatoricStress);

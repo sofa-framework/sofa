@@ -64,7 +64,7 @@ void VonMisesStress<DataTypes, ElementType>::init()
         nodalStress->resize(elements.size());
 
         this->precomputeData();
-        this->calculateElementMassMatrix(elements, m_elementMassMatrices);
+        this->calculateElementInverseGramMatrices(elements, m_elementInverseGramMatrices);
     }
 }
 
@@ -96,53 +96,21 @@ void VonMisesStress<DataTypes, ElementType>::handleEvent(core::objectmodel::Even
                     nodeCoordinatesInElement[i] = positionAccessor[element[i]];
                 }
 
-                std::array<StressVoigtVector, NumberOfNodesInElement> nodalStressInElement;
                 static constexpr auto gradients = sofa::fem::FiniteElementHelper<ElementType, DataTypes>::gradientShapeFunctionAtQuadraturePoints();
-                static constexpr auto quadraturePoints = FiniteElement::quadraturePoints();
 
-                std::array<sofa::type::Vec<NumberOfNodesInElement, sofa::Real_t<DataTypes>>, sofa::type::NumberOfIndependentElements<spatial_dimensions>> b;
-                for (auto& vec : b) vec.clear();
-
+                std::array<StressVoigtVector, NumberOfQuadraturePoints> stressAtQuadraturePoints;
                 for (sofa::Size q = 0; q < NumberOfQuadraturePoints; ++q)
                 {
-                    const auto& weight = quadraturePoints[q].second;
-                    const auto& precomputed = m_precomputedData[elementId][q];
-
-                    // gradient of shape functions in the reference element evaluated at the quadrature point
                     const auto& dN_dq_ref = gradients[q];
-
-                    // jacobian of the mapping from the reference space to the CURRENT physical space
                     const auto J_q = FiniteElement::Helper::jacobianFromReferenceToPhysical(nodeCoordinatesInElement, dN_dq_ref);
 
                     // Deformation Gradient F = J_curr * J_rest_inv
-                    const DeformationGradient F = J_q * precomputed.jacobianInv;
-
-                    const auto detJ = sofa::type::absGeneralizedDeterminant(J_q);
-
-                    // shape functions in the reference element evaluated at the quadrature point
-                    const auto N = FiniteElement::shapeFunctions(quadraturePoints[q].first);
-
-                    const StressVoigtVector stress = l_stressEvaluator->computeStress(F, elementId);
-
-                    const auto commonFactor = weight * detJ;
-                    for (sofa::Size i = 0; i < sofa::type::NumberOfIndependentElements<spatial_dimensions>; ++i)
-                    {
-                        const auto stressFactor = commonFactor * stress[i];
-                        for (sofa::Size j = 0; j < NumberOfNodesInElement; ++j)
-                        {
-                            b[i][j] += N[j] * stressFactor;
-                        }
-                    }
+                    const DeformationGradient F = J_q * m_precomputedData[elementId][q].jacobianInv;
+                    stressAtQuadraturePoints[q] = l_stressEvaluator->computeStress(F, elementId);
                 }
 
-                for (sofa::Size i = 0; i < sofa::type::NumberOfIndependentElements<spatial_dimensions>; ++i)
-                {
-                    const auto stressCoordinate = m_elementMassMatrices[elementId] * b[i];
-                    for (sofa::Size j = 0; j < NumberOfNodesInElement; ++j)
-                    {
-                        nodalStressInElement[j][i] = stressCoordinate[j];
-                    }
-                }
+                // Least-square projection from quadrature points to nodes
+                const auto nodalStressInElement = projectQuadraturePointValuesToNodes(elementId, stressAtQuadraturePoints);
 
                 for (sofa::Size i = 0; i < NumberOfNodesInElement; ++i)
                 {
@@ -212,8 +180,8 @@ void VonMisesStress<DataTypes, ElementType>::precomputeData()
 }
 
 template <class DataTypes, class ElementType>
-void VonMisesStress<DataTypes, ElementType>::calculateElementMassMatrix(
-    const auto& elements, sofa::type::vector<ElementMassMatrix>& elementMassMatrices)
+void VonMisesStress<DataTypes, ElementType>::calculateElementInverseGramMatrices(
+    const auto& elements, sofa::type::vector<ElementGramMatrix>& elementMassMatrices)
 {
     const auto nbElements = elements.size();
     elementMassMatrices.resize(nbElements);
@@ -260,6 +228,48 @@ void VonMisesStress<DataTypes, ElementType>::calculateElementMassMatrix(
 
             sofa::type::invertMatrix(elementMassMatrix, elementMassMatrix);
         });
+}
+
+template <class DataTypes, class ElementType>
+auto VonMisesStress<DataTypes, ElementType>::projectQuadraturePointValuesToNodes(
+    sofa::Size elementId,
+    const std::array<StressVoigtVector, NumberOfQuadraturePoints>& valuesAtQuadraturePoints) const
+-> std::array<StressVoigtVector, NumberOfNodesInElement>
+{
+    using Real = sofa::Real_t<DataTypes>;
+    static constexpr auto quadraturePoints = FiniteElement::quadraturePoints();
+    static constexpr auto voigtSize = sofa::type::NumberOfIndependentElements<spatial_dimensions>;
+
+    std::array<StressVoigtVector, NumberOfNodesInElement> projectedNodalValues;
+    for (auto& val : projectedNodalValues) val.clear();
+
+    // Project each Voigt component independently: M * x_i = b_i
+    for (sofa::Size i = 0; i < voigtSize; ++i)
+    {
+        sofa::type::Vec<NumberOfNodesInElement, Real> b;
+        b.clear();
+
+        for (sofa::Size q = 0; q < NumberOfQuadraturePoints; ++q)
+        {
+            const auto& weight = quadraturePoints[q].second;
+            const auto detJ = m_precomputedData[elementId][q].detJacobian;
+            const auto N = FiniteElement::shapeFunctions(quadraturePoints[q].first);
+
+            const Real val = valuesAtQuadraturePoints[q][i] * weight * detJ;
+            for (sofa::Size node = 0; node < NumberOfNodesInElement; ++node)
+            {
+                b[node] += N[node] * val;
+            }
+        }
+
+        const auto x = m_elementInverseGramMatrices[elementId] * b;
+        for (sofa::Size node = 0; node < NumberOfNodesInElement; ++node)
+        {
+            projectedNodalValues[node][i] = x[node];
+        }
+    }
+
+    return projectedNodalValues;
 }
 
 template <class DataTypes, class ElementType>
