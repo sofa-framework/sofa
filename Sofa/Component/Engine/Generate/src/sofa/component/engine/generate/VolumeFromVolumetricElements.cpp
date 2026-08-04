@@ -19,61 +19,27 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#define SOFA_COMPONENT_ENGINE_VOLUMEFROMVOLUMETRICELEMENTS_CPP
 
-#include "ScalarField.h"
-#include <sofa/type/Mat.h>
+#include <sofa/component/engine/generate/VolumeFromVolumetricElements.inl>
+#include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::geometry
+namespace sofa::component::engine::generate
 {
 
-namespace _StarShapedField_
+using namespace sofa::defaulttype;
+using namespace sofa::helper;
+
+void registerVolumeFromVolumetricElements(sofa::core::ObjectFactory* factory)
 {
+    factory->registerObjects(sofa::core::ObjectRegistrationData("This component computes the volume of a given volumetric mesh.")
+    .add<  VolumeFromVolumetricElements<Vec3Types> >(true)
+    .addAlias("VolumeFromTetrahedrons")
+    );
+}
 
-using sofa::type::Vec3d;
-using sofa::type::Mat3x3;
+template class SOFA_COMPONENT_ENGINE_GENERATE_API VolumeFromVolumetricElements<Vec3Types>;
 
-/**
- * This component emulates an implicit field that looks like some kind of star.
-*/
-class  SOFA_SOFAIMPLICITFIELD_API StarShapedField  : public ScalarField
-{
-public:
-    SOFA_CLASS(StarShapedField, ScalarField);
 
-public:
-    StarShapedField() ;
-    ~StarShapedField() override { }
-
-    /// Inherited from BaseObject
-    void init() override ;
-    void reinit() override ;
-
-    /// Inherited from ScalarField.
-    double getValue(Vec3d& Pos, int &domain) override ;
-    Vec3d getGradient(Vec3d &Pos, int& domain) override ;
-    void getHessian(Vec3d &Pos, Mat3x3& h) override;
-
-    using ScalarField::getValue ;
-    using ScalarField::getGradient ;
-    using ScalarField::getValueAndGradient ;
-
-    Data<bool> d_inside; ///< If true the field is oriented inside (resp. outside) the sphere. (default = false)
-    Data<double> d_radiusSphere; ///< Radius of Sphere emitting the field. (default = 1)
-    Data<Vec3d> d_centerSphere; ///< Position of the Sphere Surface. (default=0 0 0)
-    Data<double> d_branches; ///< Number of branches of the star. (default=1)
-    Data<double> d_branchesRadius; ///< Size of the branches of the star. (default=1)
-protected:
-    Vec3d m_center;
-    double m_radius;
-    bool m_inside;
-    double m_branches;
-    double m_branchesRadius;
-};
-
-} // namespace _StarShapedField_
-
-using sofa::component::geometry::_StarShapedField_::StarShapedField;
-
-} // namespace sofa::component::geometry
+} // namespace
 
