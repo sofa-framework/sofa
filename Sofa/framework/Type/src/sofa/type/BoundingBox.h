@@ -126,15 +126,12 @@ protected:
 
 
 template <typename TReal>
-class SOFA_ATTRIBUTE_DEPRECATED__TBOUNDINGBOX() TBoundingBox : public BoundingBox
+class SOFA_ATTRIBUTE_DISABLED__TBOUNDINGBOX() TBoundingBox : public BoundingBox
 {
 public:
-    TBoundingBox(const TReal* minBBoxPtr, const TReal* maxBBoxPtr)
-        :BoundingBox(sofa::type::Vec3(minBBoxPtr),sofa::type::Vec3(maxBBoxPtr))
-    {
-    }
+    TBoundingBox(const TReal* minBBoxPtr, const TReal* maxBBoxPtr) = delete;
 
-    TBoundingBox() : BoundingBox() {}
+    TBoundingBox() = delete;
 };
 
 

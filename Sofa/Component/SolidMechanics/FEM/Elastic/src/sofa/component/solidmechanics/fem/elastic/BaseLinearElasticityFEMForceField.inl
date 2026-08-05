@@ -143,40 +143,4 @@ auto BaseLinearElasticityFEMForceField<DataTypes>::getPoissonRatioInElement(sofa
     return getVecRealInElement(elementId, d_poissonRatio, defaultPoissonRatioValue);
 }
 
-template <class DataTypes>
-auto BaseLinearElasticityFEMForceField<DataTypes>::toLameParameters(
-    const _2DMaterials elementType,
-    const Real youngModulus,
-    const Real poissonRatio) -> std::pair<Real, Real>
-{
-    SOFA_UNUSED(elementType);
-
-    LameLambda<Real> lambda { 0 };
-    LameMu<Real> mu { 0 };
-
-    sofa::component::solidmechanics::fem::elastic::toLameParameters<2, Real>(
-        YoungModulus<Real>(youngModulus), PoissonRatio<Real>(poissonRatio),
-        lambda, mu);
-
-    return {lambda.get(), mu.get()};
-}
-
-template <class DataTypes>
-auto BaseLinearElasticityFEMForceField<DataTypes>::toLameParameters(
-    const _3DMaterials elementType,
-    const Real youngModulus,
-    const Real poissonRatio) -> std::pair<Real, Real>
-{
-    SOFA_UNUSED(elementType);
-
-    LameLambda<Real> lambda { 0 };
-    LameMu<Real> mu { 0 };
-
-    sofa::component::solidmechanics::fem::elastic::toLameParameters<3, Real>(
-        YoungModulus<Real>(youngModulus), PoissonRatio<Real>(poissonRatio),
-        lambda, mu);
-
-    return {lambda.get(), mu.get()};
-}
-
 }

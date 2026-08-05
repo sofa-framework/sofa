@@ -26,9 +26,6 @@ namespace sofa::helper::lifecycle
 {
 
 std::map<std::string, Deprecated, std::less<> > deprecatedComponents = {
-    {"RayTraceDetection", Deprecated("v21.06", "v21.12")},
-    {"BruteForceDetection", Deprecated("v21.06", "v21.12")},
-    {"DirectSAP", Deprecated("v21.06", "v21.12")},
     {"RigidRigidMapping", Deprecated("v23.06", "v23.12", "You can use the component RigidMapping with template='Rigid3,Rigid3' instead.")},
     {"ConstraintAnimationLoop", Deprecated("v26.06", "v26.12", "Use FreeMotionAnimationLoop instead.")},
 };

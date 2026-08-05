@@ -38,8 +38,8 @@ namespace sofa::component::solidmechanics::fem::elastic
 } // namespace sofa::component::solidmechanics::fem::elastic
 
 #ifdef SOFA_BUILD_SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC
-#define SOFA_ATTRIBUTE_DEPRECATED__TOLAMEPARAMETERS()
+#define SOFA_ATTRIBUTE_DISABLED__TOLAMEPARAMETERS()
 #else
-#define SOFA_ATTRIBUTE_DEPRECATED__TOLAMEPARAMETERS() \
-    SOFA_ATTRIBUTE_DEPRECATED("v26.06", "v26.12", "Use the generic overload in LameParameters.h instead.")
+#define SOFA_ATTRIBUTE_DISABLED__TOLAMEPARAMETERS() \
+    SOFA_ATTRIBUTE_DISABLED("v26.06", "v26.12", "Use the generic overload in LameParameters.h instead.")
 #endif

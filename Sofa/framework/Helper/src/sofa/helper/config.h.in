@@ -40,11 +40,3 @@
 #  define SOFA_HELPER_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-
-#ifdef SOFA_BUILD_SOFA_HELPER
-#define SOFA_HELPER_FILESYSTEM_FINDORCREATEAVALIDPATH_DISABLED()
-#else
-#define SOFA_HELPER_FILESYSTEM_FINDORCREATEAVALIDPATH_DISABLED() \
-SOFA_ATTRIBUTE_DISABLED( \
-"v25.06", "v25.12", "It is not clear that this function works on folders or files. Use ensureFolderExists or ensureFolderForFileExists instead.")
-#endif // SOFA_BUILD_SOFA_HELPER
