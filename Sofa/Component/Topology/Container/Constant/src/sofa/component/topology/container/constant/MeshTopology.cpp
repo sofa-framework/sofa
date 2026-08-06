@@ -2280,7 +2280,7 @@ void MeshTopology::reOrientateTriangle(TriangleID id)
     return;
 }
 
-bool MeshTopology::hasPos() const
+bool MeshTopology::doHasPos() const
 {
     return !d_seqPoints.getValue().empty();
 }

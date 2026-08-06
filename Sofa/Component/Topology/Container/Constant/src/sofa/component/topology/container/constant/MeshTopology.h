@@ -237,7 +237,7 @@ public:
 
     // Points accessors (not always available)
 
-    bool hasPos() const override;
+    bool doHasPos() const override;
     SReal getPX(Index i) const override;
     SReal getPY(Index i) const override;
     SReal getPZ(Index i) const override;
