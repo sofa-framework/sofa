@@ -68,26 +68,17 @@ protected:
     // -- Pipeline interface
 
     /// @brief Delegates reset to all sub-pipelines to clear previous contacts.
-    void doCollisionReset() override;
+    void doComputeCollisionReset() override;
 
     /// @brief Delegates collision detection to all sub-pipelines (optionally in parallel).
     /// @note The collisionModels parameter is ignored; each sub-pipeline uses its own models.
-    void doCollisionDetection(const sofa::type::vector<sofa::core::CollisionModel*>& collisionModels) override;
+    void doComputeCollisionDetection(const sofa::type::vector<sofa::core::CollisionModel*>& collisionModels) override;
 
     /// @brief Delegates response creation to all sub-pipelines.
-    void doCollisionResponse() override;
+    void doComputeCollisionResponse() override;
 
     void bwdInit() override;
     void reset() override;
-
-    /// @brief Entry point for collision reset, called by the simulation loop.
-    virtual void computeCollisionReset() override final;
-
-    /// @brief Entry point for collision detection, called by the simulation loop.
-    virtual void computeCollisionDetection() override final;
-
-    /// @brief Entry point for collision response, called by the simulation loop.
-    virtual void computeCollisionResponse() override final;
 
 public:
     /// When true, collision detection across sub-pipelines runs in parallel using the task scheduler.

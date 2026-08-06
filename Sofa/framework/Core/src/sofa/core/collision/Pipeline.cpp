@@ -65,5 +65,40 @@ bool Pipeline::removeInNode( objectmodel::BaseNode* node )
     Inherit1::removeInNode(node);
     return true;
 }
+
+/// Entry point for collision reset, called by the simulation loop. It removes collision response from last step
+void Pipeline::computeCollisionReset()
+{
+    //TODO (SPRINT SED 2025): Component state mechamism
+    if(!this->isComponentStateValid())
+        return;
+
+    doComputeCollisionReset();
+}
+
+/// Entry point for collision detection, called by the simulation loop. Note that this step must not modify the simulation graph
+void Pipeline::computeCollisionDetection()
+{
+    //TODO (SPRINT SED 2025): Component state mechamism
+    if(!this->isComponentStateValid())
+        return;
+
+    // The collision models parameter is not used by this pipeline
+    // since each sub-pipeline manages its own set of models
+    static std::vector<CollisionModel*> collisionModels{};
+
+    doComputeCollisionDetection(collisionModels);
+}
+
+/// Entry point for collision response, called by the simulation loop. It adds the collision response in the simulation graph
+void Pipeline::computeCollisionResponse()
+{
+    //TODO (SPRINT SED 2025): Component state mechamism
+    if(!this->isComponentStateValid())
+        return;
+
+    doComputeCollisionResponse();
+}
+
 } // namespace sofa
 
