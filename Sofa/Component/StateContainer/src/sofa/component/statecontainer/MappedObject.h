@@ -65,7 +65,7 @@ public:
     Data<VecCoord> d_X; ///< position vector
     Data<VecDeriv> d_V; ///< velocity vector
 
-    void resize(Size vsize) override { d_X.beginEdit()->resize(vsize); d_X.endEdit(); d_V.beginEdit()->resize(vsize); d_V.endEdit(); }
+    void doResize(Size vsize) override { d_X.beginEdit()->resize(vsize); d_X.endEdit(); d_V.beginEdit()->resize(vsize); d_V.endEdit(); }
 
     VecCoord* getX()  { return d_X.beginEdit(); }
     VecDeriv* getV()  { return d_V.beginEdit(); }
