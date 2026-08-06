@@ -66,7 +66,7 @@ public:
     void addInteractionPerformer(InteractionPerformer *i);
     bool removeInteractionPerformer( InteractionPerformer *i);
     //Called at each time step: launch all the performers
-    void updatePosition( SReal dt) override;
+    void doUpdatePosition( SReal dt) override;
     //Propagate an event in case to all the performers
     void handleEvent(core::objectmodel::Event *e) override;
 
