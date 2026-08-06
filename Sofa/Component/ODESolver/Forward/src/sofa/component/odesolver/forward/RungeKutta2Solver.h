@@ -33,7 +33,7 @@ class SOFA_COMPONENT_ODESOLVER_FORWARD_API RungeKutta2Solver : public sofa::core
 public:
     SOFA_CLASS(RungeKutta2Solver, sofa::core::behavior::OdeSolver);
 
-    void solve (const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
+    void doSolve (const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
 
     /// Given an input derivative order (0 for position, 1 for velocity, 2 for acceleration),
     /// how much will it affect the output derivative of the given order.
