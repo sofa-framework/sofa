@@ -238,7 +238,9 @@ public:
     template<Size L2, Size C2> 
     constexpr void operator=(const Mat<L2,C2,real>& m) noexcept
     {
-        std::copy(m.begin(), m.begin()+(L>L2?L2:L), this->begin());
+        constexpr Size minL = (L>L2?L2:L);
+        for (Size i = 0; i < minL; i++)
+            (*this)[i].set(m[i]);
     }
 
     template<Size L2, Size C2> 
