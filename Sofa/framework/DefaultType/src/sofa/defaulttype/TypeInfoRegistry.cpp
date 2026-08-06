@@ -21,6 +21,7 @@
 ******************************************************************************/
 #include <typeindex>
 #include <map>
+#include <memory>
 #include <iostream>
 #include <sofa/helper/logging/Messaging.h>
 #include <sofa/defaulttype/AbstractTypeInfo.h>
@@ -38,21 +39,24 @@
 namespace sofa::defaulttype
 {
 
+/// Non-owning list of registered type infos, indexed by TypeInfoId.
+/// Most entries are borrowed pointers to function-local static singletons
+/// (e.g. NoTypeInfo::Get() or DataTypeInfoDynamicWrapper<...>::get()) that
+/// must never be deleted here. The few objects actually allocated by this
+/// registry are owned by getOwnedStorage() instead.
 static std::vector<const AbstractTypeInfo*>& getStorage()
 {
-    static auto deleter = [](const std::vector<const AbstractTypeInfo*>* v)
-    {
-        for (const auto* info : *v)
-        {
-            if (info != NoTypeInfo::Get())
-            {
-                delete info;
-            }
-        }
-    };
-    static std::unique_ptr<std::vector<const AbstractTypeInfo*>, decltype(deleter)> type_infos(
-        new std::vector<const AbstractTypeInfo*>{NoTypeInfo::Get()}, deleter);
-    return *type_infos;
+    static std::vector<const AbstractTypeInfo*> type_infos{NoTypeInfo::Get()};
+    return type_infos;
+}
+
+/// Owns the type infos allocated by this registry itself (see AllocateNewTypeId).
+/// The raw pointers stored in getStorage() alias these objects, so ownership is
+/// kept here to release them at exit without deleting borrowed singletons.
+static std::vector<std::unique_ptr<const AbstractTypeInfo>>& getOwnedStorage()
+{
+    static std::vector<std::unique_ptr<const AbstractTypeInfo>> owned_type_infos;
+    return owned_type_infos;
 }
 
 std::vector<const AbstractTypeInfo*> TypeInfoRegistry::GetRegisteredTypes(const std::string& target)
@@ -89,7 +93,8 @@ int TypeInfoRegistry::AllocateNewTypeId(const std::type_info& nfo)
     auto& typeinfos = getStorage();
     const std::string name = sofa::helper::NameDecoder::decodeTypeName(nfo);
     const std::string typeName = sofa::helper::NameDecoder::decodeTypeName(nfo);
-    typeinfos.push_back(new NameOnlyTypeInfo(name, typeName));
+    auto& owned = getOwnedStorage().emplace_back(std::make_unique<NameOnlyTypeInfo>(name, typeName));
+    typeinfos.push_back(owned.get());
     return static_cast<int>(typeinfos.size()-1);
 }
 
