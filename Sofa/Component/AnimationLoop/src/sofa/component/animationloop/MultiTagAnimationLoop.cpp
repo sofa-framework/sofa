@@ -68,7 +68,7 @@ void MultiTagAnimationLoop::init()
 
 
 
-void MultiTagAnimationLoop::step(const sofa::core::ExecParams* params, SReal dt)
+void MultiTagAnimationLoop::doStep(const sofa::core::ExecParams* params, SReal dt)
 {
     auto node = dynamic_cast<sofa::simulation::Node*>(this->l_node.get());
 
