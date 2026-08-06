@@ -85,10 +85,10 @@ SOFA_ATTRIBUTE_DEPRECATED("v26.06", "v29.06", "Use toBaseComponent instead.")
 
 
 #ifdef SOFA_BUILD_SOFA_CORE
-#define SOFA_ATTRIBUTE_RENAMED__COLLISIONMODEL_PROXIMITY()
+#define SOFA_ATTRIBUTE_DISABLED__COLLISIONMODEL_PROXIMITY()
 #else
-#define SOFA_ATTRIBUTE_RENAMED__COLLISIONMODEL_PROXIMITY() \
-    SOFA_ATTRIBUTE_DEPRECATED("v25.12", "v26.12", "Data 'proximity' has been renamed to 'contactDistance'")
+#define SOFA_ATTRIBUTE_DISABLED__COLLISIONMODEL_PROXIMITY() \
+    SOFA_ATTRIBUTE_DISABLED("v25.12", "v26.12", "Data 'proximity' has been renamed to 'contactDistance'")
 #endif
 
 #ifdef SOFA_BUILD_SOFA_CORE

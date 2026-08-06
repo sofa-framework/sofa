@@ -99,10 +99,6 @@ public:
       Data<Real> d_constantDiffusionCoefficient;
       /// Vector of diffusivities associated with all tetras
       Data<sofa::type::vector<Real> > d_tetraDiffusionCoefficient;
-      /// bool used to specify 1D diffusion
-      /// This data is now useless, as it can be deduced from the template
-      DeprecatedAndRemoved d_1DDiffusion;
-
       /// Ratio for anisotropic diffusion
       Data<Real> d_transverseAnisotropyRatio;
       /// Vector for transverse anisotropy

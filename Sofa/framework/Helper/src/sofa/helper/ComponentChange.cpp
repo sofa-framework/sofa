@@ -367,7 +367,6 @@ std::map<std::string, ComponentChange, std::less<> > movedComponents = {
     { "UncoupledConstraintCorrection", Moved("v22.06", "SofaConstraint", Sofa.Component.Constraint.Lagrangian.Correction) },
     { "UniformConstraint", Moved("v22.06", "SofaConstraint", Sofa.Component.Constraint.Lagrangian.Model) },
     { "UnilateralInteractionConstraint", Moved("v22.06", "SofaConstraint", Sofa.Component.Constraint.Lagrangian.Model) },
-    { "ConstraintAnimationLoop", Moved("v22.06", "SofaConstraint", Sofa.Component.AnimationLoop) },
     { "FreeMotionAnimationLoop", Moved("v22.06", "SofaConstraint", Sofa.Component.AnimationLoop) },
     { "LocalMinDistance", Moved("v22.06", "SofaConstraint", Sofa.Component.Collision.Detection.Intersection) },
 
