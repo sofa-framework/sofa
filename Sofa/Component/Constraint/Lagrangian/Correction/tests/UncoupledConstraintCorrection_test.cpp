@@ -47,7 +47,7 @@ struct UncoupledConstraintCorrection_test: public BaseSimulationTest
                     "   <FreeMotionAnimationLoop />\n"
                     "   <Node name='collision'>\n"
                     "         <MechanicalObject />\n"
-                    "         <UncoupledConstraintCorrection useOdeSolverIntegrationFactors='0' />\n"
+                    "         <UncoupledConstraintCorrection useIntegrationSchemeIntegrationFactors='0' />\n"
                     "   </Node>\n"
                     "</Node>\n"
                     );

@@ -42,19 +42,19 @@ SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION_API void UncoupledConstraintCorr
 
     double  odeFactor = 1.0;
 
-    this->getContext()->get(m_pOdeSolver);
-    if (!m_pOdeSolver)
+    this->getContext()->get(m_pIntegrationScheme);
+    if (!m_pIntegrationScheme)
     {
-        if (d_useOdeSolverIntegrationFactors.getValue() == true)
+        if (d_useIntegrationSchemeIntegrationFactors.getValue() == true)
         {
             msg_error() << "Can't find any odeSolver";
-            d_useOdeSolverIntegrationFactors.setValue(false);
+            d_useIntegrationSchemeIntegrationFactors.setValue(false);
         }
-        d_useOdeSolverIntegrationFactors.setReadOnly(true);
+        d_useIntegrationSchemeIntegrationFactors.setReadOnly(true);
     }
     else
     {
-        if( !d_useOdeSolverIntegrationFactors.getValue() )
+        if( !d_useIntegrationSchemeIntegrationFactors.getValue() )
         {
             const double dt = this->getContext()->getDt();
             odeFactor = dt*dt; // W = h^2 * JMinvJt : only correct when solving in constraint equation in position. Must be deprecated.

@@ -9,7 +9,7 @@
     <RequiredPlugin pluginName="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
     <RequiredPlugin pluginName="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
     <RequiredPlugin pluginName="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [BarycentricMapping] -->
-    <RequiredPlugin pluginName="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin pluginName="Sofa.Component.IntegrationScheme.Backward"/> <!-- Needed to use components [EulerImplicitIntegrationScheme] -->
     <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [HexahedronFEMForceFieldAndMass] -->
     <RequiredPlugin pluginName="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
     <RequiredPlugin pluginName="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
@@ -26,7 +26,7 @@
     <CollisionResponse name="Response" response="PenalityContactForceField" />
     <Node name="UniformC Rough">
         <SparseGridRamificationTopology n="5 2 2" fileTopology="mesh/c.obj" nbVirtualFinerLevels="3" finestConnectivity="0" />
-        <EulerImplicitSolver rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitIntegrationScheme rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="10" tolerance="1e-5" threshold="1e-5"/>
         <MechanicalObject />
         <HexahedronFEMForceFieldAndMass youngModulus="100000" poissonRatio="0.3" method="large" density="3" updateStiffnessMatrix="false" printLog="0" />
@@ -48,7 +48,7 @@
     </Node>
     <Node name="UniformC">
         <SparseGridRamificationTopology n="5 2 2" fileTopology="mesh/c.obj" nbVirtualFinerLevels="3" finestConnectivity="0" />
-        <EulerImplicitSolver rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitIntegrationScheme rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="10" tolerance="1e-5" threshold="1e-5"/>
         <MechanicalObject dx="40" />
         <HexahedronFEMForceFieldAndMass youngModulus="100000" poissonRatio="0.3" method="large" density="3" updateStiffnessMatrix="false" printLog="0" />
@@ -70,7 +70,7 @@
     </Node>
     <Node name="UniformC and finestConnectivity">
         <SparseGridRamificationTopology n="5 3 3" fileTopology="mesh/c.obj" nbVirtualFinerLevels="0" finestConnectivity="1" />
-        <EulerImplicitSolver rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitIntegrationScheme rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="10" tolerance="1e-5" threshold="1e-5"/>
         <MechanicalObject dx="80" />
         <HexahedronFEMForceFieldAndMass youngModulus="100000" poissonRatio="0.3" method="large" density="3" updateStiffnessMatrix="false" printLog="0" />

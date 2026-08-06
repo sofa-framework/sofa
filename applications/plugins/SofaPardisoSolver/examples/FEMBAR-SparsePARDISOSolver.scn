@@ -1,7 +1,7 @@
 <Node name="root" dt="0.02" gravity="0 -10 0">
     <RequiredPlugin pluginName="SofaSparseSolver"/>
     <RequiredPlugin pluginName='SofaBoundaryCondition'/>
-    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
+    <RequiredPlugin pluginName='SofaImplicitIntegrationScheme'/>
     <RequiredPlugin pluginName='SofaMiscCollision'/>
     <RequiredPlugin pluginName='SofaSimpleFem'/> 
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
@@ -11,7 +11,7 @@
     <MinProximityIntersection name="Proximity" alarmDistance="0.5" contactDistance="0.3" />
     <CollisionResponse name="Response" response="PenalityContactForceField" />
     <Node name="M1">
-        <EulerImplicitSolver name="cg_odesolver"  />
+        <EulerImplicitIntegrationScheme name="cg_odesolver"  />
         <SparsePARDISOSolver />
         <MechanicalObject />
         <UniformMass vertexMass="1" />

@@ -6,7 +6,7 @@
         <RequiredPlugin pluginName="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [IdentityMapping] -->
         <RequiredPlugin pluginName="Sofa.Component.Mapping.NonLinear"/> <!-- Needed to use components [RigidMapping] -->
         <RequiredPlugin pluginName="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
-        <RequiredPlugin pluginName="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+        <RequiredPlugin pluginName="Sofa.Component.IntegrationScheme.Backward"/> <!-- Needed to use components [EulerImplicitIntegrationScheme] -->
         <RequiredPlugin pluginName="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
         <RequiredPlugin pluginName="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
         <RequiredPlugin pluginName="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
@@ -26,7 +26,7 @@
 
   <Node 	name="rigid" >
 	
-    	<EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
+    	<EulerImplicitIntegrationScheme  rayleighStiffness="0.1" rayleighMass="0.1" />
 	<CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
 
   	<MechanicalObject template="Rigid3d" position="@../imagemass.position" showObject="0" showObjectScale="1"/>

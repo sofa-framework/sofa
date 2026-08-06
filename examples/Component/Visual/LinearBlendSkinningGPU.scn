@@ -3,14 +3,14 @@
     <RequiredPlugin pluginName="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [LinearMovementProjectiveConstraint] -->
     <RequiredPlugin pluginName="Sofa.Component.Engine.Transform"/> <!-- Needed to use components [DisplacementMatrixEngine] -->
     <RequiredPlugin pluginName="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [IdentityMapping] -->
-    <RequiredPlugin pluginName="Sofa.Component.ODESolver.Forward"/> <!-- Needed to use components [EulerExplicitSolver] -->
+    <RequiredPlugin pluginName="Sofa.Component.IntegrationScheme.Forward"/> <!-- Needed to use components [EulerExplicitIntegrationScheme] -->
     <RequiredPlugin pluginName="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
     <RequiredPlugin pluginName="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
     <RequiredPlugin pluginName="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
     <RequiredPlugin pluginName="Sofa.GL.Component.Shader"/> <!-- Needed to use components [OglFloat4Attribute OglInt4Attribute OglMatrix4VectorVariable OglShader] -->
     <DefaultAnimationLoop/>
 
-    <EulerExplicitSolver name="odesolver"  />
+    <EulerExplicitIntegrationScheme name="odesolver"  />
     <Node 	 name="DeformableObject"   >
         <MechanicalObject template="Rigid3" name="Bones"  position="0 -2 0 0 0 0 1 0 2 0 0 0 0 1" rest_position="0 -2 0 0 0 0 1 0 2 0 0 0 0 1"  showObject="1"  showObjectScale="0.5" />
         <LinearMovementProjectiveConstraint template="Rigid3" name="BoneTrajectories"  indices="1"  keyTimes="0 1 2 3 4 5 6 7 8 9 10 11 12 20"  movements=" 0 0 0 0 0 0 0 0 0 1.5708 0 0 0 0 0 0 0 0 0 0 0 0 1.5708 0 0 0 0 0 0 0 0 0 0 0 0 1.5708 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0" />

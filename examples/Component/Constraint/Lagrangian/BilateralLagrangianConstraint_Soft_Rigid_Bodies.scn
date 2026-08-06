@@ -16,7 +16,7 @@
         <RequiredPlugin pluginName="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [BarycentricMapping IdentityMapping] -->
         <RequiredPlugin pluginName="Sofa.Component.Mapping.NonLinear"/> <!-- Needed to use components [RigidMapping] -->
         <RequiredPlugin pluginName="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
-        <RequiredPlugin pluginName="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+        <RequiredPlugin pluginName="Sofa.Component.IntegrationScheme.Backward"/> <!-- Needed to use components [EulerImplicitIntegrationScheme] -->
         <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [TetrahedronFEMForceField] -->
         <RequiredPlugin pluginName="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
         <RequiredPlugin pluginName="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [HexahedronSetTopologyContainer TetrahedronSetGeometryAlgorithms TetrahedronSetTopologyContainer TetrahedronSetTopologyModifier TriangleSetGeometryAlgorithms TriangleSetTopologyContainer TriangleSetTopologyModifier] -->
@@ -44,7 +44,7 @@
         <MechanicalObject template="Vec3d" name="gridDofs"/>
 
         <Node name="DeformableCube" bbox="-10 -10 -10 10 10 10" >
-            <EulerImplicitSolver name="cg_odesolver" />
+            <EulerImplicitIntegrationScheme name="cg_odesolver" />
             <SparseLDLSolver name="linear solver" template="CompressedRowSparseMatrixMat3x3d" />
             <TetrahedronSetTopologyContainer name="Container" />
             <TetrahedronSetTopologyModifier name="Modifier" />
@@ -81,7 +81,7 @@
 
     <!-- Rigid body -->
     <Node name="RigidBody" >
-        <EulerImplicitSolver name="EulerImplicit" />
+        <EulerImplicitIntegrationScheme name="EulerImplicit" />
         <CGLinearSolver template="GraphScattered" name="CG-LinearSolver" iterations="25" tolerance="1e-09" threshold="1e-09" />
         <MechanicalObject template="Rigid3d" name="rigidDofs" position="0 -15 0 0 0 0 1" showObject="1" showObjectScale="5"/>
         <UniformMass name="NodalMass" totalMass="1" />

@@ -56,7 +56,7 @@
 	</Node>
 
 	<Node name="Instrument" >
-		<EulerImplicitSolver name="ODE solver" rayleighStiffness="0.01" rayleighMass="1.0" />
+		<EulerImplicitIntegrationScheme name="ODE solver" rayleighStiffness="0.01" rayleighMass="1.0" />
 		<CGLinearSolver name="linear solver" iterations="25" tolerance="1e-10" threshold="10e-10" />
 		<MechanicalObject name="instrumentState" template="Rigid3d" />
 		<UniformMass name="mass" totalMass="0.05" />

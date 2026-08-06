@@ -9,7 +9,7 @@
         <RequiredPlugin pluginName="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
         <RequiredPlugin pluginName="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
         <RequiredPlugin pluginName="Sofa.Component.Mass"/> <!-- Needed to use components [DiagonalMass] -->
-        <RequiredPlugin pluginName="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+        <RequiredPlugin pluginName="Sofa.Component.IntegrationScheme.Backward"/> <!-- Needed to use components [EulerImplicitIntegrationScheme] -->
         <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [HexahedronFEMForceField] -->
         <RequiredPlugin pluginName="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
         <RequiredPlugin pluginName="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [HexahedronSetGeometryAlgorithms HexahedronSetTopologyContainer HexahedronSetTopologyModifier] -->
@@ -27,7 +27,7 @@
         This Node shows how NearestPointROI is used to create constraints to link close vertices
     -->
     <Node name="ObjectsAttachedWithConstraints">
-        <EulerImplicitSolver name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1"/>
+        <EulerImplicitIntegrationScheme name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1"/>
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         
         <Node name="gridM1" >
@@ -51,7 +51,7 @@
             <HexahedronFEMForceField name="FEM" youngModulus="4000" poissonRatio="0.3" />
             
             <TopologicalChangeProcessor listening="1" filename="RemovingConstraint.txt" />
-            <UncoupledConstraintCorrection defaultCompliance="0.001" useOdeSolverIntegrationFactors="0"/>
+            <UncoupledConstraintCorrection defaultCompliance="0.001" useIntegrationSchemeIntegrationFactors="0"/>
         </Node>
         <Node name="M2">
             <MechanicalObject name="mo" position="@../gridM2/GM2.position"/>
@@ -64,7 +64,7 @@
             <HexahedronFEMForceField name="FEM" youngModulus="4000" poissonRatio="0.3" />
             
             <TopologicalChangeProcessor listening="1" filename="RemovingConstraint.txt" />
-            <UncoupledConstraintCorrection defaultCompliance="0.001"useOdeSolverIntegrationFactors="0"/>
+            <UncoupledConstraintCorrection defaultCompliance="0.001"useIntegrationSchemeIntegrationFactors="0"/>
         </Node>
 
         <BilateralLagrangianConstraint template="Vec3" object1="@M1" object2="@M2"

@@ -62,11 +62,11 @@ TEST(SparseLDLSolver, EmptyMState)
 
     const auto plugins = sofa::testing::makeScopedPlugin({
         Sofa.Component.LinearSolver.Direct,
-        Sofa.Component.ODESolver.Backward,
+        Sofa.Component.IntegrationScheme.Backward,
         Sofa.Component.StateContainer});
 
     sofa::simpleapi::createObject(root, "DefaultAnimationLoop");
-    sofa::simpleapi::createObject(root, "EulerImplicitSolver");
+    sofa::simpleapi::createObject(root, "EulerImplicitIntegrationScheme");
     sofa::simpleapi::createObject(root, "SparseLDLSolver", {{"template", "CompressedRowSparseMatrixd"}});
     sofa::simpleapi::createObject(root, "MechanicalObject", {{"template", "Vec3"}, {"position", ""}});
 
@@ -92,13 +92,13 @@ TEST(SparseLDLSolver, TopologyChangeEmptyMState)
     const auto plugins = sofa::testing::makeScopedPlugin({
         Sofa.Component.LinearSolver.Direct,
         Sofa.Component.Mass,
-        Sofa.Component.ODESolver.Backward,
+        Sofa.Component.IntegrationScheme.Backward,
         Sofa.Component.StateContainer,
         Sofa.Component.Topology.Container.Dynamic,
         Sofa.Component.Topology.Utility});
 
     sofa::simpleapi::createObject(root, "DefaultAnimationLoop");
-    sofa::simpleapi::createObject(root, "EulerImplicitSolver");
+    sofa::simpleapi::createObject(root, "EulerImplicitIntegrationScheme");
     sofa::simpleapi::createObject(root, "SparseLDLSolver", {{"template", "CompressedRowSparseMatrixd"}});
     sofa::simpleapi::createObject(root, "PointSetTopologyContainer", {{"position", "0 0 0"}});
     sofa::simpleapi::createObject(root, "PointSetTopologyModifier");

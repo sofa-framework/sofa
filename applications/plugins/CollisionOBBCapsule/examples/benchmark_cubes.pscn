@@ -22,7 +22,7 @@
         <RequiredPlugin pluginName="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
         <RequiredPlugin pluginName="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
         <RequiredPlugin pluginName="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
-        <RequiredPlugin pluginName="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+        <RequiredPlugin pluginName="Sofa.Component.IntegrationScheme.Backward"/> <!-- Needed to use components [EulerImplicitIntegrationScheme] -->
         <RequiredPlugin pluginName="Sofa.GL.Component.Rendering2D"/> <!-- Needed to use components [OglLabel] -->
     </Node>
 
@@ -63,13 +63,13 @@
 
 <?php echo '        <Node name="Cube'.$i.'">';?>
 
-            <EulerImplicitSolver name="EulerImplicit"  rayleighStiffness="0.1" rayleighMass="0.1" />
+            <EulerImplicitIntegrationScheme name="EulerImplicit"  rayleighStiffness="0.1" rayleighMass="0.1" />
             <CGLinearSolver name="CG Solver" iterations="25" tolerance="1e-5" threshold="1e-5"/>
 
 <?php echo '            <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="'.$tx.' '.$ty.' '.$tz.'" />';?>
 
             <UniformMass name="UniformMass" totalMass="10.0" />
-            <UncoupledConstraintCorrection useOdeSolverIntegrationFactors="0"/>
+            <UncoupledConstraintCorrection useIntegrationSchemeIntegrationFactors="0"/>
             <Node name="Collision Model">
                 <MeshTopology name="Cube Mesh" filename="mesh/cube.obj" />
                 <MechanicalObject name="Collision_Cube" />

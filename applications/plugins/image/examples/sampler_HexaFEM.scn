@@ -5,7 +5,7 @@
       <RequiredPlugin pluginName="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
       <RequiredPlugin pluginName="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [BarycentricMapping] -->
       <RequiredPlugin pluginName="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
-      <RequiredPlugin pluginName="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+      <RequiredPlugin pluginName="Sofa.Component.IntegrationScheme.Backward"/> <!-- Needed to use components [EulerImplicitIntegrationScheme] -->
       <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [HexahedronFEMForceField] -->
       <RequiredPlugin pluginName="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
       <RequiredPlugin pluginName="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
@@ -22,7 +22,7 @@
   <ImageSampler template="ImageB" name="sampler" src="@image" param="1" showEdges="true" printLog="true"/>
 
   <Node name="simu"  >
-	  <EulerImplicitSolver rayleighMass="1" rayleighStiffness="0.03" />
+	  <EulerImplicitIntegrationScheme rayleighMass="1" rayleighStiffness="0.03" />
 	  <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
 	  <MeshTopology  src="@../sampler" />
 	  <MechanicalObject  />

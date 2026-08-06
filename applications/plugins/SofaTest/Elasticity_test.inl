@@ -25,7 +25,7 @@
 #include "Elasticity_test.h"
 
 // Solvers
-#include <sofa/component/odesolver/backward/EulerImplicitSolver.h>
+#include <sofa/component/odesolver/backward/EulerImplicitIntegrationScheme.h>
 #include <sofa/component/odesolver/backward/StaticSolver.h>
 #include <sofa/component/linearsolver/iterative/CGLinearSolver.h>
 
@@ -110,7 +110,7 @@ Elasticity_test<DataTypes>::createRegularGridScene(
     simulation::Node::SPtr SquareNode = root->createChild("Square");
 
     // Euler implicit solver and cglinear solver
-    component::odesolver::backward::EulerImplicitSolver::SPtr solver = modeling::addNew<component::odesolver::backward::EulerImplicitSolver>(SquareNode,"EulerImplicitSolver");
+    component::odesolver::backward::EulerImplicitIntegrationScheme::SPtr solver = modeling::addNew<component::odesolver::backward::EulerImplicitIntegrationScheme>(SquareNode,"EulerImplicitIntegrationScheme");
     solver->f_rayleighStiffness.setValue(0.5);
     solver->f_rayleighMass.setValue(0.5);
     CGLinearSolver::SPtr cgLinearSolver = modeling::addNew< CGLinearSolver >(SquareNode,"linearSolver");
@@ -278,8 +278,8 @@ simulation::Node::SPtr Elasticity_test<DT>::createGridScene(
 
     simulation::Node::SPtr simulatedScene = root->createChild("simulatedScene");
 
-    component::odesolver::backward::EulerImplicitSolver::SPtr eulerImplicitSolver = New<component::odesolver::backward::EulerImplicitSolver>();
-    simulatedScene->addObject( eulerImplicitSolver );
+    component::odesolver::backward::EulerImplicitIntegrationScheme::SPtr EulerImplicitIntegrationScheme = New<component::odesolver::backward::EulerImplicitIntegrationScheme>();
+    simulatedScene->addObject( EulerImplicitIntegrationScheme );
     CGLinearSolver::SPtr cgLinearSolver = New<CGLinearSolver>();
     simulatedScene->addObject(cgLinearSolver);
 
