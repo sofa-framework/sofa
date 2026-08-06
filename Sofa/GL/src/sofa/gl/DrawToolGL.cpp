@@ -979,6 +979,10 @@ void DrawToolGL::drawQuads(const std::vector<Vec3> &points, const type::RGBAColo
 
 void DrawToolGL::drawQuads(const std::vector<Vec3> &points, const std::vector<type::RGBAColor>& colors)
 {
+    glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+    glEnable(GL_COLOR_MATERIAL);
+    setMaterial(colors[0]);
+
     glBegin(GL_QUADS);
     {
         for (std::size_t i=0; i<points.size()/4; ++i)
@@ -993,17 +997,14 @@ void DrawToolGL::drawQuads(const std::vector<Vec3> &points, const std::vector<ty
             const type::RGBAColor& col_c = colors[ 4*i+2 ];
             const type::RGBAColor& col_d = colors[ 4*i+3 ];
 
-            type::RGBAColor average_color;
-            for(int jj=0; jj<4; jj++)
-            {
-                average_color[jj] = (col_a[jj]+col_b[jj]+col_c[jj]+col_d[jj])*0.25f;
-            }
-
             Vec3 n = cross((b-a),(c-a));
             n.normalize();
-            internalDrawQuad(a,b,c,d,n,average_color);
+            internalDrawQuad(a, b, c, d, n, col_a, col_b, col_c, col_d);
         }
     } glEnd();
+
+    glDisable(GL_COLOR_MATERIAL);
+    resetMaterial(colors[0]);
 }
 
 void DrawToolGL::drawTetrahedron(const Vec3 &p0, const Vec3 &p1, const Vec3 &p2, const Vec3 &p3, const type::RGBAColor &color)
