@@ -795,5 +795,14 @@ bool QuadSetTopologyContainer::unlinkTopologyHandlerToData(core::topology::Topol
         return EdgeSetTopologyContainer::unlinkTopologyHandlerToData(topologyHandler, elementType);
     }
 }
+const void* QuadSetTopologyContainer::getElementsRaw(
+    const sofa::geometry::ElementType& elementType) const noexcept
+{
+    if (elementType == sofa::geometry::ElementType::QUAD)
+    {
+        return &d_quad.getValue();
+    }
+    return EdgeSetTopologyContainer::getElementsRaw(elementType);
+}
 
 } //namespace sofa::component::topology::container::dynamic

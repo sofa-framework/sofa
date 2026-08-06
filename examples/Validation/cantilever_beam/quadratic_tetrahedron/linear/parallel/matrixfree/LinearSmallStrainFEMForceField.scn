@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<Node name="root" dt="0.001" gravity="0 -9.81 0">
+
+    <include href="../../../plugins.xml"/>
+
+    <DefaultAnimationLoop/>
+    <VisualStyle displayFlags="showBehaviorModels showForceFields" />
+
+    <VisualGrid size="0.1"/>
+    <LineAxis size="0.1"/>
+
+    <include href="../../../QuadraticTopology.xml"/>
+
+    <Node name="simulation">
+        <EulerImplicitSolver name="backward_Euler" rayleighStiffness="0.1" rayleighMass="0.1" />
+
+        <CGLinearSolver iterations="250" name="linear_solver" tolerance="1.0e-12" threshold="1.0e-12" />
+
+        <Node name="beam">
+            <MeshTopology name="topology"
+                          position="@../../preprocessing/tetrahedra/engine.position"
+                          quadratic_tetrahedra="@../../preprocessing/tetrahedra/engine.quadratic_tetrahedra"/>
+            <MechanicalObject template="Vec3" name="state" position="@../../preprocessing/tetrahedra/engine.position"/>
+
+            <VisualPointCloud position="@state.position" drawMode="Sphere" sphereRadius="0.0005" color="orange"/>
+            <VisualMesh position="@state.position" topology="@topology"/>
+
+            <NodalMassDensity property="1100"/>
+            <FEMMass template="Vec3,QuadraticTetrahedron"/>
+
+            <BoxROI template="Vec3" name="box_roi" box="-0.011 -0.011 -0.0001   0.011 0.011 0.0001" drawBoxes="1" />
+            <FixedProjectiveConstraint template="Vec3" indices="@box_roi.indices" />
+
+            <LinearSmallStrainFEMForceField name="FEM" template="Vec3,QuadraticTetrahedron"
+                                            youngModulus="2e6" poissonRatio="0.45" topology="@topology"
+                                            computeForceStrategy="parallel" computeForceDerivStrategy="parallel"/>
+        </Node>
+    </Node>
+
+</Node>

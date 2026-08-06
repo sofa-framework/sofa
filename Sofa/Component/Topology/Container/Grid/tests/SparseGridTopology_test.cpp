@@ -93,7 +93,7 @@ bool SparseGridTopology_test::buildFromMeshParams()
 
     //Pyramid centered on 0 0 0
     sparseGrid1->d_seqPoints.setValue({{0, 0, 1}, {-1, 0, -1}, {0, 1, -1}, {1, 0, -1}, {0, -1, -1} });
-    sparseGrid1->d_seqTriangles.setValue({{0, 1, 2}, {0, 2, 3}, {0, 3, 4}, {0, 4, 1}, {1, 2, 3}, {3, 4, 1} });
+    sparseGrid1->d_seqTriangles.toData().setValue({{0, 1, 2}, {0, 2, 3}, {0, 3, 4}, {0, 4, 1}, {1, 2, 3}, {3, 4, 1} });
     sparseGrid1->setN({ 10,10,10 });
     sparseGrid1->init();
 

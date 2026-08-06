@@ -102,6 +102,16 @@ void TetrahedronSetTopologyContainer::createTetrahedronSetArray()
     msg_error() << "createTetrahedronSetArray method must be implemented by a child topology.";
 }
 
+const void* TetrahedronSetTopologyContainer::getElementsRaw(
+    const sofa::geometry::ElementType& elementType) const noexcept
+{
+    if (elementType == sofa::geometry::ElementType::TETRAHEDRON)
+    {
+        return &d_tetrahedron.getValue();
+    }
+    return TriangleSetTopologyContainer::getElementsRaw(elementType);
+}
+
 void TetrahedronSetTopologyContainer::createEdgeSetArray()
 {
     if(!hasTetrahedra()) // this method should only be called when tetrahedra exist
