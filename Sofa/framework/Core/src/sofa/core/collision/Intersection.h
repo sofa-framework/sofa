@@ -134,14 +134,43 @@ protected:
     Intersection();
     ~Intersection() override;
 
+    virtual ElementIntersector* doFindIntersector(core::CollisionModel* object1, core::CollisionModel* object2, bool& swapModels) = 0;
+
+    virtual void doBeginBroadPhase()
+    {
+    }
+
+    virtual void doEndBroadPhase()
+    {
+    }
+
+    virtual void doBeginNarrowPhase()
+    {
+    }
+
+    virtual void doEndNarrowPhase()
+    {
+    }
+
 private:
     Intersection(const Intersection& n) = delete;
     Intersection& operator=(const Intersection& n) = delete;
 
 public:
+    /**
+     * !!! WARNING since v25.12 !!!
+     * 
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doEndNarrowPhase"
+     * internally, which is the method to override from now on.
+     * 
+     **/
     /// Return the intersector class handling the given pair of collision models, or nullptr if not supported.
     /// @param swapModels output value set to true if the collision models must be swapped before calling the intersector.
-    virtual ElementIntersector* findIntersector(core::CollisionModel* object1, core::CollisionModel* object2, bool& swapModels) = 0;
+    virtual ElementIntersector* findIntersector(core::CollisionModel* object1, core::CollisionModel* object2, bool& swapModels) final {
+      //TODO (SPRINT SED 2025): Component state mechanism
+      return this->doFindIntersector(object1, object2, swapModels);
+    }
 
     /// Test if intersection between 2 types of elements is supported, i.e. an intersection test is implemented for this combinaison of types.
     /// Note that this method is deprecated in favor of findIntersector
@@ -168,26 +197,66 @@ public:
     /// Set the contact distance (must return 0 if useProximity() is false)
     virtual void setContactDistance(SReal) { return; }
 
-
+    /**
+     * !!! WARNING since v25.12 !!!
+     * 
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doBeginBroadPhase"
+     * internally, which is the method to override from now on.
+     * 
+     **/
     /// Actions to accomplish when the broadPhase is started. By default do nothing.
-    virtual void beginBroadPhase()
+    virtual void beginBroadPhase() final
     {
+      //TODO (SPRINT SED 2025): Component state mechanism
+      this->doBeginBroadPhase();
     }
 
+    /**
+     * !!! WARNING since v25.12 !!!
+     * 
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doEndBroadPhase"
+     * internally, which is the method to override from now on.
+     * 
+     **/
     /// Actions to accomplish when the broadPhase is finished. By default do nothing.
-    virtual void endBroadPhase()
+    virtual void endBroadPhase() final
     {
+      //TODO (SPRINT SED 2025): Component state mechanism
+      this->doEndBroadPhase();
     }
 
+    /**
+     * !!! WARNING since v25.12 !!!
+     * 
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doBeginNarrowPhase"
+     * internally, which is the method to override from now on.
+     * 
+     **/
     /// Actions to accomplish when the narrow Phase is started. By default do nothing.
-    virtual void beginNarrowPhase()
+    virtual void beginNarrowPhase() final
     {
+      //TODO (SPRINT SED 2025): Component state mechanism
+      this->doBeginNarrowPhase();
     }
 
+    /**
+     * !!! WARNING since v25.12 !!!
+     * 
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doEndNarrowPhase"
+     * internally, which is the method to override from now on.
+     * 
+     **/
     /// Actions to accomplish when the narrow Phase is finished. By default do nothing.
-    virtual void endNarrowPhase()
+    virtual void endNarrowPhase() final
     {
+      //TODO (SPRINT SED 2025): Component state mechanism
+      this->doEndNarrowPhase();
     }
+
 
 
 };
