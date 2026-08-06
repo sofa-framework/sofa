@@ -100,49 +100,15 @@ public:
     /// Return the pointer to the output model.
     type::vector<BaseState*> getTo() override;
 
-    /// Apply ///
-    /// Apply the mapping to position vectors.
-    ///
-    /// If the Mapping can be represented as a matrix J, this method computes
-    /// $ out = J in $
-    void apply (const MechanicalParams* mparams, MultiVecCoordId outPos, ConstMultiVecCoordId inPos ) override;
 
     /// This method must be reimplemented by all mappings.
     virtual void apply( const MechanicalParams* mparams, OutDataVecCoord& out, const InDataVecCoord& in)= 0;
 
-    /// ApplyJ ///
-    /// Apply the mapping to derived (velocity, displacement) vectors.
-    /// $ out = J in $
-    /// where J is the tangent operator (the linear approximation) of the mapping
-    void applyJ(const MechanicalParams* mparams, MultiVecDerivId outVel, ConstMultiVecDerivId inVel ) override;
-
     /// This method must be reimplemented by all mappings.
     virtual void applyJ( const MechanicalParams* mparams, OutDataVecDeriv& out, const InDataVecDeriv& in) = 0;
 
-    /// ApplyJT (Force)///
-    /// Apply the reverse mapping to force vectors.
-    /// $ out += J^t in $
-    /// where J is the tangent operator (the linear approximation) of the mapping
-    void applyJT(const MechanicalParams* mparams, MultiVecDerivId inForce, ConstMultiVecDerivId outForce ) override;
-
     /// This method must be reimplemented by all mappings.
     virtual void applyJT( const MechanicalParams* mparams, InDataVecDeriv& out, const OutDataVecDeriv& in) = 0;
-
-    /// ApplyDJT (Force)///
-    /// Apply the change of force due to the nonlinearity of the mapping and the last propagated displacement. Also called geometric stiffness.
-    /// The default implementation does nothing, assuming a linear mapping.
-    ///
-    /// This method computes
-    /// \f$ f_p += dJ^t f_c \f$, where \f$ f_p \f$ is the parent force and  \f$ f_c \f$ is the child force.
-    /// where J is the tangent operator (the linear approximation) of the mapping
-    /// The child force is accessed in the child state using mparams->readF() .  This requires that the child force vector is used by the solver to compute the force \f$ f(x,v)\f$ corresponding to the current positions and velocities, and not to store auxiliary values.
-    /// The displacement is accessed in the parent state using mparams->readDx() .
-    /// This method generally corresponds to a symmetric stiffness matrix, but with rotations (which are not a commutative group) it is not the case.
-    /// Since some solvers (including the Conjugate Gradient) require symmetric matrices, a flag is set in the MechanicalParams to say if symmetric matrices are required. If so, non-symmetric geometric stiffness should not be applied.
-    void applyDJT(const MechanicalParams* /*mparams = */ , MultiVecDerivId /*parentForce*/, ConstMultiVecDerivId  /*childForce*/ ) override;
-
-    /// ApplyJT (Constraint)///
-    void applyJT(const ConstraintParams* cparams, MultiMatrixDerivId inConst, ConstMultiMatrixDerivId outConst ) override;
 
     /// This method must be reimplemented by all mappings if they need to support constraints.
     virtual void applyJT( const ConstraintParams* /* mparams */, InDataMatrixDeriv& /* out */, const OutDataMatrixDeriv& /* in */)
@@ -150,12 +116,6 @@ public:
         msg_error() << "This mapping does not support certain constraints because Mapping::applyJT( const ConstraintParams* , InDataMatrixDeriv&, const OutDataMatrixDeriv&) is not overloaded.";
     }
 
-    /// computeAccFromMapping
-    /// Compute the acceleration of the child, based on the acceleration and the velocity of the parent.
-    /// Let \f$ v_c = J v_p \f$ be the velocity of the child given the velocity of the parent, then the acceleration is \f$ a_c = J a_p + dJ v_p \f$.
-    /// The second term is null in linear mappings, otherwise it encodes the acceleration due to the change of mapping at constant parent velocity.
-    /// For instance, in a rigid mapping with angular velocity\f$ w \f$,  the second term is $ w^(w^rel_pos) $
-    void computeAccFromMapping(const MechanicalParams* mparams, MultiVecDerivId outAcc, ConstMultiVecDerivId inVel, ConstMultiVecDerivId inAcc ) override;
 
     /// This method must be reimplemented by all mappings if they need to support composite accelerations
     virtual void computeAccFromMapping(const MechanicalParams* /* mparams */, OutDataVecDeriv& /* accOut */, const InDataVecDeriv& /* vIn */, const InDataVecDeriv& /* accIn */)
@@ -173,15 +133,6 @@ public:
     /// Get the destination (lower, mapped) model.
     virtual type::vector<behavior::BaseMechanicalState*> getMechTo() override;
 
-    //Create a matrix for mapped mechanical objects
-    //If the two mechanical objects is identical, create a new stiffness matrix for this mapped objects
-    //If the two mechanical objects is different, create a new interaction matrix
-    sofa::linearalgebra::BaseMatrix* createMappedMatrix(const behavior::BaseMechanicalState* state1, const behavior::BaseMechanicalState* state2, func_createMappedMatrix) override;
-
-    /// Disable the mapping to get the original coordinates of the mapped model.
-    ///
-    /// It is for instance used in RigidMapping to get the local coordinates of the object.
-    void disable() override;
 
     /// Pre-construction check method called by ObjectFactory.
     ///
@@ -273,6 +224,61 @@ public:
         sofa::helper::replaceAll(name, "Mapping", "Map");
         return name;
     }
+
+
+protected:
+    /// Apply ///
+    /// Apply the mapping to position vectors.
+    ///
+    /// If the Mapping can be represented as a matrix J, this method computes
+    /// $ out = J in $
+    void doApply (const MechanicalParams* mparams, MultiVecCoordId outPos, ConstMultiVecCoordId inPos ) override;
+
+    /// ApplyJ ///
+    /// Apply the mapping to derived (velocity, displacement) vectors.
+    /// $ out = J in $
+    /// where J is the tangent operator (the linear approximation) of the mapping
+    void doApplyJ(const MechanicalParams* mparams, MultiVecDerivId outVel, ConstMultiVecDerivId inVel ) override;
+
+    /// ApplyJT (Force)///
+    /// Apply the reverse mapping to force vectors.
+    /// $ out += J^t in $
+    /// where J is the tangent operator (the linear approximation) of the mapping
+    void doApplyJT(const MechanicalParams* mparams, MultiVecDerivId inForce, ConstMultiVecDerivId outForce ) override;
+
+    /// ApplyDJT (Force)///
+    /// Apply the change of force due to the nonlinearity of the mapping and the last propagated displacement. Also called geometric stiffness.
+    /// The default implementation does nothing, assuming a linear mapping.
+    ///
+    /// This method computes
+    /// \f$ f_p += dJ^t f_c \f$, where \f$ f_p \f$ is the parent force and  \f$ f_c \f$ is the child force.
+    /// where J is the tangent operator (the linear approximation) of the mapping
+    /// The child force is accessed in the child state using mparams->readF() .  This requires that the child force vector is used by the solver to compute the force \f$ f(x,v)\f$ corresponding to the current positions and velocities, and not to store auxiliary values.
+    /// The displacement is accessed in the parent state using mparams->readDx() .
+    /// This method generally corresponds to a symmetric stiffness matrix, but with rotations (which are not a commutative group) it is not the case.
+    /// Since some solvers (including the Conjugate Gradient) require symmetric matrices, a flag is set in the MechanicalParams to say if symmetric matrices are required. If so, non-symmetric geometric stiffness should not be applied.
+    void doApplyDJT(const MechanicalParams* /*mparams = */ , MultiVecDerivId /*parentForce*/, ConstMultiVecDerivId  /*childForce*/ ) override;
+
+    /// ApplyJT (Constraint)///
+    void doApplyJT(const ConstraintParams* cparams, MultiMatrixDerivId inConst, ConstMultiMatrixDerivId outConst ) override;
+
+    /// computeAccFromMapping
+    /// Compute the acceleration of the child, based on the acceleration and the velocity of the parent.
+    /// Let \f$ v_c = J v_p \f$ be the velocity of the child given the velocity of the parent, then the acceleration is \f$ a_c = J a_p + dJ v_p \f$.
+    /// The second term is null in linear mappings, otherwise it encodes the acceleration due to the change of mapping at constant parent velocity.
+    /// For instance, in a rigid mapping with angular velocity\f$ w \f$,  the second term is $ w^(w^rel_pos) $
+    void doComputeAccFromMapping(const MechanicalParams* mparams, MultiVecDerivId outAcc, ConstMultiVecDerivId inVel, ConstMultiVecDerivId inAcc ) override;
+
+
+    //Create a matrix for mapped mechanical objects
+    //If the two mechanical objects is identical, create a new stiffness matrix for this mapped objects
+    //If the two mechanical objects is different, create a new interaction matrix
+    sofa::linearalgebra::BaseMatrix* doCreateMappedMatrix(const behavior::BaseMechanicalState* state1, const behavior::BaseMechanicalState* state2, func_createMappedMatrix) override;
+
+    /// Disable the mapping to get the original coordinates of the mapped model.
+    ///
+    /// It is for instance used in RigidMapping to get the local coordinates of the object.
+    void doDisable() override;
 
 };
 

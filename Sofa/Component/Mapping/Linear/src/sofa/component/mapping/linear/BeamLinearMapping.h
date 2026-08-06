@@ -105,9 +105,11 @@ public:
 
     void applyJT(const core::ConstraintParams *cparams, Data< typename In::MatrixDeriv >& out, const Data< typename Out::MatrixDeriv >& in) override;
 
-    const sofa::linearalgebra::BaseMatrix* getJ() override;
-
     void draw(const core::visual::VisualParams* vparams) override;
+
+protected:
+    const sofa::linearalgebra::BaseMatrix* doGetJ() override;
+
 };
 
 

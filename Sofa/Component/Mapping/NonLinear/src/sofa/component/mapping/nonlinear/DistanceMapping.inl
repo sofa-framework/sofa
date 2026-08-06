@@ -253,7 +253,7 @@ void DistanceMapping<TIn, TOut>::doUpdateK(
 }
 
 template <class TIn, class TOut>
-void DistanceMapping<TIn, TOut>::buildGeometricStiffnessMatrix(
+void DistanceMapping<TIn, TOut>::doBuildGeometricStiffnessMatrix(
     sofa::core::GeometricStiffnessMatrix* matrices)
 {
     const unsigned& geometricStiffness = this->d_geometricStiffness.getValue().getSelectedId();
