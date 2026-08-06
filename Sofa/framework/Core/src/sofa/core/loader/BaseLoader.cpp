@@ -51,7 +51,7 @@ void BaseLoader::parse(sofa::core::objectmodel::BaseObjectDescription *arg)
 }
 
 
-bool BaseLoader::canLoad()
+bool BaseLoader::doCanLoad()
 {
     std::string cmd;
 

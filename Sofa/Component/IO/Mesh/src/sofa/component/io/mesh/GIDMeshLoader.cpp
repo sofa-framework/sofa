@@ -46,7 +46,7 @@ GIDMeshLoader::~GIDMeshLoader()
 {
 }
 
-bool GIDMeshLoader::doLoad()
+bool GIDMeshLoader::doLoadMesh()
 {
     std::ifstream file(d_filename.getFullPath().c_str());
 
