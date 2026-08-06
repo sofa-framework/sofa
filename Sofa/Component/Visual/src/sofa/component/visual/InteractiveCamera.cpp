@@ -48,10 +48,6 @@ InteractiveCamera::~InteractiveCamera()
 {
 }
 
-void InteractiveCamera::internalUpdate()
-{
-}
-
 void InteractiveCamera::moveCamera(int x, int y)
 {
     Quat newQuat;
@@ -147,7 +143,7 @@ void InteractiveCamera::moveCamera(int x, int y)
 }
 
 
-void InteractiveCamera::manageEvent(core::objectmodel::Event* e)
+void InteractiveCamera::doManageEvent(core::objectmodel::Event* e)
 {
 
 
