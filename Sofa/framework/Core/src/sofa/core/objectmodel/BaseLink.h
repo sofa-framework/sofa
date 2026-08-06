@@ -175,6 +175,8 @@ public:
     /// Change the link's target at the provided index.
     bool set(Base* baseptr, size_t index=0) { return _doSet_(baseptr, index); }
 
+    bool remove(Base* baseptr) {return _doRemove_(baseptr); }
+
 protected:
     virtual bool _doSet_(Base* target, const size_t index=0) = 0;
     virtual Base* _doGetOwner_() const = 0 ;
@@ -183,6 +185,7 @@ protected:
     virtual bool _doAdd_(Base* target, const std::string&) = 0;
     virtual void _doClear_() = 0;
     virtual std::string _doGetLinkedPath_(const size_t=0) const = 0;
+    virtual bool _doRemove_(Base* target) = 0;
 
     unsigned int m_flags;
     std::string m_name;
