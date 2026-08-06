@@ -25,7 +25,12 @@
 
 namespace sofa::component::solidmechanics::fem::hyperelastic
 {
+    extern void registerHyperelasticityFEMForceField(sofa::core::ObjectFactory* factory);
+    extern void registerMooneyRivlinMaterial(sofa::core::ObjectFactory* factory);
+    extern void registerNeoHookeanMaterial(sofa::core::ObjectFactory* factory);
+    extern void registerOgdenMaterial(sofa::core::ObjectFactory* factory);
     extern void registerPlasticMaterial(sofa::core::ObjectFactory* factory);
+    extern void registerStVenantKirchhoffMaterial(sofa::core::ObjectFactory* factory);
     extern void registerStandardTetrahedralFEMForceField(sofa::core::ObjectFactory* factory);
     extern void registerTetrahedronHyperelasticityFEMForceField(sofa::core::ObjectFactory* factory);
 
@@ -53,7 +58,12 @@ const char* getModuleVersion()
 
 void registerObjects(sofa::core::ObjectFactory* factory)
 {
+    registerHyperelasticityFEMForceField(factory);
+    registerMooneyRivlinMaterial(factory);
+    registerNeoHookeanMaterial(factory);
+    registerOgdenMaterial(factory);
     registerPlasticMaterial(factory);
+    registerStVenantKirchhoffMaterial(factory);
     registerStandardTetrahedralFEMForceField(factory);
     registerTetrahedronHyperelasticityFEMForceField(factory);
 }
