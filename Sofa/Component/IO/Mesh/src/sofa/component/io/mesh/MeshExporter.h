@@ -79,7 +79,7 @@ public:
     void doInit() override ;
     void doReInit() override ;
 
-    bool write() override ;
+    bool doWrite() override ;
 
     bool writeMesh();
     bool writeMeshVTKXML();

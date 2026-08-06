@@ -84,7 +84,7 @@ void MeshExporter::doReInit()
     d_componentState.setValue(ComponentState::Valid) ;
 }
 
-bool MeshExporter::write()
+bool MeshExporter::doWrite()
 {
     if(d_componentState.getValue() != ComponentState::Valid)
         return false;

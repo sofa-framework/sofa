@@ -115,6 +115,10 @@ protected:
     PartialLinearMovementProjectiveConstraint();
     ~PartialLinearMovementProjectiveConstraint() override;
 
+    void doApplyConstraint(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
+    void doApplyConstraint(const core::MechanicalParams* mparams, linearalgebra::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
+    void doApplyConstraint(sofa::core::behavior::ZeroDirichletCondition* matrix) override;
+
 public:
     ///methods to add/remove some indices, keyTimes, keyMovement
     void clearIndices();
@@ -137,10 +141,6 @@ public:
     void projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData) override;
     void projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData) override;
     void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData) override;
-
-    void applyConstraint(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
-    void applyConstraint(const core::MechanicalParams* mparams, linearalgebra::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
-    void applyConstraint(sofa::core::behavior::ZeroDirichletCondition* matrix) override;
 
     void draw(const core::visual::VisualParams*) override;
 

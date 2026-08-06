@@ -66,7 +66,7 @@ public:
     void doReInit() override ;
     void handleEvent(Event *) override ;
 
-    bool write() override ;
+    bool doWrite() override ;
 
     bool writeSTL(bool autonumbering=true);
     bool writeSTLBinary(bool autonumbering=true);
