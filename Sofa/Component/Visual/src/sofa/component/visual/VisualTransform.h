@@ -42,13 +42,14 @@ public:
 protected:
     VisualTransform();
     ~VisualTransform() override;
+    void doDrawVisual(const sofa::core::visual::VisualParams* vparams) override;
+    void doDrawTransparent(const sofa::core::visual::VisualParams* vparams) override;
+    void doFwdDraw(sofa::core::visual::VisualParams* vparams) override;
+    void doBwdDraw(sofa::core::visual::VisualParams* vparams) override;
+
 public:
-    void fwdDraw(sofa::core::visual::VisualParams* vparams) override;
-    void bwdDraw(sofa::core::visual::VisualParams* vparams) override;
 
     void draw(const sofa::core::visual::VisualParams* vparams) override;
-    void doDrawVisual(const sofa::core::visual::VisualParams* vparams) override;
-    void drawTransparent(const sofa::core::visual::VisualParams* vparams) override;
 
     Data<Coord> d_transform; ///< Transformation to apply
     Data<bool> d_recursive; ///< True to apply transform to all nodes below
