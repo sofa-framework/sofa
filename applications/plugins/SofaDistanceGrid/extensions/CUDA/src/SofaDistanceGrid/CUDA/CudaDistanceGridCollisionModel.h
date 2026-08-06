@@ -475,6 +475,11 @@ protected:
     void updateGrid();
 
     void drawCollisionModel(const core::visual::VisualParams*) override;
+    // -- CollisionModel interface
+    void doResize(Size size) override;
+
+    /// Create or update the bounding volume hierarchy.
+    void doComputeBoundingTree(int maxDepth=0) override;
 
 public:
     // Input data parameters
@@ -545,13 +550,6 @@ public:
 
     /// Set new grid and transform, keeping the old state to estimate velocity
     void setNewState(double dt, CudaDistanceGrid* grid, const Matrix3& rotation, const Vec3& translation);
-
-    // -- CollisionModel interface
-
-    void resize(Size size) override;
-
-    /// Create or update the bounding volume hierarchy.
-    void computeBoundingTree(int maxDepth=0) override;
 
     void draw(const core::visual::VisualParams*, Index index) override;
 };

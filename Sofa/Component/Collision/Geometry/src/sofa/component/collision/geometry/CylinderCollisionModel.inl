@@ -55,9 +55,9 @@ CylinderCollisionModel<DataTypes>::CylinderCollisionModel(core::behavior::Mechan
 }
 
 template<class DataTypes>
-void CylinderCollisionModel<DataTypes>::resize(sofa::Size size)
+void CylinderCollisionModel<DataTypes>::doResize(sofa::Size size)
 {
-    this->core::CollisionModel::resize(size);
+    this->core::CollisionModel::doResize(size);
 
     VecReal & Cylinder_radii = *d_cylinder_radii.beginEdit();
     VecReal & Cylinder_heights = *d_cylinder_heights.beginEdit();
@@ -115,7 +115,7 @@ void CylinderCollisionModel<DataTypes>::init()
 
 
 template<class DataTypes>
-void CylinderCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
+void CylinderCollisionModel<DataTypes>::doComputeBoundingTree(int maxDepth)
 {
     using namespace sofa::type;
     using namespace sofa::defaulttype;
@@ -125,6 +125,7 @@ void CylinderCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
     bool updated = false;
     if (ncyl != size)
     {
+        // TODO (SPRINT SED 2025 SUGGESTION): maybe we should use doResize (because of double state check)
         resize(ncyl);
         updated = true;
         cubeModel->resize(0);
