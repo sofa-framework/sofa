@@ -209,7 +209,12 @@ void Hexa2TetraTopologicalMapping::init()
     this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
 
-void Hexa2TetraTopologicalMapping::updateTopologicalMappingTopDown()
+Index Hexa2TetraTopologicalMapping::doGetFromIndex(Index /*ind*/)
+{
+    return sofa::InvalidID;
+}
+
+void Hexa2TetraTopologicalMapping::doUpdateTopologicalMappingTopDown()
 {
     msg_warning() << "Method Hexa2TetraTopologicalMapping::updateTopologicalMappingTopDown() not "
                      "yet implemented!";

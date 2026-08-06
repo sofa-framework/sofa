@@ -347,12 +347,12 @@ void SubsetTopologicalMapping::init()
     }
 }
 
-Index SubsetTopologicalMapping::getFromIndex(Index ind)
+Index SubsetTopologicalMapping::doGetFromIndex(Index ind)
 {
     return ind;
 }
 
-Index SubsetTopologicalMapping::getGlobIndex(Index ind)
+Index SubsetTopologicalMapping::doGetGlobIndex(Index ind)
 {
     if (d_handleHexahedra.getValue())
     {
@@ -387,7 +387,7 @@ Index SubsetTopologicalMapping::getGlobIndex(Index ind)
     return ind;
 }
 
-void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
+void SubsetTopologicalMapping::doUpdateTopologicalMappingTopDown()
 {
     using namespace container::dynamic;
 
