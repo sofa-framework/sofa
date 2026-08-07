@@ -25,7 +25,7 @@
 
     <Node name="BeamPrecomputed">
         <Visual3DText text="PrecomputedConstraintCorrection" position="0 3 6" scale="0.4" color="0.3 0.7 1 1" />
-        <EulerImplicitSolver rayleighStiffness="0.01" rayleighMass="0.01" linearSolver="@linearSolver"/>
+        <EulerImplicitSolver name="odeSolver" rayleighStiffness="0.01" rayleighMass="0.01" linearSolver="@linearSolver"/>
 
         <MatrixLinearSystem name="precondSystem" template="CompressedRowSparseMatrixd"/>
         <SSORPreconditioner name="precond" linearSystem="@precondSystem"/>
@@ -41,7 +41,7 @@
         <BoxROI name="boxFixed" box="-0.1 -0.1 4.9  0.1 2.1 7.1" drawBoxes="true" />
         <FixedProjectiveConstraint indices="@boxFixed.indices" />
 
-        <PrecomputedConstraintCorrection recompute="true" printLog="true"/>
+        <PrecomputedConstraintCorrection recompute="true" printLog="true" ODESolver="@odeSolver" linearSolver="@linearSolver"/>
     </Node>
 
 </Node>
