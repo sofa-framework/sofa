@@ -1,0 +1,47 @@
+<?xml version="1.0" ?>
+<Node name="root" dt="0.001" gravity="0 -10 0">
+    <Node name="RequiredPlugins">
+        <RequiredPlugin pluginName="Sofa.Component.AnimationLoop"/>
+        <RequiredPlugin pluginName="Sofa.Component.Constraint.Lagrangian.Correction"/>
+        <RequiredPlugin pluginName="Sofa.Component.Constraint.Lagrangian.Solver"/>
+        <RequiredPlugin pluginName="Sofa.Component.Constraint.Projective"/>
+        <RequiredPlugin pluginName="Sofa.Component.Engine.Select"/>
+        <RequiredPlugin pluginName="Sofa.Component.LinearSolver.Iterative"/>
+        <RequiredPlugin pluginName="Sofa.Component.Mass"/>
+        <RequiredPlugin pluginName="Sofa.Component.MechanicalLoad"/>
+        <RequiredPlugin pluginName="Sofa.Component.ODESolver.Backward"/>
+        <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.FEM.Elastic"/>
+        <RequiredPlugin pluginName="Sofa.Component.StateContainer"/>
+        <RequiredPlugin pluginName="Sofa.Component.Topology.Container.Grid"/>
+        <RequiredPlugin pluginName="Sofa.Component.Visual"/>
+        <RequiredPlugin pluginName="Sofa.Component.LinearSolver.Preconditioner"/>
+        <RequiredPlugin pluginName="Sofa.Component.LinearSystem"/>
+    </Node>
+
+    <VisualStyle displayFlags="showBehaviorModels showForceFields showVisualModels" />
+
+    <FreeMotionAnimationLoop />
+    <BlockGaussSeidelConstraintSolver tolerance="1e-6" maxIterations="1000" />
+
+    <Node name="BeamPrecomputed">
+        <Visual3DText text="PrecomputedConstraintCorrection" position="0 3 6" scale="0.4" color="0.3 0.7 1 1" />
+        <EulerImplicitSolver rayleighStiffness="0.01" rayleighMass="0.01" linearSolver="@linearSolver"/>
+
+        <MatrixLinearSystem name="precondSystem" template="CompressedRowSparseMatrixd"/>
+        <SSORPreconditioner name="precond" linearSystem="@precondSystem"/>
+
+        <PreconditionedMatrixFreeSystem name="solverSystem" preconditionerSystem="@precondSystem"/>
+        <PCGLinearSolver name="linearSolver" iterations="200" tolerance="1e-6" linearSystem="@solverSystem" preconditioner="@precond"/>
+
+        <RegularGridTopology name="grid" n="10 3 3" min="0 0 5" max="10 2 7" />
+        <MechanicalObject name="dofs" />
+        <MeshMatrixMass massDensity="1" />
+        <HexahedronFEMForceField name="FEM" youngModulus="1e4" poissonRatio="0.45" method="large" />
+
+        <BoxROI name="boxFixed" box="-0.1 -0.1 4.9  0.1 2.1 7.1" drawBoxes="true" />
+        <FixedProjectiveConstraint indices="@boxFixed.indices" />
+
+        <PrecomputedConstraintCorrection recompute="true" printLog="true"/>
+    </Node>
+
+</Node>
