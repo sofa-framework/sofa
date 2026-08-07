@@ -73,6 +73,8 @@ PrecomputedConstraintCorrection<DataTypes>::PrecomputedConstraintCorrection(sofa
     , d_debugViewFrameScale(initData(&d_debugViewFrameScale, 1.0_sreal, "debugViewFrameScale", "Scale on computed node's frame"))
     , d_fileCompliance(initData(&d_fileCompliance, "fileCompliance", "Precomputed compliance matrix data file"))
     , d_fileDir(initData(&d_fileDir, "fileDir", "If not empty, the compliance will be saved in this repertory"))
+    , l_odeSolver(initLink("ODESolver", "Link towards the ODE solver used during the compliance precomputation. If unset, the first OdeSolver in the current context is used."))
+    , l_linearSolver(initLink("linearSolver", "Link towards the linear solver used during the compliance precomputation. If unset, the first LinearSolver in the current context is used."))
     , invM(nullptr)
     , appCompliance(nullptr)
     , nbRows(0), nbCols(0), dof_on_node(0), nbNodes(0)
@@ -290,17 +292,17 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
         static constexpr sofa::type::Vec3 gravity_zero(0_sreal, 0_sreal, 0_sreal);
         this->getContext()->setGravity(gravity_zero);
 
-        sofa::component::odesolver::backward::EulerImplicitSolver* eulerSolver;
-        core::behavior::LinearSolver* linearSolver;
+        // If a solver link was not set explicitly, fall back to the first one found in the context.
+        if (l_odeSolver.empty())
+            l_odeSolver.set(this->getContext()->template get<sofa::core::behavior::OdeSolver>(sofa::core::objectmodel::BaseContext::Local));
+        if (l_linearSolver.empty())
+            l_linearSolver.set(this->getContext()->template get<core::behavior::LinearSolver>(sofa::core::objectmodel::BaseContext::Local));
 
-        this->getContext()->get(eulerSolver);
-        this->getContext()->get(linearSolver);
-
-        if (eulerSolver && linearSolver)
+        if (l_odeSolver && l_linearSolver)
         {
             msg_info() << "use EulerImplicitSolver & LinearSolver";
         }
-        else if (eulerSolver)
+        else if (l_odeSolver)
         {
             msg_info() << "use EulerImplicitSolver";
         }
@@ -312,9 +314,9 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 
         // Tighten the linear solver accuracy so the compliance is computed as accurately as
         // possible during precomputation and restore the original values afterwards.
-        core::objectmodel::BaseData* toleranceData  = linearSolver ? linearSolver->findData("tolerance")  : nullptr;
-        core::objectmodel::BaseData* iterationsData = linearSolver ? linearSolver->findData("iterations") : nullptr;
-        core::objectmodel::BaseData* thresholdData  = linearSolver ? linearSolver->findData("threshold")  : nullptr;
+        core::objectmodel::BaseData* toleranceData  = l_linearSolver ? l_linearSolver->findData("tolerance")  : nullptr;
+        core::objectmodel::BaseData* iterationsData = l_linearSolver ? l_linearSolver->findData("iterations") : nullptr;
+        core::objectmodel::BaseData* thresholdData  = l_linearSolver ? l_linearSolver->findData("threshold")  : nullptr;
 
         std::string buf_tolerance, buf_iterations, buf_threshold;
 
@@ -322,21 +324,21 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
         {
             buf_tolerance = toleranceData->getValueString();
             toleranceData->read("1e-20");
-            msg_info() << "Precomputation: temporarily setting '" << linearSolver->getName()
+            msg_info() << "Precomputation: temporarily setting '" << l_linearSolver->getName()
                        << "' tolerance from " << buf_tolerance << " to 1e-20";
         }
         if (iterationsData)
         {
             buf_iterations = iterationsData->getValueString();
             iterationsData->read("5000");
-            msg_info() << "Precomputation: temporarily setting '" << linearSolver->getName()
+            msg_info() << "Precomputation: temporarily setting '" << l_linearSolver->getName()
                        << "' iterations from " << buf_iterations << " to 5000";
         }
         if (thresholdData)
         {
             buf_threshold = thresholdData->getValueString();
             thresholdData->read("1e-35");
-            msg_info() << "Precomputation: temporarily setting '" << linearSolver->getName()
+            msg_info() << "Precomputation: temporarily setting '" << l_linearSolver->getName()
                        << "' threshold from " << buf_threshold << " to 1e-35";
         }
 
@@ -355,9 +357,9 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 
         /// christian : it seems necessary to called the integration one time for initialization
         /// (avoid to have a line of 0 at the top of the matrix)
-        if (eulerSolver)
+        if (l_odeSolver)
         {
-            eulerSolver->solve(core::execparams::defaultInstance(), dt, core::vec_id::write_access::position, core::vec_id::write_access::velocity);
+            l_odeSolver->solve(core::execparams::defaultInstance(), dt, core::vec_id::write_access::position, core::vec_id::write_access::velocity);
         }
 
         Deriv unitary_force;
@@ -379,7 +381,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
                 velocity.clear();
                 velocity.resize(nbNodes);
 
-                // Actualize ref to the position vector ; it seems it is changed at every eulerSolver->solve()
+                // Actualize ref to the position vector ; it seems it is changed at every l_odeSolver->solve()
                 helper::WriteOnlyAccessor< Data< VecCoord > > wposData = *this->mstate->write(core::vec_id::write_access::position);
                 VecCoord& pos = wposData.wref();
 
@@ -388,11 +390,11 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 
                 SReal fact = 1.0_sreal / dt; // christian : it is not a compliance... but an admittance that is computed !
 
-                if (eulerSolver)
+                if (l_odeSolver)
                 {
-                    fact *= eulerSolver->getPositionIntegrationFactor(); // here, we compute a compliance
+                    fact *= l_odeSolver->getPositionIntegrationFactor(); // here, we compute a compliance
 
-                    eulerSolver->solve(core::execparams::defaultInstance(), dt, core::vec_id::write_access::position, core::vec_id::write_access::velocity);
+                    l_odeSolver->solve(core::execparams::defaultInstance(), dt, core::vec_id::write_access::position, core::vec_id::write_access::velocity);
                 }
 
                 for (unsigned int v = 0; v < nbNodes; v++)
