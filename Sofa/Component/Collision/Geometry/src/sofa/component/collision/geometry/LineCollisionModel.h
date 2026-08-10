@@ -167,7 +167,6 @@ public:
 
 protected:
     core::behavior::MechanicalState<DataTypes>* mstate;
-    Topology* topology;
     PointCollisionModel<sofa::defaulttype::Vec3Types>* mpoints;
     int meshRevision;
 };

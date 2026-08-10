@@ -41,7 +41,7 @@ LineCollisionModel<DataTypes>::LineCollisionModel()
     , d_bothSide(initData(&d_bothSide, false, "bothSide", "activate collision on both side of the line model (when surface normals are defined on these lines)") )
     , d_displayFreePosition(initData(&d_displayFreePosition, false, "displayFreePosition", "Display Collision Model Points free position(in green)") )
     , l_topology(initLink("topology", "link to the topology container"))
-    , mstate(nullptr), topology(nullptr), meshRevision(-1)
+    , mstate(nullptr), meshRevision(-1)
 {
     enum_type = LINE_TYPE;
 }
@@ -542,15 +542,15 @@ template<class DataTypes>
 int LineCollisionModel<DataTypes>::getLineFlags(sofa::Index i)
 {
     int f = 0;
-    if (topology)
+    if (l_topology)
     {
         sofa::core::topology::BaseMeshTopology::Edge e(elems[i].p[0], elems[i].p[1]);
         i = getElemEdgeIndex(i);
-        if (i < topology->getNbEdges())
+        if (i < l_topology->getNbEdges())
         {
             for (sofa::Index j=0; j<2; ++j)
             {
-                const auto& eav = topology->getEdgesAroundVertex(e[j]);
+                const auto& eav = l_topology->getEdgesAroundVertex(e[j]);
                 if (eav[0] == (sofa::core::topology::BaseMeshTopology::EdgeID)i)
                     f |= (FLAG_P1 << j);
                 if (eav.size() == 1)
