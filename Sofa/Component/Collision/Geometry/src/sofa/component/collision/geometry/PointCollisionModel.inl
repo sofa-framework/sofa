@@ -38,7 +38,6 @@ PointCollisionModel<DataTypes>::PointCollisionModel()
     , d_computeNormals(initData(&d_computeNormals, false, "computeNormals", "activate computation of normal vectors (required for some collision detection algorithms)") )
     , d_displayFreePosition(initData(&d_displayFreePosition, false, "displayFreePosition", "Display Collision Model Points free position(in green)") )
     , l_topology(initLink("topology", "link to the topology container"))
-    , m_mstate(nullptr)
 {
     enum_type = POINT_TYPE;
 }
@@ -52,14 +51,10 @@ void PointCollisionModel<DataTypes>::resize(sofa::Size size)
 template<class DataTypes>
 void PointCollisionModel<DataTypes>::init()
 {
-    this->CollisionModel::init();
-    m_mstate = dynamic_cast< core::behavior::MechanicalState<DataTypes>* > (getContext()->getMechanicalState());
+    Inherit2::init();
 
-    if (m_mstate==nullptr)
-    {
-        msg_error() << "PointModel requires a Vec3 Mechanical Model";
+    if (this->d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid)
         return;
-    }
 
     if (l_topology.empty())
     {
@@ -67,7 +62,7 @@ void PointCollisionModel<DataTypes>::init()
         l_topology.set(this->getContext()->getMeshTopologyLink());
     }
 
-    const int npoints = m_mstate->getSize();
+    const int npoints = this->mstate->getSize();
     resize(npoints);
     if (d_computeNormals.getValue()) updateNormals();
 }
@@ -114,7 +109,7 @@ template<class DataTypes>
 void PointCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
 {
     CubeCollisionModel* cubeModel = createPrevious<CubeCollisionModel>();
-    const auto npoints = m_mstate->getSize();
+    const auto npoints = this->mstate->getSize();
     bool updated = false;
     if (npoints != size)
     {
@@ -129,7 +124,7 @@ void PointCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
     cubeModel->resize(size);
     if (!empty())
     {
-        //VecCoord& x =m_mstate->read(core::vec_id::read_access::position)->getValue();
+        //VecCoord& x =this->mstate->read(core::vec_id::read_access::position)->getValue();
         const SReal distance = this->d_contactDistance.getValue();
         for (sofa::Size i=0; i<size; i++)
         {
@@ -145,7 +140,7 @@ template<class DataTypes>
 void PointCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, ContinuousIntersectionTypeFlag continuousIntersectionFlag , int maxDepth)
 {
     CubeCollisionModel* cubeModel = createPrevious<CubeCollisionModel>();
-    const auto npoints = m_mstate->getSize();
+    const auto npoints = this->mstate->getSize();
     bool updated = false;
     if (npoints != size)
     {
@@ -161,8 +156,8 @@ void PointCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, Con
     cubeModel->resize(size);
     if (!empty())
     {
-        //VecCoord& x =m_mstate->read(core::vec_id::read_access::position)->getValue();
-        //VecDeriv& v = m_mstate->read(core::vec_id::read_access::velocity)->getValue();
+        //VecCoord& x =this->mstate->read(core::vec_id::read_access::position)->getValue();
+        //VecDeriv& v = this->mstate->read(core::vec_id::read_access::velocity)->getValue();
         const SReal distance = (SReal)this->d_contactDistance.getValue();
         for (sofa::Size i=0; i<size; i++)
         {
@@ -189,7 +184,7 @@ void PointCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, Con
 template<class DataTypes>
 void PointCollisionModel<DataTypes>::updateNormals()
 {
-    const VecCoord& x = this->m_mstate->read(core::vec_id::read_access::position)->getValue();
+    const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
     auto n = x.size();
     m_normals.resize(n);
     for (sofa::Index i=0; i<n; ++i)
@@ -298,7 +293,7 @@ void PointCollisionModel<DataTypes>::computeBBox(const core::ExecParams* params,
     if( onlyVisible && !sofa::core::visual::VisualParams::defaultInstance()->displayFlags().getShowCollisionModels())
         return;
 
-    const auto npoints = m_mstate->getSize();
+    const auto npoints = this->mstate->getSize();
     if (npoints != size)
         return;
 
@@ -333,7 +328,7 @@ void PointCollisionModel<DataTypes>::drawCollisionModel(const core::visual::Visu
     }
 
     // Check topological modifications
-    const auto npoints = m_mstate->getSize();
+    const auto npoints = this->mstate->getSize();
     if (npoints != size) return;
 
     std::vector<type::Vec3> pointsP;

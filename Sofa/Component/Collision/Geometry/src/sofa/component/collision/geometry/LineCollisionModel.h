@@ -23,6 +23,7 @@
 #include <sofa/component/collision/geometry/config.h>
 #include <sofa/core/fwd.h>
 #include <sofa/core/CollisionModel.h>
+#include <sofa/core/behavior/SingleStateAccessor.h>
 #include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/collision/Intersection.h>
@@ -73,10 +74,10 @@ public:
 using Line = TLine<sofa::defaulttype::Vec3Types>;
 
 template<class TDataTypes>
-class LineCollisionModel : public core::CollisionModel
+class LineCollisionModel : public core::CollisionModel, public virtual core::behavior::SingleStateAccessor<TDataTypes>
 {
 public :
-    SOFA_CLASS(SOFA_TEMPLATE(LineCollisionModel, TDataTypes), core::CollisionModel);
+    SOFA_CLASS2(SOFA_TEMPLATE(LineCollisionModel, TDataTypes), core::CollisionModel, SOFA_TEMPLATE(core::behavior::SingleStateAccessor, TDataTypes));
 
     enum LineFlag
     {
@@ -130,7 +131,7 @@ public:
 
     bool canCollideWithElement(sofa::Index index, CollisionModel* model2, sofa::Index index2) override;
 
-    core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return mstate; }
+    core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return this->getMState(); }
 
     Deriv velocity(sofa::Index index)const;
 
@@ -166,7 +167,6 @@ public:
     void computeBBox(const core::ExecParams* params, bool onlyVisible) override;
 
 protected:
-    core::behavior::MechanicalState<DataTypes>* mstate;
     PointCollisionModel<sofa::defaulttype::Vec3Types>* mpoints;
     int meshRevision;
 };

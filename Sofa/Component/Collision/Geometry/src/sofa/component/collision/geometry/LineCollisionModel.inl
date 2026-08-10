@@ -41,7 +41,7 @@ LineCollisionModel<DataTypes>::LineCollisionModel()
     , d_bothSide(initData(&d_bothSide, false, "bothSide", "activate collision on both side of the line model (when surface normals are defined on these lines)") )
     , d_displayFreePosition(initData(&d_displayFreePosition, false, "displayFreePosition", "Display Collision Model Points free position(in green)") )
     , l_topology(initLink("topology", "link to the topology container"))
-    , mstate(nullptr), meshRevision(-1)
+    , meshRevision(-1)
 {
     enum_type = LINE_TYPE;
 }
@@ -57,15 +57,11 @@ void LineCollisionModel<DataTypes>::resize(sofa::Size size)
 template<class DataTypes>
 void LineCollisionModel<DataTypes>::init()
 {
-    this->CollisionModel::init();
-    mstate = dynamic_cast< core::behavior::MechanicalState<DataTypes>* > (getContext()->getMechanicalState());
+    Inherit2::init();
     this->getContext()->get(mpoints);
 
-    if (mstate==nullptr)
-    {
-        msg_error() << "LineModel requires a Vec3 Mechanical Model";
+    if (this->d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid)
         return;
-    }
 
     if (l_topology.empty())
     {
@@ -279,7 +275,7 @@ void LineCollisionModel<DataTypes>::updateFromTopology()
 
         needsUpdate = true;
 
-        const sofa::Size nbPoints = mstate->getSize();
+        const sofa::Size nbPoints = this->mstate->getSize();
         const sofa::Size nbLines = l_topology->getNbEdges();
 
         resize( nbLines );
@@ -588,21 +584,21 @@ template<class DataTypes>
 inline sofa::Index TLine<DataTypes>::i2() const { return this->model->elems[this->index].p[1]; }
 
 template<class DataTypes>
-inline const typename DataTypes::Coord& TLine<DataTypes>::p1() const { return this->model->mstate->read(core::vec_id::read_access::position)->getValue()[this->model->elems[this->index].p[0]]; }
+inline const typename DataTypes::Coord& TLine<DataTypes>::p1() const { return this->model->getMState()->read(core::vec_id::read_access::position)->getValue()[this->model->elems[this->index].p[0]]; }
 
 template<class DataTypes>
-inline const typename DataTypes::Coord& TLine<DataTypes>::p2() const { return this->model->mstate->read(core::vec_id::read_access::position)->getValue()[this->model->elems[this->index].p[1]]; }
+inline const typename DataTypes::Coord& TLine<DataTypes>::p2() const { return this->model->getMState()->read(core::vec_id::read_access::position)->getValue()[this->model->elems[this->index].p[1]]; }
 
 template<class DataTypes>
 inline const typename DataTypes::Coord& TLine<DataTypes>::p(Index i) const {
-    return this->model->mstate->read(core::vec_id::read_access::position)->getValue()[this->model->elems[this->index].p[i]];
+    return this->model->getMState()->read(core::vec_id::read_access::position)->getValue()[this->model->elems[this->index].p[i]];
 }
 
 template<class DataTypes>
 inline const typename DataTypes::Coord& TLine<DataTypes>::p1Free() const
 {
     if (hasFreePosition())
-        return this->model->mstate->read(core::vec_id::read_access::freePosition)->getValue()[this->model->elems[this->index].p[0]];
+        return this->model->getMState()->read(core::vec_id::read_access::freePosition)->getValue()[this->model->elems[this->index].p[0]];
     else
         return p1();
 }
@@ -611,28 +607,28 @@ template<class DataTypes>
 inline const typename DataTypes::Coord& TLine<DataTypes>::p2Free() const
 {
     if (hasFreePosition())
-        return this->model->mstate->read(core::vec_id::read_access::freePosition)->getValue()[this->model->elems[this->index].p[1]];
+        return this->model->getMState()->read(core::vec_id::read_access::freePosition)->getValue()[this->model->elems[this->index].p[1]];
     else
         return p2();
 }
 
 template<class DataTypes>
-inline const typename DataTypes::Deriv& TLine<DataTypes>::v1() const { return this->model->mstate->read(core::vec_id::read_access::velocity)->getValue()[this->model->elems[this->index].p[0]]; }
+inline const typename DataTypes::Deriv& TLine<DataTypes>::v1() const { return this->model->getMState()->read(core::vec_id::read_access::velocity)->getValue()[this->model->elems[this->index].p[0]]; }
 
 template<class DataTypes>
-inline const typename DataTypes::Deriv& TLine<DataTypes>::v2() const { return this->model->mstate->read(core::vec_id::read_access::velocity)->getValue()[this->model->elems[this->index].p[1]]; }
+inline const typename DataTypes::Deriv& TLine<DataTypes>::v2() const { return this->model->getMState()->read(core::vec_id::read_access::velocity)->getValue()[this->model->elems[this->index].p[1]]; }
 
 template<class DataTypes>
 inline typename DataTypes::Deriv TLine<DataTypes>::n() const {return (this->model->mpoints->getNormal(this->i1()) + this->model->mpoints->getNormal( this->i2())).normalized();}
 
 template<class DataTypes>
-inline typename LineCollisionModel<DataTypes>::Deriv LineCollisionModel<DataTypes>::velocity(sofa::Index index) const { return (mstate->read(core::vec_id::read_access::velocity)->getValue()[elems[index].p[0]] + mstate->read(core::vec_id::read_access::velocity)->getValue()[elems[index].p[1]])/((Real)(2.0)); }
+inline typename LineCollisionModel<DataTypes>::Deriv LineCollisionModel<DataTypes>::velocity(sofa::Index index) const { return (this->mstate->read(core::vec_id::read_access::velocity)->getValue()[elems[index].p[0]] + this->mstate->read(core::vec_id::read_access::velocity)->getValue()[elems[index].p[1]])/((Real)(2.0)); }
 
 template<class DataTypes>
 inline int TLine<DataTypes>::flags() const { return this->model->getLineFlags(this->index); }
 
 template<class DataTypes>
-inline bool TLine<DataTypes>::hasFreePosition() const { return this->model->mstate->read(core::vec_id::read_access::freePosition)->isSet(); }
+inline bool TLine<DataTypes>::hasFreePosition() const { return this->model->getMState()->read(core::vec_id::read_access::freePosition)->isSet(); }
 
 
 } //namespace sofa::component::collision::geometry

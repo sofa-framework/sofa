@@ -23,6 +23,7 @@
 #include <sofa/component/collision/geometry/config.h>
 #include <sofa/core/fwd.h>
 #include <sofa/core/CollisionModel.h>
+#include <sofa/core/behavior/SingleStateAccessor.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <set>
 
@@ -52,10 +53,10 @@ public:
     void setL(SReal newL);
 };
 
-class SOFA_COMPONENT_COLLISION_GEOMETRY_API RayCollisionModel : public core::CollisionModel
+class SOFA_COMPONENT_COLLISION_GEOMETRY_API RayCollisionModel : public core::CollisionModel, public virtual core::behavior::SingleStateAccessor<defaulttype::Vec3Types>
 {
 public:
-    SOFA_CLASS(RayCollisionModel, core::CollisionModel);
+    SOFA_CLASS2(RayCollisionModel, core::CollisionModel, SOFA_TEMPLATE(core::behavior::SingleStateAccessor, defaulttype::Vec3Types));
 
     typedef sofa::defaulttype::Vec3Types InDataTypes;
     typedef sofa::defaulttype::Vec3Types DataTypes;
@@ -73,7 +74,7 @@ public:
 
     void draw(const core::visual::VisualParams*, sofa::Index index) override;
 
-    core::behavior::MechanicalState<defaulttype::Vec3Types>* getMechanicalState() { return mstate; }
+    core::behavior::MechanicalState<defaulttype::Vec3Types>* getMechanicalState() { return getMState(); }
     // ----------------------------
     int addRay(const type::Vec3& origin, const type::Vec3& direction, SReal length);
     Ray getRay(int index) { return Ray(this, index); }
@@ -95,7 +96,6 @@ protected:
     sofa::type::vector<type::Vec3> direction;
 
     std::set<response::contact::BaseRayContact*> contacts;
-    core::behavior::MechanicalState<defaulttype::Vec3Types>* mstate;
 
 };
 
