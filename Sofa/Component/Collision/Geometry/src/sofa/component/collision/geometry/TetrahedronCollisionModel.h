@@ -100,8 +100,6 @@ protected:
 
     int m_topologyRevision; ///< internal revision number to check if topology has changed.
 
-protected:
-
     TetrahedronCollisionModel();
 
     virtual void updateFromTopology();

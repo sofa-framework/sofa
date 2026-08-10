@@ -139,6 +139,10 @@ public:
     int getLineFlags(sofa::Index i);
 
     Data<bool> d_bothSide; ///< activate collision on both side of the line model (when surface normals are defined on these lines)
+    Data<bool> d_displayFreePosition; ///< Display Collision Model Points free position(in green)
+
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<LineCollisionModel<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
@@ -160,11 +164,6 @@ public:
     }
 
     void computeBBox(const core::ExecParams* params, bool onlyVisible) override;
-
-    Data<bool> d_displayFreePosition; ///< Display Collision Model Points free position(in green)
-
-    /// Link to be set to the topology container in the component graph.
-    SingleLink<LineCollisionModel<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
 protected:
     core::behavior::MechanicalState<DataTypes>* mstate;

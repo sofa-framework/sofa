@@ -88,11 +88,11 @@ public:
 
     virtual const std::set<response::contact::BaseRayContact*> &getContacts() const { return contacts;}
 
+    Data<SReal> d_defaultLength; ///< The default length for all rays in this collision model
+
 protected:
     sofa::type::vector<SReal> length;
     sofa::type::vector<type::Vec3> direction;
-
-    Data<SReal> d_defaultLength; ///< The default length for all rays in this collision model
 
     std::set<response::contact::BaseRayContact*> contacts;
     core::behavior::MechanicalState<defaulttype::Vec3Types>* mstate;

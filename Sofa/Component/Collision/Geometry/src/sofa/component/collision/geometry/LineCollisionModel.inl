@@ -37,7 +37,8 @@ using core::topology::BaseMeshTopology;
 
 template<class DataTypes>
 LineCollisionModel<DataTypes>::LineCollisionModel()
-    : d_bothSide(initData(&d_bothSide, false, "bothSide", "activate collision on both side of the line model (when surface normals are defined on these lines)") )
+    : needsUpdate(true)
+    , d_bothSide(initData(&d_bothSide, false, "bothSide", "activate collision on both side of the line model (when surface normals are defined on these lines)") )
     , d_displayFreePosition(initData(&d_displayFreePosition, false, "displayFreePosition", "Display Collision Model Points free position(in green)") )
     , l_topology(initLink("topology", "link to the topology container"))
     , mstate(nullptr), topology(nullptr), meshRevision(-1)

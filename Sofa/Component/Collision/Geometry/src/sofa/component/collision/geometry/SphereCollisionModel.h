@@ -166,12 +166,13 @@ public:
     Data< SReal > d_defaultRadius; ///< Default radius
     Data< bool > d_showImpostors; ///< Draw spheres as impostors instead of "real" spheres
 
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<SphereCollisionModel<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
     void computeBBox(const core::ExecParams* params, bool onlyVisible=false) override;
 
 protected:
     core::behavior::MechanicalState<DataTypes>* mstate;
-    SingleLink<SphereCollisionModel<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 };
 
 template<class DataTypes>
