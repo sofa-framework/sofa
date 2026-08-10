@@ -86,11 +86,10 @@ bool PointCollisionModel<DataTypes>::canCollideWithElement(sofa::Index index, Co
         if (index<=index2) // to avoid to have two times the same auto-collision we only consider the case when index > index2
             return false;
 
-        sofa::core::topology::BaseMeshTopology* topology = l_topology.get();
 
         // in the neighborhood, if we find a point in common, we cancel the collision
-        const auto& verticesAroundVertex1 =topology->getVerticesAroundVertex(index);
-        const auto& verticesAroundVertex2 =topology->getVerticesAroundVertex(index2);
+        const auto& verticesAroundVertex1 = l_topology->getVerticesAroundVertex(index);
+        const auto& verticesAroundVertex2 = l_topology->getVerticesAroundVertex(index2);
 
         for (sofa::Index i1=0; i1<verticesAroundVertex1.size(); i1++)
         {
@@ -197,12 +196,14 @@ void PointCollisionModel<DataTypes>::updateNormals()
     {
         m_normals[i].clear();
     }
-    core::topology::BaseMeshTopology* mesh = l_topology.get();
-    if (mesh->getNbTetrahedra()+mesh->getNbHexahedra() > 0)
+    if (!l_topology)
+        return;
+
+    if (l_topology->getNbTetrahedra()+l_topology->getNbHexahedra() > 0)
     {
-        if (mesh->getNbTetrahedra()>0)
+        if (l_topology->getNbTetrahedra()>0)
         {
-            const core::topology::BaseMeshTopology::SeqTetrahedra &elems = mesh->getTetrahedra();
+            const core::topology::BaseMeshTopology::SeqTetrahedra &elems = l_topology->getTetrahedra();
             for (sofa::Index i=0; i < elems.size(); ++i)
             {
                 const core::topology::BaseMeshTopology::Tetra &e = elems[i];
@@ -235,11 +236,11 @@ void PointCollisionModel<DataTypes>::updateNormals()
         }
         /// @todo Hexahedra
     }
-    else if (mesh->getNbTriangles()+mesh->getNbQuads() > 0)
+    else if (l_topology->getNbTriangles()+l_topology->getNbQuads() > 0)
     {
-        if (mesh->getNbTriangles()>0)
+        if (l_topology->getNbTriangles()>0)
         {
-            const core::topology::BaseMeshTopology::SeqTriangles &elems = mesh->getTriangles();
+            const core::topology::BaseMeshTopology::SeqTriangles &elems = l_topology->getTriangles();
             for (sofa::Index i=0; i < elems.size(); ++i)
             {
                 const core::topology::BaseMeshTopology::Triangle &e = elems[i];
@@ -256,9 +257,9 @@ void PointCollisionModel<DataTypes>::updateNormals()
                 n3 += n;
             }
         }
-        if (mesh->getNbQuads()>0)
+        if (l_topology->getNbQuads()>0)
         {
-            const core::topology::BaseMeshTopology::SeqQuads &elems = mesh->getQuads();
+            const core::topology::BaseMeshTopology::SeqQuads &elems = l_topology->getQuads();
             for (sofa::Index i=0; i < elems.size(); ++i)
             {
                 const core::topology::BaseMeshTopology::Quad &e = elems[i];

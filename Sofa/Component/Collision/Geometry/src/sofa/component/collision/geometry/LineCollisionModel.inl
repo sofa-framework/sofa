@@ -73,21 +73,20 @@ void LineCollisionModel<DataTypes>::init()
         l_topology.set(this->getContext()->getMeshTopologyLink());
     }
 
-    core::topology::BaseMeshTopology *bmt = l_topology.get();
     msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
 
-    if (!bmt)
+    if (!l_topology)
     {
         msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name << ". LineCollisionModel<sofa::defaulttype::Vec3Types> requires a MeshTopology";
         this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
-    resize( bmt->getNbEdges() );
+    resize( l_topology->getNbEdges() );
 
-    for(core::topology::BaseMeshTopology::EdgeID i = 0; i < bmt->getNbEdges(); i++)
+    for(core::topology::BaseMeshTopology::EdgeID i = 0; i < l_topology->getNbEdges(); i++)
     {
-        elems[i].p[0] = bmt->getEdge(i)[0];
-        elems[i].p[1] = bmt->getEdge(i)[1];
+        elems[i].p[0] = l_topology->getEdge(i)[0];
+        elems[i].p[1] = l_topology->getEdge(i)[1];
     }
 
     updateFromTopology();
@@ -96,23 +95,22 @@ void LineCollisionModel<DataTypes>::init()
 template<class DataTypes>
 void LineCollisionModel<DataTypes>::handleTopologyChange()
 {
-    core::topology::BaseMeshTopology *bmt = l_topology.get();
-    if (bmt)
+    if (l_topology)
     {
-        resize(bmt->getNbEdges());
+        resize(l_topology->getNbEdges());
 
-        for(sofa::Size i = 0; i < bmt->getNbEdges(); i++)
+        for(sofa::Size i = 0; i < l_topology->getNbEdges(); i++)
         {
-            elems[i].p[0] = bmt->getEdge(i)[0];
-            elems[i].p[1] = bmt->getEdge(i)[1];
+            elems[i].p[0] = l_topology->getEdge(i)[0];
+            elems[i].p[1] = l_topology->getEdge(i)[1];
         }
 
         needsUpdate = true;
     }
-    if (bmt)
+    if (l_topology)
     {
-        std::list<const sofa::core::topology::TopologyChange *>::const_iterator itBegin = bmt->beginChange();
-        const std::list<const sofa::core::topology::TopologyChange *>::const_iterator itEnd = bmt->endChange();
+        std::list<const sofa::core::topology::TopologyChange *>::const_iterator itBegin = l_topology->beginChange();
+        const std::list<const sofa::core::topology::TopologyChange *>::const_iterator itEnd = l_topology->endChange();
 
         while( itBegin != itEnd )
         {
@@ -150,9 +148,9 @@ void LineCollisionModel<DataTypes>::handleTopologyChange()
                 sofa::Index last;
                 sofa::Index ind_last;
 
-                if (bmt)
+                if (l_topology)
                 {
-                    last = bmt->getNbEdges() - 1;
+                    last = l_topology->getNbEdges() - 1;
                 }
                 else
                 {
@@ -189,9 +187,9 @@ void LineCollisionModel<DataTypes>::handleTopologyChange()
 
             case core::topology::POINTSREMOVED :
             {
-                if (bmt)
+                if (l_topology)
                 {
-                    sofa::Index last = bmt->getNbPoints() - 1;
+                    sofa::Index last = l_topology->getNbPoints() - 1;
 
                     sofa::Index i,j;
                     const auto& tab = ( static_cast< const core::topology::PointsRemoved * >( *itBegin ) )->getArray();
@@ -217,7 +215,7 @@ void LineCollisionModel<DataTypes>::handleTopologyChange()
                             lastIndexVec[i_next] = lastIndexVec[i];
                         }
 
-                        const auto &shell = bmt->getEdgesAroundVertex(lastIndexVec[i]);
+                        const auto &shell = l_topology->getEdgesAroundVertex(lastIndexVec[i]);
 
                         for (j = 0; j < shell.size(); ++j)
                         {
@@ -244,7 +242,7 @@ void LineCollisionModel<DataTypes>::handleTopologyChange()
 
             case core::topology::POINTSRENUMBERING:
             {
-                if (bmt)
+                if (l_topology)
                 {
                     sofa::Index i;
 
@@ -273,24 +271,23 @@ void LineCollisionModel<DataTypes>::handleTopologyChange()
 template<class DataTypes>
 void LineCollisionModel<DataTypes>::updateFromTopology()
 {
-    core::topology::BaseMeshTopology *bmt = l_topology.get();
-    if (bmt)
+    if (l_topology)
     {
-        const int revision = bmt->getRevision();
+        const int revision = l_topology->getRevision();
         if (revision == meshRevision)
             return;
 
         needsUpdate = true;
 
         const sofa::Size nbPoints = mstate->getSize();
-        const sofa::Size nbLines = bmt->getNbEdges();
+        const sofa::Size nbLines = l_topology->getNbEdges();
 
         resize( nbLines );
         sofa::Index index = 0;
 
         for (sofa::Size i = 0; i < nbLines; i++)
         {
-            core::topology::BaseMeshTopology::Line idx = bmt->getEdge(i);
+            core::topology::BaseMeshTopology::Line idx = l_topology->getEdge(i);
 
             if (idx[0] >= nbPoints || idx[1] >= nbPoints)
             {
@@ -359,7 +356,6 @@ bool LineCollisionModel<DataTypes>::canCollideWithElement(sofa::Index index, Col
 {
     if (!this->bSelfCollision.getValue()) return true;
     if (this->getContext() != model2->getContext()) return true;
-    core::topology::BaseMeshTopology *topology = l_topology.get();
     /*
         TODO : separate 2 case: the model is only composed of lines or is composed of triangles
     */
@@ -367,13 +363,13 @@ bool LineCollisionModel<DataTypes>::canCollideWithElement(sofa::Index index, Col
     sofa::Index p12 = elems[index].p[1];
 
 
-    if (!topology)
+    if (!l_topology)
     {
         msg_error() << "no topology found";
         return true;
     }
-    const auto& EdgesAroundVertex11 =topology->getEdgesAroundVertex(p11);
-    const auto& EdgesAroundVertex12 =topology->getEdgesAroundVertex(p12);
+    const auto& EdgesAroundVertex11 = l_topology->getEdgesAroundVertex(p11);
+    const auto& EdgesAroundVertex12 = l_topology->getEdgesAroundVertex(p12);
 
     if (model2 == this)
     {
@@ -386,8 +382,8 @@ bool LineCollisionModel<DataTypes>::canCollideWithElement(sofa::Index index, Col
 
 
         // in the neighborhood, if we find a segment in common, we cancel the collision
-        const auto& EdgesAroundVertex21 =topology->getEdgesAroundVertex(p21);
-        const auto& EdgesAroundVertex22 =topology->getEdgesAroundVertex(p22);
+        const auto& EdgesAroundVertex21 = l_topology->getEdgesAroundVertex(p21);
+        const auto& EdgesAroundVertex22 = l_topology->getEdgesAroundVertex(p22);
 
         for (sofa::Size i1=0; i1<EdgesAroundVertex11.size(); i1++)
         {
