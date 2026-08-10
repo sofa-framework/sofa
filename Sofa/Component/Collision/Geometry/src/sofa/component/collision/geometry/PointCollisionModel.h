@@ -99,7 +99,7 @@ public:
 
     core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return this->mstate; }
 
-    Deriv getNormal(sofa::Index index){ return (m_normals.size()) ? m_normals[index] : Deriv();}
+    Deriv getNormal(sofa::Index index){ return (normals.size()) ? normals[index] : Deriv();}
 
     const Deriv& velocity(sofa::Index index) const;
 
@@ -135,7 +135,7 @@ public:
 
 protected:
 
-    VecDeriv m_normals;
+    VecDeriv normals;
 };
 
 
@@ -172,7 +172,7 @@ template<class DataTypes>
 inline const typename DataTypes::Deriv& PointCollisionModel<DataTypes>::velocity(sofa::Index index) const { return this->mstate->read(core::vec_id::read_access::velocity)->getValue()[index]; }
 
 template<class DataTypes>
-inline typename DataTypes::Deriv TPoint<DataTypes>::n() const { return ((unsigned)this->index<this->model->m_normals.size()) ? this->model->m_normals[this->index] : Deriv(); }
+inline typename DataTypes::Deriv TPoint<DataTypes>::n() const { return ((unsigned)this->index<this->model->normals.size()) ? this->model->normals[this->index] : Deriv(); }
 
 template<class DataTypes>
 inline bool TPoint<DataTypes>::hasFreePosition() const { return this->model->mstate->read(core::vec_id::read_access::freePosition)->isSet(); }

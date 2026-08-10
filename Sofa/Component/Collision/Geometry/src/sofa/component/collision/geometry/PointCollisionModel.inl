@@ -186,10 +186,10 @@ void PointCollisionModel<DataTypes>::updateNormals()
 {
     const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
     auto n = x.size();
-    m_normals.resize(n);
+    normals.resize(n);
     for (sofa::Index i=0; i<n; ++i)
     {
-        m_normals[i].clear();
+        normals[i].clear();
     }
     if (!l_topology)
         return;
@@ -206,10 +206,10 @@ void PointCollisionModel<DataTypes>::updateNormals()
                 const Coord& p2 = x[e[1]];
                 const Coord& p3 = x[e[2]];
                 const Coord& p4 = x[e[3]];
-                Coord& n1 = m_normals[e[0]];
-                Coord& n2 = m_normals[e[1]];
-                Coord& n3 = m_normals[e[2]];
-                Coord& n4 = m_normals[e[3]];
+                Coord& n1 = normals[e[0]];
+                Coord& n2 = normals[e[1]];
+                Coord& n3 = normals[e[2]];
+                Coord& n4 = normals[e[3]];
                 Coord n;
                 n = cross(p3-p1,p2-p1); n.normalize();
                 n1 += n;
@@ -242,9 +242,9 @@ void PointCollisionModel<DataTypes>::updateNormals()
                 const Coord& p1 = x[e[0]];
                 const Coord& p2 = x[e[1]];
                 const Coord& p3 = x[e[2]];
-                Coord& n1 = m_normals[e[0]];
-                Coord& n2 = m_normals[e[1]];
-                Coord& n3 = m_normals[e[2]];
+                Coord& n1 = normals[e[0]];
+                Coord& n2 = normals[e[1]];
+                Coord& n3 = normals[e[2]];
                 Coord n;
                 n = cross(p2-p1,p3-p1); n.normalize();
                 n1 += n;
@@ -262,10 +262,10 @@ void PointCollisionModel<DataTypes>::updateNormals()
                 const Coord& p2 = x[e[1]];
                 const Coord& p3 = x[e[2]];
                 const Coord& p4 = x[e[3]];
-                Coord& n1 = m_normals[e[0]];
-                Coord& n2 = m_normals[e[1]];
-                Coord& n3 = m_normals[e[2]];
-                Coord& n4 = m_normals[e[3]];
+                Coord& n1 = normals[e[0]];
+                Coord& n2 = normals[e[1]];
+                Coord& n3 = normals[e[2]];
+                Coord& n4 = normals[e[3]];
                 Coord n;
                 n = cross(p3-p1,p4-p2); n.normalize();
                 n1 += n;
@@ -277,11 +277,11 @@ void PointCollisionModel<DataTypes>::updateNormals()
     }
     for (sofa::Index i=0; i<n; ++i)
     {
-        const SReal l = m_normals[i].norm();
+        const SReal l = normals[i].norm();
         if (l > 1.0e-3)
-            m_normals[i] *= 1/l;
+            normals[i] *= 1/l;
         else
-            m_normals[i].clear();
+            normals[i].clear();
     }
 }
 
@@ -339,10 +339,10 @@ void PointCollisionModel<DataTypes>::drawCollisionModel(const core::visual::Visu
         if (p.isActive())
         {
             pointsP.push_back(p.p());
-            if (i < sofa::Size(m_normals.size()))
+            if (i < sofa::Size(normals.size()))
             {
                 pointsL.push_back(p.p());
-                pointsL.push_back(p.p() + m_normals[i] * 0.1f);
+                pointsL.push_back(p.p() + normals[i] * 0.1f);
             }
         }
     }
