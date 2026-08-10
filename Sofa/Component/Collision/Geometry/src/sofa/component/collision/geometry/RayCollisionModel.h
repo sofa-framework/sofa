@@ -74,7 +74,7 @@ public:
 
     void draw(const core::visual::VisualParams*, sofa::Index index) override;
 
-    core::behavior::MechanicalState<defaulttype::Vec3Types>* getMechanicalState() { return getMState(); }
+    core::behavior::MechanicalState<defaulttype::Vec3Types>* getMechanicalState() { return mstate; }
     // ----------------------------
     int addRay(const type::Vec3& origin, const type::Vec3& direction, SReal length);
     Ray getRay(int index) { return Ray(this, index); }

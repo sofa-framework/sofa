@@ -131,7 +131,7 @@ public:
 
     bool canCollideWithElement(sofa::Index index, CollisionModel* model2, sofa::Index index2) override;
 
-    core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return this->getMState(); }
+    core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return this->mstate; }
 
     Deriv velocity(sofa::Index index)const;
 

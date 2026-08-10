@@ -97,7 +97,7 @@ public:
 
     bool canCollideWithElement(sofa::Index index, CollisionModel* model2, sofa::Index index2) override;
 
-    core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return this->getMState(); }
+    core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return this->mstate; }
 
     Deriv getNormal(sofa::Index index){ return (m_normals.size()) ? m_normals[index] : Deriv();}
 
@@ -154,19 +154,19 @@ inline TPoint<DataTypes>::TPoint(const core::CollisionElementIterator& i)
 }
 
 template<class DataTypes>
-inline const typename DataTypes::Coord& TPoint<DataTypes>::p() const { return this->model->getMState()->read(core::vec_id::read_access::position)->getValue()[this->index]; }
+inline const typename DataTypes::Coord& TPoint<DataTypes>::p() const { return this->model->mstate->read(core::vec_id::read_access::position)->getValue()[this->index]; }
 
 template<class DataTypes>
 inline const typename DataTypes::Coord& TPoint<DataTypes>::pFree() const
 {
     if (hasFreePosition())
-        return this->model->getMState()->read(core::vec_id::read_access::freePosition)->getValue()[this->index];
+        return this->model->mstate->read(core::vec_id::read_access::freePosition)->getValue()[this->index];
     else
         return p();
 }
 
 template<class DataTypes>
-inline const typename DataTypes::Deriv& TPoint<DataTypes>::v() const { return this->model->getMState()->read(core::vec_id::read_access::velocity)->getValue()[this->index]; }
+inline const typename DataTypes::Deriv& TPoint<DataTypes>::v() const { return this->model->mstate->read(core::vec_id::read_access::velocity)->getValue()[this->index]; }
 
 template<class DataTypes>
 inline const typename DataTypes::Deriv& PointCollisionModel<DataTypes>::velocity(sofa::Index index) const { return this->mstate->read(core::vec_id::read_access::velocity)->getValue()[index]; }
@@ -175,7 +175,7 @@ template<class DataTypes>
 inline typename DataTypes::Deriv TPoint<DataTypes>::n() const { return ((unsigned)this->index<this->model->m_normals.size()) ? this->model->m_normals[this->index] : Deriv(); }
 
 template<class DataTypes>
-inline bool TPoint<DataTypes>::hasFreePosition() const { return this->model->getMState()->read(core::vec_id::read_access::freePosition)->isSet(); }
+inline bool TPoint<DataTypes>::hasFreePosition() const { return this->model->mstate->read(core::vec_id::read_access::freePosition)->isSet(); }
 
 #if !defined(SOFA_COMPONENT_COLLISION_POINTCOLLISIONMODEL_CPP)
 extern template class SOFA_COMPONENT_COLLISION_GEOMETRY_API PointCollisionModel<defaulttype::Vec3Types>;

@@ -184,8 +184,8 @@ public:
 
     bool canCollideWithElement(sofa::Index index, CollisionModel* model2, sofa::Index index2) override;
 
-    core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return this->getMState(); }
-    const core::behavior::MechanicalState<DataTypes>* getMechanicalState() const { return this->getMState(); }
+    core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return this->mstate; }
+    const core::behavior::MechanicalState<DataTypes>* getMechanicalState() const { return this->mstate; }
 
     const VecCoord& getX() const { return(getMechanicalState()->read(core::vec_id::read_access::position)->getValue()); }
     const sofa::core::topology::BaseMeshTopology::SeqTriangles& getTriangles() const { return *m_triangles; }

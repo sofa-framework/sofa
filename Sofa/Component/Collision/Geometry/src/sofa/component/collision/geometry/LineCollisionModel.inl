@@ -584,21 +584,21 @@ template<class DataTypes>
 inline sofa::Index TLine<DataTypes>::i2() const { return this->model->elems[this->index].p[1]; }
 
 template<class DataTypes>
-inline const typename DataTypes::Coord& TLine<DataTypes>::p1() const { return this->model->getMState()->read(core::vec_id::read_access::position)->getValue()[this->model->elems[this->index].p[0]]; }
+inline const typename DataTypes::Coord& TLine<DataTypes>::p1() const { return this->model->mstate->read(core::vec_id::read_access::position)->getValue()[this->model->elems[this->index].p[0]]; }
 
 template<class DataTypes>
-inline const typename DataTypes::Coord& TLine<DataTypes>::p2() const { return this->model->getMState()->read(core::vec_id::read_access::position)->getValue()[this->model->elems[this->index].p[1]]; }
+inline const typename DataTypes::Coord& TLine<DataTypes>::p2() const { return this->model->mstate->read(core::vec_id::read_access::position)->getValue()[this->model->elems[this->index].p[1]]; }
 
 template<class DataTypes>
 inline const typename DataTypes::Coord& TLine<DataTypes>::p(Index i) const {
-    return this->model->getMState()->read(core::vec_id::read_access::position)->getValue()[this->model->elems[this->index].p[i]];
+    return this->model->mstate->read(core::vec_id::read_access::position)->getValue()[this->model->elems[this->index].p[i]];
 }
 
 template<class DataTypes>
 inline const typename DataTypes::Coord& TLine<DataTypes>::p1Free() const
 {
     if (hasFreePosition())
-        return this->model->getMState()->read(core::vec_id::read_access::freePosition)->getValue()[this->model->elems[this->index].p[0]];
+        return this->model->mstate->read(core::vec_id::read_access::freePosition)->getValue()[this->model->elems[this->index].p[0]];
     else
         return p1();
 }
@@ -607,16 +607,16 @@ template<class DataTypes>
 inline const typename DataTypes::Coord& TLine<DataTypes>::p2Free() const
 {
     if (hasFreePosition())
-        return this->model->getMState()->read(core::vec_id::read_access::freePosition)->getValue()[this->model->elems[this->index].p[1]];
+        return this->model->mstate->read(core::vec_id::read_access::freePosition)->getValue()[this->model->elems[this->index].p[1]];
     else
         return p2();
 }
 
 template<class DataTypes>
-inline const typename DataTypes::Deriv& TLine<DataTypes>::v1() const { return this->model->getMState()->read(core::vec_id::read_access::velocity)->getValue()[this->model->elems[this->index].p[0]]; }
+inline const typename DataTypes::Deriv& TLine<DataTypes>::v1() const { return this->model->mstate->read(core::vec_id::read_access::velocity)->getValue()[this->model->elems[this->index].p[0]]; }
 
 template<class DataTypes>
-inline const typename DataTypes::Deriv& TLine<DataTypes>::v2() const { return this->model->getMState()->read(core::vec_id::read_access::velocity)->getValue()[this->model->elems[this->index].p[1]]; }
+inline const typename DataTypes::Deriv& TLine<DataTypes>::v2() const { return this->model->mstate->read(core::vec_id::read_access::velocity)->getValue()[this->model->elems[this->index].p[1]]; }
 
 template<class DataTypes>
 inline typename DataTypes::Deriv TLine<DataTypes>::n() const {return (this->model->mpoints->getNormal(this->i1()) + this->model->mpoints->getNormal( this->i2())).normalized();}
@@ -628,7 +628,7 @@ template<class DataTypes>
 inline int TLine<DataTypes>::flags() const { return this->model->getLineFlags(this->index); }
 
 template<class DataTypes>
-inline bool TLine<DataTypes>::hasFreePosition() const { return this->model->getMState()->read(core::vec_id::read_access::freePosition)->isSet(); }
+inline bool TLine<DataTypes>::hasFreePosition() const { return this->model->mstate->read(core::vec_id::read_access::freePosition)->isSet(); }
 
 
 } //namespace sofa::component::collision::geometry
