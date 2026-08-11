@@ -69,7 +69,7 @@ struct FiniteElement<sofa::geometry::Quad, DataTypes>
         };
     }
 
-    template <int Degree = 2>
+    template <sofa::Size Degree = 2>
     static constexpr auto quadraturePoints()
     {
         if constexpr (Degree <= 1)
@@ -115,7 +115,7 @@ struct FiniteElement<sofa::geometry::Quad, DataTypes>
     }
 
     // Quadrature rule selector by degree; view of the compile-time table.
-    static std::span<const QuadraturePointAndWeight> quadratureRule(int degree)
+    static std::span<const QuadraturePointAndWeight> quadratureRule(sofa::Size degree)
     {
         switch (degree)
         {
