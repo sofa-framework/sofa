@@ -132,7 +132,7 @@ void Hexa2TetraTopologicalMapping::init()
                 //    /                            /
                 //   /                            /
                 //  Z                            Z
-                for (const auto [v0, v1] : sofa::geometry::Hexahedron::xEdges)
+                for (const auto& [v0, v1] : sofa::geometry::Hexahedron::xEdges)
                 {
                     std::swap(c[v0], c[v1]);
                 }
@@ -154,7 +154,7 @@ void Hexa2TetraTopologicalMapping::init()
                 //    /                            /
                 //   /                            /
                 //  Z                            Z
-                for (const auto [v0, v1] : sofa::geometry::Hexahedron::yEdges)
+                for (const auto& [v0, v1] : sofa::geometry::Hexahedron::yEdges)
                 {
                     std::swap(c[v0], c[v1]);
                 }
@@ -176,7 +176,7 @@ void Hexa2TetraTopologicalMapping::init()
                 //    /                            /
                 //   /                            /
                 //  Z                            Z
-                for (const auto [v0, v1] : sofa::geometry::Hexahedron::zEdges)
+                for (const auto& [v0, v1] : sofa::geometry::Hexahedron::zEdges)
                 {
                     std::swap(c[v0], c[v1]);
                 }

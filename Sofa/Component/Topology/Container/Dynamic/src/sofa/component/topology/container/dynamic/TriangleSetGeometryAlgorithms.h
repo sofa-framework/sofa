@@ -128,6 +128,21 @@ public:
     */
     sofa::type::Vec<3, Real> computeTriangleBarycentricCoordinates(const TriangleID ind_t, const sofa::type::Vec<3, Real>& p, bool useRestPosition = false) const;
 
+    /** \brief Compute the barycentric coordinates of input point @param p inside the triangle formed by the three
+    * points given by their indices, using either current position or restPosition depending on @param useRestPosition value.
+    * @param p position of the point to compute the coefficients
+    * @param ind_p1 Index of the first vertex of the triangle
+    * @param ind_p2 Index of the second vertex of the triangle
+    * @param ind_p3 Index of the third vertex of the triangle
+    * @param useRestPosition bool false to use position, true to use rest_position
+    * @return the 3 barycentric coordinates inside a sofa::type::Vec<3, Real>
+    */
+    sofa::type::Vec<3, Real> compute3PointsBarycentricCoordinates(const sofa::type::Vec<3, Real>& p,
+        PointID ind_p1,
+        PointID ind_p2,
+        PointID ind_p3,
+        bool useRestPosition = false) const;
+
 
     /** \brief Finds the two closest points from two triangles (each of the point belonging to one triangle)
      *
