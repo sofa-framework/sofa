@@ -47,6 +47,8 @@ void LinearSmallStrainFEMForceField<DataTypes, ElementType>::computeElementsForc
     sofa::type::vector<ElementGradient>& elementForces,
     const sofa::VecCoord_t<DataTypes>& nodePositions)
 {
+    SOFA_UNUSED(mparams);
+
     const auto& elements = trait::FiniteElement::getElementSequence(*this->l_topology);
     auto restPositionAccessor = this->mstate->readRestPositions();
     auto elementStiffness = sofa::helper::getReadAccessor(this->d_elementStiffness);
@@ -78,6 +80,8 @@ void LinearSmallStrainFEMForceField<DataTypes, ElementType>::computeElementsForc
     sofa::type::vector<ElementGradient>& elementForcesDeriv,
     const sofa::VecDeriv_t<DataTypes>& nodeDx)
 {
+    SOFA_UNUSED(mparams);
+
     const auto& elements = trait::FiniteElement::getElementSequence(*this->l_topology);
     auto elementStiffness = sofa::helper::getReadAccessor(this->d_elementStiffness);
 
@@ -145,6 +149,8 @@ SReal LinearSmallStrainFEMForceField<DataTypes, ElementType>::getPotentialEnergy
     const sofa::core::MechanicalParams*,
     const sofa::DataVecCoord_t<DataTypes>& x) const
 {
+    SOFA_UNUSED(x);
+
     return 0;
 }
 

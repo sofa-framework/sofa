@@ -22,6 +22,7 @@
 
 #include <sofa/component/io/mesh/STLExporter.h>
 
+#include <cstring>
 #include <fstream>
 
 #include <sofa/core/ObjectFactory.h>
@@ -260,7 +261,8 @@ bool STLExporter::writeSTLBinary(bool autonumbering)
     {
         buffer[i]='\0';
     }
-    strncpy(buffer, "Exported from Sofa", 18);
+    // the 80-byte header is not required to be null-terminated: copy the text without its trailing nul
+    std::memcpy(buffer, "Exported from Sofa", 18);
 
     /* Number of d_facets */
     const unsigned int nbt = vecTri.size();

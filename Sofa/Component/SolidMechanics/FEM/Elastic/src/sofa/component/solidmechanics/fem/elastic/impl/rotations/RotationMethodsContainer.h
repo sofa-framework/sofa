@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 #include <variant>
 
 namespace sofa::component::solidmechanics::fem::elastic
@@ -65,7 +65,7 @@ public:
 
     static constexpr auto NumberOfMethods = std::variant_size_v<decltype(m_rotationComputer)>;
 
-    explicit RotationMethodsContainer(sofa::core::objectmodel::BaseObject* parent)
+    explicit RotationMethodsContainer(sofa::core::objectmodel::BaseComponent* parent)
         : d_rotationMethod(parent->initData(&d_rotationMethod, "rotationMethod", ("The method used to compute the element rotations.\n" + RotationMethodsItems::dataDescription()).c_str()))
     {}
 

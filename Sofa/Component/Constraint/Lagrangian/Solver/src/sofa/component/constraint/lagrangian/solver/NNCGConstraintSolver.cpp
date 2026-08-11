@@ -31,6 +31,8 @@ namespace sofa::component::constraint::lagrangian::solver
 
 void NNCGConstraintSolver::doSolve(GenericConstraintProblem * problem , SReal timeout)
 {
+    SOFA_UNUSED(timeout);
+
     SCOPED_TIMER_VARNAME(unbuiltGaussSeidelTimer, "NonsmoothNonlinearConjugateGradient");
 
     const int dimension = problem->getDimension();

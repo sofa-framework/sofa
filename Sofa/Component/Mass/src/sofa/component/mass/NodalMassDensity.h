@@ -37,6 +37,8 @@ public:
     template<class T>
     static bool canCreate(T* obj, sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription* arg)
     {
+        SOFA_UNUSED(obj);
+
         if (const auto* state = context->getMechanicalState())
         {
             static const auto scalarType = defaulttype::DataTypeInfo<Scalar>::name();
