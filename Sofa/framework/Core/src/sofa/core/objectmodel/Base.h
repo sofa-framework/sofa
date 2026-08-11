@@ -381,7 +381,7 @@ protected:
 
 public:
     /// Find a SnapshotObject corresponding to the object from the scene
-    virtual std::shared_ptr<Snapshot::SnapshotObject> findSnapshotObject(const std::shared_ptr<Snapshot::SnapshotNode>& parents, const std::string& objectname) const;
+    virtual std::shared_ptr<Snapshot::SnapshotObject> findSnapshotObject(const std::shared_ptr<Snapshot::SnapshotNode>& parents, const std::string& objectname, const std::string& classname, const std::string& pathname) const;
 
 protected:
     /// List of fields (Data instances)

@@ -73,18 +73,18 @@ BaseNode::createSnapshotObject(const std::shared_ptr<Snapshot::SnapshotObject>& 
 }
 
 std::shared_ptr<Snapshot::SnapshotObject>
-BaseNode::findSnapshotObject( const std::shared_ptr<Snapshot::SnapshotNode>& parents, const std::string& objectname) const
+BaseNode::findSnapshotObject( const std::shared_ptr<Snapshot::SnapshotNode>& parents, const std::string& objectname, const std::string& classname, const std::string& pathname) const
 {
     if (!parents) return nullptr;
 
-    if(parents->m_name == objectname)
+    if(parents->m_name == objectname && parents->m_className == classname && parents->m_pathName == pathname)
     {
         return parents;
     }
 
     for (const auto& child : parents->m_children)
     {
-        if (auto result = this->findSnapshotObject(child, objectname))
+        if (auto result = this->findSnapshotObject(child, objectname, classname, pathname))
             return result;
 
     }

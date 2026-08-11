@@ -59,10 +59,10 @@ public:
     {
         std::string m_name;
         std::string m_className;
+        std::string m_pathName;
         std::vector<DataInfo> m_dataContainer;
         std::vector<LinkInfo> m_linkContainer;
-        void* m_internalState { nullptr };
-        std::vector<std::shared_ptr<SnapshotObject>> m_components;
+        std::vector<std::shared_ptr<SnapshotObject>> m_objects;
 
         virtual void clear()
         {
@@ -82,7 +82,7 @@ public:
 
         void push_back(const std::shared_ptr<SnapshotObject>& component)
         {
-            m_components.push_back(component);
+            m_objects.push_back(component);
         }
 
         SnapshotObject() = default;
@@ -97,7 +97,7 @@ public:
 
         void clear() override
         {
-            m_components.clear();
+            m_objects.clear();
             m_children.clear();
             m_dataContainer.clear();
             m_linkContainer.clear();

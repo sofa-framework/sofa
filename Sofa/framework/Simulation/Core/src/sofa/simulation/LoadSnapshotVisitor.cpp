@@ -32,15 +32,15 @@ void LoadSnapshotVisitor::processObject(
     const std::shared_ptr<core::objectmodel::Snapshot::SnapshotNode>& parent
 )
 {
-    auto snapshotObject = obj->findSnapshotObject(parent, obj->getName());
+    auto snapshotObject = obj->findSnapshotObject(parent, obj->getName(), obj->getClassName(), obj->getPathName());
     if (snapshotObject)
     {
         obj->loadSnapshot(snapshotObject);
         obj->loadInternalStateFrom(*snapshotObject);
 
-        if (!snapshotObject->m_components.empty())
+        if (!snapshotObject->m_objects.empty())
         {
-            for (auto& it : snapshotObject->m_components)
+            for (auto& it : snapshotObject->m_objects)
             {
                 auto objSlave = obj->getSlave(it->m_name);
                 objSlave->loadSnapshot(it);
@@ -51,7 +51,7 @@ void LoadSnapshotVisitor::processObject(
 
 Visitor::Result LoadSnapshotVisitor::processNodeTopDown(simulation::Node* node)
 {
-    const auto snapshotObject = node->findSnapshotObject(m_snapshotContainer.m_graphRoot, node->getName());
+    const auto snapshotObject = node->findSnapshotObject(m_snapshotContainer.m_graphRoot, node->getName(), node->getClassName(), node->getPathName());
     if (snapshotObject)
     {
         const auto SnapshotNode = std::dynamic_pointer_cast<core::objectmodel::Snapshot::SnapshotNode>(snapshotObject);

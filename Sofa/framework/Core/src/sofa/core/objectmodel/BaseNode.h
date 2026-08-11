@@ -136,7 +136,7 @@ protected:
 
 public:
     /// Find a SnapshotObject corresponding to the object from the scene
-    std::shared_ptr<Snapshot::SnapshotObject> findSnapshotObject(const std::shared_ptr<Snapshot::SnapshotNode>& parents, const std::string& objectname) const override;
+    std::shared_ptr<Snapshot::SnapshotObject> findSnapshotObject(const std::shared_ptr<Snapshot::SnapshotNode>& parents, const std::string& objectname, const std::string& classname, const std::string& pathname) const override;
 
 private:
     virtual std::string internalGetPathName() const;

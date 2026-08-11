@@ -693,7 +693,7 @@ std::shared_ptr<Snapshot::SnapshotObject>
 Base::createSnapshotObject(const std::shared_ptr<Snapshot::SnapshotObject>& parent) const
 {
     auto object = std::make_shared<Snapshot::SnapshotObject>();
-    parent->m_components.push_back(object);
+    parent->m_objects.push_back(object);
 
     return object;
 }
@@ -703,6 +703,7 @@ std::shared_ptr<Snapshot::SnapshotObject> Base::saveSnapshot(std::shared_ptr<Sna
     auto snapshotObject = createSnapshotObject(object);
     snapshotObject->m_name = this->getName();
     snapshotObject->m_className = this->getClassName();
+    snapshotObject->m_pathName = this->getPathName();
 
     for (const auto& dataFields = this->getDataFields(); const auto& data : dataFields)
     {
@@ -730,11 +731,11 @@ std::shared_ptr<Snapshot::SnapshotObject> Base::saveSnapshot(std::shared_ptr<Sna
 
 
 std::shared_ptr<Snapshot::SnapshotObject>
-Base::findSnapshotObject(const std::shared_ptr<Snapshot::SnapshotNode>& parents, const std::string& objectname) const
+Base::findSnapshotObject(const std::shared_ptr<Snapshot::SnapshotNode>& parents, const std::string& objectname, const std::string& classname, const std::string& pathname) const
 {
-    for (const auto& p : parents->m_components)
+    for (const auto& p : parents->m_objects)
     {
-        if (p->m_name == objectname)
+        if (p->m_name == objectname && p->m_className == classname && p->m_pathName == pathname)
         {
             return p;
         }
@@ -759,7 +760,8 @@ void Base::loadSnapshot(const std::shared_ptr<Snapshot::SnapshotObject>& snapsho
         if (const auto data = this->findData(dataInfo.name))
         {
             if(data->read(dataInfo.value) == 0 )
-                msg_error() << "Failed to read " << dataInfo.name << " in " << this->getName()  << " from the snapshot " << dataInfo.value;
+                msg_error() << "Failed to read data : " << dataInfo.name << " in " << this->getName()  << " from the SnapshotObject " <<
+                    snapshotObject->m_name << " (" <<snapshotObject->m_className<< ") : " << dataInfo.value;
         }
     }
 
@@ -767,7 +769,8 @@ void Base::loadSnapshot(const std::shared_ptr<Snapshot::SnapshotObject>& snapsho
         if (const auto link = this->findLink(linkInfo.name)) {
 
             if (link->readFromSnapshot(linkInfo.value) == 0 )
-                msg_error() << "Failed to read " << linkInfo.name << " in " << this->getName()  << " from the snapshot " << linkInfo.value;
+                msg_error() << "Failed to read link :  " << linkInfo.name << " in " << this->getName()  << " from the snapshot " <<
+                    snapshotObject->m_name << " (" <<snapshotObject->m_className<< ") : "<< linkInfo.value;
         }
     }
 }

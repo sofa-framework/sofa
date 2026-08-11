@@ -58,10 +58,11 @@ void to_json(nlohmann::ordered_json& j, const Snapshot::SnapshotObject& so )
     j.clear();
     j["name"] = so.m_name;
     j["classname"] = so.m_className;
+    j["pathname"] = so.m_pathName;
     j["data"] = so.m_dataContainer;
     j["links"] = so.m_linkContainer;
     j["slaves"] = nlohmann::json::array();
-    for (const auto& childPtr : so.m_components)
+    for (const auto& childPtr : so.m_objects)
     {
         if(childPtr)
         {
@@ -81,11 +82,12 @@ void to_json(nlohmann::ordered_json& j, const Snapshot::SnapshotNode& sn)
     j.clear();
     j["name"] = sn.m_name;
     j["classname"] = sn.m_className;
+    j["pathname"] = sn.m_pathName;
     j["data"] = sn.m_dataContainer;
     j["links"] = sn.m_linkContainer;
 
     j["components"] = nlohmann::json::array();
-    for (const auto& childPtr : sn.m_components)
+    for (const auto& childPtr : sn.m_objects)
     {
         if (childPtr)
             j["components"].push_back(*childPtr);
@@ -130,6 +132,7 @@ void from_json(const nlohmann::json& j, Snapshot::SnapshotObject& so)
 {
     so.m_name = j.value("name", "");
     so.m_className = j.value("classname", "");
+    so.m_pathName = j.value("pathname","");
     
     if (j.contains("data") && j["data"].is_array())
     {
@@ -153,7 +156,7 @@ void from_json(const nlohmann::json& j, Snapshot::SnapshotObject& so)
         }
     }
 
-    so.m_components.clear();
+    so.m_objects.clear();
     if (j.contains("slaves") && j["slaves"].is_array())
     {
         for (const auto& childJson : j["slaves"])
@@ -162,7 +165,7 @@ void from_json(const nlohmann::json& j, Snapshot::SnapshotObject& so)
             {
                 auto child = std::make_shared<Snapshot::SnapshotNode>();
                 from_json(childJson, *child);
-                so.m_components.push_back(child);
+                so.m_objects.push_back(child);
             }
         }
     }
@@ -172,6 +175,7 @@ void from_json(const nlohmann::json& j, Snapshot::SnapshotNode& sn)
 {
     sn.m_name = j.value("name", "");
     sn.m_className = j.value("classname", "");
+    sn.m_pathName = j.value("pathname","");
     
     if (j.contains("data") && j["data"].is_array())
     {
@@ -195,7 +199,7 @@ void from_json(const nlohmann::json& j, Snapshot::SnapshotNode& sn)
         }
     }
 
-    sn.m_components.clear();
+    sn.m_objects.clear();
     if (j.contains("components") && j["components"].is_array())
     {
         for (const auto& childJson : j["components"])
@@ -204,7 +208,7 @@ void from_json(const nlohmann::json& j, Snapshot::SnapshotNode& sn)
             {
                 auto child = std::make_shared<Snapshot::SnapshotObject>();
                 from_json(childJson, *child);
-                sn.m_components.push_back(child);
+                sn.m_objects.push_back(child);
             }
         }
     }
