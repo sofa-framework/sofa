@@ -195,21 +195,21 @@ bool LCPForceFeedback_test::test_SimpleCollision()
     EXPECT_EQ(meca->getSize(), 1);
 
     VecCoord truthCoords;
-    truthCoords.push_back(Coord(sofa::type::Vec3d(0, -0.002498750625, 0), sofa::type::Quat<double>(0, 0, 0, 1)));
-    truthCoords.push_back(Coord(sofa::type::Vec3d(0, -0.1646431247, 0), sofa::type::Quat<double>(0, 0, 0, 1)));
-    truthCoords.push_back(Coord(sofa::type::Vec3d(0, -0.5752928747, 0), sofa::type::Quat<double>(0, 0, 0, 1)));
-    truthCoords.push_back(Coord(sofa::type::Vec3d(0, -1.233208884, 0), sofa::type::Quat<double>(0, 0, 0, 1)));
-    truthCoords.push_back(Coord(sofa::type::Vec3d(0, -2.137158214, 0), sofa::type::Quat<double>(0, 0, 0, 1)));
-    truthCoords.push_back(Coord(sofa::type::Vec3d(0, -3.285914075, 0), sofa::type::Quat<double>(0, 0, 0, 1)));
-    truthCoords.push_back(Coord(sofa::type::Vec3d(0, -4.678255793, 0), sofa::type::Quat<double>(0, 0, 0, 1)));
-    truthCoords.push_back(Coord(sofa::type::Vec3d(0, -6.312968782, 0), sofa::type::Quat<double>(0, 0, 0, 1)));
-    truthCoords.push_back(Coord(sofa::type::Vec3d(0, -8.188844511, 0), sofa::type::Quat<double>(0, 0, 0, 1)));
+    truthCoords.push_back(Coord(sofa::type::Vec3d(0, -0.0024875621, 0), sofa::type::Quat<double>(0, 0, 0, 1)));
+    truthCoords.push_back(Coord(sofa::type::Vec3d(0, -0.16148664, 0), sofa::type::Quat<double>(0, 0, 0, 1)));
+    truthCoords.push_back(Coord(sofa::type::Vec3d(0, -0.55601037, 0), sofa::type::Quat<double>(0, 0, 0, 1)));
+    truthCoords.push_back(Coord(sofa::type::Vec3d(0, -1.1746, 0), sofa::type::Quat<double>(0, 0, 0, 1)));
+    truthCoords.push_back(Coord(sofa::type::Vec3d(0, -2.0063543, 0), sofa::type::Quat<double>(0, 0, 0, 1)));
+    truthCoords.push_back(Coord(sofa::type::Vec3d(0, -3.0409024, 0), sofa::type::Quat<double>(0, 0, 0, 1)));
+    truthCoords.push_back(Coord(sofa::type::Vec3d(0, -4.2683778, 0), sofa::type::Quat<double>(0, 0, 0, 1)));
+    truthCoords.push_back(Coord(sofa::type::Vec3d(0, -5.6793942, 0), sofa::type::Quat<double>(0, 0, 0, 1)));
+    truthCoords.push_back(Coord(sofa::type::Vec3d(0, -7.2650223, 0), sofa::type::Quat<double>(0, 0, 0, 1)));
+    truthCoords.push_back(Coord(sofa::type::Vec3d(0, -9.0167665, 0), sofa::type::Quat<double>(0,0,0,1)));
 
-    truthCoords.push_back(Coord(sofa::type::Vec3d(0.06312707665, -9.252446766, 0.01034522507), sofa::type::Quat<double>(0.01791466055, -0.001121278545, -0.1466133921, 0.989031001)));
-    truthCoords.push_back(Coord(sofa::type::Vec3d(0.1068031131, -9.480637263, 0.01138742455), sofa::type::Quat<double>(0.01596551667, -0.006985361948, -0.4382452548, 0.8986864879)));
-    truthCoords.push_back(Coord(sofa::type::Vec3d(-0.003396912202, -9.692178925, 0.01301318567), sofa::type::Quat<double>(0.01059102598, -0.01374254084, -0.7148386272, 0.6990741805)));
-    truthCoords.push_back(Coord(sofa::type::Vec3d(-0.1668556563, -9.577363026, 0.03455744119), sofa::type::Quat<double>(-0.02439727795, -0.04585925265, -0.9016493065, 0.4293369653)));
-    truthCoords.push_back(Coord(sofa::type::Vec3d(-0.230611987, -9.409244076, 0.05034655108), sofa::type::Quat<double>(-0.06676044546, -0.08462859852, -0.9839281746, 0.1423600732)));
+    truthCoords.push_back(Coord(sofa::type::Vec3d(0.081810147, -9.3104954, 0.0084159356), sofa::type::Quat<double>(0.0175437, -0.0027353484, -0.22570916, 0.97403294)));
+    truthCoords.push_back(Coord(sofa::type::Vec3d(0.080605865, -9.5144129, 0.0084154662), sofa::type::Quat<double>(0.015405586, -0.0075208684, -0.47918597, 0.87754595)));
+    truthCoords.push_back(Coord(sofa::type::Vec3d(-0.038712446, -9.6903, 0.0090729725), sofa::type::Quat<double>(0.011461957, -0.012498143, -0.71390605, 0.70003611)));
+    truthCoords.push_back(Coord(sofa::type::Vec3d(-0.17837876, -9.6024733, 0.020258242), sofa::type::Quat<double>(-0.0072201439, -0.031115066, -0.87544507, 0.48226097)));
     
     int pctTru = 0; 
     for (int step = 0; step < 140; step++)
@@ -270,7 +270,7 @@ bool LCPForceFeedback_test::test_Collision()
 
     // check position and constraint problem
     EXPECT_LT(coords[0][1], -9.0);
-    EXPECT_EQ(cons.size(), 84);
+    EXPECT_EQ(cons.size(), 105);
 
     // check LCP computeForce method
     sofa::type::Vec3 position = sofa::type::Vec3(0, 0, 0);
@@ -287,7 +287,7 @@ bool LCPForceFeedback_test::test_Collision()
     m_LCPFFBack->computeForce(coords[0][0], coords[0][1], coords[0][2], 0, 0, 0, 0, force[0], force[1], force[2]);
 
     // test with groundtruth, do it index by index for better log
-    Coord coordT = Coord(sofa::type::Vec3d(0.1083095508, -9.45640795, 0.01134330546), sofa::type::Quat<double>(0.01623300333, -0.006386979003, -0.408876291, 0.9124230788));
+    Coord coordT = Coord(sofa::type::Vec3d(0.07618425, -9.2916698, 0.0084328074), sofa::type::Quat<double>(0.017680431, -0.0022677642, -0.20060691, 0.97950965));
     //// position
     EXPECT_FLOAT_EQ(coords[0][0], coordT[0]);
     EXPECT_FLOAT_EQ(coords[0][1], coordT[1]);
@@ -300,7 +300,7 @@ bool LCPForceFeedback_test::test_Collision()
     EXPECT_FLOAT_EQ(coords[0][6], coordT[6]);
 
     //// force
-    trueForce = sofa::type::Vec3(-0.001655988795, 0.002759984308, -2.431849862e-06);
+    trueForce = sofa::type::Vec3(-0.00084725959, 0.0024373089, -4.2111449e-05);
     EXPECT_FLOAT_EQ(force[0], trueForce[0]);
     EXPECT_FLOAT_EQ(force[1], trueForce[1]);
     EXPECT_FLOAT_EQ(force[2], trueForce[2]);
@@ -310,7 +310,7 @@ bool LCPForceFeedback_test::test_Collision()
     m_LCPFFBack->computeForce(inside[0], inside[1], inside[2], 0, 0, 0, 0, force[0], force[1], force[2]);
 
     // test with groundtruth, do it index by index for better log
-    coordT = Coord(sofa::type::Vec3d(0.1083095508, -10.45640795, 0.01134330546), sofa::type::Quat<double>(0.01623300333, -0.006386979003, -0.408876291, 0.9124230788));
+    coordT = Coord(sofa::type::Vec3d(0.07618425, -10.29167, 0.0084328074), sofa::type::Quat<double>(0.01623300333, -0.006386979003, -0.408876291, 0.9124230788));
     //// position
     EXPECT_FLOAT_EQ(inside[0], coordT[0]);
     EXPECT_FLOAT_EQ(inside[1], coordT[1]);
@@ -323,7 +323,7 @@ bool LCPForceFeedback_test::test_Collision()
     EXPECT_FLOAT_EQ(inside[6], coordT[6]);
 
     //// force
-    trueForce = sofa::type::Vec3(-0.1450155705, 8.930516304, 0.1567013005);
+    trueForce = sofa::type::Vec3(0.27008709, 9.1463537, 0.060468301);
     EXPECT_FLOAT_EQ(force[0], trueForce[0]);
     EXPECT_FLOAT_EQ(force[1], trueForce[1]);
     EXPECT_FLOAT_EQ(force[2], trueForce[2]);
@@ -333,12 +333,12 @@ bool LCPForceFeedback_test::test_Collision()
     m_LCPFFBack->computeForce(coords, forces);
          
     EXPECT_EQ(forces.size(), 1);
-    EXPECT_FLOAT_EQ(forces[0][0], -0.00164953925);
-    EXPECT_FLOAT_EQ(forces[0][1], 0.002749336856);
-    EXPECT_FLOAT_EQ(forces[0][2], -1.032894327e-05);
-    EXPECT_FLOAT_EQ(forces[0][3], 0.0001298280752);
-    EXPECT_FLOAT_EQ(forces[0][4], 7.443984612e-05);
-    EXPECT_FLOAT_EQ(forces[0][5], -0.0009855082698);
+    EXPECT_FLOAT_EQ(forces[0][0], -0.00013606942);
+    EXPECT_FLOAT_EQ(forces[0][1], 0.0027710579);
+    EXPECT_FLOAT_EQ(forces[0][2], -0.00090467848);
+    EXPECT_FLOAT_EQ(forces[0][3], 0.00030387595);
+    EXPECT_FLOAT_EQ(forces[0][4], -0.00031411531);
+    EXPECT_FLOAT_EQ(forces[0][5], -0.0010078497);
 
     return true;
 }
@@ -421,3 +421,4 @@ TEST_F(LCPForceFeedback_test, test_multiThread)
 
 
 } // namespace sofa
+
