@@ -372,14 +372,16 @@ bool BaseLink::readFromSnapshot( const std::string& str )
         if (inLinkPathsFromLink && inLinkPathsFromSnapshot)
         {
             result = true;
+            continue;
         }
         else if (inLinkPathsFromLink)
         {
             Base *ptr = PathResolver::FindBaseFromClassAndPath(owner, getDestClass(), linkPath);
             if (ptr == nullptr)
             {
-                msg_warning(owner) << "readFromSnapshot: could not resolve link path " << linkPath << "\" for link " << getName() << ". Skipping.";
+                msg_warning(owner) << "readFromSnapshot: could not resolve link path " << linkPath << "\" for link " << getName() << " from Link. Skipping.";
                 result = false;
+                continue;
             }
             this->remove(ptr);
         }
@@ -388,8 +390,9 @@ bool BaseLink::readFromSnapshot( const std::string& str )
             Base *ptr = PathResolver::FindBaseFromClassAndPath(owner, getDestClass(), linkPath);
             if (ptr == nullptr)
             {
-                msg_warning(owner) << "readFromSnapshot: could not resolve link path " << linkPath << "\" for link " << getName() << ". Skipping.";
+                msg_warning(owner) << "readFromSnapshot: could not resolve link path " << linkPath << "\" for link " << getName() << " from Snapshot. Skipping.";
                 result = false;
+                continue;
             }
             this->add(ptr);
         }

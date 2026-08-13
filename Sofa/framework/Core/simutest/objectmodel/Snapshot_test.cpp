@@ -112,9 +112,9 @@ public:
         return this->createSnapshotObject(parents);
     }
 
-    std::shared_ptr<Snapshot::SnapshotObject> findSnapshotObjectTest(const std::shared_ptr<Snapshot::SnapshotNode>& parents, const std::string& objectname)
+    std::shared_ptr<Snapshot::SnapshotObject> findSnapshotObjectTest(const std::shared_ptr<Snapshot::SnapshotNode>& parents, const std::string& objectname, const std::string& classname, const std::string& pathname)
     {
-        return this->findSnapshotObject(parents, objectname);
+        return this->findSnapshotObject(parents, objectname, classname,pathname);
     }
 
 };
@@ -243,9 +243,9 @@ TEST_F(Snapshot_test, findSnapshotObject)
     snapshotParents->m_children.push_back(snapshotNode);
 
     auto snapshot = Component.saveSnapshot(snapshotParents);
-    snapshotNode->m_components.push_back(snapshot);
+    snapshotNode->m_objects.push_back(snapshot);
 
-    auto expectedObject = Component.findSnapshotObjectTest(snapshotNode, "TestComponent");
+    auto expectedObject = Component.findSnapshotObjectTest(snapshotNode, "TestComponent", "TestComponent", "TestComponent");
 
     EXPECT_NE(expectedObject, nullptr);
     EXPECT_EQ(Component.getName(), expectedObject->m_name);
@@ -526,16 +526,16 @@ TEST_F(Snapshot_test, SnapshotJSONExporter)
     EXPECT_NE(snapshot_import->m_graphRoot,nullptr);
 
     EXPECT_EQ(snapshot_import->m_graphRoot->m_name,"Root");
-    EXPECT_EQ(snapshot_import->m_graphRoot->m_components[1]->m_name,"DefaultAnimationLoop1");
-    EXPECT_EQ(snapshot_import->m_graphRoot->m_components[2]->m_name,"DefaultVisualManagerLoop1");
+    EXPECT_EQ(snapshot_import->m_graphRoot->m_objects[1]->m_name,"DefaultAnimationLoop1");
+    EXPECT_EQ(snapshot_import->m_graphRoot->m_objects[2]->m_name,"DefaultVisualManagerLoop1");
     EXPECT_EQ(snapshot_import->m_graphRoot->m_children[0]->m_name,"child1");
-    EXPECT_EQ(snapshot_import->m_graphRoot->m_children[0]->m_components[0]->m_name,"MechanicalObject1");
+    EXPECT_EQ(snapshot_import->m_graphRoot->m_children[0]->m_objects[0]->m_name,"MechanicalObject1");
 
     EXPECT_EQ(snapshot_import->m_graphRoot->m_name,snapshot->m_graphRoot->m_name);
-    EXPECT_EQ(snapshot_import->m_graphRoot->m_components[1]->m_name,snapshot->m_graphRoot->m_components[1]->m_name);
-    EXPECT_EQ(snapshot_import->m_graphRoot->m_components[2]->m_name,snapshot->m_graphRoot->m_components[2]->m_name);
+    EXPECT_EQ(snapshot_import->m_graphRoot->m_objects[1]->m_name,snapshot->m_graphRoot->m_objects[1]->m_name);
+    EXPECT_EQ(snapshot_import->m_graphRoot->m_objects[2]->m_name,snapshot->m_graphRoot->m_objects[2]->m_name);
     EXPECT_EQ(snapshot_import->m_graphRoot->m_children[0]->m_name,snapshot->m_graphRoot->m_children[0]->m_name);
-    EXPECT_EQ(snapshot_import->m_graphRoot->m_children[0]->m_components[0]->m_name,snapshot->m_graphRoot->m_children[0]->m_components[0]->m_name);
+    EXPECT_EQ(snapshot_import->m_graphRoot->m_children[0]->m_objects[0]->m_name,snapshot->m_graphRoot->m_children[0]->m_objects[0]->m_name);
 
     std::filesystem::remove(path);
 }
