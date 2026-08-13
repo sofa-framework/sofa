@@ -52,6 +52,12 @@ private:
     using StrainDisplacement = typename trait::StrainDisplacement;
     using ElementGradient = typename trait::ElementGradient;
 
+    /// Displacement of the element nodes relative to their rest position. Returns a flat vector.
+    ElementDisplacement computeElementDisplacement(
+        const typename trait::TopologyElement& element,
+        const sofa::VecCoord_t<DataTypes>& nodePositions,
+        const sofa::VecCoord_t<DataTypes>& nodeRestPositions) const;
+
 public:
     void init() override;
 
