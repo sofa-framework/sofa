@@ -294,9 +294,9 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 
         // If a solver link was not set explicitly, fall back to the first one found in the context.
         if (l_odeSolver.empty())
-            l_odeSolver.set(this->getContext()->template get<sofa::core::behavior::OdeSolver>(sofa::core::objectmodel::BaseContext::Local));
+            l_odeSolver.set(this->getContext()->template get<sofa::core::behavior::OdeSolver>());
         if (l_linearSolver.empty())
-            l_linearSolver.set(this->getContext()->template get<core::behavior::LinearSolver>(sofa::core::objectmodel::BaseContext::Local));
+            l_linearSolver.set(this->getContext()->template get<core::behavior::LinearSolver>());
 
         if (l_odeSolver && l_linearSolver)
         {
