@@ -119,6 +119,11 @@ public:
      */
     sofa::Data<sofa::VecDeriv_t<DataTypes> > d_nodalSourceDensity;
 
+    /**
+     * @brief Degree of the quadrature rule integrating the element matrix M.
+     */
+    sofa::Data<sofa::Size> d_quadratureDegree;
+
 protected:
 
     /**
