@@ -28,10 +28,20 @@ namespace sofa::component::solidmechanics::fem::elastic
 
 template <class DataTypes, class ElementType>
 FEMSourceTerm<DataTypes, ElementType>::FEMSourceTerm()
-    : d_nodalSourceDensity(initData(&d_nodalSourceDensity, "nodalSourceDensity", 
+    : d_nodalSourceDensity(initData(&d_nodalSourceDensity, "nodalSourceDensity",
                 "Source term (per unit volume) sampled at each node. Interpolated inside the "
                 "element with the shape functions and integrated on the reference configuration."))
+    , d_quadratureDegree(initData(&d_quadratureDegree, static_cast<sofa::Size>(1), "quadratureDegree",
+                "Degree of the quadrature rule integrating the element matrix M."))
 {
+    this->addUpdateCallback("reassembleSourceMatrix", {&d_quadratureDegree},
+        [this](const sofa::core::DataTracker&)
+        {
+            if (!this->isComponentStateInvalid() && this->l_topology && this->mstate)
+                assembleGlobalMatrix();
+
+            return this->getComponentState();
+        }, {});
 }
 
 template <class DataTypes, class ElementType>
@@ -91,6 +101,8 @@ void FEMSourceTerm<DataTypes, ElementType>::calculateElementMatrix(
     const auto restPositionsAccessor = this->mstate->readRestPositions();
     elementMatrices.resize(elements.size());
 
+    const auto quadratureRule = FiniteElement::quadratureRule(d_quadratureDegree.getValue());
+
     for (std::size_t elementId = 0; elementId < elements.size(); ++elementId)
     {
         const auto& element = elements[elementId];
@@ -100,7 +112,7 @@ void FEMSourceTerm<DataTypes, ElementType>::calculateElementMatrix(
             extractNodesVectorFromGlobalVector(element, restPositionsAccessor.ref());
 
         // M_ij = integral of N_i N_j dV, evaluated on the rest configuration (geometry only).
-        for (const auto& [quadraturePoint, weight] : FiniteElement::quadraturePoints())
+        for (const auto& [quadraturePoint, weight] : quadratureRule)
         {
             const auto N = FiniteElement::shapeFunctions(quadraturePoint);
             const auto dN_dq_ref = FiniteElement::gradientShapeFunctions(quadraturePoint);
