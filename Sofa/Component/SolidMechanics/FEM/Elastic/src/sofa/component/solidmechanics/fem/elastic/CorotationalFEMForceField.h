@@ -124,6 +124,7 @@ public:
 private:
     using trait = sofa::component::solidmechanics::fem::elastic::trait<DataTypes, ElementType>;
     using ElementGradient = typename trait::ElementGradient;
+    using ElementDisplacement = typename trait::ElementDisplacement;
     using RotationMatrix = sofa::type::Mat<trait::spatial_dimensions, trait::spatial_dimensions, sofa::Real_t<DataTypes>>;
 
 
@@ -160,6 +161,12 @@ protected:
 
     sofa::type::vector<RotationMatrix> m_rotations;
     sofa::type::vector<RotationMatrix> m_initialRotationsTransposed;
+
+    /// Displacement of the element nodes in the element's own rotated frame. Returns a flat vector.
+    ElementDisplacement computeElementLocalDisplacement(
+        const std::array<sofa::Coord_t<DataTypes>, trait::NumberOfNodesInElement>& nodes,
+        const std::array<sofa::Coord_t<DataTypes>, trait::NumberOfNodesInElement>& restNodes,
+        const RotationMatrix& rotation) const;
 
     sofa::Coord_t<DataTypes> translation(const std::array<sofa::Coord_t<DataTypes>, trait::NumberOfNodesInElement>& nodes) const;
     static sofa::Coord_t<DataTypes> computeCentroid(const std::array<sofa::Coord_t<DataTypes>, trait::NumberOfNodesInElement>& nodes);
