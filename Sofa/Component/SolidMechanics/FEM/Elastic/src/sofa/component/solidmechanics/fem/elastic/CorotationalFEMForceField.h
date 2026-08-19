@@ -162,7 +162,7 @@ protected:
     sofa::type::vector<RotationMatrix> m_rotations;
     sofa::type::vector<RotationMatrix> m_initialRotationsTransposed;
 
-    /// Displacement of the element nodes in the element's own rotated frame. Returns a flat vector.
+    /// Local displacement of the element nodes in the element's own rotated frame. Flat vector.
     ElementDisplacement computeElementLocalDisplacement(
         const std::array<sofa::Coord_t<DataTypes>, trait::NumberOfNodesInElement>& nodes,
         const std::array<sofa::Coord_t<DataTypes>, trait::NumberOfNodesInElement>& restNodes,

@@ -225,8 +225,6 @@ SReal CorotationalFEMForceField<DataTypes, ElementType>::getPotentialEnergy(
     const auto& elements = trait::FiniteElement::getElementSequence(*this->l_topology);
     const auto elementStiffness = sofa::helper::getReadAccessor(this->d_elementStiffness);
 
-    // The element rotations are those of the last force computation: they are filled while the forces
-    // are computed, so there are none to read before the first one has run.
     if (m_rotations.size() < elements.size())
         return 0;
 
@@ -239,16 +237,13 @@ SReal CorotationalFEMForceField<DataTypes, ElementType>::getPotentialEnergy(
     {
         const auto& element = elements[elementId];
 
-        const std::array<sofa::Coord_t<DataTypes>, trait::NumberOfNodesInElement> elementNodesCoordinates =
-            extractNodesVectorFromGlobalVector(element, positionAccessor.ref());
-        const std::array<sofa::Coord_t<DataTypes>, trait::NumberOfNodesInElement> restElementNodesCoordinates =
-            extractNodesVectorFromGlobalVector(element, restPositionAccessor.ref());
+        const auto elementNodesCoordinates = extractNodesVectorFromGlobalVector(element, positionAccessor.ref());
+        const auto restElementNodesCoordinates = extractNodesVectorFromGlobalVector(element, restPositionAccessor.ref());
 
         const auto displacement = computeElementLocalDisplacement(
             elementNodesCoordinates, restElementNodesCoordinates, m_rotations[elementId]);
 
-        // the element stiffness matrix is the quadratic form of the strain energy: 1/2 d^T K d, taken
-        // on the co-rotated displacement, so a rigid motion of the element contributes nothing
+        // Quadratic form of strain energy: 1/2 d^T K d
         energy += displacement * (elementStiffness[elementId] * displacement);
     }
 
