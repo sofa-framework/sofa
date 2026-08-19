@@ -41,26 +41,6 @@ void LinearSmallStrainFEMForceField<DataTypes, ElementType>::init()
 
 
 template <class DataTypes, class ElementType>
-auto LinearSmallStrainFEMForceField<DataTypes, ElementType>::computeElementDisplacement(
-    const typename trait::TopologyElement& element,
-    const sofa::VecCoord_t<DataTypes>& nodePositions,
-    const sofa::VecCoord_t<DataTypes>& nodeRestPositions) const -> ElementDisplacement
-{
-    ElementDisplacement displacement{ sofa::type::NOINIT };
-
-    for (sofa::Size j = 0; j < trait::NumberOfNodesInElement; ++j)
-    {
-        const auto nodeId = element[j];
-        for (sofa::Size dim = 0; dim < trait::spatial_dimensions; ++dim)
-        {
-            displacement[j * trait::spatial_dimensions + dim] = nodePositions[nodeId][dim] - nodeRestPositions[nodeId][dim];
-        }
-    }
-
-    return displacement;
-}
-
-template <class DataTypes, class ElementType>
 void LinearSmallStrainFEMForceField<DataTypes, ElementType>::computeElementsForces(
     const sofa::simulation::Range<std::size_t>& range,
     const sofa::core::MechanicalParams* mparams,
@@ -75,7 +55,7 @@ void LinearSmallStrainFEMForceField<DataTypes, ElementType>::computeElementsForc
     {
         const auto& stiffnessMatrix = elementStiffness[elementId];
 
-        const auto displacement = computeElementDisplacement(
+        const auto displacement = this->computeElementDisplacement(
             elements[elementId], nodePositions, restPositionAccessor.ref());
 
         elementForces[elementId] = stiffnessMatrix * displacement;
@@ -169,7 +149,7 @@ SReal LinearSmallStrainFEMForceField<DataTypes, ElementType>::getPotentialEnergy
 
     for (std::size_t elementId = 0; elementId < elements.size(); ++elementId)
     {
-        const auto displacement = computeElementDisplacement(
+        const auto displacement = this->computeElementDisplacement(
             elements[elementId], positionAccessor.ref(), restPositionAccessor.ref());
 
         // the element stiffness matrix is the quadratic form of the strain energy: 1/2 d^T K d
