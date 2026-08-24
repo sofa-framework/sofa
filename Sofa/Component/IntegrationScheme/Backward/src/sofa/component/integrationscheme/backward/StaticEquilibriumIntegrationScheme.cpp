@@ -148,7 +148,7 @@ void StaticEquilibriumIntegrationScheme::integrate(const core::ExecParams* param
     //Setup tue integration step
     setupIntegrationStep(params, dt, xResult, vResult);
 
-    //Compute current residual, usefull for static solver to return fast
+    //Compute current residual, useful for static solver to return fast
     computeRHS(true);
     SReal oldResidue = evaluateResidual();
     SReal newResidue = evaluateResidual();
@@ -161,6 +161,7 @@ void StaticEquilibriumIntegrationScheme::integrate(const core::ExecParams* param
 
         const bool firstIt = it==0;
 
+        // If in first iteration, this has already been computed earlier
         if ( ! firstIt )
         {
             computeRHS(firstIt);
@@ -183,9 +184,13 @@ void StaticEquilibriumIntegrationScheme::integrate(const core::ExecParams* param
         computeRHS(false);
         newResidue = evaluateResidual();
 
-        //Compute the Armijo term
-        m_vop->v_dot(m_systemUnknown, m_r0);
-        const SReal armijoTerm = lineSearchArmijoFactor * m_vop->finish();
+        // Compute the Armijo term
+        // !! Careful this approximation holds only when A is symmetric
+        // This comes from the fact that if the current residual is f=||r||**2 and the search
+        // direction results from Ap = -r, then we have \nabla f = 2*A*r, so the armijo factor can be
+        // simplified with \nabla f * p = 2*r^T*A^T*A^{-1}*(-r) = -2*||r||^2  if A is symmetric
+        // Otherwise we need to compute 2 * r^{t} * A^{T} * p
+        const SReal armijoTerm = - 2 * lineSearchArmijoFactor * oldResidue;
 
         if (newResidue<bestresidual || d_alwaysAdvanceNewton.getValue())
         {
