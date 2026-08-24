@@ -46,11 +46,31 @@ void VelocityBasedImplicitIntegrationScheme::doSetupIntegrationStep(const core::
     simulation::common::VectorOperations::realloc(*m_vop, m_acceleration, "acceleration", this, true);
     simulation::common::VectorOperations::realloc(*m_vop, m_systemUnknown, "dv", this, true);
 
+
+    // This is only there for lagrangian based simulation, to make sure we start using the real pose
+    // instead of the free pos (same for velocity)
+    if (d_firstOrder.getValue())
+    {
+        m_vop->v_clear(m_vResult);
+        m_vop->v_clear(core::vec_id::write_access::velocity);
+    }
+    else
+    {
+        m_vop->v_eq(m_vResult, core::vec_id::write_access::velocity);
+    }
+    m_vop->v_eq(m_xResult, core::vec_id::write_access::position);
+
     // Deal with higher order integration scheme
     const Size order = getIntegrationSchemeTimeOrder();
 
     m_x0.resize(order);
     m_v0.resize(order);
+
+    if (order == 0)
+    {
+        //Early return to avoid any overflow in for loops
+        return;
+    }
 
     for (unsigned i = 0; i < order; ++i)
     {
@@ -98,19 +118,6 @@ void VelocityBasedImplicitIntegrationScheme::doSetupIntegrationStep(const core::
     sofa::core::behavior::MultiVecCoord x0(m_vop.get(), m_x0[order - 1]);
     x0.eq(core::vec_id::write_access::position);
 
-
-    // This is only there for lagrangian based simulation, to make sure we start using the real pose
-    // instead of the free pos (same for velocity)
-    if (d_firstOrder.getValue())
-    {
-        m_vop->v_clear(m_vResult);
-        m_vop->v_clear(core::vec_id::write_access::velocity);
-    }
-    else
-    {
-        m_vop->v_eq(m_vResult, core::vec_id::write_access::velocity);
-    }
-    m_vop->v_eq(m_xResult, core::vec_id::write_access::position);
 }
 
 void VelocityBasedImplicitIntegrationScheme::computeLHS(bool firstIteration)
