@@ -35,6 +35,7 @@ namespace sofa::simulation::integrationscheme
 ImplicitIntegrationScheme::ImplicitIntegrationScheme()
 : d_rayleighStiffness(initData(&d_rayleighStiffness, 0.0_sreal, "rayleighStiffness", "Rayleigh damping coefficient related to stiffness, > 0") )
 , d_rayleighMass(initData(&d_rayleighMass, 0.0_sreal, "rayleighMass", "Rayleigh damping coefficient related to mass, > 0"))
+, m_params(nullptr)
 , m_vop(nullptr)
 , m_mop(nullptr)
 {
