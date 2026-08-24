@@ -78,7 +78,7 @@ void VelocityBasedImplicitIntegrationScheme::doSetupIntegrationStep(const core::
 
     // Now shift all states to advance in time (could be skipped at the start of the simulation)
     // I decided not to do it to avoid having the check
-    for (unsigned i = 0; i < order - 1; ++i)
+    for (unsigned i = 0; i + 1 < order; ++i)
     {
         sofa::core::behavior::MultiVecCoord x(m_vop.get(), m_x0[i]);
         x.eq(m_x0[i+1]);
