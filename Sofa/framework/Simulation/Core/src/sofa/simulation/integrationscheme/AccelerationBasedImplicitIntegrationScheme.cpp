@@ -44,12 +44,23 @@ void AccelerationBasedImplicitIntegrationScheme::doSetupIntegrationStep(const co
     simulation::common::VectorOperations::realloc(*m_vop, m_acceleration, "acceleration", this, true);
     simulation::common::VectorOperations::realloc(*m_vop, m_systemUnknown, "da", this, true);
 
+    // This is only there for lagrangian based simulation, to make sure we start using the real pose
+    // instead of the free pos (same for velocity)
+    m_vop->v_eq(m_vResult, core::vec_id::write_access::velocity);
+    m_vop->v_eq(m_xResult, core::vec_id::write_access::position);
+
     // Deal with higher order integration scheme
     const Size order = getIntegrationSchemeTimeOrder();
 
     m_x0.resize(order);
     m_v0.resize(order);
     m_a0.resize(order);
+
+    if (order == 0)
+    {
+        //Early return to avoid any overflow in for loops
+        return;
+    }
 
     for (unsigned i = 0; i < order; ++i)
     {
@@ -90,11 +101,6 @@ void AccelerationBasedImplicitIntegrationScheme::doSetupIntegrationStep(const co
     x0.eq(core::vec_id::write_access::position);
     sofa::core::behavior::MultiVecDeriv a0(m_vop.get(), m_a0[order - 1]);
     a0.eq(m_acceleration);
-
-    // This is only there for lagrangian based simulation, to make sure we start using the real pose
-    // instead of the free pos (same for velocity)
-    m_vop->v_eq(m_vResult, core::vec_id::write_access::velocity);
-    m_vop->v_eq(m_xResult, core::vec_id::write_access::position);
 
     //Propagate intermediate vectors
     for (unsigned i = 0; i < order; ++i)
