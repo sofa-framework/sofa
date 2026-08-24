@@ -29,6 +29,7 @@ namespace sofa::core::behavior
 {
 
 BaseIntegrationScheme::BaseIntegrationScheme()
+: m_dt(0)
 {}
 
 BaseIntegrationScheme::~BaseIntegrationScheme()
