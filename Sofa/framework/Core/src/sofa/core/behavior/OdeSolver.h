@@ -23,4 +23,9 @@
 
 #include <sofa/core/behavior/BaseIntegrationScheme.h>
 
-SOFA_HEADER_DISABLED("v26.12", "v27.06", "sofa/core/behavior/IntegrationScheme.h")
+SOFA_HEADER_DISABLED("v26.12", "v27.06", "sofa/core/behavior/BaseIntegrationScheme.h")
+
+namespace sofa::core::behavior
+{
+    using OdeSolver = BaseIntegrationScheme;
+}

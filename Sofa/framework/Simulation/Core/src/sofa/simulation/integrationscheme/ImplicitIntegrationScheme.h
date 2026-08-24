@@ -40,11 +40,11 @@ namespace sofa::simulation::integrationscheme
 {
 
 class SOFA_SIMULATION_CORE_API ImplicitIntegrationScheme :
-                            public  sofa::core::behavior::BaseIntegrationScheme,
+                            public sofa::core::behavior::BaseIntegrationScheme,
                             public sofa::core::behavior::LinearSolverAccessor
 {
 public:
-    SOFA_ABSTRACT_CLASS(ImplicitIntegrationScheme, sofa::core::behavior::BaseIntegrationScheme);
+    SOFA_ABSTRACT_CLASS2(ImplicitIntegrationScheme, sofa::core::behavior::BaseIntegrationScheme, sofa::core::behavior::LinearSolverAccessor);
 
     /**
      * Template method pattern is implemented here to ensure some data/member are rightly initialized
