@@ -40,7 +40,7 @@ class SOFA_COMPONENT_INTEGRATIONSCHEME_BACKWARD_API StaticEquilibriumIntegration
                             public sofa::simulation::integrationscheme::ImplicitIntegrationScheme
 {
 public:
-    SOFA_ABSTRACT_CLASS(StaticEquilibriumIntegrationScheme, ImplicitIntegrationScheme);
+    SOFA_CLASS(StaticEquilibriumIntegrationScheme, ImplicitIntegrationScheme);
 
     StaticEquilibriumIntegrationScheme();
 

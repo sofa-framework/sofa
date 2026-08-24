@@ -114,6 +114,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/behavior/MultiMatrix.h
     ${SRC_ROOT}/behavior/MultiMatrixAccessor.h
     ${SRC_ROOT}/behavior/MultiVec.h
+    ${SRC_ROOT}/behavior/OdeSolver.h
     ${SRC_ROOT}/behavior/PairInteractionConstraint.h
     ${SRC_ROOT}/behavior/PairInteractionConstraint.inl
     ${SRC_ROOT}/behavior/PairInteractionForceField.h
