@@ -273,6 +273,9 @@ void VelocityBasedImplicitIntegrationScheme::updateStatesFromLinearSolution(SRea
         vel.peq(m_systemUnknown, alpha);
     }
 
+    m_mop->propagateX(pos);
+    m_mop->propagateV(vel);
+
 }
 
 

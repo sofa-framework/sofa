@@ -265,6 +265,10 @@ void AccelerationBasedImplicitIntegrationScheme::updateStatesFromLinearSolution(
         if ( fabs(pudfv) > std::numeric_limits<SReal>::epsilon() )
             pos.peq(m_r2, -pudfv);
     }
+
+    m_mop->propagateX(pos);
+    m_mop->propagateV(vel);
+    m_mop->propagateDx(acc);
 }
 
 
