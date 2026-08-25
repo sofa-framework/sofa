@@ -23,5 +23,5 @@
 #include <sofa/simulation/graph/config.h>
 #include <sofa/simulation/Node.h>
 
-//header moved in the plugin SofaValidation
-SOFA_HEADER_DISABLED("v25.12", "v26.06", "'sofa/simulation/Node.h' instead of 'sofa/simulation/Node.h' and replace uses of DAGNode with Node")
+//header removed
+SOFA_HEADER_DISABLED("v25.12", "v26.12", "'sofa/simulation/Node.h' instead of 'sofa/simulation/DAGNode.h' and replace uses of DAGNode with Node")

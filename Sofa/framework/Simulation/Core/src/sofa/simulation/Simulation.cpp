@@ -482,8 +482,19 @@ Simulation::Simulation()
 Simulation::~Simulation()
 {}
 
+        /// create a new graph(or tree) and return its root node.
+NodeSPtr Simulation::createNewGraph(const std::string& name) { return createNewNode(name); }
+
+        /// creates and returns a new node.
+NodeSPtr Simulation::createNewNode(const std::string& name) {  return sofa::core::objectmodel::New<Node>(name); }
+
+        /// Can the simulation handle a directed acyclic graph?
+bool Simulation::isDirectedAcyclicGraph() { return true; }
+
 Simulation* getSimulation()
 {
+    if(Simulation::theSimulation.get()==nullptr)
+        Simulation::theSimulation = std::make_shared<sofa::simulation::Simulation>();
     return Simulation::theSimulation.get();
 }
 

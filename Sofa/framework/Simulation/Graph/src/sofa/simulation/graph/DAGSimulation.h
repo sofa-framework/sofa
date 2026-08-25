@@ -20,34 +20,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/graph/config.h>
-#include <sofa/simulation/fwd.h>
-#include <memory>
+#include <sofa/simulation/Simulation.h>
 
-
-
-namespace sofa::simulation::graph
-{
-
-/** Main controller of the scene.
-Defines how the scene is inited at the beginning, and updated at each time step.
-Derives from BaseObject in order to model the parameters as Datas, which makes their edition easy in the GUI.
- */
-class SOFA_SIMULATION_GRAPH_API DAGSimulation: public Simulation
-{
-public:
-    DAGSimulation();
-    ~DAGSimulation() override; // this is a terminal class
-
-    /// create a new graph(or tree) and return its root node.
-    virtual NodeSPtr createNewGraph(const std::string& name) override;
-
-    /// creates and returns a new node.
-    virtual NodeSPtr createNewNode(const std::string& name) override;
-
-    /// Can the simulation handle a directed acyclic graph?
-    bool isDirectedAcyclicGraph() override { return true; }
-};
-
-} // namespace sofa::simulation::graph
+//header removed
+SOFA_HEADER_DISABLED("v26.06", "v26.12", "'sofa/simulation/Simulation.h' instead of 'sofa/simulation/DAGSimulation.h' and replace uses of DAGSimulation with Simulation")
