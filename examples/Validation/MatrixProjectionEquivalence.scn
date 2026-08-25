@@ -1,0 +1,90 @@
+<?xml version="1.0"?>
+<!--
+    Demonstrates whether a force field acting on MAPPED states is projected into
+    the global matrix exactly like the same force field acting DIRECTLY on the
+    top-level states.
+
+    Both sub-trees below are the same mechanical system:
+
+      "direct"  : two independent Vec3 states P1, P2, each with mass 1,
+                  coupled by a spring acting straight on P1 and P2.
+
+      "mapped"  : two independent Vec3 states Q1, Q2, each with mass 1, each
+                  carrying an IdentityMapping child (M1, M2). The very same
+                  spring acts on M1 and M2 instead.
+
+    Because the mappings are identities, J = I, so J^T K J = K. The assembled
+    system matrix of "mapped" must therefore be IDENTICAL to that of "direct",
+    and the two sub-trees must follow exactly the same trajectory.
+
+    Any deviation means the projection of the mapped stiffness added something
+    that is not J^T K J - either a missing coupling term, or a spurious one.
+
+    Run:
+        runSofa -g batch -n 100 projection_equivalence.scn
+        diff direct_P1.txt mapped_Q1.txt
+        diff direct_P2.txt mapped_Q2.txt
+-->
+<Node name="root" dt="0.01" gravity="0 0 0">
+    <RequiredPlugin pluginName="Sofa.Component.ODESolver.Backward"/>
+    <RequiredPlugin pluginName="Sofa.Component.LinearSolver.Direct"/>
+    <RequiredPlugin pluginName="Sofa.Component.LinearSolver.Ordering"/>
+    <RequiredPlugin pluginName="Sofa.Component.StateContainer"/>
+    <RequiredPlugin pluginName="Sofa.Component.Mass"/>
+    <RequiredPlugin pluginName="Sofa.Component.Mapping.Linear"/>
+    <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.Spring"/>
+    <RequiredPlugin pluginName="Sofa.Component.LinearSystem"/>
+    <RequiredPlugin pluginName="Sofa.Component.Playback"/>
+    <RequiredPlugin pluginName="Sofa.Component.Visual"/>
+
+    <DefaultAnimationLoop/>
+    <VisualStyle displayFlags="showBehaviorModels showInteractionForceFields"/>
+
+    <!-- ============ reference: the spring acts on the top-level states ============ -->
+    <Node name="direct">
+        <EulerImplicitSolver rayleighStiffness="0" rayleighMass="0"/>
+        <EigenSimplicialLDLT template="CompressedRowSparseMatrixd"/>
+
+        <Node name="P1">
+            <MechanicalObject template="Vec3d" name="dofs" position="0 0 0" showObject="true" showObjectScale="10" drawMode="1"/>
+            <UniformMass totalMass="1"/>
+            <WriteState filename="direct_P1.txt" period="0.01" writeX="true" writeV="true"/>
+        </Node>
+
+        <Node name="P2">
+            <MechanicalObject template="Vec3d" name="dofs" position="2 0 0" showObject="true" showObjectScale="10" drawMode="1"/>
+            <UniformMass totalMass="1"/>
+            <WriteState filename="direct_P2.txt" period="0.01" writeX="true" writeV="true"/>
+        </Node>
+
+        <SpringForceField object1="@P1/dofs" object2="@P2/dofs" spring="0 0 100 0 1" drawMode="1"/>
+    </Node>
+
+    <!-- ====== same system, but the spring acts on two identity-mapped states ====== -->
+    <Node name="mapped">
+        <EulerImplicitSolver rayleighStiffness="0" rayleighMass="0"/>
+        <EigenSimplicialLDLT template="CompressedRowSparseMatrixd"/>
+
+        <Node name="Q1">
+            <MechanicalObject template="Vec3d" name="dofs" position="0 0 0" showObject="true" showObjectScale="10" drawMode="2"/>
+            <UniformMass totalMass="1"/>
+            <WriteState filename="mapped_Q1.txt" period="0.01" writeX="true" writeV="true"/>
+            <Node name="M1">
+                <MechanicalObject template="Vec3d" name="dofs" position="0 0 0"/>
+                <IdentityMapping/>
+            </Node>
+        </Node>
+
+        <Node name="Q2">
+            <MechanicalObject template="Vec3d" name="dofs" position="2 0 0" showObject="true" showObjectScale="10" drawMode="2"/>
+            <UniformMass totalMass="1"/>
+            <WriteState filename="mapped_Q2.txt" period="0.01" writeX="true" writeV="true"/>
+            <Node name="M2">
+                <MechanicalObject template="Vec3d" name="dofs" position="2 0 0"/>
+                <IdentityMapping/>
+            </Node>
+        </Node>
+
+        <SpringForceField object1="@Q1/M1/dofs" object2="@Q2/M2/dofs" spring="0 0 100 0 1" drawMode="1"/>
+    </Node>
+</Node>
