@@ -75,7 +75,7 @@ void AnimationLoopParallelScheduler::cleanup()
     this->stopTaskSchduler();
 }
 
-void AnimationLoopParallelScheduler::step(const sofa::core::ExecParams* params, SReal dt)
+void AnimationLoopParallelScheduler::doStep(const sofa::core::ExecParams* params, SReal dt)
 {
     if (dt == 0)
         dt = this->gnode->getDt();

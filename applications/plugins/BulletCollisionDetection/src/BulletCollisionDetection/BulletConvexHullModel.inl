@@ -31,13 +31,6 @@ TBulletConvexHullModel<DataTypes>::TBulletConvexHullModel()
 
 
 template <class DataTypes>
-void TBulletConvexHullModel<DataTypes>::resize(int size)
-{
-    this->core::CollisionModel::resize(size);
-}
-
-
-template <class DataTypes>
 void TBulletConvexHullModel<DataTypes>::init(){
     this->CollisionModel::init();
     _mstate = dynamic_cast< core::behavior::MechanicalState<DataTypes >* > (this->getContext()->getMechanicalState());

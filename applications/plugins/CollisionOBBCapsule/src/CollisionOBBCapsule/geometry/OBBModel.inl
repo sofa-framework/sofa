@@ -65,8 +65,8 @@ void OBBCollisionModel<DataTypes>::init()
 
 
 template<class DataTypes>
-void OBBCollisionModel<DataTypes>::resize(sofa::Size size){
-    this->core::CollisionModel::resize(size);
+void OBBCollisionModel<DataTypes>::doResize(sofa::Size size){
+    this->core::CollisionModel::doResize(size);
 
     VecCoord & vext = *(ext.beginEdit());
 
@@ -85,12 +85,13 @@ void OBBCollisionModel<DataTypes>::resize(sofa::Size size){
 
 
 template<class DataTypes>
-void OBBCollisionModel<DataTypes>::computeBoundingTree(int maxDepth){
+void OBBCollisionModel<DataTypes>::doComputeBoundingTree(int maxDepth){
     sofa::component::collision::geometry::CubeCollisionModel* cubeModel = createPrevious<sofa::component::collision::geometry::CubeCollisionModel>();
     const auto npoints = _mstate->getSize();
     bool updated = false;
     if (npoints != size)
     {
+        // TODO (SPRINT SED 2025 SUGGESTION): maybe we should use doResize (because of double state check)
         resize(npoints);
         updated = true;
         cubeModel->resize(0);

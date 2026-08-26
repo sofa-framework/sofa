@@ -52,9 +52,9 @@ CapsuleCollisionModel<TDataTypes>::~CapsuleCollisionModel()
 {}
 
 template<class DataTypes>
-void CapsuleCollisionModel<DataTypes>::resize(sofa::Size size)
+void CapsuleCollisionModel<DataTypes>::doResize(sofa::Size size)
 {
-    this->core::CollisionModel::resize(size);
+    this->core::CollisionModel::doResize(size);
     _capsule_points.resize(size);
 
     VecReal & capsule_radii = *_capsule_radii.beginEdit();
@@ -117,7 +117,7 @@ Size CapsuleCollisionModel<DataTypes>::nbCap()const
 }
 
 template <class DataTypes>
-void CapsuleCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
+void CapsuleCollisionModel<DataTypes>::doComputeBoundingTree(int maxDepth)
 {
     using namespace sofa::type;
     using namespace sofa::defaulttype;
@@ -126,6 +126,7 @@ void CapsuleCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
     bool updated = false;
     if (ncap != size)
     {
+        // TODO (SPRINT SED 2025 SUGGESTION): maybe we should use doResize (because of double state check)
         resize(ncap);
         updated = true;
         cubeModel->resize(0);
