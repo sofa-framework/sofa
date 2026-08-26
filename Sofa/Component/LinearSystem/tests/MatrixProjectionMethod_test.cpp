@@ -36,19 +36,42 @@ namespace sofa
 using Matrix = linearalgebra::FullMatrix<SReal>;
 using MatrixIndex = linearalgebra::BaseMatrix::Index;
 
+/// The linear system and the projection method under test. Both have a variant taking
+/// advantage of a constant sparsity pattern, and both variants take a different code
+/// path once the pattern has been built, so every combination is tested.
+struct Parameters
+{
+    std::string linearSystem;
+    std::string projectionMethod;
+};
+
+static std::string testName(const ::testing::TestParamInfo<Parameters>& info)
+{
+    return info.param.linearSystem + "_" + info.param.projectionMethod;
+}
+
+/// The assembled matrix is 6x6: two independent particles of 3 degrees of freedom.
+static constexpr MatrixIndex matrixSize = 6;
+
+/// The number of times the matrix is assembled. The systems and projection methods
+/// relying on a constant sparsity pattern only use it from the second assembly on, so
+/// more than one is required to cover them.
+static constexpr unsigned int nbAssembly = 3;
+
 /// Assembles the matrix of a scene made of two independent particles coupled by a
 /// spring. The spring is applied either directly on the degrees of freedom, or on
 /// identity-mapped copies of them:
 ///
 ///     root
-///      |- MatrixLinearSystem
+///      |- <linear system>
 ///      |- p0 - dofs               (+ p0/mapped/dofs and an IdentityMapping)
 ///      |- p1 - dofs               (+ p1/mapped/dofs and an IdentityMapping)
 ///      |- SpringForceField        (on the dofs, or on the mapped ones)
+///      |- <projection methods>    (only when the spring is applied on mapped states)
 ///
-/// In both cases the degrees of freedom of the system are the two particles, so the
-/// assembled matrix is 6x6.
-static void assembleMatrix(bool throughMappings, Matrix& result)
+/// The matrix is assembled `nbAssembly` times, and every assembly is returned.
+static void assembleMatrix(const Parameters& parameters, bool throughMappings,
+                           std::array<Matrix, nbAssembly>& results)
 {
     const auto plugins = testing::makeScopedPlugin({
         Sofa.Component.LinearSystem,
@@ -58,8 +81,8 @@ static void assembleMatrix(bool throughMappings, Matrix& result)
 
     const simulation::Node::SPtr root = simulation::getSimulation()->createNewGraph("root");
 
-    const auto linearSystem = simpleapi::createObject(root, "MatrixLinearSystem",
-        {{"template", "FullMatrix"}});
+    const auto linearSystem = simpleapi::createObject(root, parameters.linearSystem,
+        {{"template", "CompressedRowSparseMatrixd"}});
 
     static const std::array<std::string, 2> positions { "0 0 0", "2 0 0" };
     std::array<std::string, 2> springTargets;
@@ -85,6 +108,21 @@ static void assembleMatrix(bool throughMappings, Matrix& result)
         }
     }
 
+    if (throughMappings)
+    {
+        // one projection method per ordered pair of mapped states: the contribution of
+        // the spring is split into as many mapped matrices
+        for (const auto& first : springTargets)
+        {
+            for (const auto& second : springTargets)
+            {
+                simpleapi::createObject(root, parameters.projectionMethod,
+                    {{"template", "CompressedRowSparseMatrixd"},
+                     {"mechanicalStates", first + " " + second}});
+            }
+        }
+    }
+
     const auto spring = simpleapi::createObject(root, "SpringForceField",
         {{"name", "spring"},
          {"object1", springTargets[0]},
@@ -97,30 +135,40 @@ static void assembleMatrix(bool throughMappings, Matrix& result)
     auto mparams = *core::MechanicalParams::defaultInstance();
     mparams.setKFactor(1_sreal);
 
-    // force fields usually pre-compute elements required by the assembly in addForce
     auto* forceField = dynamic_cast<core::behavior::BaseForceField*>(spring.get());
     ASSERT_NE(forceField, nullptr);
-    core::MultiVecDerivId forceId = core::vec_id::write_access::externalForce;
-    forceField->addForce(&mparams, forceId);
 
     auto* system = dynamic_cast<core::behavior::BaseMatrixLinearSystem*>(linearSystem.get());
     ASSERT_NE(system, nullptr);
-    system->buildSystemMatrix(&mparams);
 
-    const linearalgebra::BaseMatrix* matrix = system->getSystemBaseMatrix();
-    ASSERT_NE(matrix, nullptr);
-
-    result.resize(matrix->rowSize(), matrix->colSize());
-    for (MatrixIndex i = 0; i < matrix->rowSize(); ++i)
+    for (unsigned int assembly = 0; assembly < nbAssembly; ++assembly)
     {
-        for (MatrixIndex j = 0; j < matrix->colSize(); ++j)
+        // force fields usually pre-compute elements required by the assembly in addForce
+        core::MultiVecDerivId forceId = core::vec_id::write_access::externalForce;
+        forceField->addForce(&mparams, forceId);
+
+        system->buildSystemMatrix(&mparams);
+
+        const linearalgebra::BaseMatrix* matrix = system->getSystemBaseMatrix();
+        ASSERT_NE(matrix, nullptr);
+        ASSERT_EQ(matrix->rowSize(), matrixSize);
+        ASSERT_EQ(matrix->colSize(), matrixSize);
+
+        Matrix& result = results[assembly];
+        result.resize(matrixSize, matrixSize);
+        for (MatrixIndex i = 0; i < matrixSize; ++i)
         {
-            result.set(i, j, matrix->element(i, j));
+            for (MatrixIndex j = 0; j < matrixSize; ++j)
+            {
+                result.set(i, j, matrix->element(i, j));
+            }
         }
     }
 
     simulation::node::unload(root);
 }
+
+class MatrixProjectionMethodTest : public ::testing::TestWithParam<Parameters> {};
 
 /// A force field acting on mapped states is projected into the global matrix as
 /// J^T K J. The mappings here are identities, so J = I, and the projection must
@@ -129,26 +177,23 @@ static void assembleMatrix(bool throughMappings, Matrix& result)
 ///
 /// The comparison is sensitive in both directions: a missing coupling term and a
 /// spurious contribution both break the equality.
-TEST(MatrixProjectionMethod, mappedForceFieldMatchesNonMapped)
+TEST_P(MatrixProjectionMethodTest, mappedForceFieldMatchesNonMapped)
 {
-    Matrix reference, projected;
-    assembleMatrix(false, reference);
-    assembleMatrix(true, projected);
-
-    // two particles of 3 degrees of freedom each
-    ASSERT_EQ(reference.rowSize(), 6);
-    ASSERT_EQ(reference.colSize(), 6);
-    ASSERT_EQ(projected.rowSize(), reference.rowSize());
-    ASSERT_EQ(projected.colSize(), reference.colSize());
+    std::array<Matrix, nbAssembly> reference, projected;
+    assembleMatrix(GetParam(), false, reference);
+    assembleMatrix(GetParam(), true, projected);
 
     static constexpr SReal tolerance = 1e-12_sreal;
 
-    for (MatrixIndex i = 0; i < reference.rowSize(); ++i)
+    for (unsigned int assembly = 0; assembly < nbAssembly; ++assembly)
     {
-        for (MatrixIndex j = 0; j < reference.colSize(); ++j)
+        for (MatrixIndex i = 0; i < matrixSize; ++i)
         {
-            EXPECT_NEAR(projected.element(i, j), reference.element(i, j), tolerance)
-                << "at (" << i << ", " << j << ")";
+            for (MatrixIndex j = 0; j < matrixSize; ++j)
+            {
+                EXPECT_NEAR(projected[assembly].element(i, j), reference[assembly].element(i, j), tolerance)
+                    << "at (" << i << ", " << j << ") of assembly " << assembly;
+            }
         }
     }
 }
@@ -156,28 +201,38 @@ TEST(MatrixProjectionMethod, mappedForceFieldMatchesNonMapped)
 /// Guards the test above: it would still pass if both matrices were empty. The spring
 /// couples the two particles, so both off-diagonal blocks must be non-zero, i.e. the
 /// projection must produce the coupling terms and not only the diagonal ones.
-TEST(MatrixProjectionMethod, mappedForceFieldProducesCouplingTerms)
+TEST_P(MatrixProjectionMethodTest, mappedForceFieldProducesCouplingTerms)
 {
-    Matrix projected;
-    assembleMatrix(true, projected);
+    std::array<Matrix, nbAssembly> projected;
+    assembleMatrix(GetParam(), true, projected);
 
-    ASSERT_EQ(projected.rowSize(), 6);
-    ASSERT_EQ(projected.colSize(), 6);
-
-    SReal diagonalBlocks = 0_sreal;
-    SReal offDiagonalBlocks = 0_sreal;
-
-    for (MatrixIndex i = 0; i < 6; ++i)
+    for (unsigned int assembly = 0; assembly < nbAssembly; ++assembly)
     {
-        for (MatrixIndex j = 0; j < 6; ++j)
-        {
-            const bool sameParticle = (i < 3) == (j < 3);
-            (sameParticle ? diagonalBlocks : offDiagonalBlocks) += std::abs(projected.element(i, j));
-        }
-    }
+        SReal diagonalBlocks = 0_sreal;
+        SReal offDiagonalBlocks = 0_sreal;
 
-    EXPECT_GT(diagonalBlocks, 0_sreal);
-    EXPECT_GT(offDiagonalBlocks, 0_sreal);
+        for (MatrixIndex i = 0; i < matrixSize; ++i)
+        {
+            for (MatrixIndex j = 0; j < matrixSize; ++j)
+            {
+                const bool sameParticle = (i < 3) == (j < 3);
+                (sameParticle ? diagonalBlocks : offDiagonalBlocks) +=
+                    std::abs(projected[assembly].element(i, j));
+            }
+        }
+
+        EXPECT_GT(diagonalBlocks, 0_sreal) << "at assembly " << assembly;
+        EXPECT_GT(offDiagonalBlocks, 0_sreal) << "at assembly " << assembly;
+    }
 }
+
+INSTANTIATE_TEST_SUITE_P(MatrixProjectionMethod, MatrixProjectionMethodTest,
+    ::testing::ValuesIn(std::vector<Parameters>{
+        {"MatrixLinearSystem", "MatrixProjectionMethod"},
+        {"MatrixLinearSystem", "ConstantSparsityProjectionMethod"},
+        {"ConstantSparsityPatternSystem", "MatrixProjectionMethod"},
+        {"ConstantSparsityPatternSystem", "ConstantSparsityProjectionMethod"},
+    }),
+    testName);
 
 }
