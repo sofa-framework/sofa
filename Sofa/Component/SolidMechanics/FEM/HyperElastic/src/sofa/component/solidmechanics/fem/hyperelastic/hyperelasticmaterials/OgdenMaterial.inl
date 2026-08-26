@@ -62,15 +62,12 @@ auto OgdenMaterial<DataTypes>::secondPiolaKirchhoffStress(Strain<DataTypes>& str
             for (sofa::Index n = 0; n < spatial_dimensions; ++n) 
                 CEigen(m, n) = C(m, n);
 
-        // The SelfAdjointEigenSolver is normally the suitable choice for symmetric matrices
-        // However, it has produced wrong results in some previous tests
-        // Disable temporarilly until fixed /*Eigen::SelfAdjointEigenSolver<EigenMatrix>*/
-        Eigen::EigenSolver<EigenMatrix> EigenProblemSolver(CEigen, true);
+        Eigen::SelfAdjointEigenSolver<EigenMatrix> EigenProblemSolver(CEigen, Eigen::ComputeEigenvectors);
         if (EigenProblemSolver.info() != Eigen::Success)
             dmsg_warning("OgdenMaterial") << "EigenSolver iterations failed to converge";
 
-        const auto eigenvectors = EigenProblemSolver.eigenvectors().real().eval();
-        const auto eigenvalues = EigenProblemSolver.eigenvalues().real().eval();
+        const auto eigenvectors = EigenProblemSolver.eigenvectors();
+        const auto eigenvalues = EigenProblemSolver.eigenvalues();
 
         // Precompute trace of C^(alpha/2) and eigenvalue powers: lambda^(alpha/2 - 1)
         const Real aBy2 = static_cast<Real>(0.5) * alpha;
@@ -131,12 +128,11 @@ auto OgdenMaterial<DataTypes>::elasticityTensor(Strain<DataTypes>& strain) -> El
         for (sofa::Index n = 0; n < spatial_dimensions; ++n) 
             CEigen(m, n) = C(m, n);
 
-    // Disable temporarilly until fixed /*Eigen::SelfAdjointEigenSolver<EigenMatrix>*/
-    Eigen::EigenSolver<EigenMatrix> EigenProblemSolver(CEigen, true);
+        Eigen::SelfAdjointEigenSolver<EigenMatrix> EigenProblemSolver(CEigen, Eigen::ComputeEigenvectors);
     if (EigenProblemSolver.info() != Eigen::Success)
         dmsg_warning("OgdenMaterial") << "EigenSolver iterations failed to converge";
-    const auto eigenvectors = EigenProblemSolver.eigenvectors().real().eval();
-    const auto eigenvalues = EigenProblemSolver.eigenvalues().real().eval();
+    const auto eigenvectors = EigenProblemSolver.eigenvectors();
+    const auto eigenvalues = EigenProblemSolver.eigenvalues();
 
     // Precompute trace of C^(alpha/2) and eigenvalue powers: lambda^(a/2 - 1) and lambda^(a/2 - 2)
     const Real aBy2 = static_cast<Real>(0.5) * alpha;
@@ -184,8 +180,10 @@ auto OgdenMaterial<DataTypes>::elasticityTensor(Strain<DataTypes>& strain) -> El
                         
                         // Eigenvalue multiplicity (val1 == val2) causes an indeterminate form;
                         // In that case, the limit of the expression is used
-                        const Real eigenvalueMultiplier = 
-                            std::fabs(eigenvalues[n] - eigenvalues[m]) < std::numeric_limits<Real>::epsilon() 
+                        constexpr Real tol = static_cast<Real>(1e-8);
+                        const Real maxEval = std::max(std::fabs(eigenvalues(n)), std::fabs(eigenvalues(m)));
+                        const bool isDegenerate = std::fabs(eigenvalues(n) - eigenvalues(m)) < maxEval * tol;
+                        const Real eigenvalueMultiplier = isDegenerate
                             ? aBy2Minus1 * eigenvaluePowers2(n) 
                             : (eigenvaluePowers1(n) - eigenvaluePowers1(m)) / (eigenvalues(n) - eigenvalues(m));
 
