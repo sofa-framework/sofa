@@ -338,4 +338,4 @@ bool EulerExplicitIntegrationScheme::isMassMatrixTriviallyInvertible(const core:
     return areAllMassesDiagonal;
 }
 
-} // namespace sofa::component::odeIntegrationScheme::forward
+} // namespace sofa::component::integrationscheme::forward

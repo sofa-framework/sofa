@@ -261,8 +261,8 @@ void StaticEquilibriumIntegrationScheme::integrate(const core::ExecParams* param
 
 void registerStaticEquilibriumIntegrationScheme(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Time integrator using implicit backward Euler scheme.")
+    factory->registerObjects(core::ObjectRegistrationData("Time integrator finding static equilibrium.")
         .add< StaticEquilibriumIntegrationScheme >());
 }
 
-} // namespace sofa::component::integrationscheme::forward
+} // namespace sofa::component::integrationscheme::backward

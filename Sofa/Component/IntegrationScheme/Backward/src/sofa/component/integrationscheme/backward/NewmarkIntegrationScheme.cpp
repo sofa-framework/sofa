@@ -77,7 +77,7 @@ void NewmarkIntegrationScheme::computeCurrentVelocityIntegrationError(sofa::simu
 
 void registerNewmarkIntegrationScheme(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Time integrator using implicit backward Euler scheme.")
+    factory->registerObjects(core::ObjectRegistrationData("Time integrator using Newmark-beta implicit scheme.")
         .add< NewmarkIntegrationScheme >());
 }
 

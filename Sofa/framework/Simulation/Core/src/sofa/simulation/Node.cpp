@@ -31,7 +31,6 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/behavior/Mass.h>
 #include <sofa/core/behavior/BaseIntegrationScheme.h>
-#include <sofa/core/behavior/BaseIntegrationScheme.h>
 #include <sofa/core/collision/Pipeline.h>
 #include <sofa/core/loader/BaseLoader.h>
 #include <sofa/core/objectmodel/ConfigurationSetting.h>

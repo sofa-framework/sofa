@@ -135,4 +135,4 @@ protected:
     simulation::MappingGraph m_mappingGraph;
 };
 
-} // namespace sofa::component::odeIntegrationScheme::forward
+} // namespace sofa::component::integrationscheme::forward

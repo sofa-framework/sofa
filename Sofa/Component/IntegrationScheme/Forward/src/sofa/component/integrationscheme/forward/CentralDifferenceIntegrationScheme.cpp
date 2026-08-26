@@ -161,4 +161,4 @@ void registerCentralDifferenceIntegrationScheme(sofa::core::ObjectFactory* facto
         .add< CentralDifferenceIntegrationScheme >());
 }
 
-} // namespace sofa::component::odeIntegrationScheme::forward
+} // namespace sofa::component::integrationscheme::forward

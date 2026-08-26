@@ -56,4 +56,4 @@ protected:
     DampVelocityIntegrationScheme();
 };
 
-} // namespace sofa::component::odeIntegrationScheme::forward
+} // namespace sofa::component::integrationscheme::forward

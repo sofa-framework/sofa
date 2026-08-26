@@ -72,4 +72,4 @@ protected:
 
 };
 
-} // namespace sofa::component::integrationscheme
+} // namespace sofa::component::integrationscheme::backward
