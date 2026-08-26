@@ -34,6 +34,9 @@ function clean_default_plugins()
           SofaSimpleGUI             \
           SofaSphFluid              \
           SofaValidation            \
+          Sofa.Component.ODESolver            \
+          Sofa.Component.ODESolver.Backward   \
+          Sofa.Component.ODESolver.Forward    \
           STLIB                     \
           VolumetricRendering       \
           CUDA                      \

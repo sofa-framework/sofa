@@ -1,0 +1,35 @@
+cmake_minimum_required(VERSION 3.22)
+project(Sofa.Component.ODESolver.Backward LANGUAGES CXX)
+
+set(SOFACOMPONENTODESOLVERBACKWARD_SOURCE_DIR "compat/sofa/component/odesolver/backward")
+
+set(DEPRECATED_HEADER_FILES
+     ${SOFACOMPONENTODESOLVERBACKWARD_SOURCE_DIR}/config.h.in
+     ${SOFACOMPONENTODESOLVERBACKWARD_SOURCE_DIR}/init.h
+     ${SOFACOMPONENTODESOLVERBACKWARD_SOURCE_DIR}/EulerImplicitSolver.h
+     ${SOFACOMPONENTODESOLVERBACKWARD_SOURCE_DIR}/NewmarkImplicitSolver.h
+     ${SOFACOMPONENTODESOLVERBACKWARD_SOURCE_DIR}/StaticSolver.h
+     ${SOFACOMPONENTODESOLVERBACKWARD_SOURCE_DIR}/BDFOdeSolver.h
+     ${SOFACOMPONENTODESOLVERBACKWARD_SOURCE_DIR}/BaseLinearMultiStepMethod.h
+)
+
+set(DEPRECATED_SOURCE_FILES
+    ${SOFACOMPONENTODESOLVERBACKWARD_SOURCE_DIR}/init.cpp
+)
+
+sofa_find_package(Sofa.Simulation.Core REQUIRED)
+sofa_find_package(Sofa.Component.IntegrationScheme.Backward REQUIRED)
+
+add_library(${PROJECT_NAME} SHARED ${DEPRECATED_HEADER_FILES} ${DEPRECATED_SOURCE_FILES})
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Simulation.Core Sofa.Component.IntegrationScheme.Backward)
+
+sofa_create_package_with_targets(
+    PACKAGE_NAME ${PROJECT_NAME}
+    PACKAGE_VERSION ${Sofa_VERSION}
+    TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
+    INCLUDE_SOURCE_DIR "compat"
+    INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
+)
+
+
+
