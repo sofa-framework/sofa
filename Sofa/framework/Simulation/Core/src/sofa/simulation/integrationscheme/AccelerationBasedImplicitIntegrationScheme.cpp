@@ -71,7 +71,7 @@ void AccelerationBasedImplicitIntegrationScheme::doSetupIntegrationStep(const co
 
         // Only at the start of the simulation, copy the position/velocity values inside the stored
         // states to recreate the past
-        if (this->getTime() < std::numeric_limits<SReal>::epsilon())
+        if (!m_passedStatesValid)
         {
             sofa::core::behavior::MultiVecDeriv v0(m_vop.get(), m_v0[i]);
             v0.eq(core::vec_id::write_access::velocity);
@@ -81,6 +81,7 @@ void AccelerationBasedImplicitIntegrationScheme::doSetupIntegrationStep(const co
             a0.clear();
         }
     }
+    m_passedStatesValid = true;
 
     // Now shift all states to advance in time (could be skipped at the start of the simulation)
     // I decided not to do it to avoid having the check
