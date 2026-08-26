@@ -21,95 +21,76 @@
 ******************************************************************************/
 #include <sofa/testing/BaseTest.h>
 
-#include <sofa/component/linearsystem/MatrixLinearSystem.inl>
-#include <sofa/component/linearsystem/TypedMatrixLinearSystem.inl>
-
-#include <sofa/component/mapping/linear/IdentityMapping.h>
-#include <sofa/component/solidmechanics/spring/SpringForceField.h>
-#include <sofa/component/statecontainer/MechanicalObject.h>
-
+#include <sofa/Modules.h>
 #include <sofa/core/MechanicalParams.h>
-#include <sofa/core/behavior/ForceField.h>
+#include <sofa/core/behavior/BaseForceField.h>
+#include <sofa/core/behavior/BaseMatrixLinearSystem.h>
 #include <sofa/linearalgebra/FullMatrix.h>
+#include <sofa/simpleapi/SimpleApi.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/Simulation.h>
 
 namespace sofa
 {
 
-using DataTypes = defaulttype::Vec3Types;
-using MatrixType = linearalgebra::FullMatrix<SReal>;
-using VectorType = linearalgebra::FullVector<SReal>;
-using MatrixSystem = component::linearsystem::MatrixLinearSystem<MatrixType, VectorType>;
-using MechanicalObject3 = component::statecontainer::MechanicalObject<DataTypes>;
-using Spring3 = component::solidmechanics::spring::SpringForceField<DataTypes>;
-using IdentityMapping3 = component::mapping::linear::IdentityMapping<DataTypes, DataTypes>;
+using Matrix = linearalgebra::FullMatrix<SReal>;
+using MatrixIndex = linearalgebra::BaseMatrix::Index;
 
-constexpr SReal springStiffness = 100_sreal;
-constexpr SReal springRestLength = 1_sreal;
-
-/// A particle, alone in its node, optionally carrying an identity-mapped copy of itself
-struct Particle
+/// Assembles the matrix of a scene made of two independent particles coupled by a
+/// spring. The spring is applied either directly on the degrees of freedom, or on
+/// identity-mapped copies of them:
+///
+///     root
+///      |- MatrixLinearSystem
+///      |- p0 - dofs               (+ p0/mapped/dofs and an IdentityMapping)
+///      |- p1 - dofs               (+ p1/mapped/dofs and an IdentityMapping)
+///      |- SpringForceField        (on the dofs, or on the mapped ones)
+///
+/// In both cases the degrees of freedom of the system are the two particles, so the
+/// assembled matrix is 6x6.
+static void assembleMatrix(bool throughMappings, Matrix& result)
 {
-    simulation::Node::SPtr node;
-    MechanicalObject3::SPtr state;    ///< the degrees of freedom of the system
-    MechanicalObject3::SPtr mapped;   ///< the identity-mapped copy, if any
+    const auto plugins = testing::makeScopedPlugin({
+        Sofa.Component.LinearSystem,
+        Sofa.Component.Mapping.Linear,
+        Sofa.Component.SolidMechanics.Spring,
+        Sofa.Component.StateContainer});
 
-    /// The state the force field is applied on
-    MechanicalObject3* target() const
-    {
-        return mapped ? mapped.get() : state.get();
-    }
-};
-
-static Particle createParticle(simulation::Node* parent, const std::string& name,
-                               const type::Vec3& position, bool withMapping)
-{
-    Particle particle;
-    particle.node = parent->createChild(name);
-
-    particle.state = core::objectmodel::New<MechanicalObject3>();
-    particle.state->setName("dofs");
-    particle.node->addObject(particle.state);
-    particle.state->resize(1);
-    particle.state->writePositions()[0] = position;
-
-    if (withMapping)
-    {
-        const auto mappedNode = particle.node->createChild(name + "_mapped");
-
-        particle.mapped = core::objectmodel::New<MechanicalObject3>();
-        particle.mapped->setName("dofs");
-        mappedNode->addObject(particle.mapped);
-        particle.mapped->resize(1);
-        particle.mapped->writePositions()[0] = position;
-
-        const auto mapping = core::objectmodel::New<IdentityMapping3>();
-        mapping->setModels(particle.state.get(), particle.mapped.get());
-        mappedNode->addObject(mapping);
-    }
-
-    return particle;
-}
-
-/// Assembles the matrix of a system made of two independent particles coupled by a
-/// spring. When `throughMappings` is true, the spring is applied on identity-mapped
-/// copies of the particles rather than on the particles themselves. In both cases the
-/// degrees of freedom of the system are the two particles, so the matrix is 6x6.
-static void assembleMatrix(bool throughMappings, MatrixType& result)
-{
     const simulation::Node::SPtr root = simulation::getSimulation()->createNewGraph("root");
 
-    const MatrixSystem::SPtr linearSystem = core::objectmodel::New<MatrixSystem>();
-    root->addObject(linearSystem);
+    const auto linearSystem = simpleapi::createObject(root, "MatrixLinearSystem",
+        {{"template", "FullMatrix"}});
 
-    const Particle particle0 = createParticle(root.get(), "p0", {0_sreal, 0_sreal, 0_sreal}, throughMappings);
-    const Particle particle1 = createParticle(root.get(), "p1", {2_sreal, 0_sreal, 0_sreal}, throughMappings);
+    static const std::array<std::string, 2> positions { "0 0 0", "2 0 0" };
+    std::array<std::string, 2> springTargets;
 
-    const auto spring = core::objectmodel::New<Spring3>(particle0.target(), particle1.target());
-    spring->setName("spring");
-    root->addObject(spring);
-    spring->addSpring(0, 0, springStiffness, 0_sreal, springRestLength);
+    for (std::size_t i = 0; i < 2; ++i)
+    {
+        const std::string name = "p" + std::to_string(i);
+
+        const auto particle = simpleapi::createChild(root, name);
+        simpleapi::createObject(particle, "MechanicalObject",
+            {{"name", "dofs"}, {"template", "Vec3"}, {"position", positions[i]}});
+
+        springTargets[i] = "@/" + name + "/dofs";
+
+        if (throughMappings)
+        {
+            const auto mapped = simpleapi::createChild(particle, "mapped");
+            simpleapi::createObject(mapped, "MechanicalObject",
+                {{"name", "dofs"}, {"template", "Vec3"}, {"position", positions[i]}});
+            simpleapi::createObject(mapped, "IdentityMapping", {});
+
+            springTargets[i] = "@/" + name + "/mapped/dofs";
+        }
+    }
+
+    const auto spring = simpleapi::createObject(root, "SpringForceField",
+        {{"name", "spring"},
+         {"object1", springTargets[0]},
+         {"object2", springTargets[1]},
+         // index1 index2 stiffness damping restLength
+         {"spring", "0 0 100 0 1"}});
 
     simulation::node::initRoot(root.get());
 
@@ -117,18 +98,22 @@ static void assembleMatrix(bool throughMappings, MatrixType& result)
     mparams.setKFactor(1_sreal);
 
     // force fields usually pre-compute elements required by the assembly in addForce
+    auto* forceField = dynamic_cast<core::behavior::BaseForceField*>(spring.get());
+    ASSERT_NE(forceField, nullptr);
     core::MultiVecDerivId forceId = core::vec_id::write_access::externalForce;
-    static_cast<core::behavior::BaseForceField*>(spring.get())->addForce(&mparams, forceId);
+    forceField->addForce(&mparams, forceId);
 
-    linearSystem->buildSystemMatrix(&mparams);
+    auto* system = dynamic_cast<core::behavior::BaseMatrixLinearSystem*>(linearSystem.get());
+    ASSERT_NE(system, nullptr);
+    system->buildSystemMatrix(&mparams);
 
-    const MatrixType* matrix = linearSystem->getSystemMatrix();
+    const linearalgebra::BaseMatrix* matrix = system->getSystemBaseMatrix();
     ASSERT_NE(matrix, nullptr);
 
     result.resize(matrix->rowSize(), matrix->colSize());
-    for (MatrixType::Index i = 0; i < matrix->rowSize(); ++i)
+    for (MatrixIndex i = 0; i < matrix->rowSize(); ++i)
     {
-        for (MatrixType::Index j = 0; j < matrix->colSize(); ++j)
+        for (MatrixIndex j = 0; j < matrix->colSize(); ++j)
         {
             result.set(i, j, matrix->element(i, j));
         }
@@ -137,16 +122,16 @@ static void assembleMatrix(bool throughMappings, MatrixType& result)
     simulation::node::unload(root);
 }
 
-/// A force field applied on mapped states must be projected into the global matrix as
-/// J^T K J. Here the mappings are identities, so J = I and the projected matrix must be
-/// exactly the matrix obtained by applying the same force field directly on the degrees
-/// of freedom of the system.
+/// A force field acting on mapped states is projected into the global matrix as
+/// J^T K J. The mappings here are identities, so J = I, and the projection must
+/// reproduce exactly the matrix obtained by applying the same force field directly on
+/// the degrees of freedom of the system.
 ///
 /// The comparison is sensitive in both directions: a missing coupling term and a
 /// spurious contribution both break the equality.
 TEST(MatrixProjectionMethod, mappedForceFieldMatchesNonMapped)
 {
-    MatrixType reference, projected;
+    Matrix reference, projected;
     assembleMatrix(false, reference);
     assembleMatrix(true, projected);
 
@@ -158,9 +143,9 @@ TEST(MatrixProjectionMethod, mappedForceFieldMatchesNonMapped)
 
     static constexpr SReal tolerance = 1e-12_sreal;
 
-    for (MatrixType::Index i = 0; i < reference.rowSize(); ++i)
+    for (MatrixIndex i = 0; i < reference.rowSize(); ++i)
     {
-        for (MatrixType::Index j = 0; j < reference.colSize(); ++j)
+        for (MatrixIndex j = 0; j < reference.colSize(); ++j)
         {
             EXPECT_NEAR(projected.element(i, j), reference.element(i, j), tolerance)
                 << "at (" << i << ", " << j << ")";
@@ -173,7 +158,7 @@ TEST(MatrixProjectionMethod, mappedForceFieldMatchesNonMapped)
 /// projection must produce the coupling terms and not only the diagonal ones.
 TEST(MatrixProjectionMethod, mappedForceFieldProducesCouplingTerms)
 {
-    MatrixType projected;
+    Matrix projected;
     assembleMatrix(true, projected);
 
     ASSERT_EQ(projected.rowSize(), 6);
@@ -182,9 +167,9 @@ TEST(MatrixProjectionMethod, mappedForceFieldProducesCouplingTerms)
     SReal diagonalBlocks = 0_sreal;
     SReal offDiagonalBlocks = 0_sreal;
 
-    for (MatrixType::Index i = 0; i < 6; ++i)
+    for (MatrixIndex i = 0; i < 6; ++i)
     {
-        for (MatrixType::Index j = 0; j < 6; ++j)
+        for (MatrixIndex j = 0; j < 6; ++j)
         {
             const bool sameParticle = (i < 3) == (j < 3);
             (sameParticle ? diagonalBlocks : offDiagonalBlocks) += std::abs(projected.element(i, j));
