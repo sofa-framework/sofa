@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define ELASTICITY_COMPONENT_MATERIAL_NEOHOOKEANMATERIAL_CPP
+#define SOFA_COMPONENT_SOLIDMECHANICS_FEM_HYPERELASTIC_MATERIAL_NEOHOOKEANMATERIAL_CPP
 
 #include <sofa/component/solidmechanics/fem/hyperelastic/hyperelasticmaterials/NeoHookeanMaterial.inl>
 

@@ -25,7 +25,7 @@
 #include <sofa/component/solidmechanics/fem/hyperelastic/PK2HyperelasticMaterial.h>
 #include <sofa/component/solidmechanics/fem/hyperelastic/hyperelasticmaterials/LinearMechanicalParametersComponent.h>
 
-#if !defined(ELASTICITY_COMPONENT_MATERIAL_NEOHOOKEANMATERIAL_CPP)
+#if !defined(SOFA_COMPONENT_SOLIDMECHANICS_FEM_HYPERELASTIC_MATERIAL_NEOHOOKEANMATERIAL_CPP)
 #include <sofa/defaulttype/VecTypes.h>
 #endif
 
@@ -64,7 +64,7 @@ public:
 };
 
 
-#if !defined(ELASTICITY_COMPONENT_MATERIAL_NEOHOOKEANMATERIAL_CPP)
+#if !defined(SOFA_COMPONENT_SOLIDMECHANICS_FEM_HYPERELASTIC_MATERIAL_NEOHOOKEANMATERIAL_CPP)
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_HYPERELASTIC_API NeoHookeanMaterial<sofa::defaulttype::Vec1Types>;
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_HYPERELASTIC_API NeoHookeanMaterial<sofa::defaulttype::Vec2Types>;
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_HYPERELASTIC_API NeoHookeanMaterial<sofa::defaulttype::Vec3Types>;

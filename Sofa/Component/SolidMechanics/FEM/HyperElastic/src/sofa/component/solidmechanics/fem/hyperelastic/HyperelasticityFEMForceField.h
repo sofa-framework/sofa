@@ -25,7 +25,7 @@
 #include <sofa/component/solidmechanics/fem/hyperelastic/config.h>
 #include <sofa/component/solidmechanics/fem/elastic/FEMForceField.h>
 
-#if !defined(ELASTICITY_COMPONENT_ELEMENT_HYPERLASTICITY_FEM_FORCE_FIELD_CPP)
+#if !defined(SOFA_COMPONENT_SOLIDMECHANICS_FEM_HYPERELASTIC_HYPERLASTICITY_FEM_FORCE_FIELD_CPP)
 #include <sofa/fem/FiniteElement[all].h>
 #endif
 
@@ -149,7 +149,7 @@ protected:
         const sofa::VecDeriv_t<TDataTypes>& dx) override;
 };
 
-#if !defined(ELASTICITY_COMPONENT_HYPERLASTICITY_FEM_FORCE_FIELD_CPP)
+#if !defined(SOFA_COMPONENT_SOLIDMECHANICS_FEM_HYPERELASTIC_HYPERLASTICITY_FEM_FORCE_FIELD_CPP)
 template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_HYPERELASTIC_API HyperelasticityFEMForceField<sofa::defaulttype::Vec1Types, sofa::geometry::Edge>;
 template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_HYPERELASTIC_API HyperelasticityFEMForceField<sofa::defaulttype::Vec2Types, sofa::geometry::Edge>;
 template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_HYPERELASTIC_API HyperelasticityFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Edge>;

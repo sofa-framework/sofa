@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define ELASTICITY_COMPONENT_LINEAR_MECHANICAL_PARAMETERS_CPP
+#define SOFA_COMPONENT_SOLIDMECHANICS_FEM_HYPERELASTIC_LINEAR_MECHANICAL_PARAMETERS_CPP
 #include <sofa/component/solidmechanics/fem/hyperelastic/hyperelasticmaterials/LinearMechanicalParametersComponent.inl>
 
 namespace sofa::component::solidmechanics::fem::hyperelastic

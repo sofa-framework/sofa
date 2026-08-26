@@ -53,7 +53,7 @@ protected:
     virtual ElasticityTensor elasticityTensor(Strain<DataTypes>& strain) = 0;
 };
 
-#if !defined(ELASTICITY_COMPONENT_HYPERELASTIC_MATERIAL_CPP)
+#if !defined(SOFA_COMPONENT_SOLIDMECHANICS_FEM_HYPERELASTIC_PK2HYPERELASTIC_MATERIAL_CPP)
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_HYPERELASTIC_API PK2HyperelasticMaterial<sofa::defaulttype::Vec1Types>;
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_HYPERELASTIC_API PK2HyperelasticMaterial<sofa::defaulttype::Vec2Types>;
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_HYPERELASTIC_API PK2HyperelasticMaterial<sofa::defaulttype::Vec3Types>;

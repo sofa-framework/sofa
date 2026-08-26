@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define ELASTICITY_COMPONENT_PK2HYPERELASTIC_MATERIAL_CPP
+#define SOFA_COMPONENT_SOLIDMECHANICS_FEM_HYPERELASTIC_PK2HYPERELASTIC_MATERIAL_CPP
 #include <sofa/component/solidmechanics/fem/hyperelastic/PK2HyperelasticMaterial.inl>
 
 namespace sofa::component::solidmechanics::fem::hyperelastic

@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define ELASTICITY_COMPONENT_HYPERELASTIC_MATERIAL_CPP
+#define SOFA_COMPONENT_SOLIDMECHANICS_FEM_HYPERELASTIC_HYPERELASTIC_MATERIAL_CPP
 
 #include <sofa/component/solidmechanics/fem/hyperelastic/HyperelasticMaterial.inl>
 #include <sofa/defaulttype/VecTypes.h>
