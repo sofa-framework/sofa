@@ -80,7 +80,7 @@ void BDFIntegrationScheme::computeFactors()
 
 void registerBDFIntegrationScheme(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("Time integrator using implicit backward Euler scheme.")
+    factory->registerObjects(core::ObjectRegistrationData("Time integrator using Backward Differential Formula implicit scheme.")
         .add< BDFIntegrationScheme >());
 }
 

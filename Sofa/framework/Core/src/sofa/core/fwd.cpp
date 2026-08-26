@@ -35,7 +35,6 @@
 #include <sofa/core/behavior/BaseAnimationLoop.h>
 #include <sofa/core/behavior/BaseMass.h>
 #include <sofa/core/behavior/BaseIntegrationScheme.h>
-#include <sofa/core/behavior/BaseIntegrationScheme.h>
 #include <sofa/core/behavior/ConstraintSolver.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/core/behavior/BaseForceField.h>

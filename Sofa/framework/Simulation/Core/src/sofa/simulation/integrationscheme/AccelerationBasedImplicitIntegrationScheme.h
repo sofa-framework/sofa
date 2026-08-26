@@ -37,7 +37,7 @@ namespace sofa::simulation::integrationscheme
  * This class is a specialization of implicit integration scheme, where the unknown is expressed as
  * a delta in acceleration.
  *
- * Fixing this will then result in a particular expression of the gradient/hessain computation
+ * Fixing this will then result in a particular expression of the gradient/hessian computation
  * as well as the state update, enabling to have a generic formulation of the ODE linearization
  * for all integration scheme that uses acceleration as the unknown.
  *
@@ -71,7 +71,7 @@ protected:
     virtual sofa::Size getIntegrationSchemeTimeOrder() const = 0;
     /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ **/
 
-    /**   New API methods of VelocityBasedImplicitIntegrationScheme   **/
+    /**   New API methods of AccelerationBasedImplicitIntegrationScheme   **/
     /**
      * This method returns a scalar which is the value of the derivative of the position integration
      * scheme with respect to the acceleration.

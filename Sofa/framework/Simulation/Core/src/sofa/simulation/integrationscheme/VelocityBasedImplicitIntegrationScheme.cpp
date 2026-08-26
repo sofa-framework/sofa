@@ -227,8 +227,6 @@ void VelocityBasedImplicitIntegrationScheme::computeRHS(bool firstIteration)
 
 SReal VelocityBasedImplicitIntegrationScheme::evaluateResidual()
 {
-    sofa::simulation::common::VectorOperations vop( m_params, this->getContext() );
-
     core::behavior::MultiVecDeriv r0(m_vop.get(), m_r0);
     core::behavior::MultiVecDeriv r1(m_vop.get(), m_r1);
 
