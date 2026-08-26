@@ -142,22 +142,22 @@ void EulerExplicitIntegrationScheme::updateState(sofa::simulation::common::Vecto
         //newVel = vec + acc * dt
         //newPos = pos + newVel * dt
 
-        newVel.eq(vel, acc.id(), dt);
-        (*m_mop)->solveConstraint(newVel,core::ConstraintOrder::VEL);
+        newVel.eq(vel, acc.id(), m_dt);
+        m_mop->solveConstraint(newVel,core::ConstraintOrder::VEL);
 
-        newPos.eq(pos, newVel, dt);
-        (*m_mop)->solveConstraint(newPos,core::ConstraintOrder::POS);
+        newPos.eq(pos, newVel, m_dt);
+        m_mop->solveConstraint(newPos,core::ConstraintOrder::POS);
     }
     else
     {
         //newPos = pos + vel * dt
         //newVel = vel + acc * dt
 
-        newPos.eq(pos, vel, dt);
-        (*m_mop)->solveConstraint(newPos,core::ConstraintOrder::POS);
+        newPos.eq(pos, vel, m_dt);
+        m_mop->solveConstraint(newPos,core::ConstraintOrder::POS);
 
-        newVel.eq(vel, acc.id(), dt);
-        (*m_mop)->solveConstraint(newVel,core::ConstraintOrder::VEL);
+        newVel.eq(vel, acc.id(), m_dt);
+        m_mop->solveConstraint(newVel,core::ConstraintOrder::VEL);
     }
 #else // single-operation optimization
     {
