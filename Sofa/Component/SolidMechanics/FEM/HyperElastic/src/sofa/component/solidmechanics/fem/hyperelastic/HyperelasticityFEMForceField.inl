@@ -32,6 +32,12 @@
 namespace sofa::component::solidmechanics::fem::hyperelastic
 {
 
+template <class TDataTypes, class TElementType>
+HyperelasticityFEMForceField<TDataTypes, TElementType>::HyperelasticityFEMForceField()
+    : l_material(initLink("material", "Link to the material containing the constitutive law"))
+{
+}
+
 template <class DataTypes, class ElementType>
 void HyperelasticityFEMForceField<DataTypes, ElementType>::init()
 {

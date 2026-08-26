@@ -85,6 +85,9 @@ public:
         sofa::BaseLink::FLAG_STOREPATH | sofa::BaseLink::FLAG_STRONGLINK> l_material;
 
 protected:
+
+    HyperelasticityFEMForceField();
+
     using trait = sofa::component::solidmechanics::fem::elastic::trait<DataTypes, TElementType>;
     using ElementGradient = typename trait::ElementGradient;
 
