@@ -82,24 +82,9 @@ public:
 
     virtual void reinit();
 
-    // -- CollisionModel interface
-
-    virtual void resize(int size);
-
     //void draw(const core::visual::VisualParams*,int index);
 
     void draw(const core::visual::VisualParams* vparams);    
-
-    inline virtual void computeBoundingTree(int/* maxDepth*/){
-        _bt_cshape.recalculateLocalAabb();
-    }
-
-    virtual bool canCollideWithElement(int index, CollisionModel* model2, int index2){
-        if(this == model2)
-            return false;
-
-        return CollisionModel::canCollideWithElement(index,model2,index2);
-    }
 
     core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return _mstate; }
     const core::behavior::MechanicalState<DataTypes>* getMechanicalState() const { return _mstate; }
@@ -147,6 +132,21 @@ public:
 protected:
     void draw_without_decomposition(const core::visual::VisualParams* vparams);
     void draw_decomposition(const core::visual::VisualParams* vparams);
+
+    // -- CollisionModel interface
+
+    // virtual void doResize(int size) override;
+
+    inline virtual void doComputeBoundingTree(int/* maxDepth*/) override {
+        _bt_cshape.recalculateLocalAabb();
+    }
+
+    virtual bool doCanCollideWithElement(int index, CollisionModel* model2, int index2) override {
+        if(this == model2)
+            return false;
+
+        return CollisionModel::doCanCollideWithElement(index,model2,index2);
+    }
 
     Coord _bary;
     btTransform _bt_trans;

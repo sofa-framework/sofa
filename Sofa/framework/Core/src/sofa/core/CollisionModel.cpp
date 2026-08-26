@@ -145,7 +145,7 @@ void CollisionModel::setPrevious(CollisionModel::SPtr val)
         val->next.set(this);
 }
 
-void CollisionModel::computeContinuousBoundingTree(SReal dt, ContinuousIntersectionTypeFlag continuousIntersectionFlag, int maxDepth)
+void CollisionModel::doComputeContinuousBoundingTree(SReal dt, ContinuousIntersectionTypeFlag continuousIntersectionFlag, int maxDepth)
 {
     SOFA_UNUSED(dt);
     SOFA_UNUSED(continuousIntersectionFlag);
