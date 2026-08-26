@@ -36,18 +36,21 @@ namespace sofa
 using Matrix = linearalgebra::FullMatrix<SReal>;
 using MatrixIndex = linearalgebra::BaseMatrix::Index;
 
-/// The linear system and the projection method under test. Both have a variant taking
-/// advantage of a constant sparsity pattern, and both variants take a different code
-/// path once the pattern has been built, so every combination is tested.
+/// The container of the global matrix, the linear system and the projection method under
+/// test. The linear system and the projection method both have a variant taking advantage
+/// of a constant sparsity pattern, and both variants take a different code path once the
+/// pattern has been built, so every combination is tested.
 struct Parameters
 {
+    std::string matrixTemplate;
     std::string linearSystem;
     std::string projectionMethod;
 };
 
 static std::string testName(const ::testing::TestParamInfo<Parameters>& info)
 {
-    return info.param.linearSystem + "_" + info.param.projectionMethod;
+    return info.param.matrixTemplate + "_" + info.param.linearSystem + "_"
+        + info.param.projectionMethod;
 }
 
 /// The assembled matrix is 6x6: two independent particles of 3 degrees of freedom.
@@ -82,7 +85,7 @@ static void assembleMatrix(const Parameters& parameters, bool throughMappings,
     const simulation::Node::SPtr root = simulation::getSimulation()->createNewGraph("root");
 
     const auto linearSystem = simpleapi::createObject(root, parameters.linearSystem,
-        {{"template", "CompressedRowSparseMatrixd"}});
+        {{"template", parameters.matrixTemplate}});
 
     static const std::array<std::string, 2> positions { "0 0 0", "2 0 0" };
     std::array<std::string, 2> springTargets;
@@ -111,7 +114,8 @@ static void assembleMatrix(const Parameters& parameters, bool throughMappings,
     if (throughMappings)
     {
         // one projection method per ordered pair of mapped states: the contribution of
-        // the spring is split into as many mapped matrices
+        // the spring is split into as many mapped matrices. Contrary to the global
+        // matrix, the mapped matrices are always in the CRS format.
         for (const auto& first : springTargets)
         {
             for (const auto& second : springTargets)
@@ -228,10 +232,13 @@ TEST_P(MatrixProjectionMethodTest, mappedForceFieldProducesCouplingTerms)
 
 INSTANTIATE_TEST_SUITE_P(MatrixProjectionMethod, MatrixProjectionMethodTest,
     ::testing::ValuesIn(std::vector<Parameters>{
-        {"MatrixLinearSystem", "MatrixProjectionMethod"},
-        {"MatrixLinearSystem", "ConstantSparsityProjectionMethod"},
-        {"ConstantSparsityPatternSystem", "MatrixProjectionMethod"},
-        {"ConstantSparsityPatternSystem", "ConstantSparsityProjectionMethod"},
+        {"FullMatrix", "MatrixLinearSystem", "MatrixProjectionMethod"},
+        {"FullMatrix", "MatrixLinearSystem", "ConstantSparsityProjectionMethod"},
+        {"CompressedRowSparseMatrixd", "MatrixLinearSystem", "MatrixProjectionMethod"},
+        {"CompressedRowSparseMatrixd", "MatrixLinearSystem", "ConstantSparsityProjectionMethod"},
+        // ConstantSparsityPatternSystem only exists for the CRS format
+        {"CompressedRowSparseMatrixd", "ConstantSparsityPatternSystem", "MatrixProjectionMethod"},
+        {"CompressedRowSparseMatrixd", "ConstantSparsityPatternSystem", "ConstantSparsityProjectionMethod"},
     }),
     testName);
 
