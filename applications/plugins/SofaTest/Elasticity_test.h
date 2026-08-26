@@ -28,7 +28,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 
 //Including Simulation
-#include <sofa/simulation/graph/DAGSimulation.h>
+#include <sofa/simulation/Simulation.h>
 
 #include <sofa/component/mechanicalload/TrianglePressureForceField.h>
 #include <sofa/component/constraint/projective/AffineMovementProjectiveConstraint.h>

@@ -26,8 +26,6 @@
 #include <sofa/defaulttype/VecTypes.h>
 
 //Including Simulation
-#include <sofa/simulation/graph/DAGSimulation.h>
-
 #include <sofa/component/solidmechanics/tensormass/TetrahedralTensorMassForceField.h>
 #include <sofa/component/solidmechanics/fem/elastic/TetrahedralCorotationalFEMForceField.h>
 #include <sofa/component/statecontainer/MechanicalObject.h>
@@ -81,7 +79,7 @@ CylinderTractionStruct<DataTypes>  createCylinderTractionScene(
     CylinderTractionStruct<DataTypes> tractionStruct;
 
     // Root node
-    root = sofa::simulation::getSimulation()->createNewGraph("root");
+    root = sofa::simulation::MainSimulation::getSimulation()->createNewGraph("root");
     tractionStruct.root=root;
 
     root->setGravity( Coord(0,0,0) );
@@ -201,7 +199,7 @@ struct LinearElasticity_test : public sofa::testing::BaseSimulationTest, sofa::t
     void doSetUp() override
     {
         // Init simulation
-        simulation = sofa::simulation::getSimulation();
+        simulation = sofa::simulation::MainSimulation::getSimulation();
         const size_t resolutionCircumferential=7;
         const size_t  resolutionRadial=3;
         const size_t  resolutionHeight=7;

@@ -22,7 +22,6 @@
 
 //Including Simulation
 #include <sofa/simulation/Simulation.h>
-#include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simulation/Node.h>
 // Including constraint, force and mass
 #include <sofa/component/topology/container/dynamic/TetrahedronSetGeometryAlgorithms.h>
@@ -66,9 +65,9 @@ struct TetrahedronNumericalIntegration_test : public NumericTest<typename _DataT
     void doSetUp() override
     {
         // Init simulation
-        simulation = sofa::simulation::getSimulation();
+        simulation = sofa::simulation::MainSimulation::getSimulation();
 
-         root = simulation::getSimulation()->createNewGraph("root");
+         root = simulation::MainSimulation::getSimulation()->createNewGraph("root");
     }
      // create the TetrahedronSetGeometryAlgorithms object
     void createScene()

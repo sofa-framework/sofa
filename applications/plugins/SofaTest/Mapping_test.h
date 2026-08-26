@@ -34,7 +34,7 @@
 #include <sofa/linearalgebra/FullVector.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 #include <sofa/component/statecontainer/MechanicalObject.h>
-#include <sofa/simulation/graph/DAGSimulation.h>
+#include <sofa/simulation/Simulation.h>
 #include <SceneCreator/SceneCreator.h>
 #include <sofa/core/Mapping.h>
 
@@ -128,7 +128,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
     Mapping_test():deltaRange(1,1000),errorMax(10),errorFactorDJ(1),flags(TEST_ASSEMBLY_API | TEST_GEOMETRIC_STIFFNESS)
     {
         sofa::component::initSofaComponentAll();
-        sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
+        sofa::simulation::setSimulation(simulation = new sofa::simulation::Simulation());
 
         /// Parent node
         root = simulation->createNewGraph("root");
@@ -144,11 +144,11 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
     Mapping_test(std::string fileName):deltaRange(1,1000),errorMax(100),errorFactorDJ(1),flags(TEST_ASSEMBLY_API | TEST_GEOMETRIC_STIFFNESS)
     {
         sofa::component::initSofaComponentAll();
-        sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
+        sofa::simulation::setSimulation(simulation = new sofa::simulation::Simulation());
 
         /// Load the scene
         root = simulation->createNewGraph("root");
-        root = sofa::simulation::getSimulation()->load(fileName.c_str(), false);
+        root = sofa::simulation::MainSimulation::getSimulation()->load(fileName.c_str(), false);
 
         // InDofs
         inDofs = root->get<InDOFs>(root->SearchDown);
@@ -237,7 +237,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         copyToData(xout,childInit);
 
         /// Init based on parentInit
-        sofa::simulation::getSimulation()->init(root.get());
+        sofa::simulation::MainSimulation::getSimulation()->init(root.get());
 
         /// Updated to parentNew
         copyToData(xin,parentNew);
@@ -485,7 +485,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
     virtual ~Mapping_test()
     {
         if (root!=nullptr)
-            sofa::simulation::getSimulation()->unload(root);
+            sofa::simulation::MainSimulation::getSimulation()->unload(root);
     }
 
 protected:

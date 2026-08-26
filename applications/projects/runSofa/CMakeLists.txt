@@ -4,7 +4,7 @@ project(runSofa)
 # Detect if component is compiled outside SOFA
 if ("${CMAKE_PROJECT_NAME}" STREQUAL "${PROJECT_NAME}")
     find_package(Sofa.Config REQUIRED)
-    sofa_find_package(Sofa.Simulation.Graph REQUIRED)
+    sofa_find_package(Sofa.Simulation.Common REQUIRED)
     sofa_find_package(ZLIB)
 endif()
 
@@ -40,7 +40,7 @@ install(FILES "${_defaultConfigPluginFilePath}" DESTINATION ${_pluginLocation}/ 
 
 sofa_find_package(Sofa.Component.Playback QUIET)
 
-sofa_find_package(Sofa.Simulation.Graph REQUIRED)
+sofa_find_package(Sofa.Simulation.Common REQUIRED)
 sofa_find_package(Sofa.GUI.Common REQUIRED)
 sofa_find_package(Sofa.GUI.Batch REQUIRED)
 sofa_find_package(SceneChecking REQUIRED)
@@ -79,7 +79,7 @@ endif()
 target_compile_definitions(${PROJECT_NAME} PUBLIC "CONFIG_PLUGIN_FILENAME=${_configPluginFileName}")
 target_compile_definitions(${PROJECT_NAME} PUBLIC "DEFAULT_CONFIG_PLUGIN_FILENAME=${_defaultConfigPluginFileName}")
 
-target_link_libraries(${PROJECT_NAME} Sofa.Simulation.Graph)
+target_link_libraries(${PROJECT_NAME} Sofa.Simulation.Common)
 target_link_libraries(${PROJECT_NAME} Sofa.GUI.Common)
 target_link_libraries(${PROJECT_NAME} Sofa.GUI.Batch)
 target_link_libraries(${PROJECT_NAME} SceneChecking)

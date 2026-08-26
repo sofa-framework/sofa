@@ -25,7 +25,6 @@
 #include <sofa/component/linearsolver/direct/SparseCommon.h>
 #include <sofa/component/linearsystem/MatrixLinearSystem.h>
 #include <sofa/simulation/Node.h>
-#include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simpleapi/SimpleApi.h>
 
 #include <sofa/testing/NumericTest.h>
@@ -58,7 +57,7 @@ TEST(SparseLDLSolver, EmptyMState)
     // required to be able to use EXPECT_MSG_NOEMIT and EXPECT_MSG_EMIT
     sofa::helper::logging::MessageDispatcher::addHandler(sofa::testing::MainGtestMessageHandler::getInstance() ) ;
 
-    const sofa::simulation::Node::SPtr root = sofa::simulation::getSimulation()->createNewGraph("root");
+    const sofa::simulation::Node::SPtr root = sofa::simulation::MainSimulation::getSimulation()->createNewGraph("root");
 
     const auto plugins = sofa::testing::makeScopedPlugin({
         Sofa.Component.LinearSolver.Direct,
@@ -87,7 +86,7 @@ TEST(SparseLDLSolver, TopologyChangeEmptyMState)
     // required to be able to use EXPECT_MSG_NOEMIT and EXPECT_MSG_EMIT
     sofa::helper::logging::MessageDispatcher::addHandler(sofa::testing::MainGtestMessageHandler::getInstance() ) ;
 
-    const sofa::simulation::Node::SPtr root = sofa::simulation::getSimulation()->createNewGraph("root");
+    const sofa::simulation::Node::SPtr root = sofa::simulation::MainSimulation::getSimulation()->createNewGraph("root");
 
     const auto plugins = sofa::testing::makeScopedPlugin({
         Sofa.Component.LinearSolver.Direct,

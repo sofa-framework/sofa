@@ -35,7 +35,7 @@ struct MeshSubsetEngine_test : public testing::BaseSimulationTest
     {
         loadPlugins({Sofa.Component.Engine.Select});
 
-        m_root = simulation::getSimulation()->createNewNode("root");
+        m_root = simulation::MainSimulation::getSimulation()->createNewNode("root");
         ASSERT_NE(nullptr, m_root);
 
         m_engine = core::objectmodel::New<component::engine::select::MeshSubsetEngine<_DataTypes>>();

@@ -27,7 +27,6 @@
 #include <sofa/simpleapi/SimpleApi.h>
 #include <sofa/component/statecontainer/MechanicalObject.h>
 #include <sofa/component/mapping/linear/SubsetMapping.h>
-#include <sofa/simulation/graph/DAGSimulation.h>
 
 TEST(MappingGraph, noBuild)
 {
@@ -166,7 +165,7 @@ TEST(MappingGraph, diamondMapping)
     // required to be able to use EXPECT_MSG_NOEMIT and EXPECT_MSG_EMIT
     sofa::helper::logging::MessageDispatcher::addHandler(sofa::testing::MainGtestMessageHandler::getInstance() ) ;
 
-    sofa::simulation::Simulation* simulation = sofa::simulation::getSimulation();
+    sofa::simulation::Simulation* simulation = sofa::simulation::MainSimulation::getSimulation();
 
     sofa::simulation::Node::SPtr root = simulation->createNewGraph("root");
     EXPECT_EQ(root->getName(), "root");

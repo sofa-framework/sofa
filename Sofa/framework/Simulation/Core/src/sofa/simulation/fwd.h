@@ -36,11 +36,6 @@ namespace sofa::simulation
     class Simulation;
     typedef sofa::core::sptr<Simulation> SimulationSPtr;
 
-    /** Get the (unique) simulation which controls the scene.
-        Automatically creates one if no Simulation has been set.
-     */
-    SOFA_SIMULATION_CORE_API Simulation* getSimulation();
-
     class MutationListener;
     class Visitor;
 

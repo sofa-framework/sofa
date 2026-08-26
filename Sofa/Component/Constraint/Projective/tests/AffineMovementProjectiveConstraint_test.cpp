@@ -24,7 +24,6 @@ using sofa::testing::BaseSimulationTest;
 #include <sofa/testing/NumericTest.h>
 using sofa::testing::NumericTest;
 
-#include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/component/statecontainer/MechanicalObject.h>
 #include <sofa/component/solidmechanics/spring/MeshSpringForceField.h>
 #include <sofa/component/constraint/projective/AffineMovementProjectiveConstraint.h>
@@ -73,9 +72,9 @@ struct AffineMovementProjectiveConstraint_test : public BaseSimulationTest, Nume
      void doSetUp() override
      {
          // Init simulation
-         simulation = sofa::simulation::getSimulation();
+         simulation = sofa::simulation::MainSimulation::getSimulation();
 
-         root = simulation::getSimulation()->createNewGraph("root");
+         root = simulation::MainSimulation::getSimulation()->createNewGraph("root");
 
          // Init seed with a random value between 0 and 100
          randomGenerator.initSeed( (long)time(0) );

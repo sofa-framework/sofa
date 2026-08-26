@@ -152,7 +152,7 @@ struct SquareDistanceMappingCompare_test : NumericTest<SReal>
 
     void doSetUp() override
     {
-        root = simulation::getSimulation()->createNewNode("root");
+        root = simulation::MainSimulation::getSimulation()->createNewNode("root");
 
         simpleapi::createObject(root, "RequiredPlugin", {{"pluginName", Sofa.Component}});
         simpleapi::createObject(root, "DefaultAnimationLoop");

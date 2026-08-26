@@ -307,7 +307,7 @@ int main(int argc, char** argv)
         exit( EXIT_SUCCESS );
     }
 
-    assert(sofa::simulation::getSimulation());
+    assert(sofa::simulation::MainSimulation::getSimulation());
 
     if (colorsStatus == "unset") {
         // If the parameter is unset, check the environment variable
@@ -463,7 +463,7 @@ int main(int argc, char** argv)
     const std::vector<std::string> sceneArgs = sofa::gui::common::ArgumentParser::extra_args();
     Node::SPtr groot = sofa::simulation::node::load(fileName, false, sceneArgs);
     if( !groot )
-        groot = sofa::simulation::getSimulation()->createNewGraph("");
+        groot = sofa::simulation::MainSimulation::getSimulation()->createNewGraph("");
 
     if (!verif.empty())
     {

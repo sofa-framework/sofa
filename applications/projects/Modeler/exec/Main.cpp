@@ -26,7 +26,7 @@
 #include <sofa/helper/system/FileSystem.h>
 #include <sofa/helper/Utils.h>
 
-#include <SofaSimulationGraph/DAGSimulation.h>
+#include <sofa/simulation/Simulation.h>
 
 #include <sofa/helper/logging/Messaging.h>
 
@@ -53,7 +53,7 @@ int main(int argc, char** argv)
     QApplication* application = new QApplication(argc, argv);
     (void)application;
 
-    sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
+    sofa::simulation::setSimulation(new sofa::simulation::Simulation());
 
 	Q_INIT_RESOURCE(icons);
     sofa::qt::SofaModeler* sofaModeler = new sofa::qt::SofaModeler();

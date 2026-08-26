@@ -47,10 +47,8 @@
 
 #include <sofa/core/objectmodel/Context.h>
 #include <sofa/simulation/Node.h>
-#include <sofa/simulation/Node.h>
 #include <sofa/simulation/Simulation.h>
-#include <SofaSimulationGraph/DAGSimulation.h>
-#include <SofaSimulationGraph/init.h>
+#include <sofa/simulation/Simulation.h>
 #include <SofaComponentAll/initSofaComponentAll.h>
 
 #include <sofa/helper/system/FileRepository.h>
@@ -113,7 +111,6 @@ int main(int argc, char** argv)
 
     sofa::glfw::SofaGLFWBaseGUI glfwGUI;
 
-    sofa::simulation::graph::init();
     sofa::component::initSofaComponentAll();
 
     if (!glfwGUI.init())
@@ -123,9 +120,9 @@ int main(int argc, char** argv)
         return 0;
     }
 
-    sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
+    sofa::simulation::setSimulation(new sofa::simulation::Simulation());
     // The graph root node : gravity already exists in a GNode by default
-    Node::SPtr groot = sofa::simulation::getSimulation()->createNewGraph("root");
+    Node::SPtr groot = sofa::simulation::MainSimulation::getSimulation()->createNewGraph("root");
     groot->setGravity({ 0,0,0 });
     groot->setDt(0.02);
 
@@ -160,11 +157,11 @@ int main(int argc, char** argv)
     /*
      * Sub nodes: DRE
      */
-    Node::SPtr dreNode = New<DAGNode>();
+    Node::SPtr dreNode = New<Node>();
     dreNode->setName("DRE");
 
 
-    Node::SPtr cylNode = New<DAGNode>();
+    Node::SPtr cylNode = New<Node>();
     cylNode->setName("Cylinder");
 
 
@@ -240,7 +237,7 @@ int main(int argc, char** argv)
 
 
     // visual node
-    Node::SPtr cylVisualNode = New<DAGNode>();
+    Node::SPtr cylVisualNode = New<Node>();
     cylVisualNode->setName("Cylinder Visual");
 
     OglModel::SPtr cylOglModel = New<OglModel>();
@@ -256,7 +253,7 @@ int main(int argc, char** argv)
 
 
     // collision node
-    Node::SPtr cylCollisionNode = New<DAGNode>();
+    Node::SPtr cylCollisionNode = New<Node>();
     cylCollisionNode->setName("Cylinder Collision");
 
     MeshGmshLoader::SPtr cylSurfMeshLoader = New<MeshGmshLoader>();
@@ -304,7 +301,7 @@ int main(int argc, char** argv)
     glfwGUI.createWindow(800, 600, "SofaGLFW");
 
     // Init the scene
-    sofa::simulation::getSimulation()->init(groot.get());
+    sofa::simulation::MainSimulation::getSimulation()->init(groot.get());
     groot->setAnimate(true);
     glfwGUI.initVisual();
 
@@ -326,6 +323,5 @@ int main(int argc, char** argv)
     // Run the main loop
     glfwGUI.runLoop();
 
-    sofa::simulation::graph::cleanup();
     return 0;
 }

@@ -33,7 +33,6 @@ using sofa::testing::NumericTest;
 
 #include <sofa/linearalgebra/EigenSparseMatrix.h>
 #include <sofa/component/statecontainer/MechanicalObject.h>
-#include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/core/Mapping.h>
 
 #include <sofa/helper/logging/Messaging.h>
@@ -124,7 +123,7 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
         , flags(TEST_ASSEMBLY_API | TEST_GEOMETRIC_STIFFNESS)
     {
         /// Parent node
-        root = simpleapi::createRootNode(simulation::getSimulation(), "root");
+        root = simpleapi::createRootNode(simulation::MainSimulation::getSimulation(), "root");
 
         inDofs = core::objectmodel::New<InDOFs>();
         root->addObject(inDofs);
@@ -146,10 +145,10 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
           errorFactorDJ(1),
           flags(TEST_ASSEMBLY_API|TEST_GEOMETRIC_STIFFNESS)
     {
-        assert(simulation::getSimulation());
+        assert(simulation::MainSimulation::getSimulation());
 
         /// Load the scene
-        root = simpleapi::createRootNode(simulation::getSimulation(), "root");
+        root = simpleapi::createRootNode(simulation::MainSimulation::getSimulation(), "root");
         root = sofa::simulation::node::load(fileName.c_str(), false);
 
         // InDofs

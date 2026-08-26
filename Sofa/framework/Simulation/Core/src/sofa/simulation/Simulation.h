@@ -110,9 +110,19 @@ public:
 
     /// Can the simulation handle a directed acyclic graph?
     virtual bool isDirectedAcyclicGraph();
+};
 
+/// Singleton oriented API, if needed.
+class SOFA_SIMULATION_CORE_API MainSimulation
+{
+   public:
+    static void setSimulation(Simulation::SPtr simulation);
+    static Simulation* getSimulation();
+
+   private:
     inline static Simulation::SPtr theSimulation { nullptr };
 };
+
 } // namespace sofa::simulation
 
 MSG_REGISTER_CLASS(sofa::simulation::Simulation, "Simulation")

@@ -28,9 +28,8 @@
 #include "sofa/core/MechanicalParams.h"
 using sofa::testing::BaseTest;
 
-
-#include <sofa/simulation/graph/DAGSimulation.h>
-using sofa::simulation::graph::DAGSimulation;
+#include <sofa/simulation/Simulation.h>
+#include <sofa/simulation/Node.h>
 using sofa::simulation::Node ;
 using sofa::core::objectmodel::New ;
 using sofa::core::objectmodel::BaseData ;
@@ -57,7 +56,7 @@ public:
     {
 
 
-        sofa::simulation::Simulation* simu = sofa::simulation::getSimulation();
+        sofa::simulation::Simulation* simu = sofa::simulation::MainSimulation::getSimulation();
 
         const Node::SPtr node = simu->createNewGraph("root");
 

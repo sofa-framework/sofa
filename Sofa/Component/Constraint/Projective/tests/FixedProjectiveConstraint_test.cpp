@@ -23,7 +23,6 @@
 #include <sofa/component/constraint/projective/FixedProjectiveConstraint.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/simulation/Simulation.h>
-#include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/component/statecontainer/MechanicalObject.h>
 #include <sofa/component/mass/UniformMass.h>
@@ -69,7 +68,7 @@ struct FixedProjectiveConstraint_test : public BaseTest
     {
         //Init
 
-        simulation::Simulation* simulation = sofa::simulation::getSimulation();
+        simulation::Simulation* simulation = sofa::simulation::MainSimulation::getSimulation();
         assert(simulation);
 
         Coord initCoord1, initCoord2;
@@ -151,7 +150,7 @@ struct FixedProjectiveConstraint_test : public BaseTest
 
     bool testTopologicalChanges()
     {
-        simulation::Simulation* simulation = sofa::simulation::getSimulation();
+        simulation::Simulation* simulation = sofa::simulation::MainSimulation::getSimulation();
         assert(simulation);
         
         /// Scene creation

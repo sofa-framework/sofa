@@ -36,7 +36,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/objectmodel/GUIEvent.h>
 
-#include <sofa/simulation/graph/DAGSimulation.h>
+#include <sofa/simulation/Simulation.h>
 
 #include <sofa/gui/common/GUIManager.h>
 #include <sofa/gui/common/init.h>
@@ -343,7 +343,7 @@ SofaPhysicsSimulation::SofaPhysicsSimulation(bool useGUI_, int GUIFramerate_)
     lastH = 0;
     vparams = sofa::core::visual::VisualParams::defaultInstance();
 
-    assert(sofa::simulation::getSimulation());
+    assert(sofa::simulation::MainSimulation::getSimulation());
 
     sofa::component::init(); // force dependency on Sofa.Component
 
@@ -371,7 +371,7 @@ SofaPhysicsSimulation::~SofaPhysicsSimulation()
       //groot = dynamic_cast<sofa::simulation::Node*>( sofa::gui::common::GUIManager::CurrentSimulation() );
 
       //if (groot!=NULL)
-      //  sofa::simulation::getSimulation()->unload(groot);
+      //  sofa::simulation::MainSimulation::getSimulation()->unload(groot);
 
 
       //sofa::gui::common::GUIManager::closeGUI();
@@ -413,7 +413,7 @@ int SofaPhysicsSimulation::load(const char* cfilename)
     }
     else
     {
-        m_RootNode = sofa::simulation::getSimulation()->createNewGraph("");
+        m_RootNode = sofa::simulation::MainSimulation::getSimulation()->createNewGraph("");
         return API_SCENE_FAILED;
     }
     initTexturesDone = false;
@@ -456,7 +456,7 @@ int SofaPhysicsSimulation::loadPlugin(const char* pluginPath)
 
 void SofaPhysicsSimulation::createScene()
 {
-    m_RootNode = sofa::simulation::getSimulation()->createNewGraph("root");
+    m_RootNode = sofa::simulation::MainSimulation::getSimulation()->createNewGraph("root");
     sofa::simpleapi::createObject(m_RootNode, "CollisionPipeline", { {"name","Collision Pipeline"} });
     sofa::simpleapi::createObject(m_RootNode, "BruteForceBroadPhase", { {"name","Broad Phase Detection"} });
     sofa::simpleapi::createObject(m_RootNode, "BVHNarrowPhase", { {"name","Narrow Phase Detection"} });

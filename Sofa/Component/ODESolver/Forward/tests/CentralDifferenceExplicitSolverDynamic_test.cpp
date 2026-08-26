@@ -26,7 +26,6 @@ using sofa::testing::BaseSimulationTest;
 
 //Including Simulation
 #include <sofa/simulation/Simulation.h>
-#include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simulation/Node.h>
 
 #include <sofa/component/statecontainer/MechanicalObject.h>

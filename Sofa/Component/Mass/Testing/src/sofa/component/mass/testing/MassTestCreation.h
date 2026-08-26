@@ -85,7 +85,7 @@ struct Mass_test : public sofa::testing::BaseSimulationTest, public sofa::testin
         , m_deltaRange( 1, 1000 )
         , m_debug( false )
     {
-        simulation::Simulation* simu = sofa::simulation::getSimulation();
+        simulation::Simulation* simu = sofa::simulation::MainSimulation::getSimulation();
         assert(simu);
 
         m_node = simu->createNewGraph("root");

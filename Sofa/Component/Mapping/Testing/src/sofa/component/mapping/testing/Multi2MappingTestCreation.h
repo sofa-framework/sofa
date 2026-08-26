@@ -31,7 +31,7 @@ using sofa::testing::NumericTest;
 #include <sofa/linearalgebra/FullVector.h>
 #include <sofa/linearalgebra/EigenSparseMatrix.h>
 #include <sofa/component/statecontainer/MechanicalObject.h>
-#include <sofa/simulation/graph/DAGSimulation.h>
+#include <sofa/simulation/Simulation.h>
 #include <sofa/helper/vector.h>
 #include <sofa/core/MultiMapping.h>
 
@@ -118,7 +118,7 @@ struct Multi2Mapping_test : public BaseSimulationTest, NumericTest<typename _Mul
 
     /// Constructor
     Multi2Mapping_test()
-        : simulation(sofa::simulation::getSimulation()),
+        : simulation(sofa::simulation::MainSimulation::getSimulation()),
           deltaRange(1, 1000),
           errorMax(10)
     {
@@ -203,7 +203,7 @@ struct Multi2Mapping_test : public BaseSimulationTest, NumericTest<typename _Mul
         }
 
         /// Init
-        sofa::simulation::getSimulation()->init(root);
+        sofa::simulation::MainSimulation::getSimulation()->init(root);
 
         /// Apply the mapping
         // --- Use of the method apply
