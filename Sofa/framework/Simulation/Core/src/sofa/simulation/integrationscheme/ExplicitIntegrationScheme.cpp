@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-#include <sofa/simulation/config.h>
+    #include <sofa/simulation/config.h>
 
 #include <sofa/simulation/integrationscheme/ExplicitIntegrationScheme.h>
 #include <sofa/core/behavior/LinearSolver.h>
