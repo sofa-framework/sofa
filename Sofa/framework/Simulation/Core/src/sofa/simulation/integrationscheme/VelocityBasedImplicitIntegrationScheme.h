@@ -38,7 +38,7 @@ namespace sofa::simulation::integrationscheme
  * This class is a specialization of implicit integration scheme, where the unknown is expressed as
  * a delta in velocity.
  *
- * Fixing this will then result in a particular expression of the gradient/hessain computation
+ * Fixing this will then result in a particular expression of the gradient/hessian computation
  * as well as the state update, enabling to have a generic formulation of the ODE linearization
  * for all integration scheme that uses velocity as the unknown.
  *

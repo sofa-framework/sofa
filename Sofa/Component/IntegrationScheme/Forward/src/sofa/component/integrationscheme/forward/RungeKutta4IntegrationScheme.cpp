@@ -188,4 +188,4 @@ void RungeKutta4IntegrationScheme::doIntegrate(const core::ExecParams* params, s
 }
 
 
-} // namespace sofa::component::odeIntegrationScheme::forward
+} // namespace sofa::component::integrationscheme::forward

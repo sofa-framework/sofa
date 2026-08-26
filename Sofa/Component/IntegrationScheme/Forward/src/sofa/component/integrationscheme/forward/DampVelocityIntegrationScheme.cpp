@@ -57,4 +57,4 @@ void DampVelocityIntegrationScheme::doIntegrate(const core::ExecParams* params, 
     msg_info() <<"DampVelocityIntegrationScheme, final v = "<< vel ;
 }
 
-} // namespace sofa::component::odeIntegrationScheme::forward
+} // namespace sofa::component::integrationscheme::forward

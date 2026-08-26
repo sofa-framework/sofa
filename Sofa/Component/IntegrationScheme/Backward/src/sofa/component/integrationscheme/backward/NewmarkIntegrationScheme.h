@@ -60,4 +60,4 @@ protected:
     }
 };
 
-} // namespace sofa::component::integrationscheme::backward
+} // sofa::component::integrationscheme::backward
