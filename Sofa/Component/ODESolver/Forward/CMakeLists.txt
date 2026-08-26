@@ -1,0 +1,33 @@
+cmake_minimum_required(VERSION 3.22)
+project(Sofa.Component.ODESolver.Forward LANGUAGES CXX)
+
+set(SOFACOMPONENTODESOLVERFORWARD_SOURCE_DIR "compat/sofa/component/odesolver/forward")
+
+
+set(DEPRECATED_HEADER_FILES
+    ${SOFACOMPONENTODESOLVERFORWARD_SOURCE_DIR}/config.h.in
+    ${SOFACOMPONENTODESOLVERFORWARD_SOURCE_DIR}/init.h
+    ${SOFACOMPONENTODESOLVERFORWARD_SOURCE_DIR}/EulerExplicitSolver.h
+    ${SOFACOMPONENTODESOLVERFORWARD_SOURCE_DIR}/CentralDifferenceSolver.h
+    ${SOFACOMPONENTODESOLVERFORWARD_SOURCE_DIR}/DampVelocitySolver.h
+    ${SOFACOMPONENTODESOLVERFORWARD_SOURCE_DIR}/RungeKutta2Solver.h
+    ${SOFACOMPONENTODESOLVERFORWARD_SOURCE_DIR}/RungeKutta4Solver.h
+)
+
+set(DEPRECATED_SOURCE_FILES
+    ${SOFACOMPONENTODESOLVERFORWARD_SOURCE_DIR}/init.cpp
+)
+
+sofa_find_package(Sofa.Simulation.Core REQUIRED)
+sofa_find_package(Sofa.Component.IntegrationScheme.Forward REQUIRED)
+
+add_library(${PROJECT_NAME} SHARED ${DEPRECATED_SOURCE_FILES} ${DEPRECATED_HEADER_FILES})
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Simulation.Core Sofa.Component.IntegrationScheme.Forward)
+
+sofa_create_package_with_targets(
+    PACKAGE_NAME ${PROJECT_NAME}
+    PACKAGE_VERSION ${Sofa_VERSION}
+    TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
+    INCLUDE_SOURCE_DIR "compat"
+    INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
+)

@@ -124,6 +124,13 @@ public:
         MODULE(SceneUtility, "Sofa.Component.SceneUtility")
         MODULE(Setting, "Sofa.Component.Setting")
 
+
+        START_MODULE(ODESolver, "Sofa.Component.ODESolver")
+            MODULE(Backward, "Sofa.Component.ODESolver.Backward")
+            MODULE(Forward, "Sofa.Component.ODESolver.Forward")
+        END_MODULE(ODESolver)
+
+
         START_MODULE(SolidMechanics, "Sofa.Component.SolidMechanics")
             START_MODULE(FEM, "Sofa.Component.SolidMechanics.FEM")
                 MODULE(Elastic, "Sofa.Component.SolidMechanics.FEM.Elastic")
