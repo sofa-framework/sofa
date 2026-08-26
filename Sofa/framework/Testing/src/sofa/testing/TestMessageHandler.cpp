@@ -91,7 +91,7 @@ public:
     ~ GtestMessageHandler() override;
 
     /// Inherited from MessageHandler
-    void process(Message& m) override ;
+    void doProcess(Message& m) override ;
     std::string getName() const override { return "GtestMessageHandler"; }
 
     void pushFrame(Message::Type type, GtestMessageFrame* frame)  ;
@@ -173,7 +173,7 @@ GtestMessageHandler::GtestMessageHandler(Message::Class mclass)
     }
 }
 
-void GtestMessageHandler::process(Message& m)
+void GtestMessageHandler::doProcess(Message& m)
 {
     m_gtestframes[m.type()].back()->process(m) ;
 }

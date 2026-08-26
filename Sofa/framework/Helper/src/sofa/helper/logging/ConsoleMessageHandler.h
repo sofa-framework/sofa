@@ -43,7 +43,7 @@ public:
     /// Create a new ConsoleMessageHandler. By default the handler is using the
     /// DefaultStyleMessageFormatter object to format the message.
     ConsoleMessageHandler(MessageFormatter* formatter = nullptr);
-    void process(Message &m) override ;
+    void doProcess(Message &m) override ;
     std::string getName() const override { return "ConsoleMessageHandler"; }
     void setMessageFormatter( MessageFormatter* formatter );
 

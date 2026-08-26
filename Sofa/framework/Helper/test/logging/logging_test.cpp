@@ -69,7 +69,7 @@ class MyMessageHandler : public MessageHandler
 {
     vector<Message> m_messages ;
 public:
-    void process(Message& m) override{
+    void doProcess(Message& m) override{
         m_messages.push_back(m);
     }
 

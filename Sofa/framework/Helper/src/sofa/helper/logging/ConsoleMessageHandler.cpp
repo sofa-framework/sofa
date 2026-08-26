@@ -36,8 +36,9 @@ ConsoleMessageHandler::ConsoleMessageHandler(MessageFormatter* formatter)
     m_formatter = (formatter==nullptr?&DefaultStyleMessageFormatter::getInstance():formatter);
 }
 
-void ConsoleMessageHandler::process(Message &m) {
-    m_formatter->formatMessage(m, m.type()>=Message::Error ? std::cerr : std::cout ) ;
+void ConsoleMessageHandler::doProcess(Message &m)
+{
+    m_formatter->formatMessage(m, m.type()>Message::Info ? std::cerr : std::cout ) ;
 }
 
 void ConsoleMessageHandler::setMessageFormatter(MessageFormatter* formatter)
