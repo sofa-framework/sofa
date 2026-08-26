@@ -24,7 +24,7 @@
 #include <sofa/component/solidmechanics/fem/hyperelastic/config.h>
 #include <sofa/component/solidmechanics/fem/hyperelastic/PK2HyperelasticMaterial.h>
 
-#if !defined(ELASTICITY_COMPONENT_MATERIAL_INCOMPRESSIBLEMOONEYRIVLIN_CPP)
+#if !defined(SOFA_COMPONENT_SOLIDMECHANICS_FEM_HYPERELASTIC_MATERIAL_INCOMPRESSIBLEMOONEYRIVLIN_CPP)
 #include <sofa/defaulttype/VecTypes.h>
 #endif
 
@@ -61,7 +61,7 @@ protected:
 };
 
 
-#if !defined(ELASTICITY_COMPONENT_MATERIAL_INCOMPRESSIBLEMOONEYRIVLIN_CPP)
+#if !defined(SOFA_COMPONENT_SOLIDMECHANICS_FEM_HYPERELASTIC_MATERIAL_INCOMPRESSIBLEMOONEYRIVLIN_CPP)
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_HYPERELASTIC_API IncompressibleMooneyRivlinMaterial<sofa::defaulttype::Vec1Types>;
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_HYPERELASTIC_API IncompressibleMooneyRivlinMaterial<sofa::defaulttype::Vec2Types>;
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_HYPERELASTIC_API IncompressibleMooneyRivlinMaterial<sofa::defaulttype::Vec3Types>;

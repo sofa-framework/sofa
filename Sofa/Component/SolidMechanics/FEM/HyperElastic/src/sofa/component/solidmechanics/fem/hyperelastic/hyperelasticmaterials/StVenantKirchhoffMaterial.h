@@ -25,7 +25,7 @@
 #include <sofa/component/solidmechanics/fem/hyperelastic/PK2HyperelasticMaterial.h>
 #include <sofa/component/solidmechanics/fem/hyperelastic/hyperelasticmaterials/LinearMechanicalParametersComponent.h>
 
-#if !defined(ELASTICITY_COMPONENT_MATERIAL_STVENANTKIRCHHOFFMATERIAL_CPP)
+#if !defined(SOFA_COMPONENT_SOLIDMECHANICS_FEM_HYPERELASTIC_MATERIAL_ST_VENANT_KIRCHHOFF_MATERIAL_CPP)
 #include <sofa/defaulttype/VecTypes.h>
 #endif
 
@@ -78,7 +78,7 @@ protected:
     ElasticityTensor elasticityTensor(Strain<DataTypes>& strain) override;
 };
 
-#if !defined(ELASTICITY_COMPONENT_MATERIAL_STVENANTKIRCHHOFFMATERIAL_CPP)
+#if !defined(SOFA_COMPONENT_SOLIDMECHANICS_FEM_HYPERELASTIC_MATERIAL_ST_VENANT_KIRCHHOFF_MATERIAL_CPP)
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_HYPERELASTIC_API StVenantKirchhoffMaterial<sofa::defaulttype::Vec1Types>;
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_HYPERELASTIC_API StVenantKirchhoffMaterial<sofa::defaulttype::Vec2Types>;
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_HYPERELASTIC_API StVenantKirchhoffMaterial<sofa::defaulttype::Vec3Types>;

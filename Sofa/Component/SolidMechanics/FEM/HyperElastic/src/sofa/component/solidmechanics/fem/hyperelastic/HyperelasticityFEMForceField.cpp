@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define ELASTICITY_COMPONENT_HYPERLASTICITY_FEM_FORCE_FIELD_CPP
+#define SOFA_COMPONENT_SOLIDMECHANICS_FEM_HYPERELASTIC_HYPERLASTICITY_FEM_FORCE_FIELD_CPP
 
 #include <sofa/component/solidmechanics/fem/hyperelastic/HyperelasticityFEMForceField.inl>
 

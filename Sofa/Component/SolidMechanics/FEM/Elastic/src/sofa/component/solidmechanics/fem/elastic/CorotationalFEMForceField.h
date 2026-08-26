@@ -31,7 +31,7 @@
 #include <sofa/component/solidmechanics/fem/elastic/impl/rotations/TriangleRotation.h>
 #include <sofa/core/behavior/ForceField.h>
 
-#if !defined(ELASTICITY_COMPONENT_ELEMENT_COROTATIONAL_FEM_FORCE_FIELD_CPP)
+#if !defined(SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_ELEMENT_COROTATIONAL_FEM_FORCE_FIELD_CPP)
 #include <sofa/fem/FiniteElement[all].h>
 #endif
 

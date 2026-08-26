@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define ELASTICITY_COMPONENT_FEM_FORCEFIELD_CPP
+#define SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_FEM_FORCEFIELD_CPP
 #include <sofa/component/solidmechanics/fem/elastic/FEMForceField.inl>
 #include <sofa/fem/FiniteElement[all].h>
 

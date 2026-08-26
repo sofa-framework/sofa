@@ -24,7 +24,7 @@
 #include <sofa/component/solidmechanics/fem/hyperelastic/config.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 
-#if !defined(ELASTICITY_COMPONENT_LINEAR_MECHANICAL_PARAMETERS_CPP)
+#if !defined(SOFA_COMPONENT_SOLIDMECHANICS_FEM_HYPERELASTIC_LINEAR_MECHANICAL_PARAMETERS_CPP)
 #include <sofa/defaulttype/VecTypes.h>
 #endif
 
@@ -51,7 +51,7 @@ protected:
     Real m_lambda, m_mu;
 };
 
-#if !defined(ELASTICITY_COMPONENT_LINEAR_MECHANICAL_PARAMETERS_CPP)
+#if !defined(SOFA_COMPONENT_SOLIDMECHANICS_FEM_HYPERELASTIC_LINEAR_MECHANICAL_PARAMETERS_CPP)
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_HYPERELASTIC_API LinearMechanicalParametersComponent<sofa::defaulttype::Vec1Types>;
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_HYPERELASTIC_API LinearMechanicalParametersComponent<sofa::defaulttype::Vec2Types>;
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_HYPERELASTIC_API LinearMechanicalParametersComponent<sofa::defaulttype::Vec3Types>;
