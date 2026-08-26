@@ -153,13 +153,13 @@ protected:
 
     std::vector<sofa::core::MultiVecCoordId> m_x0;
     std::vector<sofa::core::MultiVecDerivId> m_a0, m_v0;
+    bool m_passedStatesValid;
 
     sofa::core::MultiVecDerivId m_acceleration;
 
 
     std::shared_ptr<sofa::simulation::common::VectorOperations > m_vop;
     std::unique_ptr<sofa::simulation::common::MappingGraphMechanicalOperations> m_mop;
-
 
     sofa::simulation::MappingGraph m_mappingGraph;
 };
