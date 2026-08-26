@@ -95,20 +95,22 @@ void VelocityBasedImplicitIntegrationScheme::doSetupIntegrationStep(const core::
             x0.eq(core::vec_id::write_access::position);
         }
     }
-    m_passedStatesValid = true;
 
-    // Now shift all states to advance in time (could be skipped at the start of the simulation)
-    // I decided not to do it to avoid having the check
-    for (unsigned i = 0; i + 1 < order; ++i)
+    // Now shift all states to advance in time (skipped at the start of the simulation)
+    if (m_passedStatesValid)
     {
-        sofa::core::behavior::MultiVecCoord x(m_vop.get(), m_x0[i]);
-        x.eq(m_x0[i+1]);
-        if (!d_firstOrder.getValue())
+        for (unsigned i = 0; i + 1 < order; ++i)
         {
-            sofa::core::behavior::MultiVecDeriv v(m_vop.get(), m_v0[i]);
-            v.eq(m_v0[i+1]);
+            sofa::core::behavior::MultiVecCoord x(m_vop.get(), m_x0[i]);
+            x.eq(m_x0[i+1]);
+            if (!d_firstOrder.getValue())
+            {
+                sofa::core::behavior::MultiVecDeriv v(m_vop.get(), m_v0[i]);
+                v.eq(m_v0[i+1]);
+            }
         }
     }
+    m_passedStatesValid = true;
 
     // Store the previous state in its right position in the state vector
     if (!d_firstOrder.getValue())
