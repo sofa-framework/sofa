@@ -14,6 +14,7 @@ sofa_add_subdirectory_modules(SOFACOMPONENT_TARGETS
     IntegrationScheme
     LinearSolver
     Mass
+    ODESolver
     Diffusion
     Mapping
     StateContainer

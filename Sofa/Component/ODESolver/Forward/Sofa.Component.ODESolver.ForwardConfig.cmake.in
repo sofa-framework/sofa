@@ -1,0 +1,20 @@
+@PACKAGE_GUARD@
+@PACKAGE_INIT@
+
+message(WARNING
+    "[SOFA v26.12] Sofa.Component.ODESolver.Forward has been renamed to "
+    "Sofa.Component.IntegrationScheme.Forward.\n"
+    "Please replace:\n"
+    "    find_package(Sofa.Component.ODESolver.Forward)\n"
+    "with:\n"
+    "    find_package(Sofa.Component.IntegrationScheme.Forward)\n"
+    "in your CMakeLists.txt. "
+    "This package will be fully removed in v27.12."
+)
+
+find_package(Sofa.Simulation.Core QUIET REQUIRED)
+find_package(Sofa.Component.IntegrationScheme.Forward QUIET REQUIRED)
+
+if(NOT TARGET @PROJECT_NAME@)
+    include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@Targets.cmake")
+endif()
