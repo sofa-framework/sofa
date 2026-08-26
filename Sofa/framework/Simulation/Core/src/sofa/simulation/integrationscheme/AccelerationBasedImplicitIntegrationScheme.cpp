@@ -62,6 +62,12 @@ void AccelerationBasedImplicitIntegrationScheme::doSetupIntegrationStep(const co
         return;
     }
 
+    if (!m_passedStatesValid)
+    {
+        //This is the first time we go trhough this ufnciton, this means the acceleration needs to be computed
+        m_mop->computeAcc(0,m_acceleration,m_xResult,m_vResult);
+    }
+
     for (unsigned i = 0; i < order; ++i)
     {
         // If first order, don't add the subscript
@@ -78,22 +84,24 @@ void AccelerationBasedImplicitIntegrationScheme::doSetupIntegrationStep(const co
             sofa::core::behavior::MultiVecCoord x0(m_vop.get(), m_x0[i]);
             x0.eq(core::vec_id::write_access::position);
             sofa::core::behavior::MultiVecDeriv a0(m_vop.get(), m_a0[i]);
-            a0.clear();
+            m_vop->v_eq(a0, m_acceleration);
+        }
+    }
+
+    // Now shift all states to advance in time (skipped at the start of the simulation)
+    if (m_passedStatesValid)
+    {
+        for (unsigned i = 0; i + 1 < order; ++i)
+        {
+            sofa::core::behavior::MultiVecCoord x(m_vop.get(), m_x0[i]);
+            x.eq(m_x0[i+1]);
+            sofa::core::behavior::MultiVecDeriv v(m_vop.get(), m_v0[i]);
+            v.eq(m_v0[i+1]);
+            sofa::core::behavior::MultiVecDeriv a(m_vop.get(), m_a0[i]);
+            a.eq(m_a0[i+1]);
         }
     }
     m_passedStatesValid = true;
-
-    // Now shift all states to advance in time (could be skipped at the start of the simulation)
-    // I decided not to do it to avoid having the check
-    for (unsigned i = 0; i + 1 < order; ++i)
-    {
-        sofa::core::behavior::MultiVecCoord x(m_vop.get(), m_x0[i]);
-        x.eq(m_x0[i+1]);
-        sofa::core::behavior::MultiVecDeriv v(m_vop.get(), m_v0[i]);
-        v.eq(m_v0[i+1]);
-        sofa::core::behavior::MultiVecDeriv a(m_vop.get(), m_a0[i]);
-        a.eq(m_a0[i+1]);
-    }
 
     // Store the previous state in its right position in the state vector
     sofa::core::behavior::MultiVecDeriv v0(m_vop.get(), m_v0[order - 1]);
