@@ -23,7 +23,7 @@
 #include <sofa/component/collision/geometry/config.h>
 
 #include <sofa/core/CollisionModel.h>
-#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/behavior/SingleStateAccessor.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/VecTypes.h>
 
@@ -69,10 +69,10 @@ public:
 
 };
 
-class SOFA_COMPONENT_COLLISION_GEOMETRY_API TetrahedronCollisionModel : public core::CollisionModel
+class SOFA_COMPONENT_COLLISION_GEOMETRY_API TetrahedronCollisionModel : public core::CollisionModel, public virtual core::behavior::SingleStateAccessor<defaulttype::Vec3Types>
 {
 public:
-    SOFA_CLASS(TetrahedronCollisionModel, core::CollisionModel);
+    SOFA_CLASS2(TetrahedronCollisionModel, core::CollisionModel, SOFA_TEMPLATE(core::behavior::SingleStateAccessor, defaulttype::Vec3Types));
 
     typedef defaulttype::Vec3Types InDataTypes;
     typedef defaulttype::Vec3Types DataTypes;
@@ -94,13 +94,10 @@ protected:
     sofa::type::vector<TetrahedronInfo> elems;
     const sofa::core::topology::BaseMeshTopology::SeqTetrahedra* tetra;
 
-    core::behavior::MechanicalState<defaulttype::Vec3Types>* mstate;
 
     sofa::core::topology::BaseMeshTopology* m_topology;
 
     int m_topologyRevision; ///< internal revision number to check if topology has changed.
-
-protected:
 
     TetrahedronCollisionModel();
 
