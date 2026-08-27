@@ -64,6 +64,7 @@ set(SOURCE_FILES
 )
 
 sofa_find_package(Sofa.Simulation.Core Sofa.Component.SolidMechanics.FEM.Elastic REQUIRED)
+sofa_find_package(Sofa.Component.SolidMechanics.FEM.Elastic REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Simulation.Core Sofa.Component.SolidMechanics.FEM.Elastic)
