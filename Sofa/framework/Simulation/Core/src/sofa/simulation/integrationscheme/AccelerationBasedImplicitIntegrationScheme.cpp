@@ -64,7 +64,7 @@ void AccelerationBasedImplicitIntegrationScheme::doSetupIntegrationStep(const co
 
     if (!m_passedStatesValid)
     {
-        //This is the first time we go trhough this ufnciton, this means the acceleration needs to be computed
+        //This is the first time we go through this function, this means the acceleration needs to be computed
         m_mop->computeAcc(0,m_acceleration,m_xResult,m_vResult);
     }
 
@@ -142,6 +142,7 @@ void AccelerationBasedImplicitIntegrationScheme::computeLHS(bool firstIteration)
     const core::MatricesFactors::M mFact( 1 + DGv * d_rayleighMass.getValue() );
     const core::MatricesFactors::B bFact( -DGv );
     const core::MatricesFactors::K kFact( - DGx - DGv * d_rayleighStiffness.getValue() );
+    std::cout << "Simulation factors : M "<<1 + DGv * d_rayleighMass.getValue() << " | B "<< -DGv << " | K "<< - DGx - DGv * d_rayleighStiffness.getValue()<<std::endl; ; ;
 
     m_mop->setSystemMBKMatrix(mFact, bFact, kFact, l_linearSolver.get());
 }
@@ -222,6 +223,11 @@ void AccelerationBasedImplicitIntegrationScheme::computeRHS(bool firstIteration)
         m_mop->propagateDx(m_r0);
         m_mop->propagateDx(m_r1);
         m_mop->propagateDx(m_r2);
+
+        std::cout << "Simlation b : ";
+        m_vop->print(m_r0, std::cout);
+        std::cout<<std::endl; ;
+
     }
 
 }
@@ -263,7 +269,9 @@ void AccelerationBasedImplicitIntegrationScheme::updateStatesFromLinearSolution(
     acc.peq(m_systemUnknown, alpha);
     vel.peq(m_systemUnknown, alpha * DGv);
     pos.peq(m_systemUnknown, alpha * DGx);
-
+    std::cout << "Simlation m_systemUnknown : ";
+    m_vop->print(m_systemUnknown, std::cout);
+    std::cout<<std::endl; ;
     //TODO make this work with alpha, iteration might be still 0 but we are in the linesearch algo and we don't want to remove this each time...
     if (firstIteration)
     {
