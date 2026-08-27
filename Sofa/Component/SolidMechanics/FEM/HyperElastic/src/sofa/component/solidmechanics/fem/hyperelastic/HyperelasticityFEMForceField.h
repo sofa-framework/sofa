@@ -93,7 +93,7 @@ protected:
 
     void validateMaterial();
 
-    bool m_isHessianValid;
+    bool m_isHessianValid {false};
 
     void computeHessian(const VecCoord& coordinates);
 
