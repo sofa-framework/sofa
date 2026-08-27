@@ -55,11 +55,15 @@ public:
 
     using Vec3 = sofa::type::Vec3;
 
-protected:
     BaseContext();
     ~BaseContext() override;
 
-    // Data members from Context
+private:
+    BaseContext(const BaseContext&);
+    BaseContext& operator=(const BaseContext& );
+
+public:
+    /// Data members from Context
     Data<bool> is_activated; ///< To Activate a node
     Data<Vec3> worldGravity_; ///< Gravity in the world coordinate system
     Data<SReal> dt_; ///< Time step
@@ -68,11 +72,6 @@ protected:
     Data<bool> d_isSleeping; ///< The node is sleeping, and thus ignored by visitors.
     Data<bool> d_canChangeSleepingState; ///< The node can change its sleeping state.
 
-private:
-    BaseContext(const BaseContext&);
-    BaseContext& operator=(const BaseContext& );
-
-public:
     /// Get the default Context object, that contains the default values for
     /// all parameters and can be used when no local context is defined.
     static BaseContext* getDefault();
@@ -84,35 +83,34 @@ public:
     /// @{
 
     /// The Context is active
-    virtual bool isActive() const override;
+    virtual bool isActive() const ;
 
     /// State of the context
-    virtual void setActive(bool val) override;
+    virtual void setActive(bool val) ;
 
     /// Sleeping state of the context
-    virtual bool isSleeping() const override;
+    virtual bool isSleeping() const ;
 
     /// Whether the context can change its sleeping state or not
-    virtual bool canChangeSleepingState() const override;
+    virtual bool canChangeSleepingState() const ;
 
     /// Simulation time
-    virtual SReal getTime() const override;
+    virtual SReal getTime() const ;
 
     /// Simulation timestep
-    virtual SReal getDt() const override;
+    virtual SReal getDt() const ;
 
     /// Animation flag
-    virtual bool getAnimate() const override;
+    virtual bool getAnimate() const ;
     /// @}
 
     /// Simulation time
     virtual void setTime(SReal t);
 
-
     /// Gravity in local coordinates
-    virtual const Vec3& getGravity() const override;
+    virtual const Vec3& getGravity() const;
     /// Gravity in local coordinates
-    virtual void setGravity( const Vec3& g) override;
+    virtual void setGravity( const Vec3& g);
 
     /// Get the root context of the graph
     virtual BaseContext* getRootContext() const;
@@ -329,16 +327,16 @@ public:
     /// @{
 
     /// Simulation timestep
-    virtual void setDt( SReal dt ) override;
+    virtual void setDt( SReal dt );
 
     /// Animation flag
-    virtual void setAnimate(bool val) override;
+    virtual void setAnimate(bool val);
 
     /// Sleeping state of the context
-    virtual void setSleeping(bool val) override;
+    virtual void setSleeping(bool val);
 
     /// Sleeping state change of the context
-    virtual void setChangeSleepingState(bool val) override;
+    virtual void setChangeSleepingState(bool val);
 
     /// Display flags: Gravity
     virtual void setDisplayWorldGravity(bool val);

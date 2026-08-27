@@ -1812,7 +1812,7 @@ void Node::updateContext()
         //                              if one day we refactor that part, maybe it would be better to have
         //                              an an explicit context-relationship and trigger a warning in case like the following one
         //                              saying there is an ambiguity and query scene designer to deambiguiate it.
-        copyContext(*static_cast<BaseContext*>(firstParent));
+        copyContext(*static_cast<BaseContext*>(static_cast<Node*>(firstParent)));
     }
 
     updateSimulationContext();
@@ -1834,7 +1834,7 @@ void Node::updateSimulationContext()
         //                              if one day we refactor that part, maybe it would be better to have
         //                              an an explicit context-relationship and trigger a warning in case like the following one
         //                              saying there is an ambiguity and query scene designer to deambiguiate it.
-        copySimulationContext(*static_cast<BaseContext*>(firstParent));
+        copySimulationContext(*static_cast<BaseContext*>(static_cast<Node*>(firstParent)));
     }
 
     // if there is no parent... initialize all the context objects.
