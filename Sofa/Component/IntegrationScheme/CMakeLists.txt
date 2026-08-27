@@ -27,3 +27,7 @@ sofa_create_package_with_targets(
     INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
 )
 
+if(SOFA_BUILD_TESTS)
+    add_subdirectory(Testing)
+endif()
+
