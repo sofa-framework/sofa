@@ -40,17 +40,16 @@ CylinderCollisionModel<DataTypes>::CylinderCollisionModel():
       d_cylinder_heights(initData(&d_cylinder_heights,"heights","The cylinder heights")),
       d_default_radius(initData(&d_default_radius,Real(0.5),"defaultRadius","The default radius")),
       d_default_height(initData(&d_default_height,Real(2),"defaultHeight","The default height")),
-      d_default_local_axis(initData(&d_default_local_axis,typename DataTypes::Vec3(0.0, 1.0, 0.0),"defaultLocalAxis", "The default local axis cylinder is modeled around")),
-      m_mstate(nullptr)
+      d_default_local_axis(initData(&d_default_local_axis,typename DataTypes::Vec3(0.0, 1.0, 0.0),"defaultLocalAxis", "The default local axis cylinder is modeled around"))
 {
     enum_type = CYLINDER_TYPE;
 }
 
 template<class DataTypes>
-CylinderCollisionModel<DataTypes>::CylinderCollisionModel(core::behavior::MechanicalState<DataTypes>* mstate)
+CylinderCollisionModel<DataTypes>::CylinderCollisionModel(core::behavior::MechanicalState<DataTypes>* ms)
     : CylinderCollisionModel()
 {
-    m_mstate = mstate;
+    this->mstate = ms;
     enum_type = CYLINDER_TYPE;
 }
 
@@ -101,16 +100,12 @@ void CylinderCollisionModel<DataTypes>::resize(sofa::Size size)
 template<class DataTypes>
 void CylinderCollisionModel<DataTypes>::init()
 {
-    this->CollisionModel::init();
-    m_mstate = dynamic_cast< core::behavior::MechanicalState<DataTypes>* > (getContext()->getMechanicalState());
-    if (m_mstate==nullptr)
-    {
-        msg_error() << "CylinderCollisionModel requires a Rigid Mechanical Model";
-        d_componentState.setValue(ComponentState::Invalid);
-        return;
-    }
+    Inherit2::init();
 
-    resize(m_mstate->getSize());
+    if (d_componentState.getValue() == ComponentState::Invalid)
+        return;
+
+    resize(this->mstate->getSize());
 }
 
 
@@ -120,7 +115,7 @@ void CylinderCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
     using namespace sofa::type;
     using namespace sofa::defaulttype;
     CubeCollisionModel* cubeModel = createPrevious<CubeCollisionModel>();
-    const auto ncyl = m_mstate->getSize();
+    const auto ncyl = this->mstate->getSize();
 
     bool updated = false;
     if (ncyl != size)
@@ -198,7 +193,7 @@ typename CylinderCollisionModel<DataTypes>::Real CylinderCollisionModel< DataTyp
 
 template<class DataTypes>
 const typename CylinderCollisionModel<DataTypes>::Coord & CylinderCollisionModel< DataTypes >::center(sofa::Index i)const{
-    return DataTypes::getCPos((m_mstate->read(core::vec_id::read_access::position)->getValue())[i]);
+    return DataTypes::getCPos((this->mstate->read(core::vec_id::read_access::position)->getValue())[i]);
 }
 
 template<class DataTypes>
@@ -240,7 +235,7 @@ typename TCylinder<DataTypes>::Real TCylinder<DataTypes >::radius() const
 
 template<class DataTypes>
 const typename CylinderCollisionModel<DataTypes>::Coord & CylinderCollisionModel<DataTypes >::velocity(sofa::Index index) const {
-    return DataTypes::getDPos(((m_mstate->read(core::vec_id::read_access::velocity)->getValue()))[index]);
+    return DataTypes::getDPos(((this->mstate->read(core::vec_id::read_access::velocity)->getValue()))[index]);
 }
 
 
@@ -249,7 +244,7 @@ const typename TCylinder<DataTypes>::Coord & TCylinder<DataTypes >::v() const {r
 
 template<class DataTypes>
 const sofa::type::Quat<SReal> CylinderCollisionModel<DataTypes >::orientation(sofa::Index index)const{
-    return m_mstate->read(core::vec_id::read_access::position)->getValue()[index].getOrientation();
+    return this->mstate->read(core::vec_id::read_access::position)->getValue()[index].getOrientation();
 }
 
 template<class DataTypes>
