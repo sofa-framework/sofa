@@ -55,7 +55,7 @@ auto OgdenMaterial<DataTypes>::secondPiolaKirchhoffStress(Strain<DataTypes>& str
         const Real mu = m_mu.getValue();
         const Real alpha = m_alpha.getValue();
 
-        const Real FJ = pow(J, -alpha / static_cast<Real>(3));
+        const Real FJ = pow(J, -alpha / static_cast<Real>(spatial_dimensions));
 
         EigenMatrix CEigen;
         for (sofa::Index m = 0; m < spatial_dimensions; ++m)
