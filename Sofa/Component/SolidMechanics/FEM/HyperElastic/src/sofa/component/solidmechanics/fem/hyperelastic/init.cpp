@@ -64,6 +64,7 @@ void registerObjects(sofa::core::ObjectFactory* factory)
     registerOgdenMaterial(factory);
     registerPlasticMaterial(factory);
     registerStVenantKirchhoffMaterial(factory);
+    registerIncompressibleMooneyRivlinMaterial(factory);
     registerStandardTetrahedralFEMForceField(factory);
     registerTetrahedronHyperelasticityFEMForceField(factory);
 }
