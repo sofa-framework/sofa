@@ -526,3 +526,233 @@ TEST(CompressedRowSparseMatrixMechanical, Mat3x3dMulVector)
     EXPECT_NEAR(res[1], 2.0, kTol);
     EXPECT_NEAR(res[2], 3.0, kTol);
 }
+
+// ==================== Regression tests: known defects ====================
+//
+// The tests in this section FAIL today. Each comment names the offending line.
+// They are expected to pass once the corresponding fix lands.
+//
+// WARNING: CompressedRowSparseMatrixGeneric.ClearRowBlockOnEmptyMatrix and its
+// siblings segfault rather than fail cleanly. Until the fixes land, run with
+//   --gtest_filter=-*OnEmptyMatrix*
+// if you need the rest of the suite to complete.
+
+// clearRowCol() indexes rowBegin with a block-column number, but rowBegin is
+// indexed by the *position* of a row inside rowIndex. The two only coincide when
+// every row is present. Here rows 0,1,6,7 are absent, so the search for the
+// symmetric block (3,2) is run over row 5's range and finds nothing -- entry
+// (3,2) is silently left in column 2. All rowBegin accesses stay in bounds, so
+// this reproduces deterministically rather than depending on adjacent memory.
+// CompressedRowSparseMatrixMechanical.h:411
+TEST(CompressedRowSparseMatrixMechanical, ClearRowColMissesSymmetricBlockWhenRowsAreSparse)
+{
+    CRSMech m(8, 8);
+    m.set(2, 2, 22.0);
+    m.set(2, 3, 23.0);
+    m.set(3, 2, 32.0);
+    m.set(3, 3, 33.0);
+    m.set(4, 4, 44.0);
+    m.set(5, 5, 55.0);
+    m.compress();
+    ASSERT_EQ(m.getRowIndex().size(), 4u) << "test needs rowIndex != identity";
+    ASSERT_EQ(m.getRowIndex()[0], 2);
+
+    m.clearRowCol(2);
+
+    EXPECT_NEAR(m.element(2, 2), 0.0, kTol) << "row 2";
+    EXPECT_NEAR(m.element(2, 3), 0.0, kTol) << "row 2";
+    EXPECT_NEAR(m.element(3, 2), 0.0, kTol) << "column 2 must be cleared too";
+
+    // everything outside row 2 / column 2 must survive
+    EXPECT_NEAR(m.element(3, 3), 33.0, kTol);
+    EXPECT_NEAR(m.element(4, 4), 44.0, kTol);
+    EXPECT_NEAR(m.element(5, 5), 55.0, kTol);
+}
+
+// In clearRowCol(), when the symmetric block (j,i) does not exist the local
+// pointer `b` is never reset, so it still points at block (i,j) and the second
+// loop zeroes a *column* of that block. Only observable for NL > 1.
+// CompressedRowSparseMatrixMechanical.h:417-422
+TEST(CompressedRowSparseMatrixMechanical, ClearRowColAsymmetricPatternMat3)
+{
+    // 2x2 grid of 3x3 blocks; block (1,0) is deliberately absent so that the
+    // search for the symmetric block fails.
+    CRSMechMat3 m(6, 6);
+    for (int i = 0; i < 3; ++i)
+        for (int j = 0; j < 3; ++j)
+            m.set(i, j, 1.0);           // block (0,0)
+    for (int i = 0; i < 3; ++i)
+        for (int j = 3; j < 6; ++j)
+            m.set(i, j, 2.0);           // block (0,1)
+    for (int i = 3; i < 6; ++i)
+        for (int j = 3; j < 6; ++j)
+            m.set(i, j, 3.0);           // block (1,1)
+    m.compress();
+
+    m.clearRowCol(0);
+
+    for (int j = 0; j < 6; ++j)
+        EXPECT_NEAR(m.element(0, j), 0.0, kTol) << "element(0," << j << ")";
+    for (int i = 0; i < 6; ++i)
+        EXPECT_NEAR(m.element(i, 0), 0.0, kTol) << "element(" << i << ",0)";
+
+    // block (0,1) rows 1 and 2 are neither in row 0 nor in column 0 and must survive
+    EXPECT_NEAR(m.element(1, 3), 2.0, kTol);
+    EXPECT_NEAR(m.element(2, 3), 2.0, kTol);
+    EXPECT_NEAR(m.element(1, 4), 2.0, kTol);
+    EXPECT_NEAR(m.element(2, 5), 2.0, kTol);
+
+    // block (1,1) is untouched
+    EXPECT_NEAR(m.element(3, 3), 3.0, kTol);
+    EXPECT_NEAR(m.element(5, 5), 3.0, kTol);
+}
+
+// element() delegates to block(), whose "is j the first / last column of this
+// row?" fast paths dereference colsIndex without first checking that the row
+// range is non-empty. fullRows() registers exactly such empty ranges, after
+// which element() returns a neighbouring row's value or reads colsIndex[-1].
+// CompressedRowSparseMatrixGeneric.h:768-769
+TEST(CompressedRowSparseMatrixMechanical, ElementAfterFullRows)
+{
+    CRSMech m(6, 6);
+    m.set(4, 4, 7.0);
+    m.compress();
+    m.fullRows();
+
+    for (int i = 0; i < 6; ++i)
+    {
+        for (int j = 0; j < 6; ++j)
+        {
+            const double expected = (i == 4 && j == 4) ? 7.0 : 0.0;
+            EXPECT_NEAR(m.element(i, j), expected, kTol) << "element(" << i << "," << j << ")";
+        }
+    }
+}
+
+// filterValues() only emits a row when it produced at least one value, so the
+// keepEmptyRows flag threaded through every copy*() wrapper has no effect. The
+// compensating pop_back() at line 591 is dead: rowBegin.back() == vid cannot
+// hold there. CompressedRowSparseMatrixMechanical.h:585,591
+//
+// The flag concerns destination rows emptied *by the filter*, not source rows
+// that were never registered: filterValues only visits srcMatrix.rowIndex.
+// CRSMechanicalPolicy has CompressZeros == false, so the explicitly stored zero
+// at (2,2) survives compression on the source side and gives the nonzeros filter
+// a row to empty out.
+TEST(CompressedRowSparseMatrixMechanical, CopyNonZerosKeepEmptyRows)
+{
+    CRSMech src(4, 4);
+    src.set(1, 1, 2.0);
+    src.set(2, 2, 0.0);
+    src.compress();
+    ASSERT_EQ(src.getRowIndex().size(), 2u) << "the stored zero must keep row 2 on the source";
+
+    CRSMech dst;
+    dst.copyNonZeros(src, /*keepEmptyRows*/ true);
+
+    ASSERT_EQ(dst.getRowIndex().size(), 2u) << "row 2 was emptied by the filter but must be kept";
+    EXPECT_EQ(dst.getRowIndex()[0], 1);
+    EXPECT_EQ(dst.getRowIndex()[1], 2);
+
+    // the kept row must be genuinely empty, and the surviving value intact
+    const auto range = dst.getRowRange(1);
+    EXPECT_TRUE(range.empty()) << "row 2 should hold no block";
+    EXPECT_NEAR(dst.element(1, 1), 2.0, kTol);
+}
+
+// Same source, default flag: the row emptied by the filter is dropped.
+TEST(CompressedRowSparseMatrixMechanical, CopyNonZerosDropsRowEmptiedByFilter)
+{
+    CRSMech src(4, 4);
+    src.set(1, 1, 2.0);
+    src.set(2, 2, 0.0);
+    src.compress();
+
+    CRSMech dst;
+    dst.copyNonZeros(src);
+
+    ASSERT_EQ(dst.getRowIndex().size(), 1u);
+    EXPECT_EQ(dst.getRowIndex()[0], 1);
+    EXPECT_NEAR(dst.element(1, 1), 2.0, kTol);
+}
+
+// ============ Regression guards: undefined behaviour, host-dependent ============
+//
+// These pass on this host but exercise genuine UB, so they are kept as guards
+// rather than as demonstrations of a wrong result:
+//   - the out-of-range colsIndex / rowBegin reads throw std::logic_error in a
+//     Debug build, where sofa::type::vector bounds-checks (NDEBUG undefined);
+//   - the divide-by-zero ones are only caught by UBSan, or by the hardware on
+//     x86_64 where integer division by zero raises SIGFPE. ARM's UDIV silently
+//     returns 0, which is why they pass here.
+
+// The `i * rowIndex.size() / nBlockRow` search hint is guarded against
+// nBlockRow == 0 in block() and wblock(), but the guard was dropped in every
+// copy below. Confirmed with UBSan at Mechanical.h:343, :748 and :841.
+TEST(CompressedRowSparseMatrixMechanical, ClearRowOnEmptyMatrix)
+{
+    CRSMech m;
+    EXPECT_NO_THROW(m.clearRow(3));
+    EXPECT_EQ(m.getRowIndex().size(), 0u);
+}
+
+TEST(CompressedRowSparseMatrixMechanical, ClearColOnEmptyMatrix)
+{
+    CRSMech m;
+    EXPECT_NO_THROW(m.clearCol(3));
+    EXPECT_EQ(m.getRowIndex().size(), 0u);
+}
+
+TEST(CompressedRowSparseMatrixMechanical, ClearRowColOnEmptyMatrix)
+{
+    CRSMech m;
+    EXPECT_NO_THROW(m.clearRowCol(3));
+    EXPECT_EQ(m.getRowIndex().size(), 0u);
+}
+
+TEST(CompressedRowSparseMatrixMechanical, BlockAccessorsOnEmptyMatrix)
+{
+    CRSMech m;
+    EXPECT_NO_THROW((void) m.blockGet(3, 3));
+    EXPECT_NO_THROW((void) m.blockGetW(3, 3));
+    EXPECT_NO_THROW((void) m.blockCreate(3, 3));
+}
+
+TEST(CompressedRowSparseMatrixMechanical, BRowIteratorsOnEmptyMatrix)
+{
+    CRSMech m;
+    EXPECT_NO_THROW((void) m.bRowBegin(3));
+    EXPECT_NO_THROW((void) m.bRowEnd(3));
+    EXPECT_NO_THROW((void) m.bRowRange(3));
+}
+
+// clearCol() -> clearColBlock() repeats block()'s unguarded fast path. Under the
+// ClearByZeros policy the stray index still lands on an entry of column j, so
+// the result happens to be correct; only the out-of-range read is wrong.
+// CompressedRowSparseMatrixGeneric.h:1017-1018
+TEST(CompressedRowSparseMatrixMechanical, ClearColAfterFullRows)
+{
+    CRSMech m(4, 4);
+    m.set(1, 1, 3.0);
+    m.compress();
+    m.fullRows();
+
+    m.clearCol(1);
+
+    for (int i = 0; i < 4; ++i)
+        EXPECT_NEAR(m.element(i, 1), 0.0, kTol) << "element(" << i << ",1)";
+}
+
+// Control case: the default must still drop empty rows. Passes today.
+TEST(CompressedRowSparseMatrixMechanical, CopyNonZerosDropsEmptyRowsByDefault)
+{
+    CRSMech src(4, 4);
+    src.set(1, 1, 2.0);
+    src.compress();
+
+    CRSMech dst;
+    dst.copyNonZeros(src);
+
+    EXPECT_EQ(dst.getRowIndex().size(), 1u);
+    EXPECT_NEAR(dst.element(1, 1), 2.0, kTol);
+}
