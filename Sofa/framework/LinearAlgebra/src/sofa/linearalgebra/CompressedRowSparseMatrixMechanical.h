@@ -340,8 +340,8 @@ public:
         if constexpr (Policy::AutoCompress) this->compress(); /// If AutoCompress policy is activated, we neeed to be sure not missing btemp registered value.
 
         Index bi=0; split_row_index(i, bi);
-        Index rowId = Index(i * this->rowIndex.size() / this->nBlockRow);
-        if (this->sortedFind(this->rowIndex, i, rowId))
+        Index rowId = 0;
+        if (this->findRow(i, rowId))
         {
             Range rowRange(this->rowBegin[rowId], this->rowBegin[rowId+1]);
             for (Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)
@@ -749,12 +749,12 @@ public:
     {
         if constexpr (Policy::AutoCompress) const_cast<Matrix*>(this)->compress(); /// \warning this violates the const-ness of the method !
 
-        Index rowId = Index(i * this->rowIndex.size() / this->nBlockRow);
-        if (this->sortedFind(this->rowIndex, i, rowId))
+        Index rowId = 0;
+        if (this->findRow(i, rowId))
         {
             Range rowRange(this->rowBegin[rowId], this->rowBegin[rowId+1]);
-            Index colId = rowRange.begin() + j * rowRange.size() / this->nBlockCol;
-            if (this->sortedFind(this->colsIndex, rowRange, j, colId))
+            Index colId = 0;
+            if (this->findColInRange(rowRange, j, colId))
             {
                 return createBlockConstAccessor(i, j, colId);
             }
@@ -767,12 +767,12 @@ public:
     {
         if constexpr (Policy::AutoCompress) compress();
 
-        Index rowId = Index(i * this->rowIndex.size() / this->nBlockRow);
-        if (this->sortedFind(this->rowIndex, i, rowId))
+        Index rowId = 0;
+        if (this->findRow(i, rowId))
         {
             Range rowRange(this->rowBegin[rowId], this->rowBegin[rowId+1]);
-            Index colId = rowRange.begin() + j * rowRange.size() / this->nBlockCol;
-            if (this->sortedFind(this->colsIndex, rowRange, j, colId))
+            Index colId = 0;
+            if (this->findColInRange(rowRange, j, colId))
             {
                 return createBlockAccessor(i, j, colId);
             }
@@ -783,12 +783,12 @@ public:
     /// Get write access to a block, possibly creating it
     BlockAccessor blockCreate(Index i, Index j)
     {
-        Index rowId = Index(i * this->rowIndex.size() / this->nBlockRow);
-        if (this->sortedFind(this->rowIndex, i, rowId))
+        Index rowId = 0;
+        if (this->findRow(i, rowId))
         {
             Range rowRange(this->rowBegin[rowId], this->rowBegin[rowId+1]);
-            Index colId = rowRange.begin() + j * rowRange.size() / this->nBlockCol;
-            if (this->sortedFind(this->colsIndex, rowRange, j, colId))
+            Index colId = 0;
+            if (this->findColInRange(rowRange, j, colId))
             {
                 return createBlockAccessor(i, j, colId);
             }
@@ -842,9 +842,9 @@ public:
     ColBlockConstIterator bRowBegin(Index ib) const override
     {
         if constexpr (Policy::AutoCompress) const_cast<Matrix*>(this)->compress(); /// \warning this violates the const-ness of the method !
-        Index rowId = Index(ib * this->rowIndex.size() / this->nBlockRow);
+        Index rowId = 0;
         Index index = 0;
-        if (this->sortedFind(this->rowIndex, ib, rowId))
+        if (this->findRow(ib, rowId))
         {
             index = this->rowBegin[rowId];
         }
@@ -855,9 +855,9 @@ public:
     ColBlockConstIterator bRowEnd(Index ib) const override
     {
         if constexpr (Policy::AutoCompress) const_cast<Matrix*>(this)->compress(); /// \warning this violates the const-ness of the method !
-        Index rowId = Index(ib * this->rowIndex.size() / this->nBlockRow);
+        Index rowId = 0;
         Index index2 = 0;
-        if (this->sortedFind(this->rowIndex, ib, rowId))
+        if (this->findRow(ib, rowId))
         {
             index2 = this->rowBegin[rowId+1];
         }
@@ -868,9 +868,9 @@ public:
     std::pair<ColBlockConstIterator, ColBlockConstIterator> bRowRange(Index ib) const override
     {
         if constexpr (Policy::AutoCompress) const_cast<Matrix*>(this)->compress(); /// \warning this violates the const-ness of the method !
-        Index rowId = Index(ib * this->rowIndex.size() / this->nBlockRow);
+        Index rowId = 0;
         Index index = 0, index2 = 0;
-        if (this->sortedFind(this->rowIndex, ib, rowId))
+        if (this->findRow(ib, rowId))
         {
             index = this->rowBegin[rowId];
             index2 = this->rowBegin[rowId+1];
