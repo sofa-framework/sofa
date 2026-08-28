@@ -1050,13 +1050,7 @@ public:
         }
 
         Index rowId = 0;
-        if (i == rowIndex.back()) rowId = Index(rowIndex.size() - 1);      /// Optimization to avoid do a find when looking for the last line registred
-        else if (i == rowIndex.front()) rowId = 0;                  /// Optimization to avoid do a find when looking for the first line registred
-        else
-        {
-            rowId = (nBlockRow == 0) ? 0 : Index(i * rowIndex.size() / nBlockRow);
-            if (!sortedFind(rowIndex, i, rowId)) return;
-        }
+        if (!findRow(i, rowId)) return; /// Nothing to clear: the matrix is empty or the row holds no block
 
         deleteRow(rowId);
 
