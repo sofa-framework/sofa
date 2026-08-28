@@ -429,6 +429,88 @@ protected:
     }
 
     /**
+    * \brief Look for column j among the blocks of a single row.
+    *
+    * The first and last registered columns of the row are checked directly, as
+    * they are by far the most common queries; anything else falls back to a
+    * binary search. The range must be checked for emptiness first: a registered
+    * row may hold no block at all (fullRows() and fullDiagonal() both create
+    * such rows), in which case rowRange.begin() addresses the next row's first
+    * block and rowRange.end() - 1 the previous row's last one.
+    *
+    * @param rowRange : range of this row inside colsIndex / colsValue
+    * @param j : column index to look for
+    * @param colId : on success, position of the block in colsIndex / colsValue
+    * @return true if the column holds a block in this row
+    **/
+    bool findColInRange(const Range& rowRange, Index j, Index& colId) const
+    {
+        if (rowRange.empty()) return false;
+        if (j == colsIndex[rowRange.begin()])
+        {
+            colId = rowRange.begin();
+            return true;
+        }
+        if (j == colsIndex[rowRange.end() - 1])
+        {
+            colId = rowRange.end() - 1;
+            return true;
+        }
+        return searchColInRange(rowRange, j, colId);
+    }
+
+    /**
+    * \brief Binary search for column j inside a row, from an interpolated guess.
+    *
+    * findColInRange() without the first/last-column checks. Those two loads pay
+    * for themselves when the queried column is usually an end one, and cost more
+    * than they save on the insertion paths, where they almost never hit.
+    * sortedFind() already reports an empty range as "not found", so this is safe
+    * on a row that holds no block.
+    **/
+    bool searchColInRange(const Range& rowRange, Index j, Index& colId) const
+    {
+        colId = (nBlockCol == 0) ? rowRange.begin()
+                                 : rowRange.begin() + j * rowRange.size() / nBlockCol;
+        return sortedFind(colsIndex, rowRange, j, colId);
+    }
+
+    /**
+    * \brief Look for row i and return its position inside rowIndex.
+    * @param i : row index
+    * @param rowId : on success, position of the row inside rowIndex
+    * @return true if the row is registered
+    **/
+    bool findRow(Index i, Index& rowId) const
+    {
+        if (rowIndex.empty()) return false;
+        if (i == rowIndex.back())
+        {
+            rowId = Index(rowIndex.size() - 1);
+            return true;
+        }
+        if (i == rowIndex.front())
+        {
+            rowId = 0;
+            return true;
+        }
+        return searchRow(i, rowId);
+    }
+
+    /**
+    * \brief Binary search for row i, from an interpolated guess.
+    *
+    * findRow() without the first/last-row checks, for the same reason as
+    * searchColInRange(). sortedFind() reports an empty rowIndex as "not found",
+    * and the division is guarded, so this is safe on an empty matrix.
+    **/
+    bool searchRow(Index i, Index& rowId) const
+    {
+        rowId = (nBlockRow == 0) ? 0 : Index(i * rowIndex.size() / nBlockRow);
+        return sortedFind(rowIndex, i, rowId);
+    }
+
+    /**
     * \brief Method to easy delete row given position in rowIndex.
     * @param RowId position on line in rowIndex
     **/
@@ -755,23 +837,10 @@ public:
         if constexpr (Policy::AutoSize) if (j > nBlockCol) return empty; /// Matrix is auto sized so requested column could not exist
 
         Index rowId = 0;
-        if (i == rowIndex.back()) rowId = Index(rowIndex.size() - 1); /// Optimization to avoid do a find when looking for the last line registred
-        else if (i == rowIndex.front()) rowId = 0;             /// Optimization to avoid do a find when looking for the first line registred
-        else
-        {
-            rowId = (nBlockRow == 0) ? 0 : Index(i * rowIndex.size() / nBlockRow);
-            if (!sortedFind(rowIndex, i, rowId)) return empty;
-        }
+        if (!findRow(i, rowId)) return empty;
 
-        Range rowRange(rowBegin[rowId], rowBegin[rowId+1]);
         Index colId = 0;
-        if (j == colsIndex[rowRange.first]) colId = rowRange.first;                /// Optimization to avoid do a find when looking for the first column registred for specific column
-        else if (j == colsIndex[rowRange.second - 1]) colId = rowRange.second - 1; /// Optimization to avoid do a find when looking for the last column registred for specific column
-        else
-        {
-            colId = (nBlockCol == 0) ? 0 : rowRange.begin() + j * rowRange.size() / nBlockCol;
-            if (!sortedFind(colsIndex, rowRange, j, colId)) return empty;
-        }
+        if (!findColInRange(Range(rowBegin[rowId], rowBegin[rowId+1]), j, colId)) return empty;
 
         return colsValue[colId];
     }
