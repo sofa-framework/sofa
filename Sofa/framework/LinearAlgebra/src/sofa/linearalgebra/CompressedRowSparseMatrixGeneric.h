@@ -422,6 +422,9 @@ protected:
         Index maxColIndex = 0;
         for (Index rowId = 0; rowId < static_cast<Index>(rowIndex.size()); rowId++)
         {
+            /// a registered row may hold no block, in which case rowBegin[rowId+1] - 1
+            /// would address the previous row's last column
+            if (rowBegin[rowId] == rowBegin[rowId+1]) continue;
             Index lastColIndex = colsIndex[rowBegin[rowId+1] - 1];
             if (lastColIndex > maxColIndex) maxColIndex = lastColIndex;
         }
@@ -876,11 +879,10 @@ public:
             {
                 Index rowId = Index(rowIndex.size() - 1);
                 Range rowRange(rowBegin[rowId], rowBegin[rowId+1]);
-                if (j == colsIndex[rowRange.second - 1]) /// In this case, we are trying to write on last registered column, directly return ref on it
-                {
-                    return &colsValue[rowRange.second - 1];
-                }
-                else if (j > colsIndex[rowRange.second - 1]) /// Optimization we are trying to write on last line et upper of last column, directly create it.
+                /// A registered row may hold no block at all, in which case
+                /// rowRange.end() - 1 would address the previous row's last one.
+                /// Appending is then the right move, as this is the last row.
+                if (rowRange.empty() || j > colsIndex[rowRange.end() - 1]) /// Optimization we are trying to write on last line et upper of last column, directly create it.
                 {
                     if (!create) return nullptr;
                     colsIndex.push_back(j);
@@ -894,8 +896,8 @@ public:
                 }
                 else
                 {
-                    Index colId = (nBlockCol == 0) ? 0 : rowRange.begin() + j * rowRange.size() / nBlockCol;
-                    if (!sortedFind(colsIndex, rowRange, j, colId)) return create ? insertBtemp(i,j) : nullptr;
+                    Index colId = 0;
+                    if (!findColInRange(rowRange, j, colId)) return create ? insertBtemp(i,j) : nullptr;
                     return &colsValue[colId];
                 }
             }
@@ -903,34 +905,20 @@ public:
             if constexpr (Policy::AutoSize) if (j > nBlockCol) return create ? insertBtemp(i,j) : nullptr; /// Matrix is auto sized so requested column could not exist
 
             Index rowId = 0;
-            if (i == rowIndex.back()) rowId = Index(rowIndex.size() - 1);      /// Optimization to avoid do a find when looking for the last line registred
-            else if (i == rowIndex.front()) rowId = 0;                  /// Optimization to avoid do a find when looking for the first line registred
-            else
-            {
-                rowId = (nBlockRow == 0) ? 0 : Index(i * rowIndex.size() / nBlockRow);
-                if (!sortedFind(rowIndex, i, rowId)) return create ? insertBtemp(i,j) : nullptr;
-            }
+            if (!findRow(i, rowId)) return create ? insertBtemp(i,j) : nullptr;
 
-            Range rowRange(rowBegin[rowId], rowBegin[rowId+1]);
             Index colId = 0;
-            if (j == colsIndex[rowRange.first]) colId = rowRange.first;                /// Optimization to avoid do a find when looking for the first column registred for specific column
-            else if (j == colsIndex[rowRange.second - 1]) colId = rowRange.second - 1; /// Optimization to avoid do a find when looking for the last column registred for specific column
-            else
-            {
-                colId = (nBlockCol == 0) ? 0 : rowRange.begin() + j * rowRange.size() / nBlockCol;
-                if (!sortedFind(colsIndex, rowRange, j, colId)) return create ? insertBtemp(i,j) : nullptr;
-            }
+            if (!findColInRange(Range(rowBegin[rowId], rowBegin[rowId+1]), j, colId)) return create ? insertBtemp(i,j) : nullptr;
 
             return &colsValue[colId];
         }
         else
         {
-            Index rowId = (nBlockRow == 0) ? 0 : Index(i * rowIndex.size() / nBlockRow);
-            if (sortedFind(rowIndex, i, rowId))
+            Index rowId = 0;
+            if (searchRow(i, rowId))
             {
-                Range rowRange(rowBegin[rowId], rowBegin[rowId+1]);
-                Index colId = (nBlockCol == 0) ? 0 : rowRange.begin() + j * rowRange.size() / nBlockCol;
-                if (sortedFind(colsIndex, rowRange, j, colId))
+                Index colId = 0;
+                if (searchColInRange(Range(rowBegin[rowId], rowBegin[rowId+1]), j, colId))
                 {
                     return &colsValue[colId];
                 }
@@ -961,8 +949,7 @@ public:
         bool rowFound = true;
         if (rowId < 0 || rowId >= static_cast<Index>(rowIndex.size()) || rowIndex[rowId] != i)
         {
-            rowId = Index(i * rowIndex.size() / nBlockRow);
-            rowFound = sortedFind(rowIndex, i, rowId);
+            rowFound = searchRow(i, rowId);
         }
         if (rowFound)
         {
@@ -970,8 +957,7 @@ public:
             Range rowRange(rowBegin[rowId], rowBegin[rowId+1]);
             if (colId < rowRange.begin() || colId >= rowRange.end() || colsIndex[colId] != j)
             {
-                colId = rowRange.begin() + j * rowRange.size() / nBlockCol;
-                colFound = sortedFind(colsIndex, rowRange, j, colId);
+                colFound = searchColInRange(rowRange, j, colId);
             }
             if (colFound)
             {
