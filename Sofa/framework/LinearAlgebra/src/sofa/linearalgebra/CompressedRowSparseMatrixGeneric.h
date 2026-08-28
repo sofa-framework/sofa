@@ -221,7 +221,6 @@ public :
     VecIndex rowBegin;    ///< column indices of non-empty blocks in each row. The column indices of the non-empty block within the i-th non-empty row are all the colsIndex[j],  j  in [rowBegin[i],rowBegin[i+1])
     VecIndex colsIndex;   ///< column indices of all the non-empty blocks, sorted by increasing row index and column index
     VecBlock colsValue;   ///< values of the non-empty blocks, in the same order as in colsIndex
-    VecFlag  touchedBlock; ///< boolean vector, i-th value is true if block has been touched since last compression.
 
     /// Additional storage to make block insertion more efficient
     VecIndexedBlock btemp; ///< unsorted blocks and their indices
@@ -581,7 +580,6 @@ protected:
         rowBegin.clear();
         colsIndex.clear();
         colsValue.clear();
-        touchedBlock.clear();
 
         rowIndex.reserve(oldRowIndex.size());
         rowBegin.reserve(oldRowIndex.size() + 1);
