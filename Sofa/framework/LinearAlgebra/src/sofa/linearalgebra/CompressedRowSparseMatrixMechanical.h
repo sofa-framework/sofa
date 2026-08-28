@@ -589,17 +589,13 @@ public:
                     }
                 }
 
-                if (oldVid != vid) //check in case all sub-blocks have been filtered out
+                // a destination row left empty by the filter is dropped unless
+                // the caller asked to keep it
+                if (oldVid != vid || keepEmptyRows)
                 {
                     this->rowIndex.push_back(scalarRowId / DstBlockRows + subRow);
                     this->rowBegin.push_back(oldVid);
                 }
-            }
-
-            if (!keepEmptyRows && !this->rowBegin.empty() && this->rowBegin.back() == vid) // row was empty
-            {
-                this->rowIndex.pop_back();
-                this->rowBegin.pop_back();
             }
         }
         this->rowBegin.push_back(vid); // end of last row
