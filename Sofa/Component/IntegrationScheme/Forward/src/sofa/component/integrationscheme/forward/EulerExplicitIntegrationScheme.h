@@ -90,7 +90,7 @@ public:
 
     virtual SReal getPositionIntegrationFactor() const override
     {
-        return m_dt*m_dt;
+        return d_symplectic.getValue()*m_dt*m_dt;
     }
 
     void init() override ;
