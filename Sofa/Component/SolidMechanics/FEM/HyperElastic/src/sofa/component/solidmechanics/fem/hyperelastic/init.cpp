@@ -31,6 +31,7 @@ namespace sofa::component::solidmechanics::fem::hyperelastic
     extern void registerOgdenMaterial(sofa::core::ObjectFactory* factory);
     extern void registerPlasticMaterial(sofa::core::ObjectFactory* factory);
     extern void registerStVenantKirchhoffMaterial(sofa::core::ObjectFactory* factory);
+    extern void registerIncompressibleMooneyRivlinMaterial(sofa::core::ObjectFactory* factory);
     extern void registerStandardTetrahedralFEMForceField(sofa::core::ObjectFactory* factory);
     extern void registerTetrahedronHyperelasticityFEMForceField(sofa::core::ObjectFactory* factory);
 
