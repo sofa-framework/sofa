@@ -38,12 +38,12 @@ public:
 
     virtual SReal getVelocityIntegrationFactor() const override
     {
-        return m_dt/2.0;
+        return m_dt;
     }
 
     virtual SReal getPositionIntegrationFactor() const override
     {
-        return m_dt*m_dt/4.0;
+        return m_dt*m_dt/2.0;
     }
 };
 
