@@ -392,36 +392,44 @@ public:
             if constexpr (Policy::AutoCompress) this->compress();
 
             Index bi=0; split_row_index(i, bi);
-            Index rowId = Index(i * this->rowIndex.size() / this->nBlockRow);
-            if (this->sortedFind(this->rowIndex, i, rowId))
+
+            Index rowId = 0;
+            if (!this->findRow(i, rowId)) return;
+
+            const Range rowRange(this->rowBegin[rowId], this->rowBegin[rowId+1]);
+            for (Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)
             {
-                Range rowRange(this->rowBegin[rowId], this->rowBegin[rowId+1]);
-                for (Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)
+                // first clear (i,j)
+                Block& b = this->colsValue[xj];
+                for (Index bj = 0; bj < (Index)NC; ++bj)
+                    traits::vset(b, bi, bj, 0);
+
+                const Index j = this->colsIndex[xj];
+
+                // the diagonal block is its own symmetric counterpart
+                if (j == i)
                 {
-                    Block* b = &this->colsValue[xj];
-                    // first clear (i,j)
-                    for (Index bj = 0; bj < (Index)NC; ++bj)
-                        traits::vset(*b, bi, bj, 0);
-
-                    // then clear (j,i) 
-                    Index j = this->colsIndex[xj];
-                    
-                    if (j != i)
-                    {
-                        Range jrowRange(this->rowBegin[j], this->rowBegin[j + 1]);
-                        Index colId = 0;
-
-                        // look for column i
-                        if (this->sortedFind(this->colsIndex, jrowRange, i, colId))
-                        {
-                            b = &this->colsValue[colId];
-                        }
-                    }
-
                     for (Index bj = 0; bj < (Index)NL; ++bj)
-                        traits::vset(*b, bj, bi, 0);
-             
+                        traits::vset(b, bj, bi, 0);
+                    continue;
                 }
+
+                // then clear (j,i), when that block exists. rowBegin is indexed
+                // by the position of a row inside rowIndex, not by the row
+                // number, so row j has to be looked up rather than used as an
+                // index -- the two only coincide when every row is present.
+                Index jRowId = 0;
+                if (!this->findRow(j, jRowId)) continue;
+
+                Index colId = 0;
+                if (!this->findColInRange(Range(this->rowBegin[jRowId], this->rowBegin[jRowId+1]), i, colId)) continue;
+
+                // never fall back to block (i,j) when (j,i) is missing: clearing
+                // a column of it would zero entries that lie in neither row i
+                // nor column i
+                Block& bSym = this->colsValue[colId];
+                for (Index bj = 0; bj < (Index)NL; ++bj)
+                    traits::vset(bSym, bj, bi, 0);
             }
         }
     }
