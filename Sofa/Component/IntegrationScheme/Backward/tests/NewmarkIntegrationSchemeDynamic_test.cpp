@@ -108,26 +108,13 @@ struct NewmarkImplicitDynamic_test : public component::integrationscheme::testin
         // Constants
         const double denominator = -(h*gamma*rk + h*h*beta)*K+m*(1+h*gamma*rm);
         const double constantAcc = -(1 + h*rm)*m+K*(h*h/2.0+h*rk);
-        const double constantVel = K*(h + rk) + rm*m ;
+        const double constantVel = K*(h + rk) - rm*m ;
         const double constant2 = h*h*0.5*(1-2*beta);
-
-        std::cout << "Expected factors : M "<<(1+h*gamma*rm) << " | B "<< 0 << " | K "<< -(h*gamma*rk + h*h*beta)<<std::endl; ;
-        std::cout << "constantVel "<< constantVel<<std::endl; ;
-
 
         // Compute next velocities and accelerations
         for(int i=1;i< size+1; i++)
         {
             const SReal da = (K*(positionsArray[i-1]-z0)-m*g+constantAcc*accelerationsArray[i-1]+constantVel*velocitiesArray[i-1])/denominator;
-            if (i<3)
-            {
-                std::cout << "Expected b : "<<K*(positionsArray[i-1]-z0)-m*g+constantAcc*accelerationsArray[i-1]+constantVel*velocitiesArray[i-1]<<std::endl; ;
-                std::cout << "Expected b_f : "<<K*(positionsArray[i-1]-z0)-m*g<<std::endl; ;
-                std::cout << "Expected b_acc : "<<constantAcc*accelerationsArray[i-1]<<std::endl; ;
-                std::cout << "Expected b_vel : "<<constantVel*velocitiesArray[i-1]<<std::endl; ;
-                std::cout << "Expected denominator : "<<denominator<<std::endl; ;
-                std::cout << "Expected da : "<<da<<std::endl;
-            }
 
             accelerationsArray.push_back(accelerationsArray[i-1] + da);
             velocitiesArray.push_back(velocitiesArray[i-1]+h*(1-gamma)*accelerationsArray[i-1]+h*gamma*accelerationsArray[i]);
@@ -169,17 +156,7 @@ struct NewmarkImplicitDynamic_test : public component::integrationscheme::testin
             m_si.simulate(h);
             time = m_si.root->getTime();
             // Iterate
-
             i++;
-            p0=dofs.get()->read(sofa::core::vec_id::read_access::position)->getValue()[0];
-            Deriv_t<Vec3Types> v0=dofs.get()->read(sofa::core::vec_id::read_access::velocity)->getValue()[0];
-            Deriv_t<Vec3Types> a0=dynamic_cast<DataVecDeriv_t<Vec3Types> *>(dofs.get()->findData("acceleration"))->getValue()[0];
-
-            std::cout<<"Step "<< i << " position expected / actual / diff: "<<positionsArray[i] << " / "<<p0[1]<<" / "<< positionsArray[i] - p0[1] <<std::endl;
-            std::cout<<"Step "<< i << " velocity expected / actual / diff: "<<velocitiesArray[i] << " / "<<v0[1]<<" / "<< velocitiesArray[i] - v0[1] <<std::endl;
-            std::cout<<"Step "<< i << " acceleration expected / actual / diff : "<<accelerationsArray[i] << " / "<<a0[1]<<" / "<< accelerationsArray[i] - a0[1] <<std::endl;
-
-
         }
         while (time < 2);
         return true;
@@ -214,20 +191,20 @@ TYPED_TEST( NewmarkImplicitDynamic_test , newmarkImplicitSolverDynamicTest_high_
    this-> compareSimulatedToTheoreticalPositions(5e-16,0.1);
 }
 
-// // Test case: h=0.01 K=10 m=10 rm=0 rk=0.1
-// TYPED_TEST( NewmarkImplicitDynamic_test , newmarkImplicitSolverDynamicTest_medium_dt_with_rayleigh_stiffness)
-// {
-//    this->createScene(10,10,1,0.25,0.5,0,0.1); // k,m,l0
-//    this->generateDiscreteMassPositions (0.01, 10, 10, 1, 0, 10, 2, 0, 0.25, 0.5, 0, 0.1);
-//    this-> compareSimulatedToTheoreticalPositions(6e-15,0.01);
-// }
+// Test case: h=0.01 K=10 m=10 rm=0 rk=0.1
+TYPED_TEST( NewmarkImplicitDynamic_test , newmarkImplicitSolverDynamicTest_medium_dt_with_rayleigh_stiffness)
+{
+   this->createScene(10,10,1,0.25,0.5,0,0.1); // k,m,l0
+   this->generateDiscreteMassPositions (0.01, 10, 10, 1, 0, 10, 2, 0, 0.25, 0.5, 0, 0.1);
+   this-> compareSimulatedToTheoreticalPositions(1e-12,0.01);
+}
 
 // Test case: h=0.001 K=10 m = 100 rm=0.1 rk=0
-// TYPED_TEST( NewmarkImplicitDynamic_test , newmarkImplicitSolverDynamicTest_small_dt_with_rayleigh_mass)
-// {
-//    this->createScene(10,100,1,0.25,0.5,0.1,0); // k,m,l0
-//    this->generateDiscreteMassPositions (0.001, 10, 100, 1, 0, 10, 2, 0, 0.25, 0.5, 0.1, 0);
-//    this-> compareSimulatedToTheoreticalPositions(9e-16,0.001);
-// }
+TYPED_TEST( NewmarkImplicitDynamic_test , newmarkImplicitSolverDynamicTest_small_dt_with_rayleigh_mass)
+{
+   this->createScene(10,100,1,0.25,0.5,0.1,0); // k,m,l0
+   this->generateDiscreteMassPositions (0.001, 10, 100, 1, 0, 10, 2, 0, 0.25, 0.5, 0.1, 0);
+   this-> compareSimulatedToTheoreticalPositions(1e-12,0.001);
+}
 
 } // namespace sofa

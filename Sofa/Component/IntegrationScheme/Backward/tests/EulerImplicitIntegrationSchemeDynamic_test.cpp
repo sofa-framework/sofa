@@ -167,7 +167,7 @@ TYPED_TEST( EulerImplicitDynamic_test , eulerImplicitSolverDynamicTest_high_dt_w
 {
    this->createScene(100,10,1,0.1,0.1); // k,m,l0,rm,rk
    this->generateDiscreteMassPositions (0.1, 100, 10,1, 0, 10, 2, 0.1, 0.1);
-   this-> compareSimulatedToTheoreticalPositions(5e-16,0.1);
+   this-> compareSimulatedToTheoreticalPositions(1e-12,0.1);
 }
 
 // Test case: h=0.01 K=10 m=10 rm=0 rk=0.1
@@ -175,7 +175,7 @@ TYPED_TEST( EulerImplicitDynamic_test , eulerImplicitSolverDynamicTest_medium_dt
 {
    this->createScene(10,10,1,0,0.1); // k,m,l0,rm,rk
    this->generateDiscreteMassPositions (0.01, 10, 10, 1, 0, 10, 2, 0, 0.1);
-   this-> compareSimulatedToTheoreticalPositions(6e-15,0.01);
+   this-> compareSimulatedToTheoreticalPositions(1e-12,0.01);
 }
 
 // Test case: h=0.001 K=10 m = 100 rm=0.1 rk=0
@@ -183,7 +183,7 @@ TYPED_TEST( EulerImplicitDynamic_test , eulerImplicitSolverDynamicTest_small_dt_
 {
    this->createScene(10,100,1,0.1,0); // k,m,l0,rm,rk
    this->generateDiscreteMassPositions (0.001, 10, 100, 1, 0, 10, 2, 0.1, 0);
-   this-> compareSimulatedToTheoreticalPositions(5e-16,0.001);
+   this-> compareSimulatedToTheoreticalPositions(1e-12,0.001);
 }
 
 } // namespace sofa

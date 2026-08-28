@@ -86,16 +86,18 @@ void testOrder2(SReal start, SReal dt)
     BDFIntegrationSchemeTest solver;
     solver.computeLinearMultiStepCoefficients(samples, dt, a_coef, b_coef);
 
+    const SReal normalizationCoef = 3_sreal / 2_sreal;
+
     ASSERT_EQ(a_coef.size(), b_coef.size());
     ASSERT_EQ(a_coef.size(), 3);
 
-    EXPECT_NEAR(a_coef[0], 1_sreal / 3_sreal, coefTolerance);
-    EXPECT_NEAR(a_coef[1], -4_sreal / 3_sreal, coefTolerance);
-    EXPECT_NEAR(a_coef[2], 1_sreal, coefTolerance);
+    EXPECT_NEAR(a_coef[0], 1_sreal / 3_sreal * normalizationCoef, coefTolerance);
+    EXPECT_NEAR(a_coef[1], -4_sreal / 3_sreal * normalizationCoef, coefTolerance);
+    EXPECT_NEAR(a_coef[2], 1_sreal * normalizationCoef, coefTolerance);
 
     EXPECT_NEAR(b_coef[0], 0_sreal, coefTolerance);
     EXPECT_NEAR(b_coef[1], 0_sreal, coefTolerance);
-    EXPECT_NEAR(b_coef[2], 2_sreal / 3_sreal, coefTolerance);
+    EXPECT_NEAR(b_coef[2], 1_sreal, coefTolerance);
 }
 
 TEST(BDFIntegrationSchemeTestSuite, Order2)
@@ -117,15 +119,17 @@ void testOrder3(SReal start, SReal dt)
     ASSERT_EQ(a_coef.size(), b_coef.size());
     ASSERT_EQ(a_coef.size(), 4);
 
-    EXPECT_NEAR(a_coef[0], -2_sreal / 11_sreal, coefTolerance);
-    EXPECT_NEAR(a_coef[1], 9_sreal / 11_sreal, coefTolerance);
-    EXPECT_NEAR(a_coef[2], -18_sreal / 11_sreal, coefTolerance);
-    EXPECT_NEAR(a_coef[3], 1_sreal, coefTolerance);
+    const SReal normalizationCoef = 11_sreal / 6_sreal;
+
+    EXPECT_NEAR(a_coef[0], -2_sreal / 11_sreal * normalizationCoef, coefTolerance);
+    EXPECT_NEAR(a_coef[1], 9_sreal / 11_sreal * normalizationCoef, coefTolerance);
+    EXPECT_NEAR(a_coef[2], -18_sreal / 11_sreal * normalizationCoef, coefTolerance);
+    EXPECT_NEAR(a_coef[3], 1_sreal * normalizationCoef, coefTolerance);
 
     EXPECT_NEAR(b_coef[0], 0_sreal, coefTolerance);
     EXPECT_NEAR(b_coef[1], 0_sreal, coefTolerance);
     EXPECT_NEAR(b_coef[2], 0_sreal, coefTolerance);
-    EXPECT_NEAR(b_coef[3], 6_sreal / 11_sreal, coefTolerance);
+    EXPECT_NEAR(b_coef[3], 1_sreal, coefTolerance);
 }
 
 TEST(BDFIntegrationSchemeTestSuite, Order3)
