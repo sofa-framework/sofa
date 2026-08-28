@@ -26,6 +26,8 @@
 
 #include <gtest/gtest.h>
 
+#include <cstdlib>
+
 #include <sofa/helper/RandomGenerator.h>
 #include <sofa/linearalgebra/CompressedRowSparseMatrixConstraint.h>
 #include <sofa/linearalgebra/FullVector.h>
@@ -2420,6 +2422,77 @@ TEST(CompressedRowSparseMatrixConstraint, multTransposeBaseVector)
     EXPECT_NEAR(res[2][0], 0.0, tol);
     EXPECT_NEAR(res[2][1], 2.0, tol);
     EXPECT_NEAR(res[2][2], 0.0, tol);
+}
+
+// ==================== Regression tests ====================
+//
+// The tests below currently FAIL. Each one documents a defect found by review;
+// the comment above it names the offending line. They are expected to pass once
+// the corresponding fix lands.
+
+// RowConstIterator's defaulted default constructor leaves m_internal and
+// m_matrix without initialisers, so a default-constructed iterator is not in the
+// invalid state its own isInvalid() is meant to report. Adding NSDMIs
+// (= s_invalidIndex / = nullptr) fixes it.
+// CompressedRowSparseMatrixConstraint.h:255,431-433
+TEST(CompressedRowSparseMatrixConstraint, DefaultConstructedRowIteratorIsInvalid)
+{
+    using Vec3 = sofa::type::Vec3;
+    using Matrix = sofa::linearalgebra::CompressedRowSparseMatrixConstraint<Vec3>;
+
+    Matrix::RowConstIterator it{};
+    EXPECT_TRUE(it.isInvalid()) << "a default-constructed row iterator must not alias row 0";
+}
+
+// clearRowBlock() (inherited from CompressedRowSparseMatrixGeneric) calls
+// rowIndex.back() before checking that rowIndex is non-empty, which segfaults
+// instead of failing an assertion. CompressedRowSparseMatrixGeneric.h:984-985
+//
+// EXPECT_EXIT runs the body in a forked child, so the crash is contained and the
+// test binary survives. The child exits 0 only when the call both returns and
+// leaves the matrix untouched, so this reports FAILED today ("Terminated by
+// signal 11") and PASSED once the guard is added. The suite is named *DeathTest
+// per the googletest convention: suites whose name ends in DeathTest are run
+// before all others, because forking is only safe before any test starts threads.
+#if GTEST_HAS_DEATH_TEST
+
+TEST(CompressedRowSparseMatrixConstraintDeathTest, ClearRowBlockOnEmptyMatrix)
+{
+    using Vec3 = sofa::type::Vec3;
+    using Matrix = sofa::linearalgebra::CompressedRowSparseMatrixConstraint<Vec3>;
+
+    EXPECT_EXIT(
+        {
+            Matrix m;
+            m.clearRowBlock(0);
+            std::exit(m.empty() ? 0 : 2);
+        },
+        ::testing::ExitedWithCode(0), "");
+}
+
+#endif // GTEST_HAS_DEATH_TEST
+
+// Guard (passes today): setLine() on an absent row must not trip over the same
+// unguarded back().
+TEST(CompressedRowSparseMatrixConstraint, SetLineOnEmptyMatrix)
+{
+    using Vec3 = sofa::type::Vec3;
+    using Matrix = sofa::linearalgebra::CompressedRowSparseMatrixConstraint<Vec3>;
+
+    Matrix src;
+    src.writeLine(0).addCol(2, Vec3(1, 0, 0));
+    src.compress();
+
+    Matrix dst;
+    EXPECT_NO_THROW(dst.setLine(0, src.readLine(0).row()));
+    dst.compress();
+
+    auto row = dst.readLine(0);
+    ASSERT_NE(row, dst.end());
+    auto col = row.begin();
+    ASSERT_NE(col, row.end());
+    EXPECT_EQ(col.index(), 2);
+    EXPECT_EQ(col.val(), Vec3(1, 0, 0));
 }
 
 } // namespace sofa
