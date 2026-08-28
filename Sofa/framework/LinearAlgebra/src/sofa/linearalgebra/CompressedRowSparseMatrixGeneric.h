@@ -29,7 +29,6 @@
 
 #include <sofa/type/vector.h>
 #include <sofa/type/Vec.h>
-#include <sofa/type/hardening.h>
 #include <sofa/linearalgebra/MatrixExpr.h>
 #include <sofa/linearalgebra/FullVector.h>
 #include <sofa/linearalgebra/matrix_bloc_traits.h>
@@ -1509,32 +1508,6 @@ public:
         return is;
     }
 
-protected:
-
-    template<typename TVec>
-    void writeVector(const TVec& vec, std::ostream& os)
-    {
-        for (auto& v : vec)
-            os <<v<<";";
-    }
-
-    template<typename TVec>
-    void readVector(TVec& vec, std::istream& in)
-    {
-        std::string temp;
-        while (std::getline(in, temp, ';'))
-        {
-            int val{};
-            if(sofa::type::hardening::safeStrToInt(temp, val))
-            {
-                vec.push_back(val);
-            }
-            else
-            {
-                msg_warning("CompressedRowSparseMatrixGeneric") << "could not parse " << temp << " ; skipping entry.";
-            }
-        }
-    }
 };
 
 #if !defined(SOFA_COMPONENT_LINEARSOLVER_COMPRESSEDROWSPARSEMATRIXGENERIC_CPP)
