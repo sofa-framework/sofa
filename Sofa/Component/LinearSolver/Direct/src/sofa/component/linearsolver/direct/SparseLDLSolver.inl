@@ -249,16 +249,47 @@ bool SparseLDLSolver<TMatrix, TVector, TThreadManager>::doAddJMInvJtLocal(ResMat
                     auto& [row, col, value] = tripletsBuffer[r];
                     row = Jlocal2global[j];
                     col = Jlocal2global[i];
-
+		    
                     Real* lineI = JLinv[i];
                     Real* lineJ = JLinvDinv[j];
 
                     value = 0;
-                    for (int k = 0; k < data->n; ++k)
+
+		    // avoid explicitely putting loop exit conditions in the loop
+		    // the compiler optmiser nor the chip can know they've not changed so they mostly pesimistically re-evaluate.
+		    const auto d  { data->n };    
+		    const auto kDv{ std::div( d, 4 ) };
+		    const auto k1 { kDv.quot * 4 };
+		    
+		    int k{ 0 };
+		    // avoid loop carried dependencies (I tried 8 but there was no extra improvement)
+		    auto v0{ value };
+		    auto v1{ value };
+		    auto v2{ value };
+		    auto v3{ value };
+		    auto v4{ value };
+		    
+                    for (; k < k1; k += 4)
                     {
-                        value += lineJ[k] * lineI[k];
+                        v0 += lineJ[k+0] * lineI[k+0];
+                        v1 += lineJ[k+1] * lineI[k+1];
+                        v2 += lineJ[k+2] * lineI[k+2];
+                        v3 += lineJ[k+3] * lineI[k+3];
                     }
-                    value *= fact;
+		    for(; k < d; ++k)
+                        v4 += lineJ[k] * lineI[k];
+		      
+                    value = (v0 + v1 + v2 + v3 + v4) * fact;
+
+		    // confirmation with original version
+		    // for (int k = 0; k < d; ++k)
+		    // {
+		    //     vcheck += lineJ[k] * lineI[k];
+		    // }
+		    // vcheck *= fact;
+		    // const double diff = std::abs( value - vcheck );
+		    // if ( diff > 1e-12 )
+		    //   std::cout << "value check fail " << value << ' ' <<  vcheck << '\n';
                 }
             }
 
