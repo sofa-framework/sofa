@@ -422,12 +422,6 @@ public:
             return !(*this < other);
         }
 
-        template <class VecDeriv, typename Real>
-        Real operator*(const VecDeriv& v) const
-        {
-            return CompressedRowSparseMatrixVecDerivMult(row(), v);
-        }
-
     private:
 
         /// a default-constructed iterator must report itself as invalid rather
