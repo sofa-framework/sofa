@@ -23,6 +23,7 @@
 #include <sofa/component/constraint/lagrangian/correction/config.h>
 
 #include <sofa/core/behavior/ConstraintCorrection.h>
+#include <sofa/core/behavior/BaseIntegrationScheme.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 
 #include <sofa/linearalgebra/FullMatrix.h>
@@ -192,6 +193,15 @@ protected:
     void computeDx(Data<VecDeriv>& dx, const Data< VecDeriv > &f, const std::list< int > &activeDofs);
 
     std::list< int > m_activeDofs;
+
+    /// Integration scheme found in the context, used to scale the compliance and the corrections
+    sofa::core::behavior::BaseIntegrationScheme* m_pIntegrationScheme { nullptr };
+
+    /// Position integration factor of the integration scheme (falls back to the implicit Euler factor if no scheme was found)
+    SReal getPositionIntegrationFactor() const;
+
+    /// Velocity integration factor of the integration scheme (falls back to the implicit Euler factor if no scheme was found)
+    SReal getVelocityIntegrationFactor() const;
 };
 
 
