@@ -35,8 +35,10 @@
 
         <RegularGridTopology name="grid" n="10 3 3" min="0 0 5" max="10 2 7" />
         <MechanicalObject name="dofs" />
-        <MeshMatrixMass massDensity="1" />
-        <HexahedronFEMForceField name="FEM" youngModulus="1e4" poissonRatio="0.45" method="large" />
+
+        <NodalMassDensity name="rho" property="1"/>
+        <FEMMass template="Vec3,Hexahedron" nodalMassDensity="@rho" />
+        <CorotationalFEMForceField template="Vec3,Hexahedron" name="FEM" youngModulus="1e4" poissonRatio="0.3" />
 
         <BoxROI name="boxFixed" box="-0.1 -0.1 4.9  0.1 2.1 7.1" drawBoxes="true" />
         <FixedProjectiveConstraint indices="@boxFixed.indices" />
