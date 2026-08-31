@@ -41,6 +41,11 @@ void BaseForceField::addForce(const MechanicalParams* mparams, MultiVecDerivId f
     addForce(mparams, fId, mparams->x(), mparams->v());
 }
 
+void BaseForceField::addDForce(const MechanicalParams* mparams, MultiVecDerivId dfId)
+{
+    this->addDForce(mparams, dfId, ConstMultiVecDerivId(vec_id::read_access::dx));
+}
+
 void BaseForceField::addMBKdx(const MechanicalParams* mparams, MultiVecDerivId dfId)
 {
     const auto kFactor = sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams,rayleighStiffness.getValue());
