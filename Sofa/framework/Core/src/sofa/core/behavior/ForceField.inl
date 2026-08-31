@@ -51,7 +51,7 @@ void ForceField<DataTypes>::addForce(const MechanicalParams* mparams, MultiVecDe
 }
 
 template<class DataTypes>
-void ForceField<DataTypes>::addDForce(const MechanicalParams* mparams, MultiVecDerivId dfId )
+void ForceField<DataTypes>::addDForce(const MechanicalParams* mparams, MultiVecDerivId dfId, ConstMultiVecDerivId dxId)
 {
     if (mparams && this->mstate)
     {
@@ -60,7 +60,10 @@ void ForceField<DataTypes>::addDForce(const MechanicalParams* mparams, MultiVecD
         mparams->setKFactorUsed(false);
 #endif
 
-        addDForce(mparams, *dfId[this->mstate.get()].write(), *mparams->readDx(this->mstate.get()));
+        Data<VecDeriv>* df = dfId[this->mstate.get()].write(); assert(df);
+        const Data<VecDeriv>* dx = dxId[this->mstate.get()].read(); assert(dx);
+
+        addDForce(mparams, *df, *dx);
 
 #ifndef NDEBUG
         if (!mparams->getKFactorUsed())

@@ -61,15 +61,19 @@ void PairInteractionForceField<DataTypes>::addForce(const MechanicalParams* mpar
 }
 
 template<class DataTypes>
-void PairInteractionForceField<DataTypes>::addDForce(const MechanicalParams* mparams, MultiVecDerivId dfId )
+void PairInteractionForceField<DataTypes>::addDForce(const MechanicalParams* mparams, MultiVecDerivId dfId, ConstMultiVecDerivId dxId)
 {
     auto state1 = this->mstate1.get();
-    auto state2 = this->mstate2.get();    
+    auto state2 = this->mstate2.get();
     if (state1 && state2)
     {
-        addDForce(
-            mparams, *dfId[state1].write(), *dfId[state2].write(),
-            *mparams->readDx(state1), *mparams->readDx(state2));
+        Data<VecDeriv>* df1 = dfId[state1].write(); assert(df1);
+        Data<VecDeriv>* df2 = dfId[state2].write(); assert(df2);
+
+        const Data<VecDeriv>* dx1 = dxId[state1].read(); assert(dx1);
+        const Data<VecDeriv>* dx2 = dxId[state2].read(); assert(dx2);
+
+        addDForce(mparams, *df1, *df2, *dx1, *dx2);
     }
     else
         msg_error() << "PairInteractionForceField<DataTypes>::addDForce(const MechanicalParams* /*mparams*/, MultiVecDerivId /*fId*/ ), mstate missing";
