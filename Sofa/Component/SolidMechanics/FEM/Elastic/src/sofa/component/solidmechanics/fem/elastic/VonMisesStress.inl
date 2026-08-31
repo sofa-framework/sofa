@@ -71,6 +71,10 @@ void VonMisesStress<DataTypes, ElementType>::init()
 template <class DataTypes, class ElementType>
 void VonMisesStress<DataTypes, ElementType>::handleEvent(core::objectmodel::Event* event)
 {
+    if (this->isComponentStateInvalid())
+    {
+         return;
+    }
     if (simulation::AnimateEndEvent::checkEventType(event))
     {
         SCOPED_TIMER("vonMisesStress");
