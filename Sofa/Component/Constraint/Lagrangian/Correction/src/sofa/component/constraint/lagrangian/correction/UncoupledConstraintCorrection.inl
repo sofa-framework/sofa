@@ -192,6 +192,14 @@ void UncoupledConstraintCorrection<DataTypes>::init()
     {
         msg_warning() << "Neither the \'defaultCompliance\' nor the \'compliance\' data is set, please set one to define your compliance matrix";
     }
+    else
+    {
+        msg_warning_once()<<"Since v26.12, the left hand side matrix has changed its dimension, it is now 1/h times the old one."
+                            " This means that to keep the same logic in your compliance computation (taking inertia into account)"
+                            " you need to multiply your old value to dt. Not doing it will result in having the same behavior but"
+                            " your lambda will not be the same unit as the rest of the simulation, it'll remain an impulsion while"
+                            " the other constraint correction will compute forces.";
+    }
 
     const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
 
