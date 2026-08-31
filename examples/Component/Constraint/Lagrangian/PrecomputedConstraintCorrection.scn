@@ -46,4 +46,27 @@
         <PrecomputedConstraintCorrection recompute="true" printLog="true" ODESolver="@odeSolver" linearSolver="@linearSolver"/>
     </Node>
 
+    <Node name="BeamLinearSolver">
+        <Visual3DText text="LinearSolverConstraintCorrection" position="0 3 12" scale="0.4" color="0.3 0.7 1 1" />
+        <EulerImplicitSolver name="odeSolver" rayleighStiffness="0.01" rayleighMass="0.01" linearSolver="@linearSolver"/>
+
+        <MatrixLinearSystem name="precondSystem" template="CompressedRowSparseMatrixd"/>
+        <SSORPreconditioner name="precond" linearSystem="@precondSystem"/>
+
+        <PreconditionedMatrixFreeSystem name="solverSystem" preconditionerSystem="@precondSystem"/>
+        <PCGLinearSolver name="linearSolver" iterations="200" tolerance="1e-6" linearSystem="@solverSystem" preconditioner="@precond"/>
+
+        <RegularGridTopology name="grid" n="10 3 3" min="0 0 9" max="10 2 11" />
+        <MechanicalObject name="dofs" />
+
+        <NodalMassDensity name="rho" property="1"/>
+        <FEMMass template="Vec3,Hexahedron" nodalMassDensity="@rho" />
+        <CorotationalFEMForceField template="Vec3,Hexahedron" name="FEM" youngModulus="1e4" poissonRatio="0.3" />
+
+        <BoxROI name="boxFixed" box="-0.1 -0.1 8.9  0.1 2.1 11.1" drawBoxes="true" />
+        <FixedProjectiveConstraint indices="@boxFixed.indices" />
+
+        <LinearSolverConstraintCorrection ODESolver="@odeSolver" linearSolver="@precond"/>
+    </Node>
+
 </Node>
