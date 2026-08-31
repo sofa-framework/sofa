@@ -367,7 +367,7 @@ void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(co
     // use the IntegrationScheme to get the position integration factor
     const SReal factor = useOdeIntegrationFactors ?
         core::behavior::BaseConstraintCorrection::correctionFactor(m_pIntegrationScheme, cparams->constOrder())
-        : 1.0;
+        : this->getContext()->getDt();
 
     comp0 *= Real(factor);
     for(Size i=0;i<comp.size(); ++i)
@@ -465,10 +465,24 @@ void UncoupledConstraintCorrection<DataTypes>::getComplianceMatrix(linearalgebra
     if(!this->isComponentStateValid())
         return;
 
-    const VecReal& comp = d_compliance.getValue();
-    const Real comp0 = d_defaultCompliance.getValue();
+    VecReal comp = d_compliance.getValue();
+    Real comp0 = d_defaultCompliance.getValue();
     const unsigned int s = this->mstate->getSize(); // comp.size();
     const unsigned int dimension = Coord::size();
+
+    //Multiply by correction factor so that the resulting lambda is already a force.
+    const bool useOdeIntegrationFactors = d_useIntegrationSchemeIntegrationFactors.getValue();
+    // use the IntegrationScheme to get the position integration factor
+    const SReal factor = useOdeIntegrationFactors ?
+        m_pIntegrationScheme->getPositionIntegrationFactor()
+        : this->getContext()->getDt();
+
+    comp0 *= Real(factor);
+    for(Size i=0;i<comp.size(); ++i)
+    {
+        comp[i] *= Real(factor);
+    }
+
 
     m->resize(s * dimension, s * dimension); //resize must set to zero the content of the matrix
 
@@ -762,6 +776,9 @@ void UncoupledConstraintCorrection<DataTypes>::addConstraintDisplacement(SReal *
 template<class DataTypes>
 void UncoupledConstraintCorrection<DataTypes>::setConstraintDForce(SReal * df, int begin, int end, bool update)
 {
+    if (!update)
+        return;
+
     /// set a force difference on a set of constraints (between constraint number "begin" and constraint number "end"
     /// if update is false, do nothing
     /// if update is true, it computes the displacements due to this delta of force.
@@ -771,8 +788,12 @@ void UncoupledConstraintCorrection<DataTypes>::setConstraintDForce(SReal * df, i
     const VecReal& comp = d_compliance.getValue();
     const Real comp0 = d_defaultCompliance.getValue();
 
-    if (!update)
-        return;
+    //Multiply by correction factor so that the resulting lambda is already a force.
+    const bool useOdeIntegrationFactors = d_useIntegrationSchemeIntegrationFactors.getValue();
+    // use the IntegrationScheme to get the position integration factor
+    const SReal factor = useOdeIntegrationFactors ?
+        m_pIntegrationScheme->getPositionIntegrationFactor()
+        : this->getContext()->getDt();
 
     for (int id = begin; id <= end; id++)
     {
@@ -807,6 +828,14 @@ void UncoupledConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(linear
     const MatrixDeriv& constraints = this->mstate->read(core::vec_id::read_access::constraintJacobian)->getValue();
     const VecReal& comp = d_compliance.getValue();
     const Real comp0 = d_defaultCompliance.getValue();
+
+    //Multiply by correction factor so that the resulting lambda is already a force.
+    const bool useOdeIntegrationFactors = d_useIntegrationSchemeIntegrationFactors.getValue();
+    // use the IntegrationScheme to get the position integration factor
+    const SReal factor = useOdeIntegrationFactors ?
+        m_pIntegrationScheme->getPositionIntegrationFactor()
+        : this->getContext()->getDt();
+
 
     for (int id1 = begin; id1 <= end; id1++)
     {
