@@ -104,9 +104,10 @@ public:
     /// \param mparams
     /// - \a mparams->mFactor() is the  coefficient for mass contributions (i.e. second-order derivatives term in the ODE)
     /// - \a mparams->kFactor() is the coefficient for stiffness contributions (i.e. DOFs term in the ODE)
-    /// - \a mparams->readDx() input vector
     /// \param dfId the output vector
-    virtual void addDForce(const MechanicalParams* mparams, MultiVecDerivId dfId )=0;
+    /// \param dxId the dx input vector
+    virtual void addDForce(const MechanicalParams* mparams, MultiVecDerivId dfId,
+        ConstMultiVecDerivId dxId = ConstMultiVecDerivId(vec_id::read_access::dx) )=0;
 
     /// \brief Accumulate the contribution of M, B, and/or K matrices multiplied
     /// by the dx vector with the given coefficients.
