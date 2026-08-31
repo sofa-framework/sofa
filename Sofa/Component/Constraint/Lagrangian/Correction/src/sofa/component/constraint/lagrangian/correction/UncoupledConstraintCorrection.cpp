@@ -41,6 +41,7 @@ SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION_API void UncoupledConstraintCorr
     const VecReal& comp = d_compliance.getValue();
 
     double  odeFactor = 1.0;
+    const double dt = this->getContext()->getDt();
 
     this->getContext()->get(m_pIntegrationScheme);
     if (!m_pIntegrationScheme)
@@ -56,8 +57,7 @@ SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION_API void UncoupledConstraintCorr
     {
         if( !d_useIntegrationSchemeIntegrationFactors.getValue() )
         {
-            const double dt = this->getContext()->getDt();
-            odeFactor = dt*dt; // W = h^2 * JMinvJt : only correct when solving in constraint equation in position. Must be deprecated.
+            odeFactor = dt; // By setting W = h * JMinvJt Then lambda becomes a real force
         }
     }
 
@@ -87,7 +87,11 @@ SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION_API void UncoupledConstraintCorr
                 if (const UniformMass< Rigid3Types > *um = dynamic_cast< UniformMass< Rigid3Types >* > (m))
                 {
                     massValue = um->getVertexMass();
-                    usedComp.push_back(odeFactor / massValue.mass);
+                    // In velocity/based integration scheme we have M/h in left hand side
+                    // Ode factor comes from the fact that the constraints are expressed in position
+                    // but the unknown is in velocity, so the real H matrix is h*H with H = \partial g / \partial p
+                    usedComp.push_back(dt * odeFactor / massValue.mass);
+
                     msg_info() << "Compliance matrix is evaluated using the UniformMass";
                 }
                 else
@@ -101,12 +105,12 @@ SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION_API void UncoupledConstraintCorr
             }
         }
 
-        usedComp.push_back( odeFactor * massValue.invInertiaMassMatrix(0,0));
-        usedComp.push_back( odeFactor * massValue.invInertiaMassMatrix(0,1));
-        usedComp.push_back( odeFactor * massValue.invInertiaMassMatrix(0,2));
-        usedComp.push_back( odeFactor * massValue.invInertiaMassMatrix(1,1));
-        usedComp.push_back( odeFactor * massValue.invInertiaMassMatrix(1,2));
-        usedComp.push_back( odeFactor * massValue.invInertiaMassMatrix(2,2));
+        usedComp.push_back( dt * odeFactor * massValue.invInertiaMassMatrix(0,0));
+        usedComp.push_back( dt * odeFactor * massValue.invInertiaMassMatrix(0,1));
+        usedComp.push_back( dt * odeFactor * massValue.invInertiaMassMatrix(0,2));
+        usedComp.push_back( dt * odeFactor * massValue.invInertiaMassMatrix(1,1));
+        usedComp.push_back( dt * odeFactor * massValue.invInertiaMassMatrix(1,2));
+        usedComp.push_back( dt * odeFactor * massValue.invInertiaMassMatrix(2,2));
         d_compliance.setValue(usedComp);
 
         msg_info() << "\'compliance\' equals: " << d_compliance.getValue();
@@ -124,6 +128,13 @@ SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION_API void UncoupledConstraintCorr
     const VecReal& comp = d_compliance.getValue();
     const unsigned int dimension = defaulttype::DataTypeInfo<Deriv>::size();
     const unsigned int numDofs = comp.size() / 7;
+
+    //Multiply by correction factor so that the resulting lambda is already a force.
+    const bool useOdeIntegrationFactors = d_useIntegrationSchemeIntegrationFactors.getValue();
+    // use the IntegrationScheme to get the position integration factor
+    const SReal factor = useOdeIntegrationFactors ?
+        m_pIntegrationScheme->getPositionIntegrationFactor()
+        : this->getContext()->getDt();
 
     m->resize(dimension * numDofs, dimension * numDofs);
 
