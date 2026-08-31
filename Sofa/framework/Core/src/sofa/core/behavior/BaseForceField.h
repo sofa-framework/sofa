@@ -102,12 +102,17 @@ public:
     /// and B is the damping matrix (associated with viscous forces).
     ///
     /// \param mparams
-    /// - \a mparams->mFactor() is the  coefficient for mass contributions (i.e. second-order derivatives term in the ODE)
-    /// - \a mparams->kFactor() is the coefficient for stiffness contributions (i.e. DOFs term in the ODE)
+    /// - \a mparams->mFactor() is the  coefficient for mass contributions (i.e. second-order
+    /// derivatives term in the ODE)
+    /// - \a mparams->kFactor() is the coefficient for stiffness contributions (i.e. DOFs term in
+    /// the ODE)
     /// \param dfId the output vector
     /// \param dxId the dx input vector
-    virtual void addDForce(const MechanicalParams* mparams, MultiVecDerivId dfId,
-        ConstMultiVecDerivId dxId = ConstMultiVecDerivId(vec_id::read_access::dx) )=0;
+    virtual void addDForce(const MechanicalParams* mparams,
+                           MultiVecDerivId dfId, ConstMultiVecDerivId dxId) = 0;
+
+    virtual void SOFA_ATTRIBUTE_DEPRECATED__ADDDFORCE_OVERLOAD()
+    addDForce(const MechanicalParams* mparams, MultiVecDerivId dfId) final;
 
     /// \brief Accumulate the contribution of M, B, and/or K matrices multiplied
     /// by the dx vector with the given coefficients.
