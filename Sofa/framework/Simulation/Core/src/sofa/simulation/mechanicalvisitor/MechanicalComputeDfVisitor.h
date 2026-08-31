@@ -48,11 +48,8 @@ public:
         setReadWriteVectors();
 #endif
     }
-    Result fwdMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
-    Result fwdMappedMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
     Result fwdForceField(simulation::Node* /*node*/,sofa::core::behavior::BaseForceField* ff) override;
     void bwdMechanicalMapping(simulation::Node* /*node*/, sofa::core::BaseMapping* map) override;
-    void bwdMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes

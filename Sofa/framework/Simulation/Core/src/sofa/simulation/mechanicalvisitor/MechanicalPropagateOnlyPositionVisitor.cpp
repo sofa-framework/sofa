@@ -33,21 +33,11 @@ MechanicalPropagateOnlyPositionVisitor::MechanicalPropagateOnlyPositionVisitor(c
 #endif
 }
 
-Visitor::Result MechanicalPropagateOnlyPositionVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/)
-{
-    return RESULT_CONTINUE;
-}
-
 Visitor::Result MechanicalPropagateOnlyPositionVisitor::fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map)
 {
     map->apply(mparams, x, x);
 
     return RESULT_CONTINUE;
-}
-
-void MechanicalPropagateOnlyPositionVisitor::bwdMechanicalState(simulation::Node* , core::behavior::BaseMechanicalState* mm)
-{
-    SOFA_UNUSED(mm);
 }
 
 std::string MechanicalPropagateOnlyPositionVisitor::getInfos() const
