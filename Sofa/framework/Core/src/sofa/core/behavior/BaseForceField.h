@@ -111,8 +111,8 @@ public:
     virtual void addDForce(const MechanicalParams* mparams,
                            MultiVecDerivId dfId, ConstMultiVecDerivId dxId) = 0;
 
-    virtual void SOFA_ATTRIBUTE_DEPRECATED__ADDDFORCE_OVERLOAD()
-    addDForce(const MechanicalParams* mparams, MultiVecDerivId dfId) final;
+    virtual SOFA_ATTRIBUTE_DEPRECATED__ADDDFORCE_OVERLOAD()
+    void addDForce(const MechanicalParams* mparams, MultiVecDerivId dfId) final;
 
     /// \brief Accumulate the contribution of M, B, and/or K matrices multiplied
     /// by the dx vector with the given coefficients.
