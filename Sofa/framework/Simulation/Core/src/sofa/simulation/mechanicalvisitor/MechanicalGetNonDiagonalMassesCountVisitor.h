@@ -21,13 +21,18 @@
 ******************************************************************************/
 #pragma once
 
+#include <sofa/simulation/config.h>
 #include <sofa/simulation/MechanicalVisitor.h>
+
+#if !defined(SOFA_SIMULATION_CORE_MECHANICALGETNONDIAGONALMASSESCOUNTVISITOR_CPP)
+SOFA_HEADER_DEPRECATED_NOT_REPLACED("v26.12", "v27.12")
+#endif
 
 namespace sofa::simulation::mechanicalvisitor
 {
 
 /** Count the number of masses which are not diagonal */
-class SOFA_SIMULATION_CORE_API MechanicalGetNonDiagonalMassesCountVisitor : public MechanicalVisitor
+class SOFA_SIMULATION_CORE_API SOFA_ATTRIBUTE_DEPRECATED__MECHANICALGETNONDIAGONALMASSESCOUNTIVISITOR() MechanicalGetNonDiagonalMassesCountVisitor : public MechanicalVisitor
 {
 public:
     sofa::Size* const m_nbNonDiagonalMassesPtr { nullptr };
