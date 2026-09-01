@@ -50,13 +50,13 @@ struct StateVecAccessor
 
     auto* read() const requires (vtype != V_ALL)
     {
-        assert(st);
+        assert(state);
         return state->read(id);
     }
 
     auto* write() const requires (vtype != V_ALL && vaccess == V_WRITE)
     {
-        assert(st);
+        assert(state);
         return state->write(id);
     }
 
