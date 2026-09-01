@@ -329,9 +329,12 @@ public:
     template<class State>
     void setId(const std::set<State>& states, const MyVecId& id)
     {
-        IdMap& map = writeIdMap();
-        for (typename std::set<State>::const_iterator it = states.begin(), itend = states.end(); it != itend; ++it)
-            map[*it] = id;
+        if (!states.empty())
+        {
+            IdMap& map = writeIdMap();
+            for (auto* state : states)
+                map[state] = id;
+        }
     }
 
     void setId(const BaseState* s, const MyVecId& id)
@@ -448,7 +451,7 @@ protected:
     {
         if (!idMap_ptr)
             idMap_ptr.reset(new IdMap());
-        else if(!idMap_ptr.unique())
+        else if(!(idMap_ptr.use_count() == 1))
             idMap_ptr.reset(new IdMap(*idMap_ptr));
         return *idMap_ptr;
     }
@@ -552,12 +555,15 @@ public:
         defaultId = id;
     }
 
-    template<class StateSet>
-    void setId(const StateSet& states, const MyVecId& id)
+    template<class State>
+    void setId(const std::set<State>& states, const MyVecId& id)
     {
-        IdMap& map = writeIdMap();
-        for (typename StateSet::const_iterator it = states.begin(), itend = states.end(); it != itend; ++it)
-            map[*it] = id;
+        if (!states.empty())
+        {
+            IdMap& map = writeIdMap();
+            for (auto* state : states)
+                map[state] = id;
+        }
     }
 
     void setId(const BaseState* s, const MyVecId& id)
