@@ -30,81 +30,162 @@
     <OglLabel label="quadrature degree 1" x="10" y="832" fontsize="16" color="1 0 0 1"/>
     <OglLabel label="quadrature degree 2" x="10" y="854" fontsize="16" color="0 1 0 1"/>
 
-    <RegularGridTopology name="grid" n="5 5 1" min="0 0 0" max="1 1 0"/>
+    <Node name="QuadratureDegrees">
+        <RegularGridTopology name="grid" n="5 5 1" min="0 0 0" max="1 1 0"/>
 
-    <!-- Reference Mesh: nodes are placed exactly on the manufactured solution. -->
-    <Node name="ManufacturedSolution">
-        <MechanicalObject name="dofs" template="Vec2" showObject="true" drawMode="1" showObjectScale="0.005" showColor="1 1 1 0.7"
-                          position="0 0  0.25 0  0.5 0  0.75 0  1 0
-                                    0 0.25  0.28 0.28  0.5 0.25  0.72 0.22  1 0.25
-                                    0 0.5  0.25 0.5  0.5 0.5  0.75 0.5  1 0.5
-                                    0 0.75  0.22 0.72  0.5 0.75  0.78 0.78  1 0.75
-                                    0 1  0.25 1  0.5 1  0.75 1  1 1"/>
+        <!-- Reference Mesh: nodes are placed exactly on the manufactured solution. -->
+        <Node name="ManufacturedSolution">
+            <MechanicalObject name="dofs" template="Vec2" showObject="true" drawMode="1" showObjectScale="0.005" showColor="1 1 1 0.7"
+                              position="0 0  0.25 0  0.5 0  0.75 0  1 0
+                                        0 0.25  0.28 0.28  0.5 0.25  0.72 0.22  1 0.25
+                                        0 0.5  0.25 0.5  0.5 0.5  0.75 0.5  1 0.5
+                                        0 0.75  0.22 0.72  0.5 0.75  0.78 0.78  1 0.75
+                                        0 1  0.25 1  0.5 1  0.75 1  1 1"/>
 
-        <TriangleSetTopologyContainer name="Triangle_topo"/>
-        <TriangleSetTopologyModifier name="Modifier"/>
-        <TriangleSetGeometryAlgorithms template="Vec2" name="GeomAlgo" drawEdges="1" drawColorEdges="1 1 1 1"/>
-        <Quad2TriangleTopologicalMapping input="@../grid" output="@Triangle_topo" swapping="True"/>
+            <TriangleSetTopologyContainer name="Triangle_topo"/>
+            <TriangleSetTopologyModifier name="Modifier"/>
+            <TriangleSetGeometryAlgorithms template="Vec2" name="GeomAlgo" drawEdges="1" drawColorEdges="1 1 1 1"/>
+            <Quad2TriangleTopologicalMapping input="@../grid" output="@Triangle_topo" swapping="True"/>
 
+        </Node>
+
+        <!-- Solved Mesh: Starts at rest, loaded by the manufactured body force. Quadrature order = 1. -->
+        <Node name="QuadratureDegree1">
+            <NewtonRaphsonSolver name="newton" maxNbIterationsNewton="1" absoluteResidualStoppingThreshold="1e-8"/>
+            <StaticSolver newtonSolver="@newton"/>
+            <SparseLDLSolver name="linear_solver" template="CompressedRowSparseMatrixd"/>
+
+            <MechanicalObject name="dofs" template="Vec2" src="@../grid" showObject="true" drawMode="1" showObjectScale="0.005" showColor="1 0 0 0.9"/>
+            <BoxROI name="boundary" template="Vec2" box="-0.125 -0.125 -0.125  0.125 1.125 0.125   0.875 -0.125 -0.125  1.125 1.125 0.125   -0.125 -0.125 -0.125  1.125 0.125 0.125   -0.125 0.875 -0.125  1.125 1.125 0.125"/>
+            <FixedProjectiveConstraint name="dirichlet" indices="@boundary.indices"/>
+
+            <TriangleSetTopologyContainer name="Triangle_topo"/>
+            <TriangleSetTopologyModifier name="Modifier"/>
+            <TriangleSetGeometryAlgorithms template="Vec2" name="GeomAlgo" drawEdges="1" drawColorEdges="1 0 0 1"/>
+            <Quad2TriangleTopologicalMapping input="@../grid" output="@Triangle_topo" swapping="True"/>
+
+            <LinearSmallStrainFEMForceField name="FEM" template="Vec2,Triangle"
+                                            youngModulus="100000" poissonRatio="0.3" topology="@Triangle_topo"/>
+
+            <ConstantSourceTerm name="bodyForce" template="Vec2"
+                           property="-84596.60915 -84596.60915  0 0  84596.60915 84596.60915  0 0  -84596.60915 -84596.60915
+                                     0 0  175700.6498 175700.6498  0 0  -175700.6498 -175700.6498  0 0
+                                     84596.60915 84596.60915  0 0  -84596.60915 -84596.60915  0 0  84596.60915 84596.60915
+                                     0 0  -175700.6498 -175700.6498  0 0  175700.6498 175700.6498  0 0
+                                     -84596.60915 -84596.60915  0 0  84596.60915 84596.60915  0 0  -84596.60915 -84596.60915"/>
+
+            <FEMSourceTermIntegrator name="source" template="Vec2,Triangle" topology="@Triangle_topo"
+                           quadratureDegree="1" constantSources="@bodyForce"/>
+
+        </Node>
+
+        <!-- Same as above, but the source term is integrated with the degree 2 rule. -->
+        <Node name="QuadratureDegree2">
+            <NewtonRaphsonSolver name="newton" maxNbIterationsNewton="1" absoluteResidualStoppingThreshold="1e-8"/>
+            <StaticSolver newtonSolver="@newton"/>
+            <SparseLDLSolver name="linear_solver" template="CompressedRowSparseMatrixd"/>
+
+            <MechanicalObject name="dofs" template="Vec2" src="@../grid" showObject="true" drawMode="1" showObjectScale="0.005" showColor="0 1 0 1"/>
+            <BoxROI name="boundary" template="Vec2" box="-0.125 -0.125 -0.125  0.125 1.125 0.125   0.875 -0.125 -0.125  1.125 1.125 0.125   -0.125 -0.125 -0.125  1.125 0.125 0.125   -0.125 0.875 -0.125  1.125 1.125 0.125"/>
+            <FixedProjectiveConstraint name="dirichlet" indices="@boundary.indices"/>
+
+            <TriangleSetTopologyContainer name="Triangle_topo"/>
+            <TriangleSetTopologyModifier name="Modifier"/>
+            <TriangleSetGeometryAlgorithms template="Vec2" name="GeomAlgo" drawEdges="1" drawColorEdges="0 1 0 1"/>
+            <Quad2TriangleTopologicalMapping input="@../grid" output="@Triangle_topo" swapping="True"/>
+
+            <LinearSmallStrainFEMForceField name="FEM" template="Vec2,Triangle"
+                                            youngModulus="100000" poissonRatio="0.3" topology="@Triangle_topo"/>
+
+            <ConstantSourceTerm name="bodyForce" template="Vec2"
+                           property="-84596.60915 -84596.60915  0 0  84596.60915 84596.60915  0 0  -84596.60915 -84596.60915
+                                     0 0  175700.6498 175700.6498  0 0  -175700.6498 -175700.6498  0 0
+                                     84596.60915 84596.60915  0 0  -84596.60915 -84596.60915  0 0  84596.60915 84596.60915
+                                     0 0  -175700.6498 -175700.6498  0 0  175700.6498 175700.6498  0 0
+                                     -84596.60915 -84596.60915  0 0  84596.60915 84596.60915  0 0  -84596.60915 -84596.60915"/>
+
+            <FEMSourceTermIntegrator name="source" template="Vec2,Triangle" topology="@Triangle_topo"
+                           quadratureDegree="2" constantSources="@bodyForce"/>
+
+        </Node>
     </Node>
 
-    <!-- Solved Mesh: Starts at rest, loaded by the manufactured body force. Quadrature order = 1. -->
-    <Node name="QuadratureDegree1">
-        <NewtonRaphsonSolver name="newton" maxNbIterationsNewton="1" absoluteResidualStoppingThreshold="1e-8"/>
-        <StaticSolver newtonSolver="@newton"/>
-        <SparseLDLSolver name="linear_solver" template="CompressedRowSparseMatrixd"/>
+    <OglLabel label="single source"       x="10" y="876" fontsize="16" color="1 0 0 1"/>
+    <OglLabel label="3 sources, summed"   x="10" y="898" fontsize="16" color="0 0 1 1"/>
 
-        <MechanicalObject name="dofs" template="Vec2" src="@../grid" showObject="true" drawMode="1" showObjectScale="0.005" showColor="1 0 0 0.9"/>
-        <BoxROI name="boundary" template="Vec2" box="-0.125 -0.125 -0.125  0.125 1.125 0.125   0.875 -0.125 -0.125  1.125 1.125 0.125   -0.125 -0.125 -0.125  1.125 0.125 0.125   -0.125 0.875 -0.125  1.125 1.125 0.125"/>
-        <FixedProjectiveConstraint name="dirichlet" indices="@boundary.indices"/>
+    <!-- Multiple sources demonstration
+     Green: a single ConstantSourceTerm carrying the full load. Reproduces the top row's red result.
+     Blue : same load split into three ConstantSourceTerm, each carrying a third of the values
+            Their sum equals the single source above, so blue overlaps green exactly. -->
+    <Node name="SplitSourceDemo">
+        <RegularGridTopology name="grid2" n="5 5 1" min="0 -1.5 0" max="1 -0.5 0"/>
+        <Node name="SingleSource">
+            <NewtonRaphsonSolver name="newton" maxNbIterationsNewton="1" absoluteResidualStoppingThreshold="1e-8"/>
+            <StaticSolver newtonSolver="@newton"/>
+            <SparseLDLSolver name="linear_solver" template="CompressedRowSparseMatrixd"/>
 
-        <TriangleSetTopologyContainer name="Triangle_topo"/>
-        <TriangleSetTopologyModifier name="Modifier"/>
-        <TriangleSetGeometryAlgorithms template="Vec2" name="GeomAlgo" drawEdges="1" drawColorEdges="1 0 0 1"/>
-        <Quad2TriangleTopologicalMapping input="@../grid" output="@Triangle_topo" swapping="True"/>
+            <MechanicalObject name="dofs" template="Vec2" src="@../grid2" showObject="true" drawMode="1" showObjectScale="0.005" showColor="1 0 0 0.9"/>
+            <BoxROI name="boundary" template="Vec2" box="-0.125 -1.625 -0.125  0.125 -0.375 0.125   0.875 -1.625 -0.125  1.125 -0.375 0.125   -0.125 -1.625 -0.125  1.125 -1.375 0.125   -0.125 -0.625 -0.125  1.125 -0.375 0.125"/>
+            <FixedProjectiveConstraint name="dirichlet" indices="@boundary.indices"/>
 
-        <LinearSmallStrainFEMForceField name="FEM" template="Vec2,Triangle"
-                                        youngModulus="100000" poissonRatio="0.3" topology="@Triangle_topo"/>
+            <TriangleSetTopologyContainer name="Triangle_topo"/>
+            <TriangleSetTopologyModifier name="Modifier"/>
+            <TriangleSetGeometryAlgorithms template="Vec2" name="GeomAlgo" drawEdges="1" drawColorEdges="0 1 0 1"/>
+            <Quad2TriangleTopologicalMapping input="@../grid2" output="@Triangle_topo" swapping="True"/>
 
-        <ConstantSourceTerm name="bodyForce" template="Vec2"
-                       property="-84596.60915 -84596.60915  0 0  84596.60915 84596.60915  0 0  -84596.60915 -84596.60915
-                                 0 0  175700.6498 175700.6498  0 0  -175700.6498 -175700.6498  0 0
-                                 84596.60915 84596.60915  0 0  -84596.60915 -84596.60915  0 0  84596.60915 84596.60915
-                                 0 0  -175700.6498 -175700.6498  0 0  175700.6498 175700.6498  0 0
-                                 -84596.60915 -84596.60915  0 0  84596.60915 84596.60915  0 0  -84596.60915 -84596.60915"/>
+            <LinearSmallStrainFEMForceField name="FEM" template="Vec2,Triangle"
+                                            youngModulus="100000" poissonRatio="0.3" topology="@Triangle_topo"/>
 
-        <FEMSourceTermIntegrator name="source" template="Vec2,Triangle" topology="@Triangle_topo"
-                       quadratureDegree="1" constantSources="@bodyForce"/>
+            <ConstantSourceTerm name="bodyForce" template="Vec2"
+                           property="-84596.60915 -84596.60915  0 0  84596.60915 84596.60915  0 0  -84596.60915 -84596.60915
+                                     0 0  175700.6498 175700.6498  0 0  -175700.6498 -175700.6498  0 0
+                                     84596.60915 84596.60915  0 0  -84596.60915 -84596.60915  0 0  84596.60915 84596.60915
+                                     0 0  -175700.6498 -175700.6498  0 0  175700.6498 175700.6498  0 0
+                                     -84596.60915 -84596.60915  0 0  84596.60915 84596.60915  0 0  -84596.60915 -84596.60915"/>
 
-    </Node>
+            <FEMSourceTermIntegrator name="source" template="Vec2,Triangle" topology="@Triangle_topo"
+                           quadratureDegree="1" constantSources="@bodyForce"/>
+        </Node>
 
-    <!-- Same as above, but the source term is integrated with the degree 2 rule. -->
-    <Node name="QuadratureDegree2">
-        <NewtonRaphsonSolver name="newton" maxNbIterationsNewton="1" absoluteResidualStoppingThreshold="1e-8"/>
-        <StaticSolver newtonSolver="@newton"/>
-        <SparseLDLSolver name="linear_solver" template="CompressedRowSparseMatrixd"/>
+        <Node name="TripleSource">
+            <NewtonRaphsonSolver name="newton" maxNbIterationsNewton="1" absoluteResidualStoppingThreshold="1e-8"/>
+            <StaticSolver newtonSolver="@newton"/>
+            <SparseLDLSolver name="linear_solver" template="CompressedRowSparseMatrixd"/>
 
-        <MechanicalObject name="dofs" template="Vec2" src="@../grid" showObject="true" drawMode="1" showObjectScale="0.005" showColor="0 1 0 1"/>
-        <BoxROI name="boundary" template="Vec2" box="-0.125 -0.125 -0.125  0.125 1.125 0.125   0.875 -0.125 -0.125  1.125 1.125 0.125   -0.125 -0.125 -0.125  1.125 0.125 0.125   -0.125 0.875 -0.125  1.125 1.125 0.125"/>
-        <FixedProjectiveConstraint name="dirichlet" indices="@boundary.indices"/>
+            <MechanicalObject name="dofs" template="Vec2" src="@../grid2" showObject="true" drawMode="1" showObjectScale="0.005" showColor="0 0 1 0.9"/>
+            <BoxROI name="boundary" template="Vec2" box="-0.125 -1.625 -0.125  0.125 -0.375 0.125   0.875 -1.625 -0.125  1.125 -0.375 0.125   -0.125 -1.625 -0.125  1.125 -1.375 0.125   -0.125 -0.625 -0.125  1.125 -0.375 0.125"/>
+            <FixedProjectiveConstraint name="dirichlet" indices="@boundary.indices"/>
 
-        <TriangleSetTopologyContainer name="Triangle_topo"/>
-        <TriangleSetTopologyModifier name="Modifier"/>
-        <TriangleSetGeometryAlgorithms template="Vec2" name="GeomAlgo" drawEdges="1" drawColorEdges="0 1 0 1"/>
-        <Quad2TriangleTopologicalMapping input="@../grid" output="@Triangle_topo" swapping="True"/>
+            <TriangleSetTopologyContainer name="Triangle_topo"/>
+            <TriangleSetTopologyModifier name="Modifier"/>
+            <TriangleSetGeometryAlgorithms template="Vec2" name="GeomAlgo" drawEdges="1" drawColorEdges="0 0 1 1"/>
+            <Quad2TriangleTopologicalMapping input="@../grid2" output="@Triangle_topo" swapping="True"/>
 
-        <LinearSmallStrainFEMForceField name="FEM" template="Vec2,Triangle"
-                                        youngModulus="100000" poissonRatio="0.3" topology="@Triangle_topo"/>
+            <LinearSmallStrainFEMForceField name="FEM" template="Vec2,Triangle"
+                                            youngModulus="100000" poissonRatio="0.3" topology="@Triangle_topo"/>
 
-        <ConstantSourceTerm name="bodyForce" template="Vec2"
-                       property="-84596.60915 -84596.60915  0 0  84596.60915 84596.60915  0 0  -84596.60915 -84596.60915
-                                 0 0  175700.6498 175700.6498  0 0  -175700.6498 -175700.6498  0 0
-                                 84596.60915 84596.60915  0 0  -84596.60915 -84596.60915  0 0  84596.60915 84596.60915
-                                 0 0  -175700.6498 -175700.6498  0 0  175700.6498 175700.6498  0 0
-                                 -84596.60915 -84596.60915  0 0  84596.60915 84596.60915  0 0  -84596.60915 -84596.60915"/>
+            <!-- Each of the three carries one third of SingleSource's bodyForce values. -->
+            <ConstantSourceTerm name="bodyForceThird1" template="Vec2"
+                           property="-28198.8697166667 -28198.8697166667  0 0  28198.8697166667 28198.8697166667  0 0  -28198.8697166667 -28198.8697166667
+                                     0 0  58566.8832666667 58566.8832666667  0 0  -58566.8832666667 -58566.8832666667  0 0
+                                     28198.8697166667 28198.8697166667  0 0  -28198.8697166667 -28198.8697166667  0 0  28198.8697166667 28198.8697166667
+                                     0 0  -58566.8832666667 -58566.8832666667  0 0  58566.8832666667 58566.8832666667  0 0
+                                     -28198.8697166667 -28198.8697166667  0 0  28198.8697166667 28198.8697166667  0 0  -28198.8697166667 -28198.8697166667"/>
+            <ConstantSourceTerm name="bodyForceThird2" template="Vec2"
+                           property="-28198.8697166667 -28198.8697166667  0 0  28198.8697166667 28198.8697166667  0 0  -28198.8697166667 -28198.8697166667
+                                     0 0  58566.8832666667 58566.8832666667  0 0  -58566.8832666667 -58566.8832666667  0 0
+                                     28198.8697166667 28198.8697166667  0 0  -28198.8697166667 -28198.8697166667  0 0  28198.8697166667 28198.8697166667
+                                     0 0  -58566.8832666667 -58566.8832666667  0 0  58566.8832666667 58566.8832666667  0 0
+                                     -28198.8697166667 -28198.8697166667  0 0  28198.8697166667 28198.8697166667  0 0  -28198.8697166667 -28198.8697166667"/>
+            <ConstantSourceTerm name="bodyForceThird3" template="Vec2"
+                           property="-28198.8697166667 -28198.8697166667  0 0  28198.8697166667 28198.8697166667  0 0  -28198.8697166667 -28198.8697166667
+                                     0 0  58566.8832666667 58566.8832666667  0 0  -58566.8832666667 -58566.8832666667  0 0
+                                     28198.8697166667 28198.8697166667  0 0  -28198.8697166667 -28198.8697166667  0 0  28198.8697166667 28198.8697166667
+                                     0 0  -58566.8832666667 -58566.8832666667  0 0  58566.8832666667 58566.8832666667  0 0
+                                     -28198.8697166667 -28198.8697166667  0 0  28198.8697166667 28198.8697166667  0 0  -28198.8697166667 -28198.8697166667"/>
 
-        <FEMSourceTermIntegrator name="source" template="Vec2,Triangle" topology="@Triangle_topo"
-                       quadratureDegree="2" constantSources="@bodyForce"/>
-
+            <FEMSourceTermIntegrator name="source" template="Vec2,Triangle" topology="@Triangle_topo"
+                           quadratureDegree="1" constantSources="@bodyForceThird1 @bodyForceThird2 @bodyForceThird3"/>
+        </Node>
     </Node>
 </Node>
