@@ -375,7 +375,7 @@ void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(co
     // use the IntegrationScheme to get the position integration factor
     const SReal factor = useOdeIntegrationFactors ?
         core::behavior::BaseConstraintCorrection::correctionFactor(m_pIntegrationScheme, cparams->constOrder())
-        : this->getContext()->getDt();
+        : 1.0;
 
     comp0 *= Real(factor);
     for(Size i=0;i<comp.size(); ++i)
@@ -483,7 +483,7 @@ void UncoupledConstraintCorrection<DataTypes>::getComplianceMatrix(linearalgebra
     // use the IntegrationScheme to get the position integration factor
     const SReal factor = useOdeIntegrationFactors ?
         m_pIntegrationScheme->getPositionIntegrationFactor()
-        : this->getContext()->getDt();
+        : 1.0;
 
     comp0 *= Real(factor);
     for(Size i=0;i<comp.size(); ++i)
@@ -793,15 +793,22 @@ void UncoupledConstraintCorrection<DataTypes>::setConstraintDForce(SReal * df, i
     /// As the contact are uncoupled, a displacement is obtained only on dof involved with the constraints
 
     const MatrixDeriv& constraints = this->mstate->read(core::vec_id::read_access::constraintJacobian)->getValue();
-    const VecReal& comp = d_compliance.getValue();
-    const Real comp0 = d_defaultCompliance.getValue();
+    VecReal comp = d_compliance.getValue();
+    Real comp0 = d_defaultCompliance.getValue();
 
     //Multiply by correction factor so that the resulting lambda is already a force.
     const bool useOdeIntegrationFactors = d_useIntegrationSchemeIntegrationFactors.getValue();
     // use the IntegrationScheme to get the position integration factor
     const SReal factor = useOdeIntegrationFactors ?
         m_pIntegrationScheme->getPositionIntegrationFactor()
-        : this->getContext()->getDt();
+        : 1.0;
+
+    comp0 *= Real(factor);
+    for(Size i=0;i<comp.size(); ++i)
+    {
+        comp[i] *= Real(factor);
+    }
+
 
     for (int id = begin; id <= end; id++)
     {
@@ -834,16 +841,21 @@ template<class DataTypes>
 void UncoupledConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(linearalgebra::BaseMatrix* W, int begin, int end)
 {
     const MatrixDeriv& constraints = this->mstate->read(core::vec_id::read_access::constraintJacobian)->getValue();
-    const VecReal& comp = d_compliance.getValue();
-    const Real comp0 = d_defaultCompliance.getValue();
+    VecReal comp = d_compliance.getValue();
+    Real comp0 = d_defaultCompliance.getValue();
 
     //Multiply by correction factor so that the resulting lambda is already a force.
     const bool useOdeIntegrationFactors = d_useIntegrationSchemeIntegrationFactors.getValue();
     // use the IntegrationScheme to get the position integration factor
     const SReal factor = useOdeIntegrationFactors ?
         m_pIntegrationScheme->getPositionIntegrationFactor()
-        : this->getContext()->getDt();
+        : 1.0;
 
+    comp0 *= Real(factor);
+    for(Size i=0;i<comp.size(); ++i)
+    {
+        comp[i] *= Real(factor);
+    }
 
     for (int id1 = begin; id1 <= end; id1++)
     {
