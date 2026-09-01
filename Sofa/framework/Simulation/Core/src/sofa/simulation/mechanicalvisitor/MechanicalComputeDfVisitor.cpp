@@ -27,17 +27,6 @@
 namespace sofa::simulation::mechanicalvisitor
 {
 
-Visitor::Result MechanicalComputeDfVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /* mm */)
-{
-    //<TO REMOVE>
-    return RESULT_CONTINUE;
-}
-
-Visitor::Result MechanicalComputeDfVisitor::fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/)
-{
-    return RESULT_CONTINUE;
-}
-
 Visitor::Result MechanicalComputeDfVisitor::fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff)
 {
     ff->addDForce(this->mparams, res);
@@ -51,11 +40,6 @@ void MechanicalComputeDfVisitor::bwdMechanicalMapping(simulation::Node* /*node*/
         map->applyJT(mparams, res, res);  // apply material stiffness: variation of force below the mapping
         if(mparams->kFactor() != 0) map->applyDJT(mparams, res, res); // apply geometric stiffness: variation due to a change of mapping, with a constant force below the mapping
     }
-}
-
-void MechanicalComputeDfVisitor::bwdMechanicalState(simulation::Node* , core::behavior::BaseMechanicalState* mm)
-{
-    SOFA_UNUSED(mm);
 }
 
 std::string MechanicalComputeDfVisitor::getInfos() const
