@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<!-- Demonstrates FEMSourceTermIntegrator by replicating the gravitational load SOFA applies to a beam -->
+<Node name="root" dt="1" gravity="0 -9.81 0">
+    <RequiredPlugin pluginName="Sofa.Component.AnimationLoop"/>
+    <RequiredPlugin pluginName="Sofa.Component.Constraint.Projective"/>
+    <RequiredPlugin pluginName="Sofa.Component.Engine.Select"/>
+    <RequiredPlugin pluginName="Sofa.Component.LinearSolver.Direct"/>
+    <RequiredPlugin pluginName="Sofa.Component.Mass"/>
+    <RequiredPlugin pluginName="Sofa.Component.MechanicalLoad"/>
+    <RequiredPlugin pluginName="Sofa.Component.ODESolver.Backward"/>
+    <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.FEM.Elastic"/>
+    <RequiredPlugin pluginName="Sofa.Component.StateContainer"/>
+    <RequiredPlugin pluginName="Sofa.Component.Topology.Container.Dynamic"/>
+    <RequiredPlugin pluginName="Sofa.Component.Topology.Container.Grid"/>
+    <RequiredPlugin pluginName="Sofa.Component.Topology.Mapping"/>
+    <RequiredPlugin pluginName="Sofa.Component.Visual"/>
+    <RequiredPlugin pluginName="Sofa.GL.Component.Rendering2D"/>
+
+    <DefaultAnimationLoop/>
+    <VisualStyle displayFlags="showBehaviorModels showVisualModels showWireframe"/>
+
+    <RegularGridTopology name="grid" n="13 3 1" min="0 0 0" max="4 0.5 0"/>
+
+    <!-- Usual way of applying gravity; red color -->
+    <Node name="GravityViaMass">
+        <NewtonRaphsonSolver name="newton" maxNbIterationsNewton="1" absoluteResidualStoppingThreshold="1e-8"/>
+        <StaticSolver newtonSolver="@newton"/>
+        <SparseLDLSolver name="linear_solver" template="CompressedRowSparseMatrixd"/>
+
+        <MechanicalObject name="dofs" template="Vec2" src="@../grid" showObject="true" drawMode="1" showObjectScale="0.05" showColor="1 0 0 0.5"/>
+        <BoxROI name="boundary" template="Vec2" box="-0.05 -0.05 -0.05  0.05 0.55 0.05"/>
+        <FixedProjectiveConstraint name="dirichlet" indices="@boundary.indices"/>
+
+        <TriangleSetTopologyContainer name="Triangle_topo"/>
+        <TriangleSetTopologyModifier name="Modifier"/>
+        <TriangleSetGeometryAlgorithms template="Vec2" name="GeomAlgo" drawTriangles="1" drawColorTriangles="1 0 0 1"/>
+        <Quad2TriangleTopologicalMapping input="@../grid" output="@Triangle_topo" swapping="True"/>
+
+        <LinearSmallStrainFEMForceField name="FEM" template="Vec2,Triangle" youngModulus="1e6" poissonRatio="0.3" topology="@Triangle_topo"/>
+
+        <NodalMassDensity property="100"/>
+        <FEMMass name="mass" template="Vec2,Triangle" topology="@Triangle_topo"/>
+    </Node>
+
+    <!-- Gravity felt through ConstantSourceTerm & FEMSourceIntegrator; white -->
+    <Node name="GravityViaSourceTerm">
+        <NewtonRaphsonSolver name="newton" maxNbIterationsNewton="1" absoluteResidualStoppingThreshold="1e-8"/>
+        <StaticSolver newtonSolver="@newton"/>
+        <SparseLDLSolver name="linear_solver" template="CompressedRowSparseMatrixd"/>
+
+        <MechanicalObject name="dofs" template="Vec2" src="@../grid" showObject="true" drawMode="1" showObjectScale="0.025" showColor="1 1 1 1"/>
+        <BoxROI name="boundary" template="Vec2" box="-0.05 -0.05 -0.05  0.05 0.55 0.05"/>
+        <FixedProjectiveConstraint name="dirichlet" indices="@boundary.indices"/>
+
+        <TriangleSetTopologyContainer name="Triangle_topo"/>
+        <TriangleSetTopologyModifier name="Modifier"/>
+        <TriangleSetGeometryAlgorithms template="Vec2" name="GeomAlgo" drawEdges="1" drawColorEdges="1 1 1 1"/>
+        <Quad2TriangleTopologicalMapping input="@../grid" output="@Triangle_topo" swapping="True"/>
+
+        <LinearSmallStrainFEMForceField name="FEM" template="Vec2,Triangle" youngModulus="1e6" poissonRatio="0.3" topology="@Triangle_topo"/>
+
+        <!-- Gravity is zeroed for this Node-->
+        <Gravity gravity="0 0 0"/>
+        <NodalMassDensity property="100"/>
+        <FEMMass name="mass" template="Vec2,Triangle" topology="@Triangle_topo"/>
+
+        <!-- density * gravity = 100 * (0, -9.81) --> 
+        <ConstantSourceTerm name="bodyForce" template="Vec2" property="0 -981"/>
+
+        <FEMSourceTermIntegrator name="source" template="Vec2,Triangle" topology="@Triangle_topo"
+                       quadratureDegree="1" constantSources="@bodyForce"/>
+    </Node>
+</Node>
