@@ -275,9 +275,11 @@ void AccelerationBasedImplicitIntegrationScheme::updateStatesFromLinearSolution(
             pos.peq(m_r2, -pudfv);
     }
 
-    m_mop->propagateX(pos);
-    m_mop->propagateV(vel);
-    m_mop->propagateDx(acc);
+    // TODO this collides with Free motion propagation using a MechanicalVOpVisitor and expecting a EulerImplicit
+    //      future implementation of global Newton will reactivate those
+    // m_mop->propagateX(pos);
+    // m_mop->propagateV(vel);
+    // m_mop->propagateDx(acc);
 }
 
 
