@@ -20,32 +20,35 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/solidmechanics/fem/elastic/FEMSourceTerm.h>
+#include <sofa/component/solidmechanics/fem/elastic/FEMSourceTermIntegrator.h>
 #include <sofa/component/solidmechanics/fem/elastic/impl/VectorTools.h>
 
 namespace sofa::component::solidmechanics::fem::elastic
 {
 
 template <class DataTypes, class ElementType>
-FEMSourceTerm<DataTypes, ElementType>::FEMSourceTerm()
-    : d_nodalSourceDensity(initData(&d_nodalSourceDensity, "nodalSourceDensity",
-                "Source term (per unit volume) sampled at each node. Interpolated inside the "
-                "element with the shape functions and integrated on the reference configuration."))
+FEMSourceTermIntegrator<DataTypes, ElementType>::FEMSourceTermIntegrator()
+    : l_constantSources(initLink("constantSources", "Source terms of the weak form integrated by "
+                "this component. If empty, the ones found in the current context are used."))
     , d_quadratureDegree(initData(&d_quadratureDegree, static_cast<sofa::Size>(1), "quadratureDegree",
                 "Degree of the quadrature rule integrating the element matrix M."))
 {
+    // Re-compute global matrix and constant forces in case of quadrature degree change
     this->addUpdateCallback("reassembleSourceMatrix", {&d_quadratureDegree},
         [this](const sofa::core::DataTracker&)
         {
             if (!this->isComponentStateInvalid() && this->l_topology && this->mstate)
+            {
                 assembleGlobalMatrix();
+                assembleConstantForce();
+            }
 
             return this->getComponentState();
         }, {});
 }
 
 template <class DataTypes, class ElementType>
-void FEMSourceTerm<DataTypes, ElementType>::init()
+void FEMSourceTermIntegrator<DataTypes, ElementType>::init()
 {
     sofa::core::behavior::ForceField<DataTypes>::init();
 
@@ -54,14 +57,15 @@ void FEMSourceTerm<DataTypes, ElementType>::init()
         sofa::core::behavior::TopologyAccessor::init();
     }
 
-    if (!this->isComponentStateInvalid() && this->mstate)
+    if (!this->isComponentStateInvalid())
     {
-        this->resizeNodalSourceDensity(this->mstate->getSize());
+        this->validateSources();
     }
 
     if (!this->isComponentStateInvalid() && this->l_topology && this->mstate)
     {
         this->assembleGlobalMatrix();
+        this->assembleConstantForce();
     }
 
     if (!this->isComponentStateInvalid())
@@ -71,18 +75,28 @@ void FEMSourceTerm<DataTypes, ElementType>::init()
 }
 
 template <class DataTypes, class ElementType>
-void FEMSourceTerm<DataTypes, ElementType>::resizeNodalSourceDensity(const std::size_t size)
+void FEMSourceTermIntegrator<DataTypes, ElementType>::validateSources()
 {
-    sofa::helper::WriteAccessor nodalSourceDensity = sofa::helper::getWriteAccessor(d_nodalSourceDensity);
-
-    if (nodalSourceDensity.size() < size)
+    // Gather all ConstantSourceTerm components in Context if empty
+    if (l_constantSources.empty())
     {
-        nodalSourceDensity.resize(size, sofa::Deriv_t<DataTypes>{});
+        const auto sourcesInContext = this->getContext()->template getObjects<ConstantSourceTerm<DataTypes> >(
+            sofa::core::objectmodel::BaseContext::Local);
+
+        for (const auto& source : sourcesInContext)
+            l_constantSources.add(source);
+
+        msg_info_when(!sourcesInContext.empty(), this) << "No source term linked: the "
+            << sourcesInContext.size() << " one(s) found in the current context are used.";
     }
+
+    msg_warning_when(l_constantSources.empty(), this)
+        << "No source term linked, and none found in the current context '"
+        << this->getContext()->getName() << "'. This component has zero force contribution.";
 }
 
 template <class DataTypes, class ElementType>
-void FEMSourceTerm<DataTypes, ElementType>::assembleGlobalMatrix()
+void FEMSourceTermIntegrator<DataTypes, ElementType>::assembleGlobalMatrix()
 {
     const auto& elements = FiniteElement::getElementSequence(*this->l_topology);
     sofa::type::vector<ElementMatrix> elementMatrices;
@@ -95,7 +109,7 @@ void FEMSourceTerm<DataTypes, ElementType>::assembleGlobalMatrix()
 }
 
 template <class DataTypes, class ElementType>
-void FEMSourceTerm<DataTypes, ElementType>::calculateElementMatrix(
+void FEMSourceTermIntegrator<DataTypes, ElementType>::calculateElementMatrix(
     const auto& elements, sofa::type::vector<ElementMatrix>& elementMatrices)
 {
     const auto restPositionsAccessor = this->mstate->readRestPositions();
@@ -103,7 +117,7 @@ void FEMSourceTerm<DataTypes, ElementType>::calculateElementMatrix(
 
     const auto quadratureRule = FiniteElement::quadratureRule(d_quadratureDegree.getValue());
 
-    for (std::size_t elementId = 0; elementId < elements.size(); ++elementId)
+    for (sofa::Index elementId = 0; elementId < elements.size(); ++elementId)
     {
         const auto& element = elements[elementId];
         auto& elementMatrix = elementMatrices[elementId];
@@ -129,14 +143,14 @@ void FEMSourceTerm<DataTypes, ElementType>::calculateElementMatrix(
 }
 
 template <class DataTypes, class ElementType>
-void FEMSourceTerm<DataTypes, ElementType>::initializeGlobalMatrix(
+void FEMSourceTermIntegrator<DataTypes, ElementType>::initializeGlobalMatrix(
     const auto& elements, const sofa::type::vector<ElementMatrix>& elementMatrices)
 {
     m_globalMatrix.clear();
     const auto size = this->mstate->getSize();
     m_globalMatrix.resize(size, size);
 
-    for (std::size_t elementId = 0; elementId < elements.size(); ++elementId)
+    for (sofa::Index elementId = 0; elementId < elements.size(); ++elementId)
     {
         const auto& element = elements[elementId];
         const auto& elementMatrix = elementMatrices[elementId];
@@ -154,20 +168,11 @@ void FEMSourceTerm<DataTypes, ElementType>::initializeGlobalMatrix(
 }
 
 template <class DataTypes, class ElementType>
-void FEMSourceTerm<DataTypes, ElementType>::addForce(const sofa::core::MechanicalParams* mparams,
-                                                     sofa::DataVecDeriv_t<DataTypes>& f,
-                                                     const sofa::DataVecCoord_t<DataTypes>& x,
-                                                     const sofa::DataVecDeriv_t<DataTypes>& v)
+void FEMSourceTermIntegrator<DataTypes, ElementType>::applyGlobalMatrix(
+    const sofa::VecDeriv_t<DataTypes>& nodalSourceTerm, sofa::VecDeriv_t<DataTypes>& result) const
 {
-    SOFA_UNUSED(mparams);
-    SOFA_UNUSED(x);
-    SOFA_UNUSED(v);
-
-    const sofa::helper::ReadAccessor nodalSourceDensity = sofa::helper::getReadAccessor(d_nodalSourceDensity);
-    auto forceAccessor = sofa::helper::getWriteAccessor(f);
-
-    // f_i = sum_j M_ij b_j : apply the global matrix to the nodal source density.
-    for (std::size_t xi = 0; xi < m_globalMatrix.rowIndex.size(); ++xi)
+    // f_i = sum_j M_ij b_j : apply the global matrix to the nodal source term.
+    for (sofa::Index xi = 0; xi < m_globalMatrix.rowIndex.size(); ++xi)
     {
         const auto rowId = m_globalMatrix.rowIndex[xi];
         typename GlobalMatrix::Range rowRange(m_globalMatrix.rowBegin[xi], m_globalMatrix.rowBegin[xi + 1]);
@@ -176,13 +181,54 @@ void FEMSourceTerm<DataTypes, ElementType>::addForce(const sofa::core::Mechanica
             const auto columnId = m_globalMatrix.colsIndex[xj];
             const auto& value = m_globalMatrix.colsValue[xj];
 
-            forceAccessor[rowId] += nodalSourceDensity[columnId] * value;
+            result[rowId] += nodalSourceTerm[columnId] * value;
         }
     }
 }
 
 template <class DataTypes, class ElementType>
-void FEMSourceTerm<DataTypes, ElementType>::addDForce(const sofa::core::MechanicalParams* mparams,
+void FEMSourceTermIntegrator<DataTypes, ElementType>::assembleConstantForce()
+{
+    const auto size = this->mstate->getSize();
+
+    // Aggregate all contributions to one vector before applying the global matrix
+    sofa::VecDeriv_t<DataTypes> sourceTerms(size, sofa::Deriv_t<DataTypes>{});
+
+    for (const auto& source : l_constantSources)
+    {
+        for (sofa::Index i = 0; i < size; ++i)
+            sourceTerms[i] += source->getNodeProperty(i);
+    }
+
+    m_constantForce.assign(size, sofa::Deriv_t<DataTypes>{});
+    applyGlobalMatrix(sourceTerms, m_constantForce);
+}
+
+template <class DataTypes, class ElementType>
+void FEMSourceTermIntegrator<DataTypes, ElementType>::addForce(const sofa::core::MechanicalParams* mparams,
+                                                     sofa::DataVecDeriv_t<DataTypes>& f,
+                                                     const sofa::DataVecCoord_t<DataTypes>& x,
+                                                     const sofa::DataVecDeriv_t<DataTypes>& v)
+{
+    SOFA_UNUSED(mparams);
+    SOFA_UNUSED(x);
+    SOFA_UNUSED(v);
+
+    if (this->isComponentStateInvalid())
+    {
+        return;
+    }
+
+    auto forceAccessor = sofa::helper::getWriteAccessor(f);
+
+    for (sofa::Index i = 0; i < m_constantForce.size(); ++i)
+    {
+        forceAccessor[i] += m_constantForce[i];
+    }
+}
+
+template <class DataTypes, class ElementType>
+void FEMSourceTermIntegrator<DataTypes, ElementType>::addDForce(const sofa::core::MechanicalParams* mparams,
                                                       sofa::DataVecDeriv_t<DataTypes>& df,
                                                       const sofa::DataVecDeriv_t<DataTypes>& dx)
 {
@@ -192,18 +238,31 @@ void FEMSourceTerm<DataTypes, ElementType>::addDForce(const sofa::core::Mechanic
 }
 
 template <class DataTypes, class ElementType>
-void FEMSourceTerm<DataTypes, ElementType>::buildStiffnessMatrix(sofa::core::behavior::StiffnessMatrix* matrix)
+void FEMSourceTermIntegrator<DataTypes, ElementType>::buildStiffnessMatrix(sofa::core::behavior::StiffnessMatrix* matrix)
 {
     SOFA_UNUSED(matrix);
 }
 
 template <class DataTypes, class ElementType>
-SReal FEMSourceTerm<DataTypes, ElementType>::getPotentialEnergy(const sofa::core::MechanicalParams* mparams,
+SReal FEMSourceTermIntegrator<DataTypes, ElementType>::getPotentialEnergy(const sofa::core::MechanicalParams* mparams,
                                                                 const sofa::DataVecCoord_t<DataTypes>& x) const
 {
     SOFA_UNUSED(mparams);
-    SOFA_UNUSED(x);
-    return 0.0;
+
+    if (this->isComponentStateInvalid())
+    {
+        return 0.0;
+    }
+
+    const sofa::helper::ReadAccessor positionAccessor = sofa::helper::getReadAccessor(x);
+    const auto restPositionAccessor = this->mstate->readRestPositions();
+
+    SReal energy = 0.0;
+    for (sofa::Index i = 0; i < m_constantForce.size(); ++i)
+    {
+        energy -= dot(m_constantForce[i], positionAccessor[i] - restPositionAccessor.ref()[i]);
+    }
+    return energy;
 }
 
 }  // namespace sofa::component::solidmechanics::fem::elastic
