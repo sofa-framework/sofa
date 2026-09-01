@@ -23,6 +23,7 @@
 
 #include <sofa/component/solidmechanics/fem/elastic/config.h>
 #include <sofa/component/solidmechanics/fem/elastic/ConstantSourceTerm.h>
+#include <sofa/component/solidmechanics/fem/elastic/NonConstantSourceTerm.h>
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/behavior/TopologyAccessor.h>
 #include <sofa/core/objectmodel/Link.h>
@@ -40,10 +41,11 @@ namespace sofa::component::solidmechanics::fem::elastic
  * @class FEMSourceTermIntegrator
  * @brief Integrates source terms into consistent nodal loads.
  *
- * A source term contributes \f$ \int_{\Omega} N_a \, r \, d\Omega \f$ to the right-hand side, where
- * r is the per-node density carried by a linked ConstantSourceTerm (through l_constantSources) and
- * does not depend on the displacement. Every term is thus summed and integrated once in init();
- * addForce merely accumulates the result.
+ * A source term contributes \f$ \int_{\Omega} N_a \, r \, d\Omega \f$ to the right-hand side. r is
+ * the per-node density carried by a linked ConstantSourceTerm (through l_constantSources) or
+ * NonConstantSourceTerm (through l_nonConstantSources). Constant terms do not depend on the
+ * displacement, so they are summed and integrated once in init(); non-constant ones are
+ * re-integrated at every call.
  *
  * @tparam TDataTypes The data types used for positions, velocities, etc. (e.g., Vec3Types).
  * @tparam TElementType The type of finite element (e.g., sofa::geometry::Tetrahedron).
@@ -63,12 +65,23 @@ public:
 protected:
     using FiniteElement = sofa::fem::FiniteElement<ElementType, DataTypes>;
     using Real = sofa::Real_t<DataTypes>;
+    using Coord = sofa::Coord_t<DataTypes>;
+    using Deriv = sofa::Deriv_t<DataTypes>;
+    using VecCoord = sofa::VecCoord_t<DataTypes>;
+    using VecDeriv = sofa::VecDeriv_t<DataTypes>;
+    using DataVecCoord = sofa::DataVecCoord_t<DataTypes>;
+    using DataVecDeriv = sofa::DataVecDeriv_t<DataTypes>;
 
     static constexpr sofa::Size NumberOfNodesInElement = ElementType::NumberOfNodes;
     static constexpr sofa::Size spatial_dimensions = DataTypes::spatial_dimensions;
+    static constexpr sofa::Size TopologicalDimension = FiniteElement::TopologicalDimension;
 
     using ElementMatrix = sofa::type::Mat<NumberOfNodesInElement, NumberOfNodesInElement, sofa::Real_t<DataTypes>>;
     using GlobalMatrix = sofa::linearalgebra::CompressedRowSparseMatrixMechanical<sofa::Real_t<DataTypes>>;
+    using Element = typename FiniteElement::TopologyElement;
+    using ShapeFunctions = sofa::type::Vec<NumberOfNodesInElement, Real>;
+    using Jacobian = sofa::type::Mat<spatial_dimensions, TopologicalDimension, Real>;
+    using SourceDerivative = sofa::type::Mat<spatial_dimensions, spatial_dimensions, Real>;
 
 public:
 
@@ -79,6 +92,14 @@ public:
      */
     sofa::MultiLink<FEMSourceTermIntegrator<DataTypes, ElementType>, ConstantSourceTerm<DataTypes>,
         sofa::BaseLink::FLAG_STOREPATH | sofa::BaseLink::FLAG_STRONGLINK> l_constantSources;
+
+    /**
+     * @brief Displacement-dependent source terms linked to this component.
+     *
+     * If left empty, the NonConstantSourceTerm components found in the current context are used.
+     */
+    sofa::MultiLink<FEMSourceTermIntegrator<DataTypes, ElementType>, NonConstantSourceTerm<DataTypes, ElementType>,
+        sofa::BaseLink::FLAG_STOREPATH | sofa::BaseLink::FLAG_STRONGLINK> l_nonConstantSources;
 
     /**
      * @brief Initializes the component.
@@ -95,28 +116,33 @@ public:
     /**
      * @brief Adds the nodal source term to the RHS vector.
      *
-     * The source terms were integrated once in init and are only accumulated here.
+     * The constant terms were integrated once in init and are only accumulated here. The
+     * displacement-dependent ones are integrated at the current position.
      *
      * @param mparams Mechanical parameters for the computation.
      * @param f The force vector to which the source term will be added.
-     * @param x The current positions (unused: the load is prescribed on the rest configuration).
+     * @param x The current positions, used only by displacement-dependent terms.
      * @param v The current velocities (unused in this implementation).
      */
     void addForce(
         const sofa::core::MechanicalParams* mparams,
-        sofa::DataVecDeriv_t<DataTypes>& f,
-        const sofa::DataVecCoord_t<DataTypes>& x,
-        const sofa::DataVecDeriv_t<DataTypes>& v) override;
+        DataVecDeriv& f,
+        const DataVecCoord& x,
+        const DataVecDeriv& v) override;
 
     /**
-     * @brief No-op: TODO for non-const source terms
+     * @brief Applies the tangent of the displacement-dependent terms to dx.
+     *
+     * A no-op when l_nonConstantSources is empty.
      */
     void addDForce(const sofa::core::MechanicalParams* mparams,
-        sofa::DataVecDeriv_t<DataTypes>& df,
-        const sofa::DataVecDeriv_t<DataTypes>& dx) override;
+        DataVecDeriv& df,
+        const DataVecDeriv& dx) override;
 
     /**
-     * @brief No-op: TODO for non-const source terms
+     * @brief Assembles the stiffness contribution of the displacement-dependent terms.
+     *
+     * A no-op when l_nonConstantSources is empty.
      */
     void buildStiffnessMatrix(sofa::core::behavior::StiffnessMatrix* matrix) override;
 
@@ -125,12 +151,17 @@ public:
      * @brief Potential energy of the constant nodal load, \f$ V = -\sum_a F_a \cdot (x_a - x_{0,a}) \f$.
      */
     SReal getPotentialEnergy(const sofa::core::MechanicalParams* mparams,
-        const sofa::DataVecCoord_t<DataTypes>& x) const override;
+        const DataVecCoord& x) const override;
 
     /**
      * @brief Degree of the quadrature rule integrating the element matrix M.
      */
     sofa::Data<sofa::Size> d_quadratureDegree;
+
+    /**
+     * @brief Whether to assemble/apply the stiffness of the displacement-dependent terms.
+     */
+    sofa::Data<bool> d_useTangentStiffness;
 
 protected:
 
@@ -141,6 +172,8 @@ protected:
 
     /**
      * @brief Ensures that valid source terms are linked, falling back to the current context.
+     *
+     * Applies to both l_constantSources and l_nonConstantSources.
      */
     void validateSources();
 
@@ -160,11 +193,12 @@ protected:
     /**
      * @brief Applies the geometry-only matrix M to a nodal source term.
      */
-    void applyGlobalMatrix(const sofa::VecDeriv_t<DataTypes>& nodalSourceTerm,
-        sofa::VecDeriv_t<DataTypes>& result) const;
+    void applyGlobalMatrix(const VecDeriv& nodalSourceTerm,
+        VecDeriv& result) const;
 
     /**
-     * @brief Computes the geometry-only matrix of each element.
+     * @brief Computes the geometry-only matrix of each element, caching the Jacobian of the
+     * reference-to-physical mapping of every quadrature point along the way in m_referenceJacobian.
      */
     void calculateElementMatrix(const auto& elements, sofa::type::vector<ElementMatrix>& elementMatrices);
 
@@ -186,7 +220,14 @@ protected:
      * @note Their contribution is integrated once, so editing the property of a linked term at run
      * time has no effect until the scene is reinitialised.
      */
-    sofa::VecDeriv_t<DataTypes> m_constantForce;
+    VecDeriv m_constantForce;
+
+    /**
+     * @brief Jacobian of the reference-to-physical mapping, evaluated on the rest configuration.
+     *
+     * Assembled once in init on the rest configuration.
+     */
+    sofa::type::vector<Jacobian> m_referenceJacobian;
 };
 
 #if !defined(SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_FEM_SOURCE_TERM_INTEGRATOR_CPP)

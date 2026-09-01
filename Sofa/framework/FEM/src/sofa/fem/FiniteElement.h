@@ -86,7 +86,7 @@ struct FiniteElementHelper
         const std::array<T, NumberOfNodesInElement>& valuesAtNodes,
         const sofa::type::Vec<NumberOfNodesInElement, Real>& shapeFunctions)
     {
-        return std::inner_product(valuesAtNodes.begin(), valuesAtNodes.end(), shapeFunctions.begin(), T(0));
+        return std::inner_product(valuesAtNodes.begin(), valuesAtNodes.end(), shapeFunctions.begin(), T{});
     }
 
 };
