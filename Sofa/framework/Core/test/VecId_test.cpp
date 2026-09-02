@@ -475,6 +475,13 @@ TEST(TVecId, Groups)
     EXPECT_EQ(VecCoordId::state<CoordState::RESET_POSITION>().getGroup(), "States");
     EXPECT_EQ(VecCoordId(99).getGroup(), "");
 
+    EXPECT_EQ(ConstVecCoordId::state<CoordState::NULL_STATE>().getGroup(), "");
+    EXPECT_EQ(ConstVecCoordId::state<CoordState::POSITION>().getGroup(), "States");
+    EXPECT_EQ(ConstVecCoordId::state<CoordState::REST_POSITION>().getGroup(), "Rest States");
+    EXPECT_EQ(ConstVecCoordId::state<CoordState::FREE_POSITION>().getGroup(), "Free Motion");
+    EXPECT_EQ(ConstVecCoordId::state<CoordState::RESET_POSITION>().getGroup(), "States");
+    EXPECT_EQ(ConstVecCoordId(99).getGroup(), "");
+
     // Deriv groups
     EXPECT_EQ(VecDerivId::state<DerivState::NULL_STATE>().getGroup(), "");
     EXPECT_EQ(VecDerivId::state<DerivState::VELOCITY>().getGroup(), "States");
@@ -487,16 +494,37 @@ TEST(TVecId, Groups)
     EXPECT_EQ(VecDerivId::state<DerivState::EXTERNAL_FORCE>().getGroup(), "Force");
     EXPECT_EQ(VecDerivId(99).getGroup(), "");
 
+    EXPECT_EQ(ConstVecDerivId::state<DerivState::NULL_STATE>().getGroup(), "");
+    EXPECT_EQ(ConstVecDerivId::state<DerivState::VELOCITY>().getGroup(), "States");
+    EXPECT_EQ(ConstVecDerivId::state<DerivState::DX>().getGroup(), "States");
+    EXPECT_EQ(ConstVecDerivId::state<DerivState::NORMAL>().getGroup(), "States");
+    EXPECT_EQ(ConstVecDerivId::state<DerivState::RESET_VELOCITY>().getGroup(), "States");
+    EXPECT_EQ(ConstVecDerivId::state<DerivState::FREE_VELOCITY>().getGroup(), "Free Motion");
+    EXPECT_EQ(ConstVecDerivId::state<DerivState::FORCE>().getGroup(), "Force");
+    EXPECT_EQ(ConstVecDerivId::state<DerivState::DFORCE>().getGroup(), "Force");
+    EXPECT_EQ(ConstVecDerivId::state<DerivState::EXTERNAL_FORCE>().getGroup(), "Force");
+    EXPECT_EQ(ConstVecDerivId(99).getGroup(), "");
+
     // Matrix Deriv groups
     EXPECT_EQ(MatrixDerivId::state<MatrixDerivState::NULL_STATE>().getGroup(), "");
     EXPECT_EQ(MatrixDerivId::state<MatrixDerivState::CONSTRAINT_JACOBIAN>().getGroup(), "Jacobian");
     EXPECT_EQ(MatrixDerivId::state<MatrixDerivState::MAPPING_JACOBIAN>().getGroup(), "Jacobian");
     EXPECT_EQ(MatrixDerivId(99).getGroup(), "");
 
+    EXPECT_EQ(ConstMatrixDerivId::state<MatrixDerivState::NULL_STATE>().getGroup(), "");
+    EXPECT_EQ(ConstMatrixDerivId::state<MatrixDerivState::CONSTRAINT_JACOBIAN>().getGroup(), "Jacobian");
+    EXPECT_EQ(ConstMatrixDerivId::state<MatrixDerivState::MAPPING_JACOBIAN>().getGroup(), "Jacobian");
+    EXPECT_EQ(ConstMatrixDerivId(99).getGroup(), "");
+
     // Generic VecType::V_ALL groups
     EXPECT_EQ(VecId(VecType::V_COORD, static_cast<unsigned int>(CoordState::POSITION)).getGroup(), "States");
     EXPECT_EQ(VecId(VecType::V_DERIV, static_cast<unsigned int>(DerivState::FORCE)).getGroup(), "Force");
     EXPECT_EQ(VecId(VecType::V_MATDERIV, static_cast<unsigned int>(MatrixDerivState::CONSTRAINT_JACOBIAN)).getGroup(), "Jacobian");
+
+    EXPECT_EQ(ConstVecId(VecType::V_COORD, static_cast<unsigned int>(CoordState::POSITION)).getGroup(), "States");
+    EXPECT_EQ(ConstVecId(VecType::V_DERIV, static_cast<unsigned int>(DerivState::FORCE)).getGroup(), "Force");
+    EXPECT_EQ(ConstVecId(VecType::V_MATDERIV, static_cast<unsigned int>(MatrixDerivState::CONSTRAINT_JACOBIAN)).getGroup(), "Jacobian");
+
 }
 
 TEST(TVecId, DynamicAndCustomNames)
