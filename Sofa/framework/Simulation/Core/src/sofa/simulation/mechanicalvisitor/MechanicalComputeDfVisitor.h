@@ -53,7 +53,9 @@ public:
         sofa::core::MultiVecDerivId resvecid,
         bool bAccumulate = true
         )
-            : MechanicalVisitor(mechaparams) , res(resvecid), dx(sofa::core::vec_id::read_access::dx), accumulate(bAccumulate)
+        : MechanicalVisitor(mechaparams) ,
+        res(resvecid),
+        dx(mechaparams ? mechaparams->dx() : core::vec_id::read_access::dx), accumulate(bAccumulate)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
