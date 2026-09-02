@@ -271,6 +271,17 @@ void BaseContext::notifyMoveSlave(core::objectmodel::BaseComponent* /*previousMa
 {
 }
 
+bool BaseContext::addObject( sptr<sofa::core::objectmodel::BaseComponent>, TypeOfInsertion )
+{
+    return false;
+}
+
+bool BaseContext::removeObject( sptr<sofa::core::objectmodel::BaseComponent> )
+{
+    return false;
+}
+
+
 //////////////////
 // Copy methods //
 //////////////////
