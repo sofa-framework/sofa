@@ -714,13 +714,13 @@ public:
             // before either of the two positions is written.
             for(Size i=0; i<L; i++)
             {
+                (*this)(i,i) += (*this)(i,i);
                 for(Size j=i+1; j<C; j++)
                 {
                     const real sum = (*this)(i,j) + (*this)(j,i);
                     (*this)(i,j) = sum;
                     (*this)(j,i) = sum;
                 }
-                (*this)(i,i) += (*this)(i,i);
             }
         }
         else
@@ -740,6 +740,7 @@ public:
             // before either of the two positions is written.
             for(Size i=0; i<L; i++)
             {
+                (*this)(i,i) = real{};
                 for(Size j=i+1; j<C; j++)
                 {
                     const real mij = (*this)(i,j);
@@ -747,7 +748,6 @@ public:
                     (*this)(i,j) = mij - mji;
                     (*this)(j,i) = mji - mij;
                 }
-                (*this)(i,i) = real{};
             }
         }
         else
