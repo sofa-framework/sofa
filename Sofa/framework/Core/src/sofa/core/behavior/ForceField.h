@@ -116,7 +116,7 @@ public:
     ///
     /// This method must be implemented by the component, and is usually called
     /// by the generic ForceField::getPotentialEnergy(const MechanicalParams* mparams) method.
-    SReal getPotentialEnergy(const MechanicalParams* mparams) const override;
+    SReal getPotentialEnergy(const MechanicalParams* mparams, ConstMultiVecCoordId xId) const override;
 
     virtual SReal getPotentialEnergy(const MechanicalParams* /*mparams*/, const DataVecCoord& x) const = 0;
 
