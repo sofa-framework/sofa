@@ -29,7 +29,9 @@
 
 #include <sofa/component/solidmechanics/fem/elastic/FEMSourceTermIntegrator.h>
 #include <sofa/component/solidmechanics/fem/elastic/ConstantSourceTerm.h>
+#include <sofa/component/solidmechanics/fem/elastic/TractionSourceTerm.h>
 #include <sofa/component/statecontainer/MechanicalObject.h>
+#include <sofa/core/behavior/BaseLocalForceFieldMatrix.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/geometry/Triangle.h>
 
@@ -42,6 +44,17 @@ using Integrator = component::solidmechanics::fem::elastic::FEMSourceTermIntegra
 using DOF = component::statecontainer::MechanicalObject<DataTypes>;
 using VecCoord = DataTypes::VecCoord;
 using VecDeriv = DataTypes::VecDeriv;
+
+// The non-constant (traction) path needs Vec3: the pressure/traction load is expressed
+// through the triangle's normal, which only exists in 3D.
+using DataTypes3 = defaulttype::Vec3Types;
+using Integrator3 = component::solidmechanics::fem::elastic::FEMSourceTermIntegrator<DataTypes3, geometry::Triangle>;
+using Traction = component::solidmechanics::fem::elastic::TractionSourceTerm<DataTypes3, geometry::Triangle>;
+using DOF3 = component::statecontainer::MechanicalObject<DataTypes3>;
+using VecCoord3 = DataTypes3::VecCoord;
+using VecDeriv3 = DataTypes3::VecDeriv;
+using Coord3 = DataTypes3::Coord;
+using Deriv3 = DataTypes3::Deriv;
 
 class FEMSourceTermIntegrator_test : public testing::BaseTest
 {
@@ -81,6 +94,39 @@ protected:
         integrator->addForce(&mparams, f, x, v);
         return f.getValue();
     }
+
+    simulation::Node::SPtr makeTractionMesh(Integrator3*& integrator, Traction*& load)
+    {
+        this->loadPlugins({"Sofa.Component.StateContainer",
+            "Sofa.Component.Topology.Container.Constant", "Sofa.Component.SolidMechanics.FEM.Elastic"});
+
+        auto root = createRootNode(m_simulation, "root");
+        createObject(root, "MechanicalObject", {{"template", "Vec3"}, {"position", "0 0 0  1 0 0  1 1 0  0 1 0"}});
+        createObject(root, "MeshTopology", {{"name", "mesh"}, {"triangles", "0 1 2  0 2 3"}});
+
+        load = dynamic_cast<Traction*>(createObject(root, "TractionSourceTerm",
+            {{"name", "load"}, {"template", "Vec3,Triangle"}, {"pressure", "1000"}}).get());
+        integrator = dynamic_cast<Integrator3*>(createObject(root, "FEMSourceTermIntegrator",
+            {{"name", "traction"}, {"template", "Vec3,Triangle"}, {"topology", "@mesh"},
+             {"quadratureDegree", "1"}, {"nonConstantSources", "@load"}}).get());
+
+        return root;
+    }
+
+    // Minimal dense accumulator: enough for the tiny meshes these tests use.
+    struct DenseStiffnessAccumulator : public core::behavior::StiffnessMatrixAccumulator
+    {
+        explicit DenseStiffnessAccumulator(sofa::Size size) : K(size, sofa::type::vector<SReal>(size, 0.0)) {}
+
+        void add(sofa::SignedIndex row, sofa::SignedIndex col, const sofa::type::Mat<3, 3, double>& value) override
+        {
+            for (sofa::Size i = 0; i < 3; ++i)
+                for (sofa::Size j = 0; j < 3; ++j)
+                    K[row + i][col + j] += value(i, j);
+        }
+
+        sofa::type::vector<sofa::type::vector<SReal>> K;
+    };
 };
 
 // Splitting one ConstantSourceTerm into several must not change the integrated force.
@@ -144,6 +190,123 @@ TEST_F(FEMSourceTermIntegrator_test, PotentialEnergyMatchesWork)
         work += dot(f[i], x1[i] - x0[i]);
 
     EXPECT_NEAR(e1 - e0, -work, 1e-9);
+}
+
+// addDForce is the analytic tangent of a non-constant source (TractionSourceTerm). Check it
+// against a central finite difference of addForce itself, taken at the same configuration.
+TEST_F(FEMSourceTermIntegrator_test, TractionAddDForceMatchesFiniteDifference)
+{
+    Integrator3* integrator = nullptr;
+    Traction* load = nullptr;
+    m_root = makeTractionMesh(integrator, load);
+    simulation::node::initRoot(m_root.get());
+    ASSERT_NE(integrator, nullptr);
+    ASSERT_NE(load, nullptr);
+
+    const std::size_t n = m_root->get<DOF3>()->getSize();
+    VecCoord3 x0(n);
+    testing::copyFromData(x0, m_root->get<DOF3>()->readPositions());
+
+    VecDeriv3 dx(n);
+    dx[0] = Deriv3(0.3, -0.2, 0.1);
+    dx[1] = Deriv3(-0.1, 0.4, -0.3);
+    dx[2] = Deriv3(0.2, 0.2, 0.2);
+    dx[3] = Deriv3(-0.2, 0.1, 0.3);
+
+    const SReal h = 1e-6;
+    core::MechanicalParams mparams;
+    mparams.setKFactor(1.0);
+
+    const auto evaluateForceAt = [&](SReal sign)
+    {
+        VecCoord3 x(n);
+        for (std::size_t i = 0; i < x.size(); ++i)
+            x[i] = x0[i] + dx[i] * (sign * h);
+
+        Data<VecCoord3> xData;
+        xData.setValue(x);
+        Data<VecDeriv3> vData;
+        Data<VecDeriv3> fData;
+        fData.setValue(VecDeriv3(n));
+        integrator->addForce(&mparams, fData, xData, vData);
+        return fData.getValue();
+    };
+
+    const VecDeriv3 fPlus = evaluateForceAt(1.0);
+    const VecDeriv3 fMinus = evaluateForceAt(-1.0);
+
+    VecDeriv3 finiteDifference(n);
+    for (std::size_t i = 0; i < finiteDifference.size(); ++i)
+        finiteDifference[i] = (fPlus[i] - fMinus[i]) / (2 * h);
+
+    Data<VecDeriv3> dfData;
+    dfData.setValue(VecDeriv3(n));
+    Data<VecDeriv3> dxData;
+    dxData.setValue(dx);
+    integrator->addDForce(&mparams, dfData, dxData);
+    const VecDeriv3 df = dfData.getValue();
+
+    for (std::size_t i = 0; i < df.size(); ++i)
+        for (unsigned d = 0; d < 3; ++d)
+            EXPECT_NEAR(df[i][d], finiteDifference[i][d], 1e-7)
+                << "node " << i << ", component " << d;
+}
+
+// buildStiffnessMatrix and addDForce are two independently-written paths over the same
+// per-element tangent (NonConstantSourceTerm::evaluateStiffness); they must agree exactly.
+TEST_F(FEMSourceTermIntegrator_test, TractionBuildStiffnessMatrixMatchesAddDForce)
+{
+    Integrator3* integrator = nullptr;
+    Traction* load = nullptr;
+    m_root = makeTractionMesh(integrator, load);
+    simulation::node::initRoot(m_root.get());
+    ASSERT_NE(integrator, nullptr);
+    ASSERT_NE(load, nullptr);
+
+    auto* dof = m_root->get<DOF3>();
+    const std::size_t n = dof->getSize();
+
+    VecDeriv3 dx(n);
+    dx[0] = Deriv3(0.3, -0.2, 0.1);
+    dx[1] = Deriv3(-0.1, 0.4, -0.3);
+    dx[2] = Deriv3(0.2, 0.2, 0.2);
+    dx[3] = Deriv3(-0.2, 0.1, 0.3);
+
+    core::MechanicalParams mparams;
+    mparams.setKFactor(1.0);
+
+    Data<VecDeriv3> dfData;
+    dfData.setValue(VecDeriv3(n));
+    Data<VecDeriv3> dxData;
+    dxData.setValue(dx);
+    integrator->addDForce(&mparams, dfData, dxData);
+    const VecDeriv3 dfFromAddDForce = dfData.getValue();
+
+    DenseStiffnessAccumulator accumulator(n * 3);
+    core::behavior::StiffnessMatrix stiffnessMatrix;
+    stiffnessMatrix.setMatrixAccumulator(&accumulator, dof);
+    stiffnessMatrix.setMechanicalParams(&mparams);
+    integrator->buildStiffnessMatrix(&stiffnessMatrix);
+
+    VecDeriv3 dfFromK(n);
+    for (std::size_t a = 0; a < n; ++a)
+    {
+        for (std::size_t j = 0; j < n; ++j)
+        {
+            for (unsigned row = 0; row < 3; ++row)
+            {
+                SReal sum = 0;
+                for (unsigned col = 0; col < 3; ++col)
+                    sum += accumulator.K[a * 3 + row][j * 3 + col] * dx[j][col];
+                dfFromK[a][row] += sum;
+            }
+        }
+    }
+
+    for (std::size_t i = 0; i < dfFromK.size(); ++i)
+        for (unsigned d = 0; d < 3; ++d)
+            EXPECT_NEAR(dfFromK[i][d], dfFromAddDForce[i][d], 1e-13)
+                << "node " << i << ", component " << d;
 }
 
 }  // namespace sofa
