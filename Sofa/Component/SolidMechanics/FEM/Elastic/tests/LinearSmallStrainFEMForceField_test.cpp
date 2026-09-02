@@ -105,7 +105,6 @@ TYPED_TEST(TET4LinearSmallStrainFEMForceField_stepTest, extension )
     this->errorMax *= 1e2;
     this->deltaRange = std::make_pair( 1, this->errorMax * 10 );
     this->debug = true;
-    this->flags &= ~sofa::ForceField_test<TetrahedronLinearSmallStrainFEMForceField<TypeParam>>::TEST_POTENTIAL_ENERGY;
 
     this->runTest();
 }
