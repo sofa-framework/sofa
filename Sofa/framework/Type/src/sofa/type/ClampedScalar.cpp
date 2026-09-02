@@ -19,19 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_TYPE_CLAMPEDSCALAR_CPP
+#include <sofa/type/ClampedScalar.h>
 
-#include <sofa/simulation/mechanicalvisitor/MechanicalSetPositionAndVelocityVisitor.h>
-
-namespace sofa::simulation::mechanicalvisitor
+namespace sofa::type
 {
 
-MechanicalSetPositionAndVelocityVisitor::MechanicalSetPositionAndVelocityVisitor(const sofa::core::MechanicalParams* mparams ,
-                                                                                 SReal time, core::MultiVecCoordId x, core::MultiVecDerivId v)
-        : MechanicalVisitor(mparams) , t(time), x(x), v(v)
-{
-#ifdef SOFA_DUMP_VISITOR_INFO
-    setReadWriteVectors();
-#endif
-}
+template class SOFA_TYPE_API ClampedScalar<double>;
+template class SOFA_TYPE_API ClampedScalar<float>;
 
 }

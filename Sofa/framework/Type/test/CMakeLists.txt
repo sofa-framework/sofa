@@ -4,6 +4,7 @@ project(Sofa.Type_test)
 
 set(SOURCE_FILES
     BoundingBox_test.cpp
+    ClampedScalar_test.cpp
     MatSym_test.cpp
     MatTypes_test.cpp
     Material_test.cpp

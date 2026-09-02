@@ -454,26 +454,26 @@ TYPED_TEST(TestSparseMatrices, eigenMapToDenseMatrix ) { ASSERT_TRUE( this->chec
 // Matrix-Vector product tests
 TYPED_TEST(TestSparseMatrices, set_fullVec_nrows_reference )
 {
-    ASSERT_LT(this->vectorMaxDiff(this->vecM,this->fullVec_nrows_reference), this->epsilon() );
+    EXPECT_NEAR(this->vectorMaxDiff(this->vecM,this->fullVec_nrows_reference), 0.0, 100*this->epsilon());
 }
 TYPED_TEST(TestSparseMatrices, fullMat_vector_product )
 {
     //    fullMat.opMulV(&fullVec_nrows_result,&fullVec_ncols);
     this->fullVec_nrows_result = this->fullMat * this->fullVec_ncols;
-    ASSERT_LT(this->vectorMaxDiff(this->fullVec_nrows_reference,this->fullVec_nrows_result), this->epsilon() );
+    EXPECT_NEAR(this->vectorMaxDiff(this->fullVec_nrows_reference,this->fullVec_nrows_result), 0.0, 100*this->epsilon());
 }
 TYPED_TEST(TestSparseMatrices, mapMat_vector_product )
 {
     //    mapMat.opMulV(&fullVec_nrows_result,&fullVec_ncols);
     this->fullVec_nrows_result = this->mapMat * this->fullVec_ncols;
-    ASSERT_LT(this->vectorMaxDiff(this->fullVec_nrows_reference,this->fullVec_nrows_result), this->epsilon() );
+    EXPECT_NEAR(this->vectorMaxDiff(this->fullVec_nrows_reference,this->fullVec_nrows_result), 0.0, 100*this->epsilon());
 }
 TYPED_TEST(TestSparseMatrices, eiBlock1_vector_product )
 {
     //    eiBlock1.opMulV(&fullVec_nrows_result,&fullVec_ncols);
     //    eiBlock1.multVector(fullVec_nrows_result,fullVec_ncols);
     this->fullVec_nrows_result = this->eiBlock1 * this->fullVec_ncols;
-    ASSERT_LT(this->vectorMaxDiff(this->fullVec_nrows_reference,this->fullVec_nrows_result), this->epsilon() );
+    EXPECT_NEAR(this->vectorMaxDiff(this->fullVec_nrows_reference,this->fullVec_nrows_result), 0.0, 100*this->epsilon());
 
 }
 TYPED_TEST(TestSparseMatrices, crs1_vector_product )
@@ -481,7 +481,7 @@ TYPED_TEST(TestSparseMatrices, crs1_vector_product )
     //    EXPECT_TRUE(NROWS%BROWS==0 && NCOLS%BCOLS==0) << "Error: CompressedRowSparseMatrix * Vector crashes when the size of the matrix is not a multiple of the size of the matrix blocks. Aborting this test, and reporting a failure."; // otherwise the product crashes
     //    crs1.opMulV(&fullVec_nrows_result,&fullVec_ncols);
     this->fullVec_nrows_result = this->crs1 * this->fullVec_ncols;
-    ASSERT_LT(this->vectorMaxDiff(this->fullVec_nrows_reference,this->fullVec_nrows_result), this->epsilon() );
+    EXPECT_NEAR(this->vectorMaxDiff(this->fullVec_nrows_reference,this->fullVec_nrows_result), 0.0, 100*this->epsilon());
 }
 
 

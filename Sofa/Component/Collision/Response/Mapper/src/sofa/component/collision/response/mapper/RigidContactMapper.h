@@ -129,7 +129,7 @@ class ContactMapper<collision::geometry::RigidSphereModel,TVec3Types > : public 
             const typename TVec3Types::Coord & cP = P - rCenter.getCenter();
             const type::Quat<SReal> & ori = rCenter.getOrientation();
 
-            //r = e.r();
+            r = e.r();
 
             return RigidContactMapper<collision::geometry::RigidSphereModel,TVec3Types >::addPoint(ori.inverseRotate(cP),index,r);
         }
