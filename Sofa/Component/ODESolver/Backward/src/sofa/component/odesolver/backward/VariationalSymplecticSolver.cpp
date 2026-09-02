@@ -99,7 +99,7 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt
         // Compute potential energy at time t=0
         SReal KineticEnergy;
         SReal potentialEnergy;
-        mop.computeEnergy(KineticEnergy,potentialEnergy);
+        mop.computeEnergy(pos, KineticEnergy,potentialEnergy);
 
         // Compute incremental potential energy
         if (d_computeHamiltonian.getValue() && d_useIncrementalPotentialEnergy.getValue())
