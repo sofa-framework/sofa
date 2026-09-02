@@ -409,21 +409,26 @@ TEST(TVecId, CopyAssignmentAllCombinations)
     VecCoordId coordTargetWrite;
     coordTargetWrite = VecId(VecType::V_COORD, 20);
     EXPECT_EQ(coordTargetWrite.getIndex(), 20u);
+    EXPECT_EQ(coordTargetWrite.getType(), VecType::V_COORD);
 
     ConstVecCoordId coordTargetRead;
     coordTargetRead = VecId(VecType::V_COORD, 21); // Write generic to Read specific
     EXPECT_EQ(coordTargetRead.getIndex(), 21u);
+    EXPECT_EQ(coordTargetRead.getType(), VecType::V_COORD);
 
     coordTargetRead = ConstVecId(VecType::V_COORD, 22); // Read generic to Read specific
     EXPECT_EQ(coordTargetRead.getIndex(), 22u);
+    EXPECT_EQ(coordTargetRead.getType(), VecType::V_COORD);
 
     VecDerivId derivTargetWrite;
     derivTargetWrite = VecId(VecType::V_DERIV, 23);
     EXPECT_EQ(derivTargetWrite.getIndex(), 23u);
+    EXPECT_EQ(derivTargetWrite.getType(), VecType::V_DERIV);
 
     MatrixDerivId matDerivTargetWrite;
     matDerivTargetWrite = VecId(VecType::V_MATDERIV, 24);
     EXPECT_EQ(matDerivTargetWrite.getIndex(), 24u);
+    EXPECT_EQ(matDerivTargetWrite.getType(), VecType::V_MATDERIV);
 
     // 5. Generic to Generic
     VecId genA(VecType::V_COORD, 30);
