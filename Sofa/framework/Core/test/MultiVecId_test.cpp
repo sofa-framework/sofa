@@ -26,6 +26,7 @@
 #include <string>
 #include <set>
 #include <sstream>
+#include <type_traits>
 
 namespace sofa
 {
@@ -44,6 +45,49 @@ public:
     core::objectmodel::BaseData* baseWrite(core::VecId) override { return nullptr; }
     const core::objectmodel::BaseData* baseRead(core::ConstVecId) const override { return nullptr; }
 };
+
+// ============================================================================
+// 0. Compile-time conversion and assignment contract
+//
+// TMultiVecId's API surface is mostly a type system: which conversions are
+// implicit, which must stay explicit, and which must not exist at all. None of
+// that is observable from a runtime EXPECT, so it is pinned here. A refactor
+// that silently drops one of these overloads breaks downstream code without
+// touching a single test body.
+// ============================================================================
+
+// A TVecId converts implicitly into the matching TMultiVecId.
+static_assert(std::is_convertible_v<core::VecCoordId, core::MultiVecCoordId>);
+static_assert(std::is_convertible_v<core::VecCoordId, core::ConstMultiVecCoordId>);
+
+// Write access converts implicitly to read access, never the other way round.
+static_assert(std::is_convertible_v<core::MultiVecCoordId, core::ConstMultiVecCoordId>);
+static_assert(std::is_convertible_v<core::MultiVecDerivId, core::ConstMultiVecDerivId>);
+static_assert(std::is_convertible_v<core::MultiMatrixDerivId, core::ConstMultiMatrixDerivId>);
+
+// A specific vtype widens implicitly to the generic V_ALL one.
+static_assert(std::is_convertible_v<core::MultiVecCoordId, core::MultiVecId>);
+static_assert(std::is_convertible_v<core::MultiVecCoordId, core::ConstMultiVecId>);
+static_assert(std::is_convertible_v<core::MultiVecId, core::ConstMultiVecId>);
+
+// Narrowing V_ALL back to a specific vtype stays explicit: the caller has to
+// have checked the type first.
+static_assert(!std::is_convertible_v<core::MultiVecId, core::MultiVecCoordId>);
+static_assert(!std::is_convertible_v<core::ConstMultiVecId, core::ConstMultiVecCoordId>);
+static_assert(std::is_constructible_v<core::MultiVecCoordId, core::MultiVecId>);
+static_assert(std::is_constructible_v<core::ConstMultiVecCoordId, core::ConstMultiVecId>);
+
+// Unrelated vtypes never interconvert.
+static_assert(!std::is_constructible_v<core::MultiVecCoordId, core::MultiVecDerivId>);
+static_assert(!std::is_constructible_v<core::MultiVecDerivId, core::MultiMatrixDerivId>);
+static_assert(!std::is_assignable_v<core::MultiVecCoordId&, core::MultiVecDerivId>);
+
+// Assignment mirrors construction, including the V_ALL -> specific direction.
+static_assert(std::is_assignable_v<core::MultiVecCoordId&, core::VecCoordId>);
+static_assert(std::is_assignable_v<core::ConstMultiVecCoordId&, core::MultiVecCoordId>);
+static_assert(std::is_assignable_v<core::MultiVecId&, core::MultiVecCoordId>);
+static_assert(std::is_assignable_v<core::MultiVecCoordId&, core::MultiVecId>);
+static_assert(std::is_assignable_v<core::ConstMultiVecCoordId&, core::ConstMultiVecId>);
 
 // ============================================================================
 // 1. Generic & Template Specialization Standard Functionality Tests
@@ -386,10 +430,34 @@ TEST(MultiVecIdTest, GetNameAndStreamingWithValidMockState)
     EXPECT_EQ(name.back(), '}');
     EXPECT_NE(name.find("state1"), std::string::npos);
     EXPECT_NE(name.find("state2"), std::string::npos);
+}
+
+/// operator<< is implemented as `out << v.getName()`, so comparing the stream
+/// against getName() only checks the implementation against itself. Pin the
+/// actual format against literals instead, on a single-state map so that the
+/// map's iteration order (by BaseState address) cannot affect the result.
+TEST(MultiVecIdTest, GetNameFormatAndStreaming)
+{
+    MockBaseState state("state1");
+
+    core::MultiVecCoordId coord(core::vec_id::write_access::position);
+    coord.setId(&state, core::vec_id::write_access::freePosition);
+
+    // Entries whose vtype matches the default id are printed by index.
+    EXPECT_EQ(coord.getName(), "{position(V_COORD)[*],3[state1]}");
 
     std::ostringstream ss;
     ss << coord;
-    EXPECT_EQ(ss.str(), name);
+    EXPECT_EQ(ss.str(), "{position(V_COORD)[*],3[state1]}");
+
+    // Entries of a different vtype are printed by full name instead.
+    core::MultiVecId generic(core::vec_id::write_access::position);
+    generic.setId(&state, core::vec_id::write_access::velocity);
+    EXPECT_EQ(generic.getName(), "{position(V_COORD)[*],velocity(V_DERIV)[state1]}");
+
+    std::ostringstream genericStream;
+    genericStream << generic;
+    EXPECT_EQ(genericStream.str(), "{position(V_COORD)[*],velocity(V_DERIV)[state1]}");
 }
 
 TEST(MultiVecIdTest, AccessConversionCompatibility)
@@ -420,6 +488,127 @@ TEST(MultiVecIdTest, GetNameWithAllocatedEmptyMap)
     EXPECT_FALSE(coord.hasIdMap());
 
     EXPECT_EQ(coord.getName(), core::vec_id::write_access::position.getName());
+}
+
+// ============================================================================
+// 3. Id map propagation through conversions
+// ============================================================================
+
+/// Converting a TMultiVecId must carry the per-state id map over, and must do
+/// so without copying it. The no-copy part is a documented design contract:
+/// BaseVecId in VecId.h holds all the data precisely so that TVecId templates
+/// are layout-compatible and the shared_ptr can be shared instead of the map
+/// being duplicated -- see the note on BaseVecId, which calls out passing a
+/// stored TMultiVecId<!V_ALL, V_WRITE> to a const TMultiVecId<V_ALL, V_READ>&
+/// as the operation this buys. That path runs several times per solver
+/// iteration, so an O(n) copy there is a real regression, not a detail.
+TEST(MultiVecIdTest, ConversionCarriesAndSharesIdMap)
+{
+    MockBaseState state("state");
+
+    core::MultiVecCoordId src(core::vec_id::write_access::position);
+    src.setId(&state, core::vec_id::write_access::freePosition);
+
+    // Same vtype, write -> read.
+    core::ConstMultiVecCoordId sameType(src);
+    EXPECT_TRUE(sameType.hasIdMap());
+    EXPECT_EQ(sameType.getDefaultId(), core::vec_id::read_access::position);
+    EXPECT_EQ(sameType.getId(&state), core::vec_id::read_access::freePosition);
+    EXPECT_EQ(static_cast<const void*>(&src.getIdMap()),
+              static_cast<const void*>(&sameType.getIdMap()));
+
+    // Specific vtype -> V_ALL.
+    core::ConstMultiVecId generic(src);
+    EXPECT_TRUE(generic.hasIdMap());
+    EXPECT_EQ(generic.getDefaultId(), core::vec_id::read_access::position);
+    EXPECT_EQ(generic.getId(&state), core::vec_id::read_access::freePosition);
+    EXPECT_EQ(static_cast<const void*>(&src.getIdMap()),
+              static_cast<const void*>(&generic.getIdMap()));
+}
+
+// ============================================================================
+// 4. Assignment
+// ============================================================================
+
+/// operator= and assign() are deliberately not the same operation, and callers
+/// rely on the difference: MechanicalParams and ConstraintParams use assign()
+/// for the TVecId overload of their setters and operator= for the multi-vec
+/// overload. Assigning a TVecId replaces the default id only; assign() also
+/// drops the per-state overrides.
+TEST(MultiVecIdTest, AssignmentFromVecIdKeepsIdMap)
+{
+    MockBaseState state("state");
+
+    core::MultiVecCoordId v(core::vec_id::write_access::position);
+    v.setId(&state, core::vec_id::write_access::freePosition);
+
+    v = core::vec_id::write_access::restPosition;
+    EXPECT_TRUE(v.hasIdMap());
+    EXPECT_EQ(v.getId(&state), core::vec_id::write_access::freePosition);
+    EXPECT_EQ(v.getDefaultId(), core::vec_id::write_access::restPosition);
+
+    v.assign(core::vec_id::write_access::restPosition);
+    EXPECT_FALSE(v.hasIdMap());
+    EXPECT_EQ(v.getId(&state), core::vec_id::write_access::restPosition);
+}
+
+/// Narrowing V_ALL to a specific vtype is explicit for construction but
+/// available as a plain assignment. Every id involved here is a V_COORD one:
+/// the conversion asserts on the vtype of each map entry, so a map holding a
+/// V_DERIV id would abort in a debug build rather than fail an expectation.
+TEST(MultiVecIdTest, AssignmentFromGenericToSpecific)
+{
+    MockBaseState state("state");
+
+    core::MultiVecId all(core::vec_id::write_access::position);
+    all.setId(&state, core::vec_id::write_access::freePosition);
+
+    core::MultiVecCoordId coord;
+    coord = all;
+    EXPECT_TRUE(coord.hasIdMap());
+    EXPECT_EQ(coord.getDefaultId(), core::vec_id::write_access::position);
+    EXPECT_EQ(coord.getId(&state), core::vec_id::write_access::freePosition);
+
+    core::ConstMultiVecId constAll(core::vec_id::read_access::position);
+    core::ConstMultiVecCoordId constCoord;
+    constCoord = constAll;
+    EXPECT_EQ(constCoord.getDefaultId(), core::vec_id::read_access::position);
+}
+
+// ============================================================================
+// 5. Copy-on-write
+// ============================================================================
+
+/// writeIdMap() clones the map as soon as it is shared, so that mutating one
+/// multi-vec id never reaches through to another. Every setId() elsewhere in
+/// this file runs at use_count() == 1 and therefore never reaches that branch
+/// -- which is the branch the shared_ptr::unique() fix repairs, and which does
+/// not even compile before it.
+TEST(MultiVecIdTest, WritingToASharedIdMapClonesIt)
+{
+    MockBaseState state("state");
+
+    core::MultiVecCoordId a(core::vec_id::write_access::position);
+    a.setId(&state, core::vec_id::write_access::freePosition);
+
+    core::MultiVecCoordId b(a);
+    EXPECT_EQ(static_cast<const void*>(&a.getIdMap()),
+              static_cast<const void*>(&b.getIdMap()));
+
+    b.setId(&state, core::vec_id::write_access::restPosition);
+    EXPECT_EQ(a.getId(&state), core::vec_id::write_access::freePosition);
+    EXPECT_EQ(b.getId(&state), core::vec_id::write_access::restPosition);
+    EXPECT_NE(static_cast<const void*>(&a.getIdMap()),
+              static_cast<const void*>(&b.getIdMap()));
+
+    // Same on the V_ALL specialisation.
+    core::MultiVecId genericA(core::vec_id::write_access::position);
+    genericA.setId(&state, core::vec_id::write_access::freePosition);
+
+    core::MultiVecId genericB(genericA);
+    genericB.setId(&state, core::vec_id::write_access::restPosition);
+    EXPECT_EQ(genericA.getId(&state), core::vec_id::write_access::freePosition);
+    EXPECT_EQ(genericB.getId(&state), core::vec_id::write_access::restPosition);
 }
 
 } // namespace sofa
