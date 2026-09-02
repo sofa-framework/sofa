@@ -44,7 +44,7 @@ FEMSourceTermIntegrator<DataTypes, ElementType>::FEMSourceTermIntegrator()
     this->addUpdateCallback("reassembleSourceMatrix", {&d_quadratureDegree},
         [this](const sofa::core::DataTracker&)
         {
-            if (!this->isComponentStateInvalid() && this->l_topology && this->mstate)
+            if (!this->isComponentStateInvalid() && this->l_topology && this->mstate && !l_constantSources.empty())
             {
                 assembleGlobalMatrix();
                 assembleConstantForce();
@@ -69,7 +69,7 @@ void FEMSourceTermIntegrator<DataTypes, ElementType>::init()
         this->validateSources();
     }
 
-    if (!this->isComponentStateInvalid() && this->l_topology && this->mstate)
+    if (!this->isComponentStateInvalid() && this->l_topology && this->mstate && !l_constantSources.empty())
     {
         this->assembleGlobalMatrix();
         this->assembleConstantForce();
@@ -131,9 +131,6 @@ void FEMSourceTermIntegrator<DataTypes, ElementType>::calculateElementMatrix(
     elementMatrices.resize(elements.size());
 
     const auto quadratureRule = FiniteElement::quadratureRule(d_quadratureDegree.getValue());
-    const auto quadraturePointsPerElement = quadratureRule.size();
-
-    m_referenceJacobian.resize(elements.size() * quadraturePointsPerElement);
 
     for (sofa::Index elementId = 0; elementId < elements.size(); ++elementId)
     {
@@ -144,22 +141,18 @@ void FEMSourceTermIntegrator<DataTypes, ElementType>::calculateElementMatrix(
             extractNodesVectorFromGlobalVector(element, restPositionsAccessor.ref());
 
         // M_ij = integral of N_i N_j dV, evaluated on the rest configuration (geometry only).
-        sofa::Index quadraturePointIndex = 0;
         for (const auto& [quadraturePoint, weight] : quadratureRule)
         {
             const auto N = FiniteElement::shapeFunctions(quadraturePoint);
             const auto dN_dq_ref = FiniteElement::gradientShapeFunctions(quadraturePoint);
 
-            auto& jacobian = m_referenceJacobian[elementId * quadraturePointsPerElement + quadraturePointIndex];
-            jacobian = FiniteElement::Helper::jacobianFromReferenceToPhysical(
+            const auto jacobian = FiniteElement::Helper::jacobianFromReferenceToPhysical(
                 elementNodesRestCoordinates, dN_dq_ref);
             const auto detJ = sofa::type::absGeneralizedDeterminant(jacobian);
 
             const auto NT_N = sofa::type::dyad(N, N);
 
             elementMatrix += (weight * detJ) * NT_N;
-
-            ++quadraturePointIndex;
         }
     }
 }

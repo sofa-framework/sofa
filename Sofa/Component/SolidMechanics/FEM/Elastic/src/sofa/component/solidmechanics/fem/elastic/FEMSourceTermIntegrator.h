@@ -197,8 +197,7 @@ protected:
         VecDeriv& result) const;
 
     /**
-     * @brief Computes the geometry-only matrix of each element, caching the Jacobian of the
-     * reference-to-physical mapping of every quadrature point along the way in m_referenceJacobian.
+     * @brief Computes the geometry-only matrix of each element.
      */
     void calculateElementMatrix(const auto& elements, sofa::type::vector<ElementMatrix>& elementMatrices);
 
@@ -221,13 +220,6 @@ protected:
      * time has no effect until the scene is reinitialised.
      */
     VecDeriv m_constantForce;
-
-    /**
-     * @brief Jacobian of the reference-to-physical mapping, evaluated on the rest configuration.
-     *
-     * Assembled once in init on the rest configuration.
-     */
-    sofa::type::vector<Jacobian> m_referenceJacobian;
 };
 
 #if !defined(SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_FEM_SOURCE_TERM_INTEGRATOR_CPP)
