@@ -103,8 +103,9 @@ public:
     ///
     /// This method retrieves the positions vector and call the internal
     /// getPotentialEnergy(const MechanicalParams*, const VecCoord&) method implemented by the component.
-    SReal getPotentialEnergy( const MechanicalParams* mparams) const override;
+    SReal getPotentialEnergy( const MechanicalParams* mparams, ConstMultiVecCoordId xId) const override;
     SReal getPotentialEnergy( const MechanicalParams* mparams, const DataVecCoord& x  ) const override;
+    using BaseForceField::getPotentialEnergy;
 
 
     ///    $ m = ( Mv, cross(x,Mv)+Iw ) $
