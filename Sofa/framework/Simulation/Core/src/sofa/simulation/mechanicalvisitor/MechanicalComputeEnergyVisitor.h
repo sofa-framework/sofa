@@ -35,11 +35,15 @@ Compute the amount of mechanical energy
 */
 class SOFA_SIMULATION_CORE_API MechanicalComputeEnergyVisitor : public sofa::simulation::MechanicalVisitor
 {
-    SReal m_kineticEnergy;
-    SReal m_potentialEnergy;
+    SReal m_kineticEnergy {};
+    SReal m_potentialEnergy {};
+    core::ConstMultiVecCoordId m_xId;
 
 public:
+    SOFA_ATTRIBUTE_DEPRECATED__MECHANICALCOMPUTEENERGYVISITOR_CONSTRUCTOR_OVERLOAD()
     MechanicalComputeEnergyVisitor(const sofa::core::MechanicalParams* mparams);
+
+    MechanicalComputeEnergyVisitor(const sofa::core::MechanicalParams* mparams, core::ConstMultiVecCoordId xId);
 
     ~MechanicalComputeEnergyVisitor() override;
 
