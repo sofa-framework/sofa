@@ -214,6 +214,27 @@ TEST(TVecId, NullAndIsNull)
     constexpr auto nullGenWrite = VecId::null();
     EXPECT_TRUE(nullGenWrite.isNull());
     EXPECT_FALSE(VecId(VecType::V_DERIV, 2).isNull());
+
+    // Access: write-access ids convert implicitly to read-access ids.
+    static_assert(std::is_convertible_v<VecCoordId, ConstVecCoordId>);
+    static_assert(std::is_convertible_v<VecDerivId, ConstVecDerivId>);
+    static_assert(std::is_convertible_v<MatrixDerivId, ConstMatrixDerivId>);
+
+    // A specific id converts implicitly to the generic V_ALL id.
+    static_assert(std::is_convertible_v<VecCoordId, VecId>);
+    static_assert(std::is_convertible_v<VecCoordId, ConstVecId>);
+
+    // The reverse narrowing must stay explicit: constructible, never implicit.
+    static_assert(!std::is_convertible_v<VecId, VecCoordId>);
+    static_assert(std::is_constructible_v<VecCoordId, VecId>);
+
+    // Unrelated specific types never interconvert.
+    static_assert(!std::is_constructible_v<VecCoordId, VecDerivId>);
+    static_assert(!std::is_assignable_v<VecCoordId&, VecDerivId>);
+
+    // Assignment mirrors construction, including the V_ALL -> specific direction.
+    static_assert(std::is_assignable_v<VecCoordId&, VecId>);
+    static_assert(std::is_assignable_v<VecId&, VecCoordId>);
 }
 
 TEST(TVecId, DynamicIndex)
