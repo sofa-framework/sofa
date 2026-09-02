@@ -21,6 +21,7 @@
 ******************************************************************************/
 #include <sofa/core/MultiVecId.h>
 #include <sofa/core/BaseState.h>
+#include <sofa/core/State.inl>
 #include <gtest/gtest.h>
 
 #include <string>
@@ -604,5 +605,162 @@ TEST(MultiVecIdTest, WritingToASharedIdMapClonesIt)
     EXPECT_EQ(genericA.getId(&state), core::vec_id::write_access::freePosition);
     EXPECT_EQ(genericB.getId(&state), core::vec_id::write_access::restPosition);
 }
+
+template<class DataTypes>
+class MockState : public core::State<DataTypes>
+{
+public:
+    DataVecCoord_t<DataTypes> coordData;
+    DataVecDeriv_t<DataTypes> derivData;
+    DataMatrixDeriv_t<DataTypes> matDerivData;
+
+    MockState(const std::string& name = "mockState")
+    {
+        this->setName(name);
+    }
+
+    sofa::Size getSize() const override { return 0; }
+    void resize(sofa::Size) override {}
+    core::objectmodel::BaseData* baseWrite(core::VecId) override { return nullptr; }
+    const core::objectmodel::BaseData* baseRead(core::ConstVecId) const override { return nullptr; }
+
+    const DataVecCoord_t<DataTypes>* read(core::ConstVecCoordId) const override { return &coordData; }
+    DataVecCoord_t<DataTypes>* write(core::VecCoordId) override { return &coordData; }
+
+    const DataVecDeriv_t<DataTypes>* read(core::ConstVecDerivId) const override { return &derivData; }
+    DataVecDeriv_t<DataTypes>* write(core::VecDerivId) override { return &derivData; }
+
+    const DataMatrixDeriv_t<DataTypes>* read(core::ConstMatrixDerivId) const override { return &matDerivData; }
+    DataMatrixDeriv_t<DataTypes>* write(core::MatrixDerivId) override { return &matDerivData; }
+};
+
+// ============================================================================
+// 6. Subscript operator (operator[]) and StateVecAccessor tests
+// ============================================================================
+
+TEST(MultiVecIdTest, SubscriptOperatorAndStateVecAccessorCoord)
+{
+    MockState<defaulttype::Vec1Types> state1("state1");
+    MockState<defaulttype::Rigid2Types> state2("state2");
+    const MockState<defaulttype::Vec1Types>* constState1 = &state1;
+
+    // V_COORD, V_WRITE
+    core::MultiVecCoordId writeMulti(core::vec_id::write_access::position);
+    writeMulti.setId(&state1, core::vec_id::write_access::freePosition);
+
+    auto writeAcc1 = writeMulti[&state1];
+    static_assert(std::is_same_v<decltype(writeAcc1), core::StateVecAccessor<defaulttype::Vec1Types, core::V_COORD, core::V_WRITE>>);
+    core::VecCoordId writeId1 = writeAcc1;
+    EXPECT_EQ(writeId1, core::vec_id::write_access::freePosition);
+    EXPECT_EQ(writeAcc1.read(), &state1.coordData);
+    EXPECT_EQ(writeAcc1.write(), &state1.coordData);
+
+    auto writeAcc2 = writeMulti[&state2];
+    static_assert(std::is_same_v<decltype(writeAcc2), core::StateVecAccessor<defaulttype::Rigid2Types, core::V_COORD, core::V_WRITE>>);
+    core::VecCoordId writeId2 = writeAcc2;
+    EXPECT_EQ(writeId2, core::vec_id::write_access::position);
+    EXPECT_EQ(writeAcc2.read(), &state2.coordData);
+    EXPECT_EQ(writeAcc2.write(), &state2.coordData);
+
+    // Const state access on write multi-vec yields read-only accessor
+    auto readAccFromConstState = writeMulti[constState1];
+    static_assert(std::is_same_v<decltype(readAccFromConstState), core::StateVecAccessor<defaulttype::Vec1Types, core::V_COORD, core::V_READ>>);
+    core::ConstVecCoordId readIdFromConst = readAccFromConstState;
+    EXPECT_EQ(readIdFromConst, core::vec_id::read_access::freePosition);
+    EXPECT_EQ(readAccFromConstState.read(), &state1.coordData);
+
+    // V_COORD, V_READ
+    core::ConstMultiVecCoordId readMulti(core::vec_id::read_access::position);
+    readMulti.setId(&state1, core::vec_id::read_access::freePosition);
+
+    auto readAcc1 = readMulti[&state1];
+    static_assert(std::is_same_v<decltype(readAcc1), core::StateVecAccessor<defaulttype::Vec1Types, core::V_COORD, core::V_READ>>);
+    core::ConstVecCoordId readId1 = readAcc1;
+    EXPECT_EQ(readId1, core::vec_id::read_access::freePosition);
+    EXPECT_EQ(readAcc1.read(), &state1.coordData);
+
+    auto readAccFromConst = readMulti[constState1];
+    static_assert(std::is_same_v<decltype(readAccFromConst), core::StateVecAccessor<defaulttype::Vec1Types, core::V_COORD, core::V_READ>>);
+    EXPECT_EQ(readAccFromConst.read(), &state1.coordData);
+}
+
+TEST(MultiVecIdTest, SubscriptOperatorAndStateVecAccessorDeriv)
+{
+    MockState<defaulttype::Vec1Types> state1("state1");
+    const MockState<defaulttype::Vec1Types>* constState1 = &state1;
+
+    // V_DERIV, V_WRITE
+    core::MultiVecDerivId writeMulti(core::vec_id::write_access::velocity);
+    writeMulti.setId(&state1, core::vec_id::write_access::force);
+
+    auto writeAcc = writeMulti[&state1];
+    static_assert(std::is_same_v<decltype(writeAcc), core::StateVecAccessor<defaulttype::Vec1Types, core::V_DERIV, core::V_WRITE>>);
+    core::VecDerivId writeId = writeAcc;
+    EXPECT_EQ(writeId, core::vec_id::write_access::force);
+    EXPECT_EQ(writeAcc.read(), &state1.derivData);
+    EXPECT_EQ(writeAcc.write(), &state1.derivData);
+
+    // V_DERIV, V_READ
+    core::ConstMultiVecDerivId readMulti(core::vec_id::read_access::velocity);
+    readMulti.setId(&state1, core::vec_id::read_access::force);
+
+    auto readAcc = readMulti[constState1];
+    static_assert(std::is_same_v<decltype(readAcc), core::StateVecAccessor<defaulttype::Vec1Types, core::V_DERIV, core::V_READ>>);
+    core::ConstVecDerivId readId = readAcc;
+    EXPECT_EQ(readId, core::vec_id::read_access::force);
+    EXPECT_EQ(readAcc.read(), &state1.derivData);
+}
+
+TEST(MultiVecIdTest, SubscriptOperatorAndStateVecAccessorMatDeriv)
+{
+    MockState<defaulttype::Vec1Types> state1("state1");
+    const MockState<defaulttype::Vec1Types>* constState1 = &state1;
+
+    // V_MATDERIV, V_WRITE
+    core::MultiMatrixDerivId writeMulti(core::vec_id::write_access::constraintJacobian);
+    writeMulti.setId(&state1, core::vec_id::write_access::mappingJacobian);
+
+    auto writeAcc = writeMulti[&state1];
+    static_assert(std::is_same_v<decltype(writeAcc), core::StateVecAccessor<defaulttype::Vec1Types, core::V_MATDERIV, core::V_WRITE>>);
+    core::MatrixDerivId writeId = writeAcc;
+    EXPECT_EQ(writeId, core::vec_id::write_access::mappingJacobian);
+    EXPECT_EQ(writeAcc.read(), &state1.matDerivData);
+    EXPECT_EQ(writeAcc.write(), &state1.matDerivData);
+
+    // V_MATDERIV, V_READ
+    core::ConstMultiMatrixDerivId readMulti(core::vec_id::read_access::constraintJacobian);
+    readMulti.setId(&state1, core::vec_id::read_access::mappingJacobian);
+
+    auto readAcc = readMulti[constState1];
+    static_assert(std::is_same_v<decltype(readAcc), core::StateVecAccessor<defaulttype::Vec1Types, core::V_MATDERIV, core::V_READ>>);
+    core::ConstMatrixDerivId readId = readAcc;
+    EXPECT_EQ(readId, core::vec_id::read_access::mappingJacobian);
+    EXPECT_EQ(readAcc.read(), &state1.matDerivData);
+}
+
+TEST(MultiVecIdTest, SubscriptOperatorAndStateVecAccessorAll)
+{
+    MockState<defaulttype::Vec1Types> state1("state1");
+    const MockState<defaulttype::Vec1Types>* constState1 = &state1;
+
+    // V_ALL, V_WRITE
+    core::MultiVecId writeMulti(core::vec_id::write_access::position);
+    writeMulti.setId(&state1, core::vec_id::write_access::velocity);
+
+    auto writeAcc = writeMulti[&state1];
+    static_assert(std::is_same_v<decltype(writeAcc), core::StateVecAccessor<defaulttype::Vec1Types, core::V_ALL, core::V_WRITE>>);
+    core::VecId writeId = writeAcc;
+    EXPECT_EQ(writeId, core::vec_id::write_access::velocity);
+
+    // V_ALL, V_READ
+    core::ConstMultiVecId readMulti(core::vec_id::read_access::position);
+    readMulti.setId(&state1, core::vec_id::read_access::velocity);
+
+    auto readAcc = readMulti[constState1];
+    static_assert(std::is_same_v<decltype(readAcc), core::StateVecAccessor<defaulttype::Vec1Types, core::V_ALL, core::V_READ>>);
+    core::ConstVecId readId = readAcc;
+    EXPECT_EQ(readId, core::vec_id::read_access::velocity);
+}
+
 
 } // namespace sofa
