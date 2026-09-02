@@ -43,7 +43,7 @@ void BaseForceField::addForce(const MechanicalParams* mparams, MultiVecDerivId f
 
 void BaseForceField::addDForce(const MechanicalParams* mparams, MultiVecDerivId dfId)
 {
-    this->addDForce(mparams, dfId, ConstMultiVecDerivId(vec_id::read_access::dx));
+    this->addDForce(mparams, dfId, mparams->dx());
 }
 
 void BaseForceField::addMBKdx(const MechanicalParams* mparams, MultiVecDerivId dfId)
@@ -53,7 +53,7 @@ void BaseForceField::addMBKdx(const MechanicalParams* mparams, MultiVecDerivId d
 
     if (kFactor != 0.0 || bFactor != 0.0)
     {
-        addDForce(mparams, dfId, ConstMultiVecDerivId(vec_id::read_access::dx));
+        addDForce(mparams, dfId, mparams->dx());
     }
 }
 
