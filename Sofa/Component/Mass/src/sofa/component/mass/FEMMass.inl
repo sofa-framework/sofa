@@ -199,7 +199,13 @@ void FEMMass<TDataTypes, TElementType>::initializeGlobalMassMatrix(
                           for (sofa::Size j = 0; j < NumberOfNodesInElement; ++j)
                           {
                               const auto node_j = element[j];
-                              m_globalMassMatrix.add(node_i, node_j, elementMassMatrix(i, j));
+
+                              const auto& value = elementMassMatrix(i, j);
+                              constexpr Real_t<DataTypes> tolerance { 1e-12 };
+                              if (std::abs(value) > tolerance)
+                              {
+                                  m_globalMassMatrix.add(node_i, node_j, value);
+                              }
                           }
                       }
                   });
