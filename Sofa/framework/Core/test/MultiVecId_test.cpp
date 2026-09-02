@@ -432,10 +432,6 @@ TEST(MultiVecIdTest, GetNameAndStreamingWithValidMockState)
     EXPECT_NE(name.find("state2"), std::string::npos);
 }
 
-/// operator<< is implemented as `out << v.getName()`, so comparing the stream
-/// against getName() only checks the implementation against itself. Pin the
-/// actual format against literals instead, on a single-state map so that the
-/// map's iteration order (by BaseState address) cannot affect the result.
 TEST(MultiVecIdTest, GetNameFormatAndStreaming)
 {
     MockBaseState state("state1");
@@ -581,9 +577,7 @@ TEST(MultiVecIdTest, AssignmentFromGenericToSpecific)
 
 /// writeIdMap() clones the map as soon as it is shared, so that mutating one
 /// multi-vec id never reaches through to another. Every setId() elsewhere in
-/// this file runs at use_count() == 1 and therefore never reaches that branch
-/// -- which is the branch the shared_ptr::unique() fix repairs, and which does
-/// not even compile before it.
+/// this file runs at use_count() == 1 and therefore never reaches that branch.
 TEST(MultiVecIdTest, WritingToASharedIdMapClonesIt)
 {
     MockBaseState state("state");
