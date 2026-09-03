@@ -52,8 +52,6 @@ void registerCorotationalFEMForceField(sofa::core::ObjectFactory* factory)
         .add< CorotationalFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticQuad> >()
         .add< CorotationalFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticTetrahedron> >()
         .add< CorotationalFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticHexahedron> >()
-        .add< CorotationalFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticPrism> >()
-        .add< CorotationalFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticPyramid> >()
     );
 }
 
@@ -77,7 +75,5 @@ template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API CorotationalFEMForc
 template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API CorotationalFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticQuad>;
 template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API CorotationalFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticTetrahedron>;
 template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API CorotationalFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticHexahedron>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API CorotationalFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticPrism>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API CorotationalFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticPyramid>;
 
 }
