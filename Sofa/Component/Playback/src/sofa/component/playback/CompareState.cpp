@@ -150,22 +150,22 @@ void CompareState::processCompareState()
         if (cmd.compare("X=") == 0)
         {
             last_X = *it;
-            currentError = mmodel->compareVec(sofa::core::vec_id::read_access::position, str);
+            currentError = this->l_state->compareVec(sofa::core::vec_id::read_access::position, str);
 
 
             totalError_X +=currentError;
 
-            const double dsize = (double)this->mmodel->getSize();
+            const double dsize = (double)this->l_state->getSize();
             if (dsize != 0.0)
                 dofError_X +=currentError/dsize;
         }
         else if (cmd.compare("V=") == 0)
         {
             last_V = *it;
-            currentError = mmodel->compareVec(sofa::core::vec_id::read_access::velocity, str);
+            currentError = this->l_state->compareVec(sofa::core::vec_id::read_access::velocity, str);
             totalError_V +=currentError;
 
-            const double dsize = (double)this->mmodel->getSize();
+            const double dsize = (double)this->l_state->getSize();
             if (dsize != 0.0)
                 dofError_V += currentError/dsize;
         }
@@ -206,18 +206,18 @@ void CompareState::draw(const core::visual::VisualParams* vparams)
         }
     }
 
-    if (mmodel && !last_X.empty())
+    if (this->l_state && !last_X.empty())
     {
         core::VecCoordId refX(core::VecCoordId::V_FIRST_DYNAMIC_INDEX);
-        mmodel->vAvail(vparams, refX);
-        mmodel->vAlloc(vparams, refX);
+        this->l_state->vAvail(vparams, refX);
+        this->l_state->vAlloc(vparams, refX);
         std::istringstream str(last_X);
         std::string cmd;
         str >> cmd;
-        mmodel->readVec(refX, str);
+        this->l_state->readVec(refX, str);
 
-        const core::objectmodel::BaseData* dataX = mmodel->baseRead(core::vec_id::write_access::position);
-        const core::objectmodel::BaseData* dataRefX = mmodel->baseRead(refX);
+        const core::objectmodel::BaseData* dataX = this->l_state->baseRead(core::vec_id::write_access::position);
+        const core::objectmodel::BaseData* dataRefX = this->l_state->baseRead(refX);
         if (dataX && dataRefX)
         {
             const sofa::defaulttype::AbstractTypeInfo* infoX = dataX->getValueTypeInfo();
@@ -251,7 +251,7 @@ void CompareState::draw(const core::visual::VisualParams* vparams)
             }
         }
 
-        mmodel->vFree(vparams, refX);
+        this->l_state->vFree(vparams, refX);
     }
 }
 
