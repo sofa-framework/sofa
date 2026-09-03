@@ -77,6 +77,9 @@ public:
     /// Compute Energy
     void computeEnergy(SReal &kineticEnergy, SReal &potentialEnergy);
     /// Compute the current force (given the latest propagated position and velocity)
+    void computeForce(core::MultiVecDerivId result, core::ConstMultiVecCoordId xId, core::ConstMultiVecDerivId vId,
+        bool clear = true, bool accumulate = true);
+    SOFA_ATTRIBUTE_DEPRECATED__COMPUTEFORCE_OVERLOAD()
     void computeForce(core::MultiVecDerivId result, bool clear = true, bool accumulate = true);
     /// Compute the current force delta (given the latest propagated displacement)
     void computeDf(core::MultiVecDerivId df, bool clear = true, bool accumulate = true);

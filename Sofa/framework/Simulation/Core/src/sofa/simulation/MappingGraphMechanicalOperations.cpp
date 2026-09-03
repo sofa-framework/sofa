@@ -40,6 +40,8 @@ void MappingGraphMechanicalOperations::projectResponse(const MappingGraph& mappi
 
 void MappingGraphMechanicalOperations::computeForce(const MappingGraph& mappingGraph,
                                                     core::MultiVecDerivId result,
+                                                    core::ConstMultiVecCoordId xId,
+                                                    core::ConstMultiVecDerivId vId,
                                                     bool clearForceBefore,
                                                     bool accumulateForcesFromMappedStates,
                                                     TaskScheduler* taskScheduler)
@@ -76,7 +78,7 @@ void MappingGraphMechanicalOperations::computeForce(const MappingGraph& mappingG
      */
     mappingGraph.algorithms.traverseComponentGroups_([&](core::behavior::BaseForceField& forceField)
     {
-        forceField.addForce(&mparams, result);
+        forceField.addForce(&mparams, result, xId, vId);
     }, sofa::simulation::VisitorApplication::ALL_NODES, taskScheduler);
 
     if (accumulateForcesFromMappedStates)
@@ -91,6 +93,16 @@ void MappingGraphMechanicalOperations::computeForce(const MappingGraph& mappingG
         });
     }
 }
+
+void MappingGraphMechanicalOperations::computeForce(const MappingGraph& mappingGraph,
+                                                    core::MultiVecDerivId result,
+                                                    bool clearForceBefore,
+                                                    bool accumulateForcesFromMappedStates,
+                                                    TaskScheduler* taskScheduler)
+{
+    computeForce(mappingGraph, result, mparams.x(), mparams.v(), clearForceBefore, accumulateForcesFromMappedStates, taskScheduler);
+}
+
 void MappingGraphMechanicalOperations::addMBKv(const MappingGraph& mappingGraph,
                                                core::MultiVecDerivId df, core::MatricesFactors::M m,
                                                core::MatricesFactors::B b,

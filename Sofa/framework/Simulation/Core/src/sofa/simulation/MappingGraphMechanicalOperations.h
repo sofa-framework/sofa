@@ -53,6 +53,10 @@ public:
     using MechanicalOperations::projectResponse;
 
     /// Compute the current force (given the latest propagated position and velocity)
+    void computeForce(const MappingGraph& mappingGraph, core::MultiVecDerivId result,
+        core::ConstMultiVecCoordId xId, core::ConstMultiVecDerivId vId,
+        bool clearForceBefore, bool accumulateForcesFromMappedStates, TaskScheduler* taskScheduler);
+    SOFA_ATTRIBUTE_DEPRECATED__COMPUTEFORCE_OVERLOAD()
     void computeForce(const MappingGraph& mappingGraph, core::MultiVecDerivId result, bool clearForceBefore, bool accumulateForcesFromMappedStates, TaskScheduler* taskScheduler);
     using MechanicalOperations::computeForce;
 

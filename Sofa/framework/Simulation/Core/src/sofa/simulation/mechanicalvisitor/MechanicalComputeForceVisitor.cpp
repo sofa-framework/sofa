@@ -43,7 +43,7 @@ Visitor::Result MechanicalComputeForceVisitor::fwdMappedMechanicalState(simulati
 
 Visitor::Result MechanicalComputeForceVisitor::fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff)
 {
-    ff->addForce(this->mparams, res);
+    ff->addForce(this->mparams, res, m_xId, m_vId);
 
     return RESULT_CONTINUE;
 }
