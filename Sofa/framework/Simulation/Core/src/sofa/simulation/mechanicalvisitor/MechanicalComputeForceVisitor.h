@@ -31,18 +31,33 @@ This action is typically called after a MechanicalResetForceVisitor.
 */
 class SOFA_SIMULATION_CORE_API MechanicalComputeForceVisitor : public MechanicalVisitor
 {
+    sofa::core::ConstMultiVecCoordId m_xId;
+    sofa::core::ConstMultiVecDerivId m_vId;
+
 public:
     sofa::core::MultiVecDerivId res;
     bool accumulate; ///< Accumulate everything back to the DOFs through the mappings
 
     MechanicalComputeForceVisitor(const sofa::core::MechanicalParams* mechaparams,
-                                  sofa::core::MultiVecDerivId resvecid, bool bAccumulate = true )
-            : MechanicalVisitor(mechaparams) , res(resvecid), accumulate(bAccumulate)
+                          sofa::core::MultiVecDerivId resvecid,
+                          sofa::core::ConstMultiVecCoordId xId,
+                          sofa::core::ConstMultiVecDerivId vId,
+                          bool bAccumulate = true )
+        : MechanicalVisitor(mechaparams),
+        m_xId(xId), m_vId(vId),
+        res(resvecid), accumulate(bAccumulate)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
     }
+
+    SOFA_ATTRIBUTE_DEPRECATED__MECHANICALCOMPUTEFORCEVISITOR_CONSTRUCTOR_OVERLOAD()
+    MechanicalComputeForceVisitor(const sofa::core::MechanicalParams* mechaparams,
+                                  sofa::core::MultiVecDerivId resvecid, bool bAccumulate = true )
+        : MechanicalComputeForceVisitor(mechaparams, resvecid, mparams->x(), mparams->v(), bAccumulate)
+    {}
+
     Result fwdMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
     Result fwdMappedMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
     Result fwdForceField(simulation::Node* /*node*/,sofa::core::behavior::BaseForceField* ff) override;

@@ -77,7 +77,7 @@ Visitor::Result MechanicalIntegrationVisitor::fwdInteractionForceField(simulatio
     core::MechanicalParams m_mparams(*this->params);
     m_mparams.setDt(this->dt);
 
-    obj->addForce(&m_mparams, ffId);
+    obj->addForce(&m_mparams, ffId, m_mparams.x(), m_mparams.v());
     return RESULT_CONTINUE;
 }
 
