@@ -45,7 +45,7 @@ void SolveVisitor::fwdInteractionForceField(Node* node, core::behavior::BaseInte
     const core::MultiVecDerivId ffId = core::vec_id::write_access::externalForce;
     core::MechanicalParams mparams;
     mparams.setDt(dt);
-    forceField->addForce(&mparams, ffId);
+    forceField->addForce(&mparams, ffId, mparams.x(), mparams.v());
 }
 
 Visitor::Result SolveVisitor::processNodeTopDown(simulation::Node* node)
