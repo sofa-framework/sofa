@@ -190,7 +190,13 @@ bool BoxROI<DataTypes>::isPointInAlignedBox(const typename DataTypes::CPos& p, c
 {
     static_assert(std::is_same_v<typename DataTypes::CPos::size_type, typename type::Vec6::size_type>);
 
-    for (typename type::Vec6::size_type i = 0; i < DataTypes::spatial_dimensions; ++i)
+    /// An axis-aligned box is stored as a Vec6 gathering the min corner (indices [0,2]) and the max
+    /// corner (indices [3,5]): it cannot describe more than 3 dimensions. Higher dimensions of the
+    /// tested point are therefore ignored.
+    static constexpr typename type::Vec6::size_type nbTestedDimensions =
+        DataTypes::spatial_dimensions < 3 ? DataTypes::spatial_dimensions : 3;
+
+    for (typename type::Vec6::size_type i = 0; i < nbTestedDimensions; ++i)
     {
         if (p[i] < box[i] || p[i] > box[i + 3])
         {

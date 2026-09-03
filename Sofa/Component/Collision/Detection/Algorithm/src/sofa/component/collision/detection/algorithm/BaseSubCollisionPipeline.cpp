@@ -19,7 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
 #include <sofa/component/collision/detection/algorithm/BaseSubCollisionPipeline.h>
 
 #include <sofa/core/visual/VisualParams.h>

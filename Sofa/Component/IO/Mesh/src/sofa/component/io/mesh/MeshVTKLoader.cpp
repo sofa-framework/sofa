@@ -1243,6 +1243,8 @@ bool XMLVTKReader::loadUnstructuredGrid(tinyxml2::XMLHandle datasetFormatHandle)
 
 BaseVTKReader::BaseVTKDataIO* XMLVTKReader::parsePolysIndices(tinyxml2::XMLElement* element, BaseVTKReader::VTKDataIO<int>* vtkIO_elemtypes, BaseVTKDataIO* offsetElement)
 {
+    SOFA_UNUSED(offsetElement);
+
     const char* typeStrTemp;
     typeStrTemp = element->Attribute("type");
 

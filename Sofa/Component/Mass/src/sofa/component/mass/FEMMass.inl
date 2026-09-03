@@ -225,7 +225,8 @@ void FEMMass<TDataTypes, TElementType>::buildMassMatrix(
             const auto columnId = m_globalMassMatrix.colsIndex[xj];
             const auto& value = m_globalMassMatrix.colsValue[xj];
 
-            for (typename GlobalMassMatrixType::Index d = 0; d < spatial_dimensions; ++d)
+            const auto nbDoFs = static_cast<typename GlobalMassMatrixType::Index>(spatial_dimensions);
+            for (typename GlobalMassMatrixType::Index d = 0; d < nbDoFs; ++d)
             {
                 matrices->add(rowId * spatial_dimensions + d, columnId * spatial_dimensions + d, value);
             }

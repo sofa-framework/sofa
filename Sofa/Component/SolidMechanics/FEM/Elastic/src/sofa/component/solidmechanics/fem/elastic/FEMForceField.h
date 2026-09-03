@@ -86,7 +86,12 @@ protected:
 
     virtual void beforeElementForce(const sofa::core::MechanicalParams* mparams,
         sofa::type::vector<ElementGradient>& f,
-        const sofa::VecCoord_t<DataTypes>& x) {}
+        const sofa::VecCoord_t<DataTypes>& x)
+    {
+        SOFA_UNUSED(mparams);
+        SOFA_UNUSED(f);
+        SOFA_UNUSED(x);
+    }
 
     virtual void computeElementsForces(
         const sofa::simulation::Range<std::size_t>& range,
@@ -106,7 +111,10 @@ protected:
         sofa::type::vector<ElementGradient>& df,
         const sofa::VecDeriv_t<DataTypes>& dx);
 
-    virtual void beforeElementForceDeriv(const sofa::core::MechanicalParams* mparams) {}
+    virtual void beforeElementForceDeriv(const sofa::core::MechanicalParams* mparams)
+    {
+        SOFA_UNUSED(mparams);
+    }
 
     virtual void computeElementsForcesDeriv(
         const sofa::simulation::Range<std::size_t>& range,

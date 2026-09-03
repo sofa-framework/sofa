@@ -38,6 +38,7 @@
 
 #include <sofa/component/topology/container/grid/SparseGridTopology.h>
 
+#include <algorithm>
 #include <sstream>
 #include <map>
 #include <memory>
@@ -963,7 +964,7 @@ void VisualModelImpl::computeNormals()
         auto normals = sofa::helper::getWriteOnlyAccessor(m_vnormals);
 
         normals.resize(nbn);
-        std::memset(&normals[0], 0, sizeof(normals[0]) * nbn); // bulk reset with zeros
+        std::fill(normals.begin(), normals.end(), Coord{}); // bulk reset with zeros
 
         for (const auto& triangle : triangles)
         {
