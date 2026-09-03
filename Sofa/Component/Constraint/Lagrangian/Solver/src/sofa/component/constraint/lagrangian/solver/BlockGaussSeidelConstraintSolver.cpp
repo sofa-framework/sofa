@@ -222,7 +222,7 @@ void BlockGaussSeidelConstraintSolver::gaussSeidel_increment(bool measureError, 
             const auto dimDv{ std::div( dim, 12 ) };
             const auto dim1 { dimDv.quot * 12 };
             int k{ 0 };
-            for(; k < dim1; k += 12)
+            for(; k < dim1; k += 12 )
               {
                 d[j+0 ] += w[j+0 ][k+0 ] * force[k+0 ];
                 d[j+1 ] += w[j+1 ][k+1 ] * force[k+1 ];
@@ -237,8 +237,12 @@ void BlockGaussSeidelConstraintSolver::gaussSeidel_increment(bool measureError, 
                 d[j+2 ] += w[j+2 ][k+8 ] * force[k+8 ];
 
                 d[j+0 ] += w[j+0 ][k+9 ] * force[k+9 ];
-                d[j+1 ] += w[j+1 ][k+11] * force[k+11];
-                d[j+2 ] += w[j+2 ][k+12] * force[k+12];
+                d[j+1 ] += w[j+1 ][k+10] * force[k+10];
+                d[j+2 ] += w[j+2 ][k+11] * force[k+11];
+
+                // d[j+0 ] += w[j+0 ][k+12] * force[k+12];
+                // d[j+1 ] += w[j+1 ][k+13] * force[k+13];
+                // d[j+2 ] += w[j+2 ][k+14] * force[k+14];
               }
             for(; k < dim; ++k )
               {
