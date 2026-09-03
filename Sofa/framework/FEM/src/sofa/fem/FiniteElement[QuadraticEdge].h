@@ -49,8 +49,8 @@ struct FiniteElement<sofa::geometry::QuadraticEdge, DataTypes>
     {
         const Real xi = q[0];
         return {
-            2 * xi * (xi - 0.5),      // vertex 0: (2*xi - 1) * xi
-            2 * xi * (xi - 0.5) + 1 - 2 * xi,  // vertex 1: (2*xi - 1) * (xi - 1) = 2*xi^2 - 3*xi + 1
+            2 * xi * (xi - 0.5) + 1 - 2 * xi,  // vertex 0: (2*xi - 1) * (xi - 1) = 2*xi^2 - 3*xi + 1
+            2 * xi * (xi - 0.5),      // vertex 1: (2*xi - 1) * xi
             4 * xi * (1 - xi)         // mid-edge: 4*xi*(1-xi)
         };
     }
