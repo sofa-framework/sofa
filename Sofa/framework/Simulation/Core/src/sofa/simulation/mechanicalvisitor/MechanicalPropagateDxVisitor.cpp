@@ -25,24 +25,11 @@
 namespace sofa::simulation::mechanicalvisitor
 {
 
-Visitor::Result MechanicalPropagateDxVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/)
-{
-    //<TO REMOVE>
-    return RESULT_CONTINUE;
-}
-
-
 Visitor::Result MechanicalPropagateDxVisitor::fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map)
 {
     map->applyJ(mparams, dx, dx);
 
     return RESULT_CONTINUE;
-}
-
-
-void MechanicalPropagateDxVisitor::bwdMechanicalState(simulation::Node* , core::behavior::BaseMechanicalState* mm)
-{
-    SOFA_UNUSED(mm);
 }
 
 bool MechanicalPropagateDxVisitor::stopAtMechanicalMapping(simulation::Node *, sofa::core::BaseMapping *map)

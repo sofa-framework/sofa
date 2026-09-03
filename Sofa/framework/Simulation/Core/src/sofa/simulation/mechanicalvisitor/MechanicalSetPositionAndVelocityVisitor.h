@@ -40,8 +40,6 @@ public:
                                             sofa::core::MultiVecCoordId x = sofa::core::vec_id::write_access::position,
                                             sofa::core::MultiVecDerivId v = sofa::core::vec_id::write_access::velocity);
 
-    Result fwdMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
-
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     const char* getClassName() const override { return "MechanicalSetPositionAndVelocityVisitor";}
