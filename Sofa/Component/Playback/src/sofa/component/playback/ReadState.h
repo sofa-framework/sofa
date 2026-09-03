@@ -22,7 +22,7 @@
 #pragma once
 #include <sofa/component/playback/config.h>
 
-#include <sofa/core/objectmodel/BaseComponent.h>
+#include <sofa/core/behavior/StateAccessor.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 #include <sofa/simulation/Visitor.h>
@@ -39,7 +39,7 @@ namespace sofa::component::playback
 
 /** Read State vectors from file at each timestep
 */
-class SOFA_COMPONENT_PLAYBACK_API ReadState: public core::objectmodel::BaseComponent
+class SOFA_COMPONENT_PLAYBACK_API ReadState: public core::behavior::StateAccessor
 {
 public:
     SOFA_CLASS(ReadState,core::objectmodel::BaseComponent);
@@ -53,7 +53,7 @@ public:
     Data< type::Vec3 > d_translation; ///< translate the input mechanical object
 
 protected:
-    core::behavior::BaseMechanicalState* mmodel;
+    SingleLink<ReadState, core::behavior::BaseMechanicalState, BaseLink::FLAG_STRONGLINK> l_state;
     std::ifstream* infile;
 #if SOFA_COMPONENT_PLAYBACK_HAVE_ZLIB
     gzFile gzfile;
