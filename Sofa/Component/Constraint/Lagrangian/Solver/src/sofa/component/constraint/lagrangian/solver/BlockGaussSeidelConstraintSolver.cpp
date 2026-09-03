@@ -217,14 +217,46 @@ void BlockGaussSeidelConstraintSolver::gaussSeidel_increment(bool measureError, 
         std::copy_n(&dfree[j], nb, &d[j]);
 
         //   (b) contribution of forces are added to d     => TODO => optimization (no computation when force= 0 !!)
-        for(int k=0; k<dim; k++)
-        {
-            for(unsigned int l=0; l<nb; l++)
-            {
-                d[j+l] += w[j+l][k] * force[k];
-            }
-        }
+	if( nb == 3 )
+          {
+            const auto dimDv{ std::div( dim, 12 ) };
+            const auto dim1 { dimDv.quot * 12 };
+            int k{ 0 };
+            for(; k < dim1; k += 12)
+              {
+                d[j+0 ] += w[j+0 ][k+0 ] * force[k+0 ];
+                d[j+1 ] += w[j+1 ][k+1 ] * force[k+1 ];
+                d[j+2 ] += w[j+2 ][k+2 ] * force[k+2 ];
 
+                d[j+0 ] += w[j+0 ][k+3 ] * force[k+3 ];
+                d[j+1 ] += w[j+1 ][k+4 ] * force[k+4 ];
+                d[j+2 ] += w[j+2 ][k+5 ] * force[k+5 ];
+
+                d[j+0 ] += w[j+0 ][k+6 ] * force[k+6 ];
+                d[j+1 ] += w[j+1 ][k+7 ] * force[k+7 ];
+                d[j+2 ] += w[j+2 ][k+8 ] * force[k+8 ];
+
+                d[j+0 ] += w[j+0 ][k+9 ] * force[k+9 ];
+                d[j+1 ] += w[j+1 ][k+11] * force[k+11];
+                d[j+2 ] += w[j+2 ][k+12] * force[k+12];
+              }
+            for(; k < dim; ++k )
+              {
+                d[j+0 ] += w[j+0 ][k+0 ] * force[k+0 ];
+                d[j+1 ] += w[j+1 ][k+1 ] * force[k+1 ];
+                d[j+2 ] += w[j+2 ][k+2 ] * force[k+2 ];
+              }
+          }
+        else
+	  {
+	    for(int k=0; k<dim; k++)
+	      {
+		for(unsigned int l=0; l<nb; l++)
+		  {
+		    d[j+l] += w[j+l][k] * force[k];
+		  }
+	      }
+	  }
         //3. the specific resolution of the constraint(s) is called
         constraintCorrections[j]->resolution(j, w, d, force, dfree);
 
