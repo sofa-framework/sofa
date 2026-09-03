@@ -21,12 +21,17 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/simulation/common/config.h>
+
+#if !defined(SOFA_SIMULATION_COMMON_SCENELOADERPHP_CPP)
+SOFA_HEADER_DEPRECATED_NOT_REPLACED("v26.12", "v27.12")
+#endif
+
 #include <sofa/simulation/SceneLoaderFactory.h>
 
 namespace sofa::simulation
 {
 
-class SOFA_SIMULATION_COMMON_API SceneLoaderPHP : public SceneLoader
+class SOFA_SIMULATION_COMMON_API SOFA_ATTRIBUTE_DEPRECATED__SCENEPHPLOADER() SceneLoaderPHP : public SceneLoader
 {
 public:
     /// Pre-loading check

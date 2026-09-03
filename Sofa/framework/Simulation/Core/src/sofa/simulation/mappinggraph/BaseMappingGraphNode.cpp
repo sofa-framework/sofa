@@ -31,9 +31,10 @@ bool BaseMappingGraphNode::isMapped() const
         return m_isMapped.value();
     }
 
-    const auto isMapped = std::any_of(m_parents.begin(), m_parents.end(), [](const SPtr& node)
+    const auto isMapped = std::any_of(m_parents.begin(), m_parents.end(), [](const std::weak_ptr<BaseMappingGraphNode>& weakNode)
     {
-        return node->getType() == NodeType::Mapping || node->isMapped();
+        const auto node = weakNode.lock();
+        return node && (node->getType() == NodeType::Mapping || node->isMapped());
     });
 
     m_isMapped = isMapped;
