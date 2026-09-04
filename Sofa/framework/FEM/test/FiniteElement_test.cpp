@@ -26,71 +26,74 @@ namespace sofa
 {
 
 /**
- * Computes the sum of the quadrature weights and compare it to an expected value
+ * For each quadrature degree in [1, MaxDegree], computes the sum of the quadrature weights and 
+ * compare it to an expected value
  */
-template <class ElementType, class DataTypes>
+template <class ElementType, class DataTypes, sofa::Size MaxDegree>
 void testSumWeights(const sofa::Real_t<DataTypes> expected)
 {
     using FE = sofa::fem::FiniteElement<ElementType, DataTypes>;
 
-    SReal weightSum = 0;
-    for (const auto& [q, w] : FE::quadraturePoints())
+    for (sofa::Size degree = 1; degree <= MaxDegree; ++degree)
     {
-        weightSum += w;
+        SReal weightSum = 0;
+        for (const auto& [q, w] : FE::quadratureRule(degree))
+        {
+            weightSum += w;
+        }
+        EXPECT_DOUBLE_EQ(weightSum, expected) << "degree " << degree;
     }
-
-    EXPECT_DOUBLE_EQ(weightSum, expected);
 }
 
 TEST(FiniteElement, edge1dWeights)
 {
-    testSumWeights<sofa::geometry::Edge, sofa::defaulttype::Vec1Types>(2);
+    testSumWeights<sofa::geometry::Edge, sofa::defaulttype::Vec1Types, 3>(2);
 }
 TEST(FiniteElement, edge2dWeights)
 {
-    testSumWeights<sofa::geometry::Edge, sofa::defaulttype::Vec2Types>(2);
+    testSumWeights<sofa::geometry::Edge, sofa::defaulttype::Vec2Types, 3>(2);
 }
 TEST(FiniteElement, edge3dWeights)
 {
-    testSumWeights<sofa::geometry::Edge, sofa::defaulttype::Vec3Types>(2);
+    testSumWeights<sofa::geometry::Edge, sofa::defaulttype::Vec3Types, 3>(2);
 }
 
 TEST(FiniteElement, triangle2dWeights)
 {
-    testSumWeights<sofa::geometry::Triangle, sofa::defaulttype::Vec2Types>(0.5);
+    testSumWeights<sofa::geometry::Triangle, sofa::defaulttype::Vec2Types, 2>(0.5);
 }
 TEST(FiniteElement, triangle3dWeights)
 {
-    testSumWeights<sofa::geometry::Triangle, sofa::defaulttype::Vec3Types>(0.5);
+    testSumWeights<sofa::geometry::Triangle, sofa::defaulttype::Vec3Types, 2>(0.5);
 }
 
 TEST(FiniteElement, quad2dWeights)
 {
-    testSumWeights<sofa::geometry::Quad, sofa::defaulttype::Vec2Types>(4);
+    testSumWeights<sofa::geometry::Quad, sofa::defaulttype::Vec2Types, 3>(4);
 }
 TEST(FiniteElement, quad3dWeights)
 {
-    testSumWeights<sofa::geometry::Quad, sofa::defaulttype::Vec3Types>(4);
+    testSumWeights<sofa::geometry::Quad, sofa::defaulttype::Vec3Types, 3>(4);
 }
 
 TEST(FiniteElement, tetra3dWeights)
 {
-    testSumWeights<sofa::geometry::Tetrahedron, sofa::defaulttype::Vec3Types>(1 / 6.);
+    testSumWeights<sofa::geometry::Tetrahedron, sofa::defaulttype::Vec3Types, 2>(1 / 6.);
 }
 
 TEST(FiniteElement, hexa3dWeights)
 {
-    testSumWeights<sofa::geometry::Hexahedron, sofa::defaulttype::Vec3Types>(8);
+    testSumWeights<sofa::geometry::Hexahedron, sofa::defaulttype::Vec3Types, 5>(8);
 }
 
 TEST(FiniteElement, prism3dWeights)
 {
-    testSumWeights<sofa::geometry::Prism, sofa::defaulttype::Vec3Types>(1 / 2.);
+    testSumWeights<sofa::geometry::Prism, sofa::defaulttype::Vec3Types, 1>(1 / 2.);
 }
 
 TEST(FiniteElement, pyramid3dWeights)
 {
-    testSumWeights<sofa::geometry::Pyramid, sofa::defaulttype::Vec3Types>(8);
+    testSumWeights<sofa::geometry::Pyramid, sofa::defaulttype::Vec3Types, 1>(8);
 }
 
 TEST(FiniteElement, quadraticHexa3dWeights)
