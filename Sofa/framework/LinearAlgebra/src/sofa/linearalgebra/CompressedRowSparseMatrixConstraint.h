@@ -422,16 +422,12 @@ public:
             return !(*this < other);
         }
 
-        template <class VecDeriv, typename Real>
-        Real operator*(const VecDeriv& v) const
-        {
-            return CompressedRowSparseMatrixVecDerivMult(row(), v);
-        }
-
     private:
 
-        Index m_internal;
-        const CompressedRowSparseMatrixConstraint* m_matrix;
+        /// a default-constructed iterator must report itself as invalid rather
+        /// than alias row 0 of an unspecified matrix
+        Index m_internal = s_invalidIndex;
+        const CompressedRowSparseMatrixConstraint* m_matrix = nullptr;
     };
 
     /// Get the iterator corresponding to the beginning of the rows of blocks
