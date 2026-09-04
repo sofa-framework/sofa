@@ -53,6 +53,8 @@ protected:
 
     ~AnimationLoopParallelScheduler() override;
 
+    void doStep(const sofa::core::ExecParams* params, SReal dt) override;
+
 public:
     void init() override;
 
@@ -63,8 +65,6 @@ public:
     void reinit() override;
 
     void cleanup() override;
-
-    void step(const sofa::core::ExecParams* params, SReal dt) override;
 
 private :
 

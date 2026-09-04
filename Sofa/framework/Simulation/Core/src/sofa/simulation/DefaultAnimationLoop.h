@@ -61,11 +61,11 @@ public:
     /// Set the simulation node this animation loop is controlling
     virtual void setNode(simulation::Node*);
 
-    /// perform one animation step
-    void step(const sofa::core::ExecParams* params, SReal dt) override;
-
 protected :
     simulation::Node* m_node { nullptr };
+
+    /// perform one animation step
+    void doStep(const sofa::core::ExecParams* params, SReal dt) override;
 
     void behaviorUpdatePosition(const sofa::core::ExecParams* params, SReal dt) const;
     void updateInternalData(const sofa::core::ExecParams* params) const;
