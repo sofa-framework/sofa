@@ -48,17 +48,46 @@ protected:
     /// Destructor
     ~BehaviorModel() override {}
 	
+    /// Computation of a new simulation step.
+    virtual void doUpdatePosition(SReal /*dt*/) = 0;
+
+    virtual bool doAddBBox(SReal* /*minBBox*/, SReal* /*maxBBox*/)
+    {
+        return false;
+    }
+
 private:
     BehaviorModel(const BehaviorModel& n) = delete;
     BehaviorModel& operator=(const BehaviorModel& n) = delete;
 	
 public:
-    /// Computation of a new simulation step.
-    virtual void updatePosition(SReal dt) = 0;
 
-    virtual bool addBBox(SReal* /*minBBox*/, SReal* /*maxBBox*/)
+    /**
+     * !!! WARNING since v25.12 !!! 
+     * 
+     * The template method pattern has been applied to this part of the API. 
+     * This method calls the newly introduced method "doUpdatePosition" internally,
+     * which is the method to override from now on.
+     * 
+     **/  
+    virtual void updatePosition(SReal dt) final
     {
-        return false;
+        //TODO (SPRINT SED 2025): Component state mechamism
+        this->doUpdatePosition(dt);
+    }
+
+    /**
+     * !!! WARNING since v25.12 !!! 
+     * 
+     * The template method pattern has been applied to this part of the API. 
+     * This method calls the newly introduced method "doAddBBox" internally,
+     * which is the method to override from now on.
+     * 
+     **/  
+    virtual bool addBBox(SReal* minBBox, SReal* maxBBox) final
+    {
+        //TODO (SPRINT SED 2025): Component state mechamism
+        return this->doAddBBox(minBBox, maxBBox);
     }
 
     bool insertInNode( objectmodel::BaseNode* node ) override;

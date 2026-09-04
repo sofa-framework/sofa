@@ -52,7 +52,7 @@ protected:
 public:
     virtual void init();
     virtual void reinit();
-    virtual void updatePosition(double dt);
+    void doUpdatePosition(double dt) override;
 
 protected:
     Data<unsigned> customUnsignedData; ///< Example of unsigned data with custom widget
