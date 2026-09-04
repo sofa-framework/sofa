@@ -27,7 +27,7 @@ namespace sofa::core::objectmodel
 {
 
 /**
- *  \brief Compatibility layer - Context is now a subclass of BaseContext.
+ *  \brief Compatibility layer - Context is now an alias of BaseContext.
  *  All functionality has been merged into BaseContext.
  */
 using Context = BaseContext;
