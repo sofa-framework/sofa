@@ -225,24 +225,47 @@ void BlockGaussSeidelConstraintSolver::gaussSeidel_increment(bool measureError, 
             for(; k < dim1; k += 12 )
               {
                 d[j+0 ] += w[j+0 ][k+0 ] * force[k+0 ];
-                d[j+1 ] += w[j+1 ][k+1 ] * force[k+1 ];
-                d[j+2 ] += w[j+2 ][k+2 ] * force[k+2 ];
-
+                d[j+0 ] += w[j+0 ][k+1 ] * force[k+1 ];
+                d[j+0 ] += w[j+0 ][k+2 ] * force[k+2 ];
                 d[j+0 ] += w[j+0 ][k+3 ] * force[k+3 ];
-                d[j+1 ] += w[j+1 ][k+4 ] * force[k+4 ];
-                d[j+2 ] += w[j+2 ][k+5 ] * force[k+5 ];
-
+                d[j+0 ] += w[j+0 ][k+4 ] * force[k+4 ];
+                d[j+0 ] += w[j+0 ][k+5 ] * force[k+5 ];
                 d[j+0 ] += w[j+0 ][k+6 ] * force[k+6 ];
-                d[j+1 ] += w[j+1 ][k+7 ] * force[k+7 ];
-                d[j+2 ] += w[j+2 ][k+8 ] * force[k+8 ];
-
+                d[j+0 ] += w[j+0 ][k+7 ] * force[k+7 ];
+                d[j+0 ] += w[j+0 ][k+8 ] * force[k+8 ];
                 d[j+0 ] += w[j+0 ][k+9 ] * force[k+9 ];
-                d[j+1 ] += w[j+1 ][k+10] * force[k+10];
-                d[j+2 ] += w[j+2 ][k+11] * force[k+11];
+                d[j+0 ] += w[j+0 ][k+10] * force[k+10];
+                d[j+0 ] += w[j+0 ][k+11] * force[k+11];
+                d[j+0 ] += w[j+0 ][k+12] * force[k+12];
 
-                // d[j+0 ] += w[j+0 ][k+12] * force[k+12];
-                // d[j+1 ] += w[j+1 ][k+13] * force[k+13];
-                // d[j+2 ] += w[j+2 ][k+14] * force[k+14];
+                d[j+1 ] += w[j+1 ][k+0 ] * force[k+0 ];
+                d[j+1 ] += w[j+1 ][k+1 ] * force[k+1 ];
+                d[j+1 ] += w[j+1 ][k+2 ] * force[k+2 ];
+                d[j+1 ] += w[j+1 ][k+3 ] * force[k+3 ];
+                d[j+1 ] += w[j+1 ][k+4 ] * force[k+4 ];
+                d[j+1 ] += w[j+1 ][k+5 ] * force[k+5 ];
+                d[j+1 ] += w[j+1 ][k+6 ] * force[k+6 ];
+                d[j+1 ] += w[j+1 ][k+7 ] * force[k+7 ];
+                d[j+1 ] += w[j+1 ][k+8 ] * force[k+8 ];
+                d[j+1 ] += w[j+1 ][k+9 ] * force[k+9 ];
+                d[j+1 ] += w[j+1 ][k+10] * force[k+10];
+                d[j+1 ] += w[j+1 ][k+11] * force[k+11];
+                d[j+1 ] += w[j+1 ][k+12] * force[k+12];
+
+		d[j+2 ] += w[j+2 ][k+0 ] * force[k+0 ];
+                d[j+2 ] += w[j+2 ][k+1 ] * force[k+1 ];
+                d[j+2 ] += w[j+2 ][k+2 ] * force[k+2 ];
+                d[j+2 ] += w[j+2 ][k+3 ] * force[k+3 ];
+                d[j+2 ] += w[j+2 ][k+4 ] * force[k+4 ];
+                d[j+2 ] += w[j+2 ][k+5 ] * force[k+5 ];
+                d[j+2 ] += w[j+2 ][k+6 ] * force[k+6 ];
+                d[j+2 ] += w[j+2 ][k+7 ] * force[k+7 ];
+                d[j+2 ] += w[j+2 ][k+8 ] * force[k+8 ];
+                d[j+2 ] += w[j+2 ][k+9 ] * force[k+9 ];
+                d[j+2 ] += w[j+2 ][k+10] * force[k+10];
+                d[j+2 ] += w[j+2 ][k+11] * force[k+11];
+                d[j+2 ] += w[j+2 ][k+12] * force[k+12];
+
               }
             for(; k < dim; ++k )
               {
