@@ -65,9 +65,6 @@ public:
 
     }
 
-    SOFA_ATTRIBUTE_DISABLED__TYPO()
-    static Operation* Instanciate(const std::string &name) = delete;
-
     static Operation* Instantiate(const std::string &name)
     {
         const RegisterStorage &reg = getInstance()->registry;

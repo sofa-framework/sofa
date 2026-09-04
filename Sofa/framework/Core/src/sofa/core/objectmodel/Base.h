@@ -440,8 +440,8 @@ public:
 
 #undef SOFA_BASE_CAST_DEFINITION
 
-    SOFA_ATTRIBUTE_DEPRECATED__TOBASECONSTRAINT() virtual const behavior::BaseLagrangianConstraint* toBaseConstraint() const { return toBaseLagrangianConstraint(); }
-    SOFA_ATTRIBUTE_DEPRECATED__TOBASECONSTRAINT() virtual       behavior::BaseLagrangianConstraint* toBaseConstraint()       { return toBaseLagrangianConstraint(); }
+    SOFA_ATTRIBUTE_DISABLED__TOBASECONSTRAINT() virtual const behavior::BaseLagrangianConstraint* toBaseConstraint() const = delete;
+    SOFA_ATTRIBUTE_DISABLED__TOBASECONSTRAINT() virtual       behavior::BaseLagrangianConstraint* toBaseConstraint()       = delete;
 
     SOFA_ATTRIBUTE_DEPRECATED__TOBASEOBJECT() virtual const objectmodel::BaseComponent* toBaseObject() const { return toBaseComponent(); }
     SOFA_ATTRIBUTE_DEPRECATED__TOBASEOBJECT() virtual       objectmodel::BaseComponent* toBaseObject()       { return toBaseComponent(); }

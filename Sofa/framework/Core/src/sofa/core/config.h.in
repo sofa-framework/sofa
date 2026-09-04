@@ -51,15 +51,7 @@
 #define SOFA_ATTRIBUTE_DEPRECATED__REGISTEROBJECT()
 #else
 #define SOFA_ATTRIBUTE_DEPRECATED__REGISTEROBJECT() \
-    SOFA_ATTRIBUTE_DEPRECATED("v24.12", "v26.12", "RegisterObject and the associated implicit registration is being phased out. Use ObjectRegistrationData and explicit registration from now on. See #4429 for more information.")
-#endif
-
-
-#ifdef SOFA_BUILD_SOFA_CORE
-#define SOFA_ATTRIBUTE_DISABLED__DELETED_ARGUMENTS()
-#else
-#define SOFA_ATTRIBUTE_DISABLED__DELETED_ARGUMENTS() \
-    SOFA_ATTRIBUTE_DISABLED("v25.06", "v25.12", "Signature has changed, use 'getConstraintResolution(const ConstraintParams* cParams, std::vector<ConstraintResolution*> &resTab, unsigned int &offset)' instead")
+    SOFA_ATTRIBUTE_DEPRECATED("v24.12", "v27.06", "RegisterObject and the associated implicit registration is being phased out. Use ObjectRegistrationData and explicit registration from now on. See #4429 for more information.")
 #endif
 
 
@@ -71,10 +63,10 @@ SOFA_ATTRIBUTE_DISABLED("v25.12", "v26.06", "Use getContactDistance or setContac
 #endif
 
 #ifdef SOFA_BUILD_SOFA_CORE
-#define SOFA_ATTRIBUTE_DEPRECATED__TOBASECONSTRAINT()
+#define SOFA_ATTRIBUTE_DISABLED__TOBASECONSTRAINT()
 #else
-#define SOFA_ATTRIBUTE_DEPRECATED__TOBASECONSTRAINT() \
-    SOFA_ATTRIBUTE_DEPRECATED("v25.12", "v26.12", "Use toBaseLagrangianConstraint instead.")
+#define SOFA_ATTRIBUTE_DISABLED__TOBASECONSTRAINT() \
+    SOFA_ATTRIBUTE_DISABLED("v25.12", "v26.12", "Use toBaseLagrangianConstraint instead.")
 #endif
 
 #ifdef SOFA_BUILD_SOFA_CORE
@@ -93,10 +85,10 @@ SOFA_ATTRIBUTE_DEPRECATED("v26.06", "v29.06", "Use toBaseComponent instead.")
 
 
 #ifdef SOFA_BUILD_SOFA_CORE
-#define SOFA_ATTRIBUTE_RENAMED__COLLISIONMODEL_PROXIMITY()
+#define SOFA_ATTRIBUTE_DISABLED__COLLISIONMODEL_PROXIMITY()
 #else
-#define SOFA_ATTRIBUTE_RENAMED__COLLISIONMODEL_PROXIMITY() \
-    SOFA_ATTRIBUTE_DEPRECATED("v25.12", "v26.12", "Data 'proximity' has been renamed to 'contactDistance'")
+#define SOFA_ATTRIBUTE_DISABLED__COLLISIONMODEL_PROXIMITY() \
+    SOFA_ATTRIBUTE_DISABLED("v25.12", "v26.12", "Data 'proximity' has been renamed to 'contactDistance'")
 #endif
 
 #ifdef SOFA_BUILD_SOFA_CORE
@@ -107,12 +99,6 @@ SOFA_ATTRIBUTE_DEPRECATED("v26.06", "v29.06", "Use toBaseComponent instead.")
 #endif
 
 
-#ifdef SOFA_BUILD_SOFA_CORE
-#define SOFA_CORE_ATTRIBUTE_REMOVE_ASSEMBLY_API()
-#else
-#define SOFA_CORE_ATTRIBUTE_REMOVE_ASSEMBLY_API() \
-    SOFA_ATTRIBUTE_DISABLED("v25.12", "v25.12", "The assembly of the linear system is no longer the responsibility of the solver. Instead, a linear system component lives along with the linear solver. This component is in charge of the assembly.")
-#endif
 
 #ifdef SOFA_BUILD_SOFA_CORE
 #define SOFA_CORE_DEPRECATED_RENAME_CREATOR_BASEOBJECTCREATOR()

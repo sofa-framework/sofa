@@ -68,7 +68,6 @@ public:
 
 protected:
 
-    DeprecatedAndRemoved d_orderingMethod;
     std::string m_selectedOrderingMethod;
 
     std::unique_ptr<BaseEigenSolverProxy> m_solver;

@@ -76,14 +76,3 @@ void init()
 
 } // namespace sofacuda
 
-// compat
-namespace sofa::gpu::cuda
-{
-
-void init()
-{
-    msg_warning("SofaCUDA") << "You must now call sofacuda::init() instead of sofa::gpu::cuda::init()";
-    sofacuda::init();
-}
-
-} // sofa::gpu::cuda

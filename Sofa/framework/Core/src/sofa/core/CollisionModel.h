@@ -25,8 +25,6 @@
 #include <sofa/core/CollisionElement.h>
 #include <sofa/helper/set.h>
 
-#include <sofa/core/objectmodel/lifecycle/RenamedData.h>
-
 //todo(dmarchal 2018-06-19) I really wonder why a collision model has a dependency to a RGBAColors.
 #include <sofa/type/RGBAColor.h>
 
@@ -407,8 +405,8 @@ protected:
     Data<bool> bSelfCollision;
     
     
-    SOFA_ATTRIBUTE_RENAMED__COLLISIONMODEL_PROXIMITY()
-    objectmodel::lifecycle::RenamedData<SReal>  proximity;
+    SOFA_ATTRIBUTE_DISABLED__COLLISIONMODEL_PROXIMITY()
+    DeprecatedAndRemoved proximity;
 
     /// Distance to the actual (visual) surface
     Data<SReal> d_contactDistance;

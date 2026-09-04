@@ -55,8 +55,8 @@ public:
     Real getYoungModulusInElement(sofa::Size elementId) const;
     Real getPoissonRatioInElement(sofa::Size elementId) const;
 
-    SOFA_ATTRIBUTE_DEPRECATED__TOLAMEPARAMETERS() static std::pair<Real, Real> toLameParameters(_2DMaterials, Real youngModulus, Real poissonRatio);
-    SOFA_ATTRIBUTE_DEPRECATED__TOLAMEPARAMETERS() static std::pair<Real, Real> toLameParameters(_3DMaterials, Real youngModulus, Real poissonRatio);
+    SOFA_ATTRIBUTE_DISABLED__TOLAMEPARAMETERS() static std::pair<Real, Real> toLameParameters(_2DMaterials, Real youngModulus, Real poissonRatio) = delete;
+    SOFA_ATTRIBUTE_DISABLED__TOLAMEPARAMETERS() static std::pair<Real, Real> toLameParameters(_3DMaterials, Real youngModulus, Real poissonRatio) = delete;
 
 protected:
 

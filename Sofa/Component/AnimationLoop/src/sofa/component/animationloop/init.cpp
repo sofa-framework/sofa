@@ -26,7 +26,6 @@
 namespace sofa::component::animationloop
 {
 
-extern void registerConstraintAnimationLoop(sofa::core::ObjectFactory* factory);
 extern void registerFreeMotionAnimationLoop(sofa::core::ObjectFactory* factory);
 extern void registerMultiStepAnimationLoop(sofa::core::ObjectFactory* factory);
 extern void registerMultiTagAnimationLoop(sofa::core::ObjectFactory* factory);
@@ -55,7 +54,6 @@ const char* getModuleVersion()
 
 void registerObjects(sofa::core::ObjectFactory* factory)
 {
-    registerConstraintAnimationLoop(factory);
     registerFreeMotionAnimationLoop(factory);
     registerMultiStepAnimationLoop(factory);
     registerMultiTagAnimationLoop(factory);
