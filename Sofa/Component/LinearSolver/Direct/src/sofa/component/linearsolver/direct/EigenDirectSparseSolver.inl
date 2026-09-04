@@ -48,6 +48,12 @@ void EigenDirectSparseSolver<TBlockType, EigenSolver>
 {
     SOFA_UNUSED(A);
 
+    if (this->isComponentStateInvalid())
+    {
+        // the matrix could not be factorized: the Eigen solver is not usable
+        return;
+    }
+
     EigenVectorXdMap xMap(x.ptr(), x.size());
     EigenVectorXdMap bMap(b.ptr(), b.size());
 
@@ -62,6 +68,22 @@ void EigenDirectSparseSolver<TBlockType, EigenSolver>
         SCOPED_TIMER_VARNAME(copyTimer, "copyMatrixData");
         Mfiltered.copyNonZeros(A);
         Mfiltered.compress();
+    }
+
+    // Eigen expects exactly one row offset per row, plus one, and copyNonZeros() does not
+    // store the rows which are entirely zero: they are restored here before the mapping.
+    Mfiltered.fullRows();
+
+    // Any remaining mismatch means the matrix holds entries outside its bounds, which
+    // CompressedRowSparseMatrix accepts silently: the Eigen::Map below would read too far.
+    if (Mfiltered.rowBegin.size() != static_cast<std::size_t>(Mfiltered.rows()) + 1)
+    {
+        msg_error() << "Cannot factorize a matrix of size " << Mfiltered.rows() << "x"
+            << Mfiltered.cols() << " described by " << Mfiltered.rowBegin.size()
+            << " row offsets (" << Mfiltered.rows() + 1 << " expected)"
+            << ": it likely contains entries outside its bounds.";
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
     }
 
     m_map = std::make_unique<EigenSparseMatrixMap>(Mfiltered.rows(), Mfiltered.cols(), Mfiltered.getColsValue().size(),
