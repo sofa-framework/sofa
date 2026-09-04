@@ -59,19 +59,21 @@ protected:
     }
 
     ~OglVariable() override {}
+
+    void doUpdateVisual(const core::visual::VisualParams* ) override { pushValue(); }
+    void doInitVisual(const core::visual::VisualParams*) override
+    {
+        pushValue();
+    }
+
 public:
     virtual void setValue( const DataTypes& v ) { value.setValue(v); }
     virtual void pushValue() = 0;
     
     void init() override { OglShaderElement::init(); }
-    void doInitVisual(const core::visual::VisualParams*) override
-    {
-        pushValue();
-    }
+
     void reinit() override { init();	pushValue(); }
-    void doUpdateVisual(const core::visual::VisualParams* ) override { pushValue(); }
-    
-    
+
     /// Returns the type of shader element (texture, macro, variable, or attribute)
     ShaderElementType getSEType() const override { return core::visual::ShaderElement::SE_VARIABLE; }
     // Returns the value of the shader element

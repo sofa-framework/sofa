@@ -38,8 +38,9 @@ class SOFA_GL_COMPONENT_SHADER_API OglRenderingSRGB : public core::visual::Visua
 public:
     SOFA_CLASS(OglRenderingSRGB, core::visual::VisualManager);
 
-    void fwdDraw(core::visual::VisualParams* ) override;
-    void bwdDraw(core::visual::VisualParams* ) override;
+protected:
+    void doFwdDraw(core::visual::VisualParams* ) override;
+    void doBwdDraw(core::visual::VisualParams* ) override;
 };
 
 } // namespace sofa::gl::component::shader

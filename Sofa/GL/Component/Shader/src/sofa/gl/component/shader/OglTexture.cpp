@@ -245,7 +245,7 @@ void OglTexture::reinit()
     }
 }
 
-void OglTexture::fwdDraw(core::visual::VisualParams*)
+void OglTexture::doFwdDraw(core::visual::VisualParams*)
 {
     if (enabled.getValue())
     {
@@ -255,7 +255,7 @@ void OglTexture::fwdDraw(core::visual::VisualParams*)
     }
 }
 
-void OglTexture::bwdDraw(core::visual::VisualParams*)
+void OglTexture::doBwdDraw(core::visual::VisualParams*)
 {
     if (enabled.getValue())
     {

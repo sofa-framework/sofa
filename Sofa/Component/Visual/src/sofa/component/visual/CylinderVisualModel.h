@@ -39,12 +39,13 @@ public:
 protected:
     CylinderVisualModel();
     ~CylinderVisualModel() override;
+    void doExportOBJ(std::string /*name*/, std::ostream* /*out*/, std::ostream* /*mtl*/, Index& /*vindex*/, Index& /*nindex*/, Index& /*tindex*/, int& /*count*/) override;
+
 public:
     void init() override;
 
     void doDrawVisual(const core::visual::VisualParams* vparams) override;
 
-    void exportOBJ(std::string /*name*/, std::ostream* /*out*/, std::ostream* /*mtl*/, Index& /*vindex*/, Index& /*nindex*/, Index& /*tindex*/, int& /*count*/) override;
 
 private:
     Data<float>		radius; ///< Radius of the cylinder.

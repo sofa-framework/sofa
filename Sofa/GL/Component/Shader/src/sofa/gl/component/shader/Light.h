@@ -97,7 +97,6 @@ public:
     void init() override;
     virtual void drawLight(const core::visual::VisualParams* vparams);
     void reinit() override;
-    void doUpdateVisual(const core::visual::VisualParams* vparams) override;
 
     /// Draw the light source from an external point of view.
     virtual void drawSource(const sofa::core::visual::VisualParams*) = 0;
@@ -124,6 +123,7 @@ public:
 
 protected:
     bool b_needUpdate;
+    void doUpdateVisual(const core::visual::VisualParams* vparams) override;
 
 };
 
