@@ -19,32 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-#include <sofa/simulation/common/config.h>
+#define SOFA_TYPE_CLAMPEDSCALAR_CPP
+#include <sofa/type/ClampedScalar.h>
 
-#if !defined(SOFA_SIMULATION_COMMON_SCENELOADERPHP_CPP)
-SOFA_HEADER_DEPRECATED_NOT_REPLACED("v26.12", "v27.12")
-#endif
-
-#include <sofa/simulation/SceneLoaderFactory.h>
-
-namespace sofa::simulation
+namespace sofa::type
 {
 
-class SOFA_SIMULATION_COMMON_API SOFA_ATTRIBUTE_DEPRECATED__SCENEPHPLOADER() SceneLoaderPHP : public SceneLoader
-{
-public:
-    /// Pre-loading check
-    bool canLoadFileExtension(const char *extension) override;
+template class SOFA_TYPE_API ClampedScalar<double>;
+template class SOFA_TYPE_API ClampedScalar<float>;
 
-    /// load the file
-    virtual sofa::simulation::NodeSPtr doLoad(const std::string& filename, const std::vector<std::string>& sceneArgs) override;
-
-    /// get the file type description
-    virtual std::string getFileTypeDesc() override;
-
-    /// get the list of file extensions
-    void getExtensionList(ExtensionList* list) override;
-};
-
-} // namespace sofa::simulation
+}

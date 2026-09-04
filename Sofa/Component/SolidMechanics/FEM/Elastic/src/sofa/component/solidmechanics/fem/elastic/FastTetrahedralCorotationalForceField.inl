@@ -178,9 +178,6 @@ void FastTetrahedralCorotationalForceField<DataTypes>::init()
         return;
     }
 
-    msg_warning_when(!this->d_poissonRatio.isSet()) << "The default value of the Data " << this->d_poissonRatio.getName() << " changed in v23.06 from 0.3 to 0.45.";
-    msg_warning_when(!this->d_youngModulus.isSet()) << "The default value of the Data " << this->d_youngModulus.getName() << " changed in v23.06 from 1000 to 5000";
-
     if (this->l_topology->getNbTetrahedra() == 0)
     {
         msg_error() << "No tetrahedra found in linked Topology.";

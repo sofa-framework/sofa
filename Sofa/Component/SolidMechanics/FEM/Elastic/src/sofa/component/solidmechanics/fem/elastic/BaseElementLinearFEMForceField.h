@@ -53,6 +53,7 @@ private:
     using trait = sofa::component::solidmechanics::fem::elastic::trait<DataTypes, ElementType>;
     using ElementHessian = typename trait::ElementHessian;
     using StrainDisplacement = typename trait::StrainDisplacement;
+    using ElementDisplacement = typename trait::ElementDisplacement;
     using Real = typename trait::Real;
 
 protected:
@@ -63,6 +64,12 @@ protected:
      * With linear small strain, the element stiffness matrix is constant, so it can be precomputed.
      */
     void precomputeElementStiffness();
+
+    /// Displacement of the element nodes relative to their rest position. Returns a flat vector.
+    ElementDisplacement computeElementDisplacement(
+        const typename trait::TopologyElement& element,
+        const sofa::VecCoord_t<DataTypes>& nodePositions,
+        const sofa::VecCoord_t<DataTypes>& nodeRestPositions) const;
 
 public:
 

@@ -91,11 +91,14 @@ MappingGraph::MappingInputs MappingGraph::getTopMostMechanicalStates(
                 current->accept(visitor);
             }
 
-            for (auto& parent : current->m_parents)
+            for (auto& weakParent : current->m_parents)
             {
-                if (parent->m_pendingCount == 0)
+                if (const auto parent = weakParent.lock())
                 {
-                    nodes.push(parent.get());
+                    if (parent->m_pendingCount == 0)
+                    {
+                        nodes.push(parent.get());
+                    }
                 }
             }
         }
@@ -230,11 +233,14 @@ sofa::type::vector<core::BaseMapping*> MappingGraph::getBottomUpMappingsFrom(
 
             current->accept(visitor);
 
-            for (auto& parent : current->m_parents)
+            for (auto& weakParent : current->m_parents)
             {
-                if (parent->m_pendingCount == 0)
+                if (const auto parent = weakParent.lock())
                 {
-                    nodes.push(parent.get());
+                    if (parent->m_pendingCount == 0)
+                    {
+                        nodes.push(parent.get());
+                    }
                 }
             }
         }
@@ -402,7 +408,7 @@ BaseMappingGraphNode* MappingGraph::findStateNode(core::behavior::BaseMechanical
 void MappingGraph::addEdge(BaseMappingGraphNode* from, BaseMappingGraphNode* to)
 {
     from->m_children.push_back(to->shared_from_this());
-    to->m_parents.push_back(from->shared_from_this());
+    to->m_parents.push_back(from->weak_from_this());
 }
 
 }  // namespace sofa::simulation
