@@ -37,15 +37,17 @@ namespace sofa::component::constraint::lagrangian::model
 
 struct UnilateralLagrangianContactParameters final : public BaseContactParams
 {
-    UnilateralLagrangianContactParameters() : mu(0.0) {};
-    UnilateralLagrangianContactParameters(SReal _mu) : mu(_mu) {};
+    UnilateralLagrangianContactParameters() : mu(0.0), drag(0.0) {};
+    UnilateralLagrangianContactParameters(SReal _mu) : mu(_mu), drag(0.0) {};
+    UnilateralLagrangianContactParameters(SReal _mu, SReal _drag) : mu(_mu), drag(_drag) {};
 
     virtual bool hasTangentialComponent() const override
     {
-        return mu>0.0;
+        return mu>0.0 || drag>0.0;
     }
 
     SReal mu;
+    SReal drag;
 };
 
 template<class DataTypes>
