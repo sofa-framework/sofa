@@ -418,6 +418,48 @@ TEST(MatTypesTest, invert55)
     }
 }
 
+TEST(MatTypesTest, invertMatrixSelfAliasing22)
+{
+    Matrix2 M(Matrix2::Line(4.0, 7.0), Matrix2::Line(2.0, 6.0));
+    const Matrix2 expectedInverse(Matrix2::Line(0.6, -0.7),
+                                  Matrix2::Line(-0.2, 0.4));
+
+    const bool success = type::invertMatrix(M, M);
+    EXPECT_TRUE(success);
+    EXPECT_EQ(M, expectedInverse);
+}
+
+TEST(MatTypesTest, invertMatrixSelfAliasing33)
+{
+    Matrix3 M(Matrix3::Line(3., 0., 2.), Matrix3::Line(2., 0., -2.), Matrix3::Line(0., 1., 1.));
+    const Matrix3 expectedInverse(Matrix3::Line(0.2, 0.2, 0.),
+                                  Matrix3::Line(-0.2, 0.3, 1.),
+                                  Matrix3::Line(0.2, -0.3, 0.));
+
+    const bool success = type::invertMatrix(M, M);
+    EXPECT_TRUE(success);
+    EXPECT_EQ(M, expectedInverse);
+}
+
+TEST(MatTypesTest, invertMatrixSelfAliasing55)
+{
+    Mat<5, 5, SReal> M(Mat<5, 5, SReal>::Line(-2.,  7.,  0.,  6., -2.),
+                       Mat<5, 5, SReal>::Line( 1., -1.,  3.,  2.,  2.),
+                       Mat<5, 5, SReal>::Line( 3.,  4.,  0.,  5.,  3.),
+                       Mat<5, 5, SReal>::Line( 2.,  5., -4., -2.,  2.),
+                       Mat<5, 5, SReal>::Line( 0.,  3., -1.,  1., -4.));
+
+    const Mat<5, 5, SReal> expectedInverse(Mat<5, 5, SReal>::Line(-289./1440., 11./90., 13./90., 31./1440., 101./360.),
+                                           Mat<5, 5, SReal>::Line(37./360., 14./45., -8./45., 77./360., 7./90.),
+                                           Mat<5, 5, SReal>::Line(17./288., 11./18., -5./18., 49./288., 11./72.),
+                                           Mat<5, 5, SReal>::Line(1./1440., -29./90.,23./90.,-319./1440.,-29./360.),
+                                           Mat<5, 5, SReal>::Line(1./16., 0., 0., 1./16., -1./4.));
+
+    const bool success = type::invertMatrix(M, M);
+    EXPECT_TRUE(success);
+    EXPECT_EQ(M, expectedInverse);
+}
+
 TEST(MatTypesTest, tensorProduct)
 {
     const Vec<2,SReal> v1(0.,1.), v2(1.,2.);
