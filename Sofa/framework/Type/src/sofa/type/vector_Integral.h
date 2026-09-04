@@ -30,3 +30,14 @@ template<> SOFA_TYPE_API std::istream& sofa::type::vector<unsigned int>::read( s
 template<> SOFA_TYPE_API std::ostream& sofa::type::vector<unsigned char>::write(std::ostream& os) const;
 template<> SOFA_TYPE_API std::istream& sofa::type::vector<unsigned char>::read(std::istream& in);
 
+#if !defined(SOFA_TYPE_VECTOR_INTEGRAL_CPP)
+extern template class SOFA_TYPE_API sofa::type::vector<bool>;
+extern template class SOFA_TYPE_API sofa::type::vector<char>;
+extern template class SOFA_TYPE_API sofa::type::vector<unsigned char>;
+extern template class SOFA_TYPE_API sofa::type::vector<int>;
+extern template class SOFA_TYPE_API sofa::type::vector<unsigned int>;
+extern template class SOFA_TYPE_API sofa::type::vector<long>;
+extern template class SOFA_TYPE_API sofa::type::vector<unsigned long>;
+extern template class SOFA_TYPE_API sofa::type::vector<long long>;
+extern template class SOFA_TYPE_API sofa::type::vector<unsigned long long>;
+#endif
