@@ -107,6 +107,9 @@ protected:
 
     virtual ~PatchTestMovementProjectiveConstraint();
 
+    // Implement projectMatrix for assembled solver of compliant
+    void doProjectMatrix( sofa::linearalgebra::BaseMatrix* /*M*/, unsigned /*offset*/ ) override;
+
 public:
     //Add or clear constraints
     void clearConstraints();
@@ -122,8 +125,6 @@ public:
     void projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData) override;
     /// Apply the computed movements to the border mesh points between beginConstraintTime and endConstraintTime
     void projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData) override;
-    // Implement projectMatrix for assembled solver of compliant
-    void projectMatrix( sofa::linearalgebra::BaseMatrix* /*M*/, unsigned /*offset*/ ) override;
 
     void projectJacobianMatrix(const core::MechanicalParams* /*mparams*/, DataMatrixDeriv& /* cData */) override
     {

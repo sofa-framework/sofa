@@ -48,7 +48,7 @@ bool ProjectiveConstraintSet<DataTypes>::isActive() const
 }
 
 template<class DataTypes>
-void ProjectiveConstraintSet<DataTypes>::projectJacobianMatrix(const MechanicalParams* mparams, MultiMatrixDerivId cId)
+void ProjectiveConstraintSet<DataTypes>::doProjectJacobianMatrix(const MechanicalParams* mparams, MultiMatrixDerivId cId)
 {
     if (!isActive())
         return;
@@ -62,7 +62,7 @@ void ProjectiveConstraintSet<DataTypes>::projectJacobianMatrix(const MechanicalP
 
 
 template<class DataTypes>
-void ProjectiveConstraintSet<DataTypes>::projectResponse(const MechanicalParams* mparams, MultiVecDerivId dxId)
+void ProjectiveConstraintSet<DataTypes>::doProjectResponse(const MechanicalParams* mparams, MultiVecDerivId dxId)
 {
     if (!isActive())
         return;
@@ -74,7 +74,7 @@ void ProjectiveConstraintSet<DataTypes>::projectResponse(const MechanicalParams*
 }
 
 template<class DataTypes>
-void ProjectiveConstraintSet<DataTypes>::projectVelocity(const MechanicalParams* mparams, MultiVecDerivId vId)
+void ProjectiveConstraintSet<DataTypes>::doProjectVelocity(const MechanicalParams* mparams, MultiVecDerivId vId)
 {
     if (!isActive())
         return;
@@ -88,7 +88,7 @@ void ProjectiveConstraintSet<DataTypes>::projectVelocity(const MechanicalParams*
 }
 
 template<class DataTypes>
-void ProjectiveConstraintSet<DataTypes>::projectPosition(const MechanicalParams* mparams, MultiVecCoordId xId)
+void ProjectiveConstraintSet<DataTypes>::doProjectPosition(const MechanicalParams* mparams, MultiVecCoordId xId)
 {
     if (!isActive())
         return;

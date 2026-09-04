@@ -111,6 +111,9 @@ protected:
 
     virtual ~AffineMovementProjectiveConstraint();
 
+    // Implement projectMatrix for assembled solver of compliant
+    void doProjectMatrix( sofa::linearalgebra::BaseMatrix* /*M*/, unsigned /*offset*/ ) override;
+
 public:
     //Add or clear constraints
     void clearConstraints();
@@ -134,9 +137,6 @@ public:
 
     /// Compute the theoretical final positions
     void getFinalPositions (VecCoord& finalPos, DataVecCoord& xData);
-
-    // Implement projectMatrix for assembled solver of compliant
-    void projectMatrix( sofa::linearalgebra::BaseMatrix* /*M*/, unsigned /*offset*/ ) override;
 
     /// Draw the constrained points (= border mesh points)
      void draw(const core::visual::VisualParams* vparams) override;

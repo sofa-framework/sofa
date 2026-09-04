@@ -56,7 +56,7 @@ FixedPlaneProjectiveConstraint<DataTypes>::~FixedPlaneProjectiveConstraint()
 
 /// Matrix Integration interface
 template <class DataTypes>
-void FixedPlaneProjectiveConstraint<DataTypes>::applyConstraint(const MechanicalParams* mparams, const MultiMatrixAccessor* matrix)
+void FixedPlaneProjectiveConstraint<DataTypes>::doApplyConstraint(const MechanicalParams* mparams, const MultiMatrixAccessor* matrix)
 {
     SOFA_UNUSED(mparams);
     if(const MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(mstate.get()))
@@ -81,7 +81,7 @@ void FixedPlaneProjectiveConstraint<DataTypes>::applyConstraint(const Mechanical
 }
 
 template <class DataTypes>
-void FixedPlaneProjectiveConstraint<DataTypes>::applyConstraint(const MechanicalParams* mparams,
+void FixedPlaneProjectiveConstraint<DataTypes>::doApplyConstraint(const MechanicalParams* mparams,
                                                       BaseVector* vect,
                                                       const MultiMatrixAccessor* matrix)
 {
@@ -106,7 +106,7 @@ void FixedPlaneProjectiveConstraint<DataTypes>::applyConstraint(const Mechanical
 }
 
 template <class DataTypes>
-void FixedPlaneProjectiveConstraint<DataTypes>::applyConstraint(
+void FixedPlaneProjectiveConstraint<DataTypes>::doApplyConstraint(
     sofa::core::behavior::ZeroDirichletCondition* matrix)
 {
     static constexpr unsigned int N = Deriv::size();
@@ -194,7 +194,7 @@ void FixedPlaneProjectiveConstraint<DataTypes>::projectPosition(const Mechanical
 }
 
 template <class DataTypes>
-void FixedPlaneProjectiveConstraint<DataTypes>::projectMatrix( sofa::linearalgebra::BaseMatrix* M, unsigned /*offset*/ )
+void FixedPlaneProjectiveConstraint<DataTypes>::doProjectMatrix( sofa::linearalgebra::BaseMatrix* M, unsigned /*offset*/ )
 {
     /// clears the rows and columns associated with constrained particles
     const unsigned blockSize = DataTypes::deriv_total_size;

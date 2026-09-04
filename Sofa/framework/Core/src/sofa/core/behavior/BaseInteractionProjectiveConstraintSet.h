@@ -50,7 +50,8 @@ public:
     virtual BaseMechanicalState* getMechModel2() { return l_mechanicalStates[1]; }
 
 
-    virtual type::vector< core::BaseState* > getModels() override
+protected:
+    virtual type::vector< core::BaseState* > doGetModels() override
     {
         return {getMechModel1(), getMechModel2() };
     }
