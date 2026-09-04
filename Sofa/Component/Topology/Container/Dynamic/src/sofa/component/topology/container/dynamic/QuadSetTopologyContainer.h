@@ -226,6 +226,8 @@ public:
 
 protected:
 
+    const void* getElementsRaw(const sofa::geometry::ElementType& elementType) const noexcept override;
+
     /** \brief Creates the QuadSet array.
      *
      * This function must be implemented by derived classes to create a list of quads from a set of hexahedra for instance.

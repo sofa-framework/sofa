@@ -39,16 +39,16 @@ MeshTopology::EdgeUpdate::EdgeUpdate(MeshTopology* t)
 {
     if( topology->hasVolume() )
     {
-        addInput(&topology->d_seqHexahedra);
-        addInput(&topology->d_seqTetrahedra);
-        addOutput(&topology->d_seqEdges);
+        addInput(&topology->d_seqHexahedra.toData());
+        addInput(&topology->d_seqTetrahedra.toData());
+        addOutput(&topology->d_seqEdges.toData());
         setDirtyValue();
     }
     else if( topology->hasSurface() )
     {
-        addInput(&topology->d_seqTriangles);
-        addInput(&topology->d_seqQuads);
-        addOutput(&topology->d_seqEdges);
+        addInput(&topology->d_seqTriangles.toData());
+        addInput(&topology->d_seqQuads.toData());
+        addOutput(&topology->d_seqEdges.toData());
         setDirtyValue();
     }
 
@@ -221,8 +221,8 @@ void MeshTopology::EdgeUpdate::updateFromSurface()
 MeshTopology::TriangleUpdate::TriangleUpdate(MeshTopology *t)
     :PrimitiveUpdate(t)
 {
-    addInput(&topology->d_seqTetrahedra);
-    addOutput(&topology->d_seqTriangles);
+    addInput(&topology->d_seqTetrahedra.toData());
+    addOutput(&topology->d_seqTriangles.toData());
     setDirtyValue();
 }
 
@@ -275,8 +275,8 @@ void MeshTopology::TriangleUpdate::doUpdate()
 MeshTopology::QuadUpdate::QuadUpdate(MeshTopology *t)
     :PrimitiveUpdate(t)
 {
-    addInput(&topology->d_seqHexahedra);
-    addOutput(&topology->d_seqQuads);
+    addInput(&topology->d_seqHexahedra.toData());
+    addOutput(&topology->d_seqQuads.toData());
     setDirtyValue();
 }
 
@@ -486,13 +486,6 @@ void registerMeshTopology(sofa::core::ObjectFactory* factory)
 
 MeshTopology::MeshTopology()
     : d_seqPoints(initData(&d_seqPoints, "position", "List of point positions"))
-    , d_seqEdges(initData(&d_seqEdges, "edges", "List of edge indices"))
-    , d_seqTriangles(initData(&d_seqTriangles, "triangles", "List of triangle indices"))
-    , d_seqQuads(initData(&d_seqQuads, "quads", "List of quad indices"))
-    , d_seqTetrahedra(initData(&d_seqTetrahedra, "tetrahedra", "List of tetrahedron indices"))
-    , d_seqHexahedra(initData(&d_seqHexahedra, "hexahedra", "List of hexahedron indices"))
-    , d_seqPrisms(initData(&d_seqPrisms, "prisms", "List of prisms indices"))
-    , d_seqPyramids(initData(&d_seqPyramids, "pyramids", "List of pyramids indices"))
     , d_seqUVs(initData(&d_seqUVs, "uv", "List of uv coordinates"))
     , d_computeAllBuffers(initData(&d_computeAllBuffers, false, "computeAllBuffers", "Option to compute all crossed topology buffers at init. False by default"))
     , nbPoints(0)
@@ -506,9 +499,9 @@ MeshTopology::MeshTopology()
 {
     m_upperElementType = sofa::geometry::ElementType::EDGE;
     addAlias(&d_seqPoints, "points");
-    addAlias(&d_seqEdges, "lines");
-    addAlias(&d_seqTetrahedra, "tetras");
-    addAlias(&d_seqHexahedra, "hexas");
+    addAlias(&d_seqEdges.toData(), "lines");
+    addAlias(&d_seqTetrahedra.toData(), "tetras");
+    addAlias(&d_seqHexahedra.toData(), "hexas");
     addAlias(&d_seqUVs, "texcoords");
 }
 
@@ -745,51 +738,6 @@ void MeshTopology::addUV(SReal u, SReal v)
     d_seqUVs.endEdit();
     if (d_seqUVs.getValue().size() > nbPoints)
         nbPoints = (int)d_seqUVs.getValue().size();
-}
-
-const MeshTopology::SeqEdges& MeshTopology::getEdges()
-{
-    return d_seqEdges.getValue();
-}
-
-const MeshTopology::SeqTriangles& MeshTopology::getTriangles()
-{
-    return d_seqTriangles.getValue();
-}
-
-const MeshTopology::SeqQuads& MeshTopology::getQuads()
-{
-    return d_seqQuads.getValue();
-}
-
-const MeshTopology::SeqTetrahedra& MeshTopology::getTetrahedra()
-{
-    if (!validTetrahedra)
-    {
-        updateTetrahedra();
-        validTetrahedra = true;
-    }
-    return d_seqTetrahedra.getValue();
-}
-
-const MeshTopology::SeqHexahedra& MeshTopology::getHexahedra()
-{
-    if (!validHexahedra)
-    {
-        updateHexahedra();
-        validHexahedra = true;
-    }
-    return d_seqHexahedra.getValue();
-}
-
-const BaseMeshTopology::SeqPrisms& MeshTopology::getPrisms()
-{
-    return d_seqPrisms.getValue();
-}
-
-const BaseMeshTopology::SeqPyramids& MeshTopology::getPyramids()
-{
-    return d_seqPyramids.getValue();
 }
 
 const MeshTopology::SeqUV& MeshTopology::getUVs()

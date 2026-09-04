@@ -129,6 +129,7 @@ bool MeshTopology_test::testHexahedronTopology()
     // Check tetrahedra container buffers size
     EXPECT_EQ(topo->getNbHexahedra(), nbrHexahedron);
     EXPECT_EQ(topo->getHexahedra().size(), nbrHexahedron);
+    EXPECT_EQ(topo->getElements<sofa::geometry::Hexahedron>().size(), nbrHexahedron);
 
     //// check tetrahedron buffer    
     const sofa::type::vector<HexahedronSetTopologyContainer::Hexahedron>& hexahedra1 = topoCon->getHexahedronArray();
@@ -243,6 +244,7 @@ bool MeshTopology_test::testTetrahedronTopology()
     // Check tetrahedra container buffers size
     EXPECT_EQ(topo->getNbTetrahedra(), nbrTetrahedron);
     EXPECT_EQ(topo->getTetrahedra().size(), nbrTetrahedron);
+    EXPECT_EQ(topo->getElements<sofa::geometry::Tetrahedron>().size(), nbrTetrahedron);
 
     //// check tetrahedron buffer    
     const sofa::type::vector<TetrahedronSetTopologyContainer::Tetrahedron>& tetrahedra1 = topoCon->getTetrahedronArray();
@@ -357,6 +359,7 @@ bool MeshTopology_test::testQuadTopology()
     // Check quads container buffers size
     EXPECT_EQ(topo->getNbQuads(), nbrQuad);
     EXPECT_EQ(topo->getQuads().size(), nbrQuad);
+    EXPECT_EQ(topo->getElements<sofa::geometry::Quad>().size(), nbrQuad);
 
     //// check quad buffer    
     const sofa::type::vector<QuadSetTopologyContainer::Quad>& quads1 = topoCon->getQuadArray();
@@ -453,6 +456,7 @@ bool MeshTopology_test::testTriangleTopology()
     // Check triangles container buffers size
     EXPECT_EQ(topo->getNbTriangles(), nbrTriangle);
     EXPECT_EQ(topo->getTriangles().size(), nbrTriangle);
+    EXPECT_EQ(topo->getElements<sofa::geometry::Triangle>().size(), nbrTriangle);
 
     //// check triangle buffer    
     const sofa::type::vector<TriangleSetTopologyContainer::Triangle>& triangles1 = topoCon->getTriangleArray();
@@ -549,6 +553,7 @@ bool MeshTopology_test::testEdgeTopology()
     // Check edge container buffers size
     EXPECT_EQ(topo->getNbEdges(), nbrEdge);
     EXPECT_EQ(topo->getEdges().size(), nbrEdge);
+    EXPECT_EQ(topo->getElements<sofa::geometry::Edge>().size(), nbrEdge);
 
     //// check edge buffer    
     const sofa::type::vector<EdgeSetTopologyContainer::Edge>& edges1 = topoCon->getEdgeArray();
