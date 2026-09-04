@@ -27,16 +27,20 @@ namespace sofa::component::solidmechanics::fem::elastic
 {
 
 extern void registerBeamFEMForceField(sofa::core::ObjectFactory* factory);
+extern void registerConstantSourceTerm(sofa::core::ObjectFactory* factory);
 extern void registerCorotationalFEMForceField(sofa::core::ObjectFactory* factory);
+extern void registerFEMSourceTermIntegrator(sofa::core::ObjectFactory* factory);
 extern void registerFastTetrahedralCorotationalForceField(sofa::core::ObjectFactory* factory);
 extern void registerHexahedralFEMForceField(sofa::core::ObjectFactory* factory);
 extern void registerHexahedralFEMForceFieldAndMass(sofa::core::ObjectFactory* factory);
 extern void registerHexahedronFEMForceField(sofa::core::ObjectFactory* factory);
 extern void registerHexahedronFEMForceFieldAndMass(sofa::core::ObjectFactory* factory);
 extern void registerLinearSmallStrainFEMForceField(sofa::core::ObjectFactory* factory);
+extern void registerNonConstantSourceTerm(sofa::core::ObjectFactory* factory);
 extern void registerQuadBendingFEMForceField(sofa::core::ObjectFactory* factory);
 extern void registerTetrahedralCorotationalFEMForceField(sofa::core::ObjectFactory* factory);
 extern void registerTetrahedronFEMForceField(sofa::core::ObjectFactory* factory);
+extern void registerTractionSourceTerm(sofa::core::ObjectFactory* factory);
 extern void registerTriangleFEMForceField(sofa::core::ObjectFactory* factory);
 extern void registerTriangularAnisotropicFEMForceField(sofa::core::ObjectFactory* factory);
 extern void registerTriangularFEMForceField(sofa::core::ObjectFactory* factory);
@@ -67,16 +71,20 @@ const char* getModuleVersion()
 void registerObjects(sofa::core::ObjectFactory* factory)
 {
     registerBeamFEMForceField(factory);
+    registerConstantSourceTerm(factory);
     registerCorotationalFEMForceField(factory);
+    registerFEMSourceTermIntegrator(factory);
     registerFastTetrahedralCorotationalForceField(factory);
     registerHexahedralFEMForceField(factory);
     registerHexahedralFEMForceFieldAndMass(factory);
     registerHexahedronFEMForceField(factory);
     registerHexahedronFEMForceFieldAndMass(factory);
     registerLinearSmallStrainFEMForceField(factory);
+    registerNonConstantSourceTerm(factory);
     registerQuadBendingFEMForceField(factory);
     registerTetrahedralCorotationalFEMForceField(factory);
     registerTetrahedronFEMForceField(factory);
+    registerTractionSourceTerm(factory);
     registerTriangleFEMForceField(factory);
     registerTriangularAnisotropicFEMForceField(factory);
     registerTriangularFEMForceField(factory);
