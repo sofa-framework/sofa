@@ -70,13 +70,14 @@ void VisualStyle::bwdInit()
     applyBackupFlags(sofa::core::visual::VisualParams::defaultInstance());
 }
 
-void VisualStyle::updateVisualFlags(VisualParams* vparams)
+  
+void VisualStyle::doUpdateVisualFlags(VisualParams* vparams)
 {
     backupFlags = vparams->displayFlags();
     vparams->displayFlags() = sofa::core::visual::merge_displayFlags(backupFlags, d_displayFlags.getValue());
 }
 
-void VisualStyle::applyBackupFlags(VisualParams* vparams)
+void VisualStyle::doApplyBackupFlags(VisualParams* vparams)
 {
     vparams->displayFlags() = backupFlags;
 }
