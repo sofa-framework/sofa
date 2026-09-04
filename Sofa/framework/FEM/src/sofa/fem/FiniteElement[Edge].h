@@ -21,6 +21,8 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/fem/FiniteElement.h>
+#include <span>
+#include <stdexcept>
 
 #if !defined(SOFA_FEM_FINITE_ELEMENT_EDGE_CPP)
 #include <sofa/defaulttype/VecTypes.h>
@@ -55,12 +57,43 @@ struct FiniteElement<sofa::geometry::Edge, DataTypes>
         return {{-static_cast<Real>(0.5)}, {static_cast<Real>(0.5)}};
     }
 
-    static constexpr std::array<QuadraturePointAndWeight, 1> quadraturePoints()
+    template <sofa::Size Degree = 1>
+    static constexpr auto quadraturePoints()
     {
-        constexpr sofa::type::Vec<TopologicalDimension, Real> q0(static_cast<Real>(0));
-        return {
-            std::make_pair(q0, static_cast<Real>(2))
-        };
+        if constexpr (Degree <= 1)
+        {
+            // Degree 1: 1-point midpoint rule (default).
+            return std::array<QuadraturePointAndWeight, 1>{
+                std::make_pair(ReferenceCoord(static_cast<Real>(0)), static_cast<Real>(2))
+            };
+        }
+        else if constexpr (Degree <= 3)
+        {
+            // Degrees 2-3: 2-point Gauss-Legendre rule.
+            constexpr Real sqrt3 = 1.73205080757;
+            constexpr Real g = static_cast<Real>(1) / sqrt3;
+            return std::array<QuadraturePointAndWeight, 2>{
+                std::make_pair(ReferenceCoord(-g), static_cast<Real>(1)),
+                std::make_pair(ReferenceCoord( g), static_cast<Real>(1))
+            };
+        }
+        else
+        {
+            static_assert(Degree <= 3, "FiniteElement<Edge>: no quadrature rule for the requested degree");
+        }
+    }
+
+    // Quadrature rule selector by degree; view of the compile-time table.
+    static std::span<const QuadraturePointAndWeight> quadratureRule(sofa::Size degree)
+    {
+        switch (degree)
+        {
+            case 1: { static constexpr auto rule = quadraturePoints<1>(); return rule; }
+            case 2:
+            case 3: { static constexpr auto rule = quadraturePoints<3>(); return rule; }
+            default:
+                throw std::invalid_argument("FiniteElement<Edge>::quadratureRule: unsupported degree");
+        }
     }
 
 };
