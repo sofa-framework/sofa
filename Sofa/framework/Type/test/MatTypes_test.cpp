@@ -699,6 +699,28 @@ TEST(MatTypesTest, addSubTransposed)
     EXPECT_EQ(M, Matrix3::Identity() + A.transposed());
 }
 
+TEST(MatTypesTest, addTransposedSelfAliasing)
+{
+    Matrix3 M(Matrix3::Line(1., 2., 3.), Matrix3::Line(4., 5., 6.), Matrix3::Line(7., 8., 9.));
+    const Matrix3 expected(Matrix3::Line(2., 6., 10.),
+                           Matrix3::Line(6., 10., 14.),
+                           Matrix3::Line(10., 14., 18.));
+
+    M.addTransposed(M);
+    EXPECT_EQ(M, expected);
+}
+
+TEST(MatTypesTest, subTransposedSelfAliasing)
+{
+    Matrix3 M(Matrix3::Line(1., 2., 3.), Matrix3::Line(4., 5., 6.), Matrix3::Line(7., 8., 9.));
+    const Matrix3 expected(Matrix3::Line(0., -2., -4.),
+                           Matrix3::Line(2., 0., -2.),
+                           Matrix3::Line(4., 2., 0.));
+
+    M.subTransposed(M);
+    EXPECT_EQ(M, expected);
+}
+
 TEST(MatTypesTest, symmetrize)
 {
     Matrix3 A(Matrix3::Line(1., 2., 3.), Matrix3::Line(4., 5., 6.), Matrix3::Line(7., 8., 9.));
