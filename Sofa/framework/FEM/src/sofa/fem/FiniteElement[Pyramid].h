@@ -22,6 +22,8 @@
 #pragma once
 #include <sofa/fem/FiniteElement.h>
 #include <sofa/geometry/Pyramid.h>
+#include <span>
+#include <stdexcept>
 
 #if !defined(SOFA_FEM_FINITE_ELEMENT_PYRAMID_CPP)
 #include <sofa/defaulttype/VecTypes.h>
@@ -71,22 +73,42 @@ struct FiniteElement<sofa::geometry::Pyramid, DataTypes>
         };
     }
 
+    template <sofa::Size Degree = 1>
     static constexpr auto quadraturePoints()
     {
-        constexpr Real sqrt3_1 = static_cast<Real>(1) / static_cast<Real>(1.73205080757);
-        constexpr Real one = static_cast<Real>(1);
+        if constexpr (Degree <= 1)
+        {
+            // Degree 1: 8-point rule (default).
+            constexpr Real sqrt3_1 = static_cast<Real>(1) / static_cast<Real>(1.73205080757);
+            constexpr Real one = static_cast<Real>(1);
 
-        // We use the 8 Gauss points of the hexahedron, which exactly integrate the (1-z)^2 Jacobian of the pyramid.
-        return std::array {
-            std::pair{ReferenceCoord{-sqrt3_1, -sqrt3_1, -sqrt3_1}, one},
-            std::pair{ReferenceCoord{ sqrt3_1, -sqrt3_1, -sqrt3_1}, one},
-            std::pair{ReferenceCoord{ sqrt3_1,  sqrt3_1, -sqrt3_1}, one},
-            std::pair{ReferenceCoord{-sqrt3_1,  sqrt3_1, -sqrt3_1}, one},
-            std::pair{ReferenceCoord{-sqrt3_1, -sqrt3_1,  sqrt3_1}, one},
-            std::pair{ReferenceCoord{ sqrt3_1, -sqrt3_1,  sqrt3_1}, one},
-            std::pair{ReferenceCoord{ sqrt3_1,  sqrt3_1,  sqrt3_1}, one},
-            std::pair{ReferenceCoord{-sqrt3_1,  sqrt3_1,  sqrt3_1}, one},
-        };
+            constexpr std::array q {
+                std::pair{ReferenceCoord{-sqrt3_1, -sqrt3_1, -sqrt3_1}, one},
+                std::pair{ReferenceCoord{ sqrt3_1, -sqrt3_1, -sqrt3_1}, one},
+                std::pair{ReferenceCoord{ sqrt3_1,  sqrt3_1, -sqrt3_1}, one},
+                std::pair{ReferenceCoord{-sqrt3_1,  sqrt3_1, -sqrt3_1}, one},
+                std::pair{ReferenceCoord{-sqrt3_1, -sqrt3_1,  sqrt3_1}, one},
+                std::pair{ReferenceCoord{ sqrt3_1, -sqrt3_1,  sqrt3_1}, one},
+                std::pair{ReferenceCoord{ sqrt3_1,  sqrt3_1,  sqrt3_1}, one},
+                std::pair{ReferenceCoord{-sqrt3_1,  sqrt3_1,  sqrt3_1}, one},
+            };
+            return q;
+        }
+        else
+        {
+            static_assert(Degree <= 1, "FiniteElement<Pyramid>: no quadrature rule for the requested degree");
+        }
+    }
+
+    // Quadrature rule selector by degree; view of the compile-time table.
+    static std::span<const QuadraturePointAndWeight> quadratureRule(sofa::Size degree)
+    {
+        switch (degree)
+        {
+            case 1: { static constexpr auto rule = quadraturePoints<1>(); return rule; }
+            default:
+                throw std::invalid_argument("FiniteElement<Pyramid>::quadratureRule: unsupported degree");
+        }
     }
 };
 
