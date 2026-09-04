@@ -53,19 +53,10 @@ void LinearSmallStrainFEMForceField<DataTypes, ElementType>::computeElementsForc
 
     for (std::size_t elementId = range.start; elementId < range.end; ++elementId)
     {
-        const auto& element = elements[elementId];
         const auto& stiffnessMatrix = elementStiffness[elementId];
 
-        typename trait::ElementDisplacement displacement{ sofa::type::NOINIT };
-
-        for (sofa::Size j = 0; j < trait::NumberOfNodesInElement; ++j)
-        {
-            const auto nodeId = element[j];
-            for (sofa::Size dim = 0; dim < trait::spatial_dimensions; ++dim)
-            {
-                displacement[j * trait::spatial_dimensions + dim] = nodePositions[nodeId][dim] - restPositionAccessor[nodeId][dim];
-            }
-        }
+        const auto displacement = this->computeElementDisplacement(
+            elements[elementId], nodePositions, restPositionAccessor.ref());
 
         elementForces[elementId] = stiffnessMatrix * displacement;
     }
@@ -145,7 +136,27 @@ SReal LinearSmallStrainFEMForceField<DataTypes, ElementType>::getPotentialEnergy
     const sofa::core::MechanicalParams*,
     const sofa::DataVecCoord_t<DataTypes>& x) const
 {
-    return 0;
+    if (this->isComponentStateInvalid())
+        return 0;
+
+    const auto& elements = trait::FiniteElement::getElementSequence(*this->l_topology);
+    const auto elementStiffness = sofa::helper::getReadAccessor(this->d_elementStiffness);
+
+    const auto positionAccessor = sofa::helper::getReadAccessor(x);
+    const auto restPositionAccessor = this->mstate->readRestPositions();
+
+    sofa::Real_t<DataTypes> energy {};
+
+    for (std::size_t elementId = 0; elementId < elements.size(); ++elementId)
+    {
+        const auto displacement = this->computeElementDisplacement(
+            elements[elementId], positionAccessor.ref(), restPositionAccessor.ref());
+
+        // the element stiffness matrix is the quadratic form of the strain energy: 1/2 d^T K d
+        energy += displacement * (elementStiffness[elementId] * displacement);
+    }
+
+    return static_cast<SReal>(0.5 * energy);
 }
 
 template <class DataTypes, class ElementType>
