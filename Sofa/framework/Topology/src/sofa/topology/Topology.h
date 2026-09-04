@@ -30,4 +30,5 @@
 #include <sofa/topology/Quad.h>
 #include <sofa/topology/Tetrahedron.h>
 #include <sofa/topology/Triangle.h>
+#include <sofa/geometry/QuadraticElements.h>
 #include <sofa/topology/config.h>
