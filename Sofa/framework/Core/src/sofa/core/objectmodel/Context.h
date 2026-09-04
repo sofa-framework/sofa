@@ -27,85 +27,9 @@ namespace sofa::core::objectmodel
 {
 
 /**
- *  \brief Implementation of BaseContext, storing all shared parameters in Datas.
- *
+ *  \brief Compatibility layer - Context is now an alias of BaseContext.
+ *  All functionality has been merged into BaseContext.
  */
-class SOFA_CORE_API Context : public BaseContext
-{
-public:
-    SOFA_CLASS(Context, BaseContext);
+using Context = BaseContext;
 
-    Data<bool> is_activated; ///< To Activate a node
-    Data<Vec3> worldGravity_; ///< Gravity in the world coordinate system
-    Data<SReal> dt_; ///< Time step
-    Data<SReal> time_; ///< Current time
-    Data<bool> animate_; ///< Animate the Simulation(applied at initialization only)
-    Data<bool> d_isSleeping; ///< The node is sleeping, and thus ignored by visitors.
-    Data<bool> d_canChangeSleepingState; ///< The node can change its sleeping state.
-
-protected:
-    Context();
-    virtual ~Context() override
-    {}
-
-public:
-    /// @name Parameters
-    /// @{
-
-    /// The Context is active
-    bool isActive() const override;
-    /// State of the context
-    void setActive(bool val) override;
-
-    /// The Context is sleeping
-    bool isSleeping() const override;
-
-    /// The Context can change its sleeping state
-    bool canChangeSleepingState() const override;
-
-    /// Gravity in local coordinates
-    const Vec3& getGravity() const override;
-    /// Gravity in local coordinates
-    void setGravity( const Vec3& ) override;
-
-    /// Simulation timestep
-    SReal getDt() const override;
-
-    /// Simulation time
-    SReal getTime() const override;
-
-    /// Animation flag
-    bool getAnimate() const override;
-    /// @}
-
-    /// @name Parameters Setters
-    /// @{
-
-    /// Simulation timestep
-    void setDt( SReal dt ) override;
-
-    /// Simulation time
-    virtual void setTime( SReal t );
-
-    /// Animation flag
-    void setAnimate(bool val) override;
-
-    /// Sleeping state of the context
-    void setSleeping(bool val) override;
-
-    /// Sleeping state change of the context
-    void setChangeSleepingState(bool val) override;
-
-    /// Display flags: Gravity
-    virtual void setDisplayWorldGravity(bool val) { worldGravity_.setDisplayed(val); }
-
-    /// @}
-
-    /// Copy the context variables from the given instance
-    void copyContext(const Context& c);
-
-    /// Copy the context variables of visualization from the given instance
-    void copySimulationContext(const Context& c);
-
-};
 } // namespace sofa::core::objectmodel

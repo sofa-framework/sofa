@@ -26,6 +26,7 @@
 #include <sofa/core/objectmodel/ClassInfo.h>
 #include <sofa/core/objectmodel/TypeOfInsertion.h>
 #include <sofa/core/ComponentNameHelper.h>
+#include <sofa/core/objectmodel/Data.h>
 
 namespace sofa::simulation
 {
@@ -54,7 +55,6 @@ public:
 
     using Vec3 = sofa::type::Vec3;
 
-protected:
     BaseContext();
     ~BaseContext() override;
 
@@ -63,6 +63,15 @@ private:
     BaseContext& operator=(const BaseContext& );
 
 public:
+    /// Data members from Context
+    Data<bool> is_activated; ///< To Activate a node
+    Data<Vec3> worldGravity_; ///< Gravity in the world coordinate system
+    Data<SReal> dt_; ///< Time step
+    Data<SReal> time_; ///< Current time
+    Data<bool> animate_; ///< Animate the Simulation(applied at initialization only)
+    Data<bool> d_isSleeping; ///< The node is sleeping, and thus ignored by visitors.
+    Data<bool> d_canChangeSleepingState; ///< The node can change its sleeping state.
+
     /// Get the default Context object, that contains the default values for
     /// all parameters and can be used when no local context is defined.
     static BaseContext* getDefault();
@@ -74,33 +83,34 @@ public:
     /// @{
 
     /// The Context is active
-    virtual bool isActive() const;
+    virtual bool isActive() const ;
 
     /// State of the context
-    virtual void setActive(bool) {}
+    virtual void setActive(bool val) ;
 
     /// Sleeping state of the context
-    virtual bool isSleeping() const;
+    virtual bool isSleeping() const ;
 
     /// Whether the context can change its sleeping state or not
-    virtual bool canChangeSleepingState() const;
+    virtual bool canChangeSleepingState() const ;
 
     /// Simulation time
-    virtual SReal getTime() const;
+    virtual SReal getTime() const ;
 
     /// Simulation timestep
-    virtual SReal getDt() const;
+    virtual SReal getDt() const ;
 
     /// Animation flag
-    virtual bool getAnimate() const;
+    virtual bool getAnimate() const ;
     /// @}
 
+    /// Simulation time
+    virtual void setTime(SReal t);
 
     /// Gravity in local coordinates
     virtual const Vec3& getGravity() const;
     /// Gravity in local coordinates
-    virtual void setGravity( const Vec3& )
-    { }
+    virtual void setGravity( const Vec3& g);
 
     /// Get the root context of the graph
     virtual BaseContext* getRootContext() const;
@@ -316,23 +326,27 @@ public:
     /// @name Parameters Setters
     /// @{
 
-
     /// Simulation timestep
-    virtual void setDt( SReal /*dt*/ )
-    { }
+    virtual void setDt( SReal dt );
 
     /// Animation flag
-    virtual void setAnimate(bool /*val*/)
-    { }
+    virtual void setAnimate(bool val);
 
     /// Sleeping state of the context
-    virtual void setSleeping(bool /*val*/)
-    { }
+    virtual void setSleeping(bool val);
 
     /// Sleeping state change of the context
-    virtual void setChangeSleepingState(bool /*val*/)
-    { }
+    virtual void setChangeSleepingState(bool val);
+
+    /// Display flags: Gravity
+    virtual void setDisplayWorldGravity(bool val);
     /// @}
+
+    /// Copy the context variables from the given instance
+    void copyContext(const BaseContext& c);
+
+    /// Copy the context variables of visualization from the given instance
+    void copySimulationContext(const BaseContext& c);
 
     /// @name Variables Setters
     /// @{
@@ -362,16 +376,10 @@ public:
     /// @{
 
     /// Add an object, or return false if not supported
-    virtual bool addObject( sptr<sofa::core::objectmodel::BaseComponent> /*obj*/, TypeOfInsertion = TypeOfInsertion::AtEnd)
-    {
-        return false;
-    }
+    virtual bool addObject( sptr<sofa::core::objectmodel::BaseComponent> /*obj*/, TypeOfInsertion = TypeOfInsertion::AtEnd);
 
     /// Remove an object, or return false if not supported
-    virtual bool removeObject( sptr<sofa::core::objectmodel::BaseComponent> /*obj*/ )
-    {
-        return false;
-    }
+    virtual bool removeObject( sptr<sofa::core::objectmodel::BaseComponent> /*obj*/ );
 
     /// @}
 
