@@ -25,6 +25,22 @@ sofa_find_package(STB REQUIRED)
 # DiffLib (header only)
 sofa_find_package(DiffLib REQUIRED)
 
+# taskflow
+sofa_find_package(Taskflow)
+if(NOT Taskflow_FOUND AND SOFA_ALLOW_FETCH_DEPENDENCIES)
+    message("Sofa.Helper: DEPENDENCY Taskflow NOT FOUND. SOFA_ALLOW_FETCH_DEPENDENCIES is ON, fetching Taskflow...")
+
+    sofa_fetch_dependency(Taskflow
+        GIT_REPOSITORY https://github.com/taskflow/taskflow.git
+        GIT_TAG        v3.10.0
+        DONT_BUILD
+    )
+
+    set(TASKFLOW_ROOT ${Taskflow_SOURCE_DIR})
+    sofa_find_package(Taskflow REQUIRED)
+elseif (NOT Taskflow_FOUND)
+    message(FATAL_ERROR "Sofa.Helper: DEPENDENCY Taskflow NOT FOUND. SOFA_ALLOW_FETCH_DEPENDENCIES is OFF and thus cannot be fetched. Install Taskflow, or enable SOFA_ALLOW_FETCH_DEPENDENCIES to fix this issue.")
+endif()
 
 set(SRC_ROOT "src/sofa/helper")
 
@@ -61,6 +77,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/SortedPermutation.h
     ${SRC_ROOT}/StringUtils.h
     ${SRC_ROOT}/TagFactory.h
+    ${SRC_ROOT}/taskflow.h
     ${SRC_ROOT}/TriangleOctree.h
     ${SRC_ROOT}/Utils.h
     ${SRC_ROOT}/accessor.h
@@ -272,6 +289,9 @@ target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<BUILD_INTERFACE:${ST
 
 # DiffLib (header only)
 target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<BUILD_INTERFACE:${difflib_INCLUDE_DIR}>")
+
+# taskflow (header only)
+target_link_libraries(${PROJECT_NAME} PUBLIC Taskflow::Taskflow)
 
 set(is_release "$<CONFIG:RELEASE>")
 set(is_debug "$<CONFIG:DEBUG>")
