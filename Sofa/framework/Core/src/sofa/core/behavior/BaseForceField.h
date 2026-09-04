@@ -134,10 +134,14 @@ public:
 
     /// \brief Get the potential energy associated to this ForceField during the
     /// last call of addForce( const MechanicalParams* mparams );
-    ///
-    /// Used to estimate the total energy of the system by some
-    /// post-stabilization techniques.
-    virtual SReal getPotentialEnergy( const MechanicalParams* mparams = mechanicalparams::defaultInstance() ) const=0;
+    /// \note Used to estimate the total energy of the system by some post-stabilization techniques.
+    /// \param mparams
+    /// \param xId The potential energy is evaluated on this vector of generalized coordinates
+    virtual SReal getPotentialEnergy(const MechanicalParams* mparams,
+                                     ConstMultiVecCoordId xId) const = 0;
+
+    SOFA_ATTRIBUTE_DEPRECATED__GETPOTENTIALENERGY_OVERLOAD()
+    virtual SReal getPotentialEnergy( const MechanicalParams* mparams = mechanicalparams::defaultInstance() ) const final;
     /// @}
 
 

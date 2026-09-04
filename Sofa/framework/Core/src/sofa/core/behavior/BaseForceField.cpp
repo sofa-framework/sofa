@@ -46,6 +46,11 @@ void BaseForceField::addMBKdx(const MechanicalParams* mparams, MultiVecDerivId d
     }
 }
 
+SReal BaseForceField::getPotentialEnergy(const MechanicalParams* mparams) const
+{
+    return this->getPotentialEnergy(mparams, mparams->x());
+}
+
 void BaseForceField::addBToMatrix(const MechanicalParams* /*mparams*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/)
 {
 }

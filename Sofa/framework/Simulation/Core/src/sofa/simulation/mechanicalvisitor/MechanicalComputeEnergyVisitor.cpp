@@ -29,11 +29,16 @@ namespace sofa::simulation::mechanicalvisitor
 
 MechanicalComputeEnergyVisitor::MechanicalComputeEnergyVisitor(const sofa::core::MechanicalParams* mparams)
     : sofa::simulation::MechanicalVisitor(mparams)
-    , m_kineticEnergy(0.)
-    , m_potentialEnergy(0.)
 {
+    assert(mparams);
+    m_xId = mparams->x();
 }
 
+MechanicalComputeEnergyVisitor::MechanicalComputeEnergyVisitor(
+    const sofa::core::MechanicalParams* mparams, core::ConstMultiVecCoordId xId)
+    : sofa::simulation::MechanicalVisitor(mparams)
+    , m_xId(xId)
+{}
 
 MechanicalComputeEnergyVisitor::~MechanicalComputeEnergyVisitor()
 {
@@ -59,7 +64,7 @@ Visitor::Result MechanicalComputeEnergyVisitor::fwdMass(simulation::Node* /*node
 /// Process the BaseForceField
 Visitor::Result MechanicalComputeEnergyVisitor::fwdForceField(simulation::Node* /*node*/, sofa::core::behavior::BaseForceField* f)
 {
-    m_potentialEnergy += (SReal)f->getPotentialEnergy();
+    m_potentialEnergy += (SReal)f->getPotentialEnergy(mparams, m_xId);
     return RESULT_CONTINUE;
 }
 
