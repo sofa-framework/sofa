@@ -103,6 +103,11 @@ void MatrixProjectionMethod<TMatrix>::addMappedMatrixToGlobalMatrixEigen(
     const auto inputs1 = mappingGraph.getTopMostMechanicalStates(mstatePair[0]);
     const auto inputs2 = mappingGraph.getTopMostMechanicalStates(mstatePair[1]);
 
+    // A state outside this solver's subtree has no representation in the global
+    // matrix: its contribution cannot be projected and must not be accumulated.
+    if (inputs1.empty() || inputs2.empty())
+        return;
+
     std::set<core::behavior::BaseMechanicalState*> inputs;
     inputs.insert(inputs1.begin(), inputs1.end());
     inputs.insert(inputs2.begin(), inputs2.end());
