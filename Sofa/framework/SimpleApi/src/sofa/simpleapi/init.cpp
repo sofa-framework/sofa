@@ -20,8 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/simpleapi/init.h>
-
-#include <sofa/simulation/graph/init.h>
 #include <sofa/helper/init.h>
 
 namespace sofa::simpleapi
@@ -34,7 +32,6 @@ SOFA_SIMPLEAPI_API void init()
 {
     if (!s_initialized)
     {
-        sofa::simulation::graph::init();
         s_initialized = true;
     }
 }
@@ -48,7 +45,6 @@ SOFA_SIMPLEAPI_API void cleanup()
 {
     if (!s_cleanedUp)
     {
-        sofa::simulation::graph::cleanup();
         s_cleanedUp = true;
     }
 }

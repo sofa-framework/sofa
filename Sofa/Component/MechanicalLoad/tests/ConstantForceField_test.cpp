@@ -116,7 +116,7 @@ struct ConstantForceField_test : public BaseSimulationTest, NumericTest<typename
         root->getTreeObject(forcefield) ;
         ASSERT_NE(nullptr, forcefield) ;
 
-        Simulation* simulation = sofa::simulation::getSimulation() ;
+        Simulation* simulation = sofa::simulation::MainSimulation::getSimulation() ;
         ASSERT_NE(nullptr, simulation) ;
 
         Real xi = mechanicalobject->x.getValue()[0][0];
@@ -205,7 +205,7 @@ struct ConstantForceField_test : public BaseSimulationTest, NumericTest<typename
             EXPECT_NE( nullptr, forcefield->findData(attrname) ) << "Missing attribute with name '"
                                                                  << attrname << "'." ;
 
-        Simulation* simulation = sofa::simulation::getSimulation() ;
+        Simulation* simulation = sofa::simulation::MainSimulation::getSimulation() ;
         ASSERT_NE(nullptr, simulation) ;
         for(int i=0; i<100; i++)
         {

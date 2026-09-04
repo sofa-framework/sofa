@@ -103,16 +103,26 @@ public:
     Simulation& operator=(const Simulation& n) = delete;
 
     /// create a new graph(or tree) and return its root node.
-    virtual NodeSPtr createNewGraph(const std::string& name)=0;//Todo replace newNode method
+    virtual NodeSPtr createNewGraph(const std::string& name);
 
     /// creates and returns a new node.
-    virtual NodeSPtr createNewNode(const std::string& name)=0;
+    virtual NodeSPtr createNewNode(const std::string& name);
 
     /// Can the simulation handle a directed acyclic graph?
-    virtual bool isDirectedAcyclicGraph() = 0;
+    virtual bool isDirectedAcyclicGraph();
+};
 
+/// Singleton oriented API, if needed.
+class SOFA_SIMULATION_CORE_API MainSimulation
+{
+   public:
+    static void setSimulation(Simulation::SPtr simulation);
+    static Simulation* getSimulation();
+
+   private:
     inline static Simulation::SPtr theSimulation { nullptr };
 };
+
 } // namespace sofa::simulation
 
 MSG_REGISTER_CLASS(sofa::simulation::Simulation, "Simulation")

@@ -26,8 +26,8 @@
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory ;
 
-#include <sofa/simulation/graph/DAGSimulation.h>
-using sofa::simulation::graph::DAGSimulation ;
+#include <sofa/simulation/Simulation.h>
+using sofa::simulation::Simulation ;
 
 #include <sofa/simulation/Node.h>
 using sofa::simulation::Node;
@@ -68,7 +68,7 @@ Simulation::SPtr createSimulation(const std::string& type)
         return nullptr ;
     }
 
-    return std::make_shared<simulation::graph::DAGSimulation>();
+    return std::make_shared<simulation::Simulation>();
 }
 
 

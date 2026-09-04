@@ -22,8 +22,7 @@
 #include <sofa/testing/BaseSimulationTest.h>
 using sofa::testing::BaseSimulationTest;
 
-#include <sofa/simulation/graph/DAGSimulation.h>
-using sofa::simulation::graph::DAGSimulation;
+#include <sofa/simulation/Simulation.h>
 using sofa::simulation::Simulation ;
 using sofa::core::objectmodel::New ;
 
@@ -51,7 +50,7 @@ struct MergePoints_test : public BaseSimulationTest,
 
     void doSetUp() override
     {
-        m_simu = sofa::simulation::getSimulation();
+        m_simu = sofa::simulation::MainSimulation::getSimulation();
         ASSERT_NE(m_simu, nullptr);
 
         m_thisObject = New<ThisClass >();

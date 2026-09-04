@@ -22,7 +22,7 @@
 #include <sofa/core/objectmodel/Data.h>
 #include <SceneCreator/SceneCreator.h>
 //Including Simulation
-#include <sofa/simulation/graph/DAGSimulation.h>
+#include <sofa/simulation/Simulation.h>
 
 #include <image/ImageContainer.h>
 #include <image/ImageViewer.h>
@@ -130,7 +130,7 @@ struct ImageEngine_test : public sofa::testing::BaseTest
         TestImageEngine::SPtr imageEngine;
 
         // Create a scene
-        simulation = sofa::simulation::getSimulation();
+        simulation = sofa::simulation::MainSimulation::getSimulation();
 
         // Root node
         root = simulation->createNewGraph("root");
@@ -190,7 +190,7 @@ struct ImageEngine_test : public sofa::testing::BaseTest
         ImageViewer::SPtr imageViewer;
 
         // Create a scene
-        simulation = sofa::simulation::getSimulation();
+        simulation = sofa::simulation::MainSimulation::getSimulation();
 
         // Root node
         root = simulation->createNewGraph("root");

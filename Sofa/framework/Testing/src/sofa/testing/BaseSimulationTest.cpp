@@ -28,7 +28,6 @@ using sofa::core::execparams::defaultInstance;
 using sofa::simulation::SceneLoaderFactory ;
 using sofa::simulation::SceneLoader ;
 
-#include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simulation/common/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
 
@@ -53,7 +52,7 @@ BaseSimulationTest::SceneInstance::SceneInstance(const std::string& type, const 
 BaseSimulationTest::SceneInstance BaseSimulationTest::SceneInstance::LoadFromFile(const std::string& filename)
 {
     BaseSimulationTest::SceneInstance instance ;
-    assert(sofa::simulation::getSimulation());
+    assert(sofa::simulation::MainSimulation::getSimulation());
 
     for(SceneLoader* loader : (*SceneLoaderFactory::getInstance()->getEntries()) )
     {
@@ -69,7 +68,7 @@ BaseSimulationTest::SceneInstance BaseSimulationTest::SceneInstance::LoadFromFil
 
 BaseSimulationTest::SceneInstance::SceneInstance(const std::string& rootname)
 {
-    root = simulation::getSimulation()->createNewNode(rootname) ;
+    root = simulation::MainSimulation::getSimulation()->createNewNode(rootname) ;
 }
 
 void BaseSimulationTest::SceneInstance::loadSceneFile(const std::string& filename)
@@ -79,7 +78,6 @@ void BaseSimulationTest::SceneInstance::loadSceneFile(const std::string& filenam
     if (root == nullptr)
         msg_error("BaseSimulationTest") << "Unable to find a valid loader for: '" << filename << "'";
 }
-
 
 BaseSimulationTest::SceneInstance::~SceneInstance()
 {
@@ -98,7 +96,7 @@ void BaseSimulationTest::SceneInstance::simulate(const double timestep)
 
 BaseSimulationTest::BaseSimulationTest()
 {
-    assert(sofa::simulation::getSimulation());
+    assert(sofa::simulation::MainSimulation::getSimulation());
 }
 
 } // namespace sofa::testing

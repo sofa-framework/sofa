@@ -27,7 +27,6 @@
 #include <sofa/core/topology/TopologyData.inl>
 
 #include <sofa/simpleapi/SimpleApi.h>
-#include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/Node.h>
 using sofa::simulation::Node;
@@ -69,7 +68,7 @@ public:
 
     void doSetUp() override
     {
-        m_simulation = sofa::simulation::getSimulation();
+        m_simulation = sofa::simulation::MainSimulation::getSimulation();
         this->loadPlugins({
             Sofa.Component.Topology.Container.Dynamic,
             Sofa.Component.Topology.Container.Grid

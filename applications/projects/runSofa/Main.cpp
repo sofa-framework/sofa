@@ -35,8 +35,7 @@ using std::vector;
 #include <sofa/helper/system/PluginManager.h>
 #include <sofa/simulation/config.h>
 #include <sofa/simulation/common/init.h>
-#include <sofa/simulation/graph/init.h>
-#include <sofa/simulation/graph/DAGSimulation.h>
+#include <sofa/simulation/Simulation.h>
 using sofa::simulation::Node;
 #include <sofa/simulation/SceneLoaderFactory.h>
 #include <SceneChecking/SceneCheckerListener.h>
@@ -59,7 +58,6 @@ using sofa::core::ExecParams ;
 #include <sofa/helper/system/console.h>
 using sofa::helper::Utils;
 
-using sofa::simulation::graph::DAGSimulation;
 using sofa::helper::system::SetDirectory;
 using sofa::core::objectmodel::BaseNode ;
 
@@ -309,11 +307,7 @@ int main(int argc, char** argv)
         exit( EXIT_SUCCESS );
     }
 
-    // Note that initializations must be done after ArgumentParser that can exit the application (without cleanup)
-    // even if everything is ok e.g. asking for help
-    sofa::simulation::graph::init();
-
-    assert(sofa::simulation::getSimulation());
+    assert(sofa::simulation::MainSimulation::getSimulation());
 
     if (colorsStatus == "unset") {
         // If the parameter is unset, check the environment variable
@@ -432,8 +426,6 @@ int main(int argc, char** argv)
     if (int err = GUIManager::Init(argv[0],gui.c_str()))
     {
         sofa::simulation::common::cleanup();
-        sofa::simulation::graph::cleanup();
-
         return err;
     }
 
@@ -471,7 +463,7 @@ int main(int argc, char** argv)
     const std::vector<std::string> sceneArgs = sofa::gui::common::ArgumentParser::extra_args();
     Node::SPtr groot = sofa::simulation::node::load(fileName, false, sceneArgs);
     if( !groot )
-        groot = sofa::simulation::getSimulation()->createNewGraph("");
+        groot = sofa::simulation::MainSimulation::getSimulation()->createNewGraph("");
 
     if (!verif.empty())
     {
@@ -529,7 +521,6 @@ int main(int argc, char** argv)
     GUIManager::closeGUI();
 
     sofa::simulation::common::cleanup();
-    sofa::simulation::graph::cleanup();
 
     return 0;
 }

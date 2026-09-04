@@ -14,10 +14,10 @@ set(SOURCE_FILES
     ${SOFASIMPLEAPI_SRC}/SimpleApi.cpp
 )
 
-sofa_find_package(Sofa.Simulation.Graph REQUIRED)
+sofa_find_package(Sofa.Simulation.Common REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Simulation.Graph)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Simulation.Common)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER Sofa.Framework) # IDE folder
 

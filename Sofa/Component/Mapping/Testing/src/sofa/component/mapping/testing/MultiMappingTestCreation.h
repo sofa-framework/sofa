@@ -36,7 +36,6 @@ using sofa::testing::NumericTest;
 #include <sofa/linearalgebra/FullVector.h>
 #include <sofa/linearalgebra/EigenSparseMatrix.h>
 #include <sofa/component/statecontainer/MechanicalObject.h>
-#include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/type/vector.h>
 #include <sofa/core/MultiMapping.h>
 
@@ -93,7 +92,7 @@ struct MultiMapping_test : public BaseSimulationTest, NumericTest<typename _Mult
 
 
     MultiMapping_test()
-        : simulation(sofa::simulation::getSimulation()),
+        : simulation(sofa::simulation::MainSimulation::getSimulation()),
           deltaRange(1, 1000),
           errorMax(10)
     {

@@ -30,10 +30,7 @@ using namespace sofa::defaulttype ;
 using sofa::component::mass::UniformMass ;
 
 #include <sofa/simpleapi/SimpleApi.h>
-
-#include <sofa/simulation/graph/DAGSimulation.h>
 using sofa::simulation::Simulation ;
-using sofa::simulation::graph::DAGSimulation ;
 
 #include <sofa/simulation/Node.h>
 using sofa::simulation::Node;
@@ -85,7 +82,7 @@ struct UniformMassTest :  public BaseTest
         });
 
         todo = true ;
-        m_simu = sofa::simulation::getSimulation();
+        m_simu = sofa::simulation::MainSimulation::getSimulation();
         m_root = m_simu->createNewGraph("root");
     }
 

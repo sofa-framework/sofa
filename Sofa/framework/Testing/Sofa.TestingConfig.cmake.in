@@ -10,7 +10,7 @@ sofa_find_package(SofaGTestMain QUIET REQUIRED)
 sofa_find_package(Sofa.Helper QUIET REQUIRED)
 sofa_find_package(Sofa.DefaultType QUIET REQUIRED)
 sofa_find_package(Sofa.Core QUIET REQUIRED)
-sofa_find_package(Sofa.Simulation.Graph QUIET REQUIRED)
+sofa_find_package(Sofa.Simulation.Common QUIET REQUIRED)
 sofa_find_package(Sofa.SimpleApi QUIET REQUIRED)
 
 if(NOT TARGET @PROJECT_NAME@)

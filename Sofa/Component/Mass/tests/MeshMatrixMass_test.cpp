@@ -48,7 +48,7 @@ using sofa::testing::BaseSimulationTest;
 using sofa::simulation::Node ;
 
 #include <sofa/simulation/Simulation.h>
-#include <sofa/simulation/graph/DAGSimulation.h>
+#include <sofa/simulation/Simulation.h>
 
 #include <sofa/simpleapi/SimpleApi.h>
 
@@ -108,8 +108,8 @@ public:
             Sofa.Component.Mass
         });
 
-        simulation = simulation::getSimulation();
-        root = simulation::getSimulation()->createNewGraph("root");
+        simulation = simulation::MainSimulation::getSimulation();
+        root = simulation::MainSimulation::getSimulation()->createNewGraph("root");
     }
 
     void doTearDown() override

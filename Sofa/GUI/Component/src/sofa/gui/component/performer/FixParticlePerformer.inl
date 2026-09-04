@@ -94,7 +94,7 @@ void FixParticlePerformer<DataTypes>::draw(const core::visual::VisualParams* /*v
 //        bool b = vparams->displayFlags().getShowBehaviorModels();
 //        core::visual::DisplayFlags* flags = const_cast<core::visual::DisplayFlags*>(&vparams->displayFlags());
 //        flags->setShowBehaviorModels(true);
-//        simulation::getSimulation()->draw(const_cast<core::visual::VisualParams*>(vparams),fixations[i]);
+//        simulation::MainSimulation::getSimulation()->draw(const_cast<core::visual::VisualParams*>(vparams),fixations[i]);
 //        flags->setShowBehaviorModels(b);
 //    }
 }

@@ -31,9 +31,8 @@ using sofa::testing::BaseTest;
 #include<sofa/core/objectmodel/BaseObject.h>
 using sofa::core::objectmodel::BaseObject ;
 
-#include <SofaSimulationGraph/DAGSimulation.h>
+#include <sofa/simulation/Simulation.h>
 using sofa::simulation::Simulation ;
-using sofa::simulation::graph::DAGSimulation ;
 
 #include <sofa/simulation/Node.h>
 using sofa::simulation::Node ;
@@ -67,7 +66,7 @@ class TestClipPlane : public BaseTest {
 public:
     void SetUp() override
     {
-        assert(sofa::simulation::getSimulation());
+        assert(sofa::simulation::MainSimulation::getSimulation());
     }
 
     void checkClipPlaneValidAttributes();
@@ -103,8 +102,8 @@ void TestClipPlane::checkClipPlaneValidAttributes()
     for(auto& attrname : attrnames)
         EXPECT_NE( clp->findData(attrname), nullptr ) << "Missing attribute with name '" << attrname << "'." ;
 
-    sofa::simulation::getSimulation()->unload(root);
-    sofa::simulation::getSimulation()->createNewGraph("");
+    sofa::simulation::MainSimulation::getSimulation()->unload(root);
+    sofa::simulation::MainSimulation::getSimulation()->createNewGraph("");
 }
 
 
@@ -130,8 +129,8 @@ void TestClipPlane::checkClipPlaneAttributesValues(const std::string& dataname, 
     BaseObject* clp = root->getTreeNode("Level 1")->getObject("clipplane") ;
     ASSERT_NE(clp, nullptr) ;
 
-    sofa::simulation::getSimulation()->unload(root);
-    sofa::simulation::getSimulation()->createNewGraph("");
+    sofa::simulation::MainSimulation::getSimulation()->unload(root);
+    sofa::simulation::MainSimulation::getSimulation()->createNewGraph("");
 }
 
 TEST_F(TestClipPlane, checkClipPlaneIdInValidValues)

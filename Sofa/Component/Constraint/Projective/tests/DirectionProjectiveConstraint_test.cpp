@@ -24,7 +24,6 @@ using sofa::testing::BaseSimulationTest;
 #include <sofa/testing/NumericTest.h>
 using sofa::testing::NumericTest;
 
-#include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/component/topology/container/dynamic/PointSetTopologyContainer.h>
 #include <sofa/component/constraint/projective/DirectionProjectiveConstraint.h>
@@ -72,7 +71,7 @@ struct DirectionProjectiveConstraint_test : public BaseSimulationTest, NumericTe
     void doSetUp() override
     {
         //Init
-        simulation = sofa::simulation::getSimulation();
+        simulation = sofa::simulation::MainSimulation::getSimulation();
         ASSERT_NE(simulation, nullptr);
 
         /// Create the scene

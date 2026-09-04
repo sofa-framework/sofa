@@ -97,7 +97,7 @@ GraphModeler::GraphModeler(QWidget* parent, const char* name, Qt::WindowFlags f)
 GraphModeler::~GraphModeler()
 {
     delete historyManager;
-    simulation::getSimulation()->unload(getRoot());
+    simulation::MainSimulation::getSimulation()->unload(getRoot());
     //delete getRoot();
     graphRoot.reset();
     delete graphListener;
@@ -913,7 +913,7 @@ bool GraphModeler::getSaveFilename(std::string &filename)
 void GraphModeler::save(const std::string &filename)
 {
     Node *node = getNode(this->topLevelItem(0));
-    simulation::getSimulation()->exportXML(node, filename.c_str());
+    simulation::MainSimulation::getSimulation()->exportXML(node, filename.c_str());
     emit graphClean();
 }
 

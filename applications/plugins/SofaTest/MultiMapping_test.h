@@ -31,7 +31,7 @@
 #include <sofa/linearalgebra/FullVector.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 #include <sofa/component/statecontainer/MechanicalObject.h>
-#include <sofa/simulation/graph/DAGSimulation.h>
+#include <sofa/simulation/Simulation.h>
 #include <SceneCreator/SceneCreator.h>
 #include <sofa/type/vector.h>
 #include <sofa/core/MultiMapping.h>
@@ -90,7 +90,7 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
 
     MultiMapping_test():deltaRange(1,1000),errorMax(10)
     {
-        sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
+        sofa::simulation::setSimulation(simulation = new sofa::simulation::Simulation());
 
     }
 
@@ -163,7 +163,7 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
         }
 
         /// Init
-        sofa::simulation::getSimulation()->init(root.get());
+        sofa::simulation::MainSimulation::getSimulation()->init(root.get());
 
         /// apply the mapping
         mapping->apply(&mparams, core::vec_id::write_access::position, core::vec_id::read_access::position);
@@ -414,7 +414,7 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
     virtual ~MultiMapping_test()
     {
         if (root!=nullptr)
-            sofa::simulation::getSimulation()->unload(root);
+            sofa::simulation::MainSimulation::getSimulation()->unload(root);
     }
 
 };
