@@ -47,7 +47,7 @@ ReadState::ReadState()
     , d_scalePos( initData(&d_scalePos, 1.0, "scalePos", "scale the input mechanical object"))
     , d_rotation( initData(&d_rotation, Vec3(0.,0.,0.), "rotation", "rotate the input mechanical object"))
     , d_translation( initData(&d_translation, Vec3(0.,0.,0.), "translation", "translate the input mechanical object"))
-    , mmodel(nullptr)
+    , l_state(initLink("state", "The state to read"))
     , infile(nullptr)
 #if SOFA_COMPONENT_PLAYBACK_HAVE_ZLIB
     , gzfile(nullptr)
@@ -85,7 +85,14 @@ void ReadState::bwdInit()
 
 void ReadState::reset()
 {
-    mmodel = this->getContext()->getMechanicalState();
+    if (l_state.empty())
+    {
+        l_state.set(this->getContext()->getMechanicalState());
+    }
+
+    this->l_mechanicalStates.clear();
+    this->l_mechanicalStates.add(l_state);
+
     if (infile)
     {
         delete infile;
@@ -135,17 +142,16 @@ void ReadState::handleEvent(sofa::core::objectmodel::Event* event)
     {
         processReadState();
     }
-    if (simulation::AnimateEndEvent::checkEventType(event))
-    {
-
-    }
 }
 
 
 
 void ReadState::setTime(double time)
 {
-    if (time+getContext()->getDt()*0.5 < lastTime) {reset();}
+    if (time + getContext()->getDt() * 0.5 < lastTime)
+    {
+        reset();
+    }
 }
 
 void ReadState::processReadState(double time)
@@ -157,7 +163,7 @@ void ReadState::processReadState(double time)
 
 bool ReadState::readNext(double time, std::vector<std::string>& validLines)
 {
-    if (!mmodel) return false;
+    if (!l_state) return false;
     if (!infile
 #if SOFA_COMPONENT_PLAYBACK_HAVE_ZLIB
         && !gzfile
@@ -248,16 +254,16 @@ void ReadState::processReadState()
         str >> cmd;
         if (cmd == "X=")
         {
-            mmodel->readVec(sofa::core::vec_id::write_access::position, str);
-            mmodel->applyScale(scale,scale,scale);
-            mmodel->applyRotation(rotation[0],rotation[1],rotation[2]);
-            mmodel->applyTranslation(translation[0],translation[1],translation[2]);
+            l_state->readVec(sofa::core::vec_id::write_access::position, str);
+            l_state->applyScale(scale,scale,scale);
+            l_state->applyRotation(rotation[0],rotation[1],rotation[2]);
+            l_state->applyTranslation(translation[0],translation[1],translation[2]);
 
             updated = true;
         }
         else if (cmd == "V=")
         {
-            mmodel->readVec(sofa::core::vec_id::write_access::velocity, str);
+            l_state->readVec(sofa::core::vec_id::write_access::velocity, str);
             updated = true;
         }
     }
