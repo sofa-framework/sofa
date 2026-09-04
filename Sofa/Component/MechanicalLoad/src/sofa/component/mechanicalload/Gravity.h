@@ -43,9 +43,9 @@ protected:
     Gravity();
 public:
     Data<sofa::type::Vec3> f_gravity; ///< Gravity in the world coordinate system
-
+protected:
     /// Modify the context of the Node
-    void apply() override;
+    void doApply() override;
 };
 
 } // namespace sofa::component::mechanicalload
