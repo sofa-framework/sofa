@@ -219,6 +219,14 @@
           "type": "BOOL",
           "value": "ON"
         },
+        "SOFA_FETCH_COSSERAT": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "PLUGIN_COSSERAT": {
+          "type": "BOOL",
+          "value": "ON"
+        },
         "SOFA_FETCH_SOFAIMPLICITFIELD": {
           "type": "BOOL",
           "value": "ON"
