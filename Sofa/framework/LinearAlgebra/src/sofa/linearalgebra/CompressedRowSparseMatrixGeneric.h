@@ -422,10 +422,95 @@ protected:
         Index maxColIndex = 0;
         for (Index rowId = 0; rowId < static_cast<Index>(rowIndex.size()); rowId++)
         {
+            /// a registered row may hold no block, in which case rowBegin[rowId+1] - 1
+            /// would address the previous row's last column
+            if (rowBegin[rowId] == rowBegin[rowId+1]) continue;
             Index lastColIndex = colsIndex[rowBegin[rowId+1] - 1];
             if (lastColIndex > maxColIndex) maxColIndex = lastColIndex;
         }
         return maxColIndex;
+    }
+
+    /**
+    * \brief Look for column j among the blocks of a single row.
+    *
+    * The first and last registered columns of the row are checked directly, as
+    * they are by far the most common queries; anything else falls back to a
+    * binary search. The range must be checked for emptiness first: a registered
+    * row may hold no block at all (fullRows() and fullDiagonal() both create
+    * such rows), in which case rowRange.begin() addresses the next row's first
+    * block and rowRange.end() - 1 the previous row's last one.
+    *
+    * @param rowRange : range of this row inside colsIndex / colsValue
+    * @param j : column index to look for
+    * @param colId : on success, position of the block in colsIndex / colsValue
+    * @return true if the column holds a block in this row
+    **/
+    bool findColInRange(const Range& rowRange, Index j, Index& colId) const
+    {
+        if (rowRange.empty()) return false;
+        if (j == colsIndex[rowRange.begin()])
+        {
+            colId = rowRange.begin();
+            return true;
+        }
+        if (j == colsIndex[rowRange.end() - 1])
+        {
+            colId = rowRange.end() - 1;
+            return true;
+        }
+        return searchColInRange(rowRange, j, colId);
+    }
+
+    /**
+    * \brief Binary search for column j inside a row, from an interpolated guess.
+    *
+    * findColInRange() without the first/last-column checks. Those two loads pay
+    * for themselves when the queried column is usually an end one, and cost more
+    * than they save on the insertion paths, where they almost never hit.
+    * sortedFind() already reports an empty range as "not found", so this is safe
+    * on a row that holds no block.
+    **/
+    bool searchColInRange(const Range& rowRange, Index j, Index& colId) const
+    {
+        colId = (nBlockCol == 0) ? rowRange.begin()
+                                 : rowRange.begin() + j * rowRange.size() / nBlockCol;
+        return sortedFind(colsIndex, rowRange, j, colId);
+    }
+
+    /**
+    * \brief Look for row i and return its position inside rowIndex.
+    * @param i : row index
+    * @param rowId : on success, position of the row inside rowIndex
+    * @return true if the row is registered
+    **/
+    bool findRow(Index i, Index& rowId) const
+    {
+        if (rowIndex.empty()) return false;
+        if (i == rowIndex.back())
+        {
+            rowId = Index(rowIndex.size() - 1);
+            return true;
+        }
+        if (i == rowIndex.front())
+        {
+            rowId = 0;
+            return true;
+        }
+        return searchRow(i, rowId);
+    }
+
+    /**
+    * \brief Binary search for row i, from an interpolated guess.
+    *
+    * findRow() without the first/last-row checks, for the same reason as
+    * searchColInRange(). sortedFind() reports an empty rowIndex as "not found",
+    * and the division is guarded, so this is safe on an empty matrix.
+    **/
+    bool searchRow(Index i, Index& rowId) const
+    {
+        rowId = (nBlockRow == 0) ? 0 : Index(i * rowIndex.size() / nBlockRow);
+        return sortedFind(rowIndex, i, rowId);
     }
 
     /**
@@ -755,23 +840,10 @@ public:
         if constexpr (Policy::AutoSize) if (j > nBlockCol) return empty; /// Matrix is auto sized so requested column could not exist
 
         Index rowId = 0;
-        if (i == rowIndex.back()) rowId = Index(rowIndex.size() - 1); /// Optimization to avoid do a find when looking for the last line registred
-        else if (i == rowIndex.front()) rowId = 0;             /// Optimization to avoid do a find when looking for the first line registred
-        else
-        {
-            rowId = (nBlockRow == 0) ? 0 : Index(i * rowIndex.size() / nBlockRow);
-            if (!sortedFind(rowIndex, i, rowId)) return empty;
-        }
+        if (!findRow(i, rowId)) return empty;
 
-        Range rowRange(rowBegin[rowId], rowBegin[rowId+1]);
         Index colId = 0;
-        if (j == colsIndex[rowRange.first]) colId = rowRange.first;                /// Optimization to avoid do a find when looking for the first column registred for specific column
-        else if (j == colsIndex[rowRange.second - 1]) colId = rowRange.second - 1; /// Optimization to avoid do a find when looking for the last column registred for specific column
-        else
-        {
-            colId = (nBlockCol == 0) ? 0 : rowRange.begin() + j * rowRange.size() / nBlockCol;
-            if (!sortedFind(colsIndex, rowRange, j, colId)) return empty;
-        }
+        if (!findColInRange(Range(rowBegin[rowId], rowBegin[rowId+1]), j, colId)) return empty;
 
         return colsValue[colId];
     }
@@ -807,11 +879,10 @@ public:
             {
                 Index rowId = Index(rowIndex.size() - 1);
                 Range rowRange(rowBegin[rowId], rowBegin[rowId+1]);
-                if (j == colsIndex[rowRange.second - 1]) /// In this case, we are trying to write on last registered column, directly return ref on it
-                {
-                    return &colsValue[rowRange.second - 1];
-                }
-                else if (j > colsIndex[rowRange.second - 1]) /// Optimization we are trying to write on last line et upper of last column, directly create it.
+                /// A registered row may hold no block at all, in which case
+                /// rowRange.end() - 1 would address the previous row's last one.
+                /// Appending is then the right move, as this is the last row.
+                if (rowRange.empty() || j > colsIndex[rowRange.end() - 1]) /// Optimization we are trying to write on last line et upper of last column, directly create it.
                 {
                     if (!create) return nullptr;
                     colsIndex.push_back(j);
@@ -825,8 +896,8 @@ public:
                 }
                 else
                 {
-                    Index colId = (nBlockCol == 0) ? 0 : rowRange.begin() + j * rowRange.size() / nBlockCol;
-                    if (!sortedFind(colsIndex, rowRange, j, colId)) return create ? insertBtemp(i,j) : nullptr;
+                    Index colId = 0;
+                    if (!findColInRange(rowRange, j, colId)) return create ? insertBtemp(i,j) : nullptr;
                     return &colsValue[colId];
                 }
             }
@@ -834,34 +905,20 @@ public:
             if constexpr (Policy::AutoSize) if (j > nBlockCol) return create ? insertBtemp(i,j) : nullptr; /// Matrix is auto sized so requested column could not exist
 
             Index rowId = 0;
-            if (i == rowIndex.back()) rowId = Index(rowIndex.size() - 1);      /// Optimization to avoid do a find when looking for the last line registred
-            else if (i == rowIndex.front()) rowId = 0;                  /// Optimization to avoid do a find when looking for the first line registred
-            else
-            {
-                rowId = (nBlockRow == 0) ? 0 : Index(i * rowIndex.size() / nBlockRow);
-                if (!sortedFind(rowIndex, i, rowId)) return create ? insertBtemp(i,j) : nullptr;
-            }
+            if (!findRow(i, rowId)) return create ? insertBtemp(i,j) : nullptr;
 
-            Range rowRange(rowBegin[rowId], rowBegin[rowId+1]);
             Index colId = 0;
-            if (j == colsIndex[rowRange.first]) colId = rowRange.first;                /// Optimization to avoid do a find when looking for the first column registred for specific column
-            else if (j == colsIndex[rowRange.second - 1]) colId = rowRange.second - 1; /// Optimization to avoid do a find when looking for the last column registred for specific column
-            else
-            {
-                colId = (nBlockCol == 0) ? 0 : rowRange.begin() + j * rowRange.size() / nBlockCol;
-                if (!sortedFind(colsIndex, rowRange, j, colId)) return create ? insertBtemp(i,j) : nullptr;
-            }
+            if (!findColInRange(Range(rowBegin[rowId], rowBegin[rowId+1]), j, colId)) return create ? insertBtemp(i,j) : nullptr;
 
             return &colsValue[colId];
         }
         else
         {
-            Index rowId = (nBlockRow == 0) ? 0 : Index(i * rowIndex.size() / nBlockRow);
-            if (sortedFind(rowIndex, i, rowId))
+            Index rowId = 0;
+            if (searchRow(i, rowId))
             {
-                Range rowRange(rowBegin[rowId], rowBegin[rowId+1]);
-                Index colId = (nBlockCol == 0) ? 0 : rowRange.begin() + j * rowRange.size() / nBlockCol;
-                if (sortedFind(colsIndex, rowRange, j, colId))
+                Index colId = 0;
+                if (searchColInRange(Range(rowBegin[rowId], rowBegin[rowId+1]), j, colId))
                 {
                     return &colsValue[colId];
                 }
@@ -892,8 +949,7 @@ public:
         bool rowFound = true;
         if (rowId < 0 || rowId >= static_cast<Index>(rowIndex.size()) || rowIndex[rowId] != i)
         {
-            rowId = Index(i * rowIndex.size() / nBlockRow);
-            rowFound = sortedFind(rowIndex, i, rowId);
+            rowFound = searchRow(i, rowId);
         }
         if (rowFound)
         {
@@ -901,8 +957,7 @@ public:
             Range rowRange(rowBegin[rowId], rowBegin[rowId+1]);
             if (colId < rowRange.begin() || colId >= rowRange.end() || colsIndex[colId] != j)
             {
-                colId = rowRange.begin() + j * rowRange.size() / nBlockCol;
-                colFound = sortedFind(colsIndex, rowRange, j, colId);
+                colFound = searchColInRange(rowRange, j, colId);
             }
             if (colFound)
             {
@@ -981,13 +1036,7 @@ public:
         }
 
         Index rowId = 0;
-        if (i == rowIndex.back()) rowId = Index(rowIndex.size() - 1);      /// Optimization to avoid do a find when looking for the last line registred
-        else if (i == rowIndex.front()) rowId = 0;                  /// Optimization to avoid do a find when looking for the first line registred
-        else
-        {
-            rowId = (nBlockRow == 0) ? 0 : Index(i * rowIndex.size() / nBlockRow);
-            if (!sortedFind(rowIndex, i, rowId)) return;
-        }
+        if (!findRow(i, rowId)) return; /// Nothing to clear: the matrix is empty or the row holds no block
 
         deleteRow(rowId);
 
@@ -1013,15 +1062,8 @@ public:
         {
             Range rowRange(rowBegin[rowId], rowBegin[rowId+1]);
 
-            Index colId = -1;
-            if (j == colsIndex[rowRange.first]) colId = rowRange.first;                /// Optimization to avoid do a find when looking for the first column registred for specific column
-            else if (j == colsIndex[rowRange.second - 1]) colId = rowRange.second - 1; /// Optimization to avoid do a find when looking for the last column registred for specific column
-            else
-            {
-                colId = (nBlockCol == 0) ? 0 : rowRange.begin() + j * rowRange.size() / nBlockCol;
-                if (!sortedFind(colsIndex, rowRange, j, colId)) colId = -1;
-            }
-            if (colId != -1) /// Means col exist in this line
+            Index colId = 0;
+            if (findColInRange(rowRange, j, colId)) /// Means col exist in this line
             {
                 if constexpr (Policy::ClearByZeros)
                 {
@@ -1076,34 +1118,22 @@ public:
         /// If AutoCompress policy is activated, we neeed to be sure not missing btemp registered value.
         if constexpr (Policy::AutoCompress) compress();
 
-        bool foundRowId = true;
-        Index rowId = 0;
-        if (i == rowIndex.back()) rowId = rowIndex.size() - 1;      /// Optimization to avoid do a find when looking for the last line registred
-        else if (i == rowIndex.front()) rowId = 0;                  /// Optimization to avoid do a find when looking for the first line registred
-        else
-        {
-            rowId = (nBlockRow == 0) ? 0 : i * rowIndex.size() / nBlockRow;
-            if (!sortedFind(rowIndex, i, rowId)) foundRowId = false;
-        }
-
-        bool foundColId = true;
-        Range rowRange(rowBegin[rowId], rowBegin[rowId+1]);
-        Index colId = 0;
-        if (i == colsIndex[rowRange.first]) colId = rowRange.first;                /// Optimization to avoid do a find when looking for the first column registred for specific column
-        else if (i == colsIndex[rowRange.second - 1]) colId = rowRange.second - 1; /// Optimization to avoid do a find when looking for the last column registred for specific column
-        else
-        {
-            colId = (nBlockCol == 0) ? 0 : rowRange.begin() + i * rowRange.size() / nBlockCol;
-            if (!sortedFind(colsIndex, rowRange, i, colId)) foundColId = false;;
-        }
-
-        if (!foundRowId && !foundColId)
+        if (i < 0 || i >= nBlockRow || i >= nBlockCol)
         {
             msg_error("CompressedRowSparseMatrixGeneric") << "invalid write access to row and column "<<i<<" in "<< this->Name() << " of size ("<<rowBSize()<<","<<colBSize()<<")";
             return;
         }
 
-        deleteRow(rowId); /// Do not call clearRow to only compress zero if activated once.
+        /// An absent row is not an error: the matrix is sparse, so row i may hold
+        /// no block while column i still does in other rows. Only delete the row
+        /// when it is actually registered, otherwise rowId is meaningless and
+        /// deleteRow() would drop an unrelated row.
+        Index rowId = 0;
+        if (findRow(i, rowId))
+        {
+            deleteRow(rowId); /// Do not call clearRowBlock to only compress zero if activated once.
+        }
+
         clearColBlock(i);
     }
 
