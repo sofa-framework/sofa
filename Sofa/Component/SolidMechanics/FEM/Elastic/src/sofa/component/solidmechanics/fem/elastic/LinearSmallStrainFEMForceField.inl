@@ -201,7 +201,7 @@ auto LinearSmallStrainFEMForceField<DataTypes, ElementType>::computeStress(
     for (sofa::Size i = 0; i < type::NumberOfIndependentElements<trait::spatial_dimensions>; ++i)
     {
         const auto [p, q] = type::toTensorIndices<trait::spatial_dimensions>(i);
-        strainVoigt[i] = strainTensor(p, q);
+        strainVoigt[i] = (p == q) ? strainTensor(p, q) : strainTensor(p, q) + strainTensor(q, p);
     }
 
     const auto youngModulus = this->getYoungModulusInElement(elementId);
