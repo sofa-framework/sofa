@@ -7,5 +7,7 @@
     <CorotationalFEMForceField name="FEM" template="Vec3,Hexahedron"
                                       youngModulus="2e6" poissonRatio="0.45" topology="@grid"
                                       computeForceStrategy="parallel" computeForceDerivStrategy="parallel"/>
+    <VonMisesStress template="Vec3,Hexahedron" name="stress" topology="@grid" stressEvaluator="@FEM"
+                    colorMap="green yellow orange red purple #221C35"/>
 
 </Node>

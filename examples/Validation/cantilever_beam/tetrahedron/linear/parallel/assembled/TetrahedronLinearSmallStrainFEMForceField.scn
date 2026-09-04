@@ -15,6 +15,9 @@
         <LinearSmallStrainFEMForceField name="FEM" template="Vec3,Tetrahedron"
                                                youngModulus="2e6" poissonRatio="0.45" topology="@Tetra_topo"
                                                computeForceStrategy="parallel" computeForceDerivStrategy="parallel"/>
+        <VonMisesStress template="Vec3,Tetrahedron" name="stress" topology="@Tetra_topo" stressEvaluator="@FEM"
+                        colorMap="green yellow orange red purple #221C35"/>
+
     </Node>
 
 </Node>
