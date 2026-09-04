@@ -39,10 +39,31 @@ template<typename DataTypes>
 class JointSpring;
 
 
-/** JointSpringForceField simulates 6D springs between Rigid DOFS
-  Use kst vector to specify the directionnal stiffnesses (on each local axe)
-  Use ksr vector to specify the rotational stiffnesses (on each local axe)
-*/
+/**
+ * @class JointSpringForceField
+ * @brief A force field modeling complex joint interactions between two mechanical states.
+ *
+ * This component implements a force field that models elastic and dissipative interactions
+ * (springs and dampers) between pairs of points in two different MechanicalStates.
+ * It is primarily designed for use with Rigid3Types to handle both translation and rotation.
+ *
+ * Each joint (JointSpring) can have:
+ * - Different stiffness values for translation and rotation (soft and hard stiffness).
+ * - Damping factor for both translational and rotational velocities.
+ * - Angular limits for each rotation axis (X, Y, Z).
+ * - A 'blocking' stiffness applied when rotation limits are exceeded.
+ * - Initial translation and rotation offsets.
+ *
+ * The force computation accounts for:
+ * - Constant external forces/torques read from an input file.
+ * - Relative position and orientation between the joint points.
+ * - Relative velocities for damping.
+ * - Joint limits and blocking constraints.
+ *
+ * It also supports logging joint data to an output file at specified intervals.
+ *
+ * @tparam DataTypes The type of data used for the mechanical states (usually Rigid3Types).
+ */
 template<class DataTypes>
 class JointSpringForceField : public core::behavior::PairInteractionForceField<DataTypes>
 {
@@ -122,6 +143,8 @@ public:
                            DataVecDeriv& data_df2,
                            const DataVecDeriv& data_dx1,
                            const DataVecDeriv& data_dx2) override;
+
+    void buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix) override;
 
     void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) final;
 
