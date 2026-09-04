@@ -19,19 +19,26 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_BASE_ELEMENT_LINEAR_FEM_FORCEFIELD_CPP
-#include <sofa/component/solidmechanics/fem/elastic/BaseElementLinearFEMForceField.inl>
-#include <sofa/fem/FiniteElement[all].h>
+#define SOFA_COMPONENT_SOLIDMECHANICS_FEM_HYPERELASTIC_MATERIAL_NEOHOOKEANMATERIAL_CPP
 
-namespace sofa::component::solidmechanics::fem::elastic
+#include <sofa/component/solidmechanics/fem/hyperelastic/hyperelasticmaterials/NeoHookeanMaterial.inl>
+
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/defaulttype/VecTypes.h>
+
+namespace sofa::component::solidmechanics::fem::hyperelastic
 {
-template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API BaseElementLinearFEMForceField<sofa::defaulttype::Vec1Types, sofa::geometry::Edge>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API BaseElementLinearFEMForceField<sofa::defaulttype::Vec2Types, sofa::geometry::Edge>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API BaseElementLinearFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Edge>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API BaseElementLinearFEMForceField<sofa::defaulttype::Vec2Types, sofa::geometry::Triangle>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API BaseElementLinearFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Triangle>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API BaseElementLinearFEMForceField<sofa::defaulttype::Vec2Types, sofa::geometry::Quad>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API BaseElementLinearFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Quad>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API BaseElementLinearFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Tetrahedron>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API BaseElementLinearFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Hexahedron>;
+
+void registerNeoHookeanMaterial(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Neo-Hookean material")
+        .add< NeoHookeanMaterial<sofa::defaulttype::Vec1Types> >()
+        .add< NeoHookeanMaterial<sofa::defaulttype::Vec2Types> >()
+        .add< NeoHookeanMaterial<sofa::defaulttype::Vec3Types> >(true));
+}
+
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_HYPERELASTIC_API NeoHookeanMaterial<sofa::defaulttype::Vec1Types>;
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_HYPERELASTIC_API NeoHookeanMaterial<sofa::defaulttype::Vec2Types>;
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_HYPERELASTIC_API NeoHookeanMaterial<sofa::defaulttype::Vec3Types>;
+
 }

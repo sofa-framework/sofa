@@ -29,7 +29,7 @@
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/behavior/TopologyAccessor.h>
 
-#if !defined(ELASTICITY_COMPONENT_FEM_FORCEFIELD_CPP)
+#if !defined(SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_FEM_FORCEFIELD_CPP)
 #include <sofa/fem/FiniteElement[all].h>
 #endif
 
@@ -131,7 +131,7 @@ protected:
     sofa::core::visual::DrawElementMesh<ElementType> m_drawMesh;
 };
 
-#if !defined(ELASTICITY_COMPONENT_FEM_FORCEFIELD_CPP)
+#if !defined(SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_FEM_FORCEFIELD_CPP)
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<sofa::defaulttype::Vec1Types, sofa::geometry::Edge>;
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<sofa::defaulttype::Vec2Types, sofa::geometry::Edge>;
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Edge>;

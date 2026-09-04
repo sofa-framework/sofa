@@ -19,19 +19,26 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_BASE_ELEMENT_LINEAR_FEM_FORCEFIELD_CPP
-#include <sofa/component/solidmechanics/fem/elastic/BaseElementLinearFEMForceField.inl>
-#include <sofa/fem/FiniteElement[all].h>
+#define SOFA_COMPONENT_SOLIDMECHANICS_FEM_HYPERELASTIC_MATERIAL_ST_VENANT_KIRCHHOFF_MATERIAL_CPP
 
-namespace sofa::component::solidmechanics::fem::elastic
+#include <sofa/component/solidmechanics/fem/hyperelastic/hyperelasticmaterials/StVenantKirchhoffMaterial.inl>
+
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/defaulttype/VecTypes.h>
+
+namespace sofa::component::solidmechanics::fem::hyperelastic
 {
-template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API BaseElementLinearFEMForceField<sofa::defaulttype::Vec1Types, sofa::geometry::Edge>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API BaseElementLinearFEMForceField<sofa::defaulttype::Vec2Types, sofa::geometry::Edge>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API BaseElementLinearFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Edge>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API BaseElementLinearFEMForceField<sofa::defaulttype::Vec2Types, sofa::geometry::Triangle>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API BaseElementLinearFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Triangle>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API BaseElementLinearFEMForceField<sofa::defaulttype::Vec2Types, sofa::geometry::Quad>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API BaseElementLinearFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Quad>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API BaseElementLinearFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Tetrahedron>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API BaseElementLinearFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Hexahedron>;
+
+void registerStVenantKirchhoffMaterial(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Saint Venant-Kirchhoff material model for hyperelastic materials")
+        .add< StVenantKirchhoffMaterial<sofa::defaulttype::Vec1Types> >()
+        .add< StVenantKirchhoffMaterial<sofa::defaulttype::Vec2Types> >()
+        .add< StVenantKirchhoffMaterial<sofa::defaulttype::Vec3Types> >(true));
+}
+
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_HYPERELASTIC_API StVenantKirchhoffMaterial<sofa::defaulttype::Vec1Types>;
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_HYPERELASTIC_API StVenantKirchhoffMaterial<sofa::defaulttype::Vec2Types>;
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_HYPERELASTIC_API StVenantKirchhoffMaterial<sofa::defaulttype::Vec3Types>;
+
 }
