@@ -30,7 +30,9 @@
 #include <sofa/component/odesolver/backward/EulerImplicitSolver.h>
 
 #include <sofa/linearalgebra/SparseMatrix.h>
-#include <sofa/component/linearsolver/iterative/CGLinearSolver.h>
+#include <sofa/core/behavior/LinearSolver.h>
+#include <sofa/core/objectmodel/BaseData.h>
+#include <sofa/core/ConstraintParams.h>
 
 #include <sofa/core/behavior/RotationFinder.h>
 
@@ -42,6 +44,7 @@
 #include <fstream>
 #include <sstream>
 #include <list>
+#include <vector>
 #include <iomanip>
 #include <limits>
 #include <sofa/helper/system/FileSystem.h>
@@ -70,6 +73,8 @@ PrecomputedConstraintCorrection<DataTypes>::PrecomputedConstraintCorrection(sofa
     , d_debugViewFrameScale(initData(&d_debugViewFrameScale, 1.0_sreal, "debugViewFrameScale", "Scale on computed node's frame"))
     , d_fileCompliance(initData(&d_fileCompliance, "fileCompliance", "Precomputed compliance matrix data file"))
     , d_fileDir(initData(&d_fileDir, "fileDir", "If not empty, the compliance will be saved in this repertory"))
+    , l_odeSolver(initLink("ODESolver", "Link towards the ODE solver used during the compliance precomputation. If unset, the first OdeSolver in the current context is used."))
+    , l_linearSolver(initLink("linearSolver", "Link towards the linear solver used during the compliance precomputation. If unset, the first LinearSolver in the current context is used."))
     , invM(nullptr)
     , appCompliance(nullptr)
     , nbRows(0), nbCols(0), dof_on_node(0), nbNodes(0)
@@ -287,45 +292,54 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
         static constexpr sofa::type::Vec3 gravity_zero(0_sreal, 0_sreal, 0_sreal);
         this->getContext()->setGravity(gravity_zero);
 
-        sofa::component::odesolver::backward::EulerImplicitSolver* eulerSolver;
-        sofa::component::linearsolver::iterative::CGLinearSolver< sofa::component::linearsolver::GraphScatteredMatrix, sofa::component::linearsolver::GraphScatteredVector >* cgLinearSolver;
-        core::behavior::LinearSolver* linearSolver;
+        // If a solver link was not set explicitly, fall back to the first one found in the context.
+        if (l_odeSolver.empty())
+            l_odeSolver.set(this->getContext()->template get<sofa::component::odesolver::backward::EulerImplicitSolver>());
+        if (l_linearSolver.empty())
+            l_linearSolver.set(this->getContext()->template get<core::behavior::LinearSolver>());
 
-        this->getContext()->get(eulerSolver);
-        this->getContext()->get(cgLinearSolver);
-        this->getContext()->get(linearSolver);
-
-        if (eulerSolver && cgLinearSolver)
-        {
-            msg_info() << "use EulerImplicitSolver & CGLinearSolver" ;
-        }
-        else if (eulerSolver && linearSolver)
+        if (l_odeSolver && l_linearSolver)
         {
             msg_info() << "use EulerImplicitSolver & LinearSolver";
         }
-        else if(eulerSolver)
+        else if (l_odeSolver)
         {
             msg_info() << "use EulerImplicitSolver";
         }
         else
         {
-            msg_error() << "PrecomputedContactCorrection must be associated with EulerImplicitSolver+LinearSolver for the precomputation\nNo Precomputation" ;
+            msg_error() << "PrecomputedConstraintCorrection must be associated with EulerImplicitSolver+LinearSolver for the precomputation\nNo Precomputation" ;
             return;
         }
 
-        // Change the solver parameters
-        Real buf_tolerance = 0, buf_threshold = 0;
-        unsigned int	   buf_maxIter = 0;
+        // Tighten the linear solver accuracy so the compliance is computed as accurately as
+        // possible during precomputation and restore the original values afterwards.
+        core::objectmodel::BaseData* toleranceData  = l_linearSolver ? l_linearSolver->findData("tolerance")  : nullptr;
+        core::objectmodel::BaseData* iterationsData = l_linearSolver ? l_linearSolver->findData("iterations") : nullptr;
+        core::objectmodel::BaseData* thresholdData  = l_linearSolver ? l_linearSolver->findData("threshold")  : nullptr;
 
-        if (cgLinearSolver)
+        std::string buf_tolerance, buf_iterations, buf_threshold;
+
+        if (toleranceData)
         {
-            buf_tolerance = cgLinearSolver->d_tolerance.getValue();
-            buf_maxIter   = cgLinearSolver->d_maxIter.getValue();
-            buf_threshold = cgLinearSolver->d_smallDenominatorThreshold.getValue();
-
-            cgLinearSolver->d_tolerance.setValue(Real(1e-20));
-            cgLinearSolver->d_maxIter.setValue(5000u);
-            cgLinearSolver->d_smallDenominatorThreshold.setValue(Real(1e-35));
+            buf_tolerance = toleranceData->getValueString();
+            toleranceData->read("1e-20");
+            msg_info() << "Precomputation: temporarily setting '" << l_linearSolver->getName()
+                       << "' tolerance from " << buf_tolerance << " to 1e-20";
+        }
+        if (iterationsData)
+        {
+            buf_iterations = iterationsData->getValueString();
+            iterationsData->read("5000");
+            msg_info() << "Precomputation: temporarily setting '" << l_linearSolver->getName()
+                       << "' iterations from " << buf_iterations << " to 5000";
+        }
+        if (thresholdData)
+        {
+            buf_threshold = thresholdData->getValueString();
+            thresholdData->read("1e-35");
+            msg_info() << "Precomputation: temporarily setting '" << l_linearSolver->getName()
+                       << "' threshold from " << buf_threshold << " to 1e-35";
         }
 
 
@@ -343,9 +357,9 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 
         /// christian : it seems necessary to called the integration one time for initialization
         /// (avoid to have a line of 0 at the top of the matrix)
-        if (eulerSolver)
+        if (l_odeSolver)
         {
-            eulerSolver->solve(core::execparams::defaultInstance(), dt, core::vec_id::write_access::position, core::vec_id::write_access::velocity);
+            l_odeSolver->solve(core::execparams::defaultInstance(), dt, core::vec_id::write_access::position, core::vec_id::write_access::velocity);
         }
 
         Deriv unitary_force;
@@ -367,7 +381,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
                 velocity.clear();
                 velocity.resize(nbNodes);
 
-                // Actualize ref to the position vector ; it seems it is changed at every eulerSolver->solve()
+                // Actualize ref to the position vector ; it seems it is changed at every l_odeSolver->solve()
                 helper::WriteOnlyAccessor< Data< VecCoord > > wposData = *this->mstate->write(core::vec_id::write_access::position);
                 VecCoord& pos = wposData.wref();
 
@@ -376,11 +390,11 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 
                 SReal fact = 1.0_sreal / dt; // christian : it is not a compliance... but an admittance that is computed !
 
-                if (eulerSolver)
+                if (l_odeSolver)
                 {
-                    fact *= eulerSolver->getPositionIntegrationFactor(); // here, we compute a compliance
+                    fact *= l_odeSolver->getPositionIntegrationFactor(); // here, we compute a compliance
 
-                    eulerSolver->solve(core::execparams::defaultInstance(), dt, core::vec_id::write_access::position, core::vec_id::write_access::velocity);
+                    l_odeSolver->solve(core::execparams::defaultInstance(), dt, core::vec_id::write_access::position, core::vec_id::write_access::velocity);
                 }
 
                 for (unsigned int v = 0; v < nbNodes; v++)
@@ -403,12 +417,9 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
         this->getContext()->setGravity(gravity);
 
         // Restore linear solver parameters
-        if (cgLinearSolver)
-        {
-            cgLinearSolver->d_tolerance.setValue(buf_tolerance);
-            cgLinearSolver->d_maxIter.setValue(buf_maxIter);
-            cgLinearSolver->d_smallDenominatorThreshold.setValue(buf_threshold);
-        }
+        if (toleranceData)  toleranceData->read(buf_tolerance);
+        if (iterationsData) iterationsData->read(buf_iterations);
+        if (thresholdData)  thresholdData->read(buf_threshold);
 
         // Restore velocity
         for (unsigned int i = 0; i < velocity.size(); i++)

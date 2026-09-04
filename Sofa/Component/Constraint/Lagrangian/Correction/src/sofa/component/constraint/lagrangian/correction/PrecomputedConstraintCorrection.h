@@ -23,6 +23,8 @@
 #include <sofa/component/constraint/lagrangian/correction/config.h>
 
 #include <sofa/core/behavior/ConstraintCorrection.h>
+#include <sofa/component/odesolver/backward/EulerImplicitSolver.h>
+#include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 
 #include <sofa/linearalgebra/FullMatrix.h>
@@ -66,7 +68,10 @@ public:
     Data<SReal> d_debugViewFrameScale; ///< Scale on computed node's frame
     sofa::core::objectmodel::DataFileName d_fileCompliance; ///< Precomputed compliance matrix data file
     Data<std::string> d_fileDir; ///< If not empty, the compliance will be saved in this repertory
-    
+
+    SingleLink<PrecomputedConstraintCorrection, sofa::component::odesolver::backward::EulerImplicitSolver, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_odeSolver; ///< Link towards the EulerImplicit solver used during the compliance precomputation. If unset, the first OdeSolver found in the current context is used.
+    SingleLink<PrecomputedConstraintCorrection, sofa::core::behavior::LinearSolver, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_linearSolver; ///< Link towards the linear solver used during the compliance precomputation. If unset, the first LinearSolver found in the current context is used.
+
 protected:
     PrecomputedConstraintCorrection(sofa::core::behavior::MechanicalState<DataTypes> *mm = nullptr);
 
