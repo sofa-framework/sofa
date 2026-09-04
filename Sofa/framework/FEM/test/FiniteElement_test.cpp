@@ -93,6 +93,74 @@ TEST(FiniteElement, pyramid3dWeights)
     testSumWeights<sofa::geometry::Pyramid, sofa::defaulttype::Vec3Types>(8);
 }
 
+TEST(FiniteElement, quadraticHexa3dWeights)
+{
+    testSumWeights<sofa::geometry::QuadraticHexahedron, sofa::defaulttype::Vec3Types>(8);
+}
+
+/**
+ * Checks that the shape function i at the node j is equal to delta_ij
+ */
+template <class ElementType, class DataTypes>
+void testShapeFunctionsAtNodes()
+{
+    using FE = sofa::fem::FiniteElement<ElementType, DataTypes>;
+
+    for (unsigned int j = 0; j < FE::NumberOfNodesInElement; ++j)
+    {
+        const auto& node_j = FE::referenceElementNodes[j];
+        const auto N = FE::shapeFunctions(node_j);
+
+        for (unsigned int i = 0; i < FE::NumberOfNodesInElement; ++i)
+        {
+            if (i == j)
+                EXPECT_NEAR(N[i], 1.0, 1e-12) << "Shape function " << i << " should be 1 at node " << j;
+            else
+                EXPECT_NEAR(N[i], 0.0, 1e-12) << "Shape function " << i << " should be 0 at node " << j;
+        }
+    }
+}
+
+TEST(FiniteElement, edge1dShapeFunctionsAtNodes)
+{
+    testShapeFunctionsAtNodes<sofa::geometry::Edge, sofa::defaulttype::Vec1Types>();
+}
+
+TEST(FiniteElement, triangle2dShapeFunctionsAtNodes)
+{
+    testShapeFunctionsAtNodes<sofa::geometry::Triangle, sofa::defaulttype::Vec2Types>();
+}
+
+TEST(FiniteElement, quad2dShapeFunctionsAtNodes)
+{
+    testShapeFunctionsAtNodes<sofa::geometry::Quad, sofa::defaulttype::Vec2Types>();
+}
+
+TEST(FiniteElement, tetra3dShapeFunctionsAtNodes)
+{
+    testShapeFunctionsAtNodes<sofa::geometry::Tetrahedron, sofa::defaulttype::Vec3Types>();
+}
+
+TEST(FiniteElement, hexa3dShapeFunctionsAtNodes)
+{
+    testShapeFunctionsAtNodes<sofa::geometry::Hexahedron, sofa::defaulttype::Vec3Types>();
+}
+
+TEST(FiniteElement, prism3dShapeFunctionsAtNodes)
+{
+    testShapeFunctionsAtNodes<sofa::geometry::Prism, sofa::defaulttype::Vec3Types>();
+}
+
+TEST(FiniteElement, pyramid3dShapeFunctionsAtNodes)
+{
+    testShapeFunctionsAtNodes<sofa::geometry::Pyramid, sofa::defaulttype::Vec3Types>();
+}
+
+TEST(FiniteElement, quadraticHexa3dShapeFunctionsAtNodes)
+{
+    testShapeFunctionsAtNodes<sofa::geometry::QuadraticHexahedron, sofa::defaulttype::Vec3Types>();
+}
+
 /**
  * Checks that the sum of the gradients of shape functions is zero at the evaluation point.
  */
@@ -178,6 +246,175 @@ TEST(FiniteElement, pyramid3dGradientShapeFunctions)
 {
     testGradientShapeFunctions<sofa::geometry::Pyramid, sofa::defaulttype::Vec3Types>(sofa::type::Vec3(0., 0., 0.));
     testGradientShapeFunctions<sofa::geometry::Pyramid, sofa::defaulttype::Vec3Types>(sofa::type::Vec3(0.5, 0.5, 0.5));
+}
+
+TEST(FiniteElement, quadraticHexa3dGradientShapeFunctions)
+{
+    testGradientShapeFunctions<sofa::geometry::QuadraticHexahedron, sofa::defaulttype::Vec3Types>(sofa::type::Vec3(0., 0., 0.));
+    testGradientShapeFunctions<sofa::geometry::QuadraticHexahedron, sofa::defaulttype::Vec3Types>(sofa::type::Vec3(1,1,1));
+}
+
+// Partition of unity at arbitrary (non-node) points, not just at nodes
+template <class ElementType, class DataTypes>
+void testPartitionOfUnity()
+{
+    using FE = sofa::fem::FiniteElement<ElementType, DataTypes>;
+    using Real = sofa::Real_t<DataTypes>;
+
+    for (const auto& [q, w] : FE::quadraturePoints())
+    {
+        const auto N = FE::shapeFunctions(q);
+        Real sum = 0;
+        for (unsigned int i = 0; i < FE::NumberOfNodesInElement; ++i)
+            sum += N[i];
+        EXPECT_NEAR(sum, Real(1), 1e-10) << "Shape functions must sum to 1 everywhere";
+    }
+}
+
+TEST(FiniteElement, edge1dPartitionOfUnity)
+{
+    testPartitionOfUnity<sofa::geometry::Edge, sofa::defaulttype::Vec1Types>();
+}
+
+TEST(FiniteElement, triangle2dPartitionOfUnity)
+{
+    testPartitionOfUnity<sofa::geometry::Triangle, sofa::defaulttype::Vec2Types>();
+}
+
+TEST(FiniteElement, quad2dPartitionOfUnity)
+{
+    testPartitionOfUnity<sofa::geometry::Quad, sofa::defaulttype::Vec2Types>();
+}
+
+TEST(FiniteElement, tetra3dPartitionOfUnity)
+{
+    testPartitionOfUnity<sofa::geometry::Tetrahedron, sofa::defaulttype::Vec3Types>();
+}
+
+TEST(FiniteElement, hexa3dPartitionOfUnity)
+{
+    testPartitionOfUnity<sofa::geometry::Hexahedron, sofa::defaulttype::Vec3Types>();
+}
+
+TEST(FiniteElement, prism3dPartitionOfUnity)
+{
+    testPartitionOfUnity<sofa::geometry::Prism, sofa::defaulttype::Vec3Types>();
+}
+
+TEST(FiniteElement, pyramid3dPartitionOfUnity)
+{
+    testPartitionOfUnity<sofa::geometry::Pyramid, sofa::defaulttype::Vec3Types>();
+}
+
+TEST(FiniteElement, quadraticHexa3dPartitionOfUnity)
+{
+    testPartitionOfUnity<sofa::geometry::QuadraticHexahedron, sofa::defaulttype::Vec3Types>();
+}
+
+// Finite-difference cross-check: analytical gradient vs numerical gradient
+//    Catches algebra/sign errors without needing hand-derived expected values.
+template <class ElementType, class DataTypes>
+void testGradientMatchesFiniteDifference(
+   const sofa::type::Vec<sofa::fem::FiniteElement<ElementType, DataTypes>::TopologicalDimension, sofa::Real_t<DataTypes>>& q)
+{
+    using FE = sofa::fem::FiniteElement<ElementType, DataTypes>;
+    using Real = sofa::Real_t<DataTypes>;
+    constexpr Real h = 1e-6;
+
+    const auto analyticalGrad = FE::gradientShapeFunctions(q);
+
+    for (unsigned int d = 0; d < FE::TopologicalDimension; ++d)
+    {
+        auto qPlus = q, qMinus = q;
+        qPlus[d]  += h;
+        qMinus[d] -= h;
+
+        const auto Nplus  = FE::shapeFunctions(qPlus);
+        const auto Nminus = FE::shapeFunctions(qMinus);
+
+        for (unsigned int i = 0; i < FE::NumberOfNodesInElement; ++i)
+        {
+            const Real fd = (Nplus[i] - Nminus[i]) / (2 * h);
+            EXPECT_NEAR(analyticalGrad[i][d], fd, 1e-5)
+                << "Gradient mismatch for node " << i << ", direction " << d;
+        }
+    }
+}
+
+
+TEST(FiniteElement, edge1dGradientMatchesFiniteDifference)
+{
+    testGradientMatchesFiniteDifference<sofa::geometry::Edge, sofa::defaulttype::Vec1Types>(sofa::type::Vec1(0.));
+    testGradientMatchesFiniteDifference<sofa::geometry::Edge, sofa::defaulttype::Vec1Types>(sofa::type::Vec1(1.));
+    testGradientMatchesFiniteDifference<sofa::geometry::Edge, sofa::defaulttype::Vec1Types>(sofa::type::Vec1(-1.));
+}
+
+TEST(FiniteElement, edge2dGradientMatchesFiniteDifference)
+{
+    testGradientMatchesFiniteDifference<sofa::geometry::Edge, sofa::defaulttype::Vec2Types>(sofa::type::Vec1(0.));
+    testGradientMatchesFiniteDifference<sofa::geometry::Edge, sofa::defaulttype::Vec2Types>(sofa::type::Vec1(1.));
+    testGradientMatchesFiniteDifference<sofa::geometry::Edge, sofa::defaulttype::Vec2Types>(sofa::type::Vec1(-1.));
+}
+
+TEST(FiniteElement, edge3dGradientMatchesFiniteDifference)
+{
+    testGradientMatchesFiniteDifference<sofa::geometry::Edge, sofa::defaulttype::Vec3Types>(sofa::type::Vec1(0.));
+    testGradientMatchesFiniteDifference<sofa::geometry::Edge, sofa::defaulttype::Vec3Types>(sofa::type::Vec1(1.));
+    testGradientMatchesFiniteDifference<sofa::geometry::Edge, sofa::defaulttype::Vec3Types>(sofa::type::Vec1(-1.));
+}
+
+TEST(FiniteElement, triangle2dGradientMatchesFiniteDifference)
+{
+    testGradientMatchesFiniteDifference<sofa::geometry::Triangle, sofa::defaulttype::Vec2Types>(sofa::type::Vec2(0., 0.));
+    testGradientMatchesFiniteDifference<sofa::geometry::Triangle, sofa::defaulttype::Vec2Types>(sofa::type::Vec2(1., 1.));
+}
+
+TEST(FiniteElement, triangle3dGradientMatchesFiniteDifference)
+{
+    testGradientMatchesFiniteDifference<sofa::geometry::Triangle, sofa::defaulttype::Vec3Types>(sofa::type::Vec2(0., 0.));
+    testGradientMatchesFiniteDifference<sofa::geometry::Triangle, sofa::defaulttype::Vec3Types>(sofa::type::Vec2(1., 1.));
+}
+
+TEST(FiniteElement, quad2dGradientMatchesFiniteDifference)
+{
+    testGradientMatchesFiniteDifference<sofa::geometry::Quad, sofa::defaulttype::Vec2Types>(sofa::type::Vec2(0., 0.));
+    testGradientMatchesFiniteDifference<sofa::geometry::Quad, sofa::defaulttype::Vec2Types>(sofa::type::Vec2(1., 1.));
+}
+
+TEST(FiniteElement, quad3dGradientMatchesFiniteDifference)
+{
+    testGradientMatchesFiniteDifference<sofa::geometry::Quad, sofa::defaulttype::Vec3Types>(sofa::type::Vec2(0., 0.));
+    testGradientMatchesFiniteDifference<sofa::geometry::Quad, sofa::defaulttype::Vec3Types>(sofa::type::Vec2(1., 1.));
+}
+
+TEST(FiniteElement, tetra3dGradientMatchesFiniteDifference)
+{
+    testGradientMatchesFiniteDifference<sofa::geometry::Tetrahedron, sofa::defaulttype::Vec3Types>(sofa::type::Vec3(0., 0., 0.));
+    testGradientMatchesFiniteDifference<sofa::geometry::Tetrahedron, sofa::defaulttype::Vec3Types>(sofa::type::Vec3(1., 1., 1.));
+}
+
+TEST(FiniteElement, hexa3dGradientMatchesFiniteDifference)
+{
+    testGradientMatchesFiniteDifference<sofa::geometry::Hexahedron, sofa::defaulttype::Vec3Types>(sofa::type::Vec3(0., 0., 0.));
+    testGradientMatchesFiniteDifference<sofa::geometry::Hexahedron, sofa::defaulttype::Vec3Types>(sofa::type::Vec3(1., 1., 1.));
+}
+
+TEST(FiniteElement, prism3dGradientMatchesFiniteDifference)
+{
+    testGradientMatchesFiniteDifference<sofa::geometry::Prism, sofa::defaulttype::Vec3Types>(sofa::type::Vec3(0., 0., 0.));
+    testGradientMatchesFiniteDifference<sofa::geometry::Prism, sofa::defaulttype::Vec3Types>(sofa::type::Vec3(1., 1., 1.));
+}
+
+TEST(FiniteElement, pyramid3dGradientMatchesFiniteDifference)
+{
+    testGradientMatchesFiniteDifference<sofa::geometry::Pyramid, sofa::defaulttype::Vec3Types>(sofa::type::Vec3(0., 0., 0.));
+    testGradientMatchesFiniteDifference<sofa::geometry::Pyramid, sofa::defaulttype::Vec3Types>(sofa::type::Vec3(0.5, 0.5, 0.5));
+}
+
+TEST(FiniteElement, quadraticHexa3dGradientMatchesFiniteDifference)
+{
+    testGradientMatchesFiniteDifference<sofa::geometry::QuadraticHexahedron, sofa::defaulttype::Vec3Types>(sofa::type::Vec3(0., 0., 0.));
+    testGradientMatchesFiniteDifference<sofa::geometry::QuadraticHexahedron, sofa::defaulttype::Vec3Types>(sofa::type::Vec3(1, 1, 1));
 }
 
 }

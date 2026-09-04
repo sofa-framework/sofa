@@ -12,6 +12,7 @@ set(HEADER_FILES
     ${SOFATOPOLOGYSRC_ROOT}/Edge.h
     ${SOFATOPOLOGYSRC_ROOT}/Triangle.h
     ${SOFATOPOLOGYSRC_ROOT}/Quad.h
+    ${SOFATOPOLOGYSRC_ROOT}/QuadraticElements.h
     ${SOFATOPOLOGYSRC_ROOT}/Tetrahedron.h
     ${SOFATOPOLOGYSRC_ROOT}/Pentahedron.h
     ${SOFATOPOLOGYSRC_ROOT}/Prism.h

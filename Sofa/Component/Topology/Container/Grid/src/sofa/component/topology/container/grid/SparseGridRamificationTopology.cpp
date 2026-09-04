@@ -848,8 +848,8 @@ void SparseGridRamificationTopology::buildVirtualFinerLevels()
     {
         _virtualFinerLevels[0]->d_seqPoints.setParent(&this->d_seqPoints);
         _virtualFinerLevels[0]->d_facets.setParent(&this->d_facets);
-        _virtualFinerLevels[0]->d_seqTriangles.setParent(&this->d_seqTriangles);
-        _virtualFinerLevels[0]->d_seqQuads.setParent(&this->d_seqQuads);
+        _virtualFinerLevels[0]->d_seqTriangles.setParent(&this->d_seqTriangles.toData());
+        _virtualFinerLevels[0]->d_seqQuads.setParent(&this->d_seqQuads.toData());
     }
     else
         _virtualFinerLevels[0]->load(fileTopology.c_str());
