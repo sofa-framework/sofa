@@ -72,7 +72,7 @@ struct PartialFixedProjectiveConstraint_test : public BaseSimulationTest
         const simulation::Node::SPtr root = simulation->createNewGraph("root");
 
         root->setGravity( type::Vec3(0,0,0) );
-        simulation::Node::SPtr node = createEulerSolverNode(root,"EulerExplicitSolver", integrationScheme);
+        simulation::Node::SPtr node = createEulerSolverNode(root,"EulerExplicitIntegrationScheme", integrationScheme);
 
         mstate = New<sofa::component::statecontainer::MechanicalObject<DataTypes> >();
         mstate->resize(1);

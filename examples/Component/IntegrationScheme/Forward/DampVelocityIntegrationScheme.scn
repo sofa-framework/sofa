@@ -1,0 +1,28 @@
+<Node name="root" gravity="0 0 0" dt="0.05">
+    <RequiredPlugin pluginName="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+    <RequiredPlugin pluginName="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [IdentityMapping] -->
+    <RequiredPlugin pluginName="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
+    <RequiredPlugin pluginName="Sofa.Component.IntegrationScheme.Backward"/> <!-- Needed to use components [EulerImplicitIntegrationScheme] -->
+    <RequiredPlugin pluginName="Sofa.Component.IntegrationScheme.Forward"/> <!-- Needed to use components [DampVelocitySolver] -->
+    <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [TriangleFEMForceField] -->
+    <RequiredPlugin pluginName="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin pluginName="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
+    <RequiredPlugin pluginName="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+    <RequiredPlugin pluginName="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+    <VisualStyle displayFlags="showBehaviorModels showForceFields" />
+    <DefaultAnimationLoop/>
+
+    <Node name="M0">
+        <EulerImplicitIntegrationScheme  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-10"/>
+        <DampVelocitySolver rate="0.9" threshold="0.01" printLog="0" name="damp" />
+        <MechanicalObject position="0 0 0  1 0 0  1 1 0  0 1 0" velocity="1 0 0  1 0 0  1 0 0  1 0 0" />
+        <UniformMass vertexMass="0.1" />
+        <MeshTopology triangles="0 1 2  0 2 3" />
+        <TriangleFEMForceField name="FEM0" youngModulus="100" poissonRatio="0.3" method="large" />
+        <Node name="Visu">
+            <OglModel name="Visual" color="red" />
+            <IdentityMapping input="@.." output="@Visual" />
+        </Node>
+    </Node>
+</Node>

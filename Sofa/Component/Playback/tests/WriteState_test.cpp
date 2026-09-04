@@ -29,8 +29,7 @@ using sofa::testing::BaseSimulationTest;
 
 #include <sofa/simulation/graph/DAGSimulation.h>
 
-#include <sofa/component/odesolver/backward/EulerImplicitSolver.h>
-#include <sofa/component/odesolver/backward/VariationalSymplecticSolver.h>
+#include <sofa/component/integrationscheme/backward//EulerImplicitIntegrationScheme.h>
 #include <sofa/component/linearsolver/iterative/CGLinearSolver.h>
 #include <sofa/component/statecontainer/MechanicalObject.h>
 #include <sofa/component/mass/UniformMass.h>
@@ -78,22 +77,20 @@ namespace sofa {
         }
 
         // Create the scene and the components
-        void createScene(bool symplectic)
+        void createScene(bool testPosition)
         {
             timeStep = 0.01;
             root->setGravity(Coord(0.0,0.0,gravity));
             root->setDt(timeStep);
 
-            if(symplectic)
+            const sofa::component::integrationscheme::backward::EulerImplicitIntegrationScheme::SPtr eulerSolver = New<sofa::component::integrationscheme::backward::EulerImplicitIntegrationScheme>();
+
+            if(testPosition)
             {
-                const sofa::component::odesolver::backward::VariationalSymplecticSolver::SPtr variationalSolver = New<sofa::component::odesolver::backward::VariationalSymplecticSolver>();
-                root->addObject(variationalSolver);
+                eulerSolver->d_trapezoidalScheme.setValue(true);
             }
-            else
-            {
-                const sofa::component::odesolver::backward::EulerImplicitSolver::SPtr eulerSolver = New<sofa::component::odesolver::backward::EulerImplicitSolver>();
-                root->addObject(eulerSolver);
-            }
+            root->addObject(eulerSolver);
+
             const CGLinearSolver::SPtr cgLinearSolver = New<CGLinearSolver> ();
             cgLinearSolver->d_maxIter.setValue(25u);
             cgLinearSolver->d_tolerance.setValue(1e-5);
@@ -105,6 +102,7 @@ namespace sofa {
             mecaObj = New<MechanicalObject>();
             mecaObj->resize(1);
             childNode->addObject(mecaObj);
+
             typename UniformMass::SPtr mass = New<UniformMass>();
             mass->setTotalMass(1.0);
             childNode->addObject(mass);
@@ -115,9 +113,10 @@ namespace sofa {
             time[0] = 0.0;
             writeState->d_period.setValue(timeStep);
 
+
             std::cout<<"SOFA_COMPONENT_PLAYBACK_TEST_BUILD_DIR = "<<SOFA_COMPONENT_PLAYBACK_TEST_BUILD_DIR<<std::endl;
 
-            if(symplectic)
+            if(testPosition)
             {
                 writeState->d_filename.setValue(std::string(SOFA_COMPONENT_PLAYBACK_TEST_BUILD_DIR)+"particleGravityX.data");
                 writeState->d_writeX.setValue(true);
@@ -154,13 +153,13 @@ namespace sofa {
 
 
         /// Function where you can implement the test you want to do
-        bool simulation_result_test(bool symplectic)
+        bool simulation_result_test(bool testPosition)
         {
             const double time = root->getTime();
             double result;
 
             // Compute the ANALYTICAL solution in POSITION
-            if(symplectic)
+            if(testPosition)
             {
                 final_expected_value = gravity*time*time/2.0; // position of a particle under gravity
                 result = mecaObj->x.getValue()[0][2];
@@ -171,16 +170,15 @@ namespace sofa {
                 final_expected_value = gravity*time; // velocity of a particle under gravity
                 result = mecaObj->v.getValue()[0][2];
             }
-
-            EXPECT_TRUE( fabs(final_expected_value-result)<std::numeric_limits<double>::epsilon() );
+            EXPECT_NEAR(final_expected_value,result, 1e-15);
             return true;
         }
 
-        bool test_export(bool symplectic)
+        bool test_export(bool testPosition)
         {
             // Check the written file by WriteState : should be exactly the same as reference file
             std::string createdFile, referenceFile;
-            if(symplectic)
+            if(testPosition)
             {
                 createdFile = std::string(SOFA_COMPONENT_PLAYBACK_TEST_BUILD_DIR)+"particleGravityX.data";
                 referenceFile = std::string(SOFA_COMPONENT_PLAYBACK_TEST_FILES_DIR)+"particleGravityX-reference.data";
@@ -206,7 +204,7 @@ namespace sofa {
             }
             if (f1.tellg() != f2.tellg())
             {
-                std::cout<<"File size mismatch "<<std::endl;
+                std::cout<<"File size mismatch : f1.tellg()="<<f1.tellg()<<" and f2.tellg()="<<f2.tellg()<<std::endl;
                 return false;
             }
 
@@ -237,22 +235,25 @@ namespace sofa {
     // Test 1 : write position of a particle falling under gravity (required to use SymplecticSolver
     TYPED_TEST( WriteState_test , test_write_position)
     {
-        this->createScene(true);
+        bool testPosition = true;
+
+        this->createScene(testPosition);
         this->initScene();
         this->runScene();
 
-        ASSERT_TRUE( this->simulation_result_test(true) );
-        ASSERT_TRUE( this->test_export(true) );
+        ASSERT_TRUE( this->simulation_result_test(testPosition) );
+        ASSERT_TRUE( this->test_export(testPosition) );
     }
 
     // Test 2 : write velocity of a particle falling under gravity
     TYPED_TEST( WriteState_test , test_write_velocity)
     {
-        this->createScene(false);
+        bool testPosition = false;
+        this->createScene(testPosition);
         this->initScene();
         this->runScene();
 
-        ASSERT_TRUE( this->simulation_result_test(false) );
-        ASSERT_TRUE( this->test_export(false) );
+        ASSERT_TRUE( this->simulation_result_test(testPosition) );
+        ASSERT_TRUE( this->test_export(testPosition) );
     }
 }

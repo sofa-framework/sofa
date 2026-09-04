@@ -13,7 +13,7 @@
         <RequiredPlugin pluginName="Sofa.Component.LinearSystem"/> <!-- Needed to use components [MatrixLinearSystem] -->
         <RequiredPlugin pluginName="Sofa.Component.Mapping.NonLinear"/> <!-- Needed to use components [DistanceMapping] -->
         <RequiredPlugin pluginName="Sofa.Component.Mass"/> <!-- Needed to use components [DiagonalMass] -->
-        <RequiredPlugin pluginName="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+        <RequiredPlugin pluginName="Sofa.Component.IntegrationScheme.Backward"/> <!-- Needed to use components [EulerImplicitIntegrationScheme] -->
         <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [RestShapeSpringsForceField] -->
         <RequiredPlugin pluginName="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
         <RequiredPlugin pluginName="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [EdgeSetGeometryAlgorithms EdgeSetTopologyContainer] -->
@@ -28,7 +28,7 @@
     
     <Node  name="springsWithGeometricStiffness" >
         <TransformEngine name="translate" input_position="@../loader.position" translation="0 0 0" />
-        <EulerImplicitSolver />
+        <EulerImplicitIntegrationScheme />
 
         <MatrixLinearSystem template="CompressedRowSparseMatrixd" name="system"/>
         <EigenSimplicialLDLT template="CompressedRowSparseMatrixd" linearSystem="@system"/>
@@ -52,7 +52,7 @@
 
     <Node  name="springsWithoutGeometricStiffness" >
         <TransformEngine name="translate" input_position="@../loader.position" translation="0 0 -2" />
-        <EulerImplicitSolver />
+        <EulerImplicitIntegrationScheme />
 
         <MatrixLinearSystem template="CompressedRowSparseMatrixd" name="system"/>
         <EigenSimplicialLDLT template="CompressedRowSparseMatrixd" linearSystem="@system"/>

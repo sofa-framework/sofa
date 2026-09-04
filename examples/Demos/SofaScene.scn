@@ -20,7 +20,7 @@
         <RequiredPlugin pluginName="Sofa.Component.Mapping.NonLinear"/> <!-- Needed to use components [RigidMapping] -->
         <RequiredPlugin pluginName="Sofa.Component.Mass"/> <!-- Needed to use components [MeshMatrixMass UniformMass] -->
         <RequiredPlugin pluginName="Sofa.Component.MechanicalLoad"/> <!-- Needed to use components [ConstantForceField] -->
-        <RequiredPlugin pluginName="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+        <RequiredPlugin pluginName="Sofa.Component.IntegrationScheme.Backward"/> <!-- Needed to use components [EulerImplicitIntegrationScheme] -->
         <RequiredPlugin pluginName="Sofa.Component.Setting"/> <!-- Needed to use components [BackgroundSetting] -->
         <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [HexahedronFEMForceField TetrahedronFEMForceField] -->
         <RequiredPlugin pluginName="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
@@ -55,7 +55,7 @@
 
     <!-- Object = SOFA Logo -->
     <Node name="Logo" >
-        <EulerImplicitSolver name="EulerImplicitScheme" />
+        <EulerImplicitIntegrationScheme name="EulerImplicitScheme" />
         <ConstantSparsityPatternSystem template="CompressedRowSparseMatrixd" name="A" printLog="false"/>
         <EigenSimplicialLDLT name="LDLTLinearSolver" template="CompressedRowSparseMatrixd"  parallelInverseProduct="true"   linearSystem="@A"/>
 
@@ -91,7 +91,7 @@
 
     <!-- Object = beam connecting the SOFA logo and the S letter -->
     <Node name="BeamModel">
-        <EulerImplicitSolver name="EulerImplicitScheme"  printLog="false" />
+        <EulerImplicitIntegrationScheme name="EulerImplicitScheme"  printLog="false" />
         <EigenSparseLU name="LULinearSolver" template="CompressedRowSparseMatrixd" />
 
         <MechanicalObject template="Rigid3d" name="BeamDOF" position="12 0 -9  0.707 0 0.707 0
@@ -114,7 +114,7 @@
 
     <!-- Object = S letter as a 3D deformable object -->
     <Node name="S" >
-        <EulerImplicitSolver name="EulerImplicitScheme" rayleighMass="0.1" rayleighStiffness="0.1" />
+        <EulerImplicitIntegrationScheme name="EulerImplicitScheme" rayleighMass="0.1" rayleighStiffness="0.1" />
         <ConstantSparsityPatternSystem template="CompressedRowSparseMatrixd" name="A" printLog="false"/>
         <EigenSimplicialLDLT name="LDLLinearSolver" template="CompressedRowSparseMatrixd" parallelInverseProduct="true" linearSystem="@A"/>
 
@@ -162,14 +162,14 @@
         <SparseGridRamificationTopology name="SparseGrid" n="4 2 4" position="@OLoader.position" nbVirtualFinerLevels="2" finestConnectivity="0"/>
         <HexahedronSetTopologyContainer name="HexaTopology" src="@SparseGrid"/>
 
-        <EulerImplicitSolver name="EulerImplicitScheme" />
+        <EulerImplicitIntegrationScheme name="EulerImplicitScheme" />
         <ConstantSparsityPatternSystem template="CompressedRowSparseMatrixd" name="A" printLog="false"/>
         <EigenSimplicialLDLT name="precond" template="CompressedRowSparseMatrixd"  parallelInverseProduct="true" linearSystem="@A"/>
 
         <MechanicalObject name="ODOF" position="@HexaTopology.position"  />
         <UniformMass name="Mass" totalMass="0.1" />
         <HexahedronFEMForceField name="LinearElasticityFEM" youngModulus="20" poissonRatio="0.49" method="large" updateStiffnessMatrix="false" printLog="0" />
-        <UncoupledConstraintCorrection name="UncoupledConstraintCorrection" defaultCompliance="38240" useOdeSolverIntegrationFactors="0"/>
+        <UncoupledConstraintCorrection name="UncoupledConstraintCorrection" defaultCompliance="38240" useIntegrationSchemeIntegrationFactors="0"/>
 
         <Node name="Collision">
             <MeshTopology name="CollisionTopology" src="@../OLoader"/>
@@ -187,7 +187,7 @@
 
     <!-- Object = F letter as a rigid frame -->
     <Node name="F" >
-        <EulerImplicitSolver name="EulerImplicitScheme" />
+        <EulerImplicitIntegrationScheme name="EulerImplicitScheme" />
         <EigenSimplicialLDLT name="LDLLinearSolver" template="CompressedRowSparseMatrixd"  />
         <MechanicalObject name="FDOF" template="Rigid3d" position="23.15 0 -2.7 0 0 0 1"/>
         <UniformMass name="Mass" totalMass="0.1" />
@@ -213,7 +213,7 @@
 
     <!-- Object = A letter as a 3D deformable object -->
     <Node name="A" >
-        <EulerImplicitSolver name="EulerImplicitScheme" />
+        <EulerImplicitIntegrationScheme name="EulerImplicitScheme" />
         <ConstantSparsityPatternSystem template="CompressedRowSparseMatrixd" name="A" printLog="false"/>
         <EigenSimplicialLDLT name="LDLLinearSolver" template="CompressedRowSparseMatrixd"  parallelInverseProduct="true" linearSystem="@A"/>
 

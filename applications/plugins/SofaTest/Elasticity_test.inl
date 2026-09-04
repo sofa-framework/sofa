@@ -25,8 +25,8 @@
 #include "Elasticity_test.h"
 
 // Solvers
-#include <sofa/component/odesolver/backward/EulerImplicitSolver.h>
-#include <sofa/component/odesolver/backward/StaticSolver.h>
+#include <sofa/component/integrationscheme/backward/EulerImplicitIntegrationScheme.h>
+#include <sofa/component/integrationscheme/backward/StaticEquilibriumIntegrationScheme.h>
 #include <sofa/component/linearsolver/iterative/CGLinearSolver.h>
 
 // Box roi
@@ -110,7 +110,7 @@ Elasticity_test<DataTypes>::createRegularGridScene(
     simulation::Node::SPtr SquareNode = root->createChild("Square");
 
     // Euler implicit solver and cglinear solver
-    component::odesolver::backward::EulerImplicitSolver::SPtr solver = modeling::addNew<component::odesolver::backward::EulerImplicitSolver>(SquareNode,"EulerImplicitSolver");
+    component::integrationscheme::backward::EulerImplicitIntegrationScheme::SPtr solver = modeling::addNew<component::integrationscheme::backward::EulerImplicitIntegrationScheme>(SquareNode,"EulerImplicitIntegrationScheme");
     solver->f_rayleighStiffness.setValue(0.5);
     solver->f_rayleighMass.setValue(0.5);
     CGLinearSolver::SPtr cgLinearSolver = modeling::addNew< CGLinearSolver >(SquareNode,"linearSolver");
@@ -197,8 +197,8 @@ CylinderTractionStruct<DataTypes>  Elasticity_test<DataTypes>::createCylinderTra
     cgLinearSolver->d_maxIter.setValue(maxIter);
     cgLinearSolver->d_tolerance.setValue(1e-9);
     cgLinearSolver->d_smallDenominatorThreshold.setValue(1e-9);
-    // StaticSolver
-    typename component::odesolver::backward::StaticSolver::SPtr solver = modeling::addNew<component::odesolver::backward::StaticSolver>(root,"StaticSolver");
+    // StaticEquilibriumIntegrationScheme
+    typename component::integrationscheme::backward::StaticEquilibriumIntegrationScheme::SPtr solver = modeling::addNew<component::integrationscheme::backward::StaticEquilibriumIntegrationScheme>(root,"StaticEquilibriumIntegrationScheme");
     // mechanicalObject object
     typename MechanicalObject::SPtr meca1= sofa::modeling::addNew<MechanicalObject>(root);
     sofa::modeling::setDataLink(&eng->f_outputTetrahedraPositions,&meca1->x);
@@ -278,8 +278,8 @@ simulation::Node::SPtr Elasticity_test<DT>::createGridScene(
 
     simulation::Node::SPtr simulatedScene = root->createChild("simulatedScene");
 
-    component::odesolver::backward::EulerImplicitSolver::SPtr eulerImplicitSolver = New<component::odesolver::backward::EulerImplicitSolver>();
-    simulatedScene->addObject( eulerImplicitSolver );
+    component::integrationscheme::backward::EulerImplicitIntegrationScheme::SPtr EulerImplicitIntegrationScheme = New<component::integrationscheme::backward::EulerImplicitIntegrationScheme>();
+    simulatedScene->addObject( EulerImplicitIntegrationScheme );
     CGLinearSolver::SPtr cgLinearSolver = New<CGLinearSolver>();
     simulatedScene->addObject(cgLinearSolver);
 

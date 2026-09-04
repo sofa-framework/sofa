@@ -178,7 +178,7 @@ public:
         const Node::SPtr FEMNode = sofa::simpleapi::createChild(m_root, nodeName);
 
         this->loadPlugins({
-            Sofa.Component.ODESolver.Backward,
+            Sofa.Component.IntegrationScheme.Backward,
             Sofa.Component.LinearSolver.Iterative,
             Sofa.Component.StateContainer,
             Sofa.Component.Topology.Container.Dynamic,
@@ -186,8 +186,8 @@ public:
             Sofa.Component.Constraint.Projective
         });
 
-        createObject(FEMNode, "EulerImplicitSolver");
-        createObject(FEMNode, "CGLinearSolver", {{ "iterations", "20" }, { "tolerance", "1e-5" }, {"threshold", "1e-6"}});
+        createObject(FEMNode, "EulerImplicitIntegrationScheme");
+        createObject(FEMNode, "CGLinearSolver", {{ "iterations", "25" }, { "tolerance", "1e-9" }, {"threshold", "1e-9"}});
 
         createObject(FEMNode, "MechanicalObject", {
             {"name","dof"}, {"template",dataTypeName}, {"position", "@../grid.position"} });
@@ -532,7 +532,7 @@ public:
         // Access dofs
         const VecCoord& positions = dofs->x.getValue();
         ASSERT_EQ(positions.size(), nbrGrid * nbrGrid);
-        
+
         EXPECT_NEAR(positions[1515][0], 8.97436, 1e-4);
         EXPECT_NEAR(positions[1515][1], 9.48718, 1e-4);
         EXPECT_NEAR(positions[1515][2], 0, 1e-4);
@@ -544,24 +544,25 @@ public:
 
         if (FEMType == 0 || FEMType == 1)
         {
-            EXPECT_NEAR(positions[1515][0], 8.9135, 1e-4);
-            EXPECT_NEAR(positions[1515][1], 14.2499, 1e-4);
+
+            EXPECT_NEAR(positions[1515][0], 8.89461, 1e-4);
+            EXPECT_NEAR(positions[1515][1], 14.2721, 1e-4);
             EXPECT_NEAR(positions[1515][2], 0, 1e-4);
         }
         else
-        {            
-            EXPECT_NEAR(positions[1515][0], 9.03591, 1e-4); // TODO: epernod 2021-08-03: there is a diff here compare to TriangleFEMForceField
-            EXPECT_NEAR(positions[1515][1], 12.8705, 1e-4); // TODO: epernod 2021-08-03: there is a diff here compare to TriangleFEMForceField
+        {
+            EXPECT_NEAR(positions[1515][0], 9.04982, 1e-4); // TODO: epernod 2021-08-03: there is a diff here compare to TriangleFEMForceField
+            EXPECT_NEAR(positions[1515][1], 12.8613, 1e-4); // TODO: epernod 2021-08-03: there is a diff here compare to TriangleFEMForceField
             EXPECT_NEAR(positions[1515][2], 0, 1e-4);
         }
 
         // 1st value expected values (square 2D triangle)
         static const Mat33 exp_rotatedInitPos = Mat33(Vec3(0, 0, 0), Vec3(0.25641, 0, 0), Vec3(0.25641, 0.25641, 0));
-        static const Mat33 exp_rotMat = Mat33(Vec3(0.99992, -0.0126608, 0), Vec3(0.0126608, 0.99992, 0), Vec3(0, 0, 1));
+        static const Mat33 exp_rotMat = Mat33(Vec3(0.999913, -0.0132144, 0), Vec3(0.0132144, 0.999913, 0), Vec3(0, 0, 1));
         static const Mat33 exp_stiffnessMat = Mat33(Vec3(3.61243, 1.08373, 0), Vec3(1.08373, 3.61243, 0), Vec3(0, 0, 1.26435));
         Mat63 exp_strainDispl;
-        exp_strainDispl[0] = Vec3(-3.89456, 0, -0.00185328); exp_strainDispl[1] = Vec3(0, -0.00185328, -3.89456); exp_strainDispl[2] = Vec3(3.89456, 0, -3.89816);
-        exp_strainDispl[3] = Vec3(0, -3.89816, 3.89456); exp_strainDispl[4] = Vec3(0, 0, 3.90001); exp_strainDispl[5] = Vec3(0, 3.90001, 0);
+        exp_strainDispl[0] = Vec3(-3.89735, 0, -0.00150402); exp_strainDispl[1] = Vec3(0, -0.00150402, -3.89735); exp_strainDispl[2] = Vec3(3.89735, 0, -3.89954);
+        exp_strainDispl[3] = Vec3(0, -3.89954, 3.89735); exp_strainDispl[4] = Vec3(0, 0, 3.90104); exp_strainDispl[5] = Vec3(0, 3.90104, 0);
         int idTri = 42;
 
         if (FEMType == 0)

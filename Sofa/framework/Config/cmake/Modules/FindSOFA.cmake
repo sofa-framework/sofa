@@ -248,8 +248,8 @@ math(EXPR passToCommon "${sofaLibBaseList}/2+${passToBase}")
 ## Put the name of the library SOFA COMMON to search and put it associate CMakeName
 list(APPEND SOFA_LIB_COMMON_NAME
     SofaDeformable             SOFA_LIB_DEFORMABLE
-    SofaExplicitOdeSolver      SOFA_LIB_ODE_SOLVER
-    SofaImplicitOdeSolver      SOFA_LIB_IMPLICIT_ODE_SOLVER
+    SofaExplicitIntegrationScheme      SOFA_LIB_ODE_SOLVER
+    SofaImplicitIntegrationScheme      SOFA_LIB_IMPLICIT_ODE_SOLVER
     SofaLoader                 SOFA_LIB_LOADER
     SofaMeshCollision          SOFA_LIB_MESH_COLLISION
     SofaRigid                  SOFA_LIB_RIGID

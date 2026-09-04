@@ -3,11 +3,11 @@
       <Tutorial name="Static" scene="Components/solver/StaticSolver.scn" html="Tutorials/Solvers/StaticSolver.html"/>
     </Group>
     <Group name="Explicit">
-      <Tutorial name="Euler" scene="Components/solver/EulerExplicitSolver.scn"       html="Tutorials/Solvers/ExplicitEuler.html"/>
-      <Tutorial name="Runge Kutta 4" scene="Components/solver/RungeKutta4Solver.scn" html="Tutorials/Solvers/ExplicitRungeKutta4.html"/>
+      <Tutorial name="Euler" scene="Components/solver/EulerExplicitIntegrationScheme.scn"       html="Tutorials/Solvers/ExplicitEuler.html"/>
+      <Tutorial name="Runge Kutta 4" scene="Components/solver/RungeKutta4IntegrationScheme.scn" html="Tutorials/Solvers/ExplicitRungeKutta4.html"/>
     </Group>
     <Group name="Implicit">
-	    <Tutorial name="Euler"   scene="Components/solver/EulerImplicitSolver.scn"   html="Tutorials/Solvers/ImplicitEuler.html"/>
-	    <Tutorial name="Newmark" scene="Components/solver/NewmarkImplicitSolver.scn" html="Tutorials/Solvers/ImplicitNewmark.html"/>
+	    <Tutorial name="Euler"   scene="Components/solver/EulerImplicitIntegrationScheme.scn"   html="Tutorials/Solvers/ImplicitEuler.html"/>
+	    <Tutorial name="Newmark" scene="Components/solver/NewmarkIntegrationScheme.scn" html="Tutorials/Solvers/ImplicitNewmark.html"/>
     </Group>
 </Category>

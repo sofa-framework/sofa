@@ -107,10 +107,12 @@ UncoupledConstraintCorrection<DataTypes>::UncoupledConstraintCorrection(sofa::co
     , d_verbose(initData(&d_verbose, false, "verbose", "Dump the constraint matrix at each iteration") )
     , d_correctionVelocityFactor(initData(&d_correctionVelocityFactor, (Real)1.0, "correctionVelocityFactor", "Factor applied to the constraint forces when correcting the velocities"))
     , d_correctionPositionFactor(initData(&d_correctionPositionFactor, (Real)1.0, "correctionPositionFactor", "Factor applied to the constraint forces when correcting the positions"))
-    , d_useOdeSolverIntegrationFactors(initData(&d_useOdeSolverIntegrationFactors, true, "useOdeSolverIntegrationFactors", "Use odeSolver integration factors instead of correctionVelocityFactor and correctionPositionFactor"))
+    , d_useIntegrationSchemeIntegrationFactors(initData(&d_useIntegrationSchemeIntegrationFactors, true, "useIntegrationSchemeIntegrationFactors", "Use odeSolver integration factors instead of correctionVelocityFactor and correctionPositionFactor"))
     , l_topology(initLink("topology", "link to the topology container"))
-    , m_pOdeSolver(nullptr)
+    , m_pIntegrationScheme(nullptr)
 {
+    d_useOdeSolverIntegrationFactors.setOriginalData(&d_useIntegrationSchemeIntegrationFactors);
+    this->addAlias(&d_useIntegrationSchemeIntegrationFactors, "useOdeSolverIntegrationFactors");
     // Check defaultCompliance and entries of the compliance vector are not zero
     core::objectmodel::Base::addUpdateCallback("checkNonZeroComplianceInput", {&d_defaultCompliance, &d_compliance}, [this](const core::DataTracker& t)
     {
@@ -190,6 +192,14 @@ void UncoupledConstraintCorrection<DataTypes>::init()
     {
         msg_warning() << "Neither the \'defaultCompliance\' nor the \'compliance\' data is set, please set one to define your compliance matrix";
     }
+    else
+    {
+        msg_info()<<"Since v26.12, the left hand side matrix has changed its dimension, it is now 1/h times the old one."
+                            " This means that to keep the same logic in your compliance computation (taking inertia into account)"
+                            " you need to multiply your old value to dt. Not doing it will result in having the same behavior but"
+                            " your lambda will not be the same unit as the rest of the simulation, it'll remain an impulsion while"
+                            " the other constraint correction will compute forces.";
+    }
 
     const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
 
@@ -258,15 +268,15 @@ void UncoupledConstraintCorrection<DataTypes>::init()
         msg_info() << "\'defaultCompliance\' data is used: " << d_defaultCompliance.getValue();
     }
 
-    this->getContext()->get(m_pOdeSolver);
-    if (!m_pOdeSolver)
+    this->getContext()->get(m_pIntegrationScheme);
+    if (!m_pIntegrationScheme)
     {
-        if (d_useOdeSolverIntegrationFactors.getValue() == true)
+        if (d_useIntegrationSchemeIntegrationFactors.getValue() == true)
         {
             msg_error() << "Can't find any odeSolver";
-            d_useOdeSolverIntegrationFactors.setValue(false);
+            d_useIntegrationSchemeIntegrationFactors.setValue(false);
         }
-        d_useOdeSolverIntegrationFactors.setReadOnly(true);
+        d_useIntegrationSchemeIntegrationFactors.setReadOnly(true);
     }
 
     this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
@@ -361,10 +371,10 @@ void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(co
     VecReal comp = d_compliance.getValue();
     Real comp0 = d_defaultCompliance.getValue();
     const bool verbose = d_verbose.getValue();
-    const bool useOdeIntegrationFactors = d_useOdeSolverIntegrationFactors.getValue();
-    // use the OdeSolver to get the position integration factor
+    const bool useOdeIntegrationFactors = d_useIntegrationSchemeIntegrationFactors.getValue();
+    // use the IntegrationScheme to get the position integration factor
     const SReal factor = useOdeIntegrationFactors ?
-        core::behavior::BaseConstraintCorrection::correctionFactor(m_pOdeSolver, cparams->constOrder())
+        core::behavior::BaseConstraintCorrection::correctionFactor(m_pIntegrationScheme, cparams->constOrder())
         : 1.0;
 
     comp0 *= Real(factor);
@@ -463,10 +473,24 @@ void UncoupledConstraintCorrection<DataTypes>::getComplianceMatrix(linearalgebra
     if(!this->isComponentStateValid())
         return;
 
-    const VecReal& comp = d_compliance.getValue();
-    const Real comp0 = d_defaultCompliance.getValue();
+    VecReal comp = d_compliance.getValue();
+    Real comp0 = d_defaultCompliance.getValue();
     const unsigned int s = this->mstate->getSize(); // comp.size();
     const unsigned int dimension = Coord::size();
+
+    //Multiply by correction factor so that the resulting lambda is already a force.
+    const bool useOdeIntegrationFactors = d_useIntegrationSchemeIntegrationFactors.getValue();
+    // use the IntegrationScheme to get the position integration factor
+    const SReal factor = useOdeIntegrationFactors ?
+        m_pIntegrationScheme->getPositionIntegrationFactor()
+        : 1.0;
+
+    comp0 *= Real(factor);
+    for(Size i=0;i<comp.size(); ++i)
+    {
+        comp[i] *= Real(factor);
+    }
+
 
     m->resize(s * dimension, s * dimension); //resize must set to zero the content of the matrix
 
@@ -523,10 +547,10 @@ void UncoupledConstraintCorrection<DataTypes>::applyMotionCorrection(const core:
     const VecCoord& x_free = cparams->readX(this->mstate.get())->getValue();
     const VecDeriv& v_free = cparams->readV(this->mstate.get())->getValue();
       
-    const bool useOdeIntegrationFactors = d_useOdeSolverIntegrationFactors.getValue();
+    const bool useOdeIntegrationFactors = d_useIntegrationSchemeIntegrationFactors.getValue();
 
-    const Real xFactor = useOdeIntegrationFactors ? Real(m_pOdeSolver->getPositionIntegrationFactor()) : this->d_correctionPositionFactor.getValue();
-    const Real vFactor = useOdeIntegrationFactors ? Real(m_pOdeSolver->getVelocityIntegrationFactor()) : (Real)(this->d_correctionVelocityFactor.getValue() / this->getContext()->getDt());
+    const Real xFactor = useOdeIntegrationFactors ? Real(m_pIntegrationScheme->getPositionIntegrationFactor()) : this->d_correctionPositionFactor.getValue();
+    const Real vFactor = useOdeIntegrationFactors ? Real(m_pIntegrationScheme->getVelocityIntegrationFactor()) : (Real)(this->d_correctionVelocityFactor.getValue() / this->getContext()->getDt());
 
     for (unsigned int i = 0; i < dx.size(); i++)
     {
@@ -555,9 +579,9 @@ void UncoupledConstraintCorrection<DataTypes>::applyPositionCorrection(const cor
 
     const VecCoord& x_free = cparams->readX(this->mstate.get())->getValue();
 
-    const bool useOdeIntegrationFactors = d_useOdeSolverIntegrationFactors.getValue();
+    const bool useOdeIntegrationFactors = d_useIntegrationSchemeIntegrationFactors.getValue();
 
-    const Real xFactor = useOdeIntegrationFactors ? Real(m_pOdeSolver->getPositionIntegrationFactor()) : this->d_correctionPositionFactor.getValue();
+    const Real xFactor = useOdeIntegrationFactors ? Real(m_pIntegrationScheme->getPositionIntegrationFactor()) : this->d_correctionPositionFactor.getValue();
 
     for (unsigned int i = 0; i < dx.size(); i++)
     {
@@ -583,9 +607,9 @@ void UncoupledConstraintCorrection<DataTypes>::applyVelocityCorrection(const cor
 
     const VecDeriv& v_free = cparams->readV(this->mstate.get())->getValue();
 
-    const bool useOdeIntegrationFactors = d_useOdeSolverIntegrationFactors.getValue();
+    const bool useOdeIntegrationFactors = d_useIntegrationSchemeIntegrationFactors.getValue();
 
-    const Real vFactor = useOdeIntegrationFactors ? Real(m_pOdeSolver->getVelocityIntegrationFactor()) : this->d_correctionVelocityFactor.getValue();
+    const Real vFactor = useOdeIntegrationFactors ? Real(m_pIntegrationScheme->getVelocityIntegrationFactor()) : this->d_correctionVelocityFactor.getValue();
     
     for (unsigned int i = 0; i < dx.size(); i++)
     {
@@ -639,10 +663,10 @@ void UncoupledConstraintCorrection<DataTypes>::applyContactForce(const linearalg
     const VecDeriv& v_free = this->mstate->read(core::vec_id::read_access::freeVelocity)->getValue();
     const VecCoord& x_free = this->mstate->read(core::vec_id::read_access::freePosition)->getValue();
 
-    const bool useOdeIntegrationFactors = d_useOdeSolverIntegrationFactors.getValue();
+    const bool useOdeIntegrationFactors = d_useIntegrationSchemeIntegrationFactors.getValue();
 
-    const Real xFactor = useOdeIntegrationFactors ? Real(m_pOdeSolver->getPositionIntegrationFactor()) : this->d_correctionPositionFactor.getValue();
-    const Real vFactor = useOdeIntegrationFactors ? Real(m_pOdeSolver->getVelocityIntegrationFactor()) : (Real)(this->d_correctionVelocityFactor.getValue() / this->getContext()->getDt());
+    const Real xFactor = useOdeIntegrationFactors ? Real(m_pIntegrationScheme->getPositionIntegrationFactor()) : this->d_correctionPositionFactor.getValue();
+    const Real vFactor = useOdeIntegrationFactors ? Real(m_pIntegrationScheme->getVelocityIntegrationFactor()) : (Real)(this->d_correctionVelocityFactor.getValue() / this->getContext()->getDt());
 
     // Euler integration... will be done in the "integrator" as soon as it exists !
     dx.resize(v.size());
@@ -760,17 +784,31 @@ void UncoupledConstraintCorrection<DataTypes>::addConstraintDisplacement(SReal *
 template<class DataTypes>
 void UncoupledConstraintCorrection<DataTypes>::setConstraintDForce(SReal * df, int begin, int end, bool update)
 {
+    if (!update)
+        return;
+
     /// set a force difference on a set of constraints (between constraint number "begin" and constraint number "end"
     /// if update is false, do nothing
     /// if update is true, it computes the displacements due to this delta of force.
     /// As the contact are uncoupled, a displacement is obtained only on dof involved with the constraints
 
     const MatrixDeriv& constraints = this->mstate->read(core::vec_id::read_access::constraintJacobian)->getValue();
-    const VecReal& comp = d_compliance.getValue();
-    const Real comp0 = d_defaultCompliance.getValue();
+    VecReal comp = d_compliance.getValue();
+    Real comp0 = d_defaultCompliance.getValue();
 
-    if (!update)
-        return;
+    //Multiply by correction factor so that the resulting lambda is already a force.
+    const bool useOdeIntegrationFactors = d_useIntegrationSchemeIntegrationFactors.getValue();
+    // use the IntegrationScheme to get the position integration factor
+    const SReal factor = useOdeIntegrationFactors ?
+        m_pIntegrationScheme->getPositionIntegrationFactor()
+        : 1.0;
+
+    comp0 *= Real(factor);
+    for(Size i=0;i<comp.size(); ++i)
+    {
+        comp[i] *= Real(factor);
+    }
+
 
     for (int id = begin; id <= end; id++)
     {
@@ -803,8 +841,21 @@ template<class DataTypes>
 void UncoupledConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(linearalgebra::BaseMatrix* W, int begin, int end)
 {
     const MatrixDeriv& constraints = this->mstate->read(core::vec_id::read_access::constraintJacobian)->getValue();
-    const VecReal& comp = d_compliance.getValue();
-    const Real comp0 = d_defaultCompliance.getValue();
+    VecReal comp = d_compliance.getValue();
+    Real comp0 = d_defaultCompliance.getValue();
+
+    //Multiply by correction factor so that the resulting lambda is already a force.
+    const bool useOdeIntegrationFactors = d_useIntegrationSchemeIntegrationFactors.getValue();
+    // use the IntegrationScheme to get the position integration factor
+    const SReal factor = useOdeIntegrationFactors ?
+        m_pIntegrationScheme->getPositionIntegrationFactor()
+        : 1.0;
+
+    comp0 *= Real(factor);
+    for(Size i=0;i<comp.size(); ++i)
+    {
+        comp[i] *= Real(factor);
+    }
 
     for (int id1 = begin; id1 <= end; id1++)
     {

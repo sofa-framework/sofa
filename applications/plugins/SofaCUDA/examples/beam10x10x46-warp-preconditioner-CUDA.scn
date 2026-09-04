@@ -21,7 +21,7 @@
 	</Node>
 	<Node name="M1">
 		<!--<CGImplicit iterations="10" />-->
-		<EulerImplicitSolver name="odesolver"  rayleighStiffness="0.1" rayleighMass="0.1" />
+		<EulerImplicitIntegrationScheme name="odesolver"  rayleighStiffness="0.1" rayleighMass="0.1" />
 		<PCGLinearSolver name="linearsolver" iterations="100" preconditioners="preconditioner"/>
 		<RegularGridTopology
 			nx="10" ny="10" nz="46"

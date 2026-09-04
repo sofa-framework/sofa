@@ -130,7 +130,7 @@ public:
             Sofa.Component.SolidMechanics.FEM.Elastic,
             Sofa.Component.Mass,
             Sofa.Component.LinearSolver.Iterative,
-            Sofa.Component.ODESolver.Backward,
+            Sofa.Component.IntegrationScheme.Backward,
             Sofa.Component.Constraint.Lagrangian,
             Sofa.Component.Topology.Mapping,
             Sofa.Component.Engine.Select,
@@ -144,7 +144,7 @@ public:
 
 
         simulation::Node::SPtr FEMNode = sofa::simpleapi::createChild(m_root, "Beam");
-        simpleapi::createObject(FEMNode, "EulerImplicitSolver");
+        simpleapi::createObject(FEMNode, "EulerImplicitIntegrationScheme");
         //createObject(FEMNode, "SparseLDLSolver", { {"name","solver"}, { "template", "CompressedRowSparseMatrixd" } });
         simpleapi::createObject(FEMNode, "CGLinearSolver", { { "iterations", "20" }, { "tolerance", "1e-5" }, {"threshold", "1e-6"} });
 

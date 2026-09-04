@@ -22,6 +22,7 @@
 #pragma once
 
 #include <sofa/simulation/Visitor.h>
+#include <sofa/core/behavior/BaseIntegrationScheme.h>
 #include <sofa/core/MultiVecId.h>
 #include <sofa/simulation/task/CpuTask.h>
 
@@ -48,7 +49,7 @@ public:
 
     SolveVisitor(const sofa::core::ExecParams* params, SReal _dt, bool free, bool _parallelSolve = false, bool computeForceIsolatedInteractionForceFields = false);
 
-    virtual void processSolver(simulation::Node* node, sofa::core::behavior::OdeSolver* b);
+    virtual void processSolver(simulation::Node* node,  sofa::core::behavior::BaseIntegrationScheme* b);
     void fwdInteractionForceField(Node* node, core::behavior::BaseInteractionForceField* forceField);
     Result processNodeTopDown(simulation::Node* node) override;
     void processNodeBottomUp(simulation::Node* /*node*/) override;
@@ -95,13 +96,13 @@ class SolveVisitorTask : public sofa::simulation::CpuTask
 {
 public:
     SolveVisitorTask(sofa::simulation::CpuTask::Status* status,
-                     sofa::core::behavior::OdeSolver* odeSolver,
+                      sofa::core::behavior::BaseIntegrationScheme* IntegrationScheme,
                      const sofa::core::ExecParams* params,
                      SReal dt,
                      sofa::core::MultiVecCoordId x,
                      sofa::core::MultiVecDerivId v)
     : sofa::simulation::CpuTask(status)
-    , m_solver(odeSolver)
+    , m_solver(IntegrationScheme)
     , m_execParams(params)
     , m_dt(dt)
     , m_x(x)
@@ -112,7 +113,7 @@ public:
     sofa::simulation::Task::MemoryAlloc run() final;
 
 private:
-    sofa::core::behavior::OdeSolver* m_solver {nullptr};
+     sofa::core::behavior::BaseIntegrationScheme* m_solver {nullptr};
     const sofa::core::ExecParams* m_execParams {nullptr};
     SReal m_dt;
     sofa::core::MultiVecCoordId m_x;

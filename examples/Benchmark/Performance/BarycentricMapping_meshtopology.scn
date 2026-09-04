@@ -10,7 +10,7 @@
         <RequiredPlugin pluginName="Sofa.Component.LinearSolver.Direct"/> <!-- Needed to use components [SparseLDLSolver] -->
         <RequiredPlugin pluginName="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [BarycentricMapping] -->
         <RequiredPlugin pluginName="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
-        <RequiredPlugin pluginName="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+        <RequiredPlugin pluginName="Sofa.Component.IntegrationScheme.Backward"/> <!-- Needed to use components [EulerImplicitIntegrationScheme] -->
         <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [TetrahedronFEMForceField] -->
         <RequiredPlugin pluginName="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
         <RequiredPlugin pluginName="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [TriangleSetTopologyContainer] -->
@@ -28,7 +28,7 @@
     </Node>
 
     <Node name="raptor">
-        <EulerImplicitSolver rayleighStiffness="0.2" rayleighMass="0.2" />
+        <EulerImplicitIntegrationScheme rayleighStiffness="0.2" rayleighMass="0.2" />
         <SparseLDLSolver template="CompressedRowSparseMatrixd"/>
         <MeshTopology hexahedra="@../data/topology.hexahedra" />
         <MechanicalObject name="DOFs" template="Vec3" position="@../data/DOFs.position"/>

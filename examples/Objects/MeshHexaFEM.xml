@@ -1,5 +1,5 @@
 <Node name="MeshHexaFEM">
-	<EulerImplicitSolver rayleighStiffness="0.01"  rayleighMass="0.1" />
+	<EulerImplicitIntegrationScheme rayleighStiffness="0.01"  rayleighMass="0.1" />
 	<CGLinearSolver iterations="25" threshold="0.00000001" />	 
 	<MeshOBJLoader name="loader" filename="file"/>
 	<MeshTopology src="@loader"/> 

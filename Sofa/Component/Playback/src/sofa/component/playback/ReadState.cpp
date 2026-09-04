@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include <sofa/component/playback/ReadState.inl>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/core/behavior/OdeSolver.h>
+#include <sofa/core/behavior/BaseIntegrationScheme.h>
 #include <sofa/simulation/Node.h>
 
 namespace sofa::component::playback
@@ -68,7 +68,7 @@ simulation::Visitor::Result ReadStateCreator::processNodeTopDown( simulation::No
 {
     sofa::core::behavior::BaseMechanicalState * mstate=gnode->mechanicalState;
     if (!mstate)   return Visitor::RESULT_CONTINUE;
-    core::behavior::OdeSolver *isSimulated;
+    core::behavior::BaseIntegrationScheme *isSimulated;
     mstate->getContext()->get(isSimulated);
     if (!isSimulated) return simulation::Visitor::RESULT_CONTINUE;
 

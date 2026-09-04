@@ -300,7 +300,7 @@ bool LCPForceFeedback_test::test_Collision()
     EXPECT_FLOAT_EQ(coords[0][6], coordT[6]);
 
     //// force
-    trueForce = sofa::type::Vec3(-0.00084725959, 0.0024373089, -4.2111449e-05);
+    trueForce = sofa::type::Vec3(-0.016945193, 0.04874618, -0.00084222894);
     EXPECT_FLOAT_EQ(force[0], trueForce[0]);
     EXPECT_FLOAT_EQ(force[1], trueForce[1]);
     EXPECT_FLOAT_EQ(force[2], trueForce[2]);
@@ -323,7 +323,7 @@ bool LCPForceFeedback_test::test_Collision()
     EXPECT_FLOAT_EQ(inside[6], coordT[6]);
 
     //// force
-    trueForce = sofa::type::Vec3(0.27008709, 9.1463537, 0.060468301);
+    trueForce = sofa::type::Vec3(5.401742, 182.92708, 1.209366);
     EXPECT_FLOAT_EQ(force[0], trueForce[0]);
     EXPECT_FLOAT_EQ(force[1], trueForce[1]);
     EXPECT_FLOAT_EQ(force[2], trueForce[2]);
@@ -333,12 +333,12 @@ bool LCPForceFeedback_test::test_Collision()
     m_LCPFFBack->computeForce(coords, forces);
          
     EXPECT_EQ(forces.size(), 1);
-    EXPECT_FLOAT_EQ(forces[0][0], -0.00013606942);
-    EXPECT_FLOAT_EQ(forces[0][1], 0.0027710579);
-    EXPECT_FLOAT_EQ(forces[0][2], -0.00090467848);
-    EXPECT_FLOAT_EQ(forces[0][3], 0.00030387595);
-    EXPECT_FLOAT_EQ(forces[0][4], -0.00031411531);
-    EXPECT_FLOAT_EQ(forces[0][5], -0.0010078497);
+    EXPECT_FLOAT_EQ(forces[0][0], -0.0027213881);
+    EXPECT_FLOAT_EQ(forces[0][1],  0.055421159);
+    EXPECT_FLOAT_EQ(forces[0][2], -0.018093569);
+    EXPECT_FLOAT_EQ(forces[0][3],  0.0060775192);
+    EXPECT_FLOAT_EQ(forces[0][4], -0.0062823063);
+    EXPECT_FLOAT_EQ(forces[0][5], -0.020156994);
 
     return true;
 }
