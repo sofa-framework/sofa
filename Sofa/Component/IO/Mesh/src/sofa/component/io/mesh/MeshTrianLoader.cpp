@@ -53,7 +53,7 @@ MeshTrianLoader::MeshTrianLoader() : MeshLoader()
 
 
 
-bool MeshTrianLoader::doLoad()
+bool MeshTrianLoader::doLoadMesh()
 {
     msg_info() << "Loading Trian file: " << d_filename;
 
