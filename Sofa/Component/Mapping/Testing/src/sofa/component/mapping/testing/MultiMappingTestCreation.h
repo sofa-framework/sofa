@@ -177,8 +177,8 @@ struct MultiMapping_test : public BaseSimulationTest, NumericTest<typename _Mult
         sofa::simulation::node::initRoot(root.get());
 
         /// apply the mapping
-        mapping->apply(&mparams, core::vec_id::write_access::position, core::vec_id::write_access::position);
-        mapping->applyJ(&mparams, core::vec_id::write_access::velocity, core::vec_id::write_access::velocity);
+        static_cast<core::BaseMapping*>(mapping)->apply(&mparams, core::vec_id::write_access::position, core::vec_id::write_access::position);
+        static_cast<core::BaseMapping*>(mapping)->applyJ(&mparams, core::vec_id::write_access::velocity, core::vec_id::write_access::velocity);
 
         /// test apply: check if the child positions are the expected ones
         bool succeed=true;
@@ -228,7 +228,7 @@ struct MultiMapping_test : public BaseSimulationTest, NumericTest<typename _Mult
         }
         WriteOutVecDeriv fout = outDofs->writeForces();
         sofa::testing::copyToData( fout, fc );
-        mapping->applyJT( &mparams, core::vec_id::write_access::force, core::vec_id::write_access::force );
+        static_cast<core::BaseMapping*>(mapping)->applyJT( &mparams, core::vec_id::write_access::force, core::vec_id::write_access::force );
         for(Index i=0; i<Np.size(); i++) sofa::testing::copyFromData( fp[i], inDofs[i]->readForces() );
         //        cout<<"parent forces fp = "<<fp<<endl;
 
@@ -250,7 +250,7 @@ struct MultiMapping_test : public BaseSimulationTest, NumericTest<typename _Mult
             sofa::testing::copyToData( vin, vp[p] );
         }
         mparams.setDx(core::vec_id::read_access::velocity);
-        mapping->applyJ( &mparams, core::vec_id::write_access::velocity, core::vec_id::write_access::velocity );
+        static_cast<core::BaseMapping*>(mapping)->applyJ( &mparams, core::vec_id::write_access::velocity, core::vec_id::write_access::velocity );
         ReadOutVecDeriv vout = outDofs->readVelocities();
         sofa::testing::copyFromData( vc, vout);
         //        cout<<"child velocity vc = " << vc << endl;
@@ -319,7 +319,7 @@ struct MultiMapping_test : public BaseSimulationTest, NumericTest<typename _Mult
             sofa::testing::copyToData( fin, fp[p] );  // reset parent forces before accumulating child forces
         }
         sofa::testing::copyToData( fout, fc );
-        mapping->applyJT( &mparams, core::vec_id::write_access::force, core::vec_id::write_access::force );
+        static_cast<core::BaseMapping*>(mapping)->applyJT( &mparams, core::vec_id::write_access::force, core::vec_id::write_access::force );
         for( Index p=0; p<Np.size(); p++ )
             sofa::testing::copyFromData( fp[p], inDofs[p]->readForces() );
 
@@ -334,7 +334,7 @@ struct MultiMapping_test : public BaseSimulationTest, NumericTest<typename _Mult
             sofa::testing::copyToData( pin, xp1[p] );
 //            cout<<"new parent positions xp1["<< p << "] = " << xp1[p] << endl;
         }
-        mapping->apply ( &mparams, core::vec_id::write_access::position, core::vec_id::write_access::position );
+        static_cast<core::BaseMapping*>(mapping)->apply ( &mparams, core::vec_id::write_access::position, core::vec_id::write_access::position );
         ReadOutVecCoord pout = outDofs->readPositions();
         sofa::testing::copyFromData( xc1, pout );
 //        cout<<"new child positions xc1 = " << xc1 << endl;
@@ -360,7 +360,7 @@ struct MultiMapping_test : public BaseSimulationTest, NumericTest<typename _Mult
             sofa::testing::copyToData( fin, fp2[p] );  // reset parent forces before accumulating child forces
         }
         sofa::testing::copyToData( fout, fc );
-        mapping->applyJT( &mparams, core::vec_id::write_access::force, core::vec_id::write_access::force );
+        static_cast<core::BaseMapping*>(mapping)->applyJT( &mparams, core::vec_id::write_access::force, core::vec_id::write_access::force );
         type::vector<InVecDeriv> fp12(Np.size());
         for( Index p=0; p<Np.size(); p++ ){
             sofa::testing::copyFromData( fp2[p], inDofs[p]->readForces() );

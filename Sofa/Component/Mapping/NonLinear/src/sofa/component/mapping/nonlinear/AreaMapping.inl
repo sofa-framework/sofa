@@ -275,7 +275,7 @@ void AreaMapping<TIn, TOut>::doUpdateK(const core::MechanicalParams* mparams,
 }
 
 template <class TIn, class TOut>
-void AreaMapping<TIn, TOut>::buildGeometricStiffnessMatrix(
+void AreaMapping<TIn, TOut>::doBuildGeometricStiffnessMatrix(
     sofa::core::GeometricStiffnessMatrix* matrices)
 {
     const unsigned& geometricStiffness = this->d_geometricStiffness.getValue().getSelectedId();
