@@ -79,6 +79,26 @@ void CorotationalFEMForceField<DataTypes, ElementType>::beforeElementForce(
 }
 
 template <class DataTypes, class ElementType>
+auto CorotationalFEMForceField<DataTypes, ElementType>::computeElementLocalDisplacement(
+    const std::array<sofa::Coord_t<DataTypes>, trait::NumberOfNodesInElement>& nodes,
+    const std::array<sofa::Coord_t<DataTypes>, trait::NumberOfNodesInElement>& restNodes,
+    const RotationMatrix& rotation) const -> ElementDisplacement
+{
+    const auto t = translation(nodes);
+    const auto t0 = translation(restNodes);
+
+    ElementDisplacement displacement{ sofa::type::NOINIT };
+
+    for (sofa::Size j = 0; j < trait::NumberOfNodesInElement; ++j)
+    {
+        displacement.setsub(j * trait::spatial_dimensions,
+            rotation.multTranspose(nodes[j] - t) - (restNodes[j] - t0));
+    }
+
+    return displacement;
+}
+
+template <class DataTypes, class ElementType>
 void CorotationalFEMForceField<DataTypes, ElementType>::computeElementsForces(
     const sofa::simulation::Range<std::size_t>& range, const sofa::core::MechanicalParams* mparams,
     sofa::type::vector<ElementGradient>& elementForces, const sofa::VecCoord_t<DataTypes>& nodePositions)
@@ -102,15 +122,8 @@ void CorotationalFEMForceField<DataTypes, ElementType>::computeElementsForces(
 
         m_rotationMethods.computeRotation(elementRotation, elementInitialRotationTransposed, elementNodesCoordinates, restElementNodesCoordinates);
 
-        const auto t = translation(elementNodesCoordinates);
-        const auto t0 = translation(restElementNodesCoordinates);
-
-        typename trait::ElementDisplacement displacement(sofa::type::NOINIT);
-        for (sofa::Size j = 0; j < trait::NumberOfNodesInElement; ++j)
-        {
-            displacement.setsub(j * DIM,
-                elementRotation.multTranspose(elementNodesCoordinates[j] - t) - (restElementNodesCoordinates[j] - t0));
-        }
+        const auto displacement = computeElementLocalDisplacement(
+            elementNodesCoordinates, restElementNodesCoordinates, elementRotation);
 
         const auto& stiffnessMatrix = elementStiffness[elementId];
 
@@ -206,7 +219,35 @@ SReal CorotationalFEMForceField<DataTypes, ElementType>::getPotentialEnergy(
     const sofa::core::MechanicalParams*,
     const sofa::DataVecCoord_t<DataTypes>& x) const
 {
-    return 0;
+    if (this->isComponentStateInvalid())
+        return 0;
+
+    const auto& elements = trait::FiniteElement::getElementSequence(*this->l_topology);
+    const auto elementStiffness = sofa::helper::getReadAccessor(this->d_elementStiffness);
+
+    if (m_rotations.size() < elements.size())
+        return 0;
+
+    const auto positionAccessor = sofa::helper::getReadAccessor(x);
+    const auto restPositionAccessor = this->mstate->readRestPositions();
+
+    sofa::Real_t<DataTypes> energy {};
+
+    for (std::size_t elementId = 0; elementId < elements.size(); ++elementId)
+    {
+        const auto& element = elements[elementId];
+
+        const auto elementNodesCoordinates = extractNodesVectorFromGlobalVector(element, positionAccessor.ref());
+        const auto restElementNodesCoordinates = extractNodesVectorFromGlobalVector(element, restPositionAccessor.ref());
+
+        const auto displacement = computeElementLocalDisplacement(
+            elementNodesCoordinates, restElementNodesCoordinates, m_rotations[elementId]);
+
+        // Quadratic form of strain energy: 1/2 d^T K d
+        energy += displacement * (elementStiffness[elementId] * displacement);
+    }
+
+    return static_cast<SReal>(0.5 * energy);
 }
 
 template <class DataTypes, class ElementType>
