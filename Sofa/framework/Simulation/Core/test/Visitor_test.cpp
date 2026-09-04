@@ -88,7 +88,7 @@ public:
 class TestForceField : public core::behavior::BaseForceField
 {
 public:
-    void addForce(const core::MechanicalParams* mparams, core::MultiVecDerivId fId) override {}
+    void addForce(const core::MechanicalParams* mparams, core::MultiVecDerivId fId, core::ConstMultiVecCoordId xId, core::ConstMultiVecDerivId vId) override {}
     void addDForce(const core::MechanicalParams* mparams, core::MultiVecDerivId dfId) override {}
     SReal getPotentialEnergy(const core::MechanicalParams* mparams) const override { return {}; }
     void addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override {}
@@ -114,7 +114,7 @@ public:
 class TestInteractionForceField : public core::behavior::BaseInteractionForceField
 {
 public:
-    void addForce(const core::MechanicalParams* mparams, core::MultiVecDerivId fId) override {}
+    void addForce(const core::MechanicalParams* mparams, core::MultiVecDerivId fId, core::ConstMultiVecCoordId xId, core::ConstMultiVecDerivId vId) override {}
     void addDForce(const core::MechanicalParams* mparams, core::MultiVecDerivId dfId) override {}
     SReal getPotentialEnergy(const core::MechanicalParams* mparams) const override { return {}; }
 };
