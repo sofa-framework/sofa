@@ -75,13 +75,13 @@ public:
     void doHandleEvent(sofa::core::objectmodel::Event*) override {}
 
     /// @brief Clears contact responses from the previous time step.
-    void computeCollisionReset() override;
+    void doComputeCollisionReset() override;
 
     /// @brief Performs collision detection: computes bounding trees, runs broad and narrow phase detection.
-    void computeCollisionDetection() override;
+    void doComputeCollisionDetection() override;
 
     /// @brief Creates contact responses based on detected collisions.
-    void computeCollisionResponse() override;
+    void doComputeCollisionResponse() override;
 
     /// @brief Returns the list of collision models handled by this pipeline.
     std::vector<sofa::core::CollisionModel*> getCollisionModels() override;
