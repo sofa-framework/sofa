@@ -60,14 +60,14 @@ public:
     void init() override;
 
     /// Method called at each topological changes propagation which comes from the INPUT topology to adapt the OUTPUT topology :
-    void updateTopologicalMappingTopDown() override;
+    void doUpdateTopologicalMappingTopDown() override;
 
-    Index getGlobIndex(Index ind) override
+    Index doGetGlobIndex(Index ind) override
     {
         return ind;
     }
 
-    Index getFromIndex(Index ind) override
+    Index doGetFromIndex(Index ind) override
     {
         return ind;
     }
