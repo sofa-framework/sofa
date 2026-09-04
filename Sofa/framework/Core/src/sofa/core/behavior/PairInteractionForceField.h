@@ -108,7 +108,7 @@ public:
     /// This method retrieves the force and dx vector from the two MechanicalState
     /// and call the internal addDForce(VecDeriv&,VecDeriv&,const VecDeriv&,const VecDeriv&,SReal,SReal)
     /// method implemented by the component.
-    void addDForce(const MechanicalParams* mparams, MultiVecDerivId dfId ) override;
+    void addDForce(const MechanicalParams* mparams, MultiVecDerivId dfId, ConstMultiVecDerivId dxId) override;
 
     /// Compute the force derivative given a small displacement from the
     /// position and velocity used in the previous call to addForce().

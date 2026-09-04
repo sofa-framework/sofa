@@ -33,21 +33,35 @@ class SOFA_SIMULATION_CORE_API MechanicalComputeDfVisitor : public MechanicalVis
 {
 public:
     sofa::core::MultiVecDerivId res;
+    sofa::core::ConstMultiVecDerivId dx;
     bool accumulate; ///< Accumulate everything back to the DOFs through the mappings
-    MechanicalComputeDfVisitor(const sofa::core::MechanicalParams* mechaparams, sofa::core::MultiVecDerivId resvecid)
-            : MechanicalVisitor(mechaparams) , res(resvecid), accumulate(true)
+
+    MechanicalComputeDfVisitor(const sofa::core::MechanicalParams* mechaparams,
+        sofa::core::MultiVecDerivId resvecid,
+        sofa::core::ConstMultiVecDerivId dxvecid,
+        bool bAccumulate = true
+        )
+            : MechanicalVisitor(mechaparams) , res(resvecid), dx(dxvecid), accumulate(bAccumulate)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
     }
-    MechanicalComputeDfVisitor(const sofa::core::MechanicalParams* mechaparams, sofa::core::MultiVecDerivId resvecid, bool bAccumulate)
-            : MechanicalVisitor(mechaparams) , res(resvecid), accumulate(bAccumulate)
+
+    SOFA_ATTRIBUTE_DEPRECATED__COMPUTEDFVISITOR_CONSTRUCTOR_OVERLOAD()
+    MechanicalComputeDfVisitor(const sofa::core::MechanicalParams* mechaparams,
+        sofa::core::MultiVecDerivId resvecid,
+        bool bAccumulate = true
+        )
+        : MechanicalVisitor(mechaparams) ,
+        res(resvecid),
+        dx(mechaparams ? mechaparams->dx() : core::vec_id::read_access::dx), accumulate(bAccumulate)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
     }
+
     Result fwdForceField(simulation::Node* /*node*/,sofa::core::behavior::BaseForceField* ff) override;
     void bwdMechanicalMapping(simulation::Node* /*node*/, sofa::core::BaseMapping* map) override;
 
