@@ -1180,15 +1180,25 @@ template<class real>
         return false;
     }
 
-    dest(0,0)= (from(1,1)*from(2,2) - from(2,1)*from(1,2))/det;
-    dest(1,0)= (from(1,2)*from(2,0) - from(2,2)*from(1,0))/det;
-    dest(2,0)= (from(1,0)*from(2,1) - from(2,0)*from(1,1))/det;
-    dest(0,1)= (from(2,1)*from(0,2) - from(0,1)*from(2,2))/det;
-    dest(1,1)= (from(2,2)*from(0,0) - from(0,2)*from(2,0))/det;
-    dest(2,1)= (from(2,0)*from(0,1) - from(0,0)*from(2,1))/det;
-    dest(0,2)= (from(0,1)*from(1,2) - from(1,1)*from(0,2))/det;
-    dest(1,2)= (from(0,2)*from(1,0) - from(1,2)*from(0,0))/det;
-    dest(2,2)= (from(0,0)*from(1,1) - from(1,0)*from(0,1))/det;
+    const real m00 = from(0,0);
+    const real m01 = from(0,1);
+    const real m02 = from(0,2);
+    const real m10 = from(1,0);
+    const real m11 = from(1,1);
+    const real m12 = from(1,2);
+    const real m20 = from(2,0);
+    const real m21 = from(2,1);
+    const real m22 = from(2,2);
+
+    dest(0,0)= (m11*m22 - m21*m12)/det;
+    dest(1,0)= (m12*m20 - m22*m10)/det;
+    dest(2,0)= (m10*m21 - m20*m11)/det;
+    dest(0,1)= (m21*m02 - m01*m22)/det;
+    dest(1,1)= (m22*m00 - m02*m20)/det;
+    dest(2,1)= (m20*m01 - m00*m21)/det;
+    dest(0,2)= (m01*m12 - m11*m02)/det;
+    dest(1,2)= (m02*m10 - m12*m00)/det;
+    dest(2,2)= (m00*m11 - m10*m01)/det;
 
     return true;
 }
@@ -1204,10 +1214,15 @@ template<class real>
         return false;
     }
 
-    dest(0,0)=  from(1,1)/det;
-    dest(0,1)= -from(0,1)/det;
-    dest(1,0)= -from(1,0)/det;
-    dest(1,1)=  from(0,0)/det;
+    const real m00 = from(0,0);
+    const real m01 = from(0,1);
+    const real m10 = from(1,0);
+    const real m11 = from(1,1);
+
+    dest(0,0)=  m11/det;
+    dest(0,1)= -m01/det;
+    dest(1,0)= -m10/det;
+    dest(1,1)=  m00/det;
 
     return true;
 }
