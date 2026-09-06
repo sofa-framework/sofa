@@ -21,6 +21,8 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/fem/FiniteElement.h>
+#include <span>
+#include <stdexcept>
 
 #if !defined(SOFA_FEM_FINITE_ELEMENT_TETAHEDRON_CPP)
 #include <sofa/defaulttype/VecTypes.h>
@@ -68,11 +70,45 @@ struct FiniteElement<sofa::geometry::Tetrahedron, DataTypes>
         };
     }
 
-    static constexpr std::array<QuadraturePointAndWeight, 1> quadraturePoints()
+    template <sofa::Size Degree = 1>
+    static constexpr auto quadraturePoints()
     {
-        constexpr sofa::type::Vec<TopologicalDimension, Real> q0(1./4., 1./4., 1./4.);
-        constexpr std::array<QuadraturePointAndWeight, 1> q { std::make_pair(q0, 1./6.) };
-        return q;
+        if constexpr (Degree <= 1)
+        {
+            // Degree 1: 1-point centroid rule (default).
+            return std::array<QuadraturePointAndWeight, 1>{
+                std::make_pair(ReferenceCoord(1./4., 1./4., 1./4.), Real(1./6.))
+            };
+        }
+        else if constexpr (Degree <= 2)
+        {
+            // Degree 2: 4-point rule.
+            constexpr Real sqrt5 = 2.2360679774997896;
+            constexpr Real a = (5. - sqrt5) / 20.;
+            constexpr Real b = (5. + 3. * sqrt5) / 20.;
+            return std::array<QuadraturePointAndWeight, 4>{
+                std::make_pair(ReferenceCoord(a, a, a), Real(1./24.)),
+                std::make_pair(ReferenceCoord(b, a, a), Real(1./24.)),
+                std::make_pair(ReferenceCoord(a, b, a), Real(1./24.)),
+                std::make_pair(ReferenceCoord(a, a, b), Real(1./24.))
+            };
+        }
+        else
+        {
+            static_assert(Degree <= 2, "FiniteElement<Tetrahedron>: no quadrature rule for the requested degree");
+        }
+    }
+
+    // Quadrature rule selector by degree; view of the compile-time table.
+    static std::span<const QuadraturePointAndWeight> quadratureRule(sofa::Size degree)
+    {
+        switch (degree)
+        {
+            case 1: { static constexpr auto rule = quadraturePoints<1>(); return rule; }
+            case 2: { static constexpr auto rule = quadraturePoints<2>(); return rule; }
+            default:
+                throw std::invalid_argument("FiniteElement<Tetrahedron>::quadratureRule: unsupported degree");
+        }
     }
 };
 
