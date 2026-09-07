@@ -63,7 +63,7 @@ set(SOURCE_FILES
     ${SOFACOMPONENTSOLIDMECHANICSFEMHYPERELASTIC_SOURCE_DIR}/hyperelasticmaterials/StVenantKirchhoffMaterial.cpp
 )
 
-sofa_find_package(Sofa.Simulation.Core Sofa.Component.SolidMechanics.FEM.Elastic REQUIRED)
+sofa_find_package(Sofa.Simulation.Core REQUIRED)
 sofa_find_package(Sofa.Component.SolidMechanics.FEM.Elastic REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
