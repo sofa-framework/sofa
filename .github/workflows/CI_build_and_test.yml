@@ -127,6 +127,9 @@ jobs:
         run: |
           cd $WORKSPACE
 
+          ## Configure authentification for git to clone properly
+          gh auth setup-git
+
           ## Clone sofa and merge origin master
           echo "Cloning SOFA at commit $GITHUB_WORKFLOW_SHA"
           if [ -d  $WORKSPACE/sofa ]; then
