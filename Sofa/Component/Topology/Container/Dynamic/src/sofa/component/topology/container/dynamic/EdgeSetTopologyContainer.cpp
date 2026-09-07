@@ -599,4 +599,14 @@ bool EdgeSetTopologyContainer::unlinkTopologyHandlerToData(core::topology::Topol
     }
 }
 
+const void* EdgeSetTopologyContainer::getElementsRaw(
+    const sofa::geometry::ElementType& elementType) const noexcept
+{
+    if (elementType == sofa::geometry::ElementType::EDGE)
+    {
+        return &d_edge.getValue();
+    }
+    return nullptr;
+}
+
 } //namespace sofa::component::topology::container::dynamic

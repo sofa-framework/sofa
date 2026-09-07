@@ -45,9 +45,7 @@ public:
         setReadWriteVectors();
 #endif
     }
-    Result fwdMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
     Result fwdMechanicalMapping(simulation::Node* /*node*/, sofa::core::BaseMapping* map) override;
-    void bwdMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
 
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
     bool stopAtMechanicalMapping(simulation::Node* /*node*/, sofa::core::BaseMapping* map) override;

@@ -27,17 +27,6 @@
 namespace sofa::simulation::mechanicalvisitor
 {
 
-Visitor::Result MechanicalAddMBKdxVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/)
-{
-    return RESULT_CONTINUE;
-}
-
-
-Visitor::Result MechanicalAddMBKdxVisitor::fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/)
-{
-    return RESULT_CONTINUE;
-}
-
 Visitor::Result MechanicalAddMBKdxVisitor::fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff)
 {
     ff->addMBKdx( this->mparams, res);
@@ -51,11 +40,6 @@ void MechanicalAddMBKdxVisitor::bwdMechanicalMapping(simulation::Node* /*node*/,
         map->applyJT(mparams, res, res);
         if( mparams->kFactor() != 0 ) map->applyDJT(mparams, res, res);
     }
-}
-
-void MechanicalAddMBKdxVisitor::bwdMechanicalState(simulation::Node* , core::behavior::BaseMechanicalState* mm)
-{
-    SOFA_UNUSED(mm);
 }
 
 } // namespace sofa::simulation::mechanicalvisitor

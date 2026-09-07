@@ -194,7 +194,54 @@ macro(sofa_fetch_dependency name)
 
     set(${fixed_name}_SOURCE_DIR "${fetched_dir}" CACHE STRING "" FORCE )
 
-    if( "${${upper_name}_LOCAL_DIRECTORY}" STREQUAL "" AND NOT FETCHCONTENT_FULLY_DISCONNECTED AND NOT FETCHCONTENT_UPDATES_DISCONNECTED AND NOT "${ARG_FETCH_ENABLED}" STREQUAL "OFF")
+    # Determine whether we actually need to (re)fetch. Driving ExternalProject
+    # through a nested CMake configure+build (below) is expensive and, on every
+    # reconfigure, only re-runs a git "update" step that almost always confirms the
+    # sources are already at the requested reference. If the repository is already
+    # checked out at the requested GIT_TAG, skip the fetch entirely. A re-fetch is
+    # still triggered automatically when the requested reference no longer matches
+    # what is currently checked out (e.g. a dependency version was bumped).
+    set(_sofa_need_fetch TRUE)
+    if(EXISTS "${fetched_dir}/.git")
+        if(NOT DEFINED GIT_EXECUTABLE)
+            find_package(Git QUIET)
+        endif()
+        if(GIT_EXECUTABLE)
+            execute_process(COMMAND "${GIT_EXECUTABLE}" rev-parse HEAD "${${upper_name}_GIT_TAG}^{commit}"
+                WORKING_DIRECTORY "${fetched_dir}"
+                OUTPUT_VARIABLE _sofa_refs OUTPUT_STRIP_TRAILING_WHITESPACE
+                RESULT_VARIABLE _sofa_rev_result ERROR_QUIET)
+            if(_sofa_rev_result EQUAL 0)
+                string(REGEX REPLACE "[\r\n]+" ";" _sofa_refs "${_sofa_refs}")
+                list(GET _sofa_refs 0 _sofa_head)
+                list(GET _sofa_refs 1 _sofa_want)
+                if("${_sofa_head}" STREQUAL "${_sofa_want}")
+                    set(_sofa_need_fetch FALSE)
+
+                    # If the ref names a branch, upstream may have advanced.
+                    # ls-remote returns nothing for SHAs and the same SHA for tags,
+                    # so we only re-fetch when it succeeds with a *different* hash.
+                    execute_process(
+                        COMMAND "${GIT_EXECUTABLE}" ls-remote origin "${${upper_name}_GIT_TAG}"
+                        WORKING_DIRECTORY "${fetched_dir}"
+                        OUTPUT_VARIABLE _sofa_remote_out OUTPUT_STRIP_TRAILING_WHITESPACE
+                        RESULT_VARIABLE _sofa_remote_rc ERROR_QUIET)
+                    string(REGEX MATCH "^[0-9a-fA-F]+" _sofa_remote_sha "${_sofa_remote_out}")
+                    if(_sofa_remote_rc EQUAL 0 AND _sofa_remote_sha AND NOT "${_sofa_remote_sha}" STREQUAL "${_sofa_head}")
+                        set(_sofa_need_fetch TRUE)
+                    endif()
+
+                    if(_sofa_need_fetch)
+                        message(STATUS "Dependency ${name}: upstream ${${upper_name}_GIT_TAG} has new commits; re-fetching.")
+                    else()
+                        message(STATUS "Dependency ${name} already at requested reference ${${upper_name}_GIT_TAG}; skipping fetch.")
+                    endif()
+                endif()
+            endif()
+        endif()
+    endif()
+
+    if( "${${upper_name}_LOCAL_DIRECTORY}" STREQUAL "" AND _sofa_need_fetch AND NOT FETCHCONTENT_FULLY_DISCONNECTED AND NOT FETCHCONTENT_UPDATES_DISCONNECTED AND NOT "${ARG_FETCH_ENABLED}" STREQUAL "OFF")
         # Fetch
         message("Fetching dependency ${name} in ${fetched_dir}")
         message(STATUS "Checkout reference ${${upper_name}_GIT_TAG} from repository ${${upper_name}_GIT_REPOSITORY} ")

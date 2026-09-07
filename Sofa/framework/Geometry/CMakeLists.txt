@@ -15,6 +15,7 @@ set(HEADER_FILES
     ${SOFAGEOMETRYSRC_ROOT}/Prism.h
     ${SOFAGEOMETRYSRC_ROOT}/Pyramid.h
     ${SOFAGEOMETRYSRC_ROOT}/Quad.h
+    ${SOFAGEOMETRYSRC_ROOT}/QuadraticElements.h
     ${SOFAGEOMETRYSRC_ROOT}/Tetrahedron.h
     ${SOFAGEOMETRYSRC_ROOT}/Triangle.h
 

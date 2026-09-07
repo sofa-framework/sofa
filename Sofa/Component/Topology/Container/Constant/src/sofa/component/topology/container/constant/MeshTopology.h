@@ -23,17 +23,17 @@
 #include <sofa/component/topology/container/constant/config.h>
 
 #include <sofa/core/topology/Topology.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/component/topology/container/constant/MeshTopologyContainer.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/type/vector.h>
 
 namespace sofa::component::topology::container::constant
 {
 
-class SOFA_COMPONENT_TOPOLOGY_CONTAINER_CONSTANT_API MeshTopology : public core::topology::BaseMeshTopology
+class SOFA_COMPONENT_TOPOLOGY_CONTAINER_CONSTANT_API MeshTopology : public MeshTopologyContainer
 {
 public:
-    SOFA_CLASS(MeshTopology,core::topology::BaseMeshTopology);
+    SOFA_CLASS(MeshTopology, MeshTopologyContainer);
 protected:
 
     class PrimitiveUpdate : public sofa::core::DataEngine
@@ -90,16 +90,6 @@ public:
     Size getNbPoints() const override;
 
     void setNbPoints(Size  n) override;
-
-    // Complete sequence accessors
-
-    const SeqEdges& getEdges() override;
-    const SeqTriangles& getTriangles() override;
-    const SeqQuads& getQuads() override;
-    const SeqTetrahedra& getTetrahedra() override;
-    const SeqHexahedra& getHexahedra() override;
-    const SeqPrisms& getPrisms() override;
-    const SeqPyramids& getPyramids() override;
 
     // If using STEP loader, include also uv coordinates
     typedef Index					UVID;
@@ -297,17 +287,19 @@ public:
     typedef type::vector<type::Vec3> SeqPoints;
 
     Data< SeqPoints > d_seqPoints; ///< List of point positions
-    Data<SeqEdges> d_seqEdges; ///< List of edge indices
-    Data<SeqTriangles> d_seqTriangles; ///< List of triangle indices
-    Data<SeqQuads>       d_seqQuads; ///< List of quad indices
-    Data<SeqTetrahedra>      d_seqTetrahedra; ///< List of tetrahedron indices
-    Data<SeqHexahedra>	   d_seqHexahedra; ///< List of hexahedron indices
-    Data<SeqPrisms> d_seqPrisms;
-    Data<SeqPyramids> d_seqPyramids;
+    SeqElementProxy<sofa::geometry::Edge> d_seqEdges { this };
+    SeqElementProxy<sofa::geometry::Triangle> d_seqTriangles { this };
+    SeqElementProxy<sofa::geometry::Quad> d_seqQuads { this };
+    SeqElementProxy<sofa::geometry::Tetrahedron> d_seqTetrahedra { this };
+    SeqElementProxy<sofa::geometry::Hexahedron> d_seqHexahedra { this };
+    SeqElementProxy<sofa::geometry::Prism> d_seqPrisms { this };
+    SeqElementProxy<sofa::geometry::Pyramid> d_seqPyramids { this };
+
     Data<SeqUV>	d_seqUVs; ///< List of uv coordinates
     Data<bool> d_computeAllBuffers; ///< Option to call method computeCrossElementBuffers. False by default
 
 protected:
+
     Size  nbPoints;
 
     template<typename ElementContainer>

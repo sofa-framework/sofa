@@ -45,7 +45,7 @@ struct TriangleFEMForceField_stepTest : public ForceField_test<_TriangleFEMForce
     {
         auto topology = modeling::addNew<component::topology::container::constant::MeshTopology>(this->node);
         topology->setName("topology");
-        topology->d_seqTriangles.setValue({{0,1,2}});
+        topology->d_seqTriangles.toData().setValue({{0,1,2}});
         topology->d_seqPoints.setParent(&this->dof->x);
 
         //Position

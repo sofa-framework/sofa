@@ -79,6 +79,26 @@ void CorotationalFEMForceField<DataTypes, ElementType>::beforeElementForce(
 }
 
 template <class DataTypes, class ElementType>
+auto CorotationalFEMForceField<DataTypes, ElementType>::computeElementLocalDisplacement(
+    const std::array<sofa::Coord_t<DataTypes>, trait::NumberOfNodesInElement>& nodes,
+    const std::array<sofa::Coord_t<DataTypes>, trait::NumberOfNodesInElement>& restNodes,
+    const RotationMatrix& rotation) const -> ElementDisplacement
+{
+    const auto t = translation(nodes);
+    const auto t0 = translation(restNodes);
+
+    ElementDisplacement displacement{ sofa::type::NOINIT };
+
+    for (sofa::Size j = 0; j < trait::NumberOfNodesInElement; ++j)
+    {
+        displacement.setsub(j * trait::spatial_dimensions,
+            rotation.multTranspose(nodes[j] - t) - (restNodes[j] - t0));
+    }
+
+    return displacement;
+}
+
+template <class DataTypes, class ElementType>
 void CorotationalFEMForceField<DataTypes, ElementType>::computeElementsForces(
     const sofa::simulation::Range<std::size_t>& range, const sofa::core::MechanicalParams* mparams,
     sofa::type::vector<ElementGradient>& elementForces, const sofa::VecCoord_t<DataTypes>& nodePositions)
@@ -102,15 +122,8 @@ void CorotationalFEMForceField<DataTypes, ElementType>::computeElementsForces(
 
         m_rotationMethods.computeRotation(elementRotation, elementInitialRotationTransposed, elementNodesCoordinates, restElementNodesCoordinates);
 
-        const auto t = translation(elementNodesCoordinates);
-        const auto t0 = translation(restElementNodesCoordinates);
-
-        typename trait::ElementDisplacement displacement(sofa::type::NOINIT);
-        for (sofa::Size j = 0; j < trait::NumberOfNodesInElement; ++j)
-        {
-            displacement.setsub(j * DIM,
-                elementRotation.multTranspose(elementNodesCoordinates[j] - t) - (restElementNodesCoordinates[j] - t0));
-        }
+        const auto displacement = computeElementLocalDisplacement(
+            elementNodesCoordinates, restElementNodesCoordinates, elementRotation);
 
         const auto& stiffnessMatrix = elementStiffness[elementId];
 
@@ -206,7 +219,35 @@ SReal CorotationalFEMForceField<DataTypes, ElementType>::getPotentialEnergy(
     const sofa::core::MechanicalParams*,
     const sofa::DataVecCoord_t<DataTypes>& x) const
 {
-    return 0;
+    if (this->isComponentStateInvalid())
+        return 0;
+
+    const auto& elements = trait::FiniteElement::getElementSequence(*this->l_topology);
+    const auto elementStiffness = sofa::helper::getReadAccessor(this->d_elementStiffness);
+
+    if (m_rotations.size() < elements.size())
+        return 0;
+
+    const auto positionAccessor = sofa::helper::getReadAccessor(x);
+    const auto restPositionAccessor = this->mstate->readRestPositions();
+
+    sofa::Real_t<DataTypes> energy {};
+
+    for (std::size_t elementId = 0; elementId < elements.size(); ++elementId)
+    {
+        const auto& element = elements[elementId];
+
+        const auto elementNodesCoordinates = extractNodesVectorFromGlobalVector(element, positionAccessor.ref());
+        const auto restElementNodesCoordinates = extractNodesVectorFromGlobalVector(element, restPositionAccessor.ref());
+
+        const auto displacement = computeElementLocalDisplacement(
+            elementNodesCoordinates, restElementNodesCoordinates, m_rotations[elementId]);
+
+        // Quadratic form of strain energy: 1/2 d^T K d
+        energy += displacement * (elementStiffness[elementId] * displacement);
+    }
+
+    return static_cast<SReal>(0.5 * energy);
 }
 
 template <class DataTypes, class ElementType>
@@ -273,6 +314,55 @@ void CorotationalFEMForceField<DataTypes, ElementType>::computeInitialRotations(
     {
         rotation.transpose();
     }
+}
+
+template <class DataTypes, class ElementType>
+auto CorotationalFEMForceField<DataTypes, ElementType>::computeStress(
+    const DeformationGradient& F, sofa::Size elementId) -> StressVoigtVector
+{
+    const auto R = (elementId < m_rotations.size()) ? m_rotations[elementId] : RotationMatrix::Identity();
+    const auto corotatedF = R.transposed() * F;
+    const auto strainTensor = static_cast<Real_t<DataTypes>>(1)/2 * (corotatedF + corotatedF.transposed()) - DeformationGradient::Identity();
+
+    sofa::type::Vec<type::NumberOfIndependentElements<trait::spatial_dimensions>, Real_t<DataTypes>> strainVoigt;
+    for (sofa::Size i = 0; i < type::NumberOfIndependentElements<trait::spatial_dimensions>; ++i)
+    {
+        const auto [p, q] = type::toTensorIndices<trait::spatial_dimensions>(i);
+        strainVoigt[i] = (p == q) ? strainTensor(p, q) : strainTensor(p, q) + strainTensor(q, p);
+    }
+
+    const auto youngModulus = this->getYoungModulusInElement(elementId);
+    const auto poissonRatio = this->getPoissonRatioInElement(elementId);
+
+    LameLambda<Real_t<DataTypes>> lambda { 0 };
+    LameMu<Real_t<DataTypes>> mu { 0 };
+
+    sofa::component::solidmechanics::fem::elastic::toLameParameters<DataTypes::spatial_dimensions, Real_t<DataTypes>>(
+        YoungModulus<Real_t<DataTypes>>(youngModulus), PoissonRatio<Real_t<DataTypes>>(poissonRatio),
+        lambda, mu);
+
+    const auto elasticityTensor = makeIsotropicElasticityTensor<DataTypes::spatial_dimensions, Real_t<DataTypes>>(mu, lambda);
+
+    const StressVoigtVector localStressVoigt = elasticityTensor.toVoigtMatSym().toMat() * strainVoigt;
+
+    sofa::type::Mat<trait::spatial_dimensions, trait::spatial_dimensions, Real_t<DataTypes>> localStressMatrix;
+    for (sofa::Size i = 0; i < type::NumberOfIndependentElements<trait::spatial_dimensions>; ++i)
+    {
+        const auto [p, q] = type::toTensorIndices<trait::spatial_dimensions>(i);
+        localStressMatrix(p, q) = localStressVoigt[i];
+        localStressMatrix(q, p) = localStressVoigt[i];
+    }
+
+    const auto globalStressMatrix = R * localStressMatrix * R.transposed();
+
+    StressVoigtVector stressVoigt;
+    for (sofa::Size i = 0; i < type::NumberOfIndependentElements<trait::spatial_dimensions>; ++i)
+    {
+        const auto [p, q] = type::toTensorIndices<trait::spatial_dimensions>(i);
+        stressVoigt[i] = globalStressMatrix(p, q);
+    }
+
+    return stressVoigt;
 }
 
 }  // namespace sofa::component::solidmechanics::fem::elastic

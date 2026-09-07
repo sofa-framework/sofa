@@ -155,6 +155,10 @@
           "type": "BOOL",
           "value": "ON"
         },
+        "PLUGIN_SOFAMATRIX_IMGUI": {
+          "type": "BOOL",
+          "value": "ON"
+        },
         "PLUGIN_ARTICULATEDSYSTEMPLUGIN": {
           "type": "BOOL",
           "value": "ON"

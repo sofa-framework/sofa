@@ -28,16 +28,11 @@ namespace sofa::simulation::mechanicalvisitor
 MechanicalPropagateOnlyVelocityVisitor::MechanicalPropagateOnlyVelocityVisitor(
         const sofa::core::MechanicalParams* mparams,
         SReal time, core::MultiVecDerivId v)
-        : MechanicalVisitor(mparams), currentTime(time), v(v)
+        : MechanicalVisitor(mparams), v(v)
 {
 #ifdef SOFA_DUMP_VISITOR_INFO
     setReadWriteVectors();
 #endif
-}
-
-Visitor::Result MechanicalPropagateOnlyVelocityVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/)
-{
-    return RESULT_CONTINUE;
 }
 
 Visitor::Result MechanicalPropagateOnlyVelocityVisitor::fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map)
@@ -45,11 +40,6 @@ Visitor::Result MechanicalPropagateOnlyVelocityVisitor::fwdMechanicalMapping(sim
     map->applyJ(mparams, v, v);
 
     return RESULT_CONTINUE;
-}
-
-void MechanicalPropagateOnlyVelocityVisitor::bwdMechanicalState(simulation::Node* , core::behavior::BaseMechanicalState* mm)
-{
-    SOFA_UNUSED(mm);
 }
 
 std::string MechanicalPropagateOnlyVelocityVisitor::getInfos() const

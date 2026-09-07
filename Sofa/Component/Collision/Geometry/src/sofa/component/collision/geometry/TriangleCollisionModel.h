@@ -27,7 +27,7 @@
 #include <sofa/core/CollisionModel.h>
 #include <sofa/core/VecId.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/behavior/SingleStateAccessor.h>
 
 namespace sofa::component::collision::geometry
 {
@@ -102,10 +102,10 @@ using Triangle = TTriangle<sofa::defaulttype::Vec3Types>;
  * The class \sa TTriangle is used to access specific triangle of this collision Model.
  */
 template<class TDataTypes>
-class TriangleCollisionModel : public core::CollisionModel
+class TriangleCollisionModel : public core::CollisionModel, public virtual core::behavior::SingleStateAccessor<TDataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(TriangleCollisionModel, TDataTypes), core::CollisionModel);
+    SOFA_CLASS2(SOFA_TEMPLATE(TriangleCollisionModel, TDataTypes), core::CollisionModel, SOFA_TEMPLATE(core::behavior::SingleStateAccessor, TDataTypes));
 
     typedef TDataTypes DataTypes;
     typedef DataTypes InDataTypes;
@@ -143,7 +143,6 @@ public:
     SingleLink<TriangleCollisionModel<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
 protected:
-    core::behavior::MechanicalState<DataTypes>* m_mstate; ///< Pointer to the corresponding MechanicalState
     sofa::core::topology::BaseMeshTopology* m_topology; ///< Pointer to the corresponding Topology
 
     VecDeriv m_normals; ///< Vector of normal direction per triangle.
@@ -185,8 +184,8 @@ public:
 
     bool canCollideWithElement(sofa::Index index, CollisionModel* model2, sofa::Index index2) override;
 
-    core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return m_mstate; }
-    const core::behavior::MechanicalState<DataTypes>* getMechanicalState() const { return m_mstate; }
+    core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return this->mstate; }
+    const core::behavior::MechanicalState<DataTypes>* getMechanicalState() const { return this->mstate; }
 
     const VecCoord& getX() const { return(getMechanicalState()->read(core::vec_id::read_access::position)->getValue()); }
     const sofa::core::topology::BaseMeshTopology::SeqTriangles& getTriangles() const { return *m_triangles; }

@@ -30,8 +30,15 @@ namespace sofa::component::mass
 
 template <class TDataTypes, class TElementType>
 FEMMass<TDataTypes, TElementType>::FEMMass()
-    : l_nodalMassDensity(initLink("nodalMassDensity", "Link to nodal mass density"))
+    : d_lumping(initData(&d_lumping, "lumping","If true, the mass matrix is lumped, meaning the mass matrix is approximated to a diagonal matrix (summing all mass values of a line on the diagonal)"))
+    , l_nodalMassDensity(initLink("nodalMassDensity", "Link to nodal mass density"))
 {
+    this->addUpdateCallback("recomputeMass", {&this->d_lumping},
+    [this](const sofa::core::DataTracker& )
+    {
+        elementFEMMass_init();
+        return this->getComponentState();
+    }, {});
 }
 
 
@@ -78,6 +85,9 @@ void FEMMass<TDataTypes, TElementType>::validateNodalMassDensity()
 template <class TDataTypes, class TElementType>
 void FEMMass<TDataTypes, TElementType>::elementFEMMass_init()
 {
+    if (!this->l_topology)
+        return;
+
     const auto& elements = FiniteElement::getElementSequence(*this->l_topology);
     sofa::type::vector<ElementMassMatrix> elementMassMatrices;
 
@@ -97,6 +107,8 @@ void FEMMass<TDataTypes, TElementType>::calculateElementMassMatrix(
 
     sofa::helper::ReadAccessor nodalMassDensityAccessor { l_nodalMassDensity->d_property };
     auto restPositionAccessor = this->mstate->readRestPositions();
+
+    const bool lumping = d_lumping.getValue();
 
     SCOPED_TIMER("elementMassMatrix");
     helper::IotaView indices{static_cast<decltype(nbElements)>(0ul), nbElements};
@@ -145,6 +157,19 @@ void FEMMass<TDataTypes, TElementType>::calculateElementMassMatrix(
 
                 elementMassMatrix += (weight * density * detJ) * NT_N;
             }
+
+            if (lumping)
+            {
+                ElementMassMatrix lumped{};
+                for (sofa::Size i = 0; i < NumberOfNodesInElement; ++i)
+                {
+                    Real_t<DataTypes> rowSum = 0;
+                    for (sofa::Size j = 0; j < NumberOfNodesInElement; ++j)
+                        rowSum += elementMassMatrix(i, j);
+                    lumped(i, i) = rowSum;
+                }
+                elementMassMatrix = lumped;
+            }
         });
 }
 
@@ -174,7 +199,13 @@ void FEMMass<TDataTypes, TElementType>::initializeGlobalMassMatrix(
                           for (sofa::Size j = 0; j < NumberOfNodesInElement; ++j)
                           {
                               const auto node_j = element[j];
-                              m_globalMassMatrix.add(node_i, node_j, elementMassMatrix(i, j));
+
+                              const auto& value = elementMassMatrix(i, j);
+                              constexpr Real_t<DataTypes> tolerance { 1e-12 };
+                              if (std::abs(value) > tolerance)
+                              {
+                                  m_globalMassMatrix.add(node_i, node_j, value);
+                              }
                           }
                       }
                   });
@@ -191,6 +222,9 @@ void FEMMass<TDataTypes, TElementType>::addForce(const core::MechanicalParams* m
     SOFA_UNUSED(mparams);
     SOFA_UNUSED(x);
     SOFA_UNUSED(v);
+
+    if (this->isComponentStateInvalid())
+        return;
 
     auto forceAccessor = sofa::helper::getWriteAccessor(f);
 
@@ -216,6 +250,9 @@ template <class TDataTypes, class TElementType>
 void FEMMass<TDataTypes, TElementType>::buildMassMatrix(
     sofa::core::behavior::MassMatrixAccumulator* matrices)
 {
+    if (this->isComponentStateInvalid())
+        return;
+
     for (std::size_t xi = 0; xi < m_globalMassMatrix.rowIndex.size(); ++xi)
     {
         const auto rowId = m_globalMassMatrix.rowIndex[xi];
@@ -241,6 +278,9 @@ void FEMMass<TDataTypes, TElementType>::addMDx(const core::MechanicalParams* mpa
 {
     SOFA_UNUSED(mparams);
 
+    if (this->isComponentStateInvalid())
+        return;
+
     auto result = sofa::helper::getWriteAccessor(f);
     const auto dxAccessor = sofa::helper::getReadAccessor(dx);
 
@@ -264,10 +304,36 @@ void FEMMass<TDataTypes, TElementType>::accFromF(const core::MechanicalParams* m
                                                         const DataVecDeriv_t<DataTypes>& f)
 {
     SOFA_UNUSED(mparams);
-    SOFA_UNUSED(a);
-    SOFA_UNUSED(f);
 
-    msg_error() << "the method 'accFromF' can't be used with this component as this SPARSE mass matrix can't be inversed easily.";
+    if (this->isComponentStateInvalid())
+        return;
+
+    if (!d_lumping.getValue())
+    {
+        msg_error() << "the method 'accFromF' can't be used with this component as this "
+                        "SPARSE mass matrix can't be inversed easily. Enable 'lumping' instead.";
+        return;
+    }
+
+    auto accAccessor = sofa::helper::getWriteAccessor(a);
+    const auto fAccessor = sofa::helper::getReadAccessor(f);
+
+    for (std::size_t xi = 0; xi < m_globalMassMatrix.rowIndex.size(); ++xi)
+    {
+        const auto rowId = m_globalMassMatrix.rowIndex[xi];
+        typename GlobalMassMatrixType::Range rowRange(
+            m_globalMassMatrix.rowBegin[xi], m_globalMassMatrix.rowBegin[xi + 1]);
+
+        for (typename GlobalMassMatrixType::Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)
+        {
+            const auto columnId = m_globalMassMatrix.colsIndex[xj];
+            if (columnId == rowId) // diagonal is guaranteed to exist when lumped
+            {
+                const auto& value = m_globalMassMatrix.colsValue[xj];
+                accAccessor[rowId] = fAccessor[rowId] / value;
+            }
+        }
+    }
 }
 
 template <class TDataTypes, class TElementType>
@@ -276,6 +342,9 @@ SReal FEMMass<TDataTypes, TElementType>::getKineticEnergy(
     const DataVecDeriv_t<DataTypes>& v) const
 {
     SOFA_UNUSED(mparams);
+
+    if (this->isComponentStateInvalid())
+        return 0_sreal;
 
     SReal kineticEnergy = 0.0;
     auto vAccessor = sofa::helper::getReadAccessor(v);
@@ -302,6 +371,9 @@ SReal FEMMass<TDataTypes, TElementType>::getPotentialEnergy(
     const DataVecCoord_t<DataTypes>& x) const
 {
     SOFA_UNUSED(mparams);
+
+    if (this->isComponentStateInvalid())
+        return 0_sreal;
 
     SReal potentialEnergy = 0.0;
     auto xAccessor = sofa::helper::getReadAccessor(x);

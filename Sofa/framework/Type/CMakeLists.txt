@@ -7,6 +7,7 @@ set(HEADER_FILES
     ${SOFATYPESRC_ROOT}/config.h.in
     ${SOFATYPESRC_ROOT}/init.h
     ${SOFATYPESRC_ROOT}/BoundingBox.h
+    ${SOFATYPESRC_ROOT}/ClampedScalar.h
     ${SOFATYPESRC_ROOT}/DualQuat.h
     ${SOFATYPESRC_ROOT}/DualQuat.inl
     ${SOFATYPESRC_ROOT}/Frame.h
@@ -58,6 +59,7 @@ set(HEADER_FILES
 set(SOURCE_FILES
     ${SOFATYPESRC_ROOT}/init.cpp
     ${SOFATYPESRC_ROOT}/BoundingBox.cpp
+    ${SOFATYPESRC_ROOT}/ClampedScalar.cpp
     ${SOFATYPESRC_ROOT}/DualQuat.cpp
     ${SOFATYPESRC_ROOT}/Frame.cpp
     ${SOFATYPESRC_ROOT}/Mat.cpp

@@ -39,7 +39,6 @@ TriangleCollisionModel<DataTypes>::TriangleCollisionModel()
     , d_computeNormals(initData(&d_computeNormals, true, "computeNormals", "set to false to disable computation of triangles normal"))
     , d_useCurvature(initData(&d_useCurvature, false, "useCurvature", "use the curvature of the mesh to avoid some self-intersection test"))
     , l_topology(initLink("topology", "link to the topology container"))
-    , m_mstate(nullptr)
     , m_topology(nullptr)
     , m_needsUpdate(true)
     , m_topologyRevision(-1)
@@ -59,6 +58,8 @@ void TriangleCollisionModel<DataTypes>::resize(sofa::Size size)
 template<class DataTypes>
 void TriangleCollisionModel<DataTypes>::init()
 {
+    Inherit2::init();
+
     if (l_topology.empty())
     {
         msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
@@ -75,23 +76,10 @@ void TriangleCollisionModel<DataTypes>::init()
         return;
     }
 
-    // TODO epernod 2019-01-21: Check if this call super is needed.
-    this->CollisionModel::init();
-    m_mstate = dynamic_cast< core::behavior::MechanicalState<DataTypes>* > (this->getContext()->getMechanicalState());
-
     this->getContext()->get(m_pointModels);
 
-    // Check object pointer access
-    bool modelsOk = true;
-    if (m_mstate == nullptr)
+    if (this->d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid)
     {
-        msg_error() << "No MechanicalState found. TriangleCollisionModel<sofa::defaulttype::Vec3Types> requires a Vec3 MechanicalState in the same Node.";
-        modelsOk = false;
-    }
-
-    if (!modelsOk)
-    {
-        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
 
@@ -145,7 +133,7 @@ void TriangleCollisionModel<DataTypes>::updateFromTopology()
     else
     {
         const sofa::Size newsize = ntris+2*nquads;
-        const sofa::Size npoints = m_mstate->getSize();
+        const sofa::Size npoints = this->mstate->getSize();
 
         m_triangles = &m_internalTriangles;
         m_internalTriangles.resize(newsize);
@@ -232,7 +220,7 @@ void TriangleCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
     m_needsUpdate=false;
 
     type::Vec3 minElem, maxElem;
-    const VecCoord& x = this->m_mstate->read(core::vec_id::read_access::position)->getValue();
+    const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
 
     const bool calcNormals = d_computeNormals.getValue();
 
@@ -384,7 +372,7 @@ void TriangleCollisionModel<DataTypes>::computeBBox(const core::ExecParams* para
     if (m_topology->getRevision() != m_topologyRevision)
         updateFromTopology();
 
-    const auto& positions = this->m_mstate->read(core::vec_id::read_access::position)->getValue();
+    const auto& positions = this->mstate->read(core::vec_id::read_access::position)->getValue();
     type::BoundingBox bbox;
 
     for(const auto& triangle : (*this->m_triangles))
@@ -463,26 +451,26 @@ void TriangleCollisionModel<DataTypes>::drawCollisionModel(const core::visual::V
 }
 
 template<class DataTypes>
-inline const typename DataTypes::Coord& TTriangle<DataTypes>::p1() const { return this->model->m_mstate->read(core::vec_id::read_access::position)->getValue()[(*(this->model->m_triangles))[this->index][0]]; }
+inline const typename DataTypes::Coord& TTriangle<DataTypes>::p1() const { return this->model->mstate->read(core::vec_id::read_access::position)->getValue()[(*(this->model->m_triangles))[this->index][0]]; }
 template<class DataTypes>
-inline const typename DataTypes::Coord& TTriangle<DataTypes>::p2() const { return this->model->m_mstate->read(core::vec_id::read_access::position)->getValue()[(*(this->model->m_triangles))[this->index][1]]; }
+inline const typename DataTypes::Coord& TTriangle<DataTypes>::p2() const { return this->model->mstate->read(core::vec_id::read_access::position)->getValue()[(*(this->model->m_triangles))[this->index][1]]; }
 template<class DataTypes>
-inline const typename DataTypes::Coord& TTriangle<DataTypes>::p3() const { return this->model->m_mstate->read(core::vec_id::read_access::position)->getValue()[(*(this->model->m_triangles))[this->index][2]]; }
+inline const typename DataTypes::Coord& TTriangle<DataTypes>::p3() const { return this->model->mstate->read(core::vec_id::read_access::position)->getValue()[(*(this->model->m_triangles))[this->index][2]]; }
 template<class DataTypes>
 inline const typename DataTypes::Coord& TTriangle<DataTypes>::p(Index i) const {
-    return this->model->m_mstate->read(core::vec_id::read_access::position)->getValue()[(*(this->model->m_triangles))[this->index][i]];
+    return this->model->mstate->read(core::vec_id::read_access::position)->getValue()[(*(this->model->m_triangles))[this->index][i]];
 }
 template<class DataTypes>
 inline const typename DataTypes::Coord& TTriangle<DataTypes>::operator[](Index i) const {
-    return this->model->m_mstate->read(core::vec_id::read_access::position)->getValue()[(*(this->model->m_triangles))[this->index][i]];
+    return this->model->mstate->read(core::vec_id::read_access::position)->getValue()[(*(this->model->m_triangles))[this->index][i]];
 }
 
 template<class DataTypes>
-inline const typename DataTypes::Coord& TTriangle<DataTypes>::p1Free() const { return (this->model->m_mstate->read(sofa::core::vec_id::read_access::freePosition)->getValue())[(*(this->model->m_triangles))[this->index][0]]; }
+inline const typename DataTypes::Coord& TTriangle<DataTypes>::p1Free() const { return (this->model->mstate->read(sofa::core::vec_id::read_access::freePosition)->getValue())[(*(this->model->m_triangles))[this->index][0]]; }
 template<class DataTypes>
-inline const typename DataTypes::Coord& TTriangle<DataTypes>::p2Free() const { return (this->model->m_mstate->read(sofa::core::vec_id::read_access::freePosition)->getValue())[((*this->model->m_triangles))[this->index][1]]; }
+inline const typename DataTypes::Coord& TTriangle<DataTypes>::p2Free() const { return (this->model->mstate->read(sofa::core::vec_id::read_access::freePosition)->getValue())[((*this->model->m_triangles))[this->index][1]]; }
 template<class DataTypes>
-inline const typename DataTypes::Coord& TTriangle<DataTypes>::p3Free() const { return (this->model->m_mstate->read(sofa::core::vec_id::read_access::freePosition)->getValue())[(*(this->model->m_triangles))[this->index][2]]; }
+inline const typename DataTypes::Coord& TTriangle<DataTypes>::p3Free() const { return (this->model->mstate->read(sofa::core::vec_id::read_access::freePosition)->getValue())[(*(this->model->m_triangles))[this->index][2]]; }
 
 template<class DataTypes>
 inline typename TTriangle<DataTypes>::Index TTriangle<DataTypes>::p1Index() const { return (*(this->model->m_triangles))[this->index][0]; }
@@ -492,13 +480,13 @@ template<class DataTypes>
 inline typename TTriangle<DataTypes>::Index TTriangle<DataTypes>::p3Index() const { return (*(this->model->m_triangles))[this->index][2]; }
 
 template<class DataTypes>
-inline const typename DataTypes::Deriv& TTriangle<DataTypes>::v1() const { return (this->model->m_mstate->read(core::vec_id::read_access::velocity)->getValue())[(*(this->model->m_triangles))[this->index][0]]; }
+inline const typename DataTypes::Deriv& TTriangle<DataTypes>::v1() const { return (this->model->mstate->read(core::vec_id::read_access::velocity)->getValue())[(*(this->model->m_triangles))[this->index][0]]; }
 template<class DataTypes>
-inline const typename DataTypes::Deriv& TTriangle<DataTypes>::v2() const { return this->model->m_mstate->read(core::vec_id::read_access::velocity)->getValue()[(*(this->model->m_triangles))[this->index][1]]; }
+inline const typename DataTypes::Deriv& TTriangle<DataTypes>::v2() const { return this->model->mstate->read(core::vec_id::read_access::velocity)->getValue()[(*(this->model->m_triangles))[this->index][1]]; }
 template<class DataTypes>
-inline const typename DataTypes::Deriv& TTriangle<DataTypes>::v3() const { return this->model->m_mstate->read(core::vec_id::read_access::velocity)->getValue()[(*(this->model->m_triangles))[this->index][2]]; }
+inline const typename DataTypes::Deriv& TTriangle<DataTypes>::v3() const { return this->model->mstate->read(core::vec_id::read_access::velocity)->getValue()[(*(this->model->m_triangles))[this->index][2]]; }
 template<class DataTypes>
-inline const typename DataTypes::Deriv& TTriangle<DataTypes>::v(Index i) const { return this->model->m_mstate->read(core::vec_id::read_access::velocity)->getValue()[(*(this->model->m_triangles))[this->index][i]]; }
+inline const typename DataTypes::Deriv& TTriangle<DataTypes>::v(Index i) const { return this->model->mstate->read(core::vec_id::read_access::velocity)->getValue()[(*(this->model->m_triangles))[this->index][i]]; }
 
 template<class DataTypes>
 inline const typename DataTypes::Deriv& TTriangle<DataTypes>::n() const { return this->model->m_normals[this->index]; }
@@ -509,11 +497,11 @@ template<class DataTypes>
 inline int TTriangle<DataTypes>::flags() const { return this->model->getTriangleFlags(this->index); }
 
 template<class DataTypes>
-inline bool TTriangle<DataTypes>::hasFreePosition() const { return this->model->m_mstate->read(core::vec_id::read_access::freePosition)->isSet(); }
+inline bool TTriangle<DataTypes>::hasFreePosition() const { return this->model->mstate->read(core::vec_id::read_access::freePosition)->isSet(); }
 
 template<class DataTypes>
-inline typename DataTypes::Deriv TriangleCollisionModel<DataTypes>::velocity(sofa::Index index) const { return (m_mstate->read(core::vec_id::read_access::velocity)->getValue()[(*(m_triangles))[index][0]] + m_mstate->read(core::vec_id::read_access::velocity)->getValue()[(*(m_triangles))[index][1]] +
-                                                                                                m_mstate->read(core::vec_id::read_access::velocity)->getValue()[(*(m_triangles))[index][2]])/((Real)(3.0)); }
+inline typename DataTypes::Deriv TriangleCollisionModel<DataTypes>::velocity(sofa::Index index) const { return (this->mstate->read(core::vec_id::read_access::velocity)->getValue()[(*(m_triangles))[index][0]] + this->mstate->read(core::vec_id::read_access::velocity)->getValue()[(*(m_triangles))[index][1]] +
+                                                                                                this->mstate->read(core::vec_id::read_access::velocity)->getValue()[(*(m_triangles))[index][2]])/((Real)(3.0)); }
 
 
 } //namespace sofa::component::collision::geometry

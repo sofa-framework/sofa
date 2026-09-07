@@ -35,7 +35,6 @@ namespace sofa::component::collision::geometry
 template<class DataTypes>
 PointCollisionModel<DataTypes>::PointCollisionModel()
     : d_bothSide(initData(&d_bothSide, false, "bothSide", "activate collision on both side of the point model (when surface normals are defined on these points)") )
-    , mstate(nullptr)
     , d_computeNormals(initData(&d_computeNormals, false, "computeNormals", "activate computation of normal vectors (required for some collision detection algorithms)") )
     , d_displayFreePosition(initData(&d_displayFreePosition, false, "displayFreePosition", "Display Collision Model Points free position(in green)") )
     , l_topology(initLink("topology", "link to the topology container"))
@@ -52,14 +51,10 @@ void PointCollisionModel<DataTypes>::resize(sofa::Size size)
 template<class DataTypes>
 void PointCollisionModel<DataTypes>::init()
 {
-    this->CollisionModel::init();
-    mstate = dynamic_cast< core::behavior::MechanicalState<DataTypes>* > (getContext()->getMechanicalState());
+    Inherit2::init();
 
-    if (mstate==nullptr)
-    {
-        msg_error() << "PointModel requires a Vec3 Mechanical Model";
+    if (this->d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid)
         return;
-    }
 
     if (l_topology.empty())
     {
@@ -67,7 +62,7 @@ void PointCollisionModel<DataTypes>::init()
         l_topology.set(this->getContext()->getMeshTopologyLink());
     }
 
-    const int npoints = mstate->getSize();
+    const int npoints = this->mstate->getSize();
     resize(npoints);
     if (d_computeNormals.getValue()) updateNormals();
 }
@@ -86,11 +81,10 @@ bool PointCollisionModel<DataTypes>::canCollideWithElement(sofa::Index index, Co
         if (index<=index2) // to avoid to have two times the same auto-collision we only consider the case when index > index2
             return false;
 
-        sofa::core::topology::BaseMeshTopology* topology = l_topology.get();
 
         // in the neighborhood, if we find a point in common, we cancel the collision
-        const auto& verticesAroundVertex1 =topology->getVerticesAroundVertex(index);
-        const auto& verticesAroundVertex2 =topology->getVerticesAroundVertex(index2);
+        const auto& verticesAroundVertex1 = l_topology->getVerticesAroundVertex(index);
+        const auto& verticesAroundVertex2 = l_topology->getVerticesAroundVertex(index2);
 
         for (sofa::Index i1=0; i1<verticesAroundVertex1.size(); i1++)
         {
@@ -115,7 +109,7 @@ template<class DataTypes>
 void PointCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
 {
     CubeCollisionModel* cubeModel = createPrevious<CubeCollisionModel>();
-    const auto npoints = mstate->getSize();
+    const auto npoints = this->mstate->getSize();
     bool updated = false;
     if (npoints != size)
     {
@@ -130,7 +124,7 @@ void PointCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
     cubeModel->resize(size);
     if (!empty())
     {
-        //VecCoord& x =mstate->read(core::vec_id::read_access::position)->getValue();
+        //VecCoord& x =this->mstate->read(core::vec_id::read_access::position)->getValue();
         const SReal distance = this->d_contactDistance.getValue();
         for (sofa::Size i=0; i<size; i++)
         {
@@ -146,7 +140,7 @@ template<class DataTypes>
 void PointCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, ContinuousIntersectionTypeFlag continuousIntersectionFlag , int maxDepth)
 {
     CubeCollisionModel* cubeModel = createPrevious<CubeCollisionModel>();
-    const auto npoints = mstate->getSize();
+    const auto npoints = this->mstate->getSize();
     bool updated = false;
     if (npoints != size)
     {
@@ -162,8 +156,8 @@ void PointCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, Con
     cubeModel->resize(size);
     if (!empty())
     {
-        //VecCoord& x =mstate->read(core::vec_id::read_access::position)->getValue();
-        //VecDeriv& v = mstate->read(core::vec_id::read_access::velocity)->getValue();
+        //VecCoord& x =this->mstate->read(core::vec_id::read_access::position)->getValue();
+        //VecDeriv& v = this->mstate->read(core::vec_id::read_access::velocity)->getValue();
         const SReal distance = (SReal)this->d_contactDistance.getValue();
         for (sofa::Size i=0; i<size; i++)
         {
@@ -197,12 +191,14 @@ void PointCollisionModel<DataTypes>::updateNormals()
     {
         normals[i].clear();
     }
-    core::topology::BaseMeshTopology* mesh = l_topology.get();
-    if (mesh->getNbTetrahedra()+mesh->getNbHexahedra() > 0)
+    if (!l_topology)
+        return;
+
+    if (l_topology->getNbTetrahedra()+l_topology->getNbHexahedra() > 0)
     {
-        if (mesh->getNbTetrahedra()>0)
+        if (l_topology->getNbTetrahedra()>0)
         {
-            const core::topology::BaseMeshTopology::SeqTetrahedra &elems = mesh->getTetrahedra();
+            const core::topology::BaseMeshTopology::SeqTetrahedra &elems = l_topology->getTetrahedra();
             for (sofa::Index i=0; i < elems.size(); ++i)
             {
                 const core::topology::BaseMeshTopology::Tetra &e = elems[i];
@@ -235,11 +231,11 @@ void PointCollisionModel<DataTypes>::updateNormals()
         }
         /// @todo Hexahedra
     }
-    else if (mesh->getNbTriangles()+mesh->getNbQuads() > 0)
+    else if (l_topology->getNbTriangles()+l_topology->getNbQuads() > 0)
     {
-        if (mesh->getNbTriangles()>0)
+        if (l_topology->getNbTriangles()>0)
         {
-            const core::topology::BaseMeshTopology::SeqTriangles &elems = mesh->getTriangles();
+            const core::topology::BaseMeshTopology::SeqTriangles &elems = l_topology->getTriangles();
             for (sofa::Index i=0; i < elems.size(); ++i)
             {
                 const core::topology::BaseMeshTopology::Triangle &e = elems[i];
@@ -256,9 +252,9 @@ void PointCollisionModel<DataTypes>::updateNormals()
                 n3 += n;
             }
         }
-        if (mesh->getNbQuads()>0)
+        if (l_topology->getNbQuads()>0)
         {
-            const core::topology::BaseMeshTopology::SeqQuads &elems = mesh->getQuads();
+            const core::topology::BaseMeshTopology::SeqQuads &elems = l_topology->getQuads();
             for (sofa::Index i=0; i < elems.size(); ++i)
             {
                 const core::topology::BaseMeshTopology::Quad &e = elems[i];
@@ -297,7 +293,7 @@ void PointCollisionModel<DataTypes>::computeBBox(const core::ExecParams* params,
     if( onlyVisible && !sofa::core::visual::VisualParams::defaultInstance()->displayFlags().getShowCollisionModels())
         return;
 
-    const auto npoints = mstate->getSize();
+    const auto npoints = this->mstate->getSize();
     if (npoints != size)
         return;
 
@@ -332,7 +328,7 @@ void PointCollisionModel<DataTypes>::drawCollisionModel(const core::visual::Visu
     }
 
     // Check topological modifications
-    const auto npoints = mstate->getSize();
+    const auto npoints = this->mstate->getSize();
     if (npoints != size) return;
 
     std::vector<type::Vec3> pointsP;

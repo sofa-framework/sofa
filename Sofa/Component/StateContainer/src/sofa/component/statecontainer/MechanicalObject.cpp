@@ -55,9 +55,9 @@ void registerMechanicalObject(sofa::core::ObjectFactory* factory)
 template<>
 void MechanicalObject<defaulttype::Rigid3Types>::applyRotation (const type::Quat<SReal> q)
 {
-    helper::WriteAccessor< Data<VecCoord> > x = *this->write(core::vec_id::write_access::position);
+    helper::WriteAccessor< Data<VecCoord> > x_wa = *this->write(core::vec_id::write_access::position);
 
-    for (RigidCoord<3, SReal>& xi : x)
+    for (RigidCoord<3, SReal>& xi : x_wa)
     {
         xi.getCenter() = q.rotate(xi.getCenter());
         xi.getOrientation() = q * xi.getOrientation();
@@ -198,17 +198,17 @@ void MechanicalObject<defaulttype::Rigid3Types>::draw(const core::visual::Visual
 
     if (showObject.getValue())
     {
-        const float scale = showObjectScale.getValue();
-        const helper::ReadAccessor<Data<VecCoord> > x = *this->read(core::vec_id::write_access::position);
+        const float scaleValue = showObjectScale.getValue();
+        const helper::ReadAccessor<Data<VecCoord> > x_ra = *this->read(core::vec_id::write_access::position);
         const size_t vsize = d_size.getValue();
         for (size_t i = 0; i < vsize; ++i)
         {
             vparams->drawTool()->pushMatrix();
             float glTransform[16];
             ///TODO: check if the drawtool use OpenGL-shaped matrix
-            x[i].writeOpenGlMatrix ( glTransform );
+            x_ra[i].writeOpenGlMatrix ( glTransform );
             vparams->drawTool()->multMatrix( glTransform );
-            vparams->drawTool()->scale ( scale );
+            vparams->drawTool()->scale ( scaleValue );
 
             constexpr type::Vec3f sizes ( 1.f,1.f,1.f );
 

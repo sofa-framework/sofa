@@ -1246,4 +1246,14 @@ bool HexahedronSetTopologyContainer::unlinkTopologyHandlerToData(core::topology:
     }
 }
 
+const void* HexahedronSetTopologyContainer::getElementsRaw(
+    const sofa::geometry::ElementType& elementType) const noexcept
+{
+    if (elementType == sofa::geometry::ElementType::HEXAHEDRON)
+    {
+        return &d_hexahedron.getValue();
+    }
+    return QuadSetTopologyContainer::getElementsRaw(elementType);
+}
+
 } //namespace sofa::component::topology::container::dynamic

@@ -81,6 +81,11 @@ void CompositeLinearSystem<TMatrix, TVector>::init()
             }
         }
     }
+
+    if (!this->isComponentStateInvalid())
+    {
+        this->d_matrixChanged.setParent(&l_solverLinearSystem->d_matrixChanged);
+    }
 }
 
 template <class TMatrix, class TVector>
