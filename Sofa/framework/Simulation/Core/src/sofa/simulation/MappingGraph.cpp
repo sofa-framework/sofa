@@ -320,15 +320,19 @@ void MappingGraph::build(const InputLists& input)
     for (size_t i = 0; i < input.mappings.size(); ++i)
     {
         BaseMappingGraphNode* mappingNode = mappingNodePtrs[i];
-        for (auto& s : input.mappings[i]->getMechFrom())
+        const auto mappingInputs = input.mappings[i]->getMechFrom();
+        if (auto groupNode = findInGroupNodes(std::set(mappingInputs.begin(), mappingInputs.end())))
         {
-            if (auto groupNode = findInGroupNodes(s))
+            addEdge(groupNode.get(), mappingNode);
+        }
+        else
+        {
+            for (auto& s : input.mappings[i]->getMechFrom())
             {
-                addEdge(groupNode.get(), mappingNode);
-            }
-            else if (auto* sn = findStateNode(s))
-            {
-                addEdge(sn, mappingNode);
+                if (auto* sn = findStateNode(s))
+                {
+                    addEdge(sn, mappingNode);
+                }
             }
         }
 
@@ -387,12 +391,13 @@ ComponentGroupMappingGraphNode::SPtr MappingGraph::findGroupNode(
 }
 
 ComponentGroupMappingGraphNode::SPtr MappingGraph::findInGroupNodes(
-    const core::behavior::BaseMechanicalState::SPtr state)
+    const std::set<core::behavior::BaseMechanicalState*>& states)
 {
     auto it = std::find_if(m_groupIndex.begin(), m_groupIndex.end(),
-        [&state](auto& group)
+        [&states](auto& group)
         {
-            return std::find(group.first.begin(), group.first.end(), state) != group.first.end();
+            return group.first.size() == states.size() &&
+                std::equal(states.begin(), states.end(), group.first.begin());
         });
     if (it != m_groupIndex.end())
         return it->second;

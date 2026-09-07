@@ -255,7 +255,7 @@ private:
      * @param state The mechanical state defining the scope of the group.
      * @return A shared pointer to the found/created ComponentGroupMappingGraphNode.
      */
-    ComponentGroupMappingGraphNode::SPtr findInGroupNodes(const core::behavior::BaseMechanicalState::SPtr state);
+    ComponentGroupMappingGraphNode::SPtr findInGroupNodes(const std::set<core::behavior::BaseMechanicalState*>& states);
 
     /**
      * @brief Finds the graph node corresponding to a raw mechanical state pointer.

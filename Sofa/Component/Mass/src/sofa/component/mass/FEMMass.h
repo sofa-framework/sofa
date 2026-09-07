@@ -80,6 +80,8 @@ protected:
 
 public:
 
+    sofa::Data<bool> d_lumping;
+
     /**
      * @brief Link to the nodal mass density component.
      *
@@ -102,9 +104,10 @@ public:
 
     /**
      * @brief Indicates whether the mass matrix is diagonal.
-     * @return Always returns false, as FEM mass matrices are generally not diagonal (unless lumped).
+     * @return Returns false in general as FEM mass matrices are generally not diagonal unless
+     * lumped. In that case, it returns true.
      */
-    bool isDiagonal() const override { return false; }
+    bool isDiagonal() const override { return d_lumping.getValue(); }
 
     /**
      * @brief Adds the gravity force (f = M * g) to the force vector.
@@ -147,7 +150,7 @@ public:
 
     using Inherit1::accFromF;
     /**
-     * @brief Supposed to compute $ a = M^{-1} f $, but triggers an error in this implementation.
+     * @brief Compute $ a = M^{-1} f $ if the mass matrix is lumped. Triggers an error otherwise.
      *
      * @param mparams Mechanical parameters for the computation.
      * @param a The result vector of $M^{-1} f$.
