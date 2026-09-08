@@ -43,7 +43,7 @@ public:
 
     static void pullbackCotangent(
         const MappingGraph& mappingGraph, const core::MechanicalParams& mparams,
-        core::MultiVecDerivId cotangentVectorId);
+        core::MultiVecDerivId cotangentVectorId, bool ignoreMappingFlag = true);
 
 };
 

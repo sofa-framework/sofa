@@ -46,11 +46,14 @@ void DifferentialOperations::pushforwardTangent(
 
 void DifferentialOperations::pullbackCotangent(
     const MappingGraph& mappingGraph, const core::MechanicalParams& mparams,
-    core::MultiVecDerivId cotangentVectorId)
+    core::MultiVecDerivId cotangentVectorId, bool ignoreMappingFlag)
 {
     mappingGraph.algorithms.traverseBottomUp_([&](core::BaseMapping& mapping)
     {
-        mapping.applyJ(&mparams, cotangentVectorId, cotangentVectorId);
+        if (mapping.areForcesMapped() || ignoreMappingFlag)
+        {
+            mapping.applyJT(&mparams, cotangentVectorId, cotangentVectorId);
+        }
     });
 }
 
