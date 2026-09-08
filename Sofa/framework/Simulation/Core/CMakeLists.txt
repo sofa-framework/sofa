@@ -91,15 +91,12 @@ set(HEADER_FILES
     ${SRC_ROOT}/mechanicalvisitor/MechanicalAccumulateJacobian.h
     ${SRC_ROOT}/mechanicalvisitor/MechanicalAccumulateJacobian.h
     ${SRC_ROOT}/mechanicalvisitor/MechanicalAccumulateMatrixDeriv.h
-    ${SRC_ROOT}/mechanicalvisitor/MechanicalAddMBK_ToMatrixVisitor.h
     ${SRC_ROOT}/mechanicalvisitor/MechanicalAddMBKdxVisitor.h
     ${SRC_ROOT}/mechanicalvisitor/MechanicalAddMDxVisitor.h
     ${SRC_ROOT}/mechanicalvisitor/MechanicalAddSeparateGravityVisitor.h
     ${SRC_ROOT}/mechanicalvisitor/MechanicalApplyConstraintsVisitor.h
-    ${SRC_ROOT}/mechanicalvisitor/MechanicalApplyProjectiveConstraint_ToMatrixVisitor.h
     ${SRC_ROOT}/mechanicalvisitor/MechanicalBeginIntegrationVisitor.h
     ${SRC_ROOT}/mechanicalvisitor/MechanicalBuildConstraintMatrix.h
-    ${SRC_ROOT}/mechanicalvisitor/MechanicalComputeContactForceVisitor.h
     ${SRC_ROOT}/mechanicalvisitor/MechanicalComputeDfVisitor.h
     ${SRC_ROOT}/mechanicalvisitor/MechanicalComputeEnergyVisitor.h
     ${SRC_ROOT}/mechanicalvisitor/MechanicalComputeForceVisitor.h
@@ -113,9 +110,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/mechanicalvisitor/MechanicalIdentityBlocksInJacobianVisitor.h
     ${SRC_ROOT}/mechanicalvisitor/MechanicalIntegrateConstraintVisitor.h
     ${SRC_ROOT}/mechanicalvisitor/MechanicalIntegrationVisitor.h
-    ${SRC_ROOT}/mechanicalvisitor/MechanicalMultiVectorFromBaseVectorVisitor.h
-    ${SRC_ROOT}/mechanicalvisitor/MechanicalMultiVectorPeqBaseVectorVisitor.h
-    ${SRC_ROOT}/mechanicalvisitor/MechanicalMultiVectorToBaseVectorVisitor.h
     ${SRC_ROOT}/mechanicalvisitor/MechanicalPickParticlesVisitor.h
     ${SRC_ROOT}/mechanicalvisitor/MechanicalPickParticlesWithTagsVisitor.h
     ${SRC_ROOT}/mechanicalvisitor/MechanicalProjectJacobianMatrixVisitor.h
@@ -234,15 +228,12 @@ set(SOURCE_FILES
     ${SRC_ROOT}/mechanicalvisitor/MechanicalAccumulateJacobian.cpp
     ${SRC_ROOT}/mechanicalvisitor/MechanicalAccumulateJacobian.cpp
     ${SRC_ROOT}/mechanicalvisitor/MechanicalAccumulateMatrixDeriv.cpp
-    ${SRC_ROOT}/mechanicalvisitor/MechanicalAddMBK_ToMatrixVisitor.cpp
     ${SRC_ROOT}/mechanicalvisitor/MechanicalAddMBKdxVisitor.cpp
     ${SRC_ROOT}/mechanicalvisitor/MechanicalAddMDxVisitor.cpp
     ${SRC_ROOT}/mechanicalvisitor/MechanicalAddSeparateGravityVisitor.cpp
     ${SRC_ROOT}/mechanicalvisitor/MechanicalApplyConstraintsVisitor.cpp
-    ${SRC_ROOT}/mechanicalvisitor/MechanicalApplyProjectiveConstraint_ToMatrixVisitor.cpp
     ${SRC_ROOT}/mechanicalvisitor/MechanicalBeginIntegrationVisitor.cpp
     ${SRC_ROOT}/mechanicalvisitor/MechanicalBuildConstraintMatrix.cpp
-    ${SRC_ROOT}/mechanicalvisitor/MechanicalComputeContactForceVisitor.cpp
     ${SRC_ROOT}/mechanicalvisitor/MechanicalComputeDfVisitor.cpp
     ${SRC_ROOT}/mechanicalvisitor/MechanicalComputeEnergyVisitor.cpp
     ${SRC_ROOT}/mechanicalvisitor/MechanicalComputeForceVisitor.cpp
@@ -256,9 +247,6 @@ set(SOURCE_FILES
     ${SRC_ROOT}/mechanicalvisitor/MechanicalIdentityBlocksInJacobianVisitor.cpp
     ${SRC_ROOT}/mechanicalvisitor/MechanicalIntegrateConstraintVisitor.cpp
     ${SRC_ROOT}/mechanicalvisitor/MechanicalIntegrationVisitor.cpp
-    ${SRC_ROOT}/mechanicalvisitor/MechanicalMultiVectorFromBaseVectorVisitor.cpp
-    ${SRC_ROOT}/mechanicalvisitor/MechanicalMultiVectorPeqBaseVectorVisitor.cpp
-    ${SRC_ROOT}/mechanicalvisitor/MechanicalMultiVectorToBaseVectorVisitor.cpp
     ${SRC_ROOT}/mechanicalvisitor/MechanicalPickParticlesVisitor.cpp
     ${SRC_ROOT}/mechanicalvisitor/MechanicalPickParticlesWithTagsVisitor.cpp
     ${SRC_ROOT}/mechanicalvisitor/MechanicalProjectJacobianMatrixVisitor.cpp
