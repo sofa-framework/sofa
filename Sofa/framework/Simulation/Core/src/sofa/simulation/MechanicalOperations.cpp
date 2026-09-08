@@ -30,7 +30,6 @@
 #include <sofa/simulation/mechanicalvisitor/MechanicalPropagateOnlyPositionVisitor.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalPropagateOnlyVelocityVisitor.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalPropagateOnlyPositionAndVelocityVisitor.h>
-#include <sofa/simulation/mechanicalvisitor/MechanicalPropagateOnlyPositionAndResetForceVisitor.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalProjectPositionVisitor.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalProjectVelocityVisitor.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalApplyConstraintsVisitor.h>
@@ -178,15 +177,6 @@ void MechanicalOperations::propagateXAndV(core::MultiVecCoordId x, core::MultiVe
     executeVisitor( visitor );
 }
 
-/// Propagate the given position through all mappings and reset the current force delta
-void MechanicalOperations::propagateXAndResetF(core::MultiVecCoordId x, core::MultiVecDerivId f)
-{
-    setX(x);
-    setF(f);
-    const MechanicalPropagateOnlyPositionAndResetForceVisitor visitor(&mparams, x, f);
-    executeVisitor( visitor );
-}
-
 /// Apply projective constraints to the given position vector
 void MechanicalOperations::projectPosition(core::MultiVecCoordId x, SReal time)
 {
@@ -232,12 +222,6 @@ void MechanicalOperations::addMdx(core::MultiVecDerivId res, core::MultiVecDeriv
     executeVisitor( MechanicalAddMDxVisitor(&mparams, res,dx,factor) );
 }
 
-///< res += factor M.dx
-void MechanicalOperations::integrateVelocity(core::MultiVecDerivId res, core::ConstMultiVecCoordId x, core::ConstMultiVecDerivId v, SReal dt)
-{
-    executeVisitor( MechanicalVOpVisitor(&mparams, res,x,v,dt) );
-}
-
 ///< res = x + v.dt
 void MechanicalOperations::accFromF(core::MultiVecDerivId a, core::ConstMultiVecDerivId f) ///< a = M^-1 . f
 {
@@ -257,34 +241,6 @@ void MechanicalOperations::computeForce(core::MultiVecDerivId result, bool clear
         //finish();
     }
     executeVisitor( MechanicalComputeForceVisitor(&mparams, result, accumulate) );
-}
-
-
-/// Compute the current force delta (given the latest propagated displacement)
-void MechanicalOperations::computeDf(core::MultiVecDerivId df, bool clear, bool accumulate)
-{
-    setDf(df);
-    if (clear)
-    {
-        executeVisitor( MechanicalResetForceVisitor(&mparams, df, false) );
-        //	finish();
-    }
-    executeVisitor( MechanicalComputeDfVisitor( &mparams, df,  accumulate) );
-}
-
-/// Compute the current force delta (given the latest propagated velocity)
-void MechanicalOperations::computeDfV(core::MultiVecDerivId df, bool clear, bool accumulate)
-{
-    const core::ConstMultiVecDerivId dx = mparams.dx();
-    mparams.setDx(mparams.v());
-    setDf(df);
-    if (clear)
-    {
-        executeVisitor( MechanicalResetForceVisitor(&mparams, df, false) );
-        //finish();
-    }
-    executeVisitor( MechanicalComputeDfVisitor(&mparams, df, accumulate) );
-    mparams.setDx(dx);
 }
 
 /// accumulate $ df += (m M + b B + k K) dx $ (given the latest propagated displacement)
@@ -339,21 +295,6 @@ void MechanicalOperations::addSeparateGravity(SReal dt, core::MultiVecDerivId re
     executeVisitor( MechanicalAddSeparateGravityVisitor(&mparams, result) );
 }
 
-void MechanicalOperations::computeContactForce(core::MultiVecDerivId result)
-{
-    setF(result);
-    executeVisitor( MechanicalResetForceVisitor(&mparams, result, false) );
-    //finish();
-    executeVisitor( MechanicalComputeContactForceVisitor(&mparams, result) );
-}
-
-void MechanicalOperations::computeContactDf(core::MultiVecDerivId df)
-{
-    setDf(df);
-    executeVisitor( MechanicalResetForceVisitor(&mparams, df, false) );
-    //finish();
-}
-
 void MechanicalOperations::computeAcc(SReal t, core::MultiVecDerivId a, core::MultiVecCoordId x, core::MultiVecDerivId v)
 {
     MultiVecDerivId f( vec_id::write_access::force );
@@ -369,44 +310,6 @@ void MechanicalOperations::computeAcc(SReal t, core::MultiVecDerivId a, core::Mu
     projectResponse(a);
 }
 
-void MechanicalOperations::computeForce(SReal t, core::MultiVecDerivId f, core::MultiVecCoordId x, core::MultiVecDerivId v)
-{
-    setF(f);
-    setX(x);
-    setV(v);
-    executeVisitor( MechanicalProjectPositionAndVelocityVisitor(&mparams, t,x,v) );
-    executeVisitor( MechanicalPropagateOnlyPositionAndVelocityVisitor(&mparams, t,x,v) );
-    computeForce(f,true,true);
-
-    projectResponse(f);
-}
-
-void MechanicalOperations::computeContactAcc(SReal t, core::MultiVecDerivId a, core::MultiVecCoordId x, core::MultiVecDerivId v)
-{
-    MultiVecDerivId f( vec_id::write_access::force );
-    setF(f);
-    setDx(a);
-    setX(x);
-    setV(v);
-    executeVisitor( MechanicalProjectPositionAndVelocityVisitor(&mparams, t,x,v) );
-    executeVisitor( MechanicalPropagateOnlyPositionAndVelocityVisitor(&mparams, t,x,v) );
-    computeContactForce(f);
-
-    accFromF(a,f);
-    projectResponse(a);
-}
-
-void MechanicalOperations::resetSystem(core::behavior::LinearSolver* linearSolver)
-{
-    if (linearSolver)
-    {
-        if (auto* linearSystem = linearSolver->getLinearSystem())
-        {
-            linearSystem->clearSystem();
-        }
-    }
-}
-
 void MechanicalOperations::setSystemMBKMatrix(
     MatricesFactors::M m, MatricesFactors::B b, MatricesFactors::K k,
     core::behavior::LinearSolver* linearSolver)
@@ -420,51 +323,6 @@ void MechanicalOperations::setSystemMBKMatrix(
         if (auto* linearSystem = linearSolver->getLinearSystem())
         {
             linearSystem->buildSystemMatrix(&mparams);
-        }
-    }
-}
-
-void MechanicalOperations::setSystemRHVector(
-    core::MultiVecDerivId v, core::behavior::LinearSolver* linearSolver)
-{
-    if (linearSolver)
-    {
-        if (auto* linearSystem = linearSolver->getLinearSystem())
-        {
-            linearSystem->setRHS(v);
-        }
-    }
-}
-
-void MechanicalOperations::setSystemLHVector(
-    core::MultiVecDerivId v, core::behavior::LinearSolver* linearSolver)
-{
-    if (linearSolver)
-    {
-        if (auto* linearSystem = linearSolver->getLinearSystem())
-        {
-            linearSystem->setSystemSolution(v);
-        }
-    }
-}
-
-void MechanicalOperations::solveSystem(core::behavior::LinearSolver* linearSolver)
-{
-    if (linearSolver)
-    {
-        linearSolver->solveSystem();
-    }
-}
-
-void MechanicalOperations::solveSystem(
-    core::behavior::LinearSolver* linearSolver, core::MultiVecDerivId v)
-{
-    if (linearSolver)
-    {
-        linearSolver->solveSystem();
-        if (auto* linearSystem = linearSolver->getLinearSystem())
-        {
-            linearSystem->dispatchSystemSolution(v);
         }
     }
 }
@@ -537,55 +395,6 @@ void MechanicalOperations::solveConstraint(MultiVecId id, core::ConstraintOrder 
 void MechanicalOperations::getMatrixDimension(sofa::Size*  const nbRow, sofa::Size* const nbCol, sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     executeVisitor( MechanicalGetMatrixDimensionVisitor(&mparams, nbRow, nbCol, matrix) );
-}
-
-void MechanicalOperations::addMBK_ToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, SReal mFact, SReal bFact, SReal kFact)
-{
-    mparams.setMFactor(mFact);
-    mparams.setBFactor(bFact);
-    mparams.setKFactor(kFact);
-    if (matrix != nullptr)
-    {
-        executeVisitor( MechanicalAddMBK_ToMatrixVisitor(&mparams, matrix) );
-        executeVisitor( MechanicalApplyProjectiveConstraint_ToMatrixVisitor(&mparams, matrix) );
-    }
-}
-
-void MechanicalOperations::baseVector2MultiVector(const linearalgebra::BaseVector *src, core::MultiVecId dest, const sofa::core::behavior::MultiMatrixAccessor* matrix)
-{
-    if (src != nullptr)
-    {
-        executeVisitor( MechanicalMultiVectorFromBaseVectorVisitor(&mparams, dest, src, matrix) );
-    }
-}
-
-void MechanicalOperations::multiVector2BaseVector(core::ConstMultiVecId src, linearalgebra::BaseVector *dest, const sofa::core::behavior::MultiMatrixAccessor* matrix)
-{
-    if (dest != nullptr)
-    {
-        executeVisitor( MechanicalMultiVectorToBaseVectorVisitor(&mparams, src, dest, matrix) );
-    }
-}
-
-
-void MechanicalOperations::multiVectorPeqBaseVector(core::MultiVecDerivId dest, const linearalgebra::BaseVector *src, const sofa::core::behavior::MultiMatrixAccessor* matrix)
-{
-    if (src != nullptr)
-    {
-        executeVisitor( MechanicalMultiVectorPeqBaseVectorVisitor(&mparams, dest, src, matrix) );
-    }
-}
-
-
-
-
-/// Dump the content of the given vector.
-void MechanicalOperations::print( core::ConstMultiVecId /*v*/, std::ostream& /*out*/ )
-{
-}
-
-void MechanicalOperations::printWithElapsedTime( core::ConstMultiVecId /*v*/, unsigned /*time*/, std::ostream& /*out*/ )
-{
 }
 
 void MechanicalOperations::showMissingLinearSolverError() const

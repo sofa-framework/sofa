@@ -124,7 +124,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/mechanicalvisitor/MechanicalProjectVelocityVisitor.h
     ${SRC_ROOT}/mechanicalvisitor/MechanicalPropagateDxAndResetForceVisitor.h
     ${SRC_ROOT}/mechanicalvisitor/MechanicalPropagateDxVisitor.h
-    ${SRC_ROOT}/mechanicalvisitor/MechanicalPropagateOnlyPositionAndResetForceVisitor.h
     ${SRC_ROOT}/mechanicalvisitor/MechanicalPropagateOnlyPositionAndVelocityVisitor.h
     ${SRC_ROOT}/mechanicalvisitor/MechanicalPropagateOnlyPositionVisitor.h
     ${SRC_ROOT}/mechanicalvisitor/MechanicalPropagateOnlyVelocityVisitor.h
@@ -268,7 +267,6 @@ set(SOURCE_FILES
     ${SRC_ROOT}/mechanicalvisitor/MechanicalProjectVelocityVisitor.cpp
     ${SRC_ROOT}/mechanicalvisitor/MechanicalPropagateDxAndResetForceVisitor.cpp
     ${SRC_ROOT}/mechanicalvisitor/MechanicalPropagateDxVisitor.cpp
-    ${SRC_ROOT}/mechanicalvisitor/MechanicalPropagateOnlyPositionAndResetForceVisitor.cpp
     ${SRC_ROOT}/mechanicalvisitor/MechanicalPropagateOnlyPositionAndVelocityVisitor.cpp
     ${SRC_ROOT}/mechanicalvisitor/MechanicalPropagateOnlyPositionVisitor.cpp
     ${SRC_ROOT}/mechanicalvisitor/MechanicalPropagateOnlyVelocityVisitor.cpp

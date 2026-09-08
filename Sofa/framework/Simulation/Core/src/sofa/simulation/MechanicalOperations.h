@@ -61,8 +61,6 @@ public:
     void propagateV(core::MultiVecDerivId v);
     /// Propagate the given position and velocity through all mappings
     void propagateXAndV(core::MultiVecCoordId x, core::MultiVecDerivId v);
-    /// Propagate the given position through all mappings and reset the current force delta
-    void propagateXAndResetF(core::MultiVecCoordId x, core::MultiVecDerivId f);
     /// Apply projective constraints to the given position vector
     void projectPosition(core::MultiVecCoordId x, SReal time = 0.0);
     /// Apply projective constraints to the given velocity vector
@@ -72,16 +70,11 @@ public:
     /// Apply projective constraints to the given position and velocity vectors
     void projectPositionAndVelocity(core::MultiVecCoordId x, core::MultiVecDerivId v, double time = 0.0);
     void addMdx(core::MultiVecDerivId res, core::MultiVecDerivId dx, SReal factor = 1.0); ///< res += factor M.dx
-    void integrateVelocity(core::MultiVecDerivId res, core::ConstMultiVecCoordId x, core::ConstMultiVecDerivId v, SReal dt); ///< res = x + v.dt
     void accFromF(core::MultiVecDerivId a, core::ConstMultiVecDerivId f); ///< a = M^-1 . f
     /// Compute Energy
     void computeEnergy(SReal &kineticEnergy, SReal &potentialEnergy);
     /// Compute the current force (given the latest propagated position and velocity)
     void computeForce(core::MultiVecDerivId result, bool clear = true, bool accumulate = true);
-    /// Compute the current force delta (given the latest propagated displacement)
-    void computeDf(core::MultiVecDerivId df, bool clear = true, bool accumulate = true);
-    /// Compute the current force delta (given the latest propagated velocity)
-    void computeDfV(core::MultiVecDerivId df, bool clear = true, bool accumulate = true);
     /// accumulate $ df += (m M + b B + k K) dx $ (given the latest propagated displacement)
     void addMBKdx(core::MultiVecDerivId df, core::MatricesFactors::M m, core::MatricesFactors::B b, core::MatricesFactors::K k, bool clear = true, bool accumulate = true);
     /// accumulate $ df += (m M + b B + k K) velocity $
@@ -89,25 +82,14 @@ public:
     /// Add dt*Gravity to the velocity
     void addSeparateGravity(SReal dt, core::MultiVecDerivId result = core::vec_id::write_access::velocity );
 
-    void computeContactForce(core::MultiVecDerivId result);
-    void computeContactDf(core::MultiVecDerivId df);
-
-
     void computeAcc(SReal t, core::MultiVecDerivId a, core::MultiVecCoordId x, core::MultiVecDerivId v); ///< Compute a(x,v) at time t. Parameters x and v not const due to propagation through mappings.
-    void computeForce(SReal t, core::MultiVecDerivId f, core::MultiVecCoordId x, core::MultiVecDerivId v);  ///< Compute f(x,v) at time t. Parameters x and v not const due to propagation through mappings.
-    void computeContactAcc(SReal t, core::MultiVecDerivId a, core::MultiVecCoordId x, core::MultiVecDerivId v); // Parameters x and v not const due to propagation through mappings.
 
     /// @}
 
     /// @name Matrix operations using LinearSolver components
 /// @{
 
-    void resetSystem(core::behavior::LinearSolver* linearSolver);
     void setSystemMBKMatrix(core::MatricesFactors::M m, core::MatricesFactors::B b, core::MatricesFactors::K k, core::behavior::LinearSolver* linearSolver);
-    void setSystemRHVector(core::MultiVecDerivId v, core::behavior::LinearSolver* linearSolver);
-    void setSystemLHVector(core::MultiVecDerivId v, core::behavior::LinearSolver* linearSolver);
-    void solveSystem(core::behavior::LinearSolver* linearSolver);
-    void solveSystem(core::behavior::LinearSolver* linearSolver, core::MultiVecDerivId v);
     void print( std::ostream& out, core::behavior::LinearSolver* linearSolver);
     /// @}
 
@@ -126,21 +108,6 @@ public:
     {
         getMatrixDimension(nullptr, nullptr, matrix);
     }
-
-    void addMBK_ToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, SReal mFact, SReal bFact, SReal kFact);
-
-    void multiVector2BaseVector(core::ConstMultiVecId src, linearalgebra::BaseVector *dest, const sofa::core::behavior::MultiMatrixAccessor* matrix);
-    void baseVector2MultiVector(const linearalgebra::BaseVector *src, core::MultiVecId dest, const sofa::core::behavior::MultiMatrixAccessor* matrix);
-    void multiVectorPeqBaseVector(core::MultiVecDerivId dest, const linearalgebra::BaseVector *src, const sofa::core::behavior::MultiMatrixAccessor* matrix);
-
-    /// @}
-
-    /// @name Debug operations
-/// @{
-
-    /// Dump the content of the given vector.
-    void print( core::ConstMultiVecId v, std::ostream& out );
-    void printWithElapsedTime( core::ConstMultiVecId v,  unsigned time, std::ostream& out=std::cerr );
 
     /// @}
 
