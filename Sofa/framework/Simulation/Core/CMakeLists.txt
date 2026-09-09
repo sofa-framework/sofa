@@ -6,15 +6,11 @@ set(SRC_ROOT "src/sofa/simulation")
 set(HEADER_FILES
     ${SRC_ROOT}/config.h.in
     ${SRC_ROOT}/fwd.h
-    ${SRC_ROOT}/AnimateBeginEvent.h
-    ${SRC_ROOT}/AnimateEndEvent.h
     ${SRC_ROOT}/AnimateVisitor.h
     ${SRC_ROOT}/BaseMechanicalVisitor.h
     ${SRC_ROOT}/BehaviorUpdatePositionVisitor.h
     ${SRC_ROOT}/CleanupVisitor.h
     ${SRC_ROOT}/CollisionAnimationLoop.h
-    ${SRC_ROOT}/CollisionBeginEvent.h
-    ${SRC_ROOT}/CollisionEndEvent.h
     ${SRC_ROOT}/CollisionVisitor.h
     ${SRC_ROOT}/Colors.h
     ${SRC_ROOT}/DeactivatedNodeVisitor.h
@@ -25,8 +21,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/ExportGnuplotVisitor.h
     ${SRC_ROOT}/ExportVisualModelOBJVisitor.h
     ${SRC_ROOT}/InitVisitor.h
-    ${SRC_ROOT}/IntegrateBeginEvent.h
-    ${SRC_ROOT}/IntegrateEndEvent.h
     ${SRC_ROOT}/MechanicalOperations.h
     ${SRC_ROOT}/MechanicalVPrintVisitor.h
     ${SRC_ROOT}/MechanicalVisitor.h
@@ -34,9 +28,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/Node.h
     ${SRC_ROOT}/Node.inl
     ${SRC_ROOT}/ParallelSparseMatrixProduct.h
-    ${SRC_ROOT}/PauseEvent.h
     ${SRC_ROOT}/PipelineImpl.h
-    ${SRC_ROOT}/PositionEvent.h
     ${SRC_ROOT}/PrintVisitor.h
     ${SRC_ROOT}/PropagateEventVisitor.h
     ${SRC_ROOT}/RequiredPlugin.h
@@ -51,7 +43,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/UpdateContextVisitor.h
     ${SRC_ROOT}/UpdateInternalDataVisitor.h
     ${SRC_ROOT}/UpdateLinksVisitor.h
-    ${SRC_ROOT}/UpdateMappingEndEvent.h
     ${SRC_ROOT}/UpdateMappingVisitor.h
     ${SRC_ROOT}/VectorOperations.h
     ${SRC_ROOT}/VelocityThresholdVisitor.h
@@ -70,13 +61,22 @@ set(HEADER_FILES
     ${SRC_ROOT}/MappingGraphMechanicalOperations.h
     ${SRC_ROOT}/SceneCheckerVisitor.h
 
+    ${SRC_ROOT}/events/AnimateBeginEvent.h
+    ${SRC_ROOT}/events/AnimateEndEvent.h
     ${SRC_ROOT}/events/BuildConstraintSystemEndEvent.h
+    ${SRC_ROOT}/events/CollisionBeginEvent.h
+    ${SRC_ROOT}/events/CollisionEndEvent.h
+    ${SRC_ROOT}/events/IntegrateBeginEvent.h
+    ${SRC_ROOT}/events/IntegrateEndEvent.h
+    ${SRC_ROOT}/events/PauseEvent.h
+    ${SRC_ROOT}/events/PositionEvent.h
     ${SRC_ROOT}/events/SimulationInitDoneEvent.h
     ${SRC_ROOT}/events/SimulationInitStartEvent.h
     ${SRC_ROOT}/events/SimulationInitTexturesDoneEvent.h
     ${SRC_ROOT}/events/SimulationStartEvent.h
     ${SRC_ROOT}/events/SimulationStopEvent.h
     ${SRC_ROOT}/events/SolveConstraintSystemEndEvent.h
+    ${SRC_ROOT}/events/UpdateMappingEndEvent.h
 
     ${SRC_ROOT}/mappinggraph/BaseMappingGraphNode.h
     ${SRC_ROOT}/mappinggraph/CallableVisitor.h
@@ -159,14 +159,10 @@ set(HEADER_FILES
 )
 
 set(SOURCE_FILES
-    ${SRC_ROOT}/AnimateBeginEvent.cpp
-    ${SRC_ROOT}/AnimateEndEvent.cpp
     ${SRC_ROOT}/BaseMechanicalVisitor.cpp
     ${SRC_ROOT}/BehaviorUpdatePositionVisitor.cpp
     ${SRC_ROOT}/CleanupVisitor.cpp
     ${SRC_ROOT}/CollisionAnimationLoop.cpp
-    ${SRC_ROOT}/CollisionBeginEvent.cpp
-    ${SRC_ROOT}/CollisionEndEvent.cpp
     ${SRC_ROOT}/CollisionVisitor.cpp
     ${SRC_ROOT}/Colors.cpp
     ${SRC_ROOT}/DeactivatedNodeVisitor.cpp
@@ -177,8 +173,6 @@ set(SOURCE_FILES
     ${SRC_ROOT}/ExportGnuplotVisitor.cpp
     ${SRC_ROOT}/ExportVisualModelOBJVisitor.cpp
     ${SRC_ROOT}/InitVisitor.cpp
-    ${SRC_ROOT}/IntegrateBeginEvent.cpp
-    ${SRC_ROOT}/IntegrateEndEvent.cpp
     ${SRC_ROOT}/MappingGraph.cpp
     ${SRC_ROOT}/MappingGraphMechanicalOperations.cpp
     ${SRC_ROOT}/MechanicalOperations.cpp
@@ -186,9 +180,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/MechanicalVisitor.cpp
     ${SRC_ROOT}/MutationListener.cpp
     ${SRC_ROOT}/Node.cpp
-    ${SRC_ROOT}/PauseEvent.cpp
     ${SRC_ROOT}/PipelineImpl.cpp
-    ${SRC_ROOT}/PositionEvent.cpp
     ${SRC_ROOT}/PrintVisitor.cpp
     ${SRC_ROOT}/PropagateEventVisitor.cpp
     ${SRC_ROOT}/RequiredPlugin.cpp
@@ -205,7 +197,6 @@ set(SOURCE_FILES
     ${SRC_ROOT}/UpdateContextVisitor.cpp
     ${SRC_ROOT}/UpdateInternalDataVisitor.cpp
     ${SRC_ROOT}/UpdateLinksVisitor.cpp
-    ${SRC_ROOT}/UpdateMappingEndEvent.cpp
     ${SRC_ROOT}/UpdateMappingVisitor.cpp
     ${SRC_ROOT}/VectorOperations.cpp
     ${SRC_ROOT}/VelocityThresholdVisitor.cpp
@@ -218,13 +209,22 @@ set(SOURCE_FILES
     ${SRC_ROOT}/BaseSimulationExporter.cpp
     ${SRC_ROOT}/SceneCheckerVisitor.cpp
 
+    ${SRC_ROOT}/events/AnimateBeginEvent.cpp
+    ${SRC_ROOT}/events/AnimateEndEvent.cpp
     ${SRC_ROOT}/events/BuildConstraintSystemEndEvent.cpp
+    ${SRC_ROOT}/events/CollisionBeginEvent.cpp
+    ${SRC_ROOT}/events/CollisionEndEvent.cpp
+    ${SRC_ROOT}/events/IntegrateBeginEvent.cpp
+    ${SRC_ROOT}/events/IntegrateEndEvent.cpp
+    ${SRC_ROOT}/events/PauseEvent.cpp
+    ${SRC_ROOT}/events/PositionEvent.cpp
     ${SRC_ROOT}/events/SimulationInitDoneEvent.cpp
     ${SRC_ROOT}/events/SimulationInitStartEvent.cpp
     ${SRC_ROOT}/events/SimulationInitTexturesDoneEvent.cpp
     ${SRC_ROOT}/events/SimulationStartEvent.cpp
     ${SRC_ROOT}/events/SimulationStopEvent.cpp
     ${SRC_ROOT}/events/SolveConstraintSystemEndEvent.cpp
+    ${SRC_ROOT}/events/UpdateMappingEndEvent.cpp
 
     ${SRC_ROOT}/mappinggraph/BaseMappingGraphNode.cpp
     ${SRC_ROOT}/mappinggraph/ExportDot.cpp
