@@ -140,8 +140,9 @@ protected:
      * @brief Runs the quadrature and accumulates every linked source term into m_constantForce.
      *
      * For each element and each quadrature point, a QuadratureContext is built and handed to every
-     * source term; the density it returns is weighted by \f$ w \, |\det J| \, N_a \f$ and scattered
-     * onto the element nodes.
+     * source term, together with the nodal property of that term interpolated at the point; the
+     * density it returns is weighted by \f$ w \, |\det J| \, N_a \f$ and scattered onto the element
+     * nodes.
      */
     void assembleConstantForce();
 
