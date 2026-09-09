@@ -22,7 +22,7 @@
 #pragma once
 
 #include <sofa/component/solidmechanics/fem/elastic/config.h>
-#include <sofa/component/solidmechanics/fem/elastic/BaseGeometricSourceTerm.h>
+#include <sofa/component/solidmechanics/fem/elastic/BaseSourceTerm.h>
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/behavior/TopologyAccessor.h>
 #include <sofa/core/objectmodel/Link.h>
@@ -40,7 +40,7 @@ namespace sofa::component::solidmechanics::fem::elastic
  * @brief Integrates a source density into consistent nodal loads.
  *
  * A source term contributes \f$ \int_{\Omega} N_a \, r \, d\Omega \f$ to the right-hand side, where
- * r is the density evaluated by a linked BaseGeometricSourceTerm (through l_constantSources) at
+ * r is the density evaluated by a linked BaseSourceTerm (through l_constantSources) at
  * each quadrature point.
  *
  * @tparam TDataTypes The data types used for positions, velocities, etc. (e.g., Vec3Types).
@@ -70,9 +70,9 @@ public:
     /**
      * @brief Source terms integrated by this component.
      *
-     * If left empty, the BaseGeometricSourceTerm components found in the current context are used.
+     * If left empty, the BaseSourceTerm components found in the current context are used.
      */
-    sofa::MultiLink<FEMSourceTermIntegrator<DataTypes, ElementType>, BaseGeometricSourceTerm<DataTypes, ElementType>,
+    sofa::MultiLink<FEMSourceTermIntegrator<DataTypes, ElementType>, BaseSourceTerm<DataTypes, ElementType>,
         sofa::BaseLink::FLAG_STOREPATH | sofa::BaseLink::FLAG_STRONGLINK> l_constantSources;
 
     /**
