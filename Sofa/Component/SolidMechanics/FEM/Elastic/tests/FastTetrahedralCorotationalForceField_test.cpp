@@ -202,12 +202,10 @@ TEST_F(FastTetrahedralCorotationalForceField_test, emptyTology)
 
 TEST_F(FastTetrahedralCorotationalForceField_test, TetrahedronInformationStreamOperators)
 {
-    // using Mat3 = type::Mat<3, 3, Real>;
     FastTetrahedralCorotationalForceField3::TetrahedronRestInformation tetraInfo;
 
     tetraInfo.restVolume = 1.0;
 
-    // tetraInfo.restRotation = Mat3(1, 2, 3);
     for (int i = 0; i < 3; ++i)
         for (int j = 0; j < 3; ++j)
             tetraInfo.restRotation[i][j] = i + j;
