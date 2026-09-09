@@ -77,7 +77,7 @@ void FEMSourceTermIntegrator<DataTypes, ElementType>::validateSources()
     // Gather all GeometricSourceTerm components in Context if empty
     if (l_constantSources.empty())
     {
-        const auto sourcesInContext = this->getContext()->template getObjects<GeometricSourceTerm<DataTypes, ElementType> >(
+        const auto sourcesInContext = this->getContext()->template getObjects<BaseGeometricSourceTerm<DataTypes, ElementType> >(
             sofa::core::objectmodel::BaseContext::Local);
 
         for (const auto& source : sourcesInContext)
@@ -137,18 +137,7 @@ void FEMSourceTermIntegrator<DataTypes, ElementType>::assembleConstantForce()
 
             for (const auto& source : l_constantSources)
             {
-                sofa::helper::ReadAccessor propertyAccessor { source->d_property };
-
-                std::array<sofa::Deriv_t<DataTypes>, NumberOfNodesInElement> elementNodesProperty;
-                for (sofa::Size i = 0; i < NumberOfNodesInElement; ++i)
-                {
-                    elementNodesProperty[i] = source->getNodeProperty(element[i], propertyAccessor);
-                }
-
-                const auto property =
-                    FiniteElement::Helper::evaluateValueInElement(elementNodesProperty, N);
-
-                const auto density = source->evaluate(context, property);
+                const auto density = source->evaluate(context);
 
                 for (sofa::Size i = 0; i < NumberOfNodesInElement; ++i)
                 {

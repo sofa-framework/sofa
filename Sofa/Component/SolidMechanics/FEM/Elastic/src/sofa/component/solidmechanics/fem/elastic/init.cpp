@@ -30,7 +30,6 @@ extern void registerBeamFEMForceField(sofa::core::ObjectFactory* factory);
 extern void registerCorotationalFEMForceField(sofa::core::ObjectFactory* factory);
 extern void registerFEMSourceTermIntegrator(sofa::core::ObjectFactory* factory);
 extern void registerFastTetrahedralCorotationalForceField(sofa::core::ObjectFactory* factory);
-extern void registerGeometricSourceTerm(sofa::core::ObjectFactory* factory);
 extern void registerHexahedralFEMForceField(sofa::core::ObjectFactory* factory);
 extern void registerHexahedralFEMForceFieldAndMass(sofa::core::ObjectFactory* factory);
 extern void registerHexahedronFEMForceField(sofa::core::ObjectFactory* factory);
@@ -73,7 +72,6 @@ void registerObjects(sofa::core::ObjectFactory* factory)
     registerCorotationalFEMForceField(factory);
     registerFEMSourceTermIntegrator(factory);
     registerFastTetrahedralCorotationalForceField(factory);
-    registerGeometricSourceTerm(factory);
     registerHexahedralFEMForceField(factory);
     registerHexahedralFEMForceFieldAndMass(factory);
     registerHexahedronFEMForceField(factory);

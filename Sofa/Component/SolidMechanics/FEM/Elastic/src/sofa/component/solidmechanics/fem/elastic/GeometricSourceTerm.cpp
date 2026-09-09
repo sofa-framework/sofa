@@ -21,38 +21,22 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_GEOMETRIC_SOURCE_TERM_CPP
 
-#include <sofa/component/solidmechanics/fem/elastic/GeometricSourceTerm.h>
+#include <sofa/component/solidmechanics/fem/elastic/GeometricSourceTerm.inl>
 
-#include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/fem/FiniteElement[all].h>
 
 namespace sofa::component::solidmechanics::fem::elastic
 {
 
-void registerGeometricSourceTerm(sofa::core::ObjectFactory* factory)
-{
-    factory->registerObjects(sofa::core::ObjectRegistrationData("Source density prescribed at the nodes, per unit measure of the element")
-        .add< GeometricSourceTerm<sofa::defaulttype::Vec1Types, sofa::geometry::Edge> >()
-        .add< GeometricSourceTerm<sofa::defaulttype::Vec2Types, sofa::geometry::Edge> >()
-        .add< GeometricSourceTerm<sofa::defaulttype::Vec3Types, sofa::geometry::Edge> >()
-        .add< GeometricSourceTerm<sofa::defaulttype::Vec2Types, sofa::geometry::Triangle> >()
-        .add< GeometricSourceTerm<sofa::defaulttype::Vec3Types, sofa::geometry::Triangle> >()
-        .add< GeometricSourceTerm<sofa::defaulttype::Vec2Types, sofa::geometry::Quad> >()
-        .add< GeometricSourceTerm<sofa::defaulttype::Vec3Types, sofa::geometry::Quad> >()
-        .add< GeometricSourceTerm<sofa::defaulttype::Vec3Types, sofa::geometry::Tetrahedron> >()
-        .add< GeometricSourceTerm<sofa::defaulttype::Vec3Types, sofa::geometry::Hexahedron> >()
-    );
-}
-
-template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API GeometricSourceTerm<sofa::defaulttype::Vec1Types, sofa::geometry::Edge>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API GeometricSourceTerm<sofa::defaulttype::Vec2Types, sofa::geometry::Edge>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API GeometricSourceTerm<sofa::defaulttype::Vec3Types, sofa::geometry::Edge>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API GeometricSourceTerm<sofa::defaulttype::Vec2Types, sofa::geometry::Triangle>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API GeometricSourceTerm<sofa::defaulttype::Vec3Types, sofa::geometry::Triangle>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API GeometricSourceTerm<sofa::defaulttype::Vec2Types, sofa::geometry::Quad>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API GeometricSourceTerm<sofa::defaulttype::Vec3Types, sofa::geometry::Quad>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API GeometricSourceTerm<sofa::defaulttype::Vec3Types, sofa::geometry::Tetrahedron>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API GeometricSourceTerm<sofa::defaulttype::Vec3Types, sofa::geometry::Hexahedron>;
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API GeometricSourceTerm<sofa::defaulttype::Vec1Types, sofa::geometry::Edge, sofa::Deriv_t<sofa::defaulttype::Vec1Types>>;
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API GeometricSourceTerm<sofa::defaulttype::Vec2Types, sofa::geometry::Edge, sofa::Deriv_t<sofa::defaulttype::Vec2Types>>;
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API GeometricSourceTerm<sofa::defaulttype::Vec3Types, sofa::geometry::Edge, sofa::Deriv_t<sofa::defaulttype::Vec3Types>>;
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API GeometricSourceTerm<sofa::defaulttype::Vec2Types, sofa::geometry::Triangle, sofa::Deriv_t<sofa::defaulttype::Vec2Types>>;
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API GeometricSourceTerm<sofa::defaulttype::Vec3Types, sofa::geometry::Triangle, sofa::Deriv_t<sofa::defaulttype::Vec3Types>>;
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API GeometricSourceTerm<sofa::defaulttype::Vec2Types, sofa::geometry::Quad, sofa::Deriv_t<sofa::defaulttype::Vec2Types>>;
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API GeometricSourceTerm<sofa::defaulttype::Vec3Types, sofa::geometry::Quad, sofa::Deriv_t<sofa::defaulttype::Vec3Types>>;
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API GeometricSourceTerm<sofa::defaulttype::Vec3Types, sofa::geometry::Tetrahedron, sofa::Deriv_t<sofa::defaulttype::Vec3Types>>;
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API GeometricSourceTerm<sofa::defaulttype::Vec3Types, sofa::geometry::Hexahedron, sofa::Deriv_t<sofa::defaulttype::Vec3Types>>;
 
 }  // namespace sofa::component::solidmechanics::fem::elastic
