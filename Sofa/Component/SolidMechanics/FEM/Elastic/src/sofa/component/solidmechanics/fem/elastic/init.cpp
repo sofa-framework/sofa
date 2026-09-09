@@ -37,8 +37,10 @@ extern void registerHexahedronFEMForceFieldAndMass(sofa::core::ObjectFactory* fa
 extern void registerLinearSmallStrainFEMForceField(sofa::core::ObjectFactory* factory);
 extern void registerNodalPressure(sofa::core::ObjectFactory* factory);
 extern void registerNodalSourceDensity(sofa::core::ObjectFactory* factory);
+extern void registerNodalStress(sofa::core::ObjectFactory* factory);
 extern void registerPressureSourceTerm(sofa::core::ObjectFactory* factory);
 extern void registerQuadBendingFEMForceField(sofa::core::ObjectFactory* factory);
+extern void registerStressSourceTerm(sofa::core::ObjectFactory* factory);
 extern void registerTetrahedralCorotationalFEMForceField(sofa::core::ObjectFactory* factory);
 extern void registerTetrahedronFEMForceField(sofa::core::ObjectFactory* factory);
 extern void registerTriangleFEMForceField(sofa::core::ObjectFactory* factory);
@@ -83,8 +85,10 @@ void registerObjects(sofa::core::ObjectFactory* factory)
     registerLinearSmallStrainFEMForceField(factory);
     registerNodalPressure(factory);
     registerNodalSourceDensity(factory);
+    registerNodalStress(factory);
     registerPressureSourceTerm(factory);
     registerQuadBendingFEMForceField(factory);
+    registerStressSourceTerm(factory);
     registerTetrahedralCorotationalFEMForceField(factory);
     registerTetrahedronFEMForceField(factory);
     registerTriangleFEMForceField(factory);
