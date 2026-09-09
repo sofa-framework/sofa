@@ -22,7 +22,7 @@
 #pragma once
 
 #include <sofa/component/solidmechanics/fem/elastic/config.h>
-#include <sofa/component/solidmechanics/fem/elastic/ConstantSourceTerm.h>
+#include <sofa/component/solidmechanics/fem/elastic/GeometricSourceTerm.h>
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/behavior/TopologyAccessor.h>
 #include <sofa/core/objectmodel/Link.h>
@@ -41,7 +41,7 @@ namespace sofa::component::solidmechanics::fem::elastic
  * @brief Integrates source terms into consistent nodal loads.
  *
  * A source term contributes \f$ \int_{\Omega} N_a \, r \, d\Omega \f$ to the right-hand side, where
- * r is the per-node density carried by a linked ConstantSourceTerm (through l_constantSources) and
+ * r is the per-node density carried by a linked GeometricSourceTerm (through l_constantSources) and
  * does not depend on the displacement. Every term is thus summed and integrated once in init();
  * addForce merely accumulates the result.
  *
@@ -75,9 +75,9 @@ public:
     /**
      * @brief Source terms integrated by this component.
      *
-     * If left empty, the ConstantSourceTerm components found in the current context are used.
+     * If left empty, the GeometricSourceTerm components found in the current context are used.
      */
-    sofa::MultiLink<FEMSourceTermIntegrator<DataTypes, ElementType>, ConstantSourceTerm<DataTypes>,
+    sofa::MultiLink<FEMSourceTermIntegrator<DataTypes, ElementType>, GeometricSourceTerm<DataTypes, ElementType>,
         sofa::BaseLink::FLAG_STOREPATH | sofa::BaseLink::FLAG_STRONGLINK> l_constantSources;
 
     /**

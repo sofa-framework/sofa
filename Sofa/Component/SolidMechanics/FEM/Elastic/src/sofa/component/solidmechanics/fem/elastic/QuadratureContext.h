@@ -21,46 +21,65 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/solidmechanics/fem/elastic/config.h>
-#include <sofa/core/BaseNodalProperty.h>
 #include <sofa/core/trait/DataTypes.h>
-
-#if !defined(SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_CONSTANT_SOURCE_TERM_CPP)
-#include <sofa/defaulttype/VecTypes.h>
-#endif
+#include <sofa/fem/FiniteElement.h>
+#include <sofa/type/Mat.h>
+#include <sofa/type/Vec.h>
 
 namespace sofa::component::solidmechanics::fem::elastic
 {
 
 /**
- * @class ConstantSourceTerm
- * @brief A source density prescribed at the nodes, independent of the current displacement.
+ * @struct QuadratureContext
+ * @brief Everything the integrator knows at one quadrature point.
  *
- * The density is the inherited "property" Data (see BaseNodalProperty): a vector shorter than the
- * mechanical state broadcasts its last value to the remaining nodes, so a uniform density is
- * written with a single value. Link it to a FEMSourceTermIntegrator through l_constantSources.
+ * Built once per quadrature point and handed to every integrated term. 
+ * A source term reads from it and returns an integrand.
  *
  * @tparam TDataTypes The data types used for positions, velocities, etc. (e.g., Vec3Types).
+ * @tparam TElementType The type of finite element (e.g., sofa::geometry::Tetrahedron).
  */
-template <class TDataTypes>
-class ConstantSourceTerm : public sofa::core::BaseNodalProperty<sofa::Deriv_t<TDataTypes>>
+template <class TDataTypes, class TElementType>
+struct QuadratureContext
 {
-public:
     using DataTypes = TDataTypes;
+    using ElementType = TElementType;
+    using FiniteElement = sofa::fem::FiniteElement<ElementType, DataTypes>;
+
+    using Real = sofa::Real_t<DataTypes>;
+    using Coord = sofa::Coord_t<DataTypes>;
     using Deriv = sofa::Deriv_t<DataTypes>;
 
-    SOFA_CLASS(SOFA_TEMPLATE(ConstantSourceTerm, DataTypes),
-        SOFA_TEMPLATE(sofa::core::BaseNodalProperty, Deriv));
+    static constexpr sofa::Size NumberOfNodesInElement = ElementType::NumberOfNodes;
+    static constexpr sofa::Size spatial_dimensions = DataTypes::spatial_dimensions;
+    static constexpr sofa::Size TopologicalDimension = FiniteElement::TopologicalDimension;
 
-protected:
+    using Element = typename FiniteElement::TopologyElement;
+    using ShapeFunctions = sofa::type::Vec<NumberOfNodesInElement, Real>;
+    using GradientShapeFunctions = sofa::type::Mat<NumberOfNodesInElement, TopologicalDimension, Real>;
+    using Jacobian = sofa::type::Mat<spatial_dimensions, TopologicalDimension, Real>;
 
-    ConstantSourceTerm() : sofa::core::BaseNodalProperty<Deriv>(Deriv{}) {}
+    /// Node indices of the element being integrated, with which a term gathers its own nodal
+    /// degrees of freedom.
+    const Element& element;
+
+    /// Shape function value at this quadrature point.
+    ShapeFunctions N;
+
+    /// Reference-space gradients of the shape functions at this quadrature point.
+    GradientShapeFunctions gradientShapeFunctions;
+
+    /// dx/dq of the reference-to-physical mapping, on the configuration the integrator chose.
+    Jacobian jacobian;
+
+    /// \f$ |\det J| \f$, for information only: the integrator applies it, a term must not.
+    Real measure;
+
+    /// Interpolated rest position at this quadrature point.
+    Coord restPosition;
+
+    /// Interpolated displacement at this quadrature point.
+    Deriv displacement;
 };
-
-#if !defined(SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_CONSTANT_SOURCE_TERM_CPP)
-extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API ConstantSourceTerm<sofa::defaulttype::Vec1Types>;
-extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API ConstantSourceTerm<sofa::defaulttype::Vec2Types>;
-extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API ConstantSourceTerm<sofa::defaulttype::Vec3Types>;
-#endif
 
 }  // namespace sofa::component::solidmechanics::fem::elastic
