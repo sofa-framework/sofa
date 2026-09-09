@@ -113,7 +113,7 @@ protected:
             os << ei.ks << " ";
             os << ei.kd << " ";
             os << ei.is_activated << " ";
-            os << ei.is_initialized << " ";
+            os << ei.is_initialized;
 
             return os;
         }

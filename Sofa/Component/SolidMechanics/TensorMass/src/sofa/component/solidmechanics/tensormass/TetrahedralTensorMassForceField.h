@@ -71,18 +71,18 @@ protected:
         /// Output stream
         inline friend std::ostream& operator<< ( std::ostream& os, const EdgeRestInformation& eri )
         {
-            os << eri.DfDx << " ";
             for (int i = 0; i < 2; ++i)
                 os << eri.vertices[i] << " ";
+            os << eri.DfDx;
             return os;
         }
 
         /// Input stream
         inline friend std::istream& operator>> ( std::istream& in, EdgeRestInformation& eri )
         {
-            in >> eri.DfDx;
             for (int i = 0; i < 2; ++i)
                 in >> eri.vertices[i];
+            in >> eri.DfDx;
             return in;
         }
     };

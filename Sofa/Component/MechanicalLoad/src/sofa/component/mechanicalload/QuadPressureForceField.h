@@ -86,7 +86,7 @@ protected:
         inline friend std::ostream& operator<< ( std::ostream& os, const QuadPressureInformation& ei )
         {
             os << ei.area << " ";
-            os << ei.force << " ";
+            os << ei.force;
             return os;
         }
 

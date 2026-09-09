@@ -123,7 +123,8 @@ protected:
             os << hi.materialMatrix << " ";
             for (int i = 0; i < 8; ++i)
                 os << hi.rotatedInitialElements[i] << " ";
-            os << hi.rotation << " "; os << hi.stiffness << " ";
+            os << hi.rotation << " ";
+            os << hi.stiffness;
             return os;
         }
 

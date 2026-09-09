@@ -71,7 +71,7 @@ public:
         {
             os << s.ks << " ";
             os << s.kd << " ";
-            os << s.restVector << " ";
+            os << s.restVector;
             return os;
         }
 

@@ -160,7 +160,7 @@ protected:
             os << ei.alpha << " ";
             os << ei.lambda << " ";
             os << ei.is_activated << " ";
-            os << ei.is_initialized << " ";
+            os << ei.is_initialized;
             return os;
         }
 

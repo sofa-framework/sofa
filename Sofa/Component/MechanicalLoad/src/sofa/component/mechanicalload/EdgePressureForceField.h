@@ -67,7 +67,7 @@ protected:
         inline friend std::ostream& operator<< ( std::ostream& os, const EdgePressureInformation& ei )
         {
             os << ei.length << " ";
-            os << ei.force << " ";
+            os << ei.force;
             return os;
         }
 

@@ -84,7 +84,7 @@ protected:
             os << eri.restLength << " ";
             os << eri.currentLength << " ";
             os << eri.dl << " ";
-            os << eri.stiffness << " ";
+            os << eri.stiffness;
             return os;
         }
 

@@ -133,7 +133,7 @@ public:
             os << ti.Intcentroid << " ";
             os << ti.Inthalflength << " ";
             os << ti.Inthalfheight << " ";
-            os << ti.differenceToCriteria << " ";
+            os << ti.differenceToCriteria;
             return os;
         }
 
@@ -187,7 +187,7 @@ public:
             os << ei.kd << " ";
             os << ei.restlength << " ";
             os << ei.is_activated << " ";
-            os << ei.is_initialized << " ";
+            os << ei.is_initialized;
 
             return os;
         }
@@ -227,7 +227,7 @@ public:
             os << vi.meanStrainDirection << " ";
             os << vi.sumEigenValues << " ";
             os << vi.rotation << " ";
-            os << vi.stress << " ";
+            os << vi.stress;
             return os;
         }
         /// Input stream

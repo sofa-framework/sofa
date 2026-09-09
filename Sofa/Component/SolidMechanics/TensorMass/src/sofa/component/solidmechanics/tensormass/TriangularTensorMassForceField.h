@@ -79,7 +79,7 @@ protected:
         /// Output stream
         inline friend std::ostream& operator<< ( std::ostream& os, const EdgeRestInformation& eri )
         {
-            os << eri.DfDx << " ";
+            os << eri.DfDx;
             return os;
         }
 

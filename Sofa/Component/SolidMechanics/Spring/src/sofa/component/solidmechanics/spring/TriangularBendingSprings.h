@@ -93,8 +93,7 @@ public:
             os << ei.kd << " ";
             os << ei.restlength << " ";
             os << ei.is_activated << " ";
-            os << ei.is_initialized << " ";
-
+            os << ei.is_initialized;
             return os;
         }
 
@@ -109,7 +108,6 @@ public:
             in >> ei.restlength;
             in >> ei.is_activated;
             in >> ei.is_initialized;
-            
             return in;
         }
     };

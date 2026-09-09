@@ -84,7 +84,7 @@ protected:
             os << eri.restSquareLength << " ";
             os << eri.currentSquareLength << " ";
             os << eri.deltaL2 << " ";
-            os << eri.stiffness << " ";
+            os << eri.stiffness;
             return os;
         }
 
@@ -133,8 +133,7 @@ protected:
                 os << tri.areaVector[i] << " ";
             for (int i = 0; i < 3; ++i)
                 os << tri.dp[i] << " ";
-            os << tri.J << " ";
-
+            os << tri.J;
             return os;
         }
 

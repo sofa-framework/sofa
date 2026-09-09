@@ -109,9 +109,9 @@ public:
             for (int i = 0; i < 6; ++i)
                 os << eri.linearDfDx[i] << " ";
             os << eri.rotation << " ";
-            os << eri.restRotation << " ";
             for (int i = 0; i < 6; ++i)
                 os << eri.edgeOrientation[i] << " ";
+            os << eri.restRotation;
             return os;
         }
 
@@ -128,9 +128,9 @@ public:
             for (int i = 0; i < 6; ++i)
                 in >> eri.linearDfDx[i];
             in >> eri.rotation;
-            in >> eri.restRotation;
             for (int i = 0; i < 6; ++i)
                 in >> eri.edgeOrientation[i];
+            in >> eri.restRotation;
             return in;
         }
     };

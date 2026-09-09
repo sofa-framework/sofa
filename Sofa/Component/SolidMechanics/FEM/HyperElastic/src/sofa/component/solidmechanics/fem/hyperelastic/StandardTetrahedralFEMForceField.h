@@ -120,11 +120,11 @@ public :
           os << eri.fiberDirection << " ";
           for (int i = 0; i < 4; ++i)
               os << eri.dJ[i] << " ";
-          os << eri.strainEnergy << " ";
           for (int i = 0; i < 4; ++i)
               os << eri.tetraIndices[i] << " ";
           for (int i = 0; i < 6; ++i)
               os << eri.tetraEdges[i] << " ";
+          os << eri.strainEnergy;
           return os;
       }
       /// Input stream
@@ -137,12 +137,11 @@ public :
           in >> eri.fiberDirection;
           for (int i = 0; i < 4; ++i)
               in >> eri.dJ[i];
-          in >> eri.strainEnergy;
           for (int i = 0; i < 4; ++i)
               in >> eri.tetraIndices[i];
           for (int i = 0; i < 6; ++i)
               in >> eri.tetraEdges[i];
-
+          in >> eri.strainEnergy;
           return in;
       }
 
@@ -163,17 +162,17 @@ public :
 	   /// Output stream
 	   inline friend std::ostream& operator<< ( std::ostream& os, const EdgeInformation& eri )
 	   {
-	       os << eri.DfDx << " ";
 	       for (int i = 0; i < 2; ++i)
 	           os << eri.vertices[i] << " ";
+	       os << eri.DfDx;
 	       return os;
 	   }
 	   /// Input stream
 	   inline friend std::istream& operator>> ( std::istream& in, EdgeInformation& eri )
 	   {
-	       in >> eri.DfDx;
 	       for (int i = 0; i < 2; ++i)
 	           in >> eri.vertices[i];
+	       in >> eri.DfDx;
 	       return in;
 	   }
 

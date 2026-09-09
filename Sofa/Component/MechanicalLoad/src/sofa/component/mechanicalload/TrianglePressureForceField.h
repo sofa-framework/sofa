@@ -87,9 +87,9 @@ protected:
         inline friend std::ostream& operator<< ( std::ostream& os, const TrianglePressureInformation& ei )
         {
             os << ei.area << " ";
-            os << ei.force << " ";
             for (int i = 0; i < 3; ++i)
                 os << ei.DfDx[i] << " ";
+            os << ei.force;
             return os;
         }
 
@@ -97,9 +97,9 @@ protected:
         inline friend std::istream& operator>> ( std::istream& in, TrianglePressureInformation& ei )
         {
             in >> ei.area;
-            in >> ei.force;
             for (int i = 0; i < 3; ++i)
                 in >> ei.DfDx[i];
+            in >> ei.force;
             return in;
         }
     };

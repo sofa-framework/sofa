@@ -115,8 +115,7 @@ public:
             os << eri.m_volume << " ";
             os << eri.m_SPKTensorGeneral << " ";
             os << eri.m_deformationGradient << " ";
-            os << eri.m_strainEnergy << " ";
-
+            os << eri.m_strainEnergy;
             return os;
         }
         /// Input stream
@@ -131,7 +130,6 @@ public:
             in >> eri.m_SPKTensorGeneral;
             in >> eri.m_deformationGradient;
             in >> eri.m_strainEnergy;
-            
             return in;
         }
 
@@ -148,7 +146,7 @@ public:
         /// Output stream
         inline friend std::ostream& operator<< (std::ostream& os, const EdgeInformation& eri )
         {
-            os << eri.DfDx << " ";
+            os << eri.DfDx;
             return os;
         }
         /// Input stream

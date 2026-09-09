@@ -161,11 +161,11 @@ public:
             os << ti.principalStressDirection << " ";
             os << ti.maxStress << " ";
             os << ti.principalStrainDirection << " ";
-            os << ti.maxStrain << " ";
             os << ti.differenceToCriteria << " ";
             os << ti.lastNStressDirection.size() << " ";
             for (const auto& direction : ti.lastNStressDirection)
                 os << direction << " ";
+            os << ti.maxStrain;
 
             return os;
         }
@@ -186,14 +186,13 @@ public:
             in >> ti.principalStressDirection;
             in >> ti.maxStress;
             in >> ti.principalStrainDirection;
-            in >> ti.maxStrain;
             in >> ti.differenceToCriteria;
             size_t size;
             in >> size;
             ti.lastNStressDirection.resize(size);
             for (auto& direction : ti.lastNStressDirection)
                 in >> direction;
-
+            in >> ti.maxStrain;
             return in;
         }
     };
@@ -218,7 +217,7 @@ public:
             os << vi.meanStrainDirection << " ";
             os << vi.sumEigenValues << " ";
             os << vi.rotation << " ";
-            os << vi.stress << " ";
+            os << vi.stress;
             return os;
         }
         /// Input stream
