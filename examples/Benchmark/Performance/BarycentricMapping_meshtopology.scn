@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Node name="root" gravity="0 -10 0" dt="0.01">
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/>
 
     <Node name="plugins">
         <RequiredPlugin pluginName="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->

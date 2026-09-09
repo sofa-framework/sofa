@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Node name="root" dt="0.001" gravity="0 -9.81 0">
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/>
 
     <include href="../../../plugins.xml"/>
 
