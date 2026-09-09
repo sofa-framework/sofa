@@ -263,6 +263,8 @@ public:
 
 protected:
 
+    const void* getElementsRaw(const sofa::geometry::ElementType& elementType) const noexcept override;
+
     /** \brief Creates the TriangleSet array.
      *
      * This function must be implemented by derived classes to create a list of triangles from a set of tetrahedra for instance

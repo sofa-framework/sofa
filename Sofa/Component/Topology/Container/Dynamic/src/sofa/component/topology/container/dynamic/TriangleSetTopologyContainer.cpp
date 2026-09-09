@@ -1078,5 +1078,14 @@ bool TriangleSetTopologyContainer::unlinkTopologyHandlerToData(core::topology::T
         return EdgeSetTopologyContainer::unlinkTopologyHandlerToData(topologyHandler, elementType);
     }
 }
+const void* TriangleSetTopologyContainer::getElementsRaw(
+    const sofa::geometry::ElementType& elementType) const noexcept
+{
+    if (elementType == sofa::geometry::ElementType::TRIANGLE)
+    {
+        return &d_triangle.getValue();
+    }
+    return EdgeSetTopologyContainer::getElementsRaw(elementType);
+}
 
 } //namespace sofa::component::topology::container::dynamic

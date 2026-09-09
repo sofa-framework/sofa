@@ -108,6 +108,32 @@ public:
     virtual const SeqHexahedra& getHexahedra() = 0;
     virtual const SeqPrisms& getPrisms() = 0;
     virtual const SeqPyramids& getPyramids() = 0;
+
+    /**
+     * Generic elements' accessor.
+     *
+     * Relies on the virtual method getElementsRaw. If this method is not implemented by the derived
+     * class, or if the element type is not supported by the derived class, the method returns an
+     * empty element list.
+     *
+     * @tparam ElementType the type of elements, e.g. sofa::geometry::Edge
+     * @return The element list contained in the topology
+     */
+    template <class ElementType> // e.g. sofa::geometry::Edge
+    const auto& getElements() const
+    {
+        using TopologyElement = sofa::topology::Element<ElementType>;
+        using SeqElement = sofa::type::vector<TopologyElement>;
+
+        const void* rawSequence = getElementsRaw(ElementType::Element_type);
+        if (!rawSequence)
+        {
+            static SeqElement empty;
+            return empty;
+        }
+        return *static_cast<const SeqElement*>(rawSequence);
+    }
+
     /// @}
 
     /// Random accessors
@@ -334,6 +360,13 @@ public:
 protected:
 
     sofa::core::objectmodel::DataFileName fileTopology;
+
+
+    virtual const void* getElementsRaw(const sofa::geometry::ElementType& elementType) const noexcept
+    {
+        SOFA_UNUSED(elementType);
+        return nullptr;
+    }
 
 public:
 
