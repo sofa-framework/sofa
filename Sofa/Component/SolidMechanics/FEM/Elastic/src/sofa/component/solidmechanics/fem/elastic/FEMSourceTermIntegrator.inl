@@ -31,15 +31,13 @@ FEMSourceTermIntegrator<DataTypes, ElementType>::FEMSourceTermIntegrator()
     : l_constantSources(initLink("constantSources", "Source terms of the weak form integrated by "
                 "this component. If empty, the ones found in the current context are used."))
     , d_quadratureDegree(initData(&d_quadratureDegree, static_cast<sofa::Size>(1), "quadratureDegree",
-                "Degree of the quadrature rule integrating the element matrix M."))
+                "Degree of the quadrature rule integrating the source terms."))
 {
-    // Re-compute global matrix and constant forces in case of quadrature degree change
-    this->addUpdateCallback("reassembleSourceMatrix", {&d_quadratureDegree},
+    this->addUpdateCallback("reassembleConstantForce", {&d_quadratureDegree},
         [this](const sofa::core::DataTracker&)
         {
             if (!this->isComponentStateInvalid() && this->l_topology && this->mstate)
             {
-                assembleGlobalMatrix();
                 assembleConstantForce();
             }
 
@@ -64,7 +62,6 @@ void FEMSourceTermIntegrator<DataTypes, ElementType>::init()
 
     if (!this->isComponentStateInvalid() && this->l_topology && this->mstate)
     {
-        this->assembleGlobalMatrix();
         this->assembleConstantForce();
     }
 
@@ -96,36 +93,29 @@ void FEMSourceTermIntegrator<DataTypes, ElementType>::validateSources()
 }
 
 template <class DataTypes, class ElementType>
-void FEMSourceTermIntegrator<DataTypes, ElementType>::assembleGlobalMatrix()
+void FEMSourceTermIntegrator<DataTypes, ElementType>::assembleConstantForce()
 {
-    const auto& elements = FiniteElement::getElementSequence(*this->l_topology);
-    sofa::type::vector<ElementMatrix> elementMatrices;
+    m_constantForce.assign(this->mstate->getSize(), sofa::Deriv_t<DataTypes>{});
 
-    // 1. compute the geometry-only matrix of each element
-    calculateElementMatrix(elements, elementMatrices);
-
-    // 2. scatter the element matrices into the global matrix
-    initializeGlobalMatrix(elements, elementMatrices);
-}
-
-template <class DataTypes, class ElementType>
-void FEMSourceTermIntegrator<DataTypes, ElementType>::calculateElementMatrix(
-    const auto& elements, sofa::type::vector<ElementMatrix>& elementMatrices)
-{
     const auto restPositionsAccessor = this->mstate->readRestPositions();
-    elementMatrices.resize(elements.size());
+    const auto positionsAccessor = this->mstate->readPositions();
 
+    const auto& elements = FiniteElement::getElementSequence(*this->l_topology);
     const auto quadratureRule = FiniteElement::quadratureRule(d_quadratureDegree.getValue());
 
-    for (sofa::Index elementId = 0; elementId < elements.size(); ++elementId)
+    for (const auto& element : elements)
     {
-        const auto& element = elements[elementId];
-        auto& elementMatrix = elementMatrices[elementId];
-
         const std::array<sofa::Coord_t<DataTypes>, NumberOfNodesInElement> elementNodesRestCoordinates =
             extractNodesVectorFromGlobalVector(element, restPositionsAccessor.ref());
+        const std::array<sofa::Coord_t<DataTypes>, NumberOfNodesInElement> elementNodesCoordinates =
+            extractNodesVectorFromGlobalVector(element, positionsAccessor.ref());
 
-        // M_ij = integral of N_i N_j dV, evaluated on the rest configuration (geometry only).
+        std::array<sofa::Deriv_t<DataTypes>, NumberOfNodesInElement> elementNodesDisplacement;
+        for (sofa::Size i = 0; i < NumberOfNodesInElement; ++i)
+        {
+            elementNodesDisplacement[i] = elementNodesCoordinates[i] - elementNodesRestCoordinates[i];
+        }
+
         for (const auto& [quadraturePoint, weight] : quadratureRule)
         {
             const auto N = FiniteElement::shapeFunctions(quadraturePoint);
@@ -133,75 +123,29 @@ void FEMSourceTermIntegrator<DataTypes, ElementType>::calculateElementMatrix(
 
             const auto jacobian = FiniteElement::Helper::jacobianFromReferenceToPhysical(
                 elementNodesRestCoordinates, dN_dq_ref);
-            const auto detJ = sofa::type::absGeneralizedDeterminant(jacobian);
+            const auto measure = static_cast<Real>(sofa::type::absGeneralizedDeterminant(jacobian));
 
-            const auto NT_N = sofa::type::dyad(N, N);
+            const auto restPosition =
+                FiniteElement::Helper::evaluateValueInElement(elementNodesRestCoordinates, N);
+            const auto displacement =
+                FiniteElement::Helper::evaluateValueInElement(elementNodesDisplacement, N);
 
-            elementMatrix += (weight * detJ) * NT_N;
-        }
-    }
-}
+            const QuadratureContext<DataTypes, ElementType> context{
+                element, N, dN_dq_ref, jacobian, measure, restPosition, displacement};
 
-template <class DataTypes, class ElementType>
-void FEMSourceTermIntegrator<DataTypes, ElementType>::initializeGlobalMatrix(
-    const auto& elements, const sofa::type::vector<ElementMatrix>& elementMatrices)
-{
-    m_globalMatrix.clear();
-    const auto size = this->mstate->getSize();
-    m_globalMatrix.resize(size, size);
+            const auto weightTimesMeasure = static_cast<Real>(weight) * measure;
 
-    for (sofa::Index elementId = 0; elementId < elements.size(); ++elementId)
-    {
-        const auto& element = elements[elementId];
-        const auto& elementMatrix = elementMatrices[elementId];
-
-        for (sofa::Size i = 0; i < NumberOfNodesInElement; ++i)
-        {
-            for (sofa::Size j = 0; j < NumberOfNodesInElement; ++j)
+            for (const auto& source : l_constantSources)
             {
-                m_globalMatrix.add(element[i], element[j], elementMatrix(i, j));
+                const auto density = source->evaluate(context);
+
+                for (sofa::Size a = 0; a < NumberOfNodesInElement; ++a)
+                {
+                    m_constantForce[element[a]] += density * (weightTimesMeasure * N[a]);
+                }
             }
         }
     }
-
-    m_globalMatrix.compress();
-}
-
-template <class DataTypes, class ElementType>
-void FEMSourceTermIntegrator<DataTypes, ElementType>::applyGlobalMatrix(
-    const sofa::VecDeriv_t<DataTypes>& nodalSourceTerm, sofa::VecDeriv_t<DataTypes>& result) const
-{
-    // f_i = sum_j M_ij b_j : apply the global matrix to the nodal source term.
-    for (sofa::Index xi = 0; xi < m_globalMatrix.rowIndex.size(); ++xi)
-    {
-        const auto rowId = m_globalMatrix.rowIndex[xi];
-        typename GlobalMatrix::Range rowRange(m_globalMatrix.rowBegin[xi], m_globalMatrix.rowBegin[xi + 1]);
-        for (typename GlobalMatrix::Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)
-        {
-            const auto columnId = m_globalMatrix.colsIndex[xj];
-            const auto& value = m_globalMatrix.colsValue[xj];
-
-            result[rowId] += nodalSourceTerm[columnId] * value;
-        }
-    }
-}
-
-template <class DataTypes, class ElementType>
-void FEMSourceTermIntegrator<DataTypes, ElementType>::assembleConstantForce()
-{
-    const auto size = this->mstate->getSize();
-
-    // Aggregate all contributions to one vector before applying the global matrix
-    sofa::VecDeriv_t<DataTypes> sourceTerms(size, sofa::Deriv_t<DataTypes>{});
-
-    for (const auto& source : l_constantSources)
-    {
-        for (sofa::Index i = 0; i < size; ++i)
-            sourceTerms[i] += source->getNodeProperty(i);
-    }
-
-    m_constantForce.assign(size, sofa::Deriv_t<DataTypes>{});
-    applyGlobalMatrix(sourceTerms, m_constantForce);
 }
 
 template <class DataTypes, class ElementType>
