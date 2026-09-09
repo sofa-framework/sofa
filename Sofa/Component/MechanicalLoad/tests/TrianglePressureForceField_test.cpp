@@ -25,7 +25,7 @@
 
 #include <sofa/component/solidmechanics/testing/ForceFieldTestCreation.h>
 
-#include "sofa/defaulttype/VecTypes.h"
+#include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa {
 

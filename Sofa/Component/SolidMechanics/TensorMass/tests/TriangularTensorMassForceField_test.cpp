@@ -24,7 +24,7 @@
 #include <gtest/gtest.h>
 #include <sstream>
 
-#include "sofa/defaulttype/VecTypes.h"
+#include <sofa/defaulttype/VecTypes.h>
 
 
 namespace sofa::component::solidmechanics::tensormass
