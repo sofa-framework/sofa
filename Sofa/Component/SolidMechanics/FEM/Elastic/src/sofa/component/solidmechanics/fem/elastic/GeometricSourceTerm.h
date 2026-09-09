@@ -22,7 +22,7 @@
 #pragma once
 
 #include <sofa/component/solidmechanics/fem/elastic/config.h>
-#include <sofa/component/solidmechanics/fem/elastic/BaseGeometricSourceTerm.h>
+#include <sofa/component/solidmechanics/fem/elastic/BaseSourceTerm.h>
 #include <sofa/core/BaseNodalProperty.h>
 #include <sofa/core/objectmodel/Link.h>
 #include <sofa/fem/FiniteElement.h>
@@ -47,7 +47,7 @@ namespace sofa::component::solidmechanics::fem::elastic
  * @tparam TPropertyType The type of the nodal property (e.g., Deriv).
  */
 template <class TDataTypes, class TElementType, class TPropertyType>
-class GeometricSourceTerm : public BaseGeometricSourceTerm<TDataTypes, TElementType>
+class GeometricSourceTerm : public BaseSourceTerm<TDataTypes, TElementType>
 {
 public:
     using DataTypes = TDataTypes;
@@ -55,7 +55,7 @@ public:
     using PropertyType = TPropertyType;
 
     SOFA_CLASS(SOFA_TEMPLATE3(GeometricSourceTerm, DataTypes, ElementType, PropertyType),
-        SOFA_TEMPLATE2(BaseGeometricSourceTerm, DataTypes, ElementType));
+        SOFA_TEMPLATE2(BaseSourceTerm, DataTypes, ElementType));
 
     using Deriv = sofa::Deriv_t<DataTypes>;
     using QuadratureContext = QuadratureContext<DataTypes, ElementType>;

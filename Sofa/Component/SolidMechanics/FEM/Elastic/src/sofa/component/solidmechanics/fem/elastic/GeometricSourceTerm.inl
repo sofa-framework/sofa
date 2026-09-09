@@ -35,7 +35,7 @@ GeometricSourceTerm<DataTypes, ElementType, PropertyType>::GeometricSourceTerm()
 template <class DataTypes, class ElementType, class PropertyType>
 void GeometricSourceTerm<DataTypes, ElementType, PropertyType>::init()
 {
-    BaseGeometricSourceTerm<DataTypes, ElementType>::init();
+    BaseSourceTerm<DataTypes, ElementType>::init();
 
     if (this->isComponentStateInvalid())
     {

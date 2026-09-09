@@ -77,7 +77,7 @@ void FEMSourceTermIntegrator<DataTypes, ElementType>::validateSources()
     // Gather all GeometricSourceTerm components in Context if empty
     if (l_constantSources.empty())
     {
-        const auto sourcesInContext = this->getContext()->template getObjects<BaseGeometricSourceTerm<DataTypes, ElementType> >(
+        const auto sourcesInContext = this->getContext()->template getObjects<BaseSourceTerm<DataTypes, ElementType> >(
             sofa::core::objectmodel::BaseContext::Local);
 
         for (const auto& source : sourcesInContext)
