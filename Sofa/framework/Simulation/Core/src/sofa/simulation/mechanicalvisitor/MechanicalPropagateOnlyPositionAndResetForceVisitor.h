@@ -23,6 +23,10 @@
 
 #include <sofa/simulation/MechanicalVisitor.h>
 
+#if !defined(SOFA_SIMULATION_CORE_MECHANICALPROPAGATEONLYPOSITIONANDRESETFORCEVISITOR_CPP)
+SOFA_HEADER_DEPRECATED_NOT_REPLACED("v26.12", "v27.12")
+#endif
+
 namespace sofa::simulation::mechanicalvisitor
 {
 
@@ -34,7 +38,7 @@ MechanicalPropagatePositionAndResetForceVisitor.
 Use MechanicalProjectPositionVisitor before this visitor if projection
 is needed.
 */
-class SOFA_SIMULATION_CORE_API MechanicalPropagateOnlyPositionAndResetForceVisitor : public MechanicalVisitor
+class SOFA_SIMULATION_CORE_API SOFA_ATTRIBUTE_DEPRECATED__MECHANICALPROPAGATEONLYPOSITIONANDRESETFORCEVISITOR() MechanicalPropagateOnlyPositionAndResetForceVisitor : public MechanicalVisitor
 {
 public:
     sofa::core::MultiVecCoordId x;
