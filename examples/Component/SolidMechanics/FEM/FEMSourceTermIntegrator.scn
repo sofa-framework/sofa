@@ -67,7 +67,7 @@
             <LinearSmallStrainFEMForceField name="FEM" template="Vec2,Triangle"
                                             youngModulus="100000" poissonRatio="0.3" topology="@Triangle_topo"/>
 
-            <ConstantSourceTerm name="bodyForce" template="Vec2"
+            <GeometricSourceTerm name="bodyForce" template="Vec2,Triangle"
                            property="-84596.60915 -84596.60915  0 0  84596.60915 84596.60915  0 0  -84596.60915 -84596.60915
                                      0 0  175700.6498 175700.6498  0 0  -175700.6498 -175700.6498  0 0
                                      84596.60915 84596.60915  0 0  -84596.60915 -84596.60915  0 0  84596.60915 84596.60915
@@ -97,7 +97,7 @@
             <LinearSmallStrainFEMForceField name="FEM" template="Vec2,Triangle"
                                             youngModulus="100000" poissonRatio="0.3" topology="@Triangle_topo"/>
 
-            <ConstantSourceTerm name="bodyForce" template="Vec2"
+            <GeometricSourceTerm name="bodyForce" template="Vec2,Triangle"
                            property="-84596.60915 -84596.60915  0 0  84596.60915 84596.60915  0 0  -84596.60915 -84596.60915
                                      0 0  175700.6498 175700.6498  0 0  -175700.6498 -175700.6498  0 0
                                      84596.60915 84596.60915  0 0  -84596.60915 -84596.60915  0 0  84596.60915 84596.60915
