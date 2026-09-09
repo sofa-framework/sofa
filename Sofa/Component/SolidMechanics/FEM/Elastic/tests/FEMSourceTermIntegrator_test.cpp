@@ -28,7 +28,7 @@
 #include <sofa/core/MechanicalParams.h>
 
 #include <sofa/component/solidmechanics/fem/elastic/FEMSourceTermIntegrator.h>
-#include <sofa/component/solidmechanics/fem/elastic/ConstantSourceTerm.h>
+#include <sofa/component/solidmechanics/fem/elastic/GeometricSourceTerm.h>
 #include <sofa/component/statecontainer/MechanicalObject.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/geometry/Triangle.h>
@@ -83,18 +83,18 @@ protected:
     }
 };
 
-// Splitting one ConstantSourceTerm into several must not change the integrated force.
+// Splitting one GeometricSourceTerm into several must not change the integrated force.
 TEST_F(FEMSourceTermIntegrator_test, MultipleSourcesSumToOne)
 {
     m_root = makeMesh();
 
-    createObject(m_root, "ConstantSourceTerm", {{"name", "full"}, {"template", "Vec2"}, {"property", "300 -600"}});
+    createObject(m_root, "GeometricSourceTerm", {{"name", "full"}, {"template", "Vec2,Triangle"}, {"property", "300 -600"}});
     auto* one = dynamic_cast<Integrator*>(createObject(m_root, "FEMSourceTermIntegrator",
         {{"name", "one"}, {"template", "Vec2,Triangle"}, {"topology", "@mesh"}, {"constantSources", "@full"}}).get());
 
-    createObject(m_root, "ConstantSourceTerm", {{"name", "a"}, {"template", "Vec2"}, {"property", "100 -200"}});
-    createObject(m_root, "ConstantSourceTerm", {{"name", "b"}, {"template", "Vec2"}, {"property", "100 -200"}});
-    createObject(m_root, "ConstantSourceTerm", {{"name", "c"}, {"template", "Vec2"}, {"property", "100 -200"}});
+    createObject(m_root, "GeometricSourceTerm", {{"name", "a"}, {"template", "Vec2,Triangle"}, {"property", "100 -200"}});
+    createObject(m_root, "GeometricSourceTerm", {{"name", "b"}, {"template", "Vec2,Triangle"}, {"property", "100 -200"}});
+    createObject(m_root, "GeometricSourceTerm", {{"name", "c"}, {"template", "Vec2,Triangle"}, {"property", "100 -200"}});
     auto* three = dynamic_cast<Integrator*>(createObject(m_root, "FEMSourceTermIntegrator",
         {{"name", "three"}, {"template", "Vec2,Triangle"}, {"topology", "@mesh"}, {"constantSources", "@a @b @c"}}).get());
 
@@ -114,7 +114,7 @@ TEST_F(FEMSourceTermIntegrator_test, PotentialEnergyMatchesWork)
 {
     m_root = makeMesh();
 
-    createObject(m_root, "ConstantSourceTerm", {{"name", "bodyForce"}, {"template", "Vec2"}, {"property", "300 -600"}});
+    createObject(m_root, "GeometricSourceTerm", {{"name", "bodyForce"}, {"template", "Vec2,Triangle"}, {"property", "300 -600"}});
     auto* integrator = dynamic_cast<Integrator*>(createObject(m_root, "FEMSourceTermIntegrator",
         {{"name", "source"}, {"template", "Vec2,Triangle"}, {"topology", "@mesh"}, {"constantSources", "@bodyForce"}}).get());
 
