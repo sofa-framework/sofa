@@ -67,12 +67,13 @@
             <LinearSmallStrainFEMForceField name="FEM" template="Vec2,Triangle"
                                             youngModulus="100000" poissonRatio="0.3" topology="@Triangle_topo"/>
 
-            <GeometricSourceTerm name="bodyForce" template="Vec2,Triangle"
+            <NodalSourceDensity name="bodyForceDensity" template="Vec2"
                            property="-84596.60915 -84596.60915  0 0  84596.60915 84596.60915  0 0  -84596.60915 -84596.60915
                                      0 0  175700.6498 175700.6498  0 0  -175700.6498 -175700.6498  0 0
                                      84596.60915 84596.60915  0 0  -84596.60915 -84596.60915  0 0  84596.60915 84596.60915
                                      0 0  -175700.6498 -175700.6498  0 0  175700.6498 175700.6498  0 0
                                      -84596.60915 -84596.60915  0 0  84596.60915 84596.60915  0 0  -84596.60915 -84596.60915"/>
+            <VectorSourceTerm name="bodyForce" template="Vec2,Triangle" sourceDensity="@bodyForceDensity"/>
 
             <FEMSourceTermIntegrator name="source" template="Vec2,Triangle" topology="@Triangle_topo"
                            quadratureDegree="1" constantSources="@bodyForce"/>
@@ -97,12 +98,13 @@
             <LinearSmallStrainFEMForceField name="FEM" template="Vec2,Triangle"
                                             youngModulus="100000" poissonRatio="0.3" topology="@Triangle_topo"/>
 
-            <GeometricSourceTerm name="bodyForce" template="Vec2,Triangle"
+            <NodalSourceDensity name="bodyForceDensity" template="Vec2"
                            property="-84596.60915 -84596.60915  0 0  84596.60915 84596.60915  0 0  -84596.60915 -84596.60915
                                      0 0  175700.6498 175700.6498  0 0  -175700.6498 -175700.6498  0 0
                                      84596.60915 84596.60915  0 0  -84596.60915 -84596.60915  0 0  84596.60915 84596.60915
                                      0 0  -175700.6498 -175700.6498  0 0  175700.6498 175700.6498  0 0
                                      -84596.60915 -84596.60915  0 0  84596.60915 84596.60915  0 0  -84596.60915 -84596.60915"/>
+            <VectorSourceTerm name="bodyForce" template="Vec2,Triangle" sourceDensity="@bodyForceDensity"/>
 
             <FEMSourceTermIntegrator name="source" template="Vec2,Triangle" topology="@Triangle_topo"
                            quadratureDegree="2" constantSources="@bodyForce"/>

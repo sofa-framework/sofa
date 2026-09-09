@@ -20,20 +20,20 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/solidmechanics/fem/elastic/GeometricSourceTerm.h>
+#include <sofa/component/solidmechanics/fem/elastic/VectorSourceTerm.h>
+#include <sofa/component/solidmechanics/fem/elastic/NodalPropertyInterpolation.h>
 
 namespace sofa::component::solidmechanics::fem::elastic
 {
 
-template <class DataTypes, class ElementType, class PropertyType>
-GeometricSourceTerm<DataTypes, ElementType, PropertyType>::GeometricSourceTerm()
-    : l_nodalProperty(initLink("nodalProperty", "Nodal values of the property this source term is "
-                "built from."))
+template <class DataTypes, class ElementType>
+VectorSourceTerm<DataTypes, ElementType>::VectorSourceTerm()
+    : l_sourceDensity(initLink("sourceDensity", "Nodal source density integrated by this term."))
 {
 }
 
-template <class DataTypes, class ElementType, class PropertyType>
-void GeometricSourceTerm<DataTypes, ElementType, PropertyType>::init()
+template <class DataTypes, class ElementType>
+void VectorSourceTerm<DataTypes, ElementType>::init()
 {
     BaseSourceTerm<DataTypes, ElementType>::init();
 
@@ -42,10 +42,10 @@ void GeometricSourceTerm<DataTypes, ElementType, PropertyType>::init()
         return;
     }
 
-    if (!l_nodalProperty)
+    if (!l_sourceDensity)
     {
-        msg_error(this) << "The 'nodalProperty' link must be set to a BaseNodalProperty component. "
-                           "Linked path: '" << l_nodalProperty.getLinkedPath() << "'.";
+        msg_error(this) << "The 'sourceDensity' link must be set to a NodalSourceDensity "
+                           "component. Linked path: '" << l_sourceDensity.getLinkedPath() << "'.";
         this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
@@ -53,20 +53,16 @@ void GeometricSourceTerm<DataTypes, ElementType, PropertyType>::init()
     this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
 
-template <class DataTypes, class ElementType, class PropertyType>
-PropertyType GeometricSourceTerm<DataTypes, ElementType, PropertyType>::interpolateProperty(
+template <class DataTypes, class ElementType>
+sofa::Deriv_t<DataTypes> VectorSourceTerm<DataTypes, ElementType>::evaluate(
     const QuadratureContext& context) const
 {
-    sofa::helper::ReadAccessor propertyAccessor { l_nodalProperty->d_property };
-
-    std::array<PropertyType, NumberOfNodesInElement> elementNodesProperty;
-    for (sofa::Size i = 0; i < NumberOfNodesInElement; ++i)
+    if (!l_sourceDensity)
     {
-        elementNodesProperty[i] =
-            l_nodalProperty->getNodeProperty(context.element[i], propertyAccessor);
+        return Deriv{};
     }
 
-    return FiniteElement::Helper::evaluateValueInElement(elementNodesProperty, context.N);
+    return interpolateNodalProperty(*l_sourceDensity, context);
 }
 
 }  // namespace sofa::component::solidmechanics::fem::elastic

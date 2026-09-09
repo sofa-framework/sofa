@@ -42,7 +42,7 @@
         <FEMMass name="mass" template="Vec2,Triangle" topology="@Triangle_topo"/>
     </Node>
 
-    <!-- Gravity felt through GeometricSourceTerm & FEMSourceIntegrator; white -->
+    <!-- Gravity felt through VectorSourceTerm & FEMSourceIntegrator; white -->
     <Node name="GravityViaSourceTerm">
         <NewtonRaphsonSolver name="newton" maxNbIterationsNewton="1" absoluteResidualStoppingThreshold="1e-8"/>
         <StaticSolver newtonSolver="@newton"/>
@@ -64,8 +64,9 @@
         <NodalMassDensity property="100"/>
         <FEMMass name="mass" template="Vec2,Triangle" topology="@Triangle_topo"/>
 
-        <!-- density * gravity = 100 * (0, -9.81) --> 
-        <GeometricSourceTerm name="bodyForce" template="Vec2,Triangle" property="0 -981"/>
+        <!-- density * gravity = 100 * (0, -9.81) -->
+        <NodalSourceDensity name="bodyForceDensity" template="Vec2" property="0 -981"/>
+        <VectorSourceTerm name="bodyForce" template="Vec2,Triangle" sourceDensity="@bodyForceDensity"/>
 
         <FEMSourceTermIntegrator name="source" template="Vec2,Triangle" topology="@Triangle_topo"
                        quadratureDegree="1" constantSources="@bodyForce"/>
