@@ -38,11 +38,8 @@ namespace sofa::component::solidmechanics::fem::elastic
  * @class GeometricSourceTerm
  * @brief A source density whose value is determined by the geometry, not by the solution.
  *
- * The component calculates the integrand in evaluate() given QuadratureContext from the integrator.
- *
- * The density is the inherited "property" Data (see BaseNodalProperty): a vector shorter than
- * the mechanical state broadcasts its last value to the remaining nodes, so a uniform density is
- * written with a single value.
+ * The component calculates the integrand in evaluate() given a QuadratureContext and the
+ * interpolated property field.
  *
  * @tparam TDataTypes The data types used for positions, velocities, etc. (e.g., Vec3Types).
  * @tparam TElementType The type of finite element (e.g., sofa::geometry::Tetrahedron).
@@ -58,25 +55,19 @@ public:
         SOFA_TEMPLATE(sofa::core::BaseNodalProperty, sofa::Deriv_t<DataTypes>));
 
     using Deriv = sofa::Deriv_t<DataTypes>;
-    using Context = QuadratureContext<DataTypes, ElementType>;
+    using QuadratureContext = QuadratureContext<DataTypes, ElementType>;
 
     /**
      * @brief Source density at one quadrature point, per unit physical measure.
+     *
+     * @param context Geometry of the quadrature point.
+     * @param property The nodal property interpolated at the quadrature point.
      */
-    virtual Deriv evaluate(const Context& context) const
+    virtual Deriv evaluate(const QuadratureContext& context, const Deriv& property) const
     {
         SOFA_UNUSED(context);
 
-        // The density is prescribed at the nodes, so r(q) = sum_a N_a(q) r_a. That interpolation
-        // is still to be decided, so a single representative value stands in for the whole
-        // element: a property that does vary from node to node has entry 0 applied everywhere.
-        //
-        //     Deriv density{};
-        //     for (sofa::Size a = 0; a < Context::NumberOfNodesInElement; ++a)
-        //         density += this->getNodeProperty(context.element[a]) * context.N[a];
-        //     return density;
-
-        return this->getNodeProperty(0);
+        return property;
     }
 
 protected:

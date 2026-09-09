@@ -137,11 +137,22 @@ void FEMSourceTermIntegrator<DataTypes, ElementType>::assembleConstantForce()
 
             for (const auto& source : l_constantSources)
             {
-                const auto density = source->evaluate(context);
+                sofa::helper::ReadAccessor propertyAccessor { source->d_property };
 
-                for (sofa::Size a = 0; a < NumberOfNodesInElement; ++a)
+                std::array<sofa::Deriv_t<DataTypes>, NumberOfNodesInElement> elementNodesProperty;
+                for (sofa::Size i = 0; i < NumberOfNodesInElement; ++i)
                 {
-                    m_constantForce[element[a]] += density * (weightTimesMeasure * N[a]);
+                    elementNodesProperty[i] = source->getNodeProperty(element[i], propertyAccessor);
+                }
+
+                const auto property =
+                    FiniteElement::Helper::evaluateValueInElement(elementNodesProperty, N);
+
+                const auto density = source->evaluate(context, property);
+
+                for (sofa::Size i = 0; i < NumberOfNodesInElement; ++i)
+                {
+                    m_constantForce[element[i]] += density * (weightTimesMeasure * N[i]);
                 }
             }
         }
