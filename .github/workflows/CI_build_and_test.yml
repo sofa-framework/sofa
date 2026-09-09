@@ -103,24 +103,6 @@ jobs:
 
             echo "Workspace folder for this build will be $WORKSPACE"
 
-            ## Setup github
-            # Git config (needed by CMake ExternalProject)
-            if ! git config --get user.name; then
-                git config --system user.name 'SOFA Bot' > /dev/null 2>&1 ||
-                    git config --global user.name 'SOFA Bot' > /dev/null 2>&1 ||
-                    git config user.name 'SOFA Bot' > /dev/null 2>&1 ||
-                    echo "WARNING: cannot setup git config"
-            fi
-            if ! git config --get user.email; then
-                git config --system user.email '<>' > /dev/null 2>&1 ||
-                    git config --global user.email '<>' > /dev/null 2>&1 ||
-                    git config user.email '<>' > /dev/null 2>&1 ||
-                    echo "WARNING: cannot setup git config"
-            fi
-
-            ##TODO (if required) fix path too long for windows (see main.sh:201)
-
-
       - name: Clone SOFA and CI
         id: clone
         shell: bash
@@ -128,6 +110,7 @@ jobs:
           cd $WORKSPACE
 
           ## Configure authentification for git to clone properly
+          echo "$GH_TOKEN" > gh auth login --with-token
           gh auth setup-git
 
           ## Clone sofa and merge origin master
@@ -315,7 +298,7 @@ jobs:
               docker run --rm --env XDG_CACHE_HOME --env GH_TOKEN="$GH_TOKEN" -v $BUILDER_CACHE_DIR:/cache\
                   --user $(id -u):$(id -g) --network=host -v $WORKSPACE:/workspace \
                   ${DOCKER_IMAGE} \
-                  /bin/bash -c "env; gh auth setup-git; cd /workspace; ccache -M 5; /bin/bash $DOCKER_CI_DIR/scripts/configure-and-build.sh $DOCKER_BUILD_DIR $DOCKER_SRC_DIR $DOCKER_CI_DIR/scripts/ $DOCKER_LOG_DIR \"${NODE_NAME}\" \"${BUILD_TYPE}\" \"${CONFIG}\" \"${{ inputs.python-version }}\" \"${{ inputs.preset }}\" \"${{ inputs.generate-binaries }}\" \"${CMAKE_OPTIONS}\""             
+                  /bin/bash -c "env; echo "$GH_TOKEN" > gh auth login --with-token; gh auth setup-git; cd /workspace; ccache -M 5; /bin/bash $DOCKER_CI_DIR/scripts/configure-and-build.sh $DOCKER_BUILD_DIR $DOCKER_SRC_DIR $DOCKER_CI_DIR/scripts/ $DOCKER_LOG_DIR \"${NODE_NAME}\" \"${BUILD_TYPE}\" \"${CONFIG}\" \"${{ inputs.python-version }}\" \"${{ inputs.preset }}\" \"${{ inputs.generate-binaries }}\" \"${CMAKE_OPTIONS}\""             
           else
               echo "Launching configuration and build"
 
