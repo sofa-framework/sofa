@@ -139,7 +139,7 @@ void CompositeCollisionPipeline::reset()
 }
 
 /// Delegates collision reset to all sub-pipelines sequentially.
-void CompositeCollisionPipeline::doCollisionReset()
+void CompositeCollisionPipeline::doComputeCollisionReset()
 {
     msg_info() << "CompositeCollisionPipeline::doCollisionReset" ;
 
@@ -158,7 +158,7 @@ void CompositeCollisionPipeline::doCollisionReset()
  *
  * @param collisionModels Ignored - each sub-pipeline uses its own linked collision models.
  */
-void CompositeCollisionPipeline::doCollisionDetection(const type::vector<core::CollisionModel*>& collisionModels)
+void CompositeCollisionPipeline::doComputeCollisionDetection(const type::vector<core::CollisionModel*>& collisionModels)
 {
     SOFA_UNUSED(collisionModels);
 
@@ -188,7 +188,7 @@ void CompositeCollisionPipeline::doCollisionDetection(const type::vector<core::C
 }
 
 /// Delegates collision response creation to all sub-pipelines sequentially.
-void CompositeCollisionPipeline::doCollisionResponse()
+void CompositeCollisionPipeline::doComputeCollisionResponse()
 {
     for (const auto& subPipeline : l_subCollisionPipelines)
     {
@@ -200,37 +200,6 @@ void CompositeCollisionPipeline::doCollisionResponse()
 std::set< std::string > CompositeCollisionPipeline::getResponseList() const
 {
     return BaseSubCollisionPipeline::getResponseList();
-}
-
-/// Entry point for collision reset phase, called by the simulation loop.
-void CompositeCollisionPipeline::computeCollisionReset()
-{
-    if(!this->isComponentStateValid())
-        return;
-
-    doCollisionReset();
-}
-
-/// Entry point for collision detection phase, called by the simulation loop.
-void CompositeCollisionPipeline::computeCollisionDetection()
-{
-    if(!this->isComponentStateValid())
-        return;
-
-    // The collision models parameter is not used by this pipeline
-    // since each sub-pipeline manages its own set of models
-    static std::vector<CollisionModel*> collisionModels{};
-
-    doCollisionDetection(collisionModels);
-}
-
-/// Entry point for collision response phase, called by the simulation loop.
-void CompositeCollisionPipeline::computeCollisionResponse()
-{
-    if(!this->isComponentStateValid())
-        return;
-
-    doCollisionResponse();
 }
 
 } // namespace sofa::component::collision::detection::algorithm
