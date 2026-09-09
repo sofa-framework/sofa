@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/simulation/DifferentialOperations.h>
+#include <sofa/core/MechanicalParams.h>
 
 namespace sofa::simulation::common
 {
@@ -55,6 +56,22 @@ void DifferentialOperations::pullbackCotangent(
             mapping.applyJT(&mparams, cotangentVectorId, cotangentVectorId);
         }
     });
+}
+
+void DifferentialOperations::pullbackCotangentTangent(
+    const MappingGraph& mappingGraph, const core::MechanicalParams& mparams,
+    core::MultiVecDerivId cotangentTangentVectorId)
+{
+    mappingGraph.algorithms.traverseBottomUp_(
+        [&](core::BaseMapping& mapping)
+        {
+            mapping.applyJT(&mparams, cotangentTangentVectorId, cotangentTangentVectorId);
+            if (mparams.kFactor() != 0)
+            {
+                // ideally, the child cotangent vector must be provided here, instead of implicitly getting it in the mapping
+                mapping.applyDJT(&mparams, cotangentTangentVectorId, cotangentTangentVectorId);
+            }
+        });
 }
 
 }  // namespace sofa::simulation::common
