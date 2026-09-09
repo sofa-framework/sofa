@@ -123,14 +123,7 @@ void MappingGraphMechanicalOperations::addMBKv(const MappingGraph& mappingGraph,
 
     if (accumulate)
     {
-        mappingGraph.algorithms.traverseBottomUp_([&](core::BaseMapping& mapping)
-        {
-            mapping.applyJT(&mparams, df, df);
-            if( mparams.kFactor() != 0 )
-            {
-                mapping.applyDJT(&mparams, df, df);
-            }
-        });
+        DifferentialOperations::pullbackCotangentTangent(mappingGraph, mparams, df);
     }
 
     mparams.setDx(dx);

@@ -92,6 +92,30 @@ public:
         core::MultiVecDerivId cotangentVectorId,
         bool ignoreMappingFlag = true);
 
+    /**
+     * @brief Pull back the differential (tangent variation) of a cotangent vector bottom-up.
+     *
+     * Computes the total differential of a vector-Jacobian product (VJP), corresponding to
+     * the variation of a pulled-back cotangent quantity (such as force variation @f$ df_x = d(\mathbf{J}^T f_y) @f$):
+     * @f[
+     *     df_x = \mathbf{J}^T df_y + d(\mathbf{J}^T) f_y
+     * @f]
+     *
+     * Traverses the mapping graph from bottom to top and accumulates:
+     * 1. The first-order pullback of the cotangent differential via the transpose Jacobian:
+     *    @f$ \mathbf{J}^T df_y @f$ (`applyJT()`).
+     * 2. When the stiffness factor @c kFactor is non-zero, the geometric stiffness contribution
+     *    arising from the non-linear variation of the mapping's Jacobian (a Hessian-vector contraction):
+     *    @f$ d(\mathbf{J}^T) f_y @f$ (`applyDJT()`).
+     *
+     * @param mappingGraph The mapping graph containing the topology and mappings to traverse.
+     * @param mparams Mechanical parameters associated with the current operation (including @c kFactor).
+     * @param cotangentTangentVectorId Identifier of the derivative multi-vector storing the cotangent
+     *                                 tangent variations (e.g. @f$ df @f$) to pull back.
+     */
+    static void pullbackCotangentTangent(
+        const MappingGraph& mappingGraph, const core::MechanicalParams& mparams,
+        core::MultiVecDerivId cotangentTangentVectorId);
 };
 
 }
