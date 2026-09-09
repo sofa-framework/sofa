@@ -123,6 +123,9 @@ class SOFA_SIMULATION_CORE_API MainSimulation
     inline static Simulation::SPtr theSimulation { nullptr };
 };
 
+SOFA_ATTRIBUTE_DEPRECATED__SINGLETONSIMULATION() Simulation* getSimulation(){ return MainSimulation::getSimulation(); }
+SOFA_ATTRIBUTE_DEPRECATED__SINGLETONSIMULATION() void setSimulation(Simulation::SPtr simulation){ MainSimulation::setSimulation(simulation); }
+
 } // namespace sofa::simulation
 
 MSG_REGISTER_CLASS(sofa::simulation::Simulation, "Simulation")

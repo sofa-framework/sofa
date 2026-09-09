@@ -24,13 +24,10 @@
 #include <sofa/simulation/Simulation.h>
 
 //header removed
-SOFA_HEADER_DEPRECATED("v26.12", "v27.06", "'sofa/simulation/Simulation.h' instead of 'sofa/simulation/DAGSimulation.h' and replace uses of DAGSimulation with Simulation")
+SOFA_HEADER_DEPRECATED("v26.12", "v27.12", "'sofa/simulation/Simulation.h' instead of 'sofa/simulation/DAGSimulation.h' and replace uses of DAGSimulation with Simulation")
 
 namespace sofa::simulation::graph
 {
-using DAGSimulation=Simulation;
-
-Simulation* getSimulation(){ return MainSimulation::getSimulation(); }
-void setSimulation(Simulation::SPtr simulation){ MainSimulation::setSimulation(simulation); }
-
+using DAGSimulation SOFA_ATTRIBUTE_DEPRECATED__DAGSIMULATION() = Simulation;
 }
+
