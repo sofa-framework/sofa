@@ -103,6 +103,23 @@ jobs:
 
             echo "Workspace folder for this build will be $WORKSPACE"
 
+
+            # TODO : Might not be useful anymore because of the use of gh
+            ## Setup github
+            # Git config (needed by CMake ExternalProject)
+            if ! git config --get user.name; then
+                git config --system user.name 'SOFA Bot' > /dev/null 2>&1 ||
+                    git config --global user.name 'SOFA Bot' > /dev/null 2>&1 ||
+                    git config user.name 'SOFA Bot' > /dev/null 2>&1 ||
+                    echo "WARNING: cannot setup git config"
+            fi
+            if ! git config --get user.email; then
+                git config --system user.email '<>' > /dev/null 2>&1 ||
+                    git config --global user.email '<>' > /dev/null 2>&1 ||
+                    git config user.email '<>' > /dev/null 2>&1 ||
+                    echo "WARNING: cannot setup git config"
+            fi
+
       - name: Clone SOFA and CI
         id: clone
         shell: bash
