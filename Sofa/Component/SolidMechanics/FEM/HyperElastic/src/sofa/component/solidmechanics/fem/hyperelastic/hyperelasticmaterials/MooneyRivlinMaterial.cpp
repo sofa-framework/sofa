@@ -19,19 +19,26 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_BASE_ELEMENT_LINEAR_FEM_FORCEFIELD_CPP
-#include <sofa/component/solidmechanics/fem/elastic/BaseElementLinearFEMForceField.inl>
-#include <sofa/fem/FiniteElement[all].h>
+#define SOFA_COMPONENT_SOLIDMECHANICS_FEM_HYPERELASTIC_MATERIAL_MOONEYRIVLIN_CPP
 
-namespace sofa::component::solidmechanics::fem::elastic
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/defaulttype/VecTypes.h>
+
+#include <sofa/component/solidmechanics/fem/hyperelastic/hyperelasticmaterials/MooneyRivlinMaterial.inl>
+
+namespace sofa::component::solidmechanics::fem::hyperelastic
 {
-template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API BaseElementLinearFEMForceField<sofa::defaulttype::Vec1Types, sofa::geometry::Edge>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API BaseElementLinearFEMForceField<sofa::defaulttype::Vec2Types, sofa::geometry::Edge>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API BaseElementLinearFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Edge>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API BaseElementLinearFEMForceField<sofa::defaulttype::Vec2Types, sofa::geometry::Triangle>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API BaseElementLinearFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Triangle>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API BaseElementLinearFEMForceField<sofa::defaulttype::Vec2Types, sofa::geometry::Quad>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API BaseElementLinearFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Quad>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API BaseElementLinearFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Tetrahedron>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API BaseElementLinearFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Hexahedron>;
+
+void registerMooneyRivlinMaterial(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Mooney-Rivlin material")
+        .add< MooneyRivlinMaterial<sofa::defaulttype::Vec1Types> >()
+        .add< MooneyRivlinMaterial<sofa::defaulttype::Vec2Types> >()
+        .add< MooneyRivlinMaterial<sofa::defaulttype::Vec3Types> >(true));
+}
+
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_HYPERELASTIC_API MooneyRivlinMaterial<sofa::defaulttype::Vec1Types>;
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_HYPERELASTIC_API MooneyRivlinMaterial<sofa::defaulttype::Vec2Types>;
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_HYPERELASTIC_API MooneyRivlinMaterial<sofa::defaulttype::Vec3Types>;
+
 }
