@@ -30,6 +30,6 @@ namespace sofa::core::objectmodel
  *  \brief Compatibility layer - Context is now an alias of BaseContext.
  *  All functionality has been merged into BaseContext.
  */
-using Context = BaseContext;
+using Context SOFA_CORE_DEPRECATED_REMOVE_CONTEXT() = BaseContext;
 
 } // namespace sofa::core::objectmodel
