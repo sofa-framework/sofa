@@ -22,7 +22,7 @@
 #pragma once
 
 #include <sofa/component/solidmechanics/fem/elastic/config.h>
-#include <sofa/component/solidmechanics/fem/elastic/GeometricSourceTerm.h>
+#include <sofa/component/solidmechanics/fem/elastic/BaseGeometricSourceTerm.h>
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/behavior/TopologyAccessor.h>
 #include <sofa/core/objectmodel/Link.h>
@@ -40,8 +40,8 @@ namespace sofa::component::solidmechanics::fem::elastic
  * @brief Integrates a source density into consistent nodal loads.
  *
  * A source term contributes \f$ \int_{\Omega} N_a \, r \, d\Omega \f$ to the right-hand side, where
- * r is the density evaluated by a linked GeometricSourceTerm (through l_constantSources) at each
- * quadrature point.
+ * r is the density evaluated by a linked BaseGeometricSourceTerm (through l_constantSources) at
+ * each quadrature point.
  *
  * @tparam TDataTypes The data types used for positions, velocities, etc. (e.g., Vec3Types).
  * @tparam TElementType The type of finite element (e.g., sofa::geometry::Tetrahedron).
@@ -70,9 +70,9 @@ public:
     /**
      * @brief Source terms integrated by this component.
      *
-     * If left empty, the GeometricSourceTerm components found in the current context are used.
+     * If left empty, the BaseGeometricSourceTerm components found in the current context are used.
      */
-    sofa::MultiLink<FEMSourceTermIntegrator<DataTypes, ElementType>, GeometricSourceTerm<DataTypes, ElementType>,
+    sofa::MultiLink<FEMSourceTermIntegrator<DataTypes, ElementType>, BaseGeometricSourceTerm<DataTypes, ElementType>,
         sofa::BaseLink::FLAG_STOREPATH | sofa::BaseLink::FLAG_STRONGLINK> l_constantSources;
 
     /**
@@ -140,9 +140,8 @@ protected:
      * @brief Runs the quadrature and accumulates every linked source term into m_constantForce.
      *
      * For each element and each quadrature point, a QuadratureContext is built and handed to every
-     * source term, together with the nodal property of that term interpolated at the point; the
-     * density it returns is weighted by \f$ w \, |\det J| \, N_a \f$ and scattered onto the element
-     * nodes.
+     * source term; the density it returns is weighted by \f$ w \, |\det J| \, N_a \f$ and scattered
+     * onto the element nodes.
      */
     void assembleConstantForce();
 
