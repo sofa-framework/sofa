@@ -19,24 +19,44 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_GEOMETRIC_SOURCE_TERM_CPP
+#pragma once
 
-#include <sofa/component/solidmechanics/fem/elastic/GeometricSourceTerm.inl>
+#include <sofa/component/solidmechanics/fem/elastic/config.h>
+#include <sofa/core/BaseNodalProperty.h>
+#include <sofa/core/trait/DataTypes.h>
 
+#if !defined(SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_NODAL_SOURCE_DENSITY_CPP)
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/fem/FiniteElement[all].h>
+#endif
 
 namespace sofa::component::solidmechanics::fem::elastic
 {
 
-template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API GeometricSourceTerm<sofa::defaulttype::Vec1Types, sofa::geometry::Edge, sofa::Deriv_t<sofa::defaulttype::Vec1Types>>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API GeometricSourceTerm<sofa::defaulttype::Vec2Types, sofa::geometry::Edge, sofa::Deriv_t<sofa::defaulttype::Vec2Types>>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API GeometricSourceTerm<sofa::defaulttype::Vec3Types, sofa::geometry::Edge, sofa::Deriv_t<sofa::defaulttype::Vec3Types>>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API GeometricSourceTerm<sofa::defaulttype::Vec2Types, sofa::geometry::Triangle, sofa::Deriv_t<sofa::defaulttype::Vec2Types>>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API GeometricSourceTerm<sofa::defaulttype::Vec3Types, sofa::geometry::Triangle, sofa::Deriv_t<sofa::defaulttype::Vec3Types>>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API GeometricSourceTerm<sofa::defaulttype::Vec2Types, sofa::geometry::Quad, sofa::Deriv_t<sofa::defaulttype::Vec2Types>>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API GeometricSourceTerm<sofa::defaulttype::Vec3Types, sofa::geometry::Quad, sofa::Deriv_t<sofa::defaulttype::Vec3Types>>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API GeometricSourceTerm<sofa::defaulttype::Vec3Types, sofa::geometry::Tetrahedron, sofa::Deriv_t<sofa::defaulttype::Vec3Types>>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API GeometricSourceTerm<sofa::defaulttype::Vec3Types, sofa::geometry::Hexahedron, sofa::Deriv_t<sofa::defaulttype::Vec3Types>>;
+/**
+ * @class NodalSourceDensity
+ * @brief A source density prescribed at the nodes, one vector per node.
+ *
+ * @tparam TDataTypes The data types used for positions, velocities, etc. (e.g., Vec3Types).
+ */
+template <class TDataTypes>
+class NodalSourceDensity : public sofa::core::BaseNodalProperty<sofa::Deriv_t<TDataTypes>>
+{
+public:
+    using DataTypes = TDataTypes;
+    using Deriv = sofa::Deriv_t<DataTypes>;
+
+    SOFA_CLASS(SOFA_TEMPLATE(NodalSourceDensity, DataTypes),
+        SOFA_TEMPLATE(sofa::core::BaseNodalProperty, sofa::Deriv_t<DataTypes>));
+
+protected:
+
+    NodalSourceDensity() : sofa::core::BaseNodalProperty<Deriv>(Deriv{}) {}
+};
+
+#if !defined(SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_NODAL_SOURCE_DENSITY_CPP)
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API NodalSourceDensity<sofa::defaulttype::Vec1Types>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API NodalSourceDensity<sofa::defaulttype::Vec2Types>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API NodalSourceDensity<sofa::defaulttype::Vec3Types>;
+#endif
 
 }  // namespace sofa::component::solidmechanics::fem::elastic
