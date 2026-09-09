@@ -138,7 +138,7 @@ public:
     /// This method retrieves the x vector from the MechanicalState and call
     /// the internal getPotentialEnergy(const VecCoord&,const VecCoord&) method implemented by
     /// the component.
-    SReal getPotentialEnergy(const MechanicalParams* mparams) const override;
+    SReal getPotentialEnergy(const MechanicalParams* mparams, ConstMultiVecCoordId xId) const override;
 
     /// Get the potential energy associated to this ForceField.
     ///

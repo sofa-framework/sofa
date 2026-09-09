@@ -75,6 +75,8 @@ public:
     void integrateVelocity(core::MultiVecDerivId res, core::ConstMultiVecCoordId x, core::ConstMultiVecDerivId v, SReal dt); ///< res = x + v.dt
     void accFromF(core::MultiVecDerivId a, core::ConstMultiVecDerivId f); ///< a = M^-1 . f
     /// Compute Energy
+    void computeEnergy(core::ConstMultiVecCoordId xId, SReal &kineticEnergy, SReal &potentialEnergy);
+    SOFA_ATTRIBUTE_DEPRECATED__COMPUTEENERGY_OVERLOAD()
     void computeEnergy(SReal &kineticEnergy, SReal &potentialEnergy);
     /// Compute the current force (given the latest propagated position and velocity)
     void computeForce(core::MultiVecDerivId result, bool clear = true, bool accumulate = true);
