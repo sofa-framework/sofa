@@ -43,17 +43,19 @@ MixedInteractionForceField<DataTypes1, DataTypes2>::~MixedInteractionForceField(
 }
 
 template<class DataTypes1, class DataTypes2>
-void MixedInteractionForceField<DataTypes1, DataTypes2>::addForce(const MechanicalParams* mparams, MultiVecDerivId fId )
+void MixedInteractionForceField<DataTypes1, DataTypes2>::addForce(
+    const MechanicalParams* mparams, MultiVecDerivId fId, ConstMultiVecCoordId xId, ConstMultiVecDerivId vId )
 {
-    
     if (this->mstate1 && this->mstate2)
     {
-        auto state1 = this->mstate1.get();
-        auto state2 = this->mstate2.get();
-        addForce( mparams, *fId[state1].write(), *fId[state2].write(),
-                  *mparams->readX(state1), *mparams->readX(state2),
-                  *mparams->readV(state1), *mparams->readV(state2));
-        
+        DataVecDeriv1* f1 = fId[this->mstate1.get()].write(); assert(f1);
+        DataVecDeriv2* f2 = fId[this->mstate2.get()].write(); assert(f2);
+        const DataVecCoord1* x1 = xId[this->mstate1.get()].read(); assert(x1);
+        const DataVecDeriv1* v1 = vId[this->mstate1.get()].read(); assert(v1);
+        const DataVecCoord2* x2 = xId[this->mstate2.get()].read(); assert(x2);
+        const DataVecDeriv2* v2 = vId[this->mstate2.get()].read(); assert(v2);
+
+        addForce(mparams, *f1, *f2, *x1, *x2, *v1, *v2);
     }
 }
 
