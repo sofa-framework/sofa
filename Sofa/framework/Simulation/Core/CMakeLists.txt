@@ -303,17 +303,26 @@ set(SOURCE_FILES
 
 set(DEPRECATED_DIR "compat/sofa/simulation")
 set(DEPRECATED_HEADER_FILES
+    ${DEPRECATED_DIR}/AnimateBeginEvent.h
+    ${DEPRECATED_DIR}/AnimateEndEvent.h
+    ${DEPRECATED_DIR}/CollisionBeginEvent.h
+    ${DEPRECATED_DIR}/CollisionEndEvent.h
     ${DEPRECATED_DIR}/CpuTask.h
     ${DEPRECATED_DIR}/CpuTaskStatus.h
     ${DEPRECATED_DIR}/DefaultTaskScheduler.h
     ${DEPRECATED_DIR}/InitTasks.h
+    ${DEPRECATED_DIR}/IntegrateBeginEvent.h
+    ${DEPRECATED_DIR}/IntegrateEndEvent.h
     ${DEPRECATED_DIR}/MainTaskSchedulerFactory.h
     ${DEPRECATED_DIR}/MainTaskSchedulerRegistry.h
     ${DEPRECATED_DIR}/ParallelForEach.h
+    ${DEPRECATED_DIR}/PauseEvent.h
+    ${DEPRECATED_DIR}/PositionEvent.h
     ${DEPRECATED_DIR}/Task.h
     ${DEPRECATED_DIR}/TaskScheduler.h
     ${DEPRECATED_DIR}/TaskSchedulerFactory.h
     ${DEPRECATED_DIR}/TaskSchedulerRegistry.h
+    ${DEPRECATED_DIR}/UpdateMappingEndEvent.h
     ${DEPRECATED_DIR}/WorkerThread.h
 )
 
