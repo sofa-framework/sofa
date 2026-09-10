@@ -22,7 +22,6 @@
 #pragma once
 #include <sofa/component/solidmechanics/fem/elastic/StressSourceTerm.h>
 #include <sofa/component/solidmechanics/fem/elastic/ElementNormal.h>
-#include <sofa/component/solidmechanics/fem/elastic/NodalPropertyInterpolation.h>
 
 namespace sofa::component::solidmechanics::fem::elastic
 {
@@ -63,7 +62,7 @@ sofa::Deriv_t<DataTypes> StressSourceTerm<DataTypes, ElementType>::evaluate(
         return Deriv{};
     }
 
-    const auto components = interpolateNodalProperty(*l_stress, context);
+    const auto components = this->interpolateProperty(*l_stress, context);
 
     StressTensor stress;
     for (sofa::Size i = 0; i < StressTensor::NumberStoredValues; ++i)

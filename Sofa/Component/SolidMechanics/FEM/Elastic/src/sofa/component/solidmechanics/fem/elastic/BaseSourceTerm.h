@@ -23,8 +23,13 @@
 
 #include <sofa/component/solidmechanics/fem/elastic/config.h>
 #include <sofa/component/solidmechanics/fem/elastic/QuadratureContext.h>
+#include <sofa/core/BaseNodalProperty.h>
 #include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/core/trait/DataTypes.h>
+#include <sofa/helper/accessor.h>
+#include <sofa/type/vector.h>
+
+#include <array>
 
 #if !defined(SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_BASE_SOURCE_TERM_CPP)
 #include <sofa/defaulttype/VecTypes.h>
@@ -66,6 +71,35 @@ public:
 protected:
 
     BaseSourceTerm() = default;
+
+    /**
+     * @brief Value of a nodal property interpolated at the quadrature point.
+     *
+     * The property is gathered at the nodes of the element being integrated and combined with the
+     * shape functions evaluated at that point.
+     *
+     * @param property The component holding the nodal values.
+     * @param context Geometry of the quadrature point.
+     */
+    template <class PropertyType>
+    static PropertyType interpolateProperty(
+        const sofa::core::BaseNodalProperty<PropertyType>& property,
+        const QuadratureContext& context)
+    {
+        static constexpr sofa::Size NumberOfNodesInElement = ElementType::NumberOfNodes;
+
+        sofa::helper::ReadAccessor<sofa::Data<sofa::type::vector<PropertyType>>> propertyAccessor {
+            property.d_property};
+
+        std::array<PropertyType, NumberOfNodesInElement> elementNodesProperty;
+        for (sofa::Size i = 0; i < NumberOfNodesInElement; ++i)
+        {
+            elementNodesProperty[i] = property.getNodeProperty(context.element[i], propertyAccessor);
+        }
+
+        return QuadratureContext::FiniteElement::Helper::evaluateValueInElement(
+            elementNodesProperty, context.N);
+    }
 };
 
 #if !defined(SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_BASE_SOURCE_TERM_CPP)
