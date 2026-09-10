@@ -30,8 +30,8 @@ class SOFA_SIMULATION_CORE_API MechanicalIntegrateConstraintsVisitor : public Ba
 {
 public:
     const sofa::core::ConstraintParams* cparams;
-    const double positionFactor;///< use the OdeSolver to get the position integration factor
-    const double velocityFactor;///< use the OdeSolver to get the position integration factor
+    const double positionFactor;///< use the IntegrationScheme to get the position integration factor
+    const double velocityFactor;///< use the IntegrationScheme to get the position integration factor
     sofa::core::ConstMultiVecDerivId correctionId;
     sofa::core::MultiVecDerivId dxId;
     sofa::core::MultiVecCoordId xId;

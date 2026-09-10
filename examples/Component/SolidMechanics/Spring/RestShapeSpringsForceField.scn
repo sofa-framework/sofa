@@ -5,7 +5,7 @@
     <RequiredPlugin pluginName="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [BarycentricMapping] -->
     <RequiredPlugin pluginName="Sofa.Component.Mapping.NonLinear"/> <!-- Needed to use components [RigidMapping] -->
     <RequiredPlugin pluginName="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
-    <RequiredPlugin pluginName="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin pluginName="Sofa.Component.IntegrationScheme.Backward"/> <!-- Needed to use components [EulerImplicitIntegrationScheme] -->
     <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [RestShapeSpringsForceField] -->
     <RequiredPlugin pluginName="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
     <RequiredPlugin pluginName="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
@@ -14,7 +14,7 @@
     
     <DefaultAnimationLoop/>
     <Node name="Dragon">
-        <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitIntegrationScheme  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="30" tolerance="1e-5" threshold="1e-5"/>
         <SparseGridTopology n="10 5 10" fileTopology="mesh/dragon.obj" />
         <MechanicalObject dx="-12.0" />
@@ -38,7 +38,7 @@
         </Node>
     </Node>
 	<Node name="Dragon with Damping">
-        <EulerImplicitSolver />
+        <EulerImplicitIntegrationScheme />
         <CGLinearSolver iterations="30" tolerance="1e-5" threshold="1e-5"/>
         <SparseGridTopology n="10 5 10" fileTopology="mesh/dragon.obj" />
         <MechanicalObject dx="12.0" />
@@ -62,7 +62,7 @@
         </Node>
     </Node>
 	<Node name="CUBE">
-		<EulerImplicitSolver />
+		<EulerImplicitIntegrationScheme />
         <CGLinearSolver iterations="30" tolerance="1e-5" threshold="1e-5"/>
 		<MechanicalObject template="Rigid3" dx="-12.0" dy="-20" rx="10" />
 		<UniformMass totalMass="1.0" />
@@ -83,7 +83,7 @@
 		</Node>
 	</Node>
 	<Node name="CUBE with Damping">
-		<EulerImplicitSolver />
+		<EulerImplicitIntegrationScheme />
         <CGLinearSolver iterations="30" tolerance="1e-5" threshold="1e-5"/>
 		<MechanicalObject template="Rigid3" dx="12.0" dy="-20" rx="10" />
 		<UniformMass totalMass="1.0" />

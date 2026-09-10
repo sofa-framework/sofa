@@ -18,7 +18,7 @@
 	<Node name="Raptor">
 		
 
-           	<EulerImplicitSolver name="odesolver" />
+           	<EulerImplicitIntegrationScheme name="odesolver" />
             	<CGLinearSolver iterations="10" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
 		<SparseGridTopology n="5 5 10" fileTopology="mesh/raptor_8kp.obj" />
 		<MechanicalObject name="mecaRaptor"  rotation="0 0 90"/>
@@ -62,7 +62,7 @@
 	</Node>
 
 	<Node name="Instrument" >
-		<EulerImplicitSolver name="ODE solver" rayleighStiffness="0.05" rayleighMass="1.0" />
+		<EulerImplicitIntegrationScheme name="ODE solver" rayleighStiffness="0.05" rayleighMass="1.0" />
 		<CGLinearSolver name="linear solver" iterations="25" tolerance="1e-10" threshold="10e-10" /> 
 		<MechanicalObject name="instrumentState" template="Rigid3d" />
 		<UniformMass name="mass" totalMass="0.05" />

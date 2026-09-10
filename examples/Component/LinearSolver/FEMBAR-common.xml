@@ -4,7 +4,7 @@
         <RequiredPlugin pluginName="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
         <RequiredPlugin pluginName="Sofa.Component.LinearSolver.Direct"/> <!-- Needed to use components [SVDLinearSolver] -->
         <RequiredPlugin pluginName="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
-        <RequiredPlugin pluginName="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+        <RequiredPlugin pluginName="Sofa.Component.IntegrationScheme.Backward"/> <!-- Needed to use components [EulerImplicitIntegrationScheme] -->
         <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [HexahedronFEMForceField] -->
         <RequiredPlugin pluginName="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
         <RequiredPlugin pluginName="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->
@@ -21,7 +21,7 @@
     <DefaultAnimationLoop name="animationLoop"/>
     <DefaultVisualManagerLoop name="visualLoop"/>
 
-    <EulerImplicitSolver name="odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
+    <EulerImplicitIntegrationScheme name="odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
     <MechanicalObject name="DoFs" />
     <UniformMass name="mass" totalMass="320" />
     <RegularGridTopology name="grid" nx="4" ny="4" nz="20" xmin="-9" xmax="-6" ymin="0" ymax="3" zmin="0" zmax="19" />

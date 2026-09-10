@@ -52,7 +52,7 @@ struct BlockGaussSeidelConstraintSolver_test : BaseSimulationTest
                     "   <BlockGaussSeidelConstraintSolver name='solver' constraintForces='-1 -1 -1' computeConstraintForces='True' maxIt='1000' tolerance='0.001' />\n"
                     "   <Node name='collision'>\n"
                     "         <MechanicalObject />\n"
-                    "         <UncoupledConstraintCorrection useOdeSolverIntegrationFactors='0' />\n"
+                    "         <UncoupledConstraintCorrection useIntegrationSchemeIntegrationFactors='0' />\n"
                     "   </Node>\n"
                     "</Node>\n"
                     );

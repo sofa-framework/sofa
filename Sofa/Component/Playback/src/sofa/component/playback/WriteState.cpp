@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include <sofa/component/playback/WriteState.inl>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/core/behavior/OdeSolver.h>
+#include <sofa/core/behavior/BaseIntegrationScheme.h>
 #include <sofa/core/BaseMapping.h>
 
 namespace sofa::component::playback
@@ -73,7 +73,7 @@ simulation::Visitor::Result WriteStateCreator::processNodeTopDown( simulation::N
 {
     sofa::core::behavior::BaseMechanicalState * mstate=gnode->mechanicalState;
     if (!mstate)   return simulation::Visitor::RESULT_CONTINUE;
-    core::behavior::OdeSolver *isSimulated;
+    core::behavior::BaseIntegrationScheme *isSimulated;
     mstate->getContext()->get(isSimulated);
     if (!isSimulated) return simulation::Visitor::RESULT_CONTINUE;
 

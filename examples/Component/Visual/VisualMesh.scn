@@ -13,7 +13,7 @@
     <RequiredPlugin name="Sofa.Component.Visual"/>
 
     <Node name="tetra">
-        <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitIntegrationScheme name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
 
         <RegularGridTopology name="grid" min="-5 -5 0" max="5 5 40" n="5 5 20"/>
@@ -34,7 +34,7 @@
     </Node>
 
     <Node name="hexa">
-        <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitIntegrationScheme name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
 
         <RegularGridTopology name="grid" min="10 -5 0" max="20 5 40" n="5 5 20"/>
@@ -50,7 +50,7 @@
     </Node>
 
     <Node name="triangles">
-        <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitIntegrationScheme name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject name="state"/>
         <MeshMatrixMass totalMass="1000" />

@@ -232,14 +232,6 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
 
     dmsg_info() << "beginVisitor performed - SolveVisitor for freeMotion is called" ;
 
-    // Mapping geometric stiffness coming from previous lambda.
-    {
-        SCOPED_TIMER("lambdaMultInvDt");
-        MechanicalVOpVisitor lambdaMultInvDt(params, cparams.lambda(), sofa::core::ConstMultiVecId::null(), cparams.lambda(), 1.0 / dt);
-        lambdaMultInvDt.setMapped(true);
-        node->executeVisitor(&lambdaMultInvDt);
-    }
-
     {
         SCOPED_TIMER("MechanicalComputeGeometricStiffness");
         MechanicalComputeGeometricStiffness geometricStiffnessVisitor(&mop.mparams, cparams.lambda());
