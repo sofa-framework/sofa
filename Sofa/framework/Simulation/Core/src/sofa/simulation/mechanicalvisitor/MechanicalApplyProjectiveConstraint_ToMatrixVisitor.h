@@ -23,11 +23,15 @@
 
 #include <sofa/simulation/MechanicalVisitor.h>
 
+#if !defined(SOFA_SIMULATION_CORE_MECHANICALAPPLYPROJECTIVECONSTRAINT_TOMATRIXVISITOR_CPP)
+SOFA_HEADER_DEPRECATED_NOT_REPLACED("v26.12", "v27.12")
+#endif
+
 namespace sofa::simulation::mechanicalvisitor
 {
 
 /** Apply projective constraints of the whole scene */
-class SOFA_SIMULATION_CORE_API MechanicalApplyProjectiveConstraint_ToMatrixVisitor : public MechanicalVisitor
+class SOFA_SIMULATION_CORE_API SOFA_ATTRIBUTE_DEPRECATED__MECHANICALAPPLYPROJECTIVECONSTRAINT_TOMATRIXVISITOR() MechanicalApplyProjectiveConstraint_ToMatrixVisitor : public MechanicalVisitor
 {
 public:
     const sofa::core::behavior::MultiMatrixAccessor* matrix;

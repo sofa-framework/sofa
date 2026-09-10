@@ -37,17 +37,16 @@ SphereCollisionModel<DataTypes>::SphereCollisionModel()
     : d_radius(initData(&d_radius, "listRadius", "Radius of each sphere"))
     , d_defaultRadius(initData(&d_defaultRadius, (SReal)(1.0), "radius", "Default radius"))
     , d_showImpostors(initData(&d_showImpostors, true, "showImpostors", "Draw spheres as impostors instead of \"real\" spheres"))
-    , mstate(nullptr)
 {
     enum_type = SPHERE_TYPE;
 }
 
 template<class DataTypes>
-SphereCollisionModel<DataTypes>::SphereCollisionModel(core::behavior::MechanicalState<DataTypes>* _mstate )
-    : d_radius(initData(&d_radius, "listRadius", "Radius of each sphere"))
+SphereCollisionModel<DataTypes>::SphereCollisionModel(core::behavior::MechanicalState<DataTypes>* ms )
+    : core::behavior::SingleStateAccessor<DataTypes>(ms)
+    , d_radius(initData(&d_radius, "listRadius", "Radius of each sphere"))
     , d_defaultRadius(initData(&d_defaultRadius, (SReal)(1.0), "radius", "Default radius"))
     , d_showImpostors(initData(&d_showImpostors, true, "showImpostors", "Draw spheres as impostors instead of \"real\" spheres"))
-    , mstate(_mstate)
 {
     enum_type = SPHERE_TYPE;
 }
@@ -81,24 +80,13 @@ void SphereCollisionModel<DataTypes>::init()
         msg_warning() << "Calling an already fully initialized component. You should use reinit instead." ;
     }
 
-    this->CollisionModel::init();
-    mstate = dynamic_cast< core::behavior::MechanicalState<DataTypes>* > (getContext()->getMechanicalState());
-    if (mstate==nullptr)
-    {
-        //TODO(dmarchal): The previous message was saying this only work for a vec3 mechanicalstate but there
-        // it seems that a mechanicalstate will work we well...where is the truth ?
-        msg_error(this) << "Missing a MechanicalObject with template '" << DataTypes::Name() << ". "
-                           "This MechnicalObject stores the position of the spheres. When this one is missing the collision model is deactivated. \n"
-                           "To remove this error message you can add to your scene a line <MechanicalObject template='"<< DataTypes::Name() << "'/>. ";
-        d_componentState.setValue(ComponentState::Invalid) ;
+    Inherit2::init();
 
+    if (d_componentState.getValue() == ComponentState::Invalid)
         return;
-    }
 
-    const auto npoints = mstate->getSize();
+    const auto npoints = this->mstate->getSize();
     resize(npoints);
-
-    d_componentState.setValue(ComponentState::Valid) ;
 }
 
 
@@ -124,7 +112,7 @@ void SphereCollisionModel<DataTypes>::drawCollisionModel(const core::visual::Vis
     vparams->drawTool()->setPolygonMode(0, false);
 
     // Check topological modifications
-    const auto npoints = mstate->getSize();
+    const auto npoints = this->mstate->getSize();
 
     std::vector<Vec3> points;
     std::vector<float> radius;
@@ -162,7 +150,7 @@ void SphereCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
         return ;
 
     CubeCollisionModel* cubeModel = createPrevious<CubeCollisionModel>();
-    const auto npoints = mstate->getSize();
+    const auto npoints = this->mstate->getSize();
     bool updated = false;
     if (npoints != size)
     {
@@ -202,7 +190,7 @@ void SphereCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, Co
         return ;
 
     CubeCollisionModel* cubeModel = createPrevious<CubeCollisionModel>();
-    const auto npoints = mstate->getSize();
+    const auto npoints = this->mstate->getSize();
     bool updated = false;
     if (npoints != size)
     {
@@ -261,7 +249,7 @@ void SphereCollisionModel<DataTypes>::computeBBox(const core::ExecParams* params
     if( onlyVisible && !sofa::core::visual::VisualParams::defaultInstance()->displayFlags().getShowCollisionModels())
         return;
 
-    const auto npoints = mstate->getSize();
+    const auto npoints = this->mstate->getSize();
     type::BoundingBox bbox;
 
     for(sofa::Size i = 0 ; i < npoints ; ++i )

@@ -103,6 +103,8 @@ jobs:
 
             echo "Workspace folder for this build will be $WORKSPACE"
 
+
+            # TODO : Might not be useful anymore because of the use of gh
             ## Setup github
             # Git config (needed by CMake ExternalProject)
             if ! git config --get user.name; then
@@ -118,14 +120,16 @@ jobs:
                     echo "WARNING: cannot setup git config"
             fi
 
-            ##TODO (if required) fix path too long for windows (see main.sh:201)
-
-
       - name: Clone SOFA and CI
         id: clone
         shell: bash
         run: |
           cd $WORKSPACE
+
+          ## Configure authentification for git to clone properly
+          echo "$GH_TOKEN" > gh auth login --with-token
+          gh auth setup-git
+          gh auth status
 
           ## Clone sofa and merge origin master
           echo "Cloning SOFA at commit $GITHUB_WORKFLOW_SHA"
@@ -309,10 +313,10 @@ jobs:
               export XDG_CACHE_HOME="/cache"
 
               echo "Launching configuration and build through docker using image ${DOCKER_IMAGE}. Running ./ci/scripts/configure-and-build.sh /workspace/build/ /workspace/sofa/ /workspace/ci/scripts/ \"${NODE_NAME}\" \"${BUILD_TYPE}\" \"${CONFIG}\" \"${{ inputs.python-version }}\" \"${{ inputs.preset }}\" \"${{ inputs.generate-binaries }}\" \"${CMAKE_OPTIONS}\""
-              docker run --rm --env XDG_CACHE_HOME -v $BUILDER_CACHE_DIR:/cache\
+              docker run --rm --env XDG_CACHE_HOME --env GH_TOKEN="$GH_TOKEN" -v $BUILDER_CACHE_DIR:/cache\
                   --user $(id -u):$(id -g) --network=host -v $WORKSPACE:/workspace \
                   ${DOCKER_IMAGE} \
-                  /bin/bash -c "env; cd /workspace; ccache -M 5; /bin/bash $DOCKER_CI_DIR/scripts/configure-and-build.sh $DOCKER_BUILD_DIR $DOCKER_SRC_DIR $DOCKER_CI_DIR/scripts/ $DOCKER_LOG_DIR \"${NODE_NAME}\" \"${BUILD_TYPE}\" \"${CONFIG}\" \"${{ inputs.python-version }}\" \"${{ inputs.preset }}\" \"${{ inputs.generate-binaries }}\" \"${CMAKE_OPTIONS}\""             
+                  /bin/bash -c "env; echo \"$GH_TOKEN\" > gh auth login --with-token; gh auth setup-git; gh auth status; cd /workspace; ccache -M 5; /bin/bash $DOCKER_CI_DIR/scripts/configure-and-build.sh $DOCKER_BUILD_DIR $DOCKER_SRC_DIR $DOCKER_CI_DIR/scripts/ $DOCKER_LOG_DIR \"${NODE_NAME}\" \"${BUILD_TYPE}\" \"${CONFIG}\" \"${{ inputs.python-version }}\" \"${{ inputs.preset }}\" \"${{ inputs.generate-binaries }}\" \"${CMAKE_OPTIONS}\""             
           else
               echo "Launching configuration and build"
 

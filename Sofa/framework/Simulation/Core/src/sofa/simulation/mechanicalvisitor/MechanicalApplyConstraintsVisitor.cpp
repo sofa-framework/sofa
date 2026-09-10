@@ -26,15 +26,6 @@
 
 namespace sofa::simulation::mechanicalvisitor
 {
-Visitor::Result MechanicalApplyConstraintsVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/)
-{
-    return RESULT_CONTINUE;
-}
-
-Visitor::Result MechanicalApplyConstraintsVisitor::fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/)
-{
-    return RESULT_CONTINUE;
-}
 
 void MechanicalApplyConstraintsVisitor::bwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c)
 {

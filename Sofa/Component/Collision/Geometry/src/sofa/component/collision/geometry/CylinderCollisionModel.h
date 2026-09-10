@@ -24,7 +24,7 @@
 
 #include <sofa/core/CollisionModel.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/behavior/SingleStateAccessor.h>
 
 namespace sofa::component::collision::geometry
 {
@@ -71,10 +71,10 @@ using Cylinder = TCylinder<sofa::defaulttype::Rigid3Types>;
   *CylinderModel templated by RigidTypes (frames), direction is given by Y direction of the frame.
   */
 template< class TDataTypes>
-class CylinderCollisionModel : public core::CollisionModel
+class CylinderCollisionModel : public core::CollisionModel, public virtual core::behavior::SingleStateAccessor<TDataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(CylinderCollisionModel, TDataTypes), core::CollisionModel);
+    SOFA_CLASS2(SOFA_TEMPLATE(CylinderCollisionModel, TDataTypes), core::CollisionModel, SOFA_TEMPLATE(core::behavior::SingleStateAccessor, TDataTypes));
 
     typedef TDataTypes DataTypes;
     typedef DataTypes InDataTypes;
@@ -99,7 +99,7 @@ public:
 
 protected:
     CylinderCollisionModel();
-    CylinderCollisionModel(core::behavior::MechanicalState<DataTypes>* mstate );
+    CylinderCollisionModel(core::behavior::MechanicalState<DataTypes>* _mstate );
 
 public:
     void init() override;
@@ -111,7 +111,7 @@ public:
 
     void draw(const core::visual::VisualParams* vparams,sofa::Index index) override;
 
-    core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return m_mstate; }
+    core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return this->mstate; }
 
     Real radius(sofa::Index index) const;
 
@@ -138,8 +138,6 @@ public:
     Data<VecReal>& writeHeights();
     Data<VecAxisCoord>& writeLocalAxes();
 
-protected:
-    core::behavior::MechanicalState<DataTypes>* m_mstate;
 };
 
 

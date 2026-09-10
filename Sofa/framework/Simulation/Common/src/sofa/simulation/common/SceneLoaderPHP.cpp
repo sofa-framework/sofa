@@ -19,6 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_SIMULATION_COMMON_SCENELOADERPHP_CPP
 #include <sofa/simulation/common/SceneLoaderPHP.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/common/SceneLoaderXML.h>
@@ -64,6 +65,8 @@ sofa::simulation::Node::SPtr SceneLoaderPHP::doLoad(const std::string& filename,
 
     if (!canLoadFileName(filename.c_str()))
         return 0;
+
+    msg_deprecated("SceneLoaderPHP") << "Loading file '" << filename << "': php loader is deprecated and will be removed in the future. Convert your scene into a supported format.";
 
     std::string out="",error="";
     std::vector<std::string> args;

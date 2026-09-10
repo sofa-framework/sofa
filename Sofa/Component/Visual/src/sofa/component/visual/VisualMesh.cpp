@@ -35,7 +35,7 @@ void registerVisualMesh(sofa::core::ObjectFactory* factory)
 
 VisualMesh::VisualMesh()
     : d_position(initData(&d_position, "position", "The position of the vertices of mesh"))
-    , d_elementSpace(initData(&d_elementSpace, 0.15_sreal, "elementSpace",
+    , d_elementSpace(initData(&d_elementSpace, {0.15_sreal, {0_sreal, 1_sreal}}, "elementSpace",
                               "The space between element (scalar between 0 and 1)"))
     , d_lighting(initData(&d_lighting, true, "lighting", "If true, light is simulated on the mesh. Otherwise, no lighting effect."))
     , d_vertexValues(initData(&d_vertexValues, "vertexValues", "Optional list of values associated to the vertices of the mesh. If provided, the values are converted to colors."))

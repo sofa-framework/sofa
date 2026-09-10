@@ -27,11 +27,6 @@
 namespace sofa::simulation::mechanicalvisitor
 {
 
-Visitor::Result MechanicalAddMDxVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/)
-{
-    return RESULT_CONTINUE;
-}
-
 Visitor::Result MechanicalAddMDxVisitor::fwdMass(simulation::Node* /*node*/, core::behavior::BaseMass* mass)
 {
     mass->addMDx(mparams, res, factor);

@@ -412,6 +412,11 @@ void BTDLinearSolver<Matrix,Vector>::init_partial_solve()
     // Block that is currently being proceed => start from the end (so that we use step2 bwdAccumulateLHGlobal and accumulate potential initial forces)
     current_bloc = nb-1;
 
+    // no force accumulated yet, and no LH computed during forward:
+    // both must be reset along with current_bloc, otherwise a value from the previous
+    // time step (or an out of range one if nb has decreased) is used in partial_solve
+    _indMaxNonNullForce = 0;
+    _indMaxFwdLHComputed = 0;
 
     // DF represents the variation of the right hand side of the equation (Force in mechanics)
     Vec_dRH.resize(nb);
