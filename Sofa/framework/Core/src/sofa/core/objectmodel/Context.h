@@ -23,6 +23,9 @@
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/objectmodel/BaseComponent.h>
 
+SOFA_HEADER_DEPRECATED("v26.12", "v27.12", "sofa/core/objectmodel/BaseContext.h")
+
+
 namespace sofa::core::objectmodel
 {
 
