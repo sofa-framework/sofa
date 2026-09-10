@@ -33,131 +33,35 @@ template<class DataTypes> class State;
 
 /// Identify a vector of a given type stored in multiple State instances
 /// This class is templated in order to create different variations (generic versus specific type, read-only vs write access)
-template <VecType vtype, VecAccess vaccess>
-class TMultiVecId;
-
-/// Helper class to access vectors of a given type in a given State
 template<class DataTypes, VecType vtype, VecAccess vaccess>
-struct StateVecAccessor;
-
-template<class DataTypes>
-struct StateVecAccessor<DataTypes, V_COORD, V_READ>
+struct StateVecAccessor
 {
-    typedef TVecId<V_COORD, V_READ> MyVecId;
-    typedef Data<typename DataTypes::VecCoord> MyDataVec;
+    using MyVecId = TVecId<vtype, vaccess>;
 
-    StateVecAccessor(const State<DataTypes>* st, const MyVecId& vecid) : state(st), id(vecid) {}
-    operator MyVecId() const {  return id;  }
-    const MyDataVec* read()  const {  return state-> read(id);  }
+    // const State* for read-only access, State* for write access
+    using MyStatePtr = std::conditional_t<vaccess == V_WRITE,
+                                           State<DataTypes>*,
+                                           const State<DataTypes>*>;
+
+    StateVecAccessor(MyStatePtr st, const MyVecId& vecid) : state(st), id(vecid)
+    {}
+
+    operator MyVecId() const { return id; }
+
+    auto* read() const requires (vtype != V_ALL)
+    {
+        assert(state);
+        return state->read(id);
+    }
+
+    auto* write() const requires (vtype != V_ALL && vaccess == V_WRITE)
+    {
+        assert(state);
+        return state->write(id);
+    }
 
 protected:
-    const State<DataTypes>* state;
-    MyVecId id;
-};
-
-template<class DataTypes>
-struct StateVecAccessor<DataTypes, V_COORD, V_WRITE>
-{
-    typedef TVecId<V_COORD, V_WRITE> MyVecId;
-    typedef Data<typename DataTypes::VecCoord> MyDataVec;
-
-    StateVecAccessor(State<DataTypes>* st, const MyVecId& vecid) : state(st), id(vecid) {}
-    operator MyVecId() const {  return id;  }
-    const MyDataVec* read()  const {  return state-> read(id);  }
-    MyDataVec* write() const {  return state->write(id);  }
-
-protected:
-    State<DataTypes>* state;
-    MyVecId id;
-};
-
-template<class DataTypes>
-struct StateVecAccessor<DataTypes, V_DERIV, V_READ>
-{
-    typedef TVecId<V_DERIV, V_READ> MyVecId;
-    typedef Data<typename DataTypes::VecDeriv> MyDataVec;
-
-    StateVecAccessor(const State<DataTypes>* st, const MyVecId& vecid) : state(st), id(vecid) {}
-    operator MyVecId() const {  return id;  }
-    const MyDataVec* read()  const {  return state-> read(id);  }
-
-protected:
-    const State<DataTypes>* state;
-    MyVecId id;
-};
-
-template<class DataTypes>
-struct StateVecAccessor<DataTypes, V_DERIV, V_WRITE>
-{
-    typedef TVecId<V_DERIV, V_WRITE> MyVecId;
-    typedef Data<typename DataTypes::VecDeriv> MyDataVec;
-
-    StateVecAccessor(State<DataTypes>* st, const MyVecId& vecid) : state(st), id(vecid) {}
-    operator MyVecId() const {  return id;  }
-    const MyDataVec* read()  const {  return state-> read(id);  }
-    MyDataVec* write() const {  return state->write(id);  }
-
-protected:
-    State<DataTypes>* state;
-    MyVecId id;
-};
-
-template<class DataTypes>
-struct StateVecAccessor<DataTypes, V_MATDERIV, V_READ>
-{
-    typedef TVecId<V_MATDERIV, V_READ> MyVecId;
-    typedef Data<typename DataTypes::MatrixDeriv> MyDataVec;
-
-    StateVecAccessor(const State<DataTypes>* st, const MyVecId& vecid) : state(st), id(vecid) {}
-    operator MyVecId() const {  return id;  }
-    const MyDataVec* read()  const {  return state-> read(id);  }
-
-protected:
-    const State<DataTypes>* state;
-    MyVecId id;
-};
-
-template<class DataTypes>
-struct StateVecAccessor<DataTypes, V_MATDERIV, V_WRITE>
-{
-    typedef TVecId<V_MATDERIV, V_WRITE> MyVecId;
-    typedef Data<typename DataTypes::MatrixDeriv> MyDataVec;
-
-    StateVecAccessor(State<DataTypes>* st, const MyVecId& vecid) : state(st), id(vecid) {}
-    operator MyVecId() const {  return id;  }
-    const MyDataVec* read()  const {  return state-> read(id);  }
-    MyDataVec* write() const {  return state->write(id);  }
-
-protected:
-    State<DataTypes>* state;
-    MyVecId id;
-};
-
-template<class DataTypes>
-struct StateVecAccessor<DataTypes, V_ALL, V_READ>
-{
-    typedef TVecId<V_ALL, V_READ> MyVecId;
-    //typedef BaseData MyDataVec;
-
-    StateVecAccessor(const State<DataTypes>* st, const MyVecId& vecid) : state(st), id(vecid) {}
-    operator MyVecId() const {  return id;  }
-    //const MyDataVec* read()  const {  return state-> read(id);  }
-
-protected:
-    const State<DataTypes>* state;
-    MyVecId id;
-};
-
-template<class DataTypes>
-struct StateVecAccessor<DataTypes, V_ALL, V_WRITE>
-{
-    typedef TVecId<V_ALL, V_WRITE> MyVecId;
-
-    StateVecAccessor(State<DataTypes>* st, const MyVecId& vecid) : state(st), id(vecid) {}
-    operator MyVecId() const {  return id;  }
-
-protected:
-    State<DataTypes>* state;
+    MyStatePtr state { nullptr };
     MyVecId id;
 };
 
@@ -329,9 +233,12 @@ public:
     template<class State>
     void setId(const std::set<State>& states, const MyVecId& id)
     {
-        IdMap& map = writeIdMap();
-        for (typename std::set<State>::const_iterator it = states.begin(), itend = states.end(); it != itend; ++it)
-            map[*it] = id;
+        if (!states.empty())
+        {
+            IdMap& map = writeIdMap();
+            for (auto* state : states)
+                map[state] = id;
+        }
     }
 
     void setId(const BaseState* s, const MyVecId& id)
@@ -448,7 +355,7 @@ protected:
     {
         if (!idMap_ptr)
             idMap_ptr.reset(new IdMap());
-        else if(!idMap_ptr.unique())
+        else if(!(idMap_ptr.use_count() == 1))
             idMap_ptr.reset(new IdMap(*idMap_ptr));
         return *idMap_ptr;
     }
@@ -552,12 +459,15 @@ public:
         defaultId = id;
     }
 
-    template<class StateSet>
-    void setId(const StateSet& states, const MyVecId& id)
+    template<class State>
+    void setId(const std::set<State>& states, const MyVecId& id)
     {
-        IdMap& map = writeIdMap();
-        for (typename StateSet::const_iterator it = states.begin(), itend = states.end(); it != itend; ++it)
-            map[*it] = id;
+        if (!states.empty())
+        {
+            IdMap& map = writeIdMap();
+            for (auto* state : states)
+                map[state] = id;
+        }
     }
 
     void setId(const BaseState* s, const MyVecId& id)
