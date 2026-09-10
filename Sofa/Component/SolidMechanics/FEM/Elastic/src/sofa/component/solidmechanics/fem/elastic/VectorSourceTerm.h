@@ -78,6 +78,7 @@ public:
 
     using Deriv = sofa::Deriv_t<DataTypes>;
     using QuadratureContext_t = QuadratureContext<DataTypes, ElementType>;
+    using SourceDerivative = typename BaseSourceTerm<DataTypes, ElementType>::SourceDerivative;
     using NodalSourceDensity =
         ::sofa::component::solidmechanics::fem::elastic::NodalSourceDensity<DataTypes>;
 
@@ -101,6 +102,16 @@ public:
      * @brief The nodal values this term interpolates, for FEMSourceTermIntegrator to track.
      */
     sofa::type::vector<const sofa::core::objectmodel::BaseData*> integrandInputs() const override;
+
+    /**
+     * @brief The source density times the derivative of the measure of the element.
+     *
+     * \f$ \partial (|\det J| \, r) / \partial x_b
+     *    = |\det J| \; r \otimes \left( (J^{-1})^T \frac{\partial N_b}{\partial q} \right) \f$,
+     *    the inverse being the left pseudo-inverse when J is not square.
+     */
+    SourceDerivative evaluateStiffness(const QuadratureContext_t& context,
+        sofa::Size node) const override;
 
 protected:
 
