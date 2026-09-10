@@ -27,6 +27,8 @@
 #include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/core/trait/DataTypes.h>
 #include <sofa/helper/accessor.h>
+#include <sofa/type/Mat.h>
+#include <sofa/type/Vec.h>
 #include <sofa/type/vector.h>
 
 #include <array>
@@ -38,6 +40,32 @@
 
 namespace sofa::component::solidmechanics::fem::elastic
 {
+
+/**
+ * @brief Unit normal of a codimension-1 element, from the jacobian of its mapping.
+ *
+ * Defined only where the element spans one dimension less than the space it lives in: a surface
+ * element in 3D, an edge in 2D. Its orientation follows the node ordering of the element.
+ *
+ * @param jacobian dx/dq of the reference-to-physical mapping at the point of interest.
+ */
+template <sofa::Size spatial_dimensions, sofa::Size TopologicalDimension, class Real>
+sofa::type::Vec<spatial_dimensions, Real> elementNormal(
+    const sofa::type::Mat<spatial_dimensions, TopologicalDimension, Real>& jacobian)
+{
+    static_assert(TopologicalDimension + 1 == spatial_dimensions,
+        "A normal is only defined for an element of codimension 1.");
+
+    if constexpr (spatial_dimensions == 3)
+    {
+        return jacobian.col(0).cross(jacobian.col(1)).normalized();
+    }
+    else
+    {
+        const sofa::type::Vec<2, Real> tangent = jacobian.col(0);
+        return sofa::type::Vec<2, Real>(tangent[1], -tangent[0]).normalized();
+    }
+}
 
 /**
  * @class BaseSourceTerm

@@ -21,7 +21,6 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/solidmechanics/fem/elastic/StressSourceTerm.h>
-#include <sofa/component/solidmechanics/fem/elastic/ElementNormal.h>
 
 namespace sofa::component::solidmechanics::fem::elastic
 {
