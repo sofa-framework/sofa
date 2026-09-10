@@ -23,7 +23,7 @@
 
 #include <sofa/component/solidmechanics/fem/elastic/config.h>
 #include <sofa/component/solidmechanics/fem/elastic/BaseSourceTerm.h>
-#include <sofa/component/solidmechanics/fem/elastic/NodalPressure.h>
+#include <sofa/core/BaseNodalProperty.h>
 #include <sofa/core/objectmodel/Link.h>
 
 #if !defined(SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_PRESSURE_SOURCE_TERM_CPP)
@@ -33,6 +33,27 @@
 
 namespace sofa::component::solidmechanics::fem::elastic
 {
+
+/**
+ * @class NodalPressure
+ * @brief A pressure prescribed at the nodes, one scalar per node.
+ *
+ * @tparam TDataTypes The data types used for positions, velocities, etc. (e.g., Vec3Types).
+ */
+template <class TDataTypes>
+class NodalPressure : public sofa::core::BaseNodalProperty<sofa::Real_t<TDataTypes>>
+{
+public:
+    using DataTypes = TDataTypes;
+    using Real = sofa::Real_t<DataTypes>;
+
+    SOFA_CLASS(SOFA_TEMPLATE(NodalPressure, DataTypes),
+        SOFA_TEMPLATE(sofa::core::BaseNodalProperty, sofa::Real_t<DataTypes>));
+
+protected:
+
+    NodalPressure() : sofa::core::BaseNodalProperty<Real>(Real{}) {}
+};
 
 /**
  * @class PressureSourceTerm
@@ -83,6 +104,9 @@ protected:
 };
 
 #if !defined(SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_PRESSURE_SOURCE_TERM_CPP)
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API NodalPressure<sofa::defaulttype::Vec2Types>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API NodalPressure<sofa::defaulttype::Vec3Types>;
+
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API PressureSourceTerm<sofa::defaulttype::Vec2Types, sofa::geometry::Edge>;
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API PressureSourceTerm<sofa::defaulttype::Vec3Types, sofa::geometry::Triangle>;
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API PressureSourceTerm<sofa::defaulttype::Vec3Types, sofa::geometry::Quad>;

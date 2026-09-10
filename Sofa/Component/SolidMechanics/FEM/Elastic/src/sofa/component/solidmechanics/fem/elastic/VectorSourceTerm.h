@@ -23,7 +23,7 @@
 
 #include <sofa/component/solidmechanics/fem/elastic/config.h>
 #include <sofa/component/solidmechanics/fem/elastic/BaseSourceTerm.h>
-#include <sofa/component/solidmechanics/fem/elastic/NodalSourceDensity.h>
+#include <sofa/core/BaseNodalProperty.h>
 #include <sofa/core/objectmodel/Link.h>
 
 #if !defined(SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_VECTOR_SOURCE_TERM_CPP)
@@ -33,6 +33,27 @@
 
 namespace sofa::component::solidmechanics::fem::elastic
 {
+
+/**
+ * @class NodalSourceDensity
+ * @brief A source density prescribed at the nodes, one vector per node.
+ *
+ * @tparam TDataTypes The data types used for positions, velocities, etc. (e.g., Vec3Types).
+ */
+template <class TDataTypes>
+class NodalSourceDensity : public sofa::core::BaseNodalProperty<sofa::Deriv_t<TDataTypes>>
+{
+public:
+    using DataTypes = TDataTypes;
+    using Deriv = sofa::Deriv_t<DataTypes>;
+
+    SOFA_CLASS(SOFA_TEMPLATE(NodalSourceDensity, DataTypes),
+        SOFA_TEMPLATE(sofa::core::BaseNodalProperty, sofa::Deriv_t<DataTypes>));
+
+protected:
+
+    NodalSourceDensity() : sofa::core::BaseNodalProperty<Deriv>(Deriv{}) {}
+};
 
 /**
  * @class VectorSourceTerm
@@ -82,6 +103,10 @@ protected:
 };
 
 #if !defined(SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_VECTOR_SOURCE_TERM_CPP)
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API NodalSourceDensity<sofa::defaulttype::Vec1Types>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API NodalSourceDensity<sofa::defaulttype::Vec2Types>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API NodalSourceDensity<sofa::defaulttype::Vec3Types>;
+
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API VectorSourceTerm<sofa::defaulttype::Vec1Types, sofa::geometry::Edge>;
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API VectorSourceTerm<sofa::defaulttype::Vec2Types, sofa::geometry::Edge>;
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API VectorSourceTerm<sofa::defaulttype::Vec3Types, sofa::geometry::Edge>;
