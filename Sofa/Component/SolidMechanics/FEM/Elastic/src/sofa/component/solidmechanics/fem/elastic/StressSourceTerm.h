@@ -44,8 +44,8 @@ using StressTensor =
  * @class NodalStress
  * @brief A symmetric stress tensor prescribed at the nodes, one tensor per node.
  *
- * A tensor is read from a scene as its independent components in the storage order of MatSym,
- * which is not the standard Voigt one: xx xy yy xz yz zz in 3D, xx xy yy in 2D.
+ * A tensor is read from a scene as a full matrix, row by row: nine components in 3D, four in 2D,
+ * of which MatSym keeps the independent ones.
  *
  * @tparam TDataTypes The data types used for positions, velocities, etc. (e.g., Vec3Types).
  */
