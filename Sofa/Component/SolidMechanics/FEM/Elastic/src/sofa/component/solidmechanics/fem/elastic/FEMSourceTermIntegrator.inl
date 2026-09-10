@@ -28,8 +28,11 @@ namespace sofa::component::solidmechanics::fem::elastic
 
 template <class DataTypes, class ElementType>
 FEMSourceTermIntegrator<DataTypes, ElementType>::FEMSourceTermIntegrator()
-    : l_constantSources(initLink("constantSources", "Source terms of the weak form integrated by "
-                "this component. If empty, the ones found in the current context are used."))
+    : l_constantSources(initLink("constantSources", "Source terms of the weak form integrated once "
+                "on the rest configuration."))
+    , l_nonConstantSources(initLink("nonConstantSources", "Source terms of the weak form "
+                "integrated at every step on the current configuration. If both source links are "
+                "empty, the ones found in the current context are used."))
     , d_quadratureDegree(initData(&d_quadratureDegree, static_cast<sofa::Size>(1), "quadratureDegree",
                 "Degree of the quadrature rule integrating the source terms."))
 {
