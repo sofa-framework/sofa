@@ -113,7 +113,7 @@ public:
         const sofa::DataVecDeriv_t<DataTypes>& v) override;
 
     /**
-     * @brief No-op.
+     * @brief Applies the tangent of the terms of l_nonConstantSources to a displacement increment.
      */
     void addDForce(const sofa::core::MechanicalParams* mparams,
         sofa::DataVecDeriv_t<DataTypes>& df,
