@@ -50,7 +50,6 @@ void EigenDirectSparseSolver<TBlockType, EigenSolver>
 
     if (this->isComponentStateInvalid())
     {
-        // the matrix could not be factorized: the Eigen solver is not usable
         return;
     }
 
