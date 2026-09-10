@@ -5,6 +5,7 @@
 
 find_package(Sofa.Config QUIET REQUIRED)
 sofa_find_package(Sofa.Simulation.Core QUIET REQUIRED)
+sofa_find_package(Sofa.Component.SolidMechanics.FEM.Elastic QUIET REQUIRED)
 sofa_find_package(Sofa.Component.Topology.Container.Grid QUIET REQUIRED)
 
 if(NOT TARGET @PROJECT_NAME@)

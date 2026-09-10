@@ -43,6 +43,7 @@ extern void registerTriangleFEMForceField(sofa::core::ObjectFactory* factory);
 extern void registerTriangularAnisotropicFEMForceField(sofa::core::ObjectFactory* factory);
 extern void registerTriangularFEMForceField(sofa::core::ObjectFactory* factory);
 extern void registerTriangularFEMForceFieldOptim(sofa::core::ObjectFactory* factory);
+extern void registerVonMisesStress(sofa::core::ObjectFactory* factory);
 
 extern "C" {
     SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
@@ -85,6 +86,7 @@ void registerObjects(sofa::core::ObjectFactory* factory)
     registerTriangularAnisotropicFEMForceField(factory);
     registerTriangularFEMForceField(factory);
     registerTriangularFEMForceFieldOptim(factory);
+    registerVonMisesStress(factory);
 }
 
 void init()
