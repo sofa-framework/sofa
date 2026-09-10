@@ -42,7 +42,7 @@ namespace sofa::component::solidmechanics::fem::elastic
 {
 
 /**
- * @brief Unit normal of a codimension-1 element, from the jacobian of its mapping.
+ * @brief Unit normal of an element, from the jacobian of its mapping.
  *
  * Defined only where the element spans one dimension less than the space it lives in: a surface
  * element in 3D, an edge in 2D. Its orientation follows the node ordering of the element.
