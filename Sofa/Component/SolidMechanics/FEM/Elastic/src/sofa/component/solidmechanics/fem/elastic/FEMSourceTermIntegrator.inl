@@ -97,20 +97,21 @@ void FEMSourceTermIntegrator<DataTypes, ElementType>::doUpdateInternal()
 template <class DataTypes, class ElementType>
 void FEMSourceTermIntegrator<DataTypes, ElementType>::validateSources()
 {
-    // Gather all BaseSourceTerm components in Context if empty
-    if (l_constantSources.empty())
+    // Gather all BaseSourceTerm components in Context if both links are empty
+    if (l_constantSources.empty() && l_nonConstantSources.empty())
     {
         const auto sourcesInContext = this->getContext()->template getObjects<BaseSourceTerm<DataTypes, ElementType> >(
             sofa::core::objectmodel::BaseContext::Local);
 
         for (const auto& source : sourcesInContext)
-            l_constantSources.add(source);
+            l_nonConstantSources.add(source);
 
         msg_info_when(!sourcesInContext.empty(), this) << "No source term linked: the "
-            << sourcesInContext.size() << " one(s) found in the current context are used.";
+            << sourcesInContext.size() << " one(s) found in the current context are integrated on "
+            "the current configuration.";
     }
 
-    msg_warning_when(l_constantSources.empty(), this)
+    msg_warning_when(l_constantSources.empty() && l_nonConstantSources.empty(), this)
         << "No source term linked, and none found in the current context '"
         << this->getContext()->getName() << "'. This component has zero force contribution.";
 }
