@@ -21,7 +21,6 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/solidmechanics/fem/elastic/VectorSourceTerm.h>
-#include <sofa/component/solidmechanics/fem/elastic/NodalPropertyInterpolation.h>
 
 namespace sofa::component::solidmechanics::fem::elastic
 {
@@ -62,7 +61,7 @@ sofa::Deriv_t<DataTypes> VectorSourceTerm<DataTypes, ElementType>::evaluate(
         return Deriv{};
     }
 
-    return interpolateNodalProperty(*l_sourceDensity, context);
+    return this->interpolateProperty(*l_sourceDensity, context);
 }
 
 }  // namespace sofa::component::solidmechanics::fem::elastic

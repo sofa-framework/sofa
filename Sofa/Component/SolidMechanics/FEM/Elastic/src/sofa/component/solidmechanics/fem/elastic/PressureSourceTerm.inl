@@ -22,7 +22,6 @@
 #pragma once
 #include <sofa/component/solidmechanics/fem/elastic/PressureSourceTerm.h>
 #include <sofa/component/solidmechanics/fem/elastic/ElementNormal.h>
-#include <sofa/component/solidmechanics/fem/elastic/NodalPropertyInterpolation.h>
 
 namespace sofa::component::solidmechanics::fem::elastic
 {
@@ -63,7 +62,7 @@ sofa::Deriv_t<DataTypes> PressureSourceTerm<DataTypes, ElementType>::evaluate(
         return Deriv{};
     }
 
-    return elementNormal(context.jacobian) * interpolateNodalProperty(*l_pressure, context);
+    return elementNormal(context.jacobian) * this->interpolateProperty(*l_pressure, context);
 }
 
 }  // namespace sofa::component::solidmechanics::fem::elastic
