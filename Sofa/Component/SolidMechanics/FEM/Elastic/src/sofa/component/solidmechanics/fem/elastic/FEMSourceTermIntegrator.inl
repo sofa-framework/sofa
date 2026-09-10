@@ -172,13 +172,71 @@ void FEMSourceTermIntegrator<DataTypes, ElementType>::assembleConstantForce()
 }
 
 template <class DataTypes, class ElementType>
+void FEMSourceTermIntegrator<DataTypes, ElementType>::assembleNonConstantForce(
+    const sofa::VecCoord_t<DataTypes>& x, sofa::VecDeriv_t<DataTypes>& f) const
+{
+    if (l_nonConstantSources.empty())
+    {
+        return;
+    }
+
+    const auto restPositionsAccessor = this->mstate->readRestPositions();
+
+    const auto& elements = FiniteElement::getElementSequence(*this->l_topology);
+    const auto quadratureRule = FiniteElement::quadratureRule(d_quadratureDegree.getValue());
+
+    for (const auto& element : elements)
+    {
+        const std::array<sofa::Coord_t<DataTypes>, NumberOfNodesInElement> elementNodesRestCoordinates =
+            extractNodesVectorFromGlobalVector(element, restPositionsAccessor.ref());
+        const std::array<sofa::Coord_t<DataTypes>, NumberOfNodesInElement> elementNodesCoordinates =
+            extractNodesVectorFromGlobalVector(element, x);
+
+        std::array<sofa::Deriv_t<DataTypes>, NumberOfNodesInElement> elementNodesDisplacement;
+        for (sofa::Size i = 0; i < NumberOfNodesInElement; ++i)
+        {
+            elementNodesDisplacement[i] = elementNodesCoordinates[i] - elementNodesRestCoordinates[i];
+        }
+
+        for (const auto& [quadraturePoint, weight] : quadratureRule)
+        {
+            const auto N = FiniteElement::shapeFunctions(quadraturePoint);
+            const auto dN_dq_ref = FiniteElement::gradientShapeFunctions(quadraturePoint);
+
+            const auto jacobian = FiniteElement::Helper::jacobianFromReferenceToPhysical(
+                elementNodesCoordinates, dN_dq_ref);
+            const auto measure = static_cast<Real>(sofa::type::absGeneralizedDeterminant(jacobian));
+
+            const auto restPosition =
+                FiniteElement::Helper::evaluateValueInElement(elementNodesRestCoordinates, N);
+            const auto displacement =
+                FiniteElement::Helper::evaluateValueInElement(elementNodesDisplacement, N);
+
+            const QuadratureContext<DataTypes, ElementType> context{
+                element, N, dN_dq_ref, jacobian, measure, restPosition, displacement};
+
+            const auto weightTimesMeasure = static_cast<Real>(weight) * measure;
+
+            for (const auto& source : l_nonConstantSources)
+            {
+                const auto density = source->evaluate(context);
+
+                for (sofa::Size i = 0; i < NumberOfNodesInElement; ++i)
+                {
+                    f[element[i]] += density * (weightTimesMeasure * N[i]);
+                }
+            }
+        }
+    }
+}
+
+template <class DataTypes, class ElementType>
 void FEMSourceTermIntegrator<DataTypes, ElementType>::addForce(const sofa::core::MechanicalParams* mparams,
                                                      sofa::DataVecDeriv_t<DataTypes>& f,
                                                      const sofa::DataVecCoord_t<DataTypes>& x,
                                                      const sofa::DataVecDeriv_t<DataTypes>& v)
 {
     SOFA_UNUSED(mparams);
-    SOFA_UNUSED(x);
     SOFA_UNUSED(v);
 
     if (this->isComponentStateInvalid())
@@ -192,6 +250,9 @@ void FEMSourceTermIntegrator<DataTypes, ElementType>::addForce(const sofa::core:
     {
         forceAccessor[i] += m_constantForce[i];
     }
+
+    const sofa::helper::ReadAccessor positionAccessor = sofa::helper::getReadAccessor(x);
+    assembleNonConstantForce(positionAccessor.ref(), forceAccessor.wref());
 }
 
 template <class DataTypes, class ElementType>
