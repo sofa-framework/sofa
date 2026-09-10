@@ -126,6 +126,61 @@ sofa::type::Vec<spatial_dimensions, Real> elementNormal(
 }
 
 /**
+ * @brief Derivative of the area normal of an element with respect to one of its node positions.
+ *
+ * The area normal is \f$ |\det J| \, n \f$: in 3D the cross product of the two columns of the
+ * jacobian, in 2D the tangent rotated by a quarter turn. Differentiating it with respect to the
+ * position of the node whose shape function is N gives
+ *
+ * \f[ [t_0]_\times \frac{\partial N}{\partial q_1} - [t_1]_\times \frac{\partial N}{\partial q_0}
+ *     \quad \text{in 3D,} \qquad R \, \frac{\partial N}{\partial q_0} \quad \text{in 2D,} \f]
+ *
+ * where \f$ t_i \f$ is the i-th column of the jacobian, \f$ [\,]_\times \f$ the cross-product
+ * matrix and R the quarter turn.
+ *
+ * Defined only where the element spans one dimension less than the space it lives in, as
+ * elementNormal is.
+ *
+ * @param jacobian dx/dq of the reference-to-physical mapping at the point of interest.
+ * @param gradientOfShapeFunction dN/dq of the node the derivative is taken with respect to.
+ */
+template <sofa::Size spatial_dimensions, sofa::Size TopologicalDimension, class Real>
+sofa::type::Mat<spatial_dimensions, spatial_dimensions, Real> elementAreaNormalDerivative(
+    const sofa::type::Mat<spatial_dimensions, TopologicalDimension, Real>& jacobian,
+    const sofa::type::Vec<TopologicalDimension, Real>& gradientOfShapeFunction)
+{
+    static_assert(TopologicalDimension + 1 == spatial_dimensions,
+        "An area normal is only defined for an element of codimension 1.");
+
+    using Derivative = sofa::type::Mat<spatial_dimensions, spatial_dimensions, Real>;
+
+    if constexpr (spatial_dimensions == 3)
+    {
+        const auto tangent0 = jacobian.col(0);
+        const auto tangent1 = jacobian.col(1);
+
+        const Derivative skewTangent0 {
+            {Real{0}, -tangent0[2], tangent0[1]},
+            {tangent0[2], Real{0}, -tangent0[0]},
+            {-tangent0[1], tangent0[0], Real{0}}};
+
+        const Derivative skewTangent1 {
+            {Real{0}, -tangent1[2], tangent1[1]},
+            {tangent1[2], Real{0}, -tangent1[0]},
+            {-tangent1[1], tangent1[0], Real{0}}};
+
+        return skewTangent0 * gradientOfShapeFunction[1]
+             - skewTangent1 * gradientOfShapeFunction[0];
+    }
+    else
+    {
+        const Derivative rotation {{Real{0}, Real{1}}, {Real{-1}, Real{0}}};
+
+        return rotation * gradientOfShapeFunction[0];
+    }
+}
+
+/**
  * @class BaseSourceTerm
  * @brief A source density whose value is determined by the geometry, not by the solution.
  *
