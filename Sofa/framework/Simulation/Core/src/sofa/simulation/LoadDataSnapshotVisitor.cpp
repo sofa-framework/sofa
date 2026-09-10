@@ -43,7 +43,8 @@ void LoadSnapshotVisitor::processObject(
             for (auto& it : snapshotObject->m_objects)
             {
                 auto objSlave = obj->getSlave(it->m_name);
-                objSlave->loadSnapshot(it);
+                if (objSlave)
+                    objSlave->loadSnapshot(it);
             }
         }
     }
