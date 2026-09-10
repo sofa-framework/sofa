@@ -35,34 +35,33 @@
 namespace sofa::component::solidmechanics::fem::elastic
 {
 
-/// The independent components of a symmetric stress tensor, in the storage order of MatSym.
+/// The symmetric stress tensor prescribed at one node.
 template <class DataTypes>
-using StressComponents = sofa::type::Vec<
-    sofa::type::NumberOfIndependentElements<DataTypes::spatial_dimensions>,
-    sofa::Real_t<DataTypes>>;
+using StressTensor =
+    sofa::type::MatSym<DataTypes::spatial_dimensions, sofa::Real_t<DataTypes>>;
 
 /**
  * @class NodalStress
  * @brief A symmetric stress tensor prescribed at the nodes, one tensor per node.
  *
- * A tensor is written as its independent components in the storage order of MatSym, which is not
- * the standard Voigt one: xx xy yy xz yz zz in 3D, xx xy yy in 2D.
+ * A tensor is read from a scene as its independent components in the storage order of MatSym,
+ * which is not the standard Voigt one: xx xy yy xz yz zz in 3D, xx xy yy in 2D.
  *
  * @tparam TDataTypes The data types used for positions, velocities, etc. (e.g., Vec3Types).
  */
 template <class TDataTypes>
-class NodalStress : public sofa::core::BaseNodalProperty<StressComponents<TDataTypes>>
+class NodalStress : public sofa::core::BaseNodalProperty<StressTensor<TDataTypes>>
 {
 public:
     using DataTypes = TDataTypes;
-    using Components = StressComponents<DataTypes>;
+    using Tensor = StressTensor<DataTypes>;
 
     SOFA_CLASS(SOFA_TEMPLATE(NodalStress, DataTypes),
-        SOFA_TEMPLATE(sofa::core::BaseNodalProperty, StressComponents<DataTypes>));
+        SOFA_TEMPLATE(sofa::core::BaseNodalProperty, StressTensor<DataTypes>));
 
 protected:
 
-    NodalStress() : sofa::core::BaseNodalProperty<Components>(Components{}) {}
+    NodalStress() : sofa::core::BaseNodalProperty<Tensor>(Tensor{}) {}
 };
 
 /**
@@ -90,13 +89,8 @@ public:
         SOFA_TEMPLATE2(BaseSourceTerm, DataTypes, ElementType));
 
     using Deriv = sofa::Deriv_t<DataTypes>;
-    using Real = sofa::Real_t<DataTypes>;
     using QuadratureContext = QuadratureContext<DataTypes, ElementType>;
     using NodalStress = ::sofa::component::solidmechanics::fem::elastic::NodalStress<DataTypes>;
-
-    static constexpr sofa::Size spatial_dimensions = DataTypes::spatial_dimensions;
-
-    using StressTensor = sofa::type::MatSym<spatial_dimensions, Real>;
 
     /**
      * @brief Nodal values of the stress tensor this term integrates.

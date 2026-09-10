@@ -61,15 +61,7 @@ sofa::Deriv_t<DataTypes> StressSourceTerm<DataTypes, ElementType>::evaluate(
         return Deriv{};
     }
 
-    const auto components = this->interpolateProperty(*l_stress, context);
-
-    StressTensor stress;
-    for (sofa::Size i = 0; i < StressTensor::NumberStoredValues; ++i)
-    {
-        stress[i] = components[i];
-    }
-
-    return stress * elementNormal(context.jacobian);
+    return this->interpolateProperty(*l_stress, context) * elementNormal(context.jacobian);
 }
 
 }  // namespace sofa::component::solidmechanics::fem::elastic
