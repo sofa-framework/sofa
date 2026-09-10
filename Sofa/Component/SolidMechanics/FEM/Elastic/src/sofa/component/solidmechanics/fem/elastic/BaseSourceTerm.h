@@ -184,7 +184,7 @@ public:
      * @param context Geometry of the quadrature point.
      * @param node Index in the element of the node the derivative is taken with respect to.
      */
-    virtual SourceDerivative evaluateStiffness(const QuadratureContext& context,
+    virtual SourceDerivative evaluateStiffness(const QuadratureContext_t& context,
         sofa::Size node) const = 0;
 
 protected:

@@ -76,4 +76,41 @@ PressureSourceTerm<DataTypes, ElementType>::integrandInputs() const
     return {&l_pressure->d_property};
 }
 
+template <class DataTypes, class ElementType>
+auto PressureSourceTerm<DataTypes, ElementType>::evaluateStiffness(
+    const QuadratureContext_t& context, sofa::Size node) const -> SourceDerivative
+{
+    if (!l_pressure)
+    {
+        return SourceDerivative{};
+    }
+
+    const auto pressure = this->interpolateProperty(*l_pressure, context);
+    const auto& gradient = context.gradientShapeFunctions[node];
+
+    if constexpr (QuadratureContext_t::spatial_dimensions == 3)
+    {
+        const auto tangent0 = context.jacobian.col(0);
+        const auto tangent1 = context.jacobian.col(1);
+
+        const SourceDerivative skewTangent0 {
+            {Real{0}, -tangent0[2], tangent0[1]},
+            {tangent0[2], Real{0}, -tangent0[0]},
+            {-tangent0[1], tangent0[0], Real{0}}};
+
+        const SourceDerivative skewTangent1 {
+            {Real{0}, -tangent1[2], tangent1[1]},
+            {tangent1[2], Real{0}, -tangent1[0]},
+            {-tangent1[1], tangent1[0], Real{0}}};
+
+        return (skewTangent0 * gradient[1] - skewTangent1 * gradient[0]) * pressure;
+    }
+    else
+    {
+        const SourceDerivative rotation {{Real{0}, Real{1}}, {Real{-1}, Real{0}}};
+
+        return rotation * (gradient[0] * pressure);
+    }
+}
+
 }  // namespace sofa::component::solidmechanics::fem::elastic

@@ -78,8 +78,10 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE2(PressureSourceTerm, DataTypes, ElementType),
         SOFA_TEMPLATE2(BaseSourceTerm, DataTypes, ElementType));
 
+    using Real = sofa::Real_t<DataTypes>;
     using Deriv = sofa::Deriv_t<DataTypes>;
     using QuadratureContext_t = QuadratureContext<DataTypes, ElementType>;
+    using SourceDerivative = typename BaseSourceTerm<DataTypes, ElementType>::SourceDerivative;
     using NodalPressure = ::sofa::component::solidmechanics::fem::elastic::NodalPressure<DataTypes>;
 
     /**
@@ -102,6 +104,12 @@ public:
      * @brief The nodal values this term interpolates, for FEMSourceTermIntegrator to track.
      */
     sofa::type::vector<const sofa::core::objectmodel::BaseData*> integrandInputs() const override;
+
+    /**
+     * @brief The pressure times the derivative of the area normal of the element.
+     */
+    SourceDerivative evaluateStiffness(const QuadratureContext_t& context,
+        sofa::Size node) const override;
 
 protected:
 
