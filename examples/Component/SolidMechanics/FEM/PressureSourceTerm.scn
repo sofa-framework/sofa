@@ -1,0 +1,184 @@
+<?xml version="1.0"?>
+<!-- Compares PressureSourceTerm with SurfacePressureForceField.
+
+     A beam is solved twice, once with SurfacePressureForceField and once with a NodalPressure
+     integrated by FEMSourceTermIntegrator. The two beams of a pair are independent.
+
+     White:   PressureSourceTerm, in both pairs
+     Cyan:    SurfacePressureForceField on a triangulated surface
+     Orange:  SurfacePressureForceField on the quads of that surface
+
+     This is a follower load: the traction is p n on the deformed surface, so both the normal and
+     the area are those of the current configuration. The source term is therefore attached to the
+     nonConstantSources link of the integrator, which integrates it again at every call to addForce.
+     Nothing in PressureSourceTerm itself says whether it is a dead or a follower load: the link it
+     hangs from decides.
+
+     Neither component contributes a tangent stiffness here, so the Newton iteration is a fixed
+     point on the load and needs several iterations to converge.
+
+     The pressure is applied on the same surface twice, once through its triangles and once through
+     its quads, which SurfacePressureForceField and FEMSourceTermIntegrator handle by separate
+     paths.
+-->
+<Node name="root" dt="1" gravity="0 0 0">
+    <Node name="RequiredPlugins">
+        <RequiredPlugin pluginName="Sofa.Component.AnimationLoop"/>
+        <RequiredPlugin pluginName="Sofa.Component.Constraint.Projective"/>
+        <RequiredPlugin pluginName="Sofa.Component.Engine.Select"/>
+        <RequiredPlugin pluginName="Sofa.Component.LinearSolver.Direct"/>
+        <RequiredPlugin pluginName="Sofa.Component.MechanicalLoad"/>
+        <RequiredPlugin pluginName="Sofa.Component.ODESolver.Backward"/>
+        <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.FEM.Elastic"/>
+        <RequiredPlugin pluginName="Sofa.Component.StateContainer"/>
+        <RequiredPlugin pluginName="Sofa.Component.Topology.Container.Constant"/>
+        <RequiredPlugin pluginName="Sofa.Component.Topology.Container.Dynamic"/>
+        <RequiredPlugin pluginName="Sofa.Component.Topology.Container.Grid"/>
+        <RequiredPlugin pluginName="Sofa.Component.Topology.Mapping"/>
+        <RequiredPlugin pluginName="Sofa.Component.Visual"/>
+        <RequiredPlugin pluginName="Sofa.GL.Component.Rendering2D"/>
+    </Node>
+
+    <DefaultAnimationLoop/>
+    <VisualStyle displayFlags="showBehaviorModels showVisualModels"/>
+
+    <Node name="Labels">
+        <OglLabel label="PressureSourceTerm"                    x="10" y="832" fontsize="16" color="1 1 1 1"/>
+        <OglLabel label="SurfacePressureForceField, triangles"  x="10" y="854" fontsize="16" color="0 1 1 1"/>
+        <OglLabel label="SurfacePressureForceField, quads"      x="10" y="876" fontsize="16" color="1 0.5 0 1"/>
+    </Node>
+
+    <!-- ============ Pressure on the top face of the beam; cyan ============ -->
+    <Node name="ReplicateSurfacePressure">
+        <RegularGridTopology name="grid" n="5 3 3" min="0 0 0" max="2 0.5 0.5"/>
+
+        <Node name="PressureViaForceField">
+            <NewtonRaphsonSolver name="newton" maxNbIterationsNewton="20" absoluteResidualStoppingThreshold="1e-8"/>
+            <StaticSolver newtonSolver="@newton"/>
+            <SparseLDLSolver name="linear_solver" template="CompressedRowSparseMatrixd"/>
+
+            <MechanicalObject name="dofs" template="Vec3" src="@../grid" showObject="true" drawMode="1" showObjectScale="0.05" showColor="0 1 1 0.5"/>
+            <BoxROI name="boundary" template="Vec3" box="-0.05 -0.05 -0.05  0.05 0.55 0.55"/>
+            <FixedProjectiveConstraint name="dirichlet" indices="@boundary.indices"/>
+
+            <HexahedronSetTopologyContainer name="Hexa_topo" src="@../grid"/>
+            <HexahedronSetGeometryAlgorithms template="Vec3" name="GeomAlgo" drawHexahedra="1" drawColorHexahedra="0 1 1 0.5"/>
+
+            <LinearSmallStrainFEMForceField name="FEM" template="Vec3,Hexahedron"
+                                            youngModulus="1000" poissonRatio="0.3" topology="@Hexa_topo"/>
+
+            <Node name="Boundary">
+                <QuadSetTopologyContainer name="quadSurface"/>
+                <QuadSetTopologyModifier/>
+                <Hexa2QuadTopologicalMapping input="@../Hexa_topo" output="@quadSurface"/>
+
+                <Node name="Triangulated">
+                    <TriangleSetTopologyContainer name="surface"/>
+                    <TriangleSetTopologyModifier/>
+                    <Quad2TriangleTopologicalMapping input="@../quadSurface" output="@surface"/>
+
+                    <!-- the top face of the beam, y = 0.5 -->
+                    <BoxROI name="topFace" template="Vec3" box="-0.05 0.45 -0.05  2.05 0.55 0.55"/>
+
+                    <SurfacePressureForceField name="load" topology="@surface"
+                                   triangleIndices="@topFace.triangleIndices" pressure="-2"/>
+                </Node>
+            </Node>
+        </Node>
+
+        <Node name="PressureViaSourceTerm">
+            <NewtonRaphsonSolver name="newton" maxNbIterationsNewton="20" absoluteResidualStoppingThreshold="1e-8"/>
+            <StaticSolver newtonSolver="@newton"/>
+            <SparseLDLSolver name="linear_solver" template="CompressedRowSparseMatrixd"/>
+
+            <MechanicalObject name="dofs" template="Vec3" src="@../grid" showObject="true" drawMode="1" showObjectScale="0.025" showColor="1 1 1 1"/>
+            <BoxROI name="boundary" template="Vec3" box="-0.05 -0.05 -0.05  0.05 0.55 0.55"/>
+            <FixedProjectiveConstraint name="dirichlet" indices="@boundary.indices"/>
+
+            <HexahedronSetTopologyContainer name="Hexa_topo" src="@../grid"/>
+            <HexahedronSetGeometryAlgorithms template="Vec3" name="GeomAlgo" drawEdges="1" drawColorEdges="1 1 1 1"/>
+
+            <LinearSmallStrainFEMForceField name="FEM" template="Vec3,Hexahedron"
+                                            youngModulus="1000" poissonRatio="0.3" topology="@Hexa_topo"/>
+
+            <Node name="Boundary">
+                <QuadSetTopologyContainer name="quadSurface"/>
+                <QuadSetTopologyModifier/>
+                <Hexa2QuadTopologicalMapping input="@../Hexa_topo" output="@quadSurface"/>
+
+                <Node name="Triangulated">
+                    <TriangleSetTopologyContainer name="surface"/>
+                    <TriangleSetTopologyModifier/>
+                    <Quad2TriangleTopologicalMapping input="@../quadSurface" output="@surface"/>
+
+                    <!-- the top face of the beam, y = 0.5 -->
+                    <BoxROI name="topFace" template="Vec3" box="-0.05 0.45 -0.05  2.05 0.55 0.55"/>
+
+                    <Node name="LoadedFace">
+                        <TriangleSetTopologyContainer name="face" triangles="@../topFace.trianglesInROI"/>
+                        <NodalPressure name="pressure" template="Vec3" property="-2"/>
+                        <PressureSourceTerm name="load" template="Vec3,Triangle" pressure="@pressure"/>
+                        <FEMSourceTermIntegrator name="source" template="Vec3,Triangle" topology="@face"
+                                       quadratureDegree="1" nonConstantSources="@load"/>
+                    </Node>
+                </Node>
+            </Node>
+        </Node>
+    </Node>
+
+    <!-- ============ The same pressure on the quads of the top face; orange ============ -->
+    <Node name="ReplicateSurfacePressureOnQuads">
+        <RegularGridTopology name="grid" n="5 3 3" min="0 0 1" max="2 0.5 1.5"/>
+
+        <Node name="PressureViaForceField">
+            <NewtonRaphsonSolver name="newton" maxNbIterationsNewton="20" absoluteResidualStoppingThreshold="1e-8"/>
+            <StaticSolver newtonSolver="@newton"/>
+            <SparseLDLSolver name="linear_solver" template="CompressedRowSparseMatrixd"/>
+
+            <MechanicalObject name="dofs" template="Vec3" src="@../grid" showObject="true" drawMode="1" showObjectScale="0.05" showColor="1 0.5 0 0.5"/>
+            <BoxROI name="boundary" template="Vec3" box="-0.05 -0.05 0.95  0.05 0.55 1.55"/>
+            <FixedProjectiveConstraint name="dirichlet" indices="@boundary.indices"/>
+
+            <HexahedronSetTopologyContainer name="Hexa_topo" src="@../grid"/>
+            <HexahedronSetGeometryAlgorithms template="Vec3" name="GeomAlgo" drawHexahedra="1" drawColorHexahedra="1 0.5 0 0.5"/>
+
+            <LinearSmallStrainFEMForceField name="FEM" template="Vec3,Hexahedron"
+                                            youngModulus="1000" poissonRatio="0.3" topology="@Hexa_topo"/>
+
+            <!-- the top face of the beam, y = 0.5 -->
+            <BoxROI name="topFace" template="Vec3" quads="@Hexa_topo.quads"
+                    box="-0.05 0.45 0.95  2.05 0.55 1.55"/>
+
+            <SurfacePressureForceField name="load" topology="@Hexa_topo"
+                           quadIndices="@topFace.quadIndices" pressure="-2"/>
+        </Node>
+
+        <Node name="PressureViaSourceTerm">
+            <NewtonRaphsonSolver name="newton" maxNbIterationsNewton="20" absoluteResidualStoppingThreshold="1e-8"/>
+            <StaticSolver newtonSolver="@newton"/>
+            <SparseLDLSolver name="linear_solver" template="CompressedRowSparseMatrixd"/>
+
+            <MechanicalObject name="dofs" template="Vec3" src="@../grid" showObject="true" drawMode="1" showObjectScale="0.025" showColor="1 1 1 1"/>
+            <BoxROI name="boundary" template="Vec3" box="-0.05 -0.05 0.95  0.05 0.55 1.55"/>
+            <FixedProjectiveConstraint name="dirichlet" indices="@boundary.indices"/>
+
+            <HexahedronSetTopologyContainer name="Hexa_topo" src="@../grid"/>
+            <HexahedronSetGeometryAlgorithms template="Vec3" name="GeomAlgo" drawEdges="1" drawColorEdges="1 1 1 1"/>
+
+            <LinearSmallStrainFEMForceField name="FEM" template="Vec3,Hexahedron"
+                                            youngModulus="1000" poissonRatio="0.3" topology="@Hexa_topo"/>
+
+            <!-- the top face of the beam, y = 0.5 -->
+            <BoxROI name="topFace" template="Vec3" quads="@Hexa_topo.quads"
+                    box="-0.05 0.45 0.95  2.05 0.55 1.55"/>
+
+            <Node name="LoadedFace">
+                <QuadSetTopologyContainer name="face" quads="@../topFace.quadsInROI"/>
+                <NodalPressure name="pressure" template="Vec3" property="-2"/>
+                <PressureSourceTerm name="load" template="Vec3,Quad" pressure="@pressure"/>
+                <FEMSourceTermIntegrator name="source" template="Vec3,Quad" topology="@face"
+                               quadratureDegree="1" nonConstantSources="@load"/>
+            </Node>
+        </Node>
+    </Node>
+</Node>
