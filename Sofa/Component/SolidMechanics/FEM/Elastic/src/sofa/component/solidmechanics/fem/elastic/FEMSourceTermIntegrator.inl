@@ -35,6 +35,8 @@ FEMSourceTermIntegrator<DataTypes, ElementType>::FEMSourceTermIntegrator()
                 "empty, the ones found in the current context are used."))
     , d_quadratureDegree(initData(&d_quadratureDegree, static_cast<sofa::Size>(1), "quadratureDegree",
                 "Degree of the quadrature rule integrating the source terms."))
+    , d_useTangentStiffness(initData(&d_useTangentStiffness, true, "useTangentStiffness",
+                "Whether the (non-symmetric) tangent of the non-constant source terms is assembled."))
 {
     this->addUpdateCallback("reassembleConstantForce", {&d_quadratureDegree},
         [this](const sofa::core::DataTracker&)
@@ -269,7 +271,73 @@ void FEMSourceTermIntegrator<DataTypes, ElementType>::addDForce(const sofa::core
 template <class DataTypes, class ElementType>
 void FEMSourceTermIntegrator<DataTypes, ElementType>::buildStiffnessMatrix(sofa::core::behavior::StiffnessMatrix* matrix)
 {
-    SOFA_UNUSED(matrix);
+    if (this->isComponentStateInvalid() || l_nonConstantSources.empty()
+        || !d_useTangentStiffness.getValue())
+    {
+        return;
+    }
+
+    auto dfdx = matrix->getForceDerivativeIn(this->mstate).withRespectToPositionsIn(this->mstate);
+
+    const auto restPositionsAccessor = this->mstate->readRestPositions();
+    const auto positionsAccessor = this->mstate->readPositions();
+
+    const auto& elements = FiniteElement::getElementSequence(*this->l_topology);
+    const auto quadratureRule = FiniteElement::quadratureRule(d_quadratureDegree.getValue());
+
+    for (const auto& element : elements)
+    {
+        const std::array<sofa::Coord_t<DataTypes>, NumberOfNodesInElement> elementNodesRestCoordinates =
+            extractNodesVectorFromGlobalVector(element, restPositionsAccessor.ref());
+        const std::array<sofa::Coord_t<DataTypes>, NumberOfNodesInElement> elementNodesCoordinates =
+            extractNodesVectorFromGlobalVector(element, positionsAccessor.ref());
+
+        std::array<sofa::Deriv_t<DataTypes>, NumberOfNodesInElement> elementNodesDisplacement;
+        for (sofa::Size i = 0; i < NumberOfNodesInElement; ++i)
+        {
+            elementNodesDisplacement[i] = elementNodesCoordinates[i] - elementNodesRestCoordinates[i];
+        }
+
+        for (const auto& [quadraturePoint, weight] : quadratureRule)
+        {
+            const auto N = FiniteElement::shapeFunctions(quadraturePoint);
+            const auto dN_dq_ref = FiniteElement::gradientShapeFunctions(quadraturePoint);
+
+            const auto jacobian = FiniteElement::Helper::jacobianFromReferenceToPhysical(
+                elementNodesCoordinates, dN_dq_ref);
+            const auto measure = static_cast<Real>(sofa::type::absGeneralizedDeterminant(jacobian));
+
+            const auto restPosition =
+                FiniteElement::Helper::evaluateValueInElement(elementNodesRestCoordinates, N);
+            const auto displacement =
+                FiniteElement::Helper::evaluateValueInElement(elementNodesDisplacement, N);
+
+            const QuadratureContext<DataTypes, ElementType> context{
+                element, N, dN_dq_ref, jacobian, measure, restPosition, displacement};
+
+            std::array<typename BaseSourceTerm<DataTypes, ElementType>::SourceDerivative,
+                NumberOfNodesInElement> sourceDerivative{};
+
+            for (const auto& source : l_nonConstantSources)
+            {
+                for (sofa::Size b = 0; b < NumberOfNodesInElement; ++b)
+                {
+                    sourceDerivative[b] += source->evaluateStiffness(context, b);
+                }
+            }
+
+            for (sofa::Size a = 0; a < NumberOfNodesInElement; ++a)
+            {
+                const auto weightTimesShapeFunction = static_cast<Real>(weight) * N[a];
+
+                for (sofa::Size b = 0; b < NumberOfNodesInElement; ++b)
+                {
+                    dfdx(element[a] * spatial_dimensions, element[b] * spatial_dimensions)
+                        += sourceDerivative[b] * weightTimesShapeFunction;
+                }
+            }
+        }
+    }
 }
 
 template <class DataTypes, class ElementType>

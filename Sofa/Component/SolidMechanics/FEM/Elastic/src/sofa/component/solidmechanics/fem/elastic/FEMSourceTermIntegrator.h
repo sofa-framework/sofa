@@ -120,7 +120,9 @@ public:
         const sofa::DataVecDeriv_t<DataTypes>& dx) override;
 
     /**
-     * @brief No-op.
+     * @brief Assembles the tangent of the terms of l_nonConstantSources.
+     *
+     * The tangent of a term that follows the configuration is not symmetric.
      */
     void buildStiffnessMatrix(sofa::core::behavior::StiffnessMatrix* matrix) override;
 
@@ -135,6 +137,11 @@ public:
      * @brief Degree of the quadrature rule integrating the source terms.
      */
     sofa::Data<sofa::Size> d_quadratureDegree;
+
+    /**
+     * @brief Whether the non-symmetric tangent of the non-constant source terms is assembled.
+     */
+    sofa::Data<bool> d_useTangentStiffness;
 
 protected:
 
