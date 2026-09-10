@@ -23,8 +23,9 @@
 
 #include <sofa/component/solidmechanics/fem/elastic/config.h>
 #include <sofa/component/solidmechanics/fem/elastic/BaseSourceTerm.h>
-#include <sofa/component/solidmechanics/fem/elastic/NodalStress.h>
+#include <sofa/core/BaseNodalProperty.h>
 #include <sofa/core/objectmodel/Link.h>
+#include <sofa/type/MatSym.h>
 
 #if !defined(SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_STRESS_SOURCE_TERM_CPP)
 #include <sofa/defaulttype/VecTypes.h>
@@ -33,6 +34,36 @@
 
 namespace sofa::component::solidmechanics::fem::elastic
 {
+
+/// The independent components of a symmetric stress tensor, in the storage order of MatSym.
+template <class DataTypes>
+using StressComponents = sofa::type::Vec<
+    sofa::type::NumberOfIndependentElements<DataTypes::spatial_dimensions>,
+    sofa::Real_t<DataTypes>>;
+
+/**
+ * @class NodalStress
+ * @brief A symmetric stress tensor prescribed at the nodes, one tensor per node.
+ *
+ * A tensor is written as its independent components in the storage order of MatSym, which is not
+ * the standard Voigt one: xx xy yy xz yz zz in 3D, xx xy yy in 2D.
+ *
+ * @tparam TDataTypes The data types used for positions, velocities, etc. (e.g., Vec3Types).
+ */
+template <class TDataTypes>
+class NodalStress : public sofa::core::BaseNodalProperty<StressComponents<TDataTypes>>
+{
+public:
+    using DataTypes = TDataTypes;
+    using Components = StressComponents<DataTypes>;
+
+    SOFA_CLASS(SOFA_TEMPLATE(NodalStress, DataTypes),
+        SOFA_TEMPLATE(sofa::core::BaseNodalProperty, StressComponents<DataTypes>));
+
+protected:
+
+    NodalStress() : sofa::core::BaseNodalProperty<Components>(Components{}) {}
+};
 
 /**
  * @class StressSourceTerm
@@ -89,6 +120,9 @@ protected:
 };
 
 #if !defined(SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_STRESS_SOURCE_TERM_CPP)
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API NodalStress<sofa::defaulttype::Vec2Types>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API NodalStress<sofa::defaulttype::Vec3Types>;
+
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API StressSourceTerm<sofa::defaulttype::Vec2Types, sofa::geometry::Edge>;
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API StressSourceTerm<sofa::defaulttype::Vec3Types, sofa::geometry::Triangle>;
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API StressSourceTerm<sofa::defaulttype::Vec3Types, sofa::geometry::Quad>;

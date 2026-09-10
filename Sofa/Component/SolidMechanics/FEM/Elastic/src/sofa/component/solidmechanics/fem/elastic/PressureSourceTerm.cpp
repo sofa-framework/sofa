@@ -30,6 +30,17 @@
 namespace sofa::component::solidmechanics::fem::elastic
 {
 
+void registerNodalPressure(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Definition of a nodal pressure (one scalar per dof).")
+        .add< NodalPressure<sofa::defaulttype::Vec2Types> >()
+        .add< NodalPressure<sofa::defaulttype::Vec3Types> >()
+    );
+}
+
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API NodalPressure<sofa::defaulttype::Vec2Types>;
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API NodalPressure<sofa::defaulttype::Vec3Types>;
+
 void registerPressureSourceTerm(sofa::core::ObjectFactory* factory)
 {
     factory->registerObjects(sofa::core::ObjectRegistrationData("Traction obtained from a pressure prescribed at the nodes, acting along the normal of the element")

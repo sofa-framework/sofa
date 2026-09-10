@@ -30,6 +30,19 @@
 namespace sofa::component::solidmechanics::fem::elastic
 {
 
+void registerNodalSourceDensity(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Definition of a nodal source density (one vector per dof).")
+        .add< NodalSourceDensity<sofa::defaulttype::Vec1Types> >()
+        .add< NodalSourceDensity<sofa::defaulttype::Vec2Types> >()
+        .add< NodalSourceDensity<sofa::defaulttype::Vec3Types> >()
+    );
+}
+
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API NodalSourceDensity<sofa::defaulttype::Vec1Types>;
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API NodalSourceDensity<sofa::defaulttype::Vec2Types>;
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API NodalSourceDensity<sofa::defaulttype::Vec3Types>;
+
 void registerVectorSourceTerm(sofa::core::ObjectFactory* factory)
 {
     factory->registerObjects(sofa::core::ObjectRegistrationData("Source density given as a vector at each node, per unit measure of the element")

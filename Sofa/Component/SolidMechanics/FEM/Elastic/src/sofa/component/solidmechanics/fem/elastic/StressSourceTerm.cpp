@@ -30,6 +30,17 @@
 namespace sofa::component::solidmechanics::fem::elastic
 {
 
+void registerNodalStress(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Definition of a nodal symmetric stress tensor (one tensor per dof).")
+        .add< NodalStress<sofa::defaulttype::Vec2Types> >()
+        .add< NodalStress<sofa::defaulttype::Vec3Types> >()
+    );
+}
+
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API NodalStress<sofa::defaulttype::Vec2Types>;
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API NodalStress<sofa::defaulttype::Vec3Types>;
+
 void registerStressSourceTerm(sofa::core::ObjectFactory* factory)
 {
     factory->registerObjects(sofa::core::ObjectRegistrationData("Traction obtained from a symmetric stress tensor prescribed at the nodes, contracted with the normal of the element")
