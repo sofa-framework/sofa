@@ -144,11 +144,19 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE2(BaseSourceTerm, DataTypes, ElementType),
         sofa::core::objectmodel::BaseComponent);
 
+    using Real = sofa::Real_t<DataTypes>;
     using Deriv = sofa::Deriv_t<DataTypes>;
     using QuadratureContext_t = QuadratureContext<DataTypes, ElementType>;
 
+    static constexpr sofa::Size spatial_dimensions = DataTypes::spatial_dimensions;
+
+    /// Derivative of a nodal force with respect to the position of one node of its element.
+    using SourceDerivative = sofa::type::Mat<spatial_dimensions, spatial_dimensions, Real>;
+
     /**
      * @brief Source density at one quadrature point, per unit physical measure.
+     *
+     * The integrator weights it by \f$ w \, |\det J| \, N_a \f$.
      *
      * @param context Geometry of the quadrature point.
      */
@@ -164,6 +172,20 @@ public:
     {
         return {};
     }
+
+    /**
+     * @brief Derivative of the measure-weighted density with respect to a node position.
+     *
+     * \f$ \partial (|\det J| \, r) / \partial x_b \f$, the measure included. The integrator weights
+     * this one by \f$ w \, N_a \f$ alone.
+     *
+     * A term that does not follow the configuration returns zero.
+     *
+     * @param context Geometry of the quadrature point.
+     * @param node Index in the element of the node the derivative is taken with respect to.
+     */
+    virtual SourceDerivative evaluateStiffness(const QuadratureContext& context,
+        sofa::Size node) const = 0;
 
 protected:
 
