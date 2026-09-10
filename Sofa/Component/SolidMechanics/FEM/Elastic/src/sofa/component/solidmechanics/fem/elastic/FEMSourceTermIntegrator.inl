@@ -22,6 +22,7 @@
 #pragma once
 #include <sofa/component/solidmechanics/fem/elastic/FEMSourceTermIntegrator.h>
 #include <sofa/component/solidmechanics/fem/elastic/impl/VectorTools.h>
+#include <sofa/core/behavior/BaseLocalForceFieldMatrix.h>
 
 namespace sofa::component::solidmechanics::fem::elastic
 {
