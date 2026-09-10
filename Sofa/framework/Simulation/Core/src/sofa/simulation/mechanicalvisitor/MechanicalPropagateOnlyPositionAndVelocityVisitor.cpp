@@ -35,22 +35,12 @@ MechanicalPropagateOnlyPositionAndVelocityVisitor::MechanicalPropagateOnlyPositi
 #endif
 }
 
-Visitor::Result MechanicalPropagateOnlyPositionAndVelocityVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/)
-{
-    return RESULT_CONTINUE;
-}
-
 Visitor::Result MechanicalPropagateOnlyPositionAndVelocityVisitor::fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map)
 {
     map->apply(mparams, x, x);
     map->applyJ(mparams, v, v);
 
     return RESULT_CONTINUE;
-}
-
-void MechanicalPropagateOnlyPositionAndVelocityVisitor::bwdMechanicalState(simulation::Node* , core::behavior::BaseMechanicalState* mm)
-{
-    SOFA_UNUSED(mm);
 }
 
 std::string MechanicalPropagateOnlyPositionAndVelocityVisitor::getInfos() const

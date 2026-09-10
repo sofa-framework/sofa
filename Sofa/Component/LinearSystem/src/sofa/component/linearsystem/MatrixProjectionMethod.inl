@@ -103,14 +103,10 @@ void MatrixProjectionMethod<TMatrix>::addMappedMatrixToGlobalMatrixEigen(
     const auto inputs1 = mappingGraph.getTopMostMechanicalStates(mstatePair[0]);
     const auto inputs2 = mappingGraph.getTopMostMechanicalStates(mstatePair[1]);
 
-    std::set<core::behavior::BaseMechanicalState*> inputs;
-    inputs.insert(inputs1.begin(), inputs1.end());
-    inputs.insert(inputs2.begin(), inputs2.end());
-
     std::set< std::pair<core::behavior::BaseMechanicalState*, core::behavior::BaseMechanicalState*> > uniquePairs;
-    for (auto* a : inputs)
+    for (auto* a : inputs1)
     {
-        for (auto* b : inputs)
+        for (auto* b : inputs2)
         {
             uniquePairs.insert({a, b});
         }
