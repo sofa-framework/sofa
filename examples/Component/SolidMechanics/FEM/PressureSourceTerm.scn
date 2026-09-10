@@ -8,15 +8,6 @@
      Cyan:    SurfacePressureForceField on a triangulated surface
      Orange:  SurfacePressureForceField on the quads of that surface
 
-     This is a follower load: the traction is p n on the deformed surface, so both the normal and
-     the area are those of the current configuration. The source term is therefore attached to the
-     nonConstantSources link of the integrator, which integrates it again at every call to addForce.
-     Nothing in PressureSourceTerm itself says whether it is a dead or a follower load: the link it
-     hangs from decides.
-
-     Neither component contributes a tangent stiffness here, so the Newton iteration is a fixed
-     point on the load and needs several iterations to converge.
-
      The pressure is applied on the same surface twice, once through its triangles and once through
      its quads, which SurfacePressureForceField and FEMSourceTermIntegrator handle by separate
      paths.
@@ -53,7 +44,7 @@
         <RegularGridTopology name="grid" n="5 3 3" min="0 0 0" max="2 0.5 0.5"/>
 
         <Node name="PressureViaForceField">
-            <NewtonRaphsonSolver name="newton" maxNbIterationsNewton="20" absoluteResidualStoppingThreshold="1e-8"/>
+            <NewtonRaphsonSolver name="newton" maxNbIterationsNewton="3" absoluteResidualStoppingThreshold="1e-7"/>
             <StaticSolver newtonSolver="@newton"/>
             <SparseLDLSolver name="linear_solver" template="CompressedRowSparseMatrixd"/>
 
@@ -87,7 +78,7 @@
         </Node>
 
         <Node name="PressureViaSourceTerm">
-            <NewtonRaphsonSolver name="newton" maxNbIterationsNewton="20" absoluteResidualStoppingThreshold="1e-8"/>
+            <NewtonRaphsonSolver name="newton" maxNbIterationsNewton="3" absoluteResidualStoppingThreshold="1e-7"/>
             <StaticSolver newtonSolver="@newton"/>
             <SparseLDLSolver name="linear_solver" template="CompressedRowSparseMatrixd"/>
 
@@ -131,7 +122,7 @@
         <RegularGridTopology name="grid" n="5 3 3" min="0 0 1" max="2 0.5 1.5"/>
 
         <Node name="PressureViaForceField">
-            <NewtonRaphsonSolver name="newton" maxNbIterationsNewton="20" absoluteResidualStoppingThreshold="1e-8"/>
+            <NewtonRaphsonSolver name="newton" maxNbIterationsNewton="3" absoluteResidualStoppingThreshold="1e-7"/>
             <StaticSolver newtonSolver="@newton"/>
             <SparseLDLSolver name="linear_solver" template="CompressedRowSparseMatrixd"/>
 
@@ -154,7 +145,7 @@
         </Node>
 
         <Node name="PressureViaSourceTerm">
-            <NewtonRaphsonSolver name="newton" maxNbIterationsNewton="20" absoluteResidualStoppingThreshold="1e-8"/>
+            <NewtonRaphsonSolver name="newton" maxNbIterationsNewton="3" absoluteResidualStoppingThreshold="1e-7"/>
             <StaticSolver newtonSolver="@newton"/>
             <SparseLDLSolver name="linear_solver" template="CompressedRowSparseMatrixd"/>
 
