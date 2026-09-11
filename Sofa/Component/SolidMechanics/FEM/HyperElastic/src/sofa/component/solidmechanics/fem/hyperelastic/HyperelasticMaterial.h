@@ -22,10 +22,10 @@
 #pragma once
 
 #include <sofa/component/solidmechanics/fem/hyperelastic/config.h>
+#include <sofa/component/solidmechanics/fem/elastic/CauchyStressEvaluator.h>
 #include <sofa/type/FullySymmetric4Tensor.h>
 #include <sofa/component/solidmechanics/fem/hyperelastic/impl/MajorSymmetric4Tensor.h>
 #include <sofa/component/solidmechanics/fem/hyperelastic/impl/Strain.h>
-#include <sofa/core/objectmodel/BaseObject.h>
 
 #if !defined(SOFA_COMPONENT_SOLIDMECHANICS_FEM_HYPERELASTIC_HYPERELASTIC_MATERIAL_CPP)
 #include <sofa/defaulttype/VecTypes.h>
@@ -35,10 +35,10 @@ namespace sofa::component::solidmechanics::fem::hyperelastic
 {
 
 template<class TDataTypes>
-class HyperelasticMaterial : public virtual sofa::core::objectmodel::BaseObject
+class HyperelasticMaterial : public elastic::CauchyStressEvaluator<TDataTypes>
 {
 public:
-    SOFA_ABSTRACT_CLASS(HyperelasticMaterial<TDataTypes>, sofa::core::objectmodel::BaseObject);
+    SOFA_ABSTRACT_CLASS(HyperelasticMaterial<TDataTypes>, elastic::CauchyStressEvaluator<TDataTypes>);
     using DataTypes = TDataTypes;
 
 protected:
@@ -49,6 +49,7 @@ protected:
     using DeformationGradient = sofa::type::Mat<spatial_dimensions, spatial_dimensions, Real>;
     using RightCauchyGreenTensor = sofa::type::Mat<spatial_dimensions, spatial_dimensions, Real>;
     using StressTensor = sofa::type::Mat<spatial_dimensions, spatial_dimensions, Real>;
+    using StressVoigtVector = typename elastic::CauchyStressEvaluator<DataTypes>::StressVoigtVector;
     using ElasticityTensor = sofa::type::FullySymmetric4Tensor<spatial_dimensions, Real>;
     using TangentModulus = MajorSymmetric4Tensor<DataTypes>;
 
@@ -70,6 +71,8 @@ public:
      * It is called the material tangent modulus.
      */
     virtual TangentModulus materialTangentModulus(Strain<DataTypes>& strain) = 0;
+
+    StressVoigtVector computeStress(const DeformationGradient& F, sofa::Size elementId) override;
 
 };
 

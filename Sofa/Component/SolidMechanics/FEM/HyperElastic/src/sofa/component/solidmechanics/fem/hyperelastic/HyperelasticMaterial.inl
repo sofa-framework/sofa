@@ -36,4 +36,25 @@ void HyperelasticMaterial<DataTypes>::init()
     }
 }
 
+template <class TDataTypes>
+auto HyperelasticMaterial<TDataTypes>::computeStress(const DeformationGradient& F, sofa::Size elementId) -> StressVoigtVector
+{
+    SOFA_UNUSED(elementId);
+
+    Strain<DataTypes> strain(deformationGradient, F);
+    const auto P = this->firstPiolaKirchhoffStress(strain);
+    const auto J = strain.getDeterminantDeformationGradient();
+    assert(std::abs(J) > std::numeric_limits<Real>::epsilon());
+    const auto sigma = (static_cast<Real>(1)/J) * P * F.transposed();
+
+    StressVoigtVector stressVoigt;
+    for (sofa::Size i = 0; i < type::NumberOfIndependentElements<spatial_dimensions>; ++i)
+    {
+        const auto [p, q] = type::toTensorIndices<spatial_dimensions>(i);
+        stressVoigt[i] = (p == q) ? sigma(p, q) : static_cast<Real>(0.5) * (sigma(p, q) + sigma(q, p));
+    }
+
+    return stressVoigt;
+}
+
 }  // namespace elasticity
