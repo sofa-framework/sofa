@@ -19,6 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_TYPE_VECTOR_REAL_CPP
 #include <sofa/type/vector_Real.h>
 #include <sofa/type/vector_T.inl>
 
