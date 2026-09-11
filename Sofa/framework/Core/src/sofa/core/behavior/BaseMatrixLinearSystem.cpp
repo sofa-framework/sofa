@@ -37,6 +37,7 @@ BaseMatrixLinearSystem::BaseMatrixLinearSystem()
 
 void BaseMatrixLinearSystem::buildSystemMatrix(const core::MechanicalParams* mparams)
 {
+    //TODO (SPRINT SED 2025): Component state mechamism
     if (d_enableAssembly.getValue())
     {
         preAssembleSystem(mparams);
@@ -44,7 +45,7 @@ void BaseMatrixLinearSystem::buildSystemMatrix(const core::MechanicalParams* mpa
         postAssembleSystem(mparams);
     }
 }
-
+  
 void BaseMatrixLinearSystem::preAssembleSystem(const core::MechanicalParams* mparams)
 {
     SOFA_UNUSED(mparams);
