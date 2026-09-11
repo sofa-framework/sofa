@@ -352,8 +352,10 @@ public:
     {
         if (!this->defaultId.isNull()) return false;
         if (hasIdMap())
-            for (IdMap_const_iterator it = getIdMap().begin(), itend = getIdMap().end(); it != itend; ++it)
-                if (!it->second.isNull()) return false;
+        {
+            const auto& idMap = getIdMap();
+            return std::all_of(idMap.begin(), idMap.end(), [](const auto& el){return el.second.isNull();});
+        }
         return true;
     }
 
