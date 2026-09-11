@@ -29,7 +29,7 @@ namespace sofa::simulation::mechanicalvisitor
 
 Visitor::Result MechanicalComputeDfVisitor::fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff)
 {
-    ff->addDForce(this->mparams, res, dx);
+    ff->addDForce(this->mparams, res, dx, this->mparams->x(), this->mparams->v());
     return RESULT_CONTINUE;
 }
 
