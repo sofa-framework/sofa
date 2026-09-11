@@ -56,12 +56,7 @@ public:
     void apply(const core::MechanicalParams* mparams, const type::vector<DataVecCoord_t<Out>*>& dataVecOutPos, const type::vector<const DataVecCoord_t<In>*>& dataVecInPos) override;
     void applyJ(const core::MechanicalParams* mparams, const type::vector<DataVecDeriv_t<Out>*>& dataVecOutVel, const type::vector<const DataVecDeriv_t<In>*>& dataVecInVel) override;
     void applyJT(const core::MechanicalParams* mparams, const type::vector<DataVecDeriv_t<In>*>& dataVecOutForce, const type::vector<const DataVecDeriv_t<Out>*>& dataVecInForce) override;
-    void applyDJT(const core::MechanicalParams* /*mparams*/, core::MultiVecDerivId /*inForce*/, core::ConstMultiVecDerivId /*outForce*/) override {}
-
     void applyJT( const core::ConstraintParams* cparams, const type::vector< DataMatrixDeriv_t<In>* >& dataMatOutConst, const type::vector< const DataMatrixDeriv_t<Out>* >& dataMatInConst ) override;
-
-    /// Experimental API used to handle multimappings in matrix assembly. Returns pointers to matrices associated with parent states, consistently with  getFrom().
-    virtual const type::vector<sofa::linearalgebra::BaseMatrix*>* getJs() override;
 
     Data< type::vector<unsigned> > d_indexPairs; ///< list of couples (parent index + index in the parent)
 
@@ -69,6 +64,10 @@ protected :
 
     SubsetMultiMapping();
     virtual ~SubsetMultiMapping() override;
+
+    void doApplyDJT(const core::MechanicalParams* /*mparams*/, core::MultiVecDerivId /*inForce*/, core::ConstMultiVecDerivId /*outForce*/) override {}
+    /// Experimental API used to handle multimappings in matrix assembly. Returns pointers to matrices associated with parent states, consistently with  getFrom().
+    virtual const type::vector<sofa::linearalgebra::BaseMatrix*>* doGetJs() override;
 
     type::vector<linearalgebra::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
 

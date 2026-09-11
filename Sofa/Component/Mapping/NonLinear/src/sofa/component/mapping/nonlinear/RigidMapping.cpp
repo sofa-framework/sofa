@@ -55,10 +55,10 @@ template class SOFA_COMPONENT_MAPPING_NONLINEAR_API RigidMapping< Rigid2Types, V
 
 
 template<>
-void RigidMapping< sofa::defaulttype::Rigid2Types, sofa::defaulttype::Vec2Types >::updateK( const core::MechanicalParams* /*mparams*/, core::ConstMultiVecDerivId /*childForceId*/ )
+void RigidMapping< sofa::defaulttype::Rigid2Types, sofa::defaulttype::Vec2Types >::doUpdateK( const core::MechanicalParams* /*mparams*/, core::ConstMultiVecDerivId /*childForceId*/ )
 {}
 template<>
-const linearalgebra::BaseMatrix* RigidMapping< sofa::defaulttype::Rigid2Types, sofa::defaulttype::Vec2Types >::getK()
+const linearalgebra::BaseMatrix* RigidMapping< sofa::defaulttype::Rigid2Types, sofa::defaulttype::Vec2Types >::doGetK()
 {
     msg_error() << "TODO: assembled geometric stiffness not implemented";
     return nullptr;

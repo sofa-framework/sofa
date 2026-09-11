@@ -164,19 +164,19 @@ public:
     virtual void applyJ(const type::vector<OutVecDeriv*>& outDeriv, const type::vector<const  InVecDeriv*>& inDeriv);
     virtual void applyJT(const type::vector< InVecDeriv*>& outDeriv, const type::vector<const OutVecDeriv*>& inDeriv);
     void applyJT( const core::ConstraintParams* /* cparams */, const type::vector< InDataMatrixDeriv* >& /* dataMatOutConst */, const type::vector< const OutDataMatrixDeriv* >& /* dataMatInConst */ ) override {}
-    void applyDJT(const core::MechanicalParams*, core::MultiVecDerivId inForce, core::ConstMultiVecDerivId outForce) override;
-
-    virtual const type::vector<sofa::linearalgebra::BaseMatrix*>* getJs() override;
-
-    void updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForce ) override;
-    const linearalgebra::BaseMatrix* getK() override;
-    void buildGeometricStiffnessMatrix(sofa::core::GeometricStiffnessMatrix* matrices) override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 
 protected:
     DistanceMultiMapping();
     ~DistanceMultiMapping() override;
+
+    void doApplyDJT(const core::MechanicalParams*, core::MultiVecDerivId inForce, core::ConstMultiVecDerivId outForce) override;
+    virtual const type::vector<sofa::linearalgebra::BaseMatrix*>* doGetJs() override;
+
+    void doUpdateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForce ) override;
+    const linearalgebra::BaseMatrix* doGetK() override;
+    void doBuildGeometricStiffnessMatrix(sofa::core::GeometricStiffnessMatrix* matrices) override;
 
     type::vector<linearalgebra::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
     type::vector<Direction> directions;                         ///< Unit vectors in the directions of the lines

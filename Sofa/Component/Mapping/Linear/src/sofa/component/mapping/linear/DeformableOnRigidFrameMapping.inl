@@ -385,7 +385,7 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::applyJT(
 }
 
 template <class TIn, class TInRoot, class TOut>
-void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId inForce, core::ConstMultiVecDerivId outForce)
+void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::doApplyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId inForce, core::ConstMultiVecDerivId outForce)
 {
     SOFA_UNUSED(mparams);
     SOFA_UNUSED(inForce);
@@ -486,9 +486,9 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::handleTopologyChange(cor
         {
             case core::topology::TRIANGLESADDED:       ///< To notify the end for the current sequence of topological change events
             {
-                core::Multi2Mapping<TIn, TInRoot, TOut>::apply(core::mechanicalparams::defaultInstance(), core::vec_id::write_access::restPosition, core::vec_id::read_access::restPosition);
+                core::BaseMapping::apply(core::mechanicalparams::defaultInstance(), core::vec_id::write_access::restPosition, core::vec_id::read_access::restPosition);
                 if(this->f_applyRestPosition.getValue() )
-                    core::Multi2Mapping<TIn, TInRoot, TOut>::apply(core::mechanicalparams::defaultInstance(), core::vec_id::write_access::position, core::vec_id::read_access::position);
+                    core::BaseMapping::apply(core::mechanicalparams::defaultInstance(), core::vec_id::write_access::position, core::vec_id::read_access::position);
                 break;
             }
             default:
