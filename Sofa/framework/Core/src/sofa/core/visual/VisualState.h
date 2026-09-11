@@ -46,7 +46,7 @@ public:
 
     VisualState();
 
-    virtual void resize(Size vsize) override;
+    virtual void doResize(Size vsize) override;
     virtual Size getSize() const override { return Size(m_positions.getValue().size()); }
 
     //State API

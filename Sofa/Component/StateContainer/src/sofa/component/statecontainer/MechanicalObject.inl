@@ -226,7 +226,7 @@ MechanicalObject<DataTypes>::MechanicalObject()
     //    write(VecDerivId::null())->forceSet();
 
     // default size is 1
-    resize(1);
+    doResize(1);
 }
 
 
@@ -289,7 +289,7 @@ void MechanicalObject<DataTypes>::exportGnuplot(SReal time)
 template <class DataTypes>
 MechanicalObject<DataTypes> &MechanicalObject<DataTypes>::operator = (const MechanicalObject& obj)
 {
-    resize(obj.getSize());
+    doResize(obj.getSize());
 
     return *this;
 }
@@ -305,7 +305,7 @@ void MechanicalObject<DataTypes>::parse ( sofa::core::objectmodel::BaseObjectDes
         int newsize = arg->getAttributeAsInt("size", 1) ;
         if(newsize>=0)
         {
-            resize(newsize) ;
+            doResize(newsize) ;
         }
         else
         {
@@ -408,7 +408,7 @@ void MechanicalObject<DataTypes>::handleStateChange()
             const auto& ancestors = pointsAdded.ancestorsList;
             auto coefs     = pointsAdded.coefs;
 
-            resize(prevSizeMechObj + nbPoints);
+            doResize(prevSizeMechObj + nbPoints);
 
             if (!ancestors.empty() )
             {
@@ -483,7 +483,7 @@ void MechanicalObject<DataTypes>::handleStateChange()
 
                 --lastIndexMech;
             }
-            resize( Size(prevSizeMechObj - tab.size()) );
+            doResize( Size(prevSizeMechObj - tab.size()) );
             break;
         }
         case core::topology::POINTSMOVED:
@@ -608,7 +608,7 @@ void MechanicalObject<DataTypes>::renumberValues( const sofa::type::vector< sofa
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::resize(const Size size)
+void MechanicalObject<DataTypes>::doResize(const Size size)
 {
     if(size>0)
     {
@@ -1048,7 +1048,7 @@ void MechanicalObject<DataTypes>::init()
 
         // Resize the mechanical object size to match the maximum size of argument's vectors
         if (getSize() < maxSize)
-            resize(maxSize);
+            doResize(maxSize);
 
         // Print a warning if one or more vector don't match the maximum size
         bool allSizeAreEqual = true;
@@ -1102,7 +1102,7 @@ void MechanicalObject<DataTypes>::init()
                 while (i < v_wA.size())
                     v_wA[i++] = v1;
             }
-            this->resize(nbp);
+            this->doResize(nbp);
             for (int i=0; i<nbp; i++)
             {
                 x_wA[i] = Coord();
@@ -1113,7 +1113,7 @@ void MechanicalObject<DataTypes>::init()
         {
             // special case when the user manually explicitly defined an empty position vector
             // (e.g. linked to an empty vector)
-            resize(0);
+            doResize(0);
         }
     }
     else if ((int) x_wA.size() != d_size.getValue() || (int) v_wA.size() != d_size.getValue())
@@ -1133,7 +1133,7 @@ void MechanicalObject<DataTypes>::init()
                 v_wA[i++] = v1;
         }
 
-        resize(xSize > v_wA.size() ? xSize : Size(v_wA.size()));
+        doResize(xSize > v_wA.size() ? xSize : Size(v_wA.size()));
     }
 
     x_wAData->endEdit();
@@ -1259,7 +1259,7 @@ void MechanicalObject<DataTypes>::readVec(core::VecId vecId, std::istream &in)
         while (in >> coord)
         {
             if (i >= getSize())
-                resize(i+1);
+                doResize(i+1);
             vec[i++] = coord;
         }
 
@@ -1273,7 +1273,7 @@ void MechanicalObject<DataTypes>::readVec(core::VecId vecId, std::istream &in)
         while (in >> deriv)
         {
             if (i >= getSize())
-                resize(i+1);
+                doResize(i+1);
             vec[i++] = deriv;
         }
 
@@ -1287,7 +1287,7 @@ void MechanicalObject<DataTypes>::readVec(core::VecId vecId, std::istream &in)
     }
 
     if (i < getSize())
-        resize(i);
+        doResize(i);
 }
 
 template <class DataTypes>
