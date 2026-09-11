@@ -132,5 +132,12 @@ SOFA_ATTRIBUTE_DEPRECATED("v26.06", "v29.06", "Use toBaseComponent instead.")
 #define SOFA_ATTRIBUTE_DEPRECATED__ADDDFORCE_OVERLOAD()
 #else
 #define SOFA_ATTRIBUTE_DEPRECATED__ADDDFORCE_OVERLOAD() \
-    SOFA_ATTRIBUTE_DEPRECATED("v26.12", "v27.06", "addDForce must be used by providing the dx vector.")
+    SOFA_ATTRIBUTE_DEPRECATED("v26.12", "v27.06", "addDForce must be used by providing the dx, x and v vectors.")
+#endif
+
+#ifdef SOFA_BUILD_SOFA_CORE
+#define SOFA_ATTRIBUTE_DEPRECATED__ADDDFORCE_DERIVED()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED__ADDDFORCE_DERIVED() \
+    SOFA_ATTRIBUTE_DEPRECATED("v26.12", "v27.06", "Use doAddDForce instead.")
 #endif

@@ -51,7 +51,8 @@ void ForceField<DataTypes>::addForce(const MechanicalParams* mparams, MultiVecDe
 }
 
 template<class DataTypes>
-void ForceField<DataTypes>::addDForce(const MechanicalParams* mparams, MultiVecDerivId dfId, ConstMultiVecDerivId dxId)
+void ForceField<DataTypes>::addDForce(const MechanicalParams* mparams, MultiVecDerivId dfId,
+    ConstMultiVecDerivId dxId, ConstMultiVecCoordId xId, ConstMultiVecDerivId vId)
 {
     if (mparams && this->mstate)
     {
@@ -62,8 +63,17 @@ void ForceField<DataTypes>::addDForce(const MechanicalParams* mparams, MultiVecD
 
         Data<VecDeriv>* df = dfId[this->mstate.get()].write(); assert(df);
         const Data<VecDeriv>* dx = dxId[this->mstate.get()].read(); assert(dx);
+        const Data<VecCoord>* x = xId[this->mstate.get()].read(); assert(x);
+        const Data<VecDeriv>* v = vId[this->mstate.get()].read(); assert(v);
 
-        addDForce(mparams, *df, *dx);
+        const AddDForceVectors vectors {
+            .df = *df,
+            .dx = *dx,
+            .x = *x,
+            .v = *v
+        };
+
+        doAddDForce(mparams, vectors);
 
 #ifndef NDEBUG
         if (!mparams->getKFactorUsed())
@@ -79,7 +89,14 @@ void ForceField<DataTypes>::addDForce(const MechanicalParams* mparams, MultiVecD
     }
 }
 
-template<class DataTypes>
+template <class TDataTypes>
+void ForceField<TDataTypes>::doAddDForce(const MechanicalParams* mparams, const AddDForceVectors& vectors)
+{
+    // compatibility with legacy `addDForce`.
+    addDForce(mparams, vectors.df, vectors.dx);
+}
+
+template <class DataTypes>
 SReal ForceField<DataTypes>::getPotentialEnergy(const MechanicalParams* mparams) const
 {
     if (this->mstate)
