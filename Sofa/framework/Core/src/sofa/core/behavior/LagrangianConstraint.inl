@@ -55,7 +55,7 @@ void LagrangianConstraint<DataTypes>::init()
 }
 
 template<class DataTypes>
-void LagrangianConstraint<DataTypes>::getConstraintViolation(const ConstraintParams* cParams, linearalgebra::BaseVector *v)
+void LagrangianConstraint<DataTypes>::doGetConstraintViolation(const ConstraintParams* cParams, linearalgebra::BaseVector *v)
 {
     if (cParams)
     {
@@ -65,7 +65,7 @@ void LagrangianConstraint<DataTypes>::getConstraintViolation(const ConstraintPar
 
 
 template<class DataTypes>
-void LagrangianConstraint<DataTypes>::buildConstraintMatrix(const ConstraintParams* cParams, MultiMatrixDerivId cId, unsigned int &cIndex)
+void LagrangianConstraint<DataTypes>::doBuildConstraintMatrix(const ConstraintParams* cParams, MultiMatrixDerivId cId, unsigned int &cIndex)
 {
     if (cParams)
     {
