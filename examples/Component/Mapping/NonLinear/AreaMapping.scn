@@ -45,7 +45,14 @@
         <Node name="constraintSpace">
             <MechanicalObject template="Vec1" name="areaDoFs"/>
             <AreaMapping name="areaMapping" topology="@../topology" geometricStiffness="Exact" applyRestPosition="true"/>
-            <RestShapeSpringsForceField template="Vec1" stiffness="15000"/>
+
+            <Node name="cellAveraging">
+                <MechanicalObject template="Vec1" name="areaOnVerticesDoFs"/>
+                <CellAveragingMapping input="@../areaDoFs" output="@areaOnVerticesDoFs" topology="@../../topology" applyRestPosition="true"/>
+                <UniformLagrangianConstraint template="Vec1d" iterative="true" />
+<!--                <RestShapeSpringsForceField template="Vec1" stiffness="15000"/>-->
+            </Node>
+
         </Node>
 
         <Node name="Visu">
