@@ -171,6 +171,14 @@
           "type": "BOOL",
           "value": "ON"
         },
+        "SOFA_FETCH_SOFADISTANCEGRID": {
+          "type": "BOOL",
+          "value": "ON"
+        },
+        "PLUGIN_SOFADISTANCEGRID": {
+          "type": "BOOL",
+          "value": "ON"
+        },
         "PLUGIN_SOFADISTANCEGRID_CUDA": {
           "type": "BOOL",
           "value": "ON"
@@ -257,10 +265,6 @@
           "value": "ON"
         },
         "PLUGIN_SENSABLEEMULATION": {
-          "type": "BOOL",
-          "value": "ON"
-        },
-        "PLUGIN_SOFADISTANCEGRID": {
           "type": "BOOL",
           "value": "ON"
         },
