@@ -66,15 +66,15 @@ public:
     SingleLink <DataDisplay, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
     void init() override;
-    void doDrawVisual(const core::visual::VisualParams* vparams) override;
-    void doUpdateVisual(const core::visual::VisualParams* vparams) override;
-
     bool insertInNode( core::objectmodel::BaseNode* node ) override { Inherit1::insertInNode(node); Inherit2::insertInNode(node); return true; }
     bool removeInNode( core::objectmodel::BaseNode* node ) override { Inherit1::removeInNode(node); Inherit2::removeInNode(node); return true; }
 
 protected:
     void computeNormals();
     type::vector<type::Vec3> m_normals;
+
+    void doDrawVisual(const core::visual::VisualParams* vparams) override;
+    void doUpdateVisual(const core::visual::VisualParams* vparams) override;
 
     DataDisplay();
 

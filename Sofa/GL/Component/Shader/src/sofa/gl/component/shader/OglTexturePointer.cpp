@@ -56,7 +56,7 @@ void OglTexturePointer::init()
     OglShaderElement::init();
 }
 
-void OglTexturePointer::fwdDraw(core::visual::VisualParams*)
+void OglTexturePointer::doFwdDraw(core::visual::VisualParams*)
 {
     if (enabled.getValue() && !l_oglTexture.empty())
     {
@@ -66,7 +66,7 @@ void OglTexturePointer::fwdDraw(core::visual::VisualParams*)
     }
 }
 
-void OglTexturePointer::bwdDraw(core::visual::VisualParams*)
+void OglTexturePointer::doBwdDraw(core::visual::VisualParams*)
 {
     if (enabled.getValue() && !l_oglTexture.empty())
     {

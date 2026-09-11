@@ -51,7 +51,6 @@ public:
 
 
     void handleEvent(core::objectmodel::Event *) override;
-    void doDrawVisual(const core::visual::VisualParams* vparams) override;
     void reset() override;
 
 protected:
@@ -60,6 +59,7 @@ protected:
 
     void storeParticlePositions();
     void removeFirstElements();
+    void doDrawVisual(const core::visual::VisualParams* vparams) override;
 
     type::vector<std::vector<sofa::type::Vec3> > m_trail;
 };

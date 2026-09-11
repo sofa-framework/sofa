@@ -45,12 +45,9 @@ public:
 
     void init() override;
     
-    void doInitVisual(const core::visual::VisualParams* vparams) override;
 
     void reinit() override;
 
-    /// if attributes are not static, update the buffer
-    void doUpdateVisual(const core::visual::VisualParams* vparams) override;
 
     type::vector<TDataTypes>* beginEdit();
     void endEdit();
@@ -58,8 +55,7 @@ public:
     void setValue( const type::vector<TDataTypes>& value);
     void enable();
     void disable();
-    void bwdDraw(core::visual::VisualParams* ) override;
-    void fwdDraw(core::visual::VisualParams* ) override;
+
 
     void setUsage(unsigned int usage) { _usage = usage; }
 
@@ -75,6 +71,13 @@ public:
     int getSETotalSize() override;
 
 protected:
+    /// if attributes are not static, update the buffer
+    void doUpdateVisual(const core::visual::VisualParams* vparams) override;
+    void doInitVisual(const core::visual::VisualParams* vparams) override;
+
+    void doBwdDraw(core::visual::VisualParams* ) override;
+    void doFwdDraw(core::visual::VisualParams* ) override;
+
     // attribute buffer object identity
     // to send data to the graphics card faster
     GLuint _abo;

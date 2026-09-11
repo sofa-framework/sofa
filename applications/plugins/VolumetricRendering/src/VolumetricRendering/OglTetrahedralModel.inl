@@ -254,7 +254,7 @@ void OglTetrahedralModel<DataTypes>::computeMesh()
 }
 
 template<class DataTypes>
-void OglTetrahedralModel<DataTypes>::drawTransparent(const core::visual::VisualParams* vparams)
+void OglTetrahedralModel<DataTypes>::doDrawTransparent(const core::visual::VisualParams* vparams)
 {
     if (!vparams->displayFlags().getShowVisualModels()) return;
     if (m_topology == NULL) return;
