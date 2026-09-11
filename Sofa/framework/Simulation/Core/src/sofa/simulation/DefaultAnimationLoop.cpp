@@ -296,7 +296,7 @@ void DefaultAnimationLoop::animate(const core::ExecParams* params, SReal dt) con
     endIntegration(params, dt);
 }
 
-void DefaultAnimationLoop::step(const core::ExecParams* params, SReal dt)
+void DefaultAnimationLoop::doStep(const core::ExecParams* params, SReal dt)
 {
     if (this->d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
     {

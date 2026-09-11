@@ -59,6 +59,8 @@ protected:
     /// Save the initial state for later uses in reset()
     void storeResetState() override;
 
+    virtual void doStep(const core::ExecParams* params, SReal dt) = 0 ;
+
 
 private:
     BaseAnimationLoop(const BaseAnimationLoop& n) = delete ;
@@ -67,11 +69,22 @@ private:
 public:
     void init() override;
 
-    /// Main computation method.
-    ///
-    /// Specify and execute all computations for computing a timestep, such
-    /// as one or more collisions and integrations stages.
-    virtual void step(const core::ExecParams* params, SReal dt) = 0;
+    /**
+     * !!! WARNING since v25.12 !!! 
+     * 
+     * The template method pattern has been applied to this part of the API. 
+     * This method calls the newly introduced method "doStep" internally,
+     * which is the method to override from now on.
+     *
+     * Main computation method.
+     *
+     * Specify and execute all computations for computing a timestep, such
+     * as one or more collisions and integrations stages.
+     **/  
+    virtual void step(const core::ExecParams* params, SReal dt) final {
+        //TODO (SPRINT SED 2025): Component state mechamism
+        doStep(params, dt);
+    };
 
     /// Returns starting time of the simulation
     SReal getResetTime() const;
