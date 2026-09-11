@@ -31,9 +31,10 @@
 namespace sofa::helper::logging
 {
 
-
-void ClangMessageHandler::process(Message &m) {
+void ClangMessageHandler::doProcess(Message &m)
+{
     ClangStyleMessageFormatter::getInstance().formatMessage(m, std::cerr) ;
 }
+
 } // sofa::helper::logging
 
