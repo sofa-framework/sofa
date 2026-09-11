@@ -41,13 +41,31 @@ protected:
 
     ~ContextObject() override
     {}
+
 public:
-    /// modify the Context
-    virtual void apply()=0;
+    /**
+     * !!! WARNING since v25.12 !!!
+     * 
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doApply" internally,
+     * which is the method to override from now on.
+     *
+     * Modify the context.
+     * 
+     **/
+    virtual void apply() final
+    {
+        //TODO (SPRINT SED 2025): Component state mechamism
+        this->doApply();
+    }
 
 
     bool insertInNode( objectmodel::BaseNode* node ) override;
     bool removeInNode( objectmodel::BaseNode* node ) override;
+
+protected:
+    // Modify the context.
+    virtual void doApply() = 0 ;
 
 };
 } // namespace sofa::core::objectmodel
