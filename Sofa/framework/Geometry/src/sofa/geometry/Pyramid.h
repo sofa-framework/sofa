@@ -30,6 +30,7 @@ namespace sofa::geometry
 struct Pyramid
 {
     static constexpr sofa::Size NumberOfNodes = 5;
+    static constexpr sofa::Size PolynomialOrder = 1;
     static constexpr ElementType Element_type = ElementType::PYRAMID;
 
     Pyramid() = delete;

@@ -38,6 +38,7 @@ namespace sofa::geometry
 struct Hexahedron
 {
     static constexpr sofa::Size NumberOfNodes = 8;
+    static constexpr sofa::Size PolynomialOrder = 1;
     static constexpr ElementType Element_type = ElementType::HEXAHEDRON;
 
     Hexahedron() = delete;
