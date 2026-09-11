@@ -261,10 +261,13 @@ void MechanicalOperations::computeForce(core::MultiVecDerivId result, bool clear
 
 void MechanicalOperations::computeDf(core::MultiVecDerivId df, bool clear, bool accumulate)
 {
-    computeDf(df, sofa::core::vec_id::read_access::dx, clear, accumulate);
+    computeDf(df, sofa::core::vec_id::read_access::dx,
+        sofa::core::vec_id::read_access::position,
+        sofa::core::vec_id::read_access::velocity,
+        clear, accumulate);
 }
 
-void MechanicalOperations::computeDf(core::MultiVecDerivId df, core::ConstMultiVecDerivId dx, bool clear, bool accumulate)
+void MechanicalOperations::computeDf(core::MultiVecDerivId df, core::ConstMultiVecDerivId dx, core::ConstMultiVecCoordId x, core::ConstMultiVecDerivId v, bool clear, bool accumulate)
 {
     setDf(df);
     if (clear)
@@ -272,13 +275,14 @@ void MechanicalOperations::computeDf(core::MultiVecDerivId df, core::ConstMultiV
         executeVisitor( MechanicalResetForceVisitor(&mparams, df, false) );
         //	finish();
     }
-    executeVisitor( MechanicalComputeDfVisitor( &mparams, df, dx, accumulate) );
+    executeVisitor( MechanicalComputeDfVisitor( &mparams, df, dx, x, v, accumulate) );
 }
 
 /// Compute the current force delta (given the latest propagated velocity)
 void MechanicalOperations::computeDfV(core::MultiVecDerivId df, bool clear, bool accumulate)
 {
-    computeDf(df, mparams.v(), clear, accumulate);
+    computeDf(df, mparams.v(), sofa::core::vec_id::read_access::position,
+        sofa::core::vec_id::read_access::velocity, clear, accumulate);
 }
 
 /// accumulate $ df += (m M + b B + k K) dx $ (given the latest propagated displacement)
