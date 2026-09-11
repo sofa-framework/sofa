@@ -486,4 +486,58 @@ private:
     }
 };
 
+/**
+ * Quadrature interface of a finite element: the rules of its reference domain, restricted
+ * to the degrees its interpolation order admits.
+ *
+ * ElementType supplies the domain (through ReferenceDomain) and the interpolation order
+ * (through sofa::geometry), so an element only states the degree it wants by default.
+ * DefaultDegree is given explicitly rather than derived, because the accuracy an element
+ * ships with is a choice, not a consequence of its order.
+ */
+template <class ElementType, class Real, sofa::Size DefaultDegree>
+struct FiniteElementQuadrature
+{
+    using Domain = ReferenceDomain_t<ElementType>;
+    using Dispatch = QuadratureDispatch<Domain>;
+    using QuadraturePointAndWeight = QuadraturePointAndWeight_t<Domain, Real>;
+
+    static constexpr sofa::Size InterpolationOrder = ElementType::PolynomialOrder;
+
+    /// Lowest degree integrating the stiffness integrand of an order-p element exactly on
+    /// an affine mapping: the product of two shape function gradients is of degree 2(p-1).
+    /// Clamped to 1, since no degree-0 rule is tabulated.
+    static constexpr sofa::Size MinimumQuadratureDegree =
+        InterpolationOrder > 1 ? 2 * (InterpolationOrder - 1) : 1;
+
+    static constexpr sofa::Size DefaultQuadratureDegree = DefaultDegree;
+    static_assert(DefaultQuadratureDegree >= MinimumQuadratureDegree,
+        "the default quadrature degree is too low for the order of this element");
+
+    /// Quadrature points and weights of the given degree, resolved at compile time.
+    template <sofa::Size Degree = DefaultQuadratureDegree>
+    static constexpr auto quadraturePoints()
+    {
+        static_assert(Degree >= MinimumQuadratureDegree,
+            "quadrature degree too low for the interpolation order of this element");
+        return Dispatch::template points<Degree, Real>();
+    }
+
+    /// Quadrature points and weights of a degree known only at runtime; view of the
+    /// compile-time table.
+    static std::span<const QuadraturePointAndWeight> quadratureRule(sofa::Size degree)
+    {
+        if (degree < MinimumQuadratureDegree)
+        {
+            throw std::invalid_argument(
+                std::string("FiniteElement<")
+                + sofa::geometry::elementTypeToString(ElementType::Element_type)
+                + ">::quadratureRule: degree " + std::to_string(degree)
+                + " is too low for an element of interpolation order "
+                + std::to_string(InterpolationOrder));
+        }
+        return Dispatch::template rule<Real>(degree);
+    }
+};
+
 }
