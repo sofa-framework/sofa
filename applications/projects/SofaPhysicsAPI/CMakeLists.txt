@@ -18,7 +18,7 @@ set(SOURCE_FILES
     ${SOFAPHYSICSAPI_SRC_DIR}/fakegui.cpp
 )
 
-find_package(Sofa.Simulation.Graph REQUIRED)
+find_package(Sofa.Simulation.Common REQUIRED)
 sofa_find_package(Sofa.SimpleApi REQUIRED)
 sofa_find_package(Sofa.Component REQUIRED)
 sofa_find_package(Sofa.GUI.Common REQUIRED)
@@ -39,7 +39,7 @@ else()
 endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Simulation.Graph Sofa.GUI.Common Sofa.SimpleApi)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Simulation.Common Sofa.GUI.Common Sofa.SimpleApi)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component)
 
 if(SofaValidation_FOUND)

@@ -24,7 +24,6 @@
 #include <sofa/simulation/fwd.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/Simulation.h>
-#include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/testing/TestMessageHandler.h>
 
 namespace sofa
@@ -39,7 +38,7 @@ TEST(simulationLoad, existingFilename)
     constexpr std::string_view filename { "Demos/caduceus.scn" };
     const std::string path = helper::system::DataRepository.getFile(std::string{filename});
 
-    simulation::Simulation* simulation = sofa::simulation::getSimulation();
+    simulation::Simulation* simulation = sofa::simulation::MainSimulation::getSimulation();
     ASSERT_NE(simulation, nullptr);
     const simulation::Node::SPtr groot = sofa::simulation::node::load(path, false, {});
     EXPECT_NE(groot, nullptr);
@@ -55,7 +54,7 @@ TEST(simulationLoad, nonExistingFilename)
 
     constexpr std::string_view filename { "aFileThatDoesNotExist.scn" };
 
-    simulation::Simulation* simulation = simulation::getSimulation();
+    simulation::Simulation* simulation = simulation::MainSimulation::getSimulation();
     ASSERT_NE(simulation, nullptr);
     const simulation::Node::SPtr groot = sofa::simulation::node::load(std::string{filename}, false, {});
     EXPECT_EQ(groot, nullptr);

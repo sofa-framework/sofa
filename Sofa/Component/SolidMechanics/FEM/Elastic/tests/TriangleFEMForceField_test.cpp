@@ -27,7 +27,6 @@
 #include <sofa/component/topology/container/dynamic/TriangleSetTopologyContainer.h>
 
 #include <sofa/simpleapi/SimpleApi.h>
-#include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/testing/NumericTest.h>
@@ -81,7 +80,7 @@ public:
 
     void doSetUp() override
     {
-        m_simulation = sofa::simulation::getSimulation();
+        m_simulation = sofa::simulation::MainSimulation::getSimulation();
     }
 
     void doTearDown() override

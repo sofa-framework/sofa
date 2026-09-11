@@ -137,7 +137,7 @@ public:
 
 sofa::simulation::Node::SPtr makeSceneGraph()
 {
-    const sofa::simulation::Node::SPtr root = sofa::simpleapi::createRootNode(sofa::simulation::getSimulation(), "root");
+    const sofa::simulation::Node::SPtr root = sofa::simpleapi::createRootNode(sofa::simulation::MainSimulation::getSimulation(), "root");
 
     const auto ff_0 = sofa::core::objectmodel::New<TestForceField>();
     root->addObject(ff_0);

@@ -1,24 +1,24 @@
 /******************************************************************************
-*                 SOFA, Simulation Open-Framework Architecture                *
-*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
-*                                                                             *
-* This program is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU Lesser General Public License as published by    *
-* the Free Software Foundation; either version 2.1 of the License, or (at     *
-* your option) any later version.                                             *
-*                                                                             *
-* This program is distributed in the hope that it will be useful, but WITHOUT *
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
-* for more details.                                                           *
-*                                                                             *
-* You should have received a copy of the GNU Lesser General Public License    *
-* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
-*******************************************************************************
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
-*                                                                             *
-* Contact information: contact@sofa-framework.org                             *
-******************************************************************************/
+ *                 SOFA, Simulation Open-Framework Architecture                *
+ *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
+ *                                                                             *
+ * This program is free software; you can redistribute it and/or modify it     *
+ * under the terms of the GNU Lesser General Public License as published by    *
+ * the Free Software Foundation; either version 2.1 of the License, or (at     *
+ * your option) any later version.                                             *
+ *                                                                             *
+ * This program is distributed in the hope that it will be useful, but WITHOUT *
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+ * for more details.                                                           *
+ *                                                                             *
+ * You should have received a copy of the GNU Lesser General Public License    *
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+ *******************************************************************************
+ * Authors: The SOFA Team and external contributors (see Authors.txt)          *
+ *                                                                             *
+ * Contact information: contact@sofa-framework.org                             *
+ ******************************************************************************/
 #include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/PrintVisitor.h>
 #include <sofa/simulation/ExportGnuplotVisitor.h>
@@ -91,9 +91,9 @@ void initRoot(Node* root)
     if (!root->getAnimationLoop())
     {
         msg_warning(root) << "An animation loop is required, but has not been found. Add an animation loop in the root "
-                "of your scene to fix this warning. The list of available animation loop components is: ["
-                << sofa::core::ObjectFactory::getInstance()->listClassesDerivedFrom<sofa::core::behavior::BaseAnimationLoop>()
-                << "]. A component of type " << DefaultAnimationLoop::GetClass()->className << " will be automatically added for you.";
+                             "of your scene to fix this warning. The list of available animation loop components is: ["
+                          << sofa::core::ObjectFactory::getInstance()->listClassesDerivedFrom<sofa::core::behavior::BaseAnimationLoop>()
+                          << "]. A component of type " << DefaultAnimationLoop::GetClass()->className << " will be automatically added for you.";
 
         const DefaultAnimationLoop::SPtr aloop = sofa::core::objectmodel::New<DefaultAnimationLoop>();
 
@@ -104,23 +104,23 @@ void initRoot(Node* root)
     if (!root->getVisualLoop())
     {
         msg_info(root) << "A visual loop is required, but has not been found. Add a visual loop in the root "
-            "of your scene to fix this warning. The list of available visual loop components is: ["
-            << sofa::core::ObjectFactory::getInstance()->listClassesDerivedFrom<sofa::core::visual::VisualLoop>()
-            << "]. A component of type " << DefaultVisualManagerLoop::GetClass()->className << " will be automatically added for you.";
+                          "of your scene to fix this warning. The list of available visual loop components is: ["
+                       << sofa::core::ObjectFactory::getInstance()->listClassesDerivedFrom<sofa::core::visual::VisualLoop>()
+                       << "]. A component of type " << DefaultVisualManagerLoop::GetClass()->className << " will be automatically added for you.";
 
         const DefaultVisualManagerLoop::SPtr vloop = sofa::core::objectmodel::New<DefaultVisualManagerLoop>();
         vloop->setName(root->getNameHelper().resolveName(vloop->getClassName(), sofa::core::ComponentNameHelper::Convention::python));
         root->addObject(vloop, sofa::core::objectmodel::TypeOfInsertion::AtBegin);
     }
 
-    // all the objects have now been created, update the links
+            // all the objects have now been created, update the links
     root->execute<UpdateLinksVisitor>(params);
 
     init(root);
 
     root->execute<UpdateBoundingBoxVisitor>(params);
 
-    // propagate the visualization settings (showVisualModels, etc.) in the whole graph
+            // propagate the visualization settings (showVisualModels, etc.) in the whole graph
     updateVisualContext(root);
 }
 
@@ -136,8 +136,8 @@ void init(Node* node)
     PropagateEventVisitor pb{params, &beginInit};
     node->execute(pb);
 
-    // apply the init() and bwdInit() methods to all the components.
-    // and put the VisualModels in a separate graph, rooted at getVisualRoot()
+            // apply the init() and bwdInit() methods to all the components.
+            // and put the VisualModels in a separate graph, rooted at getVisualRoot()
     node->execute<InitVisitor>(params);
 
     SimulationInitDoneEvent endInit;
@@ -253,7 +253,7 @@ void reset(Node* root)
 
     const sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
 
-    // start by resetting the time
+            // start by resetting the time
     if (const sofa::core::behavior::BaseAnimationLoop* animLoop = root->getAnimationLoop())
     {
         root->setTime(animLoop->getResetTime());
@@ -264,8 +264,8 @@ void reset(Node* root)
     }
     UpdateSimulationContextVisitor(sofa::core::execparams::defaultInstance()).execute(root);
 
-    // by definition cleanup() MUST only be called right before destroying the object
-    // if for some reason some components need to do something, it has to be done in reset or storeResetState
+            // by definition cleanup() MUST only be called right before destroying the object
+            // if for some reason some components need to do something, it has to be done in reset or storeResetState
     root->execute<ResetVisitor>(params);
     const sofa::core::MechanicalParams mparams(*params);
     root->execute<MechanicalProjectPositionAndVelocityVisitor>(&mparams);
@@ -449,7 +449,7 @@ NodeSPtr load(const std::string& filename, bool reload, const std::vector<std::s
         || extension == "pyscn" || extension == "py3scn") //special case for Python extensions
     {
         msg_error("Simulation") << "Cannot load file '" << filename << "': extension (" << extension << ") is only supported if the"
-                " plugin SofaPython3 is loaded. SofaPython3 must be loaded first before being able to load the file.";
+                                                                                                        " plugin SofaPython3 is loaded. SofaPython3 must be loaded first before being able to load the file.";
     }
     else
     {
@@ -464,7 +464,7 @@ void unload(NodeSPtr root)
     {
         return;
     }
-  
+
     const sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
     root->detachFromGraph();
     root->execute<CleanupVisitor>(params);
@@ -482,9 +482,25 @@ Simulation::Simulation()
 Simulation::~Simulation()
 {}
 
-Simulation* getSimulation()
+        /// create a new graph(or tree) and return its root node.
+NodeSPtr Simulation::createNewGraph(const std::string& name) { return createNewNode(name); }
+
+        /// creates and returns a new node.
+NodeSPtr Simulation::createNewNode(const std::string& name) {  return sofa::core::objectmodel::New<Node>(name); }
+
+        /// Can the simulation handle a directed acyclic graph?
+bool Simulation::isDirectedAcyclicGraph() { return true; }
+
+void MainSimulation::setSimulation(Simulation::SPtr simulation)
 {
-    return Simulation::theSimulation.get();
+    theSimulation = simulation;
+}
+
+Simulation* MainSimulation::getSimulation()
+{
+    if(theSimulation.get()==nullptr)
+        theSimulation = std::make_shared<sofa::simulation::Simulation>();
+    return theSimulation.get();
 }
 
 } // namespace sofa::simulation

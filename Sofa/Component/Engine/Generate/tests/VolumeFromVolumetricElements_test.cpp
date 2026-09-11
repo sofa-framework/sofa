@@ -37,7 +37,7 @@ using sofa::defaulttype::Vec3Types ;
 #include <sofa/simulation/common/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
 
-#include <sofa/simulation/graph/DAGSimulation.h>
+#include <sofa/simulation/Simulation.h>
 using sofa::simulation::Simulation ;
 #include <sofa/simulation/Node.h>
 using sofa::simulation::Node ;
@@ -84,7 +84,7 @@ struct VolumeFromVolumetricElementsTest : public sofa::testing::BaseTest, Volume
 
     void normalTests()
     {
-        const Node::SPtr node = sofa::simulation::getSimulation()->createNewGraph("root");
+        const Node::SPtr node = sofa::simulation::MainSimulation::getSimulation()->createNewGraph("root");
         typename MechanicalObject<DataTypes>::SPtr mecaobject = New<MechanicalObject<DataTypes> >() ;
         typename ThisClass::SPtr thisobject = New<ThisClass >() ;
         mecaobject->init() ;
@@ -118,7 +118,7 @@ struct VolumeFromVolumetricElementsTest : public sofa::testing::BaseTest, Volume
 
     double volumeComputationTest()
     {
-        const Node::SPtr node = sofa::simulation::getSimulation()->createNewGraph("root");
+        const Node::SPtr node = sofa::simulation::MainSimulation::getSimulation()->createNewGraph("root");
 
         typename MeshTopology::SPtr                   mesh       = New< MeshTopology >() ;
         typename MechanicalObject<DataTypes>::SPtr    mecaobject = New< MechanicalObject<DataTypes> >() ;

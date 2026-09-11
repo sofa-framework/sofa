@@ -3,7 +3,7 @@
 @PACKAGE_GUARD@
 @PACKAGE_INIT@
 
-find_package(Sofa.Simulation.Graph QUIET REQUIRED)
+find_package(Sofa.Simulation.Common QUIET REQUIRED)
 find_package(Eigen3 QUIET REQUIRED)
 
 if(NOT TARGET SceneCreator)

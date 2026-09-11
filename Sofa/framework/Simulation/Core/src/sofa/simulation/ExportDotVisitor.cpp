@@ -33,7 +33,7 @@
 #include <sofa/core/behavior/BaseInteractionForceField.h>
 #include <sofa/core/BaseMapping.h>
 
-namespace sofa::simulation::graph
+namespace sofa::simulation
 {
 
 ExportDotVisitor::ExportDotVisitor(const sofa::core::ExecParams* params, std::ostream* out)

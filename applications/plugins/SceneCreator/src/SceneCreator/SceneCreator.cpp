@@ -24,7 +24,6 @@
 #include <sofa/Modules.h>
 
 #include <sofa/simulation/Simulation.h>
-#include <sofa/simulation/graph/DAGSimulation.h>
 #include "GetVectorVisitor.h"
 #include "GetAssembledSizeVisitor.h"
 
@@ -50,7 +49,6 @@ using namespace sofa::defaulttype ;
 
 using type::vector;
 
-using sofa::simulation::graph::DAGSimulation ;
 using sofa::simulation::GetAssembledSizeVisitor ;
 using sofa::simulation::GetVectorVisitor ;
 using sofa::simulation::Node ;
@@ -67,7 +65,7 @@ using sofa::core::objectmodel::BaseObject ;
 
 Node::SPtr createRootWithCollisionPipeline(const std::string& responseType)
 {
-    root = simulation::getSimulation()->createNewGraph("root");
+    root = simulation::MainSimulation::getSimulation()->createNewGraph("root");
     simpleapi::createObject(root, "CollisionPipeline", {{"name","Collision Pipeline"}}) ;
     simpleapi::createObject(root, "BruteForceBroadPhase", {{"name","Broad Phase Detection"}}) ;
     simpleapi::createObject(root, "BVHNarrowPhase", {{"name","Narrow Phase Detection"}}) ;
@@ -680,8 +678,8 @@ Node::SPtr massSpringString(Node::SPtr parent,
 
 Node::SPtr initSofa()
 {
-    assert(sofa::simulation::getSimulation());
-    root = simulation::getSimulation()->createNewGraph("root");
+    assert(sofa::simulation::MainSimulation::getSimulation());
+    root = simulation::MainSimulation::getSimulation()->createNewGraph("root");
     return root;
 }
 
@@ -702,7 +700,7 @@ Node::SPtr clearScene()
 {
     if( root )
         sofa::simulation::node::unload( root );
-    root = simulation::getSimulation()->createNewGraph("");
+    root = simulation::MainSimulation::getSimulation()->createNewGraph("");
     return root;
 }
 

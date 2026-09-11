@@ -37,7 +37,7 @@
 
 // Constraint
 #include <sofa/component/constraint/projective/LineProjectiveConstraint.h>
-#include <sofa/component/constraint/projective/FixedConstraint.h>
+#include <sofa/component/constraint/projective/FixedProjectiveConstraint.h>
 #include <sofa/component/constraint/projective/AffineMovementProjectiveConstraint.h>
 #include <sofa/component/constraint/projective/FixedPlaneProjectiveConstraint.h>
 
@@ -73,8 +73,8 @@ typedef component::mapping::nonlinear::RigidMapping<defaulttype::Rigid3Types, de
 typedef component::mapping::linear::SubsetMultiMapping<defaulttype::Vec3Types, defaulttype::Vec3Types> SubsetMultiMapping3_to_3;
 typedef component::mass::UniformMass<defaulttype::Rigid3Types> UniformMassRigid3;
 typedef component::mass::UniformMass<defaulttype::Vec3Types> UniformMass3;
-typedef component::constraint::projective::FixedConstraint<defaulttype::Rigid3Types> FixedConstraintRigid3;
-typedef component::constraint::projective::FixedConstraint<defaulttype::Vec3Types> FixedConstraint3;
+typedef component::constraint::projective::FixedProjectiveConstraint<defaulttype::Rigid3Types> FixedProjectiveConstraintRigid3;
+typedef component::constraint::projective::FixedProjectiveConstraint<defaulttype::Vec3Types> FixedProjectiveConstraint3;
 
 /// Create a scene with a regular grid and an affine constraint for patch test
 
@@ -111,8 +111,8 @@ Elasticity_test<DataTypes>::createRegularGridScene(
 
     // Euler implicit solver and cglinear solver
     component::odesolver::backward::EulerImplicitSolver::SPtr solver = modeling::addNew<component::odesolver::backward::EulerImplicitSolver>(SquareNode,"EulerImplicitSolver");
-    solver->f_rayleighStiffness.setValue(0.5);
-    solver->f_rayleighMass.setValue(0.5);
+    solver->d_rayleighStiffness.setValue(0.5);
+    solver->d_rayleighMass.setValue(0.5);
     CGLinearSolver::SPtr cgLinearSolver = modeling::addNew< CGLinearSolver >(SquareNode,"linearSolver");
     cgLinearSolver->d_maxIter.setValue(25);
     cgLinearSolver->d_tolerance.setValue(1e-5);
@@ -145,8 +145,8 @@ Elasticity_test<DataTypes>::createRegularGridScene(
 
     //Affine constraint
     patchStruct.affineConstraint  = modeling::addNew<AffineMovementProjectiveConstraint>(SquareNode,"affineConstraint");
-    modeling::setDataLink(&boxRoi->d_indices,&patchStruct.affineConstraint->m_meshIndices);
-    modeling::setDataLink(&pairBoxRoi->f_indices,& patchStruct.affineConstraint->m_indices);
+    modeling::setDataLink(&boxRoi->d_indices,&patchStruct.affineConstraint->d_meshIndices);
+    modeling::setDataLink(&pairBoxRoi->f_indices,& patchStruct.affineConstraint->d_indices);
 
     patchStruct.SquareNode = SquareNode;
     return patchStruct;
@@ -169,7 +169,7 @@ CylinderTractionStruct<DataTypes>  Elasticity_test<DataTypes>::createCylinderTra
     CylinderTractionStruct<DataTypes> tractionStruct;
 
     // Root node
-    root = sofa::simulation::getSimulation()->createNewGraph("root");
+    root = sofa::simulation::MainSimulation::getSimulation()->createNewGraph("root");
     tractionStruct.root=root;
 
     root->setGravity( Coord(0,0,0) );
@@ -220,8 +220,8 @@ CylinderTractionStruct<DataTypes>  Elasticity_test<DataTypes>::createCylinderTra
     boxRoi1->d_alignedBoxes.setValue(vecBox);
     boxRoi1->d_strict.setValue(false);
     // FixedConstraint
-    typename component::constraint::projective::FixedConstraint<DataTypes>::SPtr fc=
-        modeling::addNew<typename component::constraint::projective::FixedConstraint<DataTypes> >(root);
+    typename component::constraint::projective::FixedProjectiveConstraint<DataTypes>::SPtr fc=
+        modeling::addNew<typename component::constraint::projective::FixedProjectiveConstraint<DataTypes> >(root);
     sofa::modeling::setDataLink(&boxRoi1->d_indices,&fc->d_indices);
     // FixedPlaneProjectiveConstraint
     typename component::constraint::projective::FixedPlaneProjectiveConstraint<DataTypes>::SPtr fpc=
@@ -240,15 +240,15 @@ CylinderTractionStruct<DataTypes>  Elasticity_test<DataTypes>::createCylinderTra
     typename sofa::component::mechanicalload::TrianglePressureForceField<DataTypes>::SPtr tpff=
             modeling::addNew<typename sofa::component::mechanicalload::TrianglePressureForceField<DataTypes> >(root);
     tractionStruct.forceField=tpff;
-    sofa::modeling::setDataLink(&boxRoi2->d_triangleIndices,&tpff->triangleList);
+    sofa::modeling::setDataLink(&boxRoi2->d_triangleIndices,&tpff->d_triangleList);
     // LineProjectiveConstraint
     typename component::constraint::projective::LineProjectiveConstraint<DataTypes>::SPtr ptlc=
             modeling::addNew<typename component::constraint::projective::LineProjectiveConstraint<DataTypes> >(root);
-    ptlc->f_direction=Coord(1,0,0);
-    ptlc->f_origin=Coord(0,0,0);
+    ptlc->d_direction=Coord(1,0,0);
+    ptlc->d_origin=Coord(0,0,0);
     sofa::type::vector<sofa::Index> vArray;
     vArray.push_back(resolutionCircumferential*(resolutionRadial-1)+1);
-    ptlc->f_indices.setValue(vArray);
+    ptlc->d_indices.setValue(vArray);
 
     return tractionStruct;
 }
@@ -270,7 +270,7 @@ simulation::Node::SPtr Elasticity_test<DT>::createGridScene(
     using core::objectmodel::New;
 
     // The graph root node
-    simulation::Node::SPtr  root = simulation::getSimulation()->createNewGraph("root");
+    simulation::Node::SPtr  root = simulation::MainSimulation::getSimulation()->createNewGraph("root");
     root->setGravity( Coord(0,-10,0) );
     root->setAnimate(false);
     root->setDt(0.01);
@@ -287,7 +287,7 @@ simulation::Node::SPtr Elasticity_test<DT>::createGridScene(
     simulation::Node::SPtr rigidNode = simulatedScene->createChild("rigidNode");
     MechanicalObjectRigid3::SPtr rigid_dof = modeling::addNew<MechanicalObjectRigid3>(rigidNode, "dof");
     UniformMassRigid3::SPtr rigid_mass = modeling::addNew<UniformMassRigid3>(rigidNode,"mass");
-    FixedConstraintRigid3::SPtr rigid_fixedConstraint = modeling::addNew<FixedConstraintRigid3>(rigidNode,"fixedConstraint");
+    FixedProjectiveConstraintRigid3::SPtr rigid_fixedConstraint = modeling::addNew<FixedProjectiveConstraintRigid3>(rigidNode,"fixedConstraint");
 
     // Particles mapped to the rigid object
     simulation::Node::SPtr mappedParticles = rigidNode->createChild("mappedParticles");
@@ -435,7 +435,7 @@ simulation::Node::SPtr Elasticity_test<DataTypes>::createMassSpringSystem(
     MechanicalObject3::WriteVecDeriv vdof = FixedPoint->writeVelocities();
     copyToData( vdof, vFixedPoint );
 
-    FixedConstraint3::SPtr fixed = modeling::addNew<FixedConstraint3>(fixedPointNode,"FixedPointNode");
+    FixedProjectiveConstraint3::SPtr fixed = modeling::addNew<FixedProjectiveConstraint3>(fixedPointNode,"FixedPointNode");
     fixed->addConstraint(0);      // attach particle
 
 

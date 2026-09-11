@@ -21,7 +21,7 @@
 ******************************************************************************/
 
 #include <sofa/testing/BaseTest.h>
-#include <sofa/simulation/graph/DAGSimulation.h>
+#include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/Node.h>
 
 #include <sofa/component/statecontainer/MechanicalObject.h>
@@ -134,7 +134,7 @@ void LCPForceFeedback_test::HapticsThread(std::atomic<bool>& terminate, void * p
 
 void LCPForceFeedback_test::loadTestScene(const std::string& filename)
 {
-    simulation::Simulation* simu = sofa::simulation::getSimulation();
+    simulation::Simulation* simu = sofa::simulation::MainSimulation::getSimulation();
     ASSERT_NE(simu, nullptr);
 
     /// Load the scene

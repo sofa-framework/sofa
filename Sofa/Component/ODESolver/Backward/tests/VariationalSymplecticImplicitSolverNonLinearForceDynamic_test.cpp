@@ -28,7 +28,6 @@ using sofa::testing::NumericTest;
 
 //Including Simulation
 #include <sofa/simulation/Simulation.h>
-#include <SofaSimulationGraph/DAGSimulation.h>
 #include <sofa/simulation/Node.h>
 
 // Including mechanical object
@@ -102,8 +101,8 @@ struct VariationalSymplecticImplicitSolverNonLinearForceDynamic_test : public Ba
     void createScene(double g, double M, double m, double x0_x, double v0_y)
     {
         // Init simulation
-        assert(sofa::simulation::getSimulation());
-        root = simulation::getSimulation()->createNewGraph("root");
+        assert(sofa::simulation::MainSimulation::getSimulation());
+        root = simulation::MainSimulation::getSimulation()->createNewGraph("root");
 
         // Create the scene
         root->setGravity(Coord(0,0,0));
@@ -160,7 +159,7 @@ struct VariationalSymplecticImplicitSolverNonLinearForceDynamic_test : public Ba
         int i = 0;
 
         // Init simulation
-        sofa::simulation::getSimulation()->init(root.get());
+        sofa::simulation::MainSimulation::getSimulation()->init(root.get());
         double time = root->getTime();
 
         // Get mechanical object
@@ -198,7 +197,7 @@ struct VariationalSymplecticImplicitSolverNonLinearForceDynamic_test : public Ba
             }
 
             //Animate
-            sofa::simulation::getSimulation()->animate(root.get(),h);
+            sofa::simulation::MainSimulation::getSimulation()->animate(root.get(),h);
             time = root->getTime();
 
             // Check energy is constant when there is no damping

@@ -3,7 +3,6 @@
 #include <sofa/Modules.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/common/init.h>
-#include <sofa/simulation/graph/init.h>
 #include <sofa/simpleapi/SimpleApi.h>
 #include <sofa/gui/init.h>
 #include <sofa/gui/common/BaseGUI.h>
@@ -114,7 +113,6 @@ sofa::simulation::Node::SPtr createScene(const sofa::simpleapi::Simulation::SPtr
 int main(int /**argc**/, char** argv)
 {
     sofa::simulation::common::init();
-    sofa::simulation::graph::init();
 
     const sofa::simpleapi::Simulation::SPtr simu = sofa::simpleapi::createSimulation("DAG") ;
     const auto root = createScene(simu);
@@ -144,6 +142,5 @@ int main(int /**argc**/, char** argv)
 
     sofa::gui::common::GUIManager::closeGUI();
     sofa::simulation::common::cleanup();
-    sofa::simulation::graph::cleanup();
     return 0;
 }

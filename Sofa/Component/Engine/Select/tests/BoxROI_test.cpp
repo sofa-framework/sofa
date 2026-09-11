@@ -37,9 +37,8 @@ using sofa::core::objectmodel::ComponentState;
 #include <sofa/component/engine/select/BoxROI.inl>
 using sofa::component::engine::select::BoxROI;
 
-#include <sofa/simulation/graph/DAGSimulation.h>
+#include <sofa/simulation/Simulation.h>
 using sofa::simulation::Simulation;
-using sofa::simulation::graph::DAGSimulation;
 #include <sofa/simulation/Node.h>
 using sofa::simulation::Node;
 using sofa::core::objectmodel::BaseComponent;
@@ -77,7 +76,7 @@ struct BoxROITest :  public sofa::testing::BaseTest
             Sofa.Component.Topology.Container.Dynamic,
             Sofa.Component.Engine.Select});
 
-        m_simu = sofa::simulation::getSimulation();
+        m_simu = sofa::simulation::MainSimulation::getSimulation();
         ASSERT_NE(m_simu, nullptr);
 
         m_root = m_simu->createNewGraph("root");

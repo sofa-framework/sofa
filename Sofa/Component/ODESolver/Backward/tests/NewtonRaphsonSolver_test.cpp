@@ -32,7 +32,7 @@ struct NewtonRaphsonSquareRootTest : public testing::NumericTest<SReal>
 {
     void doSetUp() override
     {
-        root = simulation::getSimulation()->createNewNode("root");
+        root = simulation::MainSimulation::getSimulation()->createNewNode("root");
 
         solver = core::objectmodel::New <component::odesolver::backward::NewtonRaphsonSolver>();
         root->addObject(solver);

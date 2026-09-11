@@ -429,7 +429,7 @@ struct DAG_test : public BaseTest
         }
 
 
-//        sofa::simulation::getSimulation()->print(node.get());
+//        sofa::simulation::MainSimulation::getSimulation()->print(node.get());
     }
 
 
@@ -446,7 +446,7 @@ Expected output: RAABBR
      */
     void traverse_simple_tree()
     {
-        const Node::SPtr root = sofa::simulation::getSimulation()->createNewGraph("");
+        const Node::SPtr root = sofa::simulation::MainSimulation::getSimulation()->createNewGraph("");
 
         root->setName("R");
         root->createChild("A");
@@ -471,7 +471,7 @@ Expected output: RABCCBAR
      */
     void traverse_simple_diamond()
     {
-        const Node::SPtr root = sofa::simulation::getSimulation()->createNewGraph("");
+        const Node::SPtr root = sofa::simulation::MainSimulation::getSimulation()->createNewGraph("");
 
         root->setName("R");
         const Node::SPtr A = root->createChild("A");
@@ -500,7 +500,7 @@ Expected output: RABCDEEDCBAR
      */
     void traverse_complex()
     {
-        const Node::SPtr root = sofa::simulation::getSimulation()->createNewGraph("");
+        const Node::SPtr root = sofa::simulation::MainSimulation::getSimulation()->createNewGraph("");
         root->setName("R");
         const Node::SPtr A = root->createChild("A");
         const Node::SPtr B = root->createChild("B");
@@ -528,7 +528,7 @@ Expected output: RABCDEEDCBAR
      */
     void traverse_morecomplex()
     {
-        const Node::SPtr root = sofa::simulation::getSimulation()->createNewGraph("");
+        const Node::SPtr root = sofa::simulation::MainSimulation::getSimulation()->createNewGraph("");
         root->setName("R");
         const Node::SPtr A = root->createChild("A");
         const Node::SPtr B = root->createChild("B");
@@ -560,7 +560,7 @@ Expected output: RABCDEEDCBAR
      */
     void traverse_morecomplex2()
     {
-        const Node::SPtr root = sofa::simulation::getSimulation()->createNewGraph("");
+        const Node::SPtr root = sofa::simulation::MainSimulation::getSimulation()->createNewGraph("");
         root->setName("R");
         const Node::SPtr A = root->createChild("A");
         const Node::SPtr B = root->createChild("B");
@@ -597,7 +597,7 @@ Expected output: RABCDEEDCBAR
 
     void getObject()
     {
-        const Node::SPtr A = sofa::simulation::getSimulation()->createNewGraph("");
+        const Node::SPtr A = sofa::simulation::MainSimulation::getSimulation()->createNewGraph("");
         A->setName("A");
 
         const Node::SPtr B = A->createChild("B");

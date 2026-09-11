@@ -14,8 +14,6 @@ set(HEADER_FILES
 set(SOURCE_FILES
     ${SOFASIMULATIONGRAPH_SRC}/init.cpp
     ${SOFASIMULATIONGRAPH_SRC}/initSofaSimulationGraph.cpp
-    ${SOFASIMULATIONGRAPH_SRC}/DAGNode.cpp
-    ${SOFASIMULATIONGRAPH_SRC}/DAGSimulation.cpp
 )
 
 sofa_find_package(Sofa.Simulation.Common REQUIRED)

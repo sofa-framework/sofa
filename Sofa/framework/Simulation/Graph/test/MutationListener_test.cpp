@@ -22,7 +22,7 @@
 #include <sofa/testing/BaseTest.h>
 using sofa::testing::BaseTest;
 
-#include <sofa/simulation/graph/DAGSimulation.h>
+#include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/MutationListener.h>
@@ -411,7 +411,7 @@ struct MutationListener_test : public BaseTest
 
     void doSetUp() override
     {
-        sofa::simulation::Simulation* simu = sofa::simulation::getSimulation();
+        sofa::simulation::Simulation* simu = sofa::simulation::MainSimulation::getSimulation();
 
         root = simu->createNewGraph("root");
         root->addListener(&listener);

@@ -24,7 +24,7 @@
 #include <sofa/gl/component/rendering3d/OglModel.h>
 #include <sofa/simpleapi/SimpleApi.h>
 #include <sofa/simulation/Node.h>
-#include <sofa/simulation/graph/DAGSimulation.h>
+#include <sofa/simulation/Simulation.h>
 #include <sofa/testing/ScopedPlugin.h>
 #include <sofa/testing/TestMessageHandler.h>
 
@@ -43,7 +43,7 @@ TEST(OglModel, templateName)
 
     helper::logging::MessageDispatcher::addHandler( sofa::testing::MainGtestMessageHandler::getInstance() );
 
-    simulation::Simulation* simulation = sofa::simulation::getSimulation();
+    simulation::Simulation* simulation = sofa::simulation::MainSimulation::getSimulation();
     const simulation::Node::SPtr root = simulation->createNewGraph("root");
 
     const auto plugins = testing::makeScopedPlugin({Sofa.GL.Component.Rendering3D});
