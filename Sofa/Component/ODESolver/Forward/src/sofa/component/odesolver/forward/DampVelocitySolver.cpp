@@ -42,7 +42,7 @@ DampVelocitySolver::DampVelocitySolver()
 {
 }
 
-void DampVelocitySolver::solve(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId /*xResult*/, sofa::core::MultiVecDerivId vResult)
+void DampVelocitySolver::doSolve(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId /*xResult*/, sofa::core::MultiVecDerivId vResult)
 {
     sofa::simulation::common::VectorOperations vop( params, this->getContext() );
     MultiVecDeriv vel(&vop, vResult /*core::vec_id::write_access::velocity*/ );
