@@ -21,6 +21,8 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/fem/FiniteElement.h>
+#include <span>
+#include <stdexcept>
 
 #if !defined(SOFA_FEM_FINITE_ELEMENT_PRISM_CPP)
 #include <sofa/defaulttype/VecTypes.h>
@@ -74,19 +76,39 @@ struct FiniteElement<sofa::geometry::Prism, DataTypes>
         };
     }
 
-    static constexpr std::array<QuadraturePointAndWeight, 2> quadraturePoints()
+    template <sofa::Size Degree = 1>
+    static constexpr auto quadraturePoints()
     {
-        constexpr auto third = static_cast<Real>(1) / static_cast<Real>(3);
-        constexpr auto sqrt_3 = static_cast<Real>(0.57735026919); // 1/sqrt(3)
-        constexpr auto one = static_cast<Real>(1);
-        constexpr QuadraturePoint q0 {third, third, static_cast<Real>(0.5) * (one - sqrt_3)};
-        constexpr QuadraturePoint q1 {third, third, static_cast<Real>(0.5) * (one + sqrt_3)};
+        if constexpr (Degree <= 1)
+        {
+            // Degree 1: 2-point rule (default).
+            constexpr auto third = static_cast<Real>(1) / static_cast<Real>(3);
+            constexpr auto sqrt_3 = static_cast<Real>(0.57735026919); // 1/sqrt(3)
+            constexpr auto one = static_cast<Real>(1);
+            constexpr QuadraturePoint q0 {third, third, static_cast<Real>(0.5) * (one - sqrt_3)};
+            constexpr QuadraturePoint q1 {third, third, static_cast<Real>(0.5) * (one + sqrt_3)};
 
-        constexpr std::array<QuadraturePointAndWeight, 2> q {
-            std::make_pair(q0, 1./4.),
-            std::make_pair(q1, 1./4.),
-        };
-        return q;
+            constexpr std::array<QuadraturePointAndWeight, 2> q {
+                std::make_pair(q0, 1./4.),
+                std::make_pair(q1, 1./4.),
+            };
+            return q;
+        }
+        else
+        {
+            static_assert(Degree <= 1, "FiniteElement<Prism>: no quadrature rule for the requested degree");
+        }
+    }
+
+    // Quadrature rule selector by degree; view of the compile-time table.
+    static std::span<const QuadraturePointAndWeight> quadratureRule(sofa::Size degree)
+    {
+        switch (degree)
+        {
+            case 1: { static constexpr auto rule = quadraturePoints<1>(); return rule; }
+            default:
+                throw std::invalid_argument("FiniteElement<Prism>::quadratureRule: unsupported degree");
+        }
     }
 };
 
