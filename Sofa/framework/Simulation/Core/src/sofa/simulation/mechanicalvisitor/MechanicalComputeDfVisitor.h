@@ -34,14 +34,18 @@ class SOFA_SIMULATION_CORE_API MechanicalComputeDfVisitor : public MechanicalVis
 public:
     sofa::core::MultiVecDerivId res;
     sofa::core::ConstMultiVecDerivId dx;
+    sofa::core::ConstMultiVecCoordId x;
+    sofa::core::ConstMultiVecDerivId v;
     bool accumulate; ///< Accumulate everything back to the DOFs through the mappings
 
     MechanicalComputeDfVisitor(const sofa::core::MechanicalParams* mechaparams,
         sofa::core::MultiVecDerivId resvecid,
         sofa::core::ConstMultiVecDerivId dxvecid,
+        sofa::core::ConstMultiVecCoordId xvecid,
+        sofa::core::ConstMultiVecDerivId vvecid,
         bool bAccumulate = true
         )
-            : MechanicalVisitor(mechaparams) , res(resvecid), dx(dxvecid), accumulate(bAccumulate)
+            : MechanicalVisitor(mechaparams) , res(resvecid), dx(dxvecid), x(xvecid), v(vvecid), accumulate(bAccumulate)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
