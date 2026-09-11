@@ -22,8 +22,6 @@
 #pragma once
 #include <sofa/fem/FiniteElement.h>
 #include <sofa/geometry/Pyramid.h>
-#include <span>
-#include <stdexcept>
 
 #if !defined(SOFA_FEM_FINITE_ELEMENT_PYRAMID_CPP)
 #include <sofa/defaulttype/VecTypes.h>
@@ -34,6 +32,7 @@ namespace sofa::fem
 
 template <class DataTypes>
 struct FiniteElement<sofa::geometry::Pyramid, DataTypes>
+    : FiniteElementQuadrature<sofa::geometry::Pyramid, sofa::Real_t<DataTypes>, 1>
 {
     FINITEELEMENT_HEADER(sofa::geometry::Pyramid, DataTypes, 3);
     static_assert(spatial_dimensions == 3, "Pyramids are only defined in 3D");
@@ -71,44 +70,6 @@ struct FiniteElement<sofa::geometry::Pyramid, DataTypes>
             {-static_cast<Real>(0.125) * (1 + q[1]) * (1 - q[2]),  static_cast<Real>(0.125) * (1 - q[0]) * (1 - q[2]), -static_cast<Real>(0.125) * (1 - q[0]) * (1 + q[1])},
             { 0,                                                 0,                                                 static_cast<Real>(0.5)}
         };
-    }
-
-    template <sofa::Size Degree = 1>
-    static constexpr auto quadraturePoints()
-    {
-        if constexpr (Degree <= 1)
-        {
-            // Degree 1: 8-point rule (default).
-            constexpr Real sqrt3_1 = static_cast<Real>(1) / static_cast<Real>(1.73205080757);
-            constexpr Real one = static_cast<Real>(1);
-
-            constexpr std::array q {
-                std::pair{ReferenceCoord{-sqrt3_1, -sqrt3_1, -sqrt3_1}, one},
-                std::pair{ReferenceCoord{ sqrt3_1, -sqrt3_1, -sqrt3_1}, one},
-                std::pair{ReferenceCoord{ sqrt3_1,  sqrt3_1, -sqrt3_1}, one},
-                std::pair{ReferenceCoord{-sqrt3_1,  sqrt3_1, -sqrt3_1}, one},
-                std::pair{ReferenceCoord{-sqrt3_1, -sqrt3_1,  sqrt3_1}, one},
-                std::pair{ReferenceCoord{ sqrt3_1, -sqrt3_1,  sqrt3_1}, one},
-                std::pair{ReferenceCoord{ sqrt3_1,  sqrt3_1,  sqrt3_1}, one},
-                std::pair{ReferenceCoord{-sqrt3_1,  sqrt3_1,  sqrt3_1}, one},
-            };
-            return q;
-        }
-        else
-        {
-            static_assert(Degree <= 1, "FiniteElement<Pyramid>: no quadrature rule for the requested degree");
-        }
-    }
-
-    // Quadrature rule selector by degree; view of the compile-time table.
-    static std::span<const QuadraturePointAndWeight> quadratureRule(sofa::Size degree)
-    {
-        switch (degree)
-        {
-            case 1: { static constexpr auto rule = quadraturePoints<1>(); return rule; }
-            default:
-                throw std::invalid_argument("FiniteElement<Pyramid>::quadratureRule: unsupported degree");
-        }
     }
 };
 

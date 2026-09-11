@@ -31,6 +31,7 @@ namespace sofa::fem
 
 template <class DataTypes>
 struct FiniteElement<sofa::geometry::QuadraticQuad, DataTypes>
+    : FiniteElementQuadrature<sofa::geometry::QuadraticQuad, sofa::Real_t<DataTypes>, 3>
 {
     FINITEELEMENT_HEADER(sofa::geometry::QuadraticQuad, DataTypes, 2);
 
@@ -94,26 +95,6 @@ struct FiniteElement<sofa::geometry::QuadraticQuad, DataTypes>
             // face center
             {-2 * xi * (1 - eta * eta), -2 * eta * (1 - xi * xi)}
         };
-    }
-
-    static constexpr std::array<QuadraturePointAndWeight, 4> quadraturePoints()
-    {
-        // constexpr Real a = 1. / std::sqrt(3.);
-        constexpr Real a { 0.57735026919 };
-        constexpr Real w = 1.0;
-
-        constexpr sofa::type::Vec<TopologicalDimension, Real> q0(-a, -a);
-        constexpr sofa::type::Vec<TopologicalDimension, Real> q1(a, -a);
-        constexpr sofa::type::Vec<TopologicalDimension, Real> q2(a, a);
-        constexpr sofa::type::Vec<TopologicalDimension, Real> q3(-a, a);
-
-        constexpr std::array<QuadraturePointAndWeight, 4> q {
-            std::make_pair(q0, w),
-            std::make_pair(q1, w),
-            std::make_pair(q2, w),
-            std::make_pair(q3, w)
-        };
-        return q;
     }
 };
 
