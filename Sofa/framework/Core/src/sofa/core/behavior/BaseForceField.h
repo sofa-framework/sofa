@@ -96,7 +96,7 @@ public:
     ///
     /// If the ForceField can be represented as a matrix, this method computes
     /// \f[
-    ///                    df += kFactor K dx + bFactor B dx
+    ///                    df += kFactor K(x) dx + bFactor B(v) dx
     /// \f]
     /// where K is the stiffness matrix (associated with forces which derive from a potential),
     /// and B is the damping matrix (associated with viscous forces).
@@ -106,10 +106,13 @@ public:
     /// derivatives term in the ODE)
     /// - \a mparams->kFactor() is the coefficient for stiffness contributions (i.e. DOFs term in
     /// the ODE)
-    /// \param dfId the output vector
-    /// \param dxId the dx input vector
+    /// \param dfId the cotangent output vector
+    /// \param dxId the tangent input vector
+    /// \param xId the position input vector
+    /// \param vId the velocity input vector
     virtual void addDForce(const MechanicalParams* mparams,
-                           MultiVecDerivId dfId, ConstMultiVecDerivId dxId) = 0;
+                           MultiVecDerivId dfId, ConstMultiVecDerivId dxId,
+                           ConstMultiVecCoordId xId, ConstMultiVecDerivId vId) = 0;
 
     SOFA_ATTRIBUTE_DEPRECATED__ADDDFORCE_OVERLOAD()
     virtual void addDForce(const MechanicalParams* mparams, MultiVecDerivId dfId) final;

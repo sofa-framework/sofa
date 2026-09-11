@@ -61,7 +61,8 @@ void PairInteractionForceField<DataTypes>::addForce(const MechanicalParams* mpar
 }
 
 template<class DataTypes>
-void PairInteractionForceField<DataTypes>::addDForce(const MechanicalParams* mparams, MultiVecDerivId dfId, ConstMultiVecDerivId dxId)
+void PairInteractionForceField<DataTypes>::addDForce(const MechanicalParams* mparams, MultiVecDerivId dfId,
+    ConstMultiVecDerivId dxId, ConstMultiVecCoordId xId, ConstMultiVecDerivId vId)
 {
     auto state1 = this->mstate1.get();
     auto state2 = this->mstate2.get();
@@ -73,10 +74,39 @@ void PairInteractionForceField<DataTypes>::addDForce(const MechanicalParams* mpa
         const Data<VecDeriv>* dx1 = dxId[state1].read(); assert(dx1);
         const Data<VecDeriv>* dx2 = dxId[state2].read(); assert(dx2);
 
-        addDForce(mparams, *df1, *df2, *dx1, *dx2);
+        const Data<VecCoord>* x1 = xId[state1].read(); assert(x1);
+        const Data<VecCoord>* x2 = xId[state2].read(); assert(x2);
+
+        const Data<VecDeriv>* v1 = vId[state1].read(); assert(v1);
+        const Data<VecDeriv>* v2 = vId[state2].read(); assert(v2);
+
+        const AddDForceVectors vectors1 {
+            .df = *df1,
+            .dx = *dx1,
+            .x = *x1,
+            .v = *v1
+        };
+
+        const AddDForceVectors vectors2 {
+            .df = *df2,
+            .dx = *dx2,
+            .x = *x2,
+            .v = *v2
+        };
+
+        doAddDForce(mparams, vectors1, vectors2);
     }
     else
         msg_error() << "PairInteractionForceField<DataTypes>::addDForce(const MechanicalParams* /*mparams*/, MultiVecDerivId /*fId*/ ), mstate missing";
+}
+
+template <class TDataTypes>
+void PairInteractionForceField<TDataTypes>::doAddDForce(const MechanicalParams* mparams,
+                                                        const AddDForceVectors& vectors1,
+                                                        const AddDForceVectors& vectors2)
+{
+    // compatibility with legacy `addDForce`.
+    addDForce(mparams, vectors1.df, vectors2.df, vectors1.dx, vectors2.dx);
 }
 
 template<class DataTypes>

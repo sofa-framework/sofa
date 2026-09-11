@@ -99,7 +99,8 @@ public:
     /// This method retrieves the force and dx vector from the MechanicalState
     /// and call the internal addDForce(VecDeriv&,const VecDeriv&,SReal,SReal)
     /// method implemented by the component.
-    void addDForce(const MechanicalParams* mparams, MultiVecDerivId dfId, ConstMultiVecDerivId dxId) override;
+    void addDForce(const MechanicalParams* mparams, MultiVecDerivId dfId, ConstMultiVecDerivId dxId,
+                   ConstMultiVecCoordId xId, ConstMultiVecDerivId vId) override;
 
     /// Internal addDForce
     /// Overloaded function, usually called from the generic addDForce version.
@@ -107,7 +108,13 @@ public:
     /// @param mparams
     /// @param df Output vector to fill, result of \f$ kFactor K dx + bFactor B dx \f$
     /// @param dx Input vector used to compute \f$ df = kFactor K dx + bFactor B dx \f$
-    virtual void addDForce(const MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx ) = 0;
+    ///
+    ///
+    ///              ********************     WARNING     ********************
+    ///              This overload is deprecated!!! Use `doAddDForce` instead.
+    ///
+    SOFA_ATTRIBUTE_DEPRECATED__ADDDFORCE_DERIVED()
+    virtual void addDForce(const MechanicalParams*, DataVecDeriv&, const DataVecDeriv&) {}
 
     /// Get the potential energy associated to this ForceField.
     ///
@@ -227,6 +234,23 @@ public:
         sofa::helper::replaceAll(name, "ForceField", "FF");
         return name;
     }
+
+protected:
+
+    // all vectors involved in the addDForce operation
+    struct AddDForceVectors
+    {
+        DataVecDeriv& df;
+        const DataVecDeriv& dx;
+        const DataVecCoord& x;
+        const DataVecDeriv& v;
+    };
+
+    // Computes df += kFactor K(x) dx + bFactor B(v) dx
+    // with:
+    // K the derivative of the forces wrt the position
+    // B the derivative of the forces wrt the velocity
+    virtual void doAddDForce(const MechanicalParams* mparams, const AddDForceVectors& vectors);
 
 };
 

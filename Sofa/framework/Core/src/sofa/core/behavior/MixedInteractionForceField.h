@@ -90,12 +90,9 @@ public:
     /// explicitly (i.e. using its value at the beginning of the timestep).
     ///
     /// If the ForceField can be represented as a matrix, this method computes
-    /// $ df += kFactor K dx + bFactor B dx $
-    ///
-    /// This method retrieves the force and dx vector from the two MechanicalState
-    /// and call the internal addDForce(VecDeriv1&,VecDeriv2&,const VecDeriv1&,const VecDeriv2&,SReal,SReal)
-    /// method implemented by the component.
-    void addDForce(const MechanicalParams* mparams, MultiVecDerivId dfId, ConstMultiVecDerivId dxId) override;
+    /// $ df += kFactor K(x) dx + bFactor B(v) dx $
+    void addDForce(const MechanicalParams* mparams, MultiVecDerivId dfId, ConstMultiVecDerivId dxId,
+        ConstMultiVecCoordId xId, ConstMultiVecDerivId vId) override;
 
 
     /// Get the potential energy associated to this ForceField.
@@ -132,7 +129,12 @@ public:
     ///
     /// This method must be implemented by the component, and is usually called
     /// by the generic MixedInteractionForceField::addDForce() method.
-
+    ///
+    ///
+    ///              ********************     WARNING     ********************
+    ///              This overload is deprecated!!! Use `doAddDForce` instead.
+    ///
+    SOFA_ATTRIBUTE_DEPRECATED__ADDDFORCE_DERIVED()
     virtual void addDForce(const MechanicalParams* mparams, DataVecDeriv1& df1, DataVecDeriv2& df2, const DataVecDeriv1& dx1, const DataVecDeriv2& dx2)=0;
 
     /// Get the potential energy associated to this ForceField.
@@ -155,6 +157,27 @@ public:
 
     BaseMechanicalState* getMechModel1() override { return Inherit2::getMechModel1(); }
     BaseMechanicalState* getMechModel2() override { return Inherit2::getMechModel2(); }
+
+protected:
+
+    // all vectors involved in the addDForce operation
+    template<class DataTypes>
+    struct AddDForceVectors
+    {
+        sofa::DataVecDeriv_t<DataTypes>& df;
+        const sofa::DataVecDeriv_t<DataTypes>& dx;
+        const sofa::DataVecCoord_t<DataTypes>& x;
+        const sofa::DataVecDeriv_t<DataTypes>& v;
+    };
+
+    // Computes df += kFactor K(x) dx + bFactor B(v) dx
+    // with:
+    // K the derivative of the forces wrt the position
+    // B the derivative of the forces wrt the velocity
+    virtual void doAddDForce(const MechanicalParams* mparams,
+        const AddDForceVectors<DataTypes1>& vectors1,
+        const AddDForceVectors<DataTypes2>& vectors2);
+
 };
 
 #if !defined(SOFA_CORE_BEHAVIOR_MIXEDINTERACTIONFORCEFIELD_CPP)
