@@ -35,9 +35,9 @@ struct FiniteElement<sofa::geometry::QuadraticEdge, DataTypes>
     FINITEELEMENT_HEADER(sofa::geometry::QuadraticEdge, DataTypes, 1);
 
     constexpr static std::array<ReferenceCoord, NumberOfNodesInElement> referenceElementNodes {{
-        ReferenceCoord{0},    // vertex 0
+        ReferenceCoord{-1},   // vertex 0
         ReferenceCoord{1},    // vertex 1
-        ReferenceCoord{0.5}   // mid-edge node
+        ReferenceCoord{0}     // mid-edge node
     }};
 
     static const sofa::type::vector<TopologyElement>& getElementSequence(sofa::core::topology::BaseMeshTopology& topology)
@@ -48,20 +48,22 @@ struct FiniteElement<sofa::geometry::QuadraticEdge, DataTypes>
     static constexpr sofa::type::Vec<NumberOfNodesInElement, Real> shapeFunctions(const sofa::type::Vec<TopologicalDimension, Real>& q)
     {
         const Real xi = q[0];
+        constexpr Real half = static_cast<Real>(0.5);
         return {
-            2 * xi * (xi - 0.5) + 1 - 2 * xi,  // vertex 0: (2*xi - 1) * (xi - 1) = 2*xi^2 - 3*xi + 1
-            2 * xi * (xi - 0.5),      // vertex 1: (2*xi - 1) * xi
-            4 * xi * (1 - xi)         // mid-edge: 4*xi*(1-xi)
+            half * xi * (xi - 1),                  // vertex 0, at xi = -1
+            half * xi * (xi + 1),                  // vertex 1, at xi = 1
+            static_cast<Real>(1) - xi * xi         // mid-edge node, at xi = 0
         };
     }
 
     static constexpr sofa::type::Mat<NumberOfNodesInElement, TopologicalDimension, Real> gradientShapeFunctions(const sofa::type::Vec<TopologicalDimension, Real>& q)
     {
         const Real xi = q[0];
+        constexpr Real half = static_cast<Real>(0.5);
         return {
-            {4 * xi - 3},    // vertex 0
-            {4 * xi - 1},    // vertex 1
-            {4 - 8 * xi}     // mid-edge
+            {xi - half},                   // vertex 0
+            {xi + half},                   // vertex 1
+            {-2 * xi}                      // mid-edge node
         };
     }
 
