@@ -341,7 +341,7 @@ void OglVolumetricModel::computeBarycenters()
     {
         const Tetrahedron& t = tetrahedra[i];
         Coord barycenter = (positions[t[0]] + positions[t[1]] + positions[t[2]] + positions[t[3]])*0.25;
-        m_tetraBarycenters.push_back(barycenter);
+        m_tetraBarycenters.push_back(type::Vec3f(barycenter[0], barycenter[1], barycenter[2]));
     }
 
     m_hexaBarycenters.clear();
@@ -350,11 +350,12 @@ void OglVolumetricModel::computeBarycenters()
         const Hexahedron& h = hexahedra[i];
         Coord barycenter = (positions[h[0]] + positions[h[1]] + positions[h[2]] + positions[h[3]] +
             positions[h[4]] + positions[h[5]] + positions[h[6]] + positions[h[7]])*0.125;
-        m_hexaBarycenters.push_back(barycenter);
-        m_hexaBarycenters.push_back(barycenter);
-        m_hexaBarycenters.push_back(barycenter);
-        m_hexaBarycenters.push_back(barycenter);
-        m_hexaBarycenters.push_back(barycenter);
+        const type::Vec3f fBarycenter(barycenter[0], barycenter[1], barycenter[2]);
+        m_hexaBarycenters.push_back(fBarycenter);
+        m_hexaBarycenters.push_back(fBarycenter);
+        m_hexaBarycenters.push_back(fBarycenter);
+        m_hexaBarycenters.push_back(fBarycenter);
+        m_hexaBarycenters.push_back(fBarycenter);
     }
     unsigned int tetraBarycentersBufferSize = m_tetraBarycenters.size() * 3 * sizeof(GLfloat);
     unsigned int hexaBarycentersBufferSize = m_hexaBarycenters.size() * 3 * sizeof(GLfloat);
@@ -512,7 +513,7 @@ void OglVolumetricModel::computeBBox(const core::ExecParams * params, bool onlyV
             if (maxBBox[1] < v[1]) maxBBox[1] = v[1];
             if (maxBBox[2] < v[2]) maxBBox[2] = v[2];
         }
-        this->f_bbox.setValue(sofa::type::TBoundingBox<SReal>(minBBox, maxBBox));
+        this->f_bbox.setValue(sofa::type::BoundingBox(sofa::type::Vec3(minBBox[0],minBBox[1],minBBox[2]), sofa::type::Vec3(maxBBox[0],maxBBox[1],maxBBox[2])));
     }
 }
 

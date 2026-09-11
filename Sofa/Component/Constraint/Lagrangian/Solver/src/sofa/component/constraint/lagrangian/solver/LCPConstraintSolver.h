@@ -81,11 +81,11 @@ public:
     Data<SReal> d_mu; ///< Friction coefficient
     Data<SReal> d_minW; ///< If not zero, constraints whose self-compliance (i.e. the corresponding value on the diagonal of W) is smaller than this threshold will be ignored
     Data<SReal> d_maxF; ///< If not zero, constraints whose response force becomes larger than this threshold will be ignored
-    DeprecatedAndRemoved d_multi_grid; ///< activate multi_grid resolution (NOT STABLE YET)
-    DeprecatedAndRemoved d_multi_grid_levels; ///< if multi_grid is active: how many levels to create (>=2)
-    DeprecatedAndRemoved d_merge_method; ///< if multi_grid is active: which method to use to merge constraints (0 = compliance-based, 1 = spatial coordinates)
-    DeprecatedAndRemoved d_merge_spatial_step; ///< if merge_method is 1: grid size reduction between multigrid levels
-    DeprecatedAndRemoved d_merge_local_levels; ///< if merge_method is 1: up to the specified level of the multigrid, constraints are grouped locally, i.e. separately within each contact pairs, while on upper levels they are grouped globally independently of contact pairs.
+    SOFA_ATTRIBUTE_DISABLED__LCPCONSTRAINTSOLVERMULTIGRID() DeprecatedAndRemoved d_multi_grid; ///< activate multi_grid resolution (NOT STABLE YET)
+    SOFA_ATTRIBUTE_DISABLED__LCPCONSTRAINTSOLVERMULTIGRID() DeprecatedAndRemoved d_multi_grid_levels; ///< if multi_grid is active: how many levels to create (>=2)
+    SOFA_ATTRIBUTE_DISABLED__LCPCONSTRAINTSOLVERMULTIGRID() DeprecatedAndRemoved d_merge_method; ///< if multi_grid is active: which method to use to merge constraints (0 = compliance-based, 1 = spatial coordinates)
+    SOFA_ATTRIBUTE_DISABLED__LCPCONSTRAINTSOLVERMULTIGRID() DeprecatedAndRemoved d_merge_spatial_step; ///< if merge_method is 1: grid size reduction between multigrid levels
+    SOFA_ATTRIBUTE_DISABLED__LCPCONSTRAINTSOLVERMULTIGRID() DeprecatedAndRemoved d_merge_local_levels; ///< if merge_method is 1: up to the specified level of the multigrid, constraints are grouped locally, i.e. separately within each contact pairs, while on upper levels they are grouped globally independently of contact pairs.
     Data<type::vector< SReal >> d_constraintForces; ///< OUTPUT: constraint forces (stored only if computeConstraintForces=True)
     Data<bool> d_computeConstraintForces; ///< The indices of the constraintForces to store in the constraintForce data field
 
@@ -93,10 +93,10 @@ public:
 
     Data<std::map < std::string, sofa::type::vector<SReal> > > d_graph; ///< Graph of residuals at each iteration
 
-    DeprecatedAndRemoved d_showLevels; ///< Number of constraint levels to display
+    SOFA_ATTRIBUTE_DISABLED__LCPCONSTRAINTSOLVERMULTIGRID() DeprecatedAndRemoved d_showLevels; ///< Number of constraint levels to display
     Data<SReal> d_showCellWidth; ///< Distance between each constraint cells
     Data<type::Vec3> d_showTranslation; ///< Position of the first cell
-    DeprecatedAndRemoved d_showLevelTranslation; ///< Translation between levels
+    SOFA_ATTRIBUTE_DISABLED__LCPCONSTRAINTSOLVERMULTIGRID() DeprecatedAndRemoved d_showLevelTranslation; ///< Translation between levels
 
     ConstraintProblem* getConstraintProblem() override;
     void lockConstraintProblem(sofa::core::objectmodel::BaseComponent* from, ConstraintProblem* p1, ConstraintProblem* p2=nullptr) override; ///< Do not use the following LCPs until the next call to this function. This is used to prevent concurrent access to the LCP when using a LCPForceFeedback through an haptic thread

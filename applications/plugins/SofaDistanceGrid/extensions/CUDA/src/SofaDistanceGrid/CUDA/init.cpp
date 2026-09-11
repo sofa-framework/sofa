@@ -66,7 +66,7 @@ void init()
         sofa::helper::system::PluginManager::getInstance().registerPlugin(MODULE_NAME);
 
         sofadistancegrid::initSofaDistanceGrid();
-        sofa::gpu::cuda::init();
+        sofacuda::init();
         first = false;
     }
 }

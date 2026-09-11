@@ -355,7 +355,8 @@ void PenalityContactForceField<DataTypes>::grabPoint(
             {
                 if (contactsRef[i].m1 == index[j])
                 {
-                    result.push_back(std::make_pair(static_cast< core::objectmodel::BaseComponent *>(this),mstate2Pos[contactsRef[i].m2]));
+                    const auto& p2 = mstate2Pos[contactsRef[i].m2];
+                    result.push_back(std::make_pair(static_cast< core::objectmodel::BaseComponent *>(this), type::Vec3f(p2[0], p2[1], p2[2])));
                     triangle.push_back(contactsRef[i].index2);
                     index_point.push_back(index[j]);
                 }
@@ -371,7 +372,8 @@ void PenalityContactForceField<DataTypes>::grabPoint(
             {
                 if (contactsRef[i].m2 == index[j])
                 {
-                    result.push_back(std::make_pair(static_cast< core::objectmodel::BaseComponent *>(this), mstate1Pos[contactsRef[i].m1]));
+                    const auto& p1 = mstate1Pos[contactsRef[i].m1];
+                    result.push_back(std::make_pair(static_cast< core::objectmodel::BaseComponent *>(this), type::Vec3f(p1[0], p1[1], p1[2])));
                     triangle.push_back(contactsRef[i].index1);
                     index_point.push_back(index[j]);
                 }

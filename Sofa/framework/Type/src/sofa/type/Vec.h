@@ -162,21 +162,13 @@ public:
     }
 
     template<typename real2>
-    SOFA_ATTRIBUTE_DEPRECATED__VEC_FROM_DIFFERENT_VEC()
-    constexpr Vec(const Vec<N, real2>& p) noexcept
-    {
-        for(Size i=0; i<N; i++)
-            this->elems[i] = static_cast<ValueType>(p(i));
-    }
+    SOFA_ATTRIBUTE_DISABLED__VEC_FROM_DIFFERENT_VEC()
+    constexpr Vec(const Vec<N, real2>& p) noexcept = delete;
 
     /// Constructor from an array of values.
     template<typename real2>
-    SOFA_ATTRIBUTE_DEPRECATED__VEC_FROM_POINTER()
-    explicit constexpr Vec(const real2* p) noexcept
-    {
-        for(Size i=0; i<N; i++)
-            this->elems[i] = static_cast<ValueType>(p[i]);
-    }
+    SOFA_ATTRIBUTE_DISABLED__VEC_FROM_POINTER()
+    explicit constexpr Vec(const real2* p) noexcept = delete;
 
     /// Special access to first element.
     template<Size NN = N, typename std::enable_if<(NN>=1),int>::type = 0>
@@ -237,23 +229,13 @@ public:
 
     /// Assignment operator from an array of values.
     template<typename real2>
-    SOFA_ATTRIBUTE_DEPRECATED__VEC_FROM_POINTER()
-    constexpr void operator=(const real2* p) noexcept
-    {
-        //static_assert(false);
-        for(Size i=0; i<N; i++)
-            this->elems[i] = (ValueType)p[i];
-    }
+    SOFA_ATTRIBUTE_DISABLED__VEC_FROM_POINTER()
+    constexpr void operator=(const real2* p) noexcept = delete;
 
     /// Assignment from a vector with different dimensions.
     template<Size M, typename real2>
-    SOFA_ATTRIBUTE_DEPRECATED__VEC_FROM_DIFFERENT_VEC()
-    constexpr void operator=(const Vec<M,real2>& v) noexcept
-    {
-        //static_assert(false);
-        for(Size i=0; i<(N>M?M:N); i++)
-            this->elems[i] = (ValueType)v(i);
-    }
+    SOFA_ATTRIBUTE_DISABLED__VEC_FROM_DIFFERENT_VEC()
+    constexpr void operator=(const Vec<M,real2>& v) noexcept = delete;
 
     // assign one value to all elements
     constexpr void assign(const ValueType& value) noexcept

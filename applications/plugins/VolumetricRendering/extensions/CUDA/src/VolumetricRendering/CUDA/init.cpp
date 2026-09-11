@@ -61,7 +61,7 @@ void init()
         sofa::helper::system::PluginManager::getInstance().registerPlugin(MODULE_NAME);
 
         volumetricrendering::init();
-        sofa::gpu::cuda::init();
+        sofacuda::init();
         first = false;
     }
 }

@@ -23,10 +23,10 @@
 
 #include <sofa/core/behavior/LagrangianConstraint.h>
 
-SOFA_HEADER_DEPRECATED("v25.12", "v26.12", "sofa/core/behavior/LagrangianConstraint.h")
+SOFA_HEADER_DISABLED("v25.12", "v26.12", "sofa/core/behavior/LagrangianConstraint.h")
 
 namespace sofa::core::behavior
 {
 template<class DataTypes>
-using Constraint SOFA_ATTRIBUTE_DEPRECATED("v25.12", "v26.12", "Constraint has been renamed to LagrangianConstraint") = LagrangianConstraint<DataTypes>;
+using Constraint SOFA_ATTRIBUTE_DISABLED("v25.12", "v26.12", "Constraint has been renamed to LagrangianConstraint") = LagrangianConstraint<DataTypes>;
 }

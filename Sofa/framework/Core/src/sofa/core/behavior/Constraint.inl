@@ -23,4 +23,4 @@
 
 #include <sofa/core/behavior/LagrangianConstraint.inl>
 
-SOFA_HEADER_DEPRECATED("v25.12", "v26.12", "sofa/core/behavior/LagrangianConstraint.inl")
+SOFA_HEADER_DISABLED("v25.12", "v26.12", "sofa/core/behavior/LagrangianConstraint.inl")

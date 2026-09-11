@@ -527,8 +527,8 @@ void GeomagicDriver::computeBBox(const core::ExecParams*  params, bool onlyVisib
     SOFA_UNUSED(params);
     if (!onlyVisible) return;
 
-    SReal minBBox[3] = {1e10,1e10,1e10};
-    SReal maxBBox[3] = {-1e10,-1e10,-1e10};
+    Vec3 minBBox = {1e10,1e10,1e10};
+    Vec3 maxBBox = {-1e10,-1e10,-1e10};
 
     minBBox[0] = d_posDevice.getValue().getCenter()[0]-d_positionBase.getValue()[0]*d_scale.getValue();
     minBBox[1] = d_posDevice.getValue().getCenter()[1]-d_positionBase.getValue()[1]*d_scale.getValue();
@@ -538,7 +538,7 @@ void GeomagicDriver::computeBBox(const core::ExecParams*  params, bool onlyVisib
     maxBBox[1] = d_posDevice.getValue().getCenter()[1]+d_positionBase.getValue()[1]*d_scale.getValue();
     maxBBox[2] = d_posDevice.getValue().getCenter()[2]+d_positionBase.getValue()[2]*d_scale.getValue();
 
-    this->f_bbox.setValue(sofa::type::TBoundingBox<SReal>(minBBox,maxBBox));
+    this->f_bbox.setValue(sofa::type::BoundingBox(minBBox,maxBBox));
 }
 
 

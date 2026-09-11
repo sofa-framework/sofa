@@ -23,7 +23,7 @@
 #pragma once
 #include <sofa/component/constraint/lagrangian/model/UniformLagrangianConstraint.h>
 
-#include <sofa/core/behavior/Constraint.inl>
+#include <sofa/core/behavior/LagrangianConstraint.inl>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/component/constraint/lagrangian/model/BilateralConstraintResolution.h>
 
