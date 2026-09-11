@@ -82,7 +82,7 @@ public:
     void computeForce(core::MultiVecDerivId result, bool clear = true, bool accumulate = true);
     /// Compute the current force delta, (given the latest propagated displacement)
     SOFA_ATTRIBUTE_DEPRECATED__MECHANICALOPERATIONS_COMPUTEDF()
-    void SOFA_ATTRIBUTE_DEPRECATED__COMPUTEDF_OVERLOAD() computeDf(core::MultiVecDerivId df, bool clear = true, bool accumulate = true);
+    void computeDf(core::MultiVecDerivId df, bool clear = true, bool accumulate = true);
     /// Compute the current force delta, given the provided propagated displacement
     void computeDf(core::MultiVecDerivId df, core::ConstMultiVecDerivId dx, core::ConstMultiVecCoordId x, core::ConstMultiVecDerivId v, bool clear = true, bool accumulate = true);
     /// Compute the current force delta (given the latest propagated velocity)
