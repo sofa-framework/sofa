@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/fem/config.h>
+#include <sofa/fem/QuadratureRules.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 
 namespace sofa::fem

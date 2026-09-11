@@ -21,8 +21,6 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/fem/FiniteElement.h>
-#include <span>
-#include <stdexcept>
 
 #if !defined(SOFA_FEM_FINITE_ELEMENT_HEXAHEDRON_CPP)
 #include <sofa/defaulttype/VecTypes.h>
@@ -33,6 +31,7 @@ namespace sofa::fem
 
 template <class DataTypes>
 struct FiniteElement<sofa::geometry::Hexahedron, DataTypes>
+    : FiniteElementQuadrature<sofa::geometry::Hexahedron, sofa::Real_t<DataTypes>, 3>
 {
     FINITEELEMENT_HEADER(sofa::geometry::Hexahedron, DataTypes, 3);
     static_assert(spatial_dimensions == 3, "Hexahedrons are only defined in 3D");
@@ -96,70 +95,6 @@ struct FiniteElement<sofa::geometry::Hexahedron, DataTypes>
         }
 
         return gradient;
-    }
-
-    template <sofa::Size Degree = 3>
-    static constexpr auto quadraturePoints()
-    {
-        if constexpr (Degree <= 1)
-        {
-            // Degree 1: 1-point centroid rule.
-            return std::array<QuadraturePointAndWeight, 1>{
-                std::make_pair(ReferenceCoord(static_cast<Real>(0), static_cast<Real>(0), static_cast<Real>(0)), static_cast<Real>(8))
-            };
-        }
-        else if constexpr (Degree <= 3)
-        {
-            // Degrees 2-3: 2x2x2 Gauss-Legendre rule (default).
-            constexpr Real sqrt3 = 1.73205080757; //sqrt(3.)
-            constexpr Real sqrt3_1 = static_cast<Real>(1) / sqrt3;
-            constexpr Real one = static_cast<Real>(1);
-
-            return std::array {
-                std::pair{referenceElementNodes[0] * sqrt3_1, one},
-                std::pair{referenceElementNodes[1] * sqrt3_1, one},
-                std::pair{referenceElementNodes[2] * sqrt3_1, one},
-                std::pair{referenceElementNodes[3] * sqrt3_1, one},
-                std::pair{referenceElementNodes[4] * sqrt3_1, one},
-                std::pair{referenceElementNodes[5] * sqrt3_1, one},
-                std::pair{referenceElementNodes[6] * sqrt3_1, one},
-                std::pair{referenceElementNodes[7] * sqrt3_1, one},
-            };
-        }
-        else if constexpr (Degree <= 5)
-        {
-            // Degrees 4-5: 3x3x3 Gauss-Legendre rule.
-            constexpr Real g = 0.77459666924; //sqrt(3./5.)
-            constexpr std::array<Real, 3> node{ -g, static_cast<Real>(0), g };
-            constexpr std::array<Real, 3> weight{ static_cast<Real>(5./9.), static_cast<Real>(8./9.), static_cast<Real>(5./9.) };
-
-            std::array<QuadraturePointAndWeight, 27> q{};
-            sofa::Size k = 0;
-            for (sofa::Size i = 0; i < 3; ++i)
-                for (sofa::Size j = 0; j < 3; ++j)
-                    for (sofa::Size l = 0; l < 3; ++l)
-                        q[k++] = std::make_pair(ReferenceCoord(node[i], node[j], node[l]), weight[i] * weight[j] * weight[l]);
-            return q;
-        }
-        else
-        {
-            static_assert(Degree <= 5, "FiniteElement<Hexahedron>: no quadrature rule for the requested degree");
-        }
-    }
-
-    // Quadrature rule selector by degree; view of the compile-time table.
-    static std::span<const QuadraturePointAndWeight> quadratureRule(sofa::Size degree)
-    {
-        switch (degree)
-        {
-            case 1: { static constexpr auto rule = quadraturePoints<1>(); return rule; }
-            case 2:
-            case 3: { static constexpr auto rule = quadraturePoints<3>(); return rule; }
-            case 4:
-            case 5: { static constexpr auto rule = quadraturePoints<5>(); return rule; }
-            default:
-                throw std::invalid_argument("FiniteElement<Hexahedron>::quadratureRule: unsupported degree");
-        }
     }
 };
 
