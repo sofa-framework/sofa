@@ -32,9 +32,8 @@ namespace sofa::fem
 
 template <class DataTypes>
 struct FiniteElement<sofa::geometry::Pyramid, DataTypes>
-    : FiniteElementQuadrature<sofa::geometry::Pyramid, sofa::Real_t<DataTypes>, 1>
 {
-    FINITEELEMENT_HEADER(sofa::geometry::Pyramid, DataTypes, 3);
+    FINITEELEMENT_HEADER(sofa::geometry::Pyramid, DataTypes, 3, 1);
     static_assert(spatial_dimensions == 3, "Pyramids are only defined in 3D");
 
     constexpr static std::array<ReferenceCoord, NumberOfNodesInElement> referenceElementNodes {{

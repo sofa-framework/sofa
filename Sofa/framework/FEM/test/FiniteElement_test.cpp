@@ -26,15 +26,17 @@ namespace sofa
 {
 
 /**
- * For each quadrature degree in [1, MaxDegree], computes the sum of the quadrature weights and 
- * compare it to an expected value
+ * For each quadrature degree the element admits, computes the sum of the quadrature weights
+ * and compares it to an expected value. Degrees below MinimumQuadratureDegree are rejected
+ * by the element, so the sweep starts there rather than at 1.
  */
 template <class ElementType, class DataTypes, sofa::Size MaxDegree>
 void testSumWeights(const sofa::Real_t<DataTypes> expected)
 {
     using FE = sofa::fem::FiniteElement<ElementType, DataTypes>;
+    static_assert(MaxDegree >= FE::MinimumQuadratureDegree);
 
-    for (sofa::Size degree = 1; degree <= MaxDegree; ++degree)
+    for (sofa::Size degree = FE::MinimumQuadratureDegree; degree <= MaxDegree; ++degree)
     {
         SReal weightSum = 0;
         for (const auto& [q, w] : FE::quadratureRule(degree))
@@ -98,7 +100,7 @@ TEST(FiniteElement, pyramid3dWeights)
 
 TEST(FiniteElement, quadraticHexa3dWeights)
 {
-    testSumWeights<sofa::geometry::QuadraticHexahedron, sofa::defaulttype::Vec3Types>(8);
+    testSumWeights<sofa::geometry::QuadraticHexahedron, sofa::defaulttype::Vec3Types, 5>(8);
 }
 
 /**

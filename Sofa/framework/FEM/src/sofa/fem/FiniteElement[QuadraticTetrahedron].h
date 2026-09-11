@@ -31,9 +31,8 @@ namespace sofa::fem
 
 template <class DataTypes>
 struct FiniteElement<sofa::geometry::QuadraticTetrahedron, DataTypes>
-    : FiniteElementQuadrature<sofa::geometry::QuadraticTetrahedron, sofa::Real_t<DataTypes>, 2>
 {
-    FINITEELEMENT_HEADER(sofa::geometry::QuadraticTetrahedron, DataTypes, 3);
+    FINITEELEMENT_HEADER(sofa::geometry::QuadraticTetrahedron, DataTypes, 3, 2);
     static_assert(spatial_dimensions == 3, "Quadratic Tetrahedrons are only defined in 3D");
 
     constexpr static std::array<ReferenceCoord, NumberOfNodesInElement> referenceElementNodes {{
