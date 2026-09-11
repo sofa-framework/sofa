@@ -19,34 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_SIMULATION_CORE_MECHANICALMULTIVECTORTOBASEVECTORVISITOR_CPP
-#include <sofa/simulation/mechanicalvisitor/MechanicalMultiVectorToBaseVectorVisitor.h>
-#include <sofa/core/behavior/MultiMatrixAccessor.h>
-#include <sofa/core/behavior/BaseMechanicalState.h>
-
-namespace sofa::simulation::mechanicalvisitor
-{
-
-MechanicalMultiVectorToBaseVectorVisitor::MechanicalMultiVectorToBaseVectorVisitor(
-        const core::ExecParams* params,
-        sofa::core::ConstMultiVecId _src, linearalgebra::BaseVector * _vect,
-        const sofa::core::behavior::MultiMatrixAccessor* _matrix)
-    : BaseMechanicalVisitor(params) , src(_src), vect(_vect), matrix(_matrix), offset(0)
-{
-}
-
-MechanicalMultiVectorToBaseVectorVisitor::Result MechanicalMultiVectorToBaseVectorVisitor::fwdMechanicalState(simulation::Node* /*node*/,
-                                                                                                              core::behavior::BaseMechanicalState* mm)
-{
-    if (matrix) offset = matrix->getGlobalOffset(mm);
-    if (vect != nullptr && offset >= 0)
-    {
-        unsigned int o = (unsigned int)offset;
-        mm->copyToBaseVector(vect, src.getId(mm), o);
-        offset = (int)o;
-    }
-    return RESULT_CONTINUE;
-}
-
-} // namespace sofa::simulation::mechanicalvisitor
-
+#pragma once
+#include <sofa/simulation/events/UpdateMappingEndEvent.h>
+SOFA_HEADER_DEPRECATED("v26.12", "v27.06", "sofa/simulation/events/UpdateMappingEndEvent.h")
