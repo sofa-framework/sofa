@@ -249,7 +249,7 @@ const HexahedronFEMForceField<gpu::cuda::CudaVec3fTypes>::Transformation& Hexahe
 }
 
 template<>
-void HexahedronFEMForceField<gpu::cuda::CudaVec3fTypes>::getRotations(linearalgebra::BaseMatrix * rotations,int offset)
+void HexahedronFEMForceField<gpu::cuda::CudaVec3fTypes>::doGetRotations(linearalgebra::BaseMatrix * rotations,int offset)
 {
     const auto nbdof = this->mstate->getSize();
 
