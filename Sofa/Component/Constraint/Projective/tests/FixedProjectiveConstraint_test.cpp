@@ -73,9 +73,6 @@ struct FixedProjectiveConstraint_test : public BaseTest
         assert(simulation);
 
         Coord initCoord1, initCoord2;
-        Deriv force;
-        for(unsigned i=0; i<force.size(); i++)
-            force[i]=10;
 
         /// Scene creation
         const simulation::Node::SPtr root = simulation->createNewGraph("root");
@@ -103,9 +100,14 @@ struct FixedProjectiveConstraint_test : public BaseTest
 
         createUniformMass<DataTypes>(node, *dofs.get());
 
+        VecDeriv forces;
+        forces.resize(2);
+        for(unsigned i=0; i<forces.size(); i++)
+            for(unsigned j=0; j<forces[i].size(); j++)
+                forces[i][j]=10;
+
         typename ForceField::SPtr forceField = addNew<ForceField>(node);
-        forceField->setForce( 0, force );
-        forceField->setForce( 1, force );
+        forceField->d_forces.setValue(forces);
 
         /// Let's fix the particle's movement for particle number 1 (the second one).
         typename FixedProjectiveConstraint::SPtr cst = sofa::core::objectmodel::New<FixedProjectiveConstraint>();
@@ -180,6 +182,8 @@ struct FixedProjectiveConstraint_test : public BaseTest
         typename ForceField::SPtr forceField = addNew<ForceField>(node);
         
         // create a force vector
+        VecDeriv forces;
+        forces.resize(nbrDofs);
         Deriv force;
         auto typeSize = force.size();
         
@@ -195,9 +199,11 @@ struct FixedProjectiveConstraint_test : public BaseTest
                 writeX[id][i] = id + 0.1 * i;  // create position filled as a grid:  0; 0.1; 0.2 ...  \n  1; 1.1; 1.2 ... \n 2; 2.1; 2.2 ...
             }
 
-            forceField->setForce(id, force);
+            forces[id] = force;
         }
 
+        forceField->d_forces.setValue(forces);
+        
         /// Add fixconstraint
         typename FixedProjectiveConstraint::SPtr cst = sofa::core::objectmodel::New<FixedProjectiveConstraint>();
         type::vector<Index> indices = { 0, 1, 2 };
