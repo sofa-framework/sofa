@@ -528,7 +528,7 @@ void Mesh2PointTopologicalMapping::addInputTetrahedron(Index i, PointSetTopology
     }
 }
 
-void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
+void Mesh2PointTopologicalMapping::doUpdateTopologicalMappingTopDown()
 {
     if(fromModel && toModel && initDone)
     {

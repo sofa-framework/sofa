@@ -69,7 +69,7 @@ public:
      * reflect the effects of the first topology changes on the second topology.
      *
      */
-    void updateTopologicalMappingTopDown() override;
+    void doUpdateTopologicalMappingTopDown() override;
 
     /** \brief Translates the TopologyChange objects from the target to the source.
      *
@@ -77,7 +77,7 @@ public:
      * reflect the effects of the second topology changes on the first topology.
      *
      */
-    void updateTopologicalMappingBottomUp() override;
+    void doUpdateTopologicalMappingBottomUp() override;
 
     /// Return true if this mapping is able to propagate topological changes from input to output model
     bool propagateFromInputToOutputModel() override { return true; }
