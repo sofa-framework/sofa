@@ -335,7 +335,7 @@ void LinearVelocityProjectiveConstraint<TDataTypes>::projectJacobianMatrix(const
 }
 
 template <class DataTypes>
-void LinearVelocityProjectiveConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, linearalgebra::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+void LinearVelocityProjectiveConstraint<DataTypes>::doApplyConstraint(const core::MechanicalParams* mparams, linearalgebra::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     SOFA_UNUSED(mparams);
 
@@ -360,7 +360,7 @@ void LinearVelocityProjectiveConstraint<DataTypes>::applyConstraint(const core::
 }
 
 template <class DataTypes>
-void LinearVelocityProjectiveConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+void LinearVelocityProjectiveConstraint<DataTypes>::doApplyConstraint(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     SOFA_UNUSED(mparams);
     if(isConstraintActive())
@@ -389,7 +389,7 @@ void LinearVelocityProjectiveConstraint<DataTypes>::applyConstraint(const core::
 }
 
 template <class DataTypes>
-void LinearVelocityProjectiveConstraint<DataTypes>::projectMatrix( sofa::linearalgebra::BaseMatrix* M, unsigned offset )
+void LinearVelocityProjectiveConstraint<DataTypes>::doProjectMatrix( sofa::linearalgebra::BaseMatrix* M, unsigned offset )
 {
     static const unsigned blockSize = DataTypes::deriv_total_size;
 
@@ -407,7 +407,7 @@ void LinearVelocityProjectiveConstraint<DataTypes>::projectMatrix( sofa::lineara
 }
 
 template <class DataTypes>
-void LinearVelocityProjectiveConstraint<DataTypes>::applyConstraint(
+void LinearVelocityProjectiveConstraint<DataTypes>::doApplyConstraint(
     sofa::core::behavior::ZeroDirichletCondition* matrix)
 {
     static constexpr unsigned int N = Deriv::size();
