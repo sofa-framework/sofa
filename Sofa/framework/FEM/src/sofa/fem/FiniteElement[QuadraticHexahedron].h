@@ -31,9 +31,8 @@ namespace sofa::fem
 
 template <class DataTypes>
 struct FiniteElement<sofa::geometry::QuadraticHexahedron, DataTypes>
-    : FiniteElementQuadrature<sofa::geometry::QuadraticHexahedron, sofa::Real_t<DataTypes>, 5>
 {
-    FINITEELEMENT_HEADER(sofa::geometry::QuadraticHexahedron, DataTypes, 3);
+    FINITEELEMENT_HEADER(sofa::geometry::QuadraticHexahedron, DataTypes, 3, 5);
     static_assert(spatial_dimensions == 3, "Quadratic Hexahedrons are only defined in 3D");
 
     constexpr static std::array<ReferenceCoord, NumberOfNodesInElement> referenceElementNodes {{

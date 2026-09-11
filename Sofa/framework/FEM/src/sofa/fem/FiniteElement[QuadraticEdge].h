@@ -31,9 +31,8 @@ namespace sofa::fem
 
 template <class DataTypes>
 struct FiniteElement<sofa::geometry::QuadraticEdge, DataTypes>
-    : FiniteElementQuadrature<sofa::geometry::QuadraticEdge, sofa::Real_t<DataTypes>, 3>
 {
-    FINITEELEMENT_HEADER(sofa::geometry::QuadraticEdge, DataTypes, 1);
+    FINITEELEMENT_HEADER(sofa::geometry::QuadraticEdge, DataTypes, 1, 3);
 
     constexpr static std::array<ReferenceCoord, NumberOfNodesInElement> referenceElementNodes {{
         ReferenceCoord{-1},   // vertex 0

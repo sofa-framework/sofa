@@ -31,9 +31,8 @@ namespace sofa::fem
 
 template <class DataTypes>
 struct FiniteElement<sofa::geometry::Quad, DataTypes>
-    : FiniteElementQuadrature<sofa::geometry::Quad, sofa::Real_t<DataTypes>, 2>
 {
-    FINITEELEMENT_HEADER(sofa::geometry::Quad, DataTypes, 2);
+    FINITEELEMENT_HEADER(sofa::geometry::Quad, DataTypes, 2, 2);
     static_assert(spatial_dimensions > 1, "Quads cannot be defined in 1D");
 
     constexpr static std::array<ReferenceCoord, NumberOfNodesInElement> referenceElementNodes {{
