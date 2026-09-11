@@ -94,7 +94,7 @@ protected:
     }
 public:
     bool hasIdMap() const { return idMap_ptr != nullptr; }
-    const  IdMap& getIdMap() const
+    const IdMap& getIdMap() const
     {
         if (!idMap_ptr)
         {
@@ -106,49 +106,53 @@ public:
 
     TMultiVecId() = default;
 
-    /// Copy from another VecId, possibly with another type of access, with the
-    /// constraint that the access must be compatible (i.e. cannot create
-    /// a write-access VecId from a read-only VecId.
-    template<VecAccess vaccess2>
-    TMultiVecId(const TVecId<vtype, vaccess2>& v)
-        :
-        defaultId(v)
+    /// Copy from a TVecId.
+    /// When vtype != V_ALL: only the same vtype is accepted (vtype2 must equal vtype).
+    /// When vtype == V_ALL: any vtype2 is accepted (widening to V_ALL).
+    /// In both cases, write->read is allowed but read->write is forbidden.
+    template<VecType vtype2, VecAccess vaccess2>
+        requires (vtype == V_ALL || vtype2 == vtype)
+    TMultiVecId(const TVecId<vtype2, vaccess2>& v) : defaultId(v)
     {
         static_assert(vaccess2 >= vaccess, "Copy from a read-only multi-vector id into a read/write multi-vector id is forbidden.");
     }
 
-    /// Copy assignment from another VecId
-    template<VecAccess vaccess2>
-    TMultiVecId<vtype, vaccess> & operator= (const TVecId<vtype, vaccess2>& v) {
+    /// Copy assignment from a TVecId (same constraints as the constructor above).
+    template<VecType vtype2, VecAccess vaccess2>
+        requires (vtype == V_ALL || vtype2 == vtype)
+    TMultiVecId<vtype, vaccess>& operator=(const TVecId<vtype2, vaccess2>& v)
+    {
         static_assert(vaccess2 >= vaccess, "Copy from a read-only multi-vector id into a read/write multi-vector id is forbidden.");
         defaultId = v;
         return *this;
     }
 
-    //// Copy constructor
-    TMultiVecId( const TMultiVecId<vtype,vaccess>& mv)
-        : defaultId( mv.getDefaultId() )
-        , idMap_ptr( mv.idMap_ptr )
+    //// Copy constructor (exact same type)
+    TMultiVecId(const TMultiVecId<vtype, vaccess>& mv)
+        : defaultId(mv.getDefaultId())
+        , idMap_ptr(mv.idMap_ptr)
     {
     }
 
-    /// Copy assignment
-    TMultiVecId<vtype, vaccess> & operator= (const TMultiVecId<vtype, vaccess>& mv) {
+    /// Copy assignment (exact same type)
+    TMultiVecId<vtype, vaccess>& operator=(const TMultiVecId<vtype, vaccess>& mv)
+    {
         defaultId = mv.getDefaultId();
         idMap_ptr = mv.idMap_ptr;
         return *this;
     }
 
-    //// Only TMultiVecId< V_ALL , vaccess> can declare copy constructors with all
-    //// other kinds of TMultiVecIds, namely MultiVecCoordId, MultiVecDerivId...
-    //// In other cases, the copy constructor takes a TMultiVecId of the same type
-    //// ie copy construct a MultiVecCoordId from a const MultiVecCoordId& or a
-    //// ConstMultiVecCoordId&. Other conversions should be done with the
-    //// next constructor that can only be used if requested explicitly.
-    template< VecAccess vaccess2>
-    TMultiVecId( const TMultiVecId<vtype,vaccess2>& mv) : defaultId( mv.getDefaultId() )
+    //// Copy constructor from a TMultiVecId of the same vtype but different access.
+    //// Only available when vtype != V_ALL.
+    //// For the vtype == V_ALL case, any-vtype2 widening is handled by the next
+    //// constructor instead.
+    //// When the access is compatible (write -> read), the id map is shared
+    //// instead of copied, because these types are binary-compatible.
+    template<VecAccess vaccess2>
+        requires (vtype != V_ALL && vaccess2 != vaccess)
+    TMultiVecId(const TMultiVecId<vtype, vaccess2>& mv) : defaultId(mv.getDefaultId())
     {
-        static_assert( vaccess2 >= vaccess, "Copy from a read-only multi-vector id into a read/write multi-vector id is forbidden." );
+        static_assert(vaccess2 >= vaccess, "Copy from a read-only multi-vector id into a read/write multi-vector id is forbidden.");
         if (mv.hasIdMap())
         {
             // When we assign a V_WRITE version to a V_READ version of the same type, which are binary compatible,
@@ -167,17 +171,15 @@ public:
     }
 
     template<VecAccess vaccess2>
-    TMultiVecId<vtype, vaccess> & operator= (const TMultiVecId<vtype, vaccess2>& mv) {
-        static_assert( vaccess2 >= vaccess, "Copy from a read-only multi-vector id into a read/write multi-vector id is forbidden." );
+        requires (vtype != V_ALL && vaccess2 != vaccess)
+    TMultiVecId<vtype, vaccess>& operator=(const TMultiVecId<vtype, vaccess2>& mv)
+    {
+        static_assert(vaccess2 >= vaccess, "Copy from a read-only multi-vector id into a read/write multi-vector id is forbidden.");
 
         defaultId = mv.defaultId;
-        if (mv.hasIdMap()) {
-            // When we assign a V_WRITE version to a V_READ version of the same type, which are binary compatible,
-            // share the maps like with a copy constructor, because otherwise a simple operation like passing a
-            // MultiVecCoordId to a method taking a ConstMultiVecCoordId to indicate it won't modify it
-            // will cause a temporary copy of the map, which this define was meant to avoid!
-
-            // Type-punning
+        if (mv.hasIdMap())
+        {
+            // Type-punning (same rationale as the constructor above)
             union {
                 const std::shared_ptr< IdMap > * this_map_type;
                 const std::shared_ptr< typename TMultiVecId<vtype,vaccess2>::IdMap > * other_map_type;
@@ -189,14 +191,60 @@ public:
         return *this;
     }
 
-    //// Provides explicit conversions from MultiVecId to MultiVecCoordId/...
-    //// The explicit keyword forbid the compiler to use it automatically, as
-    //// the user should check the type of the source vector before using this
-    //// conversion.
-    template< VecAccess vaccess2>
-    explicit TMultiVecId( const TMultiVecId<V_ALL,vaccess2>& mv) : defaultId( static_cast<MyVecId>(mv.getDefaultId()) )
+    //// Copy constructor from any TMultiVecId<vtype2, vaccess2>.
+    //// Only available when vtype == V_ALL (widening from a specific type to V_ALL).
+    //// The id map is shared instead of copied when the access direction is
+    //// compatible, for the same performance reason as above.
+    template<VecType vtype2, VecAccess vaccess2>
+        requires (vtype == V_ALL && (vtype2 != V_ALL || vaccess2 != vaccess))
+    TMultiVecId(const TMultiVecId<vtype2, vaccess2>& mv) : defaultId(mv.getDefaultId())
     {
-        static_assert( vaccess2 >= vaccess, "Copy from a read-only multi-vector id into a read/write multi-vector id is forbidden." );
+        static_assert(vaccess2 >= vaccess, "Copy from a read-only multi-vector id into a read/write multi-vector id is forbidden.");
+
+        if (mv.hasIdMap())
+        {
+            // Type-punning (same rationale as the constructor for same-vtype different-access)
+            union {
+                const std::shared_ptr< IdMap > * this_map_type;
+                const std::shared_ptr< typename TMultiVecId<vtype2,vaccess2>::IdMap > * other_map_type;
+            } ptr;
+            ptr.other_map_type = &mv.idMap_ptr;
+            idMap_ptr = *(ptr.this_map_type);
+        }
+    }
+
+    template<VecType vtype2, VecAccess vaccess2>
+        requires (vtype == V_ALL && (vtype2 != V_ALL || vaccess2 != vaccess))
+    TMultiVecId<vtype, vaccess>& operator=(const TMultiVecId<vtype2, vaccess2>& mv)
+    {
+        static_assert(vaccess2 >= vaccess, "Copy from a read-only multi-vector id into a read/write multi-vector id is forbidden.");
+
+        defaultId = mv.defaultId;
+        if (mv.hasIdMap())
+        {
+            // Type-punning (same rationale as the constructor for same-vtype different-access)
+            union {
+                const std::shared_ptr< IdMap > * this_map_type;
+                const std::shared_ptr< typename TMultiVecId<vtype2,vaccess2>::IdMap > * other_map_type;
+            } ptr;
+            ptr.other_map_type = &mv.idMap_ptr;
+            idMap_ptr = *(ptr.this_map_type);
+        }
+
+        return *this;
+    }
+
+    //// Provides explicit conversions from TMultiVecId<V_ALL> to a specific-vtype
+    //// TMultiVecId (e.g. MultiVecId -> MultiVecCoordId).
+    //// Only available when vtype != V_ALL.
+    //// The explicit keyword forbids the compiler to use it automatically: the
+    //// caller must have checked the type of the source vector before narrowing.
+    template<VecAccess vaccess2>
+        requires (vtype != V_ALL)
+    explicit TMultiVecId(const TMultiVecId<V_ALL, vaccess2>& mv)
+        : defaultId(static_cast<MyVecId>(mv.getDefaultId()))
+    {
+        static_assert(vaccess2 >= vaccess, "Copy from a read-only multi-vector id into a read/write multi-vector id is forbidden.");
 
         if (mv.hasIdMap())
         {
@@ -209,8 +257,10 @@ public:
     }
 
     template<VecAccess vaccess2>
-    TMultiVecId<vtype, vaccess> & operator= (const TMultiVecId<V_ALL, vaccess2>& mv) {
-        static_assert( vaccess2 >= vaccess, "Copy from a read-only multi-vector id into a read/write multi-vector id is forbidden." );
+        requires (vtype != V_ALL)
+    TMultiVecId<vtype, vaccess>& operator=(const TMultiVecId<V_ALL, vaccess2>& mv)
+    {
+        static_assert(vaccess2 >= vaccess, "Copy from a read-only multi-vector id into a read/write multi-vector id is forbidden.");
 
         defaultId = static_cast<MyVecId>(mv.defaultId);
         if (mv.hasIdMap())
@@ -301,7 +351,7 @@ public:
         }
     }
 
-    friend inline std::ostream& operator << ( std::ostream& out, const TMultiVecId<vtype, vaccess>& v )
+    friend inline std::ostream& operator<<(std::ostream& out, const TMultiVecId<vtype, vaccess>& v)
     {
         out << v.getName();
         return out;
@@ -328,236 +378,6 @@ public:
     {
         return StateVecAccessor<DataTypes,vtype,V_READ>(s,getId(s));
     }
-};
-
-
-
-template <VecAccess vaccess>
-class TMultiVecId<V_ALL, vaccess>
-{
-public:
-    typedef TVecId<V_ALL, vaccess> MyVecId;
-
-    typedef std::map<const BaseState*, MyVecId> IdMap;
-    typedef typename IdMap::iterator IdMap_iterator;
-    typedef typename IdMap::const_iterator IdMap_const_iterator;
-
-protected:
-    MyVecId defaultId;
-
-private:
-    std::shared_ptr< IdMap > idMap_ptr;
-
-	template <VecType vtype2, VecAccess vaccess2> friend class TMultiVecId;
-
-protected:
-    IdMap& writeIdMap()
-    {
-        if (!idMap_ptr)
-            idMap_ptr.reset(new IdMap());
-        else if(!(idMap_ptr.use_count() == 1))
-            idMap_ptr.reset(new IdMap(*idMap_ptr));
-        return *idMap_ptr;
-    }
-public:
-    bool hasIdMap() const { return idMap_ptr != nullptr; }
-    const  IdMap& getIdMap() const
-    {
-        if (!idMap_ptr)
-        {
-            static const IdMap empty;
-            return empty;
-        }
-        return *idMap_ptr;
-    }
-
-    TMultiVecId() = default;
-
-    /// Copy from another VecId, possibly with another type of access, with the
-    /// constraint that the access must be compatible (i.e. cannot create
-    /// a write-access VecId from a read-only VecId.
-    template<VecType vtype2, VecAccess vaccess2>
-    TMultiVecId(const TVecId<vtype2, vaccess2>& v) : defaultId(v)
-    {
-        static_assert(vaccess2 >= vaccess, "Copy from a read-only multi-vector id into a read/write multi-vector id is forbidden.");
-    }
-
-    /// Copy assignment from another VecId
-    template<VecType vtype2, VecAccess vaccess2>
-    TMultiVecId<V_ALL, vaccess> & operator= (const TVecId<vtype2, vaccess2>& v) {
-        static_assert(vaccess2 >= vaccess, "Copy from a read-only multi-vector id into a read/write multi-vector id is forbidden.");
-        defaultId = v;
-        return *this;
-    }
-
-    //// Copy constructor
-    TMultiVecId( const TMultiVecId<V_ALL,vaccess>& mv)
-        : defaultId( mv.getDefaultId() )
-        , idMap_ptr( mv.idMap_ptr )
-    {
-    }
-
-    /// Copy assignment
-    TMultiVecId<V_ALL, vaccess> & operator= (const TMultiVecId<V_ALL, vaccess>& mv) {
-        defaultId = mv.getDefaultId();
-        idMap_ptr = mv.idMap_ptr;
-        return *this;
-    }
-
-    //// Only TMultiVecId< V_ALL , vaccess> can declare copy constructors with all
-    //// other kinds of TMultiVecIds, namely MultiVecCoordId, MultiVecDerivId...
-    //// In other cases, the copy constructor takes a TMultiVecId of the same type
-    //// ie copy construct a MultiVecCoordId from a const MultiVecCoordId& or a
-    //// ConstMultiVecCoordId&.
-    template< VecType vtype2, VecAccess vaccess2>
-    TMultiVecId( const TMultiVecId<vtype2,vaccess2>& mv) : defaultId( mv.getDefaultId() )
-    {
-        static_assert( vaccess2 >= vaccess, "Copy from a read-only multi-vector id into a read/write multi-vector id is forbidden." );
-
-        if (mv.hasIdMap())
-        {
-			// When we assign a V_WRITE version to a V_READ version of the same type, which are binary compatible,
-			// share the maps like with a copy constructor, because otherwise a simple operation like passing a
-			// MultiVecCoordId to a method taking a ConstMultiVecCoordId to indicate it won't modify it
-			// will cause a temporary copy of the map, which this define was meant to avoid!
-
-            // Type-punning
-            union {
-                const std::shared_ptr< IdMap > * this_map_type;
-                const std::shared_ptr< typename TMultiVecId<vtype2,vaccess2>::IdMap > * other_map_type;
-            } ptr;
-            ptr.other_map_type = &mv.idMap_ptr;
-            idMap_ptr = *(ptr.this_map_type);
-        }
-    }
-
-    template<VecType vtype2, VecAccess vaccess2>
-    TMultiVecId<V_ALL, vaccess> & operator= (const TMultiVecId<vtype2, vaccess2>& mv) {
-        static_assert( vaccess2 >= vaccess, "Copy from a read-only multi-vector id into a read/write multi-vector id is forbidden." );
-
-        defaultId = mv.defaultId;
-        if (mv.hasIdMap()) {
-            // When we assign a V_WRITE version to a V_READ version of the same type, which are binary compatible,
-            // share the maps like with a copy constructor, because otherwise a simple operation like passing a
-            // MultiVecCoordId to a method taking a ConstMultiVecCoordId to indicate it won't modify it
-            // will cause a temporary copy of the map, which this define was meant to avoid!
-
-            // Type-punning
-            union {
-                const std::shared_ptr< IdMap > * this_map_type;
-                const std::shared_ptr< typename TMultiVecId<vtype2,vaccess2>::IdMap > * other_map_type;
-            } ptr;
-            ptr.other_map_type = &mv.idMap_ptr;
-            idMap_ptr = *(ptr.this_map_type);
-        }
-
-        return *this;
-    }
-
-    void setDefaultId(const MyVecId& id)
-    {
-        defaultId = id;
-    }
-
-    template<class State>
-    void setId(const std::set<State>& states, const MyVecId& id)
-    {
-        if (!states.empty())
-        {
-            IdMap& map = writeIdMap();
-            for (auto* state : states)
-                map[state] = id;
-        }
-    }
-
-    void setId(const BaseState* s, const MyVecId& id)
-    {
-        IdMap& map = writeIdMap();
-        map[s] = id;
-    }
-
-    void assign(const MyVecId& id)
-    {
-        defaultId = id;
-        idMap_ptr.reset();
-    }
-
-    const MyVecId& getId(const BaseState* s) const
-    {
-        if (!hasIdMap()) return defaultId;
-        const IdMap& map = getIdMap();
-
-        IdMap_const_iterator it = map.find(s);
-        if (it != map.end()) return it->second;
-        else                 return defaultId;
-    }
-
-    const MyVecId& getDefaultId() const
-    {
-        return defaultId;
-    }
-
-    std::string getName() const
-    {
-        if (!hasIdMap())
-            return defaultId.getName();
-        else
-        {
-            std::ostringstream out;
-            out << '{';
-            out << defaultId.getName() << "[*";
-            const IdMap& map = getIdMap();
-            MyVecId prev = defaultId;
-            for (IdMap_const_iterator it = map.begin(), itend = map.end(); it != itend; ++it)
-            {
-                if (it->second != prev) // new id
-                {
-                    out << "],";
-                    if (it->second.getType() == defaultId.getType())
-                        out << it->second.getIndex();
-                    else
-                        out << it->second.getName();
-                    out << '[';
-                    prev = it->second;
-                }
-                else out << ',';
-                if (it->first == nullptr) out << "nullptr";
-                else
-                    out << it->first->getName();
-            }
-            out << "]}";
-            return out.str();
-        }
-    }
-
-    friend inline std::ostream& operator << ( std::ostream& out, const TMultiVecId<V_ALL, vaccess>& v )
-    {
-        out << v.getName();
-        return out;
-    }
-
-    static TMultiVecId<V_ALL, vaccess> null() { return TMultiVecId(MyVecId::null()); }
-    bool isNull() const
-    {
-        if (!this->defaultId.isNull()) return false;
-        if (hasIdMap())
-            for (IdMap_const_iterator it = getIdMap().begin(), itend = getIdMap().end(); it != itend; ++it)
-                if (!it->second.isNull()) return false;
-        return true;
-    }
-
-    template <class DataTypes>
-    StateVecAccessor<DataTypes,V_ALL,vaccess> operator[](State<DataTypes>* s) const
-    {
-        return StateVecAccessor<DataTypes,V_ALL,vaccess>(s,getId(s));
-    }
-
-    template <class DataTypes>
-    StateVecAccessor<DataTypes,V_ALL,V_READ> operator[](const State<DataTypes>* s) const
-    {
-        return StateVecAccessor<DataTypes,V_ALL,V_READ>(s,getId(s));
-    }
-
 };
 
 
