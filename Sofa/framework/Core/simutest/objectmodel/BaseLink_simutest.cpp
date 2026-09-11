@@ -114,6 +114,30 @@ TEST_F(BaseLink_test, remove)
     ASSERT_FALSE(owner.l_target.remove(nullptr));
 }
 
+TEST_F(BaseLink_test, add)
+{
+    FakeComponent Component1;
+    Component1.setName("Component1");
+    FakeComponent Component2;
+    Component2.setName("Component2");
+    FakeComponent Component3;
+    Component3.setName("Component3");
+
+    FakeComponent* ptr;
+    ptr = &Component2;
+
+    EXPECT_EQ(Component1.l_target.getValueString(), "");
+
+    Component1.l_target.add(ptr);
+    EXPECT_EQ(Component1.l_target.getValueString(), "@Component2");
+
+    ptr = &Component3;
+
+    Component1.l_target.add(ptr);
+    EXPECT_EQ(Component1.l_target.getValueString(), "@Component2 @Component3");
+}
+
+
 //////////////////////// Testing valid path //////////////////////////////////////
 class MultiLink_simutest : public BaseLink_test {};
 
