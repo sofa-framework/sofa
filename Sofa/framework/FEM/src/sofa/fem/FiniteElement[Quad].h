@@ -21,6 +21,8 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/fem/FiniteElement.h>
+#include <span>
+#include <stdexcept>
 
 #if !defined(SOFA_FEM_FINITE_ELEMENT_QUAD_CPP)
 #include <sofa/defaulttype/VecTypes.h>
@@ -67,21 +69,62 @@ struct FiniteElement<sofa::geometry::Quad, DataTypes>
         };
     }
 
-    static constexpr std::array<QuadraturePointAndWeight, 3> quadraturePoints()
+    template <sofa::Size Degree = 2>
+    static constexpr auto quadraturePoints()
     {
-        constexpr Real sqrt2_3 = 0.816496580928; //sqrt(2./3.)
-        constexpr Real sqrt6 = 2.44948974278; //sqrt(6.)
-        constexpr Real sqrt2 = 1.41421356237; //sqrt(2.)
+        if constexpr (Degree <= 1)
+        {
+            // Degree 1: 1-point centroid rule.
+            return std::array<QuadraturePointAndWeight, 1>{
+                std::make_pair(ReferenceCoord(static_cast<Real>(0), static_cast<Real>(0)), static_cast<Real>(4))
+            };
+        }
+        else if constexpr (Degree <= 2)
+        {
+            // Degree 2: 3-point rule (default).
+            constexpr Real sqrt2_3 = 0.816496580928; //sqrt(2./3.)
+            constexpr Real sqrt6 = 2.44948974278; //sqrt(6.)
+            constexpr Real sqrt2 = 1.41421356237; //sqrt(2.)
 
-        constexpr sofa::type::Vec<TopologicalDimension, Real> q0(sqrt2_3, 0.);
-        constexpr sofa::type::Vec<TopologicalDimension, Real> q1(-1/sqrt6, -1./sqrt2);
-        constexpr sofa::type::Vec<TopologicalDimension, Real> q2(-1/sqrt6, 1./sqrt2);
+            constexpr ReferenceCoord q0(sqrt2_3, 0.);
+            constexpr ReferenceCoord q1(-1/sqrt6, -1./sqrt2);
+            constexpr ReferenceCoord q2(-1/sqrt6, 1./sqrt2);
 
-        return {
-            std::make_pair(q0, 4./3.),
-            std::make_pair(q1, 4./3.),
-            std::make_pair(q2, 4./3.),
-        };
+            return std::array<QuadraturePointAndWeight, 3>{
+                std::make_pair(q0, 4./3.),
+                std::make_pair(q1, 4./3.),
+                std::make_pair(q2, 4./3.)
+            };
+        }
+        else if constexpr (Degree <= 3)
+        {
+            // Degree 3: 2x2 Gauss-Legendre rule.
+            constexpr Real sqrt3 = 1.73205080757; //sqrt(3.)
+            constexpr Real g = static_cast<Real>(1) / sqrt3;
+            return std::array<QuadraturePointAndWeight, 4>{
+                std::make_pair(ReferenceCoord(-g, -g), static_cast<Real>(1)),
+                std::make_pair(ReferenceCoord( g, -g), static_cast<Real>(1)),
+                std::make_pair(ReferenceCoord( g,  g), static_cast<Real>(1)),
+                std::make_pair(ReferenceCoord(-g,  g), static_cast<Real>(1))
+            };
+        }
+        else
+        {
+            static_assert(Degree <= 3, "FiniteElement<Quad>: no quadrature rule for the requested degree");
+        }
+    }
+
+    // Quadrature rule selector by degree; view of the compile-time table.
+    static std::span<const QuadraturePointAndWeight> quadratureRule(sofa::Size degree)
+    {
+        switch (degree)
+        {
+            case 1: { static constexpr auto rule = quadraturePoints<1>(); return rule; }
+            case 2: { static constexpr auto rule = quadraturePoints<2>(); return rule; }
+            case 3: { static constexpr auto rule = quadraturePoints<3>(); return rule; }
+            default:
+                throw std::invalid_argument("FiniteElement<Quad>::quadratureRule: unsupported degree");
+        }
     }
 };
 
