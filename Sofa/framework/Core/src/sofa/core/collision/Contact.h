@@ -23,7 +23,7 @@
 
 #include <sofa/core/collision/DetectionOutput.h>
 #include <sofa/core/collision/Intersection.h>
-#include <sofa/core/objectmodel/Context.h>
+#include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/helper/Factory.h>
 
 #include <vector>

@@ -22,7 +22,7 @@
 #include <sofa/component/visual/VisualStyle.h>
 
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/core/objectmodel/Context.h>
+#include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/simulation/Node.h>
 namespace sofa::component::visual

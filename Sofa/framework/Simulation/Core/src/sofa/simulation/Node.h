@@ -25,7 +25,7 @@
 #include <sofa/simulation/fwd.h>
 
 #include <sofa/core/objectmodel/BaseNode.h>
-#include <sofa/core/objectmodel/Context.h>
+#include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/simulation/Visitor.h>
 
 #include <type_traits>
@@ -145,11 +145,11 @@ extern template class NodeSingle<sofa::core::collision::Pipeline>;
 
    @author The SOFA team </www.sofa-framework.org>
  */
-class SOFA_SIMULATION_CORE_API Node : public sofa::core::objectmodel::BaseNode, public sofa::core::objectmodel::Context
+class SOFA_SIMULATION_CORE_API Node : public sofa::core::objectmodel::BaseNode, public sofa::core::objectmodel::BaseContext
 {
 
 public:
-    SOFA_ABSTRACT_CLASS2(Node, BaseNode, Context);
+    SOFA_ABSTRACT_CLASS2(Node, BaseNode, BaseContext);
     typedef sofa::core::visual::DisplayFlags DisplayFlags;
 
     Node(const std::string& nodename="", Node* parent=nullptr);

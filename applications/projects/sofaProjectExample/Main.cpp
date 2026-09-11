@@ -45,7 +45,7 @@
 #include <SofaBaseMechanics/BarycentricMapping.h>
 #include <SofaBaseTopology/MeshTopology.h>
 
-#include <sofa/core/objectmodel/Context.h>
+#include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/Simulation.h>
