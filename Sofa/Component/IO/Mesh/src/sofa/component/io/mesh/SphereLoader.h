@@ -34,6 +34,8 @@ public:
 protected:
     SphereLoader();
 
+    virtual bool doLoad() override;
+
 public:
     // Point coordinates in 3D.
     Data< type::vector<sofa::type::Vec3 > > d_positions; ///< Sphere centers
@@ -41,7 +43,6 @@ public:
     Data< type::Vec3 > d_scale; ///< Scale applied to sphere positions & radius
     Data< type::Vec3 > d_rotation; ///< Rotation of the DOFs
     Data< type::Vec3 > d_translation; ///< Translation applied to sphere positions
-    bool load() override;
 
     void applyTransform();
 

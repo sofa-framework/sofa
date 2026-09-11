@@ -33,7 +33,7 @@ public:
     SOFA_CLASS(MeshXspLoader,sofa::core::loader::MeshLoader);
 
     /// Inherited from MeshLoader
-    bool doLoad() override;
+    bool doLoadMesh() override;
 
 protected:
     MeshXspLoader();

@@ -44,7 +44,7 @@ protected:
 
 private:
     void doClearBuffers() override;
-    bool doLoad() override;
+    bool doLoadMesh() override;
 
 public:
     Data <unsigned int> d_headerSize; ///< Size of the header binary file (just before the number of facet).

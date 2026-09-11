@@ -42,9 +42,9 @@ GridMeshCreator::GridMeshCreator(): MeshLoader()
     , d_resolution(initData(&d_resolution, Vec2i(2, 2), "resolution", "Number of vertices in each direction"))
     , d_trianglePattern(initData(&d_trianglePattern, 2, "trianglePattern", "0: no triangles, 1: alternate triangles, 2: upward triangles, 3: downward triangles"))
 {
-    // doLoad() is called only if d_filename is modified
+    // doLoadMesh() is called only if d_filename is modified
     // but this loader in particular does not require a filename (refactoring would be needed)
-    // we force d_filename to be dirty to trigger the callback, thus calling doLoad()
+    // we force d_filename to be dirty to trigger the callback, thus calling doLoadMesh()
     d_filename.setDirtyValue();
 
     d_filename.setReadOnly(true);
@@ -84,7 +84,7 @@ void GridMeshCreator::insertQuad(unsigned a, unsigned b, unsigned c, unsigned d)
 }
 
 
-bool GridMeshCreator::doLoad()
+bool GridMeshCreator::doLoadMesh()
 {
     auto my_positions = getWriteOnlyAccessor(d_positions);
     const unsigned numX = d_resolution.getValue()[0], numY=d_resolution.getValue()[1];

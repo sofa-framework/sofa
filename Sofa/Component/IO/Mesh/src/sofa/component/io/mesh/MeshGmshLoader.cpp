@@ -43,7 +43,7 @@ void registerMeshGmshLoader(sofa::core::ObjectFactory* factory)
         .add< MeshGmshLoader >());
 }
 
-bool MeshGmshLoader::doLoad()
+bool MeshGmshLoader::doLoadMesh()
 {
     string cmd;
     unsigned int gmshFormat = 0;
