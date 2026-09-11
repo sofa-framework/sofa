@@ -79,15 +79,19 @@ protected:
 public:
     void cleanup() override;
 
-    std::pair<core::CollisionModel*,core::CollisionModel*> getCollisionModels() override { return std::make_pair(model1,model2); }
-
-    void setDetectionOutputs(OutputVector* outputs) override;
-
-    void createResponse(core::objectmodel::BaseContext* group) override;
-
-    void removeResponse() override;
-
     void draw(const core::visual::VisualParams* vparams) override;
+
+protected:
+    std::pair<core::CollisionModel*,core::CollisionModel*> doGetCollisionModels() override 
+    { 
+        return std::make_pair(model1,model2); 
+    }
+
+    void doSetDetectionOutputs(OutputVector* outputs) override;
+
+    void doCreateResponse(core::objectmodel::BaseContext* group) override;
+
+    void doRemoveResponse() override;
 
 };
 
