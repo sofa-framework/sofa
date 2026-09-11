@@ -81,7 +81,24 @@ protected:
 private:
     std::shared_ptr< IdMap > idMap_ptr;
 
-	template <VecType vtype2, VecAccess vaccess2> friend class TMultiVecId;
+    /// Share the id map from a binary-compatible TMultiVecId instantiation
+    /// without copying it. Safe because TVecId<vtype, V_READ> and
+    /// TVecId<vtype, V_WRITE> have the same memory layout (same underlying
+    /// integral index; access direction is a type-level tag only).
+    /// This avoids an O(n) map copy when e.g. a writable id is passed to a
+    /// function expecting a read-only one.
+    template<VecType vtype2, VecAccess vaccess2>
+    void sharedIdMapCast(const TMultiVecId<vtype2, vaccess2>& mv)
+    {
+        union {
+            const std::shared_ptr<IdMap>* this_map_type;
+            const std::shared_ptr<typename TMultiVecId<vtype2, vaccess2>::IdMap>* other_map_type;
+        } ptr;
+        ptr.other_map_type = &mv.idMap_ptr;
+        idMap_ptr = *(ptr.this_map_type);
+    }
+
+    template <VecType vtype2, VecAccess vaccess2> friend class TMultiVecId;
 
 protected:
     IdMap& writeIdMap()
@@ -155,18 +172,7 @@ public:
         static_assert(vaccess2 >= vaccess, "Copy from a read-only multi-vector id into a read/write multi-vector id is forbidden.");
         if (mv.hasIdMap())
         {
-            // When we assign a V_WRITE version to a V_READ version of the same type, which are binary compatible,
-            // share the maps like with a copy constructor, because otherwise a simple operation like passing a
-            // MultiVecCoordId to a method taking a ConstMultiVecCoordId to indicate it won't modify it
-            // will cause a temporary copy of the map, which this define was meant to avoid!
-
-            // Type-punning
-            union {
-                const std::shared_ptr< IdMap > * this_map_type;
-                const std::shared_ptr< typename TMultiVecId<vtype,vaccess2>::IdMap > * other_map_type;
-            } ptr;
-            ptr.other_map_type = &mv.idMap_ptr;
-            idMap_ptr = *(ptr.this_map_type);
+            sharedIdMapCast(mv);
         }
     }
 
@@ -179,13 +185,7 @@ public:
         defaultId = mv.defaultId;
         if (mv.hasIdMap())
         {
-            // Type-punning (same rationale as the constructor above)
-            union {
-                const std::shared_ptr< IdMap > * this_map_type;
-                const std::shared_ptr< typename TMultiVecId<vtype,vaccess2>::IdMap > * other_map_type;
-            } ptr;
-            ptr.other_map_type = &mv.idMap_ptr;
-            idMap_ptr = *(ptr.this_map_type);
+            sharedIdMapCast(mv);
         }
 
         return *this;
@@ -203,13 +203,7 @@ public:
 
         if (mv.hasIdMap())
         {
-            // Type-punning (same rationale as the constructor for same-vtype different-access)
-            union {
-                const std::shared_ptr< IdMap > * this_map_type;
-                const std::shared_ptr< typename TMultiVecId<vtype2,vaccess2>::IdMap > * other_map_type;
-            } ptr;
-            ptr.other_map_type = &mv.idMap_ptr;
-            idMap_ptr = *(ptr.this_map_type);
+            sharedIdMapCast(mv);
         }
     }
 
@@ -222,13 +216,7 @@ public:
         defaultId = mv.defaultId;
         if (mv.hasIdMap())
         {
-            // Type-punning (same rationale as the constructor for same-vtype different-access)
-            union {
-                const std::shared_ptr< IdMap > * this_map_type;
-                const std::shared_ptr< typename TMultiVecId<vtype2,vaccess2>::IdMap > * other_map_type;
-            } ptr;
-            ptr.other_map_type = &mv.idMap_ptr;
-            idMap_ptr = *(ptr.this_map_type);
+            sharedIdMapCast(mv);
         }
 
         return *this;
