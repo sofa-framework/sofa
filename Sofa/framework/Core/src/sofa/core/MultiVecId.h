@@ -238,9 +238,10 @@ public:
         {
             IdMap& map = writeIdMap();
 
-            for (typename TMultiVecId<V_ALL,vaccess2>::IdMap_const_iterator it = mv.getIdMap().begin(), itend = mv.getIdMap().end();
-                    it != itend; ++it)
-                map[it->first] = MyVecId(it->second);
+            for (const auto& [k, v] : mv.getIdMap())
+            {
+                map.insert(std::make_pair(k, MyVecId(v)));
+            }
         }
     }
 
@@ -255,9 +256,10 @@ public:
         {
             IdMap& map = writeIdMap();
 
-            for (typename TMultiVecId<V_ALL,vaccess2>::IdMap_const_iterator it = mv.getIdMap().begin(), itend = mv.getIdMap().end();
-                    it != itend; ++it)
-                map[it->first] = MyVecId(it->second);
+            for (const auto& [k, v] : mv.getIdMap())
+            {
+                map.insert(std::make_pair(k, MyVecId(v)));
+            }
         }
 
         return *this;
