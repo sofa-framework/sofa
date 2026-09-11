@@ -53,7 +53,7 @@ public:
     using MechanicalOperations::projectResponse;
 
     /// Compute the current force (given the latest propagated position and velocity)
-    void computeForce(const MappingGraph& mappingGraph, core::MultiVecDerivId result, bool clearForceBefore, bool accumulateForcesFromMappedStates, TaskScheduler* taskScheduler);
+    void computeForce(const MappingGraph& mappingGraph, core::MultiVecDerivId result, bool clearForceBefore, bool pullbackForces, TaskScheduler* taskScheduler);
     using MechanicalOperations::computeForce;
 
     /// accumulate $ df += (m M + b B + k K) velocity $
