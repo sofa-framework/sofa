@@ -392,4 +392,36 @@ TEST_F(TriangularBendingSprings3_test, checkForceField_TopologyChanges)
     this->checkTopologyChanges();
 }
 
+TEST_F(TriangularBendingSprings3_test, EdgeInformationStreamOperators)
+{
+    TriangularBendingSprings3_test::EdgeInfo initialInfo;
+
+    for (int i=0; i< initialInfo.DfDx.size(); ++i)
+        for (int j=0; j<initialInfo.DfDx[i].size(); ++j)
+            initialInfo.DfDx[i][j] = i+j;
+
+    initialInfo.m1 = 1;
+    initialInfo.m2 = 1;
+    initialInfo.ks = 1;
+    initialInfo.kd = 1;
+    initialInfo.restlength = 1;
+    initialInfo.is_initialized = true;
+    initialInfo.is_activated = true;
+
+    std::stringstream buffer;
+    buffer << initialInfo;
+
+    TriangularBendingSprings3_test::EdgeInfo loadedInfo;
+    buffer >> loadedInfo;
+
+    EXPECT_EQ(initialInfo.DfDx, loadedInfo.DfDx);
+    EXPECT_EQ(initialInfo.m1, loadedInfo.m1);
+    EXPECT_EQ(initialInfo.m2, loadedInfo.m2);
+    EXPECT_EQ(initialInfo.ks, loadedInfo.ks);
+    EXPECT_EQ(initialInfo.kd, loadedInfo.kd);
+    EXPECT_EQ(initialInfo.restlength, loadedInfo.restlength);
+    EXPECT_EQ(initialInfo.is_activated, loadedInfo.is_activated);
+    EXPECT_EQ(initialInfo.is_initialized, loadedInfo.is_initialized);
+}
+
 } // namespace sofa

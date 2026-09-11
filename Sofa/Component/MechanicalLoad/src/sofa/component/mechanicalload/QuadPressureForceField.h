@@ -83,14 +83,18 @@ protected:
         }
 
         /// Output stream
-        inline friend std::ostream& operator<< ( std::ostream& os, const QuadPressureInformation& /*ei*/ )
+        inline friend std::ostream& operator<< ( std::ostream& os, const QuadPressureInformation& ei )
         {
+            os << ei.area << " ";
+            os << ei.force;
             return os;
         }
 
         /// Input stream
-        inline friend std::istream& operator>> ( std::istream& in, QuadPressureInformation& /*ei*/ )
+        inline friend std::istream& operator>> ( std::istream& in, QuadPressureInformation& ei )
         {
+            in >> ei.area;
+            in >> ei.force;
             return in;
         }
     };

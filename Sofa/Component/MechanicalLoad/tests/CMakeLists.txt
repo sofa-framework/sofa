@@ -4,6 +4,7 @@ project(Sofa.Component.MechanicalLoad_test)
 
 set(SOURCE_FILES
     ConstantForceField_test.cpp
+    EdgePressureForceField_test.cpp
     PlaneForceField_test.cpp
     QuadPressureForceField_test.cpp
     SkeletalMotionConstraint_test.cpp

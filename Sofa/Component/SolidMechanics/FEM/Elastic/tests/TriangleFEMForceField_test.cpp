@@ -64,6 +64,8 @@ public:
     using TriangleFEM = TriangleFEMForceField<DataTypes>;
     using TriangularFEM = TriangularFEMForceField<DataTypes>;
     using TriangularFEMOptim = TriangularFEMForceFieldOptim<DataTypes>;
+    using TriangleInformation = TriangularFEM::TriangleInformation;
+    using VertexInformation = TriangularFEM::VertexInformation;
     using Vec3 = type::Vec<3, Real>;
     using Mat23 = type::Mat<2, 3, Real>;
     using Mat33 = type::Mat<3, 3, Real>;
@@ -838,6 +840,140 @@ TEST_F(TriangleFEMForceField3_test, DISABLED_testTriangleFEMPerformance)
 TEST_F(TriangleFEMForceField3_test, DISABLED_testTriangularFEMPerformance)
 {
     this->testFEMPerformance(1);
+}
+
+TEST_F(TriangleFEMForceField3_test, TriangleInformationStreamOperators)
+{
+    TriangleFEMForceField3_test::TriangleInformation initialInfo;
+
+    for (int i = 0; i < 6; ++i)
+        for (int j = 0; j < 6; ++j)
+            initialInfo.materialMatrix[i][j] = i * 6 + j;
+
+    for (int i = 0; i < 6; ++i)
+        for (int j = 0; j < 9; ++j)
+            initialInfo.strainDisplacementMatrix[i][j] = i * 9 + j;
+
+    for (int i = 0; i < 9; ++i)
+        for (int j = 0; j < 9; ++j)
+            initialInfo.stiffness[i][j] = i * 9 + j;
+
+    initialInfo.area = 1.0;
+
+    for (int i = 0; i < 3; ++i)
+        initialInfo.rotatedInitialElements[i] = Coord(i, i + 1, i + 2);
+
+    for (int i = 0; i < 3; ++i)
+        for (int j = 0; j < 3; ++j)
+            initialInfo.rotation[i][j] = i * 3 + j;
+
+    for (int i = 0; i < 3; ++i)
+        initialInfo.strain[i] = i + 1;
+
+    for (int i = 0; i < 3; ++i)
+        initialInfo.stress[i] = i + 4;
+
+    for (int i = 0; i < 3; ++i)
+        for (int j = 0; j < 3; ++j)
+            initialInfo.initialTransformation[i][j] = i + j;
+
+    initialInfo.principalStressDirection = Coord(1.0, 2.0, 3.0);
+
+    initialInfo.maxStress = 10.0;
+
+    initialInfo.principalStrainDirection = Coord(4.0, 5.0, 6.0);
+
+    initialInfo.maxStrain = 20.0;
+
+    initialInfo.differenceToCriteria = 30.0;
+
+    initialInfo.lastNStressDirection.resize(3);
+
+    initialInfo.lastNStressDirection[0] = Coord(1.0, 0.0, 0.0);
+    initialInfo.lastNStressDirection[1] = Coord(0.0, 1.0, 0.0);
+    initialInfo.lastNStressDirection[2] = Coord(0.0, 0.0, 1.0);
+
+    std::stringstream buffer;
+    buffer << initialInfo;
+
+    TriangleFEMForceField3_test::TriangleInformation loadedInfo;
+    buffer >> loadedInfo;
+
+    for (int i = 0; i < 6; ++i)
+        for (int j = 0; j < 6; ++j)
+            EXPECT_EQ(initialInfo.materialMatrix[i][j], loadedInfo.materialMatrix[i][j]);
+
+    for (int i = 0; i < 6; ++i)
+        for (int j = 0; j < 9; ++j)
+            EXPECT_EQ(initialInfo.strainDisplacementMatrix[i][j], loadedInfo.strainDisplacementMatrix[i][j]);
+
+    for (int i = 0; i < 9; ++i)
+        for (int j = 0; j < 9; ++j)
+            EXPECT_EQ(initialInfo.stiffness[i][j], loadedInfo.stiffness[i][j]);
+
+    EXPECT_EQ(initialInfo.area, loadedInfo.area);
+
+    for (int i = 0; i < 3; ++i)
+        EXPECT_EQ(initialInfo.rotatedInitialElements[i], loadedInfo.rotatedInitialElements[i]);
+
+    for (int i = 0; i < 3; ++i)
+        for (int j = 0; j < 3; ++j)
+            EXPECT_EQ(initialInfo.rotation[i][j], loadedInfo.rotation[i][j]);
+
+    for (int i = 0; i < 3; ++i)
+        EXPECT_EQ(initialInfo.strain[i], loadedInfo.strain[i]);
+
+    for (int i = 0; i < 3; ++i)
+        EXPECT_EQ(initialInfo.stress[i], loadedInfo.stress[i]);
+
+    for (int i = 0; i < 3; ++i)
+        for (int j = 0; j < 3; ++j)
+            EXPECT_EQ(initialInfo.initialTransformation[i][j], loadedInfo.initialTransformation[i][j]);
+
+    EXPECT_EQ(initialInfo.principalStressDirection, loadedInfo.principalStressDirection);
+
+    EXPECT_EQ(initialInfo.maxStress, loadedInfo.maxStress);
+
+    EXPECT_EQ(initialInfo.principalStrainDirection, loadedInfo.principalStrainDirection);
+
+    EXPECT_EQ(initialInfo.maxStrain, loadedInfo.maxStrain);
+
+    EXPECT_EQ(initialInfo.differenceToCriteria, loadedInfo.differenceToCriteria);
+
+    ASSERT_EQ(initialInfo.lastNStressDirection.size(), loadedInfo.lastNStressDirection.size());
+
+    for (size_t i = 0; i < initialInfo.lastNStressDirection.size(); ++i)
+        EXPECT_EQ(initialInfo.lastNStressDirection[i], loadedInfo.lastNStressDirection[i]);
+}
+
+TEST_F(TriangleFEMForceField3_test, VertexInformationStreamOperators)
+{
+    TriangleFEMForceField3_test::VertexInformation initialInfo;
+
+    initialInfo.meanStrainDirection = Coord(1.0, 2.0, 3.0);
+    initialInfo.sumEigenValues = 10.0;
+
+    for (int i = 0; i < 3; ++i)
+        for (int j = 0; j < 3; ++j)
+            initialInfo.rotation[i][j] = i * 3 + j;
+
+    initialInfo.stress = 20.0;
+
+    std::stringstream buffer;
+    buffer << initialInfo;
+
+    TriangleFEMForceField3_test::VertexInformation loadedInfo;
+    buffer >> loadedInfo;
+
+    EXPECT_EQ(initialInfo.meanStrainDirection, loadedInfo.meanStrainDirection);
+    EXPECT_EQ(initialInfo.sumEigenValues, loadedInfo.sumEigenValues);
+
+    for (int i = 0; i < 3; ++i)
+        for (int j = 0; j < 3; ++j)
+            EXPECT_EQ(initialInfo.rotation[i][j], loadedInfo.rotation[i][j]);
+
+    EXPECT_EQ(initialInfo.stress, loadedInfo.stress);
+
 }
 
 } // namespace sofa
