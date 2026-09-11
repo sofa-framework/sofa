@@ -340,8 +340,8 @@ public:
         if constexpr (Policy::AutoCompress) this->compress(); /// If AutoCompress policy is activated, we neeed to be sure not missing btemp registered value.
 
         Index bi=0; split_row_index(i, bi);
-        Index rowId = Index(i * this->rowIndex.size() / this->nBlockRow);
-        if (this->sortedFind(this->rowIndex, i, rowId))
+        Index rowId = 0;
+        if (this->findRow(i, rowId))
         {
             Range rowRange(this->rowBegin[rowId], this->rowBegin[rowId+1]);
             for (Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)
@@ -392,36 +392,44 @@ public:
             if constexpr (Policy::AutoCompress) this->compress();
 
             Index bi=0; split_row_index(i, bi);
-            Index rowId = Index(i * this->rowIndex.size() / this->nBlockRow);
-            if (this->sortedFind(this->rowIndex, i, rowId))
+
+            Index rowId = 0;
+            if (!this->findRow(i, rowId)) return;
+
+            const Range rowRange(this->rowBegin[rowId], this->rowBegin[rowId+1]);
+            for (Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)
             {
-                Range rowRange(this->rowBegin[rowId], this->rowBegin[rowId+1]);
-                for (Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)
+                // first clear (i,j)
+                Block& b = this->colsValue[xj];
+                for (Index bj = 0; bj < (Index)NC; ++bj)
+                    traits::vset(b, bi, bj, 0);
+
+                const Index j = this->colsIndex[xj];
+
+                // the diagonal block is its own symmetric counterpart
+                if (j == i)
                 {
-                    Block* b = &this->colsValue[xj];
-                    // first clear (i,j)
-                    for (Index bj = 0; bj < (Index)NC; ++bj)
-                        traits::vset(*b, bi, bj, 0);
-
-                    // then clear (j,i) 
-                    Index j = this->colsIndex[xj];
-                    
-                    if (j != i)
-                    {
-                        Range jrowRange(this->rowBegin[j], this->rowBegin[j + 1]);
-                        Index colId = 0;
-
-                        // look for column i
-                        if (this->sortedFind(this->colsIndex, jrowRange, i, colId))
-                        {
-                            b = &this->colsValue[colId];
-                        }
-                    }
-
                     for (Index bj = 0; bj < (Index)NL; ++bj)
-                        traits::vset(*b, bj, bi, 0);
-             
+                        traits::vset(b, bj, bi, 0);
+                    continue;
                 }
+
+                // then clear (j,i), when that block exists. rowBegin is indexed
+                // by the position of a row inside rowIndex, not by the row
+                // number, so row j has to be looked up rather than used as an
+                // index -- the two only coincide when every row is present.
+                Index jRowId = 0;
+                if (!this->findRow(j, jRowId)) continue;
+
+                Index colId = 0;
+                if (!this->findColInRange(Range(this->rowBegin[jRowId], this->rowBegin[jRowId+1]), i, colId)) continue;
+
+                // never fall back to block (i,j) when (j,i) is missing: clearing
+                // a column of it would zero entries that lie in neither row i
+                // nor column i
+                Block& bSym = this->colsValue[colId];
+                for (Index bj = 0; bj < (Index)NL; ++bj)
+                    traits::vset(bSym, bj, bi, 0);
             }
         }
     }
@@ -581,17 +589,13 @@ public:
                     }
                 }
 
-                if (oldVid != vid) //check in case all sub-blocks have been filtered out
+                // a destination row left empty by the filter is dropped unless
+                // the caller asked to keep it
+                if (oldVid != vid || keepEmptyRows)
                 {
                     this->rowIndex.push_back(scalarRowId / DstBlockRows + subRow);
                     this->rowBegin.push_back(oldVid);
                 }
-            }
-
-            if (!keepEmptyRows && !this->rowBegin.empty() && this->rowBegin.back() == vid) // row was empty
-            {
-                this->rowIndex.pop_back();
-                this->rowBegin.pop_back();
             }
         }
         this->rowBegin.push_back(vid); // end of last row
@@ -745,12 +749,12 @@ public:
     {
         if constexpr (Policy::AutoCompress) const_cast<Matrix*>(this)->compress(); /// \warning this violates the const-ness of the method !
 
-        Index rowId = Index(i * this->rowIndex.size() / this->nBlockRow);
-        if (this->sortedFind(this->rowIndex, i, rowId))
+        Index rowId = 0;
+        if (this->findRow(i, rowId))
         {
             Range rowRange(this->rowBegin[rowId], this->rowBegin[rowId+1]);
-            Index colId = rowRange.begin() + j * rowRange.size() / this->nBlockCol;
-            if (this->sortedFind(this->colsIndex, rowRange, j, colId))
+            Index colId = 0;
+            if (this->findColInRange(rowRange, j, colId))
             {
                 return createBlockConstAccessor(i, j, colId);
             }
@@ -763,12 +767,12 @@ public:
     {
         if constexpr (Policy::AutoCompress) compress();
 
-        Index rowId = Index(i * this->rowIndex.size() / this->nBlockRow);
-        if (this->sortedFind(this->rowIndex, i, rowId))
+        Index rowId = 0;
+        if (this->findRow(i, rowId))
         {
             Range rowRange(this->rowBegin[rowId], this->rowBegin[rowId+1]);
-            Index colId = rowRange.begin() + j * rowRange.size() / this->nBlockCol;
-            if (this->sortedFind(this->colsIndex, rowRange, j, colId))
+            Index colId = 0;
+            if (this->findColInRange(rowRange, j, colId))
             {
                 return createBlockAccessor(i, j, colId);
             }
@@ -779,12 +783,12 @@ public:
     /// Get write access to a block, possibly creating it
     BlockAccessor blockCreate(Index i, Index j)
     {
-        Index rowId = Index(i * this->rowIndex.size() / this->nBlockRow);
-        if (this->sortedFind(this->rowIndex, i, rowId))
+        Index rowId = 0;
+        if (this->findRow(i, rowId))
         {
             Range rowRange(this->rowBegin[rowId], this->rowBegin[rowId+1]);
-            Index colId = rowRange.begin() + j * rowRange.size() / this->nBlockCol;
-            if (this->sortedFind(this->colsIndex, rowRange, j, colId))
+            Index colId = 0;
+            if (this->findColInRange(rowRange, j, colId))
             {
                 return createBlockAccessor(i, j, colId);
             }
@@ -838,9 +842,9 @@ public:
     ColBlockConstIterator bRowBegin(Index ib) const override
     {
         if constexpr (Policy::AutoCompress) const_cast<Matrix*>(this)->compress(); /// \warning this violates the const-ness of the method !
-        Index rowId = Index(ib * this->rowIndex.size() / this->nBlockRow);
+        Index rowId = 0;
         Index index = 0;
-        if (this->sortedFind(this->rowIndex, ib, rowId))
+        if (this->findRow(ib, rowId))
         {
             index = this->rowBegin[rowId];
         }
@@ -851,9 +855,9 @@ public:
     ColBlockConstIterator bRowEnd(Index ib) const override
     {
         if constexpr (Policy::AutoCompress) const_cast<Matrix*>(this)->compress(); /// \warning this violates the const-ness of the method !
-        Index rowId = Index(ib * this->rowIndex.size() / this->nBlockRow);
+        Index rowId = 0;
         Index index2 = 0;
-        if (this->sortedFind(this->rowIndex, ib, rowId))
+        if (this->findRow(ib, rowId))
         {
             index2 = this->rowBegin[rowId+1];
         }
@@ -864,9 +868,9 @@ public:
     std::pair<ColBlockConstIterator, ColBlockConstIterator> bRowRange(Index ib) const override
     {
         if constexpr (Policy::AutoCompress) const_cast<Matrix*>(this)->compress(); /// \warning this violates the const-ness of the method !
-        Index rowId = Index(ib * this->rowIndex.size() / this->nBlockRow);
+        Index rowId = 0;
         Index index = 0, index2 = 0;
-        if (this->sortedFind(this->rowIndex, ib, rowId))
+        if (this->findRow(ib, rowId))
         {
             index = this->rowBegin[rowId];
             index2 = this->rowBegin[rowId+1];
