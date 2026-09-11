@@ -58,19 +58,50 @@ void MixedInteractionForceField<DataTypes1, DataTypes2>::addForce(const Mechanic
 }
 
 template<class DataTypes1, class DataTypes2>
-void MixedInteractionForceField<DataTypes1, DataTypes2>::addDForce(const MechanicalParams* mparams, MultiVecDerivId dfId )
+void MixedInteractionForceField<DataTypes1, DataTypes2>::addDForce(const MechanicalParams* mparams,
+    MultiVecDerivId dfId, ConstMultiVecDerivId dxId, ConstMultiVecCoordId xId, ConstMultiVecDerivId vId)
 {
     if (this->mstate1 && this->mstate2)
     {
         auto state1 = this->mstate1.get();
         auto state2 = this->mstate2.get();
-        addDForce( mparams, 
-                   *dfId[state1].write()    , *dfId[state2].write()   ,
-                   *mparams->readDx(state1) , *mparams->readDx(state2) );
+
+        Data<VecDeriv1>* df1 = dfId[state1].write(); assert(df1);
+        Data<VecDeriv2>* df2 = dfId[state2].write(); assert(df2);
+
+        const Data<VecDeriv1>* dx1 = dxId[state1].read(); assert(dx1);
+        const Data<VecDeriv2>* dx2 = dxId[state2].read(); assert(dx2);
+
+        const Data<VecCoord1>* x1 = xId[state1].read(); assert(x1);
+        const Data<VecCoord2>* x2 = xId[state2].read(); assert(x2);
+
+        const Data<VecDeriv1>* v1 = vId[state1].read(); assert(v1);
+        const Data<VecDeriv2>* v2 = vId[state2].read(); assert(v2);
+
+        const AddDForceVectors<DataTypes1> vectors1 {
+            .df = *df1,
+            .dx = *dx1,
+            .x = *x1,
+            .v = *v1
+        };
+
+        const AddDForceVectors<DataTypes2> vectors2 {
+            .df = *df2,
+            .dx = *dx2,
+            .x = *x2,
+            .v = *v2
+        };
+
+        doAddDForce(mparams, vectors1, vectors2);
     }
 }
 
-
+template <class TDataTypes1, class TDataTypes2>
+void MixedInteractionForceField<TDataTypes1, TDataTypes2>::doAddDForce(
+    const MechanicalParams* mparams, const AddDForceVectors<DataTypes1>& vectors1,
+    const AddDForceVectors<DataTypes2>& vectors2)
+{
+}
 
 template<class DataTypes1, class DataTypes2>
 SReal MixedInteractionForceField<DataTypes1, DataTypes2>::getPotentialEnergy(const MechanicalParams* mparams) const

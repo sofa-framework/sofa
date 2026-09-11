@@ -103,12 +103,13 @@ public:
     /// explicitly (i.e. using its value at the beginning of the timestep).
     ///
     /// If the ForceField can be represented as a matrix, this method computes
-    /// $ df += kFactor K dx + bFactor B dx $
+    /// $ df += kFactor K(x) dx + bFactor B(v) dx $
     ///
     /// This method retrieves the force and dx vector from the two MechanicalState
     /// and call the internal addDForce(VecDeriv&,VecDeriv&,const VecDeriv&,const VecDeriv&,SReal,SReal)
     /// method implemented by the component.
-    void addDForce(const MechanicalParams* mparams, MultiVecDerivId dfId ) override;
+    void addDForce(const MechanicalParams* mparams, MultiVecDerivId dfId, ConstMultiVecDerivId dxId,
+        ConstMultiVecCoordId xId, ConstMultiVecDerivId vId) override;
 
     /// Compute the force derivative given a small displacement from the
     /// position and velocity used in the previous call to addForce().
@@ -123,10 +124,12 @@ public:
     /// This method must be implemented by the component, and is usually called
     /// by the generic PairInteractionForceField::addDForce() method.
     ///
-    /// To support old components that implement the deprecated addForce method
-    /// without scalar coefficients, it defaults to using a temporaty vector to
-    /// compute $ K dx $ and then manually scaling all values by kFactor.
-
+    ///
+    ///
+    ///              ********************     WARNING     ********************
+    ///              This overload is deprecated!!! Use `doAddDForce` instead.
+    ///
+    SOFA_ATTRIBUTE_DEPRECATED__ADDDFORCE_DERIVED()
     virtual void addDForce(const MechanicalParams* mparams, DataVecDeriv& df1, DataVecDeriv& df2, const DataVecDeriv& dx1, const DataVecDeriv& dx2)=0;
 
 
@@ -217,6 +220,24 @@ public:
         sofa::helper::replaceAll(name, "ForceField", "FF");
         return name;
     }
+
+protected:
+
+    // all vectors involved in the addDForce operation
+    struct AddDForceVectors
+    {
+        DataVecDeriv& df;
+        const DataVecDeriv& dx;
+        const DataVecCoord& x;
+        const DataVecDeriv& v;
+    };
+
+    // Computes df += kFactor K(x) dx + bFactor B(v) dx
+    // with:
+    // K the derivative of the forces wrt the position
+    // B the derivative of the forces wrt the velocity
+    virtual void doAddDForce(const MechanicalParams* mparams,
+        const AddDForceVectors& vectors1, const AddDForceVectors& vectors2);
 
 };
 
