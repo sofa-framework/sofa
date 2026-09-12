@@ -28,6 +28,7 @@
 #include <sofa/core/behavior/TopologyAccessor.h>
 #include <sofa/core/visual/DrawColoredMesh.h>
 #include <sofa/helper/ColorMap.h>
+#include <sofa/type/ClampedScalar.h>
 
 namespace sofa::component::solidmechanics::fem::elastic
 {
@@ -85,6 +86,7 @@ public:
 
     Data<helper::ColorMap> d_colorMap;
     Data<bool> d_lighting;
+    Data<type::ClampedScalar<sofa::Real_t<DataTypes>>> d_elementSpace;
 
     sofa::SingleLink<MyType, CauchyStressEvaluator<DataTypes>,
         sofa::BaseLink::FLAG_STOREPATH | sofa::BaseLink::FLAG_STRONGLINK> l_stressEvaluator;

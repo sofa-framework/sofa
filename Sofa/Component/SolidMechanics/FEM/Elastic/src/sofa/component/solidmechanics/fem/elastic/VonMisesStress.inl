@@ -36,10 +36,13 @@ VonMisesStress<DataTypes, ElementType>::VonMisesStress()
                              "Local nodal von Mises stress values"))
     , d_colorMap(initData(&d_colorMap, sofa::helper::ColorMap(), "colorMap", "Color map"))
     , d_lighting(initData(&d_lighting, true, "lighting", "If true, light is simulated on the mesh. Otherwise, no lighting effect."))
+    , d_elementSpace(initData(&d_elementSpace, type::ClampedScalar<sofa::Real_t<DataTypes>>(static_cast<sofa::Real_t<DataTypes>>(0.125)), "elementSpace", "When rendering, the space between elements"))
     , l_stressEvaluator(initLink("stressEvaluator", "The component in charge of evaluating the Cauchy stress."))
 {
     // This component must receive events
     f_listening.setValue(true);
+
+    d_elementSpace.setGroup("Visualization");
 }
 
 template <class DataTypes, class ElementType>
@@ -355,6 +358,7 @@ void VonMisesStress<DataTypes, ElementType>::draw(const core::visual::VisualPara
         nodesColors.push_back(nodesColorsInElement);
     }
 
+    m_renderer.elementSpace = d_elementSpace.getValue();
     m_renderer.drawAllElements(vparams->drawTool(), positions.ref(), this->l_topology.get(), nodesColors);
 }
 
