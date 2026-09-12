@@ -9,5 +9,7 @@
     <StVenantKirchhoffMaterial name="material" youngModulus="2e6" poissonRatio="0.45"/>
     <HyperelasticityFEMForceField name="FEM" template="Vec3,Hexahedron" topology="@grid"
                                   computeForceStrategy="sequenced" computeForceDerivStrategy="sequenced"/>
+    <VonMisesStress template="Vec3,Hexahedron" name="stress" topology="@grid" stressEvaluator="@material"
+                    colorMap="green yellow orange red purple #221C35"/>
 
 </Node>
