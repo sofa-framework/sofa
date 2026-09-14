@@ -377,7 +377,7 @@ public:
         return true;
     }
 
-    bool addDestPtr(DestPtr v)
+    bool add(DestPtr v)
     {
         if (!v)
             return false;
@@ -387,7 +387,7 @@ public:
         return true;
     }
 
-    bool addDestPtrPath(DestPtr v, const std::string& path)
+    bool add(DestPtr v, const std::string& path)
     {
         if (!v && path.empty())
             return false;
@@ -503,10 +503,10 @@ protected:
         }
 
         /// TLink:adding accepts nullptr (for a not yet resolved link).
-        return TLink::addDestPtrPath(destptr, path);
+        return TLink::add(destptr, path);
     }
 
-    bool _doAdd_(Base* baseptr) override
+    bool addRawPtr(Base* baseptr) override
     {
         /// If the pointer is null and the path empty we do nothing
         if(!baseptr)
@@ -521,7 +521,7 @@ protected:
         }
 
         /// TLink:adding accepts nullptr (for a not yet resolved link).
-        return TLink::addDestPtr(destptr);
+        return TLink::add(destptr);
     }
 
     /// Returns false on type mismatch
@@ -595,7 +595,7 @@ public:
     MultiLink(const BaseLink::InitLink<OwnerType>& init, DestPtr val)
         : Inherit(init), m_validator(nullptr)
     {
-        if (val) this->addDestPtr(val);
+        if (val) this->add(val);
     }
 
     virtual ~MultiLink()
@@ -672,7 +672,7 @@ public:
     SingleLink(const BaseLink::InitLink<OwnerType>& init, DestPtr val)
         : Inherit(init), m_validator(nullptr)
     {
-        if (val) this->addDestPtr(val);
+        if (val) this->add(val);
     }
 
     virtual ~SingleLink()
