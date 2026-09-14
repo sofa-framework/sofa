@@ -521,7 +521,7 @@ TEST_F(Snapshot_test, SnapshotJSONExporter)
     checkFile.close();
 
     auto snapshot_import = std::make_shared<Snapshot>();
-    importFrom(*snapshot_import, path.string());
+    importFromJSON(*snapshot_import, path.string());
 
     EXPECT_NE(snapshot_import->m_graphRoot,nullptr);
 

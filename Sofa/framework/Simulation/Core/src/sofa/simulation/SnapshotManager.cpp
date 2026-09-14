@@ -26,7 +26,7 @@
 #include <fstream>
 #include <sofa/helper/logging/Messaging.h>
 #include <algorithm>
-#include <sofa/core/objectmodel/SnapshotJSONExporter.cpp>
+#include <sofa/core/objectmodel/SnapshotJSONExporter.h>
 #include <utility>
 #include <sofa/helper/system/FileSystem.h>
 using sofa::helper::system::FileSystem;
@@ -53,7 +53,7 @@ void SnapshotManager::addSnapshotFromMemory(const std::shared_ptr<sofa::core::ob
     m_snapshotsFromMemory["Memory_Snapshot " + std::to_string(index++) + " at " + std::to_string(snapshotTime)] = snapshot;
 }
 
-void SnapshotManager::doMemorySave(const sofa::core::sptr<Node>& groot)
+void SnapshotManager::memorySave(const sofa::core::sptr<Node>& groot)
 {
     auto snapshot = std::make_shared<sofa::core::objectmodel::Snapshot>();
     auto visitor = SaveSnapshotVisitor(nullptr, *snapshot);
@@ -61,7 +61,7 @@ void SnapshotManager::doMemorySave(const sofa::core::sptr<Node>& groot)
     addSnapshotFromMemory(snapshot, groot->getTime());
 }
 
-void SnapshotManager::doMemoryLoad(sofa::core::sptr<Node>& groot)
+void SnapshotManager::memoryLoad(sofa::core::sptr<Node>& groot)
 {
     if (m_snapshotsFromMemory.empty())
     {
@@ -74,7 +74,7 @@ void SnapshotManager::doMemoryLoad(sofa::core::sptr<Node>& groot)
     groot->execute(visitor);
 }
 
-void SnapshotManager::doSaveTo(const sofa::core::sptr<sofa::simulation::Node>& groot, const std::string& savePath, bool isSet)
+void SnapshotManager::saveTo(const sofa::core::sptr<sofa::simulation::Node>& groot, const std::string& savePath, bool isSet)
 {
     auto m_snapshot = std::make_shared<sofa::core::objectmodel::Snapshot>();
     auto visitor = SaveSnapshotVisitor(nullptr,*m_snapshot);
@@ -93,50 +93,39 @@ void SnapshotManager::doSaveTo(const sofa::core::sptr<sofa::simulation::Node>& g
     msg_info("SaveSnapshot") << "Snapshot " << savePath << " saved";
 }
 
-void SnapshotManager::doLoadTo(sofa::core::sptr<sofa::simulation::Node>& groot, const std::string& outPath)
+void SnapshotManager::loadTo(sofa::core::sptr<sofa::simulation::Node>& groot, const std::string& outPath)
 {
     auto m_snapshot = std::make_shared<sofa::core::objectmodel::Snapshot>();
-    if (FileSystem::exists(outPath))
+
+    std::string FileExtension = FileSystem::getExtension(outPath);
+
+    if (FileSystem::exists(outPath) && FileExtension == "json")
     {
-        importFrom(*m_snapshot,outPath);
-        auto visitor = LoadSnapshotVisitor(nullptr,*m_snapshot);
-        groot->execute(visitor);
+        importFromJSON(*m_snapshot,outPath);
     }
+    else
+    {
+        msg_error("LoadSnapshot") << "Snapshot " << outPath << " not found";
+        return;
+    }
+    auto visitor = LoadSnapshotVisitor(nullptr,*m_snapshot);
+    groot->execute(visitor);
     addSnapshotFromFile(outPath);
     msg_info("LoadSnapshot") << "Snapshot " << outPath << " loaded";
 }
 
-void SnapshotManager::doLoadToSet(const std::string& filename)
+void SnapshotManager::loadToSet(const std::string& filename)
 {
     if (!FileSystem::exists(filename))
         return;
 
-    std::ifstream file(filename);
+    std::map<std::shared_ptr<sofa::core::objectmodel::Snapshot>,double> snapshots;
 
-    nlohmann::json jSnapshot;
+    doLoadSet(filename,snapshots);
 
-    if (!file.is_open())
+    for (const auto&[snapshot, snapshotTime] : snapshots)
     {
-        msg_error("SnapshotJSONExporter") << "Cannot open file " << filename << " for reading";
-        return;
-    }
-
-    file >> jSnapshot;
-    file.close();
-
-    for (const auto& snapshotJson : jSnapshot)
-    {
-        auto snapshot = std::make_shared<sofa::core::objectmodel::Snapshot>();
-        snapshot->m_graphRoot = std::make_shared<sofa::core::objectmodel::Snapshot::SnapshotNode>();
-        sofa::core::objectmodel::from_json(snapshotJson, *snapshot->m_graphRoot);
-        std::string snapshotTime = "0";
-        for (const auto& data : snapshot->m_graphRoot->m_dataContainer)
-        {
-            if (data.name == "time")
-                snapshotTime = data.value;
-        }
-
-        addSnapshotFromMemory(snapshot, std::stod(snapshotTime));
+        addSnapshotFromMemory(snapshot, snapshotTime);
     }
 
     msg_info("LoadSnapshot") << "Snapshot " << filename << " loaded";

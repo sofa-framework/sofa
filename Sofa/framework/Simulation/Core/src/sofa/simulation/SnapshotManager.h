@@ -75,19 +75,19 @@ public:
                            double snapshotTime);
 
     /// Save and store a Snapshot in memory
-    void doMemorySave(const sofa::core::sptr<sofa::simulation::Node>& groot);
+    void memorySave(const sofa::core::sptr<sofa::simulation::Node>& groot);
 
     /// Load a snapshot from memory
-    void doMemoryLoad(sofa::core::sptr<sofa::simulation::Node>& groot);
+    void memoryLoad(sofa::core::sptr<sofa::simulation::Node>& groot);
 
     /// Save and store a Snapshot to a file (or Save and store a group of Snapshot to a file when isSet is true)
-    void doSaveTo(const sofa::core::sptr<sofa::simulation::Node>& groot, const std::string& savePath, bool isSet);
+    void saveTo(const sofa::core::sptr<sofa::simulation::Node>& groot, const std::string& savePath, bool isSet);
 
     /// Load a snapshot from a file
-    void doLoadTo(sofa::core::sptr<sofa::simulation::Node>& groot, const std::string& outPath);
+    void loadTo(sofa::core::sptr<sofa::simulation::Node>& groot, const std::string& outPath);
 
     /// Load a group of snapshots from a file
-    void doLoadToSet(const std::string& filename);
+    void loadToSet(const std::string& filename);
 
 
 };
