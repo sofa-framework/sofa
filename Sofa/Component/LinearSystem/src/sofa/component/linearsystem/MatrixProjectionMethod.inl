@@ -189,6 +189,23 @@ void MatrixProjectionMethod<TMatrix>::computeProjection(
 template <class BlockType>
 void addToGlobalMatrix(linearalgebra::BaseMatrix* globalMatrix, Eigen::SparseMatrix<BlockType, Eigen::RowMajor> JT_K_J, const type::Vec2u positionInGlobalMatrix)
 {
+#ifndef NDEBUG
+    // add checks to see if JT_K_J fits in globalMatrix
+    const auto lastRow = static_cast<std::ptrdiff_t>(positionInGlobalMatrix[0]) + JT_K_J.rows();
+    const auto lastCol = static_cast<std::ptrdiff_t>(positionInGlobalMatrix[1]) + JT_K_J.cols();
+    if (lastRow > static_cast<std::ptrdiff_t>(globalMatrix->rowSize()) ||
+        lastCol > static_cast<std::ptrdiff_t>(globalMatrix->colSize()))
+    {
+        msg_error("MatrixProjectionMethod")
+            << "A projected matrix block of size " << JT_K_J.rows() << "x" << JT_K_J.cols()
+            << " placed at (" << positionInGlobalMatrix[0] << ", " << positionInGlobalMatrix[1]
+            << ") does not fit into the global matrix of size "
+            << globalMatrix->rowSize() << "x" << globalMatrix->colSize()
+            << ". The block is ignored.";
+        return;
+    }
+#endif
+
     for (int k = 0; k < JT_K_J.outerSize(); ++k)
     {
         for (typename Eigen::SparseMatrix<BlockType, Eigen::RowMajor>::InnerIterator it(JT_K_J,k); it; ++it)
