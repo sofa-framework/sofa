@@ -79,7 +79,7 @@ public:
         SOFA_TEMPLATE2(BaseSourceTerm, DataTypes, ElementType));
 
     using Deriv = sofa::Deriv_t<DataTypes>;
-    using QuadratureContext = QuadratureContext<DataTypes, ElementType>;
+    using QuadratureContext_t = QuadratureContext<DataTypes, ElementType>;
     using NodalPressure = ::sofa::component::solidmechanics::fem::elastic::NodalPressure<DataTypes>;
 
     /**
@@ -96,7 +96,7 @@ public:
     /**
      * @brief The linked pressure interpolated at the quadrature point, times the unit normal.
      */
-    Deriv evaluate(const QuadratureContext& context) const override;
+    Deriv evaluate(const QuadratureContext_t& context) const override;
 
 protected:
 

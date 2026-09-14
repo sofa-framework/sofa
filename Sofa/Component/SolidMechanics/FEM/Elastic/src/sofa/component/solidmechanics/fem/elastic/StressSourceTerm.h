@@ -89,7 +89,7 @@ public:
         SOFA_TEMPLATE2(BaseSourceTerm, DataTypes, ElementType));
 
     using Deriv = sofa::Deriv_t<DataTypes>;
-    using QuadratureContext = QuadratureContext<DataTypes, ElementType>;
+    using QuadratureContext_t = QuadratureContext<DataTypes, ElementType>;
     using NodalStress = ::sofa::component::solidmechanics::fem::elastic::NodalStress<DataTypes>;
 
     /**
@@ -106,7 +106,7 @@ public:
     /**
      * @brief The linked stress interpolated at the quadrature point, contracted with the normal.
      */
-    Deriv evaluate(const QuadratureContext& context) const override;
+    Deriv evaluate(const QuadratureContext_t& context) const override;
 
 protected:
 

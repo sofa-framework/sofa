@@ -77,7 +77,7 @@ public:
         SOFA_TEMPLATE2(BaseSourceTerm, DataTypes, ElementType));
 
     using Deriv = sofa::Deriv_t<DataTypes>;
-    using QuadratureContext = QuadratureContext<DataTypes, ElementType>;
+    using QuadratureContext_t = QuadratureContext<DataTypes, ElementType>;
     using NodalSourceDensity =
         ::sofa::component::solidmechanics::fem::elastic::NodalSourceDensity<DataTypes>;
 
@@ -95,7 +95,7 @@ public:
     /**
      * @brief The linked source density interpolated at the quadrature point.
      */
-    Deriv evaluate(const QuadratureContext& context) const override;
+    Deriv evaluate(const QuadratureContext_t& context) const override;
 
 protected:
 

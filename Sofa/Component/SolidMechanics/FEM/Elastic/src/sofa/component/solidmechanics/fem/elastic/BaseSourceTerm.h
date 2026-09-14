@@ -140,14 +140,14 @@ public:
         sofa::core::objectmodel::BaseComponent);
 
     using Deriv = sofa::Deriv_t<DataTypes>;
-    using QuadratureContext = QuadratureContext<DataTypes, ElementType>;
+    using QuadratureContext_t = QuadratureContext<DataTypes, ElementType>;
 
     /**
      * @brief Source density at one quadrature point, per unit physical measure.
      *
      * @param context Geometry of the quadrature point.
      */
-    virtual Deriv evaluate(const QuadratureContext& context) const = 0;
+    virtual Deriv evaluate(const QuadratureContext_t& context) const = 0;
 
 protected:
 
@@ -165,7 +165,7 @@ protected:
     template <class PropertyType>
     static PropertyType interpolateProperty(
         const sofa::core::BaseNodalProperty<PropertyType>& property,
-        const QuadratureContext& context)
+        const QuadratureContext_t& context)
     {
         static constexpr sofa::Size NumberOfNodesInElement = ElementType::NumberOfNodes;
 
@@ -178,7 +178,7 @@ protected:
             elementNodesProperty[i] = property.getNodeProperty(context.element[i], propertyAccessor);
         }
 
-        return QuadratureContext::FiniteElement::Helper::evaluateValueInElement(
+        return QuadratureContext_t::FiniteElement::Helper::evaluateValueInElement(
             elementNodesProperty, context.N);
     }
 };
