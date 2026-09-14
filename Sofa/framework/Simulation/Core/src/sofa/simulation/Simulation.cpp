@@ -504,3 +504,9 @@ Simulation* MainSimulation::getSimulation()
 }
 
 } // namespace sofa::simulation
+
+namespace sofa::simulation
+{
+SOFA_ATTRIBUTE_DEPRECATED__SINGLETONSIMULATION() Simulation* getSimulation(){ return MainSimulation::getSimulation(); }
+SOFA_ATTRIBUTE_DEPRECATED__SINGLETONSIMULATION() void setSimulation(Simulation::SPtr simulation){ MainSimulation::setSimulation(simulation); }
+}
