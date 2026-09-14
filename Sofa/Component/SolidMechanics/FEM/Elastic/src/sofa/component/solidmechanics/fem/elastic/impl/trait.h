@@ -67,6 +67,10 @@ struct trait
         sofa::Real_t<DataTypes>>;
 
     using ElementGradient = sofa::type::Vec<NumberOfDofsInElement, sofa::Real_t<DataTypes>>;
+
+    using DeformationGradient = sofa::type::Mat<spatial_dimensions, spatial_dimensions, Real_t<DataTypes>>;
+
+    using StressVoigtVector = sofa::type::Vec<sofa::type::NumberOfIndependentElements<spatial_dimensions>, sofa::Real_t<DataTypes>>;
 };
 
 }

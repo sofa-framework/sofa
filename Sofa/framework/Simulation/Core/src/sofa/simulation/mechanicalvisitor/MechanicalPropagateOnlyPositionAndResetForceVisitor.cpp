@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
+#define SOFA_SIMULATION_CORE_MECHANICALPROPAGATEONLYPOSITIONANDRESETFORCEVISITOR_CPP
 #include <sofa/simulation/mechanicalvisitor/MechanicalPropagateOnlyPositionAndResetForceVisitor.h>
 
 namespace sofa::simulation::mechanicalvisitor

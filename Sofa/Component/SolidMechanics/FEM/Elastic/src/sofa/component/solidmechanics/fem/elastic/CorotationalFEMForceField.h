@@ -30,8 +30,9 @@
 #include <sofa/component/solidmechanics/fem/elastic/impl/rotations/StablePolarDecomposition.h>
 #include <sofa/component/solidmechanics/fem/elastic/impl/rotations/TriangleRotation.h>
 #include <sofa/core/behavior/ForceField.h>
+#include <sofa/component/solidmechanics/fem/elastic/CauchyStressEvaluator.h>
 
-#if !defined(ELASTICITY_COMPONENT_ELEMENT_COROTATIONAL_FEM_FORCE_FIELD_CPP)
+#if !defined(SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_ELEMENT_COROTATIONAL_FEM_FORCE_FIELD_CPP)
 #include <sofa/fem/FiniteElement[all].h>
 #endif
 
@@ -109,11 +110,27 @@ struct RotationMethods<DataTypes, sofa::geometry::Hexahedron> : RotationMethodsC
     }
 };
 
+//partial specialization for quadratic tetrahedron
+template <class DataTypes>
+struct RotationMethods<DataTypes, sofa::geometry::QuadraticTetrahedron> : RotationMethodsContainer<DataTypes, sofa::geometry::QuadraticTetrahedron,
+    PolarDecomposition<DataTypes>, IdentityRotation
+>
+{
+    using Inherit = RotationMethodsContainer<DataTypes, sofa::geometry::QuadraticTetrahedron,
+        PolarDecomposition<DataTypes>, IdentityRotation>;
+
+    explicit RotationMethods(sofa::core::objectmodel::BaseObject* parent) : Inherit(parent)
+    {
+        this->d_rotationMethod.setValue(PolarDecomposition<DataTypes>::getItem().key);
+    }
+};
+
 
 template <class DataTypes, class ElementType>
 class CorotationalFEMForceField :
     public BaseElementLinearFEMForceField<DataTypes, ElementType>,
-    public FEMForceField<DataTypes, ElementType>
+    public FEMForceField<DataTypes, ElementType>,
+    public CauchyStressEvaluator<DataTypes>
 {
 public:
     SOFA_CLASS2(
@@ -126,7 +143,8 @@ private:
     using ElementGradient = typename trait::ElementGradient;
     using ElementDisplacement = typename trait::ElementDisplacement;
     using RotationMatrix = sofa::type::Mat<trait::spatial_dimensions, trait::spatial_dimensions, sofa::Real_t<DataTypes>>;
-
+    using DeformationGradient = typename trait::DeformationGradient;
+    using StressVoigtVector = typename trait::StressVoigtVector;
 
 public:
 
@@ -140,6 +158,8 @@ public:
     SReal getPotentialEnergy(const sofa::core::MechanicalParams*, const sofa::DataVecCoord_t<DataTypes>& x) const override;
 
     const sofa::type::vector<RotationMatrix>& getElementRotations() const { return m_rotations; }
+
+    StressVoigtVector computeStress(const DeformationGradient& F, sofa::Size elementId) override;
 
 protected:
 
@@ -193,6 +213,15 @@ extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API Corotational
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API CorotationalFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Hexahedron>;
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API CorotationalFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Prism>;
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API CorotationalFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Pyramid>;
+
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API CorotationalFEMForceField<sofa::defaulttype::Vec2Types, sofa::geometry::QuadraticEdge>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API CorotationalFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticEdge>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API CorotationalFEMForceField<sofa::defaulttype::Vec2Types, sofa::geometry::QuadraticTriangle>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API CorotationalFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticTriangle>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API CorotationalFEMForceField<sofa::defaulttype::Vec2Types, sofa::geometry::QuadraticQuad>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API CorotationalFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticQuad>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API CorotationalFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticTetrahedron>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API CorotationalFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticHexahedron>;
 #endif
 
 }  // namespace sofa::component::solidmechanics::fem::elastic

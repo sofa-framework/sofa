@@ -109,7 +109,9 @@ inline void CSPARSE_numeric(int n,int * M_colptr,int * M_rowind,Real * M_values,
         kk = perm[k];  // kth original, or permuted, column 
         for (p = M_colptr[kk] ; p < M_colptr[kk+1] ; p++)
         {
-            i = invperm[M_rowind[p]];	// get A(i,k) 
+            const auto r = M_rowind[p] ;
+            assert(r < n && r >= 0);
+            i = invperm[r];	// get A(i,k)
             if (i <= k)
             {
                 Y[i] += M_values[p] ;  // scatter A(i,k) into Y (sum duplicates) 

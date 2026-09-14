@@ -23,11 +23,15 @@
 
 #include <sofa/simulation/MechanicalVisitor.h>
 
+#if !defined(SOFA_SIMULATION_CORE_MECHANICALADDMBK_TOMATRIXVISITOR_CPP)
+SOFA_HEADER_DEPRECATED_NOT_REPLACED("v26.12", "v27.12")
+#endif
+
 namespace sofa::simulation::mechanicalvisitor
 {
 
 /** Accumulate the entries of a mechanical matrix (mass or stiffness) of the whole scene */
-class SOFA_SIMULATION_CORE_API MechanicalAddMBK_ToMatrixVisitor : public MechanicalVisitor
+class SOFA_SIMULATION_CORE_API SOFA_ATTRIBUTE_DEPRECATED__MECHANICALADDMBK_TOMATRIXVISITOR() MechanicalAddMBK_ToMatrixVisitor : public MechanicalVisitor
 {
 public:
     const sofa::core::behavior::MultiMatrixAccessor* matrix;

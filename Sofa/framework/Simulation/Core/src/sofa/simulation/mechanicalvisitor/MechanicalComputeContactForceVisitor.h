@@ -23,13 +23,17 @@
 
 #include <sofa/simulation/MechanicalVisitor.h>
 
+#if !defined(SOFA_SIMULATION_CORE_MECHANICALCOMPUTECONTACTFORCEVISITOR_CPP)
+SOFA_HEADER_DEPRECATED_NOT_REPLACED("v26.12", "v27.12")
+#endif
+
 namespace sofa::simulation::mechanicalvisitor
 {
 
 /** Accumulate only the contact forces computed in applyContactForce.
 This action is typically called after a MechanicalResetForceVisitor.
 */
-class SOFA_SIMULATION_CORE_API MechanicalComputeContactForceVisitor : public MechanicalVisitor
+class SOFA_SIMULATION_CORE_API SOFA_ATTRIBUTE_DEPRECATED__MECHANICALCOMPUTECONTACTFORCEVISITOR() MechanicalComputeContactForceVisitor : public MechanicalVisitor
 {
 public:
     sofa::core::MultiVecDerivId res;

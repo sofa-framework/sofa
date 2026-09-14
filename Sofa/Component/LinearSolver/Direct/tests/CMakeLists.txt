@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.22)
 project(Sofa.Component.LinearSolver.Direct_test)
 
 set(SOURCE_FILES
+    EigenDirectSparseSolver_test.cpp
     SparseLDLSolver_test.cpp
 )
 

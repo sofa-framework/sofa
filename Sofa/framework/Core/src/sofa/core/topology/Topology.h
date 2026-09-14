@@ -119,6 +119,12 @@ public:
     virtual SReal getPZ(Index /*i*/) const { return 0.0; }
 };
 
+/// List of linear sub-triangles in quadratic triangle
+SOFA_CORE_API extern const unsigned int trianglesInQuadraticTriangles[4][3];
+
+/// List of linear sub-quads in a quadratic quad
+SOFA_CORE_API extern const unsigned int quadsInQuadraticQuads[4][4];
+
 /// List of pair of vertex indices (edge) in a tetrahedron
 SOFA_CORE_API extern const unsigned int edgesInTetrahedronArray[6][2];
 /// List of 3 vertex indices (triangle) in a tetrahedron
@@ -131,6 +137,12 @@ SOFA_CORE_API extern const unsigned int edgesInHexahedronArray[12][2];
 SOFA_CORE_API extern const unsigned int quadsOrientationInHexahedronArray[6][4];
 // List of vertex indices in a hexahedron
 SOFA_CORE_API extern const unsigned int verticesInHexahedronArray[2][2][2];
+
+/// List of quadratic triangles in a quadratic tetrahedron
+SOFA_CORE_API extern const unsigned int quadraticTrianglesInQuadraticTetrahedronArray[4][6];
+
+/// List of quadratic quads in a quadratic hexahedron
+SOFA_CORE_API extern const unsigned int quadraticQuadsInQuadraticHexahedronArray[6][9];
 
 } // namespace sofa::core::topology
 
