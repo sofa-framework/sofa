@@ -54,7 +54,7 @@ void PressureSourceTerm<DataTypes, ElementType>::init()
 
 template <class DataTypes, class ElementType>
 sofa::Deriv_t<DataTypes> PressureSourceTerm<DataTypes, ElementType>::evaluate(
-    const QuadratureContext& context) const
+    const QuadratureContext_t& context) const
 {
     if (!l_pressure)
     {
