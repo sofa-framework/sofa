@@ -42,8 +42,6 @@ struct FiniteElement;
     using ShapeFunctionType = std::function<Real(const ReferenceCoord&)>;\
     using QuadraturePoint = ReferenceCoord; \
     using QuadraturePointAndWeight = std::pair<QuadraturePoint, Real>;\
-    /* Quadrature rules of this element's reference domain. The two accessors are */\
-    /* re-exported so callers keep writing FiniteElement::quadraturePoints().     */\
     using Quadrature = FiniteElementQuadrature<ElType, Real, defaultQuadratureDegree>;\
     static constexpr sofa::Size InterpolationOrder = Quadrature::InterpolationOrder;\
     static constexpr sofa::Size MinimumQuadratureDegree = Quadrature::MinimumQuadratureDegree;\
