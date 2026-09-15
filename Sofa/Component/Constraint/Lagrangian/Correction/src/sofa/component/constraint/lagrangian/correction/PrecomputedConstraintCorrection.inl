@@ -30,6 +30,7 @@
 #include <sofa/component/odesolver/backward/EulerImplicitSolver.h>
 
 #include <sofa/linearalgebra/SparseMatrix.h>
+#include <sofa/core/behavior/IterativeSolver.h>
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/core/ConstraintParams.h>
@@ -314,23 +315,22 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 
         // Tighten the linear solver accuracy so the compliance is computed as accurately as
         // possible during precomputation and restore the original values afterwards.
-        core::objectmodel::BaseData* toleranceData  = l_linearSolver ? l_linearSolver->findData("tolerance")  : nullptr;
-        core::objectmodel::BaseData* iterationsData = l_linearSolver ? l_linearSolver->findData("iterations") : nullptr;
-        core::objectmodel::BaseData* thresholdData  = l_linearSolver ? l_linearSolver->findData("threshold")  : nullptr;
+        auto* iterativeSolver = l_linearSolver ? dynamic_cast<core::behavior::IterativeSolver*>(l_linearSolver.get()) : nullptr;
+        core::objectmodel::BaseData* thresholdData = l_linearSolver ? l_linearSolver->findData("threshold") : nullptr;
 
-        std::string buf_tolerance, buf_iterations, buf_threshold;
+        SReal buf_tolerance = 0;
+        unsigned buf_iterations = 0;
+        std::string buf_threshold;
 
-        if (toleranceData)
+        if (iterativeSolver)
         {
-            buf_tolerance = toleranceData->getValueString();
-            toleranceData->read("1e-20");
+            buf_tolerance = iterativeSolver->d_tolerance.getValue();
+            iterativeSolver->d_tolerance.setValue(1e-20_sreal);
             msg_info() << "Precomputation: temporarily setting '" << l_linearSolver->getName()
                        << "' tolerance from " << buf_tolerance << " to 1e-20";
-        }
-        if (iterationsData)
-        {
-            buf_iterations = iterationsData->getValueString();
-            iterationsData->read("5000");
+
+            buf_iterations = iterativeSolver->d_maxIter.getValue();
+            iterativeSolver->d_maxIter.setValue(5000u);
             msg_info() << "Precomputation: temporarily setting '" << l_linearSolver->getName()
                        << "' iterations from " << buf_iterations << " to 5000";
         }
@@ -417,9 +417,12 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
         this->getContext()->setGravity(gravity);
 
         // Restore linear solver parameters
-        if (toleranceData)  toleranceData->read(buf_tolerance);
-        if (iterationsData) iterationsData->read(buf_iterations);
-        if (thresholdData)  thresholdData->read(buf_threshold);
+        if (iterativeSolver)
+        {
+            iterativeSolver->d_tolerance.setValue(buf_tolerance);
+            iterativeSolver->d_maxIter.setValue(buf_iterations);
+        }
+        if (thresholdData) thresholdData->read(buf_threshold);
 
         // Restore velocity
         for (unsigned int i = 0; i < velocity.size(); i++)
