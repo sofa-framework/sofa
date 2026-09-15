@@ -36,3 +36,11 @@ namespace sofa::component::engine::generate
 	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
 	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
 } // namespace sofa::component::engine::generate
+
+
+#ifdef SOFA_BUILD_SOFA_COMPONENT_ENGINE_GENERATE
+#define SOFA_ATTRIBUTE_DEPRECATED__VOLUMEFROMTETRAHEDRONS()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED__VOLUMEFROMTETRAHEDRONS() \
+    SOFA_ATTRIBUTE_DEPRECATED("v26.12", "v27.06", "Use the VolumeFromVolumetricElements instead")
+#endif

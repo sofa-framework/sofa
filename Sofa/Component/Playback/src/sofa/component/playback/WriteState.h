@@ -47,7 +47,7 @@ namespace sofa::component::playback
  * Stop to write the state if the kinematic energy reach a given threshold (stopAt)
  * The energy will be measured at each period determined by keperiod
 */
-class SOFA_COMPONENT_PLAYBACK_API WriteState: public core::objectmodel::BaseComponent
+class SOFA_COMPONENT_PLAYBACK_API WriteState: public core::behavior::StateAccessor
 {
 public:
     SOFA_CLASS(WriteState,core::objectmodel::BaseComponent);
@@ -65,7 +65,7 @@ public:
     Data < double > d_keperiod; ///< set the period to measure the kinetic energy increase
 
 protected:
-    core::behavior::BaseMechanicalState* mmodel;
+    SingleLink<WriteState, core::behavior::BaseMechanicalState, BaseLink::FLAG_STRONGLINK> l_state;
     std::ofstream* outfile;
 #if SOFA_COMPONENT_PLAYBACK_HAVE_ZLIB
     gzFile gzfile;

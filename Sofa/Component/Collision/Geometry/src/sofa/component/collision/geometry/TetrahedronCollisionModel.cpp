@@ -42,7 +42,6 @@ void registerTetrahedronCollisionModel(sofa::core::ObjectFactory* factory)
 
 TetrahedronCollisionModel::TetrahedronCollisionModel()
     : tetra(nullptr)
-    , mstate(nullptr)
     , m_topology(nullptr)
     , m_topologyRevision(-1)
     , l_topology(initLink("topology", "link to the topology container"))
@@ -59,6 +58,8 @@ void TetrahedronCollisionModel::resize(sofa::Size size)
 
 void TetrahedronCollisionModel::init()
 {
+    Inherit2::init();
+
     if (l_topology.empty())
     {
         msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
@@ -72,15 +73,6 @@ void TetrahedronCollisionModel::init()
     {
         msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name << ". TetrahedronCollisionModel requires a BaseMeshTopology";
         this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
-        return;
-    }
-
-    this->CollisionModel::init();
-    mstate = dynamic_cast< core::behavior::MechanicalState<Vec3Types>* > (getContext()->getMechanicalState());
-
-    if (mstate==nullptr)
-    {
-        msg_error() << "TetrahedronCollisionModel requires a Vec3 Mechanical Model";
         return;
     }
 

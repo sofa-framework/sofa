@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
+#define SOFA_SIMULATION_CORE_MECHANICALPROPAGATEONLYPOSITIONANDRESETFORCEVISITOR_CPP
 #include <sofa/simulation/mechanicalvisitor/MechanicalPropagateOnlyPositionAndResetForceVisitor.h>
 
 namespace sofa::simulation::mechanicalvisitor
@@ -43,11 +43,6 @@ Visitor::Result MechanicalPropagateOnlyPositionAndResetForceVisitor::fwdMappedMe
 {
     mm->resetForce(this->params, f.getId(mm));
     return RESULT_CONTINUE;
-}
-
-void MechanicalPropagateOnlyPositionAndResetForceVisitor::bwdMechanicalState(simulation::Node* , core::behavior::BaseMechanicalState* mm)
-{
-    SOFA_UNUSED(mm);
 }
 
 } // namespace sofa::simulation::mechanicalvisitor

@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
+#define SOFA_SIMULATION_CORE_MECHANICALAPPLYPROJECTIVECONSTRAINT_TOMATRIXVISITOR_CPP
 #include <sofa/simulation/mechanicalvisitor/MechanicalApplyProjectiveConstraint_ToMatrixVisitor.h>
 
 #include <sofa/core/behavior/BaseProjectiveConstraintSet.h>

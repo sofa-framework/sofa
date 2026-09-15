@@ -44,7 +44,6 @@ public:
         setReadWriteVectors();
 #endif
     }
-    Result fwdMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
     Result fwdMass(simulation::Node* /*node*/,sofa::core::behavior::BaseMass* mass) override;
 
     /// Return a class name for this visitor

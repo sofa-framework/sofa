@@ -70,11 +70,15 @@ public:
      */
     bool isMapped() const;
 
-    const sofa::type::vector<SPtr>& getParents() const { return m_parents; }
+    const sofa::type::vector<std::weak_ptr<BaseMappingGraphNode>>& getParents() const { return m_parents; }
     const sofa::type::vector<SPtr>& getChildren() const { return m_children; }
 
 private:
-    sofa::type::vector<SPtr> m_parents;   ///< prerequisite nodes (nodes pointing to this one)
+    /// Prerequisite nodes (nodes pointing to this one). Held as weak_ptr: ownership of every
+    /// node belongs to MappingGraph::m_allNodes and to the owning parent's m_children; a strong
+    /// back-reference here would form a parent<->child reference cycle that keeps the whole
+    /// graph alive forever across rebuilds (MappingGraph::clear() only releases m_allNodes).
+    sofa::type::vector<std::weak_ptr<BaseMappingGraphNode>> m_parents;
     sofa::type::vector<SPtr> m_children;  ///< dependent nodes (nodes pointed from this one)
 
     // Mutable counter used during traversal (reset before each traversal).

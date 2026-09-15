@@ -23,7 +23,7 @@
 #include <sofa/component/collision/geometry/config.h>
 
 #include <sofa/core/CollisionModel.h>
-#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/behavior/SingleStateAccessor.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/VecTypes.h>
 
@@ -60,10 +60,10 @@ public:
 using Point = TPoint<sofa::defaulttype::Vec3Types>;
 
 template<class TDataTypes>
-class PointCollisionModel : public core::CollisionModel
+class PointCollisionModel : public core::CollisionModel, public virtual core::behavior::SingleStateAccessor<TDataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(PointCollisionModel, TDataTypes), core::CollisionModel);
+    SOFA_CLASS2(SOFA_TEMPLATE(PointCollisionModel, TDataTypes), core::CollisionModel, SOFA_TEMPLATE(core::behavior::SingleStateAccessor, TDataTypes));
 
     typedef TDataTypes DataTypes;
     typedef DataTypes InDataTypes;
@@ -97,7 +97,7 @@ public:
 
     bool canCollideWithElement(sofa::Index index, CollisionModel* model2, sofa::Index index2) override;
 
-    core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return mstate; }
+    core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return this->mstate; }
 
     Deriv getNormal(sofa::Index index){ return (normals.size()) ? normals[index] : Deriv();}
 
@@ -127,18 +127,15 @@ public:
         return l_topology.get();
     }
 
-protected:
-
-    core::behavior::MechanicalState<DataTypes>* mstate;
-
     Data<bool> d_computeNormals; ///< activate computation of normal vectors (required for some collision detection algorithms)
     Data<bool> d_displayFreePosition; ///< Display Collision Model Points free position(in green)
-
-    VecDeriv normals;
 
     /// Link to be set to the topology container in the component graph.
     SingleLink<PointCollisionModel<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
+protected:
+
+    VecDeriv normals;
 };
 
 
@@ -172,7 +169,7 @@ template<class DataTypes>
 inline const typename DataTypes::Deriv& TPoint<DataTypes>::v() const { return this->model->mstate->read(core::vec_id::read_access::velocity)->getValue()[this->index]; }
 
 template<class DataTypes>
-inline const typename DataTypes::Deriv& PointCollisionModel<DataTypes>::velocity(sofa::Index index) const { return mstate->read(core::vec_id::read_access::velocity)->getValue()[index]; }
+inline const typename DataTypes::Deriv& PointCollisionModel<DataTypes>::velocity(sofa::Index index) const { return this->mstate->read(core::vec_id::read_access::velocity)->getValue()[index]; }
 
 template<class DataTypes>
 inline typename DataTypes::Deriv TPoint<DataTypes>::n() const { return ((unsigned)this->index<this->model->normals.size()) ? this->model->normals[this->index] : Deriv(); }

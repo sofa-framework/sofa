@@ -67,6 +67,21 @@ struct BaseDrawColoredMesh
 
 protected:
 
+    template<class ColorContainer>
+    static sofa::type::RGBAColor getColor(const ColorContainer& container, std::size_t elementId, std::size_t localId, std::size_t globalId)
+    {
+        if constexpr (std::is_same_v<typename ColorContainer::value_type, sofa::type::RGBAColor>)
+        {
+            // Global approach
+            return container[globalId];
+        }
+        else
+        {
+            // Local approach
+            return container[elementId][localId];
+        }
+    }
+
     template<class PositionType>
     PositionType applyElementSpace(const PositionType& position, const PositionType& elementCenter) const
     {
@@ -91,6 +106,60 @@ protected:
 
 template<class ElementType>
 struct DrawElementColoredMesh{};
+
+template<>
+struct SOFA_CORE_API DrawElementColoredMesh<sofa::geometry::Edge>
+    : public BaseDrawColoredMesh<DrawElementColoredMesh<sofa::geometry::Edge>>
+{
+    using ElementType = sofa::geometry::Edge;
+    friend BaseDrawColoredMesh;
+
+    template<class PositionContainer, class IndicesContainer, class ColorContainer>
+    void doDraw(
+        sofa::helper::visual::DrawTool* drawTool,
+        const PositionContainer& position,
+        sofa::core::topology::BaseMeshTopology* topology,
+        const IndicesContainer& elementIndices,
+        const ColorContainer& nodesColors)
+    {
+    }
+};
+
+template<>
+struct SOFA_CORE_API DrawElementColoredMesh<sofa::geometry::Triangle>
+    : public BaseDrawColoredMesh<DrawElementColoredMesh<sofa::geometry::Triangle>>
+{
+    using ElementType = sofa::geometry::Triangle;
+    friend BaseDrawColoredMesh;
+
+    template<class PositionContainer, class IndicesContainer, class ColorContainer>
+    void doDraw(
+        sofa::helper::visual::DrawTool* drawTool,
+        const PositionContainer& position,
+        sofa::core::topology::BaseMeshTopology* topology,
+        const IndicesContainer& elementIndices,
+        const ColorContainer& nodesColors)
+    {
+    }
+};
+
+template<>
+struct SOFA_CORE_API DrawElementColoredMesh<sofa::geometry::Quad>
+    : public BaseDrawColoredMesh<DrawElementColoredMesh<sofa::geometry::Quad>>
+{
+    using ElementType = sofa::geometry::Quad;
+    friend BaseDrawColoredMesh;
+
+    template<class PositionContainer, class IndicesContainer, class ColorContainer>
+    void doDraw(
+        sofa::helper::visual::DrawTool* drawTool,
+        const PositionContainer& position,
+        sofa::core::topology::BaseMeshTopology* topology,
+        const IndicesContainer& elementIndices,
+        const ColorContainer& nodesColors)
+    {
+    }
+};
 
 template<>
 struct SOFA_CORE_API DrawElementColoredMesh<sofa::geometry::Tetrahedron>
@@ -139,7 +208,12 @@ struct SOFA_CORE_API DrawElementColoredMesh<sofa::geometry::Tetrahedron>
                     const auto p = this->applyElementSpace(position[vertexId], center);
 
                     renderedPoints.push_back(p);
-                    colors.push_back(nodesColors[vertexId]);
+
+                    // Find local ID of the vertex in the Tetrahedron to support local color mapping
+                    std::size_t localId = 0;
+                    for (; localId < 4; ++localId) if (element[localId] == vertexId) break;
+
+                    colors.push_back(this->getColor(nodesColors, i, localId, vertexId));
                 }
             }
         }
@@ -147,6 +221,99 @@ struct SOFA_CORE_API DrawElementColoredMesh<sofa::geometry::Tetrahedron>
         drawTool->drawTriangles(renderedPoints, colors);
     }
 
+};
+
+template<>
+struct SOFA_CORE_API DrawElementColoredMesh<sofa::geometry::Hexahedron>
+    : public BaseDrawColoredMesh<DrawElementColoredMesh<sofa::geometry::Hexahedron>>
+{
+    using ElementType = sofa::geometry::Hexahedron;
+    friend BaseDrawColoredMesh;
+    static constexpr std::size_t NumberQuadsInHexahedron = 6;
+
+    template<class PositionContainer, class IndicesContainer, class ColorContainer>
+    void doDraw(
+        sofa::helper::visual::DrawTool* drawTool,
+        const PositionContainer& position,
+        sofa::core::topology::BaseMeshTopology* topology,
+        const IndicesContainer& elementIndices,
+        const ColorContainer& nodesColors)
+    {
+        const auto& elements = topology->getHexahedra();
+        const auto& facets = topology->getQuads();
+
+        if(facets.empty())
+        {
+            msg_error_once("DrawElementColoredMesh<Hexahedron>") << "Drawing hexahedra needs the associated quads in the topology.";
+            return;
+        }
+
+        renderedPoints.clear();
+        colors.clear();
+
+        for (auto i : elementIndices)
+        {
+            const auto& element = elements[i];
+            const auto& facetsInElement = topology->getQuadsInHexahedron(i);
+            const auto center = this->elementCenter(position, element);
+
+            for (std::size_t j = 0; j < NumberQuadsInHexahedron; ++j)
+            {
+                const auto faceId = facetsInElement[j];
+                for (const auto vertexId : facets[faceId])
+                {
+                    const auto p = this->applyElementSpace(position[vertexId], center);
+
+                    renderedPoints.push_back(p);
+
+                    // Find local ID of the vertex in the Hexahedron to support local color mapping
+                    std::size_t localId = 0;
+                    for (; localId < 8; ++localId) if (element[localId] == vertexId) break;
+
+                    colors.push_back(this->getColor(nodesColors, i, localId, vertexId));
+                }
+            }
+        }
+
+        drawTool->drawQuads(renderedPoints, colors);
+    }
+
+};
+
+template<>
+struct SOFA_CORE_API DrawElementColoredMesh<sofa::geometry::Prism>
+    : public BaseDrawColoredMesh<DrawElementColoredMesh<sofa::geometry::Prism>>
+{
+    using ElementType = sofa::geometry::Prism;
+    friend BaseDrawColoredMesh;
+
+    template<class PositionContainer, class IndicesContainer, class ColorContainer>
+    void doDraw(
+        sofa::helper::visual::DrawTool* drawTool,
+        const PositionContainer& position,
+        sofa::core::topology::BaseMeshTopology* topology,
+        const IndicesContainer& elementIndices,
+        const ColorContainer& nodesColors)
+    {
+    }
+};
+
+template<>
+struct SOFA_CORE_API DrawElementColoredMesh<sofa::geometry::Pyramid>
+    : public BaseDrawColoredMesh<DrawElementColoredMesh<sofa::geometry::Pyramid>>
+{
+    using ElementType = sofa::geometry::Pyramid;
+    friend BaseDrawColoredMesh;
+
+    template<class PositionContainer, class IndicesContainer, class ColorContainer>
+    void doDraw(
+        sofa::helper::visual::DrawTool* drawTool,
+        const PositionContainer& position,
+        sofa::core::topology::BaseMeshTopology* topology,
+        const IndicesContainer& elementIndices,
+        const ColorContainer& nodesColors)
+    {
+    }
 };
 
 class SOFA_CORE_API DrawColoredMesh
@@ -159,6 +326,7 @@ public:
     void draw(sofa::helper::visual::DrawTool* drawTool, const PositionContainer& position, const ColorContainer& nodesColors, sofa::core::topology::BaseMeshTopology* topology)
     {
         std::get<DrawElementColoredMesh<sofa::geometry::Tetrahedron>>(m_meshes).drawAllElements(drawTool, position, topology, nodesColors);
+        std::get<DrawElementColoredMesh<sofa::geometry::Hexahedron>>(m_meshes).drawAllElements(drawTool, position, topology, nodesColors);
     }
 
 private:
@@ -166,8 +334,8 @@ private:
         // DrawElementColoredMesh<sofa::geometry::Edge>,
         // DrawElementColoredMesh<sofa::geometry::Triangle>,
         // DrawElementColoredMesh<sofa::geometry::Quad>,
-        DrawElementColoredMesh<sofa::geometry::Tetrahedron>
-        // DrawElementColoredMesh<sofa::geometry::Hexahedron>,
+        DrawElementColoredMesh<sofa::geometry::Tetrahedron>,
+        DrawElementColoredMesh<sofa::geometry::Hexahedron>
         // DrawElementColoredMesh<sofa::geometry::Prism>,
         // DrawElementColoredMesh<sofa::geometry::Pyramid>
     > m_meshes;

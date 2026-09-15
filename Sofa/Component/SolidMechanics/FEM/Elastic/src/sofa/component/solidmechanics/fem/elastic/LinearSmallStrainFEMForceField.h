@@ -24,10 +24,10 @@
 #include <sofa/component/solidmechanics/fem/elastic/BaseElementLinearFEMForceField.h>
 #include <sofa/component/solidmechanics/fem/elastic/config.h>
 #include <sofa/component/solidmechanics/fem/elastic/impl/trait.h>
-
+#include <sofa/component/solidmechanics/fem/elastic/CauchyStressEvaluator.h>
 #include <sofa/component/solidmechanics/fem/elastic/FEMForceField.h>
 
-#if !defined(ELASTICITY_COMPONENT_ELEMENT_LINEAR_SMALL_STRAIN_FEM_FORCE_FIELD_CPP)
+#if !defined(SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_ELEMENT_LINEAR_SMALL_STRAIN_FEM_FORCE_FIELD_CPP)
 #include <sofa/fem/FiniteElement[all].h>
 #endif
 
@@ -37,13 +37,15 @@ namespace sofa::component::solidmechanics::fem::elastic
 template <class DataTypes, class ElementType>
 class LinearSmallStrainFEMForceField :
     public BaseElementLinearFEMForceField<DataTypes, ElementType>,
-    public FEMForceField<DataTypes, ElementType>
+    public FEMForceField<DataTypes, ElementType>,
+    public CauchyStressEvaluator<DataTypes>
 {
 public:
-    SOFA_CLASS2(
+    SOFA_CLASS3(
         SOFA_TEMPLATE2(LinearSmallStrainFEMForceField, DataTypes, ElementType),
             SOFA_TEMPLATE2(BaseElementLinearFEMForceField, DataTypes, ElementType),
-            SOFA_TEMPLATE2(FEMForceField, DataTypes, ElementType));
+            SOFA_TEMPLATE2(FEMForceField, DataTypes, ElementType),
+            CauchyStressEvaluator<DataTypes>);
 
 private:
     using trait = typename FEMForceField<DataTypes, ElementType>::trait;
@@ -51,6 +53,8 @@ private:
     using ElementDisplacement = typename trait::ElementDisplacement;
     using StrainDisplacement = typename trait::StrainDisplacement;
     using ElementGradient = typename trait::ElementGradient;
+    using DeformationGradient = typename trait::DeformationGradient;
+    using StressVoigtVector = typename trait::StressVoigtVector;
 
 public:
     void init() override;
@@ -63,6 +67,8 @@ public:
     using sofa::core::behavior::ForceField<DataTypes>::addKToMatrix;
     // almost deprecated, but here for compatibility with unit tests
     void addKToMatrix(sofa::linearalgebra::BaseMatrix* matrix, SReal kFact, unsigned& offset) override;
+
+    StressVoigtVector computeStress(const DeformationGradient& F, sofa::Size elementId) override;
 
 protected:
 
@@ -93,6 +99,16 @@ extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API LinearSmallS
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API LinearSmallStrainFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Hexahedron>;
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API LinearSmallStrainFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Prism>;
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API LinearSmallStrainFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Pyramid>;
+
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API LinearSmallStrainFEMForceField<sofa::defaulttype::Vec1Types, sofa::geometry::QuadraticEdge>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API LinearSmallStrainFEMForceField<sofa::defaulttype::Vec2Types, sofa::geometry::QuadraticEdge>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API LinearSmallStrainFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticEdge>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API LinearSmallStrainFEMForceField<sofa::defaulttype::Vec2Types, sofa::geometry::QuadraticTriangle>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API LinearSmallStrainFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticTriangle>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API LinearSmallStrainFEMForceField<sofa::defaulttype::Vec2Types, sofa::geometry::QuadraticQuad>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API LinearSmallStrainFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticQuad>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API LinearSmallStrainFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticTetrahedron>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API LinearSmallStrainFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticHexahedron>;
 #endif
 
 }  // namespace sofa::component::solidmechanics::fem::elastic

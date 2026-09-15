@@ -30,7 +30,9 @@ namespace sofa::geometry
 enum class ElementType : sofa::Size
 {
     UNKNOWN,
+
     POINT,
+
     EDGE,
     TRIANGLE,
     QUAD,
@@ -38,6 +40,15 @@ enum class ElementType : sofa::Size
     HEXAHEDRON,
     PRISM,
     PYRAMID,
+
+    QUADRATIC_EDGE,
+    QUADRATIC_TRIANGLE,
+    QUADRATIC_QUAD,
+    QUADRATIC_TETRAHEDRON,
+    QUADRATIC_HEXAHEDRON,
+    QUADRATIC_PRISM,
+    QUADRATIC_PYRAMID,
+
     SIZE
 };
 
@@ -55,6 +66,15 @@ constexpr const char* elementTypeToString(ElementType type)
     case ElementType::HEXAHEDRON: { return "Hexahedron"; }
     case ElementType::PRISM: { return "Prism"; }
     case ElementType::PYRAMID: { return "Pyramid"; }
+
+    case ElementType::QUADRATIC_EDGE: { return "Quadratic Edge"; }
+    case ElementType::QUADRATIC_TRIANGLE: { return "Quadratic Triangle"; }
+    case ElementType::QUADRATIC_QUAD: { return "Quadratic Quad"; }
+    case ElementType::QUADRATIC_TETRAHEDRON: { return "Quadratic Tetrahedron"; }
+    case ElementType::QUADRATIC_HEXAHEDRON: { return "Quadratic Hexahedron"; }
+    case ElementType::QUADRATIC_PRISM: { return "Quadratic Prism"; }
+    case ElementType::QUADRATIC_PYRAMID: { return "Quadratic Pyramid"; }
+
     default: 
         return "Unknown";
     }

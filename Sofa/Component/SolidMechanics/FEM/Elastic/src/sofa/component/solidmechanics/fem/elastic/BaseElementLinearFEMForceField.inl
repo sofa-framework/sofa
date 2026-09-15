@@ -103,4 +103,24 @@ void BaseElementLinearFEMForceField<DataTypes, ElementType>::precomputeElementSt
         });
 }
 
+template <class DataTypes, class ElementType>
+auto BaseElementLinearFEMForceField<DataTypes, ElementType>::computeElementDisplacement(
+    const typename trait::TopologyElement& element,
+    const sofa::VecCoord_t<DataTypes>& nodePositions,
+    const sofa::VecCoord_t<DataTypes>& nodeRestPositions) const -> ElementDisplacement
+{
+    ElementDisplacement displacement{ sofa::type::NOINIT };
+
+    for (sofa::Size j = 0; j < trait::NumberOfNodesInElement; ++j)
+    {
+        const auto nodeId = element[j];
+        for (sofa::Size dim = 0; dim < trait::spatial_dimensions; ++dim)
+        {
+            displacement[j * trait::spatial_dimensions + dim] = nodePositions[nodeId][dim] - nodeRestPositions[nodeId][dim];
+        }
+    }
+
+    return displacement;
+}
+
 }
