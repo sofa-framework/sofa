@@ -79,22 +79,14 @@ protected:
         EdgeRestInformation() = default;
 
         /// Output stream
-        inline friend std::ostream& operator<< ( std::ostream& os, const EdgeRestInformation& eri )
+        inline friend std::ostream& operator<< ( std::ostream& os, const EdgeRestInformation& /*eri*/ )
         {
-            os << eri.restSquareLength << " ";
-            os << eri.currentSquareLength << " ";
-            os << eri.deltaL2 << " ";
-            os << eri.stiffness << " ";
             return os;
         }
 
         /// Input stream
-        inline friend std::istream& operator>> ( std::istream& in, EdgeRestInformation& eri )
+        inline friend std::istream& operator>> ( std::istream& in, EdgeRestInformation& /*eri*/ )
         {
-            in >> eri.restSquareLength;
-            in >> eri.currentSquareLength;
-            in >> eri.deltaL2;
-            in >> eri.stiffness;
             return in;
         }
     };
@@ -117,45 +109,14 @@ protected:
         TriangleRestInformation() = default;
 
         /// Output stream
-        inline friend std::ostream& operator<< ( std::ostream& os, const TriangleRestInformation& tri )
+        inline friend std::ostream& operator<< ( std::ostream& os, const TriangleRestInformation& /*tri*/ )
         {
-            for (int i = 0; i < 3; ++i)
-                os << tri.gamma[i] << " ";
-            for (int i = 0; i < 3; ++i)
-                os << tri.stiffness[i] << " ";
-            for (int i = 0; i < 3; ++i)
-                os << tri.DfDx[i] << " ";
-            os << tri.currentNormal << " ";
-            os << tri.lastValidNormal << " ";
-            os << tri.area << " ";
-            os << tri.restArea << " ";
-            for (int i = 0; i < 3; ++i)
-                os << tri.areaVector[i] << " ";
-            for (int i = 0; i < 3; ++i)
-                os << tri.dp[i] << " ";
-            os << tri.J << " ";
-
             return os;
         }
 
         /// Input stream
-        inline friend std::istream& operator>> ( std::istream& in, TriangleRestInformation& tri )
+        inline friend std::istream& operator>> ( std::istream& in, TriangleRestInformation& /*vec*/ )
         {
-            for (int i = 0; i < 3; ++i)
-                in >> tri.gamma[i];
-            for (int i = 0; i < 3; ++i)
-                in >> tri.stiffness[i];
-            for (int i = 0; i < 3; ++i)
-                in >> tri.DfDx[i];
-            in >> tri.currentNormal;
-            in >> tri.lastValidNormal;
-            in >> tri.area;
-            in >> tri.restArea;
-            for (int i = 0; i < 3; ++i)
-                in >> tri.areaVector[i];
-            for (int i = 0; i < 3; ++i)
-                in >> tri.dp[i];
-            in >> tri.J;
             return in;
         }
     };

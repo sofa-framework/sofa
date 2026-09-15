@@ -97,40 +97,14 @@ public:
         Real edgeOrientation[6];
 
         /// Output stream
-        inline friend std::ostream& operator<< ( std::ostream& os, const TetrahedronRestInformation& eri )
+        inline friend std::ostream& operator<< ( std::ostream& os, const TetrahedronRestInformation& /*eri*/ )
         {
-            for (int i = 0; i < 4; ++i)
-                os << eri.shapeVector[i] << " ";
-            os << eri.restVolume << " ";
-            for (int i = 0; i < 6; ++i)
-                os << eri.restEdgeVector[i] << " ";
-            for (int i = 0; i < 4; ++i)
-                    os << eri.linearDfDxDiag[i] << " ";
-            for (int i = 0; i < 6; ++i)
-                os << eri.linearDfDx[i] << " ";
-            os << eri.rotation << " ";
-            os << eri.restRotation << " ";
-            for (int i = 0; i < 6; ++i)
-                os << eri.edgeOrientation[i] << " ";
             return os;
         }
 
         /// Input stream
-        inline friend std::istream& operator>> ( std::istream& in, TetrahedronRestInformation& eri )
+        inline friend std::istream& operator>> ( std::istream& in, TetrahedronRestInformation& /*eri*/ )
         {
-            for (int i = 0; i < 4; ++i)
-                in >> eri.shapeVector[i];
-            in >> eri.restVolume;
-            for (int i = 0; i < 6; ++i)
-                in >> eri.restEdgeVector[i];
-            for (int i = 0; i < 4; ++i)
-                in >> eri.linearDfDxDiag[i];
-            for (int i = 0; i < 6; ++i)
-                in >> eri.linearDfDx[i];
-            in >> eri.rotation;
-            in >> eri.restRotation;
-            for (int i = 0; i < 6; ++i)
-                in >> eri.edgeOrientation[i];
             return in;
         }
     };

@@ -74,9 +74,6 @@ protected:
     typedef type::Mat<8, 8, Real> MaterialStiffness;				    ///< the matrix of material stiffness
     typedef type::Mat<32, 20, Real> StrainDisplacement;				    ///< the strain-displacement matrix
     typedef type::Mat<20, 20, Real> Stiffness;					    ///< the stiffness matrix
-    typedef type::Mat<3, 3, Real > Transformation;				    ///< matrix for rigid transformations like rotations
-    enum { N=DataTypes::spatial_dimensions };
-    typedef type::Mat<N,N,Real> Mat;
     
 protected:
     /// ForceField API
@@ -118,42 +115,14 @@ public:
         QuadInformation() { }
 
         /// Output stream
-        inline friend std::ostream& operator<< ( std::ostream& os, const QuadInformation& ti )
+        inline friend std::ostream& operator<< ( std::ostream& os, const QuadInformation& /*ti*/ )
         {
-            os << ti.BendingmaterialMatrix << " ";
-            os << ti.ShearmaterialMatrix << " ";
-            os << ti.strainDisplacementMatrix << " ";
-            os << ti.stiffness << " ";
-            os << ti.Bendingstiffness << " ";
-            os << ti.Shearstiffness << " ";
-            for (int i = 0; i < 3; ++i)
-                os << ti.InitialPosElements[i] << " ";
-            os << ti.IntlengthElement << " ";
-            os << ti.IntheightElement << " ";
-            os << ti.Intcentroid << " ";
-            os << ti.Inthalflength << " ";
-            os << ti.Inthalfheight << " ";
-            os << ti.differenceToCriteria << " ";
             return os;
         }
 
         /// Input stream
-        inline friend std::istream& operator>> ( std::istream& in, QuadInformation& ti )
+        inline friend std::istream& operator>> ( std::istream& in, QuadInformation& /*ti*/ )
         {
-            in >> ti.BendingmaterialMatrix;
-            in >> ti.ShearmaterialMatrix;
-            in >> ti.strainDisplacementMatrix;
-            in >> ti.stiffness;
-            in >> ti.Bendingstiffness;
-            in >> ti.Shearstiffness;
-            for (int i = 0; i < 3; ++i)
-                in >> ti.InitialPosElements[i];
-            in >> ti.IntlengthElement;
-            in >> ti.IntheightElement;
-            in >> ti.Intcentroid;
-            in >> ti.Inthalflength;
-            in >> ti.Inthalfheight;
-            in >> ti.differenceToCriteria;
             return in;
         }
 
@@ -164,46 +133,17 @@ public:
     class EdgeInformation
     {
     public:
-        Mat DfDx; ///< the edge stiffness matrix
-        int   m1, m2;  ///< the two extremities of the spring: masses m1 and m2
-        Real  ks;      ///< spring stiffness (initialized to the default value)
-        Real  kd;      ///< damping factor (initialized to the default value)
-        Real  restlength; ///< rest length of the spring
+        EdgeInformation(){}
 
-        bool is_activated;
-        bool is_initialized;
-
-        EdgeInformation(int m1=0, int m2=0, Real restlength=0.0, bool is_activated=false, bool is_initialized=false)
-            : m1(m1), m2(m2), ks(Real(100000.0)), kd(Real(1.0)), restlength(restlength), is_activated(is_activated), is_initialized(is_initialized)
-        {
-        }
         /// Output stream
-        inline friend std::ostream& operator<< ( std::ostream& os, const EdgeInformation& ei )
+        inline friend std::ostream& operator<< ( std::ostream& os, const EdgeInformation& /*ei*/ )
         {
-            os << ei.DfDx << " ";
-            os << ei.m1 << " ";
-            os << ei.m2 << " ";
-            os << ei.ks << " ";
-            os << ei.kd << " ";
-            os << ei.restlength << " ";
-            os << ei.is_activated << " ";
-            os << ei.is_initialized << " ";
-
             return os;
         }
 
         /// Input stream
-        inline friend std::istream& operator>> ( std::istream& in, EdgeInformation& ei )
+        inline friend std::istream& operator>> ( std::istream& in, EdgeInformation& /*ei*/ )
         {
-            in >> ei.DfDx;
-            in >> ei.m1;
-            in >> ei.m2;
-            in >> ei.ks;
-            in >> ei.kd;
-            in >> ei.restlength;
-            in >> ei.is_activated;
-            in >> ei.is_initialized;
-
             return in;
         }
     };
@@ -212,31 +152,16 @@ public:
     class VertexInformation
     {
     public:
-        VertexInformation()
-            :sumEigenValues(0.0), stress(0.0) {}
-
-        Coord meanStrainDirection;
-        double sumEigenValues;
-        Transformation rotation;
-
-        double stress; //average stress of triangles around (used only for drawing)
+        VertexInformation(){}
 
         /// Output stream
-        inline friend std::ostream& operator<< ( std::ostream& os, const VertexInformation& vi)
+        inline friend std::ostream& operator<< ( std::ostream& os, const VertexInformation& /*vi*/)
         {
-            os << vi.meanStrainDirection << " ";
-            os << vi.sumEigenValues << " ";
-            os << vi.rotation << " ";
-            os << vi.stress << " ";
             return os;
         }
         /// Input stream
-        inline friend std::istream& operator>> ( std::istream& in, VertexInformation& vi)
+        inline friend std::istream& operator>> ( std::istream& in, VertexInformation& /*vi*/)
         {
-            in >> vi.meanStrainDirection;
-            in >> vi.sumEigenValues;
-            in >> vi.rotation;
-            in >> vi.stress;
             return in;
         }
     };
