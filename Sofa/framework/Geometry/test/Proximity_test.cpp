@@ -120,7 +120,7 @@ TEST(GeometryProximity_test, closestPointOnTriangle_degenerateTriangle)
     sofa::type::Vec3d closest;
 
     // LCP solver may return false for degenerate triangles
-    sofa::geometry::proximity::computeClosestPointOnTriangleToPoint(t0, t1, t2, q, closest);
+    static_cast<void>(sofa::geometry::proximity::computeClosestPointOnTriangleToPoint(t0, t1, t2, q, closest));
     // Just verify it doesn't crash; result depends on LCP solver behavior
 }
 
