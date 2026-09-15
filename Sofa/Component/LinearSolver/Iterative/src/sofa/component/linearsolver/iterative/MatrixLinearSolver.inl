@@ -25,15 +25,6 @@
 #include <sofa/simulation/mechanicalvisitor/MechanicalGetConstraintJacobianVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalGetConstraintJacobianVisitor;
 
-#include <sofa/simulation/mechanicalvisitor/MechanicalMultiVectorToBaseVectorVisitor.h>
-using sofa::simulation::mechanicalvisitor::MechanicalMultiVectorToBaseVectorVisitor;
-
-#include <sofa/simulation/mechanicalvisitor/MechanicalMultiVectorFromBaseVectorVisitor.h>
-using sofa::simulation::mechanicalvisitor::MechanicalMultiVectorFromBaseVectorVisitor;
-
-#include <sofa/simulation/mechanicalvisitor/MechanicalMultiVectorPeqBaseVectorVisitor.h>
-using sofa::simulation::mechanicalvisitor::MechanicalMultiVectorPeqBaseVectorVisitor;
-
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/component/linearsystem/MatrixLinearSystem.inl>
 

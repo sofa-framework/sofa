@@ -9,6 +9,7 @@ set(SOURCE_FILES
     HexahedralFEMForceField_test.cpp
     HexahedronFEMForceField_test.cpp
     QuadBendingFEMForceField_test.cpp
+    LinearSmallStrainFEMForceField_test.cpp
     StrainDisplacement_test.cpp
     TetrahedralCorotationalFEMForceField_test.cpp
     TetrahedronFEMForceField_stepTest.cpp

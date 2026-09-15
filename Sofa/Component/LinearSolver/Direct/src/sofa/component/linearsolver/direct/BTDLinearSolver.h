@@ -148,9 +148,9 @@ public:
 private:
 
 
-    Index _indMaxNonNullForce; // point with non null force which index is the greatest and for which globalAccumulate was not proceed
+    Index _indMaxNonNullForce{0}; // point with non null force which index is the greatest and for which globalAccumulate was not proceed
 
-    Index _indMaxFwdLHComputed;  // indice of node from which bwdLH is accurate
+    Index _indMaxFwdLHComputed{0};  // indice of node from which bwdLH is accurate
 
     /// private functions for partial solve
     /// step1=> accumulate RH locally for the InBloc (only if a new force is detected on RH)
