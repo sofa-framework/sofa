@@ -194,37 +194,9 @@ public:
 
     Deriv velocity(sofa::Index index)const;
 
-    void saveInternalStateIn(sofa::core::objectmodel::Snapshot::SnapshotObject& snapshot) const override
-    {
-        sofa::core::objectmodel::Snapshot::DataInfo dataInfo;
+    void saveInternalStateIn(sofa::core::objectmodel::Snapshot::SnapshotObject& snapshot) const override;
 
-        std::stringstream ss;
-        this->m_triangles->write(ss);
-
-        dataInfo.name = "m_triangles";
-        dataInfo.type = "vector";
-        dataInfo.value = ss.str();
-
-        snapshot.m_dataContainer.push_back(dataInfo);
-
-    }
-
-    void loadInternalStateFrom(const core::objectmodel::Snapshot::SnapshotObject &snapshot) override
-    {
-        m_needsUpdate = true;
-
-        for (const auto& dataInfo : snapshot.m_dataContainer)
-        {
-            if (dataInfo.name == "m_triangles")
-            {
-                m_triangles = &m_topology->getTriangles();
-                resize(m_topology->getNbTriangles());
-                updateNormals();
-            }
-
-        }
-    }
-
+    void loadInternalStateFrom(const core::objectmodel::Snapshot::SnapshotObject &snapshot) override;
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.

@@ -123,12 +123,7 @@ public:
     /// Link to be set to the topology container in the component graph.
     SingleLink<TetrahedronCollisionModel, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
-    void loadInternalStateFrom(const core::objectmodel::Snapshot::SnapshotObject &snapshot) override
-    {
-        SOFA_UNUSED(snapshot);
-        updateFromTopology();
-    }
-
+    void loadInternalStateFrom(const core::objectmodel::Snapshot::SnapshotObject &snapshot) override;
 };
 
 inline Tetrahedron::Tetrahedron(TetrahedronCollisionModel* model, Index index)
