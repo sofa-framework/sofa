@@ -34,6 +34,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/typeinfo/TypeInfo_FixedArray.h
     ${SRC_ROOT}/typeinfo/TypeInfo_Integer.h
     ${SRC_ROOT}/typeinfo/TypeInfo_Mat.h
+    ${SRC_ROOT}/typeinfo/TypeInfo_MatSym.h
     ${SRC_ROOT}/typeinfo/TypeInfo_Quat.h
     ${SRC_ROOT}/typeinfo/TypeInfo_RigidTypes.h
     ${SRC_ROOT}/typeinfo/TypeInfo_RGBAColor.h
@@ -70,6 +71,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/typeinfo/TypeInfo_FixedArray.cpp
     ${SRC_ROOT}/typeinfo/TypeInfo_Integer.cpp
     ${SRC_ROOT}/typeinfo/TypeInfo_Mat.cpp
+    ${SRC_ROOT}/typeinfo/TypeInfo_MatSym.cpp
     ${SRC_ROOT}/typeinfo/TypeInfo_Quat.cpp
     ${SRC_ROOT}/typeinfo/TypeInfo_RGBAColor.cpp
     ${SRC_ROOT}/typeinfo/TypeInfo_RigidTypes.cpp
