@@ -77,7 +77,7 @@ protected:
     virtual sofa::Size getIntegrationSchemeTimeOrder() const = 0;
     /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ **/
 
-    /**   New API methods of VelocityBasedImplicitIntegrationScheme   **/
+    /**   API methods of VelocityBasedImplicitIntegrationScheme   **/
     /**
      * This method returns a scalar which is the value of the derivative of the position integration
      * scheme with respect to the velocity.
