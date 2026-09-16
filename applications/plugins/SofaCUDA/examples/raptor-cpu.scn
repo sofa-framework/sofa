@@ -1,4 +1,16 @@
 <Node name="root" dt="0.04">
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/>
+    <RequiredPlugin name="Sofa.Component.Engine.Select"/>
+    <RequiredPlugin name="Sofa.Component.Engine.Transform"/>
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/>
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/>
+    <RequiredPlugin name="Sofa.Component.Mass"/>
+    <RequiredPlugin name="Sofa.Component.MechanicalLoad"/>
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/>
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.FEM.Elastic"/>
+    <RequiredPlugin name="Sofa.Component.StateContainer"/>
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/>
+    <RequiredPlugin name="Sofa.Component.Visual"/>
 	<VisualStyle displayFlags="showBehaviorModels showForceFields" />
 	
 	<Node name="M1">
