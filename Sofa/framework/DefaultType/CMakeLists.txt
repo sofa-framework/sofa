@@ -65,21 +65,6 @@ set(SOURCE_FILES
     ${SRC_ROOT}/TypeInfoRegistry.cpp
     ${SRC_ROOT}/TypeInfoRegistryTools.cpp
     ${SRC_ROOT}/init.cpp
-    ${SRC_ROOT}/typeinfo/TypeInfo_Bool.cpp
-    ${SRC_ROOT}/typeinfo/TypeInfo_BoundingBox.cpp
-    ${SRC_ROOT}/typeinfo/TypeInfo_FixedArray.cpp
-    ${SRC_ROOT}/typeinfo/TypeInfo_Integer.cpp
-    ${SRC_ROOT}/typeinfo/TypeInfo_Mat.cpp
-    ${SRC_ROOT}/typeinfo/TypeInfo_Quat.cpp
-    ${SRC_ROOT}/typeinfo/TypeInfo_RGBAColor.cpp
-    ${SRC_ROOT}/typeinfo/TypeInfo_RigidTypes.cpp
-    ${SRC_ROOT}/typeinfo/TypeInfo_Set.cpp
-    ${SRC_ROOT}/typeinfo/TypeInfo_Scalar.cpp
-    ${SRC_ROOT}/typeinfo/TypeInfo_Text.cpp
-    ${SRC_ROOT}/typeinfo/TypeInfo_Vector.cpp
-    ${SRC_ROOT}/typeinfo/TypeInfo_Vec.cpp
-    ${SRC_ROOT}/typeinfo/TypeInfo_VecTypes.cpp
-    ${SRC_ROOT}/typeinfo/TypeInfo_Topology.cpp
 )
 
 sofa_find_package(Sofa.Helper REQUIRED)
