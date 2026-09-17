@@ -3,7 +3,7 @@
     <RequiredPlugin pluginName="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
     <RequiredPlugin pluginName="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
     <RequiredPlugin pluginName="Sofa.Component.MechanicalLoad"/> <!-- Needed to use components [PlaneForceField] -->
-    <RequiredPlugin pluginName="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin pluginName="Sofa.Component.IntegrationScheme.Backward"/> <!-- Needed to use components [EulerImplicitIntegrationScheme] -->
     <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [HexahedronFEMForceField] -->
     <RequiredPlugin pluginName="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
     <RequiredPlugin pluginName="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->
@@ -12,7 +12,7 @@
     <VisualStyle displayFlags="showBehavior" />
     
     <Node name="Iterative method">
-        <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitIntegrationScheme  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
         <RegularGridTopology p0="-2 0 0" />
         <MechanicalObject />
@@ -22,7 +22,7 @@
     </Node>
 
     <Node name="Direct method"> 
-        <EulerImplicitSolver />
+        <EulerImplicitIntegrationScheme />
         <CholeskySolver />
         <RegularGridTopology p0="2 0 0" />
         <MechanicalObject />

@@ -12,7 +12,7 @@
     <RequiredPlugin pluginName="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
     <RequiredPlugin pluginName="Sofa.Component.Mapping.NonLinear"/> <!-- Needed to use components [RigidMapping] -->
     <RequiredPlugin pluginName="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
-    <RequiredPlugin pluginName="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin pluginName="Sofa.Component.IntegrationScheme.Backward"/> <!-- Needed to use components [EulerImplicitIntegrationScheme] -->
     <RequiredPlugin pluginName="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
     <RequiredPlugin pluginName="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
     <RequiredPlugin pluginName="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
@@ -30,7 +30,7 @@
         <MechanicalObject name="points" template="Vec3" position="1 1.25 -0.2 &#x09;1 1.25 0.2" free_position="1 1.25 -0.2 &#x09;1 1.25 0.2" />
     </Node>
     <Node name="CUBE_1">
-        <EulerImplicitSolver printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitIntegrationScheme printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject template="Rigid3" scale="1.0" dx="0.0" dy="0" dz="0.0" />
         <UniformMass totalMass="10.0" />
@@ -58,7 +58,7 @@
         <MechanicalObject name="points" template="Vec3" position="6 1.25 1&#x09;6 1.25 -1" free_position="6 1.25 1&#x09;6 1.25 -1" />
     </Node>
     <Node name="CUBE_2">
-        <EulerImplicitSolver printLog="false" />
+        <EulerImplicitIntegrationScheme printLog="false" />
         <CGLinearSolver iterations="25" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject template="Rigid3" scale="1.0" dx="5.0" dy="0" dz="0.0" />
         <UniformMass totalMass="10.0" />

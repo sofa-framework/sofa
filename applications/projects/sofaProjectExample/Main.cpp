@@ -31,7 +31,7 @@
 
 // solvers
 #include <SofaBaseLinearSolver/CGLinearSolver.h>
-#include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
+#include <SofaImplicitIntegrationScheme/EulerImplicitIntegrationScheme.h>
 
 // collision pipeline
 #include <SofaBaseCollision/DefaultPipeline.h>
@@ -75,7 +75,7 @@ using sofa::component::collision::DefaultContactManager;
 using sofa::component::collision::TriangleCollisionModel;
 
 // solvers
-using sofa::component::odesolver::EulerImplicitSolver;
+using sofa::component::odesolver::EulerImplicitIntegrationScheme;
 using sofa::component::linearsolver::CGLinearSolver;
 using sofa::component::linearsolver::GraphScatteredMatrix;
 using sofa::component::linearsolver::GraphScatteredVector;
@@ -170,10 +170,10 @@ int main(int argc, char** argv)
 
     // solvers
     typedef CGLinearSolver<GraphScatteredMatrix, GraphScatteredVector> CGLinearSolverGraph;
-    EulerImplicitSolver::SPtr implicitSolver = New<EulerImplicitSolver>();
+    EulerImplicitIntegrationScheme::SPtr implicitSolver = New<EulerImplicitIntegrationScheme>();
     CGLinearSolverGraph::SPtr cgLinearSolver = New<CGLinearSolverGraph>();
 
-    implicitSolver->setName("eulerImplicitSolver");
+    implicitSolver->setName("EulerImplicitIntegrationScheme");
     implicitSolver->f_rayleighStiffness.setValue(0.01);
     //implicitSolver->f_rayleighMass.setValue(0.1);
     implicitSolver->f_printLog = false;
