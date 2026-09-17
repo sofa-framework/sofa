@@ -64,8 +64,8 @@ public:
     using TriangleFEM = TriangleFEMForceField<DataTypes>;
     using TriangularFEM = TriangularFEMForceField<DataTypes>;
     using TriangularFEMOptim = TriangularFEMForceFieldOptim<DataTypes>;
-    using TriangleInformation = TriangularFEM::TriangleInformation;
-    using VertexInformation = TriangularFEM::VertexInformation;
+    using TriangleInformation = typename TriangularFEM::TriangleInformation;
+    using VertexInformation = typename TriangularFEM::VertexInformation;
     using Vec3 = type::Vec<3, Real>;
     using Mat23 = type::Mat<2, 3, Real>;
     using Mat33 = type::Mat<3, 3, Real>;
