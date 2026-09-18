@@ -1083,12 +1083,12 @@ public:
     GetUpObjectsVisitor(Node* searchNode, const sofa::core::objectmodel::ClassInfo& class_info, Node::GetObjectsCallBack& container, const sofa::core::objectmodel::TagSet& tags);
     ~GetUpObjectsVisitor() override;
 
-    Result processNodeTopDown(simulation::Node* node) override
+    Result processNodeTopDown(simulation::Node* basenode) override
     {
-        const Node* dagnode = dynamic_cast<const Node*>(node);
-        if( dagnode->_descendancy.contains(_searchNode) ) // searchNode is in the current node descendancy, so the current node is a parent of searchNode
+        const Node* node = dynamic_cast<const Node*>(basenode);
+        if( node->_descendancy.contains(_searchNode) ) // searchNode is in the current node descendancy, so the current node is a parent of searchNode
         {
-            dagnode->getLocalObjects( _class_info, _container, _tags );
+            node->getLocalObjects( _class_info, _container, _tags );
             return RESULT_CONTINUE;
         }
         else // the current node is NOT a parent of searchNode, stop here
@@ -1170,8 +1170,8 @@ Node::SPtr Node::createChild(const std::string& nodeName)
 
 void Node::moveChild(BaseNode::SPtr node)
 {
-    const Node::SPtr dagnode = sofa::core::objectmodel::SPtr_static_cast<Node>(node);
-    for (const auto& parent : dagnode->getParents()) {
+    const Node::SPtr nnode = sofa::core::objectmodel::SPtr_static_cast<Node>(node);
+    for (const auto& parent : nnode->getParents()) {
         Node::moveChild(node, parent);
     }
 }

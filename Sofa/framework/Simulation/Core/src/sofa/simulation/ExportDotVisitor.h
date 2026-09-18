@@ -26,7 +26,7 @@
 #include <iostream>
 
 
-namespace sofa::simulation::graph
+namespace sofa::simulation
 {
 
 /**
@@ -99,5 +99,5 @@ protected:
 
 };
 
-} // namespace sofa::simulation::graph
+} // namespace sofa::simulation
 

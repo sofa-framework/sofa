@@ -24,7 +24,6 @@ using sofa::testing::NumericTest;
 
 //Including Simulation
 #include <sofa/simulation/Simulation.h>
-#include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simulation/Node.h>
 
 // Including mechanical object
@@ -63,8 +62,8 @@ struct SpringSolverDynamic_test : public NumericTest<typename _DataTypes::Real>
     void doSetUp() override
     {
         // Init simulation
-        simulation = sofa::simulation::getSimulation();
-        root = simulation::getSimulation()->createNewGraph("root");
+        simulation = sofa::simulation::MainSimulation::getSimulation();
+        root = simulation::MainSimulation::getSimulation()->createNewGraph("root");
     }
 
     void loadScene(std::string sceneName)

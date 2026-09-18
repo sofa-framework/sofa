@@ -31,9 +31,8 @@ using sofa::testing::BaseTest;
 #include<sofa/core/objectmodel/BaseObject.h>
 using sofa::core::objectmodel::BaseObject ;
 
-#include <sofa/simulation/graph/DAGSimulation.h>
+#include <sofa/simulation/Simulation.h>
 using sofa::simulation::Simulation ;
-using sofa::simulation::graph::DAGSimulation ;
 
 #include <sofa/simulation/Node.h>
 using sofa::simulation::Node ;
@@ -87,7 +86,7 @@ public:
         EXPECT_EQ(RGBAColor::fromFloat(1,1,1,1), ogllabel->d_color.getValue()) ;
 
         sofa::simulation::node::unload(root);
-        sofa::simulation::getSimulation()->createNewGraph("");
+        sofa::simulation::MainSimulation::getSimulation()->createNewGraph("");
     }
 
 
@@ -117,7 +116,7 @@ public:
         EXPECT_EQ(RGBAColor::fromFloat(1,1,1,1), ogllabel->d_color.getValue()) ;
 
         sofa::simulation::node::unload(root);
-        sofa::simulation::getSimulation()->createNewGraph("");
+        sofa::simulation::MainSimulation::getSimulation()->createNewGraph("");
     }
 
     void checkAttributes()
@@ -146,7 +145,7 @@ public:
             EXPECT_NE( lm->findData(attrname), nullptr ) << "Missing attribute with name '" << attrname << "'." ;
 
         sofa::simulation::node::unload(root);
-        sofa::simulation::getSimulation()->createNewGraph("");
+        sofa::simulation::MainSimulation::getSimulation()->createNewGraph("");
     }
 };
 

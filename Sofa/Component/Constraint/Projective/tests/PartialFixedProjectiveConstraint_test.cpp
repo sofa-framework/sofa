@@ -25,7 +25,6 @@ using sofa::testing::BaseSimulationTest;
 #include <sofa/component/constraint/projective/PartialFixedProjectiveConstraint.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/simulation/Simulation.h>
-#include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/component/statecontainer/MechanicalObject.h>
 #include <sofa/component/mass/UniformMass.h>
@@ -67,7 +66,7 @@ struct PartialFixedProjectiveConstraint_test : public BaseSimulationTest
         typename sofa::component::statecontainer::MechanicalObject<DataTypes>::SPtr  mstate;
 
         /// Scene initialization
-        sofa::simulation::Simulation* simulation = sofa::simulation::getSimulation();
+        sofa::simulation::Simulation* simulation = sofa::simulation::MainSimulation::getSimulation();
         assert(simulation);
         const simulation::Node::SPtr root = simulation->createNewGraph("root");
 
