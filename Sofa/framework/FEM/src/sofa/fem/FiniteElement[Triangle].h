@@ -32,7 +32,7 @@ namespace sofa::fem
 template <class DataTypes>
 struct FiniteElement<sofa::geometry::Triangle, DataTypes>
 {
-    FINITEELEMENT_HEADER(sofa::geometry::Triangle, DataTypes, 2);
+    FINITEELEMENT_HEADER(sofa::geometry::Triangle, DataTypes, 2, 1);
     static_assert(spatial_dimensions > 1, "Triangles cannot be defined in 1D");
 
     constexpr static std::array<ReferenceCoord, NumberOfNodesInElement> referenceElementNodes {{
@@ -61,13 +61,6 @@ struct FiniteElement<sofa::geometry::Triangle, DataTypes>
             {-1, -1},
             {1, 0},
             {0, 1}
-        };
-    }
-
-    static constexpr std::array<QuadraturePointAndWeight, 1> quadraturePoints()
-    {
-        return {
-            std::make_pair(sofa::type::Vec<TopologicalDimension, Real>(1./3., 1./3.), 1./2.)
         };
     }
 };
