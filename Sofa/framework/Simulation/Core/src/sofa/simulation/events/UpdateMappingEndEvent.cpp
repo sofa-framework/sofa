@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/UpdateMappingEndEvent.h>
+#include <sofa/simulation/events/UpdateMappingEndEvent.h>
 
 
 namespace sofa::simulation

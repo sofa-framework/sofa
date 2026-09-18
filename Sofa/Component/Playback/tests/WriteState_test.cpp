@@ -27,8 +27,6 @@
 #include <sofa/testing/BaseSimulationTest.h>
 using sofa::testing::BaseSimulationTest;
 
-#include <sofa/simulation/graph/DAGSimulation.h>
-
 #include <sofa/component/odesolver/backward/EulerImplicitSolver.h>
 #include <sofa/component/odesolver/backward/VariationalSymplecticSolver.h>
 #include <sofa/component/linearsolver/iterative/CGLinearSolver.h>
@@ -74,7 +72,7 @@ namespace sofa {
         void doSetUp() override
         {
             // Init simulation
-            root = simulation::getSimulation()->createNewGraph("root");
+            root = simulation::MainSimulation::getSimulation()->createNewGraph("root");
         }
 
         // Create the scene and the components

@@ -24,7 +24,7 @@
 #include <sofa/core/behavior/Mass.inl>
 #include <sofa/core/fwd.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/core/objectmodel/Context.h>
+#include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/helper/accessor.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/component/mass/AddMToMatrixFunctor.h>

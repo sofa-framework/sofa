@@ -47,5 +47,4 @@ public:
 
 };
 
-} // namespace sofa::simulation::graph
-
+} // namespace sofa::core::visual

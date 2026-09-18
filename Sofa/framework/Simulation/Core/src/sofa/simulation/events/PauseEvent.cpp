@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/PauseEvent.h>
+#include <sofa/simulation/events/PauseEvent.h>
 
 
 namespace sofa::simulation
