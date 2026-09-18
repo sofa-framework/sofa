@@ -39,7 +39,7 @@ VisualState<DataTypes>::VisualState()
 }
 
 template< typename DataTypes >
-void VisualState<DataTypes>::resize(Size vsize)
+void VisualState<DataTypes>::doResize(Size vsize)
 {
     helper::WriteOnlyAccessor< Data<VecCoord > > positions = m_positions;
     if (positions.size() == vsize) return;

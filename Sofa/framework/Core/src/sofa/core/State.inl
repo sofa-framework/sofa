@@ -27,13 +27,13 @@
 namespace sofa::core
 {
 template <class TDataTypes>
-void State<TDataTypes>::addToTotalForces(core::ConstVecDerivId forceId)
+void State<TDataTypes>::doAddToTotalForces(core::ConstVecDerivId forceId)
 {
     accumulatedForces.addToContributingVecIds(forceId);
 }
 
 template <class TDataTypes>
-void State<TDataTypes>::removeFromTotalForces(core::ConstVecDerivId forceId)
+void State<TDataTypes>::doRemoveFromTotalForces(core::ConstVecDerivId forceId)
 {
     accumulatedForces.removeFromContributingVecIds(forceId);
 }
@@ -46,7 +46,7 @@ State<TDataTypes>::State()
 }
 
 template<class DataTypes>
-objectmodel::BaseData* State<DataTypes>::baseWrite(VecId v)
+objectmodel::BaseData* State<DataTypes>::doBaseWrite(VecId v)
 {
     switch (v.getType())
     {
@@ -59,7 +59,7 @@ objectmodel::BaseData* State<DataTypes>::baseWrite(VecId v)
 }
 
 template<class DataTypes>
-const objectmodel::BaseData* State<DataTypes>::baseRead(ConstVecId v) const
+const objectmodel::BaseData* State<DataTypes>::doBaseRead(ConstVecId v) const
 {
     switch (v.getType())
     {
