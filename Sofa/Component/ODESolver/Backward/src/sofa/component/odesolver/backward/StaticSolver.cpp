@@ -188,7 +188,7 @@ struct StaticResidualFunction : newton_raphson::BaseNonLinearFunction
     }
 };
 
-void StaticSolver::solve(const core::ExecParams* params, SReal dt, core::MultiVecCoordId xResult,
+void StaticSolver::doSolve(const core::ExecParams* params, SReal dt, core::MultiVecCoordId xResult,
                          core::MultiVecDerivId vResult)
 {
     if (!isComponentStateValid())

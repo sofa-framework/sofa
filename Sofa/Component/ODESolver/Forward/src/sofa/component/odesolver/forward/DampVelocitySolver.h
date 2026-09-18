@@ -36,7 +36,7 @@ class SOFA_COMPONENT_ODESOLVER_FORWARD_API DampVelocitySolver : public sofa::cor
 public:
     SOFA_CLASS(DampVelocitySolver, sofa::core::behavior::OdeSolver);
 
-    void solve (const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
+    void doSolve (const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
     Data<SReal> d_rate; ///< Factor used to reduce the velocities. Typically between 0 and 1.
     Data<SReal> d_threshold; ///< Threshold under which the velocities are canceled.
 
