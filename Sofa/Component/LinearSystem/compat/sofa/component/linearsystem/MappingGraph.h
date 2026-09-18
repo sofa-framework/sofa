@@ -23,9 +23,4 @@
 
 #include <sofa/config.h>
 #include <sofa/simulation/MappingGraph.h>
-SOFA_HEADER_DEPRECATED("v26.06", "v26.12", "sofa/simulation/MappingGraph.h")
-
-namespace sofa::component::linearsystem
-{
-using MappingGraph = sofa::simulation::MappingGraph;
-}
+SOFA_HEADER_DISABLED("v26.06", "v26.12", "sofa/simulation/MappingGraph.h")

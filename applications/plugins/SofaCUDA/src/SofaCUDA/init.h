@@ -31,6 +31,6 @@ namespace sofacuda
 // compat
 namespace sofa::gpu::cuda
 {
-    SOFA_ATTRIBUTE_DEPRECATED("v26.06", "v26.12", "use sofacuda::init() instead")
-    SOFACUDA_API void init();
+    SOFA_ATTRIBUTE_DISABLED("v26.06", "v26.12", "use sofacuda::init() instead")
+    SOFACUDA_API void init() = delete;
 } // namespace sofa::gpu::cuda
