@@ -57,7 +57,7 @@ void BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes
 }
 
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes >
-void BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::setDetectionOutputs(OutputVector* o)
+void BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::doSetDetectionOutputs(OutputVector* o)
 {
     if (o==nullptr) return;
     TOutputVector& outputs = *static_cast<TOutputVector*>(o);
@@ -184,7 +184,7 @@ void BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes
 }
 
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes >
-void BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::createResponse(core::objectmodel::BaseContext* group)
+void BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::doCreateResponse(core::objectmodel::BaseContext* group)
 {
     if (ff!=nullptr)
     {
@@ -203,7 +203,7 @@ void BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes
 }
 
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes >
-void BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::removeResponse()
+void BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::doRemoveResponse()
 {
     if (ff!=nullptr)
     {
