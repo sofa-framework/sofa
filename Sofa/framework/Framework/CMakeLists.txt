@@ -3,7 +3,7 @@ project(Sofa.Framework LANGUAGES CXX)
 
 set(SOFAFRAMEWORK_SOURCE_DIR "src/sofa/framework")
 
-set(SOFAFRAMEWORK_MODULES Sofa.Config Sofa.Type Sofa.Geometry Sofa.Topology Sofa.Helper Sofa.LinearAlgebra Sofa.DefaultType Sofa.Core Sofa.Simulation.Core Sofa.Simulation.Common Sofa.Simulation.Graph Sofa.Testing)
+set(SOFAFRAMEWORK_MODULES Sofa.Config Sofa.Type Sofa.Geometry Sofa.Topology Sofa.Helper Sofa.LinearAlgebra Sofa.DefaultType Sofa.Core Sofa.Simulation.Core Sofa.Simulation.Common Sofa.Testing)
 foreach(framework_module ${SOFAFRAMEWORK_MODULES})
     sofa_find_package(${framework_module} REQUIRED)
 endforeach()

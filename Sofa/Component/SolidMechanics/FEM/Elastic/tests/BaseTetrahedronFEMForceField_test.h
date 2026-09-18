@@ -66,7 +66,7 @@ public:
 
     void doSetUp() override
     {
-        m_simulation = sofa::simulation::getSimulation();
+        m_simulation = sofa::simulation::MainSimulation::getSimulation();
     }
 
     void doTearDown() override

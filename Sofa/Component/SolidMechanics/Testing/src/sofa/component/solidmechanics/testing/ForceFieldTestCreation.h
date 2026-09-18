@@ -107,7 +107,7 @@ struct ForceField_test : public sofa::testing::BaseSimulationTest, public sofa::
         , flags( TEST_ALL )
     {
         using modeling::addNew;
-        simulation::Simulation* simu = sofa::simulation::getSimulation();
+        simulation::Simulation* simu = sofa::simulation::MainSimulation::getSimulation();
         assert(simu);
 
         ///  node 1
@@ -128,7 +128,7 @@ struct ForceField_test : public sofa::testing::BaseSimulationTest, public sofa::
         , flags( TEST_ALL )
     {
         using modeling::addNew;
-        simulation::Simulation* simu = sofa::simulation::getSimulation();
+        simulation::Simulation* simu = sofa::simulation::MainSimulation::getSimulation();
         assert(simu);
 
         /// Load the scene
