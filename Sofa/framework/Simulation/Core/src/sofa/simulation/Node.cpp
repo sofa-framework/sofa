@@ -77,7 +77,6 @@ using core::objectmodel::BaseNode;
 
 Node::Node(const std::string& nodename, Node* parent)
     : core::objectmodel::BaseNode()
-    , sofa::core::objectmodel::Context()
     , child(initLink("child", "Child nodes"))
     , object(initLink("object","All objects attached to this node"))
 
@@ -871,7 +870,7 @@ void Node::updateVisualContext()
 {
     initializeContexts();
 
-    dmsg_info_when(debug_)<<"Node::updateVisualContext, node = "<<getName()<<", updated context = "<< *static_cast<core::objectmodel::Context*>(this) ;
+    dmsg_info_when(debug_)<<"Node::updateVisualContext, node = "<<getName()<<", updated context = "<< *this ;
 }
 
 /// Execute a recursive action starting from this node
@@ -1813,13 +1812,13 @@ void Node::updateContext()
         //                              if one day we refactor that part, maybe it would be better to have
         //                              an an explicit context-relationship and trigger a warning in case like the following one
         //                              saying there is an ambiguity and query scene designer to deambiguiate it.
-        copyContext(*static_cast<Context*>(static_cast<Node*>(firstParent)));
+        copyContext(*static_cast<BaseContext*>(static_cast<Node*>(firstParent)));
     }
 
     updateSimulationContext();
     updateVisualContext();
 
-    dmsg_info_when(debug_)<<"Node::updateContext, node = "<<getName()<<", updated context = "<< *static_cast<core::objectmodel::Context*>(this) ;
+    dmsg_info_when(debug_)<<"Node::updateContext, node = "<<getName()<<", updated context = "<< *this ;
 }
 
 void Node::updateSimulationContext()
@@ -1835,7 +1834,7 @@ void Node::updateSimulationContext()
         //                              if one day we refactor that part, maybe it would be better to have
         //                              an an explicit context-relationship and trigger a warning in case like the following one
         //                              saying there is an ambiguity and query scene designer to deambiguiate it.
-        copySimulationContext(*static_cast<Context*>(static_cast<Node*>(firstParent)));
+        copySimulationContext(*static_cast<BaseContext*>(static_cast<Node*>(firstParent)));
     }
 
     // if there is no parent... initialize all the context objects.

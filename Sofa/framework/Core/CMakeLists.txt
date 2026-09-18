@@ -314,7 +314,6 @@ set(SOURCE_FILES
     ${SRC_ROOT}/objectmodel/ClassInfo.cpp
     ${SRC_ROOT}/objectmodel/ComponentState.cpp
     ${SRC_ROOT}/objectmodel/ConfigurationSetting.cpp
-    ${SRC_ROOT}/objectmodel/Context.cpp
     ${SRC_ROOT}/objectmodel/ContextObject.cpp
     ${SRC_ROOT}/objectmodel/DDGNode.cpp
     ${SRC_ROOT}/objectmodel/Data.cpp
