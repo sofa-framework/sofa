@@ -506,6 +506,27 @@ protected:
         return TLink::add(destptr, path);
     }
 
+    bool addRawPtr(Base* baseptr) override
+    {
+        /// If the pointer is null and the path empty we do nothing
+        if(!baseptr)
+            return false;
+
+        /// Downcast the pointer to a compatible type and
+        /// If the types are not compatible with the Link we returns false
+        auto destptr = castTo<DestType*>(baseptr);
+        if(!destptr)
+        {
+            return false;
+        }
+
+        /// TLink:adding accepts nullptr (for a not yet resolved link).
+        const std::size_t index = TraitsContainer::add(m_value, destptr);
+        updateCounter();
+        added(destptr, index);
+        return true;;
+    }
+
     /// Returns false on type mismatch
     bool _doSet_(Base* baseptr, const size_t index) override
     {

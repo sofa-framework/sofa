@@ -27,6 +27,7 @@
 #include <sofa/helper/OptionsGroup.h>
 #include <sofa/helper/map_ptr_stable_compare.h>
 
+
 namespace sofa::component::collision::response::contact
 {
 
@@ -82,6 +83,8 @@ public :
     void setDefaultResponseType(const std::string &responseT);
 
     std::string getDefaultResponseType() const { return d_response.getValue().getSelectedItem(); }
+
+    void loadInternalStateFrom(const core::objectmodel::Snapshot::SnapshotObject& snapshot) override;
 
 protected:
     typedef sofa::helper::map_ptr_stable_compare<

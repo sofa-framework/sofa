@@ -194,6 +194,9 @@ public:
 
     Deriv velocity(sofa::Index index)const;
 
+    void saveInternalStateIn(sofa::core::objectmodel::Snapshot::SnapshotObject& snapshot) const override;
+
+    void loadInternalStateFrom(const core::objectmodel::Snapshot::SnapshotObject &snapshot) override;
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
