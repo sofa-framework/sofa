@@ -38,7 +38,7 @@ Gravity::Gravity()
 {
 }
 
-void Gravity::apply()
+void Gravity::doApply()
 {
     getContext()->setGravity( f_gravity.getValue() );
 }
