@@ -29,8 +29,8 @@ using std::string;
 #include <sofa/testing/BaseSimulationTest.h>
 using sofa::testing::BaseSimulationTest;
 
-#include <sofa/simulation/graph/DAGSimulation.h>
-using sofa::simulation::graph::DAGSimulation ;
+#include <sofa/simulation/Simulation.h>
+using sofa::simulation::Simulation ;
 using sofa::simulation::Node ;
 
 #include <sofa/simulation/common/SceneLoaderXML.h>
@@ -73,7 +73,7 @@ void TestLocalMinDistance::checkBasicIntersectionTests()
 {
     ExpectMessage warning(Message::Warning) ;
 
-    assert(sofa::simulation::getSimulation());
+    assert(sofa::simulation::MainSimulation::getSimulation());
 
     std::stringstream scene ;
     scene << "<?xml version='1.0'?>                                                          \n"
@@ -102,7 +102,7 @@ void TestLocalMinDistance::checkMissingRequiredAttributes()
 {
     ExpectMessage warning(Message::Warning) ;
 
-    assert(sofa::simulation::getSimulation());
+    assert(sofa::simulation::MainSimulation::getSimulation());
 
     std::stringstream scene ;
     scene << "<?xml version='1.0'?>                                                          \n"
@@ -125,7 +125,7 @@ void TestLocalMinDistance::checkMissingRequiredAttributes()
 
 void TestLocalMinDistance::checkAttributes()
 {
-    assert(sofa::simulation::getSimulation());
+    assert(sofa::simulation::MainSimulation::getSimulation());
 
     std::stringstream scene ;
     scene << "<?xml version='1.0'?>                                                          \n"
@@ -158,7 +158,7 @@ void TestLocalMinDistance::checkAttributes()
 
 void TestLocalMinDistance::checkDoubleInit()
 {
-    assert(sofa::simulation::getSimulation());
+    assert(sofa::simulation::MainSimulation::getSimulation());
 
     std::stringstream scene ;
     scene << "<?xml version='1.0'?>                                                          \n"
@@ -186,7 +186,7 @@ void TestLocalMinDistance::checkDoubleInit()
 
 void TestLocalMinDistance::checkInitReinit()
 {
-    assert(sofa::simulation::getSimulation());
+    assert(sofa::simulation::MainSimulation::getSimulation());
 
     std::stringstream scene ;
     scene << "<?xml version='1.0'?>                                                          \n"

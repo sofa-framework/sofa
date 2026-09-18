@@ -19,13 +19,31 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/common/xml/NodeElement.h>
-#include <sofa/simulation/Node.h>
+#pragma once
 
-namespace sofa::simulation
+#include <type_traits>
+#include <sofa/type/MatSym.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_FixedArray.h>
+
+namespace sofa::defaulttype
 {
 
-//helper::Creator<xml::NodeElement::Factory, Node> NodeDefaultClass("default");
-static helper::Creator<xml::NodeElement::Factory, Node> NodeClass("Node");
+template<sofa::Size D, typename real>
+struct DataTypeInfo< sofa::type::MatSym<D,real> > : public FixedArrayTypeInfo<sofa::type::MatSym<D,real> >
+{
+    static std::string GetTypeName()
+    {
+        std::ostringstream o;
+        o << "MatSym<" << D << "," << DataTypeInfo<real>::GetTypeName() << ">";
+        return o.str();
+    }
 
-}
+    static std::string name()
+    {
+        std::ostringstream o;
+        o << "MatSym" << D << DataTypeInfo<real>::name();
+        return o.str();
+    }
+};
+
+} /// namespace sofa::defaulttype

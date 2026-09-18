@@ -24,12 +24,11 @@ using sofa::testing::BaseSimulationTest;
 
 #include <sofa/helper/BackTrace.h>
 
-#include <sofa/simulation/graph/DAGSimulation.h>
+#include <sofa/simulation/Simulation.h>
 using sofa::simulation::Simulation ;
 using sofa::simulation::Node ;
 using sofa::core::objectmodel::New ;
 using sofa::core::objectmodel::BaseData ;
-using sofa::simulation::graph::DAGSimulation;
 
 #include <sofa/component/engine/transform/SmoothMeshEngine.h>
 using sofa::component::engine::transform::SmoothMeshEngine ;
@@ -55,7 +54,7 @@ struct SmoothMeshEngine_test : public BaseSimulationTest,
 
 	void doSetUp() override
 	{
-		m_simu = sofa::simulation::getSimulation();
+		m_simu = sofa::simulation::MainSimulation::getSimulation();
 		ASSERT_NE(m_simu, nullptr);
 
 		m_node = m_simu->createNewGraph("root");
