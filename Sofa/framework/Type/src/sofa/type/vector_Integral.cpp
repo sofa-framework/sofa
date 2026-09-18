@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_HELPER_VECTOR_INTEGRAL_DEFINITION
+#define SOFA_TYPE_VECTOR_INTEGRAL_CPP
 
 #include <sofa/type/vector_Integral.h>
 #include <sofa/type/vector_T.inl>
