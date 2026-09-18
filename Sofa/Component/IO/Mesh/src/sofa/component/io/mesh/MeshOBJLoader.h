@@ -41,7 +41,7 @@ protected:
     ~MeshOBJLoader() override;
 
 public:
-    bool doLoad() override;
+    bool doLoadMesh() override;
 
 protected:
     bool readOBJ (std::ifstream &file, const char* filename);
