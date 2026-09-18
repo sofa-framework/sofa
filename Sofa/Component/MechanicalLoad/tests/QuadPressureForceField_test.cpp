@@ -133,4 +133,31 @@ TYPED_TEST( QuadPressureForceField_test , constantQuadPressureForceFieldTest)
 
     this->test_constantForce();
 }
+
+using QuadPressureFF =  component::mechanicalload::QuadPressureForceField<defaulttype::Vec3Types>;
+class QuadPressureForceFieldTestAccess : public QuadPressureFF
+{
+public:
+    using QuadPressureInformation = QuadPressureFF::QuadPressureInformation;
+};
+
+TEST(QuadPressureForceField_test, QuadPressureInformationStreamOperators)
+{
+    QuadPressureForceFieldTestAccess::QuadPressureInformation initialInfo;
+    initialInfo.area = 1.0;
+    initialInfo.force[0] = 1.0;
+    initialInfo.force[1] = 2.0;
+    initialInfo.force[2] = 3.0;
+
+    std::stringstream buffer;
+    buffer << initialInfo;
+
+    QuadPressureForceFieldTestAccess::QuadPressureInformation loadedInfo;
+    buffer >> loadedInfo;
+
+    EXPECT_EQ(initialInfo.area, loadedInfo.area);
+    EXPECT_EQ(initialInfo.force[0], loadedInfo.force[0]);
+    EXPECT_EQ(initialInfo.force[1], loadedInfo.force[1]);
+    EXPECT_EQ(initialInfo.force[2], loadedInfo.force[2]);
+}
 }// namespace sofa

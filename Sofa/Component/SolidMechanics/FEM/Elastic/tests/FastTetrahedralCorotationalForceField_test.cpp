@@ -200,4 +200,53 @@ TEST_F(FastTetrahedralCorotationalForceField_test, emptyTology)
     this->checkEmptyTopology();
 }
 
+TEST_F(FastTetrahedralCorotationalForceField_test, TetrahedronInformationStreamOperators)
+{
+    FastTetrahedralCorotationalForceField3::TetrahedronRestInformation tetraInfo;
+
+    tetraInfo.restVolume = 1.0;
+
+    for (int i = 0; i < 3; ++i)
+        for (int j = 0; j < 3; ++j)
+            tetraInfo.restRotation[i][j] = i + j;
+
+    for (int i = 0; i < 3; ++i)
+        for (int j = 0; j < 3; ++j)
+            tetraInfo.rotation[i][j] = i + j;
+
+    for (int i = 0; i < 4; ++i)
+        tetraInfo.shapeVector[i] = Coord(i, i, i);
+
+    for (int i = 0; i < 6; ++i)
+        tetraInfo.restEdgeVector[i] = Coord(i, i, i);
+
+    for (int i = 0; i < 4; ++i)
+        for (int j = 0; j < 3; ++j)
+            for (int k = 0; k < 3; ++k)
+                tetraInfo.linearDfDxDiag[i][j][k] = i + j + k;
+
+    for (int i = 0; i < 6; ++i)
+        for (int j = 0; j < 3; ++j)
+            for (int k = 0; k < 3; ++k)
+                tetraInfo.linearDfDx[i][j][k] = i + j + k ;
+
+    for (int i = 0; i < 6; ++i)
+        tetraInfo.edgeOrientation[i] = 1;
+
+    std::stringstream buffer;
+    buffer << tetraInfo;
+
+    FastTetrahedralCorotationalForceField3::TetrahedronRestInformation loadedInfo;
+    buffer >> loadedInfo;
+
+    EXPECT_EQ(loadedInfo.restVolume, tetraInfo.restVolume);
+    EXPECT_EQ(loadedInfo.restRotation, tetraInfo.restRotation);
+    EXPECT_EQ(loadedInfo.rotation, tetraInfo.rotation);
+    EXPECT_EQ(*(loadedInfo.shapeVector), *(tetraInfo.shapeVector));
+    EXPECT_EQ(*(loadedInfo.restEdgeVector), *(tetraInfo.restEdgeVector));
+    EXPECT_EQ(*(loadedInfo.linearDfDxDiag), *(tetraInfo.linearDfDxDiag));
+    EXPECT_EQ(*(loadedInfo.linearDfDx), *(tetraInfo.linearDfDx));
+    EXPECT_EQ(*(loadedInfo.edgeOrientation), *(tetraInfo.edgeOrientation));
+}
+
 }

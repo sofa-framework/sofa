@@ -105,9 +105,33 @@ public:
         Real m_strainEnergy{};
 
         /// Output stream
-        inline friend std::ostream& operator<< ( std::ostream& os, const TetrahedronRestInformation& /*eri*/ ) {  return os;  }
+        inline friend std::ostream& operator<< ( std::ostream& os, const TetrahedronRestInformation& eri )
+        {
+            for (int i = 0; i < 4; ++i)
+                os << eri.m_shapeVector[i] << " ";
+            os << eri.m_fiberDirection << " ";
+            os << eri.m_restVolume << " ";
+            os << eri.m_volScale << " ";
+            os << eri.m_volume << " ";
+            os << eri.m_SPKTensorGeneral << " ";
+            os << eri.m_deformationGradient << " ";
+            os << eri.m_strainEnergy;
+            return os;
+        }
         /// Input stream
-        inline friend std::istream& operator>> ( std::istream& in, TetrahedronRestInformation& /*eri*/ ) { return in; }
+        inline friend std::istream& operator>> ( std::istream& in, TetrahedronRestInformation& eri )
+        {
+            for (int i = 0; i < 4; ++i)
+                in >> eri.m_shapeVector[i];
+            in >> eri.m_fiberDirection;
+            in >> eri.m_restVolume;
+            in >> eri.m_volScale;
+            in >> eri.m_volume;
+            in >> eri.m_SPKTensorGeneral;
+            in >> eri.m_deformationGradient;
+            in >> eri.m_strainEnergy;
+            return in;
+        }
 
         TetrahedronRestInformation() = default;
     };
@@ -120,9 +144,17 @@ public:
         Matrix3 DfDx;
 
         /// Output stream
-        inline friend std::ostream& operator<< (std::ostream& os, const EdgeInformation& /*eri*/ ) {  return os;  }
+        inline friend std::ostream& operator<< (std::ostream& os, const EdgeInformation& eri )
+        {
+            os << eri.DfDx;
+            return os;
+        }
         /// Input stream
-        inline friend std::istream& operator>> (std::istream& in, EdgeInformation& /*eri*/ ) { return in; }
+        inline friend std::istream& operator>> (std::istream& in, EdgeInformation& eri )
+        {
+            in >> eri.DfDx;
+            return in;
+        }
 
         EdgeInformation() = default;
     };
