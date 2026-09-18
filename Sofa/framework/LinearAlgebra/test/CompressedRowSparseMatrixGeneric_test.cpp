@@ -23,6 +23,8 @@
 #include <sofa/type/Mat.h>
 #include <gtest/gtest.h>
 
+#include <cstdlib>
+
 using CRS = sofa::linearalgebra::CompressedRowSparseMatrixGeneric<double>;
 using Mat3 = sofa::type::Mat<3, 3, double>;
 using CRSMat3 = sofa::linearalgebra::CompressedRowSparseMatrixGeneric<Mat3>;
@@ -645,4 +647,174 @@ TEST(CompressedRowSparseMatrixGeneric, Mat3x3dMul)
             const double expected = (i == j) ? 3.0 : 0.0;
             EXPECT_NEAR(result(i, j), expected, kTol);
         }
+}
+
+// ==================== Regression tests: known defects ====================
+//
+// The tests in this section FAIL today. Each comment names the offending line.
+// They are expected to pass once the corresponding fix lands.
+//
+// The clearRowBlock() cases segfault rather than fail cleanly, so they live in
+// the *DeathTest suite further down and run the call in a forked child.
+
+// block() short-circuits on "is j the first / last column of this row?" without
+// first checking that the row range is non-empty. fullRows() registers rows with
+// an empty range, after which colsIndex[rowRange.first] reads the *next* row's
+// first entry and colsIndex[rowRange.second - 1] reads the *previous* row's last
+// entry (index -1 for row 0). CompressedRowSparseMatrixGeneric.h:768-769
+TEST(CompressedRowSparseMatrixGeneric, BlockOnEmptyRowAfterFullRows)
+{
+    CRS m(6, 6);
+    m.setBlock(4, 4, 7.0);
+    m.compress();
+    m.fullRows();
+
+    ASSERT_EQ(m.getRowIndex().size(), 6u);
+
+    for (CRS::Index i = 0; i < 6; ++i)
+    {
+        for (CRS::Index j = 0; j < 6; ++j)
+        {
+            const double expected = (i == 4 && j == 4) ? 7.0 : 0.0;
+            EXPECT_NEAR(m.block(i, j), expected, kTol) << "block(" << i << "," << j << ")";
+        }
+    }
+}
+
+// Narrower reproduction of the same defect: reading column 4 of the empty row 0
+// returns the value stored at (4,4).
+TEST(CompressedRowSparseMatrixGeneric, BlockOnEmptyRowDoesNotBorrowNeighbourValue)
+{
+    CRS m(6, 6);
+    m.setBlock(4, 4, 7.0);
+    m.compress();
+    m.fullRows();
+
+    EXPECT_NEAR(m.block(0, 4), 0.0, kTol) << "row 0 is empty, must not return row 4's value";
+    EXPECT_NEAR(m.block(0, 0), 0.0, kTol) << "row 0 is empty, must not read colsIndex[-1]";
+}
+
+// clearRowColBlock() computes foundRowId but never uses it: rowRange is built
+// from the rowId left behind by a failed sortedFind, and deleteRow(rowId) runs
+// whenever *either* index was found. On a matrix where row i is absent but
+// column i exists, this deletes an unrelated row.
+// CompressedRowSparseMatrixGeneric.h:1074-1108
+TEST(CompressedRowSparseMatrixGeneric, ClearRowColBlockWithAbsentRow)
+{
+    CRS m(4, 4);
+    // row 0 is absent, but column 0 exists (in row 1)
+    m.setBlock(1, 0, 7.0);
+    m.setBlock(1, 1, 3.0);
+    m.setBlock(2, 2, 5.0);
+    m.compress();
+    ASSERT_EQ(m.getRowIndex().size(), 2u);
+
+    m.clearRowColBlock(0);
+
+    EXPECT_NEAR(m.block(1, 0), 0.0, kTol) << "column 0 must be cleared";
+    EXPECT_NEAR(m.block(1, 1), 3.0, kTol) << "row 1 must not be deleted";
+    EXPECT_NEAR(m.block(2, 2), 5.0, kTol) << "row 2 must be untouched";
+}
+
+// clearRowBlock() calls rowIndex.back() / rowIndex.front() before checking that
+// rowIndex is non-empty, which segfaults instead of failing an assertion.
+// CompressedRowSparseMatrixGeneric.h:984-985
+//
+// EXPECT_EXIT runs the body in a forked child, so the crash is contained and the
+// test binary survives to run everything after it. The child exits 0 only when
+// the call both returns and leaves the matrix untouched, so this reports FAILED
+// today ("Terminated by signal 11") and PASSED once the guard is added.
+// The suite is named *DeathTest per the googletest convention: suites whose name
+// ends in DeathTest are run before all others, because forking is only safe
+// before any test has started threads.
+#if GTEST_HAS_DEATH_TEST
+
+TEST(CompressedRowSparseMatrixGenericDeathTest, ClearRowBlockOnEmptyMatrix)
+{
+    EXPECT_EXIT(
+        {
+            CRS m(4, 4);
+            m.compress();
+            m.clearRowBlock(1);
+            std::exit(m.getRowIndex().empty() ? 0 : 2);
+        },
+        ::testing::ExitedWithCode(0), "");
+}
+
+TEST(CompressedRowSparseMatrixGenericDeathTest, ClearRowBlockOnDefaultConstructedMatrix)
+{
+    EXPECT_EXIT(
+        {
+            CRS m;
+            m.clearRowBlock(0);
+            std::exit(m.getRowIndex().empty() ? 0 : 2);
+        },
+        ::testing::ExitedWithCode(0), "");
+}
+
+#endif // GTEST_HAS_DEATH_TEST
+
+// ============ Regression guards: undefined behaviour, host-dependent ============
+//
+// These pass on this host but exercise genuine UB, so they are kept as guards
+// rather than as demonstrations of a wrong result:
+//   - the out-of-range colsIndex / rowBegin reads throw std::logic_error in a
+//     Debug build, where sofa::type::vector bounds-checks (NDEBUG undefined);
+//   - the divide-by-zero ones are only caught by UBSan, or by the hardware on
+//     x86_64 where integer division by zero raises SIGFPE. ARM's UDIV silently
+//     returns 0, which is why they pass here.
+
+// clearColBlock() repeats block()'s unguarded first/last-column fast path over
+// empty row ranges. CompressedRowSparseMatrixGeneric.h:1017-1018
+TEST(CompressedRowSparseMatrixGeneric, ClearColBlockAfterFullRows)
+{
+    CRS m(4, 4);
+    m.setBlock(1, 1, 3.0);
+    m.compress();
+    m.fullRows();
+
+    m.clearColBlock(1);
+
+    for (CRS::Index i = 0; i < 4; ++i)
+        EXPECT_NEAR(m.block(i, 1), 0.0, kTol) << "block(" << i << ",1)";
+}
+
+// Neither the row nor the column exists: clearRowColBlock() still builds a range
+// from a stale rowId before reporting the error.
+TEST(CompressedRowSparseMatrixGeneric, ClearRowColBlockWithAbsentRowAndCol)
+{
+    CRS m(4, 4);
+    m.setBlock(1, 1, 3.0);
+    m.setBlock(2, 1, 4.0);
+    m.compress();
+
+    m.clearRowColBlock(3);
+
+    EXPECT_NEAR(m.block(1, 1), 3.0, kTol);
+    EXPECT_NEAR(m.block(2, 1), 4.0, kTol);
+}
+
+// The hinted wblock() overload divides by nBlockRow / nBlockCol without the zero
+// guard its unhinted sibling has. CompressedRowSparseMatrixGeneric.h:895,904
+TEST(CompressedRowSparseMatrixGeneric, HintedWblockOnEmptyMatrix)
+{
+    CRS m;
+    CRS::Index rowId = 0;
+    CRS::Index colId = 0;
+    EXPECT_NO_THROW(m.setBlock(0, 0, rowId, colId, 1.0));
+}
+
+// getMaxColIndex() reads colsIndex[rowBegin[rowId + 1] - 1] for every registered
+// row, which points into the previous row when a row is empty.
+// CompressedRowSparseMatrixGeneric.h:420-427
+TEST(CompressedRowSparseMatrixGeneric, MaxColIndexWithEmptyRows)
+{
+    CRS m(4, 4);
+    m.setBlock(1, 2, 3.0);
+    m.compress();
+    m.fullRows();
+
+    // exercised through clearColBlock, which calls getMaxColIndex under AutoSize
+    EXPECT_NO_THROW(m.clearColBlock(2));
+    EXPECT_NEAR(m.block(1, 2), 0.0, kTol);
 }
