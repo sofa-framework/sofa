@@ -19,13 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/common/xml/NodeElement.h>
-#include <sofa/simulation/Node.h>
-
-namespace sofa::simulation
-{
-
-//helper::Creator<xml::NodeElement::Factory, Node> NodeDefaultClass("default");
-static helper::Creator<xml::NodeElement::Factory, Node> NodeClass("Node");
-
-}
+#pragma once
+#include <sofa/simulation/events/PauseEvent.h>
+SOFA_HEADER_DEPRECATED("v26.12", "v27.06", "sofa/simulation/events/PauseEvent.h")

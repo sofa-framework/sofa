@@ -19,10 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/defaulttype/TypeInfoRegistry.h>
-
-namespace sofa::defaulttype
-{
-
-} /// namespace sofa::defaulttype
-
+#pragma once
+#include <sofa/simulation/events/AnimateEndEvent.h>
+SOFA_HEADER_DEPRECATED("v26.12", "v27.06", "sofa/simulation/events/AnimateEndEvent.h")

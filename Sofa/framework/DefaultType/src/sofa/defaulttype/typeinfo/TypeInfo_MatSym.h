@@ -19,42 +19,31 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/graph/DAGSimulation.h>
+#pragma once
 
-#include <sofa/simulation/common/xml/BaseElement.h>
-#include <sofa/simulation/Node.h>
-#include <sofa/simulation/graph/init.h>
+#include <type_traits>
+#include <sofa/type/MatSym.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_FixedArray.h>
 
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/helper/Factory.h>
-#include <sofa/helper/init.h>
-
-namespace sofa::simulation::graph
+namespace sofa::defaulttype
 {
 
-using namespace sofa::defaulttype;
-
-
-DAGSimulation::DAGSimulation()
+template<sofa::Size D, typename real>
+struct DataTypeInfo< sofa::type::MatSym<D,real> > : public FixedArrayTypeInfo<sofa::type::MatSym<D,real> >
 {
-    // Safety check; it could be elsewhere, but here is a good place, I guess.
-    if (!sofa::simulation::graph::isInitialized())
-        sofa::helper::printUninitializedLibraryWarning("Sofa.Simulation.Graph", "sofa::simulation::graph::init()");
-}
+    static std::string GetTypeName()
+    {
+        std::ostringstream o;
+        o << "MatSym<" << D << "," << DataTypeInfo<real>::GetTypeName() << ">";
+        return o.str();
+    }
 
-DAGSimulation::~DAGSimulation()
-{
+    static std::string name()
+    {
+        std::ostringstream o;
+        o << "MatSym" << D << DataTypeInfo<real>::name();
+        return o.str();
+    }
+};
 
-}
-
-Node::SPtr DAGSimulation::createNewGraph(const std::string& name)
-{
-    return createNewNode( name );
-}
-
-Node::SPtr DAGSimulation::createNewNode(const std::string& name)
-{
-    return sofa::core::objectmodel::New<Node>(name);
-}
-
-} // namespace sofa::simulation::graph
+} /// namespace sofa::defaulttype

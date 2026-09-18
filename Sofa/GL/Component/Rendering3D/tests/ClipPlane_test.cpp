@@ -31,9 +31,8 @@ using sofa::testing::BaseTest;
 #include<sofa/core/objectmodel/BaseObject.h>
 using sofa::core::objectmodel::BaseObject ;
 
-#include <sofa/simulation/graph/DAGSimulation.h>
+#include <sofa/simulation/Simulation.h>
 using sofa::simulation::Simulation ;
-using sofa::simulation::graph::DAGSimulation ;
 
 #include <sofa/simulation/Node.h>
 using sofa::simulation::Node ;
@@ -100,7 +99,7 @@ void TestClipPlane::checkClipPlaneValidAttributes()
         EXPECT_NE( clp->findData(attrname), nullptr ) << "Missing attribute with name '" << attrname << "'." ;
 
     sofa::simulation::node::unload(root);
-    sofa::simulation::getSimulation()->createNewGraph("");
+    sofa::simulation::MainSimulation::getSimulation()->createNewGraph("");
 }
 
 
@@ -125,7 +124,7 @@ void TestClipPlane::checkClipPlaneAttributesValues(const std::string& dataname, 
     ASSERT_NE(clp, nullptr) ;
 
     sofa::simulation::node::unload(root);
-    sofa::simulation::getSimulation()->createNewGraph("");
+    sofa::simulation::MainSimulation::getSimulation()->createNewGraph("");
 }
 
 TEST_F(TestClipPlane, checkClipPlaneIdInValidValues)
