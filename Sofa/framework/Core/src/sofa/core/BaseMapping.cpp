@@ -44,6 +44,45 @@ BaseMapping::BaseMapping()
 BaseMapping::~BaseMapping()
 {}
 
+
+void BaseMapping::apply (const MechanicalParams* mparams , MultiVecCoordId outPos, ConstMultiVecCoordId inPos)
+{
+    //TODO (SPRINT SED 2025): Component state mechamism
+    doApply(mparams, outPos, inPos);
+}
+
+void BaseMapping::applyJ(const MechanicalParams* mparams , MultiVecDerivId outVel, ConstMultiVecDerivId inVel )
+{
+    //TODO (SPRINT SED 2025): Component state mechamism
+    doApplyJ(mparams, outVel, inVel);
+}
+
+void BaseMapping::applyJT(const MechanicalParams* mparams, MultiVecDerivId inForce, ConstMultiVecDerivId outForce)
+{
+    //TODO (SPRINT SED 2025): Component state mechamism
+    doApplyJT(mparams, inForce, outForce);
+}
+
+void BaseMapping::applyJT(const ConstraintParams* mparams, MultiMatrixDerivId inConst, ConstMultiMatrixDerivId outConst)
+{
+    //TODO (SPRINT SED 2025): Component state mechamism
+    doApplyJT(mparams, inConst, outConst);
+}
+
+
+void BaseMapping::applyDJT(const MechanicalParams* mparams, MultiVecDerivId inForce, ConstMultiVecDerivId outForce)
+{
+    //TODO (SPRINT SED 2025): Component state mechamism
+    doApplyDJT(mparams, inForce, outForce);
+}
+
+void BaseMapping::computeAccFromMapping(const MechanicalParams* mparams, MultiVecDerivId outAcc, ConstMultiVecDerivId inVel, ConstMultiVecDerivId inAcc)
+{
+    //TODO (SPRINT SED 2025): Component state mechamism
+    doComputeAccFromMapping(mparams, outAcc, inVel, inAcc);
+}
+
+
 bool BaseMapping::setFrom(BaseState*  )
 {
     dmsg_error() << "Calling a virtual method not implemented." ;
@@ -122,7 +161,12 @@ bool BaseMapping::isMechanical() const
 /// @TODO Note that if the mapping provides this matrix, then a default implementation
 /// of all other related methods could be provided, or optionally used to verify the
 /// provided implementations for debugging.
-const sofa::linearalgebra::BaseMatrix* BaseMapping::getJ(const MechanicalParams* /*mparams*/)
+const sofa::linearalgebra::BaseMatrix* BaseMapping::getJ(const MechanicalParams* mparams)
+{
+    //TODO (SPRINT SED 2025): Component state mechamism
+    return doGetJ(mparams);
+}
+const sofa::linearalgebra::BaseMatrix* BaseMapping::doGetJ(const MechanicalParams* /*mparams*/)
 {
     dmsg_error() << "Calling a virtual method not implemented." ;
     return getJ();
@@ -130,17 +174,56 @@ const sofa::linearalgebra::BaseMatrix* BaseMapping::getJ(const MechanicalParams*
 
 const sofa::linearalgebra::BaseMatrix* BaseMapping::getJ()
 {
-    dmsg_error() << "Calling a virtual method not implemented." ;
-    return nullptr;
+     //TODO (SPRINT SED 2025): Component state mechamism
+    return doGetJ();
 }
-
-sofa::linearalgebra::BaseMatrix* BaseMapping::createMappedMatrix(const behavior::BaseMechanicalState* /*state1*/, const behavior::BaseMechanicalState* /*state2*/, func_createMappedMatrix)
+const sofa::linearalgebra::BaseMatrix* BaseMapping::doGetJ()
 {
     dmsg_error() << "Calling a virtual method not implemented." ;
     return nullptr;
 }
 
+sofa::linearalgebra::BaseMatrix* BaseMapping::createMappedMatrix(const behavior::BaseMechanicalState* state1, const behavior::BaseMechanicalState* state2, func_createMappedMatrix func)
+{
+    //TODO (SPRINT SED 2025): Component state mechamism
+    return doCreateMappedMatrix(state1,state2,func);
+}
+sofa::linearalgebra::BaseMatrix* BaseMapping::doCreateMappedMatrix(const behavior::BaseMechanicalState* /*state1*/, const behavior::BaseMechanicalState* /*state2*/, func_createMappedMatrix)
+{
+    dmsg_error() << "Calling a virtual method not implemented." ;
+    return nullptr;
+}
+
+void BaseMapping::disable()
+{
+    //TODO (SPRINT SED 2025): Component state mechamism
+    doDisable();
+}
+
+const type::vector<sofa::linearalgebra::BaseMatrix*>* BaseMapping::getJs()
+{
+    //TODO (SPRINT SED 2025): Component state mechamism
+    return doGetJs();
+}
+
+void BaseMapping::updateK( const MechanicalParams* mparams, ConstMultiVecDerivId outForce )
+{
+    //TODO (SPRINT SED 2025): Component state mechamism
+    doUpdateK(mparams,outForce);
+}
+
+const linearalgebra::BaseMatrix* BaseMapping::getK()
+{
+    //TODO (SPRINT SED 2025): Component state mechamism
+    return doGetK();
+}
+
 void BaseMapping::buildGeometricStiffnessMatrix(sofa::core::GeometricStiffnessMatrix* matrices)
+{
+    //TODO (SPRINT SED 2025): Component state mechamism
+    doBuildGeometricStiffnessMatrix(matrices);
+}
+void BaseMapping::doBuildGeometricStiffnessMatrix(sofa::core::GeometricStiffnessMatrix* matrices)
 {
     SOFA_UNUSED(matrices);
 }
