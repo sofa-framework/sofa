@@ -65,7 +65,7 @@ private:
 
     // Kepp functions for mouse interaction (TODO: removed them and allow interactive and recorded camera in same scene)
     void moveCamera_mouse(int x, int y);
-    void manageEvent(core::objectmodel::Event* e) override;
+    void doManageEvent(core::objectmodel::Event* e) override;
     void processMouseEvent(core::objectmodel::MouseEvent* me);
 
     void configureRotation();
