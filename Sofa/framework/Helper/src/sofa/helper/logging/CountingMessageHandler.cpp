@@ -30,7 +30,7 @@
 namespace sofa::helper::logging::countingmessagehandler
 {
 
-void CountingMessageHandler::process(Message& m)
+void CountingMessageHandler::doProcess(Message& m)
 {
     assert(m.type()<m_countMatching.size() && "If this happens this means that the code initializing m_countMatching is broken.") ;
 

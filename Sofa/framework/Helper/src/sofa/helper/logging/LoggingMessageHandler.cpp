@@ -29,7 +29,7 @@
 namespace sofa::helper::logging::loggingmessagehandler
 {
 
-void LoggingMessageHandler::process(Message& m)
+void LoggingMessageHandler::doProcess(Message& m)
 {
     if(m_activationCount>0){
         m_messages.push_back(m) ;
