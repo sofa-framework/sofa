@@ -41,7 +41,6 @@ public:
 
     /// Given an input derivative order (0 for position, 1 for velocity, 2 for acceleration),
     /// how much will it affect the output derivative of the given order.
-    virtual void doIntegrate(const core::ExecParams* params, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
 
     virtual SReal getVelocityIntegrationFactor() const override
     {
@@ -53,6 +52,8 @@ public:
         return m_dt;
     }
 protected:
+    virtual void doIntegrate(const core::ExecParams* params, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
+
     DampVelocityIntegrationScheme();
 };
 

@@ -28,6 +28,7 @@
 #include <sofa/linearalgebra/FullMatrix.h>
 #include <sofa/type/Mat.h>
 #include <sofa/type/Vec.h>
+#include <sofa/component/integrationscheme/backward/EulerImplicitIntegrationScheme.h>
 
 namespace sofa::component::constraint::lagrangian::correction
 {
@@ -66,7 +67,7 @@ public:
     sofa::core::objectmodel::DataFileName d_fileCompliance; ///< Precomputed compliance matrix data file
     Data<std::string> d_fileDir; ///< If not empty, the compliance will be saved in this repertory
 
-    SingleLink<PrecomputedConstraintCorrection, sofa::component::integrationscheme::backward::EulerImplicitSolver, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_odeSolver; ///< Link towards the EulerImplicit solver used during the compliance precomputation. If unset, the first OdeSolver found in the current context is used.
+    SingleLink<PrecomputedConstraintCorrection, sofa::component::integrationscheme::backward::EulerImplicitIntegrationScheme, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_odeSolver; ///< Link towards the EulerImplicit solver used during the compliance precomputation. If unset, the first OdeSolver found in the current context is used.
     SingleLink<PrecomputedConstraintCorrection, sofa::core::behavior::LinearSolver, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_linearSolver; ///< Link towards the linear solver used during the compliance precomputation. If unset, the first LinearSolver found in the current context is used.
 
 protected:

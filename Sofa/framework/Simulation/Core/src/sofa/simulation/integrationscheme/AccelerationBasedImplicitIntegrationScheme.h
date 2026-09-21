@@ -56,7 +56,6 @@ public:
      *  All of those overriding derive from the equations presented in the documentation https://sofa-framework.github.io/doc/simulation-principles/system-resolution/integration-scheme/#solving-for-non-linearities
      **/
 
-    virtual void doSetupIntegrationStep(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
 
     virtual void computeLHS(bool firstIteration = false) override;
     virtual void computeRHS(bool firstIteration = false) override;
@@ -68,6 +67,8 @@ public:
     virtual SReal getPositionIntegrationFactor() const override final;
 
 protected:
+    virtual void doSetupIntegrationStep(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
+
     virtual sofa::Size getIntegrationSchemeTimeOrder() const = 0;
     /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ **/
 

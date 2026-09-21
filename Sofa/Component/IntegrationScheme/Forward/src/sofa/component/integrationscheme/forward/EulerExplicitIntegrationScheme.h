@@ -81,7 +81,6 @@ public:
 
     SingleLink<EulerExplicitIntegrationScheme, core::behavior::LinearSolver, BaseLink::FLAG_STRONGLINK> l_linearSolver;
 
-    virtual void doIntegrate(const core::ExecParams* params, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
 
     virtual SReal getVelocityIntegrationFactor() const override
     {
@@ -97,7 +96,7 @@ public:
 
 protected:
 
-protected:
+    virtual void doIntegrate(const core::ExecParams* params, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
 
     /// Update state variable (new position and velocity) based on the computed acceleration
     /// The update takes constraints into account

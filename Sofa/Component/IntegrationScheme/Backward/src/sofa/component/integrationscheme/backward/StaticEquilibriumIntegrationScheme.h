@@ -44,7 +44,6 @@ public:
 
     StaticEquilibriumIntegrationScheme();
 
-    virtual void doSetupIntegrationStep(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
 
     virtual void computeLHS(bool firstIteration = true) override;
     virtual void computeRHS(bool firstIteration = true) override;
@@ -67,6 +66,7 @@ public:
     Data<bool> d_alwaysAdvanceNewton;
 
 protected:
+    virtual void doSetupIntegrationStep(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
 
     virtual sofa::Size getIntegrationSchemeTimeOrder() const override;
 

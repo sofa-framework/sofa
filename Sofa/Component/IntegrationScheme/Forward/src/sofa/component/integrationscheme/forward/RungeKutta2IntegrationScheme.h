@@ -33,7 +33,6 @@ class SOFA_COMPONENT_INTEGRATIONSCHEME_FORWARD_API RungeKutta2IntegrationScheme 
 public:
     SOFA_CLASS(RungeKutta2IntegrationScheme, simulation::integrationscheme::ExplicitIntegrationScheme);
 
-    virtual void doIntegrate(const core::ExecParams* params, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
 
     virtual SReal getVelocityIntegrationFactor() const override
     {
@@ -44,6 +43,10 @@ public:
     {
         return m_dt*m_dt/4.0;
     }
+
+protected:
+    virtual void doIntegrate(const core::ExecParams* params, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
+
 };
 
 } // namespace sofa::component::integrationscheme::forward

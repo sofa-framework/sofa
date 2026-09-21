@@ -51,8 +51,6 @@ public:
      * before solving. This method internally calls doSetupIntegrationStep that can be overridden.
      */
     virtual void setupIntegrationStep(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) final;
-    virtual void doSetupIntegrationStep(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
-    {  }
 
     ImplicitIntegrationScheme();
 
@@ -136,6 +134,9 @@ public:
 
 
 protected:
+
+    virtual void doSetupIntegrationStep(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
+    {  }
 
     /**
      * This method returns the order of the integration scheme in term of number of past timestep

@@ -53,11 +53,13 @@ public:
      * before solving. This method now internally calls doIntegrate.
      */
     virtual void integrate(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override final;
-    virtual void doIntegrate(const core::ExecParams* params, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) = 0 ;
 
 protected:
     std::shared_ptr<sofa::simulation::common::VectorOperations > m_vop;
     std::unique_ptr<sofa::simulation::common::MappingGraphMechanicalOperations> m_mop;
+
+    virtual void doIntegrate(const core::ExecParams* params, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) = 0 ;
+
 
 };
 } // namespace sofa::component::integrationscheme
