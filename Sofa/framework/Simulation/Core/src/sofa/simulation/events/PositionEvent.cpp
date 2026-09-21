@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/PositionEvent.h>
+#include <sofa/simulation/events/PositionEvent.h>
 
 
 namespace sofa::simulation

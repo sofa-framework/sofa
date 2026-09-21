@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <sofa/simulation/CollisionBeginEvent.h>
+#include <sofa/simulation/events/CollisionBeginEvent.h>
 
 
 namespace sofa::simulation

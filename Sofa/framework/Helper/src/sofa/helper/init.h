@@ -44,7 +44,6 @@ namespace sofa::helper
 //     └──sofa::type::init()                     // SofaDefaultType
 //        └──sofa::core::init()                         // SofaCore
 //           └──sofa::simulation::common::init()        // SofaSimulationCommon
-//              └──sofa::simulation::graph::init()      // SofaSimulationGraph
 //
 // For example:
 //

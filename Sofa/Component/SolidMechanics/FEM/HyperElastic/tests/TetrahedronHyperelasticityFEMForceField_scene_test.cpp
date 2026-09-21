@@ -19,7 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/testing/BaseSimulationTest.h>
 using sofa::testing::BaseSimulationTest;
 
@@ -93,7 +92,7 @@ struct TetrahedronHyperelasticityFEMForceField_scene_test : public BaseSimulatio
         // Simulation gives a slightly different reference:
         refY[0] = -0.106832;
 
-        simulation::Simulation* simu = sofa::simulation::getSimulation();
+        simulation::Simulation* simu = sofa::simulation::MainSimulation::getSimulation();
 
         /// Load the scene
         root = simu->createNewGraph("root");
