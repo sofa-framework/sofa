@@ -2425,6 +2425,6 @@ template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::loadInternalStateFrom(const core::objectmodel::Snapshot::SnapshotObject &snapshot)
 {
     SOFA_UNUSED(snapshot);
-    _indexedElements = & (this->l_topology->getTetrahedra());
+    this->reinit();
 }
 } //namespace sofa::component::solidmechanics::fem::elastic
