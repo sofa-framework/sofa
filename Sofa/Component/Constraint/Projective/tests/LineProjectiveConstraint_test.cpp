@@ -24,7 +24,6 @@ using sofa::testing::BaseSimulationTest;
 #include <sofa/testing/NumericTest.h>
 using sofa::testing::NumericTest;
 
-#include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/component/topology/container/dynamic/PointSetTopologyContainer.h>
 #include <sofa/component/constraint/projective/LineProjectiveConstraint.h>
@@ -70,7 +69,7 @@ struct LineProjectiveConstraint_test : public BaseSimulationTest, NumericTest<ty
     /// Create the context for the tests.
     void doSetUp() override
     {
-        simulation = sofa::simulation::getSimulation();
+        simulation = sofa::simulation::MainSimulation::getSimulation();
         ASSERT_NE(simulation, nullptr);
 
         /// Create the scene

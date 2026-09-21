@@ -31,9 +31,6 @@ using sofa::testing::BaseSimulationTest;
 #include<sofa/core/objectmodel/BaseObject.h>
 using sofa::core::objectmodel::BaseObject ;
 
-#include <sofa/simulation/graph/DAGSimulation.h>
-using sofa::simulation::graph::DAGSimulation ;
-
 #include <sofa/simulation/Node.h>
 using sofa::simulation::Node ;
 
@@ -98,7 +95,7 @@ public:
 
         EXPECT_MSG_NOEMIT(Error, Warning) ;
 
-        const Node::SPtr root = sofa::simpleapi::createRootNode(sofa::simulation::getSimulation(), "root", {{"gravity", "0 0 0"}});
+        const Node::SPtr root = sofa::simpleapi::createRootNode(sofa::simulation::MainSimulation::getSimulation(), "root", {{"gravity", "0 0 0"}});
         sofa::simpleapi::createObject(root, "DefaultAnimationLoop");
         sofa::simpleapi::createObject(root, "MechanicalObject", {{"position", "0 1 2 3 4 5 6 7 8 9"}});
         sofa::simpleapi::createObject(root, "MeshOBJLoader", {{"name", "loader"}, {"filename", "mesh/liver-smooth.obj"}});
@@ -129,7 +126,7 @@ public:
 
         EXPECT_MSG_NOEMIT(Error, Warning) ;
 
-        const Node::SPtr root = sofa::simpleapi::createRootNode(sofa::simulation::getSimulation(), "root", {{"gravity", "0 0 0"}});
+        const Node::SPtr root = sofa::simpleapi::createRootNode(sofa::simulation::MainSimulation::getSimulation(), "root", {{"gravity", "0 0 0"}});
         sofa::simpleapi::createObject(root, "DefaultAnimationLoop");
         sofa::simpleapi::createObject(root, "MechanicalObject", {{"position", "0 1 2 3 4 5 6 7 8 9"}});
         sofa::simpleapi::createObject(root, "MeshOBJLoader", {{"name", "loader"}, {"filename", "mesh/liver-smooth.obj"}});
