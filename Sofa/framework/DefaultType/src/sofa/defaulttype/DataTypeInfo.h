@@ -33,6 +33,7 @@
 #include <sofa/defaulttype/typeinfo/TypeInfo_Bool.h>
 #include <sofa/defaulttype/typeinfo/TypeInfo_Integer.h>
 #include <sofa/defaulttype/typeinfo/TypeInfo_Mat.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_MatSym.h>
 #include <sofa/defaulttype/typeinfo/TypeInfo_Quat.h>
 #include <sofa/defaulttype/typeinfo/TypeInfo_Scalar.h>
 #include <sofa/defaulttype/typeinfo/TypeInfo_SelectableItem.h>
