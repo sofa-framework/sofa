@@ -35,7 +35,23 @@ namespace sofa::simulation::integrationscheme
 VelocityBasedImplicitIntegrationScheme::VelocityBasedImplicitIntegrationScheme()
 : d_firstOrder(initData(&d_firstOrder, false, "firstOrder", "Use this ODE to integrate first order ODE. This will replace the dynamic equation from Ma=f(x,v) to Mv=f(x), meaning that the mass component now acts as capacity."))
 , d_computeFinalAcceleration(initData(&d_computeFinalAcceleration, false, "computeFinalAcceleration", "If true the integration scheme will compute the total acceleration of the timestep after updating the positions. If false, the acceleration vector is only a result of an internal computation."))
+, d_impulseBased(initData(&d_impulseBased, false, "impulseBased", "If true the integration scheme will compute the right-hand-side in term of impulse instead of forces."))
 {}
+
+
+void VelocityBasedImplicitIntegrationScheme::init()
+{
+    Inherit1::init();
+    Inherit2::init();
+    if (d_impulseBased.getValue())
+    {
+        msg_warning() << "You have activated the impulse-based computation. "
+                         "This is a backward compatibility enabling to compute the right-hand-side "
+                         "the same way as before the ODE into IntegrationScheme refactoring.\n"
+                         "To use with caution, some components have been adapted to force-based "
+                         "computation without any compatibility layer (e.g. PrecomputedConstraintcorrection or UncoupledConstraintcorrection)";
+    }
+}
 
 void VelocityBasedImplicitIntegrationScheme::doSetupIntegrationStep(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
 {
@@ -119,9 +135,12 @@ void VelocityBasedImplicitIntegrationScheme::computeLHS(bool firstIteration)
 
     // Set the factor of the left hand side taking into account the rayleigh damping
     SCOPED_TIMER("setSystemMBKMatrix");
-    const core::MatricesFactors::M mFact(d_firstOrder.getValue() ? 1.0                                           : (this->getInverseVelocityUpdateDerivedFromVelocity() + d_rayleighMass.getValue()));
-    const core::MatricesFactors::B bFact(d_firstOrder.getValue() ? 0                                             : -1.0 );
-    const core::MatricesFactors::K kFact(d_firstOrder.getValue() ? -this->getPositionUpdateDerivedFromVelocity() : -(this->getPositionUpdateDerivedFromVelocity() +d_rayleighStiffness.getValue()));
+    const core::MatricesFactors::M mFact(d_firstOrder.getValue() ? 1.0
+                                                                 : ((d_impulseBased.getValue() ? 1.0/this->getInverseVelocityUpdateDerivedFromVelocity() : 1.0 ) * (this->getInverseVelocityUpdateDerivedFromVelocity() + d_rayleighMass.getValue())));
+    const core::MatricesFactors::B bFact(d_firstOrder.getValue() ? 0
+                                                                 : ((d_impulseBased.getValue() ? 1.0/this->getInverseVelocityUpdateDerivedFromVelocity() : 1.0 ) * -1.0 ));
+    const core::MatricesFactors::K kFact(d_firstOrder.getValue() ? -this->getPositionUpdateDerivedFromVelocity()
+                                                                 : ((d_impulseBased.getValue() ? 1.0/this->getInverseVelocityUpdateDerivedFromVelocity() : 1.0 ) * -(this->getPositionUpdateDerivedFromVelocity() +d_rayleighStiffness.getValue())));
 
     m_mop->setSystemMBKMatrix(mFact, bFact, kFact, l_linearSolver.get());
 }
@@ -205,6 +224,9 @@ void VelocityBasedImplicitIntegrationScheme::computeRHS(bool firstIteration)
         }
 
         m_mop->mparams.setV(backV);
+
+        if (d_impulseBased.getValue())
+            m_vop->v_teq(m_r0, 1.0/this->getInverseVelocityUpdateDerivedFromVelocity());
 
         // Set the factor of the left hand side taking into account the rayleigh damping
         // Apply projective constraints to the full residual

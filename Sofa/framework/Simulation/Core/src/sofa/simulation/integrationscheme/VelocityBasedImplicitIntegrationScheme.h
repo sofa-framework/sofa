@@ -52,6 +52,7 @@ public:
 
     Data<bool> d_firstOrder; ///< If true the coordinates derivative will not be integrated and considered null at the beginning of the solving.
     Data<bool> d_computeFinalAcceleration; ///< If true the integration scheme will compute the total acceleration of the timestep after updating the positions. If false, the acceleration vector is only a result of an internal computation.
+    Data<bool> d_impulseBased; ///< If true the integration scheme will compute the right-hand-side in term of impulse instead of forces.
 
 
     VelocityBasedImplicitIntegrationScheme();
@@ -60,6 +61,8 @@ public:
     /**
      *  All of those overriding derive from the equations presented in the documentation https://sofa-framework.github.io/doc/simulation-principles/system-resolution/integration-scheme/#solving-for-non-linearities
      **/
+
+    virtual void init() override;
 
     virtual void computeLHS(bool firstIteration = false) override;
     virtual void computeRHS(bool firstIteration = false) override;
