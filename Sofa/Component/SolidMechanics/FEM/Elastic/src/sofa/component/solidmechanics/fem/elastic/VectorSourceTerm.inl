@@ -64,4 +64,16 @@ sofa::Deriv_t<DataTypes> VectorSourceTerm<DataTypes, ElementType>::evaluate(
     return this->interpolateProperty(*l_sourceDensity, context);
 }
 
+template <class DataTypes, class ElementType>
+sofa::type::vector<const sofa::core::objectmodel::BaseData*>
+VectorSourceTerm<DataTypes, ElementType>::integrandInputs() const
+{
+    if (!l_sourceDensity)
+    {
+        return {};
+    }
+
+    return {&l_sourceDensity->d_property};
+}
+
 }  // namespace sofa::component::solidmechanics::fem::elastic

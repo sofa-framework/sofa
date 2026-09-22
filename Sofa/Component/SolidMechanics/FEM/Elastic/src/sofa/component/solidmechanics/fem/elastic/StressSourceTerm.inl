@@ -64,4 +64,16 @@ sofa::Deriv_t<DataTypes> StressSourceTerm<DataTypes, ElementType>::evaluate(
     return this->interpolateProperty(*l_stress, context) * elementNormal(context.jacobian);
 }
 
+template <class DataTypes, class ElementType>
+sofa::type::vector<const sofa::core::objectmodel::BaseData*>
+StressSourceTerm<DataTypes, ElementType>::integrandInputs() const
+{
+    if (!l_stress)
+    {
+        return {};
+    }
+
+    return {&l_stress->d_property};
+}
+
 }  // namespace sofa::component::solidmechanics::fem::elastic

@@ -60,6 +60,17 @@ void FEMSourceTermIntegrator<DataTypes, ElementType>::init()
         this->validateSources();
     }
 
+    if (!this->isComponentStateInvalid())
+    {
+        for (const auto& source : l_constantSources)
+        {
+            for (const auto* data : source->integrandInputs())
+            {
+                this->trackInternalData(*data);
+            }
+        }
+    }
+
     if (!this->isComponentStateInvalid() && this->l_topology && this->mstate)
     {
         this->assembleConstantForce();
@@ -68,6 +79,15 @@ void FEMSourceTermIntegrator<DataTypes, ElementType>::init()
     if (!this->isComponentStateInvalid())
     {
         this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
+    }
+}
+
+template <class DataTypes, class ElementType>
+void FEMSourceTermIntegrator<DataTypes, ElementType>::doUpdateInternal()
+{
+    if (!this->isComponentStateInvalid() && this->l_topology && this->mstate)
+    {
+        assembleConstantForce();
     }
 }
 

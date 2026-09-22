@@ -108,6 +108,11 @@ public:
      */
     Deriv evaluate(const QuadratureContext_t& context) const override;
 
+    /**
+     * @brief The nodal values this term interpolates, for FEMSourceTermIntegrator to track.
+     */
+    sofa::type::vector<const sofa::core::objectmodel::BaseData*> integrandInputs() const override;
+
 protected:
 
     StressSourceTerm();
