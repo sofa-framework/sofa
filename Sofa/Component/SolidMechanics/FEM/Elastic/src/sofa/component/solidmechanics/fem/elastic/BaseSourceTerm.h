@@ -149,6 +149,17 @@ public:
      */
     virtual Deriv evaluate(const QuadratureContext_t& context) const = 0;
 
+    /**
+     * @brief The Data this term's integrand reads, beyond the geometry it is handed.
+     *
+     * Access to this Data is enabled so that a callback on FEMSourceTermIntegrator can be activated.
+     * They are tracked and the cached integral is rebuilt whenever one of them is written.
+     */
+    virtual sofa::type::vector<const sofa::core::objectmodel::BaseData*> integrandInputs() const
+    {
+        return {};
+    }
+
 protected:
 
     BaseSourceTerm() = default;

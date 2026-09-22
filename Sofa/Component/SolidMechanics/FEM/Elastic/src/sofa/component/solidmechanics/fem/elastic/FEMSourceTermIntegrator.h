@@ -82,7 +82,8 @@ public:
      * 1. Initializes the base force field.
      * 2. Initializes the topology accessor.
      * 3. Validates the linked source terms.
-     * 4. Integrates the source terms into the nodal force.
+     * 4. Tracks the Data the constant source terms read.
+     * 5. Integrates the source terms into the nodal force.
      */
     void init() override;
 
@@ -135,6 +136,11 @@ protected:
      * @brief Ensures that valid source terms are linked, falling back to the current context.
      */
     void validateSources();
+
+    /**
+     * @brief Re-integrates the constant terms when a Data they read has changed.
+     */
+    void doUpdateInternal() override;
 
     /**
      * @brief Runs the quadrature and accumulates every linked source term into m_constantForce.
