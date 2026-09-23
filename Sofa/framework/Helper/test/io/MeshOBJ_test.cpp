@@ -126,5 +126,30 @@ TEST_F(MeshOBJ_test, MeshOBJ_UV_N_MTL_Init)
     meshUVNMTL.testBench();
 }
 
+TEST_F(MeshOBJ_test, MeshOBJ_MTL_MaterialNames)
+{
+    // meshtest_uv_n_mtl.mtl defines one material, "None", used by "usemtl None".
+    sofa::helper::io::MeshOBJ mesh("mesh/meshtest_uv_n_mtl.obj");
+
+    const auto& materials = mesh.getMaterials();
+    ASSERT_EQ(1u, materials.size());
+    EXPECT_EQ("None", materials[0].name);
+    EXPECT_FLOAT_EQ(0.8f, materials[0].diffuse[0]);
+
+    // Groups using the material must be resolved to it.
+    const auto& groups = mesh.getGroups();
+    ASSERT_FALSE(groups.empty());
+    bool foundGroupWithMaterial = false;
+    for (const auto& group : groups)
+    {
+        if (group.materialName == "None")
+        {
+            EXPECT_EQ(0, group.materialId);
+            foundGroupWithMaterial = true;
+        }
+    }
+    EXPECT_TRUE(foundGroupWithMaterial);
+}
+
 
 }// namespace sofa
