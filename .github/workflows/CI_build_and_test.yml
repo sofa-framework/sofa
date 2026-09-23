@@ -401,13 +401,13 @@ jobs:
               docker run --rm \
                   --user $(id -u):$(id -g) --network=host -v $WORKSPACE:/workspace \
                   ${DOCKER_IMAGE} \
-                  /bin/bash -c "export REGRESSION_DIR="$DOCKER_REGRESSION_DIR"; cd /workspace;. ${DOCKER_CI_DIR}/scripts/setup-test-env.sh \"${DOCKER_BUILD_DIR}\" \"${DOCKER_CI_DIR}/scripts/\" \"${NODE_NAME}\" \"${{ inputs.python-version }}\";  env ; ${VM_PYTHON3_EXECUTABLE} ${DOCKER_REGRESSION_DIR}/SofaRegressionProgram/SofaRegressionProgram.py --input "${DOCKER_SRC_DIR}/examples" --input "${DOCKER_SRC_DIR}/applications"  --input "${DOCKER_BUILD_DIR}/external_directories/fetched" --output-logs-errors "${RESULTS_DIR}/regression" -j ${VM_MAX_PARALLEL_TESTS} --legacy-regression"
+                  /bin/bash -c "export REGRESSION_DIR="$DOCKER_REGRESSION_DIR"; cd /workspace;. ${DOCKER_CI_DIR}/scripts/setup-test-env.sh \"${DOCKER_BUILD_DIR}\" \"${DOCKER_CI_DIR}/scripts/\" \"${NODE_NAME}\" \"${{ inputs.python-version }}\";  env ; ${VM_PYTHON3_EXECUTABLE} ${DOCKER_REGRESSION_DIR}/SofaRegressionProgram/SofaRegressionProgram.py --input "${DOCKER_SRC_DIR}/examples" --input "${DOCKER_SRC_DIR}/applications"  --input "${DOCKER_BUILD_DIR}/external_directories/fetched" --output-logs-errors "${RESULTS_DIR}/regression" --legacy-regression --jobs ${VM_MAX_PARALLEL_TESTS} "
           else
               echo "Launching regression test suite"
 
               . ${CI_DIR}/scripts/setup-test-env.sh "${BUILD_DIR}" "${CI_DIR}/scripts/" "${NODE_NAME}" "${{ inputs.python-version }}"
               env
-              ${VM_PYTHON3_EXECUTABLE} ${REGRESSION_DIR}/SofaRegressionProgram/SofaRegressionProgram.py --input "${SRC_DIR}/examples" --input "${SRC_DIR}/applications"  --input "${BUILD_DIR}/external_directories/fetched" --output-logs-errors "${RESULTS_DIR}/regression" -j ${VM_MAX_PARALLEL_TESTS} --legacy-regression
+              ${VM_PYTHON3_EXECUTABLE} ${REGRESSION_DIR}/SofaRegressionProgram/SofaRegressionProgram.py --input "${SRC_DIR}/examples" --input "${SRC_DIR}/applications"  --input "${BUILD_DIR}/external_directories/fetched" --output-logs-errors "${RESULTS_DIR}/regression" --legacy-regression  -j ${VM_MAX_PARALLEL_TESTS}
           fi
 
           if [[ "$(cd "${{ env.BUILD_DIR }}/tests_results/regression" && find . -maxdepth 1 -type f)" == *"summary"* ]]; then
