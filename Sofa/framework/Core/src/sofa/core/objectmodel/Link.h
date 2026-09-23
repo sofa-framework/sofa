@@ -521,10 +521,7 @@ protected:
         }
 
         /// TLink:adding accepts nullptr (for a not yet resolved link).
-        const std::size_t index = TraitsContainer::add(m_value, destptr);
-        updateCounter();
-        added(destptr, index);
-        return true;;
+        return TLink::add(destptr);
     }
 
     /// Returns false on type mismatch
