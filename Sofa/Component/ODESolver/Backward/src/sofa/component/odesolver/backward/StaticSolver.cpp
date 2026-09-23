@@ -39,42 +39,7 @@ void registerStaticSolver(sofa::core::ObjectFactory* factory)
 
 StaticSolver::StaticSolver()
     : l_newtonSolver(initLink("newtonSolver", "Link to a NewtonRaphsonSolver"))
-    , d_newton_iterations(this, "newton_iterations")
-    , d_absolute_correction_tolerance_threshold(this, "absolute_correction_tolerance_threshold")
-    , d_relative_correction_tolerance_threshold(this, "relative_correction_tolerance_threshold")
-    , d_absolute_residual_tolerance_threshold(this, "absolute_residual_tolerance_threshold")
-    , d_relative_residual_tolerance_threshold(this, "relative_residual_tolerance_threshold")
-    , d_should_diverge_when_residual_is_growing(this, "should_diverge_when_residual_is_growing")
 {}
-
-void StaticSolver::parse(core::objectmodel::BaseObjectDescription* arg)
-{
-    Inherit1::parse(arg);
-
-    const auto warnNewAttribute = [&, arg](auto& data, const std::string& newAttributeName)
-    {
-        if (const char* attribute = arg->getAttribute(data.m_name))
-        {
-            try
-            {
-                data.value.emplace(std::stod(attribute));
-                msg_warning() << "The attribute '" << data.m_name
-                    << "' is no longer defined in this component. Instead, define the attribute '"
-                    << newAttributeName << "' in the NewtonRaphsonSolver component associated with this StaticSolver.";
-            }
-            catch (const std::exception&)
-            {
-                msg_warning() << "Invalid value '" << attribute << "' for deprecated attribute '" << data.m_name << "'";
-            }
-        }
-    };
-
-    warnNewAttribute(d_newton_iterations, "maxNbIterationsNewton");
-    warnNewAttribute(d_absolute_correction_tolerance_threshold, "absoluteEstimateDifferenceThreshold");
-    warnNewAttribute(d_relative_correction_tolerance_threshold, "relativeEstimateDifferenceThreshold");
-    warnNewAttribute(d_absolute_residual_tolerance_threshold, "absoluteResidualStoppingThreshold");
-    warnNewAttribute(d_relative_residual_tolerance_threshold, "relativeEstimateDifferenceThreshold");
-}
 
 void StaticSolver::init()
 {
@@ -92,23 +57,6 @@ void StaticSolver::init()
             newtonRaphsonSolver->setName(this->getContext()->getNameHelper().resolveName(newtonRaphsonSolver->getClassName(), core::ComponentNameHelper::Convention::xml));
             this->getContext()->addObject(newtonRaphsonSolver);
             l_newtonSolver.set(newtonRaphsonSolver);
-
-            const auto setDeprecatedAttribute = [&]<class T1, class T2>(const NewtonRaphsonDeprecatedData<T1>& oldData, Data<T2>& newData)
-            {
-                if (oldData.value.has_value())
-                {
-                    newData.setValue(*oldData.value);
-                    msg_warning() << "The attribute '" << newData.getName() << "' in " << newData.getOwner()->getPathName()
-                        << " is set from the deprecated attribute '" << oldData.m_name << "'. This will be removed in the future.";
-                }
-            };
-
-            setDeprecatedAttribute(d_newton_iterations, l_newtonSolver->d_maxNbIterationsNewton);
-            setDeprecatedAttribute(d_absolute_correction_tolerance_threshold, l_newtonSolver->d_absoluteEstimateDifferenceThreshold);
-            setDeprecatedAttribute(d_relative_correction_tolerance_threshold, l_newtonSolver->d_relativeEstimateDifferenceThreshold);
-            setDeprecatedAttribute(d_absolute_residual_tolerance_threshold, l_newtonSolver->d_absoluteResidualStoppingThreshold);
-            setDeprecatedAttribute(d_relative_residual_tolerance_threshold, l_newtonSolver->d_relativeEstimateDifferenceThreshold);
-
         }
     }
 
