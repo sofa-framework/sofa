@@ -77,7 +77,7 @@ jobs:
             echo "additionnal-cmake-flags : ${{ inputs.additionnal-cmake-flags }}"
             echo "builder-os : ${{ inputs.builder-os }}"
 
-            
+
   build:
     strategy:
       fail-fast: false
@@ -120,7 +120,7 @@ jobs:
                     echo "WARNING: cannot setup git config"
             fi
 
-      - name: Clone SOFA and CI
+      - name: Clone SOFA, CI and Regression
         id: clone
         shell: bash
         run: |
@@ -134,7 +134,7 @@ jobs:
           ## Clone sofa and merge origin master
           echo "Cloning SOFA at commit $GITHUB_WORKFLOW_SHA"
           if [ -d  $WORKSPACE/sofa ]; then
-              rm -rf $WORKSPACE/sofa 
+              rm -rf $WORKSPACE/sofa
           fi
           SRC_DIR=$(pwd)/sofa
           echo "SRC_DIR=$SRC_DIR" >> $GITHUB_ENV
@@ -144,8 +144,8 @@ jobs:
               git clone -b ${{ inputs.sofa-branch-name }} --single-branch https://www.github.com/sofa-framework/sofa
               cd sofa
               git remote add pr ${{ inputs.pr-owner-url }}
-              git fetch pr 
-              
+              git fetch pr
+
               if [ "${{ inputs.pr-commit-sha }}" == "HEAD" ]; then
                   git merge ${{ inputs.pr-branch-name }}
               else
@@ -153,19 +153,19 @@ jobs:
               fi
           else
               echo "This is not a PR: checking out sha ${{ inputs.sofa-commit-sha }} from branch ${{ inputs.sofa-branch-name }}"
-              git clone -b ${{ inputs.sofa-branch-name }} --single-branch https://www.github.com/sofa-framework/sofa 
+              git clone -b ${{ inputs.sofa-branch-name }} --single-branch https://www.github.com/sofa-framework/sofa
               cd sofa
               git checkout ${{ inputs.sofa-commit-sha }}
           fi
 
           cd $WORKSPACE
- 
+
           ## Clone CI and use ci-depends-on structure
           ci_branch=${{ inputs.sofa-branch-name }}
           ci_repo_url="https://www.github.com/sofa-framework/ci"
-           
 
-          # check if ci has a ci-depends-on 
+
+          # check if ci has a ci-depends-on
           ci_ci_depends_on=$(echo "${{ inputs.ci-depends-on }}" | jq .ci)
           if [ -n "${{ inputs.ci-depends-on }}" ] && [ "$ci_ci_depends_on" != "null" ]; then
               echo "ci-depends-on for ci repository detected."
@@ -176,7 +176,7 @@ jobs:
 
 
           echo "Cloning CI from remote ${ci_repo_url}, selecting branch ${ci_branch}"
-          
+
           if [ -d  $WORKSPACE/ci ]; then
               rm -rf $WORKSPACE/ci
           fi
@@ -184,6 +184,33 @@ jobs:
           echo "CI_DIR=$CI_DIR" >> $GITHUB_ENV
 
           git clone -b ${ci_branch//\"} --single-branch ${ci_repo_url//\"}
+
+          cd $WORKSPACE
+
+          ## Clone Regression and use ci-depends-on structure
+          regression_branch=${{ inputs.sofa-branch-name }}
+          regression_repo_url="https://www.github.com/sofa-framework/Regression"
+
+
+          # check if ci has a ci-depends-on
+          regression_ci_depends_on=$(echo "${{ inputs.ci-depends-on }}" | jq .Regression)
+          if [ -n "${{ inputs.ci-depends-on }}" ] && [ "$regression_ci_depends_on" != "null" ]; then
+              echo "ci-depends-on for Regression repository detected."
+              regression_repo_url=$(echo "${{ inputs.ci-depends-on }}" | jq .Regression.repo_url)
+              regression_branch=$(echo "${{ inputs.ci-depends-on }}" | jq .Regression.branch_name)
+          fi
+          echo "REGRESSION_BRANCH=$regression_branch" >> $GITHUB_ENV
+
+
+          echo "Cloning Regression from remote ${regression_repo_url}, selecting branch ${regression_branch}"
+
+          if [ -d  $WORKSPACE/Regression ]; then
+              rm -rf $WORKSPACE/Regression
+          fi
+          REGRESSION_DIR=$WORKSPACE/Regression
+          echo "REGRESSION_DIR=$REGRESSION_DIR" >> $GITHUB_ENV
+
+          git clone -b ${regression_branch//\"} --single-branch ${regression_repo_url//\"}
 
           cd $WORKSPACE
 
@@ -211,7 +238,7 @@ jobs:
           fi
 
           ## Cleaning old tests results of they exists
-          if [ -d "${{ env.BUILD_DIR }}/tests_results/" ]; then 
+          if [ -d "${{ env.BUILD_DIR }}/tests_results/" ]; then
               echo "Cleaning old test results folder."
               rm -rf "${{ env.BUILD_DIR }}/tests_results/"
           fi
@@ -267,7 +294,7 @@ jobs:
           echo ""                                                       | tee -a "${{ env.LOG_DIR }}/cmake-output.txt"
           echo "Configuration:"                                         | tee -a "${{ env.LOG_DIR }}/cmake-output.txt"
           echo " - NODE_NAME = $NODE_NAME"                              | tee -a "${{ env.LOG_DIR }}/cmake-output.txt"
-          echo " - BUILD_TYPE = $BUILD_TYPE"                            | tee -a "${{ env.LOG_DIR }}/cmake-output.txt" 
+          echo " - BUILD_TYPE = $BUILD_TYPE"                            | tee -a "${{ env.LOG_DIR }}/cmake-output.txt"
           echo " - CONFIG = $CONFIG"                                    | tee -a "${{ env.LOG_DIR }}/cmake-output.txt"
           echo " - PYTHON_VERSION = ${{ inputs.python-version }}"       | tee -a "${{ env.LOG_DIR }}/cmake-output.txt"
           echo " - PRESET = ${{ inputs.preset }}"                       | tee -a "${{ env.LOG_DIR }}/cmake-output.txt"
@@ -283,9 +310,9 @@ jobs:
                 default_tag=${{ inputs.sofa-branch-name }}
               else
                 default_tag=master
-              fi       
+              fi
 
-              echo "${DOCKERHUB_TOKEN}" | docker login -u sofaframework --password-stdin 
+              echo "${DOCKERHUB_TOKEN}" | docker login -u sofaframework --password-stdin
 
               echo "Pulling Docker image sofaframework/sofabuilder_${builder_type}:${CI_BRANCH} ..."
               docker pull --quiet sofaframework/sofabuilder_${builder_type}:${CI_BRANCH} || true
@@ -316,13 +343,13 @@ jobs:
               docker run --rm --env XDG_CACHE_HOME --env GH_TOKEN="$GH_TOKEN" -v $BUILDER_CACHE_DIR:/cache\
                   --user $(id -u):$(id -g) --network=host -v $WORKSPACE:/workspace \
                   ${DOCKER_IMAGE} \
-                  /bin/bash -c "env; echo \"$GH_TOKEN\" > gh auth login --with-token; gh auth setup-git; gh auth status; cd /workspace; ccache -M 5; /bin/bash $DOCKER_CI_DIR/scripts/configure-and-build.sh $DOCKER_BUILD_DIR $DOCKER_SRC_DIR $DOCKER_CI_DIR/scripts/ $DOCKER_LOG_DIR \"${NODE_NAME}\" \"${BUILD_TYPE}\" \"${CONFIG}\" \"${{ inputs.python-version }}\" \"${{ inputs.preset }}\" \"${{ inputs.generate-binaries }}\" \"${CMAKE_OPTIONS}\""             
+                  /bin/bash -c "env; echo \"$GH_TOKEN\" > gh auth login --with-token; gh auth setup-git; gh auth status; cd /workspace; ccache -M 5; /bin/bash $DOCKER_CI_DIR/scripts/configure-and-build.sh $DOCKER_BUILD_DIR $DOCKER_SRC_DIR $DOCKER_CI_DIR/scripts/ $DOCKER_LOG_DIR \"${NODE_NAME}\" \"${BUILD_TYPE}\" \"${CONFIG}\" \"${{ inputs.python-version }}\" \"${{ inputs.preset }}\" \"${{ inputs.generate-binaries }}\" \"${CMAKE_OPTIONS}\""
           else
               echo "Launching configuration and build"
 
               bash ${CI_DIR}/scripts/configure-and-build.sh "${BUILD_DIR}" "${SRC_DIR}" "${CI_DIR}/scripts/" "${{ env.LOG_DIR }}" "${NODE_NAME}" "${BUILD_TYPE}" "${CONFIG}" "${{ inputs.python-version }}" "${{ inputs.preset }}" "${{ inputs.generate-binaries }}" "${CMAKE_OPTIONS}"
           fi
-        
+
 
       - name: Unit tests
         id: unit-tests-step
@@ -337,7 +364,7 @@ jobs:
               docker run --rm \
                   --user $(id -u):$(id -g) --network=host -v $WORKSPACE:/workspace \
                   ${DOCKER_IMAGE} \
-                  /bin/bash -c "env ; cd /workspace; /bin/bash $DOCKER_CI_DIR/scripts/test.sh $DOCKER_BUILD_DIR $DOCKER_SRC_DIR $DOCKER_CI_DIR/scripts/ ${NODE_NAME} ${{ inputs.python-version }} UNIT"             
+                  /bin/bash -c "env ; cd /workspace; /bin/bash $DOCKER_CI_DIR/scripts/test.sh $DOCKER_BUILD_DIR $DOCKER_SRC_DIR $DOCKER_CI_DIR/scripts/ ${NODE_NAME} ${{ inputs.python-version }} UNIT"
           else
               echo "Launching unit test suite."
 
@@ -361,7 +388,7 @@ jobs:
               docker run --rm \
                   --user $(id -u):$(id -g) --network=host -v $WORKSPACE:/workspace \
                   ${DOCKER_IMAGE} \
-                  /bin/bash -c "env ; cd /workspace; /bin/bash $DOCKER_CI_DIR/scripts/test.sh $DOCKER_BUILD_DIR $DOCKER_SRC_DIR $DOCKER_CI_DIR/scripts/ ${NODE_NAME} ${{ inputs.python-version }} SCENE"             
+                  /bin/bash -c "env ; cd /workspace; /bin/bash $DOCKER_CI_DIR/scripts/test.sh $DOCKER_BUILD_DIR $DOCKER_SRC_DIR $DOCKER_CI_DIR/scripts/ ${NODE_NAME} ${{ inputs.python-version }} SCENE"
           else
               echo "Launching scene test suite."
 
@@ -385,7 +412,7 @@ jobs:
               docker run --rm \
                   --user $(id -u):$(id -g) --network=host -v $WORKSPACE:/workspace \
                   ${DOCKER_IMAGE} \
-                  /bin/bash -c "env ; cd /workspace; /bin/bash $DOCKER_CI_DIR/scripts/test.sh $DOCKER_BUILD_DIR $DOCKER_SRC_DIR $DOCKER_CI_DIR/scripts/ ${NODE_NAME} ${{ inputs.python-version }} REGRESSION"             
+                  /bin/bash -c "env ; cd /workspace; /bin/bash $DOCKER_CI_DIR/scripts/test.sh $DOCKER_BUILD_DIR $DOCKER_SRC_DIR $DOCKER_CI_DIR/scripts/ ${NODE_NAME} ${{ inputs.python-version }} REGRESSION"
           else
               echo "Launching regression test suite"
 
@@ -404,8 +431,8 @@ jobs:
           name: binaries_${{ env.BUILDER_OS }}
           path: |
             ${{ env.BUILD_DIR }}/SOFA_v*
-      
-      
+
+
       - name: Publish build logs
         id: publish-build-logs
         if: always()
@@ -448,7 +475,7 @@ jobs:
           else
             echo "✅ Build OK."
           fi
-          
+
           if [[ "${{ inputs.generate-binaries }}" == "false" ]]; then
             if [[ "$(cd "${{ env.BUILD_DIR }}/tests_results/" && find . -maxdepth 1 -type f)" != "" ]]; then
               echo "❌ Tests have resulted in : "
@@ -459,10 +486,10 @@ jobs:
               echo "#---------------Quick Logs---------------#"
               echo "#----------------------------------------#"
               for testType in 'unit' 'scene' 'regression';
-                do 
+                do
                   for errorType in 'errors' 'crashes' 'failures';
                   do
-                    if [ -f "${{ env.BUILD_DIR }}/tests_results/${testType}-tests_${errorType}" ]; then 
+                    if [ -f "${{ env.BUILD_DIR }}/tests_results/${testType}-tests_${errorType}" ]; then
                       capitalized="$(echo "${testType:0:1}" | tr '[:lower:]' '[:upper:]')${testType:1}"
                       echo ""
                       echo -e "${bold}${capitalized} ${errorType}:${normal}"
@@ -486,7 +513,3 @@ jobs:
               echo ""
             fi
           fi
-
-
-
-
