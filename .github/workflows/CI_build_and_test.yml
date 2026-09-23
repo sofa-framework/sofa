@@ -349,7 +349,7 @@ jobs:
               docker run --rm \
                   --user $(id -u):$(id -g) --network=host -v $WORKSPACE:/workspace \
                   ${DOCKER_IMAGE} \
-                  /bin/bash -c "cd /workspace; . ${DOCKER_CI_DIR}/scripts/setup-test-env.sh \"${DOCKER_BUILD_DIR}\" \"${DOCKER_CI_DIR}/scripts/\" \"${NODE_NAME}\" \"${{ inputs.python-version }}\"; env; ${VM_PYTHON3_EXECUTABLE} ${DOCKER_CI_DIR}/scripts/tests/sofa_unit_tests.py --build-dir \"${DOCKER_BUILD_DIR}\" --results-dir \"${RESULTS_DIR}/unit\" -j ${VM_MAX_PARALLEL_TESTS}"
+                  /bin/bash -c "cd /workspace; . ${DOCKER_CI_DIR}/scripts/setup-test-env.sh \"${DOCKER_BUILD_DIR}\" \"${DOCKER_CI_DIR}/scripts/\" \"${NODE_NAME}\" \"${{ inputs.python-version }}\"; env; echo \"${VM_PYTHON3_EXECUTABLE} ${DOCKER_CI_DIR}/scripts/tests/sofa_unit_tests.py --build-dir ${DOCKER_BUILD_DIR} --results-dir ${RESULTS_DIR}/unit -j ${VM_MAX_PARALLEL_TESTS}\""
           else
               echo "Launching unit test suite."
 
