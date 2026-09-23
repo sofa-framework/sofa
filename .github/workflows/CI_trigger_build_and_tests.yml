@@ -28,10 +28,10 @@ on:
       preset:
         type: choice
         description: Which preset to use for compilation
-        options: 
+        options:
         - standard
         - supported-plugins
-        - full 
+        - full
         - standard-dev
         - supported-plugins-dev
         - full-dev
@@ -39,16 +39,16 @@ on:
       builder-os:
         type: choice
         description: On which OS run the binaries generation
-        options: 
+        options:
         - '["sh-ubuntu_gcc_release"]'
         - '["sh-macos_clang_release"]'
         - '["sh-ubuntu_gcc_release","sh-macos_clang_release"]'
         default: '["sh-ubuntu_gcc_release","sh-macos_clang_release"]'
-    
+
   # PR-related build (open, labels, push)
   pull_request:
     types: [opened, synchronize]
-    
+
   # CI for dashboard master
   push:
     branches:
@@ -79,7 +79,7 @@ jobs:
       PR_BRANCH_NAME: ${{ steps.export-vars.outputs.PR_BRANCH_NAME }}
       PR_COMMIT_SHA: ${{ steps.export-vars.outputs.PR_COMMIT_SHA }}
       BUILDER_OS: ${{ steps.export-vars.outputs.BUILDER_OS }}
-      
+
     steps:
       - name: Default values of environment variables
         run: |
@@ -97,7 +97,7 @@ jobs:
           echo "PR_BRANCH_NAME=" >> $GITHUB_ENV            # PR_BRANCH_NAME: ""
           echo "PR_COMMIT_SHA=HEAD" >> $GITHUB_ENV         # PR_COMMIT_SHA: "HEAD"
           echo 'BUILDER_OS=["sh-ubuntu_gcc_release"]' >> $GITHUB_ENV            # BUILDER_OS: ["sh-ubuntu_gcc_release"]
-          
+
       - name: Run on dispatch
         if: ${{ github.event_name == 'workflow_dispatch' }}
         run: |
@@ -122,7 +122,7 @@ jobs:
             fi
           fi
           echo "Python version $PYTHON is valid."
-          
+
           # Save all information in environment variables
           echo "SOFA_BRANCH_NAME=${{ github.event.inputs.branch }}" >> $GITHUB_ENV
           echo "SOFA_COMMIT_SHA=HEAD" >> $GITHUB_ENV
@@ -170,11 +170,11 @@ jobs:
           PR_COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
           echo "This step runs only when a PR is opened or synchronized."
-          
+
           # Trigger the Build action
           # Warning ! This script also changes ENV variables
           python ci/scripts/checkPRInfoBeforeBuild.py
-  
+
       - name: Export environment variables as outputs
         id: export-vars
         run: |
@@ -184,7 +184,7 @@ jobs:
             echo "Branch name should be either master or any release branch (e.g., v25.06)"
             exit 1
           fi
-          
+
           echo "SOFA_BRANCH_NAME=${SOFA_BRANCH_NAME}" >> $GITHUB_OUTPUT
           echo "SOFA_COMMIT_SHA=${SOFA_COMMIT_SHA}" >> $GITHUB_OUTPUT
           echo "PRESET=${PRESET}" >> $GITHUB_OUTPUT
@@ -192,8 +192,8 @@ jobs:
           echo "CI_DEPENDS_ON=${CI_DEPENDS_ON}" >> $GITHUB_OUTPUT
           echo "WITH_ALL_TESTS=${WITH_ALL_TESTS}" >> $GITHUB_OUTPUT
           echo "FORCE_FULL_BUILD=${FORCE_FULL_BUILD}" >> $GITHUB_OUTPUT
-          echo "EXTERNAL_PLUGINS=${EXTERNAL_PLUGINS}" >> $GITHUB_OUTPUT 
-          echo "ADDITIONNAL_CMAKE_FLAGS=${ADDITIONNAL_CMAKE_FLAGS}" >> $GITHUB_OUTPUT 
+          echo "EXTERNAL_PLUGINS=${EXTERNAL_PLUGINS}" >> $GITHUB_OUTPUT
+          echo "ADDITIONNAL_CMAKE_FLAGS=${ADDITIONNAL_CMAKE_FLAGS}" >> $GITHUB_OUTPUT
           echo "GENERATE_BINARIES=${GENERATE_BINARIES}" >> $GITHUB_OUTPUT
           echo "PR_OWNER_URL=${PR_OWNER_URL}" >> $GITHUB_OUTPUT
           echo "PR_BRANCH_NAME=${PR_BRANCH_NAME}" >> $GITHUB_OUTPUT
@@ -208,7 +208,7 @@ jobs:
   build-on:
     needs: filter_build
     if: ${{ github.repository_owner == 'sofa-framework' }}
-    uses: sofa-framework/sofa/.github/workflows/CI_build_and_test.yml@master
+    uses: bakpaul/sofa/.github/workflows/CI_build_and_test.yml@26_09_update_ci_with_new_test_scripts_and_pixi_based_ci_for_windows
     with:
       sofa-branch-name: ${{ needs.filter_build.outputs.SOFA_BRANCH_NAME }}
       sofa-commit-sha: ${{ needs.filter_build.outputs.SOFA_COMMIT_SHA }}
