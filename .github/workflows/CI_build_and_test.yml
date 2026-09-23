@@ -330,11 +330,13 @@ jobs:
               DOCKER_SRC_DIR="/workspace/$(realpath --relative-to=$WORKSPACE $SRC_DIR)"
               DOCKER_BUILD_DIR="/workspace/$(realpath --relative-to=$WORKSPACE $BUILD_DIR)"
               DOCKER_CI_DIR="/workspace/$(realpath --relative-to=$WORKSPACE $CI_DIR)"
+              DOCKER_REGRESSION_DIR="/workspace/$(realpath --relative-to=$WORKSPACE $REGRESSION_DIR)"
               DOCKER_LOG_DIR="/workspace/$(realpath --relative-to=$WORKSPACE ${{ env.LOG_DIR }})"
 
               echo "DOCKER_SRC_DIR=$DOCKER_SRC_DIR" >> $GITHUB_ENV
               echo "DOCKER_BUILD_DIR=$DOCKER_BUILD_DIR" >> $GITHUB_ENV
               echo "DOCKER_CI_DIR=$DOCKER_CI_DIR" >> $GITHUB_ENV
+              echo "DOCKER_REGRESSION_DIR=$DOCKER_REGRESSION_DIR" >> $GITHUB_ENV
               echo "DOCKER_LOG_DIR=$DOCKER_LOG_DIR" >> $GITHUB_ENV
 
               export XDG_CACHE_HOME="/cache"
@@ -364,14 +366,15 @@ jobs:
               docker run --rm \
                   --user $(id -u):$(id -g) --network=host -v $WORKSPACE:/workspace \
                   ${DOCKER_IMAGE} \
-                  /bin/bash -c "env ; cd /workspace; /bin/bash $DOCKER_CI_DIR/scripts/test.sh $DOCKER_BUILD_DIR $DOCKER_SRC_DIR $DOCKER_CI_DIR/scripts/ ${NODE_NAME} ${{ inputs.python-version }} UNIT"
+                  /bin/bash -c "env ; cd /workspace; . ${DOCKER_CI_DIR}/scripts/setup-test-env.sh \"${DOCKER_BUILD_DIR}\" \"${DOCKER_CI_DIR}/scripts/\" \"${NODE_NAME}\" \"${{ inputs.python-version }}\"; ${VM_PYTHON3_EXECUTABLE} ${DOCKER_CI_DIR}/scripts/tests/sofa_unit_tests.py --build-dir \"${DOCKER_BUILD_DIR}\" --results-dir \"${RESULTS_DIR}/unit\" -j ${VM_MAX_PARALLEL_TESTS}"
           else
               echo "Launching unit test suite."
 
-              bash ${CI_DIR}/scripts/test.sh "${BUILD_DIR}" "${SRC_DIR}" "${CI_DIR}/scripts/" "${NODE_NAME}" "${{ inputs.python-version }}" "UNIT"
+              . ${CI_DIR}/scripts/setup-test-env.sh "${BUILD_DIR}" "${CI_DIR}/scripts/" "${NODE_NAME}" "${{ inputs.python-version }}"
+              ${VM_PYTHON3_EXECUTABLE} ${CI_DIR}/scripts/tests/sofa_unit_tests.py --build-dir "${BUILD_DIR}" --results-dir "${RESULTS_DIR}/unit" -j ${VM_MAX_PARALLEL_TESTS}
           fi
 
-          if [[ "$(cd "${{ env.BUILD_DIR }}/tests_results/" && find . -maxdepth 1 -type f)" == *"unit-tests_"* ]]; then
+          if [[ "$(cd "${{ env.BUILD_DIR }}/tests_results/unit" && find . -maxdepth 1 -type f)" == *"summary"* ]]; then
             exit 1
           fi
 
@@ -388,14 +391,15 @@ jobs:
               docker run --rm \
                   --user $(id -u):$(id -g) --network=host -v $WORKSPACE:/workspace \
                   ${DOCKER_IMAGE} \
-                  /bin/bash -c "env ; cd /workspace; /bin/bash $DOCKER_CI_DIR/scripts/test.sh $DOCKER_BUILD_DIR $DOCKER_SRC_DIR $DOCKER_CI_DIR/scripts/ ${NODE_NAME} ${{ inputs.python-version }} SCENE"
+                  /bin/bash -c "env ; cd /workspace; . ${DOCKER_CI_DIR}/scripts/setup-test-env.sh \"${DOCKER_BUILD_DIR}\" \"${DOCKER_CI_DIR}/scripts/\" \"${NODE_NAME}\" \"${{ inputs.python-version }}\"; ${VM_PYTHON3_EXECUTABLE} ${DOCKER_CI_DIR}/scripts/tests/sofa_scene_tests.py --src-dir "${DOCKER_SRC_DIR}" --build-dir \"${DOCKER_BUILD_DIR}\" --results-dir \"${RESULTS_DIR}/scene\" -j ${VM_MAX_PARALLEL_TESTS}"
           else
               echo "Launching scene test suite."
 
-              bash ${CI_DIR}/scripts/test.sh "${BUILD_DIR}" "${SRC_DIR}" "${CI_DIR}/scripts/" "${NODE_NAME}" "${{ inputs.python-version }}" "SCENE"
+              . ${CI_DIR}/scripts/setup-test-env.sh "${BUILD_DIR}" "${CI_DIR}/scripts/" "${NODE_NAME}" "${{ inputs.python-version }}"
+              ${VM_PYTHON3_EXECUTABLE} ${CI_DIR}/scripts/tests/sofa_scene_tests.py --src-dir "${SRC_DIR}" --build-dir "${BUILD_DIR}" --results-dir "${RESULTS_DIR}/scene" -j ${VM_MAX_PARALLEL_TESTS}
           fi
 
-          if [[ "$(cd "${{ env.BUILD_DIR }}/tests_results/" && find . -maxdepth 1 -type f)" == *"scene-tests_"* ]]; then
+          if [[ "$(cd "${{ env.BUILD_DIR }}/tests_results/scene" && find . -maxdepth 1 -type f)" == *"summary"* ]]; then
             exit 1
           fi
 
@@ -412,14 +416,15 @@ jobs:
               docker run --rm \
                   --user $(id -u):$(id -g) --network=host -v $WORKSPACE:/workspace \
                   ${DOCKER_IMAGE} \
-                  /bin/bash -c "env ; cd /workspace; /bin/bash $DOCKER_CI_DIR/scripts/test.sh $DOCKER_BUILD_DIR $DOCKER_SRC_DIR $DOCKER_CI_DIR/scripts/ ${NODE_NAME} ${{ inputs.python-version }} REGRESSION"
+                  /bin/bash -c "export REGRESSION_DIR="$DOCKER_REGRESSION_DIR"; env ; cd /workspace;. ${DOCKER_CI_DIR}/scripts/setup-test-env.sh \"${DOCKER_BUILD_DIR}\" \"${DOCKER_CI_DIR}/scripts/\" \"${NODE_NAME}\" \"${{ inputs.python-version }}\"; ${VM_PYTHON3_EXECUTABLE} ${DOCKER_REGRESSION_DIR}/SofaRegressionProgram/SofaRegressionProgram.py --input "${DOCKER_SRC_DIR}/examples" --input "${DOCKER_SRC_DIR}/applications"  --input "${DOCKER_BUILD_DIR}/external_directories/fetched" --output-logs-errors "${RESULTS_DIR}/regression" -j ${VM_MAX_PARALLEL_TESTS} --legacy-regression"
           else
               echo "Launching regression test suite"
 
-              bash ${CI_DIR}/scripts/test.sh "${BUILD_DIR}" "${SRC_DIR}" "${CI_DIR}/scripts/" "${NODE_NAME}" "${{ inputs.python-version }}" "REGRESSION"
+              . ${CI_DIR}/scripts/setup-test-env.sh "${BUILD_DIR}" "${CI_DIR}/scripts/" "${NODE_NAME}" "${{ inputs.python-version }}"
+              ${VM_PYTHON3_EXECUTABLE} ${REGRESSION_DIR}/SofaRegressionProgram/SofaRegressionProgram.py --input "${SRC_DIR}/examples" --input "${SRC_DIR}/applications"  --input "${BUILD_DIR}/external_directories/fetched" --output-logs-errors "${RESULTS_DIR}/regression" -j ${VM_MAX_PARALLEL_TESTS} --legacy-regression
           fi
 
-          if [[ "$(cd "${{ env.BUILD_DIR }}/tests_results/" && find . -maxdepth 1 -type f)" == *"regression-tests_"* ]]; then
+          if [[ "$(cd "${{ env.BUILD_DIR }}/tests_results/regression" && find . -maxdepth 1 -type f)" == *"summary"* ]]; then
             exit 1
           fi
 
