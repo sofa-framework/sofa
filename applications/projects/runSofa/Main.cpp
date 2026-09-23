@@ -337,37 +337,35 @@ int main(int argc, char** argv)
         sofa::helper::console::setStatus(sofa::helper::console::Status::Off);
 
     sofa::helper::logging::MessageHandler* messageHandler = nullptr;
-    auto processMessageHandlerFromArg = [&]()
-    {
-        if (messageHandlerString == "auto" || messageHandlerString == "sofa")
-        {
-            messageHandler = &sofa::helper::logging::MainConsoleMessageHandler::getInstance();
-        }
-        else if (messageHandlerString == "clang")
-        {
-            messageHandler = new ClangMessageHandler();
-        }
-        else if (messageHandlerString == "rich")
-        {
-            messageHandler = new ConsoleMessageHandler(&RichConsoleStyleMessageFormatter::getInstance());
-        }
-        else if (messageHandlerString == "test")
-        {
-            messageHandler = new ExceptionMessageHandler();
-        }
-        else{
-            msg_warning(appName) << "Invalid argument '" << messageHandlerString << "' for '--formatting'";
-        }
 
-        if(messageHandler)
-        {
-            messageHandler->setQuiet(quiet);
-            MessageDispatcher::addHandler(messageHandler);
-        }
-    };
 
     MessageDispatcher::clearHandlers() ;
-    processMessageHandlerFromArg();
+    
+    if (messageHandlerString == "auto" || messageHandlerString == "sofa")
+    {
+        messageHandler = &sofa::helper::logging::MainConsoleMessageHandler::getInstance();
+    }
+    else if (messageHandlerString == "clang")
+    {
+        messageHandler = new ClangMessageHandler();
+    }
+    else if (messageHandlerString == "rich")
+    {
+        messageHandler = new ConsoleMessageHandler(&RichConsoleStyleMessageFormatter::getInstance());
+    }
+    else if (messageHandlerString == "test")
+    {
+        messageHandler = new ExceptionMessageHandler();
+    }
+    else{
+        msg_warning(appName) << "Invalid argument '" << messageHandlerString << "' for '--formatting'";
+    }
+
+    if(messageHandler)
+    {
+        messageHandler->setQuiet(quiet);
+        MessageDispatcher::addHandler(messageHandler);
+    }
 
     MessageDispatcher::addHandler(&MainPerComponentLoggingMessageHandler::getInstance()) ;
 #ifdef TRACY_ENABLE
