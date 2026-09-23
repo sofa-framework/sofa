@@ -349,11 +349,12 @@ jobs:
               docker run --rm \
                   --user $(id -u):$(id -g) --network=host -v $WORKSPACE:/workspace \
                   ${DOCKER_IMAGE} \
-                  /bin/bash -c "env ; cd /workspace; . ${DOCKER_CI_DIR}/scripts/setup-test-env.sh \"${DOCKER_BUILD_DIR}\" \"${DOCKER_CI_DIR}/scripts/\" \"${NODE_NAME}\" \"${{ inputs.python-version }}\"; ${VM_PYTHON3_EXECUTABLE} ${DOCKER_CI_DIR}/scripts/tests/sofa_unit_tests.py --build-dir \"${DOCKER_BUILD_DIR}\" --results-dir \"${RESULTS_DIR}/unit\" -j ${VM_MAX_PARALLEL_TESTS}"
+                  /bin/bash -c "cd /workspace; . ${DOCKER_CI_DIR}/scripts/setup-test-env.sh \"${DOCKER_BUILD_DIR}\" \"${DOCKER_CI_DIR}/scripts/\" \"${NODE_NAME}\" \"${{ inputs.python-version }}\"; env; ${VM_PYTHON3_EXECUTABLE} ${DOCKER_CI_DIR}/scripts/tests/sofa_unit_tests.py --build-dir \"${DOCKER_BUILD_DIR}\" --results-dir \"${RESULTS_DIR}/unit\" -j ${VM_MAX_PARALLEL_TESTS}"
           else
               echo "Launching unit test suite."
 
               . ${CI_DIR}/scripts/setup-test-env.sh "${BUILD_DIR}" "${CI_DIR}/scripts/" "${NODE_NAME}" "${{ inputs.python-version }}"
+              env
               ${VM_PYTHON3_EXECUTABLE} ${CI_DIR}/scripts/tests/sofa_unit_tests.py --build-dir "${BUILD_DIR}" --results-dir "${RESULTS_DIR}/unit" -j ${VM_MAX_PARALLEL_TESTS}
           fi
 
@@ -374,11 +375,12 @@ jobs:
               docker run --rm \
                   --user $(id -u):$(id -g) --network=host -v $WORKSPACE:/workspace \
                   ${DOCKER_IMAGE} \
-                  /bin/bash -c "env ; cd /workspace; . ${DOCKER_CI_DIR}/scripts/setup-test-env.sh \"${DOCKER_BUILD_DIR}\" \"${DOCKER_CI_DIR}/scripts/\" \"${NODE_NAME}\" \"${{ inputs.python-version }}\"; ${VM_PYTHON3_EXECUTABLE} ${DOCKER_CI_DIR}/scripts/tests/sofa_scene_tests.py --src-dir "${DOCKER_SRC_DIR}" --build-dir \"${DOCKER_BUILD_DIR}\" --results-dir \"${RESULTS_DIR}/scene\" -j ${VM_MAX_PARALLEL_TESTS}"
+                  /bin/bash -c "cd /workspace; . ${DOCKER_CI_DIR}/scripts/setup-test-env.sh \"${DOCKER_BUILD_DIR}\" \"${DOCKER_CI_DIR}/scripts/\" \"${NODE_NAME}\" \"${{ inputs.python-version }}\"; env ; ${VM_PYTHON3_EXECUTABLE} ${DOCKER_CI_DIR}/scripts/tests/sofa_scene_tests.py --src-dir "${DOCKER_SRC_DIR}" --build-dir \"${DOCKER_BUILD_DIR}\" --results-dir \"${RESULTS_DIR}/scene\" -j ${VM_MAX_PARALLEL_TESTS}"
           else
               echo "Launching scene test suite."
 
               . ${CI_DIR}/scripts/setup-test-env.sh "${BUILD_DIR}" "${CI_DIR}/scripts/" "${NODE_NAME}" "${{ inputs.python-version }}"
+              env
               ${VM_PYTHON3_EXECUTABLE} ${CI_DIR}/scripts/tests/sofa_scene_tests.py --src-dir "${SRC_DIR}" --build-dir "${BUILD_DIR}" --results-dir "${RESULTS_DIR}/scene" -j ${VM_MAX_PARALLEL_TESTS}
           fi
 
@@ -399,11 +401,12 @@ jobs:
               docker run --rm \
                   --user $(id -u):$(id -g) --network=host -v $WORKSPACE:/workspace \
                   ${DOCKER_IMAGE} \
-                  /bin/bash -c "export REGRESSION_DIR="$DOCKER_REGRESSION_DIR"; env ; cd /workspace;. ${DOCKER_CI_DIR}/scripts/setup-test-env.sh \"${DOCKER_BUILD_DIR}\" \"${DOCKER_CI_DIR}/scripts/\" \"${NODE_NAME}\" \"${{ inputs.python-version }}\"; ${VM_PYTHON3_EXECUTABLE} ${DOCKER_REGRESSION_DIR}/SofaRegressionProgram/SofaRegressionProgram.py --input "${DOCKER_SRC_DIR}/examples" --input "${DOCKER_SRC_DIR}/applications"  --input "${DOCKER_BUILD_DIR}/external_directories/fetched" --output-logs-errors "${RESULTS_DIR}/regression" -j ${VM_MAX_PARALLEL_TESTS} --legacy-regression"
+                  /bin/bash -c "export REGRESSION_DIR="$DOCKER_REGRESSION_DIR"; cd /workspace;. ${DOCKER_CI_DIR}/scripts/setup-test-env.sh \"${DOCKER_BUILD_DIR}\" \"${DOCKER_CI_DIR}/scripts/\" \"${NODE_NAME}\" \"${{ inputs.python-version }}\";  env ; ${VM_PYTHON3_EXECUTABLE} ${DOCKER_REGRESSION_DIR}/SofaRegressionProgram/SofaRegressionProgram.py --input "${DOCKER_SRC_DIR}/examples" --input "${DOCKER_SRC_DIR}/applications"  --input "${DOCKER_BUILD_DIR}/external_directories/fetched" --output-logs-errors "${RESULTS_DIR}/regression" -j ${VM_MAX_PARALLEL_TESTS} --legacy-regression"
           else
               echo "Launching regression test suite"
 
               . ${CI_DIR}/scripts/setup-test-env.sh "${BUILD_DIR}" "${CI_DIR}/scripts/" "${NODE_NAME}" "${{ inputs.python-version }}"
+              env
               ${VM_PYTHON3_EXECUTABLE} ${REGRESSION_DIR}/SofaRegressionProgram/SofaRegressionProgram.py --input "${SRC_DIR}/examples" --input "${SRC_DIR}/applications"  --input "${BUILD_DIR}/external_directories/fetched" --output-logs-errors "${RESULTS_DIR}/regression" -j ${VM_MAX_PARALLEL_TESTS} --legacy-regression
           fi
 
