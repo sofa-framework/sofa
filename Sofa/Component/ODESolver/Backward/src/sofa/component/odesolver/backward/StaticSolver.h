@@ -38,7 +38,7 @@ public:
     SOFA_CLASS2(StaticSolver, core::behavior::OdeSolver, core::behavior::LinearSolverAccessor);
     StaticSolver();
 
-    void solve(
+    void doSolve(
         const core::ExecParams* params,
         SReal dt,
         core::MultiVecCoordId xResult,
