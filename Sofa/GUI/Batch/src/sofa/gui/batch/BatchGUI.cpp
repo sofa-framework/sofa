@@ -73,9 +73,7 @@ int BatchGUI::mainLoop()
         sofa::simulation::node::animate(groot.get());
         msg_info("BatchGUI") << "Processing." << AdvancedTimer::end("Animate", groot->getTime(), groot->getDt()) << msgendl;
         const sofa::simulation::Visitor::ctime_t rtfreq = sofa::helper::system::thread::CTime::getRefTicksPerSec();
-        const sofa::simulation::Visitor::ctime_t tfreq = sofa::helper::system::thread::CTime::getTicksPerSec();
         sofa::simulation::Visitor::ctime_t rt = sofa::helper::system::thread::CTime::getRefTime();
-        sofa::simulation::Visitor::ctime_t t = sofa::helper::system::thread::CTime::getFastTime();
           
         signed int i = 1; //one simulation step is animated above
 
@@ -102,10 +100,8 @@ int BatchGUI::mainLoop()
 
             if ( i == nbIter || (nbIter == -1 && i%1000 == 0) )
             {
-                t = sofa::helper::system::thread::CTime::getFastTime()-t;
                 rt = sofa::helper::system::thread::CTime::getRefTime()-rt;
 
-                msg_info("BatchGUI") << i << " iterations done in " << ((double)t)/((double)tfreq) << " s ( " << (((double)tfreq)*i)/((double)t) << " FPS)." << msgendl;
                 msg_info("BatchGUI") << i << " iterations done in " << ((double)rt)/((double)rtfreq) << " s ( " << (((double)rtfreq)*i)/((double)rt) << " FPS)." << msgendl;
                 
                 if (nbIter == -1) // Additional message for infinite iterations
