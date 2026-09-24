@@ -43,16 +43,16 @@ class SOFA_CORE_API Snapshot
 public:
     struct DataInfo
     {
-        std::string name;
-        std::string type;
-        std::string value;
+        std::string m_name;
+        std::string m_type;
+        std::string m_value;
     };
 
     struct LinkInfo
     {
-        std::string name;
-        std::string type;
-        std::string value;
+        std::string m_name;
+        std::string m_type;
+        std::string m_value;
     };
 
     struct SnapshotObject

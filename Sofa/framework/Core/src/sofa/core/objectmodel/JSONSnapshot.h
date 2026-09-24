@@ -23,9 +23,7 @@
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/objectmodel/Snapshot.h>
 
-namespace sofa::core::objectmodel
-{
-
+namespace sofa::core::objectmodel::jsonsnapshot {
     /// Export a single Snapshot to a JSON file
     SOFA_CORE_API void exportToJSON(const Snapshot& snapshot, const std::string& filename);
 
@@ -45,5 +43,5 @@ namespace sofa::core::objectmodel
     SOFA_CORE_API void importFromJSON(std::map<std::string, std::shared_ptr<Snapshot>>& snapshots, const std::string& filename);
 
     SOFA_CORE_API void doLoadSet(const std::string& filename,std::map<std::shared_ptr<sofa::core::objectmodel::Snapshot>,double>&  snapshots);
+}
 
-} // namespace sofa::core::objectmodel

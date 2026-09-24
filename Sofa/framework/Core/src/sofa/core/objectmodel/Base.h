@@ -374,14 +374,13 @@ public:
     ///Load Internal State from a snapshot to the scene
     virtual void loadInternalStateFrom(const Snapshot::SnapshotObject& snapshot);
 
+    /// Find a SnapshotObject corresponding to the object from the scene
+    virtual std::shared_ptr<Snapshot::SnapshotObject> findSnapshotObject(const std::shared_ptr<Snapshot::SnapshotNode>& parents, const std::string& objectname, const std::string& classname, const std::string& pathname) const;
+
 protected:
 
     /// Create a SnapshotObject that will contain data and link
     virtual std::shared_ptr<Snapshot::SnapshotObject> createSnapshotObject(const std::shared_ptr<Snapshot::SnapshotObject>& object) const;
-
-public:
-    /// Find a SnapshotObject corresponding to the object from the scene
-    virtual std::shared_ptr<Snapshot::SnapshotObject> findSnapshotObject(const std::shared_ptr<Snapshot::SnapshotNode>& parents, const std::string& objectname, const std::string& classname, const std::string& pathname) const;
 
 protected:
     /// List of fields (Data instances)

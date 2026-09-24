@@ -451,35 +451,11 @@ void TriangleCollisionModel<DataTypes>::drawCollisionModel(const core::visual::V
 }
 
 template<class TDataTypes>
-void TriangleCollisionModel<TDataTypes>::saveInternalStateIn(sofa::core::objectmodel::Snapshot::SnapshotObject &snapshot) const
-{
-    sofa::core::objectmodel::Snapshot::DataInfo dataInfo;
-
-    std::stringstream ss;
-    this->m_triangles->write(ss);
-
-    dataInfo.name = "m_triangles";
-    dataInfo.type = "vector";
-    dataInfo.value = ss.str();
-
-    snapshot.m_dataContainer.push_back(dataInfo);
-}
-
-template<class TDataTypes>
 void TriangleCollisionModel<TDataTypes>::loadInternalStateFrom(const core::objectmodel::Snapshot::SnapshotObject &snapshot)
 {
-    m_needsUpdate = true;
-
-    for (const auto& dataInfo : snapshot.m_dataContainer)
-    {
-        if (dataInfo.name == "m_triangles")
-        {
-            m_triangles = &m_topology->getTriangles();
-            resize(m_topology->getNbTriangles());
-            updateNormals();
-        }
-
-    }
+    m_triangles = &m_topology->getTriangles();
+    resize(m_topology->getNbTriangles());
+    updateNormals();
 }
 
 template<class DataTypes>

@@ -26,7 +26,7 @@
 #include <fstream>
 #include <sofa/helper/logging/Messaging.h>
 #include <algorithm>
-#include <sofa/core/objectmodel/SnapshotJSONExporter.h>
+#include <sofa/core/objectmodel/JSONSnapshot.h>
 #include <utility>
 #include <sofa/helper/system/FileSystem.h>
 using sofa::helper::system::FileSystem;
@@ -83,9 +83,9 @@ void SnapshotManager::saveTo(const sofa::core::sptr<sofa::simulation::Node>& gro
 
     std::string FileExtension = FileSystem::getExtension(savePath);
     if (FileExtension == "json" && !isSet)
-        exportToJSON(*m_snapshot,savePath);
+        core::objectmodel::jsonsnapshot::exportToJSON(*m_snapshot,savePath);
     else if (FileExtension == "json" && isSet)
-        exportToJSON(m_snapshotsFromMemory,savePath);
+        core::objectmodel::jsonsnapshot::exportToJSON(m_snapshotsFromMemory,savePath);
     else
         msg_error("SaveSnapshot") << "Snapshot " << savePath << " not supported";
 
@@ -101,7 +101,7 @@ void SnapshotManager::loadTo(sofa::core::sptr<sofa::simulation::Node>& groot, co
 
     if (FileSystem::exists(outPath) && FileExtension == "json")
     {
-        importFromJSON(*m_snapshot,outPath);
+        core::objectmodel::jsonsnapshot::importFromJSON(*m_snapshot,outPath);
     }
     else
     {
@@ -121,7 +121,7 @@ void SnapshotManager::loadToSet(const std::string& filename)
 
     std::map<std::shared_ptr<sofa::core::objectmodel::Snapshot>,double> snapshots;
 
-    doLoadSet(filename,snapshots);
+    core::objectmodel::jsonsnapshot::doLoadSet(filename,snapshots);
 
     for (const auto&[snapshot, snapshotTime] : snapshots)
     {

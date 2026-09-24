@@ -40,7 +40,7 @@ using sofa::simulation::SaveSnapshotVisitor;
 #include <sofa/simulation/LoadSnapshotVisitor.h>
 using sofa::simulation::LoadSnapshotVisitor;
 
-#include <sofa/core/objectmodel/SnapshotJSONExporter.h>
+#include <sofa/core/objectmodel/JSONSnapshot.h>
 
 #include <sofa/core/objectmodel/Data.h>
 using sofa::core::objectmodel::Data;
@@ -85,9 +85,9 @@ public:
         for (const auto& dataFields = this->getDataFields(); const auto& data : dataFields)
         {
             Snapshot::DataInfo dataInfo;
-            dataInfo.name = data->getName();
-            dataInfo.type = data->getValueTypeString();
-            dataInfo.value = data->getValueString();
+            dataInfo.m_name = data->getName();
+            dataInfo.m_type = data->getValueTypeString();
+            dataInfo.m_value = data->getValueString();
 
             snapshot.m_dataContainer.push_back(dataInfo);
         }
@@ -98,9 +98,9 @@ public:
         for (const auto& links = this->getLinks(); const auto& link : links)
         {
             Snapshot::LinkInfo linkInfo;
-            linkInfo.name = link->getName();
-            linkInfo.type = link->getValueTypeString();
-            linkInfo.value = link->getValueString();
+            linkInfo.m_name = link->getName();
+            linkInfo.m_type = link->getValueTypeString();
+            linkInfo.m_value = link->getValueString();
 
             snapshot.m_linkContainer.push_back(linkInfo);
         }
@@ -144,13 +144,13 @@ TEST_F(Snapshot_test, saveDataIn)
     Component.saveData(*snapshot);
     for (auto& data : snapshot->m_dataContainer)
     {
-        if (data.name == "name")
+        if (data.m_name == "name")
         {
-            EXPECT_EQ(data.value, "TestComponent");
+            EXPECT_EQ(data.m_value, "TestComponent");
         }
-        if(data.name == "pi")
+        if(data.m_name == "pi")
         {
-            EXPECT_EQ(data.value, "3.14");
+            EXPECT_EQ(data.m_value, "3.14");
         }
     }
 }
@@ -175,17 +175,17 @@ TEST_F(Snapshot_test, saveLinkIn)
     tComponent.saveLinks(*snapshot);
     for (auto& link : snapshot->m_linkContainer)
     {
-        if (link.name == "name")
+        if (link.m_name == "name")
         {
-            EXPECT_EQ(link.value, "@./");
+            EXPECT_EQ(link.m_value, "@./");
         }
-        if (link.name == "slaves")
+        if (link.m_name == "slaves")
         {
-            EXPECT_EQ(link.value, "");
+            EXPECT_EQ(link.m_value, "");
         }
-        if (link.name == "master")
+        if (link.m_name == "master")
         {
-            EXPECT_EQ(link.value, "");
+            EXPECT_EQ(link.m_value, "");
         }
     }
 }
@@ -216,9 +216,9 @@ TEST_F(Snapshot_test, createSnapshotObject)
     EXPECT_EQ(snapshotObject->m_name, "snapshotObject");
     for (auto& data : snapshotObject->m_dataContainer)
     {
-        if(data.name == "pi")
+        if(data.m_name == "pi")
         {
-            EXPECT_EQ(data.value, "3.14");
+            EXPECT_EQ(data.m_value, "3.14");
         }
     }
 }
@@ -278,14 +278,14 @@ TEST_F(Snapshot_test, saveSnapshot)
 
     EXPECT_EQ(snapshot->m_name, "TestComponent");
     EXPECT_EQ(snapshot->m_dataContainer.size(), 7);
-    EXPECT_EQ(snapshot->m_dataContainer[0].name, "name");
-    EXPECT_EQ(snapshot->m_dataContainer[0].value, "TestComponent");
-    EXPECT_EQ(snapshot->m_dataContainer.back().name, "pi");
-    EXPECT_EQ(snapshot->m_dataContainer.back().value, "3.14");
-    EXPECT_EQ(snapshot->m_linkContainer[0].name, "context");
-    EXPECT_EQ(snapshot->m_linkContainer[0].value, "@./");
-    EXPECT_EQ(snapshot->m_linkContainer.back().name, "target");
-    EXPECT_EQ(snapshot->m_linkContainer.back().value, "");
+    EXPECT_EQ(snapshot->m_dataContainer[0].m_name, "name");
+    EXPECT_EQ(snapshot->m_dataContainer[0].m_value, "TestComponent");
+    EXPECT_EQ(snapshot->m_dataContainer.back().m_name, "pi");
+    EXPECT_EQ(snapshot->m_dataContainer.back().m_value, "3.14");
+    EXPECT_EQ(snapshot->m_linkContainer[0].m_name, "context");
+    EXPECT_EQ(snapshot->m_linkContainer[0].m_value, "@./");
+    EXPECT_EQ(snapshot->m_linkContainer.back().m_name, "target");
+    EXPECT_EQ(snapshot->m_linkContainer.back().m_value, "");
 
 }
 
@@ -313,8 +313,8 @@ TEST_F(Snapshot_test, saveSnapshotBis)
     snapshot = Component.saveSnapshot(snapshotParents);
 
     EXPECT_EQ(snapshot->m_name, "TestComponent");
-    EXPECT_EQ(snapshot->m_dataContainer.back().name, "pi");
-    EXPECT_EQ(snapshot->m_dataContainer.back().value, "0");
+    EXPECT_EQ(snapshot->m_dataContainer.back().m_name, "pi");
+    EXPECT_EQ(snapshot->m_dataContainer.back().m_value, "0");
 
 }
 
@@ -338,8 +338,8 @@ TEST_F(Snapshot_test, saveSnapshotWithSlave)
 
     snapshot = Component->saveSnapshot(snapshotParents);
 
-    EXPECT_EQ(snapshot->m_linkContainer[1].name, "slaves");
-    EXPECT_EQ(snapshot->m_linkContainer[1].value, "");
+    EXPECT_EQ(snapshot->m_linkContainer[1].m_name, "slaves");
+    EXPECT_EQ(snapshot->m_linkContainer[1].m_value, "");
 
     auto Slave = sofa::core::objectmodel::New<TestComponent>();
     Slave->setName("Slave");
@@ -347,8 +347,8 @@ TEST_F(Snapshot_test, saveSnapshotWithSlave)
 
     snapshot = Component->saveSnapshot(snapshotParents);
 
-    EXPECT_EQ(snapshot->m_linkContainer[1].name, "slaves");
-    EXPECT_EQ(snapshot->m_linkContainer[1].value, "@SlaveTestComponent/Slave");
+    EXPECT_EQ(snapshot->m_linkContainer[1].m_name, "slaves");
+    EXPECT_EQ(snapshot->m_linkContainer[1].m_value, "@SlaveTestComponent/Slave");
 
     Component->removeSlave(Slave);
 }
@@ -474,9 +474,9 @@ TEST_F(Snapshot_test, loadLinkSnapshot)
 }
 
 /**
- * @brief Test of SnapshotJSONExporter
+ * @brief Test of JSONSnapshot
  *
- * This test verifies the behavior of the export and the import with SnapshotJSONExporter
+ * This test verifies the behavior of the export and the import with JSONSnapshot
  *
  * Test steps:
  * 1. Init the scene
@@ -489,7 +489,7 @@ TEST_F(Snapshot_test, loadLinkSnapshot)
  * 8. Compare snapshot and snapshot_import
  *
  */
-TEST_F(Snapshot_test, SnapshotJSONExporter)
+TEST_F(Snapshot_test, JSONSnapshot)
 {
     const std::string scene = R"(
         <?xml version='1.0'?>
@@ -514,14 +514,14 @@ TEST_F(Snapshot_test, SnapshotJSONExporter)
     auto visitor = SaveSnapshotVisitor(nullptr, *snapshot);
     root->execute(visitor);
 
-    exportToJSON(*snapshot, path.string());
+    sofa::core::objectmodel::jsonsnapshot::exportToJSON(*snapshot, path.string());
 
     std::ifstream checkFile(path);
     EXPECT_TRUE(checkFile.good());
     checkFile.close();
 
     auto snapshot_import = std::make_shared<Snapshot>();
-    importFromJSON(*snapshot_import, path.string());
+    sofa::core::objectmodel::jsonsnapshot::importFromJSON(*snapshot_import, path.string());
 
     EXPECT_NE(snapshot_import->m_graphRoot,nullptr);
 

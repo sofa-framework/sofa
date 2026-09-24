@@ -708,9 +708,9 @@ std::shared_ptr<Snapshot::SnapshotObject> Base::saveSnapshot(std::shared_ptr<Sna
     for (const auto& dataFields = this->getDataFields(); const auto& data : dataFields)
     {
         Snapshot::DataInfo dataInfo;
-        dataInfo.name = data->getName();
-        dataInfo.type = data->getValueTypeString();
-        dataInfo.value = data->getValueString();
+        dataInfo.m_name = data->getName();
+        dataInfo.m_type = data->getValueTypeString();
+        dataInfo.m_value = data->getValueString();
 
         snapshotObject->m_dataContainer.push_back(dataInfo);
     }
@@ -718,9 +718,9 @@ std::shared_ptr<Snapshot::SnapshotObject> Base::saveSnapshot(std::shared_ptr<Sna
     for (const auto& links = this->getLinks(); const auto& link : links)
     {
         Snapshot::LinkInfo linkInfo;
-        linkInfo.name = link->getName();
-        linkInfo.type = link->getValueTypeString();
-        linkInfo.value = link->getValueString();
+        linkInfo.m_name = link->getName();
+        linkInfo.m_type = link->getValueTypeString();
+        linkInfo.m_value = link->getValueString();
 
         snapshotObject->m_linkContainer.push_back(linkInfo);
     }
@@ -757,20 +757,20 @@ void Base::loadSnapshot(const std::shared_ptr<Snapshot::SnapshotObject>& snapsho
 {
     for (const auto& dataInfo : snapshotObject->m_dataContainer)
     {
-        if (const auto data = this->findData(dataInfo.name))
+        if (const auto data = this->findData(dataInfo.m_name))
         {
-            if(data->read(dataInfo.value) == 0 )
-                msg_error() << "Failed to read data : " << dataInfo.name << " in " << this->getName()  << " from the SnapshotObject " <<
-                    snapshotObject->m_name << " (" <<snapshotObject->m_className<< ") : " << dataInfo.value;
+            if(data->read(dataInfo.m_value) == 0 )
+                msg_error() << "Failed to read data : " << dataInfo.m_name << " in " << this->getName()  << " from the SnapshotObject " <<
+                    snapshotObject->m_name << " (" <<snapshotObject->m_className<< ") : " << dataInfo.m_value;
         }
     }
 
     for (const auto& linkInfo : snapshotObject->m_linkContainer) {
-        if (const auto link = this->findLink(linkInfo.name)) {
+        if (const auto link = this->findLink(linkInfo.m_name)) {
 
-            if (link->readFromSnapshot(linkInfo.value) == 0 )
-                msg_error() << "Failed to read link :  " << linkInfo.name << " in " << this->getName()  << " from the snapshot " <<
-                    snapshotObject->m_name << " (" <<snapshotObject->m_className<< ") : "<< linkInfo.value;
+            if (link->readFromSnapshot(linkInfo.m_value) == 0 )
+                msg_error() << "Failed to read link :  " << linkInfo.m_name << " in " << this->getName()  << " from the snapshot " <<
+                    snapshotObject->m_name << " (" <<snapshotObject->m_className<< ") : "<< linkInfo.m_value;
         }
     }
 }
