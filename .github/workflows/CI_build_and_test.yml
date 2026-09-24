@@ -360,7 +360,12 @@ jobs:
 
           if [[ ! "$(cd "${{ env.BUILD_DIR }}/tests_results/unit" && find . -maxdepth 1 -type f)" == *"summary"* ]]; then
             exit 1
+          else
+              if [[ "$(awk -F= '$1=="crashes" {print $2}' ${{ env.BUILD_DIR }}/tests_results/unit/summary.txt)" != '0' || "$(awk -F= '$1=="failures" {print $2}' ${{ env.BUILD_DIR }}/tests_results/unit/summary.txt)" != "0" ]]; then
+                  exit 1
+              fi
           fi
+
 
       - name: Scene tests
         id: scene-tests-step
@@ -386,6 +391,10 @@ jobs:
 
           if [[ ! "$(cd "${{ env.BUILD_DIR }}/tests_results/scene" && find . -maxdepth 1 -type f)" == *"summary"* ]]; then
             exit 1
+          else
+              if [[ "$(awk -F= '$1=="crashes" {print $2}' ${{ env.BUILD_DIR }}/tests_results/scene/summary.txt)" != '0' || "$(awk -F= '$1=="failures" {print $2}' ${{ env.BUILD_DIR }}/tests_results/scene/summary.txt)" != "0" ]]; then
+                  exit 1
+              fi
           fi
 
       - name: Regression tests
@@ -411,7 +420,11 @@ jobs:
           fi
 
           if [[ ! "$(cd "${{ env.BUILD_DIR }}/tests_results/regression" && find . -maxdepth 1 -type f)" == *"summary"* ]]; then
-            exit 1
+              exit 1
+          else
+              if [[ "$(awk -F= '$1=="crashes" {print $2}' ${{ env.BUILD_DIR }}/tests_results/regression/summary.txt)" != '0' || "$(awk -F= '$1=="failures" {print $2}' ${{ env.BUILD_DIR }}/tests_results/regression/summary.txt)" != "0" ]]; then
+                  exit 1
+              fi
           fi
 
 
@@ -468,7 +481,7 @@ jobs:
           fi
 
           if [[ "${{ inputs.generate-binaries }}" == "false" ]]; then
-            if [[ "$(cd "${{ env.BUILD_DIR }}/tests_results/" && find . -maxdepth 1 -type f)" != "" ]]; then
+            if [[ "$(cd "${{ env.BUILD_DIR }}/tests_results/" && find . -mindepth 2 -maxdepth 2 -type f -name 'summary.txt')" != "" ]]; then
               echo "❌ Tests have resulted in : "
               echo ""
               python3 ${{ env.CI_DIR }}/scripts/generate-tests-table.py "${{ env.BUILD_DIR }}/tests_results/"
