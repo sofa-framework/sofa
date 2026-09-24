@@ -1,50 +1,435 @@
 name: CI - MacOS/Linux/Windows via Pixi
 
 on:
-  push:
-    branches:
-      - master
-  pull_request:
-    paths:
-      - 'pixi*'
-  workflow_dispatch:
+  workflow_call:
+    inputs:
+      sofa-branch-name:
+        type: string
+        required: true
+      sofa-commit-sha:
+        type: string
+        required: true
+      pr-owner-url:
+        type: string
+        required: false
+      pr-branch-name:
+        type: string
+        required: false
+      pr-commit-sha:
+        type: string
+        required: false
+      preset:
+        type: string
+        required: true
+      python-version:
+        type: string
+        required: true
+      ci-depends-on:
+        type: string
+        required: false
+      with-all-tests:
+        type: boolean
+        required: false
+        default: false
+      force-full-build:
+        type: boolean
+        required: false
+        default: false
+      generate-binaries:
+        type: boolean
+        required: false
+        default: false
+      external-plugins:
+        type: string
+        required: false
+      additionnal-cmake-flags:
+        type: string
+        required: false
+      builder-os:
+        type: string
+        required: true
+        default: '["ubuntu-latest", "macos-latest", "macos-15-intel", "windows-latest"]'
+      dash-info:
+        type: string
+        required: false
+        default: 'NONE'
+        description: 'Json scructure with three parameters {"COMMIT_HASH":"fullhsashofthecommit", }'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  sofa-pixi:
-    name: ${{ matrix.os }} - Env ${{ matrix.environment }} ${{ matrix.build_type }} ${{ matrix.compiler }}
-    runs-on: ${{ matrix.os }}
-    if: ${{ github.repository_owner == 'sofa-framework' }}
+  display-inputs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Display
+        shell: bash
+        run: |
+            echo "Build and test launched with following parameters:"
+            echo "sofa-branch-name : ${{ inputs.sofa-branch-name }}"
+            echo "sofa-commit-sha : ${{ inputs.sofa-commit-sha }}"
+            echo "pr-owner-url : ${{ inputs.pr-owner-url }}"
+            echo "pr-branch-name : ${{ inputs.pr-branch-name }}"
+            echo "pr-commit-sha : ${{ inputs.pr-commit-sha }}"
+            echo "preset : ${{ inputs.preset }}"
+            echo "ci-depends-on : ${{ inputs.ci-depends-on }}"
+            echo "with-all-tests : ${{ inputs.with-all-tests }}"
+            echo "force-full-build : ${{ inputs.force-full-build }}"
+            echo "generate-binaries : ${{ inputs.generate-binaries }}"
+            echo "external-plugins : ${{ inputs.external-plugins }}"
+            echo "additionnal-cmake-flags : ${{ inputs.additionnal-cmake-flags }}"
+            echo "builder-os : ${{ inputs.builder-os }}"
 
+            echo ""
+            echo "The following python version has been passed : ${{ inputs.python-version }}"
+            echo "--> only the default python version written in the pixi.toml can be used and will be forced here."
+  sofa-pixi:
     strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, macos-latest, macos-15-intel, windows-latest]
-        environment: [supported-plugins]
-        build_type: [Release]
+        fail-fast: false
+        matrix:
+          os: ${{ fromJson(inputs.builder-os) }}
+          build_type: [Release]
+    runs-on: ${{ matrix.os }}
+    name: ${{ matrix.os }} - Env ${{ inputs.preset }} ${{ matrix.build_type }} ${{ matrix.compiler }}
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.sofa-branch-name }}
+          path: sofa
+
+      - run: git config --global user.email "<>"
+      - run: git config --global user.name "SOFA Bot"
+
+      - name: Setup SOFA and clone CI
+        shell: bash -el {0}
+        run: |
+          export WORKSPACE=$GITHUB_WORKSPACE
+          echo "WORKSPACE=$WORKSPACE" >> $GITHUB_ENV
+
+          export SRC_DIR=$GITHUB_WORKSPACE/sofa
+          echo "SRC_DIR=$SRC_DIR" >> $GITHUB_ENV
+
+          cd $SRC_DIR
+          if [ ! -z "${{ inputs.pr-owner-url }}" ]; then
+              echo "This is a PR, merging branch ${{ inputs.pr-branch-name }} from remote ${{ inputs.pr-owner-url }} into origin branch ${{ inputs.sofa-branch-name }}"
+              git remote add pr ${{ inputs.pr-owner-url }}
+              git fetch pr
+
+              if [ "${{ inputs.pr-commit-sha }}" == "HEAD" ]; then
+                  git merge ${{ inputs.pr-branch-name }}
+              else
+                  git merge ${{ inputs.pr-commit-sha }}
+              fi
+          else
+              echo "This is not a PR: checking out sha ${{ inputs.sofa-commit-sha }} from branch ${{ inputs.sofa-branch-name }}"
+              git checkout ${{ inputs.sofa-commit-sha }}
+          fi
+
+          cd $WORKSPACE
+
+          ## Clone CI and use ci-depends-on structure
+          ci_branch=${{ inputs.sofa-branch-name }}
+          ci_repo_url="https://www.github.com/sofa-framework/ci"
+
+
+          # check if ci has a ci-depends-on
+          ci_ci_depends_on=$(echo "${{ inputs.ci-depends-on }}" | jq .ci)
+          if [ -n "${{ inputs.ci-depends-on }}" ] && [ "$ci_ci_depends_on" != "null" ]; then
+              echo "ci-depends-on for ci repository detected."
+              ci_repo_url=$(echo "${{ inputs.ci-depends-on }}" | jq .ci.repo_url)
+              ci_branch=$(echo "${{ inputs.ci-depends-on }}" | jq .ci.branch_name)
+          fi
+          echo "CI_BRANCH=$ci_branch" >> $GITHUB_ENV
+
+
+          echo "Cloning CI from remote ${ci_repo_url}, selecting branch ${ci_branch}"
+
+          CI_DIR=$WORKSPACE/ci
+          echo "CI_DIR=$CI_DIR" >> $GITHUB_ENV
+
+          git clone -b ${ci_branch//\"} --single-branch ${ci_repo_url//\"}
+
+
+
+          ## Clone Regression and use ci-depends-on structure
+          regression_branch=${{ inputs.sofa-branch-name }}
+          regression_repo_url="https://www.github.com/sofa-framework/Regression"
+
+
+          # check if ci has a ci-depends-on
+          regression_ci_depends_on=$(echo "${{ inputs.ci-depends-on }}" | jq .Regression)
+          if [ -n "${{ inputs.ci-depends-on }}" ] && [ "$regression_ci_depends_on" != "null" ]; then
+              echo "ci-depends-on for Regression repository detected."
+              regression_repo_url=$(echo "${{ inputs.ci-depends-on }}" | jq .Regression.repo_url)
+              regression_branch=$(echo "${{ inputs.ci-depends-on }}" | jq .Regression.branch_name)
+          fi
+          echo "REGRESSION_BRANCH=$regression_branch" >> $GITHUB_ENV
+
+
+          echo "Cloning Regression from remote ${regression_repo_url}, selecting branch ${regression_branch}"
+
+          REGRESSION_DIR=$WORKSPACE/Regression
+          echo "REGRESSION_DIR=$REGRESSION_DIR" >> $GITHUB_ENV
+
+          git clone -b ${regression_branch//\"} --single-branch ${regression_repo_url//\"}
+
+
+          cd $WORKSPACE
+
+          ## Setup build folder
+          mkdir $WORKSPACE/build
+
+          SOFA_BUILD_DIR=$WORKSPACE/build
+          echo "SOFA_BUILD_DIR=$SOFA_BUILD_DIR" >> $GITHUB_ENV
+          SOFA_INSTALL_PREFIX=$WORKSPACE/install
+          echo "SOFA_INSTALL_PREFIX=$SOFA_INSTALL_PREFIX" >> $GITHUB_ENV
+
+          if [ -n "${{ inputs.external-plugins }}" ]; then
+              echo "Setting up external plugins."
+              for plugin in ${{ inputs.external-plugins }}; do
+                  plugin_base=${plugin%@*}
+                  plugin_branch=${plugin##*@}
+                  plugin_repo=$(basename "$plugin_base")
+
+                  echo "Adding line 'sofa_add_external(plugin $plugin_repo GIT_REF $plugin_branch GIT_REPOSITORY $plugin_base ON)' to file ${SRC_DIR}/applications/CMakeLists.txt"
+                  echo "sofa_add_external(plugin $plugin_repo GIT_REF $plugin_branch GIT_REPOSITORY $plugin_base ON)" >> "${SRC_DIR}/applications/CMakeLists.txt"
+              done
+          fi
+
 
       - uses: prefix-dev/setup-pixi@v0.8.10
         with:
           cache: false
-          environments: ${{ matrix.environment }}
+          manifest-path: sofa/pixi.toml
+          environments: ${{ inputs.preset }}
 
       - name: Build SOFA [MacOS/Linux/Windows]
+        id: build-step
         shell: bash -el {0}
         env:
           SOFA_BUILD_TYPE: ${{ matrix.build_type }}
         run: |
-          pixi run -e ${{ matrix.environment }} configure -DCMAKE_CUDA_ARCHITECTURES="75;89;120"
-          pixi run -e ${{ matrix.environment }} build
+          cd ${SRC_DIR}
 
-      - name: Testing - Run SOFA in batch mode [MacOS/Linux/Windows]
-        shell: bash -el {0}
-        env:
-          SOFA_BUILD_TYPE: ${{ matrix.build_type }}
+
+          ## Deal with ci-depends-on
+          # Loop over each key-value pair in the JSON avoiding ci repository if inside
+          CMAKE_OPTIONS="${{inputs.additionnal-cmake-flags}}"
+          for key in $(echo "${{ inputs.ci-depends-on }}" | jq -r 'keys[]' | grep -v '^ci$'); do
+
+            repo_url=$(echo "${{ inputs.ci-depends-on }}" | jq -r ".\"$key\".repo_url")
+            branch_name=$(echo "${{ inputs.ci-depends-on }}" | jq -r ".\"$key\".branch_name")
+
+            # Format the CMake flags for this key and append to the result
+            fixed_name=$(echo "$key" |  awk '{gsub(/\./, "_"); print toupper($0)}')
+            flag_repository="-D${fixed_name}_GIT_REPOSITORY=\"$repo_url\""
+            flag_tag="-D${fixed_name}_GIT_TAG=\"$branch_name\""
+
+            # Append both flags to the result string with a space
+            CMAKE_OPTIONS="$CMAKE_OPTIONS $flag_repository $flag_tag "
+          done
+
+          if [[ ! -n "$CMAKE_OPTIONS" ]]; then
+              echo "No ci-depends-on detected."
+          else
+              echo "Adding the following cmake variable : $CMAKE_OPTIONS"
+          fi
+
+          ## Run build step
+          pixi run -e ${{ inputs.preset }} configure $CMAKE_OPTIONS
+          pixi run -e ${{ inputs.preset }} build
+
+      - name: Setup env for tests
+        shell: bash
+        if: always() && ${{ runner.os == 'Windows' }}
         run: |
-          pixi run -e ${{ matrix.environment }} runSofa -g batch
+          cd ${SRC_DIR}
+          PIXI_PREFIX="$(pwd -W)/.pixi/envs/${{ inputs.preset }}/"
+          echo "VM_PYTHON3_EXECUTABLE=$PIXI_PREFIX/python.exe" >> $GITHUB_ENV
+          echo "PIXI_PREFIX=$PIXI_PREFIX" >> $GITHUB_ENV
+
+          . ${CI_DIR}/scripts/setup-test-env.sh ${SOFA_BUILD_DIR} ${SRC_DIR}/scripts default none
+
+
+          echo "BUILD_DIR=$(cd "$SOFA_BUILD_DIR" && pwd -W)" >> $GITHUB_ENV
+          echo "SRC_DIR=$(cd "$SRC_DIR" && pwd -W)" >> $GITHUB_ENV
+          echo "CI_DIR=$(cd "$CI_DIR" && pwd -W)" >> $GITHUB_ENV
+          echo "REGRESSION_DIR=$(cd "$REGRESSION_DIR" && pwd -W)" >> $GITHUB_ENV
+          echo "PYTHONPATH=$PYTHONPATH" >> $GITHUB_ENV
+          echo "SOFA_ROOT=$SOFA_ROOT" >> $GITHUB_ENV
+          echo "RESULTS_DIR=$RESULTS_DIR" >> $GITHUB_ENV
+          echo "VM_MAX_PARALLEL_TESTS=$VM_MAX_PARALLEL_TESTS" >> $GITHUB_ENV
+
+
+          if [[ "$RUNNER_OS" == "Windows" ]]; then
+              #Activating pixi env in a git-bash terminal is broken, here we just want to consume it.
+
+              echo "PIXI_PREFIX=$PIXI_PREFIX" >> $GITHUB_ENV
+
+              echo "$PIXI_PREFIX" >> $GITHUB_PATH
+              echo "$PIXI_PREFIX/bin" >> $GITHUB_PATH
+              echo "$PIXI_PREFIX/Library/bin" >> $GITHUB_PATH
+              echo "$PIXI_PREFIX/Scripts" >> $GITHUB_PATH
+              echo "$PIXI_PREFIX/Library/mingw-w64/bin" >> $GITHUB_PATH
+              echo "$PIXI_PREFIX/Library/usr/bin" >> $GITHUB_PATH
+              echo "$PIXI_PREFIX/sofa-build/bin/" >> $GITHUB_PATH
+          fi
+
+          exit 0
+
+      - name: Unit tests
+        id: unit-tests-step
+        if: always() && ${{ runner.os == 'Windows' }} && steps.build-step.outcome == 'success' && inputs.generate-binaries == false
+        shell: cmd
+        run: |
+          cd /d "%SRC_DIR%"
+
+          set "UNIT_RESULTS_DIR=%BUILD_DIR%\tests_results\unit"
+
+          pixi run -e ${{ inputs.preset }} python %CI_DIR%\scripts\tests\sofa_unit_tests.py --build-dir "%BUILD_DIR%" --results-dir "%UNIT_RESULTS_DIR%" -j %VM_MAX_PARALLEL_TESTS%
+
+          if not exist "%UNIT_RESULTS_DIR%\*summary*" exit /b 1
+
+          set "CRASHES="
+          set "FAILURES="
+          for /f "usebackq tokens=1,2 delims==" %%a in ("%UNIT_RESULTS_DIR%\summary.txt") do (
+            if "%%a"=="crashes" set "CRASHES=%%b"
+            if "%%a"=="failures" set "FAILURES=%%b"
+          )
+
+          if not "%CRASHES%"=="0" exit /b 1
+          if not "%FAILURES%"=="0" exit /b 1
+
+      - name: Scene tests
+        id: scene-tests-step
+        if: always() && ${{ runner.os == 'Windows' }} && steps.build-step.outcome == 'success' && inputs.generate-binaries == false && inputs.with-all-tests == true
+        shell: cmd
+        run: |
+          cd /d "%SRC_DIR%"
+
+          set "SCENE_RESULTS_DIR=%BUILD_DIR%\tests_results\scene"
+
+          pixi run -e ${{ inputs.preset }} python %CI_DIR%\scripts\tests\sofa_scene_tests.py --src-dir "%SRC_DIR%" --build-dir "%BUILD_DIR%" --results-dir "%SCENE_RESULTS_DIR%" -j %VM_MAX_PARALLEL_TESTS%
+
+          if not exist "%SCENE_RESULTS_DIR%\*summary*" exit /b 1
+
+          set "CRASHES="
+          set "FAILURES="
+          for /f "usebackq tokens=1,2 delims==" %%a in ("%SCENE_RESULTS_DIR%\summary.txt") do (
+            if "%%a"=="crashes" set "CRASHES=%%b"
+            if "%%a"=="failures" set "FAILURES=%%b"
+          )
+
+          if not "%CRASHES%"=="0" exit /b 1
+          if not "%FAILURES%"=="0" exit /b 1
+
+      - name: Regression tests
+        id: regression-tests-step
+        if: always() && ${{ runner.os == 'Windows' }} && steps.build-step.outcome == 'success' && inputs.generate-binaries == false && inputs.with-all-tests == true
+        shell: cmd
+        run: |
+          cd /d "%SRC_DIR%"
+
+          set "REG_RESULTS_DIR=%BUILD_DIR%\tests_results\regression"
+
+          pixi run -e ${{ inputs.preset }} python %REGRESSION_DIR%\SofaRegressionProgram\SofaRegressionProgram.py --input "%SRC_DIR%/examples" --input "%SRC_DIR%\applications"  --input "%BUILD_DIR%\external_directories\fetched" --output-logs-errors "%REG_RESULTS_DIR%" --legacy-regression  -j %VM_MAX_PARALLEL_TESTS%
+          if not exist "%REG_RESULTS_DIR%\*summary*" exit /b 1
+
+          set "CRASHES="
+          set "FAILURES="
+          for /f "usebackq tokens=1,2 delims==" %%a in ("%REG_RESULTS_DIR%\summary.txt") do (
+            if "%%a"=="crashes" set "CRASHES=%%b"
+            if "%%a"=="failures" set "FAILURES=%%b"
+          )
+
+          if not "%CRASHES%"=="0" exit /b 1
+          if not "%FAILURES%"=="0" exit /b 1
+
+
+      - name: Publish artifacts
+        if: steps.build-step.outcome == 'success' && inputs.generate-binaries == true
+        uses: actions/upload-artifact@v4
+        with:
+          name: binaries_${{ matrix.os }}
+          path: |
+            ${{ env.SOFA_BUILD_DIR }}/SOFA_v*
+
+
+      - name: Publish tests logs
+        id: publish-tests-logs
+        if: always() && ${{ runner.os == 'Windows' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: tests-logs_${{ matrix.os }}
+          path: |
+            ${{ env.SOFA_BUILD_DIR }}/tests_results/
+
+
+      - name: Configure python for display
+        if: always() && ${{ runner.os == 'Windows' }}
+        shell: bash
+        run: |
+          python3 -m pip install prettytable
+
+      - name: Summarize results
+        if: always() && ${{ runner.os == 'Windows' }}
+        shell: bash
+        run: |
+
+          bold="\033[1m"
+          normal="\033[0m"
+          if [[ "${{ steps.configure.outcome }}" == "failure" || "${{ steps.clone.outcome }}" == "failure" ]]; then
+            echo "❌ Something whent wrong during the configure or clone steps..."
+            echo -e "${bold}Please check those actions logs${normal}"
+            exit 1
+          else
+            echo "✅ Setup OK."
+          fi
+
+          if [[ "${{ steps.build-step.outcome }}" == "failure" ]]; then
+            echo "❌ Build step failed"
+            echo -e "${bold}You can download all logs here : ${{ steps.publish-build-logs.outputs.artifact-url }}${normal}"
+            exit 1
+          else
+            echo "✅ Build OK."
+          fi
+
+          if [[ "${{ inputs.generate-binaries }}" == "false" ]]; then
+            if [[ "$(cd "${{ env.SOFA_BUILD_DIR }}/tests_results/" && find . -maxdepth 1 -type f)" != "" ]]; then
+              echo "❌ Tests have resulted in : "
+              echo ""
+              python3 ${{ env.CI_DIR }}/scripts/generate-tests-table.py "${{ env.SOFA_BUILD_DIR }}/tests_results/"
+              echo ""
+              echo "#----------------------------------------#"
+              echo "#---------------Quick Logs---------------#"
+              echo "#----------------------------------------#"
+              for testType in 'unit' 'scene' 'regression';
+                do
+                  for errorType in 'errors' 'crashes' 'failures';
+                  do
+                    if [ -f "${{ env.SOFA_BUILD_DIR }}/tests_results/${testType}-tests_${errorType}" ]; then
+                      capitalized="$(echo "${testType:0:1}" | tr '[:lower:]' '[:upper:]')${testType:1}"
+                      echo ""
+                      echo -e "${bold}${capitalized} ${errorType}:${normal}"
+                      echo ""
+                      cat "${{ env.SOFA_BUILD_DIR }}/tests_results/${testType}-tests_${errorType}"
+                      echo ""
+                      echo "#----------------------------------------#"
+                    fi
+                  done
+                done
+              echo -e "${bold}You can download all logs here : ${{ steps.publish-tests-logs.outputs.artifact-url }}${normal}"
+              exit 1
+            elif [[ "${{ steps.unit-tests-step.outcome }}" == "failure" || "${{ steps.scene-tests-step.outcome }}" == "failure" || "${{ steps.regression-tests-step.outcome }}" == "failure" ]]; then
+              echo "❌ Something whent wrong during one of the tests steps"
+              echo -e "${bold}Please check this action logs, and download tests logs here: ${{ steps.publish-tests-logs.outputs.artifact-url }}${normal}"
+              exit 1
+            else
+              echo "✅ Tests where successful : "
+              echo ""
+              python3 ${{ env.CI_DIR }}/scripts/generate-tests-table.py "${{ env.SOFA_BUILD_DIR }}/tests_results/"
+              echo ""
+            fi
+          fi
