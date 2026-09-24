@@ -169,8 +169,8 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v5
         with:
-          repository: sofa-framework/ci
-          ref: master
+          repository: bakpaul/ci
+          ref: 26_09_final_jenkins_2_github_migration
           path: ./ci
 
       - name: Check push on master case (e.g. merge)
