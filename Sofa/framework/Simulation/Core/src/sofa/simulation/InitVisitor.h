@@ -32,9 +32,9 @@ namespace sofa::simulation
 
 /** Initialize a newly created (or modified) scene graph.
 
-    Forward: simulation::Node::initialize() This method puts the OdeSolver, if any, first in the list of components. Then BaseObject::init() for all components.
+    Forward: simulation::Node::initialize() This method puts the IntegrationScheme, if any, first in the list of components. Then BaseObject::init() for all components.
 
-    Backward: OdeSolver::bwdInit()
+    Backward: IntegrationScheme::bwdInit()
 
     */
 class SOFA_SIMULATION_CORE_API InitVisitor : public Visitor

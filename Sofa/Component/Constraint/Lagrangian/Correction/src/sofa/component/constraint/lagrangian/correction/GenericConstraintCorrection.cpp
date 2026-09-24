@@ -23,7 +23,7 @@
 
 #include <sofa/component/constraint/lagrangian/correction/GenericConstraintCorrection.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalIntegrateConstraintVisitor.h>
-#include <sofa/core/behavior/OdeSolver.h>
+#include <sofa/core/behavior/BaseIntegrationScheme.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/ConstraintSolver.h>
 #include <sofa/core/behavior/LinearSolver.h>
@@ -94,10 +94,10 @@ void GenericConstraintCorrection::init()
     {
         msg_info() << "Link \"ODESolver\" to the desired ODE solver should be set to ensure right behavior." << msgendl
                    << "First ODESolver found in current context will be used.";
-        l_ODESolver.set( context->get<sofa::core::behavior::OdeSolver>(BaseContext::Local) );
+        l_ODESolver.set( context->get< sofa::core::behavior::BaseIntegrationScheme>(BaseContext::Local) );
         if (l_ODESolver.get() == nullptr)
         {
-            l_ODESolver.set( context->get<sofa::core::behavior::OdeSolver>(BaseContext::SearchRoot) );
+            l_ODESolver.set( context->get< sofa::core::behavior::BaseIntegrationScheme>(BaseContext::SearchRoot) );
         }
     }
 
@@ -138,7 +138,7 @@ void GenericConstraintCorrection::addComplianceInConstraintSpace(const Constrain
     if (!l_ODESolver.get()) return;
     const SReal complianceFactor = d_complianceFactor.getValue();
 
-    // use the OdeSolver to get the integration factor
+    // use the IntegrationScheme to get the integration factor
     SReal factor = BaseConstraintCorrection::correctionFactor(l_ODESolver.get(), cparams->constOrder());
     factor *= complianceFactor;
 
