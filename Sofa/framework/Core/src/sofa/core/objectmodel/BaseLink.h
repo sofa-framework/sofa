@@ -186,6 +186,7 @@ protected:
     virtual void _doClear_() = 0;
     virtual std::string _doGetLinkedPath_(const size_t=0) const = 0;
     virtual bool _doRemove_(Base* target) = 0;
+    virtual bool addRawPtr(Base* baseptr) = 0;
 
     unsigned int m_flags;
     std::string m_name;
