@@ -14,7 +14,7 @@ def internalCreateScene(root_node, template):
     root_node.addObject('RequiredPlugin', pluginName='Sofa.Component.Constraint.Projective')
     root_node.addObject('RequiredPlugin', pluginName='Sofa.Component.LinearSolver.Iterative')
     root_node.addObject('RequiredPlugin', pluginName='Sofa.Component.Mass')
-    root_node.addObject('RequiredPlugin', pluginName='Sofa.Component.ODESolver.Backward')
+    root_node.addObject('RequiredPlugin', pluginName='Sofa.Component.IntegrationScheme.Backward')
     root_node.addObject('RequiredPlugin', pluginName='Sofa.Component.SolidMechanics.FEM.Elastic')
     root_node.addObject('RequiredPlugin', pluginName='Sofa.Component.StateContainer')
     root_node.addObject('RequiredPlugin', pluginName='Sofa.Component.Topology.Container.Grid')
@@ -24,7 +24,7 @@ def internalCreateScene(root_node, template):
     root_node.addObject('VisualStyle', displayFlags='hideVisualModels hideBehaviorModels showCollisionModels hideMappings showForceFields')
 
     m1 = root_node.addChild('M1')
-    m1.addObject('EulerImplicitSolver')
+    m1.addObject('EulerImplicitIntegrationScheme')
     m1.addObject('CGLinearSolver', iterations="10", tolerance="1e-15", threshold="1e-15")
     m1.addObject('MechanicalObject', template=template)
     m1.addObject('UniformMass', totalMass=20 * size)

@@ -244,11 +244,7 @@ macro(sofa_create_package)
     install(FILES "${CMAKE_CURRENT_BINARY_DIR}/${filename}" DESTINATION "lib/cmake/${package_install_dir}" COMPONENT headers)
 
     # <package_name>Config.cmake
-    configure_package_config_file(
-        ${ARG_PACKAGE_NAME}Config.cmake.in
-        "${CMAKE_BINARY_DIR}/lib/cmake/${ARG_PACKAGE_NAME}Config.cmake"
-        INSTALL_DESTINATION "lib/cmake/${package_install_dir}"
-        )
+    configure_package_config_file(${ARG_PACKAGE_NAME}Config.cmake.in "${CMAKE_BINARY_DIR}/lib/cmake/${ARG_PACKAGE_NAME}Config.cmake" INSTALL_DESTINATION "lib/cmake/${package_install_dir}")
     install(FILES "${CMAKE_BINARY_DIR}/lib/cmake/${ARG_PACKAGE_NAME}Config.cmake" DESTINATION "lib/cmake/${package_install_dir}" COMPONENT headers)
 
     if(ARG_RELOCATABLE_PATH)

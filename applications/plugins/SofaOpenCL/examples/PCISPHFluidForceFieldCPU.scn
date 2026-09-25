@@ -1,9 +1,9 @@
 <Node dt="0.005" showBehaviorModels="1" showCollisionModels="1" showMappings="0" showForceFields="1" gravity="0 -10 0" >
     <RequiredPlugin pluginName="SofaOpenglVisual"/>
 	<Node>
-	<!--<RungeKutta4Solver/>-->
-		<!--<CentralDifferenceSolver/>-->
-        <EulerImplicitSolver rayleighStiffness="0.1" rayleighMass="0.1" />
+	<!--<RungeKutta4IntegrationScheme/>-->
+		<!--<CentralDifferenceIntegrationScheme/>-->
+        <EulerImplicitIntegrationScheme rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
 <!---->		<MechanicalObject name="MModel" template="Vec3f"/>  <-- -->
 <!-- 		<MechanicalObject name="MModel" template="Vec3f" position="0 6 0" /> -->

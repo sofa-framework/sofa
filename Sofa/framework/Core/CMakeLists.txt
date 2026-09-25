@@ -71,6 +71,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/behavior/BaseConstraintSet.h
     ${SRC_ROOT}/behavior/BaseController.h
     ${SRC_ROOT}/behavior/BaseForceField.h
+    ${SRC_ROOT}/behavior/BaseIntegrationScheme.h
     ${SRC_ROOT}/behavior/BaseInteractionConstraint.h
     ${SRC_ROOT}/behavior/BaseInteractionForceField.h
     ${SRC_ROOT}/behavior/BaseInteractionProjectiveConstraintSet.h
@@ -261,6 +262,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/behavior/BaseConstraintCorrection.cpp
     ${SRC_ROOT}/behavior/BaseConstraintSet.cpp
     ${SRC_ROOT}/behavior/BaseForceField.cpp
+    ${SRC_ROOT}/behavior/BaseIntegrationScheme.cpp
     ${SRC_ROOT}/behavior/BaseInteractionForceField.cpp
     ${SRC_ROOT}/behavior/BaseLagrangianConstraint.cpp
     ${SRC_ROOT}/behavior/BaseLinearSolver.cpp
@@ -283,7 +285,6 @@ set(SOURCE_FILES
     ${SRC_ROOT}/behavior/MixedInteractionConstraint.cpp
     ${SRC_ROOT}/behavior/MixedInteractionForceField.cpp
     ${SRC_ROOT}/behavior/MultiMatrixAccessor.cpp
-    ${SRC_ROOT}/behavior/OdeSolver.cpp
     ${SRC_ROOT}/behavior/PairInteractionConstraint.cpp
     ${SRC_ROOT}/behavior/PairInteractionForceField.cpp
     ${SRC_ROOT}/behavior/PairInteractionProjectiveConstraintSet.cpp

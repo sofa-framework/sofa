@@ -22,4 +22,5 @@
 #pragma once
 
 #include <sofa/config.h>
+
 SOFA_HEADER_DISABLED_NOT_REPLACED("v25.12", "v26.06")
