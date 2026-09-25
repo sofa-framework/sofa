@@ -118,18 +118,6 @@ SReal Mass<DataTypes>::getKineticEnergy(const MechanicalParams* /*mparams*/, con
     return 0.0;
 }
 
-
-template<class DataTypes>
-SReal Mass<DataTypes>::getPotentialEnergy(const MechanicalParams* mparams, ConstMultiVecCoordId xId) const
-{
-    if (this->mstate)
-    {
-        const DataVecCoord* x = xId[this->mstate.get()].read(); assert(x);
-        return getPotentialEnergy(mparams, *x);
-    }
-    return 0.0;
-}
-
 template<class DataTypes>
 SReal Mass<DataTypes>::getPotentialEnergy(const MechanicalParams* /*mparams*/, const DataVecCoord& /*x*/) const
 {
