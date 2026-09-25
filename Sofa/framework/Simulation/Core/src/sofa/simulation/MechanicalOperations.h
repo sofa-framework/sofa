@@ -52,14 +52,19 @@ public:
 /// @{
 
     /// Propagate the given displacement through all mappings
+    SOFA_ATTRIBUTE_DEPRECATED__MECHANICALOPERATIONS_PROPAGATE_DX()
     void propagateDx(core::MultiVecDerivId dx, bool ignore_flag = false);
     /// Propagate the given displacement through all mappings and reset the current force delta
+    SOFA_ATTRIBUTE_DEPRECATED__MECHANICALOPERATIONS_PROPAGATE_DX()
     void propagateDxAndResetDf(core::MultiVecDerivId dx, core::MultiVecDerivId df);
     /// Propagate the given position through all mappings
+    SOFA_ATTRIBUTE_DEPRECATED__MECHANICALOPERATIONS_PROPAGATE_X()
     void propagateX(core::MultiVecCoordId x);
     /// Propagate the given velocity through all mappings
+    SOFA_ATTRIBUTE_DEPRECATED__MECHANICALOPERATIONS_PROPAGATE_V()
     void propagateV(core::MultiVecDerivId v);
     /// Propagate the given position and velocity through all mappings
+    SOFA_ATTRIBUTE_DEPRECATED__MECHANICALOPERATIONS_PROPAGATE_X_AND_V()
     void propagateXAndV(core::MultiVecCoordId x, core::MultiVecDerivId v);
     /// Propagate the given position through all mappings and reset the current force delta
     SOFA_ATTRIBUTE_DEPRECATED__MECHANICALOPERATIONS_PROPAGATEXANDRESETF()
