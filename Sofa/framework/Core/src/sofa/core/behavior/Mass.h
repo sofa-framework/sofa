@@ -99,6 +99,7 @@ public:
     SReal getKineticEnergy( const MechanicalParams* mparams) const override;
     virtual SReal getKineticEnergy( const MechanicalParams* mparams, const DataVecDeriv& v) const;
 
+    SReal getPotentialEnergy( const MechanicalParams* mparams, ConstMultiVecCoordId x) const override { return ForceField<DataTypes>::getPotentialEnergy(mparams, x); }
     SReal getPotentialEnergy( const MechanicalParams* mparams, const DataVecCoord& x  ) const override;
     using BaseForceField::getPotentialEnergy;
 

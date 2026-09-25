@@ -72,7 +72,10 @@ public:
     /// vMv/2
     virtual SReal getKineticEnergy(const MechanicalParams* mparams = mechanicalparams::defaultInstance()) const = 0;
     /// Mgx
-    virtual SReal getPotentialEnergy(const MechanicalParams* mparams = mechanicalparams::defaultInstance()) const = 0;
+    virtual SReal getPotentialEnergy(const MechanicalParams* mparams, ConstMultiVecCoordId xId) const = 0;
+
+    SOFA_ATTRIBUTE_DEPRECATED__GETPOTENTIALENERGY_OVERLOAD()
+    virtual SReal getPotentialEnergy(const MechanicalParams* mparams = mechanicalparams::defaultInstance()) const final;
 
     /// (Mv,xMv+Iw) (linear and angular momenta against world origin)
     virtual type::Vec6 getMomentum(const MechanicalParams* mparams = mechanicalparams::defaultInstance()) const = 0;
