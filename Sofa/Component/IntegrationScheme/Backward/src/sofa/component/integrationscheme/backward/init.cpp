@@ -30,6 +30,7 @@ extern void registerEulerImplicitIntegrationScheme(sofa::core::ObjectFactory* fa
 extern void registerNewmarkIntegrationScheme(sofa::core::ObjectFactory* factory);
 extern void registerBDFIntegrationScheme(sofa::core::ObjectFactory* factory);
 extern void registerStaticEquilibriumIntegrationScheme(sofa::core::ObjectFactory* factory);
+extern void registerTrapezoidalIntegrationScheme(sofa::core::ObjectFactory* factory);
 
 extern "C" {
     SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
@@ -59,7 +60,7 @@ void registerObjects(sofa::core::ObjectFactory* factory)
     registerNewmarkIntegrationScheme(factory);
     registerBDFIntegrationScheme(factory);
     registerStaticEquilibriumIntegrationScheme(factory);
-
+    registerTrapezoidalIntegrationScheme(factory);
 }
 
 void init()

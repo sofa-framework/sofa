@@ -18,7 +18,7 @@
     <VisualStyle displayFlags="showBehavior" />
 
     <Node name="ClassicEulerImplicit" gravity="0 -9.81 0">
-    	<EulerImplicitIntegrationScheme name="EulerImplicit-NoTrapez" trapezoidalScheme="0"/>
+    	<EulerImplicitIntegrationScheme/>
     	<SparseLDLSolver template="CompressedRowSparseMatrixMat3x3d"/>
         <MechanicalObject template="Vec3" name="Particles" restScale="1" position="0 0 0 1 0 0" showObject="1" showObjectScale="10"/>
         <UniformMass template="Vec3" name="Mass" totalMass="1.0"/>
@@ -28,7 +28,7 @@
     </Node>
 
     <Node name="TrapezoidalRule" gravity="0 -9.81 0">
-    	<EulerImplicitIntegrationScheme name="EulerImplicit-WithTrapez" trapezoidalScheme="1"/>
+    	<TrapezoidalIntegrationScheme/>
     	<SparseLDLSolver template="CompressedRowSparseMatrixMat3x3d"/>
         <MechanicalObject template="Vec3" name="Particles" restScale="1" position="0 2 0 1 2 0" showObject="1" showObjectScale="10"/>
         <UniformMass template="Vec3" name="Mass" totalMass="1.0"/>
