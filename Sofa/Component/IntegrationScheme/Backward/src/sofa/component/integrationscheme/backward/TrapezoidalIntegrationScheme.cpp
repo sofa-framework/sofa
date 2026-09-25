@@ -19,49 +19,34 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/integrationscheme/backward/EulerImplicitIntegrationScheme.h>
+#include <sofa/component/integrationscheme/backward/TrapezoidalIntegrationScheme.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/AdvancedTimer.h>
-#include <sofa/helper/ScopedAdvancedTimer.h>
-
 #include <iomanip>
 
 
 namespace sofa::component::integrationscheme::backward
 {
 
-using core::VecId;
-using namespace sofa::defaulttype;
-using namespace core::behavior;
-
-EulerImplicitIntegrationScheme::EulerImplicitIntegrationScheme()
-    : d_trapezoidalScheme( this, "v26.12", "v27.06", "trapezoidalScheme","Use the component TrapezoidalIntegrationScheme instead.")
+SReal TrapezoidalIntegrationScheme::getPositionUpdateDerivedFromVelocity() const
 {
-
+    return m_dt/2.0 ;
 }
 
-
-
-SReal EulerImplicitIntegrationScheme::getPositionUpdateDerivedFromVelocity() const
-{
-    return m_dt ;
-}
-
-SReal EulerImplicitIntegrationScheme::getInverseVelocityUpdateDerivedFromVelocity() const
+SReal TrapezoidalIntegrationScheme::getInverseVelocityUpdateDerivedFromVelocity() const
 {
     return 1.0/m_dt;
 }
 
-void EulerImplicitIntegrationScheme::computeCurrentPositionIntegrationError(sofa::simulation::common::VectorOperations & vop, sofa::core::MultiVecDerivId& result, const sofa::core::MultiVecCoordId& position, const sofa::core::MultiVecDerivId& velocity)
+void TrapezoidalIntegrationScheme::computeCurrentPositionIntegrationError(sofa::simulation::common::VectorOperations & vop, sofa::core::MultiVecDerivId& result, const sofa::core::MultiVecCoordId& position, const sofa::core::MultiVecDerivId& velocity)
 {
     sofa::core::behavior::MultiVecDeriv res(&vop, result );
     res.eq(position,m_x0[0],  -1);
 
-    res.peq(velocity, -m_dt);
+    res.peq(m_v0[0], -m_dt / 2.0);
+    res.peq(velocity, -m_dt / 2.0);
 }
 
-void EulerImplicitIntegrationScheme::computeAccelerationFromVelocity(sofa::simulation::common::VectorOperations & vop, sofa::core::MultiVecDerivId& result, const sofa::core::MultiVecDerivId& velocity)
+void TrapezoidalIntegrationScheme::computeAccelerationFromVelocity(sofa::simulation::common::VectorOperations & vop, sofa::core::MultiVecDerivId& result, const sofa::core::MultiVecDerivId& velocity)
 {
     sofa::core::behavior::MultiVecDeriv res(&vop, result );
     res.eq(velocity,m_v0[0], -1);
@@ -69,10 +54,10 @@ void EulerImplicitIntegrationScheme::computeAccelerationFromVelocity(sofa::simul
 }
 
 
-void registerEulerImplicitIntegrationScheme(sofa::core::ObjectFactory* factory)
+void registerTrapezoidalIntegrationScheme(sofa::core::ObjectFactory* factory)
 {
     factory->registerObjects(core::ObjectRegistrationData("Time integrator using implicit backward Euler scheme.")
-        .add< EulerImplicitIntegrationScheme >());
+        .add< TrapezoidalIntegrationScheme >());
 }
 
 } // namespace sofa::component::odesolver::backward
