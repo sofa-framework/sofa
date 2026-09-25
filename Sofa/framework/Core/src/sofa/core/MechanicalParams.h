@@ -105,7 +105,7 @@ public:
 
 
     /// @name Setup methods
-    /// Called by the OdeSolver from which the mechanical computations originate.
+    /// Called by the IntegrationScheme from which the mechanical computations originate.
     /// They all return a reference to this MechanicalParam instance, to ease chaining multiple setup calls.
 
     /// @{

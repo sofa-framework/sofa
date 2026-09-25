@@ -27,7 +27,7 @@
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 
-#include <sofa/component/odesolver/backward/EulerImplicitSolver.h>
+#include <sofa/component/integrationscheme/backward/EulerImplicitIntegrationScheme.h>
 
 #include <sofa/linearalgebra/SparseMatrix.h>
 #include <sofa/core/behavior/LinearSolver.h>
@@ -73,8 +73,6 @@ PrecomputedConstraintCorrection<DataTypes>::PrecomputedConstraintCorrection(sofa
     , d_debugViewFrameScale(initData(&d_debugViewFrameScale, 1.0_sreal, "debugViewFrameScale", "Scale on computed node's frame"))
     , d_fileCompliance(initData(&d_fileCompliance, "fileCompliance", "Precomputed compliance matrix data file"))
     , d_fileDir(initData(&d_fileDir, "fileDir", "If not empty, the compliance will be saved in this repertory"))
-    , l_odeSolver(initLink("ODESolver", "Link towards the ODE solver used during the compliance precomputation. If unset, the first OdeSolver in the current context is used."))
-    , l_linearSolver(initLink("linearSolver", "Link towards the linear solver used during the compliance precomputation. If unset, the first LinearSolver in the current context is used."))
     , invM(nullptr)
     , appCompliance(nullptr)
     , nbRows(0), nbCols(0), dof_on_node(0), nbNodes(0)
@@ -86,6 +84,18 @@ template<class DataTypes>
 PrecomputedConstraintCorrection<DataTypes>::~PrecomputedConstraintCorrection()
 {
     releaseInverse(invName, invM);
+}
+
+template<class DataTypes>
+SReal PrecomputedConstraintCorrection<DataTypes>::getPositionIntegrationFactor() const
+{
+    return m_pIntegrationScheme ? m_pIntegrationScheme->getPositionIntegrationFactor() : this->getContext()->getDt();
+}
+
+template<class DataTypes>
+SReal PrecomputedConstraintCorrection<DataTypes>::getVelocityIntegrationFactor() const
+{
+    return m_pIntegrationScheme ? m_pIntegrationScheme->getVelocityIntegrationFactor() : 1.0_sreal;
 }
 
 
@@ -240,6 +250,14 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 {
     Inherit::init();
 
+    sofa::core::objectmodel::BaseContext* context = this->getContext();
+    m_pIntegrationScheme = context->get<sofa::core::behavior::BaseIntegrationScheme>(sofa::core::objectmodel::BaseContext::Local);
+    if (!m_pIntegrationScheme)
+    {
+        m_pIntegrationScheme = context->get<sofa::core::behavior::BaseIntegrationScheme>(sofa::core::objectmodel::BaseContext::SearchRoot);
+    }
+    msg_error_when(!m_pIntegrationScheme) << "No integration scheme found in the context. Implicit Euler integration factors will be assumed when scaling the compliance and the corrections.";
+
     const VecDeriv& v0 = this->mstate->read(core::vec_id::read_access::velocity)->getValue();
 
     nbNodes = v0.size();
@@ -294,21 +312,20 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 
         // If a solver link was not set explicitly, fall back to the first one found in the context.
         if (l_odeSolver.empty())
-            l_odeSolver.set(this->getContext()->template get<sofa::component::odesolver::backward::EulerImplicitSolver>());
+            l_odeSolver.set(this->getContext()->template get<sofa::component::integrationscheme::backward::EulerImplicitIntegrationScheme>());
         if (l_linearSolver.empty())
             l_linearSolver.set(this->getContext()->template get<core::behavior::LinearSolver>());
-
         if (l_odeSolver && l_linearSolver)
         {
-            msg_info() << "use EulerImplicitSolver & LinearSolver";
+            msg_info() << "use EulerImplicitIntegrationScheme & LinearSolver";
         }
         else if (l_odeSolver)
         {
-            msg_info() << "use EulerImplicitSolver";
+            msg_info() << "use EulerImplicitIntegrationScheme";
         }
         else
         {
-            msg_error() << "PrecomputedConstraintCorrection must be associated with EulerImplicitSolver+LinearSolver for the precomputation\nNo Precomputation" ;
+            msg_error() << "PrecomputedContactCorrection must be associated with EulerImplicitIntegrationScheme+LinearSolver for the precomputation\nNo Precomputation" ;
             return;
         }
 
@@ -359,7 +376,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
         /// (avoid to have a line of 0 at the top of the matrix)
         if (l_odeSolver)
         {
-            l_odeSolver->solve(core::execparams::defaultInstance(), dt, core::vec_id::write_access::position, core::vec_id::write_access::velocity);
+            l_odeSolver->integrate(core::execparams::defaultInstance(), dt, core::vec_id::write_access::position, core::vec_id::write_access::velocity);
         }
 
         Deriv unitary_force;
@@ -388,20 +405,21 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
                 for (unsigned int n = 0; n < nbNodes; n++)
                     pos[n] = prev_pos[n];
 
-                SReal fact = 1.0_sreal / dt; // christian : it is not a compliance... but an admittance that is computed !
-
+                // The measured one-step velocity response to a unit constant force is
+                // stored as is: it is the discrete admittance of the mechanical system,
+                // i.e. the inverse of the assembled system matrix. The integration scheme
+                // factors are applied wherever this matrix is used, as done in
+                // LinearSolverConstraintCorrection.
                 if (l_odeSolver)
                 {
-                    fact *= l_odeSolver->getPositionIntegrationFactor(); // here, we compute a compliance
-
-                    l_odeSolver->solve(core::execparams::defaultInstance(), dt, core::vec_id::write_access::position, core::vec_id::write_access::velocity);
+                    l_odeSolver->integrate(core::execparams::defaultInstance(), dt, core::vec_id::write_access::position, core::vec_id::write_access::velocity);
                 }
 
                 for (unsigned int v = 0; v < nbNodes; v++)
                 {
                     for (unsigned int j = 0; j < dof_on_node; j++)
                     {
-                        invM->data[(v * dof_on_node + j) * nbCols + (f * dof_on_node + i) ] = (Real)(fact * velocity[v][j]);
+                        invM->data[(v * dof_on_node + j) * nbCols + (f * dof_on_node + i) ] = (Real)(velocity[v][j]);
                     }
                 }
             }
@@ -447,17 +465,20 @@ void PrecomputedConstraintCorrection< DataTypes >::addComplianceInConstraintSpac
 
     const MatrixDeriv& c = cparams->readJ(this->mstate.get())->getValue();
 
+    // use the IntegrationScheme factors to scale the stored admittance into the
+    // constraint-order dependent compliance, as done in LinearSolverConstraintCorrection
     SReal factor = 1.0_sreal;
 
     switch (cparams->constOrder())
     {
     case core::ConstraintOrder::POS_AND_VEL :
     case core::ConstraintOrder::POS :
+        factor = getPositionIntegrationFactor();
         break;
 
     case core::ConstraintOrder::ACC :
     case core::ConstraintOrder::VEL :
-        factor = 1.0 / this->getContext()->getDt(); // @TODO : Consistency between ODESolver & Compliance and/or Admittance computation
+        factor = getVelocityIntegrationFactor();
         break;
 
     default :
@@ -648,19 +669,20 @@ void PrecomputedConstraintCorrection<DataTypes>::applyMotionCorrection(const sof
     const VecCoord& x_free = cparams->readX(this->mstate.get())->getValue();
     const VecDeriv& v_free = cparams->readV(this->mstate.get())->getValue();
 
-    const SReal invDt = 1.0_sreal / this->getContext()->getDt();
+    const SReal positionFactor = getPositionIntegrationFactor();
+    const SReal velocityFactor = getVelocityIntegrationFactor();
 
     if (d_rotations.getValue())
         rotateResponse();
 
     for (unsigned int i=0; i< dx.size(); i++)
     {
-        x[i] = x_free[i];
-        v[i] = v_free[i];
+        const Deriv dxi = correction[i] * positionFactor;
+        const Deriv dvi = correction[i] * velocityFactor;
 
-        x[i] += correction[i];
-        v[i] += correction[i] * invDt;
-        dx[i] = correction[i];
+        x[i] = x_free[i] + dxi;
+        v[i] = v_free[i] + dvi;
+        dx[i] = dxi;
     }
 
     x_d.endEdit();
@@ -680,13 +702,17 @@ void PrecomputedConstraintCorrection<DataTypes>::applyPositionCorrection(const s
 
     const VecCoord& x_free = cparams->readX(this->mstate.get())->getValue();
 
+    const SReal positionFactor = getPositionIntegrationFactor();
+
     if (d_rotations.getValue())
         rotateResponse();
 
     for (unsigned int i=0; i< dx.size(); i++)
     {
-        x[i]  = x_free[i] + correction[i];
-        dx[i] = correction[i];
+        const Deriv dxi = correction[i] * positionFactor;
+
+        x[i]  = x_free[i] + dxi;
+        dx[i] = dxi;
     }
 
     x_d.endEdit();
@@ -704,14 +730,14 @@ void PrecomputedConstraintCorrection<DataTypes>::applyVelocityCorrection(const s
     const VecDeriv& dx = this->mstate->read(core::vec_id::write_access::dx)->getValue();
     const VecDeriv& v_free = cparams->readV(this->mstate.get())->getValue();
 
-    const SReal invDt = 1.0_sreal / this->getContext()->getDt();
+    const SReal velocityFactor = getVelocityIntegrationFactor();
 
     if (d_rotations.getValue())
         rotateResponse();
 
     for (unsigned int i=0; i< dx.size(); i++)
     {
-        dv[i] = correction[i] * invDt;
+        dv[i] = correction[i] * velocityFactor;
         v[i] = v_free[i] + dv[i];
     }
 
@@ -734,8 +760,6 @@ void PrecomputedConstraintCorrection<DataTypes>::applyContactForce(const lineara
     const VecDeriv& v_free = this->mstate->read(core::vec_id::read_access::freeVelocity)->getValue();
     const VecCoord& x_free = this->mstate->read(core::vec_id::read_access::freePosition)->getValue();
     const MatrixDeriv& c = this->mstate->read(core::vec_id::read_access::constraintJacobian)->getValue();
-
-    const SReal dt = this->getContext()->getDt();
 
     dx.clear();
     dx.resize(v.size());
@@ -797,13 +821,17 @@ void PrecomputedConstraintCorrection<DataTypes>::applyContactForce(const lineara
     if (d_rotations.getValue())
         rotateResponse();
 
+    const SReal positionFactor = getPositionIntegrationFactor();
+    const SReal velocityFactor = getVelocityIntegrationFactor();
+
     for (unsigned int i=0; i< dx.size(); i++)
     {
-        x[i] = x_free[i];
-        v[i] = v_free[i];
+        const Deriv dxi = dx[i] * positionFactor;
+        const Deriv dvi = dx[i] * velocityFactor;
 
-        x[i] += dx[i];
-        v[i] += dx[i] * (1/dt);
+        x[i] = x_free[i] + dxi;
+        v[i] = v_free[i] + dvi;
+        dx[i] = dxi;
     }
 }
 
@@ -811,13 +839,15 @@ void PrecomputedConstraintCorrection<DataTypes>::applyContactForce(const lineara
 template<class DataTypes>
 void PrecomputedConstraintCorrection<DataTypes>::getComplianceMatrix(linearalgebra::BaseMatrix* m) const
 {
+    const SReal factor = getPositionIntegrationFactor();
+
     m->resize(dimensionAppCompliance,dimensionAppCompliance);
 
     for (unsigned int l = 0; l < dimensionAppCompliance; ++l)
     {
         for (unsigned int c = 0; c < dimensionAppCompliance; ++c)
         {
-            m->set(l, c, appCompliance[l * dimensionAppCompliance + c]);
+            m->set(l, c, factor * appCompliance[l * dimensionAppCompliance + c]);
         }
     }
 }
@@ -1114,6 +1144,8 @@ void PrecomputedConstraintCorrection<DataTypes>::resetForUnbuiltResolution(SReal
 
     localW.resize(nbConstraints, nbConstraints);
 
+    const SReal positionFactor = getPositionIntegrationFactor();
+
     unsigned int curRowConst = 0;
 
     for (MatrixDerivRowConstIterator rowIt = c.begin(); rowIt != rowItEnd; ++rowIt)
@@ -1130,7 +1162,7 @@ void PrecomputedConstraintCorrection<DataTypes>::resetForUnbuiltResolution(SReal
 
             for (MatrixDerivRowConstIterator rowIt2 = rowIt; rowIt2 != rowItEnd; ++rowIt2)
             {
-                Real w = _sparseCompliance[temp + curColConst] * n1;
+                const Real w = Real(_sparseCompliance[temp + curColConst] * n1 * positionFactor);
 
                 localW.add(curRowConst, curColConst, w);
 
@@ -1219,6 +1251,8 @@ void PrecomputedConstraintCorrection<DataTypes>::setConstraintDForce(SReal * /*d
     if (!update)
         return;
 
+    const SReal positionFactor = getPositionIntegrationFactor();
+
     unsigned int offset, offset2;
 
     for (int i = begin; i <= end; i++)
@@ -1259,7 +1293,7 @@ void PrecomputedConstraintCorrection<DataTypes>::setConstraintDForce(SReal * /*d
                             DXbuf += appCompliance[ offset2 + k ] * Fbuf[k];
                         }
 
-                        constraint_D(dof2,j) += DXbuf;
+                        constraint_D(dof2,j) += DXbuf * positionFactor;
                     }
                 }
             }
@@ -1286,6 +1320,7 @@ void PrecomputedConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(line
 #ifdef NEW_METHOD_UNBUILT
 
     const MatrixDeriv& c = *this->mstate->getC();
+    const SReal positionFactor = getPositionIntegrationFactor();
     int numLocalConstraints = 0;
 
     std::list<int> localActiveDof;
@@ -1383,7 +1418,7 @@ void PrecomputedConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(line
                 {
                     int id2 = constraintLocalID[c2_loc];
 
-                    auto w = n1 * _sparseCompliance[c1_loc * numLocalConstraints + c2_loc];
+                    const auto w = n1 * _sparseCompliance[c1_loc * numLocalConstraints + c2_loc] * positionFactor;
 
                     W->add(i, id2, w);
 

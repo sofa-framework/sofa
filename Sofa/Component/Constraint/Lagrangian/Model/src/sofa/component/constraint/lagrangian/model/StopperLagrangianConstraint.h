@@ -25,7 +25,7 @@
 #include <sofa/core/behavior/LagrangianConstraint.h>
 #include <sofa/core/behavior/ConstraintResolution.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/behavior/OdeSolver.h>
+#include <sofa/core/behavior/BaseIntegrationScheme.h>
 
 namespace sofa::component::constraint::lagrangian::model
 {
