@@ -3,7 +3,7 @@
     <RequiredPlugin pluginName="Sofa.Component.Constraint.Projective"/>
     <RequiredPlugin pluginName="Sofa.Component.LinearSolver.Iterative"/>
     <RequiredPlugin pluginName="Sofa.Component.Mass"/>
-    <RequiredPlugin pluginName="Sofa.Component.ODESolver.Backward"/>
+    <RequiredPlugin pluginName="Sofa.Component.IntegrationScheme.Backward"/>
     <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.FEM.Elastic"/>
     <RequiredPlugin pluginName="Sofa.Component.StateContainer"/>
     <RequiredPlugin pluginName="Sofa.Component.Topology.Container.Constant"/>
@@ -15,7 +15,7 @@
     <DefaultVisualManagerLoop />
 
     <Node name="Pyramid">
-        <EulerImplicitSolver name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitIntegrationScheme name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="20" name="linear solver" tolerance="1.0e-12" threshold="1.0e-12" />
 
         <!-- A cube made of 6 pyramids -->

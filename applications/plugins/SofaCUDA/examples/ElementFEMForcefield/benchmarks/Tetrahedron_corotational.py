@@ -25,7 +25,7 @@ def createScene(root_node):
     plugin_node = root_node.addChild('Plugins')
     plugin_node.addObject('RequiredPlugin', pluginName="Sofa.Component.Engine.Select")
     plugin_node.addObject('RequiredPlugin', pluginName="Sofa.Component.LinearSolver.Iterative")
-    plugin_node.addObject('RequiredPlugin', pluginName="Sofa.Component.ODESolver.Backward")
+    plugin_node.addObject('RequiredPlugin', pluginName="Sofa.Component.IntegrationScheme.Backward")
     plugin_node.addObject('RequiredPlugin', pluginName="Sofa.Component.StateContainer")
     plugin_node.addObject('RequiredPlugin', pluginName="Sofa.Component.Topology.Container.Dynamic")
     plugin_node.addObject('RequiredPlugin', pluginName="Sofa.Component.Topology.Container.Grid")
@@ -43,7 +43,7 @@ def createScene(root_node):
     grid_tetra = hexa_to_tetra(grid_hexa)
     
     tetrahedron_node = root_node.addChild('Tetrahedron')
-    tetrahedron_node.addObject('EulerImplicitSolver', rayleighStiffness="0.1", rayleighMass="0.1")
+    tetrahedron_node.addObject('EulerImplicitIntegrationScheme', rayleighStiffness="0.1", rayleighMass="0.1")
     tetrahedron_node.addObject('CGLinearSolver', iterations="250", name="linear_solver", tolerance="1.0e-12", threshold="1.0e-12")
     tetrahedron_node.addObject('MechanicalObject', name="ms", template=g_fem_template, position=grid_nodes)
     tetrahedron_node.addObject('TetrahedronSetTopologyContainer', tetrahedra=grid_tetra)
