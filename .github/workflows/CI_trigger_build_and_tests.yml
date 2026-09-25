@@ -28,10 +28,10 @@ on:
       preset:
         type: choice
         description: Which preset to use for compilation
-        options: 
+        options:
         - standard
         - supported-plugins
-        - full 
+        - full
         - standard-dev
         - supported-plugins-dev
         - full-dev
@@ -39,16 +39,20 @@ on:
       builder-os:
         type: choice
         description: On which OS run the binaries generation
-        options: 
-        - '["sh-ubuntu_gcc_release"]'
-        - '["sh-macos_clang_release"]'
-        - '["sh-ubuntu_gcc_release","sh-macos_clang_release"]'
-        default: '["sh-ubuntu_gcc_release","sh-macos_clang_release"]'
-    
+        options:
+        - '["ubuntu"]'
+        - '["macos"]'
+        - '["windows"]'
+        - '["ubuntu","macos"]'
+        - '["ubuntu","windows"]'
+        - '["macos","windows"]'
+        - '["ubuntu","macos","windows"]'
+        default: '["ubuntu","macos","windows"]'
+
   # PR-related build (open, labels, push)
   pull_request:
     types: [opened, synchronize]
-    
+
   # CI for dashboard master
   push:
     branches:
@@ -78,8 +82,9 @@ jobs:
       PR_OWNER_URL: ${{ steps.export-vars.outputs.PR_OWNER_URL }}
       PR_BRANCH_NAME: ${{ steps.export-vars.outputs.PR_BRANCH_NAME }}
       PR_COMMIT_SHA: ${{ steps.export-vars.outputs.PR_COMMIT_SHA }}
-      BUILDER_OS: ${{ steps.export-vars.outputs.BUILDER_OS }}
-      
+      SH_BUILDER_OS: ${{ steps.export-vars.outputs.SH_BUILDER_OS }}
+      PIXI_BUILDER_OS: ${{ steps.export-vars.outputs.PIXI_BUILDER_OS }}
+
     steps:
       - name: Default values of environment variables
         run: |
@@ -96,8 +101,9 @@ jobs:
           echo "PR_OWNER_URL=" >> $GITHUB_ENV              # PR_OWNER_URL: ""
           echo "PR_BRANCH_NAME=" >> $GITHUB_ENV            # PR_BRANCH_NAME: ""
           echo "PR_COMMIT_SHA=HEAD" >> $GITHUB_ENV         # PR_COMMIT_SHA: "HEAD"
-          echo 'BUILDER_OS=["sh-ubuntu_gcc_release"]' >> $GITHUB_ENV            # BUILDER_OS: ["sh-ubuntu_gcc_release"]
-          
+          echo 'SH_BUILDER_OS=["sh-ubuntu_gcc_release","sh-macos_clang_release"]' >> $GITHUB_ENV            # BUILDER_OS: ubuntu and maco
+          echo 'PIXI_BUILDER_OS=["windows-latest"]' >> $GITHUB_ENV            # BUILDER_OS: windows
+
       - name: Run on dispatch
         if: ${{ github.event_name == 'workflow_dispatch' }}
         run: |
@@ -122,7 +128,7 @@ jobs:
             fi
           fi
           echo "Python version $PYTHON is valid."
-          
+
           # Save all information in environment variables
           echo "SOFA_BRANCH_NAME=${{ github.event.inputs.branch }}" >> $GITHUB_ENV
           echo "SOFA_COMMIT_SHA=HEAD" >> $GITHUB_ENV
@@ -134,6 +140,21 @@ jobs:
           echo "EXTERNAL_PLUGINS=${{ inputs.external-plugins }}" >> $GITHUB_ENV
           echo "ADDITIONNAL_CMAKE_FLAGS=${{ inputs.additionnal-cmake-flags }}" >> $GITHUB_ENV
 
+          if [[ "${{ inputs.builder-os}}" == *"windows"* ]]; then
+              echo 'PIXI_BUILDER_OS=["windows-latest"]' >> $GITHUB_ENV
+          else
+              echo 'PIXI_BUILDER_OS=[]' >> $GITHUB_ENV
+          fi
+
+          if [[ "${{ inputs.builder-os}}" == *"ubuntu"* && "${{ inputs.builder-os}}" == *"macos"*]]; then
+              echo 'SH_BUILDER_OS=["sh-ubuntu_gcc_release","sh-macos_clang_release"]' >> $GITHUB_ENV
+          elif [[ "${{ inputs.builder-os}}" == *"ubuntu"* ]]; then
+              echo 'SH_BUILDER_OS=["sh-ubuntu_gcc_release"]' >> $GITHUB_ENV
+          elif [[ "${{ inputs.builder-os}}" == *"macos"* ]]; then
+              echo 'SH_BUILDER_OS=["sh-macos_clang_release"]' >> $GITHUB_ENV
+          else
+              echo 'SH_BUILDER_OS=[]' >> $GITHUB_ENV
+          fi
 
       - name: Set up python
         uses: actions/setup-python@v5
@@ -148,8 +169,8 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v5
         with:
-          repository: sofa-framework/ci
-          ref: master
+          repository: bakpaul/ci
+          ref: 26_09_final_jenkins_2_github_migration
           path: ./ci
 
       - name: Check push on master case (e.g. merge)
@@ -159,7 +180,8 @@ jobs:
           echo "SOFA_COMMIT_SHA=${{ github.sha }}">> $GITHUB_ENV
           echo "WITH_ALL_TESTS=true" >> $GITHUB_ENV
           echo "FORCE_FULL_BUILD=true" >> $GITHUB_ENV
-          echo 'BUILDER_OS=["sh-ubuntu_gcc_release","sh-ubuntu_clang_release","sh-ubuntu_clang_debug","sh-fedora_clang_release","sh-macos_clang_release"]' >> $GITHUB_ENV
+          echo 'SH_BUILDER_OS=["sh-ubuntu_gcc_release","sh-ubuntu_clang_release","sh-ubuntu_clang_debug","sh-fedora_clang_release","sh-macos_clang_release"]' >> $GITHUB_ENV
+          echo 'PIXI_BUILDER_OS=["ubuntu-latest", "macos-latest", "macos-15-intel", "windows-latest"]' >> $GITHUB_ENV
 
       - name: Run when PR is opened or a commit is pushed in a PR
         if: ${{ github.event_name == 'pull_request' }}
@@ -170,11 +192,11 @@ jobs:
           PR_COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
           echo "This step runs only when a PR is opened or synchronized."
-          
+
           # Trigger the Build action
           # Warning ! This script also changes ENV variables
           python ci/scripts/checkPRInfoBeforeBuild.py
-  
+
       - name: Export environment variables as outputs
         id: export-vars
         run: |
@@ -184,7 +206,7 @@ jobs:
             echo "Branch name should be either master or any release branch (e.g., v25.06)"
             exit 1
           fi
-          
+
           echo "SOFA_BRANCH_NAME=${SOFA_BRANCH_NAME}" >> $GITHUB_OUTPUT
           echo "SOFA_COMMIT_SHA=${SOFA_COMMIT_SHA}" >> $GITHUB_OUTPUT
           echo "PRESET=${PRESET}" >> $GITHUB_OUTPUT
@@ -192,13 +214,14 @@ jobs:
           echo "CI_DEPENDS_ON=${CI_DEPENDS_ON}" >> $GITHUB_OUTPUT
           echo "WITH_ALL_TESTS=${WITH_ALL_TESTS}" >> $GITHUB_OUTPUT
           echo "FORCE_FULL_BUILD=${FORCE_FULL_BUILD}" >> $GITHUB_OUTPUT
-          echo "EXTERNAL_PLUGINS=${EXTERNAL_PLUGINS}" >> $GITHUB_OUTPUT 
-          echo "ADDITIONNAL_CMAKE_FLAGS=${ADDITIONNAL_CMAKE_FLAGS}" >> $GITHUB_OUTPUT 
+          echo "EXTERNAL_PLUGINS=${EXTERNAL_PLUGINS}" >> $GITHUB_OUTPUT
+          echo "ADDITIONNAL_CMAKE_FLAGS=${ADDITIONNAL_CMAKE_FLAGS}" >> $GITHUB_OUTPUT
           echo "GENERATE_BINARIES=${GENERATE_BINARIES}" >> $GITHUB_OUTPUT
           echo "PR_OWNER_URL=${PR_OWNER_URL}" >> $GITHUB_OUTPUT
           echo "PR_BRANCH_NAME=${PR_BRANCH_NAME}" >> $GITHUB_OUTPUT
           echo "PR_COMMIT_SHA=${PR_COMMIT_SHA}" >> $GITHUB_OUTPUT
-          echo "BUILDER_OS=${BUILDER_OS}" >> $GITHUB_OUTPUT
+          echo "SH_BUILDER_OS=${SH_BUILDER_OS}" >> $GITHUB_OUTPUT
+          echo "PIXI_BUILDER_OS=${PIXI_BUILDER_OS}" >> $GITHUB_OUTPUT
 
 
   # ===============================================================
@@ -207,8 +230,8 @@ jobs:
   # Trigger the build and sharing all parameters from filter_build > outputs
   build-on:
     needs: filter_build
-    if: ${{ github.repository_owner == 'sofa-framework' }}
-    uses: sofa-framework/sofa/.github/workflows/CI_build_and_test.yml@master
+    if: ${{ github.repository_owner == 'sofa-framework' && needs.filter_build.outputs.SH_BUILDER_OS != '[]' }}
+    uses: bakpaul/sofa/.github/workflows/CI_build_and_test.yml@26_09_update_ci_with_new_test_scripts_and_pixi_based_ci_for_windows
     with:
       sofa-branch-name: ${{ needs.filter_build.outputs.SOFA_BRANCH_NAME }}
       sofa-commit-sha: ${{ needs.filter_build.outputs.SOFA_COMMIT_SHA }}
@@ -223,4 +246,25 @@ jobs:
       pr-owner-url: ${{ needs.filter_build.outputs.PR_OWNER_URL }}
       pr-branch-name: ${{ needs.filter_build.outputs.PR_BRANCH_NAME }}
       pr-commit-sha: ${{ needs.filter_build.outputs.PR_COMMIT_SHA }}
-      builder-os: ${{ needs.filter_build.outputs.BUILDER_OS }}
+      builder-os: ${{ needs.filter_build.outputs.SH_BUILDER_OS }}
+
+  # Trigger the build and sharing all parameters from filter_build > outputs
+  pixi-ci:
+    needs: filter_build
+    if: ${{ github.repository_owner == 'sofa-framework' && needs.filter_build.outputs.PIXI_BUILDER_OS != '[]' }}
+    uses: bakpaul/sofa/.github/workflows/CI_macos_linux_windows_pixi.yml@26_09_update_ci_with_new_test_scripts_and_pixi_based_ci_for_windows
+    with:
+      sofa-branch-name: ${{ needs.filter_build.outputs.SOFA_BRANCH_NAME }}
+      sofa-commit-sha: ${{ needs.filter_build.outputs.SOFA_COMMIT_SHA }}
+      preset: ${{ needs.filter_build.outputs.PRESET }}
+      python-version: ${{ needs.filter_build.outputs.PYTHON_VERSION }}
+      ci-depends-on: ${{ needs.filter_build.outputs.CI_DEPENDS_ON }}
+      with-all-tests: ${{ needs.filter_build.outputs.WITH_ALL_TESTS == 'true'}}
+      force-full-build: ${{ needs.filter_build.outputs.FORCE_FULL_BUILD == 'true'}}
+      external-plugins: ${{ needs.filter_build.outputs.EXTERNAL_PLUGINS }}
+      additionnal-cmake-flags: ${{ needs.filter_build.outputs.ADDITIONNAL_CMAKE_FLAGS }}
+      generate-binaries: ${{ needs.filter_build.outputs.GENERATE_BINARIES == 'true'}}
+      pr-owner-url: ${{ needs.filter_build.outputs.PR_OWNER_URL }}
+      pr-branch-name: ${{ needs.filter_build.outputs.PR_BRANCH_NAME }}
+      pr-commit-sha: ${{ needs.filter_build.outputs.PR_COMMIT_SHA }}
+      builder-os: ${{ needs.filter_build.outputs.PIXI_BUILDER_OS }}

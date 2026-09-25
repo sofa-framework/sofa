@@ -7,7 +7,7 @@ set CMAKE_EXPORT_COMPILE_COMMANDS=1
 set CMAKE_COLOR_DIAGNOSTICS=1
 
 :: Each environment have its dedicated build dir
-set SOFA_BUILD_DIR=%CONDA_PREFIX%\sofa-build
+if not defined SOFA_BUILD_DIR (set SOFA_BUILD_DIR=%CONDA_PREFIX%\sofa-build)
 
 :: Set default build value only if not previously set
 if not defined SOFA_CMAKE_PREFIX_PATH (set SOFA_CMAKE_PREFIX_PATH=%CONDA_PREFIX%)
