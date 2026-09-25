@@ -60,10 +60,6 @@ public:
         return vec;
     }
 
-    /// Disable the mapping to get the original coordinates of the mapped model.
-    void disable() override
-    {
-    }
 
     /// Get the source (upper) model.
     virtual type::vector<sofa::core::behavior::BaseMechanicalState*> getMechFrom() override
@@ -79,27 +75,7 @@ public:
         return vec;
     }
 
-    void apply (const core::MechanicalParams* /* mparams */, core::MultiVecCoordId /* outPos */, core::ConstMultiVecCoordId /* inPos */) override
-    {
-    }
 
-    void applyJ(const core::MechanicalParams* /* mparams */, core::MultiVecDerivId /* outVel */, core::ConstMultiVecDerivId /* inVel */) override
-    {
-    }
-
-    void applyJT(const core::MechanicalParams* /* mparams */, core::MultiVecDerivId /* inForce */, core::ConstMultiVecDerivId /* outForce */) override
-    {
-    }
-
-    void applyDJT(const core::MechanicalParams* /*mparams*/, core::MultiVecDerivId /*inForce*/, core::ConstMultiVecDerivId /*outForce*/) override {}
-
-    void applyJT(const core::ConstraintParams * /*cparams*/, core::MultiMatrixDerivId /* inConst */, core::ConstMultiMatrixDerivId /* outConst */) override
-    {
-    }
-
-    void computeAccFromMapping(const core::MechanicalParams* /*mparams */, core::MultiVecDerivId /* outAcc */, core::ConstMultiVecDerivId /* inVel */, core::ConstMultiVecDerivId /* inAcc */) override
-    {
-    }
 
 protected:
     In* fromModel;
@@ -115,7 +91,32 @@ protected:
     ~VoidMapping() override
     {
     }
+    void doApply (const core::MechanicalParams* /* mparams */, core::MultiVecCoordId /* outPos */, core::ConstMultiVecCoordId /* inPos */) override
+    {
+    }
 
+    /// Disable the mapping to get the original coordinates of the mapped model.
+    void doDisable() override
+    {
+    }
+
+    void doApplyJ(const core::MechanicalParams* /* mparams */, core::MultiVecDerivId /* outVel */, core::ConstMultiVecDerivId /* inVel */) override
+    {
+    }
+
+    void doApplyJT(const core::MechanicalParams* /* mparams */, core::MultiVecDerivId /* inForce */, core::ConstMultiVecDerivId /* outForce */) override
+    {
+    }
+
+    void doApplyDJT(const core::MechanicalParams* /*mparams*/, core::MultiVecDerivId /*inForce*/, core::ConstMultiVecDerivId /*outForce*/) override {}
+
+    void doApplyJT(const core::ConstraintParams * /*cparams*/, core::MultiMatrixDerivId /* inConst */, core::ConstMultiMatrixDerivId /* outConst */) override
+    {
+    }
+
+    void doComputeAccFromMapping(const core::MechanicalParams* /*mparams */, core::MultiVecDerivId /* outAcc */, core::ConstMultiVecDerivId /* inVel */, core::ConstMultiVecDerivId /* inAcc */) override
+    {
+    }
 };
 
 } // namespace sofa::component::mapping::linear
