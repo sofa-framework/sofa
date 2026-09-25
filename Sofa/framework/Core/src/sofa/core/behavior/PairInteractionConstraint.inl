@@ -50,7 +50,7 @@ bool PairInteractionConstraint<DataTypes>::isActive() const
 
 
 template<class DataTypes>
-void PairInteractionConstraint<DataTypes>::getConstraintViolation(const ConstraintParams* cParams, linearalgebra::BaseVector *v)
+void PairInteractionConstraint<DataTypes>::doGetConstraintViolation(const ConstraintParams* cParams, linearalgebra::BaseVector *v)
 {
     if (cParams)
     {
@@ -60,7 +60,7 @@ void PairInteractionConstraint<DataTypes>::getConstraintViolation(const Constrai
 
 
 template<class DataTypes>
-void PairInteractionConstraint<DataTypes>::buildConstraintMatrix(const ConstraintParams* cParams, MultiMatrixDerivId cId, unsigned int &cIndex)
+void PairInteractionConstraint<DataTypes>::doBuildConstraintMatrix(const ConstraintParams* cParams, MultiMatrixDerivId cId, unsigned int &cIndex)
 {
     if (cParams)
     {
