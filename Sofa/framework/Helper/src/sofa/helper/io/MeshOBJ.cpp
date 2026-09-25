@@ -280,7 +280,7 @@ void MeshOBJ::readMTL(const char* filename)
                 }
                 {
                     char matName[128] = {0};
-                    sscanf(buf, "%*127s %127s", matName);
+                    sscanf(buf, "%127s", matName);
                     mat->name = matName;
                 }
                 break;
