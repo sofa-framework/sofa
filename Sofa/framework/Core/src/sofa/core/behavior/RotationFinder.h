@@ -42,7 +42,7 @@ public:
     typedef typename Coord::value_type Real;
     typedef type::Mat< 3, 3, Real > Mat3x3;
 
-    using BaseRotationFinder::getRotations;
+    using BaseRotationFinder::doGetRotations;
     virtual const type::vector< Mat3x3 >& getRotations() = 0;
 };
 
