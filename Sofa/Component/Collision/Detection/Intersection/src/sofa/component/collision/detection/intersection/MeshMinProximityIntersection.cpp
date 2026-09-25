@@ -194,6 +194,8 @@ int MeshMinProximityIntersection::computeIntersection(Line& e1, Line& e2, Output
     detection->point[1] = Q;
     detection->normal = PQ;
     detection->value = detection->normal.norm();
+    detection->barycentricCoords[0] = alpha;
+    detection->barycentricCoords[1] = beta;
 
     if(detection->value>1e-15)
     {
