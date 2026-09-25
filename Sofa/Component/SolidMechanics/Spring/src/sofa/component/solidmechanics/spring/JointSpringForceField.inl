@@ -25,6 +25,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/component/solidmechanics/spring/JointSpring.h>
+#include <sofa/core/behavior/BaseLocalForceFieldMatrix.h>
 #include <fstream>
 
 namespace sofa::component::solidmechanics::spring
@@ -356,6 +357,58 @@ void JointSpringForceField<DataTypes>::addDForce(const core::MechanicalParams *m
 
     data_df1.endEdit();
     data_df2.endEdit();
+}
+
+template<class DataTypes>
+void JointSpringForceField<DataTypes>::buildStiffnessMatrix(core::behavior::StiffnessMatrix* matrix)
+{
+    auto state1 = this->mstate1.get();
+    auto state2 = this->mstate2.get();
+    if (!state1 || !state2) return;
+
+    auto df1_dx1 = matrix->getForceDerivativeIn(state1).withRespectToPositionsIn(state1);
+    auto df1_dx2 = matrix->getForceDerivativeIn(state1).withRespectToPositionsIn(state2);
+    auto df2_dx1 = matrix->getForceDerivativeIn(state2).withRespectToPositionsIn(state1);
+    auto df2_dx2 = matrix->getForceDerivativeIn(state2).withRespectToPositionsIn(state2);
+
+    df1_dx1.checkValidity(this);
+    df1_dx2.checkValidity(this);
+    df2_dx1.checkValidity(this);
+    df2_dx2.checkValidity(this);
+
+    const auto springsAccessor = sofa::helper::getReadAccessor(d_springs);
+    for (const auto& spring : springsAccessor)
+    {
+        Mat mT;
+        for (sofa::Index j = 0; j < 3; ++j)
+        {
+            mT(j, j) = spring.KT[j];
+        }
+
+        Mat mR;
+        for (sofa::Index j = 0; j < 3; ++j)
+        {
+            mR(j, j) = spring.KR[j];
+        }
+
+        Mat rot(sofa::type::NOINIT);
+        spring.ref.toMatrix(rot);
+        const Mat rotInv = rot.transposed();
+
+        //translation
+        const Mat worldKT = rot * mT * rotInv;
+        df1_dx1(spring.m1, spring.m1) +=  worldKT;
+        df1_dx2(spring.m1, spring.m2) += -worldKT;
+        df2_dx1(spring.m2, spring.m1) += -worldKT;
+        df2_dx2(spring.m2, spring.m2) +=  worldKT;
+
+        //rotation
+        const Mat worldKR = rot * mR * rotInv;
+        df1_dx1(spring.m1 + N, spring.m1 + N) +=  worldKR;
+        df1_dx2(spring.m1 + N, spring.m2 + N) += -worldKR;
+        df2_dx1(spring.m2 + N, spring.m1 + N) += -worldKR;
+        df2_dx2(spring.m2 + N, spring.m2 + N) +=  worldKR;
+    }
 }
 
 template <class DataTypes>
