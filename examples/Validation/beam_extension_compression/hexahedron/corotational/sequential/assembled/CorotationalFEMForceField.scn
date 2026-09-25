@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<Node name="root" dt="0.01" gravity="0 0 0">
+    <include href="../../../../beam.xml"/>
+
+    <ConstantSparsityPatternSystem template="CompressedRowSparseMatrix" name="A" checkIndices="false"/>
+    <NaturalOrderingMethod/>
+    <SparseLDLSolver name="linear_solver" template="CompressedRowSparseMatrix"/>
+
+    <CorotationalFEMForceField name="FEM" template="Vec3,Hexahedron"
+                               youngModulus="2e6" poissonRatio="0.45" topology="@grid"
+                               computeForceStrategy="sequenced" computeForceDerivStrategy="sequenced"/>
+    <VonMisesStress template="Vec3,Hexahedron" name="stress" topology="@grid" stressEvaluator="@FEM"
+                    colorMap="green yellow orange red purple #221C35"/>
+
+</Node>
