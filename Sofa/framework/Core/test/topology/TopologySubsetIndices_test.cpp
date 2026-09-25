@@ -39,7 +39,7 @@ class SimplePointTopology: public BaseMeshTopology
         }
     }
 
-    virtual void init()
+    void init() override
     {
         BaseMeshTopology::init();
         m_data.createTopologyHandler(this);
@@ -53,13 +53,13 @@ class SimplePointTopology: public BaseMeshTopology
     const SeqPrisms& getPrisms() override { return m_prisms; }
     const SeqPyramids& getPyramids() override { return m_pyramids; }
 
-    virtual sofa::geometry::ElementType getTopologyType() const
+    sofa::geometry::ElementType getTopologyType() const override
     {
         return sofa::geometry::ElementType::POINT;
     }
 
 
-    virtual Size getNbPoints() const { return m_points.size(); }
+    Size getNbPoints() const override { return m_points.size(); }
     void removePoints(const unsigned nb)
     {
         if(nb >= m_points.size())

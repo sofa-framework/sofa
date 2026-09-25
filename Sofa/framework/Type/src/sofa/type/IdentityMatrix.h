@@ -17,6 +17,7 @@ struct ScaledIdentityMatrix
 template<sofa::Size N, class real>
 constexpr Mat<N, N, real> operator+(const IdentityMatrix& I, const Mat<N, N, real>& M)
 {
+    SOFA_UNUSED(I);
     Mat<N, N, real> res(M);
     for (sofa::Size i = 0; i < N; ++i)
     {
@@ -34,6 +35,7 @@ constexpr Mat<N, N, real> operator+(const Mat<N, N, real>& M, const IdentityMatr
 template<sofa::Size N, class real>
 constexpr Mat<N, N, real> operator-(const IdentityMatrix& I, const Mat<N, N, real>& M)
 {
+    SOFA_UNUSED(I);
     Mat<N, N, real> res(-M);
     for (sofa::Size i = 0; i < N; ++i)
     {
@@ -45,6 +47,7 @@ constexpr Mat<N, N, real> operator-(const IdentityMatrix& I, const Mat<N, N, rea
 template<sofa::Size N, class real>
 constexpr Mat<N, N, real> operator-(const Mat<N, N, real>& M, const IdentityMatrix& I)
 {
+    SOFA_UNUSED(I);
     Mat<N, N, real> res(M);
     for (sofa::Size i = 0; i < N; ++i)
     {
@@ -56,12 +59,14 @@ constexpr Mat<N, N, real> operator-(const Mat<N, N, real>& M, const IdentityMatr
 template<class real>
 constexpr ScaledIdentityMatrix<real> operator*(const IdentityMatrix& I, real s)
 {
+    SOFA_UNUSED(I);
     return { s };
 }
 
 template<class real>
 constexpr ScaledIdentityMatrix<real> operator*(real s, const IdentityMatrix& I)
 {
+    SOFA_UNUSED(I);
     return { s };
 }
 
