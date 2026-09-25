@@ -1,0 +1,113 @@
+<?xml version="1.0"?>
+<!-- Demonstrates that StressSourceTerm reproduces the constant force of
+     TrianglePressureForceField. The two beams are independent.
+
+     White:   StressSourceTerm
+     Yellow:  TrianglePressureForceField, constant force
+
+     Hexa2QuadTopologicalMapping winds a boundary quad by vertex index, so the normal of the loaded
+     face points into the beam, (0, -1, 0). The traction the stress produces there is (-1.5, 2, 0),
+     which is what the force field prescribes as a vector.
+-->
+<Node name="root" dt="1" gravity="0 0 0">
+    <Node name="RequiredPlugins">
+        <RequiredPlugin pluginName="Sofa.Component.AnimationLoop"/>
+        <RequiredPlugin pluginName="Sofa.Component.Constraint.Projective"/>
+        <RequiredPlugin pluginName="Sofa.Component.Engine.Select"/>
+        <RequiredPlugin pluginName="Sofa.Component.LinearSolver.Direct"/>
+        <RequiredPlugin pluginName="Sofa.Component.MechanicalLoad"/>
+        <RequiredPlugin pluginName="Sofa.Component.ODESolver.Backward"/>
+        <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.FEM.Elastic"/>
+        <RequiredPlugin pluginName="Sofa.Component.StateContainer"/>
+        <RequiredPlugin pluginName="Sofa.Component.Topology.Container.Dynamic"/>
+        <RequiredPlugin pluginName="Sofa.Component.Topology.Container.Grid"/>
+        <RequiredPlugin pluginName="Sofa.Component.Topology.Mapping"/>
+        <RequiredPlugin pluginName="Sofa.Component.Visual"/>
+        <RequiredPlugin pluginName="Sofa.GL.Component.Rendering2D"/>
+    </Node>
+
+    <DefaultAnimationLoop/>
+    <VisualStyle displayFlags="showBehaviorModels showVisualModels"/>
+
+    <Node name="Labels">
+        <OglLabel label="StressSourceTerm"                      x="10" y="854" fontsize="16" color="1 1 1 1"/>
+        <OglLabel label="TrianglePressureForceField, constant"  x="10" y="876" fontsize="16" color="1 1 0 1"/>
+    </Node>
+
+    <!-- ============ The stress integrated on the rest configuration; yellow ============ -->
+    <Node name="DeadStress">
+        <RegularGridTopology name="grid" n="5 3 3" min="0 0 0" max="2 0.5 0.5"/>
+
+        <Node name="StressViaForceField">
+            <NewtonRaphsonSolver name="newton" maxNbIterationsNewton="1" absoluteResidualStoppingThreshold="1e-8"/>
+            <StaticSolver newtonSolver="@newton"/>
+            <SparseLDLSolver name="linear_solver" template="CompressedRowSparseMatrixd"/>
+
+            <MechanicalObject name="dofs" template="Vec3" src="@../grid" showObject="true" drawMode="1" showObjectScale="0.05" showColor="1 1 0 0.5"/>
+            <BoxROI name="boundary" template="Vec3" box="-0.05 -0.05 -0.05  0.05 0.55 0.55"/>
+            <FixedProjectiveConstraint name="dirichlet" indices="@boundary.indices"/>
+
+            <HexahedronSetTopologyContainer name="Hexa_topo" src="@../grid"/>
+            <HexahedronSetGeometryAlgorithms template="Vec3" name="GeomAlgo" drawHexahedra="1" drawColorHexahedra="1 1 0 0.5"/>
+
+            <LinearSmallStrainFEMForceField name="FEM" template="Vec3,Hexahedron"
+                                            youngModulus="1000" poissonRatio="0.3" topology="@Hexa_topo"/>
+
+            <Node name="Boundary">
+                <QuadSetTopologyContainer name="quadSurface"/>
+                <QuadSetTopologyModifier/>
+                <Hexa2QuadTopologicalMapping input="@../Hexa_topo" output="@quadSurface"/>
+
+                <Node name="Triangulated">
+                    <TriangleSetTopologyContainer name="surface"/>
+                    <TriangleSetTopologyModifier/>
+                    <Quad2TriangleTopologicalMapping input="@../quadSurface" output="@surface"/>
+
+                    <BoxROI name="topFace" template="Vec3" box="-0.05 0.45 -0.05  2.05 0.55 0.55"/>
+
+                    <TrianglePressureForceField name="load" topology="@surface"
+                                   triangleList="@topFace.triangleIndices"
+                                   useConstantForce="true" pressure="-1.5 2 0"/>
+                </Node>
+            </Node>
+        </Node>
+
+        <Node name="StressViaSourceTerm">
+            <NewtonRaphsonSolver name="newton" maxNbIterationsNewton="1" absoluteResidualStoppingThreshold="1e-8"/>
+            <StaticSolver newtonSolver="@newton"/>
+            <SparseLDLSolver name="linear_solver" template="CompressedRowSparseMatrixd"/>
+
+            <MechanicalObject name="dofs" template="Vec3" src="@../grid" showObject="true" drawMode="1" showObjectScale="0.025" showColor="1 1 1 1"/>
+            <BoxROI name="boundary" template="Vec3" box="-0.05 -0.05 -0.05  0.05 0.55 0.55"/>
+            <FixedProjectiveConstraint name="dirichlet" indices="@boundary.indices"/>
+
+            <HexahedronSetTopologyContainer name="Hexa_topo" src="@../grid"/>
+            <HexahedronSetGeometryAlgorithms template="Vec3" name="GeomAlgo" drawEdges="1" drawColorEdges="1 1 1 1"/>
+
+            <LinearSmallStrainFEMForceField name="FEM" template="Vec3,Hexahedron"
+                                            youngModulus="1000" poissonRatio="0.3" topology="@Hexa_topo"/>
+
+            <Node name="Boundary">
+                <QuadSetTopologyContainer name="quadSurface"/>
+                <QuadSetTopologyModifier/>
+                <Hexa2QuadTopologicalMapping input="@../Hexa_topo" output="@quadSurface"/>
+
+                <Node name="Triangulated">
+                    <TriangleSetTopologyContainer name="surface"/>
+                    <TriangleSetTopologyModifier/>
+                    <Quad2TriangleTopologicalMapping input="@../quadSurface" output="@surface"/>
+
+                    <BoxROI name="topFace" template="Vec3" box="-0.05 0.45 -0.05  2.05 0.55 0.55"/>
+
+                    <Node name="LoadedFace">
+                        <TriangleSetTopologyContainer name="face" triangles="@../topFace.trianglesInROI"/>
+                        <NodalStress name="stress" template="Vec3" property="[0 1.5 0  1.5 -2 0  0 0 0]"/>
+                        <StressSourceTerm name="load" template="Vec3,Triangle" stress="@stress"/>
+                        <FEMSourceTermIntegrator name="source" template="Vec3,Triangle" topology="@face"
+                                       quadratureDegree="1" constantSources="@load"/>
+                    </Node>
+                </Node>
+            </Node>
+        </Node>
+    </Node>
+</Node>
