@@ -44,8 +44,9 @@ protected:
     }
 public:
     /// Allow to store multiple internal states by specifying a different collision pipeline 'instance'
-    virtual void setInstance(Instance inst)
+    virtual void setInstance(Instance inst) final
     {
+        //TODO (SPRINT SED 2025): Component state mechanism
         if (instance == inst) return;
         changeInstance(inst);
         instance = inst;
