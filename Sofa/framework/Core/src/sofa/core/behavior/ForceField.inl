@@ -41,12 +41,15 @@ template<class DataTypes>
 ForceField<DataTypes>::~ForceField() = default;
 
 template<class DataTypes>
-void ForceField<DataTypes>::addForce(const MechanicalParams* mparams, MultiVecDerivId fId )
+void ForceField<DataTypes>::addForce(const MechanicalParams* mparams, MultiVecDerivId fId,
+    ConstMultiVecCoordId xId, ConstMultiVecDerivId vId )
 {
-    auto mstate = this->mstate.get();
-    if (mparams && mstate)
+    if (mparams && this->mstate)
     {
-        addForce(mparams, *fId[mstate].write() , *mparams->readX(mstate), *mparams->readV(mstate));
+        DataVecDeriv* f = fId[this->mstate.get()].write(); assert(f);
+        const DataVecCoord* x = xId[this->mstate.get()].read(); assert(x);
+        const DataVecDeriv* v = vId[this->mstate.get()].read(); assert(v);
+        addForce(mparams, *f , *x, *v);
     }
 }
 

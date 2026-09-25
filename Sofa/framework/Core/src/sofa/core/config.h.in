@@ -134,3 +134,10 @@ SOFA_ATTRIBUTE_DEPRECATED("v26.06", "v29.06", "Use toBaseComponent instead.")
 #define SOFA_CORE_DEPRECATED_REMOVE_CONTEXT() \
 SOFA_ATTRIBUTE_DISABLED("v26.12", "v27.12", "Use BaseContext instead of Context.")
 #endif
+
+#ifdef SOFA_BUILD_SOFA_CORE
+#define SOFA_ATTRIBUTE_DEPRECATED__ADDFORCE_OVERLOAD()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED__ADDFORCE_OVERLOAD() \
+    SOFA_ATTRIBUTE_DEPRECATED("v26.12", "v27.06", "addForce must be called by providing the position vector.")
+#endif
