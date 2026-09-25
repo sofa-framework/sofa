@@ -55,7 +55,7 @@ public:
     SOFA_ATTRIBUTE_DEPRECATED__MECHANICALCOMPUTEFORCEVISITOR_CONSTRUCTOR_OVERLOAD()
     MechanicalComputeForceVisitor(const sofa::core::MechanicalParams* mechaparams,
                                   sofa::core::MultiVecDerivId resvecid, bool bAccumulate = true )
-        : MechanicalComputeForceVisitor(mechaparams, resvecid, mparams->x(), mparams->v(), bAccumulate)
+        : MechanicalComputeForceVisitor(mechaparams, resvecid, mechaparams->x(), mechaparams->v(), bAccumulate)
     {}
 
     Result fwdMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
