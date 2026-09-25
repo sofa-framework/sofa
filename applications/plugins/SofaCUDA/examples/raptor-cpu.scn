@@ -6,7 +6,7 @@
     <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/>
     <RequiredPlugin name="Sofa.Component.Mass"/>
     <RequiredPlugin name="Sofa.Component.MechanicalLoad"/>
-    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/>
+    <RequiredPlugin name="Sofa.Component.IntegrationScheme.Backward"/>
     <RequiredPlugin name="Sofa.Component.SolidMechanics.FEM.Elastic"/>
     <RequiredPlugin name="Sofa.Component.StateContainer"/>
     <RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/>
