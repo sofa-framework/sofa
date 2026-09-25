@@ -66,7 +66,7 @@ void Visual3DText::doDrawVisual(const core::visual::VisualParams* vparams)
     vparams->drawTool()->draw3DText(pos,scale,d_color.getValue(),d_text.getValue().c_str());
 }
 
-void Visual3DText::drawTransparent(const core::visual::VisualParams* vparams)
+void Visual3DText::doDrawTransparent(const core::visual::VisualParams* vparams)
 {
     if(!vparams->displayFlags().getShowVisualModels()) return;
     const auto stateLifeCycle = vparams->drawTool()->makeStateLifeCycle();

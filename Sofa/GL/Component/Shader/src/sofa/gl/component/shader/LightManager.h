@@ -67,19 +67,20 @@ protected:
     LightManager();
     ~LightManager() override;
 
+    void doInitVisual(const core::visual::VisualParams* vparams) override;
+
+    void doFwdDraw(core::visual::VisualParams*) override;
+    void doBwdDraw(core::visual::VisualParams*) override;
 public:
     void init() override;
     void bwdInit() override;
     void reinit() override;
-    void doInitVisual(const core::visual::VisualParams* vparams) override;
 
     void preDrawScene(core::visual::VisualParams* vp) override;
     bool drawScene(core::visual::VisualParams* vp) override;
     void postDrawScene(core::visual::VisualParams* vp) override;
 
     void draw(const core::visual::VisualParams* vparams) override;
-    void fwdDraw(core::visual::VisualParams*) override;
-    void bwdDraw(core::visual::VisualParams*) override;
 
     ///Register a light into the LightManager
     void putLight(Light::SPtr light);

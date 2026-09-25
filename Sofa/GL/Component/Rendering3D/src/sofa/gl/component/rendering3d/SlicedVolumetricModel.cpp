@@ -148,7 +148,7 @@ void SlicedVolumetricModel::reinit()
     }
 }
 
-void SlicedVolumetricModel::drawTransparent(const core::visual::VisualParams* vparams)
+void SlicedVolumetricModel::doDrawTransparent(const core::visual::VisualParams* vparams)
 {
     if(!vparams->displayFlags().getShowVisualModels()) return;
 
