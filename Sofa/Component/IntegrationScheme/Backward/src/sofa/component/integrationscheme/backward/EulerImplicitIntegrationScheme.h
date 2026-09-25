@@ -107,7 +107,7 @@ class SOFA_COMPONENT_INTEGRATIONSCHEME_BACKWARD_API EulerImplicitIntegrationSche
 public:
     SOFA_CLASS(EulerImplicitIntegrationScheme, sofa::simulation::integrationscheme::VelocityBasedImplicitIntegrationScheme);
 
-   Data<bool> d_trapezoidalScheme; ///< Boolean to use the trapezoidal scheme instead of the implicit Euler scheme and get second order accuracy in time (false by default)
+    core::objectmodel::lifecycle::DeprecatedData d_trapezoidalScheme;
 
 protected:
     EulerImplicitIntegrationScheme();
