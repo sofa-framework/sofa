@@ -257,7 +257,7 @@ jobs:
           echo "VM_PYTHON3_EXECUTABLE=$PIXI_PREFIX/python.exe" >> $GITHUB_ENV
           echo "PIXI_PREFIX=$PIXI_PREFIX" >> $GITHUB_ENV
 
-          . ${CI_DIR}/scripts/setup-test-env.sh ${SOFA_BUILD_DIR} ${SRC_DIR}/scripts default none
+          . ${CI_DIR}/scripts/setup-test-env.sh ${SOFA_BUILD_DIR} ${CI_DIR}/scripts default none
 
 
           echo "BUILD_DIR=$(cd "$SOFA_BUILD_DIR" && pwd -W)" >> $GITHUB_ENV
