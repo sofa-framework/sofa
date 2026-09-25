@@ -22,3 +22,7 @@
 #pragma once
 #include <sofa/type/vector_T.h>
 
+#if !defined(SOFA_TYPE_VECTOR_REAL_CPP)
+extern template class SOFA_TYPE_API sofa::type::vector<float>;
+extern template class SOFA_TYPE_API sofa::type::vector<double>;
+#endif
