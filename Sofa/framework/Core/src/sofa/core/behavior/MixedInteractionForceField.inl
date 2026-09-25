@@ -73,10 +73,14 @@ void MixedInteractionForceField<DataTypes1, DataTypes2>::addDForce(const Mechani
 
 
 template<class DataTypes1, class DataTypes2>
-SReal MixedInteractionForceField<DataTypes1, DataTypes2>::getPotentialEnergy(const MechanicalParams* mparams) const
+SReal MixedInteractionForceField<DataTypes1, DataTypes2>::getPotentialEnergy(const MechanicalParams* mparams, ConstMultiVecCoordId xId) const
 {
     if (this->mstate1 && this->mstate2)
-        return getPotentialEnergy(mparams, *mparams->readX(this->mstate1.get()),*mparams->readX(this->mstate2.get()));
+    {
+        const DataVecCoord1* x1 = xId[this->mstate1.get()].read(); assert(x1);
+        const DataVecCoord2* x2 = xId[this->mstate2.get()].read(); assert(x2);
+        return getPotentialEnergy(mparams, *x1, *x2);
+    }
     else return 0;
 }
 

@@ -49,6 +49,11 @@ bool BaseMass::removeInNode( objectmodel::BaseNode* node )
     return true;
 }
 
+SReal BaseMass::getPotentialEnergy(const MechanicalParams* mparams) const
+{
+    return this->getPotentialEnergy(mparams, mparams->x());
+}
+
 void BaseMass::buildMassMatrix(sofa::core::behavior::MassMatrixAccumulator* matrices)
 {
     static std::set<BaseMass*> hasEmittedWarning;
