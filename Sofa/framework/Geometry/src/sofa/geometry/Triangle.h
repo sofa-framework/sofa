@@ -31,6 +31,7 @@ namespace sofa::geometry
 struct Triangle
 {
     static constexpr sofa::Size NumberOfNodes = 3;
+    static constexpr sofa::Size PolynomialOrder = 1;
     static constexpr ElementType Element_type = ElementType::TRIANGLE;
 
     Triangle() = delete;

@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/fem/config.h>
+#include <sofa/fem/QuadratureRules.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 
 namespace sofa::fem
@@ -29,7 +30,7 @@ namespace sofa::fem
 template <class ElementType, class DataTypes>
 struct FiniteElement;
 
-#define FINITEELEMENT_HEADER(ElType, DataTypes, dimension) \
+#define FINITEELEMENT_HEADER(ElType, DataTypes, dimension, defaultQuadratureDegree) \
     using Coord = sofa::Coord_t<DataTypes>;\
     using Real = sofa::Real_t<DataTypes>;\
     using ElementType = ElType;\
@@ -41,6 +42,15 @@ struct FiniteElement;
     using ShapeFunctionType = std::function<Real(const ReferenceCoord&)>;\
     using QuadraturePoint = ReferenceCoord; \
     using QuadraturePointAndWeight = std::pair<QuadraturePoint, Real>;\
+    using Quadrature = FiniteElementQuadrature<ElType, Real, defaultQuadratureDegree>;\
+    static constexpr sofa::Size InterpolationOrder = Quadrature::InterpolationOrder;\
+    static constexpr sofa::Size MinimumQuadratureDegree = Quadrature::MinimumQuadratureDegree;\
+    static constexpr sofa::Size DefaultQuadratureDegree = Quadrature::DefaultQuadratureDegree;\
+    template <sofa::Size Degree = Quadrature::DefaultQuadratureDegree>\
+    static constexpr auto quadraturePoints()\
+        { return Quadrature::template quadraturePoints<Degree>(); }\
+    static auto quadratureRule(sofa::Size degree)\
+        { return Quadrature::quadratureRule(degree); }\
     using Helper = FiniteElementHelper<ElementType, DataTypes>
 
 

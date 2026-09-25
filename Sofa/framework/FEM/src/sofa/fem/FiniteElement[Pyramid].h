@@ -33,7 +33,7 @@ namespace sofa::fem
 template <class DataTypes>
 struct FiniteElement<sofa::geometry::Pyramid, DataTypes>
 {
-    FINITEELEMENT_HEADER(sofa::geometry::Pyramid, DataTypes, 3);
+    FINITEELEMENT_HEADER(sofa::geometry::Pyramid, DataTypes, 3, 1);
     static_assert(spatial_dimensions == 3, "Pyramids are only defined in 3D");
 
     constexpr static std::array<ReferenceCoord, NumberOfNodesInElement> referenceElementNodes {{
@@ -68,24 +68,6 @@ struct FiniteElement<sofa::geometry::Pyramid, DataTypes>
             { static_cast<Real>(0.125) * (1 + q[1]) * (1 - q[2]),  static_cast<Real>(0.125) * (1 + q[0]) * (1 - q[2]), -static_cast<Real>(0.125) * (1 + q[0]) * (1 + q[1])},
             {-static_cast<Real>(0.125) * (1 + q[1]) * (1 - q[2]),  static_cast<Real>(0.125) * (1 - q[0]) * (1 - q[2]), -static_cast<Real>(0.125) * (1 - q[0]) * (1 + q[1])},
             { 0,                                                 0,                                                 static_cast<Real>(0.5)}
-        };
-    }
-
-    static constexpr auto quadraturePoints()
-    {
-        constexpr Real sqrt3_1 = static_cast<Real>(1) / static_cast<Real>(1.73205080757);
-        constexpr Real one = static_cast<Real>(1);
-
-        // We use the 8 Gauss points of the hexahedron, which exactly integrate the (1-z)^2 Jacobian of the pyramid.
-        return std::array {
-            std::pair{ReferenceCoord{-sqrt3_1, -sqrt3_1, -sqrt3_1}, one},
-            std::pair{ReferenceCoord{ sqrt3_1, -sqrt3_1, -sqrt3_1}, one},
-            std::pair{ReferenceCoord{ sqrt3_1,  sqrt3_1, -sqrt3_1}, one},
-            std::pair{ReferenceCoord{-sqrt3_1,  sqrt3_1, -sqrt3_1}, one},
-            std::pair{ReferenceCoord{-sqrt3_1, -sqrt3_1,  sqrt3_1}, one},
-            std::pair{ReferenceCoord{ sqrt3_1, -sqrt3_1,  sqrt3_1}, one},
-            std::pair{ReferenceCoord{ sqrt3_1,  sqrt3_1,  sqrt3_1}, one},
-            std::pair{ReferenceCoord{-sqrt3_1,  sqrt3_1,  sqrt3_1}, one},
         };
     }
 };
