@@ -69,7 +69,6 @@ public:
 protected:
     virtual void doSetupIntegrationStep(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
 
-    virtual sofa::Size getIntegrationSchemeTimeOrder() const = 0;
     /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ **/
 
     /**   New API methods of AccelerationBasedImplicitIntegrationScheme   **/
