@@ -35,6 +35,78 @@ BaseMass::BaseMass()
 {
 }
 
+void BaseMass::addMDx(const MechanicalParams* mparams, MultiVecDerivId fid, SReal factor)
+{
+    //TODO (SPRINT SED 2025): Component state mechanism
+    doAddMDx(mparams, fid, factor);
+}
+
+void BaseMass::accFromF(const MechanicalParams* mparams, MultiVecDerivId aid)
+{
+    //TODO (SPRINT SED 2025): Component state mechanism
+    doAccFromF(mparams, aid);
+}
+
+void BaseMass::addGravityToV(const MechanicalParams* mparams, MultiVecDerivId vid)
+{
+    //TODO (SPRINT SED 2025): Component state mechanism
+    doAddGravityToV(mparams, vid);
+}
+
+SReal BaseMass::getKineticEnergy(const MechanicalParams* mparams) const
+{
+    //TODO (SPRINT SED 2025): Component state mechanism
+    return doGetKineticEnergy(mparams);
+}
+
+SReal BaseMass::getPotentialEnergy(const MechanicalParams* mparams) const
+{
+    //TODO (SPRINT SED 2025): Component state mechanism
+    return doGetPotentialEnergy(mparams);
+}
+
+type::Vec6 BaseMass::getMomentum(const MechanicalParams* mparams) const
+{
+    //TODO (SPRINT SED 2025): Component state mechanism
+    return doGetMomentum(mparams);
+}
+
+void BaseMass::addMToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+{
+    //TODO (SPRINT SED 2025): Component state mechanism
+    doAddMToMatrix(mparams, matrix);
+}
+
+void BaseMass::buildMassMatrix(sofa::core::behavior::MassMatrixAccumulator* matrices)
+{
+    //TODO (SPRINT SED 2025): Component state mechanism
+    doBuildMassMatrix(matrices);
+}
+
+void BaseMass::initGnuplot(const std::string path)
+{
+    //TODO (SPRINT SED 2025): Component state mechanism
+    doInitGnuplot(path);
+}
+
+void BaseMass::exportGnuplot(const MechanicalParams* mparams, SReal time)
+{
+    //TODO (SPRINT SED 2025): Component state mechanism
+    doExportGnuplot(mparams, time);
+}
+
+SReal BaseMass::getElementMass(sofa::Index index) const
+{
+    //TODO (SPRINT SED 2025): Component state mechanism
+    return doGetElementMass(index);
+}
+
+void BaseMass::getElementMass(sofa::Index index, linearalgebra::BaseMatrix *m) const
+{
+    //TODO (SPRINT SED 2025): Component state mechanism
+    doGetElementMass(index, m);
+}
+
 bool BaseMass::insertInNode( objectmodel::BaseNode* node )
 {
     node->addMass(this);
@@ -49,7 +121,7 @@ bool BaseMass::removeInNode( objectmodel::BaseNode* node )
     return true;
 }
 
-void BaseMass::buildMassMatrix(sofa::core::behavior::MassMatrixAccumulator* matrices)
+void BaseMass::doBuildMassMatrix(sofa::core::behavior::MassMatrixAccumulator* matrices)
 {
     static std::set<BaseMass*> hasEmittedWarning;
     if (hasEmittedWarning.insert(this).second)
