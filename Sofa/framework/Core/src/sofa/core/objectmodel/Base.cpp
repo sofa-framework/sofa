@@ -20,8 +20,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_CORE_OBJECTMODEL_BASE_CPP
-#include <sofa/core/objectmodel/Base.h>
 
+#include <sofa/core/objectmodel/Base.h>
 #include <sofa/type/BoundingBox.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/core/ObjectFactory.h>
@@ -37,10 +37,14 @@ using sofa::helper::logging::Message ;
 #include <sofa/helper/DiffLib.h>
 using sofa::helper::getClosestMatch;
 
+#include <sofa/core/objectmodel/Snapshot.h>
+
 #include <map>
 #include <typeinfo>
 #include <cstring>
 #include <sstream>
+
+
 
 #define ERROR_LOG_SIZE 100
 
@@ -680,7 +684,98 @@ int Base::getInstanciationSourceFilePos() const
     return m_instanciationSourceFilePos;
 }
 
-} // namespace sofa::core::objectmodel
+void Base::saveInternalStateIn(Snapshot::SnapshotObject& snapshot) const
+{
+    SOFA_UNUSED(snapshot);
+}
+
+std::shared_ptr<Snapshot::SnapshotObject>
+Base::createSnapshotObject(const std::shared_ptr<Snapshot::SnapshotObject>& parent) const
+{
+    auto object = std::make_shared<Snapshot::SnapshotObject>();
+    parent->m_objects.push_back(object);
+
+    return object;
+}
+
+std::shared_ptr<Snapshot::SnapshotObject> Base::saveSnapshot(std::shared_ptr<Snapshot::SnapshotObject> object) const
+{
+    auto snapshotObject = createSnapshotObject(object);
+    snapshotObject->m_name = this->getName();
+    snapshotObject->m_className = this->getClassName();
+    snapshotObject->m_pathName = this->getPathName();
+
+    for (const auto& dataFields = this->getDataFields(); const auto& data : dataFields)
+    {
+        Snapshot::DataInfo dataInfo;
+        dataInfo.m_name = data->getName();
+        dataInfo.m_type = data->getValueTypeString();
+        dataInfo.m_value = data->getValueString();
+
+        snapshotObject->m_dataContainer.push_back(dataInfo);
+    }
+
+    for (const auto& links = this->getLinks(); const auto& link : links)
+    {
+        Snapshot::LinkInfo linkInfo;
+        linkInfo.m_name = link->getName();
+        linkInfo.m_type = link->getValueTypeString();
+        linkInfo.m_value = link->getValueString();
+
+        snapshotObject->m_linkContainer.push_back(linkInfo);
+    }
+
+    saveInternalStateIn(*snapshotObject);
+    return snapshotObject;
+}
+
+
+std::shared_ptr<Snapshot::SnapshotObject>
+Base::findSnapshotObject(const std::shared_ptr<Snapshot::SnapshotNode>& parents, const std::string& objectname, const std::string& classname, const std::string& pathname) const
+{
+    for (const auto& p : parents->m_objects)
+    {
+        if (p->m_name == objectname && p->m_className == classname && p->m_pathName == pathname)
+        {
+            return p;
+        }
+    }
+    msg_error() << "SnapshotObject "<< objectname << " not found";
+    auto defaultObject = std::make_shared<Snapshot::SnapshotObject>();
+    defaultObject->m_name = "Unknown object";
+    
+    return defaultObject;
+}
+
+void Base::loadInternalStateFrom(const Snapshot::SnapshotObject& snapshot)
+{
+    SOFA_UNUSED(snapshot);
+
+}
+
+void Base::loadSnapshot(const std::shared_ptr<Snapshot::SnapshotObject>& snapshotObject) const
+{
+    for (const auto& dataInfo : snapshotObject->m_dataContainer)
+    {
+        if (const auto data = this->findData(dataInfo.m_name))
+        {
+            if(data->read(dataInfo.m_value) == 0 )
+                msg_error() << "Failed to read data : " << dataInfo.m_name << " in " << this->getName()  << " from the SnapshotObject " <<
+                    snapshotObject->m_name << " (" <<snapshotObject->m_className<< ") : " << dataInfo.m_value;
+        }
+    }
+
+    for (const auto& linkInfo : snapshotObject->m_linkContainer) {
+        if (const auto link = this->findLink(linkInfo.m_name)) {
+
+            if (link->readFromSnapshot(linkInfo.m_value) == 0 )
+                msg_error() << "Failed to read link :  " << linkInfo.m_name << " in " << this->getName()  << " from the snapshot " <<
+                    snapshotObject->m_name << " (" <<snapshotObject->m_className<< ") : "<< linkInfo.m_value;
+        }
+    }
+}
+
+}// namespace sofa::core::objectmodel
 
 
 namespace sofa::helper::logging

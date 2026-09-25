@@ -2421,5 +2421,10 @@ bool TetrahedronFEMForceField<DataTypes>::isComputeVonMisesStressMethodSet()
     return d_computeVonMisesStress.getValue() == 1 || d_computeVonMisesStress.getValue() == 2;
 }
 
-
+template<class DataTypes>
+void TetrahedronFEMForceField<DataTypes>::loadInternalStateFrom(const core::objectmodel::Snapshot::SnapshotObject &snapshot)
+{
+    SOFA_UNUSED(snapshot);
+    this->reinit();
+}
 } //namespace sofa::component::solidmechanics::fem::elastic

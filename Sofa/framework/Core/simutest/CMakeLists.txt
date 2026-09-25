@@ -10,6 +10,7 @@ set(SOURCE_FILES
     objectmodel/BaseContext_test.cpp
     objectmodel/BaseLink_simutest.cpp
     objectmodel/PathResolver_simutest.cpp
+    objectmodel/Snapshot_test.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})

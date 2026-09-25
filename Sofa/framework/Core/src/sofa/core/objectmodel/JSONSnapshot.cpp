@@ -1,0 +1,364 @@
+/******************************************************************************
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
+#include <sofa/core/objectmodel/JSONSnapshot.h>
+#include <nlohmann/json.hpp>
+#include <fstream>
+#include <string>
+#include <iostream>
+#include <sofa/helper/logging/Messaging.h>
+using sofa::helper::logging::MessageDispatcher ;
+using sofa::helper::logging::Message ;
+
+#define ERROR_LOG_SIZE 100
+
+namespace sofa::core::objectmodel
+{
+
+
+
+void to_json(nlohmann::ordered_json& j, const Snapshot::DataInfo& di )
+{
+    j.clear();
+    j["name"] = di.m_name;
+    j["type"] = di.m_type;
+    j["value"] = di.m_value;
+}
+
+void to_json(nlohmann::ordered_json& j, const Snapshot::LinkInfo& li )
+{
+    j.clear();
+    j["name"]= li.m_name;
+    j["type"]= li.m_type;
+    j["value"]= li.m_value;
+}
+
+
+
+void to_json(nlohmann::ordered_json& j, const Snapshot::SnapshotObject& so )
+{
+    j.clear();
+    j["name"] = so.m_name;
+    j["classname"] = so.m_className;
+    j["pathname"] = so.m_pathName;
+    j["data"] = so.m_dataContainer;
+    j["links"] = so.m_linkContainer;
+    j["slaves"] = nlohmann::json::array();
+    for (const auto& childPtr : so.m_objects)
+    {
+        if(childPtr)
+        {
+            j["slaves"].push_back(*childPtr);
+        }
+        else
+        {
+            j["slaves"].push_back(nullptr);
+        }
+    }
+
+}
+
+
+void to_json(nlohmann::ordered_json& j, const Snapshot::SnapshotNode& sn)
+{
+    j.clear();
+    j["name"] = sn.m_name;
+    j["classname"] = sn.m_className;
+    j["pathname"] = sn.m_pathName;
+    j["data"] = sn.m_dataContainer;
+    j["links"] = sn.m_linkContainer;
+
+    j["components"] = nlohmann::json::array();
+    for (const auto& childPtr : sn.m_objects)
+    {
+        if (childPtr)
+            j["components"].push_back(*childPtr);
+        else
+            j["components"].push_back(nullptr);
+    }
+
+    j["children"] = nlohmann::json::array();
+    for (const auto& childPtr : sn.m_children)
+    {
+        if (childPtr)
+            j["children"].push_back(*childPtr);
+        else
+            j["children"].push_back(nullptr);
+    }
+}
+
+void from_json(const nlohmann::json& j, Snapshot::DataInfo& di)
+{
+    di.m_name = j.value("name", "");
+    di.m_type = j.value("type", "");
+    di.m_value = j.value("value", "");
+}
+
+void from_json(const nlohmann::json& j, Snapshot::LinkInfo& li)
+{
+    li.m_name = j.value("name", "");
+    li.m_type = j.value("type", "");
+    li.m_value = j.value("value", "");
+}
+
+void from_json(const nlohmann::json& j, Snapshot::SnapshotObject& so)
+{
+    so.m_name = j.value("name", "");
+    so.m_className = j.value("classname", "");
+    so.m_pathName = j.value("pathname","");
+
+    if (j.contains("data") && j["data"].is_array())
+    {
+        so.m_dataContainer.clear();
+        for (const auto& dataJson : j["data"])
+        {
+            Snapshot::DataInfo di;
+            from_json(dataJson, di);
+            so.m_dataContainer.push_back(di);
+        }
+    }
+
+    if (j.contains("links") && j["links"].is_array())
+    {
+        so.m_linkContainer.clear();
+        for (const auto& linkJson : j["links"])
+        {
+            Snapshot::LinkInfo li;
+            from_json(linkJson, li);
+            so.m_linkContainer.push_back(li);
+        }
+    }
+
+    so.m_objects.clear();
+    if (j.contains("slaves") && j["slaves"].is_array())
+    {
+        for (const auto& childJson : j["slaves"])
+        {
+            if (!childJson.is_null())
+            {
+                auto child = std::make_shared<Snapshot::SnapshotNode>();
+                from_json(childJson, *child);
+                so.m_objects.push_back(child);
+            }
+        }
+    }
+}
+
+void from_json(const nlohmann::json& j, Snapshot::SnapshotNode& sn)
+{
+    sn.m_name = j.value("name", "");
+    sn.m_className = j.value("classname", "");
+    sn.m_pathName = j.value("pathname","");
+
+    if (j.contains("data") && j["data"].is_array())
+    {
+        sn.m_dataContainer.clear();
+        for (const auto& dataJson : j["data"])
+        {
+            Snapshot::DataInfo di;
+            from_json(dataJson, di);
+            sn.m_dataContainer.push_back(di);
+        }
+    }
+
+    if (j.contains("links") && j["links"].is_array())
+    {
+        sn.m_linkContainer.clear();
+        for (const auto& linkJson : j["links"])
+        {
+            Snapshot::LinkInfo li;
+            from_json(linkJson, li);
+            sn.m_linkContainer.push_back(li);
+        }
+    }
+
+    sn.m_objects.clear();
+    if (j.contains("components") && j["components"].is_array())
+    {
+        for (const auto& childJson : j["components"])
+        {
+            if (!childJson.is_null())
+            {
+                auto child = std::make_shared<Snapshot::SnapshotObject>();
+                from_json(childJson, *child);
+                sn.m_objects.push_back(child);
+            }
+        }
+    }
+
+    sn.m_children.clear();
+    if (j.contains("children") && j["children"].is_array())
+    {
+        for (const auto& childJson : j["children"])
+        {
+            if (!childJson.is_null())
+            {
+                auto child = std::make_shared<Snapshot::SnapshotNode>();
+                from_json(childJson, *child);
+                sn.m_children.push_back(child);
+            }
+        }
+    }
+}
+
+namespace jsonsnapshot {
+void exportToJSON(const Snapshot &snapshot, const std::string &filename)
+{
+    nlohmann::ordered_json j = *snapshot.m_graphRoot;
+
+    std::ofstream file(filename);
+    file << j.dump(5);
+    file.close();
+}
+
+void importFromJSON(Snapshot &snapshot, const std::string &filename)
+{
+    std::ifstream file(filename);
+    if (!file.is_open())
+    {
+        msg_error("JSONSnapshot") << "ERROR: Cannot open file " << filename << " for reading";
+        return;
+    }
+
+    nlohmann::json jsonRoot;
+    file >> jsonRoot;
+    file.close();
+
+    if (!snapshot.m_graphRoot)
+    {
+        snapshot.m_graphRoot = std::make_shared<Snapshot::SnapshotNode>();
+    }
+
+    if (jsonRoot.is_object() && !jsonRoot.empty())
+    {
+        from_json(jsonRoot, *snapshot.m_graphRoot);
+    }
+    else
+    {
+        msg_error("JSONSnapshot") << "Invalid JSON format in " << filename;
+        return;
+    }
+
+    msg_info("JSONSnapshot") << "JSON imported successfully from: " << filename;
+}
+
+std::string fileToString(const std::string &filename)
+{
+    std::ifstream file(filename);
+    if (!file.is_open())
+    {
+        msg_error("JSONSnapshot") << "Cannot open file " << filename << " for reading";
+        return "";
+    }
+
+    nlohmann::json jsonRoot;
+    file >> jsonRoot;
+    file.close();
+    return to_string(jsonRoot);
+}
+
+std::string snapshotToString(const Snapshot &snapshot)
+{
+    nlohmann::ordered_json j = *snapshot.m_graphRoot;
+    return to_string(j);
+}
+
+void exportToJSON(const std::map<std::string, std::shared_ptr<Snapshot> > &snapshots, const std::string &filename)
+{
+    std::ofstream file(filename);
+
+    nlohmann::ordered_json j_all = nlohmann::json::array();
+
+    for (const auto &snapshotJson: snapshots)
+    {
+        j_all.push_back(*snapshotJson.second->m_graphRoot);
+    }
+    file << j_all.dump(5);
+    file.close();
+}
+
+void importFromJSON(std::map<std::string, std::shared_ptr<Snapshot> > &snapshots, const std::string &filename)
+{
+    std::ifstream file(filename);
+
+    if (!file.is_open())
+    {
+        msg_error("JSONSnapshot") << "Cannot open file " << filename << " for reading";
+        return;
+    }
+
+    nlohmann::json j_all = nlohmann::json::array();
+    file >> j_all;
+    file.close();
+
+    snapshots.clear();
+
+    int index = 0;
+
+    for (const auto &snapshotJson: j_all)
+    {
+        auto snapshot = std::make_shared<Snapshot>();
+
+        from_json(snapshotJson, *snapshot->m_graphRoot);
+
+        std::string id;
+
+        if (snapshot->m_graphRoot)
+           id = snapshot->m_graphRoot->m_name;
+
+        if (id.empty())
+            id = "snapshot_" + std::to_string(index++);
+        snapshot->m_graphRoot->m_name = id;
+        snapshots[id] = snapshot;
+    }
+}
+
+void doLoadSet(const std::string &filename,std::map<std::shared_ptr<sofa::core::objectmodel::Snapshot>, double> &snapshots)
+{
+    std::ifstream file(filename);
+
+    if (!file.is_open())
+    {
+        msg_error("JSONSnapshot") << "Cannot open file " << filename << " for reading";
+        return;
+    }
+
+    nlohmann::json jSnapshot;
+
+    file >> jSnapshot;
+    file.close();
+
+    for (const auto &snapshotJson: jSnapshot)
+    {
+        auto snapshot = std::make_shared<sofa::core::objectmodel::Snapshot>();
+        snapshot->m_graphRoot = std::make_shared<sofa::core::objectmodel::Snapshot::SnapshotNode>();
+        sofa::core::objectmodel::from_json(snapshotJson, *snapshot->m_graphRoot);
+        std::string snapshotTime = "0";
+        for (const auto &data: snapshot->m_graphRoot->m_dataContainer)
+        {
+            if (data.m_name == "time")
+                snapshotTime = data.m_value;
+        }
+        snapshots.insert({snapshot, std::stod(snapshotTime)});
+    }
+}
+}
+} // namespace sofa::core::objectmodel
