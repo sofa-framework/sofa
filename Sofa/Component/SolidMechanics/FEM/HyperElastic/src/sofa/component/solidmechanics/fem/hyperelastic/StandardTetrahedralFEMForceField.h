@@ -111,9 +111,39 @@ public :
       float tetraEdges[6]{};
 
       /// Output stream
-      inline friend std::ostream& operator<< ( std::ostream& os, const TetrahedronRestInformation& /*eri*/ ) {  return os;  }
+      inline friend std::ostream& operator<< ( std::ostream& os, const TetrahedronRestInformation& eri )
+      {
+          os << eri.restVolume << " ";
+          os << eri.volScale << " ";
+          for (int i = 0; i < 4; ++i)
+              os << eri.shapeVector[i] << " ";
+          os << eri.fiberDirection << " ";
+          for (int i = 0; i < 4; ++i)
+              os << eri.dJ[i] << " ";
+          for (int i = 0; i < 4; ++i)
+              os << eri.tetraIndices[i] << " ";
+          for (int i = 0; i < 6; ++i)
+              os << eri.tetraEdges[i] << " ";
+          os << eri.strainEnergy;
+          return os;
+      }
       /// Input stream
-      inline friend std::istream& operator>> ( std::istream& in, TetrahedronRestInformation& /*eri*/ ) { return in; }
+      inline friend std::istream& operator>> ( std::istream& in, TetrahedronRestInformation& eri )
+      {
+          in >> eri.restVolume;
+          in >> eri.volScale;
+          for (int i = 0; i < 4; ++i)
+              in >> eri.shapeVector[i];
+          in >> eri.fiberDirection;
+          for (int i = 0; i < 4; ++i)
+              in >> eri.dJ[i];
+          for (int i = 0; i < 4; ++i)
+              in >> eri.tetraIndices[i];
+          for (int i = 0; i < 6; ++i)
+              in >> eri.tetraEdges[i];
+          in >> eri.strainEnergy;
+          return in;
+      }
 
       TetrahedronRestInformation() : restVolume(0), volScale(0), fiberDirection(), strainEnergy(0) {}
 
@@ -130,9 +160,21 @@ public :
        float vertices[2];
 
 	   /// Output stream
-	   inline friend std::ostream& operator<< ( std::ostream& os, const EdgeInformation& /*eri*/ ) {  return os;  }
+	   inline friend std::ostream& operator<< ( std::ostream& os, const EdgeInformation& eri )
+	   {
+	       for (int i = 0; i < 2; ++i)
+	           os << eri.vertices[i] << " ";
+	       os << eri.DfDx;
+	       return os;
+	   }
 	   /// Input stream
-	   inline friend std::istream& operator>> ( std::istream& in, EdgeInformation& /*eri*/ ) { return in; }
+	   inline friend std::istream& operator>> ( std::istream& in, EdgeInformation& eri )
+	   {
+	       for (int i = 0; i < 2; ++i)
+	           in >> eri.vertices[i];
+	       in >> eri.DfDx;
+	       return in;
+	   }
 
      EdgeInformation(): DfDx() { vertices[0]=0.f; vertices[1]=0.f; }
    };
