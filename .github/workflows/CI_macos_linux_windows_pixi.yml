@@ -55,10 +55,6 @@ on:
         default: 'NONE'
         description: 'Json scructure with three parameters {"COMMIT_HASH":"fullhsashofthecommit", }'
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
   display-inputs:
     runs-on: ubuntu-latest
@@ -103,6 +99,7 @@ jobs:
       - run: git config --global user.name "SOFA Bot"
 
       - name: Setup SOFA and clone CI
+        id: clone
         shell: bash -el {0}
         run: |
           export WORKSPACE=$GITHUB_WORKSPACE
@@ -288,7 +285,7 @@ jobs:
 
       - name: Unit tests
         id: unit-tests-step
-        if: always() && ${{ runner.os == 'Windows' }} && steps.build-step.outcome == 'success' && inputs.generate-binaries == false
+        if: always() && runner.os == 'Windows' && steps.build-step.outcome == 'success' && inputs.generate-binaries == false
         shell: cmd
         run: |
           cd /d "%SRC_DIR%"
@@ -311,7 +308,7 @@ jobs:
 
       - name: Scene tests
         id: scene-tests-step
-        if: always() && ${{ runner.os == 'Windows' }} && steps.build-step.outcome == 'success' && inputs.generate-binaries == false && inputs.with-all-tests == true
+        if: always() && runner.os == 'Windows' && steps.build-step.outcome == 'success' && inputs.generate-binaries == false && inputs.with-all-tests == true
         shell: cmd
         run: |
           cd /d "%SRC_DIR%"
@@ -334,7 +331,7 @@ jobs:
 
       - name: Regression tests
         id: regression-tests-step
-        if: always() && ${{ runner.os == 'Windows' }} && steps.build-step.outcome == 'success' && inputs.generate-binaries == false && inputs.with-all-tests == true
+        if: always() && runner.os == 'Windows' && steps.build-step.outcome == 'success' && inputs.generate-binaries == false && inputs.with-all-tests == true
         shell: cmd
         run: |
           cd /d "%SRC_DIR%"
@@ -356,7 +353,7 @@ jobs:
 
 
       - name: Publish artifacts
-        if: steps.build-step.outcome == 'success' && inputs.generate-binaries == true
+        if: always() && steps.build-step.outcome == 'success' && inputs.generate-binaries == true
         uses: actions/upload-artifact@v4
         with:
           name: binaries_${{ matrix.os }}
@@ -366,7 +363,7 @@ jobs:
 
       - name: Publish tests logs
         id: publish-tests-logs
-        if: always() && ${{ runner.os == 'Windows' }}
+        if: always() && runner.os == 'Windows'
         uses: actions/upload-artifact@v4
         with:
           name: tests-logs_${{ matrix.os }}
@@ -375,20 +372,20 @@ jobs:
 
 
       - name: Configure python for display
-        if: always() && ${{ runner.os == 'Windows' }}
+        if: always() && runner.os == 'Windows'
         shell: bash
         run: |
           python3 -m pip install prettytable
 
       - name: Summarize results
-        if: always() && ${{ runner.os == 'Windows' }}
+        if: always() && runner.os == 'Windows'
         shell: bash
         run: |
 
           bold="\033[1m"
           normal="\033[0m"
-          if [[ "${{ steps.configure.outcome }}" == "failure" || "${{ steps.clone.outcome }}" == "failure" ]]; then
-            echo "❌ Something whent wrong during the configure or clone steps..."
+          if [[ "${{ steps.clone.outcome }}" == "failure" ]]; then
+            echo "❌ Something whent wrong during the clone steps..."
             echo -e "${bold}Please check those actions logs${normal}"
             exit 1
           else
@@ -397,7 +394,7 @@ jobs:
 
           if [[ "${{ steps.build-step.outcome }}" == "failure" ]]; then
             echo "❌ Build step failed"
-            echo -e "${bold}You can download all logs here : ${{ steps.publish-build-logs.outputs.artifact-url }}${normal}"
+            echo -e "${bold}Please check those actions logs${normal}"
             exit 1
           else
             echo "✅ Build OK."
