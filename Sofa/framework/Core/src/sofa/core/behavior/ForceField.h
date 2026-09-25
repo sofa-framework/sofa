@@ -119,7 +119,7 @@ public:
     SReal getPotentialEnergy(const MechanicalParams* mparams, ConstMultiVecCoordId xId) const override;
 
     virtual SReal getPotentialEnergy(const MechanicalParams* /*mparams*/, const DataVecCoord& x) const = 0;
-
+    using BaseForceField::getPotentialEnergy;
 
     /// @}
 

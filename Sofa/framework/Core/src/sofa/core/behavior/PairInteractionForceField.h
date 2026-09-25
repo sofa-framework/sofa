@@ -139,6 +139,7 @@ public:
     /// the internal getPotentialEnergy(const VecCoord&,const VecCoord&) method implemented by
     /// the component.
     SReal getPotentialEnergy(const MechanicalParams* mparams, ConstMultiVecCoordId xId) const override;
+    using BaseForceField::getPotentialEnergy;
 
     /// Get the potential energy associated to this ForceField.
     ///
