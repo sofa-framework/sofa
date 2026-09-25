@@ -39,15 +39,17 @@ public:
 
     using core::behavior::BaseOrderingMethod::SparseMatrixPattern;
 
-    void computePermutation(
+protected:
+    void doComputePermutation(
         const SparseMatrixPattern& inPattern,
         int* outPermutation,
         int* outInversePermutation) override;
 };
 
 template <class EigenOrderingMethodType>
-void BaseEigenOrderingMethod<EigenOrderingMethodType>::computePermutation(
-    const SparseMatrixPattern& inPattern, int* outPermutation,
+void BaseEigenOrderingMethod<EigenOrderingMethodType>::doComputePermutation(
+    const SparseMatrixPattern& inPattern, 
+    int* outPermutation,
     int* outInversePermutation)
 {
     EigenOrderingMethodType ordering;
