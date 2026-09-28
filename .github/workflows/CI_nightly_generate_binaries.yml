@@ -10,9 +10,9 @@ on:
     - cron: '0 2 * * *'   # Evevery night
   # On every push too so the available binaries are always recent
   push:
-    branches:
-      - master
-  workflow_dispatch:
+  #   branches:
+  #     - master
+  # workflow_dispatch:
 
 # ===============================================================
 # ===============================================================
