@@ -69,7 +69,7 @@ public:
     virtual void addMDx(const MechanicalParams* mparams, DataVecDeriv& f, const DataVecDeriv& dx, SReal factor);
 
     SOFA_CORE_DEPRECATED_ACCFROMF()
-    virtual void solveLinearSystem(const MechanicalParams* mparams, DataVecDeriv& a, const DataVecDeriv& f);
+    virtual void accFromF(const MechanicalParams* mparams, DataVecDeriv& a, const DataVecDeriv& f);
 
     void solveLinearSystem(const MechanicalParams* mparams, MultiVecDerivId xId, ConstMultiVecDerivId bId) override;
     virtual void solveLinearSystem(const MechanicalParams* mparams, DataVecDeriv& x, const DataVecDeriv& b);

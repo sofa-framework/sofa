@@ -227,7 +227,7 @@ struct Mass_test : public sofa::testing::BaseSimulationTest, public sofa::testin
             checkKineticEnergy(v, n, mparams, Mv);
         }
 
-        // 2. Test accFromF: a = M^-1 * f
+        // 2. Test solveLinearSystem: a = M^-1 * f
         // a = M^-1 * (M * v) should be v
         if (m_testSolveLinearSystem)
         {
