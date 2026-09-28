@@ -292,7 +292,12 @@ jobs:
 
           set "UNIT_RESULTS_DIR=%BUILD_DIR%\tests_results\unit"
 
-          pixi run -e ${{ inputs.preset }} python %CI_DIR%\scripts\tests\sofa_unit_tests.py --build-dir "%BUILD_DIR%" --results-dir "%UNIT_RESULTS_DIR%" -j %VM_MAX_PARALLEL_TESTS%
+          REM Activate the environment in the terminal
+          pixi shell-hook --shell cmd -e ${{ inputs.preset }} > "%TEMP%\pixi_hook.bat"
+          call "%TEMP%\pixi_hook.bat"
+          del "%TEMP%\pixi_hook.bat"
+
+          python %CI_DIR%\scripts\tests\sofa_unit_tests.py --build-dir "%BUILD_DIR%" --results-dir "%UNIT_RESULTS_DIR%" -j %VM_MAX_PARALLEL_TESTS%
 
           if not exist "%UNIT_RESULTS_DIR%\*summary*" exit /b 1
 
@@ -315,7 +320,12 @@ jobs:
 
           set "SCENE_RESULTS_DIR=%BUILD_DIR%\tests_results\scene"
 
-          pixi run -e ${{ inputs.preset }} python %CI_DIR%\scripts\tests\sofa_scene_tests.py --src-dir "%SRC_DIR%" --build-dir "%BUILD_DIR%" --results-dir "%SCENE_RESULTS_DIR%" -j %VM_MAX_PARALLEL_TESTS%
+          REM Activate the environment in the terminal
+          pixi shell-hook --shell cmd -e ${{ inputs.preset }} > "%TEMP%\pixi_hook.bat"
+          call "%TEMP%\pixi_hook.bat"
+          del "%TEMP%\pixi_hook.bat"
+
+          python %CI_DIR%\scripts\tests\sofa_scene_tests.py --src-dir "%SRC_DIR%" --build-dir "%BUILD_DIR%" --results-dir "%SCENE_RESULTS_DIR%" -j %VM_MAX_PARALLEL_TESTS%
 
           if not exist "%SCENE_RESULTS_DIR%\*summary*" exit /b 1
 
@@ -338,7 +348,13 @@ jobs:
 
           set "REG_RESULTS_DIR=%BUILD_DIR%\tests_results\regression"
 
-          pixi run -e ${{ inputs.preset }} python %REGRESSION_DIR%\SofaRegressionProgram\SofaRegressionProgram.py --input "%SRC_DIR%/examples" --input "%SRC_DIR%\applications"  --input "%BUILD_DIR%\external_directories\fetched" --output-logs-errors "%REG_RESULTS_DIR%" --legacy-regression  -j %VM_MAX_PARALLEL_TESTS%
+          REM Activate the environment in the terminal
+          pixi shell-hook --shell cmd -e ${{ inputs.preset }} > "%TEMP%\pixi_hook.bat"
+          call "%TEMP%\pixi_hook.bat"
+          del "%TEMP%\pixi_hook.bat"
+
+
+          python %REGRESSION_DIR%\SofaRegressionProgram\SofaRegressionProgram.py --input "%SRC_DIR%/examples" --input "%SRC_DIR%\applications"  --input "%BUILD_DIR%\external_directories\fetched" --output-logs-errors "%REG_RESULTS_DIR%" --legacy-regression  -j %VM_MAX_PARALLEL_TESTS%
           if not exist "%REG_RESULTS_DIR%\*summary*" exit /b 1
 
           set "CRASHES="
