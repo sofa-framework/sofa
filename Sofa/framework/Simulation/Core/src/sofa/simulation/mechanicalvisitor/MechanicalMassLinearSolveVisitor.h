@@ -32,10 +32,10 @@ class SOFA_SIMULATION_CORE_API MechanicalMassLinearSolveVisitor : public Mechani
 {
 public:
     sofa::core::MultiVecDerivId x;
-    sofa::core::MultiVecDerivId b;
+    sofa::core::ConstMultiVecDerivId b;
 
     MechanicalMassLinearSolveVisitor(const sofa::core::MechanicalParams* mechaparams,
-        sofa::core::MultiVecDerivId xVecId, sofa::core::MultiVecDerivId bVecId)
+        sofa::core::MultiVecDerivId xVecId, sofa::core::ConstMultiVecDerivId bVecId)
             : MechanicalVisitor(mechaparams), x(xVecId), b(bVecId)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
