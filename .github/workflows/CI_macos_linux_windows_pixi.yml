@@ -260,6 +260,12 @@ jobs:
         if: always() && ${{ runner.os == 'Windows' }}
         run: |
           cd ${SRC_DIR}
+
+          echo "Adding runtime related dependencies"
+          pixi add $(cat ${CI_DIR}/docker/python_extra_dependencies.txt)
+          pixi install -e ${{ inputs.preset }}
+
+          echo "Refactoring environement variables to jump into powershell"
           PIXI_PREFIX="$(pwd -W)/.pixi/envs/${{ inputs.preset }}/"
           echo "VM_PYTHON3_EXECUTABLE=$PIXI_PREFIX/python.exe" >> $GITHUB_ENV
           echo "PIXI_PREFIX=$PIXI_PREFIX" >> $GITHUB_ENV
@@ -296,86 +302,105 @@ jobs:
       - name: Unit tests
         id: unit-tests-step
         if: always() && runner.os == 'Windows' && steps.build-step.outcome == 'success' && inputs.generate-binaries == false
-        shell: cmd
+        shell: pwsh
         run: |
-          cd /d "%SRC_DIR%"
+          Set-Location $env:SRC_DIR
 
-          set "UNIT_RESULTS_DIR=%BUILD_DIR%\tests_results\unit"
+          $UnitResultsDir = Join-Path $env:BUILD_DIR "tests_results\unit"
+          $env:UNIT_RESULTS_DIR = $UnitResultsDir   # in case the script or child processes need it
 
-          REM Activate the environment in the terminal
-          pixi shell-hook --shell cmd -e ${{ inputs.preset }} > "%TEMP%\pixi_hook.bat"
-          call "%TEMP%\pixi_hook.bat"
-          del "%TEMP%\pixi_hook.bat"
+          # Activate the environment in the terminal
+          pixi shell-hook --shell powershell -e ${{ inputs.preset }} | Out-String | Invoke-Expression
 
-          python %CI_DIR%\scripts\tests\sofa_unit_tests.py --build-dir "%BUILD_DIR%" --results-dir "%UNIT_RESULTS_DIR%" -j %VM_MAX_PARALLEL_TESTS%
+          python "$env:CI_DIR\scripts\tests\sofa_unit_tests.py" `
+            --build-dir "$env:BUILD_DIR" `
+            --results-dir "$UnitResultsDir" `
+            -j $env:VM_MAX_PARALLEL_TESTS
 
-          if not exist "%UNIT_RESULTS_DIR%\*summary*" exit /b 1
+          if (-not (Test-Path "$UnitResultsDir\*summary*")) { exit 1 }
 
-          set "CRASHES="
-          set "FAILURES="
-          for /f "usebackq tokens=1,2 delims==" %%a in ("%UNIT_RESULTS_DIR%\summary.txt") do (
-            if "%%a"=="crashes" set "CRASHES=%%b"
-            if "%%a"=="failures" set "FAILURES=%%b"
-          )
+          $crashes  = $null
+          $failures = $null
+          foreach ($line in Get-Content "$UnitResultsDir\summary.txt") {
+            $key, $value = $line -split '=', 2
+            switch ($key) {
+              'crashes'  { $crashes  = $value }
+              'failures' { $failures = $value }
+            }
+          }
 
-          if not "%CRASHES%"=="0" exit /b 1
-          if not "%FAILURES%"=="0" exit /b 1
+          if ($crashes  -ne '0') { exit 1 }
+          if ($failures -ne '0') { exit 1 }
 
       - name: Scene tests
         id: scene-tests-step
         if: always() && runner.os == 'Windows' && steps.build-step.outcome == 'success' && inputs.generate-binaries == false && inputs.with-all-tests == true
-        shell: cmd
+        shell: pwsh
         run: |
-          cd /d "%SRC_DIR%"
+          Set-Location $env:SRC_DIR
 
-          set "SCENE_RESULTS_DIR=%BUILD_DIR%\tests_results\scene"
+          $SceneResultsDir = Join-Path $env:BUILD_DIR "tests_results\scene"
+          $env:SCENE_RESULTS_DIR = $SceneResultsDir   # in case the script or child processes need it
 
-          REM Activate the environment in the terminal
-          pixi shell-hook --shell cmd -e ${{ inputs.preset }} > "%TEMP%\pixi_hook.bat"
-          call "%TEMP%\pixi_hook.bat"
-          del "%TEMP%\pixi_hook.bat"
+          # Activate the environment in the terminal
+          pixi shell-hook --shell powershell -e ${{ inputs.preset }} | Out-String | Invoke-Expression
 
-          python %CI_DIR%\scripts\tests\sofa_scene_tests.py --src-dir "%SRC_DIR%" --build-dir "%BUILD_DIR%" --results-dir "%SCENE_RESULTS_DIR%" -j %VM_MAX_PARALLEL_TESTS%
+          python "$env:CI_DIR\scripts\tests\sofa_scene_tests.py" `
+            --src-dir "$env:SRC_DIR" `
+            --build-dir "$env:BUILD_DIR" `
+            --results-dir "$SceneResultsDir" `
+            -j $env:VM_MAX_PARALLEL_TESTS
 
-          if not exist "%SCENE_RESULTS_DIR%\*summary*" exit /b 1
+          if (-not (Test-Path "$SceneResultsDir\*summary*")) { exit 1 }
 
-          set "CRASHES="
-          set "FAILURES="
-          for /f "usebackq tokens=1,2 delims==" %%a in ("%SCENE_RESULTS_DIR%\summary.txt") do (
-            if "%%a"=="crashes" set "CRASHES=%%b"
-            if "%%a"=="failures" set "FAILURES=%%b"
-          )
+          $crashes  = $null
+          $failures = $null
+          foreach ($line in Get-Content "$SceneResultsDir\summary.txt") {
+            $key, $value = $line -split '=', 2
+            switch ($key) {
+              'crashes'  { $crashes  = $value }
+              'failures' { $failures = $value }
+            }
+          }
 
-          if not "%CRASHES%"=="0" exit /b 1
-          if not "%FAILURES%"=="0" exit /b 1
+          if ($crashes  -ne '0') { exit 1 }
+          if ($failures -ne '0') { exit 1 }
 
       - name: Regression tests
         id: regression-tests-step
         if: always() && runner.os == 'Windows' && steps.build-step.outcome == 'success' && inputs.generate-binaries == false && inputs.with-all-tests == true
-        shell: cmd
+        shell: pwsh
         run: |
-          cd /d "%SRC_DIR%"
+          Set-Location $env:SRC_DIR
 
-          set "REG_RESULTS_DIR=%BUILD_DIR%\tests_results\regression"
+          $RegResultsDir = Join-Path $env:BUILD_DIR "tests_results\regression"
+          $env:REG_RESULTS_DIR = $RegResultsDir   # in case the script or child processes need it
 
-          REM Activate the environment in the terminal
-          pixi shell-hook --shell cmd -e ${{ inputs.preset }} > "%TEMP%\pixi_hook.bat"
-          call "%TEMP%\pixi_hook.bat"
-          del "%TEMP%\pixi_hook.bat"
+          # Activate the environment in the terminal
+          pixi shell-hook --shell powershell -e ${{ inputs.preset }} | Out-String | Invoke-Expression
 
+          python "$env:REGRESSION_DIR\SofaRegressionProgram\SofaRegressionProgram.py" `
+            --input "$env:SRC_DIR/examples" `
+            --input "$env:SRC_DIR\applications" `
+            --input "$env:BUILD_DIR\external_directories\fetched" `
+            --output-logs-errors "$RegResultsDir" `
+            --legacy-regression `
+            -j $env:VM_MAX_PARALLEL_TESTS
 
-          python %REGRESSION_DIR%\SofaRegressionProgram\SofaRegressionProgram.py --input "%SRC_DIR%/examples" --input "%SRC_DIR%\applications"  --input "%BUILD_DIR%\external_directories\fetched" --output-logs-errors "%REG_RESULTS_DIR%" --legacy-regression  -j %VM_MAX_PARALLEL_TESTS%
-          if not exist "%REG_RESULTS_DIR%\*summary*" exit /b 1
+          if (-not (Test-Path "$RegResultsDir\*summary*")) { exit 1 }
 
-          set "CRASHES="
-          set "FAILURES="
-          for /f "usebackq tokens=1,2 delims==" %%a in ("%REG_RESULTS_DIR%\summary.txt") do (
-            if "%%a"=="crashes" set "CRASHES=%%b"
-            if "%%a"=="failures" set "FAILURES=%%b"
-          )
+          $crashes  = $null
+          $failures = $null
+          foreach ($line in Get-Content "$RegResultsDir\summary.txt") {
+            $key, $value = $line -split '=', 2
+            switch ($key) {
+              'crashes'  { $crashes  = $value }
+              'failures' { $failures = $value }
+            }
+          }
 
-          if not "%CRASHES%"=="0" exit /b 1
-          if not "%FAILURES%"=="0" exit /b 1
+          if ($crashes  -ne '0') { exit 1 }
+          if ($failures -ne '0') { exit 1 }
 
 
       - name: Publish artifacts
