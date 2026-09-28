@@ -134,17 +134,27 @@ jobs:
           cd $WORKSPACE
 
           ## Clone CI and use ci-depends-on structure
-          ci_branch=${{ inputs.sofa-branch-name }}
-          ci_repo_url="https://www.github.com/sofa-framework/ci"
+          echo "\033[33mWARNING, the ci repository is currently forced on bakpaul:26_09_final_jenkins_2_github_migration, delete the lines marked as \"TO DELETE\" and uncomment the ones marked as \"TO UNCOMMENT\" to go back into a normal behavior.\033[0m"
+
+          ### TO DELETE ###
+          ci_branch=26_09_final_jenkins_2_github_migration
+          ci_repo_url="https://www.github.com/bakpaul/ci"
+          ### TO DELETE ###
+
+          ### TO UNCOMMENT ###
+          #ci_branch=${{ inputs.sofa-branch-name }}
+          #ci_repo_url="https://www.github.com/sofa-framework/ci"
 
 
-          # check if ci has a ci-depends-on
-          ci_ci_depends_on=$(echo "${{ inputs.ci-depends-on }}" | jq .ci)
-          if [ -n "${{ inputs.ci-depends-on }}" ] && [ "$ci_ci_depends_on" != "null" ]; then
-              echo "ci-depends-on for ci repository detected."
-              ci_repo_url=$(echo "${{ inputs.ci-depends-on }}" | jq .ci.repo_url)
-              ci_branch=$(echo "${{ inputs.ci-depends-on }}" | jq .ci.branch_name)
-          fi
+          ## check if ci has a ci-depends-on
+          #ci_ci_depends_on=$(echo "${{ inputs.ci-depends-on }}" | jq .ci)
+          #if [ -n "${{ inputs.ci-depends-on }}" ] && [ "$ci_ci_depends_on" != "null" ]; then
+          #    echo "ci-depends-on for ci repository detected."
+          #    ci_repo_url=$(echo "${{ inputs.ci-depends-on }}" | jq .ci.repo_url)
+          #    ci_branch=$(echo "${{ inputs.ci-depends-on }}" | jq .ci.branch_name)
+          #fi
+          ### TO UNCOMMENT ###
+
           echo "CI_BRANCH=$ci_branch" >> $GITHUB_ENV
 
 
