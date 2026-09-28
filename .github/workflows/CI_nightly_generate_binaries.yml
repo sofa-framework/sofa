@@ -70,7 +70,7 @@ jobs:
   build-on:
     needs: nightly_build
     if: ${{ github.repository_owner == 'sofa-framework' }}
-    uses: sofa-framework/sofa/.github/workflows/CI_build-and-test.yml@master
+    uses: sofa-framework/sofa/.github/workflows/CI_build_and_test.yml@master
     with:
       sofa-branch-name: ${{ needs.nightly_build.outputs.SOFA_BRANCH_NAME }}
       sofa-commit-sha: ${{ needs.nightly_build.outputs.SOFA_COMMIT_SHA }}
