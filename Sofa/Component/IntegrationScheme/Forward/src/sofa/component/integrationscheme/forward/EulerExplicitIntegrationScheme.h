@@ -129,9 +129,6 @@ protected:
     void solveSystem(core::MultiVecDerivId solution, core::MultiVecDerivId rhs) const;
 
     bool isMassMatrixTriviallyInvertible(const core::ExecParams* params) const;
-
-
-    simulation::MappingGraph m_mappingGraph;
 };
 
 } // namespace sofa::component::integrationscheme::forward

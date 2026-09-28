@@ -57,6 +57,7 @@ public:
 protected:
     std::shared_ptr<sofa::simulation::common::VectorOperations > m_vop;
     std::unique_ptr<sofa::simulation::common::MappingGraphMechanicalOperations> m_mop;
+    sofa::simulation::MappingGraph m_mappingGraph;
 
     virtual void doIntegrate(const core::ExecParams* params, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) = 0 ;
 

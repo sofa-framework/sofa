@@ -65,9 +65,6 @@ void EulerExplicitIntegrationScheme::doIntegrate(const core::ExecParams* params,
 
     SCOPED_TIMER("EulerExplicitSolve");
 
-    m_mappingGraph.build(this->getContext());
-
-
     // Let the mechanical operations know that the current IntegrationScheme is explicit. This will be propagated back to the
     // force fields during the addForce and addKToMatrix phase. Force fields use this information to avoid
     // recomputing constant data in case of explicit IntegrationScheme.
@@ -248,7 +245,7 @@ void EulerExplicitIntegrationScheme::computeForce(sofa::simulation::common::Mapp
     // 1. Clear the force vector (F := 0)
     // 2. Go down in the current context tree calling addForce on every forcefields
     // 3. Go up from the current context tree leaves calling applyJT on every mechanical mappings
-    mop->computeForce(m_mappingGraph, f, true, true, nullptr);
+    mop->computeForce(this->m_mappingGraph, f, true, true, nullptr);
 }
 
 void EulerExplicitIntegrationScheme::computeAcceleration(sofa::simulation::common::MappingGraphMechanicalOperations* mop, core::MultiVecDerivId acc, core::ConstMultiVecDerivId f)
@@ -270,7 +267,7 @@ void EulerExplicitIntegrationScheme::projectResponse(sofa::simulation::common::M
     // Calls the "projectResponse" method of every BaseProjectiveConstraintSet objects found in the
     // current context tree. An example of such constraint set is the FixedProjectiveConstraint. In this case,
     // it will set to 0 every row (i, _) of the input vector for the ith degree of freedom.
-    mop->projectResponse(m_mappingGraph, vecId);
+    mop->projectResponse(this->m_mappingGraph, vecId);
 }
 
 void EulerExplicitIntegrationScheme::solveConstraints(sofa::simulation::common::MappingGraphMechanicalOperations* mop, core::MultiVecDerivId acc)
@@ -319,7 +316,7 @@ bool EulerExplicitIntegrationScheme::isMassMatrixTriviallyInvertible(const core:
     // Moreover, computing the inverse of a mapped mass would require a complex API. Therefore, this
     // case is not supported without assembling the global mass matrix.
     bool hasMappedMass = false;
-    m_mappingGraph.algorithms.traverseComponentGroups_([&hasMappedMass](const sofa::core::behavior::BaseMass&)
+    this->m_mappingGraph.algorithms.traverseComponentGroups_([&hasMappedMass](const sofa::core::behavior::BaseMass&)
     {
         hasMappedMass = true;
     }, simulation::VisitorApplication::ONLY_MAPPED_NODES);
@@ -330,7 +327,7 @@ bool EulerExplicitIntegrationScheme::isMassMatrixTriviallyInvertible(const core:
 
     // At this stage, we know that we don't have any mapped mass. We can check if they are all diagonal.
     bool areAllMassesDiagonal = true;
-    m_mappingGraph.algorithms.traverseComponentGroups_([&areAllMassesDiagonal](const sofa::core::behavior::BaseMass& mass)
+    this->m_mappingGraph.algorithms.traverseComponentGroups_([&areAllMassesDiagonal](const sofa::core::behavior::BaseMass& mass)
     {
         areAllMassesDiagonal &= mass.isDiagonal();
     });
