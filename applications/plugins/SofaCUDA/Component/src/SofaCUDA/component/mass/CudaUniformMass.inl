@@ -81,7 +81,7 @@ void UniformMass<CudaVec3fTypes>::addMDx(const core::MechanicalParams* /*mparams
 }
 
 template <>
-void UniformMass<CudaVec3fTypes>::accFromF(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_a, const DataVecDeriv& d_f)
+void UniformMass<CudaVec3fTypes>::solveLinearSystem(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_a, const DataVecDeriv& d_f)
 {
     VecDeriv& a = *d_a.beginEdit();
     const VecDeriv& f = d_f.getValue();
@@ -120,7 +120,7 @@ void UniformMass<CudaVec3f1Types>::addMDx(const core::MechanicalParams* /*mparam
 }
 
 template <>
-void UniformMass<CudaVec3f1Types>::accFromF(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_a, const DataVecDeriv& d_f)
+void UniformMass<CudaVec3f1Types>::solveLinearSystem(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_a, const DataVecDeriv& d_f)
 {
     VecDeriv& a = *d_a.beginEdit();
     const VecDeriv& f = d_f.getValue();
@@ -163,7 +163,7 @@ void UniformMass<gpu::cuda::CudaRigid3fTypes>::addMDx(const core::MechanicalPara
 }
 
 template<>
-void UniformMass<gpu::cuda::CudaRigid3fTypes>::accFromF(const core::MechanicalParams * /*mparams*/, DataVecDeriv &a, const DataVecDeriv &f)
+void UniformMass<gpu::cuda::CudaRigid3fTypes>::solveLinearSystem(const core::MechanicalParams * /*mparams*/, DataVecDeriv &a, const DataVecDeriv &f)
 {
         VecDeriv& _a = *a.beginEdit();
         const VecDeriv _f = f.getValue();
@@ -256,7 +256,7 @@ void UniformMass<CudaVec3dTypes>::addMDx(const core::MechanicalParams* /*mparams
 }
 
 template <>
-void UniformMass<CudaVec3dTypes>::accFromF(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_a, const DataVecDeriv& d_f)
+void UniformMass<CudaVec3dTypes>::solveLinearSystem(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_a, const DataVecDeriv& d_f)
 {
     VecDeriv& a = *d_a.beginEdit();
     const VecDeriv& f = d_f.getValue();
@@ -313,7 +313,7 @@ void UniformMass<CudaVec3d1Types>::addMDx(const core::MechanicalParams* /*mparam
 }
 
 template <>
-void UniformMass<CudaVec3d1Types>::accFromF(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_a, const DataVecDeriv& d_f)
+void UniformMass<CudaVec3d1Types>::solveLinearSystem(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_a, const DataVecDeriv& d_f)
 {
     VecDeriv& a = *d_a.beginEdit();
     const VecDeriv& f = d_f.getValue();
