@@ -148,7 +148,7 @@ public:
      */
     void addMDx(const core::MechanicalParams* mparams, DataVecDeriv_t<DataTypes>& f, const DataVecDeriv_t<DataTypes>& dx, SReal factor) override;
 
-    using Inherit1::accFromF;
+    using Inherit1::solveLinearSystem;
     /**
      * @brief Compute $ a = M^{-1} f $ if the mass matrix is lumped. Triggers an error otherwise.
      *
@@ -156,7 +156,7 @@ public:
      * @param a The result vector of $M^{-1} f$.
      * @param f The vector to be multiplied by the inverse mass matrix.
      */
-    void accFromF(const core::MechanicalParams* mparams, DataVecDeriv_t<DataTypes>& a, const DataVecDeriv_t<DataTypes>& f) override;
+    void solveLinearSystem(const core::MechanicalParams* mparams, DataVecDeriv_t<DataTypes>& a, const DataVecDeriv_t<DataTypes>& f) override;
 
 
     using Inherit1::getKineticEnergy;

@@ -54,6 +54,11 @@ SReal BaseMass::getPotentialEnergy(const MechanicalParams* mparams) const
     return this->getPotentialEnergy(mparams, mparams->x());
 }
 
+void BaseMass::accFromF(const MechanicalParams* mparams, MultiVecDerivId aid)
+{
+    solveLinearSystem(mparams, aid, mparams->f());
+}
+
 void BaseMass::buildMassMatrix(sofa::core::behavior::MassMatrixAccumulator* matrices)
 {
     static std::set<BaseMass*> hasEmittedWarning;
