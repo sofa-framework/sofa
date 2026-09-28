@@ -62,7 +62,15 @@ public:
     virtual void addMDx(const MechanicalParams* mparams, MultiVecDerivId fid, SReal factor) =0;
 
     /// dx = M^-1 f
+    SOFA_CORE_DEPRECATED_ACCFROMF()
     virtual void accFromF(const MechanicalParams* mparams, MultiVecDerivId aid) = 0;
+
+    /// Solve M x = b, or x = M^-1 b, where M is the mass matrix
+    ///
+    /// Warning: this method is only implemented in derived classes when the mass matrix is trivial
+    /// (for example, diagonal mass matrices), allowing for efficient linear system solving. In the
+    /// other cases, it may be necessary to use a more general linear solver.
+    virtual void solveLinearSystem(const MechanicalParams* mparams, MultiVecDerivId xId, ConstMultiVecDerivId bId) = 0;
 
     /// \brief Perform  v += dt*g operation. Used if mass wants to added G separately from the other forces to v.
     ///
