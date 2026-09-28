@@ -79,7 +79,7 @@ class Robot:
         # Robot node
         robot = self.node.addChild(name)
         robot.addData('angles', initAngles, None, 'angle of articulations in radian', '', 'vector<float>')
-        robot.addObject('EulerImplicitSolver')
+        robot.addObject('EulerImplicitIntegrationScheme')
         robot.addObject('SparseLDLSolver', template="CompressedRowSparseMatrixMat3x3d")
         robot.addObject('GenericConstraintCorrection')
 

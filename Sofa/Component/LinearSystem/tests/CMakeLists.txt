@@ -4,6 +4,7 @@ project(Sofa.Component.LinearSystem_test)
 
 set(SOURCE_FILES
     MatrixLinearSystem_test.cpp
+    MatrixProjectionMethod_test.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
@@ -13,4 +14,5 @@ target_link_libraries(${PROJECT_NAME} Sofa.Testing
     Sofa.Component.StateContainer
     Sofa.Component.Mapping.Linear
     Sofa.Component.SolidMechanics.Spring
+    Sofa.Simulation.Graph
 )

@@ -33,7 +33,18 @@ namespace sofa::core::objectmodel
 {
 
 BaseContext::BaseContext()
-{}
+    : is_activated(initData(&is_activated, true, "activated", "To Activate a node"))
+    , worldGravity_(initData(&worldGravity_, Vec3(SReal(0),SReal(-9.81),SReal(0)),"gravity","Gravity in the world coordinate system"))
+    , dt_(initData(&dt_,SReal(0.01),"dt","Time step"))
+    , time_(initData(&time_,SReal(0.),"time","Current time"))
+    , animate_(initData(&animate_,false,"animate","Animate the Simulation(applied at initialization only)"))
+    , d_isSleeping(initData(&d_isSleeping, false, "sleeping", "The node is sleeping, and thus ignored by visitors."))
+    , d_canChangeSleepingState(initData(&d_canChangeSleepingState, false, "canChangeSleepingState", "The node can change its sleeping state."))
+{
+    animate_.setReadOnly(true);
+    dt_.setReadOnly(true);
+    time_.setReadOnly(true);
+}
 
 BaseContext::~BaseContext()
 {}
@@ -51,38 +62,90 @@ BaseContext* BaseContext::getDefault()
 ////////////////
 
 /// The Context is active
-bool BaseContext::isActive() const { return true; }
+bool BaseContext::isActive() const { return is_activated.getValue(); }
 
-/// The Context is not sleeping by default
-bool BaseContext::isSleeping() const { return false; }
+/// State of the context
+void BaseContext::setActive(bool val)
+{
+    is_activated.setValue(val);
+}
 
-/// The Context can not change its sleeping state by default
-bool BaseContext::canChangeSleepingState() const { return false; }
+/// The Context is sleeping
+bool BaseContext::isSleeping() const 
+{
+    return d_isSleeping.getValue();
+}
 
+/// The Context can change its sleeping state
+bool BaseContext::canChangeSleepingState() const 
+{ 
+    return d_canChangeSleepingState.getValue(); 
+}
+
+/// Sleeping state of the context
+void BaseContext::setSleeping(bool val)
+{
+    d_isSleeping.setValue(val);
+}
+
+/// Sleeping state change of the context
+void BaseContext::setChangeSleepingState(bool val)
+{
+    d_canChangeSleepingState.setValue(val);
+}
 
 /// Gravity in the world coordinate system
 const BaseContext::Vec3& BaseContext::getGravity() const
 {
-    static const Vec3 G(SReal(0),SReal(-9.81), SReal(0));
-    return G;
+    return worldGravity_.getValue();
+}
+
+/// Gravity in local coordinates
+void BaseContext::setGravity(const Vec3& g)
+{
+    worldGravity_.setValue(g);
 }
 
 /// Simulation timestep
 SReal BaseContext::getDt() const
 {
-    return 0.01;
+    return dt_.getValue();
 }
 
 /// Simulation time
 SReal BaseContext::getTime() const
 {
-    return 0.0;
+    return time_.getValue();
 }
 
 /// Animation flag
 bool BaseContext::getAnimate() const
 {
-    return true;
+    return animate_.getValue();
+}
+
+/// Simulation timestep
+void BaseContext::setDt(SReal dt)
+{
+    dt_.setValue(dt);
+}
+
+/// Animation flag
+void BaseContext::setAnimate(bool val)
+{
+    animate_.setValue(val);
+}
+
+/// Simulation time
+void BaseContext::setTime(SReal t)
+{
+    time_.setValue(t);
+}
+
+/// Display flags: Gravity
+void BaseContext::setDisplayWorldGravity(bool val) 
+{
+    worldGravity_.setDisplayed(val);
 }
 
 
@@ -206,6 +269,34 @@ void BaseContext::notifyRemoveSlave(core::objectmodel::BaseComponent* /*master*/
 
 void BaseContext::notifyMoveSlave(core::objectmodel::BaseComponent* /*previousMaster*/, core::objectmodel::BaseComponent* /*master*/, core::objectmodel::BaseComponent* /*slave*/)
 {
+}
+
+bool BaseContext::addObject( sptr<sofa::core::objectmodel::BaseComponent>, TypeOfInsertion )
+{
+    return false;
+}
+
+bool BaseContext::removeObject( sptr<sofa::core::objectmodel::BaseComponent> )
+{
+    return false;
+}
+
+
+//////////////////
+// Copy methods //
+//////////////////
+
+void BaseContext::copyContext(const BaseContext& c)
+{
+    copySimulationContext(c);
+}
+
+void BaseContext::copySimulationContext(const BaseContext& c)
+{
+    worldGravity_.setValue(c.getGravity());  ///< Gravity IN THE WORLD COORDINATE SYSTEM.
+    setDt(c.getDt());
+    setTime(c.getTime());
+    setAnimate(c.getAnimate());
 }
 
 } // namespace sofa::core::objectmodel

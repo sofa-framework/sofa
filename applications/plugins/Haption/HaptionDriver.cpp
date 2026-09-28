@@ -160,7 +160,7 @@ void HaptionDriver::init()
         context = dynamic_cast<simulation::Node*>(this->getContext());
 
         //Haption node
-        nodeHaptionVisual = sofa::simulation::getSimulation()->createNewGraph("nodeHaptionVisual");
+        nodeHaptionVisual = sofa::simulation::MainSimulation::getSimulation()->createNewGraph("nodeHaptionVisual");
         if(haptionVisu.getValue())
         {
             sofa::simulation::tree::GNode *parent = dynamic_cast<sofa::simulation::tree::GNode*>(this->getContext());
@@ -182,7 +182,7 @@ void HaptionDriver::init()
         nodeHaptionVisual->updateContext();
 
         //Axes node
-        nodeAxesVisual = sofa::simulation::getSimulation()->createNewGraph("nodeAxesVisual");
+        nodeAxesVisual = sofa::simulation::MainSimulation::getSimulation()->createNewGraph("nodeAxesVisual");
         //context->addChild(nodeAxesVisual);
         //nodeAxesVisual->updateContext();
 
@@ -200,11 +200,11 @@ void HaptionDriver::init()
         visualAxesDOF->init();
         nodeAxesVisual->updateContext();
 
-        visualNode[0].node = sofa::simulation::getSimulation()->createNewGraph("base");
-        visualNode[1].node = sofa::simulation::getSimulation()->createNewGraph("avatar");
-        visualNode[2].node = sofa::simulation::getSimulation()->createNewGraph("axe X");
-        visualNode[3].node = sofa::simulation::getSimulation()->createNewGraph("axe Y");
-        visualNode[4].node = sofa::simulation::getSimulation()->createNewGraph("axe Z");
+        visualNode[0].node = sofa::simulation::MainSimulation::getSimulation()->createNewGraph("base");
+        visualNode[1].node = sofa::simulation::MainSimulation::getSimulation()->createNewGraph("avatar");
+        visualNode[2].node = sofa::simulation::MainSimulation::getSimulation()->createNewGraph("axe X");
+        visualNode[3].node = sofa::simulation::MainSimulation::getSimulation()->createNewGraph("axe Y");
+        visualNode[4].node = sofa::simulation::MainSimulation::getSimulation()->createNewGraph("axe Z");
 
         for(int i=0; i<5; i++)
         {

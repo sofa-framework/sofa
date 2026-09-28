@@ -20,7 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <SofaSimulationGraph/DAGSimulation.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <SofaBaseTopology/PointSetTopologyContainer.h>
 #include <SofaConstraint/BilateralInteractionLangrangianConstraint.h>
@@ -74,7 +73,7 @@ struct BilateralInteractionLangrangianConstraint_test : public NumericTest<>
         sofa::simpleapi::importPlugin("Sofa.Component.Collision.Detection.Intersection");
         sofa::simpleapi::importPlugin("Sofa.Component.Collision.Response.Contact");
         sofa::simpleapi::importPlugin("Sofa.GL.Component.Rendering3D");
-        assert(sofa::simulation::getSimulation());
+        assert(sofa::simulation::MainSimulation::getSimulation());
     }
 
     void TearDown() override
@@ -180,7 +179,7 @@ void BilateralInteractionLangrangianConstraint_test<Vec3Types>::init_Vec3Setup()
     // a scene independently of the data template to use.
     std::string sceneName = "BilateralInteractionLangrangianConstraint.scn";
     std::string fileName  = std::string(SOFATEST_SCENES_DIR) + "/" + sceneName;
-    root = sofa::simulation::getSimulation()->load(fileName.c_str()).get();
+    root = sofa::simulation::MainSimulation::getSimulation()->load(fileName.c_str()).get();
 
     //TODO(dmarchal): I'm very surprised that scene.loadSucceed could contain
     // a state about the load results that happens "before" maybe a side effect
@@ -196,7 +195,7 @@ void BilateralInteractionLangrangianConstraint_test<Vec3Types>::init_Vec3Setup()
 
 
     /// Init
-    sofa::simulation::getSimulation()->init(root.get());
+    sofa::simulation::MainSimulation::getSimulation()->init(root.get());
 }
 
 template<>
@@ -214,7 +213,7 @@ bool BilateralInteractionLangrangianConstraint_test<Vec3Types>::test_Vec3Constra
     }
 
     for(int i=0; i<10; i++)
-        sofa::simulation::getSimulation()->animate(root.get(),(double)0.001);
+        sofa::simulation::MainSimulation::getSimulation()->animate(root.get(),(double)0.001);
 
     if(meca.size()==2)
     {

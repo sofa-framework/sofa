@@ -109,7 +109,7 @@ bool SofaCarving_test::createScene(const std::string& carvingDistance)
     
 
     // create solver
-    createObject(m_root, "EulerImplicitSolver", { { "name","Euler Implicit" },
+    createObject(m_root, "EulerImplicitIntegrationScheme", { { "name","Euler Implicit" },
         { "rayleighStiffness","0.1" },
         { "rayleighMass", "0.1" }
     });

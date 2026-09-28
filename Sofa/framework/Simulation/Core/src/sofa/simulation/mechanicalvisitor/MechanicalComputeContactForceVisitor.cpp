@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
+#define SOFA_SIMULATION_CORE_MECHANICALCOMPUTECONTACTFORCEVISITOR_CPP
 #include <sofa/simulation/mechanicalvisitor/MechanicalComputeContactForceVisitor.h>
 
 namespace sofa::simulation::mechanicalvisitor

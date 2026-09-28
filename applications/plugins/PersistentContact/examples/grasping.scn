@@ -1,4 +1,28 @@
 <Node name="root"  dt="0.002" gravity="0 0 -9810">
+    <RequiredPlugin name="ArticulatedSystemPlugin"/>
+    <RequiredPlugin name="PersistentContact"/>
+    <RequiredPlugin name="Sofa.Component.AnimationLoop"/>
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/>
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Intersection"/>
+    <RequiredPlugin name="Sofa.Component.Collision.Geometry"/>
+    <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/>
+    <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Correction"/>
+    <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Solver"/>
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/>
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/>
+    <RequiredPlugin name="Sofa.Component.Mapping.Linear"/>
+    <RequiredPlugin name="Sofa.Component.Mapping.NonLinear"/>
+    <RequiredPlugin name="Sofa.Component.Mass"/>
+    <RequiredPlugin name="Sofa.Component.MechanicalLoad"/>
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/>
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.FEM.Elastic"/>
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.Spring"/>
+    <RequiredPlugin name="Sofa.Component.StateContainer"/>
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/>
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/>
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/>
+    <RequiredPlugin name="Sofa.Component.Topology.Mapping"/>
+    <RequiredPlugin name="Sofa.Component.Visual"/>
 
 	<VisualStyle displayFlags="hideVisual showCollisionModels" />
 	
@@ -16,7 +40,7 @@
 	
 	
 	<Node name="Torus">
-		<EulerImplicitSolver  rayleighMass="0.0001"  rayleighStiffness="0.00001"/>
+		<EulerImplicitIntegrationScheme  rayleighMass="0.0001"  rayleighStiffness="0.00001"/>
 		<SparseTAUCSLLtSolver name="taucs"/>
 		<SparseGridTopology name="grid" n="4 2 4" fileTopology="torus_cm.obj"/>
 		<MechanicalObject name="MichelleM0" dx="5" dy="7" dz="-5" rx="90" sx="4.0" sy="8.0" sz="5"/>
@@ -47,7 +71,7 @@
 	</Node>
 	
 	<Node name="Torus2">
-		<EulerImplicitSolver  rayleighMass="0.0001"  rayleighStiffness="0.00001"/>
+		<EulerImplicitIntegrationScheme  rayleighMass="0.0001"  rayleighStiffness="0.00001"/>
 		<SparseTAUCSLLtSolver name="taucs"/>
 		
 		<SparseGridTopology name="grid" n="4 2 4" fileTopology="torus_cm.obj"/>

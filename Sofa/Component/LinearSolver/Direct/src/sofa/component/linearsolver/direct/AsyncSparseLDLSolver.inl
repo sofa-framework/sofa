@@ -22,7 +22,6 @@
 #pragma once
 
 #include <sofa/component/linearsolver/direct/AsyncSparseLDLSolver.h>
-#include <sofa/simulation/mechanicalvisitor/MechanicalMultiVectorFromBaseVectorVisitor.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
 
 namespace sofa::component::linearsolver::direct

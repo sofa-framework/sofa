@@ -34,7 +34,7 @@
 	</Node>
 	
 	<Node name="Tool1">	
-		<EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
+		<EulerImplicitIntegrationScheme  rayleighStiffness="0.1" rayleighMass="0.1" />
 		<CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
 		
 		<MechanicalObject name="ms" template="Rigid3d"  position="7.13718 -5.81916 23.8066 0.807871 0.160225 -0.1368 0.550416"/>
@@ -62,7 +62,7 @@
         <MeshTetraStuffing name="stuffing" snapPoints="true" splitTetras="false" draw="false" size="2.5" inputPoints="@surface.points" inputTriangles="@surface.triangles" />
     </Node>
     <Node name="SoftSphere" >
-        <EulerImplicitSolver name="odesolver" />
+        <EulerImplicitIntegrationScheme name="odesolver" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-10" threshold="1.0e-10" />
         <TetrahedronSetTopologyContainer name="volume" points="@../InitTopology/stuffing.outputPoints" tetras="@../InitTopology/stuffing.outputTetras" />
 		<TetrahedronSetTopologyModifier  name="Modifier" />
@@ -87,7 +87,7 @@
     </Node>
 
     <Node name="Rigid" >
-        <EulerImplicitSolver name="odesolver" />
+        <EulerImplicitIntegrationScheme name="odesolver" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-10" threshold="1.0e-10" />
         <MechanicalObject template="Rigid3d" position="-12 0 0 0 0 0 1" />
         <UniformMass totalMass="1" name="mass" />

@@ -29,20 +29,20 @@
 #include <sofa/simulation/PropagateEventVisitor.h>
 #include <sofa/simulation/BehaviorUpdatePositionVisitor.h>
 #include <sofa/simulation/UpdateInternalDataVisitor.h>
-#include <sofa/simulation/AnimateBeginEvent.h>
-#include <sofa/simulation/AnimateEndEvent.h>
-#include <sofa/simulation/UpdateMappingEndEvent.h>
+#include <sofa/simulation/events/AnimateBeginEvent.h>
+#include <sofa/simulation/events/AnimateEndEvent.h>
+#include <sofa/simulation/events/UpdateMappingEndEvent.h>
 #include <sofa/simulation/UpdateBoundingBoxVisitor.h>
 
 #include <sofa/helper/ScopedAdvancedTimer.h>
 #include <sofa/helper/AdvancedTimer.h>
 
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/simulation/CollisionBeginEvent.h>
-#include <sofa/simulation/CollisionEndEvent.h>
+#include <sofa/simulation/events/CollisionBeginEvent.h>
+#include <sofa/simulation/events/CollisionEndEvent.h>
 #include <sofa/simulation/CollisionVisitor.h>
-#include <sofa/simulation/IntegrateBeginEvent.h>
-#include <sofa/simulation/IntegrateEndEvent.h>
+#include <sofa/simulation/events/IntegrateBeginEvent.h>
+#include <sofa/simulation/events/IntegrateEndEvent.h>
 #include <sofa/simulation/task/MainTaskSchedulerFactory.h>
 #include <sofa/simulation/SolveVisitor.h>
 #include <sofa/simulation/task/TaskScheduler.h>

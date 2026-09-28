@@ -9,7 +9,7 @@
 		<RequiredPlugin pluginName="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
 		<RequiredPlugin pluginName="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
 		<RequiredPlugin pluginName="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
-		<RequiredPlugin pluginName="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+		<RequiredPlugin pluginName="Sofa.Component.IntegrationScheme.Backward"/> <!-- Needed to use components [EulerImplicitIntegrationScheme] -->
 		<RequiredPlugin pluginName="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
 		<RequiredPlugin pluginName="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
 		<RequiredPlugin pluginName="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
@@ -23,7 +23,7 @@
 	<CollisionResponse name="Response"  response="PenalityContactForceField" />
 
 	<Node name="Objects"  >
-		<EulerImplicitSolver name="cg_odesolver" printLog="false" rayleighStiffness="0.1" rayleighMass="0.1"/>
+		<EulerImplicitIntegrationScheme name="cg_odesolver" printLog="false" rayleighStiffness="0.1" rayleighMass="0.1"/>
 		<CGLinearSolver template="GraphScattered" name="linear solver" iterations="15" tolerance="1.0e-5" threshold="1.0e-5"/>
 		<Node 	 name="Dragon"  >
 		    <MeshOBJLoader name="loader"  filename="mesh/dragon.obj" />

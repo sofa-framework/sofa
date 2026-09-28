@@ -19,6 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_SIMULATION_CORE_MECHANICALMULTIVECTORTOBASEVECTORVISITOR_CPP
 #include <sofa/simulation/mechanicalvisitor/MechanicalMultiVectorToBaseVectorVisitor.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>

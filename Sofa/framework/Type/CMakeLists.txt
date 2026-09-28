@@ -13,6 +13,7 @@ set(HEADER_FILES
     ${SOFATYPESRC_ROOT}/Frame.h
     ${SOFATYPESRC_ROOT}/FullySymmetric4Tensor.h
     ${SOFATYPESRC_ROOT}/hardening.h
+    ${SOFATYPESRC_ROOT}/IdentityMatrix.h
     ${SOFATYPESRC_ROOT}/Mat.h
     ${SOFATYPESRC_ROOT}/MatSym.h
     ${SOFATYPESRC_ROOT}/Mat_solve_Cholesky.h

@@ -10,13 +10,13 @@
 
 		<p>To show the genericity of SOFA, the last tutorial will simulate the same scene but using a different ODE solver and integration scheme.</p>
         
-		<p>We will remove the <strong>EulerSolver</strong> and replace it with the <strong>EulerImplicitSolver</strong>. This solver contains the algorithm used to update particle positions and velocities at each time step. It uses an auxiliary component, the <strong>CGLinearSolver</strong>, to solve equation systems.</p>
+		<p>We will remove the <strong>EulerSolver</strong> and replace it with the <strong>EulerImplicitIntegrationScheme</strong>. This solver contains the algorithm used to update particle positions and velocities at each time step. It uses an auxiliary component, the <strong>CGLinearSolver</strong>, to solve equation systems.</p>
 
 		<div id="orangeText">Key points</div>
 
 		<div id="tutorialAction"><p>Right click on the <strong>EulerSolver</strong> in the Modeler's scene graph, and select <strong>Delete</strong>.</p>
 
-		<p>Find the <strong>EulerImplicitSolver</strong> component, and add it on the <strong>root</strong> node. Find the <strong>CGLinearSolver</strong> component, and add it on the <strong>root</strong> node.</p></div>
+		<p>Find the <strong>EulerImplicitIntegrationScheme</strong> component, and add it on the <strong>root</strong> node. Find the <strong>CGLinearSolver</strong> component, and add it on the <strong>root</strong> node.</p></div>
         
 
 		<div id="orangeText">Results</div>

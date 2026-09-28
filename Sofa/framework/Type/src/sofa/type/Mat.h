@@ -708,17 +708,54 @@ public:
     /// Addition of the transposed of m
     constexpr void addTransposed(const Mat<C,L,real>& m) noexcept
     {
-        for(Size i=0; i<L; i++)
-            for(Size j=0; j<C; j++)
-                (*this)(i,j) += m(j,i);
+        if (canSelfTranspose(*this, m))
+        {
+            // m aliases *this: process each off-diagonal pair once, from values read
+            // before either of the two positions is written.
+            for(Size i=0; i<L; i++)
+            {
+                (*this)(i,i) += (*this)(i,i);
+                for(Size j=i+1; j<C; j++)
+                {
+                    const real sum = (*this)(i,j) + (*this)(j,i);
+                    (*this)(i,j) = sum;
+                    (*this)(j,i) = sum;
+                }
+            }
+        }
+        else
+        {
+            for(Size i=0; i<L; i++)
+                for(Size j=0; j<C; j++)
+                    (*this)(i,j) += m(j,i);
+        }
     }
 
     /// Subtraction of the transposed of m
     constexpr void subTransposed(const Mat<C,L,real>& m) noexcept
     {
-        for(Size i=0; i<L; i++)
-            for(Size j=0; j<C; j++)
-                (*this)(i,j) -= m(j,i);
+        if (canSelfTranspose(*this, m))
+        {
+            // m aliases *this: process each off-diagonal pair once, from values read
+            // before either of the two positions is written.
+            for(Size i=0; i<L; i++)
+            {
+                (*this)(i,i) = real{};
+                for(Size j=i+1; j<C; j++)
+                {
+                    const real mij = (*this)(i,j);
+                    const real mji = (*this)(j,i);
+                    (*this)(i,j) = mij - mji;
+                    (*this)(j,i) = mji - mij;
+                }
+            }
+        }
+        else
+        {
+            for(Size i=0; i<L; i++)
+                for(Size j=0; j<C; j++)
+                    (*this)(i,j) -= m(j,i);
+        }
     }
 
     /// Subtraction assignment operator.

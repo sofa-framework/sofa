@@ -160,11 +160,11 @@ sofa::component::collision::geometry::SphereCollisionModel<sofa::defaulttype::Ri
 
     //editing the RigidSphereModel
     sphereCollisionModel->init();
-    sofa::component::collision::geometry::SphereCollisionModel<sofa::defaulttype::Rigid3Types>::VecReal & vecRad = *(sphereCollisionModel->radius.beginEdit());
+    sofa::component::collision::geometry::SphereCollisionModel<sofa::defaulttype::Rigid3Types>::VecReal & vecRad = *(sphereCollisionModel->d_radius.beginEdit());
 
     vecRad[0] = radius;
 
-    sphereCollisionModel->radius.endEdit();
+    sphereCollisionModel->d_radius.endEdit();
 
     return sphereCollisionModel;
 }
@@ -203,11 +203,11 @@ sofa::component::collision::geometry::SphereCollisionModel<sofa::defaulttype::Ve
 
     //editing the RigidSphereModel
     sphereCollisionModel->init();
-    sofa::component::collision::geometry::SphereCollisionModel<sofa::defaulttype::Vec3Types>::VecReal & vecRad = *(sphereCollisionModel->radius.beginEdit());
+    sofa::component::collision::geometry::SphereCollisionModel<sofa::defaulttype::Vec3Types>::VecReal & vecRad = *(sphereCollisionModel->d_radius.beginEdit());
 
     vecRad[0] = radius;
 
-    sphereCollisionModel->radius.endEdit();
+    sphereCollisionModel->d_radius.endEdit();
 
     return sphereCollisionModel;
 }

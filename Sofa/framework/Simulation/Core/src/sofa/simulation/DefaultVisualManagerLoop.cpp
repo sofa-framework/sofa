@@ -25,7 +25,7 @@
 #include <sofa/core/visual/VisualManager.h>
 #include <sofa/simulation/VisualVisitor.h>
 #include <sofa/simulation/UpdateContextVisitor.h>
-#include <sofa/simulation/UpdateMappingEndEvent.h>
+#include <sofa/simulation/events/UpdateMappingEndEvent.h>
 #include <sofa/simulation/Node.h>
 
 namespace sofa::core::objectmodel {

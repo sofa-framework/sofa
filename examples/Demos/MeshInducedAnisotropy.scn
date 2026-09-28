@@ -17,7 +17,7 @@
         <RequiredPlugin pluginName="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
         <RequiredPlugin pluginName="Sofa.Component.LinearSolver.Direct"/> <!-- Needed to use components [SparseLDLSolver] -->
         <RequiredPlugin pluginName="Sofa.Component.Mass"/> <!-- Needed to use components [DiagonalMass] -->
-        <RequiredPlugin pluginName="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [NewtonRaphsonSolver,StaticSolver] -->
+        <RequiredPlugin pluginName="Sofa.Component.IntegrationScheme.Backward"/> <!-- Needed to use components [NewtonRaphsonSolver,StaticEquilibriumIntegrationScheme] -->
         <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [TetrahedronFEMForceField] -->
         <RequiredPlugin pluginName="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
         <RequiredPlugin pluginName="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [TetrahedronSetGeometryAlgorithms,TetrahedronSetTopologyContainer,TetrahedronSetTopologyModifier] -->
@@ -33,9 +33,8 @@
     <RegularGridTopology name="grid" min="-0.01 -0.01 0" max="0.01 0.01 0.2" n="5 5 30"/>
 
     <Node name="beam_with_anisotropy">
-        <NewtonRaphsonSolver name="non_linear_solver" maxNbIterationsNewton="100"
-                             maxNbIterationsLineSearch="1" warnWhenLineSearchFails="false"/>
-        <StaticSolver name="static_solver" newtonSolver="@non_linear_solver"/>
+        <StaticEquilibriumIntegrationScheme name="static_solver" maxNbIterationsNewton="100"
+                      maxNbIterationsLineSearch="1"  alwaysAdvanceNewton="true"/>
         <SparseLDLSolver name="linear_solver" template="CompressedRowSparseMatrixMat3x3d"/>
 
         <MechanicalObject template="Vec3" name="state" position="@/grid.position"/>
@@ -59,9 +58,8 @@
     </Node>
 
     <Node name="beam_without_anisotropy">
-        <NewtonRaphsonSolver name="non_linear_solver" maxNbIterationsNewton="100"
-                             maxNbIterationsLineSearch="1" warnWhenLineSearchFails="false"/>
-        <StaticSolver name="static_solver" newtonSolver="@non_linear_solver"/>
+        <StaticEquilibriumIntegrationScheme name="static_solver" maxNbIterationsNewton="100"
+                      maxNbIterationsLineSearch="1" alwaysAdvanceNewton="true"/>
         <SparseLDLSolver name="linear_solver" template="CompressedRowSparseMatrixMat3x3d"/>
 
         <MechanicalObject template="Vec3" name="state" position="@/grid.position"/>

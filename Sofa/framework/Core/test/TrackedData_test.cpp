@@ -22,7 +22,7 @@
 #include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/core/DataTracker.h>
 #include <sofa/core/DataTrackerFunctor.h>
-#include <sofa/simulation/AnimateBeginEvent.h>
+#include <sofa/simulation/events/AnimateBeginEvent.h>
 #include <sofa/helper/cast.h>
 
 #include <sofa/testing/BaseTest.h>
