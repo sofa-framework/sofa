@@ -82,8 +82,30 @@ void Mass<DataTypes>::accFromF(const MechanicalParams* /*mparams*/, DataVecDeriv
     msg_warning() << "Method accFromF(const MechanicalParams* , DataVecDeriv& , const DataVecDeriv& ) not implemented.";
 }
 
+template <class DataTypes>
+void Mass<DataTypes>::solveLinearSystem(const MechanicalParams* mparams,
+    MultiVecDerivId xId, ConstMultiVecDerivId bId)
+{
+    if(mparams)
+    {
+        auto mstate = this->mstate.get();
 
-template<class DataTypes>
+        DataVecDeriv* x = xId[mstate].write(); assert(x);
+        DataVecDeriv* b = bId[mstate].read(); assert(b);
+
+        accFromF(mparams, *x, *b);
+    }
+}
+
+template <class DataTypes>
+void Mass<DataTypes>::solveLinearSystem(const MechanicalParams* mparams,
+    DataVecDeriv& x, const DataVecDeriv& b)
+{
+    msg_warning() << "Method 'solveLinearSystem' was called but it is not implemented for '" <<
+        this->getClassName() << "'. Behavior is undefined. Try using a linear solver.";
+}
+
+template <class DataTypes>
 void Mass<DataTypes>::addDForce(const MechanicalParams* mparams,
                                 DataVecDeriv & /*df*/, const DataVecDeriv & /*dx*/)
 {
