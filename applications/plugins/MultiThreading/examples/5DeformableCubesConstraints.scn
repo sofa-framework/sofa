@@ -17,7 +17,7 @@ In this scene, collision is detected in parallel.
     <RequiredPlugin pluginName="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
     <RequiredPlugin pluginName="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
     <RequiredPlugin pluginName="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
-    <RequiredPlugin pluginName="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin pluginName="Sofa.Component.IntegrationScheme.Backward"/> <!-- Needed to use components [EulerImplicitIntegrationScheme] -->
     <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [HexahedronFEMForceField] -->
     <RequiredPlugin pluginName="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
     <RequiredPlugin pluginName="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
@@ -40,7 +40,7 @@ In this scene, collision is detected in parallel.
     <InteractiveCamera name="cam" position="0 0 -50" lookAt="0 0 0"/>
 
     <Node name="Cube1">
-        <EulerImplicitSolver name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1"/>
+        <EulerImplicitIntegrationScheme name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1"/>
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9"/>
 
         <RegularGridTopology name="grid" nx="5" ny="5" nz="5" computeHexaList="true" computeQuadList="false" xmin="-5" xmax="5" ymin="-5" ymax="5" zmin="-5" zmax="5"/>
@@ -48,7 +48,7 @@ In this scene, collision is detected in parallel.
 
         <MechanicalObject name="mechanicalObject" position="@transform.output_position"/>
         <UniformMass totalMass="30"/>
-        <UncoupledConstraintCorrection useOdeSolverIntegrationFactors="0"/>
+        <UncoupledConstraintCorrection useIntegrationSchemeIntegrationFactors="0"/>
 
         <HexahedronFEMForceField poissonRatio="0" youngModulus="7000"/>
 
@@ -74,7 +74,7 @@ In this scene, collision is detected in parallel.
     </Node>
 
     <Node name="Cube2">
-        <EulerImplicitSolver name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1"/>
+        <EulerImplicitIntegrationScheme name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1"/>
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9"/>
 
         <RegularGridTopology name="grid" nx="5" ny="5" nz="5" computeHexaList="true" computeQuadList="false" xmin="-5" xmax="5" ymin="-5" ymax="5" zmin="-5" zmax="5"/>
@@ -82,7 +82,7 @@ In this scene, collision is detected in parallel.
 
         <MechanicalObject name="mechanicalObject" position="@transform.output_position"/>
         <UniformMass totalMass="30"/>
-        <UncoupledConstraintCorrection useOdeSolverIntegrationFactors="0"/>
+        <UncoupledConstraintCorrection useIntegrationSchemeIntegrationFactors="0"/>
 
         <HexahedronFEMForceField poissonRatio="0" youngModulus="7000"/>
 
@@ -108,7 +108,7 @@ In this scene, collision is detected in parallel.
     </Node>
 
     <Node name="Cube3">
-        <EulerImplicitSolver name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1"/>
+        <EulerImplicitIntegrationScheme name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1"/>
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9"/>
 
         <RegularGridTopology name="grid" nx="5" ny="5" nz="5" computeHexaList="true" computeQuadList="false" xmin="-5" xmax="5" ymin="-5" ymax="5" zmin="-5" zmax="5"/>
@@ -116,7 +116,7 @@ In this scene, collision is detected in parallel.
 
         <MechanicalObject name="mechanicalObject" position="@transform.output_position"/>
         <UniformMass totalMass="30"/>
-        <UncoupledConstraintCorrection useOdeSolverIntegrationFactors="0"/>
+        <UncoupledConstraintCorrection useIntegrationSchemeIntegrationFactors="0"/>
 
         <HexahedronFEMForceField poissonRatio="0" youngModulus="7000"/>
 
@@ -142,7 +142,7 @@ In this scene, collision is detected in parallel.
     </Node>
 
     <Node name="Cube4">
-        <EulerImplicitSolver name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1"/>
+        <EulerImplicitIntegrationScheme name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1"/>
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9"/>
 
         <RegularGridTopology name="grid" nx="5" ny="5" nz="5" computeHexaList="true" computeQuadList="false" xmin="-5" xmax="5" ymin="-5" ymax="5" zmin="-5" zmax="5"/>
@@ -150,7 +150,7 @@ In this scene, collision is detected in parallel.
 
         <MechanicalObject name="mechanicalObject" position="@transform.output_position"/>
         <UniformMass totalMass="30"/>
-        <UncoupledConstraintCorrection useOdeSolverIntegrationFactors="0"/>
+        <UncoupledConstraintCorrection useIntegrationSchemeIntegrationFactors="0"/>
 
         <HexahedronFEMForceField poissonRatio="0" youngModulus="7000"/>
 
@@ -177,7 +177,7 @@ In this scene, collision is detected in parallel.
 
 
     <Node name="Cube5">
-        <EulerImplicitSolver name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1"/>
+        <EulerImplicitIntegrationScheme name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1"/>
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9"/>
 
         <RegularGridTopology name="grid" nx="5" ny="5" nz="5" computeHexaList="true" computeQuadList="false" xmin="-5" xmax="5" ymin="-5" ymax="5" zmin="-5" zmax="5"/>
@@ -185,7 +185,7 @@ In this scene, collision is detected in parallel.
 
         <MechanicalObject name="mechanicalObject" position="@transform.output_position"/>
         <UniformMass totalMass="30"/>
-        <UncoupledConstraintCorrection useOdeSolverIntegrationFactors="0"/>
+        <UncoupledConstraintCorrection useIntegrationSchemeIntegrationFactors="0"/>
 
         <HexahedronFEMForceField poissonRatio="0" youngModulus="7000"/>
 

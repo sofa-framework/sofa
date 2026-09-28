@@ -21,16 +21,14 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/constraint/lagrangian/correction/config.h>
-
+#include <sofa/core/behavior/BaseIntegrationScheme.h>
 #include <sofa/core/behavior/ConstraintCorrection.h>
-#include <sofa/component/odesolver/backward/EulerImplicitSolver.h>
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/core/objectmodel/DataFileName.h>
-
 #include <sofa/linearalgebra/FullMatrix.h>
-
 #include <sofa/type/Mat.h>
 #include <sofa/type/Vec.h>
+#include <sofa/component/integrationscheme/backward/EulerImplicitIntegrationScheme.h>
 
 namespace sofa::component::constraint::lagrangian::correction
 {
@@ -69,7 +67,7 @@ public:
     sofa::core::objectmodel::DataFileName d_fileCompliance; ///< Precomputed compliance matrix data file
     Data<std::string> d_fileDir; ///< If not empty, the compliance will be saved in this repertory
 
-    SingleLink<PrecomputedConstraintCorrection, sofa::component::odesolver::backward::EulerImplicitSolver, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_odeSolver; ///< Link towards the EulerImplicit solver used during the compliance precomputation. If unset, the first OdeSolver found in the current context is used.
+    SingleLink<PrecomputedConstraintCorrection, sofa::component::integrationscheme::backward::EulerImplicitIntegrationScheme, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_odeSolver; ///< Link towards the EulerImplicit solver used during the compliance precomputation. If unset, the first OdeSolver found in the current context is used.
     SingleLink<PrecomputedConstraintCorrection, sofa::core::behavior::LinearSolver, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_linearSolver; ///< Link towards the linear solver used during the compliance precomputation. If unset, the first LinearSolver found in the current context is used.
 
 protected:
@@ -197,6 +195,15 @@ protected:
     void computeDx(Data<VecDeriv>& dx, const Data< VecDeriv > &f, const std::list< int > &activeDofs);
 
     std::list< int > m_activeDofs;
+
+    /// Integration scheme found in the context, used to scale the compliance and the corrections
+    sofa::core::behavior::BaseIntegrationScheme* m_pIntegrationScheme { nullptr };
+
+    /// Position integration factor of the integration scheme (falls back to the implicit Euler factor if no scheme was found)
+    SReal getPositionIntegrationFactor() const;
+
+    /// Velocity integration factor of the integration scheme (falls back to the implicit Euler factor if no scheme was found)
+    SReal getVelocityIntegrationFactor() const;
 };
 
 
