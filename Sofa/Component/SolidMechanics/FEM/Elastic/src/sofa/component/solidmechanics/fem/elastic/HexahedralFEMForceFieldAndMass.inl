@@ -387,7 +387,7 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::addMBKToMatrix (const core::Mech
 template<class DataTypes>
 void HexahedralFEMForceFieldAndMass<DataTypes>::solveLinearSystem(const core::MechanicalParams*, DataVecDeriv& /*a*/, const DataVecDeriv& /*f*/)
 {
-    msg_error() << "HexahedralFEMForceFieldAndMass<DataTypes>::accFromF not yet implemented";
+    msg_error() << "HexahedralFEMForceFieldAndMass<DataTypes>::solveLinearSystem not yet implemented";
     // need to built the big global mass matrix and to inverse it...
 }
 
