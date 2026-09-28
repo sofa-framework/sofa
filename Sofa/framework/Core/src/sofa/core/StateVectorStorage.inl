@@ -78,6 +78,7 @@ StateVectorStorage<TDataTypes>::~StateVectorStorage()
             vectorsMatrixDeriv[i] = nullptr;
         }
 }
+
 template <class TDataTypes>
 void StateVectorStorage<TDataTypes>::init()
 {
@@ -153,6 +154,7 @@ void StateVectorStorage<TDataTypes>::reserve(Size vsize)
     reserveFunction(vectorsCoord);
     reserveFunction(vectorsDeriv);
 }
+
 template <class TDataTypes>
 auto StateVectorStorage<TDataTypes>::write(VecCoordId v) -> Data<VecCoord>*
 {
@@ -352,6 +354,7 @@ void StateVectorStorage<TDataTypes>::setVecCoord(core::ConstVecCoordId vecId, Da
         vecData->setGroup(group);
     }
 }
+
 template <class TDataTypes>
 void StateVectorStorage<TDataTypes>::setVecDeriv(core::ConstVecDerivId vecId, Data<VecDeriv>* vecData)
 {
