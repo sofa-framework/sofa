@@ -385,6 +385,7 @@ jobs:
             --input "$env:BUILD_DIR\external_directories\fetched" `
             --output-logs-errors "$RegResultsDir" `
             --legacy-regression `
+            --verbose 2 `
             -j $env:VM_MAX_PARALLEL_TESTS
 
           if (-not (Test-Path "$RegResultsDir\*summary*")) { exit 1 }
