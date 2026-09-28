@@ -50,7 +50,7 @@ template<>
 void MeshMatrixMass<sofa::gpu::cuda::CudaVec3fTypes>::addForce(const core::MechanicalParams*, DataVecDeriv& /*vf*/, const DataVecCoord& /* */, const DataVecDeriv& /* */);
 
 template<>
-void MeshMatrixMass<sofa::gpu::cuda::CudaVec3fTypes>::accFromF(const core::MechanicalParams*, DataVecDeriv& a, const DataVecDeriv& f);
+void MeshMatrixMass<sofa::gpu::cuda::CudaVec3fTypes>::solveLinearSystem(const core::MechanicalParams*, DataVecDeriv& a, const DataVecDeriv& f);
 
 
 
@@ -73,7 +73,7 @@ template<>
 void MeshMatrixMass<sofa::gpu::cuda::CudaVec2fTypes>::addForce(const core::MechanicalParams*, DataVecDeriv& /*vf*/, const DataVecCoord& /* */, const DataVecDeriv& /* */);
 
 template<>
-void MeshMatrixMass<sofa::gpu::cuda::CudaVec2fTypes>::accFromF(const core::MechanicalParams*, DataVecDeriv& a, const DataVecDeriv& f);
+void MeshMatrixMass<sofa::gpu::cuda::CudaVec2fTypes>::solveLinearSystem(const core::MechanicalParams*, DataVecDeriv& a, const DataVecDeriv& f);
 
 
 
@@ -96,7 +96,7 @@ template<>
 void MeshMatrixMass<sofa::gpu::cuda::CudaVec1fTypes>::addForce(const core::MechanicalParams*, DataVecDeriv& /*vf*/, const DataVecCoord& /* */, const DataVecDeriv& /* */);
 
 template<>
-void MeshMatrixMass<sofa::gpu::cuda::CudaVec1fTypes>::accFromF(const core::MechanicalParams*, DataVecDeriv& a, const DataVecDeriv& f);
+void MeshMatrixMass<sofa::gpu::cuda::CudaVec1fTypes>::solveLinearSystem(const core::MechanicalParams*, DataVecDeriv& a, const DataVecDeriv& f);
 
 
 #ifndef SOFA_GPU_CUDA_CUDAMESHMATRIXMASS_CPP
