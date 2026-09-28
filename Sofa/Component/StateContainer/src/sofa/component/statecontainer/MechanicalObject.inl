@@ -161,9 +161,7 @@ MechanicalObject<DataTypes>::MechanicalObject()
     , scale(initData(&scale, type::Vec3(1_sreal, 1_sreal, 1_sreal), "scale3d", "Scale of the DOFs in 3 dimensions"))
     , translation2(initData(&translation2, type::Vec3(), "translation2", "Translation of the DOFs, applied after the rest position has been computed"))
     , rotation2(initData(&rotation2, type::Vec3(), "rotation2", "Rotation of the DOFs, applied the after the rest position has been computed"))
-    , d_size(initData(&d_size, 0, "size", "Size of the vectors"))
     , l_topology(initLink("topology","Link to the topology relevant for this object"))
-    , f_reserve(initData(&f_reserve, 0, "reserve", "Size to reserve when creating vectors. (default=0)"))
     , m_gnuplotFileX(nullptr)
     , m_gnuplotFileV(nullptr)
 {
@@ -225,8 +223,7 @@ MechanicalObject<DataTypes>::MechanicalObject()
     //    write(VecCoordId::null())->forceSet();
     //    write(VecDerivId::null())->forceSet();
 
-    // default size is 1
-    resize(1);
+
 }
 
 
@@ -238,21 +235,6 @@ MechanicalObject<DataTypes>::~MechanicalObject()
 
     if (m_gnuplotFileX != nullptr)
         delete m_gnuplotFileX;
-
-    for(unsigned i=core::VecCoordId::V_FIRST_DYNAMIC_INDEX; i<vectorsCoord.size(); i++)
-        if( vectorsCoord[i] != nullptr ) { delete vectorsCoord[i]; vectorsCoord[i]=nullptr; }
-    if( vectorsCoord[core::VecCoordId::null().getIndex()] != nullptr )
-    { delete vectorsCoord[core::VecCoordId::null().getIndex()]; vectorsCoord[core::VecCoordId::null().getIndex()] = nullptr; }
-
-    for(unsigned i=core::VecDerivId::V_FIRST_DYNAMIC_INDEX; i<vectorsDeriv.size(); i++)
-        if( vectorsDeriv[i] != nullptr )  { delete vectorsDeriv[i]; vectorsDeriv[i]=nullptr; }
-    if( vectorsDeriv[core::VecDerivId::null().getIndex()] != nullptr )
-    { delete vectorsDeriv[core::VecDerivId::null().getIndex()]; vectorsDeriv[core::VecDerivId::null().getIndex()] = nullptr; }
-    if( core::vec_id::write_access::dforce.getIndex()<vectorsDeriv.size() && vectorsDeriv[core::vec_id::write_access::dforce.getIndex()] != nullptr )
-    { delete vectorsDeriv[core::vec_id::write_access::dforce.getIndex()]; vectorsDeriv[core::vec_id::write_access::dforce.getIndex()] = nullptr; }
-
-    for(unsigned i=core::MatrixDerivId::V_FIRST_DYNAMIC_INDEX; i<vectorsMatrixDeriv.size(); i++)
-        if( vectorsMatrixDeriv[i] != nullptr )  { delete vectorsMatrixDeriv[i]; vectorsMatrixDeriv[i]=nullptr; }
 }
 
 
@@ -605,69 +587,6 @@ void MechanicalObject<DataTypes>::renumberValues( const sofa::type::vector< sofa
     };
     swapFunction(vectorsCoord);
     swapFunction(vectorsDeriv);
-}
-
-template <class DataTypes>
-void MechanicalObject<DataTypes>::resize(const Size size)
-{
-    if(size>0)
-    {
-        if (d_size.getValue() != static_cast<int>(size))
-            d_size.setValue(static_cast<int>(size));
-
-        const auto resizeFunction = [&size](auto& dataList)
-        {
-            for (auto* vec : dataList)
-            {
-                if (vec != nullptr && vec->isSet())
-                {
-                    auto wa = helper::getWriteAccessor(*vec);
-                    if (wa.size() != size)
-                    {
-                        wa.resize(size);
-                    }
-                }
-            }
-        };
-        resizeFunction(vectorsCoord);
-        resizeFunction(vectorsDeriv);
-    }
-    else // clear
-    {
-        d_size.setValue(0);
-
-        const auto resizeFunction = [](auto& dataList)
-        {
-            for (auto* vec : dataList)
-            {
-                if (vec != nullptr && vec->isSet())
-                {
-                    helper::getWriteAccessor(*vec).clear();
-                }
-            }
-        };
-        resizeFunction(vectorsCoord);
-        resizeFunction(vectorsDeriv);
-    }
-}
-
-template <class DataTypes>
-void MechanicalObject<DataTypes>::reserve(const Size size)
-{
-    if (size == 0) return;
-
-    const auto reserveFunction = [size](auto& dataList)
-    {
-        for (auto* vec : dataList)
-        {
-            if (vec != nullptr && vec->isSet())
-            {
-                helper::getWriteAccessor(*vec).reserve(size);
-            }
-        }
-    };
-    reserveFunction(vectorsCoord);
-    reserveFunction(vectorsDeriv);
 }
 
 template<std::size_t dim, class VecId, class DataTypes>
@@ -1159,9 +1078,7 @@ void MechanicalObject<DataTypes>::init()
 
     m_initialized = true;
 
-    if (f_reserve.getValue() > 0)
-        reserve(f_reserve.getValue());
-
+    sofa::core::StateVectorStorage<DataTypes>::init();
 }
 
 template <class DataTypes>
@@ -1371,249 +1288,6 @@ void MechanicalObject<DataTypes>::accumulateForce(const core::ExecParams* params
                 f_wA[i] += extForces_rA[i];
             }
         }
-    }
-}
-
-template <class DataTypes>
-Data<typename MechanicalObject<DataTypes>::VecCoord>* MechanicalObject<DataTypes>::write(core::VecCoordId vecId)
-{
-    if (vecId.index >= vectorsCoord.size())
-    {
-        vectorsCoord.resize(vecId.index + 1, 0);
-    }
-
-    if (vectorsCoord[vecId.index] == nullptr)
-    {
-        vectorsCoord[vecId.index] = new Data< VecCoord >;
-        vectorsCoord[vecId.index]->setName(vecId.getName());
-        const auto group = vecId.getGroup();
-        if (!group.empty())
-        {
-            vectorsCoord[vecId.index]->setGroup(group);
-        }
-        else
-        {
-            vectorsCoord[vecId.index]->setGroup("Vector");
-        }
-        this->addData(vectorsCoord[vecId.index]);
-        if (f_reserve.getValue() > 0)
-        {
-            vectorsCoord[vecId.index]->beginWriteOnly()->reserve(f_reserve.getValue());
-            vectorsCoord[vecId.index]->endEdit();
-        }
-        if (vectorsCoord[vecId.index]->getValue().size() != getSize())
-        {
-            vectorsCoord[vecId.index]->beginWriteOnly()->resize( getSize() );
-            vectorsCoord[vecId.index]->endEdit();
-        }
-    }
-    Data<typename MechanicalObject<DataTypes>::VecCoord>* d = vectorsCoord[vecId.index];
-#if !defined(NDEBUG)
-    const typename MechanicalObject<DataTypes>::VecCoord& val = d->getValue();
-    if (!val.empty() && val.size() != (unsigned int)this->getSize())
-    {
-        msg_error() << "Writing to State vector " << vecId << " with incorrect size : " << val.size() << " != " << this->getSize();
-    }
-#endif
-    return d;
-}
-
-
-
-template <class DataTypes>
-const Data<typename MechanicalObject<DataTypes>::VecCoord>* MechanicalObject<DataTypes>::read(core::ConstVecCoordId vecId) const
-{
-    if (vecId.isNull())
-    {
-        msg_error() << "Accessing null VecCoord";
-    }
-
-    if (vecId.index < vectorsCoord.size() && vectorsCoord[vecId.index] != nullptr)
-    {
-        const Data<typename MechanicalObject<DataTypes>::VecCoord>* d = vectorsCoord[vecId.index];
-#if !defined(NDEBUG)
-        const typename MechanicalObject<DataTypes>::VecCoord& val = d->getValue();
-        if (!val.empty() && val.size() != (unsigned int)this->getSize())
-        {
-            msg_error() << "Accessing State vector " << vecId << " with incorrect size : " << val.size() << " != " << this->getSize();
-        }
-#endif
-        return d;
-    }
-    else
-    {
-        msg_error() << "Vector " << vecId << " does not exist";
-        return nullptr;
-    }
-}
-
-template <class DataTypes>
-Data<typename MechanicalObject<DataTypes>::VecDeriv>* MechanicalObject<DataTypes>::write(core::VecDerivId vecId)
-{
-
-    if (vecId.index >= vectorsDeriv.size())
-    {
-        vectorsDeriv.resize(vecId.index + 1, 0);
-    }
-
-    if (vectorsDeriv[vecId.index] == nullptr)
-    {
-        vectorsDeriv[vecId.index] = new Data< VecDeriv >;
-        vectorsDeriv[vecId.index]->setName(vecId.getName());
-        const auto group = vecId.getGroup();
-        if (!group.empty())
-        {
-            vectorsDeriv[vecId.index]->setGroup(group);
-        }
-        else
-        {
-            vectorsDeriv[vecId.index]->setGroup("Vector");
-        }
-        this->addData(vectorsDeriv[vecId.index]);
-        if (f_reserve.getValue() > 0)
-        {
-            vectorsDeriv[vecId.index]->beginWriteOnly()->reserve(f_reserve.getValue());
-            vectorsDeriv[vecId.index]->endEdit();
-        }
-        if (vectorsDeriv[vecId.index]->getValue().size() != getSize())
-        {
-            vectorsDeriv[vecId.index]->beginWriteOnly()->resize( getSize() );
-            vectorsDeriv[vecId.index]->endEdit();
-        }
-    }
-    Data<typename MechanicalObject<DataTypes>::VecDeriv>* d = vectorsDeriv[vecId.index];
-
-#if !defined(NDEBUG)
-    const typename MechanicalObject<DataTypes>::VecDeriv& val = d->getValue();
-    if (!val.empty() && val.size() != (unsigned int)this->getSize())
-    {
-        msg_error() << "Writing to State vector " << vecId << " with incorrect size : " << val.size() << " != " << this->getSize();
-    }
-#endif
-    return d;
-}
-
-template <class DataTypes>
-const Data<typename MechanicalObject<DataTypes>::VecDeriv>* MechanicalObject<DataTypes>::read(core::ConstVecDerivId vecId) const
-{
-
-    if (vecId.index < vectorsDeriv.size())
-    {
-        const Data<typename MechanicalObject<DataTypes>::VecDeriv>* d = vectorsDeriv[vecId.index];
-
-#if !defined(NDEBUG)
-        if(d!=NULL)
-        {
-            const typename MechanicalObject<DataTypes>::VecDeriv& val = d->getValue();
-            if (!val.empty() && val.size() != (unsigned int)this->getSize())
-            {
-                msg_error() << "Accessing State vector " << vecId << " with incorrect size : " << val.size() << " != " << this->getSize();
-            }
-        }
-#endif // !defined(NDEBUG)
-
-        return d;
-    }
-    else
-    {
-        msg_error() << "Vector " << vecId << "does not exist";
-        return nullptr;
-    }
-}
-
-template <class DataTypes>
-Data<typename MechanicalObject<DataTypes>::MatrixDeriv>* MechanicalObject<DataTypes>::write(core::MatrixDerivId vecId)
-{
-
-    if (vecId.index >= vectorsMatrixDeriv.size())
-    {
-        vectorsMatrixDeriv.resize(vecId.index + 1, 0);
-    }
-
-    if (vectorsMatrixDeriv[vecId.index] == nullptr)
-    {
-        vectorsMatrixDeriv[vecId.index] = new Data< MatrixDeriv >;
-        vectorsMatrixDeriv[vecId.index]->setName(vecId.getName());
-        const auto group = vecId.getGroup();
-        if (!group.empty())
-        {
-            vectorsMatrixDeriv[vecId.index]->setGroup(group);
-        }
-        else
-        {
-            vectorsMatrixDeriv[vecId.index]->setGroup("Vector");
-        }
-        this->addData(vectorsMatrixDeriv[vecId.index]);
-    }
-
-    return vectorsMatrixDeriv[vecId.index];
-}
-
-template <class DataTypes>
-const Data<typename MechanicalObject<DataTypes>::MatrixDeriv>* MechanicalObject<DataTypes>::read(core::ConstMatrixDerivId vecId) const
-{
-
-    if (vecId.index < vectorsMatrixDeriv.size())
-        return vectorsMatrixDeriv[vecId.index];
-    else
-    {
-        msg_error() << "Vector " << vecId << "does not exist";
-        return nullptr;
-    }
-}
-
-template <class DataTypes>
-void MechanicalObject<DataTypes>::setVecCoord(core::ConstVecCoordId vecId, Data< VecCoord > *vecData)
-{
-    const auto index = vecId.getIndex();
-    if (index >= vectorsCoord.size())
-    {
-        vectorsCoord.resize(index + 1, 0);
-    }
-
-    vectorsCoord[index] = vecData;
-
-    const auto group = vecId.getGroup();
-    if (!group.empty())
-    {
-        vecData->setGroup(group);
-    }
-}
-
-template <class DataTypes>
-void MechanicalObject<DataTypes>::setVecDeriv(core::ConstVecDerivId vecId, Data< VecDeriv > *vecData)
-{
-    const auto index = vecId.getIndex();
-    if (index >= vectorsDeriv.size())
-    {
-        vectorsDeriv.resize(index + 1, 0);
-    }
-
-    vectorsDeriv[index] = vecData;
-
-    const auto group = vecId.getGroup();
-    if (!group.empty())
-    {
-        vecData->setGroup(group);
-    }
-}
-
-
-template <class DataTypes>
-void MechanicalObject<DataTypes>::setVecMatrixDeriv(core::ConstMatrixDerivId vecId, Data < MatrixDeriv > *vecData)
-{
-    const auto index = vecId.getIndex();
-    if (index >= vectorsMatrixDeriv.size())
-    {
-        vectorsMatrixDeriv.resize(index + 1, 0);
-    }
-
-    vectorsMatrixDeriv[index] = vecData;
-
-    const auto group = vecId.getGroup();
-    if (!group.empty())
-    {
-        vecData->setGroup(group);
     }
 }
 

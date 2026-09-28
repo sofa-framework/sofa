@@ -125,27 +125,16 @@ public:
 
     void writeState( std::ostream& out ) override;
 
-    /// @name New vectors access API based on VecId
-    /// @{
-
-    Data< VecCoord >* write(core::VecCoordId vecId) override;
-    const Data< VecCoord >* read(core::ConstVecCoordId vecId) const override;
-
-    Data< VecDeriv >* write(core::VecDerivId vecId) override;
-    const Data< VecDeriv >* read(core::ConstVecDerivId vecId) const override;
-
-    Data< MatrixDeriv >* write(core::MatrixDerivId vecId) override;
-    const Data< MatrixDeriv >* read(core::ConstMatrixDerivId vecId) const override;
-
-    /// @}
-
     void initGnuplot(const std::string path) override;
     void exportGnuplot(SReal time) override;
 
-    void resize( Size vsize) override;
-    virtual void reserve(Size vsize);
+    using sofa::core::StateVectorStorage<DataTypes>::write;
+    using sofa::core::StateVectorStorage<DataTypes>::read;
 
-    Size getSize() const override { return d_size.getValue(); }
+    using sofa::core::StateVectorStorage<DataTypes>::resize;
+    using sofa::core::StateVectorStorage<DataTypes>::reserve;
+    using sofa::core::StateVectorStorage<DataTypes>::getSize;
+    using sofa::core::StateVectorStorage<DataTypes>::d_size;
 
     SReal getPX(sofa::Index i) const override;
     SReal getPY(sofa::Index i) const override;
@@ -361,35 +350,21 @@ protected :
     /// @}
 
     //int vsize; ///< Number of elements to allocate in vectors
-    Data< int > d_size; ///< Size of the vectors
 
     SingleLink< MechanicalObject<DataTypes>, core::topology::BaseMeshTopology,BaseLink::FLAG_STRONGLINK|BaseLink::FLAG_STOREPATH> l_topology;
-
-    Data< int > f_reserve; ///< Size to reserve when creating vectors. (default=0)
 
     bool m_initialized;
 
     /// @name Integration-related data
     /// @{
 
-    sofa::type::vector< Data< VecCoord >    * > vectorsCoord; ///< Coordinates DOFs vectors table (static and dynamic allocated)
-    sofa::type::vector< Data< VecDeriv >    * > vectorsDeriv; ///< Derivates DOFs vectors table (static and dynamic allocated)
-    sofa::type::vector< Data< MatrixDeriv > * > vectorsMatrixDeriv; ///< Constraint vectors table
+    using sofa::core::StateVectorStorage<DataTypes>::vectorsCoord;
+    using sofa::core::StateVectorStorage<DataTypes>::vectorsDeriv;
+    using sofa::core::StateVectorStorage<DataTypes>::vectorsMatrixDeriv;
 
-    /**
-     * @brief Inserts VecCoord DOF coordinates vector at index in the vectorsCoord container.
-     */
-    void setVecCoord(core::ConstVecCoordId /*vecId*/, Data< VecCoord >* /*vCoord*/);
-
-    /**
-     * @brief Inserts VecDeriv DOF derivates vector at index in the vectorsDeriv container.
-     */
-    void setVecDeriv(core::ConstVecDerivId /*vecId*/, Data< VecDeriv >* /*vDeriv*/);
-
-    /**
-     * @brief Inserts MatrixDeriv DOF  at index in the MatrixDeriv container.
-     */
-    void setVecMatrixDeriv(core::ConstMatrixDerivId /*vecId*/, Data< MatrixDeriv> * /*mDeriv*/);
+    using sofa::core::StateVectorStorage<DataTypes>::setVecCoord;
+    using sofa::core::StateVectorStorage<DataTypes>::setVecDeriv;
+    using sofa::core::StateVectorStorage<DataTypes>::setVecMatrixDeriv;
 
 
     /// @}
