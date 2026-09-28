@@ -299,7 +299,7 @@ void FEMMass<TDataTypes, TElementType>::addMDx(const core::MechanicalParams* mpa
 }
 
 template <class TDataTypes, class TElementType>
-void FEMMass<TDataTypes, TElementType>::accFromF(const core::MechanicalParams* mparams,
+void FEMMass<TDataTypes, TElementType>::solveLinearSystem(const core::MechanicalParams* mparams,
                                                         DataVecDeriv_t<DataTypes>& a,
                                                         const DataVecDeriv_t<DataTypes>& f)
 {
@@ -310,7 +310,7 @@ void FEMMass<TDataTypes, TElementType>::accFromF(const core::MechanicalParams* m
 
     if (!d_lumping.getValue())
     {
-        msg_error() << "the method 'accFromF' can't be used with this component as this "
+        msg_error() << "the method 'solveLinearSystem' can't be used with this component as this "
                         "SPARSE mass matrix can't be inversed easily. Enable 'lumping' instead.";
         return;
     }

@@ -64,20 +64,8 @@ void Mass<DataTypes>::addMDx(const MechanicalParams* /*mparams*/, DataVecDeriv& 
     msg_warning() << "Method addMDx(const MechanicalParams* , DataVecDeriv& , const DataVecDeriv&  , SReal  ) not implemented.";
 }
 
-
 template<class DataTypes>
-void Mass<DataTypes>::accFromF(const MechanicalParams* mparams, MultiVecDerivId aid)
-{
-    if(mparams)
-    {
-        auto mstate = this->mstate.get();
-        accFromF(mparams, *aid[mstate].write(), *mparams->readF(mstate));
-    }
-    else msg_error() <<"Mass<DataTypes>::accFromF(const MechanicalParams* mparams, MultiVecDerivId aid) receives no mparam";
-}
-
-template<class DataTypes>
-void Mass<DataTypes>::accFromF(const MechanicalParams* /*mparams*/, DataVecDeriv& /*a*/, const DataVecDeriv& /*f*/)
+void Mass<DataTypes>::solveLinearSystem(const MechanicalParams* /*mparams*/, DataVecDeriv& /*a*/, const DataVecDeriv& /*f*/)
 {
     msg_warning() << "Method accFromF(const MechanicalParams* , DataVecDeriv& , const DataVecDeriv& ) not implemented.";
 }

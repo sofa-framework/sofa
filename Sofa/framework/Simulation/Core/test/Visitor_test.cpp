@@ -121,7 +121,7 @@ public:
         SOFA_UNUSED(fid);
         SOFA_UNUSED(factor);
     }
-    void accFromF(const core::MechanicalParams* mparams, core::MultiVecDerivId aid) override
+    void solveLinearSystem(const core::MechanicalParams* mparams, core::MultiVecDerivId xId, core::ConstMultiVecDerivId bId) override
     {
         SOFA_UNUSED(mparams);
         SOFA_UNUSED(aid);
