@@ -76,12 +76,16 @@ void PairInteractionForceField<DataTypes>::addDForce(const MechanicalParams* mpa
 }
 
 template<class DataTypes>
-SReal PairInteractionForceField<DataTypes>::getPotentialEnergy(const MechanicalParams* mparams) const
+SReal PairInteractionForceField<DataTypes>::getPotentialEnergy(const MechanicalParams* mparams, ConstMultiVecCoordId xId) const
 {
     auto state1 = this->mstate1.get();
     auto state2 = this->mstate2.get();
     if (state1 && state2)
-        return getPotentialEnergy(mparams, *mparams->readX(state1),*mparams->readX(state2));
+    {
+        const DataVecCoord* x1 = xId[state1].read(); assert(x1);
+        const DataVecCoord* x2 = xId[state2].read(); assert(x2);
+        return getPotentialEnergy(mparams, *x1, *x2);
+    }
     else return 0.0;
 }
 

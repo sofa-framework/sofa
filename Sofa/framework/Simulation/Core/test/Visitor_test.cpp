@@ -90,7 +90,7 @@ class TestForceField : public core::behavior::BaseForceField
 public:
     void addForce(const core::MechanicalParams* mparams, core::MultiVecDerivId fId) override {}
     void addDForce(const core::MechanicalParams* mparams, core::MultiVecDerivId dfId) override {}
-    SReal getPotentialEnergy(const core::MechanicalParams* mparams) const override { return {}; }
+    SReal getPotentialEnergy(const core::MechanicalParams* mparams, core::ConstMultiVecCoordId dxId) const override { return {}; }
     void addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override {}
 };
 
@@ -101,7 +101,7 @@ public:
     void accFromF(const core::MechanicalParams* mparams, core::MultiVecDerivId aid) override {}
     void addGravityToV(const core::MechanicalParams* mparams, core::MultiVecDerivId vid) override {}
     SReal getKineticEnergy(const core::MechanicalParams* mparams) const override { return {}; }
-    SReal getPotentialEnergy(const core::MechanicalParams* mparams) const override { return {}; }
+    SReal getPotentialEnergy(const core::MechanicalParams* mparams, core::ConstMultiVecCoordId x) const override { return {}; }
     type::Vec6 getMomentum(const core::MechanicalParams* mparams) const override { return {}; }
     void addMToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override {}
     void initGnuplot(const std::string path) override {}
@@ -116,7 +116,7 @@ class TestInteractionForceField : public core::behavior::BaseInteractionForceFie
 public:
     void addForce(const core::MechanicalParams* mparams, core::MultiVecDerivId fId) override {}
     void addDForce(const core::MechanicalParams* mparams, core::MultiVecDerivId dfId) override {}
-    SReal getPotentialEnergy(const core::MechanicalParams* mparams) const override { return {}; }
+    SReal getPotentialEnergy(const core::MechanicalParams* mparams, core::ConstMultiVecCoordId) const override { return {}; }
 };
 
 class TestMapping : public core::BaseMapping

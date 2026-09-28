@@ -99,12 +99,9 @@ public:
     SReal getKineticEnergy( const MechanicalParams* mparams) const override;
     virtual SReal getKineticEnergy( const MechanicalParams* mparams, const DataVecDeriv& v) const;
 
-    ///                         $ e = M g x $
-    ///
-    /// This method retrieves the positions vector and call the internal
-    /// getPotentialEnergy(const MechanicalParams*, const VecCoord&) method implemented by the component.
-    SReal getPotentialEnergy( const MechanicalParams* mparams) const override;
+    SReal getPotentialEnergy( const MechanicalParams* mparams, ConstMultiVecCoordId x) const override { return ForceField<DataTypes>::getPotentialEnergy(mparams, x); }
     SReal getPotentialEnergy( const MechanicalParams* mparams, const DataVecCoord& x  ) const override;
+    using BaseForceField::getPotentialEnergy;
 
 
     ///    $ m = ( Mv, cross(x,Mv)+Iw ) $
