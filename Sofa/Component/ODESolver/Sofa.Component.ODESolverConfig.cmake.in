@@ -13,7 +13,14 @@ message(WARNING
 )
 
 
-find_package(Sofa.Simulation.Core QUIET REQUIRED)
+set(SOFACOMPONENTODESOLVER_SOURCE_DIR @SOFACOMPONENTODESOLVER_SOURCE_DIR@)
+
+find_package(Sofa.Config QUIET REQUIRED)
+foreach(target ${SOFACOMPONENTODESOLVER_SOURCE_DIR})
+    sofa_find_package(${target} QUIET REQUIRED)
+endforeach()
+
+sofa_find_package(Sofa.Simulation.Core QUIET REQUIRED)
 
 if(NOT TARGET @PROJECT_NAME@)
     include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@Targets.cmake")
