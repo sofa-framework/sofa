@@ -92,7 +92,7 @@ void MeshMatrixMass<CudaVec3fTypes>::addForce(const core::MechanicalParams* /*mp
 }
 
 template<>
-void MeshMatrixMass<CudaVec3fTypes>::accFromF(const core::MechanicalParams* /*mparams*/, DataVecDeriv& a, const DataVecDeriv& f)
+void MeshMatrixMass<CudaVec3fTypes>::solveLinearSystem(const core::MechanicalParams* /*mparams*/, DataVecDeriv& a, const DataVecDeriv& f)
 {
     VecDeriv& _acc = *a.beginEdit();
     const VecDeriv& _f = f.getValue();
@@ -141,7 +141,7 @@ void MeshMatrixMass<CudaVec2fTypes>::addForce(const core::MechanicalParams* /*mp
 }
 
 template<>
-void MeshMatrixMass<CudaVec2fTypes>::accFromF(const core::MechanicalParams* /*mparams*/, DataVecDeriv& a, const DataVecDeriv& f)
+void MeshMatrixMass<CudaVec2fTypes>::solveLinearSystem(const core::MechanicalParams* /*mparams*/, DataVecDeriv& a, const DataVecDeriv& f)
 {
     VecDeriv& _acc = *a.beginEdit();
     const VecDeriv& _f = f.getValue();
@@ -190,7 +190,7 @@ void MeshMatrixMass<CudaVec1fTypes>::addForce(const core::MechanicalParams* /*mp
 }
 
 template<>
-void MeshMatrixMass<CudaVec1fTypes>::accFromF(const core::MechanicalParams* /*mparams*/, DataVecDeriv& a, const DataVecDeriv& f)
+void MeshMatrixMass<CudaVec1fTypes>::solveLinearSystem(const core::MechanicalParams* /*mparams*/, DataVecDeriv& a, const DataVecDeriv& f)
 {
     VecDeriv& _acc = *a.beginEdit();
     const VecDeriv& _f = f.getValue();

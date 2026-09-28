@@ -289,7 +289,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::buildMassMatrix(sofa::core::beha
 }
 
 template<class DataTypes>
-void HexahedronFEMForceFieldAndMass<DataTypes>::accFromF(const core::MechanicalParams* /*mparams*/, DataVecDeriv& /*a*/, const DataVecDeriv& /*f*/)
+void HexahedronFEMForceFieldAndMass<DataTypes>::solveLinearSystem(const core::MechanicalParams* /*mparams*/, DataVecDeriv& /*a*/, const DataVecDeriv& /*f*/)
 {
     msg_warning()<<"HexahedronFEMForceFieldAndMass<DataTypes>::accFromF not yet implemented"<<msgendl;
     // need to built the big global mass matrix and to inverse it...

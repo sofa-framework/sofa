@@ -56,7 +56,7 @@ template <>
 void DiagonalMass<gpu::cuda::CudaVec3fTypes>::addMDx(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecDeriv& d_dx, SReal d_factor);
 
 template <>
-void DiagonalMass<gpu::cuda::CudaVec3fTypes>::accFromF(const core::MechanicalParams* mparams, DataVecDeriv& d_a, const DataVecDeriv& d_f);
+void DiagonalMass<gpu::cuda::CudaVec3fTypes>::solveLinearSystem(const core::MechanicalParams* mparams, DataVecDeriv& d_a, const DataVecDeriv& d_f);
 
 template<>
 void DiagonalMass<gpu::cuda::CudaVec3fTypes>::addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
@@ -69,7 +69,7 @@ template <>
 void DiagonalMass<gpu::cuda::CudaVec3dTypes>::addMDx(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecDeriv& d_dx, SReal d_factor);
 
 template <>
-void DiagonalMass<gpu::cuda::CudaVec3dTypes>::accFromF(const core::MechanicalParams* mparams, DataVecDeriv& d_a, const DataVecDeriv& d_f);
+void DiagonalMass<gpu::cuda::CudaVec3dTypes>::solveLinearSystem(const core::MechanicalParams* mparams, DataVecDeriv& d_a, const DataVecDeriv& d_f);
 
 template<>
 void DiagonalMass<gpu::cuda::CudaVec3dTypes>::addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
