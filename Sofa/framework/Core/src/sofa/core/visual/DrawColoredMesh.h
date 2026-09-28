@@ -122,6 +122,11 @@ struct SOFA_CORE_API DrawElementColoredMesh<sofa::geometry::Edge>
         const IndicesContainer& elementIndices,
         const ColorContainer& nodesColors)
     {
+        SOFA_UNUSED(drawTool);
+        SOFA_UNUSED(position);
+        SOFA_UNUSED(topology);
+        SOFA_UNUSED(elementIndices);
+        SOFA_UNUSED(nodesColors);
     }
 };
 
@@ -140,6 +145,11 @@ struct SOFA_CORE_API DrawElementColoredMesh<sofa::geometry::Triangle>
         const IndicesContainer& elementIndices,
         const ColorContainer& nodesColors)
     {
+        SOFA_UNUSED(drawTool);
+        SOFA_UNUSED(position);
+        SOFA_UNUSED(topology);
+        SOFA_UNUSED(elementIndices);
+        SOFA_UNUSED(nodesColors);
     }
 };
 
@@ -158,6 +168,11 @@ struct SOFA_CORE_API DrawElementColoredMesh<sofa::geometry::Quad>
         const IndicesContainer& elementIndices,
         const ColorContainer& nodesColors)
     {
+        SOFA_UNUSED(drawTool);
+        SOFA_UNUSED(position);
+        SOFA_UNUSED(topology);
+        SOFA_UNUSED(elementIndices);
+        SOFA_UNUSED(nodesColors);
     }
 };
 
@@ -295,6 +310,11 @@ struct SOFA_CORE_API DrawElementColoredMesh<sofa::geometry::Prism>
         const IndicesContainer& elementIndices,
         const ColorContainer& nodesColors)
     {
+        SOFA_UNUSED(drawTool);
+        SOFA_UNUSED(position);
+        SOFA_UNUSED(topology);
+        SOFA_UNUSED(elementIndices);
+        SOFA_UNUSED(nodesColors);
     }
 };
 
@@ -313,6 +333,11 @@ struct SOFA_CORE_API DrawElementColoredMesh<sofa::geometry::Pyramid>
         const IndicesContainer& elementIndices,
         const ColorContainer& nodesColors)
     {
+        SOFA_UNUSED(drawTool);
+        SOFA_UNUSED(position);
+        SOFA_UNUSED(topology);
+        SOFA_UNUSED(elementIndices);
+        SOFA_UNUSED(nodesColors);
     }
 };
 

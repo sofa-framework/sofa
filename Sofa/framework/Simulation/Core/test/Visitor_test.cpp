@@ -23,6 +23,7 @@ public:
 
     Result fwdMechanicalMapping(simulation::Node* /*node*/, sofa::core::BaseMapping* map) override
     {
+        SOFA_UNUSED(map);
         ++m_mappingCount;
         return Result::RESULT_CONTINUE;
     }
@@ -57,6 +58,7 @@ public:
 
     Result fwdMechanicalMapping(simulation::Node*, sofa::core::BaseMapping* map) override
     {
+        SOFA_UNUSED(map);
         ++m_mappingCount;
         return Result::RESULT_CONTINUE;
     }
@@ -88,48 +90,151 @@ public:
 class TestForceField : public core::behavior::BaseForceField
 {
 public:
-    void addForce(const core::MechanicalParams* mparams, core::MultiVecDerivId fId) override {}
-    void addDForce(const core::MechanicalParams* mparams, core::MultiVecDerivId dfId) override {}
-    SReal getPotentialEnergy(const core::MechanicalParams* mparams) const override { return {}; }
-    void addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override {}
+    void addForce(const core::MechanicalParams* mparams, core::MultiVecDerivId fId) override
+    {
+        SOFA_UNUSED(mparams);
+        SOFA_UNUSED(fId);
+    }
+    void addDForce(const core::MechanicalParams* mparams, core::MultiVecDerivId dfId) override
+    {
+        SOFA_UNUSED(mparams);
+        SOFA_UNUSED(dfId);
+    }
+    SReal getPotentialEnergy(const core::MechanicalParams* mparams) const override
+    {
+        SOFA_UNUSED(mparams);
+        return {};
+    }
+    void addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override
+    {
+        SOFA_UNUSED(mparams);
+        SOFA_UNUSED(matrix);
+    }
 };
 
 class TestMass : public core::behavior::BaseMass
 {
 public:
-    void addMDx(const core::MechanicalParams* mparams, core::MultiVecDerivId fid, SReal factor) override {}
-    void accFromF(const core::MechanicalParams* mparams, core::MultiVecDerivId aid) override {}
-    void addGravityToV(const core::MechanicalParams* mparams, core::MultiVecDerivId vid) override {}
-    SReal getKineticEnergy(const core::MechanicalParams* mparams) const override { return {}; }
-    SReal getPotentialEnergy(const core::MechanicalParams* mparams) const override { return {}; }
-    type::Vec6 getMomentum(const core::MechanicalParams* mparams) const override { return {}; }
-    void addMToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override {}
-    void initGnuplot(const std::string path) override {}
-    void exportGnuplot(const core::MechanicalParams* mparams, SReal time) override {}
-    SReal getElementMass(sofa::Index index) const override { return {}; }
-    void getElementMass(sofa::Index index, linearalgebra::BaseMatrix* m) const override {}
+    void addMDx(const core::MechanicalParams* mparams, core::MultiVecDerivId fid, SReal factor) override
+    {
+        SOFA_UNUSED(mparams);
+        SOFA_UNUSED(fid);
+        SOFA_UNUSED(factor);
+    }
+    void accFromF(const core::MechanicalParams* mparams, core::MultiVecDerivId aid) override
+    {
+        SOFA_UNUSED(mparams);
+        SOFA_UNUSED(aid);
+    }
+    void addGravityToV(const core::MechanicalParams* mparams, core::MultiVecDerivId vid) override
+    {
+        SOFA_UNUSED(mparams);
+        SOFA_UNUSED(vid);
+    }
+    SReal getKineticEnergy(const core::MechanicalParams* mparams) const override
+    {
+        SOFA_UNUSED(mparams);
+        return {};
+    }
+    SReal getPotentialEnergy(const core::MechanicalParams* mparams) const override
+    {
+        SOFA_UNUSED(mparams);
+        return {};
+    }
+    type::Vec6 getMomentum(const core::MechanicalParams* mparams) const override
+    {
+        SOFA_UNUSED(mparams);
+        return {};
+    }
+    void addMToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override
+    {
+        SOFA_UNUSED(mparams);
+        SOFA_UNUSED(matrix);
+    }
+    void initGnuplot(const std::string path) override
+    {
+        SOFA_UNUSED(path);
+    }
+    void exportGnuplot(const core::MechanicalParams* mparams, SReal time) override
+    {
+        SOFA_UNUSED(mparams);
+        SOFA_UNUSED(time);
+    }
+    SReal getElementMass(sofa::Index index) const override
+    {
+        SOFA_UNUSED(index);
+        return {};
+    }
+    void getElementMass(sofa::Index index, linearalgebra::BaseMatrix* m) const override
+    {
+        SOFA_UNUSED(index);
+        SOFA_UNUSED(m);
+    }
     bool isDiagonal() const override { return {}; }
 };
 
 class TestInteractionForceField : public core::behavior::BaseInteractionForceField
 {
 public:
-    void addForce(const core::MechanicalParams* mparams, core::MultiVecDerivId fId) override {}
-    void addDForce(const core::MechanicalParams* mparams, core::MultiVecDerivId dfId) override {}
-    SReal getPotentialEnergy(const core::MechanicalParams* mparams) const override { return {}; }
+    void addForce(const core::MechanicalParams* mparams, core::MultiVecDerivId fId) override
+    {
+        SOFA_UNUSED(mparams);
+        SOFA_UNUSED(fId);
+    }
+    void addDForce(const core::MechanicalParams* mparams, core::MultiVecDerivId dfId) override
+    {
+        SOFA_UNUSED(mparams);
+        SOFA_UNUSED(dfId);
+    }
+    SReal getPotentialEnergy(const core::MechanicalParams* mparams) const override
+    {
+        SOFA_UNUSED(mparams);
+        return {};
+    }
 };
 
 class TestMapping : public core::BaseMapping
 {
 public:
-    void apply(const core::MechanicalParams* mparams, core::MultiVecCoordId outPos, core::ConstMultiVecCoordId inPos) override {}
-    void applyJ(const core::MechanicalParams* mparams, core::MultiVecDerivId outVel, core::ConstMultiVecDerivId inVel) override {}
+    void apply(const core::MechanicalParams* mparams, core::MultiVecCoordId outPos, core::ConstMultiVecCoordId inPos) override
+    {
+        SOFA_UNUSED(mparams);
+        SOFA_UNUSED(outPos);
+        SOFA_UNUSED(inPos);
+    }
+    void applyJ(const core::MechanicalParams* mparams, core::MultiVecDerivId outVel, core::ConstMultiVecDerivId inVel) override
+    {
+        SOFA_UNUSED(mparams);
+        SOFA_UNUSED(outVel);
+        SOFA_UNUSED(inVel);
+    }
     type::vector<core::BaseState*> getFrom() override { return {} ;}
     type::vector<core::BaseState*> getTo() override { return {} ;}
-    void applyJT(const core::MechanicalParams* mparams, core::MultiVecDerivId inForce, core::ConstMultiVecDerivId outForce) override {}
-    void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId inForce, core::ConstMultiVecDerivId outForce) override {}
-    void applyJT(const core::ConstraintParams* mparams, core::MultiMatrixDerivId inConst, core::ConstMultiMatrixDerivId outConst) override {}
-    void computeAccFromMapping(const core::MechanicalParams* mparams, core::MultiVecDerivId outAcc, core::ConstMultiVecDerivId inVel, core::ConstMultiVecDerivId inAcc) override {}
+    void applyJT(const core::MechanicalParams* mparams, core::MultiVecDerivId inForce, core::ConstMultiVecDerivId outForce) override
+    {
+        SOFA_UNUSED(mparams);
+        SOFA_UNUSED(inForce);
+        SOFA_UNUSED(outForce);
+    }
+    void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId inForce, core::ConstMultiVecDerivId outForce) override
+    {
+        SOFA_UNUSED(mparams);
+        SOFA_UNUSED(inForce);
+        SOFA_UNUSED(outForce);
+    }
+    void applyJT(const core::ConstraintParams* mparams, core::MultiMatrixDerivId inConst, core::ConstMultiMatrixDerivId outConst) override
+    {
+        SOFA_UNUSED(mparams);
+        SOFA_UNUSED(inConst);
+        SOFA_UNUSED(outConst);
+    }
+    void computeAccFromMapping(const core::MechanicalParams* mparams, core::MultiVecDerivId outAcc, core::ConstMultiVecDerivId inVel, core::ConstMultiVecDerivId inAcc) override
+    {
+        SOFA_UNUSED(mparams);
+        SOFA_UNUSED(outAcc);
+        SOFA_UNUSED(inVel);
+        SOFA_UNUSED(inAcc);
+    }
     type::vector<core::behavior::BaseMechanicalState*> getMechFrom() override { return {} ;}
     type::vector<core::behavior::BaseMechanicalState*> getMechTo() override { return {} ;}
     void disable() override {}
