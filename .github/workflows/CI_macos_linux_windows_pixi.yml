@@ -257,7 +257,7 @@ jobs:
 
       - name: Setup env for tests
         shell: bash
-        if: always() && ${{ runner.os == 'Windows' }}
+        if: always() && runner.os == 'Windows'
         run: |
           cd ${SRC_DIR}
 
