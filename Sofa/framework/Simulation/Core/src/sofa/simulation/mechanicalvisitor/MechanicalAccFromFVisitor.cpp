@@ -27,22 +27,15 @@
 namespace sofa::simulation::mechanicalvisitor
 {
 
-Visitor::Result MechanicalAccFromFVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/)
+Visitor::Result MechanicalMassLinearSolveVisitor::fwdMass(simulation::Node* /*node*/, core::behavior::BaseMass* mass)
 {
-    /////<TO REMOVE>
-    /// \todo Check presence of Mass
+    mass->solveLinearSystem(mparams, x, b);
     return RESULT_CONTINUE;
 }
 
-Visitor::Result MechanicalAccFromFVisitor::fwdMass(simulation::Node* /*node*/, core::behavior::BaseMass* mass)
+std::string MechanicalMassLinearSolveVisitor::getInfos() const
 {
-    mass->accFromF(mparams, a);
-    return RESULT_CONTINUE;
-}
-
-std::string MechanicalAccFromFVisitor::getInfos() const
-{
-    std::string name="a["+a.getName()+"] f["+mparams->f().getName()+"]"; return name;
+    std::string name="x["+x.getName()+"] b["+b.getName()+"]"; return name;
 }
 
 }
