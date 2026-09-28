@@ -13,7 +13,7 @@
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/>
     <DefaultAnimationLoop/>
     <VisualStyle displayFlags="showForceFields showVisualModels showBehaviorModels showWireFrame" />
-    <EulerImplicitSolver name="odeImplicitSolver"/>
+    <EulerImplicitIntegrationScheme name="odeImplicitSolver"/>
     <CGLinearSolver name="linearSolver" maxIter="25" tolerance="1e-5" smallDenominatorThreshold="1e-5"/>
 
     <MeshTopology name="Topo" tetrahedra="0 1 2 3" />

@@ -26,13 +26,13 @@ set(SOURCE_FILES
 sofa_find_package(Sofa.Simulation.Core REQUIRED)
 sofa_find_package(Sofa.Component.Mass REQUIRED) # UncoupledCC needs UniformMass
 sofa_find_package(Sofa.Component.LinearSolver.Iterative REQUIRED) # PrecomputedCC needs CGLinearSolver
-sofa_find_package(Sofa.Component.ODESolver.Backward REQUIRED) # PrecomputedCC needs EulerSolver
+sofa_find_package(Sofa.Component.IntegrationScheme.Backward REQUIRED) # PrecomputedCC needs EulerSolver
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Simulation.Core)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Mass)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.LinearSolver.Iterative)
-target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.ODESolver.Backward)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.IntegrationScheme.Backward)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
