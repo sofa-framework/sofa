@@ -250,7 +250,7 @@ void MechanicalOperations::accFromF(core::MultiVecDerivId a, core::ConstMultiVec
     setDx(a);
     setF(f);
 
-    executeVisitor( MechanicalAccFromFVisitor(&mparams, a) );
+    executeVisitor( MechanicalMassLinearSolveVisitor(&mparams, a, f) );
 }
 
 /// Compute the current force (given the latest propagated position and velocity)
