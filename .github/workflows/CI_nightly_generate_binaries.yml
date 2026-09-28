@@ -89,22 +89,22 @@ jobs:
 
 
   # Trigger the build and sharing all parameters from nightly_build > outputs
-  pixi-ci:
-    needs: nightly_build
-    if: ${{ github.repository_owner == 'sofa-framework' && needs.nightly_build.outputs.PIXI_BUILDER_OS != '[]' }}
-    uses: sofa-framework/sofa/.github/workflows/CI_macos_linux_windows_pixi.yml@master
-    with:
-      sofa-branch-name: ${{ needs.nightly_build.outputs.SOFA_BRANCH_NAME }}
-      sofa-commit-sha: ${{ needs.nightly_build.outputs.SOFA_COMMIT_SHA }}
-      preset: ${{ needs.nightly_build.outputs.PRESET }}
-      python-version: ${{ needs.nightly_build.outputs.PYTHON_VERSION }}
-      ci-depends-on: ${{ needs.nightly_build.outputs.CI_DEPENDS_ON }}
-      with-all-tests: ${{ needs.nightly_build.outputs.WITH_ALL_TESTS == 'true'}}
-      force-full-build: ${{ needs.nightly_build.outputs.FORCE_FULL_BUILD == 'true'}}
-      external-plugins: ${{ needs.nightly_build.outputs.EXTERNAL_PLUGINS }}
-      additionnal-cmake-flags: ${{ needs.nightly_build.outputs.ADDITIONNAL_CMAKE_FLAGS }}
-      generate-binaries: ${{ needs.nightly_build.outputs.GENERATE_BINARIES == 'true'}}
-      pr-owner-url: ${{ needs.nightly_build.outputs.PR_OWNER_URL }}
-      pr-branch-name: ${{ needs.nightly_build.outputs.PR_BRANCH_NAME }}
-      pr-commit-sha: ${{ needs.nightly_build.outputs.PR_COMMIT_SHA }}
-      builder-os: ${{ needs.nightly_build.outputs.PIXI_BUILDER_OS }}
+  # pixi-ci:
+  #   needs: nightly_build
+  #   if: ${{ github.repository_owner == 'sofa-framework' && needs.nightly_build.outputs.PIXI_BUILDER_OS != '[]' }}
+  #   uses: sofa-framework/sofa/.github/workflows/CI_macos_linux_windows_pixi.yml@master
+  #   with:
+  #     sofa-branch-name: ${{ needs.nightly_build.outputs.SOFA_BRANCH_NAME }}
+  #     sofa-commit-sha: ${{ needs.nightly_build.outputs.SOFA_COMMIT_SHA }}
+  #     preset: ${{ needs.nightly_build.outputs.PRESET }}
+  #     python-version: ${{ needs.nightly_build.outputs.PYTHON_VERSION }}
+  #     ci-depends-on: ${{ needs.nightly_build.outputs.CI_DEPENDS_ON }}
+  #     with-all-tests: ${{ needs.nightly_build.outputs.WITH_ALL_TESTS == 'true'}}
+  #     force-full-build: ${{ needs.nightly_build.outputs.FORCE_FULL_BUILD == 'true'}}
+  #     external-plugins: ${{ needs.nightly_build.outputs.EXTERNAL_PLUGINS }}
+  #     additionnal-cmake-flags: ${{ needs.nightly_build.outputs.ADDITIONNAL_CMAKE_FLAGS }}
+  #     generate-binaries: ${{ needs.nightly_build.outputs.GENERATE_BINARIES == 'true'}}
+  #     pr-owner-url: ${{ needs.nightly_build.outputs.PR_OWNER_URL }}
+  #     pr-branch-name: ${{ needs.nightly_build.outputs.PR_BRANCH_NAME }}
+  #     pr-commit-sha: ${{ needs.nightly_build.outputs.PR_COMMIT_SHA }}
+  #     builder-os: ${{ needs.nightly_build.outputs.PIXI_BUILDER_OS }}
