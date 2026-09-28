@@ -27,7 +27,48 @@
 namespace sofa::core
 {
 
-template<class TDataTypes>
+/**
+ * @class StateVectorStorage
+ * @brief A storage class for managing state vectors (coordinates, derivatives, and matrix derivatives).
+ *
+ * This class provides a centralized storage system for vectors associated with degrees of freedom (DOFs).
+ * It maps vector identifiers (e.g., `VecCoordId`, `VecDerivId`, `MatrixDerivId`) to `Data<>` containers,
+ * enabling dynamic access, resizing, and reservation of vectors.
+ *
+ * @tparam TDataTypes The data types used for the state (e.g., coordinates, derivatives).
+ *
+ * @section Features
+ * - **Vector Management**: Stores and manages vectors for coordinates (`VecCoord`), derivatives (`VecDeriv`), and matrix derivatives (`MatrixDeriv`).
+ * - **Dynamic Access**: Provides methods to read/write vectors using their identifiers (e.g., `write(VecCoordId)`, `read(ConstVecCoordId)`).
+ * - **Automatic Creation**: If a `VecId` does not exist in the storage, a new `Data<>` container is dynamically created and associated with the identifier.
+ * - **Resizing and Reservation**: Supports resizing vectors to match the state size and reserving memory for performance optimization.
+ * - **Automatic Initialization**: Initializes vectors with a default size of 1 and optionally reserves memory based on `f_reserve`.
+ *
+ * @section Usage
+ * Derived classes can associate vector identifiers with `Data<>` containers using the protected methods:
+ * - `setVecCoord(core::ConstVecCoordId, Data<VecCoord>*)`
+ * - `setVecDeriv(core::ConstVecDerivId, Data<VecDeriv>*)`
+ * - `setVecMatrixDeriv(core::ConstMatrixDerivId, Data<MatrixDeriv>*)`
+ *
+ * Example:
+ * @code
+ * Data<VecCoord> x;
+ * setVecCoord(core::vec_id::write_access::position, &x);
+ * @endcode
+ *
+ * Alternatively, writing to a non-existent `VecId` will automatically create a new `Data<>` container:
+ * @code
+ * Data<VecCoord>* coordData = write(core::vec_id::write_access::position);
+ * @endcode
+ *
+ * @section Vector Containers
+ * - `vectorsCoord`: Table of coordinate vectors (static and dynamically allocated).
+ * - `vectorsDeriv`: Table of derivative vectors (static and dynamically allocated).
+ * - `vectorsMatrixDeriv`: Table of matrix derivative vectors.
+ *
+ * @note Debug checks are enabled in non-release builds to ensure vector sizes match the state size.
+ */
+template <class TDataTypes>
 class StateVectorStorage : public virtual State<TDataTypes>
 {
 public:
