@@ -40,7 +40,8 @@ jobs:
       PR_OWNER_URL: ${{ steps.export-vars.outputs.PR_OWNER_URL }}
       PR_BRANCH_NAME: ${{ steps.export-vars.outputs.PR_BRANCH_NAME }}
       PR_COMMIT_SHA: ${{ steps.export-vars.outputs.PR_COMMIT_SHA }}
-      BUILDER_OS: ${{ steps.export-vars.outputs.BUILDER_OS }}
+      SH_BUILDER_OS: ${{ steps.export-vars.outputs.SH_BUILDER_OS }}
+      PIXI_BUILDER_OS: ${{ steps.export-vars.outputs.PIXI_BUILDER_OS }}
 
     steps:
       - name: Export outputs
