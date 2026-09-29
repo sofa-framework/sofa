@@ -124,6 +124,60 @@ void TriangleSubdivider::addPoint(std::shared_ptr<PointToAdd> pTA)
 }
 
 
+void TriangleSubdivider::cutTriangles(const sofa::type::Vec3& ptA, const sofa::type::Vec3& ptB, const sofa::type::Vec3& cutNorm)
+{
+    const sofa::type::Vec3 cutPath = ptB - ptA;
+
+    for (TriangleToAdd* TTA : m_trianglesToAdd)
+    {
+        const sofa::type::fixed_array<sofa::type::Vec3, 3>& triCoords = TTA->m_triCoords;
+        sofa::type::Vec3 gravityCenter = (triCoords[0] + triCoords[1] + triCoords[2]) / 3;
+        sofa::type::Vec3 triCutNorm = cutPath.cross(gravityCenter - ptA);
+        SReal dotValue = triCutNorm * cutNorm;
+
+        // We decide that all triangles detected below the cut (means angle between cutPath and [A - tri barycenter] is negative 
+        // have to change their indices to use the new points on the cut path. All triangles above keep original vertex indices
+        if (dotValue < 0)
+        {
+            TTA->isUp = false; // need to update points
+            for (auto PTA : m_points)
+            {
+                if (PTA->m_idClone == sofa::InvalidID)
+                    continue;
+
+                for (unsigned int k = 0; k < 3; ++k)
+                {
+                    if (TTA->m_triangle[k] == PTA->m_idPoint)
+                    {
+                        TTA->m_triangle[k] = PTA->m_idClone;
+                        break;
+                    }
+                }
+            }
+
+            for (auto PTA : m_snappedPoints)
+            {
+                if (PTA->m_idClone == sofa::InvalidID)
+                    continue;
+
+                for (unsigned int k = 0; k < 3; ++k)
+                {
+                    if (TTA->m_triangle[k] == PTA->m_idPoint)
+                    {
+                        TTA->m_triangle[k] = PTA->m_idClone;
+                        break;
+                    }
+                }
+            }
+        }
+        else
+        {
+            TTA->isUp = true;
+        }
+    }
+}
+
+
 PointID TriangleSubdivider::localVertexId(PointID vertexIndex)
 {
     for (unsigned int i = 0; i < 3; ++i)
