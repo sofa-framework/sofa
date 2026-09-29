@@ -1,5 +1,6 @@
 <Node 	name="Root" dt="0.02"  >
 	<VisualStyle displayFlags="showVisualModels hideBehaviorModels showCollisionModels hideMappings hideForceFields" />
+	<RequiredPlugin name="Razer Hydra Driver" pluginName="SixenseHydra" />
 
 	<EulerImplicitIntegrationScheme name="EulerImplicitIntegrationScheme2"  rayleighStiffness="0.01"  rayleighMass="0.1" />
 	<CGLinearSolver template="GraphScattered" name="linear solver"  iterations="40"  tolerance="1e-009"  threshold="1e-015" />

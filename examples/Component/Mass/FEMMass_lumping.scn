@@ -9,7 +9,7 @@
         <RequiredPlugin pluginName="Sofa.Component.LinearSolver.Ordering"/> <!-- Needed to use components [NaturalOrderingMethod] -->
         <RequiredPlugin pluginName="Sofa.Component.LinearSystem"/> <!-- Needed to use components [ConstantSparsityPatternSystem] -->
         <RequiredPlugin pluginName="Sofa.Component.Mass"/> <!-- Needed to use components [MeshMatrixMass] -->
-        <RequiredPlugin pluginName="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+        <RequiredPlugin pluginName="Sofa.Component.IntegrationScheme.Backward"/> <!-- Needed to use components [EulerImplicitIntegrationScheme] -->
         <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.FEM.Elastic"/>
         <RequiredPlugin pluginName="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
         <RequiredPlugin pluginName="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [TetrahedronSetGeometryAlgorithms,TetrahedronSetTopologyContainer,TetrahedronSetTopologyModifier] -->
@@ -28,7 +28,7 @@
 
     <Node name="consistent">
         <Visual3DText text="consistent mass" position="-0.09 0.03 0" scale="0.01" color="teal"/>
-        <EulerImplicitSolver name="backward_Euler" rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitIntegrationScheme name="backward_Euler" rayleighStiffness="0.1" rayleighMass="0.1" />
 
         <ConstantSparsityPatternSystem template="CompressedRowSparseMatrix" name="A" checkIndices="false"/>
         <NaturalOrderingMethod/>
@@ -50,7 +50,7 @@
 
     <Node name="lumped">
         <Visual3DText text="lumped mass" position="0.01 0.03 0" scale="0.01" color="orange"/>
-        <EulerImplicitSolver name="backward_Euler" rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitIntegrationScheme name="backward_Euler" rayleighStiffness="0.1" rayleighMass="0.1" />
 
         <ConstantSparsityPatternSystem template="CompressedRowSparseMatrix" name="A" checkIndices="false"/>
         <NaturalOrderingMethod/>

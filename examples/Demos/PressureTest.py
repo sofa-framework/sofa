@@ -51,6 +51,19 @@ class LongitudinalDefComputation(Sofa.Core.Controller):
 def createScene(node):
     node.dt = 0.05
     node.gravity = [0, 0, 0]
+
+    node.addObject('RequiredPlugin', pluginName=['Sofa.Component.Constraint.Projective',
+                                                 'Sofa.Component.Engine.Generate',
+                                                 'Sofa.Component.Engine.Select',
+                                                 'Sofa.Component.IntegrationScheme.Backward',
+                                                 'Sofa.Component.LinearSolver.Iterative',
+                                                 'Sofa.Component.Mass',
+                                                 'Sofa.Component.MechanicalLoad',
+                                                 'Sofa.Component.SolidMechanics.FEM.Elastic',
+                                                 'Sofa.Component.StateContainer',
+                                                 'Sofa.Component.Topology.Container.Dynamic',
+                                                 'Sofa.Component.Visual'])
+
     node.addObject("VisualStyle", displayFlags="showBehaviorModels showForceFields showInteractionForceFields showCollisionModels showMappings")
 
     node.addObject("DefaultAnimationLoop", name = "animationLoop" )
