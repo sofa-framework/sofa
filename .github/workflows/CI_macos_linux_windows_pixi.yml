@@ -376,7 +376,6 @@ jobs:
             --input "$env:BUILD_DIR\external_directories\fetched" `
             --output-logs-errors "$RegResultsDir" `
             --legacy-regression `
-            --verbose 0 `
             -j $env:VM_MAX_PARALLEL_TESTS
 
           if (-not (Test-Path "$RegResultsDir\*summary*")) { exit 1 }
@@ -408,7 +407,7 @@ jobs:
         id: publish-tests-logs
         if: always() && runner.os == 'Windows'
         uses: actions/upload-artifact@v4
-        with:-tests_${errorType}.txt
+        with:
           name: tests-logs_${{ matrix.os }}
           path: |
             ${{ env.SOFA_BUILD_DIR }}/tests_results/
@@ -457,12 +456,12 @@ jobs:
                 do
                   for errorType in 'errors' 'crashes' 'failures';
                   do
-                    if [ -f "${{ env.SOFA_BUILD_DIR }}/tests_results/${testType}/${testType}_${errorType}.txt" ]; then
+                    if [ -f "${{ env.SOFA_BUILD_DIR }}/tests_results/${testType}-tests_${errorType}" ]; then
                       capitalized="$(echo "${testType:0:1}" | tr '[:lower:]' '[:upper:]')${testType:1}"
                       echo ""
                       echo -e "${bold}${capitalized} ${errorType}:${normal}"
                       echo ""
-                      cat "${{ env.SOFA_BUILD_DIR }}/tests_results/${testType}/${testType}_${errorType}.txt"
+                      cat "${{ env.SOFA_BUILD_DIR }}/tests_results/${testType}-tests_${errorType}"
                       echo ""
                       echo "#----------------------------------------#"
                     fi
