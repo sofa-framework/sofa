@@ -106,8 +106,8 @@ public:
     void reinit() override;
     void parse(core::objectmodel::BaseObjectDescription* arg) override;
 
-    void start() override;
-    void stop() override;
+    void doStart() override;
+    void doStop() override;
     bool isActive() override;
 
     unsigned int getNumberOfShaders();
