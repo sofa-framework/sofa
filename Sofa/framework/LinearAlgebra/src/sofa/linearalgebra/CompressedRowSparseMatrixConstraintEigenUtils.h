@@ -268,4 +268,4 @@ void addMultTransposeEigen(LhsMatrixDeriv& lhs, const Eigen::SparseMatrix<Real, 
     }
 }
 
-} // namespace sofa::defaulttype
+} // namespace sofa::linearalgebra
