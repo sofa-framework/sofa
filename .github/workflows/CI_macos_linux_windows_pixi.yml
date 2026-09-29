@@ -456,12 +456,12 @@ jobs:
                 do
                   for errorType in 'errors' 'crashes' 'failures';
                   do
-                    if [ -f "${{ env.SOFA_BUILD_DIR }}/tests_results/${testType}-tests_${errorType}" ]; then
+                    if [ -f "${{ env.SOFA_BUILD_DIR }}/tests_results/${testType}/${testType}_${errorType}.txt" ]; then
                       capitalized="$(echo "${testType:0:1}" | tr '[:lower:]' '[:upper:]')${testType:1}"
                       echo ""
                       echo -e "${bold}${capitalized} ${errorType}:${normal}"
                       echo ""
-                      cat "${{ env.SOFA_BUILD_DIR }}/tests_results/${testType}-tests_${errorType}"
+                      cat "${{ env.SOFA_BUILD_DIR }}/tests_results/${testType}/${testType}_${errorType}.txt"
                       echo ""
                       echo "#----------------------------------------#"
                     fi
