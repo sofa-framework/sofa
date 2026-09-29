@@ -90,7 +90,7 @@ public:
 
     void doInit() override;
     void doReInit() override;
-    bool write() override;
+    bool doWrite() override;
 
     void reset() override;
 
