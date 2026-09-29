@@ -113,9 +113,9 @@ public:
     //@}
 
     /// The provided VecDerivId will contribute to the sum of all force containers
-    void addToTotalForces(core::ConstVecDerivId forceId) override;
+    void doAddToTotalForces(core::ConstVecDerivId forceId) override;
 
-    void removeFromTotalForces(core::ConstVecDerivId forceId) override;
+    void doRemoveFromTotalForces(core::ConstVecDerivId forceId) override;
 
 protected:
     State();
@@ -144,8 +144,8 @@ public:
     /// @name BaseData vectors access API based on VecId
     /// @{
 
-    objectmodel::BaseData* baseWrite(VecId v) override;
-    const objectmodel::BaseData* baseRead(ConstVecId v) const override;
+    objectmodel::BaseData* doBaseWrite(VecId v) override;
+    const objectmodel::BaseData* doBaseRead(ConstVecId v) const override;
 
     /// @}
 
