@@ -100,7 +100,6 @@ public:
         msg_warning() << "This object only support Direct Solving but an Indirect Solver in the scene is calling method applyJT(constraint) which is not implemented. This will produce un-expected behavior.";
     }
 
-    void applyDJT(const core::MechanicalParams* /*mparams*/, core::MultiVecDerivId /*inForce*/, core::ConstMultiVecDerivId /*outForce*/) override {}
 
     void init() override;
     void draw(const core::visual::VisualParams* vparams) override;
@@ -113,6 +112,9 @@ protected:
 
     virtual ~CenterOfMassMulti2Mapping()
     {}
+
+    void doApplyDJT(const core::MechanicalParams* /*mparams*/, core::MultiVecDerivId /*inForce*/, core::ConstMultiVecDerivId /*outForce*/) override {}
+
 
     type::vector<const core::behavior::BaseMass*> inputBaseMass1;
     type::vector<In1Coord> inputWeightedCOM1;

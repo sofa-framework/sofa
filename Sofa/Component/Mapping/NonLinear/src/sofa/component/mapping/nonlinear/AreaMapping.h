@@ -51,7 +51,6 @@ public:
     void init() override;
 
     void apply(const core::MechanicalParams* mparams, DataVecCoord_t<Out>& out, const DataVecCoord_t<In>& in) override;
-    void buildGeometricStiffnessMatrix(sofa::core::GeometricStiffnessMatrix* matrices) override;
 
 protected:
     AreaMapping();
@@ -62,6 +61,7 @@ protected:
                             const Data<VecDeriv_t<Out> >& childForce) override;
 
     using typename Inherit1::SparseKMatrixEigen;
+    void doBuildGeometricStiffnessMatrix(sofa::core::GeometricStiffnessMatrix* matrices) override;
 
     void doUpdateK(
         const core::MechanicalParams* mparams, const Data<VecDeriv_t<Out> >& childForce,

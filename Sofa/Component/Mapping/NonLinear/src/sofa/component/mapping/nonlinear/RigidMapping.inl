@@ -358,7 +358,7 @@ void RigidMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mparams*/
 }
 
 template <class TIn, class TOut>
-void RigidMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentForceChangeId, core::ConstMultiVecDerivId childForceId)
+void RigidMapping<TIn, TOut>::doApplyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentForceChangeId, core::ConstMultiVecDerivId childForceId)
 {
     if( !d_geometricStiffness.getValue().getSelectedId() )
         return;
@@ -374,7 +374,7 @@ void RigidMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams, co
         // if symmetrized version, force local assembly
         if( d_geometricStiffness.getValue().getSelectedId() == 2 )
         {
-            updateK( mparams, childForceId );
+            core::BaseMapping::updateK( mparams, childForceId );
             auto InF = sofa::helper::getWriteOnlyAccessor(*parentForceChangeId[this->fromModel.get()].write());
             auto inDx = sofa::helper::getReadAccessor(*mparams->readDx(this->fromModel.get()));
 
@@ -510,7 +510,7 @@ void fill_block(Eigen::Matrix<U, 2, 3>& block, const Coord& v) {
 }
 
 template <class TIn, class TOut>
-const type::vector<sofa::linearalgebra::BaseMatrix*>* RigidMapping<TIn, TOut>::getJs()
+const type::vector<sofa::linearalgebra::BaseMatrix*>* RigidMapping<TIn, TOut>::doGetJs()
 {
     const OutVecCoord& out =this->toModel->read(core::vec_id::read_access::position)->getValue();
     const InVecCoord& in =this->fromModel->read(core::vec_id::read_access::position)->getValue();
@@ -570,7 +570,7 @@ const type::vector<sofa::linearalgebra::BaseMatrix*>* RigidMapping<TIn, TOut>::g
 
 
 template <class TIn, class TOut>
-void RigidMapping<TIn, TOut>::updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId )
+void RigidMapping<TIn, TOut>::doUpdateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId )
 {
     SOFA_UNUSED(mparams);
     const unsigned geomStiff = d_geometricStiffness.getValue().getSelectedId();
@@ -630,14 +630,14 @@ void RigidMapping<TIn, TOut>::updateK( const core::MechanicalParams* mparams, co
 
 
 template <class TIn, class TOut>
-const sofa::linearalgebra::BaseMatrix* RigidMapping<TIn, TOut>::getK()
+const sofa::linearalgebra::BaseMatrix* RigidMapping<TIn, TOut>::doGetK()
 {
     if( m_geometricStiffnessMatrix.compressedMatrix.nonZeros() ) return &m_geometricStiffnessMatrix;
     else return nullptr;
 }
 
 template <class TIn, class TOut>
-void RigidMapping<TIn, TOut>::buildGeometricStiffnessMatrix(
+void RigidMapping<TIn, TOut>::doBuildGeometricStiffnessMatrix(
     sofa::core::GeometricStiffnessMatrix* matrices)
 {
     const unsigned int geomStiff = d_geometricStiffness.getValue().getSelectedId();
@@ -699,7 +699,7 @@ void RigidMapping<TIn, TOut>::buildGeometricStiffnessMatrix(
 
 
 template <class TIn, class TOut>
-const sofa::linearalgebra::BaseMatrix* RigidMapping<TIn, TOut>::getJ()
+const sofa::linearalgebra::BaseMatrix* RigidMapping<TIn, TOut>::doGetJ()
 {
     const OutVecCoord& out =this->toModel->read(core::vec_id::read_access::position)->getValue();
     const InVecCoord& in =this->fromModel->read(core::vec_id::read_access::position)->getValue();

@@ -399,8 +399,8 @@ protected:
 
         /// Updated to parentNew
         positionAccessorIn.wref() = parentNew;
-        mapping->apply(&mparams, core::vec_id::write_access::position, core::vec_id::write_access::position);
-        mapping->applyJ(&mparams, core::vec_id::write_access::velocity, core::vec_id::write_access::velocity);
+        static_cast<core::BaseMapping*>(mapping)->apply(&mparams, core::vec_id::write_access::position, core::vec_id::write_access::position);
+        static_cast<core::BaseMapping*>(mapping)->applyJ(&mparams, core::vec_id::write_access::velocity, core::vec_id::write_access::velocity);
 
         bool succeed = true;
 
@@ -440,14 +440,14 @@ protected:
         inDofs->writeForces()->fill(Deriv_t<In>());  // reset parent forces before accumulating child forces
 
         outDofs->writeForces().wref() = forceOut;
-        mapping->applyJT( &mparams, core::vec_id::write_access::force, core::vec_id::write_access::force );
+        static_cast<core::BaseMapping*>(mapping)->applyJT( &mparams, core::vec_id::write_access::force, core::vec_id::write_access::force );
         forceIn = inDofs->readForces().ref();
     }
 
     void computeVelocityOutFromVelocityIn(core::MechanicalParams mparams, VecDeriv_t<Out>& velocityOut, const VecDeriv_t<In>& velocityIn)
     {
         inDofs->writeVelocities().wref() = velocityIn;
-        mapping->applyJ( &mparams, core::vec_id::write_access::velocity, core::vec_id::write_access::velocity );
+        static_cast<core::BaseMapping*>(mapping)->applyJ( &mparams, core::vec_id::write_access::velocity, core::vec_id::write_access::velocity );
         velocityOut = outDofs->readVelocities().ref();
     }
 
@@ -574,7 +574,7 @@ protected:
         Real_t<In> errorThreshold
         )
     {
-        mapping->apply ( &mparams, core::vec_id::write_access::position, core::vec_id::write_access::position );
+        static_cast<core::BaseMapping*>(mapping)->apply ( &mparams, core::vec_id::write_access::position, core::vec_id::write_access::position );
         const VecCoord_t<Out>& positionOut1 = outDofs->readPositions();
 
         const auto sizeOut = positionOut.size();
