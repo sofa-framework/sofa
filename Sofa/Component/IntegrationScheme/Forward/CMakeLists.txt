@@ -27,10 +27,6 @@ sofa_find_package(Sofa.Simulation.Core REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Simulation.Core)
-target_include_directories(${PROJECT_NAME} PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/compat>
-    $<INSTALL_INTERFACE:include/${PROJECT_NAME}_compat>
-)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
