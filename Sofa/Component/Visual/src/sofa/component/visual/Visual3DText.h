@@ -48,15 +48,14 @@ public:
 protected:
     Visual3DText();
 
+    void doDrawVisual(const core::visual::VisualParams* vparams) override;
+    void doDrawTransparent(const core::visual::VisualParams* vparams) override;
+
 public:
     void init() override;
 
     void reinit() override;
 
-    void doDrawVisual(const core::visual::VisualParams* vparams) override;
-    void drawTransparent(const core::visual::VisualParams* vparams) override;
-
-public:
     Data<std::string> d_text; ///< Test to display
     Data<type::Vec3> d_position; ///< 3d position
     Data<float> d_scale; ///< text scale
