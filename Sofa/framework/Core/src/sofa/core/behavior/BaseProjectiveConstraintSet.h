@@ -75,6 +75,20 @@ protected:
 
     ~BaseProjectiveConstraintSet() override {}
 	
+    virtual type::vector< core::BaseState* > doGetModels() = 0;
+    virtual void doProjectResponse(const MechanicalParams* mparams, MultiVecDerivId dxId) = 0;
+    virtual void doProjectResponse(const MechanicalParams* /*mparams*/, double **) { };
+    virtual void doProjectJacobianMatrix(const MechanicalParams* mparams, MultiMatrixDerivId cId) = 0;
+    virtual void doProjectVelocity(const MechanicalParams* mparams, MultiVecDerivId vId) = 0;
+    virtual void doProjectPosition(const MechanicalParams* mparams, MultiVecCoordId xId) = 0;
+
+    virtual void doApplyConstraint(const MechanicalParams* /*mparams*/, const behavior::MultiMatrixAccessor* /*matrix*/) {}
+    virtual void doApplyConstraint(const MechanicalParams* /*mparams*/, linearalgebra::BaseVector* /*vector*/, const behavior::MultiMatrixAccessor* /*matrix*/) {}
+    virtual void doProjectMatrix( sofa::linearalgebra::BaseMatrix* /*M*/, unsigned /*offset*/ ) 
+    { 
+      msg_error() << "projectMatrix not implemented, projection will not be handled appropriately";
+    }
+    virtual void doApplyConstraint(sofa::core::behavior::ZeroDirichletCondition* /*matrix*/);
 public:
     /// Get the ID of the group containing this constraint.
     /// This ID is used to specify which constraints are solved by which solver, by specifying in each solver which groups of constraints it should handle.
@@ -85,27 +99,82 @@ public:
     void setGroup(int g) { group.setValue(g); }
 
 
+    /**
+     * !!! WARNING since v25.12 !!!
+     * 
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doGetModels" internally,
+     * which is the method to override from now on.
+     * 
+     **/
     /// Return the lists of models this constraint applies to. 
-    virtual type::vector< core::BaseState* > getModels() = 0;
+    virtual type::vector< core::BaseState* > getModels() final {
+      //TODO (SPRINT SED 2025): Component state mechanism
+      return this->doGetModels();
+    }
 
     /// @name Vector operations
     /// @{
 
+    /**
+     * !!! WARNING since v25.12 !!!
+     * 
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doProjectResponse"
+     * internally, which is the method to override from now on.
+     * 
+     **/
     /// Project dx to constrained space (dx models an acceleration).
     /// \param dxId output vector
-    virtual void projectResponse(const MechanicalParams* mparams, MultiVecDerivId dxId) = 0;
+    virtual void projectResponse(const MechanicalParams* mparams, MultiVecDerivId dxId) final {
+      //TODO (SPRINT SED 2025): Component state mechanism
+      this->doProjectResponse(mparams, dxId);
+    }
 
+    /**
+     * !!! WARNING since v25.12 !!!
+     * 
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doProjectJacobianMatrix"
+     * internally, which is the method to override from now on.
+     * 
+     **/
     /// Project the L matrix of the Lagrange Multiplier equation system.
     /// \param cId output vector
-    virtual void projectJacobianMatrix(const MechanicalParams* mparams, MultiMatrixDerivId cId) = 0;
+    virtual void projectJacobianMatrix(const MechanicalParams* mparams, MultiMatrixDerivId cId) final {
+      //TODO (SPRINT SED 2025): Component state mechanism
+      this->doProjectJacobianMatrix(mparams, cId);
+    }
 
+    /**
+     * !!! WARNING since v25.12 !!!
+     * 
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doProjectVelocity"
+     * internally, which is the method to override from now on.
+     * 
+     **/
     /// Project v to constrained space (v models a velocity).
     /// \param vId output vector
-    virtual void projectVelocity(const MechanicalParams* mparams, MultiVecDerivId vId) = 0;
+    virtual void projectVelocity(const MechanicalParams* mparams, MultiVecDerivId vId) final {
+      //TODO (SPRINT SED 2025): Component state mechanism
+      this->doProjectVelocity(mparams, vId);
+    }
 
+    /**
+     * !!! WARNING since v25.12 !!!
+     * 
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doProjectPosition"
+     * internally, which is the method to override from now on.
+     * 
+     **/
     /// Project x to constrained space (x models a position).
     /// \param xId output vector
-    virtual void projectPosition(const MechanicalParams* mparams, MultiVecCoordId xId) = 0;
+    virtual void projectPosition(const MechanicalParams* mparams, MultiVecCoordId xId) final {
+      //TODO (SPRINT SED 2025): Component state mechanism
+      this->doProjectPosition(mparams, xId);
+    }
 
     /// @}
 
@@ -113,28 +182,86 @@ public:
     /// @name Matrix operations
     /// @{
 
+    /**
+     * !!! WARNING since v25.12 !!!
+     * 
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doProjectResponse"
+     * internally, which is the method to override from now on.
+     * 
+     **/
     /// Project the compliance Matrix to constrained space.
-    virtual void projectResponse(const MechanicalParams* /*mparams*/, double **) {}
-
-    /// Project the global Mechanical Matrix to constrained space using offset parameter
-    virtual void applyConstraint(const MechanicalParams* /*mparams*/, const behavior::MultiMatrixAccessor* /*matrix*/) {}
-
-    /// Project the global Mechanical Vector to constrained space using offset parameter
-    virtual void applyConstraint(const MechanicalParams* /*mparams*/, linearalgebra::BaseVector* /*vector*/, const behavior::MultiMatrixAccessor* /*matrix*/) {}
-
-    /** Project the given matrix (Experimental API).
-      Replace M with PMP, where P is the projection matrix corresponding to the projectResponse method. Contrary to applyConstraint(), the diagonal blocks of the result are not reset to the identity.
-      Typically, M is the (generalized) mass matrix of the whole system, offset is the starting index of the local state in this global matrix, and P is the identity matrix with a block on the diagonal replaced by the projection matrix.
-      If M is the matrix of the local state, then offset should be 0.
-      */
-    virtual void projectMatrix( sofa::linearalgebra::BaseMatrix* /*M*/, unsigned /*offset*/ ) 
-    { 
-        msg_error() << "projectMatrix not implemented, projection will not be handled appropriately";
+    virtual void projectResponse(const MechanicalParams* mparams, double ** W) final {
+      //TODO (SPRINT SED 2025): Component state mechanism
+      this->doProjectResponse(mparams, W);
     }
 
+    /**
+     * !!! WARNING since v25.12 !!!
+     * 
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doApplyConstraint"
+     * internally, which is the method to override from now on.
+     * 
+     **/
+    /// Project the global Mechanical Matrix to constrained space using offset parameter
+    virtual void applyConstraint(const MechanicalParams* mparams, const behavior::MultiMatrixAccessor* matrix) final {
+      //TODO (SPRINT SED 2025): Component state mechanism
+      this->doApplyConstraint(mparams, matrix);
+    }
+
+    /**
+     * !!! WARNING since v25.12 !!!
+     * 
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doApplyConstraint"
+     * internally, which is the method to override from now on.
+     * 
+     **/
+    /// Project the global Mechanical Vector to constrained space using offset parameter
+    virtual void applyConstraint(const MechanicalParams* mparams, linearalgebra::BaseVector* vector, const behavior::MultiMatrixAccessor* matrix) final {
+      //TODO (SPRINT SED 2025): Component state mechanism
+      this->doApplyConstraint(mparams, vector, matrix);
+    }
+
+    /**
+     * !!! WARNING since v25.12 !!!
+     * 
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doApplyConstraint"
+     * internally, which is the method to override from now on.
+     * 
+     **/
+    /**
+     * Project the given matrix (Experimental API). Replace M with PMP, where P
+     * is the projection matrix corresponding to the projectResponse method.
+     * Contrary to applyConstraint(), the diagonal blocks of the result are not
+     * reset to the identity. Typically, M is the (generalized) mass matrix of
+     * the whole system, offset is the starting index of the local state in this
+     * global matrix, and P is the identity matrix with a block on the diagonal
+     * replaced by the projection matrix. If M is the matrix of the local state,
+     * then offset should be 0.
+     */
+    virtual void projectMatrix( sofa::linearalgebra::BaseMatrix* M, unsigned offset ) final
+    { 
+      //TODO (SPRINT SED 2025): Component state mechanism
+      this->doProjectMatrix(M, offset);
+    }
+
+    /**
+     * !!! WARNING since v25.12 !!!
+     * 
+     * The template method pattern has been applied to this part of the API.
+     * This method calls the newly introduced method "doApplyConstraint"
+     * internally, which is the method to override from now on.
+     * 
+     **/
     /// Project the global matrix to constrained space by using the ZeroDirichletCondition interface
     /// It allows to define what rows and columns to discard for the projection.
-    virtual void applyConstraint(sofa::core::behavior::ZeroDirichletCondition* /*matrix*/);
+    virtual void applyConstraint(sofa::core::behavior::ZeroDirichletCondition* matrix) final {
+      //TODO (SPRINT SED 2025): Component state mechanism
+      this->doApplyConstraint(matrix);
+    }
 
     /// @}
 
