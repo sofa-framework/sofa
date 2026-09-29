@@ -83,7 +83,7 @@ void Fluid2D::reset()
     init();
 }
 
-void Fluid2D::updatePosition(SReal dt)
+void Fluid2D::doUpdatePosition(SReal dt)
 {
     fnext->step(fluid, ftemp, (real)dt);
     Grid2D* p = fluid; fluid=fnext; fnext=p;
