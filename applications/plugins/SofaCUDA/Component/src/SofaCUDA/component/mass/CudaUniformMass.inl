@@ -205,7 +205,7 @@ SReal UniformMass<gpu::cuda::CudaRigid3fTypes>::getPotentialEnergy(const core::M
 }
 
 template <>
-SReal UniformMass<gpu::cuda::CudaRigid3fTypes>::getElementMass(sofa::Index) const
+SReal UniformMass<gpu::cuda::CudaRigid3fTypes>::doGetElementMass(sofa::Index) const
 {
     return (SReal)(d_vertexMass.getValue().mass);
 }
@@ -374,7 +374,7 @@ SReal UniformMass<gpu::cuda::CudaRigid3dTypes>::getPotentialEnergy(const core::M
 }
 
 template <>
-SReal UniformMass<gpu::cuda::CudaRigid3dTypes>::getElementMass(sofa::Index) const
+SReal UniformMass<gpu::cuda::CudaRigid3dTypes>::doGetElementMass(sofa::Index) const
 {
     return (SReal)(d_vertexMass.getValue().mass);
 }
