@@ -4,7 +4,7 @@
     <RequiredPlugin pluginName="Sofa.Component.Engine.Select"/>
     <RequiredPlugin pluginName="Sofa.Component.LinearSolver.Iterative"/>
     <RequiredPlugin pluginName="Sofa.Component.Mass"/>
-    <RequiredPlugin pluginName="Sofa.Component.ODESolver.Backward"/>
+    <RequiredPlugin pluginName="Sofa.Component.IntegrationScheme.Backward"/>
     <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.FEM.Elastic"/>
     <RequiredPlugin pluginName="Sofa.Component.Topology.Container.Dynamic"/>
     <RequiredPlugin pluginName="Sofa.Component.Topology.Container.Grid"/>
@@ -16,7 +16,7 @@
     <DefaultVisualManagerLoop />
 
 <!--     <Node name="Hexahedron">
-        <EulerImplicitSolver name="odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitIntegrationScheme name="odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="250" name="linear_solver" tolerance="1.0e-12" threshold="1.0e-12" />
 
         <RegularGridTopology name="grid" n="80 20 20" min="0 6 -2" max="16 10 2" />
@@ -45,7 +45,7 @@
         
         
         <Node name="TetrahedronFEMForceField-GPU-Green">
-            <EulerImplicitSolver name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
+            <EulerImplicitIntegrationScheme name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
             <CGLinearSolver iterations="20" name="linear solver" tolerance="1.0e-6" threshold="1.0e-6" />
             
             <MechanicalObject position="@../Beam/grid.position" name="Volume" template="CudaVec3f"/>
@@ -66,7 +66,7 @@
 <!--     <Node name="Triangle">
         <RegularGridTopology name="tissue" n="100 100 1" min="0 0 0" max="10 10 0" />
 
-        <EulerImplicitSolver name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitIntegrationScheme name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="20" name="linear solver" tolerance="1.0e-6" threshold="1.0e-6" />
         
         <MechanicalObject position="@../tissue.position" name="dofs" template="CudaVec3f"/>
@@ -84,7 +84,7 @@
 <!--     <Node name="Quad">
         <RegularGridTopology name="tissue" n="100 100 1" min="0 0 0" max="10 10 0" />
 
-        <EulerImplicitSolver name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitIntegrationScheme name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="20" name="linear solver" tolerance="1.0e-6" threshold="1.0e-6" />
         
         <MechanicalObject position="@../tissue.position" name="dofs" template="CudaVec3f"/>

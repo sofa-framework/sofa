@@ -14,7 +14,7 @@
     <RequiredPlugin name="Sofa.Component.Mapping.NonLinear"/>
     <RequiredPlugin name="Sofa.Component.Mass"/>
     <RequiredPlugin name="Sofa.Component.MechanicalLoad"/>
-    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/>
+    <RequiredPlugin name="Sofa.Component.IntegrationScheme.Backward"/>
     <RequiredPlugin name="Sofa.Component.SolidMechanics.FEM.Elastic"/>
     <RequiredPlugin name="Sofa.Component.SolidMechanics.Spring"/>
     <RequiredPlugin name="Sofa.Component.StateContainer"/>

@@ -11,7 +11,7 @@ def addHeader(rootNode):
         'Sofa.Component.LinearSolver.Direct',
         'Sofa.Component.Mapping.NonLinear',
         'Sofa.Component.Mass',
-        'Sofa.Component.ODESolver.Backward',
+        'Sofa.Component.IntegrationScheme.Backward',
         'Sofa.Component.Setting',
         'Sofa.Component.SolidMechanics.Spring',
         'Sofa.Component.StateContainer',
