@@ -169,8 +169,8 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v5
         with:
-          repository: bakpaul/ci
-          ref: 26_09_final_jenkins_2_github_migration
+          repository: sofa-framework/ci
+          ref: master
           path: ./ci
 
       - name: Check push on master case (e.g. merge)
@@ -252,7 +252,7 @@ jobs:
   pixi-ci:
     needs: filter_build
     if: ${{ github.repository_owner == 'sofa-framework' && needs.filter_build.outputs.PIXI_BUILDER_OS != '[]' }}
-    uses: bakpaul/sofa/.github/workflows/CI_macos_linux_windows_pixi.yml@26_09_update_ci_with_new_test_scripts_and_pixi_based_ci_for_windows
+    uses: sofa-framework/sofa/.github/workflows/CI_macos_linux_windows_pixi.yml@master
     with:
       sofa-branch-name: ${{ needs.filter_build.outputs.SOFA_BRANCH_NAME }}
       sofa-commit-sha: ${{ needs.filter_build.outputs.SOFA_COMMIT_SHA }}
