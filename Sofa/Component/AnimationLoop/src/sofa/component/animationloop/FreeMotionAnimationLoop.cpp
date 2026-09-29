@@ -142,7 +142,7 @@ void FreeMotionAnimationLoop::init()
 }
 
 
-void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal dt)
+void FreeMotionAnimationLoop::doStep(const sofa::core::ExecParams* params, SReal dt)
 {
     auto node = dynamic_cast<sofa::simulation::Node*>(this->l_node.get());
 
