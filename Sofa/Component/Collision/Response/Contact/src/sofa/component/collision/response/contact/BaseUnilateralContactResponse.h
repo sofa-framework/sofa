@@ -75,19 +75,26 @@ protected:
     BaseUnilateralContactResponse(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod);
 
     ~BaseUnilateralContactResponse() override;
+
 public:
     void cleanup() override;
 
-    std::pair<core::CollisionModel*,core::CollisionModel*> getCollisionModels() override { return std::make_pair(model1,model2); }
-
-    void setDetectionOutputs(OutputVector* outputs) override;
-
-    void createResponse(core::objectmodel::BaseContext* group) override;
-
-    void removeResponse() override;
-
     virtual ConstraintParameters getParameterFromDatas() const = 0;
+
     virtual void setupConstraint(MechanicalState1 *,MechanicalState2 *) = 0;
+
+protected:
+    std::pair<core::CollisionModel*,core::CollisionModel*> doGetCollisionModels() override 
+    { 
+        return std::make_pair(model1,model2); 
+    }
+
+    void doSetDetectionOutputs(OutputVector* outputs) override;
+
+    void doCreateResponse(core::objectmodel::BaseContext* group) override;
+
+    void doRemoveResponse() override;
+    
 };
 
 } // namespace sofa::component::collision::response::contact
