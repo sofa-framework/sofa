@@ -59,7 +59,7 @@ void StringMeshCreator::doClearBuffers()
 }
 
 
-bool StringMeshCreator::doLoad()
+bool StringMeshCreator::doLoadMesh()
 {
     auto my_positions = sofa::helper::getWriteOnlyAccessor(d_positions);
     auto my_edges = sofa::helper::getWriteOnlyAccessor(d_edges);

@@ -40,7 +40,7 @@ public:
 protected:
     MeshTrianLoader();
 public:
-    bool doLoad() override;
+    bool doLoadMesh() override;
 
 protected:
 

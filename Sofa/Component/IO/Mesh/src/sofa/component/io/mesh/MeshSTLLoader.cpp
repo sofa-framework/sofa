@@ -53,7 +53,7 @@ MeshSTLLoader::MeshSTLLoader() : MeshLoader()
 }
 
 
-bool MeshSTLLoader::doLoad()
+bool MeshSTLLoader::doLoadMesh()
 {
     const char* filename = d_filename.getFullPath().c_str();
     std::string sfilename(filename);
