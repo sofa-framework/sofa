@@ -427,7 +427,7 @@ jobs:
           bold="\033[1m"
           normal="\033[0m"
           if [[ "${{ steps.clone.outcome }}" == "failure" ]]; then
-            echo "❌ Something whent wrong during the clone steps..."
+            echo "❌ Something went wrong during the clone steps..."
             echo -e "${bold}Please check those actions logs${normal}"
             exit 1
           else
@@ -470,11 +470,11 @@ jobs:
               echo -e "${bold}You can download all logs here : ${{ steps.publish-tests-logs.outputs.artifact-url }}${normal}"
               exit 1
             elif [[ "${{ steps.unit-tests-step.outcome }}" == "failure" || "${{ steps.scene-tests-step.outcome }}" == "failure" || "${{ steps.regression-tests-step.outcome }}" == "failure" ]]; then
-              echo "❌ Something whent wrong during one of the tests steps"
+              echo "❌ Something went wrong during one of the tests steps"
               echo -e "${bold}Please check this action logs, and download tests logs here: ${{ steps.publish-tests-logs.outputs.artifact-url }}${normal}"
               exit 1
             else
-              echo "✅ Tests where successful : "
+              echo "✅ Tests were successful : "
               echo ""
               python3 ${{ env.CI_DIR }}/scripts/tests/generate-tests-table.py "${{ env.SOFA_BUILD_DIR }}/tests_results/"
               echo ""
