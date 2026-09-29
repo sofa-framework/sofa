@@ -88,7 +88,9 @@ struct CheckPositionImpl<type::Vec<N, REAL>, 3>
 template<typename DataType>
 void CheckPosition(StubMechanicalObject<DataType>& mechanicalObject)
 {
-    CheckPositionImpl<typename DataType::Coord, DataType::coord_total_size>()(mechanicalObject.readPositions()[0]); // Vec<N, real>, RigidCoord<N, real>
+    auto positions = mechanicalObject.readPositions();
+    ASSERT_TRUE(positions.size() > 0);
+    CheckPositionImpl<typename DataType::Coord, DataType::coord_total_size>()(positions[0]); // Vec<N, real>, RigidCoord<N, real>
 }
 
 } // namespace TestHelpers

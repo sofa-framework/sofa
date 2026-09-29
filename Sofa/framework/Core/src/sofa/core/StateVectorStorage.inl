@@ -93,6 +93,7 @@ Size StateVectorStorage<TDataTypes>::getSize() const
 {
     return d_size.getValue();
 }
+
 template <class TDataTypes>
 void StateVectorStorage<TDataTypes>::resize(Size vsize)
 {
