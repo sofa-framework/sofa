@@ -223,7 +223,8 @@ MechanicalObject<DataTypes>::MechanicalObject()
     //    write(VecCoordId::null())->forceSet();
     //    write(VecDerivId::null())->forceSet();
 
-
+    // default size is 1
+    resize(1);
 }
 
 
