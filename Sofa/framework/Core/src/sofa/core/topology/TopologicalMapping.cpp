@@ -32,14 +32,14 @@ TopologicalMapping::TopologicalMapping()
 }
 
 
-void TopologicalMapping::setTopologies(In* from, Out* to)
+void TopologicalMapping::doSetTopologies(In* from, Out* to)
 {
     this->fromModel.set(from);
     this->toModel.set(to);
 }
 
 
-Index TopologicalMapping::getGlobIndex(Index ind)
+Index TopologicalMapping::doGetGlobIndex(Index ind)
 {
     if (ind < (Loc2GlobDataVec.getValue()).size())
     {
@@ -51,7 +51,7 @@ Index TopologicalMapping::getGlobIndex(Index ind)
     }
 }
 
-Index TopologicalMapping::getFromIndex(Index ind) 
+Index TopologicalMapping::doGetFromIndex(Index ind) 
 { 
     SOFA_UNUSED(ind);
     return 0; 
