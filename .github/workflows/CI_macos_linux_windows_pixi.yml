@@ -453,10 +453,11 @@ jobs:
           fi
 
           if [[ "${{ inputs.generate-binaries }}" == "false" ]]; then
-            if [[ "$(cd "${{ env.SOFA_BUILD_DIR }}/tests_results/" && find . -maxdepth 1 -type f)" != "" ]]; then
+            if [[  "${{ steps.unit-tests-step.outcome }}" == "failure"          || "${{ steps.scene-tests-step.outcome }}" == "failure"           || "${{ steps.regression-tests-step.outcome }}" == "failure" ]] &&
+               [[ -f "${{ env.SOFA_BUILD_DIR }}/tests_results/unit/summary.txt" && -f "${{ env.SOFA_BUILD_DIR }}/tests_results/scene/summary.txt" && -f "${{ env.SOFA_BUILD_DIR }}/tests_results/regression/summary.txt"  ]]; then
               echo "❌ Tests have resulted in : "
               echo ""
-              python3 ${{ env.CI_DIR }}/scripts/generate-tests-table.py "${{ env.SOFA_BUILD_DIR }}/tests_results/"
+              python3 ${{ env.CI_DIR }}/scripts/tests/generate-tests-table.py "${{ env.SOFA_BUILD_DIR }}/tests_results/"
               echo ""
               echo "#----------------------------------------#"
               echo "#---------------Quick Logs---------------#"
@@ -485,7 +486,7 @@ jobs:
             else
               echo "✅ Tests where successful : "
               echo ""
-              python3 ${{ env.CI_DIR }}/scripts/generate-tests-table.py "${{ env.SOFA_BUILD_DIR }}/tests_results/"
+              python3 ${{ env.CI_DIR }}/scripts/tests/generate-tests-table.py "${{ env.SOFA_BUILD_DIR }}/tests_results/"
               echo ""
             fi
           fi
