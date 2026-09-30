@@ -57,7 +57,7 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors() override
     {
-        addWriteVector(a);
+        addWriteVector(x);
         addReadVector(mparams->f());
     }
 #endif
