@@ -98,11 +98,17 @@ dependencies = { libglu = "*", libgl-devel = "*" }
 conda-deny = "*"
 [feature.build-release-package.activation]
 env = { SOFA_BUILD_RELEASE_PACKAGE_WITH_PIXI = "1" }
+[feature.build-release-package.target.win.activation]
+env = { SOFA_CPACK_PARAMS = "-DCPACK_GENERATOR=\"ZIP;NSIS\" -DCPACK_BINARY_ZIP=ON -DCPACK_BINARY_NSIS=ON -DSOFA_USE_DEPENDENCY_PACK=OFF" }
+[feature.build-release-package.target.osx.activation]
+env = { SOFA_CPACK_PARAMS = "-DCPACK_GENERATOR=ZIP -DCPACK_BINARY_ZIP=ON -DCMAKE_OSX_DEPLOYMENT_TARGET=10.15" }
+[feature.build-release-package.target.linux.activation]
+env = { SOFA_CPACK_PARAMS = "-DCPACK_GENERATOR=ZIP -DCPACK_BINARY_ZIP=ON" }
 [feature.build-release-package.tasks]
 build-package = { cmd = "cmake --build $SOFA_BUILD_DIR --target package", depends-on = ["configure-package"] }
 
 [feature.build-release-package-standard.tasks]
-configure-package = { cmd = [ "cmake",
+configure-package = { cmd = [ "echo", "\"$SOFA_CPACK_PARAMS\"", "&&", "cmake",
   "-G",
   "Ninja",
   "-B",
@@ -128,13 +134,8 @@ configure-package = { cmd = [ "cmake",
   "-DCPACK_SOURCE_TGZ=OFF",
   "-DCPACK_SOURCE_TXZ=OFF",
   "-DCPACK_SOURCE_TZ=OFF",
-  "-DCPACK_GENERATOR=\"ZIP;NSIS\"",
-  "-DCPACK_BINARY_ZIP=ON",
-  "-DCPACK_BINARY_NSIS=ON",
-  "-DCMAKE_OSX_DEPLOYMENT_TARGET=10.15",
-  "-DCPACK_GENERATOR=ZIP",
+  "$SOFA_CPACK_PARAMS",
   "-DSOFA_BUILD_RELEASE_PACKAGE=ON",
-  "-DSOFA_USE_DEPENDENCY_PACK=OFF",
   "--preset",
   "standard",
   "$SOFA_PLUGIN_PYTHON3_ARGS",
@@ -168,13 +169,8 @@ configure-package = { cmd = [ "cmake",
   "-DCPACK_SOURCE_TGZ=OFF",
   "-DCPACK_SOURCE_TXZ=OFF",
   "-DCPACK_SOURCE_TZ=OFF",
-  "-DCPACK_GENERATOR=\"ZIP;NSIS\"",
-  "-DCPACK_BINARY_ZIP=ON",
-  "-DCPACK_BINARY_NSIS=ON",
-  "-DCMAKE_OSX_DEPLOYMENT_TARGET=10.15",
-  "-DCPACK_GENERATOR=ZIP",
+  "$SOFA_CPACK_PARAMS",
   "-DSOFA_BUILD_RELEASE_PACKAGE=ON",
-  "-DSOFA_USE_DEPENDENCY_PACK=OFF",
   "--preset",
   "full",
   "$SOFA_PLUGIN_PYTHON3_ARGS",
