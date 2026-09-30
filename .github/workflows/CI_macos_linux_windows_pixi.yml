@@ -218,37 +218,41 @@ jobs:
         run: |
           cd ${SRC_DIR}
 
-
-          ## Deal with ci-depends-on
-          # Loop over each key-value pair in the JSON avoiding ci repository if inside
-          CMAKE_OPTIONS="${{inputs.additionnal-cmake-flags}}"
-          for key in $(echo "${{ inputs.ci-depends-on }}" | jq -r 'keys[]' | grep -v '^ci$'); do
-
-            repo_url=$(echo "${{ inputs.ci-depends-on }}" | jq -r ".\"$key\".repo_url")
-            branch_name=$(echo "${{ inputs.ci-depends-on }}" | jq -r ".\"$key\".branch_name")
-
-            # Format the CMake flags for this key and append to the result
-            fixed_name=$(echo "$key" |  awk '{gsub(/\./, "_"); print toupper($0)}')
-            flag_repository="-D${fixed_name}_GIT_REPOSITORY=\"$repo_url\""
-            flag_tag="-D${fixed_name}_GIT_TAG=\"$branch_name\""
-
-            # Append both flags to the result string with a space
-            CMAKE_OPTIONS="$CMAKE_OPTIONS $flag_repository $flag_tag "
-          done
-
-          if [[ ! -n "$CMAKE_OPTIONS" ]]; then
-              echo "No ci-depends-on detected."
+          if [[ "${{ inputs.generate-binaries }}" == "true" ]]; then
+            pixi run -e release-package-${{ inputs.preset }} configure-package
+            pixi run -e release-package-${{ inputs.preset }} build-package
           else
-              echo "Adding the following cmake variable : $CMAKE_OPTIONS"
-          fi
+            ## Deal with ci-depends-on
+            # Loop over each key-value pair in the JSON avoiding ci repository if inside
+            CMAKE_OPTIONS="${{inputs.additionnal-cmake-flags}}"
+            for key in $(echo "${{ inputs.ci-depends-on }}" | jq -r 'keys[]' | grep -v '^ci$'); do
 
-          ## Run build step
-          pixi run -e ${{ inputs.preset }} configure $CMAKE_OPTIONS
-          pixi run -e ${{ inputs.preset }} build
+              repo_url=$(echo "${{ inputs.ci-depends-on }}" | jq -r ".\"$key\".repo_url")
+              branch_name=$(echo "${{ inputs.ci-depends-on }}" | jq -r ".\"$key\".branch_name")
+
+              # Format the CMake flags for this key and append to the result
+              fixed_name=$(echo "$key" |  awk '{gsub(/\./, "_"); print toupper($0)}')
+              flag_repository="-D${fixed_name}_GIT_REPOSITORY=\"$repo_url\""
+              flag_tag="-D${fixed_name}_GIT_TAG=\"$branch_name\""
+
+              # Append both flags to the result string with a space
+              CMAKE_OPTIONS="$CMAKE_OPTIONS $flag_repository $flag_tag "
+            done
+
+            if [[ ! -n "$CMAKE_OPTIONS" ]]; then
+                echo "No ci-depends-on detected."
+            else
+                echo "Adding the following cmake variable : $CMAKE_OPTIONS"
+            fi
+
+            ## Run build step
+            pixi run -e ${{ inputs.preset }} configure $CMAKE_OPTIONS
+            pixi run -e ${{ inputs.preset }} build
+          fi
 
       - name: Setup env for tests
         shell: bash
-        if: always() && runner.os == 'Windows'
+        if: always() && runner.os == 'Windows' && inputs.generate-binaries == false
         run: |
           cd ${SRC_DIR}
 
