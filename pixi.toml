@@ -99,7 +99,7 @@ conda-deny = "*"
 [feature.build-release-package.activation]
 env = { SOFA_BUILD_RELEASE_PACKAGE_WITH_PIXI = "1" }
 [feature.build-release-package.target.win.activation]
-env = { SOFA_CPACK_PARAMS = "-DCPACK_GENERATOR=\"ZIP;NSIS\" -DCPACK_BINARY_ZIP=ON -DCPACK_BINARY_NSIS=ON -DSOFA_USE_DEPENDENCY_PACK=OFF" }
+env = { SOFA_CPACK_PARAMS = "-DCPACK_GENERATOR=ZIP -DCPACK_BINARY_ZIP=ON -DSOFA_USE_DEPENDENCY_PACK=OFF" }
 [feature.build-release-package.target.osx.activation]
 env = { SOFA_CPACK_PARAMS = "-DCPACK_GENERATOR=ZIP -DCPACK_BINARY_ZIP=ON -DCMAKE_OSX_DEPLOYMENT_TARGET=10.15" }
 [feature.build-release-package.target.linux.activation]
@@ -108,7 +108,7 @@ env = { SOFA_CPACK_PARAMS = "-DCPACK_GENERATOR=ZIP -DCPACK_BINARY_ZIP=ON" }
 build-package = { cmd = "cmake --build $SOFA_BUILD_DIR --target package", depends-on = ["configure-package"] }
 
 [feature.build-release-package-standard.tasks]
-configure-package = { cmd = [ "echo", "\"$SOFA_CPACK_PARAMS\"", "&&", "cmake",
+configure-package = { cmd = [ "cmake",
   "-G",
   "Ninja",
   "-B",
