@@ -8,6 +8,7 @@ on:
   # Nightly build
   schedule:
     - cron: '0 2 * * *'   # Evevery night
+      timezone: "Europe/Paris"
   # On every push too so the available binaries are always recent
   push:
     branches:
