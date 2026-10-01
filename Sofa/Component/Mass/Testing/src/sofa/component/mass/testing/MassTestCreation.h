@@ -231,7 +231,7 @@ struct Mass_test : public sofa::testing::BaseSimulationTest, public sofa::testin
         // a = M^-1 * (M * v) should be v
         if (m_testSolveLinearSystem)
         {
-            m_mass->solveLinearSystem(&mparams, sofa::core::vec_id::write_access::force);
+            m_mass->solveLinearSystem(&mparams, sofa::core::vec_id::write_access::force, sofa::core::vec_id::read_access::force);
 
             VecDeriv a;
             sofa::testing::copyFromData(a, m_dof->readForces());
