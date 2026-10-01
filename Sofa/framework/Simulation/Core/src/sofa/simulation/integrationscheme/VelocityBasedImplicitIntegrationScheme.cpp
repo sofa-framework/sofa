@@ -237,7 +237,7 @@ void VelocityBasedImplicitIntegrationScheme::computeRHS(bool firstIteration)
         m_mop->projectResponse(m_mappingGraph,m_r0);
         m_mop->projectResponse(m_mappingGraph,m_r1);
 
-        simulation::common::DifferentialOperations::pushforwardTangent(m_mappingGraph, *m_params, m_r2);
+        simulation::common::DifferentialOperations::pushforwardTangent(m_mappingGraph, *m_params, m_r0);
         simulation::common::DifferentialOperations::pushforwardTangent(m_mappingGraph, *m_params, m_r1);
     }
 
