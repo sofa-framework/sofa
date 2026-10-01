@@ -36,6 +36,7 @@ namespace sofa::geometry
 struct Edge
 {
     static constexpr sofa::Size NumberOfNodes = 2;
+    static constexpr sofa::Size PolynomialOrder = 1;
     static constexpr ElementType Element_type = ElementType::EDGE;
 
     Edge() = delete;

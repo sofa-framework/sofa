@@ -9,6 +9,7 @@ set(HEADER_FILES
 
     ${SOFAFEMSRC_ROOT}/FiniteElement.h
     ${SOFAFEMSRC_ROOT}/FiniteElement[all].h
+    ${SOFAFEMSRC_ROOT}/QuadratureRules.h
 
     ${SOFAFEMSRC_ROOT}/FiniteElement[Edge].h
     ${SOFAFEMSRC_ROOT}/FiniteElement[Hexahedron].h

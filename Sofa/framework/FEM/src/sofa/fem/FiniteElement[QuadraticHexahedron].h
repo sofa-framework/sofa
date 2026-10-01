@@ -32,7 +32,7 @@ namespace sofa::fem
 template <class DataTypes>
 struct FiniteElement<sofa::geometry::QuadraticHexahedron, DataTypes>
 {
-    FINITEELEMENT_HEADER(sofa::geometry::QuadraticHexahedron, DataTypes, 3);
+    FINITEELEMENT_HEADER(sofa::geometry::QuadraticHexahedron, DataTypes, 3, 5);
     static_assert(spatial_dimensions == 3, "Quadratic Hexahedrons are only defined in 3D");
 
     constexpr static std::array<ReferenceCoord, NumberOfNodesInElement> referenceElementNodes {{
@@ -218,33 +218,6 @@ struct FiniteElement<sofa::geometry::QuadraticHexahedron, DataTypes>
         return sofa::type::Mat<NumberOfNodesInElement, TopologicalDimension, Real>(
             N_0, N_1, N_2, N_3, N_4, N_5, N_6, N_7, N_8, N_9, N_10, N_11, N_12, N_13, N_14, N_15,
             N_16, N_17, N_18, N_19, N_20, N_21, N_22, N_23, N_24, N_25, N_26);
-    }
-
-    static constexpr std::array<QuadraturePointAndWeight, 27> quadraturePoints()
-    {
-        constexpr Real a = 0.7745966692414834; // sqrt(3/5)
-        constexpr Real w_a = 5.0 / 9.0;
-        constexpr Real w_0 = 8.0 / 9.0;
-
-        constexpr std::array<Real, 3> pts = {-a, 0.0, a};
-        constexpr std::array<Real, 3> wts = {w_a, w_0, w_a};
-
-        std::array<QuadraturePointAndWeight, 27> q {};
-        int index = 0;
-        for (int i = 0; i < 3; ++i)
-        {
-            for (int j = 0; j < 3; ++j)
-            {
-                for (int k = 0; k < 3; ++k)
-                {
-                    q[index++] = std::make_pair(
-                        sofa::type::Vec<TopologicalDimension, Real>(pts[i], pts[j], pts[k]),
-                        wts[i] * wts[j] * wts[k]
-                    );
-                }
-            }
-        }
-        return q;
     }
 };
 

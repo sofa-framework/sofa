@@ -35,6 +35,7 @@ namespace sofa::geometry
 struct Tetrahedron
 {
     static constexpr sofa::Size NumberOfNodes = 4;
+    static constexpr sofa::Size PolynomialOrder = 1;
     static constexpr ElementType Element_type = ElementType::TETRAHEDRON;
 
     Tetrahedron() = delete;
