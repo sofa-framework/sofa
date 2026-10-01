@@ -21,6 +21,8 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/fem/FiniteElement.h>
+#include <span>
+#include <stdexcept>
 
 namespace sofa::fem
 {
@@ -64,11 +66,41 @@ struct FiniteElement<sofa::geometry::Triangle, DataTypes>
         };
     }
 
-    static constexpr std::array<QuadraturePointAndWeight, 1> quadraturePoints()
+    template <sofa::Size Degree = 1>
+    static constexpr auto quadraturePoints()
     {
-        return {
-            std::make_pair(sofa::type::Vec<TopologicalDimension, Real>(1./3., 1./3.), 1./2.)
-        };
+        if constexpr (Degree <= 1)
+        {
+            // Degree 1: 1-point centroid rule (default).
+            return std::array<QuadraturePointAndWeight, 1>{
+                std::make_pair(ReferenceCoord(1./3., 1./3.), Real(1./2.))
+            };
+        }
+        else if constexpr (Degree <= 2)
+        {
+            // Degree 2: 3-point interior rule.
+            return std::array<QuadraturePointAndWeight, 3>{
+                std::make_pair(ReferenceCoord(1./6., 1./6.), Real(1./6.)),
+                std::make_pair(ReferenceCoord(2./3., 1./6.), Real(1./6.)),
+                std::make_pair(ReferenceCoord(1./6., 2./3.), Real(1./6.))
+            };
+        }
+        else
+        {
+            static_assert(Degree <= 2, "FiniteElement<Triangle>: no quadrature rule for the requested degree");
+        }
+    }
+
+    // Quadrature rule selector by degree; view of the compile-time table.
+    static std::span<const QuadraturePointAndWeight> quadratureRule(sofa::Size degree)
+    {
+        switch (degree)
+        {
+            case 1: { static constexpr auto rule = quadraturePoints<1>(); return rule; }
+            case 2: { static constexpr auto rule = quadraturePoints<2>(); return rule; }
+            default:
+                throw std::invalid_argument("FiniteElement<Triangle>::quadratureRule: unsupported degree");
+        }
     }
 };
 
