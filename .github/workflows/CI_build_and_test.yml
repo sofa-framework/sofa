@@ -421,7 +421,7 @@ jobs:
             echo -e "${bold}Please check those actions logs${normal}"
             exit 1
           else
-            echo "✅ Setup OK."
+            echo "✅ Setup OK. "
           fi
 
           if [[ "${{ steps.build-step.outcome }}" == "failure" ]]; then
