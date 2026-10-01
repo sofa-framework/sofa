@@ -124,7 +124,8 @@ public:
     void solveLinearSystem(const core::MechanicalParams* mparams, core::MultiVecDerivId xId, core::ConstMultiVecDerivId bId) override
     {
         SOFA_UNUSED(mparams);
-        SOFA_UNUSED(aid);
+        SOFA_UNUSED(xId);
+        SOFA_UNUSED(bId);
     }
     void addGravityToV(const core::MechanicalParams* mparams, core::MultiVecDerivId vid) override
     {
