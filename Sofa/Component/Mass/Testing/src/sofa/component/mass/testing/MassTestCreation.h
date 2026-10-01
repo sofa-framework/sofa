@@ -33,7 +33,6 @@
 #include <sofa/testing/NumericTest.h>
 
 #include <algorithm>
-#include <cmath>
 
 namespace sofa::component::mass::testing
 {
