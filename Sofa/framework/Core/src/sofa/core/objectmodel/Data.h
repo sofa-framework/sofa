@@ -236,8 +236,6 @@ private:
     const void* doGetValueVoidPtr() const override { return &getValue(); }
     void* doBeginEditVoidPtr() override  { return beginEdit(); }
     void doEndEditVoidPtr() override  { endEdit(); }
-
-
 };
 
 class EmptyData : public Data<void*> {};
