@@ -69,6 +69,9 @@ void VelocityBasedImplicitIntegrationScheme::doSetupIntegrationStep(const core::
     m_vop->v_eq(m_vResult, core::vec_id::write_access::velocity);
     m_vop->v_eq(m_xResult, core::vec_id::write_access::position);
 
+    m_mop->propagateX(m_xResult);
+    m_mop->propagateV(m_vResult);
+
     // Deal with higher order integration scheme
     const Size order = getIntegrationSchemeTimeOrder();
 
