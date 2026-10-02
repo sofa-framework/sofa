@@ -51,8 +51,6 @@ virtual       CLASSNAME* to##CLASSNAME()       override { return this; }
 namespace sofa::core::objectmodel
 {
 
-
-
 /**
  *  \brief Base class for everything
  *

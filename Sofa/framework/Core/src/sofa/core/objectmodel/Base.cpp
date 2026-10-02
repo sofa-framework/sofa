@@ -20,8 +20,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_CORE_OBJECTMODEL_BASE_CPP
-
 #include <sofa/core/objectmodel/Base.h>
+
 #include <sofa/type/BoundingBox.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/core/ObjectFactory.h>
@@ -43,8 +43,6 @@ using sofa::helper::getClosestMatch;
 #include <typeinfo>
 #include <cstring>
 #include <sstream>
-
-
 
 #define ERROR_LOG_SIZE 100
 
@@ -733,11 +731,11 @@ std::shared_ptr<Snapshot::SnapshotObject> Base::saveSnapshot(std::shared_ptr<Sna
 std::shared_ptr<Snapshot::SnapshotObject>
 Base::findSnapshotObject(const std::shared_ptr<Snapshot::SnapshotNode>& parents, const std::string& objectname, const std::string& classname, const std::string& pathname) const
 {
-    for (const auto& p : parents->m_objects)
+    for (const auto& parent : parents->m_objects)
     {
-        if (p->m_name == objectname && p->m_className == classname && p->m_pathName == pathname)
+        if (parent->m_name == objectname && parent->m_className == classname && parent->m_pathName == pathname)
         {
-            return p;
+            return parent;
         }
     }
     msg_error() << "SnapshotObject "<< objectname << " not found";

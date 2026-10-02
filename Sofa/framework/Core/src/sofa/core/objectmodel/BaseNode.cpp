@@ -26,6 +26,7 @@
 #include <sofa/core/collision/Pipeline.h>
 #include <sofa/core/visual/VisualLoop.h>
 
+
 namespace sofa::core::objectmodel
 {
 

@@ -28,7 +28,6 @@
 namespace sofa::core::objectmodel
 {
 
-
 /**
  *  \brief Base class for simulation nodes.
  *
