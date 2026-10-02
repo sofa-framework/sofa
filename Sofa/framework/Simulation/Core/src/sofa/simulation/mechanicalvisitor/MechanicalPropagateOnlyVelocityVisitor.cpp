@@ -30,6 +30,7 @@ MechanicalPropagateOnlyVelocityVisitor::MechanicalPropagateOnlyVelocityVisitor(
         SReal time, core::MultiVecDerivId v)
         : MechanicalVisitor(mparams), v(v)
 {
+    SOFA_UNUSED(time);
 #ifdef SOFA_DUMP_VISITOR_INFO
     setReadWriteVectors();
 #endif

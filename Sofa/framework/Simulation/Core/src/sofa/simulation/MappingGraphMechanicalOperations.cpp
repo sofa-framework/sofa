@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/simulation/MappingGraphMechanicalOperations.h>
+#include <sofa/simulation/DifferentialOperations.h>
 
 namespace sofa::simulation::common
 {
@@ -41,7 +42,7 @@ void MappingGraphMechanicalOperations::projectResponse(const MappingGraph& mappi
 void MappingGraphMechanicalOperations::computeForce(const MappingGraph& mappingGraph,
                                                     core::MultiVecDerivId result,
                                                     bool clearForceBefore,
-                                                    bool accumulateForcesFromMappedStates,
+                                                    bool pullbackForces,
                                                     TaskScheduler* taskScheduler)
 {
     //assumes the mapping graph is valid and properly initialized
@@ -79,16 +80,14 @@ void MappingGraphMechanicalOperations::computeForce(const MappingGraph& mappingG
         forceField.addForce(&mparams, result);
     }, sofa::simulation::VisitorApplication::ALL_NODES, taskScheduler);
 
-    if (accumulateForcesFromMappedStates)
+    if (pullbackForces)
     {
         /**
-         * Compute f_in += J^T * f_out using mappings in the mapping graph. This operation must be
-         * performed in a bottom-up order to ensure correct force accumulation.
+         * Pull back force f_in += J^T * f_out using the mappings in the mapping graph. Force is a
+         * dual quantity (a cotangent vector). That is why this operation must be performed in a
+         * bottom-up order.
          */
-        mappingGraph.algorithms.traverseBottomUp_([&](core::BaseMapping& mapping)
-        {
-            mapping.applyJT(&mparams, result, result);
-        });
+        DifferentialOperations::pullbackCotangent(mappingGraph, mparams, result);
     }
 }
 void MappingGraphMechanicalOperations::addMBKv(const MappingGraph& mappingGraph,
@@ -124,14 +123,7 @@ void MappingGraphMechanicalOperations::addMBKv(const MappingGraph& mappingGraph,
 
     if (accumulate)
     {
-        mappingGraph.algorithms.traverseBottomUp_([&](core::BaseMapping& mapping)
-        {
-            mapping.applyJT(&mparams, df, df);
-            if( mparams.kFactor() != 0 )
-            {
-                mapping.applyDJT(&mparams, df, df);
-            }
-        });
+        DifferentialOperations::pullbackCotangentTangent(mappingGraph, mparams, df);
     }
 
     mparams.setDx(dx);

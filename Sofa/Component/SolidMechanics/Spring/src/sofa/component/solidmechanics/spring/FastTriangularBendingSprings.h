@@ -154,14 +154,24 @@ protected:
         void replaceIndices( const type::vector<Index> &newIndices );
 
         /// Output stream
-        inline friend std::ostream& operator<< ( std::ostream& os, const EdgeSpring& /*ei*/ )
+        inline friend std::ostream& operator<< ( std::ostream& os, const EdgeSpring& ei )
         {
+            os << ei.vid << " ";
+            os << ei.alpha << " ";
+            os << ei.lambda << " ";
+            os << ei.is_activated << " ";
+            os << ei.is_initialized;
             return os;
         }
 
         /// Input stream
-        inline friend std::istream& operator>> ( std::istream& in, EdgeSpring& /*ei*/ )
+        inline friend std::istream& operator>> ( std::istream& in, EdgeSpring& ei )
         {
+            in >> ei.vid;
+            in >> ei.alpha;
+            in >> ei.lambda;
+            in >> ei.is_activated;
+            in >> ei.is_initialized;
             return in;
         }
     };
