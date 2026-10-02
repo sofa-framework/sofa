@@ -49,6 +49,11 @@ bool BaseMass::removeInNode( objectmodel::BaseNode* node )
     return true;
 }
 
+void BaseMass::accFromF(const MechanicalParams* mparams, MultiVecDerivId aid)
+{
+    solveLinearSystem(mparams, aid, mparams->f());
+}
+
 void BaseMass::buildMassMatrix(sofa::core::behavior::MassMatrixAccumulator* matrices)
 {
     static std::set<BaseMass*> hasEmittedWarning;

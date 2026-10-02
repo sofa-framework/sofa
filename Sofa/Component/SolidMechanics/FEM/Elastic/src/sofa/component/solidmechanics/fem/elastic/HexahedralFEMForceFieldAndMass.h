@@ -82,7 +82,7 @@ public:
     ///// WARNING this method only add diagonal elements in the given matrix !
     void addMBKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
 
-     void accFromF(const core::MechanicalParams* mparams, DataVecDeriv& a, const DataVecDeriv& f) override;
+     void solveLinearSystem(const core::MechanicalParams* mparams, DataVecDeriv& a, const DataVecDeriv& f) override;
 
      void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
 
