@@ -42,8 +42,8 @@ python = "3.12.*"
 # [feature.python-oldest.dependencies]
 # python = "3.10.*"
 
-# [feature.python-newest.dependencies]
-# python = "3.14.*"
+[feature.python-newest.dependencies]
+python = "3.14.*"
 
 [activation]
 scripts = ["development/scripts/pixi/activation.sh"]
@@ -332,6 +332,11 @@ standard = { features = [
   "plugin-sofa-python3",
   "presets-defaultGUI",
   "python-supported"] }
+standard-python-newest = { features = [
+  "presets-standard",
+  "plugin-sofa-python3",
+  "presets-defaultGUI",
+  "python-newest"] }
 standard-clang = { features = [
   "clang",
   "presets-standard",
