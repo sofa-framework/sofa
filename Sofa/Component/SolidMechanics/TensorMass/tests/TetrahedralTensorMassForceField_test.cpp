@@ -1,4 +1,4 @@
-﻿/******************************************************************************
+/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,45 +19,44 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/component/solidmechanics/tensormass/TetrahedralTensorMassForceField.h>
 
-#include <sofa/helper/logging/DefaultStyleMessageFormatter.h>
-#include <sofa/helper/logging/TracyMessageHandler.h>
-#include <sofa/helper/logging/MessageFormatter.h>
-#ifdef TRACY_ENABLE
-#include <tracy/Tracy.hpp>
-#endif
+#include <gtest/gtest.h>
+#include <sstream>
+
+#include <sofa/defaulttype/VecTypes.h>
 
 
-namespace sofa::helper::logging
+namespace sofa::component::solidmechanics::tensormass
 {
 
-TracyMessageHandler::TracyMessageHandler(MessageFormatter* formatter)
-    : m_formatter(formatter)
-{
-    if (m_formatter == nullptr)
-    {
-        m_formatter = &DefaultStyleMessageFormatter::getInstance();
-    }
-}
+using TetrahedralTensorMassFF = sofa::component::solidmechanics::tensormass::TetrahedralTensorMassForceField<defaulttype::Vec3Types>;
 
-void TracyMessageHandler::doProcess(Message& m)
+class TetrahedralTensorMassForceFieldTest : public TetrahedralTensorMassFF
 {
-#ifdef TRACY_ENABLE
-    std::stringstream ss;
-    m_formatter->formatMessage(m, ss) ;
-    TracyMessage(ss.str().c_str(), ss.str().size());
-#endif
-}
+public:
+    using EdgeRestInformation = TetrahedralTensorMassFF::EdgeRestInformation;
+};
 
-void TracyMessageHandler::setMessageFormatter(MessageFormatter* formatter)
+TEST(TetrahedralTensorMassForceFieldTest, EdgeRestInformationStreamOperators)
 {
-    m_formatter = formatter;
-}
+    TetrahedralTensorMassForceFieldTest::EdgeRestInformation initialInfo;
 
-TracyMessageHandler& MainTracyMessageHandler::getInstance()
-{
-    static TracyMessageHandler s_instance;
-    return s_instance;
+    for (int i = 0; i < 3; ++i)
+        for (int j = 0; j < 3; ++j)
+            initialInfo.DfDx[i][j] = i + j;
+
+    for (int i = 0; i < 2; ++i)
+        initialInfo.vertices[i] = i;
+
+    std::stringstream buffer;
+    buffer << initialInfo;
+
+    TetrahedralTensorMassForceFieldTest::EdgeRestInformation loadedInfo;
+    buffer >> loadedInfo;
+
+    EXPECT_EQ(initialInfo.DfDx, loadedInfo.DfDx);
+    EXPECT_EQ(*(initialInfo.vertices), *(loadedInfo.vertices));
 }
 
 }

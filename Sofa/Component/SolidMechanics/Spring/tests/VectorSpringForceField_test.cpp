@@ -1,4 +1,4 @@
-﻿/******************************************************************************
+/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,45 +19,44 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/component/solidmechanics/spring/VectorSpringForceField.h>
 
-#include <sofa/helper/logging/DefaultStyleMessageFormatter.h>
-#include <sofa/helper/logging/TracyMessageHandler.h>
-#include <sofa/helper/logging/MessageFormatter.h>
-#ifdef TRACY_ENABLE
-#include <tracy/Tracy.hpp>
-#endif
+#include <gtest/gtest.h>
+#include <sstream>
+
+#include <sofa/defaulttype/VecTypes.h>
 
 
-namespace sofa::helper::logging
+namespace sofa::component::solidmechanics::spring
 {
 
-TracyMessageHandler::TracyMessageHandler(MessageFormatter* formatter)
-    : m_formatter(formatter)
-{
-    if (m_formatter == nullptr)
-    {
-        m_formatter = &DefaultStyleMessageFormatter::getInstance();
-    }
-}
+using VectorSpringFF = sofa::component::solidmechanics::spring::VectorSpringForceField<defaulttype::Vec3Types>;
 
-void TracyMessageHandler::doProcess(Message& m)
+class VectorSpringForceFieldTest : public VectorSpringFF
 {
-#ifdef TRACY_ENABLE
-    std::stringstream ss;
-    m_formatter->formatMessage(m, ss) ;
-    TracyMessage(ss.str().c_str(), ss.str().size());
-#endif
-}
+public:
+    using Spring = VectorSpringFF::Spring;
+};
 
-void TracyMessageHandler::setMessageFormatter(MessageFormatter* formatter)
+TEST(VectorSpringForceFieldTest, SpringStreamOperators)
 {
-    m_formatter = formatter;
-}
 
-TracyMessageHandler& MainTracyMessageHandler::getInstance()
-{
-    static TracyMessageHandler s_instance;
-    return s_instance;
+    VectorSpringForceFieldTest::Spring initialInfo;
+
+    initialInfo.ks = 1;
+    initialInfo.kd = 1;
+    initialInfo.restVector = VectorSpringForceFieldTest::Deriv();
+
+    std::stringstream buffer;
+    buffer << initialInfo;
+
+    VectorSpringForceFieldTest::Spring loadedInfo;
+    buffer >> loadedInfo;
+
+    EXPECT_EQ(initialInfo.ks, loadedInfo.ks);
+    EXPECT_EQ(initialInfo.kd, loadedInfo.kd);
+    EXPECT_EQ(initialInfo.restVector, loadedInfo.restVector);
+
 }
 
 }

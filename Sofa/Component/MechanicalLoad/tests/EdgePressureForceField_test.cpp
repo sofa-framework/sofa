@@ -1,4 +1,4 @@
-﻿/******************************************************************************
+/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,45 +19,48 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/component/mechanicalload/EdgePressureForceField.h>
 
-#include <sofa/helper/logging/DefaultStyleMessageFormatter.h>
-#include <sofa/helper/logging/TracyMessageHandler.h>
-#include <sofa/helper/logging/MessageFormatter.h>
-#ifdef TRACY_ENABLE
-#include <tracy/Tracy.hpp>
-#endif
+#include <gtest/gtest.h>
+#include <sstream>
+
+#include <sofa/defaulttype/VecTypes.h>
 
 
-namespace sofa::helper::logging
+namespace sofa::component::mechanicalload
 {
 
-TracyMessageHandler::TracyMessageHandler(MessageFormatter* formatter)
-    : m_formatter(formatter)
-{
-    if (m_formatter == nullptr)
-    {
-        m_formatter = &DefaultStyleMessageFormatter::getInstance();
-    }
-}
+using EdgePressureFF = sofa::component::mechanicalload::EdgePressureForceField<defaulttype::Vec3Types>;
 
-void TracyMessageHandler::doProcess(Message& m)
+class EdgePressureForceFieldTest : public EdgePressureFF
 {
-#ifdef TRACY_ENABLE
-    std::stringstream ss;
-    m_formatter->formatMessage(m, ss) ;
-    TracyMessage(ss.str().c_str(), ss.str().size());
-#endif
-}
+public:
+    using EdgePressureInformation = EdgePressureFF::EdgePressureInformation;
+};
 
-void TracyMessageHandler::setMessageFormatter(MessageFormatter* formatter)
+TEST(EdgePressureForceFieldTest, EdgePressureInformationStreamOperators)
 {
-    m_formatter = formatter;
-}
 
-TracyMessageHandler& MainTracyMessageHandler::getInstance()
-{
-    static TracyMessageHandler s_instance;
-    return s_instance;
+    EdgePressureForceFieldTest::EdgePressureInformation initialInfo;
+
+    initialInfo.length = 1.0;
+
+    initialInfo.force[0] = 1.0;
+    initialInfo.force[1] = 2.0;
+    initialInfo.force[2] = 3.0;
+
+    std::stringstream buffer;
+    buffer << initialInfo;
+
+    EdgePressureForceFieldTest::EdgePressureInformation loadedInfo;
+    buffer >> loadedInfo;
+
+    EXPECT_EQ(initialInfo.length, loadedInfo.length);
+
+    EXPECT_EQ(initialInfo.force[0], loadedInfo.force[0]);
+    EXPECT_EQ(initialInfo.force[1], loadedInfo.force[1]);
+    EXPECT_EQ(initialInfo.force[2], loadedInfo.force[2]);
+
 }
 
 }

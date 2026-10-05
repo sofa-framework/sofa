@@ -40,7 +40,7 @@ public:
     /// Create a new ConsoleMessageHandler. By default the handler is using the
     /// DefaultStyleMessageFormatter object to format the message.
     TracyMessageHandler(MessageFormatter* formatter = nullptr);
-    void process(Message &m) override ;
+    void doProcess(Message &m) override ;
     void setMessageFormatter( MessageFormatter* formatter );
     std::string getName() const override { return "TracyMessageHandler"; }
 

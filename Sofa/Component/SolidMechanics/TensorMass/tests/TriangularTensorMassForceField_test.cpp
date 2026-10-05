@@ -1,4 +1,4 @@
-﻿/******************************************************************************
+/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,45 +19,40 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/component/solidmechanics/tensormass/TriangularTensorMassForceField.h>
 
-#include <sofa/helper/logging/DefaultStyleMessageFormatter.h>
-#include <sofa/helper/logging/TracyMessageHandler.h>
-#include <sofa/helper/logging/MessageFormatter.h>
-#ifdef TRACY_ENABLE
-#include <tracy/Tracy.hpp>
-#endif
+#include <gtest/gtest.h>
+#include <sstream>
+
+#include <sofa/defaulttype/VecTypes.h>
 
 
-namespace sofa::helper::logging
+namespace sofa::component::solidmechanics::tensormass
 {
 
-TracyMessageHandler::TracyMessageHandler(MessageFormatter* formatter)
-    : m_formatter(formatter)
-{
-    if (m_formatter == nullptr)
-    {
-        m_formatter = &DefaultStyleMessageFormatter::getInstance();
-    }
-}
+using TriangularTensorMassFF = sofa::component::solidmechanics::tensormass::TriangularTensorMassForceField<defaulttype::Vec3Types>;
 
-void TracyMessageHandler::doProcess(Message& m)
+class TriangularTensorMassForceFieldTest : public TriangularTensorMassFF
 {
-#ifdef TRACY_ENABLE
-    std::stringstream ss;
-    m_formatter->formatMessage(m, ss) ;
-    TracyMessage(ss.str().c_str(), ss.str().size());
-#endif
-}
+public:
+    using EdgeRestInformation = TriangularTensorMassFF::EdgeRestInformation;
+};
 
-void TracyMessageHandler::setMessageFormatter(MessageFormatter* formatter)
+TEST(TriangularTensorMassForceFieldTest, EdgeRestInformationStreamOperators)
 {
-    m_formatter = formatter;
-}
+    TriangularTensorMassForceFieldTest::EdgeRestInformation initialInfo;
 
-TracyMessageHandler& MainTracyMessageHandler::getInstance()
-{
-    static TracyMessageHandler s_instance;
-    return s_instance;
+    for (int i = 0; i < 3; ++i)
+        for (int j = 0; j < 3; ++j)
+            initialInfo.DfDx[i][j] = i + j;
+
+    std::stringstream buffer;
+    buffer << initialInfo;
+
+    TriangularTensorMassForceFieldTest::EdgeRestInformation loadedInfo;
+    buffer >> loadedInfo;
+
+    EXPECT_EQ(initialInfo.DfDx, loadedInfo.DfDx);
 }
 
 }

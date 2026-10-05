@@ -19,37 +19,60 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/*****************************************************************************
-* User of this library should read the documentation
-* in the messaging.h file.
-******************************************************************************/
+#include <sofa/component/solidmechanics/spring/QuadularBendingSprings.h>
 
-#include <sofa/helper/logging/Message.h>
-#include <sofa/helper/logging/ConsoleMessageHandler.h>
-#include <sofa/helper/logging/DefaultStyleMessageFormatter.h>
+#include <gtest/gtest.h>
+#include <sstream>
 
-namespace sofa::helper::logging
+#include <sofa/defaulttype/VecTypes.h>
+
+
+namespace sofa::component::solidmechanics::spring
 {
 
-ConsoleMessageHandler::ConsoleMessageHandler(MessageFormatter* formatter)
+using QuadularBS = sofa::component::solidmechanics::spring::QuadularBendingSprings<defaulttype::Vec3Types>;
+
+class QuadularBendingSpringsTest : public QuadularBS
 {
-    m_formatter = (formatter==nullptr?&DefaultStyleMessageFormatter::getInstance():formatter);
+public:
+    using EdgeInformation = QuadularBS::EdgeInformation;
+};
+
+TEST(QuadularBendingSpringsTest, EdgeInformationStreamOperators)
+{
+
+    QuadularBendingSpringsTest::EdgeInformation initialInfo;
+
+    for (int i = 0; i < 2; ++i)
+    {
+        initialInfo.springs[i].edge = {i,i};
+        initialInfo.springs[i].restLength = i ;
+        initialInfo.springs[i].DfDx = QuadularBendingSpringsTest::Mat();
+    }
+
+    initialInfo.ks = 1;
+    initialInfo.kd = 1;
+    initialInfo.is_activated = true;
+    initialInfo.is_initialized = true;
+
+    std::stringstream buffer;
+    buffer << initialInfo;
+
+    QuadularBendingSpringsTest::EdgeInformation loadedInfo;
+    buffer >> loadedInfo;
+
+    for (int i = 0; i < 2; ++i)
+    {
+        for (int j = 0; j < 2; ++j)
+            EXPECT_EQ(initialInfo.springs[i].edge[j], loadedInfo.springs[i].edge[j]);
+        EXPECT_EQ(initialInfo.springs[i].restLength, loadedInfo.springs[i].restLength);
+        EXPECT_EQ(initialInfo.springs[i].DfDx, loadedInfo.springs[i].DfDx);
+    }
+    EXPECT_EQ(initialInfo.ks, loadedInfo.ks);
+    EXPECT_EQ(initialInfo.kd, loadedInfo.kd);
+    EXPECT_EQ(initialInfo.is_activated, loadedInfo.is_activated);
+    EXPECT_EQ(initialInfo.is_initialized, loadedInfo.is_initialized);
+
 }
 
-void ConsoleMessageHandler::doProcess(Message &m)
-{
-    m_formatter->formatMessage(m, m.type()>=Message::Error ? std::cerr : std::cout ) ;
 }
-
-void ConsoleMessageHandler::setMessageFormatter(MessageFormatter* formatter)
-{
-    m_formatter = formatter;
-}
-
-ConsoleMessageHandler& MainConsoleMessageHandler::getInstance()
-{
-    static ConsoleMessageHandler s_instance;
-    return s_instance;
-}
-} // namespace sofa::helper::logging
-

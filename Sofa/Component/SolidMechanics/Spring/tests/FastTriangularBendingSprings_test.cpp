@@ -1,4 +1,4 @@
-﻿/******************************************************************************
+/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,45 +19,51 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/component/solidmechanics/spring/FastTriangularBendingSprings.h>
 
-#include <sofa/helper/logging/DefaultStyleMessageFormatter.h>
-#include <sofa/helper/logging/TracyMessageHandler.h>
-#include <sofa/helper/logging/MessageFormatter.h>
-#ifdef TRACY_ENABLE
-#include <tracy/Tracy.hpp>
-#endif
+#include <gtest/gtest.h>
+#include <sstream>
+
+#include <sofa/defaulttype/VecTypes.h>
 
 
-namespace sofa::helper::logging
+namespace sofa::component::solidmechanics::spring
 {
 
-TracyMessageHandler::TracyMessageHandler(MessageFormatter* formatter)
-    : m_formatter(formatter)
-{
-    if (m_formatter == nullptr)
-    {
-        m_formatter = &DefaultStyleMessageFormatter::getInstance();
-    }
-}
+using FastTriangularBS = sofa::component::solidmechanics::spring::FastTriangularBendingSprings<defaulttype::Vec3Types>;
 
-void TracyMessageHandler::doProcess(Message& m)
+class FastTriangularBendingSpringsTest : public FastTriangularBS
 {
-#ifdef TRACY_ENABLE
-    std::stringstream ss;
-    m_formatter->formatMessage(m, ss) ;
-    TracyMessage(ss.str().c_str(), ss.str().size());
-#endif
-}
+public:
+    using EdgeSpring = FastTriangularBS::EdgeSpring;
+};
 
-void TracyMessageHandler::setMessageFormatter(MessageFormatter* formatter)
+TEST(FastTriangularBendingSpringsTest, EdgePressureStreamOperators)
 {
-    m_formatter = formatter;
-}
 
-TracyMessageHandler& MainTracyMessageHandler::getInstance()
-{
-    static TracyMessageHandler s_instance;
-    return s_instance;
+    FastTriangularBendingSpringsTest::EdgeSpring initialInfo;
+
+    for (int i = 0; i < 4; ++i)
+        initialInfo.vid[i] = i;
+
+    for (int i = 0; i < 4; ++i)
+        initialInfo.alpha[i] = i;
+    initialInfo.lambda = 1;
+    initialInfo.is_activated = true;
+    initialInfo.is_initialized = true;
+
+    std::stringstream buffer;
+    buffer << initialInfo;
+
+    FastTriangularBendingSpringsTest::EdgeSpring loadedInfo;
+    buffer >> loadedInfo;
+
+    EXPECT_EQ(initialInfo.vid, loadedInfo.vid);
+    EXPECT_EQ(initialInfo.alpha, loadedInfo.alpha);
+    EXPECT_EQ(initialInfo.lambda, loadedInfo.lambda);
+    EXPECT_EQ(initialInfo.is_activated, loadedInfo.is_activated);
+    EXPECT_EQ(initialInfo.is_initialized, loadedInfo.is_initialized);
+
 }
 
 }

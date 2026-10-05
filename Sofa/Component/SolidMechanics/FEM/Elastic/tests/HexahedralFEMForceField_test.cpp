@@ -1,4 +1,4 @@
-﻿/******************************************************************************
+/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,45 +19,51 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/component/solidmechanics/fem/elastic/HexahedralFEMForceField.h>
 
-#include <sofa/helper/logging/DefaultStyleMessageFormatter.h>
-#include <sofa/helper/logging/TracyMessageHandler.h>
-#include <sofa/helper/logging/MessageFormatter.h>
-#ifdef TRACY_ENABLE
-#include <tracy/Tracy.hpp>
-#endif
+#include <gtest/gtest.h>
+#include <sstream>
 
-
-namespace sofa::helper::logging
+namespace sofa
 {
 
-TracyMessageHandler::TracyMessageHandler(MessageFormatter* formatter)
-    : m_formatter(formatter)
+using HexahedralFEMFF = sofa::component::solidmechanics::fem::elastic::HexahedralFEMForceField<defaulttype::Vec3Types>;
+
+class HexahedralFEMForceFieldTest : public HexahedralFEMFF
 {
-    if (m_formatter == nullptr)
-    {
-        m_formatter = &DefaultStyleMessageFormatter::getInstance();
-    }
+public:
+    using HexahedronInformation = HexahedralFEMFF::HexahedronInformation;
+};
+
+TEST(HexahedralFEMForceFieldTest, HexahedronInformationStreamOperators)
+{
+    HexahedralFEMForceFieldTest::HexahedronInformation initialInfo;
+
+    for (int i=0; i<6; i++)
+        for (int j=0; j<6; j++)
+            initialInfo.materialMatrix[i][j] = i+j;
+
+    for (int i=0; i<8; i++)
+        initialInfo.rotatedInitialElements[i] = HexahedralFEMFF::Coord(i,i,i);
+
+    for (int i=0; i<3; i++)
+        for (int j=0; j<3; j++)
+            initialInfo.rotation[i][j] = i+j;
+
+    for (int i=0; i<24; i++)
+        for (int j=0; j<24; j++)
+            initialInfo.stiffness[i][j] = i+j;
+
+    std::stringstream buffer;
+    buffer << initialInfo;
+
+    HexahedralFEMForceFieldTest::HexahedronInformation loadedInfo;
+    buffer >> loadedInfo;
+
+    EXPECT_EQ(loadedInfo.materialMatrix, initialInfo.materialMatrix);
+    EXPECT_EQ(loadedInfo.rotatedInitialElements, initialInfo.rotatedInitialElements);
+    EXPECT_EQ(loadedInfo.rotation, initialInfo.rotation);
+    EXPECT_EQ(loadedInfo.stiffness, initialInfo.stiffness);
 }
 
-void TracyMessageHandler::doProcess(Message& m)
-{
-#ifdef TRACY_ENABLE
-    std::stringstream ss;
-    m_formatter->formatMessage(m, ss) ;
-    TracyMessage(ss.str().c_str(), ss.str().size());
-#endif
-}
-
-void TracyMessageHandler::setMessageFormatter(MessageFormatter* formatter)
-{
-    m_formatter = formatter;
-}
-
-TracyMessageHandler& MainTracyMessageHandler::getInstance()
-{
-    static TracyMessageHandler s_instance;
-    return s_instance;
-}
-
-}
+} // namespace sofa
