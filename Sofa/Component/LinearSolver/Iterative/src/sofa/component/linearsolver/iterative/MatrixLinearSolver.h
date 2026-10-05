@@ -39,13 +39,6 @@
 #include <sofa/component/linearsolver/iterative/MatrixLinearSystem[GraphScattered].h>
 #include <sofa/type/trait/Rebind.h>
 
-#if SOFA_CORE_ENABLE_CRSMULTIMATRIXACCESSOR
-#include <sofa/core/behavior/CRSMultiMatrixAccessor.h>
-#else
-#include <sofa/core/behavior/DefaultMultiMatrixAccessor.h>
-#endif // SOFA_CORE_ENABLE_CRSMULTIMATRIXACCESSOR
-
-
 namespace sofa::component::linearsolver
 {
 
