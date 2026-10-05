@@ -40,7 +40,7 @@ TracyMessageHandler::TracyMessageHandler(MessageFormatter* formatter)
     }
 }
 
-void TracyMessageHandler::process(Message& m)
+void TracyMessageHandler::doProcess(Message& m)
 {
 #ifdef TRACY_ENABLE
     std::stringstream ss;

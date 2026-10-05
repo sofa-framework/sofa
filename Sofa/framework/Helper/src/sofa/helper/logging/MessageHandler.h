@@ -39,8 +39,15 @@ class SOFA_HELPER_API MessageHandler
 {
 public:
     virtual ~MessageHandler(){}
-    virtual void process(Message& m) = 0 ;
+    virtual void process(Message& m) final;
+    virtual void doProcess(Message& m) = 0;
     virtual std::string getName() const = 0;
+
+    virtual void setQuiet(bool quiet) { m_quiet = quiet; };
+    virtual bool isQuiet() const { return m_quiet; };
+
+private:
+    bool m_quiet {false};
 };
 
 

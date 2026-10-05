@@ -11,7 +11,7 @@
     <include href="../../../QuadraticTopology.xml"/>
 
     <Node name="simulation">
-        <EulerImplicitSolver name="backward_Euler" rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitIntegrationScheme name="backward_Euler" rayleighStiffness="0.1" rayleighMass="0.1" />
 
         <CGLinearSolver iterations="250" name="linear_solver" tolerance="1.0e-12" threshold="1.0e-12" />
 

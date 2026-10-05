@@ -115,7 +115,9 @@ public:
             Sofa.Component.StateContainer,
             Sofa.Component.Topology.Container.Grid,
             Sofa.Component.SolidMechanics.Spring,
-            Sofa.Component.ODESolver.Backward,
+            Sofa.Component.IntegrationScheme.Backward,
+            Sofa.Component.Constraint.Projective,
+            Sofa.Component.Engine.Select,
             Sofa.Component.LinearSolver.Iterative,
             Sofa.Component.Mass
         });
@@ -126,8 +128,8 @@ public:
             {"n", str(type::Vec3(nbrGrid, nbrGrid, 1))}, {"min", "0 0 0"}, {"max", "10 10 0"} });
 
         const Node::SPtr FNode = sofa::simpleapi::createChild(m_root, "SpringNode");
-        createObject(FNode, "EulerImplicitSolver");
-        createObject(FNode, "CGLinearSolver", {{ "iterations", "20" }, { "tolerance", "1e-5" }, {"threshold", "1e-8"}});
+        createObject(FNode, "EulerImplicitIntegrationScheme");
+        createObject(FNode, "CGLinearSolver", {{ "iterations", "25" }, { "tolerance", "1e-10" }, {"threshold", "1e-10"}});
         createObject(FNode, "MechanicalObject", {
             {"name","dof"}, {"template","Vec3d"}, {"position", "@../grid.position"} });
         createObject(FNode, "TriangleSetTopologyContainer", {
@@ -136,6 +138,10 @@ public:
             {"name","Modifier"} });
         createObject(FNode, "TriangleSetGeometryAlgorithms", {
             {"name","GeomAlgo"}, {"template","Vec3d"} });
+
+        createObject(FNode, "BoxROI", {{"name", "ROI1"}, {"box","-0.01 -0.01 -0.01  2.01 0.01 0.01"}});
+        createObject(FNode, "FixedProjectiveConstraint", {{"indices","@ROI1.indices"}});
+
         
         createObject(FNode, "TriangularBendingSprings", { {"Name","TBS"}, {"stiffness", str(ks)}, {"damping", str(kd)} });
         createObject(FNode, "DiagonalMass", { {"name","mass"}, {"massDensity","0.1"} });
@@ -302,11 +308,11 @@ public:
             sofa::simulation::node::animate(m_root.get(), 0.01_sreal);
         }
 
-        EXPECT_NEAR(positions[nbrGrid][0], -0.000132, 1e-4);
-        EXPECT_NEAR(positions[nbrGrid][1], 0.520924, 1e-4);
+        EXPECT_NEAR(positions[nbrGrid][0], -0.00091, 1e-4);
+        EXPECT_NEAR(positions[nbrGrid][1], 0.52464, 1e-4);
         EXPECT_NEAR(positions[nbrGrid][2], 0, 1e-4);
 
-        ASSERT_FLOAT_EQ(triBS->getAccumulatedPotentialEnergy(), 7.7932855e-06);
+        ASSERT_FLOAT_EQ(triBS->getAccumulatedPotentialEnergy(), 0.0046701669);
         ASSERT_FLOAT_EQ(EdgeInfos[0].restlength, 1.1768779);
     }
 
@@ -389,6 +395,38 @@ TEST_F(TriangularBendingSprings3_test, checkForceField_values)
 TEST_F(TriangularBendingSprings3_test, checkForceField_TopologyChanges)
 {
     this->checkTopologyChanges();
+}
+
+TEST_F(TriangularBendingSprings3_test, EdgeInformationStreamOperators)
+{
+    TriangularBendingSprings3_test::EdgeInfo initialInfo;
+
+    for (int i=0; i< initialInfo.DfDx.size(); ++i)
+        for (int j=0; j<initialInfo.DfDx[i].size(); ++j)
+            initialInfo.DfDx[i][j] = i+j;
+
+    initialInfo.m1 = 1;
+    initialInfo.m2 = 1;
+    initialInfo.ks = 1;
+    initialInfo.kd = 1;
+    initialInfo.restlength = 1;
+    initialInfo.is_initialized = true;
+    initialInfo.is_activated = true;
+
+    std::stringstream buffer;
+    buffer << initialInfo;
+
+    TriangularBendingSprings3_test::EdgeInfo loadedInfo;
+    buffer >> loadedInfo;
+
+    EXPECT_EQ(initialInfo.DfDx, loadedInfo.DfDx);
+    EXPECT_EQ(initialInfo.m1, loadedInfo.m1);
+    EXPECT_EQ(initialInfo.m2, loadedInfo.m2);
+    EXPECT_EQ(initialInfo.ks, loadedInfo.ks);
+    EXPECT_EQ(initialInfo.kd, loadedInfo.kd);
+    EXPECT_EQ(initialInfo.restlength, loadedInfo.restlength);
+    EXPECT_EQ(initialInfo.is_activated, loadedInfo.is_activated);
+    EXPECT_EQ(initialInfo.is_initialized, loadedInfo.is_initialized);
 }
 
 } // namespace sofa

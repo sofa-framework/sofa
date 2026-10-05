@@ -4,7 +4,7 @@
     <RequiredPlugin name="Sofa.Component.LinearSolver.Direct"/>
     <RequiredPlugin name="Sofa.Component.LinearSystem"/>
     <RequiredPlugin name="Sofa.Component.Mass"/>
-    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/>
+    <RequiredPlugin name="Sofa.Component.IntegrationScheme.Backward"/>
     <RequiredPlugin name="Sofa.Component.SolidMechanics.FEM.Elastic"/>
     <RequiredPlugin name="Sofa.Component.StateContainer"/>
     <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/>
@@ -16,7 +16,7 @@
     <LineAxis size="@grid.size"/>
 
     <Node name="beam">
-        <EulerImplicitSolver name="odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitIntegrationScheme name="odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
         <ConstantSparsityPatternSystem template="CompressedRowSparseMatrixd" name="A"/>
         <EigenSimplicialLDLT template="CompressedRowSparseMatrixd"/>
         <MechanicalObject name="DoFs" template="Vec3" />

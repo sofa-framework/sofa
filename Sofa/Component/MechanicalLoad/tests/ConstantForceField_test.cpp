@@ -75,7 +75,7 @@ struct ConstantForceField_test : public BaseSimulationTest, NumericTest<typename
     void doSetUp() override
     {
         this->loadPlugins({
-            Sofa.Component.ODESolver,
+            Sofa.Component.IntegrationScheme,
             Sofa.Component.StateContainer,
             Sofa.Component.MechanicalLoad,
             Sofa.Component.LinearSolver.Iterative,
@@ -97,7 +97,7 @@ struct ConstantForceField_test : public BaseSimulationTest, NumericTest<typename
                  "<Node 	name='Root' gravity='-9.81 0 0' time='0' animate='0' >               \n"
                  "   <DefaultAnimationLoop/>                                                     \n"
                  "   <CGLinearSolver iterations=\"25\" tolerance=\"1e-5\" threshold=\"1e-5\"/>   \n"
-                 "   <EulerImplicitSolver/>                                                      \n"
+                 "   <EulerImplicitIntegrationScheme/>                                                      \n"
                  "   <MechanicalObject name='mstate' size='2' template='"<<  DataTypes::Name() << "'/> \n"
                  "   <UniformMass totalMass='1.0'/>                                                                    \n"
                  "   <ConstantForceField name='myForceField' indices='0' totalForce='"<< defaultValueForces << "'/>        \n"

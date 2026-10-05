@@ -305,7 +305,7 @@ bool MatrixLinearSolver<Matrix, Vector>::addJMInvJtLocal(Matrix* M, ResMatrixTyp
         {
             rhsVector[row].resize(J->colSize());
             lhsVector[row].resize(J->colSize());
-            columnResult[row].resize(J->colSize());
+            columnResult[row].resize(J->rowSize());
 
             // STEP 1 : put each line of matrix Jt in the right hand term of the system
             for (typename JMatrixType::Index i = 0; i < J->colSize(); ++i)

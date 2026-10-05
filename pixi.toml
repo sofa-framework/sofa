@@ -85,12 +85,6 @@ dependencies = { cuda-version = "*", cuda-compiler = "*", libcublas-dev = "*", l
 [feature.plugin-cuda.target.osx]
 activation = { env = { SOFA_PLUGIN_SOFACUDA_ARGS = "-DPLUGIN_SOFACUDA=OFF -DPLUGIN_BEAMADAPTER_CUDA=OFF -DPLUGIN_SOFADISTANCEGRID_CUDA=OFF -DPLUGIN_SOFASPHFLUID_CUDA=OFF -DPLUGIN_SOFTROBOTS_CUDA=OFF" } }
 
-# We still build CGAL plugin excepted on windows (linking is failing)
-[feature.plugin-cgal.target.unix]
-dependencies = { cgal-cpp = "*", gmp = "*" }
-[feature.plugin-cgal.target.win]
-activation = { env = { SOFA_PLUGIN_SOFACGAL_ARGS = "-DSOFA_FETCH_CGALPLUGIN=OFF -DPLUGIN_CGALPLUGIN=OFF" } }
-
 [feature.plugin-cimg]
 dependencies = { zstd = "*", libtiff = "*", libjpeg-turbo = "*", libpng = "*" }
 
@@ -104,7 +98,16 @@ dependencies = { libglu = "*", libgl-devel = "*" }
 conda-deny = "*"
 [feature.build-release-package.activation]
 env = { SOFA_BUILD_RELEASE_PACKAGE_WITH_PIXI = "1" }
+[feature.build-release-package.target.win.activation]
+env = { SOFA_CPACK_PARAMS = "-DCPACK_GENERATOR=ZIP -DCPACK_BINARY_ZIP=ON -DSOFA_USE_DEPENDENCY_PACK=OFF" }
+[feature.build-release-package.target.osx.activation]
+env = { SOFA_CPACK_PARAMS = "-DCPACK_GENERATOR=ZIP -DCPACK_BINARY_ZIP=ON -DCMAKE_OSX_DEPLOYMENT_TARGET=10.15" }
+[feature.build-release-package.target.linux.activation]
+env = { SOFA_CPACK_PARAMS = "-DCPACK_GENERATOR=ZIP -DCPACK_BINARY_ZIP=ON" }
 [feature.build-release-package.tasks]
+build-package = { cmd = "cmake --build $SOFA_BUILD_DIR --target package", depends-on = ["configure-package"] }
+
+[feature.build-release-package-standard.tasks]
 configure-package = { cmd = [ "cmake",
   "-G",
   "Ninja",
@@ -131,20 +134,49 @@ configure-package = { cmd = [ "cmake",
   "-DCPACK_SOURCE_TGZ=OFF",
   "-DCPACK_SOURCE_TXZ=OFF",
   "-DCPACK_SOURCE_TZ=OFF",
-  "-DCPACK_GENERATOR=\"ZIP;NSIS\"",
-  "-DCPACK_BINARY_ZIP=ON",
-  "-DCPACK_BINARY_NSIS=ON",
-  "-DCMAKE_OSX_DEPLOYMENT_TARGET=10.15",
-  "-DCPACK_GENERATOR=ZIP",
+  "$SOFA_CPACK_PARAMS",
   "-DSOFA_BUILD_RELEASE_PACKAGE=ON",
-  "-DSOFA_USE_DEPENDENCY_PACK=OFF",
+  "--preset",
+  "standard",
+  "$SOFA_PLUGIN_PYTHON3_ARGS",
+  "$SOFA_PLUGIN_SOFACUDA_ARGS",
+  "$SOFA_PLUGIN_SOFACGAL_ARGS" ] }
+
+[feature.build-release-package-full.tasks]
+configure-package = { cmd = [ "cmake",
+  "-G",
+  "Ninja",
+  "-B",
+  "$SOFA_BUILD_DIR",
+  "-S",
+  ".",
+  "-DCMAKE_BUILD_TYPE=MinSizeRel",
+  "-DCPACK_BINARY_IFW=OFF",
+  "-DCPACK_BINARY_BUNDLE=OFF",
+  "-DCPACK_BINARY_DEB=OFF",
+  "-DCPACK_BINARY_DRAGNDROP=OFF",
+  "-DCPACK_BINARY_FREEBSD=OFF",
+  "-DCPACK_BINARY_OSXX11=OFF",
+  "-DCPACK_BINARY_PACKAGEMAKER=OFF",
+  "-DCPACK_BINARY_PRODUCTBUILD=OFF",
+  "-DCPACK_BINARY_RPM=OFF",
+  "-DCPACK_BINARY_STGZ=OFF",
+  "-DCPACK_BINARY_TBZ2=OFF",
+  "-DCPACK_BINARY_TGZ=OFF",
+  "-DCPACK_BINARY_TXZ=OFF",
+  "-DCPACK_SOURCE_RPM=OFF",
+  "-DCPACK_SOURCE_TBZ2=OFF",
+  "-DCPACK_SOURCE_TGZ=OFF",
+  "-DCPACK_SOURCE_TXZ=OFF",
+  "-DCPACK_SOURCE_TZ=OFF",
+  "$SOFA_CPACK_PARAMS",
+  "-DSOFA_BUILD_RELEASE_PACKAGE=ON",
   "--preset",
   "full",
   "$SOFA_PLUGIN_PYTHON3_ARGS",
   "$SOFA_PLUGIN_SOFACUDA_ARGS",
   "$SOFA_PLUGIN_SOFACGAL_ARGS" ] }
 
-build-package = { cmd = "cmake --build $SOFA_BUILD_DIR --target package", depends-on = ["configure-package"] }
 
 [feature.presets-conda-core.tasks]
 # XXX we should probably do not allow fetch dependencies for this preset
@@ -279,13 +311,12 @@ configure = { cmd = [ "cmake",
   "full-dev",
   "$SOFA_PLUGIN_PYTHON3_ARGS",
   "$SOFA_PLUGIN_SOFACGAL_ARGS",
-  "$SOFA_PLUGIN_SOFACUDA_ARGS"] }  
+  "$SOFA_PLUGIN_SOFACUDA_ARGS"] }
 
 [environments]
 default = { features = [
   "presets-supported-plugins",
   "plugin-sofa-python3",
-  "plugin-cgal",
   "plugin-cuda",
   "plugin-cimg",
   "presets-defaultGUI",
@@ -309,10 +340,16 @@ standard-dev = { features = [
   "plugin-sofa-python3",
   "presets-defaultGUI",
   "python-supported"] }
-release-package = { features = [
+release-package-standard = { features = [
   "build-release-package",
+  "build-release-package-standard",
   "plugin-sofa-python3",
-  "plugin-cgal",
+  "presets-defaultGUI",
+  "python-supported"] }
+release-package-full = { features = [
+  "build-release-package",
+  "build-release-package-full",
+  "plugin-sofa-python3",
   "plugin-cuda",
   "plugin-cimg",
   "presets-defaultGUI",
@@ -320,7 +357,6 @@ release-package = { features = [
 supported-plugins = { features = [
   "presets-supported-plugins",
   "plugin-sofa-python3",
-  "plugin-cgal",
   "plugin-cuda",
   "plugin-cimg",
   "presets-defaultGUI",
@@ -328,7 +364,6 @@ supported-plugins = { features = [
 supported-plugins-dev = { features = [
   "presets-supported-plugins-dev",
   "plugin-sofa-python3",
-  "plugin-cgal",
   "plugin-cuda",
   "plugin-cimg",
   "presets-defaultGUI",
@@ -336,7 +371,6 @@ supported-plugins-dev = { features = [
 full = { features = [
   "presets-full",
   "plugin-sofa-python3",
-  "plugin-cgal",
   "plugin-cuda",
   "plugin-cimg",
   "presets-defaultGUI",
@@ -344,9 +378,7 @@ full = { features = [
 full-dev = { features = [
   "presets-full-dev",
   "plugin-sofa-python3",
-  "plugin-cgal",
   "plugin-cuda",
   "plugin-cimg",
   "presets-defaultGUI",
   "python-supported"]}
- 

@@ -118,14 +118,24 @@ protected:
         HexahedronInformation() {}
 
         /// Output stream
-        inline friend std::ostream& operator<< ( std::ostream& os, const HexahedronInformation& /*hi*/ )
+        inline friend std::ostream& operator<< ( std::ostream& os, const HexahedronInformation& hi )
         {
+            os << hi.materialMatrix << " ";
+            for (int i = 0; i < 8; ++i)
+                os << hi.rotatedInitialElements[i] << " ";
+            os << hi.rotation << " ";
+            os << hi.stiffness;
             return os;
         }
 
         /// Input stream
-        inline friend std::istream& operator>> ( std::istream& in, HexahedronInformation& /*hi*/ )
+        inline friend std::istream& operator>> ( std::istream& in, HexahedronInformation& hi )
         {
+            in >> hi.materialMatrix;
+            for (int i = 0; i < 8; ++i)
+                in >> hi.rotatedInitialElements[i];
+            in >> hi.rotation;
+            in >> hi.stiffness;
             return in;
         }
     };

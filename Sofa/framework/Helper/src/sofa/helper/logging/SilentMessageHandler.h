@@ -39,7 +39,7 @@ class Message;
 class SOFA_HELPER_API SilentMessageHandler : public MessageHandler
 {
 public:
-    void process(Message& /*m*/) override;
+    void doProcess(Message& /*m*/) override;
     std::string getName() const override { return "SilentMessageHandler"; }
 };
 

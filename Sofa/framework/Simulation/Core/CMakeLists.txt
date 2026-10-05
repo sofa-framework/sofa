@@ -17,6 +17,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/DefaultAnimationLoop.h
     ${SRC_ROOT}/DefaultVisualManagerLoop.h
     ${SRC_ROOT}/DeleteVisitor.h
+    ${SRC_ROOT}/DifferentialOperations.h
     ${SRC_ROOT}/ExportDotVisitor.h
     ${SRC_ROOT}/ExportGnuplotVisitor.h
     ${SRC_ROOT}/ExportVisualModelOBJVisitor.h
@@ -156,6 +157,11 @@ set(HEADER_FILES
     ${SRC_ROOT}/task/TaskSchedulerUser.h
     ${SRC_ROOT}/task/WorkerThread.h
     ${SRC_ROOT}/task/TaskSchedulerSettings.h
+
+    ${SRC_ROOT}/integrationscheme/AccelerationBasedImplicitIntegrationScheme.h
+    ${SRC_ROOT}/integrationscheme/VelocityBasedImplicitIntegrationScheme.h
+    ${SRC_ROOT}/integrationscheme/ExplicitIntegrationScheme.h
+    ${SRC_ROOT}/integrationscheme/ImplicitIntegrationScheme.h
 )
 
 set(SOURCE_FILES
@@ -169,6 +175,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/DefaultAnimationLoop.cpp
     ${SRC_ROOT}/DefaultVisualManagerLoop.cpp
     ${SRC_ROOT}/DeleteVisitor.cpp
+    ${SRC_ROOT}/DifferentialOperations.cpp
     ${SRC_ROOT}/ExportDotVisitor.cpp
     ${SRC_ROOT}/ExportGnuplotVisitor.cpp
     ${SRC_ROOT}/ExportVisualModelOBJVisitor.cpp
@@ -299,6 +306,12 @@ set(SOURCE_FILES
     ${SRC_ROOT}/task/TaskSchedulerUser.cpp
     ${SRC_ROOT}/task/WorkerThread.cpp
     ${SRC_ROOT}/task/TaskSchedulerSettings.cpp
+
+    ${SRC_ROOT}/integrationscheme/AccelerationBasedImplicitIntegrationScheme.cpp
+    ${SRC_ROOT}/integrationscheme/VelocityBasedImplicitIntegrationScheme.cpp
+    ${SRC_ROOT}/integrationscheme/ImplicitIntegrationScheme.cpp
+    ${SRC_ROOT}/integrationscheme/ExplicitIntegrationScheme.cpp
+
 )
 
 set(DEPRECATED_DIR "compat/sofa/simulation")
