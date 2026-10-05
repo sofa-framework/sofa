@@ -126,7 +126,7 @@ extern template class NodeSequence<sofa::core::visual::VisualManager>;
 extern template class NodeSequence<sofa::core::CollisionModel>;
 extern template class NodeSequence<sofa::core::objectmodel::BaseComponent>;
 
-extern template class NodeSingle<sofa::core::behavior::BaseAnimationLoop>;
+extern template class NodeSingle<sofa::core::behavior::BaseTimeIntegrator>;
 extern template class NodeSingle<sofa::core::visual::VisualLoop>;
 extern template class NodeSingle<sofa::core::visual::BaseVisualStyle>;
 extern template class NodeSingle<sofa::core::topology::Topology>;
@@ -247,7 +247,7 @@ public:
     NodeSequence<sofa::core::CollisionModel> collisionModel;
     NodeSequence<sofa::core::objectmodel::BaseComponent> unsorted;
 
-    NodeSingle<sofa::core::behavior::BaseAnimationLoop> animationManager;
+    NodeSingle<sofa::core::behavior::BaseTimeIntegrator> timeIntegratorManager;
     NodeSingle<sofa::core::visual::VisualLoop> visualLoop;
     NodeSingle<sofa::core::visual::BaseVisualStyle> visualStyle;
     NodeSingle<sofa::core::topology::Topology> topology;
@@ -424,7 +424,7 @@ public:
     /// @name Solvers and main algorithms
     /// @{
 
-    sofa::core::behavior::BaseAnimationLoop* getAnimationLoop() const override;
+    sofa::core::behavior::BaseTimeIntegrator* getTimeIntegrator() const override;
     sofa::core::behavior::BaseIntegrationScheme* getIntegrationScheme() const override;
     sofa::core::collision::Pipeline* getCollisionPipeline() const override;
     sofa::core::visual::VisualLoop* getVisualLoop() const override;
@@ -608,7 +608,7 @@ protected:
     /// a MechanicalMapping is NOT in the Mapping Sequence
     /// a Mass is in the FF Sequence
     /// a MeshTopology is in the topology Sequence
-    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::behavior::BaseAnimationLoop, AnimationLoop, animationManager )
+    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::behavior::BaseTimeIntegrator, TimeIntegrator, timeIntegratorManager )
     NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::visual::VisualLoop, VisualLoop, visualLoop )
     NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::BehaviorModel, BehaviorModel, behaviorModel )
     NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::BaseMapping, Mapping, mapping )

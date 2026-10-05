@@ -23,7 +23,7 @@
 
 #include <sofa/simulation/Node.h>
 #include <sofa/component/collision/response/contact/CollisionResponse.h>
-#include <sofa/core/behavior/BaseAnimationLoop.h>
+#include <sofa/core/behavior/BaseTimeIntegrator.h>
 #include <sofa/core/behavior/ConstraintSolver.h>
 #include <sofa/simulation/SceneCheckMainRegistry.h>
 
@@ -73,26 +73,9 @@ void SceneCheckCollisionResponse::doCheckOn(Node* node)
             /// If StickContactConstraint is chosen, make sure the scene includes a FreeMotionAnimationLoop and a GenericConstraintSolver (specifically)
             if ( response == "StickContactConstraint" )
             {
-                sofa::core::behavior::BaseAnimationLoop* animationLoop;
-                root->get(animationLoop, sofa::core::objectmodel::BaseContext::SearchRoot);
-                if (!animationLoop || ( animationLoop && ( animationLoop->getClassName() != "FreeMotionAnimationLoop" )) )
-                {
-                    m_message <<"A FreeMotionAnimationLoop must be in the scene to solve StickContactConstraint" << msgendl;
-                }
-
-                sofa::core::behavior::ConstraintSolver* constraintSolver;
-                root->get(constraintSolver, sofa::core::objectmodel::BaseContext::SearchRoot);
-                if (!constraintSolver || ( constraintSolver && ( constraintSolver->getClassName() != "BlockGaussSeidelConstraintSolver" )) )
-                {
-                    m_message <<"A BlockGaussSeidelConstraintSolver must be in the scene to solve StickContactConstraint" << msgendl;
-                }
-            }
-            /// If FrictionContactConstraint is chosen, make sure the scene includes a FreeMotionAnimationLoop
-            else if ( response == "FrictionContactConstraint")
-            {
-                sofa::core::behavior::BaseAnimationLoop* animationLoop;
-                root->get(animationLoop, sofa::core::objectmodel::BaseContext::SearchRoot);
-                if (!animationLoop || ( animationLoop && ( animationLoop->getClassName() != "FreeMotionAnimationLoop" )) )
+                sofa::core::behavior::BaseTimeIntegrator* timeIntegrator;
+                root->get(timeIntegrator, sofa::core::objectmodel::BaseContext::SearchRoot);
+                if (!timeIntegrator || ( timeIntegrator && ( timeIntegrator->getClassName() != "FreeMotionAnimationLoop" )) )
                 {
                     m_message <<"A FreeMotionAnimationLoop must be in the scene to solve FrictionContactConstraint" << msgendl;
                 }

@@ -63,7 +63,7 @@ std::map<const std::string, int> colors = {
         {"ConstraintSet",           CONSTRAINTSET},
         {"InteractionForceField",   IFFIELD},
         {"ForceField",              FFIELD},
-        {"BaseAnimationLoop",       SOLVER},
+        {"BaseTimeIntegrator",       SOLVER},
         {"IntegrationScheme",               SOLVER},
         {"CollisionPipeline",       COLLISION},
         {"MechanicalMapping",       MMAPPING},

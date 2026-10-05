@@ -100,7 +100,6 @@ namespace sofa::core::behavior
 class BaseForceField;
 class BaseMass;
 class BaseMechanicalState;
-class BaseAnimationLoop;
 class BaseLagrangianConstraint;
 class BaseConstraintSet;
 class ConstraintSolver;
@@ -111,6 +110,7 @@ class BaseInteractionForceField;
 class BaseProjectiveConstraintSet;
 class BaseInteractionProjectiveConstraintSet;
 class BaseInteractionConstraint;
+class BaseTimeIntegrator;
 class BaseMechanicalState;
 class LinearSolver;
 class MultiMatrixAccessor;
@@ -271,7 +271,7 @@ SOFA_DECLARE_OPAQUE_FUNCTION_BETWEEN_BASE_AND(sofa::core::objectmodel::BaseCompo
 SOFA_DECLARE_OPAQUE_FUNCTION_BETWEEN_BASE_AND(sofa::core::objectmodel::ContextObject);
 SOFA_DECLARE_OPAQUE_FUNCTION_BETWEEN_BASE_AND(sofa::core::objectmodel::ConfigurationSetting);
 
-SOFA_DECLARE_OPAQUE_FUNCTION_BETWEEN_BASE_AND(sofa::core::behavior::BaseAnimationLoop);
+SOFA_DECLARE_OPAQUE_FUNCTION_BETWEEN_BASE_AND(sofa::core::behavior::BaseTimeIntegrator);
 SOFA_DECLARE_OPAQUE_FUNCTION_BETWEEN_BASE_AND(sofa::core::behavior::BaseMass);
 SOFA_DECLARE_OPAQUE_FUNCTION_BETWEEN_BASE_AND(sofa::core::behavior::BaseIntegrationScheme);
 SOFA_DECLARE_OPAQUE_FUNCTION_BETWEEN_BASE_AND(sofa::core::behavior::ConstraintSolver);

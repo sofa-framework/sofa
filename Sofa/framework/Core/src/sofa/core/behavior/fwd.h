@@ -23,7 +23,7 @@
 
 namespace sofa::core::behavior
 {
-    class BaseAnimationLoop;
+    class BaseTimeIntegrator;
     class BaseLagrangianConstraint;
     class BaseConstraintCorrection;
     class BaseController;

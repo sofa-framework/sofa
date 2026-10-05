@@ -23,6 +23,7 @@
 
 #include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/core/objectmodel/BaseNode.h>
+#include <sofa/core/behavior/BaseTimeIntegrator.h>
 
 namespace sofa::core::behavior
 {
@@ -38,27 +39,16 @@ namespace sofa::core::behavior
  *  certainly change soon.
  *
  */
-class SOFA_CORE_API BaseAnimationLoop : public virtual objectmodel::BaseComponent
+class SOFA_CORE_API BaseAnimationLoop : public BaseTimeIntegrator
 {
 
 public:
-    SOFA_ABSTRACT_CLASS(BaseAnimationLoop, objectmodel::BaseComponent);
-    SOFA_BASE_CAST_IMPLEMENTATION(BaseAnimationLoop)
-
-    // the node where the loop will start processing.
-    SingleLink<BaseAnimationLoop, core::objectmodel::BaseNode, BaseLink::FLAG_STOREPATH> l_node;
+    SOFA_ABSTRACT_CLASS(BaseAnimationLoop, BaseTimeIntegrator);
 
 protected:
     BaseAnimationLoop();
 
     ~BaseAnimationLoop() override;
-
-    /// Stores starting time of the simulation
-    SReal m_resetTime;
-
-    /// Save the initial state for later uses in reset()
-    void storeResetState() override;
-
 
 private:
     BaseAnimationLoop(const BaseAnimationLoop& n) = delete ;
@@ -67,19 +57,14 @@ private:
 public:
     void init() override;
 
+
+    virtual void integrate(const core::ExecParams* params, SReal dt) override;
+
     /// Main computation method.
     ///
     /// Specify and execute all computations for computing a timestep, such
     /// as one or more collisions and integrations stages.
     virtual void step(const core::ExecParams* params, SReal dt) = 0;
-
-    /// Returns starting time of the simulation
-    SReal getResetTime() const;
-
-    bool insertInNode( objectmodel::BaseNode* node ) override;
-    bool removeInNode( objectmodel::BaseNode* node ) override;
-
-    Data<bool> d_computeBoundingBox; ///< If true, compute the global bounding box of the scene at each time step. Used mostly for rendering.
 
 };
 

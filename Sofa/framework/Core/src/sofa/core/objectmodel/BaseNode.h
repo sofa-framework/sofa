@@ -123,7 +123,7 @@ public:
     /// @name Solvers and main algorithms
     /// @{
 
-    virtual core::behavior::BaseAnimationLoop* getAnimationLoop() const;
+    virtual core::behavior::BaseTimeIntegrator* getTimeIntegrator() const;
     virtual core::collision::Pipeline* getCollisionPipeline() const;
     virtual core::behavior::BaseIntegrationScheme* getIntegrationScheme() const;
     virtual core::visual::VisualLoop* getVisualLoop() const;
@@ -160,7 +160,7 @@ protected:
 
 public:
 
-     BASENODE_ADD_SPECIAL_COMPONENT( core::behavior::BaseAnimationLoop, AnimationLoop, animationManager )
+     BASENODE_ADD_SPECIAL_COMPONENT( core::behavior::BaseTimeIntegrator, TimeIntegrator, timeIntegratorManager )
      BASENODE_ADD_SPECIAL_COMPONENT( core::visual::VisualLoop, VisualLoop, visualLoop )
      BASENODE_ADD_SPECIAL_COMPONENT( core::BehaviorModel, BehaviorModel, behaviorModel )
      BASENODE_ADD_SPECIAL_COMPONENT( core::BaseMapping, Mapping, mapping )

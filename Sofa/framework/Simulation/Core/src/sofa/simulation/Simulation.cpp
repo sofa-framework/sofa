@@ -88,11 +88,11 @@ void initRoot(Node* root)
 
     const sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
 
-    if (!root->getAnimationLoop())
+    if (!root->getTimeIntegrator())
     {
-        msg_warning(root) << "An animation loop is required, but has not been found. Add an animation loop in the root "
-                             "of your scene to fix this warning. The list of available animation loop components is: ["
-                          << sofa::core::ObjectFactory::getInstance()->listClassesDerivedFrom<sofa::core::behavior::BaseAnimationLoop>()
+        msg_warning(root) << "A time integrator is required, but has not been found. Add a time integrator loop in the root "
+                             "of your scene to fix this warning. The list of available time integrator components is: ["
+                          << sofa::core::ObjectFactory::getInstance()->listClassesDerivedFrom<sofa::core::behavior::BaseTimeIntegrator>()
                           << "]. A component of type " << DefaultAnimationLoop::GetClass()->className << " will be automatically added for you.";
 
         const DefaultAnimationLoop::SPtr aloop = sofa::core::objectmodel::New<DefaultAnimationLoop>();
@@ -215,13 +215,13 @@ void animate(Node* root, SReal dt)
     }
     const sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
 
-    if (sofa::core::behavior::BaseAnimationLoop* aloop = root->getAnimationLoop())
+    if (sofa::core::behavior::BaseTimeIntegrator* aloop = root->getTimeIntegrator())
     {
-        aloop->step(params, dt);
+        aloop->integrate(params, dt);
     }
     else
     {
-        msg_error("Simulation") << "Simulation::animate: AnimationLoop expected at the root node";
+        msg_error("Simulation") << "Simulation::animate: TimeIntegrator expected at the root node";
         return;
     }
 }
@@ -254,7 +254,7 @@ void reset(Node* root)
     const sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
 
             // start by resetting the time
-    if (const sofa::core::behavior::BaseAnimationLoop* animLoop = root->getAnimationLoop())
+    if (const sofa::core::behavior::BaseTimeIntegrator* animLoop = root->getTimeIntegrator())
     {
         root->setTime(animLoop->getResetTime());
     }
