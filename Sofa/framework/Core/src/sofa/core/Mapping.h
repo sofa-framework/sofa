@@ -110,14 +110,14 @@ public:
     /// This method must be reimplemented by all mappings.
     virtual void apply( const MechanicalParams* mparams, OutDataVecCoord& out, const InDataVecCoord& in)= 0;
 
-    /// ApplyJ ///
-    /// Apply the mapping to derived (velocity, displacement) vectors.
-    /// $ out = J in $
-    /// where J is the tangent operator (the linear approximation) of the mapping
-    void applyJ(const MechanicalParams* mparams, MultiVecDerivId outVel, ConstMultiVecDerivId inVel ) override;
+    void applyJacobianVectorProduct(
+        const MechanicalParams* mparams,
+        MultiVecDerivId tangentOutId,
+        ConstMultiVecDerivId tangentInId,
+        ConstMultiVecCoordId positionInId) override;
 
     /// This method must be reimplemented by all mappings.
-    virtual void applyJ( const MechanicalParams* mparams, OutDataVecDeriv& out, const InDataVecDeriv& in) = 0;
+    virtual void doApplyJacobianVectorProduct(const MechanicalParams* mparams, OutDataVecDeriv& tangentOut, const InDataVecDeriv& tangentIn, const InDataVecCoord& positionIn) = 0;
 
     /// ApplyJT (Force)///
     /// Apply the reverse mapping to force vectors.
