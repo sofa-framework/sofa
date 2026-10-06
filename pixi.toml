@@ -193,6 +193,7 @@ configure = { cmd = [ "cmake",
   ".",
   "-DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX",
   "-DCMAKE_BUILD_TYPE=$SOFA_BUILD_TYPE",
+  "-DBUILD_CONDA_PACKAGE",
   "--preset",
   "conda-core"] }
 
