@@ -19,11 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/odesolver/forward/init.h>
 
+#include <sofa/Modules.h>
+#include <sofa/component/odesolver/forward/init.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/PluginManager.h>
-#include <sofa/Modules.h>
 
 namespace sofa::component::odesolver::forward
 {
@@ -52,13 +52,27 @@ const char* getModuleVersion()
 
 void registerObjects(sofa::core::ObjectFactory* factory)
 {
+    const auto isLoaded = sofa::helper::system::PluginManager::getInstance().isPluginLoaded(Sofa.Component.IntegrationScheme.Forward);
+    bool objLoded = false;
 
+    if (isLoaded.second)
+    {
+        objLoded = factory->registerObjectsFromPlugin(Sofa.Component.IntegrationScheme.Forward);
+
+        if (!objLoded)
+            msg_info_once("Sofa.Component.ODESolver.Forward")<<"Registering objects from Sofa.Component.IntegrationScheme.Forward failed.";
+    }
 }
 
 void init()
 {
     msg_deprecated_once(MODULE_NAME)<<"This plugin is empty since v26.12 and will be removed in v27.12, load Sofa.Component.IntegrationScheme.Forward instead.";
-    sofa::helper::system::PluginManager::getInstance().loadPluginByName("Sofa.Component.IntegrationScheme.Forward");
+    auto status = sofa::helper::system::PluginManager::getInstance().loadPluginByName(Sofa.Component.IntegrationScheme.Forward) ;
+
+    if (status <= sofa::helper::system::PluginManager::PluginLoadStatus::ALREADY_LOADED)
+        msg_info_once("Sofa.Component.ODESolver.Forward")<<"Sofa.Component.IntegrationScheme.Forward has been loaded automatically.";
+    else
+        msg_warning_once("Sofa.Component.ODESolver.Forward")<<"Tried to load Sofa.Component.IntegrationScheme.Forward automatically but failed.";
 }
 
 } // namespace sofa::component::odesolver::forward
