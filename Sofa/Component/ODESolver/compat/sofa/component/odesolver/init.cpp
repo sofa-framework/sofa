@@ -58,6 +58,7 @@ void registerObjects(sofa::core::ObjectFactory* factory)
 void init()
 {
     msg_deprecated_once(MODULE_NAME)<<"This plugin and its sub-plugins are empty since v26.12 and will be removed in v27.12, load Sofa.Component.IntegrationScheme instead.";
+    sofa::helper::system::PluginManager::getInstance().loadPluginByName("Sofa.Component.IntegrationScheme");
 }
 
 } // namespace sofa::component::integrationscheme

@@ -58,6 +58,7 @@ void registerObjects(sofa::core::ObjectFactory* factory)
 void init()
 {
     msg_deprecated_once(MODULE_NAME)<<"This plugin is empty since v26.12 and will be removed in v27.12, load Sofa.Component.IntegrationScheme.Forward instead.";
+    sofa::helper::system::PluginManager::getInstance().loadPluginByName("Sofa.Component.IntegrationScheme.Forward");
 }
 
 } // namespace sofa::component::odesolver::forward
