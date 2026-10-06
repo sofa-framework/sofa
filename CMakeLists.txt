@@ -290,6 +290,7 @@ if(SOFA_BUILD_RELEASE_PACKAGE)
         execute_process(COMMAND conda-deny bundle -e $ENV{PIXI_ENVIRONMENT_NAME} -p $ENV{PIXI_CURRENT_PLATFORM} -d ${CMAKE_BINARY_DIR}/licenses)
         install(DIRECTORY ${CMAKE_BINARY_DIR}/licenses/ DESTINATION licenses COMPONENT applications)
     endif()
+    option(BUILD_CONDA_PACKAGE "Set to true when building conda package" OFF)
 
     #######################
     # CPack configuration #
