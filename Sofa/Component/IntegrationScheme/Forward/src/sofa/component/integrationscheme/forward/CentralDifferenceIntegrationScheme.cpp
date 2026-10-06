@@ -75,8 +75,6 @@ CentralDifferenceIntegrationScheme::CentralDifferenceIntegrationScheme()
 
 void CentralDifferenceIntegrationScheme::doIntegrate(const core::ExecParams* params, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
 {
-    
-    (*m_mop)->setImplicit(false); // this IntegrationScheme is explicit only
     MultiVecCoord pos(m_vop.get(), core::vec_id::write_access::position );
     MultiVecDeriv vel(m_vop.get(), core::vec_id::write_access::velocity );
     MultiVecCoord pos2(m_vop.get(), xResult /*core::vec_id::write_access::position*/ );

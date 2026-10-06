@@ -19,39 +19,51 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-    #include <sofa/simulation/config.h>
+#include <sofa/component/solidmechanics/spring/FastTriangularBendingSprings.h>
 
-#include <sofa/simulation/integrationscheme/ExplicitIntegrationScheme.h>
-#include <sofa/core/behavior/LinearSolver.h>
-#include <sofa/core/behavior/MultiVec.h>
+#include <gtest/gtest.h>
+#include <sstream>
 
-#include <sofa/core/behavior/LinearSolverAccessor.h>
+#include <sofa/defaulttype/VecTypes.h>
 
-#include <sofa/simulation/MechanicalOperations.h>
-#include <sofa/simulation/VectorOperations.h>
 
-namespace sofa::simulation::integrationscheme
+namespace sofa::component::solidmechanics::spring
 {
 
-void ExplicitIntegrationScheme::integrate(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
+using FastTriangularBS = sofa::component::solidmechanics::spring::FastTriangularBendingSprings<defaulttype::Vec3Types>;
+
+class FastTriangularBendingSpringsTest : public FastTriangularBS
 {
-    m_dt = dt;
+public:
+    using EdgeSpring = FastTriangularBS::EdgeSpring;
+};
 
-    m_vop = std::make_shared<sofa::simulation::common::VectorOperations>( params, this->getContext() );
-    m_mop = std::make_unique<sofa::simulation::common::MappingGraphMechanicalOperations >( params, this->getContext() );
+TEST(FastTriangularBendingSpringsTest, EdgePressureStreamOperators)
+{
 
-    // dx is no longer allocated by default (but it will be deleted automatically by the mechanical objects)
-    sofa::core::behavior::MultiVecDeriv dx(m_vop.get(), core::vec_id::write_access::dx);
-    dx.realloc(m_vop.get(), true, true);
+    FastTriangularBendingSpringsTest::EdgeSpring initialInfo;
 
-    // Let the mechanical operations know that the current IntegrationScheme is explicit. This will be propagated back to the
-    // force fields during the addForce and addKToMatrix phase. Force fields use this information to avoid
-    // recomputing constant data in case of explicit IntegrationScheme.
-    m_mop->mparams.setImplicit(false);
+    for (int i = 0; i < 4; ++i)
+        initialInfo.vid[i] = i;
 
-    doIntegrate(params, xResult, vResult);
+    for (int i = 0; i < 4; ++i)
+        initialInfo.alpha[i] = i;
+    initialInfo.lambda = 1;
+    initialInfo.is_activated = true;
+    initialInfo.is_initialized = true;
+
+    std::stringstream buffer;
+    buffer << initialInfo;
+
+    FastTriangularBendingSpringsTest::EdgeSpring loadedInfo;
+    buffer >> loadedInfo;
+
+    EXPECT_EQ(initialInfo.vid, loadedInfo.vid);
+    EXPECT_EQ(initialInfo.alpha, loadedInfo.alpha);
+    EXPECT_EQ(initialInfo.lambda, loadedInfo.lambda);
+    EXPECT_EQ(initialInfo.is_activated, loadedInfo.is_activated);
+    EXPECT_EQ(initialInfo.is_initialized, loadedInfo.is_initialized);
+
 }
 
-} // namespace sofa::component::integrationscheme
-
-
+}

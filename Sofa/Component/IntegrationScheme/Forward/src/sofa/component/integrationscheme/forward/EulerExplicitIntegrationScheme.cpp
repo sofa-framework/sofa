@@ -67,12 +67,6 @@ void EulerExplicitIntegrationScheme::doIntegrate(const core::ExecParams* params,
 
     m_mappingGraph.build(this->getContext());
 
-
-    // Let the mechanical operations know that the current IntegrationScheme is explicit. This will be propagated back to the
-    // force fields during the addForce and addKToMatrix phase. Force fields use this information to avoid
-    // recomputing constant data in case of explicit IntegrationScheme.
-    (*m_mop)->setImplicit(false);
-
     // Initialize the set of multi-vectors computed by this IntegrationScheme
     MultiVecDeriv acc   (m_vop.get(), core::vec_id::write_access::dx);     // acceleration to be computed
     MultiVecDeriv f     (m_vop.get(), core::vec_id::write_access::force ); // force to be computed

@@ -146,14 +146,53 @@ public:
         TriangleInformation() = default;
 
         /// Output stream
-        inline friend std::ostream& operator<< ( std::ostream& os, const TriangleInformation& /*ti*/ )
+        inline friend std::ostream& operator<< ( std::ostream& os, const TriangleInformation& ti )
         {
+            os << ti.materialMatrix << " ";
+            os << ti.strainDisplacementMatrix << " ";
+            os << ti.stiffness << " ";
+            os << ti.area << " ";
+            for (int i = 0; i < 3; ++i)
+                os << ti.rotatedInitialElements[i] << " ";
+            os << ti.rotation << " ";
+            os << ti.strain << " ";
+            os << ti.stress << " ";
+            os << ti.initialTransformation << " ";
+            os << ti.principalStressDirection << " ";
+            os << ti.maxStress << " ";
+            os << ti.principalStrainDirection << " ";
+            os << ti.differenceToCriteria << " ";
+            os << ti.lastNStressDirection.size() << " ";
+            for (const auto& direction : ti.lastNStressDirection)
+                os << direction << " ";
+            os << ti.maxStrain;
+
             return os;
         }
 
         /// Input stream
-        inline friend std::istream& operator>> ( std::istream& in, TriangleInformation& /*ti*/ )
+        inline friend std::istream& operator>> ( std::istream& in, TriangleInformation& ti )
         {
+            in >> ti.materialMatrix;
+            in >> ti.strainDisplacementMatrix;
+            in >> ti.stiffness;
+            in >> ti.area;
+            for (int i = 0; i < 3; ++i)
+                in >> ti.rotatedInitialElements[i];
+            in >> ti.rotation;
+            in >> ti.strain;
+            in >> ti.stress;
+            in >> ti.initialTransformation;
+            in >> ti.principalStressDirection;
+            in >> ti.maxStress;
+            in >> ti.principalStrainDirection;
+            in >> ti.differenceToCriteria;
+            size_t size;
+            in >> size;
+            ti.lastNStressDirection.resize(size);
+            for (auto& direction : ti.lastNStressDirection)
+                in >> direction;
+            in >> ti.maxStrain;
             return in;
         }
     };
@@ -173,13 +212,21 @@ public:
         double stress; //average stress of triangles around (used only for drawing)
 
         /// Output stream
-        inline friend std::ostream& operator<< ( std::ostream& os, const VertexInformation& /*vi*/)
+        inline friend std::ostream& operator<< ( std::ostream& os, const VertexInformation& vi)
         {
+            os << vi.meanStrainDirection << " ";
+            os << vi.sumEigenValues << " ";
+            os << vi.rotation << " ";
+            os << vi.stress;
             return os;
         }
         /// Input stream
-        inline friend std::istream& operator>> ( std::istream& in, VertexInformation& /*vi*/)
+        inline friend std::istream& operator>> ( std::istream& in, VertexInformation& vi)
         {
+            in >> vi.meanStrainDirection;
+            in >> vi.sumEigenValues;
+            in >> vi.rotation;
+            in >> vi.stress;
             return in;
         }
     };

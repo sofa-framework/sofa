@@ -19,39 +19,48 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-    #include <sofa/simulation/config.h>
+#include <sofa/component/mechanicalload/EdgePressureForceField.h>
 
-#include <sofa/simulation/integrationscheme/ExplicitIntegrationScheme.h>
-#include <sofa/core/behavior/LinearSolver.h>
-#include <sofa/core/behavior/MultiVec.h>
+#include <gtest/gtest.h>
+#include <sstream>
 
-#include <sofa/core/behavior/LinearSolverAccessor.h>
+#include <sofa/defaulttype/VecTypes.h>
 
-#include <sofa/simulation/MechanicalOperations.h>
-#include <sofa/simulation/VectorOperations.h>
 
-namespace sofa::simulation::integrationscheme
+namespace sofa::component::mechanicalload
 {
 
-void ExplicitIntegrationScheme::integrate(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
+using EdgePressureFF = sofa::component::mechanicalload::EdgePressureForceField<defaulttype::Vec3Types>;
+
+class EdgePressureForceFieldTest : public EdgePressureFF
 {
-    m_dt = dt;
+public:
+    using EdgePressureInformation = EdgePressureFF::EdgePressureInformation;
+};
 
-    m_vop = std::make_shared<sofa::simulation::common::VectorOperations>( params, this->getContext() );
-    m_mop = std::make_unique<sofa::simulation::common::MappingGraphMechanicalOperations >( params, this->getContext() );
+TEST(EdgePressureForceFieldTest, EdgePressureInformationStreamOperators)
+{
 
-    // dx is no longer allocated by default (but it will be deleted automatically by the mechanical objects)
-    sofa::core::behavior::MultiVecDeriv dx(m_vop.get(), core::vec_id::write_access::dx);
-    dx.realloc(m_vop.get(), true, true);
+    EdgePressureForceFieldTest::EdgePressureInformation initialInfo;
 
-    // Let the mechanical operations know that the current IntegrationScheme is explicit. This will be propagated back to the
-    // force fields during the addForce and addKToMatrix phase. Force fields use this information to avoid
-    // recomputing constant data in case of explicit IntegrationScheme.
-    m_mop->mparams.setImplicit(false);
+    initialInfo.length = 1.0;
 
-    doIntegrate(params, xResult, vResult);
+    initialInfo.force[0] = 1.0;
+    initialInfo.force[1] = 2.0;
+    initialInfo.force[2] = 3.0;
+
+    std::stringstream buffer;
+    buffer << initialInfo;
+
+    EdgePressureForceFieldTest::EdgePressureInformation loadedInfo;
+    buffer >> loadedInfo;
+
+    EXPECT_EQ(initialInfo.length, loadedInfo.length);
+
+    EXPECT_EQ(initialInfo.force[0], loadedInfo.force[0]);
+    EXPECT_EQ(initialInfo.force[1], loadedInfo.force[1]);
+    EXPECT_EQ(initialInfo.force[2], loadedInfo.force[2]);
+
 }
 
-} // namespace sofa::component::integrationscheme
-
-
+}
