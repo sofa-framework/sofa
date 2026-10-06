@@ -527,23 +527,7 @@ TEST(CompressedRowSparseMatrixMechanical, Mat3x3dMulVector)
     EXPECT_NEAR(res[2], 3.0, kTol);
 }
 
-// ==================== Regression tests: known defects ====================
-//
-// The tests in this section FAIL today. Each comment names the offending line.
-// They are expected to pass once the corresponding fix lands.
-//
-// WARNING: CompressedRowSparseMatrixGeneric.ClearRowBlockOnEmptyMatrix and its
-// siblings segfault rather than fail cleanly. Until the fixes land, run with
-//   --gtest_filter=-*OnEmptyMatrix*
-// if you need the rest of the suite to complete.
-
-// clearRowCol() indexes rowBegin with a block-column number, but rowBegin is
-// indexed by the *position* of a row inside rowIndex. The two only coincide when
-// every row is present. Here rows 0,1,6,7 are absent, so the search for the
-// symmetric block (3,2) is run over row 5's range and finds nothing -- entry
-// (3,2) is silently left in column 2. All rowBegin accesses stay in bounds, so
-// this reproduces deterministically rather than depending on adjacent memory.
-// CompressedRowSparseMatrixMechanical.h:411
+// Rows 0, 1, 6 and 7 are absent
 TEST(CompressedRowSparseMatrixMechanical, ClearRowColMissesSymmetricBlockWhenRowsAreSparse)
 {
     CRSMech m(8, 8);
@@ -569,14 +553,9 @@ TEST(CompressedRowSparseMatrixMechanical, ClearRowColMissesSymmetricBlockWhenRow
     EXPECT_NEAR(m.element(5, 5), 55.0, kTol);
 }
 
-// In clearRowCol(), when the symmetric block (j,i) does not exist the local
-// pointer `b` is never reset, so it still points at block (i,j) and the second
-// loop zeroes a *column* of that block. Only observable for NL > 1.
-// CompressedRowSparseMatrixMechanical.h:417-422
 TEST(CompressedRowSparseMatrixMechanical, ClearRowColAsymmetricPatternMat3)
 {
-    // 2x2 grid of 3x3 blocks; block (1,0) is deliberately absent so that the
-    // search for the symmetric block fails.
+    // 2x2 grid of 3x3 blocks, block (1,0) is absent
     CRSMechMat3 m(6, 6);
     for (int i = 0; i < 3; ++i)
         for (int j = 0; j < 3; ++j)
@@ -607,11 +586,7 @@ TEST(CompressedRowSparseMatrixMechanical, ClearRowColAsymmetricPatternMat3)
     EXPECT_NEAR(m.element(5, 5), 3.0, kTol);
 }
 
-// element() delegates to block(), whose "is j the first / last column of this
-// row?" fast paths dereference colsIndex without first checking that the row
-// range is non-empty. fullRows() registers exactly such empty ranges, after
-// which element() returns a neighbouring row's value or reads colsIndex[-1].
-// CompressedRowSparseMatrixGeneric.h:768-769
+// fullRows() registers rows with an empty range
 TEST(CompressedRowSparseMatrixMechanical, ElementAfterFullRows)
 {
     CRSMech m(6, 6);
@@ -629,16 +604,7 @@ TEST(CompressedRowSparseMatrixMechanical, ElementAfterFullRows)
     }
 }
 
-// filterValues() only emits a row when it produced at least one value, so the
-// keepEmptyRows flag threaded through every copy*() wrapper has no effect. The
-// compensating pop_back() at line 591 is dead: rowBegin.back() == vid cannot
-// hold there. CompressedRowSparseMatrixMechanical.h:585,591
-//
-// The flag concerns destination rows emptied *by the filter*, not source rows
-// that were never registered: filterValues only visits srcMatrix.rowIndex.
-// CRSMechanicalPolicy has CompressZeros == false, so the explicitly stored zero
-// at (2,2) survives compression on the source side and gives the nonzeros filter
-// a row to empty out.
+// The zero stored at (2,2) is kept by compress(), but removed by the nonzeros filter
 TEST(CompressedRowSparseMatrixMechanical, CopyNonZerosKeepEmptyRows)
 {
     CRSMech src(4, 4);
@@ -654,13 +620,11 @@ TEST(CompressedRowSparseMatrixMechanical, CopyNonZerosKeepEmptyRows)
     EXPECT_EQ(dst.getRowIndex()[0], 1);
     EXPECT_EQ(dst.getRowIndex()[1], 2);
 
-    // the kept row must be genuinely empty, and the surviving value intact
     const auto range = dst.getRowRange(1);
     EXPECT_TRUE(range.empty()) << "row 2 should hold no block";
     EXPECT_NEAR(dst.element(1, 1), 2.0, kTol);
 }
 
-// Same source, default flag: the row emptied by the filter is dropped.
 TEST(CompressedRowSparseMatrixMechanical, CopyNonZerosDropsRowEmptiedByFilter)
 {
     CRSMech src(4, 4);
@@ -676,19 +640,6 @@ TEST(CompressedRowSparseMatrixMechanical, CopyNonZerosDropsRowEmptiedByFilter)
     EXPECT_NEAR(dst.element(1, 1), 2.0, kTol);
 }
 
-// ============ Regression guards: undefined behaviour, host-dependent ============
-//
-// These pass on this host but exercise genuine UB, so they are kept as guards
-// rather than as demonstrations of a wrong result:
-//   - the out-of-range colsIndex / rowBegin reads throw std::logic_error in a
-//     Debug build, where sofa::type::vector bounds-checks (NDEBUG undefined);
-//   - the divide-by-zero ones are only caught by UBSan, or by the hardware on
-//     x86_64 where integer division by zero raises SIGFPE. ARM's UDIV silently
-//     returns 0, which is why they pass here.
-
-// The `i * rowIndex.size() / nBlockRow` search hint is guarded against
-// nBlockRow == 0 in block() and wblock(), but the guard was dropped in every
-// copy below. Confirmed with UBSan at Mechanical.h:343, :748 and :841.
 TEST(CompressedRowSparseMatrixMechanical, ClearRowOnEmptyMatrix)
 {
     CRSMech m;
@@ -726,10 +677,6 @@ TEST(CompressedRowSparseMatrixMechanical, BRowIteratorsOnEmptyMatrix)
     EXPECT_NO_THROW((void) m.bRowRange(3));
 }
 
-// clearCol() -> clearColBlock() repeats block()'s unguarded fast path. Under the
-// ClearByZeros policy the stray index still lands on an entry of column j, so
-// the result happens to be correct; only the out-of-range read is wrong.
-// CompressedRowSparseMatrixGeneric.h:1017-1018
 TEST(CompressedRowSparseMatrixMechanical, ClearColAfterFullRows)
 {
     CRSMech m(4, 4);
@@ -743,7 +690,6 @@ TEST(CompressedRowSparseMatrixMechanical, ClearColAfterFullRows)
         EXPECT_NEAR(m.element(i, 1), 0.0, kTol) << "element(" << i << ",1)";
 }
 
-// Control case: the default must still drop empty rows. Passes today.
 TEST(CompressedRowSparseMatrixMechanical, CopyNonZerosDropsEmptyRowsByDefault)
 {
     CRSMech src(4, 4);

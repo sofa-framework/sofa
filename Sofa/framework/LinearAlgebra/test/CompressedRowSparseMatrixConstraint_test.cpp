@@ -2424,17 +2424,6 @@ TEST(CompressedRowSparseMatrixConstraint, multTransposeBaseVector)
     EXPECT_NEAR(res[2][2], 0.0, tol);
 }
 
-// ==================== Regression tests ====================
-//
-// The tests below currently FAIL. Each one documents a defect found by review;
-// the comment above it names the offending line. They are expected to pass once
-// the corresponding fix lands.
-
-// RowConstIterator's defaulted default constructor leaves m_internal and
-// m_matrix without initialisers, so a default-constructed iterator is not in the
-// invalid state its own isInvalid() is meant to report. Adding NSDMIs
-// (= s_invalidIndex / = nullptr) fixes it.
-// CompressedRowSparseMatrixConstraint.h:255,431-433
 TEST(CompressedRowSparseMatrixConstraint, DefaultConstructedRowIteratorIsInvalid)
 {
     using Vec3 = sofa::type::Vec3;
@@ -2444,16 +2433,7 @@ TEST(CompressedRowSparseMatrixConstraint, DefaultConstructedRowIteratorIsInvalid
     EXPECT_TRUE(it.isInvalid()) << "a default-constructed row iterator must not alias row 0";
 }
 
-// clearRowBlock() (inherited from CompressedRowSparseMatrixGeneric) calls
-// rowIndex.back() before checking that rowIndex is non-empty, which segfaults
-// instead of failing an assertion. CompressedRowSparseMatrixGeneric.h:984-985
-//
-// EXPECT_EXIT runs the body in a forked child, so the crash is contained and the
-// test binary survives. The child exits 0 only when the call both returns and
-// leaves the matrix untouched, so this reports FAILED today ("Terminated by
-// signal 11") and PASSED once the guard is added. The suite is named *DeathTest
-// per the googletest convention: suites whose name ends in DeathTest are run
-// before all others, because forking is only safe before any test starts threads.
+// Run in a child process so that a crash does not abort the whole test binary
 #if GTEST_HAS_DEATH_TEST
 
 TEST(CompressedRowSparseMatrixConstraintDeathTest, ClearRowBlockOnEmptyMatrix)
@@ -2472,8 +2452,6 @@ TEST(CompressedRowSparseMatrixConstraintDeathTest, ClearRowBlockOnEmptyMatrix)
 
 #endif // GTEST_HAS_DEATH_TEST
 
-// Guard (passes today): setLine() on an absent row must not trip over the same
-// unguarded back().
 TEST(CompressedRowSparseMatrixConstraint, SetLineOnEmptyMatrix)
 {
     using Vec3 = sofa::type::Vec3;
