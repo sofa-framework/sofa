@@ -47,7 +47,7 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${WRAPPER_FIL
 
 # When building binaries we want to build tight_inclusion ourselves
 # so we can easilly install the target along
-if(NOT SOFA_BUILD_RELEASE_PACKAGE)
+if(BUILD_CONDA_PACKAGE OR NOT SOFA_BUILD_RELEASE_PACKAGE)
   sofa_find_package(tight_inclusion QUIET)
 endif()
 
