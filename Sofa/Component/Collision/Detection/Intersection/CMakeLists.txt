@@ -45,7 +45,11 @@ sofa_find_package(Sofa.Component.Collision.Geometry REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${WRAPPER_FILES})
 
-sofa_find_package(tight_inclusion QUIET)
+# When building binaries we want to build tight_inclusion ourselves
+# so we can easilly install the target along
+if(NOT SOFA_BUILD_RELEASE_PACKAGE)
+  sofa_find_package(tight_inclusion QUIET)
+endif()
 
 if(NOT tight_inclusion_FOUND AND SOFA_ALLOW_FETCH_DEPENDENCIES)
 
