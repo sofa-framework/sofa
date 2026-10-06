@@ -434,9 +434,9 @@ protected:
     /**
     * \brief Look for column j among the blocks of a single row.
     *
-    * The first and last registered columns of the row are checked directly, as
-    * they are by far the most common queries; anything else falls back to a
-    * binary search. The range must be checked for emptiness first: a registered
+    * The first and last registered columns of the row are checked directly: each
+    * is a single random access, and a hit avoids the binary search done by
+    * searchColInRange(). The range must be checked for emptiness first: a registered
     * row may hold no block at all (fullRows() and fullDiagonal() both create
     * such rows), in which case rowRange.begin() addresses the next row's first
     * block and rowRange.end() - 1 the previous row's last one.
@@ -465,9 +465,8 @@ protected:
     /**
     * \brief Binary search for column j inside a row, from an interpolated guess.
     *
-    * findColInRange() without the first/last-column checks. Those two loads pay
-    * for themselves when the queried column is usually an end one, and cost more
-    * than they save on the insertion paths, where they almost never hit.
+    * findColInRange() without the first/last-column checks, for the insertion
+    * paths, where those two extra loads almost never hit.
     * sortedFind() already reports an empty range as "not found", so this is safe
     * on a row that holds no block.
     **/
