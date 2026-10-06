@@ -41,4 +41,34 @@ bool BaseMappingGraphNode::isMapped() const
     return isMapped;
 }
 
+bool BaseMappingGraphNode::hasMappingInChildren() const
+{
+    return std::any_of(m_children.begin(), m_children.end(), [](const SPtr& child)
+    {
+        return child && (child->getType() == NodeType::Mapping || child->hasMappingInChildren());
+    });
 }
+
+bool BaseMappingGraphNode::isLeaf() const
+{
+    switch (getType())
+    {
+        case NodeType::MechanicalState:
+            return !hasMappingInChildren();
+
+        case NodeType::Component:
+        case NodeType::Group:
+            return std::any_of(m_parents.begin(), m_parents.end(), [](const std::weak_ptr<BaseMappingGraphNode>& weakNode)
+            {
+                const auto parent = weakNode.lock();
+                return parent && parent->isLeaf();
+            });
+
+        case NodeType::Mapping:
+            return false;
+    }
+
+    return false;
+}
+
+}  // namespace sofa::simulation
