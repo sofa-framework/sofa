@@ -1,0 +1,174 @@
+/******************************************************************************
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
+#include <sofa/simulation/IntegrateVisitor.h>
+#include <sofa/helper/AdvancedTimer.h>
+#include <sofa/simulation/Node.h>
+#include <sofa/core/behavior/BaseIntegrationScheme.h>
+#include <sofa/simulation/task/TaskScheduler.h>
+#include <sofa/helper/ScopedAdvancedTimer.h>
+#include <sofa/simulation/task/MainTaskSchedulerFactory.h>
+#include <sofa/core/MechanicalParams.h>
+#include <sofa/core/behavior/BaseInteractionForceField.h>
+
+namespace sofa::simulation
+{
+
+void IntegrateVisitor::processSolver(simulation::Node* node,  sofa::core::behavior::BaseIntegrationScheme* s)
+{
+    helper::ScopedAdvancedTimer timer("Mechanical",node);
+    s->integrate(params, dt, x, v);
+}
+
+void IntegrateVisitor::fwdInteractionForceField(Node* node, core::behavior::BaseInteractionForceField* forceField)
+{
+    SOFA_UNUSED(node);
+
+    const core::MultiVecDerivId ffId = core::vec_id::write_access::externalForce;
+    core::MechanicalParams mparams;
+    mparams.setDt(dt);
+    forceField->addForce(&mparams, ffId);
+}
+
+Visitor::Result IntegrateVisitor::processNodeTopDown(simulation::Node* node)
+{
+    if (! node->integrationScheme.empty())
+    {
+        if (m_parallelSolve)
+        {
+            parallelSolve(node);
+        }
+        else
+        {
+            sequentialSolve(node);
+        }
+        return RESULT_PRUNE;
+    }
+
+    if (m_computeForceIsolatedInteractionForceFields)
+    {
+        for_each(this, node, node->interactionForceField, &IntegrateVisitor::fwdInteractionForceField);
+    }
+    return RESULT_CONTINUE;
+}
+
+void IntegrateVisitor::processNodeBottomUp(simulation::Node*)
+{
+    // only in case of parallel solving:
+    // processNodeBottomUp is called after all processNodeTopDown calls are done,
+    // i.e when all parallel tasks have been created and started.
+    // It is time to wait them to finish
+
+    if (!m_tasks.empty())
+    {
+        auto* taskScheduler = sofa::simulation::MainTaskSchedulerFactory::createInRegistry();
+        assert(taskScheduler != nullptr);
+        SCOPED_TIMER_VARNAME(parallelSolveTimer, "waitParallelTasks");
+        taskScheduler->workUntilDone(&m_status);
+    }
+    m_tasks.clear();
+}
+
+void IntegrateVisitor::setDt(SReal _dt)
+{
+    dt = _dt;
+}
+
+SReal IntegrateVisitor::getDt() const
+{
+    return dt;
+}
+
+IntegrateVisitor::IntegrateVisitor(const sofa::core::ExecParams* params, SReal _dt, TaskType taskType,
+                 bool firstStep, SReal alpha, sofa::core::MultiVecCoordId X, sofa::core::MultiVecDerivId V,
+                 bool _parallelSolve, bool computeForceIsolatedInteractionForceFields)
+
+        : Visitor(params)
+        , m_dt(_dt)
+        , m_taskType(taskType)
+        , m_firstStep(firstStep)
+        , m_alpha(alpha)
+        , m_xId(X)
+        , m_vId(V)
+        , m_parallelSolve(_parallelSolve)
+        , m_computeForceIsolatedInteractionForceFields(computeForceIsolatedInteractionForceFields)
+{
+    if (m_parallelSolve)
+    {
+        initializeTaskScheduler();
+    }
+}
+
+IntegrateVisitor::IntegrateVisitor(const sofa::core::ExecParams* params, SReal _dt, bool free, bool _parallelSolve, bool computeForceIsolatedInteractionForceFields)
+: Visitor(params), dt(_dt), m_parallelSolve(_parallelSolve), m_computeForceIsolatedInteractionForceFields(computeForceIsolatedInteractionForceFields)
+{
+    if(free)
+    {
+        m_xId = sofa::core::vec_id::write_access::freePosition;
+        m_vId = sofa::core::vec_id::write_access::freeVelocity;
+    }
+    else
+    {
+        m_xId = sofa::core::vec_id::write_access::position;
+        m_vId = sofa::core::vec_id::write_access::velocity;
+    }
+
+    if (m_parallelSolve)
+    {
+        initializeTaskScheduler();
+    }
+}
+
+void IntegrateVisitor::sequentialSolve(simulation::Node* node)
+{
+    for_each(this, node, node->integrationScheme, &IntegrateVisitor::processSolver);
+}
+
+void IntegrateVisitor::parallelSolve(simulation::Node* node)
+{
+    auto* taskScheduler = sofa::simulation::MainTaskSchedulerFactory::createInRegistry();
+    assert(taskScheduler != nullptr);
+
+    for (auto* solver : node->integrationScheme)
+    {
+        m_tasks.emplace_back(&m_status, solver, params, m_dt, m_xId, m_vId);
+        taskScheduler->addTask(&m_tasks.back());
+    }
+}
+
+void IntegrateVisitor::initializeTaskScheduler()
+{
+    auto* taskScheduler = sofa::simulation::MainTaskSchedulerFactory::createInRegistry();
+    assert(taskScheduler != nullptr);
+    if (taskScheduler->getThreadCount() < 1)
+    {
+        taskScheduler->init(0);
+    }
+}
+
+sofa::simulation::Task::MemoryAlloc IntegrateVisitorTask::run()
+{
+    m_solver->integrate(m_execParams, m_dt, m_x, m_v);
+    return Task::Stack;
+}
+
+} // namespace sofa::simulation
+

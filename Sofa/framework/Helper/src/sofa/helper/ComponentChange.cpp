@@ -31,6 +31,12 @@ std::map<std::string, Deprecated, std::less<> > deprecatedComponents = {
     {"DirectSAP", Deprecated("v21.06", "v21.12")},
     {"RigidRigidMapping", Deprecated("v23.06", "v23.12", "You can use the component RigidMapping with template='Rigid3,Rigid3' instead.")},
     {"ConstraintAnimationLoop", Deprecated("v26.06", "v26.12", "Use FreeMotionAnimationLoop instead.")},
+
+    {"AnimationLoopParallelScheduler", Deprecated("v26.12", "v27.12", "Use TimeIntegratorParallelScheduler instead.")},
+    {"DefaultAnimationLoop", Deprecated("v26.12", "v27.12", "Use NewtonRaphson instead.")},
+    {"FreeMotionAnimationLoop", Deprecated("v26.12", "v27.12", "Use NewtonRaphson instead.")},
+    {"MultiStepAnimationLoop", Deprecated("v26.12", "v27.12", "Use NewtonRaphson instead.")},
+    {"MultiTagAnimationLoop", Deprecated("v26.12", "v27.12", "It will not be replaced")},
 };
 
 std::map<std::string, ComponentChange, std::less<> > movedComponents = {
