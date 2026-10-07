@@ -27,7 +27,7 @@
 
 namespace sofa::component::odesolver::backward
 {
-    
+
 extern "C" {
     SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
     SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
@@ -53,14 +53,14 @@ const char* getModuleVersion()
 void registerObjects(sofa::core::ObjectFactory* factory)
 {
     const auto isLoaded = sofa::helper::system::PluginManager::getInstance().isPluginLoaded(Sofa.Component.IntegrationScheme.Backward);
-    bool objLoded = false;
+    bool objLoaded = false;
 
     if (isLoaded.second)
     {
         objLoaded = factory->registerObjectsFromPlugin(Sofa.Component.IntegrationScheme.Backward);
 
         if (!objLoaded)
-            msg_info_once("Sofa.Component.ODESolver.Backward")<<"Registering objects from Sofa.Component.IntegrationScheme.Backward failed.";
+            msg_error_once("Sofa.Component.ODESolver.Backward")<<"Registering objects from Sofa.Component.IntegrationScheme.Backward failed.";
     }
 }
 
@@ -72,7 +72,7 @@ void init()
     if (status <= sofa::helper::system::PluginManager::PluginLoadStatus::ALREADY_LOADED)
         msg_info_once("Sofa.Component.ODESolver.Backward")<<"Sofa.Component.IntegrationScheme.Backward has been loaded automatically.";
     else
-        msg_warning_once("Sofa.Component.ODESolver.Backward")<<"Tried to load Sofa.Component.IntegrationScheme.Backward automatically but failed.";
+        msg_error_once("Sofa.Component.ODESolver.Backward")<<"Tried to load Sofa.Component.IntegrationScheme.Backward automatically but failed.";
 }
 
 } // namespace sofa::component::odesolver::backward
