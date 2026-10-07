@@ -234,7 +234,7 @@ void Multi2Mapping<In1, In2, Out>::init()
     }
 
     apply(mechanicalparams::defaultInstance() , vec_id::write_access::position, vec_id::read_access::position);
-    applyJ(mechanicalparams::defaultInstance() , vec_id::write_access::velocity, vec_id::read_access::velocity);
+    applyJacobianVectorProduct(mechanicalparams::defaultInstance(), vec_id::write_access::velocity, vec_id::read_access::velocity, vec_id::read_access::position);
     if (f_applyRestPosition.getValue())
         apply(mechanicalparams::defaultInstance(), vec_id::write_access::restPosition, vec_id::read_access::restPosition);
 }

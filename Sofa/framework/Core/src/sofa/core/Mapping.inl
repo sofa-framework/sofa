@@ -107,7 +107,7 @@ void Mapping<In,Out>::init()
     }
 
     apply(mechanicalparams::defaultInstance(), vec_id::write_access::position, vec_id::read_access::position);
-    applyJ(mechanicalparams::defaultInstance(), vec_id::write_access::velocity, vec_id::read_access::velocity);
+    applyJacobianVectorProduct(mechanicalparams::defaultInstance(), vec_id::write_access::velocity, vec_id::read_access::velocity, vec_id::read_access::position);
     if (f_applyRestPosition.getValue())
         apply(mechanicalparams::defaultInstance(), vec_id::write_access::restPosition, vec_id::read_access::restPosition);
 }
@@ -168,14 +168,6 @@ void Mapping<TIn, TOut>::applyJacobianVectorProduct(const MechanicalParams* mpar
             this->doApplyJacobianVectorProduct(mparams, *tangentOut, *tangentIn, *positionIn);
         }
     }
-}
-
-template <class TIn, class TOut>
-void Mapping<TIn, TOut>::applyJ(const MechanicalParams* mparams, OutDataVecDeriv& out,
-                                const InDataVecDeriv& in)
-{
-    this->doApplyJacobianVectorProduct(
-        mparams, out, in, mparams ? mparams->x() : sofa::core::vec_id::read_access::position);
 }
 
 template <class In, class Out>
