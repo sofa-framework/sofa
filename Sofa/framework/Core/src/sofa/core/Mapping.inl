@@ -24,6 +24,7 @@
 #include <sofa/core/State.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/core/Mapping.h>
+#include <sofa/core/MechanicalParams.h>
 #include <iostream>
 
 namespace sofa::core
