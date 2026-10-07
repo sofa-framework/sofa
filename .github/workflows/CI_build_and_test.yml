@@ -349,11 +349,11 @@ jobs:
               docker run --rm \
                   --user $(id -u):$(id -g) --network=host -v $WORKSPACE:/workspace \
                   ${DOCKER_IMAGE} \
-                  /bin/bash -c "cd /workspace; . ${DOCKER_CI_DIR}/scripts/setup-test-env.sh \"${DOCKER_BUILD_DIR}\" \"${DOCKER_CI_DIR}/scripts/\" \"${NODE_NAME}\" \"${{ inputs.python-version }}\"; env; \${VM_PYTHON3_EXECUTABLE} ${DOCKER_CI_DIR}/scripts/tests/sofa_unit_tests.py --build-dir ${DOCKER_BUILD_DIR} --results-dir \${RESULTS_DIR}/unit -j \${VM_MAX_PARALLEL_TESTS}"
+                  /bin/bash -c "cd /workspace; . ${DOCKER_CI_DIR}/scripts/tests/setup-test-env.sh \"${DOCKER_BUILD_DIR}\" \"${DOCKER_CI_DIR}/scripts/\" \"${NODE_NAME}\" \"${{ inputs.python-version }}\"; env; \${VM_PYTHON3_EXECUTABLE} ${DOCKER_CI_DIR}/scripts/tests/sofa_unit_tests.py --build-dir ${DOCKER_BUILD_DIR} --results-dir \${RESULTS_DIR}/unit -j \${VM_MAX_PARALLEL_TESTS}"
           else
               echo "Launching unit test suite."
 
-              . ${CI_DIR}/scripts/setup-test-env.sh "${BUILD_DIR}" "${CI_DIR}/scripts/" "${NODE_NAME}" "${{ inputs.python-version }}"
+              . ${CI_DIR}/scripts/tests/setup-test-env.sh "${BUILD_DIR}" "${CI_DIR}/scripts/" "${NODE_NAME}" "${{ inputs.python-version }}"
               env
               ${VM_PYTHON3_EXECUTABLE} ${CI_DIR}/scripts/tests/sofa_unit_tests.py --build-dir "${BUILD_DIR}" --results-dir "${RESULTS_DIR}/unit" -j ${VM_MAX_PARALLEL_TESTS}
           fi
@@ -380,11 +380,11 @@ jobs:
               docker run --rm \
                   --user $(id -u):$(id -g) --network=host -v $WORKSPACE:/workspace \
                   ${DOCKER_IMAGE} \
-                  /bin/bash -c "cd /workspace; . ${DOCKER_CI_DIR}/scripts/setup-test-env.sh \"${DOCKER_BUILD_DIR}\" \"${DOCKER_CI_DIR}/scripts/\" \"${NODE_NAME}\" \"${{ inputs.python-version }}\"; env ; \${VM_PYTHON3_EXECUTABLE} ${DOCKER_CI_DIR}/scripts/tests/sofa_scene_tests.py --src-dir "${DOCKER_SRC_DIR}" --build-dir \"${DOCKER_BUILD_DIR}\" --results-dir \"\${RESULTS_DIR}/scene\" -j \${VM_MAX_PARALLEL_TESTS}"
+                  /bin/bash -c "cd /workspace; . ${DOCKER_CI_DIR}/scripts/tests/setup-test-env.sh \"${DOCKER_BUILD_DIR}\" \"${DOCKER_CI_DIR}/scripts/\" \"${NODE_NAME}\" \"${{ inputs.python-version }}\"; env ; \${VM_PYTHON3_EXECUTABLE} ${DOCKER_CI_DIR}/scripts/tests/sofa_scene_tests.py --src-dir "${DOCKER_SRC_DIR}" --build-dir \"${DOCKER_BUILD_DIR}\" --results-dir \"\${RESULTS_DIR}/scene\" -j \${VM_MAX_PARALLEL_TESTS}"
           else
               echo "Launching scene test suite."
 
-              . ${CI_DIR}/scripts/setup-test-env.sh "${BUILD_DIR}" "${CI_DIR}/scripts/" "${NODE_NAME}" "${{ inputs.python-version }}"
+              . ${CI_DIR}/scripts/tests/setup-test-env.sh "${BUILD_DIR}" "${CI_DIR}/scripts/" "${NODE_NAME}" "${{ inputs.python-version }}"
               env
               ${VM_PYTHON3_EXECUTABLE} ${CI_DIR}/scripts/tests/sofa_scene_tests.py --src-dir "${SRC_DIR}" --build-dir "${BUILD_DIR}" --results-dir "${RESULTS_DIR}/scene" -j ${VM_MAX_PARALLEL_TESTS}
           fi
@@ -410,11 +410,11 @@ jobs:
               docker run --rm \
                   --user $(id -u):$(id -g) --network=host -v $WORKSPACE:/workspace \
                   ${DOCKER_IMAGE} \
-                  /bin/bash -c "export REGRESSION_DIR="$DOCKER_REGRESSION_DIR"; cd /workspace;. ${DOCKER_CI_DIR}/scripts/setup-test-env.sh \"${DOCKER_BUILD_DIR}\" \"${DOCKER_CI_DIR}/scripts/\" \"${NODE_NAME}\" \"${{ inputs.python-version }}\";  env ; \${VM_PYTHON3_EXECUTABLE} ${DOCKER_REGRESSION_DIR}/SofaRegressionProgram/SofaRegressionProgram.py --input "${DOCKER_SRC_DIR}/examples" --input "${DOCKER_SRC_DIR}/applications"  --input "${DOCKER_BUILD_DIR}/external_directories/fetched" --output-logs-errors "\${RESULTS_DIR}/regression" --legacy-regression --jobs \${VM_MAX_PARALLEL_TESTS} "
+                  /bin/bash -c "export REGRESSION_DIR="$DOCKER_REGRESSION_DIR"; cd /workspace;. ${DOCKER_CI_DIR}/scripts/tests/setup-test-env.sh \"${DOCKER_BUILD_DIR}\" \"${DOCKER_CI_DIR}/scripts/\" \"${NODE_NAME}\" \"${{ inputs.python-version }}\";  env ; \${VM_PYTHON3_EXECUTABLE} ${DOCKER_REGRESSION_DIR}/SofaRegressionProgram/SofaRegressionProgram.py --input "${DOCKER_SRC_DIR}/examples" --input "${DOCKER_SRC_DIR}/applications"  --input "${DOCKER_BUILD_DIR}/external_directories/fetched" --output-logs-errors "\${RESULTS_DIR}/regression" --legacy-regression --jobs \${VM_MAX_PARALLEL_TESTS} "
           else
               echo "Launching regression test suite"
 
-              . ${CI_DIR}/scripts/setup-test-env.sh "${BUILD_DIR}" "${CI_DIR}/scripts/" "${NODE_NAME}" "${{ inputs.python-version }}"
+              . ${CI_DIR}/scripts/tests/setup-test-env.sh "${BUILD_DIR}" "${CI_DIR}/scripts/" "${NODE_NAME}" "${{ inputs.python-version }}"
               env
               ${VM_PYTHON3_EXECUTABLE} ${REGRESSION_DIR}/SofaRegressionProgram/SofaRegressionProgram.py --input "${SRC_DIR}/examples" --input "${SRC_DIR}/applications"  --input "${BUILD_DIR}/external_directories/fetched" --output-logs-errors "${RESULTS_DIR}/regression" --legacy-regression  -j ${VM_MAX_PARALLEL_TESTS}
           fi
@@ -481,39 +481,40 @@ jobs:
           fi
 
           if [[ "${{ inputs.generate-binaries }}" == "false" ]]; then
-            if [[ "$(cd "${{ env.BUILD_DIR }}/tests_results/" && find . -mindepth 2 -maxdepth 2 -type f -name 'summary.txt')" != "" ]]; then
+            if [[  "${{ steps.unit-tests-step.outcome }}" == "failure"          || "${{ steps.scene-tests-step.outcome }}" == "failure"           || "${{ steps.regression-tests-step.outcome }}" == "failure" ]] &&
+               [[ -f "${{ env.SOFA_BUILD_DIR }}/tests_results/unit/summary.txt" && -f "${{ env.SOFA_BUILD_DIR }}/tests_results/scene/summary.txt" && -f "${{ env.SOFA_BUILD_DIR }}/tests_results/regression/summary.txt"  ]]; then
               echo "❌ Tests have resulted in : "
               echo ""
-              python3 ${{ env.CI_DIR }}/scripts/generate-tests-table.py "${{ env.BUILD_DIR }}/tests_results/"
+              python3 ${{ env.CI_DIR }}/scripts/tests/generate-tests-table.py "${{ env.SOFA_BUILD_DIR }}/tests_results/"
               echo ""
               echo "#----------------------------------------#"
               echo "#---------------Quick Logs---------------#"
               echo "#----------------------------------------#"
               for testType in 'unit' 'scene' 'regression';
                 do
-                  capitalized="$(echo "${testType:0:1}" | tr '[:lower:]' '[:upper:]')${testType:1}"
-                  echo -e "${bold}${capitalized}:${normal}"
                   for errorType in 'errors' 'crashes' 'failures';
                   do
-                    if [ -f "${{ env.BUILD_DIR }}/tests_results/${testType}/${testType}_${errorType}.txt" ]; then
+                    if [ -f "${{ env.SOFA_BUILD_DIR }}/tests_results/${testType}/${testType}_${errorType}.txt" ]; then
+                      capitalized="$(echo "${testType:0:1}" | tr '[:lower:]' '[:upper:]')${testType:1}"
                       echo ""
-                      cat "${{ env.BUILD_DIR }}/tests_results/${testType}/${testType}_${errorType}.txt"
+                      echo -e "${bold}${capitalized} ${errorType}:${normal}"
                       echo ""
+                      cat "${{ env.SOFA_BUILD_DIR }}/tests_results/${testType}/${testType}_${errorType}.txt"
+                      echo ""
+                      echo "#----------------------------------------#"
                     fi
                   done
-                  echo "#----------------------------------------#"
-                  echo ""
                 done
               echo -e "${bold}You can download all logs here : ${{ steps.publish-tests-logs.outputs.artifact-url }}${normal}"
               exit 1
             elif [[ "${{ steps.unit-tests-step.outcome }}" == "failure" || "${{ steps.scene-tests-step.outcome }}" == "failure" || "${{ steps.regression-tests-step.outcome }}" == "failure" ]]; then
-              echo "❌ Something whent wrong during one of the tests steps"
+              echo "❌ Something went wrong during one of the tests steps"
               echo -e "${bold}Please check this action logs, and download tests logs here: ${{ steps.publish-tests-logs.outputs.artifact-url }}${normal}"
               exit 1
             else
-              echo "✅ Tests where successful : "
+              echo "✅ Tests were successful : "
               echo ""
-              python3 ${{ env.CI_DIR }}/scripts/generate-tests-table.py "${{ env.BUILD_DIR }}/tests_results/"
+              python3 ${{ env.CI_DIR }}/scripts/tests/generate-tests-table.py "${{ env.SOFA_BUILD_DIR }}/tests_results/"
               echo ""
             fi
           fi
