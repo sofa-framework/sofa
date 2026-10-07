@@ -46,7 +46,11 @@ public:
 
     void apply(const core::MechanicalParams *mparams, Data<VecCoord_t<TOut>>& out, const Data<VecCoord_t<TIn>>& in) override;
 
-    void applyJ(const core::MechanicalParams *mparams, Data<VecDeriv_t<TOut>>& out, const Data<VecDeriv_t<TIn>>& in) override;
+    void doApplyJacobianVectorProduct(
+        const core::MechanicalParams* mparams,
+        DataVecDeriv_t<TOut>& tangentOut,
+        const DataVecDeriv_t<TIn>& tangentIn,
+        const DataVecCoord_t<TIn>& positionIn) override;
 
     void applyJT(const core::MechanicalParams *mparams, Data<VecDeriv_t<TIn>>& out, const Data<VecDeriv_t<TOut>>& in) override;
 
