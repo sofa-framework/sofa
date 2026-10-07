@@ -62,7 +62,7 @@ public:
 
     /// @}
 
-    virtual void resetVec(const ExecParams* params, VecId) {}
+    virtual void resetVec(const ExecParams* params, VecId vId) { SOFA_UNUSED(params); SOFA_UNUSED(vId); }
 
     bool insertInNode( objectmodel::BaseNode* node ) override;
     bool removeInNode( objectmodel::BaseNode* node ) override;
