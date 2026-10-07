@@ -84,8 +84,8 @@ void CenterOfMassMultiMapping<TIn, TOut>::doApplyJacobianVectorProduct(
         outDeriv.push_back(dataVecTangentOut[i]->beginEdit());
 
     type::vector<const InVecDeriv*> inDeriv;
-    for(unsigned int i=0; i<dataVecTangentOut.size(); i++)
-        inDeriv.push_back(&dataVecTangentOut[i]->getValue());
+    for(unsigned int i=0; i<dataVecTangentIn.size(); i++)
+        inDeriv.push_back(&dataVecTangentIn[i]->getValue());
 
     assert( outDeriv.size() == 1 );
 
