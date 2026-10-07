@@ -95,10 +95,15 @@ public:
         SOFA_UNUSED(mparams);
         SOFA_UNUSED(fId);
     }
-    void addDForce(const core::MechanicalParams* mparams, core::MultiVecDerivId dfId) override
+    void addDForce(const core::MechanicalParams* mparams, core::MultiVecDerivId dfId,
+                   core::ConstMultiVecDerivId dxId, core::ConstMultiVecCoordId xId,
+                   core::ConstMultiVecDerivId vId) override
     {
         SOFA_UNUSED(mparams);
         SOFA_UNUSED(dfId);
+        SOFA_UNUSED(dxId);
+        SOFA_UNUSED(xId);
+        SOFA_UNUSED(vId);
     }
     SReal getPotentialEnergy(const core::MechanicalParams* mparams) const override
     {
@@ -181,10 +186,15 @@ public:
         SOFA_UNUSED(mparams);
         SOFA_UNUSED(fId);
     }
-    void addDForce(const core::MechanicalParams* mparams, core::MultiVecDerivId dfId) override
+    void addDForce(const core::MechanicalParams* mparams, core::MultiVecDerivId dfId,
+                   core::ConstMultiVecDerivId dxId, core::ConstMultiVecCoordId xId,
+                   core::ConstMultiVecDerivId vId) override
     {
         SOFA_UNUSED(mparams);
         SOFA_UNUSED(dfId);
+        SOFA_UNUSED(dxId);
+        SOFA_UNUSED(xId);
+        SOFA_UNUSED(vId);
     }
     SReal getPotentialEnergy(const core::MechanicalParams* mparams) const override
     {
