@@ -114,7 +114,7 @@ public:
         const MechanicalParams* mparams,
         MultiVecDerivId tangentOutId,
         ConstMultiVecDerivId tangentInId,
-        ConstMultiVecCoordId positionInId) override;
+        ConstMultiVecCoordId positionInId) final;
 
     virtual void doApplyJacobianVectorProduct(
         const MechanicalParams* mparams,
