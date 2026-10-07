@@ -94,31 +94,34 @@ void CenterOfMassMulti2Mapping< TIn1, TIn2, TOut >::apply(
     for(unsigned int i=0; i<dataVecOutPos.size(); i++)
         dataVecOutPos[i]->endEdit();
 }
-
 template <class TIn1, class TIn2, class TOut>
-void CenterOfMassMulti2Mapping< TIn1, TIn2, TOut >::applyJ(
-        const core::MechanicalParams* mparams, const type::vector< OutDataVecDeriv*>& dataVecOutVel,
-        const type::vector<const In1DataVecDeriv*>& dataVecIn1Vel,
-        const type::vector<const In2DataVecDeriv*>& dataVecIn2Vel)
-//applyJ(const type::vector< OutVecDeriv*>& outDeriv, const type::vector<const In1VecDeriv*>& inDeriv1, const type::vector<const In2VecDeriv*>& inDeriv2)
+void CenterOfMassMulti2Mapping<TIn1, TIn2, TOut>::doApplyJacobianVectorProduct(
+    const core::MechanicalParams* mparams,
+    const type::vector<DataVecDeriv_t<Out>*>& dataVecTangentOut,
+    const type::vector<const DataVecDeriv_t<In1>*>& dataVecTangentIn1,
+    const type::vector<const DataVecDeriv_t<In2>*>& dataVecTangentIn2,
+    const type::vector<const DataVecCoord_t<In1>*>& dataVecPositionIn1,
+    const type::vector<const DataVecCoord_t<In2>*>& dataVecPositionIn2)
 {
     SOFA_UNUSED(mparams);
+    SOFA_UNUSED(dataVecPositionIn1);
+    SOFA_UNUSED(dataVecPositionIn2);
 
-    assert( dataVecOutVel.size() == 1 );
+    assert( dataVecTangentOut.size() == 1 );
     typedef typename type::vector<In1Deriv>::iterator                     iter_deriv1;
     typedef typename type::vector<In2Deriv>::iterator                     iter_deriv2;
 
     //Not optimized at all...
     type::vector<OutVecDeriv*> outDeriv;
-    for(unsigned int i=0; i<dataVecOutVel.size(); i++)
-        outDeriv.push_back(dataVecOutVel[i]->beginEdit());
+    for(unsigned int i=0; i<dataVecTangentOut.size(); i++)
+        outDeriv.push_back(dataVecTangentOut[i]->beginEdit());
 
     type::vector<const In1VecDeriv*> inDeriv1;
-    for(unsigned int i=0; i<dataVecIn1Vel.size(); i++)
-        inDeriv1.push_back(&dataVecIn1Vel[i]->getValue());
+    for(unsigned int i=0; i<dataVecTangentIn1.size(); i++)
+        inDeriv1.push_back(&dataVecTangentIn1[i]->getValue());
     type::vector<const In2VecDeriv*> inDeriv2;
-    for(unsigned int i=0; i<dataVecIn2Vel.size(); i++)
-        inDeriv2.push_back(&dataVecIn2Vel[i]->getValue());
+    for(unsigned int i=0; i<dataVecTangentIn2.size(); i++)
+        inDeriv2.push_back(&dataVecTangentIn2[i]->getValue());
 
     SReal px=0,py=0,pz=0;
 
@@ -155,8 +158,8 @@ void CenterOfMassMulti2Mapping< TIn1, TIn2, TOut >::applyJ(
     OutDataTypes::set((*outVecDeriv)[0], px,py,pz);
 
     //Really Not optimized at all...
-    for(unsigned int i=0; i<dataVecOutVel.size(); i++)
-        dataVecOutVel[i]->endEdit();
+    for(unsigned int i=0; i<dataVecTangentOut.size(); i++)
+        dataVecTangentOut[i]->endEdit();
 }
 
 

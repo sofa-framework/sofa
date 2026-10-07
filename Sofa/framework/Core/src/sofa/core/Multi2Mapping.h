@@ -116,7 +116,7 @@ public:
 
     virtual void doApplyJacobianVectorProduct(
         const MechanicalParams* mparams,
-        const type::vector< DataVecDeriv_t<Out>*>& dataVecTangentOu,
+        const type::vector< DataVecDeriv_t<Out>*>& dataVecTangentOut,
         const type::vector<const DataVecDeriv_t<In1>*>& dataVecTangentIn1,
         const type::vector<const DataVecDeriv_t<In2>*>& dataVecTangentIn2,
         const type::vector<const DataVecCoord_t<In1>*>& dataVecPositionIn1,
