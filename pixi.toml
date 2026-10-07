@@ -24,6 +24,8 @@ zlib = ">=1.2.11"
 eigen = ">=3.4.0"
 tinyxml2 = ">=9.0.0"
 cxxopts = ">=3.1.1"
+
+[feature.extended-dependencies.dependencies]
 gtest = "*"
 tight-inclusion = "*"
 
@@ -193,6 +195,7 @@ configure = { cmd = [ "cmake",
   ".",
   "-DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX",
   "-DCMAKE_BUILD_TYPE=$SOFA_BUILD_TYPE",
+  "-DBUILD_CONDA_PACKAGE",
   "--preset",
   "conda-core"] }
 
@@ -324,26 +327,35 @@ default = { features = [
   "plugin-cuda",
   "plugin-cimg",
   "presets-defaultGUI",
-  "python-supported"] }
-conda-core = { features = ["presets-conda-core"] }
-minimal = { features = ["presets-minimal"] }
-minimal-dev = { features = ["presets-minimal-dev"] }
+  "python-supported",
+  "extended-dependencies"] }
+conda-core = { features = [
+  "presets-conda-core",
+  "extended-dependencies"] }
+minimal = { features = [
+  "presets-minimal",
+  "extended-dependencies"] }
+minimal-dev = { features = ["presets-minimal-dev",
+  "extended-dependencies"] }
 standard = { features = [
   "presets-standard",
   "plugin-sofa-python3",
   "presets-defaultGUI",
-  "python-supported"] }
+  "python-supported",
+  "extended-dependencies"] }
 standard-clang = { features = [
   "clang",
   "presets-standard",
   "plugin-sofa-python3",
   "presets-defaultGUI",
-  "python-supported"] }
+  "python-supported",
+  "extended-dependencies"] }
 standard-dev = { features = [
   "presets-standard-dev",
   "plugin-sofa-python3",
   "presets-defaultGUI",
-  "python-supported"] }
+  "python-supported",
+  "extended-dependencies"] }
 release-package-standard = { features = [
   "build-release-package",
   "build-release-package-standard",
@@ -364,25 +376,29 @@ supported-plugins = { features = [
   "plugin-cuda",
   "plugin-cimg",
   "presets-defaultGUI",
-  "python-supported"]}
+  "python-supported",
+  "extended-dependencies"]}
 supported-plugins-dev = { features = [
   "presets-supported-plugins-dev",
   "plugin-sofa-python3",
   "plugin-cuda",
   "plugin-cimg",
   "presets-defaultGUI",
-  "python-supported"]}
+  "python-supported",
+  "extended-dependencies"]}
 full = { features = [
   "presets-full",
   "plugin-sofa-python3",
   "plugin-cuda",
   "plugin-cimg",
   "presets-defaultGUI",
-  "python-supported"]}
+  "python-supported",
+  "extended-dependencies"]}
 full-dev = { features = [
   "presets-full-dev",
   "plugin-sofa-python3",
   "plugin-cuda",
   "plugin-cimg",
   "presets-defaultGUI",
-  "python-supported"]}
+  "python-supported",
+  "extended-dependencies"]}
