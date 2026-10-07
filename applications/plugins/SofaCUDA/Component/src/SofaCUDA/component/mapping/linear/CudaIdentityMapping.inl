@@ -56,13 +56,17 @@ void IdentityMapping<gpu::cuda::CudaVec3fTypes, gpu::cuda::CudaVec3fTypes>::appl
 }
 
 template <>
-void IdentityMapping<gpu::cuda::CudaVec3fTypes, gpu::cuda::CudaVec3fTypes>::applyJ( const core::MechanicalParams* /*mparams*/, OutDataVecDeriv& dOut, const InDataVecDeriv& dIn )
+void IdentityMapping<gpu::cuda::CudaVec3fTypes, gpu::cuda::CudaVec3fTypes>::doApplyJacobianVectorProduct(
+    const core::MechanicalParams* mparams, DataVecDeriv_t<Out>& tangentOut, const DataVecDeriv_t<In>& tangentIn, const DataVecCoord_t<In>& positionIn)
 {
-    OutVecDeriv& out = *dOut.beginEdit();
-    const InVecDeriv& in = dIn.getValue();
+    SOFA_UNUSED(mparams);
+    SOFA_UNUSED(positionIn);
+
+    OutVecDeriv& out = *tangentOut.beginEdit();
+    const InVecDeriv& in = tangentIn.getValue();
     out.fastResize(in.size());
     gpu::cuda::MechanicalObjectCudaVec3f_vAssign(out.size(), out.deviceWrite(), in.deviceRead());
-    dOut.endEdit();
+    tangentOut.endEdit();
 }
 
 template <>
@@ -117,13 +121,17 @@ void IdentityMapping<gpu::cuda::CudaVec3f1Types, gpu::cuda::CudaVec3f1Types>::ap
 }
 
 template <>
-void IdentityMapping<gpu::cuda::CudaVec3f1Types, gpu::cuda::CudaVec3f1Types>::applyJ( const core::MechanicalParams* /*mparams*/, OutDataVecDeriv& dOut, const InDataVecDeriv& dIn )
+void IdentityMapping<gpu::cuda::CudaVec3f1Types, gpu::cuda::CudaVec3f1Types>::doApplyJacobianVectorProduct(
+    const core::MechanicalParams* mparams, DataVecDeriv_t<Out>& tangentOut, const DataVecDeriv_t<In>& tangentIn, const DataVecCoord_t<In>& positionIn)
 {
-    OutVecDeriv& out = *dOut.beginEdit();
-    const InVecDeriv& in = dIn.getValue();
+    SOFA_UNUSED(mparams);
+    SOFA_UNUSED(positionIn);
+
+    OutVecDeriv& out = *tangentOut.beginEdit();
+    const InVecDeriv& in = tangentIn.getValue();
     out.fastResize(in.size());
     gpu::cuda::MechanicalObjectCudaVec3f1_vAssign(out.size(), out.deviceWrite(), in.deviceRead());
-    dOut.endEdit();
+    tangentOut.endEdit();
 }
 
 template <>
