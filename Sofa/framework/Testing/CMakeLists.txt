@@ -6,7 +6,13 @@ enable_testing()
 
 # add googletest library
 # set(googletest_disable_pthreads ON CACHE INTERNAL "")
-find_package(GTest QUIET)
+
+# When building binaries we want to build GTests ourselves
+# so we can easilly install the target along
+if(BUILD_CONDA_PACKAGE OR NOT SOFA_BUILD_RELEASE_PACKAGE)
+    find_package(GTest QUIET)
+endif()
+
 if(NOT GTest_FOUND AND SOFA_ALLOW_FETCH_DEPENDENCIES)
     message("${PROJECT_NAME}: DEPENDENCY googletest NOT FOUND. SOFA_ALLOW_FETCH_DEPENDENCIES is ON, fetching googletest...")
 
@@ -43,6 +49,7 @@ if(NOT GTest_FOUND AND SOFA_ALLOW_FETCH_DEPENDENCIES)
 
 elseif (NOT GTest_FOUND)
     message(FATAL_ERROR "${PROJECT_NAME}: DEPENDENCY googletest NOT FOUND. SOFA_ALLOW_FETCH_DEPENDENCIES is OFF and thus cannot be fetched. Install googletest, or enable SOFA_ALLOW_FETCH_DEPENDENCIES to fix this issue.")
+
 endif()
 
 

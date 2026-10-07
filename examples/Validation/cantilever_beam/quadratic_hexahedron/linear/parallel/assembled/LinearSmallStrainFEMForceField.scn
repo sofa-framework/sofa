@@ -12,7 +12,7 @@
     <include href="../../../QuadraticTopology.xml"/>
 
     <Node name="simulation">
-        <EulerImplicitSolver name="backward_Euler" rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitIntegrationScheme name="backward_Euler" rayleighStiffness="0.1" rayleighMass="0.1" />
 
         <ConstantSparsityPatternSystem template="CompressedRowSparseMatrix" name="A" checkIndices="false"/>
         <SparseLDLSolver name="linear_solver" template="CompressedRowSparseMatrix"/>

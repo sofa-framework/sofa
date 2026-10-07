@@ -13,7 +13,7 @@
         <RequiredPlugin pluginName="Sofa.Component.LinearSolver.Iterative"/>
         <RequiredPlugin pluginName="Sofa.Component.Mass"/>
         <RequiredPlugin pluginName="Sofa.Component.MechanicalLoad"/>
-        <RequiredPlugin pluginName="Sofa.Component.ODESolver.Backward"/>
+        <RequiredPlugin pluginName="Sofa.Component.IntegrationScheme.Backward"/>
         <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.FEM.Elastic"/>
         <RequiredPlugin pluginName="Sofa.Component.StateContainer"/>
         <RequiredPlugin pluginName="Sofa.Component.Topology.Container.Grid"/>
@@ -35,7 +35,7 @@
 
     <Node name="BeamPrecomputed">
         <Visual3DText text="PrecomputedConstraintCorrection" position="0 3 6" scale="0.4" color="0.3 0.7 1 1" />
-        <EulerImplicitSolver name="odeSolver" rayleighStiffness="0.01" rayleighMass="0.01" linearSolver="@linearSolver"/>
+        <EulerImplicitIntegrationScheme name="odeSolver" rayleighStiffness="0.01" rayleighMass="0.01" linearSolver="@linearSolver"/>
 
         <MatrixLinearSystem name="precondSystem" template="CompressedRowSparseMatrixd"/>
         <SSORPreconditioner name="precond" linearSystem="@precondSystem"/>
@@ -60,7 +60,7 @@
 
     <Node name="BeamLinearSolver">
         <Visual3DText text="LinearSolverConstraintCorrection" position="0 3 12" scale="0.4" color="0.3 0.7 1 1" />
-        <EulerImplicitSolver name="odeSolver" rayleighStiffness="0.01" rayleighMass="0.01" linearSolver="@linearSolver"/>
+        <EulerImplicitIntegrationScheme name="odeSolver" rayleighStiffness="0.01" rayleighMass="0.01" linearSolver="@linearSolver"/>
 
         <MatrixLinearSystem name="precondSystem" template="CompressedRowSparseMatrixd"/>
         <SSORPreconditioner name="precond" linearSystem="@precondSystem"/>
