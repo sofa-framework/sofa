@@ -92,7 +92,6 @@ public:
         DataVecDeriv_t<Out>& tangentOut,
         const DataVecDeriv_t<In>& tangentIn,
         const DataVecCoord_t<In>& positionIn) override;
-    //void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
 
     void applyJT( const sofa::core::MechanicalParams* mparams, InDataVecDeriv& out, const OutDataVecDeriv& in) override;
     //void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
