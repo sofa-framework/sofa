@@ -153,3 +153,10 @@ SOFA_ATTRIBUTE_DEPRECATED("v26.12", "v27.12", "Use BaseContext instead of Contex
 #define SOFA_CORE_DEPRECATED_RESETVEC() \
     SOFA_ATTRIBUTE_DEPRECATED("v26.12", "v27.12", "Use resetVec instead.")
 #endif
+
+#ifdef SOFA_BUILD_SOFA_CORE
+#define SOFA_CORE_DEPRECATED_BEGININTEGRATION()
+#else
+#define SOFA_CORE_DEPRECATED_BEGININTEGRATION() \
+    SOFA_ATTRIBUTE_DEPRECATED("v26.12", "v27.12", "`beginIntegration` method was empty for a long time.")
+#endif
