@@ -189,13 +189,15 @@ public:
         vOp(params, sofa::core::vec_id::write_access::externalForce, ConstVecId::null(), ConstVecId::null(), 1.0); // externalForce = 0
     }
 
+    void resetVec(const ExecParams* params, VecId vId) override { vOp( params, vId, ConstVecId::null(), ConstVecId::null(), 1.0 ); }
+
     /// Set F = 0
     virtual void resetForce( const ExecParams* params, VecDerivId f = vec_id::write_access::force)
-    { vOp( params, f, ConstVecId::null(), ConstVecId::null(), 1.0 ); }
+    { resetVec( params, f ); }
 
     /// Set Acc =0
     virtual void resetAcc( const ExecParams* params, VecDerivId a = vec_id::write_access::dx )
-    { vOp( params, a, ConstVecId::null(), ConstVecId::null(), 1.0 ); }
+    { resetVec( params, a ); }
 
     /// Add stored external forces to F
     virtual void accumulateForce( const ExecParams* params, VecDerivId f = vec_id::write_access::force )

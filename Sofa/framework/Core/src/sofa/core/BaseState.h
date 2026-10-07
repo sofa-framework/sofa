@@ -62,6 +62,7 @@ public:
 
     /// @}
 
+    virtual void resetVec(const ExecParams* params, VecId) {}
 
     bool insertInNode( objectmodel::BaseNode* node ) override;
     bool removeInNode( objectmodel::BaseNode* node ) override;
