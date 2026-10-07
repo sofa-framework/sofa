@@ -169,6 +169,14 @@ void Mapping<TIn, TOut>::applyJacobianVectorProduct(const MechanicalParams* mpar
     }
 }
 
+template <class TIn, class TOut>
+void Mapping<TIn, TOut>::applyJ(const MechanicalParams* mparams, OutDataVecDeriv& out,
+                                const InDataVecDeriv& in)
+{
+    this->doApplyJacobianVectorProduct(
+        mparams, out, in, mparams ? mparams->x() : sofa::core::vec_id::read_access::position);
+}
+
 template <class In, class Out>
 void Mapping<In,Out>::applyJT(const MechanicalParams *mparams, MultiVecDerivId inForce, ConstMultiVecDerivId outForce)
 {

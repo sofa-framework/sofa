@@ -69,13 +69,13 @@ public:
 
     /// Compute output velocity based on input velocity, using the linearized transformation (tangent operator). Also used to propagate small displacements.
     SOFA_ATTRIBUTE_DEPRECATED__APPLYJ()
-    virtual void applyJ(const MechanicalParams* mparams = mechanicalparams::defaultInstance(), MultiVecDerivId outVel = vec_id::write_access::velocity, ConstMultiVecDerivId inVel = vec_id::read_access::velocity ) final {}
+    virtual void applyJ(const MechanicalParams* mparams = mechanicalparams::defaultInstance(), MultiVecDerivId outVel = vec_id::write_access::velocity, ConstMultiVecDerivId inVel = vec_id::read_access::velocity ) final;
 
     /**
      * @brief Compute the product of the Jacobian matrix with a vector (JVP).
      *
-     * This function computes $v_{out} = J(x_{in}) \cdot v_{in}$. It is crucial for propagating
-     * velocities, small displacements, or generalized tangents through non-linear mappings.
+     * This function computes $v_{out} = J(x_{in}) \cdot v_{in}$. It propagates velocities, small
+     * displacements, or generalized tangents through non-linear mappings.
      * The Jacobian matrix $J$ maps derivatives (velocities) from the input space to the output space.
      * Since the Jacobian often depends on position, this method requires access to the
      * coordinates of the input model ($x_{in}$).

@@ -116,8 +116,14 @@ public:
         ConstMultiVecDerivId tangentInId,
         ConstMultiVecCoordId positionInId) override;
 
-    /// This method must be reimplemented by all mappings.
-    virtual void doApplyJacobianVectorProduct(const MechanicalParams* mparams, OutDataVecDeriv& tangentOut, const InDataVecDeriv& tangentIn, const InDataVecCoord& positionIn) = 0;
+    virtual void doApplyJacobianVectorProduct(
+        const MechanicalParams* mparams,
+        OutDataVecDeriv& tangentOut,
+        const InDataVecDeriv& tangentIn,
+        const InDataVecCoord& positionIn) = 0;
+
+    SOFA_ATTRIBUTE_DEPRECATED__APPLYJ()
+    virtual void applyJ( const MechanicalParams* mparams, OutDataVecDeriv& out, const InDataVecDeriv& in) final;
 
     /// ApplyJT (Force)///
     /// Apply the reverse mapping to force vectors.
