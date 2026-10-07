@@ -23,12 +23,16 @@
 
 #include <sofa/simulation/BaseMechanicalVisitor.h>
 
+#if !defined(SOFA_SIMULATION_MECHANICALVISITOR_MECHANICALBEGININTEGRATIONVISITOR_CPP)
+SOFA_HEADER_DEPRECATED_NOT_REPLACED("v26.12", "v27.06")
+#endif
+
 namespace sofa::simulation::mechanicalvisitor
 {
 
 /** Visitor used to prepare a time integration step. Typically, does nothing.
 */
-class SOFA_SIMULATION_CORE_API MechanicalBeginIntegrationVisitor : public BaseMechanicalVisitor
+class SOFA_SIMULATION_CORE_API SOFA_ATTRIBUTE_DEPRECATED__MECHANICALBEGININTEGRATIONVISITOR() MechanicalBeginIntegrationVisitor : public BaseMechanicalVisitor
 {
 public:
     SReal dt;
