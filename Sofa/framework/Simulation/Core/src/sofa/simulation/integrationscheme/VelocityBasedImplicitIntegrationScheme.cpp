@@ -134,6 +134,7 @@ void VelocityBasedImplicitIntegrationScheme::computeLHS(bool firstIteration)
     m_mop->mparams.setV(m_vResult);
 
     // Set the factor of the left hand side taking into account the rayleigh damping
+    // If we are in first order, no impulse scaling
     SCOPED_TIMER("setSystemMBKMatrix");
     const core::MatricesFactors::M mFact(d_firstOrder.getValue() ? 1.0
                                                                  : ((d_impulseBased.getValue() ? 1.0/this->getInverseVelocityUpdateDerivedFromVelocity() : 1.0 ) * (this->getInverseVelocityUpdateDerivedFromVelocity() + d_rayleighMass.getValue())));
@@ -225,7 +226,8 @@ void VelocityBasedImplicitIntegrationScheme::computeRHS(bool firstIteration)
 
         m_mop->mparams.setV(backV);
 
-        if (d_impulseBased.getValue())
+        // If we are in first order, no impulse scaling of the rhs
+        if (d_impulseBased.getValue() && !d_firstOrder.getValue())
             m_vop->v_teq(m_r0, 1.0/this->getInverseVelocityUpdateDerivedFromVelocity());
 
         // Set the factor of the left hand side taking into account the rayleigh damping
