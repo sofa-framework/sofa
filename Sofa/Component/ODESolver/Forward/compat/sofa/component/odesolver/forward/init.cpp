@@ -27,7 +27,7 @@
 
 namespace sofa::component::odesolver::forward
 {
-    
+
 extern "C" {
     SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
     SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
@@ -60,7 +60,7 @@ void registerObjects(sofa::core::ObjectFactory* factory)
         objLoaded = factory->registerObjectsFromPlugin(Sofa.Component.IntegrationScheme.Forward);
 
         if (!objLoaded)
-            msg_info_once("Sofa.Component.ODESolver.Forward")<<"Registering objects from Sofa.Component.IntegrationScheme.Forward failed.";
+            msg_error_once("Sofa.Component.ODESolver.Forward")<<"Registering objects from Sofa.Component.IntegrationScheme.Forward failed.";
     }
 }
 
@@ -72,7 +72,7 @@ void init()
     if (status <= sofa::helper::system::PluginManager::PluginLoadStatus::ALREADY_LOADED)
         msg_info_once("Sofa.Component.ODESolver.Forward")<<"Sofa.Component.IntegrationScheme.Forward has been loaded automatically.";
     else
-        msg_warning_once("Sofa.Component.ODESolver.Forward")<<"Tried to load Sofa.Component.IntegrationScheme.Forward automatically but failed.";
+        msg_error_once("Sofa.Component.ODESolver.Forward")<<"Tried to load Sofa.Component.IntegrationScheme.Forward automatically but failed.";
 }
 
 } // namespace sofa::component::odesolver::forward

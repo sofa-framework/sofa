@@ -27,7 +27,7 @@
 
 namespace sofa::component::odesolver
 {
-    
+
 extern "C" {
     SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
     SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
@@ -62,7 +62,7 @@ void registerObjects(sofa::core::ObjectFactory* factory)
         objLoaded &= factory->registerObjectsFromPlugin(Sofa.Component.IntegrationScheme.Forward);
 
         if (!objLoaded)
-            msg_info_once("Sofa.Component.ODESolver")<<"Registering objects from Sofa.Component.IntegrationScheme failed.";
+            msg_error_once("Sofa.Component.ODESolver")<<"Registering objects from Sofa.Component.IntegrationScheme failed.";
     }
 }
 
@@ -74,7 +74,7 @@ void init()
     if (status <= sofa::helper::system::PluginManager::PluginLoadStatus::ALREADY_LOADED)
         msg_info_once("Sofa.Component.ODESolver")<<"Sofa.Component.IntegrationScheme has been loaded automatically.";
     else
-        msg_warning_once("Sofa.Component.ODESolver")<<"Tried to load Sofa.Component.IntegrationScheme automatically but failed.";
+        msg_error_once("Sofa.Component.ODESolver")<<"Tried to load Sofa.Component.IntegrationScheme automatically but failed.";
 }
 
 } // namespace sofa::component::integrationscheme
