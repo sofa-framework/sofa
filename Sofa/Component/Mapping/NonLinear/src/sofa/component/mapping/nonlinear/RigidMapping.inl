@@ -327,10 +327,17 @@ void RigidMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*/, 
 }
 
 template <class TIn, class TOut>
-void RigidMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mparams*/, Data<OutVecDeriv>& dOut, const Data<InVecDeriv>& dIn)
+void RigidMapping<TIn, TOut>::doApplyJacobianVectorProduct(
+        const core::MechanicalParams* mparams,
+        OutDataVecDeriv& tangentOut,
+        const InDataVecDeriv& tangentIn,
+        const InDataVecCoord& positionIn)
 {
-    helper::WriteOnlyAccessor< Data<OutVecDeriv> > out = dOut;
-    helper::ReadAccessor< Data<InVecDeriv> > in = dIn;
+    SOFA_UNUSED(mparams);
+    SOFA_UNUSED(positionIn);
+
+    helper::WriteOnlyAccessor< Data<OutVecDeriv> > out = tangentOut;
+    helper::ReadAccessor< Data<InVecDeriv> > in = tangentIn;
 
     const OutVecCoord& pts = this->getPoints();
     out.resize(pts.size());
