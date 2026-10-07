@@ -110,6 +110,26 @@ TYPED_TEST(MechanicalObject_test, checkThatPositionDefaultValueIsAVectorOfValueI
     TestHelpers::CheckPosition(this->mechanicalObject);
 }
 
+TYPED_TEST(MechanicalObject_test, checkResetVec)
+{
+    this->mechanicalObject.resize(5);
+
+    static constexpr auto cotangentId = core::vec_id::write_access::force;
+
+    auto* cotangentData = this->mechanicalObject.write(cotangentId);
+    ASSERT_NE(nullptr, cotangentData);
+
+    auto cotangent = sofa::helper::getWriteAccessor(*cotangentData);
+    EXPECT_EQ(cotangent[0][0], 0);
+
+    cotangent[0][0] = 1;
+    EXPECT_EQ(cotangent[0][0], 1);
+
+    this->mechanicalObject.resetVec(nullptr, cotangentId);
+
+    EXPECT_EQ(cotangent[0][0], 0);
+}
+
 } // namespace
 
 } // namespace sofa
