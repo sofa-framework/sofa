@@ -235,7 +235,7 @@ jobs:
   build-on:
     needs: filter_build
     if: ${{ github.repository_owner == 'sofa-framework' && needs.filter_build.outputs.SH_BUILDER_OS != '[]' }}
-    uses: sofa-framework/sofa/.github/workflows/CI_build_and_test.yml@master
+    uses: bakpaul/sofa/.github/workflows/CI_build_and_test.yml@26_09_tes_new_builders
     with:
       sofa-branch-name: ${{ needs.filter_build.outputs.SOFA_BRANCH_NAME }}
       sofa-commit-sha: ${{ needs.filter_build.outputs.SOFA_COMMIT_SHA }}
