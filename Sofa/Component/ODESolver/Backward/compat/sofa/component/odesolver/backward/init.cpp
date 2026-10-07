@@ -57,9 +57,9 @@ void registerObjects(sofa::core::ObjectFactory* factory)
 
     if (isLoaded.second)
     {
-        objLoded = factory->registerObjectsFromPlugin(Sofa.Component.IntegrationScheme.Backward);
+        objLoaded = factory->registerObjectsFromPlugin(Sofa.Component.IntegrationScheme.Backward);
 
-        if (!objLoded)
+        if (!objLoaded)
             msg_info_once("Sofa.Component.ODESolver.Backward")<<"Registering objects from Sofa.Component.IntegrationScheme.Backward failed.";
     }
 }
