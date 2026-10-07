@@ -155,21 +155,21 @@ namespace multithreading::component::mapping::linear
         //task_pool.purge_memory();
         
     }
-    
-    
-    
     template <class TIn, class TOut>
-    //void AdaptiveBeamMapping< TIn, TOut>::applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
-    void BeamLinearMapping_mt< TIn, TOut>::applyJ(const sofa::core::MechanicalParams * params /* PARAMS FIRST */, sofa::Data< typename Out::VecDeriv >& _out, const sofa::Data< typename In::VecDeriv >& _in)
+    void BeamLinearMapping_mt<TIn, TOut>::doApplyJacobianVectorProduct(
+        const sofa::core::MechanicalParams* mparams, sofa::DataVecDeriv_t<Out>& tangentOut,
+        const sofa::DataVecDeriv_t<In>& tangentIn, const sofa::DataVecCoord_t<In>& positionIn)
     {
-        
+        SOFA_UNUSED(mparams);
+        SOFA_UNUSED(positionIn);
+
         //boost::pool<> task_pool(sizeof(BeamLinearMapping_mt< TIn, TOut>::applyJTask));
         unsigned int numPoints = this->points.size();
         
         if ( numPoints >  2*mGrainSize.getValue()  )
         {
-            sofa::helper::WriteAccessor< sofa::Data< typename Out::VecDeriv > > out = _out;
-            sofa::helper::ReadAccessor< sofa::Data< typename In::VecDeriv > > in = _in;
+            sofa::helper::WriteAccessor< sofa::Data< typename Out::VecDeriv > > out = tangentOut;
+            sofa::helper::ReadAccessor< sofa::Data< typename In::VecDeriv > > in = tangentIn;
             
             //const InVecDeriv& in= dIn.getValue();
             //VecDeriv& out = *dOut.beginEdit();
@@ -238,7 +238,7 @@ namespace multithreading::component::mapping::linear
         else
         {
             
-            sofa::component::mapping::linear::BeamLinearMapping<TIn,TOut>::applyJ( params, _out, _in );
+            sofa::component::mapping::linear::BeamLinearMapping<TIn,TOut>::doApplyJacobianVectorProduct( mparams, tangentOut, tangentIn, positionIn );
             
         }
         
