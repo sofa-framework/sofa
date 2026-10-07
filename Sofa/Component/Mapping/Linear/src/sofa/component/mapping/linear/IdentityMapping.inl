@@ -73,12 +73,18 @@ void IdentityMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*
 }
 
 template <class TIn, class TOut>
-void IdentityMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mparams*/, Data<VecDeriv>& dOut, const Data<InVecDeriv>& dIn)
+void IdentityMapping<TIn, TOut>::doApplyJacobianVectorProduct(const core::MechanicalParams* mparams,
+                                                              DataVecDeriv_t<Out>& tangentOut,
+                                                              const DataVecDeriv_t<In>& tangentIn,
+                                                              const DataVecCoord_t<In>& positionIn)
 {
-    helper::WriteOnlyAccessor< Data<VecDeriv> > out = dOut;
-    helper::ReadAccessor< Data<InVecDeriv> > in = dIn;
+    SOFA_UNUSED(mparams);
+    SOFA_UNUSED(positionIn);
 
-    for( size_t i=0 ; i<out.size() ; ++i)
+    helper::WriteOnlyAccessor< Data<VecDeriv> > out = tangentOut;
+    helper::ReadAccessor< Data<InVecDeriv> > in = tangentIn;
+
+    for (size_t i = 0; i < out.size(); ++i)
     {
         core::eq(out[i], in[i]);
     }
