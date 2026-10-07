@@ -192,10 +192,12 @@ public:
     void resetVec(const ExecParams* params, VecId vId) override { vOp( params, vId, ConstVecId::null(), ConstVecId::null(), 1.0 ); }
 
     /// Set F = 0
+    SOFA_CORE_DEPRECATED_RESETVEC()
     virtual void resetForce( const ExecParams* params, VecDerivId f = vec_id::write_access::force)
     { resetVec( params, f ); }
 
     /// Set Acc =0
+    SOFA_CORE_DEPRECATED_RESETVEC()
     virtual void resetAcc( const ExecParams* params, VecDerivId a = vec_id::write_access::dx )
     { resetVec( params, a ); }
 
