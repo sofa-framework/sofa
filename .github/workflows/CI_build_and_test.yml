@@ -481,8 +481,9 @@ jobs:
           fi
 
           if [[ "${{ inputs.generate-binaries }}" == "false" ]]; then
-            if [[  "${{ steps.unit-tests-step.outcome }}" == "failure"          || "${{ steps.scene-tests-step.outcome }}" == "failure"           || "${{ steps.regression-tests-step.outcome }}" == "failure" ]] &&
-               [[ -f "${{ env.SOFA_BUILD_DIR }}/tests_results/unit/summary.txt" && -f "${{ env.SOFA_BUILD_DIR }}/tests_results/scene/summary.txt" && -f "${{ env.SOFA_BUILD_DIR }}/tests_results/regression/summary.txt"  ]]; then
+            if [[  "${{ steps.unit-tests-step.outcome }}" == "failure" || "${{ steps.scene-tests-step.outcome }}" == "failure" || "${{ steps.regression-tests-step.outcome }}" == "failure" ]] &&
+               [[ -f "${{ env.SOFA_BUILD_DIR }}/tests_results/unit/summary.txt" ]] &&
+               [[ "${{ inputs.with-all-tests }}" == "false" ||  "${{ inputs.with-all-tests }}" == "true" && ( -f "${{ env.SOFA_BUILD_DIR }}/tests_results/scene/summary.txt" && -f "${{ env.SOFA_BUILD_DIR }}/tests_results/regression/summary.txt" )  ]]; then
               echo "❌ Tests have resulted in : "
               echo ""
               python3 ${{ env.CI_DIR }}/scripts/tests/generate-tests-table.py "${{ env.SOFA_BUILD_DIR }}/tests_results/"
