@@ -8,6 +8,9 @@ on:
       - labeled
       - unlabeled
 
+permissions:
+  contents: read
+  pull-requests: write
 
 jobs:
 
@@ -126,11 +129,20 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
+            // Get PR info: id and labels
+            const prNumber = context.payload.pull_request.number;
             const labels = context.payload.pull_request.labels.map(label => label.name);
             const found = labels.includes("pr: based on previous PR");
 
             // Make the action step fail
             if (found) {
+              const comment = 'This PR should not be merged until the branches it is based on have been merged.';
+              github.rest.issues.createComment({
+                issue_number: prNumber,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: comment
+              });
               core.setFailed("Merge blocked: PR has label 'pr: based on previous PR'");
             }
 
