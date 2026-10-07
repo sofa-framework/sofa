@@ -160,10 +160,16 @@ void SubsetMultiMapping<TIn, TOut>::apply(const core::MechanicalParams* mparams,
 }
 
 template <class TIn, class TOut>
-void SubsetMultiMapping<TIn, TOut>::applyJ(const core::MechanicalParams* mparams, const type::vector<DataVecDeriv_t<Out>*>& dataVecOutVel, const type::vector<const DataVecDeriv_t<In>*>& dataVecInVel)
+void SubsetMultiMapping<TIn, TOut>::doApplyJacobianVectorProduct(
+    const core::MechanicalParams* mparams,
+    const type::vector<DataVecDeriv_t<Out>*>& dataVecTangentOut,
+    const type::vector<const DataVecDeriv_t<In>*>& dataVecTangentIn,
+    const type::vector<const DataVecCoord_t<In>*>& dataVecPositionIn)
 {
     SOFA_UNUSED(mparams);
-    apply_impl( dataVecOutVel, dataVecInVel, d_indexPairs.getValue());
+    SOFA_UNUSED(dataVecPositionIn);
+
+    apply_impl( dataVecTangentOut, dataVecTangentIn, d_indexPairs.getValue());
 }
 
 template <class TIn, class TOut>
