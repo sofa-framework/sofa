@@ -19,39 +19,60 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-    #include <sofa/simulation/config.h>
+#include <sofa/component/solidmechanics/spring/QuadularBendingSprings.h>
 
-#include <sofa/simulation/integrationscheme/ExplicitIntegrationScheme.h>
-#include <sofa/core/behavior/LinearSolver.h>
-#include <sofa/core/behavior/MultiVec.h>
+#include <gtest/gtest.h>
+#include <sstream>
 
-#include <sofa/core/behavior/LinearSolverAccessor.h>
+#include <sofa/defaulttype/VecTypes.h>
 
-#include <sofa/simulation/MechanicalOperations.h>
-#include <sofa/simulation/VectorOperations.h>
 
-namespace sofa::simulation::integrationscheme
+namespace sofa::component::solidmechanics::spring
 {
 
-void ExplicitIntegrationScheme::integrate(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
+using QuadularBS = sofa::component::solidmechanics::spring::QuadularBendingSprings<defaulttype::Vec3Types>;
+
+class QuadularBendingSpringsTest : public QuadularBS
 {
-    m_dt = dt;
+public:
+    using EdgeInformation = QuadularBS::EdgeInformation;
+};
 
-    m_vop = std::make_shared<sofa::simulation::common::VectorOperations>( params, this->getContext() );
-    m_mop = std::make_unique<sofa::simulation::common::MappingGraphMechanicalOperations >( params, this->getContext() );
+TEST(QuadularBendingSpringsTest, EdgeInformationStreamOperators)
+{
 
-    // dx is no longer allocated by default (but it will be deleted automatically by the mechanical objects)
-    sofa::core::behavior::MultiVecDeriv dx(m_vop.get(), core::vec_id::write_access::dx);
-    dx.realloc(m_vop.get(), true, true);
+    QuadularBendingSpringsTest::EdgeInformation initialInfo;
 
-    // Let the mechanical operations know that the current IntegrationScheme is explicit. This will be propagated back to the
-    // force fields during the addForce and addKToMatrix phase. Force fields use this information to avoid
-    // recomputing constant data in case of explicit IntegrationScheme.
-    m_mop->mparams.setImplicit(false);
+    for (int i = 0; i < 2; ++i)
+    {
+        initialInfo.springs[i].edge = {i,i};
+        initialInfo.springs[i].restLength = i ;
+        initialInfo.springs[i].DfDx = QuadularBendingSpringsTest::Mat();
+    }
 
-    doIntegrate(params, xResult, vResult);
+    initialInfo.ks = 1;
+    initialInfo.kd = 1;
+    initialInfo.is_activated = true;
+    initialInfo.is_initialized = true;
+
+    std::stringstream buffer;
+    buffer << initialInfo;
+
+    QuadularBendingSpringsTest::EdgeInformation loadedInfo;
+    buffer >> loadedInfo;
+
+    for (int i = 0; i < 2; ++i)
+    {
+        for (int j = 0; j < 2; ++j)
+            EXPECT_EQ(initialInfo.springs[i].edge[j], loadedInfo.springs[i].edge[j]);
+        EXPECT_EQ(initialInfo.springs[i].restLength, loadedInfo.springs[i].restLength);
+        EXPECT_EQ(initialInfo.springs[i].DfDx, loadedInfo.springs[i].DfDx);
+    }
+    EXPECT_EQ(initialInfo.ks, loadedInfo.ks);
+    EXPECT_EQ(initialInfo.kd, loadedInfo.kd);
+    EXPECT_EQ(initialInfo.is_activated, loadedInfo.is_activated);
+    EXPECT_EQ(initialInfo.is_initialized, loadedInfo.is_initialized);
+
 }
 
-} // namespace sofa::component::integrationscheme
-
-
+}

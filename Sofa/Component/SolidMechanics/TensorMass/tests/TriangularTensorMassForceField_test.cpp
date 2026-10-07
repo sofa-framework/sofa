@@ -19,39 +19,40 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-    #include <sofa/simulation/config.h>
+#include <sofa/component/solidmechanics/tensormass/TriangularTensorMassForceField.h>
 
-#include <sofa/simulation/integrationscheme/ExplicitIntegrationScheme.h>
-#include <sofa/core/behavior/LinearSolver.h>
-#include <sofa/core/behavior/MultiVec.h>
+#include <gtest/gtest.h>
+#include <sstream>
 
-#include <sofa/core/behavior/LinearSolverAccessor.h>
+#include <sofa/defaulttype/VecTypes.h>
 
-#include <sofa/simulation/MechanicalOperations.h>
-#include <sofa/simulation/VectorOperations.h>
 
-namespace sofa::simulation::integrationscheme
+namespace sofa::component::solidmechanics::tensormass
 {
 
-void ExplicitIntegrationScheme::integrate(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
+using TriangularTensorMassFF = sofa::component::solidmechanics::tensormass::TriangularTensorMassForceField<defaulttype::Vec3Types>;
+
+class TriangularTensorMassForceFieldTest : public TriangularTensorMassFF
 {
-    m_dt = dt;
+public:
+    using EdgeRestInformation = TriangularTensorMassFF::EdgeRestInformation;
+};
 
-    m_vop = std::make_shared<sofa::simulation::common::VectorOperations>( params, this->getContext() );
-    m_mop = std::make_unique<sofa::simulation::common::MappingGraphMechanicalOperations >( params, this->getContext() );
+TEST(TriangularTensorMassForceFieldTest, EdgeRestInformationStreamOperators)
+{
+    TriangularTensorMassForceFieldTest::EdgeRestInformation initialInfo;
 
-    // dx is no longer allocated by default (but it will be deleted automatically by the mechanical objects)
-    sofa::core::behavior::MultiVecDeriv dx(m_vop.get(), core::vec_id::write_access::dx);
-    dx.realloc(m_vop.get(), true, true);
+    for (int i = 0; i < 3; ++i)
+        for (int j = 0; j < 3; ++j)
+            initialInfo.DfDx[i][j] = i + j;
 
-    // Let the mechanical operations know that the current IntegrationScheme is explicit. This will be propagated back to the
-    // force fields during the addForce and addKToMatrix phase. Force fields use this information to avoid
-    // recomputing constant data in case of explicit IntegrationScheme.
-    m_mop->mparams.setImplicit(false);
+    std::stringstream buffer;
+    buffer << initialInfo;
 
-    doIntegrate(params, xResult, vResult);
+    TriangularTensorMassForceFieldTest::EdgeRestInformation loadedInfo;
+    buffer >> loadedInfo;
+
+    EXPECT_EQ(initialInfo.DfDx, loadedInfo.DfDx);
 }
 
-} // namespace sofa::component::integrationscheme
-
-
+}

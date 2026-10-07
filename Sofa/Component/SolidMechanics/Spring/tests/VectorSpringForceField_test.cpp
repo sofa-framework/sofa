@@ -19,39 +19,44 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-    #include <sofa/simulation/config.h>
+#include <sofa/component/solidmechanics/spring/VectorSpringForceField.h>
 
-#include <sofa/simulation/integrationscheme/ExplicitIntegrationScheme.h>
-#include <sofa/core/behavior/LinearSolver.h>
-#include <sofa/core/behavior/MultiVec.h>
+#include <gtest/gtest.h>
+#include <sstream>
 
-#include <sofa/core/behavior/LinearSolverAccessor.h>
+#include <sofa/defaulttype/VecTypes.h>
 
-#include <sofa/simulation/MechanicalOperations.h>
-#include <sofa/simulation/VectorOperations.h>
 
-namespace sofa::simulation::integrationscheme
+namespace sofa::component::solidmechanics::spring
 {
 
-void ExplicitIntegrationScheme::integrate(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
+using VectorSpringFF = sofa::component::solidmechanics::spring::VectorSpringForceField<defaulttype::Vec3Types>;
+
+class VectorSpringForceFieldTest : public VectorSpringFF
 {
-    m_dt = dt;
+public:
+    using Spring = VectorSpringFF::Spring;
+};
 
-    m_vop = std::make_shared<sofa::simulation::common::VectorOperations>( params, this->getContext() );
-    m_mop = std::make_unique<sofa::simulation::common::MappingGraphMechanicalOperations >( params, this->getContext() );
+TEST(VectorSpringForceFieldTest, SpringStreamOperators)
+{
 
-    // dx is no longer allocated by default (but it will be deleted automatically by the mechanical objects)
-    sofa::core::behavior::MultiVecDeriv dx(m_vop.get(), core::vec_id::write_access::dx);
-    dx.realloc(m_vop.get(), true, true);
+    VectorSpringForceFieldTest::Spring initialInfo;
 
-    // Let the mechanical operations know that the current IntegrationScheme is explicit. This will be propagated back to the
-    // force fields during the addForce and addKToMatrix phase. Force fields use this information to avoid
-    // recomputing constant data in case of explicit IntegrationScheme.
-    m_mop->mparams.setImplicit(false);
+    initialInfo.ks = 1;
+    initialInfo.kd = 1;
+    initialInfo.restVector = VectorSpringForceFieldTest::Deriv();
 
-    doIntegrate(params, xResult, vResult);
+    std::stringstream buffer;
+    buffer << initialInfo;
+
+    VectorSpringForceFieldTest::Spring loadedInfo;
+    buffer >> loadedInfo;
+
+    EXPECT_EQ(initialInfo.ks, loadedInfo.ks);
+    EXPECT_EQ(initialInfo.kd, loadedInfo.kd);
+    EXPECT_EQ(initialInfo.restVector, loadedInfo.restVector);
+
 }
 
-} // namespace sofa::component::integrationscheme
-
-
+}
