@@ -53,13 +53,13 @@ const char* getModuleVersion()
 void registerObjects(sofa::core::ObjectFactory* factory)
 {
     const auto isLoaded = sofa::helper::system::PluginManager::getInstance().isPluginLoaded(Sofa.Component.IntegrationScheme.Forward);
-    bool objLoded = false;
+    bool objLoaded = false;
 
     if (isLoaded.second)
     {
-        objLoded = factory->registerObjectsFromPlugin(Sofa.Component.IntegrationScheme.Forward);
+        objLoaded = factory->registerObjectsFromPlugin(Sofa.Component.IntegrationScheme.Forward);
 
-        if (!objLoded)
+        if (!objLoaded)
             msg_info_once("Sofa.Component.ODESolver.Forward")<<"Registering objects from Sofa.Component.IntegrationScheme.Forward failed.";
     }
 }
