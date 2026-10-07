@@ -66,22 +66,26 @@ void CenterOfMassMultiMapping< TIn, TOut >::apply(const core::MechanicalParams* 
         dataVecOutPos[i]->endEdit();
 }
 
-
 template <class TIn, class TOut>
-void CenterOfMassMultiMapping< TIn, TOut >::applyJ(const core::MechanicalParams* mparams, const type::vector<OutDataVecDeriv*>& dataVecOutVel, const type::vector<const InDataVecDeriv*>& dataVecInVel)
+void CenterOfMassMultiMapping<TIn, TOut>::doApplyJacobianVectorProduct(
+    const core::MechanicalParams* mparams,
+    const type::vector<DataVecDeriv_t<Out>*>& dataVecTangentOut,
+    const type::vector<const DataVecDeriv_t<In>*>& dataVecTangentIn,
+    const type::vector<const DataVecCoord_t<In>*>& dataVecPositionIn)
 {
     SOFA_UNUSED(mparams);
+    SOFA_UNUSED(dataVecPositionIn);
 
     typedef typename InVecDeriv::iterator iter_deriv;
 
     //Not optimized at all...
     type::vector<OutVecDeriv*> outDeriv;
-    for(unsigned int i=0; i<dataVecOutVel.size(); i++)
-        outDeriv.push_back(dataVecOutVel[i]->beginEdit());
+    for(unsigned int i=0; i<dataVecTangentOut.size(); i++)
+        outDeriv.push_back(dataVecTangentOut[i]->beginEdit());
 
     type::vector<const InVecDeriv*> inDeriv;
-    for(unsigned int i=0; i<dataVecInVel.size(); i++)
-        inDeriv.push_back(&dataVecInVel[i]->getValue());
+    for(unsigned int i=0; i<dataVecTangentOut.size(); i++)
+        inDeriv.push_back(&dataVecTangentOut[i]->getValue());
 
     assert( outDeriv.size() == 1 );
 
@@ -98,8 +102,8 @@ void CenterOfMassMultiMapping< TIn, TOut >::applyJ(const core::MechanicalParams*
     OutDataTypes::set((*outVecDeriv)[0], x,y,z);
 
     //Really Not optimized at all...
-    for(unsigned int i=0; i<dataVecOutVel.size(); i++)
-        dataVecOutVel[i]->endEdit();
+    for(unsigned int i=0; i<dataVecTangentOut.size(); i++)
+        dataVecTangentOut[i]->endEdit();
 }
 
 
