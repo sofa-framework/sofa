@@ -64,7 +64,7 @@ struct MeshMatrixMass_template_test : public Mass_test<MeshMatrixMass<DataTypes>
 
         m_topology->computeCrossElementBuffers();
 
-        this->m_testAccFromF = lumped;
+        this->m_testSolveLinearSystem = lumped;
         this->m_mass->d_lumping.setValue(lumped);
 
         this->run_test(x, v);

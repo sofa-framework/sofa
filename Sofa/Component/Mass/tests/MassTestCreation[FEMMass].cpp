@@ -46,7 +46,7 @@ struct ElementMass_template_test : public Mass_test<FEMMass<typename MassParam::
 
     ElementMass_template_test()
     {
-        this->m_testAccFromF = false;
+        this->m_testSolveLinearSystem = false;
         this->m_testAddMToMatrix = false;
         this->m_errorMax = 1e3_sreal;
 

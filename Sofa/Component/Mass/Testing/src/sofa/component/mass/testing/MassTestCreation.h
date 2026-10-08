@@ -75,7 +75,7 @@ struct Mass_test : public sofa::testing::BaseSimulationTest, public sofa::testin
     bool m_debug;           ///< Print debug messages. Default is false.
     /// }
 
-    bool m_testAccFromF { true };
+    bool m_testSolveLinearSystem { true };
     bool m_testAddMToMatrix { true };
     bool m_testBuildMassMatrix { true };
     bool m_testKineticEnergy { true };
@@ -227,16 +227,16 @@ struct Mass_test : public sofa::testing::BaseSimulationTest, public sofa::testin
             checkKineticEnergy(v, n, mparams, Mv);
         }
 
-        // 2. Test accFromF: a = M^-1 * f
+        // 2. Test solveLinearSystem: a = M^-1 * f
         // a = M^-1 * (M * v) should be v
-        if (m_testAccFromF)
+        if (m_testSolveLinearSystem)
         {
-            m_mass->accFromF(&mparams, sofa::core::vec_id::write_access::force);
+            m_mass->solveLinearSystem(&mparams, sofa::core::vec_id::write_access::force, sofa::core::vec_id::read_access::force);
 
             VecDeriv a;
             sofa::testing::copyFromData(a, m_dof->readForces());
 
-            EXPECT_LT((SReal)this->vectorMaxDiff(a, v), (SReal)(m_errorMax * this->epsilon())) << "accFromF inconsistent with addMDx (M^-1 * M * v != v)";
+            EXPECT_LT((SReal)this->vectorMaxDiff(a, v), (SReal)(m_errorMax * this->epsilon())) << "solveLinearSystem inconsistent with addMDx (M^-1 * M * v != v)";
         }
 
         sofa::SignedIndex matrixSize = (sofa::SignedIndex)(n * DataTypes::deriv_total_size);

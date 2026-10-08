@@ -91,7 +91,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/mappinggraph/MappingGraphVisitor.h
     ${SRC_ROOT}/mappinggraph/VisitorApplication.h
 
-    ${SRC_ROOT}/mechanicalvisitor/MechanicalAccFromFVisitor.h
     ${SRC_ROOT}/mechanicalvisitor/MechanicalAccumulateJacobian.h
     ${SRC_ROOT}/mechanicalvisitor/MechanicalAccumulateJacobian.h
     ${SRC_ROOT}/mechanicalvisitor/MechanicalAccumulateMatrixDeriv.h
@@ -117,6 +116,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/mechanicalvisitor/MechanicalIdentityBlocksInJacobianVisitor.h
     ${SRC_ROOT}/mechanicalvisitor/MechanicalIntegrateConstraintVisitor.h
     ${SRC_ROOT}/mechanicalvisitor/MechanicalIntegrationVisitor.h
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalMassLinearSolveVisitor.h
     ${SRC_ROOT}/mechanicalvisitor/MechanicalMultiVectorFromBaseVectorVisitor.h
     ${SRC_ROOT}/mechanicalvisitor/MechanicalMultiVectorPeqBaseVectorVisitor.h
     ${SRC_ROOT}/mechanicalvisitor/MechanicalMultiVectorToBaseVectorVisitor.h
@@ -244,7 +244,6 @@ set(SOURCE_FILES
     ${SRC_ROOT}/mappinggraph/MappingGraphAlgorithms.cpp
     ${SRC_ROOT}/mappinggraph/MappingGraphVisitor.cpp
 
-    ${SRC_ROOT}/mechanicalvisitor/MechanicalAccFromFVisitor.cpp
     ${SRC_ROOT}/mechanicalvisitor/MechanicalAccumulateJacobian.cpp
     ${SRC_ROOT}/mechanicalvisitor/MechanicalAccumulateJacobian.cpp
     ${SRC_ROOT}/mechanicalvisitor/MechanicalAccumulateMatrixDeriv.cpp
@@ -270,6 +269,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/mechanicalvisitor/MechanicalIdentityBlocksInJacobianVisitor.cpp
     ${SRC_ROOT}/mechanicalvisitor/MechanicalIntegrateConstraintVisitor.cpp
     ${SRC_ROOT}/mechanicalvisitor/MechanicalIntegrationVisitor.cpp
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalMassLinearSolveVisitor.cpp
     ${SRC_ROOT}/mechanicalvisitor/MechanicalMultiVectorFromBaseVectorVisitor.cpp
     ${SRC_ROOT}/mechanicalvisitor/MechanicalMultiVectorPeqBaseVectorVisitor.cpp
     ${SRC_ROOT}/mechanicalvisitor/MechanicalMultiVectorToBaseVectorVisitor.cpp
@@ -343,6 +343,8 @@ set(DEPRECATED_HEADER_FILES
     ${DEPRECATED_DIR}/TaskSchedulerRegistry.h
     ${DEPRECATED_DIR}/UpdateMappingEndEvent.h
     ${DEPRECATED_DIR}/WorkerThread.h
+
+    ${DEPRECATED_DIR}/mechanicalvisitor/MechanicalAccFromFVisitor.h
 )
 
 sofa_find_package(Sofa.Core REQUIRED)
