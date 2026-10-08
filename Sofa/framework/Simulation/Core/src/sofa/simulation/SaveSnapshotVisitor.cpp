@@ -19,47 +19,61 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-#include <sofa/fem/FiniteElement.h>
+#include <sofa/simulation/SaveSnapshotVisitor.h>
+#include <sofa/simulation/Node.h>
 
-#if !defined(SOFA_FEM_FINITE_ELEMENT_EDGE_CPP)
-#include <sofa/defaulttype/VecTypes.h>
-#endif
 
-namespace sofa::fem
+namespace sofa::simulation
 {
 
-template <class DataTypes>
-struct FiniteElement<sofa::geometry::Edge, DataTypes>
+void SaveSnapshotVisitor::processObject(
+    const core::objectmodel::BaseObject* obj,
+    const std::shared_ptr<core::objectmodel::Snapshot::SnapshotNode>& parent)
 {
-    FINITEELEMENT_HEADER(sofa::geometry::Edge, DataTypes, 1, 1);
-
-    constexpr static std::array<ReferenceCoord, NumberOfNodesInElement> referenceElementNodes {{ReferenceCoord{-1}, ReferenceCoord{1}}};
-
-    static const sofa::type::vector<TopologyElement>& getElementSequence(sofa::core::topology::BaseMeshTopology& topology)
+    auto snapshotObject = obj->saveSnapshot(parent);
+    if (auto slaves = obj->getSlaves(); !slaves.empty())
     {
-        return topology.getEdges();
+        for (const auto& it : slaves)
+        {
+            const auto slaveObject = it->saveSnapshot(snapshotObject);
+        }
     }
-
-    static constexpr sofa::type::Vec<NumberOfNodesInElement, Real> shapeFunctions(const sofa::type::Vec<TopologicalDimension, Real>& q)
-    {
-        return {
-            static_cast<Real>(0.5) * (static_cast<Real>(1) - q[0]),
-            static_cast<Real>(0.5) * (static_cast<Real>(1) + q[0])
-        };
-    }
-
-    static constexpr sofa::type::Mat<NumberOfNodesInElement, TopologicalDimension, Real> gradientShapeFunctions(const sofa::type::Vec<TopologicalDimension, Real>& q)
-    {
-        SOFA_UNUSED(q);
-        return {{-static_cast<Real>(0.5)}, {static_cast<Real>(0.5)}};
-    }
-};
-
-#if !defined(SOFA_FEM_FINITE_ELEMENT_EDGE_CPP)
-extern template struct SOFA_FEM_API FiniteElement<sofa::geometry::Edge, sofa::defaulttype::Vec3Types>;
-extern template struct SOFA_FEM_API FiniteElement<sofa::geometry::Edge, sofa::defaulttype::Vec2Types>;
-extern template struct SOFA_FEM_API FiniteElement<sofa::geometry::Edge, sofa::defaulttype::Vec1Types>;
-#endif
 
 }
+
+Visitor::Result SaveSnapshotVisitor::processNodeTopDown(simulation::Node* node)
+{
+    const auto parents = node->getParents();
+    auto snapshotParents = std::make_shared<core::objectmodel::Snapshot::SnapshotNode>();
+
+    for (auto* p : parents)
+    {
+        const auto it = m_snapshotNodeMap.find(p);
+        if (it != m_snapshotNodeMap.end())
+        {
+            snapshotParents = std::dynamic_pointer_cast<core::objectmodel::Snapshot::SnapshotNode>(it->second);
+        }
+    }
+
+    const auto snapshot = node->saveSnapshot(snapshotParents);
+    const auto SnapshotNode = std::dynamic_pointer_cast<core::objectmodel::Snapshot::SnapshotNode>(snapshot);
+    if (SnapshotNode)
+        m_snapshotNodeMap[node] = SnapshotNode;
+
+    if (m_snapshotContainer.m_graphRoot == nullptr)
+    {
+        m_snapshotContainer.m_graphRoot = SnapshotNode;
+    }
+
+    for (const auto& it : node->object)
+    {
+        this->processObject(it.get(), SnapshotNode);
+    }
+    
+    return RESULT_CONTINUE;
+}
+
+} // namespace sofa::simulation
+
+
+

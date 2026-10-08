@@ -72,7 +72,10 @@ activation = { env = { CC = "clang", CXX = "clang++" } }
 dependencies = { clangxx = "*" }
 
 [feature.plugin-sofa-python3]
-dependencies = { numpy = ">=1.22.0", pybind11 = ">=2.3.0" }
+# pybind11 3.1.0 makes keep_alive<0, N> bindings (Node.addObject) segfault on
+# arguments that match no overload, instead of raising TypeError. Fixed by
+# pybind/pybind11#6183; lift the upper bound once a fixed release is out.
+dependencies = { numpy = ">=1.22.0", pybind11 = ">=2.3.0,<3.1" }
 activation = { env = { SOFA_PLUGIN_PYTHON3_ARGS = "-DPLUGIN_SOFAPYTHON3=ON -DSOFA_FETCH_SOFAPYTHON3=ON -DPython_EXECUTABLE=$SOFA_PYTHON_EXECUTABLE -DPython_FIND_STRATEGY=LOCATION" } }
 
 
@@ -101,7 +104,7 @@ conda-deny = "*"
 [feature.build-release-package.activation]
 env = { SOFA_BUILD_RELEASE_PACKAGE_WITH_PIXI = "1" }
 [feature.build-release-package.target.win.activation]
-env = { SOFA_CPACK_PARAMS = "-DCPACK_GENERATOR=ZIP -DCPACK_BINARY_ZIP=ON -DSOFA_USE_DEPENDENCY_PACK=OFF" }
+env = { SOFA_CPACK_PARAMS = "-DCPACK_GENERATOR=ZIP -DCPACK_BINARY_ZIP=ON -DSOFA_USE_DEPENDENCY_PACK=ON" }
 [feature.build-release-package.target.osx.activation]
 env = { SOFA_CPACK_PARAMS = "-DCPACK_GENERATOR=ZIP -DCPACK_BINARY_ZIP=ON -DCMAKE_OSX_DEPLOYMENT_TARGET=10.15" }
 [feature.build-release-package.target.linux.activation]

@@ -20,46 +20,28 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/fem/FiniteElement.h>
+#include <sofa/core/objectmodel/Base.h>
+#include <sofa/core/objectmodel/Snapshot.h>
 
-#if !defined(SOFA_FEM_FINITE_ELEMENT_EDGE_CPP)
-#include <sofa/defaulttype/VecTypes.h>
-#endif
+namespace sofa::core::objectmodel::jsonsnapshot {
+    /// Export a single Snapshot to a JSON file
+    SOFA_CORE_API void exportToJSON(const Snapshot& snapshot, const std::string& filename);
 
-namespace sofa::fem
-{
+    /// Import a single Snapshot from a JSON file
+    SOFA_CORE_API void importFromJSON(Snapshot& snapshot, const std::string& filename);
 
-template <class DataTypes>
-struct FiniteElement<sofa::geometry::Edge, DataTypes>
-{
-    FINITEELEMENT_HEADER(sofa::geometry::Edge, DataTypes, 1, 1);
+    /// Read a JSON file and returns its content as a string
+    SOFA_CORE_API std::string fileToString(const std::string& filename);
 
-    constexpr static std::array<ReferenceCoord, NumberOfNodesInElement> referenceElementNodes {{ReferenceCoord{-1}, ReferenceCoord{1}}};
+    /// Serialize a Snapshot to a JSON string
+    SOFA_CORE_API std::string snapshotToString(const Snapshot& snapshot);
 
-    static const sofa::type::vector<TopologyElement>& getElementSequence(sofa::core::topology::BaseMeshTopology& topology)
-    {
-        return topology.getEdges();
-    }
+    /// Export a collection of Snapshots to a single JSON file
+    SOFA_CORE_API void exportToJSON(const std::map<std::string, std::shared_ptr<Snapshot>>& snapshots, const std::string& filename);
 
-    static constexpr sofa::type::Vec<NumberOfNodesInElement, Real> shapeFunctions(const sofa::type::Vec<TopologicalDimension, Real>& q)
-    {
-        return {
-            static_cast<Real>(0.5) * (static_cast<Real>(1) - q[0]),
-            static_cast<Real>(0.5) * (static_cast<Real>(1) + q[0])
-        };
-    }
+    /// Import a collection of Snapshots from a single JSON file
+    SOFA_CORE_API void importFromJSON(std::map<std::string, std::shared_ptr<Snapshot>>& snapshots, const std::string& filename);
 
-    static constexpr sofa::type::Mat<NumberOfNodesInElement, TopologicalDimension, Real> gradientShapeFunctions(const sofa::type::Vec<TopologicalDimension, Real>& q)
-    {
-        SOFA_UNUSED(q);
-        return {{-static_cast<Real>(0.5)}, {static_cast<Real>(0.5)}};
-    }
-};
-
-#if !defined(SOFA_FEM_FINITE_ELEMENT_EDGE_CPP)
-extern template struct SOFA_FEM_API FiniteElement<sofa::geometry::Edge, sofa::defaulttype::Vec3Types>;
-extern template struct SOFA_FEM_API FiniteElement<sofa::geometry::Edge, sofa::defaulttype::Vec2Types>;
-extern template struct SOFA_FEM_API FiniteElement<sofa::geometry::Edge, sofa::defaulttype::Vec1Types>;
-#endif
-
+    SOFA_CORE_API void doLoadSet(const std::string& filename,std::map<std::shared_ptr<sofa::core::objectmodel::Snapshot>,double>&  snapshots);
 }
+
