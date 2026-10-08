@@ -52,6 +52,7 @@ void registerEulerExplicitIntegrationScheme(sofa::core::ObjectFactory* factory)
 EulerExplicitIntegrationScheme::EulerExplicitIntegrationScheme()
     : d_symplectic( initData( &d_symplectic, true, "symplectic", "If true (default), the velocities are updated before the positions and the method is symplectic, more robust. If false, the positions are updated before the velocities (standard Euler, less robust).") )
     , d_threadSafeVisitor(initData(&d_threadSafeVisitor, false, "threadSafeVisitor", "If true, do not use realloc and free visitors in fwdInteractionForceField."))
+    , d_firstOrder(initData(&d_firstOrder, false, "firstOrder", "If true, the ODE to solve is first order: My'=f(y,t). Otherwise, the ODE is second order: My''=f(y,t)."))
     , l_linearSolver(initLink("linearSolver", "Linear IntegrationScheme used by this component"))
 {
 }
@@ -116,6 +117,15 @@ void EulerExplicitIntegrationScheme::updateState(sofa::simulation::common::Vecto
                                       const sofa::core::behavior::MultiVecDeriv& acc) const
 {
     SCOPED_TIMER("updateState");
+
+    if (d_firstOrder.getValue())
+    {
+        MultiVecCoord pos(vop, core::vec_id::write_access::position ); //current position
+        MultiVecCoord newPos(vop, xResult);
+        newPos.eq(pos, acc.id(), m_dt);
+        m_mop->solveConstraint(newPos,core::ConstraintOrder::POS);
+        return;
+    }
 
     // Initialize the set of multi-vectors computed by this IntegrationScheme
     // "xResult" could be "position()" or "freePosition()" depending on the
