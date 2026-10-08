@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
+#define SOFA_SIMULATION_MECHANICALVISITOR_MECHANICALACCUMULATEJACOBIAN_CPP
 #include <sofa/simulation/mechanicalvisitor/MechanicalAccumulateJacobian.h>
 #include <sofa/core/ConstraintParams.h>
 #include <sofa/core/BaseMapping.h>

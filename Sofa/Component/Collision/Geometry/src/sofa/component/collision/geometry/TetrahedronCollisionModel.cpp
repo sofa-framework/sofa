@@ -269,4 +269,10 @@ void TetrahedronCollisionModel::computeBoundingTree(int maxDepth)
     }
 }
 
+void TetrahedronCollisionModel::loadInternalStateFrom(const core::objectmodel::Snapshot::SnapshotObject &snapshot)
+{
+    SOFA_UNUSED(snapshot);
+    tetra = &m_topology->getTetrahedra();
+    resize(tetra->size());
+}
 } // namespace sofa::component::collision::geometry

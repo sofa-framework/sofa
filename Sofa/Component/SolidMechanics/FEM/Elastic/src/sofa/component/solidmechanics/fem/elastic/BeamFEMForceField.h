@@ -177,6 +177,8 @@ public:
     void setBeam(Index i, SReal E, SReal L, SReal nu, SReal r, SReal rInner);
     void initBeams(std::size_t size);
 
+    void loadInternalStateFrom(const core::objectmodel::Snapshot::SnapshotObject& snapshot) override;
+
 protected:
     void drawElement(int i, std::vector< type::Vec3 >* points, const VecCoord& x);
     Real pseudoDeterminantForCoef ( const Mat<2, 3, Real>&  M );

@@ -6,6 +6,7 @@ set(SOURCE_FILES
     BaseTetrahedronFEMForceField_test.h
     BeamFEMForceField_test.cpp
     FastTetrahedralCorotationalForceField_test.cpp
+    HexahedralFEMForceField_test.cpp
     HexahedronFEMForceField_test.cpp
     LinearSmallStrainFEMForceField_test.cpp
     StrainDisplacement_test.cpp
@@ -14,6 +15,7 @@ set(SOURCE_FILES
     TetrahedronFEMForceField_test.cpp
     TriangleFEMForceField_stepTest.cpp
     TriangleFEMForceField_test.cpp
+    TriangularFEMForceField_test.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})

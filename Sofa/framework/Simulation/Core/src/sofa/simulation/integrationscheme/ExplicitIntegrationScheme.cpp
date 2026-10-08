@@ -44,6 +44,11 @@ void ExplicitIntegrationScheme::integrate(const core::ExecParams* params, SReal 
     sofa::core::behavior::MultiVecDeriv dx(m_vop.get(), core::vec_id::write_access::dx);
     dx.realloc(m_vop.get(), true, true);
 
+    // Let the mechanical operations know that the current IntegrationScheme is explicit. This will be propagated back to the
+    // force fields during the addForce and addKToMatrix phase. Force fields use this information to avoid
+    // recomputing constant data in case of explicit IntegrationScheme.
+    m_mop->mparams.setImplicit(false);
+
     doIntegrate(params, xResult, vResult);
 }
 

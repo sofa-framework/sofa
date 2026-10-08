@@ -31,7 +31,7 @@
 namespace sofa::helper::logging
 {
 
-void SilentMessageHandler::process(Message& /*m*/) {
+void SilentMessageHandler::doProcess(Message& /*m*/) {
 }
 
 

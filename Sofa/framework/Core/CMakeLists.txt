@@ -163,6 +163,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/objectmodel/BaseLink.h
     ${SRC_ROOT}/objectmodel/BaseNode.h
     ${SRC_ROOT}/objectmodel/BaseObjectDescription.h
+    ${SRC_ROOT}/objectmodel/Snapshot.h
     ${SRC_ROOT}/objectmodel/ClassInfo.h
     ${SRC_ROOT}/objectmodel/ComponentState.h
     ${SRC_ROOT}/objectmodel/ConfigurationSetting.h
@@ -181,6 +182,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/objectmodel/HapticDeviceEvent.h
     ${SRC_ROOT}/objectmodel/IdleEvent.h
     ${SRC_ROOT}/objectmodel/JoystickEvent.h
+    ${SRC_ROOT}/objectmodel/JSONSnapshot.h
     ${SRC_ROOT}/objectmodel/KeypressedEvent.h
     ${SRC_ROOT}/objectmodel/KeyreleasedEvent.h
     ${SRC_ROOT}/objectmodel/lifecycle/DeprecatedData.h
@@ -315,6 +317,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/objectmodel/BaseLink.cpp
     ${SRC_ROOT}/objectmodel/BaseNode.cpp
     ${SRC_ROOT}/objectmodel/BaseObjectDescription.cpp
+    ${SRC_ROOT}/objectmodel/Snapshot.cpp
     ${SRC_ROOT}/objectmodel/ClassInfo.cpp
     ${SRC_ROOT}/objectmodel/ComponentState.cpp
     ${SRC_ROOT}/objectmodel/ConfigurationSetting.cpp
@@ -332,6 +335,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/objectmodel/HapticDeviceEvent.cpp
     ${SRC_ROOT}/objectmodel/IdleEvent.cpp
     ${SRC_ROOT}/objectmodel/JoystickEvent.cpp
+    ${SRC_ROOT}/objectmodel/JSONSnapshot.cpp
     ${SRC_ROOT}/objectmodel/KeypressedEvent.cpp
     ${SRC_ROOT}/objectmodel/KeyreleasedEvent.cpp
     ${SRC_ROOT}/objectmodel/lifecycle/DeprecatedData.cpp
@@ -369,14 +373,6 @@ set(DEPRECATED_HEADER_FILES
 sofa_find_package(Sofa.Topology REQUIRED)
 sofa_find_package(Sofa.Helper REQUIRED)
 sofa_find_package(Sofa.DefaultType REQUIRED)
-
-# to move to core ?
-option(SOFA_CORE_ENABLE_CRSMULTIMATRIXACCESSOR "Use CompressedRowSparseMatrix to store global matrix (caution: it will lead to compile CRSMultiMatrixAcessor, which takes a considerable time to compile)" OFF)
-mark_as_advanced(FORCE SOFA_CORE_ENABLE_CRSMULTIMATRIXACCESSOR)
-if(SOFA_CORE_ENABLE_CRSMULTIMATRIXACCESSOR)
-    list(APPEND HEADER_FILES ${SRC_ROOT}/behavior/CRSMultiMatrixAccessor.h)
-    list(APPEND SOURCE_FILES ${SRC_ROOT}/behavior/CRSMultiMatrixAccessor.cpp)
-endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
