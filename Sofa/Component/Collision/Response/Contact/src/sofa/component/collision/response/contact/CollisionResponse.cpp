@@ -400,4 +400,9 @@ void CollisionResponse::setContactTags(core::CollisionModel* model1, core::Colli
     }
 }
 
+void CollisionResponse::loadInternalStateFrom(const core::objectmodel::Snapshot::SnapshotObject &snapshot)
+{
+    SOFA_UNUSED(snapshot);
+    contactMap.clear();
+}
 } // namespace sofa::component::collision::response::contact
