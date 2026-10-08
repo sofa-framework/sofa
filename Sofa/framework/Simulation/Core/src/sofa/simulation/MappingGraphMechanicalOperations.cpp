@@ -57,7 +57,7 @@ void MappingGraphMechanicalOperations::computeForce(const MappingGraph& mappingG
         mappingGraph.algorithms.traverse_([&](core::behavior::BaseMechanicalState& state)
         {
             const core::VecDerivId& stateForce = result.getId(&state);
-            state.resetForce(&mparams, stateForce);
+            state.resetVec(&mparams, stateForce);
         });
     }
 
@@ -108,7 +108,7 @@ void MappingGraphMechanicalOperations::addMBKv(const MappingGraph& mappingGraph,
         mappingGraph.algorithms.traverse_([&](core::behavior::BaseMechanicalState& state)
         {
             const core::VecDerivId& stateForce = df.getId(&state);
-            state.resetForce(&mparams, stateForce);
+            state.resetVec(&mparams, stateForce);
         }, VisitorApplication::ONLY_MAPPED_NODES);
     }
     mparams.setBFactor(b.get());

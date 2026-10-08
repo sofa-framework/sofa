@@ -313,9 +313,7 @@ public:
 
     Size vSize( const core::ExecParams* params, core::ConstVecId vecId ) override;
 
-    void resetForce(const core::ExecParams* params, core::VecDerivId f = core::vec_id::write_access::force) override;
-
-    void resetAcc(const core::ExecParams* params, core::VecDerivId a = core::vec_id::write_access::dx) override;
+    void resetVec(const core::ExecParams* params, core::VecId vId) override;
 
     void resetConstraint(const core::ConstraintParams* cparams) override;
 

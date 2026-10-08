@@ -2494,24 +2494,19 @@ unsigned MechanicalObject<DataTypes>::printDOFWithElapsedTime(core::ConstVecId v
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::resetForce(const core::ExecParams* params, core::VecDerivId fid)
+void MechanicalObject<DataTypes>::resetVec(const core::ExecParams* params, core::VecId fid)
 {
     SOFA_UNUSED(params);
 
+    if (fid.type == sofa::core::V_COORD)
     {
-        helper::WriteOnlyAccessor< Data<VecDeriv> > f_wa( *this->write(fid) );
+        helper::WriteOnlyAccessor< Data<VecCoord> > f_wa( *this->write(core::VecCoordId(fid)) );
         sofa::defaulttype::resetDataTypeVec(f_wa.wref());
     }
-}
-
-template <class DataTypes>
-void MechanicalObject<DataTypes>::resetAcc(const core::ExecParams* params, core::VecDerivId aId)
-{
-    SOFA_UNUSED(params);
-
+    else if (fid.type == sofa::core::V_DERIV)
     {
-        helper::WriteOnlyAccessor< Data<VecDeriv> > a( *this->write(aId) );
-        sofa::defaulttype::resetDataTypeVec(a.wref());
+        helper::WriteOnlyAccessor< Data<VecDeriv> > f_wa( *this->write(core::VecDerivId(fid)) );
+        sofa::defaulttype::resetDataTypeVec(f_wa.wref());
     }
 }
 
