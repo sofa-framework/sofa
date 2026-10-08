@@ -2048,7 +2048,7 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::addMDx(const core::MechanicalP
 
 
 template <class DataTypes, class GeometricalTypes>
-void MeshMatrixMass<DataTypes, GeometricalTypes>::solveLinearSystem(const core::MechanicalParams* mparams, DataVecDeriv& a, const DataVecDeriv& f)
+void MeshMatrixMass<DataTypes, GeometricalTypes>::doSolveLinearSystem(const core::MechanicalParams* mparams, DataVecDeriv& a, const DataVecDeriv& f)
 {
     SOFA_UNUSED(mparams);
     if( !isLumped() )

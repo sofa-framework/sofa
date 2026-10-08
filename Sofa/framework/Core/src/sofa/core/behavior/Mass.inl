@@ -81,12 +81,12 @@ void Mass<DataTypes>::solveLinearSystem(const MechanicalParams* mparams,
         DataVecDeriv* x = xId[mstate].write(); assert(x);
         const DataVecDeriv* b = bId[mstate].read(); assert(b);
 
-        solveLinearSystem(mparams, *x, *b);
+        doSolveLinearSystem(mparams, *x, *b);
     }
 }
 
 template <class DataTypes>
-void Mass<DataTypes>::solveLinearSystem(const MechanicalParams* mparams,
+void Mass<DataTypes>::doSolveLinearSystem(const MechanicalParams* mparams,
     DataVecDeriv& x, const DataVecDeriv& b)
 {
     SOFA_UNUSED(mparams);

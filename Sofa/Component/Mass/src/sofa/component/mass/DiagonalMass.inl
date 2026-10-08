@@ -561,7 +561,7 @@ void DiagonalMass<DataTypes, GeometricalTypes>::addMDx(const core::MechanicalPar
 
 
 template <class DataTypes, class GeometricalTypes>
-void DiagonalMass<DataTypes, GeometricalTypes>::solveLinearSystem(const core::MechanicalParams* /*mparams*/, DataVecDeriv& a, const DataVecDeriv& f)
+void DiagonalMass<DataTypes, GeometricalTypes>::doSolveLinearSystem(const core::MechanicalParams* /*mparams*/, DataVecDeriv& a, const DataVecDeriv& f)
 {
 
     const MassVector &masses= d_vertexMass.getValue();
