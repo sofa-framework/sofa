@@ -22,11 +22,9 @@
 #pragma once
 #include <sofa/component/integrationscheme/backward/config.h>
 #include <sofa/simulation/integrationscheme/VelocityBasedImplicitIntegrationScheme.h>
-#include <sofa/core/behavior/LinearSolverAccessor.h>
 
 #include <sofa/simulation/MechanicalOperations.h>
 #include <sofa/simulation/VectorOperations.h>
-#include <sofa/core/behavior/BaseIntegrationScheme.h>
 
 namespace sofa::simulation::common
 {
@@ -36,55 +34,6 @@ namespace sofa::component::integrationscheme::backward
 {
 
 /** Semi-implicit time integrator using backward Euler scheme for first and second degree ODEs. (default: second)
- *
- *** 2nd Order ***
- *
- * This is based on [Baraff and Witkin, Large Steps in Cloth Simulation, SIGGRAPH 1998]
- * The integration scheme is based on the following equations:
- *
- *   \f$x_{t+h} = x_t + h v_{t+h}\f$
- *   \f$v_{t+h} = v_t + h a_{t+h}\f$
- *
- *   The unknown is
- *   \f$v_{t+h} - v_t = dv\f$
- *
- *   Newton's law is
- *   \f$ M dv = h f(t+h) \f$
- *   \f$ M dv = h ( f(t) + K dx     + (B - r_M M + r_K K) (v+dv) )\f$
- *   \f$ M dv = h ( f(t) + K h (v+dv) + (B - r_M M + r_K K) (v+dv) )\f$
- *
- *   \f$ M \f$ is the mass matrix.
- *   \f$ K = df/dx \f$ is the stiffness implemented (or not) by the force fields.
- *   \f$ B = df/dv \f$ is the damping implemented (or not) by the force fields.
- *   An additional, uniform Rayleigh damping  \f$- r_M M + r_K K\f$ is imposed by the solver.
- *
- * This corresponds to the following equation system:
- *
- *   \f$ ( (1+h r_M) M - h B - h(h + r_K) K ) dv = h ( f(t) + (h+r_K) K v + B v - r_M M v )\f$
- *
- * Moreover, the projective constraints filter out the forbidden motions.
- * This is equivalent with multiplying vectors with a projection matrix \f$P\f$.
- * Finally, the equation system set by this ode solver is:
- *
- *   \f$ P ( (1+h r_M) M - h B - h(h + r_K) K ) P dv = P h ( f(t) + (h + r_K) K v + B v - r_M M v )\f$
- *
- *** 1st Order ***
- *
- * This integration scheme is based on the following equation:
- *
- *   \f$x_{t+h} = x_t + h v_{t+h}\f$
- *
- * Applied to this mechanical system:
- *
- *   \f$ M v_t = f_{ext} \f$
- *
- *   \f$ M v_{t+h} = f_{ext_{t+h}} \f$
- *   \f$           = f_{ext_{t}} + h (df_{ext}/dt)_{t+h} \f$
- *   \f$           = f_{ext_{t}} + h (df_{ext}/dx)_{t+h} v_{t+h} \f$
- *   \f$           = f_{ext_{t}} - h K v_{t+h} \f$
- *
- *   \f$ ( M + h K ) v_{t+h} = f_{ext} \f$
- *
  *
  *** Trapezoidal Rule ***
  *
@@ -101,16 +50,13 @@ namespace sofa::component::integrationscheme::backward
  *   \f$ ( M + h/2 K ) v_{t+h} = f_{ext} \f$
  *
  */
-class SOFA_COMPONENT_INTEGRATIONSCHEME_BACKWARD_API EulerImplicitIntegrationScheme :
+class SOFA_COMPONENT_INTEGRATIONSCHEME_BACKWARD_API TrapezoidalIntegrationScheme :
     public sofa::simulation::integrationscheme::VelocityBasedImplicitIntegrationScheme
 {
 public:
-    SOFA_CLASS(EulerImplicitIntegrationScheme, sofa::simulation::integrationscheme::VelocityBasedImplicitIntegrationScheme);
-
-    core::objectmodel::lifecycle::DeprecatedData d_trapezoidalScheme;
+    SOFA_CLASS(TrapezoidalIntegrationScheme, sofa::simulation::integrationscheme::VelocityBasedImplicitIntegrationScheme);
 
 protected:
-    EulerImplicitIntegrationScheme();
 
     virtual SReal getPositionUpdateDerivedFromVelocity() const override;
     virtual SReal getInverseVelocityUpdateDerivedFromVelocity() const override;

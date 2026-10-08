@@ -1,30 +1,31 @@
 /******************************************************************************
-*                 SOFA, Simulation Open-Framework Architecture                *
-*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
-*                                                                             *
-* This program is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU Lesser General Public License as published by    *
-* the Free Software Foundation; either version 2.1 of the License, or (at     *
-* your option) any later version.                                             *
-*                                                                             *
-* This program is distributed in the hope that it will be useful, but WITHOUT *
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
-* for more details.                                                           *
-*                                                                             *
-* You should have received a copy of the GNU Lesser General Public License    *
-* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
-*******************************************************************************
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
-*                                                                             *
-* Contact information: contact@sofa-framework.org                             *
-******************************************************************************/
+ *                 SOFA, Simulation Open-Framework Architecture                *
+ *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
+ *                                                                             *
+ * This program is free software; you can redistribute it and/or modify it     *
+ * under the terms of the GNU Lesser General Public License as published by    *
+ * the Free Software Foundation; either version 2.1 of the License, or (at     *
+ * your option) any later version.                                             *
+ *                                                                             *
+ * This program is distributed in the hope that it will be useful, but WITHOUT *
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+ * for more details.                                                           *
+ *                                                                             *
+ * You should have received a copy of the GNU Lesser General Public License    *
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+ *******************************************************************************
+ * Authors: The SOFA Team and external contributors (see Authors.txt)          *
+ *                                                                             *
+ * Contact information: contact@sofa-framework.org                             *
+ ******************************************************************************/
 
+#include <sofa/component/integrationscheme/backward/TrapezoidalIntegrationScheme.h>
+#include <sofa/testing/BaseSimulationTest.h>
+
+#include <algorithm>
 #include <fstream>
 #include <iterator>
-#include <algorithm>
-
-#include <sofa/testing/BaseSimulationTest.h>
 using sofa::testing::BaseSimulationTest;
 
 #include <sofa/component/integrationscheme/backward/EulerImplicitIntegrationScheme.h>
@@ -81,13 +82,16 @@ namespace sofa {
             root->setGravity(Coord(0.0,0.0,gravity));
             root->setDt(timeStep);
 
-            const sofa::component::integrationscheme::backward::EulerImplicitIntegrationScheme::SPtr eulerSolver = New<sofa::component::integrationscheme::backward::EulerImplicitIntegrationScheme>();
-
             if(testPosition)
             {
-                eulerSolver->d_trapezoidalScheme.setValue(true);
+                const sofa::component::integrationscheme::backward::TrapezoidalIntegrationScheme::SPtr trapezoidalSolver = New<sofa::component::integrationscheme::backward::TrapezoidalIntegrationScheme>();
+                root->addObject(trapezoidalSolver);
             }
-            root->addObject(eulerSolver);
+            else
+            {
+                const sofa::component::integrationscheme::backward::EulerImplicitIntegrationScheme::SPtr eulerSolver = New<sofa::component::integrationscheme::backward::EulerImplicitIntegrationScheme>();
+                root->addObject(eulerSolver);
+            }
 
             const CGLinearSolver::SPtr cgLinearSolver = New<CGLinearSolver> ();
             cgLinearSolver->d_maxIter.setValue(25u);
