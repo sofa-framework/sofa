@@ -46,9 +46,6 @@ using sofa::simulation::mechanicalvisitor::MechanicalIdentityBlocksInJacobianVis
 #include <sofa/simulation/mechanicalvisitor/MechanicalResetConstraintVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalResetConstraintVisitor;
 
-#include <sofa/simulation/mechanicalvisitor/MechanicalAccumulateJacobian.h>
-using sofa::simulation::mechanicalvisitor::MechanicalAccumulateJacobian;
-
 namespace sofa::component::linearsystem
 {
 

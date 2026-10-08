@@ -24,6 +24,8 @@ zlib = ">=1.2.11"
 eigen = ">=3.4.0"
 tinyxml2 = ">=9.0.0"
 cxxopts = ">=3.1.1"
+
+[feature.extended-dependencies.dependencies]
 gtest = "*"
 tight-inclusion = "*"
 
@@ -70,7 +72,10 @@ activation = { env = { CC = "clang", CXX = "clang++" } }
 dependencies = { clangxx = "*" }
 
 [feature.plugin-sofa-python3]
-dependencies = { numpy = ">=1.22.0", pybind11 = ">=2.3.0" }
+# pybind11 3.1.0 makes keep_alive<0, N> bindings (Node.addObject) segfault on
+# arguments that match no overload, instead of raising TypeError. Fixed by
+# pybind/pybind11#6183; lift the upper bound once a fixed release is out.
+dependencies = { numpy = ">=1.22.0", pybind11 = ">=2.3.0,<3.1" }
 activation = { env = { SOFA_PLUGIN_PYTHON3_ARGS = "-DPLUGIN_SOFAPYTHON3=ON -DSOFA_FETCH_SOFAPYTHON3=ON -DPython_EXECUTABLE=$SOFA_PYTHON_EXECUTABLE -DPython_FIND_STRATEGY=LOCATION" } }
 
 
@@ -136,6 +141,8 @@ configure-package = { cmd = [ "cmake",
   "-DCPACK_SOURCE_TZ=OFF",
   "$SOFA_CPACK_PARAMS",
   "-DSOFA_BUILD_RELEASE_PACKAGE=ON",
+  "-DSOFA_FETCH_REGRESSION=ON",
+  "-DAPPLICATION_REGRESSION_TEST=ON",
   "--preset",
   "standard",
   "$SOFA_PLUGIN_PYTHON3_ARGS",
@@ -171,6 +178,8 @@ configure-package = { cmd = [ "cmake",
   "-DCPACK_SOURCE_TZ=OFF",
   "$SOFA_CPACK_PARAMS",
   "-DSOFA_BUILD_RELEASE_PACKAGE=ON",
+  "-DSOFA_FETCH_REGRESSION=ON",
+  "-DAPPLICATION_REGRESSION_TEST=ON",
   "--preset",
   "full",
   "$SOFA_PLUGIN_PYTHON3_ARGS",
@@ -189,6 +198,7 @@ configure = { cmd = [ "cmake",
   ".",
   "-DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX",
   "-DCMAKE_BUILD_TYPE=$SOFA_BUILD_TYPE",
+  "-DBUILD_CONDA_PACKAGE",
   "--preset",
   "conda-core"] }
 
@@ -320,26 +330,35 @@ default = { features = [
   "plugin-cuda",
   "plugin-cimg",
   "presets-defaultGUI",
-  "python-supported"] }
-conda-core = { features = ["presets-conda-core"] }
-minimal = { features = ["presets-minimal"] }
-minimal-dev = { features = ["presets-minimal-dev"] }
+  "python-supported",
+  "extended-dependencies"] }
+conda-core = { features = [
+  "presets-conda-core",
+  "extended-dependencies"] }
+minimal = { features = [
+  "presets-minimal",
+  "extended-dependencies"] }
+minimal-dev = { features = ["presets-minimal-dev",
+  "extended-dependencies"] }
 standard = { features = [
   "presets-standard",
   "plugin-sofa-python3",
   "presets-defaultGUI",
-  "python-supported"] }
+  "python-supported",
+  "extended-dependencies"] }
 standard-clang = { features = [
   "clang",
   "presets-standard",
   "plugin-sofa-python3",
   "presets-defaultGUI",
-  "python-supported"] }
+  "python-supported",
+  "extended-dependencies"] }
 standard-dev = { features = [
   "presets-standard-dev",
   "plugin-sofa-python3",
   "presets-defaultGUI",
-  "python-supported"] }
+  "python-supported",
+  "extended-dependencies"] }
 release-package-standard = { features = [
   "build-release-package",
   "build-release-package-standard",
@@ -360,25 +379,29 @@ supported-plugins = { features = [
   "plugin-cuda",
   "plugin-cimg",
   "presets-defaultGUI",
-  "python-supported"]}
+  "python-supported",
+  "extended-dependencies"]}
 supported-plugins-dev = { features = [
   "presets-supported-plugins-dev",
   "plugin-sofa-python3",
   "plugin-cuda",
   "plugin-cimg",
   "presets-defaultGUI",
-  "python-supported"]}
+  "python-supported",
+  "extended-dependencies"]}
 full = { features = [
   "presets-full",
   "plugin-sofa-python3",
   "plugin-cuda",
   "plugin-cimg",
   "presets-defaultGUI",
-  "python-supported"]}
+  "python-supported",
+  "extended-dependencies"]}
 full-dev = { features = [
   "presets-full-dev",
   "plugin-sofa-python3",
   "plugin-cuda",
   "plugin-cimg",
   "presets-defaultGUI",
-  "python-supported"]}
+  "python-supported",
+  "extended-dependencies"]}

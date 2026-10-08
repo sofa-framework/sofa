@@ -19,39 +19,61 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-    #include <sofa/simulation/config.h>
+#include <sofa/simulation/SaveSnapshotVisitor.h>
+#include <sofa/simulation/Node.h>
 
-#include <sofa/simulation/integrationscheme/ExplicitIntegrationScheme.h>
-#include <sofa/core/behavior/LinearSolver.h>
-#include <sofa/core/behavior/MultiVec.h>
 
-#include <sofa/core/behavior/LinearSolverAccessor.h>
-
-#include <sofa/simulation/MechanicalOperations.h>
-#include <sofa/simulation/VectorOperations.h>
-
-namespace sofa::simulation::integrationscheme
+namespace sofa::simulation
 {
 
-void ExplicitIntegrationScheme::integrate(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
+void SaveSnapshotVisitor::processObject(
+    const core::objectmodel::BaseObject* obj,
+    const std::shared_ptr<core::objectmodel::Snapshot::SnapshotNode>& parent)
 {
-    m_dt = dt;
+    auto snapshotObject = obj->saveSnapshot(parent);
+    if (auto slaves = obj->getSlaves(); !slaves.empty())
+    {
+        for (const auto& it : slaves)
+        {
+            const auto slaveObject = it->saveSnapshot(snapshotObject);
+        }
+    }
 
-    m_vop = std::make_shared<sofa::simulation::common::VectorOperations>( params, this->getContext() );
-    m_mop = std::make_unique<sofa::simulation::common::MappingGraphMechanicalOperations >( params, this->getContext() );
-
-    // dx is no longer allocated by default (but it will be deleted automatically by the mechanical objects)
-    sofa::core::behavior::MultiVecDeriv dx(m_vop.get(), core::vec_id::write_access::dx);
-    dx.realloc(m_vop.get(), true, true);
-
-    // Let the mechanical operations know that the current IntegrationScheme is explicit. This will be propagated back to the
-    // force fields during the addForce and addKToMatrix phase. Force fields use this information to avoid
-    // recomputing constant data in case of explicit IntegrationScheme.
-    m_mop->mparams.setImplicit(false);
-
-    doIntegrate(params, xResult, vResult);
 }
 
-} // namespace sofa::component::integrationscheme
+Visitor::Result SaveSnapshotVisitor::processNodeTopDown(simulation::Node* node)
+{
+    const auto parents = node->getParents();
+    auto snapshotParents = std::make_shared<core::objectmodel::Snapshot::SnapshotNode>();
+
+    for (auto* p : parents)
+    {
+        const auto it = m_snapshotNodeMap.find(p);
+        if (it != m_snapshotNodeMap.end())
+        {
+            snapshotParents = std::dynamic_pointer_cast<core::objectmodel::Snapshot::SnapshotNode>(it->second);
+        }
+    }
+
+    const auto snapshot = node->saveSnapshot(snapshotParents);
+    const auto SnapshotNode = std::dynamic_pointer_cast<core::objectmodel::Snapshot::SnapshotNode>(snapshot);
+    if (SnapshotNode)
+        m_snapshotNodeMap[node] = SnapshotNode;
+
+    if (m_snapshotContainer.m_graphRoot == nullptr)
+    {
+        m_snapshotContainer.m_graphRoot = SnapshotNode;
+    }
+
+    for (const auto& it : node->object)
+    {
+        this->processObject(it.get(), SnapshotNode);
+    }
+    
+    return RESULT_CONTINUE;
+}
+
+} // namespace sofa::simulation
+
 
 

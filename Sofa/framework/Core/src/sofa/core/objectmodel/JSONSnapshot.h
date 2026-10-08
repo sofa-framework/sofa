@@ -19,39 +19,29 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-    #include <sofa/simulation/config.h>
+#pragma once
+#include <sofa/core/objectmodel/Base.h>
+#include <sofa/core/objectmodel/Snapshot.h>
 
-#include <sofa/simulation/integrationscheme/ExplicitIntegrationScheme.h>
-#include <sofa/core/behavior/LinearSolver.h>
-#include <sofa/core/behavior/MultiVec.h>
+namespace sofa::core::objectmodel::jsonsnapshot {
+    /// Export a single Snapshot to a JSON file
+    SOFA_CORE_API void exportToJSON(const Snapshot& snapshot, const std::string& filename);
 
-#include <sofa/core/behavior/LinearSolverAccessor.h>
+    /// Import a single Snapshot from a JSON file
+    SOFA_CORE_API void importFromJSON(Snapshot& snapshot, const std::string& filename);
 
-#include <sofa/simulation/MechanicalOperations.h>
-#include <sofa/simulation/VectorOperations.h>
+    /// Read a JSON file and returns its content as a string
+    SOFA_CORE_API std::string fileToString(const std::string& filename);
 
-namespace sofa::simulation::integrationscheme
-{
+    /// Serialize a Snapshot to a JSON string
+    SOFA_CORE_API std::string snapshotToString(const Snapshot& snapshot);
 
-void ExplicitIntegrationScheme::integrate(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
-{
-    m_dt = dt;
+    /// Export a collection of Snapshots to a single JSON file
+    SOFA_CORE_API void exportToJSON(const std::map<std::string, std::shared_ptr<Snapshot>>& snapshots, const std::string& filename);
 
-    m_vop = std::make_shared<sofa::simulation::common::VectorOperations>( params, this->getContext() );
-    m_mop = std::make_unique<sofa::simulation::common::MappingGraphMechanicalOperations >( params, this->getContext() );
+    /// Import a collection of Snapshots from a single JSON file
+    SOFA_CORE_API void importFromJSON(std::map<std::string, std::shared_ptr<Snapshot>>& snapshots, const std::string& filename);
 
-    // dx is no longer allocated by default (but it will be deleted automatically by the mechanical objects)
-    sofa::core::behavior::MultiVecDeriv dx(m_vop.get(), core::vec_id::write_access::dx);
-    dx.realloc(m_vop.get(), true, true);
-
-    // Let the mechanical operations know that the current IntegrationScheme is explicit. This will be propagated back to the
-    // force fields during the addForce and addKToMatrix phase. Force fields use this information to avoid
-    // recomputing constant data in case of explicit IntegrationScheme.
-    m_mop->mparams.setImplicit(false);
-
-    doIntegrate(params, xResult, vResult);
+    SOFA_CORE_API void doLoadSet(const std::string& filename,std::map<std::shared_ptr<sofa::core::objectmodel::Snapshot>,double>&  snapshots);
 }
-
-} // namespace sofa::component::integrationscheme
-
 
