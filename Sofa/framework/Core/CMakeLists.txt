@@ -371,14 +371,6 @@ sofa_find_package(Sofa.Topology REQUIRED)
 sofa_find_package(Sofa.Helper REQUIRED)
 sofa_find_package(Sofa.DefaultType REQUIRED)
 
-# to move to core ?
-option(SOFA_CORE_ENABLE_CRSMULTIMATRIXACCESSOR "Use CompressedRowSparseMatrix to store global matrix (caution: it will lead to compile CRSMultiMatrixAcessor, which takes a considerable time to compile)" OFF)
-mark_as_advanced(FORCE SOFA_CORE_ENABLE_CRSMULTIMATRIXACCESSOR)
-if(SOFA_CORE_ENABLE_CRSMULTIMATRIXACCESSOR)
-    list(APPEND HEADER_FILES ${SRC_ROOT}/behavior/CRSMultiMatrixAccessor.h)
-    list(APPEND SOURCE_FILES ${SRC_ROOT}/behavior/CRSMultiMatrixAccessor.cpp)
-endif()
-
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Helper Sofa.Topology Sofa.DefaultType)
