@@ -39,5 +39,3 @@ std::string MechanicalMassLinearSolveVisitor::getInfos() const
 }
 
 }
-
-}
