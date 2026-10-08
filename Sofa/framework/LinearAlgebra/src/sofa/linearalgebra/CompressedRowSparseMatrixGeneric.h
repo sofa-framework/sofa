@@ -29,7 +29,6 @@
 
 #include <sofa/type/vector.h>
 #include <sofa/type/Vec.h>
-#include <sofa/type/hardening.h>
 #include <sofa/linearalgebra/MatrixExpr.h>
 #include <sofa/linearalgebra/FullVector.h>
 #include <sofa/linearalgebra/matrix_bloc_traits.h>
@@ -221,7 +220,6 @@ public :
     VecIndex rowBegin;    ///< column indices of non-empty blocks in each row. The column indices of the non-empty block within the i-th non-empty row are all the colsIndex[j],  j  in [rowBegin[i],rowBegin[i+1])
     VecIndex colsIndex;   ///< column indices of all the non-empty blocks, sorted by increasing row index and column index
     VecBlock colsValue;   ///< values of the non-empty blocks, in the same order as in colsIndex
-    VecFlag  touchedBlock; ///< boolean vector, i-th value is true if block has been touched since last compression.
 
     /// Additional storage to make block insertion more efficient
     VecIndexedBlock btemp; ///< unsorted blocks and their indices
@@ -606,7 +604,6 @@ protected:
         rowBegin.clear();
         colsIndex.clear();
         colsValue.clear();
-        touchedBlock.clear();
 
         rowIndex.reserve(oldRowIndex.size());
         rowBegin.reserve(oldRowIndex.size() + 1);
@@ -1500,92 +1497,6 @@ public:
         return name.c_str();
     }
 
-    bool check_matrix()
-    {
-        return check_matrix(
-                Index(this->getColsValue().size()),
-                this->rowBSize(),
-                this->colBSize(),
-                static_cast<Index*> (&(rowBegin[0])),
-                static_cast<Index*> (&(colsIndex[0])),
-                static_cast<Block*> (&(colsValue[0]))
-                );
-    }
-
-    static bool check_matrix(
-        Index nzmax,    // nb values
-        Index m,        // number of row
-        Index n,        // number of columns
-        Index * a_p,    // column pointers (size n+1) or col indices (size nzmax)
-        Index * a_i,    // row indices, size nzmax
-        Block * a_x      // numerical values, size nzmax
-    )
-    {
-        // check ap, size m beecause ther is at least the diagonal value wich is different of 0
-        if (a_p[0]!=0)
-        {
-            msg_error("CompressedRowSparseMatrixGeneric") << "First value of row indices (a_p) should be 0";
-            return false;
-        }
-
-        for (Index i=1; i<=m; i++)
-        {
-            if (a_p[i]<=a_p[i-1])
-            {
-                msg_error("CompressedRowSparseMatrixGeneric") << "Row (a_p) indices are not sorted index " << i-1 << " : " << a_p[i-1] << " , " << i << " : " << a_p[i];
-                return false;
-            }
-        }
-        if (nzmax == -1)
-        {
-            nzmax = a_p[m];
-        }
-        else if (a_p[m]!=nzmax)
-        {
-            msg_error("CompressedRowSparseMatrixGeneric") << "Last value of row indices (a_p) should be " << nzmax << " and is " << a_p[m];
-            return false;
-        }
-
-
-        Index k=1;
-        for (Index i=0; i<nzmax; i++)
-        {
-            i++;
-            for (; i<a_p[k]; i++)
-            {
-                if (a_i[i] <= a_i[i-1])
-                {
-                    msg_error("CompressedRowSparseMatrixGeneric") << "Column (a_i) indices are not sorted index " << i-1 << " : " << a_i[i-1] << " , " << i << " : " << a_p[i];
-                    return false;
-                }
-                if (a_i[i]<0 || a_i[i]>=n)
-                {
-                    msg_error("CompressedRowSparseMatrixGeneric") << "Column (a_i) indices are not correct " << i << " : " << a_i[i];
-                    return false;
-                }
-            }
-            k++;
-        }
-
-        for (Index i=0; i<nzmax; i++)
-        {
-            if (traits::empty(a_x[i]))
-            {
-                msg_error("CompressedRowSparseMatrixGeneric") << "Warning, matrix contains empty block at index " << i;
-                return false;
-            }
-        }
-
-        if (n!=m)
-        {
-            msg_error("CompressedRowSparseMatrixGeneric") << "the matrix is not square";
-            return false;
-        }
-
-        msg_error("CompressedRowSparseMatrixGeneric") << "Check_matrix passed successfully";
-        return true;
-    }
-
     std::ostream& write(std::ostream& os) const
     {
         os << rowIndex;
@@ -1622,32 +1533,6 @@ public:
         return is;
     }
 
-protected:
-
-    template<typename TVec>
-    void writeVector(const TVec& vec, std::ostream& os)
-    {
-        for (auto& v : vec)
-            os <<v<<";";
-    }
-
-    template<typename TVec>
-    void readVector(TVec& vec, std::istream& in)
-    {
-        std::string temp;
-        while (std::getline(in, temp, ';'))
-        {
-            int val{};
-            if(sofa::type::hardening::safeStrToInt(temp, val))
-            {
-                vec.push_back(val);
-            }
-            else
-            {
-                msg_warning("CompressedRowSparseMatrixGeneric") << "could not parse " << temp << " ; skipping entry.";
-            }
-        }
-    }
 };
 
 #if !defined(SOFA_COMPONENT_LINEARSOLVER_COMPRESSEDROWSPARSEMATRIXGENERIC_CPP)
