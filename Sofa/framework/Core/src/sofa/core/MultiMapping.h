@@ -113,17 +113,20 @@ public:
     /// The size of OutPos vector is the same as the number of OutModels.
     virtual void apply(const MechanicalParams* mparams, const type::vector<OutDataVecCoord*>& dataVecOutPos, const type::vector<const InDataVecCoord*>& dataVecInPos) = 0;
 
-    /// ApplyJ ///
-    /// Apply the mapping to derived (velocity, displacement) vectors.
-    /// \f$ out = J in \f$
-    /// where \f$ J \f$ is the tangent operator (the linear approximation) of the mapping
-    void applyJ (const MechanicalParams* mparams, MultiVecDerivId outVel, ConstMultiVecDerivId inVel ) override;
+    void applyJacobianVectorProduct(
+        const MechanicalParams* mparams,
+        MultiVecDerivId tangentOutId,
+        ConstMultiVecDerivId tangentInId,
+        ConstMultiVecCoordId positionInId) final;
 
-    /// This method must be reimplemented by all mappings.
-    /// InDeriv and OutDeriv by default contains VecIds of type V_DERIV.
-    /// The size of InDeriv vector is the same as the number of fromModels.
-    /// The size of OutDeriv vector is the same as the number of OutModels.
-    virtual void applyJ(const MechanicalParams* mparams, const type::vector<OutDataVecDeriv*>& dataVecOutVel, const type::vector<const InDataVecDeriv*>& dataVecInVel) = 0;
+    virtual void doApplyJacobianVectorProduct(
+        const MechanicalParams* mparams,
+        const type::vector< DataVecDeriv_t<Out>*>& dataVecTangentOut,
+        const type::vector<const DataVecDeriv_t<In>*>& dataVecTangentIn,
+        const type::vector<const DataVecCoord_t<In>*>& dataVecPositionIn) = 0;
+
+    SOFA_ATTRIBUTE_DEPRECATED__APPLYJ()
+    virtual void applyJ(const MechanicalParams* mparams, const type::vector<OutDataVecDeriv*>& dataVecOutVel, const type::vector<const InDataVecDeriv*>& dataVecInVel) final {}
 
     /// ApplyJT (Force)///
     /// Apply the reverse mapping to force vectors.

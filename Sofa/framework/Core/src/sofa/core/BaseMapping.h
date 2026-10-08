@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
+#include <sofa/core/config.h>
 #include <sofa/core/behavior/MechanicalState.h>
 
 namespace sofa::core
@@ -65,8 +66,33 @@ public:
 
     /// Apply the transformation from the input model to the output model (like apply displacement from BehaviorModel to VisualModel)
     virtual void apply (const MechanicalParams* mparams = mechanicalparams::defaultInstance(), MultiVecCoordId outPos = vec_id::write_access::position, ConstMultiVecCoordId inPos = vec_id::read_access::position ) = 0;
+
     /// Compute output velocity based on input velocity, using the linearized transformation (tangent operator). Also used to propagate small displacements.
-    virtual void applyJ(const MechanicalParams* mparams = mechanicalparams::defaultInstance(), MultiVecDerivId outVel = vec_id::write_access::velocity, ConstMultiVecDerivId inVel = vec_id::read_access::velocity ) = 0;
+    SOFA_ATTRIBUTE_DEPRECATED__APPLYJ()
+    virtual void applyJ(const MechanicalParams* mparams = mechanicalparams::defaultInstance(), MultiVecDerivId outVel = vec_id::write_access::velocity, ConstMultiVecDerivId inVel = vec_id::read_access::velocity ) final;
+
+    /**
+     * @brief Compute the product of the Jacobian matrix with a vector (JVP).
+     *
+     * This function computes $v_{out} = J(x_{in}) \cdot v_{in}$. It propagates velocities, small
+     * displacements, or generalized tangents through non-linear mappings.
+     * The Jacobian matrix $J$ maps derivatives (velocities) from the input space to the output space.
+     * Since the Jacobian often depends on position, this method requires access to the
+     * coordinates of the input model ($x_{in}$).
+     *
+     * @param mparams The current simulation parameters.
+     * @param tangentOutId The identifier for the output velocity/tangent vector ($\dot{q}_{out}$).
+     *                     This is where the result must be written.
+     * @param tangentInId The identifier for the input velocity/tangent vector ($\dot{q}_{in}$),
+     *                    which serves as the multiplication operand.
+     * @param positionInId The identifier for the coordinates of the input model ($x_{in}$).
+     *                     The Jacobian $J$ must be evaluated at this specific configuration.
+     */
+    virtual void applyJacobianVectorProduct(
+        const MechanicalParams* mparams,
+        MultiVecDerivId tangentOutId,
+        ConstMultiVecDerivId tangentInId,
+        ConstMultiVecCoordId positionInId) = 0;
 
     /// Accessor to the input model of this mapping
     virtual type::vector<BaseState*> getFrom() = 0;

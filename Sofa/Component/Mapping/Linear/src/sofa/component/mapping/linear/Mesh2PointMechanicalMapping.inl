@@ -192,16 +192,20 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::apply(const core::MechanicalParams 
         }
     }
 }
-
 template <class TIn, class TOut>
-void Mesh2PointMechanicalMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mparams*/, Data<OutVecDeriv>& dOut, const Data<InVecDeriv>& dIn)
+void Mesh2PointMechanicalMapping<TIn, TOut>::doApplyJacobianVectorProduct(
+    const core::MechanicalParams* mparams, DataVecDeriv_t<TOut>& tangentOut,
+    const DataVecDeriv_t<TIn>& tangentIn, const DataVecCoord_t<TIn>& positionIn)
 {
+    SOFA_UNUSED(mparams);
+    SOFA_UNUSED(positionIn);
+
     if (!l_topologicalMapping) return;
 
     using sofa::InvalidID;
 
-    helper::WriteAccessor< Data<OutVecDeriv> > out = dOut;
-    helper::ReadAccessor< Data<InVecDeriv> > in = dIn;
+    helper::WriteAccessor< Data<OutVecDeriv> > out = tangentOut;
+    helper::ReadAccessor< Data<InVecDeriv> > in = tangentIn;
 
     const auto& pointMap = l_topologicalMapping->getPointsMappedFromPoint();
     const auto& edgeMap = l_topologicalMapping->getPointsMappedFromEdge();

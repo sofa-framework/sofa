@@ -24,6 +24,7 @@
 #include <sofa/core/State.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/core/Mapping.h>
+#include <sofa/core/MechanicalParams.h>
 #include <iostream>
 
 namespace sofa::core
@@ -106,7 +107,7 @@ void Mapping<In,Out>::init()
     }
 
     apply(mechanicalparams::defaultInstance(), vec_id::write_access::position, vec_id::read_access::position);
-    applyJ(mechanicalparams::defaultInstance(), vec_id::write_access::velocity, vec_id::read_access::velocity);
+    applyJacobianVectorProduct(mechanicalparams::defaultInstance(), vec_id::write_access::velocity, vec_id::read_access::velocity, vec_id::read_access::position);
     if (f_applyRestPosition.getValue())
         apply(mechanicalparams::defaultInstance(), vec_id::write_access::restPosition, vec_id::read_access::restPosition);
 }
@@ -146,23 +147,28 @@ void Mapping<In,Out>::apply(const MechanicalParams* mparams, MultiVecCoordId out
             this->apply(mparams, *out, *in);
         }
     }
-}// Mapping::apply
+}  // Mapping::apply
 
-template <class In, class Out>
-void Mapping<In,Out>::applyJ(const MechanicalParams* mparams, MultiVecDerivId outVel, ConstMultiVecDerivId inVel)
+template <class TIn, class TOut>
+void Mapping<TIn, TOut>::applyJacobianVectorProduct(const MechanicalParams* mparams,
+                                                    MultiVecDerivId tangentOutId,
+                                                    ConstMultiVecDerivId tangentInId,
+                                                    ConstMultiVecCoordId positionInId)
 {
     State<In>* from = this->fromModel.get();
-    State<Out>*  to = this->toModel.get();
-    if(from && to)
+    State<Out>* to = this->toModel.get();
+    if (from && to)
     {
-        OutDataVecDeriv* out = outVel[to].write();
-        const InDataVecDeriv* in = inVel[from].read();
-        if(out && in)
+        OutDataVecDeriv* tangentOut = tangentOutId[to].write();
+        const InDataVecDeriv* tangentIn = tangentInId[from].read();
+        const InDataVecCoord* positionIn = positionInId[from].read();
+
+        if (tangentOut && tangentIn && positionIn)
         {
-                this->applyJ(mparams, *out, *in);
+            this->doApplyJacobianVectorProduct(mparams, *tangentOut, *tangentIn, *positionIn);
         }
     }
-}// Mapping::applyJ
+}
 
 template <class In, class Out>
 void Mapping<In,Out>::applyJT(const MechanicalParams *mparams, MultiVecDerivId inForce, ConstMultiVecDerivId outForce)

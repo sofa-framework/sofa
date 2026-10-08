@@ -114,24 +114,29 @@ public:
 
     }
 
-    void applyJ(const core::MechanicalParams *mparams, const type::vector<OutDataVecDeriv*>& dataVecOutVel, const type::vector<const InDataVecDeriv*>& dataVecInVel) override
+    virtual void doApplyJacobianVectorProduct(
+        const core::MechanicalParams* mparams,
+        const type::vector< DataVecDeriv_t<Out>*>& dataVecTangentOut,
+        const type::vector<const DataVecDeriv_t<In>*>& dataVecTangentIn,
+        const type::vector<const DataVecCoord_t<In>*>& dataVecPositionIn) override
     {
         SOFA_UNUSED(mparams);
+        SOFA_UNUSED(dataVecPositionIn);
 
         //Not optimized at all...
         type::vector<OutVecDeriv*> vecOutVel;
-        for(unsigned int i=0; i<dataVecOutVel.size(); i++)
-            vecOutVel.push_back(dataVecOutVel[i]->beginEdit());
+        for(unsigned int i=0; i<dataVecTangentOut.size(); i++)
+            vecOutVel.push_back(dataVecTangentOut[i]->beginEdit());
 
         type::vector<const InVecDeriv*> vecInVel;
-        for(unsigned int i=0; i<dataVecInVel.size(); i++)
-            vecInVel.push_back(&dataVecInVel[i]->getValue());
+        for(unsigned int i=0; i<dataVecTangentIn.size(); i++)
+            vecInVel.push_back(&dataVecTangentIn[i]->getValue());
 
         this->applyJ(vecOutVel, vecInVel);
 
         //Really Not optimized at all...
-        for(unsigned int i=0; i<dataVecOutVel.size(); i++)
-            dataVecOutVel[i]->endEdit();
+        for(unsigned int i=0; i<dataVecTangentOut.size(); i++)
+            dataVecTangentOut[i]->endEdit();
 
     }
 
@@ -157,7 +162,6 @@ public:
     }
 
     using Inherit::apply;
-    using Inherit::applyJ;
     using Inherit::applyJT;
 
     virtual void apply(const type::vector<OutVecCoord*>& outPos, const vecConstInVecCoord& inPos);

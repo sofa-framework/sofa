@@ -233,15 +233,17 @@ void SkinningMapping<TIn, TOut>::apply( const sofa::core::MechanicalParams* mpar
     }
     outData.endEdit();
 }
-
-
 template <class TIn, class TOut>
-void SkinningMapping<TIn, TOut>::applyJ( const sofa::core::MechanicalParams* mparams, OutDataVecDeriv& outData, const InDataVecDeriv& inData)
+void SkinningMapping<TIn, TOut>::doApplyJacobianVectorProduct(const core::MechanicalParams* mparams,
+                                                              DataVecDeriv_t<Out>& tangentOut,
+                                                              const DataVecDeriv_t<In>& tangentIn,
+                                                              const DataVecCoord_t<In>& positionIn)
 {
     SOFA_UNUSED(mparams);
+    SOFA_UNUSED(positionIn);
 
-    OutVecDeriv& out = *outData.beginWriteOnly();
-    const InVecDeriv& in = inData.getValue();
+    OutVecDeriv& out = *tangentOut.beginWriteOnly();
+    const InVecDeriv& in = tangentIn.getValue();
 
     unsigned int nbref=d_nbRef.getValue()[0];
     sofa::helper::ReadAccessor<Data<type::vector<sofa::type::SVector<InReal> > > > m_weights  (d_weight );
@@ -261,7 +263,7 @@ void SkinningMapping<TIn, TOut>::applyJ( const sofa::core::MechanicalParams* mpa
         }
     }
 
-    outData.endEdit();
+    tangentOut.endEdit();
 }
 
 template <class TIn, class TOut>

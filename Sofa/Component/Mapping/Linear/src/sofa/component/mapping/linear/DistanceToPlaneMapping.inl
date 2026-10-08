@@ -100,17 +100,19 @@ void DistanceToPlaneMapping<TIn>::apply(const core::MechanicalParams *mparams, D
         writeOut[i] = type::dot(TIn::getCPos(readIn[i]),planeNormal) - planeDistanceToOrigin;
     }
 }
-
 template <class TIn>
-void DistanceToPlaneMapping<TIn>::applyJ(const core::MechanicalParams *mparams, Data<VecDeriv_t<TOut>>& out, const Data<VecDeriv_t<TIn>>& in)
+void DistanceToPlaneMapping<TIn>::doApplyJacobianVectorProduct(
+    const core::MechanicalParams* mparams, DataVecDeriv_t<TOut>& tangentOut,
+    const DataVecDeriv_t<TIn>& tangentIn, const DataVecCoord_t<TIn>& positionIn)
 {
     SOFA_UNUSED(mparams);
+    SOFA_UNUSED(positionIn);
 
     if (this-> d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
         return;
 
-    auto writeOut = helper::getWriteAccessor(out);
-    const auto readIn = helper::getReadAccessor(in);
+    auto writeOut = helper::getWriteAccessor(tangentOut);
+    const auto readIn = helper::getReadAccessor(tangentIn);
     const auto planeNormal = d_planeNormal.getValue();
 
     for ( unsigned i = 0; i<readIn.size(); i++ )

@@ -281,26 +281,33 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::applyJ( typename Out::Ve
 }
 
 template <class TIn, class TInRoot, class TOut>
-void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::applyJ(
-    const core::MechanicalParams* /* mparams */, const type::vector< OutDataVecDeriv*>& dataVecOutVel,
-    const type::vector<const InDataVecDeriv*>& dataVecInVel,
-    const type::vector<const InRootDataVecDeriv*>& dataVecInRootVel)
+void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::doApplyJacobianVectorProduct(
+    const core::MechanicalParams* mparams,
+    const type::vector<DataVecDeriv_t<Out>*>& dataVecTangentOut,
+    const type::vector<const DataVecDeriv_t<TIn>*>& dataVecTangentIn1,
+    const type::vector<const DataVecDeriv_t<TInRoot>*>& dataVecTangentIn2,
+    const type::vector<const DataVecCoord_t<TIn>*>& dataVecPositionIn1,
+    const type::vector<const DataVecCoord_t<TInRoot>*>& dataVecPositionIn2)
 {
-    if(dataVecOutVel.empty() || dataVecInVel.empty())
+    SOFA_UNUSED(mparams);
+    SOFA_UNUSED(dataVecPositionIn1);
+    SOFA_UNUSED(dataVecPositionIn2);
+
+    if(dataVecTangentOut.empty() || dataVecTangentIn1.empty())
         return;
 
     const InRootVecDeriv* inroot = nullptr;
 
     //We need only one input In model and input Root model (if present)
-    OutVecDeriv& out = *dataVecOutVel[0]->beginEdit();
-    const InVecDeriv& in = dataVecInVel[0]->getValue();
+    OutVecDeriv& out = *dataVecTangentOut[0]->beginEdit();
+    const InVecDeriv& in = dataVecTangentIn1[0]->getValue();
 
-    if (!dataVecInRootVel.empty())
-        inroot = &dataVecInRootVel[0]->getValue();
+    if (!dataVecTangentIn2.empty())
+        inroot = &dataVecTangentIn2[0]->getValue();
 
     applyJ(out,in, inroot);
 
-    dataVecOutVel[0]->endEdit();
+    dataVecTangentOut[0]->endEdit();
 }
 
 template <class TIn, class TInRoot, class TOut>

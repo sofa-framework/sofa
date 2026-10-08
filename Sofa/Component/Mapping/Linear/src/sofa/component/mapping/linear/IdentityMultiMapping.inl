@@ -115,16 +115,21 @@ void IdentityMultiMapping<TIn, TOut>::apply(const core::MechanicalParams* mparam
 }
 
 template <class TIn, class TOut>
-void IdentityMultiMapping<TIn, TOut>::applyJ(const core::MechanicalParams* mparams, const type::vector<OutDataVecDeriv*>& dataVecOutVel, const type::vector<const InDataVecDeriv*>& dataVecInVel)
+void IdentityMultiMapping<TIn, TOut>::doApplyJacobianVectorProduct(
+    const core::MechanicalParams* mparams,
+    const type::vector<DataVecDeriv_t<Out>*>& dataVecTangentOut,
+    const type::vector<const DataVecDeriv_t<In>*>& dataVecTangentIn,
+    const type::vector<const DataVecCoord_t<In>*>& dataVecPositionIn)
 {
     SOFA_UNUSED(mparams);
+    SOFA_UNUSED(dataVecPositionIn);
 
-    OutVecDeriv& out = *(dataVecOutVel[0]->beginEdit());
+    OutVecDeriv& out = *(dataVecTangentOut[0]->beginEdit());
 
     unsigned offset = 0;
-    for(unsigned i=0; i<dataVecInVel.size(); i++ )
+    for(unsigned i=0; i<dataVecTangentIn.size(); i++ )
     {
-        const InVecDeriv& in = dataVecInVel[i]->getValue();
+        const InVecDeriv& in = dataVecTangentIn[i]->getValue();
 
         for(unsigned int j=0; j<in.size(); j++)
         {
@@ -133,7 +138,7 @@ void IdentityMultiMapping<TIn, TOut>::applyJ(const core::MechanicalParams* mpara
         offset += in.size();
     }
 
-    dataVecOutVel[0]->endEdit();
+    dataVecTangentOut[0]->endEdit();
 }
 
 template <class TIn, class TOut>

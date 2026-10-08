@@ -66,10 +66,14 @@ void RigidMapping<gpu::cuda::CudaRigid3fTypes, gpu::cuda::CudaVec3fTypes>::apply
 }
 
 template <>
-void RigidMapping<gpu::cuda::CudaRigid3fTypes, gpu::cuda::CudaVec3fTypes>::applyJ( const core::MechanicalParams* /*mparams*/, OutDataVecDeriv& dOut, const InDataVecDeriv& dIn )
+void RigidMapping<gpu::cuda::CudaRigid3fTypes, gpu::cuda::CudaVec3fTypes>::doApplyJacobianVectorProduct(
+    const core::MechanicalParams* mparams, DataVecDeriv_t<Out>& tangentOut, const DataVecDeriv_t<In>& tangentIn, const DataVecCoord_t<In>& positionIn)
 {
-    OutVecDeriv& out = *dOut.beginEdit();
-    const InVecDeriv& in = dIn.getValue();
+    SOFA_UNUSED(mparams);
+    SOFA_UNUSED(positionIn);
+
+    OutVecDeriv& out = *tangentOut.beginEdit();
+    const InVecDeriv& in = tangentIn.getValue();
 
     const auto& points = this->d_points.getValue();
     gpu::cuda::CudaVec3fTypes::Deriv v, omega;
@@ -79,7 +83,7 @@ void RigidMapping<gpu::cuda::CudaRigid3fTypes, gpu::cuda::CudaVec3fTypes>::apply
 
     RigidMappingCuda3f_applyJ(points.size(), v, omega, out.deviceWrite(), m_rotatedPoints.deviceRead());
 
-    dOut.endEdit();
+    tangentOut.endEdit();
 }
 
 template <>
@@ -128,10 +132,14 @@ void RigidMapping<defaulttype::Rigid3Types, gpu::cuda::CudaVec3Types>::apply( co
 }
 
 template <>
-void RigidMapping<defaulttype::Rigid3Types, gpu::cuda::CudaVec3Types>::applyJ( const core::MechanicalParams* /*mparams*/, OutDataVecDeriv& dOut, const InDataVecDeriv& dIn )
+void RigidMapping<defaulttype::Rigid3Types, gpu::cuda::CudaVec3Types>::doApplyJacobianVectorProduct(
+    const core::MechanicalParams* mparams, DataVecDeriv_t<Out>& tangentOut, const DataVecDeriv_t<In>& tangentIn, const DataVecCoord_t<In>& positionIn)
 {
-    OutVecDeriv& out = *dOut.beginEdit();
-    const InVecDeriv& in = dIn.getValue();
+    SOFA_UNUSED(mparams);
+    SOFA_UNUSED(positionIn);
+
+    OutVecDeriv& out = *tangentOut.beginEdit();
+    const InVecDeriv& in = tangentIn.getValue();
 
     const auto& points = this->d_points.getValue();
     gpu::cuda::CudaVec3fTypes::Deriv v, omega;
@@ -141,7 +149,7 @@ void RigidMapping<defaulttype::Rigid3Types, gpu::cuda::CudaVec3Types>::applyJ( c
 
     RigidMappingCuda3f_applyJ(points.size(), v, omega, out.deviceWrite(), m_rotatedPoints.deviceRead());
 
-    dOut.endEdit();
+    tangentOut.endEdit();
 }
 
 template <>

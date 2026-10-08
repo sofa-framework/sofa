@@ -209,12 +209,18 @@ void SubsetMapping<TIn, TOut>::apply ( const core::MechanicalParams* /*mparams*/
 }
 
 template <class TIn, class TOut>
-void SubsetMapping<TIn, TOut>::applyJ( const core::MechanicalParams* /*mparams*/, OutDataVecDeriv& dOut, const InDataVecDeriv& dIn )
+void SubsetMapping<TIn, TOut>::doApplyJacobianVectorProduct(const core::MechanicalParams* mparams,
+                                                            DataVecDeriv_t<Out>& tangentOut,
+                                                            const DataVecDeriv_t<In>& tangentIn,
+                                                            const DataVecCoord_t<In>& positionIn)
 {
+    SOFA_UNUSED(mparams);
+    SOFA_UNUSED(positionIn);
+
     const IndexArray& indices = d_indices.getValue();
 
-    const InVecDeriv& in = dIn.getValue();
-    OutVecDeriv& out = *dOut.beginEdit();
+    const InVecDeriv& in = tangentIn.getValue();
+    OutVecDeriv& out = *tangentOut.beginEdit();
     const std::size_t fromSize = in.size();
 
     out.resize(indices.size());
@@ -224,7 +230,7 @@ void SubsetMapping<TIn, TOut>::applyJ( const core::MechanicalParams* /*mparams*/
             out[i] = in[ indices[i] ];
     }
 
-    dOut.endEdit();
+    tangentOut.endEdit();
 }
 
 template <class TIn, class TOut>

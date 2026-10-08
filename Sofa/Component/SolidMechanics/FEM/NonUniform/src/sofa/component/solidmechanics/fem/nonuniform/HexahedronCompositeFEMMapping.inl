@@ -258,15 +258,16 @@ void HexahedronCompositeFEMMapping<BasicMapping>::apply( const sofa::core::Mecha
 
 
 }
-
-
 template <class BasicMapping>
-void HexahedronCompositeFEMMapping<BasicMapping>::applyJ( const sofa::core::MechanicalParams* mparams, OutDataVecDeriv& outData, const InDataVecDeriv& inData)
+void HexahedronCompositeFEMMapping<BasicMapping>::doApplyJacobianVectorProduct(
+    const core::MechanicalParams* mparams, DataVecDeriv_t<Out>& tangentOut,
+    const DataVecDeriv_t<In>& tangentIn, const DataVecCoord_t<In>& positionIn)
 {
     SOFA_UNUSED(mparams);
+    SOFA_UNUSED(positionIn);
 
-    OutVecDeriv& out = *outData.beginEdit();
-    const InVecDeriv& in = inData.getValue();
+    OutVecDeriv& out = *tangentOut.beginEdit();
+    const InVecDeriv& in = tangentIn.getValue();
 
     // les deplacements des noeuds grossiers
     type::vector< sofa::type::Vec< 24, SReal >  > coarseDisplacements( _sparseGrid->getNbHexahedra() );
@@ -313,7 +314,7 @@ void HexahedronCompositeFEMMapping<BasicMapping>::applyJ( const sofa::core::Mech
             out[i] += (fineDisplacements[ finehexa[w] ]  * _finestBarycentricCoord[i].second[w] );
         }
     }
-    outData.endEdit();
+    tangentOut.endEdit();
 }
 
 

@@ -400,7 +400,7 @@ protected:
         /// Updated to parentNew
         positionAccessorIn.wref() = parentNew;
         mapping->apply(&mparams, core::vec_id::write_access::position, core::vec_id::write_access::position);
-        mapping->applyJ(&mparams, core::vec_id::write_access::velocity, core::vec_id::write_access::velocity);
+        mapping->applyJacobianVectorProduct(&mparams, core::vec_id::write_access::velocity, core::vec_id::write_access::velocity, core::vec_id::write_access::position);
 
         bool succeed = true;
 
@@ -447,7 +447,7 @@ protected:
     void computeVelocityOutFromVelocityIn(core::MechanicalParams mparams, VecDeriv_t<Out>& velocityOut, const VecDeriv_t<In>& velocityIn)
     {
         inDofs->writeVelocities().wref() = velocityIn;
-        mapping->applyJ( &mparams, core::vec_id::write_access::velocity, core::vec_id::write_access::velocity );
+        mapping->applyJacobianVectorProduct( &mparams, core::vec_id::write_access::velocity, core::vec_id::write_access::velocity, core::vec_id::read_access::position );
         velocityOut = outDofs->readVelocities().ref();
     }
 
