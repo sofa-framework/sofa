@@ -44,7 +44,7 @@ public:
     void doPrintSummary() override;
 
 private:
-    bool m_libLoaded;
+    bool m_libLoaded = false;
     std::set<std::pair<std::string, std::string> > m_summary;
 };
 
