@@ -81,7 +81,7 @@ void Mass<DataTypes>::solveLinearSystem(const MechanicalParams* mparams,
         DataVecDeriv* x = xId[mstate].write(); assert(x);
         const DataVecDeriv* b = bId[mstate].read(); assert(b);
 
-        accFromF(mparams, *x, *b);
+        solveLinearSystem(mparams, *x, *b);
     }
 }
 
