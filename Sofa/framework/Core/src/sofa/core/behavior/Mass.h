@@ -72,7 +72,7 @@ public:
     virtual void accFromF(const MechanicalParams* mparams, DataVecDeriv& a, const DataVecDeriv& f);
 
     void solveLinearSystem(const MechanicalParams* mparams, MultiVecDerivId xId, ConstMultiVecDerivId bId) override;
-    virtual void solveLinearSystem(const MechanicalParams* mparams, DataVecDeriv& x, const DataVecDeriv& b);
+    virtual void doSolveLinearSystem(const MechanicalParams* mparams, DataVecDeriv& x, const DataVecDeriv& b);
 
     /// Mass forces (gravity) often have null derivative
     void addDForce(const MechanicalParams* /*mparams*/, DataVecDeriv & /*df*/, const DataVecDeriv & /*dx*/ ) override;
