@@ -73,6 +73,8 @@ PrecomputedConstraintCorrection<DataTypes>::PrecomputedConstraintCorrection(sofa
     , d_debugViewFrameScale(initData(&d_debugViewFrameScale, 1.0_sreal, "debugViewFrameScale", "Scale on computed node's frame"))
     , d_fileCompliance(initData(&d_fileCompliance, "fileCompliance", "Precomputed compliance matrix data file"))
     , d_fileDir(initData(&d_fileDir, "fileDir", "If not empty, the compliance will be saved in this repertory"))
+    , l_odeSolver(initLink("integrationScheme", "The implicit Euler integration scheme used to compute the compliance"))
+    , l_linearSolver(initLink("linearSolver", "The linear solver used to solve the compliance"))
     , invM(nullptr)
     , appCompliance(nullptr)
     , nbRows(0), nbCols(0), dof_on_node(0), nbNodes(0)
@@ -413,6 +415,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
                 if (l_odeSolver)
                 {
                     l_odeSolver->integrate(core::execparams::defaultInstance(), dt, core::vec_id::write_access::position, core::vec_id::write_access::velocity);
+                    l_odeSolver->reset();
                 }
 
                 for (unsigned int v = 0; v < nbNodes; v++)
