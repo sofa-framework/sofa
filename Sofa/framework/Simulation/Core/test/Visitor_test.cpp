@@ -100,7 +100,7 @@ public:
         SOFA_UNUSED(mparams);
         SOFA_UNUSED(dfId);
     }
-    SReal getPotentialEnergy(const core::MechanicalParams* mparams) const override
+    SReal getPotentialEnergy(const core::MechanicalParams* mparams, core::ConstMultiVecCoordId dxId) const override
     {
         SOFA_UNUSED(mparams);
         return {};
@@ -136,7 +136,7 @@ public:
         SOFA_UNUSED(mparams);
         return {};
     }
-    SReal getPotentialEnergy(const core::MechanicalParams* mparams) const override
+    SReal getPotentialEnergy(const core::MechanicalParams* mparams, core::ConstMultiVecCoordId x) const override
     {
         SOFA_UNUSED(mparams);
         return {};
@@ -186,7 +186,7 @@ public:
         SOFA_UNUSED(mparams);
         SOFA_UNUSED(dfId);
     }
-    SReal getPotentialEnergy(const core::MechanicalParams* mparams) const override
+    SReal getPotentialEnergy(const core::MechanicalParams* mparams, core::ConstMultiVecCoordId) const override
     {
         SOFA_UNUSED(mparams);
         return {};
