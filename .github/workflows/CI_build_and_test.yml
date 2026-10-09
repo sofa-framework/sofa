@@ -172,7 +172,7 @@ jobs:
 
           ## Setup build folder
           if [ "${{ inputs.force-full-build }}" == "true" ] && [ -d  $WORKSPACE/build ]; then
-              rm -rf $WORKSPACE/build
+              sudo rm -rf $WORKSPACE/build
           fi
           if [ ! -d $WORKSPACE/build ]; then
               mkdir $WORKSPACE/build
@@ -269,16 +269,16 @@ jobs:
               fi
 
               echo "${DOCKERHUB_TOKEN}" | docker login -u sofaframework --password-stdin
-
-              echo "Pulling Docker image sofaframework/sofabuilder_${builder_type}:${CI_BRANCH} ..."
-              docker pull --quiet sofaframework/sofabuilder_${builder_type}:${CI_BRANCH} || true
-              DOCKER_IMAGE="sofaframework/sofabuilder_${builder_type}:${CI_BRANCH}"
+          
+              DOCKER_IMAGE="bakpaul/new_${builder_type}:latest"
+              echo "Pulling Docker image $DOCKER_IMAGE ..."
+              docker pull --quiet $DOCKER_IMAGE || true
 
               if [[ "$(docker image list --format "table {{.Repository}}:{{.Tag}}")" != *"sofaframework/sofabuilder_${builder_type}:${CI_BRANCH}"*  ]]; then
-                echo "Docker image sofaframework/sofabuilder_${builder_type}:${CI_BRANCH} doesn't exist, pulling default tag ${default_tag} "
-                docker pull --quiet sofaframework/sofabuilder_${builder_type}:${default_tag}
+                echo "Docker image $DOCKER_IMAGE doesn't exist, pulling default tag ${default_tag} "
+                docker pull --quiet $DOCKER_IMAGE
 
-                DOCKER_IMAGE="sofaframework/sofabuilder_${builder_type}:${default_tag}"
+                DOCKER_IMAGE="bakpaul/new_${builder_type}:latest"
               fi
 
               echo "DOCKER_IMAGE=$DOCKER_IMAGE" >> $GITHUB_ENV
@@ -297,7 +297,7 @@ jobs:
 
               echo "Launching configuration and build through docker using image ${DOCKER_IMAGE}. Running ./ci/scripts/configure-and-build.sh /workspace/build/ /workspace/sofa/ /workspace/ci/scripts/ \"${NODE_NAME}\" \"${BUILD_TYPE}\" \"${CONFIG}\" \"${{ inputs.python-version }}\" \"${{ inputs.preset }}\" \"${{ inputs.generate-binaries }}\" \"${CMAKE_OPTIONS}\""
               docker run --rm --env XDG_CACHE_HOME --env GH_TOKEN="$GH_TOKEN" -v $BUILDER_CACHE_DIR:/cache\
-                  --user $(id -u):$(id -g) --network=host -v $WORKSPACE:/workspace \
+                  --network=host -v $WORKSPACE:/workspace \
                   ${DOCKER_IMAGE} \
                   /bin/bash -c "env; echo \"$GH_TOKEN\" > gh auth login --with-token; gh auth setup-git; gh auth status; cd /workspace; ccache -M 5; /bin/bash $DOCKER_CI_DIR/scripts/configure-and-build.sh $DOCKER_BUILD_DIR $DOCKER_SRC_DIR $DOCKER_CI_DIR/scripts/ $DOCKER_LOG_DIR \"${NODE_NAME}\" \"${BUILD_TYPE}\" \"${CONFIG}\" \"${{ inputs.python-version }}\" \"${{ inputs.preset }}\" \"${{ inputs.generate-binaries }}\" \"${CMAKE_OPTIONS}\""
           else
@@ -318,7 +318,7 @@ jobs:
 
               echo "Launching unit test suite through docker using image ${DOCKER_IMAGE}."
               docker run --rm \
-                  --user $(id -u):$(id -g) --network=host -v $WORKSPACE:/workspace \
+                  --network=host -v $WORKSPACE:/workspace \
                   ${DOCKER_IMAGE} \
                   /bin/bash -c "env ; cd /workspace; /bin/bash $DOCKER_CI_DIR/scripts/test.sh $DOCKER_BUILD_DIR $DOCKER_SRC_DIR $DOCKER_CI_DIR/scripts/ ${NODE_NAME} ${{ inputs.python-version }} UNIT"
           else
@@ -342,7 +342,7 @@ jobs:
 
               echo "Launching scene test suite through docker using image ${DOCKER_IMAGE}."
               docker run --rm \
-                  --user $(id -u):$(id -g) --network=host -v $WORKSPACE:/workspace \
+                  --network=host -v $WORKSPACE:/workspace \
                   ${DOCKER_IMAGE} \
                   /bin/bash -c "env ; cd /workspace; /bin/bash $DOCKER_CI_DIR/scripts/test.sh $DOCKER_BUILD_DIR $DOCKER_SRC_DIR $DOCKER_CI_DIR/scripts/ ${NODE_NAME} ${{ inputs.python-version }} SCENE"
           else
@@ -366,7 +366,7 @@ jobs:
 
               echo "Launching regression test suite through docker using image ${DOCKER_IMAGE}."
               docker run --rm \
-                  --user $(id -u):$(id -g) --network=host -v $WORKSPACE:/workspace \
+                  --network=host -v $WORKSPACE:/workspace \
                   ${DOCKER_IMAGE} \
                   /bin/bash -c "env ; cd /workspace; /bin/bash $DOCKER_CI_DIR/scripts/test.sh $DOCKER_BUILD_DIR $DOCKER_SRC_DIR $DOCKER_CI_DIR/scripts/ ${NODE_NAME} ${{ inputs.python-version }} REGRESSION"
           else
@@ -421,7 +421,7 @@ jobs:
             echo -e "${bold}Please check those actions logs${normal}"
             exit 1
           else
-            echo "✅ Setup OK."
+            echo "✅ Setup OK. "
           fi
 
           if [[ "${{ steps.build-step.outcome }}" == "failure" ]]; then
