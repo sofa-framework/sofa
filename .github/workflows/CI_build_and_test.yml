@@ -172,7 +172,7 @@ jobs:
 
           ## Setup build folder
           if [ "${{ inputs.force-full-build }}" == "true" ] && [ -d  $WORKSPACE/build ]; then
-              rm -rf $WORKSPACE/build
+              sudo rm -rf $WORKSPACE/build
           fi
           if [ ! -d $WORKSPACE/build ]; then
               mkdir $WORKSPACE/build
