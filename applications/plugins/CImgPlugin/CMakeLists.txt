@@ -15,27 +15,6 @@ set(SOURCE_FILES
 sofa_find_package(Sofa.Helper REQUIRED)
 sofa_find_package(Sofa.DefaultType REQUIRED)
 
-# add FindCImg.cmake
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/FindCImg.cmake ${CMAKE_BINARY_DIR}/lib/cmake/FindCImg.cmake COPYONLY)
-install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/cmake/FindCImg.cmake DESTINATION lib/cmake/${PROJECT_NAME} COMPONENT headers)
-
-sofa_find_package(CImg QUIET)
-
-if(NOT CImg_FOUND AND SOFA_ALLOW_FETCH_DEPENDENCIES)
-    message("CImgPlugin: DEPENDENCY CImg NOT FOUND. SOFA_ALLOW_FETCH_DEPENDENCIES is ON, fetching CImg...")
-
-    sofa_fetch_dependency(CImg
-            GIT_REPOSITORY https://github.com/GreycLab/CImg
-            GIT_TAG        v.3.3.2
-            DONT_BUILD
-    )
-
-    set(CIMG_DIR ${CImg_SOURCE_DIR})
-    sofa_find_package(CImg REQUIRED)
-elseif (NOT CImg_FOUND)
-    message(FATAL_ERROR "CImgPlugin: DEPENDENCY CImg NOT FOUND. SOFA_ALLOW_FETCH_DEPENDENCIES is OFF and thus cannot be fetched. Install cimg-dev, or enable SOFA_ALLOW_FETCH_DEPENDENCIES to fix this issue.")
-endif()
 
 # OS X only: if the user installed its own JPEG/PNG lib (typically with homebrew/port),
 # it will allow to use those instead of those present in XCode's frameworks
@@ -86,6 +65,29 @@ if(ZLIB_FOUND)
     list(APPEND DEP_TARGETS ZLIB::ZLIB)
 endif()
 
+
+# add FindCImg.cmake
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/FindCImg.cmake ${CMAKE_BINARY_DIR}/lib/cmake/FindCImg.cmake COPYONLY)
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/cmake/FindCImg.cmake DESTINATION lib/cmake/${PROJECT_NAME} COMPONENT headers)
+
+sofa_find_package(CImg QUIET)
+
+if(NOT CImg_FOUND AND SOFA_ALLOW_FETCH_DEPENDENCIES)
+    message("CImgPlugin: DEPENDENCY CImg NOT FOUND. SOFA_ALLOW_FETCH_DEPENDENCIES is ON, fetching CImg...")
+
+    sofa_fetch_dependency(CImg
+            GIT_REPOSITORY https://github.com/GreycLab/CImg
+            GIT_TAG        v.3.3.2
+            DONT_BUILD
+    )
+
+    set(CIMG_DIR ${CImg_SOURCE_DIR})
+    sofa_find_package(CImg REQUIRED)
+elseif (NOT CImg_FOUND)
+    message(FATAL_ERROR "CImgPlugin: DEPENDENCY CImg NOT FOUND. SOFA_ALLOW_FETCH_DEPENDENCIES is OFF and thus cannot be fetched. Install cimg-dev, or enable SOFA_ALLOW_FETCH_DEPENDENCIES to fix this issue.")
+endif()
+
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<BUILD_INTERFACE:${CImg_INCLUDE_DIRS}>")
@@ -106,7 +108,7 @@ endif()
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
     PACKAGE_VERSION ${PROJECT_VERSION}
-    TARGETS ${PROJECT_NAME} CImg AUTO_SET_TARGET_PROPERTIES 
+    TARGETS ${PROJECT_NAME} CImg AUTO_SET_TARGET_PROPERTIES
     INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR "CImgPlugin"
     RELOCATABLE "plugins"
