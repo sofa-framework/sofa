@@ -54,7 +54,7 @@ void ImplicitIntegrationScheme::setupIntegrationStep(const core::ExecParams* par
     m_xResult = xResult;
     m_vResult = vResult;
 
-    m_mappingGraph.build(this->getContext());
+    this->m_mappingGraph.build(this->getContext());
 
 
     // dx is no longer allocated by default (but it will be deleted automatically by the mechanical objects)
