@@ -5,7 +5,7 @@
 <RequiredPlugin pluginName="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
 <RequiredPlugin pluginName="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
 <RequiredPlugin pluginName="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
-<RequiredPlugin pluginName="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+<RequiredPlugin pluginName="Sofa.Component.IntegrationScheme.Backward"/> <!-- Needed to use components [EulerImplicitIntegrationScheme] -->
 <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [TetrahedronFEMForceField] -->
 <RequiredPlugin pluginName="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
 <RequiredPlugin pluginName="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->
@@ -14,7 +14,7 @@
 <?php $size=$_ENV["s"]; if (!$size) $size=10; ?>
 	<Node name="M1">
 		<!--<CGImplicitSolver iterations="10" tolerance="1e-15" threshold="1e-15" />-->
-		<EulerImplicitSolver/>
+		<EulerImplicitIntegrationScheme/>
 		<CGLinearSolver iterations="10" tolerance="1e-15" threshold="1e-15"/>
 		<MechanicalObject template="CudaVec3f" />
 <!--		<UniformMass totalMass="20" /> -->

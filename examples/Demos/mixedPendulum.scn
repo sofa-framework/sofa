@@ -3,13 +3,13 @@
     <RequiredPlugin name="Sofa.Component.Constraint.Projective"/>
     <RequiredPlugin name="Sofa.Component.Mapping.NonLinear"/>
     <RequiredPlugin name="Sofa.Component.Mass"/>
-    <RequiredPlugin name="Sofa.Component.ODESolver.Forward"/>
+    <RequiredPlugin name="Sofa.Component.IntegrationScheme.Forward"/>
     <RequiredPlugin name="Sofa.Component.SolidMechanics.Spring"/>
     <RequiredPlugin name="Sofa.Component.StateContainer"/>
     <RequiredPlugin name="Sofa.Component.Visual"/>
     <DefaultAnimationLoop/>
     <VisualStyle displayFlags="showInteractionForceFields showMechanicalMappings showForceFields showVisualModels showBehaviorModels" />
-    <EulerExplicitSolver name="odeExplicitSolver"/>
+    <EulerExplicitIntegrationScheme name="odeExplicitSolver"/>
 
     <Node name="deformableBody">
         <MechanicalObject name="Dof1" template="Vec3" position="0 0 0  1 0 0" />

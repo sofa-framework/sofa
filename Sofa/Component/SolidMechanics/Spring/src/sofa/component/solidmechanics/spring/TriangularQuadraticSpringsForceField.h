@@ -79,14 +79,22 @@ protected:
         EdgeRestInformation() = default;
 
         /// Output stream
-        inline friend std::ostream& operator<< ( std::ostream& os, const EdgeRestInformation& /*eri*/ )
+        inline friend std::ostream& operator<< ( std::ostream& os, const EdgeRestInformation& eri )
         {
+            os << eri.restLength << " ";
+            os << eri.currentLength << " ";
+            os << eri.dl << " ";
+            os << eri.stiffness;
             return os;
         }
 
         /// Input stream
-        inline friend std::istream& operator>> ( std::istream& in, EdgeRestInformation& /*eri*/ )
+        inline friend std::istream& operator>> ( std::istream& in, EdgeRestInformation& eri )
         {
+            in >> eri.restLength;
+            in >> eri.currentLength;
+            in >> eri.dl;
+            in >> eri.stiffness;
             return in;
         }
     };
@@ -101,14 +109,26 @@ protected:
         TriangleRestInformation()= default;
 
         /// Output stream
-        inline friend std::ostream& operator<< ( std::ostream& os, const TriangleRestInformation& /*tri*/ )
+        inline friend std::ostream& operator<< ( std::ostream& os, const TriangleRestInformation& tri )
         {
+            for (int i = 0; i < 3; ++i)
+                os << tri.gamma[i] << " ";
+            for (int i = 0; i < 3; ++i)
+                os << tri.stiffness[i] << " ";
+            for (int i = 0; i < 3; ++i)
+                os << tri.DfDx[i] << " ";
             return os;
         }
 
         /// Input stream
-        inline friend std::istream& operator>> ( std::istream& in, TriangleRestInformation& /*tri*/ )
+        inline friend std::istream& operator>> ( std::istream& in, TriangleRestInformation& tri )
         {
+            for (int i = 0; i < 3; ++i)
+                in >> tri.gamma[i];
+            for (int i = 0; i < 3; ++i)
+                in >> tri.stiffness[i];
+            for (int i = 0; i < 3; ++i)
+                in >> tri.DfDx[i];
             return in;
         }
     };

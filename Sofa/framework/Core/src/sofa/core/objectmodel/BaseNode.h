@@ -24,7 +24,7 @@
 #include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/core/objectmodel/TypeOfInsertion.h>
 #include <sofa/core/visual/BaseVisualStyle.h>
-
+#include <sofa/core/objectmodel/Snapshot.h>
 namespace sofa::core::objectmodel
 {
 
@@ -124,9 +124,18 @@ public:
     /// @{
 
     virtual core::behavior::BaseAnimationLoop* getAnimationLoop() const;
-    virtual core::behavior::OdeSolver* getOdeSolver() const;
     virtual core::collision::Pipeline* getCollisionPipeline() const;
+    virtual core::behavior::BaseIntegrationScheme* getIntegrationScheme() const;
     virtual core::visual::VisualLoop* getVisualLoop() const;
+
+protected:
+
+    /// Create a SnapshotObject that will contain data and link
+    std::shared_ptr<Snapshot::SnapshotObject> createSnapshotObject(const std::shared_ptr<Snapshot::SnapshotObject>& object) const override;
+
+public:
+    /// Find a SnapshotObject corresponding to the object from the scene
+    std::shared_ptr<Snapshot::SnapshotObject> findSnapshotObject(const std::shared_ptr<Snapshot::SnapshotNode>& parents, const std::string& objectname, const std::string& classname, const std::string& pathname) const override;
 
 private:
     virtual std::string internalGetPathName() const;
@@ -155,7 +164,7 @@ public:
      BASENODE_ADD_SPECIAL_COMPONENT( core::visual::VisualLoop, VisualLoop, visualLoop )
      BASENODE_ADD_SPECIAL_COMPONENT( core::BehaviorModel, BehaviorModel, behaviorModel )
      BASENODE_ADD_SPECIAL_COMPONENT( core::BaseMapping, Mapping, mapping )
-     BASENODE_ADD_SPECIAL_COMPONENT( core::behavior::OdeSolver, OdeSolver, solver )
+     BASENODE_ADD_SPECIAL_COMPONENT( core::behavior::BaseIntegrationScheme, IntegrationScheme, integrationScheme )
      BASENODE_ADD_SPECIAL_COMPONENT( core::behavior::ConstraintSolver, ConstraintSolver, constraintSolver )
      BASENODE_ADD_SPECIAL_COMPONENT( core::behavior::BaseLinearSolver, LinearSolver, linearSolver )
      BASENODE_ADD_SPECIAL_COMPONENT( core::topology::Topology, Topology, topology )

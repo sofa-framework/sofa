@@ -17,10 +17,12 @@ set(HEADER_FILES
     ${SRC_ROOT}/DefaultAnimationLoop.h
     ${SRC_ROOT}/DefaultVisualManagerLoop.h
     ${SRC_ROOT}/DeleteVisitor.h
+    ${SRC_ROOT}/DifferentialOperations.h
     ${SRC_ROOT}/ExportDotVisitor.h
     ${SRC_ROOT}/ExportGnuplotVisitor.h
     ${SRC_ROOT}/ExportVisualModelOBJVisitor.h
     ${SRC_ROOT}/InitVisitor.h
+    ${SRC_ROOT}/LoadSnapshotVisitor.h
     ${SRC_ROOT}/MechanicalOperations.h
     ${SRC_ROOT}/MechanicalVPrintVisitor.h
     ${SRC_ROOT}/MechanicalVisitor.h
@@ -36,6 +38,8 @@ set(HEADER_FILES
     ${SRC_ROOT}/SceneLoaderFactory.h
     ${SRC_ROOT}/Simulation.h
     ${SRC_ROOT}/SimulationLoop.h
+    ${SRC_ROOT}/SaveSnapshotVisitor.h
+    ${SRC_ROOT}/SnapshotManager.h
     ${SRC_ROOT}/SolveVisitor.h
     ${SRC_ROOT}/StateChangeVisitor.h
     ${SRC_ROOT}/TopologyChangeVisitor.h
@@ -156,6 +160,11 @@ set(HEADER_FILES
     ${SRC_ROOT}/task/TaskSchedulerUser.h
     ${SRC_ROOT}/task/WorkerThread.h
     ${SRC_ROOT}/task/TaskSchedulerSettings.h
+
+    ${SRC_ROOT}/integrationscheme/AccelerationBasedImplicitIntegrationScheme.h
+    ${SRC_ROOT}/integrationscheme/VelocityBasedImplicitIntegrationScheme.h
+    ${SRC_ROOT}/integrationscheme/ExplicitIntegrationScheme.h
+    ${SRC_ROOT}/integrationscheme/ImplicitIntegrationScheme.h
 )
 
 set(SOURCE_FILES
@@ -169,10 +178,12 @@ set(SOURCE_FILES
     ${SRC_ROOT}/DefaultAnimationLoop.cpp
     ${SRC_ROOT}/DefaultVisualManagerLoop.cpp
     ${SRC_ROOT}/DeleteVisitor.cpp
+    ${SRC_ROOT}/DifferentialOperations.cpp
     ${SRC_ROOT}/ExportDotVisitor.cpp
     ${SRC_ROOT}/ExportGnuplotVisitor.cpp
     ${SRC_ROOT}/ExportVisualModelOBJVisitor.cpp
     ${SRC_ROOT}/InitVisitor.cpp
+    ${SRC_ROOT}/LoadSnapshotVisitor.cpp
     ${SRC_ROOT}/MappingGraph.cpp
     ${SRC_ROOT}/MappingGraphMechanicalOperations.cpp
     ${SRC_ROOT}/MechanicalOperations.cpp
@@ -190,6 +201,8 @@ set(SOURCE_FILES
     ${SRC_ROOT}/SceneCheckRegistry.cpp
     ${SRC_ROOT}/SceneCheckMainRegistry.cpp
     ${SRC_ROOT}/Simulation.cpp
+    ${SRC_ROOT}/SaveSnapshotVisitor.cpp
+    ${SRC_ROOT}/SnapshotManager.cpp
     ${SRC_ROOT}/SolveVisitor.cpp
     ${SRC_ROOT}/StateChangeVisitor.cpp
     ${SRC_ROOT}/TopologyChangeVisitor.cpp
@@ -299,6 +312,12 @@ set(SOURCE_FILES
     ${SRC_ROOT}/task/TaskSchedulerUser.cpp
     ${SRC_ROOT}/task/WorkerThread.cpp
     ${SRC_ROOT}/task/TaskSchedulerSettings.cpp
+
+    ${SRC_ROOT}/integrationscheme/AccelerationBasedImplicitIntegrationScheme.cpp
+    ${SRC_ROOT}/integrationscheme/VelocityBasedImplicitIntegrationScheme.cpp
+    ${SRC_ROOT}/integrationscheme/ImplicitIntegrationScheme.cpp
+    ${SRC_ROOT}/integrationscheme/ExplicitIntegrationScheme.cpp
+
 )
 
 set(DEPRECATED_DIR "compat/sofa/simulation")
@@ -331,6 +350,7 @@ sofa_find_package(Sofa.Core REQUIRED)
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Core)
+target_link_libraries(${PROJECT_NAME} PRIVATE nlohmann_json::nlohmann_json)
 
 target_include_directories(${PROJECT_NAME} PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/compat>

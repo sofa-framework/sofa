@@ -134,6 +134,9 @@ public:
     /// Read the command line
     bool read( const std::string& str );
 
+    /// Read the command line from a snapshot
+    bool readFromSnapshot( const std::string& str );
+
     /// Update pointers in case the pointed-to objects have appeared
     /// @return false if there are broken links
     bool updateLinks();
@@ -186,6 +189,7 @@ protected:
     virtual void _doClear_() = 0;
     virtual std::string _doGetLinkedPath_(const size_t=0) const = 0;
     virtual bool _doRemove_(Base* target) = 0;
+    virtual bool addRawPtr(Base* baseptr) = 0;
 
     unsigned int m_flags;
     std::string m_name;

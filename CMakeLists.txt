@@ -143,6 +143,10 @@ endif(UNIX)
 ### Windows config
 if(MSVC)
     option(SOFA_USE_DEPENDENCY_PACK "Enable the use of the Windows Dependency Pack" ON)
+    set(WinDepPack_GIT_TAG "master")
+    if($ENV{SOFA_BUILD_RELEASE_PACKAGE_WITH_PIXI})
+        set(WinDepPack_GIT_TAG "pixi_pack")
+    endif()
     # WinDepPack
     if(SOFA_USE_DEPENDENCY_PACK)
         set(SOFA_DEPENDENCY_PACK_DIR "" CACHE PATH "Directory containing Windows Dependency Pack")
@@ -150,7 +154,7 @@ if(MSVC)
             add_subdirectory(${SOFA_DEPENDENCY_PACK_DIR} ${CMAKE_BINARY_DIR}/extlibs/SofaDependencyPack)
         else ()
             message(STATUS "Fetching WinDepPack")
-            sofa_fetch_dependency(WinDepPack GIT_REPOSITORY "https://github.com/sofa-framework/WinDepPack.git" GIT_TAG "master" DONT_BUILD)
+            sofa_fetch_dependency(WinDepPack GIT_REPOSITORY "https://github.com/sofa-framework/WinDepPack.git" GIT_TAG "${WinDepPack_GIT_TAG}" DONT_BUILD)
             add_subdirectory("${CMAKE_BINARY_DIR}/external_directories/fetched/WinDepPack" "${CMAKE_BINARY_DIR}/extlibs/WinDepPack")
         endif()
     endif ()
@@ -290,6 +294,7 @@ if(SOFA_BUILD_RELEASE_PACKAGE)
         execute_process(COMMAND conda-deny bundle -e $ENV{PIXI_ENVIRONMENT_NAME} -p $ENV{PIXI_CURRENT_PLATFORM} -d ${CMAKE_BINARY_DIR}/licenses)
         install(DIRECTORY ${CMAKE_BINARY_DIR}/licenses/ DESTINATION licenses COMPONENT applications)
     endif()
+    option(BUILD_CONDA_PACKAGE "Set to true when building conda package" OFF)
 
     #######################
     # CPack configuration #

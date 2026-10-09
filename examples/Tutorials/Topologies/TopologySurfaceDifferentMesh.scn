@@ -10,7 +10,7 @@
     <RequiredPlugin pluginName="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
     <RequiredPlugin pluginName="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [IdentityMapping] -->
     <RequiredPlugin pluginName="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
-    <RequiredPlugin pluginName="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin pluginName="Sofa.Component.IntegrationScheme.Backward"/> <!-- Needed to use components [EulerImplicitIntegrationScheme] -->
     <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [TriangularFEMForceField] -->
     <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [MeshSpringForceField QuadBendingSprings RegularGridSpringForceField TriangularBendingSprings] -->
     <RequiredPlugin pluginName="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
@@ -28,7 +28,7 @@
 	  <DefaultAnimationLoop/>
 
 	  <Node name="Cloth Dynamic Mesh (blue)">
-        <EulerImplicitSolver name="cg_odesolver" printLog="0" />
+        <EulerImplicitIntegrationScheme name="cg_odesolver" printLog="0" />
         <CGLinearSolver name="linear solver" template="GraphScattered" iterations="20" tolerance="1e-09" threshold="1e-09" />
         <MeshGmshLoader name="loader" filename="mesh/square3.msh" createSubelements="true" />
         <MechanicalObject src="@loader" name="DOF" template="Vec3" translation="10 0 15" rotation="0 90 90" scale="10" />
@@ -47,7 +47,7 @@
     </Node>
 	
     <Node name="Cloth Static Mesh (white)">
-        <EulerImplicitSolver name="cg_odesolver" printLog="0" />
+        <EulerImplicitIntegrationScheme name="cg_odesolver" printLog="0" />
         <CGLinearSolver name="linear solver" template="GraphScattered" iterations="20" tolerance="1e-09" threshold="1e-09" />
         <MeshGmshLoader name="loader" filename="mesh/square3.msh" createSubelements="true"/>
         <MechanicalObject src="@loader" name="DOFs" template="Vec3" translation="10 0 5" rotation="0 90 90" scale="10" />
@@ -64,7 +64,7 @@
     </Node>
 	
     <Node name="Cloth Regular Mesh (red)">
-	    <EulerImplicitSolver name="cg_odesolver" printLog="0" />
+	    <EulerImplicitIntegrationScheme name="cg_odesolver" printLog="0" />
 	    <CGLinearSolver name="linear solver" template="GraphScattered" iterations="20" tolerance="1e-09" threshold="1e-09" />
         <MechanicalObject name="DOFs" template="Vec3" translation="0 0 -4" />
         <FixedProjectiveConstraint name="Fixed dof" template="Vec3" indices="0 870" />

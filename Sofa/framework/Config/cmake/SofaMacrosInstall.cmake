@@ -244,11 +244,7 @@ macro(sofa_create_package)
     install(FILES "${CMAKE_CURRENT_BINARY_DIR}/${filename}" DESTINATION "lib/cmake/${package_install_dir}" COMPONENT headers)
 
     # <package_name>Config.cmake
-    configure_package_config_file(
-        ${ARG_PACKAGE_NAME}Config.cmake.in
-        "${CMAKE_BINARY_DIR}/lib/cmake/${ARG_PACKAGE_NAME}Config.cmake"
-        INSTALL_DESTINATION "lib/cmake/${package_install_dir}"
-        )
+    configure_package_config_file(${ARG_PACKAGE_NAME}Config.cmake.in "${CMAKE_BINARY_DIR}/lib/cmake/${ARG_PACKAGE_NAME}Config.cmake" INSTALL_DESTINATION "lib/cmake/${package_install_dir}")
     install(FILES "${CMAKE_BINARY_DIR}/lib/cmake/${ARG_PACKAGE_NAME}Config.cmake" DESTINATION "lib/cmake/${package_install_dir}" COMPONENT headers)
 
     if(ARG_RELOCATABLE_PATH)
@@ -860,6 +856,17 @@ function(sofa_set_project_install_relocatable project_name binary_dir install_di
     set_target_properties(${custom_target} PROPERTIES FOLDER "relocatable_install")
 endfunction()
 
+function(first_target_property out target)
+    foreach(prop IN LISTS ARGN)
+        get_target_property(val ${target} ${prop})
+        if(val)
+            set(${out} "${val}" PARENT_SCOPE)
+            return()
+        endif()
+    endforeach()
+    set(${out} "" PARENT_SCOPE)
+endfunction()
+
 
 # Get path of all library versions (involving symbolic links) for a specified library
 function(sofa_install_libraries)
@@ -892,25 +899,26 @@ function(sofa_install_libraries)
 
     foreach(BUILD_TYPE ${BUILD_TYPES})
         string(TOUPPER "${BUILD_TYPE}" BUILD_TYPE_UPPER)
-
         foreach(target ${targets})
-            get_target_property(target_location ${target} LOCATION_${BUILD_TYPE_UPPER})
+            first_target_property(target_location ${target} LOCATION_${BUILD_TYPE_UPPER} LOCATION IMPORTED_LOCATION IMPORTED_LOCATION_RELEASE)
+            first_target_property(target_implib ${target} IMPLIB_${BUILD_TYPE_UPPER} IMPLIB IMPORTED_IMPLIB IMPORTED_IMPLIB_RELEASE)
             get_target_property(is_framework ${target} FRAMEWORK)
             if(APPLE AND is_framework)
                 get_filename_component(target_location ${target_location} DIRECTORY) # parent dir
                 install(DIRECTORY ${target_location} DESTINATION "lib" COMPONENT applications)
             else()
                 list(APPEND lib_paths "${target_location}")
+                list(APPEND lib_paths "${target_implib}")
             endif()
         endforeach()
 
         if(lib_paths)
             parse_library_list(${lib_paths}
-                FOUND   parseOk
-                DEBUG   LIBRARIES_DEBUG
-                OPT     LIBRARIES_RELEASE
-                GENERAL LIBRARIES_GENERAL
-                )
+                    FOUND   parseOk
+                    DEBUG   LIBRARIES_DEBUG
+                    OPT     LIBRARIES_RELEASE
+                    GENERAL LIBRARIES_GENERAL
+            )
             if(parseOk)
                 if(BUILD_TYPE_UPPER STREQUAL "DEBUG")
                     set(lib_paths ${LIBRARIES_DEBUG})
@@ -938,17 +946,17 @@ function(sofa_install_libraries)
             # or:
             # <lib_path> <slash> <library_name> <dot> <anything> <dot> <dll/so/dylib/...>
             file(GLOB SHARED_LIBS
-                "${LIBREAL_PATH}/${LIBREAL_NAME}${CMAKE_SHARED_LIBRARY_SUFFIX}*" # libtiff.dll
-                "${LIBREAL_PATH}/${LIBREAL_NAME}[0-9]${CMAKE_SHARED_LIBRARY_SUFFIX}*"
-                "${LIBREAL_PATH}/${LIBREAL_NAME}[0-9][0-9]${CMAKE_SHARED_LIBRARY_SUFFIX}*" # libpng16.dll
-                "${LIBREAL_PATH}/${LIBREAL_NAME}.*${CMAKE_SHARED_LIBRARY_SUFFIX}*" # libpng.16.dylib
-                )
+                    "${LIBREAL_PATH}/${LIBREAL_NAME}${CMAKE_SHARED_LIBRARY_SUFFIX}*" # libtiff.dll
+                    "${LIBREAL_PATH}/${LIBREAL_NAME}[0-9]${CMAKE_SHARED_LIBRARY_SUFFIX}*"
+                    "${LIBREAL_PATH}/${LIBREAL_NAME}[0-9][0-9]${CMAKE_SHARED_LIBRARY_SUFFIX}*" # libpng16.dll
+                    "${LIBREAL_PATH}/${LIBREAL_NAME}.*${CMAKE_SHARED_LIBRARY_SUFFIX}*" # libpng.16.dylib
+            )
             file(GLOB STATIC_LIBS
-                "${LIBREAL_PATH}/${LIBREAL_NAME}${CMAKE_STATIC_LIBRARY_SUFFIX}*"
-                "${LIBREAL_PATH}/${LIBREAL_NAME}[0-9]${CMAKE_STATIC_LIBRARY_SUFFIX}*"
-                "${LIBREAL_PATH}/${LIBREAL_NAME}[0-9][0-9]${CMAKE_STATIC_LIBRARY_SUFFIX}*"
-                "${LIBREAL_PATH}/${LIBREAL_NAME}.*${CMAKE_STATIC_LIBRARY_SUFFIX}*"
-                )
+                    "${LIBREAL_PATH}/${LIBREAL_NAME}${CMAKE_STATIC_LIBRARY_SUFFIX}*"
+                    "${LIBREAL_PATH}/${LIBREAL_NAME}[0-9]${CMAKE_STATIC_LIBRARY_SUFFIX}*"
+                    "${LIBREAL_PATH}/${LIBREAL_NAME}[0-9][0-9]${CMAKE_STATIC_LIBRARY_SUFFIX}*"
+                    "${LIBREAL_PATH}/${LIBREAL_NAME}.*${CMAKE_STATIC_LIBRARY_SUFFIX}*"
+            )
 
             # Install the libs
             if(WIN32)

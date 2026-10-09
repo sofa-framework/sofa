@@ -29,7 +29,7 @@
 namespace sofa::helper::logging::routingmessagehandler
 {
 
-void RoutingMessageHandler::process(Message& m)
+void RoutingMessageHandler::doProcess(Message& m)
 {
     for(const auto& f : m_filters)
     {

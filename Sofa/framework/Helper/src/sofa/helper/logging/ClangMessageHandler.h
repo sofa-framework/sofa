@@ -35,7 +35,7 @@ namespace sofa::helper::logging
 class SOFA_HELPER_API ClangMessageHandler : public MessageHandler
 {
 public:
-    void process(Message &m) override ;
+    void doProcess(Message &m) override ;
     std::string getName() const override { return "ClangMessageHandler"; }
 };
 } // namespace sofa::helper::logging
