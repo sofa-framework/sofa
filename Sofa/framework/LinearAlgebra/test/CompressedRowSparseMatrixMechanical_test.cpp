@@ -526,3 +526,179 @@ TEST(CompressedRowSparseMatrixMechanical, Mat3x3dMulVector)
     EXPECT_NEAR(res[1], 2.0, kTol);
     EXPECT_NEAR(res[2], 3.0, kTol);
 }
+
+// Rows 0, 1, 6 and 7 are absent
+TEST(CompressedRowSparseMatrixMechanical, ClearRowColMissesSymmetricBlockWhenRowsAreSparse)
+{
+    CRSMech m(8, 8);
+    m.set(2, 2, 22.0);
+    m.set(2, 3, 23.0);
+    m.set(3, 2, 32.0);
+    m.set(3, 3, 33.0);
+    m.set(4, 4, 44.0);
+    m.set(5, 5, 55.0);
+    m.compress();
+    ASSERT_EQ(m.getRowIndex().size(), 4u) << "test needs rowIndex != identity";
+    ASSERT_EQ(m.getRowIndex()[0], 2);
+
+    m.clearRowCol(2);
+
+    EXPECT_NEAR(m.element(2, 2), 0.0, kTol) << "row 2";
+    EXPECT_NEAR(m.element(2, 3), 0.0, kTol) << "row 2";
+    EXPECT_NEAR(m.element(3, 2), 0.0, kTol) << "column 2 must be cleared too";
+
+    // everything outside row 2 / column 2 must survive
+    EXPECT_NEAR(m.element(3, 3), 33.0, kTol);
+    EXPECT_NEAR(m.element(4, 4), 44.0, kTol);
+    EXPECT_NEAR(m.element(5, 5), 55.0, kTol);
+}
+
+TEST(CompressedRowSparseMatrixMechanical, ClearRowColAsymmetricPatternMat3)
+{
+    // 2x2 grid of 3x3 blocks, block (1,0) is absent
+    CRSMechMat3 m(6, 6);
+    for (int i = 0; i < 3; ++i)
+        for (int j = 0; j < 3; ++j)
+            m.set(i, j, 1.0);           // block (0,0)
+    for (int i = 0; i < 3; ++i)
+        for (int j = 3; j < 6; ++j)
+            m.set(i, j, 2.0);           // block (0,1)
+    for (int i = 3; i < 6; ++i)
+        for (int j = 3; j < 6; ++j)
+            m.set(i, j, 3.0);           // block (1,1)
+    m.compress();
+
+    m.clearRowCol(0);
+
+    for (int j = 0; j < 6; ++j)
+        EXPECT_NEAR(m.element(0, j), 0.0, kTol) << "element(0," << j << ")";
+    for (int i = 0; i < 6; ++i)
+        EXPECT_NEAR(m.element(i, 0), 0.0, kTol) << "element(" << i << ",0)";
+
+    // block (0,1) rows 1 and 2 are neither in row 0 nor in column 0 and must survive
+    EXPECT_NEAR(m.element(1, 3), 2.0, kTol);
+    EXPECT_NEAR(m.element(2, 3), 2.0, kTol);
+    EXPECT_NEAR(m.element(1, 4), 2.0, kTol);
+    EXPECT_NEAR(m.element(2, 5), 2.0, kTol);
+
+    // block (1,1) is untouched
+    EXPECT_NEAR(m.element(3, 3), 3.0, kTol);
+    EXPECT_NEAR(m.element(5, 5), 3.0, kTol);
+}
+
+// fullRows() registers rows with an empty range
+TEST(CompressedRowSparseMatrixMechanical, ElementAfterFullRows)
+{
+    CRSMech m(6, 6);
+    m.set(4, 4, 7.0);
+    m.compress();
+    m.fullRows();
+
+    for (int i = 0; i < 6; ++i)
+    {
+        for (int j = 0; j < 6; ++j)
+        {
+            const double expected = (i == 4 && j == 4) ? 7.0 : 0.0;
+            EXPECT_NEAR(m.element(i, j), expected, kTol) << "element(" << i << "," << j << ")";
+        }
+    }
+}
+
+// The zero stored at (2,2) is kept by compress(), but removed by the nonzeros filter
+TEST(CompressedRowSparseMatrixMechanical, CopyNonZerosKeepEmptyRows)
+{
+    CRSMech src(4, 4);
+    src.set(1, 1, 2.0);
+    src.set(2, 2, 0.0);
+    src.compress();
+    ASSERT_EQ(src.getRowIndex().size(), 2u) << "the stored zero must keep row 2 on the source";
+
+    CRSMech dst;
+    dst.copyNonZeros(src, /*keepEmptyRows*/ true);
+
+    ASSERT_EQ(dst.getRowIndex().size(), 2u) << "row 2 was emptied by the filter but must be kept";
+    EXPECT_EQ(dst.getRowIndex()[0], 1);
+    EXPECT_EQ(dst.getRowIndex()[1], 2);
+
+    const auto range = dst.getRowRange(1);
+    EXPECT_TRUE(range.empty()) << "row 2 should hold no block";
+    EXPECT_NEAR(dst.element(1, 1), 2.0, kTol);
+}
+
+TEST(CompressedRowSparseMatrixMechanical, CopyNonZerosDropsRowEmptiedByFilter)
+{
+    CRSMech src(4, 4);
+    src.set(1, 1, 2.0);
+    src.set(2, 2, 0.0);
+    src.compress();
+
+    CRSMech dst;
+    dst.copyNonZeros(src);
+
+    ASSERT_EQ(dst.getRowIndex().size(), 1u);
+    EXPECT_EQ(dst.getRowIndex()[0], 1);
+    EXPECT_NEAR(dst.element(1, 1), 2.0, kTol);
+}
+
+TEST(CompressedRowSparseMatrixMechanical, ClearRowOnEmptyMatrix)
+{
+    CRSMech m;
+    EXPECT_NO_THROW(m.clearRow(3));
+    EXPECT_EQ(m.getRowIndex().size(), 0u);
+}
+
+TEST(CompressedRowSparseMatrixMechanical, ClearColOnEmptyMatrix)
+{
+    CRSMech m;
+    EXPECT_NO_THROW(m.clearCol(3));
+    EXPECT_EQ(m.getRowIndex().size(), 0u);
+}
+
+TEST(CompressedRowSparseMatrixMechanical, ClearRowColOnEmptyMatrix)
+{
+    CRSMech m;
+    EXPECT_NO_THROW(m.clearRowCol(3));
+    EXPECT_EQ(m.getRowIndex().size(), 0u);
+}
+
+TEST(CompressedRowSparseMatrixMechanical, BlockAccessorsOnEmptyMatrix)
+{
+    CRSMech m;
+    EXPECT_NO_THROW((void) m.blockGet(3, 3));
+    EXPECT_NO_THROW((void) m.blockGetW(3, 3));
+    EXPECT_NO_THROW((void) m.blockCreate(3, 3));
+}
+
+TEST(CompressedRowSparseMatrixMechanical, BRowIteratorsOnEmptyMatrix)
+{
+    CRSMech m;
+    EXPECT_NO_THROW((void) m.bRowBegin(3));
+    EXPECT_NO_THROW((void) m.bRowEnd(3));
+    EXPECT_NO_THROW((void) m.bRowRange(3));
+}
+
+TEST(CompressedRowSparseMatrixMechanical, ClearColAfterFullRows)
+{
+    CRSMech m(4, 4);
+    m.set(1, 1, 3.0);
+    m.compress();
+    m.fullRows();
+
+    m.clearCol(1);
+
+    for (int i = 0; i < 4; ++i)
+        EXPECT_NEAR(m.element(i, 1), 0.0, kTol) << "element(" << i << ",1)";
+}
+
+TEST(CompressedRowSparseMatrixMechanical, CopyNonZerosDropsEmptyRowsByDefault)
+{
+    CRSMech src(4, 4);
+    src.set(1, 1, 2.0);
+    src.compress();
+
+    CRSMech dst;
+    dst.copyNonZeros(src);
+
+    EXPECT_EQ(dst.getRowIndex().size(), 1u);
+    EXPECT_NEAR(dst.element(1, 1), 2.0, kTol);
+}

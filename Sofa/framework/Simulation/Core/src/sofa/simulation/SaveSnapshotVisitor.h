@@ -19,47 +19,32 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-#include <sofa/fem/FiniteElement.h>
+#include <sofa/core/objectmodel/Base.h>
+#include <sofa/simulation/Visitor.h>
+#include <memory>
 
-#if !defined(SOFA_FEM_FINITE_ELEMENT_EDGE_CPP)
-#include <sofa/defaulttype/VecTypes.h>
-#endif
-
-namespace sofa::fem
+namespace sofa::simulation
 {
 
-template <class DataTypes>
-struct FiniteElement<sofa::geometry::Edge, DataTypes>
+
+class SOFA_SIMULATION_CORE_API SaveSnapshotVisitor : public Visitor
 {
-    FINITEELEMENT_HEADER(sofa::geometry::Edge, DataTypes, 1, 1);
+protected:
+    core::objectmodel::Snapshot& m_snapshotContainer;
 
-    constexpr static std::array<ReferenceCoord, NumberOfNodesInElement> referenceElementNodes {{ReferenceCoord{-1}, ReferenceCoord{1}}};
-
-    static const sofa::type::vector<TopologyElement>& getElementSequence(sofa::core::topology::BaseMeshTopology& topology)
+    std::unordered_map<core::objectmodel::BaseNode*, std::shared_ptr<core::objectmodel::Snapshot::SnapshotNode>> m_snapshotNodeMap;
+    
+public:
+    SaveSnapshotVisitor(const sofa::core::ExecParams* eparams, core::objectmodel::Snapshot& snapshot) : Visitor(eparams), m_snapshotContainer(snapshot)
     {
-        return topology.getEdges();
     }
 
-    static constexpr sofa::type::Vec<NumberOfNodesInElement, Real> shapeFunctions(const sofa::type::Vec<TopologicalDimension, Real>& q)
-    {
-        return {
-            static_cast<Real>(0.5) * (static_cast<Real>(1) - q[0]),
-            static_cast<Real>(0.5) * (static_cast<Real>(1) + q[0])
-        };
-    }
+    void processObject(const core::objectmodel::BaseObject* obj, const std::shared_ptr<core::objectmodel::Snapshot::SnapshotNode>& parent);
 
-    static constexpr sofa::type::Mat<NumberOfNodesInElement, TopologicalDimension, Real> gradientShapeFunctions(const sofa::type::Vec<TopologicalDimension, Real>& q)
-    {
-        SOFA_UNUSED(q);
-        return {{-static_cast<Real>(0.5)}, {static_cast<Real>(0.5)}};
-    }
+    Result processNodeTopDown(simulation::Node* node) override;
+    const char* getClassName() const override { return "SaveSnapshotVisitor"; }
+
 };
 
-#if !defined(SOFA_FEM_FINITE_ELEMENT_EDGE_CPP)
-extern template struct SOFA_FEM_API FiniteElement<sofa::geometry::Edge, sofa::defaulttype::Vec3Types>;
-extern template struct SOFA_FEM_API FiniteElement<sofa::geometry::Edge, sofa::defaulttype::Vec2Types>;
-extern template struct SOFA_FEM_API FiniteElement<sofa::geometry::Edge, sofa::defaulttype::Vec1Types>;
-#endif
+} // namespace sofa::simulation
 
-}

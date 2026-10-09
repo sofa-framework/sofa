@@ -32,7 +32,7 @@ namespace sofa::fem
 template <class DataTypes>
 struct FiniteElement<sofa::geometry::Prism, DataTypes>
 {
-    FINITEELEMENT_HEADER(sofa::geometry::Prism, DataTypes, 3);
+    FINITEELEMENT_HEADER(sofa::geometry::Prism, DataTypes, 3, 1);
     static_assert(spatial_dimensions == 3, "Prisms are only defined in 3D");
 
     constexpr static std::array<ReferenceCoord, NumberOfNodesInElement> referenceElementNodes {{
@@ -72,21 +72,6 @@ struct FiniteElement<sofa::geometry::Prism, DataTypes>
             {q[2], 0, q[0]},
             {0, q[2], q[1]},
         };
-    }
-
-    static constexpr std::array<QuadraturePointAndWeight, 2> quadraturePoints()
-    {
-        constexpr auto third = static_cast<Real>(1) / static_cast<Real>(3);
-        constexpr auto sqrt_3 = static_cast<Real>(0.57735026919); // 1/sqrt(3)
-        constexpr auto one = static_cast<Real>(1);
-        constexpr QuadraturePoint q0 {third, third, static_cast<Real>(0.5) * (one - sqrt_3)};
-        constexpr QuadraturePoint q1 {third, third, static_cast<Real>(0.5) * (one + sqrt_3)};
-
-        constexpr std::array<QuadraturePointAndWeight, 2> q {
-            std::make_pair(q0, 1./4.),
-            std::make_pair(q1, 1./4.),
-        };
-        return q;
     }
 };
 
