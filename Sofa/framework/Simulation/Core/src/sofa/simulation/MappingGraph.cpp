@@ -267,7 +267,7 @@ void MappingGraph::build(const InputLists& input)
 
     // 1. Create one wrapper node per object; index state nodes by raw ptr.
     std::vector<MappingGraphNode<sofa::core::behavior::BaseMechanicalState>*> mechanicalStateNodes;
-    for (auto& s : input.mechanicalStates)
+    for (auto* s : input.mechanicalStates)
     {
         auto node = makeMappingGraphNode<sofa::core::behavior::BaseMechanicalState>(s);
         mechanicalStateNodes.push_back(node.get());
@@ -333,6 +333,10 @@ void MappingGraph::build(const InputLists& input)
                 {
                     addEdge(sn, mappingNode);
                 }
+                else
+                {
+                    msg_warning(input.mappings[i]) << "Mapping input '" << s->getPathName() << "' is not contained in the mapping graph context. It will not be considered when traversing the graph, neither the components relying on it.";
+                }
             }
         }
 
@@ -341,6 +345,10 @@ void MappingGraph::build(const InputLists& input)
             if (auto* sn = findStateNode(s))
             {
                 addEdge(mappingNode, sn);
+            }
+            else
+            {
+                msg_warning(input.mappings[i]) << "Mapping output '" << s->getPathName() << "' is not contained in the mapping graph context. It will not be considered when traversing the graph, neither the components relying on it.";
             }
         }
     }
