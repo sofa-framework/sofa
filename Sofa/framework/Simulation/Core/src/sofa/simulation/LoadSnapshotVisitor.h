@@ -20,30 +20,26 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
+#include <sofa/core/objectmodel/Base.h>
+#include <sofa/simulation/Visitor.h>
 
-#include <sofa/simulation/MechanicalVisitor.h>
-
-#if !defined(SOFA_SIMULATION_CORE_MECHANICALADDMBK_TOMATRIXVISITOR_CPP)
-SOFA_HEADER_DEPRECATED_NOT_REPLACED("v26.12", "v27.12")
-#endif
-
-namespace sofa::simulation::mechanicalvisitor
+namespace sofa::simulation
 {
 
-/** Accumulate the entries of a mechanical matrix (mass or stiffness) of the whole scene */
-class SOFA_SIMULATION_CORE_API SOFA_ATTRIBUTE_DEPRECATED__MECHANICALADDMBK_TOMATRIXVISITOR() MechanicalAddMBK_ToMatrixVisitor : public MechanicalVisitor
+class SOFA_SIMULATION_CORE_API LoadSnapshotVisitor : public Visitor
 {
+protected:
+    const core::objectmodel::Snapshot& m_snapshotContainer;
+
 public:
-    const sofa::core::behavior::MultiMatrixAccessor* matrix;
+    LoadSnapshotVisitor(const sofa::core::ExecParams* eparams, const core::objectmodel::Snapshot& snapshot) : Visitor(eparams), m_snapshotContainer(snapshot) {}
 
-    MechanicalAddMBK_ToMatrixVisitor(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* _matrix );
+    void processObject(core::objectmodel::BaseObject* obj, const std::shared_ptr<core::objectmodel::Snapshot::SnapshotNode>& parent);
 
-    /// Return a class name for this visitor
-    /// Only used for debugging / profiling purposes
-    const char* getClassName() const override { return "MechanicalAddMBK_ToMatrixVisitor"; }
+    Result processNodeTopDown(simulation::Node* node) override;
+    const char* getClassName() const override { return "LoadDataSnapshotVisitor"; }
 
-    Result fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff) override;
-
-    bool stopAtMechanicalMapping(simulation::Node* node, core::BaseMapping* map) override;
 };
-}
+
+} // namespace sofa::simulation
+

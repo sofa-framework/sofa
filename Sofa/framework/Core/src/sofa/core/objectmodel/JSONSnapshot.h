@@ -20,30 +20,28 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
+#include <sofa/core/objectmodel/Base.h>
+#include <sofa/core/objectmodel/Snapshot.h>
 
-#include <sofa/simulation/MechanicalVisitor.h>
+namespace sofa::core::objectmodel::jsonsnapshot {
+    /// Export a single Snapshot to a JSON file
+    SOFA_CORE_API void exportToJSON(const Snapshot& snapshot, const std::string& filename);
 
-#if !defined(SOFA_SIMULATION_CORE_MECHANICALADDMBK_TOMATRIXVISITOR_CPP)
-SOFA_HEADER_DEPRECATED_NOT_REPLACED("v26.12", "v27.12")
-#endif
+    /// Import a single Snapshot from a JSON file
+    SOFA_CORE_API void importFromJSON(Snapshot& snapshot, const std::string& filename);
 
-namespace sofa::simulation::mechanicalvisitor
-{
+    /// Read a JSON file and returns its content as a string
+    SOFA_CORE_API std::string fileToString(const std::string& filename);
 
-/** Accumulate the entries of a mechanical matrix (mass or stiffness) of the whole scene */
-class SOFA_SIMULATION_CORE_API SOFA_ATTRIBUTE_DEPRECATED__MECHANICALADDMBK_TOMATRIXVISITOR() MechanicalAddMBK_ToMatrixVisitor : public MechanicalVisitor
-{
-public:
-    const sofa::core::behavior::MultiMatrixAccessor* matrix;
+    /// Serialize a Snapshot to a JSON string
+    SOFA_CORE_API std::string snapshotToString(const Snapshot& snapshot);
 
-    MechanicalAddMBK_ToMatrixVisitor(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* _matrix );
+    /// Export a collection of Snapshots to a single JSON file
+    SOFA_CORE_API void exportToJSON(const std::map<std::string, std::shared_ptr<Snapshot>>& snapshots, const std::string& filename);
 
-    /// Return a class name for this visitor
-    /// Only used for debugging / profiling purposes
-    const char* getClassName() const override { return "MechanicalAddMBK_ToMatrixVisitor"; }
+    /// Import a collection of Snapshots from a single JSON file
+    SOFA_CORE_API void importFromJSON(std::map<std::string, std::shared_ptr<Snapshot>>& snapshots, const std::string& filename);
 
-    Result fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff) override;
-
-    bool stopAtMechanicalMapping(simulation::Node* node, core::BaseMapping* map) override;
-};
+    SOFA_CORE_API void doLoadSet(const std::string& filename,std::map<std::shared_ptr<sofa::core::objectmodel::Snapshot>,double>&  snapshots);
 }
+

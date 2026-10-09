@@ -249,3 +249,10 @@
 #define SOFA_ATTRIBUTE_DEPRECATED__MECHANICALOPERATIONS_PROPAGATE_X_AND_V() \
     SOFA_ATTRIBUTE_DEPRECATED("v26.12", "v27.06", "Use DifferentialOperations::pushforwardCoord and DifferentialOperations::pushforwardTangent instead")
 #endif
+
+#ifdef SOFA_BUILD_SOFA_SIMULATION_CORE
+#define SOFA_ATTRIBUTE_DEPRECATED__MECHANICALACCUMULATEJACOBIAN()
+#else
+#define SOFA_ATTRIBUTE_DEPRECATED__MECHANICALACCUMULATEJACOBIAN() \
+    SOFA_ATTRIBUTE_DEPRECATED("v26.12", "v27.06", "`MechanicalAccumulateJacobian` was not used. If you need it, use DifferentialOperations::pullbackCotangent.")
+#endif

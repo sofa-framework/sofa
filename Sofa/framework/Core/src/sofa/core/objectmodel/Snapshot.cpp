@@ -19,31 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#include <sofa/core/objectmodel/Snapshot.h>
 
-#include <sofa/simulation/MechanicalVisitor.h>
-
-#if !defined(SOFA_SIMULATION_CORE_MECHANICALADDMBK_TOMATRIXVISITOR_CPP)
-SOFA_HEADER_DEPRECATED_NOT_REPLACED("v26.12", "v27.12")
-#endif
-
-namespace sofa::simulation::mechanicalvisitor
+namespace sofa::core::objectmodel
 {
 
-/** Accumulate the entries of a mechanical matrix (mass or stiffness) of the whole scene */
-class SOFA_SIMULATION_CORE_API SOFA_ATTRIBUTE_DEPRECATED__MECHANICALADDMBK_TOMATRIXVISITOR() MechanicalAddMBK_ToMatrixVisitor : public MechanicalVisitor
-{
-public:
-    const sofa::core::behavior::MultiMatrixAccessor* matrix;
+Snapshot::Snapshot() = default;
+Snapshot::~Snapshot() = default;
 
-    MechanicalAddMBK_ToMatrixVisitor(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* _matrix );
-
-    /// Return a class name for this visitor
-    /// Only used for debugging / profiling purposes
-    const char* getClassName() const override { return "MechanicalAddMBK_ToMatrixVisitor"; }
-
-    Result fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff) override;
-
-    bool stopAtMechanicalMapping(simulation::Node* node, core::BaseMapping* map) override;
-};
-}
+} // namespace sofa::core::objectmodel
