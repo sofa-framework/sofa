@@ -22,13 +22,16 @@
 #pragma once
 
 #include <sofa/simulation/BaseMechanicalVisitor.h>
+#if !defined(SOFA_SIMULATION_MECHANICALVISITOR_MECHANICALACCUMULATEJACOBIAN_CPP)
+SOFA_HEADER_DEPRECATED_NOT_REPLACED("v26.12", "v27.06")
+#endif
 
 namespace sofa::simulation::mechanicalvisitor
 {
 /**
 * This class define a visitor which will go through the scene graph in reverse order and call the method applyJT of each mechanical mapping (@sa sofa::core::BaseMapping)
 */
-class SOFA_SIMULATION_CORE_API MechanicalAccumulateJacobian : public simulation::BaseMechanicalVisitor
+class SOFA_SIMULATION_CORE_API SOFA_ATTRIBUTE_DEPRECATED__MECHANICALACCUMULATEJACOBIAN() MechanicalAccumulateJacobian : public simulation::BaseMechanicalVisitor
 {
 public:
     MechanicalAccumulateJacobian(const core::ConstraintParams* _cparams, core::MultiMatrixDerivId _res);

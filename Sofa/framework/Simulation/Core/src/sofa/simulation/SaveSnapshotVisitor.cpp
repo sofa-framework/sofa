@@ -19,31 +19,61 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#include <sofa/simulation/SaveSnapshotVisitor.h>
+#include <sofa/simulation/Node.h>
 
-#include <sofa/simulation/MechanicalVisitor.h>
 
-#if !defined(SOFA_SIMULATION_CORE_MECHANICALADDMBK_TOMATRIXVISITOR_CPP)
-SOFA_HEADER_DEPRECATED_NOT_REPLACED("v26.12", "v27.12")
-#endif
-
-namespace sofa::simulation::mechanicalvisitor
+namespace sofa::simulation
 {
 
-/** Accumulate the entries of a mechanical matrix (mass or stiffness) of the whole scene */
-class SOFA_SIMULATION_CORE_API SOFA_ATTRIBUTE_DEPRECATED__MECHANICALADDMBK_TOMATRIXVISITOR() MechanicalAddMBK_ToMatrixVisitor : public MechanicalVisitor
+void SaveSnapshotVisitor::processObject(
+    const core::objectmodel::BaseObject* obj,
+    const std::shared_ptr<core::objectmodel::Snapshot::SnapshotNode>& parent)
 {
-public:
-    const sofa::core::behavior::MultiMatrixAccessor* matrix;
+    auto snapshotObject = obj->saveSnapshot(parent);
+    if (auto slaves = obj->getSlaves(); !slaves.empty())
+    {
+        for (const auto& it : slaves)
+        {
+            const auto slaveObject = it->saveSnapshot(snapshotObject);
+        }
+    }
 
-    MechanicalAddMBK_ToMatrixVisitor(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* _matrix );
-
-    /// Return a class name for this visitor
-    /// Only used for debugging / profiling purposes
-    const char* getClassName() const override { return "MechanicalAddMBK_ToMatrixVisitor"; }
-
-    Result fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff) override;
-
-    bool stopAtMechanicalMapping(simulation::Node* node, core::BaseMapping* map) override;
-};
 }
+
+Visitor::Result SaveSnapshotVisitor::processNodeTopDown(simulation::Node* node)
+{
+    const auto parents = node->getParents();
+    auto snapshotParents = std::make_shared<core::objectmodel::Snapshot::SnapshotNode>();
+
+    for (auto* p : parents)
+    {
+        const auto it = m_snapshotNodeMap.find(p);
+        if (it != m_snapshotNodeMap.end())
+        {
+            snapshotParents = std::dynamic_pointer_cast<core::objectmodel::Snapshot::SnapshotNode>(it->second);
+        }
+    }
+
+    const auto snapshot = node->saveSnapshot(snapshotParents);
+    const auto SnapshotNode = std::dynamic_pointer_cast<core::objectmodel::Snapshot::SnapshotNode>(snapshot);
+    if (SnapshotNode)
+        m_snapshotNodeMap[node] = SnapshotNode;
+
+    if (m_snapshotContainer.m_graphRoot == nullptr)
+    {
+        m_snapshotContainer.m_graphRoot = SnapshotNode;
+    }
+
+    for (const auto& it : node->object)
+    {
+        this->processObject(it.get(), SnapshotNode);
+    }
+    
+    return RESULT_CONTINUE;
+}
+
+} // namespace sofa::simulation
+
+
+
