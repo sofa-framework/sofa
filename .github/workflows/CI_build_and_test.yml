@@ -269,14 +269,14 @@ jobs:
               fi
 
               echo "${DOCKERHUB_TOKEN}" | docker login -u sofaframework --password-stdin
-
-              echo "Pulling Docker image sofaframework/sofabuilder_${builder_type}:${CI_BRANCH} ..."
-              docker pull --quiet sofaframework/sofabuilder_${builder_type}:${CI_BRANCH} || true
+          
               DOCKER_IMAGE="bakpaul/new_${builder_type}:latest"
+              echo "Pulling Docker image $DOCKER_IMAGE ..."
+              docker pull --quiet $DOCKER_IMAGE || true
 
               if [[ "$(docker image list --format "table {{.Repository}}:{{.Tag}}")" != *"sofaframework/sofabuilder_${builder_type}:${CI_BRANCH}"*  ]]; then
-                echo "Docker image sofaframework/sofabuilder_${builder_type}:${CI_BRANCH} doesn't exist, pulling default tag ${default_tag} "
-                docker pull --quiet sofaframework/sofabuilder_${builder_type}:${default_tag}
+                echo "Docker image $DOCKER_IMAGE doesn't exist, pulling default tag ${default_tag} "
+                docker pull --quiet $DOCKER_IMAGE
 
                 DOCKER_IMAGE="bakpaul/new_${builder_type}:latest"
               fi
