@@ -231,43 +231,44 @@ public:
     }
 
 protected:
-    void getVecIn1Coord     (const MultiVecCoordId id,         type::vector<      DataVecCoord_t<In1>*> &v) const
+
+    SOFA_CORE_DEPRECATED_GETDATAVECFROMMULTIVECID() void getVecIn1Coord     (const MultiVecCoordId id,         type::vector<      DataVecCoord_t<In1>*> &v) const
     {   for (unsigned int i=0; i<fromModels1.size(); ++i) v.push_back(id[fromModels1[i]].write()); }
-    void getConstVecIn1Coord(const ConstMultiVecCoordId id,    type::vector<const DataVecCoord_t<In1>*> &v) const
+    SOFA_CORE_DEPRECATED_GETDATAVECFROMMULTIVECID() void getConstVecIn1Coord(const ConstMultiVecCoordId id,    type::vector<const DataVecCoord_t<In1>*> &v) const
     {   for (unsigned int i=0; i<fromModels1.size(); ++i) v.push_back(id[fromModels1[i]].read());  }
-    void getVecIn1Deriv     (const MultiVecDerivId id,         type::vector<      DataVecDeriv_t<In1>*> &v) const
+    SOFA_CORE_DEPRECATED_GETDATAVECFROMMULTIVECID() void getVecIn1Deriv     (const MultiVecDerivId id,         type::vector<      DataVecDeriv_t<In1>*> &v) const
     {   for (unsigned int i=0; i<fromModels1.size(); ++i) v.push_back(id[fromModels1[i]].write()); }
-    void getConstVecIn1Deriv(const ConstMultiVecDerivId id,    type::vector<const DataVecDeriv_t<In1>*> &v) const
+    SOFA_CORE_DEPRECATED_GETDATAVECFROMMULTIVECID() void getConstVecIn1Deriv(const ConstMultiVecDerivId id,    type::vector<const DataVecDeriv_t<In1>*> &v) const
     {   for (unsigned int i=0; i<fromModels1.size(); ++i) v.push_back(id[fromModels1[i]].read());  }
-    void getMatIn1Deriv     (const MultiMatrixDerivId id,      type::vector<      DataMatrixDeriv_t<In1>*> &v) const
+    SOFA_CORE_DEPRECATED_GETDATAVECFROMMULTIVECID() void getMatIn1Deriv     (const MultiMatrixDerivId id,      type::vector<      DataMatrixDeriv_t<In1>*> &v) const
     {   for (unsigned int i=0; i<fromModels1.size(); ++i) v.push_back(id[fromModels1[i]].write()); }
-    void getConstMatIn1Deriv(const ConstMultiMatrixDerivId id, type::vector<const DataMatrixDeriv_t<In1>*> &v) const
+    SOFA_CORE_DEPRECATED_GETDATAVECFROMMULTIVECID() void getConstMatIn1Deriv(const ConstMultiMatrixDerivId id, type::vector<const DataMatrixDeriv_t<In1>*> &v) const
     {   for (unsigned int i=0; i<fromModels1.size(); ++i) v.push_back(id[fromModels1[i]].read());  }
 
-    void getVecIn2Coord     (const MultiVecCoordId id,         type::vector<      DataVecCoord_t<In2>*> &v) const
+    SOFA_CORE_DEPRECATED_GETDATAVECFROMMULTIVECID() void getVecIn2Coord     (const MultiVecCoordId id,         type::vector<      DataVecCoord_t<In2>*> &v) const
     {   for (unsigned int i=0; i<fromModels2.size(); ++i) v.push_back(id[fromModels2[i]].write()); }
-    void getConstVecIn2Coord(const ConstMultiVecCoordId id,    type::vector<const DataVecCoord_t<In2>*> &v) const
+    SOFA_CORE_DEPRECATED_GETDATAVECFROMMULTIVECID() void getConstVecIn2Coord(const ConstMultiVecCoordId id,    type::vector<const DataVecCoord_t<In2>*> &v) const
     {   for (unsigned int i=0; i<fromModels2.size(); ++i) v.push_back(id[fromModels2[i]].read());  }
-    void getVecIn2Deriv     (const MultiVecDerivId id,         type::vector<      DataVecDeriv_t<In2>*> &v) const
+    SOFA_CORE_DEPRECATED_GETDATAVECFROMMULTIVECID() void getVecIn2Deriv     (const MultiVecDerivId id,         type::vector<      DataVecDeriv_t<In2>*> &v) const
     {   for (unsigned int i=0; i<fromModels2.size(); ++i) v.push_back(id[fromModels2[i]].write()); }
-    void getConstVecIn2Deriv(const ConstMultiVecDerivId id,    type::vector<const DataVecDeriv_t<In2>*> &v) const
+    SOFA_CORE_DEPRECATED_GETDATAVECFROMMULTIVECID() void getConstVecIn2Deriv(const ConstMultiVecDerivId id,    type::vector<const DataVecDeriv_t<In2>*> &v) const
     {   for (unsigned int i=0; i<fromModels2.size(); ++i) v.push_back(id[fromModels2[i]].read());  }
-    void getMatIn2Deriv     (const MultiMatrixDerivId id,      type::vector<      DataMatrixDeriv_t<In2>*> &v) const
+    SOFA_CORE_DEPRECATED_GETDATAVECFROMMULTIVECID() void getMatIn2Deriv     (const MultiMatrixDerivId id,      type::vector<      DataMatrixDeriv_t<In2>*> &v) const
     {   for (unsigned int i=0; i<fromModels2.size(); ++i) v.push_back(id[fromModels2[i]].write()); }
-    void getConstMatIn2Deriv(const ConstMultiMatrixDerivId id, type::vector<const DataMatrixDeriv_t<In2>*> &v) const
+    SOFA_CORE_DEPRECATED_GETDATAVECFROMMULTIVECID() void getConstMatIn2Deriv(const ConstMultiMatrixDerivId id, type::vector<const DataMatrixDeriv_t<In2>*> &v) const
     {   for (unsigned int i=0; i<fromModels2.size(); ++i) v.push_back(id[fromModels2[i]].read());  }
 
-    void getVecOutCoord     (const MultiVecCoordId id,         type::vector<      DataVecCoord_t<Out>*> &v) const
+    SOFA_CORE_DEPRECATED_GETDATAVECFROMMULTIVECID() void getVecOutCoord     (const MultiVecCoordId id,         type::vector<      DataVecCoord_t<Out>*> &v) const
     {   for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(id[toModels[i]].write());      }
-    void getConstVecOutCoord(const ConstMultiVecCoordId id,    type::vector<const DataVecCoord_t<Out>*> &v) const
+    SOFA_CORE_DEPRECATED_GETDATAVECFROMMULTIVECID() void getConstVecOutCoord(const ConstMultiVecCoordId id,    type::vector<const DataVecCoord_t<Out>*> &v) const
     {   for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(id[toModels[i]].read());       }
-    void getVecOutDeriv     (const MultiVecDerivId id,         type::vector<      DataVecDeriv_t<Out>*> &v) const
+    SOFA_CORE_DEPRECATED_GETDATAVECFROMMULTIVECID() void getVecOutDeriv     (const MultiVecDerivId id,         type::vector<      DataVecDeriv_t<Out>*> &v) const
     {   for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(id[toModels[i]].write());      }
-    void getConstVecOutDeriv(const ConstMultiVecDerivId id,    type::vector<const DataVecDeriv_t<Out>*> &v) const
+    SOFA_CORE_DEPRECATED_GETDATAVECFROMMULTIVECID() void getConstVecOutDeriv(const ConstMultiVecDerivId id,    type::vector<const DataVecDeriv_t<Out>*> &v) const
     {   for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(id[toModels[i]].read());       }
-    void getMatOutDeriv     (const MultiMatrixDerivId id,      type::vector<      DataMatrixDeriv_t<Out>*> &v) const
+    SOFA_CORE_DEPRECATED_GETDATAVECFROMMULTIVECID() void getMatOutDeriv     (const MultiMatrixDerivId id,      type::vector<      DataMatrixDeriv_t<Out>*> &v) const
     {   for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(id[toModels[i]].write());      }
-    void getConstMatOutDeriv(const ConstMultiMatrixDerivId id, type::vector<const DataMatrixDeriv_t<Out>*> &v) const
+    SOFA_CORE_DEPRECATED_GETDATAVECFROMMULTIVECID() void getConstMatOutDeriv(const ConstMultiMatrixDerivId id, type::vector<const DataMatrixDeriv_t<Out>*> &v) const
     {   for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(id[toModels[i]].read());       }
 
 };
