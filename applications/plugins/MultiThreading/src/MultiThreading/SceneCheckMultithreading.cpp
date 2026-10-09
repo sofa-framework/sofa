@@ -50,7 +50,7 @@ const std::string SceneCheckMultithreading::getDesc()
 void SceneCheckMultithreading::doInit(sofa::simulation::Node* node)
 {
     SOFA_UNUSED(node);
-
+    m_libLoaded = true;
     m_summary.clear();
 }
 
@@ -89,8 +89,8 @@ void SceneCheckMultithreading::doCheckOn(sofa::simulation::Node* node)
                 }
                 else
                 {
-                    msg_error(object.get()) << "The component has a equivalent parallel implementation '"
-                        << parallelImplementation << "' but it cannot be found in the object factory";
+                    m_summary.insert({object.get()->getClassName(), parallelImplementation });
+                    m_libLoaded = false;
                 }
             }
         }
@@ -106,9 +106,14 @@ void SceneCheckMultithreading::doPrintSummary()
         {
             ss << "\t" << seq << " -> " << par << msgendl;
         }
+        if ( ! this->m_libLoaded )
+        {
+            msg_warning(this->getName()) << "The MultiThreading plugin hasn't been properly loaded. The following message "
+                 << "might contain incomplete information. To get reliable info, please make sure MultiThreading is loaded by your scene through a RequiredPlugin object.";
+        }
         msg_advice(this->getName()) << "This scene is using components implemented sequentially while "
             << "a parallel implementation is available. Using the parallel implementation may improve "
-            "the performances. Here is the list of sequential components in your scene and "
+            "the performances. " <<"Here is the list of sequential components in your scene and "
             "their parallel equivalent: " << msgendl << ss.str();
     }
 }
