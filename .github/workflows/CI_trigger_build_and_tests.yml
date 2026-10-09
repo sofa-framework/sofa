@@ -174,7 +174,7 @@ jobs:
         uses: actions/checkout@v5
         with:
           repository: sofa-framework/ci
-          ref: master
+          ref: hugtalbot-patch-2
           path: ./ci
 
       - name: Check push on master case (e.g. merge)
