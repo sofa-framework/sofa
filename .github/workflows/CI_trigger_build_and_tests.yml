@@ -234,8 +234,8 @@ jobs:
   # Trigger the build and sharing all parameters from filter_build > outputs
   build-on:
     needs: filter_build
-    if: ${{ github.repository_owner == 'sofa-framework' && needs.filter_build.outputs.SH_BUILDER_OS != '[]' }}
-    uses: sofa-framework/sofa/.github/workflows/CI_build_and_test.yml@master
+    if: ${{ github.repository_owner == 'sofa-framework' }}
+    uses: bakpaul/sofa/.github/workflows/CI_build_and_test.yml@26_09_use_python_based_ci_script_on_unix_ci
     with:
       sofa-branch-name: ${{ needs.filter_build.outputs.SOFA_BRANCH_NAME }}
       sofa-commit-sha: ${{ needs.filter_build.outputs.SOFA_COMMIT_SHA }}
