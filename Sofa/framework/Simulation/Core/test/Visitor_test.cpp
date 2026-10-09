@@ -90,7 +90,7 @@ public:
 class TestForceField : public core::behavior::BaseForceField
 {
 public:
-    void addForce(const core::MechanicalParams* mparams, core::MultiVecDerivId fId) override
+    void addForce(const core::MechanicalParams* mparams, core::MultiVecDerivId fId, core::ConstMultiVecCoordId xId, core::ConstMultiVecDerivId vId) override
     {
         SOFA_UNUSED(mparams);
         SOFA_UNUSED(fId);
@@ -176,7 +176,7 @@ public:
 class TestInteractionForceField : public core::behavior::BaseInteractionForceField
 {
 public:
-    void addForce(const core::MechanicalParams* mparams, core::MultiVecDerivId fId) override
+    void addForce(const core::MechanicalParams* mparams, core::MultiVecDerivId fId, core::ConstMultiVecCoordId xId, core::ConstMultiVecDerivId vId) override
     {
         SOFA_UNUSED(mparams);
         SOFA_UNUSED(fId);

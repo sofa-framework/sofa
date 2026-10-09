@@ -204,6 +204,7 @@ void MechanicalOperations::computeEnergy(SReal &kineticEnergy, SReal &potentialE
     kineticEnergy = energyVisitor.getKineticEnergy();
     potentialEnergy = energyVisitor.getPotentialEnergy();
 }
+
 /// Apply projective constraints to the given velocity vector
 void MechanicalOperations::projectVelocity(core::MultiVecDerivId v, SReal time)
 {
@@ -248,7 +249,9 @@ void MechanicalOperations::accFromF(core::MultiVecDerivId a, core::ConstMultiVec
 }
 
 /// Compute the current force (given the latest propagated position and velocity)
-void MechanicalOperations::computeForce(core::MultiVecDerivId result, bool clear, bool accumulate)
+void MechanicalOperations::computeForce(core::MultiVecDerivId result,
+                                        core::ConstMultiVecCoordId xId,
+                                        core::ConstMultiVecDerivId vId, bool clear, bool accumulate)
 {
     setF(result);
     if (clear)
@@ -256,7 +259,12 @@ void MechanicalOperations::computeForce(core::MultiVecDerivId result, bool clear
         executeVisitor( MechanicalResetForceVisitor(&mparams, result, false) );
         //finish();
     }
-    executeVisitor( MechanicalComputeForceVisitor(&mparams, result, accumulate) );
+    executeVisitor( MechanicalComputeForceVisitor(&mparams, result, xId, vId, accumulate) );
+}
+
+void MechanicalOperations::computeForce(core::MultiVecDerivId result, bool clear, bool accumulate)
+{
+    computeForce(result, mparams.x(), mparams.v(), clear, accumulate);
 }
 
 
