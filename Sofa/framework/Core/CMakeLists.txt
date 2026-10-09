@@ -97,6 +97,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/behavior/DefaultMultiMatrixAccessor.h
     ${SRC_ROOT}/behavior/ForceField.h
     ${SRC_ROOT}/behavior/ForceField.inl
+    ${SRC_ROOT}/behavior/IterativeSolver.h
     ${SRC_ROOT}/behavior/LagrangianConstraint.h
     ${SRC_ROOT}/behavior/LagrangianConstraint.inl
     ${SRC_ROOT}/behavior/LinearSolver.h
@@ -276,6 +277,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/behavior/ConstraintSolver.cpp
     ${SRC_ROOT}/behavior/DefaultMultiMatrixAccessor.cpp
     ${SRC_ROOT}/behavior/ForceField.cpp
+    ${SRC_ROOT}/behavior/IterativeSolver.cpp
     ${SRC_ROOT}/behavior/LagrangianConstraint.cpp
     ${SRC_ROOT}/behavior/LinearSolver.cpp
     ${SRC_ROOT}/behavior/LinearSolverAccessor.cpp
