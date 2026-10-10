@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" ?>
-<Node name="root" dt="0.00005" showBoundingTree="0" gravity="0 0 0">
+<Node name="root" dt="0.00001" showBoundingTree="0" gravity="0 0 0">
     <Node name="plugins">
         <RequiredPlugin pluginName="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
         <RequiredPlugin pluginName="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
@@ -25,10 +25,11 @@
         <SparseLDLSolver template="CompressedRowSparseMatrixd"/>
 
         <RegularGridTopology name="hexaGrid"     min="0 0 0" max="1 1 2.7" n="6 6 16" p0="0 0 0"/>
-        <RegularGridTopology name="hexaGridRest" min="0 0 0" max="1 1 -2.7"   n="6 6 16" p0="0 0 0"/>
+        <Node name="invertedConfiguration">
+            <RegularGridTopology name="hexaGrid" min="0 0 0" max="1 1 -2.7" n="6 6 16" p0="0 0 0"/>
+        </Node>
 
-        <MechanicalObject name="mechObj" rest_position="@hexaGrid.position" position="@hexaGridRest.position"/>
-        <MeshMatrixMass totalMass="1.0"/>
+        <MechanicalObject name="mechObj" rest_position="@hexaGrid.position" position="@invertedConfiguration/hexaGrid.position"/>
 
         <Node name="tetras">
             <TetrahedronSetTopologyContainer name="Container"/>
@@ -36,10 +37,12 @@
             <TetrahedronSetGeometryAlgorithms template="Vec3" name="GeomAlgo" />
             <Hexa2TetraTopologicalMapping name="default28" input="@../hexaGrid" output="@Container" swapping="true"/>
 
-            <TetrahedronHyperelasticityFEMForceField name="FEM" ParameterSet="1644295.30201342 33557.0469798658" materialName="StableNeoHookean"/>
+            <MeshMatrixMass totalMass="1.0" topology="@Container" geometryState="@../mechObj" computeMassOnRest="true"/>
+
+            <TetrahedronHyperelasticityFEMForceField name="FEM" topology="@Container" ParameterSet="1644295.30201342 33557.0469798658" materialName="StableNeoHookean"/>
         </Node>
 
-        <BoxROI drawBoxes="1" box="0 0 0 1 1 0.05" name="box"/>
+        <BoxROI drawBoxes="1" box="0 0 0 1 1 0.05" name="box" position="@mechObj.rest_position"/>
         <FixedProjectiveConstraint indices="@box.indices"/>
     </Node>
 
