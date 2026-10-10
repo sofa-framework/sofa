@@ -72,12 +72,36 @@ generatePositiveDefiniteMatrix(sofa::testing::LinearCongruentialRandomGenerator&
     return W;
 }
 
-void computeStrainInformation(StrainInformation<defaulttype::Vec3Types>& strain)
+StrainInformation<defaulttype::Vec3Types>::MatrixSym
+generateTestDeformationTensor(sofa::testing::LinearCongruentialRandomGenerator& lcg, bool inverted)
+{
+    if (!inverted)
+    {
+        return generatePositiveDefiniteMatrix(lcg);
+    }
+
+    // C = F^T F for F = {{1.2, 0.2, 0.1}, {0, 0.9, 0.15}, {0, 0, -0.8}}.
+    // Keep the inverted sample away from singularity for finite differences.
+    StrainInformation<defaulttype::Vec3Types>::MatrixSym C;
+    C(0, 0) = 1.44;
+    C(0, 1) = 0.24;
+    C(0, 2) = 0.12;
+    C(1, 1) = 0.85;
+    C(1, 2) = 0.155;
+    C(2, 2) = 0.6725;
+    return C;
+}
+
+void computeStrainInformation(StrainInformation<defaulttype::Vec3Types>& strain, bool inverted = false)
 {
     strain.trC = sofa::type::trace(strain.deformationTensor);
 
-    //det(C)=J^2
+    // det(C) = J^2 does not retain the orientation of the deformation.
     strain.J = std::sqrt(sofa::type::determinant(strain.deformationTensor));
+    if (inverted)
+    {
+        strain.J = -strain.J;
+    }
 }
 
 SReal perturbedStrainEnergy(
@@ -97,7 +121,7 @@ SReal perturbedStrainEnergy(
     }
 
     strain.deformationTensor[i] += h;
-    computeStrainInformation(strain);
+    computeStrainInformation(strain, strain_0.J < 0);
 
     return material.getStrainEnergy(&strain, materialParameters);
 }
@@ -119,7 +143,7 @@ StrainInformation<defaulttype::Vec3Types>::MatrixSym perturbedPK2(
     }
 
     strain.deformationTensor[i] += h;
-    computeStrainInformation(strain);
+    computeStrainInformation(strain, strain_0.J < 0);
 
     StrainInformation<defaulttype::Vec3Types>::MatrixSym PK2;
     material.deriveSPKTensor(&strain, materialParameters, PK2);
@@ -128,7 +152,8 @@ StrainInformation<defaulttype::Vec3Types>::MatrixSym perturbedPK2(
 
 void testSecondPiolaKirchhoffFromStrainEnergyDensityFunction(
     HyperelasticMaterial<defaulttype::Vec3Types>& material,
-    const MaterialParameters<defaulttype::Vec3Types>& materialParameters)
+    const MaterialParameters<defaulttype::Vec3Types>& materialParameters,
+    bool inverted = false)
 {
     using Real = defaulttype::Vec3Types::Coord::value_type;
 
@@ -136,9 +161,10 @@ void testSecondPiolaKirchhoffFromStrainEnergyDensityFunction(
 
     //random right Cauchy-Green deformation tensor
     sofa::testing::LinearCongruentialRandomGenerator lcg(96547);
-    strain.deformationTensor = generatePositiveDefiniteMatrix(lcg);
+    strain.deformationTensor = generateTestDeformationTensor(lcg, inverted);
 
-    computeStrainInformation(strain);
+    computeStrainInformation(strain, inverted);
+    ASSERT_EQ(strain.J < 0, inverted);
 
     StrainInformation<defaulttype::Vec3Types>::MatrixSym PK2;
     material.deriveSPKTensor(&strain, materialParameters, PK2);
@@ -167,7 +193,8 @@ void testSecondPiolaKirchhoffFromStrainEnergyDensityFunction(
 
 void testElasticityTensorFromSecondPiolaKirchhoff(
     HyperelasticMaterial<defaulttype::Vec3Types>& material,
-    const MaterialParameters<defaulttype::Vec3Types>& materialParameters)
+    const MaterialParameters<defaulttype::Vec3Types>& materialParameters,
+    bool inverted = false)
 {
     using Real = defaulttype::Vec3Types::Coord::value_type;
     using MatrixSym = StrainInformation<defaulttype::Vec3Types>::MatrixSym;
@@ -177,9 +204,10 @@ void testElasticityTensorFromSecondPiolaKirchhoff(
 
     //random right Cauchy-Green deformation tensor
     sofa::testing::LinearCongruentialRandomGenerator lcg(96547);
-    strain.deformationTensor = generatePositiveDefiniteMatrix(lcg);
+    strain.deformationTensor = generateTestDeformationTensor(lcg, inverted);
 
-    computeStrainInformation(strain);
+    computeStrainInformation(strain, inverted);
+    ASSERT_EQ(strain.J < 0, inverted);
 
     Matrix6 elasticityTensor;
     material.ElasticityTensor(&strain, materialParameters, elasticityTensor);
@@ -212,7 +240,8 @@ void testElasticityTensorFromSecondPiolaKirchhoff(
 
 void testApplyElasticityTensor(
     HyperelasticMaterial<defaulttype::Vec3Types>& material,
-    const MaterialParameters<defaulttype::Vec3Types>& materialParameters)
+    const MaterialParameters<defaulttype::Vec3Types>& materialParameters,
+    bool inverted = false)
 {
     using MatrixSym = StrainInformation<defaulttype::Vec3Types>::MatrixSym;
     using Matrix6 = HyperelasticMaterial<defaulttype::Vec3Types>::Matrix6;
@@ -221,7 +250,7 @@ void testApplyElasticityTensor(
 
     //random right Cauchy-Green deformation tensor
     sofa::testing::LinearCongruentialRandomGenerator lcg(96547);
-    strain.deformationTensor = generatePositiveDefiniteMatrix(lcg);
+    strain.deformationTensor = generateTestDeformationTensor(lcg, inverted);
 
     //another random-generated symmetric second-order tensor
     const StrainInformation<defaulttype::Vec3Types>::MatrixSym e =
@@ -232,7 +261,8 @@ void testApplyElasticityTensor(
         eVec[i] = e[i];
     }
 
-    computeStrainInformation(strain);
+    computeStrainInformation(strain, inverted);
+    ASSERT_EQ(strain.J < 0, inverted);
 
     //first method to obtain the application of the elasticity tensor: matrix-vector product
     Matrix6 elasticityTensor;
@@ -313,6 +343,40 @@ TEST(HyperelasticMaterial, PK2_StableNeoHookean)
     testSecondPiolaKirchhoffFromStrainEnergyDensityFunction(material, materialParameters);
 }
 
+TEST(HyperelasticMaterial, PK2_StableNeoHookean_Inverted)
+{
+    MaterialParameters<defaulttype::Vec3Types> materialParameters;
+    materialParameters.parameterArray = { 1., 1.};
+
+    StableNeoHookean<defaulttype::Vec3Types> material{};
+    testSecondPiolaKirchhoffFromStrainEnergyDensityFunction(material, materialParameters, true);
+}
+
+TEST(HyperelasticMaterial, StableNeoHookean_Reflection)
+{
+    MaterialParameters<defaulttype::Vec3Types> materialParameters;
+    materialParameters.parameterArray = { 1., 1.};
+
+    StableNeoHookean<defaulttype::Vec3Types> material{};
+    StrainInformation<defaulttype::Vec3Types> strain;
+    strain.deformationTensor.identity();
+    computeStrainInformation(strain);
+    const auto restEnergy = material.getStrainEnergy(&strain, materialParameters);
+
+    // F = diag(1, 1, -1) has the same C as the rest state, but J = -1.
+    strain.J = -1;
+    StrainInformation<defaulttype::Vec3Types>::MatrixSym stress;
+    material.deriveSPKTensor(&strain, materialParameters, stress);
+
+    EXPECT_DOUBLE_EQ(material.getStrainEnergy(&strain, materialParameters) - restEnergy, 6.);
+    for (sofa::Size i = 0; i < 3; ++i)
+    {
+        for (sofa::Size j = 0; j <= i; ++j)
+        {
+            EXPECT_DOUBLE_EQ(stress(i, j), i == j ? 6. : 0.);
+        }
+    }
+}
 
 
 TEST(HyperelasticMaterial, ElasticityTensor_StVenantKirchhoff)
@@ -349,6 +413,15 @@ TEST(HyperelasticMaterial, ElasticityTensor_StableNeoHookean)
 
     StableNeoHookean<defaulttype::Vec3Types> material{};
     testElasticityTensorFromSecondPiolaKirchhoff(material, materialParameters);
+}
+
+TEST(HyperelasticMaterial, ElasticityTensor_StableNeoHookean_Inverted)
+{
+    MaterialParameters<defaulttype::Vec3Types> materialParameters;
+    materialParameters.parameterArray = { 1., 1.};
+
+    StableNeoHookean<defaulttype::Vec3Types> material{};
+    testElasticityTensorFromSecondPiolaKirchhoff(material, materialParameters, true);
 }
 
 TEST(HyperelasticMaterial, ElasticityTensor_ArrudaBoyce)
@@ -407,6 +480,15 @@ TEST(HyperelasticMaterial, applyElasticityTensor_StableNeoHookean)
 
     StableNeoHookean<defaulttype::Vec3Types> material{};
     testApplyElasticityTensor(material, materialParameters);
+}
+
+TEST(HyperelasticMaterial, applyElasticityTensor_StableNeoHookean_Inverted)
+{
+    MaterialParameters<defaulttype::Vec3Types> materialParameters;
+    materialParameters.parameterArray = { 1., 1.};
+
+    StableNeoHookean<defaulttype::Vec3Types> material{};
+    testApplyElasticityTensor(material, materialParameters, true);
 }
 
 TEST(HyperelasticMaterial, applyElasticityTensor_ArrudaBoyce)
