@@ -16,8 +16,10 @@ set(SOURCE_FILES
     ${SOFACOMPONENTODESOLVER_SOURCE_DIR}/init.cpp
 )
 
+sofa_find_package(Sofa.Component.IntegrationScheme REQUIRED)
+
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC ${SOFACOMPONENTODESOLVER_TARGETS})
+target_link_libraries(${PROJECT_NAME} PUBLIC ${SOFACOMPONENTODESOLVER_TARGETS} Sofa.Component.IntegrationScheme)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

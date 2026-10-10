@@ -27,7 +27,7 @@
 
 namespace sofa::component::odesolver
 {
-    
+
 extern "C" {
     SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
     SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
@@ -52,12 +52,29 @@ const char* getModuleVersion()
 
 void registerObjects(sofa::core::ObjectFactory* factory)
 {
+    const auto isLoaded = sofa::helper::system::PluginManager::getInstance().isPluginLoaded(Sofa.Component.IntegrationScheme);
+    bool objLoaded = true;
 
+    if (isLoaded.second)
+    {
+
+        objLoaded &= factory->registerObjectsFromPlugin(Sofa.Component.IntegrationScheme.Backward);
+        objLoaded &= factory->registerObjectsFromPlugin(Sofa.Component.IntegrationScheme.Forward);
+
+        if (!objLoaded)
+            msg_error_once("Sofa.Component.ODESolver")<<"Registering objects from Sofa.Component.IntegrationScheme failed.";
+    }
 }
 
 void init()
 {
-    msg_deprecated_once(MODULE_NAME)<<"This plugin and its sub-plugins are empty since v26.12 and will be removed in v27.12, load Sofa.Component.IntegrationScheme instead.";
+    msg_deprecated_once(MODULE_NAME)<<"This plugin is empty since v26.12 and will be removed in v27.12, load Sofa.Component.IntegrationScheme instead.";
+    auto status = sofa::helper::system::PluginManager::getInstance().loadPluginByName(Sofa.Component.IntegrationScheme) ;
+
+    if (status <= sofa::helper::system::PluginManager::PluginLoadStatus::ALREADY_LOADED)
+        msg_info_once("Sofa.Component.ODESolver")<<"Sofa.Component.IntegrationScheme has been loaded automatically.";
+    else
+        msg_error_once("Sofa.Component.ODESolver")<<"Tried to load Sofa.Component.IntegrationScheme automatically but failed.";
 }
 
 } // namespace sofa::component::integrationscheme
