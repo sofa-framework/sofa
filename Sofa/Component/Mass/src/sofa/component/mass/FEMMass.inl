@@ -299,7 +299,7 @@ void FEMMass<TDataTypes, TElementType>::addMDx(const core::MechanicalParams* mpa
 }
 
 template <class TDataTypes, class TElementType>
-void FEMMass<TDataTypes, TElementType>::solveLinearSystem(const core::MechanicalParams* mparams,
+void FEMMass<TDataTypes, TElementType>::doSolveLinearSystem(const core::MechanicalParams* mparams,
                                                         DataVecDeriv_t<DataTypes>& a,
                                                         const DataVecDeriv_t<DataTypes>& f)
 {
