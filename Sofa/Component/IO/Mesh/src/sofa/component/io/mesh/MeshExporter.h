@@ -22,9 +22,10 @@
 #pragma once
 
 #include <sofa/component/io/mesh/config.h>
-
+#include <sofa/core/behavior/TopologyAccessor.h>
 #include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/core/objectmodel/DataFileName.h>
+#include <sofa/core/topology/Topology.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/OptionsGroup.h>
 #include <sofa/simulation/BaseSimulationExporter.h>
@@ -54,10 +55,10 @@ using sofa::core::topology::BaseMeshTopology ;
 using sofa::simulation::BaseSimulationExporter ;
 using sofa::core::topology::Topology ;
 
-class SOFA_COMPONENT_IO_MESH_API MeshExporter : public BaseSimulationExporter
+class SOFA_COMPONENT_IO_MESH_API MeshExporter : public BaseSimulationExporter, public core::behavior::TopologyAccessor
 {
 public:
-    SOFA_CLASS(MeshExporter, BaseSimulationExporter);
+    SOFA_CLASS2(MeshExporter, BaseSimulationExporter, core::behavior::TopologyAccessor);
 
 public:
     Data<sofa::helper::OptionsGroup> d_fileFormat; ///< File format to use
@@ -94,7 +95,6 @@ protected:
     MeshExporter();
     ~MeshExporter() override;
 
-    BaseMeshTopology*     m_inputtopology {nullptr};
     BaseMechanicalState*  m_inputmstate {nullptr};
 
     std::string getMeshFilename(const char* ext);
