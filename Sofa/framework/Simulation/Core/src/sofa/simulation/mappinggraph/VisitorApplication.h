@@ -29,7 +29,8 @@ enum class SOFA_SIMULATION_CORE_API VisitorApplication
 {
     ALL_NODES,
     ONLY_MAPPED_NODES,
-    ONLY_MAIN_NODES
+    ONLY_MAIN_NODES,
+    ONLY_LEAF_NODES,
 };
 
 }

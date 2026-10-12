@@ -38,6 +38,8 @@ bool shouldVisit(const BaseMappingGraphNode* node, VisitorApplication scope)
                 return node->isMapped();
             case VisitorApplication::ONLY_MAIN_NODES:
                 return !node->isMapped();
+            case VisitorApplication::ONLY_LEAF_NODES:
+                return node->isLeaf();
             case VisitorApplication::ALL_NODES:
             default:
                 return true; // Visit all nodes.

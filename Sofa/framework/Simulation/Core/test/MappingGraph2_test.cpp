@@ -343,6 +343,42 @@ TEST(MappingGraph, ComplexGraph_OnlyMainNodes)
     EXPECT_EQ(visitor.names[4], "[STATE]state1");
 }
 
+/**
+ * @brief Tests scoped traversal using different VisitorApplication scopes, limiting results to leaf nodes only.
+ */
+TEST(MappingGraph, ComplexGraph_OnlyLeafNodes)
+{
+    // Setup environment using helper function
+    auto [root, inputs] = setupComplexGraphEnvironment();
+
+    ASSERT_EQ(inputs.mappings.size(), 1);
+    ASSERT_EQ(inputs.mechanicalStates.size(), 2);
+    ASSERT_EQ(inputs.forceFields.size(), 4);
+    sofa::simulation::MappingGraph mappingGraph(inputs);
+    ASSERT_TRUE(mappingGraph.isBuilt());
+
+    CollectNamesVisitor visitor;
+
+    // Test ONLY_MAIN_NODES scope
+    mappingGraph.algorithms.traverseTopDown(visitor, sofa::simulation::VisitorApplication::ONLY_LEAF_NODES);
+    ASSERT_EQ(visitor.names.size(), 4);
+
+    EXPECT_EQ(visitor.names[0], "[STATE]state2");
+    EXPECT_EQ(visitor.names[1], "[FORCEFIELD]ff2");
+    EXPECT_EQ(visitor.names[2], "[FORCEFIELD]mass2");
+    EXPECT_EQ(visitor.names[3], "[MASS]mass2");
+
+    visitor.names.clear();
+    // Bottom Up Traversal Check
+    mappingGraph.algorithms.traverseBottomUp(visitor, sofa::simulation::VisitorApplication::ONLY_LEAF_NODES);
+    ASSERT_EQ(visitor.names.size(), 4);
+
+    EXPECT_EQ(visitor.names[0], "[MASS]mass2");
+    EXPECT_EQ(visitor.names[1], "[FORCEFIELD]mass2");
+    EXPECT_EQ(visitor.names[2], "[FORCEFIELD]ff2");
+    EXPECT_EQ(visitor.names[3], "[STATE]state2");
+}
+
 TEST(MappingGraph, ComplexGraphUsingLambdas)
 {
     // Setup environment using helper function
