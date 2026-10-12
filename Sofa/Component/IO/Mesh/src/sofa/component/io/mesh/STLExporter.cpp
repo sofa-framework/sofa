@@ -60,8 +60,10 @@ void STLExporter::doReInit()
 {
     const BaseContext* context = this->getContext();
 
+    BaseMeshTopology*    m_inputtopology {nullptr};
+    VisualModel*         m_inputvmodel   {nullptr};
+
     context->get(m_inputtopology, BaseContext::Local);
-    context->get(m_inputmstate, BaseContext::Local);
     context->get(m_inputvmodel, BaseContext::Local);
 
     // Test if the position has not been modified
