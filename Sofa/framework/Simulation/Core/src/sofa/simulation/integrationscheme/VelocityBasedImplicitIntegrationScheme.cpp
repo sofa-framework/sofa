@@ -66,7 +66,7 @@ void VelocityBasedImplicitIntegrationScheme::doSetupIntegrationStep(const core::
 
     // This is only there for lagrangian based simulation, to make sure we start using the real pose
     // instead of the free pos (same for velocity)
-    simulation::mechanicalvisitor::MechanicalVOpVisitor copyPoseInFreePose(params, m_vResult, core::vec_id::write_access::velocity);
+    simulation::mechanicalvisitor::MechanicalVOpVisitor copyPoseInFreePose(params, m_xResult, core::vec_id::write_access::position);
     simulation::mechanicalvisitor::MechanicalVOpVisitor copyVelInFreeVel(params, m_vResult, core::vec_id::write_access::velocity);
     copyVelInFreeVel.setMapped(true);
     copyPoseInFreePose.setMapped(true);
