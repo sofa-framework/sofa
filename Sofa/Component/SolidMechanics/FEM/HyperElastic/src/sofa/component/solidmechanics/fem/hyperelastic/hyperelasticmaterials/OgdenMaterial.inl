@@ -81,7 +81,7 @@ auto OgdenMaterial<DataTypes>::secondPiolaKirchhoffStress(Strain<DataTypes>& str
         }
 
         const Real coefS1 = FJ * mu / (alpha * static_cast<Real>(2));
-        const Real coefS2 = -FJ * mu / (alpha * static_cast<Real>(6)) * trCaBy2;
+        const Real coefS2 = -FJ * mu / (alpha * static_cast<Real>(2 * spatial_dimensions)) * trCaBy2;
 
         StressTensor S{};
 
@@ -121,7 +121,7 @@ auto OgdenMaterial<DataTypes>::elasticityTensor(Strain<DataTypes>& strain) -> El
 
     const Real J = strain.getDeterminantDeformationGradient();
     assert(J > 0);
-    const Real FJ = pow(J, -alpha / static_cast<Real>(3));
+    const Real FJ = pow(J, -alpha / static_cast<Real>(spatial_dimensions));
 
     EigenMatrix CEigen;
     for (sofa::Index m = 0; m < spatial_dimensions; ++m)
@@ -197,12 +197,12 @@ auto OgdenMaterial<DataTypes>::elasticityTensor(Strain<DataTypes>& strain) -> El
                 // differentiating coefS1, coefS2 and C^(-1) from S_isochoric
                 sum += FJ * mu * (
                         // Contribution from derivative of F(J)
-                        trCaBy2 / static_cast<Real>(18) * C_1(j,i) * C_1(l,k) - 
+                        trCaBy2 / static_cast<Real>(2 * spatial_dimensions * spatial_dimensions) * C_1(j,i) * C_1(l,k) - 
                         // Contribution from derivatives of C^(alpha/2 - 1) and tr(C^(alpha/2))
                         (CaBy2Minus1(j,i) * C_1(l,k) + C_1(j,i) * CaBy2Minus1(k,l)) 
-                        / static_cast<Real>(6) +
+                        / static_cast<Real>(2 * spatial_dimensions) +
                         // Contribution from derivative of C^(-1) 
-                        trCaBy2 / (static_cast<Real>(6) * alpha) 
+                        trCaBy2 / (static_cast<Real>(2 * spatial_dimensions) * alpha) 
                         * (C_1(j,k) * C_1(l,i) + C_1(j,l) * C_1(k,i))
                 );
 
