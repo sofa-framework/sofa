@@ -60,18 +60,21 @@ void MeshExporter::doReInit()
 {
     this->validateTopology();
 
-    const sofa::core::objectmodel::BaseContext* context = this->getContext();
-    context->get(m_inputmstate);
-
-    if (!d_position.isSet() && m_inputmstate)
+    if (!d_position.isSet())
     {
-        sofa::core::objectmodel::BaseData* parent = nullptr;
-        if (!parent && m_inputmstate) parent = m_inputmstate->findData("position");
-        if (!parent && l_topology) parent = m_inputmstate->findData("topology");
-        if (parent)
+        const sofa::core::objectmodel::BaseContext* context = this->getContext();
+        assert(context);
+
+        if (auto* state = context->getState())
         {
-            d_position.setParent(parent);
-            d_position.setReadOnly(true);
+            sofa::core::objectmodel::BaseData* parent = nullptr;
+            if (!parent && state) parent = state->findData("position");
+            if (!parent && l_topology) parent = state->findData("topology");
+            if (parent)
+            {
+                d_position.setParent(parent);
+                d_position.setReadOnly(true);
+            }
         }
     }
 

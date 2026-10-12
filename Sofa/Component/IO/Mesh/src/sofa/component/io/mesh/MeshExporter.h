@@ -95,8 +95,6 @@ protected:
     MeshExporter();
     ~MeshExporter() override;
 
-    BaseMechanicalState*  m_inputmstate {nullptr};
-
     std::string getMeshFilename(const char* ext);
 };
 
