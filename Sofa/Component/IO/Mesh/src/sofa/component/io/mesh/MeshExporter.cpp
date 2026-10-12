@@ -68,6 +68,7 @@ void MeshExporter::doReInit()
         if (auto* state = context->getState())
         {
             sofa::core::objectmodel::BaseData* parent = nullptr;
+            if (!parent && state) parent = state->baseWrite(sofa::core::vec_id::write_access::position);
             if (!parent && state) parent = state->findData("position");
             if (!parent && l_topology) parent = state->findData("topology");
             if (parent)
