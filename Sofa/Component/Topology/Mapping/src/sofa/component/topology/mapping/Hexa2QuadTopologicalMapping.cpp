@@ -116,7 +116,7 @@ void Hexa2QuadTopologicalMapping::init()
     this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
 
-Index Hexa2QuadTopologicalMapping::getFromIndex(Index ind)
+Index Hexa2QuadTopologicalMapping::doGetFromIndex(Index ind)
 {
 
     if(fromModel->getHexahedraAroundQuad(ind).size()==1)
@@ -129,7 +129,7 @@ Index Hexa2QuadTopologicalMapping::getFromIndex(Index ind)
     }
 }
 
-void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
+void Hexa2QuadTopologicalMapping::doUpdateTopologicalMappingTopDown()
 {
     if (this->d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
         return;

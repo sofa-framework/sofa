@@ -72,9 +72,9 @@ public:
     * reflect the effects of the first topology changes on the second topology.
     *
     */
-    void updateTopologicalMappingTopDown() override;
+    void doUpdateTopologicalMappingTopDown() override;
 
-    Index getFromIndex(Index ind) override;
+    Index doGetFromIndex(Index ind) override;
 
 private:
     /// Pointer to the output topology modifier
