@@ -166,7 +166,7 @@ void PartialFixedProjectiveConstraint<DataTypes>::projectJacobianMatrix(const co
 }
 
 template <class DataTypes>
-void PartialFixedProjectiveConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, linearalgebra::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+void PartialFixedProjectiveConstraint<DataTypes>::doApplyConstraint(const core::MechanicalParams* mparams, linearalgebra::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     SOFA_UNUSED(mparams);
     const int o = matrix->getGlobalOffset(this->mstate.get());
@@ -208,7 +208,7 @@ void PartialFixedProjectiveConstraint<DataTypes>::applyConstraint(const core::Me
 }
 
 template <class DataTypes>
-void PartialFixedProjectiveConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+void PartialFixedProjectiveConstraint<DataTypes>::doApplyConstraint(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     SOFA_UNUSED(mparams);
     if(const core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate.get()))
@@ -266,7 +266,7 @@ void PartialFixedProjectiveConstraint<DataTypes>::applyConstraint(const core::Me
 }
 
 template <class DataTypes>
-void PartialFixedProjectiveConstraint<DataTypes>::projectMatrix( sofa::linearalgebra::BaseMatrix* M, unsigned offset )
+void PartialFixedProjectiveConstraint<DataTypes>::doProjectMatrix( sofa::linearalgebra::BaseMatrix* M, unsigned offset )
 {
     static const unsigned blockSize = DataTypes::deriv_total_size;
 
@@ -303,7 +303,7 @@ void PartialFixedProjectiveConstraint<DataTypes>::projectMatrix( sofa::linearalg
 }
 
 template <class DataTypes>
-void PartialFixedProjectiveConstraint<DataTypes>::applyConstraint(
+void PartialFixedProjectiveConstraint<DataTypes>::doApplyConstraint(
     sofa::core::behavior::ZeroDirichletCondition* matrix)
 {
     static constexpr unsigned int N = Deriv::size();
