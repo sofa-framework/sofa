@@ -39,7 +39,7 @@ class SOFA_SOFAMATRIX_API GlobalSystemMatrixExporter : public sofa::simulation::
 public:
     SOFA_CLASS(GlobalSystemMatrixExporter, sofa::simulation::BaseSimulationExporter);
 
-    bool write() override;
+    bool doWrite() override;
     void doInit() override;
 
 protected:

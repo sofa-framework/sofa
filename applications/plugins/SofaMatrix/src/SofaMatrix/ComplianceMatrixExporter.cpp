@@ -60,7 +60,7 @@ void ComplianceMatrixExporter::doInit()
     }
 }
 
-bool ComplianceMatrixExporter::write()
+bool ComplianceMatrixExporter::doWrite()
 {
     if (l_constraintSolver)
     {
