@@ -159,8 +159,11 @@ void BTDLinearSolver<Matrix,Vector>::invert(Matrix& M)
     for (Index i=0; i<nb; ++i)
         nBlockComputedMinv[i] = 0;
 
-    // WARNING : cost of resize here : ???
-    Minv.resize(nb*bsize,nb*bsize);
+    // Minv is dense: resizing it clears all its nb*nb blocks, which is very costly for long chains.
+    // Clearing is not needed: a block is only read after computeMinvBlock() has written it
+    // (tracked by nBlockComputedMinv, reset above), so by default only resize when the size changes.
+    if (d_forceClearInverse.getValue() || Minv.rowSize() != nb*bsize || Minv.colSize() != nb*bsize)
+        Minv.resize(nb*bsize,nb*bsize);
     Minv.setAlignedSubMatrix((nb-1),(nb-1),bsize,bsize,alpha_inv[nb-1]);
 
     nBlockComputedMinv[nb-1] = 1;
