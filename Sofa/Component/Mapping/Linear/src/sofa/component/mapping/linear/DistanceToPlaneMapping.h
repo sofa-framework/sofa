@@ -52,7 +52,6 @@ public:
 
     void applyJT(const core::ConstraintParams *cparams, Data<MatrixDeriv_t<TIn>>& out, const Data<MatrixDeriv_t<TOut>>& in) override;
 
-    const linearalgebra::BaseMatrix* getJ() override;
 
     void handleTopologyChange() override;
 
@@ -64,6 +63,7 @@ protected:
 
     DistanceToPlaneMapping();
     virtual ~DistanceToPlaneMapping() {};
+    const linearalgebra::BaseMatrix* doGetJ() override;
 
     linearalgebra::EigenSparseMatrix<TIn, TOut> J;
 };
