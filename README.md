@@ -65,3 +65,4 @@ contact@sofa-framework.org
 
 SOFA, Simulation Open-Framework Architecture  
 (c) 2006 INRIA, USTL, UJF, CNRS, MGH
+nothing
