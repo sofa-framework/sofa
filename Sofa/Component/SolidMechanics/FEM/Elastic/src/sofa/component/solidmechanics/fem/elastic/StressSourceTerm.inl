@@ -25,14 +25,14 @@
 namespace sofa::component::solidmechanics::fem::elastic
 {
 
-template <class DataTypes, class ElementType>
-StressSourceTerm<DataTypes, ElementType>::StressSourceTerm()
+template <class DataTypes, class ElementType, class TNodalStress>
+BaseStressSourceTerm<DataTypes, ElementType, TNodalStress>::BaseStressSourceTerm()
     : l_stress(initLink("stress", "Nodal stress tensor integrated by this term."))
 {
 }
 
-template <class DataTypes, class ElementType>
-void StressSourceTerm<DataTypes, ElementType>::init()
+template <class DataTypes, class ElementType, class TNodalStress>
+void BaseStressSourceTerm<DataTypes, ElementType, TNodalStress>::init()
 {
     BaseSourceTerm<DataTypes, ElementType>::init();
 
@@ -43,7 +43,8 @@ void StressSourceTerm<DataTypes, ElementType>::init()
 
     if (!l_stress)
     {
-        msg_error(this) << "The 'stress' link must be set to a NodalStress component. "
+        msg_error(this) << "The 'stress' link must be set to a "
+                        << TNodalStress::GetClass()->className << " component. "
                            "Linked path: '" << l_stress.getLinkedPath() << "'.";
         this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
@@ -52,8 +53,8 @@ void StressSourceTerm<DataTypes, ElementType>::init()
     this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
 
-template <class DataTypes, class ElementType>
-sofa::Deriv_t<DataTypes> StressSourceTerm<DataTypes, ElementType>::evaluate(
+template <class DataTypes, class ElementType, class TNodalStress>
+sofa::Deriv_t<DataTypes> BaseStressSourceTerm<DataTypes, ElementType, TNodalStress>::evaluate(
     const QuadratureContext_t& context) const
 {
     if (!l_stress)
@@ -64,9 +65,9 @@ sofa::Deriv_t<DataTypes> StressSourceTerm<DataTypes, ElementType>::evaluate(
     return this->interpolateProperty(*l_stress, context) * elementNormal(context.jacobian);
 }
 
-template <class DataTypes, class ElementType>
+template <class DataTypes, class ElementType, class TNodalStress>
 sofa::type::vector<const sofa::core::objectmodel::BaseData*>
-StressSourceTerm<DataTypes, ElementType>::integrandInputs() const
+BaseStressSourceTerm<DataTypes, ElementType, TNodalStress>::integrandInputs() const
 {
     if (!l_stress)
     {

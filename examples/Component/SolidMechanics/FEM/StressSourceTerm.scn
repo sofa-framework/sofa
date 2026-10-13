@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
-<!-- Demonstrates that StressSourceTerm reproduces the constant force of
+<!-- Demonstrates that SymmetricStressSourceTerm reproduces the constant force of
      TrianglePressureForceField. The two beams are independent.
 
-     White:   StressSourceTerm
+     White:   SymmetricStressSourceTerm
      Yellow:  TrianglePressureForceField, constant force
 
      Hexa2QuadTopologicalMapping winds a boundary quad by vertex index, so the normal of the loaded
@@ -30,7 +30,7 @@
     <VisualStyle displayFlags="showBehaviorModels showVisualModels"/>
 
     <Node name="Labels">
-        <OglLabel label="StressSourceTerm"                      x="10" y="854" fontsize="16" color="1 1 1 1"/>
+        <OglLabel label="SymmetricStressSourceTerm"             x="10" y="854" fontsize="16" color="1 1 1 1"/>
         <OglLabel label="TrianglePressureForceField, constant"  x="10" y="876" fontsize="16" color="1 1 0 1"/>
     </Node>
 
@@ -101,8 +101,8 @@
 
                     <Node name="LoadedFace">
                         <TriangleSetTopologyContainer name="face" triangles="@../topFace.trianglesInROI"/>
-                        <NodalStress name="stress" template="Vec3" property="[0 1.5 0  1.5 -2 0  0 0 0]"/>
-                        <StressSourceTerm name="load" template="Vec3,Triangle" stress="@stress"/>
+                        <NodalSymmetricStress name="stress" template="Vec3" property="[0 1.5 0  1.5 -2 0  0 0 0]"/>
+                        <SymmetricStressSourceTerm name="load" template="Vec3,Triangle" stress="@stress"/>
                         <FEMSourceTermIntegrator name="source" template="Vec3,Triangle" topology="@face"
                                        quadratureDegree="1" constantSources="@load"/>
                     </Node>
