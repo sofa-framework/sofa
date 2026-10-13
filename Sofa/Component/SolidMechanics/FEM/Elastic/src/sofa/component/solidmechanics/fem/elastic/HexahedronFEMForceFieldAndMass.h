@@ -97,14 +97,9 @@ public:
         return 0.0;
     }
 
-    SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override
+    SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord& x) const override
     {
-        msg_warning() << "Method getPotentialEnergy not implemented yet.";
-        return 0.0;
-    }
-
-    SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/) const override
-    {
+        SOFA_UNUSED(x);
         msg_warning() << "Method getPotentialEnergy not implemented yet.";
         return 0.0;
     }
