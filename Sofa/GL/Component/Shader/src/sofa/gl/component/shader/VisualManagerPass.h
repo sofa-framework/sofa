@@ -48,6 +48,11 @@ public:
     Data<std::string> outputName; ///< name the output texture
 protected:
     bool checkMultipass(sofa::core::objectmodel::BaseContext* con);
+
+    void doInitVisual(const core::visual::VisualParams*) override;
+    void doFwdDraw(core::visual::VisualParams*) override;
+    void doBwdDraw(core::visual::VisualParams*) override;
+
     bool multiPassEnabled;
 
     std::unique_ptr<sofa::gl::FrameBufferObject> fbo;
@@ -61,7 +66,6 @@ public:
 
 
     void init() override;
-    void doInitVisual(const core::visual::VisualParams*) override;
 
     void preDrawScene(core::visual::VisualParams* vp) override;
     bool drawScene(core::visual::VisualParams* vp) override;
@@ -69,8 +73,6 @@ public:
 
 
     void draw(const core::visual::VisualParams* vparams) override;
-    void fwdDraw(core::visual::VisualParams*) override;
-    void bwdDraw(core::visual::VisualParams*) override;
 
     void handleEvent(sofa::core::objectmodel::Event* /*event*/) override;
 

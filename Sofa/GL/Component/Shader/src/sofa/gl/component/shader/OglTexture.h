@@ -76,12 +76,14 @@ public:
 protected:
     OglTexture();
     ~OglTexture() override;
+
+    void doInitVisual(const core::visual::VisualParams* vparams) override;
+    void doFwdDraw(core::visual::VisualParams*) override;
+    void doBwdDraw(core::visual::VisualParams*) override;
+
 public:
     void init() override;
-    void doInitVisual(const core::visual::VisualParams* vparams) override;
     void reinit() override;
-    void fwdDraw(core::visual::VisualParams*) override;
-    void bwdDraw(core::visual::VisualParams*) override;
 
     std::string getTextureName();
     unsigned short getTextureUnit() { return textureUnit.getValue(); }

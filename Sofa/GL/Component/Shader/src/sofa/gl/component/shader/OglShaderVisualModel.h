@@ -51,12 +51,14 @@ public:
 protected:
     OglShaderVisualModel();
     ~OglShaderVisualModel() override;
-public:
-    void init() override;
+
     void doUpdateVisual(const core::visual::VisualParams* vparams) override;
 
-    void bwdDraw(core::visual::VisualParams*) override;
-    void fwdDraw(core::visual::VisualParams*) override;
+    void doFwdDraw(core::visual::VisualParams*) override;
+    void doBwdDraw(core::visual::VisualParams*) override;
+
+public:
+    void init() override;
 
     // handle topological changes
     void handleTopologyChange() override;

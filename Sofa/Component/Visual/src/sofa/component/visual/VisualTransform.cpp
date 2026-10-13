@@ -64,7 +64,7 @@ void VisualTransform::pop(const sofa::core::visual::VisualParams* vparams)
     }
 }
 
-void VisualTransform::fwdDraw(sofa::core::visual::VisualParams* vparams)
+void VisualTransform::doFwdDraw(sofa::core::visual::VisualParams* vparams)
 {
     push(vparams);
 }
@@ -80,13 +80,13 @@ void VisualTransform::doDrawVisual(const sofa::core::visual::VisualParams* vpara
         pop(vparams);
 }
 
-void VisualTransform::drawTransparent(const sofa::core::visual::VisualParams* vparams)
+void VisualTransform::doDrawTransparent(const sofa::core::visual::VisualParams* vparams)
 {
     if (!d_recursive.getValue())
         pop(vparams);
 }
 
-void VisualTransform::bwdDraw(sofa::core::visual::VisualParams* vparams)
+void VisualTransform::doBwdDraw(sofa::core::visual::VisualParams* vparams)
 {
     pop(vparams);
 }

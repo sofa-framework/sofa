@@ -252,13 +252,13 @@ void VisualModelImpl::doDrawVisual(const core::visual::VisualParams* vparams)
         internalDraw(vparams,false);
 }
 
-void VisualModelImpl::drawTransparent(const core::visual::VisualParams* vparams)
+void VisualModelImpl::doDrawTransparent(const core::visual::VisualParams* vparams)
 {
     if (hasTransparent())
         internalDraw(vparams,true);
 }
 
-void VisualModelImpl::drawShadow(const core::visual::VisualParams* vparams)
+void VisualModelImpl::doDrawShadow(const core::visual::VisualParams* vparams)
 {
     if (hasOpaque() && getCastShadow())
         internalDraw(vparams, false);
@@ -616,7 +616,7 @@ void VisualModelImpl::applyUVTransformation()
     d_translationTex.setValue(TexCoord(0.f, 0.f));
 }
 
-void VisualModelImpl::applyTranslation(const SReal dx, const SReal dy, const SReal dz)
+void VisualModelImpl::doApplyTranslation(const SReal dx, const SReal dy, const SReal dz)
 {
     constexpr auto computeTranslation = [](auto id, auto& vm, const auto& d)
     {
@@ -637,13 +637,13 @@ void VisualModelImpl::applyTranslation(const SReal dx, const SReal dy, const SRe
     }
 }
 
-void VisualModelImpl::applyRotation(const SReal rx, const SReal ry, const SReal rz)
+void VisualModelImpl::doApplyRotation(const SReal rx, const SReal ry, const SReal rz)
 {
     const auto q = type::Quat<SReal>::createQuaterFromEuler( Vec3(rx,ry,rz)*M_PI/180.0);
     applyRotation(q);
 }
 
-void VisualModelImpl::applyRotation(const Quat<SReal> q)
+void VisualModelImpl::doApplyRotation(const Quat<SReal> q)
 {
     constexpr auto computeRotation = [](auto id, auto& vm, const auto& q)
     {
@@ -663,7 +663,7 @@ void VisualModelImpl::applyRotation(const Quat<SReal> q)
     }
 }
 
-void VisualModelImpl::applyScale(const SReal sx, const SReal sy, const SReal sz)
+void VisualModelImpl::doApplyScale(const SReal sx, const SReal sy, const SReal sz)
 {
     constexpr auto computeScale = [](auto id, auto& vm, const auto sx, const auto sy, const auto sz)
     {
@@ -1458,7 +1458,7 @@ void VisualModelImpl::computeMesh()
     d_quads.endEdit();
 }
 
-void VisualModelImpl::exportOBJ(std::string name, std::ostream* out, std::ostream* mtl, sofa::Index& vindex, sofa::Index& nindex, sofa::Index& tindex, int& count)
+void VisualModelImpl::doExportOBJ(std::string name, std::ostream* out, std::ostream* mtl, sofa::Index& vindex, sofa::Index& nindex, sofa::Index& tindex, int& count)
 {
     *out << "g "<<name<<"\n";
 

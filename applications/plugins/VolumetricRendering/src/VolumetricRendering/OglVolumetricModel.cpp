@@ -411,7 +411,7 @@ void OglVolumetricModel::handleTopologyChange()
     }
 }
 
-void OglVolumetricModel::drawTransparent(const core::visual::VisualParams* vparams)
+void OglVolumetricModel::doDrawTransparent(const core::visual::VisualParams* vparams)
 {
     if (!vparams->displayFlags().getShowVisualModels()) return;
 

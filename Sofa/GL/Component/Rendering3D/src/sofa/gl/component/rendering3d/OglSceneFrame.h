@@ -61,6 +61,7 @@ public:
 
     OglSceneFrame();
 
+protected:
     void doDrawVisual(const core::visual::VisualParams*) override;
 
 private:

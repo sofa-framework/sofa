@@ -92,11 +92,11 @@ void VisualManagerPass::doInitVisual(const core::visual::VisualParams*)
     fbo->init(passWidth, passHeight);
 }
 
-void VisualManagerPass::fwdDraw(core::visual::VisualParams* )
+void VisualManagerPass::doFwdDraw(core::visual::VisualParams* )
 {
 }
 
-void VisualManagerPass::bwdDraw(core::visual::VisualParams* )
+void VisualManagerPass::doBwdDraw(core::visual::VisualParams* )
 {
 }
 
