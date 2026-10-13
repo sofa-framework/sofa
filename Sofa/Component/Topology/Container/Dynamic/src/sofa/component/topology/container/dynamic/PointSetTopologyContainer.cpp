@@ -99,7 +99,7 @@ void PointSetTopologyContainer::addPoint(SReal px, SReal py, SReal pz)
     }
 }
 
-bool PointSetTopologyContainer::hasPos() const
+bool PointSetTopologyContainer::doHasPos() const
 {
     const helper::ReadAccessor< Data<InitTypes::VecCoord> > initPoints = d_initPoints;
     return !initPoints.empty();
