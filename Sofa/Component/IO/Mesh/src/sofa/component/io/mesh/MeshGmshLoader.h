@@ -32,7 +32,7 @@ class SOFA_COMPONENT_IO_MESH_API MeshGmshLoader : public sofa::core::loader::Mes
 public:
     SOFA_CLASS(MeshGmshLoader,sofa::core::loader::MeshLoader);
 
-    bool doLoad() override;
+    bool doLoadMesh() override;
 
 protected:
 
