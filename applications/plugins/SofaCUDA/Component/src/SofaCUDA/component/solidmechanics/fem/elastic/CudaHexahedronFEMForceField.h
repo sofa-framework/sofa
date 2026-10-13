@@ -353,7 +353,7 @@ public:
     template<> void HexahedronFEMForceField< T >::reinit(); \
     template<> void HexahedronFEMForceField< T >::addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v); \
     template<> void HexahedronFEMForceField< T >::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx); \
-    template<> void HexahedronFEMForceField< T >::getRotations(linearalgebra::BaseMatrix* rotations, int offset); \
+    template<> void HexahedronFEMForceField< T >::doGetRotations(linearalgebra::BaseMatrix* rotations, int offset); \
 
 CudaHexahedronFEMForceField_DeclMethods(gpu::cuda::CudaVec3fTypes);
 
