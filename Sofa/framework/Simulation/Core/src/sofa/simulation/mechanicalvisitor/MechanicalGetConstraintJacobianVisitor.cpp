@@ -20,7 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/simulation/mechanicalvisitor/MechanicalGetConstraintJacobianVisitor.h>
-#include <sofa/simulation/mechanicalvisitor/MechanicalMultiVectorToBaseVectorVisitor.h>
 #include <sofa/core/ConstraintParams.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>

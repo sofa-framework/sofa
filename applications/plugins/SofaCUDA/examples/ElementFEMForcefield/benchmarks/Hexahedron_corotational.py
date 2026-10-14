@@ -25,7 +25,7 @@ def createScene(root_node):
     plugin_node = root_node.addChild('Plugins')
     plugin_node.addObject('RequiredPlugin', pluginName="Sofa.Component.Engine.Select")
     plugin_node.addObject('RequiredPlugin', pluginName="Sofa.Component.LinearSolver.Iterative")
-    plugin_node.addObject('RequiredPlugin', pluginName="Sofa.Component.ODESolver.Backward")
+    plugin_node.addObject('RequiredPlugin', pluginName="Sofa.Component.IntegrationScheme.Backward")
     plugin_node.addObject('RequiredPlugin', pluginName="Sofa.Component.StateContainer")
     plugin_node.addObject('RequiredPlugin', pluginName="Sofa.Component.Topology.Container.Dynamic")
     plugin_node.addObject('RequiredPlugin', pluginName="Sofa.Component.Topology.Container.Grid")
@@ -42,7 +42,7 @@ def createScene(root_node):
     grid_nodes, grid_hexa = generate_regular_grid(nx=g_grid_nx, ny=g_grid_ny, nz=g_grid_nz, min_corner=g_grid_min_corner, max_corner=g_grid_max_corner)
 
     hexahedron_node = root_node.addChild('Hexahedron')
-    hexahedron_node.addObject('EulerImplicitSolver', rayleighStiffness="0.1", rayleighMass="0.1")
+    hexahedron_node.addObject('EulerImplicitIntegrationScheme', rayleighStiffness="0.1", rayleighMass="0.1")
     hexahedron_node.addObject('CGLinearSolver', iterations="250", name="linear_solver", tolerance="1.0e-12", threshold="1.0e-12")
     hexahedron_node.addObject('MechanicalObject', name="ms", template=g_fem_template, position=grid_nodes)
     hexahedron_node.addObject('HexahedronSetTopologyContainer', hexahedra=grid_hexa)

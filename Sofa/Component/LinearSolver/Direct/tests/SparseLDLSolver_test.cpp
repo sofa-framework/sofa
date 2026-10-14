@@ -25,7 +25,6 @@
 #include <sofa/component/linearsolver/direct/SparseCommon.h>
 #include <sofa/component/linearsystem/MatrixLinearSystem.h>
 #include <sofa/simulation/Node.h>
-#include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simpleapi/SimpleApi.h>
 
 #include <sofa/testing/NumericTest.h>
@@ -58,15 +57,15 @@ TEST(SparseLDLSolver, EmptyMState)
     // required to be able to use EXPECT_MSG_NOEMIT and EXPECT_MSG_EMIT
     sofa::helper::logging::MessageDispatcher::addHandler(sofa::testing::MainGtestMessageHandler::getInstance() ) ;
 
-    const sofa::simulation::Node::SPtr root = sofa::simulation::getSimulation()->createNewGraph("root");
+    const sofa::simulation::Node::SPtr root = sofa::simulation::MainSimulation::getSimulation()->createNewGraph("root");
 
     const auto plugins = sofa::testing::makeScopedPlugin({
         Sofa.Component.LinearSolver.Direct,
-        Sofa.Component.ODESolver.Backward,
+        Sofa.Component.IntegrationScheme.Backward,
         Sofa.Component.StateContainer});
 
     sofa::simpleapi::createObject(root, "DefaultAnimationLoop");
-    sofa::simpleapi::createObject(root, "EulerImplicitSolver");
+    sofa::simpleapi::createObject(root, "EulerImplicitIntegrationScheme");
     sofa::simpleapi::createObject(root, "SparseLDLSolver", {{"template", "CompressedRowSparseMatrixd"}});
     sofa::simpleapi::createObject(root, "MechanicalObject", {{"template", "Vec3"}, {"position", ""}});
 
@@ -87,18 +86,18 @@ TEST(SparseLDLSolver, TopologyChangeEmptyMState)
     // required to be able to use EXPECT_MSG_NOEMIT and EXPECT_MSG_EMIT
     sofa::helper::logging::MessageDispatcher::addHandler(sofa::testing::MainGtestMessageHandler::getInstance() ) ;
 
-    const sofa::simulation::Node::SPtr root = sofa::simulation::getSimulation()->createNewGraph("root");
+    const sofa::simulation::Node::SPtr root = sofa::simulation::MainSimulation::getSimulation()->createNewGraph("root");
 
     const auto plugins = sofa::testing::makeScopedPlugin({
         Sofa.Component.LinearSolver.Direct,
         Sofa.Component.Mass,
-        Sofa.Component.ODESolver.Backward,
+        Sofa.Component.IntegrationScheme.Backward,
         Sofa.Component.StateContainer,
         Sofa.Component.Topology.Container.Dynamic,
         Sofa.Component.Topology.Utility});
 
     sofa::simpleapi::createObject(root, "DefaultAnimationLoop");
-    sofa::simpleapi::createObject(root, "EulerImplicitSolver");
+    sofa::simpleapi::createObject(root, "EulerImplicitIntegrationScheme");
     sofa::simpleapi::createObject(root, "SparseLDLSolver", {{"template", "CompressedRowSparseMatrixd"}});
     sofa::simpleapi::createObject(root, "PointSetTopologyContainer", {{"position", "0 0 0"}});
     sofa::simpleapi::createObject(root, "PointSetTopologyModifier");

@@ -35,8 +35,7 @@ using std::vector;
 #include <sofa/helper/system/PluginManager.h>
 #include <sofa/simulation/config.h>
 #include <sofa/simulation/common/init.h>
-#include <sofa/simulation/graph/init.h>
-#include <sofa/simulation/graph/DAGSimulation.h>
+#include <sofa/simulation/Simulation.h>
 using sofa::simulation::Node;
 #include <sofa/simulation/SceneLoaderFactory.h>
 #include <SceneChecking/SceneCheckerListener.h>
@@ -59,7 +58,6 @@ using sofa::core::ExecParams ;
 #include <sofa/helper/system/console.h>
 using sofa::helper::Utils;
 
-using sofa::simulation::graph::DAGSimulation;
 using sofa::helper::system::SetDirectory;
 using sofa::core::objectmodel::BaseNode ;
 
@@ -167,8 +165,9 @@ int main(int argc, char** argv)
     vector<string> plugins;
     vector<string> files;
 
+    bool quiet = false;
     string colorsStatus = "unset";
-    string messageHandler = "auto";
+    string messageHandlerString = "auto";
     int width = 800;
     int height = 600;
 
@@ -265,6 +264,13 @@ int main(int argc, char** argv)
         "load verification data for the scene"
     );
     argParser->addArgument(
+        cxxopts::value<bool>(quiet)
+            ->default_value("false")
+            ->implicit_value("true"),
+        "q,quiet",
+        "do not print informational messages at startup"
+        );
+    argParser->addArgument(
         cxxopts::value<std::string>(colorsStatus)
         ->default_value("auto")
         ->implicit_value("yes"),
@@ -272,7 +278,7 @@ int main(int argc, char** argv)
         "use colors on stdout and stderr (yes, no, auto)"
     );
     argParser->addArgument(
-        cxxopts::value<std::string>(messageHandler)
+        cxxopts::value<std::string>(messageHandlerString)
         ->default_value("auto"),
         "f,formatting",
         "select the message formatting to use (auto, clang, sofa, rich, test)"
@@ -309,11 +315,7 @@ int main(int argc, char** argv)
         exit( EXIT_SUCCESS );
     }
 
-    // Note that initializations must be done after ArgumentParser that can exit the application (without cleanup)
-    // even if everything is ok e.g. asking for help
-    sofa::simulation::graph::init();
-
-    assert(sofa::simulation::getSimulation());
+    assert(sofa::simulation::MainSimulation::getSimulation());
 
     if (colorsStatus == "unset") {
         // If the parameter is unset, check the environment variable
@@ -334,33 +336,37 @@ int main(int argc, char** argv)
     else if (colorsStatus == "no")
         sofa::helper::console::setStatus(sofa::helper::console::Status::Off);
 
-    //TODO(dmarchal): Use smart pointer there to avoid memory leaks !!
-    if (messageHandler == "auto" )
+    sofa::helper::logging::MessageHandler* messageHandler = nullptr;
+
+
+    MessageDispatcher::clearHandlers() ;
+    
+    if (messageHandlerString == "auto" || messageHandlerString == "sofa")
     {
-        MessageDispatcher::clearHandlers() ;
-        MessageDispatcher::addHandler( &sofa::helper::logging::MainConsoleMessageHandler::getInstance() ) ;
+        messageHandler = &sofa::helper::logging::MainConsoleMessageHandler::getInstance();
     }
-    else if (messageHandler == "clang")
+    else if (messageHandlerString == "clang")
     {
-        MessageDispatcher::clearHandlers() ;
-        MessageDispatcher::addHandler( new ClangMessageHandler() ) ;
+        messageHandler = new ClangMessageHandler();
     }
-    else if (messageHandler == "sofa")
+    else if (messageHandlerString == "rich")
     {
-        MessageDispatcher::clearHandlers() ;
-        MessageDispatcher::addHandler( &sofa::helper::logging::MainConsoleMessageHandler::getInstance() ) ;
+        messageHandler = new ConsoleMessageHandler(&RichConsoleStyleMessageFormatter::getInstance());
     }
-    else if (messageHandler == "rich")
+    else if (messageHandlerString == "test")
     {
-        MessageDispatcher::clearHandlers() ;
-        MessageDispatcher::addHandler( new ConsoleMessageHandler(&RichConsoleStyleMessageFormatter::getInstance()) ) ;
-    }
-    else if (messageHandler == "test"){
-        MessageDispatcher::addHandler( new ExceptionMessageHandler() ) ;
+        messageHandler = new ExceptionMessageHandler();
     }
     else{
-        msg_warning(appName) << "Invalid argument '" << messageHandler << "' for '--formatting'";
+        msg_warning(appName) << "Invalid argument '" << messageHandlerString << "' for '--formatting'";
     }
+
+    if(messageHandler)
+    {
+        messageHandler->setQuiet(quiet);
+        MessageDispatcher::addHandler(messageHandler);
+    }
+
     MessageDispatcher::addHandler(&MainPerComponentLoggingMessageHandler::getInstance()) ;
 #ifdef TRACY_ENABLE
     MessageDispatcher::addHandler(&sofa::helper::logging::MainTracyMessageHandler::getInstance());
@@ -432,8 +438,6 @@ int main(int argc, char** argv)
     if (int err = GUIManager::Init(argv[0],gui.c_str()))
     {
         sofa::simulation::common::cleanup();
-        sofa::simulation::graph::cleanup();
-
         return err;
     }
 
@@ -471,7 +475,7 @@ int main(int argc, char** argv)
     const std::vector<std::string> sceneArgs = sofa::gui::common::ArgumentParser::extra_args();
     Node::SPtr groot = sofa::simulation::node::load(fileName, false, sceneArgs);
     if( !groot )
-        groot = sofa::simulation::getSimulation()->createNewGraph("");
+        groot = sofa::simulation::MainSimulation::getSimulation()->createNewGraph("");
 
     if (!verif.empty())
     {
@@ -486,6 +490,9 @@ int main(int argc, char** argv)
         sofa::helper::AdvancedTimer::begin("Init");
     }
 
+    //
+    messageHandler->setQuiet(false);
+
     sofa::simulation::node::initRoot(groot.get());
     if( computationTimeAtBegin )
     {
@@ -499,6 +506,7 @@ int main(int argc, char** argv)
     if (startAnim)
         groot->setAnimate(true);
 
+    messageHandler->setQuiet(quiet);
     // set scene and animation root to the gui
     GUIManager::SetScene(groot, fileName.c_str(), temporaryFile);
 
@@ -516,6 +524,7 @@ int main(int argc, char** argv)
         sofa::helper::AdvancedTimer::setOutputType("Animate", computationTimeOutputType);
     }
 
+    messageHandler->setQuiet(false);
     //=======================================
     // Run the main loop
     if (int err = GUIManager::MainLoop(groot,fileName.c_str()))
@@ -529,7 +538,6 @@ int main(int argc, char** argv)
     GUIManager::closeGUI();
 
     sofa::simulation::common::cleanup();
-    sofa::simulation::graph::cleanup();
 
     return 0;
 }

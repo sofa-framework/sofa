@@ -79,13 +79,15 @@ public:
     /// \param mparams
     /// - \a sofa::core::mechanicalparams::bFactor(mparams) is the coefficient for damping contributions (i.e. first derivatives term in the ODE)
     /// - \a mparams->kFactor() is the coefficient for stiffness contributions (i.e. DOFs term in the ODE)
-    /// - \a mparams->readX() is the input vector of position
-    /// - \a mparams->readV() is the input vector of velocity
-    /// - \a mparams->readF() is the input vector of force
     /// - if \a mparams->energy() is true, the method computes and internally stores the potential energy,
     /// which will be subsequently returned by method getPotentialEnergy()
     /// \param fId the output vector of forces
-    virtual void addForce(const MechanicalParams* mparams, MultiVecDerivId fId )=0;
+    /// \param xId the input vector for positions
+    /// \param vId the input vector for velocities
+    virtual void addForce(const MechanicalParams* mparams, MultiVecDerivId fId,
+        ConstMultiVecCoordId xId, ConstMultiVecDerivId vId )=0;
+    SOFA_ATTRIBUTE_DEPRECATED__ADDFORCE_OVERLOAD()
+    virtual void addForce(const MechanicalParams* mparams, MultiVecDerivId fId ) final;
 
     /// \brief Compute the force derivative given a small displacement from the
     /// position and velocity used in the previous call to addForce().
@@ -134,10 +136,14 @@ public:
 
     /// \brief Get the potential energy associated to this ForceField during the
     /// last call of addForce( const MechanicalParams* mparams );
-    ///
-    /// Used to estimate the total energy of the system by some
-    /// post-stabilization techniques.
-    virtual SReal getPotentialEnergy( const MechanicalParams* mparams = mechanicalparams::defaultInstance() ) const=0;
+    /// \note Used to estimate the total energy of the system by some post-stabilization techniques.
+    /// \param mparams
+    /// \param xId The potential energy is evaluated on this vector of generalized coordinates
+    virtual SReal getPotentialEnergy(const MechanicalParams* mparams,
+                                     ConstMultiVecCoordId xId) const = 0;
+
+    SOFA_ATTRIBUTE_DEPRECATED__GETPOTENTIALENERGY_OVERLOAD()
+    virtual SReal getPotentialEnergy( const MechanicalParams* mparams = mechanicalparams::defaultInstance() ) const final;
     /// @}
 
 

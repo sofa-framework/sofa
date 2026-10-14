@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define ELASTICITY_COMPONENT_BASE_ELEMENT_LINEAR_FEM_FORCEFIELD_CPP
+#define SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_BASE_ELEMENT_LINEAR_FEM_FORCEFIELD_CPP
 #include <sofa/component/solidmechanics/fem/elastic/BaseElementLinearFEMForceField.inl>
 #include <sofa/fem/FiniteElement[all].h>
 

@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
+#define SOFA_SIMULATION_CORE_MECHANICALADDMBK_TOMATRIXVISITOR_CPP
 #include <sofa/simulation/mechanicalvisitor/MechanicalAddMBK_ToMatrixVisitor.h>
 
 #include <sofa/core/behavior/BaseForceField.h>
@@ -31,13 +31,6 @@ MechanicalAddMBK_ToMatrixVisitor::MechanicalAddMBK_ToMatrixVisitor(const core::M
                                                                    const sofa::core::behavior::MultiMatrixAccessor *_matrix)
         : MechanicalVisitor(mparams) ,  matrix(_matrix) //,m(_m),b(_b),k(_k)
 {
-}
-
-Visitor::Result
-MechanicalAddMBK_ToMatrixVisitor::fwdMechanicalState(simulation::Node *, core::behavior::BaseMechanicalState *)
-{
-    //ms->setOffset(offsetOnExit);
-    return RESULT_CONTINUE;
 }
 
 Visitor::Result MechanicalAddMBK_ToMatrixVisitor::fwdForceField(simulation::Node *, core::behavior::BaseForceField *ff)

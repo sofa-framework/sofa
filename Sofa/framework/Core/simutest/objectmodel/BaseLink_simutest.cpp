@@ -31,6 +31,7 @@ using sofa::simulation::Node ;
 
 #include <sofa/core/objectmodel/BaseComponent.h>
 using sofa::core::objectmodel::BaseObject;
+using sofa::core::objectmodel::BaseComponent;
 
 #include <sofa/core/PathResolver.h>
 using sofa::core::PathResolver;
@@ -56,6 +57,7 @@ public:
         scene << "<?xml version='1.0'?>"
                  "<Node name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"
                  "   <RequiredPlugin pluginName='Sofa.Component.SceneUtility' />                   \n"
+                 "   <RequiredPlugin pluginName='Sofa.Component.StateContainer' />                 \n"
                  "   <DefaultAnimationLoop />                                                \n"
                  "   <DefaultVisualManagerLoop />                                            \n"
                  "   <MechanicalObject name='mstate0'/>                                      \n"
@@ -78,6 +80,62 @@ public:
         delete c;
     }
 };
+
+class FakeComponent : public BaseComponent {
+public:
+    SOFA_CLASS(FakeComponent, BaseComponent);
+
+    sofa::MultiLink<FakeComponent, sofa::core::objectmodel::BaseComponent, sofa::BaseLink::FLAG_DOUBLELINK> l_target;
+
+    FakeComponent()
+        : l_target(initLink("target", "link for test")) {
+    }
+};
+
+TEST_F(BaseLink_test, remove)
+{
+    FakeComponent owner;
+    FakeComponent target1;
+    FakeComponent target2;
+
+    ASSERT_FALSE(owner.l_target.remove(&target1));
+
+    ASSERT_TRUE(owner.l_target.add(&target1, ""));
+    ASSERT_TRUE(owner.l_target.add(&target2, ""));
+    ASSERT_EQ(owner.l_target.size(), size_t(2));
+    ASSERT_EQ(owner.l_target.get(0), &target1);
+    ASSERT_EQ(owner.l_target.get(1), &target2);
+
+    ASSERT_TRUE(owner.l_target.remove(&target1));
+    ASSERT_EQ(owner.l_target.size(), size_t(1));
+    ASSERT_EQ(owner.l_target.get(0), &target2);
+
+    ASSERT_FALSE(owner.l_target.remove(&target1));
+    ASSERT_FALSE(owner.l_target.remove(nullptr));
+}
+
+TEST_F(BaseLink_test, add)
+{
+    FakeComponent Component1;
+    Component1.setName("Component1");
+    FakeComponent Component2;
+    Component2.setName("Component2");
+    FakeComponent Component3;
+    Component3.setName("Component3");
+
+    FakeComponent* ptr;
+    ptr = &Component2;
+
+    EXPECT_EQ(Component1.l_target.getValueString(), "");
+
+    Component1.l_target.add(ptr);
+    EXPECT_EQ(Component1.l_target.getValueString(), "@Component2");
+
+    ptr = &Component3;
+
+    Component1.l_target.add(ptr);
+    EXPECT_EQ(Component1.l_target.getValueString(), "@Component2 @Component3");
+}
 
 
 //////////////////////// Testing valid path //////////////////////////////////////

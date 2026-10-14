@@ -31,15 +31,14 @@
 namespace sofa::helper::logging
 {
 
-
-
-    void ExceptionMessageHandler::process(Message &m)
+void ExceptionMessageHandler::doProcess(Message &m)
+{
+    if( m.type()>=Message::Error )
     {
-        if( m.type()>=Message::Error )
-        {
-           ErrorMessageException errorMessageException/*(some Message's information could be added to the exception)*/;
-           throw errorMessageException;
-        }
+       ErrorMessageException errorMessageException/*(some Message's information could be added to the exception)*/;
+       throw errorMessageException;
     }
+}
+
 } // namespace sofa::helper::logging
 

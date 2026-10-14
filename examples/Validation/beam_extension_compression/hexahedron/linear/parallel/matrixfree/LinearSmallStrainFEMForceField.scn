@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<Node name="root" dt="0.01" gravity="0 0 0">
+    <include href="../../../../beam.xml"/>
+
+    <CGLinearSolver iterations="250" name="linear_solver" tolerance="1.0e-12" threshold="1.0e-12" />
+
+    <LinearSmallStrainFEMForceField name="FEM" template="Vec3,Hexahedron"
+                                           youngModulus="2e6" poissonRatio="0.45" topology="@grid"
+                                           computeForceStrategy="parallel" computeForceDerivStrategy="parallel"/>
+    <VonMisesStress template="Vec3,Hexahedron" name="stress" topology="@grid" stressEvaluator="@FEM"
+                    colorMap="green yellow orange red purple #221C35"/>
+
+</Node>

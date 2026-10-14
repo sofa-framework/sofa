@@ -22,7 +22,7 @@
 #include <sofa/simulation/SolveVisitor.h>
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/simulation/Node.h>
-#include <sofa/core/behavior/OdeSolver.h>
+#include <sofa/core/behavior/BaseIntegrationScheme.h>
 #include <sofa/simulation/task/TaskScheduler.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
 #include <sofa/simulation/task/MainTaskSchedulerFactory.h>
@@ -32,10 +32,10 @@
 namespace sofa::simulation
 {
 
-void SolveVisitor::processSolver(simulation::Node* node, sofa::core::behavior::OdeSolver* s)
+void SolveVisitor::processSolver(simulation::Node* node,  sofa::core::behavior::BaseIntegrationScheme* s)
 {
     helper::ScopedAdvancedTimer timer("Mechanical",node);
-    s->solve(params, dt, x, v);
+    s->integrate(params, dt, x, v);
 }
 
 void SolveVisitor::fwdInteractionForceField(Node* node, core::behavior::BaseInteractionForceField* forceField)
@@ -45,12 +45,12 @@ void SolveVisitor::fwdInteractionForceField(Node* node, core::behavior::BaseInte
     const core::MultiVecDerivId ffId = core::vec_id::write_access::externalForce;
     core::MechanicalParams mparams;
     mparams.setDt(dt);
-    forceField->addForce(&mparams, ffId);
+    forceField->addForce(&mparams, ffId, mparams.x(), mparams.v());
 }
 
 Visitor::Result SolveVisitor::processNodeTopDown(simulation::Node* node)
 {
-    if (! node->solver.empty())
+    if (! node->integrationScheme.empty())
     {
         if (m_parallelSolve)
         {
@@ -135,7 +135,7 @@ SolveVisitor::SolveVisitor(const sofa::core::ExecParams* params, SReal _dt, bool
 
 void SolveVisitor::sequentialSolve(simulation::Node* node)
 {
-    for_each(this, node, node->solver, &SolveVisitor::processSolver);
+    for_each(this, node, node->integrationScheme, &SolveVisitor::processSolver);
 }
 
 void SolveVisitor::parallelSolve(simulation::Node* node)
@@ -143,7 +143,7 @@ void SolveVisitor::parallelSolve(simulation::Node* node)
     auto* taskScheduler = sofa::simulation::MainTaskSchedulerFactory::createInRegistry();
     assert(taskScheduler != nullptr);
 
-    for (auto* solver : node->solver)
+    for (auto* solver : node->integrationScheme)
     {
         m_tasks.emplace_back(&m_status, solver, params, dt, x, v);
         taskScheduler->addTask(&m_tasks.back());
@@ -162,7 +162,7 @@ void SolveVisitor::initializeTaskScheduler()
 
 sofa::simulation::Task::MemoryAlloc SolveVisitorTask::run()
 {
-    m_solver->solve(m_execParams, m_dt, m_x, m_v);
+    m_solver->integrate(m_execParams, m_dt, m_x, m_v);
     return Task::Stack;
 }
 

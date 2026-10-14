@@ -44,7 +44,7 @@ WriteState::WriteState()
     , d_DOFsV( initData(&d_DOFsV, type::vector<unsigned int>(0), "DOFsV", "set the velocity DOFs to write"))
     , d_stopAt( initData(&d_stopAt, 0.0, "stopAt", "stop the simulation when the given threshold is reached"))
     , d_keperiod( initData(&d_keperiod, 0.0, "keperiod", "set the period to measure the kinetic energy increase"))
-    , mmodel(nullptr)
+    , l_state(initLink("state", "The state to write"))
     , outfile(nullptr)
 #if SOFA_COMPONENT_PLAYBACK_HAVE_ZLIB
     , gzfile(nullptr)
@@ -74,10 +74,16 @@ void WriteState::init()
 {
     validInit = true;
     periodicExport = false;
-    mmodel = this->getContext()->getMechanicalState();
+    if (l_state.empty())
+    {
+        l_state.set(this->getContext()->getMechanicalState());
+    }
+
+    this->l_mechanicalStates.clear();
+    this->l_mechanicalStates.add(l_state);
 
     // test the size and range of the DOFs to write in the file output
-    if (mmodel)
+    if (l_state)
     {
         timeToTestEnergyIncrease = d_keperiod.getValue();
     }
@@ -245,7 +251,7 @@ void WriteState::handleEvent(sofa::core::objectmodel::Event* event)
 
     if (simulation::AnimateBeginEvent::checkEventType(event))
     {
-        if (!mmodel) return;
+        if (!l_state) return;
         if (!outfile
 #if SOFA_COMPONENT_PLAYBACK_HAVE_ZLIB
             && !gzfile
@@ -266,7 +272,7 @@ void WriteState::handleEvent(sofa::core::objectmodel::Event* event)
                 if (!gnode->mass)
                 {
                     // Error: the mechanical model has no mass
-                    msg_error() << "Error: Kinetic energy can not be computed. The mass for " << mmodel->getName() << " has no been defined";
+                    msg_error() << "Error: Kinetic energy can not be computed. The mass for " << l_state->getName() << " has no been defined";
                     exit(EXIT_FAILURE);
                 }
                 else
@@ -327,20 +333,20 @@ void WriteState::handleEvent(sofa::core::objectmodel::Event* event)
                 if (d_writeX.getValue())
                 {
                     str << "  X= ";
-                    mmodel->writeVec(sofa::core::vec_id::read_access::position, str);
+                    l_state->writeVec(sofa::core::vec_id::read_access::position, str);
                     str << "\n";
                 }
                 if (d_writeX0.getValue())
                 {
                     str << "  X0= ";
-                    mmodel->writeVec(sofa::core::vec_id::read_access::restPosition, str);
+                    l_state->writeVec(sofa::core::vec_id::read_access::restPosition, str);
                     str << "\n";
                 }
                 //write the V state
                 if (d_writeV.getValue())
                 {
                     str << "  V= ";
-                    mmodel->writeVec(sofa::core::vec_id::read_access::velocity, str);
+                    l_state->writeVec(sofa::core::vec_id::read_access::velocity, str);
                     str << "\n";
                 }
                 gzputs(gzfile, str.str().c_str());
@@ -355,27 +361,27 @@ void WriteState::handleEvent(sofa::core::objectmodel::Event* event)
                     if (d_writeX.getValue())
                     {
                         (*outfile) << "  X= ";
-                        mmodel->writeVec(sofa::core::vec_id::read_access::position, *outfile);
+                        l_state->writeVec(sofa::core::vec_id::read_access::position, *outfile);
                         (*outfile) << "\n";
                     }
                     if (d_writeX0.getValue())
                     {
                         (*outfile) << "  X0= ";
-                        mmodel->writeVec(sofa::core::vec_id::read_access::restPosition, *outfile);
+                        l_state->writeVec(sofa::core::vec_id::read_access::restPosition, *outfile);
                         (*outfile) << "\n";
                     }
                     //write the V state
                     if (d_writeV.getValue())
                     {
                         (*outfile) << "  V= ";
-                        mmodel->writeVec(sofa::core::vec_id::read_access::velocity, *outfile);
+                        l_state->writeVec(sofa::core::vec_id::read_access::velocity, *outfile);
                         (*outfile) << "\n";
                     }
                     //write the F state
                     if (d_writeF.getValue())
                     {
                         (*outfile) << "  F= ";
-                        mmodel->writeVec(sofa::core::vec_id::read_access::force, *outfile);
+                        l_state->writeVec(sofa::core::vec_id::read_access::force, *outfile);
                         (*outfile) << "\n";
                     }
                     outfile->flush();

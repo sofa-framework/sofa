@@ -45,7 +45,7 @@ public:
     FileMessageHandler(const char* filename,MessageFormatter* formatter = nullptr);
 
     ~FileMessageHandler() override;
-    void process(Message& m) override ;
+    void doProcess(Message& m) override ;
     std::string getName() const override { return "FileMessageHandler"; }
 
     bool isValid(); // is output file ok ?

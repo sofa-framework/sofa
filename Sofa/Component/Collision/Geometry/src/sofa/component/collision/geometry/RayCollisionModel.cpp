@@ -68,19 +68,12 @@ void RayCollisionModel::resize(sofa::Size size)
 
 void RayCollisionModel::init()
 {
-    this->CollisionModel::init();
+    Inherit2::init();
 
-    mstate = dynamic_cast< core::behavior::MechanicalState<Vec3Types>* > (getContext()->getMechanicalState());
-    if (mstate==nullptr)
-    {
-        msg_error() << "RayCollisionModel requires a Vec3 Mechanical Model";
+    if (d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Invalid)
         return;
-    }
 
-    {
-        const int npoints = mstate->getSize();
-        resize(npoints);
-    }
+    resize(this->mstate->getSize());
 }
 
 

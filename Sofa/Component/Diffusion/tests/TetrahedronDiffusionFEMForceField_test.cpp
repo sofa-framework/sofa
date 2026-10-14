@@ -22,8 +22,6 @@
 #include <sofa/testing/BaseSimulationTest.h>
 using sofa::testing::BaseSimulationTest;
 
-#include <sofa/simulation/graph/DAGSimulation.h>
-
 #include <sofa/component/statecontainer/MechanicalObject.h>
 #include <sofa/component/topology/container/grid/RegularGridTopology.h>
 #include <sofa/component/diffusion/TetrahedronDiffusionFEMForceField.h>
@@ -100,7 +98,7 @@ struct TetrahedronDiffusionFEMForceField_test : public BaseSimulationTest
         timeStep = 0.0001;
         idMiddlePoint = 1270;
 
-        simulation::Simulation* simu = sofa::simulation::getSimulation();
+        simulation::Simulation* simu = sofa::simulation::MainSimulation::getSimulation();
         assert(simu);
 
         /// Load the scene

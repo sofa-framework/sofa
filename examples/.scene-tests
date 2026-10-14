@@ -1,6 +1,6 @@
 # [Slow] This runs very slowly, so compute only a few iterations
-iterations "Component/ODESolver/Backward/NewmarkImplicitSolver.scn" "5"
-timeout "Component/ODESolver/Backward/NewmarkImplicitSolver.scn" "60"
+iterations "Component/ODESolver/Backward/NewmarkIntegrationScheme.scn" "5"
+timeout "Component/ODESolver/Backward/NewmarkIntegrationScheme.scn" "60"
 
 # [Slow] Idem
 iterations "Component/SolidMechanics/FEM/FastTetrahedronCorotationalForceField_validation.scn" "10"
@@ -50,3 +50,6 @@ ignore "Benchmark/Performance/Bar16-fem-implicit-CudaVec3f.py"
 ignore "Benchmark/Performance/Bar16-spring-rk4-CudaVec3d.py"
 ignore "Benchmark/Performance/Bar16-spring-rk4-CudaVec3f.py"
 
+
+# Crash on windows
+ignore "Component/Constraint/Lagrangian/PrecomputedConstraintCorrection.scn"

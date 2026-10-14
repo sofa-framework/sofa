@@ -69,14 +69,20 @@ protected:
         {
         }
         /// Output stream
-        inline friend std::ostream& operator<< ( std::ostream& os, const EdgeRestInformation& /*eri*/ )
+        inline friend std::ostream& operator<< ( std::ostream& os, const EdgeRestInformation& eri )
         {
+            for (int i = 0; i < 2; ++i)
+                os << eri.vertices[i] << " ";
+            os << eri.DfDx;
             return os;
         }
 
         /// Input stream
-        inline friend std::istream& operator>> ( std::istream& in, EdgeRestInformation& /*eri*/ )
+        inline friend std::istream& operator>> ( std::istream& in, EdgeRestInformation& eri )
         {
+            for (int i = 0; i < 2; ++i)
+                in >> eri.vertices[i];
+            in >> eri.DfDx;
             return in;
         }
     };
@@ -109,16 +115,11 @@ public:
     void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx) override;
     void buildStiffnessMatrix(sofa::core::behavior::StiffnessMatrix* matrix) override;
     void buildDampingMatrix(core::behavior::DampingMatrix* /*matrix*/) final;
-    SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override
-    {
-        msg_warning() << "Method getPotentialEnergy not implemented yet.";
-        return 0.0;
-    }
 
     virtual Real getLambda() const { return lambda;}
     virtual Real getMu() const { return mu;}
 
-    SReal getPotentialEnergy(const core::MechanicalParams* mparams) const override;
+    SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const override;
     void setYoungModulus(const Real modulus)
     {
         d_youngModulus.setValue(modulus);

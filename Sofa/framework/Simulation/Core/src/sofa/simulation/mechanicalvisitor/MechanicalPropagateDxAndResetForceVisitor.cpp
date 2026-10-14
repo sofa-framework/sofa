@@ -31,20 +31,12 @@ Visitor::Result MechanicalPropagateDxAndResetForceVisitor::fwdMechanicalState(si
     return RESULT_CONTINUE;
 }
 
-
 Visitor::Result MechanicalPropagateDxAndResetForceVisitor::fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map)
 {
     map->applyJ(mparams, dx, dx);
 
     return RESULT_CONTINUE;
 }
-
-
-void MechanicalPropagateDxAndResetForceVisitor::bwdMechanicalState(simulation::Node* , core::behavior::BaseMechanicalState* mm)
-{
-    SOFA_UNUSED(mm);
-}
-
 
 Visitor::Result MechanicalPropagateDxAndResetForceVisitor::fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
 {

@@ -23,6 +23,7 @@
 #include <sofa/component/collision/geometry/config.h>
 #include <sofa/core/fwd.h>
 #include <sofa/core/CollisionModel.h>
+#include <sofa/core/behavior/SingleStateAccessor.h>
 #include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/collision/Intersection.h>
@@ -73,10 +74,10 @@ public:
 using Line = TLine<sofa::defaulttype::Vec3Types>;
 
 template<class TDataTypes>
-class LineCollisionModel : public core::CollisionModel
+class LineCollisionModel : public core::CollisionModel, public virtual core::behavior::SingleStateAccessor<TDataTypes>
 {
 public :
-    SOFA_CLASS(SOFA_TEMPLATE(LineCollisionModel, TDataTypes), core::CollisionModel);
+    SOFA_CLASS2(SOFA_TEMPLATE(LineCollisionModel, TDataTypes), core::CollisionModel, SOFA_TEMPLATE(core::behavior::SingleStateAccessor, TDataTypes));
 
     enum LineFlag
     {
@@ -130,7 +131,7 @@ public:
 
     bool canCollideWithElement(sofa::Index index, CollisionModel* model2, sofa::Index index2) override;
 
-    core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return mstate; }
+    core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return this->mstate; }
 
     Deriv velocity(sofa::Index index)const;
 
@@ -139,6 +140,10 @@ public:
     int getLineFlags(sofa::Index i);
 
     Data<bool> d_bothSide; ///< activate collision on both side of the line model (when surface normals are defined on these lines)
+    Data<bool> d_displayFreePosition; ///< Display Collision Model Points free position(in green)
+
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<LineCollisionModel<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
@@ -161,14 +166,7 @@ public:
 
     void computeBBox(const core::ExecParams* params, bool onlyVisible) override;
 
-    Data<bool> d_displayFreePosition; ///< Display Collision Model Points free position(in green)
-
-    /// Link to be set to the topology container in the component graph.
-    SingleLink<LineCollisionModel<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
-
 protected:
-    core::behavior::MechanicalState<DataTypes>* mstate;
-    Topology* topology;
     PointCollisionModel<sofa::defaulttype::Vec3Types>* mpoints;
     int meshRevision;
 };

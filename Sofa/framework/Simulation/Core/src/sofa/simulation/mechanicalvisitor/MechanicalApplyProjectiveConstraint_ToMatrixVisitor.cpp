@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
+#define SOFA_SIMULATION_CORE_MECHANICALAPPLYPROJECTIVECONSTRAINT_TOMATRIXVISITOR_CPP
 #include <sofa/simulation/mechanicalvisitor/MechanicalApplyProjectiveConstraint_ToMatrixVisitor.h>
 
 #include <sofa/core/behavior/BaseProjectiveConstraintSet.h>
@@ -31,13 +31,6 @@ MechanicalApplyProjectiveConstraint_ToMatrixVisitor::MechanicalApplyProjectiveCo
         const core::MechanicalParams *mparams, const sofa::core::behavior::MultiMatrixAccessor *_matrix)
         : MechanicalVisitor(mparams) ,  matrix(_matrix) //,m(_m),b(_b),k(_k)
 {
-}
-
-Visitor::Result MechanicalApplyProjectiveConstraint_ToMatrixVisitor::fwdMechanicalState(simulation::Node *,
-                                                                                        core::behavior::BaseMechanicalState *)
-{
-    //ms->setOffset(offsetOnExit);
-    return RESULT_CONTINUE;
 }
 
 Visitor::Result MechanicalApplyProjectiveConstraint_ToMatrixVisitor::fwdProjectiveConstraintSet(simulation::Node *,

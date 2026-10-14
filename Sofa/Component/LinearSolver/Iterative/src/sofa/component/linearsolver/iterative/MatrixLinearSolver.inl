@@ -25,15 +25,6 @@
 #include <sofa/simulation/mechanicalvisitor/MechanicalGetConstraintJacobianVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalGetConstraintJacobianVisitor;
 
-#include <sofa/simulation/mechanicalvisitor/MechanicalMultiVectorToBaseVectorVisitor.h>
-using sofa::simulation::mechanicalvisitor::MechanicalMultiVectorToBaseVectorVisitor;
-
-#include <sofa/simulation/mechanicalvisitor/MechanicalMultiVectorFromBaseVectorVisitor.h>
-using sofa::simulation::mechanicalvisitor::MechanicalMultiVectorFromBaseVectorVisitor;
-
-#include <sofa/simulation/mechanicalvisitor/MechanicalMultiVectorPeqBaseVectorVisitor.h>
-using sofa::simulation::mechanicalvisitor::MechanicalMultiVectorPeqBaseVectorVisitor;
-
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/component/linearsystem/MatrixLinearSystem.inl>
 
@@ -314,7 +305,7 @@ bool MatrixLinearSolver<Matrix, Vector>::addJMInvJtLocal(Matrix* M, ResMatrixTyp
         {
             rhsVector[row].resize(J->colSize());
             lhsVector[row].resize(J->colSize());
-            columnResult[row].resize(J->colSize());
+            columnResult[row].resize(J->rowSize());
 
             // STEP 1 : put each line of matrix Jt in the right hand term of the system
             for (typename JMatrixType::Index i = 0; i < J->colSize(); ++i)

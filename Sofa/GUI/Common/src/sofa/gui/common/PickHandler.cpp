@@ -463,7 +463,7 @@ BodyPicked PickHandler::findCollisionUsingBruteForce(const type::Vec3& origin,
     // Look for particles hit by this ray
 //  msg_info()<<"PickHandler::findCollisionUsingBruteForce" << std::endl;
     MechanicalPickParticlesVisitor picker(sofa::core::execparams::defaultInstance(), origin, direction, maxLength, 0 );
-    //core::objectmodel::BaseNode* rootNode = mouseNode->getRoot(); //sofa::simulation::getSimulation()->getContext()->toBaseNode();
+    //core::objectmodel::BaseNode* rootNode = mouseNode->getRoot(); //sofa::simulation::MainSimulation::getSimulation()->getContext()->toBaseNode();
 
     if (rootNode) picker.execute(rootNode->getContext());
     else

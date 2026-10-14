@@ -31,8 +31,8 @@ using sofa::testing::BaseTest;
 #include<sofa/core/objectmodel/BaseObject.h>
 using sofa::core::objectmodel::BaseObject ;
 
-#include <sofa/simulation/graph/DAGSimulation.h>
-using sofa::simulation::graph::DAGSimulation ;
+#include <sofa/simulation/Simulation.h>
+using sofa::simulation::Simulation ;
 
 #include <sofa/simulation/Node.h>
 using sofa::simulation::Node ;
@@ -105,7 +105,7 @@ void TestLight::checkLightMissingLightManager(const std::string& lighttype)
     ASSERT_NE(lm, nullptr) ;
 
     sofa::simulation::node::unload(root);
-    sofa::simulation::getSimulation()->createNewGraph("");
+    sofa::simulation::MainSimulation::getSimulation()->createNewGraph("");
 }
 
 void TestLight::checkPositionalLightValidAttributes()
@@ -146,7 +146,7 @@ void TestLight::checkPositionalLightValidAttributes()
         EXPECT_NE( light->findData(attrname), nullptr ) << "Missing attribute with name '" << attrname << "'." ;
 
     sofa::simulation::node::unload(root);
-    sofa::simulation::getSimulation()->createNewGraph("");
+    sofa::simulation::MainSimulation::getSimulation()->createNewGraph("");
 }
 
 void TestLight::checkDirectionalLightValidAttributes()
@@ -187,7 +187,7 @@ void TestLight::checkDirectionalLightValidAttributes()
         EXPECT_NE( light->findData(attrname), nullptr ) << "Missing attribute with name '" << attrname << "'." ;
 
     sofa::simulation::node::unload(root);
-    sofa::simulation::getSimulation()->createNewGraph("");
+    sofa::simulation::MainSimulation::getSimulation()->createNewGraph("");
 }
 
 void TestLight::checkSpotLightValidAttributes()
@@ -232,7 +232,7 @@ void TestLight::checkSpotLightValidAttributes()
         EXPECT_NE( light->findData(attrname), nullptr ) << "Missing attribute with name '" << attrname << "'." ;
 
     sofa::simulation::node::unload(root);
-    sofa::simulation::getSimulation()->createNewGraph("");
+    sofa::simulation::MainSimulation::getSimulation()->createNewGraph("");
 }
 
 

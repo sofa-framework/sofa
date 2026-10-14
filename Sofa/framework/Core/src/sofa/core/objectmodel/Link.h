@@ -408,11 +408,11 @@ public:
         return add(ptr, path);
     }
 
-    bool remove(DestPtr v)
+    bool _doRemove_(Base* target) override
     {
-        if (!v)
+        if (!target)
             return false;
-        return removeAt(TraitsContainer::find(m_value,v));
+        return removeAt(TraitsContainer::find(m_value,castTo<DestType*>(target)));
     }
 
     bool removeAt(std::size_t index)
@@ -504,6 +504,24 @@ protected:
 
         /// TLink:adding accepts nullptr (for a not yet resolved link).
         return TLink::add(destptr, path);
+    }
+
+    bool addRawPtr(Base* baseptr) override
+    {
+        /// If the pointer is null and the path empty we do nothing
+        if(!baseptr)
+            return false;
+
+        /// Downcast the pointer to a compatible type and
+        /// If the types are not compatible with the Link we returns false
+        auto destptr = castTo<DestType*>(baseptr);
+        if(!destptr)
+        {
+            return false;
+        }
+
+        /// TLink:adding accepts nullptr (for a not yet resolved link).
+        return TLink::add(destptr);
     }
 
     /// Returns false on type mismatch

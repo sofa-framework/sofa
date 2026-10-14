@@ -119,42 +119,30 @@ public:
 
     void reset() override;
 
-    void writeVec(core::ConstVecId v, std::ostream &out) override;
-    void readVec(core::VecId v, std::istream &in) override;
-    SReal compareVec(core::ConstVecId v, std::istream &in) override;
+    void writeVec(core::ConstVecId vecId, std::ostream &out) override;
+    void readVec(core::VecId vecId, std::istream &in) override;
+    SReal compareVec(core::ConstVecId vecId, std::istream &in) override;
 
     void writeState( std::ostream& out ) override;
-
-    /// @name New vectors access API based on VecId
-    /// @{
-
-    Data< VecCoord >* write(core::VecCoordId v) override;
-    const Data< VecCoord >* read(core::ConstVecCoordId v) const override;
-
-    Data< VecDeriv >* write(core::VecDerivId v) override;
-    const Data< VecDeriv >* read(core::ConstVecDerivId v) const override;
-
-    Data< MatrixDeriv >* write(core::MatrixDerivId v) override;
-    const Data< MatrixDeriv >* read(core::ConstMatrixDerivId v) const override;
-
-    /// @}
 
     void initGnuplot(const std::string path) override;
     void exportGnuplot(SReal time) override;
 
-    void resize( Size vsize) override;
-    virtual void reserve(Size vsize);
+    using sofa::core::StateVectorStorage<DataTypes>::write;
+    using sofa::core::StateVectorStorage<DataTypes>::read;
 
-    Size getSize() const override { return d_size.getValue(); }
+    using sofa::core::StateVectorStorage<DataTypes>::resize;
+    using sofa::core::StateVectorStorage<DataTypes>::reserve;
+    using sofa::core::StateVectorStorage<DataTypes>::getSize;
+    using sofa::core::StateVectorStorage<DataTypes>::d_size;
 
-    SReal getPX(sofa::Index i) const override { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(read(core::vec_id::read_access::position)->getValue())[i]); return (SReal)x; }
-    SReal getPY(sofa::Index i) const override { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(read(core::vec_id::read_access::position)->getValue())[i]); return (SReal)y; }
-    SReal getPZ(sofa::Index i) const override { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(read(core::vec_id::read_access::position)->getValue())[i]); return (SReal)z; }
+    SReal getPX(sofa::Index i) const override;
+    SReal getPY(sofa::Index i) const override;
+    SReal getPZ(sofa::Index i) const override;
 
-    SReal getVX(sofa::Index i) const { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z, read(core::vec_id::read_access::velocity)->getValue()[i]); return (SReal)x; }
-    SReal getVY(sofa::Index i) const { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z, read(core::vec_id::read_access::velocity)->getValue()[i]); return (SReal)y; }
-    SReal getVZ(sofa::Index i) const { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z, read(core::vec_id::read_access::velocity)->getValue()[i]); return (SReal)z; }
-
+    SReal getVX(sofa::Index i) const;
+    SReal getVY(sofa::Index i) const;
+    SReal getVZ(sofa::Index i) const;
 
     /** \brief Overwrite values at index outputIndex by the ones at inputIndex.
      *
@@ -186,7 +174,7 @@ public:
     /// @{
 
     /// Apply translation vector to the position.
-    void applyTranslation (const SReal dx, const SReal dy, const SReal dz) override;
+    void applyTranslation (const SReal translationVectorX, const SReal translationVectorY, const SReal translationVectorZ) override;
 
     /// Rotation using Euler Angles in degree.
     void applyRotation (const SReal rx, const SReal ry, const SReal rz) override;
@@ -243,7 +231,7 @@ public:
     /// @name Initial transformations accessors.
     /// @{
 
-    void setTranslation(SReal dx, SReal dy, SReal dz) {translation.setValue(type::Vec3(dx,dy,dz));}
+    void setTranslation(SReal translationVectorX, SReal translationVectorY, SReal translationVectorZ);
     void setRotation(SReal rx, SReal ry, SReal rz) {rotation.setValue(type::Vec3(rx,ry,rz));}
     void setScale(SReal sx, SReal sy, SReal sz) {scale.setValue(type::Vec3(sx,sy,sz));}
 
@@ -263,23 +251,23 @@ public:
     void accumulateForce(const core::ExecParams* params, core::VecDerivId f = core::vec_id::write_access::force) override; // see BaseMechanicalState::accumulateForce(const ExecParams*, VecId) override
 
     /// Increment the index of the given VecCoordId, so that all 'allocated' vectors in this state have a lower index
-    void vAvail(const core::ExecParams* params, core::VecCoordId& v) override;
+    void vAvail(const core::ExecParams* params, core::VecCoordId& vecId) override;
     /// Increment the index of the given VecDerivId, so that all 'allocated' vectors in this state have a lower index
-    void vAvail(const core::ExecParams* params, core::VecDerivId& v) override;
+    void vAvail(const core::ExecParams* params, core::VecDerivId& vecId) override;
     /// Increment the index of the given MatrixDerivId, so that all 'allocated' vectors in this state have a lower index
     //virtual void vAvail(core::MatrixDerivId& v);
 
     /// Allocate a new temporary vector
-    void vAlloc(const core::ExecParams* params, core::VecCoordId v, const core::VecIdProperties& properties = {}) override;
+    void vAlloc(const core::ExecParams* params, core::VecCoordId vecId, const core::VecIdProperties& properties = {}) override;
     /// Allocate a new temporary vector
-    void vAlloc(const core::ExecParams* params, core::VecDerivId v, const core::VecIdProperties& properties = {}) override;
+    void vAlloc(const core::ExecParams* params, core::VecDerivId vecId, const core::VecIdProperties& properties = {}) override;
     /// Allocate a new temporary vector
     //virtual void vAlloc(core::MatrixDerivId v);
 
     /// Reallocate a new temporary vector
-    void vRealloc(const core::ExecParams* params, core::VecCoordId v, const core::VecIdProperties& properties = {}) override;
+    void vRealloc(const core::ExecParams* params, core::VecCoordId vecId, const core::VecIdProperties& properties = {}) override;
     /// Reallocate a new temporary vector
-    void vRealloc(const core::ExecParams* params, core::VecDerivId v, const core::VecIdProperties& properties = {}) override;
+    void vRealloc(const core::ExecParams* params, core::VecDerivId vecId, const core::VecIdProperties& properties = {}) override;
 
 
     /// Free a temporary vector
@@ -296,7 +284,9 @@ public:
     /// Initialize an unset vector
     //virtual void vInit(const core::ExecParams* params, core::MatrixDerivId v, core::ConstMatrixDerivId vSrc);
 
-    void vOp(const core::ExecParams* params, core::VecId v, core::ConstVecId a = core::ConstVecId::null(), core::ConstVecId b = core::ConstVecId::null(), SReal f=1.0) override;
+    void vOp(const core::ExecParams* params, core::VecId r,
+             core::ConstVecId a = core::ConstVecId::null(),
+             core::ConstVecId b = core::ConstVecId::null(), SReal f = 1.0) override;
 
     void vMultiOp(const core::ExecParams* params, const VMultiOp& ops) override;
 
@@ -310,7 +300,7 @@ public:
     /// Maximum of the absolute values of the entries of state vector a. This is used to compute the infinite-norm of the vector.
     SReal vMax(const core::ExecParams* params, core::ConstVecId a) override;
 
-    Size vSize( const core::ExecParams* params, core::ConstVecId v ) override;
+    Size vSize( const core::ExecParams* params, core::ConstVecId vecId ) override;
 
     void resetForce(const core::ExecParams* params, core::VecDerivId f = core::vec_id::write_access::force) override;
 
@@ -360,35 +350,21 @@ protected :
     /// @}
 
     //int vsize; ///< Number of elements to allocate in vectors
-    Data< int > d_size; ///< Size of the vectors
 
     SingleLink< MechanicalObject<DataTypes>, core::topology::BaseMeshTopology,BaseLink::FLAG_STRONGLINK|BaseLink::FLAG_STOREPATH> l_topology;
-
-    Data< int > f_reserve; ///< Size to reserve when creating vectors. (default=0)
 
     bool m_initialized;
 
     /// @name Integration-related data
     /// @{
 
-    sofa::type::vector< Data< VecCoord >    * > vectorsCoord; ///< Coordinates DOFs vectors table (static and dynamic allocated)
-    sofa::type::vector< Data< VecDeriv >    * > vectorsDeriv; ///< Derivates DOFs vectors table (static and dynamic allocated)
-    sofa::type::vector< Data< MatrixDeriv > * > vectorsMatrixDeriv; ///< Constraint vectors table
+    using sofa::core::StateVectorStorage<DataTypes>::vectorsCoord;
+    using sofa::core::StateVectorStorage<DataTypes>::vectorsDeriv;
+    using sofa::core::StateVectorStorage<DataTypes>::vectorsMatrixDeriv;
 
-    /**
-     * @brief Inserts VecCoord DOF coordinates vector at index in the vectorsCoord container.
-     */
-    void setVecCoord(core::ConstVecCoordId /*vecId*/, Data< VecCoord >* /*vCoord*/);
-
-    /**
-     * @brief Inserts VecDeriv DOF derivates vector at index in the vectorsDeriv container.
-     */
-    void setVecDeriv(core::ConstVecDerivId /*vecId*/, Data< VecDeriv >* /*vDeriv*/);
-
-    /**
-     * @brief Inserts MatrixDeriv DOF  at index in the MatrixDeriv container.
-     */
-    void setVecMatrixDeriv(core::ConstMatrixDerivId /*vecId*/, Data< MatrixDeriv> * /*mDeriv*/);
+    using sofa::core::StateVectorStorage<DataTypes>::setVecCoord;
+    using sofa::core::StateVectorStorage<DataTypes>::setVecDeriv;
+    using sofa::core::StateVectorStorage<DataTypes>::setVecMatrixDeriv;
 
 
     /// @}
@@ -445,7 +421,7 @@ protected :
     /// Given the number of a constraint Equation, find the index in the MatrixDeriv C, where the constraint is actually stored
     // unsigned int getIdxConstraintFromId(unsigned int id) const;
 
-    MechanicalObjectInternalData<DataTypes> data;
+    MechanicalObjectInternalData<DataTypes> m_data;
 
     template <core::VecType vtype, core::VecAccess vaccess>
     static void setVecIdProperties(core::TVecId<vtype, vaccess> v, const core::VecIdProperties& properties, core::BaseData* vec_d);

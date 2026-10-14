@@ -19,7 +19,7 @@
 		<ul>
 			<li>First, we put a gravity in the whole scene with the <b>Gravity</b> component.</li>
 			<li>We set the instrument as a <b>MechanicalObject</b>. It describes the state of the particles of the object.</li>
-			<li>To compute the states at each time step, we need a time integrator, like the <b>EulerImplicitSolver</b>.</li>
+			<li>To compute the states at each time step, we need a time integrator, like the <b>EulerImplicitIntegrationScheme</b>.</li>
 			<li>We need a linear solver, like <b>CGLinearSolver</b>, to solve the linear system generated with our implicit solver.</li>
 			<li>We finally add a mass to the object with the <b>UniformMass</b> component.</li>
 		</ul>

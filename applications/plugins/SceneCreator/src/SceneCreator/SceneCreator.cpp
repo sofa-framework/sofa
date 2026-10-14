@@ -24,7 +24,6 @@
 #include <sofa/Modules.h>
 
 #include <sofa/simulation/Simulation.h>
-#include <sofa/simulation/graph/DAGSimulation.h>
 #include "GetVectorVisitor.h"
 #include "GetAssembledSizeVisitor.h"
 
@@ -50,7 +49,6 @@ using namespace sofa::defaulttype ;
 
 using type::vector;
 
-using sofa::simulation::graph::DAGSimulation ;
 using sofa::simulation::GetAssembledSizeVisitor ;
 using sofa::simulation::GetVectorVisitor ;
 using sofa::simulation::Node ;
@@ -67,7 +65,7 @@ using sofa::core::objectmodel::BaseObject ;
 
 Node::SPtr createRootWithCollisionPipeline(const std::string& responseType)
 {
-    root = simulation::getSimulation()->createNewGraph("root");
+    root = simulation::MainSimulation::getSimulation()->createNewGraph("root");
     simpleapi::createObject(root, "CollisionPipeline", {{"name","Collision Pipeline"}}) ;
     simpleapi::createObject(root, "BruteForceBroadPhase", {{"name","Broad Phase Detection"}}) ;
     simpleapi::createObject(root, "BVHNarrowPhase", {{"name","Narrow Phase Detection"}}) ;
@@ -88,16 +86,16 @@ Node::SPtr  createEulerSolverNode(Node::SPtr parent, const std::string& name, co
 
     if (scheme == "Explicit")
     {
-        simpleapi::createObject(parent, "RequiredPlugin", {{"pluginName", Sofa.Component.ODESolver.Forward}});
-        simpleapi::createObject(node, "EulerExplicitSolver", {{"name","Euler Explicit"}});
+        simpleapi::createObject(parent, "RequiredPlugin", {{"pluginName", Sofa.Component.IntegrationScheme.Forward}});
+        simpleapi::createObject(node, "EulerExplicitIntegrationScheme", {{"name","Euler Explicit"}});
         return node ;
     }
 
     if (scheme == "Implicit")
     {
-        simpleapi::createObject(parent, "RequiredPlugin", {{"pluginName", Sofa.Component.ODESolver.Backward}});
+        simpleapi::createObject(parent, "RequiredPlugin", {{"pluginName", Sofa.Component.IntegrationScheme.Backward}});
         simpleapi::createObject(parent, "RequiredPlugin", {{"pluginName", Sofa.Component.LinearSolver.Iterative}});
-        simpleapi::createObject(node, "EulerImplicitSolver", {{"name","Euler Implicit"},
+        simpleapi::createObject(node, "EulerImplicitIntegrationScheme", {{"name","Euler Implicit"},
                                                               {"rayleighStiffness","0.01"},
                                                               {"rayleighMass", "1.0"}}) ;
         simpleapi::createObject(node, "CGLinearSolver", {{"name","Conjugate Gradient"},
@@ -110,9 +108,9 @@ Node::SPtr  createEulerSolverNode(Node::SPtr parent, const std::string& name, co
 
     if (scheme == "Implicit_SparseLDL")
     {
-        simpleapi::createObject(parent, "RequiredPlugin", {{"pluginName", Sofa.Component.ODESolver.Backward}});
+        simpleapi::createObject(parent, "RequiredPlugin", {{"pluginName", Sofa.Component.IntegrationScheme.Backward}});
         simpleapi::createObject(parent, "RequiredPlugin", {{"pluginName", Sofa.Component.LinearSolver.Direct}});
-        simpleapi::createObject(node, "EulerImplicitSolver", {{"name","Euler Implicit"},
+        simpleapi::createObject(node, "EulerImplicitIntegrationScheme", {{"name","Euler Implicit"},
                                                                 {"rayleighStiffness","0.01"},
                                                                 {"rayleighMass", "1.0"}}) ;
 
@@ -680,8 +678,8 @@ Node::SPtr massSpringString(Node::SPtr parent,
 
 Node::SPtr initSofa()
 {
-    assert(sofa::simulation::getSimulation());
-    root = simulation::getSimulation()->createNewGraph("root");
+    assert(sofa::simulation::MainSimulation::getSimulation());
+    root = simulation::MainSimulation::getSimulation()->createNewGraph("root");
     return root;
 }
 
@@ -702,7 +700,7 @@ Node::SPtr clearScene()
 {
     if( root )
         sofa::simulation::node::unload( root );
-    root = simulation::getSimulation()->createNewGraph("");
+    root = simulation::MainSimulation::getSimulation()->createNewGraph("");
     return root;
 }
 

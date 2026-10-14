@@ -28,7 +28,7 @@ using sofa::defaulttype::Vec3Types ;
 #include <sofa/component/statecontainer/MechanicalObject.h>
 typedef sofa::component::statecontainer::MechanicalObject<Vec3Types> MechanicalObject3;
 
-#include <sofa/simulation/graph/DAGSimulation.h>
+#include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/DeleteVisitor.h>
 #include <sofa/core/objectmodel/BaseNode.h>
 #include <sofa/component/mass/UniformMass.h>
@@ -71,14 +71,14 @@ struct Scene_test: public NumericTest<SReal>
 
     Scene_test()
     {
-        simulation = sofa::simulation::getSimulation();
+        simulation = sofa::simulation::MainSimulation::getSimulation();
     }
 
     /// Test Simulation::computeBBox
     void computeBBox()
     {
         // Init Sofa
-        root = simulation::getSimulation()->createNewGraph("root");
+        root = simulation::MainSimulation::getSimulation()->createNewGraph("root");
 
         // create DOFs and its expected bounding box
         const MechanicalObject3::SPtr DOF = core::objectmodel::New<MechanicalObject3>();
@@ -163,7 +163,7 @@ struct Scene_test: public NumericTest<SReal>
     /// create a scene, remove a node then step the scene
     void objectDestruction_subNodeAndStep()
     {
-        root = simulation::getSimulation()->createNewGraph("root");
+        root = simulation::MainSimulation::getSimulation()->createNewGraph("root");
         root->addObject(core::objectmodel::New<sofa::simulation::DefaultAnimationLoop>());
 
         core::objectmodel::BaseNode* child  = root->createChild("child").get();
@@ -193,7 +193,7 @@ struct Scene_test: public NumericTest<SReal>
     void sceneDestruction_createnewgraph()
     {
         createScene();
-        root = simulation::getSimulation()->createNewGraph("root2");
+        root = simulation::MainSimulation::getSimulation()->createNewGraph("root2");
         checkDeletions();
     }
 
@@ -220,14 +220,14 @@ protected:
 
         objectCounter = 0;
 
-        root = simulation::getSimulation()->createNewGraph("root");
+        root = simulation::MainSimulation::getSimulation()->createNewGraph("root");
         root->addObject(core::objectmodel::New<InstrumentedObject<MechanicalObject3> >());
 
         typename UniformMass3::SPtr uniformMass = core::objectmodel::New<InstrumentedObject<UniformMass3>>();
         uniformMass->d_totalMass.setValue(1.0);
         root->addObject(uniformMass);
 
-        const simulation::Node::SPtr child  = simulation::getSimulation()->createNewNode("child");
+        const simulation::Node::SPtr child  = simulation::MainSimulation::getSimulation()->createNewNode("child");
         root->addChild(child);
         child->addObject(core::objectmodel::New<InstrumentedObject<MechanicalObject3> >());
 

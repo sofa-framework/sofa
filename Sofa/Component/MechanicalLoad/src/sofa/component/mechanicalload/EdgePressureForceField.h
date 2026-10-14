@@ -64,14 +64,18 @@ protected:
         }
 
         /// Output stream
-        inline friend std::ostream& operator<< ( std::ostream& os, const EdgePressureInformation& /*ei*/ )
+        inline friend std::ostream& operator<< ( std::ostream& os, const EdgePressureInformation& ei )
         {
+            os << ei.length << " ";
+            os << ei.force;
             return os;
         }
 
         /// Input stream
-        inline friend std::istream& operator>> ( std::istream& in, EdgePressureInformation& /*ei*/ )
+        inline friend std::istream& operator>> ( std::istream& in, EdgePressureInformation& ei )
         {
+            in >> ei.length;
+            in >> ei.force;
             return in;
         }
     };

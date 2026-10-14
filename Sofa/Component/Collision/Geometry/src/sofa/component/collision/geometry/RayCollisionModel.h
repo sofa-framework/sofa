@@ -23,6 +23,7 @@
 #include <sofa/component/collision/geometry/config.h>
 #include <sofa/core/fwd.h>
 #include <sofa/core/CollisionModel.h>
+#include <sofa/core/behavior/SingleStateAccessor.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <set>
 
@@ -52,10 +53,10 @@ public:
     void setL(SReal newL);
 };
 
-class SOFA_COMPONENT_COLLISION_GEOMETRY_API RayCollisionModel : public core::CollisionModel
+class SOFA_COMPONENT_COLLISION_GEOMETRY_API RayCollisionModel : public core::CollisionModel, public virtual core::behavior::SingleStateAccessor<defaulttype::Vec3Types>
 {
 public:
-    SOFA_CLASS(RayCollisionModel, core::CollisionModel);
+    SOFA_CLASS2(RayCollisionModel, core::CollisionModel, SOFA_TEMPLATE(core::behavior::SingleStateAccessor, defaulttype::Vec3Types));
 
     typedef sofa::defaulttype::Vec3Types InDataTypes;
     typedef sofa::defaulttype::Vec3Types DataTypes;
@@ -88,14 +89,13 @@ public:
 
     virtual const std::set<response::contact::BaseRayContact*> &getContacts() const { return contacts;}
 
+    Data<SReal> d_defaultLength; ///< The default length for all rays in this collision model
+
 protected:
     sofa::type::vector<SReal> length;
     sofa::type::vector<type::Vec3> direction;
 
-    Data<SReal> d_defaultLength; ///< The default length for all rays in this collision model
-
     std::set<response::contact::BaseRayContact*> contacts;
-    core::behavior::MechanicalState<defaulttype::Vec3Types>* mstate;
 
 };
 

@@ -4,8 +4,10 @@ project(Sofa.Component.SolidMechanics.FEM.HyperElastic_test)
 
 set(SOURCE_FILES
     Material_test.cpp
+    StandardTetrahedralFEMForceField_test.cpp
     TetrahedronHyperelasticityFEMForceField_params_test.cpp
     TetrahedronHyperelasticityFEMForceField_scene_test.cpp
+    TetrahedronHyperelasticityFEMForceField_test.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
@@ -15,6 +17,6 @@ target_link_libraries(${PROJECT_NAME}
     Sofa.Component.SolidMechanics.FEM.HyperElastic
     Sofa.Component.SolidMechanics.Testing
     Sofa.Component.StateContainer
-    Sofa.Component.ODESolver.Backward)
+    Sofa.Component.IntegrationScheme.Backward)
 
 add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})

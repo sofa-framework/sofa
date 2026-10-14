@@ -1401,8 +1401,8 @@ double MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TR
         }
         else
         {
-            m->data.tmpdot.recreate(tmpsize);
-            Kernels::vDot(va->size(), &r, va->deviceRead(), vb->deviceRead(), m->data.tmpdot.deviceWrite(), (Real*)(&(m->data.tmpdot.getCached(0))));
+            m->m_data.tmpdot.recreate(tmpsize);
+            Kernels::vDot(va->size(), &r, va->deviceRead(), vb->deviceRead(), m->m_data.tmpdot.deviceWrite(), (Real*)(&(m->m_data.tmpdot.getCached(0))));
         }
     }
     else if (a.type == sofa::core::V_DERIV && b.type == sofa::core::V_DERIV)
@@ -1416,8 +1416,8 @@ double MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TR
         }
         else
         {
-            m->data.tmpdot.recreate(tmpsize);
-            Kernels::vDot(va->size(), &r, va->deviceRead(), vb->deviceRead(), m->data.tmpdot.deviceWrite(), (Real*)(&(m->data.tmpdot.getCached(0))));
+            m->m_data.tmpdot.recreate(tmpsize);
+            Kernels::vDot(va->size(), &r, va->deviceRead(), vb->deviceRead(), m->m_data.tmpdot.deviceWrite(), (Real*)(&(m->m_data.tmpdot.getCached(0))));
         }
 #ifndef NDEBUG
         // Check the result
@@ -2091,8 +2091,8 @@ double MechanicalObjectInternalData< gpu::cuda::CudaRigidTypes<N, real> >::vDot(
         }
         else
         {
-            m->data.tmpdot.recreate(tmpsize);
-            Kernels::vDot(va->size(), &r, va->deviceRead(), vb->deviceRead(), m->data.tmpdot.deviceWrite(), (Real*)(&(m->data.tmpdot.getCached(0))));
+            m->m_data.tmpdot.recreate(tmpsize);
+            Kernels::vDot(va->size(), &r, va->deviceRead(), vb->deviceRead(), m->m_data.tmpdot.deviceWrite(), (Real*)(&(m->m_data.tmpdot.getCached(0))));
         }
     }
     else if (a.type == sofa::core::V_DERIV && b.type == sofa::core::V_DERIV)
@@ -2106,8 +2106,8 @@ double MechanicalObjectInternalData< gpu::cuda::CudaRigidTypes<N, real> >::vDot(
         }
         else
         {
-            m->data.tmpdot.recreate(tmpsize);
-            Kernels::vDot(va->size(), &r, va->deviceRead(), vb->deviceRead(), m->data.tmpdot.deviceWrite(), (Real*)(&(m->data.tmpdot.getCached(0))));
+            m->m_data.tmpdot.recreate(tmpsize);
+            Kernels::vDot(va->size(), &r, va->deviceRead(), vb->deviceRead(), m->m_data.tmpdot.deviceWrite(), (Real*)(&(m->m_data.tmpdot.getCached(0))));
         }
 #ifndef NDEBUG
         // Check the result
@@ -2359,24 +2359,24 @@ void MechanicalObjectInternalData< gpu::cuda::CudaRigidTypes<N, real> >::addFrom
 // I know using macros is bad design but this is the only way not to repeat the code for all CUDA types
 #define CudaMechanicalObject_ImplMethods(T) \
 template<> void MechanicalObject< T >::accumulateForce(const core::ExecParams* params, core::VecDerivId fid) \
-{ if( fid==core::vec_id::write_access::force ) data.accumulateForce(this); else core::behavior::BaseMechanicalState::accumulateForce(params,fid);} \
+{ if( fid==core::vec_id::write_access::force ) m_data.accumulateForce(this); else core::behavior::BaseMechanicalState::accumulateForce(params,fid);} \
 template<> void MechanicalObject< T >::vOp(const core::ExecParams* /* params */, core::VecId v, core::ConstVecId a, core::ConstVecId b, SReal f) \
-{ data.vOp(this, v, a, b, f); }		\
+{ m_data.vOp(this, v, a, b, f); }		\
 template<> void MechanicalObject< T >::vMultiOp(const core::ExecParams* params, const VMultiOp& ops) \
-{ data.vMultiOp(this, params, ops); }                                    \
+{ m_data.vMultiOp(this, params, ops); }                                    \
 template<> SReal MechanicalObject< T >::vDot(const core::ExecParams* /* params */, core::ConstVecId a, core::ConstVecId b) \
-{ return data.vDot(this, a, b); }				    \
+{ return m_data.vDot(this, a, b); }				    \
 template<> void MechanicalObject< T >::resetForce(const core::ExecParams* params, core::VecDerivId fid) \
-{ if( fid==core::vec_id::write_access::force ) data.resetForce(this); else core::behavior::BaseMechanicalState::resetForce(params,fid); } \
+{ if( fid==core::vec_id::write_access::force ) m_data.resetForce(this); else core::behavior::BaseMechanicalState::resetForce(params,fid); } \
 template<> void MechanicalObject< T >::copyToBaseVector(linearalgebra::BaseVector * dest, core::ConstVecId src, unsigned int &offset) \
-{ if (CudaBaseVectorType<Real> * vec = dynamic_cast<CudaBaseVectorType<Real> *>(dest)) data.copyToCudaBaseVector(this, vec,src,offset); \
-else data.copyToBaseVector(this, dest,src,offset); } \
+{ if (CudaBaseVectorType<Real> * vec = dynamic_cast<CudaBaseVectorType<Real> *>(dest)) m_data.copyToCudaBaseVector(this, vec,src,offset); \
+else m_data.copyToBaseVector(this, dest,src,offset); } \
 template<> void MechanicalObject< T >::copyFromBaseVector(core::VecId dest, const linearalgebra::BaseVector * src, unsigned int &offset) \
-{ if (const CudaBaseVectorType<Real> * vec = dynamic_cast<const CudaBaseVectorType<Real> *>(src)) data.copyFromCudaBaseVector(this, dest,vec,offset); \
-else data.copyFromBaseVector(this, dest,src,offset); } \
+{ if (const CudaBaseVectorType<Real> * vec = dynamic_cast<const CudaBaseVectorType<Real> *>(src)) m_data.copyFromCudaBaseVector(this, dest,vec,offset); \
+else m_data.copyFromBaseVector(this, dest,src,offset); } \
 template<> void MechanicalObject< T >::addFromBaseVectorSameSize(core::VecId dest, const linearalgebra::BaseVector *src, unsigned int &offset) \
-{ if (const CudaBaseVectorType<Real> * vec = dynamic_cast<const CudaBaseVectorType<Real> *>(src)) data.addFromCudaBaseVectorSameSize(this, dest,vec,offset); \
-else data.addFromBaseVectorSameSize(this, dest,src,offset); }
+{ if (const CudaBaseVectorType<Real> * vec = dynamic_cast<const CudaBaseVectorType<Real> *>(src)) m_data.addFromCudaBaseVectorSameSize(this, dest,vec,offset); \
+else m_data.addFromBaseVectorSameSize(this, dest,src,offset); }
 
 CudaMechanicalObject_ImplMethods(gpu::cuda::CudaVec1fTypes)
 CudaMechanicalObject_ImplMethods(gpu::cuda::CudaVec2fTypes)

@@ -810,4 +810,11 @@ void BeamFEMForceField<DataTypes>::BeamInfo::init(SReal E, SReal L, SReal nu, SR
     _Asz = 0.0;
 }
 
+template<class DataTypes>
+void BeamFEMForceField<DataTypes>::loadInternalStateFrom(const core::objectmodel::Snapshot::SnapshotObject &snapshot)
+{
+    SOFA_UNUSED(snapshot);
+    m_indexedElements = &this->l_topology->getEdges();
+}
+
 } // namespace sofa::component::solidmechanics::fem::elastic::_beamfemforcefield_

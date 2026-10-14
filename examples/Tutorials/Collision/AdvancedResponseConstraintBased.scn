@@ -12,7 +12,7 @@
     <RequiredPlugin pluginName="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
     <RequiredPlugin pluginName="Sofa.Component.Mapping.NonLinear"/> <!-- Needed to use components [RigidMapping] -->
     <RequiredPlugin pluginName="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
-    <RequiredPlugin pluginName="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin pluginName="Sofa.Component.IntegrationScheme.Backward"/> <!-- Needed to use components [EulerImplicitIntegrationScheme] -->
     <RequiredPlugin pluginName="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
     <RequiredPlugin pluginName="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
     <RequiredPlugin pluginName="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
@@ -29,7 +29,7 @@
     <LCPConstraintSolver maxIt="1000" tolerance="0.001" />
     <!-- Using a rigid cube using collision triangles, lines and points  -->
     <Node name="Cube1">
-        <EulerImplicitSolver name="EulerImplicit"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitIntegrationScheme name="EulerImplicit"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver name="CG Solver" iterations="25" tolerance="1e-5" threshold="1e-5"/>
         <MechanicalObject name="Cube1_RigidDOF" template="Rigid3" dy="2" />
         <UniformMass name="UniformMass" totalMass="10.0" />
@@ -51,7 +51,7 @@
     </Node>
     <!-- Using a rigid cube using collision triangles, lines and points  -->
     <Node name="Cube2">
-        <EulerImplicitSolver name="EulerImplicit" />
+        <EulerImplicitIntegrationScheme name="EulerImplicit" />
         <CGLinearSolver name="CG Solver" iterations="25" tolerance="1e-5" threshold="1e-5"/>
         <MechanicalObject name="Cube2_RigidDOF" template="Rigid3" dy="5" dx="1" />
         <UniformMass name="UniformMass" totalMass="10.0" />

@@ -60,9 +60,11 @@ void STLExporter::doReInit()
 {
     const BaseContext* context = this->getContext();
 
-    context->get(m_inputtopology, BaseContext::Local);
-    context->get(m_inputmstate, BaseContext::Local);
-    context->get(m_inputvmodel, BaseContext::Local);
+    BaseMeshTopology*    inputtopology {nullptr};
+    VisualModel*         inputvmodel   {nullptr};
+
+    context->get(inputtopology, BaseContext::Local);
+    context->get(inputvmodel, BaseContext::Local);
 
     // Test if the position has not been modified
     if(!d_position.isSet())
@@ -70,17 +72,17 @@ void STLExporter::doReInit()
         BaseData* pos = nullptr;
         BaseData* tri = nullptr;
         BaseData* qua = nullptr;
-        if(m_inputvmodel)
+        if(inputvmodel)
         {
-            pos = m_inputvmodel->findData("position");
-            tri = m_inputvmodel->findData("triangles");
-            qua = m_inputvmodel->findData("quads");
+            pos = inputvmodel->findData("position");
+            tri = inputvmodel->findData("triangles");
+            qua = inputvmodel->findData("quads");
         }
-        else if(m_inputtopology)
+        else if(inputtopology)
         {
-            pos = m_inputtopology->findData("position");
-            tri = m_inputtopology->findData("triangles");
-            qua = m_inputtopology->findData("quads");
+            pos = inputtopology->findData("position");
+            tri = inputtopology->findData("triangles");
+            qua = inputtopology->findData("quads");
         }
         else
         {

@@ -31,6 +31,7 @@ namespace sofa::geometry
 struct Quad
 {
     static constexpr sofa::Size NumberOfNodes = 4;
+    static constexpr sofa::Size PolynomialOrder = 1;
     static constexpr ElementType Element_type = ElementType::QUAD;
 
     Quad() = delete;

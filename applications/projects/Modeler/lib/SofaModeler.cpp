@@ -613,7 +613,7 @@ bool SofaModeler::closeTab(QWidget *curTab, bool forceClose)
         else if (response == QMessageBox::Ok)
         {
             if (mod->getFilename().empty()) fileSaveAs();
-            else simulation::getSimulation()->exportXML(mod->getRoot(), mod->getFilename().c_str());
+            else simulation::MainSimulation::getSimulation()->exportXML(mod->getRoot(), mod->getFilename().c_str());
         }
     }
     //If the scene has been launch in Sofa
@@ -680,7 +680,7 @@ void SofaModeler::fileOpen(std::string filename)
         filename =  sofa::helper::system::DataRepository.getFile ( filename );
         openPath = sofa::helper::system::SetDirectory::GetParentDir(filename.c_str());
         Node::SPtr root = NULL;
-        root = down_cast<sofa::simulation::Node>( sofa::simulation::getSimulation()->load(filename.c_str()).get() );
+        root = down_cast<sofa::simulation::Node>( sofa::simulation::MainSimulation::getSimulation()->load(filename.c_str()).get() );
         if (root)
         {
             createTab();
@@ -1094,7 +1094,7 @@ void SofaModeler::runInSofa(	const std::string &sceneFilename, Node* root)
 
 
     std::string filename=path + std::string("temp") + (++count) + std::string(".scn");
-    simulation::getSimulation()->exportXML(root,filename.c_str());
+    simulation::MainSimulation::getSimulation()->exportXML(root,filename.c_str());
 
     //Make a copy of the .view if it exists for the current viewer
     const std::string &extension=sofa::helper::system::SetDirectory::GetExtension(sceneFilename.c_str());

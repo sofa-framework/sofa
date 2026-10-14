@@ -4,7 +4,7 @@
     <RequiredPlugin pluginName="Sofa.Component.Engine.Select"/>
     <RequiredPlugin pluginName="Sofa.Component.LinearSolver.Iterative"/>
     <RequiredPlugin pluginName="Sofa.Component.Mass"/>
-    <RequiredPlugin pluginName="Sofa.Component.ODESolver.Backward"/>
+    <RequiredPlugin pluginName="Sofa.Component.IntegrationScheme.Backward"/>
     <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.FEM.Elastic"/>
     <RequiredPlugin pluginName="Sofa.Component.Topology.Container.Dynamic"/>
     <RequiredPlugin pluginName="Sofa.Component.Topology.Container.Grid"/>
@@ -15,7 +15,7 @@
     <DefaultAnimationLoop/>
 
     <Node name="Hexahedron">
-        <EulerImplicitSolver name="odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
+        <EulerImplicitIntegrationScheme name="odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="250" name="linear_solver" tolerance="1.0e-12" threshold="1.0e-12" />
 
         <RegularGridTopology name="grid" n="40 10 10" min="0 6 -2" max="16 10 2" />

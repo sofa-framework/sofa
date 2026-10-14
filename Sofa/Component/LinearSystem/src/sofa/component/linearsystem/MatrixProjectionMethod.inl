@@ -103,14 +103,10 @@ void MatrixProjectionMethod<TMatrix>::addMappedMatrixToGlobalMatrixEigen(
     const auto inputs1 = mappingGraph.getTopMostMechanicalStates(mstatePair[0]);
     const auto inputs2 = mappingGraph.getTopMostMechanicalStates(mstatePair[1]);
 
-    std::set<core::behavior::BaseMechanicalState*> inputs;
-    inputs.insert(inputs1.begin(), inputs1.end());
-    inputs.insert(inputs2.begin(), inputs2.end());
-
     std::set< std::pair<core::behavior::BaseMechanicalState*, core::behavior::BaseMechanicalState*> > uniquePairs;
-    for (auto* a : inputs)
+    for (auto* a : inputs1)
     {
-        for (auto* b : inputs)
+        for (auto* b : inputs2)
         {
             uniquePairs.insert({a, b});
         }
@@ -193,6 +189,23 @@ void MatrixProjectionMethod<TMatrix>::computeProjection(
 template <class BlockType>
 void addToGlobalMatrix(linearalgebra::BaseMatrix* globalMatrix, Eigen::SparseMatrix<BlockType, Eigen::RowMajor> JT_K_J, const type::Vec2u positionInGlobalMatrix)
 {
+#ifndef NDEBUG
+    // add checks to see if JT_K_J fits in globalMatrix
+    const auto lastRow = static_cast<std::ptrdiff_t>(positionInGlobalMatrix[0]) + JT_K_J.rows();
+    const auto lastCol = static_cast<std::ptrdiff_t>(positionInGlobalMatrix[1]) + JT_K_J.cols();
+    if (lastRow > static_cast<std::ptrdiff_t>(globalMatrix->rowSize()) ||
+        lastCol > static_cast<std::ptrdiff_t>(globalMatrix->colSize()))
+    {
+        msg_error("MatrixProjectionMethod")
+            << "A projected matrix block of size " << JT_K_J.rows() << "x" << JT_K_J.cols()
+            << " placed at (" << positionInGlobalMatrix[0] << ", " << positionInGlobalMatrix[1]
+            << ") does not fit into the global matrix of size "
+            << globalMatrix->rowSize() << "x" << globalMatrix->colSize()
+            << ". The block is ignored.";
+        return;
+    }
+#endif
+
     for (int k = 0; k < JT_K_J.outerSize(); ++k)
     {
         for (typename Eigen::SparseMatrix<BlockType, Eigen::RowMajor>::InnerIterator it(JT_K_J,k); it; ++it)
