@@ -25,6 +25,8 @@
 
 #include <sofa/component/solidmechanics/testing/ForceFieldTestCreation.h>
 
+#include <sofa/defaulttype/VecTypes.h>
+
 namespace sofa {
 
 /**  Test TrianglePressureForceField.
@@ -128,4 +130,40 @@ TYPED_TEST( TrianglePressureForceField_test , constantTrianglePressureForceField
 
     this->test_constantForce();
 }
+
+using TrianglePressureFF =  component::mechanicalload::TrianglePressureForceField<defaulttype::Vec3Types>;
+class TrianglePressureForceFieldTestAccess : public TrianglePressureFF
+{
+public:
+    using TrianglePressureInformation = TrianglePressureFF::TrianglePressureInformation;
+};
+
+TEST(TrianglePressureForceField_test, TrianglePressureInformationStreamOperators)
+{
+    TrianglePressureForceFieldTestAccess::TrianglePressureInformation initialInfo;
+
+    initialInfo.area = 1.0;
+    for (int i = 0; i < 3; ++i)
+        initialInfo.force[i] = i*1.0;
+
+    for (int i = 0; i < 3; ++i)
+        for (int j = 0; j < 3; ++j)
+            for (int k = 0; k < 3; ++k)
+                initialInfo.DfDx[i][j][k] = i*j*k;
+
+    std::stringstream buffer;
+    buffer << initialInfo;
+
+    TrianglePressureForceFieldTestAccess::TrianglePressureInformation loadedInfo;
+    buffer >> loadedInfo;
+
+    EXPECT_EQ(initialInfo.area, loadedInfo.area);
+    for (int i = 0; i < 3; ++i)
+        EXPECT_EQ(initialInfo.force[i], loadedInfo.force[i]);
+    for (int i = 0; i < 3; ++i)
+        for (int j = 0; j < 3; ++j)
+            for (int k = 0; k < 3; ++k)
+                EXPECT_EQ(initialInfo.DfDx[i][j][k], loadedInfo.DfDx[i][j][k]);
+}
+
 }// namespace sofa

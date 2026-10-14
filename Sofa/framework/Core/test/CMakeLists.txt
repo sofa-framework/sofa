@@ -27,6 +27,7 @@ set(SOURCE_FILES
     DataEngine_test.cpp
     Engine_test.cpp
     MatrixAccumulator_test.cpp
+    MultiVecId_test.cpp
     ObjectFactory_test.cpp
     ObjectFactoryJson_test.cpp
     PathResolver_test.cpp

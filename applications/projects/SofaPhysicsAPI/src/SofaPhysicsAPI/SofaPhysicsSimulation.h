@@ -173,7 +173,7 @@ public:
     }
     sofa::simulation::Simulation* getSimulation() const
     {
-        return sofa::simulation::getSimulation();
+        return sofa::simulation::MainSimulation::getSimulation();
     }
     sofa::simulation::Node* getScene() const
     {

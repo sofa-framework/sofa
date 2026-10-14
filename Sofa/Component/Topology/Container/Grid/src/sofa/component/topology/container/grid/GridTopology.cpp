@@ -37,9 +37,9 @@ GridTopology::GridUpdate::GridUpdate(GridTopology *t):
     m_topology(t)
 {
     addInput(&t->d_n);
-    addOutput(&t->d_seqEdges);
-    addOutput(&t->d_seqQuads);
-    addOutput(&t->d_seqHexahedra);
+    addOutput(&t->d_seqEdges.toData());
+    addOutput(&t->d_seqQuads.toData());
+    addOutput(&t->d_seqHexahedra.toData());
     setDirtyValue();
 }
 

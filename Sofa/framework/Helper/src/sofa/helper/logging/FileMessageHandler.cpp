@@ -48,7 +48,7 @@ FileMessageHandler::~FileMessageHandler()
         m_outFile.close();
 }
 
-void FileMessageHandler::process(Message& m)
+void FileMessageHandler::doProcess(Message& m)
 {
     if (m_outFile.is_open())
     {

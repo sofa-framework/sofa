@@ -322,6 +322,21 @@ public:
             return result;
         }
     }
+
+    static std::string getGroup(const MyVecId& v)
+    {
+        switch(v.getType())
+        {
+            case V_COORD:
+                return TStandardVec<V_COORD,vaccess>::getGroup(static_cast<TVecId<V_COORD,vaccess>>(v));
+            case V_DERIV:
+                return TStandardVec<V_DERIV,vaccess>::getGroup(static_cast<TVecId<V_DERIV,vaccess>>(v));
+            case V_MATDERIV:
+                return TStandardVec<V_MATDERIV,vaccess>::getGroup(static_cast<TVecId<V_MATDERIV,vaccess>>(v));
+            default:
+                return {};
+        }
+    }
 };
 
 /// This is a base class for TVecId that contains all the data stored.

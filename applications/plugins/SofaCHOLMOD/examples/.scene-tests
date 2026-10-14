@@ -1,0 +1,3 @@
+# [Slow] This runs very slowly, so compute only a few iterations
+iterations "FEMBAR_SparseLDL.scn" "50"
+timeout "FEMBAR_SparseLDL.scn" "90"

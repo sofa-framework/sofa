@@ -193,6 +193,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/logging/MessageDispatcher.cpp
     ${SRC_ROOT}/logging/MessageFormatter.cpp
     ${SRC_ROOT}/logging/ComponentInfo.cpp
+    ${SRC_ROOT}/logging/MessageHandler.cpp
     ${SRC_ROOT}/logging/ClangMessageHandler.cpp
     ${SRC_ROOT}/logging/ClangStyleMessageFormatter.cpp
     ${SRC_ROOT}/logging/DefaultStyleMessageFormatter.cpp

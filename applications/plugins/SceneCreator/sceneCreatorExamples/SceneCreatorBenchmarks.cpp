@@ -27,10 +27,7 @@
 #include <sofa/gui/common/GUIManager.h>
 
 #include <sofa/simulation/Simulation.h>
-#include <sofa/simulation/graph/init.h>
 #include <sofa/simulation/Node.h>
-#include <sofa/simulation/graph/DAGSimulation.h>
-#include <sofa/simulation/graph/init.h>
 
 #include <cxxopts.hpp>
 
@@ -101,8 +98,6 @@ void fallingDrapExample(sofa::simulation::Node::SPtr root)
 
 int main(int argc, char** argv)
 {
-    sofa::simulation::graph::init();
-
     bool showHelp = false;
     unsigned int idExample = 0;
     auto* argParser = new sofa::gui::common::ArgumentParser(argc, argv);
@@ -176,8 +171,5 @@ int main(int argc, char** argv)
     //=======================================
     // Run the main loop
     sofa::gui::common::GUIManager::MainLoop(root);
-
-    sofa::simulation::graph::cleanup();
-
     return 0;
 }

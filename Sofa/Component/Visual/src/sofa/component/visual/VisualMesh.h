@@ -26,6 +26,7 @@
 #include <sofa/core/visual/DrawMesh.h>
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/helper/ColorMap.h>
+#include <sofa/type/ClampedScalar.h>
 
 namespace sofa::component::visual
 {
@@ -36,7 +37,7 @@ public:
     SOFA_CLASS(VisualMesh, core::visual::VisualModel);
 
     Data<type::vector<type::Vec3>> d_position;
-    Data<SReal> d_elementSpace;
+    Data<type::ClampedScalar<SReal>> d_elementSpace;
     Data<bool> d_lighting;
 
 

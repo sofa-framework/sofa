@@ -25,7 +25,7 @@
 #include <sofa/simulation/fwd.h>
 
 #include <sofa/core/objectmodel/BaseNode.h>
-#include <sofa/core/objectmodel/Context.h>
+#include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/simulation/Visitor.h>
 
 #include <type_traits>
@@ -110,7 +110,7 @@ extern template class NodeSequence<Node,true>;
 extern template class NodeSequence<sofa::core::objectmodel::BaseComponent,true>;
 extern template class NodeSequence<sofa::core::BehaviorModel>;
 extern template class NodeSequence<sofa::core::BaseMapping>;
-extern template class NodeSequence<sofa::core::behavior::OdeSolver>;
+extern template class NodeSequence<sofa::core::behavior::BaseIntegrationScheme>;
 extern template class NodeSequence<sofa::core::behavior::ConstraintSolver>;
 extern template class NodeSequence<sofa::core::behavior::BaseLinearSolver>;
 extern template class NodeSequence<sofa::core::topology::BaseTopologyObject>;
@@ -145,11 +145,11 @@ extern template class NodeSingle<sofa::core::collision::Pipeline>;
 
    @author The SOFA team </www.sofa-framework.org>
  */
-class SOFA_SIMULATION_CORE_API Node : public sofa::core::objectmodel::BaseNode, public sofa::core::objectmodel::Context
+class SOFA_SIMULATION_CORE_API Node : public sofa::core::objectmodel::BaseNode, public sofa::core::objectmodel::BaseContext
 {
 
 public:
-    SOFA_ABSTRACT_CLASS2(Node, BaseNode, Context);
+    SOFA_ABSTRACT_CLASS2(Node, BaseNode, BaseContext);
     typedef sofa::core::visual::DisplayFlags DisplayFlags;
 
     Node(const std::string& nodename="", Node* parent=nullptr);
@@ -231,7 +231,7 @@ public:
     NodeSequence<sofa::core::BehaviorModel> behaviorModel;
     NodeSequence<sofa::core::BaseMapping> mapping;
 
-    NodeSequence<sofa::core::behavior::OdeSolver> solver;
+    NodeSequence<sofa::core::behavior::BaseIntegrationScheme> integrationScheme;
     NodeSequence<sofa::core::behavior::ConstraintSolver> constraintSolver;
     NodeSequence<sofa::core::behavior::BaseLinearSolver> linearSolver;
     NodeSequence<sofa::core::topology::BaseTopologyObject> topologyObject;
@@ -425,7 +425,7 @@ public:
     /// @{
 
     sofa::core::behavior::BaseAnimationLoop* getAnimationLoop() const override;
-    sofa::core::behavior::OdeSolver* getOdeSolver() const override;
+    sofa::core::behavior::BaseIntegrationScheme* getIntegrationScheme() const override;
     sofa::core::collision::Pipeline* getCollisionPipeline() const override;
     sofa::core::visual::VisualLoop* getVisualLoop() const override;
 
@@ -612,7 +612,7 @@ protected:
     NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::visual::VisualLoop, VisualLoop, visualLoop )
     NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::BehaviorModel, BehaviorModel, behaviorModel )
     NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::BaseMapping, Mapping, mapping )
-    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::behavior::OdeSolver, OdeSolver, solver )
+    NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::behavior::BaseIntegrationScheme, IntegrationScheme, integrationScheme )
     NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::behavior::ConstraintSolver, ConstraintSolver, constraintSolver )
     NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::behavior::BaseLinearSolver, LinearSolver, linearSolver )
     NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::topology::Topology, Topology, topology )

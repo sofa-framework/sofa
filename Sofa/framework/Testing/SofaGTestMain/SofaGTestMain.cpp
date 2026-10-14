@@ -24,17 +24,15 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/FileSystem.h>
 #include <sofa/simulation/config.h> // #defines SOFA_HAVE_DAG
-#include <sofa/simulation/graph/init.h>
-
+#include <sofa/simulation/init.h>
 #include <gtest/gtest.h>
 
 SOFA_EXPORT_DYNAMIC_LIBRARY int main(int argc, char **argv)
 {
     testing::InitGoogleTest(&argc, argv);
-
-    sofa::simulation::graph::init();
+    sofa::simulation::core::init();
     const int ret =  RUN_ALL_TESTS();
-    sofa::simulation::graph::cleanup();
+    sofa::simulation::core::cleanup();
 
     return ret;
 }

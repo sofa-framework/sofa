@@ -77,14 +77,16 @@ protected:
         }
 
         /// Output stream
-        inline friend std::ostream& operator<< ( std::ostream& os, const EdgeRestInformation& /*eri*/ )
+        inline friend std::ostream& operator<< ( std::ostream& os, const EdgeRestInformation& eri )
         {
+            os << eri.DfDx;
             return os;
         }
 
         /// Input stream
-        inline friend std::istream& operator>> ( std::istream& in, EdgeRestInformation& /*eri*/ )
+        inline friend std::istream& operator>> ( std::istream& in, EdgeRestInformation& eri )
         {
+            in >> eri.DfDx;
             return in;
         }
     };

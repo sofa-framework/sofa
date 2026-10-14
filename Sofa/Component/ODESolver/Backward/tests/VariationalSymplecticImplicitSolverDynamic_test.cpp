@@ -29,7 +29,6 @@ using sofa::testing::NumericTest;
 
 //Including Simulation
 #include <sofa/simulation/Simulation.h>
-#include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simulation/Node.h>
 
 // Including mechanical object

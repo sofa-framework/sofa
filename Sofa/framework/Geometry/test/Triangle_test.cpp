@@ -286,7 +286,6 @@ TYPED_TEST(GeometryVec3DTriangle_test, isPointInTriangle)
 
 TYPED_TEST(GeometryVec2DTriangle_test, getBarycentricCoordinates)
 {
-    using Scalar = typename TypeParam::value_type;
 
     const TypeParam a{ 0., 0. };
     const TypeParam b{ 2., 0. };
@@ -331,7 +330,6 @@ TYPED_TEST(GeometryVec2DTriangle_test, getBarycentricCoordinates)
 
 TYPED_TEST(GeometryVec3DTriangle_test, getBarycentricCoordinates)
 {
-    using Scalar = typename TypeParam::value_type;
 
     const TypeParam a{ 0., 0., 0. };
     const TypeParam b{ 2., 0., 2. };

@@ -69,7 +69,7 @@ struct CollectNamesVisitor : public sofa::simulation::MappingGraphVisitor
 
 TEST(MappingGraph, SingleState)
 {
-    const sofa::simulation::Node::SPtr root = sofa::simpleapi::createRootNode(sofa::simulation::getSimulation(), "root");
+    const sofa::simulation::Node::SPtr root = sofa::simpleapi::createRootNode(sofa::simulation::MainSimulation::getSimulation(), "root");
 
     sofa::simpleapi::importPlugin(Sofa.Component.StateContainer);
     sofa::simpleapi::createObject(root, "MechanicalObject", {{"name", "state"}});
@@ -88,7 +88,7 @@ TEST(MappingGraph, SingleState)
 
 TEST(MappingGraph, SingleMappingInSingleNode)
 {
-    const sofa::simulation::Node::SPtr root = sofa::simpleapi::createRootNode(sofa::simulation::getSimulation(), "root");
+    const sofa::simulation::Node::SPtr root = sofa::simpleapi::createRootNode(sofa::simulation::MainSimulation::getSimulation(), "root");
 
     sofa::simpleapi::importPlugin(Sofa.Component.Mapping.Linear);
     sofa::simpleapi::importPlugin(Sofa.Component.StateContainer);
@@ -121,7 +121,7 @@ TEST(MappingGraph, SingleMappingInSingleNode)
 
 TEST(MappingGraph, SingleMappingWithIntermediateNode)
 {
-    const sofa::simulation::Node::SPtr root = sofa::simpleapi::createRootNode(sofa::simulation::getSimulation(), "root");
+    const sofa::simulation::Node::SPtr root = sofa::simpleapi::createRootNode(sofa::simulation::MainSimulation::getSimulation(), "root");
 
     sofa::simpleapi::importPlugin(Sofa.Component.Mapping.Linear);
     sofa::simpleapi::importPlugin(Sofa.Component.StateContainer);
@@ -155,7 +155,7 @@ TEST(MappingGraph, SingleMappingWithIntermediateNode)
 
 TEST(MappingGraph, SingleMappingWithIntermediateNodeInverseInputOutput)
 {
-    const sofa::simulation::Node::SPtr root = sofa::simpleapi::createRootNode(sofa::simulation::getSimulation(), "root");
+    const sofa::simulation::Node::SPtr root = sofa::simpleapi::createRootNode(sofa::simulation::MainSimulation::getSimulation(), "root");
 
     sofa::simpleapi::importPlugin(Sofa.Component.Mapping.Linear);
     sofa::simpleapi::importPlugin(Sofa.Component.StateContainer);
@@ -200,7 +200,7 @@ auto setupComplexGraphEnvironment() -> std::pair<const sofa::simulation::Node::S
     sofa::simpleapi::importPlugin(Sofa.Component.MechanicalLoad);
     sofa::simpleapi::importPlugin(Sofa.Component.Mass);
 
-    const sofa::simulation::Node::SPtr root = sofa::simpleapi::createRootNode(sofa::simulation::getSimulation(), "root");
+    const sofa::simulation::Node::SPtr root = sofa::simpleapi::createRootNode(sofa::simulation::MainSimulation::getSimulation(), "root");
 
     // Components on the root node (state1)
     sofa::simpleapi::createObject(root, "MechanicalObject", {{"name", "state1"}});
@@ -385,7 +385,7 @@ TEST(MappingGraph, ComplexGraphInteractionForceField)
     sofa::simpleapi::importPlugin(Sofa.Component.Mass);
     sofa::simpleapi::importPlugin(Sofa.Component.SolidMechanics.Spring);
 
-    const sofa::simulation::Node::SPtr root = sofa::simpleapi::createRootNode(sofa::simulation::getSimulation(), "root");
+    const sofa::simulation::Node::SPtr root = sofa::simpleapi::createRootNode(sofa::simulation::MainSimulation::getSimulation(), "root");
 
     const auto node1 = root->createChild("node1");
     sofa::simpleapi::createObject(node1, "MechanicalObject", {{"name", "state1"}});

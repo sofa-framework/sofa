@@ -22,7 +22,7 @@
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalIntegrationVisitor.h>
 
-#include <sofa/core/behavior/OdeSolver.h>
+#include <sofa/core/behavior/BaseIntegrationScheme.h>
 #include <sofa/core/ConstraintParams.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/simulation/Node.h>
@@ -37,7 +37,7 @@
 namespace sofa::simulation::mechanicalvisitor
 {
 
-Visitor::Result MechanicalIntegrationVisitor::fwdOdeSolver(simulation::Node* node, core::behavior::OdeSolver* obj)
+Visitor::Result MechanicalIntegrationVisitor::fwdIntegrationScheme(simulation::Node* node, core::behavior::BaseIntegrationScheme* obj)
 {
     SReal nextTime = node->getTime() + dt;
     MechanicalBeginIntegrationVisitor beginVisitor( this->params, dt );
@@ -58,7 +58,7 @@ Visitor::Result MechanicalIntegrationVisitor::fwdOdeSolver(simulation::Node* nod
         accumulateMatrixDeriv.execute(node);
     }
 
-    obj->solve(params, dt);
+    obj->integrate(params, dt, sofa::core::vec_id::write_access::position, sofa::core::vec_id::write_access::velocity);
 
     MechanicalProjectPositionAndVelocityVisitor(&mparams, nextTime,core::vec_id::write_access::position,core::vec_id::write_access::velocity
     ).execute( node );
@@ -77,7 +77,7 @@ Visitor::Result MechanicalIntegrationVisitor::fwdInteractionForceField(simulatio
     core::MechanicalParams m_mparams(*this->params);
     m_mparams.setDt(this->dt);
 
-    obj->addForce(&m_mparams, ffId);
+    obj->addForce(&m_mparams, ffId, m_mparams.x(), m_mparams.v());
     return RESULT_CONTINUE;
 }
 

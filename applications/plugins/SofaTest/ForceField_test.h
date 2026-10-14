@@ -25,7 +25,7 @@
 #define SOFA_STANDARDTEST_ForceField_test_H
 
 #include "Sofa_test.h"
-#include <sofa/simulation/graph/DAGSimulation.h>
+#include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/linearalgebra/EigenBaseSparseMatrix.h>
 #include <SofaBaseLinearSolver/SingleMatrixAccessor.h>
@@ -110,7 +110,7 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
     {
         using modeling::addNew;
         simulation::Simulation* simu;
-        sofa::simulation::setSimulation(simu = new sofa::simulation::graph::DAGSimulation());
+        sofa::simulation::MainSimulation::setSimulation(simu = new sofa::simulation::Simulation());
 
         ///  node 1
         node = simu->createNewGraph("root");
@@ -131,11 +131,11 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
     {
         using modeling::addNew;
         simulation::Simulation* simu;
-        sofa::simulation::setSimulation(simu = new sofa::simulation::graph::DAGSimulation());
+        sofa::simulation::MainSimulation::setSimulation(sofa::simulation::Simulation::SPtr());
 
         /// Load the scene
         node = simu->createNewGraph("root");
-        node = sofa::simulation::getSimulation()->load(filename.c_str());
+        node = sofa::simulation::node::load(filename.c_str());
 
         ///  Get mechanical object
         dof = node->get<DOF>(node->SearchDown);
@@ -175,7 +175,7 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
         copyToData( vdof, v );
 
         // init scene and compute force
-        sofa::simulation::getSimulation()->init(this->node.get());
+        sofa::simulation::node::init(this->node.get());
         core::MechanicalParams mparams;
         mparams.setKFactor(1.0);
         MechanicalResetForceVisitor resetForce(&mparams, core::vec_id::write_access::force);

@@ -22,10 +22,15 @@
 #pragma once
 
 #include <sofa/simulation/BaseMechanicalVisitor.h>
+
+#if !defined(SOFA_SIMULATION_CORE_MECHANICALMULTIVECTORPEQBASEVECTORVISITOR_CPP)
+SOFA_HEADER_DEPRECATED_NOT_REPLACED("v26.12", "v27.12")
+#endif
+
 namespace sofa::simulation::mechanicalvisitor
 {
 
-class SOFA_SIMULATION_CORE_API MechanicalMultiVectorPeqBaseVectorVisitor : public BaseMechanicalVisitor
+class SOFA_SIMULATION_CORE_API SOFA_ATTRIBUTE_DEPRECATED__MECHANICALMULTIVECTORPEQBASEVECTORVISITOR() MechanicalMultiVectorPeqBaseVectorVisitor : public BaseMechanicalVisitor
 {
 public:
     const sofa::linearalgebra::BaseVector *src;

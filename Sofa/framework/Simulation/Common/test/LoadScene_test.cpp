@@ -23,7 +23,6 @@
 using sofa::testing::BaseTest;
 
 #include <sofa/simulation/Simulation.h>
-#include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/simulation/common/SceneLoaderXML.h>

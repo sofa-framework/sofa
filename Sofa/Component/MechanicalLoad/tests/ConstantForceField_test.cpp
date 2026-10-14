@@ -75,7 +75,7 @@ struct ConstantForceField_test : public BaseSimulationTest, NumericTest<typename
     void doSetUp() override
     {
         this->loadPlugins({
-            Sofa.Component.ODESolver,
+            Sofa.Component.IntegrationScheme,
             Sofa.Component.StateContainer,
             Sofa.Component.MechanicalLoad,
             Sofa.Component.LinearSolver.Iterative,
@@ -97,7 +97,7 @@ struct ConstantForceField_test : public BaseSimulationTest, NumericTest<typename
                  "<Node 	name='Root' gravity='-9.81 0 0' time='0' animate='0' >               \n"
                  "   <DefaultAnimationLoop/>                                                     \n"
                  "   <CGLinearSolver iterations=\"25\" tolerance=\"1e-5\" threshold=\"1e-5\"/>   \n"
-                 "   <EulerImplicitSolver/>                                                      \n"
+                 "   <EulerImplicitIntegrationScheme/>                                                      \n"
                  "   <MechanicalObject name='mstate' size='2' template='"<<  DataTypes::Name() << "'/> \n"
                  "   <UniformMass totalMass='1.0'/>                                                                    \n"
                  "   <ConstantForceField name='myForceField' indices='0' totalForce='"<< defaultValueForces << "'/>        \n"
@@ -116,7 +116,7 @@ struct ConstantForceField_test : public BaseSimulationTest, NumericTest<typename
         root->getTreeObject(forcefield) ;
         ASSERT_NE(nullptr, forcefield) ;
 
-        Simulation* simulation = sofa::simulation::getSimulation() ;
+        Simulation* simulation = sofa::simulation::MainSimulation::getSimulation() ;
         ASSERT_NE(nullptr, simulation) ;
 
         Real xi = mechanicalobject->x.getValue()[0][0];
@@ -205,7 +205,7 @@ struct ConstantForceField_test : public BaseSimulationTest, NumericTest<typename
             EXPECT_NE( nullptr, forcefield->findData(attrname) ) << "Missing attribute with name '"
                                                                  << attrname << "'." ;
 
-        Simulation* simulation = sofa::simulation::getSimulation() ;
+        Simulation* simulation = sofa::simulation::MainSimulation::getSimulation() ;
         ASSERT_NE(nullptr, simulation) ;
         for(int i=0; i<100; i++)
         {

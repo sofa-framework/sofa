@@ -64,6 +64,8 @@ set(HEADER_FILES
     ${SRC_ROOT}/sptr.h
     ${SRC_ROOT}/State.h
     ${SRC_ROOT}/State.inl
+    ${SRC_ROOT}/StateVectorStorage.h
+    ${SRC_ROOT}/StateVectorStorage.inl
     ${SRC_ROOT}/VecId.h
     ${SRC_ROOT}/behavior/BaseAnimationLoop.h
     ${SRC_ROOT}/behavior/BaseConstraint.h
@@ -71,6 +73,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/behavior/BaseConstraintSet.h
     ${SRC_ROOT}/behavior/BaseController.h
     ${SRC_ROOT}/behavior/BaseForceField.h
+    ${SRC_ROOT}/behavior/BaseIntegrationScheme.h
     ${SRC_ROOT}/behavior/BaseInteractionConstraint.h
     ${SRC_ROOT}/behavior/BaseInteractionForceField.h
     ${SRC_ROOT}/behavior/BaseInteractionProjectiveConstraintSet.h
@@ -160,6 +163,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/objectmodel/BaseLink.h
     ${SRC_ROOT}/objectmodel/BaseNode.h
     ${SRC_ROOT}/objectmodel/BaseObjectDescription.h
+    ${SRC_ROOT}/objectmodel/Snapshot.h
     ${SRC_ROOT}/objectmodel/ClassInfo.h
     ${SRC_ROOT}/objectmodel/ComponentState.h
     ${SRC_ROOT}/objectmodel/ConfigurationSetting.h
@@ -178,6 +182,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/objectmodel/HapticDeviceEvent.h
     ${SRC_ROOT}/objectmodel/IdleEvent.h
     ${SRC_ROOT}/objectmodel/JoystickEvent.h
+    ${SRC_ROOT}/objectmodel/JSONSnapshot.h
     ${SRC_ROOT}/objectmodel/KeypressedEvent.h
     ${SRC_ROOT}/objectmodel/KeyreleasedEvent.h
     ${SRC_ROOT}/objectmodel/lifecycle/DeprecatedData.h
@@ -254,11 +259,13 @@ set(SOURCE_FILES
     ${SRC_ROOT}/PathResolver.cpp
     ${SRC_ROOT}/SofaLibrary.cpp
     ${SRC_ROOT}/State.cpp
+    ${SRC_ROOT}/StateVectorStorage.cpp
     ${SRC_ROOT}/VecId.cpp
     ${SRC_ROOT}/behavior/BaseAnimationLoop.cpp
     ${SRC_ROOT}/behavior/BaseConstraintCorrection.cpp
     ${SRC_ROOT}/behavior/BaseConstraintSet.cpp
     ${SRC_ROOT}/behavior/BaseForceField.cpp
+    ${SRC_ROOT}/behavior/BaseIntegrationScheme.cpp
     ${SRC_ROOT}/behavior/BaseInteractionForceField.cpp
     ${SRC_ROOT}/behavior/BaseLagrangianConstraint.cpp
     ${SRC_ROOT}/behavior/BaseLinearSolver.cpp
@@ -281,7 +288,6 @@ set(SOURCE_FILES
     ${SRC_ROOT}/behavior/MixedInteractionConstraint.cpp
     ${SRC_ROOT}/behavior/MixedInteractionForceField.cpp
     ${SRC_ROOT}/behavior/MultiMatrixAccessor.cpp
-    ${SRC_ROOT}/behavior/OdeSolver.cpp
     ${SRC_ROOT}/behavior/PairInteractionConstraint.cpp
     ${SRC_ROOT}/behavior/PairInteractionForceField.cpp
     ${SRC_ROOT}/behavior/PairInteractionProjectiveConstraintSet.cpp
@@ -311,10 +317,10 @@ set(SOURCE_FILES
     ${SRC_ROOT}/objectmodel/BaseLink.cpp
     ${SRC_ROOT}/objectmodel/BaseNode.cpp
     ${SRC_ROOT}/objectmodel/BaseObjectDescription.cpp
+    ${SRC_ROOT}/objectmodel/Snapshot.cpp
     ${SRC_ROOT}/objectmodel/ClassInfo.cpp
     ${SRC_ROOT}/objectmodel/ComponentState.cpp
     ${SRC_ROOT}/objectmodel/ConfigurationSetting.cpp
-    ${SRC_ROOT}/objectmodel/Context.cpp
     ${SRC_ROOT}/objectmodel/ContextObject.cpp
     ${SRC_ROOT}/objectmodel/DDGNode.cpp
     ${SRC_ROOT}/objectmodel/Data.cpp
@@ -329,6 +335,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/objectmodel/HapticDeviceEvent.cpp
     ${SRC_ROOT}/objectmodel/IdleEvent.cpp
     ${SRC_ROOT}/objectmodel/JoystickEvent.cpp
+    ${SRC_ROOT}/objectmodel/JSONSnapshot.cpp
     ${SRC_ROOT}/objectmodel/KeypressedEvent.cpp
     ${SRC_ROOT}/objectmodel/KeyreleasedEvent.cpp
     ${SRC_ROOT}/objectmodel/lifecycle/DeprecatedData.cpp
@@ -366,14 +373,6 @@ set(DEPRECATED_HEADER_FILES
 sofa_find_package(Sofa.Topology REQUIRED)
 sofa_find_package(Sofa.Helper REQUIRED)
 sofa_find_package(Sofa.DefaultType REQUIRED)
-
-# to move to core ?
-option(SOFA_CORE_ENABLE_CRSMULTIMATRIXACCESSOR "Use CompressedRowSparseMatrix to store global matrix (caution: it will lead to compile CRSMultiMatrixAcessor, which takes a considerable time to compile)" OFF)
-mark_as_advanced(FORCE SOFA_CORE_ENABLE_CRSMULTIMATRIXACCESSOR)
-if(SOFA_CORE_ENABLE_CRSMULTIMATRIXACCESSOR)
-    list(APPEND HEADER_FILES ${SRC_ROOT}/behavior/CRSMultiMatrixAccessor.h)
-    list(APPEND SOURCE_FILES ${SRC_ROOT}/behavior/CRSMultiMatrixAccessor.cpp)
-endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 

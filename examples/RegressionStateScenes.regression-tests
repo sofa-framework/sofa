@@ -44,6 +44,7 @@ Component/Constraint/Lagrangian/BilateralLagrangianConstraint_PGS.scn 100 1e-4 0
 Component/Constraint/Lagrangian/BilateralLagrangianConstraint_UGS.scn 100 1e-4 0 1
 Component/Constraint/Lagrangian/FrictionContact_LCP_with_friction.scn 500 1e-4 0 1
 Component/Constraint/Lagrangian/FrictionContact_LCP_without_friction.scn 500 1e-4 0 1
+Component/Constraint/Lagrangian/PrecomputedConstraintCorrection.scn 120 1e-4 0 1
 Component/Constraint/Projective/FixedProjectiveConstraint.scn 100 1e-4 0 1
 Component/Constraint/Projective/LinearVelocityProjectiveConstraint.scn 100 1e-4 0 1
 Component/LinearSolver/Direct/FEMBAR_EigenSimplicialLDLT.scn 100 1e-8 0 1
@@ -70,10 +71,10 @@ Component/Mass/UniformMass.scn 100 1e-4 0 1
 Component/Mass/DiagonalMass.scn 100 1e-4 0 1
 Component/Mass/MeshMatrixMass.scn 100 1e-4 0 1
 Component/MechanicalLoad/InteractionEllipsoidForceField.scn 100 1e-4 0 1
-Component/ODESolver/Forward/EulerExplicitSolver.scn 3000 1e-4 0 1
-Component/ODESolver/Forward/EulerExplicitSolver_diagonal.scn 3000 1e-4 0 1
-Component/ODESolver/Forward/RungeKutta4Solver.scn 3000 1e-4 0 1
-Component/ODESolver/Backward/EulerImplicitSolver.scn 3000 1e-4 0 1
+Component/IntegrationScheme/Forward/EulerExplicitIntegrationScheme.scn 3000 1e-4 0 1
+Component/IntegrationScheme/Forward/EulerExplicitIntegrationScheme_diagonal.scn 3000 1e-4 0 1
+Component/IntegrationScheme/Forward/RungeKutta4IntegrationScheme.scn 3000 1e-4 0 1
+Component/IntegrationScheme/Backward/EulerImplicitIntegrationScheme.scn 3000 1e-4 0 1
 Component/SolidMechanics/FEM/BeamFEMForceField.scn 100 1e-4 0 1
 Component/SolidMechanics/FEM/HexahedronFEMForceField.scn 300 1e-4 0 1
 Component/SolidMechanics/FEM/HexahedronFEMForceFieldAndMass.scn 100 1e-4 0 1

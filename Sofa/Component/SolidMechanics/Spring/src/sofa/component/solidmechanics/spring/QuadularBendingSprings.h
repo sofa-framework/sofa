@@ -102,14 +102,36 @@ protected:
         { }
 
         /// Output stream
-        inline friend std::ostream& operator<< ( std::ostream& os, const EdgeInformation& /*ei*/ )
+        inline friend std::ostream& operator<< ( std::ostream& os, const EdgeInformation& ei )
         {
+            for (int i = 0; i < 2; ++i)
+            {
+                os << ei.springs[i].edge << " ";
+                os << ei.springs[i].restLength << " ";
+                os << ei.springs[i].DfDx << " ";
+            }
+            os << ei.ks << " ";
+            os << ei.kd << " ";
+            os << ei.is_activated << " ";
+            os << ei.is_initialized;
+
             return os;
         }
 
         /// Input stream
-        inline friend std::istream& operator>> ( std::istream& in, EdgeInformation& /*ei*/ )
+        inline friend std::istream& operator>> ( std::istream& in, EdgeInformation& ei )
         {
+            for (int i = 0; i < 2; ++i)
+            {
+                in >> ei.springs[i].edge;
+                in >> ei.springs[i].restLength;
+                in >> ei.springs[i].DfDx;
+            }
+            in >> ei.ks;
+            in >> ei.kd;
+            in >> ei.is_activated;
+            in >> ei.is_initialized;
+
             return in;
         }
     };

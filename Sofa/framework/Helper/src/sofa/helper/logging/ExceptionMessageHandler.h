@@ -52,7 +52,7 @@ public:
 
 
 
-    void process(Message &m) override;
+    void doProcess(Message &m) override;
     std::string getName() const override { return "ExceptionMessageHandler"; }
 };
 } // namespace sofa::helper::logging

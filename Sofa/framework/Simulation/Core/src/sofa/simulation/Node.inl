@@ -29,7 +29,7 @@ namespace sofa::simulation
 template <class RealObject>
 Node::SPtr Node::create( RealObject*, sofa::core::objectmodel::BaseObjectDescription* arg)
 {
-    if (Simulation* simulation = getSimulation())
+    if (Simulation* simulation = MainSimulation::getSimulation())
     {
         Node::SPtr obj = simulation->createNewNode(arg->getName());
         obj->parse(arg);

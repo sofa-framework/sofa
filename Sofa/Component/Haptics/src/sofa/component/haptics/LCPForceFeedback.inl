@@ -153,6 +153,13 @@ void LCPForceFeedback<DataTypes>::init()
     const core::objectmodel::BaseContext* c = this->getContext();
 
     this->ForceFeedback::init();
+
+    // Warning for "v26.12", "v27.12"
+    msg_warning_once()<<"Until v26.12, this component wasn't rendering the contact force but the impulsion (dt*lambda).\n"
+                        "          It is not the case anymore since v26.12 : now the forces are real forces "
+                        "and so you will likely need to carefully update the force factors in your "
+                        "scene before launching it to cope for this missing factor.";
+
     if(!c)
     {
         msg_error() << "LCPForceFeedback has no current context. Initialisation failed.";

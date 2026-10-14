@@ -92,10 +92,9 @@ public:
     void trace() const
     {
         const Real expectedTrace = convert<Eigen::Matrix<Real, Size, Size>>().trace();
-        EXPECT_NEAR(
+        EXPECT_DOUBLE_EQ(
             expectedTrace,
-            sofa::type::trace(m_symmetricMatrix),
-            testing::NumericTest<Real>::epsilon());
+            sofa::type::trace(m_symmetricMatrix));
     }
 
     void access() const

@@ -25,7 +25,7 @@
 #include <sofa/component/solidmechanics/fem/elastic/impl/trait.h>
 #include <sofa/component/solidmechanics/fem/elastic/BaseLinearElasticityFEMForceField.h>
 
-#if !defined(ELASTICITY_COMPONENT_BASE_ELEMENT_LINEAR_FEM_FORCEFIELD_CPP)
+#if !defined(SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_BASE_ELEMENT_LINEAR_FEM_FORCEFIELD_CPP)
 #include <sofa/fem/FiniteElement[all].h>
 #endif
 
@@ -53,6 +53,7 @@ private:
     using trait = sofa::component::solidmechanics::fem::elastic::trait<DataTypes, ElementType>;
     using ElementHessian = typename trait::ElementHessian;
     using StrainDisplacement = typename trait::StrainDisplacement;
+    using ElementDisplacement = typename trait::ElementDisplacement;
     using Real = typename trait::Real;
 
 protected:
@@ -64,6 +65,12 @@ protected:
      */
     void precomputeElementStiffness();
 
+    /// Displacement of the element nodes relative to their rest position. Returns a flat vector.
+    ElementDisplacement computeElementDisplacement(
+        const typename trait::TopologyElement& element,
+        const sofa::VecCoord_t<DataTypes>& nodePositions,
+        const sofa::VecCoord_t<DataTypes>& nodeRestPositions) const;
+
 public:
 
     /**
@@ -72,7 +79,7 @@ public:
     sofa::Data<sofa::type::vector<ElementHessian> > d_elementStiffness;
 };
 
-#if !defined(ELASTICITY_COMPONENT_BASE_ELEMENT_LINEAR_FEM_FORCEFIELD_CPP)
+#if !defined(SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_BASE_ELEMENT_LINEAR_FEM_FORCEFIELD_CPP)
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API BaseElementLinearFEMForceField<sofa::defaulttype::Vec1Types, sofa::geometry::Edge>;
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API BaseElementLinearFEMForceField<sofa::defaulttype::Vec2Types, sofa::geometry::Edge>;
 extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API BaseElementLinearFEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Edge>;

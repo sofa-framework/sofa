@@ -294,6 +294,9 @@ public:
     friend std::istream& operator>>(std::istream& in, TetrahedronSetTopologyContainer& t);
 
 protected:
+
+    const void* getElementsRaw(const sofa::geometry::ElementType& elementType) const noexcept override;
+
     /** \brief Creates the EdgeSet array.
      *
      * Create the set of edges when needed.

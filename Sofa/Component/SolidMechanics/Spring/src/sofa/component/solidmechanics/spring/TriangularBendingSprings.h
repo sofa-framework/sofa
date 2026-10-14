@@ -84,14 +84,30 @@ public:
         {
         }
         /// Output stream
-        inline friend std::ostream& operator<< ( std::ostream& os, const EdgeInformation& /*ei*/ )
+        inline friend std::ostream& operator<< ( std::ostream& os, const EdgeInformation& ei )
         {
+            os << ei.DfDx << " ";
+            os << ei.m1 << " ";
+            os << ei.m2 << " ";
+            os << ei.ks << " ";
+            os << ei.kd << " ";
+            os << ei.restlength << " ";
+            os << ei.is_activated << " ";
+            os << ei.is_initialized;
             return os;
         }
 
         /// Input stream
-        inline friend std::istream& operator>> ( std::istream& in, EdgeInformation& /*ei*/ )
+        inline friend std::istream& operator>> ( std::istream& in, EdgeInformation& ei )
         {
+            in >> ei.DfDx;
+            in >> ei.m1;
+            in >> ei.m2;
+            in >> ei.ks;
+            in >> ei.kd;
+            in >> ei.restlength;
+            in >> ei.is_activated;
+            in >> ei.is_initialized;
             return in;
         }
     };

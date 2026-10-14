@@ -30,6 +30,7 @@ namespace sofa::geometry
 struct Prism
 {
     static constexpr sofa::Size NumberOfNodes = 6;
+    static constexpr sofa::Size PolynomialOrder = 1;
     static constexpr ElementType Element_type = ElementType::PRISM;
 
     Prism() = delete;

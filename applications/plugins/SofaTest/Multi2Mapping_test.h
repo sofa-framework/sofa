@@ -26,7 +26,7 @@
 #include <sofa/linearalgebra/FullVector.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 #include <sofa/component/statecontainer/MechanicalObject.h>
-#include <sofa/simulation/graph/DAGSimulation.h>
+#include <sofa/simulation/Simulation.h>
 #include <SceneCreator/SceneCreator.h>
 #include <sofa/type/vector.h>
 #include <sofa/core/MultiMapping.h>
@@ -116,14 +116,14 @@ struct Multi2Mapping_test : public Sofa_test<typename _MultiMapping::Real>
     /// Constructor
     Multi2Mapping_test() :deltaRange(1, 1000), errorMax(10)
     {
-        sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
+        sofa::simulation::setSimulation(simulation = new sofa::simulation::Simulation());
 
     }
 
     virtual ~Multi2Mapping_test()
     {
         if (root!=nullptr)
-            sofa::simulation::getSimulation()->unload(root);
+            sofa::simulation::MainSimulation::getSimulation()->unload(root);
     }
 
     /** Returns OutCoord subtraction a-b (should return a OutDeriv, but???)
@@ -197,7 +197,7 @@ struct Multi2Mapping_test : public Sofa_test<typename _MultiMapping::Real>
         }
 
         /// Init
-        sofa::simulation::getSimulation()->init(root);
+        sofa::simulation::MainSimulation::getSimulation()->init(root);
 
         /// Apply the mapping
         // --- Use of the method apply

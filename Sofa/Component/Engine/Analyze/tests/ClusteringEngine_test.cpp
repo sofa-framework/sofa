@@ -26,12 +26,10 @@ using sofa::testing::BaseSimulationTest;
 #include <sofa/component/statecontainer/MechanicalObject.h>
 using sofa::component::statecontainer::MechanicalObject ;
 
-#include <sofa/simulation/graph/DAGSimulation.h>
 using sofa::simulation::Simulation ;
 using sofa::simulation::Node ;
 using sofa::core::objectmodel::New ;
 using sofa::core::objectmodel::BaseData ;
-using sofa::simulation::graph::DAGSimulation;
 
 #include <sofa/core/visual/VisualParams.h>
 using sofa::core::visual::VisualParams;
@@ -59,7 +57,7 @@ struct ClusteringEngine_test : public BaseSimulationTest,
 
     void doSetUp() override
     {
-        m_simu = sofa::simulation::getSimulation();
+        m_simu = sofa::simulation::MainSimulation::getSimulation();
         ASSERT_NE(m_simu, nullptr);
 
         m_node = m_simu->createNewGraph("root");

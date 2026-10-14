@@ -67,14 +67,20 @@ public:
         }
 
         /// Output stream
-        inline friend std::ostream& operator<< ( std::ostream& os, const Spring& /*s*/ )
+        inline friend std::ostream& operator<< ( std::ostream& os, const Spring& s )
         {
+            os << s.ks << " ";
+            os << s.kd << " ";
+            os << s.restVector;
             return os;
         }
 
         /// Input stream
-        inline friend std::istream& operator>> ( std::istream& in, Spring& /*s*/ )
+        inline friend std::istream& operator>> ( std::istream& in, Spring& s )
         {
+            in >> s.ks;
+            in >> s.kd;
+            in >> s.restVector;
             return in;
         }
     };

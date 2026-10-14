@@ -26,7 +26,6 @@ using sofa::testing::BaseSimulationTest;
 #include <sofa/component/constraint/projective/FixedPlaneProjectiveConstraint.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/simulation/Simulation.h>
-#include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/component/statecontainer/MechanicalObject.h>
 #include <sofa/component/mass/UniformMass.h>
@@ -69,7 +68,7 @@ struct FixedPlaneProjectiveConstraint_test : public BaseSimulationTest
 
         /// Scene initialization
         sofa::simulation::Simulation* simulation;
-        simulation = sofa::simulation::getSimulation();
+        simulation = sofa::simulation::MainSimulation::getSimulation();
         simulation::Node::SPtr root = simulation->createNewGraph("root");
         root->setGravity( type::Vec3(0,0,0) );
 

@@ -24,7 +24,7 @@
 
 #include <sofa/core/CollisionModel.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/behavior/SingleStateAccessor.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 
 namespace sofa::component::collision::geometry
@@ -80,10 +80,10 @@ sofa::type::Vec3 TSphere<defaulttype::Vec3Types >::getContactPointWithSurfacePoi
 
 
 template< class TDataTypes>
-class SphereCollisionModel : public core::CollisionModel
+class SphereCollisionModel : public core::CollisionModel, public virtual core::behavior::SingleStateAccessor<TDataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(SphereCollisionModel, TDataTypes), core::CollisionModel);
+    SOFA_CLASS2(SOFA_TEMPLATE(SphereCollisionModel, TDataTypes), core::CollisionModel, SOFA_TEMPLATE(core::behavior::SingleStateAccessor, TDataTypes));
 
     typedef TDataTypes DataTypes;
     typedef DataTypes InDataTypes;
@@ -114,7 +114,7 @@ public:
 
     void draw(const core::visual::VisualParams*, sofa::Index index) override;
 
-    core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return mstate; }
+    core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return this->mstate; }
 
     const VecReal& getR() const { return this->d_radius.getValue(); }
 
@@ -166,12 +166,10 @@ public:
     Data< SReal > d_defaultRadius; ///< Default radius
     Data< bool > d_showImpostors; ///< Draw spheres as impostors instead of "real" spheres
 
+    /// Link to be set to the topology container in the component graph.
+    SingleLink<SphereCollisionModel<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
     void computeBBox(const core::ExecParams* params, bool onlyVisible=false) override;
-
-protected:
-    core::behavior::MechanicalState<DataTypes>* mstate;
-    SingleLink<SphereCollisionModel<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 };
 
 template<class DataTypes>
@@ -198,7 +196,7 @@ template<class DataTypes>
 inline const typename TSphere<DataTypes>::Coord& TSphere<DataTypes>::pFree() const { return DataTypes::getCPos((*this->model->mstate->read(core::vec_id::read_access::freePosition)).getValue()[this->index]); }
 
 template<class DataTypes>
-inline const typename SphereCollisionModel<DataTypes>::Coord& SphereCollisionModel<DataTypes>::velocity(sofa::Index index) const { return DataTypes::getDPos(mstate->read(core::vec_id::read_access::velocity)->getValue()[index]);}
+inline const typename SphereCollisionModel<DataTypes>::Coord& SphereCollisionModel<DataTypes>::velocity(sofa::Index index) const { return DataTypes::getDPos(this->mstate->read(core::vec_id::read_access::velocity)->getValue()[index]);}
 
 template<class DataTypes>
 inline const typename TSphere<DataTypes>::Coord& TSphere<DataTypes>::v() const { return DataTypes::getDPos(this->model->mstate->read(core::vec_id::read_access::velocity)->getValue()[this->index]); }
