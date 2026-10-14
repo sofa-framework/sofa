@@ -55,7 +55,7 @@ void registerObjects(sofa::core::ObjectFactory* factory)
     const auto isLoaded = sofa::helper::system::PluginManager::getInstance().isPluginLoaded(Sofa.Component.IntegrationScheme.Forward);
     bool objLoaded = false;
 
-    if (isLoaded.second)
+    if (isLoaded.second && !factory->pluginAlreadyRegistered(Sofa.Component.IntegrationScheme.Forward))
     {
         objLoaded = factory->registerObjectsFromPlugin(Sofa.Component.IntegrationScheme.Forward);
 
