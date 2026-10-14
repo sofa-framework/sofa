@@ -12,19 +12,18 @@ on:
         type: choice
         description: On which OS run the binaries generation
         options: 
-        - '["sofa-ci-dev-ubuntu2204-0"]'
-        - '["sofa-ci-dev-ubuntu2204-1"]'
-        - '["sofa-ci-dev-ubuntu2204-2"]'
-        - '["sofa-ci-dev-ubuntu2204-3"]'
         - '["sofa-ci-dev-ubuntu2404-0"]'
         - '["sofa-ci-dev-ubuntu2404-1"]'
         - '["sofa-ci-dev-ubuntu2404-2"]'
         - '["sofa-ci-dev-ubuntu2404-3"]'
         - '["sofa-ci-dev-ubuntu2404-4"]'
+        - '["sofa-ci-dev-ubuntu2404-5"]'
+        - '["sofa-ci-dev-ubuntu2404-6"]'
+        - '["sofa-ci-dev-ubuntu2404-7"]'
         - '["consortium-macos-2-1"]'
         - '["consortium-macos-3-1"]'
-        - '["sofa-ci-dev-ubuntu2204-0","sofa-ci-dev-ubuntu2204-1","sofa-ci-dev-ubuntu2204-2","sofa-ci-dev-ubuntu2204-3","sofa-ci-dev-ubuntu2204-4","sofa-ci-dev-ubuntu2404-0","sofa-ci-dev-ubuntu2404-1","sofa-ci-dev-ubuntu2404-2","sofa-ci-dev-ubuntu2404-3","sofa-ci-dev-ubuntu2404-4","consortium-macos-2-1","consortium-macos-3-1"]'
-        default: '["sofa-ci-dev-ubuntu2204-0","sofa-ci-dev-ubuntu2204-1","sofa-ci-dev-ubuntu2204-2","sofa-ci-dev-ubuntu2204-3","sofa-ci-dev-ubuntu2204-4","sofa-ci-dev-ubuntu2404-0","sofa-ci-dev-ubuntu2404-1","sofa-ci-dev-ubuntu2404-2","sofa-ci-dev-ubuntu2404-3","sofa-ci-dev-ubuntu2404-4","consortium-macos-2-1","consortium-macos-3-1"]'
+        - '["sofa-ci-dev-ubuntu2404-0","sofa-ci-dev-ubuntu2404-1","sofa-ci-dev-ubuntu2404-2","sofa-ci-dev-ubuntu2404-3","sofa-ci-dev-ubuntu2404-4","sofa-ci-dev-ubuntu2404-5","sofa-ci-dev-ubuntu2404-6","sofa-ci-dev-ubuntu2404-7","consortium-macos-2-1","consortium-macos-3-1"]'
+        default: '["sofa-ci-dev-ubuntu2404-0","sofa-ci-dev-ubuntu2404-1","sofa-ci-dev-ubuntu2404-2","sofa-ci-dev-ubuntu2404-3","sofa-ci-dev-ubuntu2404-4","sofa-ci-dev-ubuntu2404-5","sofa-ci-dev-ubuntu2404-6","sofa-ci-dev-ubuntu2404-7","consortium-macos-2-1","consortium-macos-3-1"]'
 
 
 
