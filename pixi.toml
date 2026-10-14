@@ -104,7 +104,7 @@ conda-deny = "*"
 [feature.build-release-package.activation]
 env = { SOFA_BUILD_RELEASE_PACKAGE_WITH_PIXI = "1" }
 [feature.build-release-package.target.win.activation]
-env = { SOFA_CPACK_PARAMS = "-DCPACK_GENERATOR=ZIP -DCPACK_BINARY_ZIP=ON -DSOFA_USE_DEPENDENCY_PACK=OFF" }
+env = { SOFA_CPACK_PARAMS = "-DCPACK_GENERATOR=ZIP -DCPACK_BINARY_ZIP=ON -DSOFA_USE_DEPENDENCY_PACK=ON" }
 [feature.build-release-package.target.osx.activation]
 env = { SOFA_CPACK_PARAMS = "-DCPACK_GENERATOR=ZIP -DCPACK_BINARY_ZIP=ON -DCMAKE_OSX_DEPLOYMENT_TARGET=10.15" }
 [feature.build-release-package.target.linux.activation]

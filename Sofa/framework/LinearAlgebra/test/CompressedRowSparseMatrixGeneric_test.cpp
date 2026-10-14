@@ -23,6 +23,8 @@
 #include <sofa/type/Mat.h>
 #include <gtest/gtest.h>
 
+#include <cstdlib>
+
 using CRS = sofa::linearalgebra::CompressedRowSparseMatrixGeneric<double>;
 using Mat3 = sofa::type::Mat<3, 3, double>;
 using CRSMat3 = sofa::linearalgebra::CompressedRowSparseMatrixGeneric<Mat3>;
@@ -645,4 +647,126 @@ TEST(CompressedRowSparseMatrixGeneric, Mat3x3dMul)
             const double expected = (i == j) ? 3.0 : 0.0;
             EXPECT_NEAR(result(i, j), expected, kTol);
         }
+}
+
+// fullRows() registers rows with an empty range
+TEST(CompressedRowSparseMatrixGeneric, BlockOnEmptyRowAfterFullRows)
+{
+    CRS m(6, 6);
+    m.setBlock(4, 4, 7.0);
+    m.compress();
+    m.fullRows();
+
+    ASSERT_EQ(m.getRowIndex().size(), 6u);
+
+    for (CRS::Index i = 0; i < 6; ++i)
+    {
+        for (CRS::Index j = 0; j < 6; ++j)
+        {
+            const double expected = (i == 4 && j == 4) ? 7.0 : 0.0;
+            EXPECT_NEAR(m.block(i, j), expected, kTol) << "block(" << i << "," << j << ")";
+        }
+    }
+}
+
+TEST(CompressedRowSparseMatrixGeneric, BlockOnEmptyRowDoesNotBorrowNeighbourValue)
+{
+    CRS m(6, 6);
+    m.setBlock(4, 4, 7.0);
+    m.compress();
+    m.fullRows();
+
+    EXPECT_NEAR(m.block(0, 4), 0.0, kTol) << "row 0 is empty, must not return row 4's value";
+    EXPECT_NEAR(m.block(0, 0), 0.0, kTol) << "row 0 is empty, must not read colsIndex[-1]";
+}
+
+TEST(CompressedRowSparseMatrixGeneric, ClearRowColBlockWithAbsentRow)
+{
+    CRS m(4, 4);
+    // row 0 is absent, but column 0 exists (in row 1)
+    m.setBlock(1, 0, 7.0);
+    m.setBlock(1, 1, 3.0);
+    m.setBlock(2, 2, 5.0);
+    m.compress();
+    ASSERT_EQ(m.getRowIndex().size(), 2u);
+
+    m.clearRowColBlock(0);
+
+    EXPECT_NEAR(m.block(1, 0), 0.0, kTol) << "column 0 must be cleared";
+    EXPECT_NEAR(m.block(1, 1), 3.0, kTol) << "row 1 must not be deleted";
+    EXPECT_NEAR(m.block(2, 2), 5.0, kTol) << "row 2 must be untouched";
+}
+
+// Run in a child process so that a crash does not abort the whole test binary
+#if GTEST_HAS_DEATH_TEST
+
+TEST(CompressedRowSparseMatrixGenericDeathTest, ClearRowBlockOnEmptyMatrix)
+{
+    EXPECT_EXIT(
+        {
+            CRS m(4, 4);
+            m.compress();
+            m.clearRowBlock(1);
+            std::exit(m.getRowIndex().empty() ? 0 : 2);
+        },
+        ::testing::ExitedWithCode(0), "");
+}
+
+TEST(CompressedRowSparseMatrixGenericDeathTest, ClearRowBlockOnDefaultConstructedMatrix)
+{
+    EXPECT_EXIT(
+        {
+            CRS m;
+            m.clearRowBlock(0);
+            std::exit(m.getRowIndex().empty() ? 0 : 2);
+        },
+        ::testing::ExitedWithCode(0), "");
+}
+
+#endif // GTEST_HAS_DEATH_TEST
+
+TEST(CompressedRowSparseMatrixGeneric, ClearColBlockAfterFullRows)
+{
+    CRS m(4, 4);
+    m.setBlock(1, 1, 3.0);
+    m.compress();
+    m.fullRows();
+
+    m.clearColBlock(1);
+
+    for (CRS::Index i = 0; i < 4; ++i)
+        EXPECT_NEAR(m.block(i, 1), 0.0, kTol) << "block(" << i << ",1)";
+}
+
+TEST(CompressedRowSparseMatrixGeneric, ClearRowColBlockWithAbsentRowAndCol)
+{
+    CRS m(4, 4);
+    m.setBlock(1, 1, 3.0);
+    m.setBlock(2, 1, 4.0);
+    m.compress();
+
+    m.clearRowColBlock(3);
+
+    EXPECT_NEAR(m.block(1, 1), 3.0, kTol);
+    EXPECT_NEAR(m.block(2, 1), 4.0, kTol);
+}
+
+TEST(CompressedRowSparseMatrixGeneric, HintedWblockOnEmptyMatrix)
+{
+    CRS m;
+    CRS::Index rowId = 0;
+    CRS::Index colId = 0;
+    EXPECT_NO_THROW(m.setBlock(0, 0, rowId, colId, 1.0));
+}
+
+TEST(CompressedRowSparseMatrixGeneric, MaxColIndexWithEmptyRows)
+{
+    CRS m(4, 4);
+    m.setBlock(1, 2, 3.0);
+    m.compress();
+    m.fullRows();
+
+    // clearColBlock() calls getMaxColIndex()
+    EXPECT_NO_THROW(m.clearColBlock(2));
+    EXPECT_NEAR(m.block(1, 2), 0.0, kTol);
 }
