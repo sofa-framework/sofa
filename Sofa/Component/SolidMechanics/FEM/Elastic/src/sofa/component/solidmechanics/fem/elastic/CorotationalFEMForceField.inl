@@ -61,7 +61,7 @@ void CorotationalFEMForceField<DataTypes, ElementType>::init()
     if (!this->isComponentStateInvalid())
     {
         // makes sure the element sequence is available in the topology container
-        [[maybe_unused]] const auto& elements = trait::FiniteElement::getElementSequence(*this->l_topology);
+        const auto& elements = trait::FiniteElement::getElementSequence(*this->l_topology);
     }
 
     if (!this->isComponentStateInvalid())
