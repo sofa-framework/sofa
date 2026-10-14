@@ -450,6 +450,14 @@ void TriangleCollisionModel<DataTypes>::drawCollisionModel(const core::visual::V
     }
 }
 
+template<class TDataTypes>
+void TriangleCollisionModel<TDataTypes>::loadInternalStateFrom(const core::objectmodel::Snapshot::SnapshotObject &snapshot)
+{
+    m_triangles = &m_topology->getTriangles();
+    resize(m_topology->getNbTriangles());
+    updateNormals();
+}
+
 template<class DataTypes>
 inline const typename DataTypes::Coord& TTriangle<DataTypes>::p1() const { return this->model->mstate->read(core::vec_id::read_access::position)->getValue()[(*(this->model->m_triangles))[this->index][0]]; }
 template<class DataTypes>

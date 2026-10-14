@@ -9,7 +9,7 @@ enable_testing()
 
 # When building binaries we want to build GTests ourselves
 # so we can easilly install the target along
-if(NOT SOFA_BUILD_RELEASE_PACKAGE)
+if(BUILD_CONDA_PACKAGE OR NOT SOFA_BUILD_RELEASE_PACKAGE)
     find_package(GTest QUIET)
 endif()
 

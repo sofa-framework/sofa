@@ -57,6 +57,8 @@ public:
 
     virtual       Data<MatrixDeriv>* write(core::MatrixDerivId /* v */) override { return nullptr; }
     virtual const Data<MatrixDeriv>* read(core::ConstMatrixDerivId /* v */) const override { return nullptr; }
+
+    void loadInternalStateFrom(const core::objectmodel::Snapshot::SnapshotObject& snapshot) override;
 };
 
 #if !defined(SOFA_CORE_VISUAL_VISUALSTATE_CPP)

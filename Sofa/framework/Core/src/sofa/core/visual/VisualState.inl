@@ -95,4 +95,11 @@ auto VisualState<DataTypes>::read(core::ConstVecDerivId v) const -> const Data<V
     return nullptr;
 }
 
+template< typename DataTypes >
+void VisualState<DataTypes>::loadInternalStateFrom(const core::objectmodel::Snapshot::SnapshotObject& snapshot)
+{
+    SOFA_UNUSED(snapshot);
+    modified = true;
+}    
+
 } // namespace sofa::core::visual

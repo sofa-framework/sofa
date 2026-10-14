@@ -32,7 +32,7 @@ namespace sofa::fem
 template <class DataTypes>
 struct FiniteElement<sofa::geometry::QuadraticTetrahedron, DataTypes>
 {
-    FINITEELEMENT_HEADER(sofa::geometry::QuadraticTetrahedron, DataTypes, 3);
+    FINITEELEMENT_HEADER(sofa::geometry::QuadraticTetrahedron, DataTypes, 3, 2);
     static_assert(spatial_dimensions == 3, "Quadratic Tetrahedrons are only defined in 3D");
 
     constexpr static std::array<ReferenceCoord, NumberOfNodesInElement> referenceElementNodes {{
@@ -103,29 +103,6 @@ struct FiniteElement<sofa::geometry::QuadraticTetrahedron, DataTypes>
             // mid-edge 2-3
             {0, 4 * l3, 4 * l2}
         };
-    }
-
-    static constexpr std::array<QuadraturePointAndWeight, 4> quadraturePoints()
-    {
-        // 4-point quadrature rule for quadratic tetrahedron
-        // constexpr Real a = (5. + 3. * std::sqrt(5.)) / 20.;
-        constexpr Real a { 0.585410196625 };
-        // constexpr Real b = (5. - std::sqrt(5.)) / 20.;
-        constexpr Real b { 0.138196601125 };
-        constexpr Real w = 1. / 24.;
-
-        constexpr sofa::type::Vec<TopologicalDimension, Real> q0(a, b, b);
-        constexpr sofa::type::Vec<TopologicalDimension, Real> q1(b, a, b);
-        constexpr sofa::type::Vec<TopologicalDimension, Real> q2(b, b, a);
-        constexpr sofa::type::Vec<TopologicalDimension, Real> q3(b, b, b);
-
-        constexpr std::array<QuadraturePointAndWeight, 4> q {
-            std::make_pair(q0, w),
-            std::make_pair(q1, w),
-            std::make_pair(q2, w),
-            std::make_pair(q3, w)
-        };
-        return q;
     }
 };
 

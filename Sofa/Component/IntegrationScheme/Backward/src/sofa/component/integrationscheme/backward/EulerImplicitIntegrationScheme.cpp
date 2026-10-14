@@ -36,7 +36,7 @@ using namespace sofa::defaulttype;
 using namespace core::behavior;
 
 EulerImplicitIntegrationScheme::EulerImplicitIntegrationScheme()
-    : d_trapezoidalScheme( initData(&d_trapezoidalScheme,false,"trapezoidalScheme","Boolean to use the trapezoidal scheme instead of the implicit Euler scheme and get second order accuracy in time (false by default)") )
+    : d_trapezoidalScheme( this, "v26.12", "v27.06", "trapezoidalScheme","Use the component TrapezoidalIntegrationScheme instead.")
 {
 
 }
@@ -45,7 +45,7 @@ EulerImplicitIntegrationScheme::EulerImplicitIntegrationScheme()
 
 SReal EulerImplicitIntegrationScheme::getPositionUpdateDerivedFromVelocity() const
 {
-    return d_trapezoidalScheme.getValue() ? m_dt/2.0 : m_dt ;
+    return m_dt ;
 }
 
 SReal EulerImplicitIntegrationScheme::getInverseVelocityUpdateDerivedFromVelocity() const
@@ -58,15 +58,7 @@ void EulerImplicitIntegrationScheme::computeCurrentPositionIntegrationError(sofa
     sofa::core::behavior::MultiVecDeriv res(&vop, result );
     res.eq(position,m_x0[0],  -1);
 
-    if ( d_trapezoidalScheme.getValue())
-    {
-        res.peq(m_v0[0], -m_dt/2.0);
-        res.peq(velocity, -m_dt/2.0);
-    }
-    else
-    {
-        res.peq(velocity, -m_dt);
-    }
+    res.peq(velocity, -m_dt);
 }
 
 void EulerImplicitIntegrationScheme::computeAccelerationFromVelocity(sofa::simulation::common::VectorOperations & vop, sofa::core::MultiVecDerivId& result, const sofa::core::MultiVecDerivId& velocity)

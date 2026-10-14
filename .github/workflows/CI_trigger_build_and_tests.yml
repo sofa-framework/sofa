@@ -68,6 +68,10 @@ jobs:
   filter_build:
     runs-on: ubuntu-latest
     if: ${{ github.repository_owner == 'sofa-framework' }}
+    permissions:
+      contents: read
+      pull-requests: write   # for publish_github_message()
+      statuses: write        # for update_action_status()
     outputs:
       SOFA_BRANCH_NAME: ${{ steps.export-vars.outputs.SOFA_BRANCH_NAME }}
       SOFA_COMMIT_SHA: ${{ steps.export-vars.outputs.SOFA_COMMIT_SHA }}

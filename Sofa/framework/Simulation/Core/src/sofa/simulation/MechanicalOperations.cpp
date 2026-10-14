@@ -194,16 +194,22 @@ void MechanicalOperations::projectPosition(core::MultiVecCoordId x, SReal time)
     executeVisitor( MechanicalProjectPositionVisitor(&mparams, time, x) );
 }
 
-/// Apply projective constraints to the given velocity vector
-void MechanicalOperations::computeEnergy(SReal &kineticEnergy, SReal &potentialEnergy)
+void MechanicalOperations::computeEnergy(core::ConstMultiVecCoordId xId,
+    SReal& kineticEnergy, SReal& potentialEnergy)
 {
     kineticEnergy = 0;
     potentialEnergy = 0;
-    MechanicalComputeEnergyVisitor energyVisitor(&mparams);
+    MechanicalComputeEnergyVisitor energyVisitor(&mparams, xId);
     executeVisitor(&energyVisitor);
     kineticEnergy = energyVisitor.getKineticEnergy();
     potentialEnergy = energyVisitor.getPotentialEnergy();
 }
+
+void MechanicalOperations::computeEnergy(SReal &kineticEnergy, SReal &potentialEnergy)
+{
+    computeEnergy(mparams.x(), kineticEnergy, potentialEnergy);
+}
+
 /// Apply projective constraints to the given velocity vector
 void MechanicalOperations::projectVelocity(core::MultiVecDerivId v, SReal time)
 {
@@ -248,7 +254,9 @@ void MechanicalOperations::accFromF(core::MultiVecDerivId a, core::ConstMultiVec
 }
 
 /// Compute the current force (given the latest propagated position and velocity)
-void MechanicalOperations::computeForce(core::MultiVecDerivId result, bool clear, bool accumulate)
+void MechanicalOperations::computeForce(core::MultiVecDerivId result,
+                                        core::ConstMultiVecCoordId xId,
+                                        core::ConstMultiVecDerivId vId, bool clear, bool accumulate)
 {
     setF(result);
     if (clear)
@@ -256,7 +264,12 @@ void MechanicalOperations::computeForce(core::MultiVecDerivId result, bool clear
         executeVisitor( MechanicalResetForceVisitor(&mparams, result, false) );
         //finish();
     }
-    executeVisitor( MechanicalComputeForceVisitor(&mparams, result, accumulate) );
+    executeVisitor( MechanicalComputeForceVisitor(&mparams, result, xId, vId, accumulate) );
+}
+
+void MechanicalOperations::computeForce(core::MultiVecDerivId result, bool clear, bool accumulate)
+{
+    computeForce(result, mparams.x(), mparams.v(), clear, accumulate);
 }
 
 

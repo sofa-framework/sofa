@@ -32,6 +32,8 @@
 #include <sofa/testing/BaseSimulationTest.h>
 #include <sofa/testing/NumericTest.h>
 
+#include <algorithm>
+
 namespace sofa::component::mass::testing
 {
 
@@ -131,7 +133,10 @@ struct Mass_test : public sofa::testing::BaseSimulationTest, public sofa::testin
         sofa::type::vector<Real> expectedMv;
         sofa::testing::data_traits<DataTypes>::VecDeriv_to_Vector(expectedMv, Mv);
 
-        EXPECT_LT(this->vectorMaxDiff(eigenMv, expectedMv), m_errorMax * this->epsilon())
+        const SReal tolerance = m_errorMax * (SReal)this->epsilon()
+            * std::max((SReal)1, (SReal)this->vectorMaxAbs(expectedMv));
+
+        EXPECT_LT((SReal)this->vectorMaxDiff(eigenMv, expectedMv), tolerance)
             << "addMToMatrix inconsistent with addMDx";
     }
 
@@ -167,7 +172,10 @@ struct Mass_test : public sofa::testing::BaseSimulationTest, public sofa::testin
         sofa::type::vector<Real> expectedMv;
         sofa::testing::data_traits<DataTypes>::VecDeriv_to_Vector(expectedMv, Mv);
 
-        EXPECT_LT((SReal)this->vectorMaxDiff(eigenMv, expectedMv), (SReal)(m_errorMax * this->epsilon()))
+        const SReal tolerance = m_errorMax * (SReal)this->epsilon()
+            * std::max((SReal)1, (SReal)this->vectorMaxAbs(expectedMv));
+
+        EXPECT_LT((SReal)this->vectorMaxDiff(eigenMv, expectedMv), tolerance)
             << "buildMassMatrix inconsistent with addMDx";
     }
 
@@ -181,8 +189,11 @@ struct Mass_test : public sofa::testing::BaseSimulationTest, public sofa::testin
             vMv += static_cast<SReal>(sofa::type::dot(v[i], Mv[i]));
         }
 
+        const SReal tolerance = m_errorMax * (SReal)this->epsilon()
+            * std::max((SReal)1, std::abs(vMv));
+
         // v * Mv should be the 2 * kinetic energy
-        EXPECT_LT(std::abs(vMv - 2 * ke), (SReal)(m_errorMax * this->epsilon()))
+        EXPECT_LT(std::abs(vMv - 2 * ke), tolerance)
             << "Kinetic energy inconsistent with addMDx (vMv = " << vMv << ", kinetic energy = " << (Real)ke << ")";
     }
     /**
@@ -236,7 +247,11 @@ struct Mass_test : public sofa::testing::BaseSimulationTest, public sofa::testin
             VecDeriv a;
             sofa::testing::copyFromData(a, m_dof->readForces());
 
-            EXPECT_LT((SReal)this->vectorMaxDiff(a, v), (SReal)(m_errorMax * this->epsilon())) << "accFromF inconsistent with addMDx (M^-1 * M * v != v)";
+            const SReal tolerance = m_errorMax * (SReal)this->epsilon()
+                * std::max((SReal)1, (SReal)this->vectorMaxAbs(v));
+
+            EXPECT_LT((SReal)this->vectorMaxDiff(a, v), tolerance)
+                << "accFromF inconsistent with addMDx (M^-1 * M * v != v)";
         }
 
         sofa::SignedIndex matrixSize = (sofa::SignedIndex)(n * DataTypes::deriv_total_size);

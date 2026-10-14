@@ -129,6 +129,7 @@ public:
     const Transformation& getRotationMatrix(Index elemId);
     const MaterialStiffness& getMaterialStiffness(Index elemId);
     const StrainDisplacement& getStrainDisplacements(Index elemId);
+    void loadInternalStateFrom(const core::objectmodel::Snapshot::SnapshotObject& snapshot) override;
 
 protected:
 

@@ -33,13 +33,6 @@ MechanicalApplyProjectiveConstraint_ToMatrixVisitor::MechanicalApplyProjectiveCo
 {
 }
 
-Visitor::Result MechanicalApplyProjectiveConstraint_ToMatrixVisitor::fwdMechanicalState(simulation::Node *,
-                                                                                        core::behavior::BaseMechanicalState *)
-{
-    //ms->setOffset(offsetOnExit);
-    return RESULT_CONTINUE;
-}
-
 Visitor::Result MechanicalApplyProjectiveConstraint_ToMatrixVisitor::fwdProjectiveConstraintSet(simulation::Node *,
                                                                                                 core::behavior::BaseProjectiveConstraintSet *c)
 {
