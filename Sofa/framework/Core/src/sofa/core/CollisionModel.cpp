@@ -120,7 +120,6 @@ CollisionModel::CollisionModel()
     , l_collElemActiver(initLink("collisionElementActiver", "CollisionElementActiver component that activates or deactivates collision element(s) during execution"))
 {
 
-    proximity.setOriginalData(&d_contactDistance);
     addAlias(&d_contactDistance, "proximity");
 
     d_numberOfContacts.setReadOnly(true);

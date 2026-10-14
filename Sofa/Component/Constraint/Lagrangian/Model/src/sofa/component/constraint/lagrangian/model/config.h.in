@@ -36,13 +36,3 @@ namespace sofa::component::constraint::lagrangian::model
 	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
 	constexpr const char* MODULE_VERSION = "@PROJECT_VERSION@";
 } // namespace sofa::component::constraint::lagrangian::model
-
-
-#ifdef SOFA_BUILD_SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL
-#define SOFA_ATTRIBUTE_DISABLED__BILATERALREMOVEUNUSEDTOLERANCE()
-#else
-#define SOFA_ATTRIBUTE_DISABLED__BILATERALREMOVEUNUSEDTOLERANCE() \
-    SOFA_ATTRIBUTE_DISABLED( \
-        "v25.06", "v25.12", \
-        "Data \'d_numericalTolerance\' has been removed since it was actually not taken into account")
-#endif
