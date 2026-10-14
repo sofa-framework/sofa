@@ -23,11 +23,48 @@
 
 #include <sofa/core/objectmodel/Data.h>
 #include <Eigen/Dense>
+
+/// Support of Eigen matrices in sofa::core::objectmodel::Data.
+///
+/// The string format is "rows cols c00 c01 ... c(rows-1)(cols-1)": the
+/// dimensions, then the coefficients in row-major order, all separated by
+/// whitespaces. Reading resizes dynamic matrices to the given dimensions, so
+/// no pre-sized default value is needed; for fixed-size matrices the
+/// dimensions must match the compile-time sizes, otherwise the read fails.
+///
+/// Both directions are explicit specializations of Data<T>::read() and
+/// Data<T>::getValueString(), declared below and defined in Data[Eigen].cpp.
+/// No operator<< or operator>> is added to namespace
+///
+/// Note: a matrix type that is not listed below cannot be stored in a Data:
+/// the generic Data<T>::read() would be instantiated and fail to compile, as
+/// Eigen matrices have no stream operators.
 namespace sofa::core::objectmodel
 {
+template<> bool SOFA_CORE_API Data<Eigen::MatrixXf>::read( const std::string& str );
+template<> std::string SOFA_CORE_API Data<Eigen::MatrixXf>::getValueString() const;
 
-/// Specialization for reading strings
-template<> bool Data<Eigen::MatrixXf>::read( const std::string& str );
-template<> std::string Data<Eigen::MatrixXf>::getValueString() const;
+template<> bool SOFA_CORE_API Data<Eigen::MatrixXd>::read( const std::string& str );
+template<> std::string SOFA_CORE_API Data<Eigen::MatrixXd>::getValueString() const;
 
-}
+template<> bool SOFA_CORE_API Data<Eigen::Matrix2f>::read( const std::string& str );
+template<> std::string SOFA_CORE_API Data<Eigen::Matrix2f>::getValueString() const;
+
+template<> bool SOFA_CORE_API Data<Eigen::Matrix2d>::read( const std::string& str );
+template<> std::string SOFA_CORE_API Data<Eigen::Matrix2d>::getValueString() const;
+
+template<> bool SOFA_CORE_API Data<Eigen::Matrix3f>::read( const std::string& str );
+template<> std::string SOFA_CORE_API Data<Eigen::Matrix3f>::getValueString() const;
+
+template<> bool SOFA_CORE_API Data<Eigen::Matrix3d>::read( const std::string& str );
+template<> std::string SOFA_CORE_API Data<Eigen::Matrix3d>::getValueString() const;
+
+template<> bool SOFA_CORE_API Data<Eigen::Matrix4f>::read( const std::string& str );
+template<> std::string SOFA_CORE_API Data<Eigen::Matrix4f>::getValueString() const;
+
+template<> bool SOFA_CORE_API Data<Eigen::Matrix4d>::read( const std::string& str );
+template<> std::string SOFA_CORE_API Data<Eigen::Matrix4d>::getValueString() const;
+
+template<> bool SOFA_CORE_API Data<Eigen::MatrixXi>::read( const std::string& str );
+template<> std::string SOFA_CORE_API Data<Eigen::MatrixXi>::getValueString() const;
+} // namespace sofa::core::objectmodel
