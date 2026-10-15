@@ -189,7 +189,7 @@ jobs:
 
           # Trigger the Build action
           # Warning ! This script also changes ENV variables
-          python ci/scripts/checkPRInfoBeforeBuild.py
+          python3 ci/scripts/checkPRInfoBeforeBuild.py
 
       - name: Export environment variables as outputs
         id: export-vars
