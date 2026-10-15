@@ -296,7 +296,7 @@ jobs:
 
               echo "Launching configuration and build through docker using image ${DOCKER_IMAGE}. Running ./ci/scripts/configure-and-build.sh /workspace/build/ /workspace/sofa/ /workspace/ci/scripts/ \"${NODE_NAME}\" \"${BUILD_TYPE}\" \"${CONFIG}\" \"${{ inputs.python-version }}\" \"${{ inputs.preset }}\" \"${{ inputs.generate-binaries }}\" \"${CMAKE_OPTIONS}\""
               docker run --rm --env XDG_CACHE_HOME --env GH_TOKEN="$GH_TOKEN" -v $BUILDER_CACHE_DIR:/cache\
-                  --user $(id -u):$(id -g) --network=host -v $WORKSPACE:/workspace \
+                  --user 1000:1000 --network=host -v $WORKSPACE:/workspace \
                   ${DOCKER_IMAGE} \
                   /bin/bash -c "env; gh auth setup-git; gh auth status; cd /workspace; ccache -M 5; /bin/bash $DOCKER_CI_DIR/scripts/configure-and-build.sh $DOCKER_BUILD_DIR $DOCKER_SRC_DIR $DOCKER_CI_DIR/scripts/ $DOCKER_LOG_DIR \"${NODE_NAME}\" \"${BUILD_TYPE}\" \"${CONFIG}\" \"${{ inputs.python-version }}\" \"${{ inputs.preset }}\" \"${{ inputs.generate-binaries }}\" \"${CMAKE_OPTIONS}\""
           else
@@ -317,7 +317,7 @@ jobs:
 
               echo "Launching unit test suite through docker using image ${DOCKER_IMAGE}."
               docker run --rm \
-                  --user $(id -u):$(id -g) --network=host -v $WORKSPACE:/workspace \
+                  --user 1000:1000 --network=host -v $WORKSPACE:/workspace \
                   ${DOCKER_IMAGE} \
                   /bin/bash -c "env ; cd /workspace; /bin/bash $DOCKER_CI_DIR/scripts/test.sh $DOCKER_BUILD_DIR $DOCKER_SRC_DIR $DOCKER_CI_DIR/scripts/ ${NODE_NAME} ${{ inputs.python-version }} UNIT"
           else
@@ -341,7 +341,7 @@ jobs:
 
               echo "Launching scene test suite through docker using image ${DOCKER_IMAGE}."
               docker run --rm \
-                  --user $(id -u):$(id -g) --network=host -v $WORKSPACE:/workspace \
+                  --user 1000:1000 --network=host -v $WORKSPACE:/workspace \
                   ${DOCKER_IMAGE} \
                   /bin/bash -c "env ; cd /workspace; /bin/bash $DOCKER_CI_DIR/scripts/test.sh $DOCKER_BUILD_DIR $DOCKER_SRC_DIR $DOCKER_CI_DIR/scripts/ ${NODE_NAME} ${{ inputs.python-version }} SCENE"
           else
@@ -365,7 +365,7 @@ jobs:
 
               echo "Launching regression test suite through docker using image ${DOCKER_IMAGE}."
               docker run --rm \
-                  --user $(id -u):$(id -g) --network=host -v $WORKSPACE:/workspace \
+                  --user 1000:1000 --network=host -v $WORKSPACE:/workspace \
                   ${DOCKER_IMAGE} \
                   /bin/bash -c "env ; cd /workspace; /bin/bash $DOCKER_CI_DIR/scripts/test.sh $DOCKER_BUILD_DIR $DOCKER_SRC_DIR $DOCKER_CI_DIR/scripts/ ${NODE_NAME} ${{ inputs.python-version }} REGRESSION"
           else
