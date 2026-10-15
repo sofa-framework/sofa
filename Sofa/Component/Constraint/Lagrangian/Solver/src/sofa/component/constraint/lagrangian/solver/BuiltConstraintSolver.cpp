@@ -81,7 +81,7 @@ void BuiltConstraintSolver::addRegularization(linearalgebra::BaseMatrix& W, cons
             //Now for all vector of the null space basis, we look at the indices where the coefficient
             //is greater than 1% of the norm of the vector, this is the constraints that
             //belong to the null space and thus have other one that are antagonists
-            for(int i=nullSpaceBegin; (i != -1) && (i<problemSize); ++i)
+            for(int i=nullSpaceBegin; (i != -1) && (i < static_cast<int>(problemSize)); ++i)
             {
                 for(size_t j=0; j<problemSize; j++)
                     nullSpaceIndicator[j] = nullSpaceIndicator[j] ||  fabs(svd.matrixV().col(i)(j)) > d_svdSingularVectorNullSpaceCriteriaFactor.getValue();

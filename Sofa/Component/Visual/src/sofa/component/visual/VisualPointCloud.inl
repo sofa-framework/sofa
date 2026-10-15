@@ -165,6 +165,8 @@ template <class DataTypes>
 void VisualPointCloud<DataTypes>::drawFrames(const core::visual::VisualParams* vparams,
                                              type::RGBAColor color) requires hasWriteOpenGlMatrix<DataTypes>
 {
+    SOFA_UNUSED(color);
+
     if constexpr (hasWriteOpenGlMatrix<DataTypes>)
     {
         auto* drawTool = vparams->drawTool();

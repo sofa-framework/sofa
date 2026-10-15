@@ -29,6 +29,8 @@ struct IdentityRotation
     template<class RotationMatrix, class NotUsed1, class NotUsed2>
     void computeRotation(RotationMatrix& rotationMatrix, const RotationMatrix& initialRotationMatrix, const NotUsed1&, const NotUsed2&)
     {
+        SOFA_UNUSED(initialRotationMatrix);
+
         rotationMatrix.identity();
     }
 

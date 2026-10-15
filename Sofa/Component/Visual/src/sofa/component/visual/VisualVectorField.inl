@@ -74,6 +74,9 @@ void VisualVectorField<DataTypes>::doDrawVisual(const core::visual::VisualParams
 template <class DataTypes>
 void VisualVectorField<DataTypes>::computeBBox(const core::ExecParams* exec_params, bool cond)
 {
+    SOFA_UNUSED(exec_params);
+    SOFA_UNUSED(cond);
+
     const auto position = sofa::helper::getReadAccessor(d_position);
     const auto vector = sofa::helper::getReadAccessor(d_vector);
 

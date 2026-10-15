@@ -482,7 +482,8 @@ auto TriangleSetGeometryAlgorithms< DataTypes >::computeTriangleBarycoefs(
     const sofa::type::Vec<3,Real> &p) const -> sofa::type::vector<SReal>
 {
     const Triangle &t=this->m_topology->getTriangle(ind_t);
-    return compute3PointsBarycoefs(p, t[0], t[1], t[2],false);
+    const auto baryCoords = compute3PointsBarycentricCoordinates(p, t[0], t[1], t[2], false);
+    return { baryCoords[0], baryCoords[1], baryCoords[2] };
 }
 
 template<class DataTypes>
@@ -507,7 +508,8 @@ auto TriangleSetGeometryAlgorithms< DataTypes >::computeRestTriangleBarycoefs(
     const sofa::type::Vec<3, Real>& p) const -> sofa::type::vector<SReal>
 {
     const Triangle& t = this->m_topology->getTriangle(ind_t);
-    return compute3PointsBarycoefs(p, t[0], t[1], t[2], true);
+    const auto baryCoords = compute3PointsBarycentricCoordinates(p, t[0], t[1], t[2], true);
+    return { baryCoords[0], baryCoords[1], baryCoords[2] };
 }
 
 // barycentric coefficients of point p in triangle whose vertices are indexed by (ind_p1,ind_p2,ind_p3)
@@ -519,10 +521,22 @@ auto TriangleSetGeometryAlgorithms< DataTypes >::compute3PointsBarycoefs(
     PointID ind_p3,
     bool bRest) const -> sofa::type::vector<SReal>
 {
-    const Real ZERO = 1e-12;
-    sofa::type::vector< SReal > baryCoefs;
+    const auto baryCoords = compute3PointsBarycentricCoordinates(p, ind_p1, ind_p2, ind_p3, bRest);
+    return { baryCoords[0], baryCoords[1], baryCoords[2] };
+}
 
-    const typename DataTypes::VecCoord& vect_c = (bRest ? (this->object->read(core::vec_id::read_access::restPosition)->getValue()) : (this->object->read(core::vec_id::read_access::position)->getValue()));
+// barycentric coordinates of point p in triangle whose vertices are indexed by (ind_p1,ind_p2,ind_p3)
+template<class DataTypes>
+auto TriangleSetGeometryAlgorithms< DataTypes >::compute3PointsBarycentricCoordinates(
+    const sofa::type::Vec<3, Real> &p,
+    PointID ind_p1,
+    PointID ind_p2,
+    PointID ind_p3,
+    bool useRestPosition) const -> sofa::type::Vec<3, Real>
+{
+    const Real ZERO = 1e-12;
+
+    const typename DataTypes::VecCoord& vect_c = (useRestPosition ? (this->object->read(core::vec_id::read_access::restPosition)->getValue()) : (this->object->read(core::vec_id::read_access::position)->getValue()));
 
     const typename DataTypes::Coord& c0 = vect_c[ind_p1];
     const typename DataTypes::Coord& c1 = vect_c[ind_p2];
@@ -563,11 +577,7 @@ auto TriangleSetGeometryAlgorithms< DataTypes >::compute3PointsBarycoefs(
         coef_c = (Real) (1.0 - (coef_a + coef_b)); //N*((a-p).cross(b-p));
     }
 
-    baryCoefs.push_back(coef_a);
-    baryCoefs.push_back(coef_b);
-    baryCoefs.push_back(coef_c);
-
-    return baryCoefs;
+    return { coef_a, coef_b, coef_c };
 }
 
 // Find the two closest points from two triangles (each of the point belonging to one triangle)
@@ -2730,7 +2740,7 @@ bool TriangleSetGeometryAlgorithms<DataTypes>::computeIntersectedObjectsList (co
     }
     else
     {
-        auto coefs_a = computeTriangleBarycoefs (ind_triA, pointA);
+        auto coefs_a = computeTriangleBarycentricCoordinates (ind_triA, pointA);
         intersected_topoElements.push_back (sofa::geometry::ElementType::TRIANGLE);
         intersected_indices.push_back (ind_triA);
         for (unsigned int i = 0; i<3; i++)
@@ -2753,7 +2763,7 @@ bool TriangleSetGeometryAlgorithms<DataTypes>::computeIntersectedObjectsList (co
     }
 
     // 3 - Last point b (for the moment: always a point in a triangle)
-    auto coefs_b = computeTriangleBarycoefs (ind_triB, pointB);
+    auto coefs_b = computeTriangleBarycentricCoordinates (ind_triB, pointB);
     bool isOnPoint = false;
     for (unsigned int i = 0; i<3; i++)
         if (coefs_b[i] > 0.9999 )
@@ -3201,14 +3211,14 @@ void TriangleSetGeometryAlgorithms< DataTypes >::InciseAlongLinesList(
     Real epsilon = 0.2; // INFO : epsilon is a threshold in [0,1] to control the snapping of the extremities to the closest vertex
 
     auto a_baryCoefs =
-        computeTriangleBarycoefs(ind_ta, (const sofa::type::Vec<3, Real> &) a);
+        computeTriangleBarycentricCoordinates(ind_ta, (const sofa::type::Vec<3, Real> &) a);
     snapping_test_triangle(epsilon, a_baryCoefs[0], a_baryCoefs[1], a_baryCoefs[2],
         is_snap_a0, is_snap_a1, is_snap_a2);
 
     Real is_snapping_a = is_snap_a0 || is_snap_a1 || is_snap_a2;
 
     auto b_baryCoefs =
-        computeTriangleBarycoefs(ind_tb, (const sofa::type::Vec<3, Real> &) b);
+        computeTriangleBarycentricCoordinates(ind_tb, (const sofa::type::Vec<3, Real> &) b);
     snapping_test_triangle(epsilon, b_baryCoefs[0], b_baryCoefs[1], b_baryCoefs[2],
         is_snap_b0, is_snap_b1, is_snap_b2);
 
@@ -3246,7 +3256,10 @@ void TriangleSetGeometryAlgorithms< DataTypes >::InciseAlongLinesList(
             a_first_ancestors.push_back(ta[1]);
             a_first_ancestors.push_back(ta[2]);
             p_ancestors.push_back(a_first_ancestors);
-            p_baryCoefs.push_back(a_baryCoefs);
+            p_baryCoefs.push_back(sofa::type::vector<SReal>{
+                static_cast<SReal>(a_baryCoefs[0]),
+                static_cast<SReal>(a_baryCoefs[1]),
+                static_cast<SReal>(a_baryCoefs[2]) });
 
             acc_nb_points = acc_nb_points + 1;
 
@@ -3531,7 +3544,10 @@ void TriangleSetGeometryAlgorithms< DataTypes >::InciseAlongLinesList(
             b_first_ancestors.push_back(tb[1]);
             b_first_ancestors.push_back(tb[2]);
             p_ancestors.push_back(b_first_ancestors);
-            p_baryCoefs.push_back(b_baryCoefs);
+            p_baryCoefs.push_back(sofa::type::vector<SReal>{
+                static_cast<SReal>(b_baryCoefs[0]),
+                static_cast<SReal>(b_baryCoefs[1]),
+                static_cast<SReal>(b_baryCoefs[2]) });
 
             acc_nb_points = acc_nb_points + 1;
 
@@ -4513,7 +4529,11 @@ int TriangleSetGeometryAlgorithms<DataTypes>::SplitAlongPath(PointID ind_A, Coor
 
             if (points2Snap[i].size() == 7)
             {
-                coefs2Snap[i] = compute3PointsBarycoefs(SnapedCoord, firstAncestor, secondAncestor, (PointID)points2Snap[i][6]);
+                const auto baryCoords = compute3PointsBarycentricCoordinates(SnapedCoord, firstAncestor, secondAncestor, (PointID)points2Snap[i][6]);
+                coefs2Snap[i] = sofa::type::vector<SReal>{
+                    static_cast<SReal>(baryCoords[0]),
+                    static_cast<SReal>(baryCoords[1]),
+                    static_cast<SReal>(baryCoords[2]) };
                 ancestors2Snap[i].push_back((PointID)points2Snap[i][6]);
             }
             else

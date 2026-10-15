@@ -69,8 +69,10 @@ void BaseElementLinearFEMForceField<DataTypes, ElementType>::precomputeElementSt
     if (!this->mstate)
         return;
 
-    const auto youngModulusAccessor = sofa::helper::ReadAccessor(this->d_youngModulus);
-    const auto poissonRatioAccessor = sofa::helper::ReadAccessor(this->d_poissonRatio);
+    // accessors are only there to make sure both Data are up-to-date before they are read
+    // concurrently through getYoungModulusInElement/getPoissonRatioInElement
+    [[maybe_unused]] const auto youngModulusAccessor = sofa::helper::ReadAccessor(this->d_youngModulus);
+    [[maybe_unused]] const auto poissonRatioAccessor = sofa::helper::ReadAccessor(this->d_poissonRatio);
 
     auto restPositionAccessor = this->mstate->readRestPositions();
 

@@ -43,6 +43,8 @@ ImprovedJacobiConstraintSolver::ImprovedJacobiConstraintSolver()
 
 void ImprovedJacobiConstraintSolver::doSolve(GenericConstraintProblem * problem , SReal timeout)
 {
+    SOFA_UNUSED(timeout);
+
     SCOPED_TIMER_VARNAME(gaussSeidelTimer, "ImprovedJacobiConstraintSolver");
 
 
@@ -63,7 +65,7 @@ void ImprovedJacobiConstraintSolver::doSolve(GenericConstraintProblem * problem 
 
     std::copy_n(dfree, dimension, d);
 
-    for(unsigned i=0; i< dimension; ++i)
+    for(int i=0; i< dimension; ++i)
     {
         force[i] = 0;
     }
@@ -128,7 +130,7 @@ void ImprovedJacobiConstraintSolver::doSolve(GenericConstraintProblem * problem 
 
             for(unsigned l=j; l<j+nb; ++l )
             {
-                for(unsigned k=0; k<dimension; ++k)
+                for(int k=0; k<dimension; ++k)
                 {
                     d[l] +=  w[l][k] * deltaF[k];
                 }
@@ -153,7 +155,7 @@ void ImprovedJacobiConstraintSolver::doSolve(GenericConstraintProblem * problem 
             SReal cstError = 0.0;
             for(unsigned l=j; l<j+nb; ++l )
             {
-                for(unsigned k=0; k<dimension; ++k)
+                for(int k=0; k<dimension; ++k)
                 {
                     cstError += pow(w[l][k] * deltaF[k],2);
                 }

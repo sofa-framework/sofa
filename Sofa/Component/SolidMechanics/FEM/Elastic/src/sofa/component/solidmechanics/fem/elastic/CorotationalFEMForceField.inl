@@ -60,6 +60,7 @@ void CorotationalFEMForceField<DataTypes, ElementType>::init()
 
     if (!this->isComponentStateInvalid())
     {
+        // makes sure the element sequence is available in the topology container
         const auto& elements = trait::FiniteElement::getElementSequence(*this->l_topology);
     }
 
@@ -74,6 +75,10 @@ void CorotationalFEMForceField<DataTypes, ElementType>::beforeElementForce(
     const sofa::core::MechanicalParams* mparams, sofa::type::vector<ElementGradient>& f,
     const sofa::VecCoord_t<DataTypes>& x)
 {
+    SOFA_UNUSED(mparams);
+    SOFA_UNUSED(f);
+    SOFA_UNUSED(x);
+
     const auto& elements = trait::FiniteElement::getElementSequence(*this->l_topology);
     m_rotations.resize(elements.size(), RotationMatrix::Identity());
 }
@@ -103,6 +108,8 @@ void CorotationalFEMForceField<DataTypes, ElementType>::computeElementsForces(
     const sofa::simulation::Range<std::size_t>& range, const sofa::core::MechanicalParams* mparams,
     sofa::type::vector<ElementGradient>& elementForces, const sofa::VecCoord_t<DataTypes>& nodePositions)
 {
+    SOFA_UNUSED(mparams);
+
     static constexpr auto DIM = trait::spatial_dimensions;
     const auto& elements = trait::FiniteElement::getElementSequence(*this->l_topology);
     auto restPositionAccessor = this->mstate->readRestPositions();
@@ -147,6 +154,8 @@ void CorotationalFEMForceField<DataTypes, ElementType>::computeElementsForcesDer
     sofa::type::vector<ElementGradient>& elementForcesDeriv,
     const sofa::VecDeriv_t<DataTypes>& nodeDx)
 {
+    SOFA_UNUSED(mparams);
+
     const auto& elements = trait::FiniteElement::getElementSequence(*this->l_topology);
     auto elementStiffness = sofa::helper::getReadAccessor(this->d_elementStiffness);
 
