@@ -413,7 +413,6 @@ jobs:
         if: always()
         shell: bash
         run: |
-          which python3
           bold="\033[1m"
           normal="\033[0m"
           if [[ "${{ steps.configure.outcome }}" == "failure" || "${{ steps.clone.outcome }}" == "failure" ]]; then
