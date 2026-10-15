@@ -224,7 +224,7 @@ void TetrahedralTensorMassForceField<DataTypes>::applyTetrahedronDestruction(con
 }
 
 
-template <class DataTypes> 
+template <class DataTypes>
 TetrahedralTensorMassForceField<DataTypes>::TetrahedralTensorMassForceField()
     : _initialPoints(0)
     , updateMatrix(true)
@@ -238,12 +238,12 @@ TetrahedralTensorMassForceField<DataTypes>::TetrahedralTensorMassForceField()
 {
 }
 
-template <class DataTypes> 
+template <class DataTypes>
 TetrahedralTensorMassForceField<DataTypes>::~TetrahedralTensorMassForceField()
 {
 }
 
-template <class DataTypes> void 
+template <class DataTypes> void
 TetrahedralTensorMassForceField<DataTypes>::init()
 {
     this->Inherited::init();
@@ -338,11 +338,9 @@ void TetrahedralTensorMassForceField<DataTypes>::initNeighbourhoodPoints() {}
 
 
 template <class DataTypes>
-SReal  TetrahedralTensorMassForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /* mparams */) const
+SReal TetrahedralTensorMassForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /* mparams */, const DataVecCoord& x) const
 {
     SCOPED_TIMER("getPotentialEnergy");
-
-    const VecCoord& x = this->mstate->read(core::vec_id::read_access::position)->getValue();
 
     SReal energy=0;
 
@@ -355,25 +353,23 @@ SReal  TetrahedralTensorMassForceField<DataTypes>::getPotentialEnergy(const core
     Deriv force,dp;
     Deriv dp0,dp1;
 
-    for(int i=0; i<nbEdges; i++ )
+    const auto xAccessor = sofa::helper::getReadAccessor(x);
+
+    for (int i = 0; i < nbEdges; i++)
     {
-        einfo=&edgeInf[i];
-        v0=m_topology->getEdge(i)[0];
-        v1=m_topology->getEdge(i)[1];
-        dp0=x[v0]-_initialPoints[v0];
-        dp1=x[v1]-_initialPoints[v1];
-        dp = dp1-dp0;
-        force=einfo->DfDx*dp;
-        energy+=dot(force,dp1);
-        force=einfo->DfDx.multTranspose(dp);
-        energy-=dot(force,dp0);
+        einfo = &edgeInf[i];
+        v0 = m_topology->getEdge(i)[0];
+        v1 = m_topology->getEdge(i)[1];
+        dp0 = xAccessor[v0] - _initialPoints[v0];
+        dp1 = xAccessor[v1] - _initialPoints[v1];
+        dp = dp1 - dp0;
+        force = einfo->DfDx * dp;
+        energy += dot(force, dp1);
+        force = einfo->DfDx.multTranspose(dp);
+        energy -= dot(force, dp0);
     }
 
-    energy/=-2.0;
-
-    msg_info() << "energy="<<energy ;
-
-    return(energy);
+    return -energy / 2_sreal;
 }
 
 template <class DataTypes>
