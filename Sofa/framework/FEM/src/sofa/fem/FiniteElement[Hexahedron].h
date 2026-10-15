@@ -29,6 +29,21 @@
 namespace sofa::fem
 {
 
+namespace detail
+{
+template <class ReferenceCoord>
+inline constexpr std::array<ReferenceCoord, 8> hexahedronReferenceElementNodes {{
+    {-1, -1, -1},
+    {1, -1, -1},
+    {1, 1, -1},
+    {-1, 1, -1},
+    {-1, -1, 1},
+    {1, -1, 1},
+    {1, 1, 1},
+    {-1, 1, 1},
+}};
+}
+
 template <class DataTypes>
 struct FiniteElement<sofa::geometry::Hexahedron, DataTypes>
 {
@@ -48,16 +63,7 @@ struct FiniteElement<sofa::geometry::Hexahedron, DataTypes>
     //    /
     //   /
     //  Z
-    constexpr static std::array<ReferenceCoord, NumberOfNodesInElement> referenceElementNodes {{
-        {-1, -1, -1},
-        {1, -1, -1},
-        {1, 1, -1},
-        {-1, 1, -1},
-        {-1, -1, 1},
-        {1, -1, 1},
-        {1, 1, 1},
-        {-1, 1, 1},
-    }};
+    constexpr static std::array<ReferenceCoord, NumberOfNodesInElement> referenceElementNodes = detail::hexahedronReferenceElementNodes<ReferenceCoord>;
 
     static const sofa::type::vector<TopologyElement>& getElementSequence(sofa::core::topology::BaseMeshTopology& topology)
     {
@@ -86,7 +92,7 @@ struct FiniteElement<sofa::geometry::Hexahedron, DataTypes>
 
         for (sofa::Size i = 0; i < NumberOfNodesInElement; ++i)
         {
-            const auto& [xref, yref, zref] = referenceElementNodes[i];
+            const auto& [xref, yref, zref] = detail::hexahedronReferenceElementNodes<ReferenceCoord>[i];
             gradient[i] = 1./8. * Line(
                 xref * (1 + y * yref) * (1 + z * zref),
                 yref * (1 + x * xref) * (1 + z * zref),
