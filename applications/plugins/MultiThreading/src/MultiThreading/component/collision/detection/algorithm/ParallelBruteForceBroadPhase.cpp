@@ -46,6 +46,8 @@ ParallelBruteForceBroadPhase::ParallelBruteForceBroadPhase()
     : BruteForceBroadPhase()
 {}
 
+ParallelBruteForceBroadPhase::~ParallelBruteForceBroadPhase() = default;
+
 void ParallelBruteForceBroadPhase::init()
 {
     BruteForceBroadPhase::init();
