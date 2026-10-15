@@ -19,15 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_LINEARSOLVER_TYPEDMATRIXLINEARSYSTEM_BTDMATRIX_CPP
 #include <sofa/component/linearsolver/direct/TypedMatrixLinearSystem[BTDMatrix].h>
-#include <sofa/component/linearsystem/TypedMatrixLinearSystem.inl>
 
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::linearsystem
 {
-template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API TypedMatrixLinearSystem< linearalgebra::BTDMatrix<6, SReal>, linearalgebra::BlockVector<6, SReal> >;
 
 void registerTypedMatrixLinearSystemBTDMatrix(sofa::core::ObjectFactory* factory)
 {
