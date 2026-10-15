@@ -414,7 +414,6 @@ jobs:
         shell: bash
         run: |
           which python3
-          python3 -m pip install prettytable
           bold="\033[1m"
           normal="\033[0m"
           if [[ "${{ steps.configure.outcome }}" == "failure" || "${{ steps.clone.outcome }}" == "failure" ]]; then
