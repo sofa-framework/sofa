@@ -25,6 +25,7 @@
 
 #include <sofa/simulation/SceneLoaderFactory.h>
 #include <sofa/simulation/Visitor.h>
+#include <sofa/simulation/Node.h>
 
 
 
