@@ -79,12 +79,13 @@ protected:
     void doSetUp() override
     {
         material = sofa::core::objectmodel::New<T>();
-        material->init();
 
         if (auto* linearMaterial = dynamic_cast<LinearMechanicalParametersComponent<DataTypes>*>(material.get()) )
         {
             linearMaterial->d_youngModulus.setValue(10.);
         }
+
+        material->init();
     }
 
     DeformationGradient generatePositiveDefiniteMatrix()
