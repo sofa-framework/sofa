@@ -74,7 +74,7 @@ public:
     /// This method retrieves the force, x and v vector from the MechanicalState
     /// and call the internal addForce(const MechanicalParams*, DataVecDeriv&,const DataVecCoord&,const DataVecDeriv&)
     /// method implemented by the component.
-    void addForce(const MechanicalParams* mparams, MultiVecDerivId fId ) override;
+    void addForce(const MechanicalParams* mparams, MultiVecDerivId fId, ConstMultiVecCoordId xId, ConstMultiVecDerivId vId ) override;
 
     /// Given the current position and velocity states, update the current force
     /// vector by computing and adding the forces associated with this
@@ -116,10 +116,10 @@ public:
     ///
     /// This method must be implemented by the component, and is usually called
     /// by the generic ForceField::getPotentialEnergy(const MechanicalParams* mparams) method.
-    SReal getPotentialEnergy(const MechanicalParams* mparams) const override;
+    SReal getPotentialEnergy(const MechanicalParams* mparams, ConstMultiVecCoordId xId) const override;
 
     virtual SReal getPotentialEnergy(const MechanicalParams* /*mparams*/, const DataVecCoord& x) const = 0;
-
+    using BaseForceField::getPotentialEnergy;
 
     /// @}
 

@@ -4,6 +4,7 @@ on:
     types:
       - opened
       - synchronize
+      - edited
       - reopened
       - labeled
       - unlabeled
