@@ -27,7 +27,7 @@
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
 #include <sofa/helper/map.h>
-#include <sofa/simulation/AnimateBeginEvent.h>
+#include <sofa/simulation/events/AnimateBeginEvent.h>
 
 #include <cmath>
 

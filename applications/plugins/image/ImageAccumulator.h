@@ -28,8 +28,8 @@
 #include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/objectmodel/Event.h>
-#include <sofa/simulation/AnimateBeginEvent.h>
-#include <sofa/simulation/AnimateEndEvent.h>
+#include <sofa/simulation/events/AnimateBeginEvent.h>
+#include <sofa/simulation/events/AnimateEndEvent.h>
 #include <sofa/helper/system/thread/CTime.h>
 
 

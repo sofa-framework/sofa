@@ -34,7 +34,7 @@
 #include <sofa/component/visual/RecordedCamera.h>
 #include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
-#include <sofa/simulation/AnimateBeginEvent.h>
+#include <sofa/simulation/events/AnimateBeginEvent.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/Vec.h>
