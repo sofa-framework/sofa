@@ -81,6 +81,14 @@ public:
     // almost deprecated, but here for compatibility with unit tests
     void addKToMatrix(sofa::linearalgebra::BaseMatrix* matrix, SReal kFact, unsigned& offset) override;
 
+    MAKE_SELECTABLE_ITEMS(EigenvaluesFilter,
+         sofa::helper::Item{"None", "No filter"},
+         sofa::helper::Item{"ClampNegative", "Clamp negative eigenvalues"},
+         sofa::helper::Item{"Abs", "Absolute eigenvalues filtering"}
+     );
+    Data<EigenvaluesFilter> d_materialEigenvaluesFilter;
+    Data<EigenvaluesFilter> d_stiffnessEigenvaluesFilter;
+
     sofa::SingleLink<MyType, HyperelasticMaterial<TDataTypes>,
         sofa::BaseLink::FLAG_STOREPATH | sofa::BaseLink::FLAG_STRONGLINK> l_material;
 

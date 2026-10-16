@@ -34,7 +34,9 @@ namespace sofa::component::solidmechanics::fem::hyperelastic
 
 template <class TDataTypes, class TElementType>
 HyperelasticityFEMForceField<TDataTypes, TElementType>::HyperelasticityFEMForceField()
-    : l_material(initLink("material", "Link to the material containing the constitutive law"))
+    : d_materialEigenvaluesFilter(initData(&d_materialEigenvaluesFilter, "materialEigenvaluesFilter", ("Filter to apply to the material Hessian matrix eigenvalues\n" + EigenvaluesFilter::dataDescription()).c_str()))
+    , d_stiffnessEigenvaluesFilter(initData(&d_stiffnessEigenvaluesFilter, "stiffnessEigenvaluesFilter", ("Filter to apply to the element stiffness matrix eigenvalues\n" + EigenvaluesFilter::dataDescription()).c_str()))
+    , l_material(initLink("material", "Link to the material containing the constitutive law"))
 {
 }
 
@@ -157,6 +159,31 @@ void HyperelasticityFEMForceField<TDataTypes, TElementType>::validateMaterial()
     }
 }
 
+template <class TDataTypes>
+struct MaterialFilter
+{
+    virtual ~MaterialFilter() = default;
+    virtual void apply(MajorSymmetric4Tensor<TDataTypes>& materialHessian) = 0;
+};
+
+template <class TDataTypes>
+struct MaterialClampNegativeFilter : MaterialFilter<TDataTypes>
+{
+    void apply(MajorSymmetric4Tensor<TDataTypes>& materialHessian) override
+    {
+        materialHessian.filterEigenValues(EigenValueFilter::ClampNegative);
+    }
+};
+
+template <class TDataTypes>
+struct MaterialAbsFilter : MaterialFilter<TDataTypes>
+{
+    void apply(MajorSymmetric4Tensor<TDataTypes>& materialHessian) override
+    {
+        materialHessian.filterEigenValues(EigenValueFilter::Abs);
+    }
+};
+
 template <class TDataTypes, class TElementType>
 void HyperelasticityFEMForceField<TDataTypes, TElementType>::computeHessian(const VecCoord& coordinates)
 {
@@ -166,6 +193,19 @@ void HyperelasticityFEMForceField<TDataTypes, TElementType>::computeHessian(cons
     SCOPED_TIMER("ComputeHessian");
 
     const auto& elements = FiniteElement::getElementSequence(*this->l_topology);
+
+    std::unique_ptr<MaterialFilter<TDataTypes>> materialFilter;
+    switch (d_materialEigenvaluesFilter.getValue())
+    {
+        case EigenvaluesFilter("Abs"):
+            materialFilter.reset(new MaterialAbsFilter<TDataTypes>());
+            break;
+        case EigenvaluesFilter("ClampNegative"):
+            materialFilter.reset(new MaterialClampNegativeFilter<TDataTypes>());
+            break;
+        default:
+            break;
+    }
 
     if (m_precomputedData.size() != elements.size())
     {
@@ -213,11 +253,13 @@ void HyperelasticityFEMForceField<TDataTypes, TElementType>::computeHessian(cons
             Strain<TDataTypes> strain(deformationGradient, F);
 
             // derivative of first Piola-Kirchhoff stress tensor with respect to deformation gradient
-            const auto dPdF = [&]()
+            auto dPdF = [&]()
             {
                 SCOPED_TIMER_VARNAME_TR(dPdFTimer, "dPdF");
                 return l_material->materialTangentModulus(strain);
             }();
+
+            if (materialFilter) materialFilter->apply(dPdF);
 
             const auto factor = detJ_Q * weight;
 

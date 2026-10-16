@@ -24,9 +24,16 @@
 #include <sofa/core/trait/DataTypes.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
 #include <sofa/type/MatSym.h>
+#include <Eigen/Dense>
 
 namespace sofa::component::solidmechanics::fem::hyperelastic
 {
+
+enum class EigenValueFilter
+{
+    ClampNegative,
+    Abs
+};
 
 /**
  * A class to represent a major symmetric 4th rank tensor.
@@ -87,6 +94,50 @@ public:
         const auto a = i * spatial_dimensions + j;
         const auto b = k * spatial_dimensions + l;
         return m_matrix(a, b);
+    }
+
+    void filterEigenValues(EigenValueFilter filter)
+    {
+        using MaterialHessian = Eigen::Matrix<Real, spatial_dimension_square, spatial_dimension_square>;
+        using EigenVector = Eigen::Matrix<Real, spatial_dimension_square, 1>;
+
+        MaterialHessian H;
+        for (std::size_t i = 0; i < spatial_dimension_square; ++i)
+        {
+            for (std::size_t j = 0; j < spatial_dimension_square; ++j)
+            {
+                H(i, j) = m_matrix(i, j);
+            }
+        }
+
+        EigenVector eigenvalues;
+        Eigen::SelfAdjointEigenSolver<MaterialHessian> eigen_solver(H);
+
+        if (eigen_solver.info() != Eigen::Success)
+        {
+            return;
+        }
+
+        eigenvalues = eigen_solver.eigenvalues();
+
+        if (filter == EigenValueFilter::ClampNegative)
+        {
+            eigenvalues = eigenvalues.cwiseMax(0);
+        }
+        else if (filter == EigenValueFilter::Abs)
+        {
+            eigenvalues = eigenvalues.cwiseAbs();
+        }
+
+        H = eigen_solver.eigenvectors() * eigenvalues.asDiagonal() * eigen_solver.eigenvectors().transpose();
+
+        for (std::size_t i = 0; i < spatial_dimension_square; ++i)
+        {
+            for (std::size_t j = i; j < spatial_dimension_square; ++j)
+            {
+                m_matrix(i, j) = H(i, j);
+            }
+        }
     }
 
 private:
