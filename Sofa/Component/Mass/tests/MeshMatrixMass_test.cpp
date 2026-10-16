@@ -58,6 +58,8 @@ using sofa::simulation::SceneLoaderXML ;
 #include <string>
 using std::string ;
 
+#include <Eigen/Eigenvalues>
+
 #include <sofa/testing/BaseTest.h>
 using sofa::testing::BaseTest;
 
@@ -90,6 +92,8 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Real Real;
+    typedef typename DataTypes::Deriv Deriv;
+    typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename type::vector<MassType> VecMass;
     typedef MeshMatrixMass<TDataTypes> TheMeshMatrixMass ;
 
@@ -204,8 +208,8 @@ public:
             static const MassType volume = 8.0;
             static const MassType expectedTotalMass = 1.0f;
             static const MassType expectedDensity = expectedTotalMass / volume;
-            static const VecMass expectedVMass(8, (MassType)(expectedDensity * volume * 1 / 20));
-            static const VecMass expectedEMass(18, (MassType)(expectedDensity * volume * 1 / 40));
+            static const VecMass expectedVMass(8, (MassType)(expectedDensity * volume * 15 / 216));
+            static const VecMass expectedEMass(18, (MassType)(expectedDensity * volume * 4 / 216));
 
             check(expectedTotalMass, expectedDensity, expectedVMass, expectedEMass);
         }
@@ -245,10 +249,10 @@ public:
             EXPECT_FLOATINGPOINT_EQ( mass->getTotalMass(), expectedTotalMass);
             EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], expectedDensity);
 
-            EXPECT_FLOATINGPOINT_EQ(mass->d_vertexMass.getValue()[0], (MassType)(expectedDensity * volumeElem * 1 / 20));
-            EXPECT_FLOATINGPOINT_EQ(mass->d_vertexMass.getValue()[1], (MassType)(expectedDensity * volumeElem * 1 / 20 * 2)); // vertex shared by 2 hexa
-            EXPECT_FLOATINGPOINT_EQ(mass->d_edgeMass.getValue()[0], (MassType)(expectedDensity * volumeElem * 1 / 40 * 2)); // Edge shared by 2 hexa
-            EXPECT_FLOATINGPOINT_EQ(mass->d_edgeMass.getValue()[2], (MassType)(expectedDensity * volumeElem * 1 / 40)); 
+            EXPECT_FLOATINGPOINT_EQ(mass->d_vertexMass.getValue()[0], (MassType)(expectedDensity * volumeElem * 15 / 216));
+            EXPECT_FLOATINGPOINT_EQ(mass->d_vertexMass.getValue()[1], (MassType)(expectedDensity * volumeElem * 15 / 216 * 2)); // vertex shared by 2 hexa
+            EXPECT_FLOATINGPOINT_EQ(mass->d_edgeMass.getValue()[0], (MassType)(expectedDensity * volumeElem * 4 / 216 * 2)); // Edge shared by 2 hexa
+            EXPECT_FLOATINGPOINT_EQ(mass->d_edgeMass.getValue()[2], (MassType)(expectedDensity * volumeElem * 4 / 216)); 
         }
 
         return ;
@@ -287,10 +291,10 @@ public:
             EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), expectedTotalMass);
             EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], expectedDensity);
 
-            EXPECT_FLOATINGPOINT_EQ(mass->d_vertexMass.getValue()[0], (MassType)(expectedDensity * volumeElem * 1 / 20));
-            EXPECT_FLOATINGPOINT_EQ(mass->d_vertexMass.getValue()[1], (MassType)(expectedDensity * volumeElem * 1 / 20 * 2)); // vertex shared by 2 hexa
-            EXPECT_FLOATINGPOINT_EQ(mass->d_edgeMass.getValue()[0], (MassType)(expectedDensity * volumeElem * 1 / 40 * 2)); // Edge shared by 2 hexa
-            EXPECT_FLOATINGPOINT_EQ(mass->d_edgeMass.getValue()[2], (MassType)(expectedDensity * volumeElem * 1 / 40));
+            EXPECT_FLOATINGPOINT_EQ(mass->d_vertexMass.getValue()[0], (MassType)(expectedDensity * volumeElem * 15 / 216));
+            EXPECT_FLOATINGPOINT_EQ(mass->d_vertexMass.getValue()[1], (MassType)(expectedDensity * volumeElem * 15 / 216 * 2)); // vertex shared by 2 hexa
+            EXPECT_FLOATINGPOINT_EQ(mass->d_edgeMass.getValue()[0], (MassType)(expectedDensity * volumeElem * 4 / 216 * 2)); // Edge shared by 2 hexa
+            EXPECT_FLOATINGPOINT_EQ(mass->d_edgeMass.getValue()[2], (MassType)(expectedDensity * volumeElem * 4 / 216));
         }
 
         return ;
@@ -371,7 +375,7 @@ public:
             EXPECT_EQ( mass->getMassCount(), 27 );
             EXPECT_FLOATINGPOINT_EQ( mass->getTotalMass(), 2.0_sreal);
             EXPECT_FLOATINGPOINT_EQ( mass->getMassDensity()[0], SReal(mass->getTotalMass() / 8.0)); // 8 hexa
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], SReal(mass->getMassDensity()[0] / 20));
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], SReal(mass->getMassDensity()[0] * 15 / 216));
         }
 
         return ;
@@ -404,7 +408,7 @@ public:
             EXPECT_EQ( mass->getMassCount(), 27 );
             EXPECT_FLOATINGPOINT_EQ( mass->getTotalMass(), 2.0_sreal);
             EXPECT_FLOATINGPOINT_EQ( mass->getMassDensity()[0], SReal(mass->getTotalMass() / 8.0));
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], SReal(mass->getMassDensity()[0] / 20));
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], SReal(mass->getMassDensity()[0] * 15 / 216));
         }
 
         return ;
@@ -437,7 +441,7 @@ public:
             EXPECT_EQ( mass->getMassCount(), 27 );
             EXPECT_FLOATINGPOINT_EQ( mass->getTotalMass(), 8.0_sreal);
             EXPECT_FLOATINGPOINT_EQ( mass->getMassDensity()[0], 1.0_sreal);
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], 0.05_sreal);
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], SReal(1.0 * 15 / 216));
         }
 
         return ;
@@ -471,7 +475,7 @@ public:
             EXPECT_EQ( mass->getMassCount(), 27 );
             EXPECT_FLOATINGPOINT_EQ( mass->getTotalMass(), 1.0_sreal);
             EXPECT_FLOATINGPOINT_EQ( mass->getMassDensity()[0], 0.125_sreal);
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], 0.00625_sreal);
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], SReal(0.125 * 15 / 216));
         }
 
         return ;
@@ -502,7 +506,7 @@ public:
             EXPECT_EQ( mass->getMassCount(), 27 );
             EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0_sreal);
             EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125_sreal);
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], 0.00625_sreal);
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], SReal(0.125 * 15 / 216));
         }
 
         return ;
@@ -533,7 +537,7 @@ public:
             EXPECT_EQ( mass->getMassCount(), 27 );
             EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0_sreal);
             EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125_sreal);
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], 0.00625_sreal);
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], SReal(0.125 * 15 / 216));
         }
 
         return ;
@@ -565,7 +569,7 @@ public:
             EXPECT_EQ( mass->getMassCount(), 27 );
             EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0_sreal);
             EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125_sreal);
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], 0.00625_sreal);
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], SReal(0.125 * 15 / 216));
         }
 
         return ;
@@ -596,7 +600,7 @@ public:
             EXPECT_EQ( mass->getMassCount(), 27 );
             EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0_sreal);
             EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125_sreal);
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], 0.00625_sreal);
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], SReal(0.125 * 15 / 216));
         }
 
         return ;
@@ -631,7 +635,7 @@ public:
             EXPECT_EQ( mass->getMassCount(), 27 );
             EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0_sreal);
             EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125_sreal);
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], 0.00625_sreal);
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], SReal(0.125 * 15 / 216));
         }
 
         return ;
@@ -664,7 +668,7 @@ public:
             EXPECT_EQ( mass->getMassCount(), 27 );
             EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 2.0_sreal);
             EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.25_sreal);
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], 0.0125_sreal);
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], SReal(0.25 * 15 / 216));
         }
 
         return ;
@@ -1273,8 +1277,8 @@ public:
 
         const VecMass& vMasses = mass->d_vertexMass.getValue();
         const VecMass& eMasses = mass->d_edgeMass.getValue();
-        static const MassType refValueV = (MassType)(expectedDensity * volumeElem * 1 / 20);
-        static const MassType refValueE = (MassType)(expectedDensity * volumeElem * 1 / 40);
+        static const MassType refValueV = (MassType)(expectedDensity * volumeElem * 15 / 216);
+        static const MassType refValueE = (MassType)(expectedDensity * volumeElem * 4 / 216);
 
         // check value at init
         EXPECT_EQ(vMasses.size(), 27);
@@ -1302,6 +1306,10 @@ public:
         EXPECT_EQ(vMasses.size(), 26);
         EXPECT_EQ(eMasses.size(), 87);
         EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 7.0_sreal);
+        if (!lumped)
+        {
+            checkPositiveDefinite(mass);
+        }
 
         // check vertex mass
         EXPECT_FLOATINGPOINT_EQ(vMasses[0], refValueV); // check update of Mass when removing tetra
@@ -1584,8 +1592,8 @@ public:
 
         const VecMass& vMasses = mass->d_vertexMass.getValue();
         const VecMass& eMasses = mass->d_edgeMass.getValue();
-        static const MassType refValueV = (MassType)(expectedDensity * volumeElem * 1 / 8);
-        static const MassType refValueE = (MassType)(expectedDensity * volumeElem * 1 / 16);
+        static const MassType refValueV = (MassType)(expectedDensity * volumeElem * 5 / 36);
+        static const MassType refValueE = (MassType)(expectedDensity * volumeElem * 2 / 36);
 
         // check value at init
         EXPECT_EQ(vMasses.size(), 9);
@@ -1613,6 +1621,10 @@ public:
         EXPECT_EQ(vMasses.size(), 8);
         EXPECT_EQ(eMasses.size(), 14);
         EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), expectedTotalMass - massElem);
+        if (!lumped)
+        {
+            checkPositiveDefinite(mass);
+        }
 
         // check vertex mass
         EXPECT_FLOATINGPOINT_EQ(vMasses[0], refValueV); // check update of Mass when removing tetra
@@ -1922,6 +1934,118 @@ public:
         EXPECT_EQ(eMasses.size(), 0);
         EXPECT_NEAR(mass->getTotalMass(), 0, 1e-4);
     }
+
+    /// Assemble the scalar mass matrix (one row per vertex) from vertexMass and edgeMass,
+    /// as addMDx does when the mass is not lumped.
+    static Eigen::MatrixXd assembleScalarMassMatrix(TheMeshMatrixMass* mass)
+    {
+        const VecMass& vMasses = mass->d_vertexMass.getValue();
+        const VecMass& eMasses = mass->d_edgeMass.getValue();
+        const auto& edges = mass->l_topology->getEdges();
+
+        Eigen::MatrixXd M = Eigen::MatrixXd::Zero(vMasses.size(), vMasses.size());
+        for (std::size_t i = 0; i < vMasses.size(); ++i)
+        {
+            M(i, i) += vMasses[i];
+        }
+        for (std::size_t i = 0; i < edges.size(); ++i)
+        {
+            M(edges[i][0], edges[i][1]) += eMasses[i];
+            M(edges[i][1], edges[i][0]) += eMasses[i];
+        }
+        return M;
+    }
+
+    /// Check that the assembled non-lumped mass matrix is positive definite and sums to totalMass
+    static void checkPositiveDefinite(TheMeshMatrixMass* mass)
+    {
+        const Eigen::MatrixXd M = assembleScalarMassMatrix(mass);
+        EXPECT_NEAR(M.sum(), mass->getTotalMass(), 1e-10 * mass->getTotalMass());
+
+        const Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> eigenSolver(M, Eigen::EigenvaluesOnly);
+        const Eigen::VectorXd& eigenvalues = eigenSolver.eigenvalues();
+        const auto nbNonPositive = (eigenvalues.array() <= 1e-12 * eigenvalues.maxCoeff()).count();
+        EXPECT_EQ(nbNonPositive, 0) << "The mass matrix has " << nbNonPositive << " non-positive eigenvalues out of "
+                                    << eigenvalues.size() << " (min eigenvalue: " << eigenvalues.minCoeff() << ")";
+    }
+
+    /// Returns M * 1 (a column of ones per dof direction), i.e. the row sums of the mass matrix
+    static VecDeriv computeMOnes(TheMeshMatrixMass* mass)
+    {
+        const auto nbDofs = mass->d_vertexMass.getValue().size();
+        Data<VecDeriv> ones(VecDeriv(nbDofs, Deriv(1, 1, 1)));
+        Data<VecDeriv> res(VecDeriv(nbDofs, Deriv()));
+        mass->addMDx(core::mechanicalparams::defaultInstance(), res, ones, 1.0);
+        return res.getValue();
+    }
+
+    /// Check that the non-lumped mass matrix is symmetric positive definite, sums to totalMass,
+    /// and that its row sums are the masses of the lumped matrix built on the same mesh.
+    void checkMassMatrix(const string& topologyNodes)
+    {
+        const auto createScene = [&topologyNodes](bool lumped)
+        {
+            const string scene =
+                "<?xml version='1.0'?>"
+                "<Node name='Root' gravity='0 -1 0' time='0' animate='0' >"
+                "    <DefaultAnimationLoop />"
+                + topologyNodes +
+                "    <MechanicalObject />"
+                "    <MeshMatrixMass name='m_mass' totalMass='2' lumping='" + (lumped ? "1" : "0") + "' />"
+                "</Node>";
+            const Node::SPtr root = SceneLoaderXML::loadFromMemory("massMatrix", scene.c_str());
+            sofa::simulation::node::initRoot(root.get());
+            return root;
+        };
+
+        const Node::SPtr root = createScene(false);
+        ASSERT_NE(root.get(), nullptr);
+        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>();
+        ASSERT_NE(mass, nullptr);
+        ASSERT_TRUE(mass->isComponentStateValid());
+        ASSERT_FALSE(mass->isLumped());
+
+        EXPECT_NEAR(mass->getTotalMass(), 2.0, 1e-10);
+        checkPositiveDefinite(mass);
+        const Eigen::MatrixXd M = assembleScalarMassMatrix(mass);
+
+        // M is applied with the same matrix as the one assembled above
+        const VecDeriv MOnes = computeMOnes(mass);
+        ASSERT_EQ(MOnes.size(), M.rows());
+        for (std::size_t i = 0; i < MOnes.size(); ++i)
+        {
+            EXPECT_NEAR(MOnes[i][0], M.row(i).sum(), 1e-12);
+        }
+
+        // the row sums are the lumped masses...
+        const Node::SPtr rootLumped = createScene(true);
+        ASSERT_NE(rootLumped.get(), nullptr);
+        TheMeshMatrixMass* lumpedMass = rootLumped->getTreeObject<TheMeshMatrixMass>();
+        ASSERT_NE(lumpedMass, nullptr);
+        ASSERT_TRUE(lumpedMass->isComponentStateValid());
+        ASSERT_TRUE(lumpedMass->isLumped());
+        EXPECT_NEAR(lumpedMass->getTotalMass(), 2.0, 1e-10);
+        const VecDeriv lumpedMasses = computeMOnes(lumpedMass);
+        ASSERT_EQ(lumpedMasses.size(), MOnes.size());
+
+        // ... and the masses used for the weight, whether lumped or not
+        const Data<VecCoord> x(VecCoord(MOnes.size(), Coord()));
+        const Data<VecDeriv> v(VecDeriv(MOnes.size(), Deriv()));
+        Data<VecDeriv> weight(VecDeriv(MOnes.size(), Deriv()));
+        Data<VecDeriv> weightLumped(VecDeriv(MOnes.size(), Deriv()));
+        mass->addForce(core::mechanicalparams::defaultInstance(), weight, x, v);
+        lumpedMass->addForce(core::mechanicalparams::defaultInstance(), weightLumped, x, v);
+
+        for (std::size_t i = 0; i < MOnes.size(); ++i)
+        {
+            EXPECT_NEAR(MOnes[i][0], lumpedMasses[i][0], 1e-12) << "vertex " << i;
+            EXPECT_NEAR(-weight.getValue()[i][1], lumpedMasses[i][0], 1e-12) << "vertex " << i;
+            EXPECT_NEAR(-weightLumped.getValue()[i][1], lumpedMasses[i][0], 1e-12) << "vertex " << i;
+        }
+
+        sofa::simulation::node::unload(root);
+        sofa::simulation::node::unload(rootLumped);
+    }
 };
 
 
@@ -1967,8 +2091,8 @@ TEST_F(MeshMatrixMass3_test, singleQuad)
     static const MassType surface = 1.0;
     static const MassType expectedTotalMass = 1.0f;
     static const MassType density = expectedTotalMass / surface;
-    static const VecMass expectedVMass(4, (MassType)(density * surface * 1 / 8));
-    static const VecMass expectedEMass(4, (MassType)(density * surface * 1 / 16));
+    static const VecMass expectedVMass(4, (MassType)(density * surface * 5 / 36));
+    static const VecMass expectedEMass(4, (MassType)(density * surface * 2 / 36));
 
     runTest(positions, topologyContainer, geometryAlgorithms, expectedTotalMass, density, expectedVMass, expectedEMass);
 }
@@ -2017,8 +2141,8 @@ TEST_F(MeshMatrixMass3_test, singleHexahedron)
     static const MassType volume = 1.0;
     static const MassType expectedTotalMass = 1.0f;
     static const MassType density = expectedTotalMass / volume;
-    static const VecMass expectedVMass(8, (MassType)(density * volume * 1 / 20));
-    static const VecMass expectedEMass(12, (MassType)(density * volume * 1 / 40));
+    static const VecMass expectedVMass(8, (MassType)(density * volume * 15 / 216));
+    static const VecMass expectedEMass(12, (MassType)(density * volume * 4 / 216));
 
     runTest(positions, topologyContainer, geometryAlgorithms, expectedTotalMass, density, expectedVMass, expectedEMass);
 }
@@ -2212,5 +2336,31 @@ TEST_F(MeshMatrixMass3_test, checkTopologicalChanges_Edge_lumped) {
     checkTopologicalChanges_Edge(true);
 }
 
+
+TEST_F(MeshMatrixMass3_test, checkMassMatrix_Hexa)
+{
+    EXPECT_MSG_NOEMIT(Error);
+    checkMassMatrix("<RegularGridTopology name='grid' n='4 3 5' min='0 0 0' max='3 1 2' />");
+}
+
+TEST_F(MeshMatrixMass3_test, checkMassMatrix_Quad)
+{
+    EXPECT_MSG_NOEMIT(Error);
+    checkMassMatrix("<RegularGridTopology name='grid' n='4 5 1' min='0 0 0' max='3 2 0' />");
+}
+
+TEST_F(MeshMatrixMass3_test, checkMassMatrix_Tetra)
+{
+    EXPECT_MSG_NOEMIT(Error);
+    checkMassMatrix("<RequiredPlugin pluginName='Sofa.Component.Topology.Container.Constant'/>"
+                    "<MeshTopology name='mesh' position='0 0 0  1 0 0  0 1 0  0 0 1  1 1 1' tetrahedra='0 1 2 3  1 2 3 4' />");
+}
+
+TEST_F(MeshMatrixMass3_test, checkMassMatrix_Triangle)
+{
+    EXPECT_MSG_NOEMIT(Error);
+    checkMassMatrix("<RequiredPlugin pluginName='Sofa.Component.Topology.Container.Constant'/>"
+                    "<MeshTopology name='mesh' position='0 0 0  1 0 0  0 1 0  1 1 0' triangles='0 1 2  1 3 2' />");
+}
 
 } // namespace sofa
