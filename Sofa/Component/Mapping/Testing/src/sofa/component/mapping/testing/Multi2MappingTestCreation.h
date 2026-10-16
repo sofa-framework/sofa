@@ -32,7 +32,7 @@ using sofa::testing::NumericTest;
 #include <sofa/linearalgebra/EigenSparseMatrix.h>
 #include <sofa/component/statecontainer/MechanicalObject.h>
 #include <sofa/simulation/Simulation.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 #include <sofa/core/MultiMapping.h>
 
 #include <sofa/defaulttype/VecTypes.h>
