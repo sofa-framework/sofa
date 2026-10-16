@@ -22,7 +22,7 @@
 #pragma once
 
 #include <sofa/component/solidmechanics/fem/hyperelastic/config.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 
 #if !defined(SOFA_COMPONENT_SOLIDMECHANICS_FEM_HYPERELASTIC_LINEAR_MECHANICAL_PARAMETERS_CPP)
 #include <sofa/defaulttype/VecTypes.h>
@@ -32,12 +32,12 @@ namespace sofa::component::solidmechanics::fem::hyperelastic
 {
 
 template<class DataTypes>
-class LinearMechanicalParametersComponent : public virtual sofa::core::objectmodel::BaseObject
+class LinearMechanicalParametersComponent : public virtual sofa::core::objectmodel::BaseComponent
 {
     using Real = sofa::Real_t<DataTypes>;
 
 public:
-    SOFA_CLASS(LinearMechanicalParametersComponent<DataTypes>, sofa::core::objectmodel::BaseObject);
+    SOFA_CLASS(LinearMechanicalParametersComponent<DataTypes>, sofa::core::objectmodel::BaseComponent);
 
     sofa::Data<Real> d_poissonRatio;
     sofa::Data<Real> d_youngModulus;
