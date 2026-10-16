@@ -26,8 +26,8 @@
 #include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/core/objectmodel/BaseComponent.h>
 #include <sofa/core/objectmodel/Event.h>
-#include <sofa/simulation/AnimateBeginEvent.h>
-#include <sofa/simulation/AnimateEndEvent.h>
+#include <sofa/simulation/events/AnimateBeginEvent.h>
+#include <sofa/simulation/events/AnimateEndEvent.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/simulation/Visitor.h>
 #include <sofa/core/objectmodel/DataFileName.h>

@@ -30,7 +30,7 @@ using Mat3 = sofa::type::Mat3x3;
 using Mat4 = sofa::type::Mat4x4;
 
 #include <sofa/type/Transform.h>
-#include <sofa/simulation/AnimateBeginEvent.h>
+#include <sofa/simulation/events/AnimateBeginEvent.h>
 
 #include <sofa/helper/rmath.h>
 using sofa::helper::isEqual;

@@ -34,7 +34,7 @@
 #include <sofa/helper/OptionsGroup.h>
 #include <sofa/type/Vec.h>
 #include <sofa/core/objectmodel/Event.h>
-#include <sofa/simulation/AnimateBeginEvent.h>
+#include <sofa/simulation/events/AnimateBeginEvent.h>
 #include <sofa/core/objectmodel/MouseEvent.h>
 
 
