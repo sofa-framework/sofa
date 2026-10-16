@@ -76,6 +76,8 @@ protected:
     StressTensor secondPiolaKirchhoffStress(Strain<DataTypes>& strain) override;
 
     ElasticityTensor elasticityTensor(Strain<DataTypes>& strain) override;
+
+    Real strainEnergyDensity(Strain<DataTypes>& strain) override;
 };
 
 #if !defined(SOFA_COMPONENT_SOLIDMECHANICS_FEM_HYPERELASTIC_MATERIAL_ST_VENANT_KIRCHHOFF_MATERIAL_CPP)

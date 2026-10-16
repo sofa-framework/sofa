@@ -55,4 +55,13 @@ auto StVenantKirchhoffMaterial<DataTypes>::elasticityTensor(Strain<DataTypes>& s
     return sofa::component::solidmechanics::fem::elastic::makeIsotropicElasticityTensor<spatial_dimensions>(mu, lambda);
 }
 
+template <class DataTypes>
+auto StVenantKirchhoffMaterial<DataTypes>::strainEnergyDensity(Strain<DataTypes>& strain) -> Real
+{
+    const auto& E = strain.getGreenLagrangeTensor();
+    const Real trE = sofa::type::trace(E);
+
+    return static_cast<Real>(0.5) * m_lambda * trE * trE + m_mu * sofa::type::trace(E * E);
+}
+
 }  // namespace elasticity
