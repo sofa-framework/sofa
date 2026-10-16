@@ -397,16 +397,20 @@ void RestShapeSpringsForceField<DataTypes>::addForce(const MechanicalParams*  mp
             type::Quat<Real> dq = p1[index].getOrientation() * p0[ext_index].getOrientation().inverse();
             dq.normalize();
 
-            type::Vec<3, Real> dir{type::NOINIT};
-            Real angle = 0.;
-
             if (dq[3] < 0.)
             {
                 dq = dq * -1.0;
             }
 
-            if (dq[3] < 1.0)
-                dq.quatToAxis(dir, angle);
+            // Rotation vector (axis * angle) of dq. It is computed from the imaginary part of dq,
+            // which keeps its precision for small rotations: below ~3e-8 rad, the real part dq[3]
+            // rounds to 1, and the angle cannot be deduced from it.
+            type::Vec<3, Real> rotation(dq[0], dq[1], dq[2]);
+            const Real sinHalfAngle = rotation.norm();
+            if (sinHalfAngle > 0)
+            {
+                rotation *= 2 * std::atan2(sinHalfAngle, dq[3]) / sinHalfAngle;
+            }
 
             // We change the direction of the axis of rotation based on
             // the 0 values in d_activeDirections. This is equivalent
@@ -416,11 +420,11 @@ void RestShapeSpringsForceField<DataTypes>::addForce(const MechanicalParams*  mp
             for (sofa::Size entryId = spatial_dimensions; entryId < Deriv::total_size; ++entryId)
             {
                 if (!activeDirections[entryId])
-                    dir[entryId-spatial_dimensions] = 0;
+                    rotation[entryId-spatial_dimensions] = 0;
             }
 
             const auto angularStiffness = k_a[static_cast<std::size_t>(i < k_a.size()) * i];
-            getVOrientation(f1[index]) -= dir * angle * angularStiffness;
+            getVOrientation(f1[index]) -= rotation * angularStiffness;
         }
         else // non-rigid implementation
         {
