@@ -26,12 +26,11 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
+#include <sofa/simulation/DifferentialOperations.h>
 #include <sofa/simulation/MappingGraph.h>
 #include <sofa/simulation/MechanicalOperations.h>
 #include <sofa/simulation/VectorOperations.h>
-#include <sofa/simulation/mechanicalvisitor/MechanicalGetNonDiagonalMassesCountVisitor.h>
 
-using sofa::simulation::mechanicalvisitor::MechanicalGetNonDiagonalMassesCountVisitor;
 
 
 namespace sofa::component::integrationscheme::backward
@@ -181,7 +180,7 @@ void StaticEquilibriumIntegrationScheme::integrate(const core::ExecParams* param
 
         //Already make a full step
         updateStatesFromLinearSolution(alpha, firstIt);
-        m_mop->propagateX(xResult); //Need to propagate explicitly to enable recomputation of mapped Forcefield
+        sofa::simulation::common::DifferentialOperations::pushforwardCoord(m_mappingGraph, m_mop->mparams, xResult); //Need to propagate explicitly to enable recomputation of mapped Forcefield
 
         computeRHS(false);
         newResidue = evaluateResidual();
@@ -209,7 +208,7 @@ void StaticEquilibriumIntegrationScheme::integrate(const core::ExecParams* param
             alpha -= delta;
 
             updateStatesFromLinearSolution(-delta, false);
-            m_mop->propagateX(xResult); //Need to propagate explicitly to enable recomputation of mapped Forcefield
+            sofa::simulation::common::DifferentialOperations::pushforwardCoord(m_mappingGraph, m_mop->mparams, xResult); //Need to propagate explicitly to enable recomputation of mapped Forcefield
 
             computeRHS(false);
             newResidue = evaluateResidual();
@@ -226,7 +225,7 @@ void StaticEquilibriumIntegrationScheme::integrate(const core::ExecParams* param
         if (fabs(alpha - bestalpha )> std::numeric_limits<SReal>::epsilon() )
         {
             updateStatesFromLinearSolution( bestalpha - alpha, false);
-            m_mop->propagateX(xResult); //Need to propagate explicitly to enable recomputation of mapped Forcefileld
+            sofa::simulation::common::DifferentialOperations::pushforwardCoord(m_mappingGraph, m_mop->mparams, xResult); //Need to propagate explicitly to enable recomputation of mapped Forcefileld
 
             computeRHS(false);
             newResidue = evaluateResidual();
