@@ -80,14 +80,16 @@ void CenterOfMassMapping<TIn, TOut>::apply( const sofa::core::MechanicalParams* 
     outData.endEdit();
 }
 
-
 template <class TIn, class TOut>
-void CenterOfMassMapping<TIn, TOut>::applyJ( const sofa::core::MechanicalParams* mparams, OutDataVecDeriv& outData, const InDataVecDeriv& inData)
+void CenterOfMassMapping<TIn, TOut>::doApplyJacobianVectorProduct(
+    const core::MechanicalParams* mparams, DataVecDeriv_t<Out>& tangentOut,
+    const DataVecDeriv_t<In>& tangentIn, const DataVecCoord_t<In>& positionIn)
 {
     SOFA_UNUSED(mparams);
+    SOFA_UNUSED(positionIn);
 
-    OutVecDeriv& childForces = *outData.beginEdit();
-    const InVecDeriv& parentForces = inData.getValue();
+    OutVecDeriv& childForces = *tangentOut.beginEdit();
+    const InVecDeriv& parentForces = tangentIn.getValue();
 
     if(!masses || totalMass==0.0)
     {
@@ -106,9 +108,8 @@ void CenterOfMassMapping<TIn, TOut>::applyJ( const sofa::core::MechanicalParams*
 
     childForces[0] = outF / totalMass;
 
-    outData.endEdit();
+    tangentOut.endEdit();
 }
-
 
 template <class TIn, class TOut>
 void CenterOfMassMapping<TIn, TOut>::applyJT( const sofa::core::MechanicalParams* mparams, InDataVecDeriv& outData, const OutDataVecDeriv& inData)

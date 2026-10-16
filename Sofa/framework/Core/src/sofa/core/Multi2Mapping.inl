@@ -151,16 +151,28 @@ void Multi2Mapping<In1,In2,Out>::apply (const MechanicalParams* mparams, MultiVe
     this->apply(mparams, vecOutPos, vecIn1Pos, vecIn2Pos);
 }
 
-template < class In1, class In2,class Out>
-void Multi2Mapping<In1,In2,Out>::applyJ (const MechanicalParams* mparams, MultiVecDerivId outVel, ConstMultiVecDerivId inVel )
+template <class TIn1, class TIn2, class TOut>
+void Multi2Mapping<TIn1, TIn2, TOut>::applyJacobianVectorProduct(const MechanicalParams* mparams,
+                                                                 MultiVecDerivId tangentOutId,
+                                                                 ConstMultiVecDerivId tangentInId,
+                                                                 ConstMultiVecCoordId positionInId)
 {
-    type::vector<DataVecDeriv_t<Out>*> vecOutVel;
-    getVecOutDeriv(outVel, vecOutVel);
-    type::vector<const DataVecDeriv_t<In1>*> vecIn1Vel;
-    getConstVecIn1Deriv(inVel, vecIn1Vel);
-    type::vector<const DataVecDeriv_t<In2>*> vecIn2Vel;
-    getConstVecIn2Deriv(inVel, vecIn2Vel);
-    this->applyJ(mparams, vecOutVel, vecIn1Vel, vecIn2Vel);
+    type::vector<DataVecDeriv_t<Out>*> vecTangentOut;
+    getVecOutDeriv(tangentOutId, vecTangentOut);
+
+    type::vector<const DataVecDeriv_t<In1>*> vecTangentIn1;
+    getConstVecIn1Deriv(tangentInId, vecTangentIn1);
+
+    type::vector<const DataVecDeriv_t<In2>*> vecTangentIn2;
+    getConstVecIn2Deriv(tangentInId, vecTangentIn2);
+
+    type::vector<const DataVecCoord_t<In1>*> vecPositionIn1;
+    getConstVecIn1Coord(positionInId, vecPositionIn1);
+
+    type::vector<const DataVecCoord_t<In2>*> vecPositionIn2;
+    getConstVecIn2Coord(positionInId, vecPositionIn2);
+
+    this->doApplyJacobianVectorProduct(mparams, vecTangentOut, vecTangentIn1, vecTangentIn2, vecPositionIn1, vecPositionIn2);
 }
 
 template < class In1, class In2,class Out>
@@ -222,7 +234,7 @@ void Multi2Mapping<In1, In2, Out>::init()
     }
 
     apply(mechanicalparams::defaultInstance() , vec_id::write_access::position, vec_id::read_access::position);
-    applyJ(mechanicalparams::defaultInstance() , vec_id::write_access::velocity, vec_id::read_access::velocity);
+    applyJacobianVectorProduct(mechanicalparams::defaultInstance(), vec_id::write_access::velocity, vec_id::read_access::velocity, vec_id::read_access::position);
     if (f_applyRestPosition.getValue())
         apply(mechanicalparams::defaultInstance(), vec_id::write_access::restPosition, vec_id::read_access::restPosition);
 }

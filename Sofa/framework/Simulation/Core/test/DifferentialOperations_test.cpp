@@ -65,10 +65,17 @@ public:
         }
     }
 
-    void applyJ( const core::MechanicalParams* mparams, OutDataVecDeriv& dOut, const InDataVecDeriv& dIn) override
+    void doApplyJacobianVectorProduct(
+        const core::MechanicalParams* mparams,
+        OutDataVecDeriv& tangentOut,
+        const InDataVecDeriv& tangentIn,
+        const InDataVecCoord& positionIn) override
     {
-        const auto in = sofa::helper::getReadAccessor(dIn);
-        auto out = sofa::helper::getWriteOnlyAccessor(dOut);
+        SOFA_UNUSED(mparams);
+        SOFA_UNUSED(positionIn);
+
+        const auto in = sofa::helper::getReadAccessor(tangentIn);
+        auto out = sofa::helper::getWriteOnlyAccessor(tangentOut);
         out.resize(in.size());
 
         for (size_t i = 0; i < in.size(); ++i)

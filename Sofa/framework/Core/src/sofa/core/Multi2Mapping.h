@@ -108,21 +108,30 @@ public:
         const type::vector<const DataVecCoord_t<In1>*>& dataVecIn1Pos ,
         const type::vector<const DataVecCoord_t<In2>*>& dataVecIn2Pos) = 0;
 
-    /// ApplyJ ///
-    /// This method computes
-    /// $ out = J in $
-    /// where J is the tangent operator (the linear approximation) of the mapping
-    void applyJ (const MechanicalParams* mparams, MultiVecDerivId outVel, ConstMultiVecDerivId inVel ) override;
+    void applyJacobianVectorProduct(
+        const MechanicalParams* mparams,
+        MultiVecDerivId tangentOutId,
+        ConstMultiVecDerivId tangentInId,
+        ConstMultiVecCoordId positionInId) final;
+
+    virtual void doApplyJacobianVectorProduct(
+        const MechanicalParams* mparams,
+        const type::vector< DataVecDeriv_t<Out>*>& dataVecTangentOut,
+        const type::vector<const DataVecDeriv_t<In1>*>& dataVecTangentIn1,
+        const type::vector<const DataVecDeriv_t<In2>*>& dataVecTangentIn2,
+        const type::vector<const DataVecCoord_t<In1>*>& dataVecPositionIn1,
+        const type::vector<const DataVecCoord_t<In2>*>& dataVecPositionIn2) = 0;
 
     /// This method must be reimplemented by all mappings.
     /// InDeriv and OutDeriv by default contains VecIds of type V_DERIV.
     /// The size of InDeriv vector is the same as the number of fromModels.
     /// The size of OutDeriv vector is the same as the number of OutModels.
+    SOFA_ATTRIBUTE_DEPRECATED__APPLYJ()
     virtual void applyJ(
         const MechanicalParams*,
         const type::vector< DataVecDeriv_t<Out>*>& dataVecOutVel,
         const type::vector<const DataVecDeriv_t<In1>*>& dataVecIn1Vel,
-        const type::vector<const DataVecDeriv_t<In2>*>& dataVecIn2Vel)
+        const type::vector<const DataVecDeriv_t<In2>*>& dataVecIn2Vel) final
     {
         //Not optimized at all...
         type::vector<VecDeriv_t<Out>*> vecOutVel;
@@ -141,11 +150,13 @@ public:
         for(unsigned int i=0; i<dataVecOutVel.size(); i++)
             dataVecOutVel[i]->endEdit();
     }
+
     /// Compat Method
     /// @deprecated
+    SOFA_ATTRIBUTE_DEPRECATED__APPLYJ()
     virtual void applyJ(const type::vector< VecDeriv_t<Out>*>& /* outDeriv */,
             const type::vector<const VecDeriv_t<In1>*>& /* inDeriv1 */,
-            const type::vector<const VecDeriv_t<In2>*>& /* inDeriv2 */) {}
+            const type::vector<const VecDeriv_t<In2>*>& /* inDeriv2 */) final {}
 
     /// ApplyJT (Force)///
     /// Apply the mapping to Force vectors.

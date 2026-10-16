@@ -19,12 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/core/BaseMapping.h>
-#include <sofa/core/objectmodel/BaseNode.h>
-#include <sofa/core/BaseState.h>
 #include <sofa/core/BaseLocalMappingMatrix.h>
-#include <sofa/linearalgebra/BaseMatrix.h>
+#include <sofa/core/BaseMapping.h>
 #include <sofa/core/BaseMatrixAccumulatorComponent.h>
+#include <sofa/core/BaseState.h>
+#include <sofa/core/objectmodel/BaseNode.h>
+#include <sofa/linearalgebra/BaseMatrix.h>
+
+#include "MechanicalParams.h"
 
 namespace sofa::core
 {
@@ -43,6 +45,13 @@ BaseMapping::BaseMapping()
 /// Destructor
 BaseMapping::~BaseMapping()
 {}
+
+void BaseMapping::applyJ(
+    const MechanicalParams* mparams, MultiVecDerivId outVel, ConstMultiVecDerivId inVel)
+{
+    this->applyJacobianVectorProduct(
+        mparams, outVel, inVel, mparams ? mparams->x() : sofa::core::vec_id::read_access::position);
+}
 
 bool BaseMapping::setFrom(BaseState*  )
 {

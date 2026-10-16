@@ -127,10 +127,13 @@ class DeformableOnRigidFrameMapping : public LinearMulti2Mapping<TIn, TInRoot, T
 
     //ApplyJ
     void applyJ( OutVecDeriv& out, const InVecDeriv& in, const InRootVecDeriv* inroot );
-    void applyJ(
-        const core::MechanicalParams* /* mparams */, const type::vector< OutDataVecDeriv*>& dataVecOutVel,
-        const type::vector<const InDataVecDeriv*>& dataVecInVel,
-        const type::vector<const InRootDataVecDeriv*>& dataVecInRootVel) override;
+    virtual void doApplyJacobianVectorProduct(
+        const core::MechanicalParams* mparams,
+        const type::vector< DataVecDeriv_t<Out>*>& dataVecTangentOut,
+        const type::vector<const DataVecDeriv_t<TIn>*>& dataVecTangentIn1,
+        const type::vector<const DataVecDeriv_t<TInRoot>*>& dataVecTangentIn2,
+        const type::vector<const DataVecCoord_t<TIn>*>& dataVecPositionIn1,
+        const type::vector<const DataVecCoord_t<TInRoot>*>& dataVecPositionIn2) override;
 
     //ApplyJT Force
     void applyJT( InVecDeriv& out, const OutVecDeriv& in, InRootVecDeriv* outroot );

@@ -303,14 +303,19 @@ void BarycentricMapping<TIn, TOut>::apply(const core::MechanicalParams * mparams
 }
 
 template <class TIn, class TOut>
-void BarycentricMapping<TIn, TOut>::applyJ (const core::MechanicalParams * mparams, Data< typename Out::VecDeriv >& _out, const Data< typename In::VecDeriv >& in)
+void BarycentricMapping<TIn, TOut>::doApplyJacobianVectorProduct(
+        const core::MechanicalParams* mparams,
+        DataVecDeriv_t<Out>& tangentOut,
+        const DataVecDeriv_t<In>& tangentIn,
+        const DataVecCoord_t<In>& positionIn)
 {
     SOFA_UNUSED(mparams);
+    SOFA_UNUSED(positionIn);
 
     if (d_mapper != nullptr)
     {
-        auto outWriteAccessor = sofa::helper::getWriteAccessor(_out);
-        d_mapper->applyJ(outWriteAccessor.wref(), in.getValue());
+        auto outWriteAccessor = sofa::helper::getWriteAccessor(tangentOut);
+        d_mapper->applyJ(outWriteAccessor.wref(), tangentIn.getValue());
     }
 }
 

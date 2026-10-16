@@ -38,15 +38,17 @@ init()
 }
 
 template <class TIn, class TOut, bool HasStabilizedGeometricStiffness>
-void BaseNonLinearMapping<TIn, TOut, HasStabilizedGeometricStiffness>::applyJ(
-    const core::MechanicalParams* mparams, DataVecDeriv_t<Out>& out,
-    const DataVecDeriv_t<In>& in)
+void BaseNonLinearMapping<TIn, TOut, HasStabilizedGeometricStiffness>::doApplyJacobianVectorProduct(
+    const core::MechanicalParams* mparams,
+    DataVecDeriv_t<Out>& tangentOut,
+    const DataVecDeriv_t<In>& tangentIn,
+    const DataVecCoord_t<In>& positionIn)
 {
     SOFA_UNUSED( mparams );
     if( m_jacobian.rowSize() )
     {
-        auto dOutWa = sofa::helper::getWriteOnlyAccessor(out);
-        auto dInRa = sofa::helper::getReadAccessor(in);
+        auto dOutWa = sofa::helper::getWriteOnlyAccessor(tangentOut);
+        auto dInRa = sofa::helper::getReadAccessor(tangentIn);
         m_jacobian.mult(dOutWa.wref(),dInRa.ref());
     }
 }

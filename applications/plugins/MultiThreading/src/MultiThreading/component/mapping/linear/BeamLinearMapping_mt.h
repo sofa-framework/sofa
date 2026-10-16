@@ -67,7 +67,11 @@ public:
 
     virtual void apply(const sofa::core::MechanicalParams *mparams /* PARAMS FIRST */, sofa::Data< typename Out::VecCoord >& out, const sofa::Data< typename In::VecCoord >& in) override;
 
-    virtual void applyJ(const sofa::core::MechanicalParams *mparams /* PARAMS FIRST */, sofa::Data< typename Out::VecDeriv >& out, const sofa::Data< typename In::VecDeriv >& in) override;
+    virtual void doApplyJacobianVectorProduct(
+                const sofa::core::MechanicalParams* mparams,
+                sofa::DataVecDeriv_t<Out>& tangentOut,
+                const sofa::DataVecDeriv_t<In>& tangentIn,
+                const sofa::DataVecCoord_t<In>& positionIn) override;
 
     virtual void applyJT(const sofa::core::MechanicalParams *mparams /* PARAMS FIRST */, sofa::Data< typename In::VecDeriv >& out, const sofa::Data< typename Out::VecDeriv >& in) override;
 

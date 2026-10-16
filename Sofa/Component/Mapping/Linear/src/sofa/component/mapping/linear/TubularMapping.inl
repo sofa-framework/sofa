@@ -124,14 +124,21 @@ void TubularMapping<TIn, TOut>::apply ( const core::MechanicalParams* /* mparams
 
 
 template <class TIn, class TOut>
-void TubularMapping<TIn, TOut>::applyJ( const core::MechanicalParams* /* mparams */, OutDataVecDeriv& dOut, const InDataVecDeriv& dIn )
+void TubularMapping<TIn, TOut>::doApplyJacobianVectorProduct(
+        const core::MechanicalParams* mparams,
+        DataVecDeriv_t<Out>& tangentOut,
+        const DataVecDeriv_t<In>& tangentIn,
+        const DataVecCoord_t<In>& positionIn)
 {
+    SOFA_UNUSED(mparams);
+    SOFA_UNUSED(positionIn);
+
     if (this->d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
         return;
 
     // Propagation of velocities from the input DOFs to the output DOFs
-    const InVecDeriv& in = dIn.getValue();
-    OutVecDeriv& out = *dOut.beginEdit();
+    const InVecDeriv& in = tangentIn.getValue();
+    OutVecDeriv& out = *tangentOut.beginEdit();
 
     unsigned int N = d_nbPointsOnEachCircle.getValue();
 
@@ -154,7 +161,7 @@ void TubularMapping<TIn, TOut>::applyJ( const core::MechanicalParams* /* mparams
         }
     }
 
-    dOut.endEdit();
+    tangentOut.endEdit();
 }
 
 

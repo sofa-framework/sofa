@@ -129,7 +129,7 @@ void MultiMapping<In,Out>::init()
     }
 
     apply(mechanicalparams::defaultInstance() , vec_id::write_access::position, vec_id::read_access::position);
-    applyJ(mechanicalparams::defaultInstance() , vec_id::write_access::velocity, vec_id::read_access::velocity);
+    applyJacobianVectorProduct(mechanicalparams::defaultInstance(), vec_id::write_access::velocity, vec_id::read_access::velocity, vec_id::read_access::position);
     if (f_applyRestPosition.getValue())
         apply(mechanicalparams::defaultInstance(), vec_id::write_access::restPosition, vec_id::read_access::restPosition);
 }
@@ -142,17 +142,25 @@ void MultiMapping<In,Out>::apply(const MechanicalParams* mparams, MultiVecCoordI
     type::vector<const InDataVecCoord*> vecInPos;
     getConstVecInCoord(inPos, vecInPos);
     this->apply(mparams, vecOutPos, vecInPos);
-}// MultiMapping::apply
+}  // MultiMapping::apply
 
-template <class In, class Out>
-void MultiMapping<In,Out>::applyJ(const MechanicalParams* mparams, MultiVecDerivId outVel, ConstMultiVecDerivId inVel)
+template <class TIn, class TOut>
+void MultiMapping<TIn, TOut>::applyJacobianVectorProduct(const MechanicalParams* mparams,
+                                                         MultiVecDerivId tangentOutId,
+                                                         ConstMultiVecDerivId tangentInId,
+                                                         ConstMultiVecCoordId positionInId)
 {
-    type::vector<OutDataVecDeriv*> vecOutVel;
-    getVecOutDeriv(outVel, vecOutVel);
-    type::vector<const InDataVecDeriv*> vecInVel;
-    getConstVecInDeriv(inVel, vecInVel);
-    this->applyJ(mparams, vecOutVel, vecInVel);
-}// MultiMapping::applyJ
+    type::vector<OutDataVecDeriv*> vecTangentOut;
+    getVecOutDeriv(tangentOutId, vecTangentOut);
+
+    type::vector<const InDataVecDeriv*> vecTangentIn;
+    getConstVecInDeriv(tangentInId, vecTangentIn);
+
+    type::vector<const InDataVecCoord*> vecPositionIn;
+    getConstVecInCoord(positionInId, vecPositionIn);
+
+    this->doApplyJacobianVectorProduct(mparams, vecTangentOut, vecTangentIn, vecPositionIn);
+}
 
 template <class In, class Out>
 void MultiMapping<In,Out>::applyJT(const MechanicalParams* mparams, MultiVecDerivId inForce, ConstMultiVecDerivId outForce)

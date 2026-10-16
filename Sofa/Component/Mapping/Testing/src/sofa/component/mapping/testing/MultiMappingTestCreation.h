@@ -177,7 +177,7 @@ struct MultiMapping_test : public BaseSimulationTest, NumericTest<typename _Mult
 
         /// apply the mapping
         mapping->apply(&mparams, core::vec_id::write_access::position, core::vec_id::write_access::position);
-        mapping->applyJ(&mparams, core::vec_id::write_access::velocity, core::vec_id::write_access::velocity);
+        mapping->applyJacobianVectorProduct( &mparams, core::vec_id::write_access::velocity, core::vec_id::write_access::velocity, core::vec_id::read_access::position );
 
         /// test apply: check if the child positions are the expected ones
         bool succeed=true;
@@ -249,7 +249,7 @@ struct MultiMapping_test : public BaseSimulationTest, NumericTest<typename _Mult
             sofa::testing::copyToData( vin, vp[p] );
         }
         mparams.setDx(core::vec_id::read_access::velocity);
-        mapping->applyJ( &mparams, core::vec_id::write_access::velocity, core::vec_id::write_access::velocity );
+        mapping->applyJacobianVectorProduct( &mparams, core::vec_id::write_access::velocity, core::vec_id::write_access::velocity, core::vec_id::read_access::position );
         ReadOutVecDeriv vout = outDofs->readVelocities();
         sofa::testing::copyFromData( vc, vout);
         //        cout<<"child velocity vc = " << vc << endl;

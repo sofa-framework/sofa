@@ -83,8 +83,16 @@ public:
     {
     }
 
-    void applyJ(const core::MechanicalParams* /* mparams */, core::MultiVecDerivId /* outVel */, core::ConstMultiVecDerivId /* inVel */) override
+    void applyJacobianVectorProduct(
+        const core::MechanicalParams* mparams,
+        core::MultiVecDerivId tangentOutId,
+        core::ConstMultiVecDerivId tangentInId,
+        core::ConstMultiVecCoordId positionInId) override
     {
+        SOFA_UNUSED(mparams);
+        SOFA_UNUSED(tangentOutId);
+        SOFA_UNUSED(tangentInId);
+        SOFA_UNUSED(positionInId);
     }
 
     void applyJT(const core::MechanicalParams* /* mparams */, core::MultiVecDerivId /* inForce */, core::ConstMultiVecDerivId /* outForce */) override

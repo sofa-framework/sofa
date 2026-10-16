@@ -245,13 +245,18 @@ void LineSetSkinningMapping<TIn, TOut>::apply( const sofa::core::MechanicalParam
 }
 
 template <class TIn, class TOut>
-void LineSetSkinningMapping<TIn, TOut>::applyJ( const sofa::core::MechanicalParams* mparams, OutDataVecDeriv& outData, const InDataVecDeriv& inData)
+void LineSetSkinningMapping<TIn, TOut>::doApplyJacobianVectorProduct(
+        const core::MechanicalParams* mparams,
+        DataVecDeriv_t<Out>& tangentOut,
+        const DataVecDeriv_t<In>& tangentIn,
+        const DataVecCoord_t<In>& positionIn)
 {
     SOFA_UNUSED(mparams);
+    SOFA_UNUSED(positionIn);
 
     const InVecCoord& xfrom = this->fromModel->read(core::vec_id::read_access::position)->getValue();
-    OutVecDeriv& out = *outData.beginEdit();
-    const InVecDeriv& in = inData.getValue();
+    OutVecDeriv& out = *tangentOut.beginEdit();
+    const InVecDeriv& in = tangentIn.getValue();
     for (unsigned int verticeIndex=0; verticeIndex<out.size(); verticeIndex++)
     {
         out[verticeIndex] = typename Out::Deriv();
@@ -262,7 +267,7 @@ void LineSetSkinningMapping<TIn, TOut>::applyJ( const sofa::core::MechanicalPara
             out[verticeIndex] += (getVCenter(in[m_topology->getLine(iline.lineIndex)[0]]) - IP.cross(getVOrientation(in[m_topology->getLine(iline.lineIndex)[0]]))) * iline.weight;
         }
     }
-    outData.endEdit();
+    tangentOut.endEdit();
 }
 
 

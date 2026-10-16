@@ -54,7 +54,11 @@ public:
 
     // usual Mapping API
     void apply(const core::MechanicalParams* mparams, const type::vector<DataVecCoord_t<Out>*>& dataVecOutPos, const type::vector<const DataVecCoord_t<In>*>& dataVecInPos) override;
-    void applyJ(const core::MechanicalParams* mparams, const type::vector<DataVecDeriv_t<Out>*>& dataVecOutVel, const type::vector<const DataVecDeriv_t<In>*>& dataVecInVel) override;
+    virtual void doApplyJacobianVectorProduct(
+        const core::MechanicalParams* mparams,
+        const type::vector< DataVecDeriv_t<Out>*>& dataVecTangentOut,
+        const type::vector<const DataVecDeriv_t<In>*>& dataVecTangentIn,
+        const type::vector<const DataVecCoord_t<In>*>& dataVecPositionIn) override;
     void applyJT(const core::MechanicalParams* mparams, const type::vector<DataVecDeriv_t<In>*>& dataVecOutForce, const type::vector<const DataVecDeriv_t<Out>*>& dataVecInForce) override;
     void applyDJT(const core::MechanicalParams* /*mparams*/, core::MultiVecDerivId /*inForce*/, core::ConstMultiVecDerivId /*outForce*/) override {}
 

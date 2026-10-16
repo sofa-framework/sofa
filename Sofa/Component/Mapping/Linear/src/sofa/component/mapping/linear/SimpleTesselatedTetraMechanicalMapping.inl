@@ -80,8 +80,12 @@ void SimpleTesselatedTetraMechanicalMapping<TIn, TOut>::apply ( const core::Mech
 }
 
 template <class TIn, class TOut>
-void SimpleTesselatedTetraMechanicalMapping<TIn, TOut>::applyJ( const core::MechanicalParams* /* mparams */, OutDataVecDeriv& dOut, const InDataVecDeriv& dIn )
+void SimpleTesselatedTetraMechanicalMapping<TIn, TOut>::doApplyJacobianVectorProduct(
+    const core::MechanicalParams* mparams, DataVecDeriv_t<TOut>& tangentOut,
+    const DataVecDeriv_t<TIn>& tangentIn, const DataVecCoord_t<TIn>& positionIn)
 {
+    SOFA_UNUSED(mparams);
+    SOFA_UNUSED(positionIn);
 
     if (!topoMap) return;
     const auto& pointMap = topoMap->getPointMappedFromPoint();
@@ -89,8 +93,8 @@ void SimpleTesselatedTetraMechanicalMapping<TIn, TOut>::applyJ( const core::Mech
     if (pointMap.empty() && edgeMap.empty()) return;
     const core::topology::BaseMeshTopology::SeqEdges& edges = inputTopo->getEdges();
 
-    helper::ReadAccessor<InDataVecDeriv> in = dIn;
-    helper::WriteAccessor<OutDataVecDeriv> out = dOut;
+    helper::ReadAccessor<InDataVecDeriv> in = tangentIn;
+    helper::WriteAccessor<OutDataVecDeriv> out = tangentOut;
 
     out.resize(outputTopo->getNbPoints());
     for(Size i = 0; i < pointMap.size(); ++i)

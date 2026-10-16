@@ -134,10 +134,15 @@ void BeamLinearMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparam
 }
 
 template <class TIn, class TOut>
-void BeamLinearMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mparams*/, Data< typename Out::VecDeriv >& _out, const Data< typename In::VecDeriv >& _in)
+void BeamLinearMapping<TIn, TOut>::doApplyJacobianVectorProduct(
+    const core::MechanicalParams* mparams, DataVecDeriv_t<Out>& tangentOut,
+    const DataVecDeriv_t<In>& tangentIn, const DataVecCoord_t<In>& positionIn)
 {
-    helper::WriteAccessor< Data< typename Out::VecDeriv > > out = _out;
-    helper::ReadAccessor< Data< typename In::VecDeriv > > in = _in;
+    SOFA_UNUSED(mparams);
+    SOFA_UNUSED(positionIn);
+
+    helper::WriteAccessor< Data< typename Out::VecDeriv > > out = tangentOut;
+    helper::ReadAccessor< Data< typename In::VecDeriv > > in = tangentIn;
 
     out.resize(points.size());
     for(unsigned int i=0; i<points.size(); i++)

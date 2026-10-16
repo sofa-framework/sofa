@@ -81,14 +81,18 @@ void SubsetMapping<gpu::cuda::CudaVec3fTypes, gpu::cuda::CudaVec3fTypes>::apply(
 }
 
 template <>
-void SubsetMapping<gpu::cuda::CudaVec3fTypes, gpu::cuda::CudaVec3fTypes>::applyJ( const core::MechanicalParams* /*mparams*/, OutDataVecDeriv& dOut, const InDataVecDeriv& dIn )
+void SubsetMapping<gpu::cuda::CudaVec3fTypes, gpu::cuda::CudaVec3fTypes>::doApplyJacobianVectorProduct(
+    const core::MechanicalParams* mparams, DataVecDeriv_t<Out>& tangentOut, const DataVecDeriv_t<In>& tangentIn, const DataVecCoord_t<In>& positionIn)
 {
-    OutVecDeriv& out = *dOut.beginEdit();
-    const InVecDeriv& in = dIn.getValue();
+    SOFA_UNUSED(mparams);
+    SOFA_UNUSED(positionIn);
+
+    OutVecDeriv& out = *tangentOut.beginEdit();
+    const InVecDeriv& in = tangentIn.getValue();
     const IndexArray& map = this->d_indices.getValue();
     out.fastResize(map.size());
     SubsetMappingCuda3f_applyJ(map.size(), map.deviceRead(), out.deviceWrite(), in.deviceRead());
-    dOut.endEdit();
+    tangentOut.endEdit();
 }
 
 template <>
@@ -131,14 +135,18 @@ void SubsetMapping<gpu::cuda::CudaVec3f1Types, gpu::cuda::CudaVec3f1Types>::appl
 }
 
 template <>
-void SubsetMapping<gpu::cuda::CudaVec3f1Types, gpu::cuda::CudaVec3f1Types>::applyJ( const core::MechanicalParams* /*mparams*/, OutDataVecDeriv& dOut, const InDataVecDeriv& dIn )
+void SubsetMapping<gpu::cuda::CudaVec3f1Types, gpu::cuda::CudaVec3f1Types>::doApplyJacobianVectorProduct(
+    const core::MechanicalParams* mparams, DataVecDeriv_t<Out>& tangentOut, const DataVecDeriv_t<In>& tangentIn, const DataVecCoord_t<In>& positionIn)
 {
-    OutVecDeriv& out = *dOut.beginEdit();
-    const InVecDeriv& in = dIn.getValue();
+    SOFA_UNUSED(mparams);
+    SOFA_UNUSED(positionIn);
+
+    OutVecDeriv& out = *tangentOut.beginEdit();
+    const InVecDeriv& in = tangentIn.getValue();
     const IndexArray& map = this->d_indices.getValue();
     out.fastResize(map.size());
     SubsetMappingCuda3f1_applyJ(map.size(), map.deviceRead(), out.deviceWrite(), in.deviceRead());
-    dOut.endEdit();
+    tangentOut.endEdit();
 }
 
 template <>
@@ -179,14 +187,18 @@ void SubsetMapping<gpu::cuda::CudaVec3f1Types, gpu::cuda::CudaVec3fTypes>::apply
 }
 
 template <>
-void SubsetMapping<gpu::cuda::CudaVec3f1Types, gpu::cuda::CudaVec3fTypes>::applyJ( const core::MechanicalParams* /*mparams*/, OutDataVecDeriv& dOut, const InDataVecDeriv& dIn )
+void SubsetMapping<gpu::cuda::CudaVec3f1Types, gpu::cuda::CudaVec3fTypes>::doApplyJacobianVectorProduct(
+    const core::MechanicalParams* mparams, DataVecDeriv_t<Out>& tangentOut, const DataVecDeriv_t<In>& tangentIn, const DataVecCoord_t<In>& positionIn)
 {
-    OutVecDeriv& out = *dOut.beginEdit();
-    const InVecDeriv& in = dIn.getValue();
+    SOFA_UNUSED(mparams);
+    SOFA_UNUSED(positionIn);
+
+    OutVecDeriv& out = *tangentOut.beginEdit();
+    const InVecDeriv& in = tangentIn.getValue();
     const IndexArray& map = this->d_indices.getValue();
     out.fastResize(map.size());
     SubsetMappingCuda3f1_3f_applyJ(map.size(), map.deviceRead(), out.deviceWrite(), in.deviceRead());
-    dOut.endEdit();
+    tangentOut.endEdit();
 }
 
 template <>
@@ -227,14 +239,18 @@ void SubsetMapping<gpu::cuda::CudaVec3fTypes, gpu::cuda::CudaVec3f1Types>::apply
 }
 
 template <>
-void SubsetMapping<gpu::cuda::CudaVec3fTypes, gpu::cuda::CudaVec3f1Types>::applyJ( const core::MechanicalParams* /*mparams*/, OutDataVecDeriv& dOut, const InDataVecDeriv& dIn )
+void SubsetMapping<gpu::cuda::CudaVec3fTypes, gpu::cuda::CudaVec3f1Types>::doApplyJacobianVectorProduct(
+    const core::MechanicalParams* mparams, DataVecDeriv_t<Out>& tangentOut, const DataVecDeriv_t<In>& tangentIn, const DataVecCoord_t<In>& positionIn)
 {
-    OutVecDeriv& out = *dOut.beginEdit();
-    const InVecDeriv& in = dIn.getValue();
+    SOFA_UNUSED(mparams);
+    SOFA_UNUSED(positionIn);
+
+    OutVecDeriv& out = *tangentOut.beginEdit();
+    const InVecDeriv& in = tangentIn.getValue();
     const IndexArray& map = this->d_indices.getValue();
     out.fastResize(map.size());
     SubsetMappingCuda3f_3f1_applyJ(map.size(), map.deviceRead(), out.deviceWrite(), in.deviceRead());
-    dOut.endEdit();
+    tangentOut.endEdit();
 }
 
 template <>
