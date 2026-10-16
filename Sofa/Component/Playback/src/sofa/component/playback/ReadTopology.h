@@ -22,8 +22,8 @@
 #pragma once
 #include <sofa/component/playback/config.h>
 
-#include <sofa/simulation/AnimateBeginEvent.h>
-#include <sofa/simulation/AnimateEndEvent.h>
+#include <sofa/simulation/events/AnimateBeginEvent.h>
+#include <sofa/simulation/events/AnimateEndEvent.h>
 #include <sofa/simulation/Visitor.h>
 
 #if SOFA_COMPONENT_PLAYBACK_HAVE_ZLIB
