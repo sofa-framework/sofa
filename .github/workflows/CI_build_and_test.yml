@@ -56,7 +56,7 @@ on:
 
 jobs:
   display-inputs:
-    runs-on: ubuntu-latest
+    runs-on: launcher
     steps:
       - name: Display
         shell: bash
