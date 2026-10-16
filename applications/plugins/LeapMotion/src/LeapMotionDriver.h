@@ -32,8 +32,8 @@
 #include <sofa/gl/BasicShapes.h>
 #include <sofa/gl/glText.inl>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/simulation/AnimateBeginEvent.h>
-#include <sofa/simulation/AnimateEndEvent.h>
+#include <sofa/simulation/events/AnimateBeginEvent.h>
+#include <sofa/simulation/events/AnimateEndEvent.h>
 #include <iostream>
 #include <sstream>
 #include <MyListener.h>

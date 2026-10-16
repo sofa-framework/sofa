@@ -3,7 +3,7 @@
 
 #include <CollisionOBBCapsule/geometry/OBBModel.h>
 #include "BulletCollisionModel.h"
-#include <sofa/simulation/CollisionBeginEvent.h>
+#include <sofa/simulation/events/CollisionBeginEvent.h>
 #include <BulletCollisionDetection/config.h>
 #include <stack>
 
