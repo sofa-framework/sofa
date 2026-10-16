@@ -184,7 +184,7 @@ int CCDTightInclusionIntersection::computeIntersection(Line& e1, Line& e2, Outpu
     SReal outputTolerance = 0.0;
 
 
-    const auto result =  ticcd::edgeEdgeCCD(
+    [[maybe_unused]] const auto result =  ticcd::edgeEdgeCCD(
         Line1ABegin, Line2ABegin, Line1BBegin, Line2BBegin,
         Line1AEnd,   Line2AEnd,   Line1BEnd,   Line2BEnd,
         err,maxSeparation, toi,d_tolerance.getValue(), tmax, d_maxIterations.getValue(), outputTolerance);
