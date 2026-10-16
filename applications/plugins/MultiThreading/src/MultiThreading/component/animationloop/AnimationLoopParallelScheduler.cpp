@@ -28,7 +28,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/simulation/PrintVisitor.h>
 #include <sofa/simulation/common/FindByTypeVisitor.h>
-#include <sofa/simulation/CollisionBeginEvent.h>
+#include <sofa/simulation/events/CollisionBeginEvent.h>
 #include <sofa/simulation/PropagateEventVisitor.h>
 #include <sofa/simulation/common/xml/NodeElement.h>
 
