@@ -171,7 +171,7 @@ struct MaterialClampNegativeFilter : MaterialFilter<TDataTypes>
 {
     void apply(MajorSymmetric4Tensor<TDataTypes>& materialHessian) override
     {
-        materialHessian.filterEigenValues(EigenValueFilter::ClampNegative);
+        materialHessian.filterEigenValues(sofa::helper::EigenValueFilter::ClampNegative);
     }
 };
 
@@ -180,7 +180,7 @@ struct MaterialAbsFilter : MaterialFilter<TDataTypes>
 {
     void apply(MajorSymmetric4Tensor<TDataTypes>& materialHessian) override
     {
-        materialHessian.filterEigenValues(EigenValueFilter::Abs);
+        materialHessian.filterEigenValues(sofa::helper::EigenValueFilter::Abs);
     }
 };
 
