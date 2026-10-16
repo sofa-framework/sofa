@@ -184,16 +184,35 @@ struct MaterialAbsFilter : MaterialFilter<TDataTypes>
     }
 };
 
-template <class TDataTypes, class TElementType>
-void HyperelasticityFEMForceField<TDataTypes, TElementType>::computeHessian(const VecCoord& coordinates)
+template <sofa::Size L, sofa::Size C, class real>
+struct StiffnessFilter
 {
-    if (this->l_topology == nullptr) return;
-    if (l_material == nullptr) return;
+    virtual ~StiffnessFilter() = default;
+    virtual void apply(sofa::type::Mat<L, C, real>& stiffnessMatrix) = 0;
+};
 
-    SCOPED_TIMER("ComputeHessian");
+template <sofa::Size L, sofa::Size C, class real>
+struct StiffnessClampNegativeFilter : StiffnessFilter<L, C, real>
+{
+    void apply(sofa::type::Mat<L, C, real>& stiffnessMatrix) override
+    {
+        sofa::helper::filterEigenValues(stiffnessMatrix, sofa::helper::EigenValueFilter::ClampNegative);
+    }
+};
 
-    const auto& elements = FiniteElement::getElementSequence(*this->l_topology);
+template <sofa::Size L, sofa::Size C, class real>
+struct StiffnessAbsFilter : StiffnessFilter<L, C, real>
+{
+    void apply(sofa::type::Mat<L, C, real>& stiffnessMatrix) override
+    {
+        sofa::helper::filterEigenValues(stiffnessMatrix, sofa::helper::EigenValueFilter::Abs);
+    }
+};
 
+template <class TDataTypes, class TElementType>
+std::unique_ptr<MaterialFilter<TDataTypes>>
+HyperelasticityFEMForceField<TDataTypes, TElementType>::createMaterialFilter()
+{
     std::unique_ptr<MaterialFilter<TDataTypes>> materialFilter;
     switch (d_materialEigenvaluesFilter.getValue())
     {
@@ -206,6 +225,48 @@ void HyperelasticityFEMForceField<TDataTypes, TElementType>::computeHessian(cons
         default:
             break;
     }
+    return materialFilter;
+}
+
+template <class TDataTypes, class TElementType>
+auto HyperelasticityFEMForceField<TDataTypes, TElementType>::createStiffnessFilter() ->
+std::unique_ptr<StiffnessFilter<TElementType::NumberOfNodes * DataTypes::spatial_dimensions,
+                                    TElementType::NumberOfNodes * DataTypes::spatial_dimensions,
+                                    sofa::Real_t<DataTypes>>>
+{
+    std::unique_ptr<StiffnessFilter<TElementType::NumberOfNodes * DataTypes::spatial_dimensions,
+                                    TElementType::NumberOfNodes * DataTypes::spatial_dimensions,
+                                    sofa::Real_t<DataTypes>>> stiffnessFilter;
+    switch (d_stiffnessEigenvaluesFilter.getValue())
+    {
+        case EigenvaluesFilter("Abs"):
+            stiffnessFilter.reset(new StiffnessAbsFilter<TElementType::NumberOfNodes * DataTypes::spatial_dimensions,
+                                    TElementType::NumberOfNodes * DataTypes::spatial_dimensions,
+                                    sofa::Real_t<DataTypes>>());
+            break;
+        case EigenvaluesFilter("ClampNegative"):
+            stiffnessFilter.reset(new StiffnessClampNegativeFilter<TElementType::NumberOfNodes * DataTypes::spatial_dimensions,
+                                    TElementType::NumberOfNodes * DataTypes::spatial_dimensions,
+                                    sofa::Real_t<DataTypes>>());
+            break;
+        default:
+            break;
+    }
+    return stiffnessFilter;
+}
+
+template <class TDataTypes, class TElementType>
+void HyperelasticityFEMForceField<TDataTypes, TElementType>::computeHessian(const VecCoord& coordinates)
+{
+    if (this->l_topology == nullptr) return;
+    if (l_material == nullptr) return;
+
+    SCOPED_TIMER("ComputeHessian");
+
+    const auto& elements = FiniteElement::getElementSequence(*this->l_topology);
+
+    auto materialFilter = createMaterialFilter();
+    auto stiffnessFilter = createStiffnessFilter();
 
     if (m_precomputedData.size() != elements.size())
     {
@@ -285,6 +346,9 @@ void HyperelasticityFEMForceField<TDataTypes, TElementType>::computeHessian(cons
                 }
             }
         }
+
+        if (stiffnessFilter)
+            stiffnessFilter->apply(K);
         ++elementIndex;
     }
 

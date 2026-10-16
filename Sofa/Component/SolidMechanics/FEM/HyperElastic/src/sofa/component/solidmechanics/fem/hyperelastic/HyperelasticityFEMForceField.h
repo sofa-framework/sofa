@@ -32,6 +32,12 @@
 namespace sofa::component::solidmechanics::fem::hyperelastic
 {
 
+template <class TDataTypes>
+struct MaterialFilter;
+
+template <sofa::Size L, sofa::Size C, class real>
+struct StiffnessFilter;
+
 template <class TDataTypes, class TElementType>
 class HyperelasticityFEMForceField :
     public sofa::component::solidmechanics::fem::elastic::FEMForceField<TDataTypes, TElementType>
@@ -158,6 +164,11 @@ protected:
         const sofa::core::MechanicalParams* mparams,
         sofa::type::vector<ElementGradient>& df,
         const sofa::VecDeriv_t<TDataTypes>& dx) override;
+
+    std::unique_ptr<MaterialFilter<TDataTypes>> createMaterialFilter();
+    std::unique_ptr<StiffnessFilter<TElementType::NumberOfNodes * DataTypes::spatial_dimensions,
+                                    TElementType::NumberOfNodes * DataTypes::spatial_dimensions,
+                                    sofa::Real_t<DataTypes>>> createStiffnessFilter();
 };
 
 #if !defined(SOFA_COMPONENT_SOLIDMECHANICS_FEM_HYPERELASTIC_HYPERLASTICITY_FEM_FORCE_FIELD_CPP)
