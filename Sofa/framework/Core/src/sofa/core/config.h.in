@@ -146,3 +146,10 @@ SOFA_ATTRIBUTE_DEPRECATED("v26.12", "v27.12", "Use BaseContext instead of Contex
 #define SOFA_ATTRIBUTE_DEPRECATED__GETPOTENTIALENERGY_OVERLOAD() \
     SOFA_ATTRIBUTE_DEPRECATED("v26.12", "v27.06", "getPotentialEnergy must be called by providing the position vector.")
 #endif
+
+#ifdef SOFA_BUILD_SOFA_CORE
+#define SOFA_CORE_DEPRECATED_RESETVEC()
+#else
+#define SOFA_CORE_DEPRECATED_RESETVEC() \
+    SOFA_ATTRIBUTE_DEPRECATED("v26.12", "v27.12", "Use resetVec instead.")
+#endif
