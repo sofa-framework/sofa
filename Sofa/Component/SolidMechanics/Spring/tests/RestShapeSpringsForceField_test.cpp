@@ -31,10 +31,27 @@ using namespace sofa::simpleapi;
 #include <sofa/component/statecontainer/MechanicalObject.h>
 using sofa::component::statecontainer::MechanicalObject;
 
+#include <sofa/core/MechanicalParams.h>
+#include <sofa/core/behavior/BaseLocalForceFieldMatrix.h>
+#include <sofa/linearalgebra/FullMatrix.h>
+
 using sofa::defaulttype::Vec3Types;
 using sofa::defaulttype::Rigid3dTypes;
 using sofa::helper::ReadAccessor;
 using sofa::Data;
+
+namespace
+{
+/// Adds the entries of the stiffness matrix of a force field (buildStiffnessMatrix) to a FullMatrix
+struct StiffnessMatrixAccumulatorInto : public sofa::core::behavior::StiffnessMatrixAccumulator
+{
+    explicit StiffnessMatrixAccumulatorInto(sofa::linearalgebra::FullMatrix<SReal>& m) : matrix(m) {}
+    void add(sofa::SignedIndex row, sofa::SignedIndex col, float value) override { matrix.add(row, col, value); }
+    void add(sofa::SignedIndex row, sofa::SignedIndex col, double value) override { matrix.add(row, col, value); }
+
+    sofa::linearalgebra::FullMatrix<SReal>& matrix;
+};
+}
 
 /// Test suite for RestShapeSpringsForceField
 class RestSpringsForceField_test : public BaseTest
@@ -142,4 +159,115 @@ TEST_F(RestSpringsForceField_test, defaultBehaviorVec3)
 TEST_F(RestSpringsForceField_test, defaultBehaviorRigid3)
 {
     this->testDefaultBehavior<sofa::defaulttype::Rigid3Types>(this->createScene("Rigid3"));
+}
+
+/// The torque of the rigid springs is -angularStiffness * (rotation vector from the rest orientation),
+/// also for rotations so small that the real part of the quaternion rounds to 1 (below ~3e-8 rad).
+/// With a large angularStiffness, the equilibrium is in this range: a torque wrongly set to zero there
+/// makes the Newton iterations stall. The stiffness (addDForce and buildStiffnessMatrix) is checked with
+/// central finite differences, the orientation being perturbed as in RigidCoord::operator+=.
+TEST_F(RestSpringsForceField_test, torqueAndStiffnessForSmallRotationsRigid3)
+{
+    using DataTypes = Rigid3dTypes;
+    using Coord = DataTypes::Coord;
+    using Deriv = DataTypes::Deriv;
+    using VecCoord = DataTypes::VecCoord;
+    using VecDeriv = DataTypes::VecDeriv;
+    using Quat = sofa::type::Quat<SReal>;
+    using sofa::type::Vec3;
+    using RestShapeSprings = sofa::component::solidmechanics::spring::RestShapeSpringsForceField<DataTypes>;
+
+    this->loadPlugins({Sofa.Component.StateContainer, Sofa.Component.SolidMechanics.Spring});
+
+    const auto root = createRootNode(createSimulation(), "root");
+    createObject(root, "DefaultAnimationLoop");
+    createObject(root, "MechanicalObject", {{"name", "dofs"}, {"template", "Rigid3"}, {"size", "1"}});
+    createObject(root, "RestShapeSpringsForceField", {{"name", "springs"}, {"stiffness", "3"}, {"angularStiffness", "7"}});
+    sofa::simulation::node::initRoot(root.get());
+
+    auto* dofs = dynamic_cast<MechanicalObject<DataTypes>*>(root->getObject("dofs"));
+    ASSERT_NE(dofs, nullptr);
+    auto* springs = dynamic_cast<RestShapeSprings*>(root->getObject("springs"));
+    ASSERT_NE(springs, nullptr);
+
+    sofa::core::MechanicalParams mparams;
+    mparams.setKFactor(1);
+
+    const auto setRestPosition = [&](const Coord& rest)
+    {
+        auto x0 = sofa::helper::getWriteOnlyAccessor(*dofs->write(sofa::core::vec_id::write_access::restPosition));
+        x0[0] = rest;
+    };
+    const auto computeForce = [&](const Coord& x) -> Deriv
+    {
+        Data<VecCoord> position(VecCoord{x});
+        Data<VecDeriv> velocity(VecDeriv{Deriv()});
+        Data<VecDeriv> force(VecDeriv{Deriv()});
+        springs->addForce(&mparams, force, position, velocity);
+        return force.getValue()[0];
+    };
+
+    const Vec3 axis = Vec3(0.2, 1, -0.3).normalized();
+    const std::vector<Coord> restPositions {
+        Coord(Vec3(0, 0, 0), Quat::identity()),
+        Coord(Vec3(1, -2, 0.5), Quat(Vec3(-0.5, 0.1, 0.8).normalized(), 0.8))
+    };
+
+    for (const Coord& rest : restPositions)
+    {
+        setRestPosition(rest);
+
+        // torque for rotations from 1e-10 to 1e-3 rad
+        for (const SReal angle : {1e-10, 1e-9, 1e-8, 1e-7, 1e-6, 1e-3})
+        {
+            Coord x = rest;
+            x += Deriv(Vec3(), axis * angle);
+            const Vec3 torque = computeForce(x).getVOrientation();
+            for (sofa::Index i = 0; i < 3; ++i)
+            {
+                // relative tolerance, plus the round-off of the quaternion products (~1e-16 rad)
+                EXPECT_NEAR(torque[i], -7 * angle * axis[i], 7 * (1e-6 * angle + 1e-15))
+                    << "rotation of " << angle << " rad, component " << i;
+            }
+        }
+
+        // stiffness: derivative of the force around a configuration rotated by 1e-9 rad from the rest
+        Coord current = rest;
+        current += Deriv(Vec3(1e-3, -2e-3, 1e-3), axis * 1e-9);
+        {
+            auto x = sofa::helper::getWriteOnlyAccessor(*dofs->write(sofa::core::vec_id::write_access::position));
+            x[0] = current;
+        }
+
+        sofa::linearalgebra::FullMatrix<SReal> K(6, 6);
+        K.clear();
+        StiffnessMatrixAccumulatorInto accumulator(K);
+        sofa::core::behavior::StiffnessMatrix stiffnessMatrix;
+        stiffnessMatrix.setMatrixAccumulator(&accumulator, dofs);
+        stiffnessMatrix.setMechanicalParams(&mparams);
+        springs->buildStiffnessMatrix(&stiffnessMatrix);
+
+        constexpr SReal delta = 1e-9;
+        for (sofa::Index j = 0; j < 6; ++j)
+        {
+            Deriv dx;
+            dx[j] = delta;
+            Coord xPlus = current;
+            xPlus += dx;
+            Coord xMinus = current;
+            xMinus += -dx;
+            const Deriv finiteDifference = (computeForce(xPlus) - computeForce(xMinus)) / (2 * delta);
+
+            Data<VecDeriv> dxData(VecDeriv{dx / delta});
+            Data<VecDeriv> dfData(VecDeriv{Deriv()});
+            springs->addDForce(&mparams, dfData, dxData);
+            const Deriv df = dfData.getValue()[0];
+
+            for (sofa::Index i = 0; i < 6; ++i)
+            {
+                EXPECT_NEAR(df[i], finiteDifference[i], 1e-5) << "addDForce, row " << i << ", column " << j;
+                EXPECT_NEAR(K.element(i, j), finiteDifference[i], 1e-5) << "buildStiffnessMatrix, row " << i << ", column " << j;
+            }
+        }
+    }
 }
