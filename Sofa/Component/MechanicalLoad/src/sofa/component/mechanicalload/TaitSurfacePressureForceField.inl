@@ -24,7 +24,7 @@
 #include <sofa/component/mechanicalload/TaitSurfacePressureForceField.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/core/behavior/BlocMatrixWriter.h>
-#include <sofa/simulation/AnimateBeginEvent.h>
+#include <sofa/simulation/events/AnimateBeginEvent.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>

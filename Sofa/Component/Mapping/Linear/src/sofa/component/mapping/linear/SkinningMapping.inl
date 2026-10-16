@@ -40,9 +40,9 @@ SkinningMapping<TIn, TOut>::SkinningMapping ()
     , d_initPos (initData (&d_initPos, "initPos", "initial child coordinates in the world reference frame." ) )
     , d_nbRef (initData (&d_nbRef, "nbRef", "Number of primitives influencing each point." ) )
     , d_index (initData (&d_index, "indices", "parent indices for each child." ) )
+    , d_computeWeightsFromPosition (initData (&d_computeWeightsFromPosition, false, "computeWeightsFromPosition", "By default, the weights are computed w.r.t the rest positions of the input model. Set to true to compute them from the position instead." ) )
     , d_weight (initData (&d_weight, "weight", "influence weights of the Dofs." ) )
     , d_showFromIndex (initData (&d_showFromIndex, ( unsigned int ) 0, "showFromIndex", "Displayed From Index." ) )
-    , d_computeWeightsFromPosition (initData (&d_computeWeightsFromPosition, false, "computeWeightsFromPosition", "By default, the weights are computed w.r.t the rest positions of the input model. Set to true to compute them from the position instead." ) )
     , d_showWeights (initData (&d_showWeights, false, "showWeights", "Show influence." ) )
 {
     type::vector<unsigned int> defaultNbRef;
