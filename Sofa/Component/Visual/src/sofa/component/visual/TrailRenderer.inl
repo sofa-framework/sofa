@@ -22,7 +22,7 @@
 #pragma once
 #include <sofa/component/visual/TrailRenderer.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/simulation/AnimateEndEvent.h>
+#include <sofa/simulation/events/AnimateEndEvent.h>
 
 namespace sofa::component::visual
 {
