@@ -23,7 +23,7 @@
 #include <sofa/component/playback/config.h>
 
 #include <sofa/core/objectmodel/BaseComponent.h>
-#include <sofa/simulation/AnimateBeginEvent.h>
+#include <sofa/simulation/events/AnimateBeginEvent.h>
 #include <sofa/core/objectmodel/MouseEvent.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 
