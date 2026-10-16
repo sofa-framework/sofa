@@ -23,6 +23,7 @@
 #include <sofa/component/engine/select/BoxROI.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/BoundingBox.h>
+#include <algorithm>
 #include <limits>
 #include <sofa/core/topology/BaseTopology.h>
 #include <sofa/helper/accessor.h>
@@ -190,7 +191,7 @@ bool BoxROI<DataTypes>::isPointInAlignedBox(const typename DataTypes::CPos& p, c
 {
     static_assert(std::is_same_v<typename DataTypes::CPos::size_type, typename type::Vec6::size_type>);
 
-    for (typename type::Vec6::size_type i = 0; i < DataTypes::spatial_dimensions; ++i)
+    for (typename type::Vec6::size_type i = 0; i < std::min<typename type::Vec6::size_type>(DataTypes::spatial_dimensions, 3); ++i)
     {
         if (p[i] < box[i] || p[i] > box[i + 3])
         {

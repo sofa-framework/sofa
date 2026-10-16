@@ -75,6 +75,7 @@ public:
     /// and call the internal addForce(const MechanicalParams*, DataVecDeriv&,const DataVecCoord&,const DataVecDeriv&)
     /// method implemented by the component.
     void addForce(const MechanicalParams* mparams, MultiVecDerivId fId, ConstMultiVecCoordId xId, ConstMultiVecDerivId vId ) override;
+    using BaseForceField::addForce;
 
     /// Given the current position and velocity states, update the current force
     /// vector by computing and adding the forces associated with this

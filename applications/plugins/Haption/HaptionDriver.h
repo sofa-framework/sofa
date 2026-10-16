@@ -38,8 +38,8 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/component/haptics/MechanicalStateForceFeedback.h>
 #include <sofa/component/haptics/NullForceFeedbackT.h>
-#include <sofa/simulation/AnimateBeginEvent.h>
-#include <sofa/simulation/AnimateEndEvent.h>
+#include <sofa/simulation/events/AnimateBeginEvent.h>
+#include <sofa/simulation/events/AnimateEndEvent.h>
 #include <cstring>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
