@@ -32,6 +32,7 @@ namespace sofa::linearalgebra
  * Single-precision float + Column-major sparse matrix representation
  */
 ///@{
+template<> void SOFA_LINEARALGEBRA_API SparseMatrixStorageOrder<Eigen::SparseMatrix<float> >::buildOppositeOrder();
 template<> float SOFA_LINEARALGEBRA_API SparseMatrixStorageOrder<Eigen::SparseMatrix<float> >::InnerIterator::value() const;
 template<> Eigen::SparseMatrix<float>::Index SOFA_LINEARALGEBRA_API SparseMatrixStorageOrder<Eigen::SparseMatrix<float> >::InnerIterator::row() const;
 template<> Eigen::SparseMatrix<float>::Index SOFA_LINEARALGEBRA_API SparseMatrixStorageOrder<Eigen::SparseMatrix<float> >::InnerIterator::col() const;
@@ -41,6 +42,7 @@ template<> Eigen::SparseMatrix<float>::Index SOFA_LINEARALGEBRA_API SparseMatrix
  * Double-precision float + Column-major sparse matrix representation
  */
 ///@{
+template<> void SOFA_LINEARALGEBRA_API SparseMatrixStorageOrder<Eigen::SparseMatrix<double> >::buildOppositeOrder();
 template<> double SOFA_LINEARALGEBRA_API SparseMatrixStorageOrder<Eigen::SparseMatrix<double> >::InnerIterator::value() const;
 template<> Eigen::SparseMatrix<double>::Index SOFA_LINEARALGEBRA_API SparseMatrixStorageOrder<Eigen::SparseMatrix<double> >::InnerIterator::row() const;
 template<> Eigen::SparseMatrix<double>::Index SOFA_LINEARALGEBRA_API SparseMatrixStorageOrder<Eigen::SparseMatrix<double> >::InnerIterator::col() const;
@@ -50,6 +52,7 @@ template<> Eigen::SparseMatrix<double>::Index SOFA_LINEARALGEBRA_API SparseMatri
  * Single-precision float + Row-major sparse matrix representation
  */
  ///@{
+template<> void SOFA_LINEARALGEBRA_API SparseMatrixStorageOrder<Eigen::SparseMatrix<float, Eigen::RowMajor> >::buildOppositeOrder();
 template<> float SOFA_LINEARALGEBRA_API SparseMatrixStorageOrder<Eigen::SparseMatrix<float, Eigen::RowMajor> >::InnerIterator::value() const;
 template<> Eigen::SparseMatrix<float>::Index SOFA_LINEARALGEBRA_API SparseMatrixStorageOrder<Eigen::SparseMatrix<float, Eigen::RowMajor> >::InnerIterator::row() const;
 template<> Eigen::SparseMatrix<float>::Index SOFA_LINEARALGEBRA_API SparseMatrixStorageOrder<Eigen::SparseMatrix<float, Eigen::RowMajor> >::InnerIterator::col() const;
@@ -59,6 +62,7 @@ template<> Eigen::SparseMatrix<float>::Index SOFA_LINEARALGEBRA_API SparseMatrix
  * Double-precision float + Row-major sparse matrix representation
  */
 ///@{
+template<> void SOFA_LINEARALGEBRA_API SparseMatrixStorageOrder<Eigen::SparseMatrix<double, Eigen::RowMajor> >::buildOppositeOrder();
 template<> double SOFA_LINEARALGEBRA_API SparseMatrixStorageOrder<Eigen::SparseMatrix<double, Eigen::RowMajor> >::InnerIterator::value() const;
 template<> Eigen::SparseMatrix<double>::Index SOFA_LINEARALGEBRA_API SparseMatrixStorageOrder<Eigen::SparseMatrix<double, Eigen::RowMajor> >::InnerIterator::row() const;
 template<> Eigen::SparseMatrix<double>::Index SOFA_LINEARALGEBRA_API SparseMatrixStorageOrder<Eigen::SparseMatrix<double, Eigen::RowMajor> >::InnerIterator::col() const;
