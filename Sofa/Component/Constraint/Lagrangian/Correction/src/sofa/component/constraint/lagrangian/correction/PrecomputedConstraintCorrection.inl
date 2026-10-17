@@ -415,6 +415,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
                 if (l_odeSolver)
                 {
                     l_odeSolver->integrate(core::execparams::defaultInstance(), dt, core::vec_id::write_access::position, core::vec_id::write_access::velocity);
+                    l_odeSolver->reset();
                 }
 
                 for (unsigned int v = 0; v < nbNodes; v++)
