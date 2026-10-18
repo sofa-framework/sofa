@@ -29,8 +29,8 @@
 #include <SofaHaptics/ForceFeedback.h>
 #include <SofaHaptics/NullForceFeedback.h>
 //
-#include <sofa/simulation/AnimateBeginEvent.h>
-#include <sofa/simulation/AnimateEndEvent.h>
+#include <sofa/simulation/events/AnimateBeginEvent.h>
+#include <sofa/simulation/events/AnimateEndEvent.h>
 //
 #include <sofa/simulation/Node.h>
 #include <cstring>

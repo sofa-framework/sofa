@@ -31,7 +31,7 @@
 #include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/core/objectmodel/Event.h>
-#include <sofa/simulation/AnimateEndEvent.h>
+#include <sofa/simulation/events/AnimateEndEvent.h>
 
 #include <sofa/type/Vec.h>
 #include <sofa/helper/OptionsGroup.h>
