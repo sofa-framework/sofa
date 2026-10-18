@@ -19,6 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_SIMULATION_MECHANICALVISITOR_MECHANICALIDENTITYBLOCKSINJACOBIANVISITOR_CPP
 #include <numeric>
 #include <sofa/simulation/mechanicalvisitor/MechanicalIdentityBlocksInJacobianVisitor.h>
 

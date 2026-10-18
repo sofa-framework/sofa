@@ -30,7 +30,7 @@
 #include <sofa/component/mass/AddMToMatrixFunctor.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/type/vector.h>
-#include <sofa/simulation/AnimateEndEvent.h>
+#include <sofa/simulation/events/AnimateEndEvent.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <numeric>
 

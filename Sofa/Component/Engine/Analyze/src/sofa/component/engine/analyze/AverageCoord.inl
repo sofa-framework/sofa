@@ -23,7 +23,7 @@
 #include <sofa/component/engine/analyze/AverageCoord.h>
 #include <iostream>
 #include <sofa/core/objectmodel/Event.h>
-#include <sofa/simulation/AnimateBeginEvent.h>
+#include <sofa/simulation/events/AnimateBeginEvent.h>
 #include <sofa/helper/logging/Messaging.h>
 
 namespace sofa::component::engine::analyze

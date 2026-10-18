@@ -6,8 +6,8 @@
 #include <sofa/helper/random.h>
 #include <sofa/simulation/PropagateEventVisitor.h>
 #include <sofa/simulation/CollisionVisitor.h>
-#include <sofa/simulation/CollisionEndEvent.h>
-#include <sofa/simulation/CollisionBeginEvent.h>
+#include <sofa/simulation/events/CollisionEndEvent.h>
+#include <sofa/simulation/events/CollisionBeginEvent.h>
 #include <sofa/simulation/PropagateEventVisitor.h>
 
 typedef sofa::component::container::MechanicalObject<sofa::defaulttype::Rigid3Types> MechanicalObjectRigid3;
