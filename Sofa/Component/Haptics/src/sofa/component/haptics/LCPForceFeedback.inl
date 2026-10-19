@@ -25,7 +25,7 @@
 
 #include <sofa/component/constraint/lagrangian/solver/ConstraintSolverImpl.h>
 
-#include <sofa/simulation/AnimateEndEvent.h>
+#include <sofa/simulation/events/AnimateEndEvent.h>
 
 #include <algorithm>
 #include <mutex>

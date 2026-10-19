@@ -24,14 +24,14 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/simulation/MechanicalVisitor.h>
-#include <sofa/simulation/AnimateBeginEvent.h>
-#include <sofa/simulation/AnimateEndEvent.h>
+#include <sofa/simulation/events/AnimateBeginEvent.h>
+#include <sofa/simulation/events/AnimateEndEvent.h>
 #include <sofa/simulation/PropagateEventVisitor.h>
 #include <sofa/simulation/BehaviorUpdatePositionVisitor.h>
 #include <sofa/simulation/UpdateInternalDataVisitor.h>
 #include <sofa/simulation/UpdateContextVisitor.h>
 #include <sofa/simulation/UpdateMappingVisitor.h>
-#include <sofa/simulation/UpdateMappingEndEvent.h>
+#include <sofa/simulation/events/UpdateMappingEndEvent.h>
 #include <sofa/simulation/UpdateBoundingBoxVisitor.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
 

@@ -32,7 +32,7 @@
 #include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/events/SimulationInitDoneEvent.h>
-#include <sofa/simulation/AnimateEndEvent.h>
+#include <sofa/simulation/events/AnimateEndEvent.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 #include <sofa/core/objectmodel/GUIEvent.h>

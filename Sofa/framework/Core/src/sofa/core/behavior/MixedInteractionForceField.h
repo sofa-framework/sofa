@@ -81,6 +81,7 @@ public:
     /// and call the internal addForce(VecDeriv&,VecDeriv&,const VecCoord&,const VecCoord&,const VecDeriv&,const VecDeriv&)
     /// method implemented by the component.
     void addForce(const MechanicalParams* mparams, MultiVecDerivId fId, ConstMultiVecCoordId xId, ConstMultiVecDerivId vId ) override;
+    using BaseForceField::addForce;
 
     /// Compute the force derivative given a small displacement from the
     /// position and velocity used in the previous call to addForce().
@@ -107,6 +108,7 @@ public:
     /// the internal getPotentialEnergy(const VecCoord&,const VecCoord&) method implemented by
     /// the component.
     SReal getPotentialEnergy(const MechanicalParams* mparams, ConstMultiVecCoordId xId) const override;
+    using BaseForceField::getPotentialEnergy;
 
     /// Given the current position and velocity states, update the current force
     /// vector by computing and adding the forces associated with this

@@ -25,7 +25,7 @@
 #include <image/config.h>
 #include "ImageTypes.h"
 #include <sofa/core/objectmodel/Event.h>
-#include <sofa/simulation/AnimateEndEvent.h>
+#include <sofa/simulation/events/AnimateEndEvent.h>
 #include <sofa/helper/OptionsGroup.h>
 #include <sofa/type/Vec.h>
 #include <sofa/defaulttype/RigidTypes.h>

@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
+#define SOFA_SIMULATION_MECHANICALVISITOR_MECHANICALPROPAGATEDXVISITOR_CPP
 #include <sofa/simulation/mechanicalvisitor/MechanicalPropagateDxVisitor.h>
 
 namespace sofa::simulation::mechanicalvisitor

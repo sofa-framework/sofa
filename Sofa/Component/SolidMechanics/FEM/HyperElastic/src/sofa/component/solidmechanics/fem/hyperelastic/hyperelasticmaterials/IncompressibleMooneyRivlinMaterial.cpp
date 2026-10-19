@@ -21,10 +21,9 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_SOLIDMECHANICS_FEM_HYPERELASTIC_MATERIAL_INCOMPRESSIBLEMOONEYRIVLIN_CPP
 
+#include <sofa/component/solidmechanics/fem/hyperelastic/hyperelasticmaterials/IncompressibleMooneyRivlinMaterial.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
-
-#include <sofa/component/solidmechanics/fem/hyperelastic/hyperelasticmaterials/IncompressibleMooneyRivlinMaterial.inl>
 
 namespace sofa::component::solidmechanics::fem::hyperelastic
 {

@@ -30,10 +30,10 @@
 #include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/Visitor.h>
-#include <sofa/simulation/AnimateBeginEvent.h>
-#include <sofa/simulation/AnimateEndEvent.h>
+#include <sofa/simulation/events/AnimateBeginEvent.h>
+#include <sofa/simulation/events/AnimateEndEvent.h>
 #include <sofa/simulation/PropagateEventVisitor.h>
-#include <sofa/simulation/UpdateMappingEndEvent.h>
+#include <sofa/simulation/events/UpdateMappingEndEvent.h>
 #include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/simulation/UpdateBoundingBoxVisitor.h>
 #include <sofa/simulation/UpdateContextVisitor.h>

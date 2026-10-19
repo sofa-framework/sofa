@@ -26,7 +26,7 @@
 
 #include <sofa/component/mapping/nonlinear/RigidMapping.inl>
 
-#include <sofa/simulation/AnimateEndEvent.h>
+#include <sofa/simulation/events/AnimateEndEvent.h>
 #include <sofa/simulation/Node.h>
 
 

@@ -22,7 +22,7 @@
 #include <SofaMatrix/GlobalSystemMatrixImage.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/LinearSolver.h>
-#include <sofa/simulation/AnimateEndEvent.h>
+#include <sofa/simulation/events/AnimateEndEvent.h>
 
 namespace sofa::component::linearsolver
 {
