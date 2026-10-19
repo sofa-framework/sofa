@@ -25,9 +25,13 @@
 #include <sofa/simulation/BaseMechanicalVisitor.h>
 #include <sofa/core/fwd.h>
 
+#if !defined(SOFA_SIMULATION_MECHANICALVISITOR_MECHANICALIDENTITYBLOCKSINJACOBIANVISITOR_CPP)
+SOFA_HEADER_DEPRECATED_NOT_REPLACED("v26.12", "v27.06")
+#endif
+
 namespace sofa::simulation::mechanicalvisitor
 {
-class SOFA_SIMULATION_CORE_API MechanicalIdentityBlocksInJacobianVisitor : public BaseMechanicalVisitor
+class SOFA_SIMULATION_CORE_API SOFA_ATTRIBUTE_DEPRECATED__MECHANICALIDENTITYBLOCKSINJACOBIANVISITOR() MechanicalIdentityBlocksInJacobianVisitor : public BaseMechanicalVisitor
 {
 public:
     const char* getClassName() const override { return "MechanicalIdentityBlocksInJacobianVisitor"; }
