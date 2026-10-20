@@ -22,6 +22,7 @@
 #pragma once
 
 #include <SofaCUDA/component/statecontainer/CudaMechanicalObject.h>
+#include <type_traits>
 #include <sofa/component/statecontainer/MechanicalObject.inl>
 
 namespace sofa::gpu::cuda
@@ -933,7 +934,29 @@ void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
     {
         if (a.type != v.type)
         {
-            // ERROR
+            // For vector types, coordinate differences are derivatives. The implicit
+            // integrator uses this operation for its position residual.
+            if constexpr (std::is_same_v<Coord, Deriv>)
+            {
+                if (v.type == sofa::core::V_DERIV && a.type == sofa::core::V_COORD && !b.isNull() && b.type == sofa::core::V_COORD)
+                {
+                    Data<VecDeriv>* d_vv = m->write((core::VecDerivId)v);
+                    const Data<VecCoord>* d_va = m->read((core::ConstVecCoordId)a);
+                    const Data<VecCoord>* d_vb = m->read((core::ConstVecCoordId)b);
+                    const VecCoord& va = d_va->getValue();
+                    const VecCoord& vb = d_vb->getValue();
+                    if (va.size() != vb.size())
+                    {
+                        msg_error(m) << "Invalid vOp sizes (" << va.size() << ',' << vb.size() << ')';
+                        return;
+                    }
+                    VecDeriv* vv = d_vv->beginEdit();
+                    vv->recreate(va.size());
+                    Kernels::vOp(vv->size(), vv->deviceWrite(), va.deviceRead(), vb.deviceRead(), (Real)f);
+                    d_vv->endEdit();
+                    return;
+                }
+            }
             msg_error(m) << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")";
             return;
         }

@@ -44,7 +44,7 @@ void ArgumentParser::addArgument(std::shared_ptr<cxxopts::Value> s, const std::s
     {
         m_options.add_options()(name.c_str(), help.c_str(), s);
     }
-    catch (cxxopts::exceptions::option_already_exists)
+    catch (const cxxopts::exceptions::option_already_exists&)
     {
         dmsg_warning("ArgumentParser") << "Option " << name << " has already been added to the argument parser.";
     }
@@ -62,7 +62,7 @@ void ArgumentParser::addArgument(const std::string name, const std::string help)
     {
         m_options.add_options()(name.c_str(), help.c_str());
     }
-    catch (cxxopts::exceptions::option_already_exists)
+    catch (const cxxopts::exceptions::option_already_exists&)
     {
         dmsg_warning("ArgumentParser") << "Option " << name << " has already been added to the argument parser.";
     }

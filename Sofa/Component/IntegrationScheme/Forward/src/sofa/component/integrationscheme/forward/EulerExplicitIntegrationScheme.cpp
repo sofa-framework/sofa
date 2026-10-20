@@ -34,8 +34,6 @@
 #include "sofa/simulation/integrationscheme/ImplicitIntegrationScheme.h"
 using sofa::simulation::mechanicalvisitor::MechanicalGetNonDiagonalMassesCountVisitor;
 
-//#define SOFA_NO_VMULTIOP
-
 namespace sofa::component::integrationscheme::forward
 {
 
@@ -64,8 +62,6 @@ void EulerExplicitIntegrationScheme::doIntegrate(const core::ExecParams* params,
     }
 
     SCOPED_TIMER("EulerExplicitSolve");
-
-    m_mappingGraph.build(this->getContext());
 
     // Initialize the set of multi-vectors computed by this IntegrationScheme
     MultiVecDeriv acc   (m_vop.get(), core::vec_id::write_access::dx);     // acceleration to be computed
@@ -130,30 +126,6 @@ void EulerExplicitIntegrationScheme::updateState(sofa::simulation::common::Vecto
     MultiVecCoord pos(vop, core::vec_id::write_access::position ); //current position
     MultiVecDeriv vel(vop, core::vec_id::write_access::velocity ); //current velocity
 
-#ifdef SOFA_NO_VMULTIOP // unoptimized version
-    if (d_symplectic.getValue())
-    {
-        //newVel = vec + acc * dt
-        //newPos = pos + newVel * dt
-
-        newVel.eq(vel, acc.id(), m_dt);
-        m_mop->solveConstraint(newVel,core::ConstraintOrder::VEL);
-
-        newPos.eq(pos, newVel, m_dt);
-        m_mop->solveConstraint(newPos,core::ConstraintOrder::POS);
-    }
-    else
-    {
-        //newPos = pos + vel * dt
-        //newVel = vel + acc * dt
-
-        newPos.eq(pos, vel, m_dt);
-        m_mop->solveConstraint(newPos,core::ConstraintOrder::POS);
-
-        newVel.eq(vel, acc.id(), m_dt);
-        m_mop->solveConstraint(newVel,core::ConstraintOrder::VEL);
-    }
-#else // single-operation optimization
     {
         typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
 
@@ -209,7 +181,6 @@ void EulerExplicitIntegrationScheme::updateState(sofa::simulation::common::Vecto
         m_mop->solveConstraint(newVel,core::ConstraintOrder::VEL);
         m_mop->solveConstraint(newPos,core::ConstraintOrder::POS);
     }
-#endif
 }
 
 void EulerExplicitIntegrationScheme::init()
@@ -242,7 +213,7 @@ void EulerExplicitIntegrationScheme::computeForce(sofa::simulation::common::Mapp
     // 1. Clear the force vector (F := 0)
     // 2. Go down in the current context tree calling addForce on every forcefields
     // 3. Go up from the current context tree leaves calling applyJT on every mechanical mappings
-    mop->computeForce(m_mappingGraph, f, true, true, nullptr);
+    mop->computeForce(this->m_mappingGraph, f, true, true, nullptr);
 }
 
 void EulerExplicitIntegrationScheme::computeAcceleration(sofa::simulation::common::MappingGraphMechanicalOperations* mop, core::MultiVecDerivId acc, core::ConstMultiVecDerivId f)
@@ -264,7 +235,7 @@ void EulerExplicitIntegrationScheme::projectResponse(sofa::simulation::common::M
     // Calls the "projectResponse" method of every BaseProjectiveConstraintSet objects found in the
     // current context tree. An example of such constraint set is the FixedProjectiveConstraint. In this case,
     // it will set to 0 every row (i, _) of the input vector for the ith degree of freedom.
-    mop->projectResponse(m_mappingGraph, vecId);
+    mop->projectResponse(this->m_mappingGraph, vecId);
 }
 
 void EulerExplicitIntegrationScheme::solveConstraints(sofa::simulation::common::MappingGraphMechanicalOperations* mop, core::MultiVecDerivId acc)
@@ -313,7 +284,7 @@ bool EulerExplicitIntegrationScheme::isMassMatrixTriviallyInvertible(const core:
     // Moreover, computing the inverse of a mapped mass would require a complex API. Therefore, this
     // case is not supported without assembling the global mass matrix.
     bool hasMappedMass = false;
-    m_mappingGraph.algorithms.traverseComponentGroups_([&hasMappedMass](const sofa::core::behavior::BaseMass&)
+    this->m_mappingGraph.algorithms.traverseComponentGroups_([&hasMappedMass](const sofa::core::behavior::BaseMass&)
     {
         hasMappedMass = true;
     }, simulation::VisitorApplication::ONLY_MAPPED_NODES);
@@ -324,7 +295,7 @@ bool EulerExplicitIntegrationScheme::isMassMatrixTriviallyInvertible(const core:
 
     // At this stage, we know that we don't have any mapped mass. We can check if they are all diagonal.
     bool areAllMassesDiagonal = true;
-    m_mappingGraph.algorithms.traverseComponentGroups_([&areAllMassesDiagonal](const sofa::core::behavior::BaseMass& mass)
+    this->m_mappingGraph.algorithms.traverseComponentGroups_([&areAllMassesDiagonal](const sofa::core::behavior::BaseMass& mass)
     {
         areAllMassesDiagonal &= mass.isDiagonal();
     });

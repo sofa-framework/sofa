@@ -74,11 +74,6 @@ public:
 protected:
     STLExporter();
     ~STLExporter() override;
-
-private:
-    BaseMeshTopology*    m_inputtopology {nullptr};
-    BaseMechanicalState* m_inputmstate   {nullptr};
-    VisualModel*         m_inputvmodel   {nullptr};
 };
 
 } // namespace sofa::component::_stlexporter_

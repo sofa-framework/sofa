@@ -22,7 +22,7 @@
 #pragma once
 #include <sofa/component/topology/utility/TopologyBoundingTrasher.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/simulation/AnimateEndEvent.h>
+#include <sofa/simulation/events/AnimateEndEvent.h>
 #include <sofa/helper/AdvancedTimer.h>
 
 #include <sofa/component/topology/container/dynamic/EdgeSetTopologyModifier.h>
