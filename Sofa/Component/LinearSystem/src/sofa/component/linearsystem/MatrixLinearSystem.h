@@ -50,6 +50,37 @@ using sofa::core::BaseMapping;
 using sofa::core::matrixaccumulator::Contribution;
 
 /**
+ * Order of the components (or of the mechanical states) in the containers of the assembly: by their path in the scene
+ * graph, then by address for identical paths. The contributions of the components are added to the global matrix in
+ * the order of these containers: ordered by addresses, the rounding of the sums of contributions to the same entries
+ * would depend on where the components are allocated, which changes from one run to another.
+ */
+struct ComponentPathLess
+{
+    bool operator()(const sofa::core::objectmodel::BaseObject* a, const sofa::core::objectmodel::BaseObject* b) const
+    {
+        if (a == b || !a || !b)
+            return a < b;
+        const std::string pathA = a->getPathName();
+        const std::string pathB = b->getPathName();
+        return pathA != pathB ? pathA < pathB : a < b;
+    }
+};
+
+/// Lexicographic order of pairs of mechanical states, with ComponentPathLess
+struct PairOfStatesPathLess
+{
+    bool operator()(const sofa::type::fixed_array<core::behavior::BaseMechanicalState*, 2>& a,
+                    const sofa::type::fixed_array<core::behavior::BaseMechanicalState*, 2>& b) const
+    {
+        const ComponentPathLess less;
+        if (less(a[0], b[0])) return true;
+        if (less(b[0], a[0])) return false;
+        return less(a[1], b[1]);
+    }
+};
+
+/**
  * Data structure storing local matrix components created during the matrix assembly and associated
  * to each component contributing to the global matrix
  */
@@ -107,17 +138,17 @@ protected:
         LocalMatrixMaps<Contribution::GEOMETRIC_STIFFNESS, Real>
     > m_localMatrixMaps;
 
-    std::map<BaseForceField*, core::behavior::StiffnessMatrix> m_stiffness;
-    std::map<BaseForceField*, core::behavior::DampingMatrix> m_damping;
-    std::map<BaseMapping*, core::GeometricStiffnessMatrix> m_geometricStiffness;
-    std::map<BaseMass*, BaseAssemblingMatrixAccumulator<Contribution::MASS>*> m_mass;
+    std::map<BaseForceField*, core::behavior::StiffnessMatrix, ComponentPathLess> m_stiffness;
+    std::map<BaseForceField*, core::behavior::DampingMatrix, ComponentPathLess> m_damping;
+    std::map<BaseMapping*, core::GeometricStiffnessMatrix, ComponentPathLess> m_geometricStiffness;
+    std::map<BaseMass*, BaseAssemblingMatrixAccumulator<Contribution::MASS>*, ComponentPathLess> m_mass;
 
     struct IndependentContributors
     {
-        std::map<BaseForceField*, core::behavior::StiffnessMatrix> m_stiffness;
-        std::map<BaseForceField*, core::behavior::DampingMatrix> m_damping;
-        std::map<BaseMapping*, core::GeometricStiffnessMatrix> m_geometricStiffness;
-        std::map<BaseMass*, BaseAssemblingMatrixAccumulator<Contribution::MASS>*> m_mass;
+        std::map<BaseForceField*, core::behavior::StiffnessMatrix, ComponentPathLess> m_stiffness;
+        std::map<BaseForceField*, core::behavior::DampingMatrix, ComponentPathLess> m_damping;
+        std::map<BaseMapping*, core::GeometricStiffnessMatrix, ComponentPathLess> m_geometricStiffness;
+        std::map<BaseMass*, BaseAssemblingMatrixAccumulator<Contribution::MASS>*, ComponentPathLess> m_mass;
         int id {};
     };
 
@@ -238,7 +269,7 @@ protected:
     sofa::type::vector<sofa::core::matrixaccumulator::get_component_type<c>*> getContributors() const;
 
     void buildGroupsOfComponentAssociatedToMechanicalStates(
-        std::map< PairMechanicalStates, GroupOfComponentsAssociatedToAPairOfMechanicalStates>& groups);
+        std::map< PairMechanicalStates, GroupOfComponentsAssociatedToAPairOfMechanicalStates, PairOfStatesPathLess>& groups);
 
     /// An object with factory methods to create local matrices
     std::tuple<
@@ -255,7 +286,7 @@ protected:
     virtual std::shared_ptr<sofa::core::matrixaccumulator::IndexVerificationStrategy>
     makeIndexVerificationStrategy(sofa::core::objectmodel::BaseComponent* component);
 
-    std::map< PairMechanicalStates, BaseMatrixProjectionMethod<LocalMappedMatrixType<Real> >* > m_matrixMappings;
+    std::map< PairMechanicalStates, BaseMatrixProjectionMethod<LocalMappedMatrixType<Real> >*, PairOfStatesPathLess > m_matrixMappings;
 
     virtual typename BaseMatrixProjectionMethod<LocalMappedMatrixType<Real> >::SPtr createMatrixMapping(const PairMechanicalStates& pair);
 
@@ -286,12 +317,12 @@ struct LocalMatrixMaps
     using PairMechanicalStates = sofa::type::fixed_array<core::behavior::BaseMechanicalState*, 2>;
 
     /// The local matrix (value) that has been created and associated to a mapped component (key)
-    std::map< ComponentType*, std::map<PairMechanicalStates, AssemblingMappedMatrixAccumulator<c, Real>*> > mappedLocalMatrix;
+    std::map< ComponentType*, std::map<PairMechanicalStates, AssemblingMappedMatrixAccumulator<c, Real>*, PairOfStatesPathLess>, ComponentPathLess > mappedLocalMatrix;
     /// A verification strategy allowing to verify that the matrix indices provided are valid
-    std::map< ComponentType*, std::shared_ptr<core::matrixaccumulator::IndexVerificationStrategy> > indexVerificationStrategy;
+    std::map< ComponentType*, std::shared_ptr<core::matrixaccumulator::IndexVerificationStrategy>, ComponentPathLess > indexVerificationStrategy;
 
 
-    std::map< ComponentType*, std::map<PairMechanicalStates, BaseAssemblingMatrixAccumulator<c>* > > componentLocalMatrix;
+    std::map< ComponentType*, std::map<PairMechanicalStates, BaseAssemblingMatrixAccumulator<c>*, PairOfStatesPathLess >, ComponentPathLess > componentLocalMatrix;
 
     void clear()
     {
@@ -311,9 +342,9 @@ struct LocalMatrixMaps
 
 struct GroupOfComponentsAssociatedToAPairOfMechanicalStates
 {
-    std::set<BaseForceField*> forcefieds;
-    std::set<BaseMass*> masses;
-    std::set<BaseMapping*> mappings;
+    std::set<BaseForceField*, ComponentPathLess> forcefieds;
+    std::set<BaseMass*, ComponentPathLess> masses;
+    std::set<BaseMapping*, ComponentPathLess> mappings;
 
     friend std::ostream& operator<<(std::ostream& os,
         const GroupOfComponentsAssociatedToAPairOfMechanicalStates& group);
