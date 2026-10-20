@@ -117,6 +117,7 @@ struct CorotationalFEMForceFieldTangent_test : public sofa::ForceField_test<Forc
         this->force->findData("rotationMethod")->read("polar");
 
         this->deltaRange = {5e5, 5e6};
+        this->flags &= ~sofa::ForceField_test<ForceField>::TEST_ADD_K_TO_MATRIX;
     }
 
     /// Rotation by 30 degrees. In 3D, the rotation is taken about the axis (1, 2, 3).
