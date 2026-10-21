@@ -68,14 +68,11 @@ public:
 
     virtual void addMDx(const MechanicalParams* mparams, DataVecDeriv& f, const DataVecDeriv& dx, SReal factor);
 
-    ///                            $ dx = M^-1 f $
-    ///
-    /// This method retrieves the force and dx vector and call the internal
-    /// accFromF(VecDeriv&,const VecDeriv&) method implemented by the component.
-    void accFromF(const MechanicalParams* mparams, MultiVecDerivId aid) override;
-
+    SOFA_CORE_DEPRECATED_ACCFROMF()
     virtual void accFromF(const MechanicalParams* mparams, DataVecDeriv& a, const DataVecDeriv& f);
 
+    void solveLinearSystem(const MechanicalParams* mparams, MultiVecDerivId xId, ConstMultiVecDerivId bId) override;
+    virtual void doSolveLinearSystem(const MechanicalParams* mparams, DataVecDeriv& x, const DataVecDeriv& b);
 
     /// Mass forces (gravity) often have null derivative
     void addDForce(const MechanicalParams* /*mparams*/, DataVecDeriv & /*df*/, const DataVecDeriv & /*dx*/ ) override;
