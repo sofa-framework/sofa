@@ -24,8 +24,8 @@
 
 #include <sofa/core/ObjectFactory.h>
 //#include <sofa/core/objectmodel/HapticDeviceEvent.h>
-#include <sofa/simulation/AnimateBeginEvent.h>
-#include <sofa/simulation/AnimateEndEvent.h>
+#include <sofa/simulation/events/AnimateBeginEvent.h>
+#include <sofa/simulation/events/AnimateEndEvent.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/UpdateMappingVisitor.h>

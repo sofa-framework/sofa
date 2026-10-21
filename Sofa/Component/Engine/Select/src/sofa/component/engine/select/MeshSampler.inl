@@ -115,7 +115,7 @@ void MeshSampler<DataTypes>::farthestPointSampling(VD& distances,VI& voronoi,con
 
     while(ind.size()<nbc)
     {
-        Real dmax=0; ID imax;
+        Real dmax=0; ID imax=0;
         for (unsigned int i=0; i<distances.size(); i++) if(distances[i]>dmax) {dmax=distances[i]; imax=(ID)i;}
         if(dmax==0) break;
         else ind.push_back(imax);

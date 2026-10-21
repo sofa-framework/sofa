@@ -24,7 +24,7 @@
 
 #include <sofa/component/statecontainer/MechanicalObject.h>
 
-#include <sofa/simulation/AnimateBeginEvent.h>
+#include <sofa/simulation/events/AnimateBeginEvent.h>
 
 namespace sofa::component::engine
 {

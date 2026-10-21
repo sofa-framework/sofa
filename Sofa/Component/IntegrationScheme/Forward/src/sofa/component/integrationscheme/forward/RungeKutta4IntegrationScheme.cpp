@@ -78,12 +78,6 @@ void RungeKutta4IntegrationScheme::doIntegrate(const core::ExecParams* params, s
     //Step 2
     dmsg_info() << "RK4 Step 2" ;
 
-#ifdef SOFA_NO_VMULTIOP // unoptimized version
-    newX = pos;
-    k2v = vel;
-    newX.peq(k1v, stepBy2);
-    k2v.peq(k1a, stepBy2);
-#else // single-operation optimization
     {
         typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
         VMultiOp ops;
@@ -96,18 +90,12 @@ void RungeKutta4IntegrationScheme::doIntegrate(const core::ExecParams* params, s
         ops[1].second.push_back(std::make_pair(k1a.id(),stepBy2));
         m_vop->v_multiop(ops);
     }
-#endif
 
     m_mop->computeAcc ( startTime+stepBy2, k2a, newX, k2v );
 
     // step 3
     dmsg_info() << "RK4 Step 3" ;
-#ifdef SOFA_NO_VMULTIOP // unoptimized version
-    newX = pos;
-    k3v = vel;
-    newX.peq(k2v, stepBy2);
-    k3v.peq(k2a, stepBy2);
-#else // single-operation optimization
+
     {
         typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
         VMultiOp ops;
@@ -120,18 +108,11 @@ void RungeKutta4IntegrationScheme::doIntegrate(const core::ExecParams* params, s
         ops[1].second.push_back(std::make_pair(k2a.id(),stepBy2));
         m_vop->v_multiop(ops);
     }
-#endif
 
     m_mop->computeAcc ( startTime+stepBy2, k3a, newX, k3v );
 
     // step 4
     dmsg_info() << "RK4 Step 4" ;
-#ifdef SOFA_NO_VMULTIOP // unoptimized version
-    newX = pos;
-    k4v = vel;
-    newX.peq(k3v, dt);
-    k4v.peq(k3a, dt);
-#else // single-operation optimization
     {
         typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
         VMultiOp ops;
@@ -144,24 +125,11 @@ void RungeKutta4IntegrationScheme::doIntegrate(const core::ExecParams* params, s
         ops[1].second.push_back(std::make_pair(k3a.id(),m_dt));
         m_vop->v_multiop(ops);
     }
-#endif
 
     m_mop->computeAcc( startTime+m_dt, k4a, newX, k4v);
 
    dmsg_info() << "RK4 Final";
 
-#ifdef SOFA_NO_VMULTIOP // unoptimized version
-    pos2.eq(pos,k1v,stepBy6);
-    vel2.eq(vel,k1a,stepBy6);
-    pos2.peq(k2v,stepBy3);
-    vel2.peq(k2a,stepBy3);
-    pos2.peq(k3v,stepBy3);
-    vel2.peq(k3a,stepBy3);
-    pos2.peq(k4v,stepBy6);
-    m_mop->solveConstraint(pos2, core::ConstraintOrder::POS);
-    vel2.peq(k4a,stepBy6);
-    m_mop->solveConstraint(vel2, core::ConstraintOrder::VEL);
-#else // single-operation optimization
     {
         typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
         VMultiOp ops;
@@ -183,7 +151,6 @@ void RungeKutta4IntegrationScheme::doIntegrate(const core::ExecParams* params, s
         m_mop->solveConstraint(pos, core::ConstraintOrder::POS);
         m_mop->solveConstraint(vel, core::ConstraintOrder::VEL);
     }
-#endif
 }
 
 

@@ -26,7 +26,7 @@
 #include <sofa/core/objectmodel/BaseComponent.h>
 #include <image/ImageTypes.h>
 #include <sofa/core/objectmodel/Event.h>
-#include <sofa/simulation/AnimateEndEvent.h>
+#include <sofa/simulation/events/AnimateEndEvent.h>
 
 
 namespace sofa
