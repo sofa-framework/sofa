@@ -20,12 +20,14 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/simulation/integrationscheme/AccelerationBasedImplicitIntegrationScheme.h>
+
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/BaseMass.h>
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
+#include <sofa/simulation/DifferentialOperations.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalGetNonDiagonalMassesCountVisitor.h>
 
 using sofa::simulation::mechanicalvisitor::MechanicalGetNonDiagonalMassesCountVisitor;
@@ -114,9 +116,9 @@ void AccelerationBasedImplicitIntegrationScheme::doSetupIntegrationStep(const co
     //Propagate intermediate vectors
     for (unsigned i = 0; i < order; ++i)
     {
-        m_mop->propagateX(m_x0[i]);
-        m_mop->propagateV(m_v0[i]);
-        m_mop->propagateV(m_a0[i]);
+        simulation::common::DifferentialOperations::pushforwardCoord(m_mappingGraph, *m_params, m_x0[i]);
+        simulation::common::DifferentialOperations::pushforwardTangent(m_mappingGraph, *m_params, m_v0[i]);
+        simulation::common::DifferentialOperations::pushforwardTangent(m_mappingGraph, *m_params, m_a0[i]);
     }
 
 }
@@ -192,8 +194,8 @@ void AccelerationBasedImplicitIntegrationScheme::computeRHS(bool firstIteration)
 
         if (firstIteration)
         {
-            m_mop->propagateDx(m_r1);
-            m_mop->propagateDx(m_r2);
+            simulation::common::DifferentialOperations::pushforwardTangent(m_mappingGraph, *m_params, m_r1);
+            simulation::common::DifferentialOperations::pushforwardTangent(m_mappingGraph, *m_params, m_r2);
 
             m_mop->mparams.setV(m_r1);
             m_mop->addMBKv(m_mappingGraph, m_r0, core::MatricesFactors::M(0.0),
@@ -207,7 +209,7 @@ void AccelerationBasedImplicitIntegrationScheme::computeRHS(bool firstIteration)
         }
 
         m_mop->mparams.setV(m_acceleration);
-        m_mop->propagateDx(m_acceleration);
+        simulation::common::DifferentialOperations::pushforwardTangent(m_mappingGraph, *m_params, m_acceleration);
 
         m_mop->addMBKv(m_mappingGraph, m_r0, core::MatricesFactors::M(-1.0),
                     core::MatricesFactors::B(0),
@@ -219,9 +221,9 @@ void AccelerationBasedImplicitIntegrationScheme::computeRHS(bool firstIteration)
         m_mop->projectResponse(m_mappingGraph, m_r1);
         m_mop->projectResponse(m_mappingGraph, m_r2);
 
-        m_mop->propagateDx(m_r0);
-        m_mop->propagateDx(m_r1);
-        m_mop->propagateDx(m_r2);
+        simulation::common::DifferentialOperations::pushforwardTangent(m_mappingGraph, *m_params, m_r0);
+        simulation::common::DifferentialOperations::pushforwardTangent(m_mappingGraph, *m_params, m_r1);
+        simulation::common::DifferentialOperations::pushforwardTangent(m_mappingGraph, *m_params, m_r2);
     }
 
 }
@@ -244,7 +246,7 @@ void AccelerationBasedImplicitIntegrationScheme::solveLinearEquation()
     l_linearSolver->solveSystem();
     l_linearSolver->getLinearSystem()->dispatchSystemSolution(m_systemUnknown);
 
-    m_mop->propagateDx(m_systemUnknown);
+    simulation::common::DifferentialOperations::pushforwardTangent(m_mappingGraph, *m_params, m_systemUnknown);
 }
 
 void AccelerationBasedImplicitIntegrationScheme::updateStatesFromLinearSolution(SReal alpha, bool firstIteration)
@@ -277,9 +279,9 @@ void AccelerationBasedImplicitIntegrationScheme::updateStatesFromLinearSolution(
 
     // TODO this collides with Free motion propagation using a MechanicalVOpVisitor and expecting a EulerImplicit
     //      future implementation of global Newton will reactivate those
-    // m_mop->propagateX(pos);
-    // m_mop->propagateV(vel);
-    // m_mop->propagateDx(acc);
+    // simulation::common::DifferentialOperations::pushforwardCoord(m_mappingGraph, *m_params, pos);
+    // simulation::common::DifferentialOperations::pushforwardTangent(m_mappingGraph, *m_params, vel);
+    // simulation::common::DifferentialOperations::pushforwardTangent(m_mappingGraph, *m_params, acc);
 }
 
 
