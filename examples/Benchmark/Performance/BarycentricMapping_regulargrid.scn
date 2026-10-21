@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<Node name="root" gravity="0 0 0" dt="0.01">
+
+    <Node name="plugins">
+        <RequiredPlugin pluginName="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
+        <RequiredPlugin pluginName="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+        <RequiredPlugin pluginName="Sofa.Component.IntegrationScheme.Forward"/> <!-- Needed to use components [EulerExplicitIntegrationScheme] -->
+        <RequiredPlugin pluginName="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [BarycentricMapping] -->
+        <RequiredPlugin pluginName="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
+        <RequiredPlugin pluginName="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+        <RequiredPlugin pluginName="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->
+    </Node>
+
+    <DefaultAnimationLoop computeBoundingBox="false" />
+    <MeshOBJLoader name="meshLoader" triangulate="true" filename="mesh/raptor_35kp.obj" />
+
+    <Node name="grid">
+        <EulerExplicitIntegrationScheme />
+        <RegularGridTopology name="topology" n="22 38 82" min="-2.1 -0.3 -9.2" max="2.1 7.1 7.0" />
+        <MechanicalObject name="DOFs" template="Vec3" />
+        <UniformMass totalMass="1.0" />
+
+        <Node name="Visualization">
+            <OglModel name="VisualModel" src="@../../meshLoader" />
+            <BarycentricMapping input="@../DOFs" output="@VisualModel" />
+        </Node>
+    </Node>
+
+</Node>
