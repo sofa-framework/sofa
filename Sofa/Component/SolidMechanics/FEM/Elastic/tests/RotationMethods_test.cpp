@@ -88,6 +88,17 @@ const Matrix<Vec3Types> inPlaneStretch3D = []
     return tilt * stretch * tilt.transposed();
 }();
 
+// Stretches followed by a rotation.
+const Matrix<Vec2Types> rotatedStretch2D = rotation(30 * degreeToRadian) * offAxisStretch2D;
+const Matrix<Vec3Types> rotatedStretch3D = rotation(axis, 30 * degreeToRadian) * offAxisStretch3D;
+const Matrix<Vec3Types> rotatedInPlaneStretch3D = rotation(axis, 30 * degreeToRadian) * inPlaneStretch3D;
+
+// Renumberings that keep the element valid.
+const std::array<std::size_t, 3> triangleNumbering {1, 2, 0};
+const std::array<std::size_t, 4> quadNumbering {1, 2, 3, 0};
+const std::array<std::size_t, 4> tetrahedronNumbering {1, 2, 0, 3};
+const std::array<std::size_t, 8> hexahedronNumbering {1, 2, 3, 0, 5, 6, 7, 4};
+
 /// The 2D element placed in the tilted plane.
 template <std::size_t N>
 Nodes<Vec3Types, N> tiltElement(const Nodes<Vec2Types, N>& nodes)
@@ -204,6 +215,30 @@ template <class Method, class Coord, std::size_t N>
     }
 
     return sameRotation(extractRotation<Method>(positions, restPositions), Method::RotationMatrix::Identity());
+}
+
+/// Renumbering the nodes of a deformed element x = F X leaves R unchanged.
+template <class Method, class Coord, std::size_t N>
+::testing::AssertionResult meetsRenumbering(const std::array<Coord, N>& restPositions,
+                                            const typename Method::RotationMatrix& F,
+                                            const std::array<std::size_t, N>& numbering)
+{
+    std::array<Coord, N> positions;
+    for (std::size_t j = 0; j < N; ++j)
+    {
+        positions[j] = F * restPositions[j];
+    }
+
+    std::array<Coord, N> renumberedPositions;
+    std::array<Coord, N> renumberedRestPositions;
+    for (std::size_t j = 0; j < N; ++j)
+    {
+        renumberedPositions[j] = positions[numbering[j]];
+        renumberedRestPositions[j] = restPositions[numbering[j]];
+    }
+
+    return sameRotation(extractRotation<Method>(renumberedPositions, renumberedRestPositions),
+                        extractRotation<Method>(positions, restPositions));
 }
 
 }
@@ -362,6 +397,84 @@ TEST(RotationMethods, irregularHexahedronStretchPatch)
     EXPECT_FALSE(meetsStretchPatch<PolarDecomposition<Vec3Types>>(irregularHexahedron, offAxisStretch3D));
     EXPECT_FALSE(meetsStretchPatch<StablePolarDecomposition<Vec3Types>>(irregularHexahedron, offAxisStretch3D));
     EXPECT_FALSE(meetsStretchPatch<HexahedronRotation<Vec3Types>>(irregularHexahedron, offAxisStretch3D));
+}
+
+TEST(RotationMethods, regularQuad2DRenumbering)
+{
+    EXPECT_TRUE(meetsRenumbering<PolarDecomposition<Vec2Types>>(regularQuad2D, rotatedStretch2D, quadNumbering));
+    EXPECT_TRUE(meetsRenumbering<StablePolarDecomposition<Vec2Types>>(regularQuad2D, rotatedStretch2D, quadNumbering));
+}
+
+TEST(RotationMethods, regularQuad3DRenumbering)
+{
+    EXPECT_TRUE(meetsRenumbering<PolarDecomposition<Vec3Types>>(regularQuad3D, rotatedInPlaneStretch3D, quadNumbering));
+    EXPECT_TRUE(meetsRenumbering<StablePolarDecomposition<Vec3Types>>(regularQuad3D, rotatedInPlaneStretch3D, quadNumbering));
+}
+
+TEST(RotationMethods, regularTriangle2DRenumbering)
+{
+    EXPECT_TRUE(meetsRenumbering<PolarDecomposition<Vec2Types>>(regularTriangle2D, rotatedStretch2D, triangleNumbering));
+    EXPECT_TRUE(meetsRenumbering<StablePolarDecomposition<Vec2Types>>(regularTriangle2D, rotatedStretch2D, triangleNumbering));
+}
+
+TEST(RotationMethods, regularTriangle3DRenumbering)
+{
+    EXPECT_TRUE(meetsRenumbering<PolarDecomposition<Vec3Types>>(regularTriangle3D, rotatedInPlaneStretch3D, triangleNumbering));
+    EXPECT_TRUE(meetsRenumbering<StablePolarDecomposition<Vec3Types>>(regularTriangle3D, rotatedInPlaneStretch3D, triangleNumbering));
+    EXPECT_FALSE(meetsRenumbering<TriangleRotation<Vec3Types>>(regularTriangle3D, rotatedInPlaneStretch3D, triangleNumbering));
+}
+
+TEST(RotationMethods, regularTetrahedronRenumbering)
+{
+    EXPECT_TRUE(meetsRenumbering<PolarDecomposition<Vec3Types>>(regularTetrahedron, rotatedStretch3D, tetrahedronNumbering));
+    EXPECT_TRUE(meetsRenumbering<StablePolarDecomposition<Vec3Types>>(regularTetrahedron, rotatedStretch3D, tetrahedronNumbering));
+    EXPECT_FALSE(meetsRenumbering<TriangleRotation<Vec3Types>>(regularTetrahedron, rotatedStretch3D, tetrahedronNumbering));
+}
+
+TEST(RotationMethods, regularHexahedronRenumbering)
+{
+    EXPECT_TRUE(meetsRenumbering<PolarDecomposition<Vec3Types>>(regularHexahedron, rotatedStretch3D, hexahedronNumbering));
+    EXPECT_TRUE(meetsRenumbering<StablePolarDecomposition<Vec3Types>>(regularHexahedron, rotatedStretch3D, hexahedronNumbering));
+    EXPECT_FALSE(meetsRenumbering<HexahedronRotation<Vec3Types>>(regularHexahedron, rotatedStretch3D, hexahedronNumbering));
+}
+
+TEST(RotationMethods, irregularQuad2DRenumbering)
+{
+    EXPECT_TRUE(meetsRenumbering<PolarDecomposition<Vec2Types>>(irregularQuad2D, rotatedStretch2D, quadNumbering));
+    EXPECT_TRUE(meetsRenumbering<StablePolarDecomposition<Vec2Types>>(irregularQuad2D, rotatedStretch2D, quadNumbering));
+}
+
+TEST(RotationMethods, irregularQuad3DRenumbering)
+{
+    EXPECT_TRUE(meetsRenumbering<PolarDecomposition<Vec3Types>>(irregularQuad3D, rotatedInPlaneStretch3D, quadNumbering));
+    EXPECT_TRUE(meetsRenumbering<StablePolarDecomposition<Vec3Types>>(irregularQuad3D, rotatedInPlaneStretch3D, quadNumbering));
+}
+
+TEST(RotationMethods, irregularTriangle2DRenumbering)
+{
+    EXPECT_TRUE(meetsRenumbering<PolarDecomposition<Vec2Types>>(irregularTriangle2D, rotatedStretch2D, triangleNumbering));
+    EXPECT_TRUE(meetsRenumbering<StablePolarDecomposition<Vec2Types>>(irregularTriangle2D, rotatedStretch2D, triangleNumbering));
+}
+
+TEST(RotationMethods, irregularTriangle3DRenumbering)
+{
+    EXPECT_TRUE(meetsRenumbering<PolarDecomposition<Vec3Types>>(irregularTriangle3D, rotatedInPlaneStretch3D, triangleNumbering));
+    EXPECT_TRUE(meetsRenumbering<StablePolarDecomposition<Vec3Types>>(irregularTriangle3D, rotatedInPlaneStretch3D, triangleNumbering));
+    EXPECT_FALSE(meetsRenumbering<TriangleRotation<Vec3Types>>(irregularTriangle3D, rotatedInPlaneStretch3D, triangleNumbering));
+}
+
+TEST(RotationMethods, irregularTetrahedronRenumbering)
+{
+    EXPECT_TRUE(meetsRenumbering<PolarDecomposition<Vec3Types>>(irregularTetrahedron, rotatedStretch3D, tetrahedronNumbering));
+    EXPECT_TRUE(meetsRenumbering<StablePolarDecomposition<Vec3Types>>(irregularTetrahedron, rotatedStretch3D, tetrahedronNumbering));
+    EXPECT_FALSE(meetsRenumbering<TriangleRotation<Vec3Types>>(irregularTetrahedron, rotatedStretch3D, tetrahedronNumbering));
+}
+
+TEST(RotationMethods, irregularHexahedronRenumbering)
+{
+    EXPECT_TRUE(meetsRenumbering<PolarDecomposition<Vec3Types>>(irregularHexahedron, rotatedStretch3D, hexahedronNumbering));
+    EXPECT_TRUE(meetsRenumbering<StablePolarDecomposition<Vec3Types>>(irregularHexahedron, rotatedStretch3D, hexahedronNumbering));
+    EXPECT_FALSE(meetsRenumbering<HexahedronRotation<Vec3Types>>(irregularHexahedron, rotatedStretch3D, hexahedronNumbering));
 }
 
 }
