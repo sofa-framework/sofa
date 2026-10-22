@@ -32,7 +32,8 @@ namespace sofa::component::solidmechanics::fem::elastic
 
 template <class DataTypes, class ElementType>
 CorotationalFEMForceField<DataTypes, ElementType>::CorotationalFEMForceField()
-    : m_rotationMethods(this)
+    : d_consistentTangent(initData(&d_consistentTangent, true, "consistentTangent", "Include the change of the element rotations in the force derivatives"))
+    , m_rotationMethods(this)
 {
     this->addUpdateCallback("selectRotationMethod", {&this->m_rotationMethods.d_rotationMethod},
         [this](const sofa::core::DataTracker&)
@@ -76,6 +77,7 @@ void CorotationalFEMForceField<DataTypes, ElementType>::beforeElementForce(
 {
     const auto& elements = trait::FiniteElement::getElementSequence(*this->l_topology);
     m_rotations.resize(elements.size(), RotationMatrix::Identity());
+    m_tangents.resize(d_consistentTangent.getValue() ? elements.size() : 0);
 }
 
 template <class DataTypes, class ElementType>
@@ -130,6 +132,43 @@ void CorotationalFEMForceField<DataTypes, ElementType>::computeElementsForces(
         auto& elementForce = elementForces[elementId];
         elementForce = stiffnessMatrix * displacement;
 
+        if (!m_tangents.empty())
+        {
+            typename RotationMethods<DataTypes, ElementType>::RotationJacobian jacobian;
+            if (!m_rotationMethods.computeRotationJacobian(jacobian, elementRotation, elementNodesCoordinates, restElementNodesCoordinates))
+            {
+                msg_warning_once() << "The rotation jacobian of an element could not be computed. Its tangent ignores the change of rotation.";
+            }
+
+            const auto t0 = translation(restElementNodesCoordinates);
+            std::array<decltype(sofa::type::crossProductMatrix(sofa::Coord_t<DataTypes>()).transposed()), trait::NumberOfNodesInElement> localPositions;
+            sofa::Coord_t<DataTypes> nodeValue { sofa::type::NOINIT };
+            for (sofa::Size c = 0; c < trait::NumberOfNodesInElement; ++c)
+            {
+                displacement.getsub(c * DIM, nodeValue);
+                localPositions[c] = sofa::type::crossProductMatrix(nodeValue + restElementNodesCoordinates[c] - t0).transposed();
+            }
+
+            auto& tangent = m_tangents[elementId];
+            tangent = stiffnessMatrix;
+            RotationMatrix block { sofa::type::NOINIT };
+            for (sofa::Size a = 0; a < trait::NumberOfNodesInElement; ++a)
+            {
+                elementForce.getsub(a * DIM, nodeValue);
+                auto W = sofa::type::crossProductMatrix(nodeValue).transposed();
+                for (sofa::Size c = 0; c < trait::NumberOfNodesInElement; ++c)
+                {
+                    stiffnessMatrix.getsub(a * DIM, c * DIM, block);
+                    W -= block * localPositions[c];
+                }
+                for (sofa::Size b = 0; b < trait::NumberOfNodesInElement; ++b)
+                {
+                    tangent.getsub(a * DIM, b * DIM, block);
+                    tangent.setsub(a * DIM, b * DIM, block + W * jacobian[b]);
+                }
+            }
+        }
+
         sofa::type::Vec<DIM, sofa::Real_t<DataTypes>> nodeForce { sofa::type::NOINIT };
         for (sofa::Size n = 0; n < trait::NumberOfNodesInElement; ++n)
         {
@@ -149,6 +188,7 @@ void CorotationalFEMForceField<DataTypes, ElementType>::computeElementsForcesDer
 {
     const auto& elements = trait::FiniteElement::getElementSequence(*this->l_topology);
     auto elementStiffness = sofa::helper::getReadAccessor(this->d_elementStiffness);
+    const auto& elementTangentStiffness = m_tangents.empty() ? elementStiffness.ref() : m_tangents;
 
     for (std::size_t elementId = range.start; elementId < range.end; ++elementId)
     {
@@ -163,7 +203,7 @@ void CorotationalFEMForceField<DataTypes, ElementType>::computeElementsForcesDer
             element_dx.setsub(n * trait::spatial_dimensions, elementRotation.multTranspose(nodeDx[element[n]]));
         }
 
-        const auto& stiffnessMatrix = elementStiffness[elementId];
+        const auto& stiffnessMatrix = elementTangentStiffness[elementId];
 
         auto& df = elementForcesDeriv[elementId];
         df = stiffnessMatrix * element_dx;
@@ -194,7 +234,8 @@ void CorotationalFEMForceField<DataTypes, ElementType>::buildStiffnessMatrix(
         return;
     }
 
-    auto elementStiffnessIt = elementStiffness.begin();
+    const auto& elementTangentStiffness = m_tangents.empty() ? elementStiffness.ref() : m_tangents;
+    auto elementStiffnessIt = elementTangentStiffness.begin();
     auto rotationMatrixIt = m_rotations.begin();
     for (const auto& element : elements)
     {
