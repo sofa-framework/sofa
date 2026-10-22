@@ -34,7 +34,9 @@ namespace sofa::component::solidmechanics::fem::hyperelastic
 
 template <class TDataTypes, class TElementType>
 HyperelasticityFEMForceField<TDataTypes, TElementType>::HyperelasticityFEMForceField()
-    : l_material(initLink("material", "Link to the material containing the constitutive law"))
+    : d_materialEigenvaluesFilter(initData(&d_materialEigenvaluesFilter, "materialEigenvaluesFilter", ("Filter to apply to the material Hessian matrix eigenvalues\n" + EigenvaluesFilter::dataDescription()).c_str()))
+    , d_stiffnessEigenvaluesFilter(initData(&d_stiffnessEigenvaluesFilter, "stiffnessEigenvaluesFilter", ("Filter to apply to the element stiffness matrix eigenvalues\n" + EigenvaluesFilter::dataDescription()).c_str()))
+    , l_material(initLink("material", "Link to the material containing the constitutive law"))
 {
 }
 
@@ -157,6 +159,102 @@ void HyperelasticityFEMForceField<TDataTypes, TElementType>::validateMaterial()
     }
 }
 
+template <class TDataTypes>
+struct MaterialFilter
+{
+    virtual ~MaterialFilter() = default;
+    virtual void apply(MajorSymmetric4Tensor<TDataTypes>& materialHessian) = 0;
+};
+
+template <class TDataTypes>
+struct MaterialClampNegativeFilter : MaterialFilter<TDataTypes>
+{
+    void apply(MajorSymmetric4Tensor<TDataTypes>& materialHessian) override
+    {
+        materialHessian.filterEigenValues(sofa::helper::EigenValueFilter::ClampNegative);
+    }
+};
+
+template <class TDataTypes>
+struct MaterialAbsFilter : MaterialFilter<TDataTypes>
+{
+    void apply(MajorSymmetric4Tensor<TDataTypes>& materialHessian) override
+    {
+        materialHessian.filterEigenValues(sofa::helper::EigenValueFilter::Abs);
+    }
+};
+
+template <sofa::Size L, sofa::Size C, class real>
+struct StiffnessFilter
+{
+    virtual ~StiffnessFilter() = default;
+    virtual void apply(sofa::type::Mat<L, C, real>& stiffnessMatrix) = 0;
+};
+
+template <sofa::Size L, sofa::Size C, class real>
+struct StiffnessClampNegativeFilter : StiffnessFilter<L, C, real>
+{
+    void apply(sofa::type::Mat<L, C, real>& stiffnessMatrix) override
+    {
+        sofa::helper::filterEigenValues(stiffnessMatrix, sofa::helper::EigenValueFilter::ClampNegative);
+    }
+};
+
+template <sofa::Size L, sofa::Size C, class real>
+struct StiffnessAbsFilter : StiffnessFilter<L, C, real>
+{
+    void apply(sofa::type::Mat<L, C, real>& stiffnessMatrix) override
+    {
+        sofa::helper::filterEigenValues(stiffnessMatrix, sofa::helper::EigenValueFilter::Abs);
+    }
+};
+
+template <class TDataTypes, class TElementType>
+std::unique_ptr<MaterialFilter<TDataTypes>>
+HyperelasticityFEMForceField<TDataTypes, TElementType>::createMaterialFilter()
+{
+    std::unique_ptr<MaterialFilter<TDataTypes>> materialFilter;
+    switch (d_materialEigenvaluesFilter.getValue())
+    {
+        case EigenvaluesFilter("Abs"):
+            materialFilter.reset(new MaterialAbsFilter<TDataTypes>());
+            break;
+        case EigenvaluesFilter("ClampNegative"):
+            materialFilter.reset(new MaterialClampNegativeFilter<TDataTypes>());
+            break;
+        default:
+            break;
+    }
+    return materialFilter;
+}
+
+template <class TDataTypes, class TElementType>
+auto HyperelasticityFEMForceField<TDataTypes, TElementType>::createStiffnessFilter() ->
+std::unique_ptr<StiffnessFilter<TElementType::NumberOfNodes * DataTypes::spatial_dimensions,
+                                    TElementType::NumberOfNodes * DataTypes::spatial_dimensions,
+                                    sofa::Real_t<DataTypes>>>
+{
+    std::unique_ptr<StiffnessFilter<TElementType::NumberOfNodes * DataTypes::spatial_dimensions,
+                                    TElementType::NumberOfNodes * DataTypes::spatial_dimensions,
+                                    sofa::Real_t<DataTypes>>> stiffnessFilter;
+    switch (d_stiffnessEigenvaluesFilter.getValue())
+    {
+        case EigenvaluesFilter("Abs"):
+            stiffnessFilter.reset(new StiffnessAbsFilter<TElementType::NumberOfNodes * DataTypes::spatial_dimensions,
+                                    TElementType::NumberOfNodes * DataTypes::spatial_dimensions,
+                                    sofa::Real_t<DataTypes>>());
+            break;
+        case EigenvaluesFilter("ClampNegative"):
+            stiffnessFilter.reset(new StiffnessClampNegativeFilter<TElementType::NumberOfNodes * DataTypes::spatial_dimensions,
+                                    TElementType::NumberOfNodes * DataTypes::spatial_dimensions,
+                                    sofa::Real_t<DataTypes>>());
+            break;
+        default:
+            break;
+    }
+    return stiffnessFilter;
+}
+
 template <class TDataTypes, class TElementType>
 void HyperelasticityFEMForceField<TDataTypes, TElementType>::computeHessian(const VecCoord& coordinates)
 {
@@ -166,6 +264,9 @@ void HyperelasticityFEMForceField<TDataTypes, TElementType>::computeHessian(cons
     SCOPED_TIMER("ComputeHessian");
 
     const auto& elements = FiniteElement::getElementSequence(*this->l_topology);
+
+    auto materialFilter = createMaterialFilter();
+    auto stiffnessFilter = createStiffnessFilter();
 
     if (m_precomputedData.size() != elements.size())
     {
@@ -213,11 +314,13 @@ void HyperelasticityFEMForceField<TDataTypes, TElementType>::computeHessian(cons
             Strain<TDataTypes> strain(deformationGradient, F);
 
             // derivative of first Piola-Kirchhoff stress tensor with respect to deformation gradient
-            const auto dPdF = [&]()
+            auto dPdF = [&]()
             {
                 SCOPED_TIMER_VARNAME_TR(dPdFTimer, "dPdF");
                 return l_material->materialTangentModulus(strain);
             }();
+
+            if (materialFilter) materialFilter->apply(dPdF);
 
             const auto factor = detJ_Q * weight;
 
@@ -243,6 +346,9 @@ void HyperelasticityFEMForceField<TDataTypes, TElementType>::computeHessian(cons
                 }
             }
         }
+
+        if (stiffnessFilter)
+            stiffnessFilter->apply(K);
         ++elementIndex;
     }
 
