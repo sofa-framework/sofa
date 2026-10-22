@@ -60,44 +60,10 @@ Matrix<Vec3Types> rotation(const sofa::type::Vec3& axis, SReal angle)
     return Matrix<Vec3Types>::Identity() + K * std::sin(angle) + K * K * (1 - std::cos(angle));
 }
 
-const sofa::type::Vec3 axis(1.0, 2.0, 3.0);
+// Shapes
 
 /// Maps the plane z = 0 to a plane that contains no coordinate axis.
 const Matrix<Vec3Types> tilt = rotation(sofa::type::Vec3(1.0, -1.0, 2.0), 40 * degreeToRadian);
-
-const Matrix<Vec2Types> stretch2D {{1.5, 0.0}, {0.0, 1.0}};
-const Matrix<Vec3Types> stretch3D {{1.5, 0.0, 0.0}, {0.0, 1.0, 0.0}, {0.0, 0.0, 1.0}};
-
-// Stretches along a direction that follows no element edge.
-const Matrix<Vec2Types> offAxisStretch2D =
-    rotation(30 * degreeToRadian) * stretch2D * rotation(30 * degreeToRadian).transposed();
-const Matrix<Vec3Types> offAxisStretch3D =
-    rotation(axis, 30 * degreeToRadian) * stretch3D * rotation(axis, 30 * degreeToRadian).transposed();
-
-/// offAxisStretch2D within the tilted plane.
-const Matrix<Vec3Types> inPlaneStretch3D = []
-{
-    Matrix<Vec3Types> stretch = Matrix<Vec3Types>::Identity();
-    for (std::size_t i = 0; i < 2; ++i)
-    {
-        for (std::size_t j = 0; j < 2; ++j)
-        {
-            stretch(i, j) = offAxisStretch2D(i, j);
-        }
-    }
-    return tilt * stretch * tilt.transposed();
-}();
-
-// Stretches followed by a rotation.
-const Matrix<Vec2Types> rotatedStretch2D = rotation(30 * degreeToRadian) * offAxisStretch2D;
-const Matrix<Vec3Types> rotatedStretch3D = rotation(axis, 30 * degreeToRadian) * offAxisStretch3D;
-const Matrix<Vec3Types> rotatedInPlaneStretch3D = rotation(axis, 30 * degreeToRadian) * inPlaneStretch3D;
-
-// Renumberings that keep the element valid.
-const std::array<std::size_t, 3> triangleNumbering {1, 2, 0};
-const std::array<std::size_t, 4> quadNumbering {1, 2, 3, 0};
-const std::array<std::size_t, 4> tetrahedronNumbering {1, 2, 0, 3};
-const std::array<std::size_t, 8> hexahedronNumbering {1, 2, 3, 0, 5, 6, 7, 4};
 
 /// The 2D element placed in the tilted plane.
 template <std::size_t N>
@@ -146,6 +112,44 @@ const Nodes<Vec3Types, 8> irregularHexahedron {
     sofa::type::Vec3(3.0, 2.0, 0.0), sofa::type::Vec3(0.0, 2.0, 0.0),
     sofa::type::Vec3(0.0, 0.0, 1.0), sofa::type::Vec3(3.0, 0.0, 1.0),
     sofa::type::Vec3(3.0, 2.0, 1.0), sofa::type::Vec3(0.0, 2.0, 1.0)};
+
+// Rigid motion
+
+const Matrix<Vec2Types> rotation2D = rotation(30 * degreeToRadian);
+const Matrix<Vec3Types> rotation3D = rotation(sofa::type::Vec3(1.0, 2.0, 3.0), 30 * degreeToRadian);
+
+// Stretch patch: stretches along a direction that follows no element edge
+
+const Matrix<Vec2Types> stretch2D {{1.5, 0.0}, {0.0, 1.0}};
+const Matrix<Vec3Types> stretch3D {{1.5, 0.0, 0.0}, {0.0, 1.0, 0.0}, {0.0, 0.0, 1.0}};
+
+const Matrix<Vec2Types> offAxisStretch2D = rotation2D * stretch2D * rotation2D.transposed();
+const Matrix<Vec3Types> offAxisStretch3D = rotation3D * stretch3D * rotation3D.transposed();
+
+/// offAxisStretch2D within the tilted plane.
+const Matrix<Vec3Types> inPlaneStretch3D = []
+{
+    Matrix<Vec3Types> stretch = Matrix<Vec3Types>::Identity();
+    for (std::size_t i = 0; i < 2; ++i)
+    {
+        for (std::size_t j = 0; j < 2; ++j)
+        {
+            stretch(i, j) = offAxisStretch2D(i, j);
+        }
+    }
+    return tilt * stretch * tilt.transposed();
+}();
+
+// Renumbering: the stretches followed by a rotation, and renumberings that keep the element valid
+
+const Matrix<Vec2Types> rotatedStretch2D = rotation2D * offAxisStretch2D;
+const Matrix<Vec3Types> rotatedStretch3D = rotation3D * offAxisStretch3D;
+const Matrix<Vec3Types> rotatedInPlaneStretch3D = rotation3D * inPlaneStretch3D;
+
+const std::array<std::size_t, 3> triangleNumbering {1, 2, 0};
+const std::array<std::size_t, 4> quadNumbering {1, 2, 3, 0};
+const std::array<std::size_t, 4> tetrahedronNumbering {1, 2, 0, 3};
+const std::array<std::size_t, 8> hexahedronNumbering {1, 2, 3, 0, 5, 6, 7, 4};
 
 /// Whether R equals the expected rotation, entry by entry, within 1e-10.
 template <class RotationMatrix>
@@ -245,80 +249,80 @@ template <class Method, class Coord, std::size_t N>
 
 TEST(RotationMethods, regularQuad2DRigidMotion)
 {
-    EXPECT_TRUE(meetsRigidMotion<PolarDecomposition<Vec2Types>>(regularQuad2D, rotation(30 * degreeToRadian)));
-    EXPECT_TRUE(meetsRigidMotion<StablePolarDecomposition<Vec2Types>>(regularQuad2D, rotation(30 * degreeToRadian)));
+    EXPECT_TRUE(meetsRigidMotion<PolarDecomposition<Vec2Types>>(regularQuad2D, rotation2D));
+    EXPECT_TRUE(meetsRigidMotion<StablePolarDecomposition<Vec2Types>>(regularQuad2D, rotation2D));
 }
 
 TEST(RotationMethods, regularQuad3DRigidMotion)
 {
-    EXPECT_TRUE(meetsRigidMotion<PolarDecomposition<Vec3Types>>(regularQuad3D, rotation(axis, 30 * degreeToRadian)));
-    EXPECT_TRUE(meetsRigidMotion<StablePolarDecomposition<Vec3Types>>(regularQuad3D, rotation(axis, 30 * degreeToRadian)));
+    EXPECT_TRUE(meetsRigidMotion<PolarDecomposition<Vec3Types>>(regularQuad3D, rotation3D));
+    EXPECT_TRUE(meetsRigidMotion<StablePolarDecomposition<Vec3Types>>(regularQuad3D, rotation3D));
 }
 
 TEST(RotationMethods, regularTriangle2DRigidMotion)
 {
-    EXPECT_TRUE(meetsRigidMotion<PolarDecomposition<Vec2Types>>(regularTriangle2D, rotation(30 * degreeToRadian)));
-    EXPECT_TRUE(meetsRigidMotion<StablePolarDecomposition<Vec2Types>>(regularTriangle2D, rotation(30 * degreeToRadian)));
+    EXPECT_TRUE(meetsRigidMotion<PolarDecomposition<Vec2Types>>(regularTriangle2D, rotation2D));
+    EXPECT_TRUE(meetsRigidMotion<StablePolarDecomposition<Vec2Types>>(regularTriangle2D, rotation2D));
 }
 
 TEST(RotationMethods, regularTriangle3DRigidMotion)
 {
-    EXPECT_TRUE(meetsRigidMotion<PolarDecomposition<Vec3Types>>(regularTriangle3D, rotation(axis, 30 * degreeToRadian)));
-    EXPECT_TRUE(meetsRigidMotion<StablePolarDecomposition<Vec3Types>>(regularTriangle3D, rotation(axis, 30 * degreeToRadian)));
-    EXPECT_TRUE(meetsRigidMotion<TriangleRotation<Vec3Types>>(regularTriangle3D, rotation(axis, 30 * degreeToRadian)));
+    EXPECT_TRUE(meetsRigidMotion<PolarDecomposition<Vec3Types>>(regularTriangle3D, rotation3D));
+    EXPECT_TRUE(meetsRigidMotion<StablePolarDecomposition<Vec3Types>>(regularTriangle3D, rotation3D));
+    EXPECT_TRUE(meetsRigidMotion<TriangleRotation<Vec3Types>>(regularTriangle3D, rotation3D));
 }
 
 TEST(RotationMethods, regularTetrahedronRigidMotion)
 {
-    EXPECT_TRUE(meetsRigidMotion<PolarDecomposition<Vec3Types>>(regularTetrahedron, rotation(axis, 30 * degreeToRadian)));
-    EXPECT_TRUE(meetsRigidMotion<StablePolarDecomposition<Vec3Types>>(regularTetrahedron, rotation(axis, 30 * degreeToRadian)));
-    EXPECT_TRUE(meetsRigidMotion<TriangleRotation<Vec3Types>>(regularTetrahedron, rotation(axis, 30 * degreeToRadian)));
+    EXPECT_TRUE(meetsRigidMotion<PolarDecomposition<Vec3Types>>(regularTetrahedron, rotation3D));
+    EXPECT_TRUE(meetsRigidMotion<StablePolarDecomposition<Vec3Types>>(regularTetrahedron, rotation3D));
+    EXPECT_TRUE(meetsRigidMotion<TriangleRotation<Vec3Types>>(regularTetrahedron, rotation3D));
 }
 
 TEST(RotationMethods, regularHexahedronRigidMotion)
 {
-    EXPECT_TRUE(meetsRigidMotion<PolarDecomposition<Vec3Types>>(regularHexahedron, rotation(axis, 30 * degreeToRadian)));
-    EXPECT_TRUE(meetsRigidMotion<StablePolarDecomposition<Vec3Types>>(regularHexahedron, rotation(axis, 30 * degreeToRadian)));
-    EXPECT_TRUE(meetsRigidMotion<HexahedronRotation<Vec3Types>>(regularHexahedron, rotation(axis, 30 * degreeToRadian)));
+    EXPECT_TRUE(meetsRigidMotion<PolarDecomposition<Vec3Types>>(regularHexahedron, rotation3D));
+    EXPECT_TRUE(meetsRigidMotion<StablePolarDecomposition<Vec3Types>>(regularHexahedron, rotation3D));
+    EXPECT_TRUE(meetsRigidMotion<HexahedronRotation<Vec3Types>>(regularHexahedron, rotation3D));
 }
 
 TEST(RotationMethods, irregularQuad2DRigidMotion)
 {
-    EXPECT_TRUE(meetsRigidMotion<PolarDecomposition<Vec2Types>>(irregularQuad2D, rotation(30 * degreeToRadian)));
-    EXPECT_TRUE(meetsRigidMotion<StablePolarDecomposition<Vec2Types>>(irregularQuad2D, rotation(30 * degreeToRadian)));
+    EXPECT_TRUE(meetsRigidMotion<PolarDecomposition<Vec2Types>>(irregularQuad2D, rotation2D));
+    EXPECT_TRUE(meetsRigidMotion<StablePolarDecomposition<Vec2Types>>(irregularQuad2D, rotation2D));
 }
 
 TEST(RotationMethods, irregularQuad3DRigidMotion)
 {
-    EXPECT_TRUE(meetsRigidMotion<PolarDecomposition<Vec3Types>>(irregularQuad3D, rotation(axis, 30 * degreeToRadian)));
-    EXPECT_TRUE(meetsRigidMotion<StablePolarDecomposition<Vec3Types>>(irregularQuad3D, rotation(axis, 30 * degreeToRadian)));
+    EXPECT_TRUE(meetsRigidMotion<PolarDecomposition<Vec3Types>>(irregularQuad3D, rotation3D));
+    EXPECT_TRUE(meetsRigidMotion<StablePolarDecomposition<Vec3Types>>(irregularQuad3D, rotation3D));
 }
 
 TEST(RotationMethods, irregularTriangle2DRigidMotion)
 {
-    EXPECT_TRUE(meetsRigidMotion<PolarDecomposition<Vec2Types>>(irregularTriangle2D, rotation(30 * degreeToRadian)));
-    EXPECT_TRUE(meetsRigidMotion<StablePolarDecomposition<Vec2Types>>(irregularTriangle2D, rotation(30 * degreeToRadian)));
+    EXPECT_TRUE(meetsRigidMotion<PolarDecomposition<Vec2Types>>(irregularTriangle2D, rotation2D));
+    EXPECT_TRUE(meetsRigidMotion<StablePolarDecomposition<Vec2Types>>(irregularTriangle2D, rotation2D));
 }
 
 TEST(RotationMethods, irregularTriangle3DRigidMotion)
 {
-    EXPECT_TRUE(meetsRigidMotion<PolarDecomposition<Vec3Types>>(irregularTriangle3D, rotation(axis, 30 * degreeToRadian)));
-    EXPECT_TRUE(meetsRigidMotion<StablePolarDecomposition<Vec3Types>>(irregularTriangle3D, rotation(axis, 30 * degreeToRadian)));
-    EXPECT_TRUE(meetsRigidMotion<TriangleRotation<Vec3Types>>(irregularTriangle3D, rotation(axis, 30 * degreeToRadian)));
+    EXPECT_TRUE(meetsRigidMotion<PolarDecomposition<Vec3Types>>(irregularTriangle3D, rotation3D));
+    EXPECT_TRUE(meetsRigidMotion<StablePolarDecomposition<Vec3Types>>(irregularTriangle3D, rotation3D));
+    EXPECT_TRUE(meetsRigidMotion<TriangleRotation<Vec3Types>>(irregularTriangle3D, rotation3D));
 }
 
 TEST(RotationMethods, irregularTetrahedronRigidMotion)
 {
-    EXPECT_TRUE(meetsRigidMotion<PolarDecomposition<Vec3Types>>(irregularTetrahedron, rotation(axis, 30 * degreeToRadian)));
-    EXPECT_TRUE(meetsRigidMotion<StablePolarDecomposition<Vec3Types>>(irregularTetrahedron, rotation(axis, 30 * degreeToRadian)));
-    EXPECT_TRUE(meetsRigidMotion<TriangleRotation<Vec3Types>>(irregularTetrahedron, rotation(axis, 30 * degreeToRadian)));
+    EXPECT_TRUE(meetsRigidMotion<PolarDecomposition<Vec3Types>>(irregularTetrahedron, rotation3D));
+    EXPECT_TRUE(meetsRigidMotion<StablePolarDecomposition<Vec3Types>>(irregularTetrahedron, rotation3D));
+    EXPECT_TRUE(meetsRigidMotion<TriangleRotation<Vec3Types>>(irregularTetrahedron, rotation3D));
 }
 
 TEST(RotationMethods, irregularHexahedronRigidMotion)
 {
-    EXPECT_TRUE(meetsRigidMotion<PolarDecomposition<Vec3Types>>(irregularHexahedron, rotation(axis, 30 * degreeToRadian)));
-    EXPECT_TRUE(meetsRigidMotion<StablePolarDecomposition<Vec3Types>>(irregularHexahedron, rotation(axis, 30 * degreeToRadian)));
-    EXPECT_TRUE(meetsRigidMotion<HexahedronRotation<Vec3Types>>(irregularHexahedron, rotation(axis, 30 * degreeToRadian)));
+    EXPECT_TRUE(meetsRigidMotion<PolarDecomposition<Vec3Types>>(irregularHexahedron, rotation3D));
+    EXPECT_TRUE(meetsRigidMotion<StablePolarDecomposition<Vec3Types>>(irregularHexahedron, rotation3D));
+    EXPECT_TRUE(meetsRigidMotion<HexahedronRotation<Vec3Types>>(irregularHexahedron, rotation3D));
 }
 
 TEST(RotationMethods, regularQuad2DStretchPatch)
