@@ -66,18 +66,19 @@ struct PolarDecomposition
 
         const auto H = P.multTranspose(Q);
 
-        // H = F M, with F the deformation gradient and M = Q^T Q
-        auto M = Q.multTranspose(Q);
+        // TODO: least-squares fit F = H M^-1, on hold until embedded elements, where M is singular, are handled.
+        // // H = F M, with F the deformation gradient and M = Q^T Q
+        // auto M = Q.multTranspose(Q);
+        //
+        // // Scale M so that small elements do not test as singular. Polar ignores the scale.
+        // M = M / sofa::type::trace(M);
+        //
+        // // F = H M^-1. Embedded elements, e.g. triangles in 3D, keep H due to singular M.
+        // RotationMatrix inverseM(sofa::type::NOINIT);
+        // const bool isInvertible = inverseM.invert(M);
+        // const auto F = isInvertible ? H * inverseM : H;
 
-        // Scale M so that small elements do not test as singular. Polar ignores the scale.
-        M = M / sofa::type::trace(M);
-
-        // F = H M^-1. Embedded elements, e.g. triangles in 3D, keep H due to singular M.
-        RotationMatrix inverseM(sofa::type::NOINIT);
-        const bool isInvertible = inverseM.invert(M);
-        const auto F = isInvertible ? H * inverseM : H;
-
-        sofa::helper::Decompose<sofa::Real_t<DataTypes>>::polarDecomposition(F, rotationMatrix);
+        sofa::helper::Decompose<sofa::Real_t<DataTypes>>::polarDecomposition(H, rotationMatrix);
     }
 
     static constexpr sofa::helper::Item getItem()
