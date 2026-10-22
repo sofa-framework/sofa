@@ -331,7 +331,7 @@ void MatrixLinearSystem<TMatrix, TVector>::setSharedMatrix(
 
 template <class TMatrix, class TVector>
 void MatrixLinearSystem<TMatrix, TVector>::buildGroupsOfComponentAssociatedToMechanicalStates(
-    std::map<PairMechanicalStates, GroupOfComponentsAssociatedToAPairOfMechanicalStates>& groups)
+    std::map<PairMechanicalStates, GroupOfComponentsAssociatedToAPairOfMechanicalStates, PairOfStatesPathLess>& groups)
 {
     for (auto* ff : this->m_forceFields)
     {
@@ -373,7 +373,7 @@ void MatrixLinearSystem<TMatrix, TVector>::makeLocalMatrixGroups(const core::Mec
 
     m_localMappedMatrices.clear();
 
-    std::map<PairMechanicalStates, GroupOfComponentsAssociatedToAPairOfMechanicalStates> groups;
+    std::map<PairMechanicalStates, GroupOfComponentsAssociatedToAPairOfMechanicalStates, PairOfStatesPathLess> groups;
     buildGroupsOfComponentAssociatedToMechanicalStates(groups);
 
     for (const auto& [pair, group] : groups)
