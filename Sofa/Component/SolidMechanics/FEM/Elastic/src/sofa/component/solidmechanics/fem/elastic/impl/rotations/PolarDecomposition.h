@@ -75,38 +75,49 @@ struct PolarDecomposition
             Q[j] = nodesRestPosition[j] - t0;
         }
 
-        const auto H = P.multTranspose(Q);
-        RotationMatrix F = H;
-
-        // The H of an embedded element is singular, as it holds nothing along the element normal.
-        // Adding n n0^T completes it, so that R turns the rest normal n0 into the current normal n.
-        if constexpr (Codimension == 1)
+        // The motion fitted to the node offsets, which the polar decomposition splits.
+        const auto F = [&P, &Q]() -> RotationMatrix
         {
-            const auto M = Q.multTranspose(Q);
-            const auto cofactorM = sofa::type::cofactor(M);
-            // The unit normal of the element at rest. Choose the greatest one for accuracy.
-            const auto n0 = std::max_element(cofactorM.begin(), cofactorM.end(),
-                [](const auto& a, const auto& b) { return a.norm2() < b.norm2(); })->normalized();
-            const auto n = (sofa::type::cofactor(H) * n0).normalized();
+            const auto H = P.multTranspose(Q);
 
-            if constexpr (FitType == Fit::Affine)
+            // The H of an embedded element is singular, as it holds nothing along the element normal.
+            // Adding n n0^T completes it, so that R turns the rest normal n0 into the current normal n.
+            if constexpr (Codimension == 1)
             {
-                // M is scaled by its trace so that small elements do not test as singular. Polar
-                // ignores the scale. M has nothing along n0, which n0 n0^T fills in.
-                F = H * (M / sofa::type::trace(M) + sofa::type::dyad(n0, n0)).inverted();
+                const auto M = Q.multTranspose(Q);
+                const auto cofactorM = sofa::type::cofactor(M);
+                // The unit normal of the element at rest. Choose the greatest one for accuracy.
+                const auto n0 = std::max_element(cofactorM.begin(), cofactorM.end(),
+                    [](const auto& a, const auto& b) { return a.norm2() < b.norm2(); })->normalized();
+                const auto n = (sofa::type::cofactor(H) * n0).normalized();
+
+                if constexpr (FitType == Fit::Affine)
+                {
+                    // M is scaled by its trace so that small elements do not test as singular. Polar
+                    // ignores the scale. M has nothing along n0, which n0 n0^T fills in.
+                    return H * (M / sofa::type::trace(M) + sofa::type::dyad(n0, n0)).inverted() + sofa::type::dyad(n, n0);
+                }
+                else
+                {
+                    return H + sofa::type::dyad(n, n0);
+                }
             }
-            F += sofa::type::dyad(n, n0);
-        }
-        else if constexpr (Codimension > 1)
-        {
-            // Not handled: H is decomposed as it is.
-        }
-        else if constexpr (FitType == Fit::Affine)
-        {
-            const auto M = Q.multTranspose(Q);
-            // M is scaled by its trace so that small elements do not test as singular. Polar ignores the scale.
-            F = H * (M / sofa::type::trace(M)).inverted();
-        }
+            else if constexpr (Codimension > 1)
+            {
+                // Not handled: H is decomposed as it is.
+                return H;
+            }
+            else if constexpr (FitType == Fit::Affine)
+            {
+                const auto M = Q.multTranspose(Q);
+                // M is scaled by its trace so that small elements do not test as singular. Polar ignores the scale.
+                return H * (M / sofa::type::trace(M)).inverted();
+            }
+            else
+            {
+                return H;
+            }
+        }();
 
         sofa::helper::Decompose<sofa::Real_t<DataTypes>>::polarDecomposition(F, rotationMatrix);
     }
