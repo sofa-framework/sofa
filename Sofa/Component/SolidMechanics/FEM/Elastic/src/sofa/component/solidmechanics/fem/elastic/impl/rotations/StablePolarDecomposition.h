@@ -22,16 +22,24 @@
 #pragma once
 
 #include <sofa/core/trait/DataTypes.h>
+#include <sofa/fem/FiniteElement.h>
 #include <sofa/helper/SelectableItem.h>
 #include <sofa/helper/decompose.h>
+
+#include <algorithm>
 
 namespace sofa::component::solidmechanics::fem::elastic
 {
 
-template <class DataTypes>
+template <class DataTypes, class ElementType>
 struct StablePolarDecomposition
 {
     using RotationMatrix = sofa::type::Mat<DataTypes::spatial_dimensions, DataTypes::spatial_dimensions, sofa::Real_t<DataTypes>>;
+
+    /// The remainder of the dimensions of an embedded element within a higher-dimensional space.
+    // TODO: edges in 3D are not handled.
+    static constexpr sofa::Size Codimension =
+        DataTypes::spatial_dimensions - sofa::fem::FiniteElement<ElementType, DataTypes>::TopologicalDimension;
 
     template<std::size_t NumberOfNodesInElement>
     sofa::Coord_t<DataTypes> computeCentroid(const std::array<sofa::Coord_t<DataTypes>, NumberOfNodesInElement>& nodes)
@@ -66,7 +74,22 @@ struct StablePolarDecomposition
 
         const auto H = P.multTranspose(Q);
 
-        sofa::helper::Decompose<sofa::Real_t<DataTypes>>::polarDecomposition_stable(H, rotationMatrix);
+        // The H of an embedded element is singular, as it holds nothing along the element normal.
+        // Adding n n0^T completes it, so that R turns the rest normal n0 into the current normal n.
+        if constexpr (Codimension == 1)
+        {
+            const auto cofactorM = sofa::type::cofactor(Q.multTranspose(Q));
+            // The unit normal of the element at rest. Choose the greatest one for accuracy.
+            const auto n0 = std::max_element(cofactorM.begin(), cofactorM.end(),
+                [](const auto& a, const auto& b) { return a.norm2() < b.norm2(); })->normalized();
+            const auto n = (sofa::type::cofactor(H) * n0).normalized();
+
+            sofa::helper::Decompose<sofa::Real_t<DataTypes>>::polarDecomposition_stable(H + sofa::type::dyad(n, n0), rotationMatrix);
+        }
+        else
+        {
+            sofa::helper::Decompose<sofa::Real_t<DataTypes>>::polarDecomposition_stable(H, rotationMatrix);
+        }
     }
 
     static constexpr sofa::helper::Item getItem()

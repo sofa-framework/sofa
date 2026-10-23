@@ -54,10 +54,10 @@ namespace sofa::component::solidmechanics::fem::elastic
  */
 template <class DataTypes, class ElementType>
 struct RotationMethods : RotationMethodsContainer<DataTypes, ElementType,
-    StablePolarDecomposition<DataTypes>, PolarDecomposition<DataTypes, ElementType>, IdentityRotation
+    StablePolarDecomposition<DataTypes, ElementType>, PolarDecomposition<DataTypes, ElementType>, IdentityRotation
 >
 {
-    using Inherit = RotationMethodsContainer<DataTypes, ElementType, StablePolarDecomposition<DataTypes>, PolarDecomposition<DataTypes, ElementType>, IdentityRotation>;
+    using Inherit = RotationMethodsContainer<DataTypes, ElementType, StablePolarDecomposition<DataTypes, ElementType>, PolarDecomposition<DataTypes, ElementType>, IdentityRotation>;
     explicit RotationMethods(sofa::core::objectmodel::BaseObject* parent) : Inherit(parent)
     {}
 };
@@ -68,11 +68,11 @@ using Vec3Real = sofa::defaulttype::StdVectorTypes<sofa::type::Vec<3, Real>, sof
 //partial specialization for linear triangle in 3D
 template <class Real>
 struct RotationMethods<Vec3Real<Real>, sofa::geometry::Triangle> : RotationMethodsContainer<Vec3Real<Real>, sofa::geometry::Triangle,
-    StablePolarDecomposition<Vec3Real<Real>>, PolarDecomposition<Vec3Real<Real>, sofa::geometry::Triangle>, IdentityRotation, TriangleRotation<Vec3Real<Real>>
+    StablePolarDecomposition<Vec3Real<Real>, sofa::geometry::Triangle>, PolarDecomposition<Vec3Real<Real>, sofa::geometry::Triangle>, IdentityRotation, TriangleRotation<Vec3Real<Real>>
 >
 {
     using Inherit = RotationMethodsContainer<Vec3Real<Real>, sofa::geometry::Triangle,
-        StablePolarDecomposition<Vec3Real<Real>>, PolarDecomposition<Vec3Real<Real>, sofa::geometry::Triangle>, IdentityRotation, TriangleRotation<Vec3Real<Real>> >;
+        StablePolarDecomposition<Vec3Real<Real>, sofa::geometry::Triangle>, PolarDecomposition<Vec3Real<Real>, sofa::geometry::Triangle>, IdentityRotation, TriangleRotation<Vec3Real<Real>> >;
 
     explicit RotationMethods(sofa::core::objectmodel::BaseObject* parent) : Inherit(parent)
     {
@@ -83,11 +83,11 @@ struct RotationMethods<Vec3Real<Real>, sofa::geometry::Triangle> : RotationMetho
 //partial specialization for linear tetrahedron
 template <class DataTypes>
 struct RotationMethods<DataTypes, sofa::geometry::Tetrahedron> : RotationMethodsContainer<DataTypes, sofa::geometry::Tetrahedron,
-    StablePolarDecomposition<DataTypes>, PolarDecomposition<DataTypes, sofa::geometry::Tetrahedron>, IdentityRotation, TriangleRotation<DataTypes>
+    StablePolarDecomposition<DataTypes, sofa::geometry::Tetrahedron>, PolarDecomposition<DataTypes, sofa::geometry::Tetrahedron>, IdentityRotation, TriangleRotation<DataTypes>
 >
 {
     using Inherit = RotationMethodsContainer<DataTypes, sofa::geometry::Tetrahedron,
-        StablePolarDecomposition<DataTypes>, PolarDecomposition<DataTypes, sofa::geometry::Tetrahedron>, IdentityRotation, TriangleRotation<DataTypes> >;
+        StablePolarDecomposition<DataTypes, sofa::geometry::Tetrahedron>, PolarDecomposition<DataTypes, sofa::geometry::Tetrahedron>, IdentityRotation, TriangleRotation<DataTypes> >;
 
     explicit RotationMethods(sofa::core::objectmodel::BaseObject* parent) : Inherit(parent)
     {
@@ -98,11 +98,11 @@ struct RotationMethods<DataTypes, sofa::geometry::Tetrahedron> : RotationMethods
 //partial specialization for linear hexahedron
 template <class DataTypes>
 struct RotationMethods<DataTypes, sofa::geometry::Hexahedron> : RotationMethodsContainer<DataTypes, sofa::geometry::Hexahedron,
-    StablePolarDecomposition<DataTypes>, PolarDecomposition<DataTypes, sofa::geometry::Hexahedron>, IdentityRotation, HexahedronRotation<DataTypes>
+    StablePolarDecomposition<DataTypes, sofa::geometry::Hexahedron>, PolarDecomposition<DataTypes, sofa::geometry::Hexahedron>, IdentityRotation, HexahedronRotation<DataTypes>
 >
 {
     using Inherit = RotationMethodsContainer<DataTypes, sofa::geometry::Hexahedron,
-        StablePolarDecomposition<DataTypes>, PolarDecomposition<DataTypes, sofa::geometry::Hexahedron>, IdentityRotation, HexahedronRotation<DataTypes> >;
+        StablePolarDecomposition<DataTypes, sofa::geometry::Hexahedron>, PolarDecomposition<DataTypes, sofa::geometry::Hexahedron>, IdentityRotation, HexahedronRotation<DataTypes> >;
 
     explicit RotationMethods(sofa::core::objectmodel::BaseObject* parent) : Inherit(parent)
     {
