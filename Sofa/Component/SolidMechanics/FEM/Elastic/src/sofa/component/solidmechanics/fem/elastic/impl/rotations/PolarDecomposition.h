@@ -43,6 +43,7 @@ template <class DataTypes, class ElementType, Fit FitType, Algorithm AlgorithmTy
 struct PolarDecomposition
 {
     using RotationMatrix = sofa::type::Mat<DataTypes::spatial_dimensions, DataTypes::spatial_dimensions, sofa::Real_t<DataTypes>>;
+    using StretchMatrix = RotationMatrix;
 
     /// The remainder of the dimensions of an embedded element within a higher-dimensional space.
     // TODO: edges in 3D are not handled.
@@ -130,6 +131,71 @@ struct PolarDecomposition
         else
         {
             sofa::helper::Decompose<sofa::Real_t<DataTypes>>::polarDecomposition_stable(F, rotationMatrix);
+        }
+    }
+
+    /// Computes the jacobian of the rotation matrix
+    template<std::size_t NumberOfNodesInElement, class JacobianBlock>
+    bool computeRotationJacobian(std::array<JacobianBlock, NumberOfNodesInElement>& jacobian,
+        const RotationMatrix& rotationMatrix,
+        const std::array<sofa::Coord_t<DataTypes>, NumberOfNodesInElement>& nodesPosition,
+        const std::array<sofa::Coord_t<DataTypes>, NumberOfNodesInElement>& nodesRestPosition)
+    {
+        if constexpr (DataTypes::spatial_dimensions == 1)
+        {
+            // In 1D, there is no rotation.
+            return true;
+        }
+        else if constexpr (Codimension > 0 || FitType == Fit::Affine)
+        {
+            // TODO: the affine fit and embedded elements. Without a jacobian, the tangent treats the
+            // rotation as constant.
+            jacobian = {};
+            return false;
+        }
+        else
+        {
+            const auto t = computeCentroid(nodesPosition);
+            const auto t0 = computeCentroid(nodesRestPosition);
+
+            sofa::type::Mat<NumberOfNodesInElement, DataTypes::spatial_dimensions, sofa::Real_t<DataTypes>> P(sofa::type::NOINIT);
+            sofa::type::Mat<NumberOfNodesInElement, DataTypes::spatial_dimensions, sofa::Real_t<DataTypes>> Q(sofa::type::NOINIT);
+
+            for (sofa::Size j = 0; j < NumberOfNodesInElement; ++j)
+            {
+                P[j] = nodesPosition[j] - t;
+                Q[j] = nodesRestPosition[j] - t0;
+            }
+
+            const auto H = P.multTranspose(Q);
+
+            // S and the offsets q_k are divided by the trace of M so that small elements do not test A as
+            // singular. The jacobian is unchanged.
+            const auto inverseTraceM = static_cast<sofa::Real_t<DataTypes>>(1) / sofa::type::trace(Q.multTranspose(Q));
+            const StretchMatrix S = rotationMatrix.multTranspose(H) * inverseTraceM;
+
+            sofa::type::Mat<JacobianBlock::nbLines, JacobianBlock::nbLines, sofa::Real_t<DataTypes>> A;
+            if constexpr (DataTypes::spatial_dimensions == 3)
+            {
+                A = StretchMatrix::Identity() * sofa::type::trace(S) - S;
+            }
+            else
+            {
+                A(0, 0) = sofa::type::trace(S);
+            }
+
+            decltype(A) inverseA(sofa::type::NOINIT);
+            if (!inverseA.invert(A))
+            {
+                jacobian = {};
+                return false;
+            }
+
+            for (sofa::Size j = 0; j < NumberOfNodesInElement; ++j)
+            {
+                jacobian[j] = inverseA * sofa::type::crossProductMatrix(Q[j] * inverseTraceM);
+            }
+            return true;
         }
     }
 
