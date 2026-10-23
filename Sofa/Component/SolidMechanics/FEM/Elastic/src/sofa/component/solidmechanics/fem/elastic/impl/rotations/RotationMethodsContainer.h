@@ -71,6 +71,7 @@ public:
 
     using RotationMatrix = sofa::type::Mat<DataTypes::spatial_dimensions, DataTypes::spatial_dimensions, sofa::Real_t<DataTypes>>;
     static constexpr std::size_t NumberOfNodesInElement = ElementType::NumberOfNodes;
+    using RotationJacobian = std::array<decltype(sofa::type::crossProductMatrix(sofa::Coord_t<DataTypes>())), NumberOfNodesInElement>;
 
     /**
      * Computes the current rotation state relative to the initial configuration.
@@ -88,6 +89,35 @@ public:
             [&](auto& rotationComputer)
             {
                 rotationComputer.computeRotation(rotationMatrix, initialRotationMatrix, nodesPosition, nodesRestPosition);
+            },
+            m_rotationComputer);
+    }
+
+    /**
+     * Computes the jacobian of the rotation matrix. Zero for methods that do not provide one.
+     *
+     * @param jacobian Output: Derivative of the rotation with respect to each node position, in the element frame
+     * @param rotationMatrix Current rotation matrix, as computed by computeRotation
+     * @param nodesPosition Current positions of element nodes
+     * @param nodesRestPosition Rest positions of element nodes (initial configuration)
+     * @return False if the method failed to compute the jacobian
+     */
+    bool computeRotationJacobian(RotationJacobian& jacobian, const RotationMatrix& rotationMatrix,
+        const std::array<sofa::Coord_t<DataTypes>, NumberOfNodesInElement>& nodesPosition,
+        const std::array<sofa::Coord_t<DataTypes>, NumberOfNodesInElement>& nodesRestPosition)
+    {
+        return std::visit(
+            [&](auto& rotationComputer)
+            {
+                if constexpr (requires { rotationComputer.computeRotationJacobian(jacobian, rotationMatrix, nodesPosition, nodesRestPosition); })
+                {
+                    return rotationComputer.computeRotationJacobian(jacobian, rotationMatrix, nodesPosition, nodesRestPosition);
+                }
+                else
+                {
+                    jacobian = {};
+                    return true;
+                }
             },
             m_rotationComputer);
     }
