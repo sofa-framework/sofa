@@ -450,53 +450,53 @@ TEST(RotationMethods, regularHexahedronStretchPatch)
 
 TEST(RotationMethods, irregularQuad2DStretchPatch)
 {
-    EXPECT_FALSE((meetsStretchPatch<PolarDecomposition<Vec2Types, sofa::geometry::Quad>>(irregularQuad2D, offAxisStretch2D)));
-    EXPECT_FALSE((meetsStretchPatch<StablePolarDecomposition<Vec2Types, sofa::geometry::Quad>>(irregularQuad2D, offAxisStretch2D)));
+    EXPECT_TRUE((meetsStretchPatch<PolarDecomposition<Vec2Types, sofa::geometry::Quad>>(irregularQuad2D, offAxisStretch2D)));
+    EXPECT_TRUE((meetsStretchPatch<StablePolarDecomposition<Vec2Types, sofa::geometry::Quad>>(irregularQuad2D, offAxisStretch2D)));
 }
 
 TEST(RotationMethods, irregularQuadFlatStretchPatch)
 {
-    EXPECT_FALSE((meetsStretchPatch<PolarDecomposition<Vec3Types, sofa::geometry::Quad>>(irregularQuadFlat, flatStretch3D)));
-    EXPECT_FALSE((meetsStretchPatch<StablePolarDecomposition<Vec3Types, sofa::geometry::Quad>>(irregularQuadFlat, flatStretch3D)));
+    EXPECT_TRUE((meetsStretchPatch<PolarDecomposition<Vec3Types, sofa::geometry::Quad>>(irregularQuadFlat, flatStretch3D)));
+    EXPECT_TRUE((meetsStretchPatch<StablePolarDecomposition<Vec3Types, sofa::geometry::Quad>>(irregularQuadFlat, flatStretch3D)));
 }
 
 TEST(RotationMethods, irregularQuadTiltedStretchPatch)
 {
-    EXPECT_FALSE((meetsStretchPatch<PolarDecomposition<Vec3Types, sofa::geometry::Quad>>(irregularQuadTilted, tiltedStretch3D)));
-    EXPECT_FALSE((meetsStretchPatch<StablePolarDecomposition<Vec3Types, sofa::geometry::Quad>>(irregularQuadTilted, tiltedStretch3D)));
+    EXPECT_TRUE((meetsStretchPatch<PolarDecomposition<Vec3Types, sofa::geometry::Quad>>(irregularQuadTilted, tiltedStretch3D)));
+    EXPECT_TRUE((meetsStretchPatch<StablePolarDecomposition<Vec3Types, sofa::geometry::Quad>>(irregularQuadTilted, tiltedStretch3D)));
 }
 
 TEST(RotationMethods, irregularTriangle2DStretchPatch)
 {
-    EXPECT_FALSE((meetsStretchPatch<PolarDecomposition<Vec2Types, sofa::geometry::Triangle>>(irregularTriangle2D, offAxisStretch2D)));
-    EXPECT_FALSE((meetsStretchPatch<StablePolarDecomposition<Vec2Types, sofa::geometry::Triangle>>(irregularTriangle2D, offAxisStretch2D)));
+    EXPECT_TRUE((meetsStretchPatch<PolarDecomposition<Vec2Types, sofa::geometry::Triangle>>(irregularTriangle2D, offAxisStretch2D)));
+    EXPECT_TRUE((meetsStretchPatch<StablePolarDecomposition<Vec2Types, sofa::geometry::Triangle>>(irregularTriangle2D, offAxisStretch2D)));
 }
 
 TEST(RotationMethods, irregularTriangleFlatStretchPatch)
 {
-    EXPECT_FALSE((meetsStretchPatch<PolarDecomposition<Vec3Types, sofa::geometry::Triangle>>(irregularTriangleFlat, flatStretch3D)));
-    EXPECT_FALSE((meetsStretchPatch<StablePolarDecomposition<Vec3Types, sofa::geometry::Triangle>>(irregularTriangleFlat, flatStretch3D)));
+    EXPECT_TRUE((meetsStretchPatch<PolarDecomposition<Vec3Types, sofa::geometry::Triangle>>(irregularTriangleFlat, flatStretch3D)));
+    EXPECT_TRUE((meetsStretchPatch<StablePolarDecomposition<Vec3Types, sofa::geometry::Triangle>>(irregularTriangleFlat, flatStretch3D)));
     EXPECT_FALSE(meetsStretchPatch<TriangleRotation<Vec3Types>>(irregularTriangleFlat, flatStretch3D));
 }
 
 TEST(RotationMethods, irregularTriangleTiltedStretchPatch)
 {
-    EXPECT_FALSE((meetsStretchPatch<PolarDecomposition<Vec3Types, sofa::geometry::Triangle>>(irregularTriangleTilted, tiltedStretch3D)));
-    EXPECT_FALSE((meetsStretchPatch<StablePolarDecomposition<Vec3Types, sofa::geometry::Triangle>>(irregularTriangleTilted, tiltedStretch3D)));
+    EXPECT_TRUE((meetsStretchPatch<PolarDecomposition<Vec3Types, sofa::geometry::Triangle>>(irregularTriangleTilted, tiltedStretch3D)));
+    EXPECT_TRUE((meetsStretchPatch<StablePolarDecomposition<Vec3Types, sofa::geometry::Triangle>>(irregularTriangleTilted, tiltedStretch3D)));
     EXPECT_FALSE(meetsStretchPatch<TriangleRotation<Vec3Types>>(irregularTriangleTilted, tiltedStretch3D));
 }
 
 TEST(RotationMethods, irregularTetrahedronStretchPatch)
 {
-    EXPECT_FALSE((meetsStretchPatch<PolarDecomposition<Vec3Types, sofa::geometry::Tetrahedron>>(irregularTetrahedron, offAxisStretch3D)));
-    EXPECT_FALSE((meetsStretchPatch<StablePolarDecomposition<Vec3Types, sofa::geometry::Tetrahedron>>(irregularTetrahedron, offAxisStretch3D)));
+    EXPECT_TRUE((meetsStretchPatch<PolarDecomposition<Vec3Types, sofa::geometry::Tetrahedron>>(irregularTetrahedron, offAxisStretch3D)));
+    EXPECT_TRUE((meetsStretchPatch<StablePolarDecomposition<Vec3Types, sofa::geometry::Tetrahedron>>(irregularTetrahedron, offAxisStretch3D)));
     EXPECT_FALSE(meetsStretchPatch<TriangleRotation<Vec3Types>>(irregularTetrahedron, offAxisStretch3D));
 }
 
 TEST(RotationMethods, irregularHexahedronStretchPatch)
 {
-    EXPECT_FALSE((meetsStretchPatch<PolarDecomposition<Vec3Types, sofa::geometry::Hexahedron>>(irregularHexahedron, offAxisStretch3D)));
-    EXPECT_FALSE((meetsStretchPatch<StablePolarDecomposition<Vec3Types, sofa::geometry::Hexahedron>>(irregularHexahedron, offAxisStretch3D)));
+    EXPECT_TRUE((meetsStretchPatch<PolarDecomposition<Vec3Types, sofa::geometry::Hexahedron>>(irregularHexahedron, offAxisStretch3D)));
+    EXPECT_TRUE((meetsStretchPatch<StablePolarDecomposition<Vec3Types, sofa::geometry::Hexahedron>>(irregularHexahedron, offAxisStretch3D)));
     EXPECT_FALSE(meetsStretchPatch<HexahedronRotation<Vec3Types>>(irregularHexahedron, offAxisStretch3D));
 }
 
