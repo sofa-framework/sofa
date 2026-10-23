@@ -25,9 +25,7 @@
 
 #include <cmath>
 #include <numbers>
-#include <string>
 #include <type_traits>
-#include <vector>
 
 namespace sofa
 {
@@ -81,12 +79,35 @@ const Matrix<Vec3Types> prescribedFlatStretchMatrix3D {
 // An edge is stretched along its own line. any other direction involves rotation.
 const Matrix<Vec2Types> prescribedEdgeStretchMatrix2D {{1.5, 0.0}, {0.0, 1.0}};
 
+struct PolarMethod { static constexpr const char* key = "polar"; };
+struct PolarAffineMethod { static constexpr const char* key = "polar_affine"; };
+struct StablePolarMethod { static constexpr const char* key = "stable_polar"; };
+struct StablePolarAffineMethod { static constexpr const char* key = "stable_polar_affine"; };
+struct TriangleMethod { static constexpr const char* key = "triangle"; };
+struct HexahedronMethod { static constexpr const char* key = "hexahedron"; };
+
+using Quad2D = CorotationalFEMForceField<Vec2Types, sofa::geometry::Quad>;
+using Triangle2D = CorotationalFEMForceField<Vec2Types, sofa::geometry::Triangle>;
+using Edge2D = CorotationalFEMForceField<Vec2Types, sofa::geometry::Edge>;
+using Quad3D = CorotationalFEMForceField<Vec3Types, sofa::geometry::Quad>;
+using Triangle3D = CorotationalFEMForceField<Vec3Types, sofa::geometry::Triangle>;
+using Hexahedron3D = CorotationalFEMForceField<Vec3Types, sofa::geometry::Hexahedron>;
+using Tetrahedron3D = CorotationalFEMForceField<Vec3Types, sofa::geometry::Tetrahedron>;
+
+template <class ForceFieldType, class MethodType>
+struct TestCase
+{
+    using ForceField = ForceFieldType;
+    using Method = MethodType;
+};
+
 }
 
 /// Checks the force derivatives against a finite difference of the force, on a single element.
-template <class ForceField>
-struct CorotationalFEMForceFieldTangent_test : public sofa::ForceField_test<ForceField>
+template <class TestCase>
+struct CorotationalFEMForceFieldTangent_test : public sofa::ForceField_test<typename TestCase::ForceField>
 {
+    using ForceField = typename TestCase::ForceField;
     using DataTypes = typename ForceField::DataTypes;
     using VecCoord = sofa::VecCoord_t<DataTypes>;
     using VecDeriv = sofa::VecDeriv_t<DataTypes>;
@@ -98,9 +119,6 @@ struct CorotationalFEMForceFieldTangent_test : public sofa::ForceField_test<Forc
     Matrix<DataTypes> rotation;
     Matrix<DataTypes> stretch;
 
-    /// The rotation methods available for the element, except identity, which does not rotate.
-    std::vector<std::string> rotationMethods {"polar", "polar_affine", "stable_polar", "stable_polar_affine"};
-
     CorotationalFEMForceFieldTangent_test()
     {
         const auto topology = sofa::core::objectmodel::New<sofa::component::topology::container::constant::MeshTopology>();
@@ -109,58 +127,55 @@ struct CorotationalFEMForceFieldTangent_test : public sofa::ForceField_test<Forc
         /// An irregular shape is chosen for all elements that follow. This skews the rigid fit of
         /// the polar decomposition methods. Rigid and affine fits extract different rotations and
         /// the tangent of each must follow how its own rotation changes.
-        if constexpr (std::is_same_v<ForceField, CorotationalFEMForceField<Vec2Types, sofa::geometry::Quad>>)
+        if constexpr (std::is_same_v<ForceField, Quad2D>)
         {
             topology->addQuad(0, 1, 2, 3);
             restPositions = VecCoord{Coord(0.0, 0.0), Coord(3.0, 0.0), Coord(3.0, 1.0), Coord(0.0, 1.0)};
             rotation = prescribedRotationMatrix2D;
             stretch = prescribedStretchMatrix2D;
         }
-        else if constexpr (std::is_same_v<ForceField, CorotationalFEMForceField<Vec2Types, sofa::geometry::Triangle>>)
+        else if constexpr (std::is_same_v<ForceField, Triangle2D>)
         {
             topology->addTriangle(0, 1, 2);
             restPositions = VecCoord{Coord(0.0, 0.0), Coord(1.0, 0.0), Coord(0.0, 1.0)};
             rotation = prescribedRotationMatrix2D;
             stretch = prescribedStretchMatrix2D;
         }
-        else if constexpr (std::is_same_v<ForceField, CorotationalFEMForceField<Vec2Types, sofa::geometry::Edge>>)
+        else if constexpr (std::is_same_v<ForceField, Edge2D>)
         {
             topology->addEdge(0, 1);
             restPositions = VecCoord{Coord(0.0, 0.0), Coord(1.0, 0.0)};
             rotation = prescribedRotationMatrix2D;
             stretch = prescribedEdgeStretchMatrix2D;
         }
-        else if constexpr (std::is_same_v<ForceField, CorotationalFEMForceField<Vec3Types, sofa::geometry::Quad>>)
+        else if constexpr (std::is_same_v<ForceField, Quad3D>)
         {
             topology->addQuad(0, 1, 2, 3);
             restPositions = VecCoord{Coord(0.0, 0.0, 0.0), Coord(3.0, 0.0, 0.0), Coord(3.0, 1.0, 0.0), Coord(0.0, 1.0, 0.0)};
             rotation = prescribedRotationMatrix3D;
             stretch = prescribedFlatStretchMatrix3D;
         }
-        else if constexpr (std::is_same_v<ForceField, CorotationalFEMForceField<Vec3Types, sofa::geometry::Triangle>>)
+        else if constexpr (std::is_same_v<ForceField, Triangle3D>)
         {
             topology->addTriangle(0, 1, 2);
             restPositions = VecCoord{Coord(0.0, 0.0, 0.0), Coord(1.0, 0.0, 0.0), Coord(0.0, 1.0, 0.0)};
             rotation = prescribedRotationMatrix3D;
             stretch = prescribedFlatStretchMatrix3D;
-            rotationMethods.push_back("triangle");
         }
-        else if constexpr (std::is_same_v<ForceField, CorotationalFEMForceField<Vec3Types, sofa::geometry::Hexahedron>>)
+        else if constexpr (std::is_same_v<ForceField, Hexahedron3D>)
         {
             topology->addHexa(0, 1, 2, 3, 4, 5, 6, 7);
             restPositions = VecCoord{Coord(0.0, 0.0, 0.0), Coord(3.0, 0.0, 0.0), Coord(3.0, 2.0, 0.0), Coord(0.0, 2.0, 0.0),
                                      Coord(0.0, 0.0, 1.0), Coord(3.0, 0.0, 1.0), Coord(3.0, 2.0, 1.0), Coord(0.0, 2.0, 1.0)};
             rotation = prescribedRotationMatrix3D;
             stretch = prescribedStretchMatrix3D;
-            rotationMethods.push_back("hexahedron");
         }
-        else if constexpr (std::is_same_v<ForceField, CorotationalFEMForceField<Vec3Types, sofa::geometry::Tetrahedron>>)
+        else if constexpr (std::is_same_v<ForceField, Tetrahedron3D>)
         {
             topology->addTetra(0, 1, 2, 3);
             restPositions = VecCoord{Coord(0.0, 0.0, 0.0), Coord(1.0, 0.0, 0.0), Coord(0.0, 1.0, 0.0), Coord(0.0, 0.0, 1.0)};
             rotation = prescribedRotationMatrix3D;
             stretch = prescribedStretchMatrix3D;
-            rotationMethods.push_back("triangle");
         }
         else
         {
@@ -177,7 +192,7 @@ struct CorotationalFEMForceFieldTangent_test : public sofa::ForceField_test<Forc
     }
 
     /// The forces of the force field at the positions x.
-    VecDeriv forcesAt(const VecCoord& x, const VecDeriv& v)
+    VecDeriv computeForcesAt(const VecCoord& x, const VecDeriv& v)
     {
         this->setupState(x, v);
         sofa::simulation::node::initRoot(this->node.get());
@@ -188,7 +203,8 @@ struct CorotationalFEMForceFieldTangent_test : public sofa::ForceField_test<Forc
         return forces;
     }
 
-    /// Moves the nodes by the deformation gradient F = R U and checks each rotation method.
+    /// Moves the nodes by the deformation gradient F = R U and runs the ForceField test there.
+    /// The consistency of the tangent stiffness is checked therein.
     void runTest(const Matrix<DataTypes>& R, const Matrix<DataTypes>& U)
     {
         // The element at rest, stretched by U, then rotated by R.
@@ -204,46 +220,65 @@ struct CorotationalFEMForceFieldTangent_test : public sofa::ForceField_test<Forc
         // The expected forces: the linear elastic forces of the stretch, computed by the identity
         // method, rotated by R.
         this->force->findData("rotationMethod")->read("identity");
-        VecDeriv expectedForces = forcesAt(stretchedPositions, v);
+        VecDeriv expectedForces = computeForcesAt(stretchedPositions, v);
         for (auto& force : expectedForces)
         {
             force = R * force;
         }
 
-        // This test checks the consistency of the tangent. The elements have irregular shapes, on which
-        // only the polar decomposition of the affine fit extracts the rotation that produces the correct
-        // forces. For polar_affine and stable_polar_affine, the forces are therefore checked against the
-        // expected ones. The other methods can produce incorrect forces on irregular shapes, so their
-        // forces are checked against the ones they compute themselves, which bypasses the force check
-        // and leaves only the tangent checked.
-        for (const auto& rotationMethod : rotationMethods)
-        {
-            SCOPED_TRACE("rotationMethod = " + rotationMethod);
-            this->force->findData("rotationMethod")->read(rotationMethod);
+        using Method = typename TestCase::Method;
+        this->force->findData("rotationMethod")->read(Method::key);
 
-            if (rotationMethod == "polar_affine" || rotationMethod == "stable_polar_affine")
-            {
-                this->run_test(x, v, expectedForces);
-            }
-            else
-            {
-                // These methods are also expected to miscompute the potential energy on irregular shapes.
-                this->flags &= ~sofa::ForceField_test<ForceField>::TEST_POTENTIAL_ENERGY;
-                this->run_test(x, v, forcesAt(x, v));
-                this->flags |= sofa::ForceField_test<ForceField>::TEST_POTENTIAL_ENERGY;
-            }
+        // For irregular elements, only the polar decomposition of the affine fit extracts the
+        // rotation that produces the correct forces. 
+        if constexpr (std::is_same_v<Method, PolarAffineMethod> || std::is_same_v<Method, StablePolarAffineMethod>)
+        {
+            // Therefore the expected force is used as reference.
+            this->run_test(x, v, expectedForces);
+        }
+        else
+        {
+            // The rest of the methods produce incorrect forces on irregular shapes. So the check is
+            // implicitly bypassed by using the force they compute themselves as reference. These
+            // methods are also expected to miscompute the potential energy on irregular shapes.
+            this->flags &= ~sofa::ForceField_test<ForceField>::TEST_POTENTIAL_ENERGY;
+            this->run_test(x, v, computeForcesAt(x, v));
         }
     }
 };
 
 using TestTypes = ::testing::Types<
-    CorotationalFEMForceField<Vec2Types, sofa::geometry::Quad>,
-    CorotationalFEMForceField<Vec2Types, sofa::geometry::Triangle>,
-    CorotationalFEMForceField<Vec3Types, sofa::geometry::Hexahedron>,
-    CorotationalFEMForceField<Vec3Types, sofa::geometry::Tetrahedron>,
-    CorotationalFEMForceField<Vec2Types, sofa::geometry::Edge>,
-    CorotationalFEMForceField<Vec3Types, sofa::geometry::Quad>,
-    CorotationalFEMForceField<Vec3Types, sofa::geometry::Triangle>>;
+    TestCase<Quad2D, PolarMethod>,
+    TestCase<Quad2D, PolarAffineMethod>,
+    TestCase<Quad2D, StablePolarMethod>,
+    TestCase<Quad2D, StablePolarAffineMethod>,
+    TestCase<Triangle2D, PolarMethod>,
+    TestCase<Triangle2D, PolarAffineMethod>,
+    TestCase<Triangle2D, StablePolarMethod>,
+    TestCase<Triangle2D, StablePolarAffineMethod>,
+    TestCase<Edge2D, PolarMethod>,
+    TestCase<Edge2D, PolarAffineMethod>,
+    TestCase<Edge2D, StablePolarMethod>,
+    TestCase<Edge2D, StablePolarAffineMethod>,
+    TestCase<Quad3D, PolarMethod>,
+    TestCase<Quad3D, PolarAffineMethod>,
+    TestCase<Quad3D, StablePolarMethod>,
+    TestCase<Quad3D, StablePolarAffineMethod>,
+    TestCase<Triangle3D, PolarMethod>,
+    TestCase<Triangle3D, PolarAffineMethod>,
+    TestCase<Triangle3D, StablePolarMethod>,
+    TestCase<Triangle3D, StablePolarAffineMethod>,
+    TestCase<Triangle3D, TriangleMethod>,
+    TestCase<Hexahedron3D, PolarMethod>,
+    TestCase<Hexahedron3D, PolarAffineMethod>,
+    TestCase<Hexahedron3D, StablePolarMethod>,
+    TestCase<Hexahedron3D, StablePolarAffineMethod>,
+    TestCase<Hexahedron3D, HexahedronMethod>,
+    TestCase<Tetrahedron3D, PolarMethod>,
+    TestCase<Tetrahedron3D, PolarAffineMethod>,
+    TestCase<Tetrahedron3D, StablePolarMethod>,
+    TestCase<Tetrahedron3D, StablePolarAffineMethod>,
+    TestCase<Tetrahedron3D, TriangleMethod>>;
 
 TYPED_TEST_SUITE(CorotationalFEMForceFieldTangent_test, TestTypes);
 
