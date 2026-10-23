@@ -34,8 +34,9 @@ namespace sofa::component::solidmechanics::fem::elastic
 /// How the motion of the nodes is fitted before the polar decomposition.
 enum class Fit { Rigid, Affine };
 
-/// How the polar decomposition is computed: Standard calls Decompose::polarDecomposition, Stable
-/// calls Decompose::polarDecomposition_stable, which returns a rotation even for an inverted element.
+/// How the polar decomposition is computed: 
+/// Standard calls Decompose::polarDecomposition
+/// Stable calls Decompose::polarDecomposition_stable
 enum class Algorithm { Standard, Stable };
 
 template <class DataTypes, class ElementType, Fit FitType, Algorithm AlgorithmType>
@@ -79,26 +80,26 @@ struct PolarDecomposition
             Q[j] = nodesRestPosition[j] - t0;
         }
 
-        // The motion fitted to the node offsets, which the polar decomposition splits.
         const auto F = [&P, &Q]() -> RotationMatrix
         {
             const auto H = P.multTranspose(Q);
 
-            // The H of an embedded element is singular, as it holds nothing along the element normal.
-            // Adding n n0^T completes it, so that R turns the rest normal n0 into the current normal n.
             if constexpr (Codimension == 1)
             {
+                // The H of an embedded element is singular. It holds nothing along the element
+                // normal. It is completed by mapping the current normal to the rest normal.
                 const auto M = Q.multTranspose(Q);
                 const auto cofactorM = sofa::type::cofactor(M);
                 // The unit normal of the element at rest. Choose the greatest one for accuracy.
                 const auto n0 = std::max_element(cofactorM.begin(), cofactorM.end(),
                     [](const auto& a, const auto& b) { return a.norm2() < b.norm2(); })->normalized();
+                // The current normal of the element.
                 const auto n = (sofa::type::cofactor(H) * n0).normalized();
 
                 if constexpr (FitType == Fit::Affine)
                 {
-                    // M is scaled by its trace so that small elements do not test as singular. Polar
-                    // ignores the scale. M has nothing along n0, which n0 n0^T fills in.
+                    // M is scaled by its trace so that small elements do not test as singular.
+                    // Polar ignores the scale. M has nothing along n0, which n0 n0^T fills in.
                     return H * (M / sofa::type::trace(M) + sofa::type::dyad(n0, n0)).inverted() + sofa::type::dyad(n, n0);
                 }
                 else
@@ -114,7 +115,6 @@ struct PolarDecomposition
             else if constexpr (FitType == Fit::Affine)
             {
                 const auto M = Q.multTranspose(Q);
-                // M is scaled by its trace so that small elements do not test as singular. Polar ignores the scale.
                 return H * (M / sofa::type::trace(M)).inverted();
             }
             else
