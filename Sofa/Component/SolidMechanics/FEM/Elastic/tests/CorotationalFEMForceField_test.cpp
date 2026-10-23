@@ -227,7 +227,10 @@ struct CorotationalFEMForceFieldTangent_test : public sofa::ForceField_test<Forc
             }
             else
             {
+                // These methods are also expected to miscompute the potential energy on irregular shapes.
+                this->flags &= ~sofa::ForceField_test<ForceField>::TEST_POTENTIAL_ENERGY;
                 this->run_test(x, v, forcesAt(x, v));
+                this->flags |= sofa::ForceField_test<ForceField>::TEST_POTENTIAL_ENERGY;
             }
         }
     }
