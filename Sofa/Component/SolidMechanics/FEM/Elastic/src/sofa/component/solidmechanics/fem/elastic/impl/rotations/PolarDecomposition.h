@@ -34,8 +34,9 @@ namespace sofa::component::solidmechanics::fem::elastic
 /// How the motion of the nodes is fitted before the polar decomposition.
 enum class Fit { Rigid, Affine };
 
-/// How the polar decomposition is computed: by Newton iterations, or through an SVD.
-enum class Algorithm { Newton, Stable };
+/// How the polar decomposition is computed: Standard calls Decompose::polarDecomposition, Stable
+/// calls Decompose::polarDecomposition_stable, which returns a rotation even for an inverted element.
+enum class Algorithm { Standard, Stable };
 
 template <class DataTypes, class ElementType, Fit FitType, Algorithm AlgorithmType>
 struct PolarDecomposition
@@ -122,7 +123,7 @@ struct PolarDecomposition
             }
         }();
 
-        if constexpr (AlgorithmType == Algorithm::Newton)
+        if constexpr (AlgorithmType == Algorithm::Standard)
         {
             sofa::helper::Decompose<sofa::Real_t<DataTypes>>::polarDecomposition(F, rotationMatrix);
         }
@@ -134,7 +135,7 @@ struct PolarDecomposition
 
     static constexpr sofa::helper::Item getItem()
     {
-        if constexpr (AlgorithmType == Algorithm::Newton)
+        if constexpr (AlgorithmType == Algorithm::Standard)
         {
             if constexpr (FitType == Fit::Rigid)
             {
@@ -160,10 +161,10 @@ struct PolarDecomposition
 };
 
 template <class DataTypes, class ElementType>
-using RigidFitPolarDecomposition = PolarDecomposition<DataTypes, ElementType, Fit::Rigid, Algorithm::Newton>;
+using RigidFitPolarDecomposition = PolarDecomposition<DataTypes, ElementType, Fit::Rigid, Algorithm::Standard>;
 
 template <class DataTypes, class ElementType>
-using AffineFitPolarDecomposition = PolarDecomposition<DataTypes, ElementType, Fit::Affine, Algorithm::Newton>;
+using AffineFitPolarDecomposition = PolarDecomposition<DataTypes, ElementType, Fit::Affine, Algorithm::Standard>;
 
 template <class DataTypes, class ElementType>
 using RigidFitStablePolarDecomposition = PolarDecomposition<DataTypes, ElementType, Fit::Rigid, Algorithm::Stable>;
