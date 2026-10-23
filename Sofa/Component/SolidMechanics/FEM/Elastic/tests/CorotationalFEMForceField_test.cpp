@@ -96,6 +96,25 @@ struct CorotationalFEMForceFieldTangent_test : public sofa::ForceField_test<Forc
             restPositions = VecCoord{Coord(0.0, 0.0), Coord(1.0, 0.0), Coord(0.0, 1.0)};
             expectedStretchForces = VecDeriv{Deriv(0.25, 0.0), Deriv(-0.25, 0.0), Deriv(0.0, 0.0)};
         }
+        else if constexpr (std::is_same_v<ForceField, CorotationalFEMForceField<Vec2Types, sofa::geometry::Edge>>)
+        {
+            topology->addEdge(0, 1);
+            restPositions = VecCoord{Coord(0.0, 0.0), Coord(1.0, 0.0)};
+            expectedStretchForces = VecDeriv{Deriv(0.5, 0.0), Deriv(-0.5, 0.0)};
+        }
+        else if constexpr (std::is_same_v<ForceField, CorotationalFEMForceField<Vec3Types, sofa::geometry::Quad>>)
+        {
+            topology->addQuad(0, 1, 2, 3);
+            restPositions = VecCoord{Coord(0.0, 0.0, 0.0), Coord(1.0, 0.0, 0.0), Coord(1.0, 1.0, 0.0), Coord(0.0, 1.0, 0.0)};
+            expectedStretchForces = VecDeriv{Deriv(0.25, 0.0, 0.0), Deriv(-0.25, 0.0, 0.0), Deriv(-0.25, 0.0, 0.0), Deriv(0.25, 0.0, 0.0)};
+        }
+        else if constexpr (std::is_same_v<ForceField, CorotationalFEMForceField<Vec3Types, sofa::geometry::Triangle>>)
+        {
+            topology->addTriangle(0, 1, 2);
+            restPositions = VecCoord{Coord(0.0, 0.0, 0.0), Coord(1.0, 0.0, 0.0), Coord(0.0, 1.0, 0.0)};
+            expectedStretchForces = VecDeriv{Deriv(0.25, 0.0, 0.0), Deriv(-0.25, 0.0, 0.0), Deriv(0.0, 0.0, 0.0)};
+            rotationMethods.push_back("triangle");
+        }
         else if constexpr (std::is_same_v<ForceField, CorotationalFEMForceField<Vec3Types, sofa::geometry::Hexahedron>>)
         {
             topology->addHexa(0, 1, 2, 3, 4, 5, 6, 7);
@@ -178,7 +197,10 @@ using TestTypes = ::testing::Types<
     CorotationalFEMForceField<Vec2Types, sofa::geometry::Quad>,
     CorotationalFEMForceField<Vec2Types, sofa::geometry::Triangle>,
     CorotationalFEMForceField<Vec3Types, sofa::geometry::Hexahedron>,
-    CorotationalFEMForceField<Vec3Types, sofa::geometry::Tetrahedron>>;
+    CorotationalFEMForceField<Vec3Types, sofa::geometry::Tetrahedron>,
+    CorotationalFEMForceField<Vec2Types, sofa::geometry::Edge>,
+    CorotationalFEMForceField<Vec3Types, sofa::geometry::Quad>,
+    CorotationalFEMForceField<Vec3Types, sofa::geometry::Triangle>>;
 
 TYPED_TEST_SUITE(CorotationalFEMForceFieldTangent_test, TestTypes);
 
