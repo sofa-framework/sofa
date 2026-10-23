@@ -1463,6 +1463,13 @@ constexpr Mat<3, 3, Real> crossProductMatrix(const Vec<3, Real>& v) noexcept
     return res;
 }
 
+/// crossProductMatrix(v) * x = v.cross(x), a scalar in 2D
+template<class Real>
+constexpr Mat<1, 2, Real> crossProductMatrix(const Vec<2, Real>& v) noexcept
+{
+    return {{-v[1], v[0]}};
+}
+
 
 /// return a * b^T
 template<sofa::Size L,class Real>
