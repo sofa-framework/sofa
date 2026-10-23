@@ -21,7 +21,6 @@
 ******************************************************************************/
 #include <sofa/component/solidmechanics/fem/elastic/impl/rotations/HexahedronRotation.h>
 #include <sofa/component/solidmechanics/fem/elastic/impl/rotations/PolarDecomposition.h>
-#include <sofa/component/solidmechanics/fem/elastic/impl/rotations/StablePolarDecomposition.h>
 #include <sofa/component/solidmechanics/fem/elastic/impl/rotations/TriangleRotation.h>
 #include <gtest/gtest.h>
 #include <sofa/fem/FiniteElement[all].h>

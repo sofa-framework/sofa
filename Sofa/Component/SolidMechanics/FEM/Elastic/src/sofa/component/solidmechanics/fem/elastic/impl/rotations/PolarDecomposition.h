@@ -34,7 +34,10 @@ namespace sofa::component::solidmechanics::fem::elastic
 /// How the motion of the nodes is fitted before the polar decomposition.
 enum class Fit { Rigid, Affine };
 
-template <class DataTypes, class ElementType, Fit FitType>
+/// How the polar decomposition is computed: by Newton iterations, or through an SVD.
+enum class Algorithm { Newton, Stable };
+
+template <class DataTypes, class ElementType, Fit FitType, Algorithm AlgorithmType>
 struct PolarDecomposition
 {
     using RotationMatrix = sofa::type::Mat<DataTypes::spatial_dimensions, DataTypes::spatial_dimensions, sofa::Real_t<DataTypes>>;
@@ -119,26 +122,53 @@ struct PolarDecomposition
             }
         }();
 
-        sofa::helper::Decompose<sofa::Real_t<DataTypes>>::polarDecomposition(F, rotationMatrix);
+        if constexpr (AlgorithmType == Algorithm::Newton)
+        {
+            sofa::helper::Decompose<sofa::Real_t<DataTypes>>::polarDecomposition(F, rotationMatrix);
+        }
+        else
+        {
+            sofa::helper::Decompose<sofa::Real_t<DataTypes>>::polarDecomposition_stable(F, rotationMatrix);
+        }
     }
 
     static constexpr sofa::helper::Item getItem()
     {
-        if constexpr (FitType == Fit::Rigid)
+        if constexpr (AlgorithmType == Algorithm::Newton)
         {
-            return {"polar", "Polar decomposition of the rigid fit"};
+            if constexpr (FitType == Fit::Rigid)
+            {
+                return {"polar", "Polar decomposition of the rigid fit"};
+            }
+            else
+            {
+                return {"polar_affine", "Polar decomposition of the affine fit"};
+            }
         }
         else
         {
-            return {"polar_affine", "Polar decomposition of the affine fit"};
+            if constexpr (FitType == Fit::Rigid)
+            {
+                return {"stable_polar", "Stable polar decomposition of the rigid fit"};
+            }
+            else
+            {
+                return {"stable_polar_affine", "Stable polar decomposition of the affine fit"};
+            }
         }
     }
 };
 
 template <class DataTypes, class ElementType>
-using RigidFitPolarDecomposition = PolarDecomposition<DataTypes, ElementType, Fit::Rigid>;
+using RigidFitPolarDecomposition = PolarDecomposition<DataTypes, ElementType, Fit::Rigid, Algorithm::Newton>;
 
 template <class DataTypes, class ElementType>
-using AffineFitPolarDecomposition = PolarDecomposition<DataTypes, ElementType, Fit::Affine>;
+using AffineFitPolarDecomposition = PolarDecomposition<DataTypes, ElementType, Fit::Affine, Algorithm::Newton>;
+
+template <class DataTypes, class ElementType>
+using RigidFitStablePolarDecomposition = PolarDecomposition<DataTypes, ElementType, Fit::Rigid, Algorithm::Stable>;
+
+template <class DataTypes, class ElementType>
+using AffineFitStablePolarDecomposition = PolarDecomposition<DataTypes, ElementType, Fit::Affine, Algorithm::Stable>;
 
 }
