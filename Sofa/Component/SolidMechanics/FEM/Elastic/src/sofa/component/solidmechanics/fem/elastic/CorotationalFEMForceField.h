@@ -27,7 +27,6 @@
 #include <sofa/component/solidmechanics/fem/elastic/impl/rotations/IdentityRotation.h>
 #include <sofa/component/solidmechanics/fem/elastic/impl/rotations/PolarDecomposition.h>
 #include <sofa/component/solidmechanics/fem/elastic/impl/rotations/RotationMethodsContainer.h>
-#include <sofa/component/solidmechanics/fem/elastic/impl/rotations/StablePolarDecomposition.h>
 #include <sofa/component/solidmechanics/fem/elastic/impl/rotations/TriangleRotation.h>
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/component/solidmechanics/fem/elastic/CauchyStressEvaluator.h>
