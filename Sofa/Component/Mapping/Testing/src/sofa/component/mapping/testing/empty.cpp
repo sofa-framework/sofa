@@ -21,4 +21,9 @@
 ******************************************************************************/
 #include <sofa/config.h>
 
+/// Keep this here to force the reading of the header with the proper dependencies and see its work.
+#include <sofa/component/mapping/testing/MappingTestCreation.h>
+#include <sofa/component/mapping/testing/Multi2MappingTestCreation.h>
+#include <sofa/component/mapping/testing/MultiMappingTestCreation.h>
+
 SOFA_EXPORT_DYNAMIC_LIBRARY void init(){}
