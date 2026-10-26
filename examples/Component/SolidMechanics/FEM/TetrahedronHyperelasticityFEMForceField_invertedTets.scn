@@ -1,11 +1,11 @@
-﻿<?xml version="1.0" ?>
-<Node name="root" dt="0.00001" showBoundingTree="0" gravity="0 0 0">
+<?xml version="1.0" ?>
+<Node name="root" dt="0.00005" showBoundingTree="0" gravity="0 0 0">
     <Node name="plugins">
         <RequiredPlugin pluginName="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
         <RequiredPlugin pluginName="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
         <RequiredPlugin pluginName="Sofa.Component.LinearSolver.Direct"/> <!-- Needed to use components [SparseLDLSolver] -->
         <RequiredPlugin pluginName="Sofa.Component.LinearSystem"/> <!-- Needed to use components [ConstantSparsityPatternSystem] -->
-        <RequiredPlugin pluginName="Sofa.Component.Mass"/> <!-- Needed to use components [MeshMatrixMass] -->
+        <RequiredPlugin pluginName="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
         <RequiredPlugin pluginName="Sofa.Component.IntegrationScheme.Backward"/> <!-- Needed to use components [EulerImplicitIntegrationScheme] -->
         <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.FEM.HyperElastic"/> <!-- Needed to use components [TetrahedronHyperelasticityFEMForceField] -->
         <RequiredPlugin pluginName="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
@@ -30,14 +30,14 @@
         </Node>
 
         <MechanicalObject name="mechObj" rest_position="@hexaGrid.position" position="@invertedConfiguration/hexaGrid.position"/>
+        <!-- Preserve the uniform nodal mass used by the original inverted-element example. -->
+        <UniformMass totalMass="1.0"/>
 
         <Node name="tetras">
             <TetrahedronSetTopologyContainer name="Container"/>
             <TetrahedronSetTopologyModifier name="Modifier" />
             <TetrahedronSetGeometryAlgorithms template="Vec3" name="GeomAlgo" />
             <Hexa2TetraTopologicalMapping name="default28" input="@../hexaGrid" output="@Container" swapping="true"/>
-
-            <MeshMatrixMass totalMass="1.0" topology="@Container" geometryState="@../mechObj" computeMassOnRest="true"/>
 
             <TetrahedronHyperelasticityFEMForceField name="FEM" topology="@Container" ParameterSet="1644295.30201342 33557.0469798658" materialName="StableNeoHookean"/>
         </Node>

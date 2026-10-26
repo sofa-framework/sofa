@@ -4,7 +4,7 @@
 
 ### Bug fixes
 
-- [HyperElastic] Fix the Stable Neo-Hookean example by isolating the inverted configuration's topology, computing mass on the tetrahedral rest mesh, and reducing its time step. Add scene regression coverage and material derivative tests for inverted deformations ([#6220](https://github.com/sofa-framework/sofa/issues/6220)).
+- [HyperElastic] Fix the Stable Neo-Hookean example by isolating the inverted configuration's topology and restoring its original uniform nodal mass at the unchanged time step. Add scene regression coverage and material derivative tests for inverted deformations ([#6220](https://github.com/sofa-framework/sofa/issues/6220)).
 
 
 
