@@ -125,10 +125,10 @@ auto OgdenMaterial<DataTypes>::elasticityTensor(Strain<DataTypes>& strain) -> El
 
     EigenMatrix CEigen;
     for (sofa::Index m = 0; m < spatial_dimensions; ++m)
-        for (sofa::Index n = 0; n < spatial_dimensions; ++n) 
+        for (sofa::Index n = 0; n < spatial_dimensions; ++n)
             CEigen(m, n) = C(m, n);
 
-        Eigen::SelfAdjointEigenSolver<EigenMatrix> EigenProblemSolver(CEigen, Eigen::ComputeEigenvectors);
+    Eigen::SelfAdjointEigenSolver<EigenMatrix> EigenProblemSolver(CEigen, Eigen::ComputeEigenvectors);
     if (EigenProblemSolver.info() != Eigen::Success)
         dmsg_warning("OgdenMaterial") << "EigenSolver iterations failed to converge";
     const auto eigenvectors = EigenProblemSolver.eigenvectors();

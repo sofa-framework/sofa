@@ -34,8 +34,6 @@
 #include "sofa/simulation/integrationscheme/ImplicitIntegrationScheme.h"
 using sofa::simulation::mechanicalvisitor::MechanicalGetNonDiagonalMassesCountVisitor;
 
-//#define SOFA_NO_VMULTIOP
-
 namespace sofa::component::integrationscheme::forward
 {
 
@@ -128,30 +126,6 @@ void EulerExplicitIntegrationScheme::updateState(sofa::simulation::common::Vecto
     MultiVecCoord pos(vop, core::vec_id::write_access::position ); //current position
     MultiVecDeriv vel(vop, core::vec_id::write_access::velocity ); //current velocity
 
-#ifdef SOFA_NO_VMULTIOP // unoptimized version
-    if (d_symplectic.getValue())
-    {
-        //newVel = vec + acc * dt
-        //newPos = pos + newVel * dt
-
-        newVel.eq(vel, acc.id(), m_dt);
-        m_mop->solveConstraint(newVel,core::ConstraintOrder::VEL);
-
-        newPos.eq(pos, newVel, m_dt);
-        m_mop->solveConstraint(newPos,core::ConstraintOrder::POS);
-    }
-    else
-    {
-        //newPos = pos + vel * dt
-        //newVel = vel + acc * dt
-
-        newPos.eq(pos, vel, m_dt);
-        m_mop->solveConstraint(newPos,core::ConstraintOrder::POS);
-
-        newVel.eq(vel, acc.id(), m_dt);
-        m_mop->solveConstraint(newVel,core::ConstraintOrder::VEL);
-    }
-#else // single-operation optimization
     {
         typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
 
@@ -207,7 +181,6 @@ void EulerExplicitIntegrationScheme::updateState(sofa::simulation::common::Vecto
         m_mop->solveConstraint(newVel,core::ConstraintOrder::VEL);
         m_mop->solveConstraint(newPos,core::ConstraintOrder::POS);
     }
-#endif
 }
 
 void EulerExplicitIntegrationScheme::init()

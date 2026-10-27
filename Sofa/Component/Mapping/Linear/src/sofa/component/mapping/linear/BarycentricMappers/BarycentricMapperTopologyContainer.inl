@@ -221,7 +221,7 @@ void BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::checkDi
                                                                                                   NearestParams& nearestParams)
 {
     Vec3 bary = m_bases[e] * ( outPos - inPos);
-    SReal dist;
+    SReal dist = 0;
     computeDistance(dist, bary);
     if ( dist>0 )
         dist = ( outPos-m_centers[e] ).norm2();

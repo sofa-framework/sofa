@@ -24,10 +24,10 @@
 #include <sofa/simulation/CollisionVisitor.h>
 
 #include <sofa/simulation/PropagateEventVisitor.h>
-#include <sofa/simulation/CollisionBeginEvent.h>
-#include <sofa/simulation/CollisionEndEvent.h>
-#include <sofa/simulation/IntegrateBeginEvent.h>
-#include <sofa/simulation/IntegrateEndEvent.h>
+#include <sofa/simulation/events/CollisionBeginEvent.h>
+#include <sofa/simulation/events/CollisionEndEvent.h>
+#include <sofa/simulation/events/IntegrateBeginEvent.h>
+#include <sofa/simulation/events/IntegrateEndEvent.h>
 
 #include <stdlib.h>
 #include <math.h>
