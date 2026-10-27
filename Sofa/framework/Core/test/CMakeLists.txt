@@ -13,6 +13,7 @@ set(SOURCE_FILES
     objectmodel/BaseLink_test.cpp
     objectmodel/BaseObjectDescription_test.cpp
     objectmodel/Data_test.cpp
+    objectmodel/DataEigen_test.cpp
     objectmodel/DataLink_test.cpp
     objectmodel/DataFileName_test.cpp
     objectmodel/DataFileNameVector_test.cpp
