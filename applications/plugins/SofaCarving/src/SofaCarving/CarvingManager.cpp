@@ -26,9 +26,9 @@
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 #include <sofa/core/objectmodel/ScriptEvent.h>
 #include <sofa/core/objectmodel/MouseEvent.h>
-#include <sofa/simulation/AnimateBeginEvent.h>
-#include <sofa/simulation/AnimateEndEvent.h>
-#include <sofa/simulation/CollisionEndEvent.h>
+#include <sofa/simulation/events/AnimateBeginEvent.h>
+#include <sofa/simulation/events/AnimateEndEvent.h>
+#include <sofa/simulation/events/CollisionEndEvent.h>
 
 #include <sofa/core/topology/TopologicalMapping.h>
 #include <sofa/gui/component/performer/TopologicalChangeManager.h>

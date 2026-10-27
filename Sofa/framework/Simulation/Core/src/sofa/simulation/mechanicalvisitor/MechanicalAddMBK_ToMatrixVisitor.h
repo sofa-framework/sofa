@@ -42,8 +42,6 @@ public:
     /// Only used for debugging / profiling purposes
     const char* getClassName() const override { return "MechanicalAddMBK_ToMatrixVisitor"; }
 
-    Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*ms*/) override;
-
     Result fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff) override;
 
     bool stopAtMechanicalMapping(simulation::Node* node, core::BaseMapping* map) override;

@@ -83,6 +83,8 @@ public :
 
     std::string getDefaultResponseType() const { return d_response.getValue().getSelectedItem(); }
 
+    void loadInternalStateFrom(const core::objectmodel::Snapshot::SnapshotObject& snapshot) override;
+
 protected:
     typedef sofa::helper::map_ptr_stable_compare<
                 /* key */  std::pair<core::CollisionModel*, core::CollisionModel*>,

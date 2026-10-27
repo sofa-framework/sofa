@@ -24,7 +24,7 @@
 #include <sofa/core/ObjectFactory.h>
 
 #include <sofa/simulation/events/SimulationInitDoneEvent.h>
-#include <sofa/simulation/AnimateEndEvent.h>
+#include <sofa/simulation/events/AnimateEndEvent.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 
 namespace sofa::component::_vtkexporter_

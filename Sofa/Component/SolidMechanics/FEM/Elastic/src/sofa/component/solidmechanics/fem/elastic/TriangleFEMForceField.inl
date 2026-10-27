@@ -715,4 +715,10 @@ const typename TriangleFEMForceField<DataTypes>::StrainDisplacement& TriangleFEM
     return InvalidStrainDisplacement;
 }
 
+template<class DataTypes>
+void TriangleFEMForceField<DataTypes>::loadInternalStateFrom(const core::objectmodel::Snapshot::SnapshotObject &snapshot)
+{
+    SOFA_UNUSED(snapshot);
+    _indexedElements = &(this->l_topology->getTriangles());
+}
 } // namespace sofa::component::solidmechanics::fem::elastic

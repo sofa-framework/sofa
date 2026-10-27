@@ -26,6 +26,8 @@
 
 #include <gtest/gtest.h>
 
+#include <cstdlib>
+
 #include <sofa/helper/RandomGenerator.h>
 #include <sofa/linearalgebra/CompressedRowSparseMatrixConstraint.h>
 #include <sofa/linearalgebra/FullVector.h>
@@ -2420,6 +2422,55 @@ TEST(CompressedRowSparseMatrixConstraint, multTransposeBaseVector)
     EXPECT_NEAR(res[2][0], 0.0, tol);
     EXPECT_NEAR(res[2][1], 2.0, tol);
     EXPECT_NEAR(res[2][2], 0.0, tol);
+}
+
+TEST(CompressedRowSparseMatrixConstraint, DefaultConstructedRowIteratorIsInvalid)
+{
+    using Vec3 = sofa::type::Vec3;
+    using Matrix = sofa::linearalgebra::CompressedRowSparseMatrixConstraint<Vec3>;
+
+    Matrix::RowConstIterator it{};
+    EXPECT_TRUE(it.isInvalid()) << "a default-constructed row iterator must not alias row 0";
+}
+
+// Run in a child process so that a crash does not abort the whole test binary
+#if GTEST_HAS_DEATH_TEST
+
+TEST(CompressedRowSparseMatrixConstraintDeathTest, ClearRowBlockOnEmptyMatrix)
+{
+    using Vec3 = sofa::type::Vec3;
+    using Matrix = sofa::linearalgebra::CompressedRowSparseMatrixConstraint<Vec3>;
+
+    EXPECT_EXIT(
+        {
+            Matrix m;
+            m.clearRowBlock(0);
+            std::exit(m.empty() ? 0 : 2);
+        },
+        ::testing::ExitedWithCode(0), "");
+}
+
+#endif // GTEST_HAS_DEATH_TEST
+
+TEST(CompressedRowSparseMatrixConstraint, SetLineOnEmptyMatrix)
+{
+    using Vec3 = sofa::type::Vec3;
+    using Matrix = sofa::linearalgebra::CompressedRowSparseMatrixConstraint<Vec3>;
+
+    Matrix src;
+    src.writeLine(0).addCol(2, Vec3(1, 0, 0));
+    src.compress();
+
+    Matrix dst;
+    EXPECT_NO_THROW(dst.setLine(0, src.readLine(0).row()));
+    dst.compress();
+
+    auto row = dst.readLine(0);
+    ASSERT_NE(row, dst.end());
+    auto col = row.begin();
+    ASSERT_NE(col, row.end());
+    EXPECT_EQ(col.index(), 2);
+    EXPECT_EQ(col.val(), Vec3(1, 0, 0));
 }
 
 } // namespace sofa

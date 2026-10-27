@@ -110,7 +110,6 @@ jobs:
           cd $WORKSPACE
 
           ## Configure authentification for git to clone properly
-          echo "$GH_TOKEN" > gh auth login --with-token
           gh auth setup-git
           gh auth status
 
@@ -326,9 +325,9 @@ jobs:
 
               echo "Launching configuration and build through docker using image ${DOCKER_IMAGE}. Running ./ci/scripts/configure-and-build.sh /workspace/build/ /workspace/sofa/ /workspace/ci/scripts/ \"${NODE_NAME}\" \"${BUILD_TYPE}\" \"${CONFIG}\" \"${{ inputs.python-version }}\" \"${{ inputs.preset }}\" \"${{ inputs.generate-binaries }}\" \"${CMAKE_OPTIONS}\""
               docker run --rm --env XDG_CACHE_HOME --env GH_TOKEN="$GH_TOKEN" -v $BUILDER_CACHE_DIR:/cache\
-                  --user $(id -u):$(id -g) --network=host -v $WORKSPACE:/workspace \
+                  --user 1000:1000 --network=host -v $WORKSPACE:/workspace \
                   ${DOCKER_IMAGE} \
-                  /bin/bash -c "env; echo \"$GH_TOKEN\" > gh auth login --with-token; gh auth setup-git; gh auth status; cd /workspace; ccache -M 5; /bin/bash $DOCKER_CI_DIR/scripts/configure-and-build.sh $DOCKER_BUILD_DIR $DOCKER_SRC_DIR $DOCKER_CI_DIR/scripts/ $DOCKER_LOG_DIR \"${NODE_NAME}\" \"${BUILD_TYPE}\" \"${CONFIG}\" \"${{ inputs.python-version }}\" \"${{ inputs.preset }}\" \"${{ inputs.generate-binaries }}\" \"${CMAKE_OPTIONS}\""
+                  /bin/bash -c "env; gh auth setup-git; gh auth status; cd /workspace; ccache -M 5; /bin/bash $DOCKER_CI_DIR/scripts/configure-and-build.sh $DOCKER_BUILD_DIR $DOCKER_SRC_DIR $DOCKER_CI_DIR/scripts/ $DOCKER_LOG_DIR \"${NODE_NAME}\" \"${BUILD_TYPE}\" \"${CONFIG}\" \"${{ inputs.python-version }}\" \"${{ inputs.preset }}\" \"${{ inputs.generate-binaries }}\" \"${CMAKE_OPTIONS}\""
           else
               echo "Launching configuration and build"
 
@@ -347,7 +346,7 @@ jobs:
 
               echo "Launching unit test suite through docker using image ${DOCKER_IMAGE}."
               docker run --rm \
-                  --user $(id -u):$(id -g) --network=host -v $WORKSPACE:/workspace \
+                  --user 1000:1000 --network=host -v $WORKSPACE:/workspace \
                   ${DOCKER_IMAGE} \
                   /bin/bash -c "cd /workspace; . ${DOCKER_CI_DIR}/scripts/tests/setup-test-env.sh \"${DOCKER_BUILD_DIR}\" \"${DOCKER_CI_DIR}/scripts/\" \"${NODE_NAME}\" \"${{ inputs.python-version }}\"; env; \${VM_PYTHON3_EXECUTABLE} ${DOCKER_CI_DIR}/scripts/tests/sofa_unit_tests.py --build-dir ${DOCKER_BUILD_DIR} --results-dir \${RESULTS_DIR}/unit -j \${VM_MAX_PARALLEL_TESTS}"
           else
@@ -378,7 +377,7 @@ jobs:
 
               echo "Launching scene test suite through docker using image ${DOCKER_IMAGE}."
               docker run --rm \
-                  --user $(id -u):$(id -g) --network=host -v $WORKSPACE:/workspace \
+                  --user 1000:1000 --network=host -v $WORKSPACE:/workspace \
                   ${DOCKER_IMAGE} \
                   /bin/bash -c "cd /workspace; . ${DOCKER_CI_DIR}/scripts/tests/setup-test-env.sh \"${DOCKER_BUILD_DIR}\" \"${DOCKER_CI_DIR}/scripts/\" \"${NODE_NAME}\" \"${{ inputs.python-version }}\"; env ; \${VM_PYTHON3_EXECUTABLE} ${DOCKER_CI_DIR}/scripts/tests/sofa_scene_tests.py --src-dir "${DOCKER_SRC_DIR}" --build-dir \"${DOCKER_BUILD_DIR}\" --results-dir \"\${RESULTS_DIR}/scene\" -j \${VM_MAX_PARALLEL_TESTS}"
           else
@@ -408,7 +407,7 @@ jobs:
 
               echo "Launching regression test suite through docker using image ${DOCKER_IMAGE}."
               docker run --rm \
-                  --user $(id -u):$(id -g) --network=host -v $WORKSPACE:/workspace \
+                  --user 1000:1000 --network=host -v $WORKSPACE:/workspace \
                   ${DOCKER_IMAGE} \
                   /bin/bash -c "export REGRESSION_DIR="$DOCKER_REGRESSION_DIR"; cd /workspace;. ${DOCKER_CI_DIR}/scripts/tests/setup-test-env.sh \"${DOCKER_BUILD_DIR}\" \"${DOCKER_CI_DIR}/scripts/\" \"${NODE_NAME}\" \"${{ inputs.python-version }}\";  env ; \${VM_PYTHON3_EXECUTABLE} ${DOCKER_REGRESSION_DIR}/SofaRegressionProgram/SofaRegressionProgram.py --input "${DOCKER_SRC_DIR}/examples" --input "${DOCKER_SRC_DIR}/applications"  --input "${DOCKER_BUILD_DIR}/external_directories/fetched" --output-logs-errors "\${RESULTS_DIR}/regression" --legacy-regression --jobs \${VM_MAX_PARALLEL_TESTS} "
           else

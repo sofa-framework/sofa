@@ -98,14 +98,6 @@ void CentralDifferenceIntegrationScheme::doIntegrate(const core::ExecParams* par
     // apply the solution
     if (r==0)
     {
-#ifdef SOFA_NO_VMULTIOP // unoptimized version
-        vel2.eq( vel, dx, dt );                  // vel = vel + dt M^{-1} ( P_n - K u_n )
-        m_mop->solveConstraint(vel2,core::ConstraintOrder::VEL);
-        pos2.eq( pos, vel2, dt );                    // pos = pos + h vel
-        m_mop->solveConstraint(pos2,core::ConstraintOrder::POS);
-
-#else // single-operation optimization
-
         typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
         VMultiOp ops;
         ops.resize(2);
@@ -122,15 +114,9 @@ void CentralDifferenceIntegrationScheme::doIntegrate(const core::ExecParams* par
 
         m_mop->solveConstraint(vel2,core::ConstraintOrder::VEL);
         m_mop->solveConstraint(pos2,core::ConstraintOrder::POS);
-#endif
     }
     else
     {
-#ifdef SOFA_NO_VMULTIOP // unoptimized version
-        vel2.eq( vel, (1/dt - r/2)/(1/dt + r/2) );
-        vel2.peq( dx, 1/(1/dt + r/2) );     // vel = \frac{\frac{1}{dt} - \frac{r}{2}}{\frac{1}{dt} + \frac{r}{2}} vel + \frac{1}{\frac{1}{dt} + \frac{r}{2}} M^{-1} ( P_n - K u_n )
-        pos2.eq( pos, vel2, dt );                    // pos = pos + h vel
-#else // single-operation optimization
         typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
         VMultiOp ops;
         ops.resize(2);
@@ -148,7 +134,6 @@ void CentralDifferenceIntegrationScheme::doIntegrate(const core::ExecParams* par
 
         m_mop->solveConstraint(vel2,core::ConstraintOrder::VEL);
         m_mop->solveConstraint(pos2,core::ConstraintOrder::POS);
-#endif
     }
 
 }

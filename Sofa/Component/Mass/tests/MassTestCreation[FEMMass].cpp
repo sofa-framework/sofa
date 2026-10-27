@@ -48,7 +48,7 @@ struct ElementMass_template_test : public Mass_test<FEMMass<typename MassParam::
     {
         this->m_testAccFromF = false;
         this->m_testAddMToMatrix = false;
-        this->m_errorMax = 1e3_sreal;
+        this->m_errorMax = 1e2_sreal;
 
         auto topology = sofa::core::objectmodel::New<MeshTopology>();
         this->m_node->addObject(topology);

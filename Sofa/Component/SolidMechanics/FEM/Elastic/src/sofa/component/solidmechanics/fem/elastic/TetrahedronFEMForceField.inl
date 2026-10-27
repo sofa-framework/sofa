@@ -29,8 +29,8 @@
 #include <sofa/component/topology/container/grid/GridTopology.h>
 #include <sofa/helper/decompose.h>
 #include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
-#include <sofa/simulation/AnimateBeginEvent.h>
-#include <sofa/simulation/AnimateEndEvent.h>
+#include <sofa/simulation/events/AnimateBeginEvent.h>
+#include <sofa/simulation/events/AnimateEndEvent.h>
 #include <sofa/core/behavior/BaseLocalForceFieldMatrix.h>
 
 namespace sofa::component::solidmechanics::fem::elastic
@@ -2421,5 +2421,10 @@ bool TetrahedronFEMForceField<DataTypes>::isComputeVonMisesStressMethodSet()
     return d_computeVonMisesStress.getValue() == 1 || d_computeVonMisesStress.getValue() == 2;
 }
 
-
+template<class DataTypes>
+void TetrahedronFEMForceField<DataTypes>::loadInternalStateFrom(const core::objectmodel::Snapshot::SnapshotObject &snapshot)
+{
+    SOFA_UNUSED(snapshot);
+    this->reinit();
+}
 } //namespace sofa::component::solidmechanics::fem::elastic

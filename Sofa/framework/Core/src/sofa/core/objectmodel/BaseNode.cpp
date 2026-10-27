@@ -64,6 +64,36 @@ core::visual::VisualLoop* BaseNode::getVisualLoop() const
     return this->getContext()->get<core::visual::VisualLoop>();
 }
 
+std::shared_ptr<Snapshot::SnapshotObject>
+BaseNode::createSnapshotObject(const std::shared_ptr<Snapshot::SnapshotObject>& parent) const
+{
+    auto nodeObject = std::make_shared<Snapshot::SnapshotNode>();
+    const auto nodeParent = std::dynamic_pointer_cast<Snapshot::SnapshotNode>(parent);
+    nodeParent->m_children.push_back(nodeObject);
+
+    return nodeObject;
+}
+
+std::shared_ptr<Snapshot::SnapshotObject>
+BaseNode::findSnapshotObject( const std::shared_ptr<Snapshot::SnapshotNode>& parents, const std::string& objectname, const std::string& classname, const std::string& pathname) const
+{
+    if (!parents) return nullptr;
+
+    if(parents->m_name == objectname && parents->m_className == classname && parents->m_pathName == pathname)
+    {
+        return parents;
+    }
+
+    for (const auto& child : parents->m_children)
+    {
+        if (auto result = this->findSnapshotObject(child, objectname, classname, pathname))
+            return result;
+
+    }
+
+    return nullptr;
+}
+
 /// Set the context of an object to this
 void BaseNode::setObjectContext(BaseComponent::SPtr obj)
 {

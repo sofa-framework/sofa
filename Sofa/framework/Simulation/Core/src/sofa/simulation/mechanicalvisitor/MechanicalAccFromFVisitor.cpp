@@ -27,13 +27,6 @@
 namespace sofa::simulation::mechanicalvisitor
 {
 
-Visitor::Result MechanicalAccFromFVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/)
-{
-    /////<TO REMOVE>
-    /// \todo Check presence of Mass
-    return RESULT_CONTINUE;
-}
-
 Visitor::Result MechanicalAccFromFVisitor::fwdMass(simulation::Node* /*node*/, core::behavior::BaseMass* mass)
 {
     mass->accFromF(mparams, a);

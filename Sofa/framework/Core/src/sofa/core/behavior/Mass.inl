@@ -118,15 +118,6 @@ SReal Mass<DataTypes>::getKineticEnergy(const MechanicalParams* /*mparams*/, con
     return 0.0;
 }
 
-
-template<class DataTypes>
-SReal Mass<DataTypes>::getPotentialEnergy(const MechanicalParams* mparams) const
-{
-    if (this->mstate)
-        return getPotentialEnergy(mparams /* PARAMS FIRST */, *mparams->readX(this->mstate.get()));
-    return 0.0;
-}
-
 template<class DataTypes>
 SReal Mass<DataTypes>::getPotentialEnergy(const MechanicalParams* /*mparams*/, const DataVecCoord& /*x*/) const
 {
@@ -217,10 +208,14 @@ void Mass<DataTypes>::exportGnuplot(const MechanicalParams* mparams, SReal time)
 {
     if (m_gnuplotFileEnergy!=nullptr)
     {
-        (*m_gnuplotFileEnergy) << time <<"\t"<< this->getKineticEnergy(mparams)
-                               <<"\t"<< this->getPotentialEnergy(mparams)
-                              <<"\t"<< this->getPotentialEnergy(mparams)
-                                +this->getKineticEnergy(mparams)<< std::endl;
+        assert(mparams);
+        auto xId = mparams->x();
+        const auto kineticEnergy = this->getKineticEnergy(mparams);
+        const auto potentialEnergy = this->getPotentialEnergy(mparams, xId);
+        (*m_gnuplotFileEnergy) << time <<"\t"<< kineticEnergy
+                               <<"\t"<< potentialEnergy
+                              <<"\t"<< potentialEnergy
+                                +kineticEnergy<< std::endl;
     }
 }
 

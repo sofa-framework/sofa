@@ -64,6 +64,8 @@ set(HEADER_FILES
     ${SRC_ROOT}/sptr.h
     ${SRC_ROOT}/State.h
     ${SRC_ROOT}/State.inl
+    ${SRC_ROOT}/StateVectorStorage.h
+    ${SRC_ROOT}/StateVectorStorage.inl
     ${SRC_ROOT}/VecId.h
     ${SRC_ROOT}/behavior/BaseAnimationLoop.h
     ${SRC_ROOT}/behavior/BaseConstraint.h
@@ -97,6 +99,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/behavior/DefaultMultiMatrixAccessor.h
     ${SRC_ROOT}/behavior/ForceField.h
     ${SRC_ROOT}/behavior/ForceField.inl
+    ${SRC_ROOT}/behavior/IterativeSolver.h
     ${SRC_ROOT}/behavior/LagrangianConstraint.h
     ${SRC_ROOT}/behavior/LagrangianConstraint.inl
     ${SRC_ROOT}/behavior/LinearSolver.h
@@ -143,6 +146,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/collision/IntersectorFactory.h
     ${SRC_ROOT}/collision/NarrowPhaseDetection.h
     ${SRC_ROOT}/collision/Pipeline.h
+    ${SRC_ROOT}/data/Data[Eigen].h
     ${SRC_ROOT}/loader/BaseLoader.h
     ${SRC_ROOT}/loader/ImageLoader.h
     ${SRC_ROOT}/loader/MeshLoader.h
@@ -161,6 +165,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/objectmodel/BaseLink.h
     ${SRC_ROOT}/objectmodel/BaseNode.h
     ${SRC_ROOT}/objectmodel/BaseObjectDescription.h
+    ${SRC_ROOT}/objectmodel/Snapshot.h
     ${SRC_ROOT}/objectmodel/ClassInfo.h
     ${SRC_ROOT}/objectmodel/ComponentState.h
     ${SRC_ROOT}/objectmodel/ConfigurationSetting.h
@@ -179,6 +184,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/objectmodel/HapticDeviceEvent.h
     ${SRC_ROOT}/objectmodel/IdleEvent.h
     ${SRC_ROOT}/objectmodel/JoystickEvent.h
+    ${SRC_ROOT}/objectmodel/JSONSnapshot.h
     ${SRC_ROOT}/objectmodel/KeypressedEvent.h
     ${SRC_ROOT}/objectmodel/KeyreleasedEvent.h
     ${SRC_ROOT}/objectmodel/lifecycle/DeprecatedData.h
@@ -255,6 +261,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/PathResolver.cpp
     ${SRC_ROOT}/SofaLibrary.cpp
     ${SRC_ROOT}/State.cpp
+    ${SRC_ROOT}/StateVectorStorage.cpp
     ${SRC_ROOT}/VecId.cpp
     ${SRC_ROOT}/behavior/BaseAnimationLoop.cpp
     ${SRC_ROOT}/behavior/BaseConstraintCorrection.cpp
@@ -274,6 +281,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/behavior/ConstraintSolver.cpp
     ${SRC_ROOT}/behavior/DefaultMultiMatrixAccessor.cpp
     ${SRC_ROOT}/behavior/ForceField.cpp
+    ${SRC_ROOT}/behavior/IterativeSolver.cpp
     ${SRC_ROOT}/behavior/LagrangianConstraint.cpp
     ${SRC_ROOT}/behavior/LinearSolver.cpp
     ${SRC_ROOT}/behavior/LinearSolverAccessor.cpp
@@ -312,6 +320,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/objectmodel/BaseLink.cpp
     ${SRC_ROOT}/objectmodel/BaseNode.cpp
     ${SRC_ROOT}/objectmodel/BaseObjectDescription.cpp
+    ${SRC_ROOT}/objectmodel/Snapshot.cpp
     ${SRC_ROOT}/objectmodel/ClassInfo.cpp
     ${SRC_ROOT}/objectmodel/ComponentState.cpp
     ${SRC_ROOT}/objectmodel/ConfigurationSetting.cpp
@@ -329,6 +338,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/objectmodel/HapticDeviceEvent.cpp
     ${SRC_ROOT}/objectmodel/IdleEvent.cpp
     ${SRC_ROOT}/objectmodel/JoystickEvent.cpp
+    ${SRC_ROOT}/objectmodel/JSONSnapshot.cpp
     ${SRC_ROOT}/objectmodel/KeypressedEvent.cpp
     ${SRC_ROOT}/objectmodel/KeyreleasedEvent.cpp
     ${SRC_ROOT}/objectmodel/lifecycle/DeprecatedData.cpp
@@ -336,6 +346,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/objectmodel/ScriptEvent.cpp
     ${SRC_ROOT}/objectmodel/Tag.cpp
     ${SRC_ROOT}/objectmodel/TagSet.cpp
+    ${SRC_ROOT}/data/Data[Eigen].cpp
     ${SRC_ROOT}/topology/BaseMeshTopology.cpp
     ${SRC_ROOT}/topology/BaseTopology.cpp
     ${SRC_ROOT}/topology/BaseTopologyObject.cpp
