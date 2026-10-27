@@ -146,10 +146,9 @@ struct PolarDecomposition
             // In 1D, there is no rotation.
             return true;
         }
-        else if constexpr (Codimension > 0 || FitType == Fit::Affine)
+        else if constexpr (Codimension > 0)
         {
-            // TODO: the affine fit and embedded elements. Without a jacobian, the tangent treats the
-            // rotation as constant.
+            // TODO: embedded elements.
             jacobian = {};
             return false;
         }
@@ -167,12 +166,23 @@ struct PolarDecomposition
                 Q[j] = nodesRestPosition[j] - t0;
             }
 
-            const auto H = P.multTranspose(Q);
+            const auto M = Q.multTranspose(Q);
+            const auto traceM = sofa::type::trace(M);
 
-            // S and the offsets q_k are divided by the trace of M so that small elements do not test A as
-            // singular. The jacobian is unchanged.
-            const auto inverseTraceM = static_cast<sofa::Real_t<DataTypes>>(1) / sofa::type::trace(Q.multTranspose(Q));
-            const StretchMatrix S = rotationMatrix.multTranspose(H) * inverseTraceM;
+            const auto w = [&Q, &M, traceM]()
+            {
+                if constexpr (FitType == Fit::Affine)
+                {
+                    return Q * (M / traceM).inverted() / traceM;
+                }
+                else
+                {
+                    return Q / traceM;
+                }
+            }();
+
+            const auto F = P.multTranspose(w);
+            const StretchMatrix S = rotationMatrix.multTranspose(F);
 
             sofa::type::Mat<JacobianBlock::nbLines, JacobianBlock::nbLines, sofa::Real_t<DataTypes>> A;
             if constexpr (DataTypes::spatial_dimensions == 3)
@@ -191,9 +201,9 @@ struct PolarDecomposition
                 return false;
             }
 
-            for (sofa::Size j = 0; j < NumberOfNodesInElement; ++j)
+            for (sofa::Size k = 0; k < NumberOfNodesInElement; ++k)
             {
-                jacobian[j] = inverseA * sofa::type::crossProductMatrix(Q[j] * inverseTraceM);
+                jacobian[k] = inverseA * sofa::type::crossProductMatrix(w[k]);
             }
             return true;
         }
