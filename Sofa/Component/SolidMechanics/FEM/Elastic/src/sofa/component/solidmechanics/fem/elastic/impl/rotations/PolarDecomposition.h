@@ -146,9 +146,9 @@ struct PolarDecomposition
             // In 1D, there is no rotation.
             return true;
         }
-        else if constexpr (Codimension > 0)
+        else if constexpr (Codimension > 1)
         {
-            // TODO: embedded elements.
+            // TODO: edges in 3D.
             jacobian = {};
             return false;
         }
@@ -171,7 +171,14 @@ struct PolarDecomposition
 
             const auto w = [&Q, &M, traceM]()
             {
-                if constexpr (FitType == Fit::Affine)
+                if constexpr (FitType == Fit::Affine && Codimension == 1)
+                {
+                    const auto cofactorM = sofa::type::cofactor(M);
+                    const auto n0 = std::max_element(cofactorM.begin(), cofactorM.end(),
+                        [](const auto& a, const auto& b) { return a.norm2() < b.norm2(); })->normalized();
+                    return Q * (M / traceM + sofa::type::dyad(n0, n0)).inverted() / traceM;
+                }
+                else if constexpr (FitType == Fit::Affine)
                 {
                     return Q * (M / traceM).inverted() / traceM;
                 }
