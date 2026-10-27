@@ -45,6 +45,34 @@ struct TriangleRotation
         rotationMatrix = currentRotation.multTranspose(initialRotationMatrix);
     }
 
+    template<std::size_t NumberOfNodesInElement, class JacobianBlock>
+    bool computeRotationJacobian(std::array<JacobianBlock, NumberOfNodesInElement>& jacobian,
+        const RotationMatrix& rotationMatrix,
+        const std::array<sofa::Coord_t<DataTypes>, NumberOfNodesInElement>& nodesPosition,
+        const std::array<sofa::Coord_t<DataTypes>, NumberOfNodesInElement>& nodesRestPosition)
+    {
+        SOFA_UNUSED(nodesRestPosition);
+
+        RotationMatrix currentFrame(sofa::type::NOINIT);
+        computeRotationFrom3Points(currentFrame, {nodesPosition[0], nodesPosition[1], nodesPosition[2]});
+        const RotationMatrix restFrame = currentFrame * rotationMatrix;
+
+        const auto a = nodesPosition[1] - nodesPosition[0];
+        const auto b = nodesPosition[2] - nodesPosition[0];
+        const auto lengthA = a.norm();
+        const auto b1 = b * currentFrame[0];
+        const auto b2 = b * currentFrame[1];
+
+        const RotationMatrix Ga {{0, 0, -b1 / (lengthA * b2)}, {0, 0, -1 / lengthA}, {0, 1 / lengthA, 0}};
+        const RotationMatrix Gb {{0, 0, 1 / b2}, {0, 0, 0}, {0, 0, 0}};
+
+        jacobian = {};
+        jacobian[0] = restFrame.multTranspose((-Ga - Gb) * restFrame);
+        jacobian[1] = restFrame.multTranspose(Ga * restFrame);
+        jacobian[2] = restFrame.multTranspose(Gb * restFrame);
+        return true;
+    }
+
     static constexpr sofa::helper::Item getItem()
     {
         return {"triangle", "Compute the rotation based on the Gram-Schmidt frame alignment"};
