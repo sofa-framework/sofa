@@ -64,6 +64,45 @@ struct HexahedronRotation
         rotationMatrix = currentRotation.multTranspose(initialRotationMatrix);
     }
 
+    template<std::size_t NumberOfNodesInElement, class JacobianBlock>
+    bool computeRotationJacobian(std::array<JacobianBlock, NumberOfNodesInElement>& jacobian,
+        const RotationMatrix& rotationMatrix,
+        const std::array<sofa::Coord_t<DataTypes>, NumberOfNodesInElement>& nodesPosition,
+        const std::array<sofa::Coord_t<DataTypes>, NumberOfNodesInElement>& nodesRestPosition)
+    {
+        using Real = sofa::Real_t<DataTypes>;
+        SOFA_UNUSED(nodesRestPosition);
+
+        RotationMatrix currentFrame(sofa::type::NOINIT);
+        computeOrientationFromHexahedron(currentFrame, nodesPosition);
+        const RotationMatrix restFrame = currentFrame * rotationMatrix;
+
+        const auto a = (nodesPosition[1] - nodesPosition[0] +
+                        nodesPosition[2] - nodesPosition[3] +
+                        nodesPosition[5] - nodesPosition[4] +
+                        nodesPosition[6] - nodesPosition[7]) * 0.25;
+        const auto b = (nodesPosition[3] - nodesPosition[0] +
+                        nodesPosition[2] - nodesPosition[1] +
+                        nodesPosition[7] - nodesPosition[4] +
+                        nodesPosition[6] - nodesPosition[5]) * 0.25;
+        const auto lengthA = a.norm();
+        const auto b1 = b * currentFrame[0];
+        const auto b2 = b * currentFrame[1];
+
+        const RotationMatrix Ga {{0, 0, -b1 / (lengthA * b2)}, {0, 0, -1 / lengthA}, {0, 1 / lengthA, 0}};
+        const RotationMatrix Gb {{0, 0, 1 / b2}, {0, 0, 0}, {0, 0, 0}};
+
+        constexpr std::array<Real, 8> alpha {-0.25, 0.25, 0.25, -0.25, -0.25, 0.25, 0.25, -0.25};
+        constexpr std::array<Real, 8> beta {-0.25, -0.25, 0.25, 0.25, -0.25, -0.25, 0.25, 0.25};
+
+        jacobian = {};
+        for (std::size_t k = 0; k < 8; ++k)
+        {
+            jacobian[k] = restFrame.multTranspose((Ga * alpha[k] + Gb * beta[k]) * restFrame);
+        }
+        return true;
+    }
+
     static constexpr sofa::helper::Item getItem()
     {
         return {"hexahedron", "Compute the rotation based on two average edges in the hexahedron"};
