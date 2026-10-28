@@ -36,20 +36,27 @@
 namespace sofa::component::solidmechanics::fem::elastic
 {
 
-template<class DataTypes, class ElementType>
+/**
+ * Base class for finite element force fields.
+ *
+ * @tparam DataTypes The type of the quantity to integrate in the finite elements
+ * @tparam SpatialTypes The type of the spatial coordinates
+ * @tparam ElementType The type of the finite element
+ */
+template <class DataTypes, class SpatialTypes, class ElementType>
 class FEMForceField :
     public virtual sofa::core::behavior::ForceField<DataTypes>,
     public virtual sofa::core::behavior::TopologyAccessor,
     public virtual sofa::simulation::TaskSchedulerUser
 {
 public:
-    SOFA_CLASS3(SOFA_TEMPLATE2(FEMForceField, DataTypes, ElementType),
+    SOFA_CLASS3(SOFA_TEMPLATE3(FEMForceField, DataTypes, SpatialTypes, ElementType),
         sofa::core::behavior::ForceField<DataTypes>,
         sofa::core::behavior::TopologyAccessor,
         sofa::simulation::TaskSchedulerUser);
 
 protected:
-    using trait = sofa::component::solidmechanics::fem::elastic::trait<DataTypes, ElementType>;
+    using trait = sofa::component::solidmechanics::fem::elastic::trait<DataTypes, SpatialTypes, ElementType>;
     using ElementGradient = typename trait::ElementGradient;
 
 public:
@@ -72,7 +79,7 @@ public:
     sofa::Data<ComputeStrategy> d_computeForceStrategy;
     sofa::Data<ComputeStrategy> d_computeForceDerivStrategy;
 
-    sofa::Data<sofa::Real_t<DataTypes>> d_elementSpace;
+    sofa::Data<sofa::Real_t<SpatialTypes>> d_elementSpace;
 
 protected:
 
@@ -132,15 +139,50 @@ protected:
 };
 
 #if !defined(SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_FEM_FORCEFIELD_CPP)
-extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<sofa::defaulttype::Vec1Types, sofa::geometry::Edge>;
-extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<sofa::defaulttype::Vec2Types, sofa::geometry::Edge>;
-extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Edge>;
-extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<sofa::defaulttype::Vec2Types, sofa::geometry::Triangle>;
-extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Triangle>;
-extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<sofa::defaulttype::Vec2Types, sofa::geometry::Quad>;
-extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Quad>;
-extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Tetrahedron>;
-extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Hexahedron>;
+
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<sofa::defaulttype::Vec1Types, sofa::defaulttype::Vec1Types, sofa::geometry::Edge>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<sofa::defaulttype::Vec2Types, sofa::defaulttype::Vec1Types, sofa::geometry::Edge>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<sofa::defaulttype::Vec3Types, sofa::defaulttype::Vec1Types, sofa::geometry::Edge>;
+
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<sofa::defaulttype::Vec1Types, sofa::defaulttype::Vec2Types, sofa::geometry::Edge>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<sofa::defaulttype::Vec2Types, sofa::defaulttype::Vec2Types, sofa::geometry::Edge>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<sofa::defaulttype::Vec3Types, sofa::defaulttype::Vec2Types, sofa::geometry::Edge>;
+
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<sofa::defaulttype::Vec1Types, sofa::defaulttype::Vec3Types, sofa::geometry::Edge>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<sofa::defaulttype::Vec2Types, sofa::defaulttype::Vec3Types, sofa::geometry::Edge>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<sofa::defaulttype::Vec3Types, sofa::defaulttype::Vec3Types, sofa::geometry::Edge>;
+
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<sofa::defaulttype::Vec1Types, sofa::defaulttype::Vec2Types, sofa::geometry::Triangle>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<sofa::defaulttype::Vec2Types, sofa::defaulttype::Vec2Types, sofa::geometry::Triangle>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<sofa::defaulttype::Vec3Types, sofa::defaulttype::Vec2Types, sofa::geometry::Triangle>;
+
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<sofa::defaulttype::Vec1Types, sofa::defaulttype::Vec3Types, sofa::geometry::Triangle>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<sofa::defaulttype::Vec2Types, sofa::defaulttype::Vec3Types, sofa::geometry::Triangle>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<sofa::defaulttype::Vec3Types, sofa::defaulttype::Vec3Types, sofa::geometry::Triangle>;
+
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<sofa::defaulttype::Vec1Types, sofa::defaulttype::Vec2Types, sofa::geometry::Quad>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<sofa::defaulttype::Vec2Types, sofa::defaulttype::Vec2Types, sofa::geometry::Quad>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<sofa::defaulttype::Vec3Types, sofa::defaulttype::Vec2Types, sofa::geometry::Quad>;
+
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<sofa::defaulttype::Vec1Types, sofa::defaulttype::Vec3Types, sofa::geometry::Quad>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<sofa::defaulttype::Vec2Types, sofa::defaulttype::Vec3Types, sofa::geometry::Quad>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<sofa::defaulttype::Vec3Types, sofa::defaulttype::Vec3Types, sofa::geometry::Quad>;
+
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<sofa::defaulttype::Vec1Types, sofa::defaulttype::Vec3Types, sofa::geometry::Tetrahedron>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<sofa::defaulttype::Vec2Types, sofa::defaulttype::Vec3Types, sofa::geometry::Tetrahedron>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<sofa::defaulttype::Vec3Types, sofa::defaulttype::Vec3Types, sofa::geometry::Tetrahedron>;
+
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<sofa::defaulttype::Vec1Types, sofa::defaulttype::Vec3Types, sofa::geometry::Hexahedron>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<sofa::defaulttype::Vec2Types, sofa::defaulttype::Vec3Types, sofa::geometry::Hexahedron>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<sofa::defaulttype::Vec3Types, sofa::defaulttype::Vec3Types, sofa::geometry::Hexahedron>;
+
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<sofa::defaulttype::Vec1Types, sofa::defaulttype::Vec3Types, sofa::geometry::Prism>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<sofa::defaulttype::Vec2Types, sofa::defaulttype::Vec3Types, sofa::geometry::Prism>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<sofa::defaulttype::Vec3Types, sofa::defaulttype::Vec3Types, sofa::geometry::Prism>;
+
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<sofa::defaulttype::Vec1Types, sofa::defaulttype::Vec3Types, sofa::geometry::Pyramid>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<sofa::defaulttype::Vec2Types, sofa::defaulttype::Vec3Types, sofa::geometry::Pyramid>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<sofa::defaulttype::Vec3Types, sofa::defaulttype::Vec3Types, sofa::geometry::Pyramid>;
 #endif
 
 }  // namespace sofa::component::solidmechanics::fem::elastic
