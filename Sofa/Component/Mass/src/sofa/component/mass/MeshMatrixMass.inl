@@ -323,6 +323,12 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::applyEdgeMassTriangleDestructi
 // ---------------------------------------------------
 //{
 
+// The consistent mass matrix of a bilinear quad is rho*A/36 * (4 on the vertices, 2 on the edges,
+// 1 between opposite vertices). Only vertex and edge masses are stored, so the coupling between
+// opposite vertices is added to the vertex mass: rho*A/36 * (5 on the vertices, 2 on the edges).
+// This keeps the total mass and the row sums (rho*A/4 per vertex, which is the lumped mass) and
+// gives a positive definite element matrix (eigenvalues rho*A/36 * {9, 5, 5, 1}).
+
 /// Creation function for mass stored on vertices
 template <class DataTypes, class GeometricalTypes>
 template <typename T, typename std::enable_if_t<T::spatial_dimensions >= 2, int > >
@@ -363,7 +369,7 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::applyVertexMassQuadCreation(co
             const auto& pos3 = GeometricalTypes::getCPos(positions[q[3]]);
 
             const auto quadArea = sofa::geometry::Quad::area(pos0, pos1, pos2, pos3);
-            mass = (densityM[quadAdded[i]] * quadArea) / (typename DataTypes::Real(8.0));
+            mass = (densityM[quadAdded[i]] * quadArea) * (typename DataTypes::Real(5.0) / typename DataTypes::Real(36.0));
 
             // Adding mass
             for (unsigned int j = 0; j < 4; ++j)
@@ -423,7 +429,7 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::applyEdgeMassQuadCreation(cons
             const auto& pos3 = GeometricalTypes::getCPos(positions[q[3]]);
 
             const auto quadArea = sofa::geometry::Quad::area(pos0, pos1, pos2, pos3);
-            mass = (densityM[quadAdded[i]] * quadArea) / (typename DataTypes::Real(16.0));
+            mass = (densityM[quadAdded[i]] * quadArea) * (typename DataTypes::Real(2.0) / typename DataTypes::Real(36.0));
 
             // Adding mass edges of concerne quad
             for (unsigned int j = 0; j < 4; ++j)
@@ -467,7 +473,7 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::applyVertexMassQuadDestruction
             const auto& pos3 = GeometricalTypes::getCPos(positions[q[3]]);
 
             const auto quadArea = sofa::geometry::Quad::area(pos0, pos1, pos2, pos3);
-            mass = (densityM[quadRemoved[i]] * quadArea) / (typename DataTypes::Real(8.0));
+            mass = (densityM[quadRemoved[i]] * quadArea) * (typename DataTypes::Real(5.0) / typename DataTypes::Real(36.0));
 
             // Removing mass
             for (unsigned int j = 0; j < 4; ++j)
@@ -516,7 +522,7 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::applyEdgeMassQuadDestruction(c
             const auto& pos3 = GeometricalTypes::getCPos(positions[q[3]]);
 
             const auto quadArea = sofa::geometry::Quad::area(pos0, pos1, pos2, pos3);
-            mass = (densityM[quadRemoved[i]] * quadArea) / (typename DataTypes::Real(16.0));
+            mass = (densityM[quadRemoved[i]] * quadArea) * (typename DataTypes::Real(2.0) / typename DataTypes::Real(36.0));
 
             // Removing mass edges of concerne quad
             for (unsigned int j = 0; j < 4; ++j)
@@ -757,6 +763,13 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::applyEdgeMassTetrahedronDestru
 // ---------------------------------------------------------
 //{
 
+// The consistent mass matrix of a trilinear hexahedron is rho*V/216 * (8 on the vertices, 4 on the
+// edges, 2 on the face diagonals, 1 on the body diagonals). Only vertex and edge masses are stored,
+// so the face and body diagonal couplings are added to the vertex mass:
+// rho*V/216 * (15 on the vertices, 4 on the edges). This keeps the total mass and the row sums
+// (rho*V/8 per vertex, which is the lumped mass) and gives a positive definite element matrix
+// (eigenvalues rho*V/216 * {27, 19, 11, 3}).
+
 /// Creation function for mass stored on vertices
 template <class DataTypes, class GeometricalTypes>
 template <typename T, typename std::enable_if_t<T::spatial_dimensions >= 3, int > >
@@ -801,7 +814,7 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::applyVertexMassHexahedronCreat
             const auto& rpos7 = GeometricalTypes::getCPos(positions[h[7]]);
 
             const auto hexaVolume = sofa::geometry::Hexahedron::volume(rpos0, rpos1, rpos2, rpos3, rpos4, rpos5, rpos6, rpos7);
-            mass = (densityM[hexahedronAdded[i]] * hexaVolume) / (typename DataTypes::Real(20.0));
+            mass = (densityM[hexahedronAdded[i]] * hexaVolume) * (typename DataTypes::Real(15.0) / typename DataTypes::Real(216.0));
 
             // Adding mass
             for (unsigned int j = 0; j < 8; ++j)
@@ -865,7 +878,7 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::applyEdgeMassHexahedronCreatio
             const auto& rpos7 = GeometricalTypes::getCPos(positions[h[7]]);
 
             const auto hexaVolume = sofa::geometry::Hexahedron::volume(rpos0, rpos1, rpos2, rpos3, rpos4, rpos5, rpos6, rpos7);
-            mass = (densityM[hexahedronAdded[i]] * hexaVolume) / (typename DataTypes::Real(40.0));
+            mass = (densityM[hexahedronAdded[i]] * hexaVolume) * (typename DataTypes::Real(4.0) / typename DataTypes::Real(216.0));
 
             // Adding mass edges of concerne triangle
             for (unsigned int j = 0; j < 12; ++j)
@@ -913,7 +926,7 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::applyVertexMassHexahedronDestr
             const auto& rpos7 = GeometricalTypes::getCPos(positions[h[7]]);
 
             const auto hexaVolume = sofa::geometry::Hexahedron::volume(rpos0, rpos1, rpos2, rpos3, rpos4, rpos5, rpos6, rpos7);
-            mass = (densityM[hexahedronRemoved[i]] * hexaVolume) / (typename DataTypes::Real(20.0));
+            mass = (densityM[hexahedronRemoved[i]] * hexaVolume) * (typename DataTypes::Real(15.0) / typename DataTypes::Real(216.0));
 
             // Removing mass
             for (unsigned int j = 0; j < 8; ++j)
@@ -966,7 +979,7 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::applyEdgeMassHexahedronDestruc
             const auto& rpos7 = GeometricalTypes::getCPos(positions[h[7]]);
 
             const auto hexaVolume = sofa::geometry::Hexahedron::volume(rpos0, rpos1, rpos2, rpos3, rpos4, rpos5, rpos6, rpos7);
-            mass = (densityM[hexahedronRemoved[i]] * hexaVolume) / (typename DataTypes::Real(40.0));
+            mass = (densityM[hexahedronRemoved[i]] * hexaVolume) * (typename DataTypes::Real(4.0) / typename DataTypes::Real(216.0));
 
             // Removing mass edges of concerne triangle
             for (unsigned int j = 0; j < 12; ++j)
@@ -1425,7 +1438,7 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::computeMass()
             for (Index i = 0; i < n; ++i)
                 quadsAdded.push_back(i);
 
-            m_massLumpingCoeff = 2.0;
+            m_massLumpingCoeff = 9.0 / 5.0;
             if (!isLumped())
             {
                 applyEdgeMassQuadCreation(quadsAdded, l_topology->getQuads(), emptyAncestors, emptyCoefficients);
@@ -1463,7 +1476,7 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::computeMass()
             for (Index i = 0; i < n; ++i)
                 hexahedraAdded.push_back(i);
 
-            m_massLumpingCoeff = 2.5;
+            m_massLumpingCoeff = 27.0 / 15.0;
             if (!isLumped())
             {
                 applyEdgeMassHexahedronCreation(hexahedraAdded, l_topology->getHexahedra(), emptyAncestors, emptyCoefficients);
