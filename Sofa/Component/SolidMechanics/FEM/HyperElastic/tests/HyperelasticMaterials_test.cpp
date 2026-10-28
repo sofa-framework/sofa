@@ -226,6 +226,7 @@ public:
     SOFA_CLASS(PK2Material, T);
     using T::secondPiolaKirchhoffStress;
     using T::elasticityTensor;
+    using T::strainEnergyDensity;
 };
 
 template <typename T>
@@ -348,6 +349,39 @@ public:
             }
         }
     }
+
+    void testDerivativeStrainEnergy()
+    {
+        const auto F = this->generatePositiveDefiniteMatrix();
+        Strain<DataTypes> strain(deformationGradient, F);
+
+        const auto P = this->material->firstPiolaKirchhoffStress(strain);
+
+        constexpr Real epsilon = 1e-8;
+
+        for(sofa::Size i = 0; i < spatial_dimensions; ++i)
+        {
+            for(sofa::Size j = 0; j < spatial_dimensions; ++j)
+            {
+                auto F_perturbed_plus = F;
+                F_perturbed_plus(i,j) += epsilon;
+
+                auto F_perturbed_minus = F;
+                F_perturbed_minus(i,j) -= epsilon;
+
+                Strain<DataTypes> strainPerturbed_plus(deformationGradient, F_perturbed_plus);
+                Strain<DataTypes> strainPerturbed_minus(deformationGradient, F_perturbed_minus);
+
+                const Real W_perturbed_plus = this->material->strainEnergyDensity(strainPerturbed_plus);
+                const Real W_perturbed_minus = this->material->strainEnergyDensity(strainPerturbed_minus);
+
+                // Compare numerical and analytical derivatives
+                const Real numerical = (W_perturbed_plus - W_perturbed_minus) / (static_cast<Real>(2) * epsilon);
+                const Real analytical = P(i, j);
+                EXPECT_NEAR(numerical, analytical, 5e-4) << "i = " << i << " j = " << j;
+            }
+        }
+    }
     
 };
 
@@ -388,6 +422,11 @@ TYPED_TEST(PK2MaterialTest, derivativePK2)
 TYPED_TEST(PK2MaterialTest, PK1PK2)
 {
     this->testPK1PK2();
+}
+
+TYPED_TEST(PK2MaterialTest, derivativeStrainEnergy)
+{
+    this->testDerivativeStrainEnergy();
 }
 
 }
