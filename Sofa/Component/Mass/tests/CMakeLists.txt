@@ -8,6 +8,7 @@ set(SOURCE_FILES
     MassTestCreation[FEMMass].cpp
     MassTestCreation[MeshMatrixMass].cpp
     MassTestCreation[UniformMass].cpp
+    MeshMatrixMass_test.cpp
     UniformMass_test.cpp
 )
 
