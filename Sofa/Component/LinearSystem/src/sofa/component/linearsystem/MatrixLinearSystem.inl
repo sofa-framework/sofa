@@ -565,7 +565,7 @@ void MatrixLinearSystem<TMatrix, TVector>::makeIndependentLocalMatrixGroups()
     const auto dispatch = [this, &nonMappedContributors, &mappedContributors]<Contribution c>(
         const auto& components, const auto& localMatrices, auto member)
     {
-        const auto& mappedMatrices = getLocalMatrixMap<c>().mappedLocalMatrix;
+        const auto& mappedMatrices = this->template getLocalMatrixMap<c>().mappedLocalMatrix;
         for (auto* component : components)
         {
             const auto it = localMatrices.find(component);
@@ -579,7 +579,7 @@ void MatrixLinearSystem<TMatrix, TVector>::makeIndependentLocalMatrixGroups()
                 if constexpr (c != Contribution::GEOMETRIC_STIFFNESS)
                 {
                     //confirmation that this component is not mapped:
-                    if (m_mappingGraph.hasAnyMappingInput(component))
+                    if (this->m_mappingGraph.hasAnyMappingInput(component))
                     {
                         dmsg_error() << "A mapped component has no mapped local matrix. This should not happen.";
                         continue;
