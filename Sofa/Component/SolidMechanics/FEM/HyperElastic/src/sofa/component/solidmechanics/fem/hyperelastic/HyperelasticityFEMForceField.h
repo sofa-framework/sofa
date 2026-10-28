@@ -40,12 +40,12 @@ struct StiffnessFilter;
 
 template <class TDataTypes, class TElementType>
 class HyperelasticityFEMForceField :
-    public sofa::component::solidmechanics::fem::elastic::FEMForceField<TDataTypes, TElementType>
+    public sofa::component::solidmechanics::fem::elastic::FEMForceField<TDataTypes, TDataTypes, TElementType>
 {
 public:
     SOFA_CLASS(
         SOFA_TEMPLATE2(HyperelasticityFEMForceField, TDataTypes, TElementType),
-        SOFA_TEMPLATE2(sofa::component::solidmechanics::fem::elastic::FEMForceField, TDataTypes, TElementType));
+        SOFA_TEMPLATE3(sofa::component::solidmechanics::fem::elastic::FEMForceField, TDataTypes, TDataTypes, TElementType));
 
     using DataTypes = TDataTypes;
 
@@ -102,7 +102,7 @@ protected:
 
     HyperelasticityFEMForceField();
 
-    using trait = sofa::component::solidmechanics::fem::elastic::trait<DataTypes, TElementType>;
+    using trait = sofa::component::solidmechanics::fem::elastic::trait<DataTypes, DataTypes, TElementType>;
     using ElementGradient = typename trait::ElementGradient;
 
     void validateMaterial();

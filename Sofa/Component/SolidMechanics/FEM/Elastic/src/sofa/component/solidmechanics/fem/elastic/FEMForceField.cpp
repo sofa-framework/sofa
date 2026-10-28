@@ -25,13 +25,60 @@
 
 namespace sofa::component::solidmechanics::fem::elastic
 {
-template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<sofa::defaulttype::Vec1Types, sofa::geometry::Edge>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<sofa::defaulttype::Vec2Types, sofa::geometry::Edge>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Edge>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<sofa::defaulttype::Vec2Types, sofa::geometry::Triangle>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Triangle>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<sofa::defaulttype::Vec2Types, sofa::geometry::Quad>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Quad>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Tetrahedron>;
-template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<sofa::defaulttype::Vec3Types, sofa::geometry::Hexahedron>;
+
+using sofa::defaulttype::Vec1Types;
+using sofa::defaulttype::Vec2Types;
+using sofa::defaulttype::Vec3Types;
+using sofa::geometry::Edge;
+using sofa::geometry::Triangle;
+using sofa::geometry::Quad;
+using sofa::geometry::Tetrahedron;
+using sofa::geometry::Hexahedron;
+using sofa::geometry::Prism;
+using sofa::geometry::Pyramid;
+
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<Vec1Types, Vec1Types, Edge>;
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<Vec2Types, Vec1Types, Edge>;
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<Vec3Types, Vec1Types, Edge>;
+
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<Vec1Types, Vec2Types, Edge>;
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<Vec2Types, Vec2Types, Edge>;
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<Vec3Types, Vec2Types, Edge>;
+
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<Vec1Types, Vec3Types, Edge>;
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<Vec2Types, Vec3Types, Edge>;
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<Vec3Types, Vec3Types, Edge>;
+
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<Vec1Types, Vec2Types, Triangle>;
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<Vec2Types, Vec2Types, Triangle>;
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<Vec3Types, Vec2Types, Triangle>;
+
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<Vec1Types, Vec3Types, Triangle>;
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<Vec2Types, Vec3Types, Triangle>;
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<Vec3Types, Vec3Types, Triangle>;
+
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<Vec1Types, Vec2Types, Quad>;
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<Vec2Types, Vec2Types, Quad>;
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<Vec3Types, Vec2Types, Quad>;
+
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<Vec1Types, Vec3Types, Quad>;
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<Vec2Types, Vec3Types, Quad>;
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<Vec3Types, Vec3Types, Quad>;
+
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<Vec1Types, Vec3Types, Tetrahedron>;
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<Vec2Types, Vec3Types, Tetrahedron>;
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<Vec3Types, Vec3Types, Tetrahedron>;
+
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<Vec1Types, Vec3Types, Hexahedron>;
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<Vec2Types, Vec3Types, Hexahedron>;
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<Vec3Types, Vec3Types, Hexahedron>;
+
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<Vec1Types, Vec3Types, Prism>;
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<Vec2Types, Vec3Types, Prism>;
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<Vec3Types, Vec3Types, Prism>;
+
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<Vec1Types, Vec3Types, Pyramid>;
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<Vec2Types, Vec3Types, Pyramid>;
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API FEMForceField<Vec3Types, Vec3Types, Pyramid>;
+
 }
