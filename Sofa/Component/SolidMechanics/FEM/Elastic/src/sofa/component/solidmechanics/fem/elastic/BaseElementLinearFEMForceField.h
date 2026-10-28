@@ -50,7 +50,7 @@ public:
     void init() override;
 
 private:
-    using trait = sofa::component::solidmechanics::fem::elastic::trait<DataTypes, ElementType>;
+    using trait = sofa::component::solidmechanics::fem::elastic::trait<DataTypes, DataTypes, ElementType>;
     using ElementHessian = typename trait::ElementHessian;
     using StrainDisplacement = typename trait::StrainDisplacement;
     using ElementDisplacement = typename trait::ElementDisplacement;

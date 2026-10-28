@@ -43,7 +43,7 @@ HyperelasticityFEMForceField<TDataTypes, TElementType>::HyperelasticityFEMForceF
 template <class TDataTypes, class TElementType>
 void HyperelasticityFEMForceField<TDataTypes, TElementType>::init()
 {
-    sofa::component::solidmechanics::fem::elastic::FEMForceField<TDataTypes, TElementType>::init();
+    sofa::component::solidmechanics::fem::elastic::FEMForceField<TDataTypes, TDataTypes, TElementType>::init();
 
     if (!this->isComponentStateInvalid())
     {
