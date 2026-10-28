@@ -1475,32 +1475,32 @@ void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
         const VecCoord& vSrc = m->read(core::ConstVecCoordId(src))->getValue();
 
         const unsigned int coordDim = DataTypeInfo<Coord>::size();
-        const unsigned int nbEntries = dest->size()/coordDim;
+        const unsigned int nbEntries = vSrc.size();
 
         for (unsigned int i=0; i<nbEntries; ++i)
             for (unsigned int j=0; j<coordDim; ++j)
             {
                 Real tmp;
-                DataTypeInfo<Coord>::getValue(vSrc[offset + i],j,tmp);
-                dest->set(i * coordDim + j, tmp);
+                DataTypeInfo<Coord>::getValue(vSrc[i],j,tmp);
+                dest->set(offset + i * coordDim + j, tmp);
             }
-        // offset += vSrc.size() * coordDim;
+        offset += nbEntries * coordDim;
     }
     else
     {
         const VecDeriv& vSrc = m->read(core::ConstVecDerivId(src))->getValue();
 
         const unsigned int derivDim = DataTypeInfo<Deriv>::size();
-        const unsigned int nbEntries = dest->size()/derivDim;
+        const unsigned int nbEntries = vSrc.size();
 
         for (unsigned int i=0; i<nbEntries; i++)
             for (unsigned int j=0; j<derivDim; j++)
             {
                 Real tmp;
-                DataTypeInfo<Deriv>::getValue(vSrc[i + offset],j,tmp);
-                dest->set(i * derivDim + j, tmp);
+                DataTypeInfo<Deriv>::getValue(vSrc[i],j,tmp);
+                dest->set(offset + i * derivDim + j, tmp);
             }
-        // offset += vSrc.size() * derivDim;
+        offset += nbEntries * derivDim;
     }
 }
 
@@ -1511,21 +1511,21 @@ void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
     {
         unsigned int elemDim = DataTypeInfo<Coord>::size();
         const VecCoord& va = m->read(core::ConstVecCoordId(src))->getValue();
-        const unsigned int nbEntries = dest->size()/elemDim;
+        const unsigned int nbEntries = va.size();
         dest->invalidateHost();
-        Kernels::vAssign(nbEntries, dest->deviceWrite(), va.deviceRead(offset*elemDim));
+        Kernels::vAssign(nbEntries, dest->deviceWrite(offset), va.deviceRead());
 
-// 		offset += va->size() * elemDim;
+        offset += nbEntries * elemDim;
     }
     else
     {
         unsigned int elemDim = DataTypeInfo<Deriv>::size();
-        const VecCoord& va = m->read(core::ConstVecDerivId(src))->getValue();
-        const unsigned int nbEntries = dest->size()/elemDim;
+        const VecDeriv& va = m->read(core::ConstVecDerivId(src))->getValue();
+        const unsigned int nbEntries = va.size();
         dest->invalidateHost();
-        Kernels::vAssign(nbEntries, dest->deviceWrite(), ((Real *) va.deviceRead())+(offset*elemDim));
+        Kernels::vAssign(nbEntries, dest->deviceWrite(offset), va.deviceRead());
 
-// 		offset += va->size() * elemDim;
+        offset += nbEntries * elemDim;
     }
 }
 
