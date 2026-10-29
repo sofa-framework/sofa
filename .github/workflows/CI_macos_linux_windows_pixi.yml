@@ -379,7 +379,6 @@ jobs:
             --input "$env:SRC_DIR\applications" `
             --input "$env:BUILD_DIR\external_directories\fetched" `
             --output-logs-errors "$RegResultsDir" `
-            --legacy-regression `
             -j $env:VM_MAX_PARALLEL_TESTS
 
           if (-not (Test-Path "$RegResultsDir\*summary*")) { exit 1 }
