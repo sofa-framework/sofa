@@ -15,7 +15,7 @@ on:
       python_version:
         description: 'Version of Python used'
         required: true
-        default: '3.12'
+        default: '3.14'
         type: string
       external-plugins:
         description: 'List of github repository and branch name to add to build tree, separated by a space. Syntax: https://www.github.com/me/myrepo@mybranch'
