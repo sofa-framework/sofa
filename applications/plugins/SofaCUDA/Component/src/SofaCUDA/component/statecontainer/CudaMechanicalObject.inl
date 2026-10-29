@@ -1440,7 +1440,7 @@ void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
     if (vId.getType() == sofa::core::V_COORD)
     {
         Data<VecCoord>* d_f = m->write(core::VecCoordId(vId));
-        VecDeriv& f = *d_f->beginEdit();
+        VecCoord& f = *d_f->beginEdit();
 
         if (f.size() > 0)
         {
