@@ -198,7 +198,7 @@ void VelocityBasedImplicitIntegrationScheme::computeRHS(bool firstIteration)
         {
             // This propagation is needed for forcefields that are applied to mapped objects. Then,
             // those mapped objects need to have the r1 up to date otherwise it'll add 0.
-            simulation::common::DifferentialOperations::pushforwardTangent(m_mappingGraph, *m_params, m_r1);
+            simulation::common::DifferentialOperations::pushforwardTangent(m_mappingGraph, m_mop->mparams, m_r1);
 
             m_mop->mparams.setV(m_r1);
             m_mop->addMBKv(m_mappingGraph,m_r0, core::MatricesFactors::M(0.0),
@@ -214,7 +214,7 @@ void VelocityBasedImplicitIntegrationScheme::computeRHS(bool firstIteration)
             computeAccelerationFromVelocity(*m_vop, m_acceleration, m_vResult);
 
             // Again, as for m_r1, this propagation is needed for Mapped mass.
-            simulation::common::DifferentialOperations::pushforwardTangent(m_mappingGraph, *m_params, m_acceleration);
+            simulation::common::DifferentialOperations::pushforwardTangent(m_mappingGraph, m_mop->mparams, m_acceleration);
 
             m_mop->mparams.setV(m_acceleration);
             m_mop->addMBKv(m_mappingGraph,m_r0, core::MatricesFactors::M(-1.0),
@@ -241,8 +241,8 @@ void VelocityBasedImplicitIntegrationScheme::computeRHS(bool firstIteration)
         m_mop->projectResponse(m_mappingGraph,m_r0);
         m_mop->projectResponse(m_mappingGraph,m_r1);
 
-        simulation::common::DifferentialOperations::pushforwardTangent(m_mappingGraph, *m_params, m_r0);
-        simulation::common::DifferentialOperations::pushforwardTangent(m_mappingGraph, *m_params, m_r1);
+        simulation::common::DifferentialOperations::pushforwardTangent(m_mappingGraph, m_mop->mparams, m_r0);
+        simulation::common::DifferentialOperations::pushforwardTangent(m_mappingGraph, m_mop->mparams, m_r1);
     }
 
 }
@@ -264,7 +264,7 @@ void VelocityBasedImplicitIntegrationScheme::solveLinearEquation()
     l_linearSolver->solveSystem();
     l_linearSolver->getLinearSystem()->dispatchSystemSolution(m_systemUnknown);
 
-    simulation::common::DifferentialOperations::pushforwardTangent(m_mappingGraph, *m_params, m_systemUnknown);
+    simulation::common::DifferentialOperations::pushforwardTangent(m_mappingGraph, m_mop->mparams, m_systemUnknown);
 }
 
 void VelocityBasedImplicitIntegrationScheme::updateStatesFromLinearSolution(SReal alpha, bool firstIteration)
@@ -288,8 +288,8 @@ void VelocityBasedImplicitIntegrationScheme::updateStatesFromLinearSolution(SRea
 
     // TODO this collides with Free motion propagation using a MechanicalVOpVisitor and expecting a EulerImplicit
     //      future implementation of global Newton will reactivate those
-    // simulation::common::DifferentialOperations::pushforwardCoord(m_mappingGraph, *m_params, pos);
-    // simulation::common::DifferentialOperations::pushforwardTangent(m_mappingGraph, *m_params, vel);
+    // simulation::common::DifferentialOperations::pushforwardCoord(m_mappingGraph, m_mop->mparams, pos);
+    // simulation::common::DifferentialOperations::pushforwardTangent(m_mappingGraph, m_mop->mparams, vel);
 
 }
 
@@ -299,7 +299,7 @@ void VelocityBasedImplicitIntegrationScheme::finalizeIntegrationStep()
     if (d_computeFinalAcceleration.getValue())
     {
         computeAccelerationFromVelocity(*m_vop, m_acceleration, m_vResult);
-        simulation::common::DifferentialOperations::pushforwardTangent(m_mappingGraph, *m_params, m_acceleration);
+        simulation::common::DifferentialOperations::pushforwardTangent(m_mappingGraph, m_mop->mparams, m_acceleration);
     }
 }
 

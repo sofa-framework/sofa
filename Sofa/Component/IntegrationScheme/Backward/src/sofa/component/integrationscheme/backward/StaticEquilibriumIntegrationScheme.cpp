@@ -182,7 +182,7 @@ void StaticEquilibriumIntegrationScheme::integrate(const core::ExecParams* param
 
         //Already make a full step
         updateStatesFromLinearSolution(alpha, firstIt);
-        simulation::common::DifferentialOperations::pushforwardCoord(m_mappingGraph, *m_params, xResult);
+        simulation::common::DifferentialOperations::pushforwardCoord(m_mappingGraph, m_mop->mparams, xResult);
 
         computeRHS(false);
         newResidue = evaluateResidual();
@@ -227,7 +227,7 @@ void StaticEquilibriumIntegrationScheme::integrate(const core::ExecParams* param
         if (fabs(alpha - bestalpha )> std::numeric_limits<SReal>::epsilon() )
         {
             updateStatesFromLinearSolution( bestalpha - alpha, false);
-            simulation::common::DifferentialOperations::pushforwardCoord(m_mappingGraph, *m_params, xResult);
+            simulation::common::DifferentialOperations::pushforwardCoord(m_mappingGraph, m_mop->mparams, xResult);
 
             computeRHS(false);
             newResidue = evaluateResidual();
