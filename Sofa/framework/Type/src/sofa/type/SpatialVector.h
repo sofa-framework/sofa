@@ -150,7 +150,8 @@ public:
     }
 };
 
-#if !defined(SOFA_TYPE_SPATIALVECTOR_CPP)
+// See Mat.h: on Windows, dllimport extern templates prevent inlining of the header-defined members.
+#if !defined(SOFA_TYPE_SPATIALVECTOR_CPP) && !defined(_WIN32)
 extern template class SOFA_TYPE_API SpatialVector<double>;
 extern template class SOFA_TYPE_API SpatialVector<float>;
 #endif

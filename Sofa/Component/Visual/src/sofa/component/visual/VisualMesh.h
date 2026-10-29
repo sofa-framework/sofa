@@ -42,6 +42,7 @@ public:
 
 
     Data<type::vector<SReal>> d_vertexValues;
+    Data<std::array<SReal, 2>> d_colorMapRange;
     Data<sofa::helper::ColorMap> d_colorMap;
 
     /// The topology will give access to the elements
