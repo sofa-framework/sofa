@@ -65,7 +65,7 @@ public:
     static void vOp(Main* m, VecId v, ConstVecId a, ConstVecId b, double f);
     static void vMultiOp(Main* m, const core::ExecParams* params, const VMultiOp& ops);
     static double vDot(Main* m, ConstVecId a, ConstVecId b);
-    static void resetForce(Main* m);
+    static void resetVec(Main* m, VecId vId);
 
     //loadInBaseVector
     static void copyToBaseVector(Main* m,linearalgebra::BaseVector * dest, ConstVecId src, unsigned int &offset);
@@ -111,7 +111,7 @@ public:
     static void vOp(Main* m, VecId v, ConstVecId a, ConstVecId b, double f);
     static void vMultiOp(Main* m, const core::ExecParams* params, const VMultiOp& ops);
     static double vDot(Main* m, ConstVecId a, ConstVecId b);
-    static void resetForce(Main* m);
+    static void resetVec(Main* m, VecId vId);
 
 //    static void loadInBaseVector(Main* m,linearalgebra::BaseVector * dest, VecId src, unsigned int &offset);
     static void copyToBaseVector(Main* m,linearalgebra::BaseVector * dest, ConstVecId src, unsigned int &offset);
@@ -137,7 +137,7 @@ public:
     template<> inline void MechanicalObject< T >::vOp(const core::ExecParams* params, core::VecId v, core::ConstVecId a, core::ConstVecId b, SReal f); \
     template<> inline void MechanicalObject< T >::vMultiOp(const core::ExecParams* params, const VMultiOp& ops); \
     template<> inline SReal MechanicalObject< T >::vDot(const core::ExecParams* params, core::ConstVecId a, core::ConstVecId b); \
-    template<> inline void MechanicalObject< T >::resetForce(const core::ExecParams* params, core::VecDerivId); \
+    template<> inline void MechanicalObject< T >::resetVec(const core::ExecParams* params, core::VecId vId); \
     template<> inline void MechanicalObject< T >::copyToBaseVector(linearalgebra::BaseVector * dest, core::ConstVecId src, unsigned int &offset); \
     template<> inline void MechanicalObject< T >::copyFromBaseVector(core::VecId dest, const linearalgebra::BaseVector * src,  unsigned int &offset); \
     template<> inline void MechanicalObject< T >::addFromBaseVectorSameSize(core::VecId dest, const linearalgebra::BaseVector *src, unsigned int &offset);
