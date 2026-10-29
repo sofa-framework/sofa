@@ -23,6 +23,7 @@
 #include <sofa/component/linearsolver/iterative/config.h>
 
 #include <sofa/component/linearsolver/iterative/MatrixLinearSolver.h>
+#include <sofa/core/behavior/IterativeSolver.h>
 #include <sofa/helper/map.h>
 
 namespace sofa::component::linearsolver::iterative
@@ -30,21 +31,21 @@ namespace sofa::component::linearsolver::iterative
 
 /// Linear system solver using the conjugate gradient iterative algorithm
 template<class TMatrix, class TVector>
-class CGLinearSolver : public sofa::component::linearsolver::MatrixLinearSolver<TMatrix, TVector>
+class CGLinearSolver : public sofa::component::linearsolver::MatrixLinearSolver<TMatrix, TVector>,
+                        public sofa::core::behavior::IterativeSolver
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(CGLinearSolver,TMatrix,TVector),SOFA_TEMPLATE2(sofa::component::linearsolver::MatrixLinearSolver,TMatrix,TVector));
+    SOFA_CLASS2(SOFA_TEMPLATE2(CGLinearSolver,TMatrix,TVector),
+                SOFA_TEMPLATE2(sofa::component::linearsolver::MatrixLinearSolver,TMatrix,TVector),
+                sofa::core::behavior::IterativeSolver);
 
     typedef TMatrix Matrix;
     typedef TVector Vector;
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
     using Real = typename Matrix::Real;
 
-    Data<unsigned> d_maxIter; ///< Maximum number of iterations after which the iterative descent of the Conjugate Gradient must stop
-    Data<Real> d_tolerance; ///< Desired accuracy of the Conjugate Gradient solution evaluating: |r|²/|b|² (ratio of current residual norm over initial residual norm)
     Data<Real> d_smallDenominatorThreshold; ///< Minimum value of the denominator (pT A p)^ in the conjugate Gradient solution
     Data<bool> d_warmStart; ///< Use previous solution as initial solution, which may improve the initial guess if your system is evolving smoothly
-    Data<std::map < std::string, sofa::type::vector<Real> > > d_graph; ///< Graph of residuals at each iteration
 
 protected:
 
