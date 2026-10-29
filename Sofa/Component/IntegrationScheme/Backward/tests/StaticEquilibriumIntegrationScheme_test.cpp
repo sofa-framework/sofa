@@ -51,8 +51,8 @@ static constexpr SReal l = youngModulus * poissonRatio / ((1.0 + poissonRatio) *
  * StaticSolver, with a choice of pluggable convergence measures (relative-to-initial,
  * estimate-difference, ...) and a per-iteration residual history (d_residualGraph). After the
  * refactoring, that logic lives directly in StaticEquilibriumIntegrationScheme, with a single
- * residual-based stopping criterion (d_residueThreshold) and no per-iteration history exposed:
- * only the final residual (d_currentResidue) can be inspected. So only the scenario that maps
+ * residual-based stopping criterion (d_residualThreshold) and no per-iteration history exposed:
+ * only the final residual (d_currentResidual) can be inspected. So only the scenario that maps
  * cleanly onto the new API is kept here (force exactly d_maxNbIterationsNewton iterations and
  * check the final residual); the former RelativeResiduals/AbsoluteResiduals cases exercised
  * convergence criteria that no longer exist.
@@ -112,7 +112,7 @@ public:
     auto execute() -> SReal {
         sofa::simulation::node::initRoot(root.get());
         sofa::simulation::node::animate(root.get(), 1_sreal);
-        return std::sqrt(staticSolver->d_currentResidue.getValue());
+        return std::sqrt(staticSolver->d_currentResidual.getValue());
     }
 
 
@@ -126,7 +126,7 @@ TEST_F(StaticEquilibriumIntegrationSchemeTest, Residuals) {
     const SReal expected_force_residual_norm = 1.2283305451908398e-05;
 
     staticSolver->d_maxNbIterationsNewton.setValue(10);
-    staticSolver->d_residueThreshold.setValue(0.0_sreal);
+    staticSolver->d_residualThreshold.setValue(0.0_sreal);
 
     const SReal actual_force_residual_norm = this->execute();
 

@@ -61,8 +61,8 @@ public:
     Data<SReal> d_newtonStepSize;
     Data<SReal> d_lineSearchReductionRate;
     Data<SReal> d_lineSearchArmijoFactor;
-    Data<SReal> d_residueThreshold;
-    Data<SReal> d_currentResidue;
+    Data<SReal> d_residualThreshold;
+    Data<SReal> d_currentResidual;
     Data<bool> d_alwaysAdvanceNewton;
 
 protected:

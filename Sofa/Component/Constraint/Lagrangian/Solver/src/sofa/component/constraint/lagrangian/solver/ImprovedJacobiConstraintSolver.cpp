@@ -34,8 +34,8 @@ ImprovedJacobiConstraintSolver::ImprovedJacobiConstraintSolver()
     : BuiltConstraintSolver()
     , d_useSpectralCorrection(initData(&d_useSpectralCorrection,false,"useSpectralCorrection","If set to true, the solution found after each iteration will be multiplied by spectralCorrectionFactor*2/spr(W), with spr() denoting the spectral radius."))
     , d_spectralCorrectionFactor(initData(&d_spectralCorrectionFactor,1.0_sreal,"spectralCorrectionFactor","Factor used to modulate the spectral correction"))
-    , d_useConjugateResidue(initData(&d_useConjugateResidue,false,"useConjugateResidue","If set to true, the solution found after each iteration will be corrected along the solution direction using `\\lambda^{i+1} -= beta^{i} * (\\lambda^{i} - \\lambda^{i-1})` with beta following the formula beta^{i} = min(1, (i/maxIterations)^{conjugateResidueSpeedFactor}) "))
-    , d_conjugateResidueSpeedFactor(initData(&d_conjugateResidueSpeedFactor,10.0_sreal,"conjugateResidueSpeedFactor","Factor used to modulate the speed in which beta used in the conjugate residue part reaches 1.0. The higher the value, the slower the reach. "))
+    , d_useConjugateResidual(initData(&d_useConjugateResidual,false,"useConjugateResidual","If set to true, the solution found after each iteration will be corrected along the solution direction using `\\lambda^{i+1} -= beta^{i} * (\\lambda^{i} - \\lambda^{i-1})` with beta following the formula beta^{i} = min(1, (i/maxIterations)^{conjugateResidualSpeedFactor}) "))
+    , d_conjugateResidualSpeedFactor(initData(&d_conjugateResidualSpeedFactor,10.0_sreal,"conjugateResidualSpeedFactor","Factor used to modulate the speed in which beta used in the conjugate residual part reaches 1.0. The higher the value, the slower the reach. "))
 {
 
 }
@@ -119,7 +119,7 @@ void ImprovedJacobiConstraintSolver::doSolve(GenericConstraintProblem * problem 
         bool constraintsAreVerified = true;
 
         error=0.0;
-        SReal beta = d_useConjugateResidue.getValue() * std::min(1.0, pow( ((float)i)/problem->maxIterations,d_conjugateResidueSpeedFactor.getValue()));
+        SReal beta = d_useConjugateResidual.getValue() * std::min(1.0, pow( ((float)i)/problem->maxIterations,d_conjugateResidualSpeedFactor.getValue()));
 
         for(int j=0; j<dimension; ) // increment of j realized at the end of the loop
         {

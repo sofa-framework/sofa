@@ -119,10 +119,10 @@ void PreconditionedConjugateResidual::doSolve(GenericConstraintProblem * problem
         // Unknown update
         force.eq(force, p, alpha);
 
-        // Residue update
+        // Residual update
         r.eq(r, Wp, -alpha);
 
-        // W*residue update
+        // W*residual update
         Wr = MW*r;
         const double oldrWr = rWr;
         rWr = r.dot(Wr);
