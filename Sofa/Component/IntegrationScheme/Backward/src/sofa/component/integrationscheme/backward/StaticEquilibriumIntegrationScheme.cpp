@@ -50,6 +50,10 @@ StaticEquilibriumIntegrationScheme::StaticEquilibriumIntegrationScheme()
 
 void StaticEquilibriumIntegrationScheme::doSetupIntegrationStep(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
 {
+    SOFA_UNUSED(dt);
+    SOFA_UNUSED(params);
+    SOFA_UNUSED(vResult);
+    SOFA_UNUSED(xResult);
     simulation::common::VectorOperations::realloc(*m_vop, m_systemUnknown, "dx", this, true);
     simulation::common::VectorOperations::realloc(*m_vop, m_r0, "r0", this, true);
 }
@@ -72,6 +76,7 @@ void StaticEquilibriumIntegrationScheme::computeLHS(bool firstIteration)
 
 void StaticEquilibriumIntegrationScheme::computeRHS(bool firstIteration)
 {
+    SOFA_UNUSED(firstIteration);
     sofa::core::behavior::MultiVecDeriv f(m_vop.get(), core::vec_id::write_access::force );
     f.clear();
 
@@ -108,6 +113,7 @@ void StaticEquilibriumIntegrationScheme::solveLinearEquation()
 
 void StaticEquilibriumIntegrationScheme::updateStatesFromLinearSolution(SReal alpha, bool firstIteration)
 {
+    SOFA_UNUSED(firstIteration);
     sofa::core::behavior::MultiVecCoord pos(m_vop.get(), m_xResult);
 
     pos.peq(m_systemUnknown, alpha );

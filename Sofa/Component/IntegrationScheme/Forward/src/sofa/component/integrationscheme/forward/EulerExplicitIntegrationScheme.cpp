@@ -111,6 +111,7 @@ void EulerExplicitIntegrationScheme::updateState(sofa::simulation::common::Vecto
                                       sofa::core::MultiVecDerivId vResult,
                                       const sofa::core::behavior::MultiVecDeriv& acc) const
 {
+    SOFA_UNUSED(mop);
     SCOPED_TIMER("updateState");
 
     // Initialize the set of multi-vectors computed by this IntegrationScheme

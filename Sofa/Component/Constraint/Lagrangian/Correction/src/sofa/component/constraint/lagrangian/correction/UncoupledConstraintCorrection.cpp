@@ -134,13 +134,6 @@ SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION_API void UncoupledConstraintCorr
     const unsigned int dimension = defaulttype::DataTypeInfo<Deriv>::size();
     const unsigned int numDofs = comp.size() / 7;
 
-    //Multiply by correction factor so that the resulting lambda is already a force.
-    const bool useOdeIntegrationFactors = d_useIntegrationSchemeIntegrationFactors.getValue();
-    // use the IntegrationScheme to get the position integration factor
-    const SReal factor = useOdeIntegrationFactors ?
-        m_pIntegrationScheme->getPositionIntegrationFactor()
-        : this->getContext()->getDt();
-
     m->resize(dimension * numDofs, dimension * numDofs);
 
     /// @todo Optimization

@@ -133,9 +133,6 @@ public:
         const Real alpha1 = param.parameterArray[1];
         const Real k0 = param.parameterArray[2];
 
-        // trace of C^(alpha1/2)
-        const Real aBy2 = alpha1/static_cast<Real>(2);
-
         // Siso = dWiso/dlambda*dlambda/dC + dWiso/dF*dF/dC
         const MatrixSym S_isochoric = m_CaBy2Minus1 * m_FJ * mu1 / alpha1
                                      -m_invC * m_FJ * mu1 / (static_cast<Real>(3)*alpha1) * m_trCaBy2;
@@ -149,7 +146,6 @@ public:
     {
         this->precomputeVariables(sinfo, param);
 
-        const MatrixSym& C = sinfo->deformationTensor;
         const Real mu1 = param.parameterArray[0];
         const Real alpha1 = param.parameterArray[1];
         const Real k0 = param.parameterArray[2];
