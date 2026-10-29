@@ -56,6 +56,8 @@ public:
 
     ImplicitIntegrationScheme();
 
+    void reset() override;
+
     /**
      * Compute the system matrix.
      */
