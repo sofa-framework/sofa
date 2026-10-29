@@ -52,9 +52,6 @@
 #include <sofa/simulation/mechanicalvisitor/MechanicalVInitVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalVInitVisitor;
 
-#include <sofa/simulation/mechanicalvisitor/MechanicalBeginIntegrationVisitor.h>
-using sofa::simulation::mechanicalvisitor::MechanicalBeginIntegrationVisitor;
-
 #include <sofa/simulation/mechanicalvisitor/MechanicalVOpVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalVOpVisitor;
 
@@ -297,8 +294,6 @@ void ConstraintAnimationLoop::freeMotion(const core::ExecParams* params, simulat
     ///////////////////////////////////////////// FREE MOTION /////////////////////////////////////////////////////////////
     {
         SCOPED_TIMER_VARNAME(freeMotionTimer, "Free Motion");
-
-        MechanicalBeginIntegrationVisitor(params, dt).execute(context);
 
         ////////////////// (optional) PREDICTIVE CONSTRAINT FORCES ///////////////////////////////////////////////////////////////////////////////////////////
         /// When scheme Correction is used, the constraint forces computed at the previous time-step

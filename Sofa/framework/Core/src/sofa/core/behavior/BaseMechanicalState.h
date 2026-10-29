@@ -178,6 +178,7 @@ public:
     /// @{
 
     /// Called at the beginning of each integration step.
+    SOFA_CORE_DEPRECATED_BEGININTEGRATION()
     virtual void beginIntegration(SReal /*dt*/)
     {
         // it is no longer necessary to switch forceId to internalForce here...
