@@ -90,7 +90,7 @@ public:
     MAKE_SELECTABLE_ITEMS(EigenvaluesFilter,
          sofa::helper::Item{"None", "No filter"},
          sofa::helper::Item{"ClampNegative", "Clamp negative eigenvalues"},
-         sofa::helper::Item{"Abs", "Absolute eigenvalues filtering"}
+         sofa::helper::Item{"Abs", "Apply absolute value on eigenvalues"}
      );
     Data<EigenvaluesFilter> d_materialEigenvaluesFilter;
     Data<EigenvaluesFilter> d_stiffnessEigenvaluesFilter;
