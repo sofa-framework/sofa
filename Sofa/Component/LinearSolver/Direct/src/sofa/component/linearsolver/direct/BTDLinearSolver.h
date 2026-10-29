@@ -52,7 +52,6 @@ public:
     Data<bool> d_verbose; ///< Dump system state at each iteration
     Data<bool> d_problem; ///< display debug information about subpartSolve computation
     Data<bool> d_subpartSolve; ///< Allows for the computation of a subpart of the system
-    Data<bool> d_forceClearInverse; ///< Clear the whole (dense) inverse matrix at each factorization, as done in previous versions. Not needed for correctness, and costly for long chains
     Data<bool> d_verification; ///< verification of the subpartSolve
 
     typedef typename Vector::SubVectorType SubVector;
@@ -92,7 +91,6 @@ protected:
         : d_verbose( initData(&d_verbose,false,"verbose","Dump system state at each iteration") )
         , d_problem(initData(&d_problem, false,"showProblem", "display debug information about subpartSolve computation") )
         , d_subpartSolve(initData(&d_subpartSolve, false,"subpartSolve", "Allows for the computation of a subpart of the system") )
-        , d_forceClearInverse(initData(&d_forceClearInverse, false, "forceClearInverse", "Clear the whole (dense) inverse matrix at each factorization, as done in previous versions. Not needed for correctness (a block is computed before being used), and costly for long chains"))
         , d_verification(initData(&d_verification, false,"verification", "verification of the subpartSolve"))
     {
 
