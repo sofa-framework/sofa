@@ -39,6 +39,7 @@ VisualMesh::VisualMesh()
                               "The space between element (scalar between 0 and 1)"))
     , d_lighting(initData(&d_lighting, true, "lighting", "If true, light is simulated on the mesh. Otherwise, no lighting effect."))
     , d_vertexValues(initData(&d_vertexValues, "vertexValues", "Optional list of values associated to the vertices of the mesh. If provided, the values are converted to colors."))
+    , d_colorMapRange(initData(&d_colorMapRange, std::array<SReal, 2>{0_sreal, 1_sreal}, "colorMapRange", "Range of values used to convert vertex values to colors. Used only if provided."))
     , d_colorMap(initData(&d_colorMap, *sofa::helper::ColorMap::getDefault(), "colorMap", "Color map used to convert vertex values to colors."))
     , l_topology(initLink("topology", "Link to a topology containing elements"))
 {
@@ -92,8 +93,20 @@ void VisualMesh::doDrawVisual(const core::visual::VisualParams* vparams)
         if (vertexValuesAccessor.size() >= positionAccessor.size())
         {
             const auto& colorMap = d_colorMap.getValue();
-            const auto [minIt, maxIt] = std::minmax_element(vertexValuesAccessor.begin(), vertexValuesAccessor.end());
-            auto colorEvaluator = colorMap.getEvaluator<SReal>(*minIt, *maxIt);
+            SReal min, max;
+            if (d_colorMapRange.isSet())
+            {
+                const auto& colorMapRange = d_colorMapRange.getValue();
+                min = std::min(colorMapRange[0], colorMapRange[1]);
+                max = std::max(colorMapRange[0], colorMapRange[1]);
+            }
+            else
+            {
+                const auto [minIt, maxIt] = std::minmax_element(vertexValuesAccessor.begin(), vertexValuesAccessor.end());
+                min = *minIt;
+                max = *maxIt;
+            }
+            auto colorEvaluator = colorMap.getEvaluator<SReal>(min, max);
 
             sofa::type::vector<sofa::type::RGBAColor> vertexColors;
             for (const auto& v : vertexValuesAccessor)
