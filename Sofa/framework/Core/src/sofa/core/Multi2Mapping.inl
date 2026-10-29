@@ -230,19 +230,19 @@ template < class In1, class In2,class Out>
 void Multi2Mapping<In1,In2,Out>::computeAccFromMapping(const MechanicalParams* mparams, MultiVecDerivId outAcc, ConstMultiVecDerivId inVel, ConstMultiVecDerivId inAcc )
 {
     type::vector<DataVecDeriv_t<Out>*> vecOutAcc;
-    getDataVecFromMultiVecId(toModels, outAcc, vecOutAcc);
+    getDataVecFromMultiVecId(this, toModels, outAcc, vecOutAcc);
 
     type::vector<const DataVecDeriv_t<In1>*> vecIn1Vel;
-    getDataVecFromMultiVecId(fromModels1, inVel, vecIn1Vel);
+    getDataVecFromMultiVecId(this, fromModels1, inVel, vecIn1Vel);
 
     type::vector<const DataVecDeriv_t<In1>*> vecIn1Acc;
-    getDataVecFromMultiVecId(fromModels1, inAcc, vecIn1Acc);
+    getDataVecFromMultiVecId(this, fromModels1, inAcc, vecIn1Acc);
 
-    type::vector<const DataVecDeriv_t<In2>*> vecIn2Vel;
-    getDataVecFromMultiVecId(fromModels2, inVel, vecIn2Vel);
+   type::vector<const DataVecDeriv_t<In2>*> vecIn2Vel;
+    getDataVecFromMultiVecId(this, fromModels2, inVel, vecIn2Vel);
 
     type::vector<const DataVecDeriv_t<In2>*> vecIn2Acc;
-    getDataVecFromMultiVecId(fromModels2, inAcc, vecIn2Acc);
+    getDataVecFromMultiVecId(this, fromModels2, inAcc, vecIn2Acc);
 
     this->computeAccFromMapping(mparams, vecOutAcc, vecIn1Vel, vecIn2Vel,vecIn1Acc, vecIn2Acc);
 }
