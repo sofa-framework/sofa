@@ -37,6 +37,10 @@ namespace sofa::simulation::integrationscheme
 
 void AccelerationBasedImplicitIntegrationScheme::doSetupIntegrationStep(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
 {
+    SOFA_UNUSED(dt);
+    SOFA_UNUSED(params);
+    SOFA_UNUSED(vResult);
+    SOFA_UNUSED(xResult);
 
     // Make sure the states are following the sizes
     simulation::common::VectorOperations::realloc(*m_vop, m_r0, "r0", this, true);
