@@ -52,6 +52,7 @@ auto IncompressibleMooneyRivlinMaterial<DataTypes>::secondPiolaKirchhoffStress(S
 template <class DataTypes>
 auto IncompressibleMooneyRivlinMaterial<DataTypes>::elasticityTensor(Strain<DataTypes>& strain) -> ElasticityTensor
 {
+    SOFA_UNUSED(strain);
     auto delta = [](auto i, auto j){ return sofa::component::solidmechanics::fem::elastic::kroneckerDelta<Real>(i, j); };
 
     return ElasticityTensor(
@@ -63,6 +64,20 @@ auto IncompressibleMooneyRivlinMaterial<DataTypes>::elasticityTensor(Strain<Data
                 - delta(i, l) * delta(j, k)
                 );
         });
+}
+
+template <class DataTypes>
+auto IncompressibleMooneyRivlinMaterial<DataTypes>::strainEnergyDensity(Strain<DataTypes>& strain) -> Real
+{
+    static constexpr Real dim = static_cast<Real>(spatial_dimensions);
+
+    // value of I2 in the rest configuration (C = I)
+    static constexpr Real restInvariant2 = static_cast<Real>(0.5) * dim * (dim - static_cast<Real>(1));
+
+    const auto mu10 = m_mu10.getValue();
+    const auto mu01 = m_mu01.getValue();
+
+    return mu10 * (strain.getInvariant1() - dim) + mu01 * (strain.getInvariant2() - restInvariant2);
 }
 
 }  // namespace elasticity

@@ -25,7 +25,7 @@
 #include <sofa/core/visual/DrawColoredMesh.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/IotaView.h>
-#include <sofa/simulation/AnimateEndEvent.h>
+#include <sofa/simulation/events/AnimateEndEvent.h>
 
 namespace sofa::component::solidmechanics::fem::elastic
 {
@@ -236,7 +236,7 @@ void VonMisesStress<DataTypes, ElementType>::calculateElementInverseGramMatrices
                 elementMassMatrix += (weight * detJ) * NT_N;
             }
 
-            sofa::type::invertMatrix(elementMassMatrix, elementMassMatrix);
+            [[maybe_unused]] const bool invertible = sofa::type::invertMatrix(elementMassMatrix, elementMassMatrix);
         });
 }
 

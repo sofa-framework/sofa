@@ -23,8 +23,8 @@
 
 #include <sofa/component/topology/utility/config.h>
 
-#include <sofa/simulation/AnimateBeginEvent.h>
-#include <sofa/simulation/AnimateEndEvent.h>
+#include <sofa/simulation/events/AnimateBeginEvent.h>
+#include <sofa/simulation/events/AnimateEndEvent.h>
 
 #include <sofa/core/topology/BaseMeshTopology.h>
 

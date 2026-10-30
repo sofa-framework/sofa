@@ -81,7 +81,7 @@ auto OgdenMaterial<DataTypes>::secondPiolaKirchhoffStress(Strain<DataTypes>& str
         }
 
         const Real coefS1 = FJ * mu / (alpha * static_cast<Real>(2));
-        const Real coefS2 = -FJ * mu / (alpha * static_cast<Real>(6)) * trCaBy2;
+        const Real coefS2 = -FJ * mu / (alpha * static_cast<Real>(2 * spatial_dimensions)) * trCaBy2;
 
         StressTensor S{};
 
@@ -121,14 +121,14 @@ auto OgdenMaterial<DataTypes>::elasticityTensor(Strain<DataTypes>& strain) -> El
 
     const Real J = strain.getDeterminantDeformationGradient();
     assert(J > 0);
-    const Real FJ = pow(J, -alpha / static_cast<Real>(3));
+    const Real FJ = pow(J, -alpha / static_cast<Real>(spatial_dimensions));
 
     EigenMatrix CEigen;
     for (sofa::Index m = 0; m < spatial_dimensions; ++m)
-        for (sofa::Index n = 0; n < spatial_dimensions; ++n) 
+        for (sofa::Index n = 0; n < spatial_dimensions; ++n)
             CEigen(m, n) = C(m, n);
 
-        Eigen::SelfAdjointEigenSolver<EigenMatrix> EigenProblemSolver(CEigen, Eigen::ComputeEigenvectors);
+    Eigen::SelfAdjointEigenSolver<EigenMatrix> EigenProblemSolver(CEigen, Eigen::ComputeEigenvectors);
     if (EigenProblemSolver.info() != Eigen::Success)
         dmsg_warning("OgdenMaterial") << "EigenSolver iterations failed to converge";
     const auto eigenvectors = EigenProblemSolver.eigenvectors();
@@ -197,12 +197,12 @@ auto OgdenMaterial<DataTypes>::elasticityTensor(Strain<DataTypes>& strain) -> El
                 // differentiating coefS1, coefS2 and C^(-1) from S_isochoric
                 sum += FJ * mu * (
                         // Contribution from derivative of F(J)
-                        trCaBy2 / static_cast<Real>(18) * C_1(j,i) * C_1(l,k) - 
+                        trCaBy2 / static_cast<Real>(2 * spatial_dimensions * spatial_dimensions) * C_1(j,i) * C_1(l,k) - 
                         // Contribution from derivatives of C^(alpha/2 - 1) and tr(C^(alpha/2))
                         (CaBy2Minus1(j,i) * C_1(l,k) + C_1(j,i) * CaBy2Minus1(k,l)) 
-                        / static_cast<Real>(6) +
+                        / static_cast<Real>(2 * spatial_dimensions) +
                         // Contribution from derivative of C^(-1) 
-                        trCaBy2 / (static_cast<Real>(6) * alpha) 
+                        trCaBy2 / (static_cast<Real>(2 * spatial_dimensions) * alpha) 
                         * (C_1(j,k) * C_1(l,i) + C_1(j,l) * C_1(k,i))
                 );
 
@@ -216,6 +216,44 @@ auto OgdenMaterial<DataTypes>::elasticityTensor(Strain<DataTypes>& strain) -> El
 
             return static_cast<Real>(2) * (T_isochoric + T_volumetric);
         });
+}
+
+template <class DataTypes>
+auto OgdenMaterial<DataTypes>::strainEnergyDensity(Strain<DataTypes>& strain) -> Real
+{
+    using EigenMatrix = Eigen::Matrix<Real, spatial_dimensions, spatial_dimensions>;
+
+    const Real mu = m_mu.getValue();
+    const Real alpha = m_alpha.getValue();
+    const Real kappa = m_kappa.getValue();
+
+    const auto& C = strain.getRightCauchyGreenTensor();
+
+    const Real J = strain.getDeterminantDeformationGradient();
+    assert(J > 0);
+
+    EigenMatrix CEigen;
+    for (sofa::Index m = 0; m < spatial_dimensions; ++m)
+        for (sofa::Index n = 0; n < spatial_dimensions; ++n)
+            CEigen(m, n) = C(m, n);
+
+    Eigen::SelfAdjointEigenSolver<EigenMatrix> EigenProblemSolver(CEigen, Eigen::EigenvaluesOnly);
+    if (EigenProblemSolver.info() != Eigen::Success)
+        dmsg_warning("OgdenMaterial") << "EigenSolver iterations failed to converge";
+    const auto eigenvalues = EigenProblemSolver.eigenvalues();
+
+    const Real aBy2 = static_cast<Real>(0.5) * alpha;
+    Real trCaBy2{static_cast<Real>(0)};
+    for (sofa::Index n = 0; n < spatial_dimensions; ++n)
+        trCaBy2 += pow(eigenvalues(n), aBy2);
+
+    const Real FJ = pow(J, -alpha / static_cast<Real>(spatial_dimensions));
+    const Real W_isochoric = mu / (alpha * alpha) * (FJ * trCaBy2 - static_cast<Real>(spatial_dimensions));
+
+    const Real logJ = log(J);
+    const Real W_volumetric = static_cast<Real>(0.5) * kappa * logJ * logJ;
+
+    return W_isochoric + W_volumetric;
 }
 
 }  // namespace elasticity

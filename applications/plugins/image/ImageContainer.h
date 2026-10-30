@@ -31,8 +31,8 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/BoundingBox.h>
 #include <sofa/core/objectmodel/Event.h>
-#include <sofa/simulation/AnimateBeginEvent.h>
-#include <sofa/simulation/AnimateEndEvent.h>
+#include <sofa/simulation/events/AnimateBeginEvent.h>
+#include <sofa/simulation/events/AnimateEndEvent.h>
 #include <sofa/type/Mat.h>
 #include <sofa/type/Quat.h>
 #include <sofa/helper/rmath.h>

@@ -29,6 +29,7 @@
 #include <sofa/core/behavior/LinearSolverAccessor.h>
 #include <sofa/simulation/MappingGraphMechanicalOperations.h>
 #include <sofa/simulation/MappingGraph.h>
+#include <sofa/simulation/mappinggraph/MappingGraphUser.h>
 
 namespace sofa::simulation::common
 {
@@ -41,7 +42,8 @@ namespace sofa::simulation::integrationscheme
 
 class SOFA_SIMULATION_CORE_API ImplicitIntegrationScheme :
                             public sofa::core::behavior::BaseIntegrationScheme,
-                            public sofa::core::behavior::LinearSolverAccessor
+                            public sofa::core::behavior::LinearSolverAccessor,
+                            public sofa::simulation::MappingGraphUser
 {
 public:
     SOFA_ABSTRACT_CLASS2(ImplicitIntegrationScheme, sofa::core::behavior::BaseIntegrationScheme, sofa::core::behavior::LinearSolverAccessor);
@@ -53,6 +55,8 @@ public:
     virtual void setupIntegrationStep(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) final;
 
     ImplicitIntegrationScheme();
+
+    void reset() override;
 
     /**
      * Compute the system matrix.
@@ -136,7 +140,7 @@ public:
 protected:
 
     virtual void doSetupIntegrationStep(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
-    {  }
+    { SOFA_UNUSED(dt); SOFA_UNUSED(params); SOFA_UNUSED(vResult); SOFA_UNUSED(xResult); }
 
     /**
      * This method returns the order of the integration scheme in term of number of past timestep
@@ -161,8 +165,6 @@ protected:
 
     std::shared_ptr<sofa::simulation::common::VectorOperations > m_vop;
     std::unique_ptr<sofa::simulation::common::MappingGraphMechanicalOperations> m_mop;
-
-    sofa::simulation::MappingGraph m_mappingGraph;
 };
 } // namespace sofa::component::integrationscheme
 

@@ -42,6 +42,7 @@ void registerRungeKutta2IntegrationScheme(sofa::core::ObjectFactory* factory)
 
 void RungeKutta2IntegrationScheme::doIntegrate(const core::ExecParams* params, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
 {
+    SOFA_UNUSED(params);
     // Get the Ids of the state vectors
     MultiVecCoord pos(m_vop.get(), core::vec_id::write_access::position );
     MultiVecDeriv vel(m_vop.get(), core::vec_id::write_access::velocity );
@@ -61,12 +62,6 @@ void RungeKutta2IntegrationScheme::doIntegrate(const core::ExecParams* params, s
     m_mop->computeAcc (startTime, acc, pos, vel); // acc is the derivative of vel
 
     // Perform a dt/2 step along the derivative
-#ifdef SOFA_NO_VMULTIOP // unoptimized version
-    newX = pos;
-    newX.peq(vel, dt/2.); // newX = pos + vel dt/2
-    newV = vel;
-    newV.peq(acc, dt/2.); // newV = vel + acc dt/2
-#else // single-operation optimization
     {
 
         typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
@@ -81,18 +76,11 @@ void RungeKutta2IntegrationScheme::doIntegrate(const core::ExecParams* params, s
 
         m_vop->v_multiop(ops);
     }
-#endif
 
     // Compute the derivative at newX, newV
     m_mop->computeAcc ( startTime+m_dt/2., acc, newX, newV);
 
     // Use the derivative at newX, newV to update the state
-#ifdef SOFA_NO_VMULTIOP // unoptimized version
-    pos2.eq(pos,newV,dt);
-    m_mop->solveConstraint(pos2,core::ConstraintOrder::POS);
-    vel2.eq(vel,acc,dt);
-    m_mop->solveConstraint(vel2,core::ConstraintOrder::VEL);
-#else // single-operation optimization
     {
         typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
         VMultiOp ops;
@@ -108,7 +96,6 @@ void RungeKutta2IntegrationScheme::doIntegrate(const core::ExecParams* params, s
         m_mop->solveConstraint(vel2,core::ConstraintOrder::VEL);
         m_mop->solveConstraint(pos2,core::ConstraintOrder::POS);
     }
-#endif
 
 
 }

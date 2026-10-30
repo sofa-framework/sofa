@@ -26,7 +26,7 @@
 
 #include <sofa/component/mapping/linear/BarycentricMapping.inl>
 
-#include <sofa/simulation/AnimateEndEvent.h>
+#include <sofa/simulation/events/AnimateEndEvent.h>
 #include <sofa/topology/Tetrahedron.h>
 #include <sofa/simulation/Node.h>
 

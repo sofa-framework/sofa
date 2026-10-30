@@ -56,6 +56,8 @@ public:
 
     ElasticityTensor elasticityTensor(Strain<DataTypes>& strain) override;
 
+    Real strainEnergyDensity(Strain<DataTypes>& strain) override;
+
 protected:
     IncompressibleMooneyRivlinMaterial();
 };

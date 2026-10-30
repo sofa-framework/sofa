@@ -22,6 +22,7 @@
 #pragma once
 
 #include <SofaCUDA/component/statecontainer/CudaMechanicalObject.h>
+#include <type_traits>
 #include <sofa/component/statecontainer/MechanicalObject.inl>
 
 namespace sofa::gpu::cuda
@@ -933,7 +934,29 @@ void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
     {
         if (a.type != v.type)
         {
-            // ERROR
+            // For vector types, coordinate differences are derivatives. The implicit
+            // integrator uses this operation for its position residual.
+            if constexpr (std::is_same_v<Coord, Deriv>)
+            {
+                if (v.type == sofa::core::V_DERIV && a.type == sofa::core::V_COORD && !b.isNull() && b.type == sofa::core::V_COORD)
+                {
+                    Data<VecDeriv>* d_vv = m->write((core::VecDerivId)v);
+                    const Data<VecCoord>* d_va = m->read((core::ConstVecCoordId)a);
+                    const Data<VecCoord>* d_vb = m->read((core::ConstVecCoordId)b);
+                    const VecCoord& va = d_va->getValue();
+                    const VecCoord& vb = d_vb->getValue();
+                    if (va.size() != vb.size())
+                    {
+                        msg_error(m) << "Invalid vOp sizes (" << va.size() << ',' << vb.size() << ')';
+                        return;
+                    }
+                    VecDeriv* vv = d_vv->beginEdit();
+                    vv->recreate(va.size());
+                    Kernels::vOp(vv->size(), vv->deviceWrite(), va.deviceRead(), vb.deviceRead(), (Real)f);
+                    d_vv->endEdit();
+                    return;
+                }
+            }
             msg_error(m) << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")";
             return;
         }
@@ -1435,13 +1458,30 @@ double MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TR
 }
 
 template<class TCoord, class TDeriv, class TReal>
-void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::resetForce(Main* m)
+void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::resetVec(Main* m, VecId vId)
 {
-    Data<VecDeriv>* d_f = m->write(core::vec_id::write_access::force);
-    VecDeriv& f = *d_f->beginEdit();
-    if (f.size() > 0)
-        Kernels::vClear(f.size(), f.deviceWrite());
-    d_f->endEdit();
+    if (vId.getType() == sofa::core::V_COORD)
+    {
+        Data<VecCoord>* d_f = m->write(core::VecCoordId(vId));
+        VecCoord& f = *d_f->beginEdit();
+
+        if (f.size() > 0)
+        {
+            Kernels::vClear(f.size(), f.deviceWrite());
+        }
+        d_f->endEdit();
+    }
+    else if (vId.getType() == sofa::core::V_DERIV)
+    {
+        Data<VecDeriv>* d_f = m->write(core::VecDerivId(vId));
+        VecDeriv& f = *d_f->beginEdit();
+
+        if (f.size() > 0)
+        {
+            Kernels::vClear(f.size(), f.deviceWrite());
+        }
+        d_f->endEdit();
+    }
 }
 
 template<class TCoord, class TDeriv, class TReal>
@@ -2125,14 +2165,26 @@ double MechanicalObjectInternalData< gpu::cuda::CudaRigidTypes<N, real> >::vDot(
 }
 
 template<int N, class real>
-void MechanicalObjectInternalData< gpu::cuda::CudaRigidTypes<N, real> >::resetForce(Main* m)
+void MechanicalObjectInternalData< gpu::cuda::CudaRigidTypes<N, real> >::resetVec(Main* m, VecId vId)
 {
-    Data<VecDeriv>* d_f = m->write(core::vec_id::write_access::force);
-    VecDeriv& f = *d_f->beginEdit();
+    if (vId.getType() == sofa::core::V_COORD)
+    {
+        Data<VecCoord>* d_f = m->write(core::VecCoordId(vId));
+        VecCoord& f = *d_f->beginEdit();
 
-    if (f.size() == 0) return;
-    Kernels::vClearDeriv(f.size(), f.deviceWrite());
-    d_f->endEdit();
+        if (f.size() == 0) return;
+        Kernels::vClearCoord(f.size(), f.deviceWrite());
+        d_f->endEdit();
+    }
+    else if (vId.getType() == sofa::core::V_DERIV)
+    {
+        Data<VecDeriv>* d_f = m->write(core::VecDerivId(vId));
+        VecDeriv& f = *d_f->beginEdit();
+
+        if (f.size() == 0) return;
+        Kernels::vClearDeriv(f.size(), f.deviceWrite());
+        d_f->endEdit();
+    }
 }
 
 template<int N, class real>
@@ -2366,8 +2418,8 @@ template<> void MechanicalObject< T >::vMultiOp(const core::ExecParams* params, 
 { m_data.vMultiOp(this, params, ops); }                                    \
 template<> SReal MechanicalObject< T >::vDot(const core::ExecParams* /* params */, core::ConstVecId a, core::ConstVecId b) \
 { return m_data.vDot(this, a, b); }				    \
-template<> void MechanicalObject< T >::resetForce(const core::ExecParams* params, core::VecDerivId fid) \
-{ if( fid==core::vec_id::write_access::force ) m_data.resetForce(this); else core::behavior::BaseMechanicalState::resetForce(params,fid); } \
+template<> void MechanicalObject< T >::resetVec(const core::ExecParams* params, core::VecId fid) \
+{ m_data.resetVec(this, fid); } \
 template<> void MechanicalObject< T >::copyToBaseVector(linearalgebra::BaseVector * dest, core::ConstVecId src, unsigned int &offset) \
 { if (CudaBaseVectorType<Real> * vec = dynamic_cast<CudaBaseVectorType<Real> *>(dest)) m_data.copyToCudaBaseVector(this, vec,src,offset); \
 else m_data.copyToBaseVector(this, dest,src,offset); } \

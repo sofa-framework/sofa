@@ -88,7 +88,9 @@ struct CheckPositionImpl<type::Vec<N, REAL>, 3>
 template<typename DataType>
 void CheckPosition(StubMechanicalObject<DataType>& mechanicalObject)
 {
-    CheckPositionImpl<typename DataType::Coord, DataType::coord_total_size>()(mechanicalObject.readPositions()[0]); // Vec<N, real>, RigidCoord<N, real>
+    auto positions = mechanicalObject.readPositions();
+    ASSERT_TRUE(positions.size() > 0);
+    CheckPositionImpl<typename DataType::Coord, DataType::coord_total_size>()(positions[0]); // Vec<N, real>, RigidCoord<N, real>
 }
 
 } // namespace TestHelpers
@@ -108,6 +110,26 @@ TYPED_TEST(MechanicalObject_test, checkThatTheSizeOfTheDefaultPositionIsEqualToT
 TYPED_TEST(MechanicalObject_test, checkThatPositionDefaultValueIsAVectorOfValueInitializedReals)
 {
     TestHelpers::CheckPosition(this->mechanicalObject);
+}
+
+TYPED_TEST(MechanicalObject_test, checkResetVec)
+{
+    this->mechanicalObject.resize(5);
+
+    static constexpr auto cotangentId = core::vec_id::write_access::force;
+
+    auto* cotangentData = this->mechanicalObject.write(cotangentId);
+    ASSERT_NE(nullptr, cotangentData);
+
+    auto cotangent = sofa::helper::getWriteAccessor(*cotangentData);
+    EXPECT_EQ(cotangent[0][0], 0);
+
+    cotangent[0][0] = 1;
+    EXPECT_EQ(cotangent[0][0], 1);
+
+    this->mechanicalObject.resetVec(nullptr, cotangentId);
+
+    EXPECT_EQ(cotangent[0][0], 0);
 }
 
 } // namespace
