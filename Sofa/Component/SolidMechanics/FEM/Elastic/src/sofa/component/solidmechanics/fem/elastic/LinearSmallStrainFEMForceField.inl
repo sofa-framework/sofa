@@ -31,7 +31,7 @@ template <class DataTypes, class ElementType>
 void LinearSmallStrainFEMForceField<DataTypes, ElementType>::init()
 {
     BaseElementLinearFEMForceField<DataTypes, ElementType>::init();
-    FEMForceField<DataTypes, ElementType>::init();
+    FEMForceField<DataTypes, DataTypes, ElementType>::init();
 
     if (!this->isComponentStateInvalid())
     {

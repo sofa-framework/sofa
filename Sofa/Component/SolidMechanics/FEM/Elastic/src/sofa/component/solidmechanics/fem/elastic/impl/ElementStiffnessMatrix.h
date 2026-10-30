@@ -45,7 +45,7 @@ auto integrate(
     static constexpr sofa::Size NumberOfNodesInElement = ElementType::NumberOfNodes;
     static constexpr sofa::Size TopologicalDimension = FiniteElement::TopologicalDimension;
 
-    typename trait<DataTypes, ElementType>::ElementHessian K;
+    typename trait<DataTypes, DataTypes, ElementType>::ElementHessian K;
 
     auto C = elasticityTensor.toVoigtMatSym().toMat();
 

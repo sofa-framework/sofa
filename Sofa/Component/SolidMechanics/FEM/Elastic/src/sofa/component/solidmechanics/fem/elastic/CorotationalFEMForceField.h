@@ -129,17 +129,17 @@ struct RotationMethods<DataTypes, sofa::geometry::QuadraticTetrahedron> : Rotati
 template <class DataTypes, class ElementType>
 class CorotationalFEMForceField :
     public BaseElementLinearFEMForceField<DataTypes, ElementType>,
-    public FEMForceField<DataTypes, ElementType>,
+    public FEMForceField<DataTypes, DataTypes, ElementType>,
     public CauchyStressEvaluator<DataTypes>
 {
 public:
     SOFA_CLASS2(
         SOFA_TEMPLATE2(CorotationalFEMForceField, DataTypes, ElementType),
         SOFA_TEMPLATE2(BaseElementLinearFEMForceField, DataTypes, ElementType),
-        SOFA_TEMPLATE2(FEMForceField, DataTypes, ElementType));
+        SOFA_TEMPLATE3(FEMForceField, DataTypes, DataTypes, ElementType));
 
 private:
-    using trait = sofa::component::solidmechanics::fem::elastic::trait<DataTypes, ElementType>;
+    using trait = sofa::component::solidmechanics::fem::elastic::trait<DataTypes, DataTypes, ElementType>;
     using ElementGradient = typename trait::ElementGradient;
     using ElementDisplacement = typename trait::ElementDisplacement;
     using RotationMatrix = sofa::type::Mat<trait::spatial_dimensions, trait::spatial_dimensions, sofa::Real_t<DataTypes>>;

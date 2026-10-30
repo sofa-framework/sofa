@@ -15,10 +15,10 @@ sofa_add_subdirectory_modules(SOFACOMPONENT_TARGETS
     LinearSolver
     Mass
     ODESolver
-    Diffusion
     Mapping
     StateContainer
     SolidMechanics
+    Diffusion
     Constraint
     AnimationLoop
     MechanicalLoad
