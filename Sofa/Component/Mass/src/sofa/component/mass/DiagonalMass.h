@@ -293,7 +293,7 @@ public:
     // -- Mass interface
     void addMDx(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecDeriv& dx, SReal factor) override;
 
-    void accFromF(const core::MechanicalParams* mparams, DataVecDeriv& a, const DataVecDeriv& f) override;
+    void doSolveLinearSystem(const core::MechanicalParams* mparams, DataVecDeriv& a, const DataVecDeriv& f) override;
 
     void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
 
