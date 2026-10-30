@@ -222,23 +222,27 @@ inline sofa::type::vector<core::behavior::BaseMechanicalState*> retrieveAssociat
     mstates.reserve(mstatesLinks.size());
     for (auto m : mstatesLinks)
     {
-        mstates.push_back(m);
+        //skip duplicates: it may happen for InteractionForceFields
+        if (std::find(mstates.begin(), mstates.end(), m) == mstates.end())
+        {
+            mstates.push_back(m);
+        }
     }
-
-    //remove duplicates: it may happen for InteractionForceFields
-    std::sort( mstates.begin(), mstates.end() );
-    mstates.erase( std::unique( mstates.begin(), mstates.end() ), mstates.end() );
 
     return mstates;
 }
 
 inline sofa::type::vector<core::behavior::BaseMechanicalState*> retrieveAssociatedMechanicalState(BaseMapping* component)
 {
-    type::vector<core::behavior::BaseMechanicalState*> mstates = component->getMechFrom();
-
-    //remove duplicates: it may happen for MultiMappings
-    std::sort( mstates.begin(), mstates.end() );
-    mstates.erase( std::unique( mstates.begin(), mstates.end() ), mstates.end() );
+    type::vector<core::behavior::BaseMechanicalState*> mstates;
+    for (auto* m : component->getMechFrom())
+    {
+        //skip duplicates: it may happen for MultiMappings
+        if (std::find(mstates.begin(), mstates.end(), m) == mstates.end())
+        {
+            mstates.push_back(m);
+        }
+    }
 
     return mstates;
 }
@@ -333,12 +337,22 @@ template <class TMatrix, class TVector>
 void MatrixLinearSystem<TMatrix, TVector>::buildGroupsOfComponentAssociatedToMechanicalStates(
     std::map<PairMechanicalStates, GroupOfComponentsAssociatedToAPairOfMechanicalStates>& groups)
 {
+    const auto groupOf = [&groups](const PairMechanicalStates& pair) -> GroupOfComponentsAssociatedToAPairOfMechanicalStates&
+    {
+        const auto [it, inserted] = groups.try_emplace(pair);
+        if (inserted)
+        {
+            it->second.order = groups.size() - 1;
+        }
+        return it->second;
+    };
+
     for (auto* ff : this->m_forceFields)
     {
         const auto mstates = retrieveAssociatedMechanicalState(ff);
         for (auto& pair : generatePairs(mstates))
         {
-            groups[pair].forcefieds.insert(ff);
+            groupOf(pair).forcefieds.insert(ff);
         }
     }
 
@@ -347,7 +361,7 @@ void MatrixLinearSystem<TMatrix, TVector>::buildGroupsOfComponentAssociatedToMec
         const auto mstates = retrieveAssociatedMechanicalState(mass);
         for (auto& pair : generatePairs(mstates))
         {
-            groups[pair].masses.insert(mass);
+            groupOf(pair).masses.insert(mass);
         }
     }
 
@@ -356,7 +370,7 @@ void MatrixLinearSystem<TMatrix, TVector>::buildGroupsOfComponentAssociatedToMec
         const auto mstates = retrieveAssociatedMechanicalState(mapping);
         for (auto& pair : generatePairs(mstates))
         {
-            groups[pair].mappings.insert(mapping);
+            groupOf(pair).mappings.insert(mapping);
         }
     }
 }
@@ -376,8 +390,20 @@ void MatrixLinearSystem<TMatrix, TVector>::makeLocalMatrixGroups(const core::Mec
     std::map<PairMechanicalStates, GroupOfComponentsAssociatedToAPairOfMechanicalStates> groups;
     buildGroupsOfComponentAssociatedToMechanicalStates(groups);
 
-    for (const auto& [pair, group] : groups)
+    // The mapped matrices are projected into the global matrix in the order of m_localMappedMatrices: the pairs are
+    // processed in the order of the scene graph traversal, rather than in the order of the addresses of the map keys
+    sofa::type::vector<const std::pair<const PairMechanicalStates, GroupOfComponentsAssociatedToAPairOfMechanicalStates>*> orderedGroups;
+    orderedGroups.reserve(groups.size());
+    for (const auto& entry : groups)
     {
+        orderedGroups.push_back(&entry);
+    }
+    std::sort(orderedGroups.begin(), orderedGroups.end(),
+        [](const auto* a, const auto* b) { return a->second.order < b->second.order; });
+
+    for (const auto* entry : orderedGroups)
+    {
+        const auto& [pair, group] = *entry;
         const bool isMapped1 = m_mappingGraph.hasAnyMappingInput(pair[0]);
         const bool isMapped2 = m_mappingGraph.hasAnyMappingInput(pair[1]);
 
@@ -534,78 +560,45 @@ void MatrixLinearSystem<TMatrix, TVector>::makeIndependentLocalMatrixGroups()
     IndependentContributors nonMappedContributors;
     IndependentContributors mappedContributors;
 
-    for (auto& [component, localMatrix] : m_stiffness)
+    // The components are visited in the order of the scene graph traversal
+    // so that their contributions are summed in an order which does not change between runs
+    const auto dispatch = [this, &nonMappedContributors, &mappedContributors]<Contribution c>(
+        const auto& components, const auto& localMatrices, auto member)
     {
-        const auto& mappedMatrices = getLocalMatrixMap<Contribution::STIFFNESS>().mappedLocalMatrix;
-        if (mappedMatrices.find(component) == mappedMatrices.end()) //this component is not mapped
+        const auto& mappedMatrices = this->template getLocalMatrixMap<c>().mappedLocalMatrix;
+        for (auto* component : components)
         {
-            //confirmation that this component is not mapped:
-            if (m_mappingGraph.hasAnyMappingInput(component))
+            const auto it = localMatrices.find(component);
+            if (it == localMatrices.end())
             {
-                dmsg_error() << "A mapped component has no mapped local matrix. This should not happen.";
                 continue;
             }
 
-            nonMappedContributors.m_stiffness.insert({component, localMatrix});
-        }
-        else
-        {
-            mappedContributors.m_stiffness.insert({component, localMatrix});
-        }
-    }
-
-    for (auto& [component, localMatrix] : m_damping)
-    {
-        const auto& mappedMatrices = getLocalMatrixMap<Contribution::DAMPING>().mappedLocalMatrix;
-        if (mappedMatrices.find(component) == mappedMatrices.end()) //this component is not mapped
-        {
-            //confirmation that this component is not mapped:
-            if (m_mappingGraph.hasAnyMappingInput(component))
+            if (mappedMatrices.find(component) == mappedMatrices.end()) //this component is not mapped
             {
-                dmsg_error() << "A mapped component has no mapped local matrix. This should not happen.";
-                continue;
+                if constexpr (c != Contribution::GEOMETRIC_STIFFNESS)
+                {
+                    //confirmation that this component is not mapped:
+                    if (this->m_mappingGraph.hasAnyMappingInput(component))
+                    {
+                        dmsg_error() << "A mapped component has no mapped local matrix. This should not happen.";
+                        continue;
+                    }
+                }
+
+                (nonMappedContributors.*member).emplace_back(component, it->second);
             }
-
-            nonMappedContributors.m_damping.insert({component, localMatrix});
-        }
-        else
-        {
-            mappedContributors.m_damping.insert({component, localMatrix});
-        }
-    }
-
-    for (auto& [component, localMatrix] : m_geometricStiffness)
-    {
-        const auto& mappedMatrices = getLocalMatrixMap<Contribution::GEOMETRIC_STIFFNESS>().mappedLocalMatrix;
-        if (mappedMatrices.find(component) == mappedMatrices.end()) //this component is not mapped
-        {
-            nonMappedContributors.m_geometricStiffness.insert({component, localMatrix});
-        }
-        else
-        {
-            mappedContributors.m_geometricStiffness.insert({component, localMatrix});
-        }
-    }
-
-    for (auto& [component, localMatrix] : m_mass)
-    {
-        const auto& mappedMatrices = getLocalMatrixMap<Contribution::MASS>().mappedLocalMatrix;
-        if (mappedMatrices.find(component) == mappedMatrices.end()) //this component is not mapped
-        {
-            //confirmation that this component is not mapped:
-            if (m_mappingGraph.hasAnyMappingInput(component))
+            else
             {
-                dmsg_error() << "A mapped component has no mapped local matrix. This should not happen.";
-                continue;
+                (mappedContributors.*member).emplace_back(component, it->second);
             }
+        }
+    };
 
-            nonMappedContributors.m_mass.insert({component, localMatrix});
-        }
-        else
-        {
-            mappedContributors.m_mass.insert({component, localMatrix});
-        }
-    }
+    dispatch.template operator()<Contribution::STIFFNESS>(this->m_forceFields, m_stiffness, &IndependentContributors::m_stiffness);
+    dispatch.template operator()<Contribution::DAMPING>(this->m_forceFields, m_damping, &IndependentContributors::m_damping);
+    dispatch.template operator()<Contribution::GEOMETRIC_STIFFNESS>(this->m_mechanicalMappings, m_geometricStiffness, &IndependentContributors::m_geometricStiffness);
+    dispatch.template operator()<Contribution::MASS>(this->m_masses, m_mass, &IndependentContributors::m_mass);
 
     m_independentContributors.push_back(nonMappedContributors);
     m_independentContributors.push_back(mappedContributors);
