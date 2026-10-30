@@ -57,16 +57,16 @@ bool ObjectElement::init()
 bool ObjectElement::initNode()
 {
     core::objectmodel::BaseContext* ctx { nullptr };
-    if (auto* parent = getParent())
+    if (auto* parentElement = getParent())
     {
-        if (auto* parentObj = parent->getObject())
+        if (auto* parentObj = parentElement->getObject())
         {
             ctx = parentObj->toBaseContext();
         }
         else
         {
             msg_error("XML parser") << "Cannot access to a valid component from parent element \'"
-                << parent->getName() << "\' (type:\'" << parent->getAttribute("type")
+                << parentElement->getName() << "\' (type:\'" << parentElement->getAttribute("type")
                 << "\') for the object element \'" << this->getName() << "\'";
         }
     }

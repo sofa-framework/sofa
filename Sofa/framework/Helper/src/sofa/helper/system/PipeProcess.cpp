@@ -192,7 +192,6 @@ bool PipeProcess::executeProcess(const std::string &command,  const std::vector<
             if (exit != STILL_ACTIVE)
                 break;
 
-            bool busy = false;
             for (int i=0; i<2; ++i)
             {
                 DWORD n = BUFSIZE-nfill[i];
@@ -203,7 +202,6 @@ bool PipeProcess::executeProcess(const std::string &command,  const std::vector<
 
                 if (bread>0)
                 {
-                    busy = true;
                     ReadFile(fds[i][0], buf[i]+nfill[i], n, &n, nullptr);
                     nfill[i] += n;
                     {
