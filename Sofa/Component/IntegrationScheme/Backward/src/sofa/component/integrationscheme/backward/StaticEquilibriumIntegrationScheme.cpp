@@ -42,9 +42,9 @@ StaticEquilibriumIntegrationScheme::StaticEquilibriumIntegrationScheme()
 , d_maxNbIterationsLineSearch(initData(&d_maxNbIterationsLineSearch, static_cast<unsigned int>(1), "maxNbIterationsLineSearch", "Maximum number of iteration for the backtracking linesearch algorithm"))
 , d_newtonStepSize(initData(&d_newtonStepSize, 1.0_sreal , "newtonStepSize", "Size of the first newton step before the linesearch"))
 , d_lineSearchReductionRate(initData(&d_lineSearchReductionRate, 0.5_sreal , "lineSearchReductionRate", "Taken in [0,1[ representing the fraction of diminution of the step done in the backtracking line search (if set to 0.3, the first line search will reduce the step from 1.0 to 0.7)"))
-, d_lineSearchArmijoFactor(initData(&d_lineSearchArmijoFactor, 1e-3_sreal , "lineSearchArmijoFactor", "Taken in [0,1[ it represents a tolerance on the residue in term of the linear approximation. e.g., for a value of 0.01, it means we want the solution to decrease the residue as much as 0.01 times the linear approximation in the same direction."))
-, d_residueThreshold(initData(&d_residueThreshold, 1e-9_sreal , "residueThreshold", "Threshold under which, the residue is considered to be sufficiently low. Newton algorithm will stop after reaching a lower value"))
-, d_currentResidue(initData(&d_currentResidue , "currentResidue", "Current value of the residue"))
+, d_lineSearchArmijoFactor(initData(&d_lineSearchArmijoFactor, 1e-3_sreal , "lineSearchArmijoFactor", "Taken in [0,1[ it represents a tolerance on the residual in term of the linear approximation. e.g., for a value of 0.01, it means we want the solution to decrease the residual as much as 0.01 times the linear approximation in the same direction."))
+, d_residualThreshold(initData(&d_residualThreshold, 1e-9_sreal , "residualThreshold", "Threshold under which, the residual is considered to be sufficiently low. Newton algorithm will stop after reaching a lower value"))
+, d_currentResidual(initData(&d_currentResidual , "currentResidual", "Current value of the residual"))
 , d_alwaysAdvanceNewton(initData(&d_alwaysAdvanceNewton , false, "alwaysAdvanceNewton", "Even if the linesearch didn't find a better solution than the current one, take the best one along the path that is not the current guess."))
 {  }
 
@@ -145,7 +145,7 @@ void StaticEquilibriumIntegrationScheme::integrate(const core::ExecParams* param
     const unsigned maxNewtonIt = d_maxNbIterationsNewton.getValue();
     const unsigned maxLineSearchIt = d_maxNbIterationsLineSearch.getValue();
     const SReal newtonStepSize = d_newtonStepSize.getValue();
-    const SReal residueThreshold = d_residueThreshold.getValue();
+    const SReal residualThreshold = d_residualThreshold.getValue();
     const SReal lineSearchReductionRate = d_lineSearchReductionRate.getValue();
     const SReal lineSearchArmijoFactor = d_lineSearchArmijoFactor.getValue();
 
@@ -156,12 +156,12 @@ void StaticEquilibriumIntegrationScheme::integrate(const core::ExecParams* param
 
     //Compute current residual, useful for static solver to return fast
     computeRHS(true);
-    SReal oldResidue = evaluateResidual();
-    SReal newResidue = evaluateResidual();
+    SReal oldResidual = evaluateResidual();
+    SReal newResidual = evaluateResidual();
 
 
     unsigned it = 0;
-    while ( it<maxNewtonIt && newResidue>residueThreshold )
+    while ( it<maxNewtonIt && newResidual>residualThreshold )
     {
         SCOPED_TIMER_VARNAME(step_timer, "NewtonStep");
 
@@ -171,10 +171,10 @@ void StaticEquilibriumIntegrationScheme::integrate(const core::ExecParams* param
         if ( ! firstIt )
         {
             computeRHS(firstIt);
-            oldResidue = evaluateResidual();
+            oldResidual = evaluateResidual();
         }
 
-        double bestresidual = oldResidue;
+        double bestresidual = oldResidual;
         double bestalpha = 0.0;
 
         computeLHS(firstIt);
@@ -190,7 +190,7 @@ void StaticEquilibriumIntegrationScheme::integrate(const core::ExecParams* param
         m_mop->propagateX(xResult); //Need to propagate explicitly to enable recomputation of mapped Forcefield
 
         computeRHS(false);
-        newResidue = evaluateResidual();
+        newResidual = evaluateResidual();
 
         // Compute the Armijo term
         // !! Careful this approximation holds only when A is symmetric
@@ -198,16 +198,16 @@ void StaticEquilibriumIntegrationScheme::integrate(const core::ExecParams* param
         // direction results from Ap = -r, then we have \nabla f = 2*A*r, so the armijo factor can be
         // simplified with \nabla f * p = 2*r^T*A^T*A^{-1}*(-r) = -2*||r||^2  if A is symmetric
         // Otherwise we need to compute 2 * r^{t} * A^{T} * p
-        const SReal armijoTerm = - 2 * lineSearchArmijoFactor * oldResidue;
+        const SReal armijoTerm = - 2 * lineSearchArmijoFactor * oldResidual;
 
-        if (newResidue<bestresidual || d_alwaysAdvanceNewton.getValue())
+        if (newResidual<bestresidual || d_alwaysAdvanceNewton.getValue())
         {
-            bestresidual = newResidue;
+            bestresidual = newResidual;
             bestalpha = alpha;
         }
 
         unsigned lineSearchIt = 0;
-        while ((newResidue>(oldResidue + alpha*armijoTerm)) && lineSearchIt<maxLineSearchIt )
+        while ((newResidual>(oldResidual + alpha*armijoTerm)) && lineSearchIt<maxLineSearchIt )
         {
             //We are backtracking on the same line. Instead of starting from initial position and
             //adding alpha each time, we go back toward the initial position
@@ -218,11 +218,11 @@ void StaticEquilibriumIntegrationScheme::integrate(const core::ExecParams* param
             m_mop->propagateX(xResult); //Need to propagate explicitly to enable recomputation of mapped Forcefield
 
             computeRHS(false);
-            newResidue = evaluateResidual();
+            newResidual = evaluateResidual();
 
-            if (newResidue<bestresidual)
+            if (newResidual<bestresidual)
             {
-                bestresidual = newResidue;
+                bestresidual = newResidual;
                 bestalpha = alpha;
             }
 
@@ -235,38 +235,38 @@ void StaticEquilibriumIntegrationScheme::integrate(const core::ExecParams* param
             m_mop->propagateX(xResult); //Need to propagate explicitly to enable recomputation of mapped Forcefileld
 
             computeRHS(false);
-            newResidue = evaluateResidual();
+            newResidual = evaluateResidual();
         }
 
 
         if (printLog)
         {
-            if (newResidue>oldResidue)
+            if (newResidual>oldResidual)
             {
                 msg_warning()<<"Newton step increased the residual";
             }
             msg_info()<<"Newton step = "<<it;
-            msg_info()<<"Current residue = "<<newResidue<< "   | previous residue = "<<oldResidue ;
+            msg_info()<<"Current residual = "<<newResidual<< "   | previous residual = "<<oldResidual ;
             msg_info()<<"Number of line search iterations = "<<lineSearchIt;
         }
         ++it ;
     }
     if (printLog)
     {
-        if (newResidue<residueThreshold)
+        if (newResidual<residualThreshold)
         {
-            msg_info()<<"Newton converged to residue "<<newResidue<<" in "<<it<<" steps.";
+            msg_info()<<"Newton converged to residual "<<newResidual<<" in "<<it<<" steps.";
         }
         else
         {
-            msg_warning()<<"Newton didn't converge ! Current residue is "<<newResidue;
+            msg_warning()<<"Newton didn't converge ! Current residual is "<<newResidual;
         }
     }
 
     sofa::helper::AdvancedTimer::valSet("nb_iterations", it);
-    sofa::helper::AdvancedTimer::valSet("residual", std::sqrt(newResidue));
+    sofa::helper::AdvancedTimer::valSet("residual", std::sqrt(newResidual));
 
-    d_currentResidue.setValue(newResidue);
+    d_currentResidual.setValue(newResidual);
 
 
 }
