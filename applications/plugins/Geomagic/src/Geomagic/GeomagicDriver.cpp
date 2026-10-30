@@ -22,8 +22,8 @@
 
 #include <Geomagic/GeomagicDriver.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/simulation/AnimateBeginEvent.h>
-#include <sofa/simulation/AnimateEndEvent.h>
+#include <sofa/simulation/events/AnimateBeginEvent.h>
+#include <sofa/simulation/events/AnimateEndEvent.h>
 #include <sofa/core/objectmodel/ScriptEvent.h>
 
 #include <sofa/core/visual/VisualParams.h>

@@ -72,6 +72,11 @@ public:
      */
     virtual TangentModulus materialTangentModulus(Strain<DataTypes>& strain) = 0;
 
+    /**
+     * Computes the strain energy density, per unit volume in the reference configuration.
+     */
+    virtual Real strainEnergyDensity(Strain<DataTypes>& strain) = 0;
+
     StressVoigtVector computeStress(const DeformationGradient& F, sofa::Size elementId) override;
 
 };

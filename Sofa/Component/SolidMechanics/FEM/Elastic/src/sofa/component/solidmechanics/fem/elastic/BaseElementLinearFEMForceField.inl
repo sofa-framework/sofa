@@ -69,9 +69,6 @@ void BaseElementLinearFEMForceField<DataTypes, ElementType>::precomputeElementSt
     if (!this->mstate)
         return;
 
-    const auto youngModulusAccessor = sofa::helper::ReadAccessor(this->d_youngModulus);
-    const auto poissonRatioAccessor = sofa::helper::ReadAccessor(this->d_poissonRatio);
-
     auto restPositionAccessor = this->mstate->readRestPositions();
 
     const auto& elements = trait::FiniteElement::getElementSequence(*this->l_topology);

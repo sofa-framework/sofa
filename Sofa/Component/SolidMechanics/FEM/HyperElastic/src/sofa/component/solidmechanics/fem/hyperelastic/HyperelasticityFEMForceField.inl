@@ -97,7 +97,43 @@ template <class TDataTypes, class TElementType>
 SReal HyperelasticityFEMForceField<TDataTypes, TElementType>::getPotentialEnergy(
     const sofa::core::MechanicalParams*, const DataVecCoord& x) const
 {
-    return 0;
+    if (this->isComponentStateInvalid())
+        return 0;
+
+    const auto& elements = FiniteElement::getElementSequence(*this->l_topology);
+
+    if (m_precomputedData.size() != elements.size())
+    {
+        msg_warning() << "Precomputed data does not match the topology: potential energy cannot be computed";
+        return 0;
+    }
+
+    const auto positionAccessor = sofa::helper::getReadAccessor(x);
+
+    static constexpr auto quadraturePoints = FiniteElement::quadraturePoints();
+    static constexpr auto gradients = sofa::fem::FiniteElementHelper<TElementType, TDataTypes>::gradientShapeFunctionAtQuadraturePoints();
+
+    Real energy {};
+
+    for (std::size_t elementId = 0; elementId < elements.size(); ++elementId)
+    {
+        const std::array<Coord, NumberOfNodesInElement> elementNodesCoordinates 
+            = sofa::component::solidmechanics::fem::elastic::extractNodesVectorFromGlobalVector(elements[elementId], positionAccessor.ref());
+
+        for (sofa::Size q = 0; q < NumberOfQuadraturePoints; ++q)
+        {
+            const auto& weight = quadraturePoints[q].second;
+            const PrecomputedData& precomputedData = m_precomputedData[elementId][q];
+
+            const auto J_q = sofa::fem::FiniteElementHelper<TElementType, TDataTypes>::jacobianFromReferenceToPhysical(elementNodesCoordinates, gradients[q]);
+            const DeformationGradient F = computeDeformationGradient(J_q, precomputedData.jacobianInv);
+
+            Strain<TDataTypes> strain(deformationGradient, F);
+            energy += (precomputedData.detJacobian * weight) * l_material->strainEnergyDensity(strain);
+        }
+    }
+
+    return static_cast<SReal>(energy);
 }
 
 template <class TDataTypes, class TElementType>
@@ -160,6 +196,7 @@ void HyperelasticityFEMForceField<TDataTypes, TElementType>::validateMaterial()
 template <class TDataTypes, class TElementType>
 void HyperelasticityFEMForceField<TDataTypes, TElementType>::computeHessian(const VecCoord& coordinates)
 {
+    SOFA_UNUSED(coordinates);
     if (this->l_topology == nullptr) return;
     if (l_material == nullptr) return;
 
@@ -252,7 +289,7 @@ void HyperelasticityFEMForceField<TDataTypes, TElementType>::computeHessian(cons
 template <class TDataTypes, class TElementType>
 auto HyperelasticityFEMForceField<TDataTypes, TElementType>::computeDeformationGradient(
     const sofa::type::Mat<spatial_dimensions, TopologicalDimension, Real>& J_q,
-    const sofa::type::Mat<TopologicalDimension, spatial_dimensions, Real>& J_Q_inv) -> DeformationGradient
+    const sofa::type::Mat<TopologicalDimension, spatial_dimensions, Real>& J_Q_inv) const -> DeformationGradient
 {
     return J_q * J_Q_inv;
 }
@@ -297,6 +334,7 @@ void HyperelasticityFEMForceField<TDataTypes, TElementType>::beforeElementForce(
     const sofa::core::MechanicalParams* mparams, sofa::type::vector<ElementGradient>& f,
     const sofa::VecCoord_t<TDataTypes>& x)
 {
+    SOFA_UNUSED(mparams);
     //store coordinates to use it later when computing the Hessian
     m_coordinates = &x;
 
@@ -320,6 +358,7 @@ void HyperelasticityFEMForceField<TDataTypes, TElementType>::computeElementsForc
     const sofa::simulation::Range<std::size_t>& range, const sofa::core::MechanicalParams* mparams,
     sofa::type::vector<ElementGradient>& f, const sofa::VecCoord_t<TDataTypes>& x)
 {
+    SOFA_UNUSED(mparams);
     const auto& elements = trait::FiniteElement::getElementSequence(*this->l_topology);
 
     static constexpr auto quadraturePoints = FiniteElement::quadraturePoints();
@@ -374,6 +413,7 @@ template <class TDataTypes, class TElementType>
 void HyperelasticityFEMForceField<TDataTypes, TElementType>::beforeElementForceDeriv(
     const sofa::core::MechanicalParams* mparams)
 {
+    SOFA_UNUSED(mparams);
     if (!m_isHessianValid)
     {
         computeHessian(*m_coordinates);
@@ -385,6 +425,7 @@ void HyperelasticityFEMForceField<TDataTypes, TElementType>::computeElementsForc
     const sofa::simulation::Range<std::size_t>& range, const sofa::core::MechanicalParams* mparams,
     sofa::type::vector<ElementGradient>& df, const sofa::VecDeriv_t<TDataTypes>& dx)
 {
+    SOFA_UNUSED(mparams);
     const auto& elements = trait::FiniteElement::getElementSequence(*this->l_topology);
 
     for (std::size_t elementId = range.start; elementId < range.end; ++elementId)

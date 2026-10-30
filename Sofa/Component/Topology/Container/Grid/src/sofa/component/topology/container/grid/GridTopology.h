@@ -141,6 +141,8 @@ public:
 
     /// Get the one-dimensional index of a grid point given its @param i @param j @param k indices
     Index getIndex( int i, int j, int k ) const;
+    /// Get the one-dimensional index of the point @param i @param j @param k of a grid of resolution @param n
+    static Index getIndex( const type::Vec3i& n, int i, int j, int k ) { return Index(n[0]* ( n[1]*k + j ) + i); }
 
     /// Overwrite from @sa MeshTopology::hasPos always @return bool true
     bool hasPos()  const override { return true; }
@@ -170,6 +172,10 @@ public:
 
     Hexa getHexahedron(int x, int y, int z);
     Hexa getHexaCopy(Index i);
+    /// Get the hexahedron of the cell @param x @param y @param z of a grid of resolution @param n
+    static Hexa getHexahedron(const type::Vec3i& n, int x, int y, int z);
+    /// Get the hexahedron of index @param i of a grid of resolution @param n
+    static Hexa getHexaCopy(const type::Vec3i& n, Index i);
     Quad getQuadCopy(Index i);
 
     /// Get Point index in Grid, will call method @sa getIndex

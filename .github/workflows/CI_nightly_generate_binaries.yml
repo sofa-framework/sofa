@@ -61,8 +61,8 @@ jobs:
           echo "PR_OWNER_URL=" >> $GITHUB_OUTPUT                                                    # PR_OWNER_URL: ""
           echo "PR_BRANCH_NAME=" >> $GITHUB_OUTPUT                                                  # PR_BRANCH_NAME: ""
           echo "PR_COMMIT_SHA=HEAD" >> $GITHUB_OUTPUT                                               # PR_COMMIT_SHA: "HEAD"
-          echo 'SH_BUILDER_OS=["sh-ubuntu_gcc_release","sh-macos_clang_release"]' >> $GITHUB_OUTPUT # SH_BUILDER_OS: ["sh-ubuntu_gcc_release","sh-macos_clang_release"]
-          echo 'PIXI_BUILDER_OS=["windows-latest"]' >> $GITHUB_OUTPUT                               # PIXI_BUILDER_OS: ["windows-latest"]
+          echo 'SH_BUILDER_OS=["sh-ubuntu_gcc_release","shas-macos_clang_release"]' >> $GITHUB_OUTPUT # SH_BUILDER_OS: ["sh-ubuntu_gcc_release","sh-macos_clang_release"]
+          echo 'PIXI_BUILDER_OS=["windows-latest"]' >> $GITHUB_OUTPUT                                # PIXI_BUILDER_OS: ["windows-latest"]
 
 
   # ===============================================================

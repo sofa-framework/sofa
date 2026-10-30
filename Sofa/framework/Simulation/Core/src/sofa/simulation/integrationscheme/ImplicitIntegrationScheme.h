@@ -56,6 +56,8 @@ public:
 
     ImplicitIntegrationScheme();
 
+    void reset() override;
+
     /**
      * Compute the system matrix.
      */
@@ -138,7 +140,7 @@ public:
 protected:
 
     virtual void doSetupIntegrationStep(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
-    {  }
+    { SOFA_UNUSED(dt); SOFA_UNUSED(params); SOFA_UNUSED(vResult); SOFA_UNUSED(xResult); }
 
     /**
      * This method returns the order of the integration scheme in term of number of past timestep

@@ -106,7 +106,7 @@ protected:
 
     DeformationGradient computeDeformationGradient(
         const sofa::type::Mat<spatial_dimensions, TopologicalDimension, Real>& J_q,
-        const sofa::type::Mat<TopologicalDimension, spatial_dimensions, Real>& J_Q_inv);
+        const sofa::type::Mat<TopologicalDimension, spatial_dimensions, Real>& J_Q_inv) const;
 
     struct PrecomputedData
     {

@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include <SofaMatrix/ComplianceMatrixImage.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/simulation/AnimateEndEvent.h>
+#include <sofa/simulation/events/AnimateEndEvent.h>
 
 namespace sofa::component::constraintset
 {

@@ -28,6 +28,7 @@
 #include <sofa/helper/ScopedAdvancedTimer.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalGetNonDiagonalMassesCountVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalGetNonDiagonalMassesCountVisitor;
+#include <sofa/simulation/mechanicalvisitor/MechanicalVOpVisitor.h>
 
 namespace sofa::simulation::integrationscheme
 {
@@ -55,6 +56,10 @@ void VelocityBasedImplicitIntegrationScheme::init()
 
 void VelocityBasedImplicitIntegrationScheme::doSetupIntegrationStep(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
 {
+    SOFA_UNUSED(dt);
+    SOFA_UNUSED(params);
+    SOFA_UNUSED(vResult);
+    SOFA_UNUSED(xResult);
 
     // Make sure the states are following the sizes
     simulation::common::VectorOperations::realloc(*m_vop, m_r0, "r0", this, true);
@@ -65,9 +70,12 @@ void VelocityBasedImplicitIntegrationScheme::doSetupIntegrationStep(const core::
 
     // This is only there for lagrangian based simulation, to make sure we start using the real pose
     // instead of the free pos (same for velocity)
-
-    m_vop->v_eq(m_vResult, core::vec_id::write_access::velocity);
-    m_vop->v_eq(m_xResult, core::vec_id::write_access::position);
+    simulation::mechanicalvisitor::MechanicalVOpVisitor copyPoseInFreePose(params, m_xResult, core::vec_id::write_access::position);
+    simulation::mechanicalvisitor::MechanicalVOpVisitor copyVelInFreeVel(params, m_vResult, core::vec_id::write_access::velocity);
+    copyVelInFreeVel.setMapped(true);
+    copyPoseInFreePose.setMapped(true);
+    this->getContext()->executeVisitor(&copyPoseInFreePose);
+    this->getContext()->executeVisitor(&copyVelInFreeVel);
 
     // Deal with higher order integration scheme
     const Size order = getIntegrationSchemeTimeOrder();
