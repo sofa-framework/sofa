@@ -1043,6 +1043,25 @@ constexpr real determinant(const Mat<2,2,real>& m) noexcept
             - m(1,0)*m(0,1);
 }
 
+/// Matrix of cofactors, such that cofactor(A) * cross(u, v) == cross(A * u, A * v).
+template<class real>
+constexpr Mat<3,3,real> cofactor(const Mat<3,3,real>& A) noexcept
+{
+    Mat<3,3,real> C(NOINIT);
+    C[0] = cross(A[1], A[2]);
+    C[1] = cross(A[2], A[0]);
+    C[2] = cross(A[0], A[1]);
+    return C;
+}
+
+/// Matrix of cofactors, such that cofactor(A) * perp(u) == perp(A * u), with perp(u) the vector u
+/// turned by 90 degrees.
+template<class real>
+constexpr Mat<2,2,real> cofactor(const Mat<2,2,real>& A) noexcept
+{
+    return {{A(1,1), -A(1,0)}, {-A(0,1), A(0,0)}};
+}
+
 /// Determinant of a 1x1 matrix.
 template<class real>
 constexpr real determinant(const Mat<1,1,real>& m) noexcept
