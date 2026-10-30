@@ -348,9 +348,9 @@ bool BaseLink::readFromSnapshot( const std::string& str )
     /// From the link
     std::vector<std::string> linkPathsFromLink;
 
-    std::string linkPath = this->getValueString();
-    
-    std::istringstream istrLink(linkPath);
+    const std::string linkValue = this->getValueString();
+
+    std::istringstream istrLink(linkValue);
     std::string linkStringBis;
 
     while (istrLink >> linkStringBis)
