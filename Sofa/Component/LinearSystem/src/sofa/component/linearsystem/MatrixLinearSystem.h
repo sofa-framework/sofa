@@ -113,9 +113,8 @@ protected:
     std::map<BaseMass*, BaseAssemblingMatrixAccumulator<Contribution::MASS>*> m_mass;
 
     /**
-     * Components contributing to the same matrix. They are stored in the order of the scene graph traversal, which
-     * is the order of their contributions: ordered by addresses, the rounding of the sums of contributions to the
-     * same entries would depend on where the components are allocated, which changes from one run to another.
+     * Components contributing to the same matrix.
+     * They are stored in the order of the scene graph traversal, which is the order of their contributions
      */
     struct IndependentContributors
     {

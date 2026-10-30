@@ -560,8 +560,8 @@ void MatrixLinearSystem<TMatrix, TVector>::makeIndependentLocalMatrixGroups()
     IndependentContributors nonMappedContributors;
     IndependentContributors mappedContributors;
 
-    // The components are visited in the order of the scene graph traversal (and not in the order of the maps, i.e.
-    // of their addresses), so that their contributions are summed in an order which does not change between runs
+    // The components are visited in the order of the scene graph traversal
+    // so that their contributions are summed in an order which does not change between runs
     const auto dispatch = [this, &nonMappedContributors, &mappedContributors]<Contribution c>(
         const auto& components, const auto& localMatrices, auto member)
     {
