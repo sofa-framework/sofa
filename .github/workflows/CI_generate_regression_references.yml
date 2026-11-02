@@ -1,0 +1,157 @@
+# >>> CI-UPDATE-REF BEGIN
+name: Generate regression references
+
+# ===============================================================
+# Generate the regression references of every OS for the scenes listed in the
+# [ci-update-ref {json}] tag of the SOFA-PR description, push them on the branch
+# ci/add_sofa_prXXXX_references of each concerned repository and open the REF-PRs.
+# ===============================================================
+
+on:
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'Number of the SOFA-PR for which the references are generated'
+        required: true
+        type: string
+
+jobs:
+  # Parse the SOFA-PR description, create the branches, compute the inputs of the build workflows
+  setup:
+    runs-on: launcher
+    if: ${{ github.repository_owner == 'sofa-framework' }}
+    outputs:
+      SOFA_BRANCH_NAME: ${{ steps.export-vars.outputs.SOFA_BRANCH_NAME }}
+      CI_DEPENDS_ON: ${{ steps.export-vars.outputs.CI_DEPENDS_ON }}
+      WITH_ALL_TESTS: ${{ steps.export-vars.outputs.WITH_ALL_TESTS }}
+      FORCE_FULL_BUILD: ${{ steps.export-vars.outputs.FORCE_FULL_BUILD }}
+      PR_OWNER_URL: ${{ steps.export-vars.outputs.PR_OWNER_URL }}
+      PR_BRANCH_NAME: ${{ steps.export-vars.outputs.PR_BRANCH_NAME }}
+      PR_COMMIT_SHA: ${{ steps.export-vars.outputs.PR_COMMIT_SHA }}
+      SH_BUILDER_OS: ${{ steps.export-vars.outputs.SH_BUILDER_OS }}
+      PIXI_BUILDER_OS: ${{ steps.export-vars.outputs.PIXI_BUILDER_OS }}
+      CI_UPDATE_REF: ${{ steps.export-vars.outputs.CI_UPDATE_REF }}
+      CI_REPO_URL: ${{ steps.ci-checkout.outputs.CI_REPO_URL }}
+      CI_BRANCH: ${{ steps.ci-checkout.outputs.CI_BRANCH }}
+
+    steps:
+      # The ci plugin holds the scripts: honor its [ci-depends-on] if the SOFA-PR has one
+      - name: Check out ci
+        id: ci-checkout
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.SOFA_BOT_TOKEN }}
+          PR_NUMBER: ${{ inputs.pr_number }}
+        run: |
+          ci_repo_url="https://github.com/sofa-framework/ci.git"
+          ci_branch="master"
+          ci_pr_url=$(gh api "repos/sofa-framework/sofa/pulls/${PR_NUMBER}" --jq .body \
+                      | grep -oE '\[ci-depends-on https://github.com/[^/]+/ci/pull/[0-9]+\]' | head -1 \
+                      | grep -oE 'https://github.com/[^]]+' || true)
+          if [ -n "$ci_pr_url" ]; then
+              api_path=$(echo "$ci_pr_url" | sed -E 's#https://github.com/([^/]+)/([^/]+)/pull/([0-9]+)#repos/\1/\2/pulls/\3#')
+              ci_repo_url=$(gh api "$api_path" --jq .head.repo.clone_url)
+              ci_branch=$(gh api "$api_path" --jq .head.ref)
+          fi
+          echo "Using ci from ${ci_repo_url}, branch ${ci_branch}"
+          rm -rf ./ci
+          git clone -b "$ci_branch" --single-branch "$ci_repo_url" ./ci
+          echo "CI_REPO_URL=${ci_repo_url}" >> $GITHUB_OUTPUT
+          echo "CI_BRANCH=${ci_branch}" >> $GITHUB_OUTPUT
+
+      - name: Parse the SOFA-PR and create the branches
+        env:
+          GH_TOKEN: ${{ secrets.SOFA_BOT_TOKEN }}
+          PR_NUMBER: ${{ inputs.pr_number }}
+        run: |
+          # Warning ! This script writes the build inputs in ENV variables
+          python3 ci/scripts/ci_update_ref_setup.py
+
+      - name: Export environment variables as outputs
+        id: export-vars
+        run: |
+          # Validate branch format (e.g., v25.06)
+          if [[ ! "$SOFA_BRANCH_NAME" =~ ^v[0-9]{2}\.[0-9]{2}$ && "$SOFA_BRANCH_NAME" != "master" ]]; then
+            echo "Error: Invalid branch name format: $SOFA_BRANCH_NAME."
+            exit 1
+          fi
+
+          echo "SOFA_BRANCH_NAME=${SOFA_BRANCH_NAME}" >> $GITHUB_OUTPUT
+          echo "CI_DEPENDS_ON=${CI_DEPENDS_ON}" >> $GITHUB_OUTPUT
+          echo "WITH_ALL_TESTS=${WITH_ALL_TESTS}" >> $GITHUB_OUTPUT
+          echo "FORCE_FULL_BUILD=${FORCE_FULL_BUILD}" >> $GITHUB_OUTPUT
+          echo "PR_OWNER_URL=${PR_OWNER_URL}" >> $GITHUB_OUTPUT
+          echo "PR_BRANCH_NAME=${PR_BRANCH_NAME}" >> $GITHUB_OUTPUT
+          echo "PR_COMMIT_SHA=${PR_COMMIT_SHA}" >> $GITHUB_OUTPUT
+          echo "SH_BUILDER_OS=${SH_BUILDER_OS}" >> $GITHUB_OUTPUT
+          echo "PIXI_BUILDER_OS=${PIXI_BUILDER_OS}" >> $GITHUB_OUTPUT
+          echo "CI_UPDATE_REF=${CI_UPDATE_REF}" >> $GITHUB_OUTPUT
+
+  # ===============================================================
+
+  build-on:
+    needs: setup
+    if: ${{ needs.setup.outputs.SH_BUILDER_OS != '[]' }}
+    uses: ./.github/workflows/CI_build_and_test.yml
+    secrets:
+      SOFA_BOT_TOKEN: ${{ secrets.SOFA_BOT_TOKEN }}
+    with:
+      sofa-branch-name: ${{ needs.setup.outputs.SOFA_BRANCH_NAME }}
+      sofa-commit-sha: HEAD
+      preset: full-dev
+      python-version: '3.12'
+      ci-depends-on: ${{ needs.setup.outputs.CI_DEPENDS_ON }}
+      with-all-tests: false
+      force-full-build: ${{ needs.setup.outputs.FORCE_FULL_BUILD == 'true' }}
+      generate-binaries: false
+      pr-owner-url: ${{ needs.setup.outputs.PR_OWNER_URL }}
+      pr-branch-name: ${{ needs.setup.outputs.PR_BRANCH_NAME }}
+      pr-commit-sha: ${{ needs.setup.outputs.PR_COMMIT_SHA }}
+      builder-os: ${{ needs.setup.outputs.SH_BUILDER_OS }}
+      ci-update-ref: ${{ needs.setup.outputs.CI_UPDATE_REF }}
+
+  pixi-ci:
+    needs: setup
+    if: ${{ needs.setup.outputs.PIXI_BUILDER_OS != '[]' }}
+    uses: ./.github/workflows/CI_macos_linux_windows_pixi.yml
+    secrets:
+      SOFA_BOT_TOKEN: ${{ secrets.SOFA_BOT_TOKEN }}
+    with:
+      sofa-branch-name: ${{ needs.setup.outputs.SOFA_BRANCH_NAME }}
+      sofa-commit-sha: HEAD
+      preset: full-dev
+      python-version: '3.12'
+      ci-depends-on: ${{ needs.setup.outputs.CI_DEPENDS_ON }}
+      with-all-tests: false
+      force-full-build: ${{ needs.setup.outputs.FORCE_FULL_BUILD == 'true' }}
+      generate-binaries: false
+      pr-owner-url: ${{ needs.setup.outputs.PR_OWNER_URL }}
+      pr-branch-name: ${{ needs.setup.outputs.PR_BRANCH_NAME }}
+      pr-commit-sha: ${{ needs.setup.outputs.PR_COMMIT_SHA }}
+      builder-os: ${{ needs.setup.outputs.PIXI_BUILDER_OS }}
+      ci-update-ref: ${{ needs.setup.outputs.CI_UPDATE_REF }}
+
+  # ===============================================================
+
+  # Runs exactly once, after every build job: REF-PRs, SOFA-PR description and the single summary comment
+  finalize:
+    needs: [setup, build-on, pixi-ci]
+    if: ${{ always() && needs.setup.result == 'success' }}
+    runs-on: launcher
+    steps:
+      - name: Check out ci
+        shell: bash
+        run: |
+          rm -rf ./ci
+          git clone -b "${{ needs.setup.outputs.CI_BRANCH }}" --single-branch "${{ needs.setup.outputs.CI_REPO_URL }}" ./ci
+
+      - name: Open the REF-PRs, update the SOFA-PR and post the summary
+        env:
+          GH_TOKEN: ${{ secrets.SOFA_BOT_TOKEN }}
+          PR_NUMBER: ${{ inputs.pr_number }}
+          CI_UPDATE_REF: ${{ needs.setup.outputs.CI_UPDATE_REF }}
+          GITHUB_RUN_ID: ${{ github.run_id }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          python3 ci/scripts/ci_update_ref_finish.py
+# <<< CI-UPDATE-REF END

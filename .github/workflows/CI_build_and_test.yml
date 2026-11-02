@@ -53,6 +53,16 @@ on:
         required: false
         default: 'NONE'
         description: 'Json scructure with three parameters {"COMMIT_HASH":"fullhsashofthecommit", }'
+# >>> CI-UPDATE-REF BEGIN
+      ci-update-ref:
+        type: string
+        required: false
+        default: ''
+        description: 'When not empty, only build and generate the regression references (JSON given by CI_generate_regression_references)'
+    secrets:
+      SOFA_BOT_TOKEN:
+        required: false
+# <<< CI-UPDATE-REF END
 
 jobs:
   display-inputs:
@@ -76,6 +86,9 @@ jobs:
             echo "external-plugins : ${{ inputs.external-plugins }}"
             echo "additionnal-cmake-flags : ${{ inputs.additionnal-cmake-flags }}"
             echo "builder-os : ${{ inputs.builder-os }}"
+            # >>> CI-UPDATE-REF BEGIN
+            echo "ci-update-ref : ${{ inputs.ci-update-ref != '' }}"
+            # <<< CI-UPDATE-REF END
 
 
   build:
@@ -86,6 +99,17 @@ jobs:
     runs-on: ${{ matrix.os }}
     name: ${{ matrix.os }}
     steps:
+      # >>> CI-UPDATE-REF BEGIN
+      - name: Export bot token
+        if: ${{ inputs.ci-update-ref != '' }}
+        shell: bash
+        env:
+          BOT_TOKEN: ${{ secrets.SOFA_BOT_TOKEN }}
+        run: |
+          echo "::add-mask::$BOT_TOKEN"
+          echo "GH_TOKEN=$BOT_TOKEN" >> $GITHUB_ENV
+      # <<< CI-UPDATE-REF END
+
       - name: Configure builder
         id: configure
         shell: bash
@@ -337,7 +361,7 @@ jobs:
 
       - name: Unit tests
         id: unit-tests-step
-        if: always() && steps.build-step.outcome == 'success' && inputs.generate-binaries == false
+        if: always() && steps.build-step.outcome == 'success' && inputs.generate-binaries == false && inputs.ci-update-ref == '' # CI-UPDATE-REF
         shell: bash
         run: |
           # If os has got docker then use it
@@ -368,7 +392,7 @@ jobs:
 
       - name: Scene tests
         id: scene-tests-step
-        if: always() && steps.build-step.outcome == 'success' && inputs.generate-binaries == false && inputs.with-all-tests == true
+        if: always() && steps.build-step.outcome == 'success' && inputs.generate-binaries == false && inputs.with-all-tests == true && inputs.ci-update-ref == '' # CI-UPDATE-REF
         shell: bash
         run: |
           # If os has got docker then use it
@@ -398,7 +422,7 @@ jobs:
 
       - name: Regression tests
         id: regression-tests-step
-        if: always() && steps.build-step.outcome == 'success' && inputs.generate-binaries == false && inputs.with-all-tests == true
+        if: always() && steps.build-step.outcome == 'success' && inputs.generate-binaries == false && inputs.with-all-tests == true && inputs.ci-update-ref == '' # CI-UPDATE-REF
         shell: bash
         run: |
           # If os has got docker then use it
@@ -426,6 +450,57 @@ jobs:
               fi
           fi
 
+
+      # >>> CI-UPDATE-REF BEGIN
+      - name: Update references - prepare
+        id: update-ref-prepare
+        if: always() && steps.build-step.outcome == 'success' && inputs.ci-update-ref != ''
+        shell: bash
+        env:
+          CI_UPDATE_REF: ${{ inputs.ci-update-ref }}
+        run: |
+          # The reference folder is named after the OS of the (docker) image running the regression
+          echo "CI_UPDATE_REF_OS=$(echo ${{ matrix.os }} | sed -E 's/^sh-([a-z]+)_.*/\1/')" >> $GITHUB_ENV
+          export CI_UPDATE_REF_OS=$(echo ${{ matrix.os }} | sed -E 's/^sh-([a-z]+)_.*/\1/')
+          python3 ${CI_DIR}/scripts/ci_update_ref_build.py prepare
+
+      - name: Update references - generate
+        id: update-ref-generate
+        if: always() && steps.update-ref-prepare.outcome == 'success'
+        shell: bash
+        run: |
+          if [ ! -s "${BUILD_DIR}/ci_update_ref/filter.txt" ]; then
+              echo "No scene to generate."
+              exit 0
+          fi
+          # If os has got docker then use it
+          if [[ "${{ matrix.os }}" == *"ubuntu"* ]] || [[ "${{ matrix.os }}" == *"fedora"* ]]; then
+              echo "Generating references through docker using image ${DOCKER_IMAGE}."
+              docker run --rm \
+                  --user 1000:1000 --network=host -v $WORKSPACE:/workspace \
+                  ${DOCKER_IMAGE} \
+                  /bin/bash -c "export REGRESSION_DIR="$DOCKER_REGRESSION_DIR"; cd /workspace;. ${DOCKER_CI_DIR}/scripts/tests/setup-test-env.sh \"${DOCKER_BUILD_DIR}\" \"${DOCKER_CI_DIR}/scripts/\" \"${NODE_NAME}\" \"${{ inputs.python-version }}\";  env ; \${VM_PYTHON3_EXECUTABLE} ${DOCKER_REGRESSION_DIR}/SofaRegressionProgram/SofaRegressionProgram.py --input "${DOCKER_SRC_DIR}/examples" --input "${DOCKER_SRC_DIR}/applications"  --input "${DOCKER_BUILD_DIR}/external_directories/fetched" --filter \"\$(cat ${DOCKER_BUILD_DIR}/ci_update_ref/filter.txt)\" --write-references --output-logs-errors "\${RESULTS_DIR}/regression"  --jobs \${VM_MAX_PARALLEL_TESTS} "
+          else
+              . ${CI_DIR}/scripts/tests/setup-test-env.sh "${BUILD_DIR}" "${CI_DIR}/scripts/" "${NODE_NAME}" "${{ inputs.python-version }}"
+              ${VM_PYTHON3_EXECUTABLE} ${REGRESSION_DIR}/SofaRegressionProgram/SofaRegressionProgram.py --input "${SRC_DIR}/examples" --input "${SRC_DIR}/applications"  --input "${BUILD_DIR}/external_directories/fetched" --filter "$(cat ${BUILD_DIR}/ci_update_ref/filter.txt)" --write-references --output-logs-errors "${RESULTS_DIR}/regression"  -j ${VM_MAX_PARALLEL_TESTS}
+          fi
+
+          if [[ ! "$(cd "${{ env.BUILD_DIR }}/tests_results/regression" && find . -maxdepth 1 -type f)" == *"summary"* ]]; then
+              exit 1
+          elif [[ "$(awk -F= '$1=="crashes" {print $2}' ${{ env.BUILD_DIR }}/tests_results/regression/summary.txt)" != '0' ]]; then
+              exit 1
+          fi
+
+      - name: Update references - commit and push
+        id: update-ref-commit
+        if: always() && steps.update-ref-generate.outcome == 'success'
+        shell: bash
+        env:
+          CI_UPDATE_REF: ${{ inputs.ci-update-ref }}
+          BUILD_COMMIT: ${{ (inputs.pr-commit-sha != '' && inputs.pr-commit-sha) || inputs.sofa-commit-sha }}
+        run: |
+          python3 ${CI_DIR}/scripts/ci_update_ref_build.py commit
+      # <<< CI-UPDATE-REF END
 
       - name: Publish artifacts
         if: steps.build-step.outcome == 'success' && inputs.generate-binaries == true
@@ -478,6 +553,17 @@ jobs:
           else
             echo "✅ Build OK."
           fi
+
+          # >>> CI-UPDATE-REF BEGIN
+          if [[ -n "${{ inputs.ci-update-ref }}" ]]; then
+            if [[ "${{ steps.update-ref-prepare.outcome }}" == "failure" || "${{ steps.update-ref-generate.outcome }}" == "failure" || "${{ steps.update-ref-commit.outcome }}" == "failure" ]]; then
+              echo "❌ References generation failed"
+              exit 1
+            fi
+            echo "✅ References generated and pushed."
+            exit 0
+          fi
+          # <<< CI-UPDATE-REF END
 
           if [[ "${{ inputs.generate-binaries }}" == "false" ]]; then
             if [[  "${{ steps.unit-tests-step.outcome }}" == "failure"          || "${{ steps.scene-tests-step.outcome }}" == "failure"           || "${{ steps.regression-tests-step.outcome }}" == "failure" ]] &&
