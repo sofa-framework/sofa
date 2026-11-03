@@ -39,7 +39,7 @@ class SOFA_COMPONENT_IO_MESH_API VisualModelOBJExporter : public BaseSimulationE
 public:
     SOFA_CLASS(VisualModelOBJExporter, BaseSimulationExporter);
 
-    bool write() override;
+    bool doWrite() override;
     bool writeOBJ();
 
 protected:

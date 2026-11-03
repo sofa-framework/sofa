@@ -78,7 +78,7 @@ void GlobalSystemMatrixExporter::doInit()
     }
 }
 
-bool GlobalSystemMatrixExporter::write()
+bool GlobalSystemMatrixExporter::doWrite()
 {
     if (l_linearSystem)
     {
