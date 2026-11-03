@@ -205,74 +205,69 @@ void IntegrateVisitor::initializeTaskScheduler()
 
 
 IntegrationHelper::IntegrationHelper(const sofa::core::ExecParams* params,
+                 SReal dt,
                  sofa::core::MultiVecCoordId X ,
                  sofa::core::MultiVecDerivId V ,
                  bool parallelExecution ,
                  bool computeForceIsolatedInteractionForceFields )
-    : m_visitor(params, 0.0, IntegrateVisitor::TaskType::NONE, true, 1.0, X, V, parallelExecution, computeForceIsolatedInteractionForceFields)
+    : m_visitor(params, dt, IntegrateVisitor::TaskType::NONE, true, 1.0, X, V, parallelExecution, computeForceIsolatedInteractionForceFields)
 {}
 
-void  IntegrationHelper::setupIntegrationStep(sofa::simulation::Node * node)
+void  IntegrationHelper::setupIntegrationStep()
 {
     helper::ScopedAdvancedTimer timer("SetupIntegrationStep");
-    m_visitor.setDt(node->getDt());
     m_visitor.setTaskType(IntegrateVisitor::TaskType::SETUP_INTEGRATION_STEP);
-    m_visitor.execute(node);
+    m_visitor.execute(m_node);
     if (m_visitor.isExecutionParallel())
         m_visitor.parallelWaitForResult();
 }
 
-SReal IntegrationHelper::evaluateResidual(sofa::simulation::Node * node)
+SReal IntegrationHelper::evaluateResidual()
 {
     helper::ScopedAdvancedTimer timer("evaluateResidual");
-    m_visitor.setDt(node->getDt());
     m_visitor.setTaskType(IntegrateVisitor::TaskType::EVALUATE_RESIDUAL);
-    m_visitor.execute(node);
+    m_visitor.execute(m_node);
     if (m_visitor.isExecutionParallel())
         m_visitor.parallelWaitForResult();
     return m_visitor.getResult();
 }
 
-void  IntegrationHelper::computeLHS(sofa::simulation::Node * node, bool firstIteration)
+void  IntegrationHelper::computeLHS(bool firstIteration)
 {
     helper::ScopedAdvancedTimer timer("computeLHS");
-    m_visitor.setDt(node->getDt());
     m_visitor.setTaskType(IntegrateVisitor::TaskType::COMPUTE_LHS);
     m_visitor.setFirstIteration(firstIteration);
-    m_visitor.execute(node);
+    m_visitor.execute(m_node);
     if (m_visitor.isExecutionParallel())
         m_visitor.parallelWaitForResult();
 }
 
-void  IntegrationHelper::computeRHS(sofa::simulation::Node * node, bool firstIteration)
+void  IntegrationHelper::computeRHS(bool firstIteration)
 {
     helper::ScopedAdvancedTimer timer("computeRHS");
-    m_visitor.setDt(node->getDt());
     m_visitor.setTaskType(IntegrateVisitor::TaskType::COMPUTE_RHS);
     m_visitor.setFirstIteration(firstIteration);
-    m_visitor.execute(node);
+    m_visitor.execute(m_node);
     if (m_visitor.isExecutionParallel())
         m_visitor.parallelWaitForResult();
 }
 
-void  IntegrationHelper::solveLinearEquation(sofa::simulation::Node * node)
+void  IntegrationHelper::solveLinearEquation()
 {
     helper::ScopedAdvancedTimer timer("solveLinearEquation");
-    m_visitor.setDt(node->getDt());
     m_visitor.setTaskType(IntegrateVisitor::TaskType::SOLVE_LINEAR_EQUATION);
-    m_visitor.execute(node);
+    m_visitor.execute(m_node);
     if (m_visitor.isExecutionParallel())
         m_visitor.parallelWaitForResult();
 }
 
-void  IntegrationHelper::updateStatesFromLinearSolution(sofa::simulation::Node * node, SReal alpha, bool firstIteration)
+void  IntegrationHelper::updateStatesFromLinearSolution(SReal alpha, bool firstIteration)
 {
     helper::ScopedAdvancedTimer timer("updateStatesFromLinearSolution");
-    m_visitor.setDt(node->getDt());
     m_visitor.setTaskType(IntegrateVisitor::TaskType::UPDATE_STATE_FROM_LINEAR_SOLUTION);
     m_visitor.setFirstIteration(firstIteration);
     m_visitor.setAlpha(alpha);
-    m_visitor.execute(node);
+    m_visitor.execute(m_node);
     if (m_visitor.isExecutionParallel())
         m_visitor.parallelWaitForResult();
 }

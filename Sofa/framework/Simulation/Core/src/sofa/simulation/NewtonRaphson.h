@@ -49,14 +49,23 @@ public:
     SOFA_CLASS(NewtonRaphson, sofa::core::behavior::BaseTimeIntegrator);
 
     virtual void init() override;
-    virtual void integrate(const core::ExecParams* params, SReal dt) override
-    {
-
-    }
+    virtual void integrate(const core::ExecParams* params, SReal dt) override;
 
 protected:
     NewtonRaphson();
     ~NewtonRaphson() override;
+
+    void newtonSolve(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xId, sofa::core::MultiVecDerivId vId);
+
+
+    Data<unsigned int> d_maxNbIterationsNewton;
+    Data<unsigned int> d_maxNbIterationsLineSearch;
+    Data<SReal> d_newtonStepSize;
+    Data<SReal> d_lineSearchReductionRate;
+    Data<SReal> d_lineSearchArmijoFactor;
+    Data<SReal> d_residueThreshold;
+    Data<SReal> d_currentResidue;
+    Data<bool> d_alwaysAdvanceNewton;
 
 };
 

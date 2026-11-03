@@ -96,11 +96,6 @@ public:
         m_alpha = alpha;
     }
 
-    void setDt(SReal dt)
-    {
-        m_dt = dt;
-    }
-
     void setTaskType(TaskType taskType)
     {
         m_taskType = taskType;
@@ -178,21 +173,27 @@ class IntegrationHelper
 public:
 
     IntegrationHelper(const sofa::core::ExecParams* params,
+                 SReal dt,
                  sofa::core::MultiVecCoordId X = sofa::core::vec_id::write_access::position,
                  sofa::core::MultiVecDerivId V = sofa::core::vec_id::write_access::velocity,
                  bool parallelSolve = false,
                  bool computeForceIsolatedInteractionForceFields = false);
 
-    void setupIntegrationStep(sofa::simulation::Node * node);
-    SReal evaluateResidual(sofa::simulation::Node * node);
-    void computeLHS(sofa::simulation::Node * node, bool firstIteration);
-    void computeRHS(sofa::simulation::Node * node, bool firstIteration);
-    void solveLinearEquation(sofa::simulation::Node * node);
-    void updateStatesFromLinearSolution(sofa::simulation::Node * node, SReal alpha, bool firstIteration = false);
+    void setupIntegrationStep();
+    SReal evaluateResidual();
+    void computeLHS(bool firstIteration);
+    void computeRHS(bool firstIteration);
+    void solveLinearEquation();
+    void updateStatesFromLinearSolution(SReal alpha, bool firstIteration = false);
 
+    void setNode(Node* node)
+    {
+        m_node = node;
+    }
 
 private:
     IntegrateVisitor m_visitor;
+    sofa::simulation::Node * m_node;
 };
 
 } // namespace sofa

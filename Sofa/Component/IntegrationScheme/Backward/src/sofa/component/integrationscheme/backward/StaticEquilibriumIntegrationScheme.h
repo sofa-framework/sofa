@@ -54,17 +54,6 @@ public:
     virtual SReal getVelocityIntegrationFactor() const override final;
     virtual SReal getPositionIntegrationFactor() const override final;
 
-    virtual void integrate(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
-
-    Data<unsigned int> d_maxNbIterationsNewton;
-    Data<unsigned int> d_maxNbIterationsLineSearch;
-    Data<SReal> d_newtonStepSize;
-    Data<SReal> d_lineSearchReductionRate;
-    Data<SReal> d_lineSearchArmijoFactor;
-    Data<SReal> d_residualThreshold;
-    Data<SReal> d_currentResidual;
-    Data<bool> d_alwaysAdvanceNewton;
-
 protected:
     virtual void doSetupIntegrationStep(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
 
