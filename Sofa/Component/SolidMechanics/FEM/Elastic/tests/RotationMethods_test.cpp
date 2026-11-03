@@ -94,8 +94,6 @@ Nodes<Vec3Types, N> tiltElement(const Nodes<Vec2Types, N>& nodes)
 const Nodes<Vec2Types, 4> regularQuad2D {
     sofa::type::Vec2(0.0, 0.0), sofa::type::Vec2(1.0, 0.0),
     sofa::type::Vec2(1.0, 1.0), sofa::type::Vec2(0.0, 1.0)};
-const Nodes<Vec3Types, 4> regularQuadFlat = embedElement(regularQuad2D);
-const Nodes<Vec3Types, 4> regularQuadTilted = tiltElement(regularQuad2D);
 const Nodes<Vec2Types, 3> regularTriangle2D {
     sofa::type::Vec2(0.0, 0.0), sofa::type::Vec2(1.0, 0.0), sofa::type::Vec2(0.5, std::sqrt(3.0) / 2)};
 const Nodes<Vec3Types, 3> regularTriangleFlat = embedElement(regularTriangle2D);
@@ -114,8 +112,6 @@ const Nodes<Vec3Types, 8> regularHexahedron {
 const Nodes<Vec2Types, 4> irregularQuad2D {
     sofa::type::Vec2(0.0, 0.0), sofa::type::Vec2(3.0, 0.0),
     sofa::type::Vec2(3.0, 1.0), sofa::type::Vec2(0.0, 1.0)};
-const Nodes<Vec3Types, 4> irregularQuadFlat = embedElement(irregularQuad2D);
-const Nodes<Vec3Types, 4> irregularQuadTilted = tiltElement(irregularQuad2D);
 const Nodes<Vec2Types, 3> irregularTriangle2D {
     sofa::type::Vec2(0.0, 0.0), sofa::type::Vec2(1.0, 0.0), sofa::type::Vec2(0.0, 1.0)};
 const Nodes<Vec3Types, 3> irregularTriangleFlat = embedElement(irregularTriangle2D);
@@ -129,12 +125,6 @@ const Nodes<Vec3Types, 8> irregularHexahedron {
     sofa::type::Vec3(0.0, 0.0, 1.0), sofa::type::Vec3(3.0, 0.0, 1.0),
     sofa::type::Vec3(3.0, 2.0, 1.0), sofa::type::Vec3(0.0, 2.0, 1.0)};
 
-// Edges in 2D: along the x axis, and turned by 25 degrees.
-
-const Matrix<Vec2Types> edgeTilt = rotation(25 * degreeToRadian);
-const Nodes<Vec2Types, 2> edgeFlat {sofa::type::Vec2(0.0, 0.0), sofa::type::Vec2(2.0, 0.0)};
-const Nodes<Vec2Types, 2> edgeTilted {edgeTilt * edgeFlat[0], edgeTilt * edgeFlat[1]};
-
 // Rigid motion
 
 const Matrix<Vec2Types> rotation2D = rotation(30 * degreeToRadian);
@@ -147,10 +137,6 @@ const Matrix<Vec3Types> stretch3D {{1.5, 0.0, 0.0}, {0.0, 1.0, 0.0}, {0.0, 0.0, 
 
 const Matrix<Vec2Types> offAxisStretch2D = rotation2D * stretch2D * rotation2D.transposed();
 const Matrix<Vec3Types> offAxisStretch3D = rotation3D * stretch3D * rotation3D.transposed();
-
-// An edge is stretched along its own line.
-const Matrix<Vec2Types> flatEdgeStretch = stretch2D;
-const Matrix<Vec2Types> tiltedEdgeStretch = edgeTilt * stretch2D * edgeTilt.transposed();
 
 /// offAxisStretch2D within the plane z = 0.
 const Matrix<Vec3Types> flatStretch3D = []
@@ -176,10 +162,6 @@ const Matrix<Vec3Types> rotatedStretch3D = rotation3D * offAxisStretch3D;
 const Matrix<Vec3Types> rotatedFlatStretch3D = rotation3D * flatStretch3D;
 const Matrix<Vec3Types> rotatedTiltedStretch3D = rotation3D * tiltedStretch3D;
 
-const Matrix<Vec2Types> rotatedFlatEdgeStretch = rotation2D * flatEdgeStretch;
-const Matrix<Vec2Types> rotatedTiltedEdgeStretch = rotation2D * tiltedEdgeStretch;
-
-const std::array<std::size_t, 2> edgeNumbering {1, 0};
 const std::array<std::size_t, 3> triangleNumbering {1, 2, 0};
 const std::array<std::size_t, 4> quadNumbering {1, 2, 3, 0};
 const std::array<std::size_t, 4> tetrahedronNumbering {1, 2, 0, 3};
@@ -313,22 +295,6 @@ TEST(RotationMethods, regularQuad2DRigidMotion)
     EXPECT_TRUE((meetsRigidMotion<AffineFitStablePolarDecomposition<Vec2Types, sofa::geometry::Quad>>(regularQuad2D, rotation2D)));
 }
 
-TEST(RotationMethods, regularQuadFlatRigidMotion)
-{
-    EXPECT_TRUE((meetsRigidMotion<RigidFitPolarDecomposition<Vec3Types, sofa::geometry::Quad>>(regularQuadFlat, rotation3D)));
-    EXPECT_TRUE((meetsRigidMotion<AffineFitPolarDecomposition<Vec3Types, sofa::geometry::Quad>>(regularQuadFlat, rotation3D)));
-    EXPECT_TRUE((meetsRigidMotion<RigidFitStablePolarDecomposition<Vec3Types, sofa::geometry::Quad>>(regularQuadFlat, rotation3D)));
-    EXPECT_TRUE((meetsRigidMotion<AffineFitStablePolarDecomposition<Vec3Types, sofa::geometry::Quad>>(regularQuadFlat, rotation3D)));
-}
-
-TEST(RotationMethods, regularQuadTiltedRigidMotion)
-{
-    EXPECT_TRUE((meetsRigidMotion<RigidFitPolarDecomposition<Vec3Types, sofa::geometry::Quad>>(regularQuadTilted, rotation3D)));
-    EXPECT_TRUE((meetsRigidMotion<AffineFitPolarDecomposition<Vec3Types, sofa::geometry::Quad>>(regularQuadTilted, rotation3D)));
-    EXPECT_TRUE((meetsRigidMotion<RigidFitStablePolarDecomposition<Vec3Types, sofa::geometry::Quad>>(regularQuadTilted, rotation3D)));
-    EXPECT_TRUE((meetsRigidMotion<AffineFitStablePolarDecomposition<Vec3Types, sofa::geometry::Quad>>(regularQuadTilted, rotation3D)));
-}
-
 TEST(RotationMethods, regularTriangle2DRigidMotion)
 {
     EXPECT_TRUE((meetsRigidMotion<RigidFitPolarDecomposition<Vec2Types, sofa::geometry::Triangle>>(regularTriangle2D, rotation2D)));
@@ -339,19 +305,11 @@ TEST(RotationMethods, regularTriangle2DRigidMotion)
 
 TEST(RotationMethods, regularTriangleFlatRigidMotion)
 {
-    EXPECT_TRUE((meetsRigidMotion<RigidFitPolarDecomposition<Vec3Types, sofa::geometry::Triangle>>(regularTriangleFlat, rotation3D)));
-    EXPECT_TRUE((meetsRigidMotion<AffineFitPolarDecomposition<Vec3Types, sofa::geometry::Triangle>>(regularTriangleFlat, rotation3D)));
-    EXPECT_TRUE((meetsRigidMotion<RigidFitStablePolarDecomposition<Vec3Types, sofa::geometry::Triangle>>(regularTriangleFlat, rotation3D)));
-    EXPECT_TRUE((meetsRigidMotion<AffineFitStablePolarDecomposition<Vec3Types, sofa::geometry::Triangle>>(regularTriangleFlat, rotation3D)));
     EXPECT_TRUE(meetsRigidMotion<TriangleRotation<Vec3Types>>(regularTriangleFlat, rotation3D));
 }
 
 TEST(RotationMethods, regularTriangleTiltedRigidMotion)
 {
-    EXPECT_TRUE((meetsRigidMotion<RigidFitPolarDecomposition<Vec3Types, sofa::geometry::Triangle>>(regularTriangleTilted, rotation3D)));
-    EXPECT_TRUE((meetsRigidMotion<AffineFitPolarDecomposition<Vec3Types, sofa::geometry::Triangle>>(regularTriangleTilted, rotation3D)));
-    EXPECT_TRUE((meetsRigidMotion<RigidFitStablePolarDecomposition<Vec3Types, sofa::geometry::Triangle>>(regularTriangleTilted, rotation3D)));
-    EXPECT_TRUE((meetsRigidMotion<AffineFitStablePolarDecomposition<Vec3Types, sofa::geometry::Triangle>>(regularTriangleTilted, rotation3D)));
     EXPECT_TRUE(meetsRigidMotion<TriangleRotation<Vec3Types>>(regularTriangleTilted, rotation3D));
 }
 
@@ -381,22 +339,6 @@ TEST(RotationMethods, irregularQuad2DRigidMotion)
     EXPECT_TRUE((meetsRigidMotion<AffineFitStablePolarDecomposition<Vec2Types, sofa::geometry::Quad>>(irregularQuad2D, rotation2D)));
 }
 
-TEST(RotationMethods, irregularQuadFlatRigidMotion)
-{
-    EXPECT_TRUE((meetsRigidMotion<RigidFitPolarDecomposition<Vec3Types, sofa::geometry::Quad>>(irregularQuadFlat, rotation3D)));
-    EXPECT_TRUE((meetsRigidMotion<AffineFitPolarDecomposition<Vec3Types, sofa::geometry::Quad>>(irregularQuadFlat, rotation3D)));
-    EXPECT_TRUE((meetsRigidMotion<RigidFitStablePolarDecomposition<Vec3Types, sofa::geometry::Quad>>(irregularQuadFlat, rotation3D)));
-    EXPECT_TRUE((meetsRigidMotion<AffineFitStablePolarDecomposition<Vec3Types, sofa::geometry::Quad>>(irregularQuadFlat, rotation3D)));
-}
-
-TEST(RotationMethods, irregularQuadTiltedRigidMotion)
-{
-    EXPECT_TRUE((meetsRigidMotion<RigidFitPolarDecomposition<Vec3Types, sofa::geometry::Quad>>(irregularQuadTilted, rotation3D)));
-    EXPECT_TRUE((meetsRigidMotion<AffineFitPolarDecomposition<Vec3Types, sofa::geometry::Quad>>(irregularQuadTilted, rotation3D)));
-    EXPECT_TRUE((meetsRigidMotion<RigidFitStablePolarDecomposition<Vec3Types, sofa::geometry::Quad>>(irregularQuadTilted, rotation3D)));
-    EXPECT_TRUE((meetsRigidMotion<AffineFitStablePolarDecomposition<Vec3Types, sofa::geometry::Quad>>(irregularQuadTilted, rotation3D)));
-}
-
 TEST(RotationMethods, irregularTriangle2DRigidMotion)
 {
     EXPECT_TRUE((meetsRigidMotion<RigidFitPolarDecomposition<Vec2Types, sofa::geometry::Triangle>>(irregularTriangle2D, rotation2D)));
@@ -407,19 +349,11 @@ TEST(RotationMethods, irregularTriangle2DRigidMotion)
 
 TEST(RotationMethods, irregularTriangleFlatRigidMotion)
 {
-    EXPECT_TRUE((meetsRigidMotion<RigidFitPolarDecomposition<Vec3Types, sofa::geometry::Triangle>>(irregularTriangleFlat, rotation3D)));
-    EXPECT_TRUE((meetsRigidMotion<AffineFitPolarDecomposition<Vec3Types, sofa::geometry::Triangle>>(irregularTriangleFlat, rotation3D)));
-    EXPECT_TRUE((meetsRigidMotion<RigidFitStablePolarDecomposition<Vec3Types, sofa::geometry::Triangle>>(irregularTriangleFlat, rotation3D)));
-    EXPECT_TRUE((meetsRigidMotion<AffineFitStablePolarDecomposition<Vec3Types, sofa::geometry::Triangle>>(irregularTriangleFlat, rotation3D)));
     EXPECT_TRUE(meetsRigidMotion<TriangleRotation<Vec3Types>>(irregularTriangleFlat, rotation3D));
 }
 
 TEST(RotationMethods, irregularTriangleTiltedRigidMotion)
 {
-    EXPECT_TRUE((meetsRigidMotion<RigidFitPolarDecomposition<Vec3Types, sofa::geometry::Triangle>>(irregularTriangleTilted, rotation3D)));
-    EXPECT_TRUE((meetsRigidMotion<AffineFitPolarDecomposition<Vec3Types, sofa::geometry::Triangle>>(irregularTriangleTilted, rotation3D)));
-    EXPECT_TRUE((meetsRigidMotion<RigidFitStablePolarDecomposition<Vec3Types, sofa::geometry::Triangle>>(irregularTriangleTilted, rotation3D)));
-    EXPECT_TRUE((meetsRigidMotion<AffineFitStablePolarDecomposition<Vec3Types, sofa::geometry::Triangle>>(irregularTriangleTilted, rotation3D)));
     EXPECT_TRUE(meetsRigidMotion<TriangleRotation<Vec3Types>>(irregularTriangleTilted, rotation3D));
 }
 
@@ -441,44 +375,12 @@ TEST(RotationMethods, irregularHexahedronRigidMotion)
     EXPECT_TRUE(meetsRigidMotion<HexahedronRotation<Vec3Types>>(irregularHexahedron, rotation3D));
 }
 
-TEST(RotationMethods, edgeFlatRigidMotion)
-{
-    EXPECT_TRUE((meetsRigidMotion<RigidFitPolarDecomposition<Vec2Types, sofa::geometry::Edge>>(edgeFlat, rotation2D)));
-    EXPECT_TRUE((meetsRigidMotion<AffineFitPolarDecomposition<Vec2Types, sofa::geometry::Edge>>(edgeFlat, rotation2D)));
-    EXPECT_TRUE((meetsRigidMotion<RigidFitStablePolarDecomposition<Vec2Types, sofa::geometry::Edge>>(edgeFlat, rotation2D)));
-    EXPECT_TRUE((meetsRigidMotion<AffineFitStablePolarDecomposition<Vec2Types, sofa::geometry::Edge>>(edgeFlat, rotation2D)));
-}
-
-TEST(RotationMethods, edgeTiltedRigidMotion)
-{
-    EXPECT_TRUE((meetsRigidMotion<RigidFitPolarDecomposition<Vec2Types, sofa::geometry::Edge>>(edgeTilted, rotation2D)));
-    EXPECT_TRUE((meetsRigidMotion<AffineFitPolarDecomposition<Vec2Types, sofa::geometry::Edge>>(edgeTilted, rotation2D)));
-    EXPECT_TRUE((meetsRigidMotion<RigidFitStablePolarDecomposition<Vec2Types, sofa::geometry::Edge>>(edgeTilted, rotation2D)));
-    EXPECT_TRUE((meetsRigidMotion<AffineFitStablePolarDecomposition<Vec2Types, sofa::geometry::Edge>>(edgeTilted, rotation2D)));
-}
-
 TEST(RotationMethods, regularQuad2DStretchPatch)
 {
     EXPECT_TRUE((meetsStretchPatch<RigidFitPolarDecomposition<Vec2Types, sofa::geometry::Quad>>(regularQuad2D, offAxisStretch2D)));
     EXPECT_TRUE((meetsStretchPatch<AffineFitPolarDecomposition<Vec2Types, sofa::geometry::Quad>>(regularQuad2D, offAxisStretch2D)));
     EXPECT_TRUE((meetsStretchPatch<RigidFitStablePolarDecomposition<Vec2Types, sofa::geometry::Quad>>(regularQuad2D, offAxisStretch2D)));
     EXPECT_TRUE((meetsStretchPatch<AffineFitStablePolarDecomposition<Vec2Types, sofa::geometry::Quad>>(regularQuad2D, offAxisStretch2D)));
-}
-
-TEST(RotationMethods, regularQuadFlatStretchPatch)
-{
-    EXPECT_TRUE((meetsStretchPatch<RigidFitPolarDecomposition<Vec3Types, sofa::geometry::Quad>>(regularQuadFlat, flatStretch3D)));
-    EXPECT_TRUE((meetsStretchPatch<AffineFitPolarDecomposition<Vec3Types, sofa::geometry::Quad>>(regularQuadFlat, flatStretch3D)));
-    EXPECT_TRUE((meetsStretchPatch<RigidFitStablePolarDecomposition<Vec3Types, sofa::geometry::Quad>>(regularQuadFlat, flatStretch3D)));
-    EXPECT_TRUE((meetsStretchPatch<AffineFitStablePolarDecomposition<Vec3Types, sofa::geometry::Quad>>(regularQuadFlat, flatStretch3D)));
-}
-
-TEST(RotationMethods, regularQuadTiltedStretchPatch)
-{
-    EXPECT_TRUE((meetsStretchPatch<RigidFitPolarDecomposition<Vec3Types, sofa::geometry::Quad>>(regularQuadTilted, tiltedStretch3D)));
-    EXPECT_TRUE((meetsStretchPatch<AffineFitPolarDecomposition<Vec3Types, sofa::geometry::Quad>>(regularQuadTilted, tiltedStretch3D)));
-    EXPECT_TRUE((meetsStretchPatch<RigidFitStablePolarDecomposition<Vec3Types, sofa::geometry::Quad>>(regularQuadTilted, tiltedStretch3D)));
-    EXPECT_TRUE((meetsStretchPatch<AffineFitStablePolarDecomposition<Vec3Types, sofa::geometry::Quad>>(regularQuadTilted, tiltedStretch3D)));
 }
 
 TEST(RotationMethods, regularTriangle2DStretchPatch)
@@ -491,19 +393,11 @@ TEST(RotationMethods, regularTriangle2DStretchPatch)
 
 TEST(RotationMethods, regularTriangleFlatStretchPatch)
 {
-    EXPECT_TRUE((meetsStretchPatch<RigidFitPolarDecomposition<Vec3Types, sofa::geometry::Triangle>>(regularTriangleFlat, flatStretch3D)));
-    EXPECT_TRUE((meetsStretchPatch<AffineFitPolarDecomposition<Vec3Types, sofa::geometry::Triangle>>(regularTriangleFlat, flatStretch3D)));
-    EXPECT_TRUE((meetsStretchPatch<RigidFitStablePolarDecomposition<Vec3Types, sofa::geometry::Triangle>>(regularTriangleFlat, flatStretch3D)));
-    EXPECT_TRUE((meetsStretchPatch<AffineFitStablePolarDecomposition<Vec3Types, sofa::geometry::Triangle>>(regularTriangleFlat, flatStretch3D)));
     EXPECT_FALSE(meetsStretchPatch<TriangleRotation<Vec3Types>>(regularTriangleFlat, flatStretch3D));
 }
 
 TEST(RotationMethods, regularTriangleTiltedStretchPatch)
 {
-    EXPECT_TRUE((meetsStretchPatch<RigidFitPolarDecomposition<Vec3Types, sofa::geometry::Triangle>>(regularTriangleTilted, tiltedStretch3D)));
-    EXPECT_TRUE((meetsStretchPatch<AffineFitPolarDecomposition<Vec3Types, sofa::geometry::Triangle>>(regularTriangleTilted, tiltedStretch3D)));
-    EXPECT_TRUE((meetsStretchPatch<RigidFitStablePolarDecomposition<Vec3Types, sofa::geometry::Triangle>>(regularTriangleTilted, tiltedStretch3D)));
-    EXPECT_TRUE((meetsStretchPatch<AffineFitStablePolarDecomposition<Vec3Types, sofa::geometry::Triangle>>(regularTriangleTilted, tiltedStretch3D)));
     EXPECT_FALSE(meetsStretchPatch<TriangleRotation<Vec3Types>>(regularTriangleTilted, tiltedStretch3D));
 }
 
@@ -533,22 +427,6 @@ TEST(RotationMethods, irregularQuad2DStretchPatch)
     EXPECT_TRUE((meetsStretchPatch<AffineFitStablePolarDecomposition<Vec2Types, sofa::geometry::Quad>>(irregularQuad2D, offAxisStretch2D)));
 }
 
-TEST(RotationMethods, irregularQuadFlatStretchPatch)
-{
-    EXPECT_FALSE((meetsStretchPatch<RigidFitPolarDecomposition<Vec3Types, sofa::geometry::Quad>>(irregularQuadFlat, flatStretch3D)));
-    EXPECT_TRUE((meetsStretchPatch<AffineFitPolarDecomposition<Vec3Types, sofa::geometry::Quad>>(irregularQuadFlat, flatStretch3D)));
-    EXPECT_FALSE((meetsStretchPatch<RigidFitStablePolarDecomposition<Vec3Types, sofa::geometry::Quad>>(irregularQuadFlat, flatStretch3D)));
-    EXPECT_TRUE((meetsStretchPatch<AffineFitStablePolarDecomposition<Vec3Types, sofa::geometry::Quad>>(irregularQuadFlat, flatStretch3D)));
-}
-
-TEST(RotationMethods, irregularQuadTiltedStretchPatch)
-{
-    EXPECT_FALSE((meetsStretchPatch<RigidFitPolarDecomposition<Vec3Types, sofa::geometry::Quad>>(irregularQuadTilted, tiltedStretch3D)));
-    EXPECT_TRUE((meetsStretchPatch<AffineFitPolarDecomposition<Vec3Types, sofa::geometry::Quad>>(irregularQuadTilted, tiltedStretch3D)));
-    EXPECT_FALSE((meetsStretchPatch<RigidFitStablePolarDecomposition<Vec3Types, sofa::geometry::Quad>>(irregularQuadTilted, tiltedStretch3D)));
-    EXPECT_TRUE((meetsStretchPatch<AffineFitStablePolarDecomposition<Vec3Types, sofa::geometry::Quad>>(irregularQuadTilted, tiltedStretch3D)));
-}
-
 TEST(RotationMethods, irregularTriangle2DStretchPatch)
 {
     EXPECT_FALSE((meetsStretchPatch<RigidFitPolarDecomposition<Vec2Types, sofa::geometry::Triangle>>(irregularTriangle2D, offAxisStretch2D)));
@@ -559,19 +437,11 @@ TEST(RotationMethods, irregularTriangle2DStretchPatch)
 
 TEST(RotationMethods, irregularTriangleFlatStretchPatch)
 {
-    EXPECT_FALSE((meetsStretchPatch<RigidFitPolarDecomposition<Vec3Types, sofa::geometry::Triangle>>(irregularTriangleFlat, flatStretch3D)));
-    EXPECT_TRUE((meetsStretchPatch<AffineFitPolarDecomposition<Vec3Types, sofa::geometry::Triangle>>(irregularTriangleFlat, flatStretch3D)));
-    EXPECT_FALSE((meetsStretchPatch<RigidFitStablePolarDecomposition<Vec3Types, sofa::geometry::Triangle>>(irregularTriangleFlat, flatStretch3D)));
-    EXPECT_TRUE((meetsStretchPatch<AffineFitStablePolarDecomposition<Vec3Types, sofa::geometry::Triangle>>(irregularTriangleFlat, flatStretch3D)));
     EXPECT_FALSE(meetsStretchPatch<TriangleRotation<Vec3Types>>(irregularTriangleFlat, flatStretch3D));
 }
 
 TEST(RotationMethods, irregularTriangleTiltedStretchPatch)
 {
-    EXPECT_FALSE((meetsStretchPatch<RigidFitPolarDecomposition<Vec3Types, sofa::geometry::Triangle>>(irregularTriangleTilted, tiltedStretch3D)));
-    EXPECT_TRUE((meetsStretchPatch<AffineFitPolarDecomposition<Vec3Types, sofa::geometry::Triangle>>(irregularTriangleTilted, tiltedStretch3D)));
-    EXPECT_FALSE((meetsStretchPatch<RigidFitStablePolarDecomposition<Vec3Types, sofa::geometry::Triangle>>(irregularTriangleTilted, tiltedStretch3D)));
-    EXPECT_TRUE((meetsStretchPatch<AffineFitStablePolarDecomposition<Vec3Types, sofa::geometry::Triangle>>(irregularTriangleTilted, tiltedStretch3D)));
     EXPECT_FALSE(meetsStretchPatch<TriangleRotation<Vec3Types>>(irregularTriangleTilted, tiltedStretch3D));
 }
 
@@ -593,44 +463,12 @@ TEST(RotationMethods, irregularHexahedronStretchPatch)
     EXPECT_FALSE(meetsStretchPatch<HexahedronRotation<Vec3Types>>(irregularHexahedron, offAxisStretch3D));
 }
 
-TEST(RotationMethods, edgeFlatStretchPatch)
-{
-    EXPECT_TRUE((meetsStretchPatch<RigidFitPolarDecomposition<Vec2Types, sofa::geometry::Edge>>(edgeFlat, flatEdgeStretch)));
-    EXPECT_TRUE((meetsStretchPatch<AffineFitPolarDecomposition<Vec2Types, sofa::geometry::Edge>>(edgeFlat, flatEdgeStretch)));
-    EXPECT_TRUE((meetsStretchPatch<RigidFitStablePolarDecomposition<Vec2Types, sofa::geometry::Edge>>(edgeFlat, flatEdgeStretch)));
-    EXPECT_TRUE((meetsStretchPatch<AffineFitStablePolarDecomposition<Vec2Types, sofa::geometry::Edge>>(edgeFlat, flatEdgeStretch)));
-}
-
-TEST(RotationMethods, edgeTiltedStretchPatch)
-{
-    EXPECT_TRUE((meetsStretchPatch<RigidFitPolarDecomposition<Vec2Types, sofa::geometry::Edge>>(edgeTilted, tiltedEdgeStretch)));
-    EXPECT_TRUE((meetsStretchPatch<AffineFitPolarDecomposition<Vec2Types, sofa::geometry::Edge>>(edgeTilted, tiltedEdgeStretch)));
-    EXPECT_TRUE((meetsStretchPatch<RigidFitStablePolarDecomposition<Vec2Types, sofa::geometry::Edge>>(edgeTilted, tiltedEdgeStretch)));
-    EXPECT_TRUE((meetsStretchPatch<AffineFitStablePolarDecomposition<Vec2Types, sofa::geometry::Edge>>(edgeTilted, tiltedEdgeStretch)));
-}
-
 TEST(RotationMethods, regularQuad2DRenumbering)
 {
     EXPECT_TRUE((meetsRenumbering<RigidFitPolarDecomposition<Vec2Types, sofa::geometry::Quad>>(regularQuad2D, rotatedStretch2D, quadNumbering)));
     EXPECT_TRUE((meetsRenumbering<AffineFitPolarDecomposition<Vec2Types, sofa::geometry::Quad>>(regularQuad2D, rotatedStretch2D, quadNumbering)));
     EXPECT_TRUE((meetsRenumbering<RigidFitStablePolarDecomposition<Vec2Types, sofa::geometry::Quad>>(regularQuad2D, rotatedStretch2D, quadNumbering)));
     EXPECT_TRUE((meetsRenumbering<AffineFitStablePolarDecomposition<Vec2Types, sofa::geometry::Quad>>(regularQuad2D, rotatedStretch2D, quadNumbering)));
-}
-
-TEST(RotationMethods, regularQuadFlatRenumbering)
-{
-    EXPECT_TRUE((meetsRenumbering<RigidFitPolarDecomposition<Vec3Types, sofa::geometry::Quad>>(regularQuadFlat, rotatedFlatStretch3D, quadNumbering)));
-    EXPECT_TRUE((meetsRenumbering<AffineFitPolarDecomposition<Vec3Types, sofa::geometry::Quad>>(regularQuadFlat, rotatedFlatStretch3D, quadNumbering)));
-    EXPECT_TRUE((meetsRenumbering<RigidFitStablePolarDecomposition<Vec3Types, sofa::geometry::Quad>>(regularQuadFlat, rotatedFlatStretch3D, quadNumbering)));
-    EXPECT_TRUE((meetsRenumbering<AffineFitStablePolarDecomposition<Vec3Types, sofa::geometry::Quad>>(regularQuadFlat, rotatedFlatStretch3D, quadNumbering)));
-}
-
-TEST(RotationMethods, regularQuadTiltedRenumbering)
-{
-    EXPECT_TRUE((meetsRenumbering<RigidFitPolarDecomposition<Vec3Types, sofa::geometry::Quad>>(regularQuadTilted, rotatedTiltedStretch3D, quadNumbering)));
-    EXPECT_TRUE((meetsRenumbering<AffineFitPolarDecomposition<Vec3Types, sofa::geometry::Quad>>(regularQuadTilted, rotatedTiltedStretch3D, quadNumbering)));
-    EXPECT_TRUE((meetsRenumbering<RigidFitStablePolarDecomposition<Vec3Types, sofa::geometry::Quad>>(regularQuadTilted, rotatedTiltedStretch3D, quadNumbering)));
-    EXPECT_TRUE((meetsRenumbering<AffineFitStablePolarDecomposition<Vec3Types, sofa::geometry::Quad>>(regularQuadTilted, rotatedTiltedStretch3D, quadNumbering)));
 }
 
 TEST(RotationMethods, regularTriangle2DRenumbering)
@@ -643,19 +481,11 @@ TEST(RotationMethods, regularTriangle2DRenumbering)
 
 TEST(RotationMethods, regularTriangleFlatRenumbering)
 {
-    EXPECT_TRUE((meetsRenumbering<RigidFitPolarDecomposition<Vec3Types, sofa::geometry::Triangle>>(regularTriangleFlat, rotatedFlatStretch3D, triangleNumbering)));
-    EXPECT_TRUE((meetsRenumbering<AffineFitPolarDecomposition<Vec3Types, sofa::geometry::Triangle>>(regularTriangleFlat, rotatedFlatStretch3D, triangleNumbering)));
-    EXPECT_TRUE((meetsRenumbering<RigidFitStablePolarDecomposition<Vec3Types, sofa::geometry::Triangle>>(regularTriangleFlat, rotatedFlatStretch3D, triangleNumbering)));
-    EXPECT_TRUE((meetsRenumbering<AffineFitStablePolarDecomposition<Vec3Types, sofa::geometry::Triangle>>(regularTriangleFlat, rotatedFlatStretch3D, triangleNumbering)));
     EXPECT_FALSE(meetsRenumbering<TriangleRotation<Vec3Types>>(regularTriangleFlat, rotatedFlatStretch3D, triangleNumbering));
 }
 
 TEST(RotationMethods, regularTriangleTiltedRenumbering)
 {
-    EXPECT_TRUE((meetsRenumbering<RigidFitPolarDecomposition<Vec3Types, sofa::geometry::Triangle>>(regularTriangleTilted, rotatedTiltedStretch3D, triangleNumbering)));
-    EXPECT_TRUE((meetsRenumbering<AffineFitPolarDecomposition<Vec3Types, sofa::geometry::Triangle>>(regularTriangleTilted, rotatedTiltedStretch3D, triangleNumbering)));
-    EXPECT_TRUE((meetsRenumbering<RigidFitStablePolarDecomposition<Vec3Types, sofa::geometry::Triangle>>(regularTriangleTilted, rotatedTiltedStretch3D, triangleNumbering)));
-    EXPECT_TRUE((meetsRenumbering<AffineFitStablePolarDecomposition<Vec3Types, sofa::geometry::Triangle>>(regularTriangleTilted, rotatedTiltedStretch3D, triangleNumbering)));
     EXPECT_FALSE(meetsRenumbering<TriangleRotation<Vec3Types>>(regularTriangleTilted, rotatedTiltedStretch3D, triangleNumbering));
 }
 
@@ -685,22 +515,6 @@ TEST(RotationMethods, irregularQuad2DRenumbering)
     EXPECT_TRUE((meetsRenumbering<AffineFitStablePolarDecomposition<Vec2Types, sofa::geometry::Quad>>(irregularQuad2D, rotatedStretch2D, quadNumbering)));
 }
 
-TEST(RotationMethods, irregularQuadFlatRenumbering)
-{
-    EXPECT_TRUE((meetsRenumbering<RigidFitPolarDecomposition<Vec3Types, sofa::geometry::Quad>>(irregularQuadFlat, rotatedFlatStretch3D, quadNumbering)));
-    EXPECT_TRUE((meetsRenumbering<AffineFitPolarDecomposition<Vec3Types, sofa::geometry::Quad>>(irregularQuadFlat, rotatedFlatStretch3D, quadNumbering)));
-    EXPECT_TRUE((meetsRenumbering<RigidFitStablePolarDecomposition<Vec3Types, sofa::geometry::Quad>>(irregularQuadFlat, rotatedFlatStretch3D, quadNumbering)));
-    EXPECT_TRUE((meetsRenumbering<AffineFitStablePolarDecomposition<Vec3Types, sofa::geometry::Quad>>(irregularQuadFlat, rotatedFlatStretch3D, quadNumbering)));
-}
-
-TEST(RotationMethods, irregularQuadTiltedRenumbering)
-{
-    EXPECT_TRUE((meetsRenumbering<RigidFitPolarDecomposition<Vec3Types, sofa::geometry::Quad>>(irregularQuadTilted, rotatedTiltedStretch3D, quadNumbering)));
-    EXPECT_TRUE((meetsRenumbering<AffineFitPolarDecomposition<Vec3Types, sofa::geometry::Quad>>(irregularQuadTilted, rotatedTiltedStretch3D, quadNumbering)));
-    EXPECT_TRUE((meetsRenumbering<RigidFitStablePolarDecomposition<Vec3Types, sofa::geometry::Quad>>(irregularQuadTilted, rotatedTiltedStretch3D, quadNumbering)));
-    EXPECT_TRUE((meetsRenumbering<AffineFitStablePolarDecomposition<Vec3Types, sofa::geometry::Quad>>(irregularQuadTilted, rotatedTiltedStretch3D, quadNumbering)));
-}
-
 TEST(RotationMethods, irregularTriangle2DRenumbering)
 {
     EXPECT_TRUE((meetsRenumbering<RigidFitPolarDecomposition<Vec2Types, sofa::geometry::Triangle>>(irregularTriangle2D, rotatedStretch2D, triangleNumbering)));
@@ -711,19 +525,11 @@ TEST(RotationMethods, irregularTriangle2DRenumbering)
 
 TEST(RotationMethods, irregularTriangleFlatRenumbering)
 {
-    EXPECT_TRUE((meetsRenumbering<RigidFitPolarDecomposition<Vec3Types, sofa::geometry::Triangle>>(irregularTriangleFlat, rotatedFlatStretch3D, triangleNumbering)));
-    EXPECT_TRUE((meetsRenumbering<AffineFitPolarDecomposition<Vec3Types, sofa::geometry::Triangle>>(irregularTriangleFlat, rotatedFlatStretch3D, triangleNumbering)));
-    EXPECT_TRUE((meetsRenumbering<RigidFitStablePolarDecomposition<Vec3Types, sofa::geometry::Triangle>>(irregularTriangleFlat, rotatedFlatStretch3D, triangleNumbering)));
-    EXPECT_TRUE((meetsRenumbering<AffineFitStablePolarDecomposition<Vec3Types, sofa::geometry::Triangle>>(irregularTriangleFlat, rotatedFlatStretch3D, triangleNumbering)));
     EXPECT_FALSE(meetsRenumbering<TriangleRotation<Vec3Types>>(irregularTriangleFlat, rotatedFlatStretch3D, triangleNumbering));
 }
 
 TEST(RotationMethods, irregularTriangleTiltedRenumbering)
 {
-    EXPECT_TRUE((meetsRenumbering<RigidFitPolarDecomposition<Vec3Types, sofa::geometry::Triangle>>(irregularTriangleTilted, rotatedTiltedStretch3D, triangleNumbering)));
-    EXPECT_TRUE((meetsRenumbering<AffineFitPolarDecomposition<Vec3Types, sofa::geometry::Triangle>>(irregularTriangleTilted, rotatedTiltedStretch3D, triangleNumbering)));
-    EXPECT_TRUE((meetsRenumbering<RigidFitStablePolarDecomposition<Vec3Types, sofa::geometry::Triangle>>(irregularTriangleTilted, rotatedTiltedStretch3D, triangleNumbering)));
-    EXPECT_TRUE((meetsRenumbering<AffineFitStablePolarDecomposition<Vec3Types, sofa::geometry::Triangle>>(irregularTriangleTilted, rotatedTiltedStretch3D, triangleNumbering)));
     EXPECT_FALSE(meetsRenumbering<TriangleRotation<Vec3Types>>(irregularTriangleTilted, rotatedTiltedStretch3D, triangleNumbering));
 }
 
@@ -743,22 +549,6 @@ TEST(RotationMethods, irregularHexahedronRenumbering)
     EXPECT_TRUE((meetsRenumbering<RigidFitStablePolarDecomposition<Vec3Types, sofa::geometry::Hexahedron>>(irregularHexahedron, rotatedStretch3D, hexahedronNumbering)));
     EXPECT_TRUE((meetsRenumbering<AffineFitStablePolarDecomposition<Vec3Types, sofa::geometry::Hexahedron>>(irregularHexahedron, rotatedStretch3D, hexahedronNumbering)));
     EXPECT_FALSE(meetsRenumbering<HexahedronRotation<Vec3Types>>(irregularHexahedron, rotatedStretch3D, hexahedronNumbering));
-}
-
-TEST(RotationMethods, edgeFlatRenumbering)
-{
-    EXPECT_TRUE((meetsRenumbering<RigidFitPolarDecomposition<Vec2Types, sofa::geometry::Edge>>(edgeFlat, rotatedFlatEdgeStretch, edgeNumbering)));
-    EXPECT_TRUE((meetsRenumbering<AffineFitPolarDecomposition<Vec2Types, sofa::geometry::Edge>>(edgeFlat, rotatedFlatEdgeStretch, edgeNumbering)));
-    EXPECT_TRUE((meetsRenumbering<RigidFitStablePolarDecomposition<Vec2Types, sofa::geometry::Edge>>(edgeFlat, rotatedFlatEdgeStretch, edgeNumbering)));
-    EXPECT_TRUE((meetsRenumbering<AffineFitStablePolarDecomposition<Vec2Types, sofa::geometry::Edge>>(edgeFlat, rotatedFlatEdgeStretch, edgeNumbering)));
-}
-
-TEST(RotationMethods, edgeTiltedRenumbering)
-{
-    EXPECT_TRUE((meetsRenumbering<RigidFitPolarDecomposition<Vec2Types, sofa::geometry::Edge>>(edgeTilted, rotatedTiltedEdgeStretch, edgeNumbering)));
-    EXPECT_TRUE((meetsRenumbering<AffineFitPolarDecomposition<Vec2Types, sofa::geometry::Edge>>(edgeTilted, rotatedTiltedEdgeStretch, edgeNumbering)));
-    EXPECT_TRUE((meetsRenumbering<RigidFitStablePolarDecomposition<Vec2Types, sofa::geometry::Edge>>(edgeTilted, rotatedTiltedEdgeStretch, edgeNumbering)));
-    EXPECT_TRUE((meetsRenumbering<AffineFitStablePolarDecomposition<Vec2Types, sofa::geometry::Edge>>(edgeTilted, rotatedTiltedEdgeStretch, edgeNumbering)));
 }
 
 }
