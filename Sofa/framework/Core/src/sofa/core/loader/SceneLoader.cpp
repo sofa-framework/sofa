@@ -47,11 +47,6 @@ void SceneLoader::reinit()
 
 }
 
-bool SceneLoader::canLoad()
-{
-    return BaseLoader::canLoad();
-}
-
 } // namespace sofa::core::loader
 
 
