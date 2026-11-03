@@ -61,8 +61,7 @@ using sofa::simulation::mechanicalvisitor::MechanicalVOpVisitor;
 #include <sofa/simulation/mechanicalvisitor/MechanicalComputeGeometricStiffness.h>
 using sofa::simulation::mechanicalvisitor::MechanicalComputeGeometricStiffness;
 
-#include <sofa/simulation/mechanicalvisitor/MechanicalEndIntegrationVisitor.h>
-using sofa::simulation::mechanicalvisitor::MechanicalEndIntegrationVisitor;
+#include <sofa/simulation/mechanicalvisitor/MechanicalResetForceVisitor.h>
 
 namespace sofa::component::animationloop
 {
@@ -264,8 +263,8 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
         }
     }
 
-    MechanicalEndIntegrationVisitor endVisitor(params, dt);
-    node->execute(&endVisitor);
+    mechanicalvisitor::MechanicalResetForceVisitor resetForceVisitor(params, sofa::core::vec_id::write_access::externalForce);
+    node->execute(&resetForceVisitor);
 
     {
         SCOPED_TIMER("ProjectAndPropagateXAndV");
