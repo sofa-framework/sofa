@@ -40,9 +40,6 @@
 #include <sofa/simulation/task/ParallelForEach.h>
 #include <sofa/component/linearsystem/MappedMassMatrixObserver.inl>
 
-#include <sofa/simulation/mechanicalvisitor/MechanicalIdentityBlocksInJacobianVisitor.h>
-using sofa::simulation::mechanicalvisitor::MechanicalIdentityBlocksInJacobianVisitor;
-
 #include <sofa/simulation/mechanicalvisitor/MechanicalResetConstraintVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalResetConstraintVisitor;
 

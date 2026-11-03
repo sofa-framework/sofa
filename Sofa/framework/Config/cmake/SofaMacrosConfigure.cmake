@@ -152,7 +152,7 @@ macro(sofa_add_generic directory name type)
             if(${type} MATCHES "library")
                 set(ide_foldername "libraries")
             endif()
-            
+
             set_target_properties(${target} PROPERTIES FOLDER ${ide_foldername}) # IDE folder
             set_target_properties(${target} PROPERTIES DEBUG_POSTFIX "_d")
 
@@ -271,7 +271,6 @@ macro(sofa_fetch_dependency name)
             BUILD_COMMAND \"\"
             INSTALL_COMMAND \"\"
             TEST_COMMAND \"\"
-            GIT_CONFIG \"remote.origin.fetch=+refs/pull/*:refs/remotes/origin/pr/*\"
             GIT_SHALLOW ${GIT_SHALLOW_VALUE}
             )"
         )

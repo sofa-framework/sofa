@@ -296,9 +296,22 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::applyJ(
     const InVecDeriv& in = dataVecInVel[0]->getValue();
 
     if (!dataVecInRootVel.empty())
-        inroot = &dataVecInRootVel[0]->getValue();
+    {
+        if (auto* front = dataVecInRootVel.front(); front != nullptr)
+        {
+            inroot = &front->getValue();
+        }
+    }
 
-    applyJ(out,in, inroot);
+    if (inroot)
+    {
+        applyJ(out, in, inroot);
+    }
+    else
+    {
+        msg_error() << "Null pointer when trying to access root Data";
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+    }
 
     dataVecOutVel[0]->endEdit();
 }

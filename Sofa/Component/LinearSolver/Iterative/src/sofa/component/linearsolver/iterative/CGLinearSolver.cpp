@@ -46,10 +46,6 @@ inline void CGLinearSolver<component::linearsolver::GraphScatteredMatrix,compone
 template<> SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API
 inline void CGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::cgstep_alpha(const core::ExecParams* params, Vector& x, Vector& r, Vector& p, Vector& q, Real alpha)
 {
-#ifdef SOFA_NO_VMULTIOP // unoptimized version
-    x.peq(p,alpha);                 // x = x + alpha p
-    r.peq(q,-alpha);                // r = r - alpha q
-#else // single-operation optimization
     typedef sofa::core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
     VMultiOp ops;
     ops.resize(2);
@@ -60,7 +56,6 @@ inline void CGLinearSolver<component::linearsolver::GraphScatteredMatrix,compone
     ops[1].second.push_back(std::make_pair((MultiVecDerivId)r,1.0));
     ops[1].second.push_back(std::make_pair((MultiVecDerivId)q,-alpha));
     this->executeVisitor(MechanicalVMultiOpVisitor(params, ops));
-#endif
 }
 using namespace sofa::linearalgebra;
 

@@ -1,0 +1,48 @@
+name: PR check based on previous PR
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - labeled
+      - unlabeled
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+
+  check_based_on_previous_pr:
+    name: Check "based on previous PR" label
+    runs-on: ubuntu-latest
+    if: ${{ github.repository_owner == 'sofa-framework' }}
+
+    steps:
+      - name: Check label pr based on previous PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // Get PR info: id and labels
+            const prNumber = context.payload.pull_request.number;
+            const labels = context.payload.pull_request.labels.map(label => label.name);
+            const found = labels.includes("pr: based on previous PR");
+
+            // Make the action step fail
+            if (found) {
+              
+              if (context.payload.action === 'labeled' && context.payload.label?.name === 'pr: based on previous PR') {
+
+                const comment = 'This PR should not be merged until the branches it is based on have been merged.';
+                await github.rest.issues.createComment({
+                  issue_number: prNumber,
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  body: comment
+                });
+              }
+
+              core.setFailed("Merge blocked: PR has label 'pr: based on previous PR'");
+            }
+

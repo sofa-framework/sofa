@@ -159,7 +159,8 @@ std::istream& operator>>(std::istream& i, sofa::type::ClampedScalar<T>& s)
     return i;
 }
 
-#if !defined(SOFA_TYPE_CLAMPEDSCALAR_CPP)
+// See Mat.h: on Windows, dllimport extern templates prevent inlining of the header-defined members.
+#if !defined(SOFA_TYPE_CLAMPEDSCALAR_CPP) && !defined(_WIN32)
 extern template class SOFA_TYPE_API ClampedScalar<double>;
 extern template class SOFA_TYPE_API ClampedScalar<float>;
 #endif

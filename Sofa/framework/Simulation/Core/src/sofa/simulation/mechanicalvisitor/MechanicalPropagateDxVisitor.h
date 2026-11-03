@@ -22,6 +22,9 @@
 #pragma once
 
 #include <sofa/simulation/MechanicalVisitor.h>
+#if !defined(SOFA_SIMULATION_MECHANICALVISITOR_MECHANICALPROPAGATEDXVISITOR_CPP)
+SOFA_HEADER_DEPRECATED_NOT_REPLACED("v26.12", "v27.06")
+#endif
 
 namespace sofa::simulation::mechanicalvisitor
 {
@@ -31,7 +34,7 @@ This action does not modify the state (i.e. positions and velocities) of the obj
 It is typically applied before a MechanicalComputeDfVisitor, in order to compute the df corresponding to a given dx (i.e. apply stiffness).
 Dx is propagated to all the layers through the mappings.
 */
-class SOFA_SIMULATION_CORE_API MechanicalPropagateDxVisitor : public MechanicalVisitor
+class SOFA_SIMULATION_CORE_API SOFA_ATTRIBUTE_DEPRECATED__MECHANICALPROPAGATEDXVISITOR() MechanicalPropagateDxVisitor : public MechanicalVisitor
 {
 public:
     sofa::core::MultiVecDerivId dx;

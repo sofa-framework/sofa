@@ -22,6 +22,7 @@
 #pragma once
 #include <sofa/component/linearsolver/iterative/config.h>
 
+#include <sofa/core/behavior/IterativeSolver.h>
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/component/linearsolver/iterative/MatrixLinearSolver.h>
 #include <sofa/helper/map.h>
@@ -33,26 +34,25 @@ namespace sofa::component::linearsolver::iterative
 
 /// Linear system solver using the preconditioned conjugate gradient iterative algorithm
 template<class TMatrix, class TVector>
-class PCGLinearSolver : public sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector>
+class PCGLinearSolver : public sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector>,
+                         public sofa::core::behavior::IterativeSolver
 {
 
 public:
 
-    SOFA_CLASS(
+    SOFA_CLASS2(
         SOFA_TEMPLATE2(PCGLinearSolver,TMatrix,TVector),
-        SOFA_TEMPLATE2(sofa::component::linearsolver::MatrixLinearSolver, TMatrix, TVector));
+        SOFA_TEMPLATE2(sofa::component::linearsolver::MatrixLinearSolver, TMatrix, TVector),
+        sofa::core::behavior::IterativeSolver);
 
     using Matrix = TMatrix;
     using Vector = TVector;
     using Real = typename Matrix::Real;
     using Inherit = sofa::component::linearsolver::MatrixLinearSolver<TMatrix, TVector>;
 
-    Data<unsigned> d_maxIter; ///< Maximum number of iterations after which the iterative descent of the Conjugate Gradient must stop
-    Data<Real> d_tolerance; ///< Desired accuracy of the Conjugate Gradient solution evaluating: |r|²/|b|² (ratio of current residual norm over initial residual norm)
     Data<bool> d_use_precond; ///< Use a preconditioner
     SingleLink<PCGLinearSolver, sofa::core::behavior::LinearSolver, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_preconditioner; ///< Link towards the linear solver used to precondition the conjugate gradient
     core::objectmodel::lifecycle::DeprecatedData d_update_step; ///< Number of steps before the next refresh of preconditioners
-    Data<std::map < std::string, sofa::type::vector<Real> > > d_graph; ///< Graph of residuals at each iteration
 
     void solve (Matrix& M, Vector& x, Vector& b) override;
     void init() override;

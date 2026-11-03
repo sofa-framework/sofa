@@ -23,6 +23,7 @@
 #include <sofa/component/linearsolver/iterative/config.h>
 
 #include <sofa/component/linearsolver/iterative/MatrixLinearSolver.h>
+#include <sofa/core/behavior/IterativeSolver.h>
 #include <sofa/helper/map.h>
 
 #include <cmath>
@@ -35,18 +36,17 @@ namespace sofa::component::linearsolver::iterative
 /// @author Matthieu Nesme
 /// @date 2013
 template<class TMatrix, class TVector>
-class MinResLinearSolver : public sofa::component::linearsolver::MatrixLinearSolver<TMatrix, TVector>
+class MinResLinearSolver : public sofa::component::linearsolver::MatrixLinearSolver<TMatrix, TVector>,
+                            public sofa::core::behavior::IterativeSolver
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(MinResLinearSolver,TMatrix,TVector),SOFA_TEMPLATE2(sofa::component::linearsolver::MatrixLinearSolver,TMatrix,TVector));
+    SOFA_CLASS2(SOFA_TEMPLATE2(MinResLinearSolver,TMatrix,TVector),
+                SOFA_TEMPLATE2(sofa::component::linearsolver::MatrixLinearSolver,TMatrix,TVector),
+                sofa::core::behavior::IterativeSolver);
 
     typedef TMatrix Matrix;
     typedef TVector Vector;
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
-    Data<unsigned> f_maxIter; ///< maximum number of iterations of the Conjugate Gradient solution
-    Data<double> f_tolerance; ///< desired precision of the Conjugate Gradient Solution (ratio of current residual norm over initial residual norm)
-
-    Data<std::map < std::string, sofa::type::vector<SReal> > > f_graph; ///< Graph of residuals at each iteration
 
 protected:
     MinResLinearSolver();

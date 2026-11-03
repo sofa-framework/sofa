@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
+#define SOFA_SIMULATION_MECHANICALVISITOR_MECHANICALPROPAGATEDXANDRESETFORCEVISITOR_CPP
 #include <sofa/simulation/mechanicalvisitor/MechanicalPropagateDxAndResetForceVisitor.h>
 
 namespace sofa::simulation::mechanicalvisitor
@@ -27,7 +27,7 @@ namespace sofa::simulation::mechanicalvisitor
 
 Visitor::Result MechanicalPropagateDxAndResetForceVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
 {
-    mm->resetForce(this->params, f.getId(mm));
+    mm->resetVec(this->params, f.getId(mm));
     return RESULT_CONTINUE;
 }
 
@@ -40,7 +40,7 @@ Visitor::Result MechanicalPropagateDxAndResetForceVisitor::fwdMechanicalMapping(
 
 Visitor::Result MechanicalPropagateDxAndResetForceVisitor::fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
 {
-    mm->resetForce(this->params, f.getId(mm));
+    mm->resetVec(this->params, f.getId(mm));
     return RESULT_CONTINUE;
 }
 

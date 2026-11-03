@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
+#define SOFA_SIMULATION_MECHANICALVISITOR_MECHANICALGETMOMENTUMVISITOR_CPP
 #include <sofa/simulation/mechanicalvisitor/MechanicalGetMomentumVisitor.h>
 
 #include <sofa/core/behavior/BaseMass.h>

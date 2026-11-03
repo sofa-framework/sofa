@@ -32,22 +32,22 @@ using sofa::testing::NumericTest;
 #include <sofa/linearalgebra/EigenSparseMatrix.h>
 #include <sofa/component/statecontainer/MechanicalObject.h>
 #include <sofa/simulation/Simulation.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 #include <sofa/core/MultiMapping.h>
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/Multi2Mapping.inl>
 
+#include <SceneCreator/SceneCreator.h>
 
 namespace sofa {
 namespace {
 using namespace core;
 using namespace component;
-using defaulttype::Vec;
-using defaulttype::Mat;
+using type::Vec;
+using type::Mat;
 using sofa::type::vector;
-typedef std::size_t Index;
 
 /**  Test suite for Multi2Mapping.
   */
@@ -99,10 +99,10 @@ struct Multi2Mapping_test : public BaseSimulationTest, NumericTest<typename _Mul
 
     typedef core::Multi2Mapping <In1Type, In2Type, OutType> Multi2Mapping;
 
-    typedef component::linearsolver::EigenSparseMatrix<In1Type, OutType> SparseJMatrixEigen1;
-    typedef component::linearsolver::EigenSparseMatrix<In2Type, OutType> SparseJMatrixEigen2;
-    typedef linearsolver::EigenSparseMatrix<In1Type, In2Type> SparseKMatrixEigen1;
-    typedef linearsolver::EigenSparseMatrix<In2Type, In2Type> SparseKMatrixEigen2;
+    typedef sofa::linearalgebra::EigenSparseMatrix<In1Type, OutType> SparseJMatrixEigen1;
+    typedef sofa::linearalgebra::EigenSparseMatrix<In2Type, OutType> SparseJMatrixEigen2;
+    typedef sofa::linearalgebra::EigenSparseMatrix<In1Type, In2Type> SparseKMatrixEigen1;
+    typedef sofa::linearalgebra::EigenSparseMatrix<In2Type, In2Type> SparseKMatrixEigen2;
 
     Multi2Mapping* mapping; ///< the mapping to be tested
     vector<In1DOFs*>  in1Dofs; ///< mapping input
@@ -203,7 +203,7 @@ struct Multi2Mapping_test : public BaseSimulationTest, NumericTest<typename _Mul
         }
 
         /// Init
-        sofa::simulation::MainSimulation::getSimulation()->init(root);
+        sofa::simulation::node::init(root);
 
         /// Apply the mapping
         // --- Use of the method apply

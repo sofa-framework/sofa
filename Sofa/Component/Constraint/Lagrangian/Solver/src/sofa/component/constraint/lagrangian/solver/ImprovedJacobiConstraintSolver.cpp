@@ -43,6 +43,7 @@ ImprovedJacobiConstraintSolver::ImprovedJacobiConstraintSolver()
 
 void ImprovedJacobiConstraintSolver::doSolve(GenericConstraintProblem * problem , SReal timeout)
 {
+    SOFA_UNUSED(timeout);
     SCOPED_TIMER_VARNAME(gaussSeidelTimer, "ImprovedJacobiConstraintSolver");
 
 

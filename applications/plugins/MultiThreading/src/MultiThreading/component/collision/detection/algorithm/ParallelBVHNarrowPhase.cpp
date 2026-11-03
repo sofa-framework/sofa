@@ -47,6 +47,8 @@ using sofa::helper::ScopedAdvancedTimer;
 ParallelBVHNarrowPhase::ParallelBVHNarrowPhase()
 {}
 
+ParallelBVHNarrowPhase::~ParallelBVHNarrowPhase() = default;
+
 void ParallelBVHNarrowPhase::init()
 {
     NarrowPhaseDetection::init();

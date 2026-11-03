@@ -25,6 +25,10 @@
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/type/Vec.h>
 
+#if !defined(SOFA_SIMULATION_MECHANICALVISITOR_MECHANICALGETMOMENTUMVISITOR_CPP)
+SOFA_HEADER_DEPRECATED_NOT_REPLACED("v26.12", "v27.06")
+#endif
+
 namespace sofa::simulation::mechanicalvisitor
 {
 
@@ -32,7 +36,7 @@ namespace sofa::simulation::mechanicalvisitor
 ///
 /// @author Matthieu Nesme, 2015
 ///
-class SOFA_SIMULATION_CORE_API MechanicalGetMomentumVisitor : public sofa::simulation::MechanicalVisitor
+class SOFA_SIMULATION_CORE_API SOFA_ATTRIBUTE_DEPRECATED__MECHANICALGETMOMENTUMVISITOR() MechanicalGetMomentumVisitor : public sofa::simulation::MechanicalVisitor
 {
     type::Vec6 m_momenta;
 

@@ -66,7 +66,7 @@ on:
 jobs:
   # Filter build handling : push in master, commits in PR, comments in PR and dispatch
   filter_build:
-    runs-on: ubuntu-latest
+    runs-on: launcher
     if: ${{ github.repository_owner == 'sofa-framework' }}
     permissions:
       contents: read
@@ -160,16 +160,6 @@ jobs:
               echo 'SH_BUILDER_OS=[]' >> $GITHUB_ENV
           fi
 
-      - name: Set up python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-
-      - name: Install pip packages
-        run: |
-          pip install python-graphql-client
-          pip install requests
-
       - name: Check out code
         uses: actions/checkout@v5
         with:
@@ -199,7 +189,7 @@ jobs:
 
           # Trigger the Build action
           # Warning ! This script also changes ENV variables
-          python ci/scripts/checkPRInfoBeforeBuild.py
+          python3 ci/scripts/checkPRInfoBeforeBuild.py
 
       - name: Export environment variables as outputs
         id: export-vars
