@@ -30,6 +30,7 @@
 using sofa::simulation::mechanicalvisitor::MechanicalGetNonDiagonalMassesCountVisitor;
 #include <sofa/simulation/mechanicalvisitor/MechanicalVOpVisitor.h>
 
+
 namespace sofa::simulation::integrationscheme
 {
 

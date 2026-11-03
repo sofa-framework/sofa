@@ -19,6 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+// These deprecated visitors are still used internally: do not warn about their headers
+#define SOFA_SIMULATION_CORE_MECHANICALMULTIVECTORTOBASEVECTORVISITOR_CPP
+#define SOFA_SIMULATION_CORE_MECHANICALMULTIVECTORFROMBASEVECTORVISITOR_CPP
+#define SOFA_SIMULATION_CORE_MECHANICALMULTIVECTORPEQBASEVECTORVISITOR_CPP
+#define SOFA_SIMULATION_CORE_MECHANICALPROPAGATEONLYPOSITIONANDRESETFORCEVISITOR_CPP
+#define SOFA_SIMULATION_CORE_MECHANICALCOMPUTECONTACTFORCEVISITOR_CPP
+#define SOFA_SIMULATION_CORE_MECHANICALADDMBK_TOMATRIXVISITOR_CPP
+#define SOFA_SIMULATION_CORE_MECHANICALAPPLYPROJECTIVECONSTRAINT_TOMATRIXVISITOR_CPP
 #include <sofa/simulation/MechanicalOperations.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalMultiVectorToBaseVectorVisitor.h>
