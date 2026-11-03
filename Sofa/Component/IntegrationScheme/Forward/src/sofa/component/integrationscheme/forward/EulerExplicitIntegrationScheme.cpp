@@ -29,10 +29,8 @@
 #include <sofa/simulation/MappingGraph.h>
 #include <sofa/simulation/MechanicalOperations.h>
 #include <sofa/simulation/VectorOperations.h>
-#include <sofa/simulation/mechanicalvisitor/MechanicalGetNonDiagonalMassesCountVisitor.h>
 
 #include "sofa/simulation/integrationscheme/ImplicitIntegrationScheme.h"
-using sofa::simulation::mechanicalvisitor::MechanicalGetNonDiagonalMassesCountVisitor;
 
 namespace sofa::component::integrationscheme::forward
 {

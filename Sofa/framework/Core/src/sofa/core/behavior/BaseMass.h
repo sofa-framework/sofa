@@ -75,7 +75,7 @@ public:
     virtual SReal getPotentialEnergy(const MechanicalParams* mparams, ConstMultiVecCoordId xId) const = 0;
 
     SOFA_ATTRIBUTE_DEPRECATED__GETPOTENTIALENERGY_OVERLOAD()
-    virtual SReal getPotentialEnergy(const MechanicalParams* mparams = mechanicalparams::defaultInstance()) const final;
+    SReal getPotentialEnergy(const MechanicalParams* mparams = mechanicalparams::defaultInstance()) const;
 
     /// (Mv,xMv+Iw) (linear and angular momenta against world origin)
     virtual type::Vec6 getMomentum(const MechanicalParams* mparams = mechanicalparams::defaultInstance()) const = 0;

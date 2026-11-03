@@ -117,7 +117,7 @@ public:
     /// with $r$ being constant in term of $x$ and $k$ the integration factor returned by this function.
     ///
     /// This method is used to compute the compliance for contact corrections.
-    virtual SReal getVelocityIntegrationFactor() const = 0;
+    SReal getVelocityIntegrationFactor() const override = 0;
 
     /// The integration scheme solves a linear system. In this linear system the unknown has a unit.
     /// It can be the position, velocity or acceleration increase. In any case, this unknown need then
@@ -131,7 +131,7 @@ public:
     /// with $r$ being constant in term of $x$ and $k$ the integration factor returned by this function.
     ///
     /// This method is used to compute the compliance for contact corrections.
-    virtual SReal getPositionIntegrationFactor() const = 0;
+    SReal getPositionIntegrationFactor() const override = 0;
 
     Data<SReal> d_rayleighStiffness; ///< Rayleigh damping coefficient related to stiffness, > 0
     Data<SReal> d_rayleighMass; ///< Rayleigh damping coefficient related to mass, > 0

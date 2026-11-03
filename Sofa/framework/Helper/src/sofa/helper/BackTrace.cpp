@@ -190,8 +190,6 @@ static std::string SigDescription(int sig)
         return "SIGTERM: a termination request was sent to the program";
         break;
     }
-
-    return "Unknown signal";
 }
 
 void BackTrace::sig(int sig)
