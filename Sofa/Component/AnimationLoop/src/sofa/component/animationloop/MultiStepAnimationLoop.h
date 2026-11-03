@@ -38,9 +38,9 @@ protected:
     MultiStepAnimationLoop();
 
     ~MultiStepAnimationLoop() override;
+    
+    void doStep (const sofa::core::ExecParams* params, SReal dt) override;
 public:
-    void step (const sofa::core::ExecParams* params, SReal dt) override;
-
     Data<int> d_collisionSteps; ///< number of collision steps between each frame rendering
     Data<int> d_integrationSteps; ///< number of integration steps between each collision detection
 };

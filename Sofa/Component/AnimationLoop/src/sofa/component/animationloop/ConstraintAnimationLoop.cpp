@@ -483,7 +483,7 @@ void ConstraintAnimationLoop::correctiveMotion(const core::ExecParams* params, s
     }
 }
 
-void ConstraintAnimationLoop::step ( const core::ExecParams* params, SReal dt )
+void ConstraintAnimationLoop::doStep ( const core::ExecParams* params, SReal dt )
 {
     auto node = dynamic_cast<sofa::simulation::Node*>(this->l_node.get());
 
