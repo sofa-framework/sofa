@@ -103,6 +103,8 @@ void MixedInteractionForceField<TDataTypes1, TDataTypes2>::doAddDForce(
     const MechanicalParams* mparams, const AddDForceVectors<DataTypes1>& vectors1,
     const AddDForceVectors<DataTypes2>& vectors2)
 {
+    // compatibility with legacy `addDForce`.
+    addDForce(mparams, vectors1.df, vectors2.df, vectors1.dx, vectors2.dx);
 }
 
 template<class DataTypes1, class DataTypes2>
