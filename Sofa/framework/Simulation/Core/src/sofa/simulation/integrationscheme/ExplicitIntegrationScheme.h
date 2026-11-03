@@ -54,6 +54,11 @@ public:
      */
     virtual void integrate(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override final;
 
+    bool isImplicit() const final
+    {
+        return false;
+    }
+
 protected:
     std::shared_ptr<sofa::simulation::common::VectorOperations > m_vop;
     std::unique_ptr<sofa::simulation::common::MappingGraphMechanicalOperations> m_mop;

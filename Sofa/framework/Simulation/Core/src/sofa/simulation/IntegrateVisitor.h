@@ -21,9 +21,10 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/simulation/Visitor.h>
-#include <sofa/core/behavior/BaseIntegrationScheme.h>
 #include <sofa/core/MultiVecId.h>
+#include <sofa/core/behavior/BaseIntegrationScheme.h>
+#include <sofa/simulation/Visitor.h>
+#include <sofa/simulation/integrationscheme/ImplicitIntegrationScheme.h>
 #include <sofa/simulation/task/CpuTask.h>
 
 #include <list>
@@ -42,6 +43,7 @@ public:
 
     enum TaskType
     {
+        NONE,
         SETUP_INTEGRATION_STEP,
         COMPUTE_LHS,
         COMPUTE_RHS,
@@ -59,13 +61,10 @@ public:
                  SReal alpha,
                  sofa::core::MultiVecCoordId X = sofa::core::vec_id::write_access::position,
                  sofa::core::MultiVecDerivId V = sofa::core::vec_id::write_access::velocity,
-                 bool _parallelSolve = false,
+                 bool _parallelExecution = false,
                  bool computeForceIsolatedInteractionForceFields = false);
 
-    IntegrateVisitor(const sofa::core::ExecParams* params, SReal _dt, bool free, bool _parallelSolve = false, bool computeForceIsolatedInteractionForceFields = false);
 
-
-    virtual void processSolver(simulation::Node* node,  sofa::core::behavior::BaseIntegrationScheme* b);
     void fwdInteractionForceField(Node* node, core::behavior::BaseInteractionForceField* forceField);
 
     /// Specify whether this action can be parallelized.
@@ -80,6 +79,49 @@ public:
     Result processNodeTopDown(simulation::Node* node) override;
     void processNodeBottomUp(simulation::Node* /*node*/) override;
 
+    void parallelWaitForResult();
+
+    SReal getResult() const
+    {
+        return m_result;
+    }
+
+    void setFirstIteration(bool firstStep)
+    {
+        m_firstStep = firstStep;
+    }
+
+    void setAlpha(SReal alpha)
+    {
+        m_alpha = alpha;
+    }
+
+    void setDt(SReal dt)
+    {
+        m_dt = dt;
+    }
+
+    void setTaskType(TaskType taskType)
+    {
+        m_taskType = taskType;
+    }
+
+    bool isExecutionParallel() const
+    {
+        return m_parallelExecution;
+    }
+
+
+    static SReal s_doProcessIS(sofa::core::behavior::BaseIntegrationScheme* integrationScheme,
+                                 const sofa::core::ExecParams* params,
+                                 const sofa::simulation::Node* node,
+                                 SReal dt,
+                                 TaskType taskType,
+                                 bool firstStep = true,
+                                 SReal alpha = 1.0,
+                                 sofa::core::MultiVecCoordId X = sofa::core::vec_id::write_access::position,
+                                 sofa::core::MultiVecDerivId V = sofa::core::vec_id::write_access::velocity);
+
 
 protected:
     SReal m_dt;
@@ -89,26 +131,17 @@ protected:
     sofa::core::MultiVecCoordId m_xId;
     sofa::core::MultiVecDerivId m_vId;
 
+    SReal m_result;
 
-    bool m_parallelSolve {false };
+    bool m_parallelExecution {false };
     bool m_computeForceIsolatedInteractionForceFields { false };
 
-    /// Container for the parallel tasks
     std::list<IntegrateVisitorTask> m_tasks;
-
-    /// Status for the parallel tasks
     sofa::simulation::CpuTask::Status m_status;
 
-    /// Function called if the solvers run sequentially
-    void sequentialSolve(simulation::Node* node);
+    void sequentialExecute(simulation::Node* node);
+    void parallelExecute(simulation::Node* node);
 
-    /// Function called if the solvers run concurrently
-    /// Solving tasks are added to the list of tasks and start to run.
-    /// However, there is no check that the tasks finished. This is
-    /// done later, once all nodes have been traversed.
-    void parallelSolve(simulation::Node* node);
-
-    /// Initialize the task scheduler if it is not done already
     void initializeTaskScheduler();
 };
 
@@ -117,54 +150,49 @@ class IntegrateVisitorTask : public sofa::simulation::CpuTask
 {
 public:
     IntegrateVisitorTask(sofa::simulation::CpuTask::Status* status,
-                      sofa::core::behavior::BaseIntegrationScheme* IntegrationScheme,
-                     const sofa::core::ExecParams* params,
-                     SReal dt,
-                     sofa::core::MultiVecCoordId x,
-                     sofa::core::MultiVecDerivId v)
+                         std::function<SReal()> task)
     : sofa::simulation::CpuTask(status)
-    , m_solver(IntegrationScheme)
-    , m_execParams(params)
-    , m_dt(dt)
-    , m_x(x)
-    , m_v(v)
+    , m_task(task)
     {}
 
     ~IntegrateVisitorTask() override = default;
-    sofa::simulation::Task::MemoryAlloc run() final;
+    sofa::simulation::Task::MemoryAlloc run() final
+    {
+        m_result = m_task();
+        return Task::Stack;
+    }
+
+    SReal getResult() const
+    {
+        return m_result;
+    }
+
 
 private:
-     sofa::core::behavior::BaseIntegrationScheme* m_solver {nullptr};
-    const sofa::core::ExecParams* m_execParams {nullptr};
-    SReal m_dt;
-    sofa::core::MultiVecCoordId m_x;
-    sofa::core::MultiVecDerivId m_v;
+    std::function<SReal()> m_task;
+    SReal m_result;
 };
 
 class IntegrationHelper
 {
 public:
 
-    IntegrateVisitor(const sofa::core::ExecParams* params,
-                 SReal _dt,
+    IntegrationHelper(const sofa::core::ExecParams* params,
                  sofa::core::MultiVecCoordId X = sofa::core::vec_id::write_access::position,
                  sofa::core::MultiVecDerivId V = sofa::core::vec_id::write_access::velocity,
-                 bool _parallelSolve = false,
+                 bool parallelSolve = false,
                  bool computeForceIsolatedInteractionForceFields = false);
 
-    void setupIntegrationStep();
-    SReal evaluateResidual();
-    void computeLHS(bool firstIteration);
-    void computeRHS(bool firstIteration);
-    void solveLinearEquation();
-    void updateStatesFromLinearSolution(SReal alpha, bool firstIteration = false);
+    void setupIntegrationStep(sofa::simulation::Node * node);
+    SReal evaluateResidual(sofa::simulation::Node * node);
+    void computeLHS(sofa::simulation::Node * node, bool firstIteration);
+    void computeRHS(sofa::simulation::Node * node, bool firstIteration);
+    void solveLinearEquation(sofa::simulation::Node * node);
+    void updateStatesFromLinearSolution(sofa::simulation::Node * node, SReal alpha, bool firstIteration = false);
 
 
-    SReal m_dt;
-    core::MultiVecCoordId m_xId;
-    core::MultiVecDerivId m_vId;
-    bool m_parallelSolve;
-    bool m_computeForceIsolatedInteractionForceFields;
+private:
+    IntegrateVisitor m_visitor;
 };
 
 } // namespace sofa

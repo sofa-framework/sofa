@@ -22,7 +22,6 @@
 #include <sofa/simulation/IntegrateVisitor.h>
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/simulation/Node.h>
-#include <sofa/core/behavior/BaseIntegrationScheme.h>
 #include <sofa/simulation/task/TaskScheduler.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
 #include <sofa/simulation/task/MainTaskSchedulerFactory.h>
@@ -32,11 +31,65 @@
 namespace sofa::simulation
 {
 
-void IntegrateVisitor::processSolver(simulation::Node* node,  sofa::core::behavior::BaseIntegrationScheme* s)
+SReal IntegrateVisitor::s_doProcessIS(sofa::core::behavior::BaseIntegrationScheme* integrationScheme,
+                                 const sofa::core::ExecParams* params,
+                                 const sofa::simulation::Node* node,
+                                 SReal dt,
+                                 TaskType taskType,
+                                 bool firstStep,
+                                 SReal alpha,
+                                 sofa::core::MultiVecCoordId X,
+                                 sofa::core::MultiVecDerivId V)
 {
     helper::ScopedAdvancedTimer timer("Mechanical",node);
-    s->integrate(params, dt, x, v);
-}
+
+    if (!integrationScheme->isImplicit())
+        return 0;
+
+    auto implicitIntegrationScheme = static_cast<sofa::simulation::integrationscheme::ImplicitIntegrationScheme*>(integrationScheme);
+
+
+    switch (taskType)
+    {
+        case SETUP_INTEGRATION_STEP:
+        {
+            implicitIntegrationScheme->setupIntegrationStep(params, dt, X, V);
+            return 0;
+        }
+        case COMPUTE_LHS:
+        {
+            implicitIntegrationScheme->computeLHS(firstStep);
+            return 0;
+        }
+        case COMPUTE_RHS:
+        {
+            implicitIntegrationScheme->computeRHS(firstStep);
+            return 0;
+        }
+        case EVALUATE_RESIDUAL:
+        {
+            const SReal res = implicitIntegrationScheme->evaluateResidual();
+            return res;
+        }
+        case SOLVE_LINEAR_EQUATION:
+        {
+            implicitIntegrationScheme->solveLinearEquation();
+            return 0;
+        }
+        case UPDATE_STATE_FROM_LINEAR_SOLUTION:
+        {
+            implicitIntegrationScheme->updateStatesFromLinearSolution(alpha,firstStep);
+            return 0;
+        }
+        case FINALIZE_INTEGRATION_STEP:
+        {
+            implicitIntegrationScheme->finalizeIntegrationStep();
+            return 0;
+        }
+        default:
+            return 0;
+    }
+};
 
 void IntegrateVisitor::fwdInteractionForceField(Node* node, core::behavior::BaseInteractionForceField* forceField)
 {
@@ -44,7 +97,7 @@ void IntegrateVisitor::fwdInteractionForceField(Node* node, core::behavior::Base
 
     const core::MultiVecDerivId ffId = core::vec_id::write_access::externalForce;
     core::MechanicalParams mparams;
-    mparams.setDt(dt);
+    mparams.setDt(m_dt);
     forceField->addForce(&mparams, ffId);
 }
 
@@ -52,18 +105,18 @@ Visitor::Result IntegrateVisitor::processNodeTopDown(simulation::Node* node)
 {
     if (! node->integrationScheme.empty())
     {
-        if (m_parallelSolve)
+        if (m_parallelExecution)
         {
-            parallelSolve(node);
+            parallelExecute(node);
         }
         else
         {
-            sequentialSolve(node);
+            sequentialExecute(node);
         }
         return RESULT_PRUNE;
     }
 
-    if (m_computeForceIsolatedInteractionForceFields)
+    if (m_computeForceIsolatedInteractionForceFields and m_taskType == COMPUTE_RHS)
     {
         for_each(this, node, node->interactionForceField, &IntegrateVisitor::fwdInteractionForceField);
     }
@@ -87,19 +140,9 @@ void IntegrateVisitor::processNodeBottomUp(simulation::Node*)
     m_tasks.clear();
 }
 
-void IntegrateVisitor::setDt(SReal _dt)
-{
-    dt = _dt;
-}
-
-SReal IntegrateVisitor::getDt() const
-{
-    return dt;
-}
-
 IntegrateVisitor::IntegrateVisitor(const sofa::core::ExecParams* params, SReal _dt, TaskType taskType,
                  bool firstStep, SReal alpha, sofa::core::MultiVecCoordId X, sofa::core::MultiVecDerivId V,
-                 bool _parallelSolve, bool computeForceIsolatedInteractionForceFields)
+                 bool _parallelExecution, bool computeForceIsolatedInteractionForceFields)
 
         : Visitor(params)
         , m_dt(_dt)
@@ -108,50 +151,46 @@ IntegrateVisitor::IntegrateVisitor(const sofa::core::ExecParams* params, SReal _
         , m_alpha(alpha)
         , m_xId(X)
         , m_vId(V)
-        , m_parallelSolve(_parallelSolve)
+        , m_parallelExecution(_parallelExecution)
         , m_computeForceIsolatedInteractionForceFields(computeForceIsolatedInteractionForceFields)
 {
-    if (m_parallelSolve)
+    if (m_parallelExecution)
     {
         initializeTaskScheduler();
     }
 }
 
-IntegrateVisitor::IntegrateVisitor(const sofa::core::ExecParams* params, SReal _dt, bool free, bool _parallelSolve, bool computeForceIsolatedInteractionForceFields)
-: Visitor(params), dt(_dt), m_parallelSolve(_parallelSolve), m_computeForceIsolatedInteractionForceFields(computeForceIsolatedInteractionForceFields)
-{
-    if(free)
-    {
-        m_xId = sofa::core::vec_id::write_access::freePosition;
-        m_vId = sofa::core::vec_id::write_access::freeVelocity;
-    }
-    else
-    {
-        m_xId = sofa::core::vec_id::write_access::position;
-        m_vId = sofa::core::vec_id::write_access::velocity;
-    }
 
-    if (m_parallelSolve)
+void IntegrateVisitor::sequentialExecute(simulation::Node* node)
+{
+    for (auto* solver : node->integrationScheme)
     {
-        initializeTaskScheduler();
+        m_result += s_doProcessIS(solver, this->params, node, this->m_dt, this->m_taskType, this->m_firstStep, this->m_alpha, this->m_xId, this->m_vId );
     }
 }
 
-void IntegrateVisitor::sequentialSolve(simulation::Node* node)
-{
-    for_each(this, node, node->integrationScheme, &IntegrateVisitor::processSolver);
-}
-
-void IntegrateVisitor::parallelSolve(simulation::Node* node)
+void IntegrateVisitor::parallelExecute(simulation::Node* node)
 {
     auto* taskScheduler = sofa::simulation::MainTaskSchedulerFactory::createInRegistry();
     assert(taskScheduler != nullptr);
 
     for (auto* solver : node->integrationScheme)
     {
-        m_tasks.emplace_back(&m_status, solver, params, m_dt, m_xId, m_vId);
+        m_tasks.emplace_back(&m_status, [this, solver, node]()->SReal {return s_doProcessIS(solver, this->params, node, this->m_dt, this->m_taskType, this->m_firstStep, this->m_alpha, this->m_xId, this->m_vId );});
         taskScheduler->addTask(&m_tasks.back());
     }
+}
+
+void IntegrateVisitor::parallelWaitForResult()
+{
+    auto* taskScheduler = sofa::simulation::MainTaskSchedulerFactory::createInRegistry();
+    assert(taskScheduler != nullptr);
+    taskScheduler->workUntilDone(&m_status);
+    for (auto& task : m_tasks)
+    {
+        m_result += task.getResult();
+    }
+    m_tasks.clear();
 }
 
 void IntegrateVisitor::initializeTaskScheduler()
@@ -164,11 +203,81 @@ void IntegrateVisitor::initializeTaskScheduler()
     }
 }
 
-sofa::simulation::Task::MemoryAlloc IntegrateVisitorTask::run()
+
+IntegrationHelper::IntegrationHelper(const sofa::core::ExecParams* params,
+                 sofa::core::MultiVecCoordId X ,
+                 sofa::core::MultiVecDerivId V ,
+                 bool parallelExecution ,
+                 bool computeForceIsolatedInteractionForceFields )
+    : m_visitor(params, 0.0, IntegrateVisitor::TaskType::NONE, true, 1.0, X, V, parallelExecution, computeForceIsolatedInteractionForceFields)
+{}
+
+void  IntegrationHelper::setupIntegrationStep(sofa::simulation::Node * node)
 {
-    m_solver->integrate(m_execParams, m_dt, m_x, m_v);
-    return Task::Stack;
+    helper::ScopedAdvancedTimer timer("SetupIntegrationStep");
+    m_visitor.setDt(node->getDt());
+    m_visitor.setTaskType(IntegrateVisitor::TaskType::SETUP_INTEGRATION_STEP);
+    m_visitor.execute(node);
+    if (m_visitor.isExecutionParallel())
+        m_visitor.parallelWaitForResult();
 }
+
+SReal IntegrationHelper::evaluateResidual(sofa::simulation::Node * node)
+{
+    helper::ScopedAdvancedTimer timer("evaluateResidual");
+    m_visitor.setDt(node->getDt());
+    m_visitor.setTaskType(IntegrateVisitor::TaskType::EVALUATE_RESIDUAL);
+    m_visitor.execute(node);
+    if (m_visitor.isExecutionParallel())
+        m_visitor.parallelWaitForResult();
+    return m_visitor.getResult();
+}
+
+void  IntegrationHelper::computeLHS(sofa::simulation::Node * node, bool firstIteration)
+{
+    helper::ScopedAdvancedTimer timer("computeLHS");
+    m_visitor.setDt(node->getDt());
+    m_visitor.setTaskType(IntegrateVisitor::TaskType::COMPUTE_LHS);
+    m_visitor.setFirstIteration(firstIteration);
+    m_visitor.execute(node);
+    if (m_visitor.isExecutionParallel())
+        m_visitor.parallelWaitForResult();
+}
+
+void  IntegrationHelper::computeRHS(sofa::simulation::Node * node, bool firstIteration)
+{
+    helper::ScopedAdvancedTimer timer("computeRHS");
+    m_visitor.setDt(node->getDt());
+    m_visitor.setTaskType(IntegrateVisitor::TaskType::COMPUTE_RHS);
+    m_visitor.setFirstIteration(firstIteration);
+    m_visitor.execute(node);
+    if (m_visitor.isExecutionParallel())
+        m_visitor.parallelWaitForResult();
+}
+
+void  IntegrationHelper::solveLinearEquation(sofa::simulation::Node * node)
+{
+    helper::ScopedAdvancedTimer timer("solveLinearEquation");
+    m_visitor.setDt(node->getDt());
+    m_visitor.setTaskType(IntegrateVisitor::TaskType::SOLVE_LINEAR_EQUATION);
+    m_visitor.execute(node);
+    if (m_visitor.isExecutionParallel())
+        m_visitor.parallelWaitForResult();
+}
+
+void  IntegrationHelper::updateStatesFromLinearSolution(sofa::simulation::Node * node, SReal alpha, bool firstIteration)
+{
+    helper::ScopedAdvancedTimer timer("updateStatesFromLinearSolution");
+    m_visitor.setDt(node->getDt());
+    m_visitor.setTaskType(IntegrateVisitor::TaskType::UPDATE_STATE_FROM_LINEAR_SOLUTION);
+    m_visitor.setFirstIteration(firstIteration);
+    m_visitor.setAlpha(alpha);
+    m_visitor.execute(node);
+    if (m_visitor.isExecutionParallel())
+        m_visitor.parallelWaitForResult();
+}
+
+
 
 } // namespace sofa::simulation
 

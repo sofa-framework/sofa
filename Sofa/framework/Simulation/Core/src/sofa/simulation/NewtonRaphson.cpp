@@ -63,7 +63,7 @@ NewtonRaphson::~NewtonRaphson() = default;
 
 void NewtonRaphson::init()
 {
-    Inherit::init();
+    // Inherit::init();
     if (!l_node)
     {
         this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);

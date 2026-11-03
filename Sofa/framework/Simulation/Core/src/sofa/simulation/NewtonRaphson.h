@@ -49,7 +49,10 @@ public:
     SOFA_CLASS(NewtonRaphson, sofa::core::behavior::BaseTimeIntegrator);
 
     virtual void init() override;
-    virtual void integrate(const core::ExecParams* params, SReal dt) override;
+    virtual void integrate(const core::ExecParams* params, SReal dt) override
+    {
+
+    }
 
 protected:
     NewtonRaphson();

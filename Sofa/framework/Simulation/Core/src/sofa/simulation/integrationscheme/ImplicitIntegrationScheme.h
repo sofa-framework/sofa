@@ -133,6 +133,11 @@ public:
     /// This method is used to compute the compliance for contact corrections.
     SReal getPositionIntegrationFactor() const override = 0;
 
+    bool isImplicit() const final
+    {
+        return true;
+    }
+
     Data<SReal> d_rayleighStiffness; ///< Rayleigh damping coefficient related to stiffness, > 0
     Data<SReal> d_rayleighMass; ///< Rayleigh damping coefficient related to mass, > 0
 
