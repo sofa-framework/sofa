@@ -335,8 +335,10 @@ void MappingGraph::build(const InputLists& input)
                 }
                 else
                 {
-                    if (thread_local sofa::helper::logging::OnceTracker sofaMsgOnceTracker;
-                        sofaMsgOnceTracker.firstTimeFor(static_cast<const void*>(input.mappings[i])) || sofaMsgOnceTracker.firstTimeFor(static_cast<const void*>(s)))
+                    thread_local sofa::helper::logging::OnceTracker sofaMsgOnceTracker;
+                    const bool firstTimeMapping = sofaMsgOnceTracker.firstTimeFor(static_cast<const void*>(input.mappings[i]));
+                    const bool firstTimeState = sofaMsgOnceTracker.firstTimeFor(static_cast<const void*>(s));
+                    if (firstTimeMapping || firstTimeState)
                     {
                         msg_warning(input.mappings[i]) << "Mapping input '" << s->getPathName() << "' is not contained in the mapping graph context. It will not be considered when traversing the graph, neither the components relying on it.";
                     }
@@ -352,8 +354,10 @@ void MappingGraph::build(const InputLists& input)
             }
             else
             {
-                if (thread_local sofa::helper::logging::OnceTracker sofaMsgOnceTracker;
-                    sofaMsgOnceTracker.firstTimeFor(static_cast<const void*>(input.mappings[i])) || sofaMsgOnceTracker.firstTimeFor(static_cast<const void*>(s)))
+                thread_local sofa::helper::logging::OnceTracker sofaMsgOnceTracker;
+                const bool firstTimeMapping = sofaMsgOnceTracker.firstTimeFor(static_cast<const void*>(input.mappings[i]));
+                const bool firstTimeState = sofaMsgOnceTracker.firstTimeFor(static_cast<const void*>(s));
+                if (firstTimeMapping || firstTimeState)
                 {
                     msg_warning(input.mappings[i]) << "Mapping output '" << s->getPathName() << "' is not contained in the mapping graph context. It will not be considered when traversing the graph, neither the components relying on it.";
                 }
