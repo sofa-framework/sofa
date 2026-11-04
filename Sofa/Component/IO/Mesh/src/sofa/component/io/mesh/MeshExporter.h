@@ -29,21 +29,6 @@
 #include <sofa/helper/OptionsGroup.h>
 #include <sofa/simulation/BaseSimulationExporter.h>
 
-///////////////////////////// FORWARD DECLARATION //////////////////////////////////////////////////
-namespace sofa::core
-{
-namespace objectmodel {
-    class Event ;
-}
-namespace behavior {
-    class BaseMechanicalState;
-}
-namespace topology {
-    class BaseMeshTopology ;
-}
-}
-
-
 ////////////////////////////////// DECLARATION /////////////////////////////////////////////////////
 namespace sofa::component::_meshexporter_
 {

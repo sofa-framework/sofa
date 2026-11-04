@@ -25,16 +25,6 @@
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/type/RGBAColor.h>
 
-namespace sofa::core::topology
-{
-    class BaseMeshTopology;
-} // namespace sofa::core::topology
-
-namespace sofa::core::behavior
-{
-    class BaseMechanicalState;
-} // namespace sofa::core::behavior
-
 namespace sofa::component::visual
 {
 
