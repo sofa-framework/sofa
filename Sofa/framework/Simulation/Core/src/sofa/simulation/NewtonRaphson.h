@@ -22,7 +22,11 @@
 #pragma once
 
 #include <sofa/core/objectmodel/BaseComponent.h>
+#include <sofa/simulation/task/TaskSchedulerUser.h>
 #include <sofa/core/behavior/BaseAnimationLoop.h>
+#include <sofa/simulation/CollisionAnimationLoop.h>
+#include <sofa/core/MultiVecId.h>
+#include <sofa/simulation/VectorOperations.h>
 
 #include <sofa/simulation/fwd.h>
 
@@ -41,22 +45,15 @@ namespace sofa::simulation
  *
  *
  */
-class SOFA_SIMULATION_CORE_API NewtonRaphson : public sofa::core::behavior::BaseTimeIntegrator
+class SOFA_SIMULATION_CORE_API NewtonRaphson : public CollisionAnimationLoop,
+                                               public TaskSchedulerUser
 {
 public:
-    typedef sofa::core::behavior::BaseAnimationLoop Inherit;
     typedef sofa::core::objectmodel::BaseContext BaseContext;
-    SOFA_CLASS(NewtonRaphson, sofa::core::behavior::BaseTimeIntegrator);
+    SOFA_CLASS2(NewtonRaphson, CollisionAnimationLoop, TaskSchedulerUser);
 
     virtual void init() override;
     virtual void integrate(const core::ExecParams* params, SReal dt) override;
-
-protected:
-    NewtonRaphson();
-    ~NewtonRaphson() override;
-
-    void newtonSolve(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xId, sofa::core::MultiVecDerivId vId);
-
 
     Data<unsigned int> d_maxNbIterationsNewton;
     Data<unsigned int> d_maxNbIterationsLineSearch;
@@ -66,6 +63,27 @@ protected:
     Data<SReal> d_residueThreshold;
     Data<SReal> d_currentResidue;
     Data<bool> d_alwaysAdvanceNewton;
+    Data<bool> d_performCollisionDetectionEachNewtonStep;
+    Data<bool> d_solveVelocityConstraintFirst; ///< solve separately velocity constraint violations before position constraint violations
+    Data<bool> d_parallelODESolving; ///< If true, solves all the ODEs in parallel during the free motion step.
+
+protected:
+    NewtonRaphson();
+    ~NewtonRaphson() override;
+
+    SingleLink<NewtonRaphson, sofa::core::behavior::ConstraintSolver, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> l_constraintSolver;
+
+    void preSolve(const core::ExecParams* paramsms, core::ConstraintParams* cparams, common::VectorOperations* vop, common::MechanicalOperations* mop, SReal dt, Node* node);
+    void newtonSolve(const core::ExecParams* params, core::ConstraintParams* cparams, common::VectorOperations* vop, common::MechanicalOperations* mop,  SReal dt, sofa::core::MultiVecCoordId xId, sofa::core::MultiVecDerivId vId, Node* node);
+    void postSolve(const core::ExecParams* params, core::ConstraintParams* cparams, common::VectorOperations* vop, common::MechanicalOperations* mop, SReal startTime, SReal dt, Node* node);
+
+    void computeCollision(const core::ExecParams* params) override;
+    void computeGeometricalStiffness(const core::MechanicalParams* mparams, const core::ConstraintParams* cparams, Node* node);
+    void solveConstraints(const core::MechanicalParams* mparams, const core::ConstraintParams* cparams, common::VectorOperations* vop, common::MechanicalOperations* mop, sofa::core::MultiVecCoordId xId, sofa::core::MultiVecDerivId vId, SReal dt);
+
+    bool m_solveConstraints;
+    core::ConstraintParams m_cparams;
+
 
 };
 

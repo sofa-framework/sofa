@@ -64,7 +64,8 @@ public:
     ///
     /// Specify and execute all computations for computing a timestep, such
     /// as one or more collisions and integrations stages.
-    virtual void step(const core::ExecParams* params, SReal dt) = 0;
+    virtual void step(const core::ExecParams* params, SReal dt)
+    {};
 
 };
 
