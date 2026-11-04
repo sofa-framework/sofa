@@ -40,9 +40,11 @@ Visitor::Result UpdateBoundingBoxVisitor::processNodeTopDown(Node* node)
     type::vector<BaseObject*> objectList;
     type::vector<BaseObject*>::iterator object;
     node->get<BaseObject>(&objectList,BaseContext::Local);
-    sofa::type::BoundingBox* nodeBBox = node->f_bbox.beginEdit();
-    if(!node->bboxIsFixed()) // bmarques: Without invalidating the bbox, the node's bbox will only be sized up, and never down with this visitor, to my understanding..
+    // a fixed (user given) bbox is left untouched; otherwise it is recomputed
+    sofa::type::BoundingBox* nodeBBox = node->bboxIsFixed() ? nullptr : node->f_bbox.beginEdit();
+    if(nodeBBox)
         nodeBBox->invalidate();
+    
     for ( object = objectList.begin(); object != objectList.end(); ++object)
     {
         // warning the second parameter should NOT be false
@@ -54,10 +56,14 @@ Visitor::Result UpdateBoundingBoxVisitor::processNodeTopDown(Node* node)
         // you should overload their computeBBox function to correct that
         (*object)->computeBBox(params, true);
         
-        if(!node->bboxIsFixed())
+        if(nodeBBox)
             nodeBBox->include((*object)->f_bbox.getValue());
     }
-    node->f_bbox.endEdit();
+    if(nodeBBox)
+    {
+        node->f_bbox.endEdit();
+        node->f_bbox.unset(); // computed, not user given: keep the bbox not fixed
+    }
     return RESULT_CONTINUE;
 }
 
@@ -72,6 +78,7 @@ void UpdateBoundingBoxVisitor::processNodeBottomUp(simulation::Node* node)
             nodeBBox->include((*childNode)->f_bbox.getValue());
         }
         node->f_bbox.endEdit();
+        node->f_bbox.unset(); // computed, not user given: keep the bbox not fixed
     }
     else
     {
