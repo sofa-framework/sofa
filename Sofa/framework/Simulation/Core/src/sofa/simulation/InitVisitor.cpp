@@ -36,18 +36,23 @@ Visitor::Result InitVisitor::processNodeTopDown(simulation::Node* node)
 
     node->initialize();
 
-    sofa::type::BoundingBox* nodeBBox = node->f_bbox.beginEdit();
-    if(!node->bboxIsFixed())
+    // a fixed (user given) bbox is left untouched; otherwise it is recomputed
+    sofa::type::BoundingBox* nodeBBox = node->bboxIsFixed() ? nullptr : node->f_bbox.beginEdit();
+    if(nodeBBox)
         nodeBBox->invalidate();
 
     for(unsigned int i=0; i<node->object.size(); ++i)
     {
         node->object[i]->init();
         node->object[i]->computeBBox(params, true);
-        if(!node->bboxIsFixed())
+        if(nodeBBox)
             nodeBBox->include(node->object[i]->f_bbox.getValue());
     }
-    node->f_bbox.endEdit();
+    if(nodeBBox)
+    {
+        node->f_bbox.endEdit();
+        node->f_bbox.unset(); // computed, not user given: keep the bbox not fixed
+    }
     return RESULT_CONTINUE;
 }
 
@@ -56,16 +61,20 @@ void InitVisitor::processNodeBottomUp(simulation::Node* node)
 {
     // init all the components in reverse order
     node->setDefaultVisualContextValue();
-    sofa::type::BoundingBox* nodeBBox = node->f_bbox.beginEdit();
+    sofa::type::BoundingBox* nodeBBox = node->bboxIsFixed() ? nullptr : node->f_bbox.beginEdit();
 
     for(std::size_t i=node->object.size(); i>0; --i)
     {
         node->object[i-1]->bwdInit();
-        if(!node->bboxIsFixed())
+        if(nodeBBox)
             nodeBBox->include(node->object[i-1]->f_bbox.getValue());
     }
 
-    node->f_bbox.endEdit();
+    if(nodeBBox)
+    {
+        node->f_bbox.endEdit();
+        node->f_bbox.unset(); // computed, not user given: keep the bbox not fixed
+    }
 }
 
 
