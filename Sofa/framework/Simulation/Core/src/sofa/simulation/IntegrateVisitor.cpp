@@ -137,22 +137,26 @@ void IntegrateVisitor::processNodeBottomUp(simulation::Node*)
         SCOPED_TIMER_VARNAME(parallelSolveTimer, "waitParallelTasks");
         taskScheduler->workUntilDone(&m_status);
     }
+    for (auto& task : m_tasks)
+    {
+        m_result += task.getResult();
+    }
     m_tasks.clear();
 }
 
 IntegrateVisitor::IntegrateVisitor(const sofa::core::ExecParams* params, SReal _dt, TaskType taskType,
                  bool firstStep, SReal alpha, sofa::core::MultiVecCoordId X, sofa::core::MultiVecDerivId V,
                  bool _parallelExecution, bool computeForceIsolatedInteractionForceFields)
-
-        : Visitor(params)
-        , m_dt(_dt)
-        , m_taskType(taskType)
-        , m_firstStep(firstStep)
-        , m_alpha(alpha)
-        , m_xId(X)
-        , m_vId(V)
-        , m_parallelExecution(_parallelExecution)
-        , m_computeForceIsolatedInteractionForceFields(computeForceIsolatedInteractionForceFields)
+: Visitor(params)
+, m_dt(_dt)
+, m_taskType(taskType)
+, m_firstStep(firstStep)
+, m_alpha(alpha)
+, m_xId(X)
+, m_vId(V)
+, m_parallelExecution(_parallelExecution)
+, m_computeForceIsolatedInteractionForceFields(computeForceIsolatedInteractionForceFields)
+, m_result(0.0_sreal)
 {
     if (m_parallelExecution)
     {
@@ -181,17 +185,6 @@ void IntegrateVisitor::parallelExecute(simulation::Node* node)
     }
 }
 
-void IntegrateVisitor::parallelWaitForResult()
-{
-    auto* taskScheduler = sofa::simulation::MainTaskSchedulerFactory::createInRegistry();
-    assert(taskScheduler != nullptr);
-    taskScheduler->workUntilDone(&m_status);
-    for (auto& task : m_tasks)
-    {
-        m_result += task.getResult();
-    }
-    m_tasks.clear();
-}
 
 void IntegrateVisitor::initializeTaskScheduler()
 {
@@ -218,8 +211,6 @@ void  IntegrationHelper::setupIntegrationStep()
     helper::ScopedAdvancedTimer timer("SetupIntegrationStep");
     m_visitor.setTaskType(IntegrateVisitor::TaskType::SETUP_INTEGRATION_STEP);
     m_visitor.execute(m_node);
-    if (m_visitor.isExecutionParallel())
-        m_visitor.parallelWaitForResult();
 }
 
 SReal IntegrationHelper::evaluateResidual()
@@ -228,8 +219,6 @@ SReal IntegrationHelper::evaluateResidual()
     helper::ScopedAdvancedTimer timer("evaluateResidual");
     m_visitor.setTaskType(IntegrateVisitor::TaskType::EVALUATE_RESIDUAL);
     m_visitor.execute(m_node);
-    if (m_visitor.isExecutionParallel())
-        m_visitor.parallelWaitForResult();
     return m_visitor.getResult();
 }
 
@@ -239,8 +228,6 @@ void  IntegrationHelper::computeLHS(bool firstIteration)
     m_visitor.setTaskType(IntegrateVisitor::TaskType::COMPUTE_LHS);
     m_visitor.setFirstIteration(firstIteration);
     m_visitor.execute(m_node);
-    if (m_visitor.isExecutionParallel())
-        m_visitor.parallelWaitForResult();
 }
 
 void  IntegrationHelper::computeRHS(bool firstIteration)
@@ -249,8 +236,6 @@ void  IntegrationHelper::computeRHS(bool firstIteration)
     m_visitor.setTaskType(IntegrateVisitor::TaskType::COMPUTE_RHS);
     m_visitor.setFirstIteration(firstIteration);
     m_visitor.execute(m_node);
-    if (m_visitor.isExecutionParallel())
-        m_visitor.parallelWaitForResult();
 }
 
 void  IntegrationHelper::solveLinearEquation()
@@ -258,8 +243,6 @@ void  IntegrationHelper::solveLinearEquation()
     helper::ScopedAdvancedTimer timer("solveLinearEquation");
     m_visitor.setTaskType(IntegrateVisitor::TaskType::SOLVE_LINEAR_EQUATION);
     m_visitor.execute(m_node);
-    if (m_visitor.isExecutionParallel())
-        m_visitor.parallelWaitForResult();
 }
 
 void  IntegrationHelper::updateStatesFromLinearSolution(SReal alpha, bool firstIteration)
@@ -269,8 +252,13 @@ void  IntegrationHelper::updateStatesFromLinearSolution(SReal alpha, bool firstI
     m_visitor.setFirstIteration(firstIteration);
     m_visitor.setAlpha(alpha);
     m_visitor.execute(m_node);
-    if (m_visitor.isExecutionParallel())
-        m_visitor.parallelWaitForResult();
+}
+
+void  IntegrationHelper::finalizeIntegrationStep()
+{
+    helper::ScopedAdvancedTimer timer("finalizeIntegrationStep");
+    m_visitor.setTaskType(IntegrateVisitor::TaskType::FINALIZE_INTEGRATION_STEP);
+    m_visitor.execute(m_node);
 }
 
 

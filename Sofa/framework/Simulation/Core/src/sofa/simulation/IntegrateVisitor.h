@@ -79,8 +79,6 @@ public:
     Result processNodeTopDown(simulation::Node* node) override;
     void processNodeBottomUp(simulation::Node* /*node*/) override;
 
-    void parallelWaitForResult();
-
     SReal getResult() const
     {
         return m_result;
@@ -190,6 +188,7 @@ public:
     void computeRHS(bool firstIteration);
     void solveLinearEquation();
     void updateStatesFromLinearSolution(SReal alpha, bool firstIteration = false);
+    void finalizeIntegrationStep();
 
     void setNode(Node* node)
     {

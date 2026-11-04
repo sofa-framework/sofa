@@ -228,6 +228,9 @@ void NewtonRaphson::newtonSolve(const core::ExecParams* params, core::Constraint
     const SReal lineSearchArmijoFactor = d_lineSearchArmijoFactor.getValue();
     const bool performCollisionDetectionEachNewtonStep = d_performCollisionDetectionEachNewtonStep.getValue();
 
+    const auto pos = sofa::core::vec_id::write_access::position;
+    const auto vel = sofa::core::vec_id::write_access::velocity;
+
     const bool printLog = f_printLog.getValue();
 
     IntegrationHelper intHelper(params, dt,  xId, vId, d_parallelODESolving.getValue(), true);
@@ -283,8 +286,10 @@ void NewtonRaphson::newtonSolve(const core::ExecParams* params, core::Constraint
 
         if (m_solveConstraints)
         {
-            solveConstraints(&mop->mparams, cparams, vop, mop, xId, vId,dt);
+            solveConstraints(&mop->mparams, cparams, vop, mop, pos, vel,dt);
+            //TODO understand which VecID to work on inside the NR
             mop->propagateXAndV(xId, vId); //Need to propagate explicitly to enable recomputation of mapped Forcefileld
+            mop->propagateXAndV(pos, vel); //Need to propagate explicitly to enable recomputation of mapped Forcefileld
         }
 
 
@@ -367,6 +372,8 @@ void NewtonRaphson::newtonSolve(const core::ExecParams* params, core::Constraint
     helper::AdvancedTimer::valSet("residual", std::sqrt(newResidue));
 
     d_currentResidue.setValue(newResidue);
+
+    intHelper.finalizeIntegrationStep();
 
     mechanicalvisitor::MechanicalEndIntegrationVisitor endVisitor(params, dt);
     node->execute(&endVisitor);
