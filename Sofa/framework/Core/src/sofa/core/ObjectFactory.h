@@ -224,6 +224,7 @@ public:
 
     bool registerObjectsFromPlugin(const std::string& pluginName);
     bool registerObjects(ObjectRegistrationData& ro);
+    bool pluginAlreadyRegistered(const std::string& pluginName);
 
 };
 

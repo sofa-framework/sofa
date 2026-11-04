@@ -37,6 +37,7 @@ const std::string SceneCheckMapping::getDesc() { return "Check if the mappings a
 
 void SceneCheckMapping::doInit(sofa::simulation::Node* node)
 {
+    SOFA_UNUSED(node);
     m_nodesWithMappingNoState.clear();
     m_nodesWithMappingWrongState.clear();
 }

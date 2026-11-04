@@ -55,4 +55,15 @@ auto NeoHookeanMaterial<DataTypes>::elasticityTensor(Strain<DataTypes>& strain) 
         });
 }
 
+template <class DataTypes>
+auto NeoHookeanMaterial<DataTypes>::strainEnergyDensity(Strain<DataTypes>& strain) -> Real
+{
+    const Real I1 = strain.getInvariant1();
+    const Real logJ = std::log(strain.getDeterminantDeformationGradient());
+
+    return static_cast<Real>(0.5) * m_mu * (I1 - static_cast<Real>(spatial_dimensions))
+        - m_mu * logJ
+        + static_cast<Real>(0.5) * m_lambda * logJ * logJ;
+}
+
 }  // namespace elasticity

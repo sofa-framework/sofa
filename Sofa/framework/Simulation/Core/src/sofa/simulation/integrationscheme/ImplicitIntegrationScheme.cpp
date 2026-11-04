@@ -43,6 +43,11 @@ ImplicitIntegrationScheme::ImplicitIntegrationScheme()
 
 }
 
+void ImplicitIntegrationScheme::reset()
+{
+    m_passedStatesValid = false;
+}
+
 void ImplicitIntegrationScheme::setupIntegrationStep(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
 {
 

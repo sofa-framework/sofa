@@ -129,4 +129,31 @@ auto MooneyRivlinMaterial<DataTypes>::elasticityTensor(Strain<DataTypes>& strain
         });
 }
 
+template <class DataTypes>
+auto MooneyRivlinMaterial<DataTypes>::strainEnergyDensity(Strain<DataTypes>& strain) -> Real
+{
+    static constexpr Real dim = static_cast<Real>(spatial_dimensions);
+    static constexpr Real dim_1 = static_cast<Real>(1) / dim;
+
+    // value of I2 in the rest configuration (C = I)
+    static constexpr Real restInvariant2 = static_cast<Real>(0.5) * dim * (dim - static_cast<Real>(1));
+
+    const auto J = strain.getDeterminantDeformationGradient();
+    assert(J > 0);
+    const auto logJ = log(J);
+    const auto I1 = strain.getInvariant1();
+    const auto I2 = strain.getInvariant2();
+
+    const auto mu10 = m_mu10.getValue();
+    const auto mu01 = m_mu01.getValue();
+    const auto bulk = m_bulkModulus.getValue();
+
+    const Real W_isochoric = mu10 * (pow(J, -2 * dim_1) * I1 - dim)
+        + mu01 * (pow(J, -4 * dim_1) * I2 - restInvariant2);
+
+    const Real W_volumetric = static_cast<Real>(0.5) * bulk * logJ * logJ;
+
+    return W_isochoric + W_volumetric;
+}
+
 }  // namespace elasticity

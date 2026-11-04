@@ -776,7 +776,7 @@ bool ObjectFactory::registerObjectsFromPlugin(const std::string& pluginName)
     }
 
     // do not register if it was already done before
-    if(m_registeredPluginSet.contains(pluginName))
+    if(pluginAlreadyRegistered(pluginName))
     {
         // This warning should be generalized (i.e not only in dev mode) when runSofa will not auto-load modules/plugins by default anymore
         // Commented warning since it is triggered even for SOFA meta-modules (e.g. Sofa.Components)
@@ -796,6 +796,12 @@ bool ObjectFactory::registerObjectsFromPlugin(const std::string& pluginName)
         return false;
     }
 }
+
+bool ObjectFactory::pluginAlreadyRegistered(const std::string& pluginName)
+{
+    return m_registeredPluginSet.contains(pluginName);
+}
+
 
 RegisterObject::RegisterObject(const std::string& description)
     : m_objectRegistrationdata(description)

@@ -30,13 +30,13 @@ namespace sofa::simulation::mechanicalvisitor
 Visitor::Result MechanicalResetForceVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
 {
     if (!onlyMapped)
-        mm->resetForce(this->params, res.getId(mm));
+        mm->resetVec(this->params, res.getId(mm));
     return RESULT_CONTINUE;
 }
 
 Visitor::Result MechanicalResetForceVisitor::fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
 {
-    mm->resetForce(this->params, res.getId(mm));
+    mm->resetVec(this->params, res.getId(mm));
     return RESULT_CONTINUE;
 }
 
