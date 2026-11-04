@@ -86,6 +86,11 @@ public:
         return m_result;
     }
 
+    void resetResult()
+    {
+        m_result = 0.0_sreal;
+    }
+
     void setFirstIteration(bool firstStep)
     {
         m_firstStep = firstStep;

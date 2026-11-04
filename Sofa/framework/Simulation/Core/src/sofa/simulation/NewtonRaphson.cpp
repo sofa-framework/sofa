@@ -279,11 +279,13 @@ void NewtonRaphson::newtonSolve(const core::ExecParams* params, core::Constraint
 
         //Already make a full step
         intHelper.updateStatesFromLinearSolution(alpha, firstIt);
-        //TODO is this propagation really required ?
         mop->propagateXAndV(xId, vId); //Need to propagate explicitly to enable recomputation of mapped Forcefileld
 
-        solveConstraints(&mop->mparams, cparams, vop, mop, xId, vId,dt);
-        mop->propagateXAndV(xId, vId); //Need to propagate explicitly to enable recomputation of mapped Forcefileld
+        if (m_solveConstraints)
+        {
+            solveConstraints(&mop->mparams, cparams, vop, mop, xId, vId,dt);
+            mop->propagateXAndV(xId, vId); //Need to propagate explicitly to enable recomputation of mapped Forcefileld
+        }
 
 
         intHelper.computeRHS(false);
@@ -345,6 +347,7 @@ void NewtonRaphson::newtonSolve(const core::ExecParams* params, core::Constraint
             msg_info()<<"Newton step = "<<it;
             msg_info()<<"Current residue = "<<newResidue<< "   | previous residue = "<<oldResidue ;
             msg_info()<<"Number of line search iterations = "<<lineSearchIt;
+            msg_info()<<"Final alpha / best alpha : "<<alpha << " / " <<bestalpha;
         }
         ++it ;
     }

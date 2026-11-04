@@ -292,8 +292,9 @@ void VelocityBasedImplicitIntegrationScheme::updateStatesFromLinearSolution(SRea
 
     // TODO this collides with Free motion propagation using a MechanicalVOpVisitor and expecting a EulerImplicit
     //      future implementation of global Newton will reactivate those
-    // simulation::common::DifferentialOperations::pushforwardCoord(m_mappingGraph, m_mop->mparams, pos);
-    // simulation::common::DifferentialOperations::pushforwardTangent(m_mappingGraph, m_mop->mparams, vel);
+    simulation::common::DifferentialOperations::pushforwardCoord(m_mappingGraph, m_mop->mparams, pos);
+    simulation::common::DifferentialOperations::pushforwardTangent(m_mappingGraph, m_mop->mparams, vel);
+
 
 }
 

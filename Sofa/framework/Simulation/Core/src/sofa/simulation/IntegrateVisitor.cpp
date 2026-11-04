@@ -224,6 +224,7 @@ void  IntegrationHelper::setupIntegrationStep()
 
 SReal IntegrationHelper::evaluateResidual()
 {
+    m_visitor.resetResult();
     helper::ScopedAdvancedTimer timer("evaluateResidual");
     m_visitor.setTaskType(IntegrateVisitor::TaskType::EVALUATE_RESIDUAL);
     m_visitor.execute(m_node);
