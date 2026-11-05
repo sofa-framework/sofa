@@ -26,9 +26,13 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalVOpVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalVOpVisitor;
+
 #include <sofa/simulation/mechanicalvisitor/MechanicalGetNonDiagonalMassesCountVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalGetNonDiagonalMassesCountVisitor;
-#include <sofa/simulation/mechanicalvisitor/MechanicalVOpVisitor.h>
+
 
 namespace sofa::simulation::integrationscheme
 {
@@ -56,6 +60,10 @@ void VelocityBasedImplicitIntegrationScheme::init()
 
 void VelocityBasedImplicitIntegrationScheme::doSetupIntegrationStep(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
 {
+    SOFA_UNUSED(dt);
+    SOFA_UNUSED(params);
+    SOFA_UNUSED(vResult);
+    SOFA_UNUSED(xResult);
 
     // Make sure the states are following the sizes
     simulation::common::VectorOperations::realloc(*m_vop, m_r0, "r0", this, true);

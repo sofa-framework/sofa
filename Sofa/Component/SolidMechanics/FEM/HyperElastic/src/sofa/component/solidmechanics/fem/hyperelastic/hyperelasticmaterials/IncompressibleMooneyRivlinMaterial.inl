@@ -52,6 +52,7 @@ auto IncompressibleMooneyRivlinMaterial<DataTypes>::secondPiolaKirchhoffStress(S
 template <class DataTypes>
 auto IncompressibleMooneyRivlinMaterial<DataTypes>::elasticityTensor(Strain<DataTypes>& strain) -> ElasticityTensor
 {
+    SOFA_UNUSED(strain);
     auto delta = [](auto i, auto j){ return sofa::component::solidmechanics::fem::elastic::kroneckerDelta<Real>(i, j); };
 
     return ElasticityTensor(

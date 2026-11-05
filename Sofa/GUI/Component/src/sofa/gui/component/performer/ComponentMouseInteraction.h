@@ -28,6 +28,7 @@
 #include <sofa/component/statecontainer/MechanicalObject.h>
 #include <sofa/core/Mapping.h>
 #include <sofa/simulation/fwd.h>
+#include <sofa/simulation/Node.h>
 
 namespace sofa::gui::component::performer
 {

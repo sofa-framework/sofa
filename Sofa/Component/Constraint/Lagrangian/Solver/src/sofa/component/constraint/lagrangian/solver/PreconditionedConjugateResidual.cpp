@@ -40,6 +40,7 @@ PreconditionedConjugateResidual::PreconditionedConjugateResidual()
 
 void PreconditionedConjugateResidual::doSolve(GenericConstraintProblem * problem , SReal timeout)
 {
+    SOFA_UNUSED(timeout);
     SCOPED_TIMER_VARNAME(gaussSeidelTimer, "PreconditionedConjugateResidual");
 
     if (!problem)

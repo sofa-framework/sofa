@@ -130,6 +130,7 @@ void TriangleOctreeCollisionModel::computeBoundingTree(int maxDepth)
 
 void TriangleOctreeCollisionModel::computeContinuousBoundingTree(SReal/* dt*/, ContinuousIntersectionTypeFlag continuousIntersectionFlag, int maxDepth)
 {
+    SOFA_UNUSED(continuousIntersectionFlag);
     computeBoundingTree(maxDepth);
 }
 
