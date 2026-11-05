@@ -351,8 +351,7 @@ void GridTopology::computePointList()
 
 GridTopology::Index GridTopology::getIndex( int i, int j, int k ) const
 {
-    const auto& n = d_n.getValue();
-    return Index(n[0]* ( n[1]*k + j ) + i);
+    return getIndex(d_n.getValue(), i, j, k);
 }
 
 
@@ -380,21 +379,28 @@ sofa::type::Vec3 GridTopology::getPointInGrid(int i, int j, int k) const
 
 GridTopology::Hexa GridTopology::getHexaCopy(Index i)
 {
-    const auto& n = d_n.getValue();
-
-    const int x = i%(n[0]-1); i/=(n[0]-1);
-    const int y = i%(n[1]-1); i/=(n[1]-1);
-    const int z = int(i);
-    return getHexahedron(x,y,z);
+    return getHexaCopy(d_n.getValue(), i);
 }
 
 GridTopology::Hexa GridTopology::getHexahedron(int x, int y, int z)
 {
+    return getHexahedron(d_n.getValue(), x, y, z);
+}
 
-    return Hexa(point(x  ,y  ,z  ),point(x+1,y  ,z  ),
-            point(x+1,y+1,z  ),point(x  ,y+1,z  ),
-            point(x  ,y  ,z+1),point(x+1,y  ,z+1),
-            point(x+1,y+1,z+1),point(x  ,y+1,z+1));
+GridTopology::Hexa GridTopology::getHexaCopy(const type::Vec3i& n, Index i)
+{
+    const int x = i%(n[0]-1); i/=(n[0]-1);
+    const int y = i%(n[1]-1); i/=(n[1]-1);
+    const int z = int(i);
+    return getHexahedron(n, x, y, z);
+}
+
+GridTopology::Hexa GridTopology::getHexahedron(const type::Vec3i& n, int x, int y, int z)
+{
+    return Hexa(getIndex(n, x  ,y  ,z  ),getIndex(n, x+1,y  ,z  ),
+            getIndex(n, x+1,y+1,z  ),getIndex(n, x  ,y+1,z  ),
+            getIndex(n, x  ,y  ,z+1),getIndex(n, x+1,y  ,z+1),
+            getIndex(n, x+1,y+1,z+1),getIndex(n, x  ,y+1,z+1));
 }
 
 GridTopology::Quad GridTopology::getQuadCopy(Index i)

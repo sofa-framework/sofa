@@ -236,7 +236,7 @@ void VonMisesStress<DataTypes, ElementType>::calculateElementInverseGramMatrices
                 elementMassMatrix += (weight * detJ) * NT_N;
             }
 
-            sofa::type::invertMatrix(elementMassMatrix, elementMassMatrix);
+            [[maybe_unused]] const bool invertible = sofa::type::invertMatrix(elementMassMatrix, elementMassMatrix);
         });
 }
 

@@ -42,6 +42,7 @@ public:
 
 protected:
     ParallelBVHNarrowPhase();
+    ~ParallelBVHNarrowPhase() override;
 
     std::vector<ParallelBVHNarrowPhasePairTask> m_tasks;
 

@@ -58,7 +58,7 @@ public:
 
 protected:
     ParallelBruteForceBroadPhase();
-    ~ParallelBruteForceBroadPhase() override = default;
+    ~ParallelBruteForceBroadPhase() override;
 
     /// List of tasks executed in parallel.
     /// They are created at each time step, but the memory is not freed

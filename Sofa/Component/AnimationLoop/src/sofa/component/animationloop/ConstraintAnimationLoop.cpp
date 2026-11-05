@@ -19,6 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_ANIMATIONLOOP_CONSTRAINTANIMATIONLOOP_CPP
 #include <sofa/component/animationloop/ConstraintAnimationLoop.h>
 #include <sofa/core/visual/VisualParams.h>
 

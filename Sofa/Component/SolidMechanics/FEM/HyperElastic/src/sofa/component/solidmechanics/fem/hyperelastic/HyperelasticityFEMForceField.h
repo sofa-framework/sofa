@@ -32,6 +32,12 @@
 namespace sofa::component::solidmechanics::fem::hyperelastic
 {
 
+template <class TDataTypes>
+struct MaterialFilter;
+
+template <sofa::Size L, sofa::Size C, class real>
+struct StiffnessFilter;
+
 template <class TDataTypes, class TElementType>
 class HyperelasticityFEMForceField :
     public sofa::component::solidmechanics::fem::elastic::FEMForceField<TDataTypes, TElementType>
@@ -80,6 +86,14 @@ public:
     using Inherit1::addKToMatrix;
     // almost deprecated, but here for compatibility with unit tests
     void addKToMatrix(sofa::linearalgebra::BaseMatrix* matrix, SReal kFact, unsigned& offset) override;
+
+    MAKE_SELECTABLE_ITEMS(EigenvaluesFilter,
+         sofa::helper::Item{"None", "No filter"},
+         sofa::helper::Item{"ClampNegative", "Clamp negative eigenvalues"},
+         sofa::helper::Item{"Abs", "Apply absolute value on eigenvalues"}
+     );
+    Data<EigenvaluesFilter> d_materialEigenvaluesFilter;
+    Data<EigenvaluesFilter> d_stiffnessEigenvaluesFilter;
 
     sofa::SingleLink<MyType, HyperelasticMaterial<TDataTypes>,
         sofa::BaseLink::FLAG_STOREPATH | sofa::BaseLink::FLAG_STRONGLINK> l_material;
@@ -150,6 +164,11 @@ protected:
         const sofa::core::MechanicalParams* mparams,
         sofa::type::vector<ElementGradient>& df,
         const sofa::VecDeriv_t<TDataTypes>& dx) override;
+
+    std::unique_ptr<MaterialFilter<TDataTypes>> createMaterialFilter();
+    std::unique_ptr<StiffnessFilter<TElementType::NumberOfNodes * DataTypes::spatial_dimensions,
+                                    TElementType::NumberOfNodes * DataTypes::spatial_dimensions,
+                                    sofa::Real_t<DataTypes>>> createStiffnessFilter();
 };
 
 #if !defined(SOFA_COMPONENT_SOLIDMECHANICS_FEM_HYPERELASTIC_HYPERLASTICITY_FEM_FORCE_FIELD_CPP)

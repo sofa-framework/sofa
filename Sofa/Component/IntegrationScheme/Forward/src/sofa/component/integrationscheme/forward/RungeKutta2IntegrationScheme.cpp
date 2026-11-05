@@ -42,6 +42,7 @@ void registerRungeKutta2IntegrationScheme(sofa::core::ObjectFactory* factory)
 
 void RungeKutta2IntegrationScheme::doIntegrate(const core::ExecParams* params, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
 {
+    SOFA_UNUSED(params);
     // Get the Ids of the state vectors
     MultiVecCoord pos(m_vop.get(), core::vec_id::write_access::position );
     MultiVecDeriv vel(m_vop.get(), core::vec_id::write_access::velocity );
