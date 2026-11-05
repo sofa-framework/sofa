@@ -51,10 +51,6 @@
 #include <sofa/component/constraint/lagrangian/solver/BlockGaussSeidelConstraintSolver.h>
 using sofa::simulation::mechanicalvisitor::MechanicalVInitVisitor;
 
-
-#include <sofa/simulation/mechanicalvisitor/MechanicalBeginIntegrationVisitor.h>
-using sofa::simulation::mechanicalvisitor::MechanicalBeginIntegrationVisitor;
-
 #include <sofa/simulation/mechanicalvisitor/MechanicalVOpVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalVOpVisitor;
 
@@ -224,13 +220,6 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
     }
 
     dmsg_info() << "updateInternal performed - beginVisitor called" ;
-
-
-    // MechanicalBeginIntegrationVisitor
-    MechanicalBeginIntegrationVisitor beginVisitor(params, dt);
-    node->execute(&beginVisitor);
-
-    dmsg_info() << "beginVisitor performed - SolveVisitor for freeMotion is called" ;
 
     {
         SCOPED_TIMER("MechanicalComputeGeometricStiffness");

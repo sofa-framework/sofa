@@ -176,10 +176,6 @@ void DefaultAnimationLoop::propagateAnimateBeginEvent(const core::ExecParams* pa
 void DefaultAnimationLoop::beginIntegration(const core::ExecParams* params, SReal dt) const
 {
     propagateIntegrateBeginEvent(params);
-
-    SCOPED_TIMER("beginIntegration");
-    mechanicalvisitor::MechanicalBeginIntegrationVisitor beginVisitor(params, dt);
-    m_node->execute(&beginVisitor);
 }
 
 void DefaultAnimationLoop::propagateIntegrateBeginEvent(const core::ExecParams* params) const
