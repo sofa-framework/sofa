@@ -49,8 +49,8 @@ sofa_add_external(plugin SoftRobots GIT_REF master GIT_REPOSITORY https://www.gi
 sofa_add_external(plugin SoftRobots.Inverse GIT_REF main GIT_REPOSITORY https://www.github.com/SofaDefrost/SoftRobots.Inverse.git)
 sofa_add_external(plugin Cosserat GIT_REF main GIT_REPOSITORY https://www.github.com/SofaDefrost/Cosserat.git) # Cosserat has an optional dependency on SoftRobots
 sofa_add_external(plugin SofaViscoElastic GIT_REF main GIT_REPOSITORY https://www.github.com/SofaDefrost/SofaViscoElastic.git)
-sofa_add_external(plugin CollisionAlgorithm GIT_REF master GIT_REPOSITORY https://forge.icube.unistra.fr/sofa/CollisionAlgorithm.git)
-sofa_add_external(plugin ConstraintGeometry GIT_REF master GIT_REPOSITORY https://forge.icube.unistra.fr/sofa/ConstraintGeometry.git)
+sofa_add_external(plugin CollisionAlgorithm GIT_REF master GIT_REPOSITORY https://github.com/InfinyTech3D/CollisionAlgorithm.git)
+sofa_add_external(plugin ConstraintGeometry GIT_REF master GIT_REPOSITORY https://github.com/InfinyTech3D/ConstraintGeometry.git)
 sofa_add_external(plugin ShapeMatchingPlugin GIT_REF master GIT_REPOSITORY https://www.github.com/sofa-framework/ShapeMatchingPlugin.git)
 sofa_add_external(plugin CSparseSolvers GIT_REF master GIT_REPOSITORY https://www.github.com/sofa-framework/CSparseSolvers.git)
 sofa_add_external(plugin ModelOrderReduction GIT_REF master GIT_REPOSITORY https://www.github.com/SofaDefrost/ModelOrderReduction.git)
