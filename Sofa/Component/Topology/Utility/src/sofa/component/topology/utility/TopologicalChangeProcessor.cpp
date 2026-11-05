@@ -892,7 +892,7 @@ void TopologicalChangeProcessor::saveIndices()
             sofa::component::topology::container::dynamic::TriangleSetGeometryAlgorithms<Vec3Types>* triangleGeo;
             m_topology->getContext()->get(triangleGeo);
 
-            const auto baryCoef = triangleGeo->computeTriangleBarycoefs( triInd, constCoord);
+            const auto baryCoef = triangleGeo->computeTriangleBarycentricCoordinates( triInd, constCoord);
 
             Vec3 barycentricCoordinates(baryCoef[0], baryCoef[1], baryCoef[2]);
             Vec3Types::Coord aCoord[3];
@@ -953,7 +953,7 @@ void TopologicalChangeProcessor::saveIndices()
 
                 triangleIncisionInformation[i].triangleIndices[0] = triIndex;
 
-                const auto newBaryCoef = triangleGeo->computeTriangleBarycoefs( triangleIncisionInformation[i].triangleIndices[0], newPosition);
+                const auto newBaryCoef = triangleGeo->computeTriangleBarycentricCoordinates( triangleIncisionInformation[i].triangleIndices[0], newPosition);
 
                 for (unsigned int j = 0 ; j < 3 ; j++)
                     triangleIncisionInformation[i].barycentricCoordinates.front()[j] = newBaryCoef[j];
@@ -1366,7 +1366,7 @@ void TopologicalChangeProcessor::updateTriangleIncisionInformation()
 
             //update the triangle barycentric coordinates corresponding to the current coordinates
             const Vec3 constCoord = triangleIncisionInformation[i].coordinates[j];
-            const auto baryCoef = triangleGeo->computeTriangleBarycoefs( newTriangleIndexb, constCoord);
+            const auto baryCoef = triangleGeo->computeTriangleBarycentricCoordinates( newTriangleIndexb, constCoord);
             triangleIncisionInformation[i].barycentricCoordinates[j] = Vec3(baryCoef[0], baryCoef[1], baryCoef[2]);
         }
     }

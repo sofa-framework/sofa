@@ -22,7 +22,9 @@
 #pragma once
 #include <sofa/component/animationloop/config.h>
 
+#if !defined(SOFA_COMPONENT_ANIMATIONLOOP_CONSTRAINTANIMATIONLOOP_CPP)
 SOFA_HEADER_DEPRECATED_NOT_REPLACED("v26.06", "v26.12")
+#endif
 
 
 #include <sofa/helper/map.h>
