@@ -64,26 +64,40 @@ void Mass<DataTypes>::addMDx(const MechanicalParams* /*mparams*/, DataVecDeriv& 
     msg_warning() << "Method addMDx(const MechanicalParams* , DataVecDeriv& , const DataVecDeriv&  , SReal  ) not implemented.";
 }
 
-
-template<class DataTypes>
-void Mass<DataTypes>::accFromF(const MechanicalParams* mparams, MultiVecDerivId aid)
-{
-    if(mparams)
-    {
-        auto mstate = this->mstate.get();
-        accFromF(mparams, *aid[mstate].write(), *mparams->readF(mstate));
-    }
-    else msg_error() <<"Mass<DataTypes>::accFromF(const MechanicalParams* mparams, MultiVecDerivId aid) receives no mparam";
-}
-
 template<class DataTypes>
 void Mass<DataTypes>::accFromF(const MechanicalParams* /*mparams*/, DataVecDeriv& /*a*/, const DataVecDeriv& /*f*/)
 {
     msg_warning() << "Method accFromF(const MechanicalParams* , DataVecDeriv& , const DataVecDeriv& ) not implemented.";
 }
 
+template <class DataTypes>
+void Mass<DataTypes>::solveLinearSystem(const MechanicalParams* mparams,
+    MultiVecDerivId xId, ConstMultiVecDerivId bId)
+{
+    if(mparams)
+    {
+        auto mstate = this->mstate.get();
 
-template<class DataTypes>
+        DataVecDeriv* x = xId[mstate].write(); assert(x);
+        const DataVecDeriv* b = bId[mstate].read(); assert(b);
+
+        doSolveLinearSystem(mparams, *x, *b);
+    }
+}
+
+template <class DataTypes>
+void Mass<DataTypes>::doSolveLinearSystem(const MechanicalParams* mparams,
+    DataVecDeriv& x, const DataVecDeriv& b)
+{
+    SOFA_UNUSED(mparams);
+    SOFA_UNUSED(x);
+    SOFA_UNUSED(b);
+
+    msg_warning() << "Method 'solveLinearSystem' was called but it is not implemented for '" <<
+        this->getClassName() << "'. Behavior is undefined. Try using a linear solver.";
+}
+
+template <class DataTypes>
 void Mass<DataTypes>::addDForce(const MechanicalParams* mparams,
                                 DataVecDeriv & /*df*/, const DataVecDeriv & /*dx*/)
 {

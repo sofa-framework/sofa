@@ -420,7 +420,7 @@ void UniformMass<DataTypes>::addMDx ( const core::MechanicalParams*, DataVecDeri
 
 
 template <class DataTypes>
-void UniformMass<DataTypes>::accFromF ( const core::MechanicalParams*, DataVecDeriv& va, const DataVecDeriv& vf )
+void UniformMass<DataTypes>::doSolveLinearSystem ( const core::MechanicalParams*, DataVecDeriv& va, const DataVecDeriv& vf )
 {
     if (!this->isComponentStateValid())
         return;
