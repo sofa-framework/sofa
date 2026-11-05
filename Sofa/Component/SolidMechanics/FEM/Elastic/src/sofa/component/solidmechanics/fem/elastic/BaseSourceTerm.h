@@ -32,6 +32,7 @@
 #include <sofa/type/vector.h>
 
 #include <array>
+#include <limits>
 
 #if !defined(SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_BASE_SOURCE_TERM_CPP)
 #include <sofa/defaulttype/VecTypes.h>
@@ -109,15 +110,19 @@ sofa::type::Vec<spatial_dimensions, Real> elementNormal(
     static_assert(TopologicalDimension + 1 == spatial_dimensions,
         "A normal is only defined for an element of codimension 1.");
 
+    sofa::type::Vec<spatial_dimensions, Real> normal;
     if constexpr (spatial_dimensions == 3)
     {
-        return jacobian.col(0).cross(jacobian.col(1)).normalized();
+        normal = jacobian.col(0).cross(jacobian.col(1));
     }
     else
     {
         const sofa::type::Vec<2, Real> tangent = jacobian.col(0);
-        return sofa::type::Vec<2, Real>(tangent[1], -tangent[0]).normalized();
+        normal = sofa::type::Vec<2, Real>(tangent[1], -tangent[0]);
     }
+
+    normal.normalize(sofa::type::Vec<spatial_dimensions, Real>{}, std::numeric_limits<Real>::min());
+    return normal;
 }
 
 /**
