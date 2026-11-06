@@ -90,8 +90,10 @@ public:
     /**
      * This method is called after the integration step is completed.
      */
-    virtual void finalizeIntegrationStep()
-    {  };
+    virtual void finalizeIntegrationStep(bool advanceTime);
+
+    virtual void doFinalizeIntegrationStep(bool advanceTime)
+    { SOFA_UNUSED(advanceTime); }
 
     /**
      * @param params Parameters for vector and mechanical operations

@@ -58,6 +58,7 @@ public:
                  SReal _dt,
                  TaskType taskType,
                  bool firstStep,
+                 bool advanceTime,
                  SReal alpha,
                  sofa::core::MultiVecCoordId X = sofa::core::vec_id::write_access::position,
                  sofa::core::MultiVecDerivId V = sofa::core::vec_id::write_access::velocity,
@@ -94,6 +95,11 @@ public:
         m_firstStep = firstStep;
     }
 
+    void setAdvanceTime(bool advanceTime)
+    {
+        m_advanceTime = advanceTime;
+    }
+
     void setAlpha(SReal alpha)
     {
         m_alpha = alpha;
@@ -116,6 +122,7 @@ public:
                                  SReal dt,
                                  TaskType taskType,
                                  bool firstStep = true,
+                                 bool advanceTime = true,
                                  SReal alpha = 1.0,
                                  sofa::core::MultiVecCoordId X = sofa::core::vec_id::write_access::position,
                                  sofa::core::MultiVecDerivId V = sofa::core::vec_id::write_access::velocity);
@@ -125,6 +132,7 @@ protected:
     SReal m_dt;
     TaskType m_taskType;
     bool m_firstStep;
+    bool m_advanceTime;
     SReal m_alpha;
     sofa::core::MultiVecCoordId m_xId;
     sofa::core::MultiVecDerivId m_vId;
@@ -188,7 +196,7 @@ public:
     void computeRHS(bool firstIteration);
     void solveLinearEquation();
     void updateStatesFromLinearSolution(SReal alpha, bool firstIteration = false);
-    void finalizeIntegrationStep();
+    void finalizeIntegrationStep(bool advanceTime);
 
     void setNode(Node* node)
     {

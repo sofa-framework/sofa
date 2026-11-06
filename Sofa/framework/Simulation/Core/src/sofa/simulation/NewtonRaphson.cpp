@@ -233,6 +233,8 @@ void NewtonRaphson::newtonSolve(const core::ExecParams* params, core::Constraint
 
     const bool printLog = f_printLog.getValue();
 
+    m_advanceTime = true;
+
     IntegrationHelper intHelper(params, dt,  xId, vId, d_parallelODESolving.getValue(), true);
     intHelper.setNode(node);
 
@@ -342,7 +344,6 @@ void NewtonRaphson::newtonSolve(const core::ExecParams* params, core::Constraint
             newResidue = intHelper.evaluateResidual();
         }
 
-
         if (printLog)
         {
             if (newResidue>oldResidue)
@@ -353,6 +354,16 @@ void NewtonRaphson::newtonSolve(const core::ExecParams* params, core::Constraint
             msg_info()<<"Current residue = "<<newResidue<< "   | previous residue = "<<oldResidue ;
             msg_info()<<"Number of line search iterations = "<<lineSearchIt;
             msg_info()<<"Final alpha / best alpha : "<<alpha << " / " <<bestalpha;
+        }
+
+        if (lineSearchIt == maxLineSearchIt && bestalpha < std::numeric_limits<SReal>::epsilon() && ! d_alwaysAdvanceNewton.getValue())
+        {
+            // If it is the first newton step then we don't advance time.
+            if (it == 0)
+                m_advanceTime=false;
+            //LineSearch didn't improve anything, no need to continue
+
+            break;
         }
         ++it ;
     }
@@ -373,7 +384,7 @@ void NewtonRaphson::newtonSolve(const core::ExecParams* params, core::Constraint
 
     d_currentResidue.setValue(newResidue);
 
-    intHelper.finalizeIntegrationStep();
+    intHelper.finalizeIntegrationStep(m_advanceTime);
 
     mechanicalvisitor::MechanicalEndIntegrationVisitor endVisitor(params, dt);
     node->execute(&endVisitor);
@@ -385,6 +396,7 @@ void NewtonRaphson::postSolve(const core::ExecParams* params, core::ConstraintPa
 
     auto pos = sofa::core::vec_id::write_access::position;
     auto vel = sofa::core::vec_id::write_access::velocity;
+
     {
         SCOPED_TIMER("ProjectAndPropagateXAndV");
 
@@ -392,8 +404,11 @@ void NewtonRaphson::postSolve(const core::ExecParams* params, core::ConstraintPa
         mop->propagateXAndV(pos, vel);
     }
 
-    node->setTime ( startTime + dt );
-    node->execute<UpdateSimulationContextVisitor>(params);  // propagate time
+    if (m_advanceTime)
+    {
+        node->setTime ( startTime + dt );
+        node->execute<UpdateSimulationContextVisitor>(params);  // propagate time
+    }
 
     {
         SCOPED_TIMER("AnimateEndEvent");

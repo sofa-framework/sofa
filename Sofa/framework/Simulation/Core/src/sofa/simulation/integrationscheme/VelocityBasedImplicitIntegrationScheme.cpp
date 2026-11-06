@@ -279,8 +279,8 @@ void VelocityBasedImplicitIntegrationScheme::updateStatesFromLinearSolution(SRea
     //Update position w/r to unknown
     pos.peq(m_systemUnknown, alpha * getPositionUpdateDerivedFromVelocity());
 
-    //TODO make this work with alpha, iteration might be still 0 but we are in the linesearch algo and we don't want to remove this each time...
-    // R1 should be equal to 0, avoids computation
+    // //TODO make this work with alpha, iteration might be still 0 but we are in the linesearch algo and we don't want to remove this each time...
+    // // R1 should be equal to 0, avoids computation
     if (firstIteration)
     {
         //Update position w/r R1
@@ -299,8 +299,9 @@ void VelocityBasedImplicitIntegrationScheme::updateStatesFromLinearSolution(SRea
 }
 
 
-void VelocityBasedImplicitIntegrationScheme::finalizeIntegrationStep()
+void VelocityBasedImplicitIntegrationScheme::doFinalizeIntegrationStep(bool advanceTime)
 {
+    SOFA_UNUSED(advanceTime);
     if (d_computeFinalAcceleration.getValue())
     {
         computeAccelerationFromVelocity(*m_vop, m_acceleration, m_vResult);

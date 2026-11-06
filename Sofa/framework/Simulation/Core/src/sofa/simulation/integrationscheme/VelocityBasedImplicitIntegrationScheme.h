@@ -69,7 +69,7 @@ public:
     virtual SReal evaluateResidual() override;
     virtual void solveLinearEquation() override;
     virtual void updateStatesFromLinearSolution(SReal alpha, bool firstIteration = false) override;
-    virtual void finalizeIntegrationStep() override;
+    virtual void doFinalizeIntegrationStep(bool advanceTime) override;
 
     virtual SReal getVelocityIntegrationFactor() const override final;
     virtual SReal getPositionIntegrationFactor() const override final;

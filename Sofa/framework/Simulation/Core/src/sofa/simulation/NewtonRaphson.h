@@ -82,6 +82,7 @@ protected:
     void solveConstraints(const core::MechanicalParams* mparams, const core::ConstraintParams* cparams, common::VectorOperations* vop, common::MechanicalOperations* mop, sofa::core::MultiVecCoordId xId, sofa::core::MultiVecDerivId vId, SReal dt);
 
     bool m_solveConstraints;
+    bool m_advanceTime;
     core::ConstraintParams m_cparams;
 
 

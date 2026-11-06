@@ -71,6 +71,18 @@ void ImplicitIntegrationScheme::setupIntegrationStep(const core::ExecParams* par
 
 }
 
+
+void ImplicitIntegrationScheme::finalizeIntegrationStep(bool advanceTime)
+{
+    if (!advanceTime)
+    {
+        m_vop->v_eq(m_xResult, m_x0.back());
+        m_vop->v_eq(m_vResult, m_v0.back());
+        m_mop->propagateXAndV(m_xResult,m_vResult );
+    }
+    doFinalizeIntegrationStep(advanceTime);
+};
+
 void ImplicitIntegrationScheme::integrate(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
 {
     setupIntegrationStep(params, dt, xResult, vResult);
@@ -78,7 +90,7 @@ void ImplicitIntegrationScheme::integrate(const core::ExecParams* params, SReal 
     computeLHS(true);
     solveLinearEquation();
     updateStatesFromLinearSolution(1.0, true);
-    finalizeIntegrationStep();
+    finalizeIntegrationStep(true);
 }
 
 }
