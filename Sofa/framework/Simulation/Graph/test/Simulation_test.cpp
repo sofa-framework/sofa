@@ -36,6 +36,8 @@ typedef sofa::component::statecontainer::MechanicalObject<Vec3Types> MechanicalO
 #include <sofa/simulation/DefaultAnimationLoop.h>
 
 #include <sofa/simulation/Node.h>
+#include <sofa/simulation/UpdateBoundingBoxVisitor.h>
+#include <sofa/core/objectmodel/BaseObjectDescription.h>
 
 namespace sofa {
 
@@ -284,6 +286,144 @@ TEST_F( Scene_test,sceneDestruction_unload) {
 TEST_F( Scene_test,sceneDestruction_createnewgraph) {
     EXPECT_MSG_NOEMIT(Error) ;
     this->sceneDestruction_createnewgraph();
+}
+
+// node bounding box: computed from the objects, unless fixed by the user
+
+namespace
+{
+using sofa::type::BoundingBox;
+using sofa::type::Vec3;
+
+/// Two points; the state is drawn, the condition for a MechanicalObject to
+/// take part in the bounding box.
+MechanicalObject3::SPtr addPoints(simulation::Node* node, const Vec3& a, const Vec3& b)
+{
+    const MechanicalObject3::SPtr dofs = core::objectmodel::New<MechanicalObject3>();
+    dofs->showObject.setValue(true);
+    node->addObject(dofs);
+    dofs->resize(2);
+    MechanicalObject3::WriteVecCoord x = dofs->writePositions();
+    x[0] = a;
+    x[1] = b;
+    return dofs;
+}
+
+void movePoints(MechanicalObject3* dofs, const Vec3& a, const Vec3& b)
+{
+    MechanicalObject3::WriteVecCoord x = dofs->writePositions();
+    x[0] = a;
+    x[1] = b;
+}
+
+/// What the animation loop runs after each step.
+void updateBBox(simulation::Node* root)
+{
+    root->execute<simulation::UpdateBoundingBoxVisitor>(core::execparams::defaultInstance());
+}
+
+void expectBBox(const simulation::Node* node, const Vec3& expectedMin, const Vec3& expectedMax)
+{
+    const BoundingBox& bbox = node->f_bbox.getValue();
+    EXPECT_TRUE(bbox.isValid()) << "node " << node->getName();
+    EXPECT_EQ(bbox.minBBox(), expectedMin) << "node " << node->getName();
+    EXPECT_EQ(bbox.maxBBox(), expectedMax) << "node " << node->getName();
+}
+
+simulation::Node::SPtr createRoot()
+{
+    return simulation::MainSimulation::getSimulation()->createNewGraph("root");
+}
+} // namespace
+
+/// No bbox given: computed at init, and recomputed when the objects move.
+/// Writing the computed value must not turn it into a fixed bbox.
+TEST(NodeBBox_test, computedBBoxFollowsObjects)
+{
+    EXPECT_MSG_NOEMIT(Error);
+    const simulation::Node::SPtr root = createRoot();
+    const auto dofs = addPoints(root.get(), Vec3(0, 0, 0), Vec3(1, 1, 1));
+
+    simulation::node::initRoot(root.get());
+    EXPECT_FALSE(root->bboxIsFixed());
+    expectBBox(root.get(), Vec3(0, 0, 0), Vec3(1, 1, 1));
+
+    movePoints(dofs.get(), Vec3(5, 5, 5), Vec3(6, 6, 6));
+    updateBBox(root.get());
+    EXPECT_FALSE(root->bboxIsFixed());
+    expectBBox(root.get(), Vec3(5, 5, 5), Vec3(6, 6, 6));
+}
+
+/// bbox written after the node creation and before init, e.g. `root.bbox = ...`
+/// in a Python createScene: kept by init and by the updates.
+TEST(NodeBBox_test, bboxSetBeforeInitIsKept)
+{
+    EXPECT_MSG_NOEMIT(Error);
+    const simulation::Node::SPtr root = createRoot();
+    const auto dofs = addPoints(root.get(), Vec3(0, 0, 0), Vec3(1, 1, 1));
+    root->f_bbox.setValue(BoundingBox(Vec3(-0.5, -0.5, -0.5), Vec3(0.5, 0.5, 0.5)));
+    EXPECT_TRUE(root->bboxIsFixed());
+
+    simulation::node::initRoot(root.get());
+    expectBBox(root.get(), Vec3(-0.5, -0.5, -0.5), Vec3(0.5, 0.5, 0.5));
+
+    movePoints(dofs.get(), Vec3(5, 5, 5), Vec3(6, 6, 6));
+    updateBBox(root.get());
+    EXPECT_TRUE(root->bboxIsFixed());
+    expectBBox(root.get(), Vec3(-0.5, -0.5, -0.5), Vec3(0.5, 0.5, 0.5));
+}
+
+/// bbox written while the simulation runs (e.g. from a controller): from then on
+/// it is fixed.
+TEST(NodeBBox_test, bboxSetAfterInitIsKept)
+{
+    EXPECT_MSG_NOEMIT(Error);
+    const simulation::Node::SPtr root = createRoot();
+    const auto dofs = addPoints(root.get(), Vec3(0, 0, 0), Vec3(1, 1, 1));
+    simulation::node::initRoot(root.get());
+    expectBBox(root.get(), Vec3(0, 0, 0), Vec3(1, 1, 1));
+
+    root->f_bbox.setValue(BoundingBox(Vec3(-2, -2, -2), Vec3(2, 2, 2)));
+    EXPECT_TRUE(root->bboxIsFixed());
+    updateBBox(root.get());
+    expectBBox(root.get(), Vec3(-2, -2, -2), Vec3(2, 2, 2));
+
+    movePoints(dofs.get(), Vec3(5, 5, 5), Vec3(6, 6, 6));
+    updateBBox(root.get());
+    expectBBox(root.get(), Vec3(-2, -2, -2), Vec3(2, 2, 2));
+}
+
+/// bbox given as a scene attribute (what the XML loader and addChild(name, bbox=...)
+/// do through Node::parse): the node keeps it, and the computed bbox of its parent
+/// includes it along with the computed bbox of its siblings.
+TEST(NodeBBox_test, bboxFromSceneAttributeIsKeptAndIncludedInParent)
+{
+    EXPECT_MSG_NOEMIT(Error);
+    const simulation::Node::SPtr root = createRoot();
+
+    const simulation::Node::SPtr fixedChild = root->createChild("fixedChild");
+    core::objectmodel::BaseObjectDescription desc("fixedChild", "Node");
+    desc.setAttribute("bbox", "-3 -3 -3 3 3 3");
+    fixedChild->parse(&desc);
+    const auto fixedDofs = addPoints(fixedChild.get(), Vec3(0, 0, 0), Vec3(1, 1, 1));
+
+    const simulation::Node::SPtr computedChild = root->createChild("computedChild");
+    const auto computedDofs = addPoints(computedChild.get(), Vec3(10, 10, 10), Vec3(11, 11, 11));
+
+    simulation::node::initRoot(root.get());
+    EXPECT_TRUE(fixedChild->bboxIsFixed());
+    EXPECT_FALSE(computedChild->bboxIsFixed());
+    EXPECT_FALSE(root->bboxIsFixed());
+    expectBBox(fixedChild.get(), Vec3(-3, -3, -3), Vec3(3, 3, 3));
+    expectBBox(computedChild.get(), Vec3(10, 10, 10), Vec3(11, 11, 11));
+    expectBBox(root.get(), Vec3(-3, -3, -3), Vec3(11, 11, 11));
+
+    movePoints(fixedDofs.get(), Vec3(20, 20, 20), Vec3(21, 21, 21));
+    movePoints(computedDofs.get(), Vec3(4, 4, 4), Vec3(5, 5, 5));
+    updateBBox(root.get());
+    expectBBox(fixedChild.get(), Vec3(-3, -3, -3), Vec3(3, 3, 3));
+    expectBBox(computedChild.get(), Vec3(4, 4, 4), Vec3(5, 5, 5));
+    expectBBox(root.get(), Vec3(-3, -3, -3), Vec3(5, 5, 5));
 }
 
 }// namespace sofa
