@@ -31,9 +31,13 @@ namespace sofa::component::linearsolver::iterative
 void registerPCGLinearSolver(sofa::core::ObjectFactory* factory)
 {
     factory->registerObjects(core::ObjectRegistrationData("Linear solver using the preconditioned conjugate gradient iterative algorithm.")
-        .add< PCGLinearSolver<GraphScatteredMatrix, GraphScatteredVector> >());
+        .add< PCGLinearSolver<GraphScatteredMatrix, GraphScatteredVector> >(true)
+        .add< PCGLinearSolver<linearalgebra::CompressedRowSparseMatrix<SReal>, linearalgebra::FullVector<SReal> > >()
+        .add< PCGLinearSolver<linearalgebra::CompressedRowSparseMatrix<type::Mat<3,3,SReal> >, linearalgebra::FullVector<SReal> > >());
 }
 
 template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API PCGLinearSolver<GraphScatteredMatrix, GraphScatteredVector>;
+template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API PCGLinearSolver< linearalgebra::CompressedRowSparseMatrix<SReal>, linearalgebra::FullVector<SReal> >;
+template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API PCGLinearSolver< linearalgebra::CompressedRowSparseMatrix<type::Mat<3,3,SReal> >, linearalgebra::FullVector<SReal> >;
 
 } // namespace sofa::component::linearsolver::iterative
