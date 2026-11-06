@@ -6,19 +6,22 @@ set(SOFACOMPONENTDIFFUSION_SOURCE_DIR "src/sofa/component/diffusion")
 set(HEADER_FILES
     ${SOFACOMPONENTDIFFUSION_SOURCE_DIR}/config.h.in
     ${SOFACOMPONENTDIFFUSION_SOURCE_DIR}/init.h
+    ${SOFACOMPONENTDIFFUSION_SOURCE_DIR}/DiffusionFEMForceField.h
+    ${SOFACOMPONENTDIFFUSION_SOURCE_DIR}/DiffusionFEMForceField.inl
     ${SOFACOMPONENTDIFFUSION_SOURCE_DIR}/TetrahedronDiffusionFEMForceField.h
     ${SOFACOMPONENTDIFFUSION_SOURCE_DIR}/TetrahedronDiffusionFEMForceField.inl
 )
 
 set(SOURCE_FILES
     ${SOFACOMPONENTDIFFUSION_SOURCE_DIR}/init.cpp
+    ${SOFACOMPONENTDIFFUSION_SOURCE_DIR}/DiffusionFEMForceField.cpp
     ${SOFACOMPONENTDIFFUSION_SOURCE_DIR}/TetrahedronDiffusionFEMForceField.cpp
 )
 
-sofa_find_package(Sofa.Simulation.Core REQUIRED)
+sofa_find_package(Sofa.Component.SolidMechanics.FEM.Elastic REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Simulation.Core)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.SolidMechanics.FEM.Elastic)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
