@@ -69,8 +69,11 @@ void MappingGraphMechanicalOperations::computeForce(const MappingGraph& mappingG
      */
     mappingGraph.algorithms.traverse_([&](core::behavior::BaseMechanicalState& state)
     {
-        const core::VecDerivId& stateForce = result.getId(&state);
-        state.accumulateForce(&mparams, stateForce);
+        const core::VecDerivId& stateVecDerivId = result.getId(&state);
+        state.vOp(&mparams,
+            static_cast<core::VecId>(stateVecDerivId),
+            static_cast<core::ConstVecId>(stateVecDerivId),
+            sofa::core::vec_id::read_access::externalForce, 1.0);
     });
 
     /**
