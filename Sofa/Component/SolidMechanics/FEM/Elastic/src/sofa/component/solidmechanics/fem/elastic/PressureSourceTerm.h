@@ -59,11 +59,7 @@ protected:
  * @class PressureSourceTerm
  * @brief A traction \f$ p \, n \f$ built from a pressure prescribed at the nodes.
  *
- * The linked NodalPressure is interpolated at the quadrature point and multiplied by the unit
- * normal of the element. A positive pressure acts along the normal, whose orientation follows the
- * node ordering of the element.
- *
- * Only available on elements of codimension 1, the ones that have a normal.
+ * A positive pressure acts along the normal, which is oriented by the node ordering.
  *
  * @tparam TDataTypes The data types used for positions, velocities, etc. (e.g., Vec3Types).
  * @tparam TElementType The type of finite element (e.g., sofa::geometry::Triangle).
@@ -78,8 +74,10 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE2(PressureSourceTerm, DataTypes, ElementType),
         SOFA_TEMPLATE2(BaseSourceTerm, DataTypes, ElementType));
 
+    using Real = sofa::Real_t<DataTypes>;
     using Deriv = sofa::Deriv_t<DataTypes>;
     using QuadratureContext_t = QuadratureContext<DataTypes, ElementType>;
+    using SourceDerivative = typename BaseSourceTerm<DataTypes, ElementType>::SourceDerivative;
     using NodalPressure = ::sofa::component::solidmechanics::fem::elastic::NodalPressure<DataTypes>;
 
     /**
@@ -89,19 +87,25 @@ public:
         sofa::BaseLink::FLAG_STOREPATH | sofa::BaseLink::FLAG_STRONGLINK> l_pressure;
 
     /**
-     * @brief Initializes the component and checks that a pressure is linked.
+     * @brief Initializes the component.
      */
     void init() override;
 
     /**
-     * @brief The linked pressure interpolated at the quadrature point, times the unit normal.
+     * @brief The pressure interpolated at the quadrature point, times the unit normal.
      */
     Deriv evaluate(const QuadratureContext_t& context) const override;
 
     /**
-     * @brief The nodal values this term interpolates, for FEMSourceTermIntegrator to track.
+     * @brief The nodal values of the pressure.
      */
     sofa::type::vector<const sofa::core::objectmodel::BaseData*> integrandInputs() const override;
+
+    /**
+     * @brief The pressure times the derivative of the area normal of the element.
+     */
+    SourceDerivative evaluateStiffness(const QuadratureContext_t& context,
+        sofa::Size node) const override;
 
 protected:
 

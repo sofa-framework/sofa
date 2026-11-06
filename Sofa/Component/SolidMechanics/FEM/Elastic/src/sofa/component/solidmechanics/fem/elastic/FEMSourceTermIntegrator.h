@@ -37,11 +37,9 @@ namespace sofa::component::solidmechanics::fem::elastic
 
 /**
  * @class FEMSourceTermIntegrator
- * @brief Integrates a source density into consistent nodal loads.
- *
- * A source term contributes \f$ \int_{\Omega} N_a \, r \, d\Omega \f$ to the right-hand side, where
- * r is the density evaluated by a linked BaseSourceTerm (through l_constantSources) at
- * each quadrature point.
+ * @brief Integrates source terms into consistent nodal loads,
+ * \f$ \int_{\Omega} N_a \, r \, d\Omega \f$, with \f$ N_a \f$ the shape function of node a and r
+ * the source density.
  *
  * @tparam TDataTypes The data types used for positions, velocities, etc. (e.g., Vec3Types).
  * @tparam TElementType The type of finite element (e.g., sofa::geometry::Tetrahedron).
@@ -68,30 +66,27 @@ protected:
 public:
 
     /**
-     * @brief Source terms integrated by this component.
-     *
-     * If left empty, the BaseSourceTerm components found in the current context are used.
+     * @brief Source terms integrated once on the rest configuration.
      */
     sofa::MultiLink<FEMSourceTermIntegrator<DataTypes, ElementType>, BaseSourceTerm<DataTypes, ElementType>,
         sofa::BaseLink::FLAG_STOREPATH | sofa::BaseLink::FLAG_STRONGLINK> l_constantSources;
 
     /**
+     * @brief Source terms integrated on the current configuration.
+     */
+    sofa::MultiLink<FEMSourceTermIntegrator<DataTypes, ElementType>, BaseSourceTerm<DataTypes, ElementType>,
+        sofa::BaseLink::FLAG_STOREPATH | sofa::BaseLink::FLAG_STRONGLINK> l_nonConstantSources;
+
+    /**
      * @brief Initializes the component.
-     *
-     * This method performs several initialization steps:
-     * 1. Initializes the base force field.
-     * 2. Initializes the topology accessor.
-     * 3. Validates the linked source terms.
-     * 4. Tracks the Data the constant source terms read.
-     * 5. Integrates the source terms into the nodal force.
      */
     void init() override;
 
     /**
-     * @brief Adds the nodal source term to the RHS vector.
+     * @brief Adds the nodal loads of the source terms.
      *
      * @param mparams Mechanical parameters for the computation.
-     * @param f The force vector to which the source term will be added.
+     * @param f The force vector, to which the source term will be added.
      * @param x The current positions.
      * @param v The current velocities.
      */
@@ -102,14 +97,14 @@ public:
         const sofa::DataVecDeriv_t<DataTypes>& v) override;
 
     /**
-     * @brief No-op.
+     * @brief Applies the tangent of the non-constant source terms to a displacement increment.
      */
     void addDForce(const sofa::core::MechanicalParams* mparams,
         sofa::DataVecDeriv_t<DataTypes>& df,
         const sofa::DataVecDeriv_t<DataTypes>& dx) override;
 
     /**
-     * @brief No-op.
+     * @brief Assembles the tangent of the non-constant source terms.
      */
     void buildStiffnessMatrix(sofa::core::behavior::StiffnessMatrix* matrix) override;
 
@@ -125,11 +120,13 @@ public:
      */
     sofa::Data<sofa::Size> d_quadratureDegree;
 
+    /**
+     * @brief Whether the non-symmetric tangent of the non-constant source terms is assembled.
+     */
+    sofa::Data<bool> d_useTangentStiffness;
+
 protected:
 
-    /**
-     * @brief Default constructor.
-     */
     FEMSourceTermIntegrator();
 
     /**
@@ -143,16 +140,21 @@ protected:
     void doUpdateInternal() override;
 
     /**
-     * @brief Runs the quadrature and accumulates every linked source term into m_constantForce.
-     *
-     * For each element and each quadrature point, a QuadratureContext is built and handed to every
-     * source term; the density it returns is weighted by \f$ w \, |\det J| \, N_a \f$ and scattered
-     * onto the element nodes.
+     * @brief Integrates the constant source terms on the rest configuration.
      */
     void assembleConstantForce();
 
     /**
-     * @brief Nodal load of every term in l_constantSources.
+     * @brief Integrates the non-constant source terms.
+     *
+     * @param x The configuration the terms are integrated on.
+     * @param f The force vector the nodal forces are accumulated into.
+     */
+    void assembleNonConstantForce(const sofa::VecCoord_t<DataTypes>& x,
+        sofa::VecDeriv_t<DataTypes>& f) const;
+
+    /**
+     * @brief Nodal load of the constant source terms.
      */
     sofa::VecDeriv_t<DataTypes> m_constantForce;
 };

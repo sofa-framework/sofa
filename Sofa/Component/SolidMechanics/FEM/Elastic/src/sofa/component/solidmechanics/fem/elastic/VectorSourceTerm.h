@@ -59,10 +59,6 @@ protected:
  * @class VectorSourceTerm
  * @brief A source density given directly as a vector at each node.
  *
- * The linked NodalSourceDensity is interpolated at the quadrature point and returned unchanged.
- * The measure the integrator divides it by is the one of the element it is attached to: a body
- * force on a volume element, a traction on a boundary one.
- *
  * @tparam TDataTypes The data types used for positions, velocities, etc. (e.g., Vec3Types).
  * @tparam TElementType The type of finite element (e.g., sofa::geometry::Tetrahedron).
  */
@@ -78,6 +74,7 @@ public:
 
     using Deriv = sofa::Deriv_t<DataTypes>;
     using QuadratureContext_t = QuadratureContext<DataTypes, ElementType>;
+    using SourceDerivative = typename BaseSourceTerm<DataTypes, ElementType>::SourceDerivative;
     using NodalSourceDensity =
         ::sofa::component::solidmechanics::fem::elastic::NodalSourceDensity<DataTypes>;
 
@@ -88,19 +85,28 @@ public:
         sofa::BaseLink::FLAG_STOREPATH | sofa::BaseLink::FLAG_STRONGLINK> l_sourceDensity;
 
     /**
-     * @brief Initializes the component and checks that a source density is linked.
+     * @brief Initializes the component.
      */
     void init() override;
 
     /**
-     * @brief The linked source density interpolated at the quadrature point.
+     * @brief The source density interpolated at the quadrature point.
      */
     Deriv evaluate(const QuadratureContext_t& context) const override;
 
     /**
-     * @brief The nodal values this term interpolates, for FEMSourceTermIntegrator to track.
+     * @brief The nodal values of the source density.
      */
     sofa::type::vector<const sofa::core::objectmodel::BaseData*> integrandInputs() const override;
+
+    /**
+     * @brief The source density times the derivative of the measure:
+     *
+     * \f[ \frac{\partial (|\det J| \, r)}{\partial x_b}
+     *     = |\det J| \; r \otimes \left( J^{-T} \frac{\partial N_b}{\partial q} \right) \f]
+     */
+    SourceDerivative evaluateStiffness(const QuadratureContext_t& context,
+        sofa::Size node) const override;
 
 protected:
 
