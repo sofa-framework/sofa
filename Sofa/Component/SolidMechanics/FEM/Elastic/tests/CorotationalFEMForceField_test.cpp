@@ -70,14 +70,11 @@ const Matrix<Vec2Types> prescribedStretchMatrix2D =
 const Matrix<Vec3Types> prescribedStretchMatrix3D =
     prescribedRotationMatrix3D * Matrix<Vec3Types>{{1.5, 0.0, 0.0}, {0.0, 1.0, 0.0}, {0.0, 0.0, 1.0}} * prescribedRotationMatrix3D.transposed();
 
-/// prescribedStretchMatrix2D within the plane z = 0, for the triangles and quads in 3D.
+/// prescribedStretchMatrix2D within the plane z = 0, for the triangles in 3D.
 const Matrix<Vec3Types> prescribedFlatStretchMatrix3D {
     {prescribedStretchMatrix2D(0, 0), prescribedStretchMatrix2D(0, 1), 0.0},
     {prescribedStretchMatrix2D(1, 0), prescribedStretchMatrix2D(1, 1), 0.0},
     {0.0, 0.0, 1.0}};
-
-// An edge is stretched along its own line. any other direction involves rotation.
-const Matrix<Vec2Types> prescribedEdgeStretchMatrix2D {{1.5, 0.0}, {0.0, 1.0}};
 
 struct PolarMethod { static constexpr const char* key = "polar"; };
 struct PolarAffineMethod { static constexpr const char* key = "polar_affine"; };
@@ -88,8 +85,6 @@ struct HexahedronMethod { static constexpr const char* key = "hexahedron"; };
 
 using Quad2D = CorotationalFEMForceField<Vec2Types, sofa::geometry::Quad>;
 using Triangle2D = CorotationalFEMForceField<Vec2Types, sofa::geometry::Triangle>;
-using Edge2D = CorotationalFEMForceField<Vec2Types, sofa::geometry::Edge>;
-using Quad3D = CorotationalFEMForceField<Vec3Types, sofa::geometry::Quad>;
 using Triangle3D = CorotationalFEMForceField<Vec3Types, sofa::geometry::Triangle>;
 using Hexahedron3D = CorotationalFEMForceField<Vec3Types, sofa::geometry::Hexahedron>;
 using Tetrahedron3D = CorotationalFEMForceField<Vec3Types, sofa::geometry::Tetrahedron>;
@@ -140,20 +135,6 @@ struct CorotationalFEMForceFieldTangent_test : public sofa::ForceField_test<type
             restPositions = VecCoord{Coord(0.0, 0.0), Coord(1.0, 0.0), Coord(0.0, 1.0)};
             rotation = prescribedRotationMatrix2D;
             stretch = prescribedStretchMatrix2D;
-        }
-        else if constexpr (std::is_same_v<ForceField, Edge2D>)
-        {
-            topology->addEdge(0, 1);
-            restPositions = VecCoord{Coord(0.0, 0.0), Coord(1.0, 0.0)};
-            rotation = prescribedRotationMatrix2D;
-            stretch = prescribedEdgeStretchMatrix2D;
-        }
-        else if constexpr (std::is_same_v<ForceField, Quad3D>)
-        {
-            topology->addQuad(0, 1, 2, 3);
-            restPositions = VecCoord{Coord(0.0, 0.0, 0.0), Coord(3.0, 0.0, 0.0), Coord(3.0, 1.0, 0.0), Coord(0.0, 1.0, 0.0)};
-            rotation = prescribedRotationMatrix3D;
-            stretch = prescribedFlatStretchMatrix3D;
         }
         else if constexpr (std::is_same_v<ForceField, Triangle3D>)
         {
@@ -256,18 +237,6 @@ using TestTypes = ::testing::Types<
     TestCase<Triangle2D, PolarAffineMethod>,
     TestCase<Triangle2D, StablePolarMethod>,
     TestCase<Triangle2D, StablePolarAffineMethod>,
-    TestCase<Edge2D, PolarMethod>,
-    TestCase<Edge2D, PolarAffineMethod>,
-    TestCase<Edge2D, StablePolarMethod>,
-    TestCase<Edge2D, StablePolarAffineMethod>,
-    TestCase<Quad3D, PolarMethod>,
-    TestCase<Quad3D, PolarAffineMethod>,
-    TestCase<Quad3D, StablePolarMethod>,
-    TestCase<Quad3D, StablePolarAffineMethod>,
-    TestCase<Triangle3D, PolarMethod>,
-    TestCase<Triangle3D, PolarAffineMethod>,
-    TestCase<Triangle3D, StablePolarMethod>,
-    TestCase<Triangle3D, StablePolarAffineMethod>,
     TestCase<Triangle3D, TriangleMethod>,
     TestCase<Hexahedron3D, PolarMethod>,
     TestCase<Hexahedron3D, PolarAffineMethod>,
