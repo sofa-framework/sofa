@@ -112,19 +112,23 @@ protected:
     std::map<BaseMapping*, core::GeometricStiffnessMatrix> m_geometricStiffness;
     std::map<BaseMass*, BaseAssemblingMatrixAccumulator<Contribution::MASS>*> m_mass;
 
+    /**
+     * Components contributing to the same matrix.
+     * They are stored in the order of the scene graph traversal, which is the order of their contributions
+     */
     struct IndependentContributors
     {
-        std::map<BaseForceField*, core::behavior::StiffnessMatrix> m_stiffness;
-        std::map<BaseForceField*, core::behavior::DampingMatrix> m_damping;
-        std::map<BaseMapping*, core::GeometricStiffnessMatrix> m_geometricStiffness;
-        std::map<BaseMass*, BaseAssemblingMatrixAccumulator<Contribution::MASS>*> m_mass;
+        sofa::type::vector<std::pair<BaseForceField*, core::behavior::StiffnessMatrix> > m_stiffness;
+        sofa::type::vector<std::pair<BaseForceField*, core::behavior::DampingMatrix> > m_damping;
+        sofa::type::vector<std::pair<BaseMapping*, core::GeometricStiffnessMatrix> > m_geometricStiffness;
+        sofa::type::vector<std::pair<BaseMass*, BaseAssemblingMatrixAccumulator<Contribution::MASS>*> > m_mass;
         int id {};
     };
 
     sofa::type::vector<IndependentContributors> m_independentContributors;
 
 
-    /// List of shared local matrices under mappings
+    /// List of shared local matrices under mappings, in the order of the scene graph traversal
     sofa::type::vector< std::pair<
         PairMechanicalStates,
         std::shared_ptr<LocalMappedMatrixType<Real> >
@@ -314,6 +318,9 @@ struct GroupOfComponentsAssociatedToAPairOfMechanicalStates
     std::set<BaseForceField*> forcefieds;
     std::set<BaseMass*> masses;
     std::set<BaseMapping*> mappings;
+
+    /// Rank of the pair of mechanical states when it is first encountered in the scene graph traversal
+    std::size_t order {};
 
     friend std::ostream& operator<<(std::ostream& os,
         const GroupOfComponentsAssociatedToAPairOfMechanicalStates& group);
