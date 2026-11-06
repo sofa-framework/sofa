@@ -22,16 +22,30 @@
 #pragma once
 
 #include <sofa/core/trait/DataTypes.h>
+#include <sofa/fem/FiniteElement.h>
 #include <sofa/helper/SelectableItem.h>
 #include <sofa/helper/decompose.h>
 
 namespace sofa::component::solidmechanics::fem::elastic
 {
 
-template <class DataTypes>
+/// How the motion of the nodes is fitted before the polar decomposition.
+enum class Fit { Rigid, Affine };
+
+/// How the polar decomposition is computed: 
+/// Standard calls Decompose::polarDecomposition
+/// Stable calls Decompose::polarDecomposition_stable
+enum class Algorithm { Standard, Stable };
+
+template <class DataTypes, class ElementType, Fit FitType, Algorithm AlgorithmType>
 struct PolarDecomposition
 {
     using RotationMatrix = sofa::type::Mat<DataTypes::spatial_dimensions, DataTypes::spatial_dimensions, sofa::Real_t<DataTypes>>;
+
+    /// The remainder of the dimensions of an embedded element within a higher-dimensional space.
+    // TODO: embedded elements (Codimension > 0) are not handled.
+    static constexpr sofa::Size Codimension =
+        DataTypes::spatial_dimensions - sofa::fem::FiniteElement<ElementType, DataTypes>::TopologicalDimension;
 
     template<std::size_t NumberOfNodesInElement>
     sofa::Coord_t<DataTypes> computeCentroid(const std::array<sofa::Coord_t<DataTypes>, NumberOfNodesInElement>& nodes)
@@ -64,15 +78,73 @@ struct PolarDecomposition
             Q[j] = nodesRestPosition[j] - t0;
         }
 
-        const auto H = P.multTranspose(Q);
+        const auto F = [&P, &Q]() -> RotationMatrix
+        {
+            const auto H = P.multTranspose(Q);
 
-        sofa::helper::Decompose<sofa::Real_t<DataTypes>>::polarDecomposition(H, rotationMatrix);
+            if constexpr (Codimension > 0)
+            {
+                // Not handled: H is decomposed as it is.
+                return H;
+            }
+            else if constexpr (FitType == Fit::Affine)
+            {
+                const auto M = Q.multTranspose(Q);
+                return H * (M / sofa::type::trace(M)).inverted();
+            }
+            else
+            {
+                return H;
+            }
+        }();
+
+        if constexpr (AlgorithmType == Algorithm::Standard)
+        {
+            sofa::helper::Decompose<sofa::Real_t<DataTypes>>::polarDecomposition(F, rotationMatrix);
+        }
+        else
+        {
+            sofa::helper::Decompose<sofa::Real_t<DataTypes>>::polarDecomposition_stable(F, rotationMatrix);
+        }
     }
 
     static constexpr sofa::helper::Item getItem()
     {
-        return {"polar", "Polar decomposition"};
+        if constexpr (AlgorithmType == Algorithm::Standard)
+        {
+            if constexpr (FitType == Fit::Rigid)
+            {
+                return {"polar", "Polar decomposition of the rigid fit"};
+            }
+            else
+            {
+                return {"polar_affine", "Polar decomposition of the affine fit"};
+            }
+        }
+        else
+        {
+            if constexpr (FitType == Fit::Rigid)
+            {
+                return {"stable_polar", "Stable polar decomposition of the rigid fit"};
+            }
+            else
+            {
+                return {"stable_polar_affine", "Stable polar decomposition of the affine fit"};
+            }
+        }
     }
 };
+
+template <class DataTypes, class ElementType>
+using RigidFitPolarDecomposition = PolarDecomposition<DataTypes, ElementType, Fit::Rigid, Algorithm::Standard>;
+
+template <class DataTypes, class ElementType>
+using AffineFitPolarDecomposition = PolarDecomposition<DataTypes, ElementType, Fit::Affine, Algorithm::Standard>;
+
+template <class DataTypes, class ElementType>
+using RigidFitStablePolarDecomposition = PolarDecomposition<DataTypes, ElementType, Fit::Rigid, Algorithm::Stable>;
+
+template <class DataTypes, class ElementType>
+using AffineFitStablePolarDecomposition = PolarDecomposition<DataTypes, ElementType, Fit::Affine, Algorithm::Stable>;
 
 }
