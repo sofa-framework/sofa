@@ -22,12 +22,12 @@
 #pragma once
 
 #include <sofa/helper/config.h>
+#include <sofa/type/trait/TypeTrait.h>
 
+#include <sstream>
 #include <string>
 #include <string_view>
 #include <vector>
-#include <sstream>
-
 
 namespace sofa::helper
 {
@@ -108,5 +108,34 @@ SOFA_HELPER_API std::string_view removeTrailingCharacter(std::string_view sv, ch
 
 ///@brief Removes specified trailing characters from a string view.
 SOFA_HELPER_API std::string_view removeTrailingCharacters(std::string_view sv, std::initializer_list<char> characters);
+
+template<std::integral T>
+constexpr std::size_t numDigits(T n)
+{
+    std::size_t d = 1;
+    while (n >= 10) { n /= 10; ++d; }
+    return d;
+}
+
+template<class Prefix, sofa::Size N, class T>
+constexpr static auto makeFixedSizeTypeName()
+{
+    constexpr std::string_view prefix = Prefix::value;
+    constexpr std::size_t d = sofa::helper::numDigits(N);
+    constexpr auto suffix = type::TypeTrait<T>::suffix;
+
+    std::array<char, prefix.size() + d + suffix.size() + 1> s{};
+    std::copy(prefix.begin(), prefix.end(), s.begin());
+    int n = N;
+    for (int i = d - 1; i >= 0; --i)
+    {
+        s[prefix.size() + i] = static_cast<char>('0' + n % 10);
+        n /= 10;
+    }
+    //suffix
+    std::copy(suffix.begin(), suffix.end(), s.begin() + prefix.size() + d);
+    s[prefix.size() + d + suffix.size()] = '\0';
+    return s;
+}
 
 } // namespace sofa::helper
