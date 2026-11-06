@@ -11,9 +11,9 @@
         <RequiredPlugin pluginName="Sofa.Component.AnimationLoop"/>
         <RequiredPlugin pluginName="Sofa.Component.Constraint.Projective"/>
         <RequiredPlugin pluginName="Sofa.Component.Engine.Select"/>
+        <RequiredPlugin pluginName="Sofa.Component.IntegrationScheme.Backward"/>
         <RequiredPlugin pluginName="Sofa.Component.LinearSolver.Direct"/>
         <RequiredPlugin pluginName="Sofa.Component.MechanicalLoad"/>
-        <RequiredPlugin pluginName="Sofa.Component.ODESolver.Backward"/>
         <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.FEM.Elastic"/>
         <RequiredPlugin pluginName="Sofa.Component.StateContainer"/>
         <RequiredPlugin pluginName="Sofa.Component.Topology.Container.Constant"/>
@@ -38,8 +38,7 @@
         <RegularGridTopology name="grid" n="5 3 3" min="0 0 0" max="2 0.5 0.5"/>
 
         <Node name="PressureViaForceField">
-            <NewtonRaphsonSolver name="newton" maxNbIterationsNewton="3" absoluteResidualStoppingThreshold="1e-7"/>
-            <StaticSolver newtonSolver="@newton"/>
+            <StaticEquilibriumIntegrationScheme maxNbIterationsNewton="3" residualThreshold="1e-14"/>
             <SparseLDLSolver name="linear_solver" template="CompressedRowSparseMatrixd"/>
 
             <MechanicalObject name="dofs" template="Vec3" src="@../grid" showObject="true" drawMode="1" showObjectScale="0.05" showColor="0 1 1 0.5"/>
@@ -72,8 +71,7 @@
         </Node>
 
         <Node name="PressureViaSourceTerm">
-            <NewtonRaphsonSolver name="newton" maxNbIterationsNewton="3" absoluteResidualStoppingThreshold="1e-7"/>
-            <StaticSolver newtonSolver="@newton"/>
+            <StaticEquilibriumIntegrationScheme maxNbIterationsNewton="3" residualThreshold="1e-14"/>
             <SparseLDLSolver name="linear_solver" template="CompressedRowSparseMatrixd"/>
 
             <MechanicalObject name="dofs" template="Vec3" src="@../grid" showObject="true" drawMode="1" showObjectScale="0.025" showColor="1 1 1 1"/>
@@ -116,8 +114,7 @@
         <RegularGridTopology name="grid" n="5 3 3" min="0 0 1" max="2 0.5 1.5"/>
 
         <Node name="PressureViaForceField">
-            <NewtonRaphsonSolver name="newton" maxNbIterationsNewton="3" absoluteResidualStoppingThreshold="1e-7"/>
-            <StaticSolver newtonSolver="@newton"/>
+            <StaticEquilibriumIntegrationScheme maxNbIterationsNewton="3" residualThreshold="1e-14"/>
             <SparseLDLSolver name="linear_solver" template="CompressedRowSparseMatrixd"/>
 
             <MechanicalObject name="dofs" template="Vec3" src="@../grid" showObject="true" drawMode="1" showObjectScale="0.05" showColor="1 0.5 0 0.5"/>
@@ -139,8 +136,7 @@
         </Node>
 
         <Node name="PressureViaSourceTerm">
-            <NewtonRaphsonSolver name="newton" maxNbIterationsNewton="3" absoluteResidualStoppingThreshold="1e-7"/>
-            <StaticSolver newtonSolver="@newton"/>
+            <StaticEquilibriumIntegrationScheme maxNbIterationsNewton="3" residualThreshold="1e-14"/>
             <SparseLDLSolver name="linear_solver" template="CompressedRowSparseMatrixd"/>
 
             <MechanicalObject name="dofs" template="Vec3" src="@../grid" showObject="true" drawMode="1" showObjectScale="0.025" showColor="1 1 1 1"/>
