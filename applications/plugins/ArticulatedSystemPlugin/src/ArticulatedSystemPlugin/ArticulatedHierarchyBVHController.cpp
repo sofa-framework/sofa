@@ -72,16 +72,16 @@ void ArticulatedHierarchyBVHController::applyController(void)
 
         frame = (int)(floor(externalTime.getValue() / ahc->dtbvh));
 
-        const double residu = (externalTime.getValue() / ahc->dtbvh) - (double) frame;
+        const double residual = (externalTime.getValue() / ahc->dtbvh) - (double) frame;
 
-        msg_info() << "externalTime.getValue() = "<<externalTime.getValue() <<"  frame= "<<frame<<" residu = "<<residu ;
+        msg_info() << "externalTime.getValue() = "<<externalTime.getValue() <<"  frame= "<<frame<<" residual = "<<residual ;
 
         if(frame > ahc->numOfFrames-2)
         {
             frame = ahc->numOfFrames-2;
         }
 
-        alpha = residu;
+        alpha = residual;
     }
     else
     {
