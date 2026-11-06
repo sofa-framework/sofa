@@ -838,16 +838,22 @@ function(sofa_set_project_install_relocatable project_name binary_dir install_di
                 && ${CMAKE_COMMAND} -E copy \"${binary_dir}/cmake_install.cmakepatch\" \"${binary_dir}/cmake_install.cmake\"
             )
     else()
+        # Makefile/Ninja unescape "$$" to "$" before running the shell, Xcode does not:
+        # a leftover "$$" makes the shell expand the variable itself
+        set(escaped_dollar "\$\$")
+        if(CMAKE_GENERATOR MATCHES "Xcode")
+            set(escaped_dollar "\$")
+        endif()
         add_custom_target(${custom_target} ALL
             COMMENT "${project_name}: Patching cmake_install.cmake"
             COMMAND
                 test ! -e ${binary_dir}/cmake_install.cmakepatch
-                && echo \" set ( CMAKE_INSTALL_PREFIX_BACK_${project_name}_${binary_dirname} \\"\\$$\{CMAKE_INSTALL_PREFIX\}\\" ) \"
+                && echo \" set ( CMAKE_INSTALL_PREFIX_BACK_${project_name}_${binary_dirname} \\"\\${escaped_dollar}\{CMAKE_INSTALL_PREFIX\}\\" ) \"
                     > "${binary_dir}/cmake_install.cmakepatch"
-                && echo \" set ( CMAKE_INSTALL_PREFIX \\"\\$$\{CMAKE_INSTALL_PREFIX\}/${install_dir}/${project_name}\\" ) \"
+                && echo \" set ( CMAKE_INSTALL_PREFIX \\"\\${escaped_dollar}\{CMAKE_INSTALL_PREFIX\}/${install_dir}/${project_name}\\" ) \"
                     >> "${binary_dir}/cmake_install.cmakepatch"
                 && cat ${binary_dir}/cmake_install.cmake >> ${binary_dir}/cmake_install.cmakepatch
-                && echo \" set ( CMAKE_INSTALL_PREFIX \\"\\$$\{CMAKE_INSTALL_PREFIX_BACK_${project_name}_${binary_dirname}\}\\" ) \"
+                && echo \" set ( CMAKE_INSTALL_PREFIX \\"\\${escaped_dollar}\{CMAKE_INSTALL_PREFIX_BACK_${project_name}_${binary_dirname}\}\\" ) \"
                     >> "${binary_dir}/cmake_install.cmakepatch"
                 && ${CMAKE_COMMAND} -E copy ${binary_dir}/cmake_install.cmakepatch ${binary_dir}/cmake_install.cmake
                 || true
