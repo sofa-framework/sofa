@@ -1,19 +1,10 @@
 <?xml version="1.0"?>
-<!-- Demonstrates that SymmetricStressSourceTerm reproduces the two stress loads of
-     TrianglePressureForceField. The two beams of a pair are independent.
+<!-- Compares SymmetricStressSourceTerm with TrianglePressureForceField; their results should be
+     comparable. A stress that follows the deformation and a constant one are both demonstrated.
 
-     White:   SymmetricStressSourceTerm, in every pair
-     Cyan:    TrianglePressureForceField, cauchyStress  (nonConstantSources)
-     Yellow:  TrianglePressureForceField, constant force (constantSources)
-
-     The same stress serves both pairs, only the link it hangs from differs.
-
-     Hexa2QuadTopologicalMapping winds a boundary quad by vertex index, so the normal of the loaded
-     face points into the beam, (0, -1, 0). The traction the stress produces there is (-1.5, 2, 0),
-     which is what the constant pair prescribes as a vector.
-
-     TrianglePressureForceField contributes no tangent, so useTangentStiffness is off on the
-     follower pair.
+     White:   SymmetricStressSourceTerm
+     Cyan:    TrianglePressureForceField, cauchyStress
+     Yellow:  TrianglePressureForceField, constant force
 -->
 <Node name="root" dt="1" gravity="0 0 0">
     <Node name="RequiredPlugins">
@@ -41,7 +32,7 @@
         <OglLabel label="TrianglePressureForceField, constant"      x="10" y="876" fontsize="16" color="1 1 0 1"/>
     </Node>
 
-    <!-- ============ The stress integrated on the current configuration; cyan ============ -->
+    <!-- The stress is integrated on the current configuration; cyan -->
     <Node name="FollowerStress">
         <RegularGridTopology name="grid" n="5 3 3" min="0 0 0" max="2 0.5 0.5"/>
 
@@ -117,7 +108,7 @@
         </Node>
     </Node>
 
-    <!-- ============ The stress integrated on the rest configuration; yellow ============ -->
+    <!-- The stress is integrated on the rest configuration; yellow -->
     <Node name="DeadStress">
         <RegularGridTopology name="grid" n="5 3 3" min="0 0 1" max="2 0.5 1.5"/>
 

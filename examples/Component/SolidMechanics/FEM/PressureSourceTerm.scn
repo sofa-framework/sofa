@@ -1,16 +1,10 @@
 <?xml version="1.0"?>
-<!-- Compares PressureSourceTerm with SurfacePressureForceField.
+<!-- Compares PressureSourceTerm with SurfacePressureForceField; their results should be comparable.
+     Triangle and quad meshes are both demonstrated.
 
-     A beam is solved twice, once with SurfacePressureForceField and once with a NodalPressure
-     integrated by FEMSourceTermIntegrator. The two beams of a pair are independent.
-
-     White:   PressureSourceTerm, in both pairs
-     Cyan:    SurfacePressureForceField on a triangulated surface
-     Orange:  SurfacePressureForceField on the quads of that surface
-
-     The pressure is applied on the same surface twice, once through its triangles and once through
-     its quads, which SurfacePressureForceField and FEMSourceTermIntegrator handle by separate
-     paths.
+     White:   PressureSourceTerm
+     Cyan:    SurfacePressureForceField, triangles
+     Orange:  SurfacePressureForceField, quads
 -->
 <Node name="root" dt="1" gravity="0 0 0">
     <Node name="RequiredPlugins">
@@ -39,7 +33,7 @@
         <OglLabel label="SurfacePressureForceField, quads"      x="10" y="876" fontsize="16" color="1 0.5 0 1"/>
     </Node>
 
-    <!-- ============ Pressure on the top face of the beam; cyan ============ -->
+    <!-- Triangle mesh; cyan -->
     <Node name="ReplicateSurfacePressure">
         <RegularGridTopology name="grid" n="5 3 3" min="0 0 0" max="2 0.5 0.5"/>
 
@@ -117,7 +111,7 @@
         </Node>
     </Node>
 
-    <!-- ============ The same pressure on the quads of the top face; orange ============ -->
+    <!-- Quad mesh; orange -->
     <Node name="ReplicateSurfacePressureOnQuads">
         <RegularGridTopology name="grid" n="5 3 3" min="0 0 1" max="2 0.5 1.5"/>
 
