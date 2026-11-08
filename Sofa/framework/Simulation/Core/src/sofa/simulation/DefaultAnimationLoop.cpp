@@ -47,7 +47,6 @@
 #include <sofa/simulation/SolveVisitor.h>
 #include <sofa/simulation/task/TaskScheduler.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalAccumulateMatrixDeriv.h>
-#include <sofa/simulation/mechanicalvisitor/MechanicalBeginIntegrationVisitor.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalEndIntegrationVisitor.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalProjectPositionAndVelocityVisitor.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalPropagateOnlyPositionAndVelocityVisitor.h>
@@ -175,6 +174,7 @@ void DefaultAnimationLoop::propagateAnimateBeginEvent(const core::ExecParams* pa
 
 void DefaultAnimationLoop::beginIntegration(const core::ExecParams* params, SReal dt) const
 {
+    SOFA_UNUSED(dt);
     propagateIntegrateBeginEvent(params);
 }
 

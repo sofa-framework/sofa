@@ -74,9 +74,6 @@ public:
     void solveLinearSystem(const MechanicalParams* mparams, MultiVecDerivId xId, ConstMultiVecDerivId bId) override;
     virtual void doSolveLinearSystem(const MechanicalParams* mparams, DataVecDeriv& x, const DataVecDeriv& b);
 
-    /// Mass forces (gravity) often have null derivative
-    void addDForce(const MechanicalParams* /*mparams*/, DataVecDeriv & /*df*/, const DataVecDeriv & /*dx*/ ) override;
-
     /// Accumulate the contribution of M, B, and/or K matrices multiplied
     /// by the dx vector with the given coefficients.
     ///

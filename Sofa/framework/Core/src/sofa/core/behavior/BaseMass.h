@@ -63,7 +63,7 @@ public:
 
     /// dx = M^-1 f
     SOFA_CORE_DEPRECATED_ACCFROMF()
-    virtual void accFromF(const MechanicalParams* mparams, MultiVecDerivId aid) final;
+    void accFromF(const MechanicalParams* mparams, MultiVecDerivId aid);
 
     /// Solve M x = b, or x = M^-1 b, where M is the mass matrix
     ///
