@@ -124,17 +124,20 @@ constexpr static auto makeFixedSizeTypeName()
     constexpr std::size_t d = sofa::helper::numDigits(N);
     constexpr auto suffix = type::TypeTrait<T>::suffix;
 
-    std::array<char, prefix.size() + d + suffix.size() + 1> s{};
+    constexpr std::size_t prefixSize = prefix.size();
+    constexpr std::size_t suffixSize = suffix.size();
+
+    std::array<char, prefixSize + d + suffixSize + 1> s{};
     std::copy(prefix.begin(), prefix.end(), s.begin());
     int n = N;
     for (int i = d - 1; i >= 0; --i)
     {
-        s[prefix.size() + i] = static_cast<char>('0' + n % 10);
+        s[prefixSize + i] = static_cast<char>('0' + n % 10);
         n /= 10;
     }
     //suffix
-    std::copy(suffix.begin(), suffix.end(), s.begin() + prefix.size() + d);
-    s[prefix.size() + d + suffix.size()] = '\0';
+    std::copy(suffix.begin(), suffix.end(), s.begin() + prefixSize + d);
+    s[prefixSize + d + suffixSize] = '\0';
     return s;
 }
 
