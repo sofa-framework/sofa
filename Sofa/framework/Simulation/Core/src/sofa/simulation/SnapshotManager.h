@@ -43,8 +43,8 @@ namespace sofa::simulation
  * - m_snapshotsFromMemory for in-memory snapshots.
  * - m_snapshotsFromFiles for snapshots stored on disk.
  *
- * New snapshots can be added using addSnapshotFromMemory() and
- * addSnapshotFromFile().
+ * New snapshots can be added using addSnapshotToMemory() and
+ * addSnapshotToFile().
  *
  * Although in-memory and on-disk snapshots are handled separately,
  * both follow the same overall design:
@@ -61,9 +61,13 @@ class SOFA_SIMULATION_CORE_API SnapshotManager : public sofa::core::objectmodel:
 public:
 
     SOFA_CLASS(SnapshotManager, sofa::core::objectmodel::BaseComponent);
+    sofa::core::objectmodel::Data<Index> d_numberOfSnapshots; ///< Number of snapshot inside the manager
+
+protected:
     SnapshotManager();
     ~SnapshotManager();
 
+public:
     /// Container of snapshot from Files
     std::vector<std::string> m_snapshotsFromFiles;
 
@@ -71,10 +75,10 @@ public:
     std::map<std::string, std::shared_ptr<sofa::core::objectmodel::Snapshot>> m_snapshotsFromMemory;
 
     /// Store every snapshot from files in m_recentSnapshotsFromFiles and sort them by filename
-    void addSnapshotFromFile(const std::string& path);
+    void addSnapshotToFile(const std::string& path);
 
     /// Store every snapshot in memory in m_recentSnapshotsFromMemory and sort them by simulation time
-    void addSnapshotFromMemory(const std::shared_ptr<sofa::core::objectmodel::Snapshot>& snapshot,
+    void addSnapshotToMemory(const std::shared_ptr<sofa::core::objectmodel::Snapshot>& snapshot,
                            double snapshotTime);
 
     /// Save and store a Snapshot in memory
