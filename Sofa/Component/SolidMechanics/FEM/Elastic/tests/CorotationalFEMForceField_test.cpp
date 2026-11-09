@@ -167,6 +167,7 @@ struct CorotationalFEMForceFieldTangent_test : public sofa::ForceField_test<type
 
         this->force->d_youngModulus.setValue({1});
         this->force->d_poissonRatio.setValue({0});
+        this->force->d_symmetrizeTangent.setValue(false);
 
         this->deltaRange = {5e5, 5e6};
         this->flags &= ~sofa::ForceField_test<ForceField>::TEST_ADD_K_TO_MATRIX;
