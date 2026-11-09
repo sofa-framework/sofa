@@ -41,7 +41,7 @@ using namespace core::behavior;
 
 void registerEulerExplicitIntegrationScheme(sofa::core::ObjectFactory* factory)
 {
-    factory->registerObjects(core::ObjectRegistrationData("A simple explicit time integrator.")
+    factory->registerObjects(core::ObjectRegistrationData("The forward Euler and symplectic time integrator.")
         .add< EulerExplicitIntegrationScheme >());
 }
 
@@ -52,7 +52,7 @@ EulerExplicitIntegrationScheme::EulerExplicitIntegrationScheme()
 {
 }
 
-void EulerExplicitIntegrationScheme::doIntegrate(const core::ExecParams* params, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
+void EulerExplicitIntegrationScheme::doIntegrate(const core::ExecParams* params, sofa::core::MultiVecCoordId primaryStateVariableId, sofa::core::MultiVecDerivId derivStateVariableId)
 {
     if (!isComponentStateValid())
     {
@@ -62,24 +62,24 @@ void EulerExplicitIntegrationScheme::doIntegrate(const core::ExecParams* params,
     SCOPED_TIMER("EulerExplicitSolve");
 
     // Initialize the set of multi-vectors computed by this IntegrationScheme
-    MultiVecDeriv acc   (m_vop.get(), core::vec_id::write_access::dx);     // acceleration to be computed
-    MultiVecDeriv f     (m_vop.get(), core::vec_id::write_access::force ); // force to be computed
+    MultiVecDeriv unknown (m_vop.get(), core::vec_id::write_access::dx); // the unknown of the equation to solve. In mechanics, it's the acceleration in M a = f
+    MultiVecDeriv rhs (m_vop.get(), core::vec_id::write_access::force ); // the right-hand side of the equation to solve. In mechanics, it's the forces in M a = f.
 
-    addSeparateGravity(m_mop.get(), m_dt, vResult);
-    computeForce(m_mop.get(), f);
+    addSeparateGravity(m_mop.get(), m_dt, derivStateVariableId);
+    computeRhs(m_mop.get(), rhs);
 
-    // The inverse of the mass matrix is trivial to compute. Otherwise, it requires the
+    // The inverse of the mass matrix may be trivial to compute. Otherwise, it requires the
     // assembly of a linear system and a linear IntegrationScheme to compute its solution.
     if(isMassMatrixTriviallyInvertible(params))
     {
-        // acc = M^-1 * f
-        computeAcceleration(m_mop.get(), acc, f);
-        projectResponse(m_mop.get(), acc);
-        solveConstraints(m_mop.get(), acc);
+        // unknown = M^-1 * rhs
+        solveTrivialLinearSystem(m_mop.get(), unknown, rhs);
+        projectResponse(m_mop.get(), unknown);
+        solveConstraints(m_mop.get(), unknown);
     }
     else
     {
-        projectResponse(m_mop.get(), f);
+        projectResponse(m_mop.get(), rhs);
 
         if (l_linearSolver.get())
         {
@@ -88,8 +88,8 @@ void EulerExplicitIntegrationScheme::doIntegrate(const core::ExecParams* params,
             assembleSystemMatrix(m_mop.get());
 
             // Solve the system to find the acceleration
-            // Solve M * a = f
-            solveSystem(acc, f);
+            // Solve M * unknown = rhs
+            solveSystem(unknown, rhs);
         }
         else
         {
@@ -99,31 +99,31 @@ void EulerExplicitIntegrationScheme::doIntegrate(const core::ExecParams* params,
         }
     }
 
-    // Compute the new position and new velocity from the acceleration
-    updateState(m_vop.get(), m_mop.get(), xResult, vResult, acc);
+    // Compute the new state from the unknown
+    updateState(m_vop.get(), m_mop.get(), primaryStateVariableId, derivStateVariableId, unknown);
 }
 
 void EulerExplicitIntegrationScheme::updateState(sofa::simulation::common::VectorOperations* vop,
                                       sofa::simulation::common::MappingGraphMechanicalOperations* mop,
-                                      sofa::core::MultiVecCoordId xResult,
-                                      sofa::core::MultiVecDerivId vResult,
-                                      const sofa::core::behavior::MultiVecDeriv& acc) const
+                                      sofa::core::MultiVecCoordId primaryStateVariableResultId,
+                                      sofa::core::MultiVecDerivId derivStateVariableResultId,
+                                      const sofa::core::behavior::MultiVecDeriv& unknown) const
 {
     SOFA_UNUSED(mop);
     SCOPED_TIMER("updateState");
 
     // Initialize the set of multi-vectors computed by this IntegrationScheme
-    // "xResult" could be "position()" or "freePosition()" depending on the
+    // "primaryStateVariable" could be "position()" or "freePosition()" depending on the
     // animation loop calling this ODE IntegrationScheme.
-    // Similarly, "vResult" could be "velocity()" or "freeVelocity()".
-    // In case "xResult" refers to "position()", "newPos" refers the
+    // Similarly, "firstTimeDerivativeStateVariable" could be "velocity()" or "freeVelocity()".
+    // In case "primaryStateVariable" refers to "position()", "newPos" refers the
     // same multi-vector than "pos". Similarly, for "newVel" and "vel".
-    MultiVecCoord newPos(vop, xResult);                    // velocity to be computed
-    MultiVecDeriv newVel(vop, vResult);                    // position to be computed
+    MultiVecCoord newPrimaryStateVariable(vop, primaryStateVariableResultId); // position in mechanics
+    MultiVecDeriv newDerivStateVariable(vop, derivStateVariableResultId); // first time derivative of the primary state variable; velocity in mechanics
 
     // Initialize the set of multi-vectors used to compute the new velocity and position
-    MultiVecCoord pos(vop, core::vec_id::write_access::position ); //current position
-    MultiVecDeriv vel(vop, core::vec_id::write_access::velocity ); //current velocity
+    MultiVecCoord primaryStateVariable(vop, core::vec_id::write_access::position ); //current primary state variable
+    MultiVecDeriv derivStateVariable(vop, core::vec_id::write_access::velocity ); //current first time derivative of the primary state variable
 
     {
         typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
@@ -135,28 +135,28 @@ void EulerExplicitIntegrationScheme::updateState(sofa::simulation::common::Vecto
         VMultiOp ops(2);
 
         // Change order of operations depending on the symplectic flag
-        const VMultiOp::size_type posId = d_symplectic.getValue(); // 1 if symplectic, 0 otherwise
-        const VMultiOp::size_type velId = 1 - posId; // 0 if symplectic, 1 otherwise
+        const VMultiOp::size_type primaryId = d_symplectic.getValue(); // 1 if symplectic, 0 otherwise
+        const VMultiOp::size_type derivativeId = 1 - primaryId; // 0 if symplectic, 1 otherwise
 
-        // Access the set of operations corresponding to the velocity vector
+        // Access the set of operations corresponding to the derivative vector
         // In case of symplectic IntegrationScheme, these operations are executed first.
-        auto& ops_vel = ops[velId];
+        auto& opsDeriv = ops[derivativeId];
 
-        // Associate the new velocity vector as the result to this set of operations
-        ops_vel.first = newVel;
+        // Associate the new time derivative vector as the result to this set of operations
+        opsDeriv.first = newDerivStateVariable;
 
         // The two following operations are actually a unique operation: newVel = vel + dt * acc
         // The value 1.0 indicates that the first operation is based on the values
         // in the second pair and, therefore, the second operation is discarded.
-        ops_vel.second.emplace_back(vel.id(), 1.0);
-        ops_vel.second.emplace_back(acc.id(), m_dt);
+        opsDeriv.second.emplace_back(derivStateVariable.id(), 1.0);
+        opsDeriv.second.emplace_back(unknown.id(), m_dt);
 
-        // Access the set of operations corresponding to the position vector
+        // Access the set of operations corresponding to the primary state vector
         // In case of symplectic IntegrationScheme, these operations are executed second.
-        auto& ops_pos = ops[posId];
+        auto& opsPrimary = ops[primaryId];
 
-        // Associate the new position vector as the result to this set of operations
-        ops_pos.first = newPos;
+        // Associate the new primary state vector as the result to this set of operations
+        opsPrimary.first = newPrimaryStateVariable;
 
         // The two following operations are actually a unique operation: newPos = pos + dt * v
         // where v is "newVel" in case of a symplectic IntegrationScheme, and "vel" otherwise.
@@ -164,11 +164,11 @@ void EulerExplicitIntegrationScheme::updateState(sofa::simulation::common::Vecto
         // If not symplectic: newPos = pos + dt * vel
         // The value 1.0 indicates that the first operation is based on the values
         // in the second pair and, therefore, the second operation is discarded.
-        ops_pos.second.emplace_back(pos.id(), 1.0);
-        ops_pos.second.emplace_back(d_symplectic.getValue() ? newVel.id() : vel.id(), m_dt);
+        opsPrimary.second.emplace_back(primaryStateVariable.id(), 1.0);
+        opsPrimary.second.emplace_back(d_symplectic.getValue() ? newDerivStateVariable.id() : derivStateVariable.id(), m_dt);
 
-        // Execute the defined operations to compute the new velocity vector and
-        // the new position vector.
+        // Execute the defined operations to compute the new derivative vector and
+        // the new primary vector.
         // 1. Calls the "vMultiOp" method of every mapped BaseMechanicalState objects found in the
         // current context tree. This method may be called with different parameters than for the non-mapped
         // BaseMechanicalState objects.
@@ -177,8 +177,8 @@ void EulerExplicitIntegrationScheme::updateState(sofa::simulation::common::Vecto
         vop->v_multiop(ops);
 
         // Calls "solveConstraint" on every ConstraintIntegrationScheme objects found in the current context tree.
-        m_mop->solveConstraint(newVel,core::ConstraintOrder::VEL);
-        m_mop->solveConstraint(newPos,core::ConstraintOrder::POS);
+        m_mop->solveConstraint(newDerivStateVariable,core::ConstraintOrder::VEL);
+        m_mop->solveConstraint(newPrimaryStateVariable,core::ConstraintOrder::POS);
     }
 }
 
@@ -189,6 +189,7 @@ void EulerExplicitIntegrationScheme::init()
     if (!l_linearSolver.get())
     {
         l_linearSolver.set(getContext()->get<LinearSolver>());
+        msg_info_when(l_linearSolver ) << "If a linear solver is required, the following will be used: '" << l_linearSolver->getPathName() << "'";
     }
 
     reinit();
@@ -205,26 +206,26 @@ void EulerExplicitIntegrationScheme::addSeparateGravity(sofa::simulation::common
     mop->addSeparateGravity(dt, v);
 }
 
-void EulerExplicitIntegrationScheme::computeForce(sofa::simulation::common::MappingGraphMechanicalOperations* mop, core::MultiVecDerivId f) const
+void EulerExplicitIntegrationScheme::computeRhs(sofa::simulation::common::MappingGraphMechanicalOperations* mop, core::MultiVecDerivId rhs) const
 {
     SCOPED_TIMER("ComputeForce");
 
-    // 1. Clear the force vector (F := 0)
+    // 1. Clear the rhs vector (rhs := 0)
     // 2. Go down in the current context tree calling addForce on every forcefields
     // 3. Go up from the current context tree leaves calling applyJT on every mechanical mappings
-    mop->computeForce(this->m_mappingGraph, f, true, true, nullptr);
+    mop->computeForce(this->m_mappingGraph, rhs, true, true, nullptr);
 }
 
-void EulerExplicitIntegrationScheme::computeAcceleration(sofa::simulation::common::MappingGraphMechanicalOperations* mop, core::MultiVecDerivId acc, core::ConstMultiVecDerivId f)
+void EulerExplicitIntegrationScheme::solveTrivialLinearSystem(sofa::simulation::common::MappingGraphMechanicalOperations* mop, core::MultiVecDerivId unknownId, core::ConstMultiVecDerivId rhsId)
 {
     SCOPED_TIMER("AccFromF");
 
-    // acc = M^-1 f
+    // unknown = M^-1 rhs
     // Since it requires the inverse of the mass matrix, this method is
     // probably implemented only for trivial matrix inversion, such as
     // a diagonal matrix.
     // For example, for a diagonal mass: a_i := f_i / M_ii
-    mop->accFromF(acc, f);
+    mop->accFromF(unknownId, rhsId);
 }
 
 void EulerExplicitIntegrationScheme::projectResponse(sofa::simulation::common::MappingGraphMechanicalOperations* mop, core::MultiVecDerivId vecId) const
