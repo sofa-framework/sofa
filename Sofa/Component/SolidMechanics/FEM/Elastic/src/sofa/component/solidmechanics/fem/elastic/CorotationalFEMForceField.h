@@ -172,6 +172,7 @@ public:
     StressVoigtVector computeStress(const DeformationGradient& F, sofa::Size elementId) override;
 
     sofa::Data<bool> d_consistentTangent;
+    sofa::Data<bool> d_symmetrizeTangent;
 
 protected:
 

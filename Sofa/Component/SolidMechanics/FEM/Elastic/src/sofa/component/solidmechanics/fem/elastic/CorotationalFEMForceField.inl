@@ -33,6 +33,7 @@ namespace sofa::component::solidmechanics::fem::elastic
 template <class DataTypes, class ElementType>
 CorotationalFEMForceField<DataTypes, ElementType>::CorotationalFEMForceField()
     : d_consistentTangent(initData(&d_consistentTangent, true, "consistentTangent", "Include the change of the element rotations in the force derivatives"))
+    , d_symmetrizeTangent(initData(&d_symmetrizeTangent, true, "symmetrizeTangent", "Use the symmetric part of the consistent tangent"))
     , m_rotationMethods(this)
 {
     this->addUpdateCallback("selectRotationMethod", {&this->m_rotationMethods.d_rotationMethod},
@@ -165,6 +166,11 @@ void CorotationalFEMForceField<DataTypes, ElementType>::computeElementsForces(
                     tangent.getsub(a * DIM, b * DIM, block);
                     tangent.setsub(a * DIM, b * DIM, block + W * jacobian[b]);
                 }
+            }
+
+            if (d_symmetrizeTangent.getValue())
+            {
+                tangent = (tangent + tangent.transposed()) / 2;
             }
         }
 
