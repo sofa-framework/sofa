@@ -85,6 +85,12 @@ protected:
             linearMaterial->d_youngModulus.setValue(10.);
         }
 
+        if (auto* ogdenMaterial = dynamic_cast<OgdenMaterial<DataTypes>*>(material.get()))
+        {
+            ogdenMaterial->m_mu.setValue({80., 25., 40.});
+            ogdenMaterial->m_alpha.setValue({1.3, 3.7, -1.8});
+        }
+
         material->init();
     }
 
