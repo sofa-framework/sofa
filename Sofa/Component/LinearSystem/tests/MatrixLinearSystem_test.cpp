@@ -370,3 +370,119 @@ TEST(LinearSystem, MatrixSystem_buggyForceField)
     }
 }
 
+
+/// Records the order in which the stiffness matrices of the force fields are built
+template<class DataTypes>
+class OrderRecordingForceField : public sofa::core::behavior::ForceField<DataTypes>
+{
+public:
+    SOFA_CLASS(OrderRecordingForceField, sofa::core::behavior::ForceField<DataTypes>);
+    inline static std::vector<std::string> buildOrder;
+
+    void buildStiffnessMatrix(sofa::core::behavior::StiffnessMatrix* matrix) override
+    {
+        buildOrder.push_back(this->getName());
+        auto dfdx = matrix->getForceDerivativeIn(this->mstate).withRespectToPositionsIn(this->mstate);
+        dfdx(0, 0) += 1.;
+    }
+    void addForce(const sofa::core::MechanicalParams*, typename Inherit1::DataVecDeriv&, const typename Inherit1::DataVecCoord&, const typename Inherit1::DataVecDeriv&) override {}
+    void addDForce(const sofa::core::MechanicalParams*, typename Inherit1::DataVecDeriv&, const typename Inherit1::DataVecDeriv&) override {}
+    SReal getPotentialEnergy(const sofa::core::MechanicalParams*, const typename Inherit1::DataVecCoord&) const override { return 0; }
+};
+
+/// The force fields contributing to the same entries of the global matrix are assembled in an order which does not
+/// depend on their addresses (the rounding of the sums would change from one run to another): here, in the order of
+/// the scene graph
+TEST(LinearSystem, MatrixSystem_contributionsInAnOrderIndependentOfTheAddresses)
+{
+    using FF = OrderRecordingForceField<sofa::defaulttype::Vec3Types>;
+    const sofa::simulation::Node::SPtr root = sofa::core::objectmodel::New<sofa::simulation::Node>();
+    using MatrixSystem = sofa::component::linearsystem::MatrixLinearSystem<sofa::linearalgebra::FullMatrix<SReal>, sofa::linearalgebra::FullVector<SReal> >;
+    const MatrixSystem::SPtr linearSystem = sofa::core::objectmodel::New<MatrixSystem>();
+    root->addObject(linearSystem);
+    const auto mstate = sofa::core::objectmodel::New<sofa::component::statecontainer::MechanicalObject<sofa::defaulttype::Vec3Types> >();
+    root->addObject(mstate);
+    mstate->resize(2);
+
+    // allocated in an order, added to the scene graph in the reverse order
+    std::vector<FF::SPtr> forceFields;
+    for (int i = 0; i < 8; ++i)
+    {
+        forceFields.push_back(sofa::core::objectmodel::New<FF>());
+        forceFields.back()->setName("forceField" + std::to_string(i));
+    }
+    for (auto it = forceFields.rbegin(); it != forceFields.rend(); ++it)
+    {
+        root->addObject(*it);
+    }
+
+    auto mparams = *sofa::core::MechanicalParams::defaultInstance();
+    mparams.setKFactor(1._sreal);
+    root->init(&mparams);
+
+    FF::buildOrder.clear();
+    linearSystem->buildSystemMatrix(&mparams);
+    const std::vector<std::string> expected { "forceField7", "forceField6", "forceField5", "forceField4",
+                                              "forceField3", "forceField2", "forceField1", "forceField0" };
+    EXPECT_EQ(FF::buildOrder, expected);
+}
+
+/// Adds its value to the entry (0, 0) of the stiffness matrix
+template<class DataTypes>
+class ValueForceField : public sofa::core::behavior::ForceField<DataTypes>
+{
+public:
+    SOFA_CLASS(ValueForceField, sofa::core::behavior::ForceField<DataTypes>);
+    SReal value {};
+
+    void buildStiffnessMatrix(sofa::core::behavior::StiffnessMatrix* matrix) override
+    {
+        auto dfdx = matrix->getForceDerivativeIn(this->mstate).withRespectToPositionsIn(this->mstate);
+        dfdx(0, 0) += value;
+    }
+    void addForce(const sofa::core::MechanicalParams*, typename Inherit1::DataVecDeriv&, const typename Inherit1::DataVecCoord&, const typename Inherit1::DataVecDeriv&) override {}
+    void addDForce(const sofa::core::MechanicalParams*, typename Inherit1::DataVecDeriv&, const typename Inherit1::DataVecDeriv&) override {}
+    SReal getPotentialEnergy(const sofa::core::MechanicalParams*, const typename Inherit1::DataVecCoord&) const override { return 0; }
+};
+
+/// The same scene gives the same global matrix, whatever the order in which its components are allocated: three
+/// force fields add 1, 1e16 and -1e16 to the same entry, whose floating-point sum is 0 or 1 depending on the order of
+/// the additions. The scene (same components, names and graph order) is built twice, with the force fields allocated
+/// in two opposite orders: the assembled entries must be identical
+TEST(LinearSystem, MatrixSystem_sameMatrixWhateverTheAddressesOfTheComponents)
+{
+    using FF = ValueForceField<sofa::defaulttype::Vec3Types>;
+    using MatrixSystem = sofa::component::linearsystem::MatrixLinearSystem<sofa::linearalgebra::FullMatrix<SReal>, sofa::linearalgebra::FullVector<SReal> >;
+
+    const auto assembledEntry = [](bool reverseAllocation)
+    {
+        const sofa::simulation::Node::SPtr root = sofa::core::objectmodel::New<sofa::simulation::Node>();
+        const MatrixSystem::SPtr linearSystem = sofa::core::objectmodel::New<MatrixSystem>();
+        root->addObject(linearSystem);
+        const auto mstate = sofa::core::objectmodel::New<sofa::component::statecontainer::MechanicalObject<sofa::defaulttype::Vec3Types> >();
+        root->addObject(mstate);
+        mstate->resize(1);
+
+        const std::vector<std::pair<std::string, SReal>> forceFields { {"a", 1.}, {"b", 1e16}, {"c", -1e16} };
+        std::vector<FF::SPtr> allocated(forceFields.size());
+        for (std::size_t k = 0; k < forceFields.size(); ++k)
+        {
+            const std::size_t i = reverseAllocation ? forceFields.size() - 1 - k : k;
+            allocated[i] = sofa::core::objectmodel::New<FF>();
+        }
+        for (std::size_t i = 0; i < forceFields.size(); ++i)
+        {
+            allocated[i]->setName(forceFields[i].first);
+            allocated[i]->value = forceFields[i].second;
+            root->addObject(allocated[i]);
+        }
+
+        auto mparams = *sofa::core::MechanicalParams::defaultInstance();
+        mparams.setKFactor(1._sreal);
+        root->init(&mparams);
+        linearSystem->buildSystemMatrix(&mparams);
+        return linearSystem->getSystemMatrix()->element(0, 0);
+    };
+
+    EXPECT_EQ(assembledEntry(false), assembledEntry(true));
+}
