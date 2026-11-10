@@ -24,6 +24,7 @@
 #include <sofa/component/solidmechanics/fem/hyperelastic/hyperelasticmaterials/OgdenMaterial.h>
 #include <sofa/component/solidmechanics/fem/hyperelastic/PK2HyperelasticMaterial.inl>
 #include <Eigen/Eigenvalues>
+#include <algorithm>
 #include <iomanip>
 
 namespace sofa::component::solidmechanics::fem::hyperelastic
@@ -31,13 +32,35 @@ namespace sofa::component::solidmechanics::fem::hyperelastic
 
 template <class DataTypes>
 OgdenMaterial<DataTypes>::OgdenMaterial()
-    : m_mu(initData(&m_mu, static_cast<Real>(1e2), "mu",
+    : m_mu(initData(&m_mu, sofa::type::vector<Real>{static_cast<Real>(1e2)}, "mu",
                       "Material constant relevant to the shear modulus"))
-    , m_alpha(initData(&m_alpha, static_cast<Real>(1.5), "alpha",
+    , m_alpha(initData(&m_alpha, sofa::type::vector<Real>{static_cast<Real>(1.5)}, "alpha",
                       "Material constant exponent related to strain-stiffening"))
     , m_kappa(initData(&m_kappa, static_cast<Real>(1e3), "kappa",
                       "Material constant related to the bulk modulus"))
 {}
+
+template <class DataTypes>
+void OgdenMaterial<DataTypes>::init()
+{
+    const auto& mu = m_mu.getValue();
+    const auto& alpha = m_alpha.getValue();
+
+    if (mu.empty() || mu.size() != alpha.size())
+    {
+        msg_error() << "mu and alpha must be non-empty and of the same size (got " << mu.size()
+                    << " and " << alpha.size() << ")";
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+    }
+
+    if (std::any_of(alpha.begin(), alpha.end(), [](Real a) { return a == static_cast<Real>(0); }))
+    {
+        msg_error() << "alpha values must be non-zero";
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+    }
+
+    PK2HyperelasticMaterial<DataTypes>::init();
+}
 
 template <class DataTypes>
 auto OgdenMaterial<DataTypes>::secondPiolaKirchhoffStress(Strain<DataTypes>& strain) -> StressTensor
@@ -52,8 +75,8 @@ auto OgdenMaterial<DataTypes>::secondPiolaKirchhoffStress(Strain<DataTypes>& str
 
     const auto S_isochoric = [this, J, &strain, &C_1, &C] ()
     {
-        const Real mu = m_mu.getValue();
-        const Real alpha = m_alpha.getValue();
+        const Real mu = m_mu.getValue()[0];
+        const Real alpha = m_alpha.getValue()[0];
 
         const Real FJ = pow(J, -alpha / static_cast<Real>(spatial_dimensions));
 
@@ -112,8 +135,8 @@ auto OgdenMaterial<DataTypes>::elasticityTensor(Strain<DataTypes>& strain) -> El
 {
     using EigenMatrix = Eigen::Matrix<Real, spatial_dimensions, spatial_dimensions>;
 
-    const Real mu = m_mu.getValue();
-    const Real alpha = m_alpha.getValue();
+    const Real mu = m_mu.getValue()[0];
+    const Real alpha = m_alpha.getValue()[0];
     const Real kappa = m_kappa.getValue();
 
     const auto& C = strain.getRightCauchyGreenTensor();
@@ -223,8 +246,8 @@ auto OgdenMaterial<DataTypes>::strainEnergyDensity(Strain<DataTypes>& strain) ->
 {
     using EigenMatrix = Eigen::Matrix<Real, spatial_dimensions, spatial_dimensions>;
 
-    const Real mu = m_mu.getValue();
-    const Real alpha = m_alpha.getValue();
+    const Real mu = m_mu.getValue()[0];
+    const Real alpha = m_alpha.getValue()[0];
     const Real kappa = m_kappa.getValue();
 
     const auto& C = strain.getRightCauchyGreenTensor();
