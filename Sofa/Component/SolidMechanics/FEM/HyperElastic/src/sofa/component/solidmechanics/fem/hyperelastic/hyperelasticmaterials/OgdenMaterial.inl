@@ -159,6 +159,38 @@ auto OgdenMaterial<DataTypes>::elasticityTensor(Strain<DataTypes>& strain) -> El
     const auto eigenvectors = EigenProblemSolver.eigenvectors();
     const auto eigenvalues = EigenProblemSolver.eigenvalues();
 
+    const auto nbTerms = mu.size();
+    sofa::type::vector<Real> FJ(nbTerms), aBy2Minus1(nbTerms), trCaBy2(nbTerms);
+    sofa::type::vector<typename DataTypes::Coord> eigenvaluePowers1(nbTerms), eigenvaluePowers2(nbTerms);
+    sofa::type::vector<RightCauchyGreenTensor> CaBy2Minus1(nbTerms);
+
+    RightCauchyGreenTensor EigenBasis;
+    for (sofa::Index n = 0; n < spatial_dimensions; ++n)
+        for (sofa::Index m = 0; m < spatial_dimensions; ++m) 
+            EigenBasis(n,m) = eigenvectors(n,m);
+
+    // Precompute terms that are shared over the upcoming ijkl loop
+    for (sofa::Index p = 0; p < nbTerms; ++p)
+    {
+        FJ[p] = pow(J, -alpha[p] / static_cast<Real>(spatial_dimensions));
+
+        // Trace of C^(alpha/2) and eigenvalue powers: lambda^(a/2 - 1) and lambda^(a/2 - 2)
+        const Real aBy2 = static_cast<Real>(0.5) * alpha[p];
+        aBy2Minus1[p] = aBy2 - static_cast<Real>(1);
+        for (sofa::Index n = 0; n < spatial_dimensions; ++n)
+        {
+            trCaBy2[p] += pow(eigenvalues(n), aBy2);
+            eigenvaluePowers1[p](n) = pow(eigenvalues(n), aBy2Minus1[p]);
+            eigenvaluePowers2[p](n) = pow(eigenvalues(n), aBy2Minus1[p] - static_cast<Real>(1));
+        }
+
+        // C^(alpha1/2 - 1) from eigenbasis: V * D * V^T; D_i = lambda_i^(alpha1/2 - 1)
+        RightCauchyGreenTensor D;
+        for (sofa::Index n = 0; n < spatial_dimensions; ++n)
+            D(n,n) = eigenvaluePowers1[p](n);
+        CaBy2Minus1[p] = EigenBasis*D*(EigenBasis.transposed());
+    }
+
     return ElasticityTensor(
         [&](sofa::Index i, sofa::Index j, sofa::Index k, sofa::Index l)
         {
@@ -167,39 +199,15 @@ auto OgdenMaterial<DataTypes>::elasticityTensor(Strain<DataTypes>& strain) -> El
             {
                 Real sum{static_cast<Real>(0)};
 
-                for (sofa::Index p = 0; p < mu.size(); ++p)
+                for (sofa::Index p = 0; p < nbTerms; ++p)
                 {
-                    const Real FJ = pow(J, -alpha[p] / static_cast<Real>(spatial_dimensions));
-
-                    // Precompute trace of C^(alpha/2) and eigenvalue powers: lambda^(a/2 - 1) and lambda^(a/2 - 2)
-                    const Real aBy2 = static_cast<Real>(0.5) * alpha[p];
-                    const Real aBy2Minus1 = aBy2 - static_cast<Real>(1);
-                    Real trCaBy2{static_cast<Real>(0)};
-                    typename DataTypes::Coord eigenvaluePowers1{}, eigenvaluePowers2{};
-                    for (sofa::Index n = 0; n < spatial_dimensions; ++n)
-                    {
-                        trCaBy2 += pow(eigenvalues(n), aBy2);
-                        eigenvaluePowers1(n) = pow(eigenvalues(n), aBy2Minus1);
-                        eigenvaluePowers2(n) = pow(eigenvalues(n), aBy2Minus1 - static_cast<Real>(1));
-                    }
-
-                    const Real coefSpectral = FJ * mu[p] / alpha[p] * aBy2Minus1;
-                    const Real coefRotational = FJ * mu[p] / alpha[p];
-
-                    // Precompute C^(alpha1/2 - 1) from eigenbasis: V * D * V^T; D_i = lambda_i^(alpha1/2 - 1)
-                    RightCauchyGreenTensor D, EigenBasis;
-                    for (sofa::Index n = 0; n < spatial_dimensions; ++n)
-                    {
-                        for (sofa::Index m = 0; m < spatial_dimensions; ++m) 
-                            EigenBasis(n,m) = eigenvectors(n,m);
-                        D(n,n) = eigenvaluePowers1(n);
-                    }
-                    const RightCauchyGreenTensor CaBy2Minus1(EigenBasis*D*(EigenBasis.transposed()));
+                    const Real coefSpectral = FJ[p] * mu[p] / alpha[p] * aBy2Minus1[p];
+                    const Real coefRotational = FJ[p] * mu[p] / alpha[p];
 
                     // Spectral decomposition contributions; derivatives of eigenvalues and eigenvectors
                     for (sofa::Index n = 0; n < spatial_dimensions; ++n)
                     {
-                        sum += coefSpectral * eigenvaluePowers2(n) * eigenvectors(i,n) * eigenvectors(j,n)
+                        sum += coefSpectral * eigenvaluePowers2[p](n) * eigenvectors(i,n) * eigenvectors(j,n)
                              * eigenvectors(k,n) * eigenvectors(l,n);
 
                         for (sofa::Index m = 0; m < spatial_dimensions; ++m)
@@ -213,8 +221,8 @@ auto OgdenMaterial<DataTypes>::elasticityTensor(Strain<DataTypes>& strain) -> El
                             const Real maxEval = std::max(std::fabs(eigenvalues(n)), std::fabs(eigenvalues(m)));
                             const bool isDegenerate = std::fabs(eigenvalues(n) - eigenvalues(m)) < maxEval * tol;
                             const Real eigenvalueMultiplier = isDegenerate
-                                ? aBy2Minus1 * eigenvaluePowers2(n) 
-                                : (eigenvaluePowers1(n) - eigenvaluePowers1(m)) / (eigenvalues(n) - eigenvalues(m));
+                                ? aBy2Minus1[p] * eigenvaluePowers2[p](n) 
+                                : (eigenvaluePowers1[p](n) - eigenvaluePowers1[p](m)) / (eigenvalues(n) - eigenvalues(m));
 
                             sum += static_cast<Real>(0.5) * coefRotational * eigenvalueMultiplier *
                                        (eigenvectors(i,n) * eigenvectors(j,m) * eigenvectors(k,m) * eigenvectors(l,n)
@@ -224,14 +232,14 @@ auto OgdenMaterial<DataTypes>::elasticityTensor(Strain<DataTypes>& strain) -> El
 
                     // Remaining terms grouped to highlight respective contribution from 
                     // differentiating coefS1, coefS2 and C^(-1) from S_isochoric
-                    sum += FJ * mu[p] * (
+                    sum += FJ[p] * mu[p] * (
                             // Contribution from derivative of F(J)
-                            trCaBy2 / static_cast<Real>(2 * spatial_dimensions * spatial_dimensions) * C_1(j,i) * C_1(l,k) - 
+                            trCaBy2[p] / static_cast<Real>(2 * spatial_dimensions * spatial_dimensions) * C_1(j,i) * C_1(l,k) - 
                             // Contribution from derivatives of C^(alpha/2 - 1) and tr(C^(alpha/2))
-                            (CaBy2Minus1(j,i) * C_1(l,k) + C_1(j,i) * CaBy2Minus1(k,l)) 
+                            (CaBy2Minus1[p](j,i) * C_1(l,k) + C_1(j,i) * CaBy2Minus1[p](k,l)) 
                             / static_cast<Real>(2 * spatial_dimensions) +
                             // Contribution from derivative of C^(-1) 
-                            trCaBy2 / (static_cast<Real>(2 * spatial_dimensions) * alpha[p]) 
+                            trCaBy2[p] / (static_cast<Real>(2 * spatial_dimensions) * alpha[p]) 
                             * (C_1(j,k) * C_1(l,i) + C_1(j,l) * C_1(k,i))
                     );
                 }
