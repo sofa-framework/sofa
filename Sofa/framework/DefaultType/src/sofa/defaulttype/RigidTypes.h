@@ -140,7 +140,7 @@ public:
         getVCenter(c)[2] += static_cast<Real>(z);
     }
 
-    static constexpr const char* Name();
+    static constexpr const char* Name() { return s_name.data(); }
 
     /// Return a Deriv with random value. Each entry with magnitude smaller than the given value.
     static Deriv randomDeriv(Real minMagnitude, Real maxMagnitude)
@@ -240,17 +240,18 @@ public:
     /// create a rotation from Euler angles. For homogeneity with 2D.
     static Quat rotationEuler(Real x, Real y, Real z) { return Quat::fromEuler(x, y, z); }
 
+private:
+    struct Prefix { static constexpr std::string_view value = "Rigid"; };
+
+    static constexpr auto s_name = helper::makeFixedSizeTypeName<Prefix, spatial_dimensions, Real>();
 };
+
 
 typedef StdRigidTypes<3,double> Rigid3dTypes;
 typedef StdRigidTypes<3,float> Rigid3fTypes;
 
-/// We now use template aliases so we do not break backward compatibility.
-template<> constexpr const char* Rigid3dTypes::Name() { return "Rigid3d"; }
-template<> constexpr const char* Rigid3fTypes::Name() { return "Rigid3f"; }
-
-typedef StdRigidTypes<3,SReal> Rigid3Types;  ///< un-defined precision type
-typedef StdRigidTypes<3,SReal> RigidTypes;   ///< alias (beurk)
+typedef StdRigidTypes<3,SReal> Rigid3Types;
+typedef StdRigidTypes<3,SReal> RigidTypes;
 
 static_assert(type::isRigidType<Rigid3dTypes>);
 static_assert(type::isRigidType<Rigid3fTypes>);
@@ -289,7 +290,7 @@ public:
     static constexpr const DRot& getDRot(const Deriv& d) { return getVOrientation(d); }
     static constexpr void setDRot(Deriv& d, const DRot& v) { getVOrientation(d) = v; }
 
-    static constexpr const char* Name();
+    static constexpr const char* Name() { return s_name.data(); }
 
     typedef type::vector<Coord> VecCoord;
     typedef type::vector<Deriv> VecDeriv;
@@ -411,11 +412,11 @@ public:
     /// create a rotation from Euler angles (only the first is used). For homogeneity with 3D.
     static constexpr CRot rotationEuler( Real x, Real , Real ){ return CRot(x); }
 
+private:
+    struct Prefix { static constexpr std::string_view value = "Rigid"; };
 
+    static constexpr auto s_name = helper::makeFixedSizeTypeName<Prefix, spatial_dimensions, Real>();
 };
-
-template<> constexpr const char* Rigid2dTypes::Name() { return "Rigid2d"; }
-template<> constexpr const char* Rigid2fTypes::Name() { return "Rigid2f"; }
 
 static_assert(type::isRigidType<Rigid2dTypes>);
 static_assert(type::isRigidType<Rigid2fTypes>);
