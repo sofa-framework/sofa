@@ -198,12 +198,10 @@ void VelocityBasedImplicitIntegrationScheme::computeRHS(bool firstIteration)
         // R1 should be equal to 0 in theory when integration scheme is linear. But let's recompute
         // it anyway to compute the residual
         computeCurrentPositionIntegrationError(*m_vop, m_r1, m_xResult, m_vResult);
+        simulation::common::DifferentialOperations::pushforwardTangent(m_mappingGraph, m_mop->mparams, m_r1);
+
         if (firstIteration)
         {
-            // This propagation is needed for forcefields that are applied to mapped objects. Then,
-            // those mapped objects need to have the r1 up to date otherwise it'll add 0.
-            simulation::common::DifferentialOperations::pushforwardTangent(m_mappingGraph, m_mop->mparams, m_r1);
-
             m_mop->mparams.setV(m_r1);
             m_mop->addMBKv(m_mappingGraph,m_r0, core::MatricesFactors::M(0.0),
                         core::MatricesFactors::B(0),

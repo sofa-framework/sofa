@@ -201,10 +201,13 @@ void AccelerationBasedImplicitIntegrationScheme::computeRHS(bool firstIteration)
         computeCurrentPositionIntegrationError (*m_vop, m_r1, m_xResult, m_vResult, m_acceleration);
         computeCurrentVelocityIntegrationError (*m_vop, m_r2, m_vResult, m_acceleration);
 
+
+        simulation::common::DifferentialOperations::pushforwardTangent(m_mappingGraph, m_mop->mparams, m_r1);
+        simulation::common::DifferentialOperations::pushforwardTangent(m_mappingGraph, m_mop->mparams, m_r2);
+
         if (firstIteration)
         {
-            simulation::common::DifferentialOperations::pushforwardTangent(m_mappingGraph, m_mop->mparams, m_r1);
-            simulation::common::DifferentialOperations::pushforwardTangent(m_mappingGraph, m_mop->mparams, m_r2);
+
 
             m_mop->mparams.setV(m_r1);
             m_mop->addMBKv(m_mappingGraph, m_r0, core::MatricesFactors::M(0.0),
@@ -288,9 +291,10 @@ void AccelerationBasedImplicitIntegrationScheme::updateStatesFromLinearSolution(
 
     // TODO this collides with Free motion propagation using a MechanicalVOpVisitor and expecting a EulerImplicit
     //      future implementation of global Newton will reactivate those
-    // simulation::common::DifferentialOperations::pushforwardCoord(m_mappingGraph, m_mop->mparams, pos);
-    // simulation::common::DifferentialOperations::pushforwardTangent(m_mappingGraph, m_mop->mparams, vel);
-    // simulation::common::DifferentialOperations::pushforwardTangent(m_mappingGraph, m_mop->mparams, acc);
+    simulation::common::DifferentialOperations::pushforwardCoord(m_mappingGraph, m_mop->mparams, pos);
+    simulation::common::DifferentialOperations::pushforwardTangent(m_mappingGraph, m_mop->mparams, vel);
+    simulation::common::DifferentialOperations::pushforwardTangent(m_mappingGraph, m_mop->mparams, acc);
+
 }
 
 

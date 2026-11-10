@@ -285,6 +285,7 @@ void NewtonRaphson::newtonSolve(const core::ExecParams* params, core::Constraint
         //Already make a full step
         intHelper.updateStatesFromLinearSolution(alpha, firstIt);
         mop->propagateXAndV(xId, vId); //Need to propagate explicitly to enable recomputation of mapped Forcefileld
+        // mop->propagateDx(xId, vId); //Need to propagate explicitly to enable recomputation of mapped Forcefileld
 
         if (m_solveConstraints)
         {
@@ -356,7 +357,7 @@ void NewtonRaphson::newtonSolve(const core::ExecParams* params, core::Constraint
             msg_info()<<"Final alpha / best alpha : "<<alpha << " / " <<bestalpha;
         }
 
-        if (lineSearchIt == maxLineSearchIt && bestalpha < std::numeric_limits<SReal>::epsilon() && ! d_alwaysAdvanceNewton.getValue())
+        if (bestalpha < std::numeric_limits<SReal>::epsilon() && ! d_alwaysAdvanceNewton.getValue())
         {
             // If it is the first newton step then we don't advance time.
             if (it == 0)
