@@ -75,10 +75,8 @@ auto OgdenMaterial<DataTypes>::secondPiolaKirchhoffStress(Strain<DataTypes>& str
 
     const auto S_isochoric = [this, J, &strain, &C_1, &C] ()
     {
-        const Real mu = m_mu.getValue()[0];
-        const Real alpha = m_alpha.getValue()[0];
-
-        const Real FJ = pow(J, -alpha / static_cast<Real>(spatial_dimensions));
+        const auto& mu = m_mu.getValue();
+        const auto& alpha = m_alpha.getValue();
 
         EigenMatrix CEigen;
         for (sofa::Index m = 0; m < spatial_dimensions; ++m)
@@ -92,29 +90,34 @@ auto OgdenMaterial<DataTypes>::secondPiolaKirchhoffStress(Strain<DataTypes>& str
         const auto eigenvectors = EigenProblemSolver.eigenvectors();
         const auto eigenvalues = EigenProblemSolver.eigenvalues();
 
-        // Precompute trace of C^(alpha/2) and eigenvalue powers: lambda^(alpha/2 - 1)
-        const Real aBy2 = static_cast<Real>(0.5) * alpha;
-        const Real aBy2Minus1 = aBy2 - static_cast<Real>(1);
-        Real trCaBy2{static_cast<Real>(0)};
-        typename DataTypes::Coord eigenvaluePowers{};
-        for (sofa::Index n = 0; n < spatial_dimensions; ++n)
-        {
-            trCaBy2 += pow(eigenvalues(n), aBy2);
-            eigenvaluePowers(n) = pow(eigenvalues(n), aBy2Minus1);
-        }
-
-        const Real coefS1 = FJ * mu / (alpha * static_cast<Real>(2));
-        const Real coefS2 = -FJ * mu / (alpha * static_cast<Real>(2 * spatial_dimensions)) * trCaBy2;
-
         StressTensor S{};
 
-        for (sofa::Index i = 0; i < spatial_dimensions; ++i)
+        for (sofa::Index p = 0; p < mu.size(); ++p)
         {
-            for (sofa::Index j = 0; j < spatial_dimensions; ++j)
+            const Real FJ = pow(J, -alpha[p] / static_cast<Real>(spatial_dimensions));
+
+            // Precompute trace of C^(alpha/2) and eigenvalue powers: lambda^(alpha/2 - 1)
+            const Real aBy2 = static_cast<Real>(0.5) * alpha[p];
+            const Real aBy2Minus1 = aBy2 - static_cast<Real>(1);
+            Real trCaBy2{static_cast<Real>(0)};
+            typename DataTypes::Coord eigenvaluePowers{};
+            for (sofa::Index n = 0; n < spatial_dimensions; ++n)
             {
-                for (sofa::Index n = 0; n < spatial_dimensions; ++n)
-                    S(i,j) += coefS1 * eigenvaluePowers(n) * eigenvectors(i,n) * eigenvectors(j,n);
-                S(i,j) += coefS2 * C_1(j, i);
+                trCaBy2 += pow(eigenvalues(n), aBy2);
+                eigenvaluePowers(n) = pow(eigenvalues(n), aBy2Minus1);
+            }
+
+            const Real coefS1 = FJ * mu[p] / (alpha[p] * static_cast<Real>(2));
+            const Real coefS2 = -FJ * mu[p] / (alpha[p] * static_cast<Real>(2 * spatial_dimensions)) * trCaBy2;
+
+            for (sofa::Index i = 0; i < spatial_dimensions; ++i)
+            {
+                for (sofa::Index j = 0; j < spatial_dimensions; ++j)
+                {
+                    for (sofa::Index n = 0; n < spatial_dimensions; ++n)
+                        S(i,j) += coefS1 * eigenvaluePowers(n) * eigenvectors(i,n) * eigenvectors(j,n);
+                    S(i,j) += coefS2 * C_1(j, i);
+                }
             }
         }
 
