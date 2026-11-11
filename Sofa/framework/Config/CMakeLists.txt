@@ -295,6 +295,13 @@ if(MSVC)
     endif()
 endif()
 
+# Trigger an error (instead of a warning) when a function does not return (and is supposed to)
+if(MSVC)
+    list(APPEND SOFACONFIG_COMPILE_OPTIONS "/we4715")
+else()
+    list(APPEND SOFACONFIG_COMPILE_OPTIONS "-Werror=return-type")
+endif()
+
 # Use Release flags for MinSizeRel and RelWithDebInfo build types:
 set_target_properties(${PROJECT_NAME} PROPERTIES
   MAP_IMPORTED_CONFIG_MINSIZEREL Release
