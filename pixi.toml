@@ -37,7 +37,7 @@ clean = { cmd = "rm -rf $SOFA_BUILD_DIR" }
 
 # Python 3.12 is the one supported by default
 [feature.python-supported.dependencies]
-python = "3.12.*"
+python = "3.14.*"
 
 # Remark: one can add these features to add support for lower/upper bounds of python
 # versions support in the CI
