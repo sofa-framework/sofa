@@ -65,6 +65,7 @@ public:
 
     virtual SReal getVelocityIntegrationFactor() const override final;
     virtual SReal getPositionIntegrationFactor() const override final;
+    virtual void  doFinalizeIntegrationStep(bool advanceTime) override final;
 
 protected:
     virtual void doSetupIntegrationStep(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
@@ -125,6 +126,8 @@ protected:
      * For more information see the documentation : https://sofa-framework.github.io/doc/simulation-principles/system-resolution/integration-scheme/#the-sofa-implementation
      **/
     virtual void computeCurrentVelocityIntegrationError(sofa::simulation::common::VectorOperations & vop, const sofa::core::MultiVecDerivId& result, const sofa::core::MultiVecDerivId& velocity, const sofa::core::MultiVecDerivId& acceleration) = 0;
+
+
 };
 
 } // namespace sofa::component::integrationscheme

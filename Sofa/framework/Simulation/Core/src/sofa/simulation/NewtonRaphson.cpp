@@ -265,6 +265,7 @@ void NewtonRaphson::newtonSolve(const core::ExecParams* params, core::Constraint
             if (performCollisionDetectionEachNewtonStep)
                 computeCollision(params);
 
+            //TODO do we want to recompute this each newton step ?
             computeGeometricalStiffness(&mop->mparams, cparams, node);
             intHelper.computeRHS(firstIt);
             oldResidue = intHelper.evaluateResidual();
@@ -284,8 +285,6 @@ void NewtonRaphson::newtonSolve(const core::ExecParams* params, core::Constraint
 
         //Already make a full step
         intHelper.updateStatesFromLinearSolution(alpha, firstIt);
-        mop->propagateXAndV(xId, vId); //Need to propagate explicitly to enable recomputation of mapped Forcefileld
-        // mop->propagateDx(xId, vId); //Need to propagate explicitly to enable recomputation of mapped Forcefileld
 
         if (m_solveConstraints)
         {
@@ -322,7 +321,6 @@ void NewtonRaphson::newtonSolve(const core::ExecParams* params, core::Constraint
             alpha -= delta;
 
             intHelper.updateStatesFromLinearSolution(-delta, false);
-            mop->propagateXAndV(xId, vId); //Need to propagate explicitly to enable recomputation of mapped Forcefileld
 
             intHelper.computeRHS(false);
             newResidue = intHelper.evaluateResidual();
@@ -339,7 +337,6 @@ void NewtonRaphson::newtonSolve(const core::ExecParams* params, core::Constraint
         if (fabs(alpha - bestalpha )> std::numeric_limits<SReal>::epsilon() )
         {
             intHelper.updateStatesFromLinearSolution( bestalpha - alpha, false);
-            mop->propagateXAndV(xId, vId); //Need to propagate explicitly to enable recomputation of mapped Forcefileld
 
             intHelper.computeRHS(false);
             newResidue = intHelper.evaluateResidual();
@@ -385,7 +382,14 @@ void NewtonRaphson::newtonSolve(const core::ExecParams* params, core::Constraint
 
     d_currentResidue.setValue(newResidue);
 
+    if (m_advanceTime)
+    {
+        //Integrate explicit IS
+
+    }
+
     intHelper.finalizeIntegrationStep(m_advanceTime);
+
 
     mechanicalvisitor::MechanicalEndIntegrationVisitor endVisitor(params, dt);
     node->execute(&endVisitor);

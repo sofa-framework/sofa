@@ -105,10 +105,12 @@ public:
 };
 
 /***
- * Equation of the form \frac{\partial^2 x}{\partial t ^2} + A e^{2x}=0
- * The analytical solution is
- *      x(t) = log(A / cosh(A*(t - t0)))
- * TODO : test the analytical solution again.
+ * Equation of the form \frac{\partial^2 x}{\partial t ^2} + e^{2x}=0
+ * The analytical solution is of the form
+ *      x(t)                             = log(A / \cosh(A*(t - t_0)))
+ *      frac{\partial x}{\partial t}     = -A*\tanh(A*(t-t_0))
+ *      frac{\partial^2 x}{\partial t^2} = -A^2*(1-\tanh^2(A*(t-t_0)))
+ * Using this function one can check the capability of the Newton-Raphson solver to follow the right trajectory
  ***/
 class LiouvilleForceField: public sofa::core::behavior::ForceField<sofa::defaulttype::Vec1dTypes>
 {
@@ -286,9 +288,9 @@ public:
         std::stringstream scene ;
         scene << "<?xml version='1.0'?>"
                  "<Node name='Root' gravity='0 0 0' time='"<< startTime <<"' animate='0' dt='"<< dt1 << "' > \n";
-        scene << (lineSearch ? "<NewtonRaphson maxNbIterationsLineSearch='20' maxNbIterationsNewton='200' residueThreshold='0' lineSearchReductionRate='0.2' /> "
+        scene << (lineSearch ? "<NewtonRaphson maxNbIterationsLineSearch='0' maxNbIterationsNewton='2' residueThreshold='0' lineSearchReductionRate='0.2' printLog='true'/> "
                              : "<NewtonRaphson maxNbIterationsLineSearch='0' maxNbIterationsNewton='200' residueThreshold='0'  /> ") << " \n";
-        scene << "   <EulerImplicitIntegrationScheme />                                                                     \n"
+        scene << "   <EulerImplicitIntegrationScheme/>                                                                     \n"
                  "   <SparseLDLSolver template='CompressedRowSparseMatrixd' />                                                                                        \n"
                  "   <PointSetTopologyContainer position='"<<LiouvilleForceField::analyticalSolution(A, t0, startTime)<<"' />                                             \n"
                  "   <MechanicalObject template='Vec1d' name='state' position='"<<LiouvilleForceField::analyticalSolution(A, t0, startTime)<<"' velocity='"<<LiouvilleForceField::analyticalSolutionDerivative(A, t0, startTime)<<"' />                                             \n"

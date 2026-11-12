@@ -44,8 +44,17 @@ SReal IntegrateVisitor::s_doProcessIS(sofa::core::behavior::BaseIntegrationSchem
 {
     helper::ScopedAdvancedTimer timer("Mechanical",node);
 
-    if (!integrationScheme->isImplicit())
+    const bool isImplicit = integrationScheme->isImplicit();
+
+    if (!isImplicit && taskType == INTEGRATE_EXPLICIT_IS)
+    {
+        integrationScheme->integrate(params, dt, X, V);
+    }
+
+    if (!isImplicit)
+    {
         return 0;
+    }
 
     auto implicitIntegrationScheme = static_cast<sofa::simulation::integrationscheme::ImplicitIntegrationScheme*>(integrationScheme);
 
@@ -261,6 +270,13 @@ void  IntegrationHelper::finalizeIntegrationStep(bool advanceTime)
     helper::ScopedAdvancedTimer timer("finalizeIntegrationStep");
     m_visitor.setAdvanceTime(advanceTime);
     m_visitor.setTaskType(IntegrateVisitor::TaskType::FINALIZE_INTEGRATION_STEP);
+    m_visitor.execute(m_node);
+}
+
+void  IntegrationHelper::integrateExplicitIS()
+{
+    helper::ScopedAdvancedTimer timer("integrateExplicitIS");
+    m_visitor.setTaskType(IntegrateVisitor::TaskType::INTEGRATE_EXPLICIT_IS);
     m_visitor.execute(m_node);
 }
 

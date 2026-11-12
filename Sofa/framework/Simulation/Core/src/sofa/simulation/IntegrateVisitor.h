@@ -51,6 +51,7 @@ public:
         SOLVE_LINEAR_EQUATION,
         UPDATE_STATE_FROM_LINEAR_SOLUTION,
         FINALIZE_INTEGRATION_STEP,
+        INTEGRATE_EXPLICIT_IS,
     };
 
 
@@ -197,6 +198,8 @@ public:
     void solveLinearEquation();
     void updateStatesFromLinearSolution(SReal alpha, bool firstIteration = false);
     void finalizeIntegrationStep(bool advanceTime);
+
+    void integrateExplicitIS();
 
     void setNode(Node* node)
     {

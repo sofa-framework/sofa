@@ -309,7 +309,14 @@ SReal AccelerationBasedImplicitIntegrationScheme::getPositionIntegrationFactor()
     return getPositionUpdateDerivedFromVelocity()*getVelocityUpdateDerivedFromAcceleration() + getPositionUpdateDerivedFromAcceleration();
 }
 
-
+void  AccelerationBasedImplicitIntegrationScheme::doFinalizeIntegrationStep(bool advanceTime)
+{
+    if (!advanceTime)
+    {
+        m_vop->v_eq(m_acceleration, m_a0.back());
+        m_mop->propagateDx(m_acceleration );
+    }
+}
 
 
 } // namespace sofa::component::integrationscheme::forward
