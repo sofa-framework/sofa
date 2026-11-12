@@ -54,6 +54,16 @@ on:
         required: false
         default: 'NONE'
         description: 'Json scructure with three parameters {"COMMIT_HASH":"fullhsashofthecommit", }'
+# >>> CI-UPDATE-REF BEGIN
+      ci-update-ref:
+        type: string
+        required: false
+        default: ''
+        description: 'When not empty, only build and generate the regression references (JSON given by CI_generate_regression_references)'
+    secrets:
+      SOFA_BOT_TOKEN:
+        required: false
+# <<< CI-UPDATE-REF END
 
 jobs:
   display-inputs:
@@ -97,6 +107,17 @@ jobs:
 
       - run: git config --global user.email "<>"
       - run: git config --global user.name "SOFA Bot"
+
+      # >>> CI-UPDATE-REF BEGIN
+      - name: Export bot token
+        if: ${{ inputs.ci-update-ref != '' }}
+        shell: bash
+        env:
+          BOT_TOKEN: ${{ secrets.SOFA_BOT_TOKEN }}
+        run: |
+          echo "::add-mask::$BOT_TOKEN"
+          echo "GH_TOKEN=$BOT_TOKEN" >> $GITHUB_ENV
+      # <<< CI-UPDATE-REF END
 
       - name: Setup SOFA and clone CI
         id: clone
@@ -296,7 +317,7 @@ jobs:
 
       - name: Unit tests
         id: unit-tests-step
-        if: always() && runner.os == 'Windows' && steps.build-step.outcome == 'success' && inputs.generate-binaries == false
+        if: always() && runner.os == 'Windows' && steps.build-step.outcome == 'success' && inputs.generate-binaries == false && inputs.ci-update-ref == '' # CI-UPDATE-REF
         shell: pwsh
         run: |
           Set-Location $env:SRC_DIR
@@ -329,7 +350,7 @@ jobs:
 
       - name: Scene tests
         id: scene-tests-step
-        if: always() && runner.os == 'Windows' && steps.build-step.outcome == 'success' && inputs.generate-binaries == false && inputs.with-all-tests == true
+        if: always() && runner.os == 'Windows' && steps.build-step.outcome == 'success' && inputs.generate-binaries == false && inputs.with-all-tests == true && inputs.ci-update-ref == '' # CI-UPDATE-REF
         shell: pwsh
         run: |
           Set-Location $env:SRC_DIR
@@ -363,7 +384,7 @@ jobs:
 
       - name: Regression tests
         id: regression-tests-step
-        if: always() && runner.os == 'Windows' && steps.build-step.outcome == 'success' && inputs.generate-binaries == false && inputs.with-all-tests == true
+        if: always() && runner.os == 'Windows' && steps.build-step.outcome == 'success' && inputs.generate-binaries == false && inputs.with-all-tests == true && inputs.ci-update-ref == '' # CI-UPDATE-REF
         shell: pwsh
         run: |
           Set-Location $env:SRC_DIR
@@ -379,7 +400,6 @@ jobs:
             --input "$env:SRC_DIR\applications" `
             --input "$env:BUILD_DIR\external_directories\fetched" `
             --output-logs-errors "$RegResultsDir" `
-            --legacy-regression `
             -j $env:VM_MAX_PARALLEL_TESTS
 
           if (-not (Test-Path "$RegResultsDir\*summary*")) { exit 1 }
@@ -397,6 +417,59 @@ jobs:
           if ($crashes  -ne '0') { exit 1 }
           if ($failures -ne '0') { exit 1 }
 
+
+      # >>> CI-UPDATE-REF BEGIN
+      - name: Update references - prepare
+        id: update-ref-prepare
+        if: always() && runner.os == 'Windows' && steps.build-step.outcome == 'success' && inputs.ci-update-ref != ''
+        shell: bash
+        env:
+          CI_UPDATE_REF: ${{ inputs.ci-update-ref }}
+        run: |
+          python3 ${CI_DIR}/scripts/ci_update_ref_build.py prepare
+
+      - name: Update references - generate
+        id: update-ref-generate
+        if: always() && steps.update-ref-prepare.outcome == 'success'
+        shell: pwsh
+        run: |
+          Set-Location $env:SRC_DIR
+
+          $FilterFile = Join-Path $env:BUILD_DIR "ci_update_ref\filter.txt"
+          $Filter = (Get-Content -Raw $FilterFile).Trim()
+          if ($Filter -eq '') { Write-Host "No scene to generate."; exit 0 }
+
+          $RegResultsDir = Join-Path $env:BUILD_DIR "tests_results\regression"
+
+          # Activate the environment in the terminal
+          pixi shell-hook --shell powershell -e ${{ inputs.preset }} | Out-String | Invoke-Expression
+
+          python "$env:REGRESSION_DIR\SofaRegressionProgram\SofaRegressionProgram.py" `
+            --input "$env:SRC_DIR/examples" `
+            --input "$env:SRC_DIR\applications" `
+            --input "$env:BUILD_DIR\external_directories\fetched" `
+            --filter $Filter `
+            --write-references `
+            --output-logs-errors "$RegResultsDir" `
+            -j $env:VM_MAX_PARALLEL_TESTS
+
+          if (-not (Test-Path "$RegResultsDir\*summary*")) { exit 1 }
+
+          foreach ($line in Get-Content "$RegResultsDir\summary.txt") {
+            $key, $value = $line -split '=', 2
+            if ($key -eq 'crashes' -and $value -ne '0') { exit 1 }
+          }
+
+      - name: Update references - commit and push
+        id: update-ref-commit
+        if: always() && steps.update-ref-generate.outcome == 'success'
+        shell: bash
+        env:
+          CI_UPDATE_REF: ${{ inputs.ci-update-ref }}
+          BUILD_COMMIT: ${{ (inputs.pr-commit-sha != '' && inputs.pr-commit-sha) || inputs.sofa-commit-sha }}
+        run: |
+          python3 ${CI_DIR}/scripts/ci_update_ref_build.py commit
+      # <<< CI-UPDATE-REF END
 
       - name: Publish artifacts
         if: always() && steps.build-step.outcome == 'success' && inputs.generate-binaries == true
@@ -445,6 +518,17 @@ jobs:
           else
             echo "✅ Build OK."
           fi
+
+          # >>> CI-UPDATE-REF BEGIN
+          if [[ -n "${{ inputs.ci-update-ref }}" ]]; then
+            if [[ "${{ steps.update-ref-prepare.outcome }}" == "failure" || "${{ steps.update-ref-generate.outcome }}" == "failure" || "${{ steps.update-ref-commit.outcome }}" == "failure" ]]; then
+              echo "❌ References generation failed"
+              exit 1
+            fi
+            echo "✅ References generated and pushed."
+            exit 0
+          fi
+          # <<< CI-UPDATE-REF END
 
           if [[ "${{ inputs.generate-binaries }}" == "false" ]]; then
             if [[  "${{ steps.unit-tests-step.outcome }}" == "failure"          || "${{ steps.scene-tests-step.outcome }}" == "failure"           || "${{ steps.regression-tests-step.outcome }}" == "failure" ]] &&
