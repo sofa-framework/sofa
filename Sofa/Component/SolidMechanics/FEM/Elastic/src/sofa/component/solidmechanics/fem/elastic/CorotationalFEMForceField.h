@@ -171,6 +171,9 @@ public:
 
     StressVoigtVector computeStress(const DeformationGradient& F, sofa::Size elementId) override;
 
+    sofa::Data<bool> d_consistentTangent;
+    sofa::Data<bool> d_symmetrizeTangent;
+
 protected:
 
     void beforeElementForce(const sofa::core::MechanicalParams* mparams,
@@ -191,6 +194,10 @@ protected:
 
     sofa::type::vector<RotationMatrix> m_rotations;
     sofa::type::vector<RotationMatrix> m_initialRotationsTransposed;
+
+    /// Element stiffness plus the stiffness due to the element rotation, in the element frame,
+    /// accumulated in computeElementsForces. Empty if consistentTangent is off.
+    sofa::type::vector<typename trait::ElementHessian> m_tangents;
 
     /// Local displacement of the element nodes in the element's own rotated frame. Flat vector.
     ElementDisplacement computeElementLocalDisplacement(
