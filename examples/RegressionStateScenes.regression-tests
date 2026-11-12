@@ -78,13 +78,16 @@ Component/IntegrationScheme/Backward/EulerImplicitIntegrationScheme.scn 3000 1e-
 Component/SolidMechanics/FEM/BeamFEMForceField.scn 100 1e-4 0 1
 Component/SolidMechanics/FEM/HexahedronFEMForceField.scn 300 1e-4 0 1
 Component/SolidMechanics/FEM/HexahedronFEMForceFieldAndMass.scn 100 1e-4 0 1
+Component/SolidMechanics/FEM/PressureSourceTerm.scn 2 1e-4 0 1
 Component/SolidMechanics/FEM/QuadBendingFEMForceField.scn 300 1e-4 0 1
+Component/SolidMechanics/FEM/StressSourceTerm.scn 2 1e-4 0 1
 Component/SolidMechanics/FEM/TetrahedralCorotationalFEMForceField.scn 300 1e-4 0 1
 Component/SolidMechanics/FEM/TetrahedronFEMForceField.scn 300 1e-4 0 1
 Component/SolidMechanics/FEM/TetrahedronFEMForceField_assemble.scn 300 1e-4 0 1
 Component/SolidMechanics/FEM/TetrahedronFEMForceField_plasticity.scn 300 1e-4 0 1
 Component/SolidMechanics/FEM/TetrahedronHyperelasticityFEMForceField.scn 100 1e-4 0 1
 Component/SolidMechanics/FEM/TriangularFEMForceFieldOptim.scn 100 1e-4 0 1
+Component/SolidMechanics/FEM/VectorSourceTerm.scn 2 1e-4 0 1
 Component/SolidMechanics/Spring/FastTriangularBendingSprings.scn 100 1e-4 0 1
 Component/SolidMechanics/Spring/MeshSpringForceField.scn 300 1e-4 0 1
 Component/Topology/Mapping/Mesh2PointTopologicalMapping.scn 100 1e-4 0 1
