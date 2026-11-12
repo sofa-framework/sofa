@@ -1597,6 +1597,7 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::initFromVertexMass()
 {
     msg_info() << "vertexMass information is used";
 
+    // The given vertexMass are the lumped masses, i.e. the diagonal of the applied mass matrix
     const auto vertexMass = d_vertexMass.getValue();
     Real totalMassSave = 0.0;
     for(size_t i=0; i<vertexMass.size(); i++)
@@ -1614,7 +1615,8 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::initFromVertexMass()
     for(size_t i=0; i<vertexMassInfo.size(); i++)
     {
         volume += vertexMassInfo[i]*m_massLumpingCoeff;
-        vertexMassInfo[i] = vertexMass[i];
+        // the stored vertexMass is multiplied by m_massLumpingCoeff wherever the lumped mass is used
+        vertexMassInfo[i] = m_massLumpingCoeff > 0 ? vertexMass[i] / m_massLumpingCoeff : vertexMass[i];
     }
 
     //Update all computed values
@@ -1656,19 +1658,23 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::initFromVertexAndEdgeMass()
 
     const sofa::type::vector<MassType> vertexMass = d_vertexMass.getValue();
     const sofa::type::vector<MassType> edgeMass = d_edgeMass.getValue();
-    Real totalMassSave = 0.0;
-    for(size_t i=0; i<vertexMass.size(); i++)
-    {
-        totalMassSave += vertexMass[i];
-    }
-    for(size_t i=0; i<edgeMass.size(); i++)
-    {
-        totalMassSave += edgeMass[i];
-    }
+
     //Compute the volume
     setMassDensity(1.0);
 
     computeMass();
+
+    // Sum of the entries of the applied mass matrix
+    Real totalMassSave = std::accumulate(vertexMass.begin(), vertexMass.end(), Real(0));
+    if (!isLumped())
+    {
+        // Add mass per edges if not lumped, *2 as it is added to both edge vertices
+        totalMassSave += std::accumulate(edgeMass.begin(), edgeMass.end(), Real(0)) * 2.0;
+    }
+    else
+    {
+        totalMassSave *= m_massLumpingCoeff;
+    }
 
     helper::WriteAccessor<Data<MassVector> > vertexMassInfo = d_vertexMass;
     helper::WriteAccessor<Data<MassVector> > edgeMassInfo = d_edgeMass;
