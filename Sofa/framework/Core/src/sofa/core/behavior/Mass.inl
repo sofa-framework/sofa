@@ -97,13 +97,6 @@ void Mass<DataTypes>::doSolveLinearSystem(const MechanicalParams* mparams,
         this->getClassName() << "'. Behavior is undefined. Try using a linear solver.";
 }
 
-template <class DataTypes>
-void Mass<DataTypes>::addDForce(const MechanicalParams* mparams,
-                                DataVecDeriv & /*df*/, const DataVecDeriv & /*dx*/)
-{
-    SOFA_UNUSED(mparams);
-}
-
 template<class DataTypes>
 void Mass<DataTypes>::addMBKdx(const MechanicalParams* mparams, MultiVecDerivId dfId)
 {

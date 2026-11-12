@@ -716,49 +716,51 @@ protected:
 
     void compressCSR()
     {
-        if constexpr (!Policy::CompressZeros) return;
-        Index outValues = 0;
-        Index outRows = 0;
-        for (Index r = 0; r < static_cast<Index>(rowIndex.size()); ++r)
+        if constexpr (Policy::CompressZeros)
         {
-            Index row = rowIndex[r];
-            Index rBegin = rowBegin[r];
-            Index rEnd = rowBegin[r+1];
-            Index outRBegin = outValues;
-            for (Index p = rBegin; p != rEnd; ++p)
+            Index outValues = 0;
+            Index outRows = 0;
+            for (Index r = 0; r < static_cast<Index>(rowIndex.size()); ++r)
             {
-                if (!traits::empty(colsValue[p]))
+                Index row = rowIndex[r];
+                Index rBegin = rowBegin[r];
+                Index rEnd = rowBegin[r+1];
+                Index outRBegin = outValues;
+                for (Index p = rBegin; p != rEnd; ++p)
                 {
-                    // keep this value
-                    if (p != outValues)
+                    if (!traits::empty(colsValue[p]))
                     {
-                        colsValue[outValues] = colsValue[p];
-                        colsIndex[outValues] = colsIndex[p];
+                        // keep this value
+                        if (p != outValues)
+                        {
+                            colsValue[outValues] = colsValue[p];
+                            colsIndex[outValues] = colsIndex[p];
+                        }
+                        ++outValues;
                     }
-                    ++outValues;
+                }
+                if(outValues != outRBegin)
+                {
+                    // keep this row
+                    if (r != outRows)
+                    {
+                        rowIndex[outRows] = row;
+                    }
+                    if (r != outRows || rBegin != outRBegin)
+                    {
+                        rowBegin[outRows] = outRBegin;
+                    }
+                    ++outRows;
                 }
             }
-            if(outValues != outRBegin)
+            if (static_cast<Index>(rowIndex.size()) != outRows || static_cast<Index>(colsIndex.size()) != outValues)
             {
-                // keep this row
-                if (r != outRows)
-                {
-                    rowIndex[outRows] = row;
-                }
-                if (r != outRows || rBegin != outRBegin)
-                {
-                    rowBegin[outRows] = outRBegin;
-                }
-                ++outRows;
+                rowBegin[outRows] = outValues;
+                rowIndex.resize(outRows);
+                rowBegin.resize(outRows+1);
+                colsIndex.resize(outValues);
+                colsValue.resize(outValues);
             }
-        }
-        if (static_cast<Index>(rowIndex.size()) != outRows || static_cast<Index>(colsIndex.size()) != outValues)
-        {
-            rowBegin[outRows] = outValues;
-            rowIndex.resize(outRows);
-            rowBegin.resize(outRows+1);
-            colsIndex.resize(outValues);
-            colsValue.resize(outValues);
         }
     }
 

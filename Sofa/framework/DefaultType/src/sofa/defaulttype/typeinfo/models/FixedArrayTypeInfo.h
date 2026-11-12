@@ -88,7 +88,10 @@ struct FixedArrayTypeInfo
             }
             return true;
         }
-        return false;
+        else
+        {
+            return false;
+        }
     }
 
     template <typename T>
