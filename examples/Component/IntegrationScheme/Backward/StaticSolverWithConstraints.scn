@@ -1,0 +1,99 @@
+<?xml version="1.0"?>
+<Node name="root" dt="0.01" gravity="0 -9.81 0">
+    <Node name="plugins">
+        <RequiredPlugin pluginName="Sofa.Component.AnimationLoop"/> <!-- Needed to use components [FreeMotionAnimationLoop] -->
+        <RequiredPlugin pluginName="Sofa.Component.Constraint.Lagrangian.Correction"/> <!-- Needed to use components [LinearSolverConstraintCorrection] -->
+        <RequiredPlugin pluginName="Sofa.Component.Constraint.Lagrangian.Model"/> <!-- Needed to use components [FixedLagrangianConstraint,StopperLagrangianConstraint] -->
+        <RequiredPlugin pluginName="Sofa.Component.Constraint.Lagrangian.Solver"/> <!-- Needed to use components [BlockGaussSeidelConstraintSolver] -->
+        <RequiredPlugin pluginName="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
+        <RequiredPlugin pluginName="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
+        <RequiredPlugin pluginName="Sofa.Component.IntegrationScheme.Backward"/> <!-- Needed to use components [StaticEquilibriumIntegrationScheme] -->
+        <RequiredPlugin pluginName="Sofa.Component.LinearSolver.Direct"/> <!-- Needed to use components [SparseLDLSolver] -->
+        <RequiredPlugin pluginName="Sofa.Component.LinearSolver.Ordering"/> <!-- Needed to use components [NaturalOrderingMethod] -->
+        <RequiredPlugin pluginName="Sofa.Component.LinearSystem"/> <!-- Needed to use components [ConstantSparsityPatternSystem] -->
+        <RequiredPlugin pluginName="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [DistanceToPlaneMapping,SubsetMapping] -->
+        <RequiredPlugin pluginName="Sofa.Component.Mass"/> <!-- Needed to use components [FEMMass,NodalMassDensity] -->
+        <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [VonMisesStress] -->
+        <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.FEM.HyperElastic"/> <!-- Needed to use components [HyperelasticityFEMForceField,StVenantKirchhoffMaterial] -->
+        <RequiredPlugin pluginName="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+        <RequiredPlugin pluginName="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->
+        <RequiredPlugin pluginName="Sofa.Component.Visual"/> <!-- Needed to use components [LineAxis,VisualGrid,VisualStyle] -->
+    </Node>
+
+    <VisualStyle displayFlags="showBehaviorModels showForceFields" />
+
+    <FreeMotionAnimationLoop printLog="false" constraintsStateVariables="pos" solveConstraints="true" parallelODESolving="true"/>
+    <BlockGaussSeidelConstraintSolver multithreading="true" maxIterations="100" tolerance="1e-5" regularizationTerm="0.007"/>
+
+    <VisualGrid size="0.1"/>
+    <LineAxis size="0.1"/>
+
+    <Node name="plane">
+        <StaticEquilibriumIntegrationScheme maxNbIterationsNewton="1"
+                                            maxNbIterationsLineSearch="1"
+                                            alwaysAdvanceNewton="true"/>
+        <ConstantSparsityPatternSystem template="CompressedRowSparseMatrix" name="A" checkIndices="false"/>
+        <NaturalOrderingMethod/>
+        <SparseLDLSolver name="linear_solver" template="CompressedRowSparseMatrix" parallelInverseProduct="true"/>
+
+        <RegularGridTopology name="grid" min="-0.03 -0.01 0" max="-0.01 0.01 0.2" n="5 5 30"/>
+        <MechanicalObject template="Vec3" name="state" showObject="true"/>
+
+        <NodalMassDensity property="1100"/>
+        <FEMMass template="Vec3,Hexahedron"/>
+
+        <BoxROI template="Vec3" name="box_roi_0" box="-0.031 -0.011 -0.0001   -0.0099 0.011 0.0001" drawBoxes="true" />
+        <FixedProjectiveConstraint template="Vec3" indices="@box_roi_0.indices" />
+
+        <StVenantKirchhoffMaterial name="material" youngModulus="1e5" poissonRatio="0.45"/>
+        <HyperelasticityFEMForceField name="FEM" template="Vec3,Hexahedron" topology="@grid"
+                                      computeForceStrategy="parallel" computeForceDerivStrategy="parallel"/>
+
+        <VonMisesStress template="Vec3,Hexahedron" name="stress" topology="@grid" stressEvaluator="@material"
+                        colorMap="green yellow orange red purple #221C35"/>
+
+        <Node name="bottomFace">
+            <MechanicalObject name="bottom_state" template="Vec3"/>
+            <BoxROI template="Vec3" name="box" position="@../state.position" box="-0.031 -0.011 -0.0001   0.0099 -0.009 0.2" drawBoxes="false" doUpdate="false"/>
+            <SubsetMapping input="@../state" output="@bottom_state" indices="@box.indices" applyRestPosition="true"/>
+
+            <Node name="DistanceToPlane">
+                <MechanicalObject name="distance" template="Vec1"/>
+                <DistanceToPlaneMapping input="@../bottom_state" output="@distance" planeNormal="0 1 0" planePoint="0 -0.03 0" applyRestPosition="true"/>
+
+                <StopperLagrangianConstraint min="0"/>
+            </Node>
+        </Node>
+        <LinearSolverConstraintCorrection linearSolver="@linear_solver"/>
+    </Node>
+
+    <Node name="fixed">
+        <StaticEquilibriumIntegrationScheme maxNbIterationsNewton="1"
+                                            maxNbIterationsLineSearch="1"
+                                            alwaysAdvanceNewton="true"/>
+        <ConstantSparsityPatternSystem template="CompressedRowSparseMatrix" name="A" checkIndices="false"/>
+        <NaturalOrderingMethod/>
+        <SparseLDLSolver name="linear_solver" template="CompressedRowSparseMatrix" parallelInverseProduct="true"/>
+
+        <RegularGridTopology name="grid" min="0.01 -0.01 0" max="0.03 0.01 0.2" n="5 5 30"/>
+        <MechanicalObject template="Vec3" name="state"/>
+
+        <NodalMassDensity property="1100"/>
+        <FEMMass template="Vec3,Hexahedron"/>
+
+        <BoxROI template="Vec3" name="box_roi_0" box="0.009 -0.011 -0.0001   0.031 0.011 0.0001" drawBoxes="true" />
+        <FixedProjectiveConstraint template="Vec3" indices="@box_roi_0.indices" />
+
+        <BoxROI template="Vec3" name="box_roi_1" box="0.009 -0.011 0.199   0.031 0.011 0.201" drawBoxes="true" />
+        <FixedLagrangianConstraint template="Vec3" indices="@box_roi_1.indices" />
+
+        <StVenantKirchhoffMaterial name="material" youngModulus="1e5" poissonRatio="0.45"/>
+        <HyperelasticityFEMForceField name="FEM" template="Vec3,Hexahedron" topology="@grid"
+                                      computeForceStrategy="parallel" computeForceDerivStrategy="parallel"/>
+
+        <VonMisesStress template="Vec3,Hexahedron" name="stress" topology="@grid" stressEvaluator="@material"
+                        colorMap="green yellow orange red purple #221C35"/>
+        <LinearSolverConstraintCorrection linearSolver="@linear_solver"/>
+    </Node>
+
+</Node>
