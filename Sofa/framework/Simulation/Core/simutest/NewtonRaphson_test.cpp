@@ -104,6 +104,71 @@ public:
 
 };
 
+
+class Simple2DSpring: public sofa::core::behavior::ForceField<sofa::defaulttype::Vec2dTypes>
+{
+public:
+    SOFA_CLASS(Simple2DSpring, sofa::core::behavior::ForceField<sofa::defaulttype::Vec2dTypes>);
+    Simple2DSpring()
+    : d_k(initData(&d_k, "k", ""))
+    , d_l0(initData(&d_l0, "l0", ""))
+    {}
+
+    virtual void addForce(const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v)
+    {
+        sofa::helper::WriteOnlyAccessor< DataVecDeriv > _f = f;
+        sofa::helper::ReadAccessor< DataVecCoord > _x = x;
+        const auto x_0 = _x[0];
+        const auto x_1 = _x[1];
+        _f[0] += eval(x_0,x_1);
+        _f[1] += -eval(x_0,x_1);
+    }
+
+    virtual void buildStiffnessMatrix(sofa::core::behavior::StiffnessMatrix* matrix)
+    {
+        auto dfdx = matrix->getForceDerivativeIn(this->mstate)
+                           .withRespectToPositionsIn(this->mstate);
+
+        sofa::helper::ReadAccessor< DataVecCoord > _x = this->mstate->readPositions();
+        const auto x_0 = _x[0];
+        const auto x_1 = _x[1];
+        const auto dir = x_0 - x_1;
+
+        const auto k = d_k.getValue();
+        const auto l0 = d_l0.getValue();
+
+        for (unsigned i=0; i<2; ++i)
+        {
+            for (unsigned j=0; j<2; ++j)
+            {
+                sofa::type::Mat2x2d temp{};
+                temp [0][0] = (i!=j ? -1 : 1) * (k * ( l0/(dir.norm()) - 1 ) - k * l0 * pow(dir[0],2.0)/pow(dot(dir, dir), 3.0/2.0)) ;
+                temp [0][1] = (i!=j ? -1 : 1) * (- k * l0 * dir[0] * dir[1]/pow(dot(dir, dir), 3.0/2.0)) ;
+                temp [1][0] = (i!=j ? -1 : 1) * (- k * l0 * dir[0] * dir[1]/pow(dot(dir, dir), 3.0/2.0)) ;
+                temp [1][1] = (i!=j ? -1 : 1) * (k * ( l0/(dir.norm()) - 1 ) - k * l0 * pow(dir[1],2.0)/pow(dot(dir, dir), 3.0/2.0)) ;
+                dfdx(Deriv::total_size * i, Deriv::total_size * j) += temp;
+            }
+        }
+    }
+
+    sofa::type::Vec2d eval(sofa::type::Vec2d x_0, sofa::type::Vec2d x_1)
+    {
+        const auto dir = x_0 - x_1;
+        return d_k.getValue() * dir/dir.norm() * (d_l0.getValue() - dir.norm());
+    }
+
+
+    virtual void addDForce(const sofa::core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx )
+    { }
+
+    virtual SReal getPotentialEnergy(const sofa::core::MechanicalParams* /*mparams*/, const DataVecCoord& x) const
+    { }
+
+    sofa::core::objectmodel::Data<SReal> d_k;
+    sofa::core::objectmodel::Data<SReal> d_l0;
+
+};
+
 /***
  * Equation of the form \frac{\partial^2 x}{\partial t ^2} + e^{2x}=0
  * The analytical solution is of the form
@@ -174,46 +239,42 @@ public:
 
 };
 
-
-class Antagonists2DLinearSprings: public sofa::core::behavior::ForceField<sofa::defaulttype::Vec2dTypes>
+static std::string create1DScene(const SReal position, const SReal velocity, const SReal m, const SReal g,
+                                        const SReal startTime, const SReal dt, const bool lineSearch, const bool staticSolve)
 {
-public:
-    SOFA_CLASS(Antagonists2DLinearSprings, sofa::core::behavior::ForceField<sofa::defaulttype::Vec2dTypes>);
-    Antagonists2DLinearSprings()
-    : d_k1(initData(&d_k1, "k1", ""))
-    , d_k2(initData(&d_k2, "k2", ""))
-    {}
+    std::stringstream scene ;
+    scene << "<?xml version='1.0'?>"
+             "<Node name='Root' gravity='" << g <<" 0 0' time='"<< startTime <<"' animate='0' dt='"<< dt << "' > \n";
+    scene << (lineSearch ? "<NewtonRaphson maxNbIterationsLineSearch='20' maxNbIterationsNewton='20' residueThreshold='1e-30' lineSearchReductionRate='0.2'/> "
+                         : "<NewtonRaphson maxNbIterationsLineSearch='0' maxNbIterationsNewton='20' residueThreshold='1e-30'  /> ") << " \n";
+    scene << (staticSolve ? "   <StaticEquilibriumIntegrationScheme/> \n"  : "   <EulerImplicitIntegrationScheme/> \n" );
+    scene << "   <SparseLDLSolver template='CompressedRowSparseMatrixd' />                                                                                        \n"
+             "   <PointSetTopologyContainer position='"<<position<<"' />                                             \n"
+             "   <MechanicalObject template='Vec1d' name='state' position='"<<position<<"' velocity='"<<velocity<<"' />                                             \n"
+             "   <UniformMass totalMass='"<< m <<"'/>                                                                             \n"
+             "</Node>                                                                                                       \n" ;
+    return scene.str();
+}
 
-    virtual void addForce(const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v)
-    {
-        // sofa::helper::WriteOnlyAccessor< DataVecDeriv > _f = f;
-        // sofa::helper::ReadAccessor< DataVecCoord > _x = x;
-        // const auto x_0 = _x[0][0];
-        // _f[0] += sofa::type::Vec1d(x_0*x_0 + d_k1.getValue()*x_0 + d_k2.getValue());
-    }
 
-    virtual void buildStiffnessMatrix(sofa::core::behavior::StiffnessMatrix* matrix)
-    {
-        // auto dfdx = matrix->getForceDerivativeIn(this->mstate)
-        //                    .withRespectToPositionsIn(this->mstate);
-        //
-        //
-        // sofa::helper::ReadAccessor< DataVecCoord > _x = this->mstate->readPositions();
-        // const auto x_0 = _x[0][0];
-        // dfdx(0,0) += 2.0 * x_0 + d_k1.getValue();
+static std::string create2DScene(const sofa::type::Vec2d position, const sofa::type::Vec2d velocity, const SReal m, const sofa::type::Vec2d  g,
+                                        const SReal startTime, const SReal dt, const bool lineSearch, const bool staticSolve)
+{
+    std::stringstream scene ;
+    scene << "<?xml version='1.0'?>"
+             "<Node name='Root' gravity='" << g[0] << " " << g[1] <<" 0' time='"<< startTime <<"' animate='0' dt='"<< dt << "' > \n";
+    scene << (lineSearch ? "<NewtonRaphson maxNbIterationsLineSearch='20' maxNbIterationsNewton='20' residueThreshold='1e-30' lineSearchReductionRate='0.2'/> "
+                         : "<NewtonRaphson maxNbIterationsLineSearch='0' maxNbIterationsNewton='20' residueThreshold='1e-30'  /> ") << " \n";
+    scene << (staticSolve ? "   <StaticEquilibriumIntegrationScheme/> \n"  : "   <EulerImplicitIntegrationScheme/> \n" );
+    scene << "   <SparseLDLSolver template='CompressedRowSparseMatrixd' />                                                                                        \n"
+             "   <PointSetTopologyContainer position='"<<position<<" 0 0' />                                             \n"
+             "   <MechanicalObject template='Vec2d' name='state' position='"<<position<<" 0 0' velocity='"<<velocity<<" 0 0' />                                             \n"
+             "   <UniformMass totalMass='"<< 2*m <<"'/>                                                                             \n"
+             "   <FixedProjectiveConstraint indices='1'/>                                                                             \n"
+             "</Node>                                                                                                       \n" ;
+    return scene.str();
+}
 
-    }
-
-    virtual void addDForce(const sofa::core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx )
-    { }
-
-    virtual SReal getPotentialEnergy(const sofa::core::MechanicalParams* /*mparams*/, const DataVecCoord& x) const
-    { }
-
-    sofa::core::objectmodel::Data<SReal> d_k1;
-    sofa::core::objectmodel::Data<SReal> d_k2;
-
-};
 
 class NewtonRaphson_test: public BaseSimulationTest
 {
@@ -229,6 +290,7 @@ public:
             Sofa.Component.LinearSolver.Direct,
             Sofa.Component.Topology.Container.Dynamic,
             Sofa.Component.Mass,
+            Sofa.Component.Constraint.Projective
         });
     }
 
@@ -237,22 +299,11 @@ public:
         const SReal m = 1.0;
         const SReal g = 9.81;
         const SReal k0 = 10;
-        const SReal k1 = 10 * sqrt(m*g + k1);
+        const SReal k1 = 10 * sqrt(m*g + k0);
         const SReal k2 = 1.0;
 
-        std::stringstream scene ;
-        scene << "<?xml version='1.0'?>"
-                 "<Node name='Root' gravity='" << g  <<" 0 0' time='0' animate='0' > \n";
-        scene << (lineSearch ? "<NewtonRaphson maxNbIterationsLineSearch='20' maxNbIterationsNewton='3' residueThreshold='1e-10' lineSearchReductionRate='0.2' /> "
-                             : "<NewtonRaphson maxNbIterationsLineSearch='0' maxNbIterationsNewton='3' residueThreshold='1e-10' /> ") << " \n";
-        scene << "   <StaticEquilibriumIntegrationScheme />                                                                     \n"
-                 "   <SparseLDLSolver template='CompressedRowSparseMatrixd' />                                                                                        \n"
-                 "   <PointSetTopologyContainer position='0'/>                                             \n"
-                 "   <MechanicalObject template='Vec1d' name='state' position='0'/>                                             \n"
-                 "   <UniformMass totalMass='"<< m <<"'/>                                                                             \n"
-                 "</Node>                                                                                                       \n" ;
-
-        SceneInstance c("xml", scene.str()) ;
+        const std::string scene = create1DScene(0, 0, m, g, 0, 0 , lineSearch, true);
+        SceneInstance c("xml", scene.c_str()) ;
 
         Node* m_root = c.root.get() ;
         ASSERT_NE(m_root, nullptr) ;
@@ -273,94 +324,95 @@ public:
     }
 
 
+    void test_2D_linear_spring(bool lineSearch)
+    {
+        const SReal m = 2.0;
+        const SReal g = 9.81;
+        const SReal l0 = 1.5;
+        const SReal k0 = 8;
 
-    void test1D_liouville_dynamic_compare_analytical(unsigned nSteps, bool lineSearch)
+        const std::string scene = create2DScene({-1, -0.1}, {0, 0}, m, {0, -g}, 0, 0 , lineSearch, true);
+        SceneInstance c("xml", scene.c_str()) ;
+
+        Node* m_root = c.root.get() ;
+        ASSERT_NE(m_root, nullptr) ;
+
+        auto simple2DSpring = sofa::core::objectmodel::New<Simple2DSpring>();
+        simple2DSpring->d_k.setValue(k0);
+        simple2DSpring->d_l0.setValue(l0);
+
+        m_root->addObject(simple2DSpring);
+
+        c.initScene() ;
+
+        sofa::type::Vec2d expectedSolution{0, -(l0 + m*g/k0)};
+
+        sofa::simulation::node::animate(m_root, 1);
+
+        EXPECT_NEAR(m_root->getMechanicalState()->getPX(0),expectedSolution[0], 1e-10);
+        EXPECT_NEAR(m_root->getMechanicalState()->getPY(0),expectedSolution[1], 1e-10);
+    }
+
+    void test1D_liouville_dynamic_compare_analytical(unsigned nbHDivision, bool lineSearch)
     {
 
         const SReal t0 = 2;
         const SReal A = 10;
         const SReal m = 1000;
-        const SReal startTime = 1.7;
-
+        const SReal startTime = 1.8;
+        const SReal finalTime = 2.2;
         const SReal dt1 = 0.002;
 
 
-        std::stringstream scene ;
-        scene << "<?xml version='1.0'?>"
-                 "<Node name='Root' gravity='0 0 0' time='"<< startTime <<"' animate='0' dt='"<< dt1 << "' > \n";
-        scene << (lineSearch ? "<NewtonRaphson maxNbIterationsLineSearch='0' maxNbIterationsNewton='2' residueThreshold='0' lineSearchReductionRate='0.2' printLog='true'/> "
-                             : "<NewtonRaphson maxNbIterationsLineSearch='0' maxNbIterationsNewton='200' residueThreshold='0'  /> ") << " \n";
-        scene << "   <EulerImplicitIntegrationScheme/>                                                                     \n"
-                 "   <SparseLDLSolver template='CompressedRowSparseMatrixd' />                                                                                        \n"
-                 "   <PointSetTopologyContainer position='"<<LiouvilleForceField::analyticalSolution(A, t0, startTime)<<"' />                                             \n"
-                 "   <MechanicalObject template='Vec1d' name='state' position='"<<LiouvilleForceField::analyticalSolution(A, t0, startTime)<<"' velocity='"<<LiouvilleForceField::analyticalSolutionDerivative(A, t0, startTime)<<"' />                                             \n"
-                 "   <UniformMass totalMass='"<< m <<"'/>                                                                             \n"
-                 "</Node>                                                                                                       \n" ;
-
-        SceneInstance c1("xml", scene.str()) ;
-        SceneInstance c2("xml", scene.str()) ;
-
-        Node* m_root1 = c1.root.get() ;
-        ASSERT_NE(m_root1, nullptr) ;
-
-        auto liouville = sofa::core::objectmodel::New<LiouvilleForceField>();
-        liouville->d_A.setValue(A);
-        liouville->d_t0.setValue(t0);
-        liouville->d_M.setValue(m);
-
-        m_root1->addObject(liouville);
-
-
-        c1.initScene() ;
-
         std::vector<SReal> pos;
         std::vector<SReal> vel;
-        pos.resize(nSteps);
-        vel.resize(nSteps);
+        pos.resize(nbHDivision);
+        vel.resize(nbHDivision);
 
-        auto * realState = static_cast<sofa::core::behavior::MechanicalState<sofa::defaulttype::Vec1dTypes>*>(m_root1->getMechanicalState());
 
-        SReal mechaVel;
-        realState->copyToBuffer(&mechaVel, sofa::core::vec_id::write_access::velocity, 1);
-
-        EXPECT_NEAR(realState->getPX(0),LiouvilleForceField::analyticalSolution(A, t0, m_root1->getTime()),1e-5);
-        EXPECT_NEAR(mechaVel,LiouvilleForceField::analyticalSolutionDerivative(A, t0, m_root1->getTime()),1e-5);
-        pos[0] = realState->getPX(0);
-        vel[0] = mechaVel;
-
-        for (unsigned i=0; i<nSteps; ++i)
+        for (unsigned i=0; i<nbHDivision; ++i)
         {
-            sofa::simulation::node::animate(m_root1, dt1);
-            realState->copyToBuffer(&mechaVel, sofa::core::vec_id::write_access::velocity, 1);
+            const SReal newDt=dt1/pow(2,i);
+            const std::string scene = create1DScene(LiouvilleForceField::analyticalSolution(A, t0, startTime), LiouvilleForceField::analyticalSolutionDerivative(A, t0, startTime), m, 0, startTime, newDt , lineSearch, false);
 
-            EXPECT_NEAR(realState->getPX(0),LiouvilleForceField::analyticalSolution(A, t0, m_root1->getTime()),1e-5);
-            EXPECT_NEAR(mechaVel,LiouvilleForceField::analyticalSolutionDerivative(A, t0, m_root1->getTime()),1e-5);
+            SceneInstance c1("xml", scene) ;
 
-            pos[i+1] = realState->getPX(0);
-            vel[i+1] = mechaVel;
+            const unsigned nbStep = round((finalTime - startTime)/newDt);
+
+            Node* m_root1 = c1.root.get() ;
+            ASSERT_NE(m_root1, nullptr) ;
+
+            auto liouville = sofa::core::objectmodel::New<LiouvilleForceField>();
+            liouville->d_A.setValue(A);
+            liouville->d_t0.setValue(t0);
+            liouville->d_M.setValue(m);
+
+            m_root1->addObject(liouville);
+            c1.initScene();
+
+            auto * realState = static_cast<sofa::core::behavior::MechanicalState<sofa::defaulttype::Vec1dTypes>*>(m_root1->getMechanicalState());
+            SReal mechaVel;
+
+            pos[i] = 0;
+            vel[i] = 0;
+
+            for (unsigned j=0; j<nbStep; ++j)
+            {
+                sofa::simulation::node::animate(m_root1, newDt);
+                realState->copyToBuffer(&mechaVel, sofa::core::vec_id::write_access::velocity, 1);
+                pos[i] += fabs(realState->getPX(0) -LiouvilleForceField::analyticalSolution(A, t0, startTime + newDt * (j+1)));
+                vel[i] += fabs(mechaVel - LiouvilleForceField::analyticalSolutionDerivative(A, t0,  startTime + newDt * (j+1)));
+            }
+            pos[i] /= nbStep;
+            vel[i] /= nbStep;
+
         }
 
-        std::cout<<"NR_pos = np.array([";
-        for (unsigned i=0; i<nSteps-1; ++i)
+        for (unsigned i=1; i<nbHDivision; ++i)
         {
-            std::cout << pos[i] << ", ";
+            EXPECT_NEAR(std::log2(pos[i-1]/pos[i]),1.0,1e-2);
+            EXPECT_NEAR(std::log2(vel[i-1]/vel[i]),1.0,1e-2);
         }
-        std::cout << pos[nSteps]<<"])"<<std::endl;
-        std::cout<<"NR_vel = np.array([";
-        for (unsigned i=0; i<nSteps-1; ++i)
-        {
-            std::cout << vel[i] << ", ";
-        }
-        std::cout << vel[nSteps]<<"])"<<std::endl;
-
-
-    }
-
-
-
-
-    void test2D_twoLinearSpringsPerpendicularToGravity()
-    {
 
     }
 
@@ -376,9 +428,19 @@ TEST_F(NewtonRaphson_test , Quadratic1DSpring_Static_LineSearch )
     this->test1D_quadraticFunction_static(true);
 }
 
+TEST_F(NewtonRaphson_test , Linear2DSpring_Static_NoLineSearch )
+{
+    this->test_2D_linear_spring(false);
+}
+
+TEST_F(NewtonRaphson_test , Linear2DSpring_Static_LineSearch )
+{
+    this->test_2D_linear_spring(true);
+}
+
 TEST_F(NewtonRaphson_test , Liouville_Dynamic_Analytical )
 {
-    this->test1D_liouville_dynamic_compare_analytical(300, true);
+    this->test1D_liouville_dynamic_compare_analytical(6, false);
 }
 
 

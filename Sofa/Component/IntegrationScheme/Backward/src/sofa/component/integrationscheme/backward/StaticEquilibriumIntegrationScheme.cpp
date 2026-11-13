@@ -112,6 +112,11 @@ void StaticEquilibriumIntegrationScheme::updateStatesFromLinearSolution(SReal al
     pos.peq(m_systemUnknown, alpha );
 }
 
+void StaticEquilibriumIntegrationScheme::finalizeIntegrationStep(bool advanceTime)
+{
+
+}
+
 SReal StaticEquilibriumIntegrationScheme::getVelocityIntegrationFactor() const
 {
     return 0.0;
