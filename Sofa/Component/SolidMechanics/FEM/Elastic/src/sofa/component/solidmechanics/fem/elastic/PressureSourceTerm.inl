@@ -76,4 +76,17 @@ PressureSourceTerm<DataTypes, ElementType>::integrandInputs() const
     return {&l_pressure->d_property};
 }
 
+template <class DataTypes, class ElementType>
+auto PressureSourceTerm<DataTypes, ElementType>::evaluateStiffness(
+    const QuadratureContext_t& context, sofa::Size node) const -> SourceDerivative
+{
+    if (!l_pressure)
+    {
+        return SourceDerivative{};
+    }
+
+    return elementAreaNormalDerivative(context.jacobian, context.gradientShapeFunctions[node])
+        * this->interpolateProperty(*l_pressure, context);
+}
+
 }  // namespace sofa::component::solidmechanics::fem::elastic

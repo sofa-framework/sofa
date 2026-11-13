@@ -77,4 +77,17 @@ BaseStressSourceTerm<DataTypes, ElementType, TNodalStress>::integrandInputs() co
     return {&l_stress->d_property};
 }
 
+template <class DataTypes, class ElementType, class TNodalStress>
+auto BaseStressSourceTerm<DataTypes, ElementType, TNodalStress>::evaluateStiffness(
+    const QuadratureContext_t& context, sofa::Size node) const -> SourceDerivative
+{
+    if (!l_stress)
+    {
+        return SourceDerivative{};
+    }
+
+    return this->interpolateProperty(*l_stress, context)
+        * elementAreaNormalDerivative(context.jacobian, context.gradientShapeFunctions[node]);
+}
+
 }  // namespace sofa::component::solidmechanics::fem::elastic
