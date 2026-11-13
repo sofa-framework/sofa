@@ -42,7 +42,7 @@ void CudaLinearSmallStrainFEMForceField<DataTypes, ElementType>::init()
 template<class DataTypes, class ElementType>
 void CudaLinearSmallStrainFEMForceField<DataTypes, ElementType>::uploadStiffnessAndConnectivity()
 {
-    using trait = sofa::component::solidmechanics::fem::elastic::trait<DataTypes, ElementType>;
+    using trait = sofa::component::solidmechanics::fem::elastic::trait<DataTypes, DataTypes, ElementType>;
 
     if (!this->l_topology) return;
 
@@ -160,7 +160,7 @@ void CudaLinearSmallStrainFEMForceField<DataTypes, ElementType>::addForce(
         return;
     }
 
-    using trait = sofa::component::solidmechanics::fem::elastic::trait<DataTypes, ElementType>;
+    using trait = sofa::component::solidmechanics::fem::elastic::trait<DataTypes, DataTypes, ElementType>;
     constexpr auto nNodes = trait::NumberOfNodesInElement;
     constexpr auto dim = trait::spatial_dimensions;
 
@@ -203,7 +203,7 @@ void CudaLinearSmallStrainFEMForceField<DataTypes, ElementType>::addDForce(
         return;
     }
 
-    using trait = sofa::component::solidmechanics::fem::elastic::trait<DataTypes, ElementType>;
+    using trait = sofa::component::solidmechanics::fem::elastic::trait<DataTypes, DataTypes, ElementType>;
     constexpr auto nNodes = trait::NumberOfNodesInElement;
     constexpr auto dim = trait::spatial_dimensions;
 

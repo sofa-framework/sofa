@@ -43,7 +43,7 @@ void CudaCorotationalFEMForceField<DataTypes, ElementType>::init()
 template<class DataTypes, class ElementType>
 void CudaCorotationalFEMForceField<DataTypes, ElementType>::uploadStiffnessAndConnectivity()
 {
-    using trait = sofa::component::solidmechanics::fem::elastic::trait<DataTypes, ElementType>;
+    using trait = sofa::component::solidmechanics::fem::elastic::trait<DataTypes, DataTypes, ElementType>;
 
     if (!this->l_topology) return;
 
@@ -152,7 +152,7 @@ void CudaCorotationalFEMForceField<DataTypes, ElementType>::uploadStiffnessAndCo
 template<class DataTypes, class ElementType>
 void CudaCorotationalFEMForceField<DataTypes, ElementType>::uploadRotations()
 {
-    using trait = sofa::component::solidmechanics::fem::elastic::trait<DataTypes, ElementType>;
+    using trait = sofa::component::solidmechanics::fem::elastic::trait<DataTypes, DataTypes, ElementType>;
     constexpr auto dim = trait::spatial_dimensions;
 
     const auto& rotations = this->m_rotations;
@@ -176,7 +176,7 @@ void CudaCorotationalFEMForceField<DataTypes, ElementType>::uploadRotations()
 template<class DataTypes, class ElementType>
 void CudaCorotationalFEMForceField<DataTypes, ElementType>::uploadInitialRotationsTransposed()
 {
-    using trait = sofa::component::solidmechanics::fem::elastic::trait<DataTypes, ElementType>;
+    using trait = sofa::component::solidmechanics::fem::elastic::trait<DataTypes, DataTypes, ElementType>;
     constexpr auto dim = trait::spatial_dimensions;
     constexpr auto nNodes = trait::NumberOfNodesInElement;
 
@@ -206,7 +206,7 @@ void CudaCorotationalFEMForceField<DataTypes, ElementType>::uploadInitialRotatio
 template<class DataTypes, class ElementType>
 void CudaCorotationalFEMForceField<DataTypes, ElementType>::downloadRotations()
 {
-    using trait = sofa::component::solidmechanics::fem::elastic::trait<DataTypes, ElementType>;
+    using trait = sofa::component::solidmechanics::fem::elastic::trait<DataTypes, DataTypes, ElementType>;
     constexpr auto dim = trait::spatial_dimensions;
 
     if (!m_gpuRotationsUploaded) return;
@@ -251,7 +251,7 @@ void CudaCorotationalFEMForceField<DataTypes, ElementType>::addForce(
         return;
     }
 
-    using trait = sofa::component::solidmechanics::fem::elastic::trait<DataTypes, ElementType>;
+    using trait = sofa::component::solidmechanics::fem::elastic::trait<DataTypes, DataTypes, ElementType>;
     constexpr auto nNodes = trait::NumberOfNodesInElement;
     constexpr auto dim = trait::spatial_dimensions;
 
@@ -314,7 +314,7 @@ void CudaCorotationalFEMForceField<DataTypes, ElementType>::addDForce(
         return;
     }
 
-    using trait = sofa::component::solidmechanics::fem::elastic::trait<DataTypes, ElementType>;
+    using trait = sofa::component::solidmechanics::fem::elastic::trait<DataTypes, DataTypes, ElementType>;
     constexpr auto nNodes = trait::NumberOfNodesInElement;
     constexpr auto dim = trait::spatial_dimensions;
 
