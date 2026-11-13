@@ -320,9 +320,9 @@ void MechanicalObject<DataTypes>::parse ( sofa::core::objectmodel::BaseObjectDes
 
     if (arg->getAttribute("dx") != nullptr || arg->getAttribute("dy") != nullptr || arg->getAttribute("dz") != nullptr)
     {
-        translation.setValue(type::Vec3((Real)arg->getAttributeAsFloat("dx",0.0),
-                                     (Real)arg->getAttributeAsFloat("dy",0.0),
-                                     (Real)arg->getAttributeAsFloat("dz",0.0)));
+        translation.setValue(type::Vec3((SReal)arg->getAttributeAsFloat("dx",0.0),
+                                     (SReal)arg->getAttributeAsFloat("dy",0.0),
+                                     (SReal)arg->getAttributeAsFloat("dz",0.0)));
     }
 
     if (arg->getAttribute("rx2") != nullptr || arg->getAttribute("ry2") != nullptr || arg->getAttribute("rz2") != nullptr)
@@ -334,9 +334,9 @@ void MechanicalObject<DataTypes>::parse ( sofa::core::objectmodel::BaseObjectDes
 
     if (arg->getAttribute("dx2") != nullptr || arg->getAttribute("dy2") != nullptr || arg->getAttribute("dz2") != nullptr)
     {
-        translation2.setValue(type::Vec3((Real)arg->getAttributeAsFloat("dx2",0.0),
-                                      (Real)arg->getAttributeAsFloat("dy2",0.0),
-                                      (Real)arg->getAttributeAsFloat("dz2",0.0)));
+        translation2.setValue(type::Vec3((SReal)arg->getAttributeAsFloat("dx2",0.0),
+                                      (SReal)arg->getAttributeAsFloat("dy2",0.0),
+                                      (SReal)arg->getAttributeAsFloat("dz2",0.0)));
     }
 }
 
@@ -688,7 +688,10 @@ void MechanicalObject<DataTypes>::getIndicesInSpace(sofa::type::vector<sofa::Ind
 {
     helper::ReadAccessor< Data<VecCoord> > x_rA = this->readPositions();
 
-    type::BoundingBox box(xmin, xmax, ymin, ymax, zmin, zmax);
+    type::BoundingBox box(
+        static_cast<SReal>(xmin), static_cast<SReal>(xmax),
+        static_cast<SReal>(ymin), static_cast<SReal>(ymax),
+        static_cast<SReal>(zmin), static_cast<SReal>(zmax));
 
     for (unsigned i = 0; i < x_rA.size(); ++i)
     {
@@ -1241,7 +1244,7 @@ SReal MechanicalObject<DataTypes>::compareVec(core::ConstVecId vecId, std::istre
     unsigned int count=0;
     while (compare_ref >> value_ref && compare_cur >> value_cur )
     {
-        error += fabs(value_ref-value_cur);
+        error += abs(static_cast<SReal>(value_ref)-static_cast<SReal>(value_cur));
         count ++;
     }
     if( count == 0 ) return 0; //both vector are empty, so we return 0;
@@ -2536,8 +2539,8 @@ bool MechanicalObject<DataTypes>::addBBox(SReal* minBBox, SReal* maxBBox)
 
         for (unsigned int j = 0; j < spatial_dimensions; ++j)
         {
-            if (p[j] < minBBox[j]) minBBox[j] = p[j];
-            if (p[j] > maxBBox[j]) maxBBox[j] = p[j];
+            if (p[j] < minBBox[j]) minBBox[j] = static_cast<SReal>(p[j]);
+            if (p[j] > maxBBox[j]) maxBBox[j] = static_cast<SReal>(p[j]);
         }
     }
     return true;
