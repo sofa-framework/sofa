@@ -51,7 +51,7 @@ Visitor::Result SaveSnapshotVisitor::processNodeTopDown(simulation::Node* node)
         const auto it = m_snapshotNodeMap.find(p);
         if (it != m_snapshotNodeMap.end())
         {
-            snapshotParents = std::dynamic_pointer_cast<core::objectmodel::Snapshot::SnapshotNode>(it->second);
+            snapshotParents = it->second;
         }
     }
 

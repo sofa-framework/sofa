@@ -38,6 +38,7 @@ namespace sofa::simulation
 
 /**
  * \brief SnapshotManager is responsible for storing and managing snapshots, whether they are kept in memory or stored on disk.
+ * The SnapshotManager is a component that you need to add to your scene to use snapshots.
  *
  * Snapshots are stored in two separate containers:
  * - m_snapshotsFromMemory for in-memory snapshots.
@@ -82,20 +83,29 @@ public:
                            double snapshotTime);
 
     /// Save and store a Snapshot in memory
-    void memorySave(const sofa::core::sptr<sofa::simulation::Node>& groot);
+    void memorySave();
 
     /// Load a snapshot from memory
-    void memoryLoad(sofa::core::sptr<sofa::simulation::Node>& groot);
+    void memoryLoad();
 
     /// Save and store a Snapshot to a file (or Save and store a group of Snapshot to a file when isSet is true)
-    void saveTo(const sofa::core::sptr<sofa::simulation::Node>& groot, const std::string& savePath, bool isSet);
+    void saveTo(const std::string& savePath, bool isSet);
 
     /// Load a snapshot from a file
-    void loadTo(sofa::core::sptr<sofa::simulation::Node>& groot, const std::string& outPath);
+    void loadTo(const std::string& outPath);
 
     /// Load a group of snapshots from a file
     void loadToSet(const std::string& filename);
 
+    /// Save a SnapshotObject full of data and link into the snapshot
+    std::shared_ptr<core::objectmodel::Snapshot::SnapshotObject> saveSnapshot(std::shared_ptr<core::objectmodel::Snapshot::SnapshotObject> object) const override;
+
+    /// Load data and links from the snapshot to the scene
+    void loadSnapshot(const std::shared_ptr<core::objectmodel::Snapshot::SnapshotObject>& snapshotObject) const override;
+
+protected:
+
+    void refreshNumberOfSnapshots();
 
 };
 
