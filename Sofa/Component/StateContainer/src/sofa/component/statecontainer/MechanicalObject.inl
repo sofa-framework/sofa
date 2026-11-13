@@ -1602,7 +1602,8 @@ bool vOp_vf(MechanicalObject<DataTypes>& self, core::VecId v, Real_t<DataTypes> 
 {
     if constexpr (requires(core::StateVecType_t<DataTypes, vtype> vc, Real_t<DataTypes> fc){vc[0] *= fc;})
     {
-        auto vv = helper::getWriteOnlyAccessor(*self.write(core::TVecId<vtype, core::V_WRITE>(v)));
+        // write accessor (instead of write-only accessor) because content must be updated if dirty before the multiplication
+        auto vv = helper::getWriteAccessor(*self.write(core::TVecId<vtype, core::V_WRITE>(v)));
         for (unsigned int i = 0; i < vv.size(); ++i)
         {
             vv[i] *= k;
@@ -1619,9 +1620,14 @@ bool vOp_vbf(MechanicalObject<DataTypes>& self, core::VecId v, core::ConstVecId 
     {
         // Read accessors are created before the write-only accessor on purpose: see vOp_va.
         auto vb = helper::getReadAccessor(*self.read(core::TVecId<btype, core::V_READ>(b)));
+        if (vb.empty())
+            return true;
+
+        // write-only accessor (instead of write-accessor) because content is irrelevant and will be overwritten
         auto vv = helper::getWriteOnlyAccessor(*self.write(core::TVecId<vtype, core::V_WRITE>(v)));
-        vv.resize(vb.size());
-        for (unsigned int i = 0; i < vv.size(); ++i)
+        if (vv.size() < vb.size())
+            vv.resize(vb.size());
+        for (unsigned int i = 0; i < vb.size(); ++i)
         {
             vv[i] = vb[i] * k;
         }
@@ -1641,6 +1647,8 @@ bool vOp_va(MechanicalObject<DataTypes>& self, core::VecId v, core::ConstVecId b
         // copy-on-write shared_ptr and would free the buffer captured by a write accessor
         // opened earlier. This matters in particular when v == b (self-copy of a linked Data).
         auto vb = helper::getReadAccessor(*self.read(core::TVecId<btype, core::V_READ>(b)));
+
+        // write-only accessor (instead of write-accessor) because content is irrelevant and will be overwritten
         auto vv = helper::getWriteOnlyAccessor(*self.write(core::TVecId<vtype, core::V_WRITE>(v)));
         vv.wref() = vb.ref();
         return true;
@@ -1659,9 +1667,14 @@ bool vOp_vb(MechanicalObject<DataTypes>& self, core::VecId v, core::ConstVecId b
     {
         // Read accessors are created before the write-only accessor on purpose: see vOp_va.
         auto vb = helper::getReadAccessor(*self.read(core::TVecId<btype, core::V_READ>(b)));
-        auto vv = helper::getWriteOnlyAccessor(*self.write(core::TVecId<vtype, core::V_WRITE>(v)));
-        vv.resize(vb.size());
-        for (unsigned int i = 0; i < vv.size(); ++i)
+        if (vb.empty())
+            return true;
+
+        // write accessor (instead of write-only accessor) because content must be updated if dirty before the accumulation
+        auto vv = helper::getWriteAccessor(*self.write(core::TVecId<vtype, core::V_WRITE>(v)));
+        if (vv.size() < vb.size())
+            vv.resize(vb.size());
+        for (unsigned int i = 0; i < vb.size(); ++i)
         {
             vv[i] += vb[i];
         }
@@ -1677,9 +1690,12 @@ bool vOp_avf(MechanicalObject<DataTypes>& self, core::VecId v, core::ConstVecId 
     {
         // Read accessors are created before the write-only accessor on purpose: see vOp_va.
         auto vb = helper::getReadAccessor(*self.read(core::TVecId<btype, core::V_READ>(b)));
-        auto vv = helper::getWriteOnlyAccessor(*self.write(core::TVecId<vtype, core::V_WRITE>(v)));
-        vv.resize(vb.size());
-        for (unsigned int i = 0; i < vv.size(); ++i)
+
+        // write accessor (instead of write-only accessor) because content must be updated if dirty before the accumulation
+        auto vv = helper::getWriteAccessor(*self.write(core::TVecId<vtype, core::V_WRITE>(v)));
+        if (vv.size() < vb.size())
+            vv.resize(vb.size());
+        for (unsigned int i = 0; i < vb.size(); ++i)
         {
             vv[i] *= k;
             vv[i] += vb[i];
@@ -1696,9 +1712,14 @@ bool vOp_v_inc_bf(MechanicalObject<DataTypes>& self, core::VecId v, core::ConstV
     {
         // Read accessors are created before the write-only accessor on purpose: see vOp_va.
         auto vb = helper::getReadAccessor(*self.read(core::TVecId<btype, core::V_READ>(b)));
-        auto vv = helper::getWriteOnlyAccessor(*self.write(core::TVecId<vtype, core::V_WRITE>(v)));
-        vv.resize(vb.size());
-        for (unsigned int i = 0; i < vv.size(); ++i)
+        if (vb.empty())
+            return true;
+
+        // write accessor (instead of write-only accessor) because content must be updated if dirty before the accumulation
+        auto vv = helper::getWriteAccessor(*self.write(core::TVecId<vtype, core::V_WRITE>(v)));
+        if (vv.size() < vb.size())
+            vv.resize(vb.size());
+        for (unsigned int i = 0; i < vb.size(); ++i)
         {
             vv[i] += vb[i] * k;
         }
@@ -1716,10 +1737,19 @@ bool vOp_vab(MechanicalObject<DataTypes>& self, core::VecId v, core::ConstVecId 
     {
         // Read accessors are created before the write-only accessor on purpose: see vOp_va.
         auto va = helper::getReadAccessor(*self.read(core::TVecId<atype, core::V_READ>(a)));
+        if (va.empty())
+            return true;
+
         auto vb = helper::getReadAccessor(*self.read(core::TVecId<btype, core::V_READ>(b)));
+        if (vb.empty())
+            return true;
+
+        // write-only accessor (instead of write-accessor) because content is irrelevant and will be overwritten
         auto vv = helper::getWriteOnlyAccessor(*self.write(core::TVecId<vtype, core::V_WRITE>(v)));
-        vv.resize(vb.size());
-        for (unsigned int i = 0; i < vv.size(); ++i)
+        const auto size = std::min(va.size(), vb.size());
+        if (vv.size() < size)
+            vv.resize(size);
+        for (unsigned int i = 0; i < size; ++i)
         {
             vv[i] = va[i] + vb[i];
         }
@@ -1735,10 +1765,19 @@ bool vOp_vabf(MechanicalObject<DataTypes>& self, core::VecId v, core::ConstVecId
     {
         // Read accessors are created before the write-only accessor on purpose: see vOp_va.
         auto va = helper::getReadAccessor(*self.read(core::TVecId<atype, core::V_READ>(a)));
+        if (va.empty())
+            return true;
+
         auto vb = helper::getReadAccessor(*self.read(core::TVecId<btype, core::V_READ>(b)));
+        if (vb.empty())
+            return true;
+
+        // write-only accessor (instead of write-accessor) because content is irrelevant and will be overwritten
         auto vv = helper::getWriteOnlyAccessor(*self.write(core::TVecId<vtype, core::V_WRITE>(v)));
-        vv.resize(vb.size());
-        for (unsigned int i = 0; i < vv.size(); ++i)
+        const auto size = std::min(va.size(), vb.size());
+        if (vv.size() < size)
+            vv.resize(size);
+        for (unsigned int i = 0; i < size; ++i)
         {
             vv[i] = va[i] + vb[i] * k;
         }
