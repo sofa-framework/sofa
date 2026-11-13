@@ -43,8 +43,17 @@ public:
 public:
     void step (const sofa::core::ExecParams* params, SReal dt) override;
     void init() override;
+    void parse ( BaseObjectDescription* arg ) override;
 
-    Data<bool> d_solveVelocityConstraintFirst; ///< solve separately velocity constraint violations before position constraint violations
+    MAKE_SELECTABLE_ITEMS(ConstraintsStateVariables,
+        sofa::helper::Item{.key = "pos", .description = "Position"},
+        sofa::helper::Item{.key = "posVel", .description = "Position and velocity"},
+        sofa::helper::Item{.key = "vel", .description = "Velocity"},
+    );
+
+    Data<bool> d_solveConstraints; ///< If true, constraints are solved. Otherwise, they are ignored.
+    core::objectmodel::lifecycle::DeprecatedData d_solveVelocityConstraintFirst {this, "v26.12", "v27.06", "solveVelocityConstraintFirst", "You should now use the Data 'constraintsStateVariables'"};
+    Data<ConstraintsStateVariables> d_constraintsStateVariables;
     Data<bool> d_threadSafeVisitor; ///< If true, do not use realloc and free visitors in fwdInteractionForceField.
     Data<bool> d_parallelCollisionDetectionAndFreeMotion; ///< If true, executes free motion step and collision detection step in parallel.
     Data<bool> d_parallelODESolving; ///< If true, solves all the ODEs in parallel during the free motion step.
@@ -57,16 +66,18 @@ protected:
     SingleLink<FreeMotionAnimationLoop, sofa::core::behavior::ConstraintSolver, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> l_constraintSolver;
 
     void computeFreeMotionAndCollisionDetection(const sofa::core::ExecParams* params, const core::ConstraintParams& cparams, SReal dt,
-                                         sofa::core::MultiVecId pos,
-                                         sofa::core::MultiVecId freePos,
+                                         sofa::core::MultiVecCoordId pos,
+                                         sofa::core::MultiVecCoordId freePos,
                                          sofa::core::MultiVecDerivId freeVel,
                                          simulation::common::MechanicalOperations* mop);
 
     void computeFreeMotion(const sofa::core::ExecParams* params, const core::ConstraintParams& cparams, SReal dt,
-                                         sofa::core::MultiVecId pos,
-                                         sofa::core::MultiVecId freePos,
+                                         sofa::core::MultiVecCoordId pos,
+                                         sofa::core::MultiVecCoordId freePos,
                                          sofa::core::MultiVecDerivId freeVel,
                                          simulation::common::MechanicalOperations* mop);
+
+    void validateConstraintSolver();
 };
 
 } // namespace sofa::component::animationloop
