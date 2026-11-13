@@ -75,6 +75,14 @@ void PCGLinearSolver<TMatrix, TVector>::init()
                 this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
                 return;
             }
+            else if (!std::is_same_v<TMatrix, GraphScatteredMatrix>
+                     && !dynamic_cast<Inherit*>(l_preconditioner.get()))
+            {
+                msg_error() << "Cannot use the preconditioner " << l_preconditioner->getName()
+                            << " because it is not templated on " << this->getTemplateName();
+                this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+                return;
+            }
             else
             {
                 msg_info() << "Preconditioner path used: '" << l_preconditioner.getLinkedPath() << "'";
@@ -97,6 +105,8 @@ void PCGLinearSolver<TMatrix, TVector>::init()
 template <class TMatrix, class TVector>
 void PCGLinearSolver<TMatrix, TVector>::ensureRequiredLinearSystemType()
 {
+    // only the matrix-free version requires a specific linear system
+    if constexpr (std::is_same_v<TMatrix, GraphScatteredMatrix>)
     if (this->l_linearSystem)
     {
         auto* preconditionedMatrix =
@@ -118,7 +128,8 @@ void PCGLinearSolver<TMatrix, TVector>::bwdInit()
     if (this->isComponentStateInvalid())
         return;
 
-    //link the linear systems of both the preconditioner and the PCG
+    //link the linear systems of both the preconditioner and the PCG (matrix-free version only)
+    if constexpr (std::is_same_v<TMatrix, GraphScatteredMatrix>)
     if (l_preconditioner && this->l_linearSystem)
     {
         if (auto* preconditionerLinearSystem = l_preconditioner->getLinearSystem())
@@ -167,7 +178,21 @@ template <class TMatrix, class TVector>
 void PCGLinearSolver<TMatrix, TVector>::checkLinearSystem()
 {
     // a PreconditionedMatrixFreeSystem component is created in the absence of a linear system
-    this->template doCheckLinearSystem<PreconditionedMatrixFreeSystem<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector> >();
+    if constexpr (std::is_same_v<TMatrix, GraphScatteredMatrix>)
+        this->template doCheckLinearSystem<PreconditionedMatrixFreeSystem<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector> >();
+    else
+        Inherit::checkLinearSystem(); // assembled version: a MatrixLinearSystem<TMatrix, TVector>
+}
+
+template <class TMatrix, class TVector>
+void PCGLinearSolver<TMatrix, TVector>::invert(Matrix& M)
+{
+    // assembled version: the preconditioner is built on the matrix of the PCG, once per assembly
+    if constexpr (!std::is_same_v<TMatrix, GraphScatteredMatrix>)
+    {
+        if (auto* preconditioner = dynamic_cast<Inherit*>(l_preconditioner.get()); preconditioner && d_use_precond.getValue())
+            preconditioner->invert(M);
+    }
 }
 
 template <class TMatrix, class TVector>
@@ -191,6 +216,24 @@ void PCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vector& b)
 
     const bool apply_precond = l_preconditioner.get()!=nullptr && d_use_precond.getValue();
 
+    // z = P^-1 rhs
+    const auto applyPreconditioner = [this, &M](Vector& z, Vector& rhs)
+    {
+        SCOPED_TIMER_VARNAME(applyPrecondTimer, "PCGLinearSolver::apply Precond");
+        if constexpr (std::is_same_v<TMatrix, GraphScatteredMatrix>)
+        {
+            l_preconditioner->getLinearSystem()->setSystemSolution(z);
+            l_preconditioner->getLinearSystem()->setRHS(rhs);
+            l_preconditioner->solveSystem();
+            l_preconditioner->getLinearSystem()->dispatchSystemSolution(z);
+        }
+        else // assembled version: the preconditioner works directly on the matrix of the PCG
+        {
+            z.resize(rhs.size());
+            dynamic_cast<Inherit*>(l_preconditioner.get())->solve(M, z, rhs);
+        }
+    };
+
     const Real b_norm = b.dot(b);
     const Real tol = d_tolerance.getValue() * b_norm;
 
@@ -199,11 +242,7 @@ void PCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vector& b)
 
     if (apply_precond)
     {
-        SCOPED_TIMER_VARNAME(applyPrecondTimer, "PCGLinearSolver::apply Precond");
-        l_preconditioner->getLinearSystem()->setSystemSolution(w);
-        l_preconditioner->getLinearSystem()->setRHS(r);
-        l_preconditioner->solveSystem();
-        l_preconditioner->getLinearSystem()->dispatchSystemSolution(w);
+        applyPreconditioner(w, r);
     }
     else
     {
@@ -225,11 +264,7 @@ void PCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vector& b)
 
         if (apply_precond)
         {
-            SCOPED_TIMER_VARNAME(applyPrecondTimer, "PCGLinearSolver::apply Precond");
-            l_preconditioner->getLinearSystem()->setSystemSolution(s);
-            l_preconditioner->getLinearSystem()->setRHS(r);
-            l_preconditioner->solveSystem();
-            l_preconditioner->getLinearSystem()->dispatchSystemSolution(s);
+            applyPreconditioner(s, r);
         }
         else
         {
