@@ -65,8 +65,7 @@ using sofa::simulation::mechanicalvisitor::MechanicalPropagateOnlyPositionVisito
 #include <sofa/simulation/mechanicalvisitor/MechanicalProjectJacobianMatrixVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalProjectJacobianMatrixVisitor;
 
-#include <sofa/simulation/mechanicalvisitor/MechanicalEndIntegrationVisitor.h>
-using sofa::simulation::mechanicalvisitor::MechanicalEndIntegrationVisitor;
+#include <sofa/simulation/mechanicalvisitor/MechanicalResetForceVisitor.h>
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalResetConstraintVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalResetConstraintVisitor;
@@ -662,8 +661,9 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params, SReal dt )
                    << "<<<<< End display ConstraintAnimationLoop time." ;
     }
 
-    MechanicalEndIntegrationVisitor endVisitor(params, dt);
-    node->execute(&endVisitor);
+    mechanicalvisitor::MechanicalResetForceVisitor resetForceVisitor(params, sofa::core::vec_id::write_access::externalForce);
+    node->execute(&resetForceVisitor);
+
     node->setTime ( startTime + dt );
     node->execute<UpdateSimulationContextVisitor>(params);  // propagate time
 
