@@ -120,6 +120,7 @@ public:
 
     using Deriv = sofa::Deriv_t<DataTypes>;
     using QuadratureContext_t = QuadratureContext<DataTypes, ElementType>;
+    using SourceDerivative = typename BaseSourceTerm<DataTypes, ElementType>::SourceDerivative;
 
     /**
      * @brief Nodal values of the stress tensor this term integrates.
@@ -141,6 +142,12 @@ public:
      * @brief The nodal values this term interpolates, for FEMSourceTermIntegrator to track.
      */
     sofa::type::vector<const sofa::core::objectmodel::BaseData*> integrandInputs() const override;
+
+    /**
+     * @brief The stress tensor applied to the derivative of the area normal of the element.
+     */
+    SourceDerivative evaluateStiffness(const QuadratureContext_t& context,
+        sofa::Size node) const override;
 
 protected:
 

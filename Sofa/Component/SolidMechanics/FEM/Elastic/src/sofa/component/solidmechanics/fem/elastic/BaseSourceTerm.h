@@ -44,10 +44,7 @@ namespace sofa::component::solidmechanics::fem::elastic
 
 /**
  * @struct QuadratureContext
- * @brief Everything the integrator knows at one quadrature point.
- *
- * Built once per quadrature point and handed to every integrated term.
- * A source term reads from it and returns an integrand.
+ * @brief Geometry of one quadrature point.
  *
  * @tparam TDataTypes The data types used for positions, velocities, etc. (e.g., Vec3Types).
  * @tparam TElementType The type of finite element (e.g., sofa::geometry::Tetrahedron).
@@ -72,36 +69,32 @@ struct QuadratureContext
     using GradientShapeFunctions = sofa::type::Mat<NumberOfNodesInElement, TopologicalDimension, Real>;
     using Jacobian = sofa::type::Mat<spatial_dimensions, TopologicalDimension, Real>;
 
-    /// Node indices of the element being integrated, with which a term gathers its own nodal
-    /// degrees of freedom.
+    /// Node indices of the element.
     const Element& element;
 
-    /// Shape function value at this quadrature point.
+    /// Shape function values.
     ShapeFunctions N;
 
-    /// Reference-space gradients of the shape functions at this quadrature point.
+    /// Reference-space gradients of the shape functions.
     GradientShapeFunctions gradientShapeFunctions;
 
-    /// dx/dq of the reference-to-physical mapping, on the configuration the integrator chose.
+    /// dx/dq of the reference-to-physical mapping.
     Jacobian jacobian;
 
-    /// \f$ |\det J| \f$, for information only: the integrator applies it, a term must not.
+    /// \f$ |\det J| \f$
     Real measure;
 
-    /// Interpolated rest position at this quadrature point.
+    /// Interpolated rest position.
     Coord restPosition;
 
-    /// Interpolated displacement at this quadrature point.
+    /// Interpolated displacement.
     Deriv displacement;
 };
 
 /**
- * @brief Unit normal of an element, from the jacobian of its mapping.
+ * @brief Unit normal of an element of codimension 1, oriented by its node ordering.
  *
- * Defined only where the element spans one dimension less than the space it lives in: a surface
- * element in 3D, an edge in 2D. Its orientation follows the node ordering of the element.
- *
- * @param jacobian dx/dq of the reference-to-physical mapping at the point of interest.
+ * @param jacobian dx/dq of the reference-to-physical mapping.
  */
 template <sofa::Size spatial_dimensions, sofa::Size TopologicalDimension, class Real>
 sofa::type::Vec<spatial_dimensions, Real> elementNormal(
@@ -126,10 +119,55 @@ sofa::type::Vec<spatial_dimensions, Real> elementNormal(
 }
 
 /**
- * @class BaseSourceTerm
- * @brief A source density whose value is determined by the geometry, not by the solution.
+ * @brief Derivative of the area normal of an element with respect to a node position:
  *
- * The component calculates the integrand in evaluate() given a QuadratureContext.
+ * \f[ \frac{\partial (|\det J| \, n)}{\partial x}
+ *     = \sum_i \frac{\partial (|\det J| \, n)}{\partial t_i} \frac{\partial N}{\partial q_i}, \f]
+ *
+ * with \f$ t_i \f$ the columns of J and N the shape function of the node.
+ *
+ * @param jacobian dx/dq of the reference-to-physical mapping.
+ * @param gradientOfShapeFunction dN/dq of the node.
+ */
+template <sofa::Size spatial_dimensions, sofa::Size TopologicalDimension, class Real>
+sofa::type::Mat<spatial_dimensions, spatial_dimensions, Real> elementAreaNormalDerivative(
+    const sofa::type::Mat<spatial_dimensions, TopologicalDimension, Real>& jacobian,
+    const sofa::type::Vec<TopologicalDimension, Real>& gradientOfShapeFunction)
+{
+    static_assert(TopologicalDimension + 1 == spatial_dimensions,
+        "An area normal is only defined for an element of codimension 1.");
+
+    using Derivative = sofa::type::Mat<spatial_dimensions, spatial_dimensions, Real>;
+
+    if constexpr (spatial_dimensions == 3)
+    {
+        const auto tangent0 = jacobian.col(0);
+        const auto tangent1 = jacobian.col(1);
+
+        const Derivative skewTangent0 {
+            {Real{0}, -tangent0[2], tangent0[1]},
+            {tangent0[2], Real{0}, -tangent0[0]},
+            {-tangent0[1], tangent0[0], Real{0}}};
+
+        const Derivative skewTangent1 {
+            {Real{0}, -tangent1[2], tangent1[1]},
+            {tangent1[2], Real{0}, -tangent1[0]},
+            {-tangent1[1], tangent1[0], Real{0}}};
+
+        return skewTangent0 * gradientOfShapeFunction[1]
+             - skewTangent1 * gradientOfShapeFunction[0];
+    }
+    else
+    {
+        const Derivative rotation {{Real{0}, Real{1}}, {Real{-1}, Real{0}}};
+
+        return rotation * gradientOfShapeFunction[0];
+    }
+}
+
+/**
+ * @class BaseSourceTerm
+ * @brief A source term of the weak form.
  *
  * @tparam TDataTypes The data types used for positions, velocities, etc. (e.g., Vec3Types).
  * @tparam TElementType The type of finite element (e.g., sofa::geometry::Tetrahedron).
@@ -144,8 +182,14 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE2(BaseSourceTerm, DataTypes, ElementType),
         sofa::core::objectmodel::BaseComponent);
 
+    using Real = sofa::Real_t<DataTypes>;
     using Deriv = sofa::Deriv_t<DataTypes>;
     using QuadratureContext_t = QuadratureContext<DataTypes, ElementType>;
+
+    static constexpr sofa::Size spatial_dimensions = DataTypes::spatial_dimensions;
+
+    /// Derivative of a nodal force with respect to a node position.
+    using SourceDerivative = sofa::type::Mat<spatial_dimensions, spatial_dimensions, Real>;
 
     /**
      * @brief Source density at one quadrature point, per unit physical measure.
@@ -155,27 +199,31 @@ public:
     virtual Deriv evaluate(const QuadratureContext_t& context) const = 0;
 
     /**
-     * @brief The Data this term's integrand reads, beyond the geometry it is handed.
-     *
-     * Access to this Data is enabled so that a callback on FEMSourceTermIntegrator can be activated.
-     * They are tracked and the cached integral is rebuilt whenever one of them is written.
+     * @brief Data the integrand depends on; used for callbacks.
      */
     virtual sofa::type::vector<const sofa::core::objectmodel::BaseData*> integrandInputs() const
     {
         return {};
     }
 
+    /**
+     * @brief Derivative of the measure-weighted density with respect to a node position,
+     * \f$ \partial (|\det J| \, r) / \partial x_b \f$, with r the source density.
+     *
+     * @param context Geometry of the quadrature point.
+     * @param node Index of the node in the element.
+     */
+    virtual SourceDerivative evaluateStiffness(const QuadratureContext_t& context,
+        sofa::Size node) const = 0;
+
 protected:
 
     BaseSourceTerm() = default;
 
     /**
-     * @brief Value of a nodal property interpolated at the quadrature point.
+     * @brief Nodal property interpolated at the quadrature point.
      *
-     * The property is gathered at the nodes of the element being integrated and combined with the
-     * shape functions evaluated at that point.
-     *
-     * @param property The component holding the nodal values.
+     * @param property The nodal values.
      * @param context Geometry of the quadrature point.
      */
     template <class PropertyType>

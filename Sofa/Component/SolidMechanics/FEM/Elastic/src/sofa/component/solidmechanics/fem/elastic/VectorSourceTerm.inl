@@ -76,4 +76,19 @@ VectorSourceTerm<DataTypes, ElementType>::integrandInputs() const
     return {&l_sourceDensity->d_property};
 }
 
+template <class DataTypes, class ElementType>
+auto VectorSourceTerm<DataTypes, ElementType>::evaluateStiffness(
+    const QuadratureContext_t& context, sofa::Size node) const -> SourceDerivative
+{
+    if (!l_sourceDensity)
+    {
+        return SourceDerivative{};
+    }
+
+    const auto measureDerivative = sofa::type::inverse(context.jacobian).transposed()
+        * context.gradientShapeFunctions[node] * context.measure;
+
+    return sofa::type::dyad(this->interpolateProperty(*l_sourceDensity, context), measureDerivative);
+}
+
 }  // namespace sofa::component::solidmechanics::fem::elastic
