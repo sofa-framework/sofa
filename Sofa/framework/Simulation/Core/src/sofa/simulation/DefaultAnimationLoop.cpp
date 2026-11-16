@@ -212,6 +212,8 @@ void DefaultAnimationLoop::propagateIntegrateEndEvent(const core::ExecParams* pa
 
 void DefaultAnimationLoop::endIntegration(const core::ExecParams* params, const SReal dt) const
 {
+    SOFA_UNUSED(dt);
+
     {
         SCOPED_TIMER("endIntegration");
         mechanicalvisitor::MechanicalResetForceVisitor resetForceVisitor(params, sofa::core::vec_id::write_access::externalForce);
