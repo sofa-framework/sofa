@@ -88,6 +88,9 @@ void VisualMesh::doDrawVisual(const core::visual::VisualParams* vparams)
 
     const auto positionAccessor = sofa::helper::getReadAccessor(d_position);
 
+    if (positionAccessor.empty())
+        return;
+
     if (d_vertexValues.isSet())
     {
         const auto vertexValuesAccessor = sofa::helper::getReadAccessor(d_vertexValues);
