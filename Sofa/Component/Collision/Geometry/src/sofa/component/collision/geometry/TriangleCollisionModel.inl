@@ -453,6 +453,7 @@ void TriangleCollisionModel<DataTypes>::drawCollisionModel(const core::visual::V
 template<class TDataTypes>
 void TriangleCollisionModel<TDataTypes>::loadInternalStateFrom(const core::objectmodel::Snapshot::SnapshotObject &snapshot)
 {
+    SOFA_UNUSED(snapshot);
     m_triangles = &m_topology->getTriangles();
     resize(m_topology->getNbTriangles());
     updateNormals();

@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
+#define SOFA_SIMULATION_MECHANICALVISITOR_MECHANICALBEGININTEGRATIONVISITOR_CPP
 #include <sofa/simulation/mechanicalvisitor/MechanicalIntegrationVisitor.h>
 
 #include <sofa/core/behavior/BaseIntegrationScheme.h>

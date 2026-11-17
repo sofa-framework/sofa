@@ -22,8 +22,11 @@
 #pragma once
 
 #include <sofa/core/trait/DataTypes.h>
+#include <sofa/helper/MatEigen.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
 #include <sofa/type/MatSym.h>
+
+#include <Eigen/Dense>
 
 namespace sofa::component::solidmechanics::fem::hyperelastic
 {
@@ -87,6 +90,11 @@ public:
         const auto a = i * spatial_dimensions + j;
         const auto b = k * spatial_dimensions + l;
         return m_matrix(a, b);
+    }
+
+    void filterEigenValues(helper::EigenValueFilter filter)
+    {
+        sofa::helper::filterEigenValues(m_matrix, filter);
     }
 
 private:

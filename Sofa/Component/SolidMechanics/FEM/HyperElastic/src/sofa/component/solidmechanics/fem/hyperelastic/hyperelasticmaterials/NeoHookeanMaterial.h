@@ -61,6 +61,8 @@ public:
     StressTensor secondPiolaKirchhoffStress(Strain<DataTypes>& strain) override;
 
     ElasticityTensor elasticityTensor(Strain<DataTypes>& strain) override;
+
+    Real strainEnergyDensity(Strain<DataTypes>& strain) override;
 };
 
 

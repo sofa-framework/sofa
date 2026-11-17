@@ -51,18 +51,13 @@
 #include <sofa/component/constraint/lagrangian/solver/BlockGaussSeidelConstraintSolver.h>
 using sofa::simulation::mechanicalvisitor::MechanicalVInitVisitor;
 
-
-#include <sofa/simulation/mechanicalvisitor/MechanicalBeginIntegrationVisitor.h>
-using sofa::simulation::mechanicalvisitor::MechanicalBeginIntegrationVisitor;
-
 #include <sofa/simulation/mechanicalvisitor/MechanicalVOpVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalVOpVisitor;
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalComputeGeometricStiffness.h>
 using sofa::simulation::mechanicalvisitor::MechanicalComputeGeometricStiffness;
 
-#include <sofa/simulation/mechanicalvisitor/MechanicalEndIntegrationVisitor.h>
-using sofa::simulation::mechanicalvisitor::MechanicalEndIntegrationVisitor;
+#include <sofa/simulation/mechanicalvisitor/MechanicalResetForceVisitor.h>
 
 namespace sofa::component::animationloop
 {
@@ -225,13 +220,6 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
 
     dmsg_info() << "updateInternal performed - beginVisitor called" ;
 
-
-    // MechanicalBeginIntegrationVisitor
-    MechanicalBeginIntegrationVisitor beginVisitor(params, dt);
-    node->execute(&beginVisitor);
-
-    dmsg_info() << "beginVisitor performed - SolveVisitor for freeMotion is called" ;
-
     {
         SCOPED_TIMER("MechanicalComputeGeometricStiffness");
         MechanicalComputeGeometricStiffness geometricStiffnessVisitor(&mop.mparams, cparams.lambda());
@@ -264,8 +252,8 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
         }
     }
 
-    MechanicalEndIntegrationVisitor endVisitor(params, dt);
-    node->execute(&endVisitor);
+    mechanicalvisitor::MechanicalResetForceVisitor resetForceVisitor(params, sofa::core::vec_id::write_access::externalForce);
+    node->execute(&resetForceVisitor);
 
     {
         SCOPED_TIMER("ProjectAndPropagateXAndV");

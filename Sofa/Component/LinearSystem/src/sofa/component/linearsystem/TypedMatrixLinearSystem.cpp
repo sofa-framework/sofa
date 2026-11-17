@@ -53,5 +53,6 @@ template class SOFA_COMPONENT_LINEARSYSTEM_API TypedMatrixLinearSystem< BlockDia
 template class SOFA_COMPONENT_LINEARSYSTEM_API TypedMatrixLinearSystem< BlockDiagonalMatrix<3,float>, FullVector<float> >;
 template class SOFA_COMPONENT_LINEARSYSTEM_API TypedMatrixLinearSystem< RotationMatrix<double>, FullVector<double> >;
 template class SOFA_COMPONENT_LINEARSYSTEM_API TypedMatrixLinearSystem< RotationMatrix<float>, FullVector<float> >;
+template class SOFA_COMPONENT_LINEARSYSTEM_API TypedMatrixLinearSystem< BTDMatrix<6, SReal>, BlockVector<6, SReal> >;
 
 } //namespace sofa::component::linearsystem

@@ -27,7 +27,7 @@ namespace sofa::simulation::mechanicalvisitor
 
 Visitor::Result MechanicalPropagateOnlyPositionAndResetForceVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
 {
-    mm->resetForce(this->params, f.getId(mm));
+    mm->resetVec(this->params, f.getId(mm));
     return RESULT_CONTINUE;
 }
 
@@ -41,7 +41,7 @@ Visitor::Result MechanicalPropagateOnlyPositionAndResetForceVisitor::fwdMechanic
 
 Visitor::Result MechanicalPropagateOnlyPositionAndResetForceVisitor::fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
 {
-    mm->resetForce(this->params, f.getId(mm));
+    mm->resetVec(this->params, f.getId(mm));
     return RESULT_CONTINUE;
 }
 

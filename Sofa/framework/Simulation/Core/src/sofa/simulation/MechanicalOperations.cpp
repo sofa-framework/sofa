@@ -19,6 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+// These deprecated visitors are still used internally: do not warn about their headers
+#define SOFA_SIMULATION_CORE_MECHANICALMULTIVECTORTOBASEVECTORVISITOR_CPP
+#define SOFA_SIMULATION_CORE_MECHANICALMULTIVECTORFROMBASEVECTORVISITOR_CPP
+#define SOFA_SIMULATION_CORE_MECHANICALMULTIVECTORPEQBASEVECTORVISITOR_CPP
+#define SOFA_SIMULATION_CORE_MECHANICALPROPAGATEONLYPOSITIONANDRESETFORCEVISITOR_CPP
+#define SOFA_SIMULATION_CORE_MECHANICALCOMPUTECONTACTFORCEVISITOR_CPP
+#define SOFA_SIMULATION_CORE_MECHANICALADDMBK_TOMATRIXVISITOR_CPP
+#define SOFA_SIMULATION_CORE_MECHANICALAPPLYPROJECTIVECONSTRAINT_TOMATRIXVISITOR_CPP
+#define SOFA_SIMULATION_MECHANICALVISITOR_MECHANICALPROPAGATEDXVISITOR_CPP
+#define SOFA_SIMULATION_MECHANICALVISITOR_MECHANICALPROPAGATEDXANDRESETFORCEVISITOR_CPP
 #include <sofa/simulation/MechanicalOperations.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalMultiVectorToBaseVectorVisitor.h>
@@ -37,7 +47,7 @@
 #include <sofa/simulation/mechanicalvisitor/MechanicalProjectPositionAndVelocityVisitor.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalAddMDxVisitor.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalVOpVisitor.h>
-#include <sofa/simulation/mechanicalvisitor/MechanicalAccFromFVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalMassLinearSolveVisitor.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalResetForceVisitor.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalComputeForceVisitor.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalComputeDfVisitor.h>
@@ -250,7 +260,7 @@ void MechanicalOperations::accFromF(core::MultiVecDerivId a, core::ConstMultiVec
     setDx(a);
     setF(f);
 
-    executeVisitor( MechanicalAccFromFVisitor(&mparams, a) );
+    executeVisitor( MechanicalMassLinearSolveVisitor(&mparams, a, f) );
 }
 
 /// Compute the current force (given the latest propagated position and velocity)
@@ -272,9 +282,15 @@ void MechanicalOperations::computeForce(core::MultiVecDerivId result, bool clear
     computeForce(result, mparams.x(), mparams.v(), clear, accumulate);
 }
 
-
-/// Compute the current force delta (given the latest propagated displacement)
 void MechanicalOperations::computeDf(core::MultiVecDerivId df, bool clear, bool accumulate)
+{
+    computeDf(df, sofa::core::vec_id::read_access::dx,
+        sofa::core::vec_id::read_access::position,
+        sofa::core::vec_id::read_access::velocity,
+        clear, accumulate);
+}
+
+void MechanicalOperations::computeDf(core::MultiVecDerivId df, core::ConstMultiVecDerivId dx, core::ConstMultiVecCoordId x, core::ConstMultiVecDerivId v, bool clear, bool accumulate)
 {
     setDf(df);
     if (clear)
@@ -282,22 +298,14 @@ void MechanicalOperations::computeDf(core::MultiVecDerivId df, bool clear, bool 
         executeVisitor( MechanicalResetForceVisitor(&mparams, df, false) );
         //	finish();
     }
-    executeVisitor( MechanicalComputeDfVisitor( &mparams, df,  accumulate) );
+    executeVisitor( MechanicalComputeDfVisitor( &mparams, df, dx, x, v, accumulate) );
 }
 
 /// Compute the current force delta (given the latest propagated velocity)
 void MechanicalOperations::computeDfV(core::MultiVecDerivId df, bool clear, bool accumulate)
 {
-    const core::ConstMultiVecDerivId dx = mparams.dx();
-    mparams.setDx(mparams.v());
-    setDf(df);
-    if (clear)
-    {
-        executeVisitor( MechanicalResetForceVisitor(&mparams, df, false) );
-        //finish();
-    }
-    executeVisitor( MechanicalComputeDfVisitor(&mparams, df, accumulate) );
-    mparams.setDx(dx);
+    computeDf(df, mparams.v(), sofa::core::vec_id::read_access::position,
+        sofa::core::vec_id::read_access::velocity, clear, accumulate);
 }
 
 /// accumulate $ df += (m M + b B + k K) dx $ (given the latest propagated displacement)

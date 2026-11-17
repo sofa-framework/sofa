@@ -35,6 +35,7 @@ const std::string SceneCheckEmptyNodeName::getDesc() { return "Check if a Node h
 
 void SceneCheckEmptyNodeName::doInit(sofa::simulation::Node* node)
 {
+    SOFA_UNUSED(node);
     m_nbNodesWithEmptyName = 0;
 }
 

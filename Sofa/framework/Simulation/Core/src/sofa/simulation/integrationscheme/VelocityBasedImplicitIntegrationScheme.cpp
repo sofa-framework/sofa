@@ -20,14 +20,17 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/simulation/integrationscheme/VelocityBasedImplicitIntegrationScheme.h>
+
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/BaseMass.h>
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
-#include <sofa/simulation/mechanicalvisitor/MechanicalGetNonDiagonalMassesCountVisitor.h>
-using sofa::simulation::mechanicalvisitor::MechanicalGetNonDiagonalMassesCountVisitor;
+#include <sofa/simulation/DifferentialOperations.h>
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalVOpVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalVOpVisitor;
 
 namespace sofa::simulation::integrationscheme
 {
@@ -55,6 +58,10 @@ void VelocityBasedImplicitIntegrationScheme::init()
 
 void VelocityBasedImplicitIntegrationScheme::doSetupIntegrationStep(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
 {
+    SOFA_UNUSED(dt);
+    SOFA_UNUSED(params);
+    SOFA_UNUSED(vResult);
+    SOFA_UNUSED(xResult);
 
     // Make sure the states are following the sizes
     simulation::common::VectorOperations::realloc(*m_vop, m_r0, "r0", this, true);
@@ -65,9 +72,12 @@ void VelocityBasedImplicitIntegrationScheme::doSetupIntegrationStep(const core::
 
     // This is only there for lagrangian based simulation, to make sure we start using the real pose
     // instead of the free pos (same for velocity)
-
-    m_vop->v_eq(m_vResult, core::vec_id::write_access::velocity);
-    m_vop->v_eq(m_xResult, core::vec_id::write_access::position);
+    simulation::mechanicalvisitor::MechanicalVOpVisitor copyPoseInFreePose(params, m_xResult, core::vec_id::write_access::position);
+    simulation::mechanicalvisitor::MechanicalVOpVisitor copyVelInFreeVel(params, m_vResult, core::vec_id::write_access::velocity);
+    copyVelInFreeVel.setMapped(true);
+    copyPoseInFreePose.setMapped(true);
+    this->getContext()->executeVisitor(&copyPoseInFreePose);
+    this->getContext()->executeVisitor(&copyVelInFreeVel);
 
     // Deal with higher order integration scheme
     const Size order = getIntegrationSchemeTimeOrder();
@@ -192,7 +202,7 @@ void VelocityBasedImplicitIntegrationScheme::computeRHS(bool firstIteration)
         {
             // This propagation is needed for forcefields that are applied to mapped objects. Then,
             // those mapped objects need to have the r1 up to date otherwise it'll add 0.
-            m_mop->propagateDx(m_r1);
+            simulation::common::DifferentialOperations::pushforwardTangent(m_mappingGraph, m_mop->mparams, m_r1);
 
             m_mop->mparams.setV(m_r1);
             m_mop->addMBKv(m_mappingGraph,m_r0, core::MatricesFactors::M(0.0),
@@ -208,7 +218,7 @@ void VelocityBasedImplicitIntegrationScheme::computeRHS(bool firstIteration)
             computeAccelerationFromVelocity(*m_vop, m_acceleration, m_vResult);
 
             // Again, as for m_r1, this propagation is needed for Mapped mass.
-            m_mop->propagateDx(m_acceleration);
+            simulation::common::DifferentialOperations::pushforwardTangent(m_mappingGraph, m_mop->mparams, m_acceleration);
 
             m_mop->mparams.setV(m_acceleration);
             m_mop->addMBKv(m_mappingGraph,m_r0, core::MatricesFactors::M(-1.0),
@@ -235,8 +245,8 @@ void VelocityBasedImplicitIntegrationScheme::computeRHS(bool firstIteration)
         m_mop->projectResponse(m_mappingGraph,m_r0);
         m_mop->projectResponse(m_mappingGraph,m_r1);
 
-        m_mop->propagateDx(m_r0);
-        m_mop->propagateDx(m_r1);
+        simulation::common::DifferentialOperations::pushforwardTangent(m_mappingGraph, m_mop->mparams, m_r0);
+        simulation::common::DifferentialOperations::pushforwardTangent(m_mappingGraph, m_mop->mparams, m_r1);
     }
 
 }
@@ -258,7 +268,7 @@ void VelocityBasedImplicitIntegrationScheme::solveLinearEquation()
     l_linearSolver->solveSystem();
     l_linearSolver->getLinearSystem()->dispatchSystemSolution(m_systemUnknown);
 
-    m_mop->propagateDx(m_systemUnknown);
+    simulation::common::DifferentialOperations::pushforwardTangent(m_mappingGraph, m_mop->mparams, m_systemUnknown);
 }
 
 void VelocityBasedImplicitIntegrationScheme::updateStatesFromLinearSolution(SReal alpha, bool firstIteration)
@@ -282,8 +292,8 @@ void VelocityBasedImplicitIntegrationScheme::updateStatesFromLinearSolution(SRea
 
     // TODO this collides with Free motion propagation using a MechanicalVOpVisitor and expecting a EulerImplicit
     //      future implementation of global Newton will reactivate those
-    // m_mop->propagateX(pos);
-    // m_mop->propagateV(vel);
+    // simulation::common::DifferentialOperations::pushforwardCoord(m_mappingGraph, m_mop->mparams, pos);
+    // simulation::common::DifferentialOperations::pushforwardTangent(m_mappingGraph, m_mop->mparams, vel);
 
 }
 
@@ -293,7 +303,7 @@ void VelocityBasedImplicitIntegrationScheme::finalizeIntegrationStep()
     if (d_computeFinalAcceleration.getValue())
     {
         computeAccelerationFromVelocity(*m_vop, m_acceleration, m_vResult);
-        m_mop->propagateDx(m_acceleration);
+        simulation::common::DifferentialOperations::pushforwardTangent(m_mappingGraph, m_mop->mparams, m_acceleration);
     }
 }
 

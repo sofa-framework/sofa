@@ -2048,12 +2048,12 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::addMDx(const core::MechanicalP
 
 
 template <class DataTypes, class GeometricalTypes>
-void MeshMatrixMass<DataTypes, GeometricalTypes>::accFromF(const core::MechanicalParams* mparams, DataVecDeriv& a, const DataVecDeriv& f)
+void MeshMatrixMass<DataTypes, GeometricalTypes>::doSolveLinearSystem(const core::MechanicalParams* mparams, DataVecDeriv& a, const DataVecDeriv& f)
 {
     SOFA_UNUSED(mparams);
     if( !isLumped() )
     {
-        msg_error() << "the method 'accFromF' can't be used with MeshMatrixMass as this SPARSE mass matrix can't be inversed easily. "
+        msg_error() << "the method 'solveLinearSystem' can't be used with MeshMatrixMass as this SPARSE mass matrix can't be inversed easily. "
                     << "Please proceed to mass lumping or use a DiagonalMass (both are equivalent).";
         return;
     }

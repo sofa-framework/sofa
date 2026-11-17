@@ -37,6 +37,8 @@
 #include <sofa/linearalgebra/DiagonalMatrix.h>
 #include <sofa/linearalgebra/RotationMatrix.h>
 #include <sofa/linearalgebra/BlockDiagonalMatrix.h>
+#include <sofa/linearalgebra/BTDMatrix.h>
+#include <sofa/linearalgebra/BlockVector.h>
 
 namespace sofa::component::linearsystem
 {
@@ -186,6 +188,7 @@ extern template class SOFA_COMPONENT_LINEARSYSTEM_API TypedMatrixLinearSystem< B
 extern template class SOFA_COMPONENT_LINEARSYSTEM_API TypedMatrixLinearSystem< BlockDiagonalMatrix<3,float>, FullVector<float> >;
 extern template class SOFA_COMPONENT_LINEARSYSTEM_API TypedMatrixLinearSystem< RotationMatrix<double>, FullVector<double> >;
 extern template class SOFA_COMPONENT_LINEARSYSTEM_API TypedMatrixLinearSystem< RotationMatrix<float>, FullVector<float> >;
+extern template class SOFA_COMPONENT_LINEARSYSTEM_API TypedMatrixLinearSystem< BTDMatrix<6, SReal>, BlockVector<6, SReal> >;
 #endif
 
 

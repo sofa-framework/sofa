@@ -29,10 +29,8 @@
 #include <sofa/simulation/MappingGraph.h>
 #include <sofa/simulation/MechanicalOperations.h>
 #include <sofa/simulation/VectorOperations.h>
-#include <sofa/simulation/mechanicalvisitor/MechanicalGetNonDiagonalMassesCountVisitor.h>
 
 #include "sofa/simulation/integrationscheme/ImplicitIntegrationScheme.h"
-using sofa::simulation::mechanicalvisitor::MechanicalGetNonDiagonalMassesCountVisitor;
 
 namespace sofa::component::integrationscheme::forward
 {
@@ -111,6 +109,7 @@ void EulerExplicitIntegrationScheme::updateState(sofa::simulation::common::Vecto
                                       sofa::core::MultiVecDerivId vResult,
                                       const sofa::core::behavior::MultiVecDeriv& acc) const
 {
+    SOFA_UNUSED(mop);
     SCOPED_TIMER("updateState");
 
     // Initialize the set of multi-vectors computed by this IntegrationScheme

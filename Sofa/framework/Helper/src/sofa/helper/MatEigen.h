@@ -42,14 +42,40 @@ Eigen::Matrix<Real, NumRows, NumCols> eigenMat( const type::Mat< NumRows, NumCol
     return emat;
 }
 
+template <Size D, class Real>
+Eigen::Matrix<Real, D, D> eigenMat( const type::MatSym<D, Real>& mat )
+{
+    Eigen::Matrix<Real, D, D> emat;
+    for (Size i = 0; i < D; i++)
+    {
+        for (Size j = 0; j < D; j++)
+        {
+            emat(i, j) = mat(i, j);
+        }
+    }
+    return emat;
+}
+
 template <Size NumRows, Size NumCols, class Real>
-type::Mat<NumRows, NumCols, Real>  sofaMat( const Eigen::Matrix<Real, NumRows, NumCols>& emat )
+type::Mat<NumRows, NumCols, Real> sofaMat( const Eigen::Matrix<Real, NumRows, NumCols>& emat )
 {
     type::Mat<NumRows, NumCols, Real> mat;
     for(Size i=0; i<NumRows; i++)
         for(Size j=0; j<NumCols; j++)
             mat(i,j) = emat(i,j);
     return mat;
+}
+
+template<class SofaMat>
+void eigenToSofaMat(SofaMat& dest, const Eigen::Matrix<typename SofaMat::Real, SofaMat::nbLines, SofaMat::nbCols>& emat )
+{
+    for (Size i = 0; i < SofaMat::nbLines; i++)
+    {
+        for (Size j = 0; j < SofaMat::nbCols; j++)
+        {
+            dest(i, j) = emat(i, j);
+        }
+    }
 }
 
 template <Size NumRows, class Real>
@@ -68,6 +94,41 @@ Eigen::Matrix<Real, NumRows, 1>  eigenVec( const type::Vec<NumRows, Real>& vec )
     for(Size i=0; i<NumRows; i++)
         evec(i)  = vec[i];
     return evec;
+}
+
+enum class EigenValueFilter
+{
+    ClampNegative,
+    Abs
+};
+
+template<class SofaMat>
+void filterEigenValues(SofaMat& matrix, EigenValueFilter filter)
+{
+    using EigenMatrix = Eigen::Matrix<typename SofaMat::Real, SofaMat::nbLines, SofaMat::nbCols>;
+
+    EigenMatrix H = sofa::helper::eigenMat(matrix);
+
+    Eigen::SelfAdjointEigenSolver<EigenMatrix> eigen_solver(H);
+
+    if (eigen_solver.info() != Eigen::Success)
+    {
+        return;
+    }
+
+    auto eigenvalues = eigen_solver.eigenvalues();
+
+    if (filter == EigenValueFilter::ClampNegative)
+    {
+        eigenvalues = eigenvalues.cwiseMax(0);
+    }
+    else if (filter == EigenValueFilter::Abs)
+    {
+        eigenvalues = eigenvalues.cwiseAbs();
+    }
+
+    H = eigen_solver.eigenvectors() * eigenvalues.asDiagonal() * eigen_solver.eigenvectors().transpose();
+    sofa::helper::eigenToSofaMat(matrix, H);
 }
 
 }

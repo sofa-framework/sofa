@@ -104,8 +104,8 @@ void * DynamicLibrary::getSymbolAddress(Handle handle,
         return nullptr;
     }
 # if defined(WIN32)
-    void *symbolAddress = ::GetProcAddress((HMODULE)handle.m_realHandle,
-                                     symbol.c_str());
+    void *symbolAddress = reinterpret_cast<void*>(::GetProcAddress((HMODULE)handle.m_realHandle,
+                                     symbol.c_str()));
 # else
     void *symbolAddress = ::dlsym(handle.m_realHandle, symbol.c_str());
 # endif

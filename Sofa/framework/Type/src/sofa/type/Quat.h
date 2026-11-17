@@ -427,7 +427,8 @@ template<class Real> SOFA_TYPE_API std::ostream& operator << ( std::ostream& out
 /// read from an input stream
 template<class Real> SOFA_TYPE_API std::istream& operator >> (std::istream& in, Quat<Real>& v);
 
-#if !defined(SOFA_TYPE_QUAT_CPP)
+// See Mat.h: on Windows, dllimport extern templates prevent inlining of the header-defined members.
+#if !defined(SOFA_TYPE_QUAT_CPP) && !defined(_WIN32)
 extern template class SOFA_TYPE_API Quat<double>;
 extern template class SOFA_TYPE_API Quat<float>;
 #endif

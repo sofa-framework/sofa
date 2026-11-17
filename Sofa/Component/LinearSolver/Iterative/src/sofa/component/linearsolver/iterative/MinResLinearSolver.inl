@@ -38,15 +38,9 @@ namespace sofa::component::linearsolver::iterative
 /// Linear system solver using the conjugate gradient iterative algorithm
 template<class TMatrix, class TVector>
 MinResLinearSolver<TMatrix,TVector>::MinResLinearSolver()
-    : f_maxIter( initData(&f_maxIter,(unsigned)25,"iterations","maximum number of iterations of the Conjugate Gradient solution") )
-    , f_tolerance( initData(&f_tolerance,1e-5,"tolerance","desired precision of the Conjugate Gradient Solution (ratio of current residual norm over initial residual norm)") )
-    , f_graph( initData(&f_graph,"graph","Graph of residuals at each iteration") )
 {
-    f_graph.setWidget("graph");
-//    d_graph.setReadOnly(true);
-
-	f_maxIter.setRequired(true);
-	f_tolerance.setRequired(true);
+	d_maxIter.setRequired(true);
+	d_tolerance.setRequired(true);
 }
 
 /// Solve Ax=b
@@ -57,11 +51,11 @@ MinResLinearSolver<TMatrix,TVector>::MinResLinearSolver()
 template<class TMatrix, class TVector>
 void MinResLinearSolver<TMatrix,TVector>::solve(Matrix& A, Vector& x, Vector& b)
 {
-    const SReal& tol = f_tolerance.getValue();
-    const unsigned& max_iter = f_maxIter.getValue();
+    const SReal& tol = d_tolerance.getValue();
+    const unsigned& max_iter = d_maxIter.getValue();
 
 
-    std::map < std::string, sofa::type::vector<SReal> >& graph = *f_graph.beginEdit();
+    std::map < std::string, sofa::type::vector<SReal> >& graph = *d_graph.beginEdit();
     sofa::type::vector<SReal>& graph_error = graph[std::string("Error")];
     graph_error.clear();
     graph_error.push_back(1);

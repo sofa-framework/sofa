@@ -1463,6 +1463,13 @@ constexpr Mat<3, 3, Real> crossProductMatrix(const Vec<3, Real>& v) noexcept
     return res;
 }
 
+/// crossProductMatrix(v) * x = v.cross(x), a scalar in 2D
+template<class Real>
+constexpr Mat<1, 2, Real> crossProductMatrix(const Vec<2, Real>& v) noexcept
+{
+    return {{-v[1], v[0]}};
+}
+
 
 /// return a * b^T
 template<sofa::Size L,class Real>
@@ -1592,7 +1599,12 @@ constexpr Mat<3,3,real> multTranspose(const Mat<3,3,real>& m1, const Mat<3,3,rea
     return r;
 }
 
-#if not defined(SOFA_TYPE_MAT_CPP)
+// On Windows, an "extern template class __declspec(dllimport)" turns every member, including the
+// trivial accessors, into a call through the DLL import table: neither MSVC nor clang-cl inline
+// them (clang-cl refuses because they call non-imported std::array members).
+// All members are inline, so let client code instantiate them locally there. 
+// Mat.cpp still exports the explicit instantiations, so binaries built against the previous header keep working.
+#if not defined(SOFA_TYPE_MAT_CPP) && not defined(_WIN32)
 
 extern template class SOFA_TYPE_API Mat<1,1,float>;
 extern template class SOFA_TYPE_API Mat<1,1,double>;

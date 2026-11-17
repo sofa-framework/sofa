@@ -24,10 +24,3 @@
 #include <sofa/component/linearsystem/TypedMatrixLinearSystem.h>
 #include <sofa/linearalgebra/BTDMatrix.h>
 #include <sofa/linearalgebra/BlockVector.h>
-
-#if !defined(SOFA_COMPONENT_LINEARSOLVER_TYPEDMATRIXLINEARSYSTEM_BTDMATRIX_CPP)
-namespace sofa::component::linearsystem
-{
-extern template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API TypedMatrixLinearSystem< linearalgebra::BTDMatrix<6, SReal>, linearalgebra::BlockVector<6, SReal> >;
-}
-#endif

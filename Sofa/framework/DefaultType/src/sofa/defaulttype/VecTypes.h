@@ -178,7 +178,7 @@ public:
         Impl<spatial_dimensions,T>::add(c,x,y,z);
     }
 
-    static constexpr const char* Name();
+    static constexpr const char* Name() { return s_name.data();}
 
     static Coord interpolate(const type::vector< Coord > &ancestors, const type::vector< Real > &coefs)
     {
@@ -193,50 +193,42 @@ public:
 
         return c;
     }
+
+private:
+
+    struct Prefix { static constexpr std::string_view value = "Vec"; };
+
+    static constexpr auto s_name = helper::makeFixedSizeTypeName<Prefix, spatial_dimensions, Real>();
 };
 
+namespace internal
+{
+template<sofa::Size N, class T> using VecTypes = StdVectorTypes<type::Vec<N, T>, type::Vec<N, T>, T>;
+}
 
-/// 3D DOFs, double precision
-typedef StdVectorTypes<type::Vec3d,type::Vec3d,double> Vec3dTypes;
-template<> constexpr const char* Vec3dTypes::Name() { return "Vec3d"; }
+using Vec3dTypes = internal::VecTypes<3, double>;
+using Vec2dTypes = internal::VecTypes<2, double>;
+using Vec1dTypes = internal::VecTypes<1, double>;
+using Vec6dTypes = internal::VecTypes<6, double>;
 
-/// 2D DOFs, double precision
-typedef StdVectorTypes<type::Vec2d, type::Vec2d,double> Vec2dTypes;
-template<> constexpr const char* Vec2dTypes::Name() { return "Vec2d"; }
+using Vec3fTypes = internal::VecTypes<3, float>;
+using Vec2fTypes = internal::VecTypes<2, float>;
+using Vec1fTypes = internal::VecTypes<1, float>;
+using Vec6fTypes = internal::VecTypes<6, float>;
 
-/// 1D DOFs, double precision
-typedef StdVectorTypes<type::Vec1d, type::Vec1d,double> Vec1dTypes;
-template<> constexpr const char* Vec1dTypes::Name() { return "Vec1d"; }
+using Vec3Types = internal::VecTypes<3, SReal>;
+using Vec2Types = internal::VecTypes<2, SReal>;
+using Vec1Types = internal::VecTypes<1, SReal>;
+using Vec6Types = internal::VecTypes<6, SReal>;
 
-/// 6D DOFs, double precision
-typedef StdVectorTypes<type::Vec6d, type::Vec6d,double> Vec6dTypes;
-template<> constexpr const char* Vec6dTypes::Name() { return "Vec6d"; }
 
-/// 3f DOFs, single precision
-typedef StdVectorTypes<type::Vec3f, type::Vec3f,float> Vec3fTypes;
-template<> constexpr const char* Vec3fTypes::Name() { return "Vec3f"; }
+static_assert(std::string_view(Vec1dTypes::Name()) == "Vec1d");
+static_assert(std::string_view(Vec2dTypes::Name()) == "Vec2d");
+static_assert(std::string_view(Vec3dTypes::Name()) == "Vec3d");
 
-/// 2f DOFs, single precision
-typedef StdVectorTypes<type::Vec2f, type::Vec2f,float> Vec2fTypes;
-template<> constexpr const char* Vec2fTypes::Name() { return "Vec2f"; }
-
-/// 1f DOFs, single precision
-typedef StdVectorTypes<type::Vec1f, type::Vec1f,float> Vec1fTypes;
-template<> constexpr const char* Vec1fTypes::Name() { return "Vec1f"; }
-
-/// 6f DOFs, single precision
-typedef StdVectorTypes<type::Vec6f, type::Vec6f,float> Vec6fTypes;
-template<> constexpr const char* Vec6fTypes::Name() { return "Vec6f"; }
-
-/// 6D DOFs, double precision (default)
-typedef StdVectorTypes<type::Vec6, type::Vec6, type::Vec6::value_type> Vec6Types;
-/// 3D DOFs, double precision (default)
-typedef StdVectorTypes<type::Vec3, type::Vec3, type::Vec3::value_type> Vec3Types;
-/// 2D DOFs, double precision (default)
-typedef StdVectorTypes<type::Vec2, type::Vec2, type::Vec2::value_type> Vec2Types;
-/// 1D DOFs, double precision (default)
-typedef StdVectorTypes<type::Vec1, type::Vec1, type::Vec1::value_type> Vec1Types;
-
+static_assert(std::string_view(Vec1fTypes::Name()) == "Vec1f");
+static_assert(std::string_view(Vec2fTypes::Name()) == "Vec2f");
+static_assert(std::string_view(Vec3fTypes::Name()) == "Vec3f");
 
 static_assert(!type::isRigidType<Vec6dTypes>);
 static_assert(!type::isRigidType<Vec3dTypes>);

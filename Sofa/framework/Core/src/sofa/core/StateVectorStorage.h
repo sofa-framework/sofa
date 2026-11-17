@@ -100,14 +100,14 @@ public:
     /// @name Vectors access API based on VecId
     /// @{
 
-    virtual Data< VecCoord >* write(VecCoordId v);
-    virtual const Data< VecCoord >* read(ConstVecCoordId v) const;
+    virtual Data< VecCoord >* write(VecCoordId v) override;
+    virtual const Data< VecCoord >* read(ConstVecCoordId v) const override;
 
-    virtual Data< VecDeriv >* write(VecDerivId v);
-    virtual const Data< VecDeriv >* read(ConstVecDerivId v) const;
+    virtual Data< VecDeriv >* write(VecDerivId v) override;
+    virtual const Data< VecDeriv >* read(ConstVecDerivId v) const override;
 
-    virtual Data< MatrixDeriv >* write(MatrixDerivId v);
-    virtual const Data< MatrixDeriv >* read(ConstMatrixDerivId v) const;
+    virtual Data< MatrixDeriv >* write(MatrixDerivId v) override;
+    virtual const Data< MatrixDeriv >* read(ConstMatrixDerivId v) const override;
 
     /// @}
 

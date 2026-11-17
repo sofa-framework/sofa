@@ -19,23 +19,51 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
 
-#include <sofa/simulation/mechanicalvisitor/MechanicalAccFromFVisitor.h>
-
-#include <sofa/core/behavior/BaseMass.h>
+#include <sofa/simulation/MechanicalVisitor.h>
 
 namespace sofa::simulation::mechanicalvisitor
 {
 
-Visitor::Result MechanicalAccFromFVisitor::fwdMass(simulation::Node* /*node*/, core::behavior::BaseMass* mass)
+/** Solves a linear system where the matrix is the mass matrix
+*/
+class SOFA_SIMULATION_CORE_API MechanicalMassLinearSolveVisitor : public MechanicalVisitor
 {
-    mass->accFromF(mparams, a);
-    return RESULT_CONTINUE;
-}
+public:
+    sofa::core::MultiVecDerivId x;
+    sofa::core::ConstMultiVecDerivId b;
 
-std::string MechanicalAccFromFVisitor::getInfos() const
-{
-    std::string name="a["+a.getName()+"] f["+mparams->f().getName()+"]"; return name;
-}
+    MechanicalMassLinearSolveVisitor(const sofa::core::MechanicalParams* mechaparams,
+        sofa::core::MultiVecDerivId xVecId, sofa::core::ConstMultiVecDerivId bVecId)
+            : MechanicalVisitor(mechaparams), x(xVecId), b(bVecId)
+    {
+#ifdef SOFA_DUMP_VISITOR_INFO
+        setReadWriteVectors();
+#endif
+    }
+    Result fwdMass(simulation::Node* /*node*/,sofa::core::behavior::BaseMass* mass) override;
+
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    const char* getClassName() const override { return "MechanicalMassLinearSolveVisitor"; }
+    virtual std::string getInfos() const override;
+
+    /// Specify whether this action can be parallelized.
+    bool isThreadSafe() const override
+    {
+        return true;
+    }
+#ifdef SOFA_DUMP_VISITOR_INFO
+    void setReadWriteVectors() override
+    {
+        addWriteVector(x);
+        addReadVector(mparams->f());
+    }
+#endif
+};
+
+SOFA_ATTRIBUTE_DEPRECATED__MECHANICALACCFROMFVISITOR()
+using MechanicalAccFromFVisitor = MechanicalMassLinearSolveVisitor;
 
 }

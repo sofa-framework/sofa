@@ -33,8 +33,8 @@ public:
 
     Data<bool>  d_useSpectralCorrection;
     Data<SReal> d_spectralCorrectionFactor;
-    Data<bool>  d_useConjugateResidue;
-    Data<SReal> d_conjugateResidueSpeedFactor;
+    Data<bool>  d_useConjugateResidual;
+    Data<SReal> d_conjugateResidualSpeedFactor;
 
     ImprovedJacobiConstraintSolver();
 

@@ -103,9 +103,11 @@ void BarycentricMapperRegularGridTopology<In,Out>::apply ( typename Out::VecCoor
 {
     out.resize( m_map.size() );
 
+    // the resolution of the grid read once (getHexaCopy(Index) reads the Data)
+    const auto& n = this->m_fromTopology->d_n.getValue();
     for ( unsigned int i=0; i<m_map.size(); i++ )
     {
-        const topology::container::grid::RegularGridTopology::Hexa cube = this->m_fromTopology->getHexaCopy ( this->m_map[i].in_index );
+        const topology::container::grid::RegularGridTopology::Hexa cube = RegularGridTopology::getHexaCopy ( n, this->m_map[i].in_index );
 
         const Real fx = m_map[i].baryCoords[0];
         const Real fy = m_map[i].baryCoords[1];
@@ -127,9 +129,10 @@ void BarycentricMapperRegularGridTopology<In,Out>::applyJ ( typename Out::VecDer
 {
     out.resize( m_map.size() );
 
+    const auto& n = this->m_fromTopology->d_n.getValue();
     for( size_t index=0 ; index< out.size() ; ++index)
     {
-        const topology::container::grid::RegularGridTopology::Hexa cube = this->m_fromTopology->getHexaCopy ( this->m_map[index].in_index );
+        const topology::container::grid::RegularGridTopology::Hexa cube = RegularGridTopology::getHexaCopy ( n, this->m_map[index].in_index );
 
         const Real fx = m_map[index].baryCoords[0];
         const Real fy = m_map[index].baryCoords[1];
@@ -148,10 +151,11 @@ void BarycentricMapperRegularGridTopology<In,Out>::applyJ ( typename Out::VecDer
 template <class In, class Out>
 void BarycentricMapperRegularGridTopology<In,Out>::applyJT ( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
 {
+    const auto& n = this->m_fromTopology->d_n.getValue();
     for( size_t index=0 ; index<in.size() ; ++index)
     {
         const typename Out::DPos v = Out::getDPos(in[index]);
-        const topology::container::grid::RegularGridTopology::Hexa cube = this->m_fromTopology->getHexaCopy ( this->m_map[index].in_index );
+        const topology::container::grid::RegularGridTopology::Hexa cube = RegularGridTopology::getHexaCopy ( n, this->m_map[index].in_index );
 
         const OutReal fx = ( OutReal ) m_map[index].baryCoords[0];
         const OutReal fy = ( OutReal ) m_map[index].baryCoords[1];
@@ -185,11 +189,12 @@ const sofa::linearalgebra::BaseMatrix* BarycentricMapperRegularGridTopology<In,O
     else
         m_matrixJ->clear();
 
+    const auto& n = this->m_fromTopology->d_n.getValue();
     for ( size_t i=0; i<m_map.size(); i++ )
     {
         const int out = int(i);
 
-        const topology::container::grid::RegularGridTopology::Hexa cube = this->m_fromTopology->getHexaCopy ( this->m_map[i].in_index );
+        const topology::container::grid::RegularGridTopology::Hexa cube = RegularGridTopology::getHexaCopy ( n, this->m_map[i].in_index );
 
         const Real fx = ( Real ) m_map[i].baryCoords[0];
         const Real fy = ( Real ) m_map[i].baryCoords[1];
@@ -219,10 +224,11 @@ void BarycentricMapperRegularGridTopology<In,Out>::draw  (const core::visual::Vi
 {
     std::vector< Vec3 > points;
 
+    const auto& n = this->m_fromTopology->d_n.getValue();
     for ( unsigned int i=0; i<m_map.size(); i++ )
     {
 
-        const topology::container::grid::RegularGridTopology::Hexa cube = this->m_fromTopology->getHexaCopy ( this->m_map[i].in_index );
+        const topology::container::grid::RegularGridTopology::Hexa cube = RegularGridTopology::getHexaCopy ( n, this->m_map[i].in_index );
 
         const Real fx = m_map[i].baryCoords[0];
         const Real fy = m_map[i].baryCoords[1];
@@ -256,6 +262,7 @@ template <class In, class Out>
 void BarycentricMapperRegularGridTopology<In,Out>::applyJT ( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in )
 {
     typename Out::MatrixDeriv::RowConstIterator rowItEnd = in.end();
+    const auto& n = this->m_fromTopology->d_n.getValue();
 
     for (typename Out::MatrixDeriv::RowConstIterator rowIt = in.begin(); rowIt != rowItEnd; ++rowIt)
     {
@@ -271,7 +278,7 @@ void BarycentricMapperRegularGridTopology<In,Out>::applyJT ( typename In::Matrix
                 unsigned int indexIn = colIt.index();
                 InDeriv data = (InDeriv) Out::getDPos(colIt.val());
 
-                const topology::container::grid::RegularGridTopology::Hexa cube = this->m_fromTopology->getHexaCopy ( this->m_map[indexIn].in_index );
+                const topology::container::grid::RegularGridTopology::Hexa cube = RegularGridTopology::getHexaCopy ( n, this->m_map[indexIn].in_index );
 
                 const OutReal fx = (OutReal) m_map[indexIn].baryCoords[0];
                 const OutReal fy = (OutReal) m_map[indexIn].baryCoords[1];

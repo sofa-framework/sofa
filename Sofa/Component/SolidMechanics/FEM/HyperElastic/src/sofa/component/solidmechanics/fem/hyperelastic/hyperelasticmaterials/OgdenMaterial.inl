@@ -218,4 +218,42 @@ auto OgdenMaterial<DataTypes>::elasticityTensor(Strain<DataTypes>& strain) -> El
         });
 }
 
+template <class DataTypes>
+auto OgdenMaterial<DataTypes>::strainEnergyDensity(Strain<DataTypes>& strain) -> Real
+{
+    using EigenMatrix = Eigen::Matrix<Real, spatial_dimensions, spatial_dimensions>;
+
+    const Real mu = m_mu.getValue();
+    const Real alpha = m_alpha.getValue();
+    const Real kappa = m_kappa.getValue();
+
+    const auto& C = strain.getRightCauchyGreenTensor();
+
+    const Real J = strain.getDeterminantDeformationGradient();
+    assert(J > 0);
+
+    EigenMatrix CEigen;
+    for (sofa::Index m = 0; m < spatial_dimensions; ++m)
+        for (sofa::Index n = 0; n < spatial_dimensions; ++n)
+            CEigen(m, n) = C(m, n);
+
+    Eigen::SelfAdjointEigenSolver<EigenMatrix> EigenProblemSolver(CEigen, Eigen::EigenvaluesOnly);
+    if (EigenProblemSolver.info() != Eigen::Success)
+        dmsg_warning("OgdenMaterial") << "EigenSolver iterations failed to converge";
+    const auto eigenvalues = EigenProblemSolver.eigenvalues();
+
+    const Real aBy2 = static_cast<Real>(0.5) * alpha;
+    Real trCaBy2{static_cast<Real>(0)};
+    for (sofa::Index n = 0; n < spatial_dimensions; ++n)
+        trCaBy2 += pow(eigenvalues(n), aBy2);
+
+    const Real FJ = pow(J, -alpha / static_cast<Real>(spatial_dimensions));
+    const Real W_isochoric = mu / (alpha * alpha) * (FJ * trCaBy2 - static_cast<Real>(spatial_dimensions));
+
+    const Real logJ = log(J);
+    const Real W_volumetric = static_cast<Real>(0.5) * kappa * logJ * logJ;
+
+    return W_isochoric + W_volumetric;
+}
+
 }  // namespace elasticity

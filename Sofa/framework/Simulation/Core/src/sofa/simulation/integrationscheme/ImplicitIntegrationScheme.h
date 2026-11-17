@@ -56,6 +56,8 @@ public:
 
     ImplicitIntegrationScheme();
 
+    void reset() override;
+
     /**
      * Compute the system matrix.
      */
@@ -115,7 +117,7 @@ public:
     /// with $r$ being constant in term of $x$ and $k$ the integration factor returned by this function.
     ///
     /// This method is used to compute the compliance for contact corrections.
-    virtual SReal getVelocityIntegrationFactor() const = 0;
+    SReal getVelocityIntegrationFactor() const override = 0;
 
     /// The integration scheme solves a linear system. In this linear system the unknown has a unit.
     /// It can be the position, velocity or acceleration increase. In any case, this unknown need then
@@ -129,7 +131,7 @@ public:
     /// with $r$ being constant in term of $x$ and $k$ the integration factor returned by this function.
     ///
     /// This method is used to compute the compliance for contact corrections.
-    virtual SReal getPositionIntegrationFactor() const = 0;
+    SReal getPositionIntegrationFactor() const override = 0;
 
     Data<SReal> d_rayleighStiffness; ///< Rayleigh damping coefficient related to stiffness, > 0
     Data<SReal> d_rayleighMass; ///< Rayleigh damping coefficient related to mass, > 0
@@ -138,7 +140,7 @@ public:
 protected:
 
     virtual void doSetupIntegrationStep(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
-    {  }
+    { SOFA_UNUSED(dt); SOFA_UNUSED(params); SOFA_UNUSED(vResult); SOFA_UNUSED(xResult); }
 
     /**
      * This method returns the order of the integration scheme in term of number of past timestep

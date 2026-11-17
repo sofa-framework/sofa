@@ -19,6 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_ANIMATIONLOOP_CONSTRAINTANIMATIONLOOP_CPP
 #include <sofa/component/animationloop/ConstraintAnimationLoop.h>
 #include <sofa/core/visual/VisualParams.h>
 
@@ -52,9 +53,6 @@
 #include <sofa/simulation/mechanicalvisitor/MechanicalVInitVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalVInitVisitor;
 
-#include <sofa/simulation/mechanicalvisitor/MechanicalBeginIntegrationVisitor.h>
-using sofa::simulation::mechanicalvisitor::MechanicalBeginIntegrationVisitor;
-
 #include <sofa/simulation/mechanicalvisitor/MechanicalVOpVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalVOpVisitor;
 
@@ -67,8 +65,7 @@ using sofa::simulation::mechanicalvisitor::MechanicalPropagateOnlyPositionVisito
 #include <sofa/simulation/mechanicalvisitor/MechanicalProjectJacobianMatrixVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalProjectJacobianMatrixVisitor;
 
-#include <sofa/simulation/mechanicalvisitor/MechanicalEndIntegrationVisitor.h>
-using sofa::simulation::mechanicalvisitor::MechanicalEndIntegrationVisitor;
+#include <sofa/simulation/mechanicalvisitor/MechanicalResetForceVisitor.h>
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalResetConstraintVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalResetConstraintVisitor;
@@ -297,8 +294,6 @@ void ConstraintAnimationLoop::freeMotion(const core::ExecParams* params, simulat
     ///////////////////////////////////////////// FREE MOTION /////////////////////////////////////////////////////////////
     {
         SCOPED_TIMER_VARNAME(freeMotionTimer, "Free Motion");
-
-        MechanicalBeginIntegrationVisitor(params, dt).execute(context);
 
         ////////////////// (optional) PREDICTIVE CONSTRAINT FORCES ///////////////////////////////////////////////////////////////////////////////////////////
         /// When scheme Correction is used, the constraint forces computed at the previous time-step
@@ -666,8 +661,9 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params, SReal dt )
                    << "<<<<< End display ConstraintAnimationLoop time." ;
     }
 
-    MechanicalEndIntegrationVisitor endVisitor(params, dt);
-    node->execute(&endVisitor);
+    mechanicalvisitor::MechanicalResetForceVisitor resetForceVisitor(params, sofa::core::vec_id::write_access::externalForce);
+    node->execute(&resetForceVisitor);
+
     node->setTime ( startTime + dt );
     node->execute<UpdateSimulationContextVisitor>(params);  // propagate time
 

@@ -47,8 +47,7 @@
 #include <sofa/simulation/SolveVisitor.h>
 #include <sofa/simulation/task/TaskScheduler.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalAccumulateMatrixDeriv.h>
-#include <sofa/simulation/mechanicalvisitor/MechanicalBeginIntegrationVisitor.h>
-#include <sofa/simulation/mechanicalvisitor/MechanicalEndIntegrationVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalResetForceVisitor.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalProjectPositionAndVelocityVisitor.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalPropagateOnlyPositionAndVelocityVisitor.h>
 
@@ -175,11 +174,8 @@ void DefaultAnimationLoop::propagateAnimateBeginEvent(const core::ExecParams* pa
 
 void DefaultAnimationLoop::beginIntegration(const core::ExecParams* params, SReal dt) const
 {
+    SOFA_UNUSED(dt);
     propagateIntegrateBeginEvent(params);
-
-    SCOPED_TIMER("beginIntegration");
-    mechanicalvisitor::MechanicalBeginIntegrationVisitor beginVisitor(params, dt);
-    m_node->execute(&beginVisitor);
 }
 
 void DefaultAnimationLoop::propagateIntegrateBeginEvent(const core::ExecParams* params) const
@@ -216,10 +212,12 @@ void DefaultAnimationLoop::propagateIntegrateEndEvent(const core::ExecParams* pa
 
 void DefaultAnimationLoop::endIntegration(const core::ExecParams* params, const SReal dt) const
 {
+    SOFA_UNUSED(dt);
+
     {
         SCOPED_TIMER("endIntegration");
-        mechanicalvisitor::MechanicalEndIntegrationVisitor endVisitor(params, dt);
-        m_node->execute(&endVisitor);
+        mechanicalvisitor::MechanicalResetForceVisitor resetForceVisitor(params, sofa::core::vec_id::write_access::externalForce);
+        m_node->execute(&resetForceVisitor);
     }
 
     propagateIntegrateEndEvent(params);

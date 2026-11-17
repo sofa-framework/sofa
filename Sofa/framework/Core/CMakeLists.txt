@@ -99,6 +99,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/behavior/DefaultMultiMatrixAccessor.h
     ${SRC_ROOT}/behavior/ForceField.h
     ${SRC_ROOT}/behavior/ForceField.inl
+    ${SRC_ROOT}/behavior/IterativeSolver.h
     ${SRC_ROOT}/behavior/LagrangianConstraint.h
     ${SRC_ROOT}/behavior/LagrangianConstraint.inl
     ${SRC_ROOT}/behavior/LinearSolver.h
@@ -145,6 +146,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/collision/IntersectorFactory.h
     ${SRC_ROOT}/collision/NarrowPhaseDetection.h
     ${SRC_ROOT}/collision/Pipeline.h
+    ${SRC_ROOT}/data/Data[Eigen].h
     ${SRC_ROOT}/loader/BaseLoader.h
     ${SRC_ROOT}/loader/ImageLoader.h
     ${SRC_ROOT}/loader/MeshLoader.h
@@ -279,6 +281,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/behavior/ConstraintSolver.cpp
     ${SRC_ROOT}/behavior/DefaultMultiMatrixAccessor.cpp
     ${SRC_ROOT}/behavior/ForceField.cpp
+    ${SRC_ROOT}/behavior/IterativeSolver.cpp
     ${SRC_ROOT}/behavior/LagrangianConstraint.cpp
     ${SRC_ROOT}/behavior/LinearSolver.cpp
     ${SRC_ROOT}/behavior/LinearSolverAccessor.cpp
@@ -343,6 +346,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/objectmodel/ScriptEvent.cpp
     ${SRC_ROOT}/objectmodel/Tag.cpp
     ${SRC_ROOT}/objectmodel/TagSet.cpp
+    ${SRC_ROOT}/data/Data[Eigen].cpp
     ${SRC_ROOT}/topology/BaseMeshTopology.cpp
     ${SRC_ROOT}/topology/BaseTopology.cpp
     ${SRC_ROOT}/topology/BaseTopologyObject.cpp
@@ -396,6 +400,7 @@ if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     target_compile_options(${PROJECT_NAME} PRIVATE -Wno-attributes)
 endif()
 
+sofa_treat_warnings_as_errors(${PROJECT_NAME})
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER Sofa.Framework) # IDE folder
 
 sofa_create_package_with_targets(

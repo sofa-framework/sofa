@@ -95,10 +95,15 @@ public:
         SOFA_UNUSED(mparams);
         SOFA_UNUSED(fId);
     }
-    void addDForce(const core::MechanicalParams* mparams, core::MultiVecDerivId dfId) override
+    void addDForce(const core::MechanicalParams* mparams, core::MultiVecDerivId dfId,
+                   core::ConstMultiVecDerivId dxId, core::ConstMultiVecCoordId xId,
+                   core::ConstMultiVecDerivId vId) override
     {
         SOFA_UNUSED(mparams);
         SOFA_UNUSED(dfId);
+        SOFA_UNUSED(dxId);
+        SOFA_UNUSED(xId);
+        SOFA_UNUSED(vId);
     }
     SReal getPotentialEnergy(const core::MechanicalParams* mparams, core::ConstMultiVecCoordId dxId) const override
     {
@@ -121,10 +126,11 @@ public:
         SOFA_UNUSED(fid);
         SOFA_UNUSED(factor);
     }
-    void accFromF(const core::MechanicalParams* mparams, core::MultiVecDerivId aid) override
+    void solveLinearSystem(const core::MechanicalParams* mparams, core::MultiVecDerivId xId, core::ConstMultiVecDerivId bId) override
     {
         SOFA_UNUSED(mparams);
-        SOFA_UNUSED(aid);
+        SOFA_UNUSED(xId);
+        SOFA_UNUSED(bId);
     }
     void addGravityToV(const core::MechanicalParams* mparams, core::MultiVecDerivId vid) override
     {
@@ -181,10 +187,15 @@ public:
         SOFA_UNUSED(mparams);
         SOFA_UNUSED(fId);
     }
-    void addDForce(const core::MechanicalParams* mparams, core::MultiVecDerivId dfId) override
+    void addDForce(const core::MechanicalParams* mparams, core::MultiVecDerivId dfId,
+                   core::ConstMultiVecDerivId dxId, core::ConstMultiVecCoordId xId,
+                   core::ConstMultiVecDerivId vId) override
     {
         SOFA_UNUSED(mparams);
         SOFA_UNUSED(dfId);
+        SOFA_UNUSED(dxId);
+        SOFA_UNUSED(xId);
+        SOFA_UNUSED(vId);
     }
     SReal getPotentialEnergy(const core::MechanicalParams* mparams, core::ConstMultiVecCoordId) const override
     {

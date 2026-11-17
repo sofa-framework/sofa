@@ -26,6 +26,7 @@
 #include <sofa/core/behavior/ConstraintResolution.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/behavior/BaseIntegrationScheme.h>
+#include <sofa/core/objectmodel/lifecycle/DeprecatedData.h>
 
 namespace sofa::component::constraint::lagrangian::model
 {
@@ -84,17 +85,22 @@ public:
     typedef core::objectmodel::Data<VecDeriv>		DataVecDeriv;
     typedef core::objectmodel::Data<MatrixDeriv>    DataMatrixDeriv;
 
+    using Inherit::getMState;
+    using Inherit::isComponentStateInvalid;
+    using Inherit::d_componentState;
+    using Inherit::d_constraintIndex;
 protected:
-    Data<int> d_index; ///< index of the stop constraint
+    sofa::core::objectmodel::lifecycle::DeprecatedData d_index {this, "v26.12", "v27.12", "d_index", "You should now use indices to specify the set of dof indices to constraint"};
+    Data<sofa::type::vector<unsigned int>> d_indices; ///< index of the stop constraint
     Data<SReal> d_min; ///< minimum value accepted
     Data<SReal> d_max; ///< maximum value accepted
 
-
+    sofa::type::vector<unsigned int> m_cid;
 
     StopperLagrangianConstraint(MechanicalState* object = nullptr);
-
     virtual ~StopperLagrangianConstraint() {}
 
+    void init() override;
 
     virtual type::vector<std::string> getConstraintIdentifiers() override final
     {
@@ -103,21 +109,16 @@ protected:
         ids.push_back("Unilateral");
         return ids;
     }
-
     virtual type::vector<std::string> getStopperIdentifiers(){ return {}; }
-
-
 
 public:
     void buildConstraintMatrix(const core::ConstraintParams* cParams, DataMatrixDeriv &c_d, unsigned int &cIndex, const DataVecCoord &x) override;
     void getConstraintViolation(const core::ConstraintParams* cParams, linearalgebra::BaseVector *resV, const DataVecCoord &x, const DataVecDeriv &v) override;
-
     void getConstraintResolution(const core::ConstraintParams *, std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset) override;
 };
 
 #if !defined(SOFA_COMPONENT_CONSTRAINTSET_STOPPERLAGRANGIANCONSTRAINT_CPP)
 extern template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API StopperLagrangianConstraint<defaulttype::Vec1Types>;
-
 #endif
 
 } //namespace sofa::component::constraint::lagrangian::model
