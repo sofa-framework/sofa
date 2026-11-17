@@ -60,14 +60,16 @@ protected:
                                      TMatrix* matrixToProject,
                                      linearalgebra::BaseMatrix* globalMatrix) override;
 
+    enum class AffectedSide { Rows, Columns, Both };
+
     /// Given a Mechanical State and its matrix, identifies the nodes affected by the matrix
-    std::vector<unsigned int> identifyAffectedDoFs(core::behavior::BaseMechanicalState* mstate, TMatrix* crs);
+    std::vector<unsigned int> identifyAffectedDoFs(core::behavior::BaseMechanicalState* mstate, TMatrix* crs, AffectedSide side);
 
     /**
      * Build the jacobian matrices of mappings from a mapped state to its top most parents (in the
      * sense of mappings)
      */
-    simulation::MappingJacobians<TMatrix> computeJacobiansFrom(core::behavior::BaseMechanicalState* mstate, const core::MechanicalParams* mparams, const simulation::MappingGraph& mappingGraph, TMatrix* crs);
+    simulation::MappingJacobians<TMatrix> computeJacobiansFrom(core::behavior::BaseMechanicalState* mstate, const core::MechanicalParams* mparams, const simulation::MappingGraph& mappingGraph, TMatrix* crs, AffectedSide side);
 
     core::objectmodel::BaseContext* getSolveContext();
 
