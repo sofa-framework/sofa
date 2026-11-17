@@ -108,7 +108,7 @@ void IntegrateVisitor::fwdInteractionForceField(Node* node, core::behavior::Base
     const core::MultiVecDerivId ffId = core::vec_id::write_access::externalForce;
     core::MechanicalParams mparams;
     mparams.setDt(m_dt);
-    forceField->addForce(&mparams, ffId);
+    forceField->addForce(&mparams, ffId, mparams.x(), mparams.v());
 }
 
 Visitor::Result IntegrateVisitor::processNodeTopDown(simulation::Node* node)
@@ -165,9 +165,9 @@ IntegrateVisitor::IntegrateVisitor(const sofa::core::ExecParams* params, SReal _
 , m_alpha(alpha)
 , m_xId(X)
 , m_vId(V)
+, m_result(0.0_sreal)
 , m_parallelExecution(_parallelExecution)
 , m_computeForceIsolatedInteractionForceFields(computeForceIsolatedInteractionForceFields)
-, m_result(0.0_sreal)
 {
     if (m_parallelExecution)
     {

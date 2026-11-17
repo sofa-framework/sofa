@@ -140,8 +140,8 @@ protected:
 
     SReal m_result;
 
-    bool m_parallelExecution {false };
-    bool m_computeForceIsolatedInteractionForceFields { false };
+    bool m_parallelExecution;
+    bool m_computeForceIsolatedInteractionForceFields;
 
     std::list<IntegrateVisitorTask> m_tasks;
     sofa::simulation::CpuTask::Status m_status;

@@ -46,10 +46,9 @@
 #include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/simulation/events/UpdateMappingEndEvent.h>
 #include <sofa/simulation/UpdateBoundingBoxVisitor.h>
-#include <sofa/simulation/mechanicalvisitor/MechanicalBeginIntegrationVisitor.h>
-#include <sofa/simulation/mechanicalvisitor/MechanicalEndIntegrationVisitor.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalComputeGeometricStiffness.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalResetForceVisitor.h>
 
 
 
@@ -137,6 +136,7 @@ void NewtonRaphson::integrate(const core::ExecParams* params, SReal dt)
 
 void NewtonRaphson::preSolve(const core::ExecParams* params, core::ConstraintParams* cparams, common::VectorOperations* vop, common::MechanicalOperations* mop, SReal dt, Node* node)
 {
+    SOFA_UNUSED(mop);
 
     core::behavior::MultiVecDeriv dx(vop, core::vec_id::write_access::dx);
     dx.realloc(vop, true, true);
@@ -213,10 +213,6 @@ void NewtonRaphson::preSolve(const core::ExecParams* params, core::ConstraintPar
 
 void NewtonRaphson::newtonSolve(const core::ExecParams* params, core::ConstraintParams* cparams, common::VectorOperations* vop, common::MechanicalOperations* mop,  SReal dt, sofa::core::MultiVecCoordId xId, sofa::core::MultiVecDerivId vId, Node* node)
 {
-    // MechanicalBeginIntegrationVisitor
-    mechanicalvisitor::MechanicalBeginIntegrationVisitor beginVisitor(params, dt);
-    node->execute(&beginVisitor);
-
     dmsg_info() << "beginVisitor performed - SolveVisitor for freeMotion is called" ;
 
     //Constify the data values
@@ -391,13 +387,15 @@ void NewtonRaphson::newtonSolve(const core::ExecParams* params, core::Constraint
     intHelper.finalizeIntegrationStep(m_advanceTime);
 
 
-    mechanicalvisitor::MechanicalEndIntegrationVisitor endVisitor(params, dt);
-    node->execute(&endVisitor);
+    mechanicalvisitor::MechanicalResetForceVisitor resetForceVisitor(params, sofa::core::vec_id::write_access::externalForce);
+    node->execute(&resetForceVisitor);
 
 }
 
 void NewtonRaphson::postSolve(const core::ExecParams* params, core::ConstraintParams* cparams, common::VectorOperations* vop, common::MechanicalOperations* mop, SReal startTime, SReal dt, Node* node)
 {
+    SOFA_UNUSED(cparams);
+    SOFA_UNUSED(vop);
 
     auto pos = sofa::core::vec_id::write_access::position;
     auto vel = sofa::core::vec_id::write_access::velocity;
@@ -455,6 +453,7 @@ void NewtonRaphson::computeGeometricalStiffness(const core::MechanicalParams* mp
 
 void NewtonRaphson::solveConstraints(const core::MechanicalParams* mparams, const core::ConstraintParams* cparams, common::VectorOperations* vop, common::MechanicalOperations* mop, sofa::core::MultiVecCoordId xId, sofa::core::MultiVecDerivId vId, SReal dt)
 {
+    SOFA_UNUSED(mparams);
     SCOPED_TIMER("ConstraintSolver");
 
     if (cparams->constOrder() == core::ConstraintOrder::VEL )

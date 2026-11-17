@@ -26,8 +26,8 @@ namespace sofa::core::behavior
 {
 
 BaseTimeIntegrator::BaseTimeIntegrator()
-    : l_node(initLink("targetNode","Link to the scene's node that will be processed by the loop"))
-    , d_computeBoundingBox(initData(&d_computeBoundingBox, !SOFA_NO_UPDATE_BBOX, "computeBoundingBox", "If true, compute the global bounding box of the scene at each time step. Used mostly for rendering."))
+    : d_computeBoundingBox(initData(&d_computeBoundingBox, !SOFA_NO_UPDATE_BBOX, "computeBoundingBox", "If true, compute the global bounding box of the scene at each time step. Used mostly for rendering."))
+    , l_node(initLink("targetNode","Link to the scene's node that will be processed by the loop"))
     , m_resetTime(0.0)
 {}
 
