@@ -253,9 +253,8 @@ void VelocityBasedImplicitIntegrationScheme::computeRHS(bool firstIteration)
 SReal VelocityBasedImplicitIntegrationScheme::evaluateResidual()
 {
     core::behavior::MultiVecDeriv r0(m_vop.get(), m_r0);
-    core::behavior::MultiVecDeriv r1(m_vop.get(), m_r1);
 
-    return r0.dot(r0) + r1.dot(r1);
+    return r0.dot(r0);
 }
 
 void VelocityBasedImplicitIntegrationScheme::solveLinearEquation()
