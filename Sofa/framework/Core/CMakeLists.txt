@@ -83,11 +83,11 @@ set(HEADER_FILES
     ${SRC_ROOT}/behavior/BaseLocalMassMatrix.h
     ${SRC_ROOT}/behavior/BaseMass.h
     ${SRC_ROOT}/behavior/BaseMatrixLinearSystem.h
-    ${SRC_ROOT}/behavior/BaseMechanicalState.h
     ${SRC_ROOT}/behavior/BaseOrderingMethod.h
     ${SRC_ROOT}/behavior/BaseProjectiveConstraintSet.h
     ${SRC_ROOT}/behavior/BaseRotationFinder.h
     ${SRC_ROOT}/behavior/BaseVectorOperations.h
+    ${SRC_ROOT}/behavior/BaseVectorState.h
     ${SRC_ROOT}/behavior/BlocMatrixWriter.h
     ${SRC_ROOT}/behavior/BlockType.h
     ${SRC_ROOT}/behavior/Constraint.h
@@ -273,9 +273,9 @@ set(SOURCE_FILES
     ${SRC_ROOT}/behavior/BaseLinearSolver.cpp
     ${SRC_ROOT}/behavior/BaseMass.cpp
     ${SRC_ROOT}/behavior/BaseMatrixLinearSystem.cpp
-    ${SRC_ROOT}/behavior/BaseMechanicalState.cpp
     ${SRC_ROOT}/behavior/BaseOrderingMethod.cpp
     ${SRC_ROOT}/behavior/BaseProjectiveConstraintSet.cpp
+    ${SRC_ROOT}/behavior/BaseVectorState.cpp
     ${SRC_ROOT}/behavior/ConstraintCorrection.cpp
     ${SRC_ROOT}/behavior/ConstraintResolution.cpp
     ${SRC_ROOT}/behavior/ConstraintSolver.cpp
@@ -371,6 +371,7 @@ set(SOURCE_FILES
 
 set(DEPRECATED_DIR "compat/sofa/core")
 set(DEPRECATED_HEADER_FILES
+    ${DEPRECATED_DIR}/behavior/BaseMechanicalState.h
     ${DEPRECATED_DIR}/objectmodel/BaseObject.h
 )
 

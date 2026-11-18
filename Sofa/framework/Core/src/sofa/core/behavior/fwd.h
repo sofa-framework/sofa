@@ -32,6 +32,7 @@ namespace sofa::core::behavior
     class BaseInteractionForceField;
     class BaseInteractionProjectiveConstraintSet;
     class BaseMass;
-    class BaseMechanicalState;
+    class BaseVectorState;
+    using BaseMechanicalState = BaseVectorState;
     class MultiMatrixAccessor;
 }

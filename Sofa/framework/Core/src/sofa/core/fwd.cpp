@@ -36,7 +36,7 @@
 #include <sofa/core/behavior/BaseMass.h>
 #include <sofa/core/behavior/BaseIntegrationScheme.h>
 #include <sofa/core/behavior/ConstraintSolver.h>
-#include <sofa/core/behavior/BaseMechanicalState.h>
+#include <sofa/core/behavior/BaseVectorState.h>
 #include <sofa/core/behavior/BaseForceField.h>
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/core/behavior/BaseConstraintSet.h>
@@ -174,7 +174,7 @@ SOFA_DEFINE_OPAQUE_FUNCTIONS_BETWEEN_BASE_AND(sofa::core::behavior::BaseMass);
 SOFA_DEFINE_OPAQUE_FUNCTIONS_BETWEEN_BASE_AND(sofa::core::behavior::BaseIntegrationScheme);
 SOFA_DEFINE_OPAQUE_FUNCTIONS_BETWEEN_BASE_AND(sofa::core::behavior::ConstraintSolver);
 SOFA_DEFINE_OPAQUE_FUNCTIONS_BETWEEN_BASE_AND(sofa::core::behavior::BaseLinearSolver);
-SOFA_DEFINE_OPAQUE_FUNCTIONS_BETWEEN_BASE_AND(sofa::core::behavior::BaseMechanicalState);
+SOFA_DEFINE_OPAQUE_FUNCTIONS_BETWEEN_BASE_AND(sofa::core::behavior::BaseVectorState);
 SOFA_DEFINE_OPAQUE_FUNCTIONS_BETWEEN_BASE_AND(sofa::core::behavior::BaseForceField);
 SOFA_DEFINE_OPAQUE_FUNCTIONS_BETWEEN_BASE_AND(sofa::core::behavior::BaseInteractionForceField);
 SOFA_DEFINE_OPAQUE_FUNCTIONS_BETWEEN_BASE_AND(sofa::core::behavior::BaseProjectiveConstraintSet);

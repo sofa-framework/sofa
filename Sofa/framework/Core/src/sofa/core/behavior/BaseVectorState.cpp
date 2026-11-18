@@ -19,18 +19,18 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/core/behavior/BaseMechanicalState.h>
+#include <sofa/core/behavior/BaseVectorState.h>
 #include <sofa/core/objectmodel/BaseNode.h>
 
 
 namespace sofa::core::behavior
 {
 
-BaseMechanicalState::BaseMechanicalState()
+BaseVectorState::BaseVectorState()
 {
 }
 
-BaseMechanicalState::~BaseMechanicalState()
+BaseVectorState::~BaseVectorState()
 {
 }
 
@@ -39,7 +39,7 @@ BaseMechanicalState::~BaseMechanicalState()
 /// This is used to compute in on steps operations such as $v = v + a*dt, x = x + v*dt$.
 /// Note that if the result vector appears inside the expression, it must be the first operand.
 /// By default this method decompose the computation into multiple vOp calls.
-void BaseMechanicalState::vMultiOp(const ExecParams* params, const VMultiOp& ops)
+void BaseVectorState::vMultiOp(const ExecParams* params, const VMultiOp& ops)
 {
     for (const auto& op : ops)
     {
@@ -79,7 +79,7 @@ void BaseMechanicalState::vMultiOp(const ExecParams* params, const VMultiOp& ops
 }
 
 /// Handle state Changes from a given Topology
-void BaseMechanicalState::handleStateChange(core::topology::Topology* /*t*/)
+void BaseVectorState::handleStateChange(core::topology::Topology* /*t*/)
 {
 //    if (t == this->getContext()->getTopology())
 //    {
@@ -87,17 +87,17 @@ void BaseMechanicalState::handleStateChange(core::topology::Topology* /*t*/)
 //    }
 }
 
-void BaseMechanicalState::writeState( std::ostream& )
+void BaseVectorState::writeState( std::ostream& )
 { }
 
-bool BaseMechanicalState::insertInNode( objectmodel::BaseNode* node )
+bool BaseVectorState::insertInNode( objectmodel::BaseNode* node )
 {
     node->addMechanicalState(this);
     Inherit1::insertInNode(node);
     return true;
 }
 
-bool BaseMechanicalState::removeInNode( objectmodel::BaseNode* node )
+bool BaseVectorState::removeInNode( objectmodel::BaseNode* node )
 {
     node->removeMechanicalState(this);
     Inherit1::removeInNode(node);
