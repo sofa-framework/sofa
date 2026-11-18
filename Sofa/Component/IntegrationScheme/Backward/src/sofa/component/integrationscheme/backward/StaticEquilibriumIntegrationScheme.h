@@ -54,7 +54,7 @@ public:
     virtual SReal getVelocityIntegrationFactor() const override final;
     virtual SReal getPositionIntegrationFactor() const override final;
 
-    virtual void finalizeIntegrationStep(bool advanceTime);
+    virtual void finalizeIntegrationStep(bool advanceTime) override;
 
 protected:
     virtual void doSetupIntegrationStep(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;

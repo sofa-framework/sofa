@@ -283,12 +283,13 @@ void NewtonRaphson::newtonSolve(const core::ExecParams* params, core::Constraint
         intHelper.computeRHS(false);
         newResidue = intHelper.evaluateResidual();
 
-        // Compute the Armijo term
-        // !! Careful this approximation holds only when A is symmetric
-        // This comes from the fact that if the current residual is f=||r||**2 and the search
-        // direction results from Ap = -r, then we have \nabla f = 2*A*r, so the armijo factor can be
-        // simplified with \nabla f * p = 2*r^T*A^T*A^{-1}*(-r) = -2*||r||^2  if A is symmetric
-        // Otherwise we need to compute 2 * r^{t} * A^{T} * p
+        // Compute the Armijo term for the cost function f = ||r||^2.
+        // With J = dr/dX, we have \nabla f = 2 * J^T * r, hence \nabla f . p = 2 * r^T * J * p.
+        // The Newton direction satisfies J * p = -r, so \nabla f . p = -2 * ||r||^2.
+        // This holds for any (even non-symmetric) J, but it requires the system matrix A to be the
+        // exact Jacobian of the residual. If A is only an approximation of J (e.g. missing
+        // geometric stiffness, or interaction forcefields contributing only to the RHS), this
+        // term is an approximation and the Armijo condition may be too strict or too loose.
         const SReal armijoTerm = - 2 * lineSearchArmijoFactor * oldResidue;
 
         if (newResidue<bestresidual || d_alwaysAdvanceNewton.getValue())
