@@ -209,6 +209,7 @@ public:
 private:
     IntegrateVisitor m_visitor;
     sofa::simulation::Node * m_node;
+    const sofa::core::ExecParams* m_params;
 };
 
 } // namespace sofa

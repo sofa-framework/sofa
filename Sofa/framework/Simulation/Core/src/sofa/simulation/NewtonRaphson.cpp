@@ -40,6 +40,7 @@
 #include <sofa/simulation/events/AnimateBeginEvent.h>
 #include <sofa/simulation/events/AnimateEndEvent.h>
 #include <sofa/simulation/PropagateEventVisitor.h>
+#include <sofa/simulation/DifferentialOperations.h>
 #include <sofa/simulation/UpdateInternalDataVisitor.h>
 #include <sofa/simulation/BehaviorUpdatePositionVisitor.h>
 #include <sofa/simulation/UpdateContextVisitor.h>
@@ -136,6 +137,8 @@ void NewtonRaphson::integrate(const core::ExecParams* params, SReal dt)
 void NewtonRaphson::preSolve(const core::ExecParams* params, core::ConstraintParams* cparams, common::VectorOperations* vop, common::MechanicalOperations* mop, SReal dt, Node* node)
 {
     SOFA_UNUSED(mop);
+
+    m_mappingGraph.build(this->getContext());
 
     core::behavior::MultiVecDeriv dx(vop, core::vec_id::write_access::dx);
     dx.realloc(vop, true, true);
@@ -396,14 +399,17 @@ void NewtonRaphson::postSolve(const core::ExecParams* params, core::ConstraintPa
         SCOPED_TIMER("ProjectAndPropagateX");
 
         mop->projectPosition(pos);
-        mop->propagateX(pos);
+
+        simulation::common::DifferentialOperations::pushforwardCoord(m_mappingGraph, mop->mparams, pos);
     }
     else
     {
         SCOPED_TIMER("ProjectAndPropagateXAndV");
 
         mop->projectPositionAndVelocity(pos, vel);
-        mop->propagateXAndV(pos, vel);
+
+        simulation::common::DifferentialOperations::pushforwardCoord(m_mappingGraph, mop->mparams, pos);
+        simulation::common::DifferentialOperations::pushforwardTangent(m_mappingGraph, mop->mparams, vel);
     }
 
     if (m_advanceTime)
@@ -476,7 +482,7 @@ void NewtonRaphson::solveConstraints(const core::MechanicalParams* mparams, cons
 
         core::behavior::MultiVecDeriv cdx(vop, l_constraintSolver->getDx());
         mop->projectResponse(cdx);
-        mop->propagateDx(cdx, true);
+        simulation::common::DifferentialOperations::pushforwardTangent(m_mappingGraph, mop->mparams, cdx);
     }
 }
 

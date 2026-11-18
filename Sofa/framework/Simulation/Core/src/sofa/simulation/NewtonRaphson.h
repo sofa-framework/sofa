@@ -27,6 +27,7 @@
 #include <sofa/simulation/CollisionAnimationLoop.h>
 #include <sofa/core/MultiVecId.h>
 #include <sofa/simulation/VectorOperations.h>
+#include <sofa/simulation/mappinggraph/MappingGraphUser.h>
 
 #include <sofa/simulation/fwd.h>
 
@@ -46,7 +47,8 @@ namespace sofa::simulation
  *
  */
 class SOFA_SIMULATION_CORE_API NewtonRaphson : public CollisionAnimationLoop,
-                                               public TaskSchedulerUser
+                                               public TaskSchedulerUser,
+                                               public sofa::simulation::MappingGraphUser
 {
 public:
     typedef sofa::core::objectmodel::BaseContext BaseContext;

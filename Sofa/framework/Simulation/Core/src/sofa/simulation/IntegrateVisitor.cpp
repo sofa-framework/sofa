@@ -27,6 +27,7 @@
 #include <sofa/simulation/task/MainTaskSchedulerFactory.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/core/behavior/BaseInteractionForceField.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalResetForceVisitor.h>
 
 namespace sofa::simulation
 {
@@ -217,6 +218,7 @@ IntegrationHelper::IntegrationHelper(const sofa::core::ExecParams* params,
                  bool parallelExecution ,
                  bool computeForceIsolatedInteractionForceFields )
     : m_visitor(params, dt, IntegrateVisitor::TaskType::NONE, true, true, 1.0, X, V, parallelExecution, computeForceIsolatedInteractionForceFields)
+    , m_params(params)
 {}
 
 void  IntegrationHelper::setupIntegrationStep()
@@ -246,6 +248,9 @@ void  IntegrationHelper::computeLHS(bool firstIteration)
 void  IntegrationHelper::computeRHS(bool firstIteration)
 {
     helper::ScopedAdvancedTimer timer("computeRHS");
+    mechanicalvisitor::MechanicalResetForceVisitor resetForceVisitor(m_params, sofa::core::vec_id::write_access::externalForce);
+    resetForceVisitor.execute(m_node);
+
     m_visitor.setTaskType(IntegrateVisitor::TaskType::COMPUTE_RHS);
     m_visitor.setFirstIteration(firstIteration);
     m_visitor.execute(m_node);
