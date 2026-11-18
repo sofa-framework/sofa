@@ -158,8 +158,30 @@ public:
     }
 
 
+    sofa::type::Mat2x2d stiffness(const sofa::type::Vec2d& dir) const
+    {
+        const SReal k = d_k.getValue();
+        const SReal l0 = d_l0.getValue();
+        const SReal n = dir.norm();
+        sofa::type::Mat2x2d K;
+        for (unsigned a=0; a<2; ++a)
+            for (unsigned b=0; b<2; ++b)
+                K[a][b] = (a==b ? k * (l0/n - 1) : 0.0) - k * l0 * dir[a] * dir[b] / (n*n*n);
+        return K;
+    }
+
+    // Needed because the integration scheme uses addMBKv (thus addDForce) in its RHS for the
+    // Rayleigh stiffness damping and the first-iteration K*r1 term
     virtual void addDForce(const sofa::core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx )
-    { }
+    {
+        sofa::helper::WriteAccessor< DataVecDeriv > _df = df;
+        sofa::helper::ReadAccessor< DataVecDeriv > _dx = dx;
+        sofa::helper::ReadAccessor< DataVecCoord > _x = this->mstate->readPositions();
+        const SReal kFactor = mparams->kFactor();
+        const sofa::type::Vec2d dforce = stiffness(_x[0] - _x[1]) * (_dx[0] - _dx[1]) * kFactor;
+        _df[0] += dforce;
+        _df[1] -= dforce;
+    }
 
     virtual SReal getPotentialEnergy(const sofa::core::MechanicalParams* /*mparams*/, const DataVecCoord& x) const
     { }
@@ -265,7 +287,7 @@ static std::string create2DScene(const sofa::type::Vec2d position, const sofa::t
              "<Node name='Root' gravity='" << g[0] << " " << g[1] <<" 0' time='"<< startTime <<"' animate='0' dt='"<< dt << "' > \n";
     scene << (lineSearch ? "<NewtonRaphson maxNbIterationsLineSearch='20' maxNbIterationsNewton='20' residueThreshold='1e-30' lineSearchReductionRate='0.2'/> "
                          : "<NewtonRaphson maxNbIterationsLineSearch='0' maxNbIterationsNewton='20' residueThreshold='1e-30'  /> ") << " \n";
-    scene << (staticSolve ? "   <StaticEquilibriumIntegrationScheme/> \n"  : "   <EulerImplicitIntegrationScheme/> \n" );
+    scene << (staticSolve ? "   <StaticEquilibriumIntegrationScheme/> \n"  : "   <EulerImplicitIntegrationScheme rayleighMass='2' rayleighStiffness='0.1'/> \n" );
     scene << "   <SparseLDLSolver template='CompressedRowSparseMatrixd' />                                                                                        \n"
              "   <PointSetTopologyContainer position='"<<position<<" 0 0' />                                             \n"
              "   <MechanicalObject template='Vec2d' name='state' position='"<<position<<" 0 0' velocity='"<<velocity<<" 0 0' />                                             \n"
@@ -317,21 +339,24 @@ public:
 
         SReal expectedSolution = (-k1 + sqrt(k1 * k1 - 4*k2*(m*g + k0)))/(2.0*k2);
 
-        sofa::simulation::node::animate(m_root, 1);
+        sofa::simulation::node::animate(m_root);
 
         EXPECT_NEAR(m_root->getMechanicalState()->getPX(0),expectedSolution, 1e-10);
 
     }
 
 
-    void test_2D_linear_spring(bool lineSearch)
+    // Without line search, the starting point must be in a region where the stiffness is definite
+    // (spring stretched): from a compressed configuration such as {-1, -0.1}, the first full Newton step
+    // increases the residual and is rejected by the NewtonRaphson (which then does not move at all).
+    void test_2D_linear_spring(bool lineSearch, sofa::type::Vec2d startPosition)
     {
         const SReal m = 2.0;
         const SReal g = 9.81;
         const SReal l0 = 1.5;
         const SReal k0 = 8;
 
-        const std::string scene = create2DScene({-1, -0.1}, {0, 0}, m, {0, -g}, 0, 0 , lineSearch, true);
+        const std::string scene = create2DScene(startPosition, {0, 0}, m, {0, -g}, 0, 0 , lineSearch, true);
         SceneInstance c("xml", scene.c_str()) ;
 
         Node* m_root = c.root.get() ;
@@ -347,7 +372,91 @@ public:
 
         sofa::type::Vec2d expectedSolution{0, -(l0 + m*g/k0)};
 
-        sofa::simulation::node::animate(m_root, 1);
+        sofa::simulation::node::animate(m_root);
+
+        EXPECT_NEAR(m_root->getMechanicalState()->getPX(0),expectedSolution[0], 1e-10);
+        EXPECT_NEAR(m_root->getMechanicalState()->getPY(0),expectedSolution[1], 1e-10);
+    }
+
+
+    void test2D_linear_spring_dynamic_step_by_step(bool lineSearch)
+    {
+        const SReal m = 2.0;
+        const SReal g = 9.81;
+        const SReal l0 = 1.5;
+        const SReal k0 = 8;
+
+        const std::string scene = create2DScene({-1, -0.1}, {0, 0}, m, {0, -g}, 0, 0.01 , lineSearch, false);
+        SceneInstance c("xml", scene.c_str()) ;
+
+        Node* m_root = c.root.get() ;
+        ASSERT_NE(m_root, nullptr) ;
+
+        auto simple2DSpring = sofa::core::objectmodel::New<Simple2DSpring>();
+        simple2DSpring->d_k.setValue(k0);
+        simple2DSpring->d_l0.setValue(l0);
+
+        m_root->addObject(simple2DSpring);
+
+        c.initScene() ;
+
+        sofa::type::Vec2d expectedSolution{0, -(l0 + m*g/k0)};
+
+        std::vector<sofa::type::Vec2d> expectedValue{{-1.00019171247996, -0.100982980399615},
+                                                  {-1.00056981305708, -0.102931691796746},
+                                                  {-1.00112894962203, -0.105829333403968},
+                                                  {-1.00186372930715, -0.109659529084676},
+                                                  {-1.00276870578739, -0.114406303132725},
+                                                  {-1.00383836709484, -0.120054055708613},
+                                                  {-1.00506712412284, -0.126587537869115},
+                                                  {-1.00644929998999, -0.133991826153435},
+                                                  {-1.00797912042896, -0.142252296717049},
+                                                  {-1.00965070535706, -0.151354599033696},
+                                                  {-1.01145806177669, -0.161284629215909},
+                                                  {-1.01339507814142, -0.172028503034245},
+                                                  {-1.01545552030903, -0.183572528744312},
+                                                  {-1.01763302918493, -0.195903179857918},
+                                                  {-1.0199211201383, -0.209007068019343},
+                                                  {-1.02231318424942, -0.222870916169143},
+                                                  {-1.02480249141989, -0.237481532195052},
+                                                  {-1.02738219534862, -0.252825783281977},
+                                                  {-1.03004534034588, -0.268890571179989},
+                                                  {-1.03278486992674, -0.285662808610343}};
+
+        for(unsigned i=0; i<expectedValue.size(); ++i)
+        {
+            sofa::simulation::node::animate(m_root);
+            EXPECT_NEAR(m_root->getMechanicalState()->getPX(0),expectedValue[i][0], 1e-10);
+            EXPECT_NEAR(m_root->getMechanicalState()->getPY(0),expectedValue[i][1], 1e-10);
+        }
+    }
+
+
+    void test2D_linear_spring_dynamic(bool lineSearch, unsigned nbStep)
+    {
+        const SReal m = 2.0;
+        const SReal g = 9.81;
+        const SReal l0 = 1.5;
+        const SReal k0 = 4;
+
+        const std::string scene = create2DScene({-1, -0.1}, {0, 0}, m, {0, -g}, 0, 0.1 , lineSearch, false);
+        SceneInstance c("xml", scene.c_str()) ;
+
+        Node* m_root = c.root.get() ;
+        ASSERT_NE(m_root, nullptr) ;
+
+        auto simple2DSpring = sofa::core::objectmodel::New<Simple2DSpring>();
+        simple2DSpring->d_k.setValue(k0);
+        simple2DSpring->d_l0.setValue(l0);
+
+        m_root->addObject(simple2DSpring);
+
+        c.initScene() ;
+
+        sofa::type::Vec2d expectedSolution{0, -(l0 + m*g/k0)};
+
+        for(unsigned i=0; i<nbStep; ++i)
+            sofa::simulation::node::animate(m_root);
 
         EXPECT_NEAR(m_root->getMechanicalState()->getPX(0),expectedSolution[0], 1e-10);
         EXPECT_NEAR(m_root->getMechanicalState()->getPY(0),expectedSolution[1], 1e-10);
@@ -416,6 +525,9 @@ public:
 
     }
 
+
+
+
 };
 
 TEST_F(NewtonRaphson_test , Quadratic1DSpring_Static_NoLineSearch )
@@ -430,12 +542,27 @@ TEST_F(NewtonRaphson_test , Quadratic1DSpring_Static_LineSearch )
 
 TEST_F(NewtonRaphson_test , Linear2DSpring_Static_NoLineSearch )
 {
-    this->test_2D_linear_spring(false);
+    this->test_2D_linear_spring(false, {-1, -2});
 }
 
 TEST_F(NewtonRaphson_test , Linear2DSpring_Static_LineSearch )
 {
-    this->test_2D_linear_spring(true);
+    this->test_2D_linear_spring(true, {-1, -0.1});
+}
+
+TEST_F(NewtonRaphson_test , Linear2DSpring_Dynamic_NoLineSearch )
+{
+    this->test2D_linear_spring_dynamic(false, 2600);
+}
+
+TEST_F(NewtonRaphson_test , Linear2DSpring_Dynamic_LineSearch )
+{
+    this->test2D_linear_spring_dynamic(true, 2600);
+}
+
+TEST_F(NewtonRaphson_test , Linear2DSpring_StepByStep )
+{
+    this->test2D_linear_spring_dynamic_step_by_step(true);
 }
 
 TEST_F(NewtonRaphson_test , Liouville_Dynamic_Analytical )
