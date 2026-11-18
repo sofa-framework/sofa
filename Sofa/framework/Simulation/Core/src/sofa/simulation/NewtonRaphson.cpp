@@ -63,7 +63,6 @@ NewtonRaphson::NewtonRaphson()
 , d_residueThreshold(initData(&d_residueThreshold, 1e-9_sreal , "residueThreshold", "Threshold under which, the residue is considered to be sufficiently low. Newton algorithm will stop after reaching a lower value"))
 , d_currentResidue(initData(&d_currentResidue , "currentResidue", "Current value of the residue"))
 , d_alwaysAdvanceNewton(initData(&d_alwaysAdvanceNewton , false, "alwaysAdvanceNewton", "Even if the linesearch didn't find a better solution than the current one, take the best one along the path that is not the current guess."))
-, d_performCollisionDetectionEachNewtonStep(initData(&d_performCollisionDetectionEachNewtonStep , false, "performCollisionDetectionEachNewtonStep", "If true, each newton iteration will recompute the collision detection with the updated position from the previous newton iteration."))
 , d_solveVelocityConstraintFirst(initData(&d_solveVelocityConstraintFirst , false, "solveVelocityConstraintFirst", "solve separately velocity constraint violations before position constraint violations"))
 , d_parallelODESolving(initData(&d_parallelODESolving, false, "parallelODESolving", "If true, solves all the ODEs in parallel during the free motion step."))
 , m_solveConstraints(false)
@@ -222,7 +221,6 @@ void NewtonRaphson::newtonSolve(const core::ExecParams* params, core::Constraint
     const SReal residueThreshold = d_residueThreshold.getValue();
     const SReal lineSearchReductionRate = d_lineSearchReductionRate.getValue();
     const SReal lineSearchArmijoFactor = d_lineSearchArmijoFactor.getValue();
-    const bool performCollisionDetectionEachNewtonStep = d_performCollisionDetectionEachNewtonStep.getValue();
 
     const auto pos = sofa::core::vec_id::write_access::position;
     const auto vel = sofa::core::vec_id::write_access::velocity;
@@ -258,11 +256,8 @@ void NewtonRaphson::newtonSolve(const core::ExecParams* params, core::Constraint
         // If in first iteration, this has already been computed earlier
         if ( ! firstIt )
         {
-            if (performCollisionDetectionEachNewtonStep)
-                computeCollision(params);
-
             //TODO do we want to recompute this each newton step ?
-            computeGeometricalStiffness(&mop->mparams, cparams, node);
+            // computeGeometricalStiffness(&mop->mparams, cparams, node);
             intHelper.computeRHS(firstIt);
             oldResidue = intHelper.evaluateResidual();
         }
@@ -281,15 +276,6 @@ void NewtonRaphson::newtonSolve(const core::ExecParams* params, core::Constraint
 
         //Already make a full step
         intHelper.updateStatesFromLinearSolution(alpha, firstIt);
-
-        if (m_solveConstraints)
-        {
-            solveConstraints(&mop->mparams, cparams, vop, mop, pos, vel,dt);
-            //TODO understand which VecID to work on inside the NR
-            mop->propagateXAndV(xId, vId); //Need to propagate explicitly to enable recomputation of mapped Forcefileld
-            mop->propagateXAndV(pos, vel); //Need to propagate explicitly to enable recomputation of mapped Forcefileld
-        }
-
 
         intHelper.computeRHS(false);
         newResidue = intHelper.evaluateResidual();
@@ -381,10 +367,15 @@ void NewtonRaphson::newtonSolve(const core::ExecParams* params, core::Constraint
     if (m_advanceTime)
     {
         //Integrate explicit IS
-
+        intHelper.integrateExplicitIS();
+        if (m_solveConstraints)
+        {
+            solveConstraints(&mop->mparams, cparams, vop, mop, pos, vel,dt);
+        }
     }
 
     intHelper.finalizeIntegrationStep(m_advanceTime);
+
 
 
     mechanicalvisitor::MechanicalResetForceVisitor resetForceVisitor(params, sofa::core::vec_id::write_access::externalForce);
@@ -400,6 +391,14 @@ void NewtonRaphson::postSolve(const core::ExecParams* params, core::ConstraintPa
     auto pos = sofa::core::vec_id::write_access::position;
     auto vel = sofa::core::vec_id::write_access::velocity;
 
+    if (cparams->constOrder() == core::ConstraintOrder::POS)
+    {
+        SCOPED_TIMER("ProjectAndPropagateX");
+
+        mop->projectPosition(pos);
+        mop->propagateX(pos);
+    }
+    else
     {
         SCOPED_TIMER("ProjectAndPropagateXAndV");
 
@@ -456,15 +455,20 @@ void NewtonRaphson::solveConstraints(const core::MechanicalParams* mparams, cons
     SOFA_UNUSED(mparams);
     SCOPED_TIMER("ConstraintSolver");
 
-    if (cparams->constOrder() == core::ConstraintOrder::VEL )
+    const auto constOrder = cparams->constOrder();
+    if (constOrder == core::ConstraintOrder::VEL )
     {
         l_constraintSolver->solveConstraint(cparams, vId);
         //TODO Why is this even necessary, shouldn't we call the integraitons cheme to perform this integration ?
         vop->v_peq(xId, vId, dt); //position += velocity * dt
     }
-    else
+    else if (constOrder == core::ConstraintOrder::POS_AND_VEL)
     {
         l_constraintSolver->solveConstraint(cparams, xId, vId);
+    }
+    else if (constOrder == core::ConstraintOrder::POS)
+    {
+        l_constraintSolver->solveConstraint(cparams, xId);
     }
 
     {

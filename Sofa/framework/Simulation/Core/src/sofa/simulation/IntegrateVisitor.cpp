@@ -108,6 +108,8 @@ void IntegrateVisitor::fwdInteractionForceField(Node* node, core::behavior::Base
     const core::MultiVecDerivId ffId = core::vec_id::write_access::externalForce;
     core::MechanicalParams mparams;
     mparams.setDt(m_dt);
+    mparams.setX(m_xId);
+    mparams.setV(m_vId);
     forceField->addForce(&mparams, ffId, mparams.x(), mparams.v());
 }
 
