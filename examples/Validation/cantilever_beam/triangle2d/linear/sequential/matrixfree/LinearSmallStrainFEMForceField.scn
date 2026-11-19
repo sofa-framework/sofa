@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<Node name="root" dt="0.01" gravity="0 -9.81 0">
+    <include href="../../../../CantileverBeam_ElementFEMForceField2d.xml"/>
+
+    <CGLinearSolver iterations="250" name="linear_solver" tolerance="1.0e-12" threshold="1.0e-12" />
+
+    <Node name="fem">
+        <TriangleSetTopologyContainer name="topology"/>
+        <TriangleSetTopologyModifier name="Modifier" />
+        <TriangleSetGeometryAlgorithms template="Vec2" name="GeomAlgo"/>
+        <Quad2TriangleTopologicalMapping input="@grid" output="@topology" swapping="true"/>
+
+        <LinearSmallStrainFEMForceField name="FEM" template="Vec2,Triangle"
+                                               youngModulus="2e6" poissonRatio="0.45" topology="@topology"
+                                               computeForceStrategy="sequenced" computeForceDerivStrategy="sequenced"/>
+        <VonMisesStress template="Vec2,Triangle" name="stress" topology="@topology" stressEvaluator="@FEM"
+                        colorMap="green yellow orange red purple #221C35" showEdges="true" elementSpace="0"/>
+
+    </Node>
+
+</Node>
