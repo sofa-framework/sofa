@@ -16,7 +16,7 @@
         <HyperelasticityFEMForceField name="FEM" template="Vec3,Tetrahedron" topology="@Tetra_topo"
                                       computeForceStrategy="parallel" computeForceDerivStrategy="parallel"/>
         <VonMisesStress template="Vec3,Tetrahedron" name="stress" topology="@Tetra_topo" stressEvaluator="@material"
-                        colorMap="green yellow orange red purple #221C35"/>
+                        colorMap="green yellow orange red purple #221C35" showEdges="true" elementSpace="0"/>
     </Node>
 
 </Node>
