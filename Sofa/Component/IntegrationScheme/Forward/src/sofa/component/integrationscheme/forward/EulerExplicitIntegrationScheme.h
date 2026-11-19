@@ -96,28 +96,28 @@ public:
 
 protected:
 
-    virtual void doIntegrate(const core::ExecParams* params, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
+    virtual void doIntegrate(const core::ExecParams* params, sofa::core::MultiVecCoordId primaryStateVariableId, sofa::core::MultiVecDerivId derivStateVariableId) override;
 
-    /// Update state variable (new position and velocity) based on the computed acceleration
+    /// Update state variable based on the computed unknown
     /// The update takes constraints into account
     void updateState(sofa::simulation::common::VectorOperations* vop,
                      sofa::simulation::common::MappingGraphMechanicalOperations* mop,
-                     sofa::core::MultiVecCoordId xResult,
-                     sofa::core::MultiVecDerivId vResult,
-                     const sofa::core::behavior::MultiVecDeriv& acc) const;
+                     sofa::core::MultiVecCoordId primaryStateVariableResultId,
+                     sofa::core::MultiVecDerivId derivStateVariableResultId,
+                     const sofa::core::behavior::MultiVecDeriv& unknown) const;
 
     /// Gravity times time step size is added to the velocity for some masses
     /// v += g * dt
     static void addSeparateGravity(sofa::simulation::common::MappingGraphMechanicalOperations* mop, SReal dt, core::MultiVecDerivId v);
 
     /// Assemble the force vector (right-hand side of the equation)
-    void computeForce(sofa::simulation::common::MappingGraphMechanicalOperations* mop, core::MultiVecDerivId f) const;
+    void computeRhs(sofa::simulation::common::MappingGraphMechanicalOperations* mop, core::MultiVecDerivId rhs) const;
 
     /// Compute the acceleration from the force and the inverse of the mass
     /// acc = M^-1 * f
-    static void computeAcceleration(sofa::simulation::common::MappingGraphMechanicalOperations* mop,
-                                    core::MultiVecDerivId acc,
-                                    core::ConstMultiVecDerivId f);
+    static void solveTrivialLinearSystem(sofa::simulation::common::MappingGraphMechanicalOperations* mop,
+                                    core::MultiVecDerivId unknownId,
+                                    core::ConstMultiVecDerivId rhsId);
 
     /// Apply projective constraints, such as FixedProjectiveConstraint
     void projectResponse(sofa::simulation::common::MappingGraphMechanicalOperations* mop, core::MultiVecDerivId vecId) const;
