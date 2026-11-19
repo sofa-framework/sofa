@@ -37,12 +37,21 @@ VonMisesStress<DataTypes, ElementType>::VonMisesStress()
     , d_colorMap(initData(&d_colorMap, sofa::helper::ColorMap(), "colorMap", "Color map"))
     , d_lighting(initData(&d_lighting, true, "lighting", "If true, light is simulated on the mesh. Otherwise, no lighting effect."))
     , d_elementSpace(initData(&d_elementSpace, type::ClampedScalar<sofa::Real_t<DataTypes>>(static_cast<sofa::Real_t<DataTypes>>(0.125)), "elementSpace", "When rendering, the space between elements"))
+    , d_showEdges(initData(&d_showEdges, false, "showEdges", "If true, the mesh also show the edges of the elements. Warning: for quads and hexas, topology may have computed edges based on triangles."))
+    , d_edgeColor(initData(&d_edgeColor, type::RGBAColor::black(), "edgeColor", "Color of the edges of the elements"))
+    , d_lineWidth(initData(&d_lineWidth, 1.0f, "lineWidth", "Width of the edges of the elements"))
     , l_stressEvaluator(initLink("stressEvaluator", "The component in charge of evaluating the Cauchy stress."))
 {
     // This component must receive events
     f_listening.setValue(true);
 
-    d_elementSpace.setGroup("Visualization");
+    static std::string visualizationGroup { "Visualization" };
+    d_colorMap.setGroup(visualizationGroup);
+    d_lighting.setGroup(visualizationGroup);
+    d_elementSpace.setGroup(visualizationGroup);
+    d_showEdges.setGroup(visualizationGroup);
+    d_edgeColor.setGroup(visualizationGroup);
+    d_lineWidth.setGroup(visualizationGroup);
 }
 
 template <class DataTypes, class ElementType>
@@ -360,6 +369,15 @@ void VonMisesStress<DataTypes, ElementType>::draw(const core::visual::VisualPara
 
     m_renderer.elementSpace = d_elementSpace.getValue();
     m_renderer.drawAllElements(vparams->drawTool(), positions.ref(), this->l_topology.get(), nodesColors);
+
+    if (d_showEdges.getValue())
+    {
+        m_edgeRenderer.elementSpace = 0;
+        m_edgeRenderer.lineWidth = d_lineWidth.getValue();
+        const auto& edgeColor = d_edgeColor.getValue();
+        std::array<type::RGBAColor, 2> edgesColors{ {edgeColor, edgeColor}};
+        m_edgeRenderer.drawAllElements(vparams->drawTool(), positions.ref(), this->l_topology.get(), edgesColors);
+    }
 }
 
 template <class DataTypes, class ElementType>

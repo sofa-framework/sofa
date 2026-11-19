@@ -70,6 +70,8 @@ private:
         void doUpdate() override;
     protected:
         void updateEdges();
+        void updateEdgesFromGrid();
+        void updateEdgesFromTriangles();
         void updateQuads();
         void updateTriangles();
         void updateHexas();

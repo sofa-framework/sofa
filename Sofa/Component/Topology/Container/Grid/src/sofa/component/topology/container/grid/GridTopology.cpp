@@ -79,35 +79,48 @@ Size GridTopology::getNbHexahedra()
     return (n[0] - 1) * (n[1] - 1) * (n[2] - 1);
 }
 
-
 void GridTopology::GridUpdate::updateEdges()
 {
-    SeqEdges& edges = *m_topology->d_seqEdges.beginWriteOnly();
+    auto edges = sofa::helper::getWriteOnlyAccessor(m_topology->d_seqEdges);
     edges.clear();
-    const SeqTriangles& triangles = m_topology->d_seqTriangles.getValue();
-    if (triangles.empty()) // if has triangles will create edges using triangles, otherwise will use the quads from the grid
-    {
-        const type::Vec3i& n = m_topology->d_n.getValue();
-        edges.reserve((n[0] - 1)*n[1] * n[2] +
-            n[0] * (n[1] - 1)*n[2] +
-            n[0] * n[1] * (n[2] - 1));
-        // lines along X
-        for (int z = 0; z<n[2]; z++)
-            for (int y = 0; y<n[1]; y++)
-                for (int x = 0; x<n[0] - 1; x++)
-                    edges.push_back(Edge(m_topology->point(x, y, z), m_topology->point(x + 1, y, z)));
-        // lines along Y
-        for (int z = 0; z<n[2]; z++)
-            for (int y = 0; y<n[1] - 1; y++)
-                for (int x = 0; x<n[0]; x++)
-                    edges.push_back(Edge(m_topology->point(x, y, z), m_topology->point(x, y + 1, z)));
-        // lines along Z
-        for (int z = 0; z<n[2] - 1; z++)
-            for (int y = 0; y<n[1]; y++)
-                for (int x = 0; x<n[0]; x++)
-                    edges.push_back(Edge(m_topology->point(x, y, z), m_topology->point(x, y, z + 1)));
-    }
+
+    auto triangles = sofa::helper::getReadAccessor(m_topology->d_seqTriangles);
+
+    if (triangles.empty())
+        updateEdgesFromGrid();
     else
+        updateEdgesFromTriangles();
+}
+
+void GridTopology::GridUpdate::updateEdgesFromGrid()
+{
+    auto edges = sofa::helper::getWriteOnlyAccessor(m_topology->d_seqEdges);
+
+    const type::Vec3i& n = m_topology->d_n.getValue();
+    edges.reserve((n[0] - 1)*n[1] * n[2] +
+        n[0] * (n[1] - 1)*n[2] +
+        n[0] * n[1] * (n[2] - 1));
+    // lines along X
+    for (int z = 0; z<n[2]; z++)
+        for (int y = 0; y<n[1]; y++)
+            for (int x = 0; x<n[0] - 1; x++)
+                edges.push_back(Edge(m_topology->point(x, y, z), m_topology->point(x + 1, y, z)));
+    // lines along Y
+    for (int z = 0; z<n[2]; z++)
+        for (int y = 0; y<n[1] - 1; y++)
+            for (int x = 0; x<n[0]; x++)
+                edges.push_back(Edge(m_topology->point(x, y, z), m_topology->point(x, y + 1, z)));
+    // lines along Z
+    for (int z = 0; z<n[2] - 1; z++)
+        for (int y = 0; y<n[1]; y++)
+            for (int x = 0; x<n[0]; x++)
+                edges.push_back(Edge(m_topology->point(x, y, z), m_topology->point(x, y, z + 1)));
+}
+
+void GridTopology::GridUpdate::updateEdgesFromTriangles()
+{
+    SeqEdges& edges = *m_topology->d_seqEdges.beginWriteOnly();
+    const SeqTriangles& triangles = m_topology->d_seqTriangles.getValue();
     {
         // Similar algo as createEdgeSetArray in TriangleSetTopologyContainer
         // create a temporary map to find redundant edges

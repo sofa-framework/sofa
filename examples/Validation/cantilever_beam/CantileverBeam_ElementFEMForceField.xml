@@ -24,11 +24,10 @@
 
     <VisualGrid size="0.1"/>
     <LineAxis size="0.1"/>
-    <OglSceneFrame/>
 
     <EulerImplicitIntegrationScheme name="backward_Euler" rayleighStiffness="0.1" rayleighMass="0.1" />
 
-    <RegularGridTopology name="grid" min="-0.01 -0.01 0" max="0.01 0.01 0.2" n="5 5 30"/>
+    <RegularGridTopology name="grid" min="-0.01 -0.01 0" max="0.01 0.01 0.2" n="5 5 30" computeTriangleList="false"/>
     <MechanicalObject template="Vec3" name="state" showObject="true"/>
 
     <NodalMassDensity property="1100"/>

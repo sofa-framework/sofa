@@ -150,6 +150,8 @@ struct SOFA_CORE_API DrawElementMesh<sofa::geometry::Edge>
         sofa::type::RGBAColor::silver()
     };
 
+    float lineWidth = 2.0f;
+
 private:
     template<class PositionContainer, class IndicesContainer>
     void doDraw(
@@ -186,7 +188,7 @@ private:
 
         for (std::size_t j = 0; j < NumberColors; ++j)
         {
-            drawTool->drawLines(renderedPoints[j], 2.f, colors[j]);
+            drawTool->drawLines(renderedPoints[j], lineWidth, colors[j]);
         }
     }
 };
