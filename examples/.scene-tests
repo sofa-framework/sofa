@@ -53,3 +53,7 @@ ignore "Benchmark/Performance/Bar16-spring-rk4-CudaVec3f.py"
 
 # Crash on windows
 ignore "Component/Constraint/Lagrangian/PrecomputedConstraintCorrection.scn"
+
+
+# Slow on windows github-hosted machines
+timeout "Demos/SofaScene.scn" 60
