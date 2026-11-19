@@ -145,11 +145,31 @@ struct SOFA_CORE_API DrawElementColoredMesh<sofa::geometry::Triangle>
         const IndicesContainer& elementIndices,
         const ColorContainer& nodesColors)
     {
-        SOFA_UNUSED(drawTool);
-        SOFA_UNUSED(position);
-        SOFA_UNUSED(topology);
-        SOFA_UNUSED(elementIndices);
-        SOFA_UNUSED(nodesColors);
+        const auto& elements = topology->getTriangles();
+
+        renderedPoints.clear();
+        colors.clear();
+
+        for (auto i : elementIndices)
+        {
+            const auto& element = elements[i];
+            const auto center = this->elementCenter(position, element);
+
+            for (const auto vertexId : element)
+            {
+                const auto p = this->applyElementSpace(position[vertexId], center);
+
+                renderedPoints.push_back(sofa::type::toVec3(p));
+
+                // Find local ID of the vertex in the triangle to support local color mapping
+                std::size_t localId = 0;
+                for (; localId < 3; ++localId) if (element[localId] == vertexId) break;
+
+                colors.push_back(this->getColor(nodesColors, i, localId, vertexId));
+            }
+        }
+
+        drawTool->drawTriangles(renderedPoints, colors);
     }
 };
 
@@ -168,11 +188,31 @@ struct SOFA_CORE_API DrawElementColoredMesh<sofa::geometry::Quad>
         const IndicesContainer& elementIndices,
         const ColorContainer& nodesColors)
     {
-        SOFA_UNUSED(drawTool);
-        SOFA_UNUSED(position);
-        SOFA_UNUSED(topology);
-        SOFA_UNUSED(elementIndices);
-        SOFA_UNUSED(nodesColors);
+        const auto& elements = topology->getQuads();
+
+        renderedPoints.clear();
+        colors.clear();
+
+        for (auto i : elementIndices)
+        {
+            const auto& element = elements[i];
+            const auto center = this->elementCenter(position, element);
+
+            for (const auto vertexId : element)
+            {
+                const auto p = this->applyElementSpace(position[vertexId], center);
+
+                renderedPoints.push_back(sofa::type::toVec3(p));
+
+                // Find local ID of the vertex in the triangle to support local color mapping
+                std::size_t localId = 0;
+                for (; localId < 4; ++localId) if (element[localId] == vertexId) break;
+
+                colors.push_back(this->getColor(nodesColors, i, localId, vertexId));
+            }
+        }
+
+        drawTool->drawQuads(renderedPoints, colors);
     }
 };
 
@@ -350,6 +390,8 @@ public:
     template<class PositionContainer, class ColorContainer>
     void draw(sofa::helper::visual::DrawTool* drawTool, const PositionContainer& position, const ColorContainer& nodesColors, sofa::core::topology::BaseMeshTopology* topology)
     {
+        std::get<DrawElementColoredMesh<sofa::geometry::Triangle>>(m_meshes).drawAllElements(drawTool, position, topology, nodesColors);
+        std::get<DrawElementColoredMesh<sofa::geometry::Quad>>(m_meshes).drawAllElements(drawTool, position, topology, nodesColors);
         std::get<DrawElementColoredMesh<sofa::geometry::Tetrahedron>>(m_meshes).drawAllElements(drawTool, position, topology, nodesColors);
         std::get<DrawElementColoredMesh<sofa::geometry::Hexahedron>>(m_meshes).drawAllElements(drawTool, position, topology, nodesColors);
     }
@@ -357,8 +399,8 @@ public:
 private:
     std::tuple<
         // DrawElementColoredMesh<sofa::geometry::Edge>,
-        // DrawElementColoredMesh<sofa::geometry::Triangle>,
-        // DrawElementColoredMesh<sofa::geometry::Quad>,
+        DrawElementColoredMesh<sofa::geometry::Triangle>,
+        DrawElementColoredMesh<sofa::geometry::Quad>,
         DrawElementColoredMesh<sofa::geometry::Tetrahedron>,
         DrawElementColoredMesh<sofa::geometry::Hexahedron>
         // DrawElementColoredMesh<sofa::geometry::Prism>,
