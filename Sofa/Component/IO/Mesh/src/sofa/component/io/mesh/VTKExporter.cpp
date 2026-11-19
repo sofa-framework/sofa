@@ -350,7 +350,7 @@ std::string VTKExporter::segmentString(std::string str, unsigned int n)
 }
 
 
-bool VTKExporter::write()
+bool VTKExporter::doWrite()
 { 
     if (!this->isComponentStateValid()) 
         return false;
