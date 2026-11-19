@@ -84,19 +84,7 @@ public:
     void projectResponse(const MechanicalParams* mparams, DataVecDeriv& resData) override;
     void projectVelocity(const MechanicalParams* mparams, DataVecDeriv& vData) override;
     void projectPosition(const MechanicalParams* mparams, DataVecCoord& xData) override;
-
-    /// Implement projectMatrix for assembled solver of compliant
-    void projectMatrix( sofa::linearalgebra::BaseMatrix* M, unsigned offset) override;
     void projectJacobianMatrix(const MechanicalParams* mparams, DataMatrixDeriv& cData) override;
-
-    /// Implement applyConstraint for direct solvers
-    void applyConstraint(const MechanicalParams* mparams,
-                                 const MultiMatrixAccessor* matrix) override;
-
-    void applyConstraint(const MechanicalParams* mparams, BaseVector* vect,
-                                 const MultiMatrixAccessor* matrix) override;
-
-    void applyConstraint(sofa::core::behavior::ZeroDirichletCondition* matrix) override;
 
     void setDirection (Coord dir);
     void selectVerticesAlongPlane();
@@ -124,6 +112,18 @@ protected:
     using ProjectiveConstraintSet<DataTypes>::getContext;
 
     bool isPointInPlane(const Coord& p) const ;
+
+    /// Implement applyConstraint for direct solvers
+    void doApplyConstraint(const MechanicalParams* mparams,
+                                 const MultiMatrixAccessor* matrix) override;
+
+    void doApplyConstraint(const MechanicalParams* mparams, BaseVector* vect,
+                                 const MultiMatrixAccessor* matrix) override;
+
+    void doApplyConstraint(sofa::core::behavior::ZeroDirichletCondition* matrix) override;
+
+    /// Implement projectMatrix for assembled solver of compliant
+    void doProjectMatrix( sofa::linearalgebra::BaseMatrix* M, unsigned offset) override;
 };
 
 #if !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDPLANEPROJECTIVECONSTRAINT_CPP)

@@ -157,7 +157,7 @@ void  FixedProjectiveConstraint<DataTypes>::checkIndices()
 }
 
 template <class DataTypes>
-void FixedProjectiveConstraint<DataTypes>::projectMatrix( sofa::linearalgebra::BaseMatrix* M, unsigned offset )
+void FixedProjectiveConstraint<DataTypes>::doProjectMatrix( sofa::linearalgebra::BaseMatrix* M, unsigned offset )
 {
     static const unsigned blockSize = DataTypes::deriv_total_size;
 
@@ -266,7 +266,7 @@ void FixedProjectiveConstraint<DataTypes>::projectPosition(const core::Mechanica
 
 // Matrix Integration interface
 template <class DataTypes>
-void FixedProjectiveConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+void FixedProjectiveConstraint<DataTypes>::doApplyConstraint(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     SOFA_UNUSED(mparams);
     if(const core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate.get()))
@@ -304,7 +304,7 @@ void FixedProjectiveConstraint<DataTypes>::applyConstraint(const core::Mechanica
 }
 
 template <class DataTypes>
-void FixedProjectiveConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, linearalgebra::BaseVector* vect, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+void FixedProjectiveConstraint<DataTypes>::doApplyConstraint(const core::MechanicalParams* mparams, linearalgebra::BaseVector* vect, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     SOFA_UNUSED(mparams);
     const int o = matrix->getGlobalOffset(this->mstate.get());
@@ -334,7 +334,7 @@ void FixedProjectiveConstraint<DataTypes>::applyConstraint(const core::Mechanica
 }
 
 template <class DataTypes>
-void FixedProjectiveConstraint<DataTypes>::applyConstraint(sofa::core::behavior::ZeroDirichletCondition* matrix)
+void FixedProjectiveConstraint<DataTypes>::doApplyConstraint(sofa::core::behavior::ZeroDirichletCondition* matrix)
 {
     static constexpr unsigned int N = Deriv::size();
 
