@@ -86,10 +86,10 @@ void ImplicitIntegrationScheme::finalizeIntegrationStep(bool advanceTime)
 void ImplicitIntegrationScheme::integrate(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
 {
     setupIntegrationStep(params, dt, xResult, vResult);
-    computeRHS(true);
-    computeLHS(true);
+    computeRHS();
+    computeLHS();
     solveLinearEquation();
-    updateStatesFromLinearSolution(1.0, true);
+    updateStatesFromLinearSolution(1.0);
     finalizeIntegrationStep(true);
 }
 

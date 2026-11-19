@@ -58,7 +58,6 @@ public:
     IntegrateVisitor(const sofa::core::ExecParams* params,
                  SReal _dt,
                  TaskType taskType,
-                 bool firstStep,
                  bool advanceTime,
                  SReal alpha,
                  sofa::core::MultiVecCoordId X = sofa::core::vec_id::write_access::position,
@@ -91,11 +90,6 @@ public:
         m_result = 0.0_sreal;
     }
 
-    void setFirstIteration(bool firstStep)
-    {
-        m_firstStep = firstStep;
-    }
-
     void setAdvanceTime(bool advanceTime)
     {
         m_advanceTime = advanceTime;
@@ -122,7 +116,6 @@ public:
                                  const sofa::simulation::Node* node,
                                  SReal dt,
                                  TaskType taskType,
-                                 bool firstStep = true,
                                  bool advanceTime = true,
                                  SReal alpha = 1.0,
                                  sofa::core::MultiVecCoordId X = sofa::core::vec_id::write_access::position,
@@ -132,7 +125,6 @@ public:
 protected:
     SReal m_dt;
     TaskType m_taskType;
-    bool m_firstStep;
     bool m_advanceTime;
     SReal m_alpha;
     sofa::core::MultiVecCoordId m_xId;
@@ -193,10 +185,10 @@ public:
 
     void setupIntegrationStep();
     SReal evaluateResidual();
-    void computeLHS(bool firstIteration);
-    void computeRHS(bool firstIteration);
+    void computeLHS();
+    void computeRHS();
     void solveLinearEquation();
-    void updateStatesFromLinearSolution(SReal alpha, bool firstIteration = false);
+    void updateStatesFromLinearSolution(SReal alpha);
     void finalizeIntegrationStep(bool advanceTime);
 
     void integrateExplicitIS();

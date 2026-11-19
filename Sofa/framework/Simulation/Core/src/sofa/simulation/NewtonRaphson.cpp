@@ -243,7 +243,7 @@ void NewtonRaphson::newtonSolve(const core::ExecParams* params, core::Constraint
     computeCollision(params);
     //Same for geometrical stiffness
     computeGeometricalStiffness(&mop->mparams, cparams, node);
-    intHelper.computeRHS(true);
+    intHelper.computeRHS();
 
     SReal oldResidue = intHelper.evaluateResidual();
     SReal newResidue = oldResidue;
@@ -254,22 +254,17 @@ void NewtonRaphson::newtonSolve(const core::ExecParams* params, core::Constraint
     {
         SCOPED_TIMER_VARNAME(step_timer, "NewtonStep");
 
-        const bool firstIt = it==0;
-
-        // If in first iteration, this has already been computed earlier
-        if ( ! firstIt )
-        {
-            //TODO do we want to recompute this each newton step ?
-            // computeGeometricalStiffness(&mop->mparams, cparams, node);
-            intHelper.computeRHS(firstIt);
-            oldResidue = intHelper.evaluateResidual();
-        }
-
+        // The RHS and residual of the current guess are already available: they were computed
+        // before the loop for the first iteration, and at the end of the previous iteration
+        // otherwise.
+        //TODO do we want to recompute this each newton step ?
+        // computeGeometricalStiffness(&mop->mparams, cparams, node);
+        oldResidue = newResidue;
 
         double bestresidual = oldResidue;
         double bestalpha = 0.0;
 
-        intHelper.computeLHS(firstIt);
+        intHelper.computeLHS();
         //Find decrease direction
         intHelper.solveLinearEquation();
 
@@ -278,9 +273,9 @@ void NewtonRaphson::newtonSolve(const core::ExecParams* params, core::Constraint
         SReal delta = 0.0;
 
         //Already make a full step
-        intHelper.updateStatesFromLinearSolution(alpha, firstIt);
+        intHelper.updateStatesFromLinearSolution(alpha);
 
-        intHelper.computeRHS(false);
+        intHelper.computeRHS();
         newResidue = intHelper.evaluateResidual();
 
         // Compute the Armijo term for the cost function f = ||r||^2.
@@ -306,9 +301,9 @@ void NewtonRaphson::newtonSolve(const core::ExecParams* params, core::Constraint
             delta = alpha*lineSearchReductionRate;
             alpha -= delta;
 
-            intHelper.updateStatesFromLinearSolution(-delta, false);
+            intHelper.updateStatesFromLinearSolution(-delta);
 
-            intHelper.computeRHS(false);
+            intHelper.computeRHS();
             newResidue = intHelper.evaluateResidual();
 
             if (newResidue<bestresidual)
@@ -322,9 +317,9 @@ void NewtonRaphson::newtonSolve(const core::ExecParams* params, core::Constraint
 
         if (fabs(alpha - bestalpha )> std::numeric_limits<SReal>::epsilon() )
         {
-            intHelper.updateStatesFromLinearSolution( bestalpha - alpha, false);
+            intHelper.updateStatesFromLinearSolution( bestalpha - alpha);
 
-            intHelper.computeRHS(false);
+            intHelper.computeRHS();
             newResidue = intHelper.evaluateResidual();
         }
 

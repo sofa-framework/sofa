@@ -61,12 +61,14 @@ public:
     /**
      * Compute the system matrix.
      */
-    virtual void computeLHS(bool firstIteration = false) = 0;
+    virtual void computeLHS() = 0;
 
-     /**
-     * compute the current RHS.
+    /**
+     * Compute the current RHS (Schur complement of the full residual) at the current guess.
+     * The integration errors (m_r1, m_r2) are recomputed here and their contribution is always
+     * added to the RHS, so that it is consistent with the full residual of the system.
      */
-    virtual void computeRHS(bool firstIteration = false) = 0;
+    virtual void computeRHS() = 0;
 
 
     /**
@@ -77,15 +79,18 @@ public:
 
     /**
      * Solve the linear equation from a Newton iteration, i.e. it computes (x^{i+1}-x^i).
+     * The integration errors are snapshotted (m_r1LineStart, m_r2LineStart) so that
+     * updateStatesFromLinearSolution can be called several times along the same line.
      */
     virtual void solveLinearEquation() = 0;
 
     /**
      * Once (x^{i+1}-x^i) has been computed, the result is used internally to update the current
-     * guess. It computes x^{i+1} += alpha * dx, where dx is the result of the linear system. It is
-     * not necessary to share the result with the Newton-Raphson method.
+     * guess. It computes X^{i+1} += alpha * dX, where dX is the full Newton update, i.e. the result
+     * of the linear system combined with the integration errors snapshotted in
+     * solveLinearEquation. It is not necessary to share the result with the Newton-Raphson method.
      */
-    virtual void updateStatesFromLinearSolution(SReal alpha, bool firstIteration = false) = 0;
+    virtual void updateStatesFromLinearSolution(SReal alpha) = 0;
 
     /**
      * This method is called after the integration step is completed.
@@ -162,6 +167,7 @@ protected:
     sofa::core::MultiVecDerivId m_systemUnknown;
 
     sofa::core::MultiVecDerivId m_r0, m_r1, m_r2;
+    sofa::core::MultiVecDerivId m_r1LineStart, m_r2LineStart; ///< Integration errors at the start of the current Newton line
 
     std::vector<sofa::core::MultiVecCoordId> m_x0;
     std::vector<sofa::core::MultiVecDerivId> m_a0, m_v0;

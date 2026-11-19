@@ -64,11 +64,11 @@ public:
 
     virtual void init() override;
 
-    virtual void computeLHS(bool firstIteration = false) override;
-    virtual void computeRHS(bool firstIteration = false) override;
+    virtual void computeLHS() override;
+    virtual void computeRHS() override;
     virtual SReal evaluateResidual() override;
     virtual void solveLinearEquation() override;
-    virtual void updateStatesFromLinearSolution(SReal alpha, bool firstIteration = false) override;
+    virtual void updateStatesFromLinearSolution(SReal alpha) override;
     virtual void doFinalizeIntegrationStep(bool advanceTime) override;
 
     virtual SReal getVelocityIntegrationFactor() const override final;

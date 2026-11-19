@@ -45,11 +45,11 @@ public:
     StaticEquilibriumIntegrationScheme();
 
 
-    virtual void computeLHS(bool firstIteration = true) override;
-    virtual void computeRHS(bool firstIteration = true) override;
+    virtual void computeLHS() override;
+    virtual void computeRHS() override;
     virtual SReal evaluateResidual() override;
     virtual void solveLinearEquation() override;
-    virtual void updateStatesFromLinearSolution(SReal alpha, bool firstIteration = true) override;
+    virtual void updateStatesFromLinearSolution(SReal alpha) override;
 
     virtual SReal getVelocityIntegrationFactor() const override final;
     virtual SReal getPositionIntegrationFactor() const override final;

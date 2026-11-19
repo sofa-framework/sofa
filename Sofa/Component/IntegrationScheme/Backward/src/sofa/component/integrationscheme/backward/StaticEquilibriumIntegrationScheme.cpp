@@ -51,10 +51,8 @@ void StaticEquilibriumIntegrationScheme::doSetupIntegrationStep(const core::Exec
     simulation::common::VectorOperations::realloc(*m_vop, m_r0, "r0", this, true);
 }
 
-void StaticEquilibriumIntegrationScheme::computeLHS(bool firstIteration)
+void StaticEquilibriumIntegrationScheme::computeLHS()
 {
-    SOFA_UNUSED(firstIteration);
-
     {
 
         SCOPED_TIMER("setSystemMBKMatrix");
@@ -67,9 +65,8 @@ void StaticEquilibriumIntegrationScheme::computeLHS(bool firstIteration)
 
 }
 
-void StaticEquilibriumIntegrationScheme::computeRHS(bool firstIteration)
+void StaticEquilibriumIntegrationScheme::computeRHS()
 {
-    SOFA_UNUSED(firstIteration);
     sofa::core::behavior::MultiVecDeriv f(m_vop.get(), core::vec_id::write_access::force );
     f.clear();
 
@@ -104,9 +101,8 @@ void StaticEquilibriumIntegrationScheme::solveLinearEquation()
     l_linearSolver->getLinearSystem()->dispatchSystemSolution(m_systemUnknown);
 }
 
-void StaticEquilibriumIntegrationScheme::updateStatesFromLinearSolution(SReal alpha, bool firstIteration)
+void StaticEquilibriumIntegrationScheme::updateStatesFromLinearSolution(SReal alpha)
 {
-    SOFA_UNUSED(firstIteration);
     sofa::core::behavior::MultiVecCoord pos(m_vop.get(), m_xResult);
 
     pos.peq(m_systemUnknown, alpha );

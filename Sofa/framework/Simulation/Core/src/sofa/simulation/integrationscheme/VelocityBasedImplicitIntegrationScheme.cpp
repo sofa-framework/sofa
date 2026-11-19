@@ -66,6 +66,7 @@ void VelocityBasedImplicitIntegrationScheme::doSetupIntegrationStep(const core::
     // Make sure the states are following the sizes
     simulation::common::VectorOperations::realloc(*m_vop, m_r0, "r0", this, true);
     simulation::common::VectorOperations::realloc(*m_vop, m_r1, "r1", this, true);
+    simulation::common::VectorOperations::realloc(*m_vop, m_r1LineStart, "r1LineStart", this, true);
     simulation::common::VectorOperations::realloc(*m_vop, m_acceleration, "acceleration", this, true);
     simulation::common::VectorOperations::realloc(*m_vop, m_systemUnknown, "dv", this, true);
 
@@ -132,10 +133,8 @@ void VelocityBasedImplicitIntegrationScheme::doSetupIntegrationStep(const core::
 
 }
 
-void VelocityBasedImplicitIntegrationScheme::computeLHS(bool firstIteration)
+void VelocityBasedImplicitIntegrationScheme::computeLHS()
 {
-    SOFA_UNUSED(firstIteration);
-
     // Make sure no one modified this
     m_mop->cparams.setX(m_xResult);
     m_mop->cparams.setV(m_vResult);
@@ -156,7 +155,7 @@ void VelocityBasedImplicitIntegrationScheme::computeLHS(bool firstIteration)
     m_mop->setSystemMBKMatrix(mFact, bFact, kFact, l_linearSolver.get());
 }
 
-void VelocityBasedImplicitIntegrationScheme::computeRHS(bool firstIteration)
+void VelocityBasedImplicitIntegrationScheme::computeRHS()
 {
     // Make sure no one modified this
     m_mop->cparams.setX(m_xResult);
@@ -195,18 +194,17 @@ void VelocityBasedImplicitIntegrationScheme::computeRHS(bool firstIteration)
             core::MatricesFactors::K(d_rayleighStiffness.getValue()));
         }
 
-        // R1 should be equal to 0 in theory when integration scheme is linear. But let's recompute
-        // it anyway to compute the residual
+        // R1 is the position integration error at the current guess. It is non-zero at the
+        // beginning of the time step (the initial guess is the previous state) and after a damped
+        // Newton update (alpha < 1). Its contribution -K R1 is always added so that the RHS is the
+        // Schur complement of the full residual.
         computeCurrentPositionIntegrationError(*m_vop, m_r1, m_xResult, m_vResult);
         simulation::common::DifferentialOperations::pushforwardTangent(m_mappingGraph, m_mop->mparams, m_r1);
 
-        if (firstIteration)
-        {
-            m_mop->mparams.setV(m_r1);
-            m_mop->addMBKv(m_mappingGraph,m_r0, core::MatricesFactors::M(0.0),
-                        core::MatricesFactors::B(0),
-                        core::MatricesFactors::K(-1.0));
-        }
+        m_mop->mparams.setV(m_r1);
+        m_mop->addMBKv(m_mappingGraph,m_r0, core::MatricesFactors::M(0.0),
+                    core::MatricesFactors::B(0),
+                    core::MatricesFactors::K(-1.0));
 
         // If we are in first order, no acceleration in rhs
         if (! d_firstOrder.getValue() )
@@ -266,25 +264,22 @@ void VelocityBasedImplicitIntegrationScheme::solveLinearEquation()
     l_linearSolver->getLinearSystem()->dispatchSystemSolution(m_systemUnknown);
 
     simulation::common::DifferentialOperations::pushforwardTangent(m_mappingGraph, m_mop->mparams, m_systemUnknown);
+
+    // Snapshot the integration error of the state the linear system was built on: computeRHS
+    // recomputes m_r1 at every trial state of the line search, but the update direction must stay
+    // the one computed here.
+    m_vop->v_eq(m_r1LineStart, m_r1);
 }
 
-void VelocityBasedImplicitIntegrationScheme::updateStatesFromLinearSolution(SReal alpha, bool firstIteration)
+void VelocityBasedImplicitIntegrationScheme::updateStatesFromLinearSolution(SReal alpha)
 {
     sofa::core::behavior::MultiVecCoord pos(m_vop.get(), m_xResult);
     sofa::core::behavior::MultiVecDeriv vel(m_vop.get(), m_vResult );
 
-    //Update position w/r to unknown
+    // Full Newton update, scaled by alpha: dx = h * dv - R1, dv = unknown
     pos.peq(m_systemUnknown, alpha * getPositionUpdateDerivedFromVelocity());
+    pos.peq(m_r1LineStart, -alpha);
 
-    // //TODO make this work with alpha, iteration might be still 0 but we are in the linesearch algo and we don't want to remove this each time...
-    // // R1 should be equal to 0, avoids computation
-    if (firstIteration)
-    {
-        //Update position w/r R1
-        pos.peq(m_r1, -1.0);
-    }
-
-    // Accumulate the velocity
     vel.peq(m_systemUnknown, alpha);
 
     // TODO this collides with Free motion propagation using a MechanicalVOpVisitor and expecting a EulerImplicit
