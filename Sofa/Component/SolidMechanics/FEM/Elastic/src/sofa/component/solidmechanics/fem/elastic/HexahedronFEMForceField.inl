@@ -973,7 +973,7 @@ void HexahedronFEMForceField<DataTypes>::getNodeRotation(Transformation& R, unsi
 }
 
 template<class DataTypes>
-void HexahedronFEMForceField<DataTypes>::getRotations(linearalgebra::BaseMatrix * rotations,int offset)
+void HexahedronFEMForceField<DataTypes>::doGetRotations(linearalgebra::BaseMatrix * rotations,int offset)
 {
     auto nbdof = this->mstate->getSize();
 

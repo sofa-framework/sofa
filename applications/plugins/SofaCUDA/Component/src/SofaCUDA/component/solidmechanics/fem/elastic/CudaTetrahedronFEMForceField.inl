@@ -634,7 +634,7 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
 } \
     template<> inline void TetrahedronFEMForceField< T >::getRotations(VecReal & rotations) \
 { data.getRotations(this, rotations); } \
-    template<> inline void TetrahedronFEMForceField< T >::getRotations(linearalgebra::BaseMatrix * rotations,int offset) \
+    template<> inline void TetrahedronFEMForceField< T >::doGetRotations(linearalgebra::BaseMatrix * rotations,int offset) \
 { data.getRotations(this, rotations,offset); } \
     template<> inline void TetrahedronFEMForceField< T >::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx) \
 { \
