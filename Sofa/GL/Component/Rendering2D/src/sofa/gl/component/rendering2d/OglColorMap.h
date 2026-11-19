@@ -48,6 +48,7 @@ public:
 protected:
     OglColorMap();
     ~OglColorMap() override;
+    void doDrawVisual(const core::visual::VisualParams* vparams) override;
 
 public:
     Data<unsigned int> d_paletteSize; ///< How many colors to use
@@ -71,7 +72,6 @@ public:
     //void initVisual() { initTextures(); }
     //void clearVisual() { }
     //void initTextures() {}
-    void doDrawVisual(const core::visual::VisualParams* vparams) override;
     //void drawTransparent(const VisualParams* /*vparams*/)
     //void updateVisual();
 

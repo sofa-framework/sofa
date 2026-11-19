@@ -213,13 +213,13 @@ void OglAttribute< size, type, DataTypes>::disable()
 }
 
 template < int size, unsigned int type, class DataTypes>
-void OglAttribute< size, type, DataTypes>::fwdDraw(core::visual::VisualParams*)
+void OglAttribute< size, type, DataTypes>::doFwdDraw(core::visual::VisualParams*)
 {
     enable();
 }
 
 template < int size, unsigned int type, class DataTypes>
-void OglAttribute< size, type, DataTypes>::bwdDraw(core::visual::VisualParams*)
+void OglAttribute< size, type, DataTypes>::doBwdDraw(core::visual::VisualParams*)
 {
     disable();
 }
