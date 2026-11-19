@@ -105,7 +105,7 @@ void SphereLoader::applyTransform()
 }
 
 
-bool SphereLoader::load()
+bool SphereLoader::doLoad()
 {
     auto my_radius = getWriteOnlyAccessor(d_radius);
     auto my_positions = getWriteOnlyAccessor(d_positions);
