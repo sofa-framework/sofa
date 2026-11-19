@@ -145,7 +145,7 @@ public:
     static Index getIndex( const type::Vec3i& n, int i, int j, int k ) { return Index(n[0]* ( n[1]*k + j ) + i); }
 
     /// Overwrite from @sa MeshTopology::hasPos always @return bool true
-    bool hasPos()  const override { return true; }
+    bool doHasPos()  const override { return true; }
 
     /// Get Point in grid @return Vec3 given its @param id i. Will call @sa getPointInGrid. This method should be overwritten by children.
     virtual Vec3 getPoint(Index i) const;
