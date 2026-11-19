@@ -297,12 +297,12 @@ void Edge2QuadTopologicalMapping::init()
 }
 
 
-Index Edge2QuadTopologicalMapping::getFromIndex(Index ind)
+Index Edge2QuadTopologicalMapping::doGetFromIndex(Index ind)
 {
     return ind; // identity
 }
 
-void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
+void Edge2QuadTopologicalMapping::doUpdateTopologicalMappingTopDown()
 {
     if (d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
         return;

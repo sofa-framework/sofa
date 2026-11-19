@@ -64,7 +64,7 @@ void CenterPointTopologicalMapping::init()
     }
 }
 
-void CenterPointTopologicalMapping::updateTopologicalMappingTopDown()
+void CenterPointTopologicalMapping::doUpdateTopologicalMappingTopDown()
 {
     if(this->isComponentStateValid())
     {
