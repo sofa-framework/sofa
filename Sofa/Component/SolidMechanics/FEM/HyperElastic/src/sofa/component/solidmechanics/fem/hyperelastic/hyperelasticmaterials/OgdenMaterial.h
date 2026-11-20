@@ -50,9 +50,11 @@ private:
 
 public:
     // Ogden material constants
-    sofa::Data<Real> m_mu;
-    sofa::Data<Real> m_alpha;
+    sofa::Data<sofa::type::vector<Real>> m_mu;
+    sofa::Data<sofa::type::vector<Real>> m_alpha;
     sofa::Data<Real> m_kappa;
+
+    void init() override;
 
     StressTensor secondPiolaKirchhoffStress(Strain<DataTypes>& strain) override;
 
