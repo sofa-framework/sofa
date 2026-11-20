@@ -402,7 +402,7 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
     EdgeSetTopologyModifier *toEdgeMod = nullptr;
     TriangleSetTopologyModifier *toTriangleMod = nullptr;
     //QuadSetTopologyModifier *toQuadMod = nullptr;
-    //TetrahedronSetTopologyModifier *toTetrahedronMod = nullptr;
+    TetrahedronSetTopologyModifier *toTetrahedronMod = nullptr;
     //HexahedronSetTopologyModifier *toHexahedronMod = nullptr;
 
     toModel->getContext()->get(toPointMod);
@@ -918,6 +918,106 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
                         --last;
                     }
                     tD2S.resize( tD2S.size() - tab2.size() );
+                }
+            }
+            break;
+        }
+
+        case core::topology::TETRAHEDRAADDED:
+        {
+        }
+
+        case core::topology::TETRAHEDRAREMOVED:
+        {
+            if (!d_handleTetrahedra.getValue()) break;
+            if (!toTetrahedronMod) toModel->getContext()->get(toTetrahedronMod);
+            if (!toTetrahedronMod) break;
+
+            // teRem is a pointer to the tetra elements that should be removed
+            // this change comes from the topology container in the source topology.
+            // So here, we have to update our data that maps between source and destination
+            // teD2S and teS2D, and also update the topology container of this model (the destination)
+            const TetrahedraRemoved *teRem = static_cast< const TetrahedraRemoved * >( topoChange );
+
+            // each tetra is an integer that specifies it's index in the source topology
+            sofa::type::vector<Index> tetra_array_buffer_source = teRem->getArray();
+
+            // we want to remove the elements in both source and destination
+            sofa::type::vector<Index> tetra_array_buffer_destination;
+            tetra_array_buffer_destination.reserve(tetra_array_buffer_source.size());
+
+            // for each tetra that should be removed, look up the correct tetra in the destination topology
+            for (auto &tetra_source : tetra_array_buffer_source)
+            {
+                Index tetra_destination = teS2D[tetra_source];
+                if (tetra_destination == sofa::InvalidID)
+                    continue;
+                tetra_array_buffer_destination.push_back(tetra_destination);
+            }
+
+            msg_info() << "[" << count << "]TETRAHEDRAREMOVED : "
+                << tetra_array_buffer_source.size() << " -> "
+                << tetra_array_buffer_destination.size() << " : "
+                << tetra_array_buffer_source << " -> "
+                << tetra_array_buffer_destination;
+
+            // remove the tetra in the tS2D data (the mapping from source to destination topology)
+            // removal is done by looking up the tetra that should be removed,
+            // replacing the tetra with the tetra that is the last one in the data,
+            // and finally resizing the data so that the last tetra is dropped.
+            // So essentially placing the last tetra in the data to overwrite the tetra that should
+            // be removed from the data.
+            {
+                Index last_index = teS2D.size() -1;
+                for (auto &tetra_source : tetra_array_buffer_source)
+                {
+                    Index tetra_destination = teS2D[tetra_source];
+
+                    // we set the source tetra to invalid in the destination to source mapping,
+                    // because we now remove it.
+                    if (tetra_destination != sofa::InvalidID)
+                        teD2S[tetra_destination] = sofa::InvalidID;
+
+                    // get the tetra of the destination topology, that corresponds to the last tetra
+                    // in the source topology
+                    Index new_tetra_destination = teS2D[last_index];
+
+                    // replace the destination tetra at the position where we remove a tetra
+                    // in the source topology
+                    teS2D[tetra_source] = new_tetra_destination;
+
+                    // if that destination tetra is valid, and correctly maps back to the last
+                    // tetra in the source topology, update the mapping from destination to source.
+                    if (new_tetra_destination != sofa::InvalidID && teD2S[new_tetra_destination] == last_index)
+                        teD2S[new_tetra_destination] = tetra_source;
+                    --last_index;
+                }
+                teS2D.resize(teS2D.size() - tetra_array_buffer_source.size());
+            }
+
+            // the same for the D2S data, but also update the topology container of this model
+            if (!tetra_array_buffer_destination.empty())
+            {
+                toTetrahedronMod->removeTetrahedra(tetra_array_buffer_destination, false);
+                {
+                    Index last_index = teD2S.size() -1;
+
+                    for (auto &tetra_destination : tetra_array_buffer_destination)
+                    {
+                        Index tetra_source = teD2S[tetra_destination];
+
+                        // now as a sanity check, we check that the source tetra is INVALID, because
+                        // we set it to invalid when we updated the teS2D data
+                        if (tetra_source != sofa::InvalidID)
+                                msg_error() << "Invalid Tetra Remove";
+
+                        Index new_tetra_source = teD2S[last_index];
+                        teD2S[tetra_destination] = new_tetra_source;
+                        if (new_tetra_source != sofa::InvalidID && teS2D[new_tetra_source] == last_index)
+                            teS2D[new_tetra_source] = tetra_destination;
+                        --last_index;
+                    }
+                    teD2S.resize(teD2S.size() - tetra_array_buffer_destination.size());
                 }
             }
             break;
