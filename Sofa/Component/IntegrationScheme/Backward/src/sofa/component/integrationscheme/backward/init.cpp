@@ -32,6 +32,11 @@ extern void registerBDFIntegrationScheme(sofa::core::ObjectFactory* factory);
 extern void registerStaticEquilibriumIntegrationScheme(sofa::core::ObjectFactory* factory);
 extern void registerTrapezoidalIntegrationScheme(sofa::core::ObjectFactory* factory);
 
+namespace unknownpredictors
+{
+    extern void registerConstantVelocityPredictor(sofa::core::ObjectFactory* factory);
+    extern void registerConstantAccelerationPredictor(sofa::core::ObjectFactory* factory);
+}
 extern "C" {
     SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
     SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
@@ -61,6 +66,8 @@ void registerObjects(sofa::core::ObjectFactory* factory)
     registerBDFIntegrationScheme(factory);
     registerStaticEquilibriumIntegrationScheme(factory);
     registerTrapezoidalIntegrationScheme(factory);
+    unknownpredictors::registerConstantVelocityPredictor(factory);
+    unknownpredictors::registerConstantAccelerationPredictor(factory);
 }
 
 void init()

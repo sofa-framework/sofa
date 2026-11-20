@@ -57,14 +57,15 @@ public:
      **/
 
 
-    virtual void computeLHS(bool firstIteration = false) override;
-    virtual void computeRHS(bool firstIteration = false) override;
-    virtual SReal evaluateResidual() override;
+    virtual void computeLHS() override;
+    virtual void computeRHS(bool recompute) override;
+    virtual SReal evaluateResidual(bool recompute) override;
     virtual void solveLinearEquation() override;
-    virtual void updateStatesFromLinearSolution(SReal alpha, bool firstIteration = false) override;
+    virtual void updateStatesFromLinearSolution(SReal alpha) override;
 
     virtual SReal getVelocityIntegrationFactor() const override final;
     virtual SReal getPositionIntegrationFactor() const override final;
+    virtual void  doFinalizeIntegrationStep(bool advanceTime) override final;
 
 protected:
     virtual void doSetupIntegrationStep(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
@@ -125,6 +126,17 @@ protected:
      * For more information see the documentation : https://sofa-framework.github.io/doc/simulation-principles/system-resolution/integration-scheme/#the-sofa-implementation
      **/
     virtual void computeCurrentVelocityIntegrationError(sofa::simulation::common::VectorOperations & vop, const sofa::core::MultiVecDerivId& result, const sofa::core::MultiVecDerivId& velocity, const sofa::core::MultiVecDerivId& acceleration) = 0;
+
+    void computeG0();
+    void computeG1();
+    void computeG2();
+
+
+    virtual unsigned getUnknownDerivativeOrder() const override
+    {
+        return 2;
+    }
+
 };
 
 } // namespace sofa::component::integrationscheme

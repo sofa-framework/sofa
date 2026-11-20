@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include <sofa/simulation/Node.h>
 
-#include <sofa/core/behavior/BaseAnimationLoop.h>
+#include <sofa/core/behavior/BaseTimeIntegrator.h>
 #include <sofa/core/behavior/BaseConstraintSet.h>
 #include <sofa/core/behavior/BaseInteractionForceField.h>
 #include <sofa/core/behavior/BaseProjectiveConstraintSet.h>
@@ -99,7 +99,7 @@ Node::Node(const std::string& nodename, Node* parent)
     , collisionModel(initLink("collisionModel", "The CollisionModel(s) attached to this node"))
     , unsorted(initLink("unsorted", "The remaining objects attached to this node"))
 
-    , animationManager(initLink("animationLoop","The AnimationLoop attached to this node (only valid for root node)"))
+    , timeIntegratorManager(initLink("animationLoop","The AnimationLoop attached to this node (only valid for root node)"))
     , visualLoop(initLink("visualLoop", "The VisualLoop attached to this node (only valid for root node)"))
     , visualStyle(initLink("visualStyle", "The VisualStyle(s) attached to this node"))
     , topology(initLink("topology", "The Topology attached to this node"))
@@ -616,8 +616,8 @@ sofa::core::objectmodel::Base* Node::findLinkDestClass(const core::objectmodel::
             return destType->dynamicCast(node->getTopology());
         else if (destType->hasParent(core::visual::Shader::GetClass()))
             return destType->dynamicCast(node->getShader());
-        else if (destType->hasParent(core::behavior::BaseAnimationLoop::GetClass()))
-            return destType->dynamicCast(node->getAnimationLoop());
+        else if (destType->hasParent(core::behavior::BaseTimeIntegrator::GetClass()))
+            return destType->dynamicCast(node->getTimeIntegrator());
         else if (destType->hasParent(core::behavior::BaseIntegrationScheme::GetClass()))
             return destType->dynamicCast(node->getIntegrationScheme());
         else if (destType->hasParent(core::collision::Pipeline::GetClass()))
@@ -720,12 +720,12 @@ core::visual::Shader* Node::getShader(const sofa::core::objectmodel::TagSet& t) 
     }
 }
 
-core::behavior::BaseAnimationLoop* Node::getAnimationLoop() const
+core::behavior::BaseTimeIntegrator* Node::getTimeIntegrator() const
 {
-    if (animationManager)
-        return animationManager;
+    if (timeIntegratorManager)
+        return timeIntegratorManager;
     else
-        return get<core::behavior::BaseAnimationLoop>(SearchParents);
+        return get<core::behavior::BaseTimeIntegrator>(SearchParents);
 }
 
 core::behavior::BaseIntegrationScheme* Node::getIntegrationScheme() const
@@ -824,7 +824,7 @@ bool Node::getDebug() const
 
 void Node::removeControllers()
 {
-    removeObject(*animationManager.begin());
+    removeObject(*timeIntegratorManager.begin());
     typedef NodeSequence<core::behavior::BaseIntegrationScheme> integrationSchemes;
     const integrationSchemes solverRemove = integrationScheme;
     for ( integrationSchemes::iterator i=solverRemove.begin(), iend=solverRemove.end(); i!=iend; ++i )
@@ -936,8 +936,8 @@ void Node::printComponents()
 
     std::stringstream sstream;
 
-    sstream << "BaseAnimationLoop: ";
-    for (NodeSingle<BaseAnimationLoop>::iterator i = animationManager.begin(), iend = animationManager.end(); i != iend; ++i)
+    sstream << "BaseTimeIntegrator: ";
+    for (NodeSingle<BaseTimeIntegrator>::iterator i = timeIntegratorManager.begin(), iend = timeIntegratorManager.end(); i != iend; ++i)
         sstream << (*i)->getName() << " ";
     sstream << "\n" << "BaseIntegrationScheme: ";
     for (NodeSequence<BaseIntegrationScheme>::iterator i = integrationScheme.begin(), iend = integrationScheme.end(); i != iend; ++i)
@@ -1882,7 +1882,7 @@ void Node::getLocalObjects( const sofa::core::objectmodel::ClassInfo& class_info
     void Node::add##FUNCTIONNAME( CLASSNAME* obj ) { checkAlreadyContains(*this, SEQUENCENAME, obj); SEQUENCENAME.add(obj); } \
     void Node::remove##FUNCTIONNAME( CLASSNAME* obj ) { SEQUENCENAME.remove(obj); }
 
-NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::behavior::BaseAnimationLoop, AnimationLoop, animationManager )
+NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::behavior::BaseTimeIntegrator, TimeIntegrator, timeIntegratorManager )
 NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::visual::VisualLoop, VisualLoop, visualLoop )
 NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::BehaviorModel, BehaviorModel, behaviorModel )
 NODE_DEFINE_SEQUENCE_ACCESSOR( sofa::core::BaseMapping, Mapping, mapping )
@@ -1929,7 +1929,7 @@ template class NodeSequence<sofa::core::visual::VisualManager>;
 template class NodeSequence<sofa::core::CollisionModel>;
 template class NodeSequence<sofa::core::objectmodel::BaseComponent>;
 
-template class NodeSingle<sofa::core::behavior::BaseAnimationLoop>;
+template class NodeSingle<sofa::core::behavior::BaseTimeIntegrator>;
 template class NodeSingle<sofa::core::visual::VisualLoop>;
 template class NodeSingle<sofa::core::visual::BaseVisualStyle>;
 template class NodeSingle<sofa::core::topology::Topology>;

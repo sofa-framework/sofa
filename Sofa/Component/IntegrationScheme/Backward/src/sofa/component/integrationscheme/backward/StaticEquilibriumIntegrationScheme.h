@@ -45,30 +45,29 @@ public:
     StaticEquilibriumIntegrationScheme();
 
 
-    virtual void computeLHS(bool firstIteration = true) override;
-    virtual void computeRHS(bool firstIteration = true) override;
-    virtual SReal evaluateResidual() override;
+    virtual void computeLHS() override;
+    virtual void computeRHS(bool recompute) override;
+    virtual SReal evaluateResidual(bool recompute) override;
     virtual void solveLinearEquation() override;
-    virtual void updateStatesFromLinearSolution(SReal alpha, bool firstIteration = true) override;
+    virtual void updateStatesFromLinearSolution(SReal alpha) override;
 
     virtual SReal getVelocityIntegrationFactor() const override final;
     virtual SReal getPositionIntegrationFactor() const override final;
 
-    virtual void integrate(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
-
-    Data<unsigned int> d_maxNbIterationsNewton;
-    Data<unsigned int> d_maxNbIterationsLineSearch;
-    Data<SReal> d_newtonStepSize;
-    Data<SReal> d_lineSearchReductionRate;
-    Data<SReal> d_lineSearchArmijoFactor;
-    Data<SReal> d_residualThreshold;
-    Data<SReal> d_currentResidual;
-    Data<bool> d_alwaysAdvanceNewton;
+    virtual void finalizeIntegrationStep(bool advanceTime) override;
 
 protected:
     virtual void doSetupIntegrationStep(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
 
     virtual sofa::Size getIntegrationSchemeTimeOrder() const override;
+
+    void computeG0();
+
+
+    virtual unsigned getUnknownDerivativeOrder() const override
+    {
+        return 0;
+    }
 
 };
 

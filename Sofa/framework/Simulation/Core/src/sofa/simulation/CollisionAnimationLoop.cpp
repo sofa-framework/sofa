@@ -85,25 +85,6 @@ void CollisionAnimationLoop::computeCollision(const core::ExecParams* params)
     postCollisionComputation(params);
 }
 
-void CollisionAnimationLoop::integrate(const core::ExecParams* params, SReal dt)
-{
-
-    {
-        IntegrateBeginEvent evBegin;
-        PropagateEventVisitor eventPropagation( params, &evBegin);
-        eventPropagation.execute(getContext());
-    }
-
-    MechanicalIntegrationVisitor act( params, dt );
-    act.setTags(this->getTags());
-    act.execute( getContext() );
-
-    {
-        IntegrateEndEvent evBegin;
-        PropagateEventVisitor eventPropagation( params, &evBegin);
-        eventPropagation.execute(getContext());
-    }
-}
 
 const CollisionAnimationLoop::Solvers& CollisionAnimationLoop::getSolverSequence()
 {

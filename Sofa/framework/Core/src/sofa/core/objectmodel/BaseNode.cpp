@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include <sofa/core/objectmodel/BaseNode.h>
 #include <sofa/core/objectmodel/BaseComponent.h>
-#include <sofa/core/behavior/BaseAnimationLoop.h>
+#include <sofa/core/behavior/BaseTimeIntegrator.h>
 #include <sofa/core/behavior/BaseIntegrationScheme.h>
 #include <sofa/core/collision/Pipeline.h>
 #include <sofa/core/visual/VisualLoop.h>
@@ -43,9 +43,9 @@ BaseNode* BaseNode::getRoot() const
     else return firstParent->getRoot();
 }
 
-core::behavior::BaseAnimationLoop* BaseNode::getAnimationLoop() const
+core::behavior::BaseTimeIntegrator* BaseNode::getTimeIntegrator() const
 {
-    return this->getContext()->get<core::behavior::BaseAnimationLoop>();
+    return this->getContext()->get<core::behavior::BaseTimeIntegrator>();
 }
 
 core::collision::Pipeline* BaseNode::getCollisionPipeline() const

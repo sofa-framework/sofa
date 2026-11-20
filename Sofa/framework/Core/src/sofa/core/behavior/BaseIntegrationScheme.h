@@ -91,7 +91,7 @@ public:
     bool insertInNode( objectmodel::BaseNode* node ) override;
     bool removeInNode( objectmodel::BaseNode* node ) override;
 
-protected:
+    virtual bool isImplicit() const = 0;
 
     SReal m_dt;
 };

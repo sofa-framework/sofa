@@ -64,12 +64,12 @@ public:
 
     virtual void init() override;
 
-    virtual void computeLHS(bool firstIteration = false) override;
-    virtual void computeRHS(bool firstIteration = false) override;
-    virtual SReal evaluateResidual() override;
+    virtual void computeLHS() override;
+    virtual void computeRHS(bool recompute) override;
+    virtual SReal evaluateResidual(bool recompute) override;
     virtual void solveLinearEquation() override;
-    virtual void updateStatesFromLinearSolution(SReal alpha, bool firstIteration = false) override;
-    virtual void finalizeIntegrationStep() override;
+    virtual void updateStatesFromLinearSolution(SReal alpha) override;
+    virtual void doFinalizeIntegrationStep(bool advanceTime) override;
 
     virtual SReal getVelocityIntegrationFactor() const override final;
     virtual SReal getPositionIntegrationFactor() const override final;
@@ -122,6 +122,15 @@ protected:
      **/
     virtual void computeAccelerationFromVelocity(sofa::simulation::common::VectorOperations & vop, sofa::core::MultiVecDerivId& result, const sofa::core::MultiVecDerivId& velocity) = 0;
     /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ **/
+
+    void computeG0();
+    void computeG1();
+
+    virtual unsigned getUnknownDerivativeOrder() const override
+    {
+        return 1;
+    }
+
 
 };
 

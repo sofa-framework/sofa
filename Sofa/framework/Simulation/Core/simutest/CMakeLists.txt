@@ -5,6 +5,7 @@ project(Sofa.Simulation.Core_simutest)
 set(SOURCE_FILES
     DefaultAnimationLoop_test.cpp
     NodeContext_test.cpp
+    NewtonRaphson_test.cpp
     )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})

@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include <sofa/simulation/task/InitTasks.h>
 
-#include <sofa/core/behavior/BaseAnimationLoop.h>
+#include <sofa/core/behavior/BaseTimeIntegrator.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/AdvancedTimer.h>
