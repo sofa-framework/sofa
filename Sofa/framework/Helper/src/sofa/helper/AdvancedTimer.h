@@ -213,44 +213,19 @@ public:
                @return the Id corresponding to the name of the id given in parameter
                If the name isn't found in the list, it is added to it and return the new id.
             */
-            static unsigned int getID(const std::string& name)
-            {
-                if (name.empty())
-                    return 0;
-                IdFactory& idfac = getInstance();
+            static unsigned int getID(const std::string& name);
 
-                const auto it = idfac.idsMap.find(name);
-                if (it == idfac.idsMap.end())
-                {
-                    const auto idsMapSize = sofa::helper::narrow_cast<unsigned int>(idfac.idsMap.size());
-                    idfac.idsMap.insert(it, {name, idsMapSize});
-                    idfac.idsList.push_back(name);
-                    return idsMapSize;
-                }
-
-                return it->second;
-            }
-
-            static std::size_t getLastID()
-            {
-                return getInstance().idsList.size()-1;
-            }
+            static std::size_t getLastID();
 
             /// return the name corresponding to the id in parameter
-            static std::string getName(unsigned int id)
-            {
-                if (id < getInstance().idsList.size())
-                    return getInstance().idsList[id];
-                else
-                    return "";
-            }
+            static std::string getName(unsigned int id);
 
             /// return the instance of the factory. Creates it if doesn't exist yet.
-            static IdFactory& getInstance()
-            {
-                static thread_local IdFactory factory;
-                return factory;
-            }
+            /// Defined in AdvancedTimer.cpp (and not inline): the factory must be unique across all the
+            /// libraries. If it was inline, a library compiled with a hidden visibility (e.g. a Python
+            /// module) could inline it and get its own private copy of the (thread_local) factory, leading
+            /// to ids inconsistent with the rest of SOFA.
+            static IdFactory& getInstance();
         };
 
         Id() : id(0) {}
