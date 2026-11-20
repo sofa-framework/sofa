@@ -127,7 +127,9 @@ protected:
      **/
     virtual void computeCurrentVelocityIntegrationError(sofa::simulation::common::VectorOperations & vop, const sofa::core::MultiVecDerivId& result, const sofa::core::MultiVecDerivId& velocity, const sofa::core::MultiVecDerivId& acceleration) = 0;
 
-
+    void computeG0();
+    void computeG1();
+    void computeG2();
 };
 
 } // namespace sofa::component::integrationscheme
