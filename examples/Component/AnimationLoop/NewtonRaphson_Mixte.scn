@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<Node name="root" dt="0.01" gravity="0 -9.81 0">
+
+    <Node name="plugins">
+        <RequiredPlugin pluginName="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedProjectiveConstraint] -->
+        <RequiredPlugin pluginName="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
+        <RequiredPlugin pluginName="Sofa.Component.LinearSolver.Direct"/> <!-- Needed to use components [SparseLDLSolver] -->
+        <RequiredPlugin pluginName="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+        <RequiredPlugin pluginName="Sofa.Component.LinearSolver.Ordering"/> <!-- Needed to use components [NaturalOrderingMethod] -->
+        <RequiredPlugin pluginName="Sofa.Component.LinearSystem"/> <!-- Needed to use components [ConstantSparsityPatternSystem] -->
+        <RequiredPlugin pluginName="Sofa.Component.Mass"/> <!-- Needed to use components [MeshMatrixMass] -->
+        <RequiredPlugin pluginName="Sofa.Component.IntegrationScheme.Backward"/> <!-- Needed to use components [EulerImplicitIntegrationScheme] -->
+        <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.FEM.Elastic"/>
+        <RequiredPlugin pluginName="Sofa.Component.SolidMechanics.FEM.HyperElastic"/>
+        <RequiredPlugin pluginName="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+        <RequiredPlugin pluginName="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [TetrahedronSetGeometryAlgorithms,TetrahedronSetTopologyContainer,TetrahedronSetTopologyModifier] -->
+        <RequiredPlugin pluginName="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->
+        <RequiredPlugin pluginName="Sofa.Component.Topology.Mapping"/> <!-- Needed to use components [Hexa2TetraTopologicalMapping] -->
+        <RequiredPlugin pluginName="Sofa.Component.Visual"/> <!-- Needed to use components [LineAxis,VisualGrid,VisualStyle] -->
+        <RequiredPlugin pluginName="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglSceneFrame] -->
+    </Node>
+
+    <NewtonRaphson maxNbIterationsNewton="20" maxNbIterationsLineSearch="10" lineSearchReductionRate="0.3"/>
+
+    <Node name="ClassicEulerImplicit" gravity="0 -9.81 0">
+        <EulerImplicitIntegrationScheme/>
+        <SparseLDLSolver template="CompressedRowSparseMatrixMat3x3d"/>
+        <MechanicalObject template="Vec3" name="Particles" restScale="1" position="0 0 0 1 0 0" showObject="1"  showColor="1.0 1.0 1.0 1.0" showObjectScale="10"/>
+        <UniformMass template="Vec3" name="Mass" totalMass="1.0"/>
+        <FixedProjectiveConstraint template="Vec3" name="Fix Particle" indices="0" />
+        <SpringForceField template="Vec3" name="Internal Spring" spring="0 1 100 0.1 1" />
+        <OglLabel label="Euler implicit" x="230" y="280" color="1.0 1.0 1.0 1.0"/>
+    </Node>
+
+    <Node name="Newmark" gravity="0 -9.81 0">
+        <NewmarkIntegrationScheme/>
+        <SparseLDLSolver template="CompressedRowSparseMatrixMat3x3d"/>
+        <MechanicalObject template="Vec3" name="Particles" restScale="1" position="2 0 0 3 0 0" showObject="1" showColor="1.0 0.0 0.0 1.0" showObjectScale="10"/>
+        <UniformMass template="Vec3" name="Mass" totalMass="1.0"/>
+        <FixedProjectiveConstraint template="Vec3" name="Fix Particle" indices="0" />
+        <SpringForceField template="Vec3" name="Internal Spring" spring="0 1 100 0.1 1" />
+        <OglLabel label="Newmark" x="780" y="280" color="1.0 0.0 0.0 1.0"/>
+
+    </Node>
+
+    <Node name="TrapezoidalRule" gravity="0 -9.81 0">
+        <TrapezoidalIntegrationScheme/>
+        <SparseLDLSolver template="CompressedRowSparseMatrixMat3x3d"/>
+        <MechanicalObject template="Vec3" name="Particles" restScale="1" position="0 2 0 1 2 0" showObject="1" showColor="0.0 1.0 0.0 1.0" showObjectScale="10"/>
+        <UniformMass template="Vec3" name="Mass" totalMass="1.0"/>
+        <FixedProjectiveConstraint template="Vec3" name="Fix Particle" indices="0" />
+        <SpringForceField template="Vec3" name="Internal Spring" spring="0 1 100 0.1 1" />
+        <OglLabel label="Trapezoidal" x="230" y="40" color="0.0 1.0 0.0 1.0"/>
+    </Node>
+
+    <Node name="ClassicEulerExplicit" gravity="0 -9.81 0">
+        <EulerExplicitIntegrationScheme/>
+        <SparseLDLSolver template="CompressedRowSparseMatrixMat3x3d"/>
+        <MechanicalObject template="Vec3" name="Particles" restScale="1" position="2 2 0 3 2 0" showObject="1" showColor="0.0 0.0 1.0 1.0" showObjectScale="10"/>
+        <UniformMass template="Vec3" name="Mass" totalMass="1.0"/>
+        <FixedProjectiveConstraint template="Vec3" name="Fix Particle" indices="0" />
+        <SpringForceField template="Vec3" name="Internal Spring" spring="0 1 100 0.1 1" />
+        <OglLabel label="Euler explicit" x="780" y="40" color="0.0 0.0 1.0 1.0"/>
+
+    </Node>
+
+</Node>
