@@ -312,12 +312,6 @@ void AccelerationBasedImplicitIntegrationScheme::solveLinearEquation()
     l_linearSolver->getLinearSystem()->dispatchSystemSolution(m_systemUnknown);
 
     simulation::common::DifferentialOperations::pushforwardTangent(m_mappingGraph, m_mop->mparams, m_systemUnknown);
-
-    // Snapshot the integration errors of the state the linear system was built on: computeRHS
-    // recomputes m_r1 and m_r2 at every trial state of the line search, but the update direction
-    // must stay the one computed here.
-    m_vop->v_eq(m_r1, m_r1);
-    m_vop->v_eq(m_r2, m_r2);
 }
 
 void AccelerationBasedImplicitIntegrationScheme::updateStatesFromLinearSolution(SReal alpha)
