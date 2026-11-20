@@ -27,6 +27,7 @@ namespace sofa::component::diffusion
 {
     
 extern void registerTetrahedronDiffusionFEMForceField(sofa::core::ObjectFactory* factory);
+extern void registerDiffusionFEMForceField(sofa::core::ObjectFactory* factory);
 
 extern "C" {
     SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
@@ -53,6 +54,7 @@ const char* getModuleVersion()
 void registerObjects(sofa::core::ObjectFactory* factory)
 {
     registerTetrahedronDiffusionFEMForceField(factory);
+    registerDiffusionFEMForceField(factory);
 }
 
 void init()

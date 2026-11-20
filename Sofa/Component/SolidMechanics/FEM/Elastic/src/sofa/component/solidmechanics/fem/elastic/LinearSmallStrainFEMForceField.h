@@ -37,18 +37,18 @@ namespace sofa::component::solidmechanics::fem::elastic
 template <class DataTypes, class ElementType>
 class LinearSmallStrainFEMForceField :
     public BaseElementLinearFEMForceField<DataTypes, ElementType>,
-    public FEMForceField<DataTypes, ElementType>,
+    public FEMForceField<DataTypes, DataTypes, ElementType>,
     public CauchyStressEvaluator<DataTypes>
 {
 public:
     SOFA_CLASS3(
         SOFA_TEMPLATE2(LinearSmallStrainFEMForceField, DataTypes, ElementType),
             SOFA_TEMPLATE2(BaseElementLinearFEMForceField, DataTypes, ElementType),
-            SOFA_TEMPLATE2(FEMForceField, DataTypes, ElementType),
+            SOFA_TEMPLATE3(FEMForceField, DataTypes, DataTypes, ElementType),
             CauchyStressEvaluator<DataTypes>);
 
 private:
-    using trait = typename FEMForceField<DataTypes, ElementType>::trait;
+    using trait = typename FEMForceField<DataTypes, DataTypes, ElementType>::trait;
     using ElementHessian = typename trait::ElementHessian;
     using ElementDisplacement = typename trait::ElementDisplacement;
     using StrainDisplacement = typename trait::StrainDisplacement;
