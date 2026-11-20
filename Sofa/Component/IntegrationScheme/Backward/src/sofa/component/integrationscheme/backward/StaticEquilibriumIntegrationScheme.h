@@ -62,6 +62,13 @@ protected:
     virtual sofa::Size getIntegrationSchemeTimeOrder() const override;
 
     void computeG0();
+
+
+    virtual unsigned getUnknownDerivativeOrder() const
+    {
+        return 0;
+    }
+
 };
 
 } // namespace sofa::component::integrationscheme::backward

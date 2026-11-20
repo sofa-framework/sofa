@@ -130,6 +130,13 @@ protected:
     void computeG0();
     void computeG1();
     void computeG2();
+
+
+    virtual unsigned getUnknownDerivativeOrder() const
+    {
+        return 2;
+    }
+
 };
 
 } // namespace sofa::component::integrationscheme

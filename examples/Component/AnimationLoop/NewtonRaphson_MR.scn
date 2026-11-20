@@ -29,7 +29,8 @@
     <LineAxis size="0.1"/>
     <OglSceneFrame/>
 
-    <EulerImplicitIntegrationScheme name="backward_Euler"  />
+    <EulerImplicitIntegrationScheme name="backward_Euler"  unknownPredictor="@UnknownPredictor" />
+    <ConstantVelocityPredictor name="UnknownPredictor" />
 
     <ConstantSparsityPatternSystem template="CompressedRowSparseMatrix" name="A" checkIndices="false"/>
     <NaturalOrderingMethod/>

@@ -93,8 +93,6 @@ public:
 
     virtual bool isImplicit() const = 0;
 
-protected:
-
     SReal m_dt;
 };
 

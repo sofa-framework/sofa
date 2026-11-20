@@ -126,6 +126,12 @@ protected:
     void computeG0();
     void computeG1();
 
+    virtual unsigned getUnknownDerivativeOrder() const
+    {
+        return 1;
+    }
+
+
 };
 
 } // namespace sofa::component::integrationscheme

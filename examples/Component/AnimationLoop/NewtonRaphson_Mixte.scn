@@ -23,7 +23,8 @@
     <NewtonRaphson maxNbIterationsNewton="20" maxNbIterationsLineSearch="10" lineSearchReductionRate="0.3"/>
 
     <Node name="ClassicEulerImplicit" gravity="0 -9.81 0">
-        <EulerImplicitIntegrationScheme/>
+        <EulerImplicitIntegrationScheme unknownPredictor="@UnknownPredictor" />
+        <ConstantVelocityPredictor name="UnknownPredictor" />
         <SparseLDLSolver template="CompressedRowSparseMatrixMat3x3d"/>
         <MechanicalObject template="Vec3" name="Particles" restScale="1" position="0 0 0 1 0 0" showObject="1"  showColor="1.0 1.0 1.0 1.0" showObjectScale="10"/>
         <UniformMass template="Vec3" name="Mass" totalMass="1.0"/>

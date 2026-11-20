@@ -35,10 +35,11 @@ namespace sofa::simulation::integrationscheme
 ImplicitIntegrationScheme::ImplicitIntegrationScheme()
 : d_rayleighStiffness(initData(&d_rayleighStiffness, 0.0_sreal, "rayleighStiffness", "Rayleigh damping coefficient related to stiffness, > 0") )
 , d_rayleighMass(initData(&d_rayleighMass, 0.0_sreal, "rayleighMass", "Rayleigh damping coefficient related to mass, > 0"))
-, m_params(nullptr)
-, m_passedStatesValid(false)
+, l_unknownPredictor(initLink("unknownPredictor", "Link to an object of type UnknownPredictor enabling to make a first guess and start the NEwton in a better place"))
 , m_vop(nullptr)
 , m_mop(nullptr)
+, m_params(nullptr)
+, m_passedStatesValid(false)
 {
 
 }
@@ -68,6 +69,10 @@ void ImplicitIntegrationScheme::setupIntegrationStep(const core::ExecParams* par
 
     doSetupIntegrationStep(params, dt, xResult, vResult);
 
+    if (l_unknownPredictor)
+    {
+        l_unknownPredictor->makeAndApplyPrediction(this);
+    }
 
 }
 

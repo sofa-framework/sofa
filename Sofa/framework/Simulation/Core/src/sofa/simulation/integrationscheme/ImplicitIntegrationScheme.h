@@ -30,6 +30,7 @@
 #include <sofa/simulation/MappingGraphMechanicalOperations.h>
 #include <sofa/simulation/MappingGraph.h>
 #include <sofa/simulation/mappinggraph/MappingGraphUser.h>
+#include <sofa/simulation/integrationscheme/UnknownPredictor.h>
 
 namespace sofa::simulation::common
 {
@@ -47,6 +48,7 @@ class SOFA_SIMULATION_CORE_API ImplicitIntegrationScheme :
 {
 public:
     SOFA_ABSTRACT_CLASS2(ImplicitIntegrationScheme, sofa::core::behavior::BaseIntegrationScheme, sofa::core::behavior::LinearSolverAccessor);
+
 
     /**
      * Template method pattern is implemented here to ensure some data/member are rightly initialized
@@ -145,9 +147,24 @@ public:
         return true;
     }
 
+    virtual unsigned getUnknownDerivativeOrder() const = 0;
+
+
+
     Data<SReal> d_rayleighStiffness; ///< Rayleigh damping coefficient related to stiffness, > 0
     Data<SReal> d_rayleighMass; ///< Rayleigh damping coefficient related to mass, > 0
 
+    SingleLink<ImplicitIntegrationScheme, UnknownPredictor, sofa::BaseLink::FLAG_STOREPATH | sofa::BaseLink::FLAG_STRONGLINK> l_unknownPredictor;
+
+
+    sofa::core::MultiVecCoordId m_xResult;
+    sofa::core::MultiVecDerivId m_vResult;
+    sofa::core::MultiVecDerivId m_systemUnknown;
+
+    sofa::core::MultiVecDerivId m_acceleration;
+
+    std::shared_ptr<sofa::simulation::common::VectorOperations > m_vop;
+    std::unique_ptr<sofa::simulation::common::MappingGraphMechanicalOperations> m_mop;
 
 protected:
 
@@ -162,9 +179,6 @@ protected:
     virtual sofa::Size getIntegrationSchemeTimeOrder() const = 0;
 
     const core::ExecParams* m_params;
-    sofa::core::MultiVecCoordId m_xResult;
-    sofa::core::MultiVecDerivId m_vResult;
-    sofa::core::MultiVecDerivId m_systemUnknown;
 
     sofa::core::MultiVecDerivId m_r0, m_r1, m_r2;
     sofa::core::MultiVecDerivId m_g0, m_g1, m_g2;
@@ -173,11 +187,6 @@ protected:
     std::vector<sofa::core::MultiVecDerivId> m_a0, m_v0;
     bool m_passedStatesValid;
 
-    sofa::core::MultiVecDerivId m_acceleration;
-
-
-    std::shared_ptr<sofa::simulation::common::VectorOperations > m_vop;
-    std::unique_ptr<sofa::simulation::common::MappingGraphMechanicalOperations> m_mop;
 };
 } // namespace sofa::component::integrationscheme
 

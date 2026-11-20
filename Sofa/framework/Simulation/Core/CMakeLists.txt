@@ -168,6 +168,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/integrationscheme/VelocityBasedImplicitIntegrationScheme.h
     ${SRC_ROOT}/integrationscheme/ExplicitIntegrationScheme.h
     ${SRC_ROOT}/integrationscheme/ImplicitIntegrationScheme.h
+    ${SRC_ROOT}/integrationscheme/UnknownPredictor.h
 )
 
 set(SOURCE_FILES
@@ -323,6 +324,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/integrationscheme/VelocityBasedImplicitIntegrationScheme.cpp
     ${SRC_ROOT}/integrationscheme/ImplicitIntegrationScheme.cpp
     ${SRC_ROOT}/integrationscheme/ExplicitIntegrationScheme.cpp
+    ${SRC_ROOT}/integrationscheme/UnknownPredictor.cpp
 
 )
 
