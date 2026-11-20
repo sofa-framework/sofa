@@ -27,14 +27,22 @@ namespace sofa::simulation::mechanicalvisitor
 
 Visitor::Result MechanicalComputeContactForceVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
 {
-    mm->accumulateForce(this->params, res.getId(mm));
+    const core::VecDerivId& stateVecDerivId = res.getId(mm);
+    mm->vOp(this->params,
+        static_cast<core::VecId>(stateVecDerivId),
+        static_cast<core::ConstVecId>(stateVecDerivId),
+        sofa::core::vec_id::read_access::externalForce, 1.0);
     return RESULT_PRUNE;
 }
 
 
 Visitor::Result MechanicalComputeContactForceVisitor::fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
 {
-    mm->accumulateForce(this->params, res.getId(mm));
+    const core::VecDerivId& stateVecDerivId = res.getId(mm);
+    mm->vOp(this->params,
+        static_cast<core::VecId>(stateVecDerivId),
+        static_cast<core::ConstVecId>(stateVecDerivId),
+        sofa::core::vec_id::read_access::externalForce, 1.0);
     return RESULT_CONTINUE;
 }
 

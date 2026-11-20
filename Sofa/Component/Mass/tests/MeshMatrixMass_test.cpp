@@ -55,8 +55,14 @@ using sofa::simulation::Node ;
 #include <sofa/simulation/common/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
 
+#include <sofa/core/MechanicalParams.h>
+
+#include <numeric>
+#include <sstream>
 #include <string>
 using std::string ;
+
+#include <Eigen/Eigenvalues>
 
 #include <sofa/testing/BaseTest.h>
 using sofa::testing::BaseTest;
@@ -90,6 +96,8 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Real Real;
+    typedef typename DataTypes::Deriv Deriv;
+    typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename type::vector<MassType> VecMass;
     typedef MeshMatrixMass<TDataTypes> TheMeshMatrixMass ;
 
@@ -170,6 +178,162 @@ public:
     }
 
 
+    /// Load a scene made of a 2x2x2 box (hexahedra or tetrahedra) with a MeshMatrixMass using the given attributes.
+    /// The scene replaces the root of the test, so that it is unloaded at tear down.
+    TheMeshMatrixMass* loadBoxScene(const bool hexa, const string& massAttributes)
+    {
+        string topology;
+        if (hexa)
+        {
+            topology =
+                "    <RegularGridTopology name='grid' n='3 3 3' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
+                "    <Node name='Hexa' >                                                                            "
+                "        <MechanicalObject position='@../grid.position' />                                          "
+                "        <HexahedronSetTopologyContainer name='Container' src='@../grid' />                         "
+                "        <HexahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                       ";
+        }
+        else
+        {
+            topology =
+                "    <RequiredPlugin pluginName='Sofa.Component.Topology.Mapping'/>                                 "
+                "    <MechanicalObject />                                                                           "
+                "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
+                "    <Node name='Tetra' >                                                                           "
+                "        <MechanicalObject src='@../grid'/>                                                         "
+                "        <TetrahedronSetTopologyContainer name='Container' />                                       "
+                "        <TetrahedronSetTopologyModifier name='Modifier' />                                         "
+                "        <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                      "
+                "        <Hexa2TetraTopologicalMapping input='@../grid' output='@Container' />                      ";
+        }
+
+        const string scene =
+                "<?xml version='1.0'?>                                                                              "
+                "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <DefaultAnimationLoop />                                                                       "
+                + topology +
+                "        <MeshMatrixMass name='m_mass' " + massAttributes + " />                                   "
+                "    </Node>                                                                                        "
+                "</Node>                                                                                            ";
+
+        if (root != nullptr)
+            sofa::simulation::node::unload(root);
+
+        root = SceneLoaderXML::loadFromMemory("loadBoxScene", scene.c_str());
+        if (root == nullptr)
+            return nullptr;
+
+        sofa::simulation::node::initRoot(root.get());
+        return root->getTreeObject<TheMeshMatrixMass>();
+    }
+
+    static string toString(const VecMass& values)
+    {
+        std::ostringstream oss;
+        oss.precision(17);
+        oss << values;
+        return oss.str();
+    }
+
+    /// Row sums of the mass matrix actually applied by the component: M * 1, computed with addMDx
+    static VecMass computeAppliedRowSums(TheMeshMatrixMass* mass, const std::size_t nbVertices)
+    {
+        typename DataTypes::Deriv one;
+        one[0] = 1;
+
+        core::objectmodel::Data<typename DataTypes::VecDeriv> dx;
+        dx.setValue(typename DataTypes::VecDeriv(nbVertices, one));
+        core::objectmodel::Data<typename DataTypes::VecDeriv> res;
+        res.setValue(typename DataTypes::VecDeriv(nbVertices));
+
+        mass->addMDx(core::mechanicalparams::defaultInstance(), res, dx, 1.0);
+
+        VecMass rowSums(nbVertices);
+        for (std::size_t i = 0; i < nbVertices; ++i)
+            rowSums[i] = res.getValue()[i][0];
+        return rowSums;
+    }
+
+    /// Check that the total mass is the sum of all the entries of the mass matrix, both the matrix
+    /// assembled from vertexMass (diagonal) and edgeMass (both off-diagonal entries), and the matrix
+    /// actually applied by addMDx (which uses the lumped masses if lumping is enabled).
+    /// The box has a volume of 8, so the density must be totalMass / 8.
+    void checkTotalMassMatchesMassMatrix(TheMeshMatrixMass* mass)
+    {
+        const auto& vertexMass = mass->d_vertexMass.getValue();
+        const auto& edgeMass = mass->d_edgeMass.getValue();
+        const MassType totalMass = mass->getTotalMass();
+        const MassType tolerance = 1e-10 * totalMass;
+
+        if (!mass->isLumped())
+        {
+            const MassType assembledSum = std::accumulate(vertexMass.begin(), vertexMass.end(), MassType(0))
+                + 2 * std::accumulate(edgeMass.begin(), edgeMass.end(), MassType(0));
+            EXPECT_NEAR(totalMass, assembledSum, tolerance);
+        }
+
+        const VecMass rowSums = computeAppliedRowSums(mass, vertexMass.size());
+        EXPECT_NEAR(totalMass, std::accumulate(rowSums.begin(), rowSums.end(), MassType(0)), tolerance);
+
+        EXPECT_NEAR(mass->getMassDensity()[0], totalMass / 8, tolerance);
+    }
+
+    /// With lumping and vertexMass only, the given vertexMass are the lumped masses:
+    /// they are the diagonal of the applied mass matrix and sum to the total mass.
+    void check_VertexMass_Lumping_TotalMassMatchesMassMatrix(const bool hexa)
+    {
+        TheMeshMatrixMass* mass = loadBoxScene(hexa, "massDensity='1.0' lumping='1'");
+        ASSERT_NE(mass, nullptr);
+        const std::size_t nbVertices = mass->d_vertexMass.getValue().size();
+
+        VecMass vertexMass(nbVertices);
+        for (std::size_t i = 0; i < nbVertices; ++i)
+            vertexMass[i] = MassType(1.0 + 0.1 * i);
+
+        mass = loadBoxScene(hexa, "lumping='1' vertexMass='" + toString(vertexMass) + "'");
+        ASSERT_NE(mass, nullptr);
+        ASSERT_TRUE(mass->isLumped());
+
+        const MassType expectedTotalMass = std::accumulate(vertexMass.begin(), vertexMass.end(), MassType(0));
+        EXPECT_NEAR(mass->getTotalMass(), expectedTotalMass, 1e-10 * expectedTotalMass);
+
+        const VecMass rowSums = computeAppliedRowSums(mass, nbVertices);
+        for (std::size_t i = 0; i < nbVertices; ++i)
+            EXPECT_NEAR(rowSums[i], vertexMass[i], 1e-10 * vertexMass[i]);
+
+        checkTotalMassMatchesMassMatrix(mass);
+    }
+
+    /// With vertexMass and edgeMass, each edge mass is applied twice: M(i,j) and M(j,i)
+    void check_VertexAndEdgeMass_TotalMassMatchesMassMatrix(const bool hexa, const bool lumped)
+    {
+        TheMeshMatrixMass* mass = loadBoxScene(hexa, "massDensity='1.0'");
+        ASSERT_NE(mass, nullptr);
+        const std::size_t nbVertices = mass->d_vertexMass.getValue().size();
+        const std::size_t nbEdges = mass->d_edgeMass.getValue().size();
+
+        VecMass vertexMass(nbVertices);
+        for (std::size_t i = 0; i < nbVertices; ++i)
+            vertexMass[i] = MassType(1.0 + 0.1 * i);
+        VecMass edgeMass(nbEdges);
+        for (std::size_t i = 0; i < nbEdges; ++i)
+            edgeMass[i] = MassType(0.05 + 0.01 * i);
+
+        mass = loadBoxScene(hexa, string("lumping='") + (lumped ? "1" : "0") + "'"
+            + " vertexMass='" + toString(vertexMass) + "' edgeMass='" + toString(edgeMass) + "'");
+        ASSERT_NE(mass, nullptr);
+        ASSERT_EQ(mass->isLumped(), lumped);
+
+        if (!lumped)
+        {
+            const MassType expectedTotalMass = std::accumulate(vertexMass.begin(), vertexMass.end(), MassType(0))
+                + 2 * std::accumulate(edgeMass.begin(), edgeMass.end(), MassType(0));
+            EXPECT_NEAR(mass->getTotalMass(), expectedTotalMass, 1e-10 * expectedTotalMass);
+        }
+
+        checkTotalMassMatchesMassMatrix(mass);
+    }
+
+
     //---------------------------------------------------------------
     // HEXA topology
     //---------------------------------------------------------------
@@ -204,8 +368,8 @@ public:
             static const MassType volume = 8.0;
             static const MassType expectedTotalMass = 1.0f;
             static const MassType expectedDensity = expectedTotalMass / volume;
-            static const VecMass expectedVMass(8, (MassType)(expectedDensity * volume * 1 / 20));
-            static const VecMass expectedEMass(18, (MassType)(expectedDensity * volume * 1 / 40));
+            static const VecMass expectedVMass(8, (MassType)(expectedDensity * volume * 15 / 216));
+            static const VecMass expectedEMass(18, (MassType)(expectedDensity * volume * 4 / 216));
 
             check(expectedTotalMass, expectedDensity, expectedVMass, expectedEMass);
         }
@@ -245,10 +409,10 @@ public:
             EXPECT_FLOATINGPOINT_EQ( mass->getTotalMass(), expectedTotalMass);
             EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], expectedDensity);
 
-            EXPECT_FLOATINGPOINT_EQ(mass->d_vertexMass.getValue()[0], (MassType)(expectedDensity * volumeElem * 1 / 20));
-            EXPECT_FLOATINGPOINT_EQ(mass->d_vertexMass.getValue()[1], (MassType)(expectedDensity * volumeElem * 1 / 20 * 2)); // vertex shared by 2 hexa
-            EXPECT_FLOATINGPOINT_EQ(mass->d_edgeMass.getValue()[0], (MassType)(expectedDensity * volumeElem * 1 / 40 * 2)); // Edge shared by 2 hexa
-            EXPECT_FLOATINGPOINT_EQ(mass->d_edgeMass.getValue()[2], (MassType)(expectedDensity * volumeElem * 1 / 40)); 
+            EXPECT_FLOATINGPOINT_EQ(mass->d_vertexMass.getValue()[0], (MassType)(expectedDensity * volumeElem * 15 / 216));
+            EXPECT_FLOATINGPOINT_EQ(mass->d_vertexMass.getValue()[1], (MassType)(expectedDensity * volumeElem * 15 / 216 * 2)); // vertex shared by 2 hexa
+            EXPECT_FLOATINGPOINT_EQ(mass->d_edgeMass.getValue()[0], (MassType)(expectedDensity * volumeElem * 4 / 216 * 2)); // Edge shared by 2 hexa
+            EXPECT_FLOATINGPOINT_EQ(mass->d_edgeMass.getValue()[2], (MassType)(expectedDensity * volumeElem * 4 / 216)); 
         }
 
         return ;
@@ -287,10 +451,10 @@ public:
             EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), expectedTotalMass);
             EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], expectedDensity);
 
-            EXPECT_FLOATINGPOINT_EQ(mass->d_vertexMass.getValue()[0], (MassType)(expectedDensity * volumeElem * 1 / 20));
-            EXPECT_FLOATINGPOINT_EQ(mass->d_vertexMass.getValue()[1], (MassType)(expectedDensity * volumeElem * 1 / 20 * 2)); // vertex shared by 2 hexa
-            EXPECT_FLOATINGPOINT_EQ(mass->d_edgeMass.getValue()[0], (MassType)(expectedDensity * volumeElem * 1 / 40 * 2)); // Edge shared by 2 hexa
-            EXPECT_FLOATINGPOINT_EQ(mass->d_edgeMass.getValue()[2], (MassType)(expectedDensity * volumeElem * 1 / 40));
+            EXPECT_FLOATINGPOINT_EQ(mass->d_vertexMass.getValue()[0], (MassType)(expectedDensity * volumeElem * 15 / 216));
+            EXPECT_FLOATINGPOINT_EQ(mass->d_vertexMass.getValue()[1], (MassType)(expectedDensity * volumeElem * 15 / 216 * 2)); // vertex shared by 2 hexa
+            EXPECT_FLOATINGPOINT_EQ(mass->d_edgeMass.getValue()[0], (MassType)(expectedDensity * volumeElem * 4 / 216 * 2)); // Edge shared by 2 hexa
+            EXPECT_FLOATINGPOINT_EQ(mass->d_edgeMass.getValue()[2], (MassType)(expectedDensity * volumeElem * 4 / 216));
         }
 
         return ;
@@ -330,10 +494,11 @@ public:
             EXPECT_EQ(mass->isLumped(), true);
             EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), expectedTotalMass);
             EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], expectedDensity);
-            EXPECT_EQ(mass->getVertexMass()[0], 1.0);
 
-            EXPECT_FLOATINGPOINT_EQ(mass->d_vertexMass.getValue()[0], 1.0_sreal);
-            EXPECT_FLOATINGPOINT_EQ(mass->d_vertexMass.getValue()[1], 1.0_sreal);
+            // the given vertexMass are the lumped masses applied on each vertex
+            const VecMass lumpedMasses = computeAppliedRowSums(mass, 27);
+            EXPECT_FLOATINGPOINT_EQ(lumpedMasses[0], 1.0_sreal);
+            EXPECT_FLOATINGPOINT_EQ(lumpedMasses[1], 1.0_sreal);
             EXPECT_FLOATINGPOINT_EQ(mass->d_edgeMass.getValue()[0], 0.0_sreal);
             EXPECT_FLOATINGPOINT_EQ(mass->d_edgeMass.getValue()[2], 0.0_sreal);
         }
@@ -371,7 +536,7 @@ public:
             EXPECT_EQ( mass->getMassCount(), 27 );
             EXPECT_FLOATINGPOINT_EQ( mass->getTotalMass(), 2.0_sreal);
             EXPECT_FLOATINGPOINT_EQ( mass->getMassDensity()[0], SReal(mass->getTotalMass() / 8.0)); // 8 hexa
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], SReal(mass->getMassDensity()[0] / 20));
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], SReal(mass->getMassDensity()[0] * 15 / 216));
         }
 
         return ;
@@ -404,7 +569,7 @@ public:
             EXPECT_EQ( mass->getMassCount(), 27 );
             EXPECT_FLOATINGPOINT_EQ( mass->getTotalMass(), 2.0_sreal);
             EXPECT_FLOATINGPOINT_EQ( mass->getMassDensity()[0], SReal(mass->getTotalMass() / 8.0));
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], SReal(mass->getMassDensity()[0] / 20));
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], SReal(mass->getMassDensity()[0] * 15 / 216));
         }
 
         return ;
@@ -437,7 +602,7 @@ public:
             EXPECT_EQ( mass->getMassCount(), 27 );
             EXPECT_FLOATINGPOINT_EQ( mass->getTotalMass(), 8.0_sreal);
             EXPECT_FLOATINGPOINT_EQ( mass->getMassDensity()[0], 1.0_sreal);
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], 0.05_sreal);
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], SReal(1.0 * 15 / 216));
         }
 
         return ;
@@ -471,7 +636,7 @@ public:
             EXPECT_EQ( mass->getMassCount(), 27 );
             EXPECT_FLOATINGPOINT_EQ( mass->getTotalMass(), 1.0_sreal);
             EXPECT_FLOATINGPOINT_EQ( mass->getMassDensity()[0], 0.125_sreal);
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], 0.00625_sreal);
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], SReal(0.125 * 15 / 216));
         }
 
         return ;
@@ -502,7 +667,7 @@ public:
             EXPECT_EQ( mass->getMassCount(), 27 );
             EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0_sreal);
             EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125_sreal);
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], 0.00625_sreal);
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], SReal(0.125 * 15 / 216));
         }
 
         return ;
@@ -533,7 +698,7 @@ public:
             EXPECT_EQ( mass->getMassCount(), 27 );
             EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0_sreal);
             EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125_sreal);
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], 0.00625_sreal);
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], SReal(0.125 * 15 / 216));
         }
 
         return ;
@@ -565,7 +730,7 @@ public:
             EXPECT_EQ( mass->getMassCount(), 27 );
             EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0_sreal);
             EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125_sreal);
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], 0.00625_sreal);
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], SReal(0.125 * 15 / 216));
         }
 
         return ;
@@ -596,7 +761,7 @@ public:
             EXPECT_EQ( mass->getMassCount(), 27 );
             EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0_sreal);
             EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125_sreal);
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], 0.00625_sreal);
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], SReal(0.125 * 15 / 216));
         }
 
         return ;
@@ -631,7 +796,7 @@ public:
             EXPECT_EQ( mass->getMassCount(), 27 );
             EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 1.0_sreal);
             EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.125_sreal);
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], 0.00625_sreal);
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], SReal(0.125 * 15 / 216));
         }
 
         return ;
@@ -664,7 +829,7 @@ public:
             EXPECT_EQ( mass->getMassCount(), 27 );
             EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 2.0_sreal);
             EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 0.25_sreal);
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], 0.0125_sreal);
+            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], SReal(0.25 * 15 / 216));
         }
 
         return ;
@@ -827,7 +992,8 @@ public:
             EXPECT_EQ( mass->getMassCount(), 8 );
             EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 8.0_sreal);
             EXPECT_FLOATINGPOINT_EQ(mass->getMassDensity()[0], 1.0_sreal);
-            EXPECT_FLOATINGPOINT_EQ( mass->getVertexMass()[0], 1.0_sreal);
+            // the given vertexMass are the lumped masses applied on each vertex
+            EXPECT_FLOATINGPOINT_EQ(computeAppliedRowSums(mass, 8)[0], 1.0_sreal);
         }
 
         return ;
@@ -1273,8 +1439,8 @@ public:
 
         const VecMass& vMasses = mass->d_vertexMass.getValue();
         const VecMass& eMasses = mass->d_edgeMass.getValue();
-        static const MassType refValueV = (MassType)(expectedDensity * volumeElem * 1 / 20);
-        static const MassType refValueE = (MassType)(expectedDensity * volumeElem * 1 / 40);
+        static const MassType refValueV = (MassType)(expectedDensity * volumeElem * 15 / 216);
+        static const MassType refValueE = (MassType)(expectedDensity * volumeElem * 4 / 216);
 
         // check value at init
         EXPECT_EQ(vMasses.size(), 27);
@@ -1302,6 +1468,10 @@ public:
         EXPECT_EQ(vMasses.size(), 26);
         EXPECT_EQ(eMasses.size(), 87);
         EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), 7.0_sreal);
+        if (!lumped)
+        {
+            checkPositiveDefinite(mass);
+        }
 
         // check vertex mass
         EXPECT_FLOATINGPOINT_EQ(vMasses[0], refValueV); // check update of Mass when removing tetra
@@ -1584,8 +1754,8 @@ public:
 
         const VecMass& vMasses = mass->d_vertexMass.getValue();
         const VecMass& eMasses = mass->d_edgeMass.getValue();
-        static const MassType refValueV = (MassType)(expectedDensity * volumeElem * 1 / 8);
-        static const MassType refValueE = (MassType)(expectedDensity * volumeElem * 1 / 16);
+        static const MassType refValueV = (MassType)(expectedDensity * volumeElem * 5 / 36);
+        static const MassType refValueE = (MassType)(expectedDensity * volumeElem * 2 / 36);
 
         // check value at init
         EXPECT_EQ(vMasses.size(), 9);
@@ -1613,6 +1783,10 @@ public:
         EXPECT_EQ(vMasses.size(), 8);
         EXPECT_EQ(eMasses.size(), 14);
         EXPECT_FLOATINGPOINT_EQ(mass->getTotalMass(), expectedTotalMass - massElem);
+        if (!lumped)
+        {
+            checkPositiveDefinite(mass);
+        }
 
         // check vertex mass
         EXPECT_FLOATINGPOINT_EQ(vMasses[0], refValueV); // check update of Mass when removing tetra
@@ -1922,6 +2096,118 @@ public:
         EXPECT_EQ(eMasses.size(), 0);
         EXPECT_NEAR(mass->getTotalMass(), 0, 1e-4);
     }
+
+    /// Assemble the scalar mass matrix (one row per vertex) from vertexMass and edgeMass,
+    /// as addMDx does when the mass is not lumped.
+    static Eigen::MatrixXd assembleScalarMassMatrix(TheMeshMatrixMass* mass)
+    {
+        const VecMass& vMasses = mass->d_vertexMass.getValue();
+        const VecMass& eMasses = mass->d_edgeMass.getValue();
+        const auto& edges = mass->l_topology->getEdges();
+
+        Eigen::MatrixXd M = Eigen::MatrixXd::Zero(vMasses.size(), vMasses.size());
+        for (std::size_t i = 0; i < vMasses.size(); ++i)
+        {
+            M(i, i) += vMasses[i];
+        }
+        for (std::size_t i = 0; i < edges.size(); ++i)
+        {
+            M(edges[i][0], edges[i][1]) += eMasses[i];
+            M(edges[i][1], edges[i][0]) += eMasses[i];
+        }
+        return M;
+    }
+
+    /// Check that the assembled non-lumped mass matrix is positive definite and sums to totalMass
+    static void checkPositiveDefinite(TheMeshMatrixMass* mass)
+    {
+        const Eigen::MatrixXd M = assembleScalarMassMatrix(mass);
+        EXPECT_NEAR(M.sum(), mass->getTotalMass(), 1e-10 * mass->getTotalMass());
+
+        const Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> eigenSolver(M, Eigen::EigenvaluesOnly);
+        const Eigen::VectorXd& eigenvalues = eigenSolver.eigenvalues();
+        const auto nbNonPositive = (eigenvalues.array() <= 1e-12 * eigenvalues.maxCoeff()).count();
+        EXPECT_EQ(nbNonPositive, 0) << "The mass matrix has " << nbNonPositive << " non-positive eigenvalues out of "
+                                    << eigenvalues.size() << " (min eigenvalue: " << eigenvalues.minCoeff() << ")";
+    }
+
+    /// Returns M * 1 (a column of ones per dof direction), i.e. the row sums of the mass matrix
+    static VecDeriv computeMOnes(TheMeshMatrixMass* mass)
+    {
+        const auto nbDofs = mass->d_vertexMass.getValue().size();
+        Data<VecDeriv> ones(VecDeriv(nbDofs, Deriv(1, 1, 1)));
+        Data<VecDeriv> res(VecDeriv(nbDofs, Deriv()));
+        mass->addMDx(core::mechanicalparams::defaultInstance(), res, ones, 1.0);
+        return res.getValue();
+    }
+
+    /// Check that the non-lumped mass matrix is symmetric positive definite, sums to totalMass,
+    /// and that its row sums are the masses of the lumped matrix built on the same mesh.
+    void checkMassMatrix(const string& topologyNodes)
+    {
+        const auto createScene = [&topologyNodes](bool lumped)
+        {
+            const string scene =
+                "<?xml version='1.0'?>"
+                "<Node name='Root' gravity='0 -1 0' time='0' animate='0' >"
+                "    <DefaultAnimationLoop />"
+                + topologyNodes +
+                "    <MechanicalObject />"
+                "    <MeshMatrixMass name='m_mass' totalMass='2' lumping='" + (lumped ? "1" : "0") + "' />"
+                "</Node>";
+            const Node::SPtr root = SceneLoaderXML::loadFromMemory("massMatrix", scene.c_str());
+            sofa::simulation::node::initRoot(root.get());
+            return root;
+        };
+
+        const Node::SPtr root = createScene(false);
+        ASSERT_NE(root.get(), nullptr);
+        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>();
+        ASSERT_NE(mass, nullptr);
+        ASSERT_TRUE(mass->isComponentStateValid());
+        ASSERT_FALSE(mass->isLumped());
+
+        EXPECT_NEAR(mass->getTotalMass(), 2.0, 1e-10);
+        checkPositiveDefinite(mass);
+        const Eigen::MatrixXd M = assembleScalarMassMatrix(mass);
+
+        // M is applied with the same matrix as the one assembled above
+        const VecDeriv MOnes = computeMOnes(mass);
+        ASSERT_EQ(MOnes.size(), M.rows());
+        for (std::size_t i = 0; i < MOnes.size(); ++i)
+        {
+            EXPECT_NEAR(MOnes[i][0], M.row(i).sum(), 1e-12);
+        }
+
+        // the row sums are the lumped masses...
+        const Node::SPtr rootLumped = createScene(true);
+        ASSERT_NE(rootLumped.get(), nullptr);
+        TheMeshMatrixMass* lumpedMass = rootLumped->getTreeObject<TheMeshMatrixMass>();
+        ASSERT_NE(lumpedMass, nullptr);
+        ASSERT_TRUE(lumpedMass->isComponentStateValid());
+        ASSERT_TRUE(lumpedMass->isLumped());
+        EXPECT_NEAR(lumpedMass->getTotalMass(), 2.0, 1e-10);
+        const VecDeriv lumpedMasses = computeMOnes(lumpedMass);
+        ASSERT_EQ(lumpedMasses.size(), MOnes.size());
+
+        // ... and the masses used for the weight, whether lumped or not
+        const Data<VecCoord> x(VecCoord(MOnes.size(), Coord()));
+        const Data<VecDeriv> v(VecDeriv(MOnes.size(), Deriv()));
+        Data<VecDeriv> weight(VecDeriv(MOnes.size(), Deriv()));
+        Data<VecDeriv> weightLumped(VecDeriv(MOnes.size(), Deriv()));
+        mass->addForce(core::mechanicalparams::defaultInstance(), weight, x, v);
+        lumpedMass->addForce(core::mechanicalparams::defaultInstance(), weightLumped, x, v);
+
+        for (std::size_t i = 0; i < MOnes.size(); ++i)
+        {
+            EXPECT_NEAR(MOnes[i][0], lumpedMasses[i][0], 1e-12) << "vertex " << i;
+            EXPECT_NEAR(-weight.getValue()[i][1], lumpedMasses[i][0], 1e-12) << "vertex " << i;
+            EXPECT_NEAR(-weightLumped.getValue()[i][1], lumpedMasses[i][0], 1e-12) << "vertex " << i;
+        }
+
+        sofa::simulation::node::unload(root);
+        sofa::simulation::node::unload(rootLumped);
+    }
 };
 
 
@@ -1967,8 +2253,8 @@ TEST_F(MeshMatrixMass3_test, singleQuad)
     static const MassType surface = 1.0;
     static const MassType expectedTotalMass = 1.0f;
     static const MassType density = expectedTotalMass / surface;
-    static const VecMass expectedVMass(4, (MassType)(density * surface * 1 / 8));
-    static const VecMass expectedEMass(4, (MassType)(density * surface * 1 / 16));
+    static const VecMass expectedVMass(4, (MassType)(density * surface * 5 / 36));
+    static const VecMass expectedEMass(4, (MassType)(density * surface * 2 / 36));
 
     runTest(positions, topologyContainer, geometryAlgorithms, expectedTotalMass, density, expectedVMass, expectedEMass);
 }
@@ -2017,8 +2303,8 @@ TEST_F(MeshMatrixMass3_test, singleHexahedron)
     static const MassType volume = 1.0;
     static const MassType expectedTotalMass = 1.0f;
     static const MassType density = expectedTotalMass / volume;
-    static const VecMass expectedVMass(8, (MassType)(density * volume * 1 / 20));
-    static const VecMass expectedEMass(12, (MassType)(density * volume * 1 / 40));
+    static const VecMass expectedVMass(8, (MassType)(density * volume * 15 / 216));
+    static const VecMass expectedEMass(12, (MassType)(density * volume * 4 / 216));
 
     runTest(positions, topologyContainer, geometryAlgorithms, expectedTotalMass, density, expectedVMass, expectedEMass);
 }
@@ -2110,6 +2396,31 @@ TEST_F(MeshMatrixMass3_test, check_MassDensity_Initialization_Tetra){
 
 TEST_F(MeshMatrixMass3_test, check_VertexMass_Lumping_Initialization_Tetra){
     check_VertexMass_Lumping_Initialization_Tetra();
+}
+
+
+TEST_F(MeshMatrixMass3_test, check_VertexMass_Lumping_TotalMassMatchesMassMatrix_Hexa) {
+    check_VertexMass_Lumping_TotalMassMatchesMassMatrix(true);
+}
+
+TEST_F(MeshMatrixMass3_test, check_VertexMass_Lumping_TotalMassMatchesMassMatrix_Tetra) {
+    check_VertexMass_Lumping_TotalMassMatchesMassMatrix(false);
+}
+
+TEST_F(MeshMatrixMass3_test, check_VertexAndEdgeMass_TotalMassMatchesMassMatrix_Hexa_sparse) {
+    check_VertexAndEdgeMass_TotalMassMatchesMassMatrix(true, false);
+}
+
+TEST_F(MeshMatrixMass3_test, check_VertexAndEdgeMass_TotalMassMatchesMassMatrix_Tetra_sparse) {
+    check_VertexAndEdgeMass_TotalMassMatchesMassMatrix(false, false);
+}
+
+TEST_F(MeshMatrixMass3_test, check_VertexAndEdgeMass_TotalMassMatchesMassMatrix_Hexa_lumped) {
+    check_VertexAndEdgeMass_TotalMassMatchesMassMatrix(true, true);
+}
+
+TEST_F(MeshMatrixMass3_test, check_VertexAndEdgeMass_TotalMassMatchesMassMatrix_Tetra_lumped) {
+    check_VertexAndEdgeMass_TotalMassMatchesMassMatrix(false, true);
 }
 
 
@@ -2212,5 +2523,31 @@ TEST_F(MeshMatrixMass3_test, checkTopologicalChanges_Edge_lumped) {
     checkTopologicalChanges_Edge(true);
 }
 
+
+TEST_F(MeshMatrixMass3_test, checkMassMatrix_Hexa)
+{
+    EXPECT_MSG_NOEMIT(Error);
+    checkMassMatrix("<RegularGridTopology name='grid' n='4 3 5' min='0 0 0' max='3 1 2' />");
+}
+
+TEST_F(MeshMatrixMass3_test, checkMassMatrix_Quad)
+{
+    EXPECT_MSG_NOEMIT(Error);
+    checkMassMatrix("<RegularGridTopology name='grid' n='4 5 1' min='0 0 0' max='3 2 0' />");
+}
+
+TEST_F(MeshMatrixMass3_test, checkMassMatrix_Tetra)
+{
+    EXPECT_MSG_NOEMIT(Error);
+    checkMassMatrix("<RequiredPlugin pluginName='Sofa.Component.Topology.Container.Constant'/>"
+                    "<MeshTopology name='mesh' position='0 0 0  1 0 0  0 1 0  0 0 1  1 1 1' tetrahedra='0 1 2 3  1 2 3 4' />");
+}
+
+TEST_F(MeshMatrixMass3_test, checkMassMatrix_Triangle)
+{
+    EXPECT_MSG_NOEMIT(Error);
+    checkMassMatrix("<RequiredPlugin pluginName='Sofa.Component.Topology.Container.Constant'/>"
+                    "<MeshTopology name='mesh' position='0 0 0  1 0 0  0 1 0  1 1 0' triangles='0 1 2  1 3 2' />");
+}
 
 } // namespace sofa
