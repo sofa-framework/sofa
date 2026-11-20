@@ -30,6 +30,7 @@
 #include <sofa/core/objectmodel/Snapshot.h>
 #include <sofa/core/sptr.h>
 #include <sofa/simulation/Node.h>
+#include <sofa/core/objectmodel/BaseComponent.h>
 
 
 namespace sofa::simulation
@@ -37,13 +38,14 @@ namespace sofa::simulation
 
 /**
  * \brief SnapshotManager is responsible for storing and managing snapshots, whether they are kept in memory or stored on disk.
+ * The SnapshotManager is a component that you need to add to your scene to use snapshots.
  *
  * Snapshots are stored in two separate containers:
  * - m_snapshotsFromMemory for in-memory snapshots.
  * - m_snapshotsFromFiles for snapshots stored on disk.
  *
- * New snapshots can be added using addSnapshotFromMemory() and
- * addSnapshotFromFile().
+ * New snapshots can be added using addSnapshotToMemory() and
+ * addSnapshotToFile().
  *
  * Although in-memory and on-disk snapshots are handled separately,
  * both follow the same overall design:
@@ -55,12 +57,18 @@ namespace sofa::simulation
  * These functions allow sets of snapshots to be saved to and restored from a single file.
  *
  */
-class SOFA_SIMULATION_CORE_API SnapshotManager
+class SOFA_SIMULATION_CORE_API SnapshotManager : public sofa::core::objectmodel::BaseComponent
 {
 public:
+
+    SOFA_CLASS(SnapshotManager, sofa::core::objectmodel::BaseComponent);
+    sofa::core::objectmodel::Data<Index> d_numberOfSnapshots; ///< Number of snapshot inside the manager
+
+protected:
     SnapshotManager();
     ~SnapshotManager();
 
+public:
     /// Container of snapshot from Files
     std::vector<std::string> m_snapshotsFromFiles;
 
@@ -68,27 +76,36 @@ public:
     std::map<std::string, std::shared_ptr<sofa::core::objectmodel::Snapshot>> m_snapshotsFromMemory;
 
     /// Store every snapshot from files in m_recentSnapshotsFromFiles and sort them by filename
-    void addSnapshotFromFile(const std::string& path);
+    void addSnapshotToFile(const std::string& path);
 
     /// Store every snapshot in memory in m_recentSnapshotsFromMemory and sort them by simulation time
-    void addSnapshotFromMemory(const std::shared_ptr<sofa::core::objectmodel::Snapshot>& snapshot,
+    void addSnapshotToMemory(const std::shared_ptr<sofa::core::objectmodel::Snapshot>& snapshot,
                            double snapshotTime);
 
     /// Save and store a Snapshot in memory
-    void memorySave(const sofa::core::sptr<sofa::simulation::Node>& groot);
+    void memorySave();
 
     /// Load a snapshot from memory
-    void memoryLoad(sofa::core::sptr<sofa::simulation::Node>& groot);
+    void memoryLoad();
 
     /// Save and store a Snapshot to a file (or Save and store a group of Snapshot to a file when isSet is true)
-    void saveTo(const sofa::core::sptr<sofa::simulation::Node>& groot, const std::string& savePath, bool isSet);
+    void saveTo(const std::string& savePath, bool isSet);
 
     /// Load a snapshot from a file
-    void loadTo(sofa::core::sptr<sofa::simulation::Node>& groot, const std::string& outPath);
+    void loadTo(const std::string& outPath);
 
     /// Load a group of snapshots from a file
     void loadToSet(const std::string& filename);
 
+    /// Save a SnapshotObject full of data and link into the snapshot
+    std::shared_ptr<core::objectmodel::Snapshot::SnapshotObject> saveSnapshot(std::shared_ptr<core::objectmodel::Snapshot::SnapshotObject> object) const override;
+
+    /// Load data and links from the snapshot to the scene
+    void loadSnapshot(const std::shared_ptr<core::objectmodel::Snapshot::SnapshotObject>& snapshotObject) const override;
+
+protected:
+
+    void refreshNumberOfSnapshots();
 
 };
 
