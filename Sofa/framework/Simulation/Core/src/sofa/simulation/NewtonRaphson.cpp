@@ -63,7 +63,7 @@ NewtonRaphson::NewtonRaphson()
 , d_lineSearchArmijoFactor(initData(&d_lineSearchArmijoFactor, 1e-3_sreal , "lineSearchArmijoFactor", "Taken in [0,1[ it represents a tolerance on the residue in term of the linear approximation. e.g., for a value of 0.01, it means we want the solution to decrease the residue as much as 0.01 times the linear approximation in the same direction."))
 , d_residueThreshold(initData(&d_residueThreshold, 1e-9_sreal , "residueThreshold", "Threshold under which, the residue is considered to be sufficiently low. Newton algorithm will stop after reaching a lower value"))
 , d_currentResidue(initData(&d_currentResidue , "currentResidue", "Current value of the residue"))
-, d_alwaysAdvanceNewton(initData(&d_alwaysAdvanceNewton , false, "alwaysAdvanceNewton", "Even if the linesearch didn't find a better solution than the current one, take the best one along the path that is not the current guess."))
+, d_alwaysAdvanceTime(initData(&d_alwaysAdvanceTime , false, "alwaysAdvanceTime", "Even if the residual increased after the newton step, advance time anyway."))
 , d_solveVelocityConstraintFirst(initData(&d_solveVelocityConstraintFirst , false, "solveVelocityConstraintFirst", "solve separately velocity constraint violations before position constraint violations"))
 , d_parallelODESolving(initData(&d_parallelODESolving, false, "parallelODESolving", "If true, solves all the ODEs in parallel during the free motion step."))
 , m_solveConstraints(false)
@@ -290,7 +290,7 @@ void NewtonRaphson::newtonSolve(const core::ExecParams* params, core::Constraint
         // term is an approximation and the Armijo condition may be too strict or too loose.
         const SReal armijoTerm = - 2 * lineSearchArmijoFactor * oldResidue;
 
-        if (newResidue<bestresidual || d_alwaysAdvanceNewton.getValue())
+        if (newResidue<bestresidual)
         {
             bestresidual = newResidue;
             bestalpha = alpha;
@@ -342,15 +342,16 @@ void NewtonRaphson::newtonSolve(const core::ExecParams* params, core::Constraint
         {
             msg_warning_when(printLog)<<"NewtonStep increased the residual !";
         }
-        msg_info_when(printLog)<<"| -------------------------------- |";
+        msg_info_when(printLog)<<"| ------------------------------------- |";
 
         ++it ;
     }
 
     // If the newton didn't converge to a better solution, don't advance
-    if (newResidue>initialResidue)
+    if (newResidue>initialResidue && !d_alwaysAdvanceTime.getValue())
+    {
         m_advanceTime=false;
-
+    }
 
     if (printLog)
     {
@@ -378,10 +379,7 @@ void NewtonRaphson::newtonSolve(const core::ExecParams* params, core::Constraint
             solveConstraints(&mop->mparams, cparams, vop, mop, pos, vel,dt);
         }
     }
-
     intHelper.finalizeIntegrationStep(m_advanceTime);
-
-
 
     mechanicalvisitor::MechanicalResetForceVisitor resetForceVisitor(params, sofa::core::vec_id::write_access::externalForce);
     node->execute(&resetForceVisitor);

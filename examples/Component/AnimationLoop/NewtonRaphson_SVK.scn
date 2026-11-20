@@ -20,7 +20,10 @@
         <RequiredPlugin pluginName="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglSceneFrame] -->
     </Node>
 
-    <NewtonRaphson maxNbIterationsNewton="20" maxNbIterationsLineSearch="30" lineSearchReductionRate="0.3" printLog="true" alwaysAdvanceNewton="false"/>
+    <NewtonRaphson maxNbIterationsNewton="40" maxNbIterationsLineSearch="30" lineSearchReductionRate="0.3" />
+    <PreconditionedConjugateResidual maxIterations="50" tolerance="1e-9" regularizationTerm="0"/>
+
+
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
 
     <VisualGrid size="0.1"/>
@@ -47,5 +50,8 @@
                                   computeForceStrategy="sequenced" computeForceDerivStrategy="sequenced"/>
     <VonMisesStress template="Vec3,Hexahedron" name="stress" topology="@grid" stressEvaluator="@material"
                     colorMap="green yellow orange red purple #221C35"/>
+    <FixedLagrangianConstraint indices="@box_roi.indices"/>
+
+    <LinearSolverConstraintCorrection />
 
 </Node>
