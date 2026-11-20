@@ -243,9 +243,10 @@ void NewtonRaphson::newtonSolve(const core::ExecParams* params, core::Constraint
     computeCollision(params);
     //Same for geometrical stiffness
     computeGeometricalStiffness(&mop->mparams, cparams, node);
-    intHelper.computeRHS();
+    intHelper.computeRHS(true);
 
-    SReal oldResidue = intHelper.evaluateResidual();
+    SReal initialResidue = intHelper.evaluateResidual(false);
+    SReal oldResidue = initialResidue;
     SReal newResidue = oldResidue;
 
 
@@ -254,16 +255,20 @@ void NewtonRaphson::newtonSolve(const core::ExecParams* params, core::Constraint
     {
         SCOPED_TIMER_VARNAME(step_timer, "NewtonStep");
 
-        // The RHS and residual of the current guess are already available: they were computed
-        // before the loop for the first iteration, and at the end of the previous iteration
-        // otherwise.
+
         //TODO do we want to recompute this each newton step ?
         // computeGeometricalStiffness(&mop->mparams, cparams, node);
+
+        //Upate old residue to be the one of the last newton iteration
         oldResidue = newResidue;
 
         double bestresidual = oldResidue;
         double bestalpha = 0.0;
 
+        if (it != 0)
+        {
+            intHelper.computeRHS(false);
+        }
         intHelper.computeLHS();
         //Find decrease direction
         intHelper.solveLinearEquation();
@@ -274,9 +279,7 @@ void NewtonRaphson::newtonSolve(const core::ExecParams* params, core::Constraint
 
         //Already make a full step
         intHelper.updateStatesFromLinearSolution(alpha);
-
-        intHelper.computeRHS();
-        newResidue = intHelper.evaluateResidual();
+        newResidue = intHelper.evaluateResidual(true);
 
         // Compute the Armijo term for the cost function f = ||r||^2.
         // With J = dr/dX, we have \nabla f = 2 * J^T * r, hence \nabla f . p = 2 * r^T * J * p.
@@ -302,9 +305,7 @@ void NewtonRaphson::newtonSolve(const core::ExecParams* params, core::Constraint
             alpha -= delta;
 
             intHelper.updateStatesFromLinearSolution(-delta);
-
-            intHelper.computeRHS();
-            newResidue = intHelper.evaluateResidual();
+            newResidue = intHelper.evaluateResidual(true);
 
             if (newResidue<bestresidual)
             {
@@ -318,34 +319,39 @@ void NewtonRaphson::newtonSolve(const core::ExecParams* params, core::Constraint
         if (fabs(alpha - bestalpha )> std::numeric_limits<SReal>::epsilon() )
         {
             intHelper.updateStatesFromLinearSolution( bestalpha - alpha);
-
-            intHelper.computeRHS();
-            newResidue = intHelper.evaluateResidual();
+            newResidue = intHelper.evaluateResidual(true);
         }
 
-        if (printLog)
+        msg_info_when(printLog)<<"| ---------- Newton step = "<<it + 1<<" ---------- |";
+        msg_info_when(printLog)<<"Number of line search iterations = "<<lineSearchIt;
+
+        if (bestalpha < std::numeric_limits<SReal>::epsilon())
         {
-            if (newResidue>oldResidue)
-            {
-                msg_warning()<<"Newton step increased the residual";
-            }
-            msg_info()<<"Newton step = "<<it;
-            msg_info()<<"Current residue = "<<newResidue<< "   | previous residue = "<<oldResidue ;
-            msg_info()<<"Number of line search iterations = "<<lineSearchIt;
-            msg_info()<<"Final alpha / best alpha : "<<alpha << " / " <<bestalpha;
+
+            msg_warning_when(printLog)<<"Line-search didn't improve anything ! Making the full newton step...";
+
+            //LineSearch didn't improve anything let's advance the newton.
+            intHelper.updateStatesFromLinearSolution( 1.0 - bestalpha);
+            newResidue = intHelper.evaluateResidual(true);
+            bestalpha = 1.0;
         }
 
-        if (bestalpha < std::numeric_limits<SReal>::epsilon() && ! d_alwaysAdvanceNewton.getValue())
+        msg_info_when(printLog)<<"Best alpha : "<<bestalpha;
+        msg_info_when(printLog)<<"Residual evolution : "<< oldResidue << " --> "<<newResidue ;
+        if (newResidue>oldResidue)
         {
-            // If it is the first newton step then we don't advance time.
-            if (it == 0)
-                m_advanceTime=false;
-            //LineSearch didn't improve anything, no need to continue
-
-            break;
+            msg_warning_when(printLog)<<"NewtonStep increased the residual !";
         }
+        msg_info_when(printLog)<<"| -------------------------------- |";
+
         ++it ;
     }
+
+    // If the newton didn't converge to a better solution, don't advance
+    if (newResidue>initialResidue)
+        m_advanceTime=false;
+
+
     if (printLog)
     {
         if (newResidue<residueThreshold)

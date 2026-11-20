@@ -462,7 +462,7 @@ public:
         EXPECT_NEAR(m_root->getMechanicalState()->getPY(0),expectedSolution[1], 1e-10);
     }
 
-    void test1D_liouville_dynamic_compare_analytical(unsigned nbHDivision, bool lineSearch)
+    void test1D_liouville_dynamic_compare_analytical( bool lineSearch)
     {
 
         const SReal t0 = 2;
@@ -471,6 +471,7 @@ public:
         const SReal startTime = 1.8;
         const SReal finalTime = 2.2;
         const SReal dt1 = 0.002;
+        const unsigned nbHDivision = 6;
 
 
         std::vector<SReal> pos;
@@ -517,10 +518,12 @@ public:
 
         }
 
+        const std::vector<SReal> expectedSlop{1e-2, 1e-2, 1e-2, 5e-3, 3e-3, 3e-4};
+
         for (unsigned i=1; i<nbHDivision; ++i)
         {
-            EXPECT_NEAR(std::log2(pos[i-1]/pos[i]),1.0,1e-2);
-            EXPECT_NEAR(std::log2(vel[i-1]/vel[i]),1.0,1e-2);
+            EXPECT_NEAR(std::log2(pos[i-1]/pos[i]),1.0,expectedSlop[i]);
+            EXPECT_NEAR(std::log2(vel[i-1]/vel[i]),1.0,expectedSlop[i]);
         }
 
     }
@@ -567,7 +570,7 @@ TEST_F(NewtonRaphson_test , Linear2DSpring_StepByStep )
 
 TEST_F(NewtonRaphson_test , Liouville_Dynamic_Analytical )
 {
-    this->test1D_liouville_dynamic_compare_analytical(6, false);
+    this->test1D_liouville_dynamic_compare_analytical(false);
 }
 
 

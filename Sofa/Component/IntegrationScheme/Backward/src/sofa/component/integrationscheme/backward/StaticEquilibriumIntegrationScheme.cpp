@@ -49,6 +49,7 @@ void StaticEquilibriumIntegrationScheme::doSetupIntegrationStep(const core::Exec
     SOFA_UNUSED(xResult);
     simulation::common::VectorOperations::realloc(*m_vop, m_systemUnknown, "dx", this, true);
     simulation::common::VectorOperations::realloc(*m_vop, m_r0, "r0", this, true);
+    simulation::common::VectorOperations::realloc(*m_vop, m_g0, "g0", this, true, false);
 }
 
 void StaticEquilibriumIntegrationScheme::computeLHS()
@@ -65,7 +66,7 @@ void StaticEquilibriumIntegrationScheme::computeLHS()
 
 }
 
-void StaticEquilibriumIntegrationScheme::computeRHS()
+void StaticEquilibriumIntegrationScheme::computeG0()
 {
     sofa::core::behavior::MultiVecDeriv f(m_vop.get(), core::vec_id::write_access::force );
     f.clear();
@@ -79,16 +80,29 @@ void StaticEquilibriumIntegrationScheme::computeRHS()
 
         m_mop->projectResponse(m_mappingGraph,f);   // b is projected to the constrained space
 
-        m_vop->v_eq(m_r0,core::vec_id::write_access::force );
+        m_vop->v_eq(m_g0,core::vec_id::write_access::force );
     }
-
 }
 
-SReal StaticEquilibriumIntegrationScheme::evaluateResidual()
+void StaticEquilibriumIntegrationScheme::computeRHS(bool recompute)
 {
-    core::behavior::MultiVecDeriv r0(m_vop.get(), m_r0);
+    if ( recompute )
+    {
+        computeG0();
+    }
+    m_vop->v_eq(m_r0,m_g0 );
+}
 
-    return r0.dot(r0);
+SReal StaticEquilibriumIntegrationScheme::evaluateResidual(bool recompute)
+{
+    if (recompute)
+    {
+        computeG0();
+    }
+
+    core::behavior::MultiVecDeriv g0(m_vop.get(), m_g0);
+
+    return g0.dot(g0);
 }
 
 void StaticEquilibriumIntegrationScheme::solveLinearEquation()

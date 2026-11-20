@@ -58,8 +58,8 @@ public:
 
 
     virtual void computeLHS() override;
-    virtual void computeRHS() override;
-    virtual SReal evaluateResidual() override;
+    virtual void computeRHS(bool recompute) override;
+    virtual SReal evaluateResidual(bool recompute) override;
     virtual void solveLinearEquation() override;
     virtual void updateStatesFromLinearSolution(SReal alpha) override;
 

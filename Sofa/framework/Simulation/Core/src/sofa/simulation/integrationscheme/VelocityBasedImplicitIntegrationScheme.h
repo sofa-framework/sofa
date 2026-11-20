@@ -65,8 +65,8 @@ public:
     virtual void init() override;
 
     virtual void computeLHS() override;
-    virtual void computeRHS() override;
-    virtual SReal evaluateResidual() override;
+    virtual void computeRHS(bool recompute) override;
+    virtual SReal evaluateResidual(bool recompute) override;
     virtual void solveLinearEquation() override;
     virtual void updateStatesFromLinearSolution(SReal alpha) override;
     virtual void doFinalizeIntegrationStep(bool advanceTime) override;
@@ -122,6 +122,9 @@ protected:
      **/
     virtual void computeAccelerationFromVelocity(sofa::simulation::common::VectorOperations & vop, sofa::core::MultiVecDerivId& result, const sofa::core::MultiVecDerivId& velocity) = 0;
     /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ **/
+
+    void computeG0();
+    void computeG1();
 
 };
 

@@ -68,13 +68,13 @@ public:
      * The integration errors (m_r1, m_r2) are recomputed here and their contribution is always
      * added to the RHS, so that it is consistent with the full residual of the system.
      */
-    virtual void computeRHS() = 0;
+    virtual void computeRHS(bool recompute) = 0;
 
 
     /**
      * Returns the evaluation of the residual
      */
-    virtual SReal evaluateResidual() = 0;
+    virtual SReal evaluateResidual(bool recompute) = 0;
 
 
     /**
@@ -167,7 +167,7 @@ protected:
     sofa::core::MultiVecDerivId m_systemUnknown;
 
     sofa::core::MultiVecDerivId m_r0, m_r1, m_r2;
-    sofa::core::MultiVecDerivId m_r1LineStart, m_r2LineStart; ///< Integration errors at the start of the current Newton line
+    sofa::core::MultiVecDerivId m_g0, m_g1, m_g2;
 
     std::vector<sofa::core::MultiVecCoordId> m_x0;
     std::vector<sofa::core::MultiVecDerivId> m_a0, m_v0;

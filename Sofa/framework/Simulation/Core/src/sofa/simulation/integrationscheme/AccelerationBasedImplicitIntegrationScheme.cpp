@@ -47,8 +47,6 @@ void AccelerationBasedImplicitIntegrationScheme::doSetupIntegrationStep(const co
     simulation::common::VectorOperations::realloc(*m_vop, m_r0, "r0", this, true);
     simulation::common::VectorOperations::realloc(*m_vop, m_r1, "r1", this, true);
     simulation::common::VectorOperations::realloc(*m_vop, m_r2, "r2", this, true);
-    simulation::common::VectorOperations::realloc(*m_vop, m_r1LineStart, "r1LineStart", this, true);
-    simulation::common::VectorOperations::realloc(*m_vop, m_r2LineStart, "r2LineStart", this, true);
     simulation::common::VectorOperations::realloc(*m_vop, m_acceleration, "acceleration", this, true);
     simulation::common::VectorOperations::realloc(*m_vop, m_systemUnknown, "da", this, true);
 
@@ -157,8 +155,9 @@ void AccelerationBasedImplicitIntegrationScheme::computeLHS()
     m_mop->setSystemMBKMatrix(mFact, bFact, kFact, l_linearSolver.get());
 }
 
-void AccelerationBasedImplicitIntegrationScheme::computeRHS()
+void AccelerationBasedImplicitIntegrationScheme::computeRHS(bool recompute)
 {
+    SOFA_UNUSED(recompute);
     // Make sure no one modified this
     m_mop->cparams.setX(m_xResult);
     m_mop->cparams.setV(m_vResult);
@@ -236,8 +235,9 @@ void AccelerationBasedImplicitIntegrationScheme::computeRHS()
 
 }
 
-SReal AccelerationBasedImplicitIntegrationScheme::evaluateResidual()
+SReal AccelerationBasedImplicitIntegrationScheme::evaluateResidual(bool recompute)
 {
+    SOFA_UNUSED(recompute);
     core::behavior::MultiVecDeriv r0(m_vop.get(), m_r0);
 
     return r0.dot(r0) ;
@@ -257,8 +257,8 @@ void AccelerationBasedImplicitIntegrationScheme::solveLinearEquation()
     // Snapshot the integration errors of the state the linear system was built on: computeRHS
     // recomputes m_r1 and m_r2 at every trial state of the line search, but the update direction
     // must stay the one computed here.
-    m_vop->v_eq(m_r1LineStart, m_r1);
-    m_vop->v_eq(m_r2LineStart, m_r2);
+    m_vop->v_eq(m_r1, m_r1);
+    m_vop->v_eq(m_r2, m_r2);
 }
 
 void AccelerationBasedImplicitIntegrationScheme::updateStatesFromLinearSolution(SReal alpha)
@@ -281,12 +281,12 @@ void AccelerationBasedImplicitIntegrationScheme::updateStatesFromLinearSolution(
     vel.peq(m_systemUnknown, alpha * DGv);
     pos.peq(m_systemUnknown, alpha * DGx);
 
-    vel.peq(m_r2LineStart, -alpha);
-    pos.peq(m_r1LineStart, -alpha);
+    vel.peq(m_r2, -alpha);
+    pos.peq(m_r1, -alpha);
 
     const SReal pudfv = getPositionUpdateDerivedFromVelocity();
     if ( fabs(pudfv) > std::numeric_limits<SReal>::epsilon() )
-        pos.peq(m_r2LineStart, -alpha * pudfv);
+        pos.peq(m_r2, -alpha * pudfv);
 
     // TODO this collides with Free motion propagation using a MechanicalVOpVisitor and expecting a EulerImplicit
     //      future implementation of global Newton will reactivate those

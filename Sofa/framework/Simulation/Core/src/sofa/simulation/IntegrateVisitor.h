@@ -60,6 +60,7 @@ public:
                  TaskType taskType,
                  bool advanceTime,
                  SReal alpha,
+                 bool recompute,
                  sofa::core::MultiVecCoordId X = sofa::core::vec_id::write_access::position,
                  sofa::core::MultiVecDerivId V = sofa::core::vec_id::write_access::velocity,
                  bool _parallelExecution = false,
@@ -100,6 +101,11 @@ public:
         m_alpha = alpha;
     }
 
+    void setRecompute(bool recompute)
+    {
+        m_recompute = recompute;
+    }
+
     void setTaskType(TaskType taskType)
     {
         m_taskType = taskType;
@@ -118,6 +124,7 @@ public:
                                  TaskType taskType,
                                  bool advanceTime = true,
                                  SReal alpha = 1.0,
+                                 bool recompute = false,
                                  sofa::core::MultiVecCoordId X = sofa::core::vec_id::write_access::position,
                                  sofa::core::MultiVecDerivId V = sofa::core::vec_id::write_access::velocity);
 
@@ -131,6 +138,7 @@ protected:
     sofa::core::MultiVecDerivId m_vId;
 
     SReal m_result;
+    bool m_recompute;
 
     bool m_parallelExecution;
     bool m_computeForceIsolatedInteractionForceFields;
@@ -184,9 +192,9 @@ public:
                  bool computeForceIsolatedInteractionForceFields = false);
 
     void setupIntegrationStep();
-    SReal evaluateResidual();
+    SReal evaluateResidual(bool recompute);
     void computeLHS();
-    void computeRHS();
+    void computeRHS(bool recompute);
     void solveLinearEquation();
     void updateStatesFromLinearSolution(SReal alpha);
     void finalizeIntegrationStep(bool advanceTime);

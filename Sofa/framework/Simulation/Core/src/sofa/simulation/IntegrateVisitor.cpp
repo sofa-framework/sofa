@@ -39,6 +39,7 @@ SReal IntegrateVisitor::s_doProcessIS(sofa::core::behavior::BaseIntegrationSchem
                                  TaskType taskType,
                                  bool advanceTime,
                                  SReal alpha,
+                                 bool recompute,
                                  sofa::core::MultiVecCoordId X,
                                  sofa::core::MultiVecDerivId V)
 {
@@ -73,12 +74,12 @@ SReal IntegrateVisitor::s_doProcessIS(sofa::core::behavior::BaseIntegrationSchem
         }
         case COMPUTE_RHS:
         {
-            implicitIntegrationScheme->computeRHS();
+            implicitIntegrationScheme->computeRHS(recompute);
             return 0;
         }
         case EVALUATE_RESIDUAL:
         {
-            const SReal res = implicitIntegrationScheme->evaluateResidual();
+            const SReal res = implicitIntegrationScheme->evaluateResidual(recompute);
             return res;
         }
         case SOLVE_LINEAR_EQUATION:
@@ -157,7 +158,7 @@ void IntegrateVisitor::processNodeBottomUp(simulation::Node*)
 }
 
 IntegrateVisitor::IntegrateVisitor(const sofa::core::ExecParams* params, SReal _dt, TaskType taskType,
-                 bool advanceTime, SReal alpha, sofa::core::MultiVecCoordId X, sofa::core::MultiVecDerivId V,
+                 bool advanceTime, SReal alpha, bool recompute, sofa::core::MultiVecCoordId X, sofa::core::MultiVecDerivId V,
                  bool _parallelExecution, bool computeForceIsolatedInteractionForceFields)
 : Visitor(params)
 , m_dt(_dt)
@@ -167,6 +168,7 @@ IntegrateVisitor::IntegrateVisitor(const sofa::core::ExecParams* params, SReal _
 , m_xId(X)
 , m_vId(V)
 , m_result(0.0_sreal)
+, m_recompute(recompute)
 , m_parallelExecution(_parallelExecution)
 , m_computeForceIsolatedInteractionForceFields(computeForceIsolatedInteractionForceFields)
 {
@@ -181,7 +183,7 @@ void IntegrateVisitor::sequentialExecute(simulation::Node* node)
 {
     for (auto* solver : node->integrationScheme)
     {
-        m_result += s_doProcessIS(solver, this->params, node, this->m_dt, this->m_taskType, this->m_advanceTime, this->m_alpha, this->m_xId, this->m_vId );
+        m_result += s_doProcessIS(solver, this->params, node, this->m_dt, this->m_taskType, this->m_advanceTime, this->m_alpha, this->m_recompute, this->m_xId, this->m_vId );
     }
 }
 
@@ -192,7 +194,7 @@ void IntegrateVisitor::parallelExecute(simulation::Node* node)
 
     for (auto* solver : node->integrationScheme)
     {
-        m_tasks.emplace_back(&m_status, [this, solver, node]()->SReal {return s_doProcessIS(solver, this->params, node, this->m_dt, this->m_taskType, this->m_advanceTime, this->m_alpha, this->m_xId, this->m_vId );});
+        m_tasks.emplace_back(&m_status, [this, solver, node]()->SReal {return s_doProcessIS(solver, this->params, node, this->m_dt, this->m_taskType, this->m_advanceTime, this->m_alpha, this->m_recompute, this->m_xId, this->m_vId );});
         taskScheduler->addTask(&m_tasks.back());
     }
 }
@@ -215,7 +217,7 @@ IntegrationHelper::IntegrationHelper(const sofa::core::ExecParams* params,
                  sofa::core::MultiVecDerivId V ,
                  bool parallelExecution ,
                  bool computeForceIsolatedInteractionForceFields )
-    : m_visitor(params, dt, IntegrateVisitor::TaskType::NONE, true, 1.0, X, V, parallelExecution, computeForceIsolatedInteractionForceFields)
+    : m_visitor(params, dt, IntegrateVisitor::TaskType::NONE, true, 1.0, false, X, V, parallelExecution, computeForceIsolatedInteractionForceFields)
     , m_params(params)
 {}
 
@@ -226,10 +228,11 @@ void  IntegrationHelper::setupIntegrationStep()
     m_visitor.execute(m_node);
 }
 
-SReal IntegrationHelper::evaluateResidual()
+SReal IntegrationHelper::evaluateResidual(bool recompute)
 {
     m_visitor.resetResult();
     helper::ScopedAdvancedTimer timer("evaluateResidual");
+    m_visitor.setRecompute(recompute);
     m_visitor.setTaskType(IntegrateVisitor::TaskType::EVALUATE_RESIDUAL);
     m_visitor.execute(m_node);
     return m_visitor.getResult();
@@ -242,13 +245,14 @@ void  IntegrationHelper::computeLHS()
     m_visitor.execute(m_node);
 }
 
-void  IntegrationHelper::computeRHS()
+void  IntegrationHelper::computeRHS(bool recompute)
 {
     helper::ScopedAdvancedTimer timer("computeRHS");
     mechanicalvisitor::MechanicalResetForceVisitor resetForceVisitor(m_params, sofa::core::vec_id::write_access::externalForce);
     resetForceVisitor.execute(m_node);
 
     m_visitor.setTaskType(IntegrateVisitor::TaskType::COMPUTE_RHS);
+    m_visitor.setRecompute(recompute);
     m_visitor.execute(m_node);
 }
 
