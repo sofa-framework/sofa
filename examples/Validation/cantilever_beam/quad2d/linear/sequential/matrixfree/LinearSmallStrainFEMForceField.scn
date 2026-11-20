@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<Node name="root" dt="0.01" gravity="0 -9.81 0">
+    <include href="../../../../CantileverBeam_ElementFEMForceField2d.xml"/>
+
+    <CGLinearSolver iterations="250" name="linear_solver" tolerance="1.0e-12" threshold="1.0e-12" />
+
+    <LinearSmallStrainFEMForceField name="FEM" template="Vec2,Quad"
+                                    youngModulus="2e6" poissonRatio="0.45" topology="@grid"
+                                    computeForceStrategy="sequenced" computeForceDerivStrategy="sequenced"/>
+    <VonMisesStress template="Vec2,Quad" name="stress" topology="@grid" stressEvaluator="@FEM"
+                    colorMap="green yellow orange red purple #221C35" showEdges="true" elementSpace="0" lineWidth="1"/>
+
+</Node>
