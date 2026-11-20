@@ -132,7 +132,7 @@ protected:
     void computeG2();
 
 
-    virtual unsigned getUnknownDerivativeOrder() const
+    virtual unsigned getUnknownDerivativeOrder() const override
     {
         return 2;
     }

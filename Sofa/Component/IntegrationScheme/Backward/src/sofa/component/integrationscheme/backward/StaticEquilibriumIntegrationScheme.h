@@ -64,7 +64,7 @@ protected:
     void computeG0();
 
 
-    virtual unsigned getUnknownDerivativeOrder() const
+    virtual unsigned getUnknownDerivativeOrder() const override
     {
         return 0;
     }
