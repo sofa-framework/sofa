@@ -30,6 +30,7 @@
 #include <sofa/simulation/MappingGraphMechanicalOperations.h>
 #include <sofa/simulation/MappingGraph.h>
 #include <sofa/simulation/mappinggraph/MappingGraphUser.h>
+#include <sofa/simulation/integrationscheme/UnknownPredictor.h>
 
 namespace sofa::simulation::common
 {
@@ -48,6 +49,7 @@ class SOFA_SIMULATION_CORE_API ImplicitIntegrationScheme :
 public:
     SOFA_ABSTRACT_CLASS2(ImplicitIntegrationScheme, sofa::core::behavior::BaseIntegrationScheme, sofa::core::behavior::LinearSolverAccessor);
 
+
     /**
      * Template method pattern is implemented here to ensure some data/member are rightly initialized
      * before solving. This method internally calls doSetupIntegrationStep that can be overridden.
@@ -61,37 +63,44 @@ public:
     /**
      * Compute the system matrix.
      */
-    virtual void computeLHS(bool firstIteration = false) = 0;
+    virtual void computeLHS() = 0;
 
-     /**
-     * compute the current RHS.
+    /**
+     * Compute the current RHS (Schur complement of the full residual) at the current guess.
+     * The integration errors (m_r1, m_r2) are recomputed here and their contribution is always
+     * added to the RHS, so that it is consistent with the full residual of the system.
      */
-    virtual void computeRHS(bool firstIteration = false) = 0;
+    virtual void computeRHS(bool recompute) = 0;
 
 
     /**
      * Returns the evaluation of the residual
      */
-    virtual SReal evaluateResidual() = 0;
+    virtual SReal evaluateResidual(bool recompute) = 0;
 
 
     /**
      * Solve the linear equation from a Newton iteration, i.e. it computes (x^{i+1}-x^i).
+     * The integration errors are snapshotted (m_r1LineStart, m_r2LineStart) so that
+     * updateStatesFromLinearSolution can be called several times along the same line.
      */
     virtual void solveLinearEquation() = 0;
 
     /**
      * Once (x^{i+1}-x^i) has been computed, the result is used internally to update the current
-     * guess. It computes x^{i+1} += alpha * dx, where dx is the result of the linear system. It is
-     * not necessary to share the result with the Newton-Raphson method.
+     * guess. It computes X^{i+1} += alpha * dX, where dX is the full Newton update, i.e. the result
+     * of the linear system combined with the integration errors snapshotted in
+     * solveLinearEquation. It is not necessary to share the result with the Newton-Raphson method.
      */
-    virtual void updateStatesFromLinearSolution(SReal alpha, bool firstIteration = false) = 0;
+    virtual void updateStatesFromLinearSolution(SReal alpha) = 0;
 
     /**
      * This method is called after the integration step is completed.
      */
-    virtual void finalizeIntegrationStep()
-    {  };
+    virtual void finalizeIntegrationStep(bool advanceTime);
+
+    virtual void doFinalizeIntegrationStep(bool advanceTime)
+    { SOFA_UNUSED(advanceTime); }
 
     /**
      * @param params Parameters for vector and mechanical operations
@@ -133,9 +142,29 @@ public:
     /// This method is used to compute the compliance for contact corrections.
     SReal getPositionIntegrationFactor() const override = 0;
 
+    bool isImplicit() const final
+    {
+        return true;
+    }
+
+    virtual unsigned getUnknownDerivativeOrder() const = 0;
+
+
+
     Data<SReal> d_rayleighStiffness; ///< Rayleigh damping coefficient related to stiffness, > 0
     Data<SReal> d_rayleighMass; ///< Rayleigh damping coefficient related to mass, > 0
 
+    SingleLink<ImplicitIntegrationScheme, UnknownPredictor, sofa::BaseLink::FLAG_STOREPATH | sofa::BaseLink::FLAG_STRONGLINK> l_unknownPredictor;
+
+
+    sofa::core::MultiVecCoordId m_xResult;
+    sofa::core::MultiVecDerivId m_vResult;
+    sofa::core::MultiVecDerivId m_systemUnknown;
+
+    sofa::core::MultiVecDerivId m_acceleration;
+
+    std::shared_ptr<sofa::simulation::common::VectorOperations > m_vop;
+    std::unique_ptr<sofa::simulation::common::MappingGraphMechanicalOperations> m_mop;
 
 protected:
 
@@ -150,21 +179,14 @@ protected:
     virtual sofa::Size getIntegrationSchemeTimeOrder() const = 0;
 
     const core::ExecParams* m_params;
-    sofa::core::MultiVecCoordId m_xResult;
-    sofa::core::MultiVecDerivId m_vResult;
-    sofa::core::MultiVecDerivId m_systemUnknown;
 
     sofa::core::MultiVecDerivId m_r0, m_r1, m_r2;
+    sofa::core::MultiVecDerivId m_g0, m_g1, m_g2;
 
     std::vector<sofa::core::MultiVecCoordId> m_x0;
     std::vector<sofa::core::MultiVecDerivId> m_a0, m_v0;
     bool m_passedStatesValid;
 
-    sofa::core::MultiVecDerivId m_acceleration;
-
-
-    std::shared_ptr<sofa::simulation::common::VectorOperations > m_vop;
-    std::unique_ptr<sofa::simulation::common::MappingGraphMechanicalOperations> m_mop;
 };
 } // namespace sofa::component::integrationscheme
 

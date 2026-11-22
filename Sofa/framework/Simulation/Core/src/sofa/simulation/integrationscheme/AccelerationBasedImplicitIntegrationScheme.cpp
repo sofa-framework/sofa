@@ -47,6 +47,9 @@ void AccelerationBasedImplicitIntegrationScheme::doSetupIntegrationStep(const co
     simulation::common::VectorOperations::realloc(*m_vop, m_r0, "r0", this, true);
     simulation::common::VectorOperations::realloc(*m_vop, m_r1, "r1", this, true);
     simulation::common::VectorOperations::realloc(*m_vop, m_r2, "r2", this, true);
+    simulation::common::VectorOperations::realloc(*m_vop, m_g0, "g0", this, true, false);
+    simulation::common::VectorOperations::realloc(*m_vop, m_g1, "g1", this, true, false);
+    simulation::common::VectorOperations::realloc(*m_vop, m_g2, "g2", this, true, false);
     simulation::common::VectorOperations::realloc(*m_vop, m_acceleration, "acceleration", this, true);
     simulation::common::VectorOperations::realloc(*m_vop, m_systemUnknown, "da", this, true);
 
@@ -132,10 +135,78 @@ void AccelerationBasedImplicitIntegrationScheme::doSetupIntegrationStep(const co
 
 }
 
-void AccelerationBasedImplicitIntegrationScheme::computeLHS(bool firstIteration)
+void AccelerationBasedImplicitIntegrationScheme::computeG0()
 {
-    SOFA_UNUSED(firstIteration);
+    m_mop->cparams.setX(m_xResult);
+    m_mop->cparams.setV(m_vResult);
 
+    m_mop->mparams.setX(m_xResult);
+    m_mop->mparams.setV(m_vResult);
+
+    sofa::core::behavior::MultiVecDeriv f(m_vop.get(), core::vec_id::write_access::force );
+    // Let's make sure f is cleared between each Newton steps
+    f.clear();
+    // The other one don't need to be clear as they are recomputed and not updated by the real IS impl
+
+    {
+        SCOPED_TIMER("ComputeForce");
+        m_mop->mparams.setImplicit(true); // this solver is implicit
+        // compute the net forces at the beginning of the time step
+        m_mop->computeForce(m_mappingGraph, f, true, true, nullptr);
+    }
+
+    {
+        SCOPED_TIMER("Compute G0");
+
+        m_vop->v_eq(m_g0, f, 1.0);
+
+        // This computes the explicit part of the Rayleigh damping
+        if (   fabs(d_rayleighMass.getValue()) > std::numeric_limits<SReal>::epsilon()
+            || fabs(d_rayleighStiffness.getValue()) > std::numeric_limits<SReal>::epsilon())
+        {
+            m_mop->addMBKv(m_mappingGraph, m_g0, core::MatricesFactors::M(-d_rayleighMass.getValue()),
+            core::MatricesFactors::B(0),
+            core::MatricesFactors::K(d_rayleighStiffness.getValue()));
+        }
+
+        auto backV = m_mop->mparams.v();
+
+        m_mop->mparams.setV(m_acceleration);
+        simulation::common::DifferentialOperations::pushforwardTangent(m_mappingGraph, m_mop->mparams, m_acceleration);
+
+        m_mop->addMBKv(m_mappingGraph, m_g0, core::MatricesFactors::M(-1.0),
+                    core::MatricesFactors::B(0),
+                    core::MatricesFactors::K(0));
+
+        m_mop->mparams.setV(backV);
+    }
+
+}
+
+void AccelerationBasedImplicitIntegrationScheme::computeG1()
+{
+    m_mop->cparams.setX(m_xResult);
+    m_mop->cparams.setV(m_vResult);
+
+    m_mop->mparams.setX(m_xResult);
+    m_mop->mparams.setV(m_vResult);
+
+    computeCurrentPositionIntegrationError (*m_vop, m_g1, m_xResult, m_vResult, m_acceleration);
+}
+
+void AccelerationBasedImplicitIntegrationScheme::computeG2()
+{
+    m_mop->cparams.setX(m_xResult);
+    m_mop->cparams.setV(m_vResult);
+
+    m_mop->mparams.setX(m_xResult);
+    m_mop->mparams.setV(m_vResult);
+
+    computeCurrentVelocityIntegrationError (*m_vop, m_g2, m_vResult, m_acceleration);
+}
+
+void AccelerationBasedImplicitIntegrationScheme::computeLHS()
+{
     // Make sure no one modified this
     m_mop->cparams.setX(m_xResult);
     m_mop->cparams.setV(m_vResult);
@@ -157,7 +228,7 @@ void AccelerationBasedImplicitIntegrationScheme::computeLHS(bool firstIteration)
     m_mop->setSystemMBKMatrix(mFact, bFact, kFact, l_linearSolver.get());
 }
 
-void AccelerationBasedImplicitIntegrationScheme::computeRHS(bool firstIteration)
+void AccelerationBasedImplicitIntegrationScheme::computeRHS(bool recompute)
 {
     // Make sure no one modified this
     m_mop->cparams.setX(m_xResult);
@@ -166,63 +237,35 @@ void AccelerationBasedImplicitIntegrationScheme::computeRHS(bool firstIteration)
     m_mop->mparams.setX(m_xResult);
     m_mop->mparams.setV(m_vResult);
 
-    sofa::core::behavior::MultiVecDeriv f(m_vop.get(), core::vec_id::write_access::force );
-    // Let's make sure f is cleared between each Newton steps
-    f.clear();
-    // The other one don't need to be clear as they are recomputed and not updated by the real IS impl
-
-    {
-        SCOPED_TIMER("ComputeForce");
-        m_mop->mparams.setImplicit(true); // this solver is implicit
-        // compute the net forces at the beginning of the time step
-        m_mop->computeForce(m_mappingGraph, f, true, true, nullptr);
-    }
-
     {
         SCOPED_TIMER("ComputeRHTerm");
 
-        m_vop->v_eq(m_r0, f, 1.0);
-
-        // This computes the explicit part of the Rayleigh damping
-        if (   fabs(d_rayleighMass.getValue()) > std::numeric_limits<SReal>::epsilon()
-            || fabs(d_rayleighStiffness.getValue()) > std::numeric_limits<SReal>::epsilon())
+        if (recompute)
         {
-            m_mop->addMBKv(m_mappingGraph, m_r0, core::MatricesFactors::M(-d_rayleighMass.getValue()),
-            core::MatricesFactors::B(0),
-            core::MatricesFactors::K(d_rayleighStiffness.getValue()));
+            computeG0();
+            computeG1();
+            computeG1();
         }
 
-
+        m_vop->v_eq(m_r0, m_g0, 1.0);
+        m_vop->v_eq(m_r1, m_g1, 1.0);
+        m_vop->v_eq(m_r2, m_g2, 1.0);
 
         auto backV = m_mop->mparams.v();
 
-        // R1 and R2 should be equal to 0 in theory when integration scheme is linear. But let's
-        // recompute them anyway to compute the residual
-        computeCurrentPositionIntegrationError (*m_vop, m_r1, m_xResult, m_vResult, m_acceleration);
-        computeCurrentVelocityIntegrationError (*m_vop, m_r2, m_vResult, m_acceleration);
+        simulation::common::DifferentialOperations::pushforwardTangent(m_mappingGraph, m_mop->mparams, m_r1);
+        simulation::common::DifferentialOperations::pushforwardTangent(m_mappingGraph, m_mop->mparams, m_r2);
 
-        if (firstIteration)
-        {
-            simulation::common::DifferentialOperations::pushforwardTangent(m_mappingGraph, m_mop->mparams, m_r1);
-            simulation::common::DifferentialOperations::pushforwardTangent(m_mappingGraph, m_mop->mparams, m_r2);
+        m_mop->mparams.setV(m_r1);
+        m_mop->addMBKv(m_mappingGraph, m_r0, core::MatricesFactors::M(0.0),
+                       core::MatricesFactors::B(0),
+                       core::MatricesFactors::K(-1.0));
 
-            m_mop->mparams.setV(m_r1);
-            m_mop->addMBKv(m_mappingGraph, m_r0, core::MatricesFactors::M(0.0),
-                           core::MatricesFactors::B(0),
-                           core::MatricesFactors::K(-1.0));
+        m_mop->mparams.setV(m_r2);
+        m_mop->addMBKv(m_mappingGraph, m_r0, core::MatricesFactors::M(d_rayleighMass.getValue()),
+                    core::MatricesFactors::B(-1.0),
+                    core::MatricesFactors::K(-getPositionUpdateDerivedFromVelocity() - d_rayleighStiffness.getValue()));
 
-            m_mop->mparams.setV(m_r2);
-            m_mop->addMBKv(m_mappingGraph, m_r0, core::MatricesFactors::M(d_rayleighMass.getValue()),
-                        core::MatricesFactors::B(-1.0),
-                        core::MatricesFactors::K(-getPositionUpdateDerivedFromVelocity() - d_rayleighStiffness.getValue()));
-        }
-
-        m_mop->mparams.setV(m_acceleration);
-        simulation::common::DifferentialOperations::pushforwardTangent(m_mappingGraph, m_mop->mparams, m_acceleration);
-
-        m_mop->addMBKv(m_mappingGraph, m_r0, core::MatricesFactors::M(-1.0),
-                    core::MatricesFactors::B(0),
-                    core::MatricesFactors::K(0));
         m_mop->mparams.setV(backV);
 
         // Apply projective constraints to the full residual
@@ -237,13 +280,26 @@ void AccelerationBasedImplicitIntegrationScheme::computeRHS(bool firstIteration)
 
 }
 
-SReal AccelerationBasedImplicitIntegrationScheme::evaluateResidual()
+SReal AccelerationBasedImplicitIntegrationScheme::evaluateResidual(bool recompute)
 {
-    core::behavior::MultiVecDeriv r0(m_vop.get(), m_r0);
-    core::behavior::MultiVecDeriv r1(m_vop.get(), m_r1);
-    core::behavior::MultiVecDeriv r2(m_vop.get(), m_r2);
+    if (recompute)
+    {
+        computeG0();
+        computeG1();
+        computeG2();
+    }
 
-    return r0.dot(r0) + r1.dot(r1) + r2.dot(r2);
+    // /TODO is it required here to project those values ?
+    m_mop->projectResponse(m_mappingGraph,m_g0);
+    m_mop->projectResponse(m_mappingGraph,m_g1);
+    m_mop->projectResponse(m_mappingGraph,m_g2);
+
+
+    core::behavior::MultiVecDeriv g0(m_vop.get(), m_g0);
+    core::behavior::MultiVecDeriv g1(m_vop.get(), m_g1);
+    core::behavior::MultiVecDeriv g2(m_vop.get(), m_g2);
+
+    return g0.dot(g0) + g1.dot(g1) + g2.dot(g2);
 }
 
 void AccelerationBasedImplicitIntegrationScheme::solveLinearEquation()
@@ -258,7 +314,7 @@ void AccelerationBasedImplicitIntegrationScheme::solveLinearEquation()
     simulation::common::DifferentialOperations::pushforwardTangent(m_mappingGraph, m_mop->mparams, m_systemUnknown);
 }
 
-void AccelerationBasedImplicitIntegrationScheme::updateStatesFromLinearSolution(SReal alpha, bool firstIteration)
+void AccelerationBasedImplicitIntegrationScheme::updateStatesFromLinearSolution(SReal alpha)
 {
     sofa::core::behavior::MultiVecCoord pos(m_vop.get(), m_xResult);
     sofa::core::behavior::MultiVecDeriv vel(m_vop.get(), m_vResult );
@@ -270,27 +326,27 @@ void AccelerationBasedImplicitIntegrationScheme::updateStatesFromLinearSolution(
     const SReal DGx = getPositionUpdateDerivedFromVelocity()*getVelocityUpdateDerivedFromAcceleration() + getPositionUpdateDerivedFromAcceleration();
     const SReal DGv = getVelocityUpdateDerivedFromAcceleration();
 
-    //Update position, velocity and acceleration w/r to unknown
+    // Full Newton update, scaled by alpha:
+    //   da = unknown
+    //   dv = DGv * da - R2
+    //   dx = DGx * da - R1 - (dx/dv) * R2
     acc.peq(m_systemUnknown, alpha);
     vel.peq(m_systemUnknown, alpha * DGv);
     pos.peq(m_systemUnknown, alpha * DGx);
 
-    //TODO make this work with alpha, iteration might be still 0 but we are in the linesearch algo and we don't want to remove this each time...
-    if (firstIteration)
-    {
-        vel.peq(m_r2, -1.0);
-        pos.peq(m_r1, -1.0);
+    vel.peq(m_r2, -alpha);
+    pos.peq(m_r1, -alpha);
 
-        const SReal pudfv = getPositionUpdateDerivedFromVelocity();
-        if ( fabs(pudfv) > std::numeric_limits<SReal>::epsilon() )
-            pos.peq(m_r2, -pudfv);
-    }
+    const SReal pudfv = getPositionUpdateDerivedFromVelocity();
+    if ( fabs(pudfv) > std::numeric_limits<SReal>::epsilon() )
+        pos.peq(m_r2, -alpha * pudfv);
 
     // TODO this collides with Free motion propagation using a MechanicalVOpVisitor and expecting a EulerImplicit
     //      future implementation of global Newton will reactivate those
-    // simulation::common::DifferentialOperations::pushforwardCoord(m_mappingGraph, m_mop->mparams, pos);
-    // simulation::common::DifferentialOperations::pushforwardTangent(m_mappingGraph, m_mop->mparams, vel);
-    // simulation::common::DifferentialOperations::pushforwardTangent(m_mappingGraph, m_mop->mparams, acc);
+    simulation::common::DifferentialOperations::pushforwardCoord(m_mappingGraph, m_mop->mparams, pos);
+    simulation::common::DifferentialOperations::pushforwardTangent(m_mappingGraph, m_mop->mparams, vel);
+    simulation::common::DifferentialOperations::pushforwardTangent(m_mappingGraph, m_mop->mparams, acc);
+
 }
 
 
@@ -305,7 +361,14 @@ SReal AccelerationBasedImplicitIntegrationScheme::getPositionIntegrationFactor()
     return getPositionUpdateDerivedFromVelocity()*getVelocityUpdateDerivedFromAcceleration() + getPositionUpdateDerivedFromAcceleration();
 }
 
-
+void  AccelerationBasedImplicitIntegrationScheme::doFinalizeIntegrationStep(bool advanceTime)
+{
+    if (!advanceTime)
+    {
+        m_vop->v_eq(m_acceleration, m_a0.back());
+        m_mop->propagateDx(m_acceleration );
+    }
+}
 
 
 } // namespace sofa::component::integrationscheme::forward

@@ -87,6 +87,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/behavior/BaseOrderingMethod.h
     ${SRC_ROOT}/behavior/BaseProjectiveConstraintSet.h
     ${SRC_ROOT}/behavior/BaseRotationFinder.h
+    ${SRC_ROOT}/behavior/BaseTimeIntegrator.h
     ${SRC_ROOT}/behavior/BaseVectorOperations.h
     ${SRC_ROOT}/behavior/BlocMatrixWriter.h
     ${SRC_ROOT}/behavior/BlockType.h
@@ -276,6 +277,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/behavior/BaseMechanicalState.cpp
     ${SRC_ROOT}/behavior/BaseOrderingMethod.cpp
     ${SRC_ROOT}/behavior/BaseProjectiveConstraintSet.cpp
+    ${SRC_ROOT}/behavior/BaseTimeIntegrator.cpp
     ${SRC_ROOT}/behavior/ConstraintCorrection.cpp
     ${SRC_ROOT}/behavior/ConstraintResolution.cpp
     ${SRC_ROOT}/behavior/ConstraintSolver.cpp

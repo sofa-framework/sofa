@@ -27,12 +27,14 @@ set(HEADER_FILES
     ${SRC_ROOT}/MechanicalVPrintVisitor.h
     ${SRC_ROOT}/MechanicalVisitor.h
     ${SRC_ROOT}/MutationListener.h
+    ${SRC_ROOT}/NewtonRaphson.h
     ${SRC_ROOT}/Node.h
     ${SRC_ROOT}/Node.inl
     ${SRC_ROOT}/ParallelSparseMatrixProduct.h
     ${SRC_ROOT}/PipelineImpl.h
     ${SRC_ROOT}/PrintVisitor.h
     ${SRC_ROOT}/PropagateEventVisitor.h
+    ${SRC_ROOT}/IntegrateVisitor.h
     ${SRC_ROOT}/RequiredPlugin.h
     ${SRC_ROOT}/ResetVisitor.h
     ${SRC_ROOT}/SceneLoaderFactory.h
@@ -166,6 +168,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/integrationscheme/VelocityBasedImplicitIntegrationScheme.h
     ${SRC_ROOT}/integrationscheme/ExplicitIntegrationScheme.h
     ${SRC_ROOT}/integrationscheme/ImplicitIntegrationScheme.h
+    ${SRC_ROOT}/integrationscheme/UnknownPredictor.h
 )
 
 set(SOURCE_FILES
@@ -192,9 +195,11 @@ set(SOURCE_FILES
     ${SRC_ROOT}/MechanicalVisitor.cpp
     ${SRC_ROOT}/MutationListener.cpp
     ${SRC_ROOT}/Node.cpp
+    ${SRC_ROOT}/NewtonRaphson.cpp
     ${SRC_ROOT}/PipelineImpl.cpp
     ${SRC_ROOT}/PrintVisitor.cpp
     ${SRC_ROOT}/PropagateEventVisitor.cpp
+    ${SRC_ROOT}/IntegrateVisitor.cpp
     ${SRC_ROOT}/RequiredPlugin.cpp
     ${SRC_ROOT}/ResetVisitor.cpp
     ${SRC_ROOT}/SceneLoaderFactory.cpp
@@ -319,6 +324,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/integrationscheme/VelocityBasedImplicitIntegrationScheme.cpp
     ${SRC_ROOT}/integrationscheme/ImplicitIntegrationScheme.cpp
     ${SRC_ROOT}/integrationscheme/ExplicitIntegrationScheme.cpp
+    ${SRC_ROOT}/integrationscheme/UnknownPredictor.cpp
 
 )
 

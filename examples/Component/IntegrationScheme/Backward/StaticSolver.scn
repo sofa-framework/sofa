@@ -13,7 +13,7 @@
         <RequiredPlugin pluginName="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
         <RequiredPlugin pluginName="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
     </Node>
-    <DefaultAnimationLoop parallelODESolving="true"/>
+    <NewtonRaphson maxNbIterationsNewton="50" maxNbIterationsLineSearch="20" lineSearchReductionRate="0.3" printLog="true"/>
 
     <VisualStyle displayFlags="hideBehaviorModels hideCollisionModels hideMappings hideForceFields" />
 

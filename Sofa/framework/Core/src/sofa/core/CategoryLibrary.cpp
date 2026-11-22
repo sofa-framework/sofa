@@ -25,7 +25,7 @@
 #include <sofa/core/CategoryLibrary.h>
 #include <sofa/core/CollisionModel.h>
 #include <sofa/core/DataEngine.h>
-#include <sofa/core/behavior/BaseAnimationLoop.h>
+#include <sofa/core/behavior/BaseTimeIntegrator.h>
 #include <sofa/core/behavior/BaseConstraintCorrection.h>
 #include <sofa/core/behavior/BaseConstraintSet.h>
 #include <sofa/core/behavior/BaseController.h>
@@ -207,8 +207,8 @@ void CategoryLibrary::getCategories(const objectmodel::BaseClass* mclass,
         v.push_back("OrderingMethod");
     if (mclass->hasParent(behavior::LinearSolver::GetClass()))
         v.push_back("LinearSolver");
-    if (mclass->hasParent(behavior::BaseAnimationLoop::GetClass()))
-        v.push_back("AnimationLoop");
+    if (mclass->hasParent(behavior::BaseTimeIntegrator::GetClass()))
+        v.push_back("TimeIntegrator");
     // Just like Mass and ForceField, we don't want TopologyObject to appear in the Topology category
     if (mclass->hasParent(topology::Topology::GetClass()) && !mclass->hasParent(topology::BaseTopologyObject::GetClass()))
         v.push_back("Topology");

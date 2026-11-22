@@ -26,21 +26,23 @@
 #include <sofa/defaulttype/VecTypes.h>
 
 //Including Simulation
-#include <sofa/component/solidmechanics/tensormass/TetrahedralTensorMassForceField.h>
-#include <sofa/component/solidmechanics/fem/elastic/TetrahedralCorotationalFEMForceField.h>
-#include <sofa/component/statecontainer/MechanicalObject.h>
-#include <sofa/component/mechanicalload/TrianglePressureForceField.h>
-#include <sofa/component/linearsolver/iterative/CGLinearSolver.h>
-#include <sofa/component/engine/select/BoxROI.h>
-#include <sofa/component/engine/generate/GenerateCylinder.h>
-#include <sofa/component/topology/container/dynamic/TetrahedronSetTopologyContainer.h>
-#include <sofa/component/topology/container/dynamic/TetrahedronSetGeometryAlgorithms.h>
-#include <sofa/component/mass/MeshMatrixMass.h>
-#include <sofa/component/integrationscheme/backward/StaticEquilibriumIntegrationScheme.h>
-#include <sofa/component/constraint/projective/FixedProjectiveConstraint.h>
 #include <sofa/component/constraint/projective/FixedPlaneProjectiveConstraint.h>
+#include <sofa/component/constraint/projective/FixedProjectiveConstraint.h>
 #include <sofa/component/constraint/projective/LineProjectiveConstraint.h>
+#include <sofa/component/engine/generate/GenerateCylinder.h>
+#include <sofa/component/engine/select/BoxROI.h>
+#include <sofa/component/integrationscheme/backward/StaticEquilibriumIntegrationScheme.h>
+#include <sofa/component/linearsolver/iterative/CGLinearSolver.h>
+#include <sofa/component/mass/MeshMatrixMass.h>
+#include <sofa/component/mechanicalload/TrianglePressureForceField.h>
+#include <sofa/component/solidmechanics/fem/elastic/TetrahedralCorotationalFEMForceField.h>
+#include <sofa/component/solidmechanics/tensormass/TetrahedralTensorMassForceField.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
+#include <sofa/component/topology/container/dynamic/TetrahedronSetGeometryAlgorithms.h>
+#include <sofa/component/topology/container/dynamic/TetrahedronSetTopologyContainer.h>
 #include <sofa/simulation/DefaultAnimationLoop.h>
+
+#include "sofa/simulation/NewtonRaphson.h"
 
 namespace sofa {
 
@@ -85,8 +87,9 @@ CylinderTractionStruct<DataTypes>  createCylinderTractionScene(
     root->setAnimate(false);
     root->setDt(0.05);
 
-    sofa::modeling::addNew<sofa::simulation::DefaultAnimationLoop>(root, "animationLoop");
-
+    auto nr = sofa::modeling::addNew<sofa::simulation::NewtonRaphson>(root, "animationLoop");
+    nr->d_maxNbIterationsNewton.setValue(1);
+    nr->d_maxNbIterationsLineSearch.setValue(1);
     // GenerateCylinder object
     typename sofa::component::engine::generate::GenerateCylinder<DataTypes>::SPtr eng= sofa::modeling::addNew<sofa::component::engine::generate::GenerateCylinder<DataTypes> >(root,"cylinder");
     eng->f_radius=0.2;
@@ -110,8 +113,6 @@ CylinderTractionStruct<DataTypes>  createCylinderTractionScene(
     // StaticSolver
     auto staticSolver = modeling::addNew<component::integrationscheme::backward::StaticEquilibriumIntegrationScheme>(root,"StaticSolver");
     staticSolver->f_printLog.setValue(true);
-    staticSolver->d_maxNbIterationsNewton.setValue(1);
-    staticSolver->d_maxNbIterationsLineSearch.setValue(1);
     // mechanicalObject object
     typename MechanicalObject::SPtr meca1= sofa::modeling::addNew<MechanicalObject>(root);
     sofa::modeling::setDataLink(&eng->f_outputTetrahedraPositions,&meca1->x);

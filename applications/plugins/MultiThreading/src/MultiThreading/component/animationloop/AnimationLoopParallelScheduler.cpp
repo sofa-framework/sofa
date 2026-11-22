@@ -86,9 +86,9 @@ void AnimationLoopParallelScheduler::step(const sofa::core::ExecParams* params, 
         gnode->child.begin(), gnode->child.end(),
         [dt](const auto& node)
         {
-            if ( sofa::core::behavior::BaseAnimationLoop* aloop = node->getAnimationLoop() )
+            if ( sofa::core::behavior::BaseTimeIntegrator* aloop = node->getTimeIntegrator() )
             {
-                aloop->step(sofa::core::ExecParams::defaultInstance(), dt);
+                aloop->integrate(sofa::core::ExecParams::defaultInstance(), dt);
             }
         });
 

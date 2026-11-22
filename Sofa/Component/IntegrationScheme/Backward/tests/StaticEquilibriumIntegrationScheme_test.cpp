@@ -19,14 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/testing/BaseTest.h>
-#include <sofa/simulation/Node.h>
 #include <sofa/component/integrationscheme/backward/StaticEquilibriumIntegrationScheme.h>
-#include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simpleapi/SimpleApi.h>
+#include <sofa/simulation/Node.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
+#include <sofa/testing/BaseTest.h>
 
-#include <vector>
 #include <algorithm>
+#include <vector>
+
+#include "sofa/simulation/NewtonRaphson.h"
 
 using namespace sofa::simulation;
 using namespace sofa::simpleapi;
@@ -77,9 +79,9 @@ public:
             Sofa.Component.MechanicalLoad
         });
 
-        createObject(root, "DefaultAnimationLoop");
+        createObject(root, "NewtonRaphson", {{"maxNbIterationsNewton", "10"}});
         createObject(root, "RegularGridTopology", {{"name", "grid"}, {"min", "-7.5 -7.5 0"}, {"max", "7.5 7.5 80"}, {"n", "3 3 9"}});
-        const auto s = createObject(root, "StaticEquilibriumIntegrationScheme", {{"maxNbIterationsNewton", "10"}});
+        const auto s = createObject(root, "StaticEquilibriumIntegrationScheme");
         createObject(root, "SparseLDLSolver", {{"template", "CompressedRowSparseMatrixd"}});
         createObject(root, "MechanicalObject", {{"name", "mo"}, {"src", "@grid"}});
         createObject(root, "TetrahedronSetTopologyContainer", {{"name", "mechanical_topology"}});
@@ -102,6 +104,7 @@ public:
         createObject(root, "SurfacePressureForceField", {{"pressure", "100"}, {"mainDirection", "0 -1 0"}, {"triangleIndices", "@base_roi.trianglesInROI"}});
 
         staticSolver = dynamic_cast<StaticEquilibriumIntegrationScheme *> (s.get());
+        newtonRaphson = dynamic_cast<NewtonRaphson *> (s.get());
     }
 
     void doTearDown() override {
@@ -112,12 +115,14 @@ public:
     auto execute() -> SReal {
         sofa::simulation::node::initRoot(root.get());
         sofa::simulation::node::animate(root.get(), 1_sreal);
-        return std::sqrt(staticSolver->d_currentResidual.getValue());
+
+        return std::sqrt(newtonRaphson->d_currentResidual.getValue());
     }
 
 
     NodeSPtr root;
     StaticEquilibriumIntegrationScheme::SPtr staticSolver;
+    NewtonRaphson::SPtr newtonRaphson;
 };
 
 TEST_F(StaticEquilibriumIntegrationSchemeTest, Residuals) {
@@ -125,8 +130,8 @@ TEST_F(StaticEquilibriumIntegrationSchemeTest, Residuals) {
     // threshold disabled so the solve always runs the maximum number of iterations.
     const SReal expected_force_residual_norm = 1.2283305451908398e-05;
 
-    staticSolver->d_maxNbIterationsNewton.setValue(10);
-    staticSolver->d_residualThreshold.setValue(0.0_sreal);
+    newtonRaphson->d_maxNbIterationsNewton.setValue(10);
+    newtonRaphson->d_residualThreshold.setValue(0.0_sreal);
 
     const SReal actual_force_residual_norm = this->execute();
 
