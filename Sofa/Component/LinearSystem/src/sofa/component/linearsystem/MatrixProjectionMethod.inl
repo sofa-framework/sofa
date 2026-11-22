@@ -216,18 +216,37 @@ void addToGlobalMatrix(linearalgebra::BaseMatrix* globalMatrix, Eigen::SparseMat
 }
 
 template <class TMatrix>
-void MatrixProjectionMethod<TMatrix>::computeMatrixJacobians(const core::MechanicalParams* mparams, const simulation::MappingGraph& mappingGraph, TMatrix* matrixToProject)
+void MatrixProjectionMethod<TMatrix>::computeMatrixJacobians(
+    const core::MechanicalParams* mparams, const simulation::MappingGraph& mappingGraph,
+    TMatrix* matrixToProject)
 {
     if (!m_mappingJacobians.has_value() || !d_areJacobiansConstant.getValue())
     {
-        const simulation::MappingJacobians<TMatrix> J0 = computeJacobiansFrom(
-            this->l_mechanicalStates[0], mparams, mappingGraph, matrixToProject);
+        auto* rowState = this->l_mechanicalStates[0];
+        auto* colState = this->l_mechanicalStates[1];
 
-        const simulation::MappingJacobians<TMatrix> J1 =
-                (this->l_mechanicalStates[0] == this->l_mechanicalStates[1]) ?
-                    J0 : computeJacobiansFrom(this->l_mechanicalStates[1], mparams, mappingGraph, matrixToProject);
+        if (rowState == colState)
+        {
+            // same state on both sides: one Jacobian, built for the union of
+            // the row and column DoFs
+            const simulation::MappingJacobians<TMatrix> J = computeJacobiansFrom(
+                rowState, mparams, mappingGraph, matrixToProject, AffectedSide::Both);
 
-        m_mappingJacobians.emplace(sofa::type::fixed_array<simulation::MappingJacobians<TMatrix>, 2>({J0, J1}));
+            m_mappingJacobians.emplace(
+                sofa::type::fixed_array<simulation::MappingJacobians<TMatrix>, 2>({J, J}));
+        }
+        else
+        {
+            // coupling term: rows index the first state, columns the second
+            const simulation::MappingJacobians<TMatrix> J0 = computeJacobiansFrom(
+                rowState, mparams, mappingGraph, matrixToProject, AffectedSide::Rows);
+
+            const simulation::MappingJacobians<TMatrix> J1 = computeJacobiansFrom(
+                colState, mparams, mappingGraph, matrixToProject, AffectedSide::Columns);
+
+            m_mappingJacobians.emplace(
+                sofa::type::fixed_array<simulation::MappingJacobians<TMatrix>, 2>({J0, J1}));
+        }
     }
 }
 
@@ -252,34 +271,53 @@ void MatrixProjectionMethod<TMatrix>::projectMatrixToGlobalMatrix(const core::Me
 
 template <class TMatrix>
 std::vector<unsigned> MatrixProjectionMethod<TMatrix>::identifyAffectedDoFs(
-    core::behavior::BaseMechanicalState* mstate, TMatrix* crs)
+    core::behavior::BaseMechanicalState* mstate, TMatrix* crs, AffectedSide side)
 {
     const auto blockSize = mstate->getMatrixBlockSize();
+    const auto nbDofs = static_cast<sofa::SignedIndex>(mstate->getSize());
+
+    const bool useRows    = (side == AffectedSide::Rows    || side == AffectedSide::Both);
+    const bool useColumns = (side == AffectedSide::Columns || side == AffectedSide::Both);
+
     std::set<unsigned int> setAffectedDoFs;
+
+    const auto insertDof = [&](sofa::SignedIndex index, const char* what)
+    {
+        const sofa::SignedIndex dofId = index / blockSize;
+        if (dofId < 0 || dofId >= nbDofs)
+        {
+            msg_error() << "Matrix " << what << " index " << index << " maps to DoF " << dofId
+                        << ", which is out of range for state '" << mstate->getPathName()
+                        << "' (size " << nbDofs << ", block size " << blockSize << ")";
+            return;
+        }
+        setAffectedDoFs.insert(static_cast<unsigned int>(dofId));
+    };
 
     for (std::size_t it_rows_k = 0; it_rows_k < crs->rowIndex.size(); it_rows_k++)
     {
-        const auto row = crs->rowIndex[it_rows_k];
+        if (useRows)
         {
-            const sofa::SignedIndex dofId = row / blockSize;
-            setAffectedDoFs.insert(dofId);
+            insertDof(crs->rowIndex[it_rows_k], "row");
         }
-        typename TMatrix::Range rowRange(crs->rowBegin[it_rows_k], crs->rowBegin[it_rows_k + 1]);
-        for (auto xj = rowRange.begin(); xj < rowRange.end(); ++xj) // for each non-null block
+
+        if (useColumns)
         {
-            const sofa::SignedIndex col = crs->colsIndex[xj];
-            const sofa::SignedIndex dofId = col / blockSize;
-            setAffectedDoFs.insert(dofId);
+            typename TMatrix::Range rowRange(crs->rowBegin[it_rows_k], crs->rowBegin[it_rows_k + 1]);
+            for (auto xj = rowRange.begin(); xj < rowRange.end(); ++xj) // for each non-null block
+            {
+                insertDof(crs->colsIndex[xj], "column");
+            }
         }
     }
 
-    return std::vector( setAffectedDoFs.begin(), setAffectedDoFs.end() );
+    return std::vector<unsigned>(setAffectedDoFs.begin(), setAffectedDoFs.end());
 }
 
 template <class TMatrix>
 simulation::MappingJacobians<TMatrix> MatrixProjectionMethod<TMatrix>::computeJacobiansFrom(
     core::behavior::BaseMechanicalState* mstate, const core::MechanicalParams* mparams,
-    const simulation::MappingGraph& mappingGraph, TMatrix* crs)
+    const simulation::MappingGraph& mappingGraph, TMatrix* crs, AffectedSide side)
 {
     core::ConstraintParams cparams(*mparams);
 
@@ -301,7 +339,7 @@ simulation::MappingJacobians<TMatrix> MatrixProjectionMethod<TMatrix>::computeJa
     // J does not need to be fully computed if K is sparse.
     {
         crs->compress();
-        const std::vector<unsigned> listAffectedDoFs = identifyAffectedDoFs(mstate, crs);
+        const std::vector<unsigned> listAffectedDoFs = identifyAffectedDoFs(mstate, crs, side);
 
         if (listAffectedDoFs.empty())
         {
