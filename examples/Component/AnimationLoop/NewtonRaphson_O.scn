@@ -20,7 +20,7 @@
         <RequiredPlugin pluginName="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglSceneFrame] -->
     </Node>
 
-    <NewtonRaphson maxNbIterationsNewton="50" maxNbIterationsLineSearch="30" residueThreshold="1e-18" lineSearchReductionRate="0.3" />
+    <NewtonRaphson maxNbIterationsNewton="50" maxNbIterationsLineSearch="30" residualThreshold="1e-18" lineSearchReductionRate="0.3" />
 
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
 

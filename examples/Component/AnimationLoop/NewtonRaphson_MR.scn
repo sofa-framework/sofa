@@ -21,7 +21,7 @@
     </Node>
 
 
-    <NewtonRaphson maxNbIterationsNewton="200" maxNbIterationsLineSearch="30" lineSearchReductionRate="0.2" printLog="true" residueThreshold="1e-12"/>
+    <NewtonRaphson maxNbIterationsNewton="200" maxNbIterationsLineSearch="30" lineSearchReductionRate="0.2" printLog="true" residualThreshold="1e-12"/>
 
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
 

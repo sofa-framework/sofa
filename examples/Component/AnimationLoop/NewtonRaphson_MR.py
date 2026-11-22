@@ -39,7 +39,7 @@ class TipTracker(Sofa.Core.Controller):
         t = self.getContext().time.value
         x = self.state.position.value[self.tip]
         v = self.state.velocity.value[self.tip]
-        res = self.newton.currentResidue.value
+        res = self.newton.currentResidual.value
         row = (t, *x, *v, res)
         self.samples.append(row)
         if self.csv_path:

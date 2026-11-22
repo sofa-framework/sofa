@@ -62,8 +62,8 @@ public:
     Data<SReal> d_newtonStepSize;
     Data<SReal> d_lineSearchReductionRate;
     Data<SReal> d_lineSearchArmijoFactor;
-    Data<SReal> d_residueThreshold;
-    Data<SReal> d_currentResidue;
+    Data<SReal> d_residualThreshold;
+    Data<SReal> d_currentResidual;
     Data<bool> d_alwaysAdvanceTime;
     Data<bool> d_solveVelocityConstraintFirst; ///< solve separately velocity constraint violations before position constraint violations
     Data<bool> d_parallelODESolving; ///< If true, solves all the ODEs in parallel during the free motion step.

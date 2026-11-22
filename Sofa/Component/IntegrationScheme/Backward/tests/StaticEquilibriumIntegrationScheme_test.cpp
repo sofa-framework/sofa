@@ -116,7 +116,7 @@ public:
         sofa::simulation::node::initRoot(root.get());
         sofa::simulation::node::animate(root.get(), 1_sreal);
 
-        return std::sqrt(newtonRaphson->d_currentResidue.getValue());
+        return std::sqrt(newtonRaphson->d_currentResidual.getValue());
     }
 
 
@@ -131,7 +131,7 @@ TEST_F(StaticEquilibriumIntegrationSchemeTest, Residuals) {
     const SReal expected_force_residual_norm = 1.2283305451908398e-05;
 
     newtonRaphson->d_maxNbIterationsNewton.setValue(10);
-    newtonRaphson->d_residueThreshold.setValue(0.0_sreal);
+    newtonRaphson->d_residualThreshold.setValue(0.0_sreal);
 
     const SReal actual_force_residual_norm = this->execute();
 

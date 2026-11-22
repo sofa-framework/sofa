@@ -60,9 +60,9 @@ NewtonRaphson::NewtonRaphson()
 , d_maxNbIterationsLineSearch(initData(&d_maxNbIterationsLineSearch, static_cast<unsigned int>(1), "maxNbIterationsLineSearch", "Maximum number of iteration for the backtracking linesearch algorithm"))
 , d_newtonStepSize(initData(&d_newtonStepSize, 1.0_sreal , "newtonStepSize", "Size of the first newton step before the linesearch"))
 , d_lineSearchReductionRate(initData(&d_lineSearchReductionRate, 0.5_sreal , "lineSearchReductionRate", "Taken in [0,1[ representing the fraction of diminution of the step done in the backtracking line search (if set to 0.3, the first line search will reduce the step from 1.0 to 0.7)"))
-, d_lineSearchArmijoFactor(initData(&d_lineSearchArmijoFactor, 1e-3_sreal , "lineSearchArmijoFactor", "Taken in [0,1[ it represents a tolerance on the residue in term of the linear approximation. e.g., for a value of 0.01, it means we want the solution to decrease the residue as much as 0.01 times the linear approximation in the same direction."))
-, d_residueThreshold(initData(&d_residueThreshold, 1e-9_sreal , "residueThreshold", "Threshold under which, the residue is considered to be sufficiently low. Newton algorithm will stop after reaching a lower value"))
-, d_currentResidue(initData(&d_currentResidue , "currentResidue", "Current value of the residue"))
+, d_lineSearchArmijoFactor(initData(&d_lineSearchArmijoFactor, 1e-3_sreal , "lineSearchArmijoFactor", "Taken in [0,1[ it represents a tolerance on the residual in term of the linear approximation. e.g., for a value of 0.01, it means we want the solution to decrease the residual as much as 0.01 times the linear approximation in the same direction."))
+, d_residualThreshold(initData(&d_residualThreshold, 1e-9_sreal , "residualThreshold", "Threshold under which, the residual is considered to be sufficiently low. Newton algorithm will stop after reaching a lower value"))
+, d_currentResidual(initData(&d_currentResidual , "currentResidual", "Current value of the residual"))
 , d_alwaysAdvanceTime(initData(&d_alwaysAdvanceTime , false, "alwaysAdvanceTime", "Even if the residual increased after the newton step, advance time anyway."))
 , d_solveVelocityConstraintFirst(initData(&d_solveVelocityConstraintFirst , false, "solveVelocityConstraintFirst", "solve separately velocity constraint violations before position constraint violations"))
 , d_parallelODESolving(initData(&d_parallelODESolving, false, "parallelODESolving", "If true, solves all the ODEs in parallel during the free motion step."))
@@ -221,7 +221,7 @@ void NewtonRaphson::newtonSolve(const core::ExecParams* params, core::Constraint
     const unsigned maxNewtonIt = d_maxNbIterationsNewton.getValue();
     const unsigned maxLineSearchIt = d_maxNbIterationsLineSearch.getValue();
     const SReal newtonStepSize = d_newtonStepSize.getValue();
-    const SReal residueThreshold = d_residueThreshold.getValue();
+    const SReal residualThreshold = d_residualThreshold.getValue();
     const SReal lineSearchReductionRate = d_lineSearchReductionRate.getValue();
     const SReal lineSearchArmijoFactor = d_lineSearchArmijoFactor.getValue();
 
@@ -245,13 +245,13 @@ void NewtonRaphson::newtonSolve(const core::ExecParams* params, core::Constraint
     computeGeometricalStiffness(&mop->mparams, cparams, node);
     intHelper.computeRHS(true);
 
-    SReal initialResidue = intHelper.evaluateResidual(false);
-    SReal oldResidue = initialResidue;
-    SReal newResidue = oldResidue;
+    SReal initialResidual = intHelper.evaluateResidual(false);
+    SReal oldResidual = initialResidual;
+    SReal newResidual = oldResidual;
 
 
     unsigned it = 0;
-    while ( it<maxNewtonIt && newResidue>residueThreshold )
+    while ( it<maxNewtonIt && newResidual>residualThreshold )
     {
         SCOPED_TIMER_VARNAME(step_timer, "NewtonStep");
 
@@ -259,10 +259,10 @@ void NewtonRaphson::newtonSolve(const core::ExecParams* params, core::Constraint
         //TODO do we want to recompute this each newton step ?
         // computeGeometricalStiffness(&mop->mparams, cparams, node);
 
-        //Upate old residue to be the one of the last newton iteration
-        oldResidue = newResidue;
+        //Upate old residual to be the one of the last newton iteration
+        oldResidual = newResidual;
 
-        double bestresidual = oldResidue;
+        double bestresidual = oldResidual;
         double bestalpha = 0.0;
 
         if (it != 0)
@@ -279,7 +279,7 @@ void NewtonRaphson::newtonSolve(const core::ExecParams* params, core::Constraint
 
         //Already make a full step
         intHelper.updateStatesFromLinearSolution(alpha);
-        newResidue = intHelper.evaluateResidual(true);
+        newResidual = intHelper.evaluateResidual(true);
 
         // Compute the Armijo term for the cost function f = ||r||^2.
         // With J = dr/dX, we have \nabla f = 2 * J^T * r, hence \nabla f . p = 2 * r^T * J * p.
@@ -288,16 +288,16 @@ void NewtonRaphson::newtonSolve(const core::ExecParams* params, core::Constraint
         // exact Jacobian of the residual. If A is only an approximation of J (e.g. missing
         // geometric stiffness, or interaction forcefields contributing only to the RHS), this
         // term is an approximation and the Armijo condition may be too strict or too loose.
-        const SReal armijoTerm = - 2 * lineSearchArmijoFactor * oldResidue;
+        const SReal armijoTerm = - 2 * lineSearchArmijoFactor * oldResidual;
 
-        if (newResidue<bestresidual)
+        if (newResidual<bestresidual)
         {
-            bestresidual = newResidue;
+            bestresidual = newResidual;
             bestalpha = alpha;
         }
 
         unsigned lineSearchIt = 0;
-        while ((newResidue>(oldResidue + alpha*armijoTerm)) && lineSearchIt<maxLineSearchIt )
+        while ((newResidual>(oldResidual + alpha*armijoTerm)) && lineSearchIt<maxLineSearchIt )
         {
             //We are backtracking on the same line. Instead of starting from initial position and
             //adding alpha each time, we go back toward the initial position
@@ -305,11 +305,11 @@ void NewtonRaphson::newtonSolve(const core::ExecParams* params, core::Constraint
             alpha -= delta;
 
             intHelper.updateStatesFromLinearSolution(-delta);
-            newResidue = intHelper.evaluateResidual(true);
+            newResidual = intHelper.evaluateResidual(true);
 
-            if (newResidue<bestresidual)
+            if (newResidual<bestresidual)
             {
-                bestresidual = newResidue;
+                bestresidual = newResidual;
                 bestalpha = alpha;
             }
 
@@ -319,7 +319,7 @@ void NewtonRaphson::newtonSolve(const core::ExecParams* params, core::Constraint
         if (fabs(alpha - bestalpha )> std::numeric_limits<SReal>::epsilon() )
         {
             intHelper.updateStatesFromLinearSolution( bestalpha - alpha);
-            newResidue = intHelper.evaluateResidual(true);
+            newResidual = intHelper.evaluateResidual(true);
         }
 
         msg_info_when(printLog)<<"| ---------- Newton step = "<<it + 1<<" ---------- |";
@@ -332,13 +332,13 @@ void NewtonRaphson::newtonSolve(const core::ExecParams* params, core::Constraint
 
             //LineSearch didn't improve anything let's advance the newton.
             intHelper.updateStatesFromLinearSolution( 1.0 - bestalpha);
-            newResidue = intHelper.evaluateResidual(true);
+            newResidual = intHelper.evaluateResidual(true);
             bestalpha = 1.0;
         }
 
         msg_info_when(printLog)<<"Best alpha : "<<bestalpha;
-        msg_info_when(printLog)<<"Residual evolution : "<< oldResidue << " --> "<<newResidue ;
-        if (newResidue>oldResidue)
+        msg_info_when(printLog)<<"Residual evolution : "<< oldResidual << " --> "<<newResidual ;
+        if (newResidual>oldResidual)
         {
             msg_warning_when(printLog)<<"NewtonStep increased the residual !";
         }
@@ -348,27 +348,27 @@ void NewtonRaphson::newtonSolve(const core::ExecParams* params, core::Constraint
     }
 
     // If the newton didn't converge to a better solution, don't advance
-    if (newResidue>initialResidue && !d_alwaysAdvanceTime.getValue())
+    if (newResidual>initialResidual && !d_alwaysAdvanceTime.getValue())
     {
         m_advanceTime=false;
     }
 
     if (printLog)
     {
-        if (newResidue<residueThreshold)
+        if (newResidual<residualThreshold)
         {
-            msg_info()<<"Newton converged to residue "<<newResidue<<" in "<<it<<" steps.";
+            msg_info()<<"Newton converged to residual "<<newResidual<<" in "<<it<<" steps.";
         }
         else
         {
-            msg_warning()<<"Newton didn't converge ! Current residue is "<<newResidue;
+            msg_warning()<<"Newton didn't converge ! Current residual is "<<newResidual;
         }
     }
 
     helper::AdvancedTimer::valSet("nb_iterations", it);
-    helper::AdvancedTimer::valSet("residual", std::sqrt(newResidue));
+    helper::AdvancedTimer::valSet("residual", std::sqrt(newResidual));
 
-    d_currentResidue.setValue(newResidue);
+    d_currentResidual.setValue(newResidual);
 
     if (m_advanceTime)
     {

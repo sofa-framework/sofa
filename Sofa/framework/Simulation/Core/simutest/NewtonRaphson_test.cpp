@@ -267,8 +267,8 @@ static std::string create1DScene(const SReal position, const SReal velocity, con
     std::stringstream scene ;
     scene << "<?xml version='1.0'?>"
              "<Node name='Root' gravity='" << g <<" 0 0' time='"<< startTime <<"' animate='0' dt='"<< dt << "' > \n";
-    scene << (lineSearch ? "<NewtonRaphson maxNbIterationsLineSearch='20' maxNbIterationsNewton='20' residueThreshold='1e-30' lineSearchReductionRate='0.2'/> "
-                         : "<NewtonRaphson maxNbIterationsLineSearch='0' maxNbIterationsNewton='20' residueThreshold='1e-30'  /> ") << " \n";
+    scene << (lineSearch ? "<NewtonRaphson maxNbIterationsLineSearch='20' maxNbIterationsNewton='20' residualThreshold='1e-30' lineSearchReductionRate='0.2'/> "
+                         : "<NewtonRaphson maxNbIterationsLineSearch='0' maxNbIterationsNewton='20' residualThreshold='1e-30'  /> ") << " \n";
     scene << (staticSolve ? "   <StaticEquilibriumIntegrationScheme/> \n"  : "   <EulerImplicitIntegrationScheme/> \n" );
     scene << "   <SparseLDLSolver template='CompressedRowSparseMatrixd' />                                                                                        \n"
              "   <PointSetTopologyContainer position='"<<position<<"' />                                             \n"
@@ -285,8 +285,8 @@ static std::string create2DScene(const sofa::type::Vec2d position, const sofa::t
     std::stringstream scene ;
     scene << "<?xml version='1.0'?>"
              "<Node name='Root' gravity='" << g[0] << " " << g[1] <<" 0' time='"<< startTime <<"' animate='0' dt='"<< dt << "' > \n";
-    scene << (lineSearch ? "<NewtonRaphson maxNbIterationsLineSearch='20' maxNbIterationsNewton='20' residueThreshold='1e-30' lineSearchReductionRate='0.2'/> "
-                         : "<NewtonRaphson maxNbIterationsLineSearch='0' maxNbIterationsNewton='20' residueThreshold='1e-30'  /> ") << " \n";
+    scene << (lineSearch ? "<NewtonRaphson maxNbIterationsLineSearch='20' maxNbIterationsNewton='20' residualThreshold='1e-30' lineSearchReductionRate='0.2'/> "
+                         : "<NewtonRaphson maxNbIterationsLineSearch='0' maxNbIterationsNewton='20' residualThreshold='1e-30'  /> ") << " \n";
     scene << (staticSolve ? "   <StaticEquilibriumIntegrationScheme/> \n"  : "   <EulerImplicitIntegrationScheme rayleighMass='2' rayleighStiffness='0.1'/> \n" );
     scene << "   <SparseLDLSolver template='CompressedRowSparseMatrixd' />                                                                                        \n"
              "   <PointSetTopologyContainer position='"<<position<<" 0 0' />                                             \n"
