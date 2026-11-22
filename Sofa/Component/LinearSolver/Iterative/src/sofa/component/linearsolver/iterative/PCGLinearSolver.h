@@ -54,6 +54,7 @@ public:
     SingleLink<PCGLinearSolver, sofa::core::behavior::LinearSolver, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_preconditioner; ///< Link towards the linear solver used to precondition the conjugate gradient
     core::objectmodel::lifecycle::DeprecatedData d_update_step; ///< Number of steps before the next refresh of preconditioners
 
+    void invert(Matrix& M) override;
     void solve (Matrix& M, Vector& x, Vector& b) override;
     void init() override;
     void bwdInit() override;
@@ -102,6 +103,8 @@ inline void PCGLinearSolver<component::linearsolver::GraphScatteredMatrix,compon
 
 #if !defined(SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_PCGLINEARSOLVER_CPP)
 template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API PCGLinearSolver<GraphScatteredMatrix, GraphScatteredVector>;
+extern template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API PCGLinearSolver< linearalgebra::CompressedRowSparseMatrix<SReal>, linearalgebra::FullVector<SReal> >;
+extern template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API PCGLinearSolver< linearalgebra::CompressedRowSparseMatrix<type::Mat<3,3,SReal> >, linearalgebra::FullVector<SReal> >;
 #endif // !defined(SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_PCGLINEARSOLVER_CPP)
 
 } // namespace sofa::component::linearsolver::iterative
