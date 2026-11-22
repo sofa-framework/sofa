@@ -48,6 +48,48 @@ namespace sofa::helper
 typedef sofa::helper::system::thread::ctime_t ctime_t;
 typedef sofa::helper::system::thread::CTime CTime;
 
+template<class Base>
+unsigned int AdvancedTimer::Id<Base>::IdFactory::getID(const std::string& name)
+{
+    if (name.empty())
+        return 0;
+    IdFactory& idfac = getInstance();
+
+    const auto it = idfac.idsMap.find(name);
+    if (it == idfac.idsMap.end())
+    {
+        const auto idsMapSize = sofa::helper::narrow_cast<unsigned int>(idfac.idsMap.size());
+        idfac.idsMap.insert(it, {name, idsMapSize});
+        idfac.idsList.push_back(name);
+        return idsMapSize;
+    }
+
+    return it->second;
+}
+
+template<class Base>
+std::size_t AdvancedTimer::Id<Base>::IdFactory::getLastID()
+{
+    return getInstance().idsList.size()-1;
+}
+
+template<class Base>
+std::string AdvancedTimer::Id<Base>::IdFactory::getName(unsigned int id)
+{
+    const IdFactory& idfac = getInstance();
+    if (id < idfac.idsList.size())
+        return idfac.idsList[id];
+    else
+        return "";
+}
+
+template<class Base>
+typename AdvancedTimer::Id<Base>::IdFactory& AdvancedTimer::Id<Base>::IdFactory::getInstance()
+{
+    static thread_local IdFactory factory;
+    return factory;
+}
+
 template class SOFA_HELPER_API AdvancedTimer::Id<AdvancedTimer::Timer>;
 template class SOFA_HELPER_API AdvancedTimer::Id<AdvancedTimer::Step>;
 template class SOFA_HELPER_API AdvancedTimer::Id<AdvancedTimer::Obj>;
