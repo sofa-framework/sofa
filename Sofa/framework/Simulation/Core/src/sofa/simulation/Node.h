@@ -556,7 +556,9 @@ public:
     /// return the smallest common parent between this and node2 (returns nullptr if separated sub-graphes)
     Node* findCommonParent( simulation::Node* node2 );
     
-    bool bboxIsFixed() const { return m_bboxIsFixed; }
+    /// True when the bounding box of this node is given by the user rather than
+    /// computed from its objects and children.
+    bool bboxIsFixed() const { return m_bboxIsFixed || f_bbox.isSet(); }
 protected:
     bool debug_;
     bool initialized;
