@@ -213,7 +213,7 @@ void NewtonRaphson::preSolve(const core::ExecParams* params, core::ConstraintPar
 }
 
 
-void NewtonRaphson::newtonSolve(const core::ExecParams* params, core::ConstraintParams* cparams, common::VectorOperations* vop, common::MechanicalOperations* mop,  SReal dt, sofa::core::MultiVecCoordId xId, sofa::core::MultiVecDerivId vId, Node* node)
+void NewtonRaphson::newtonSolve(const core::ExecParams* params, core::ConstraintParams* cparams, common::VectorOperations* vop, common::MechanicalOperations* mop,  SReal dt, const sofa::core::MultiVecCoordId& xId, const sofa::core::MultiVecDerivId& vId, Node* node)
 {
     dmsg_info() << "beginVisitor performed - SolveVisitor for freeMotion is called" ;
 
@@ -459,7 +459,7 @@ void NewtonRaphson::computeGeometricalStiffness(const core::MechanicalParams* mp
 void NewtonRaphson::solveConstraints(const core::MechanicalParams* mparams, const core::ConstraintParams* cparams, common::VectorOperations* vop, common::MechanicalOperations* mop, sofa::core::MultiVecCoordId xId, sofa::core::MultiVecDerivId vId, SReal dt)
 {
     SOFA_UNUSED(mparams);
-    SCOPED_TIMER("ConstraintSolver");
+    SCOPED_TIMER_VARNAME(ConstraintSolverTimer, "ConstraintSolver");
 
     const auto constOrder = cparams->constOrder();
     if (constOrder == core::ConstraintOrder::VEL )
@@ -478,7 +478,7 @@ void NewtonRaphson::solveConstraints(const core::MechanicalParams* mparams, cons
     }
 
     {
-        SCOPED_TIMER("ProjectAndPropagateDx");
+        SCOPED_TIMER_VARNAME(ProjectAndPropagateDxTimer, "ProjectAndPropagateDx");
 
         core::behavior::MultiVecDeriv cdx(vop, l_constraintSolver->getDx());
         mop->projectResponse(cdx);
