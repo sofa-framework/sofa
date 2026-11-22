@@ -27,11 +27,11 @@
 namespace sofa::component::solidmechanics::fem::elastic
 {
 
-template <class DataTypes, class ElementType>
-FEMForceField<DataTypes, ElementType>::FEMForceField()
+template<class DataTypes, class SpatialTypes, class ElementType>
+FEMForceField<DataTypes, SpatialTypes, ElementType>::FEMForceField()
     : d_computeForceStrategy(initData(&d_computeForceStrategy, "computeForceStrategy", std::string("The compute strategy used to compute the forces.\n" + ComputeStrategy::dataDescription()).c_str()))
     , d_computeForceDerivStrategy(initData(&d_computeForceDerivStrategy, "computeForceDerivStrategy", std::string("The compute strategy used to compute the forces derivatives.\n" + ComputeStrategy::dataDescription()).c_str()))
-    , d_elementSpace(initData(&d_elementSpace, static_cast<sofa::Real_t<DataTypes>>(0.125), "elementSpace", "When rendering, the space between elements"))
+    , d_elementSpace(initData(&d_elementSpace, static_cast<sofa::Real_t<SpatialTypes>>(0.125), "elementSpace", "When rendering, the space between elements"))
 {
     d_elementSpace.setGroup("Visualization");
 
@@ -39,8 +39,8 @@ FEMForceField<DataTypes, ElementType>::FEMForceField()
     d_computeForceDerivStrategy.setGroup("Multithreading");
 }
 
-template <class DataTypes, class ElementType>
-void FEMForceField<DataTypes, ElementType>::init()
+template<class DataTypes, class SpatialTypes, class ElementType>
+void FEMForceField<DataTypes, SpatialTypes, ElementType>::init()
 {
     sofa::core::behavior::ForceField<DataTypes>::init();
 
@@ -55,15 +55,17 @@ void FEMForceField<DataTypes, ElementType>::init()
     }
 }
 
-template <class DataTypes, class ElementType>
-void FEMForceField<DataTypes, ElementType>::addForce(
+template<class DataTypes, class SpatialTypes, class ElementType>
+void FEMForceField<DataTypes, SpatialTypes, ElementType>::addForce(
     const sofa::core::MechanicalParams* mparams,
     sofa::DataVecDeriv_t<DataTypes>& f,
     const sofa::DataVecCoord_t<DataTypes>& x,
     const sofa::DataVecDeriv_t<DataTypes>& v)
 {
-    SOFA_UNUSED(mparams);
     SOFA_UNUSED(v);
+
+    if (this->isComponentStateInvalid())
+        return;
 
     auto positionAccessor = sofa::helper::getReadAccessor(x);
 
@@ -85,8 +87,8 @@ void FEMForceField<DataTypes, ElementType>::addForce(
     dispatchElementForcesToNodes(elements, forceAccessor.wref());
 }
 
-template <class DataTypes, class ElementType>
-void FEMForceField<DataTypes, ElementType>::computeElementsForces(
+template<class DataTypes, class SpatialTypes, class ElementType>
+void FEMForceField<DataTypes, SpatialTypes, ElementType>::computeElementsForces(
     const sofa::core::MechanicalParams* mparams,
     sofa::type::vector<ElementGradient>& f,
     const sofa::VecCoord_t<DataTypes>& x)
@@ -104,8 +106,8 @@ void FEMForceField<DataTypes, ElementType>::computeElementsForces(
         });
 }
 
-template <class DataTypes, class ElementType>
-void FEMForceField<DataTypes, ElementType>::dispatchElementForcesToNodes(
+template<class DataTypes, class SpatialTypes, class ElementType>
+void FEMForceField<DataTypes, SpatialTypes, ElementType>::dispatchElementForcesToNodes(
     const sofa::type::vector<typename trait::TopologyElement>& elements,
     sofa::VecDeriv_t<DataTypes>& nodeForces)
 {
@@ -119,16 +121,16 @@ void FEMForceField<DataTypes, ElementType>::dispatchElementForcesToNodes(
         for (sofa::Size j = 0; j < trait::NumberOfNodesInElement; ++j)
         {
             auto& nodeForce = nodeForces[element[j]];
-            for (sofa::Size k = 0; k < trait::spatial_dimensions; ++k)
+            for (sofa::Size k = 0; k < trait::field_dimensions; ++k)
             {
-                nodeForce[k] -= elementForce[j * trait::spatial_dimensions + k];
+                nodeForce[k] -= elementForce[j * trait::field_dimensions + k];
             }
         }
     }
 }
 
-template <class DataTypes, class ElementType>
-void FEMForceField<DataTypes, ElementType>::addDForce(
+template<class DataTypes, class SpatialTypes, class ElementType>
+void FEMForceField<DataTypes, SpatialTypes, ElementType>::addDForce(
     const sofa::core::MechanicalParams* mparams,
     sofa::DataVecDeriv_t<DataTypes>& df,
     const sofa::DataVecDeriv_t<DataTypes>& dx)
@@ -157,13 +159,12 @@ void FEMForceField<DataTypes, ElementType>::addDForce(
     dispatchElementForcesDerivToNodes(mparams, elements, dfAccessor.wref());
 }
 
-template <class DataTypes, class ElementType>
-void FEMForceField<DataTypes, ElementType>::computeElementsForcesDeriv(
+template<class DataTypes, class SpatialTypes, class ElementType>
+void FEMForceField<DataTypes, SpatialTypes, ElementType>::computeElementsForcesDeriv(
     const sofa::core::MechanicalParams* mparams, sofa::type::vector<ElementGradient>& df,
     const sofa::VecDeriv_t<DataTypes>& dx)
 {
     SCOPED_TIMER("ElementForcesDeriv");
-    beforeElementForceDeriv(mparams);
 
     this->beforeElementForceDeriv(mparams);
 
@@ -178,8 +179,8 @@ void FEMForceField<DataTypes, ElementType>::computeElementsForcesDeriv(
         });
 }
 
-template <class DataTypes, class ElementType>
-void FEMForceField<DataTypes, ElementType>::dispatchElementForcesDerivToNodes(const sofa::core::MechanicalParams* mparams,
+template<class DataTypes, class SpatialTypes, class ElementType>
+void FEMForceField<DataTypes, SpatialTypes, ElementType>::dispatchElementForcesDerivToNodes(const sofa::core::MechanicalParams* mparams,
     const sofa::type::vector<typename trait::TopologyElement>& elements,
     sofa::VecDeriv_t<DataTypes>& nodeForcesDeriv)
 {
@@ -198,17 +199,17 @@ void FEMForceField<DataTypes, ElementType>::dispatchElementForcesDerivToNodes(co
             const auto nodeId = element[i];
             auto& df = nodeForcesDeriv[nodeId];
 
-            for (sofa::Size dim = 0; dim < trait::spatial_dimensions; ++dim)
+            for (sofa::Size dim = 0; dim < trait::field_dimensions; ++dim)
             {
-                df[dim] -= kFactor * elementDForce[i * trait::spatial_dimensions + dim];
+                df[dim] -= kFactor * elementDForce[i * trait::field_dimensions + dim];
             }
         }
     }
 }
 
 
-template <class DataTypes, class ElementType>
-sofa::simulation::ForEachExecutionPolicy FEMForceField<DataTypes, ElementType>::getExecutionPolicy(
+template<class DataTypes, class SpatialTypes, class ElementType>
+sofa::simulation::ForEachExecutionPolicy FEMForceField<DataTypes, SpatialTypes, ElementType>::getExecutionPolicy(
     const sofa::Data<ComputeStrategy>& strategy) const
 {
     auto computeForceStrategyAccessor = sofa::helper::getReadAccessor(strategy);
@@ -219,8 +220,8 @@ sofa::simulation::ForEachExecutionPolicy FEMForceField<DataTypes, ElementType>::
         : sofa::simulation::ForEachExecutionPolicy::SEQUENTIAL;
 }
 
-template <class DataTypes, class ElementType>
-void FEMForceField<DataTypes, ElementType>::draw(const sofa::core::visual::VisualParams* vparams)
+template<class DataTypes, class SpatialTypes, class ElementType>
+void FEMForceField<DataTypes, SpatialTypes, ElementType>::draw(const sofa::core::visual::VisualParams* vparams)
 {
     if (!vparams->displayFlags().getShowForceFields())
         return;
@@ -239,8 +240,8 @@ void FEMForceField<DataTypes, ElementType>::draw(const sofa::core::visual::Visua
     m_drawMesh.drawAllElements(vparams->drawTool(), x, this->l_topology.get());
 }
 
-template <class DataTypes, class ElementType>
-void FEMForceField<DataTypes, ElementType>::computeBBox(const core::ExecParams* params, bool onlyVisible)
+template<class DataTypes, class SpatialTypes, class ElementType>
+void FEMForceField<DataTypes, SpatialTypes, ElementType>::computeBBox(const core::ExecParams* params, bool onlyVisible)
 {
     SOFA_UNUSED(params);
 

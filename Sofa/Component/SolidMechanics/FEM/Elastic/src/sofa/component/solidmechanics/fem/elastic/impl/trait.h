@@ -30,10 +30,11 @@
 namespace sofa::component::solidmechanics::fem::elastic
 {
 
-template <class DataTypes, class ElementType>
+template <class DataTypes, class SpatialTypes, class ElementType>
 struct trait
 {
-    using DataVecCoord = sofa::DataVecDeriv_t<DataTypes>;
+    // ---- Types of the field (displacement, temperature, concentration, ...) ----
+    using DataVecCoord = sofa::DataVecCoord_t<DataTypes>;
     using DataVecDeriv = sofa::DataVecDeriv_t<DataTypes>;
     using VecCoord = sofa::VecCoord_t<DataTypes>;
     using VecDeriv = sofa::VecDeriv_t<DataTypes>;
@@ -41,23 +42,35 @@ struct trait
     using Deriv = sofa::Deriv_t<DataTypes>;
     using Real = sofa::Real_t<DataTypes>;
 
-    using FiniteElement = sofa::fem::FiniteElement<ElementType, DataTypes>;
+    // ---- Types of the geometry ----
+    using GeometryCoord = sofa::Coord_t<SpatialTypes>;
+    using GeometryReal = sofa::Real_t<SpatialTypes>;
+
+    using FiniteElement = sofa::fem::FiniteElement<ElementType, SpatialTypes>;
     using TopologyElement = typename FiniteElement::TopologyElement;
     using ReferenceCoord = typename FiniteElement::ReferenceCoord;
 
-    static constexpr sofa::Size spatial_dimensions = DataTypes::spatial_dimensions;
+    /// Dimension of the space in which the mesh lives
+    static constexpr sofa::Size spatial_dimensions = SpatialTypes::coord_total_size;
+    /// Number of components of the field at each node (1 for a scalar field)
+    static constexpr sofa::Size field_dimensions = DataTypes::coord_total_size;
+
     static constexpr sofa::Size NumberOfNodesInElement = ElementType::NumberOfNodes;
-    static constexpr sofa::Size NumberOfDofsInElement = NumberOfNodesInElement * spatial_dimensions;
+    static constexpr sofa::Size NumberOfDofsInElement = NumberOfNodesInElement * field_dimensions;
     static constexpr sofa::Size TopologicalDimension = FiniteElement::TopologicalDimension;
     static constexpr sofa::Size NbQuadraturePoints = FiniteElement::quadraturePoints().size();
 
-    /// type of 2nd-order tensor for the elasticity tensor for isotropic materials
-    using ElasticityTensor = sofa::type::FullySymmetric4Tensor<DataTypes::spatial_dimensions, Real>;
+    static_assert(field_dimensions >= 1, "The field must have at least one component");
+    static_assert(TopologicalDimension <= spatial_dimensions,
+                  "The element cannot have a higher dimension than the space it is embedded in");
+
+    /// 4th-order tensor for isotropic elasticity: lives in physical space
+    using ElasticityTensor = sofa::type::FullySymmetric4Tensor<spatial_dimensions, Real>;
 
     /// the type of B in e = B d, if e is the strain, and d is the displacement
-    using StrainDisplacement = sofa::component::solidmechanics::fem::elastic::StrainDisplacement<DataTypes, ElementType>;
+    using StrainDisplacement = sofa::component::solidmechanics::fem::elastic::StrainDisplacement<SpatialTypes, ElementType>;
 
-    /// the concatenation of the displacement of the element nodes in a single vector
+    /// the concatenation of the nodal values (displacement, temperature, ...) of the element nodes in a single vector
     using ElementDisplacement = sofa::type::Vec<NumberOfDofsInElement, Real>;
 
     /// the type of the element hessian matrix
