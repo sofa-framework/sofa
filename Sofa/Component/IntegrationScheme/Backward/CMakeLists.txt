@@ -15,6 +15,7 @@ set(HEADER_FILES
 
     ${SOFACOMPONENTINTEGRATIONSCHEMEBACKWARD_SOURCE_DIR}/unknownpredictors/ConstantAccelerationPredictor.h
     ${SOFACOMPONENTINTEGRATIONSCHEMEBACKWARD_SOURCE_DIR}/unknownpredictors/ConstantVelocityPredictor.h
+    ${SOFACOMPONENTINTEGRATIONSCHEMEBACKWARD_SOURCE_DIR}/unknownpredictors/DampedVelocityPredictor.h
 
 )
 
@@ -29,6 +30,7 @@ set(SOURCE_FILES
 
     ${SOFACOMPONENTINTEGRATIONSCHEMEBACKWARD_SOURCE_DIR}/unknownpredictors/ConstantAccelerationPredictor.cpp
     ${SOFACOMPONENTINTEGRATIONSCHEMEBACKWARD_SOURCE_DIR}/unknownpredictors/ConstantVelocityPredictor.cpp
+    ${SOFACOMPONENTINTEGRATIONSCHEMEBACKWARD_SOURCE_DIR}/unknownpredictors/DampedVelocityPredictor.cpp
 )
 
 sofa_find_package(Sofa.Simulation.Core REQUIRED)

@@ -36,6 +36,7 @@ namespace unknownpredictors
 {
     extern void registerConstantVelocityPredictor(sofa::core::ObjectFactory* factory);
     extern void registerConstantAccelerationPredictor(sofa::core::ObjectFactory* factory);
+    extern void registerDampedVelocityPredictor(sofa::core::ObjectFactory* factory);
 }
 extern "C" {
     SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
@@ -68,6 +69,7 @@ void registerObjects(sofa::core::ObjectFactory* factory)
     registerTrapezoidalIntegrationScheme(factory);
     unknownpredictors::registerConstantVelocityPredictor(factory);
     unknownpredictors::registerConstantAccelerationPredictor(factory);
+    unknownpredictors::registerDampedVelocityPredictor(factory);
 }
 
 void init()
