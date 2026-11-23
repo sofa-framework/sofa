@@ -52,7 +52,7 @@ WorkerThread::~WorkerThread()
 
 bool WorkerThread::isFinished() const
 {
-    return m_finished.load(std::memory_order_relaxed);
+    return m_finished.load(std::memory_order_acquire);
 }
 
 bool WorkerThread::start(DefaultTaskScheduler *const &taskScheduler)
@@ -101,7 +101,9 @@ void WorkerThread::run(void)
         }
     }
 
-    m_finished.store(true, std::memory_order_relaxed);
+    // Release pairs with the acquire in isFinished(). Deleting the worker is
+    // ordered by the join() in its destructor, not by this flag.
+    m_finished.store(true, std::memory_order_release);
 }
 
 const std::thread::id WorkerThread::getId() const

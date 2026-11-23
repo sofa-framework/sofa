@@ -23,7 +23,7 @@
 
 namespace sofa::simulation
 {
-Task::Allocator* Task::_allocator = nullptr;
+std::atomic<Task::Allocator*> Task::_allocator { nullptr };
 
 Task::Task(int scheduledThread)
 : m_scheduledThread(scheduledThread)
@@ -33,17 +33,17 @@ Task::Task(int scheduledThread)
 
 void *Task::operator new(std::size_t sz)
 {
-    return _allocator->allocate(sz);
+    return _allocator.load(std::memory_order_acquire)->allocate(sz);
 }
 
 void Task::operator delete(void *ptr)
 {
-    _allocator->free(ptr, 0);
+    _allocator.load(std::memory_order_acquire)->free(ptr, 0);
 }
 
 void Task::operator delete(void *ptr, std::size_t sz)
 {
-    _allocator->free(ptr, sz);
+    _allocator.load(std::memory_order_acquire)->free(ptr, sz);
 }
 
 int Task::getScheduledThread() const
@@ -53,12 +53,12 @@ int Task::getScheduledThread() const
 
 Task::Allocator *Task::getAllocator()
 {
-    return _allocator;
+    return _allocator.load(std::memory_order_acquire);
 }
 
 void Task::setAllocator(Task::Allocator *allocator)
 {
-    _allocator = allocator;
+    _allocator.store(allocator, std::memory_order_release);
 }
 
 } // namespace sofa
