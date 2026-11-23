@@ -361,10 +361,10 @@ public:
     ///@}
 
     /// Save a SnapshotObject full of data and link into the snapshot
-    std::shared_ptr<Snapshot::SnapshotObject> saveSnapshot(std::shared_ptr<Snapshot::SnapshotObject> object) const;
+    virtual std::shared_ptr<Snapshot::SnapshotObject> saveSnapshot(std::shared_ptr<Snapshot::SnapshotObject> object) const;
 
     /// Load data and links from the snapshot to the scene
-    void loadSnapshot(const std::shared_ptr<Snapshot::SnapshotObject>& snapshotObject) const;
+    virtual void loadSnapshot(const std::shared_ptr<Snapshot::SnapshotObject>& snapshotObject) const;
     
     /// Save Internal State to the SnapshotObject
     virtual void saveInternalStateIn(Snapshot::SnapshotObject& snapshot) const;

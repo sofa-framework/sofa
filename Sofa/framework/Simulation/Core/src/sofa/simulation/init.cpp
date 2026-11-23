@@ -35,6 +35,7 @@ extern void registerRequiredPlugin(sofa::core::ObjectFactory* factory);
 extern void registerDefaultVisualManagerLoop(sofa::core::ObjectFactory* factory);
 extern void registerDefaultAnimationLoop(sofa::core::ObjectFactory* factory);
 extern void registerTaskSchedulerSettings(sofa::core::ObjectFactory* factory);
+extern void registerSnapshotManager(sofa::core::ObjectFactory* factory);
 
 namespace core
 {
@@ -55,6 +56,7 @@ SOFA_SIMULATION_CORE_API void init()
         registerDefaultVisualManagerLoop(factory);
         registerDefaultAnimationLoop(factory);
         registerTaskSchedulerSettings(factory);
+        registerSnapshotManager(factory);
     }
 }
 

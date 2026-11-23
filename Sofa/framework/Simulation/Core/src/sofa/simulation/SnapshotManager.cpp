@@ -27,6 +27,7 @@
 #include <sofa/helper/logging/Messaging.h>
 #include <algorithm>
 #include <sofa/core/objectmodel/JSONSnapshot.h>
+#include <sofa/core/ObjectFactory.h>
 #include <utility>
 #include <sofa/helper/system/FileSystem.h>
 using sofa::helper::system::FileSystem;
@@ -36,32 +37,48 @@ using sofa::helper::system::FileSystem;
 namespace sofa::simulation
 {
 
-SnapshotManager::SnapshotManager() = default;
+void registerSnapshotManager(sofa::core::ObjectFactory* factory)
+{
+    factory->registerObjects(sofa::core::ObjectRegistrationData("Manages the snapshots in the simulation")
+        .add< SnapshotManager >());
+}
 
-SnapshotManager::~SnapshotManager() = default;
+SnapshotManager::SnapshotManager()
+    :d_numberOfSnapshots( initData(&d_numberOfSnapshots, "numberOfSnapshots", "number of Snapshots inside the SnapshotManager"))
+{
 
-void SnapshotManager::addSnapshotFromFile(const std::string& path)
+}
+
+SnapshotManager::~SnapshotManager()
+{
+
+}
+
+void SnapshotManager::addSnapshotToFile(const std::string& path)
 {
     m_snapshotsFromFiles.erase(std::remove(m_snapshotsFromFiles.begin(), m_snapshotsFromFiles.end(), path), m_snapshotsFromFiles.end());
     m_snapshotsFromFiles.push_back(path);
+    d_numberOfSnapshots.setValue(d_numberOfSnapshots.getValue() + 1);
 }
 
-void SnapshotManager::addSnapshotFromMemory(const std::shared_ptr<sofa::core::objectmodel::Snapshot>& snapshot,
+void SnapshotManager::addSnapshotToMemory(const std::shared_ptr<sofa::core::objectmodel::Snapshot>& snapshot,
                                         double snapshotTime)
 {
     static int index = 0;
     m_snapshotsFromMemory["Memory_Snapshot " + std::to_string(index++) + " at " + std::to_string(snapshotTime)] = snapshot;
+    d_numberOfSnapshots.setValue(d_numberOfSnapshots.getValue() + 1);
 }
 
-void SnapshotManager::memorySave(const sofa::core::sptr<Node>& groot)
+void SnapshotManager::memorySave()
 {
     auto snapshot = std::make_shared<sofa::core::objectmodel::Snapshot>();
     auto visitor = SaveSnapshotVisitor(nullptr, *snapshot);
-    groot->execute(visitor);
-    addSnapshotFromMemory(snapshot, groot->getTime());
+    this->getContext()->getRootContext()->executeVisitor(&visitor);
+    addSnapshotToMemory(snapshot, this->getContext()->getTime());
+
 }
 
-void SnapshotManager::memoryLoad(sofa::core::sptr<Node>& groot)
+void SnapshotManager::memoryLoad()
 {
     if (m_snapshotsFromMemory.empty())
     {
@@ -71,14 +88,14 @@ void SnapshotManager::memoryLoad(sofa::core::sptr<Node>& groot)
 
     const auto& snapshot = m_snapshotsFromMemory.rbegin()->second;
     auto visitor = LoadSnapshotVisitor(nullptr, *snapshot);
-    groot->execute(visitor);
+    this->getContext()->getRootContext()->executeVisitor(&visitor);
 }
 
-void SnapshotManager::saveTo(const sofa::core::sptr<sofa::simulation::Node>& groot, const std::string& savePath, bool isSet)
+void SnapshotManager::saveTo(const std::string& savePath, bool isSet)
 {
     auto m_snapshot = std::make_shared<sofa::core::objectmodel::Snapshot>();
     auto visitor = SaveSnapshotVisitor(nullptr,*m_snapshot);
-    groot->execute(visitor);
+    this->getContext()->getRootContext()->executeVisitor(&visitor);
 
 
     std::string FileExtension = FileSystem::getExtension(savePath);
@@ -89,11 +106,11 @@ void SnapshotManager::saveTo(const sofa::core::sptr<sofa::simulation::Node>& gro
     else
         msg_error("SaveSnapshot") << "Snapshot " << savePath << " not supported";
 
-    addSnapshotFromFile(savePath);
+    addSnapshotToFile(savePath);
     msg_info("SaveSnapshot") << "Snapshot " << savePath << " saved";
 }
 
-void SnapshotManager::loadTo(sofa::core::sptr<sofa::simulation::Node>& groot, const std::string& outPath)
+void SnapshotManager::loadTo(const std::string& outPath)
 {
     auto m_snapshot = std::make_shared<sofa::core::objectmodel::Snapshot>();
 
@@ -109,8 +126,8 @@ void SnapshotManager::loadTo(sofa::core::sptr<sofa::simulation::Node>& groot, co
         return;
     }
     auto visitor = LoadSnapshotVisitor(nullptr,*m_snapshot);
-    groot->execute(visitor);
-    addSnapshotFromFile(outPath);
+    this->getContext()->getRootContext()->executeVisitor(&visitor);
+    addSnapshotToFile(outPath);
     msg_info("LoadSnapshot") << "Snapshot " << outPath << " loaded";
 }
 
@@ -125,10 +142,21 @@ void SnapshotManager::loadToSet(const std::string& filename)
 
     for (const auto&[snapshot, snapshotTime] : snapshots)
     {
-        addSnapshotFromMemory(snapshot, snapshotTime);
+        addSnapshotToMemory(snapshot, snapshotTime);
     }
 
     msg_info("LoadSnapshot") << "Snapshot " << filename << " loaded";
+}
+
+std::shared_ptr<core::objectmodel::Snapshot::SnapshotObject> SnapshotManager::saveSnapshot(std::shared_ptr<core::objectmodel::Snapshot::SnapshotObject> object) const
+{
+    SOFA_UNUSED(object);
+    return nullptr;
+}
+
+void SnapshotManager::loadSnapshot(const std::shared_ptr<core::objectmodel::Snapshot::SnapshotObject>& snapshotObject) const
+{
+    SOFA_UNUSED(snapshotObject);
 }
 
 } // namespace sofa::simulation
