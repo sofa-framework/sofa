@@ -27,6 +27,7 @@
 #include <sofa/core/behavior/SingleStateAccessor.h>
 #include <sofa/core/behavior/TopologyAccessor.h>
 #include <sofa/core/visual/DrawColoredMesh.h>
+#include <sofa/core/visual/DrawMesh.h>
 #include <sofa/helper/ColorMap.h>
 #include <sofa/type/ClampedScalar.h>
 
@@ -87,6 +88,9 @@ public:
     Data<helper::ColorMap> d_colorMap;
     Data<bool> d_lighting;
     Data<type::ClampedScalar<sofa::Real_t<DataTypes>>> d_elementSpace;
+    Data<bool> d_showEdges;
+    Data<type::RGBAColor> d_edgeColor;
+    Data<float> d_lineWidth;
 
     sofa::SingleLink<MyType, CauchyStressEvaluator<DataTypes>,
         sofa::BaseLink::FLAG_STOREPATH | sofa::BaseLink::FLAG_STRONGLINK> l_stressEvaluator;
@@ -134,6 +138,7 @@ protected:
     static Real_t<DataTypes> vonMisesStress(const StressVoigtVector& deviatoricStress);
 
     core::visual::DrawElementColoredMesh<ElementType> m_renderer;
+    core::visual::DrawElementMesh<sofa::geometry::Edge> m_edgeRenderer;
 };
 
 }  // namespace sofa::component::solidmechanics::fem::elastic
