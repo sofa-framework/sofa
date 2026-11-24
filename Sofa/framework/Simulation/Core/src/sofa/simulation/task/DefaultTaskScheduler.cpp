@@ -58,7 +58,7 @@ DefaultTaskScheduler::DefaultTaskScheduler()
 {
     m_isInitialized = false;
     m_threadCount = 0;
-    m_isClosing = false;
+    m_isClosing.store(false, std::memory_order_release);
 
     // init global static thread local var
     {
@@ -108,7 +108,7 @@ void DefaultTaskScheduler::start(const unsigned int NbThread )
 {
     stop();
 
-    m_isClosing = false;
+    m_isClosing.store(false, std::memory_order_release);
     m_workerThreadsIdle = true;
     m_mainTaskStatus	= nullptr;
 
@@ -137,7 +137,7 @@ void DefaultTaskScheduler::start(const unsigned int NbThread )
 
 void DefaultTaskScheduler::stop()
 {
-    m_isClosing = true;
+    m_isClosing.store(true, std::memory_order_release);
 
     if ( m_isInitialized )
     {

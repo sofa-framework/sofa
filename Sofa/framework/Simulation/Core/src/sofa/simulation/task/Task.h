@@ -23,6 +23,7 @@
 
 #include <sofa/simulation/config.h>
 
+#include <atomic>
 #include <cstddef>
 
 namespace sofa::simulation
@@ -100,7 +101,7 @@ public:
             
 private:
             
-    static Task::Allocator * _allocator;
+    static std::atomic<Task::Allocator*> _allocator;
 };
 
 } // namespace sofa::simulation

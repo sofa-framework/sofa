@@ -28,7 +28,9 @@ CpuTaskStatus::CpuTaskStatus(): m_busy(0)
 
 bool CpuTaskStatus::isBusy() const
 {
-    return (m_busy.load(std::memory_order_relaxed) > 0);
+    // Acquire pairs with the release in setBusy(false): once a thread sees the
+    // status idle, it also sees everything the finished tasks wrote.
+    return (m_busy.load(std::memory_order_acquire) > 0);
 }
 
 int CpuTaskStatus::setBusy(bool busy)
@@ -39,7 +41,8 @@ int CpuTaskStatus::setBusy(bool busy)
     }
     else
     {
-        return m_busy.fetch_sub(1, std::memory_order_relaxed);
+        // Release publishes the task's writes to whoever waits on this status.
+        return m_busy.fetch_sub(1, std::memory_order_acq_rel);
     }
 }
 }
