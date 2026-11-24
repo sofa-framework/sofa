@@ -1,0 +1,63 @@
+<Node name="root" dt="0.001" gravity="0 0 0" >
+
+    <Node name="plugins">
+        <RequiredPlugin pluginName="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [LinearMovementProjectiveConstraint] -->
+        <RequiredPlugin pluginName="Sofa.Component.Diffusion"/> <!-- Needed to use components [DiffusionFEMForceField] -->
+        <RequiredPlugin pluginName="Sofa.Component.Engine.Select"/> <!-- Needed to use components [BoxROI] -->
+        <RequiredPlugin pluginName="Sofa.Component.IntegrationScheme.Backward"/> <!-- Needed to use components [EulerImplicitIntegrationScheme] -->
+        <RequiredPlugin pluginName="Sofa.Component.LinearSolver.Direct"/> <!-- Needed to use components [SparseLDLSolver] -->
+        <RequiredPlugin pluginName="Sofa.Component.Mass"/> <!-- Needed to use components [MeshMatrixMass] -->
+        <RequiredPlugin pluginName="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+        <RequiredPlugin pluginName="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->
+        <RequiredPlugin pluginName="Sofa.Component.Visual"/> <!-- Needed to use components [VisualMesh,VisualStyle] -->
+    </Node>
+
+    <VisualStyle displayFlags="showVisualModels"/>
+    <DefaultAnimationLoop computeBoundingBox="false"/>
+
+    <Node name="direct_solver">
+        <Node name="geometry">
+            <RegularGridTopology name="grid" min="-1 -1 0" max="1 1 0" n="100 100 1"/>
+            <MechanicalObject template="Vec2" name="spatialState"/>
+
+            <BoxROI name="topLeft"  box="-1.01 0.99 -0.01  0 1.01 0.01"/>
+            <BoxROI name="topRight"  box="0.001 0.99 -0.01  1.01 1.01 0.01"/>
+
+            <BoxROI name="bottomLeft"  box="-1.01 -0.99 -0.01  0 -1.01 0.01"/>
+            <BoxROI name="bottomRight"  box="0.001 -0.99 -0.01  1.01 -1.01 0.01"/>
+
+            <BoxROI name="center"  box="-0.1 -0.1 -0.01  0.1 0.1 0.01"/>
+        </Node>
+
+        <Node name="diffusion_quads">
+            <EulerImplicitIntegrationScheme name="timeIntegration" firstOrder="true" rayleighStiffness="0." rayleighMass="0." />
+            <SparseLDLSolver template="CompressedRowSparseMatrix"/>
+
+            <RegularGridTopology name="grid" min="0 0 0" max="0 1 1" n="100 100 1"/>
+            <MechanicalObject template="Vec1" position="@grid.position" name="temperature" bbox="0 0 0 0 0 0"/>
+            <MeshMatrixMass name="mass" template="Vec1,Vec2" massDensity="1" topology="@../geometry/grid" geometryState="@../geometry/spatialState"/>
+            <DiffusionFEMForceField template="Vec1,Vec2,Quad" name="diffusion" topology="@../geometry/grid"
+                                    elementDiffusionCoefficient="1" spatialState="@../geometry/spatialState" mstate="@temperature"/>
+
+            <LinearMovementProjectiveConstraint template="Vec1" indices="@../geometry/topLeft.indices"
+                                                keyTimes="0 1 2 1e11" movements="0 100 0 0"/>
+            <LinearMovementProjectiveConstraint template="Vec1" indices="@../geometry/topRight.indices"
+                                                keyTimes="0 1 2 1e11" movements="100 0 100 100"/>
+
+            <LinearMovementProjectiveConstraint template="Vec1" indices="@../geometry/bottomLeft.indices"
+                                                keyTimes="0 1 2 1e11" movements="100 0 100 100"/>
+            <LinearMovementProjectiveConstraint template="Vec1" indices="@../geometry/bottomRight.indices"
+                                                keyTimes="0 1 2 1e11" movements="0 100 0 0"/>
+
+            <LinearMovementProjectiveConstraint template="Vec1" indices="@../geometry/center.indices"
+                                                keyTimes="0 2 3 1e11" movements="100 0 100 0"/>
+
+            <!-- color palette: https://coolors.co/palette/f94144-f3722c-f8961e-f9844a-f9c74f-90be6d-43aa8b-4d908e-577590-277da1 -->
+            <VisualMesh position="@../geometry/spatialState.position" elementSpace="0.0" lighting="false"
+                        vertexValues="@temperature.position"
+                        colorMap="#277DA1 #577590 #4D908E #43AA8B #90BE6D #F9C74F #F9844A #F8961E #F3722C #F94144"
+                        colorMapRange="0 100"/>
+        </Node>
+
+    </Node>
+</Node>
