@@ -130,11 +130,11 @@ struct SOFA_CORE_API DrawElementColoredMesh<sofa::geometry::Edge>
     }
 };
 
-template<>
-struct SOFA_CORE_API DrawElementColoredMesh<sofa::geometry::Triangle>
-    : public BaseDrawColoredMesh<DrawElementColoredMesh<sofa::geometry::Triangle>>
+template<class TElementType>
+struct DrawSurfaceElementColoredMesh
+    : public BaseDrawColoredMesh<DrawSurfaceElementColoredMesh<TElementType>>
 {
-    using ElementType = sofa::geometry::Triangle;
+    using ElementType = TElementType;
     friend BaseDrawColoredMesh;
 
     template<class PositionContainer, class IndicesContainer, class ColorContainer>
@@ -145,10 +145,10 @@ struct SOFA_CORE_API DrawElementColoredMesh<sofa::geometry::Triangle>
         const IndicesContainer& elementIndices,
         const ColorContainer& nodesColors)
     {
-        const auto& elements = topology->getTriangles();
+        const auto& elements = topology->getElements<ElementType>();
 
-        renderedPoints.clear();
-        colors.clear();
+        this->renderedPoints.clear();
+        this->colors.clear();
 
         for (auto i : elementIndices)
         {
@@ -159,60 +159,46 @@ struct SOFA_CORE_API DrawElementColoredMesh<sofa::geometry::Triangle>
             {
                 const auto p = this->applyElementSpace(position[vertexId], center);
 
-                renderedPoints.push_back(sofa::type::toVec3(p));
+                this->renderedPoints.push_back(sofa::type::toVec3(p));
 
-                // Find local ID of the vertex in the triangle to support local color mapping
+                // Find local ID of the vertex in the element to support local color mapping
                 std::size_t localId = 0;
-                for (; localId < 3; ++localId) if (element[localId] == vertexId) break;
+                for (; localId < ElementType::NumberOfNodes; ++localId)
+                {
+                    if (element[localId] == vertexId)
+                        break;
+                }
 
-                colors.push_back(this->getColor(nodesColors, i, localId, vertexId));
+                this->colors.push_back(this->getColor(nodesColors, i, localId, vertexId));
             }
         }
 
-        drawTool->drawTriangles(renderedPoints, colors);
+        drawPrimitives(drawTool);
+    }
+
+protected:
+    virtual void drawPrimitives(sofa::helper::visual::DrawTool* drawTool) = 0;
+};
+
+template<>
+struct SOFA_CORE_API DrawElementColoredMesh<sofa::geometry::Triangle>
+    : public DrawSurfaceElementColoredMesh<sofa::geometry::Triangle>
+{
+protected:
+    void drawPrimitives(sofa::helper::visual::DrawTool* drawTool) override
+    {
+        drawTool->drawTriangles(this->renderedPoints, this->colors);
     }
 };
 
 template<>
 struct SOFA_CORE_API DrawElementColoredMesh<sofa::geometry::Quad>
-    : public BaseDrawColoredMesh<DrawElementColoredMesh<sofa::geometry::Quad>>
+    : public DrawSurfaceElementColoredMesh<sofa::geometry::Quad>
 {
-    using ElementType = sofa::geometry::Quad;
-    friend BaseDrawColoredMesh;
-
-    template<class PositionContainer, class IndicesContainer, class ColorContainer>
-    void doDraw(
-        sofa::helper::visual::DrawTool* drawTool,
-        const PositionContainer& position,
-        sofa::core::topology::BaseMeshTopology* topology,
-        const IndicesContainer& elementIndices,
-        const ColorContainer& nodesColors)
+protected:
+    void drawPrimitives(sofa::helper::visual::DrawTool* drawTool) override
     {
-        const auto& elements = topology->getQuads();
-
-        renderedPoints.clear();
-        colors.clear();
-
-        for (auto i : elementIndices)
-        {
-            const auto& element = elements[i];
-            const auto center = this->elementCenter(position, element);
-
-            for (const auto vertexId : element)
-            {
-                const auto p = this->applyElementSpace(position[vertexId], center);
-
-                renderedPoints.push_back(sofa::type::toVec3(p));
-
-                // Find local ID of the vertex in the triangle to support local color mapping
-                std::size_t localId = 0;
-                for (; localId < 4; ++localId) if (element[localId] == vertexId) break;
-
-                colors.push_back(this->getColor(nodesColors, i, localId, vertexId));
-            }
-        }
-
-        drawTool->drawQuads(renderedPoints, colors);
+        drawTool->drawQuads(this->renderedPoints, this->colors);
     }
 };
 
