@@ -15,7 +15,7 @@ on:
       python_version:
         description: 'Version of Python used'
         required: true
-        default: '3.12'
+        default: '3.14'
         type: string
       external-plugins:
         description: 'List of github repository and branch name to add to build tree, separated by a space. Syntax: https://www.github.com/me/myrepo@mybranch'
@@ -95,7 +95,7 @@ jobs:
           echo "SOFA_BRANCH_NAME=master" >> $GITHUB_ENV    # SOFA_BRANCH_NAME: "master"
           echo "SOFA_COMMIT_SHA=HEAD" >> $GITHUB_ENV       # SOFA_COMMIT_SHA: "HEAD"
           echo "PRESET=full-dev" >> $GITHUB_ENV            # PRESET: "full-dev"
-          echo "PYTHON_VERSION=3.12" >> $GITHUB_ENV        # PYTHON_VERSION: "3.12"
+          echo "PYTHON_VERSION=3.14" >> $GITHUB_ENV        # PYTHON_VERSION: "3.14"
           echo "CI_DEPENDS_ON=" >> $GITHUB_ENV             # CI_DEPENDS_ON: ""
           echo "WITH_ALL_TESTS=false" >> $GITHUB_ENV       # WITH_ALL_TESTS: false
           echo "FORCE_FULL_BUILD=false" >> $GITHUB_ENV     # FORCE_FULL_BUILD: false
