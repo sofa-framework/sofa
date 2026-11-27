@@ -241,7 +241,7 @@ void OglShader::parse(core::objectmodel::BaseObjectDescription* arg)
 #endif
 }
 
-void OglShader::stop()
+void OglShader::doStop()
 {
     if(turnOn.getValue() && shaderVector[indexActiveShader.getValue()]->IsReady())
     {
@@ -253,7 +253,7 @@ void OglShader::stop()
     }
 }
 
-void OglShader::start()
+void OglShader::doStart()
 {
     if(turnOn.getValue() && shaderVector[indexActiveShader.getValue()]->IsReady())
     {
