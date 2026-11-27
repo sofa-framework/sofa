@@ -29,16 +29,6 @@
 #include <sofa/core/topology/TopologyData.h>
 #include <sofa/gl/template.h>
 
-namespace sofa::core::topology
-{
-    class BaseMeshTopology;
-} // namespace sofa::core::topology
-
-namespace sofa::core::behavior
-{
-    class BaseMechanicalState;
-} // namespace sofa::core::behavior
-
 namespace sofa::gl::component::rendering3d
 {
 

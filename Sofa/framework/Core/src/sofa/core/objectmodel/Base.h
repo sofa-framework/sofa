@@ -439,7 +439,7 @@ public:
     SOFA_BASE_CAST_DEFINITION( behavior,    LinearSolver                           )
     SOFA_BASE_CAST_DEFINITION( behavior,    ConstraintSolver                       )
     SOFA_BASE_CAST_DEFINITION( behavior,    BaseMass                               )
-    SOFA_BASE_CAST_DEFINITION( behavior,    BaseMechanicalState                    )
+    SOFA_BASE_CAST_DEFINITION( behavior,    BaseVectorState                        )
     SOFA_BASE_CAST_DEFINITION( behavior,    BaseInteractionForceField              )
     SOFA_BASE_CAST_DEFINITION( behavior,    BaseInteractionConstraint              )
     SOFA_BASE_CAST_DEFINITION( behavior,    BaseForceField                         )
@@ -468,6 +468,9 @@ public:
 
     SOFA_ATTRIBUTE_DEPRECATED__TOBASEOBJECT() virtual const objectmodel::BaseComponent* toBaseObject() const { return toBaseComponent(); }
     SOFA_ATTRIBUTE_DEPRECATED__TOBASEOBJECT() virtual       objectmodel::BaseComponent* toBaseObject()       { return toBaseComponent(); }
+
+    SOFA_ATTRIBUTE_DEPRECATED__TOBASEMECHANICALSTATE() virtual const behavior::BaseVectorState* toBaseMechanicalState() const { return toBaseVectorState(); }
+    SOFA_ATTRIBUTE_DEPRECATED__TOBASEMECHANICALSTATE() virtual       behavior::BaseVectorState* toBaseMechanicalState()       { return toBaseVectorState(); }
 
     /// @}
 };

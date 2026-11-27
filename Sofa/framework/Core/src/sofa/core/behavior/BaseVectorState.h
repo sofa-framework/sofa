@@ -31,47 +31,20 @@
 namespace sofa::core::behavior
 {
 
-/**
- *  \brief Component storing all state vectors of a simulated body (position, velocity, etc).
- *
- *  This class only contains the data of the body and not any of its
- *  <i>active</i> computations, which are handled by the Mass, ForceField, and
- *  LagrangianConstraint components.
- *
- *  Two types of vectors are used :
- *  \li \code VecCoord \endcode : containing positions.
- *  \li \code VecDeriv \endcode : derivative values, i.e. velocity, forces, displacements.
- *  In most cases they are the same (i.e. 3D/2D point particles), but they can
- *  be different (rigid frames for instance).
- *
- *  Several pre-defined vectors are stored :
- *  \li \code position \endcode
- *  \li \code velocity \endcode
- *  \li \code force \endcode
- *  \li \code dx \endcode (displacement)
- *
- *  Other vectors can be allocated to store other temporary values.
- *  Vectors can be assigned efficiently by just swapping pointers.
- *
- *  In addition to state vectors, the current constraint system matrix is also
- *  stored, containing the coefficient of each constraint defined over the DOFs
- *  in this body.
- *
- */
-class SOFA_CORE_API BaseMechanicalState : public virtual BaseState
+class SOFA_CORE_API BaseVectorState : public virtual BaseState
 {
 public:
-    SOFA_ABSTRACT_CLASS(BaseMechanicalState, BaseState);
-    SOFA_BASE_CAST_IMPLEMENTATION(BaseMechanicalState);
+    SOFA_ABSTRACT_CLASS(BaseVectorState, BaseState);
+    SOFA_BASE_CAST_IMPLEMENTATION(BaseVectorState);
 
     using Index = sofa::Index;
 protected:
-    BaseMechanicalState();
+    BaseVectorState();
 
-    ~BaseMechanicalState() override;
+    ~BaseVectorState() override;
 private:
-    BaseMechanicalState(const BaseMechanicalState& n) = delete;
-    BaseMechanicalState& operator=(const BaseMechanicalState& n) = delete;
+    BaseVectorState(const BaseVectorState& n) = delete;
+    BaseVectorState& operator=(const BaseVectorState& n) = delete;
 
 public:
     /// @name Methods allowing to have access to the geometry without a template class (generic but not efficient)
@@ -299,7 +272,7 @@ public:
     virtual bool pickParticles(const ExecParams* /* params */, double /*rayOx*/, double /*rayOy*/, double /*rayOz*/,
             double /*rayDx*/, double /*rayDy*/, double /*rayDz*/,
             double /*radius0*/, double /*dRadius*/,
-            std::multimap< double, std::pair<sofa::core::behavior::BaseMechanicalState*, int> >& /*particles*/)
+            std::multimap< double, std::pair<sofa::core::behavior::BaseVectorState*, int> >& /*particles*/)
     {
         return false;
     }
