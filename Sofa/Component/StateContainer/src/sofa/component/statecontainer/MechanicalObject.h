@@ -97,7 +97,7 @@ public:
     Data< VecDeriv > reset_velocity; ///< reset velocity coordinates of the degrees of freedom
 
 
-    defaulttype::MapMapSparseMatrix< Deriv > c2;
+    SOFA_ATTRIBUTE_DEPRECATED__MECHANICALOBJECT_C2() defaulttype::MapMapSparseMatrix< Deriv > c2;
 
     Data< SReal > restScale; ///< optional scaling of rest position coordinates (to simulated pre-existing internal tension).(default = 1.0)
 
