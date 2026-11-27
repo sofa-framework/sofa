@@ -70,10 +70,20 @@ public:
      */
     bool isMapped() const;
 
+    /**
+     * @return True if this node represents a leaf of the mapping graph.
+     *
+     * A mechanical state is a leaf when it is not the input of a mapping.
+     * A component or group is a leaf when it is associated to a leaf mechanical state.
+     */
+    bool isLeaf() const;
+
     const sofa::type::vector<std::weak_ptr<BaseMappingGraphNode>>& getParents() const { return m_parents; }
     const sofa::type::vector<SPtr>& getChildren() const { return m_children; }
 
 private:
+    bool hasMappingInChildren() const;
+
     /// Prerequisite nodes (nodes pointing to this one). Held as weak_ptr: ownership of every
     /// node belongs to MappingGraph::m_allNodes and to the owning parent's m_children; a strong
     /// back-reference here would form a parent<->child reference cycle that keeps the whole
