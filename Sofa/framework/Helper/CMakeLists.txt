@@ -156,6 +156,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/RandomGenerator.cpp
     ${SRC_ROOT}/StringUtils.cpp
     ${SRC_ROOT}/TagFactory.cpp
+    ${SRC_ROOT}/TriangleOctree.cpp
     ${SRC_ROOT}/Utils.cpp
     ${SRC_ROOT}/decompose.cpp
     ${SRC_ROOT}/init.cpp
@@ -172,7 +173,6 @@ set(SOURCE_FILES
     ${SRC_ROOT}/io/MeshTopologyLoader.cpp
     ${SRC_ROOT}/io/SphereLoader.cpp
     ${SRC_ROOT}/io/STBImage.cpp
-    ${SRC_ROOT}/io/TriangleLoader.cpp
     ${SRC_ROOT}/io/XspLoader.cpp
     ${SRC_ROOT}/kdTree.cpp
     ${SRC_ROOT}/system/DynamicLibrary.cpp
