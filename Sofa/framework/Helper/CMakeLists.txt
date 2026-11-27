@@ -91,7 +91,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/io/MeshTopologyLoader.h
     ${SRC_ROOT}/io/SphereLoader.h
     ${SRC_ROOT}/io/STBImage.h
-    ${SRC_ROOT}/io/TriangleLoader.h
     ${SRC_ROOT}/kdTree.h
     ${SRC_ROOT}/kdTree.inl
     ${SRC_ROOT}/list.h
@@ -174,7 +173,6 @@ set(SOURCE_FILES
     ${SRC_ROOT}/io/MeshTopologyLoader.cpp
     ${SRC_ROOT}/io/SphereLoader.cpp
     ${SRC_ROOT}/io/STBImage.cpp
-    ${SRC_ROOT}/io/TriangleLoader.cpp
     ${SRC_ROOT}/io/XspLoader.cpp
     ${SRC_ROOT}/kdTree.cpp
     ${SRC_ROOT}/system/DynamicLibrary.cpp
