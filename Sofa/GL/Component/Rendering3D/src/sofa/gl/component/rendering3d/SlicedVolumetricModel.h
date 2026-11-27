@@ -56,11 +56,11 @@ public:
 
     virtual bool isTransparent() {return true;}
 
-    void drawTransparent(const core::visual::VisualParams* vparams) override;
 
 protected:
 //    void setColor(float r, float g, float b);
 //    void setColor(std::string color);
+    void doDrawTransparent(const core::visual::VisualParams* vparams) override;
 
     void findAndDrawTriangles();
 

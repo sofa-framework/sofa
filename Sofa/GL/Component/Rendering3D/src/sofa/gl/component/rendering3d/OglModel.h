@@ -99,6 +99,8 @@ protected:
     OglModel();
 
     ~OglModel() override;
+    void doInitVisual(const core::visual::VisualParams* vparams) override;
+
 public:
     void parse(core::objectmodel::BaseObjectDescription* arg) override;
 
@@ -106,7 +108,6 @@ public:
     bool loadTextures() override;
 
     void initTextures();
-    void doInitVisual(const core::visual::VisualParams* vparams) override;
 
     void init() override { VisualModelImpl::init(); }
 

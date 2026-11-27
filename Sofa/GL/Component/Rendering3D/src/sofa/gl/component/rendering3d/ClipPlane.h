@@ -42,12 +42,14 @@ public:
     virtual sofa::core::objectmodel::ComponentState checkDataValues();
     void init() override;
     void reinit() override;
-    void fwdDraw(core::visual::VisualParams*) override;
-    void bwdDraw(core::visual::VisualParams*) override;
 
 protected:
     ClipPlane();
     ~ClipPlane() override;
+
+    void doFwdDraw(core::visual::VisualParams*) override;
+    void doBwdDraw(core::visual::VisualParams*) override;
+
 
     GLboolean wasActive;
     double saveEq[4];

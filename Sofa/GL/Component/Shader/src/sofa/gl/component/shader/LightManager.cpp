@@ -197,7 +197,7 @@ void LightManager::makeShadowMatrix(unsigned int i)
     glMatrixMode(GL_MODELVIEW);
 }
 
-void LightManager::fwdDraw(core::visual::VisualParams* vp)
+void LightManager::doFwdDraw(core::visual::VisualParams* vp)
 {
 
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT, d_ambient.getValue().data());
@@ -315,7 +315,7 @@ void LightManager::fwdDraw(core::visual::VisualParams* vp)
     glActiveTexture(GL_TEXTURE0);
 }
 
-void LightManager::bwdDraw(core::visual::VisualParams* )
+void LightManager::doBwdDraw(core::visual::VisualParams* )
 {
     for(unsigned int i=0 ; i<m_lights.size() ; ++i)
     {
