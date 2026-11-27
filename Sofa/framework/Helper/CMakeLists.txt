@@ -91,7 +91,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/io/MeshTopologyLoader.h
     ${SRC_ROOT}/io/SphereLoader.h
     ${SRC_ROOT}/io/STBImage.h
-    ${SRC_ROOT}/io/TriangleLoader.h
     ${SRC_ROOT}/kdTree.h
     ${SRC_ROOT}/kdTree.inl
     ${SRC_ROOT}/list.h
@@ -157,7 +156,6 @@ set(SOURCE_FILES
     ${SRC_ROOT}/RandomGenerator.cpp
     ${SRC_ROOT}/StringUtils.cpp
     ${SRC_ROOT}/TagFactory.cpp
-    ${SRC_ROOT}/TriangleOctree.cpp
     ${SRC_ROOT}/Utils.cpp
     ${SRC_ROOT}/decompose.cpp
     ${SRC_ROOT}/init.cpp
