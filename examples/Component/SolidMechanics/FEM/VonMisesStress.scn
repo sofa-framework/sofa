@@ -27,7 +27,7 @@
     <FixedProjectiveConstraint indices="@boxLeft.indices"/>
 
     <NodalMassDensity property="1100"/>
-    <FEMMass template="Vec3,Hexahedron" topology="@grid"/>
+    <FEMMass template="Vec3,Vec3,Hexahedron" topology="@grid"/>
 
     <LinearSmallStrainFEMForceField name="FEM" template="Vec3,Hexahedron"
                                     youngModulus="500000" poissonRatio="0.45"/>

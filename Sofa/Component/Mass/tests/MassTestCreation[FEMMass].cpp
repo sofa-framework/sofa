@@ -36,7 +36,7 @@ using MeshTopology = sofa::component::topology::container::constant::MeshTopolog
  **************************************************************************************************/
 
 template <typename MassParam>
-struct ElementMass_template_test : public Mass_test<FEMMass<typename MassParam::DataTypes, typename MassParam::ElementType>>
+struct ElementMass_template_test : public Mass_test<FEMMass<typename MassParam::DataTypes, typename MassParam::DataTypes, typename MassParam::ElementType>>
 {
     using DataTypes = typename MassParam::DataTypes;
 

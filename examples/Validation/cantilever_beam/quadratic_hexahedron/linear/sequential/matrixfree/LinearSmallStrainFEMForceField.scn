@@ -26,7 +26,7 @@
             <VisualMesh position="@state.position" topology="@topology"/>
 
             <NodalMassDensity property="1100"/>
-            <FEMMass template="Vec3,QuadraticHexahedron"/>
+            <FEMMass template="Vec3,Vec3,QuadraticHexahedron"/>
 
             <BoxROI template="Vec3" name="box_roi" box="-0.011 -0.011 -0.0001   0.011 0.011 0.0001" drawBoxes="1" />
             <FixedProjectiveConstraint template="Vec3" indices="@box_roi.indices" />

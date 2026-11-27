@@ -41,7 +41,7 @@
         <MechanicalObject template="CudaVec3f" name="Volume" />
 
         <NodalMassDensity property="10"/>
-        <FEMMass template="CudaVec3f,Pyramid"/>
+        <FEMMass template="CudaVec3f,CudaVec3f,Pyramid"/>
         <FixedProjectiveConstraint indices="2 3 7 6"/>
         <CudaCorotationalFEMForceField name="FEM" template="CudaVec3f,Pyramid"
                                        youngModulus="500" poissonRatio="0.45"/>

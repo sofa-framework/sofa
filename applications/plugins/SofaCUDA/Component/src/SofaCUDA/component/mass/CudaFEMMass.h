@@ -30,22 +30,22 @@ namespace sofa::component::mass
 {
 
 #ifndef SOFA_GPU_CUDA_CUDAFEMMASS_CPP
-extern template class SOFACUDA_COMPONENT_API FEMMass<sofa::gpu::cuda::CudaVec3fTypes, sofa::geometry::Edge>;
-extern template class SOFACUDA_COMPONENT_API FEMMass<sofa::gpu::cuda::CudaVec3fTypes, sofa::geometry::Triangle>;
-extern template class SOFACUDA_COMPONENT_API FEMMass<sofa::gpu::cuda::CudaVec3fTypes, sofa::geometry::Quad>;
-extern template class SOFACUDA_COMPONENT_API FEMMass<sofa::gpu::cuda::CudaVec3fTypes, sofa::geometry::Tetrahedron>;
-extern template class SOFACUDA_COMPONENT_API FEMMass<sofa::gpu::cuda::CudaVec3fTypes, sofa::geometry::Hexahedron>;
-extern template class SOFACUDA_COMPONENT_API FEMMass<sofa::gpu::cuda::CudaVec3fTypes, sofa::geometry::Prism>;
-extern template class SOFACUDA_COMPONENT_API FEMMass<sofa::gpu::cuda::CudaVec3fTypes, sofa::geometry::Pyramid>;
+extern template class SOFACUDA_COMPONENT_API FEMMass<sofa::gpu::cuda::CudaVec3fTypes, sofa::gpu::cuda::CudaVec3fTypes, sofa::geometry::Edge>;
+extern template class SOFACUDA_COMPONENT_API FEMMass<sofa::gpu::cuda::CudaVec3fTypes, sofa::gpu::cuda::CudaVec3fTypes, sofa::geometry::Triangle>;
+extern template class SOFACUDA_COMPONENT_API FEMMass<sofa::gpu::cuda::CudaVec3fTypes, sofa::gpu::cuda::CudaVec3fTypes, sofa::geometry::Quad>;
+extern template class SOFACUDA_COMPONENT_API FEMMass<sofa::gpu::cuda::CudaVec3fTypes, sofa::gpu::cuda::CudaVec3fTypes, sofa::geometry::Tetrahedron>;
+extern template class SOFACUDA_COMPONENT_API FEMMass<sofa::gpu::cuda::CudaVec3fTypes, sofa::gpu::cuda::CudaVec3fTypes, sofa::geometry::Hexahedron>;
+extern template class SOFACUDA_COMPONENT_API FEMMass<sofa::gpu::cuda::CudaVec3fTypes, sofa::gpu::cuda::CudaVec3fTypes, sofa::geometry::Prism>;
+extern template class SOFACUDA_COMPONENT_API FEMMass<sofa::gpu::cuda::CudaVec3fTypes, sofa::gpu::cuda::CudaVec3fTypes, sofa::geometry::Pyramid>;
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
-extern template class SOFACUDA_COMPONENT_API FEMMass<sofa::gpu::cuda::CudaVec3dTypes, sofa::geometry::Edge>;
-extern template class SOFACUDA_COMPONENT_API FEMMass<sofa::gpu::cuda::CudaVec3dTypes, sofa::geometry::Triangle>;
-extern template class SOFACUDA_COMPONENT_API FEMMass<sofa::gpu::cuda::CudaVec3dTypes, sofa::geometry::Quad>;
-extern template class SOFACUDA_COMPONENT_API FEMMass<sofa::gpu::cuda::CudaVec3dTypes, sofa::geometry::Tetrahedron>;
-extern template class SOFACUDA_COMPONENT_API FEMMass<sofa::gpu::cuda::CudaVec3dTypes, sofa::geometry::Hexahedron>;
-extern template class SOFACUDA_COMPONENT_API FEMMass<sofa::gpu::cuda::CudaVec3dTypes, sofa::geometry::Prism>;
-extern template class SOFACUDA_COMPONENT_API FEMMass<sofa::gpu::cuda::CudaVec3dTypes, sofa::geometry::Pyramid>;
+extern template class SOFACUDA_COMPONENT_API FEMMass<sofa::gpu::cuda::CudaVec3dTypes, sofa::gpu::cuda::CudaVec3dTypes, sofa::geometry::Edge>;
+extern template class SOFACUDA_COMPONENT_API FEMMass<sofa::gpu::cuda::CudaVec3dTypes, sofa::gpu::cuda::CudaVec3dTypes, sofa::geometry::Triangle>;
+extern template class SOFACUDA_COMPONENT_API FEMMass<sofa::gpu::cuda::CudaVec3dTypes, sofa::gpu::cuda::CudaVec3dTypes, sofa::geometry::Quad>;
+extern template class SOFACUDA_COMPONENT_API FEMMass<sofa::gpu::cuda::CudaVec3dTypes, sofa::gpu::cuda::CudaVec3dTypes, sofa::geometry::Tetrahedron>;
+extern template class SOFACUDA_COMPONENT_API FEMMass<sofa::gpu::cuda::CudaVec3dTypes, sofa::gpu::cuda::CudaVec3dTypes, sofa::geometry::Hexahedron>;
+extern template class SOFACUDA_COMPONENT_API FEMMass<sofa::gpu::cuda::CudaVec3dTypes, sofa::gpu::cuda::CudaVec3dTypes, sofa::geometry::Prism>;
+extern template class SOFACUDA_COMPONENT_API FEMMass<sofa::gpu::cuda::CudaVec3dTypes, sofa::gpu::cuda::CudaVec3dTypes, sofa::geometry::Pyramid>;
 #endif
 #endif
 

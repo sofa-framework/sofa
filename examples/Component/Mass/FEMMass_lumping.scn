@@ -38,7 +38,7 @@
         <MechanicalObject template="Vec3" name="state" showObject="true"/>
 
         <NodalMassDensity property="1100"/>
-        <FEMMass template="Vec3,Hexahedron" lumping="false"/>
+        <FEMMass template="Vec3,Vec3,Hexahedron" lumping="false"/>
 
         <CorotationalFEMForceField name="FEM" template="Vec3,Hexahedron"
                                    youngModulus="1e5" poissonRatio="0.45" topology="@grid"
@@ -60,7 +60,7 @@
         <MechanicalObject template="Vec3" name="state" showObject="true"/>
 
         <NodalMassDensity property="1100"/>
-        <FEMMass template="Vec3,Hexahedron" lumping="true"/>
+        <FEMMass template="Vec3,Vec3,Hexahedron" lumping="true"/>
 
         <CorotationalFEMForceField name="FEM" template="Vec3,Hexahedron"
                                    youngModulus="1e5" poissonRatio="0.45" topology="@grid"

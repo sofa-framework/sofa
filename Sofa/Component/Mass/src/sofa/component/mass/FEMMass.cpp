@@ -28,52 +28,184 @@
 namespace sofa::component::mass
 {
 
-template class SOFA_COMPONENT_MASS_API FEMMass<sofa::defaulttype::Vec1Types, sofa::geometry::Edge>;
-template class SOFA_COMPONENT_MASS_API FEMMass<sofa::defaulttype::Vec2Types, sofa::geometry::Edge>;
-template class SOFA_COMPONENT_MASS_API FEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::Edge>;
-template class SOFA_COMPONENT_MASS_API FEMMass<sofa::defaulttype::Vec2Types, sofa::geometry::Triangle>;
-template class SOFA_COMPONENT_MASS_API FEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::Triangle>;
-template class SOFA_COMPONENT_MASS_API FEMMass<sofa::defaulttype::Vec2Types, sofa::geometry::Quad>;
-template class SOFA_COMPONENT_MASS_API FEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::Quad>;
-template class SOFA_COMPONENT_MASS_API FEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::Tetrahedron>;
-template class SOFA_COMPONENT_MASS_API FEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::Hexahedron>;
-template class SOFA_COMPONENT_MASS_API FEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::Prism>;
-template class SOFA_COMPONENT_MASS_API FEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::Pyramid>;
+using sofa::defaulttype::Vec1Types;
+using sofa::defaulttype::Vec2Types;
+using sofa::defaulttype::Vec3Types;
+using sofa::geometry::Edge;
+using sofa::geometry::Triangle;
+using sofa::geometry::Quad;
+using sofa::geometry::Tetrahedron;
+using sofa::geometry::Hexahedron;
+using sofa::geometry::Prism;
+using sofa::geometry::Pyramid;
+using sofa::geometry::QuadraticEdge;
+using sofa::geometry::QuadraticTriangle;
+using sofa::geometry::QuadraticQuad;
+using sofa::geometry::QuadraticTetrahedron;
+using sofa::geometry::QuadraticHexahedron;
 
-template class SOFA_COMPONENT_MASS_API FEMMass<sofa::defaulttype::Vec1Types, sofa::geometry::QuadraticEdge>;
-template class SOFA_COMPONENT_MASS_API FEMMass<sofa::defaulttype::Vec2Types, sofa::geometry::QuadraticEdge>;
-template class SOFA_COMPONENT_MASS_API FEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticEdge>;
-template class SOFA_COMPONENT_MASS_API FEMMass<sofa::defaulttype::Vec2Types, sofa::geometry::QuadraticTriangle>;
-template class SOFA_COMPONENT_MASS_API FEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticTriangle>;
-template class SOFA_COMPONENT_MASS_API FEMMass<sofa::defaulttype::Vec2Types, sofa::geometry::QuadraticQuad>;
-template class SOFA_COMPONENT_MASS_API FEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticQuad>;
-template class SOFA_COMPONENT_MASS_API FEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticTetrahedron>;
-template class SOFA_COMPONENT_MASS_API FEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticHexahedron>;
+template class SOFA_COMPONENT_MASS_API FEMMass<Vec1Types, Vec1Types, Edge>;
+template class SOFA_COMPONENT_MASS_API FEMMass<Vec2Types, Vec1Types, Edge>;
+template class SOFA_COMPONENT_MASS_API FEMMass<Vec3Types, Vec1Types, Edge>;
+
+template class SOFA_COMPONENT_MASS_API FEMMass<Vec1Types, Vec2Types, Edge>;
+template class SOFA_COMPONENT_MASS_API FEMMass<Vec2Types, Vec2Types, Edge>;
+template class SOFA_COMPONENT_MASS_API FEMMass<Vec3Types, Vec2Types, Edge>;
+
+template class SOFA_COMPONENT_MASS_API FEMMass<Vec1Types, Vec3Types, Edge>;
+template class SOFA_COMPONENT_MASS_API FEMMass<Vec2Types, Vec3Types, Edge>;
+template class SOFA_COMPONENT_MASS_API FEMMass<Vec3Types, Vec3Types, Edge>;
+
+template class SOFA_COMPONENT_MASS_API FEMMass<Vec1Types, Vec2Types, Triangle>;
+template class SOFA_COMPONENT_MASS_API FEMMass<Vec2Types, Vec2Types, Triangle>;
+template class SOFA_COMPONENT_MASS_API FEMMass<Vec3Types, Vec2Types, Triangle>;
+
+template class SOFA_COMPONENT_MASS_API FEMMass<Vec1Types, Vec3Types, Triangle>;
+template class SOFA_COMPONENT_MASS_API FEMMass<Vec2Types, Vec3Types, Triangle>;
+template class SOFA_COMPONENT_MASS_API FEMMass<Vec3Types, Vec3Types, Triangle>;
+
+template class SOFA_COMPONENT_MASS_API FEMMass<Vec1Types, Vec2Types, Quad>;
+template class SOFA_COMPONENT_MASS_API FEMMass<Vec2Types, Vec2Types, Quad>;
+template class SOFA_COMPONENT_MASS_API FEMMass<Vec3Types, Vec2Types, Quad>;
+
+template class SOFA_COMPONENT_MASS_API FEMMass<Vec1Types, Vec3Types, Quad>;
+template class SOFA_COMPONENT_MASS_API FEMMass<Vec2Types, Vec3Types, Quad>;
+template class SOFA_COMPONENT_MASS_API FEMMass<Vec3Types, Vec3Types, Quad>;
+
+template class SOFA_COMPONENT_MASS_API FEMMass<Vec1Types, Vec3Types, Tetrahedron>;
+template class SOFA_COMPONENT_MASS_API FEMMass<Vec2Types, Vec3Types, Tetrahedron>;
+template class SOFA_COMPONENT_MASS_API FEMMass<Vec3Types, Vec3Types, Tetrahedron>;
+
+template class SOFA_COMPONENT_MASS_API FEMMass<Vec1Types, Vec3Types, Hexahedron>;
+template class SOFA_COMPONENT_MASS_API FEMMass<Vec2Types, Vec3Types, Hexahedron>;
+template class SOFA_COMPONENT_MASS_API FEMMass<Vec3Types, Vec3Types, Hexahedron>;
+
+template class SOFA_COMPONENT_MASS_API FEMMass<Vec1Types, Vec3Types, Prism>;
+template class SOFA_COMPONENT_MASS_API FEMMass<Vec2Types, Vec3Types, Prism>;
+template class SOFA_COMPONENT_MASS_API FEMMass<Vec3Types, Vec3Types, Prism>;
+
+template class SOFA_COMPONENT_MASS_API FEMMass<Vec1Types, Vec3Types, Pyramid>;
+template class SOFA_COMPONENT_MASS_API FEMMass<Vec2Types, Vec3Types, Pyramid>;
+template class SOFA_COMPONENT_MASS_API FEMMass<Vec3Types, Vec3Types, Pyramid>;
+
+template class SOFA_COMPONENT_MASS_API FEMMass<Vec1Types, Vec1Types, QuadraticEdge>;
+template class SOFA_COMPONENT_MASS_API FEMMass<Vec2Types, Vec1Types, QuadraticEdge>;
+template class SOFA_COMPONENT_MASS_API FEMMass<Vec3Types, Vec1Types, QuadraticEdge>;
+
+template class SOFA_COMPONENT_MASS_API FEMMass<Vec1Types, Vec2Types, QuadraticEdge>;
+template class SOFA_COMPONENT_MASS_API FEMMass<Vec2Types, Vec2Types, QuadraticEdge>;
+template class SOFA_COMPONENT_MASS_API FEMMass<Vec3Types, Vec2Types, QuadraticEdge>;
+
+template class SOFA_COMPONENT_MASS_API FEMMass<Vec1Types, Vec3Types, QuadraticEdge>;
+template class SOFA_COMPONENT_MASS_API FEMMass<Vec2Types, Vec3Types, QuadraticEdge>;
+template class SOFA_COMPONENT_MASS_API FEMMass<Vec3Types, Vec3Types, QuadraticEdge>;
+
+template class SOFA_COMPONENT_MASS_API FEMMass<Vec1Types, Vec2Types, QuadraticTriangle>;
+template class SOFA_COMPONENT_MASS_API FEMMass<Vec2Types, Vec2Types, QuadraticTriangle>;
+template class SOFA_COMPONENT_MASS_API FEMMass<Vec3Types, Vec2Types, QuadraticTriangle>;
+
+template class SOFA_COMPONENT_MASS_API FEMMass<Vec1Types, Vec3Types, QuadraticTriangle>;
+template class SOFA_COMPONENT_MASS_API FEMMass<Vec2Types, Vec3Types, QuadraticTriangle>;
+template class SOFA_COMPONENT_MASS_API FEMMass<Vec3Types, Vec3Types, QuadraticTriangle>;
+
+template class SOFA_COMPONENT_MASS_API FEMMass<Vec1Types, Vec2Types, QuadraticQuad>;
+template class SOFA_COMPONENT_MASS_API FEMMass<Vec2Types, Vec2Types, QuadraticQuad>;
+template class SOFA_COMPONENT_MASS_API FEMMass<Vec3Types, Vec2Types, QuadraticQuad>;
+
+template class SOFA_COMPONENT_MASS_API FEMMass<Vec1Types, Vec3Types, QuadraticQuad>;
+template class SOFA_COMPONENT_MASS_API FEMMass<Vec2Types, Vec3Types, QuadraticQuad>;
+template class SOFA_COMPONENT_MASS_API FEMMass<Vec3Types, Vec3Types, QuadraticQuad>;
+
+template class SOFA_COMPONENT_MASS_API FEMMass<Vec1Types, Vec3Types, QuadraticTetrahedron>;
+template class SOFA_COMPONENT_MASS_API FEMMass<Vec2Types, Vec3Types, QuadraticTetrahedron>;
+template class SOFA_COMPONENT_MASS_API FEMMass<Vec3Types, Vec3Types, QuadraticTetrahedron>;
+
+template class SOFA_COMPONENT_MASS_API FEMMass<Vec1Types, Vec3Types, QuadraticHexahedron>;
+template class SOFA_COMPONENT_MASS_API FEMMass<Vec2Types, Vec3Types, QuadraticHexahedron>;
+template class SOFA_COMPONENT_MASS_API FEMMass<Vec3Types, Vec3Types, QuadraticHexahedron>;
 
 void registerFEMMass(sofa::core::ObjectFactory* factory)
 {
     factory->registerObjects(sofa::core::ObjectRegistrationData("Finite-element mass (inertia and body force)")
-        .add< FEMMass<sofa::defaulttype::Vec1Types, sofa::geometry::Edge> >()
-        .add< FEMMass<sofa::defaulttype::Vec2Types, sofa::geometry::Edge> >()
-        .add< FEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::Edge> >()
-        .add< FEMMass<sofa::defaulttype::Vec2Types, sofa::geometry::Triangle> >()
-        .add< FEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::Triangle> >()
-        .add< FEMMass<sofa::defaulttype::Vec2Types, sofa::geometry::Quad> >()
-        .add< FEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::Quad> >()
-        .add< FEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::Tetrahedron> >()
-        .add< FEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::Hexahedron> >()
-        .add< FEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::Prism> >()
-        .add< FEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::Pyramid> >()
+        .add< FEMMass<Vec1Types, Vec1Types, Edge> >()
+        .add< FEMMass<Vec2Types, Vec1Types, Edge> >()
+        .add< FEMMass<Vec3Types, Vec1Types, Edge> >()
 
-        .add< FEMMass<sofa::defaulttype::Vec1Types, sofa::geometry::QuadraticEdge> >()
-        .add< FEMMass<sofa::defaulttype::Vec2Types, sofa::geometry::QuadraticEdge> >()
-        .add< FEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticEdge> >()
-        .add< FEMMass<sofa::defaulttype::Vec2Types, sofa::geometry::QuadraticTriangle> >()
-        .add< FEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticTriangle> >()
-        .add< FEMMass<sofa::defaulttype::Vec2Types, sofa::geometry::QuadraticQuad> >()
-        .add< FEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticQuad> >()
-        .add< FEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticTetrahedron> >()
-        .add< FEMMass<sofa::defaulttype::Vec3Types, sofa::geometry::QuadraticHexahedron> >()
+        .add< FEMMass<Vec1Types, Vec2Types, Edge> >()
+        .add< FEMMass<Vec2Types, Vec2Types, Edge> >()
+        .add< FEMMass<Vec3Types, Vec2Types, Edge> >()
+
+        .add< FEMMass<Vec1Types, Vec3Types, Edge> >()
+        .add< FEMMass<Vec2Types, Vec3Types, Edge> >()
+        .add< FEMMass<Vec3Types, Vec3Types, Edge> >()
+
+        .add< FEMMass<Vec1Types, Vec2Types, Triangle> >()
+        .add< FEMMass<Vec2Types, Vec2Types, Triangle> >()
+        .add< FEMMass<Vec3Types, Vec2Types, Triangle> >()
+
+        .add< FEMMass<Vec1Types, Vec3Types, Triangle> >()
+        .add< FEMMass<Vec2Types, Vec3Types, Triangle> >()
+        .add< FEMMass<Vec3Types, Vec3Types, Triangle> >()
+
+        .add< FEMMass<Vec1Types, Vec2Types, Quad> >()
+        .add< FEMMass<Vec2Types, Vec2Types, Quad> >()
+        .add< FEMMass<Vec3Types, Vec2Types, Quad> >()
+
+        .add< FEMMass<Vec1Types, Vec3Types, Quad> >()
+        .add< FEMMass<Vec2Types, Vec3Types, Quad> >()
+        .add< FEMMass<Vec3Types, Vec3Types, Quad> >()
+
+        .add< FEMMass<Vec1Types, Vec3Types, Tetrahedron> >()
+        .add< FEMMass<Vec2Types, Vec3Types, Tetrahedron> >()
+        .add< FEMMass<Vec3Types, Vec3Types, Tetrahedron> >()
+
+        .add< FEMMass<Vec1Types, Vec3Types, Hexahedron> >()
+        .add< FEMMass<Vec2Types, Vec3Types, Hexahedron> >()
+        .add< FEMMass<Vec3Types, Vec3Types, Hexahedron> >()
+
+        .add< FEMMass<Vec1Types, Vec3Types, Prism> >()
+        .add< FEMMass<Vec2Types, Vec3Types, Prism> >()
+        .add< FEMMass<Vec3Types, Vec3Types, Prism> >()
+
+        .add< FEMMass<Vec1Types, Vec3Types, Pyramid> >()
+        .add< FEMMass<Vec2Types, Vec3Types, Pyramid> >()
+        .add< FEMMass<Vec3Types, Vec3Types, Pyramid> >()
+
+        .add< FEMMass<Vec1Types, Vec1Types, QuadraticEdge> >()
+        .add< FEMMass<Vec2Types, Vec1Types, QuadraticEdge> >()
+        .add< FEMMass<Vec3Types, Vec1Types, QuadraticEdge> >()
+
+        .add< FEMMass<Vec1Types, Vec2Types, QuadraticEdge> >()
+        .add< FEMMass<Vec2Types, Vec2Types, QuadraticEdge> >()
+        .add< FEMMass<Vec3Types, Vec2Types, QuadraticEdge> >()
+
+        .add< FEMMass<Vec1Types, Vec3Types, QuadraticEdge> >()
+        .add< FEMMass<Vec2Types, Vec3Types, QuadraticEdge> >()
+        .add< FEMMass<Vec3Types, Vec3Types, QuadraticEdge> >()
+
+        .add< FEMMass<Vec1Types, Vec2Types, QuadraticTriangle> >()
+        .add< FEMMass<Vec2Types, Vec2Types, QuadraticTriangle> >()
+        .add< FEMMass<Vec3Types, Vec2Types, QuadraticTriangle> >()
+
+        .add< FEMMass<Vec1Types, Vec3Types, QuadraticTriangle> >()
+        .add< FEMMass<Vec2Types, Vec3Types, QuadraticTriangle> >()
+        .add< FEMMass<Vec3Types, Vec3Types, QuadraticTriangle> >()
+
+        .add< FEMMass<Vec1Types, Vec2Types, QuadraticQuad> >()
+        .add< FEMMass<Vec2Types, Vec2Types, QuadraticQuad> >()
+        .add< FEMMass<Vec3Types, Vec2Types, QuadraticQuad> >()
+
+        .add< FEMMass<Vec1Types, Vec3Types, QuadraticQuad> >()
+        .add< FEMMass<Vec2Types, Vec3Types, QuadraticQuad> >()
+        .add< FEMMass<Vec3Types, Vec3Types, QuadraticQuad> >()
+
+        .add< FEMMass<Vec1Types, Vec3Types, QuadraticTetrahedron> >()
+        .add< FEMMass<Vec2Types, Vec3Types, QuadraticTetrahedron> >()
+        .add< FEMMass<Vec3Types, Vec3Types, QuadraticTetrahedron> >()
+
+        .add< FEMMass<Vec1Types, Vec3Types, QuadraticHexahedron> >()
+        .add< FEMMass<Vec2Types, Vec3Types, QuadraticHexahedron> >()
+        .add< FEMMass<Vec3Types, Vec3Types, QuadraticHexahedron> >()
     );
 }
 
