@@ -51,7 +51,7 @@ bool PairInteractionProjectiveConstraintSet<DataTypes>::isActive() const
 }
 
 template<class DataTypes>
-void PairInteractionProjectiveConstraintSet<DataTypes>::projectJacobianMatrix(const MechanicalParams* /*mparams*/, MultiMatrixDerivId /*cId*/)
+void PairInteractionProjectiveConstraintSet<DataTypes>::doProjectJacobianMatrix(const MechanicalParams* /*mparams*/, MultiMatrixDerivId /*cId*/)
 {
     msg_error()<< "NOT IMPLEMENTED YET";
 }
@@ -59,7 +59,7 @@ void PairInteractionProjectiveConstraintSet<DataTypes>::projectJacobianMatrix(co
 
 
 template<class DataTypes>
-void PairInteractionProjectiveConstraintSet<DataTypes>::projectResponse(const MechanicalParams* mparams, MultiVecDerivId dxId)
+void PairInteractionProjectiveConstraintSet<DataTypes>::doProjectResponse(const MechanicalParams* mparams, MultiVecDerivId dxId)
 {
     if( !isActive() ) return;
     if (this->mstate1 && this->mstate2)
@@ -69,7 +69,7 @@ void PairInteractionProjectiveConstraintSet<DataTypes>::projectResponse(const Me
 }
 
 template<class DataTypes>
-void PairInteractionProjectiveConstraintSet<DataTypes>::projectVelocity(const MechanicalParams* mparams, MultiVecDerivId vId)
+void PairInteractionProjectiveConstraintSet<DataTypes>::doProjectVelocity(const MechanicalParams* mparams, MultiVecDerivId vId)
 {
     if( !isActive() ) return;
     if (this->mstate1 && this->mstate2)
@@ -79,7 +79,7 @@ void PairInteractionProjectiveConstraintSet<DataTypes>::projectVelocity(const Me
 }
 
 template<class DataTypes>
-void PairInteractionProjectiveConstraintSet<DataTypes>::projectPosition(const MechanicalParams* mparams, MultiVecCoordId xId)
+void PairInteractionProjectiveConstraintSet<DataTypes>::doProjectPosition(const MechanicalParams* mparams, MultiVecCoordId xId)
 {
     if( !isActive() ) return;
     if (this->mstate1 && this->mstate2)
