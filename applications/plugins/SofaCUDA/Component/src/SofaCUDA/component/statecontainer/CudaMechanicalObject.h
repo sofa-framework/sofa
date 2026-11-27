@@ -134,10 +134,6 @@ public:
 // I know using macros is bad design but this is the only way not to repeat the code for all CUDA types
 #define CudaMechanicalObject_DeclMethods(T) \
     template<> inline void MechanicalObject< T >::accumulateForce(const core::ExecParams* params, core::VecDerivId); \
-    template<> inline void MechanicalObject< T >::vOp(const core::ExecParams* params, core::VecId v, core::ConstVecId a, core::ConstVecId b, SReal f); \
-    template<> inline void MechanicalObject< T >::vMultiOp(const core::ExecParams* params, const VMultiOp& ops); \
-    template<> inline SReal MechanicalObject< T >::vDot(const core::ExecParams* params, core::ConstVecId a, core::ConstVecId b); \
-    template<> inline void MechanicalObject< T >::resetVec(const core::ExecParams* params, core::VecId vId); \
     template<> inline void MechanicalObject< T >::copyToBaseVector(linearalgebra::BaseVector * dest, core::ConstVecId src, unsigned int &offset); \
     template<> inline void MechanicalObject< T >::copyFromBaseVector(core::VecId dest, const linearalgebra::BaseVector * src,  unsigned int &offset); \
     template<> inline void MechanicalObject< T >::addFromBaseVectorSameSize(core::VecId dest, const linearalgebra::BaseVector *src, unsigned int &offset);
@@ -161,6 +157,37 @@ CudaMechanicalObject_DeclMethods(gpu::cuda::CudaRigid3dTypes)
 #undef CudaMechanicalObject_DeclMethods
 
 } // namespace sofa::component::statecontainer
+
+namespace sofa::core::behavior
+{
+
+// The vector arithmetic of MechanicalObject is implemented in StateVectorAlgebra:
+// the CUDA versions are provided as explicit specializations of StateVectorAlgebra.
+#define CudaStateVectorAlgebra_DeclMethods(T) \
+    template<> SOFACUDA_COMPONENT_API void StateVectorAlgebra< T >::vOp(const ExecParams* params, VecId v, ConstVecId a, ConstVecId b, SReal f); \
+    template<> SOFACUDA_COMPONENT_API void StateVectorAlgebra< T >::vMultiOp(const ExecParams* params, const VMultiOp& ops); \
+    template<> SOFACUDA_COMPONENT_API SReal StateVectorAlgebra< T >::vDot(const ExecParams* params, ConstVecId a, ConstVecId b); \
+    template<> SOFACUDA_COMPONENT_API void StateVectorAlgebra< T >::resetVec(const ExecParams* params, VecId vId);
+
+CudaStateVectorAlgebra_DeclMethods(gpu::cuda::CudaVec1fTypes)
+CudaStateVectorAlgebra_DeclMethods(gpu::cuda::CudaVec2fTypes)
+CudaStateVectorAlgebra_DeclMethods(gpu::cuda::CudaVec3fTypes)
+CudaStateVectorAlgebra_DeclMethods(gpu::cuda::CudaVec3f1Types)
+CudaStateVectorAlgebra_DeclMethods(gpu::cuda::CudaVec6fTypes)
+CudaStateVectorAlgebra_DeclMethods(gpu::cuda::CudaRigid3fTypes)
+
+#ifdef SOFA_GPU_CUDA_DOUBLE
+
+CudaStateVectorAlgebra_DeclMethods(gpu::cuda::CudaVec3dTypes)
+CudaStateVectorAlgebra_DeclMethods(gpu::cuda::CudaVec3d1Types)
+CudaStateVectorAlgebra_DeclMethods(gpu::cuda::CudaVec6dTypes)
+CudaStateVectorAlgebra_DeclMethods(gpu::cuda::CudaRigid3dTypes)
+
+#endif // SOFA_GPU_CUDA_DOUBLE
+
+#undef CudaStateVectorAlgebra_DeclMethods
+
+} // namespace sofa::core::behavior
 
 
 #ifndef SOFA_GPU_CUDA_CUDAMECHANICALOBJECT_CPP
@@ -199,4 +226,24 @@ extern template class SOFACUDA_COMPONENT_API MechanicalObject<CudaRigid3dTypes>;
 extern template class SOFACUDA_COMPONENT_API MechanicalObject<CudaRigid2dTypes>;
 #endif // SOFA_GPU_CUDA_DOUBLE
 }
+
+namespace sofa::core::behavior
+{
+extern template class SOFACUDA_COMPONENT_API StateVectorAlgebra<gpu::cuda::CudaVec1fTypes>;
+extern template class SOFACUDA_COMPONENT_API StateVectorAlgebra<gpu::cuda::CudaVec2fTypes>;
+extern template class SOFACUDA_COMPONENT_API StateVectorAlgebra<gpu::cuda::CudaVec3fTypes>;
+extern template class SOFACUDA_COMPONENT_API StateVectorAlgebra<gpu::cuda::CudaVec3f1Types>;
+extern template class SOFACUDA_COMPONENT_API StateVectorAlgebra<gpu::cuda::CudaVec6fTypes>;
+extern template class SOFACUDA_COMPONENT_API StateVectorAlgebra<gpu::cuda::CudaRigid3fTypes>;
+extern template class SOFACUDA_COMPONENT_API StateVectorAlgebra<gpu::cuda::CudaRigid2fTypes>;
+#ifdef SOFA_GPU_CUDA_DOUBLE
+extern template class SOFACUDA_COMPONENT_API StateVectorAlgebra<gpu::cuda::CudaVec1dTypes>;
+extern template class SOFACUDA_COMPONENT_API StateVectorAlgebra<gpu::cuda::CudaVec2dTypes>;
+extern template class SOFACUDA_COMPONENT_API StateVectorAlgebra<gpu::cuda::CudaVec3dTypes>;
+extern template class SOFACUDA_COMPONENT_API StateVectorAlgebra<gpu::cuda::CudaVec3d1Types>;
+extern template class SOFACUDA_COMPONENT_API StateVectorAlgebra<gpu::cuda::CudaVec6dTypes>;
+extern template class SOFACUDA_COMPONENT_API StateVectorAlgebra<gpu::cuda::CudaRigid3dTypes>;
+extern template class SOFACUDA_COMPONENT_API StateVectorAlgebra<gpu::cuda::CudaRigid2dTypes>;
+#endif // SOFA_GPU_CUDA_DOUBLE
+} // namespace sofa::core::behavior
 #endif // SOFA_GPU_CUDA_CUDAMECHANICALOBJECT_CPP

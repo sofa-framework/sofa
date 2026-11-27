@@ -24,7 +24,7 @@
 #include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/defaulttype/typeinfo/TypeInfo_RigidTypes.h>
 #include <sofa/defaulttype/typeinfo/TypeInfo_VecTypes.h>
-#include <sofa/core/StateVectorStorage.h>
+#include <sofa/core/behavior/StateVectorAlgebra.h>
 #include <sofa/helper/StringUtils.h>
 
 namespace sofa::core::behavior
@@ -51,10 +51,10 @@ namespace sofa::core::behavior
  *
  */
 template<class TDataTypes>
-class MechanicalState : public BaseMechanicalState, public StateVectorStorage<TDataTypes>
+class MechanicalState : public StateVectorAlgebra<TDataTypes>
 {
 public:
-    SOFA_CLASS2(SOFA_TEMPLATE(MechanicalState,TDataTypes), BaseMechanicalState, SOFA_TEMPLATE(StateVectorStorage,TDataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(MechanicalState,TDataTypes), SOFA_TEMPLATE(StateVectorAlgebra,TDataTypes));
 
     typedef TDataTypes DataTypes;
     /// Scalar values (float or double).
