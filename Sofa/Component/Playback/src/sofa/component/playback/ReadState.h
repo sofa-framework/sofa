@@ -52,8 +52,10 @@ public:
     Data< type::Vec3 > d_rotation; ///< rotate the input mechanical object
     Data< type::Vec3 > d_translation; ///< translate the input mechanical object
 
-protected:
+    /// The state to read. If empty at init, the mechanical state of the context is used.
     SingleLink<ReadState, core::behavior::BaseMechanicalState, BaseLink::FLAG_STRONGLINK> l_state;
+
+protected:
     std::ifstream* infile;
 #if SOFA_COMPONENT_PLAYBACK_HAVE_ZLIB
     gzFile gzfile;
@@ -87,7 +89,7 @@ public:
     template<class T>
     static bool canCreate(T* obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        if (context->getMechanicalState() == nullptr) {
+        if (context->getMechanicalStates().empty()) {
             arg->logError("No mechanical state found in the context node.");
             return false;
         }

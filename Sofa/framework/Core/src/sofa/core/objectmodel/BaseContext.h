@@ -27,6 +27,7 @@
 #include <sofa/core/objectmodel/TypeOfInsertion.h>
 #include <sofa/core/ComponentNameHelper.h>
 #include <sofa/core/objectmodel/Data.h>
+#include <sofa/type/vector.h>
 
 namespace sofa::simulation
 {
@@ -118,11 +119,21 @@ public:
     /// @name Containers
     /// @{
 
-    /// Mechanical Degrees-of-Freedom
+    /// Degrees-of-Freedom
+    /// If several states are available in the context, the returned one is ambiguous. In that
+    /// case, prefer getStates() or an explicit link.
     virtual core::BaseState* getState() const;
 
+    /// All the Degrees-of-Freedom available in this context
+    virtual sofa::type::vector<core::BaseState*> getStates() const;
+
     /// Mechanical Degrees-of-Freedom
+    /// If several mechanical states are available in the context, the returned one is ambiguous.
+    /// In that case, prefer getMechanicalStates() or an explicit link.
     virtual behavior::BaseMechanicalState* getMechanicalState() const;
+
+    /// All the mechanical Degrees-of-Freedom available in this context
+    virtual sofa::type::vector<behavior::BaseMechanicalState*> getMechanicalStates() const;
 
     /// Topology
     virtual core::topology::Topology* getTopology() const;

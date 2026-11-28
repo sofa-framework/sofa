@@ -51,9 +51,12 @@ Visitor::Result StateChangeVisitor::processNodeTopDown(simulation::Node* node)
         }
     }
 
-    if (node->mechanicalState && testTags(node->mechanicalState))
+    for (const auto& mstate : node->mechanicalState)
     {
-        this->processStateChange(node->mechanicalState);
+        if (testTags(mstate))
+        {
+            this->processStateChange(mstate);
+        }
     }
 
     // TODO 2019-01-04: epernod remove this hack when mechanicalMapping could be updated directly form MechanicalObject through Data link

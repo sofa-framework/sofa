@@ -30,6 +30,7 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/simulation/Node.h>
+#include <sofa/component/playback/StateComponentLookup.h>
 
 
 #include <sstream>
@@ -288,18 +289,18 @@ CompareStateCreator::CompareStateCreator(const std::string &n, const core::ExecP
 {
 }
 
-//Create a Compare State component each time a mechanical state is found
+//Create a Compare State component for each mechanical state found
 simulation::Visitor::Result CompareStateCreator::processNodeTopDown( simulation::Node* gnode)
 {
-    using namespace sofa::defaulttype;
-    sofa::core::behavior::BaseMechanicalState * mstate = gnode->mechanicalState;
-    if (!mstate)   return simulation::Visitor::RESULT_CONTINUE;
+    if (gnode->mechanicalState.empty())   return simulation::Visitor::RESULT_CONTINUE;
     core::behavior::BaseIntegrationScheme *isSimulated;
-    mstate->getContext()->get(isSimulated);
+    gnode->getContext()->get(isSimulated);
     if (!isSimulated) return simulation::Visitor::RESULT_CONTINUE;
 
-    //We have a mechanical state
-    addCompareState(mstate, gnode);
+    for (const auto& mstate : gnode->mechanicalState)
+    {
+        addCompareState(mstate, gnode);
+    }
     return simulation::Visitor::RESULT_CONTINUE;
 }
 
@@ -311,10 +312,13 @@ void CompareStateCreator::addCompareState(sofa::core::behavior::BaseMechanicalSt
     sofa::core::BaseMapping *mapping; context->get(mapping);
     if (createInMapping || mapping== nullptr)
     {
-        CompareState::SPtr rs; context->get(rs, core::objectmodel::BaseContext::Local);
+        // a CompareState is explicitly linked to the state it compares
+        CompareState::SPtr rs = findComponentLinkedToState(getLocalComponents<CompareState>(gnode), ms, gnode);
         if (  rs == nullptr )
         {
-            rs = sofa::core::objectmodel::New<CompareState>(); gnode->addObject(rs);
+            rs = sofa::core::objectmodel::New<CompareState>();
+            rs->l_state.set(ms);
+            gnode->addObject(rs);
         }
 
         // compatibility:
@@ -337,13 +341,20 @@ void CompareStateCreator::addCompareState(sofa::core::behavior::BaseMechanicalSt
 //Create a Compare State component each time a mechanical state is found
 simulation::Visitor::Result CompareStateResult::processNodeTopDown( simulation::Node* gnode)
 {
-    CompareState *cv;
-    gnode->get(cv);
-    if (!cv)   return simulation::Visitor::RESULT_CONTINUE;
-    //We have a mechanical state
-    error += cv->getTotalError();
-    errorByDof += cv->getErrorByDof();
-    numCompareState++;
+    auto comparators = getLocalComponents<CompareState>(gnode);
+    if (comparators.empty())
+    {
+        CompareState *cv;
+        gnode->get(cv);
+        if (!cv)   return simulation::Visitor::RESULT_CONTINUE;
+        comparators.push_back(cv);
+    }
+    for (auto* cv : comparators)
+    {
+        error += cv->getTotalError();
+        errorByDof += cv->getErrorByDof();
+        numCompareState++;
+    }
     return simulation::Visitor::RESULT_CONTINUE;
 }
 

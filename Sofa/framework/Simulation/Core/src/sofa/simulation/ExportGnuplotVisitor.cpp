@@ -43,9 +43,9 @@ simulation::Visitor::Result InitGnuplotVisitor::processNodeTopDown(simulation::N
         }
     }
 
-    if (node->mechanicalState)
+    for (const auto& mstate : node->mechanicalState)
     {
-        node->mechanicalState->initGnuplot(gnuplotDirectory);
+        mstate->initGnuplot(gnuplotDirectory);
     }
     if (node->mass)
     {
@@ -74,9 +74,9 @@ simulation::Visitor::Result ExportGnuplotVisitor::processNodeTopDown(simulation:
         }
     }
 
-    if (node->mechanicalState)
+    for (const auto& mstate : node->mechanicalState)
     {
-        node->mechanicalState->exportGnuplot(m_time);
+        mstate->exportGnuplot(m_time);
     }
     if (node->mass)
     {

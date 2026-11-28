@@ -64,8 +64,10 @@ public:
     Data < double > d_stopAt; ///< stop the simulation when the given threshold is reached
     Data < double > d_keperiod; ///< set the period to measure the kinetic energy increase
 
-protected:
+    /// The state to write. If empty at init, the mechanical state of the context is used.
     SingleLink<WriteState, core::behavior::BaseMechanicalState, BaseLink::FLAG_STRONGLINK> l_state;
+
+protected:
     std::ofstream* outfile;
 #if SOFA_COMPONENT_PLAYBACK_HAVE_ZLIB
     gzFile gzfile;
@@ -98,7 +100,7 @@ public:
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        if (context->getMechanicalState() == nullptr)
+        if (context->getMechanicalStates().empty())
         {
             arg->logError("No mechanical state found in the context node.");
             return false;

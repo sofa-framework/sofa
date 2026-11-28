@@ -222,17 +222,69 @@ TEST(Node_test, twoMechanicalStatesInTheSameNode)
     const auto plugins = testing::makeScopedPlugin({Sofa.Component.StateContainer});
     sofa::simpleapi::createObject(root, "MechanicalObject", {{"template", "Vec3"}, {"name", "A"}});
 
-    EXPECT_MSG_EMIT(Warning);
-    sofa::simpleapi::createObject(root, "MechanicalObject", {{"template", "Vec3"}, {"name", "B"}});
+    {
+        // adding a second mechanical state is allowed
+        EXPECT_MSG_NOEMIT(Warning, Error);
+        sofa::simpleapi::createObject(root, "MechanicalObject", {{"template", "Vec3"}, {"name", "B"}});
+    }
 
-    //the last added state is the one in Node
-    EXPECT_EQ(root->mechanicalState->getName(), "B");
+    // both states are stored in the Node, in the order of insertion
+    ASSERT_EQ(root->mechanicalState.size(), 2);
+    EXPECT_EQ(root->mechanicalState[0]->getName(), "A");
+    EXPECT_EQ(root->mechanicalState[1]->getName(), "B");
+
+    // a BaseMechanicalState is also a BaseState
+    ASSERT_EQ(root->state.size(), 2);
+
+    // the plural accessors return all the states
+    {
+        EXPECT_MSG_NOEMIT(Warning, Error);
+        const auto mstates = root->getMechanicalStates();
+        ASSERT_EQ(mstates.size(), 2);
+        EXPECT_EQ(mstates[0]->getName(), "A");
+        EXPECT_EQ(mstates[1]->getName(), "B");
+        EXPECT_EQ(root->getStates().size(), 2);
+    }
+
+    // the singular accessor is ambiguous: it returns the first state, with a warning
+    {
+        EXPECT_MSG_EMIT(Warning);
+        const auto* mstate = root->getMechanicalState();
+        ASSERT_NE(mstate, nullptr);
+        EXPECT_EQ(mstate->getName(), "A");
+    }
+
+    // a child Node without state gets the states of its parent
+    {
+        const Node::SPtr child = sofa::simpleapi::createChild(root, "child");
+        EXPECT_EQ(child->getMechanicalStates().size(), 2);
+    }
 
     CounterVisitor visitor(core::MechanicalParams::defaultInstance());
     root->executeVisitor(&visitor);
 
-    //only one of the two added states is visited
-    EXPECT_EQ(visitor.m_counter, 1);
+    // both states are visited
+    EXPECT_EQ(visitor.m_counter, 2);
+}
+
+TEST(Node_test, removeOneOfTwoMechanicalStates)
+{
+    const sofa::core::sptr<Node> root = sofa::simpleapi::createNode("root");
+
+    const auto plugins = testing::makeScopedPlugin({Sofa.Component.StateContainer});
+    sofa::simpleapi::createObject(root, "MechanicalObject", {{"template", "Vec3"}, {"name", "A"}});
+    const auto B = sofa::simpleapi::createObject(root, "MechanicalObject", {{"template", "Vec3"}, {"name", "B"}});
+
+    ASSERT_EQ(root->mechanicalState.size(), 2);
+    root->removeObject(B);
+
+    ASSERT_EQ(root->mechanicalState.size(), 1);
+    EXPECT_EQ(root->mechanicalState[0]->getName(), "A");
+    EXPECT_EQ(root->state.size(), 1);
+
+    // no more ambiguity
+    EXPECT_MSG_NOEMIT(Warning, Error);
+    EXPECT_EQ(root->getMechanicalState()->getName(), "A");
 }
 
 TEST(NodeTest, objectDestruction_singleObject)
