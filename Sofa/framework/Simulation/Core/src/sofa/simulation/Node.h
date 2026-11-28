@@ -125,14 +125,14 @@ extern template class NodeSequence<sofa::core::visual::VisualModel>;
 extern template class NodeSequence<sofa::core::visual::VisualManager>;
 extern template class NodeSequence<sofa::core::CollisionModel>;
 extern template class NodeSequence<sofa::core::objectmodel::BaseComponent>;
+extern template class NodeSequence<sofa::core::BaseState>;
+extern template class NodeSequence<sofa::core::behavior::BaseMechanicalState>;
 
 extern template class NodeSingle<sofa::core::behavior::BaseAnimationLoop>;
 extern template class NodeSingle<sofa::core::visual::VisualLoop>;
 extern template class NodeSingle<sofa::core::visual::BaseVisualStyle>;
 extern template class NodeSingle<sofa::core::topology::Topology>;
 extern template class NodeSingle<sofa::core::topology::BaseMeshTopology>;
-extern template class NodeSingle<sofa::core::BaseState>;
-extern template class NodeSingle<sofa::core::behavior::BaseMechanicalState>;
 extern template class NodeSingle<sofa::core::BaseMapping>;
 extern template class NodeSingle<sofa::core::behavior::BaseMass>;
 extern template class NodeSingle<sofa::core::collision::Pipeline>;
@@ -252,8 +252,10 @@ public:
     NodeSingle<sofa::core::visual::BaseVisualStyle> visualStyle;
     NodeSingle<sofa::core::topology::Topology> topology;
     NodeSingle<sofa::core::topology::BaseMeshTopology> meshTopology;
-    NodeSingle<sofa::core::BaseState> state;
-    NodeSingle<sofa::core::behavior::BaseMechanicalState> mechanicalState;
+    /// All the states (including the mechanical ones) stored in this node
+    NodeSequence<sofa::core::BaseState> state;
+    /// All the mechanical states stored in this node. A node can contain several mechanical states.
+    NodeSequence<sofa::core::behavior::BaseMechanicalState> mechanicalState;
     NodeSingle<sofa::core::BaseMapping> mechanicalMapping;
     NodeSingle<sofa::core::behavior::BaseMass> mass;
     NodeSingle<sofa::core::collision::Pipeline> collisionPipeline;
@@ -412,10 +414,24 @@ public:
     sofa::core::topology::Topology* getTopology() const override;
 
     /// Degrees-of-Freedom
+    /// If this node contains several states, the first one is returned and a warning is emitted,
+    /// as the result is ambiguous. If this node contains no state, the parents are searched.
     sofa::core::BaseState* getState() const override;
 
+    /// All the Degrees-of-Freedom of this node. If this node contains no state, the states of the
+    /// first ancestor node containing at least one state are returned.
+    sofa::type::vector<sofa::core::BaseState*> getStates() const override;
+
     /// Mechanical Degrees-of-Freedom
+    /// If this node contains several mechanical states, the first one is returned and a warning is
+    /// emitted, as the result is ambiguous. In this case, prefer an explicit link to the desired
+    /// state. If this node contains no mechanical state, the parents are searched.
     sofa::core::behavior::BaseMechanicalState* getMechanicalState() const override;
+
+    /// All the mechanical Degrees-of-Freedom of this node. If this node contains no mechanical
+    /// state, the mechanical states of the first ancestor node containing at least one mechanical
+    /// state are returned.
+    sofa::type::vector<sofa::core::behavior::BaseMechanicalState*> getMechanicalStates() const override;
 
     /// Shader
     sofa::core::visual::Shader* getShader() const override;
@@ -646,6 +662,11 @@ protected:
     typedef LinkParents::const_iterator ParentIterator;
 
 private:
+    /// Set to true once a warning about an ambiguous call to getState/getMechanicalState has been
+    /// emitted, to avoid flooding the logs
+    mutable bool m_hasWarnedAmbiguousState { false };
+    mutable bool m_hasWarnedAmbiguousMechanicalState { false };
+
     /// bottom-up traversal, returning the first node which have a descendancy containing both node1 & node2
     Node* findCommonParent( Node* node1, Node* node2 );
 

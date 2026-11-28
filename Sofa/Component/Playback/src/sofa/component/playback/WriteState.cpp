@@ -71,8 +71,10 @@ WriteStateCreator::WriteStateCreator(const core::ExecParams* params, const std::
 //Create a Write State component each time a mechanical state is found
 simulation::Visitor::Result WriteStateCreator::processNodeTopDown( simulation::Node* gnode)
 {
-    sofa::core::behavior::BaseMechanicalState * mstate=gnode->mechanicalState;
-    if (!mstate)   return simulation::Visitor::RESULT_CONTINUE;
+    // TODO: only the first mechanical state of the node is considered. Supporting several states
+    // requires one WriteState per state, with an explicit link to it.
+    if (gnode->mechanicalState.empty())   return simulation::Visitor::RESULT_CONTINUE;
+    sofa::core::behavior::BaseMechanicalState * mstate = gnode->mechanicalState[0];
     core::behavior::BaseIntegrationScheme *isSimulated;
     mstate->getContext()->get(isSimulated);
     if (!isSimulated) return simulation::Visitor::RESULT_CONTINUE;

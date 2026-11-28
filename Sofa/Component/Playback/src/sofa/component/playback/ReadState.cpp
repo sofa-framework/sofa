@@ -66,8 +66,10 @@ ReadStateCreator::ReadStateCreator(const std::string &n, bool _createInMapping, 
 //Create a Read State component each time a mechanical state is found
 simulation::Visitor::Result ReadStateCreator::processNodeTopDown( simulation::Node* gnode)
 {
-    sofa::core::behavior::BaseMechanicalState * mstate=gnode->mechanicalState;
-    if (!mstate)   return Visitor::RESULT_CONTINUE;
+    // TODO: only the first mechanical state of the node is considered. Supporting several states
+    // requires one ReadState per state, with an explicit link to it.
+    if (gnode->mechanicalState.empty())   return Visitor::RESULT_CONTINUE;
+    sofa::core::behavior::BaseMechanicalState * mstate = gnode->mechanicalState[0];
     core::behavior::BaseIntegrationScheme *isSimulated;
     mstate->getContext()->get(isSimulated);
     if (!isSimulated) return simulation::Visitor::RESULT_CONTINUE;

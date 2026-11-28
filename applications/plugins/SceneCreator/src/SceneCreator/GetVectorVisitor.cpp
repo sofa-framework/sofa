@@ -52,9 +52,12 @@ void GetVectorVisitor::setIndependentOnly(bool b){ independentOnly=b; }
 
 Visitor::Result GetVectorVisitor::processNodeTopDown( simulation::Node* gnode )
 {
-    if (gnode->mechanicalState != nullptr && ( gnode->mechanicalMapping ==nullptr || independentOnly==false) )
+    if (gnode->mechanicalMapping == nullptr || independentOnly == false)
     {
-        gnode->mechanicalState->copyToBaseVector(vec,src,offset);
+        for (const auto& mstate : gnode->mechanicalState)
+        {
+            mstate->copyToBaseVector(vec,src,offset);
+        }
     }
     return Visitor::RESULT_CONTINUE;
 }

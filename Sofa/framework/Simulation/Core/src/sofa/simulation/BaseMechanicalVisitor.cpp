@@ -90,16 +90,22 @@ Visitor::Result BaseMechanicalVisitor::processNodeTopDown(simulation::Node *node
         res = runVisitorTask(this, ctx, &BaseMechanicalVisitor::fwdMechanicalMapping, &*node->mechanicalMapping, fwdVisitorType);
     }
 
-    if (node->mechanicalState != nullptr)
+    if (!node->mechanicalState.empty())
     {
-        if (isMechanicalStateMapped(node))
+        // TODO: the mapped status is defined per node, not per state
+        const bool isMapped = isMechanicalStateMapped(node);
+        Result stateRes = RESULT_CONTINUE;
+        for (const auto& mstate : node->mechanicalState)
         {
-            res = runVisitorTask(this, ctx, &BaseMechanicalVisitor::fwdMappedMechanicalState, &*node->mechanicalState, fwdVisitorType);
+            const Result r = isMapped
+                ? runVisitorTask(this, ctx, &BaseMechanicalVisitor::fwdMappedMechanicalState, &*mstate, fwdVisitorType)
+                : runVisitorTask(this, ctx, &BaseMechanicalVisitor::fwdMechanicalState, &*mstate, fwdVisitorType);
+            if (r == RESULT_PRUNE)
+            {
+                stateRes = RESULT_PRUNE;
+            }
         }
-        else
-        {
-            res = runVisitorTask(this, ctx, &BaseMechanicalVisitor::fwdMechanicalState, &*node->mechanicalState, fwdVisitorType);
-        }
+        res = stateRes;
     }
 
     if (res == RESULT_PRUNE)
@@ -148,15 +154,16 @@ void BaseMechanicalVisitor::processNodeBottomUp(simulation::Node *node, VisitorC
     for_each(this, ctx, node->constraintSet, &BaseMechanicalVisitor::bwdConstraintSet, bwdVisitorType);
     for_each(this, ctx, node->constraintSolver, &BaseMechanicalVisitor::bwdConstraintSolver, bwdVisitorType);
 
-    if (node->mechanicalState != nullptr)
+    if (!node->mechanicalState.empty())
     {
+        // TODO: the mapped status is defined per node, not per state
         if (isMechanicalStateMapped(node))
         {
-            runVisitorTask(this, ctx, &BaseMechanicalVisitor::bwdMappedMechanicalState, &*node->mechanicalState, bwdVisitorType);
+            for_each(this, ctx, node->mechanicalState, &BaseMechanicalVisitor::bwdMappedMechanicalState, bwdVisitorType);
         }
         else
         {
-            runVisitorTask(this, ctx, &BaseMechanicalVisitor::bwdMechanicalState, &*node->mechanicalState, bwdVisitorType);
+            for_each(this, ctx, node->mechanicalState, &BaseMechanicalVisitor::bwdMechanicalState, bwdVisitorType);
         }
     }
 
@@ -269,7 +276,10 @@ void BaseMechanicalVisitor::printReadVectors(simulation::Node* node, core::objec
             dof2 = interact3->getMechModel2();
         }else
         {
-            printReadVectors(node->mechanicalState);
+            for (const auto& mstate : node->mechanicalState)
+            {
+                printReadVectors(mstate);
+            }
             return;
         }
 
@@ -317,10 +327,19 @@ void BaseMechanicalVisitor::printWriteVectors(simulation::Node* node, core::obje
             dof2 = interact3->getMechModel2();
         }else
         {
-            BaseMechanicalState* dof = node->mechanicalState;
-            if (dof == nullptr)
+            if (node->mechanicalState.empty())
+            {
+                BaseMechanicalState* dof = nullptr;
                 node->getContext()->get(dof);
-            printWriteVectors(dof);
+                printWriteVectors(dof);
+            }
+            else
+            {
+                for (const auto& mstate : node->mechanicalState)
+                {
+                    printWriteVectors(mstate);
+                }
+            }
             return;
         }
 

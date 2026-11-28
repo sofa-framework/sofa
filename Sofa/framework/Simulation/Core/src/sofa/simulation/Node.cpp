@@ -679,22 +679,85 @@ core::topology::Topology* Node::getTopology() const
         return get<core::topology::Topology>(SearchParents);
 }
 
+namespace
+{
+
+/// Return the first component of the local sequence, or search in the parents if the sequence is
+/// empty. A warning is emitted (only once per node) if the local sequence contains more than one
+/// component, as the result is ambiguous.
+template<class StateType, class Sequence>
+StateType* getFirstLocalOrSearchParents(const Node& self, const Sequence& sequence, bool& hasWarned)
+{
+    if (!sequence.empty())
+    {
+        if (sequence.size() > 1 && !hasWarned)
+        {
+            hasWarned = true;
+            msg_warning(&self) << "This Node contains " << sequence.size() << " components of type "
+                << StateType::GetClass()->className << ", whereas only one is expected by the caller. "
+                << "The first one ('" << sequence[0]->getName() << "') is used. "
+                << "Prefer an explicit link to the desired component.";
+        }
+        return sequence[0];
+    }
+    return self.template get<StateType>(core::objectmodel::BaseContext::SearchParents);
+}
+
+/// Return all the components of the local sequence, or, if the sequence is empty, all the
+/// components of the same sequence in the first ancestor node containing at least one of them.
+template<class StateType, class Sequence>
+sofa::type::vector<StateType*> getAllLocalOrFromFirstAncestor(const Node& self, const Sequence& sequence, Sequence Node::* ancestorSequence)
+{
+    sofa::type::vector<StateType*> states;
+    if (!sequence.empty())
+    {
+        states.reserve(sequence.size());
+        for (const auto& s : sequence)
+        {
+            states.push_back(s);
+        }
+        return states;
+    }
+
+    if (auto* found = self.template get<StateType>(core::objectmodel::BaseContext::SearchParents))
+    {
+        if (const auto* owner = dynamic_cast<const Node*>(found->getContext()))
+        {
+            for (const auto& s : owner->*ancestorSequence)
+            {
+                states.push_back(s);
+            }
+        }
+        else
+        {
+            states.push_back(found);
+        }
+    }
+    return states;
+}
+
+}
+
 /// Degrees-of-Freedom
 core::BaseState* Node::getState() const
 {
-    if (this->state)
-        return this->state;
-    else
-        return get<core::BaseState>(SearchParents);
+    return getFirstLocalOrSearchParents<core::BaseState>(*this, this->state, m_hasWarnedAmbiguousState);
+}
+
+sofa::type::vector<core::BaseState*> Node::getStates() const
+{
+    return getAllLocalOrFromFirstAncestor<core::BaseState>(*this, this->state, &Node::state);
 }
 
 /// Mechanical Degrees-of-Freedom
 core::behavior::BaseMechanicalState* Node::getMechanicalState() const
 {
-    if (this->mechanicalState)
-        return this->mechanicalState;
-    else
-        return get<core::behavior::BaseMechanicalState>(SearchParents);
+    return getFirstLocalOrSearchParents<core::behavior::BaseMechanicalState>(*this, this->mechanicalState, m_hasWarnedAmbiguousMechanicalState);
+}
+
+sofa::type::vector<core::behavior::BaseMechanicalState*> Node::getMechanicalStates() const
+{
+    return getAllLocalOrFromFirstAncestor<core::behavior::BaseMechanicalState>(*this, this->mechanicalState, &Node::mechanicalState);
 }
 
 /// Shader
@@ -958,10 +1021,10 @@ void Node::printComponents()
     for (NodeSequence<BaseForceField>::iterator i = forceField.begin(), iend = forceField.end(); i != iend; ++i)
         sstream << (*i)->getName() << " ";
     sstream << "\n" << "State: ";
-    for (NodeSingle<BaseState>::iterator i = state.begin(), iend = state.end(); i != iend; ++i)
+    for (NodeSequence<BaseState>::iterator i = state.begin(), iend = state.end(); i != iend; ++i)
         sstream << (*i)->getName() << " ";
     sstream << "\n" << "MechanicalState: ";
-    for (NodeSingle<BaseMechanicalState>::iterator i = mechanicalState.begin(), iend = mechanicalState.end(); i != iend; ++i)
+    for (NodeSequence<BaseMechanicalState>::iterator i = mechanicalState.begin(), iend = mechanicalState.end(); i != iend; ++i)
         sstream << (*i)->getName() << " ";
     sstream << "\n" << "Mechanical Mapping: ";
     for (NodeSingle<BaseMapping>::iterator i = mechanicalMapping.begin(), iend = mechanicalMapping.end(); i != iend; ++i)
@@ -1928,14 +1991,14 @@ template class NodeSequence<sofa::core::visual::VisualModel>;
 template class NodeSequence<sofa::core::visual::VisualManager>;
 template class NodeSequence<sofa::core::CollisionModel>;
 template class NodeSequence<sofa::core::objectmodel::BaseComponent>;
+template class NodeSequence<sofa::core::BaseState>;
+template class NodeSequence<sofa::core::behavior::BaseMechanicalState>;
 
 template class NodeSingle<sofa::core::behavior::BaseAnimationLoop>;
 template class NodeSingle<sofa::core::visual::VisualLoop>;
 template class NodeSingle<sofa::core::visual::BaseVisualStyle>;
 template class NodeSingle<sofa::core::topology::Topology>;
 template class NodeSingle<sofa::core::topology::BaseMeshTopology>;
-template class NodeSingle<sofa::core::BaseState>;
-template class NodeSingle<sofa::core::behavior::BaseMechanicalState>;
 template class NodeSingle<sofa::core::BaseMapping>;
 template class NodeSingle<sofa::core::behavior::BaseMass>;
 template class NodeSingle<sofa::core::collision::Pipeline>;

@@ -40,9 +40,12 @@ public:
 
     Result processNodeTopDown(simulation::Node* gnode) override
     {
-        if (gnode->mechanicalState != nullptr && (gnode->mechanicalMapping == nullptr || independentOnly == false))
+        if (gnode->mechanicalMapping == nullptr || independentOnly == false)
         {
-            gnode->mechanicalState->copyToBaseVector(vec, src, offset);
+            for (const auto& mstate : gnode->mechanicalState)
+            {
+                mstate->copyToBaseVector(vec, src, offset);
+            }
         }
         return Visitor::RESULT_CONTINUE;
     }
@@ -69,10 +72,13 @@ public:
 
     Result processNodeTopDown(simulation::Node* gnode) override
     {
-        if (gnode->mechanicalState != nullptr && (gnode->mechanicalMapping == nullptr || independentOnly == false))
+        if (gnode->mechanicalMapping == nullptr || independentOnly == false)
         {
-            xsize += gnode->mechanicalState->getSize() * gnode->mechanicalState->getCoordDimension();
-            vsize += gnode->mechanicalState->getMatrixSize();
+            for (const auto& mstate : gnode->mechanicalState)
+            {
+                xsize += mstate->getSize() * mstate->getCoordDimension();
+                vsize += mstate->getMatrixSize();
+            }
         }
         return Visitor::RESULT_CONTINUE;
     }

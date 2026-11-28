@@ -38,13 +38,13 @@ MechanicalVPrintVisitor::MechanicalVPrintVisitor(const core::ExecParams* params,
 
 Visitor::Result MechanicalVPrintVisitor::processNodeTopDown(simulation::Node* node)
 {
-    if( ! node->mechanicalState.empty() )
+    for (const auto& mstate : node->mechanicalState)
     {
-        const ConstVecId id = v_.getId(node->mechanicalState);
+        const ConstVecId id = v_.getId(mstate);
         if (!id.isNull())
         {
             out_<<"[ ";
-            (*node->mechanicalState).printDOF(id,out_);
+            mstate->printDOF(id,out_);
             out_<<"] ";
         }
     }
@@ -63,12 +63,12 @@ MechanicalVPrintWithElapsedTimeVisitor::MechanicalVPrintWithElapsedTimeVisitor(c
 
 Visitor::Result MechanicalVPrintWithElapsedTimeVisitor::processNodeTopDown(simulation::Node* node)
 {
-    if( ! node->mechanicalState.empty() )
+    for (const auto& mstate : node->mechanicalState)
     {
-        const ConstVecId id = v_.getId(node->mechanicalState);
+        const ConstVecId id = v_.getId(mstate);
         if (!id.isNull())
         {
-            count_+=(*node->mechanicalState).printDOFWithElapsedTime(id,count_,time_,out_);
+            count_+=mstate->printDOFWithElapsedTime(id,count_,time_,out_);
         }
     }
     return Visitor::RESULT_CONTINUE;
@@ -87,12 +87,16 @@ DofPrintVisitor::DofPrintVisitor(const core::ExecParams* params, ConstMultiVecId
 
 Visitor::Result DofPrintVisitor::processNodeTopDown(simulation::Node* node)
 {
-    if( ! node->mechanicalState.empty() && node->mechanicalState->getName()==dofname_ )
+    for (const auto& mstate : node->mechanicalState)
     {
-        const ConstVecId id = v_.getId(node->mechanicalState);
+        if (mstate->getName() != dofname_)
+        {
+            continue;
+        }
+        const ConstVecId id = v_.getId(mstate);
         if (!id.isNull())
         {
-            (*node->mechanicalState).printDOF(id,out_);
+            mstate->printDOF(id,out_);
             out_<<" ";
         }
     }

@@ -470,8 +470,10 @@ void PersistentContactBarycentricMapping<TIn, TOut>::createPersistentMapperFromT
         this->fromModel->getContext()->get(fromTopoCont);
     }
 
-    BaseMechanicalState *dofFrom = static_cast< simulation::Node* >(this->fromModel->getContext())->mechanicalState;
-    BaseMechanicalState *dofTo = static_cast< simulation::Node* >(this->toModel->getContext())->mechanicalState;
+    const auto& fromStates = static_cast< simulation::Node* >(this->fromModel->getContext())->mechanicalState;
+    const auto& toStates = static_cast< simulation::Node* >(this->toModel->getContext())->mechanicalState;
+    BaseMechanicalState *dofFrom = fromStates.empty() ? nullptr : fromStates[0];
+    BaseMechanicalState *dofTo = toStates.empty() ? nullptr : toStates[0];
 
     if (fromTopoCont != NULL)
     {

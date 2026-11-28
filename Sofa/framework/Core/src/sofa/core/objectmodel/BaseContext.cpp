@@ -207,10 +207,28 @@ core::BaseState* BaseContext::getState() const
     return this->get<sofa::core::BaseState>();
 }
 
+sofa::type::vector<core::BaseState*> BaseContext::getStates() const
+{
+    if (auto* state = getState())
+    {
+        return { state };
+    }
+    return {};
+}
+
 /// Mechanical Degrees-of-Freedom
 core::behavior::BaseMechanicalState* BaseContext::getMechanicalState() const
 {
     return this->get<sofa::core::behavior::BaseMechanicalState>();
+}
+
+sofa::type::vector<core::behavior::BaseMechanicalState*> BaseContext::getMechanicalStates() const
+{
+    if (auto* mstate = getMechanicalState())
+    {
+        return { mstate };
+    }
+    return {};
 }
 
 /// Mass

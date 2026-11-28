@@ -23,6 +23,7 @@
 #include <sofa/helper/Factory.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/Colors.h>
+#include <algorithm>
 #include <sofa/simulation/ExportDotVisitor.h>
 #include <sofa/core/collision/Pipeline.h>
 #include <sofa/core/collision/CollisionGroupManager.h>
@@ -191,18 +192,20 @@ std::string ExportDotVisitor::getParentName(core::objectmodel::BaseComponent* ob
                 obj->toContactManager() ||
                 obj->toCollisionGroupManager()))
         return getName(node->collisionPipeline);
+    const bool isMechanicalState = std::find(node->mechanicalState.begin(), node->mechanicalState.end(), obj) != node->mechanicalState.end();
     /// \todo consider all solvers instead of the first one (FF)
-    if (!node->mechanicalState.empty() && node->mechanicalState!=obj && node->linearSolver[0]!=obj && node->integrationScheme[0]!=obj  && node->animationManager!=obj && display(node->mechanicalState))
-        return getName(node->mechanicalState);
+    /// \todo consider all mechanical states instead of the first one
+    if (!node->mechanicalState.empty() && !isMechanicalState && node->linearSolver[0]!=obj && node->integrationScheme[0]!=obj  && node->animationManager!=obj && display(node->mechanicalState[0]))
+        return getName(node->mechanicalState[0]);
     if (!node->linearSolver.empty() && node->linearSolver[0]!=obj && node->integrationScheme[0]!=obj && node->animationManager!=obj && display(node->linearSolver[0]))
         return getName(node->linearSolver[0]);
     if (!node->integrationScheme.empty() && node->integrationScheme[0]!=obj && node->animationManager!=obj && display(node->integrationScheme[0]))
         return getName(node->integrationScheme[0]);
     if (!node->animationManager.empty() && node->animationManager!=obj && display(node->integrationScheme[0]))
         return getName(node->animationManager);
-    if ((node->mechanicalState==obj || node->integrationScheme[0]==obj) && !node->mechanicalMapping && node->getFirstParent() && display(static_cast<Node*>(node->getFirstParent())->integrationScheme[0]))
+    if ((isMechanicalState || node->integrationScheme[0]==obj) && !node->mechanicalMapping && node->getFirstParent() && display(static_cast<Node*>(node->getFirstParent())->integrationScheme[0]))
         return getName(static_cast<Node*>(node->getFirstParent())->integrationScheme[0]);
-    if ((node->mechanicalState==obj || node->integrationScheme[0]==obj || node->animationManager==obj) && !node->mechanicalMapping && node->getFirstParent() && display(static_cast<Node*>(node->getFirstParent())->animationManager))
+    if ((isMechanicalState || node->integrationScheme[0]==obj || node->animationManager==obj) && !node->mechanicalMapping && node->getFirstParent() && display(static_cast<Node*>(node->getFirstParent())->animationManager))
         return getName(static_cast<Node*>(node->getFirstParent())->animationManager);
     return "";
 }
