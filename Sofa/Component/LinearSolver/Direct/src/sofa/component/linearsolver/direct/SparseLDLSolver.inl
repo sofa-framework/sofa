@@ -91,13 +91,91 @@ void SparseLDLSolver<TMatrix,TVector,TThreadManager>::solve (Matrix& M, Vector& 
 }
 
 template <class TMatrix, class TVector, class TThreadManager>
+bool SparseLDLSolver<TMatrix, TVector, TThreadManager>::filterMatrix(Matrix& M, int nBlocks, int systemSize)
+{
+    using traits = typename BlockOperations::traits;
+    constexpr int N = Inherit::BlockSize;
+
+    M.compress();
+
+    const auto& rowIndex = M.getRowIndex();
+    const auto& rowBegin = M.getRowBegin();
+    const auto& colsIndex = M.getColsIndex();
+    const auto& colsValue = M.getColsValue();
+
+    m_filteredRowBegin.resize(nBlocks + 1);
+    m_filteredColsIndex.clear();
+    m_filteredValues.clear();
+    m_filteredColsIndex.reserve(colsIndex.size());
+    m_filteredValues.reserve(colsIndex.size());
+
+    // copy the non-zero blocks, keeping the empty rows
+    int row = 0;
+    m_filteredRowBegin[0] = 0;
+    for (std::size_t xi = 0; xi < rowIndex.size(); ++xi)
+    {
+        const int r = static_cast<int>(rowIndex[xi]);
+        while (row < r)
+        {
+            m_filteredRowBegin[++row] = static_cast<int>(m_filteredColsIndex.size());
+        }
+        for (auto j = rowBegin[xi]; j < rowBegin[xi + 1]; ++j)
+        {
+            if (!traits::empty(colsValue[j]))
+            {
+                m_filteredColsIndex.push_back(static_cast<int>(colsIndex[j]));
+                m_filteredValues.push_back(colsValue[j]);
+            }
+        }
+        m_filteredRowBegin[++row] = static_cast<int>(m_filteredColsIndex.size());
+    }
+    while (row < nBlocks)
+    {
+        m_filteredRowBegin[++row] = static_cast<int>(m_filteredColsIndex.size());
+    }
+
+    // If the system size is not a multiple of the block size, the last block is incomplete: the
+    // unused rows and columns are zero. Identity is set on their diagonal so that the padded
+    // system remains invertible. The unused entries of the right-hand side are zero, so the
+    // padded entries of the solution are zero and do not interfere with the actual system.
+    if (const int nbUsed = systemSize - (nBlocks - 1) * N; nbUsed < N)
+    {
+        const int lastRow = nBlocks - 1;
+        // the last row is stored at the end of the arrays, and its columns are sorted
+        const bool hasDiagonal =
+            m_filteredRowBegin[lastRow + 1] > m_filteredRowBegin[lastRow] &&
+            m_filteredColsIndex.back() == lastRow;
+        if (!hasDiagonal)
+        {
+            m_filteredColsIndex.push_back(lastRow);
+            m_filteredValues.emplace_back();
+            traits::clear(m_filteredValues.back());
+            m_filteredRowBegin[nBlocks] = static_cast<int>(m_filteredColsIndex.size());
+        }
+        for (int c = nbUsed; c < N; ++c)
+        {
+            traits::vset(m_filteredValues.back(), c, c, 1);
+        }
+    }
+
+    for (int r = 0; r < nBlocks; ++r)
+    {
+        if (m_filteredRowBegin[r + 1] == m_filteredRowBegin[r])
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+template <class TMatrix, class TVector, class TThreadManager>
 bool SparseLDLSolver<TMatrix, TVector, TThreadManager>::factorize(
     Matrix& M, InvertData * invertData)
 {
-    Mfiltered.copyNonZeros(M);
-    Mfiltered.compress();
+    constexpr int N = Inherit::BlockSize;
 
-    int n = M.colSize();
+    const int n = M.colSize();
 
     if (n == 0)
     {
@@ -105,23 +183,15 @@ bool SparseLDLSolver<TMatrix, TVector, TThreadManager>::factorize(
         return true;
     }
 
-    int * M_colptr = (int *)Mfiltered.getRowBegin().data();
-    int * M_rowind = (int *)Mfiltered.getColsIndex().data();
-    Real * M_values = (Real *)Mfiltered.getColsValue().data();
+    const int nBlocks = (n + N - 1) / N;
 
-    if (M_colptr == nullptr || M_rowind == nullptr || M_values == nullptr)
+    if (!filterMatrix(M, nBlocks, n))
     {
-        showInvalidSystemMessage("invalid matrix data structure");
+        showInvalidSystemMessage("empty row");
         return true;
     }
 
-    if (Mfiltered.getRowBegin().size() < (size_t)n)
-    {
-        showInvalidSystemMessage("size mismatch");
-        return true;
-    }
-
-    Inherit::factorize(n,M_colptr,M_rowind,M_values, invertData);
+    Inherit::factorize(nBlocks, m_filteredRowBegin.data(), m_filteredColsIndex.data(), m_filteredValues.data(), invertData, n);
 
     numStep++;
 
@@ -181,18 +251,28 @@ bool SparseLDLSolver<TMatrix, TVector, TThreadManager>::doAddJMInvJtLocal(ResMat
     simulation::TaskScheduler* taskScheduler = simulation::MainTaskSchedulerFactory::createInRegistry();
     assert(taskScheduler);
 
-    JLinv.clear();
-    JLinv.resize(J->rowSize(), data->n);
-    JLinvDinv.resize(J->rowSize(), data->n);
+    using traits = typename BlockOperations::traits;
+    constexpr int N = Inherit::BlockSize;
 
-    // copy J in to JLinv taking into account the permutation
+    // size of the factorized system (it includes the padding of the last block, if any)
+    const int n = data->n * N;
+
+    JLinv.clear();
+    JLinv.resize(J->rowSize(), n);
+    JLinvDinv.resize(J->rowSize(), n);
+
+    // copy J in to JLinv taking into account the (block) permutation
     unsigned int localRow = 0;
     for (auto jit = J->begin(), jitend = J->end(); jit != jitend; ++jit, ++localRow)
     {
         Real* line = JLinv[localRow];
         for (auto it = jit->second.begin(), i2end = jit->second.end(); it != i2end; ++it)
         {
-            int col = data->invperm[it->first];
+            sofa::SignedIndex block = it->first;
+            sofa::SignedIndex component = 0;
+            traits::split_col_index(block, component);
+
+            const int col = data->invperm[block] * N + component;
             Real val = it->second;
 
             line[col] = val;
@@ -236,7 +316,7 @@ bool SparseLDLSolver<TMatrix, TVector, TThreadManager>::doAddJMInvJtLocal(ResMat
     // Distribution of the tasks according to the number of triplets, i.e. the
     // number of elements in a triangular matrix
     simulation::forEachRange(execution, *taskScheduler, 0u, nbTriplets,
-        [&data, this, fact, &mutex, result, &tripletsBuffer](const auto& range)
+        [n, this, fact, &mutex, result, &tripletsBuffer](const auto& range)
         {
             {
                 SCOPED_TIMER("UpperRange");
@@ -254,7 +334,7 @@ bool SparseLDLSolver<TMatrix, TVector, TThreadManager>::doAddJMInvJtLocal(ResMat
                     Real* lineJ = JLinvDinv[j];
 
                     value = 0;
-                    for (int k = 0; k < data->n; ++k)
+                    for (int k = 0; k < n; ++k)
                     {
                         value += lineJ[k] * lineI[k];
                     }
