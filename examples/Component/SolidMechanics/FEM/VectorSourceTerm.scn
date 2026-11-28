@@ -69,7 +69,7 @@
             <LinearSmallStrainFEMForceField name="FEM" template="Vec2,Triangle" youngModulus="1e6" poissonRatio="0.3" topology="@Triangle_topo"/>
 
             <NodalMassDensity property="100"/>
-            <FEMMass name="mass" template="Vec2,Vec2,Triangle" topology="@Triangle_topo"/>
+            <FEMMass name="mass" template="Vec2,Triangle" topology="@Triangle_topo"/>
         </Node>
 
         <Node name="GravityViaSourceTerm">
@@ -90,7 +90,7 @@
             <!-- Gravity needs to get zeroed for this Node, it will be enforced as a source term-->
             <Gravity gravity="0 0 0"/>
             <NodalMassDensity property="100"/>
-            <FEMMass name="mass" template="Vec2,Vec2,Triangle" topology="@Triangle_topo"/>
+            <FEMMass name="mass" template="Vec2,Triangle" topology="@Triangle_topo"/>
 
             <!-- density * gravity = 100 * (0, -9.81) -->
             <NodalSourceDensity name="bodyForceDensity" template="Vec2" property="0 -981"/>

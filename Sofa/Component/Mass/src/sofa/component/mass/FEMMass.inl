@@ -21,83 +21,25 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/mass/FEMMass.h>
-#include <sofa/core/behavior/BaseLocalMassMatrix.h>
-#include <sofa/helper/IotaView.h>
-#include <sofa/helper/ScopedAdvancedTimer.h>
+#include <sofa/component/mass/BaseFEMMassMatrix.inl>
 
 namespace sofa::component::mass
 {
 
-template <class TDataTypes, class TSpatialTypes, class TElementType>
-FEMMass<TDataTypes, TSpatialTypes, TElementType>::FEMMass()
-    : d_lumping(initData(&d_lumping, "lumping","If true, the mass matrix is lumped, meaning the mass matrix is approximated to a diagonal matrix (summing all mass values of a line on the diagonal)"))
-    , l_nodalMassDensity(initLink("nodalMassDensity", "Link to nodal mass density"))
-    , l_spatialState(initLink("spatialState", "Link to the state holding the spatial positions of the mesh"))
+template <class TDataTypes, class TElementType>
+FEMMass<TDataTypes, TElementType>::FEMMass()
+    : l_nodalMassDensity(initLink("nodalMassDensity", "Link to nodal mass density"))
 {
-    this->addUpdateCallback("recomputeMass", {&this->d_lumping},
-    [this](const sofa::core::DataTracker& )
-    {
-        elementFEMMass_init();
-        return this->getComponentState();
-    }, {});
 }
 
-
-template <class TDataTypes, class TSpatialTypes, class TElementType>
-void FEMMass<TDataTypes, TSpatialTypes, TElementType>::init()
+template <class TDataTypes, class TElementType>
+auto FEMMass<TDataTypes, TElementType>::getNodalCoefficient() const -> const NodalCoefficient*
 {
-    TopologyAccessor::init();
-
-    if (!this->isComponentStateInvalid())
-    {
-        core::behavior::Mass<TDataTypes>::init();
-    }
-
-    if (!this->isComponentStateInvalid())
-    {
-        validateNodalMassDensity();
-    }
-
-    if (!this->isComponentStateInvalid())
-    {
-        validateSpatialState();
-    }
-
-    if (!this->isComponentStateInvalid())
-    {
-        elementFEMMass_init();
-    }
+    return l_nodalMassDensity.get();
 }
 
-template <class TDataTypes, class TSpatialTypes, class TElementType>
-void FEMMass<TDataTypes, TSpatialTypes, TElementType>::validateSpatialState()
-{
-    if (l_spatialState.empty())
-    {
-        if constexpr (std::is_same_v<DataTypes, SpatialTypes>)
-        {
-            l_spatialState.set(this->mstate.get());
-        }
-        else
-        {
-            msg_info() << "Link to a spatial state should be set to ensure right behavior. First "
-                          "compatible component found in current context will be used.";
-            l_spatialState.set(this->getContext()->template get<sofa::core::behavior::MechanicalState<SpatialTypes>>());
-        }
-    }
-
-    if (l_spatialState == nullptr)
-    {
-        msg_error() << "No compatible spatial state (MechanicalState<" << SpatialTypes::Name()
-                    << ">) found at path: " << this->l_spatialState.getLinkedPath()
-                    << ", nor in current context: " << this->getContext()->name
-                    << ". Please set the link `spatialState` explicitly.";
-        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
-    }
-}
-
-template <class TDataTypes, class TSpatialTypes, class TElementType>
-void FEMMass<TDataTypes, TSpatialTypes, TElementType>::validateNodalMassDensity()
+template <class TDataTypes, class TElementType>
+void FEMMass<TDataTypes, TElementType>::validateNodalCoefficient()
 {
     if (l_nodalMassDensity.empty())
     {
@@ -114,350 +56,68 @@ void FEMMass<TDataTypes, TSpatialTypes, TElementType>::validateNodalMassDensity(
     }
 }
 
-
-template <class TDataTypes, class TSpatialTypes, class TElementType>
-void FEMMass<TDataTypes, TSpatialTypes, TElementType>::elementFEMMass_init()
-{
-    if (!this->l_topology || !this->l_spatialState)
-        return;
-
-    // the rest positions may not be available yet if the spatial state has not been initialized
-    // (e.g. if it is located in a child node)
-    const auto nbSpatialRestPositions = this->l_spatialState->readRestPositions().size();
-    if (nbSpatialRestPositions != this->mstate->getSize())
-    {
-        msg_error() << "The rest positions of the spatial state (" << nbSpatialRestPositions
-                    << " nodes) and the state of this component (" << this->mstate->getSize()
-                    << " nodes) must have the same number of nodes. Make sure that the spatial "
-                       "state is initialized before this component.";
-        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
-        return;
-    }
-
-    const auto& elements = FiniteElement::getElementSequence(*this->l_topology);
-    sofa::type::vector<ElementMassMatrix> elementMassMatrices;
-
-    //1. compute element mass matrix
-    calculateElementMassMatrix(elements, elementMassMatrices);
-
-    // 2. convert element matrices to dof matrices and store them for later use
-    initializeGlobalMassMatrix(elements, elementMassMatrices);
-}
-
-template <class TDataTypes, class TSpatialTypes, class TElementType>
-void FEMMass<TDataTypes, TSpatialTypes, TElementType>::calculateElementMassMatrix(
-    const auto& elements, sofa::type::vector<ElementMassMatrix> &elementMassMatrices)
-{
-    const auto nbElements = elements.size();
-    elementMassMatrices.resize(nbElements);
-
-    sofa::helper::ReadAccessor nodalMassDensityAccessor { l_nodalMassDensity->d_property };
-    auto restPositionAccessor = this->l_spatialState->readRestPositions();
-
-    const bool lumping = d_lumping.getValue();
-
-    SCOPED_TIMER("elementMassMatrix");
-    helper::IotaView indices{static_cast<decltype(nbElements)>(0ul), nbElements};
-    std::for_each(
-        indices.begin(), indices.end(),
-        [&](const auto elementId)
-        {
-            const auto& element = elements[elementId];
-            auto& elementMassMatrix = elementMassMatrices[elementId];
-
-            std::array<Real, NumberOfNodesInElement> nodeDensityInElement;
-            for (sofa::Size i = 0; i < NumberOfNodesInElement; ++i)
-            {
-                nodeDensityInElement[i] =
-                    l_nodalMassDensity->getNodeProperty(element[i], nodalMassDensityAccessor);
-            }
-
-            std::array<GeometryCoord, NumberOfNodesInElement> nodeCoordinatesInElement;
-            for (sofa::Size i = 0; i < NumberOfNodesInElement; ++i)
-            {
-                nodeCoordinatesInElement[i] = restPositionAccessor[element[i]];
-            }
-
-            for (const auto& [quadraturePoint, weight] : FiniteElement::quadraturePoints())
-            {
-                // gradient of shape functions in the reference element evaluated at the quadrature
-                // point
-                const sofa::type::Mat<NumberOfNodesInElement, TopologicalDimension, GeometryReal>
-                    dN_dq_ref = FiniteElement::gradientShapeFunctions(quadraturePoint);
-
-                // jacobian of the mapping from the reference space to the physical space, evaluated
-                // at the quadrature point
-                sofa::type::Mat<spatial_dimensions, TopologicalDimension, GeometryReal>
-                    jacobian = FiniteElement::Helper::jacobianFromReferenceToPhysical(
-                        nodeCoordinatesInElement, dN_dq_ref);
-
-                const auto detJ = static_cast<Real>(sofa::type::absGeneralizedDeterminant(jacobian));
-
-                // shape functions in the reference element evaluated at the quadrature point
-                const auto N = FiniteElement::shapeFunctions(quadraturePoint);
-
-                const auto density =
-                    FiniteElement::Helper::evaluateValueInElement(nodeDensityInElement, N);
-
-                const sofa::type::Vec<NumberOfNodesInElement, Real> N_field(N);
-                const auto NT_N = sofa::type::dyad(N_field, N_field);
-
-                elementMassMatrix += (static_cast<Real>(weight) * density * detJ) * NT_N;
-            }
-
-            if (lumping)
-            {
-                ElementMassMatrix lumped{};
-                for (sofa::Size i = 0; i < NumberOfNodesInElement; ++i)
-                {
-                    Real rowSum = 0;
-                    for (sofa::Size j = 0; j < NumberOfNodesInElement; ++j)
-                        rowSum += elementMassMatrix(i, j);
-                    lumped(i, i) = rowSum;
-                }
-                elementMassMatrix = lumped;
-            }
-        });
-}
-
-template <class TDataTypes, class TSpatialTypes, class TElementType>
-void FEMMass<TDataTypes, TSpatialTypes, TElementType>::initializeGlobalMassMatrix(
-    const auto& elements, const sofa::type::vector<ElementMassMatrix>& elementMassMatrices)
-{
-    SCOPED_TIMER("elementMassMatrix");
-
-    const auto nbElements = elements.size();
-
-    m_globalMassMatrix.clear();
-
-    const auto matrixSize = this->mstate->getSize();
-    m_globalMassMatrix.resize(matrixSize, matrixSize);
-
-    helper::IotaView indices{static_cast<decltype(nbElements)>(0ul), nbElements};
-    std::for_each(indices.begin(), indices.end(),
-                  [&](const auto elementId)
-                  {
-                      const auto& element = elements[elementId];
-                      const auto& elementMassMatrix = elementMassMatrices[elementId];
-
-                      for (sofa::Size i = 0; i < NumberOfNodesInElement; ++i)
-                      {
-                          const auto node_i = element[i];
-                          for (sofa::Size j = 0; j < NumberOfNodesInElement; ++j)
-                          {
-                              const auto node_j = element[j];
-
-                              const auto& value = elementMassMatrix(i, j);
-                              constexpr Real tolerance { 1e-12 };
-                              if (std::abs(value) > tolerance)
-                              {
-                                  m_globalMassMatrix.add(node_i, node_j, value);
-                              }
-                          }
-                      }
-                  });
-
-    m_globalMassMatrix.compress();
-}
-
-template <class TDataTypes, class TSpatialTypes, class TElementType>
-void FEMMass<TDataTypes, TSpatialTypes, TElementType>::addForce(const core::MechanicalParams* mparams,
-                                                        sofa::DataVecDeriv_t<DataTypes>& f,
-                                                        const sofa::DataVecCoord_t<DataTypes>& x,
-                                                        const sofa::DataVecDeriv_t<DataTypes>& v)
+template <class TDataTypes, class TElementType>
+void FEMMass<TDataTypes, TElementType>::addForce(const core::MechanicalParams* mparams,
+                                                 sofa::DataVecDeriv_t<DataTypes>& f,
+                                                 const sofa::DataVecCoord_t<DataTypes>& x,
+                                                 const sofa::DataVecDeriv_t<DataTypes>& v)
 {
     SOFA_UNUSED(mparams);
     SOFA_UNUSED(x);
     SOFA_UNUSED(v);
 
-    if constexpr (!isGravityApplicable)
-    {
-        SOFA_UNUSED(f);
-        return;
-    }
-    else
-    {
-        if (this->isComponentStateInvalid())
-            return;
-
-        auto forceAccessor = sofa::helper::getWriteAccessor(f);
-
-        const auto g = getContext()->getGravity();
-        Deriv_t<DataTypes> theGravity;
-        DataTypes::set( theGravity, g[0], g[1], g[2] );
-
-        for (std::size_t xi = 0; xi < m_globalMassMatrix.rowIndex.size(); ++xi)
-        {
-            const auto rowId = m_globalMassMatrix.rowIndex[xi];
-            typename GlobalMassMatrixType::Range rowRange(m_globalMassMatrix.rowBegin[xi], m_globalMassMatrix.rowBegin[xi + 1]);
-            for (typename GlobalMassMatrixType::Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)
-            {
-                const auto& value = m_globalMassMatrix.colsValue[xj];
-
-                const auto force = value * theGravity;
-                forceAccessor[rowId] += force;
-            }
-        }
-    }
-}
-
-template <class TDataTypes, class TSpatialTypes, class TElementType>
-void FEMMass<TDataTypes, TSpatialTypes, TElementType>::buildMassMatrix(
-    sofa::core::behavior::MassMatrixAccumulator* matrices)
-{
     if (this->isComponentStateInvalid())
         return;
 
-    for (std::size_t xi = 0; xi < m_globalMassMatrix.rowIndex.size(); ++xi)
-    {
-        const auto rowId = m_globalMassMatrix.rowIndex[xi];
-        typename GlobalMassMatrixType::Range rowRange(m_globalMassMatrix.rowBegin[xi], m_globalMassMatrix.rowBegin[xi + 1]);
-        for (typename GlobalMassMatrixType::Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)
-        {
-            const auto columnId = m_globalMassMatrix.colsIndex[xj];
-            const auto& value = m_globalMassMatrix.colsValue[xj];
+    auto forceAccessor = sofa::helper::getWriteAccessor(f);
 
-            for (typename GlobalMassMatrixType::Index d = 0; d < static_cast<typename GlobalMassMatrixType::Index>(field_dimensions); ++d)
-            {
-                matrices->add(rowId * field_dimensions + d, columnId * field_dimensions + d, value);
-            }
+    const auto g = this->getContext()->getGravity();
+    Deriv_t<DataTypes> theGravity;
+    DataTypes::set( theGravity, g[0], g[1], g[2] );
+
+    const auto& matrix = this->m_globalMatrix;
+    for (std::size_t xi = 0; xi < matrix.rowIndex.size(); ++xi)
+    {
+        const auto rowId = matrix.rowIndex[xi];
+        typename GlobalMatrixType::Range rowRange(matrix.rowBegin[xi], matrix.rowBegin[xi + 1]);
+        for (typename GlobalMatrixType::Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)
+        {
+            const auto& value = matrix.colsValue[xj];
+            forceAccessor[rowId] += value * theGravity;
         }
     }
 }
 
-template <class TDataTypes, class TSpatialTypes, class TElementType>
-void FEMMass<TDataTypes, TSpatialTypes, TElementType>::addMDx(const core::MechanicalParams* mparams,
-                                                      DataVecDeriv_t<DataTypes>& f,
-                                                      const DataVecDeriv_t<DataTypes>& dx,
-                                                      SReal factor)
-{
-    SOFA_UNUSED(mparams);
-
-    if (this->isComponentStateInvalid())
-        return;
-
-    auto result = sofa::helper::getWriteAccessor(f);
-    const auto dxAccessor = sofa::helper::getReadAccessor(dx);
-
-    for (std::size_t xi = 0; xi < m_globalMassMatrix.rowIndex.size(); ++xi)
-    {
-        const auto rowId = m_globalMassMatrix.rowIndex[xi];
-        typename GlobalMassMatrixType::Range rowRange(m_globalMassMatrix.rowBegin[xi], m_globalMassMatrix.rowBegin[xi + 1]);
-        for (typename GlobalMassMatrixType::Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)
-        {
-            const auto columnId = m_globalMassMatrix.colsIndex[xj];
-            const auto& value = m_globalMassMatrix.colsValue[xj];
-
-            result[rowId] += (factor * value) * dxAccessor[columnId];
-        }
-    }
-}
-
-template <class TDataTypes, class TSpatialTypes, class TElementType>
-void FEMMass<TDataTypes, TSpatialTypes, TElementType>::doSolveLinearSystem(const core::MechanicalParams* mparams,
-                                                        DataVecDeriv_t<DataTypes>& a,
-                                                        const DataVecDeriv_t<DataTypes>& f)
-{
-    SOFA_UNUSED(mparams);
-
-    if (this->isComponentStateInvalid())
-        return;
-
-    if (!d_lumping.getValue())
-    {
-        msg_error() << "the method 'solveLinearSystem' can't be used with this component as this "
-                        "SPARSE mass matrix can't be inversed easily. Enable 'lumping' instead.";
-        return;
-    }
-
-    auto accAccessor = sofa::helper::getWriteAccessor(a);
-    const auto fAccessor = sofa::helper::getReadAccessor(f);
-
-    for (std::size_t xi = 0; xi < m_globalMassMatrix.rowIndex.size(); ++xi)
-    {
-        const auto rowId = m_globalMassMatrix.rowIndex[xi];
-        typename GlobalMassMatrixType::Range rowRange(
-            m_globalMassMatrix.rowBegin[xi], m_globalMassMatrix.rowBegin[xi + 1]);
-
-        for (typename GlobalMassMatrixType::Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)
-        {
-            const auto columnId = m_globalMassMatrix.colsIndex[xj];
-            if (columnId == rowId) // diagonal is guaranteed to exist when lumped
-            {
-                const auto& value = m_globalMassMatrix.colsValue[xj];
-                accAccessor[rowId] = fAccessor[rowId] / value;
-            }
-        }
-    }
-}
-
-template <class TDataTypes, class TSpatialTypes, class TElementType>
-SReal FEMMass<TDataTypes, TSpatialTypes, TElementType>::getKineticEnergy(
-    const core::MechanicalParams* mparams,
-    const DataVecDeriv_t<DataTypes>& v) const
-{
-    SOFA_UNUSED(mparams);
-
-    if (this->isComponentStateInvalid())
-        return 0_sreal;
-
-    SReal kineticEnergy = 0.0;
-    auto vAccessor = sofa::helper::getReadAccessor(v);
-
-    for (std::size_t xi = 0; xi < m_globalMassMatrix.rowIndex.size(); ++xi)
-    {
-        const auto rowId = m_globalMassMatrix.rowIndex[xi];
-        typename GlobalMassMatrixType::Range rowRange(m_globalMassMatrix.rowBegin[xi], m_globalMassMatrix.rowBegin[xi + 1]);
-        for (typename GlobalMassMatrixType::Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)
-        {
-            const auto columnId = m_globalMassMatrix.colsIndex[xj];
-            const auto& value = m_globalMassMatrix.colsValue[xj];
-
-            kineticEnergy += sofa::type::dot(vAccessor[rowId], vAccessor[columnId] * value);
-        }
-    }
-
-    return kineticEnergy / 2_sreal;
-}
-
-template <class TDataTypes, class TSpatialTypes, class TElementType>
-SReal FEMMass<TDataTypes, TSpatialTypes, TElementType>::getPotentialEnergy(
+template <class TDataTypes, class TElementType>
+SReal FEMMass<TDataTypes, TElementType>::getPotentialEnergy(
     const core::MechanicalParams* mparams,
     const DataVecCoord_t<DataTypes>& x) const
 {
     SOFA_UNUSED(mparams);
 
-    if constexpr (!isGravityApplicable)
-    {
-        SOFA_UNUSED(x);
+    if (this->isComponentStateInvalid())
         return 0_sreal;
-    }
-    else
+
+    SReal potentialEnergy = 0.0;
+    auto xAccessor = sofa::helper::getReadAccessor(x);
+
+    const auto g = this->getContext()->getGravity();
+    Deriv_t<DataTypes> theGravity;
+    DataTypes::set( theGravity, g[0], g[1], g[2] );
+
+    const auto& matrix = this->m_globalMatrix;
+    for (std::size_t xi = 0; xi < matrix.rowIndex.size(); ++xi)
     {
-        if (this->isComponentStateInvalid())
-            return 0_sreal;
-
-        SReal potentialEnergy = 0.0;
-        auto xAccessor = sofa::helper::getReadAccessor(x);
-
-        const auto g = getContext()->getGravity();
-        Deriv_t<DataTypes> theGravity;
-        DataTypes::set( theGravity, g[0], g[1], g[2] );
-
-        for (std::size_t xi = 0; xi < m_globalMassMatrix.rowIndex.size(); ++xi)
+        const auto rowId = matrix.rowIndex[xi];
+        typename GlobalMatrixType::Range rowRange(matrix.rowBegin[xi], matrix.rowBegin[xi + 1]);
+        for (typename GlobalMatrixType::Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)
         {
-            const auto rowId = m_globalMassMatrix.rowIndex[xi];
-            typename GlobalMassMatrixType::Range rowRange(m_globalMassMatrix.rowBegin[xi], m_globalMassMatrix.rowBegin[xi + 1]);
-            for (typename GlobalMassMatrixType::Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)
-            {
-                const auto& value = m_globalMassMatrix.colsValue[xj];
-
-                potentialEnergy -= sofa::type::dot(xAccessor[rowId], theGravity * value);
-            }
+            const auto& value = matrix.colsValue[xj];
+            potentialEnergy -= sofa::type::dot(xAccessor[rowId], theGravity * value);
         }
-
-        return potentialEnergy;
     }
+
+    return potentialEnergy;
 }
 
 }  // namespace sofa::component::mass

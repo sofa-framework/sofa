@@ -20,9 +20,11 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <gtest/gtest.h>
+#include <sofa/component/mass/FEMCapacity.h>
 #include <sofa/component/mass/FEMMass.h>
 #include <sofa/component/statecontainer/MechanicalObject.h>
 #include <sofa/component/topology/container/constant/MeshTopology.h>
+#include <sofa/core/MechanicalParams.h>
 #include <sofa/core/behavior/BaseLocalMassMatrix.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/simulation/Simulation.h>
@@ -98,23 +100,39 @@ struct MatrixSumAccumulator : public sofa::core::behavior::MassMatrixAccumulator
 };
 } // namespace
 
-template <typename MassParam>
-struct FEMMassLumpingTest : public sofa::testing::BaseSimulationTest
+/// Parameters of the tests: the component computing the matrix, and the component providing the
+/// nodal coefficient (mass density or capacity)
+template<class TComponent, template<class> class TCoefficient>
+struct CapacityParam
 {
-    using DataTypes = typename MassParam::DataTypes;
-    using SpatialTypes = typename MassParam::SpatialTypes;
-    using ElementType = typename MassParam::ElementType;
-    using FEMMassType = FEMMass<DataTypes, SpatialTypes, ElementType>;
+    using Component = TComponent;
+    using DataTypes = typename Component::DataTypes;
+    using SpatialTypes = typename Component::SpatialTypes;
+    using Coefficient = TCoefficient<sofa::Real_t<DataTypes>>;
+};
+
+template<class DataTypes, class ElementType>
+using MassParam = CapacityParam<FEMMass<DataTypes, ElementType>, NodalMassDensity>;
+
+template<class DataTypes, class SpatialTypes, class ElementType>
+using CapacityOfFieldParam = CapacityParam<FEMCapacity<DataTypes, SpatialTypes, ElementType>, NodalCapacity>;
+
+template <typename Param>
+struct FEMCapacityLumpingTest : public sofa::testing::BaseSimulationTest
+{
+    using Component = typename Param::Component;
+    using DataTypes = typename Param::DataTypes;
+    using SpatialTypes = typename Param::SpatialTypes;
+    using Coefficient = typename Param::Coefficient;
     using DOF = sofa::component::statecontainer::MechanicalObject<DataTypes>;
     using SpatialDOF = sofa::component::statecontainer::MechanicalObject<SpatialTypes>;
 
     typename simulation::Node::SPtr m_root;
-    typename simulation::Node::SPtr m_node; ///< node containing the field state and the mass
+    typename simulation::Node::SPtr m_node; ///< node containing the field state and the component
     typename DOF::SPtr m_dof;
     typename SpatialDOF::SPtr m_spatialDof;
-    typename FEMMassType::SPtr m_mass;
+    typename Component::SPtr m_component;
     typename MeshTopology::SPtr m_topology;
-    typename NodalMassDensity<sofa::Real_t<DataTypes>>::SPtr m_nodalDensity;
 
     void doSetUp() override
     {
@@ -149,11 +167,10 @@ struct FEMMassLumpingTest : public sofa::testing::BaseSimulationTest
         m_topology->addTetra(0, 1, 2, 3);
         m_topology->addHexa(0, 1, 2, 3, 4, 5, 6, 7);
 
-        m_nodalDensity = sofa::core::objectmodel::New<NodalMassDensity<sofa::Real_t<DataTypes>>>();
-        m_node->addObject(m_nodalDensity);
+        m_node->addObject(sofa::core::objectmodel::New<Coefficient>());
 
-        m_mass = sofa::core::objectmodel::New<FEMMassType>();
-        m_node->addObject(m_mass);
+        m_component = sofa::core::objectmodel::New<Component>();
+        m_node->addObject(m_component);
 
         m_dof->resize(8);
 
@@ -163,7 +180,7 @@ struct FEMMassLumpingTest : public sofa::testing::BaseSimulationTest
         }
         else
         {
-            m_mass->l_spatialState.set(m_spatialDof.get());
+            m_component->l_spatialState.set(m_spatialDof.get());
         }
     }
 
@@ -183,136 +200,184 @@ struct FEMMassLumpingTest : public sofa::testing::BaseSimulationTest
     }
 };
 
-template<class TDataTypes, class TSpatialTypes, class TElementType>
-struct MassParam
-{
-    using DataTypes = TDataTypes;
-    using SpatialTypes = TSpatialTypes;
-    using ElementType = TElementType;
-};
-
-using ElementMassTypes = ::testing::Types<
-    MassParam<defaulttype::Vec1Types, defaulttype::Vec1Types, sofa::geometry::Edge>,
-    MassParam<defaulttype::Vec2Types, defaulttype::Vec2Types, sofa::geometry::Edge>,
-    MassParam<defaulttype::Vec3Types, defaulttype::Vec3Types, sofa::geometry::Edge>,
-    MassParam<defaulttype::Vec2Types, defaulttype::Vec2Types, sofa::geometry::Triangle>,
-    MassParam<defaulttype::Vec3Types, defaulttype::Vec3Types, sofa::geometry::Triangle>,
-    MassParam<defaulttype::Vec2Types, defaulttype::Vec2Types, sofa::geometry::Quad>,
-    MassParam<defaulttype::Vec3Types, defaulttype::Vec3Types, sofa::geometry::Quad>,
-    MassParam<defaulttype::Vec3Types, defaulttype::Vec3Types, sofa::geometry::Tetrahedron>,
-    MassParam<defaulttype::Vec3Types, defaulttype::Vec3Types, sofa::geometry::Hexahedron>,
-    // MassParam<defaulttype::Vec3Types, defaulttype::Vec3Types, sofa::geometry::Prism>,
-    // MassParam<defaulttype::Vec3Types, defaulttype::Vec3Types, sofa::geometry::Pyramid>
+using CapacityTypes = ::testing::Types<
+    MassParam<defaulttype::Vec1Types, sofa::geometry::Edge>,
+    MassParam<defaulttype::Vec2Types, sofa::geometry::Edge>,
+    MassParam<defaulttype::Vec3Types, sofa::geometry::Edge>,
+    MassParam<defaulttype::Vec2Types, sofa::geometry::Triangle>,
+    MassParam<defaulttype::Vec3Types, sofa::geometry::Triangle>,
+    MassParam<defaulttype::Vec2Types, sofa::geometry::Quad>,
+    MassParam<defaulttype::Vec3Types, sofa::geometry::Quad>,
+    MassParam<defaulttype::Vec3Types, sofa::geometry::Tetrahedron>,
+    MassParam<defaulttype::Vec3Types, sofa::geometry::Hexahedron>,
+    // MassParam<defaulttype::Vec3Types, sofa::geometry::Prism>,
+    // MassParam<defaulttype::Vec3Types, sofa::geometry::Pyramid>
 
     // field type different from the spatial type
-    MassParam<defaulttype::Vec1Types, defaulttype::Vec3Types, sofa::geometry::Edge>,
-    MassParam<defaulttype::Vec1Types, defaulttype::Vec2Types, sofa::geometry::Triangle>,
-    MassParam<defaulttype::Vec1Types, defaulttype::Vec3Types, sofa::geometry::Triangle>,
-    MassParam<defaulttype::Vec1Types, defaulttype::Vec3Types, sofa::geometry::Tetrahedron>,
-    MassParam<defaulttype::Vec1Types, defaulttype::Vec3Types, sofa::geometry::Hexahedron>,
-    MassParam<defaulttype::Vec2Types, defaulttype::Vec3Types, sofa::geometry::Tetrahedron>
+    CapacityOfFieldParam<defaulttype::Vec1Types, defaulttype::Vec3Types, sofa::geometry::Edge>,
+    CapacityOfFieldParam<defaulttype::Vec1Types, defaulttype::Vec2Types, sofa::geometry::Triangle>,
+    CapacityOfFieldParam<defaulttype::Vec1Types, defaulttype::Vec3Types, sofa::geometry::Triangle>,
+    CapacityOfFieldParam<defaulttype::Vec1Types, defaulttype::Vec3Types, sofa::geometry::Tetrahedron>,
+    CapacityOfFieldParam<defaulttype::Vec1Types, defaulttype::Vec3Types, sofa::geometry::Hexahedron>,
+    CapacityOfFieldParam<defaulttype::Vec2Types, defaulttype::Vec3Types, sofa::geometry::Tetrahedron>,
+    // field type identical to the spatial type
+    CapacityOfFieldParam<defaulttype::Vec3Types, defaulttype::Vec3Types, sofa::geometry::Tetrahedron>
 >;
 
-TYPED_TEST_SUITE(FEMMassLumpingTest, ElementMassTypes);
+TYPED_TEST_SUITE(FEMCapacityLumpingTest, CapacityTypes);
 
-TYPED_TEST(FEMMassLumpingTest, ConsistentMassMatrixIsNotDiagonal)
+TYPED_TEST(FEMCapacityLumpingTest, ConsistentMatrixIsNotDiagonal)
 {
-    this->m_mass->d_lumping.setValue(false);
+    this->m_component->d_lumping.setValue(false);
     sofa::simulation::node::initRoot(this->m_root.get());
 
-    EXPECT_FALSE(this->m_mass->isDiagonal());
+    EXPECT_FALSE(this->m_component->isComponentStateInvalid());
+    EXPECT_FALSE(this->m_component->isDiagonal());
 
     MatrixDiagonalCheckerAccumulator accumulator;
-    this->m_mass->buildMassMatrix(&accumulator);
+    this->m_component->buildMassMatrix(&accumulator);
 
-    EXPECT_TRUE(accumulator.hasDiagonalNonZero) << "Consistent mass matrix should contain diagonal entries.";
-    EXPECT_TRUE(accumulator.hasOffDiagonalNonZero) << "Consistent mass matrix must have non-zero off-diagonal entries.";
+    EXPECT_TRUE(accumulator.hasDiagonalNonZero) << "Consistent matrix should contain diagonal entries.";
+    EXPECT_TRUE(accumulator.hasOffDiagonalNonZero) << "Consistent matrix must have non-zero off-diagonal entries.";
 }
 
-TYPED_TEST(FEMMassLumpingTest, LumpedMassMatrixIsDiagonal)
+TYPED_TEST(FEMCapacityLumpingTest, LumpedMatrixIsDiagonal)
 {
-    this->m_mass->d_lumping.setValue(true);
+    this->m_component->d_lumping.setValue(true);
     sofa::simulation::node::initRoot(this->m_root.get());
 
-    EXPECT_TRUE(this->m_mass->isDiagonal());
+    EXPECT_FALSE(this->m_component->isComponentStateInvalid());
+    EXPECT_TRUE(this->m_component->isDiagonal());
 
     MatrixDiagonalCheckerAccumulator accumulator;
-    this->m_mass->buildMassMatrix(&accumulator);
+    this->m_component->buildMassMatrix(&accumulator);
 
-    EXPECT_TRUE(accumulator.hasDiagonalNonZero) << "Lumped mass matrix must contain diagonal entries.";
-    EXPECT_FALSE(accumulator.hasOffDiagonalNonZero) << "Lumped mass matrix must not contain any off-diagonal entries.";
+    EXPECT_TRUE(accumulator.hasDiagonalNonZero) << "Lumped matrix must contain diagonal entries.";
+    EXPECT_FALSE(accumulator.hasOffDiagonalNonZero) << "Lumped matrix must not contain any off-diagonal entries.";
 }
 
 namespace
 {
-/// Builds a scene with a single tetrahedron (unit corner tetrahedron in 3D), and returns the sum of
-/// all the entries of the mass matrix computed by a FEMMass<DataTypes, Vec3Types, Tetrahedron>.
-template<class DataTypes>
-MatrixSumAccumulator computeTetrahedronMassMatrixSum()
+/// A scene with a single tetrahedron (unit corner tetrahedron in 3D), with a gravity along -y
+template<class Param>
+struct TetrahedronScene
 {
-    using SpatialTypes = defaulttype::Vec3Types;
-    using FEMMassType = FEMMass<DataTypes, SpatialTypes, sofa::geometry::Tetrahedron>;
+    using Component = typename Param::Component;
+    using DataTypes = typename Param::DataTypes;
+    using SpatialTypes = typename Param::SpatialTypes;
+    static_assert(std::is_same_v<SpatialTypes, defaulttype::Vec3Types>);
 
-    auto* simu = sofa::simulation::getSimulation();
-    const auto root = simu->createNewGraph("root");
+    sofa::simulation::Node::SPtr root;
+    typename Component::SPtr component;
 
-    // The spatial state is in the root node (initialized first). If the field type differs, the
-    // field state is in a child node, as only one state is allowed per node.
-    const auto spatialState = sofa::core::objectmodel::New<sofa::component::statecontainer::MechanicalObject<SpatialTypes>>();
-    root->addObject(spatialState);
-    spatialState->resize(4);
+    TetrahedronScene()
     {
-        auto x = spatialState->writePositions();
-        x[0] = {0, 0, 0};
-        x[1] = {1, 0, 0};
-        x[2] = {0, 1, 0};
-        x[3] = {0, 0, 1};
+        root = sofa::simulation::getSimulation()->createNewGraph("root");
+        root->setGravity(sofa::type::Vec3(0, -10, 0));
+
+        // The spatial state is in the root node (initialized first). If the field type differs, the
+        // field state is in a child node, as only one state is allowed per node.
+        const auto spatialState = sofa::core::objectmodel::New<sofa::component::statecontainer::MechanicalObject<SpatialTypes>>();
+        root->addObject(spatialState);
+        spatialState->resize(4);
+        {
+            auto x = spatialState->writePositions();
+            x[0] = {0, 0, 0};
+            x[1] = {1, 0, 0};
+            x[2] = {0, 1, 0};
+            x[3] = {0, 0, 1};
+        }
+
+        auto fieldNode = root;
+        if constexpr (!std::is_same_v<DataTypes, SpatialTypes>)
+        {
+            fieldNode = root->createChild("field");
+            const auto fieldState = sofa::core::objectmodel::New<sofa::component::statecontainer::MechanicalObject<DataTypes>>();
+            fieldNode->addObject(fieldState);
+            fieldState->resize(4);
+        }
+
+        const auto topology = sofa::core::objectmodel::New<MeshTopology>();
+        fieldNode->addObject(topology);
+        topology->addTetra(0, 1, 2, 3);
+
+        fieldNode->addObject(sofa::core::objectmodel::New<typename Param::Coefficient>());
+
+        component = sofa::core::objectmodel::New<Component>();
+        fieldNode->addObject(component);
+        component->l_spatialState.set(spatialState.get());
+
+        sofa::simulation::node::initRoot(root.get());
+        EXPECT_FALSE(component->isComponentStateInvalid());
     }
 
-    auto fieldNode = root;
-    if constexpr (!std::is_same_v<DataTypes, SpatialTypes>)
+    MatrixSumAccumulator computeMatrixSum() const
     {
-        fieldNode = root->createChild("field");
-        const auto fieldState = sofa::core::objectmodel::New<sofa::component::statecontainer::MechanicalObject<DataTypes>>();
-        fieldNode->addObject(fieldState);
-        fieldState->resize(4);
+        MatrixSumAccumulator accumulator;
+        component->buildMassMatrix(&accumulator);
+        return accumulator;
     }
 
-    const auto topology = sofa::core::objectmodel::New<MeshTopology>();
-    fieldNode->addObject(topology);
-    topology->addTetra(0, 1, 2, 3);
+    /// sum of all the components of the force vector computed by addForce
+    SReal computeForceSum() const
+    {
+        sofa::Data<sofa::VecDeriv_t<DataTypes>> f;
+        f.setValue(sofa::VecDeriv_t<DataTypes>(4));
+        sofa::Data<sofa::VecCoord_t<DataTypes>> x;
+        x.setValue(sofa::VecCoord_t<DataTypes>(4));
+        sofa::Data<sofa::VecDeriv_t<DataTypes>> v;
+        v.setValue(sofa::VecDeriv_t<DataTypes>(4));
 
-    fieldNode->addObject(sofa::core::objectmodel::New<NodalMassDensity<sofa::Real_t<DataTypes>>>());
+        component->addForce(sofa::core::MechanicalParams::defaultInstance(), f, x, v);
 
-    const auto mass = sofa::core::objectmodel::New<FEMMassType>();
-    fieldNode->addObject(mass);
-    mass->l_spatialState.set(spatialState.get());
-
-    sofa::simulation::node::initRoot(root.get());
-    EXPECT_FALSE(mass->isComponentStateInvalid());
-
-    MatrixSumAccumulator accumulator;
-    mass->buildMassMatrix(&accumulator);
-
-    return accumulator;
-}
+        SReal sum = 0;
+        for (const auto& fi : f.getValue())
+        {
+            for (sofa::Size d = 0; d < DataTypes::deriv_total_size; ++d)
+            {
+                sum += fi[d];
+            }
+        }
+        return sum;
+    }
+};
 } // namespace
 
 /**
- * A scalar field (Vec1) defined on a tetrahedron living in 3D: the sum of all the entries of the
- * mass matrix must be equal to the mass of the tetrahedron (density * volume).
- * The same tetrahedron with a Vec3 field has the same scalar mass matrix, repeated on each of the
- * 3 field components.
+ * The sum of all the entries of the matrix must be equal to the integral of the coefficient over
+ * the tetrahedron (coefficient * volume = 1/6), repeated on each of the field components.
  */
-TEST(FEMMass, scalarFieldOnTetrahedronIn3D)
+TEST(FEMCapacity, scalarFieldOnTetrahedronIn3D)
 {
-    const auto scalar = computeTetrahedronMassMatrixSum<defaulttype::Vec1Types>();
-    EXPECT_NEAR(scalar.sum, 1. / 6., 1e-10);
-    EXPECT_EQ(scalar.maxIndex, 3);
+    const TetrahedronScene<CapacityOfFieldParam<defaulttype::Vec1Types, defaulttype::Vec3Types, sofa::geometry::Tetrahedron>> scene;
+    const auto sum = scene.computeMatrixSum();
+    EXPECT_NEAR(sum.sum, 1. / 6., 1e-10);
+    EXPECT_EQ(sum.maxIndex, 3);
+}
 
-    const auto vector = computeTetrahedronMassMatrixSum<defaulttype::Vec3Types>();
-    EXPECT_NEAR(vector.sum, 3. / 6., 1e-10);
-    EXPECT_EQ(vector.maxIndex, 11);
+TEST(FEMMass, tetrahedronIn3D)
+{
+    const TetrahedronScene<MassParam<defaulttype::Vec3Types, sofa::geometry::Tetrahedron>> scene;
+    const auto sum = scene.computeMatrixSum();
+    EXPECT_NEAR(sum.sum, 3. / 6., 1e-10);
+    EXPECT_EQ(sum.maxIndex, 11);
+}
+
+/// FEMMass applies the gravity: the total force is the total mass times the gravity
+TEST(FEMMass, gravityIsApplied)
+{
+    const TetrahedronScene<MassParam<defaulttype::Vec3Types, sofa::geometry::Tetrahedron>> scene;
+    EXPECT_NEAR(scene.computeForceSum(), -10. / 6., 1e-10);
+}
+
+/// FEMCapacity does not apply any body force, even if the field has the dimension of the space
+TEST(FEMCapacity, gravityIsNotApplied)
+{
+    const TetrahedronScene<CapacityOfFieldParam<defaulttype::Vec1Types, defaulttype::Vec3Types, sofa::geometry::Tetrahedron>> scalar;
+    EXPECT_EQ(scalar.computeForceSum(), 0);
+
+    const TetrahedronScene<CapacityOfFieldParam<defaulttype::Vec3Types, defaulttype::Vec3Types, sofa::geometry::Tetrahedron>> vector;
+    EXPECT_EQ(vector.computeForceSum(), 0);
 }
 
 } // namespace sofa::component::mass::testing

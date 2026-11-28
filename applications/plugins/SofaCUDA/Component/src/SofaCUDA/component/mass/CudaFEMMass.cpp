@@ -25,6 +25,7 @@
 
 #include <sofa/gpu/cuda/CudaTypes.h>
 #include <SofaCUDA/component/mass/CudaFEMMass.h>
+#include <sofa/component/mass/BaseFEMMassMatrix.inl>
 #include <sofa/component/mass/FEMMass.inl>
 #include <sofa/core/behavior/Mass.inl>
 #include <sofa/core/ObjectFactory.h>
@@ -35,22 +36,36 @@ namespace sofa::component::mass
 
 using namespace sofa::gpu::cuda;
 
-template class SOFACUDA_COMPONENT_API FEMMass<CudaVec3fTypes, CudaVec3fTypes, sofa::geometry::Edge>;
-template class SOFACUDA_COMPONENT_API FEMMass<CudaVec3fTypes, CudaVec3fTypes, sofa::geometry::Triangle>;
-template class SOFACUDA_COMPONENT_API FEMMass<CudaVec3fTypes, CudaVec3fTypes, sofa::geometry::Quad>;
-template class SOFACUDA_COMPONENT_API FEMMass<CudaVec3fTypes, CudaVec3fTypes, sofa::geometry::Tetrahedron>;
-template class SOFACUDA_COMPONENT_API FEMMass<CudaVec3fTypes, CudaVec3fTypes, sofa::geometry::Hexahedron>;
-template class SOFACUDA_COMPONENT_API FEMMass<CudaVec3fTypes, CudaVec3fTypes, sofa::geometry::Prism>;
-template class SOFACUDA_COMPONENT_API FEMMass<CudaVec3fTypes, CudaVec3fTypes, sofa::geometry::Pyramid>;
+template class SOFACUDA_COMPONENT_API BaseFEMMassMatrix<CudaVec3fTypes, CudaVec3fTypes, sofa::geometry::Edge>;
+template class SOFACUDA_COMPONENT_API FEMMass<CudaVec3fTypes, sofa::geometry::Edge>;
+template class SOFACUDA_COMPONENT_API BaseFEMMassMatrix<CudaVec3fTypes, CudaVec3fTypes, sofa::geometry::Triangle>;
+template class SOFACUDA_COMPONENT_API FEMMass<CudaVec3fTypes, sofa::geometry::Triangle>;
+template class SOFACUDA_COMPONENT_API BaseFEMMassMatrix<CudaVec3fTypes, CudaVec3fTypes, sofa::geometry::Quad>;
+template class SOFACUDA_COMPONENT_API FEMMass<CudaVec3fTypes, sofa::geometry::Quad>;
+template class SOFACUDA_COMPONENT_API BaseFEMMassMatrix<CudaVec3fTypes, CudaVec3fTypes, sofa::geometry::Tetrahedron>;
+template class SOFACUDA_COMPONENT_API FEMMass<CudaVec3fTypes, sofa::geometry::Tetrahedron>;
+template class SOFACUDA_COMPONENT_API BaseFEMMassMatrix<CudaVec3fTypes, CudaVec3fTypes, sofa::geometry::Hexahedron>;
+template class SOFACUDA_COMPONENT_API FEMMass<CudaVec3fTypes, sofa::geometry::Hexahedron>;
+template class SOFACUDA_COMPONENT_API BaseFEMMassMatrix<CudaVec3fTypes, CudaVec3fTypes, sofa::geometry::Prism>;
+template class SOFACUDA_COMPONENT_API FEMMass<CudaVec3fTypes, sofa::geometry::Prism>;
+template class SOFACUDA_COMPONENT_API BaseFEMMassMatrix<CudaVec3fTypes, CudaVec3fTypes, sofa::geometry::Pyramid>;
+template class SOFACUDA_COMPONENT_API FEMMass<CudaVec3fTypes, sofa::geometry::Pyramid>;
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
-template class SOFACUDA_COMPONENT_API FEMMass<CudaVec3dTypes, CudaVec3dTypes, sofa::geometry::Edge>;
-template class SOFACUDA_COMPONENT_API FEMMass<CudaVec3dTypes, CudaVec3dTypes, sofa::geometry::Triangle>;
-template class SOFACUDA_COMPONENT_API FEMMass<CudaVec3dTypes, CudaVec3dTypes, sofa::geometry::Quad>;
-template class SOFACUDA_COMPONENT_API FEMMass<CudaVec3dTypes, CudaVec3dTypes, sofa::geometry::Tetrahedron>;
-template class SOFACUDA_COMPONENT_API FEMMass<CudaVec3dTypes, CudaVec3dTypes, sofa::geometry::Hexahedron>;
-template class SOFACUDA_COMPONENT_API FEMMass<CudaVec3dTypes, CudaVec3dTypes, sofa::geometry::Prism>;
-template class SOFACUDA_COMPONENT_API FEMMass<CudaVec3dTypes, CudaVec3dTypes, sofa::geometry::Pyramid>;
+template class SOFACUDA_COMPONENT_API BaseFEMMassMatrix<CudaVec3dTypes, CudaVec3dTypes, sofa::geometry::Edge>;
+template class SOFACUDA_COMPONENT_API FEMMass<CudaVec3dTypes, sofa::geometry::Edge>;
+template class SOFACUDA_COMPONENT_API BaseFEMMassMatrix<CudaVec3dTypes, CudaVec3dTypes, sofa::geometry::Triangle>;
+template class SOFACUDA_COMPONENT_API FEMMass<CudaVec3dTypes, sofa::geometry::Triangle>;
+template class SOFACUDA_COMPONENT_API BaseFEMMassMatrix<CudaVec3dTypes, CudaVec3dTypes, sofa::geometry::Quad>;
+template class SOFACUDA_COMPONENT_API FEMMass<CudaVec3dTypes, sofa::geometry::Quad>;
+template class SOFACUDA_COMPONENT_API BaseFEMMassMatrix<CudaVec3dTypes, CudaVec3dTypes, sofa::geometry::Tetrahedron>;
+template class SOFACUDA_COMPONENT_API FEMMass<CudaVec3dTypes, sofa::geometry::Tetrahedron>;
+template class SOFACUDA_COMPONENT_API BaseFEMMassMatrix<CudaVec3dTypes, CudaVec3dTypes, sofa::geometry::Hexahedron>;
+template class SOFACUDA_COMPONENT_API FEMMass<CudaVec3dTypes, sofa::geometry::Hexahedron>;
+template class SOFACUDA_COMPONENT_API BaseFEMMassMatrix<CudaVec3dTypes, CudaVec3dTypes, sofa::geometry::Prism>;
+template class SOFACUDA_COMPONENT_API FEMMass<CudaVec3dTypes, sofa::geometry::Prism>;
+template class SOFACUDA_COMPONENT_API BaseFEMMassMatrix<CudaVec3dTypes, CudaVec3dTypes, sofa::geometry::Pyramid>;
+template class SOFACUDA_COMPONENT_API FEMMass<CudaVec3dTypes, sofa::geometry::Pyramid>;
 #endif
 
 } // namespace sofa::component::mass
@@ -63,21 +78,21 @@ void registerFEMMass(sofa::core::ObjectFactory* factory)
     using namespace sofa::component::mass;
 
     factory->registerObjects(sofa::core::ObjectRegistrationData("Supports GPU-side computations using CUDA for FEMMass")
-        .add< FEMMass<CudaVec3fTypes, CudaVec3fTypes, sofa::geometry::Edge> >()
-        .add< FEMMass<CudaVec3fTypes, CudaVec3fTypes, sofa::geometry::Triangle> >()
-        .add< FEMMass<CudaVec3fTypes, CudaVec3fTypes, sofa::geometry::Quad> >()
-        .add< FEMMass<CudaVec3fTypes, CudaVec3fTypes, sofa::geometry::Tetrahedron> >()
-        .add< FEMMass<CudaVec3fTypes, CudaVec3fTypes, sofa::geometry::Hexahedron> >()
-        .add< FEMMass<CudaVec3fTypes, CudaVec3fTypes, sofa::geometry::Prism> >()
-        .add< FEMMass<CudaVec3fTypes, CudaVec3fTypes, sofa::geometry::Pyramid> >()
+        .add< FEMMass<CudaVec3fTypes, sofa::geometry::Edge> >()
+        .add< FEMMass<CudaVec3fTypes, sofa::geometry::Triangle> >()
+        .add< FEMMass<CudaVec3fTypes, sofa::geometry::Quad> >()
+        .add< FEMMass<CudaVec3fTypes, sofa::geometry::Tetrahedron> >()
+        .add< FEMMass<CudaVec3fTypes, sofa::geometry::Hexahedron> >()
+        .add< FEMMass<CudaVec3fTypes, sofa::geometry::Prism> >()
+        .add< FEMMass<CudaVec3fTypes, sofa::geometry::Pyramid> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
-        .add< FEMMass<CudaVec3dTypes, CudaVec3dTypes, sofa::geometry::Edge> >()
-        .add< FEMMass<CudaVec3dTypes, CudaVec3dTypes, sofa::geometry::Triangle> >()
-        .add< FEMMass<CudaVec3dTypes, CudaVec3dTypes, sofa::geometry::Quad> >()
-        .add< FEMMass<CudaVec3dTypes, CudaVec3dTypes, sofa::geometry::Tetrahedron> >()
-        .add< FEMMass<CudaVec3dTypes, CudaVec3dTypes, sofa::geometry::Hexahedron> >()
-        .add< FEMMass<CudaVec3dTypes, CudaVec3dTypes, sofa::geometry::Prism> >()
-        .add< FEMMass<CudaVec3dTypes, CudaVec3dTypes, sofa::geometry::Pyramid> >()
+        .add< FEMMass<CudaVec3dTypes, sofa::geometry::Edge> >()
+        .add< FEMMass<CudaVec3dTypes, sofa::geometry::Triangle> >()
+        .add< FEMMass<CudaVec3dTypes, sofa::geometry::Quad> >()
+        .add< FEMMass<CudaVec3dTypes, sofa::geometry::Tetrahedron> >()
+        .add< FEMMass<CudaVec3dTypes, sofa::geometry::Hexahedron> >()
+        .add< FEMMass<CudaVec3dTypes, sofa::geometry::Prism> >()
+        .add< FEMMass<CudaVec3dTypes, sofa::geometry::Pyramid> >()
 #endif
     );
 }

@@ -30,8 +30,8 @@
 
             <RegularGridTopology name="grid" min="0 0 0" max="0 1 1" n="10 10 10"/>
             <MechanicalObject template="Vec1" position="@grid.position" name="temperature" bbox="0 0 0 0 0 0"/>
-            <NodalMassDensity property="1"/>
-            <FEMMass name="mass" template="Vec1,Vec3,Hexahedron" topology="@../geometry/grid" spatialState="@../geometry/spatialState"/>
+            <NodalCapacity property="1"/>
+            <FEMCapacity name="capacity" template="Vec1,Vec3,Hexahedron" topology="@../geometry/grid" spatialState="@../geometry/spatialState"/>
             <DiffusionFEMForceField template="Vec1,Vec3,Hexahedron" name="diffusion" topology="@../geometry/grid"
                                     elementDiffusionCoefficient="1" spatialState="@../geometry/spatialState" mstate="@temperature"/>
 
@@ -54,7 +54,8 @@
 
             <RegularGridTopology name="grid" min="0 0 0" max="0 1 1" n="10 10 10"/>
             <MechanicalObject template="Vec1" position="@grid.position" name="temperature" bbox="0 0 0 0 0 0"/>
-            <MeshMatrixMass name="mass" template="Vec1,Vec3" massDensity="1" topology="@../geometry/tetrahedra/Tetra_topo" geometryState="@../geometry/spatialState"/>
+            <NodalCapacity property="1"/>
+            <FEMCapacity name="capacity" template="Vec1,Vec3,Tetrahedron" topology="@../geometry/tetrahedra/Tetra_topo" spatialState="@../geometry/spatialState"/>
             <DiffusionFEMForceField template="Vec1,Vec3,Tetrahedron" name="diffusion" topology="@../geometry/tetrahedra/Tetra_topo"
                                     elementDiffusionCoefficient="1" spatialState="@../geometry/spatialState" mstate="@temperature"/>
 
