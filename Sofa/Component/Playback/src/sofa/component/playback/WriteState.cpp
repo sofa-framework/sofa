@@ -23,6 +23,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/BaseIntegrationScheme.h>
 #include <sofa/core/BaseMapping.h>
+#include <sofa/component/playback/StateComponentLookup.h>
 
 namespace sofa::component::playback
 {
@@ -68,19 +69,18 @@ WriteStateCreator::WriteStateCreator(const core::ExecParams* params, const std::
 }
 
 
-//Create a Write State component each time a mechanical state is found
+//Create a Write State component for each mechanical state found
 simulation::Visitor::Result WriteStateCreator::processNodeTopDown( simulation::Node* gnode)
 {
-    // TODO: only the first mechanical state of the node is considered. Supporting several states
-    // requires one WriteState per state, with an explicit link to it.
     if (gnode->mechanicalState.empty())   return simulation::Visitor::RESULT_CONTINUE;
-    sofa::core::behavior::BaseMechanicalState * mstate = gnode->mechanicalState[0];
     core::behavior::BaseIntegrationScheme *isSimulated;
-    mstate->getContext()->get(isSimulated);
+    gnode->getContext()->get(isSimulated);
     if (!isSimulated) return simulation::Visitor::RESULT_CONTINUE;
 
-    //We have a mechanical state
-    addWriteState(mstate, gnode);
+    for (const auto& mstate : gnode->mechanicalState)
+    {
+        addWriteState(mstate, gnode);
+    }
     return simulation::Visitor::RESULT_CONTINUE;
 }
 
@@ -92,11 +92,13 @@ void WriteStateCreator::addWriteState(sofa::core::behavior::BaseMechanicalState 
     context->get(mapping);
     if ( createInMapping || mapping == nullptr)
     {
-        sofa::component::playback::WriteState::SPtr ws;
-        context->get(ws, this->subsetsToManage, core::objectmodel::BaseContext::Local);
+        // a WriteState is explicitly linked to the state it writes
+        sofa::component::playback::WriteState::SPtr ws = findComponentLinkedToState(
+            getLocalComponents<WriteState>(gnode, this->subsetsToManage), ms, gnode);
         if ( ws == nullptr )
         {
             ws = sofa::core::objectmodel::New<WriteState>();
+            ws->l_state.set(ms);
             gnode->addObject(ws);
             ws->d_writeX.setValue(recordX);
             ws->d_writeV.setValue(recordV);
@@ -130,8 +132,16 @@ void WriteStateCreator::addWriteState(sofa::core::behavior::BaseMechanicalState 
 //if state is true, we activate all the write states present in the scene.
 simulation::Visitor::Result WriteStateActivator::processNodeTopDown( simulation::Node* gnode)
 {
-    sofa::component::playback::WriteState *ws = gnode->get< sofa::component::playback::WriteState >(this->subsetsToManage);
-    if (ws != nullptr) { changeStateWriter(ws);}
+    const auto writers = getLocalComponents<WriteState>(gnode, this->subsetsToManage);
+    if (writers.empty())
+    {
+        sofa::component::playback::WriteState *ws = gnode->get< sofa::component::playback::WriteState >(this->subsetsToManage);
+        if (ws != nullptr) { changeStateWriter(ws);}
+    }
+    for (auto* ws : writers)
+    {
+        changeStateWriter(ws);
+    }
     return simulation::Visitor::RESULT_CONTINUE;
 }
 

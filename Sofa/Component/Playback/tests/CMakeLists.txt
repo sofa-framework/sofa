@@ -4,6 +4,7 @@ project(Sofa.Component.Playback_test)
 
 set(SOURCE_FILES
     ReadState_test.cpp
+    StateCreators_test.cpp
     WriteState_test.cpp
 )
 

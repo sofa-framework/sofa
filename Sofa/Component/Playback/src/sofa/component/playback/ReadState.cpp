@@ -23,6 +23,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/BaseIntegrationScheme.h>
 #include <sofa/simulation/Node.h>
+#include <sofa/component/playback/StateComponentLookup.h>
 
 namespace sofa::component::playback
 {
@@ -63,19 +64,18 @@ ReadStateCreator::ReadStateCreator(const std::string &n, bool _createInMapping, 
 {
 }
 
-//Create a Read State component each time a mechanical state is found
+//Create a Read State component for each mechanical state found
 simulation::Visitor::Result ReadStateCreator::processNodeTopDown( simulation::Node* gnode)
 {
-    // TODO: only the first mechanical state of the node is considered. Supporting several states
-    // requires one ReadState per state, with an explicit link to it.
     if (gnode->mechanicalState.empty())   return Visitor::RESULT_CONTINUE;
-    sofa::core::behavior::BaseMechanicalState * mstate = gnode->mechanicalState[0];
     core::behavior::BaseIntegrationScheme *isSimulated;
-    mstate->getContext()->get(isSimulated);
+    gnode->getContext()->get(isSimulated);
     if (!isSimulated) return simulation::Visitor::RESULT_CONTINUE;
 
-    //We have a mechanical state
-    addReadState(mstate, gnode);
+    for (const auto& mstate : gnode->mechanicalState)
+    {
+        addReadState(mstate, gnode);
+    }
     return simulation::Visitor::RESULT_CONTINUE;
 }
 
@@ -85,11 +85,13 @@ void ReadStateCreator::addReadState(sofa::core::behavior::BaseMechanicalState *m
     sofa::core::BaseMapping *mapping; context->get(mapping);
     if (createInMapping || mapping== nullptr)
     {
-        sofa::component::playback::ReadState::SPtr rs;
-        context->get(rs, this->subsetsToManage, core::objectmodel::BaseContext::Local);
+        // a ReadState is explicitly linked to the state it reads
+        sofa::component::playback::ReadState::SPtr rs = findComponentLinkedToState(
+            getLocalComponents<ReadState>(gnode, this->subsetsToManage), ms, gnode);
         if (rs == nullptr)
         {
             rs = sofa::core::objectmodel::New<ReadState>();
+            rs->l_state.set(ms);
             gnode->addObject(rs);
             for (const auto& subset : this->subsetsToManage)
             {
@@ -110,8 +112,16 @@ void ReadStateCreator::addReadState(sofa::core::behavior::BaseMechanicalState *m
 ///if state is true, we activate all the write states present in the scene.
 simulation::Visitor::Result ReadStateActivator::processNodeTopDown( simulation::Node* gnode)
 {
-    sofa::component::playback::ReadState *rs = gnode->get< sofa::component::playback::ReadState >(this->subsetsToManage);
-    if (rs != nullptr) { changeStateReader(rs);}
+    const auto readers = getLocalComponents<ReadState>(gnode, this->subsetsToManage);
+    if (readers.empty())
+    {
+        sofa::component::playback::ReadState *rs = gnode->get< sofa::component::playback::ReadState >(this->subsetsToManage);
+        if (rs != nullptr) { changeStateReader(rs);}
+    }
+    for (auto* rs : readers)
+    {
+        changeStateReader(rs);
+    }
 
     return simulation::Visitor::RESULT_CONTINUE;
 }
@@ -128,8 +138,16 @@ simulation::Visitor::Result ReadStateModifier::processNodeTopDown( simulation::N
 {
     using namespace sofa::defaulttype;
 
-    sofa::component::playback::ReadState*rs = gnode->get< sofa::component::playback::ReadState>(this->subsetsToManage);
-    if (rs != nullptr) {changeTimeReader(rs);}
+    const auto readers = getLocalComponents<ReadState>(gnode, this->subsetsToManage);
+    if (readers.empty())
+    {
+        sofa::component::playback::ReadState*rs = gnode->get< sofa::component::playback::ReadState>(this->subsetsToManage);
+        if (rs != nullptr) {changeTimeReader(rs);}
+    }
+    for (auto* rs : readers)
+    {
+        changeTimeReader(rs);
+    }
 
     return simulation::Visitor::RESULT_CONTINUE;
 }
