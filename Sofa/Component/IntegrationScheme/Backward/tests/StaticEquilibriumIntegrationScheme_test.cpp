@@ -24,6 +24,9 @@
 #include <sofa/component/integrationscheme/backward/StaticEquilibriumIntegrationScheme.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simpleapi/SimpleApi.h>
+#include <sofa/core/ExecParams.h>
+#include <sofa/core/State.h>
+#include <sofa/defaulttype/VecTypes.h>
 
 #include <vector>
 #include <algorithm>
@@ -132,4 +135,86 @@ TEST_F(StaticEquilibriumIntegrationSchemeTest, Residuals) {
 
     EXPECT_NEAR(actual_force_residual_norm, expected_force_residual_norm, 1e-3)
     << "The actual force residual norm doesn't match the expected one.";
+}
+
+/**
+ * The integration scheme must solve the static equilibrium on the state vectors it is given
+ * (xResult, vResult), which are not necessarily position and velocity. For example,
+ * FreeMotionAnimationLoop calls it with freePosition and freeVelocity.
+ *
+ * Forces and residual must be evaluated on xResult. If they were evaluated on position instead,
+ * the residual would never change along the Newton iterations, and xResult would not converge
+ * toward the equilibrium.
+ *
+ * The result obtained in freePosition is compared to the result obtained in position.
+ */
+TEST_F(StaticEquilibriumIntegrationSchemeTest, ResultInFreePosition)
+{
+    using DataTypes = sofa::defaulttype::Vec3Types;
+    using VecCoord = DataTypes::VecCoord;
+    using VecDeriv = DataTypes::VecDeriv;
+
+    staticSolver->d_maxNbIterationsNewton.setValue(10);
+    staticSolver->d_residualThreshold.setValue(0.0_sreal);
+
+    sofa::simulation::node::initRoot(root.get());
+
+    auto* state = dynamic_cast<sofa::core::State<DataTypes>*>(root->getObject("mo"));
+    ASSERT_NE(state, nullptr);
+
+    const VecCoord initialPosition = state->read(sofa::core::vec_id::read_access::position)->getValue();
+    const VecDeriv initialVelocity = state->read(sofa::core::vec_id::read_access::velocity)->getValue();
+    ASSERT_FALSE(initialPosition.empty());
+
+    // The free state starts from the current state, as in FreeMotionAnimationLoop
+    state->write(sofa::core::vec_id::write_access::freePosition)->setValue(initialPosition);
+    state->write(sofa::core::vec_id::write_access::freeVelocity)->setValue(initialVelocity);
+
+    const auto* params = sofa::core::ExecParams::defaultInstance();
+
+    // Solve the static equilibrium in freePosition
+    staticSolver->integrate(params, 1_sreal,
+        sofa::core::vec_id::write_access::freePosition,
+        sofa::core::vec_id::write_access::freeVelocity);
+    const SReal residualInFreePosition = std::sqrt(staticSolver->d_currentResidual.getValue());
+
+    const VecCoord freePosition = state->read(sofa::core::vec_id::read_access::freePosition)->getValue();
+
+    // position must not have been modified
+    {
+        const VecCoord& position = state->read(sofa::core::vec_id::read_access::position)->getValue();
+        ASSERT_EQ(position.size(), initialPosition.size());
+        for (std::size_t i = 0; i < position.size(); ++i)
+        {
+            EXPECT_EQ(position[i], initialPosition[i]) << "position has been modified at node " << i;
+        }
+    }
+
+    // freePosition must have moved toward the equilibrium
+    SReal maxDisplacement = 0;
+    for (std::size_t i = 0; i < freePosition.size(); ++i)
+    {
+        maxDisplacement = std::max(maxDisplacement, (freePosition[i] - initialPosition[i]).norm());
+    }
+    EXPECT_GT(maxDisplacement, 1_sreal) << "freePosition did not move";
+
+    // Reference: solve the same static equilibrium in position
+    staticSolver->integrate(params, 1_sreal,
+        sofa::core::vec_id::write_access::position,
+        sofa::core::vec_id::write_access::velocity);
+    const SReal residualInPosition = std::sqrt(staticSolver->d_currentResidual.getValue());
+
+    const VecCoord& position = state->read(sofa::core::vec_id::read_access::position)->getValue();
+
+    EXPECT_NEAR(residualInFreePosition, residualInPosition, 1e-10);
+    EXPECT_LT(residualInFreePosition, 1e-3) << "The Newton iterations did not converge in freePosition";
+
+    ASSERT_EQ(position.size(), freePosition.size());
+    for (std::size_t i = 0; i < position.size(); ++i)
+    {
+        for (std::size_t c = 0; c < DataTypes::spatial_dimensions; ++c)
+        {
+            EXPECT_NEAR(freePosition[i][c], position[i][c], 1e-8) << "node " << i << ", coordinate " << c;
+        }
+    }
 }
