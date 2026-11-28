@@ -54,7 +54,11 @@ public :
     typedef SparseLDLSolverImpl<TMatrix,TVector,TThreadManager> Inherit;
     typedef typename Inherit::ResMatrixType ResMatrixType;
     typedef typename Inherit::JMatrixType JMatrixType;
-    typedef SparseLDLImplInvertData<type::vector<int>, type::vector<Real> > InvertData;
+    using Block = typename Inherit::Block;
+    using BlockOperations = typename Inherit::BlockOperations;
+
+    /// The factorization is performed directly on the blocks of the matrix (scalars or square matrices)
+    typedef SparseLDLImplInvertData<type::vector<int>, type::vector<Block> > InvertData;
 
     void init() override;
     void parse( sofa::core::objectmodel::BaseObjectDescription* arg ) override;
@@ -73,7 +77,15 @@ protected :
 
     type::vector<sofa::SignedIndex> Jlocal2global;
     sofa::linearalgebra::FullMatrix<Real> JLinvDinv, JLinv;
-    sofa::linearalgebra::CompressedRowSparseMatrix<Real> Mfiltered;
+
+    /// Copy of the system matrix without its zero blocks (block CSR format), which is factorized
+    type::vector<int> m_filteredRowBegin;
+    type::vector<int> m_filteredColsIndex;
+    type::vector<Block> m_filteredValues;
+
+    /// Fill m_filteredRowBegin, m_filteredColsIndex and m_filteredValues from M.
+    /// Return false if the matrix has an empty block row.
+    bool filterMatrix(Matrix& M, int nBlocks, int systemSize);
 
     bool factorize(Matrix& M, InvertData * invertData);
 

@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/config.h>
+#include <sofa/linearalgebra/matrix_bloc_traits.h>
 
 namespace sofa::linearalgebra
 {
@@ -48,16 +49,38 @@ void solveDiagonalSystem(
 /// x is the solution vector
 /// b is the right-hand side vector
 /// The diagonal matrix is stored as the list of the inverse of the entries in the diagonal
-template<typename Real>
+///
+/// D can also be a block diagonal matrix, made of square blocks of size NxN (e.g.
+/// type::Mat<3,3,Real>). In this case, systemSize is the number of blocks, Dinv_values contains
+/// the inverse of the diagonal blocks, and the vectors contain systemSize * N scalars.
+/// rightHandSideVector and solution can be the same vector.
+template<typename Real, typename Block>
 void solveDiagonalSystemUsingInvertedValues(
     const sofa::Size systemSize,
     const Real* rightHandSideVector,
     Real* solution,
-    const Real* const Dinv_values)
+    const Block* const Dinv_values)
 {
+    using traits = matrix_bloc_traits<Block, sofa::Index>;
+    constexpr sofa::Size N = traits::NL;
+    static_assert(static_cast<int>(traits::NL) == static_cast<int>(traits::NC), "Blocks must be square");
+
     for (sofa::Size i = 0 ; i < systemSize; ++i)
     {
-        solution[i] = rightHandSideVector[i] * Dinv_values[i];
+        Real b_i[N];
+        for (sofa::Size c = 0; c < N; ++c)
+        {
+            b_i[c] = rightHandSideVector[i * N + c];
+        }
+        for (sofa::Size r = 0; r < N; ++r)
+        {
+            Real x_r = b_i[0] * traits::v(Dinv_values[i], r, 0);
+            for (sofa::Size c = 1; c < N; ++c)
+            {
+                x_r += b_i[c] * traits::v(Dinv_values[i], r, c);
+            }
+            solution[i * N + r] = x_r;
+        }
     }
 }
 

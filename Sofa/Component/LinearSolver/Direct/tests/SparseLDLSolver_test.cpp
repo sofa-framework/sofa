@@ -30,6 +30,12 @@
 #include <sofa/testing/NumericTest.h>
 #include <sofa/type/Mat.h>
 #include <sofa/type/Vec.h>
+#include <sofa/linearalgebra/FullMatrix.h>
+#include <sofa/linearalgebra/SparseMatrix.h>
+
+#include <map>
+#include <random>
+#include <tuple>
 
 
 TEST(SparseLDLSolver, EmptySystem)
@@ -438,4 +444,302 @@ TEST(SparseLDLSolver, MultiStepFactorization)
     {
         EXPECT_NEAR(Ax[i], b[i], 1e-10);
     }
+}
+
+namespace
+{
+/// Scalar triplets of a sparse symmetric positive definite matrix, built like a stiffness + mass
+/// matrix of nbNodes nodes with 3 DOFs: a chain of nodes plus random connections. The entries
+/// are scaled to be small (like in a mass matrix with small masses).
+struct SPDTestSystem
+{
+    int systemSize { 0 };
+    std::vector<std::tuple<int, int, SReal>> triplets;
+};
+
+SPDTestSystem generateSPDSystem(int nbNodes, int systemSize, unsigned int seed, SReal scale)
+{
+    std::mt19937 gen(seed);
+    std::uniform_real_distribution<SReal> dist(-1., 1.);
+    std::uniform_int_distribution<int> nodeDist(0, nbNodes - 1);
+
+    std::map<std::pair<int, int>, SReal> entries;
+    const auto addEntry = [&](int i, int j, SReal v)
+    {
+        if (i < systemSize && j < systemSize)
+        {
+            entries[{i, j}] += v;
+        }
+    };
+
+    // a random SPD 3x3 matrix S = R^T R + I, added between nodes a and b as a spring would
+    const auto addSpring = [&](int a, int b)
+    {
+        sofa::type::Mat<3, 3, SReal> R;
+        for (int i = 0; i < 3; ++i)
+            for (int j = 0; j < 3; ++j)
+                R(i, j) = dist(gen);
+        sofa::type::Mat<3, 3, SReal> S = R.transposed() * R;
+        for (int i = 0; i < 3; ++i)
+            S(i, i) += 1;
+        for (int i = 0; i < 3; ++i)
+            for (int j = 0; j < 3; ++j)
+            {
+                const SReal v = scale * S(i, j);
+                addEntry(3 * a + i, 3 * a + j, v);
+                addEntry(3 * b + i, 3 * b + j, v);
+                addEntry(3 * a + i, 3 * b + j, -v);
+                addEntry(3 * b + i, 3 * a + j, -v);
+            }
+    };
+
+    for (int a = 0; a + 1 < nbNodes; ++a)
+    {
+        addSpring(a, a + 1);
+    }
+    for (int e = 0; e < 2 * nbNodes; ++e)
+    {
+        const int a = nodeDist(gen);
+        const int b = nodeDist(gen);
+        if (a != b)
+        {
+            addSpring(a, b);
+        }
+    }
+    // mass
+    for (int i = 0; i < systemSize; ++i)
+    {
+        addEntry(i, i, scale * (1 + 0.5 * dist(gen)));
+    }
+
+    SPDTestSystem system;
+    system.systemSize = systemSize;
+    for (const auto& [ij, v] : entries)
+    {
+        system.triplets.emplace_back(ij.first, ij.second, v);
+    }
+    return system;
+}
+
+template<class MatrixType>
+MatrixType buildMatrix(const SPDTestSystem& system)
+{
+    MatrixType A(system.systemSize, system.systemSize);
+    for (const auto& [i, j, v] : system.triplets)
+    {
+        A.add(i, j, v);
+    }
+    A.compress();
+    return A;
+}
+
+template<class MatrixType>
+auto createSolver()
+{
+    using Solver = sofa::component::linearsolver::direct::SparseLDLSolver<MatrixType, sofa::linearalgebra::FullVector<SReal> >;
+    typename Solver::SPtr solver = sofa::core::objectmodel::New<Solver>();
+    solver->init();
+    return solver;
+}
+
+template<class MatrixType>
+sofa::linearalgebra::FullVector<SReal> solveSystem(const SPDTestSystem& system, const sofa::linearalgebra::FullVector<SReal>& b)
+{
+    auto solver = createSolver<MatrixType>();
+    MatrixType A = buildMatrix<MatrixType>(system);
+    sofa::linearalgebra::FullVector<SReal> x(system.systemSize), rhs = b;
+    solver->invert(A);
+    solver->solve(A, x, rhs);
+    return x;
+}
+
+sofa::linearalgebra::FullVector<SReal> randomVector(int size, unsigned int seed)
+{
+    std::mt19937 gen(seed);
+    std::uniform_real_distribution<SReal> dist(-1., 1.);
+    sofa::linearalgebra::FullVector<SReal> v(size);
+    for (int i = 0; i < size; ++i)
+    {
+        v[i] = dist(gen);
+    }
+    return v;
+}
+
+/// max_i |(A x - b)_i| / max_i |b_i|
+SReal relativeResidual(const SPDTestSystem& system, const sofa::linearalgebra::FullVector<SReal>& x, const sofa::linearalgebra::FullVector<SReal>& b)
+{
+    std::vector<SReal> Ax(system.systemSize, 0);
+    for (const auto& [i, j, v] : system.triplets)
+    {
+        Ax[i] += v * x[j];
+    }
+    SReal maxRes = 0, maxB = 0;
+    for (int i = 0; i < system.systemSize; ++i)
+    {
+        maxRes = std::max(maxRes, std::abs(Ax[i] - b[i]));
+        maxB = std::max(maxB, std::abs(b[i]));
+    }
+    return maxRes / maxB;
+}
+
+SReal relativeDifference(const sofa::linearalgebra::FullVector<SReal>& a, const sofa::linearalgebra::FullVector<SReal>& b)
+{
+    SReal maxDiff = 0, maxA = 0;
+    for (decltype(a.size()) i = 0; i < a.size(); ++i)
+    {
+        maxDiff = std::max(maxDiff, std::abs(a[i] - b[i]));
+        maxA = std::max(maxA, std::abs(a[i]));
+    }
+    return maxDiff / maxA;
+}
+
+using ScalarMatrix = sofa::linearalgebra::CompressedRowSparseMatrix<SReal>;
+using BlockMatrix = sofa::linearalgebra::CompressedRowSparseMatrix<sofa::type::Mat<3, 3, SReal> >;
+}
+
+class SparseLDLSolverBlockVsScalar : public ::testing::TestWithParam<std::tuple<int, int, SReal>>
+{};
+
+// The factorization on 3x3 blocks gives the same solution as the factorization on scalars
+TEST_P(SparseLDLSolverBlockVsScalar, Solve)
+{
+    const auto [nbNodes, missingDofs, scale] = GetParam();
+    const int systemSize = 3 * nbNodes - missingDofs;
+
+    const auto system = generateSPDSystem(nbNodes, systemSize, 42 + nbNodes, scale);
+    const auto b = randomVector(systemSize, 7);
+
+    const auto xScalar = solveSystem<ScalarMatrix>(system, b);
+    const auto xBlock = solveSystem<BlockMatrix>(system, b);
+
+    EXPECT_LT(relativeResidual(system, xScalar, b), 1e-10);
+    EXPECT_LT(relativeResidual(system, xBlock, b), 1e-10);
+    EXPECT_LT(relativeDifference(xScalar, xBlock), 1e-10);
+}
+
+// J * A^-1 * J^T computed with the factorization on 3x3 blocks is the same as with the factorization on scalars
+TEST_P(SparseLDLSolverBlockVsScalar, AddJMInvJt)
+{
+    const auto [nbNodes, missingDofs, scale] = GetParam();
+    const int systemSize = 3 * nbNodes - missingDofs;
+
+    const auto system = generateSPDSystem(nbNodes, systemSize, 42 + nbNodes, scale);
+
+    using JMatrix = sofa::linearalgebra::SparseMatrix<SReal>;
+    constexpr int nbConstraints = 7;
+    JMatrix J;
+    J.resize(nbConstraints, systemSize);
+    {
+        std::mt19937 gen(3);
+        std::uniform_real_distribution<SReal> dist(-1., 1.);
+        std::uniform_int_distribution<int> colDist(0, systemSize - 1);
+        for (int r = 0; r < nbConstraints; ++r)
+        {
+            for (int k = 0; k < 4; ++k)
+            {
+                J.add(r, colDist(gen), dist(gen));
+            }
+        }
+        J.add(1, systemSize - 1, 1.); // the last DOF (possibly in an incomplete block)
+    }
+
+    const auto compute = [&]<class MatrixType>()
+    {
+        auto solver = createSolver<MatrixType>();
+        MatrixType A = buildMatrix<MatrixType>(system);
+        solver->invert(A);
+        sofa::linearalgebra::FullMatrix<SReal> result(nbConstraints, nbConstraints);
+        result.clear();
+        solver->addJMInvJtLocal(&A, &result, &J, 2.);
+        return result;
+    };
+
+    const auto resScalar = compute.template operator()<ScalarMatrix>();
+    const auto resBlock = compute.template operator()<BlockMatrix>();
+
+    SReal maxDiff = 0, maxValue = 0;
+    for (int i = 0; i < nbConstraints; ++i)
+    {
+        for (int j = 0; j < nbConstraints; ++j)
+        {
+            maxDiff = std::max(maxDiff, std::abs(resScalar.element(i, j) - resBlock.element(i, j)));
+            maxValue = std::max(maxValue, std::abs(resScalar.element(i, j)));
+            EXPECT_DOUBLE_EQ(resBlock.element(i, j), resBlock.element(j, i));
+        }
+    }
+    EXPECT_GT(maxValue, 0);
+    EXPECT_LT(maxDiff / maxValue, 1e-10);
+}
+
+// Second factorization with the same pattern but different values: the symbolic factorization is reused
+TEST_P(SparseLDLSolverBlockVsScalar, Refactorization)
+{
+    const auto [nbNodes, missingDofs, scale] = GetParam();
+    const int systemSize = 3 * nbNodes - missingDofs;
+
+    const auto system1 = generateSPDSystem(nbNodes, systemSize, 42 + nbNodes, scale);
+    auto system2 = system1;
+    {
+        // same pattern, different values: A2 = 2 * A1 + diag
+        for (auto& [i, j, v] : system2.triplets)
+        {
+            v *= 2;
+            if (i == j) v += scale;
+        }
+    }
+    const auto b = randomVector(systemSize, 11);
+
+    const auto solveTwice = [&]<class MatrixType>()
+    {
+        auto solver = createSolver<MatrixType>();
+        sofa::linearalgebra::FullVector<SReal> x(systemSize), rhs = b;
+
+        MatrixType A1 = buildMatrix<MatrixType>(system1);
+        solver->invert(A1);
+        solver->solve(A1, x, rhs);
+        EXPECT_LT(relativeResidual(system1, x, b), 1e-10);
+
+        MatrixType A2 = buildMatrix<MatrixType>(system2);
+        solver->invert(A2);
+        solver->solve(A2, x, rhs);
+        EXPECT_LT(relativeResidual(system2, x, b), 1e-10);
+        return x;
+    };
+
+    const auto xScalar = solveTwice.template operator()<ScalarMatrix>();
+    const auto xBlock = solveTwice.template operator()<BlockMatrix>();
+    EXPECT_LT(relativeDifference(xScalar, xBlock), 1e-10);
+}
+
+INSTANTIATE_TEST_SUITE_P(SparseLDLSolver, SparseLDLSolverBlockVsScalar,
+    ::testing::Values(
+        std::make_tuple(1, 0, 1.),
+        std::make_tuple(2, 0, 1.),
+        std::make_tuple(50, 0, 1.),
+        std::make_tuple(300, 0, 1.),
+        std::make_tuple(300, 0, 1e-5),  // small entries: a threshold on the determinant would fail
+        std::make_tuple(50, 1, 1.),     // incomplete last block (padding)
+        std::make_tuple(50, 2, 1.),     // incomplete last block (padding)
+        std::make_tuple(1, 2, 1.)       // a single incomplete block
+    ));
+
+// A singular pivot is detected (no threshold, only an exact zero), and reported as an error
+TEST(SparseLDLSolver, BlockMatrixSingular)
+{
+    sofa::helper::logging::MessageDispatcher::addHandler(sofa::testing::MainGtestMessageHandler::getInstance());
+
+    // 2 blocks: the second one is a rank-deficient block (rank 2)
+    BlockMatrix A(6, 6);
+    for (int i = 0; i < 3; ++i)
+    {
+        A.add(i, i, 1.);
+    }
+    A.add(3, 3, 1.); A.add(3, 4, 1.);
+    A.add(4, 3, 1.); A.add(4, 4, 1.);
+    A.add(5, 5, 1.);
+    A.compress();
+
+    auto solver = createSolver<BlockMatrix>();
+    EXPECT_MSG_EMIT(Error);
+    solver->invert(A);
 }

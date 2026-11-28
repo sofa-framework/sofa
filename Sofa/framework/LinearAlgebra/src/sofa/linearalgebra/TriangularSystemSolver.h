@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/config.h>
+#include <sofa/linearalgebra/matrix_bloc_traits.h>
 #include <cstring>
 #include <cmath>
 
@@ -35,30 +36,53 @@ namespace sofa::linearalgebra
 /// b is the right-hand side vector
 /// The lower unitriangular matrix must be provided in compressed sparse row (CSR) format
 ///
-/// \param systemSize The size of the system. All other parameters must comply with this size
-/// \param rightHandSideVector The right-hand side vector
+/// The matrix can be made of scalars, or of square blocks of size NxN (e.g. type::Mat<3,3,Real>).
+/// In the block case, the CSR format describes the blocks (row and column indices are block
+/// indices), the diagonal blocks are the identity, and the vectors contain systemSize * N scalars.
+///
+/// \param systemSize The size of the system, in number of blocks (number of scalars if the
+/// matrix is made of scalars). All other parameters must comply with this size
+/// \param rightHandSideVector The right-hand side vector. It can be the same vector as solutionVector
 /// \param solutionVector The solution vector
 /// \param CSR_rows The array storing the starting index of each row in the data array.
 /// \param CSR_columns The array storing the column indices of the nonzero values in the data array.
-/// \param CSR_values The array containing the nonzero values of the matrix
-template<typename Real, typename Integer>
+/// \param CSR_values The array containing the nonzero values (or blocks) of the matrix
+template<typename Real, typename Integer, typename Block>
 void solveLowerUnitriangularSystemCSR(
     const sofa::Size systemSize,
     const Real* rightHandSideVector,
     Real* solutionVector,
     const Integer* const CSR_rows,
     const Integer* const CSR_columns,
-    const Real* const CSR_values
+    const Block* const CSR_values
     )
 {
+    using traits = matrix_bloc_traits<Block, Integer>;
+    constexpr sofa::Size N = traits::NL;
+    static_assert(static_cast<int>(traits::NL) == static_cast<int>(traits::NC), "Blocks must be square");
+
     for (sofa::Size i = 0; i < systemSize; ++i)
     {
-        Real x_i = rightHandSideVector[i];
+        Real x_i[N];
+        for (sofa::Size r = 0; r < N; ++r)
+        {
+            x_i[r] = rightHandSideVector[i * N + r];
+        }
         for (Integer p = CSR_rows[i]; p < CSR_rows[i + 1]; ++p)
         {
-            x_i -= CSR_values[p] * solutionVector[CSR_columns[p]];
+            const Real* x_j = solutionVector + CSR_columns[p] * N;
+            for (sofa::Size r = 0; r < N; ++r)
+            {
+                for (sofa::Size c = 0; c < N; ++c)
+                {
+                    x_i[r] -= traits::v(CSR_values[p], r, c) * x_j[c];
+                }
+            }
         }
-        solutionVector[i] = x_i;
+        for (sofa::Size r = 0; r < N; ++r)
+        {
+            solutionVector[i * N + r] = x_i[r];
+        }
     }
 }
 
@@ -70,30 +94,53 @@ void solveLowerUnitriangularSystemCSR(
 /// b is the right-hand side vector
 /// The upper unitriangular matrix must be provided in compressed sparse row (CSR) format
 ///
-/// \param systemSize The size of the system. All other parameters must comply with this size
-/// \param rightHandSideVector The right-hand side vector
+/// The matrix can be made of scalars, or of square blocks of size NxN (e.g. type::Mat<3,3,Real>).
+/// In the block case, the CSR format describes the blocks (row and column indices are block
+/// indices), the diagonal blocks are the identity, and the vectors contain systemSize * N scalars.
+///
+/// \param systemSize The size of the system, in number of blocks (number of scalars if the
+/// matrix is made of scalars). All other parameters must comply with this size
+/// \param rightHandSideVector The right-hand side vector. It can be the same vector as solutionVector
 /// \param solutionVector The solution vector
 /// \param CSR_rows The array storing the starting index of each row in the data array.
 /// \param CSR_columns The array storing the column indices of the nonzero values in the data array.
-/// \param CSR_values The array containing the nonzero values of the matrix
-template<typename Real, typename Integer>
+/// \param CSR_values The array containing the nonzero values (or blocks) of the matrix
+template<typename Real, typename Integer, typename Block>
 void solveUpperUnitriangularSystemCSR(
     const sofa::Size systemSize,
     const Real* rightHandSideVector,
     Real* solutionVector,
     const Integer* const CSR_rows,
     const Integer* const CSR_columns,
-    const Real* const CSR_values
+    const Block* const CSR_values
     )
 {
+    using traits = matrix_bloc_traits<Block, Integer>;
+    constexpr sofa::Size N = traits::NL;
+    static_assert(static_cast<int>(traits::NL) == static_cast<int>(traits::NC), "Blocks must be square");
+
     for (sofa::Size i = systemSize - 1; i != static_cast<sofa::Size>(-1); --i)
     {
-        Real x_i = rightHandSideVector[i];
+        Real x_i[N];
+        for (sofa::Size r = 0; r < N; ++r)
+        {
+            x_i[r] = rightHandSideVector[i * N + r];
+        }
         for (Integer p = CSR_rows[i]; p < CSR_rows[i + 1]; ++p)
         {
-            x_i -= CSR_values[p] * solutionVector[CSR_columns[p]];
+            const Real* x_j = solutionVector + CSR_columns[p] * N;
+            for (sofa::Size r = 0; r < N; ++r)
+            {
+                for (sofa::Size c = 0; c < N; ++c)
+                {
+                    x_i[r] -= traits::v(CSR_values[p], r, c) * x_j[c];
+                }
+            }
         }
-        solutionVector[i] = x_i;
+        for (sofa::Size r = 0; r < N; ++r)
+        {
+            solutionVector[i * N + r] = x_i[r];
+        }
     }
 }
 
