@@ -132,6 +132,8 @@ set(HEADER_FILES
     ${SRC_ROOT}/behavior/SingleStateAccessor.h
     ${SRC_ROOT}/behavior/SingleStateAccessor.inl
     ${SRC_ROOT}/behavior/StateAccessor.h
+    ${SRC_ROOT}/behavior/StateVectorAlgebra.h
+    ${SRC_ROOT}/behavior/StateVectorAlgebra.inl
     ${SRC_ROOT}/behavior/TopologyAccessor.h
     ${SRC_ROOT}/behavior/fwd.h
     ${SRC_ROOT}/collision/BroadPhaseDetection.h
@@ -297,6 +299,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/behavior/ProjectiveConstraintSet.cpp
     ${SRC_ROOT}/behavior/SingleMatrixAccessor.cpp
     ${SRC_ROOT}/behavior/SingleStateAccessor.cpp
+    ${SRC_ROOT}/behavior/StateVectorAlgebra.cpp
     ${SRC_ROOT}/behavior/TopologyAccessor.cpp
     ${SRC_ROOT}/behavior/fwd.cpp
     ${SRC_ROOT}/collision/BroadPhaseDetection.cpp

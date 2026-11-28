@@ -2412,14 +2412,6 @@ void MechanicalObjectInternalData< gpu::cuda::CudaRigidTypes<N, real> >::addFrom
 #define CudaMechanicalObject_ImplMethods(T) \
 template<> void MechanicalObject< T >::accumulateForce(const core::ExecParams* params, core::VecDerivId fid) \
 { if( fid==core::vec_id::write_access::force ) m_data.accumulateForce(this); else core::behavior::BaseMechanicalState::accumulateForce(params,fid);} \
-template<> void MechanicalObject< T >::vOp(const core::ExecParams* /* params */, core::VecId v, core::ConstVecId a, core::ConstVecId b, SReal f) \
-{ m_data.vOp(this, v, a, b, f); }		\
-template<> void MechanicalObject< T >::vMultiOp(const core::ExecParams* params, const VMultiOp& ops) \
-{ m_data.vMultiOp(this, params, ops); }                                    \
-template<> SReal MechanicalObject< T >::vDot(const core::ExecParams* /* params */, core::ConstVecId a, core::ConstVecId b) \
-{ return m_data.vDot(this, a, b); }				    \
-template<> void MechanicalObject< T >::resetVec(const core::ExecParams* params, core::VecId fid) \
-{ m_data.resetVec(this, fid); } \
 template<> void MechanicalObject< T >::copyToBaseVector(linearalgebra::BaseVector * dest, core::ConstVecId src, unsigned int &offset) \
 { if (CudaBaseVectorType<Real> * vec = dynamic_cast<CudaBaseVectorType<Real> *>(dest)) m_data.copyToCudaBaseVector(this, vec,src,offset); \
 else m_data.copyToBaseVector(this, dest,src,offset); } \
@@ -2450,3 +2442,38 @@ CudaMechanicalObject_ImplMethods(gpu::cuda::CudaRigid3dTypes)
 #undef CudaMechanicalObject_ImplMethods
 
 } // namespace sofa::component::statecontainer
+
+namespace sofa::core::behavior
+{
+
+// In SofaCUDA, every MechanicalState of a CUDA type is a MechanicalObject: the downcast below is
+// therefore valid, and gives access to the CUDA kernels wrapped in MechanicalObjectInternalData.
+#define CudaStateVectorAlgebra_ImplMethods(T) \
+template<> void StateVectorAlgebra< T >::vOp(const ExecParams* /* params */, VecId v, ConstVecId a, ConstVecId b, SReal f) \
+{ component::statecontainer::MechanicalObjectInternalData< T >::vOp(static_cast<component::statecontainer::MechanicalObject< T >*>(this), v, a, b, f); } \
+template<> void StateVectorAlgebra< T >::vMultiOp(const ExecParams* params, const VMultiOp& ops) \
+{ component::statecontainer::MechanicalObjectInternalData< T >::vMultiOp(static_cast<component::statecontainer::MechanicalObject< T >*>(this), params, ops); } \
+template<> SReal StateVectorAlgebra< T >::vDot(const ExecParams* /* params */, ConstVecId a, ConstVecId b) \
+{ return component::statecontainer::MechanicalObjectInternalData< T >::vDot(static_cast<component::statecontainer::MechanicalObject< T >*>(this), a, b); } \
+template<> void StateVectorAlgebra< T >::resetVec(const ExecParams* /* params */, VecId fid) \
+{ component::statecontainer::MechanicalObjectInternalData< T >::resetVec(static_cast<component::statecontainer::MechanicalObject< T >*>(this), fid); }
+
+CudaStateVectorAlgebra_ImplMethods(gpu::cuda::CudaVec1fTypes)
+CudaStateVectorAlgebra_ImplMethods(gpu::cuda::CudaVec2fTypes)
+CudaStateVectorAlgebra_ImplMethods(gpu::cuda::CudaVec3fTypes)
+CudaStateVectorAlgebra_ImplMethods(gpu::cuda::CudaVec3f1Types)
+CudaStateVectorAlgebra_ImplMethods(gpu::cuda::CudaVec6fTypes)
+CudaStateVectorAlgebra_ImplMethods(gpu::cuda::CudaRigid3fTypes)
+
+#ifdef SOFA_GPU_CUDA_DOUBLE
+
+CudaStateVectorAlgebra_ImplMethods(gpu::cuda::CudaVec3dTypes)
+CudaStateVectorAlgebra_ImplMethods(gpu::cuda::CudaVec3d1Types)
+CudaStateVectorAlgebra_ImplMethods(gpu::cuda::CudaVec6dTypes)
+CudaStateVectorAlgebra_ImplMethods(gpu::cuda::CudaRigid3dTypes)
+
+#endif // SOFA_GPU_CUDA_DOUBLE
+
+#undef CudaStateVectorAlgebra_ImplMethods
+
+} // namespace sofa::core::behavior

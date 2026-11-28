@@ -250,60 +250,6 @@ public:
 
     void accumulateForce(const core::ExecParams* params, core::VecDerivId f = core::vec_id::write_access::force) override; // see BaseMechanicalState::accumulateForce(const ExecParams*, VecId) override
 
-    /// Increment the index of the given VecCoordId, so that all 'allocated' vectors in this state have a lower index
-    void vAvail(const core::ExecParams* params, core::VecCoordId& vecId) override;
-    /// Increment the index of the given VecDerivId, so that all 'allocated' vectors in this state have a lower index
-    void vAvail(const core::ExecParams* params, core::VecDerivId& vecId) override;
-    /// Increment the index of the given MatrixDerivId, so that all 'allocated' vectors in this state have a lower index
-    //virtual void vAvail(core::MatrixDerivId& v);
-
-    /// Allocate a new temporary vector
-    void vAlloc(const core::ExecParams* params, core::VecCoordId vecId, const core::VecIdProperties& properties = {}) override;
-    /// Allocate a new temporary vector
-    void vAlloc(const core::ExecParams* params, core::VecDerivId vecId, const core::VecIdProperties& properties = {}) override;
-    /// Allocate a new temporary vector
-    //virtual void vAlloc(core::MatrixDerivId v);
-
-    /// Reallocate a new temporary vector
-    void vRealloc(const core::ExecParams* params, core::VecCoordId vecId, const core::VecIdProperties& properties = {}) override;
-    /// Reallocate a new temporary vector
-    void vRealloc(const core::ExecParams* params, core::VecDerivId vecId, const core::VecIdProperties& properties = {}) override;
-
-
-    /// Free a temporary vector
-    void vFree(const core::ExecParams* params, core::VecCoordId v) override;
-    /// Free a temporary vector
-    void vFree(const core::ExecParams* params, core::VecDerivId v) override;
-    /// Free a temporary vector
-    //virtual void vFree(core::MatrixDerivId v);
-
-    /// Initialize an unset vector
-    void vInit(const core::ExecParams* params, core::VecCoordId v, core::ConstVecCoordId vSrc) override;
-    /// Initialize an unset vector
-    void vInit(const core::ExecParams* params, core::VecDerivId v, core::ConstVecDerivId vSrc) override;
-    /// Initialize an unset vector
-    //virtual void vInit(const core::ExecParams* params, core::MatrixDerivId v, core::ConstMatrixDerivId vSrc);
-
-    void vOp(const core::ExecParams* params, core::VecId r,
-             core::ConstVecId a = core::ConstVecId::null(),
-             core::ConstVecId b = core::ConstVecId::null(), SReal f = 1.0) override;
-
-    void vMultiOp(const core::ExecParams* params, const VMultiOp& ops) override;
-
-    void vThreshold(core::VecId a, SReal threshold ) override;
-
-    SReal vDot(const core::ExecParams* params, core::ConstVecId a, core::ConstVecId b) override;
-
-    /// Sum of the entries of state vector a at the power of l>0. This is used to compute the l-norm of the vector.
-    SReal vSum(const core::ExecParams* params, core::ConstVecId a, unsigned l) override;
-
-    /// Maximum of the absolute values of the entries of state vector a. This is used to compute the infinite-norm of the vector.
-    SReal vMax(const core::ExecParams* params, core::ConstVecId a) override;
-
-    Size vSize( const core::ExecParams* params, core::ConstVecId vecId ) override;
-
-    void resetVec(const core::ExecParams* params, core::VecId vId) override;
-
     void resetConstraint(const core::ConstraintParams* cparams) override;
 
     void getConstraintJacobian(const core::ConstraintParams* cparams, sofa::linearalgebra::BaseMatrix* J,unsigned int & off) override;
@@ -367,45 +313,6 @@ protected :
 
     /// @}
 
-    /// Generic implementation of the method vAvail
-    template<core::VecType vtype>
-    void vAvailImpl(
-        core::TVecId<vtype, core::V_WRITE>& v,
-        sofa::type::vector< Data< core::StateVecType_t<DataTypes, vtype> >* >& dataContainer);
-
-    /// Generic implementation of the method vAlloc
-    template<core::VecType vtype>
-    void vAllocImpl(core::TVecId<vtype, core::V_WRITE> v, const core::VecIdProperties& properties);
-
-    /// Generic implementation of the method vRealloc
-    template<core::VecType vtype>
-    void vReallocImpl(core::TVecId<vtype, core::V_WRITE> v, const core::VecIdProperties& properties);
-
-    /// Generic implementation of the method vFree
-    template<core::VecType vtype>
-    void vFreeImpl(core::TVecId<vtype, core::V_WRITE> v);
-
-    /// Generic implementation of the method vInit
-    template<core::VecType vtype>
-    void vInitImpl(const core::ExecParams* params,
-                   core::TVecId<vtype, core::V_WRITE> vId,
-                   core::TVecId<vtype, core::V_READ> vSrcId);
-
-    /// Shortcut to get a write-only accessor corresponding to the provided VecType from a VecId
-    template<core::VecType vtype>
-    helper::WriteOnlyAccessor<core::objectmodel::Data<core::StateVecType_t<DataTypes, vtype> > >
-        getWriteOnlyAccessor(core::VecId v);
-
-    /// Shortcut to get a write accessor corresponding to the provided VecType from a VecId
-    template<core::VecType vtype>
-    helper::WriteAccessor<core::objectmodel::Data<core::StateVecType_t<DataTypes, vtype> > >
-        getWriteAccessor(core::VecId v);
-
-    /// Shortcut to get a read accessor corresponding to the provided VecType from a VecId
-    template<core::VecType vtype>
-    helper::ReadAccessor<core::objectmodel::Data<core::StateVecType_t<DataTypes, vtype> > >
-        getReadAccessor(core::ConstVecId v);
-
     /**
     * @brief Internal function : Draw indices in 3d coordinates.
     */
@@ -420,9 +327,6 @@ protected :
     // unsigned int getIdxConstraintFromId(unsigned int id) const;
 
     MechanicalObjectInternalData<DataTypes> m_data;
-
-    template <core::VecType vtype, core::VecAccess vaccess>
-    static void setVecIdProperties(core::TVecId<vtype, vaccess> v, const core::VecIdProperties& properties, core::BaseData* vec_d);
 
     friend class MechanicalObjectInternalData<DataTypes>;
 

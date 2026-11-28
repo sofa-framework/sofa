@@ -71,6 +71,26 @@ template class SOFACUDA_COMPONENT_API MechanicalObject<CudaRigid2dTypes>;
 
 } // namespace sofa::component::statecontainer
 
+namespace sofa::core::behavior
+{
+template class SOFACUDA_COMPONENT_API StateVectorAlgebra<gpu::cuda::CudaVec1fTypes>;
+template class SOFACUDA_COMPONENT_API StateVectorAlgebra<gpu::cuda::CudaVec2fTypes>;
+template class SOFACUDA_COMPONENT_API StateVectorAlgebra<gpu::cuda::CudaVec3fTypes>;
+template class SOFACUDA_COMPONENT_API StateVectorAlgebra<gpu::cuda::CudaVec3f1Types>;
+template class SOFACUDA_COMPONENT_API StateVectorAlgebra<gpu::cuda::CudaVec6fTypes>;
+template class SOFACUDA_COMPONENT_API StateVectorAlgebra<gpu::cuda::CudaRigid3fTypes>;
+template class SOFACUDA_COMPONENT_API StateVectorAlgebra<gpu::cuda::CudaRigid2fTypes>;
+#ifdef SOFA_GPU_CUDA_DOUBLE
+template class SOFACUDA_COMPONENT_API StateVectorAlgebra<gpu::cuda::CudaVec1dTypes>;
+template class SOFACUDA_COMPONENT_API StateVectorAlgebra<gpu::cuda::CudaVec2dTypes>;
+template class SOFACUDA_COMPONENT_API StateVectorAlgebra<gpu::cuda::CudaVec3dTypes>;
+template class SOFACUDA_COMPONENT_API StateVectorAlgebra<gpu::cuda::CudaVec3d1Types>;
+template class SOFACUDA_COMPONENT_API StateVectorAlgebra<gpu::cuda::CudaVec6dTypes>;
+template class SOFACUDA_COMPONENT_API StateVectorAlgebra<gpu::cuda::CudaRigid3dTypes>;
+template class SOFACUDA_COMPONENT_API StateVectorAlgebra<gpu::cuda::CudaRigid2dTypes>;
+#endif // SOFA_GPU_CUDA_DOUBLE
+} // namespace sofa::core::behavior
+
 namespace sofa::gpu::cuda
 {
 
