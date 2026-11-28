@@ -53,8 +53,13 @@ void StaticEquilibriumIntegrationScheme::doSetupIntegrationStep(const core::Exec
 {
     SOFA_UNUSED(dt);
     SOFA_UNUSED(params);
-    SOFA_UNUSED(vResult);
-    SOFA_UNUSED(xResult);
+
+    // The state being solved is xResult/vResult (e.g. freePosition/freeVelocity when called from
+    // a FreeMotionAnimationLoop), not necessarily position/velocity. Make the mechanical
+    // parameters consistent with it, so that any operation relying on mparams.x()/v() works on it.
+    m_mop->mparams.setX(xResult);
+    m_mop->mparams.setV(vResult);
+
     simulation::common::VectorOperations::realloc(*m_vop, m_systemUnknown, "dx", this, true);
     simulation::common::VectorOperations::realloc(*m_vop, m_r0, "r0", this, true);
 }
@@ -85,8 +90,9 @@ void StaticEquilibriumIntegrationScheme::computeRHS(bool firstIteration)
         //TODO deal with that.
         SCOPED_TIMER("ComputeForce");
         m_mop->mparams.setImplicit(true); // this solver is implicit
-        // compute the net forces at the beginning of the time step
-        m_mop->computeForce(m_mappingGraph, f, true, true, nullptr); //f = Kx + Bv
+        // compute the forces on the state being solved (xResult), which is not necessarily the
+        // position (e.g. freePosition when called from a FreeMotionAnimationLoop)
+        m_mop->computeForce(m_mappingGraph, f, m_xResult, m_vResult, true, true, nullptr);
 
         m_mop->projectResponse(m_mappingGraph,f);   // b is projected to the constrained space
 
